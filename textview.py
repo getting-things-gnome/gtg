@@ -28,17 +28,25 @@ class TaskEditor :
 				doc = xml.dom.minidom.parseString(stringed)
 			except :
 				return 0
+			content = doc.getElementsByTagName("content")
+			if content[0].hasChildNodes():
+				texte = content[0].childNodes[0].nodeValue
+				buff = gtk.TextBuffer()
+				buff.set_text(texte)
+			else :
+				buff = None
+			
 		#the file didn't exist, create it now
 		else :
 			doc = xml.dom.minidom.Document()
-			content = doc.createElement("task")
-			doc.appendChild(content)
+			task = doc.createElement("task")
+			doc.appendChild(task)
 			#then we create the file
 			f = open(zefile, mode='a+')
 			f.write(doc.toxml().encode("utf-8"))
 			f.close()
 		
-		self.textview = gtk.TextView(buffer=None)
+		self.textview = gtk.TextView(buffer=buff)
 		self.window.add(self.textview)
 		self.window.connect("destroy", self.close)
 		self.window.show_all()
@@ -53,7 +61,18 @@ class TaskEditor :
 		#We should have a look at Tomboy Serialize function 
 		#NoteBuffer.cs : line 1163
 		#Currently, we are not saving the tag table.
-		print texte
+		doc = xml.dom.minidom.Document()
+		task = doc.createElement("task")
+		doc.appendChild(task)
+		content = doc.createElement("content")
+		task.appendChild(content)
+		content.appendChild(doc.createTextNode(texte))
+		#it's maybe not optimal to open/close the file each time we sync
+		# but I'm not sure that those operations are so frequent
+		# might be changed in the future.
+		f = open(zefile, mode='w+')
+		f.write(doc.toprettyxml().encode("utf-8"))
+		f.close()
 		
 	def close(self,window) :
 		#Save should be also called when buffer is modified
