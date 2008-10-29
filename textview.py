@@ -20,6 +20,7 @@ class TaskEditor :
 		self.window = gtk.Window(type=gtk.WINDOW_TOPLEVEL)
 		self.window.set_default_size(150,150)
 		#We open the note file or create it if it doesn't exist
+		buff = None
 		if os.path.exists(zefile) :
 			f = open(zefile,mode='r')
 			# sanitize the pretty XML
@@ -33,8 +34,6 @@ class TaskEditor :
 				texte = content[0].childNodes[0].nodeValue
 				buff = gtk.TextBuffer()
 				buff.set_text(texte)
-			else :
-				buff = None
 			
 		#the file didn't exist, create it now
 		else :
