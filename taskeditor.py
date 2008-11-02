@@ -1,5 +1,6 @@
-import sys, time, os, xml.dom.minidom
+import sys, time, os
 import string, threading
+from task import Task
 
 try:
  	import pygtk
@@ -41,10 +42,3 @@ class TaskEditor :
 		#Save should be also called when buffer is modified
 		self.save()
 		gtk.main_quit()
-
-	
-
-if __name__ == "__main__":
-	gobject.threads_init()
-	tv = TaskEditor()
-	gtk.main()
