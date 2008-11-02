@@ -1,7 +1,20 @@
 import sys, time, os
 import string, threading
 
-from task import Task,Project
+try:
+ 	import pygtk
+  	pygtk.require("2.0")
+except:
+  	pass
+try:
+	import gtk
+  	import gtk.glade
+	import gobject
+except:
+	sys.exit(1)
+
+from task import Task
+from project import Project
 from taskeditor import TaskEditor
 
 if __name__ == "__main__":

@@ -1,7 +1,7 @@
 import sys, time, os, xml.dom.minidom
 import string, threading
 
-from task import Project,Task
+from task import Task
 #Development variables. Should be removed
 zefile = "mynote.xml"
 
@@ -16,8 +16,6 @@ class Backend :
 			except :
 				return 0
 			self.project = doc.getElementsByTagName("project")
-			for task in self.project[0].childNodes:
-				print task.getAttribute("id")
 		
 		#the file didn't exist, create it now
 		else :
@@ -30,13 +28,31 @@ class Backend :
 			f.close()
 			
 	def get_task(self,ze_id) :
-		#not optimal. Should relearn python xml methods
-		for task in self.project[0].childNodes:
-			if task.getAttribute("id") == ze_id :
-				my_task = Task(ze_id)
-				
-		return None
 		
+		t = self.__get_xmltask(ze_id)
+		my_task = Task(ze_id)
+		content = t.getElementsByTagName("content")
+		if content[0].hasChildNodes():
+			texte = content[0].childNodes[0].nodeValue
+			my_task.set_text(texte)
+			return my_task
+		else :		
+			return None
+		
+	def __get_xmltask(self,ze_id) :
+		#not optimal. Should relearn python xml methods
+		for t in self.project[0].childNodes:
+			cur_id = "%s" %t.getAttribute("id")
+			my_id = "%s" %ze_id
+			if cur_id == my_id :
+				return t
+		
+	def set_task(self,task) :
+		tid = task.get_id()
+		t = self.__get_xmltask(tid)
+		
+	
+	#this is old code that doesn't work. To adapt !
 	def save(self) :
 	
 		#the text buffer
@@ -49,10 +65,10 @@ class Backend :
 		#NoteBuffer.cs : line 1163
 		#Currently, we are not saving the tag table.
 		doc = xml.dom.minidom.Document()
-		task = doc.createElement("task")
-		doc.appendChild(task)
+		t = doc.createElement("task")
+		doc.appendChild(t)
 		content = doc.createElement("content")
-		task.appendChild(content)
+		t.appendChild(content)
 		content.appendChild(doc.createTextNode(texte))
 		#it's maybe not optimal to open/close the file each time we sync
 		# but I'm not sure that those operations are so frequent
