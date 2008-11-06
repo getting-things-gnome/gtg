@@ -1,10 +1,13 @@
-import sys, time, os, xml.dom.minidom
+"import sys, time, os, xml.dom.minidom
 import string, threading
 
-from task import Task
+from task import Task, Project
 #Development variables. Should be removed
 zefile = "mynote.xml"
 
+
+#todo : Backend should only provide one big "project" object and should 
+#not provide get_task and stuff like that.
 class Backend :
 	def __init__(self) :
 		if os.path.exists(zefile) :
@@ -27,6 +30,20 @@ class Backend :
 			f.write(doc.toxml().encode("utf-8"))
 			f.close()
 			
+			
+	def get_project(self) :
+		#TODO
+		
+	#This function will
+	def sync_project(self) :
+
+	def sync_task(self) :
+		
+	
+###################### OLD #############################		
+					
+	
+	#to remove
 	def get_task(self,ze_id) :
 		
 		t = self.__get_xmltask(ze_id)
@@ -39,6 +56,7 @@ class Backend :
 		else :		
 			return None
 		
+	#to remove
 	def __get_xmltask(self,ze_id) :
 		#not optimal. Should relearn python xml methods
 		for t in self.project[0].childNodes:
@@ -46,10 +64,6 @@ class Backend :
 			my_id = "%s" %ze_id
 			if cur_id == my_id :
 				return t
-		
-	def set_task(self,task) :
-		tid = task.get_id()
-		t = self.__get_xmltask(tid)
 		
 	
 	#this is old code that doesn't work. To adapt !
