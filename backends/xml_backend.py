@@ -1,4 +1,4 @@
-"import sys, time, os, xml.dom.minidom
+import sys, time, os, xml.dom.minidom
 import string, threading
 
 from task import Task, Project
@@ -10,6 +10,7 @@ zefile = "mynote.xml"
 #not provide get_task and stuff like that.
 class Backend :
 	def __init__(self) :
+		self.project = Project("project")
 		if os.path.exists(zefile) :
 			f = open(zefile,mode='r')
 			# sanitize the pretty XML
@@ -18,52 +19,44 @@ class Backend :
 				doc = xml.dom.minidom.parseString(stringed)
 			except :
 				return 0
-			self.project = doc.getElementsByTagName("project")
+			self.__xmlproject = doc.getElementsByTagName("project")
 		
 		#the file didn't exist, create it now
 		else :
 			doc = xml.dom.minidom.Document()
-			self.project = doc.createElement("project")
+			self.__xmlproject = doc.createElement("project")
 			doc.appendChild(self.project)
 			#then we create the file
 			f = open(zefile, mode='a+')
 			f.write(doc.toxml().encode("utf-8"))
 			f.close()
 			
-			
+		
+	#This function should return a project object with all the current tasks in it.
 	def get_project(self) :
-		#TODO
+		#t is the xml of each task
+		for t in self.__xmlproject[0].childNodes:
+			cur_id = "%s" %t.getAttribute("id")
+			cur_task = Task(cur_id)
+			#we will fill the task with its content
+			content = t.getElementsByTagName("content")
+			if content[0].hasChildNodes():
+				texte = content[0].childNodes[0].nodeValue
+				cur_task.set_text(texte)
+			#adding task to the project
+			self.project.add_task(cur_task)
+		return self.project
 		
 	#This function will
 	def sync_project(self) :
+		print "to implement"
 
 	def sync_task(self) :
+		print "to implement"
 		
 	
 ###################### OLD #############################		
 					
-	
-	#to remove
-	def get_task(self,ze_id) :
-		
-		t = self.__get_xmltask(ze_id)
-		my_task = Task(ze_id)
-		content = t.getElementsByTagName("content")
-		if content[0].hasChildNodes():
-			texte = content[0].childNodes[0].nodeValue
-			my_task.set_text(texte)
-			return my_task
-		else :		
-			return None
-		
-	#to remove
-	def __get_xmltask(self,ze_id) :
-		#not optimal. Should relearn python xml methods
-		for t in self.project[0].childNodes:
-			cur_id = "%s" %t.getAttribute("id")
-			my_id = "%s" %ze_id
-			if cur_id == my_id :
-				return t
 		
 	
 	#this is old code that doesn't work. To adapt !
