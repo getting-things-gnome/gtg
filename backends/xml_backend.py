@@ -49,10 +49,11 @@ class Backend :
 		
 	#This function will
 	def sync_project(self) :
-		print "to implement"
+		for tid in self.project.list_tasks():
+			print tid
 
 	def sync_task(self) :
-		print "to implement"
+		self.sync_project()
 		
 	
 ###################### OLD #############################		
@@ -62,14 +63,7 @@ class Backend :
 	#this is old code that doesn't work. To adapt !
 	def save(self) :
 	
-		#the text buffer
-		buff = self.textview.get_buffer()
-		#the tag table
-		table = buff.get_tag_table()
-		#we get the text
-		texte = buff.get_text(buff.get_start_iter(),buff.get_end_iter())
-		#We should have a look at Tomboy Serialize function 
-		#NoteBuffer.cs : line 1163
+
 		#Currently, we are not saving the tag table.
 		doc = xml.dom.minidom.Document()
 		t = doc.createElement("task")

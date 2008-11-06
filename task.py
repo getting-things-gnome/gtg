@@ -33,11 +33,14 @@ class Project :
 		self.list = {}
 		
 	def list_tasks(self):
-		print "implement list_tasks in task.py"
+		result = self.list.keys()
+		#we must ensure that we not return a None
+		if not result :
+			result = []
+		return result
 		
 	def get_task(self,ze_id) :
-		print "convert to string !"
-		return self.list["1"]
+		return self.list[str(ze_id)]
 		
 	def add_task(self,task) :
 		tid = task.get_id()
