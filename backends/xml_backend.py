@@ -25,7 +25,7 @@ class Backend :
 		else :
 			doc = xml.dom.minidom.Document()
 			self.__xmlproject = doc.createElement("project")
-			doc.appendChild(self.project)
+			doc.appendChild(self.__xmlproject)
 			#then we create the file
 			f = open(zefile, mode='a+')
 			f.write(doc.toxml().encode("utf-8"))
@@ -47,33 +47,28 @@ class Backend :
 			self.project.add_task(cur_task)
 		return self.project
 		
-	#This function will
+	#This function will sync the whole project
 	def sync_project(self) :
-		for tid in self.project.list_tasks():
-			print tid
-
-	def sync_task(self) :
-		self.sync_project()
-		
-	
-###################### OLD #############################		
-					
-		
-	
-	#this is old code that doesn't work. To adapt !
-	def save(self) :
-	
-
 		#Currently, we are not saving the tag table.
 		doc = xml.dom.minidom.Document()
-		t = doc.createElement("task")
-		doc.appendChild(t)
-		content = doc.createElement("content")
-		t.appendChild(content)
-		content.appendChild(doc.createTextNode(texte))
+		p_xml = doc.createElement("project")
+		doc.appendChild(p_xml)
+		for tid in self.project.list_tasks():
+			t = self.project.get_task(tid)
+			t_xml = doc.createElement("task")
+			t_xml.setAttribute("id",str(tid))
+			p_xml.appendChild(t_xml)
+			content = doc.createElement("content")
+			t_xml.appendChild(content)
+			content.appendChild(doc.createTextNode(t.get_text()))
 		#it's maybe not optimal to open/close the file each time we sync
 		# but I'm not sure that those operations are so frequent
 		# might be changed in the future.
 		f = open(zefile, mode='w+')
 		f.write(doc.toprettyxml().encode("utf-8"))
 		f.close()
+
+	#It's easier to save the whole project each time we change a task
+	def sync_task(self) :
+		self.sync_project()
+		
