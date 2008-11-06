@@ -37,6 +37,7 @@ class TaskEditor :
 		#NoteBuffer.cs : line 1163
 		#Currently, we are not saving the tag table.
 		self.task.set_text(texte)
+		self.task.sync()
 		
 	def close(self,window) :
 		#Save should be also called when buffer is modified

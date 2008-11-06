@@ -26,5 +26,7 @@ if __name__ == "__main__":
 	zeproject = my_backend.get_project()
 	# "1" is just the ID of the task
 	zetask = zeproject.get_task(1)
+	zetask.set_sync_func(my_backend.sync_task)
 	tv = TaskEditor(zetask)
+	## callback here to sync ?
 	gtk.main()

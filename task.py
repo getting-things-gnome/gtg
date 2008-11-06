@@ -8,6 +8,7 @@ class Task :
 		#the id of this task in the project
 		self.tid = ze_id
 		self.content = None
+		self.sync_func = None
 		
 	def get_id(self) :
 		return self.tid
@@ -17,6 +18,13 @@ class Task :
 		
 	def set_text(self,texte) :
 		self.content = texte
+		
+	#This is a callback. The "sync" function has to be set
+	def set_sync_func(self,sync) :
+		self.sync_func = sync
+		
+	def sync(self) :
+		self.sync_func()
 		
 #This class represent a project : a list of tasks sharing the same backend
 class Project :
@@ -28,8 +36,8 @@ class Project :
 		print "implement list_tasks in task.py"
 		
 	def get_task(self,ze_id) :
-		#convert to string !
-		return self.list[ze_id]
+		print "convert to string !"
+		return self.list["1"]
 		
 	def add_task(self,task) :
 		tid = task.get_id()
