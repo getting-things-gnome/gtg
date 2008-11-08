@@ -7,6 +7,11 @@
 # @author : B. Rousseau, L. Dricot
 # @date   : November 2008
 #
+#   main.py contains the main GTK interface for the tasklist
+#   task.py contains the implementation of a task and a project
+#   taskeditor contains the GTK interface for task editing
+#   backends/xml_backend.py is the way to store tasks and project in XML
+#
 #=============================================================================== 
 
 #=== IMPORT ====================================================================
@@ -54,11 +59,15 @@ class Base:
               }
         self.wTree.signal_autoconnect(dic)
         
+        #Now we have to open our tasks
         self.backend = Backend()
         self.project = self.backend.get_project()
+        self.project.set_sync_func(self.backend.sync_project)
         
     def main(self):
+        #Here we will define the main TaskList interface
         self.c_title=1
+        #The Active tasks treeview
         self.task_tview = self.wTree.get_widget("task_tview")
         self.cellBool = gtk.CellRendererToggle()
         self.cell     = gtk.CellRendererText()
@@ -74,35 +83,90 @@ class Base:
         self.task_tview.set_model(self.task_ts)
         self.task_ts.set_sort_column_id(self.c_title, gtk.SORT_ASCENDING)
         
-        for tid in self.project.list_tasks() :
-            t = self.project.get_task(tid)
-            title = t.get_title()
-            self.task_ts.append(None,[tid,title,False])
+        #The done/dismissed taks treeview
+        self.taskdone_tview = self.wTree.get_widget("taskdone_tview")
+        cold = gtk.TreeViewColumn("Done")
+        cold.pack_start(self.cellBool)
+        cold.pack_start(self.cell)
+        cold.set_resizable(True)        
+        cold.set_sort_column_id(1)
+        cold.set_attributes(self.cell, markup=1)
+        cold.add_attribute(self.cellBool, 'active', 2)
+        self.taskdone_tview.append_column(cold)
+        self.taskdone_ts = gtk.TreeStore(gobject.TYPE_PYOBJECT, str, bool)
+        self.taskdone_tview.set_model(self.taskdone_ts)
+        self.taskdone_ts.set_sort_column_id(self.c_title, gtk.SORT_ASCENDING)
         
+        
+        self.refresh_list()
         
         
         gtk.main()
         return 0
+     
+    #refresh list build/refresh your TreeStore of task
+    #to keep it in sync with your self.project   
+    def refresh_list(self) :
+        #to refresh the list we first empty it then rebuild it
+        #is it acceptable to do that ?
+        self.task_ts.clear()
+        self.taskdone_ts.clear()
+        for tid in self.project.active_tasks() :
+            t = self.project.get_task(tid)
+            title = t.get_title()
+            self.task_ts.append(None,[tid,title,False])
+        for tid in self.project.unactive_tasks() :
+            t = self.project.get_task(tid)
+            title = t.get_title()
+            self.taskdone_ts.append(None,[tid,title,False])
+
+    
+    def open_task(self,task) :
+        t = task
+        t.set_sync_func(self.backend.sync_task)
+        tv = TaskEditor(t,self.refresh_list)
         
     def on_add_task(self,widget) :
-        print "to implement"
-        
-    def on_edit_task(self,widget,row=None ,col=None) :
+        task = self.project.new_task()
+        self.open_task(task)
+    
+    def get_selected_task(self) :
+        tid = None
         # Get the selection in the gtk.TreeView
         selection = self.task_tview.get_selection()
         # Get the selection iter
-        model, selection_iter = selection.get_selected()
+        selection_iter = selection.get_selected()[1]
+        if selection_iter :
+            tid = self.task_ts.get_value(selection_iter, 0)
+        #maybe the selection is in the taskdone_tview ?
+        else :
+            selection = self.taskdone_tview.get_selection()
+            selection_iter = selection.get_selected()[1]
+            if selection_iter :
+                tid = self.taskdone_ts.get_value(selection_iter, 0)
+        return tid
+        
+    def on_edit_task(self,widget,row=None ,col=None) :
+        tid = self.get_selected_task()
+        zetask = self.project.get_task(tid)
+        self.open_task(zetask)
+        
+    def on_delete_task(self,widget) :
+        tid = self.get_selected_task()
+        self.project.delete_task(tid)
+        self.refresh_list()
+        
+    def on_mark_as_done(self,widget) :
+        # Get the selection in the gtk.TreeView
+        selection = self.task_tview.get_selection()[1]
+        # Get the selection iter
+        selection_iter = selection.get_selected()
         if (selection_iter):
             tid = self.task_ts.get_value(selection_iter, 0)
             zetask = self.project.get_task(tid)
-            zetask.set_sync_func(self.backend.sync_task)
-            tv = TaskEditor(zetask)
-        
-    def on_delete_task(self,widget) :
-        print "to implement"
-        
-    def on_mark_as_done(self,widget) :
-        print "to implement"
+            zetask.set_status("Done")
+            self.refresh_list()
+            self.backend.sync_task(tid)
         
     def on_select_tag(self, widget, row=None ,col=None) :
         print "to implement"

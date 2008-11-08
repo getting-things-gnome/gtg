@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Sat Sep 13 16:24:38 2008 -->
+<!--Generated with glade3 3.4.5 on Sat Nov  8 22:53:37 2008 -->
 <glade-interface>
-  <requires lib="gnome"/>
   <widget class="GtkWindow" id="MainWindow">
     <property name="visible">True</property>
     <property name="title" translatable="yes">Getting Things Gnome!</property>
@@ -170,18 +169,42 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkScrolledWindow" id="scrolledwindow1">
+              <widget class="GtkVBox" id="vbox2">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
-                <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
                 <child>
-                  <widget class="GtkTreeView" id="task_tview">
+                  <widget class="GtkScrolledWindow" id="scrolledwindow1">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="search_column">8</property>
-                    <signal name="row_activated" handler="on_edit_task"/>
+                    <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+                    <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+                    <child>
+                      <widget class="GtkTreeView" id="task_tview">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="search_column">8</property>
+                        <signal name="row_activated" handler="on_edit_task"/>
+                      </widget>
+                    </child>
                   </widget>
+                </child>
+                <child>
+                  <widget class="GtkScrolledWindow" id="scrolledwindow2">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+                    <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+                    <child>
+                      <widget class="GtkTreeView" id="taskdone_tview">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="search_column">8</property>
+                        <signal name="row_activated" handler="on_edit_task"/>
+                      </widget>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="position">1</property>
+                  </packing>
                 </child>
               </widget>
               <packing>
@@ -207,235 +230,63 @@
       </widget>
     </child>
   </widget>
-  <widget class="GtkDialog" id="task_edit_dlg">
-    <property name="width_request">400</property>
-    <property name="height_request">600</property>
-    <property name="border_width">5</property>
-    <property name="title" translatable="yes">Edit task</property>
+  <widget class="GtkWindow" id="TaskEditor">
+    <property name="title" translatable="yes">Task</property>
     <property name="window_position">GTK_WIN_POS_CENTER_ON_PARENT</property>
-    <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
-    <property name="has_separator">False</property>
-    <child internal-child="vbox">
-      <widget class="GtkVBox" id="dialog-vbox3">
+    <property name="default_width">316</property>
+    <property name="default_height">321</property>
+    <child>
+      <widget class="GtkVBox" id="vbox4">
         <property name="visible">True</property>
-        <property name="spacing">2</property>
         <child>
-          <widget class="GtkVBox" id="vbox2">
+          <widget class="GtkToolbar" id="task_tb1">
             <property name="visible">True</property>
+            <property name="toolbar_style">GTK_TOOLBAR_BOTH</property>
             <child>
-              <widget class="GtkLabel" id="header_lbl">
-                <property name="height_request">50</property>
+              <widget class="GtkToolButton" id="mark_as_done_b1">
                 <property name="visible">True</property>
-                <property name="xalign">0</property>
-                <property name="label" translatable="yes">&lt;span size="xx-large" weight="bold"&gt;Edit task&lt;/span&gt;</property>
-                <property name="use_markup">True</property>
+                <property name="label" translatable="yes">Mark as done</property>
+                <property name="stock_id">gtk-apply</property>
+                <signal name="clicked" handler="mark_as_done_clicked"/>
               </widget>
               <packing>
-                <property name="expand">False</property>
+                <property name="homogeneous">True</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkAspectFrame" id="aspectframe1">
+              <widget class="GtkToolButton" id="delete_b1">
                 <property name="visible">True</property>
-                <property name="label_xalign">0</property>
-                <child>
-                  <widget class="GtkTable" id="table1">
-                    <property name="visible">True</property>
-                    <property name="border_width">10</property>
-                    <property name="n_rows">9</property>
-                    <property name="n_columns">2</property>
-                    <child>
-                      <widget class="GtkLabel" id="tag_lbl">
-                        <property name="visible">True</property>
-                        <property name="xalign">0</property>
-                        <property name="label" translatable="yes">&lt;span size="large" weight="bold"&gt;Tags:&lt;/span&gt;</property>
-                        <property name="use_markup">True</property>
-                      </widget>
-                      <packing>
-                        <property name="top_attach">4</property>
-                        <property name="bottom_attach">5</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkLabel" id="title_lbl">
-                        <property name="visible">True</property>
-                        <property name="xalign">0</property>
-                        <property name="label" translatable="yes">&lt;span size="large" weight="bold"&gt;Title:&lt;/span&gt;</property>
-                        <property name="use_markup">True</property>
-                      </widget>
-                      <packing>
-                        <property name="right_attach">2</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkEntry" id="title_ent">
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                      </widget>
-                      <packing>
-                        <property name="right_attach">2</property>
-                        <property name="top_attach">1</property>
-                        <property name="bottom_attach">2</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkLabel" id="note_lbl">
-                        <property name="visible">True</property>
-                        <property name="xalign">0</property>
-                        <property name="label" translatable="yes">&lt;span size="large" weight="bold"&gt;Note:&lt;/span&gt;</property>
-                        <property name="use_markup">True</property>
-                      </widget>
-                      <packing>
-                        <property name="right_attach">2</property>
-                        <property name="top_attach">2</property>
-                        <property name="bottom_attach">3</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkTextView" id="note_txtview">
-                        <property name="height_request">100</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="accepts_tab">False</property>
-                      </widget>
-                      <packing>
-                        <property name="right_attach">2</property>
-                        <property name="top_attach">3</property>
-                        <property name="bottom_attach">4</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkEntry" id="tag_ent">
-                        <property name="width_request">200</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                      </widget>
-                      <packing>
-                        <property name="left_attach">1</property>
-                        <property name="right_attach">2</property>
-                        <property name="top_attach">4</property>
-                        <property name="bottom_attach">5</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkLabel" id="Due date">
-                        <property name="visible">True</property>
-                        <property name="xalign">0</property>
-                        <property name="label" translatable="yes">&lt;span size="large" weight="bold"&gt;Due date:&lt;/span&gt;</property>
-                        <property name="use_markup">True</property>
-                      </widget>
-                      <packing>
-                        <property name="top_attach">5</property>
-                        <property name="bottom_attach">6</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GnomeDateEdit" id="duedate_ent">
-                        <property name="visible">True</property>
-                        <property name="dateedit_flags">GNOME_DATE_EDIT_WEEK_STARTS_ON_MONDAY</property>
-                      </widget>
-                      <packing>
-                        <property name="left_attach">1</property>
-                        <property name="right_attach">2</property>
-                        <property name="top_attach">5</property>
-                        <property name="bottom_attach">6</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkCheckButton" id="is_done_ent">
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="label" translatable="yes">task is completed</property>
-                        <property name="response_id">0</property>
-                        <property name="draw_indicator">True</property>
-                      </widget>
-                      <packing>
-                        <property name="left_attach">1</property>
-                        <property name="right_attach">2</property>
-                        <property name="top_attach">6</property>
-                        <property name="bottom_attach">7</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkLabel" id="Done">
-                        <property name="visible">True</property>
-                        <property name="xalign">0</property>
-                        <property name="label" translatable="yes">&lt;span size="large" weight="bold"&gt;Done:&lt;/span&gt;</property>
-                        <property name="use_markup">True</property>
-                      </widget>
-                      <packing>
-                        <property name="top_attach">6</property>
-                        <property name="bottom_attach">7</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkLabel" id="deo_lbl">
-                        <property name="visible">True</property>
-                        <property name="xalign">0</property>
-                        <property name="label" translatable="yes">&lt;span size="large" weight="bold"&gt;Depends:&lt;/span&gt;</property>
-                        <property name="use_markup">True</property>
-                      </widget>
-                      <packing>
-                        <property name="right_attach">2</property>
-                        <property name="top_attach">7</property>
-                        <property name="bottom_attach">8</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <widget class="GtkTreeView" id="deps_tview">
-                        <property name="height_request">100</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                      </widget>
-                      <packing>
-                        <property name="right_attach">2</property>
-                        <property name="top_attach">8</property>
-                        <property name="bottom_attach">9</property>
-                      </packing>
-                    </child>
-                  </widget>
-                </child>
+                <property name="label" translatable="yes">Delete</property>
+                <property name="stock_id">gtk-delete</property>
+                <signal name="clicked" handler="delete_clicked"/>
               </widget>
               <packing>
-                <property name="position">1</property>
-              </packing>
-            </child>
-          </widget>
-          <packing>
-            <property name="position">1</property>
-          </packing>
-        </child>
-        <child internal-child="action_area">
-          <widget class="GtkHButtonBox" id="dialog-action_area3">
-            <property name="visible">True</property>
-            <property name="layout_style">GTK_BUTTONBOX_END</property>
-            <child>
-              <widget class="GtkButton" id="button2">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="label" translatable="yes">gtk-cancel</property>
-                <property name="use_stock">True</property>
-                <property name="response_id">-6</property>
-              </widget>
-            </child>
-            <child>
-              <widget class="GtkButton" id="button3">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="label" translatable="yes">gtk-ok</property>
-                <property name="use_stock">True</property>
-                <property name="response_id">-5</property>
-              </widget>
-              <packing>
-                <property name="position">1</property>
+                <property name="homogeneous">True</property>
               </packing>
             </child>
           </widget>
           <packing>
             <property name="expand">False</property>
-            <property name="pack_type">GTK_PACK_END</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="GtkScrolledWindow" id="scrolledwindow3">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+            <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+            <child>
+              <widget class="GtkTextView" id="textview">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="has_focus">True</property>
+                <property name="resize_mode">GTK_RESIZE_IMMEDIATE</property>
+                <property name="wrap_mode">GTK_WRAP_WORD</property>
+              </widget>
+            </child>
+          </widget>
+          <packing>
+            <property name="position">1</property>
           </packing>
         </child>
       </widget>
