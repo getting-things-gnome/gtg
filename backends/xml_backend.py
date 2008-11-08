@@ -52,6 +52,10 @@ class Backend :
             cur_id = "%s" %t.getAttribute("id")
             cur_task = Task(cur_id)
             #we will fill the task with its content
+            xtitle = t.getElementsByTagName("title")
+            if xtitle[0].hasChildNodes():
+                title = xtitle[0].childNodes[0].nodeValue
+                cur_task.set_title(title)
             content = t.getElementsByTagName("content")
             if content[0].hasChildNodes():
                 texte = content[0].childNodes[0].nodeValue
@@ -71,6 +75,9 @@ class Backend :
             t_xml = doc.createElement("task")
             t_xml.setAttribute("id",str(tid))
             p_xml.appendChild(t_xml)
+            title = doc.createElement("title")
+            t_xml.appendChild(title)
+            title.appendChild(doc.createTextNode(t.get_title()))
             content = doc.createElement("content")
             t_xml.appendChild(content)
             content.appendChild(doc.createTextNode(t.get_text()))

@@ -9,9 +9,16 @@ class Task :
 		self.tid = ze_id
 		self.content = None
 		self.sync_func = None
-		
+		self.title = None
+				
 	def get_id(self) :
 		return self.tid
+		
+	def get_title(self) :
+	    return self.title
+	
+	def set_title(self,title) :
+	    self.title = title
 		
 	def get_text(self) :
 		return self.content
