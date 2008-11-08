@@ -11,6 +11,8 @@ class Task :
         self.content = ""
         self.sync_func = None
         self.title = "My task"
+        #available status are : Active - Done - Dismiss
+        self.status = "Active"
                 
     def get_id(self) :
         return self.tid
@@ -20,6 +22,12 @@ class Task :
     
     def set_title(self,title) :
         self.title = title
+        
+    def set_status(self,status) :
+        self.status = status
+        
+    def get_status(self) :
+        return self.status
         
     def get_text(self) :
         #defensive programmtion to avoid returning None
@@ -36,7 +44,7 @@ class Task :
         self.sync_func = sync
         
     def sync(self) :
-        self.sync_func()
+        self.sync_func(self.tid)
         
 #This class represent a project : a list of tasks sharing the same backend
 class Project :

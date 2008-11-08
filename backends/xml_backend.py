@@ -47,21 +47,24 @@ class Backend :
         
     #This function should return a project object with all the current tasks in it.
     def get_project(self) :
-        #t is the xml of each task
-        for t in self.__xmlproject[0].childNodes:
-            cur_id = "%s" %t.getAttribute("id")
-            cur_task = Task(cur_id)
-            #we will fill the task with its content
-            xtitle = t.getElementsByTagName("title")
-            if xtitle[0].hasChildNodes():
-                title = xtitle[0].childNodes[0].nodeValue
-                cur_task.set_title(title)
-            content = t.getElementsByTagName("content")
-            if content[0].hasChildNodes():
-                texte = content[0].childNodes[0].nodeValue
-                cur_task.set_text(texte)
-            #adding task to the project
-            self.project.add_task(cur_task)
+        if self.__xmlproject[0] :
+            #t is the xml of each task
+            for t in self.__xmlproject[0].childNodes:
+                cur_id = "%s" %t.getAttribute("id")
+                cur_stat = "%s" %t.getAttribute("status")
+                cur_task = Task(cur_id)
+                cur_task.set_status(cur_stat)
+                #we will fill the task with its content
+                xtitle = t.getElementsByTagName("title")
+                if xtitle[0].hasChildNodes():
+                    title = xtitle[0].childNodes[0].nodeValue
+                    cur_task.set_title(title)
+                content = t.getElementsByTagName("content")
+                if content[0].hasChildNodes():
+                    texte = content[0].childNodes[0].nodeValue
+                    cur_task.set_text(texte)
+                #adding task to the project
+                self.project.add_task(cur_task)
         return self.project
         
     #This function will sync the whole project
@@ -74,6 +77,7 @@ class Backend :
             t = self.project.get_task(tid)
             t_xml = doc.createElement("task")
             t_xml.setAttribute("id",str(tid))
+            t_xml.setAttribute("status",t.get_status())
             p_xml.appendChild(t_xml)
             title = doc.createElement("title")
             t_xml.appendChild(title)
@@ -89,6 +93,6 @@ class Backend :
         f.close()
 
     #It's easier to save the whole project each time we change a task
-    def sync_task(self) :
+    def sync_task(self,task_id) :
         self.sync_project()
         

@@ -76,7 +76,7 @@ class Base:
         self.task_ts.set_sort_column_id(self.c_title, gtk.SORT_ASCENDING)
         
         
-        self.refresh_list()
+        self.refresh_active_list()
         
         
         gtk.main()
@@ -84,19 +84,20 @@ class Base:
      
     #refresh list build/refresh your TreeStore of task
     #to keep it in sync with your self.project   
-    def refresh_list(self) :
+    def refresh_active_list(self) :
         #to refresh the list we first empty it then rebuild it
         #is it acceptable to do that ?
         self.task_ts.clear()
         for tid in self.project.list_tasks() :
             t = self.project.get_task(tid)
-            title = t.get_title()
-            self.task_ts.append(None,[tid,title,False])
+            if t.get_status() == "Active" :
+                title = t.get_title()
+                self.task_ts.append(None,[tid,title,False])
     
     def open_task(self,task) :
         t = task
         t.set_sync_func(self.backend.sync_task)
-        tv = TaskEditor(t,self.refresh_list)
+        tv = TaskEditor(t,self.refresh_active_list)
         
     def on_add_task(self,widget) :
         task = self.project.new_task()
@@ -121,10 +122,19 @@ class Base:
         if (selection_iter):
             tid = self.task_ts.get_value(selection_iter, 0)
             self.project.delete_task(tid)
-            self.refresh_list()
+            self.refresh_active_list()
         
     def on_mark_as_done(self,widget) :
-        print "to implement"
+        # Get the selection in the gtk.TreeView
+        selection = self.task_tview.get_selection()
+        # Get the selection iter
+        model, selection_iter = selection.get_selected()
+        if (selection_iter):
+            tid = self.task_ts.get_value(selection_iter, 0)
+            zetask = self.project.get_task(tid)
+            zetask.set_status("Done")
+            self.refresh_active_list()
+            self.backend.sync_task(tid)
         
     def on_select_tag(self, widget, row=None ,col=None) :
         print "to implement"

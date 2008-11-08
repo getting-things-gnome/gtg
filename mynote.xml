@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <project>
-	<task id="10">
+	<task id="10" status="Done">
 		<title>
 			remove tasks
 		</title>
@@ -8,7 +8,7 @@
 			
 		</content>
 	</task>
-	<task id="1">
+	<task id="1" status="Done">
 		<title>
 			refresh title
 		</title>
@@ -18,7 +18,15 @@ dans la liste quand on close
 l'éditeur
 		</content>
 	</task>
-	<task id="2">
+	<task id="0" status="Active">
+		<title>
+			Display tasks done
+		</title>
+		<content>
+			
+		</content>
+	</task>
+	<task id="2" status="Done">
 		<title>
 			nouvelle tache
 		</title>
@@ -27,7 +35,7 @@ l'éditeur
 &quot;new task&quot;
 		</content>
 	</task>
-	<task id="9">
+	<task id="9" status="Done">
 		<title>
 			mark as done
 		</title>
@@ -35,7 +43,7 @@ l'éditeur
 			
 		</content>
 	</task>
-	<task id="8">
+	<task id="8" status="Active">
 		<title>
 			do not save by default
 		</title>
