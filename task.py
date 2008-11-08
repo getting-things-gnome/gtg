@@ -43,6 +43,7 @@ class Project :
     def __init__(self, name) :
         self.name = name
         self.list = {}
+        self.sync_func = None
         
     def list_tasks(self):
         result = self.list.keys()
@@ -66,12 +67,20 @@ class Project :
     
     def delete_task(self,tid) :
         del self.list[tid]
+        self.sync()
     
     def __free_tid(self) :
         k = 0
         while self.list.has_key(str(k)) :
             k += 1
         return str(k)
+        
+    #This is a callback. The "sync" function has to be set
+    def set_sync_func(self,sync) :
+        self.sync_func = sync
+        
+    def sync(self) :
+        self.sync_func()
         
         
     

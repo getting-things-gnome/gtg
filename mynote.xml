@@ -1,13 +1,5 @@
 <?xml version="1.0" ?>
 <project>
-	<task id="11">
-		<title>
-			to_delete
-		</title>
-		<content>
-			
-		</content>
-	</task>
 	<task id="10">
 		<title>
 			remove tasks
@@ -26,22 +18,6 @@ dans la liste quand on close
 l'éditeur
 		</content>
 	</task>
-	<task id="0">
-		<title>
-			to_delete
-		</title>
-		<content>
-			aze
-		</content>
-	</task>
-	<task id="3">
-		<title>
-			to_delete
-		</title>
-		<content>
-			
-		</content>
-	</task>
 	<task id="2">
 		<title>
 			nouvelle tache
@@ -49,38 +25,6 @@ l'éditeur
 		<content>
 			implémenter le boutton
 &quot;new task&quot;
-		</content>
-	</task>
-	<task id="5">
-		<title>
-			to_delete
-		</title>
-		<content>
-			
-		</content>
-	</task>
-	<task id="4">
-		<title>
-			to_delete
-		</title>
-		<content>
-			
-		</content>
-	</task>
-	<task id="7">
-		<title>
-			to_delete
-		</title>
-		<content>
-			
-		</content>
-	</task>
-	<task id="6">
-		<title>
-			to_delete
-		</title>
-		<content>
-			
 		</content>
 	</task>
 	<task id="9">

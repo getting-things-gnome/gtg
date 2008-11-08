@@ -56,6 +56,7 @@ class Base:
         
         self.backend = Backend()
         self.project = self.backend.get_project()
+        self.project.set_sync_func(self.backend.sync_project)
         
     def main(self):
         self.c_title=1
