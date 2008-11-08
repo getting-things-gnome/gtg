@@ -87,8 +87,16 @@ class Base:
     def on_add_task(self,widget) :
         print "to implement"
         
-    def on_edit_task(self,widget) :
-        print "to implement"
+    def on_edit_task(self,widget,row=None ,col=None) :
+        # Get the selection in the gtk.TreeView
+        selection = self.task_tview.get_selection()
+        # Get the selection iter
+        model, selection_iter = selection.get_selected()
+        if (selection_iter):
+            tid = self.task_ts.get_value(selection_iter, 0)
+            zetask = self.project.get_task(tid)
+            zetask.set_sync_func(self.backend.sync_task)
+            tv = TaskEditor(zetask)
         
     def on_delete_task(self,widget) :
         print "to implement"

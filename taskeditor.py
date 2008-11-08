@@ -53,4 +53,6 @@ class TaskEditor :
 	def close(self,window) :
 		#Save should be also called when buffer is modified
 		self.save()
-		gtk.main_quit()
+		#TODO : verify that destroy the window is enough ! 
+		#We should also destroy the whole taskeditor object.
+		self.window.destroy()

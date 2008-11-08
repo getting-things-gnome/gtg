@@ -2,12 +2,13 @@
 <project>
 	<task id="1">
 		<title>
-			aze
+			refresh title
 		</title>
 		<content>
 			
-azeaze
-azeaze
+On doit rafraichir le title
+dans la liste quand on close
+l'éditeur
 		</content>
 	</task>
 </project>
