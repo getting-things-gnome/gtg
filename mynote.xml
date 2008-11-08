@@ -1,20 +1,12 @@
 <?xml version="1.0" ?>
 <project>
-	<task id="11" status="Active">
+	<task id="11" status="Done">
 		<title>
 			TaskEditor resizeing
 		</title>
 		<content>
 			Le texte doit s'adapter à la fenêtre et faire des &quot;faux&quot; retours à la ligne automatiquement (et s'adapter quand on redimensionne)
-
-
-
-
-
-
-
-
-
+C'est cool non ?
 		</content>
 	</task>
 	<task id="10" status="Done">
@@ -23,6 +15,15 @@
 		</title>
 		<content>
 			
+		</content>
+	</task>
+	<task id="12" status="Done">
+		<title>
+			Boutton dans l'éditeur
+		</title>
+		<content>
+			Mark as done
+delete
 		</content>
 	</task>
 	<task id="1" status="Done">
@@ -48,9 +49,8 @@ l'éditeur
 			Undone
 		</title>
 		<content>
-			When a &quot;done&quot; task is selected
-The &quot;Mark as done&quot; should change to
-&quot;Undone&quot;
+			When a &quot;done&quot; task is selected The &quot;Mark as done&quot; should change to &quot;Undone&quot;
+(also in the task editor)
 		</content>
 	</task>
 	<task id="2" status="Done">

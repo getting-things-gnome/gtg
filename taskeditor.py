@@ -17,12 +17,16 @@ except:
 class TaskEditor :
     def __init__(self, task, refresh_callback=None) :
         self.gladefile = "gtd-gnome.glade"
-        self.wTree = gtk.glade.XML(self.gladefile, "TaskEditor") 
+        self.wTree = gtk.glade.XML(self.gladefile, "TaskEditor")
+        #Create our dictionay and connect it
+        dic = {
+                "mark_as_done_clicked"       : self.change_status,
+                "delete_clicked"        : self.delete_task,
+              }
+        self.wTree.signal_autoconnect(dic)
         self.window = self.wTree.get_widget("TaskEditor")
         self.textview = self.wTree.get_widget("textview")
         self.task = task
-        #self.window = gtk.Window(type=gtk.WINDOW_TOPLEVEL)
-        #self.window.set_default_size(150,150)
         self.refresh = refresh_callback
         buff = gtk.TextBuffer()
         texte = self.task.get_text()
@@ -35,12 +39,23 @@ class TaskEditor :
         else : 
             to_set = title
         buff.set_text(to_set)
-        #self.textview = gtk.TextView(buffer=buff)
         self.textview.set_buffer(buff)
-        #self.window.add(self.textview)
         self.window.connect("destroy", self.close)
         self.window.show_all()
-        
+    
+    def change_status(self,widget) :
+        stat = self.task.get_status()
+        if stat == "Active" :
+            toset = "Done"
+        elif stat == "Done" :
+            toset = "Active"
+        self.task.set_status(toset)
+        self.close(None)
+        self.refresh()
+    
+    def delete_task(self,widget) :
+        print "implement delete task from the editor"
+    
     def save(self) :
         #the text buffer
         buff = self.textview.get_buffer()

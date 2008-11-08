@@ -7,6 +7,11 @@
 # @author : B. Rousseau, L. Dricot
 # @date   : November 2008
 #
+#   main.py contains the main GTK interface for the tasklist
+#   task.py contains the implementation of a task and a project
+#   taskeditor contains the GTK interface for task editing
+#   backends/xml_backend.py is the way to store tasks and project in XML
+#
 #=============================================================================== 
 
 #=== IMPORT ====================================================================
@@ -54,11 +59,13 @@ class Base:
               }
         self.wTree.signal_autoconnect(dic)
         
+        #Now we have to open our tasks
         self.backend = Backend()
         self.project = self.backend.get_project()
         self.project.set_sync_func(self.backend.sync_project)
         
     def main(self):
+        #Here we will define the main TaskList interface
         self.c_title=1
         #The Active tasks treeview
         self.task_tview = self.wTree.get_widget("task_tview")

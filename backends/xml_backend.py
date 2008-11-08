@@ -38,7 +38,7 @@ class Backend :
         filter=indent+newl
         if currentNode.hasChildNodes:
             for node in currentNode.childNodes:
-                if node.nodeType == 3:
+                if node.nodeType == 3 :
                     node.nodeValue = node.nodeValue.lstrip(filter).strip(filter)
                     if node.nodeValue == "":
                         currentNode.removeChild(node)

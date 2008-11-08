@@ -44,7 +44,8 @@ class Task :
         self.sync_func = sync
         
     def sync(self) :
-        self.sync_func(self.tid)
+        if self.sync_func :
+            self.sync_func(self.tid)
         
 ###########################################################################
         
