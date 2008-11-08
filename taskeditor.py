@@ -20,7 +20,16 @@ class TaskEditor :
 		self.window = gtk.Window(type=gtk.WINDOW_TOPLEVEL)
 		self.window.set_default_size(150,150)
 		buff = gtk.TextBuffer()
-		buff.set_text(self.task.get_text())
+		texte = self.task.get_text()
+		title = self.task.get_title()
+		#the first line is the title
+		#If we don't have text, it's also valid
+		if texte :
+		    sepa = '\n'
+		    to_set = sepa.join([title,texte])
+		else : 
+		    to_set = title
+		buff.set_text(to_set)
 		self.textview = gtk.TextView(buffer=buff)
 		self.window.add(self.textview)
 		self.window.connect("destroy", self.close)
@@ -36,10 +45,14 @@ class TaskEditor :
 		#We should have a look at Tomboy Serialize function 
 		#NoteBuffer.cs : line 1163
 		#Currently, we are not saving the tag table.
-		self.task.set_text(texte)
+		content = texte.partition('\n')
+		self.task.set_title(content[0])
+		self.task.set_text(content[2])
 		self.task.sync()
 		
 	def close(self,window) :
 		#Save should be also called when buffer is modified
 		self.save()
-		gtk.main_quit()
+		#TODO : verify that destroy the window is enough ! 
+		#We should also destroy the whole taskeditor object.
+		self.window.destroy()
