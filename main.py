@@ -111,15 +111,15 @@ class Base:
         #is it acceptable to do that ?
         self.task_ts.clear()
         self.taskdone_ts.clear()
-        for tid in self.project.list_tasks() :
+        for tid in self.project.active_tasks() :
             t = self.project.get_task(tid)
-            status = t.get_status()
-            if status == "Active" :
-                title = t.get_title()
-                self.task_ts.append(None,[tid,title,False])
-            if status == "Done" or status == "Dismissed" :
-                title = t.get_title()
-                self.taskdone_ts.append(None,[tid,title,False])
+            title = t.get_title()
+            self.task_ts.append(None,[tid,title,False])
+        for tid in self.project.unactive_tasks() :
+            t = self.project.get_task(tid)
+            title = t.get_title()
+            self.taskdone_ts.append(None,[tid,title,False])
+
     
     def open_task(self,task) :
         t = task

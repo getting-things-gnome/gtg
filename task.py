@@ -63,6 +63,21 @@ class Project :
             result = []
         return result
         
+    def active_tasks(self) :
+        return self.__list_by_status(["Active"])
+        
+    def unactive_tasks(self) :
+        return self.__list_by_status(["Done","Dismissed"])
+    
+    def __list_by_status(self,status) :
+        result = []
+        for st in status :
+            for tid in self.list.keys() :
+                if self.get_task(tid).get_status() == st :
+                    result.append(tid)
+        return result
+            
+        
     def get_task(self,ze_id) :
         return self.list[str(ze_id)]
         
