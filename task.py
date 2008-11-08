@@ -6,7 +6,8 @@ import string, threading
 class Task :
 	def __init__(self, ze_id) :
 		#the id of this task in the project
-		self.tid = ze_id
+		#tid is a string ! (we have to choose a type and stick to it)
+		self.tid = str(ze_id)
 		self.content = None
 		self.sync_func = None
 		self.title = None
@@ -51,6 +52,6 @@ class Project :
 		
 	def add_task(self,task) :
 		tid = task.get_id()
-		self.list[tid] = task
+		self.list[str(tid)] = task
 		
 	
