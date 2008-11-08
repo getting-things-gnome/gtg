@@ -1,5 +1,22 @@
 <?xml version="1.0" ?>
 <project>
+	<task id="11" status="Active">
+		<title>
+			TaskEditor resizeing
+		</title>
+		<content>
+			Le texte doit s'adapter à la fenêtre et faire des &quot;faux&quot; retours à la ligne automatiquement (et s'adapter quand on redimensionne)
+
+
+
+
+
+
+
+
+
+		</content>
+	</task>
 	<task id="10" status="Done">
 		<title>
 			remove tasks
@@ -50,8 +67,7 @@ The &quot;Mark as done&quot; should change to
 			Esc to close
 		</title>
 		<content>
-			
-Esc dans l'éditeur doit le fermer
+			Esc dans l'éditeur doit le fermer
 		</content>
 	</task>
 	<task id="4" status="Active">
@@ -59,18 +75,16 @@ Esc dans l'éditeur doit le fermer
 			Right clic
 		</title>
 		<content>
-			
-Right clic sur les tâches doit 
+			Right clic sur les tâches doit 
 permettre d'avoir un menu
 		</content>
 	</task>
-	<task id="7" status="Active">
+	<task id="7" status="Done">
 		<title>
 			Task editor glade
 		</title>
 		<content>
-			
-Le task editor doit devenir
+			Le task editor doit devenir
 un peu plus utilisable
 		</content>
 	</task>
@@ -79,13 +93,12 @@ un peu plus utilisable
 			confirmation pour delete
 		</title>
 		<content>
-			
-Le delete doit être confirmé
+			Le delete doit être confirmé
 		</content>
 	</task>
 	<task id="9" status="Done">
 		<title>
-			mark as done
+			My task
 		</title>
 		<content>
 			
@@ -98,7 +111,7 @@ Le delete doit être confirmé
 		<content>
 			si la tâche est pas modifiée
 on la sauve pas !
-(ou bien si elle est vide)
+(ou bien si elle est vide) 
 		</content>
 	</task>
 </project>
