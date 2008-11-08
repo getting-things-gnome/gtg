@@ -17,6 +17,14 @@ C'est cool non ?
 			
 		</content>
 	</task>
+	<task id="13" status="Active">
+		<title>
+			Title en plus gros
+		</title>
+		<content>
+			
+		</content>
+	</task>
 	<task id="12" status="Done">
 		<title>
 			Boutton dans l'éditeur
@@ -24,6 +32,32 @@ C'est cool non ?
 		<content>
 			Mark as done
 delete
+		</content>
+	</task>
+	<task id="15" status="Active">
+		<title>
+			Done date
+		</title>
+		<content>
+			L'afficher dans le treeview des tasks Done
+		</content>
+	</task>
+	<task id="14" status="Active">
+		<title>
+			Due date
+		</title>
+		<content>
+			L'afficher dans le treeview des taches actives
+		</content>
+	</task>
+	<task id="16" status="Active">
+		<title>
+			child task
+		</title>
+		<content>
+			faut avoir des listes à puces, un boutton pour rajouter une sous-tâche
+
+Comment indiquer le parent ?
 		</content>
 	</task>
 	<task id="1" status="Done">

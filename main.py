@@ -129,9 +129,8 @@ class Base:
     def on_add_task(self,widget) :
         task = self.project.new_task()
         self.open_task(task)
-        
-        
-    def on_edit_task(self,widget,row=None ,col=None) :
+    
+    def get_selected_task(self) :
         tid = None
         # Get the selection in the gtk.TreeView
         selection = self.task_tview.get_selection()
@@ -145,25 +144,23 @@ class Base:
             selection_iter = selection.get_selected()[1]
             if selection_iter :
                 tid = self.taskdone_ts.get_value(selection_iter, 0)
-        if tid :
-            zetask = self.project.get_task(tid)
-            self.open_task(zetask)
+        return tid
+        
+    def on_edit_task(self,widget,row=None ,col=None) :
+        tid = self.get_selected_task()
+        zetask = self.project.get_task(tid)
+        self.open_task(zetask)
         
     def on_delete_task(self,widget) :
-        # Get the selection in the gtk.TreeView
-        selection = self.task_tview.get_selection()
-        # Get the selection iter
-        model, selection_iter = selection.get_selected()
-        if (selection_iter):
-            tid = self.task_ts.get_value(selection_iter, 0)
-            self.project.delete_task(tid)
-            self.refresh_list()
+        tid = self.get_selected_task()
+        self.project.delete_task(tid)
+        self.refresh_list()
         
     def on_mark_as_done(self,widget) :
         # Get the selection in the gtk.TreeView
-        selection = self.task_tview.get_selection()
+        selection = self.task_tview.get_selection()[1]
         # Get the selection iter
-        model, selection_iter = selection.get_selected()
+        selection_iter = selection.get_selected()
         if (selection_iter):
             tid = self.task_ts.get_value(selection_iter, 0)
             zetask = self.project.get_task(tid)
