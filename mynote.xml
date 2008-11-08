@@ -26,6 +26,16 @@ l'éditeur
 			
 		</content>
 	</task>
+	<task id="3" status="Active">
+		<title>
+			Undone
+		</title>
+		<content>
+			When a &quot;done&quot; task is selected
+The &quot;Mark as done&quot; should change to
+&quot;Undone&quot;
+		</content>
+	</task>
 	<task id="2" status="Done">
 		<title>
 			nouvelle tache
@@ -33,6 +43,44 @@ l'éditeur
 		<content>
 			implémenter le boutton
 &quot;new task&quot;
+		</content>
+	</task>
+	<task id="5" status="Active">
+		<title>
+			Esc to close
+		</title>
+		<content>
+			
+Esc dans l'éditeur doit le fermer
+		</content>
+	</task>
+	<task id="4" status="Active">
+		<title>
+			Right clic
+		</title>
+		<content>
+			
+Right clic sur les tâches doit 
+permettre d'avoir un menu
+		</content>
+	</task>
+	<task id="7" status="Active">
+		<title>
+			Task editor glade
+		</title>
+		<content>
+			
+Le task editor doit devenir
+un peu plus utilisable
+		</content>
+	</task>
+	<task id="6" status="Active">
+		<title>
+			confirmation pour delete
+		</title>
+		<content>
+			
+Le delete doit être confirmé
 		</content>
 	</task>
 	<task id="9" status="Done">
@@ -50,6 +98,7 @@ l'éditeur
 		<content>
 			si la tâche est pas modifiée
 on la sauve pas !
+(ou bien si elle est vide)
 		</content>
 	</task>
 </project>
