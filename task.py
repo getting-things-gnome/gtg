@@ -1,5 +1,5 @@
 import sys, time, os
-import string, threading
+import string
 
 
 #This class represent a task in GTG.
@@ -45,6 +45,8 @@ class Task :
         
     def sync(self) :
         self.sync_func(self.tid)
+        
+###########################################################################
         
 #This class represent a project : a list of tasks sharing the same backend
 class Project :

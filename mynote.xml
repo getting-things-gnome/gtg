@@ -18,7 +18,7 @@ dans la liste quand on close
 l'éditeur
 		</content>
 	</task>
-	<task id="0" status="Active">
+	<task id="0" status="Done">
 		<title>
 			Display tasks done
 		</title>
