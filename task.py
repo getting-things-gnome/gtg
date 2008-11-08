@@ -64,6 +64,9 @@ class Project :
         self.list[str(tid)] = task
         return task
     
+    def delete_task(self,tid) :
+        del self.list[tid]
+    
     def __free_tid(self) :
         k = 0
         while self.list.has_key(str(k)) :

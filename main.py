@@ -80,8 +80,12 @@ class Base:
         
         gtk.main()
         return 0
-        
+     
+    #refresh list build/refresh your TreeStore of task
+    #to keep it in sync with your self.project   
     def refresh_list(self) :
+        #to refresh the list we first empty it then rebuild it
+        #is it acceptable to do that ?
         self.task_ts.clear()
         for tid in self.project.list_tasks() :
             t = self.project.get_task(tid)
@@ -109,7 +113,14 @@ class Base:
             self.open_task(zetask)
         
     def on_delete_task(self,widget) :
-        print "to implement"
+        # Get the selection in the gtk.TreeView
+        selection = self.task_tview.get_selection()
+        # Get the selection iter
+        model, selection_iter = selection.get_selected()
+        if (selection_iter):
+            tid = self.task_ts.get_value(selection_iter, 0)
+            self.project.delete_task(tid)
+            self.refresh_list()
         
     def on_mark_as_done(self,widget) :
         print "to implement"
