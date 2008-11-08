@@ -5,10 +5,19 @@
 			refresh title
 		</title>
 		<content>
-			
-On doit rafraichir le title
+			On doit rafraichir le title
 dans la liste quand on close
 l'éditeur
+		</content>
+	</task>
+	<task id="2">
+		<title>
+			nouvelle tache
+		</title>
+		<content>
+			
+implémenter le boutton
+&quot;new task&quot;
 		</content>
 	</task>
 </project>
