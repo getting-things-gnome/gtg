@@ -15,10 +15,11 @@ except:
 	sys.exit(1)
 
 class TaskEditor :
-	def __init__(self, task) :
+	def __init__(self, task, refresh_callback) :
 		self.task = task
 		self.window = gtk.Window(type=gtk.WINDOW_TOPLEVEL)
 		self.window.set_default_size(150,150)
+		self.refresh = refresh_callback
 		buff = gtk.TextBuffer()
 		texte = self.task.get_text()
 		title = self.task.get_title()
@@ -48,6 +49,7 @@ class TaskEditor :
 		content = texte.partition('\n')
 		self.task.set_title(content[0])
 		self.task.set_text(content[2])
+		self.refresh()
 		self.task.sync()
 		
 	def close(self,window) :

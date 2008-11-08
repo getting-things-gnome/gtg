@@ -1,5 +1,21 @@
 <?xml version="1.0" ?>
 <project>
+	<task id="11">
+		<title>
+			to_delete
+		</title>
+		<content>
+			
+		</content>
+	</task>
+	<task id="10">
+		<title>
+			remove tasks
+		</title>
+		<content>
+			
+		</content>
+	</task>
 	<task id="1">
 		<title>
 			refresh title
@@ -10,14 +26,78 @@ dans la liste quand on close
 l'éditeur
 		</content>
 	</task>
+	<task id="0">
+		<title>
+			to_delete
+		</title>
+		<content>
+			aze
+		</content>
+	</task>
+	<task id="3">
+		<title>
+			to_delete
+		</title>
+		<content>
+			
+		</content>
+	</task>
 	<task id="2">
 		<title>
 			nouvelle tache
 		</title>
 		<content>
-			
-implémenter le boutton
+			implémenter le boutton
 &quot;new task&quot;
+		</content>
+	</task>
+	<task id="5">
+		<title>
+			to_delete
+		</title>
+		<content>
+			
+		</content>
+	</task>
+	<task id="4">
+		<title>
+			to_delete
+		</title>
+		<content>
+			
+		</content>
+	</task>
+	<task id="7">
+		<title>
+			to_delete
+		</title>
+		<content>
+			
+		</content>
+	</task>
+	<task id="6">
+		<title>
+			to_delete
+		</title>
+		<content>
+			
+		</content>
+	</task>
+	<task id="9">
+		<title>
+			mark as done
+		</title>
+		<content>
+			
+		</content>
+	</task>
+	<task id="8">
+		<title>
+			do not save by default
+		</title>
+		<content>
+			si la tâche est pas modifiée
+on la sauve pas !
 		</content>
 	</task>
 </project>

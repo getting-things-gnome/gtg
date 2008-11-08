@@ -74,18 +74,29 @@ class Base:
         self.task_tview.set_model(self.task_ts)
         self.task_ts.set_sort_column_id(self.c_title, gtk.SORT_ASCENDING)
         
-        for tid in self.project.list_tasks() :
-            t = self.project.get_task(tid)
-            title = t.get_title()
-            self.task_ts.append(None,[tid,title,False])
         
+        self.refresh_list()
         
         
         gtk.main()
         return 0
         
+    def refresh_list(self) :
+        self.task_ts.clear()
+        for tid in self.project.list_tasks() :
+            t = self.project.get_task(tid)
+            title = t.get_title()
+            self.task_ts.append(None,[tid,title,False])
+    
+    def open_task(self,task) :
+        t = task
+        t.set_sync_func(self.backend.sync_task)
+        tv = TaskEditor(t,self.refresh_list)
+        
     def on_add_task(self,widget) :
-        print "to implement"
+        task = self.project.new_task()
+        self.open_task(task)
+        
         
     def on_edit_task(self,widget,row=None ,col=None) :
         # Get the selection in the gtk.TreeView
@@ -95,8 +106,7 @@ class Base:
         if (selection_iter):
             tid = self.task_ts.get_value(selection_iter, 0)
             zetask = self.project.get_task(tid)
-            zetask.set_sync_func(self.backend.sync_task)
-            tv = TaskEditor(zetask)
+            self.open_task(zetask)
         
     def on_delete_task(self,widget) :
         print "to implement"
