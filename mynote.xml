@@ -122,20 +122,12 @@ permettre d'avoir un menu
 un peu plus utilisable
 		</content>
 	</task>
-	<task id="6" status="Active">
+	<task id="6" status="Done">
 		<title>
 			confirmation pour delete
 		</title>
 		<content>
 			Le delete doit être confirmé
-		</content>
-	</task>
-	<task id="9" status="Done">
-		<title>
-			My task
-		</title>
-		<content>
-			
 		</content>
 	</task>
 	<task id="8" status="Active">
