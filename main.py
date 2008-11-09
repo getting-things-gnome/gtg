@@ -141,21 +141,22 @@ class Base:
         # Get the selection in the gtk.TreeView
         selection = self.task_tview.get_selection()
         # Get the selection iter
-        selection_iter = selection.get_selected()[1]
+        model, selection_iter = selection.get_selected()
         if selection_iter :
             tid = self.task_ts.get_value(selection_iter, 0)
         #maybe the selection is in the taskdone_tview ?
         else :
             selection = self.taskdone_tview.get_selection()
-            selection_iter = selection.get_selected()[1]
+            model, selection_iter = selection.get_selected()
             if selection_iter :
                 tid = self.taskdone_ts.get_value(selection_iter, 0)
         return tid
         
     def on_edit_task(self,widget,row=None ,col=None) :
         tid = self.get_selected_task()
-        zetask = self.project.get_task(tid)
-        self.open_task(zetask)
+        if tid :
+            zetask = self.project.get_task(tid)
+            self.open_task(zetask)
      
     #if we pass a tid as a parameter, we delete directly
     #otherwise, we will look which tid is selected   
@@ -165,23 +166,25 @@ class Base:
         self.refresh_list()
         
     def on_delete_task(self,widget,tid=None) :
+        #If we don't have a parameter, then take the selection in the treeview
         if not tid :
-            self.tid_todelete = self.get_selected_task()
+            selec = self.get_selected_task()
+            self.tid_todelete = selec
         else :
             self.tid_todelete = tid
-        delete_dialog = self.wTree.get_widget("confirm_delete")
-        delete_dialog.run()
-        delete_dialog.hide()
-        #has the task been deleted ?
-        return not self.tid_todelete
+        #We must at least have something to delete !
+        if self.tid_todelete :
+            delete_dialog = self.wTree.get_widget("confirm_delete")
+            delete_dialog.run()
+            delete_dialog.hide()
+            #has the task been deleted ?
+            return not self.tid_todelete
+        else :
+            return False
         
     def on_mark_as_done(self,widget) :
-        # Get the selection in the gtk.TreeView
-        selection = self.task_tview.get_selection()[1]
-        # Get the selection iter
-        selection_iter = selection.get_selected()
-        if (selection_iter):
-            tid = self.task_ts.get_value(selection_iter, 0)
+        tid = self.get_selected_task()
+        if tid :
             zetask = self.project.get_task(tid)
             zetask.set_status("Done")
             self.refresh_list()

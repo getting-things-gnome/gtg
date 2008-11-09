@@ -1,20 +1,82 @@
 <?xml version="1.0" ?>
 <project>
-	<task id="20" status="Active">
+	<task id="11" status="Done">
 		<title>
-			Support des projets
+			TaskEditor resizeing
 		</title>
 		<content>
-			
-Mettre au point les procédes de créations/modification des projets
+			Le texte doit s'adapter à la fenêtre et faire des &quot;faux&quot; retours à la ligne automatiquement (et s'adapter quand on redimensionne)
+C'est cool non ?
 		</content>
 	</task>
-	<task id="21" status="Active">
+	<task id="10" status="Done">
 		<title>
-			Ajouter les selectionneur projet/tags dans la vue &quot;gestionnaire de tâches&quot;
+			remove tasks
 		</title>
 		<content>
-			
+			Press Escape or close this task to save it
+		</content>
+	</task>
+	<task id="13" status="Active">
+		<title>
+			Title en plus gros
+		</title>
+		<content>
+			Press Escape or close this task to save it
+		</content>
+	</task>
+	<task id="12" status="Done">
+		<title>
+			Boutton dans l'éditeur
+		</title>
+		<content>
+			Mark as done
+delete
+		</content>
+	</task>
+	<task id="15" status="Active">
+		<title>
+			Done date
+		</title>
+		<content>
+			L'afficher dans le treeview des tasks Done
+		</content>
+	</task>
+	<task id="14" status="Active">
+		<title>
+			Due date
+		</title>
+		<content>
+			- fermer automatiquement si on clique en dehors du calendar
+- permettre de le modifier dans l'éditeur de tâches
+- le sauver dans le XML
+- L'afficher dans le treeview des taches actives
+		</content>
+	</task>
+	<task id="16" status="Active">
+		<title>
+			child task
+		</title>
+		<content>
+			faut avoir des listes à puces, un boutton pour rajouter une sous-tâche
+
+Comment indiquer le parent ?
+		</content>
+	</task>
+	<task id="19" status="Active">
+		<title>
+			Manger des frites
+		</title>
+		<content>
+			C'est bon
+		</content>
+	</task>
+	<task id="18" status="Active">
+		<title>
+			Support des tags
+		</title>
+		<content>
+			Pouvoir specifier des tags/contextes aux tâches, pour les trier
 		</content>
 	</task>
 	<task id="1" status="Done">
@@ -32,7 +94,7 @@ l'éditeur
 			Display tasks done
 		</title>
 		<content>
-			
+			Press Escape or close this task to save it
 		</content>
 	</task>
 	<task id="3" status="Active">
@@ -89,11 +151,20 @@ un peu plus utilisable
 	</task>
 	<task id="9" status="Active">
 		<title>
-			Travailler le placement des fenetres
+			Ne pas ouvrir plusieurs fois la même tâche
 		</title>
 		<content>
-			
-Elles apparaissent sur le côté: ennuyeux
+			Parce que c'est pas bien
+
+gtk.window.present() peut nous aider !
+		</content>
+	</task>
+	<task id="20" status="Active">
+		<title>
+			Support des projets
+		</title>
+		<content>
+			Press Escape or close this task to save it
 		</content>
 	</task>
 	<task id="8" status="Active">
@@ -104,93 +175,6 @@ Elles apparaissent sur le côté: ennuyeux
 			si la tâche est pas modifiée
 on la sauve pas !
 (ou bien si elle est vide) 
-		</content>
-	</task>
-	<task id="11" status="Done">
-		<title>
-			TaskEditor resizeing
-		</title>
-		<content>
-			Le texte doit s'adapter à la fenêtre et faire des &quot;faux&quot; retours à la ligne automatiquement (et s'adapter quand on redimensionne)
-C'est cool non ?
-		</content>
-	</task>
-	<task id="10" status="Done">
-		<title>
-			remove tasks
-		</title>
-		<content>
-			
-		</content>
-	</task>
-	<task id="13" status="Active">
-		<title>
-			Title en plus gros
-		</title>
-		<content>
-			
-		</content>
-	</task>
-	<task id="12" status="Done">
-		<title>
-			Boutton dans l'éditeur
-		</title>
-		<content>
-			Mark as done
-delete
-		</content>
-	</task>
-	<task id="15" status="Active">
-		<title>
-			Done date
-		</title>
-		<content>
-			L'afficher dans le treeview des tasks Done
-		</content>
-	</task>
-	<task id="14" status="Active">
-		<title>
-			Due date
-		</title>
-		<content>
-			L'afficher dans le treeview des taches actives
-		</content>
-	</task>
-	<task id="17" status="Active">
-		<title>
-			Ajouter un bouton &quot;Ok&quot;
-		</title>
-		<content>
-			
-Valider la création d'une tâche en fermant la fenetre, ça va un peu à rebours du bon sens
-		</content>
-	</task>
-	<task id="16" status="Active">
-		<title>
-			child task
-		</title>
-		<content>
-			faut avoir des listes à puces, un boutton pour rajouter une sous-tâche
-
-Comment indiquer le parent ?
-		</content>
-	</task>
-	<task id="19" status="Active">
-		<title>
-			Manger des frites
-		</title>
-		<content>
-			
-C'est bon
-		</content>
-	</task>
-	<task id="18" status="Active">
-		<title>
-			Support des tags
-		</title>
-		<content>
-			
-Pouvoir specifier des tags/contextes aux tâches, pour les trier
 		</content>
 	</task>
 </project>
