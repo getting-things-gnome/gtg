@@ -12,6 +12,7 @@
 #   taskeditor contains the GTK interface for task editing
 #   backends/xml_backend.py is the way to store tasks and project in XML
 #
+#   tid stand for "Task ID"
 #=============================================================================== 
 
 #=== IMPORT ====================================================================
@@ -47,6 +48,9 @@ class Base:
         self.window = self.wTree.get_widget("MainWindow")
         if (self.window):
             self.window.connect("destroy", gtk.main_quit)
+            
+        
+        #self.delete_dialog.connect("destroy", self.delete_dialog.hide)
 
         #Create our dictionay and connect it
         dic = {
@@ -55,7 +59,9 @@ class Base:
                 "on_delete_task"    : self.on_delete_task,
                 "on_mark_as_done"   : self.on_mark_as_done,
                 "gtk_main_quit"     : gtk.main_quit,
-                "on_select_tag" : self.on_select_tag
+                "on_select_tag" : self.on_select_tag,
+                "on_delete_confirm" : self.on_delete_confirm,
+                "on_delete_cancel" : lambda x : x.hide
               }
         self.wTree.signal_autoconnect(dic)
         
@@ -124,7 +130,7 @@ class Base:
     def open_task(self,task) :
         t = task
         t.set_sync_func(self.backend.sync_task)
-        tv = TaskEditor(t,self.refresh_list)
+        tv = TaskEditor(t,self.refresh_list,self.on_delete_task)
         
     def on_add_task(self,widget) :
         task = self.project.new_task()
@@ -150,11 +156,24 @@ class Base:
         tid = self.get_selected_task()
         zetask = self.project.get_task(tid)
         self.open_task(zetask)
-        
-    def on_delete_task(self,widget) :
-        tid = self.get_selected_task()
-        self.project.delete_task(tid)
+     
+    #if we pass a tid as a parameter, we delete directly
+    #otherwise, we will look which tid is selected   
+    def on_delete_confirm(self,widget) :
+        self.project.delete_task(self.tid_todelete)
+        self.tid_todelete = None
         self.refresh_list()
+        
+    def on_delete_task(self,widget,tid=None) :
+        if not tid :
+            self.tid_todelete = self.get_selected_task()
+        else :
+            self.tid_todelete = tid
+        delete_dialog = self.wTree.get_widget("confirm_delete")
+        delete_dialog.run()
+        delete_dialog.hide()
+        #has the task been deleted ?
+        return not self.tid_todelete
         
     def on_mark_as_done(self,widget) :
         # Get the selection in the gtk.TreeView

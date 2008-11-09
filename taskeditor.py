@@ -15,7 +15,7 @@ except:
     sys.exit(1)
 
 class TaskEditor :
-    def __init__(self, task, refresh_callback=None) :
+    def __init__(self, task, refresh_callback=None,delete_callback=None) :
         self.gladefile = "gtd-gnome.glade"
         self.wTree = gtk.glade.XML(self.gladefile, "TaskEditor")
         #Create our dictionay and connect it
@@ -26,8 +26,17 @@ class TaskEditor :
         self.wTree.signal_autoconnect(dic)
         self.window = self.wTree.get_widget("TaskEditor")
         self.textview = self.wTree.get_widget("textview")
+        
+        #We will intercept the "Escape" button
+        accelgroup = gtk.AccelGroup()
+        key, modifier = gtk.accelerator_parse('Escape')
+        #Escape call close()
+        accelgroup.connect_group(key, modifier, gtk.ACCEL_VISIBLE, self.close)
+        self.window.add_accel_group(accelgroup)
+     
         self.task = task
         self.refresh = refresh_callback
+        self.delete = delete_callback
         buff = gtk.TextBuffer()
         texte = self.task.get_text()
         title = self.task.get_title()
@@ -54,7 +63,12 @@ class TaskEditor :
         self.refresh()
     
     def delete_task(self,widget) :
-        print "implement delete task from the editor"
+        if self.delete :
+            result = self.delete(widget,self.task.get_id())
+        else :
+            print "No callback to delete"
+        #if the task was deleted, we close the window
+        if result : self.window.destroy()
     
     def save(self) :
         #the text buffer
@@ -73,7 +87,8 @@ class TaskEditor :
             self.refresh()
         self.task.sync()
         
-    def close(self,window) :
+    #We define dummy variable for when close is called from a callback
+    def close(self,window,a=None,b=None,c=None) :
         #Save should be also called when buffer is modified
         self.save()
         #TODO : verify that destroy the window is enough ! 
