@@ -18,8 +18,8 @@ class TaskEditor :
     def __init__(self, task, refresh_callback=None,delete_callback=None) :
         self.gladefile = "gtd-gnome.glade"
         self.wTree = gtk.glade.XML(self.gladefile, "TaskEditor")
-        cal_tree = gtk.glade.XML(self.gladefile, "calendar")
-        self.calendar = cal_tree.get_widget("calendar")
+        self.cal_tree = gtk.glade.XML(self.gladefile, "calendar")
+        self.calendar = self.cal_tree.get_widget("calendar")
         #Create our dictionay and connect it
         dic = {
                 "mark_as_done_clicked"       : self.change_status,
@@ -27,6 +27,12 @@ class TaskEditor :
                 "on_duedate_pressed"    : self.on_duedate_pressed
               }
         self.wTree.signal_autoconnect(dic)
+        cal_dic = {
+                "on_nodate" :   self.nodate_pressed,
+                "on_dayselected" : self.day_selected,
+                "on_dayselected_double" : self.day_selected_double
+        }
+        self.cal_tree.signal_autoconnect(cal_dic)
         self.window = self.wTree.get_widget("TaskEditor")
         self.textview = self.wTree.get_widget("textview")
         
@@ -66,6 +72,15 @@ class TaskEditor :
         """Because some window managers ignore move before you show a window."""
         self.calendar.move((x + rect.x - cal_width + rect.width)
                                             , (y + rect.y + rect.height))
+    
+    def day_selected(self,widget) :
+        pass
+    
+    def day_selected_double(self,widget) :
+        self.calendar.hide()
+        
+    def nodate_pressed(self,widget) :
+        self.calendar.hide()
     
     def change_status(self,widget) :
         stat = self.task.get_status()

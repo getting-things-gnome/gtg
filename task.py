@@ -9,9 +9,9 @@ class Task :
         #the id of this task in the project
         #tid is a string ! (we have to choose a type and stick to it)
         self.tid = str(ze_id)
-        self.content = ""
+        self.content = "Press Escape or close this task to save it"
         self.sync_func = None
-        self.title = "My task"
+        self.title = "My new task"
         #available status are : Active - Done - Dismiss
         self.status = "Active"
         self.done_date = None

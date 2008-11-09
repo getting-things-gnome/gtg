@@ -14,7 +14,7 @@ C'est cool non ?
 			remove tasks
 		</title>
 		<content>
-			
+			Press Escape or close this task to save it
 		</content>
 	</task>
 	<task id="13" status="Active">
@@ -22,7 +22,7 @@ C'est cool non ?
 			Title en plus gros
 		</title>
 		<content>
-			
+			Press Escape or close this task to save it
 		</content>
 	</task>
 	<task id="12" status="Done">
@@ -47,7 +47,8 @@ delete
 			Due date
 		</title>
 		<content>
-			- permettre de le modifier dans l'éditeur de tâches
+			- fermer automatiquement si on clique en dehors du calendar
+- permettre de le modifier dans l'éditeur de tâches
 - le sauver dans le XML
 - L'afficher dans le treeview des taches actives
 		</content>
@@ -77,7 +78,7 @@ l'éditeur
 			Display tasks done
 		</title>
 		<content>
-			
+			Press Escape or close this task to save it
 		</content>
 	</task>
 	<task id="3" status="Active">
