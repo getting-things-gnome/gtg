@@ -27,5 +27,8 @@ if __name__ == "__main__":
 	# "1" is just the ID of the task
 	zetask = zeproject.get_task(1)
 	zetask.set_sync_func(my_backend.sync_task)
+	zetask.set_due_date("2008-12-01")
+	print "###%s###" %zetask.get_due_date()
+	print zetask.get_days_left()
 	tv = TaskEditor(zetask)
 	gtk.main()

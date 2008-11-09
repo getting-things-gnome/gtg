@@ -1,4 +1,5 @@
 import sys, time, os
+from datetime import date
 import string
 
 
@@ -13,6 +14,9 @@ class Task :
         self.title = "My task"
         #available status are : Active - Done - Dismiss
         self.status = "Active"
+        self.done_date = None
+        self.due_date = None
+        self.start_date = None
                 
     def get_id(self) :
         return self.tid
@@ -28,6 +32,17 @@ class Task :
         
     def get_status(self) :
         return self.status
+        
+    def set_due_date(self,fulldate) :
+        tabu = fulldate.split('-')
+        self.due_date= date(int(tabu[0]),int(tabu[1]),int(tabu[2]))
+        
+    def get_due_date(self) :
+        return str(self.due_date)
+    
+    def get_days_left(self) :
+        difference = self.due_date - date.today()
+        return difference.days
         
     def get_text(self) :
         #defensive programmtion to avoid returning None
