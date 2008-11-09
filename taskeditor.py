@@ -26,6 +26,14 @@ class TaskEditor :
         self.wTree.signal_autoconnect(dic)
         self.window = self.wTree.get_widget("TaskEditor")
         self.textview = self.wTree.get_widget("textview")
+        
+        #We will intercept the "Escpape" button
+        accelgroup = gtk.AccelGroup()
+        key, modifier = gtk.accelerator_parse('Escape')
+        #Escape call close()
+        accelgroup.connect_group(key, modifier, gtk.ACCEL_VISIBLE, self.close)
+        self.window.add_accel_group(accelgroup)
+     
         self.task = task
         self.refresh = refresh_callback
         buff = gtk.TextBuffer()
@@ -73,7 +81,8 @@ class TaskEditor :
             self.refresh()
         self.task.sync()
         
-    def close(self,window) :
+    #We define dummy variable for when close is called from a callback
+    def close(self,window,a=None,b=None,c=None) :
         #Save should be also called when buffer is modified
         self.save()
         #TODO : verify that destroy the window is enough ! 

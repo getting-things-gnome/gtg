@@ -96,12 +96,12 @@ l'éditeur
 &quot;new task&quot;
 		</content>
 	</task>
-	<task id="5" status="Active">
+	<task id="5" status="Done">
 		<title>
 			Esc to close
 		</title>
 		<content>
-			Esc dans l'éditeur doit le fermer
+			Esc dans l'éditeur doit le fermer e
 		</content>
 	</task>
 	<task id="4" status="Active">
