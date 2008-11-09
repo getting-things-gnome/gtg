@@ -18,10 +18,13 @@ class TaskEditor :
     def __init__(self, task, refresh_callback=None,delete_callback=None) :
         self.gladefile = "gtd-gnome.glade"
         self.wTree = gtk.glade.XML(self.gladefile, "TaskEditor")
+        cal_tree = gtk.glade.XML(self.gladefile, "calendar")
+        self.calendar = cal_tree.get_widget("calendar")
         #Create our dictionay and connect it
         dic = {
                 "mark_as_done_clicked"       : self.change_status,
                 "delete_clicked"        : self.delete_task,
+                "on_duedate_pressed"    : self.on_duedate_pressed
               }
         self.wTree.signal_autoconnect(dic)
         self.window = self.wTree.get_widget("TaskEditor")
@@ -50,7 +53,19 @@ class TaskEditor :
         buff.set_text(to_set)
         self.textview.set_buffer(buff)
         self.window.connect("destroy", self.close)
-        self.window.show_all()
+        self.window.show()
+        
+    def on_duedate_pressed(self, widget):
+        """Called when the due button is clicked."""
+        rect = widget.get_allocation()
+        x, y = widget.window.get_origin()
+        cal_width, cal_height = self.calendar.get_size()
+        self.calendar.move((x + rect.x - cal_width + rect.width)
+                                            , (y + rect.y + rect.height))
+        self.calendar.show()
+        """Because some window managers ignore move before you show a window."""
+        self.calendar.move((x + rect.x - cal_width + rect.width)
+                                            , (y + rect.y + rect.height))
     
     def change_status(self,widget) :
         stat = self.task.get_status()

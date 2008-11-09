@@ -47,7 +47,9 @@ delete
 			Due date
 		</title>
 		<content>
-			L'afficher dans le treeview des taches actives
+			- permettre de le modifier dans l'éditeur de tâches
+- le sauver dans le XML
+- L'afficher dans le treeview des taches actives
 		</content>
 	</task>
 	<task id="16" status="Active">
@@ -128,6 +130,14 @@ un peu plus utilisable
 		</title>
 		<content>
 			Le delete doit être confirmé
+		</content>
+	</task>
+	<task id="9" status="Active">
+		<title>
+			Ne pas ouvrir plusieurs fois la même tâche
+		</title>
+		<content>
+			Parce que c'est pas bien
 		</content>
 	</task>
 	<task id="8" status="Active">

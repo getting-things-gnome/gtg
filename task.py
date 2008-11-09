@@ -33,9 +33,14 @@ class Task :
     def get_status(self) :
         return self.status
         
+    #function to convert a string of the form XXXX-XX-XX
+    #to a date (where X are integer)
+    def __strtodate(self,stri) :
+        tabu = stri.split('-')
+        return date(int(tabu[0]),int(tabu[1]),int(tabu[2]))
+        
     def set_due_date(self,fulldate) :
-        tabu = fulldate.split('-')
-        self.due_date= date(int(tabu[0]),int(tabu[1]),int(tabu[2]))
+        self.due_date = self.__strtodate(fulldate)
         
     def get_due_date(self) :
         return str(self.due_date)
