@@ -139,6 +139,8 @@ un peu plus utilisable
 		</title>
 		<content>
 			Parce que c'est pas bien
+
+gtk.window.present() peut nous aider !
 		</content>
 	</task>
 	<task id="8" status="Active">

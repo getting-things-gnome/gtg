@@ -9,6 +9,7 @@ except:
       pass
 try:
     import gtk
+    from gtk import gdk
     import gtk.glade
     import gobject
 except:
@@ -30,7 +31,8 @@ class TaskEditor :
         cal_dic = {
                 "on_nodate" :   self.nodate_pressed,
                 "on_dayselected" : self.day_selected,
-                "on_dayselected_double" : self.day_selected_double
+                "on_dayselected_double" : self.day_selected_double,
+                "on_focus_out" :    self.on_focus_out
         }
         self.cal_tree.signal_autoconnect(cal_dic)
         self.window = self.wTree.get_widget("TaskEditor")
@@ -72,15 +74,34 @@ class TaskEditor :
         """Because some window managers ignore move before you show a window."""
         self.calendar.move((x + rect.x - cal_width + rect.width)
                                             , (y + rect.y + rect.height))
+        
+        #self.calendar.grab_add()
+        print gdk.pointer_grab(self.calendar.window, True,0)
+                         #gdk.BUTTON1_MASK )
+        #print self.calendar.window.get_pointer()
+        
+        #gdk.pointer_ungrab()
+        
+    def on_focus_out(self,a,b) :
+        #gdk.BUTTON1_MASK|gdk.BUTTON2_MASK|gdk.BUTTON3_MASK
+        event = b.get_state()
+        print "focus_out : %s" %(event)
+    
+    def __close_calendar(self,widget=None) :
+        self.calendar.hide()
+        gtk.gdk.pointer_ungrab()
+        self.calendar.grab_remove()
+        
+
     
     def day_selected(self,widget) :
         pass
     
     def day_selected_double(self,widget) :
-        self.calendar.hide()
+        self.__close_calendar()
         
     def nodate_pressed(self,widget) :
-        self.calendar.hide()
+        self.__close_calendar()
     
     def change_status(self,widget) :
         stat = self.task.get_status()
