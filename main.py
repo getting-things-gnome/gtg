@@ -61,7 +61,8 @@ class Base:
                 "gtk_main_quit"     : gtk.main_quit,
                 "on_select_tag" : self.on_select_tag,
                 "on_delete_confirm" : self.on_delete_confirm,
-                "on_delete_cancel" : lambda x : x.hide
+                "on_delete_cancel" : lambda x : x.hide,
+                "on_project_selected" : self.on_project_selected
               }
         self.wTree.signal_autoconnect(dic)
         
@@ -136,26 +137,34 @@ class Base:
         gtk.main()
         return 0
      
+    def on_project_selected(self,widget,row,col) :
+        self.refresh_list()
+        
     #refresh list build/refresh your TreeStore of task
     #to keep it in sync with your self.projects   
     def refresh_list(self) :
+        #The selected list
+        k = self.get_selected_project()
         #to refresh the list we first empty it then rebuild it
         #is it acceptable to do that ?
         self.task_ts.clear()
         self.taskdone_ts.clear()
         self.project_ts.clear()
-        for p_key in  self.projects :
+        #We add all projects to the project list
+        for p_key in self.projects :
             p = self.projects[p_key][1]
             title = p.get_name()
             self.project_ts.append(None,[p_key,title])
-            for tid in p.active_tasks() :
-                t = p.get_task(tid)
-                title = t.get_title()
-                self.task_ts.append(None,[tid,title,False])
-            for tid in p.unactive_tasks() :
-                t = p.get_task(tid)
-                title = t.get_title()
-                self.taskdone_ts.append(None,[tid,title,False])
+            #We display only tasks of the active projects  
+            if p_key in k :
+                for tid in p.active_tasks() :
+                    t = p.get_task(tid)
+                    title = t.get_title()
+                    self.task_ts.append(None,[tid,title,False])
+                for tid in p.unactive_tasks() :
+                    t = p.get_task(tid)
+                    title = t.get_title()
+                    self.taskdone_ts.append(None,[tid,title,False])
 
     #If a Task editor is already opened for a given task, we present it
     #Else, we create a new one.
