@@ -55,16 +55,27 @@ class TaskEditor :
         texte = self.task.get_text()
         title = self.task.get_title()
         #the first line is the title
-        #If we don't have text, it's also valid
-        if texte :
-            sepa = '\n'
-            to_set = sepa.join([title,texte])
-        else : 
-            to_set = title
-        buff.set_text(to_set)
+        buff.set_text("%s\n"%title)
+        
+        #tag test for title
+        self.test_tag = buff.create_tag(foreground="#12F",scale=1.3,underline=1)
+        self.test_tag.set_property("pixels-below-lines",13)
+        start = buff.get_start_iter()
+        end = buff.get_end_iter()
+        buff.apply_tag(self.test_tag, start, end)
+        #We have to find a way to keep this tag for the first line
+        #Even when the task is edited
+        
+        #we insert the rest of the task
+        if texte : 
+            buff.insert(end,"%s"%texte)
+    
+        
+        
         self.textview.set_buffer(buff)
         self.window.connect("destroy", self.close)
         self.refresh_editor()
+
         self.window.show()
     
     def refresh_editor(self) :
