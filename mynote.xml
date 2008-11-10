@@ -123,6 +123,25 @@ http://www.pygtk.org/pygtk2tutorial/examples/testtext.py
 			Pouvoir specifier des tags/contextes aux tâches, pour les trier
 		</content>
 	</task>
+	<task id="23@1" status="Active">
+		<title>
+			Hyperlink dans les tasks
+		</title>
+		<content>
+			Voir NoteTag.cs ligne 194
+
+Et pour le curseur voir Watchers.cs ligne 1094 :
+
+if (hovering != hovering_on_link) {
+				hovering_on_link = hovering;
+
+				Gdk.Window win = Window.Editor.GetWindow (Gtk.TextWindowType.Text);
+				if (hovering &amp;&amp; !avoid_hand)
+					win.Cursor = hand_cursor;
+				else
+					win.Cursor = normal_cursor;
+		</content>
+	</task>
 	<task id="3@1" status="Active">
 		<title>
 			Undone
