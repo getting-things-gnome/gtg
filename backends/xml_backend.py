@@ -62,6 +62,7 @@ class Backend :
                 self.project.add_task(cur_task)
         return self.project
     
+    #This is a method to read the textnode of the XML
     def __read_textnode(self,node,title) :
         n = node.getElementsByTagName(title)
         if n and n[0].hasChildNodes() :

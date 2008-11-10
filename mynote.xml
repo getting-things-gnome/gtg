@@ -58,6 +58,17 @@ Done:
 - le sauver dans le XML
 		</content>
 	</task>
+	<task id="17" status="Active">
+		<title>
+			refactor main.py
+		</title>
+		<content>
+			
+We should really separate the management of the task editor and the main task list.
+
+In fact, task list should be &quot;hideable&quot; at will and should be usable with any task editor
+		</content>
+	</task>
 	<task id="16" status="Active">
 		<title>
 			child task
@@ -154,7 +165,7 @@ un peu plus utilisable
 			Le delete doit être confirmé
 		</content>
 	</task>
-	<task id="9" status="Active">
+	<task id="9" status="Done">
 		<title>
 			Ne pas ouvrir plusieurs fois la même tâche
 		</title>
