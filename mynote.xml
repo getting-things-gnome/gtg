@@ -46,6 +46,9 @@ delete
 		<title>
 			Due date
 		</title>
+		<duedate>
+			2008-10-09
+		</duedate>
 		<content>
 			- fermer automatiquement si on clique en dehors du calendar
 - permettre de le modifier dans l'éditeur de tâches

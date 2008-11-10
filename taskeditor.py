@@ -20,7 +20,6 @@ class TaskEditor :
         self.gladefile = "gtd-gnome.glade"
         self.wTree = gtk.glade.XML(self.gladefile, "TaskEditor")
         self.cal_tree = gtk.glade.XML(self.gladefile, "calendar")
-        self.calendar = self.cal_tree.get_widget("calendar")
         #Create our dictionay and connect it
         dic = {
                 "mark_as_done_clicked"       : self.change_status,
@@ -37,6 +36,8 @@ class TaskEditor :
         self.cal_tree.signal_autoconnect(cal_dic)
         self.window = self.wTree.get_widget("TaskEditor")
         self.textview = self.wTree.get_widget("textview")
+        self.calendar = self.cal_tree.get_widget("calendar")
+        self.duedate_widget = self.wTree.get_widget("duedate_entry")
         
         #We will intercept the "Escape" button
         accelgroup = gtk.AccelGroup()
@@ -61,7 +62,17 @@ class TaskEditor :
         buff.set_text(to_set)
         self.textview.set_buffer(buff)
         self.window.connect("destroy", self.close)
+        self.refresh_editor()
         self.window.show()
+    
+    def refresh_editor(self) :
+        #refreshing the due date field
+        duedate = self.task.get_due_date()
+        if duedate :
+            zedate = duedate.replace("-","/")
+            self.duedate_widget.set_text(zedate)
+        else :
+            self.duedate_widget.set_text('')
         
     def on_duedate_pressed(self, widget):
         """Called when the due button is clicked."""
@@ -76,7 +87,7 @@ class TaskEditor :
                                             , (y + rect.y + rect.height))
         
         #self.calendar.grab_add()
-        print gdk.pointer_grab(self.calendar.window, True,0)
+        #gdk.pointer_grab(self.calendar.window, True,0)
                          #gdk.BUTTON1_MASK )
         #print self.calendar.window.get_pointer()
         
@@ -95,7 +106,9 @@ class TaskEditor :
 
     
     def day_selected(self,widget) :
-        pass
+        y,m,d = widget.get_date()
+        self.task.set_due_date("%s-%s-%s"%(y,m,d))
+        self.refresh_editor()
     
     def day_selected_double(self,widget) :
         self.__close_calendar()

@@ -63,6 +63,11 @@ class Backend :
                 if content[0].hasChildNodes():
                     texte = content[0].childNodes[0].nodeValue
                     cur_task.set_text(texte)
+                duedate = t.getElementsByTagName("duedate")
+                if duedate and duedate[0].hasChildNodes() :
+                    zedate = duedate[0].childNodes[0].nodeValue
+                    if zedate :
+                        cur_task.set_due_date(zedate)
                 #adding task to the project
                 self.project.add_task(cur_task)
         return self.project
@@ -82,6 +87,10 @@ class Backend :
             title = doc.createElement("title")
             t_xml.appendChild(title)
             title.appendChild(doc.createTextNode(t.get_title()))
+            if t.get_due_date() :
+                duedate = doc.createElement("duedate")
+                t_xml.appendChild(duedate)
+                duedate.appendChild(doc.createTextNode(t.get_due_date()))
             content = doc.createElement("content")
             t_xml.appendChild(content)
             content.appendChild(doc.createTextNode(t.get_text()))
