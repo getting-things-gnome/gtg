@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<project name="GTG tasks">
+<project name="Lio - GTG tasks">
 	<task id="11" status="Done">
 		<title>
 			TaskEditor resizeing

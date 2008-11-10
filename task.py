@@ -5,7 +5,7 @@ import string
 
 #This class represent a task in GTG.
 class Task :
-    def __init__(self, ze_id) :
+    def __init__(self, pid, ze_id) :
         #the id of this task in the project
         #tid is a string ! (we have to choose a type and stick to it)
         self.tid = str(ze_id)
@@ -17,13 +17,13 @@ class Task :
         self.done_date = None
         self.due_date = None
         self.start_date = None
-        self.project = None
+        self.pid = pid
         
     def set_project(self,proj) :
-        self.project = proj
+        self.pid = proj
     
     def get_project(self) :
-        return self.project
+        return self.pid
                 
     def get_id(self) :
         return self.tid
@@ -127,6 +127,7 @@ class Project :
             
         
     def get_task(self,ze_id) :
+        print self.get_name()
         return self.list[str(ze_id)]
         
     def add_task(self,task) :

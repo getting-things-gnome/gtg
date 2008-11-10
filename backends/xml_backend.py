@@ -47,11 +47,12 @@ class Backend :
     #This function should return a project object with all the current tasks in it.
     def get_project(self) :
         if self.__xmlproject[0] :
+            p_name = self.project.get_name()
             #t is the xml of each task
             for t in self.__xmlproject[0].childNodes:
                 cur_id = "%s" %t.getAttribute("id")
                 cur_stat = "%s" %t.getAttribute("status")
-                cur_task = Task(cur_id)
+                cur_task = Task(p_name,cur_id)
                 cur_task.set_status(cur_stat)
                 #we will fill the task with its content
                 cur_task.set_title(self.__read_textnode(t,"title"))

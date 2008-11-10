@@ -69,15 +69,17 @@ class Base:
         #We create a dict which contains every pair of Backend/project
         #TODO : do this from a projects configuration
         backend1 = Backend("mynote.xml")
-        #backend2 = Backend("myotherproject.xml")
+        backend2 = Backend("bert.xml")
         project1 = backend1.get_project()
-        #project2 = backend2.get_project()
+        project2 = backend2.get_project()
         name1 = project1.get_name()
-        #name2 = project2.get_name()
+        name2 = project2.get_name()
         #We add the sync function for project
         project1.set_sync_func(backend1.sync_project)
         self.projects = {}
         self.projects[name1] = [backend1, project1]
+        project2.set_sync_func(backend2.sync_project)
+        self.projects[name2] = [backend2, project2]
         
     def main(self):
         #Here we will define the main TaskList interface
@@ -158,14 +160,16 @@ class Base:
     def open_task(self,task) :
         t = task
         tid = t.get_id()
-        if self.opened_task.has_key(tid) :
-            self.opened_task[tid].present()
+        pid = t.get_project()
+        uid = "%s@%s"%(tid,pid)
+        if self.opened_task.has_key(uid) :
+            self.opened_task[uid].present()
         else :
             backend = self.projects[t.get_project()][0]
             t.set_sync_func(backend.sync_task)
             tv = TaskEditor(t,self.refresh_list,self.on_delete_task,self.close_task)
             #registering as opened
-            self.opened_task[tid] = tv
+            self.opened_task[uid] = tv
     
     #When an editor is closed, it should deregister itself
     def close_task(self,tid) :
@@ -180,10 +184,15 @@ class Base:
     
     def get_selected_task(self) :
         #We have to select the project
-        #FIXME (just random code to remove)
         #if pid is none, we should handle a default project
-        pid = self.projects.keys()[0]
-        #remove code above
+        #and display all tasks
+        p_selected = self.project_tview.get_selection()
+        pmodel, p_iter = p_selected.get_selected()
+        if p_iter :
+            pid = self.project_ts.get_value(p_iter, 0)
+        #If no selection, we display all
+        else :
+            pid = self.projects.keys()[0] 
         tid = None
         # Get the selection in the gtk.TreeView
         selection = self.task_tview.get_selection()
