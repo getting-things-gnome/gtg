@@ -97,8 +97,11 @@ class Project :
     def set_pid(self,pid) :
         self.pid = pid 
         for tid in self.list_tasks() :
-            t = self.get_task(tid)
+            t = self.list.pop(tid)
+            #We must inform the tasks of our pid
             t.set_project(pid)
+            #then we re-add the task
+            self.add_task(t)
         
     def get_pid(self) :
         return self.pid
@@ -137,13 +140,13 @@ class Project :
     def add_task(self,task) :
         tid = task.get_id()
         self.list[str(tid)] = task
-        task.set_project(self.get_name())
+        task.set_project(self.get_pid())
         
     def new_task(self) :
         tid = self.__free_tid()
         task = Task(tid)
         self.list[str(tid)] = task
-        task.set_project(self.get_name())
+        task.set_project(self.get_pid())
         return task
     
     def delete_task(self,tid) :
