@@ -25,10 +25,12 @@ class Task :
         return self.title
     
     def set_title(self,title) :
-        self.title = title
+        if title :
+            self.title = title
         
     def set_status(self,status) :
-        self.status = status
+        if status :
+            self.status = status
         
     def get_status(self) :
         return self.status
@@ -43,7 +45,8 @@ class Task :
         return None
         
     def set_due_date(self,fulldate) :
-        self.due_date = self.__strtodate(fulldate)
+        if fulldate :
+            self.due_date = self.__strtodate(fulldate)
         
     def get_due_date(self) :
         if self.due_date :
@@ -63,7 +66,8 @@ class Task :
             return ""
         
     def set_text(self,texte) :
-        self.content = str(texte)
+        if texte :
+            self.content = str(texte)
         
     #This is a callback. The "sync" function has to be set
     def set_sync_func(self,sync) :

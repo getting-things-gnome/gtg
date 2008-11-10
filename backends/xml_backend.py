@@ -55,22 +55,21 @@ class Backend :
                 cur_task = Task(cur_id)
                 cur_task.set_status(cur_stat)
                 #we will fill the task with its content
-                xtitle = t.getElementsByTagName("title")
-                if xtitle[0].hasChildNodes():
-                    title = xtitle[0].childNodes[0].nodeValue
-                    cur_task.set_title(title)
-                content = t.getElementsByTagName("content")
-                if content[0].hasChildNodes():
-                    texte = content[0].childNodes[0].nodeValue
-                    cur_task.set_text(texte)
-                duedate = t.getElementsByTagName("duedate")
-                if duedate and duedate[0].hasChildNodes() :
-                    zedate = duedate[0].childNodes[0].nodeValue
-                    if zedate :
-                        cur_task.set_due_date(zedate)
+                cur_task.set_title(self.__read_textnode(t,"title"))
+                cur_task.set_text(self.__read_textnode(t,"content"))
+                cur_task.set_due_date(self.__read_textnode(t,"duedate"))
                 #adding task to the project
                 self.project.add_task(cur_task)
         return self.project
+    
+    def __read_textnode(self,node,title) :
+        n = node.getElementsByTagName(title)
+        if n and n[0].hasChildNodes() :
+            content = n[0].childNodes[0].nodeValue
+            if content :
+                return content
+        return None
+        
         
     #This function will sync the whole project
     def sync_project(self) :
@@ -84,9 +83,9 @@ class Backend :
             t_xml.setAttribute("id",str(tid))
             t_xml.setAttribute("status",t.get_status())
             p_xml.appendChild(t_xml)
-            self.__textnode(doc,t_xml,"title",t.get_title())
-            self.__textnode(doc,t_xml,"duedate",t.get_due_date())
-            self.__textnode(doc,t_xml,"content",t.get_text())
+            self.__write_textnode(doc,t_xml,"title",t.get_title())
+            self.__write_textnode(doc,t_xml,"duedate",t.get_due_date())
+            self.__write_textnode(doc,t_xml,"content",t.get_text())
         #it's maybe not optimal to open/close the file each time we sync
         # but I'm not sure that those operations are so frequent
         # might be changed in the future.
@@ -95,7 +94,7 @@ class Backend :
         f.close()
      
     #Method to add a text node in the doc to the parent node   
-    def __textnode(self,doc,parent,title,content) :
+    def __write_textnode(self,doc,parent,title,content) :
         if content :
             element = doc.createElement(title)
             parent.appendChild(element)
