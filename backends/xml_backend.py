@@ -2,21 +2,20 @@ import sys, time, os, xml.dom.minidom
 import string, threading
 
 from task import Task, Project
-#Development variables. Should be removed
-zefile = "mynote.xml"
-
 
 #todo : Backend should only provide one big "project" object and should 
 #not provide get_task and stuff like that.
 class Backend :
-    def __init__(self) :
-        self.project = Project("project")
-        if os.path.exists(zefile) :
-            f = open(zefile,mode='r')
+    def __init__(self,zefile) :
+        self.zefile = zefile
+        if os.path.exists(self.zefile) :
+            f = open(self.zefile,mode='r')
             # sanitize the pretty XML
-            doc=xml.dom.minidom.parse(zefile)
+            doc=xml.dom.minidom.parse(self.zefile)
             self.__cleanDoc(doc,"\t","\n")
             self.__xmlproject = doc.getElementsByTagName("project")
+            proj_name = str(self.__xmlproject[0].getAttribute("name"))
+            self.project = Project(proj_name)
         
         #the file didn't exist, create it now
         else :
@@ -24,7 +23,7 @@ class Backend :
             self.__xmlproject = doc.createElement("project")
             doc.appendChild(self.__xmlproject)
             #then we create the file
-            f = open(zefile, mode='a+')
+            f = open(self.zefile, mode='a+')
             f.write(doc.toxml().encode("utf-8"))
             f.close()
      
@@ -77,6 +76,9 @@ class Backend :
         #Currently, we are not saving the tag table.
         doc = xml.dom.minidom.Document()
         p_xml = doc.createElement("project")
+        p_name = self.project.get_name()
+        if p_name :
+            p_xml.setAttribute("name", p_name)
         doc.appendChild(p_xml)
         for tid in self.project.list_tasks():
             t = self.project.get_task(tid)
@@ -90,7 +92,7 @@ class Backend :
         #it's maybe not optimal to open/close the file each time we sync
         # but I'm not sure that those operations are so frequent
         # might be changed in the future.
-        f = open(zefile, mode='w+')
+        f = open(self.zefile, mode='w+')
         f.write(doc.toprettyxml().encode("utf-8"))
         f.close()
      

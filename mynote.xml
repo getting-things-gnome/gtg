@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
-<project>
-	<task id="11" status="Done">
+<project name="Lio - GTG tasks">
+	<task id="11@1" status="Done">
 		<title>
 			TaskEditor resizeing
 		</title>
@@ -9,7 +9,17 @@
 C'est cool non ?
 		</content>
 	</task>
-	<task id="10" status="Done">
+	<task id="8@1" status="Active">
+		<title>
+			do not save by default
+		</title>
+		<content>
+			si la tâche est pas modifiée
+on la sauve pas !
+(ou bien si elle est vide) 
+		</content>
+	</task>
+	<task id="10@1" status="Done">
 		<title>
 			remove tasks
 		</title>
@@ -17,7 +27,15 @@ C'est cool non ?
 			Press Escape or close this task to save it
 		</content>
 	</task>
-	<task id="13" status="Active">
+	<task id="6@1" status="Done">
+		<title>
+			confirmation pour delete
+		</title>
+		<content>
+			Le delete doit être confirmé
+		</content>
+	</task>
+	<task id="13@1" status="Active">
 		<title>
 			Title en plus gros
 		</title>
@@ -25,7 +43,7 @@ C'est cool non ?
 			Press Escape or close this task to save it
 		</content>
 	</task>
-	<task id="12" status="Done">
+	<task id="12@1" status="Done">
 		<title>
 			Boutton dans l'éditeur
 		</title>
@@ -34,7 +52,93 @@ C'est cool non ?
 delete
 		</content>
 	</task>
-	<task id="15" status="Active">
+	<task id="7@1" status="Done">
+		<title>
+			Task editor glade
+		</title>
+		<content>
+			Le task editor doit devenir
+un peu plus utilisable
+		</content>
+	</task>
+	<task id="20@1" status="Active">
+		<title>
+			Support des projets
+		</title>
+		<content>
+			Press Escape or close this task to save it
+		</content>
+	</task>
+	<task id="4@1" status="Active">
+		<title>
+			Right clic
+		</title>
+		<content>
+			Right clic sur les tâches doit 
+permettre d'avoir un menu
+		</content>
+	</task>
+	<task id="5@1" status="Done">
+		<title>
+			Esc to close
+		</title>
+		<content>
+			Esc dans l'éditeur doit le fermer e
+		</content>
+	</task>
+	<task id="2@1" status="Done">
+		<title>
+			nouvelle tache
+		</title>
+		<content>
+			implémenter le boutton
+&quot;new task&quot;
+		</content>
+	</task>
+	<task id="18@1" status="Active">
+		<title>
+			Support des tags
+		</title>
+		<content>
+			Pouvoir specifier des tags/contextes aux tâches, pour les trier
+		</content>
+	</task>
+	<task id="3@1" status="Active">
+		<title>
+			Undone
+		</title>
+		<content>
+			When a &quot;done&quot; task is selected The &quot;Mark as done&quot; should change to &quot;Undone&quot;
+(also in the task editor)
+		</content>
+	</task>
+	<task id="0@1" status="Done">
+		<title>
+			Display tasks done
+		</title>
+		<content>
+			Press Escape or close this task to save it
+		</content>
+	</task>
+	<task id="1@1" status="Done">
+		<title>
+			refresh title
+		</title>
+		<content>
+			On doit rafraichir le title
+dans la liste quand on close
+l'éditeur
+		</content>
+	</task>
+	<task id="19@1" status="Active">
+		<title>
+			Manger des frites
+		</title>
+		<content>
+			C'est bon
+		</content>
+	</task>
+	<task id="15@1" status="Active">
 		<title>
 			Done date
 		</title>
@@ -42,12 +146,12 @@ delete
 			L'afficher dans le treeview des tasks Done
 		</content>
 	</task>
-	<task id="14" status="Active">
+	<task id="14@1" status="Active">
 		<title>
 			Due date
 		</title>
 		<duedate>
-			2008-11-22
+			2008-11-21
 		</duedate>
 		<content>
 			- fermer automatiquement si on clique en dehors du calendar
@@ -58,114 +162,17 @@ Done:
 - le sauver dans le XML
 		</content>
 	</task>
-	<task id="17" status="Active">
+	<task id="17@1" status="Active">
 		<title>
 			refactor main.py
 		</title>
 		<content>
-			
-We should really separate the management of the task editor and the main task list.
+			We should really separate the management of the task editor and the main task list.
 
 In fact, task list should be &quot;hideable&quot; at will and should be usable with any task editor
 		</content>
 	</task>
-	<task id="16" status="Active">
-		<title>
-			child task
-		</title>
-		<content>
-			faut avoir des listes à puces, un boutton pour rajouter une sous-tâche
-
-Comment indiquer le parent ?
-		</content>
-	</task>
-	<task id="19" status="Active">
-		<title>
-			Manger des frites
-		</title>
-		<content>
-			C'est bon
-		</content>
-	</task>
-	<task id="18" status="Active">
-		<title>
-			Support des tags
-		</title>
-		<content>
-			Pouvoir specifier des tags/contextes aux tâches, pour les trier
-		</content>
-	</task>
-	<task id="1" status="Done">
-		<title>
-			refresh title
-		</title>
-		<content>
-			On doit rafraichir le title
-dans la liste quand on close
-l'éditeur
-		</content>
-	</task>
-	<task id="0" status="Done">
-		<title>
-			Display tasks done
-		</title>
-		<content>
-			Press Escape or close this task to save it
-		</content>
-	</task>
-	<task id="3" status="Active">
-		<title>
-			Undone
-		</title>
-		<content>
-			When a &quot;done&quot; task is selected The &quot;Mark as done&quot; should change to &quot;Undone&quot;
-(also in the task editor)
-		</content>
-	</task>
-	<task id="2" status="Done">
-		<title>
-			nouvelle tache
-		</title>
-		<content>
-			implémenter le boutton
-&quot;new task&quot;
-		</content>
-	</task>
-	<task id="5" status="Done">
-		<title>
-			Esc to close
-		</title>
-		<content>
-			Esc dans l'éditeur doit le fermer e
-		</content>
-	</task>
-	<task id="4" status="Active">
-		<title>
-			Right clic
-		</title>
-		<content>
-			Right clic sur les tâches doit 
-permettre d'avoir un menu
-		</content>
-	</task>
-	<task id="7" status="Done">
-		<title>
-			Task editor glade
-		</title>
-		<content>
-			Le task editor doit devenir
-un peu plus utilisable
-		</content>
-	</task>
-	<task id="6" status="Done">
-		<title>
-			confirmation pour delete
-		</title>
-		<content>
-			Le delete doit être confirmé
-		</content>
-	</task>
-	<task id="9" status="Done">
+	<task id="9@1" status="Done">
 		<title>
 			Ne pas ouvrir plusieurs fois la même tâche
 		</title>
@@ -175,22 +182,14 @@ un peu plus utilisable
 gtk.window.present() peut nous aider !
 		</content>
 	</task>
-	<task id="20" status="Active">
+	<task id="16@1" status="Active">
 		<title>
-			Support des projets
+			child task
 		</title>
 		<content>
-			Press Escape or close this task to save it
-		</content>
-	</task>
-	<task id="8" status="Active">
-		<title>
-			do not save by default
-		</title>
-		<content>
-			si la tâche est pas modifiée
-on la sauve pas !
-(ou bien si elle est vide) 
+			faut avoir des listes à puces, un boutton pour rajouter une sous-tâche
+
+Comment indiquer le parent ? 
 		</content>
 	</task>
 </project>

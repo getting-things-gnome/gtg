@@ -17,9 +17,14 @@ class Task :
         self.done_date = None
         self.due_date = None
         self.start_date = None
+        
+    def set_project(self,pid) :
+        tid = self.get_id()
+        result = tid.split('@')
+        self.tid = "%s@%s" %(result[0],pid)
                 
     def get_id(self) :
-        return self.tid
+        return str(self.tid)
         
     def get_title(self) :
         return self.title
@@ -47,6 +52,8 @@ class Task :
     def set_due_date(self,fulldate) :
         if fulldate :
             self.due_date = self.__strtodate(fulldate)
+        else :
+            self.due_date = None
         
     def get_due_date(self) :
         if self.due_date :
@@ -85,6 +92,25 @@ class Project :
         self.name = name
         self.list = {}
         self.sync_func = None
+        self.pid = None
+        
+    def set_pid(self,pid) :
+        self.pid = pid 
+        for tid in self.list_tasks() :
+            t = self.list.pop(tid)
+            #We must inform the tasks of our pid
+            t.set_project(pid)
+            #then we re-add the task
+            self.add_task(t)
+        
+    def get_pid(self) :
+        return self.pid
+    
+    def set_name(self,name) :
+        self.name = name
+    
+    def get_name(self) :
+        return self.name
         
     def list_tasks(self):
         result = self.list.keys()
@@ -114,11 +140,13 @@ class Project :
     def add_task(self,task) :
         tid = task.get_id()
         self.list[str(tid)] = task
+        task.set_project(self.get_pid())
         
     def new_task(self) :
         tid = self.__free_tid()
         task = Task(tid)
         self.list[str(tid)] = task
+        task.set_project(self.get_pid())
         return task
     
     def delete_task(self,tid) :
@@ -127,9 +155,12 @@ class Project :
     
     def __free_tid(self) :
         k = 0
-        while self.list.has_key(str(k)) :
+        pid = self.get_pid()
+        kk = "%s@%s" %(k,pid)
+        while self.list.has_key(str(kk)) :
             k += 1
-        return str(k)
+            kk = "%s@%s" %(k,pid)
+        return str(kk)
         
     #This is a callback. The "sync" function has to be set
     def set_sync_func(self,sync) :

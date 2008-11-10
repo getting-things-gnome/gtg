@@ -68,6 +68,8 @@ class TaskEditor :
         self.window.show()
     
     def refresh_editor(self) :
+        #title of the window 
+        self.window.set_title(self.task.get_title())
         #refreshing the due date field
         duedate = self.task.get_due_date()
         if duedate :
@@ -88,6 +90,7 @@ class TaskEditor :
             self.dayleft_label.set_text(txt) 
                 
         else :
+            self.dayleft_label.set_text('')
             self.duedate_widget.set_text('')
             
         
@@ -131,6 +134,8 @@ class TaskEditor :
         self.__close_calendar()
         
     def nodate_pressed(self,widget) :
+        self.task.set_due_date(None)
+        self.refresh_editor()
         self.__close_calendar()
     
     def change_status(self,widget) :

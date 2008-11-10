@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Sun Nov  9 23:51:29 2008 -->
+<!--Generated with glade3 3.4.5 on Mon Nov 10 18:17:23 2008 -->
 <glade-interface>
   <requires lib="gnome"/>
   <widget class="GtkWindow" id="MainWindow">
@@ -147,9 +147,10 @@
               <widget class="GtkVBox" id="vbox3">
                 <property name="visible">True</property>
                 <child>
-                  <widget class="GtkTreeView" id="folder_tview">
+                  <widget class="GtkTreeView" id="project_tview">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <signal name="row_activated" handler="on_project_selected"/>
                   </widget>
                 </child>
                 <child>
