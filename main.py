@@ -67,7 +67,7 @@ class Base:
         
         #Now we have to open our tasks
         #We create a dict which contains every pair of Backend/project
-        #todo : do this from a projects configuration
+        #TODO : do this from a projects configuration
         backend1 = Backend("mynote.xml")
         #backend2 = Backend("myotherproject.xml")
         project1 = backend1.get_project()
@@ -82,10 +82,23 @@ class Base:
     def main(self):
         #Here we will define the main TaskList interface
         self.c_title=1
-        #The Active tasks treeview
-        self.task_tview = self.wTree.get_widget("task_tview")
         self.cellBool = gtk.CellRendererToggle()
         self.cell     = gtk.CellRendererText()
+        
+        #The project list
+        self.project_tview = self.wTree.get_widget("project_tview")
+        pcol = gtk.TreeViewColumn("Projects")
+        pcol.pack_start(self.cell)
+        pcol.set_resizable(True)
+        pcol.set_sort_column_id(1)
+        pcol.set_attributes(self.cell, markup=1)
+        self.project_tview.append_column(pcol)
+        self.project_ts = gtk.TreeStore(gobject.TYPE_PYOBJECT,str)
+        self.project_tview.set_model(self.project_ts)
+        #self.project_ts.set_sort_column_id(self.c_title, gtk.SORT_ASCENDING)
+        
+        #The Active tasks treeview
+        self.task_tview = self.wTree.get_widget("task_tview")
         col = gtk.TreeViewColumn("Actions")
         col.pack_start(self.cellBool)
         col.pack_start(self.cell)
@@ -126,8 +139,11 @@ class Base:
         #is it acceptable to do that ?
         self.task_ts.clear()
         self.taskdone_ts.clear()
+        self.project_ts.clear()
         for p_key in  self.projects :
             p = self.projects[p_key][1]
+            title = p.get_name()
+            self.project_ts.append(None,[p_key,title])
             for tid in p.active_tasks() :
                 t = p.get_task(tid)
                 title = t.get_title()
