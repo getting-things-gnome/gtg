@@ -105,7 +105,7 @@ class Base:
         
         
         self.refresh_list()
-        
+        self.opened_task = {}
         
         gtk.main()
         return 0
@@ -126,12 +126,24 @@ class Base:
             title = t.get_title()
             self.taskdone_ts.append(None,[tid,title,False])
 
-    
+    #If a Task editor is already opened for a given task, we present it
+    #Else, we create a new one.
     def open_task(self,task) :
         t = task
-        t.set_sync_func(self.backend.sync_task)
-        tv = TaskEditor(t,self.refresh_list,self.on_delete_task)
-        
+        tid = t.get_id()
+        if self.opened_task.has_key(tid) :
+            self.opened_task[tid].present()
+        else :
+            t.set_sync_func(self.backend.sync_task)
+            tv = TaskEditor(t,self.refresh_list,self.on_delete_task,self.close_task)
+            #registering as opened
+            self.opened_task[tid] = tv
+    
+    #When an editor is closed, it should deregister itself
+    def close_task(self,tid) :
+        if self.opened_task.has_key(tid) :
+            del self.opened_task[tid]
+            
     def on_add_task(self,widget) :
         task = self.project.new_task()
         self.open_task(task)

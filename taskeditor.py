@@ -16,7 +16,7 @@ except:
     sys.exit(1)
 
 class TaskEditor :
-    def __init__(self, task, refresh_callback=None,delete_callback=None) :
+    def __init__(self, task, refresh_callback=None,delete_callback=None,close_callback=None) :
         self.gladefile = "gtd-gnome.glade"
         self.wTree = gtk.glade.XML(self.gladefile, "TaskEditor")
         self.cal_tree = gtk.glade.XML(self.gladefile, "calendar")
@@ -50,6 +50,7 @@ class TaskEditor :
         self.task = task
         self.refresh = refresh_callback
         self.delete = delete_callback
+        self.closing = close_callback
         buff = gtk.TextBuffer()
         texte = self.task.get_text()
         title = self.task.get_title()
@@ -167,10 +168,14 @@ class TaskEditor :
             self.refresh()
         self.task.sync()
         
+    def present(self) :
+        self.window.present()
+        
     #We define dummy variable for when close is called from a callback
     def close(self,window,a=None,b=None,c=None) :
         #Save should be also called when buffer is modified
         self.save()
+        self.closing(self.task.get_id())
         #TODO : verify that destroy the window is enough ! 
         #We should also destroy the whole taskeditor object.
         self.window.destroy()
