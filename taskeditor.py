@@ -63,6 +63,8 @@ class TaskEditor :
         start = buff.get_start_iter()
         end = buff.get_end_iter()
         buff.apply_tag(self.test_tag, start, end)
+        #We have to find a way to keep this tag for the first line
+        #Even when the task is edited
         
         #we insert the rest of the task
         if texte : 
