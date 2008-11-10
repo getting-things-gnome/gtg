@@ -35,7 +35,7 @@ on la sauve pas !
 			Le delete doit être confirmé
 		</content>
 	</task>
-	<task id="13@1" status="Active">
+	<task id="13@1" status="Done">
 		<title>
 			Title en plus gros
 		</title>
@@ -61,7 +61,7 @@ delete
 un peu plus utilisable
 		</content>
 	</task>
-	<task id="20@1" status="Active">
+	<task id="20@1" status="Done">
 		<title>
 			Support des projets
 		</title>
@@ -76,6 +76,18 @@ un peu plus utilisable
 		<content>
 			Right clic sur les tâches doit 
 permettre d'avoir un menu
+		</content>
+	</task>
+	<task id="21@1" status="Active">
+		<title>
+			Title Tag
+		</title>
+		<content>
+			Automatiquement appliquer le tag title quand on tape.
+Voir :
+http://www.pygtk.org/pygtk2tutorial/sec-TextBuffers.html
+http://www.pygtk.org/pygtk2tutorial/sec-TextTagsAndTextTagTables.html#sec-TextTags
+http://www.pygtk.org/pygtk2tutorial/examples/testtext.py
 		</content>
 	</task>
 	<task id="5@1" status="Done">
@@ -151,7 +163,7 @@ l'éditeur
 			Due date
 		</title>
 		<duedate>
-			2008-11-21
+			2008-11-09
 		</duedate>
 		<content>
 			- fermer automatiquement si on clique en dehors du calendar
