@@ -57,12 +57,13 @@ class TaskEditor :
         #the first line is the title
         self.buff.set_text("%s\n"%title)
         
+        ##########Tag we will use #######
+        #Maybe we should consider using the provided tag list
         #tag test for title
         self.title_tag = self.buff.create_tag(foreground="#12F",scale=1.3,underline=1)
         self.title_tag.set_property("pixels-below-lines",13)
-#        start = self.buff.get_start_iter()
+        #start = self.buff.get_start_iter()
         end = self.buff.get_end_iter()
-#        self.buff.apply_tag(self.title_tag, start, end)
         #We have to find a way to keep this tag for the first line
         #Even when the task is edited
         
@@ -82,8 +83,6 @@ class TaskEditor :
         
     #The buffer was modified, let reflect this
     def modified(self,a=None) :
-        #Maybe we can improve performance by putting start and end in
-        #self.variables ?
         start = self.buff.get_start_iter()
         end = self.buff.get_end_iter()
         #Here we apply the title tag on the first line
@@ -91,11 +90,14 @@ class TaskEditor :
             end_title = self.buff.get_iter_at_line(1)
             self.buff.apply_tag(self.title_tag, start, end_title)
             self.buff.remove_tag(self.title_tag,end_title,end)
+            #title of the window 
+            self.window.set_title(self.buff.get_text(start,end_title))
         #Or to all the buffer if there is only one line
         else :
             self.buff.apply_tag(self.title_tag, start, end)
-            
-            
+            #title of the window 
+            self.window.set_title(self.buff.get_text(start,end))
+                        
         #Do we want to save the text at each modification ?
         
         #Ok, we took care of the modification
