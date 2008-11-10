@@ -16,7 +16,7 @@ C'est cool non ?
 		<content>
 			si la tâche est pas modifiée
 on la sauve pas !
-(ou bien si elle est vide) 
+(ou bien si elle est vide)
 		</content>
 	</task>
 	<task id="10@1" status="Done">
@@ -107,6 +107,14 @@ http://www.pygtk.org/pygtk2tutorial/examples/testtext.py
 &quot;new task&quot;
 		</content>
 	</task>
+	<task id="22@1" status="Active">
+		<title>
+			My new task
+		</title>
+		<content>
+			t
+		</content>
+	</task>
 	<task id="18@1" status="Active">
 		<title>
 			Support des tags
@@ -147,7 +155,7 @@ l'éditeur
 			Manger des frites
 		</title>
 		<content>
-			C'est bon
+			C'est bon !
 		</content>
 	</task>
 	<task id="15@1" status="Active">
