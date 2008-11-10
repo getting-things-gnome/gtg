@@ -75,6 +75,8 @@ class Task :
     def set_text(self,texte) :
         if texte :
             self.content = str(texte)
+        else :
+            self.content = ''
         
     #This is a callback. The "sync" function has to be set
     def set_sync_func(self,sync) :

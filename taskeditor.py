@@ -51,32 +51,58 @@ class TaskEditor :
         self.refresh = refresh_callback
         self.delete = delete_callback
         self.closing = close_callback
-        buff = gtk.TextBuffer()
+        self.buff = gtk.TextBuffer()
         texte = self.task.get_text()
         title = self.task.get_title()
         #the first line is the title
-        buff.set_text("%s\n"%title)
+        self.buff.set_text("%s\n"%title)
         
+        ##########Tag we will use #######
+        #We use the tag table (tag are defined here but set in self.modified)
+        table = self.buff.get_tag_table()
         #tag test for title
-        self.test_tag = buff.create_tag(foreground="#12F",scale=1.3,underline=1)
-        self.test_tag.set_property("pixels-below-lines",13)
-        start = buff.get_start_iter()
-        end = buff.get_end_iter()
-        buff.apply_tag(self.test_tag, start, end)
+        title_tag = self.buff.create_tag("title",foreground="#12F",scale=1.3,underline=1)
+        title_tag.set_property("pixels-below-lines",13)
+        #start = self.buff.get_start_iter()
+        end = self.buff.get_end_iter()
         #We have to find a way to keep this tag for the first line
         #Even when the task is edited
         
         #we insert the rest of the task
         if texte : 
-            buff.insert(end,"%s"%texte)
+            self.buff.insert(end,"%s"%texte)
     
+        #The signal emitted each time the buffer is modified
+        self.modi_signal = self.buff.connect("modified_changed",self.modified)
         
-        
-        self.textview.set_buffer(buff)
+        self.textview.set_buffer(self.buff)
         self.window.connect("destroy", self.close)
         self.refresh_editor()
 
         self.window.show()
+        self.buff.set_modified(False)
+        
+    #The buffer was modified, let reflect this
+    def modified(self,a=None) :
+        start = self.buff.get_start_iter()
+        end = self.buff.get_end_iter()
+        #Here we apply the title tag on the first line
+        if self.buff.get_line_count() > 1 :
+            end_title = self.buff.get_iter_at_line(1)
+            self.buff.apply_tag_by_name('title', start, end_title)
+            self.buff.remove_tag_by_name('title',end_title,end)
+            #title of the window 
+            self.window.set_title(self.buff.get_text(start,end_title))
+        #Or to all the buffer if there is only one line
+        else :
+            self.buff.apply_tag_by_name('title', start, end)
+            #title of the window 
+            self.window.set_title(self.buff.get_text(start,end))
+                        
+        #Do we want to save the text at each modification ?
+        
+        #Ok, we took care of the modification
+        self.buff.set_modified(False)
     
     def refresh_editor(self) :
         #title of the window 

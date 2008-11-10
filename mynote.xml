@@ -16,7 +16,7 @@ C'est cool non ?
 		<content>
 			si la tâche est pas modifiée
 on la sauve pas !
-(ou bien si elle est vide) 
+(ou bien si elle est vide)
 		</content>
 	</task>
 	<task id="10@1" status="Done">
@@ -78,7 +78,7 @@ un peu plus utilisable
 permettre d'avoir un menu
 		</content>
 	</task>
-	<task id="21@1" status="Active">
+	<task id="21@1" status="Done">
 		<title>
 			Title Tag
 		</title>
@@ -107,12 +107,39 @@ http://www.pygtk.org/pygtk2tutorial/examples/testtext.py
 &quot;new task&quot;
 		</content>
 	</task>
+	<task id="22@1" status="Active">
+		<title>
+			My new task
+		</title>
+		<content>
+			t
+		</content>
+	</task>
 	<task id="18@1" status="Active">
 		<title>
 			Support des tags
 		</title>
 		<content>
 			Pouvoir specifier des tags/contextes aux tâches, pour les trier
+		</content>
+	</task>
+	<task id="23@1" status="Active">
+		<title>
+			Hyperlink dans les tasks
+		</title>
+		<content>
+			Voir NoteTag.cs ligne 194
+
+Et pour le curseur voir Watchers.cs ligne 1094 :
+
+if (hovering != hovering_on_link) {
+				hovering_on_link = hovering;
+
+				Gdk.Window win = Window.Editor.GetWindow (Gtk.TextWindowType.Text);
+				if (hovering &amp;&amp; !avoid_hand)
+					win.Cursor = hand_cursor;
+				else
+					win.Cursor = normal_cursor;
 		</content>
 	</task>
 	<task id="3@1" status="Active">
@@ -147,7 +174,7 @@ l'éditeur
 			Manger des frites
 		</title>
 		<content>
-			C'est bon
+			C'est bon !
 		</content>
 	</task>
 	<task id="15@1" status="Active">
