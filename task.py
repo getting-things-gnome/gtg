@@ -54,6 +54,8 @@ class Task :
     def set_due_date(self,fulldate) :
         if fulldate :
             self.due_date = self.__strtodate(fulldate)
+        else :
+            self.due_date = None
         
     def get_due_date(self) :
         if self.due_date :

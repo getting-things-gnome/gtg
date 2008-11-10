@@ -134,6 +134,8 @@ class TaskEditor :
         self.__close_calendar()
         
     def nodate_pressed(self,widget) :
+        self.task.set_due_date(None)
+        self.refresh_editor()
         self.__close_calendar()
     
     def change_status(self,widget) :
