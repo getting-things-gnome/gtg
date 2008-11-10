@@ -58,10 +58,11 @@ class TaskEditor :
         self.buff.set_text("%s\n"%title)
         
         ##########Tag we will use #######
-        #Maybe we should consider using the provided tag list
+        #We use the tag table (tag are defined here but set in self.modified)
+        table = self.buff.get_tag_table()
         #tag test for title
-        self.title_tag = self.buff.create_tag(foreground="#12F",scale=1.3,underline=1)
-        self.title_tag.set_property("pixels-below-lines",13)
+        title_tag = self.buff.create_tag("title",foreground="#12F",scale=1.3,underline=1)
+        title_tag.set_property("pixels-below-lines",13)
         #start = self.buff.get_start_iter()
         end = self.buff.get_end_iter()
         #We have to find a way to keep this tag for the first line
@@ -88,13 +89,13 @@ class TaskEditor :
         #Here we apply the title tag on the first line
         if self.buff.get_line_count() > 1 :
             end_title = self.buff.get_iter_at_line(1)
-            self.buff.apply_tag(self.title_tag, start, end_title)
-            self.buff.remove_tag(self.title_tag,end_title,end)
+            self.buff.apply_tag_by_name('title', start, end_title)
+            self.buff.remove_tag_by_name('title',end_title,end)
             #title of the window 
             self.window.set_title(self.buff.get_text(start,end_title))
         #Or to all the buffer if there is only one line
         else :
-            self.buff.apply_tag(self.title_tag, start, end)
+            self.buff.apply_tag_by_name('title', start, end)
             #title of the window 
             self.window.set_title(self.buff.get_text(start,end))
                         
