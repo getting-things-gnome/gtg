@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Mon Nov 10 18:17:23 2008 -->
+<!--Generated with glade3 3.4.5 on Mon Nov 10 23:51:40 2008 -->
 <glade-interface>
   <requires lib="gnome"/>
   <widget class="GtkWindow" id="MainWindow">
@@ -171,10 +171,13 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkVBox" id="vbox2">
+              <widget class="GtkVPaned" id="vpaned1">
                 <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="position">330</property>
+                <property name="position_set">True</property>
                 <child>
-                  <widget class="GtkScrolledWindow" id="scrolledwindow1">
+                  <widget class="GtkScrolledWindow" id="scrolledwindow4">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
@@ -183,14 +186,20 @@
                       <widget class="GtkTreeView" id="task_tview">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
+                        <property name="reorderable">True</property>
                         <property name="search_column">8</property>
+                        <property name="rubber_banding">True</property>
                         <signal name="row_activated" handler="on_edit_task"/>
                       </widget>
                     </child>
                   </widget>
+                  <packing>
+                    <property name="resize">False</property>
+                    <property name="shrink">True</property>
+                  </packing>
                 </child>
                 <child>
-                  <widget class="GtkScrolledWindow" id="scrolledwindow2">
+                  <widget class="GtkScrolledWindow" id="scrolledwindow5">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
@@ -205,7 +214,8 @@
                     </child>
                   </widget>
                   <packing>
-                    <property name="position">1</property>
+                    <property name="resize">True</property>
+                    <property name="shrink">True</property>
                   </packing>
                 </child>
               </widget>
