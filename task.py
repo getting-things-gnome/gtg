@@ -17,6 +17,13 @@ class Task :
         self.done_date = None
         self.due_date = None
         self.start_date = None
+        self.project = None
+        
+    def set_project(self,proj) :
+        self.project = proj
+    
+    def get_project(self) :
+        return self.project
                 
     def get_id(self) :
         return self.tid
@@ -88,6 +95,9 @@ class Project :
     
     def set_name(self,name) :
         self.name = name
+        for tid in self.list_tasks() :
+            t = self.get_task(tid)
+            t.set_project(name)
     
     def get_name(self) :
         return self.name
@@ -120,11 +130,13 @@ class Project :
     def add_task(self,task) :
         tid = task.get_id()
         self.list[str(tid)] = task
+        task.set_project(self.get_name())
         
     def new_task(self) :
         tid = self.__free_tid()
         task = Task(tid)
         self.list[str(tid)] = task
+        task.set_project(self.get_name())
         return task
     
     def delete_task(self,tid) :

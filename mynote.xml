@@ -1,5 +1,103 @@
 <?xml version="1.0" ?>
-<project>
+<project name="GTG tasks">
+	<task id="20" status="Active">
+		<title>
+			Support des projets
+		</title>
+		<content>
+			Press Escape or close this task to save it
+		</content>
+	</task>
+	<task id="1" status="Done">
+		<title>
+			refresh title
+		</title>
+		<content>
+			On doit rafraichir le title
+dans la liste quand on close
+l'éditeur
+		</content>
+	</task>
+	<task id="0" status="Done">
+		<title>
+			Display tasks done
+		</title>
+		<content>
+			Press Escape or close this task to save it
+		</content>
+	</task>
+	<task id="3" status="Active">
+		<title>
+			Undone
+		</title>
+		<content>
+			When a &quot;done&quot; task is selected The &quot;Mark as done&quot; should change to &quot;Undone&quot;
+(also in the task editor)
+		</content>
+	</task>
+	<task id="2" status="Done">
+		<title>
+			nouvelle tache
+		</title>
+		<content>
+			implémenter le boutton
+&quot;new task&quot;
+		</content>
+	</task>
+	<task id="5" status="Done">
+		<title>
+			Esc to close
+		</title>
+		<content>
+			Esc dans l'éditeur doit le fermer e
+		</content>
+	</task>
+	<task id="4" status="Active">
+		<title>
+			Right clic
+		</title>
+		<content>
+			Right clic sur les tâches doit 
+permettre d'avoir un menu
+		</content>
+	</task>
+	<task id="7" status="Done">
+		<title>
+			Task editor glade
+		</title>
+		<content>
+			Le task editor doit devenir
+un peu plus utilisable
+		</content>
+	</task>
+	<task id="6" status="Done">
+		<title>
+			confirmation pour delete
+		</title>
+		<content>
+			Le delete doit être confirmé
+		</content>
+	</task>
+	<task id="9" status="Done">
+		<title>
+			Ne pas ouvrir plusieurs fois la même tâche
+		</title>
+		<content>
+			Parce que c'est pas bien
+
+gtk.window.present() peut nous aider !
+		</content>
+	</task>
+	<task id="8" status="Active">
+		<title>
+			do not save by default
+		</title>
+		<content>
+			si la tâche est pas modifiée
+on la sauve pas !
+(ou bien si elle est vide) 
+		</content>
+	</task>
 	<task id="11" status="Done">
 		<title>
 			TaskEditor resizeing
@@ -92,104 +190,6 @@ Comment indiquer le parent ?
 		</title>
 		<content>
 			Pouvoir specifier des tags/contextes aux tâches, pour les trier
-		</content>
-	</task>
-	<task id="1" status="Done">
-		<title>
-			refresh title
-		</title>
-		<content>
-			On doit rafraichir le title
-dans la liste quand on close
-l'éditeur
-		</content>
-	</task>
-	<task id="0" status="Done">
-		<title>
-			Display tasks done
-		</title>
-		<content>
-			Press Escape or close this task to save it
-		</content>
-	</task>
-	<task id="3" status="Active">
-		<title>
-			Undone
-		</title>
-		<content>
-			When a &quot;done&quot; task is selected The &quot;Mark as done&quot; should change to &quot;Undone&quot;
-(also in the task editor)
-		</content>
-	</task>
-	<task id="2" status="Done">
-		<title>
-			nouvelle tache
-		</title>
-		<content>
-			implémenter le boutton
-&quot;new task&quot;
-		</content>
-	</task>
-	<task id="5" status="Done">
-		<title>
-			Esc to close
-		</title>
-		<content>
-			Esc dans l'éditeur doit le fermer e
-		</content>
-	</task>
-	<task id="4" status="Active">
-		<title>
-			Right clic
-		</title>
-		<content>
-			Right clic sur les tâches doit 
-permettre d'avoir un menu
-		</content>
-	</task>
-	<task id="7" status="Done">
-		<title>
-			Task editor glade
-		</title>
-		<content>
-			Le task editor doit devenir
-un peu plus utilisable
-		</content>
-	</task>
-	<task id="6" status="Done">
-		<title>
-			confirmation pour delete
-		</title>
-		<content>
-			Le delete doit être confirmé
-		</content>
-	</task>
-	<task id="9" status="Done">
-		<title>
-			Ne pas ouvrir plusieurs fois la même tâche
-		</title>
-		<content>
-			Parce que c'est pas bien
-
-gtk.window.present() peut nous aider !
-		</content>
-	</task>
-	<task id="20" status="Active">
-		<title>
-			Support des projets
-		</title>
-		<content>
-			Press Escape or close this task to save it
-		</content>
-	</task>
-	<task id="8" status="Active">
-		<title>
-			do not save by default
-		</title>
-		<content>
-			si la tâche est pas modifiée
-on la sauve pas !
-(ou bien si elle est vide) 
 		</content>
 	</task>
 </project>
