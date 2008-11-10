@@ -13,6 +13,14 @@
 #   backends/xml_backend.py is the way to store tasks and project in XML
 #
 #   tid stand for "Task ID"
+#   pid stand for "Project ID"
+#   uid stand for "Universal ID" which is generally the tuple [pid,tid]
+#
+#   Each id are *strings*
+#   tid are the form "X@Y" where Y is the pid.
+#   For example : 21@2 is the 21th task of the 2nd project
+#   This way, we are sure that a tid is unique accross multiple projects 
+#
 #=============================================================================== 
 
 #=== IMPORT ====================================================================
@@ -73,15 +81,21 @@ class Base:
         backend2 = Backend("bert.xml")
         project1 = backend1.get_project()
         project2 = backend2.get_project()
-        project1.set_pid(1)
-        project2.set_pid(2)
-        name1 = project1.get_name()
-        name2 = project2.get_name()
+        #We assign a random number to each project
+        #This way, each project has a unique ID for the session
+        #Warning : this is not persistant ! The pid is different
+        #for each session !
+        # (this is a feature to allow easy import of a project
+        project1.set_pid('1')
+        project2.set_pid('2')
         #We add the sync function for project
         project1.set_sync_func(backend1.sync_project)
+        project2.set_sync_func(backend2.sync_project)
+        #self.projects is a list of tuples
+        #each tuple is a [backend,project] duo
+        #So we always have the relevant backend for a project if needed
         self.projects = {}
         self.projects['1'] = [backend1, project1]
-        project2.set_sync_func(backend2.sync_project)
         self.projects['2'] = [backend2, project2]
         
     def main(self):
@@ -130,52 +144,61 @@ class Base:
         self.taskdone_tview.set_model(self.taskdone_ts)
         self.taskdone_ts.set_sort_column_id(self.c_title, gtk.SORT_ASCENDING)
         
-        
+        #put the content in those treeviews
+        self.refresh_projects()
         self.refresh_list()
+        #This is the list of tasks that are already opened in an editor
+        #of course it's empty right now
         self.opened_task = {}
         
         gtk.main()
         return 0
-     
+    
+    #We double clicked on a project in the project list
     def on_project_selected(self,widget,row,col) :
         self.refresh_list()
-        
-    #refresh list build/refresh your TreeStore of task
-    #to keep it in sync with your self.projects   
-    def refresh_list(self) :
-        #The selected list
-        k = self.get_selected_project()
-        #to refresh the list we first empty it then rebuild it
-        #is it acceptable to do that ?
-        self.task_ts.clear()
-        self.taskdone_ts.clear()
+    
+    #We refresh the project list. Not needed very often
+    def refresh_projects(self) :
         self.project_ts.clear()
-        #We add all projects to the project list
         for p_key in self.projects :
             p = self.projects[p_key][1]
             title = p.get_name()
             self.project_ts.append(None,[p_key,title])
-            #We display only tasks of the active projects  
-            if p_key in k :
-                for tid in p.active_tasks() :
-                    t = p.get_task(tid)
-                    title = t.get_title()
-                    self.task_ts.append(None,[tid,title,False])
-                for tid in p.unactive_tasks() :
-                    t = p.get_task(tid)
-                    title = t.get_title()
-                    self.taskdone_ts.append(None,[tid,title,False])
+        
+    #refresh list build/refresh your TreeStore of task
+    #to keep it in sync with your self.projects   
+    def refresh_list(self) :
+        #to refresh the list we first empty it then rebuild it
+        #is it acceptable to do that ?
+        self.task_ts.clear()
+        self.taskdone_ts.clear()
+        #We display only tasks of the active projects
+        for p_key in self.get_selected_project() :
+            p = self.projects[p_key][1]  
+            #we first build the active_tasks pane
+            for tid in p.active_tasks() :
+                t = p.get_task(tid)
+                title = t.get_title()
+                self.task_ts.append(None,[tid,title,False])
+            #then the one with tasks already done
+            for tid in p.unactive_tasks() :
+                t = p.get_task(tid)
+                title = t.get_title()
+                self.taskdone_ts.append(None,[tid,title,False])
 
     #If a Task editor is already opened for a given task, we present it
     #Else, we create a new one.
     def open_task(self,task) :
         t = task
         uid = t.get_id()
-        tid,pid = uid.split('@')
         if self.opened_task.has_key(uid) :
             self.opened_task[uid].present()
         else :
+            #We need the pid number to get the backend
+            tid,pid = uid.split('@')
             backend = self.projects[pid][0]
+            #We give to the task the callback to synchronize the list
             t.set_sync_func(backend.sync_task)
             tv = TaskEditor(t,self.refresh_list,self.on_delete_task,self.close_task)
             #registering as opened
@@ -194,6 +217,10 @@ class Base:
         task = self.projects[p][1].new_task()
         self.open_task(task)
     
+    #Get_selected_task returns two value :
+    # pid (example : '1')
+    # uid (example : '21@1')
+    #Yes, indeed, it means that the pid appears twice.
     def get_selected_task(self) :
         uid = None
         # Get the selection in the gtk.TreeView

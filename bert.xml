@@ -1,2 +1,15 @@
 <?xml version="1.0" ?>
-<project name="Tasks from Bert"/>
+<project name="Tasks from Bert">
+	<task id="0@2" status="Done">
+		<title>
+			test it
+		</title>
+		<duedate>
+			2008-11-14
+		</duedate>
+		<content>
+			
+it should work
+		</content>
+	</task>
+</project>
