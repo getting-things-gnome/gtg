@@ -85,6 +85,12 @@ class Project :
         self.name = name
         self.list = {}
         self.sync_func = None
+    
+    def set_name(self,name) :
+        self.name = name
+    
+    def get_name(self) :
+        return self.name
         
     def list_tasks(self):
         result = self.list.keys()

@@ -66,7 +66,7 @@ class Base:
         self.wTree.signal_autoconnect(dic)
         
         #Now we have to open our tasks
-        self.backend = Backend()
+        self.backend = Backend("mynote.xml")
         self.project = self.backend.get_project()
         self.project.set_sync_func(self.backend.sync_project)
         
