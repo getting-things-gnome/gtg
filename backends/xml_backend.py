@@ -84,22 +84,22 @@ class Backend :
             t_xml.setAttribute("id",str(tid))
             t_xml.setAttribute("status",t.get_status())
             p_xml.appendChild(t_xml)
-            title = doc.createElement("title")
-            t_xml.appendChild(title)
-            title.appendChild(doc.createTextNode(t.get_title()))
-            if t.get_due_date() :
-                duedate = doc.createElement("duedate")
-                t_xml.appendChild(duedate)
-                duedate.appendChild(doc.createTextNode(t.get_due_date()))
-            content = doc.createElement("content")
-            t_xml.appendChild(content)
-            content.appendChild(doc.createTextNode(t.get_text()))
+            self.__textnode(doc,t_xml,"title",t.get_title())
+            self.__textnode(doc,t_xml,"duedate",t.get_due_date())
+            self.__textnode(doc,t_xml,"content",t.get_text())
         #it's maybe not optimal to open/close the file each time we sync
         # but I'm not sure that those operations are so frequent
         # might be changed in the future.
         f = open(zefile, mode='w+')
         f.write(doc.toprettyxml().encode("utf-8"))
         f.close()
+     
+    #Method to add a text node in the doc to the parent node   
+    def __textnode(self,doc,parent,title,content) :
+        if content :
+            element = doc.createElement(title)
+            parent.appendChild(element)
+            element.appendChild(doc.createTextNode(content))
 
     #It's easier to save the whole project each time we change a task
     def sync_task(self,task_id) :

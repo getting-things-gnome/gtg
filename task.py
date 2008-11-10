@@ -36,10 +36,10 @@ class Task :
     #function to convert a string of the form XXXX-XX-XX
     #to a date (where X are integer)
     def __strtodate(self,stri) :
-        if stri != 'None' :
-            tabu = stri.split('-')
-            if tabu :
-                return date(int(tabu[0]),int(tabu[1]),int(tabu[2]))
+        if stri :
+            y,m,d = stri.split('-')
+            if y and m and d :
+                return date(int(y),int(m),int(d))
         return None
         
     def set_due_date(self,fulldate) :

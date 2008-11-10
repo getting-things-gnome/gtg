@@ -38,6 +38,7 @@ class TaskEditor :
         self.textview = self.wTree.get_widget("textview")
         self.calendar = self.cal_tree.get_widget("calendar")
         self.duedate_widget = self.wTree.get_widget("duedate_entry")
+        self.dayleft_label = self.wTree.get_widget("dayleft")
         
         #We will intercept the "Escape" button
         accelgroup = gtk.AccelGroup()
@@ -71,8 +72,23 @@ class TaskEditor :
         if duedate :
             zedate = duedate.replace("-","/")
             self.duedate_widget.set_text(zedate)
+            #refreshing the day left label
+            result = self.task.get_days_left()
+            if result == 1 :
+                txt = "Due tomorrow !"
+            elif result > 0 :
+                txt = "%s days left" %result
+            elif result == 0 :
+                txt = "Due today !"
+            elif result == -1 :
+                txt = "Due for yesterday"
+            elif result < 0 :
+                txt = "Was %s days ago" %result
+            self.dayleft_label.set_text(txt) 
+                
         else :
             self.duedate_widget.set_text('')
+            
         
     def on_duedate_pressed(self, widget):
         """Called when the due button is clicked."""
@@ -96,7 +112,7 @@ class TaskEditor :
     def on_focus_out(self,a,b) :
         #gdk.BUTTON1_MASK|gdk.BUTTON2_MASK|gdk.BUTTON3_MASK
         event = b.get_state()
-        print "focus_out : %s" %(event)
+        #print "focus_out : %s" %(event)
     
     def __close_calendar(self,widget=None) :
         self.calendar.hide()
@@ -107,7 +123,7 @@ class TaskEditor :
     
     def day_selected(self,widget) :
         y,m,d = widget.get_date()
-        self.task.set_due_date("%s-%s-%s"%(y,m,d))
+        self.task.set_due_date("%s-%s-%s"%(y,m+1,d))
         self.refresh_editor()
     
     def day_selected_double(self,widget) :

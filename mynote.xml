@@ -47,13 +47,15 @@ delete
 			Due date
 		</title>
 		<duedate>
-			2008-10-09
+			2008-11-22
 		</duedate>
 		<content>
 			- fermer automatiquement si on clique en dehors du calendar
+- L'afficher dans le treeview des taches actives
+
+Done:
 - permettre de le modifier dans l'éditeur de tâches
 - le sauver dans le XML
-- L'afficher dans le treeview des taches actives
 		</content>
 	</task>
 	<task id="16" status="Active">
@@ -63,7 +65,7 @@ delete
 		<content>
 			faut avoir des listes à puces, un boutton pour rajouter une sous-tâche
 
-Comment indiquer le parent ?
+Comment indiquer le parent ? hein ?
 		</content>
 	</task>
 	<task id="19" status="Active">
