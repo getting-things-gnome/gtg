@@ -5,7 +5,7 @@ import string
 
 #This class represent a task in GTG.
 class Task :
-    def __init__(self, pid, ze_id) :
+    def __init__(self, ze_id) :
         #the id of this task in the project
         #tid is a string ! (we have to choose a type and stick to it)
         self.tid = str(ze_id)
@@ -17,16 +17,14 @@ class Task :
         self.done_date = None
         self.due_date = None
         self.start_date = None
-        self.pid = pid
         
-    def set_project(self,proj) :
-        self.pid = proj
-    
-    def get_project(self) :
-        return self.pid
+    def set_project(self,pid) :
+        tid = self.get_id()
+        result = tid.split('@')
+        self.tid = "%s@%s" %(result[0],pid)
                 
     def get_id(self) :
-        return self.tid
+        return str(self.tid)
         
     def get_title(self) :
         return self.title
@@ -94,12 +92,19 @@ class Project :
         self.name = name
         self.list = {}
         self.sync_func = None
+        self.pid = None
+        
+    def set_pid(self,pid) :
+        self.pid = pid 
+        for tid in self.list_tasks() :
+            t = self.get_task(tid)
+            t.set_project(pid)
+        
+    def get_pid(self) :
+        return self.pid
     
     def set_name(self,name) :
         self.name = name
-        for tid in self.list_tasks() :
-            t = self.get_task(tid)
-            t.set_project(name)
     
     def get_name(self) :
         return self.name
@@ -127,7 +132,6 @@ class Project :
             
         
     def get_task(self,ze_id) :
-        print self.get_name()
         return self.list[str(ze_id)]
         
     def add_task(self,task) :
@@ -148,9 +152,12 @@ class Project :
     
     def __free_tid(self) :
         k = 0
-        while self.list.has_key(str(k)) :
+        pid = self.get_pid()
+        kk = "%s@%s" %(k,pid)
+        while self.list.has_key(str(kk)) :
             k += 1
-        return str(k)
+            kk = "%s@%s" %(k,pid)
+        return str(kk)
         
     #This is a callback. The "sync" function has to be set
     def set_sync_func(self,sync) :

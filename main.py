@@ -72,14 +72,16 @@ class Base:
         backend2 = Backend("bert.xml")
         project1 = backend1.get_project()
         project2 = backend2.get_project()
+        project1.set_pid(1)
+        project2.set_pid(2)
         name1 = project1.get_name()
         name2 = project2.get_name()
         #We add the sync function for project
         project1.set_sync_func(backend1.sync_project)
         self.projects = {}
-        self.projects[name1] = [backend1, project1]
+        self.projects['1'] = [backend1, project1]
         project2.set_sync_func(backend2.sync_project)
-        self.projects[name2] = [backend2, project2]
+        self.projects['2'] = [backend2, project2]
         
     def main(self):
         #Here we will define the main TaskList interface
@@ -159,13 +161,13 @@ class Base:
     #Else, we create a new one.
     def open_task(self,task) :
         t = task
-        tid = t.get_id()
-        pid = t.get_project()
-        uid = "%s@%s"%(tid,pid)
+        uid = t.get_id()
+        tid,pid = uid.split('@')
         if self.opened_task.has_key(uid) :
             self.opened_task[uid].present()
         else :
-            backend = self.projects[t.get_project()][0]
+            print self.projects
+            backend = self.projects[pid][0]
             t.set_sync_func(backend.sync_task)
             tv = TaskEditor(t,self.refresh_list,self.on_delete_task,self.close_task)
             #registering as opened
@@ -179,7 +181,10 @@ class Base:
     def on_add_task(self,widget) :
         #We have to select the project to which we should add a task
         selected_proj,sel_task = self.get_selected_task()
-        task = self.projects[selected_proj][1].new_task()
+        #TODO : what if multiple projects are selected ?
+        #Currently, we take the first one
+        p = selected_proj[0]
+        task = self.projects[p][1].new_task()
         self.open_task(task)
     
     def get_selected_task(self) :
@@ -189,10 +194,10 @@ class Base:
         p_selected = self.project_tview.get_selection()
         pmodel, p_iter = p_selected.get_selected()
         if p_iter :
-            pid = self.project_ts.get_value(p_iter, 0)
+            pid = [self.project_ts.get_value(p_iter, 0)]
         #If no selection, we display all
         else :
-            pid = self.projects.keys()[0] 
+            pid = self.projects.keys() 
         tid = None
         # Get the selection in the gtk.TreeView
         selection = self.task_tview.get_selection()
@@ -210,8 +215,11 @@ class Base:
         
     def on_edit_task(self,widget,row=None ,col=None) :
         pid,tid = self.get_selected_task()
+        #TODO : what if multiple projects are selected ?
+        #Currently, we take the first one
+        p = pid[0]
         if tid :
-            zetask = self.projects[pid][1].get_task(tid)
+            zetask = self.projects[p][1].get_task(tid)
             self.open_task(zetask)
      
     #if we pass a tid as a parameter, we delete directly
@@ -226,7 +234,11 @@ class Base:
         #If we don't have a parameter, then take the selection in the treeview
         if not tid :
             #tid_to_delete is a [project,task] tuple
-            self.tid_todelete = self.get_selected_task()
+            pid, t = self.get_selected_task()
+            #TODO : what if multiple projects are selected ?
+            #Currently, we take the first one
+            p = pid[0]
+            self.projects[p].get_task
         else :
             self.tid_todelete = tid
         #We must at least have something to delete !
