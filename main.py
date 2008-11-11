@@ -99,7 +99,12 @@ class Base:
         self.projects['2'] = [backend2, project2]
         
     def __add_active_column(self,name,value) :
-        pass
+        col2 = gtk.TreeViewColumn(name)
+        col2.pack_start(self.cell)
+        col2.set_resizable(True)        
+        col2.set_sort_column_id(value)
+        col2.set_attributes(self.cell, markup=value)
+        self.task_tview.append_column(col2)
         
     def main(self):
         #Here we will define the main TaskList interface
@@ -129,12 +134,7 @@ class Base:
         col.set_attributes(self.cell, markup=1)
         col.add_attribute(self.cellBool, 'active', 3)
         self.task_tview.append_column(col)
-        col2 = gtk.TreeViewColumn("Due date")
-        col2.pack_start(self.cell)
-        col2.set_resizable(True)        
-        col2.set_sort_column_id(2)
-        col2.set_attributes(self.cell, markup=2)
-        self.task_tview.append_column(col2)
+        self.__add_active_column("Due date",2)
         self.task_ts = gtk.TreeStore(gobject.TYPE_PYOBJECT, str, str, bool)
         self.task_tview.set_model(self.task_ts)
         self.task_ts.set_sort_column_id(self.c_title, gtk.SORT_ASCENDING)
