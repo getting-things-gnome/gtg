@@ -22,23 +22,24 @@ class TaskEditor :
         self.cal_tree = gtk.glade.XML(self.gladefile, "calendar")
         #Create our dictionay and connect it
         dic = {
-                "mark_as_done_clicked"       : self.change_status,
+                "mark_as_done_clicked"  : self.change_status,
                 "delete_clicked"        : self.delete_task,
-                "on_duedate_pressed"    : self.on_duedate_pressed
+                "on_duedate_pressed"    : self.on_duedate_pressed,
+                "close_clicked"         : self.close
               }
         self.wTree.signal_autoconnect(dic)
         cal_dic = {
-                "on_nodate" :   self.nodate_pressed,
-                "on_dayselected" : self.day_selected,
+                "on_nodate"             : self.nodate_pressed,
+                "on_dayselected"        : self.day_selected,
                 "on_dayselected_double" : self.day_selected_double,
-                "on_focus_out" :    self.on_focus_out
+                "on_focus_out"          : self.on_focus_out
         }
         self.cal_tree.signal_autoconnect(cal_dic)
-        self.window = self.wTree.get_widget("TaskEditor")
-        self.textview = self.wTree.get_widget("textview")
-        self.calendar = self.cal_tree.get_widget("calendar")
+        self.window         = self.wTree.get_widget("TaskEditor")
+        self.textview       = self.wTree.get_widget("textview")
+        self.calendar       = self.cal_tree.get_widget("calendar")
         self.duedate_widget = self.wTree.get_widget("duedate_entry")
-        self.dayleft_label = self.wTree.get_widget("dayleft")
+        self.dayleft_label  = self.wTree.get_widget("dayleft")
         
         #We will intercept the "Escape" button
         accelgroup = gtk.AccelGroup()
@@ -49,7 +50,7 @@ class TaskEditor :
      
         self.task = task
         self.refresh = refresh_callback
-        self.delete = delete_callback
+        self.delete  = delete_callback
         self.closing = close_callback
         self.buff = gtk.TextBuffer()
         texte = self.task.get_text()
@@ -61,8 +62,9 @@ class TaskEditor :
         #We use the tag table (tag are defined here but set in self.modified)
         table = self.buff.get_tag_table()
         #tag test for title
-        title_tag = self.buff.create_tag("title",foreground="#12F",scale=1.3,underline=1)
-        title_tag.set_property("pixels-below-lines",13)
+        title_tag = self.buff.create_tag("title",foreground="#12F",scale=1.6,underline=1)
+        title_tag.set_property("pixels-above-lines",10)
+        title_tag.set_property("pixels-below-lines",10)
         #start = self.buff.get_start_iter()
         end = self.buff.get_end_iter()
         #We have to find a way to keep this tag for the first line
@@ -124,7 +126,7 @@ class TaskEditor :
                 txt = "Due for yesterday"
             elif result < 0 :
                 txt = "Was %s days ago" %result
-            self.dayleft_label.set_text(txt) 
+            self.dayleft_label.set_markup("<span color='#666666'>"+txt+"</span>") 
                 
         else :
             self.dayleft_label.set_text('')
