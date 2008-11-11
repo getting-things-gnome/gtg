@@ -52,7 +52,8 @@ class Backend :
                 cur_id = "%s" %t.getAttribute("id")
                 cur_stat = "%s" %t.getAttribute("status")
                 cur_task = Task(cur_id)
-                cur_task.set_status(cur_stat)
+                donedate = self.__read_textnode(t,"donedate")
+                cur_task.set_status(cur_stat,donedate=donedate)
                 #we will fill the task with its content
                 cur_task.set_title(self.__read_textnode(t,"title"))
                 cur_task.set_text(self.__read_textnode(t,"content"))
@@ -88,6 +89,7 @@ class Backend :
             p_xml.appendChild(t_xml)
             self.__write_textnode(doc,t_xml,"title",t.get_title())
             self.__write_textnode(doc,t_xml,"duedate",t.get_due_date())
+            self.__write_textnode(doc,t_xml,"donedate",t.get_done_date())
             self.__write_textnode(doc,t_xml,"content",t.get_text())
         #it's maybe not optimal to open/close the file each time we sync
         # but I'm not sure that those operations are so frequent

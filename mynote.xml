@@ -2,8 +2,11 @@
 <project name="Lio - GTG tasks">
 	<task id="11@1" status="Done">
 		<title>
-			TaskEditor resizeing
+			Task editor resize
 		</title>
+		<donedate>
+			2008-11-11
+		</donedate>
 		<content>
 			Le texte doit s'adapter à la fenêtre et faire des &quot;faux&quot; retours à la ligne automatiquement (et s'adapter quand on redimensionne)
 C'est cool non ?
@@ -23,6 +26,9 @@ on la sauve pas !
 		<title>
 			remove tasks
 		</title>
+		<donedate>
+			2008-11-11
+		</donedate>
 		<content>
 			Press Escape or close this task to save it
 		</content>
@@ -31,6 +37,9 @@ on la sauve pas !
 		<title>
 			confirmation pour delete
 		</title>
+		<donedate>
+			2008-11-11
+		</donedate>
 		<content>
 			Le delete doit être confirmé
 		</content>
@@ -39,6 +48,9 @@ on la sauve pas !
 		<title>
 			Title en plus gros
 		</title>
+		<donedate>
+			2008-11-11
+		</donedate>
 		<content>
 			Press Escape or close this task to save it
 		</content>
@@ -47,6 +59,9 @@ on la sauve pas !
 		<title>
 			Boutton dans l'éditeur
 		</title>
+		<donedate>
+			2008-11-11
+		</donedate>
 		<content>
 			Mark as done
 delete
@@ -56,6 +71,9 @@ delete
 		<title>
 			Task editor glade
 		</title>
+		<donedate>
+			2008-11-11
+		</donedate>
 		<content>
 			Le task editor doit devenir
 un peu plus utilisable
@@ -65,6 +83,9 @@ un peu plus utilisable
 		<title>
 			Support des projets
 		</title>
+		<donedate>
+			2008-11-11
+		</donedate>
 		<content>
 			Press Escape or close this task to save it
 		</content>
@@ -82,6 +103,9 @@ permettre d'avoir un menu
 		<title>
 			Title Tag
 		</title>
+		<donedate>
+			2008-11-11
+		</donedate>
 		<content>
 			Automatiquement appliquer le tag title quand on tape.
 Voir :
@@ -94,6 +118,9 @@ http://www.pygtk.org/pygtk2tutorial/examples/testtext.py
 		<title>
 			Esc to close
 		</title>
+		<donedate>
+			2008-11-11
+		</donedate>
 		<content>
 			Esc dans l'éditeur doit le fermer e
 		</content>
@@ -102,6 +129,9 @@ http://www.pygtk.org/pygtk2tutorial/examples/testtext.py
 		<title>
 			nouvelle tache
 		</title>
+		<donedate>
+			2008-11-11
+		</donedate>
 		<content>
 			implémenter le boutton
 &quot;new task&quot;
@@ -111,6 +141,9 @@ http://www.pygtk.org/pygtk2tutorial/examples/testtext.py
 		<title>
 			Si première ligne vide
 		</title>
+		<donedate>
+			2008-11-11
+		</donedate>
 		<content>
 			Le titre est la suivante et ainsi de suite
 		</content>
@@ -119,9 +152,6 @@ http://www.pygtk.org/pygtk2tutorial/examples/testtext.py
 		<title>
 			Support des tags
 		</title>
-		<duedate>
-			2008-11-23
-		</duedate>
 		<content>
 			Pouvoir specifier des tags/contextes aux tâches, pour les trier
 		</content>
@@ -130,6 +160,9 @@ http://www.pygtk.org/pygtk2tutorial/examples/testtext.py
 		<title>
 			Hyperlink dans les tasks
 		</title>
+		<duedate>
+			2008-11-07
+		</duedate>
 		<content>
 			Voir NoteTag.cs ligne 194
 
@@ -158,6 +191,9 @@ if (hovering != hovering_on_link) {
 		<title>
 			Display tasks done
 		</title>
+		<donedate>
+			2008-11-11
+		</donedate>
 		<content>
 			Press Escape or close this task to save it
 		</content>
@@ -178,24 +214,46 @@ if (hovering != hovering_on_link) {
 		<title>
 			refresh title
 		</title>
+		<donedate>
+			2008-11-11
+		</donedate>
 		<content>
 			On doit rafraichir le title
 dans la liste quand on close
 l'éditeur
 		</content>
 	</task>
+	<task id="25@1" status="Active">
+		<title>
+			Undone also in the main window
+		</title>
+		<content>
+			If the task is marked as done, it should be undonable from the main window
+		</content>
+	</task>
 	<task id="19@1" status="Active">
 		<title>
 			Manger des frites
 		</title>
+		<duedate>
+			2008-10-03
+		</duedate>
 		<content>
 			C'est bon !
 		</content>
 	</task>
-	<task id="15@1" status="Active">
+	<task id="26@1" status="Active">
+		<title>
+			Press Escape or close this task to save it
+		</title>
+	</task>
+	<task id="15@1" status="Done">
 		<title>
 			Done date
 		</title>
+		<donedate>
+			2008-11-11
+		</donedate>
 		<content>
 			L'afficher dans le treeview des tasks Done
 		</content>
@@ -207,6 +265,9 @@ l'éditeur
 		<duedate>
 			2008-11-09
 		</duedate>
+		<donedate>
+			2008-11-11
+		</donedate>
 		<content>
 			- fermer automatiquement si on clique en dehors du calendar
 - L'afficher dans le treeview des taches actives
@@ -230,6 +291,9 @@ In fact, task list should be &quot;hideable&quot; at will and should be usable w
 		<title>
 			Ne pas ouvrir plusieurs fois la même tâche
 		</title>
+		<donedate>
+			2008-11-11
+		</donedate>
 		<content>
 			Parce que c'est pas bien
 
