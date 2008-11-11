@@ -152,9 +152,6 @@ http://www.pygtk.org/pygtk2tutorial/examples/testtext.py
 		<title>
 			Support des tags
 		</title>
-		<duedate>
-			2008-11-23
-		</duedate>
 		<content>
 			Pouvoir specifier des tags/contextes aux tâches, pour les trier
 		</content>
@@ -163,6 +160,9 @@ http://www.pygtk.org/pygtk2tutorial/examples/testtext.py
 		<title>
 			Hyperlink dans les tasks
 		</title>
+		<duedate>
+			2008-11-07
+		</duedate>
 		<content>
 			Voir NoteTag.cs ligne 194
 
@@ -221,6 +221,14 @@ if (hovering != hovering_on_link) {
 			On doit rafraichir le title
 dans la liste quand on close
 l'éditeur
+		</content>
+	</task>
+	<task id="25@1" status="Active">
+		<title>
+			Undone also in the main window
+		</title>
+		<content>
+			If the task is marked as done, it should be undonable from the main window
 		</content>
 	</task>
 	<task id="19@1" status="Active">

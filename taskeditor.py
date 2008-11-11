@@ -32,7 +32,6 @@ class TaskEditor :
                 "on_nodate"             : self.nodate_pressed,
                 "on_dayselected"        : self.day_selected,
                 "on_dayselected_double" : self.day_selected_double,
-                "on_focus_out"          : self.on_focus_out
         }
         self.cal_tree.signal_autoconnect(cal_dic)
         self.window         = self.wTree.get_widget("TaskEditor")
@@ -152,19 +151,22 @@ class TaskEditor :
         self.calendar.move((x + rect.x - cal_width + rect.width)
                                             , (y + rect.y + rect.height))
         
-        #self.calendar.grab_add()
-        #gdk.pointer_grab(self.calendar.window, True,0)
-                         #gdk.BUTTON1_MASK )
-        #print self.calendar.window.get_pointer()
+        self.calendar.grab_add()
+        #We grab the pointer in the calendar
+        gdk.pointer_grab(self.calendar.window, True,gdk.BUTTON1_MASK|gdk.MOD2_MASK)
+        #we will close the calendar if the user clic outside
+        self.calendar.connect('button-press-event', self.__focus_out)
         
-        #gdk.pointer_ungrab()
-        
-    def on_focus_out(self,a,b) :
-        #gdk.BUTTON1_MASK|gdk.BUTTON2_MASK|gdk.BUTTON3_MASK
-        event = b.get_state()
-        #print "focus_out : %s" %(event)
     
-    def __close_calendar(self,widget=None) :
+    def __focus_out(self,w=None,e=None) :
+        #We should only close if the pointer clic is out of the calendar !
+        p = self.calendar.window.get_pointer()
+        s = self.calendar.get_size()
+        if  not(0 <= p[0] <= s[0] and 0 <= p[1] <= s[1]) :
+            self.__close_calendar()
+        
+    
+    def __close_calendar(self,widget=None,e=None) :
         self.calendar.hide()
         gtk.gdk.pointer_ungrab()
         self.calendar.grab_remove()
