@@ -66,8 +66,11 @@ class Task :
             return ''
     
     def get_days_left(self) :
-        difference = self.due_date - date.today()
-        return difference.days
+        if self.due_date :
+            difference = self.due_date - date.today()
+            return difference.days
+        else :
+            return None
         
     def get_text(self) :
         #defensive programmtion to avoid returning None
