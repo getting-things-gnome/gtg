@@ -119,6 +119,9 @@ http://www.pygtk.org/pygtk2tutorial/examples/testtext.py
 		<title>
 			Support des tags
 		</title>
+		<duedate>
+			2008-11-23
+		</duedate>
 		<content>
 			Pouvoir specifier des tags/contextes aux tâches, pour les trier
 		</content>
