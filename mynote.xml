@@ -107,7 +107,7 @@ http://www.pygtk.org/pygtk2tutorial/examples/testtext.py
 &quot;new task&quot;
 		</content>
 	</task>
-	<task id="22@1" status="Active">
+	<task id="22@1" status="Done">
 		<title>
 			Si première ligne vide
 		</title>

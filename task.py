@@ -30,8 +30,12 @@ class Task :
         return self.title
     
     def set_title(self,title) :
+        #We should check for other task with the same title
+        #In that case, we should add a number (like Tomboy does)
         if title :
             self.title = title
+        else :
+            self.title = "(no title task)"
         
     def set_status(self,status) :
         if status :
