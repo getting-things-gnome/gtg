@@ -33,7 +33,7 @@ class Task :
         #We should check for other task with the same title
         #In that case, we should add a number (like Tomboy does)
         if title :
-            self.title = title
+            self.title = title.strip('\t\n')
         else :
             self.title = "(no title task)"
         
@@ -63,7 +63,7 @@ class Task :
         if self.due_date :
             return str(self.due_date)
         else :
-            return None
+            return ''
     
     def get_days_left(self) :
         difference = self.due_date - date.today()

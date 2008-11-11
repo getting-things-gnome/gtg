@@ -97,7 +97,7 @@ class TaskEditor :
                 stripped = self.buff.get_text(start,end_title).strip('\n\t ')
             self.buff.apply_tag_by_name('title', start, end_title)
             self.buff.remove_tag_by_name('title',end_title,end)
-            #title of the window 
+            #title of the window  (we obviously remove \t and \n)
             self.window.set_title(self.buff.get_text(start,end_title).strip('\n\t'))
         #Or to all the buffer if there is only one line
         else :

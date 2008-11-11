@@ -197,7 +197,7 @@ l'éditeur
 			L'afficher dans le treeview des tasks Done
 		</content>
 	</task>
-	<task id="14@1" status="Active">
+	<task id="14@1" status="Done">
 		<title>
 			Due date
 		</title>

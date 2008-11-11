@@ -98,6 +98,9 @@ class Base:
         self.projects['1'] = [backend1, project1]
         self.projects['2'] = [backend2, project2]
         
+    def __add_active_column(self,name,value) :
+        pass
+        
     def main(self):
         #Here we will define the main TaskList interface
         self.c_title=1
@@ -124,9 +127,15 @@ class Base:
         col.set_resizable(True)        
         col.set_sort_column_id(1)
         col.set_attributes(self.cell, markup=1)
-        col.add_attribute(self.cellBool, 'active', 2)
+        col.add_attribute(self.cellBool, 'active', 3)
         self.task_tview.append_column(col)
-        self.task_ts = gtk.TreeStore(gobject.TYPE_PYOBJECT, str, bool)
+        col2 = gtk.TreeViewColumn("Due date")
+        col2.pack_start(self.cell)
+        col2.set_resizable(True)        
+        col2.set_sort_column_id(2)
+        col2.set_attributes(self.cell, markup=2)
+        self.task_tview.append_column(col2)
+        self.task_ts = gtk.TreeStore(gobject.TYPE_PYOBJECT, str, str, bool)
         self.task_tview.set_model(self.task_ts)
         self.task_ts.set_sort_column_id(self.c_title, gtk.SORT_ASCENDING)
         
@@ -180,7 +189,8 @@ class Base:
             for tid in p.active_tasks() :
                 t = p.get_task(tid)
                 title = t.get_title()
-                self.task_ts.append(None,[tid,title,False])
+                duedate = t.get_due_date()
+                self.task_ts.append(None,[tid,title,duedate,False])
             #then the one with tasks already done
             for tid in p.unactive_tasks() :
                 t = p.get_task(tid)
