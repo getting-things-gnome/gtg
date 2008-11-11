@@ -55,7 +55,7 @@ class Base:
         #Get the Main Window, and connect the "destroy" event
         self.window = self.wTree.get_widget("MainWindow")
         if (self.window):
-            self.window.connect("destroy", gtk.main_quit)
+            self.window.connect("destroy", self.close)
             
         
         #self.delete_dialog.connect("destroy", self.delete_dialog.hide)
@@ -66,7 +66,7 @@ class Base:
                 "on_edit_task"      : self.on_edit_task,
                 "on_delete_task"    : self.on_delete_task,
                 "on_mark_as_done"   : self.on_mark_as_done,
-                "gtk_main_quit"     : gtk.main_quit,
+                "gtk_main_quit"     : self.close,
                 "on_select_tag" : self.on_select_tag,
                 "on_delete_confirm" : self.on_delete_confirm,
                 "on_delete_cancel" : lambda x : x.hide,
@@ -123,8 +123,9 @@ class Base:
         
         #The done/dismissed taks treeview
         self.taskdone_tview = self.wTree.get_widget("taskdone_tview")
-        self.__add_closed_column("Closed",1,checkbox=2)
-        self.taskdone_ts = gtk.TreeStore(gobject.TYPE_PYOBJECT, str, bool)
+        self.__add_closed_column("Closed",2,checkbox=1)
+        self.__add_closed_column("Done date",3)
+        self.taskdone_ts = gtk.TreeStore(gobject.TYPE_PYOBJECT, bool,str,str)
         self.taskdone_tview.set_model(self.taskdone_ts)
         self.taskdone_ts.set_sort_column_id(self.c_title, gtk.SORT_ASCENDING)
         
@@ -171,7 +172,8 @@ class Base:
             for tid in p.unactive_tasks() :
                 t = p.get_task(tid)
                 title = t.get_title()
-                self.taskdone_ts.append(None,[tid,title,False])
+                donedate = t.get_done_date()
+                self.taskdone_ts.append(None,[tid,False,title,donedate])
 
     #If a Task editor is already opened for a given task, we present it
     #Else, we create a new one.
@@ -306,6 +308,13 @@ class Base:
         col.set_sort_column_id(value)
         col.set_attributes(self.cell, markup=value)
         return col
+        
+    ######Closing the window
+    def close(self,widget=None) :
+        #Saving all projects
+        for p in self.projects :
+            self.projects[p][1].sync()
+        gtk.main_quit()
 
 #=== EXECUTION =================================================================
 

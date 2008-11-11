@@ -12,7 +12,7 @@ class Task :
         self.content = "Press Escape or close this task to save it"
         self.sync_func = None
         self.title = "My new task"
-        #available status are : Active - Done - Dismiss
+        #available status are : Active - Done - Dismiss - Deleted
         self.status = "Active"
         self.done_date = None
         self.due_date = None
@@ -37,9 +37,17 @@ class Task :
         else :
             self.title = "(no title task)"
         
-    def set_status(self,status) :
+    def set_status(self,status,donedate=None) :
         if status :
             self.status = status
+            #If Done, we set the done date
+            if status == "Done" :
+                #to the specified date (if any)
+                if donedate :
+                    self.done_date = donedate
+                #or to today
+                else : 
+                    self.done_date = date.today()
         
     def get_status(self) :
         return self.status
@@ -62,6 +70,12 @@ class Task :
     def get_due_date(self) :
         if self.due_date :
             return str(self.due_date)
+        else :
+            return ''
+            
+    def get_done_date(self) :
+        if self.done_date :
+            return str(self.done_date)
         else :
             return ''
     

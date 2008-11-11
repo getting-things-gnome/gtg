@@ -90,10 +90,11 @@ class TaskEditor :
         end = self.buff.get_end_iter()
         #Here we apply the title tag on the first line
         line_nbr = 1
-        if self.buff.get_line_count() > line_nbr :
+        linecount = self.buff.get_line_count()
+        if linecount > line_nbr :
             end_title = self.buff.get_iter_at_line(line_nbr)
             stripped = self.buff.get_text(start,end_title).strip('\n\t ')
-            while not stripped :
+            while line_nbr <= linecount and not stripped :
                 line_nbr += 1
                 end_title = self.buff.get_iter_at_line(line_nbr)
                 stripped = self.buff.get_text(start,end_title).strip('\n\t ')
