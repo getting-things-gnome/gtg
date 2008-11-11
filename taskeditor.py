@@ -89,12 +89,18 @@ class TaskEditor :
         start = self.buff.get_start_iter()
         end = self.buff.get_end_iter()
         #Here we apply the title tag on the first line
-        if self.buff.get_line_count() > 1 :
-            end_title = self.buff.get_iter_at_line(1)
+        line_nbr = 1
+        if self.buff.get_line_count() > line_nbr :
+            end_title = self.buff.get_iter_at_line(line_nbr)
+            stripped = self.buff.get_text(start,end_title).strip('\n\t ')
+            while not stripped :
+                line_nbr += 1
+                end_title = self.buff.get_iter_at_line(line_nbr)
+                stripped = self.buff.get_text(start,end_title).strip('\n\t ')
             self.buff.apply_tag_by_name('title', start, end_title)
             self.buff.remove_tag_by_name('title',end_title,end)
-            #title of the window 
-            self.window.set_title(self.buff.get_text(start,end_title))
+            #title of the window  (we obviously remove \t and \n)
+            self.window.set_title(self.buff.get_text(start,end_title).strip('\n\t'))
         #Or to all the buffer if there is only one line
         else :
             self.buff.apply_tag_by_name('title', start, end)
@@ -199,15 +205,22 @@ class TaskEditor :
         #the text buffer
         buff = self.textview.get_buffer()
         #the tag table
+        #Currently, we are not saving the tag table
         table = buff.get_tag_table()
         #we get the text
         texte = buff.get_text(buff.get_start_iter(),buff.get_end_iter())
+        
         #We should have a look at Tomboy Serialize function 
         #NoteBuffer.cs : line 1163
-        #Currently, we are not saving the tag table.
+        stripped = texte.strip(' \n\t')
         content = texte.partition('\n')
+        #We don't have an empty task
+        #We will find for the first line as the title
+        if stripped :
+            while not content[0] :
+                content = content[2].partition('\n')
         self.task.set_title(content[0])
-        self.task.set_text(content[2])
+        self.task.set_text(content[2]) 
         if self.refresh :
             self.refresh()
         self.task.sync()
