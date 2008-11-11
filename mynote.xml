@@ -109,10 +109,10 @@ http://www.pygtk.org/pygtk2tutorial/examples/testtext.py
 	</task>
 	<task id="22@1" status="Active">
 		<title>
-			My new task
+			Si première ligne vide
 		</title>
 		<content>
-			t
+			Le titre est la suivante et ainsi de suite
 		</content>
 	</task>
 	<task id="18@1" status="Active">
@@ -157,6 +157,18 @@ if (hovering != hovering_on_link) {
 		</title>
 		<content>
 			Press Escape or close this task to save it
+		</content>
+	</task>
+	<task id="24@1" status="Active">
+		<title>
+			Strike task on delete
+		</title>
+		<duedate>
+			2008-11-11
+		</duedate>
+		<content>
+			plutot que de demander confirmation, on le met striked dans le done-list (à renommer &quot;closed&quot;)
+(et on efface les deleted à la fermeture de l'application)
 		</content>
 	</task>
 	<task id="1@1" status="Done">
