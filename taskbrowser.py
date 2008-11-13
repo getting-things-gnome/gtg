@@ -18,7 +18,7 @@ from taskeditor import TaskEditor
 
 class TaskBrowser:
 
-    def __init__(self, projects):
+    def __init__(self, datastore):
         
         #Set the Glade file
         self.gladefile = "gtd-gnome.glade"  
@@ -47,7 +47,7 @@ class TaskBrowser:
               }
         self.wTree.signal_autoconnect(dic)
         
-        self.projects = projects
+        self.ds = datastore
         
     def main(self):
         #Here we will define the main TaskList interface
@@ -85,7 +85,6 @@ class TaskBrowser:
         col.set_resizable(True)        
         col.set_sort_column_id(1)
         col.set_attributes(self.cell, markup=1)
-        col.add_attribute(self.cellBool, 'active', 2)
         self.task_tview.append_column(col)
         self.task_ts = gtk.TreeStore(gobject.TYPE_PYOBJECT, str, bool)
         self.task_tview.set_model(self.task_ts)
@@ -98,7 +97,6 @@ class TaskBrowser:
         cold.set_resizable(True)        
         cold.set_sort_column_id(1)
         cold.set_attributes(self.cell, markup=1)
-        cold.add_attribute(self.cellBool, 'active', 2)
         self.taskdone_tview.append_column(cold)
         self.taskdone_ts = gtk.TreeStore(gobject.TYPE_PYOBJECT, str, bool)
         self.taskdone_tview.set_model(self.taskdone_ts)
@@ -114,11 +112,9 @@ class TaskBrowser:
         gtk.main()
         return 0
 
-    def on_add_project(self,widget) :
-        backend2 = Backend("bert.xml")
-        p    = Project("New project")
-        p.set_pid('3')
-        self.projects['3'] = [backend2, p]
+    def on_add_project(self, widget):
+        p = Project("New project")
+        self.ds.add_project(p)
         self.refresh_projects()
     
     #We double clicked on a project in the project list
@@ -128,21 +124,23 @@ class TaskBrowser:
     #We refresh the project list. Not needed very often
     def refresh_projects(self) :
         self.project_ts.clear()
-        for p_key in self.projects :
-            p = self.projects[p_key][1]
+        projects = self.ds.get_all_projects()
+        for p_key in projects :
+            p = projects[p_key][1]
             title = p.get_name()
             self.project_ts.append(None,[p_key,title])
         
     #refresh list build/refresh your TreeStore of task
-    #to keep it in sync with your self.projects   
+    #to keep it in sync with your self.ds.get_all_projects()   
     def refresh_list(self) :
         #to refresh the list we first empty it then rebuild it
         #is it acceptable to do that ?
         self.task_ts.clear()
         self.taskdone_ts.clear()
         #We display only tasks of the active projects
+        projects = self.ds.get_all_projects()
         for p_key in self.get_selected_project() :
-            p = self.projects[p_key][1]  
+            p = projects[p_key][1]  
             #we first build the active_tasks pane
             for tid in p.active_tasks() :
                 t = p.get_task(tid)
@@ -164,7 +162,7 @@ class TaskBrowser:
         else :
             #We need the pid number to get the backend
             tid,pid = uid.split('@')
-            backend = self.projects[pid][0]
+            backend = self.ds.get_all_projects()[pid][0]
             #We give to the task the callback to synchronize the list
             t.set_sync_func(backend.sync_task)
             tv = TaskEditor(t,self.refresh_list,self.on_delete_task,self.close_task)
@@ -181,7 +179,7 @@ class TaskBrowser:
         #TODO : what if multiple projects are selected ?
         #Currently, we take the first one
         p = self.get_selected_project()[0]
-        task = self.projects[p][1].new_task()
+        task = self.ds.get_all_projects()[p][1].new_task()
         self.open_task(task)
     
     #Get_selected_task returns two value :
@@ -215,13 +213,13 @@ class TaskBrowser:
             pid = [self.project_ts.get_value(p_iter, 0)]
         #If no selection, we display all
         else :
-            pid = self.projects.keys() 
+            pid = self.ds.get_all_projects().keys() 
         return pid
         
     def on_edit_task(self,widget,row=None ,col=None) :
         pid,tid = self.get_selected_task()
         if tid :
-            zetask = self.projects[pid][1].get_task(tid)
+            zetask = self.ds.get_all_projects()[pid][1].get_task(tid)
             self.open_task(zetask)
      
     #if we pass a tid as a parameter, we delete directly
@@ -229,7 +227,7 @@ class TaskBrowser:
     def on_delete_confirm(self,widget) :
         uid = self.tid_todelete
         pid = uid.split('@')[1]
-        pr = self.projects[pid][1]
+        pr = self.ds.get_all_projects()[pid][1]
         pr.delete_task(self.tid_todelete)
         self.tid_todelete = None
         self.refresh_list()
@@ -254,8 +252,8 @@ class TaskBrowser:
     def on_mark_as_done(self,widget) :
         pid,tid = self.get_selected_task()
         if tid :
-            backend = self.projects[pid][0]
-            zetask = self.projects[pid][1].get_task(tid)
+            backend = self.ds.get_all_projects()[pid][0]
+            zetask = self.ds.get_all_projects()[pid][1].get_task(tid)
             zetask.set_status("Done")
             self.refresh_list()
             backend.sync_task(tid)

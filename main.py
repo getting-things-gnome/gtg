@@ -2,7 +2,7 @@
 #
 #===============================================================================
 #
-# GTD-gnome: a gtd organizer for GNOME
+# Getting things Gnome!: a gtd-inspired organizer for GNOME
 #
 # @author : B. Rousseau, L. Dricot
 # @date   : November 2008
@@ -61,7 +61,7 @@ class Gtg:
         ds.load_data()
 
         # Launch task browser
-        tb = TaskBrowser(ds.get_all_projects())
+        tb = TaskBrowser(ds)
         tb.main()
 
         

@@ -1,11 +1,12 @@
 <?xml version="1.0" ?>
 <project name="Tasks from Bert">
-	<task id="0@2" status="Active">
+	<task id="0@2" status="Done">
 		<title>
-			My new test
+			My old test
 		</title>
 		<content>
 			Blah blah blah
+Yes, blah blah blah
 		</content>
 	</task>
 </project>

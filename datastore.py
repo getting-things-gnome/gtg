@@ -4,6 +4,7 @@ class DataStore:
         self.backends = []
         self.projects = {}
         self.tasks    = []
+        self.cur_pid  = 1
 
     def add_task(self, task):
         self.tasks.append(task)
@@ -12,20 +13,24 @@ class DataStore:
         self.tasks.remove(task)
 
     def add_project(self, project):
-        self.projects.append(project)
+        project.set_pid(self.cur_pid)
+        p = project
+        #TODO: define a policy for backend selection
+        b = self.backends[1]
+        self.projects[str(self.cur_pid)] = [b, p]
+        self.cur_pid = self.cur_pid + 1
 
     def remove_project(self, project):
-        self.projects.remove(project)
+        self.projects.pop(project.get_pid())
 
     def load_data(self):
-        i = 1
         for b in self.backends:
             p = b.get_project()
-            p.set_pid(str(i))
+            p.set_pid(str(self.cur_pid))
             p.set_sync_func(b.sync_project)
-            self.projects[str(i)] = [b, p]
+            self.projects[str(self.cur_pid)] = [b, p]
             self.tasks.append(p.list_tasks)
-            i=i+1
+            self.cur_pid=self.cur_pid+1
 
     def register_backend(self, backend):
         if backend!=None:
