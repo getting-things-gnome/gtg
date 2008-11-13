@@ -62,9 +62,12 @@ class TaskEditor :
         #We use the tag table (tag are defined here but set in self.modified)
         table = self.buff.get_tag_table()
         #tag test for title
-        title_tag = self.buff.create_tag("title",foreground="#12F",scale=1.6,underline=1)
+        title_tag = self.buff.create_tag("title",foreground="#12F",scale=1.6,underline=0)
         title_tag.set_property("pixels-above-lines",10)
         title_tag.set_property("pixels-below-lines",10)
+        #tag test for date
+        date_tag = self.buff.create_tag("date",foreground="#AAAAAA",scale=1,underline=0)
+        date_tag.set_property("pixels-below-lines",10)
         #start = self.buff.get_start_iter()
         end = self.buff.get_end_iter()
         #We have to find a way to keep this tag for the first line
@@ -100,6 +103,13 @@ class TaskEditor :
             self.buff.apply_tag_by_name('title', start, end)
             #title of the window 
             self.window.set_title(self.buff.get_text(start,end))
+
+        #Here we apply the date tag on the second line
+        if self.buff.get_line_count() > 1 :
+            start_date = self.buff.get_iter_at_line(1)
+            end_date   = self.buff.get_iter_at_line(2)
+            self.buff.apply_tag_by_name('date', start_date, end_date)
+            #self.buff.remove_tag_by_name('date',end_date,end)
                         
         #Do we want to save the text at each modification ?
         
