@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <project name="Lio - GTG tasks">
-	<task id="11@1" status="Done">
+	<task id="11@2" status="Done">
 		<title>
 			TaskEditor resizeing
 		</title>
@@ -9,7 +9,7 @@
 C'est cool non ?
 		</content>
 	</task>
-	<task id="8@1" status="Active">
+	<task id="8@2" status="Active">
 		<title>
 			do not save by default
 		</title>
@@ -19,7 +19,7 @@ on la sauve pas !
 (ou bien si elle est vide)
 		</content>
 	</task>
-	<task id="10@1" status="Done">
+	<task id="10@2" status="Done">
 		<title>
 			remove tasks
 		</title>
@@ -27,15 +27,7 @@ on la sauve pas !
 			Press Escape or close this task to save it
 		</content>
 	</task>
-	<task id="6@1" status="Done">
-		<title>
-			confirmation pour delete
-		</title>
-		<content>
-			Le delete doit être confirmé
-		</content>
-	</task>
-	<task id="13@1" status="Done">
+	<task id="13@2" status="Done">
 		<title>
 			Title en plus gros
 		</title>
@@ -43,16 +35,15 @@ on la sauve pas !
 			Press Escape or close this task to save it
 		</content>
 	</task>
-	<task id="12@1" status="Done">
+	<task id="6@2" status="Done">
 		<title>
-			Boutton dans l'éditeur
+			confirmation pour delete
 		</title>
 		<content>
-			Mark as done
-delete
+			Le delete doit être confirmé
 		</content>
 	</task>
-	<task id="7@1" status="Done">
+	<task id="7@2" status="Done">
 		<title>
 			Task editor glade
 		</title>
@@ -61,7 +52,16 @@ delete
 un peu plus utilisable
 		</content>
 	</task>
-	<task id="20@1" status="Done">
+	<task id="12@2" status="Done">
+		<title>
+			Boutton dans l'éditeur
+		</title>
+		<content>
+			Mark as done
+delete
+		</content>
+	</task>
+	<task id="20@2" status="Done">
 		<title>
 			Support des projets
 		</title>
@@ -69,7 +69,7 @@ un peu plus utilisable
 			Press Escape or close this task to save it
 		</content>
 	</task>
-	<task id="4@1" status="Active">
+	<task id="4@2" status="Active">
 		<title>
 			Right clic
 		</title>
@@ -77,7 +77,7 @@ un peu plus utilisable
 			Right clic sur les tâches doit permettre d'avoir un menu
 		</content>
 	</task>
-	<task id="21@1" status="Done">
+	<task id="21@2" status="Done">
 		<title>
 			Title Tag
 		</title>
@@ -89,7 +89,7 @@ http://www.pygtk.org/pygtk2tutorial/sec-TextTagsAndTextTagTables.html#sec-TextTa
 http://www.pygtk.org/pygtk2tutorial/examples/testtext.py
 		</content>
 	</task>
-	<task id="5@1" status="Done">
+	<task id="5@2" status="Done">
 		<title>
 			Esc to close
 		</title>
@@ -97,7 +97,15 @@ http://www.pygtk.org/pygtk2tutorial/examples/testtext.py
 			Esc dans l'éditeur doit le fermer e
 		</content>
 	</task>
-	<task id="2@1" status="Done">
+	<task id="22@2" status="Active">
+		<title>
+			My new task
+		</title>
+		<content>
+			t
+		</content>
+	</task>
+	<task id="2@2" status="Done">
 		<title>
 			nouvelle tache
 		</title>
@@ -106,15 +114,7 @@ http://www.pygtk.org/pygtk2tutorial/examples/testtext.py
 &quot;new task&quot;
 		</content>
 	</task>
-	<task id="22@1" status="Active">
-		<title>
-			My new task
-		</title>
-		<content>
-			t
-		</content>
-	</task>
-	<task id="18@1" status="Active">
+	<task id="18@2" status="Active">
 		<title>
 			Support des tags
 		</title>
@@ -122,7 +122,16 @@ http://www.pygtk.org/pygtk2tutorial/examples/testtext.py
 			Pouvoir specifier des tags/contextes aux tâches, pour les trier
 		</content>
 	</task>
-	<task id="23@1" status="Active">
+	<task id="3@2" status="Active">
+		<title>
+			Undone
+		</title>
+		<content>
+			When a &quot;done&quot; task is selected The &quot;Mark as done&quot; should change to &quot;Undone&quot;
+(also in the task editor)
+		</content>
+	</task>
+	<task id="23@2" status="Active">
 		<title>
 			Hyperlink dans les tasks
 		</title>
@@ -141,16 +150,7 @@ if (hovering != hovering_on_link) {
 					win.Cursor = normal_cursor;
 		</content>
 	</task>
-	<task id="3@1" status="Active">
-		<title>
-			Undone
-		</title>
-		<content>
-			When a &quot;done&quot; task is selected The &quot;Mark as done&quot; should change to &quot;Undone&quot;
-(also in the task editor)
-		</content>
-	</task>
-	<task id="0@1" status="Done">
+	<task id="0@2" status="Done">
 		<title>
 			Display tasks done
 		</title>
@@ -158,7 +158,7 @@ if (hovering != hovering_on_link) {
 			Press Escape or close this task to save it
 		</content>
 	</task>
-	<task id="24@1" status="Active">
+	<task id="24@2" status="Active">
 		<title>
 			My new task
 		</title>
@@ -166,7 +166,7 @@ if (hovering != hovering_on_link) {
 			Press Escape or close this task to save it
 		</content>
 	</task>
-	<task id="1@1" status="Done">
+	<task id="1@2" status="Done">
 		<title>
 			refresh title
 		</title>
@@ -176,15 +176,7 @@ dans la liste quand on close
 l'éditeur
 		</content>
 	</task>
-	<task id="25@1" status="Active">
-		<title>
-			My new task
-		</title>
-		<content>
-			Press Escape or close this task to save it
-		</content>
-	</task>
-	<task id="19@1" status="Active">
+	<task id="19@2" status="Active">
 		<title>
 			Manger des frites
 		</title>
@@ -192,7 +184,15 @@ l'éditeur
 			C'est bon !
 		</content>
 	</task>
-	<task id="15@1" status="Active">
+	<task id="25@2" status="Active">
+		<title>
+			My new task
+		</title>
+		<content>
+			Press Escape or close this task to save it
+		</content>
+	</task>
+	<task id="15@2" status="Active">
 		<title>
 			Done date
 		</title>
@@ -200,7 +200,7 @@ l'éditeur
 			L'afficher dans le treeview des tasks Done
 		</content>
 	</task>
-	<task id="14@1" status="Active">
+	<task id="14@2" status="Active">
 		<title>
 			Due date
 		</title>
@@ -216,17 +216,7 @@ Done:
 - le sauver dans le XML
 		</content>
 	</task>
-	<task id="17@1" status="Active">
-		<title>
-			refactor main.py
-		</title>
-		<content>
-			We should really separate the management of the task editor and the main task list.
-
-In fact, task list should be &quot;hideable&quot; at will and should be usable with any task editor
-		</content>
-	</task>
-	<task id="9@1" status="Done">
+	<task id="9@2" status="Done">
 		<title>
 			Ne pas ouvrir plusieurs fois la même tâche
 		</title>
@@ -236,7 +226,17 @@ In fact, task list should be &quot;hideable&quot; at will and should be usable w
 gtk.window.present() peut nous aider !
 		</content>
 	</task>
-	<task id="16@1" status="Active">
+	<task id="17@2" status="Active">
+		<title>
+			refactor main.py
+		</title>
+		<content>
+			We should really separate the management of the task editor and the main task list.
+
+In fact, task list should be &quot;hideable&quot; at will and should be usable with any task editor
+		</content>
+	</task>
+	<task id="16@2" status="Active">
 		<title>
 			child task
 		</title>

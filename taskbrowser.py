@@ -1,5 +1,6 @@
 #=== IMPORT ====================================================================
 #system imports
+import os
 import pygtk
 pygtk.require('2.0')
 import gtk
@@ -11,7 +12,7 @@ import datetime, time, sys
 #our own imports
 from task import Task, Project
 from taskeditor import TaskEditor
-from project_ui import NewProjectDialog
+from project_ui import ProjectEditDialog
 
 #=== OBJECTS ===================================================================
 
@@ -29,7 +30,8 @@ class TaskBrowser:
         self.window = self.wTree.get_widget("MainWindow")
         if (self.window):
             self.window.connect("destroy", gtk.main_quit)
-            
+
+        self.popup = self.wTree.get_widget("ProjectContextMenu")
         
         #self.delete_dialog.connect("destroy", self.delete_dialog.hide)
 
@@ -44,7 +46,11 @@ class TaskBrowser:
                 "on_select_tag"       : self.on_select_tag,
                 "on_delete_confirm"   : self.on_delete_confirm,
                 "on_delete_cancel"    : lambda x : x.hide,
-                "on_project_selected" : self.on_project_selected
+                "on_project_selected" : self.on_project_selected,
+                "on_treeview_button_press_event" : self.on_treeview_button_press_event,
+                "on_edit_item_activate"     : self.on_edit_item_activate,
+                "on_delete_item_activate" : self.on_delete_item_activate
+
               }
         self.wTree.signal_autoconnect(dic)
         
@@ -114,9 +120,26 @@ class TaskBrowser:
         return 0
 
     def on_add_project(self, widget):
-        pd = NewProjectDialog(self.ds)
+        pd = ProjectEditDialog(self.ds)
         pd.set_on_close_cb(self.refresh_projects)
         pd.main()
+
+    def on_edit_item_activate(self, widget):
+        ppid = self.get_selected_project()[0]
+        p  = self.ds.get_project_with_pid(ppid)[1]
+        pd = ProjectEditDialog(self.ds, p)
+        pd.set_on_close_cb(self.refresh_projects)
+        pd.main()
+
+    def on_delete_item_activate(self, widget):
+        ppid = self.get_selected_project()[0]
+        b  = self.ds.get_project_with_pid(ppid)[0]
+        p  = self.ds.get_project_with_pid(ppid)[1]
+        self.ds.remove_project(p)
+        self.ds.unregister_backend(b)
+        fn = b.get_filename()
+        os.remove(fn)
+        self.refresh_projects()
     
     #We double clicked on a project in the project list
     def on_project_selected(self,widget,row,col) :
@@ -174,6 +197,19 @@ class TaskBrowser:
     def close_task(self,tid) :
         if self.opened_task.has_key(tid) :
             del self.opened_task[tid]
+
+    def on_treeview_button_press_event(self, treeview, event):
+        if event.button == 3:
+            x = int(event.x)
+            y = int(event.y)
+            time = event.time
+            pthinfo = treeview.get_path_at_pos(x, y)
+            if pthinfo is not None:
+                path, col, cellx, celly = pthinfo
+                treeview.grab_focus()
+                treeview.set_cursor( path, col, 0)
+                self.popup.popup( None, None, None, event.button, time)
+            return 1        
             
     def on_add_task(self,widget) :
         #We have to select the project to which we should add a task

@@ -13,7 +13,7 @@ class DataStore:
         self.tasks.remove(task)
 
     def add_project(self, project, backend):
-        project.set_pid(self.cur_pid)
+        project.set_pid(str(self.cur_pid))
         p = project
         b = backend
         self.projects[str(self.cur_pid)] = [b, p]
@@ -47,6 +47,9 @@ class DataStore:
 
     def get_all_projects(self):
         return self.projects
+
+    def get_project_with_pid(self, pid):
+        return self.projects[pid]
 
     def get_projects_for_query(self):
         pass

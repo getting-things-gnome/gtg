@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Sat Nov 15 11:44:39 2008 -->
+<!--Generated with glade3 3.4.5 on Sat Nov 15 16:39:07 2008 -->
 <glade-interface>
   <requires lib="gnome"/>
   <widget class="GtkWindow" id="MainWindow">
@@ -152,7 +152,7 @@
           <widget class="GtkHPaned" id="hpaned1">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="position">220</property>
+            <property name="position">300</property>
             <property name="position_set">True</property>
             <child>
               <widget class="GtkVBox" id="vbox3">
@@ -161,6 +161,7 @@
                   <widget class="GtkTreeView" id="project_tview">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <signal name="button_press_event" handler="on_treeview_button_press_event"/>
                     <signal name="row_activated" handler="on_project_selected"/>
                   </widget>
                 </child>
@@ -567,7 +568,7 @@ Are you sure you to want delete this task ?</property>
       </widget>
     </child>
   </widget>
-  <widget class="GtkWindow" id="NewProjectDialog">
+  <widget class="GtkWindow" id="ProjectEditDialog">
     <child>
       <widget class="GtkVBox" id="vbox6">
         <property name="visible">True</property>
@@ -655,6 +656,27 @@ Are you sure you to want delete this task ?</property>
             <property name="position">3</property>
           </packing>
         </child>
+      </widget>
+    </child>
+  </widget>
+  <widget class="GtkMenu" id="ProjectContextMenu">
+    <property name="visible">True</property>
+    <child>
+      <widget class="GtkImageMenuItem" id="edit_item">
+        <property name="visible">True</property>
+        <property name="label" translatable="yes">gtk-edit</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">True</property>
+        <signal name="activate" handler="on_edit_item_activate"/>
+      </widget>
+    </child>
+    <child>
+      <widget class="GtkImageMenuItem" id="delete_item">
+        <property name="visible">True</property>
+        <property name="label" translatable="yes">gtk-delete</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">True</property>
+        <signal name="activate" handler="on_delete_item_activate"/>
       </widget>
     </child>
   </widget>
