@@ -95,10 +95,7 @@ un peu plus utilisable
 			Right clic
 		</title>
 		<content>
-			The link tik
-The link test
-The link test
-Right clic sur les tâches doit 
+			Right clic sur les tâches doit 
 permettre d'avoir un menu
 		</content>
 	</task>
@@ -156,7 +153,7 @@ http://www.pygtk.org/pygtk2tutorial/examples/testtext.py
 			Support des tags
 		</title>
 		<content>
-			The link testPouvoir specifier des tags/contextes aux tâches, pour les trier
+			Pouvoir specifier des tags/contextes aux tâches, pour les trier
 		</content>
 	</task>
 	<task id="23@1" status="Active">
@@ -167,7 +164,7 @@ http://www.pygtk.org/pygtk2tutorial/examples/testtext.py
 			2008-11-07
 		</duedate>
 		<content>
-			The link testVoir NoteTag.cs ligne 194
+			 NoteTag.cs ligne 194
 
 Et pour le curseur voir Watchers.cs ligne 1094 :
 

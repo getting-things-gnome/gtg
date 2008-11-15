@@ -57,7 +57,8 @@ class TaskEditor :
         title = self.task.get_title()
         #the first line is the title
         self.buff.set_text("%s\n"%title)
-        self.insert_with_anchor("The link test\n","http://fritalk.com")
+        #How to insert a link ? 
+        #self.insert_with_anchor("Fritalk link\n","http://fritalk.com")
         
         ##########Tag we will use #######
         #We use the tag table (tag are defined here but set in self.modified)
@@ -95,7 +96,7 @@ class TaskEditor :
         if anchor is None:
             anchor = text
 
-        tag = self.buff.create_tag(None)
+        tag = self.buff.create_tag(None,foreground="blue",underline=1)
         tag.set_property("background","red")
         tag.set_data('is_anchor', True)
         tag.connect('event', self._tag_event, text, anchor)
