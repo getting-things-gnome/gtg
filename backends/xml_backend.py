@@ -26,6 +26,9 @@ class Backend :
             f = open(self.zefile, mode='a+')
             f.write(doc.toxml().encode("utf-8"))
             f.close()
+
+    def get_filename(self):
+        return self.zefile
      
     #Those two functions are there only to be able to read prettyXML
     #Source : http://yumenokaze.free.fr/?/Informatique/Snipplet/Python/cleandom       
@@ -60,6 +63,9 @@ class Backend :
                 #adding task to the project
                 self.project.add_task(cur_task)
         return self.project
+
+    def set_project(self, project):
+        self.project = project
     
     #This is a method to read the textnode of the XML
     def __read_textnode(self,node,title) :

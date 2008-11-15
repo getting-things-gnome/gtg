@@ -11,6 +11,7 @@ import datetime, time, sys
 #our own imports
 from task import Task, Project
 from taskeditor import TaskEditor
+from project_ui import NewProjectDialog
 
 #=== OBJECTS ===================================================================
 
@@ -113,9 +114,9 @@ class TaskBrowser:
         return 0
 
     def on_add_project(self, widget):
-        p = Project("New project")
-        self.ds.add_project(p)
-        self.refresh_projects()
+        pd = NewProjectDialog(self.ds)
+        pd.set_on_close_cb(self.refresh_projects)
+        pd.main()
     
     #We double clicked on a project in the project list
     def on_project_selected(self,widget,row,col) :
@@ -261,8 +262,4 @@ class TaskBrowser:
     def on_select_tag(self, widget, row=None ,col=None) :
         print "to implement"
 
-#=== EXECUTION =================================================================
 
-if __name__ == "__main__":
-    base = Base()
-    base.main()

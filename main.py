@@ -24,7 +24,7 @@
 #=============================================================================== 
 
 #=== IMPORT ====================================================================
-import sys
+import sys, os, xml.dom.minidom
 
 #our own imports
 from task import Task, Project
@@ -41,30 +41,69 @@ from xml_backend import Backend
 
 class Gtg:
 
+    CONFIG_FILE = "config.xml"
+
     def __init__(self):        
-        self.projects = [] 
-        
+        self.projects = []
+    
     def main(self):
 
+        backends_fn = []
+        backends = []
+
         # Read configuration
-        # TODO: implement configuration storage (gconf?)
+        if os.path.exists(self.CONFIG_FILE) :
+            f = open(self.CONFIG_FILE,mode='r')
+            # sanitize the pretty XML
+            doc=xml.dom.minidom.parse(self.CONFIG_FILE)
+            self.__cleanDoc(doc,"\t","\n")
+            self.__xmlproject = doc.getElementsByTagName("backend")
+            for xp in self.__xmlproject:
+                backends_fn.append(str(xp.getAttribute("filename")))
+            f.close()
+        else:
+            print "No config file found!"
 
         # Create & init backends
-        # TODO: implement generic (configuration-dependent) code
-        backend1 = Backend("mynote.xml")
-        backend2 = Backend("bert.xml")
+        for b in backends_fn:
+            backends.append(Backend(b))
 
         # Load data store
         ds = DataStore()
-        ds.register_backend(backend1)
-        ds.register_backend(backend2)
+        for b in backends:
+            ds.register_backend(b)
         ds.load_data()
 
         # Launch task browser
         tb = TaskBrowser(ds)
         tb.main()
 
-        
+        # save configuration
+        s = "<?xml version=\"1.0\" ?><config>\n"
+        for b in ds.get_all_backends():
+            s = s + "\t<backend filename=\"%s\"/>\n" % b.get_filename()
+        s = s + "</config>\n"
+        f = open(self.CONFIG_FILE,mode='w')
+        f.write(s)
+        f.close()
+
+    #Those two functions are there only to be able to read prettyXML
+    #Source : http://yumenokaze.free.fr/?/Informatique/Snipplet/Python/cleandom       
+    def __cleanDoc(self,document,indent="",newl=""):
+        node=document.documentElement
+        self.__cleanNode(node,indent,newl)
+ 
+    def __cleanNode(self,currentNode,indent,newl):
+        filter=indent+newl
+        if currentNode.hasChildNodes:
+            for node in currentNode.childNodes:
+                if node.nodeType == 3 :
+                    node.nodeValue = node.nodeValue.lstrip(filter).strip(filter)
+                    if node.nodeValue == "":
+                        currentNode.removeChild(node)
+            for node in currentNode.childNodes:
+                self.__cleanNode(node,indent,newl)
+
 
 #=== EXECUTION =================================================================
 

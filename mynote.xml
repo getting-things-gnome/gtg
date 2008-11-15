@@ -158,6 +158,14 @@ if (hovering != hovering_on_link) {
 			Press Escape or close this task to save it
 		</content>
 	</task>
+	<task id="24@1" status="Active">
+		<title>
+			My new task
+		</title>
+		<content>
+			Press Escape or close this task to save it
+		</content>
+	</task>
 	<task id="1@1" status="Done">
 		<title>
 			refresh title
@@ -166,6 +174,14 @@ if (hovering != hovering_on_link) {
 			On doit rafraichir le title
 dans la liste quand on close
 l'éditeur
+		</content>
+	</task>
+	<task id="25@1" status="Active">
+		<title>
+			My new task
+		</title>
+		<content>
+			Press Escape or close this task to save it
 		</content>
 	</task>
 	<task id="19@1" status="Active">

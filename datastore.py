@@ -12,11 +12,10 @@ class DataStore:
     def remove_task(self, task):
         self.tasks.remove(task)
 
-    def add_project(self, project):
+    def add_project(self, project, backend):
         project.set_pid(self.cur_pid)
         p = project
-        #TODO: define a policy for backend selection
-        b = self.backends[1]
+        b = backend
         self.projects[str(self.cur_pid)] = [b, p]
         self.cur_pid = self.cur_pid + 1
 
@@ -51,3 +50,6 @@ class DataStore:
 
     def get_projects_for_query(self):
         pass
+
+    def get_all_backends(self):
+        return self.backends
