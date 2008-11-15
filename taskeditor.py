@@ -104,6 +104,7 @@ class TaskEditor :
 
         
     #Function that will transform the cursor if we are above a link
+    #A lot of code was stolen here : http://trac.atzm.org/index.cgi/wiki/PyGTK
     def _motion(self, view, ev):
         window = ev.window
         x, y, _ = window.get_pointer()
@@ -127,7 +128,7 @@ class TaskEditor :
             button = ev.button
             cursor = gtk.gdk.Cursor(gtk.gdk.HAND2)
             if _type == gtk.gdk.BUTTON_RELEASE:
-                print "anchor clicked"
+                print "anchor clicked : %s" %anchor
                 #self.textview.emit('anchor-clicked', text, anchor, button)
                 #self.textview.__set_anchor(ev.window, tag, cursor, self.get_property('hover'))
             elif button in [1, 2]:
