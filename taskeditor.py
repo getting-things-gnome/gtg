@@ -192,13 +192,14 @@ class TaskEditor :
                 line = start_line.get_slice(end_line)
                 #Python 2.5 should allow both tests in one
                 if line.startswith('-') or line.startswith(' -') :
-                    #line = line.lstrip(' -')
+                    line = line.lstrip(' -')
                     #From Tomboy : ('\u2022\u2218\u2023')
                     #bullet = '%s%s%s' %(unichr(2022),unichr(2218),unichr(2023))
                     bullet = unichr(2192)
                     newline = '%s%s' %(bullet,line)
+                    newline.encode('utf-8')
                     self.buff.delete(start_line,end_line)
-                    #self.buff.insert(start_line,newline)
+                    self.buff.insert(start_line,newline)
     
     def refresh_editor(self) :
         #title of the window 
