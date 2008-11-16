@@ -156,13 +156,16 @@ http://www.pygtk.org/pygtk2tutorial/examples/testtext.py
 			Pouvoir specifier des tags/contextes aux tâches, pour les trier
 		</content>
 	</task>
-	<task id="23@1" status="Active">
+	<task id="23@1" status="Done">
 		<title>
 			Hyperlink dans les tasks
 		</title>
 		<duedate>
 			2008-11-07
 		</duedate>
+		<donedate>
+			2008-11-15
+		</donedate>
 		<content>
 			 NoteTag.cs ligne 194
 
@@ -183,7 +186,7 @@ if (hovering != hovering_on_link) {
 			Undone
 		</title>
 		<content>
-			When a &quot;done&quot; task is selected The &quot;Mark as done&quot; should change to &quot;Undone&quot;
+			When a &quot;done&quot; task is selected The &quot;Mark as done&quot; should change to &quot;Undone&quot; 
 (also in the task editor)
 		</content>
 	</task>
@@ -242,10 +245,21 @@ l'éditeur
 			C'est bon !
 		</content>
 	</task>
-	<task id="26@1" status="Active">
+	<task id="26@1" status="Done">
 		<title>
 			Press Escape or close this task to save it
 		</title>
+		<donedate>
+			2008-11-15
+		</donedate>
+	</task>
+	<task id="27@1" status="Active">
+		<title>
+			Start date
+		</title>
+		<content>
+			Mettre notre propre widget pour le startdate et ajouter le support de start date dans l'interface principale
+		</content>
 	</task>
 	<task id="15@1" status="Done">
 		<title>
