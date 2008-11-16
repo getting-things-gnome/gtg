@@ -80,6 +80,9 @@ class TaskEditor :
         self.modi_signal = self.buff.connect("modified_changed",self._modified)
         #The signal emitted each time we move the mouse in the text view window
         self.textview.connect('motion-notify-event', self._motion)
+        #pas l'air de fonctionner celui-la
+        #self.textview.connect('insert-at-cursor',self._insert_at_cursor)
+        self.buff.connect('insert-text',self._insert_at_cursor)
 
         
         self.textview.set_buffer(self.buff)
@@ -132,8 +135,8 @@ class TaskEditor :
                 print "anchor clicked : %s" %anchor
                 #self.textview.emit('anchor-clicked', text, anchor, button)
                 #self.textview.__set_anchor(ev.window, tag, cursor, self.get_property('hover'))
-            elif button in [1, 2]:
-                pass
+            #elif button in [1, 2]:
+                #pass
                 #self.__set_anchor(ev.window, tag, cursor, self.get_property('active'))
 
     def __tag_reset(self, tag, window):
@@ -154,6 +157,7 @@ class TaskEditor :
         line_nbr = 1
         linecount = self.buff.get_line_count()
         if linecount > line_nbr :
+            #Applying title on the first line
             end_title = self.buff.get_iter_at_line(line_nbr)
             stripped = self.buff.get_text(start,end_title).strip('\n\t ')
             while line_nbr <= linecount and not stripped :
@@ -174,6 +178,27 @@ class TaskEditor :
         
         #Ok, we took care of the modification
         self.buff.set_modified(False)
+        
+    def _insert_at_cursor(self,tv,itera,tex,leng) :
+        #New line : the user pressed enter !
+        if tex == '\n' :
+            #The nbr just before the \n
+            line_nbr = itera.get_line()
+            start_line = itera.copy()
+            start_line.set_line(line_nbr)
+            end_line = itera.copy()
+            #We add a bullet list but not on the first line
+            if line_nbr > 0 :
+                line = start_line.get_slice(end_line)
+                #Python 2.5 should allow both tests in one
+                if line.startswith('-') or line.startswith(' -') :
+                    #line = line.lstrip(' -')
+                    #From Tomboy : ('\u2022\u2218\u2023')
+                    #bullet = '%s%s%s' %(unichr(2022),unichr(2218),unichr(2023))
+                    bullet = unichr(2192)
+                    newline = '%s%s' %(bullet,line)
+                    self.buff.delete(start_line,end_line)
+                    #self.buff.insert(start_line,newline)
     
     def refresh_editor(self) :
         #title of the window 
