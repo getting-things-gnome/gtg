@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import sys, time, os
 import string, threading
 from task import Task
@@ -67,6 +69,10 @@ class TaskEditor :
         title_tag = self.buff.create_tag("title",foreground="#12F",scale=1.6,underline=1)
         title_tag.set_property("pixels-above-lines",10)
         title_tag.set_property("pixels-below-lines",10)
+        #Tag higligt
+        fluo_tag = self.buff.create_tag("fluo",background="#F0F")
+        #Bullet tag
+        bullet_tag = self.buff.create_tag("bullet",scale=1.6)
         #start = self.buff.get_start_iter()
         end = self.buff.get_end_iter()
         #We have to find a way to keep this tag for the first line
@@ -100,7 +106,7 @@ class TaskEditor :
             anchor = text
 
         tag = self.buff.create_tag(None,foreground="blue",underline=1)
-        tag.set_property("background","red")
+        #tag.set_property("background","red")
         tag.set_data('is_anchor', True)
         tag.connect('event', self._tag_event, text, anchor)
         self.__tags.append(tag)
@@ -195,11 +201,35 @@ class TaskEditor :
                     line = line.lstrip(' -')
                     #From Tomboy : ('\u2022\u2218\u2023')
                     #bullet = '%s%s%s' %(unichr(2022),unichr(2218),unichr(2023))
-                    bullet = unichr(2192)
-                    newline = '%s%s' %(bullet,line)
+                    #FIXME : we should insert the correct UTF-8 code
+                    bullet =' ↪ '
+                    newline = '%s\n' %(line)
                     newline.encode('utf-8')
-                    self.buff.delete(start_line,end_line)
-                    self.buff.insert(start_line,newline)
+                    starts = self.buff.get_iter_at_line(line_nbr)
+                    ends = starts.copy()
+                    ends.forward_line()
+                    #self.buff.apply_tag_by_name('fluo',starts,ends)
+                    self.buff.delete(starts,ends)
+                    starts = self.buff.get_iter_at_line(line_nbr)
+                    ends = starts.copy()
+                    ends.forward_line()
+                    #Inserting the bullet
+                    self.buff.insert(starts,bullet)
+                    starts = self.buff.get_iter_at_line(line_nbr)
+                    ends = starts.copy()
+                    ends.forward_line()
+                    self.buff.apply_tag_by_name("bullet",starts,ends)
+                    #Inserting the name of the subtask as a link
+                    #TODO : anchor = get_task_by_title(newline)
+                    anchor = "1@1"
+                    starts = self.buff.get_iter_at_line(line_nbr)
+                    ends = starts.copy()
+                    ends.forward_line()
+                    self.insert_with_anchor(newline,anchor,_iter=ends)
+                    #We must stop the signal because if not,
+                    #\n will be inserted twice !
+                    tv.emit_stop_by_name('insert-text')
+                    return True
     
     def refresh_editor(self) :
         #title of the window 
