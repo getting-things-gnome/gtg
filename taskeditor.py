@@ -62,122 +62,19 @@ class TaskEditor :
         self.refresh = refresh_callback
         self.delete  = delete_callback
         self.closing = close_callback
-#        self.buff = gtk.TextBuffer()
-        self.__tags = []
         texte = self.task.get_text()
         title = self.task.get_title()
         #the first line is the title
         self.textview.set_text("%s\n"%title)
-        #How to insert a link ? 
-        #self.insert_with_anchor("Fritalk link\n","http://fritalk.com")
-        
-#        ##########Tag we will use #######
-#        #We use the tag table (tag are defined here but set in self.modified)
-#        table = self.buff.get_tag_table()
-#        #tag test for title
-#        title_tag = self.buff.create_tag("title",foreground="#12F",scale=1.6,underline=1)
-#        title_tag.set_property("pixels-above-lines",10)
-#        title_tag.set_property("pixels-below-lines",10)
-#        #Tag higligt
-#        fluo_tag = self.buff.create_tag("fluo",background="#F0F")
-#        #Bullet tag
-#        bullet_tag = self.buff.create_tag("bullet",scale=1.6)
-#        #start = self.buff.get_start_iter()
-##        end = self.buff.get_end_iter()
-#        #We have to find a way to keep this tag for the first line
-#        #Even when the task is edited
-        
         #we insert the rest of the task
         if texte : 
             self.textview.append("%s"%texte)
-    
-#        #The signal emitted each time the buffer is modified
-#        self.modi_signal = self.buff.connect("modified_changed",self._modified)
-#        self.buff.connect('insert-text',self._insert_at_cursor)
-
-        
-#        self.textview.set_buffer(self.buff)
+            
         self.window.connect("destroy", self.close)
         self.refresh_editor()
 
         self.window.show()
-#        self.buff.set_modified(False)
-        
-#    #The buffer was modified, let reflect this
-#    def _modified(self,a=None) :
-#        start = self.buff.get_start_iter()
-#        end = self.buff.get_end_iter()
-#        #Here we apply the title tag on the first line
-#        line_nbr = 1
-#        linecount = self.buff.get_line_count()
-#        if linecount > line_nbr :
-#            #Applying title on the first line
-#            end_title = self.buff.get_iter_at_line(line_nbr)
-#            stripped = self.buff.get_text(start,end_title).strip('\n\t ')
-#            while line_nbr <= linecount and not stripped :
-#                line_nbr += 1
-#                end_title = self.buff.get_iter_at_line(line_nbr)
-#                stripped = self.buff.get_text(start,end_title).strip('\n\t ')
-#            self.buff.apply_tag_by_name('title', start, end_title)
-#            self.buff.remove_tag_by_name('title',end_title,end)
-#            #title of the window  (we obviously remove \t and \n)
-#            self.window.set_title(self.buff.get_text(start,end_title).strip('\n\t'))
-#        #Or to all the buffer if there is only one line
-#        else :
-#            self.buff.apply_tag_by_name('title', start, end)
-#            #title of the window 
-#            self.window.set_title(self.buff.get_text(start,end))
-#                        
-#        #Do we want to save the text at each modification ?
-#        
-#        #Ok, we took care of the modification
-#        self.buff.set_modified(False)
-#        
-#    def _insert_at_cursor(self,tv,itera,tex,leng) :
-#        #New line : the user pressed enter !
-#        if tex == '\n' :
-#            #The nbr just before the \n
-#            line_nbr = itera.get_line()
-#            start_line = itera.copy()
-#            start_line.set_line(line_nbr)
-#            end_line = itera.copy()
-#            #We add a bullet list but not on the first line
-#            if line_nbr > 0 :
-#                line = start_line.get_slice(end_line)
-#                #Python 2.5 should allow both tests in one
-#                if line.startswith('-') or line.startswith(' -') :
-#                    line = line.lstrip(' -')
-#                    #From Tomboy : ('\u2022\u2218\u2023')
-#                    #bullet = '%s%s%s' %(unichr(2022),unichr(2218),unichr(2023))
-#                    #FIXME : we should insert the correct UTF-8 code
-#                    bullet =' ↪ '
-#                    newline = '%s\n' %(line)
-#                    newline.encode('utf-8')
-#                    starts = self.buff.get_iter_at_line(line_nbr)
-#                    ends = starts.copy()
-#                    ends.forward_line()
-#                    #self.buff.apply_tag_by_name('fluo',starts,ends)
-#                    self.buff.delete(starts,ends)
-#                    starts = self.buff.get_iter_at_line(line_nbr)
-#                    ends = starts.copy()
-#                    ends.forward_line()
-#                    #Inserting the bullet
-#                    self.buff.insert(starts,bullet)
-#                    starts = self.buff.get_iter_at_line(line_nbr)
-#                    ends = starts.copy()
-#                    ends.forward_line()
-#                    self.buff.apply_tag_by_name("bullet",starts,ends)
-#                    #Inserting the name of the subtask as a link
-#                    #TODO : anchor = get_task_by_title(newline)
-#                    anchor = "1@1"
-#                    starts = self.buff.get_iter_at_line(line_nbr)
-#                    ends = starts.copy()
-#                    ends.forward_line()
-#                    self.textview.insert_with_anchor(newline,anchor,_iter=ends)
-#                    #We must stop the signal because if not,
-#                    #\n will be inserted twice !
-#                    tv.emit_stop_by_name('insert-text')
-#                    return True
+
     
     def refresh_editor(self,title=None) :
         #title of the window 
