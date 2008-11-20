@@ -11,6 +11,7 @@
 #   main.py contains the main GTK interface for the tasklist
 #   task.py contains the implementation of a task and a project
 #   taskeditor contains the GTK interface for task editing
+#       (it's the window you see when writing a task)
 #   backends/xml_backend.py is the way to store tasks and project in XML
 #
 #   tid stand for "Task ID"
