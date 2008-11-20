@@ -91,7 +91,7 @@ class TaskEditor :
         #The signal emitted each time the buffer is modified
         self.modi_signal = self.buff.connect("modified_changed",self._modified)
         #The signal emitted each time we move the mouse in the text view window
-        self.textview.connect('motion-notify-event', self._motion)
+#        self.textview.connect('motion-notify-event', self._motion)
         #pas l'air de fonctionner celui-la
         #self.textview.connect('insert-at-cursor',self._insert_at_cursor)
         self.buff.connect('insert-text',self._insert_at_cursor)
@@ -104,62 +104,62 @@ class TaskEditor :
         self.window.show()
         self.buff.set_modified(False)
     
-    #Insert a link (anchor) in the textview
-    def insert_with_anchor(self, text, anchor=None, _iter=None):
-        if _iter is None:
-            _iter = self.buff.get_end_iter()
-        if anchor is None:
-            anchor = text
+#    #Insert a link (anchor) in the textview
+#    def insert_with_anchor(self, text, anchor=None, _iter=None):
+#        if _iter is None:
+#            _iter = self.buff.get_end_iter()
+#        if anchor is None:
+#            anchor = text
 
-        tag = self.buff.create_tag(None,foreground="blue",underline=1)
-        #tag.set_property("background","red")
-        tag.set_data('is_anchor', True)
-        tag.connect('event', self._tag_event, text, anchor)
-        self.__tags.append(tag)
-        self.buff.insert_with_tags(_iter, text, tag)
+#        tag = self.buff.create_tag(None,foreground="blue",underline=1)
+#        #tag.set_property("background","red")
+#        tag.set_data('is_anchor', True)
+#        tag.connect('event', self._tag_event, text, anchor)
+#        self.__tags.append(tag)
+#        self.buff.insert_with_tags(_iter, text, tag)
 
         
-    #Function that will transform the cursor if we are above a link
-    #A lot of code was stolen here : http://trac.atzm.org/index.cgi/wiki/PyGTK
-    def _motion(self, view, ev):
-        window = ev.window
-        x, y, _ = window.get_pointer()
-        x, y = view.window_to_buffer_coords(gtk.TEXT_WINDOW_TEXT, x, y)
-        tags = view.get_iter_at_location(x, y).get_tags()
-        for tag in tags:
-            if tag.get_data('is_anchor'):
-                for t in set(self.__tags) - set([tag]):
-                    self.__tag_reset(t, window)
-                self.__set_anchor(window, tag, gtk.gdk.Cursor(gtk.gdk.HAND2),None)
-                break
-        else:
-            tag_table = self.textview.get_buffer().get_tag_table()
-            tag_table.foreach(self.__tag_reset, window)
-            
-    def _tag_event(self, tag, view, ev, _iter, text, anchor):
-        _type = ev.type
-        if _type == gtk.gdk.MOTION_NOTIFY:
-            return
-        elif _type in [gtk.gdk.BUTTON_PRESS, gtk.gdk.BUTTON_RELEASE]:
-            button = ev.button
-            cursor = gtk.gdk.Cursor(gtk.gdk.HAND2)
-            if _type == gtk.gdk.BUTTON_RELEASE:
-                print "anchor clicked : %s" %anchor
-                #self.textview.emit('anchor-clicked', text, anchor, button)
-                #self.textview.__set_anchor(ev.window, tag, cursor, self.get_property('hover'))
-            #elif button in [1, 2]:
-                #pass
-                #self.__set_anchor(ev.window, tag, cursor, self.get_property('active'))
+#    #Function that will transform the cursor if we are above a link
+#    #A lot of code was stolen here : http://trac.atzm.org/index.cgi/wiki/PyGTK
+#    def _motion(self, view, ev):
+#        window = ev.window
+#        x, y, _ = window.get_pointer()
+#        x, y = view.window_to_buffer_coords(gtk.TEXT_WINDOW_TEXT, x, y)
+#        tags = view.get_iter_at_location(x, y).get_tags()
+#        for tag in tags:
+#            if tag.get_data('is_anchor'):
+#                for t in set(self.__tags) - set([tag]):
+#                    self.__tag_reset(t, window)
+#                self.__set_anchor(window, tag, gtk.gdk.Cursor(gtk.gdk.HAND2),None)
+#                break
+#        else:
+#            tag_table = self.textview.get_buffer().get_tag_table()
+#            tag_table.foreach(self.__tag_reset, window)
+#            
+#    def _tag_event(self, tag, view, ev, _iter, text, anchor):
+#        _type = ev.type
+#        if _type == gtk.gdk.MOTION_NOTIFY:
+#            return
+#        elif _type in [gtk.gdk.BUTTON_PRESS, gtk.gdk.BUTTON_RELEASE]:
+#            button = ev.button
+#            cursor = gtk.gdk.Cursor(gtk.gdk.HAND2)
+#            if _type == gtk.gdk.BUTTON_RELEASE:
+#                print "anchor clicked : %s" %anchor
+#                #self.textview.emit('anchor-clicked', text, anchor, button)
+#                #self.textview.__set_anchor(ev.window, tag, cursor, self.get_property('hover'))
+#            #elif button in [1, 2]:
+#                #pass
+#                #self.__set_anchor(ev.window, tag, cursor, self.get_property('active'))
 
-    def __tag_reset(self, tag, window):
-        if tag.get_data('is_anchor'):
-            self.__set_anchor(window, tag, None, None)
+#    def __tag_reset(self, tag, window):
+#        if tag.get_data('is_anchor'):
+#            self.__set_anchor(window, tag, None, None)
 
-    def __set_anchor(self, window, tag, cursor, prop):
-        window.set_cursor(cursor)
-        if prop :
-            for key, val in prop.iteritems():
-                tag.set_property(key, val)
+#    def __set_anchor(self, window, tag, cursor, prop):
+#        window.set_cursor(cursor)
+#        if prop :
+#            for key, val in prop.iteritems():
+#                tag.set_property(key, val)
         
     #The buffer was modified, let reflect this
     def _modified(self,a=None) :
@@ -231,7 +231,7 @@ class TaskEditor :
                     starts = self.buff.get_iter_at_line(line_nbr)
                     ends = starts.copy()
                     ends.forward_line()
-                    self.insert_with_anchor(newline,anchor,_iter=ends)
+                    self.textview.insert_with_anchor(newline,anchor,_iter=ends)
                     #We must stop the signal because if not,
                     #\n will be inserted twice !
                     tv.emit_stop_by_name('insert-text')

@@ -191,7 +191,7 @@ if (hovering != hovering_on_link) {
 			When a &quot;done&quot; task is selected The &quot;Mark as done&quot; should change to &quot;Undone&quot; 
 (also in the task editor)
 
- ↪ ez
+ ↪ eza
 
 		</content>
 	</task>
@@ -250,6 +250,14 @@ l'éditeur
 			C'est bon !
 		</content>
 	</task>
+	<task id="29@1" status="Active">
+		<title>
+			Sauver le style
+		</title>
+		<content>
+			sauver les tags dans le XML
+		</content>
+	</task>
 	<task id="26@1" status="Done">
 		<title>
 			Press Escape or close this task to save it
@@ -294,6 +302,14 @@ l'éditeur
 Done:
 - permettre de le modifier dans l'éditeur de tâches
 - le sauver dans le XML
+		</content>
+	</task>
+	<task id="28@1" status="Active">
+		<title>
+			Pointeur devient souris
+		</title>
+		<content>
+			après hover sur un lien alors qu'il devrait redevenir un truc d'insertion (ce qu'il redevient après avoir taper du texte)
 		</content>
 	</task>
 	<task id="17@1" status="Active">
