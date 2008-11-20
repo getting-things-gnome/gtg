@@ -62,46 +62,46 @@ class TaskEditor :
         self.refresh = refresh_callback
         self.delete  = delete_callback
         self.closing = close_callback
-        self.buff = gtk.TextBuffer()
+#        self.buff = gtk.TextBuffer()
         self.__tags = []
         texte = self.task.get_text()
         title = self.task.get_title()
         #the first line is the title
-        self.buff.set_text("%s\n"%title)
+        self.textview.set_text("%s\n"%title)
         #How to insert a link ? 
         #self.insert_with_anchor("Fritalk link\n","http://fritalk.com")
         
-        ##########Tag we will use #######
-        #We use the tag table (tag are defined here but set in self.modified)
-        table = self.buff.get_tag_table()
-        #tag test for title
-        title_tag = self.buff.create_tag("title",foreground="#12F",scale=1.6,underline=1)
-        title_tag.set_property("pixels-above-lines",10)
-        title_tag.set_property("pixels-below-lines",10)
-        #Tag higligt
-        fluo_tag = self.buff.create_tag("fluo",background="#F0F")
-        #Bullet tag
-        bullet_tag = self.buff.create_tag("bullet",scale=1.6)
-        #start = self.buff.get_start_iter()
-        end = self.buff.get_end_iter()
-        #We have to find a way to keep this tag for the first line
-        #Even when the task is edited
+#        ##########Tag we will use #######
+#        #We use the tag table (tag are defined here but set in self.modified)
+#        table = self.buff.get_tag_table()
+#        #tag test for title
+#        title_tag = self.buff.create_tag("title",foreground="#12F",scale=1.6,underline=1)
+#        title_tag.set_property("pixels-above-lines",10)
+#        title_tag.set_property("pixels-below-lines",10)
+#        #Tag higligt
+#        fluo_tag = self.buff.create_tag("fluo",background="#F0F")
+#        #Bullet tag
+#        bullet_tag = self.buff.create_tag("bullet",scale=1.6)
+#        #start = self.buff.get_start_iter()
+##        end = self.buff.get_end_iter()
+#        #We have to find a way to keep this tag for the first line
+#        #Even when the task is edited
         
         #we insert the rest of the task
         if texte : 
-            self.buff.insert(end,"%s"%texte)
+            self.textview.append("%s"%texte)
     
 #        #The signal emitted each time the buffer is modified
 #        self.modi_signal = self.buff.connect("modified_changed",self._modified)
 #        self.buff.connect('insert-text',self._insert_at_cursor)
 
         
-        self.textview.set_buffer(self.buff)
+#        self.textview.set_buffer(self.buff)
         self.window.connect("destroy", self.close)
         self.refresh_editor()
 
         self.window.show()
-        self.buff.set_modified(False)
+#        self.buff.set_modified(False)
         
 #    #The buffer was modified, let reflect this
 #    def _modified(self,a=None) :

@@ -32,15 +32,33 @@ class HyperTextView(gtk.TextView):
 
     def __init__(self, buffer=None):
         gtk.TextView.__init__(self, buffer)
+        self.buff = self.get_buffer()
+        #Buffer init
+        #self.buff.set_text("%s\n"%title)
+        
         self.link   = {'background': 'white', 'foreground': 'blue', 
                                     'underline': pango.UNDERLINE_SINGLE}
         self.active = {'background': 'light gray', 'foreground': 'red', 
                                     'underline': pango.UNDERLINE_SINGLE}
         self.hover  = {'background': 'light gray', 'foreground': 'blue', 
                                     'underline': pango.UNDERLINE_SINGLE}
+        ##########Tag we will use #######
+        #We use the tag table (tag are defined here but set in self.modified)
+        table = self.buff.get_tag_table()
+        #tag test for title
+        title_tag = self.buff.create_tag("title",foreground="#12F",scale=1.6,underline=1)
+        title_tag.set_property("pixels-above-lines",10)
+        title_tag.set_property("pixels-below-lines",10)
+        #Tag higligt
+        fluo_tag = self.buff.create_tag("fluo",background="#F0F")
+        #Bullet tag
+        bullet_tag = self.buff.create_tag("bullet",scale=1.6)
+        #start = self.buff.get_start_iter()
+        end = self.buff.get_end_iter()
+        #We have to find a way to keep this tag for the first line
+        #Even when the task is edited
 
         self.__tags = []
-        self.buff = self.get_buffer()
         
         #Callback to refresh the editor window
         self.refresh = None
@@ -55,11 +73,18 @@ class HyperTextView(gtk.TextView):
         self.set_wrap_mode(gtk.WRAP_WORD)
         self.set_editable(True)
         self.set_cursor_visible(True)
-        
+        self.buff.set_modified(False)
     
     def refresh_callback(self,funct) :
         self.refresh = funct
-        
+    
+    #Buffer related functions
+    def set_text(self,stri) :
+        self.buff.set_text(stri)
+    
+    def append(self,stri) :
+        end = self.buff.get_end_iter()
+        self.buff.insert(end,stri)
         
         #The buffer was modified, let reflect this
     def _modified(self,a=None) :

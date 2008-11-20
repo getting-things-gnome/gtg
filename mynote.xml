@@ -190,6 +190,7 @@ if (hovering != hovering_on_link) {
 		<content>
 			When a &quot;done&quot; task is selected The &quot;Mark as done&quot; should change to &quot;Undone&quot; 
 (also in the task editor)
+
 		</content>
 	</task>
 	<task id="0@1" status="Done">
