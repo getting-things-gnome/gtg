@@ -97,6 +97,8 @@ un peu plus utilisable
 		<content>
 			Right clic sur les tâches doit 
 permettre d'avoir un menu
+ ↪ 
+ ↪ ee az
 		</content>
 	</task>
 	<task id="21@1" status="Done">
@@ -201,6 +203,14 @@ if (hovering != hovering_on_link) {
 			Press Escape or close this task to save it
 		</content>
 	</task>
+	<task id="30@1" status="Active">
+		<title>
+			My new task
+		</title>
+		<content>
+			Press Escape or close this task to save it
+		</content>
+	</task>
 	<task id="24@1" status="Active">
 		<title>
 			Strike task on delete
@@ -243,6 +253,14 @@ l'éditeur
 		</duedate>
 		<content>
 			C'est bon !
+		</content>
+	</task>
+	<task id="29@1" status="Active">
+		<title>
+			Sauver le style
+		</title>
+		<content>
+			sauver les tags dans le XML
 		</content>
 	</task>
 	<task id="26@1" status="Done">
@@ -289,6 +307,14 @@ l'éditeur
 Done:
 - permettre de le modifier dans l'éditeur de tâches
 - le sauver dans le XML
+		</content>
+	</task>
+	<task id="28@1" status="Active">
+		<title>
+			Pointeur devient souris
+		</title>
+		<content>
+			après hover sur un lien alors qu'il devrait redevenir un truc d'insertion (ce qu'il redevient après avoir taper du texte)
 		</content>
 	</task>
 	<task id="17@1" status="Active">
