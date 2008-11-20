@@ -203,14 +203,6 @@ if (hovering != hovering_on_link) {
 			Press Escape or close this task to save it
 		</content>
 	</task>
-	<task id="30@1" status="Active">
-		<title>
-			My new task
-		</title>
-		<content>
-			Press Escape or close this task to save it
-		</content>
-	</task>
 	<task id="24@1" status="Active">
 		<title>
 			Strike task on delete

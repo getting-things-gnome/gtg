@@ -1,15 +1,24 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-#This is a class take originally from http://trac.atzm.org/index.cgi/wiki/PyGTK
+#This is a class taken originally from http://trac.atzm.org/index.cgi/wiki/PyGTK
+#It was in Japanese and I didn't understood anything but the code.
 
 #This class implement a gtk.TextView but with many other features like hyperlink
+#others stuffs special for GTG
+#
+#For your information, a gtkTextView always contains a gtk.TextBuffer which
+#Contains the text. Ours is called self.buff (how original !)
+#
+#The Taskview should not be called anywhere else than in the taskeditor !
+#As a rule of thumb, the taskview should not have any logic (so no link 
+#to Tasks/Projects or whatever)
 
 import gtk
 import gobject
 import pango
 
-class HyperTextView(gtk.TextView):
+class TaskView(gtk.TextView):
     __gtype_name__ = 'HyperTextView'
     __gsignals__ = {'anchor-clicked': (gobject.SIGNAL_RUN_LAST, None, (str, str, int))}
     __gproperties__ = {
@@ -67,26 +76,48 @@ class HyperTextView(gtk.TextView):
         self.connect('motion-notify-event', self._motion)
         self.connect('focus-out-event', lambda w, e: self.get_buffer().get_tag_table().foreach(self.__tag_reset, e.window))
         #The signal emitted each time the buffer is modified
-        self.modi_signal = self.buff.connect("modified_changed",self._modified)
+        self.buff.connect("modified_changed",self._modified)
         self.buff.connect('insert-text',self._insert_at_cursor)
-        #All the typical properties
+        
+        #All the typical properties of our textview
         self.set_wrap_mode(gtk.WRAP_WORD)
         self.set_editable(True)
         self.set_cursor_visible(True)
         self.buff.set_modified(False)
     
+    #This function is called to refresh the editor 
+    #Specially when we change the title
     def refresh_callback(self,funct) :
         self.refresh = funct
     
     #Buffer related functions
+    #This set the text of the buffer (and replace any existing one)
     def set_text(self,stri) :
         self.buff.set_text(stri)
-    
-    def append(self,stri) :
-        end = self.buff.get_end_iter()
-        self.buff.insert(end,stri)
+    #This append text at the end of the buffer
+    def insert(self, text, _iter=None):
+        if _iter is None:
+            _iter = self.buff.get_end_iter()
+        self.buff.insert(_iter, text)
+
+    def insert_with_anchor(self, text, anchor=None, _iter=None):
+        b = self.get_buffer()
+        if _iter is None:
+            _iter = b.get_end_iter()
+        if anchor is None:
+            anchor = text
+
+        tag = b.create_tag(None, **self.get_property('link'))
+        tag.set_data('is_anchor', True)
+        tag.connect('event', self._tag_event, text, anchor)
+        self.__tags.append(tag)
+        b.insert_with_tags(_iter, text, tag)
         
-        #The buffer was modified, let reflect this
+########### Private function ####################
+        
+    #The buffer was modified, let reflect this
+    # 1. Apply the title style on the first line
+    # 2. Change the name of the window if title change
     def _modified(self,a=None) :
         start = self.buff.get_start_iter()
         end = self.buff.get_end_iter()
@@ -97,6 +128,8 @@ class HyperTextView(gtk.TextView):
             #Applying title on the first line
             end_title = self.buff.get_iter_at_line(line_nbr)
             stripped = self.buff.get_text(start,end_title).strip('\n\t ')
+            #Here we ignore lines that are blank
+            #Title is the first written line
             while line_nbr <= linecount and not stripped :
                 line_nbr += 1
                 end_title = self.buff.get_iter_at_line(line_nbr)
@@ -105,7 +138,6 @@ class HyperTextView(gtk.TextView):
             self.buff.remove_tag_by_name('title',end_title,end)
             #title of the window  (we obviously remove \t and \n)
             self.refresh(self.buff.get_text(start,end_title).strip('\n\t'))
-            #self.window.set_title(self.buff.get_text(start,end_title).strip('\n\t'))
         #Or to all the buffer if there is only one line
         else :
             self.buff.apply_tag_by_name('title', start, end)
@@ -117,9 +149,11 @@ class HyperTextView(gtk.TextView):
         
         #Ok, we took care of the modification
         self.buff.set_modified(False)
-        
+    
+    #Function called each time the user input a letter   
     def _insert_at_cursor(self,tv,itera,tex,leng) :
         #New line : the user pressed enter !
+        #If the line begins with "-", it's a new subtask !
         if tex == '\n' :
             #The nbr just before the \n
             line_nbr = itera.get_line()
@@ -127,8 +161,10 @@ class HyperTextView(gtk.TextView):
             start_line.set_line(line_nbr)
             end_line = itera.copy()
             #We add a bullet list but not on the first line
+            #Because it's the title
             if line_nbr > 0 :
                 line = start_line.get_slice(end_line)
+                #the "-" might be after a space
                 #Python 2.5 should allow both tests in one
                 if line.startswith('-') or line.startswith(' -') :
                     line = line.lstrip(' -')
@@ -164,25 +200,7 @@ class HyperTextView(gtk.TextView):
                     tv.emit_stop_by_name('insert-text')
                     return True
 
-    def insert(self, text, _iter=None):
-        b = self.get_buffer()
-        if _iter is None:
-            _iter = b.get_end_iter()
-        b.insert(_iter, text)
-
-    def insert_with_anchor(self, text, anchor=None, _iter=None):
-        b = self.get_buffer()
-        if _iter is None:
-            _iter = b.get_end_iter()
-        if anchor is None:
-            anchor = text
-
-        tag = b.create_tag(None, **self.get_property('link'))
-        tag.set_data('is_anchor', True)
-        tag.connect('event', self._tag_event, text, anchor)
-        self.__tags.append(tag)
-        b.insert_with_tags(_iter, text, tag)
-
+    #The mouse is moving. We must change it to a hand when hovering a link
     def _motion(self, view, ev):
         window = ev.window
         x, y, _ = window.get_pointer()
@@ -198,6 +216,7 @@ class HyperTextView(gtk.TextView):
             tag_table = self.get_buffer().get_tag_table()
             tag_table.foreach(self.__tag_reset, window)
 
+    #We clicked on a link
     def _tag_event(self, tag, view, ev, _iter, text, anchor):
         _type = ev.type
         if _type == gtk.gdk.MOTION_NOTIFY:
@@ -221,5 +240,5 @@ class HyperTextView(gtk.TextView):
         for key, val in prop.iteritems():
             tag.set_property(key, val)
 
-gobject.type_register(HyperTextView)
+gobject.type_register(TaskView)
 
