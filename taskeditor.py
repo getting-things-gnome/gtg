@@ -3,6 +3,7 @@
 import sys, time, os
 import string, threading
 from task import Task
+from taskview import HyperTextView
 
 try:
     import pygtk
@@ -37,7 +38,12 @@ class TaskEditor :
         }
         self.cal_tree.signal_autoconnect(cal_dic)
         self.window         = self.wTree.get_widget("TaskEditor")
-        self.textview       = self.wTree.get_widget("textview")
+        textview = self.wTree.get_widget("textview")
+        scrolled = self.wTree.get_widget("scrolledtask")
+        scrolled.remove(textview)
+        self.textview       = HyperTextView()
+        self.textview.show()
+        scrolled.add(self.textview)
         self.calendar       = self.cal_tree.get_widget("calendar")
         self.duedate_widget = self.wTree.get_widget("duedate_entry")
         self.dayleft_label  = self.wTree.get_widget("dayleft")
