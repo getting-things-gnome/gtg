@@ -38,12 +38,15 @@ class TaskEditor :
         }
         self.cal_tree.signal_autoconnect(cal_dic)
         self.window         = self.wTree.get_widget("TaskEditor")
+        #Removing the Normal textview to replace it by our own
         textview = self.wTree.get_widget("textview")
         scrolled = self.wTree.get_widget("scrolledtask")
         scrolled.remove(textview)
         self.textview       = HyperTextView()
         self.textview.show()
+        self.textview.refresh_callback(self.refresh_editor)
         scrolled.add(self.textview)
+        #Voila! it's done
         self.calendar       = self.cal_tree.get_widget("calendar")
         self.duedate_widget = self.wTree.get_widget("duedate_entry")
         self.dayleft_label  = self.wTree.get_widget("dayleft")
@@ -88,13 +91,9 @@ class TaskEditor :
         if texte : 
             self.buff.insert(end,"%s"%texte)
     
-        #The signal emitted each time the buffer is modified
-        self.modi_signal = self.buff.connect("modified_changed",self._modified)
-        #The signal emitted each time we move the mouse in the text view window
-#        self.textview.connect('motion-notify-event', self._motion)
-        #pas l'air de fonctionner celui-la
-        #self.textview.connect('insert-at-cursor',self._insert_at_cursor)
-        self.buff.connect('insert-text',self._insert_at_cursor)
+#        #The signal emitted each time the buffer is modified
+#        self.modi_signal = self.buff.connect("modified_changed",self._modified)
+#        self.buff.connect('insert-text',self._insert_at_cursor)
 
         
         self.textview.set_buffer(self.buff)
@@ -103,143 +102,89 @@ class TaskEditor :
 
         self.window.show()
         self.buff.set_modified(False)
+        
+#    #The buffer was modified, let reflect this
+#    def _modified(self,a=None) :
+#        start = self.buff.get_start_iter()
+#        end = self.buff.get_end_iter()
+#        #Here we apply the title tag on the first line
+#        line_nbr = 1
+#        linecount = self.buff.get_line_count()
+#        if linecount > line_nbr :
+#            #Applying title on the first line
+#            end_title = self.buff.get_iter_at_line(line_nbr)
+#            stripped = self.buff.get_text(start,end_title).strip('\n\t ')
+#            while line_nbr <= linecount and not stripped :
+#                line_nbr += 1
+#                end_title = self.buff.get_iter_at_line(line_nbr)
+#                stripped = self.buff.get_text(start,end_title).strip('\n\t ')
+#            self.buff.apply_tag_by_name('title', start, end_title)
+#            self.buff.remove_tag_by_name('title',end_title,end)
+#            #title of the window  (we obviously remove \t and \n)
+#            self.window.set_title(self.buff.get_text(start,end_title).strip('\n\t'))
+#        #Or to all the buffer if there is only one line
+#        else :
+#            self.buff.apply_tag_by_name('title', start, end)
+#            #title of the window 
+#            self.window.set_title(self.buff.get_text(start,end))
+#                        
+#        #Do we want to save the text at each modification ?
+#        
+#        #Ok, we took care of the modification
+#        self.buff.set_modified(False)
+#        
+#    def _insert_at_cursor(self,tv,itera,tex,leng) :
+#        #New line : the user pressed enter !
+#        if tex == '\n' :
+#            #The nbr just before the \n
+#            line_nbr = itera.get_line()
+#            start_line = itera.copy()
+#            start_line.set_line(line_nbr)
+#            end_line = itera.copy()
+#            #We add a bullet list but not on the first line
+#            if line_nbr > 0 :
+#                line = start_line.get_slice(end_line)
+#                #Python 2.5 should allow both tests in one
+#                if line.startswith('-') or line.startswith(' -') :
+#                    line = line.lstrip(' -')
+#                    #From Tomboy : ('\u2022\u2218\u2023')
+#                    #bullet = '%s%s%s' %(unichr(2022),unichr(2218),unichr(2023))
+#                    #FIXME : we should insert the correct UTF-8 code
+#                    bullet =' ↪ '
+#                    newline = '%s\n' %(line)
+#                    newline.encode('utf-8')
+#                    starts = self.buff.get_iter_at_line(line_nbr)
+#                    ends = starts.copy()
+#                    ends.forward_line()
+#                    #self.buff.apply_tag_by_name('fluo',starts,ends)
+#                    self.buff.delete(starts,ends)
+#                    starts = self.buff.get_iter_at_line(line_nbr)
+#                    ends = starts.copy()
+#                    ends.forward_line()
+#                    #Inserting the bullet
+#                    self.buff.insert(starts,bullet)
+#                    starts = self.buff.get_iter_at_line(line_nbr)
+#                    ends = starts.copy()
+#                    ends.forward_line()
+#                    self.buff.apply_tag_by_name("bullet",starts,ends)
+#                    #Inserting the name of the subtask as a link
+#                    #TODO : anchor = get_task_by_title(newline)
+#                    anchor = "1@1"
+#                    starts = self.buff.get_iter_at_line(line_nbr)
+#                    ends = starts.copy()
+#                    ends.forward_line()
+#                    self.textview.insert_with_anchor(newline,anchor,_iter=ends)
+#                    #We must stop the signal because if not,
+#                    #\n will be inserted twice !
+#                    tv.emit_stop_by_name('insert-text')
+#                    return True
     
-#    #Insert a link (anchor) in the textview
-#    def insert_with_anchor(self, text, anchor=None, _iter=None):
-#        if _iter is None:
-#            _iter = self.buff.get_end_iter()
-#        if anchor is None:
-#            anchor = text
-
-#        tag = self.buff.create_tag(None,foreground="blue",underline=1)
-#        #tag.set_property("background","red")
-#        tag.set_data('is_anchor', True)
-#        tag.connect('event', self._tag_event, text, anchor)
-#        self.__tags.append(tag)
-#        self.buff.insert_with_tags(_iter, text, tag)
-
-        
-#    #Function that will transform the cursor if we are above a link
-#    #A lot of code was stolen here : http://trac.atzm.org/index.cgi/wiki/PyGTK
-#    def _motion(self, view, ev):
-#        window = ev.window
-#        x, y, _ = window.get_pointer()
-#        x, y = view.window_to_buffer_coords(gtk.TEXT_WINDOW_TEXT, x, y)
-#        tags = view.get_iter_at_location(x, y).get_tags()
-#        for tag in tags:
-#            if tag.get_data('is_anchor'):
-#                for t in set(self.__tags) - set([tag]):
-#                    self.__tag_reset(t, window)
-#                self.__set_anchor(window, tag, gtk.gdk.Cursor(gtk.gdk.HAND2),None)
-#                break
-#        else:
-#            tag_table = self.textview.get_buffer().get_tag_table()
-#            tag_table.foreach(self.__tag_reset, window)
-#            
-#    def _tag_event(self, tag, view, ev, _iter, text, anchor):
-#        _type = ev.type
-#        if _type == gtk.gdk.MOTION_NOTIFY:
-#            return
-#        elif _type in [gtk.gdk.BUTTON_PRESS, gtk.gdk.BUTTON_RELEASE]:
-#            button = ev.button
-#            cursor = gtk.gdk.Cursor(gtk.gdk.HAND2)
-#            if _type == gtk.gdk.BUTTON_RELEASE:
-#                print "anchor clicked : %s" %anchor
-#                #self.textview.emit('anchor-clicked', text, anchor, button)
-#                #self.textview.__set_anchor(ev.window, tag, cursor, self.get_property('hover'))
-#            #elif button in [1, 2]:
-#                #pass
-#                #self.__set_anchor(ev.window, tag, cursor, self.get_property('active'))
-
-#    def __tag_reset(self, tag, window):
-#        if tag.get_data('is_anchor'):
-#            self.__set_anchor(window, tag, None, None)
-
-#    def __set_anchor(self, window, tag, cursor, prop):
-#        window.set_cursor(cursor)
-#        if prop :
-#            for key, val in prop.iteritems():
-#                tag.set_property(key, val)
-        
-    #The buffer was modified, let reflect this
-    def _modified(self,a=None) :
-        start = self.buff.get_start_iter()
-        end = self.buff.get_end_iter()
-        #Here we apply the title tag on the first line
-        line_nbr = 1
-        linecount = self.buff.get_line_count()
-        if linecount > line_nbr :
-            #Applying title on the first line
-            end_title = self.buff.get_iter_at_line(line_nbr)
-            stripped = self.buff.get_text(start,end_title).strip('\n\t ')
-            while line_nbr <= linecount and not stripped :
-                line_nbr += 1
-                end_title = self.buff.get_iter_at_line(line_nbr)
-                stripped = self.buff.get_text(start,end_title).strip('\n\t ')
-            self.buff.apply_tag_by_name('title', start, end_title)
-            self.buff.remove_tag_by_name('title',end_title,end)
-            #title of the window  (we obviously remove \t and \n)
-            self.window.set_title(self.buff.get_text(start,end_title).strip('\n\t'))
-        #Or to all the buffer if there is only one line
-        else :
-            self.buff.apply_tag_by_name('title', start, end)
-            #title of the window 
-            self.window.set_title(self.buff.get_text(start,end))
-                        
-        #Do we want to save the text at each modification ?
-        
-        #Ok, we took care of the modification
-        self.buff.set_modified(False)
-        
-    def _insert_at_cursor(self,tv,itera,tex,leng) :
-        #New line : the user pressed enter !
-        if tex == '\n' :
-            #The nbr just before the \n
-            line_nbr = itera.get_line()
-            start_line = itera.copy()
-            start_line.set_line(line_nbr)
-            end_line = itera.copy()
-            #We add a bullet list but not on the first line
-            if line_nbr > 0 :
-                line = start_line.get_slice(end_line)
-                #Python 2.5 should allow both tests in one
-                if line.startswith('-') or line.startswith(' -') :
-                    line = line.lstrip(' -')
-                    #From Tomboy : ('\u2022\u2218\u2023')
-                    #bullet = '%s%s%s' %(unichr(2022),unichr(2218),unichr(2023))
-                    #FIXME : we should insert the correct UTF-8 code
-                    bullet =' ↪ '
-                    newline = '%s\n' %(line)
-                    newline.encode('utf-8')
-                    starts = self.buff.get_iter_at_line(line_nbr)
-                    ends = starts.copy()
-                    ends.forward_line()
-                    #self.buff.apply_tag_by_name('fluo',starts,ends)
-                    self.buff.delete(starts,ends)
-                    starts = self.buff.get_iter_at_line(line_nbr)
-                    ends = starts.copy()
-                    ends.forward_line()
-                    #Inserting the bullet
-                    self.buff.insert(starts,bullet)
-                    starts = self.buff.get_iter_at_line(line_nbr)
-                    ends = starts.copy()
-                    ends.forward_line()
-                    self.buff.apply_tag_by_name("bullet",starts,ends)
-                    #Inserting the name of the subtask as a link
-                    #TODO : anchor = get_task_by_title(newline)
-                    anchor = "1@1"
-                    starts = self.buff.get_iter_at_line(line_nbr)
-                    ends = starts.copy()
-                    ends.forward_line()
-                    self.textview.insert_with_anchor(newline,anchor,_iter=ends)
-                    #We must stop the signal because if not,
-                    #\n will be inserted twice !
-                    tv.emit_stop_by_name('insert-text')
-                    return True
-    
-    def refresh_editor(self) :
+    def refresh_editor(self,title=None) :
         #title of the window 
-        self.window.set_title(self.task.get_title())
+        if title :
+            self.window.set_title(title)
+        else :
+            self.window.set_title(self.task.get_title())
         #refreshing the due date field
         duedate = self.task.get_due_date()
         if duedate :
