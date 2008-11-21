@@ -21,12 +21,15 @@ except:
 from task import Task, Project
 from taskeditor import TaskEditor
 
+def close(a=None) :
+    sys.exit(0)
+
 if __name__ == "__main__":
-	my_backend = Backend()
+	my_backend = Backend("test.xml")
 	zeproject = my_backend.get_project()
 	# "1" is just the ID of the task
-	zetask = zeproject.get_task(1)
+	zetask = zeproject.get_task("1@2")
 	zetask.set_sync_func(my_backend.sync_task)
 	zetask.set_due_date("2008-12-01")
-	tv = TaskEditor(zetask)
+	tv = TaskEditor(zetask,close_callback=close)
 	gtk.main()
