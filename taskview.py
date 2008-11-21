@@ -115,21 +115,35 @@ class TaskView(gtk.TextView):
         self.__tags.append(tag)
         b.insert_with_tags(_iter, text, tag)
         
+    ### To move at another place
+    def taskserial(self,register_buf, content_buf, start, end, data) :
+        return content_buf.get_text(start,end)
+        
  ##### The "Get text" group #########
     #Get the complete text
     def get_text(self) :
         #the tag table
         #Currently, we are not saving the tag table
         table = self.buff.get_tag_table()
+        
         #we get the text
-        texte = self.buff.get_text(self.buff.get_start_iter(),self.buff.get_end_iter())
+        #texte = self.buff.get_text(self.buff.get_start_iter(),self.buff.get_end_iter())
+        start = self.buff.get_start_iter()
+        end = self.buff.get_end_iter()
+        
+        #Let's try with serializing
+        mime_type = 'application/x-gtg-task'
+        self.buff.register_serialize_format(mime_type, self.taskserial, None)
+        texte = self.buff.serialize(self.buff, mime_type, start, end)
+        
         return texte
     #Get the title of the task (aka the first line of the buffer)
     def get_title(self) :
         return self.get_fulltext()[0]
     #Get the content of the task without the title
     def get_tasktext(self) :
-        return self.get_fulltext()[1]
+        texte = self.get_fulltext()[1]
+        return texte
     #Strip the title (first line with text) from the rest  
     def get_fulltext(self) :
         texte = self.get_text()
