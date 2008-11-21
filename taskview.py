@@ -88,6 +88,8 @@ class TaskView(gtk.TextView):
         #Let's try with serializing
         self.mime_type = 'application/x-gtg-task'
         self.buff.register_serialize_format(self.mime_type, self.__taskserial, None)
+        self.buff.register_deserialize_format(self.mime_type, self.__taskdeserial, None)
+
     
     #This function is called to refresh the editor 
     #Specially when we change the title
@@ -105,7 +107,8 @@ class TaskView(gtk.TextView):
     def insert(self, text, _iter=None):
         if _iter is None:
             _iter = self.buff.get_end_iter()
-        self.buff.insert(_iter, text)
+        self.buff.deserialize(self.buff, self.mime_type, _iter, text)
+        #self.buff.insert(_iter, text)
     def insert_with_anchor(self, text, anchor=None, _iter=None):
         b = self.get_buffer()
         if _iter is None:
@@ -161,6 +164,10 @@ class TaskView(gtk.TextView):
     #we can store
     def __taskserial(self,register_buf, content_buf, start, end, data) :
         return content_buf.get_text(start,end)
+        
+    ### Deserialize : put all in the TextBuffer
+    def __taskdeserial(self,register_buf, content_buf, ite, data, cr_tags, udata) :
+        content_buf.insert(ite, data)
         
 ########### Private function ####################
         
