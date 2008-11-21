@@ -84,6 +84,10 @@ class TaskView(gtk.TextView):
         self.set_editable(True)
         self.set_cursor_visible(True)
         self.buff.set_modified(False)
+        
+        #Let's try with serializing
+        self.mime_type = 'application/x-gtg-task'
+        self.buff.register_serialize_format(self.mime_type, self.__taskserial, None)
     
     #This function is called to refresh the editor 
     #Specially when we change the title
@@ -92,7 +96,7 @@ class TaskView(gtk.TextView):
     
     #Buffer related functions
     #Those functions are higly related and should always be symetrical
-    #
+    #See also the serializing functions
  #### The "Set text" group ########
     #This set the text of the buffer (and replace any existing one)
     def set_text(self,stri) :
@@ -114,10 +118,7 @@ class TaskView(gtk.TextView):
         tag.connect('event', self._tag_event, text, anchor)
         self.__tags.append(tag)
         b.insert_with_tags(_iter, text, tag)
-        
-    ### To move at another place
-    def taskserial(self,register_buf, content_buf, start, end, data) :
-        return content_buf.get_text(start,end)
+
         
  ##### The "Get text" group #########
     #Get the complete text
@@ -130,11 +131,7 @@ class TaskView(gtk.TextView):
         #texte = self.buff.get_text(self.buff.get_start_iter(),self.buff.get_end_iter())
         start = self.buff.get_start_iter()
         end = self.buff.get_end_iter()
-        
-        #Let's try with serializing
-        mime_type = 'application/x-gtg-task'
-        self.buff.register_serialize_format(mime_type, self.taskserial, None)
-        texte = self.buff.serialize(self.buff, mime_type, start, end)
+        texte = self.buff.serialize(self.buff, self.mime_type, start, end)
         
         return texte
     #Get the title of the task (aka the first line of the buffer)
@@ -157,6 +154,13 @@ class TaskView(gtk.TextView):
             while not content[0] :
                 content = content[2].partition('\n')
         return content[0],content[2]
+        
+########### Serializing functions ###############
+
+    ### Serialize the task : transform it's content in something
+    #we can store
+    def __taskserial(self,register_buf, content_buf, start, end, data) :
+        return content_buf.get_text(start,end)
         
 ########### Private function ####################
         
