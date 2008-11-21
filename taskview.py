@@ -91,40 +91,17 @@ class TaskView(gtk.TextView):
         self.refresh = funct
     
     #Buffer related functions
+    #Those functions are higly related and should always be symetrical
+    #
+ #### The "Set text" group ########
     #This set the text of the buffer (and replace any existing one)
     def set_text(self,stri) :
         self.buff.set_text(stri)
-    #Get the content of the task without the title
-    def get_text(self) :
-        return self.get_fulltext()[1]
-    
-    #Get the title of the task (aka the first line of the buffer)
-    def get_title(self) :
-        return self.get_fulltext()[0]
-        
-    def get_fulltext(self) :
-        #the tag table
-        #Currently, we are not saving the tag table
-        table = self.buff.get_tag_table()
-        #we get the text
-        texte = self.buff.get_text(self.buff.get_start_iter(),self.buff.get_end_iter())
-        #We should have a look at Tomboy Serialize function 
-        #NoteBuffer.cs : line 1163
-        stripped = texte.strip(' \n\t')
-        content = texte.partition('\n')
-        #We don't have an empty task
-        #We will find for the first line as the title
-        if stripped :
-            while not content[0] :
-                content = content[2].partition('\n')
-        return content[0],content[2]
-    
     #This append text at the end of the buffer
     def insert(self, text, _iter=None):
         if _iter is None:
             _iter = self.buff.get_end_iter()
         self.buff.insert(_iter, text)
-
     def insert_with_anchor(self, text, anchor=None, _iter=None):
         b = self.get_buffer()
         if _iter is None:
@@ -137,6 +114,35 @@ class TaskView(gtk.TextView):
         tag.connect('event', self._tag_event, text, anchor)
         self.__tags.append(tag)
         b.insert_with_tags(_iter, text, tag)
+        
+ ##### The "Get text" group #########
+    #Get the complete text
+    def get_text(self) :
+        #the tag table
+        #Currently, we are not saving the tag table
+        table = self.buff.get_tag_table()
+        #we get the text
+        texte = self.buff.get_text(self.buff.get_start_iter(),self.buff.get_end_iter())
+        return texte
+    #Get the title of the task (aka the first line of the buffer)
+    def get_title(self) :
+        return self.get_fulltext()[0]
+    #Get the content of the task without the title
+    def get_tasktext(self) :
+        return self.get_fulltext()[1]
+    #Strip the title (first line with text) from the rest  
+    def get_fulltext(self) :
+        texte = self.get_text()
+        #We should have a look at Tomboy Serialize function 
+        #NoteBuffer.cs : line 1163
+        stripped = texte.strip(' \n\t')
+        content = texte.partition('\n')
+        #We don't have an empty task
+        #We will find for the first line as the title
+        if stripped :
+            while not content[0] :
+                content = content[2].partition('\n')
+        return content[0],content[2]
         
 ########### Private function ####################
         

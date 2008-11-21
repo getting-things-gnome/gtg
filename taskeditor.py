@@ -168,7 +168,7 @@ class TaskEditor :
     
     def save(self) :
         self.task.set_title(self.textview.get_title())
-        self.task.set_text(self.textview.get_text()) 
+        self.task.set_text(self.textview.get_tasktext()) 
         if self.refresh :
             self.refresh()
         self.task.sync()
