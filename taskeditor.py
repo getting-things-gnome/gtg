@@ -167,25 +167,8 @@ class TaskEditor :
         if result : self.window.destroy()
     
     def save(self) :
-        #the text buffer
-        buff = self.textview.get_buffer()
-        #the tag table
-        #Currently, we are not saving the tag table
-        table = buff.get_tag_table()
-        #we get the text
-        texte = buff.get_text(buff.get_start_iter(),buff.get_end_iter())
-        
-        #We should have a look at Tomboy Serialize function 
-        #NoteBuffer.cs : line 1163
-        stripped = texte.strip(' \n\t')
-        content = texte.partition('\n')
-        #We don't have an empty task
-        #We will find for the first line as the title
-        if stripped :
-            while not content[0] :
-                content = content[2].partition('\n')
-        self.task.set_title(content[0])
-        self.task.set_text(content[2]) 
+        self.task.set_title(self.textview.get_title())
+        self.task.set_text(self.textview.get_text()) 
         if self.refresh :
             self.refresh()
         self.task.sync()
