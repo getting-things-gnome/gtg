@@ -156,6 +156,7 @@ http://www.pygtk.org/pygtk2tutorial/examples/testtext.py
 		</title>
 		<content>
 			Pouvoir specifier des tags/contextes aux tâches, pour les trier
+ ↪ aze
 		</content>
 	</task>
 	<task id="23@1" status="Done">
@@ -203,14 +204,6 @@ if (hovering != hovering_on_link) {
 			Press Escape or close this task to save it
 		</content>
 	</task>
-	<task id="30@1" status="Active">
-		<title>
-			My new task
-		</title>
-		<content>
-			Press Escape or close this task to save it
-		</content>
-	</task>
 	<task id="24@1" status="Active">
 		<title>
 			Strike task on delete
@@ -242,6 +235,8 @@ l'éditeur
 		</title>
 		<content>
 			If the task is marked as done, it should be undonable from the main window
+ ↪ e az
+
 		</content>
 	</task>
 	<task id="19@1" status="Active">

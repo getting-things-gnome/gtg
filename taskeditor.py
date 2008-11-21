@@ -1,9 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+
+#This is the TaskEditor
+#
+#It's the window you see when you double-clic on a Task
+#The main text widget is a home-made TextView called TaskView (see taskview.py)
+#The rest are the logic of the widget : date changing widgets, buttons, ...
+
 import sys, time, os
 import string, threading
 from task import Task
-from taskview import HyperTextView
+from taskview import TaskView
 
 try:
     import pygtk
@@ -39,10 +46,11 @@ class TaskEditor :
         self.cal_tree.signal_autoconnect(cal_dic)
         self.window         = self.wTree.get_widget("TaskEditor")
         #Removing the Normal textview to replace it by our own
+        #So don't try to change anything with glade, this is a home-made widget
         textview = self.wTree.get_widget("textview")
         scrolled = self.wTree.get_widget("scrolledtask")
         scrolled.remove(textview)
-        self.textview       = HyperTextView()
+        self.textview       = TaskView()
         self.textview.show()
         self.textview.refresh_callback(self.refresh_editor)
         scrolled.add(self.textview)
@@ -68,14 +76,17 @@ class TaskEditor :
         self.textview.set_text("%s\n"%title)
         #we insert the rest of the task
         if texte : 
-            self.textview.append("%s"%texte)
+            self.textview.insert("%s"%texte)
             
         self.window.connect("destroy", self.close)
         self.refresh_editor()
 
         self.window.show()
 
-    
+    #Can be called at any time to reflect the status of the Task
+    #Refresh should never interfer with the TaskView
+    #If a title is passed as a parameter, it will become
+    #The new window title. If not, we will look for the task title
     def refresh_editor(self,title=None) :
         #title of the window 
         if title :
@@ -124,22 +135,6 @@ class TaskEditor :
         #we will close the calendar if the user clic outside
         self.calendar.connect('button-press-event', self.__focus_out)
         
-    
-    def __focus_out(self,w=None,e=None) :
-        #We should only close if the pointer clic is out of the calendar !
-        p = self.calendar.window.get_pointer()
-        s = self.calendar.get_size()
-        if  not(0 <= p[0] <= s[0] and 0 <= p[1] <= s[1]) :
-            self.__close_calendar()
-        
-    
-    def __close_calendar(self,widget=None,e=None) :
-        self.calendar.hide()
-        gtk.gdk.pointer_ungrab()
-        self.calendar.grab_remove()
-        
-
-    
     def day_selected(self,widget) :
         y,m,d = widget.get_date()
         self.task.set_due_date("%s-%s-%s"%(y,m+1,d))
@@ -172,29 +167,13 @@ class TaskEditor :
         if result : self.window.destroy()
     
     def save(self) :
-        #the text buffer
-        buff = self.textview.get_buffer()
-        #the tag table
-        #Currently, we are not saving the tag table
-        table = buff.get_tag_table()
-        #we get the text
-        texte = buff.get_text(buff.get_start_iter(),buff.get_end_iter())
-        
-        #We should have a look at Tomboy Serialize function 
-        #NoteBuffer.cs : line 1163
-        stripped = texte.strip(' \n\t')
-        content = texte.partition('\n')
-        #We don't have an empty task
-        #We will find for the first line as the title
-        if stripped :
-            while not content[0] :
-                content = content[2].partition('\n')
-        self.task.set_title(content[0])
-        self.task.set_text(content[2]) 
+        self.task.set_title(self.textview.get_title())
+        self.task.set_text(self.textview.get_tasktext()) 
         if self.refresh :
             self.refresh()
         self.task.sync()
-        
+    
+    #This will bring the Task Editor to front    
     def present(self) :
         self.window.present()
         
@@ -206,3 +185,24 @@ class TaskEditor :
         #TODO : verify that destroy the window is enough ! 
         #We should also destroy the whole taskeditor object.
         self.window.destroy()
+        
+        
+############# Private functions #################
+        
+    
+    def __focus_out(self,w=None,e=None) :
+        #We should only close if the pointer clic is out of the calendar !
+        p = self.calendar.window.get_pointer()
+        s = self.calendar.get_size()
+        if  not(0 <= p[0] <= s[0] and 0 <= p[1] <= s[1]) :
+            self.__close_calendar()
+        
+    
+    def __close_calendar(self,widget=None,e=None) :
+        self.calendar.hide()
+        gtk.gdk.pointer_ungrab()
+        self.calendar.grab_remove()
+        
+
+    
+
