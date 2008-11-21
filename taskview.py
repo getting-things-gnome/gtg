@@ -53,7 +53,7 @@ class TaskView(gtk.TextView):
                                     'underline': pango.UNDERLINE_SINGLE}
         ##########Tag we will use #######
         #We use the tag table (tag are defined here but set in self.modified)
-        table = self.buff.get_tag_table()
+        self.table = self.buff.get_tag_table()
         #tag test for title
         title_tag = self.buff.create_tag("title",foreground="#12F",scale=1.6,underline=1)
         title_tag.set_property("pixels-above-lines",10)
@@ -74,7 +74,7 @@ class TaskView(gtk.TextView):
         
         #Signals
         self.connect('motion-notify-event', self._motion)
-        self.connect('focus-out-event', lambda w, e: self.get_buffer().get_tag_table().foreach(self.__tag_reset, e.window))
+        self.connect('focus-out-event', lambda w, e: self.table.foreach(self.__tag_reset, e.window))
         #The signal emitted each time the buffer is modified
         self.buff.connect("modified_changed",self._modified)
         self.buff.connect('insert-text',self._insert_at_cursor)
@@ -101,12 +101,14 @@ class TaskView(gtk.TextView):
     #See also the serializing functions
  #### The "Set text" group ########
     #This set the text of the buffer (and replace any existing one)
+    #without deserializing (used for the title)
     def set_text(self,stri) :
         self.buff.set_text(stri)
-    #This append text at the end of the buffer
+    #This append text at the end of the buffer after deserializing it
     def insert(self, text, _iter=None):
         if _iter is None:
             _iter = self.buff.get_end_iter()
+        #Ok, this line require an integer at some place !
         self.buff.deserialize(self.buff, self.mime_type, _iter, text)
         #self.buff.insert(_iter, text)
     def insert_with_anchor(self, text, anchor=None, _iter=None):
@@ -124,7 +126,8 @@ class TaskView(gtk.TextView):
 
         
  ##### The "Get text" group #########
-    #Get the complete text
+    #Get the complete serialized text
+    #But without the title
     def get_text(self) :
         #the tag table
         #Currently, we are not saving the tag table
@@ -133,41 +136,59 @@ class TaskView(gtk.TextView):
         #we get the text
         #texte = self.buff.get_text(self.buff.get_start_iter(),self.buff.get_end_iter())
         start = self.buff.get_start_iter()
+        conti = True
+        while conti and not start.ends_tag(self.table.lookup("title")) :
+            conti = start.forward_line()
         end = self.buff.get_end_iter()
         texte = self.buff.serialize(self.buff, self.mime_type, start, end)
         
         return texte
     #Get the title of the task (aka the first line of the buffer)
     def get_title(self) :
-        return self.get_fulltext()[0]
+        start = self.buff.get_start_iter()
+        end = self.buff.get_start_iter()
+        #The boolean stays True as long as we are in the buffer
+        conti = True
+        while conti and not end.ends_tag(self.table.lookup("title")) :
+            conti = end.forward_line()
+        #We don't want to deserialize the title
+        #Let's get the pure text directly
+        title = self.buff.get_text(start,end)
+        #Let's strip blank lines
+        stripped = title.strip(' \n\t')
+        return stripped
     #Get the content of the task without the title
     def get_tasktext(self) :
-        texte = self.get_fulltext()[1]
-        return texte
-    #Strip the title (first line with text) from the rest  
-    def get_fulltext(self) :
         texte = self.get_text()
-        #We should have a look at Tomboy Serialize function 
-        #NoteBuffer.cs : line 1163
-        stripped = texte.strip(' \n\t')
-        content = texte.partition('\n')
-        #We don't have an empty task
-        #We will find for the first line as the title
-        if stripped :
-            while not content[0] :
-                content = content[2].partition('\n')
-        return content[0],content[2]
+        return texte
+#    #Strip the title (first line with text) from the rest  
+#    #We don't use serializing here !
+#    def get_fulltext(self) :
+#        texte = self.buff.get_text(self.buff.get_start_iter(),self.buff.get_end_iter())
+
+#        stripped = texte.strip(' \n\t')
+#        content = texte.partition('\n')
+#        #We don't have an empty task
+#        #We will find for the first line as the title
+#        if stripped :
+#            while not content[0] :
+#                content = content[2].partition('\n')
+#        return content[0],content[2]
         
 ########### Serializing functions ###############
-
+    #We should have a look at Tomboy Serialize function 
+    #NoteBuffer.cs : line 1163
     ### Serialize the task : transform it's content in something
     #we can store
-    def __taskserial(self,register_buf, content_buf, start, end, data) :
+    def __taskserial(self,register_buf, content_buf, start, end, udata) :
+        #Currently the serializing is still trivial
         return content_buf.get_text(start,end)
         
     ### Deserialize : put all in the TextBuffer
     def __taskdeserial(self,register_buf, content_buf, ite, data, cr_tags, udata) :
+        #Currently the serializing is still trivial
         content_buf.insert(ite, data)
+        return True
         
 ########### Private function ####################
         
