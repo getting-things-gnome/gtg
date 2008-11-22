@@ -184,7 +184,7 @@ class TaskView(gtk.TextView):
             #if a tag begin, we will parse until the end
             if it.begins_tag() :
                 #We take the tag with the highest priority
-                ta = it.get_tags[0]
+                ta = it.get_tags()[0]
                 for t in it.get_tags() :
                     if t.get_priority() > ta.get_priority() :
                         ta = t
@@ -192,13 +192,18 @@ class TaskView(gtk.TextView):
                 startit = it.copy()
                 it.forward_to_tag_toggle(ta)
                 endit = it.copy()
+                #remove the tag (to avoid infinite loop)
+                buf.remove_tag(ta,startit,endit)
                 #recursive call around the tag "ta"
+                txt += "<%s>" %ta.props.name
                 txt += self.__parse(buf,startit,endit)
-                it.forward_char()
+                txt += "</%s>" %ta.props.name
+                #it.forward_char()
             #else, we just add the text
             else :
                 txt += it.get_char()
-            return txt
+                it.forward_char()
+        return txt
                 
     def __istagend(self,it, tag=None) :
         #FIXME : we should handle the None case
@@ -224,21 +229,9 @@ class TaskView(gtk.TextView):
     def __taskserial(self,register_buf, content_buf, start, end, udata) :
         #Currently the serializing is still trivial
         txt = ""
-        it = start.copy()
-        while it.get_offset() != end.get_offset() :
-            #Let's try if a tag begin here
-            for t in it.get_tags() :
-                if it.begins_tag(t) :
-                    txt += "<%s>" %t.props.name
-            #Now we add the character
-            txt += it.get_char()
-            #Let's see if a tag ends here
-            for t in it.get_tags() :
-                #if it.ends_tag(t) :
-                if self.__istagend(it,t) :
-                    #it means we were at the end of a tag
-                    txt += "</%s>" %t.props.name
-            it.forward_char()
+        its = start.copy()
+        ite = end.copy()
+        txt += self.__parse(content_buf,its, ite)
         print txt
         return content_buf.get_text(start,end)
         
