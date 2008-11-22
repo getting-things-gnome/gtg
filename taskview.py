@@ -176,6 +176,41 @@ class TaskView(gtk.TextView):
 #        return content[0],content[2]
         
 ########### Serializing functions ###############
+
+    def __parse(buf, start, end) :
+        txt = ""
+        it = start.copy()
+        while it.get_offset() != end.get_offset() :
+            #if a tag begin, we will parse until the end
+            if it.begins_tag() :
+                #We take the tag with the highest priority
+                ta = it.get_tags[0]
+                for t in it.get_tags() :
+                    if t.get_priority() > ta.get_priority() :
+                        ta = t
+                #So now, we are in tag "ta"
+            #else, we just add the text
+                startit = it.copy()
+                #while 
+            else :
+                txt += it.get_char()
+                
+    def __istagend(self,it, tag=None) :
+        # ends_tag doesn't work (see bug #561916)
+        #Let's reimplement it manyally
+        #if we currently have a tag
+        has = it.has_tag(tag)
+        it.forward_char()
+        #But the tag is not there anymore on next char
+        if has and not it.has_tag(tag) :
+            #it means we were at the end of a tag
+            val = True
+            it.backward_char()
+        else :
+            val = False
+            it.backward_char()
+        return val
+
     #We should have a look at Tomboy Serialize function 
     #NoteBuffer.cs : line 1163
     ### Serialize the task : transform it's content in something
@@ -197,15 +232,16 @@ class TaskView(gtk.TextView):
                 # ends_tag doesn't work (see bug #561916)
                 #Let's reimplement it manyally
                 #if we currently have a tag
-                has = it.has_tag(t)
-                it.forward_char()
+#                has = it.has_tag(t)
+#                it.forward_char()
                 #But the tag is not there anymore on next char
-                if has and not it.has_tag(t) :
+#                if has and not it.has_tag(t) :
+                if self.__istagend(it,t) :
                     #it means we were at the end of a tag
                     txt += "</%s>" %t.props.name
-                    it.backward_char()
-                else :
-                    it.backward_char()
+#                    it.backward_char()
+#                else :
+#                    it.backward_char()
             it.forward_char()
         print txt
         return content_buf.get_text(start,end)
