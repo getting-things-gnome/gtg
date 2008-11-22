@@ -177,7 +177,7 @@ class TaskView(gtk.TextView):
         
 ########### Serializing functions ###############
 
-    def __parse(buf, start, end) :
+    def __parse(self,buf, start, end) :
         txt = ""
         it = start.copy()
         while it.get_offset() != end.get_offset() :
@@ -189,15 +189,21 @@ class TaskView(gtk.TextView):
                     if t.get_priority() > ta.get_priority() :
                         ta = t
                 #So now, we are in tag "ta"
-            #else, we just add the text
                 startit = it.copy()
-                #while 
+                it.forward_to_tag_toggle(ta)
+                endit = it.copy()
+                #recursive call around the tag "ta"
+                txt += self.__parse(buf,startit,endit)
+                it.forward_char()
+            #else, we just add the text
             else :
                 txt += it.get_char()
+            return txt
                 
     def __istagend(self,it, tag=None) :
+        #FIXME : we should handle the None case
         # ends_tag doesn't work (see bug #561916)
-        #Let's reimplement it manyally
+        #Let's reimplement it manually
         #if we currently have a tag
         has = it.has_tag(tag)
         it.forward_char()
@@ -229,19 +235,9 @@ class TaskView(gtk.TextView):
             #Let's see if a tag ends here
             for t in it.get_tags() :
                 #if it.ends_tag(t) :
-                # ends_tag doesn't work (see bug #561916)
-                #Let's reimplement it manyally
-                #if we currently have a tag
-#                has = it.has_tag(t)
-#                it.forward_char()
-                #But the tag is not there anymore on next char
-#                if has and not it.has_tag(t) :
                 if self.__istagend(it,t) :
                     #it means we were at the end of a tag
                     txt += "</%s>" %t.props.name
-#                    it.backward_char()
-#                else :
-#                    it.backward_char()
             it.forward_char()
         print txt
         return content_buf.get_text(start,end)
