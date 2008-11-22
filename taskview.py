@@ -17,6 +17,7 @@
 import gtk
 import gobject
 import pango
+import xml.dom.minidom
 
 class TaskView(gtk.TextView):
     __gtype_name__ = 'HyperTextView'
@@ -118,7 +119,7 @@ class TaskView(gtk.TextView):
         if anchor is None:
             anchor = text
 
-        tag = b.create_tag(None, **self.get_property('link'))
+        tag = b.create_tag("link", **self.get_property('link'))
         tag.set_data('is_anchor', True)
         tag.connect('event', self._tag_event, text, anchor)
         self.__tags.append(tag)
@@ -176,18 +177,101 @@ class TaskView(gtk.TextView):
 #        return content[0],content[2]
         
 ########### Serializing functions ###############
+
+    # TextIter.ends_tag doesn't work (see bug #561916)
+    #Let's reimplement it manually
+    def __istagend(self,it, tag=None) :
+        #FIXME : we should handle the None case
+        #if we currently have a tag
+        has = it.has_tag(tag)
+        it.forward_char()
+        #But the tag is not there anymore on next char
+        if has and not it.has_tag(tag) :
+            #it means we were at the end of a tag
+            val = True
+            it.backward_char()
+        else :
+            val = False
+            it.backward_char()
+        return val
+
+    #parse the buffer and output an XML representation
+    #Buf is the buffer to parse from start to end
+    #name is the name of the XML element and doc is the XML dom
+    def __parsebuf(self,buf, start, end,name,doc) :
+        txt = ""
+        it = start.copy()
+        parent = doc.createElement(name)
+        while it.get_offset() != end.get_offset() :
+            #if a tag begin, we will parse until the end
+            if it.begins_tag() :
+                #We take the tag with the highest priority
+                ta = it.get_tags()[0]
+                for t in it.get_tags() :
+                    if t.get_priority() > ta.get_priority() :
+                        ta = t
+                #So now, we are in tag "ta"
+                startit = it.copy()
+                it.forward_to_tag_toggle(ta)
+                endit = it.copy()
+                #remove the tag (to avoid infinite loop)
+                buf.remove_tag(ta,startit,endit)
+                #recursive call around the tag "ta"
+                parent.appendChild(self.__parsebuf(buf,startit,endit,ta.props.name,doc))
+            #else, we just add the text
+            else :
+                parent.appendChild(doc.createTextNode(it.get_char()))
+                it.forward_char()
+        parent.normalize()
+        return parent
+        
+    #parse the XML and put the content in the buffer
+    def __parsexml(self,buf,ite,element) :
+        for n in element.childNodes :
+            if n.nodeType == n.ELEMENT_NODE :
+                #print "<%s>" %n.nodeName
+                start = ite.get_offset()
+                end = self.__parsexml(buf,ite,n)
+                s = buf.get_iter_at_offset(start)
+                e = buf.get_iter_at_offset(end)
+                buf.apply_tag_by_name(n.nodeName,s,e)
+                #print "</%s>" %n.nodeName
+            elif n.nodeType == n.TEXT_NODE :
+                buf.insert(ite,n.toxml())
+        #return buf.get_end_iter()
+        return ite.get_offset()
+                
     #We should have a look at Tomboy Serialize function 
     #NoteBuffer.cs : line 1163
     ### Serialize the task : transform it's content in something
     #we can store
     def __taskserial(self,register_buf, content_buf, start, end, udata) :
-        #Currently the serializing is still trivial
-        return content_buf.get_text(start,end)
+        #Currently we serialize in XML
+        its = start.copy()
+        ite = end.copy()
+        doc = xml.dom.minidom.Document()
+        doc.appendChild(self.__parsebuf(content_buf,its, ite,"content",doc))
+        #We don't want the whole doc with the XML declaration
+        #we only take the first node (the "content" one)
+        node = doc.firstChild
+        return node.toxml().encode("utf-8")
+        #return content_buf.get_text(start,end)
         
     ### Deserialize : put all in the TextBuffer
     def __taskdeserial(self,register_buf, content_buf, ite, data, cr_tags, udata) :
         #Currently the serializing is still trivial
-        content_buf.insert(ite, data)
+        #content_buf.insert(ite, data)
+        #fluo = self.table.lookup("fluo")
+        #content_buf.insert_with_tags(ite,data,fluo)
+        
+        #backward compatibility
+        #if not data.startswith("<content>") :
+        #   data = "<content>%s</content>" %data
+        #print data
+        element = xml.dom.minidom.parseString(data)
+        val = self.__parsexml(content_buf,ite,element.firstChild)
+        #content_buf.insert(ite, "\n- aze\n -qsd")
+        #self.insert_with_anchor("http://aze","http://eaz")
         return True
         
 ########### Private function ####################
