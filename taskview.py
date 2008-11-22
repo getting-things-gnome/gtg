@@ -178,6 +178,8 @@ class TaskView(gtk.TextView):
         
 ########### Serializing functions ###############
 
+    #Buf is the buffer to parse from start to end
+    #name is the name of the XML element and doc is the XML dom
     def __parse(self,buf, start, end,name,doc) :
         txt = ""
         it = start.copy()
@@ -197,15 +199,9 @@ class TaskView(gtk.TextView):
                 #remove the tag (to avoid infinite loop)
                 buf.remove_tag(ta,startit,endit)
                 #recursive call around the tag "ta"
-                #txt += "<%s>" %ta.props.name
-                #element = doc.createElement(ta.props.name)
                 parent.appendChild(self.__parse(buf,startit,endit,ta.props.name,doc))
-                #parent.appendChild(element)
-                #txt += "</%s>" %ta.props.name
-                #it.forward_char()
             #else, we just add the text
             else :
-                #txt += it.get_char()
                 parent.appendChild(doc.createTextNode(it.get_char()))
                 it.forward_char()
         parent.normalize()
@@ -233,14 +229,14 @@ class TaskView(gtk.TextView):
     ### Serialize the task : transform it's content in something
     #we can store
     def __taskserial(self,register_buf, content_buf, start, end, udata) :
-        #Currently the serializing is still trivial
-        txt = ""
+        #Currently we serialize in XML
         its = start.copy()
         ite = end.copy()
         doc = xml.dom.minidom.Document()
-        #element = doc.createElement("content")
         doc.appendChild(self.__parse(content_buf,its, ite,"content",doc))
-        print doc.toprettyxml().encode("utf-8")
+        #print doc.toxml().encode("utf-8")
+        node = doc.childNodes[0]
+        print node.toxml()
         return content_buf.get_text(start,end)
         
     ### Deserialize : put all in the TextBuffer
