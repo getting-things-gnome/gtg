@@ -118,7 +118,7 @@ class TaskView(gtk.TextView):
         if anchor is None:
             anchor = text
 
-        tag = b.create_tag(None, **self.get_property('link'))
+        tag = b.create_tag("link", **self.get_property('link'))
         tag.set_data('is_anchor', True)
         tag.connect('event', self._tag_event, text, anchor)
         self.__tags.append(tag)
@@ -182,12 +182,43 @@ class TaskView(gtk.TextView):
     #we can store
     def __taskserial(self,register_buf, content_buf, start, end, udata) :
         #Currently the serializing is still trivial
+        txt = ""
+        it = start.copy()
+        while it.get_offset() != end.get_offset() :
+            #Let's try if a tag begin here
+            for t in it.get_tags() :
+                if it.begins_tag(t) :
+                    txt += "<%s>" %t.props.name
+            #Now we add the character
+            txt += it.get_char()
+            #Let's see if a tag ends here
+            for t in it.get_tags() :
+                #if it.ends_tag(t) :
+                # ends_tag doesn't work (see bug #561916)
+                #Let's reimplement it manyally
+                #if we currently have a tag
+                has = it.has_tag(t)
+                it.forward_char()
+                #But the tag is not there anymore on next char
+                if has and not it.has_tag(t) :
+                    #it means we were at the end of a tag
+                    txt += "</%s>" %t.props.name
+                    it.backward_char()
+                else :
+                    it.backward_char()
+            it.forward_char()
+        print txt
         return content_buf.get_text(start,end)
         
     ### Deserialize : put all in the TextBuffer
     def __taskdeserial(self,register_buf, content_buf, ite, data, cr_tags, udata) :
         #Currently the serializing is still trivial
-        content_buf.insert(ite, data)
+        #content_buf.insert(ite, data)
+        #debug
+        fluo = self.table.lookup("fluo")
+        content_buf.insert_with_tags(ite,data,fluo)
+        #content_buf.insert(ite, "\n- aze\n -qsd")
+        #self.insert_with_anchor("http://aze","http://eaz")
         return True
         
 ########### Private function ####################

@@ -191,6 +191,7 @@ if (hovering != hovering_on_link) {
 		<content>
 			When a &quot;done&quot; task is selected The &quot;Mark as done&quot; should change to &quot;Undone&quot; 
 (also in the task editor)
+az
 		</content>
 	</task>
 	<task id="0@1" status="Done">
@@ -236,7 +237,6 @@ l'éditeur
 		<content>
 			If the task is marked as done, it should be undonable from the main window
  ↪ e az
-
 		</content>
 	</task>
 	<task id="19@1" status="Active">
