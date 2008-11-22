@@ -17,6 +17,7 @@
 import gtk
 import gobject
 import pango
+import xml.dom.minidom
 
 class TaskView(gtk.TextView):
     __gtype_name__ = 'HyperTextView'
@@ -177,9 +178,10 @@ class TaskView(gtk.TextView):
         
 ########### Serializing functions ###############
 
-    def __parse(self,buf, start, end) :
+    def __parse(self,buf, start, end,name,doc) :
         txt = ""
         it = start.copy()
+        parent = doc.createElement(name)
         while it.get_offset() != end.get_offset() :
             #if a tag begin, we will parse until the end
             if it.begins_tag() :
@@ -195,20 +197,24 @@ class TaskView(gtk.TextView):
                 #remove the tag (to avoid infinite loop)
                 buf.remove_tag(ta,startit,endit)
                 #recursive call around the tag "ta"
-                txt += "<%s>" %ta.props.name
-                txt += self.__parse(buf,startit,endit)
-                txt += "</%s>" %ta.props.name
+                #txt += "<%s>" %ta.props.name
+                #element = doc.createElement(ta.props.name)
+                parent.appendChild(self.__parse(buf,startit,endit,ta.props.name,doc))
+                #parent.appendChild(element)
+                #txt += "</%s>" %ta.props.name
                 #it.forward_char()
             #else, we just add the text
             else :
-                txt += it.get_char()
+                #txt += it.get_char()
+                parent.appendChild(doc.createTextNode(it.get_char()))
                 it.forward_char()
-        return txt
+        parent.normalize()
+        return parent
                 
+    # TextIter.ends_tag doesn't work (see bug #561916)
+    #Let's reimplement it manually
     def __istagend(self,it, tag=None) :
         #FIXME : we should handle the None case
-        # ends_tag doesn't work (see bug #561916)
-        #Let's reimplement it manually
         #if we currently have a tag
         has = it.has_tag(tag)
         it.forward_char()
@@ -231,8 +237,10 @@ class TaskView(gtk.TextView):
         txt = ""
         its = start.copy()
         ite = end.copy()
-        txt += self.__parse(content_buf,its, ite)
-        print txt
+        doc = xml.dom.minidom.Document()
+        #element = doc.createElement("content")
+        doc.appendChild(self.__parse(content_buf,its, ite,"content",doc))
+        print doc.toprettyxml().encode("utf-8")
         return content_buf.get_text(start,end)
         
     ### Deserialize : put all in the TextBuffer
