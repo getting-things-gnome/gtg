@@ -56,7 +56,8 @@ class Backend :
                 cur_task.set_status(cur_stat,donedate=donedate)
                 #we will fill the task with its content
                 cur_task.set_title(self.__read_textnode(t,"title"))
-                cur_task.set_text(self.__read_textnode(t,"content"))
+                #cur_task.set_text(self.__read_textnode(t,"content"))
+                cur_task.set_text(t.getElementsByTagName("content")[0].toxml())
                 cur_task.set_due_date(self.__read_textnode(t,"duedate"))
                 #adding task to the project
                 self.project.add_task(cur_task)
@@ -90,7 +91,9 @@ class Backend :
             self.__write_textnode(doc,t_xml,"title",t.get_title())
             self.__write_textnode(doc,t_xml,"duedate",t.get_due_date())
             self.__write_textnode(doc,t_xml,"donedate",t.get_done_date())
-            self.__write_textnode(doc,t_xml,"content",t.get_text())
+            element = xml.dom.minidom.parseString(t.get_text())
+            t_xml.appendChild(element.firstChild)
+            #self.__write_textnode(doc,t_xml,"content",t.get_text())
         #it's maybe not optimal to open/close the file each time we sync
         # but I'm not sure that those operations are so frequent
         # might be changed in the future.
