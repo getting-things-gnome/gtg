@@ -178,9 +178,27 @@ class TaskView(gtk.TextView):
         
 ########### Serializing functions ###############
 
+    # TextIter.ends_tag doesn't work (see bug #561916)
+    #Let's reimplement it manually
+    def __istagend(self,it, tag=None) :
+        #FIXME : we should handle the None case
+        #if we currently have a tag
+        has = it.has_tag(tag)
+        it.forward_char()
+        #But the tag is not there anymore on next char
+        if has and not it.has_tag(tag) :
+            #it means we were at the end of a tag
+            val = True
+            it.backward_char()
+        else :
+            val = False
+            it.backward_char()
+        return val
+
+    #parse the buffer and output an XML representation
     #Buf is the buffer to parse from start to end
     #name is the name of the XML element and doc is the XML dom
-    def __parse(self,buf, start, end,name,doc) :
+    def __parsebuf(self,buf, start, end,name,doc) :
         txt = ""
         it = start.copy()
         parent = doc.createElement(name)
@@ -199,31 +217,27 @@ class TaskView(gtk.TextView):
                 #remove the tag (to avoid infinite loop)
                 buf.remove_tag(ta,startit,endit)
                 #recursive call around the tag "ta"
-                parent.appendChild(self.__parse(buf,startit,endit,ta.props.name,doc))
+                parent.appendChild(self.__parsebuf(buf,startit,endit,ta.props.name,doc))
             #else, we just add the text
             else :
                 parent.appendChild(doc.createTextNode(it.get_char()))
                 it.forward_char()
         parent.normalize()
         return parent
+        
+    #parse the XML and put the content in the buffer
+    def __parsexml(self,buf,ite,element) :
+        for n in element.childNodes :
+            if n.nodeType == n.ELEMENT_NODE :
+                #print "<%s>" %n.nodeName
+                start = ite.copy()
+                end = self.__parsexml(buf,ite,n)
+                buf.apply_tag_by_name(n.nodeName,start,end)
+                #print "</%s>" %n.nodeName
+            elif n.nodeType == n.TEXT_NODE :
+                buf.insert(ite,n.toxml())
+        return ite
                 
-    # TextIter.ends_tag doesn't work (see bug #561916)
-    #Let's reimplement it manually
-    def __istagend(self,it, tag=None) :
-        #FIXME : we should handle the None case
-        #if we currently have a tag
-        has = it.has_tag(tag)
-        it.forward_char()
-        #But the tag is not there anymore on next char
-        if has and not it.has_tag(tag) :
-            #it means we were at the end of a tag
-            val = True
-            it.backward_char()
-        else :
-            val = False
-            it.backward_char()
-        return val
-
     #We should have a look at Tomboy Serialize function 
     #NoteBuffer.cs : line 1163
     ### Serialize the task : transform it's content in something
@@ -233,19 +247,26 @@ class TaskView(gtk.TextView):
         its = start.copy()
         ite = end.copy()
         doc = xml.dom.minidom.Document()
-        doc.appendChild(self.__parse(content_buf,its, ite,"content",doc))
-        #print doc.toxml().encode("utf-8")
-        node = doc.childNodes[0]
-        print node.toxml()
+        doc.appendChild(self.__parsebuf(content_buf,its, ite,"content",doc))
+        #We don't want the whole doc with the XML declaration
+        #we only take the first node (the "content" one)
+        node = doc.firstChild
+        print node.toxml().encode("utf-8")
         return content_buf.get_text(start,end)
         
     ### Deserialize : put all in the TextBuffer
     def __taskdeserial(self,register_buf, content_buf, ite, data, cr_tags, udata) :
         #Currently the serializing is still trivial
         #content_buf.insert(ite, data)
-        #debug
-        fluo = self.table.lookup("fluo")
-        content_buf.insert_with_tags(ite,data,fluo)
+        #fluo = self.table.lookup("fluo")
+        #content_buf.insert_with_tags(ite,data,fluo)
+        
+        #backward compatibility
+        if not data.startswith("<content>") :
+            data = "<content>%s</content>" %data
+        print data
+        element = xml.dom.minidom.parseString(data)
+        val = self.__parsexml(content_buf,ite,element)
         #content_buf.insert(ite, "\n- aze\n -qsd")
         #self.insert_with_anchor("http://aze","http://eaz")
         return True
