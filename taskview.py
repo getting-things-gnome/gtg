@@ -230,13 +230,16 @@ class TaskView(gtk.TextView):
         for n in element.childNodes :
             if n.nodeType == n.ELEMENT_NODE :
                 #print "<%s>" %n.nodeName
-                start = ite.copy()
+                start = ite.get_offset()
                 end = self.__parsexml(buf,ite,n)
-                buf.apply_tag_by_name(n.nodeName,start,end)
+                s = buf.get_iter_at_offset(start)
+                e = buf.get_iter_at_offset(end)
+                buf.apply_tag_by_name(n.nodeName,s,e)
                 #print "</%s>" %n.nodeName
             elif n.nodeType == n.TEXT_NODE :
                 buf.insert(ite,n.toxml())
-        return ite
+        #return buf.get_end_iter()
+        return ite.get_offset()
                 
     #We should have a look at Tomboy Serialize function 
     #NoteBuffer.cs : line 1163
@@ -251,8 +254,8 @@ class TaskView(gtk.TextView):
         #We don't want the whole doc with the XML declaration
         #we only take the first node (the "content" one)
         node = doc.firstChild
-        print node.toxml().encode("utf-8")
-        return content_buf.get_text(start,end)
+        return node.toxml().encode("utf-8")
+        #return content_buf.get_text(start,end)
         
     ### Deserialize : put all in the TextBuffer
     def __taskdeserial(self,register_buf, content_buf, ite, data, cr_tags, udata) :
@@ -264,7 +267,7 @@ class TaskView(gtk.TextView):
         #backward compatibility
         if not data.startswith("<content>") :
             data = "<content>%s</content>" %data
-        print data
+        #print data
         element = xml.dom.minidom.parseString(data)
         val = self.__parsexml(content_buf,ite,element)
         #content_buf.insert(ite, "\n- aze\n -qsd")
