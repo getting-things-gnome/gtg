@@ -57,7 +57,9 @@ class Backend :
                 #we will fill the task with its content
                 cur_task.set_title(self.__read_textnode(t,"title"))
                 #cur_task.set_text(self.__read_textnode(t,"content"))
-                cur_task.set_text(t.getElementsByTagName("content")[0].toxml())
+                tasktext = t.getElementsByTagName("content")
+                if len(tasktext) > 0 :
+                    cur_task.set_text(tasktext[0].toxml())
                 cur_task.set_due_date(self.__read_textnode(t,"duedate"))
                 #adding task to the project
                 self.project.add_task(cur_task)
