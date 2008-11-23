@@ -2,12 +2,10 @@ import sys, time, os, xml.dom.minidom
 import string, threading
 
 from task import Task, Project
-from cStringIO import StringIO
 
+#This is for the awful pretty xml things
 tab = "\t"
-enter = "\n_"
-oldtab = "\t"
-oldenter = "\n_"
+enter = "\n"
 
 #todo : Backend should only provide one big "project" object and should 
 #not provide get_task and stuff like that.
@@ -16,11 +14,8 @@ class Backend :
         self.zefile = zefile
         if os.path.exists(self.zefile) :
             f = open(self.zefile,mode='r')
-            # sanitize the pretty XML
-            s = f.read().replace(oldtab,'').replace(oldenter,'')
-            doc=xml.dom.minidom.parseString(s)
-            #doc=xml.dom.minidom.parse(self.zefile)
-            #self.__cleanDoc(doc,tab,enter)
+            doc=xml.dom.minidom.parse(self.zefile)
+            self.__cleanDoc(doc,tab,enter)
             self.__xmlproject = doc.getElementsByTagName("project")
             proj_name = str(self.__xmlproject[0].getAttribute("name"))
             self.project = Project(proj_name)
@@ -69,7 +64,10 @@ class Backend :
                 #cur_task.set_text(self.__read_textnode(t,"content"))
                 tasktext = t.getElementsByTagName("content")
                 if len(tasktext) > 0 :
-                    cur_task.set_text(tasktext[0].toxml())
+                    #cur_task.set_text(tasktext[0].toxml())
+                    tas = "<content>%s</content>" %tasktext[0].firstChild.nodeValue
+                    content = xml.dom.minidom.parseString(tas)
+                    cur_task.set_text(content.firstChild.toxml())
                 cur_task.set_due_date(self.__read_textnode(t,"duedate"))
                 #adding task to the project
                 self.project.add_task(cur_task)
@@ -105,18 +103,18 @@ class Backend :
             self.__write_textnode(doc,t_xml,"donedate",t.get_done_date())
             tex = t.get_text()
             if tex :
+                #We take the xml text and convert it to a string
+                #but without the "<content />" 
                 element = xml.dom.minidom.parseString(tex)
-                t_xml.appendChild(element.firstChild)
+                temp = element.firstChild.toxml().partition("<content>")[2]
+                desc = temp.partition("</content>")[0]
+                #t_xml.appendChild(element.firstChild)
+                self.__write_textnode(doc,t_xml,"content",desc)
             #self.__write_textnode(doc,t_xml,"content",t.get_text())
         #it's maybe not optimal to open/close the file each time we sync
         # but I'm not sure that those operations are so frequent
         # might be changed in the future.
         f = open(self.zefile, mode='w+')
-#        s = StringIO()
-#        doc.writexml(s, "####", "****", "\n")
-#        print s.getvalue()
-#        s.close()
-#        print self.__prettyxml(doc)
         f.write(doc.toprettyxml(tab,enter).encode("utf-8"))
 #        f.write(doc.toxml().encode("utf-8"))
         f.close()
