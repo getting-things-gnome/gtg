@@ -1,5 +1,0 @@
-<?xml version="1.0" ?><project name="Tasks from Bert"><task id="1@2" status="Active"><title>Inclure l'édition des dates dans l'éditeur texte</title><duedate>2008-11-14</duedate><content>Les dates sur le côté c'est sympa, mais il faudrait remplacer ou du moins ajouter la possibilité de fixer les dates directements dans l'éditeur de texte.
-
-Dans ce cas la barre latérale serait enlevée ou ne contiendrait que des infos (pas de moyen d'édition). Ex: récapitualtif des dates, infos sur les priorités, les tags, les fichiers joints...
-
-(Note de lio : moi j'aimais bien les dates au-dessus ;-) )</content></task><task id="0@2" status="Done"><title>test it</title><duedate>2008-11-14</duedate><donedate>2008-11-11</donedate><content>it should work</content></task></project>

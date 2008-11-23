@@ -1,45 +1,341 @@
-<?xml version="1.0" ?><project name="Lio - GTG tasks"><task id="11@1" status="Done"><title>Task editor resize</title><donedate>2008-11-11</donedate><content>Le texte doit s'adapter à la fenêtre et faire des &quot;faux&quot; retours à la ligne automatiquement (et s'adapter quand on redimensionne)
-C'est cool non ?</content></task><task id="8@1" status="Active"><title>do not save by default</title><content>si la tâche est <fluo>pas modifiée</fluo>
-on la sauve pas !
-(ou bien si elle est vide)</content></task><task id="10@1" status="Done"><title>remove tasks</title><donedate>2008-11-11</donedate><content>Press Escape or close this task to save it</content></task><task id="6@1" status="Done"><title>confirmation pour delete</title><donedate>2008-11-11</donedate><content>Le delete doit être confirmé</content></task><task id="13@1" status="Done"><title>Title en plus gros</title><donedate>2008-11-11</donedate><content>Press Escape or close this task to save it</content></task><task id="12@1" status="Done"><title>Boutton dans l'éditeur</title><donedate>2008-11-11</donedate><content>Mark as done
-delete</content></task><task id="7@1" status="Done"><title>Task editor glade</title><donedate>2008-11-11</donedate><content>Le task editor doit devenir
-un peu plus utilisable</content></task><task id="20@1" status="Done"><title>Support des projets</title><donedate>2008-11-11</donedate><content>Press Escape or close this task to save it</content></task><task id="4@1" status="Active"><title>Right clic</title><content>Right clic sur les tâches doit 
-permettre d'avoir un menu
-<bullet> ↪ </bullet><link target="1@1">eaz
-</link><bullet> ↪ </bullet><link target="1@1">eaz
-</link></content></task><task id="21@1" status="Done"><title>Title Tag</title><donedate>2008-11-11</donedate><content>Automatiquement appliquer le tag title quand on tape.
-Voir :
-http://www.pygtk.org/pygtk2tutorial/sec-TextBuffers.html
-http://www.pygtk.org/pygtk2tutorial/sec-TextTagsAndTextTagTables.html#sec-TextTags
-http://www.pygtk.org/pygtk2tutorial/examples/testtext.py</content></task><task id="5@1" status="Done"><title>Esc to close</title><donedate>2008-11-11</donedate><content>Esc dans l'éditeur doit le fermer e</content></task><task id="2@1" status="Done"><title>nouvelle tache</title><donedate>2008-11-11</donedate><content>implémenter le boutton
-&quot;new task&quot;</content></task><task id="22@1" status="Done"><title>Si première ligne vide</title><donedate>2008-11-11</donedate><content>Le titre est la suivante et ainsi de suite</content></task><task id="18@1" status="Active"><title>Support des tags</title><content>Pouvoir specifier des tags/contextes aux tâches, pour les trier
- ↪ aze</content></task><task id="23@1" status="Done"><title>Hyperlink dans les tasks</title><duedate>2008-11-07</duedate><donedate>2008-11-15</donedate><content> NoteTag.cs ligne 194
+<?xml version="1.0" ?>
+_<project name="Lio - GTG tasks">
+_	<task id="11@1" status="Done">
+_		<title>
+_			Task editor resize
+_		</title>
+_		<donedate>
+_			2008-11-11
+_		</donedate>
+_		<content>
+_			Le texte doit s'adapter à la fenêtre et faire des &quot;faux&quot; retours à la ligne automatiquement (et s'adapter quand on redimensionne)C'est cool non ?
+_		</content>
+_	</task>
+_	<task id="8@1" status="Active">
+_		<title>
+_			do not save by default
+_		</title>
+_		<content>
+_			si la tâche est 
+_			<fluo>
+_				pas modifiée
+_			</fluo>
+_			on la sauve pas !(ou bien si elle est vide)
+_		</content>
+_	</task>
+_	<task id="10@1" status="Done">
+_		<title>
+_			remove tasks
+_		</title>
+_		<donedate>
+_			2008-11-11
+_		</donedate>
+_		<content>
+_			Press Escape or close this task to save it
+_		</content>
+_	</task>
+_	<task id="6@1" status="Done">
+_		<title>
+_			confirmation pour delete
+_		</title>
+_		<donedate>
+_			2008-11-11
+_		</donedate>
+_		<content>
+_			Le delete doit être confirmé
+_		</content>
+_	</task>
+_	<task id="13@1" status="Done">
+_		<title>
+_			Title en plus gros
+_		</title>
+_		<donedate>
+_			2008-11-11
+_		</donedate>
+_		<content>
+_			Press Escape or close this task to save it
+_		</content>
+_	</task>
+_	<task id="12@1" status="Done">
+_		<title>
+_			Boutton dans l'éditeur
+_		</title>
+_		<donedate>
+_			2008-11-11
+_		</donedate>
+_		<content>
+_			Mark as donedelete
+_		</content>
+_	</task>
+_	<task id="7@1" status="Done">
+_		<title>
+_			Task editor glade
+_		</title>
+_		<donedate>
+_			2008-11-11
+_		</donedate>
+_		<content>
+_			Le task editor doit devenirun peu plus utilisable
+_		</content>
+_	</task>
+_	<task id="20@1" status="Done">
+_		<title>
+_			Support des projets
+_		</title>
+_		<donedate>
+_			2008-11-11
+_		</donedate>
+_		<content>
+_			Press Escape or close this task to save it
+_		</content>
+_	</task>
+_	<task id="4@1" status="Active">
+_		<title>
+_			Right clic
+_		</title>
+_		<content>
+_			Right clic sur les tâches doit permettre d'avoir un menu
+_			<bullet>
+_				 
+↪ 
+_			</bullet>
+_			<link target="1@1">
+_				eaz
+_			</link>
+_			<bullet>
+_				 
+↪ 
+_			</bullet>
+_			<link target="1@1">
+_				eaz
+_			</link>
+_			
 
-Et pour le curseur voir Watchers.cs ligne 1094 :
+_			<bullet>
+_				 ↪ 
+_			</bullet>
+_			<link target="1@1">
+_				eaz
 
-if (hovering != hovering_on_link) {
-				hovering_on_link = hovering;
-
-				Gdk.Window win = Window.Editor.GetWindow (Gtk.TextWindowType.Text);
-				if (hovering &amp;&amp; !avoid_hand)
-					win.Cursor = hand_cursor;
-				else
-					win.Cursor = normal_cursor;</content></task><task id="3@1" status="Active"><title>Undone</title><content>When a &quot;done&quot; task is selected The &quot;Mark as done&quot; should change to &quot;Undone&quot; 
-(also in the task editor)
-az</content></task><task id="0@1" status="Done"><title>Display tasks done</title><donedate>2008-11-11</donedate><content>Press Escape or close this task to save it</content></task><task id="24@1" status="Active"><title>Strike task on delete</title><duedate>2008-11-11</duedate><content>plutot que de demander confirmation, on le met striked dans le done-list (à renommer &quot;closed&quot;)
-(et on efface les deleted à la fermeture de l'application)</content></task><task id="1@1" status="Done"><title>refresh title</title><donedate>2008-11-11</donedate><content>On doit rafraichir le title
-dans la liste quand on close
-l'éditeur</content></task><task id="25@1" status="Active"><title>Undone also in the main window</title><content>If the task is marked as done, it should be undonable from the main window
-<bullet> ↪ </bullet><link target="1@1">eaz
-</link></content></task><task id="19@1" status="Active"><title>Manger des frites</title><duedate>2008-10-03</duedate><content>C'est bon !</content></task><task id="29@1" status="Active"><title>Sauver le style</title><content>sauver les tags dans le XML</content></task><task id="26@1" status="Done"><title>Press Escape or close this task to save it</title><donedate>2008-11-15</donedate></task><task id="27@1" status="Active"><title>Start date</title><content>Mettre notre propre widget pour le startdate et ajouter le support de start date dans l'interface principale</content></task><task id="15@1" status="Done"><title>Done date</title><donedate>2008-11-11</donedate><content>L'afficher dans le treeview des tasks Done</content></task><task id="14@1" status="Done"><title>Due date</title><duedate>2008-11-09</duedate><donedate>2008-11-11</donedate><content>- fermer automatiquement si on clique en dehors du calendar
-- L'afficher dans le treeview des taches actives
-
-Done:
-- permettre de le modifier dans l'éditeur de tâches
-- le sauver dans le XML</content></task><task id="28@1" status="Active"><title>Pointeur devient souris</title><content>après hover sur un lien alors qu'il devrait redevenir un truc d'insertion (ce qu'il redevient après avoir taper du texte)</content></task><task id="17@1" status="Active"><title>refactor main.py</title><content>We should really separate the management of the task editor and the main task list.
-
-In fact, task list should be &quot;hideable&quot; at will and should be usable with any task editor</content></task><task id="9@1" status="Done"><title>Ne pas ouvrir plusieurs fois la même tâche</title><donedate>2008-11-11</donedate><content>Parce que c'est pas bien
-
-gtk.window.present() peut nous aider !</content></task><task id="16@1" status="Active"><title>child task</title><content>faut avoir des listes à puces, un boutton pour rajouter une sous-tâche
-
-Comment indiquer le parent ? </content></task></project>
+_			</link>
+_		</content>
+_	</task>
+_	<task id="21@1" status="Done">
+_		<title>
+_			Title Tag
+_		</title>
+_		<donedate>
+_			2008-11-11
+_		</donedate>
+_		<content>
+_			Automatiquement appliquer le tag title quand on tape.Voir :http://www.pygtk.org/pygtk2tutorial/sec-TextBuffers.htmlhttp://www.pygtk.org/pygtk2tutorial/sec-TextTagsAndTextTagTables.html#sec-TextTagshttp://www.pygtk.org/pygtk2tutorial/examples/testtext.py
+_		</content>
+_	</task>
+_	<task id="5@1" status="Done">
+_		<title>
+_			Esc to close
+_		</title>
+_		<donedate>
+_			2008-11-11
+_		</donedate>
+_		<content>
+_			Esc dans l'éditeur doit le fermer e
+_		</content>
+_	</task>
+_	<task id="2@1" status="Done">
+_		<title>
+_			nouvelle tache
+_		</title>
+_		<donedate>
+_			2008-11-11
+_		</donedate>
+_		<content>
+_			implémenter le bouttonquot;new task&quot;
+_		</content>
+_	</task>
+_	<task id="22@1" status="Done">
+_		<title>
+_			Si première ligne vide
+_		</title>
+_		<donedate>
+_			2008-11-11
+_		</donedate>
+_		<content>
+_			Le titre est la suivante et ainsi de suite
+_		</content>
+_	</task>
+_	<task id="18@1" status="Active">
+_		<title>
+_			Support des tags
+_		</title>
+_		<content>
+_			Pouvoir specifier des tags/contextes aux tâches, pour les trier ↪ aze
+_		</content>
+_	</task>
+_	<task id="23@1" status="Done">
+_		<title>
+_			Hyperlink dans les tasks
+_		</title>
+_		<duedate>
+_			2008-11-07
+_		</duedate>
+_		<donedate>
+_			2008-11-15
+_		</donedate>
+_		<content>
+_			 NoteTag.cs ligne 194Et pour le curseur voir Watchers.cs ligne 1094 :if (hovering != hovering_on_link) {hovering_on_link = hovering;Gdk.Window win = Window.Editor.GetWindow (Gtk.TextWindowType.Text);if (hovering  !avoid_hand)win.Cursor = hand_cursor;elsewin.Cursor = normal_cursor;
+_		</content>
+_	</task>
+_	<task id="3@1" status="Active">
+_		<title>
+_			Undone
+_		</title>
+_		<content>
+_			When a &quot;done&quot; task is selected The &quot;Mark as done&quot; should change to &quot;Undone&quot; (also in the task editor)az
+_		</content>
+_	</task>
+_	<task id="0@1" status="Done">
+_		<title>
+_			Display tasks done
+_		</title>
+_		<donedate>
+_			2008-11-11
+_		</donedate>
+_		<content>
+_			Press Escape or close this task to save it
+_		</content>
+_	</task>
+_	<task id="24@1" status="Active">
+_		<title>
+_			Strike task on delete
+_		</title>
+_		<duedate>
+_			2008-11-11
+_		</duedate>
+_		<content>
+_			plutot que de demander confirmation, on le met striked dans le done-list (à renommer &quot;closed&quot;)(et on efface les deleted à la fermeture de l'application)
+_		</content>
+_	</task>
+_	<task id="1@1" status="Done">
+_		<title>
+_			refresh title
+_		</title>
+_		<donedate>
+_			2008-11-11
+_		</donedate>
+_		<content>
+_			On doit rafraichir le titledans la liste quand on closel'éditeur
+_		</content>
+_	</task>
+_	<task id="25@1" status="Active">
+_		<title>
+_			Undone also in the main window
+_		</title>
+_		<content>
+_			If the task is marked as done, it should be undonable from the main window
+_			<bullet>
+_				 ↪ 
+_			</bullet>
+_			<link target="1@1">
+_				eaz
+_			</link>
+_		</content>
+_	</task>
+_	<task id="19@1" status="Active">
+_		<title>
+_			Manger des frites
+_		</title>
+_		<duedate>
+_			2008-10-03
+_		</duedate>
+_		<content>
+_			C'est bon !
+ez
+_		</content>
+_	</task>
+_	<task id="29@1" status="Active">
+_		<title>
+_			Sauver le style
+_		</title>
+_		<content>
+_			sauver les tags dans le XML
+_		</content>
+_	</task>
+_	<task id="26@1" status="Done">
+_		<title>
+_			Press Escape or close this task to save it
+_		</title>
+_		<donedate>
+_			2008-11-15
+_		</donedate>
+_	</task>
+_	<task id="27@1" status="Active">
+_		<title>
+_			Start date
+_		</title>
+_		<content>
+_			Mettre notre propre widget pour le startdate et ajouter le support de start date dans l'interface principale
+_		</content>
+_	</task>
+_	<task id="15@1" status="Done">
+_		<title>
+_			Done date
+_		</title>
+_		<donedate>
+_			2008-11-11
+_		</donedate>
+_		<content>
+_			L'afficher dans le treeview des tasks Done
+_		</content>
+_	</task>
+_	<task id="14@1" status="Done">
+_		<title>
+_			Due date
+_		</title>
+_		<duedate>
+_			2008-11-09
+_		</duedate>
+_		<donedate>
+_			2008-11-11
+_		</donedate>
+_		<content>
+_			- fermer automatiquement si on clique en dehors du calendar- L'afficher dans le treeview des taches activesDone:- permettre de le modifier dans l'éditeur de tâches- le sauver dans le XML
+_		</content>
+_	</task>
+_	<task id="28@1" status="Active">
+_		<title>
+_			Pointeur devient souris
+_		</title>
+_		<content>
+_			après hover sur un lien alors qu'il devrait redevenir un truc d'insertion (ce qu'il redevient après avoir taper du texte)
+_		</content>
+_	</task>
+_	<task id="17@1" status="Active">
+_		<title>
+_			refactor main.py
+_		</title>
+_		<content>
+_			We should really separate the management of the task editor and the main task list.In fact, task list should be &quot;hideable&quot; at will and should be usable with any task editor
+_		</content>
+_	</task>
+_	<task id="9@1" status="Done">
+_		<title>
+_			Ne pas ouvrir plusieurs fois la même tâche
+_		</title>
+_		<donedate>
+_			2008-11-11
+_		</donedate>
+_		<content>
+_			Parce que c'est pas biengtk.window.present() peut nous aider !
+_		</content>
+_	</task>
+_	<task id="16@1" status="Active">
+_		<title>
+_			child task
+_		</title>
+_		<content>
+_			faut avoir des listes à puces, un boutton pour rajouter une sous-tâcheComment indiquer le parent ? 
+_		</content>
+_	</task>
+_</project>
+_

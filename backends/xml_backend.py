@@ -4,6 +4,10 @@ import string, threading
 from task import Task, Project
 from cStringIO import StringIO
 
+tab = "\t"
+enter = "\n_"
+oldtab = "\t"
+oldenter = "\n_"
 
 #todo : Backend should only provide one big "project" object and should 
 #not provide get_task and stuff like that.
@@ -13,8 +17,10 @@ class Backend :
         if os.path.exists(self.zefile) :
             f = open(self.zefile,mode='r')
             # sanitize the pretty XML
-            doc=xml.dom.minidom.parse(self.zefile)
-            #self.__cleanDoc(doc,"\t","\n")
+            s = f.read().replace(oldtab,'').replace(oldenter,'')
+            doc=xml.dom.minidom.parseString(s)
+            #doc=xml.dom.minidom.parse(self.zefile)
+            #self.__cleanDoc(doc,tab,enter)
             self.__xmlproject = doc.getElementsByTagName("project")
             proj_name = str(self.__xmlproject[0].getAttribute("name"))
             self.project = Project(proj_name)
@@ -37,7 +43,8 @@ class Backend :
  
     def __cleanNode(self,currentNode,indent,newl):
         filter=indent+newl
-        if currentNode.hasChildNodes and currentNode.nodeName != "content":
+        if currentNode.hasChildNodes :
+        #and currentNode.nodeName != "content":
             for node in currentNode.childNodes:
                 if node.nodeType == 3 :
                     node.nodeValue = node.nodeValue.lstrip(filter).strip(filter)
@@ -110,8 +117,8 @@ class Backend :
 #        print s.getvalue()
 #        s.close()
 #        print self.__prettyxml(doc)
-#        f.write(doc.toprettyxml().encode("utf-8"))
-        f.write(doc.toxml().encode("utf-8"))
+        f.write(doc.toprettyxml(tab,enter).encode("utf-8"))
+#        f.write(doc.toxml().encode("utf-8"))
         f.close()
     
 #    #our own method that will print pretty xml

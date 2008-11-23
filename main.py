@@ -80,25 +80,25 @@ class Base:
         #We create a dict which contains every pair of Backend/project
         #TODO : do this from a projects configuration
         backend1 = Backend("mynote.xml")
-        backend2 = Backend("bert.xml")
+        #backend2 = Backend("bert.xml")
         project1 = backend1.get_project()
-        project2 = backend2.get_project()
+        #project2 = backend2.get_project()
         #We assign a random number to each project
         #This way, each project has a unique ID for the session
         #Warning : this is not persistant ! The pid is different
         #for each session !
         # (this is a feature to allow easy import of a project
         project1.set_pid('1')
-        project2.set_pid('2')
+        #project2.set_pid('2')
         #We add the sync function for project
         project1.set_sync_func(backend1.sync_project)
-        project2.set_sync_func(backend2.sync_project)
+        #project2.set_sync_func(backend2.sync_project)
         #self.projects is a list of tuples
         #each tuple is a [backend,project] duo
         #So we always have the relevant backend for a project if needed
         self.projects = {}
         self.projects['1'] = [backend1, project1]
-        self.projects['2'] = [backend2, project2]
+        #self.projects['2'] = [backend2, project2]
         
         
     def main(self):
