@@ -2,6 +2,8 @@ import sys, time, os, xml.dom.minidom
 import string, threading
 
 from task import Task, Project
+from cStringIO import StringIO
+
 
 #todo : Backend should only provide one big "project" object and should 
 #not provide get_task and stuff like that.
@@ -12,7 +14,7 @@ class Backend :
             f = open(self.zefile,mode='r')
             # sanitize the pretty XML
             doc=xml.dom.minidom.parse(self.zefile)
-            self.__cleanDoc(doc,"\t","\n")
+            #self.__cleanDoc(doc,"\t","\n")
             self.__xmlproject = doc.getElementsByTagName("project")
             proj_name = str(self.__xmlproject[0].getAttribute("name"))
             self.project = Project(proj_name)
@@ -35,7 +37,7 @@ class Backend :
  
     def __cleanNode(self,currentNode,indent,newl):
         filter=indent+newl
-        if currentNode.hasChildNodes:
+        if currentNode.hasChildNodes and currentNode.nodeName != "content":
             for node in currentNode.childNodes:
                 if node.nodeType == 3 :
                     node.nodeValue = node.nodeValue.lstrip(filter).strip(filter)
@@ -43,6 +45,7 @@ class Backend :
                         currentNode.removeChild(node)
             for node in currentNode.childNodes:
                 self.__cleanNode(node,indent,newl)
+#        elif currentNode.nodeName == "content" :
         
     #This function should return a project object with all the current tasks in it.
     def get_project(self) :
@@ -57,7 +60,9 @@ class Backend :
                 #we will fill the task with its content
                 cur_task.set_title(self.__read_textnode(t,"title"))
                 #cur_task.set_text(self.__read_textnode(t,"content"))
-                cur_task.set_text(t.getElementsByTagName("content")[0].toxml())
+                tasktext = t.getElementsByTagName("content")
+                if len(tasktext) > 0 :
+                    cur_task.set_text(tasktext[0].toxml())
                 cur_task.set_due_date(self.__read_textnode(t,"duedate"))
                 #adding task to the project
                 self.project.add_task(cur_task)
@@ -91,15 +96,48 @@ class Backend :
             self.__write_textnode(doc,t_xml,"title",t.get_title())
             self.__write_textnode(doc,t_xml,"duedate",t.get_due_date())
             self.__write_textnode(doc,t_xml,"donedate",t.get_done_date())
-            element = xml.dom.minidom.parseString(t.get_text())
-            t_xml.appendChild(element.firstChild)
+            tex = t.get_text()
+            if tex :
+                element = xml.dom.minidom.parseString(tex)
+                t_xml.appendChild(element.firstChild)
             #self.__write_textnode(doc,t_xml,"content",t.get_text())
         #it's maybe not optimal to open/close the file each time we sync
         # but I'm not sure that those operations are so frequent
         # might be changed in the future.
         f = open(self.zefile, mode='w+')
-        f.write(doc.toprettyxml().encode("utf-8"))
+#        s = StringIO()
+#        doc.writexml(s, "####", "****", "\n")
+#        print s.getvalue()
+#        s.close()
+#        print self.__prettyxml(doc)
+#        f.write(doc.toprettyxml().encode("utf-8"))
+        f.write(doc.toxml().encode("utf-8"))
         f.close()
+    
+#    #our own method that will print pretty xml
+#    def __prettyxml(self,doc) :
+#        txt = ""
+#        if doc.nodeType == doc.TEXT_NODE :
+#            txt += doc.toxml()
+#        elif doc.nodeName == "content" :
+#            txt += "\n"
+#            txt += doc.toxml()
+#            #txt += "\n"
+#        else :
+#            childs = doc.childNodes
+#            if len(childs) == 1 :
+#                if doc.firstChild.nodeType == doc.TEXT_NODE :
+#                    txt += "\n"
+#                    txt += doc.toxml()
+#                    #txt += "\n"
+#                else :
+#                    txt += "\n"
+#                    txt += "<%s>"
+#                    txt += self.__prettyxml(childs[0])
+#            else :
+#                for n in childs :
+#                    txt += self.__prettyxml(n)
+#        return txt
      
     #Method to add a text node in the doc to the parent node   
     def __write_textnode(self,doc,parent,title,content) :
