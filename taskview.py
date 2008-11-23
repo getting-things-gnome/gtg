@@ -220,9 +220,6 @@ class TaskView(gtk.TextView):
                 ta_list = it.get_tags()
                 #The last of the list is the highest priority
                 ta = ta_list.pop()
-#                for t in it.get_tags() :
-#                    if t.get_priority() > ta.get_priority() :
-#                        ta = t
                 #remove the tag (to avoid infinite loop)
                 #buf.remove_tag(ta,startit,endit)
                 #But we are modifying the buffer. So instead,
@@ -242,20 +239,26 @@ class TaskView(gtk.TextView):
                         else :
                             ta = ta_list.pop()
                 else :
+                    #if we process the first tag of this offset, we add an entry
                     self.__tag_stack[offset] = []
                 #Not tag to process, we are in the text mode
                 if all_processed :
+                    #same code below. Should we make a separate function ?
                     parent.appendChild(doc.createTextNode(it.get_char()))
                     it.forward_char()
                 else :
                     #So now, we are in tag "ta"
+                    #Let's get the end of the tag
                     it.forward_to_tag_toggle(ta)
                     endit = it.copy()
                     tagname = ta.props.name
+                    #Let's add this tag to the stack so we remember
+                    #it's already processed
                     self.__tag_stack[offset].append(tagname)
                     #The link tag has noname but has "is_anchor" properties
                     if ta.get_data('is_anchor') :
                         tagname = "link"
+                    #Recursive call !!!!! (we handle tag in tags)
                     child = self.__parsebuf(buf,startit,endit,tagname,doc)
                     #handling special tags
                     if ta.get_data('is_anchor') :
@@ -265,6 +268,7 @@ class TaskView(gtk.TextView):
             else :
                 parent.appendChild(doc.createTextNode(it.get_char()))
                 it.forward_char()
+        #This function concatenate all the adjacent text node of the XML
         parent.normalize()
         return parent
         
@@ -285,7 +289,7 @@ class TaskView(gtk.TextView):
                     buf.apply_tag_by_name(n.nodeName,s,e)
                 #print "</%s>" %n.nodeName
             elif n.nodeType == n.TEXT_NODE :
-                buf.insert(ite,n.toxml())
+                buf.insert(ite,n.nodeValue)
         #return buf.get_end_iter()
         return ite.get_offset()
                 

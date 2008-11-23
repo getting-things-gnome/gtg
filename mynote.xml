@@ -221,9 +221,14 @@ if (hovering != hovering_on_link) {
 			Undone
 		</title>
 		<content>
-			When a &quot;done&quot; task is selected The &quot;Mark as done&quot; should change to &quot;Undone&quot; 
-(also in the task editor)
-az
+			When a done task is selected The Mark as done should change to &quot;undone&quot; &lt;zae&gt;&lt;/zea&gt;
+(also in the task editor) éà&amp;
+			<bullet>
+				 ↪ 
+			</bullet>
+			<link target="1@1">
+				subtask test
+			</link>
 		</content>
 	</task>
 	<task id="0@1" status="Done">
