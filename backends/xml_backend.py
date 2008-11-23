@@ -59,14 +59,7 @@ class Backend :
                 #cur_task.set_text(self.__read_textnode(t,"content"))
                 tasktext = t.getElementsByTagName("content")
                 if len(tasktext) > 0 :
-#                    print "##########"
-#                    print self.__read_textnode(t,"title")
-#                    print tasktext
-#                    print "***********"
                     cur_task.set_text(tasktext[0].toxml())
-                #else :
-#                    print "%%%%%%%%%%"
-#                    print self.__read_textnode(t,"title")
                 cur_task.set_due_date(self.__read_textnode(t,"duedate"))
                 #adding task to the project
                 self.project.add_task(cur_task)
@@ -102,8 +95,6 @@ class Backend :
             self.__write_textnode(doc,t_xml,"donedate",t.get_done_date())
             tex = t.get_text()
             if tex :
-                if not tex.startswith("<content>") :
-                    tex = "<content>%s</content>" %tex
                 element = xml.dom.minidom.parseString(tex)
                 t_xml.appendChild(element.firstChild)
             #self.__write_textnode(doc,t_xml,"content",t.get_text())

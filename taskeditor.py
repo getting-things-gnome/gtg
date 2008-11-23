@@ -76,13 +76,9 @@ class TaskEditor :
         self.textview.set_text("%s\n"%title)
         #we insert the rest of the task
         if texte : 
-#            print "          "
-#            print "Inserting"
-#            print "Title : %s" %title
-#            print "text : %s " %texte
             self.textview.insert("%s"%texte)
             
-        self.window.connect("destroy", self.close)
+        self.window.connect("destroy", self.destruction)
         self.refresh_editor()
 
         self.window.show()
@@ -183,12 +179,18 @@ class TaskEditor :
         
     #We define dummy variable for when close is called from a callback
     def close(self,window,a=None,b=None,c=None) :
-        #Save should be also called when buffer is modified
-        self.save()
-        self.closing(self.task.get_id())
         #TODO : verify that destroy the window is enough ! 
         #We should also destroy the whole taskeditor object.
         self.window.destroy()
+    
+    #The destroy signal is linked to the "close" button. So if we call
+    #destroy in the close function, this will cause the close to be called twice
+    #To solve that, close will just call "destroy" and the destroy signal
+    #Will be linked to this destruction method that will save the task
+    def destruction(self,a=None) :
+        #Save should be also called when buffer is modified
+        self.save()
+        self.closing(self.task.get_id())
         
         
 ############# Private functions #################

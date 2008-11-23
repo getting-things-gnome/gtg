@@ -68,7 +68,10 @@ class TaskView(gtk.TextView):
         #We have to find a way to keep this tag for the first line
         #Even when the task is edited
 
+        #This is the list of all the links in our task
         self.__tags = []
+        #This is a simple stack used by the serialization
+        self.__tag_stack = {}
         
         #Callback to refresh the editor window
         self.refresh = None
@@ -166,11 +169,11 @@ class TaskView(gtk.TextView):
         #Let's strip blank lines
         stripped = title.strip(' \n\t')
         return stripped
-    #Get the content of the task without the title
-    def get_tasktext(self) :
-        texte = self.get_text()
-        return texte
-#    #Strip the title (first line with text) from the rest  
+#    #Get the content of the task without the title
+#    def get_tasktext(self) :
+#        texte = self.get_text()
+#        return texte
+##    #Strip the title (first line with text) from the rest  
 #    #We don't use serializing here !
 #    def get_fulltext(self) :
 #        texte = self.buff.get_text(self.buff.get_start_iter(),self.buff.get_end_iter())
@@ -214,26 +217,50 @@ class TaskView(gtk.TextView):
             #if a tag begin, we will parse until the end
             if it.begins_tag() :
                 #We take the tag with the highest priority
-                ta = it.get_tags()[0]
-                for t in it.get_tags() :
-                    if t.get_priority() > ta.get_priority() :
-                        ta = t
-                #So now, we are in tag "ta"
-                startit = it.copy()
-                it.forward_to_tag_toggle(ta)
-                endit = it.copy()
+                ta_list = it.get_tags()
+                #The last of the list is the highest priority
+                ta = ta_list.pop()
+#                for t in it.get_tags() :
+#                    if t.get_priority() > ta.get_priority() :
+#                        ta = t
                 #remove the tag (to avoid infinite loop)
-                buf.remove_tag(ta,startit,endit)
-                tagname = ta.props.name
-                #The link tag has noname
-                if ta.get_data('is_anchor') :
-                    tagname = "link"
-                #recursive call around the tag "ta"
-                child = self.__parsebuf(buf,startit,endit,tagname,doc)
-                #handling special tags
-                if ta.get_data('is_anchor') :
-                    child.setAttribute("target",ta.get_data('link'))
-                parent.appendChild(child)
+                #buf.remove_tag(ta,startit,endit)
+                #But we are modifying the buffer. So instead,
+                #We put the tag in the stack so we remember it was
+                #already processed.
+                startit = it.copy()
+                offset = startit.get_offset()
+                #a boolean to know if we have processed all tags here
+                all_processed = False
+                #Have we already processed a tag a this point ?
+                if self.__tag_stack.has_key(offset) :
+                    #Have we already processed this particular tag ?
+                    while (not all_processed) and ta.props.name in self.__tag_stack[offset] :
+                        #Yes, so we take another tag (if there's one
+                        if len(ta_list) <= 0 :
+                            all_processed = True
+                        else :
+                            ta = ta_list.pop()
+                else :
+                    self.__tag_stack[offset] = []
+                #Not tag to process, we are in the text mode
+                if all_processed :
+                    parent.appendChild(doc.createTextNode(it.get_char()))
+                    it.forward_char()
+                else :
+                    #So now, we are in tag "ta"
+                    it.forward_to_tag_toggle(ta)
+                    endit = it.copy()
+                    tagname = ta.props.name
+                    self.__tag_stack[offset].append(tagname)
+                    #The link tag has noname but has "is_anchor" properties
+                    if ta.get_data('is_anchor') :
+                        tagname = "link"
+                    child = self.__parsebuf(buf,startit,endit,tagname,doc)
+                    #handling special tags
+                    if ta.get_data('is_anchor') :
+                        child.setAttribute("target",ta.get_data('link'))
+                    parent.appendChild(child)
             #else, we just add the text
             else :
                 parent.appendChild(doc.createTextNode(it.get_char()))
@@ -262,15 +289,16 @@ class TaskView(gtk.TextView):
         #return buf.get_end_iter()
         return ite.get_offset()
                 
-    #We should have a look at Tomboy Serialize function 
-    #NoteBuffer.cs : line 1163
     ### Serialize the task : transform it's content in something
     #we can store
     def __taskserial(self,register_buf, content_buf, start, end, udata) :
         #Currently we serialize in XML
         its = start.copy()
         ite = end.copy()
+        #Warning : the serialization process cannot be allowed to modify 
+        #the content of the buffer.
         doc = xml.dom.minidom.Document()
+        self.__tag_stack = {}
         doc.appendChild(self.__parsebuf(content_buf,its, ite,"content",doc))
         #We don't want the whole doc with the XML declaration
         #we only take the first node (the "content" one)
@@ -284,10 +312,6 @@ class TaskView(gtk.TextView):
         #content_buf.insert(ite, data)
         #fluo = self.table.lookup("fluo")
         #content_buf.insert_with_tags(ite,data,fluo)
-        
-        #backward compatibility
-        #if not data.startswith("<content>") :
-        #   data = "<content>%s</content>" %data
         if data :
             element = xml.dom.minidom.parseString(data)
             val = self.__parsexml(content_buf,ite,element.firstChild)

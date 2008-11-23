@@ -17,9 +17,31 @@ C'est cool non ?
 			do not save by default
 		</title>
 		<content>
-			si la tâche est pas modifiée
-on la sauve pas !
+			si la tâche est 
+			<fluo>
+				pas modifiée
+			</fluo>
+			on la sauve pas !
 (ou bien si elle est vide)
+			<bullet>
+				 ↪ 
+			</bullet>
+			<link target="1@1">
+				à 
+				<link target="1@1">
+					<fluo>
+						faire
+					</fluo>
+				</link>
+			</link>
+			<bullet>
+				 ↪ 
+			</bullet>
+			<link target="1@1">
+				<fluo>
+					ensuite
+				</fluo>
+			</link>
 		</content>
 	</task>
 	<task id="10@1" status="Done">
@@ -97,8 +119,18 @@ un peu plus utilisable
 		<content>
 			Right clic sur les tâches doit 
 permettre d'avoir un menu
- ↪ 
- ↪ ee az
+			<bullet>
+				 ↪ 
+			</bullet>
+			<link target="1@1">
+				dqs
+			</link>
+			<bullet>
+				 ↪ 
+			</bullet>
+			<link target="1@1">
+				dqs
+			</link>
 		</content>
 	</task>
 	<task id="21@1" status="Done">
