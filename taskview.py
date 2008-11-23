@@ -118,12 +118,17 @@ class TaskView(gtk.TextView):
             _iter = b.get_end_iter()
         if anchor is None:
             anchor = text
+        tag = self.create_anchor_tag(b,anchor,text)
+        b.insert_with_tags(_iter, text, tag)
 
+    def create_anchor_tag(self,b,anchor,text=None):
         tag = b.create_tag("link", **self.get_property('link'))
         tag.set_data('is_anchor', True)
+        tag.set_data('link',anchor)
         tag.connect('event', self._tag_event, text, anchor)
         self.__tags.append(tag)
-        b.insert_with_tags(_iter, text, tag)
+        return tag
+        
 
         
  ##### The "Get text" group #########
@@ -217,7 +222,11 @@ class TaskView(gtk.TextView):
                 #remove the tag (to avoid infinite loop)
                 buf.remove_tag(ta,startit,endit)
                 #recursive call around the tag "ta"
-                parent.appendChild(self.__parsebuf(buf,startit,endit,ta.props.name,doc))
+                child = self.__parsebuf(buf,startit,endit,ta.props.name,doc)
+                #handling special tags
+                if ta.props.name == "link" :
+                    child.setAttribute("target",ta.get_data('link'))
+                parent.appendChild(child)
             #else, we just add the text
             else :
                 parent.appendChild(doc.createTextNode(it.get_char()))
@@ -234,7 +243,12 @@ class TaskView(gtk.TextView):
                 end = self.__parsexml(buf,ite,n)
                 s = buf.get_iter_at_offset(start)
                 e = buf.get_iter_at_offset(end)
-                buf.apply_tag_by_name(n.nodeName,s,e)
+                if n.nodeName == "link" :
+                    anchor = n.getAttribute("target")
+                    tag = self.create_anchor_tag(buf,anchor,None)
+                    buf.apply_tag(tag,s,e)
+                else :
+                    buf.apply_tag_by_name(n.nodeName,s,e)
                 #print "</%s>" %n.nodeName
             elif n.nodeType == n.TEXT_NODE :
                 buf.insert(ite,n.toxml())
