@@ -122,7 +122,10 @@ class TaskView(gtk.TextView):
         b.insert_with_tags(_iter, text, tag)
 
     def create_anchor_tag(self,b,anchor,text=None):
-        tag = b.create_tag("link", **self.get_property('link'))
+        #We cannot have two tags with the same name
+        #That's why the link tag has no name
+        #but it has a "is_anchor" property
+        tag = b.create_tag(None, **self.get_property('link'))
         tag.set_data('is_anchor', True)
         tag.set_data('link',anchor)
         tag.connect('event', self._tag_event, text, anchor)
@@ -221,10 +224,14 @@ class TaskView(gtk.TextView):
                 endit = it.copy()
                 #remove the tag (to avoid infinite loop)
                 buf.remove_tag(ta,startit,endit)
+                tagname = ta.props.name
+                #The link tag has noname
+                if ta.get_data('is_anchor') :
+                    tagname = "link"
                 #recursive call around the tag "ta"
-                child = self.__parsebuf(buf,startit,endit,ta.props.name,doc)
+                child = self.__parsebuf(buf,startit,endit,tagname,doc)
                 #handling special tags
-                if ta.props.name == "link" :
+                if ta.get_data('is_anchor') :
                     child.setAttribute("target",ta.get_data('link'))
                 parent.appendChild(child)
             #else, we just add the text
