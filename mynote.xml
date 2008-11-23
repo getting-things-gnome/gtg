@@ -97,8 +97,8 @@ un peu plus utilisable
 		<content>
 			Right clic sur les tâches doit 
 permettre d'avoir un menu
- ↪ aze
- ↪ aze
+ ↪ 
+ ↪ ee az
 		</content>
 	</task>
 	<task id="21@1" status="Done">
@@ -136,7 +136,7 @@ http://www.pygtk.org/pygtk2tutorial/examples/testtext.py
 		</donedate>
 		<content>
 			implémenter le boutton
-&amp;quot;new task&amp;quot;
+&quot;new task&quot;
 		</content>
 	</task>
 	<task id="22@1" status="Done">
@@ -213,7 +213,7 @@ az
 			2008-11-11
 		</duedate>
 		<content>
-			plutot que de demander confirmation, on le met striked dans le done-list (à renommer &amp;quot;closed&amp;quot;)
+			plutot que de demander confirmation, on le met striked dans le done-list (à renommer &quot;closed&quot;)
 (et on efface les deleted à la fermeture de l'application)
 		</content>
 	</task>
@@ -265,9 +265,6 @@ l'éditeur
 		<donedate>
 			2008-11-15
 		</donedate>
-		<content>
-			<content/>
-		</content>
 	</task>
 	<task id="27@1" status="Active">
 		<title>

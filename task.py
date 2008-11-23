@@ -95,6 +95,11 @@ class Task :
             return ""
         
     def set_text(self,texte) :
+        #defensive programmation to filter bad formatted tasks
+        if not texte.startswith("<content>") :
+            texte = "<content>%s" %texte
+        if not texte.endswith("</content>") :
+            texte = "%s</content>" %texte
         if texte :
             self.content = str(texte)
         else :
