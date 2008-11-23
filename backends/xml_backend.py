@@ -37,8 +37,7 @@ class Backend :
  
     def __cleanNode(self,currentNode,indent,newl):
         filter=indent+newl
-        if currentNode.hasChildNodes :
-        #and currentNode.nodeName != "content":
+        if currentNode.hasChildNodes and currentNode.nodeName != "content":
             for node in currentNode.childNodes:
                 if node.nodeType == 3 :
                     node.nodeValue = node.nodeValue.lstrip(filter).strip(filter)
@@ -46,6 +45,7 @@ class Backend :
                         currentNode.removeChild(node)
             for node in currentNode.childNodes:
                 self.__cleanNode(node,indent,newl)
+#        elif currentNode.nodeName == "content" :
         
     #This function should return a project object with all the current tasks in it.
     def get_project(self) :
