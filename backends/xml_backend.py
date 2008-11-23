@@ -93,8 +93,12 @@ class Backend :
             self.__write_textnode(doc,t_xml,"title",t.get_title())
             self.__write_textnode(doc,t_xml,"duedate",t.get_due_date())
             self.__write_textnode(doc,t_xml,"donedate",t.get_done_date())
-            element = xml.dom.minidom.parseString(t.get_text())
-            t_xml.appendChild(element.firstChild)
+            tex = t.get_text()
+            if tex :
+                #if not tex.startswith("<content>") :
+                #   tex = "<content>%s</content>" %tex
+                element = xml.dom.minidom.parseString(tex)
+                t_xml.appendChild(element.firstChild)
             #self.__write_textnode(doc,t_xml,"content",t.get_text())
         #it's maybe not optimal to open/close the file each time we sync
         # but I'm not sure that those operations are so frequent

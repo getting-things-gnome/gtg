@@ -97,8 +97,8 @@ un peu plus utilisable
 		<content>
 			Right clic sur les tâches doit 
 permettre d'avoir un menu
- ↪ 
- ↪ ee az
+ ↪ aze
+
 		</content>
 	</task>
 	<task id="21@1" status="Done">
@@ -189,7 +189,7 @@ if (hovering != hovering_on_link) {
 			Undone
 		</title>
 		<content>
-			When a &quot;done&quot; task is selected The &quot;Mark as done&quot; should change to &quot;Undone&quot; 
+			When a &amp;amp;amp;quot;done&amp;amp;amp;quot; task is selected The &amp;amp;amp;quot;Mark as done&amp;amp;amp;quot; should change to &amp;amp;amp;quot;Undone&amp;amp;amp;quot; 
 (also in the task editor)
 az
 		</content>
@@ -265,6 +265,9 @@ l'éditeur
 		<donedate>
 			2008-11-15
 		</donedate>
+		<content>
+			Press Escape or close this task to save it
+		</content>
 	</task>
 	<task id="27@1" status="Active">
 		<title>
