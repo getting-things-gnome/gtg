@@ -288,9 +288,9 @@ class TaskView(gtk.TextView):
         #backward compatibility
         #if not data.startswith("<content>") :
         #   data = "<content>%s</content>" %data
-        #print data
-        element = xml.dom.minidom.parseString(data)
-        val = self.__parsexml(content_buf,ite,element.firstChild)
+        if data :
+            element = xml.dom.minidom.parseString(data)
+            val = self.__parsexml(content_buf,ite,element.firstChild)
         #content_buf.insert(ite, "\n- aze\n -qsd")
         #self.insert_with_anchor("http://aze","http://eaz")
         return True

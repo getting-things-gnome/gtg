@@ -76,6 +76,10 @@ class TaskEditor :
         self.textview.set_text("%s\n"%title)
         #we insert the rest of the task
         if texte : 
+#            print "          "
+#            print "Inserting"
+#            print "Title : %s" %title
+#            print "text : %s " %texte
             self.textview.insert("%s"%texte)
             
         self.window.connect("destroy", self.close)
@@ -168,7 +172,7 @@ class TaskEditor :
     
     def save(self) :
         self.task.set_title(self.textview.get_title())
-        self.task.set_text(self.textview.get_tasktext()) 
+        self.task.set_text(self.textview.get_text()) 
         if self.refresh :
             self.refresh()
         self.task.sync()
