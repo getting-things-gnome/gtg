@@ -423,7 +423,7 @@ class TaskView(gtk.TextView):
                 self.__set_anchor(window, tag, gtk.gdk.Cursor(gtk.gdk.HAND2), self.get_property('hover'))
                 break
         else:
-            tag_table = self.get_buffer().get_tag_table()
+            tag_table = self.buff.get_tag_table()
             tag_table.foreach(self.__tag_reset, window)
 
     #We clicked on a link
@@ -443,7 +443,8 @@ class TaskView(gtk.TextView):
 
     def __tag_reset(self, tag, window):
         if tag.get_data('is_anchor'):
-            self.__set_anchor(window, tag, None, self.get_property('link'))
+            editing_cursor = gtk.gdk.Cursor(gtk.gdk.XTERM)
+            self.__set_anchor(window, tag, editing_cursor, self.get_property('link'))
 
     def __set_anchor(self, window, tag, cursor, prop):
         window.set_cursor(cursor)
