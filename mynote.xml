@@ -90,7 +90,8 @@
 			Right clic
 		</title>
 		<content>
-			Right clic sur les tâches doit permettre d'avoir un menu&lt;bullet&gt; 
+			Right clic sur les tâches doit permettre d'avoir un menu
+éà&amp;amp;&amp;gt;&lt;bullet&gt;
 ↪ &lt;/bullet&gt;&lt;link target=&quot;1@1&quot;&gt;eaz&lt;/link&gt;&lt;bullet&gt; 
  ↪ &lt;/bullet&gt;&lt;link target=&quot;1@1&quot;&gt;qsd
 &lt;/link&gt;
@@ -223,10 +224,13 @@
 ez
 		</content>
 	</task>
-	<task id="29@1" status="Active">
+	<task id="29@1" status="Done">
 		<title>
 			Sauver le style
 		</title>
+		<donedate>
+			2008-11-24
+		</donedate>
 		<content>
 			sauver les tags dans le XML
 		</content>
@@ -272,10 +276,13 @@ ez
 			- fermer automatiquement si on clique en dehors du calendar- L'afficher dans le treeview des taches activesDone:- permettre de le modifier dans l'éditeur de tâches- le sauver dans le XML
 		</content>
 	</task>
-	<task id="28@1" status="Active">
+	<task id="28@1" status="Done">
 		<title>
 			Pointeur devient souris
 		</title>
+		<donedate>
+			2008-11-24
+		</donedate>
 		<content>
 			après hover sur un lien alors qu'il devrait redevenir un truc d'insertion (ce qu'il redevient après avoir taper du texte)
 		</content>
