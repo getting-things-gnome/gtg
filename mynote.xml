@@ -248,7 +248,11 @@ ez
 			Start date
 		</title>
 		<content>
-			Mettre notre propre widget pour le startdate et ajouter le support de start date dans l'interface principal
+			Manque plus que l'interface principale!
+
+Done :
+
+Mettre notre propre widget pour le startdate et ajouter le support de start date dans l'interface principal
 		</content>
 	</task>
 	<task id="15@1" status="Done">

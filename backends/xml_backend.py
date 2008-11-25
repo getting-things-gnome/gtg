@@ -69,6 +69,7 @@ class Backend :
                     content = xml.dom.minidom.parseString(tas)
                     cur_task.set_text(content.firstChild.toxml())
                 cur_task.set_due_date(self.__read_textnode(t,"duedate"))
+                cur_task.set_start_date(self.__read_textnode(t,"startdate"))
                 #adding task to the project
                 self.project.add_task(cur_task)
         return self.project
@@ -100,6 +101,7 @@ class Backend :
             p_xml.appendChild(t_xml)
             self.__write_textnode(doc,t_xml,"title",t.get_title())
             self.__write_textnode(doc,t_xml,"duedate",t.get_due_date())
+            self.__write_textnode(doc,t_xml,"startdate",t.get_start_date())
             self.__write_textnode(doc,t_xml,"donedate",t.get_done_date())
             tex = t.get_text()
             if tex :
