@@ -1,17 +1,18 @@
 import sys, time, os, xml.dom.minidom
 import string, threading
 
-from task import Task, Project
+from task      import Task, Project
+from gtgconfig import GtgConfig
 
 #todo : Backend should only provide one big "project" object and should 
 #not provide get_task and stuff like that.
 class Backend :
     def __init__(self,zefile) :
         self.zefile = zefile
-        if os.path.exists(self.zefile) :
-            f = open(self.zefile,mode='r')
+        if os.path.exists(GtgConfig.CONFIG_DIR + self.zefile) :
+            f = open(GtgConfig.CONFIG_DIR + self.zefile,mode='r')
             # sanitize the pretty XML
-            doc=xml.dom.minidom.parse(self.zefile)
+            doc=xml.dom.minidom.parse(GtgConfig.CONFIG_DIR + self.zefile)
             self.__cleanDoc(doc,"\t","\n")
             self.__xmlproject = doc.getElementsByTagName("project")
             proj_name = str(self.__xmlproject[0].getAttribute("name"))
@@ -23,7 +24,7 @@ class Backend :
             self.__xmlproject = doc.createElement("project")
             doc.appendChild(self.__xmlproject)
             #then we create the file
-            f = open(self.zefile, mode='a+')
+            f = open(GtgConfig.CONFIG_DIR + self.zefile, mode='a+')
             f.write(doc.toxml().encode("utf-8"))
             f.close()
 
@@ -98,7 +99,7 @@ class Backend :
         #it's maybe not optimal to open/close the file each time we sync
         # but I'm not sure that those operations are so frequent
         # might be changed in the future.
-        f = open(self.zefile, mode='w+')
+        f = open(GtgConfig.CONFIG_DIR + self.zefile, mode='w+')
         f.write(doc.toprettyxml().encode("utf-8"))
         f.close()
      

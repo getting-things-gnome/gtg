@@ -61,6 +61,7 @@ class ProjectEditDialog:
         text = buff.get_text(buff.get_start_iter(),buff.get_end_iter())
         
         if self.project == None:
+            #NOTE: not sure it is right to do this here => DataStore?
             # Create project
             p = Project(text)
             # Create backend
