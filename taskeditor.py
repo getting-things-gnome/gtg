@@ -24,6 +24,8 @@ try:
     import gobject
 except:
     sys.exit(1)
+    
+date_separator="/"
 
 class TaskEditor :
     def __init__(self, task, refresh_callback=None,delete_callback=None,close_callback=None) :
@@ -34,7 +36,8 @@ class TaskEditor :
         dic = {
                 "mark_as_done_clicked"  : self.change_status,
                 "delete_clicked"        : self.delete_task,
-                "on_duedate_pressed"    : self.on_duedate_pressed,
+                "on_duedate_pressed"    : (self.on_date_pressed,"due"),
+                "on_startdate_pressed"    : (self.on_date_pressed,"start"),
                 "close_clicked"         : self.close
               }
         self.wTree.signal_autoconnect(dic)
@@ -57,7 +60,11 @@ class TaskEditor :
         #Voila! it's done
         self.calendar       = self.cal_tree.get_widget("calendar")
         self.duedate_widget = self.wTree.get_widget("duedate_entry")
+        self.startdate_widget = self.wTree.get_widget("startdate_entry")
         self.dayleft_label  = self.wTree.get_widget("dayleft")
+        #We will keep the name of the opened calendar
+        #Empty means that no calendar is opened
+        self.__opened_date = ''
         
         #We will intercept the "Escape" button
         accelgroup = gtk.AccelGroup()
@@ -96,7 +103,7 @@ class TaskEditor :
         #refreshing the due date field
         duedate = self.task.get_due_date()
         if duedate :
-            zedate = duedate.replace("-","/")
+            zedate = duedate.replace("-",date_separator)
             self.duedate_widget.set_text(zedate)
             #refreshing the day left label
             result = self.task.get_days_left()
@@ -115,9 +122,13 @@ class TaskEditor :
         else :
             self.dayleft_label.set_text('')
             self.duedate_widget.set_text('')
-            
+        startdate = self.task.get_start_date()
+        if startdate :
+            self.startdate_widget.set_text(startdate.replace("-",date_separator))
+        else :
+            self.startdate_widget.set_text('')
         
-    def on_duedate_pressed(self, widget):
+    def on_date_pressed(self, widget,data):
         """Called when the due button is clicked."""
         rect = widget.get_allocation()
         x, y = widget.window.get_origin()
@@ -133,18 +144,25 @@ class TaskEditor :
         #We grab the pointer in the calendar
         gdk.pointer_grab(self.calendar.window, True,gdk.BUTTON1_MASK|gdk.MOD2_MASK)
         #we will close the calendar if the user clic outside
+        self.__opened_date = data
         self.calendar.connect('button-press-event', self.__focus_out)
         
     def day_selected(self,widget) :
         y,m,d = widget.get_date()
-        self.task.set_due_date("%s-%s-%s"%(y,m+1,d))
+        if self.__opened_date == "due" :
+            self.task.set_due_date("%s-%s-%s"%(y,m+1,d))
+        elif self.__opened_date == "start" :
+            self.task.set_start_date("%s-%s-%s"%(y,m+1,d))
         self.refresh_editor()
     
     def day_selected_double(self,widget) :
         self.__close_calendar()
         
     def nodate_pressed(self,widget) :
-        self.task.set_due_date(None)
+        if self.__opened_date == "due" :
+            self.task.set_due_date(None)
+        elif self.__opened_date == "start" :
+            self.task.set_start_date(None)
         self.refresh_editor()
         self.__close_calendar()
     
@@ -206,6 +224,7 @@ class TaskEditor :
     
     def __close_calendar(self,widget=None,e=None) :
         self.calendar.hide()
+        self.__opened_date = ''
         gtk.gdk.pointer_ungrab()
         self.calendar.grab_remove()
         

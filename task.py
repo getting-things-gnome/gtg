@@ -74,6 +74,18 @@ class Task :
         else :
             return ''
             
+    def set_start_date(self,fulldate) :
+        if fulldate :
+            self.start_date = self.__strtodate(fulldate)
+        else :
+            self.start_date = None
+        
+    def get_start_date(self) :
+        if self.start_date :
+            return str(self.start_date)
+        else :
+            return ''
+            
     def get_done_date(self) :
         if self.done_date :
             return str(self.done_date)
