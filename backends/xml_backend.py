@@ -1,7 +1,8 @@
 import sys, time, os, xml.dom.minidom
 import string, threading
 
-from task import Task, Project
+from task      import Task, Project
+from gtgconfig import GtgConfig
 
 #This is for the awful pretty xml things
 tab = "\t"
@@ -12,9 +13,9 @@ enter = "\n"
 class Backend :
     def __init__(self,zefile) :
         self.zefile = zefile
-        if os.path.exists(self.zefile) :
-            f = open(self.zefile,mode='r')
-            doc=xml.dom.minidom.parse(self.zefile)
+        if os.path.exists(GtgConfig.CONFIG_DIR + self.zefile) :
+            f = open(GtgConfig.CONFIG_DIR + self.zefile,mode='r')
+            doc=xml.dom.minidom.parse(GtgConfig.CONFIG_DIR + self.zefile)
             self.__cleanDoc(doc,tab,enter)
             self.__xmlproject = doc.getElementsByTagName("project")
             proj_name = str(self.__xmlproject[0].getAttribute("name"))
@@ -26,9 +27,12 @@ class Backend :
             self.__xmlproject = doc.createElement("project")
             doc.appendChild(self.__xmlproject)
             #then we create the file
-            f = open(self.zefile, mode='a+')
+            f = open(GtgConfig.CONFIG_DIR + self.zefile, mode='a+')
             f.write(doc.toxml().encode("utf-8"))
             f.close()
+
+    def get_filename(self):
+        return self.zefile
      
     #Those two functions are there only to be able to read prettyXML
     #Source : http://yumenokaze.free.fr/?/Informatique/Snipplet/Python/cleandom       
@@ -73,6 +77,9 @@ class Backend :
                 #adding task to the project
                 self.project.add_task(cur_task)
         return self.project
+
+    def set_project(self, project):
+        self.project = project
     
     #This is a method to read the textnode of the XML
     def __read_textnode(self,node,title) :
@@ -116,7 +123,7 @@ class Backend :
         #it's maybe not optimal to open/close the file each time we sync
         # but I'm not sure that those operations are so frequent
         # might be changed in the future.
-        f = open(self.zefile, mode='w+')
+        f = open(GtgConfig.CONFIG_DIR + self.zefile, mode='w+')
         f.write(doc.toprettyxml(tab,enter).encode("utf-8"))
 #        f.write(doc.toxml().encode("utf-8"))
         f.close()

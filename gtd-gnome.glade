@@ -87,6 +87,17 @@
             <property name="visible">True</property>
             <property name="toolbar_style">GTK_TOOLBAR_BOTH</property>
             <child>
+              <widget class="GtkToolButton" id="new_project_b">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">New Project</property>
+                <property name="stock_id">gtk-dnd-multiple</property>
+                <signal name="clicked" handler="on_add_project"/>
+              </widget>
+              <packing>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+            <child>
               <widget class="GtkToolButton" id="new_task_b">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">New Task</property>
@@ -140,7 +151,7 @@
           <widget class="GtkHPaned" id="hpaned1">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="position">220</property>
+            <property name="position">300</property>
             <property name="position_set">True</property>
             <child>
               <widget class="GtkVBox" id="vbox3">
@@ -149,6 +160,7 @@
                   <widget class="GtkTreeView" id="project_tview">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <signal name="button_press_event" handler="on_treeview_button_press_event"/>
                     <signal name="row_activated" handler="on_project_selected"/>
                   </widget>
                 </child>
@@ -193,12 +205,13 @@
                     </child>
                   </widget>
                   <packing>
-                    <property name="resize">False</property>
+                    <property name="resize">True</property>
                     <property name="shrink">True</property>
                   </packing>
                 </child>
                 <child>
                   <widget class="GtkScrolledWindow" id="scrolledwindow5">
+                    <property name="height_request">200</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
@@ -580,6 +593,118 @@ Are you sure you to want delete this task ?</property>
             <property name="position">1</property>
           </packing>
         </child>
+      </widget>
+    </child>
+  </widget>
+  <widget class="GtkWindow" id="ProjectEditDialog">
+    <child>
+      <widget class="GtkVBox" id="vbox6">
+        <property name="visible">True</property>
+        <child>
+          <widget class="GtkLabel" id="label4">
+            <property name="visible">True</property>
+            <property name="xalign">0.019999999552965164</property>
+            <property name="label" translatable="yes">&lt;span weight="bold" size="xx-large"&gt;Add a new project&lt;/span&gt;</property>
+            <property name="use_markup">True</property>
+          </widget>
+        </child>
+        <child>
+          <widget class="GtkLabel" id="label5">
+            <property name="visible">True</property>
+            <property name="xalign">0.020000001415610313</property>
+            <property name="label" translatable="yes">&lt;span&gt;Project name:&lt;/span&gt;</property>
+            <property name="use_markup">True</property>
+          </widget>
+          <packing>
+            <property name="expand">False</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="GtkScrolledWindow" id="scrolledwindow1">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="border_width">5</property>
+            <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+            <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+            <property name="shadow_type">GTK_SHADOW_IN</property>
+            <child>
+              <widget class="GtkTextView" id="project_desc_tv">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+              </widget>
+            </child>
+          </widget>
+          <packing>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="GtkHBox" id="hbox1">
+            <property name="visible">True</property>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <widget class="GtkButton" id="save_btn">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="label" translatable="yes">gtk-save</property>
+                <property name="use_stock">True</property>
+                <property name="response_id">0</property>
+                <signal name="clicked" handler="on_save_btn_clicked"/>
+              </widget>
+              <packing>
+                <property name="expand">False</property>
+                <property name="padding">5</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkButton" id="cancel_btn">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="label" translatable="yes">gtk-cancel</property>
+                <property name="use_stock">True</property>
+                <property name="response_id">0</property>
+                <signal name="clicked" handler="on_cancel_btn_clicked"/>
+              </widget>
+              <packing>
+                <property name="expand">False</property>
+                <property name="padding">5</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+          </widget>
+          <packing>
+            <property name="expand">False</property>
+            <property name="padding">5</property>
+            <property name="position">3</property>
+          </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
+  <widget class="GtkMenu" id="ProjectContextMenu">
+    <property name="visible">True</property>
+    <child>
+      <widget class="GtkImageMenuItem" id="edit_item">
+        <property name="visible">True</property>
+        <property name="label" translatable="yes">gtk-edit</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">True</property>
+        <signal name="activate" handler="on_edit_item_activate"/>
+      </widget>
+    </child>
+    <child>
+      <widget class="GtkImageMenuItem" id="delete_item">
+        <property name="visible">True</property>
+        <property name="label" translatable="yes">gtk-delete</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">True</property>
+        <signal name="activate" handler="on_delete_item_activate"/>
       </widget>
     </child>
   </widget>
