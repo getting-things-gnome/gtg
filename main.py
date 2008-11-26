@@ -45,8 +45,6 @@ from gtgconfig   import GtgConfig
 
 class Gtg:
 
-    CONFIG_FILE_TEMPLATE = "<?xml version=\"1.0\" ?><config></config>"
-
     def __init__(self):        
         self.projects = []
     
@@ -56,24 +54,25 @@ class Gtg:
         backends = []
 
         # Check if config dir exists, if not create it
-        if not os.path.exists(GtgConfig.CONFIG_DIR):
-            os.mkdir(GtgConfig.CONFIG_DIR)
+        if not os.path.exists(GtgConfig.DATA_DIR):
+            os.mkdir(GtgConfig.DATA_DIR)
 
         # Read configuration file, if it does not exist, create one
-        if os.path.exists(GtgConfig.CONFIG_DIR + GtgConfig.CONFIG_FILE) :
-            f = open(GtgConfig.CONFIG_DIR + GtgConfig.CONFIG_FILE,mode='r')
+        if os.path.exists(GtgConfig.DATA_DIR + GtgConfig.DATA_FILE) :
+            f = open(GtgConfig.DATA_DIR + GtgConfig.DATA_FILE,mode='r')
             # sanitize the pretty XML
-            doc=xml.dom.minidom.parse(GtgConfig.CONFIG_DIR + GtgConfig.CONFIG_FILE)
+            doc=xml.dom.minidom.parse(GtgConfig.DATA_DIR + GtgConfig.DATA_FILE)
             self.__cleanDoc(doc,"\t","\n")
             self.__xmlproject = doc.getElementsByTagName("backend")
             # collect configred backends
             for xp in self.__xmlproject:
-                backends_fn.append(str(xp.getAttribute("filename")))
+                zefile = os.path.join(GtgConfig.DATA_DIR,str(xp.getAttribute("filename")))
+                backends_fn.append(str(zefile))
             f.close()
         else:
             print "No config file found! Creating one."
-            f = open(GtgConfig.CONFIG_DIR + GtgConfig.CONFIG_FILE,mode='w')
-            f.write(self.CONFIG_FILE_TEMPLATE)
+            f = open(GtgConfig.DATA_DIR + GtgConfig.DATA_FILE,mode='w')
+            f.write(self.DATA_FILE_TEMPLATE)
             f.close()
 
         # Create & init backends
@@ -99,7 +98,7 @@ class Gtg:
         for b in ds.get_all_backends():
             s = s + "\t<backend filename=\"%s\"/>\n" % b.get_filename()
         s = s + "</config>\n"
-        f = open(GtgConfig.CONFIG_DIR + GtgConfig.CONFIG_FILE,mode='w')
+        f = open(GtgConfig.DATA_DIR + GtgConfig.DATA_FILE,mode='w')
         f.write(s)
         f.close()
 
