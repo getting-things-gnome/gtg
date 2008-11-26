@@ -5,6 +5,7 @@ class DataStore:
         self.projects = {}
         self.tasks    = []
         self.cur_pid  = 1
+        self.tags     = []
 
     def add_task(self, task):
         self.tasks.append(task)
@@ -28,7 +29,11 @@ class DataStore:
             p.set_pid(str(self.cur_pid))
             p.set_sync_func(b.sync_project)
             self.projects[str(self.cur_pid)] = [b, p]
-            self.tasks.append(p.list_tasks)
+            tid_list = p.list_tasks()
+            self.tasks.append(tid_list)
+            for t in tid_list:
+                for tag in p.get_task(t).get_tags():
+                    if tag not in self.tags: self.tags.append(tag)
             self.cur_pid=self.cur_pid+1
 
     def register_backend(self, backend):
@@ -47,6 +52,9 @@ class DataStore:
 
     def get_all_projects(self):
         return self.projects
+
+    def get_all_tags(self):
+        return self.tags
 
     def get_project_with_pid(self, pid):
         return self.projects[pid]

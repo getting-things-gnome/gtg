@@ -74,6 +74,8 @@ class Backend :
                     cur_task.set_text(content.firstChild.toxml())
                 cur_task.set_due_date(self.__read_textnode(t,"duedate"))
                 cur_task.set_start_date(self.__read_textnode(t,"startdate"))
+                cur_tags = t.getAttribute("tags").replace(' ','').split(",")
+                for tag in cur_tags: cur_task.add_tag(tag)
                 #adding task to the project
                 self.project.add_task(cur_task)
         return self.project
@@ -105,6 +107,11 @@ class Backend :
             t_xml = doc.createElement("task")
             t_xml.setAttribute("id",str(tid))
             t_xml.setAttribute("status",t.get_status())
+            tag_str = ""
+            for tag in t.get_tags():
+                tag_str = tag_str + str(tag) + ","
+            tag_str = tag_str[:-1]
+            t_xml.setAttribute("tags", tag_str)
             p_xml.appendChild(t_xml)
             self.__write_textnode(doc,t_xml,"title",t.get_title())
             self.__write_textnode(doc,t_xml,"duedate",t.get_due_date())

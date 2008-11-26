@@ -18,6 +18,8 @@ class Task :
         self.done_date = None
         self.due_date = None
         self.start_date = None
+        # tags
+        self.tags = []
         
     def set_project(self,pid) :
         tid = self.get_id()
@@ -124,6 +126,27 @@ class Task :
     def sync(self) :
         if self.sync_func :
             self.sync_func(self.tid)
+
+    def get_tags(self):
+        return self.tags
+
+    def add_tag(self, t):
+        self.tags.append(t)
+
+    def remove_tag(self, t):
+        self.tags.remove(t)
+
+    def has_tag(self, t):
+        return t in self.tags
+
+    def __str__(self):
+        s = ""
+        s = s + "Task Object\n"
+        s = s + "Title:  " + self.title + "\n"
+        s = s + "Id:     " + self.tid + "\n"
+        s = s + "Status: " + self.status + "\n"
+        s = s + "Tags:   "  + str(self.tags)
+        return s
         
 ###########################################################################
         

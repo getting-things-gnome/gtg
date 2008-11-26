@@ -67,18 +67,14 @@ class TaskBrowser:
         self.__add_project_column("Projects",1)
         self.project_ts = gtk.TreeStore(gobject.TYPE_PYOBJECT,str)
         self.project_tview.set_model(self.project_ts)
-        #self.project_ts.set_sort_column_id(self.c_title, gtk.SORT_ASCENDING)
+        self.project_ts.set_sort_column_id(self.c_title, gtk.SORT_ASCENDING)
         
         #The tags treeview
         self.tag_tview = self.wTree.get_widget("tag_tview")
-        tcol = gtk.TreeViewColumn("Tag")
-        tcol.pack_start(self.cell)
-        tcol.set_resizable(True)
-        tcol.set_sort_column_id(1)
-        tcol.set_attributes(self.cell, markup=1)
-        self.tag_tview.append_column(tcol)
+        self.__add_tag_column("Tags",1)
         self.tag_ts = gtk.TreeStore(gobject.TYPE_PYOBJECT,str)
         self.tag_tview.set_model(self.tag_ts)
+        self.tag_ts.set_sort_column_id(self.c_title, gtk.SORT_ASCENDING)
    
         #The Active tasks treeview
         self.task_tview = self.wTree.get_widget("task_tview")
@@ -99,6 +95,7 @@ class TaskBrowser:
         
         #put the content in those treeviews
         self.refresh_projects()
+        self.refresh_tags()
         self.refresh_list()
         #This is the list of tasks that are already opened in an editor
         #of course it's empty right now
@@ -141,7 +138,14 @@ class TaskBrowser:
             p = projects[p_key][1]
             title = p.get_name()
             self.project_ts.append(None,[p_key,title])
-        
+
+    #We refresh the tag list. Not needed very often
+    def refresh_tags(self) :
+        self.tag_ts.clear()
+        tags = self.ds.get_all_tags()
+        for tag in tags:
+            self.tag_ts.append(None,[tag,tag])
+
     #refresh list build/refresh your TreeStore of task
     #to keep it in sync with your self.projects   
     def refresh_list(self) :
@@ -301,7 +305,11 @@ class TaskBrowser:
     def __add_closed_column(self,name,value,checkbox=False) :
         col = self.__add_column(name,value,checkbox)
         self.taskdone_tview.append_column(col)
-        
+
+    def __add_tag_column(self,name,value,checkbox=False) :
+        col = self.__add_column(name,value,checkbox)
+        self.tag_tview.append_column(col)
+
     def __add_column(self,name,value,checkbox=False) :
         col = gtk.TreeViewColumn(name)
         if checkbox :
