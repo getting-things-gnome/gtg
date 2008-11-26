@@ -1,6 +1,16 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+#This is the TaskEditor
+#
+#It's the window you see when you double-clic on a Task
+#The main text widget is a home-made TextView called TaskView (see taskview.py)
+#The rest are the logic of the widget : date changing widgets, buttons, ...
+
 import sys, time, os
 import string, threading
 from task import Task
+from taskview import TaskView
 
 try:
     import pygtk
@@ -14,6 +24,8 @@ try:
     import gobject
 except:
     sys.exit(1)
+    
+date_separator="/"
 
 class TaskEditor :
     def __init__(self, task, refresh_callback=None,delete_callback=None,close_callback=None) :
@@ -24,7 +36,8 @@ class TaskEditor :
         dic = {
                 "mark_as_done_clicked"  : self.change_status,
                 "delete_clicked"        : self.delete_task,
-                "on_duedate_pressed"    : self.on_duedate_pressed,
+                "on_duedate_pressed"    : (self.on_date_pressed,"due"),
+                "on_startdate_pressed"    : (self.on_date_pressed,"start"),
                 "close_clicked"         : self.close
               }
         self.wTree.signal_autoconnect(dic)
@@ -32,14 +45,26 @@ class TaskEditor :
                 "on_nodate"             : self.nodate_pressed,
                 "on_dayselected"        : self.day_selected,
                 "on_dayselected_double" : self.day_selected_double,
-                "on_focus_out"          : self.on_focus_out
         }
         self.cal_tree.signal_autoconnect(cal_dic)
         self.window         = self.wTree.get_widget("TaskEditor")
-        self.textview       = self.wTree.get_widget("textview")
+        #Removing the Normal textview to replace it by our own
+        #So don't try to change anything with glade, this is a home-made widget
+        textview = self.wTree.get_widget("textview")
+        scrolled = self.wTree.get_widget("scrolledtask")
+        scrolled.remove(textview)
+        self.textview       = TaskView()
+        self.textview.show()
+        self.textview.refresh_callback(self.refresh_editor)
+        scrolled.add(self.textview)
+        #Voila! it's done
         self.calendar       = self.cal_tree.get_widget("calendar")
         self.duedate_widget = self.wTree.get_widget("duedate_entry")
+        self.startdate_widget = self.wTree.get_widget("startdate_entry")
         self.dayleft_label  = self.wTree.get_widget("dayleft")
+        #We will keep the name of the opened calendar
+        #Empty means that no calendar is opened
+        self.__opened_date = ''
         
         #We will intercept the "Escape" button
         accelgroup = gtk.AccelGroup()
@@ -52,77 +77,33 @@ class TaskEditor :
         self.refresh = refresh_callback
         self.delete  = delete_callback
         self.closing = close_callback
-        self.buff = gtk.TextBuffer()
         texte = self.task.get_text()
         title = self.task.get_title()
         #the first line is the title
-        self.buff.set_text("%s\n"%title)
-        
-        ##########Tag we will use #######
-        #We use the tag table (tag are defined here but set in self.modified)
-        table = self.buff.get_tag_table()
-        #tag test for title
-        title_tag = self.buff.create_tag("title",foreground="#12F",scale=1.6,underline=0)
-        title_tag.set_property("pixels-above-lines",10)
-        title_tag.set_property("pixels-below-lines",10)
-        #tag test for date
-        date_tag = self.buff.create_tag("date",foreground="#AAAAAA",scale=1,underline=0)
-        date_tag.set_property("pixels-below-lines",10)
-        #start = self.buff.get_start_iter()
-        end = self.buff.get_end_iter()
-        #We have to find a way to keep this tag for the first line
-        #Even when the task is edited
-        
+        self.textview.set_text("%s\n"%title)
         #we insert the rest of the task
         if texte : 
-            self.buff.insert(end,"%s"%texte)
-    
-        #The signal emitted each time the buffer is modified
-        self.modi_signal = self.buff.connect("modified_changed",self.modified)
-        
-        self.textview.set_buffer(self.buff)
-        self.window.connect("destroy", self.close)
+            self.textview.insert("%s"%texte)
+            
+        self.window.connect("destroy", self.destruction)
         self.refresh_editor()
 
         self.window.show()
-        self.buff.set_modified(False)
-        
-    #The buffer was modified, let reflect this
-    def modified(self,a=None) :
-        start = self.buff.get_start_iter()
-        end = self.buff.get_end_iter()
-        #Here we apply the title tag on the first line
-        if self.buff.get_line_count() > 1 :
-            end_title = self.buff.get_iter_at_line(1)
-            self.buff.apply_tag_by_name('title', start, end_title)
-            self.buff.remove_tag_by_name('title',end_title,end)
-            #title of the window 
-            self.window.set_title(self.buff.get_text(start,end_title))
-        #Or to all the buffer if there is only one line
-        else :
-            self.buff.apply_tag_by_name('title', start, end)
-            #title of the window 
-            self.window.set_title(self.buff.get_text(start,end))
 
-        #Here we apply the date tag on the second line
-        if self.buff.get_line_count() > 1 :
-            start_date = self.buff.get_iter_at_line(1)
-            end_date   = self.buff.get_iter_at_line(2)
-            self.buff.apply_tag_by_name('date', start_date, end_date)
-            #self.buff.remove_tag_by_name('date',end_date,end)
-                        
-        #Do we want to save the text at each modification ?
-        
-        #Ok, we took care of the modification
-        self.buff.set_modified(False)
-    
-    def refresh_editor(self) :
+    #Can be called at any time to reflect the status of the Task
+    #Refresh should never interfer with the TaskView
+    #If a title is passed as a parameter, it will become
+    #The new window title. If not, we will look for the task title
+    def refresh_editor(self,title=None) :
         #title of the window 
-        self.window.set_title(self.task.get_title())
+        if title :
+            self.window.set_title(title)
+        else :
+            self.window.set_title(self.task.get_title())
         #refreshing the due date field
         duedate = self.task.get_due_date()
         if duedate :
-            zedate = duedate.replace("-","/")
+            zedate = duedate.replace("-",date_separator)
             self.duedate_widget.set_text(zedate)
             #refreshing the day left label
             result = self.task.get_days_left()
@@ -141,9 +122,13 @@ class TaskEditor :
         else :
             self.dayleft_label.set_text('')
             self.duedate_widget.set_text('')
-            
+        startdate = self.task.get_start_date()
+        if startdate :
+            self.startdate_widget.set_text(startdate.replace("-",date_separator))
+        else :
+            self.startdate_widget.set_text('')
         
-    def on_duedate_pressed(self, widget):
+    def on_date_pressed(self, widget,data):
         """Called when the due button is clicked."""
         rect = widget.get_allocation()
         x, y = widget.window.get_origin()
@@ -155,35 +140,29 @@ class TaskEditor :
         self.calendar.move((x + rect.x - cal_width + rect.width)
                                             , (y + rect.y + rect.height))
         
-        #self.calendar.grab_add()
-        #gdk.pointer_grab(self.calendar.window, True,0)
-                         #gdk.BUTTON1_MASK )
-        #print self.calendar.window.get_pointer()
+        self.calendar.grab_add()
+        #We grab the pointer in the calendar
+        gdk.pointer_grab(self.calendar.window, True,gdk.BUTTON1_MASK|gdk.MOD2_MASK)
+        #we will close the calendar if the user clic outside
+        self.__opened_date = data
+        self.calendar.connect('button-press-event', self.__focus_out)
         
-        #gdk.pointer_ungrab()
-        
-    def on_focus_out(self,a,b) :
-        #gdk.BUTTON1_MASK|gdk.BUTTON2_MASK|gdk.BUTTON3_MASK
-        event = b.get_state()
-        #print "focus_out : %s" %(event)
-    
-    def __close_calendar(self,widget=None) :
-        self.calendar.hide()
-        gtk.gdk.pointer_ungrab()
-        self.calendar.grab_remove()
-        
-
-    
     def day_selected(self,widget) :
         y,m,d = widget.get_date()
-        self.task.set_due_date("%s-%s-%s"%(y,m+1,d))
+        if self.__opened_date == "due" :
+            self.task.set_due_date("%s-%s-%s"%(y,m+1,d))
+        elif self.__opened_date == "start" :
+            self.task.set_start_date("%s-%s-%s"%(y,m+1,d))
         self.refresh_editor()
     
     def day_selected_double(self,widget) :
         self.__close_calendar()
         
     def nodate_pressed(self,widget) :
-        self.task.set_due_date(None)
+        if self.__opened_date == "due" :
+            self.task.set_due_date(None)
+        elif self.__opened_date == "start" :
+            self.task.set_start_date(None)
         self.refresh_editor()
         self.__close_calendar()
     
@@ -206,30 +185,49 @@ class TaskEditor :
         if result : self.window.destroy()
     
     def save(self) :
-        #the text buffer
-        buff = self.textview.get_buffer()
-        #the tag table
-        table = buff.get_tag_table()
-        #we get the text
-        texte = buff.get_text(buff.get_start_iter(),buff.get_end_iter())
-        #We should have a look at Tomboy Serialize function 
-        #NoteBuffer.cs : line 1163
-        #Currently, we are not saving the tag table.
-        content = texte.partition('\n')
-        self.task.set_title(content[0])
-        self.task.set_text(content[2])
+        self.task.set_title(self.textview.get_title())
+        self.task.set_text(self.textview.get_text()) 
         if self.refresh :
             self.refresh()
         self.task.sync()
-        
+    
+    #This will bring the Task Editor to front    
     def present(self) :
         self.window.present()
         
     #We define dummy variable for when close is called from a callback
     def close(self,window,a=None,b=None,c=None) :
-        #Save should be also called when buffer is modified
-        self.save()
-        self.closing(self.task.get_id())
         #TODO : verify that destroy the window is enough ! 
         #We should also destroy the whole taskeditor object.
         self.window.destroy()
+    
+    #The destroy signal is linked to the "close" button. So if we call
+    #destroy in the close function, this will cause the close to be called twice
+    #To solve that, close will just call "destroy" and the destroy signal
+    #Will be linked to this destruction method that will save the task
+    def destruction(self,a=None) :
+        #Save should be also called when buffer is modified
+        self.save()
+        self.closing(self.task.get_id())
+        
+        
+############# Private functions #################
+        
+    
+    def __focus_out(self,w=None,e=None) :
+        #We should only close if the pointer clic is out of the calendar !
+        p = self.calendar.window.get_pointer()
+        s = self.calendar.get_size()
+        if  not(0 <= p[0] <= s[0] and 0 <= p[1] <= s[1]) :
+            self.__close_calendar()
+        
+    
+    def __close_calendar(self,widget=None,e=None) :
+        self.calendar.hide()
+        self.__opened_date = ''
+        gtk.gdk.pointer_ungrab()
+        self.calendar.grab_remove()
+        
+
+    
+

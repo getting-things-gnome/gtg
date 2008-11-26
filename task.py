@@ -9,10 +9,11 @@ class Task :
         #the id of this task in the project
         #tid is a string ! (we have to choose a type and stick to it)
         self.tid = str(ze_id)
-        self.content = "Press Escape or close this task to save it"
+        self.content = ""
+        #self.content = "<content>Press Escape or close this task to save it</content>"
         self.sync_func = None
         self.title = "My new task"
-        #available status are : Active - Done - Dismiss
+        #available status are : Active - Done - Dismiss - Deleted
         self.status = "Active"
         self.done_date = None
         self.due_date = None
@@ -30,12 +31,24 @@ class Task :
         return self.title
     
     def set_title(self,title) :
+        #We should check for other task with the same title
+        #In that case, we should add a number (like Tomboy does)
         if title :
-            self.title = title
+            self.title = title.strip('\t\n')
+        else :
+            self.title = "(no title task)"
         
-    def set_status(self,status) :
+    def set_status(self,status,donedate=None) :
         if status :
             self.status = status
+            #If Done, we set the done date
+            if status == "Done" :
+                #to the specified date (if any)
+                if donedate :
+                    self.done_date = donedate
+                #or to today
+                else : 
+                    self.done_date = date.today()
         
     def get_status(self) :
         return self.status
@@ -59,11 +72,32 @@ class Task :
         if self.due_date :
             return str(self.due_date)
         else :
-            return None
+            return ''
+            
+    def set_start_date(self,fulldate) :
+        if fulldate :
+            self.start_date = self.__strtodate(fulldate)
+        else :
+            self.start_date = None
+        
+    def get_start_date(self) :
+        if self.start_date :
+            return str(self.start_date)
+        else :
+            return ''
+            
+    def get_done_date(self) :
+        if self.done_date :
+            return str(self.done_date)
+        else :
+            return ''
     
     def get_days_left(self) :
-        difference = self.due_date - date.today()
-        return difference.days
+        if self.due_date :
+            difference = self.due_date - date.today()
+            return difference.days
+        else :
+            return None
         
     def get_text(self) :
         #defensive programmtion to avoid returning None
@@ -73,6 +107,11 @@ class Task :
             return ""
         
     def set_text(self,texte) :
+        #defensive programmation to filter bad formatted tasks
+        if not texte.startswith("<content>") :
+            texte = "<content>%s" %texte
+        if not texte.endswith("</content>") :
+            texte = "%s</content>" %texte
         if texte :
             self.content = str(texte)
         else :
