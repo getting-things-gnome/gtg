@@ -72,7 +72,7 @@ class Gtg:
         else:
             print "No config file found! Creating one."
             f = open(GtgConfig.DATA_DIR + GtgConfig.DATA_FILE,mode='w')
-            f.write(self.DATA_FILE_TEMPLATE)
+            f.write(GtgConfig.DATA_FILE_TEMPLATE)
             f.close()
 
         # Create & init backends
