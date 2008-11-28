@@ -18,6 +18,8 @@ class Task :
         self.done_date = None
         self.due_date = None
         self.start_date = None
+        self.parents = []
+        self.childrens = []
         
     def set_project(self,pid) :
         tid = self.get_id()
@@ -116,6 +118,24 @@ class Task :
             self.content = str(texte)
         else :
             self.content = ''
+    
+    #Take a task object as parameter
+    def add_subtask(self,task) :
+        if task not in self.children and task not in self.parents :
+            self.children.append(task)
+    
+    #Take a task object as parameter 
+    def remove_subtask(self,task) :
+        self.children.remove(task)
+        
+    #Take a task object as parameter
+    def add_parent(self,task) :
+        if task not in self.children and task not in self.parents :
+            self.parents.append(task)
+            
+    #Take a task object as parameter
+    def remove_parent(self,task) :
+        self.parents.remove(task)
         
     #This is a callback. The "sync" function has to be set
     def set_sync_func(self,sync) :
