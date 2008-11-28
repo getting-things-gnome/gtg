@@ -20,6 +20,7 @@ class Task :
         self.start_date = None
         self.parents = []
         self.children = []
+        self.new_task_func = None
         
     def set_project(self,pid) :
         tid = self.get_id()
@@ -126,6 +127,12 @@ class Task :
             #The if prevent an infinite loop
             task.add_parent(self)
     
+    #Return the task added as a subtask
+    def new_subtask(self) :
+        subt = self.new_task_func()
+        self.add_subtask(subt)
+        return subt
+    
     #Take a task object as parameter 
     def remove_subtask(self,task) :
         self.children.remove(task)
@@ -152,6 +159,10 @@ class Task :
         for i in self.parents :
             zelist.append(i)
         return zeli
+        
+    #This is a callback
+    def set_newtask_func(self,newtask) :
+        self.new_task_func = newtask
         
     #This is a callback. The "sync" function has to be set
     def set_sync_func(self,sync) :
@@ -218,12 +229,12 @@ class Project :
         tid = task.get_id()
         self.list[str(tid)] = task
         task.set_project(self.get_pid())
+        task.set_newtask_func(self.new_task)
         
     def new_task(self) :
         tid = self.__free_tid()
         task = Task(tid)
-        self.list[str(tid)] = task
-        task.set_project(self.get_pid())
+        self.add_task(task)
         return task
     
     def delete_task(self,tid) :
