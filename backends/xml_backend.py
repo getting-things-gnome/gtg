@@ -88,7 +88,9 @@ class Backend :
             #Now we can process the subtasks
             for t in subtasks :
                 for s in t[1] :
-                    t[0].add_subtask(s)
+                    sub = s.childNodes[0].nodeValue
+                    subt = self.project.get_task(sub)
+                    t[0].add_subtask(subt)
         return self.project
 
     def set_project(self, project):
