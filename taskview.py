@@ -63,6 +63,7 @@ class TaskView(gtk.TextView):
         fluo_tag = self.buff.create_tag("fluo",background="#F0F")
         #Bullet tag
         bullet_tag = self.buff.create_tag("bullet",scale=1.6)
+        subtask_tag = self.buff.create_tag("subtask",editable=False)
         #start = self.buff.get_start_iter()
         end = self.buff.get_end_iter()
         #We have to find a way to keep this tag for the first line
@@ -213,7 +214,7 @@ class TaskView(gtk.TextView):
         txt = ""
         it = start.copy()
         parent = doc.createElement(name)
-        while it.get_offset() != end.get_offset() :
+        while (it.get_offset() <= end.get_offset()) and (it.get_char() != '\0') :
             #if a tag begin, we will parse until the end
             if it.begins_tag() :
                 #We take the tag with the highest priority
@@ -405,6 +406,11 @@ class TaskView(gtk.TextView):
                     ends = starts.copy()
                     ends.forward_line()
                     self.insert_with_anchor(newline,anchor,_iter=ends)
+                    #All is wrapped in subtask tag
+                    starts = self.buff.get_iter_at_line(line_nbr)
+                    ends = starts.copy()
+                    ends.forward_line()
+                    self.buff.apply_tag_by_name("subtask",starts,ends)
                     #We must stop the signal because if not,
                     #\n will be inserted twice !
                     tv.emit_stop_by_name('insert-text')
