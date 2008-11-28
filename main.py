@@ -66,7 +66,7 @@ class Gtg:
             self.__xmlproject = doc.getElementsByTagName("backend")
             # collect configred backends
             for xp in self.__xmlproject:
-                zefile = os.path.join(GtgConfig.DATA_DIR,str(xp.getAttribute("filename")))
+                zefile = str(xp.getAttribute("filename"))
                 backends_fn.append(str(zefile))
             f.close()
         else:

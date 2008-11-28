@@ -19,7 +19,7 @@ class Task :
         self.due_date = None
         self.start_date = None
         self.parents = []
-        self.childrens = []
+        self.children = []
         
     def set_project(self,pid) :
         tid = self.get_id()
@@ -123,19 +123,35 @@ class Task :
     def add_subtask(self,task) :
         if task not in self.children and task not in self.parents :
             self.children.append(task)
+            #The if prevent an infinite loop
+            task.add_parent(self)
     
     #Take a task object as parameter 
     def remove_subtask(self,task) :
         self.children.remove(task)
         
+    def get_subtasks(self) :
+        zelist = []
+        for i in self.children :
+            zelist.append(i)
+        return zelist
+        
     #Take a task object as parameter
     def add_parent(self,task) :
         if task not in self.children and task not in self.parents :
             self.parents.append(task)
+            #The if prevent an infinite loop
+            task.add_subtask(self)
             
     #Take a task object as parameter
     def remove_parent(self,task) :
         self.parents.remove(task)
+    
+    def get_parents(self):
+        zelist = []
+        for i in self.parents :
+            zelist.append(i)
+        return zeli
         
     #This is a callback. The "sync" function has to be set
     def set_sync_func(self,sync) :

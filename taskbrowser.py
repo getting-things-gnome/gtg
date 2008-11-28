@@ -13,6 +13,7 @@ import datetime, time, sys
 from task import Task, Project
 from taskeditor import TaskEditor
 from project_ui import ProjectEditDialog
+from gtgconfig   import GtgConfig
 
 #=== OBJECTS ===================================================================
 
@@ -126,7 +127,7 @@ class TaskBrowser:
         self.ds.remove_project(p)
         self.ds.unregister_backend(b)
         fn = b.get_filename()
-        os.remove(fn)
+        os.remove(os.path.join(GtgConfig.DATA_DIR,fn))
         self.refresh_projects()
     
     #We double clicked on a project in the project list
