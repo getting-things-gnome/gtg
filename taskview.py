@@ -76,6 +76,10 @@ class TaskView(gtk.TextView):
         
         #Callback to refresh the editor window
         self.refresh = None
+        #Callback to open another task
+        self.open_task = None
+        #Callback to create a subtask
+        self.new_subtask_callback = None
         
         #Signals
         self.connect('motion-notify-event', self._motion)
@@ -103,6 +107,9 @@ class TaskView(gtk.TextView):
         
     def set_subtask_callback(self,funct) :
         self.new_subtask_callback = funct
+    
+    def open_task_callback(self,funct) :
+        self.open_task = funct
     
     #Buffer related functions
     #Those functions are higly related and should always be symetrical
@@ -458,7 +465,8 @@ class TaskView(gtk.TextView):
             button = ev.button
             cursor = gtk.gdk.Cursor(gtk.gdk.HAND2)
             if _type == gtk.gdk.BUTTON_RELEASE:
-                print "anchor clicked : %s" %anchor
+                #print "anchor clicked : %s" %anchor
+                self.open_task(anchor)
                 self.emit('anchor-clicked', text, anchor, button)
                 self.__set_anchor(ev.window, tag, cursor, self.get_property('hover'))
             elif button in [1, 2]:

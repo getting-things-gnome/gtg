@@ -177,12 +177,19 @@ class TaskBrowser:
         else :
             #We need the pid number to get the backend
             tid,pid = uid.split('@')
-            backend = self.ds.get_all_projects()[pid][0]
+            backend = self.ds.get_project_with_pid(pid)[0]
             #We give to the task the callback to synchronize the list
             t.set_sync_func(backend.sync_task)
-            tv = TaskEditor(t,self.refresh_list,self.on_delete_task,self.close_task)
+            tv = TaskEditor(t,self.refresh_list,self.on_delete_task,
+                                    self.close_task,self.open_task_byid)
             #registering as opened
             self.opened_task[uid] = tv
+            
+    def open_task_byid(self,tid) :
+        tiid,pid = tid.split('@')
+        proj = self.ds.get_project_with_pid(pid)[1]
+        task = proj.get_task(tid)
+        self.open_task(task)
     
     #When an editor is closed, it should deregister itself
     def close_task(self,tid) :
