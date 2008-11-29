@@ -56,6 +56,7 @@ class TaskEditor :
         self.textview       = TaskView()
         self.textview.show()
         self.textview.refresh_callback(self.refresh_editor)
+        self.textview.set_subtask_callback(self.new_subtask)
         scrolled.add(self.textview)
         #Voila! it's done
         self.calendar       = self.cal_tree.get_widget("calendar")
@@ -183,6 +184,12 @@ class TaskEditor :
             print "No callback to delete"
         #if the task was deleted, we close the window
         if result : self.window.destroy()
+    
+    #Take the title as argument and return the subtask ID
+    def new_subtask(self,title) :
+        subt = self.task.new_subtask()
+        tid = subt.get_id()
+        return tid
     
     def save(self) :
         self.task.set_title(self.textview.get_title())

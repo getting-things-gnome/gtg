@@ -100,6 +100,9 @@ class TaskView(gtk.TextView):
     #Specially when we change the title
     def refresh_callback(self,funct) :
         self.refresh = funct
+        
+    def set_subtask_callback(self,funct) :
+        self.new_subtask_callback = funct
     
     #Buffer related functions
     #Those functions are higly related and should always be symetrical
@@ -370,7 +373,7 @@ class TaskView(gtk.TextView):
         self.buff.delete(start_i,end_i)
         start_i = self.buff.get_iter_at_mark(start)
         newline = title
-        anchor = "link"
+        anchor = self.new_subtask_callback(title)
         self.insert_with_anchor(newline,anchor,_iter=start_i)
     
     #Function called each time the user input a letter   
