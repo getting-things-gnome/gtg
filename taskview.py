@@ -262,6 +262,7 @@ class TaskView(gtk.TextView):
                         subt = doc.createElement(tagname)
                         target = ta.get_data('child')
                         subt.appendChild(doc.createTextNode(target))
+                        parent.appendChild(subt)
                     else :
                         #The link tag has noname but has "is_anchor" properties
                         if ta.get_data('is_anchor') :
@@ -283,23 +284,33 @@ class TaskView(gtk.TextView):
     #parse the XML and put the content in the buffer
     def __parsexml(self,buf,ite,element) :
         for n in element.childNodes :
+            start = buf.create_mark("start",ite,True)
+            end = buf.create_mark("end",ite,False)
             if n.nodeType == n.ELEMENT_NODE :
                 #print "<%s>" %n.nodeName
-                start = ite.get_offset()
-                end = self.__parsexml(buf,ite,n)
-                s = buf.get_iter_at_offset(start)
-                e = buf.get_iter_at_offset(end)
-                if n.nodeName == "link" :
-                    anchor = n.getAttribute("target")
-                    tag = self.create_anchor_tag(buf,anchor,None)
-                    buf.apply_tag(tag,s,e)
+                if n.nodeName == "subtask" :
+                    tid = n.firstChild.nodeValue
+                    line_nbr = ite.get_line()
+                    self.__subtask(line_nbr,tid)
                 else :
-                    buf.apply_tag_by_name(n.nodeName,s,e)
-                #print "</%s>" %n.nodeName
+                    self.__parsexml(buf,ite,n)
+                    s = buf.get_iter_at_mark(start)
+                    e = buf.get_iter_at_mark(end)
+                    if n.nodeName == "link" :
+                        anchor = n.getAttribute("target")
+                        tag = self.create_anchor_tag(buf,anchor,None)
+                        buf.apply_tag(tag,s,e)
+                    else :
+                        buf.apply_tag_by_name(n.nodeName,s,e)
+                    #print "</%s>" %n.nodeName
+                    buf.delete_mark(start)
+                    buf.delete_mark(end)
             elif n.nodeType == n.TEXT_NODE :
                 buf.insert(ite,n.nodeValue)
         #return buf.get_end_iter()
-        return ite.get_offset()
+        #create a mark where the iter is right now
+        #mark = buf.create_mark("end",ite,False)
+        return True
                 
     ### Serialize the task : transform it's content in something
     #we can store
@@ -326,7 +337,7 @@ class TaskView(gtk.TextView):
         #content_buf.insert_with_tags(ite,data,fluo)
         if data :
             element = xml.dom.minidom.parseString(data)
-            val = self.__parsexml(content_buf,ite,element.firstChild)
+            success = self.__parsexml(content_buf,ite,element.firstChild)
         #content_buf.insert(ite, "\n- aze\n -qsd")
         #self.insert_with_anchor("http://aze","http://eaz")
         return True
@@ -390,6 +401,9 @@ class TaskView(gtk.TextView):
         start_i = self.buff.get_iter_at_mark(start)
         end_i = self.buff.get_iter_at_mark(end)
         self.buff.apply_tag(tag,start_i,end_i)
+        self.buff.delete_mark(start)
+        self.buff.delete_mark(end)
+        
     
     #Function called each time the user input a letter   
     def _insert_at_cursor(self,tv,itera,tex,leng) :
