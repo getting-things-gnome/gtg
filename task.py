@@ -158,7 +158,14 @@ class Task :
         zelist = []
         for i in self.parents :
             zelist.append(i)
-        return zeli
+        return zelist
+        
+    #Method called before the task is deleted
+    def delete(self) :
+        for i in self.get_parents() :
+            i.remove_subtask(self)
+        for j in self.get_subtasks() :
+            j.remove_parent(self)
         
     #This is a callback
     def set_newtask_func(self,newtask) :
@@ -238,6 +245,7 @@ class Project :
         return task
     
     def delete_task(self,tid) :
+        self.list[tid].delete()
         del self.list[tid]
         self.sync()
     

@@ -188,23 +188,6 @@ class TaskView(gtk.TextView):
         #Let's strip blank lines
         stripped = title.strip(' \n\t')
         return stripped
-#    #Get the content of the task without the title
-#    def get_tasktext(self) :
-#        texte = self.get_text()
-#        return texte
-##    #Strip the title (first line with text) from the rest  
-#    #We don't use serializing here !
-#    def get_fulltext(self) :
-#        texte = self.buff.get_text(self.buff.get_start_iter(),self.buff.get_end_iter())
-
-#        stripped = texte.strip(' \n\t')
-#        content = texte.partition('\n')
-#        #We don't have an empty task
-#        #We will find for the first line as the title
-#        if stripped :
-#            while not content[0] :
-#                content = content[2].partition('\n')
-#        return content[0],content[2]
         
 ########### Serializing functions ###############
 
@@ -274,15 +257,21 @@ class TaskView(gtk.TextView):
                     #Let's add this tag to the stack so we remember
                     #it's already processed
                     self.__tag_stack[offset].append(tagname)
-                    #The link tag has noname but has "is_anchor" properties
-                    if ta.get_data('is_anchor') :
-                        tagname = "link"
-                    #Recursive call !!!!! (we handle tag in tags)
-                    child = self.__parsebuf(buf,startit,endit,tagname,doc)
-                    #handling special tags
-                    if ta.get_data('is_anchor') :
-                        child.setAttribute("target",ta.get_data('link'))
-                    parent.appendChild(child)
+                    if ta.get_data('is_subtask') :
+                        tagname = "subtask"
+                        subt = doc.createElement(tagname)
+                        target = ta.get_data('child')
+                        subt.appendChild(doc.createTextNode(target))
+                    else :
+                        #The link tag has noname but has "is_anchor" properties
+                        if ta.get_data('is_anchor') :
+                            tagname = "link"
+                        #Recursive call !!!!! (we handle tag in tags)
+                        child = self.__parsebuf(buf,startit,endit,tagname,doc)
+                        #handling special tags
+                        if ta.get_data('is_anchor') :
+                            child.setAttribute("target",ta.get_data('link'))
+                        parent.appendChild(child)
             #else, we just add the text
             else :
                 parent.appendChild(doc.createTextNode(it.get_char()))
@@ -393,6 +382,14 @@ class TaskView(gtk.TextView):
         start_i = self.buff.get_iter_at_mark(start)
         newline = self.get_subtasktitle(anchor)
         self.insert_with_anchor(newline,anchor,_iter=start_i)
+        #The invisible "subtask" tag
+        #It must be the last tag set as it's around everything else
+        tag = self.buff.create_tag(None)
+        tag.set_data('is_subtask', True)
+        tag.set_data('child',anchor)
+        start_i = self.buff.get_iter_at_mark(start)
+        end_i = self.buff.get_iter_at_mark(end)
+        self.buff.apply_tag(tag,start_i,end_i)
     
     #Function called each time the user input a letter   
     def _insert_at_cursor(self,tv,itera,tex,leng) :
