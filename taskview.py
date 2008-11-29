@@ -80,6 +80,7 @@ class TaskView(gtk.TextView):
         self.open_task = None
         #Callback to create a subtask
         self.new_subtask_callback = None
+        self.get_subtasktitle = None
         
         #Signals
         self.connect('motion-notify-event', self._motion)
@@ -105,11 +106,18 @@ class TaskView(gtk.TextView):
     def refresh_callback(self,funct) :
         self.refresh = funct
         
+    #This callback is called to create a new subtask
     def set_subtask_callback(self,funct) :
         self.new_subtask_callback = funct
     
+    #This callback is called to open another task
     def open_task_callback(self,funct) :
         self.open_task = funct
+        
+    #This callback is called to know the title of a task
+    #Knowing its tid
+    def tasktitle_callback(self,funct) :
+        self.get_subtasktitle = funct
     
     #Buffer related functions
     #Those functions are higly related and should always be symetrical
@@ -372,6 +380,10 @@ class TaskView(gtk.TextView):
         self.buff.set_modified(False)
         
     def __newsubtask(self,title,line_nbr) :
+        anchor = self.new_subtask_callback(title)
+        self.__subtask(line_nbr,anchor)
+        
+    def __subtask(self,line_nbr,anchor) :
         start_i = self.buff.get_iter_at_line(line_nbr)
         start = self.buff.create_mark("start",start_i,True)
         end_i = start_i.copy()
@@ -379,8 +391,7 @@ class TaskView(gtk.TextView):
         end = self.buff.create_mark("end",end_i,False)
         self.buff.delete(start_i,end_i)
         start_i = self.buff.get_iter_at_mark(start)
-        newline = title
-        anchor = self.new_subtask_callback(title)
+        newline = self.get_subtasktitle(anchor)
         self.insert_with_anchor(newline,anchor,_iter=start_i)
     
     #Function called each time the user input a letter   

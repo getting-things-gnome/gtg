@@ -181,14 +181,16 @@ class TaskBrowser:
             #We give to the task the callback to synchronize the list
             t.set_sync_func(backend.sync_task)
             tv = TaskEditor(t,self.refresh_list,self.on_delete_task,
-                                    self.close_task,self.open_task_byid)
+                            self.close_task,self.open_task_byid,self.get_tasktitle)
             #registering as opened
             self.opened_task[uid] = tv
             
+    def get_tasktitle(self,tid) :
+        task = self.__get_task_byid(tid)
+        return task.get_title()
+            
     def open_task_byid(self,tid) :
-        tiid,pid = tid.split('@')
-        proj = self.ds.get_project_with_pid(pid)[1]
-        task = proj.get_task(tid)
+        task = self.__get_task_byid(tid)
         self.open_task(task)
     
     #When an editor is closed, it should deregister itself
@@ -297,6 +299,14 @@ class TaskBrowser:
         print "to implement"
 
     ##### Useful tools##################
+    
+    #Getting a task by its ID
+    def __get_task_byid(self,tid) :
+        tiid,pid = tid.split('@')
+        proj = self.ds.get_project_with_pid(pid)[1]
+        task = proj.get_task(tid)
+        return task
+    
     #    Functions that help to build the GUI. Nothing really interesting.
     def __add_active_column(self,name,value,checkbox=False) :
         col = self.__add_column(name,value,checkbox)
