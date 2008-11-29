@@ -134,23 +134,25 @@ class TaskView(gtk.TextView):
         #Ok, this line require an integer at some place !
         self.buff.deserialize(self.buff, self.mime_type, _iter, text)
         #self.buff.insert(_iter, text)
-    def insert_with_anchor(self, text, anchor=None, _iter=None):
+    def insert_with_anchor(self, text, anchor=None, _iter=None,typ=None):
         b = self.get_buffer()
         if _iter is None:
             _iter = b.get_end_iter()
         if anchor is None:
             anchor = text
-        tag = self.create_anchor_tag(b,anchor,text)
+        tag = self.create_anchor_tag(b,anchor,text,typ=typ)
         b.insert_with_tags(_iter, text, tag)
 
-    def create_anchor_tag(self,b,anchor,text=None):
+    def create_anchor_tag(self,b,anchor,text=None,typ=None):
         #We cannot have two tags with the same name
         #That's why the link tag has no name
         #but it has a "is_anchor" property
         tag = b.create_tag(None, **self.get_property('link'))
         tag.set_data('is_anchor', True)
         tag.set_data('link',anchor)
-        tag.connect('event', self._tag_event, text, anchor)
+        if typ :
+            tag.set_data('type',typ)
+        tag.connect('event', self._tag_event, text, anchor,typ)
         self.__tags.append(tag)
         return tag
         
@@ -390,21 +392,35 @@ class TaskView(gtk.TextView):
         end_i.forward_line()
         end = self.buff.create_mark("end",end_i,False)
         self.buff.delete(start_i,end_i)
-        start_i = self.buff.get_iter_at_mark(start)
+        bullet ='  ↪ '
+        self.__insert_at_mark(start,bullet)
+        self.__apply_tag_to_mark(start,end,name="bullet")
         newline = self.get_subtasktitle(anchor)
-        self.insert_with_anchor(newline,anchor,_iter=start_i)
+        self.__insert_at_mark(end,newline,anchor=anchor)
         #The invisible "subtask" tag
         #It must be the last tag set as it's around everything else
         tag = self.buff.create_tag(None)
         tag.set_data('is_subtask', True)
         tag.set_data('child',anchor)
-        start_i = self.buff.get_iter_at_mark(start)
-        end_i = self.buff.get_iter_at_mark(end)
-        self.buff.apply_tag(tag,start_i,end_i)
+        self.__apply_tag_to_mark(start,end,tag=tag)
         self.buff.delete_mark(start)
         self.buff.delete_mark(end)
         
+    def __apply_tag_to_mark(self,start,end,tag=None,name=None) :
+        start_i = self.buff.get_iter_at_mark(start)
+        end_i = self.buff.get_iter_at_mark(end)
+        if tag :
+            self.buff.apply_tag(tag,start_i,end_i)
+        elif name :
+            self.buff.apply_tag_by_name(name,start_i,end_i)
     
+    def __insert_at_mark(self,mark,text,anchor=None) :
+        ite = self.buff.get_iter_at_mark(mark)
+        if anchor :
+            self.insert_with_anchor(text,anchor,_iter=ite,typ="subtask")
+        else :
+            self.buff.insert(ite,text)
+        
     #Function called each time the user input a letter   
     def _insert_at_cursor(self,tv,itera,tex,leng) :
         #New line : the user pressed enter !
@@ -479,7 +495,7 @@ class TaskView(gtk.TextView):
             tag_table.foreach(self.__tag_reset, window)
 
     #We clicked on a link
-    def _tag_event(self, tag, view, ev, _iter, text, anchor):
+    def _tag_event(self, tag, view, ev, _iter, text, anchor,typ):
         _type = ev.type
         if _type == gtk.gdk.MOTION_NOTIFY:
             return
@@ -488,7 +504,10 @@ class TaskView(gtk.TextView):
             cursor = gtk.gdk.Cursor(gtk.gdk.HAND2)
             if _type == gtk.gdk.BUTTON_RELEASE:
                 #print "anchor clicked : %s" %anchor
-                self.open_task(anchor)
+                if typ == "subtask" :
+                    self.open_task(anchor)
+                else :
+                    print "Unknown link type for %s" %anchor
                 self.emit('anchor-clicked', text, anchor, button)
                 self.__set_anchor(ev.window, tag, cursor, self.get_property('hover'))
             elif button in [1, 2]:
