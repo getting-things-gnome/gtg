@@ -188,6 +188,7 @@ class TaskEditor :
     #Take the title as argument and return the subtask ID
     def new_subtask(self,title) :
         subt = self.task.new_subtask()
+        subt.set_title(title)
         tid = subt.get_id()
         return tid
     
