@@ -63,7 +63,7 @@ class TaskView(gtk.TextView):
         fluo_tag = self.buff.create_tag("fluo",background="#F0F")
         #Bullet tag
         bullet_tag = self.buff.create_tag("bullet",scale=1.6)
-        subtask_tag = self.buff.create_tag("subtask",editable=False)
+        subtask_tag = self.buff.create_tag("subtask",background="#FF0")
         #start = self.buff.get_start_iter()
         end = self.buff.get_end_iter()
         #We have to find a way to keep this tag for the first line
@@ -360,6 +360,18 @@ class TaskView(gtk.TextView):
         
         #Ok, we took care of the modification
         self.buff.set_modified(False)
+        
+    def __newsubtask(self,title,line_nbr) :
+        start_i = self.buff.get_iter_at_line(line_nbr)
+        start = self.buff.create_mark("start",start_i,True)
+        end_i = start_i.copy()
+        end_i.forward_line()
+        end = self.buff.create_mark("end",end_i,False)
+        self.buff.delete(start_i,end_i)
+        start_i = self.buff.get_iter_at_mark(start)
+        newline = title
+        anchor = "link"
+        self.insert_with_anchor(newline,anchor,_iter=start_i)
     
     #Function called each time the user input a letter   
     def _insert_at_cursor(self,tv,itera,tex,leng) :
@@ -382,39 +394,41 @@ class TaskView(gtk.TextView):
                     #From Tomboy : ('\u2022\u2218\u2023')
                     #bullet = '%s%s%s' %(unichr(2022),unichr(2218),unichr(2023))
                     #FIXME : we should insert the correct UTF-8 code
-                    bullet =' ↪ '
-                    newline = '%s\n' %(line)
-                    newline.encode('utf-8')
-                    starts = self.buff.get_iter_at_line(line_nbr)
-                    ends = starts.copy()
-                    ends.forward_line()
-                    #self.buff.apply_tag_by_name('fluo',starts,ends)
-                    self.buff.delete(starts,ends)
-                    starts = self.buff.get_iter_at_line(line_nbr)
-                    ends = starts.copy()
-                    ends.forward_line()
-                    #Inserting the bullet
-                    self.buff.insert(starts,bullet)
-                    starts = self.buff.get_iter_at_line(line_nbr)
-                    ends = starts.copy()
-                    ends.forward_line()
-                    self.buff.apply_tag_by_name("bullet",starts,ends)
-                    #Inserting the name of the subtask as a link
-                    #TODO : anchor = get_task_by_title(newline)
-                    anchor = "1@1"
-                    starts = self.buff.get_iter_at_line(line_nbr)
-                    ends = starts.copy()
-                    ends.forward_line()
-                    self.insert_with_anchor(newline,anchor,_iter=ends)
-                    #All is wrapped in subtask tag
-                    starts = self.buff.get_iter_at_line(line_nbr)
-                    ends = starts.copy()
-                    ends.forward_line()
-                    self.buff.apply_tag_by_name("subtask",starts,ends)
+                    self.__newsubtask(line,line_nbr)
+                    
                     #We must stop the signal because if not,
                     #\n will be inserted twice !
                     tv.emit_stop_by_name('insert-text')
                     return True
+#                    bullet =' ↪ '
+#                    newline = '%s\n' %(line)
+#                    newline.encode('utf-8')
+#                    starts = self.buff.get_iter_at_line(line_nbr)
+#                    ends = starts.copy()
+#                    ends.forward_line()
+#                    #self.buff.apply_tag_by_name('fluo',starts,ends)
+#                    self.buff.delete(starts,ends)
+#                    starts = self.buff.get_iter_at_line(line_nbr)
+#                    ends = starts.copy()
+#                    ends.forward_line()
+#                    #Inserting the bullet
+#                    self.buff.insert(starts,bullet)
+#                    starts = self.buff.get_iter_at_line(line_nbr)
+#                    ends = starts.copy()
+#                    ends.forward_line()
+#                    self.buff.apply_tag_by_name("bullet",starts,ends)
+#                    #Inserting the name of the subtask as a link
+#                    #TODO : anchor = get_task_by_title(newline)
+#                    anchor = "1@1"
+#                    starts = self.buff.get_iter_at_line(line_nbr)
+#                    ends = starts.copy()
+#                    ends.forward_line()
+#                    self.insert_with_anchor(newline,anchor,_iter=ends)
+#                    #All is wrapped in subtask tag
+#                    starts = self.buff.get_iter_at_line(line_nbr)
+#                    ends = starts.copy()
+#                    ends.forward_line()
+#                    self.buff.apply_tag_by_name("subtask",starts,ends)
 
     #The mouse is moving. We must change it to a hand when hovering a link
     def _motion(self, view, ev):
