@@ -1,8 +1,8 @@
 import sys, time, os, xml.dom.minidom
 import string, threading
 
-from task      import Task, Project
-from gtgconfig   import GtgConfig
+from gtg_core.task      import Task, Project
+from gtg_core   import CoreConfig
 
 #This is for the awful pretty xml things
 tab = "\t"
@@ -13,7 +13,7 @@ enter = "\n"
 class Backend :
     def __init__(self,zefile,default_folder=True) :
         if default_folder :
-            self.zefile = os.path.join(GtgConfig.DATA_DIR,zefile)
+            self.zefile = os.path.join(CoreConfig.DATA_DIR,zefile)
             self.filename = zefile
         else :
             self.zefile = zefile

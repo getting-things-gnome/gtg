@@ -10,11 +10,10 @@ import datetime, time, sys
 import uuid
 
 #our own imports
-from task      import Task, Project
-from datastore import DataStore
-#subfolders are added to the path
-sys.path[1:1]=["backends"]
-from xml_backend import Backend
+from gtg_core.task      import Task, Project
+from gtg_core.datastore import DataStore
+from backends.localfile import Backend
+from gnome_frontend import GnomeConfig
 
 #=== OBJECTS ===================================================================
 
@@ -25,7 +24,7 @@ class ProjectEditDialog:
     def __init__(self, datastore, project=None):
         
         #Set the Glade file
-        self.gladefile = "gtd-gnome.glade"  
+        self.gladefile = GnomeConfig.GLADE_FILE  
         self.wTree = gtk.glade.XML(self.gladefile, "ProjectEditDialog") 
         
         #Get the Main Window, and connect the "destroy" event
