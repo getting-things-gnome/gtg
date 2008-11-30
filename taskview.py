@@ -285,17 +285,18 @@ class TaskView(gtk.TextView):
         
     #parse the XML and put the content in the buffer
     def __parsexml(self,buf,ite,element) :
+        start = buf.create_mark(None,ite,True)
+        end = buf.create_mark(None,ite,False)
         for n in element.childNodes :
-            start = buf.create_mark("start",ite,True)
-            end = buf.create_mark("end",ite,False)
+            itera = buf.get_iter_at_mark(start)
             if n.nodeType == n.ELEMENT_NODE :
                 #print "<%s>" %n.nodeName
                 if n.nodeName == "subtask" :
                     tid = n.firstChild.nodeValue
-                    line_nbr = ite.get_line()
+                    line_nbr = itera.get_line()
                     self.__subtask(line_nbr,tid)
                 else :
-                    self.__parsexml(buf,ite,n)
+                    self.__parsexml(buf,itera,n)
                     s = buf.get_iter_at_mark(start)
                     e = buf.get_iter_at_mark(end)
                     if n.nodeName == "link" :
@@ -305,11 +306,13 @@ class TaskView(gtk.TextView):
                     else :
                         buf.apply_tag_by_name(n.nodeName,s,e)
                     #print "</%s>" %n.nodeName
-                    buf.delete_mark(start)
-                    buf.delete_mark(end)
+#                    buf.delete_mark(start)
+#                    buf.delete_mark(end)
             elif n.nodeType == n.TEXT_NODE :
-                buf.insert(ite,n.nodeValue)
+                buf.insert(itera,n.nodeValue)
         #return buf.get_end_iter()
+        buf.delete_mark(start)
+        buf.delete_mark(end)
         #create a mark where the iter is right now
         #mark = buf.create_mark("end",ite,False)
         return True
@@ -403,6 +406,7 @@ class TaskView(gtk.TextView):
         tag.set_data('is_subtask', True)
         tag.set_data('child',anchor)
         self.__apply_tag_to_mark(start,end,tag=tag)
+        self.__insert_at_mark(end,"\n")
         self.buff.delete_mark(start)
         self.buff.delete_mark(end)
         
@@ -423,6 +427,9 @@ class TaskView(gtk.TextView):
         
     #Function called each time the user input a letter   
     def _insert_at_cursor(self,tv,itera,tex,leng) :
+        for t in itera.get_tags() :
+            if t.get_data('is_subtask') :
+                print "subtask"
         #New line : the user pressed enter !
         #If the line begins with "-", it's a new subtask !
         if tex == '\n' :
