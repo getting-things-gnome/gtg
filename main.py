@@ -34,8 +34,6 @@ from task import Task, Project
 from taskeditor  import TaskEditor
 from taskbrowser import TaskBrowser
 from datastore   import DataStore
-#subfolders are added to the path
-#sys.path[1:1]=["backends"]
 from backends.localfile import Backend
 from gtgconfig   import GtgConfig
 

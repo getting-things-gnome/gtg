@@ -12,8 +12,6 @@ import uuid
 #our own imports
 from task      import Task, Project
 from datastore import DataStore
-#subfolders are added to the path
-#sys.path[1:1]=["backends"]
 from backends.localfile import Backend
 
 #=== OBJECTS ===================================================================
