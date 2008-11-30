@@ -18,6 +18,9 @@ class Task :
         self.done_date = None
         self.due_date = None
         self.start_date = None
+        self.parents = []
+        self.children = []
+        self.new_task_func = None
         
     def set_project(self,pid) :
         tid = self.get_id()
@@ -107,15 +110,66 @@ class Task :
             return ""
         
     def set_text(self,texte) :
-        #defensive programmation to filter bad formatted tasks
-        if not texte.startswith("<content>") :
-            texte = "<content>%s" %texte
-        if not texte.endswith("</content>") :
-            texte = "%s</content>" %texte
-        if texte :
+        if texte != "<content/>" :
+            #defensive programmation to filter bad formatted tasks
+            if not texte.startswith("<content>") :
+                texte = "<content>%s" %texte
+            if not texte.endswith("</content>") :
+                texte = "%s</content>" %texte
             self.content = str(texte)
         else :
             self.content = ''
+    
+    #Take a task object as parameter
+    def add_subtask(self,task) :
+        if task not in self.children and task not in self.parents :
+            self.children.append(task)
+            #The if prevent an infinite loop
+            task.add_parent(self)
+    
+    #Return the task added as a subtask
+    def new_subtask(self) :
+        subt = self.new_task_func()
+        self.add_subtask(subt)
+        return subt
+    
+    #Take a task object as parameter 
+    def remove_subtask(self,task) :
+        self.children.remove(task)
+        
+    def get_subtasks(self) :
+        zelist = []
+        for i in self.children :
+            zelist.append(i)
+        return zelist
+        
+    #Take a task object as parameter
+    def add_parent(self,task) :
+        if task not in self.children and task not in self.parents :
+            self.parents.append(task)
+            #The if prevent an infinite loop
+            task.add_subtask(self)
+            
+    #Take a task object as parameter
+    def remove_parent(self,task) :
+        self.parents.remove(task)
+    
+    def get_parents(self):
+        zelist = []
+        for i in self.parents :
+            zelist.append(i)
+        return zelist
+        
+    #Method called before the task is deleted
+    def delete(self) :
+        for i in self.get_parents() :
+            i.remove_subtask(self)
+        for j in self.get_subtasks() :
+            j.remove_parent(self)
+        
+    #This is a callback
+    def set_newtask_func(self,newtask) :
+        self.new_task_func = newtask
         
     #This is a callback. The "sync" function has to be set
     def set_sync_func(self,sync) :
@@ -182,15 +236,16 @@ class Project :
         tid = task.get_id()
         self.list[str(tid)] = task
         task.set_project(self.get_pid())
+        task.set_newtask_func(self.new_task)
         
     def new_task(self) :
         tid = self.__free_tid()
         task = Task(tid)
-        self.list[str(tid)] = task
-        task.set_project(self.get_pid())
+        self.add_task(task)
         return task
     
     def delete_task(self,tid) :
+        self.list[tid].delete()
         del self.list[tid]
         self.sync()
     

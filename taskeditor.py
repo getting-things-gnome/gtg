@@ -28,7 +28,8 @@ except:
 date_separator="/"
 
 class TaskEditor :
-    def __init__(self, task, refresh_callback=None,delete_callback=None,close_callback=None) :
+    def __init__(self, task, refresh_callback=None,delete_callback=None,
+                close_callback=None,opentask_callback=None, tasktitle_callback=None) :
         self.gladefile = "gtd-gnome.glade"
         self.wTree = gtk.glade.XML(self.gladefile, "TaskEditor")
         self.cal_tree = gtk.glade.XML(self.gladefile, "calendar")
@@ -53,9 +54,14 @@ class TaskEditor :
         textview = self.wTree.get_widget("textview")
         scrolled = self.wTree.get_widget("scrolledtask")
         scrolled.remove(textview)
+        self.open_task = opentask_callback
+        self.task_title = tasktitle_callback
         self.textview       = TaskView()
         self.textview.show()
         self.textview.refresh_callback(self.refresh_editor)
+        self.textview.set_subtask_callback(self.new_subtask)
+        self.textview.open_task_callback(self.open_task)
+        self.textview.tasktitle_callback(self.task_title)
         scrolled.add(self.textview)
         #Voila! it's done
         self.calendar       = self.cal_tree.get_widget("calendar")
@@ -183,6 +189,13 @@ class TaskEditor :
             print "No callback to delete"
         #if the task was deleted, we close the window
         if result : self.window.destroy()
+    
+    #Take the title as argument and return the subtask ID
+    def new_subtask(self,title) :
+        subt = self.task.new_subtask()
+        subt.set_title(title)
+        tid = subt.get_id()
+        return tid
     
     def save(self) :
         self.task.set_title(self.textview.get_title())
