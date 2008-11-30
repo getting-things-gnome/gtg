@@ -9,8 +9,9 @@
 
 import sys, time, os
 import string, threading
-from task import Task
-from taskview import TaskView
+from gtg_core.task import Task
+from gnome_frontend.taskview import TaskView
+from gnome_frontend import GnomeConfig
 
 try:
     import pygtk
@@ -30,7 +31,7 @@ date_separator="/"
 class TaskEditor :
     def __init__(self, task, refresh_callback=None,delete_callback=None,
                 close_callback=None,opentask_callback=None, tasktitle_callback=None) :
-        self.gladefile = "gtd-gnome.glade"
+        self.gladefile = GnomeConfig.GLADE_FILE
         self.wTree = gtk.glade.XML(self.gladefile, "TaskEditor")
         self.cal_tree = gtk.glade.XML(self.gladefile, "calendar")
         #Create our dictionay and connect it

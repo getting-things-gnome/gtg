@@ -10,10 +10,10 @@ import gtk.glade
 import datetime, time, sys
 
 #our own imports
-from task import Task, Project
-from taskeditor import TaskEditor
-from project_ui import ProjectEditDialog
-from gtgconfig   import GtgConfig
+from gtg_core.task import Task, Project
+from gnome_frontend.taskeditor import TaskEditor
+from gnome_frontend.project_ui import ProjectEditDialog
+from gnome_frontend import GnomeConfig
 
 #=== OBJECTS ===================================================================
 
@@ -24,7 +24,7 @@ class TaskBrowser:
     def __init__(self, datastore):
         
         #Set the Glade file
-        self.gladefile = "gtd-gnome.glade"  
+        self.gladefile = GnomeConfig.GLADE_FILE  
         self.wTree = gtk.glade.XML(self.gladefile) 
         
         #Get the Main Window, and connect the "destroy" event
@@ -127,7 +127,7 @@ class TaskBrowser:
         self.ds.remove_project(p)
         self.ds.unregister_backend(b)
         fn = b.get_filename()
-        os.remove(os.path.join(GtgConfig.DATA_DIR,fn))
+        os.remove(os.path.join(CoreConfig.DATA_DIR,fn))
         self.refresh_projects()
     
     #We double clicked on a project in the project list
