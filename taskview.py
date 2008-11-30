@@ -248,7 +248,7 @@ class TaskView(gtk.TextView):
                 else :
                     #if we process the first tag of this offset, we add an entry
                     self.__tag_stack[offset] = []
-                #Not tag to process, we are in the text mode
+                #No tag to process, we are in the text mode
                 if all_processed :
                     #same code below. Should we make a separate function ?
                     parent.appendChild(doc.createTextNode(it.get_char()))
@@ -268,6 +268,7 @@ class TaskView(gtk.TextView):
                         target = ta.get_data('child')
                         subt.appendChild(doc.createTextNode(target))
                         parent.appendChild(subt)
+                        it.forward_line()
                     else :
                         #The link tag has noname but has "is_anchor" properties
                         if ta.get_data('is_anchor') :
@@ -411,7 +412,7 @@ class TaskView(gtk.TextView):
         #self.__insert_at_mark(start, "@@@")
         #self.__insert_at_mark(end, "###")
         self.__apply_tag_to_mark(start,end,tag=tag)
-        #self.__insert_at_mark(end,"\n")
+        self.__insert_at_mark(end,"\n")
         self.buff.delete_mark(start)
         self.buff.delete_mark(end)
         
