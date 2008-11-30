@@ -48,6 +48,9 @@ class TaskView(gtk.TextView):
         
         self.link   = {'background': 'white', 'foreground': 'blue', 
                                     'underline': pango.UNDERLINE_SINGLE}
+#        self.link = {}
+#        self.active = {}
+#        self.hover = {}
         self.active = {'background': 'light gray', 'foreground': 'red', 
                                     'underline': pango.UNDERLINE_SINGLE}
         self.hover  = {'background': 'light gray', 'foreground': 'blue', 
@@ -63,7 +66,7 @@ class TaskView(gtk.TextView):
         fluo_tag = self.buff.create_tag("fluo",background="#F0F")
         #Bullet tag
         bullet_tag = self.buff.create_tag("bullet",scale=1.6)
-        subtask_tag = self.buff.create_tag("subtask",background="#FF0")
+        #subtask_tag = self.buff.create_tag("subtask",background="#FF0")
         #start = self.buff.get_start_iter()
         end = self.buff.get_end_iter()
         #We have to find a way to keep this tag for the first line
@@ -288,7 +291,7 @@ class TaskView(gtk.TextView):
         start = buf.create_mark(None,ite,True)
         end = buf.create_mark(None,ite,False)
         for n in element.childNodes :
-            itera = buf.get_iter_at_mark(start)
+            itera = buf.get_iter_at_mark(end)
             if n.nodeType == n.ELEMENT_NODE :
                 #print "<%s>" %n.nodeName
                 if n.nodeName == "subtask" :
@@ -405,8 +408,10 @@ class TaskView(gtk.TextView):
         tag = self.buff.create_tag(None)
         tag.set_data('is_subtask', True)
         tag.set_data('child',anchor)
+        #self.__insert_at_mark(start, "@@@")
+        #self.__insert_at_mark(end, "###")
         self.__apply_tag_to_mark(start,end,tag=tag)
-        self.__insert_at_mark(end,"\n")
+        #self.__insert_at_mark(end,"\n")
         self.buff.delete_mark(start)
         self.buff.delete_mark(end)
         
@@ -427,9 +432,9 @@ class TaskView(gtk.TextView):
         
     #Function called each time the user input a letter   
     def _insert_at_cursor(self,tv,itera,tex,leng) :
-        for t in itera.get_tags() :
-            if t.get_data('is_subtask') :
-                print "subtask"
+#        for t in itera.get_tags() :
+#            if t.get_data('is_subtask') :
+#                print "I'm in a subtask"
         #New line : the user pressed enter !
         #If the line begins with "-", it's a new subtask !
         if tex == '\n' :
