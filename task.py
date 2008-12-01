@@ -136,8 +136,10 @@ class Task :
     def remove_tag(self, t):
         self.tags.remove(t)
 
-    def has_tag(self, t):
-        return t in self.tags
+    def has_tags(self, tag_list):
+        for my_tag in tag_list:
+            if my_tag in self.tags: return True
+        return False
 
     def __str__(self):
         s = ""

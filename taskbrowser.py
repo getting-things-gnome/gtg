@@ -67,14 +67,13 @@ class TaskBrowser:
         self.__add_project_column("Projects",1)
         self.project_ts = gtk.TreeStore(gobject.TYPE_PYOBJECT,str)
         self.project_tview.set_model(self.project_ts)
-        self.project_ts.set_sort_column_id(self.c_title, gtk.SORT_ASCENDING)
         
         #The tags treeview
         self.tag_tview = self.wTree.get_widget("tag_tview")
         self.__add_tag_column("Tags",1)
         self.tag_ts = gtk.TreeStore(gobject.TYPE_PYOBJECT,str)
         self.tag_tview.set_model(self.tag_ts)
-        self.tag_ts.set_sort_column_id(self.c_title, gtk.SORT_ASCENDING)
+
    
         #The Active tasks treeview
         self.task_tview = self.wTree.get_widget("task_tview")
@@ -127,12 +126,13 @@ class TaskBrowser:
         self.refresh_projects()
     
     #We double clicked on a project in the project list
-    def on_project_selected(self,widget,row,col) :
+    def on_project_selected(self,widget,row=None ,col=None) :
         self.refresh_list()
     
     #We refresh the project list. Not needed very often
     def refresh_projects(self) :
         self.project_ts.clear()
+        self.project_ts.append(None,[-1,"<span weight=\"bold\">All projects</span>"])
         projects = self.ds.get_all_projects()
         for p_key in projects:
             p = projects[p_key][1]
@@ -142,7 +142,9 @@ class TaskBrowser:
     #We refresh the tag list. Not needed very often
     def refresh_tags(self) :
         self.tag_ts.clear()
+        self.tag_ts.append(None,[-1,"<span weight=\"bold\">All tags</span>"])
         tags = self.ds.get_all_tags()
+        tags.sort()
         for tag in tags:
             self.tag_ts.append(None,[tag,tag])
 
@@ -153,7 +155,9 @@ class TaskBrowser:
         #is it acceptable to do that ?
         self.task_ts.clear()
         self.taskdone_ts.clear()
+        tag_list = self.get_selected_tags()
         #We display only tasks of the active projects
+        #TODO: implement queries in DataStore, and use it here
         for p_key in self.get_selected_project() :
             p = self.ds.get_all_projects()[p_key][1]  
             #we first build the active_tasks pane
@@ -162,13 +166,15 @@ class TaskBrowser:
                 title = t.get_title()
                 duedate = t.get_due_date()
                 left = t.get_days_left()
-                self.task_ts.append(None,[tid,False,title,duedate,left])
+                if tag_list==[] or t.has_tags(tag_list):
+                    self.task_ts.append(None,[tid,False,title,duedate,left])
             #then the one with tasks already done
             for tid in p.unactive_tasks() :
                 t = p.get_task(tid)
                 title = t.get_title()
                 donedate = t.get_done_date()
-                self.taskdone_ts.append(None,[tid,False,title,donedate])
+                if tag_list==[] or t.has_tags(tag_list):
+                    self.taskdone_ts.append(None,[tid,False,title,donedate])
 
     #If a Task editor is already opened for a given task, we present it
     #Else, we create a new one.
@@ -242,10 +248,22 @@ class TaskBrowser:
         pmodel, p_iter = p_selected.get_selected()
         if p_iter :
             pid = [self.project_ts.get_value(p_iter, 0)]
+            if -1 in pid: pid = self.ds.get_all_projects().keys()
         #If no selection, we display all
         else :
             pid = self.ds.get_all_projects().keys() 
         return pid
+
+    def get_selected_tags(self) :
+        t_selected = self.tag_tview.get_selection()
+        tmodel, t_iter = t_selected.get_selected()
+        if t_iter :
+            tag = [self.tag_ts.get_value(t_iter, 0)]
+            if -1 in tag: tag.remove(-1)
+        #If no selection, we display all
+        else :
+            tag = []
+        return tag
         
     def on_edit_task(self,widget,row=None ,col=None) :
         pid,tid = self.get_selected_task()
@@ -290,7 +308,7 @@ class TaskBrowser:
             backend.sync_task(tid)
         
     def on_select_tag(self, widget, row=None ,col=None) :
-        print "to implement"
+        self.refresh_list()
 
     ##### Useful tools##################
     #    Functions that help to build the GUI. Nothing really interesting.
@@ -300,6 +318,7 @@ class TaskBrowser:
         
     def __add_project_column(self,name,value,checkbox=False) :
         col = self.__add_column(name,value,checkbox)
+        col.set_clickable(False)
         self.project_tview.append_column(col)
         
     def __add_closed_column(self,name,value,checkbox=False) :
@@ -308,6 +327,7 @@ class TaskBrowser:
 
     def __add_tag_column(self,name,value,checkbox=False) :
         col = self.__add_column(name,value,checkbox)
+        col.set_clickable(False)
         self.tag_tview.append_column(col)
 
     def __add_column(self,name,value,checkbox=False) :

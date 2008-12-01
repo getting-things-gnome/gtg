@@ -162,6 +162,7 @@
                     <property name="can_focus">True</property>
                     <signal name="button_press_event" handler="on_treeview_button_press_event"/>
                     <signal name="row_activated" handler="on_project_selected"/>
+                    <signal name="cursor_changed" handler="on_project_selected"/>
                   </widget>
                 </child>
                 <child>
