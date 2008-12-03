@@ -83,6 +83,9 @@ class Backend :
                     cur_task.set_text(content.firstChild.toxml())
                 cur_task.set_due_date(self.__read_textnode(t,"duedate"))
                 cur_task.set_start_date(self.__read_textnode(t,"startdate"))
+                cur_tags = t.getAttribute("tags").replace(' ','').split(",")
+                if "" in cur_tags: cur_tags.remove("")
+                for tag in cur_tags: cur_task.add_tag(tag)
                 #adding task to the project
                 self.project.add_task(cur_task)
             #Now we can process the subtasks

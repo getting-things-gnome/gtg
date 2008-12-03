@@ -21,6 +21,8 @@ class Task :
         self.parents = []
         self.children = []
         self.new_task_func = None
+        # tags
+        self.tags = []
         
     def set_project(self,pid) :
         tid = self.get_id()
@@ -159,7 +161,10 @@ class Task :
         for i in self.parents :
             zelist.append(i)
         return zelist
-        
+ 
+    def has_parents(self):
+        return len(self.parents)!=0
+       
     #Method called before the task is deleted
     def delete(self) :
         for i in self.get_parents() :
@@ -178,6 +183,28 @@ class Task :
     def sync(self) :
         if self.sync_func :
             self.sync_func(self.tid)
+    def get_tags(self):
+        return self.tags
+
+    def add_tag(self, t):
+        self.tags.append(t)
+
+    def remove_tag(self, t):
+        self.tags.remove(t)
+
+    def has_tags(self, tag_list):
+        for my_tag in tag_list:
+            if my_tag in self.tags: return True
+        return False
+
+    def __str__(self):
+        s = ""
+        s = s + "Task Object\n"
+        s = s + "Title:  " + self.title + "\n"
+        s = s + "Id:     " + self.tid + "\n"
+        s = s + "Status: " + self.status + "\n"
+        s = s + "Tags:   "  + str(self.tags)
+        return s
         
 ###########################################################################
         

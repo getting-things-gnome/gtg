@@ -72,12 +72,7 @@ class TaskBrowser:
         
         #The tags treeview
         self.tag_tview = self.wTree.get_widget("tag_tview")
-        tcol = gtk.TreeViewColumn("Tag")
-        tcol.pack_start(self.cell)
-        tcol.set_resizable(True)
-        tcol.set_sort_column_id(1)
-        tcol.set_attributes(self.cell, markup=1)
-        self.tag_tview.append_column(tcol)
+        self.__add_tag_column("Tags",1)
         self.tag_ts = gtk.TreeStore(gobject.TYPE_PYOBJECT,str)
         self.tag_tview.set_model(self.tag_ts)
    
@@ -100,6 +95,7 @@ class TaskBrowser:
         
         #put the content in those treeviews
         self.refresh_projects()
+        self.refresh_tags()
         self.refresh_list()
         #This is the list of tasks that are already opened in an editor
         #of course it's empty right now
@@ -131,18 +127,28 @@ class TaskBrowser:
         self.refresh_projects()
     
     #We double clicked on a project in the project list
-    def on_project_selected(self,widget,row,col) :
+    def on_project_selected(self,widget,row=None ,col=None) :
         self.refresh_list()
     
     #We refresh the project list. Not needed very often
     def refresh_projects(self) :
         self.project_ts.clear()
+        self.project_ts.append(None,[-1,"<span weight=\"bold\">All projects</span>"])
         projects = self.ds.get_all_projects()
         for p_key in projects:
             p = projects[p_key][1]
             title = p.get_name()
             self.project_ts.append(None,[p_key,title])
-        
+
+    #We refresh the tag list. Not needed very often
+    def refresh_tags(self) :
+        self.tag_ts.clear()
+        self.tag_ts.append(None,[-1,"<span weight=\"bold\">All tags</span>"])
+        tags = self.ds.get_all_tags()
+        tags.sort()
+        for tag in tags:
+            self.tag_ts.append(None,[tag,tag])
+
     #refresh list build/refresh your TreeStore of task
     #to keep it in sync with your self.projects   
     def refresh_list(self) :
@@ -150,22 +156,34 @@ class TaskBrowser:
         #is it acceptable to do that ?
         self.task_ts.clear()
         self.taskdone_ts.clear()
+        tag_list = self.get_selected_tags()
         #We display only tasks of the active projects
+        #TODO: implement queries in DataStore, and use it here
         for p_key in self.get_selected_project() :
             p = self.ds.get_all_projects()[p_key][1]  
             #we first build the active_tasks pane
             for tid in p.active_tasks() :
                 t = p.get_task(tid)
-                title = t.get_title()
-                duedate = t.get_due_date()
-                left = t.get_days_left()
-                self.task_ts.append(None,[tid,False,title,duedate,left])
+                if not t.has_parents() and (tag_list==[] or t.has_tags(tag_list)):
+                    self.add_task_tree_to_list(p, self.task_ts, t, None)
             #then the one with tasks already done
             for tid in p.unactive_tasks() :
                 t = p.get_task(tid)
                 title = t.get_title()
                 donedate = t.get_done_date()
-                self.taskdone_ts.append(None,[tid,False,title,donedate])
+                if tag_list==[] or t.has_tags(tag_list):
+                    self.taskdone_ts.append(None,[tid,False,title,donedate])
+        self.task_tview.expand_all()
+
+    def add_task_tree_to_list(self, project, tree_store, task, parent):
+        tid     = task.get_id()
+        title   = task.get_title()
+        duedate = task.get_due_date()
+        left    = task.get_days_left()
+        my_row  = self.task_ts.append(parent, [tid,False,title,duedate,left])
+        for c in task.get_subtasks():
+            if c.get_id() in project.active_tasks():
+                self.add_task_tree_to_list(project, tree_store, c, my_row)
 
     #If a Task editor is already opened for a given task, we present it
     #Else, we create a new one.
@@ -177,7 +195,7 @@ class TaskBrowser:
         else :
             #We need the pid number to get the backend
             tid,pid = uid.split('@')
-            backend = self.ds.get_project_with_pid(pid)[0]
+            backend = self.ds.get_all_projects()[pid][0]
             #We give to the task the callback to synchronize the list
             t.set_sync_func(backend.sync_task)
             tv = TaskEditor(t,self.refresh_list,self.on_delete_task,
@@ -248,10 +266,22 @@ class TaskBrowser:
         pmodel, p_iter = p_selected.get_selected()
         if p_iter :
             pid = [self.project_ts.get_value(p_iter, 0)]
+            if -1 in pid: pid = self.ds.get_all_projects().keys()
         #If no selection, we display all
         else :
             pid = self.ds.get_all_projects().keys() 
         return pid
+
+    def get_selected_tags(self) :
+        t_selected = self.tag_tview.get_selection()
+        tmodel, t_iter = t_selected.get_selected()
+        if t_iter :
+            tag = [self.tag_ts.get_value(t_iter, 0)]
+            if -1 in tag: tag.remove(-1)
+        #If no selection, we display all
+        else :
+            tag = []
+        return tag
         
     def on_edit_task(self,widget,row=None ,col=None) :
         pid,tid = self.get_selected_task()
@@ -296,7 +326,7 @@ class TaskBrowser:
             backend.sync_task(tid)
         
     def on_select_tag(self, widget, row=None ,col=None) :
-        print "to implement"
+        self.refresh_list()
 
     ##### Useful tools##################
     
@@ -314,12 +344,18 @@ class TaskBrowser:
         
     def __add_project_column(self,name,value,checkbox=False) :
         col = self.__add_column(name,value,checkbox)
+        col.set_clickable(False)
         self.project_tview.append_column(col)
         
     def __add_closed_column(self,name,value,checkbox=False) :
         col = self.__add_column(name,value,checkbox)
         self.taskdone_tview.append_column(col)
-        
+
+    def __add_tag_column(self,name,value,checkbox=False) :
+        col = self.__add_column(name,value,checkbox)
+        col.set_clickable(False)
+        self.tag_tview.append_column(col)
+
     def __add_column(self,name,value,checkbox=False) :
         col = gtk.TreeViewColumn(name)
         if checkbox :
