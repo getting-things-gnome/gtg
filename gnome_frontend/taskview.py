@@ -48,6 +48,9 @@ class TaskView(gtk.TextView):
         
         self.link   = {'background': 'white', 'foreground': 'blue', 
                                     'underline': pango.UNDERLINE_SINGLE}
+#        self.link = {}
+#        self.active = {}
+#        self.hover = {}
         self.active = {'background': 'light gray', 'foreground': 'red', 
                                     'underline': pango.UNDERLINE_SINGLE}
         self.hover  = {'background': 'light gray', 'foreground': 'blue', 
@@ -63,6 +66,7 @@ class TaskView(gtk.TextView):
         fluo_tag = self.buff.create_tag("fluo",background="#F0F")
         #Bullet tag
         bullet_tag = self.buff.create_tag("bullet",scale=1.6)
+        #subtask_tag = self.buff.create_tag("subtask",background="#FF0")
         #start = self.buff.get_start_iter()
         end = self.buff.get_end_iter()
         #We have to find a way to keep this tag for the first line
@@ -75,6 +79,11 @@ class TaskView(gtk.TextView):
         
         #Callback to refresh the editor window
         self.refresh = None
+        #Callback to open another task
+        self.open_task = None
+        #Callback to create a subtask
+        self.new_subtask_callback = None
+        self.get_subtasktitle = None
         
         #Signals
         self.connect('motion-notify-event', self._motion)
@@ -99,6 +108,19 @@ class TaskView(gtk.TextView):
     #Specially when we change the title
     def refresh_callback(self,funct) :
         self.refresh = funct
+        
+    #This callback is called to create a new subtask
+    def set_subtask_callback(self,funct) :
+        self.new_subtask_callback = funct
+    
+    #This callback is called to open another task
+    def open_task_callback(self,funct) :
+        self.open_task = funct
+        
+    #This callback is called to know the title of a task
+    #Knowing its tid
+    def tasktitle_callback(self,funct) :
+        self.get_subtasktitle = funct
     
     #Buffer related functions
     #Those functions are higly related and should always be symetrical
@@ -115,23 +137,25 @@ class TaskView(gtk.TextView):
         #Ok, this line require an integer at some place !
         self.buff.deserialize(self.buff, self.mime_type, _iter, text)
         #self.buff.insert(_iter, text)
-    def insert_with_anchor(self, text, anchor=None, _iter=None):
+    def insert_with_anchor(self, text, anchor=None, _iter=None,typ=None):
         b = self.get_buffer()
         if _iter is None:
             _iter = b.get_end_iter()
         if anchor is None:
             anchor = text
-        tag = self.create_anchor_tag(b,anchor,text)
+        tag = self.create_anchor_tag(b,anchor,text,typ=typ)
         b.insert_with_tags(_iter, text, tag)
 
-    def create_anchor_tag(self,b,anchor,text=None):
+    def create_anchor_tag(self,b,anchor,text=None,typ=None):
         #We cannot have two tags with the same name
         #That's why the link tag has no name
         #but it has a "is_anchor" property
         tag = b.create_tag(None, **self.get_property('link'))
         tag.set_data('is_anchor', True)
         tag.set_data('link',anchor)
-        tag.connect('event', self._tag_event, text, anchor)
+        if typ :
+            tag.set_data('type',typ)
+        tag.connect('event', self._tag_event, text, anchor,typ)
         self.__tags.append(tag)
         return tag
         
@@ -169,23 +193,6 @@ class TaskView(gtk.TextView):
         #Let's strip blank lines
         stripped = title.strip(' \n\t')
         return stripped
-#    #Get the content of the task without the title
-#    def get_tasktext(self) :
-#        texte = self.get_text()
-#        return texte
-##    #Strip the title (first line with text) from the rest  
-#    #We don't use serializing here !
-#    def get_fulltext(self) :
-#        texte = self.buff.get_text(self.buff.get_start_iter(),self.buff.get_end_iter())
-
-#        stripped = texte.strip(' \n\t')
-#        content = texte.partition('\n')
-#        #We don't have an empty task
-#        #We will find for the first line as the title
-#        if stripped :
-#            while not content[0] :
-#                content = content[2].partition('\n')
-#        return content[0],content[2]
         
 ########### Serializing functions ###############
 
@@ -213,7 +220,7 @@ class TaskView(gtk.TextView):
         txt = ""
         it = start.copy()
         parent = doc.createElement(name)
-        while it.get_offset() != end.get_offset() :
+        while (it.get_offset() <= end.get_offset()) and (it.get_char() != '\0') :
             #if a tag begin, we will parse until the end
             if it.begins_tag() :
                 #We take the tag with the highest priority
@@ -241,7 +248,7 @@ class TaskView(gtk.TextView):
                 else :
                     #if we process the first tag of this offset, we add an entry
                     self.__tag_stack[offset] = []
-                #Not tag to process, we are in the text mode
+                #No tag to process, we are in the text mode
                 if all_processed :
                     #same code below. Should we make a separate function ?
                     parent.appendChild(doc.createTextNode(it.get_char()))
@@ -255,15 +262,23 @@ class TaskView(gtk.TextView):
                     #Let's add this tag to the stack so we remember
                     #it's already processed
                     self.__tag_stack[offset].append(tagname)
-                    #The link tag has noname but has "is_anchor" properties
-                    if ta.get_data('is_anchor') :
-                        tagname = "link"
-                    #Recursive call !!!!! (we handle tag in tags)
-                    child = self.__parsebuf(buf,startit,endit,tagname,doc)
-                    #handling special tags
-                    if ta.get_data('is_anchor') :
-                        child.setAttribute("target",ta.get_data('link'))
-                    parent.appendChild(child)
+                    if ta.get_data('is_subtask') :
+                        tagname = "subtask"
+                        subt = doc.createElement(tagname)
+                        target = ta.get_data('child')
+                        subt.appendChild(doc.createTextNode(target))
+                        parent.appendChild(subt)
+                        it.forward_line()
+                    else :
+                        #The link tag has noname but has "is_anchor" properties
+                        if ta.get_data('is_anchor') :
+                            tagname = "link"
+                        #Recursive call !!!!! (we handle tag in tags)
+                        child = self.__parsebuf(buf,startit,endit,tagname,doc)
+                        #handling special tags
+                        if ta.get_data('is_anchor') :
+                            child.setAttribute("target",ta.get_data('link'))
+                        parent.appendChild(child)
             #else, we just add the text
             else :
                 parent.appendChild(doc.createTextNode(it.get_char()))
@@ -274,24 +289,37 @@ class TaskView(gtk.TextView):
         
     #parse the XML and put the content in the buffer
     def __parsexml(self,buf,ite,element) :
+        start = buf.create_mark(None,ite,True)
+        end = buf.create_mark(None,ite,False)
         for n in element.childNodes :
+            itera = buf.get_iter_at_mark(end)
             if n.nodeType == n.ELEMENT_NODE :
                 #print "<%s>" %n.nodeName
-                start = ite.get_offset()
-                end = self.__parsexml(buf,ite,n)
-                s = buf.get_iter_at_offset(start)
-                e = buf.get_iter_at_offset(end)
-                if n.nodeName == "link" :
-                    anchor = n.getAttribute("target")
-                    tag = self.create_anchor_tag(buf,anchor,None)
-                    buf.apply_tag(tag,s,e)
+                if n.nodeName == "subtask" :
+                    tid = n.firstChild.nodeValue
+                    line_nbr = itera.get_line()
+                    self.__subtask(line_nbr,tid)
                 else :
-                    buf.apply_tag_by_name(n.nodeName,s,e)
-                #print "</%s>" %n.nodeName
+                    self.__parsexml(buf,itera,n)
+                    s = buf.get_iter_at_mark(start)
+                    e = buf.get_iter_at_mark(end)
+                    if n.nodeName == "link" :
+                        anchor = n.getAttribute("target")
+                        tag = self.create_anchor_tag(buf,anchor,None)
+                        buf.apply_tag(tag,s,e)
+                    else :
+                        buf.apply_tag_by_name(n.nodeName,s,e)
+                    #print "</%s>" %n.nodeName
+#                    buf.delete_mark(start)
+#                    buf.delete_mark(end)
             elif n.nodeType == n.TEXT_NODE :
-                buf.insert(ite,n.nodeValue)
+                buf.insert(itera,n.nodeValue)
         #return buf.get_end_iter()
-        return ite.get_offset()
+        buf.delete_mark(start)
+        buf.delete_mark(end)
+        #create a mark where the iter is right now
+        #mark = buf.create_mark("end",ite,False)
+        return True
                 
     ### Serialize the task : transform it's content in something
     #we can store
@@ -318,7 +346,7 @@ class TaskView(gtk.TextView):
         #content_buf.insert_with_tags(ite,data,fluo)
         if data :
             element = xml.dom.minidom.parseString(data)
-            val = self.__parsexml(content_buf,ite,element.firstChild)
+            success = self.__parsexml(content_buf,ite,element.firstChild)
         #content_buf.insert(ite, "\n- aze\n -qsd")
         #self.insert_with_anchor("http://aze","http://eaz")
         return True
@@ -359,9 +387,55 @@ class TaskView(gtk.TextView):
         
         #Ok, we took care of the modification
         self.buff.set_modified(False)
+        
+    def __newsubtask(self,title,line_nbr) :
+        anchor = self.new_subtask_callback(title)
+        self.__subtask(line_nbr,anchor)
+        
+    def __subtask(self,line_nbr,anchor) :
+        start_i = self.buff.get_iter_at_line(line_nbr)
+        start = self.buff.create_mark("start",start_i,True)
+        end_i = start_i.copy()
+        end_i.forward_line()
+        end = self.buff.create_mark("end",end_i,False)
+        self.buff.delete(start_i,end_i)
+        bullet ='  ↪ '
+        self.__insert_at_mark(start,bullet)
+        self.__apply_tag_to_mark(start,end,name="bullet")
+        newline = self.get_subtasktitle(anchor)
+        self.__insert_at_mark(end,newline,anchor=anchor)
+        #The invisible "subtask" tag
+        #It must be the last tag set as it's around everything else
+        tag = self.buff.create_tag(None)
+        tag.set_data('is_subtask', True)
+        tag.set_data('child',anchor)
+        #self.__insert_at_mark(start, "@@@")
+        #self.__insert_at_mark(end, "###")
+        self.__apply_tag_to_mark(start,end,tag=tag)
+        self.__insert_at_mark(end,"\n")
+        self.buff.delete_mark(start)
+        self.buff.delete_mark(end)
+        
+    def __apply_tag_to_mark(self,start,end,tag=None,name=None) :
+        start_i = self.buff.get_iter_at_mark(start)
+        end_i = self.buff.get_iter_at_mark(end)
+        if tag :
+            self.buff.apply_tag(tag,start_i,end_i)
+        elif name :
+            self.buff.apply_tag_by_name(name,start_i,end_i)
     
+    def __insert_at_mark(self,mark,text,anchor=None) :
+        ite = self.buff.get_iter_at_mark(mark)
+        if anchor :
+            self.insert_with_anchor(text,anchor,_iter=ite,typ="subtask")
+        else :
+            self.buff.insert(ite,text)
+        
     #Function called each time the user input a letter   
     def _insert_at_cursor(self,tv,itera,tex,leng) :
+#        for t in itera.get_tags() :
+#            if t.get_data('is_subtask') :
+#                print "I'm in a subtask"
         #New line : the user pressed enter !
         #If the line begins with "-", it's a new subtask !
         if tex == '\n' :
@@ -381,34 +455,41 @@ class TaskView(gtk.TextView):
                     #From Tomboy : ('\u2022\u2218\u2023')
                     #bullet = '%s%s%s' %(unichr(2022),unichr(2218),unichr(2023))
                     #FIXME : we should insert the correct UTF-8 code
-                    bullet =' ↪ '
-                    newline = '%s\n' %(line)
-                    newline.encode('utf-8')
-                    starts = self.buff.get_iter_at_line(line_nbr)
-                    ends = starts.copy()
-                    ends.forward_line()
-                    #self.buff.apply_tag_by_name('fluo',starts,ends)
-                    self.buff.delete(starts,ends)
-                    starts = self.buff.get_iter_at_line(line_nbr)
-                    ends = starts.copy()
-                    ends.forward_line()
-                    #Inserting the bullet
-                    self.buff.insert(starts,bullet)
-                    starts = self.buff.get_iter_at_line(line_nbr)
-                    ends = starts.copy()
-                    ends.forward_line()
-                    self.buff.apply_tag_by_name("bullet",starts,ends)
-                    #Inserting the name of the subtask as a link
-                    #TODO : anchor = get_task_by_title(newline)
-                    anchor = "1@1"
-                    starts = self.buff.get_iter_at_line(line_nbr)
-                    ends = starts.copy()
-                    ends.forward_line()
-                    self.insert_with_anchor(newline,anchor,_iter=ends)
+                    self.__newsubtask(line,line_nbr)
+                    
                     #We must stop the signal because if not,
                     #\n will be inserted twice !
                     tv.emit_stop_by_name('insert-text')
                     return True
+#                    bullet =' ↪ '
+#                    newline = '%s\n' %(line)
+#                    newline.encode('utf-8')
+#                    starts = self.buff.get_iter_at_line(line_nbr)
+#                    ends = starts.copy()
+#                    ends.forward_line()
+#                    #self.buff.apply_tag_by_name('fluo',starts,ends)
+#                    self.buff.delete(starts,ends)
+#                    starts = self.buff.get_iter_at_line(line_nbr)
+#                    ends = starts.copy()
+#                    ends.forward_line()
+#                    #Inserting the bullet
+#                    self.buff.insert(starts,bullet)
+#                    starts = self.buff.get_iter_at_line(line_nbr)
+#                    ends = starts.copy()
+#                    ends.forward_line()
+#                    self.buff.apply_tag_by_name("bullet",starts,ends)
+#                    #Inserting the name of the subtask as a link
+#                    #TODO : anchor = get_task_by_title(newline)
+#                    anchor = "1@1"
+#                    starts = self.buff.get_iter_at_line(line_nbr)
+#                    ends = starts.copy()
+#                    ends.forward_line()
+#                    self.insert_with_anchor(newline,anchor,_iter=ends)
+#                    #All is wrapped in subtask tag
+#                    starts = self.buff.get_iter_at_line(line_nbr)
+#                    ends = starts.copy()
+#                    ends.forward_line()
+#                    self.buff.apply_tag_by_name("subtask",starts,ends)
 
     #The mouse is moving. We must change it to a hand when hovering a link
     def _motion(self, view, ev):
@@ -427,7 +508,7 @@ class TaskView(gtk.TextView):
             tag_table.foreach(self.__tag_reset, window)
 
     #We clicked on a link
-    def _tag_event(self, tag, view, ev, _iter, text, anchor):
+    def _tag_event(self, tag, view, ev, _iter, text, anchor,typ):
         _type = ev.type
         if _type == gtk.gdk.MOTION_NOTIFY:
             return
@@ -435,7 +516,11 @@ class TaskView(gtk.TextView):
             button = ev.button
             cursor = gtk.gdk.Cursor(gtk.gdk.HAND2)
             if _type == gtk.gdk.BUTTON_RELEASE:
-                print "anchor clicked : %s" %anchor
+                #print "anchor clicked : %s" %anchor
+                if typ == "subtask" :
+                    self.open_task(anchor)
+                else :
+                    print "Unknown link type for %s" %anchor
                 self.emit('anchor-clicked', text, anchor, button)
                 self.__set_anchor(ev.window, tag, cursor, self.get_property('hover'))
             elif button in [1, 2]:

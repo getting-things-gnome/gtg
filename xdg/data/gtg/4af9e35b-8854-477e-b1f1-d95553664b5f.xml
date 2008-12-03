@@ -1,0 +1,37 @@
+<?xml version="1.0" ?>
+<project name="aze">
+	<task id="2@1" status="Active">
+		<title>
+			enfant 2
+		</title>
+	</task>
+	<task id="3@1" status="Active">
+		<title>
+			enfant3
+		</title>
+	</task>
+	<task id="0@1" status="Active">
+		<title>
+			My new task
+		</title>
+		<subtask>
+			1@1
+		</subtask>
+		<subtask>
+			2@1
+		</subtask>
+		<subtask>
+			3@1
+		</subtask>
+		<content>
+			qsd
+&lt;subtask&gt;1@1&lt;/subtask&gt;wxc
+&lt;subtask&gt;2@1&lt;/subtask&gt;&lt;subtask&gt;3@1&lt;/subtask&gt;wxc
+		</content>
+	</task>
+	<task id="1@1" status="Active">
+		<title>
+			enfant 1
+		</title>
+	</task>
+</project>

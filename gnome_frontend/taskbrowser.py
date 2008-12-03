@@ -10,9 +10,10 @@ import gtk.glade
 import datetime, time, sys
 
 #our own imports
-from task import Task, Project
-from taskeditor import TaskEditor
-from project_ui import ProjectEditDialog
+from gtg_core.task import Task, Project
+from gnome_frontend.taskeditor import TaskEditor
+from gnome_frontend.project_ui import ProjectEditDialog
+from gnome_frontend import GnomeConfig
 
 #=== OBJECTS ===================================================================
 
@@ -23,7 +24,7 @@ class TaskBrowser:
     def __init__(self, datastore):
         
         #Set the Glade file
-        self.gladefile = "gtd-gnome.glade"  
+        self.gladefile = GnomeConfig.GLADE_FILE  
         self.wTree = gtk.glade.XML(self.gladefile) 
         
         #Get the Main Window, and connect the "destroy" event
@@ -67,13 +68,13 @@ class TaskBrowser:
         self.__add_project_column("Projects",1)
         self.project_ts = gtk.TreeStore(gobject.TYPE_PYOBJECT,str)
         self.project_tview.set_model(self.project_ts)
+        #self.project_ts.set_sort_column_id(self.c_title, gtk.SORT_ASCENDING)
         
         #The tags treeview
         self.tag_tview = self.wTree.get_widget("tag_tview")
         self.__add_tag_column("Tags",1)
         self.tag_ts = gtk.TreeStore(gobject.TYPE_PYOBJECT,str)
         self.tag_tview.set_model(self.tag_ts)
-
    
         #The Active tasks treeview
         self.task_tview = self.wTree.get_widget("task_tview")
@@ -122,7 +123,7 @@ class TaskBrowser:
         self.ds.remove_project(p)
         self.ds.unregister_backend(b)
         fn = b.get_filename()
-        os.remove(fn)
+        os.remove(os.path.join(CoreConfig.DATA_DIR,fn))
         self.refresh_projects()
     
     #We double clicked on a project in the project list
@@ -163,11 +164,8 @@ class TaskBrowser:
             #we first build the active_tasks pane
             for tid in p.active_tasks() :
                 t = p.get_task(tid)
-                title = t.get_title()
-                duedate = t.get_due_date()
-                left = t.get_days_left()
-                if tag_list==[] or t.has_tags(tag_list):
-                    self.task_ts.append(None,[tid,False,title,duedate,left])
+                if not t.has_parents() and (tag_list==[] or t.has_tags(tag_list)):
+                    self.add_task_tree_to_list(p, self.task_ts, t, None)
             #then the one with tasks already done
             for tid in p.unactive_tasks() :
                 t = p.get_task(tid)
@@ -175,6 +173,17 @@ class TaskBrowser:
                 donedate = t.get_done_date()
                 if tag_list==[] or t.has_tags(tag_list):
                     self.taskdone_ts.append(None,[tid,False,title,donedate])
+        self.task_tview.expand_all()
+
+    def add_task_tree_to_list(self, project, tree_store, task, parent):
+        tid     = task.get_id()
+        title   = task.get_title()
+        duedate = task.get_due_date()
+        left    = task.get_days_left()
+        my_row  = self.task_ts.append(parent, [tid,False,title,duedate,left])
+        for c in task.get_subtasks():
+            if c.get_id() in project.active_tasks():
+                self.add_task_tree_to_list(project, tree_store, c, my_row)
 
     #If a Task editor is already opened for a given task, we present it
     #Else, we create a new one.
@@ -189,9 +198,18 @@ class TaskBrowser:
             backend = self.ds.get_all_projects()[pid][0]
             #We give to the task the callback to synchronize the list
             t.set_sync_func(backend.sync_task)
-            tv = TaskEditor(t,self.refresh_list,self.on_delete_task,self.close_task)
+            tv = TaskEditor(t,self.refresh_list,self.on_delete_task,
+                            self.close_task,self.open_task_byid,self.get_tasktitle)
             #registering as opened
             self.opened_task[uid] = tv
+            
+    def get_tasktitle(self,tid) :
+        task = self.__get_task_byid(tid)
+        return task.get_title()
+            
+    def open_task_byid(self,tid) :
+        task = self.__get_task_byid(tid)
+        self.open_task(task)
     
     #When an editor is closed, it should deregister itself
     def close_task(self,tid) :
@@ -311,6 +329,14 @@ class TaskBrowser:
         self.refresh_list()
 
     ##### Useful tools##################
+    
+    #Getting a task by its ID
+    def __get_task_byid(self,tid) :
+        tiid,pid = tid.split('@')
+        proj = self.ds.get_project_with_pid(pid)[1]
+        task = proj.get_task(tid)
+        return task
+    
     #    Functions that help to build the GUI. Nothing really interesting.
     def __add_active_column(self,name,value,checkbox=False) :
         col = self.__add_column(name,value,checkbox)

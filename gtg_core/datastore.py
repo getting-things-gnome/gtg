@@ -44,7 +44,7 @@ class DataStore:
         if backend!=None:
             self.backends.remove(backend)
 
-    def get_tasks_for_query(self, pid_list, tag_list):
+    def get_tasks_for_query(self):
         pass
 
     def get_all_tasks(self):
@@ -52,7 +52,6 @@ class DataStore:
 
     def get_all_projects(self):
         return self.projects
-
     def get_all_tags(self):
         return self.tags
 

@@ -1,8 +1,8 @@
 import sys, time, os, xml.dom.minidom
 import string, threading
 
-from task      import Task, Project
-from gtgconfig import GtgConfig
+from gtg_core.task      import Task, Project
+from gtg_core   import CoreConfig
 
 #This is for the awful pretty xml things
 tab = "\t"
@@ -11,11 +11,16 @@ enter = "\n"
 #todo : Backend should only provide one big "project" object and should 
 #not provide get_task and stuff like that.
 class Backend :
-    def __init__(self,zefile) :
-        self.zefile = zefile
-        if os.path.exists(GtgConfig.CONFIG_DIR + self.zefile) :
-            f = open(GtgConfig.CONFIG_DIR + self.zefile,mode='r')
-            doc=xml.dom.minidom.parse(GtgConfig.CONFIG_DIR + self.zefile)
+    def __init__(self,zefile,default_folder=True) :
+        if default_folder :
+            self.zefile = os.path.join(CoreConfig.DATA_DIR,zefile)
+            self.filename = zefile
+        else :
+            self.zefile = zefile
+            self.filename = zefile
+        if os.path.exists(self.zefile) :
+            f = open(self.zefile,mode='r')
+            doc=xml.dom.minidom.parse(self.zefile)
             self.__cleanDoc(doc,tab,enter)
             self.__xmlproject = doc.getElementsByTagName("project")
             proj_name = str(self.__xmlproject[0].getAttribute("name"))
@@ -27,12 +32,12 @@ class Backend :
             self.__xmlproject = doc.createElement("project")
             doc.appendChild(self.__xmlproject)
             #then we create the file
-            f = open(GtgConfig.CONFIG_DIR + self.zefile, mode='a+')
+            f = open(self.zefile, mode='a+')
             f.write(doc.toxml().encode("utf-8"))
             f.close()
 
     def get_filename(self):
-        return self.zefile
+        return self.filename
      
     #Those two functions are there only to be able to read prettyXML
     #Source : http://yumenokaze.free.fr/?/Informatique/Snipplet/Python/cleandom       
@@ -56,6 +61,7 @@ class Backend :
     #This function should return a project object with all the current tasks in it.
     def get_project(self) :
         if self.__xmlproject[0] :
+            subtasks = []
             #t is the xml of each task
             for t in self.__xmlproject[0].childNodes:
                 cur_id = "%s" %t.getAttribute("id")
@@ -66,6 +72,9 @@ class Backend :
                 #we will fill the task with its content
                 cur_task.set_title(self.__read_textnode(t,"title"))
                 #cur_task.set_text(self.__read_textnode(t,"content"))
+                #the subtasks should be processed later, when all tasks
+                #are in the project. We put all the information in a list.
+                subtasks.append([cur_task,t.getElementsByTagName("subtask")])
                 tasktext = t.getElementsByTagName("content")
                 if len(tasktext) > 0 :
                     #cur_task.set_text(tasktext[0].toxml())
@@ -79,6 +88,12 @@ class Backend :
                 for tag in cur_tags: cur_task.add_tag(tag)
                 #adding task to the project
                 self.project.add_task(cur_task)
+            #Now we can process the subtasks
+            for t in subtasks :
+                for s in t[1] :
+                    sub = s.childNodes[0].nodeValue
+                    subt = self.project.get_task(sub)
+                    t[0].add_subtask(subt)
         return self.project
 
     def set_project(self, project):
@@ -108,16 +123,14 @@ class Backend :
             t_xml = doc.createElement("task")
             t_xml.setAttribute("id",str(tid))
             t_xml.setAttribute("status",t.get_status())
-            tag_str = ""
-            for tag in t.get_tags():
-                tag_str = tag_str + str(tag) + ","
-            tag_str = tag_str[:-1]
-            t_xml.setAttribute("tags", tag_str)
             p_xml.appendChild(t_xml)
             self.__write_textnode(doc,t_xml,"title",t.get_title())
             self.__write_textnode(doc,t_xml,"duedate",t.get_due_date())
             self.__write_textnode(doc,t_xml,"startdate",t.get_start_date())
             self.__write_textnode(doc,t_xml,"donedate",t.get_done_date())
+            childs = t.get_subtasks()
+            for c in childs :
+                self.__write_textnode(doc,t_xml,"subtask",c.get_id())
             tex = t.get_text()
             if tex :
                 #We take the xml text and convert it to a string
@@ -131,7 +144,7 @@ class Backend :
         #it's maybe not optimal to open/close the file each time we sync
         # but I'm not sure that those operations are so frequent
         # might be changed in the future.
-        f = open(GtgConfig.CONFIG_DIR + self.zefile, mode='w+')
+        f = open(self.zefile, mode='w+')
         f.write(doc.toprettyxml(tab,enter).encode("utf-8"))
 #        f.write(doc.toxml().encode("utf-8"))
         f.close()

@@ -1,0 +1,6 @@
+This folder does not contain any code.
+
+This folder is intented to contain a typical configuration example using for debugging purpose (by launching debug.sh).
+
+For informations on the XDG folders, see :
+http://standards.freedesktop.org/basedir-spec/basedir-spec-0.6.html
