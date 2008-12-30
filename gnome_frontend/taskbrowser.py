@@ -78,16 +78,16 @@ class TaskBrowser:
    
         #The Active tasks treeview
         self.task_tview = self.wTree.get_widget("task_tview")
-        self.__add_active_column("Actions",2,checkbox=1)
-        self.__add_active_column("Due date",3)
-        self.__add_active_column("Left",4)
-        self.task_ts = gtk.TreeStore(gobject.TYPE_PYOBJECT, bool, str, str, str)
+        self.__add_active_column("Actions",1)
+        self.__add_active_column("Due date",2)
+        self.__add_active_column("Left",3)
+        self.task_ts = gtk.TreeStore(gobject.TYPE_PYOBJECT, str, str, str)
         self.task_tview.set_model(self.task_ts)
         self.task_ts.set_sort_column_id(self.c_title, gtk.SORT_ASCENDING)
      
         #The done/dismissed taks treeview
         self.taskdone_tview = self.wTree.get_widget("taskdone_tview")
-        self.__add_closed_column("Closed",2,checkbox=1)
+        self.__add_closed_column("Closed",2)
         self.__add_closed_column("Done date",3)
         self.taskdone_ts = gtk.TreeStore(gobject.TYPE_PYOBJECT, bool,str,str)
         self.taskdone_tview.set_model(self.taskdone_ts)
@@ -133,12 +133,14 @@ class TaskBrowser:
     #We refresh the project list. Not needed very often
     def refresh_projects(self) :
         self.project_ts.clear()
-        self.project_ts.append(None,[-1,"<span weight=\"bold\">All projects</span>"])
+        self.project_ts.append(None,[-1, "<span weight=\"bold\">All projects</span>"])
         projects = self.ds.get_all_projects()
         for p_key in projects:
             p = projects[p_key][1]
             title = p.get_name()
-            self.project_ts.append(None,[p_key,title])
+            at_num = len(p.active_tasks())
+            p_str  = "%s (%d)" % (title, at_num)
+            self.project_ts.append(None,[p_key, p_str])
 
     #We refresh the tag list. Not needed very often
     def refresh_tags(self) :
@@ -180,7 +182,7 @@ class TaskBrowser:
         title   = task.get_title()
         duedate = task.get_due_date()
         left    = task.get_days_left()
-        my_row  = self.task_ts.append(parent, [tid,False,title,duedate,left])
+        my_row  = self.task_ts.append(parent, [tid,title,duedate,left])
         for c in task.get_subtasks():
             if c.get_id() in project.active_tasks():
                 self.add_task_tree_to_list(project, tree_store, c, my_row)
@@ -338,29 +340,26 @@ class TaskBrowser:
         return task
     
     #    Functions that help to build the GUI. Nothing really interesting.
-    def __add_active_column(self,name,value,checkbox=False) :
-        col = self.__add_column(name,value,checkbox)
+    def __add_active_column(self,name,value) :
+        col = self.__add_column(name,value)
         self.task_tview.append_column(col)
         
-    def __add_project_column(self,name,value,checkbox=False) :
-        col = self.__add_column(name,value,checkbox)
+    def __add_project_column(self,name,value) :
+        col = self.__add_column(name,value)
         col.set_clickable(False)
         self.project_tview.append_column(col)
         
-    def __add_closed_column(self,name,value,checkbox=False) :
-        col = self.__add_column(name,value,checkbox)
+    def __add_closed_column(self,name,value) :
+        col = self.__add_column(name,value)
         self.taskdone_tview.append_column(col)
 
-    def __add_tag_column(self,name,value,checkbox=False) :
-        col = self.__add_column(name,value,checkbox)
+    def __add_tag_column(self,name,value) :
+        col = self.__add_column(name,value)
         col.set_clickable(False)
         self.tag_tview.append_column(col)
 
-    def __add_column(self,name,value,checkbox=False) :
+    def __add_column(self,name,value) :
         col = gtk.TreeViewColumn(name)
-        if checkbox :
-            col.pack_start(self.cellBool)
-            col.add_attribute(self.cellBool, 'active', checkbox)
         col.pack_start(self.cell)
         col.set_resizable(True)        
         col.set_sort_column_id(value)
