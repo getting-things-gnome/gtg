@@ -161,7 +161,12 @@ class TaskView(gtk.TextView):
         tag.connect('event', self._tag_event, text, anchor,typ)
         self.__tags.append(tag)
         return tag
-        
+    
+    #Insert a list of subtasks at the end of the buffer
+    def insert_subtasks(self,st_list) :
+        for tid in st_list :
+            line_nbr = self.buff.get_end_iter().get_line()
+            self.__subtask(line_nbr,tid)
 
         
  ##### The "Get text" group #########
@@ -325,11 +330,6 @@ class TaskView(gtk.TextView):
         buf.delete_mark(start)
         buf.delete_mark(end)
         return True
-        
-    def insert_subtasks(self,st_list) :
-        for tid in st_list :
-            line_nbr = self.buff.get_end_iter().get_line()
-            self.__subtask(line_nbr,tid)
                 
     ### Serialize the task : transform it's content in something
     #we can store

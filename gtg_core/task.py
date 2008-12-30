@@ -21,6 +21,7 @@ class Task :
         self.parents = []
         self.children = []
         self.new_task_func = None
+        self.can_be_deleted = True
         # tags
         self.tags = []
         
@@ -44,6 +45,7 @@ class Task :
             self.title = "(no title task)"
         
     def set_status(self,status,donedate=None) :
+        self.can_be_deleted = False
         if status :
             self.status = status
             #If Done, we set the done date
@@ -68,6 +70,7 @@ class Task :
         return None
         
     def set_due_date(self,fulldate) :
+        self.can_be_deleted = False
         if fulldate :
             self.due_date = self.__strtodate(fulldate)
         else :
@@ -80,6 +83,7 @@ class Task :
             return ''
             
     def set_start_date(self,fulldate) :
+        self.can_be_deleted = False
         if fulldate :
             self.start_date = self.__strtodate(fulldate)
         else :
@@ -112,6 +116,7 @@ class Task :
             return ""
         
     def set_text(self,texte) :
+        self.can_be_deleted = False
         if texte != "<content/>" :
             #defensive programmation to filter bad formatted tasks
             if not texte.startswith("<content>") :
@@ -124,6 +129,7 @@ class Task :
     
     #Take a task object as parameter
     def add_subtask(self,task) :
+        self.can_be_deleted = False
         if task not in self.children and task not in self.parents :
             self.children.append(task)
             #The if prevent an infinite loop
@@ -161,6 +167,9 @@ class Task :
     #Take a task object as parameter
     def remove_parent(self,task) :
         self.parents.remove(task)
+        #TODO
+        if task.can_be_deleted :
+            task.delete()
     
     def get_parents(self):
         zelist = []
@@ -177,6 +186,7 @@ class Task :
             i.remove_subtask(self)
         for j in self.get_subtasks() :
             j.remove_parent(self)
+        #FIXME : the task should be really deleted with a callback
         
     #This is a callback
     def set_newtask_func(self,newtask) :
@@ -193,6 +203,7 @@ class Task :
         return self.tags
 
     def add_tag(self, t):
+        self.can_be_deleted = False
         self.tags.append(t)
 
     def remove_tag(self, t):
