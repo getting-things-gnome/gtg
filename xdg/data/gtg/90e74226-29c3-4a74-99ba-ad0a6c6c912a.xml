@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+<project name="adqs">
+	<task id="1@2" status="Active">
+		<title>
+			test
+		</title>
+	</task>
+	<task id="0@2" status="Active">
+		<title>
+			My new task
+		</title>
+		<subtask>
+			1@2
+		</subtask>
+		<subtask>
+			2@2
+		</subtask>
+		<content>
+			&lt;subtask&gt;2@2&lt;/subtask&gt;&lt;subtask&gt;1@2&lt;/subtask&gt;
+		</content>
+	</task>
+	<task id="2@2" status="Active">
+		<title>
+			test2
+		</title>
+	</task>
+</project>

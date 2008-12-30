@@ -321,12 +321,15 @@ class TaskView(gtk.TextView):
             elif n.nodeType == n.TEXT_NODE :
                 buf.insert(itera,n.nodeValue)
         #Now, we insert the remaining subtasks
-        for tid in subtasks :
-            line_nbr = buf.get_iter_at_mark(end).get_line()
-            self.__subtask(line_nbr,tid)
+        self.insert_subtasks(subtasks)
         buf.delete_mark(start)
         buf.delete_mark(end)
         return True
+        
+    def insert_subtasks(self,st_list) :
+        for tid in st_list :
+            line_nbr = self.buff.get_end_iter().get_line()
+            self.__subtask(line_nbr,tid)
                 
     ### Serialize the task : transform it's content in something
     #we can store

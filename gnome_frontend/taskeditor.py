@@ -92,6 +92,11 @@ class TaskEditor :
         #we insert the rest of the task
         if texte : 
             self.textview.insert("%s"%texte)
+        else :
+            #If we don't have text, we still need to insert subtasks if any
+            subtasks = task.get_subtasks_tid()
+            if subtasks :
+                self.textview.insert_subtasks(subtasks)
             
         self.window.connect("destroy", self.destruction)
         self.refresh_editor()
