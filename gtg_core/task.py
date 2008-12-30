@@ -148,6 +148,7 @@ class Task :
             if task.can_be_deleted :
                 task.delete()
             else :
+                task.remove_parent(self)
                 self.sync()
             
     def remove_subtask_tid(self,tid) :
