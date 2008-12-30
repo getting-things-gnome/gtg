@@ -122,9 +122,14 @@ class TaskView(gtk.TextView):
     #Knowing its tid
     def tasktitle_callback(self,funct) :
         self.get_subtasktitle = funct
-        
+    
+    #This callback is called to get the list of tid of subtasks
     def subtasks_callback(self,funct) :
         self.get_subtasks = funct
+        
+    #This callback is called to remove a subtask by its pid
+    def removesubtask_callback(self,funct) :
+        self.remove_subtask = funct
     
     #Buffer related functions
     #Those functions are higly related and should always be symetrical
@@ -400,7 +405,7 @@ class TaskView(gtk.TextView):
                 for ta in tags :
                     if ta.get_data('is_subtask') :
                         target = ta.get_data('child')
-                        print target
+                        self.remove_subtask(target)
             it.forward_char()
         #print self.buff.get_text(start,end)
         return False

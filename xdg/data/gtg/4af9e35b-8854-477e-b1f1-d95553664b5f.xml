@@ -5,12 +5,6 @@
 			My new task
 		</title>
 		<subtask>
-			1@1
-		</subtask>
-		<subtask>
-			2@1
-		</subtask>
-		<subtask>
 			3@1
 		</subtask>
 		<content>
@@ -18,52 +12,12 @@
 
 wxc
 aze
-&lt;subtask&gt;3@1&lt;/subtask&gt;&lt;subtask&gt;1@1&lt;/subtask&gt;&lt;subtask&gt;2@1&lt;/subtask&gt;
+&lt;subtask&gt;3@1&lt;/subtask&gt;
 		</content>
-	</task>
-	<task id="4@1" status="Active">
-		<title>
-			eaz
-		</title>
-	</task>
-	<task id="1@1" status="Active">
-		<title>
-			enfant 1
-		</title>
-	</task>
-	<task id="5@1" status="Active">
-		<title>
-			aze
-		</title>
-	</task>
-	<task id="2@1" status="Active">
-		<title>
-			enfant 2
-		</title>
-		<content>
-			ajk
-		</content>
-	</task>
-	<task id="6@1" status="Active">
-		<title>
-			eaz
-		</title>
 	</task>
 	<task id="3@1" status="Active">
 		<title>
 			enfant3
 		</title>
-		<subtask>
-			4@1
-		</subtask>
-		<subtask>
-			5@1
-		</subtask>
-		<subtask>
-			6@1
-		</subtask>
-		<content>
-			&lt;subtask&gt;5@1&lt;/subtask&gt;
-		</content>
 	</task>
 </project>

@@ -148,7 +148,19 @@ class Task :
             task.delete()
         else :
             self.sync()
-        
+            
+    def remove_subtask_tid(self,tid) :
+        st = self.get_subtask_tid(tid)
+        if st :
+            self.remove_subtask(st)
+    
+    def get_subtask_tid(self,tid) :
+        to_ret = None
+        for i in self.children :
+            if i.get_id() == tid :
+                to_ret = i
+        return to_ret
+    
     def get_subtasks(self) :
         zelist = []
         for i in self.children :

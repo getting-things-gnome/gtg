@@ -82,6 +82,7 @@ class TaskEditor :
      
         self.task = task
         self.textview.subtasks_callback(task.get_subtasks_tid)
+        self.textview.removesubtask_callback(task.remove_subtask_tid)
         self.refresh = refresh_callback
         self.delete  = delete_callback
         self.closing = close_callback
