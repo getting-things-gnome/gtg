@@ -144,6 +144,8 @@ class Task :
     #Take a task object as parameter 
     def remove_subtask(self,task) :
         self.children.remove(task)
+        if task.can_be_deleted :
+            task.delete()
         
     def get_subtasks(self) :
         zelist = []
@@ -167,8 +169,6 @@ class Task :
     #Take a task object as parameter
     def remove_parent(self,task) :
         self.parents.remove(task)
-        if task.can_be_deleted :
-            task.delete()
     
     def get_parents(self):
         zelist = []
