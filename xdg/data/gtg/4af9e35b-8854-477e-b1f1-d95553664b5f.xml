@@ -1,22 +1,23 @@
 <?xml version="1.0" ?>
 <project name="aze">
-	<task id="3@1" status="Active">
-		<title>
-			enfant3
-		</title>
-		<content>
-			az
-		</content>
-	</task>
 	<task id="0@1" status="Active">
 		<title>
 			My new task
 		</title>
+		<subtask>
+			1@1
+		</subtask>
 		<content>
 			qsd
 
 wxc
 aze
+&lt;subtask&gt;1@1&lt;/subtask&gt;
 		</content>
+	</task>
+	<task id="1@1" status="Active">
+		<title>
+			aze
+		</title>
 	</task>
 </project>

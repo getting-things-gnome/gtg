@@ -4,12 +4,6 @@
 		<title>
 			My new task
 		</title>
-		<subtask>
-			2@2
-		</subtask>
-		<content>
-			&lt;subtask&gt;2@2&lt;/subtask&gt;
-		</content>
 	</task>
 	<task id="2@2" status="Active">
 		<title>

@@ -130,6 +130,10 @@ class TaskView(gtk.TextView):
     #This callback is called to remove a subtask by its pid
     def removesubtask_callback(self,funct) :
         self.remove_subtask = funct
+        
+    #This callback refresh the task browser
+    def refresh_browser_callback(self,funct) :
+        self.refresh_browser = funct
     
     #Buffer related functions
     #Those functions are higly related and should always be symetrical
@@ -406,6 +410,7 @@ class TaskView(gtk.TextView):
                     if ta.get_data('is_subtask') :
                         target = ta.get_data('child')
                         self.remove_subtask(target)
+                        self.refresh_browser()
             it.forward_char()
         #print self.buff.get_text(start,end)
         return False
@@ -414,6 +419,7 @@ class TaskView(gtk.TextView):
     def __newsubtask(self,title,line_nbr) :
         anchor = self.new_subtask_callback(title)
         self.__subtask(line_nbr,anchor)
+        self.refresh_browser()
         
     def __subtask(self,line_nbr,anchor) :
         start_i = self.buff.get_iter_at_line(line_nbr)
