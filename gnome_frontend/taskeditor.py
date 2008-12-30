@@ -81,6 +81,7 @@ class TaskEditor :
         self.window.add_accel_group(accelgroup)
      
         self.task = task
+        self.textview.subtasks_callback(task.get_subtasks_tid)
         self.refresh = refresh_callback
         self.delete  = delete_callback
         self.closing = close_callback

@@ -25,8 +25,10 @@
 		</subtask>
 		<content>
 			qsd
-&lt;subtask&gt;1@1&lt;/subtask&gt;wxc
-&lt;subtask&gt;2@1&lt;/subtask&gt;&lt;subtask&gt;3@1&lt;/subtask&gt;wxc
+
+wxc
+&lt;subtask&gt;2@1&lt;/subtask&gt;aze
+&lt;subtask&gt;3@1&lt;/subtask&gt;&lt;subtask&gt;1@1&lt;/subtask&gt;
 		</content>
 	</task>
 	<task id="1@1" status="Active">

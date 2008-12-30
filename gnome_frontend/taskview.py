@@ -121,6 +121,9 @@ class TaskView(gtk.TextView):
     #Knowing its tid
     def tasktitle_callback(self,funct) :
         self.get_subtasktitle = funct
+        
+    def subtasks_callback(self,funct) :
+        self.get_subtasks = funct
     
     #Buffer related functions
     #Those functions are higly related and should always be symetrical
@@ -291,14 +294,20 @@ class TaskView(gtk.TextView):
     def __parsexml(self,buf,ite,element) :
         start = buf.create_mark(None,ite,True)
         end = buf.create_mark(None,ite,False)
+        subtasks = self.get_subtasks()
         for n in element.childNodes :
             itera = buf.get_iter_at_mark(end)
             if n.nodeType == n.ELEMENT_NODE :
                 #print "<%s>" %n.nodeName
                 if n.nodeName == "subtask" :
                     tid = n.firstChild.nodeValue
-                    line_nbr = itera.get_line()
-                    self.__subtask(line_nbr,tid)
+                    #We remove the added subtask from the list
+                    #Of known subtasks
+                    #If the subtask is not in the list, we don't write it
+                    if tid in subtasks :
+                        subtasks.remove(tid)
+                        line_nbr = itera.get_line()
+                        self.__subtask(line_nbr,tid)
                 else :
                     self.__parsexml(buf,itera,n)
                     s = buf.get_iter_at_mark(start)
@@ -309,16 +318,14 @@ class TaskView(gtk.TextView):
                         buf.apply_tag(tag,s,e)
                     else :
                         buf.apply_tag_by_name(n.nodeName,s,e)
-                    #print "</%s>" %n.nodeName
-#                    buf.delete_mark(start)
-#                    buf.delete_mark(end)
             elif n.nodeType == n.TEXT_NODE :
                 buf.insert(itera,n.nodeValue)
-        #return buf.get_end_iter()
+        #Now, we insert the remaining subtasks
+        for tid in subtasks :
+            line_nbr = buf.get_iter_at_mark(end).get_line()
+            self.__subtask(line_nbr,tid)
         buf.delete_mark(start)
         buf.delete_mark(end)
-        #create a mark where the iter is right now
-        #mark = buf.create_mark("end",ite,False)
         return True
                 
     ### Serialize the task : transform it's content in something
@@ -336,19 +343,12 @@ class TaskView(gtk.TextView):
         #we only take the first node (the "content" one)
         node = doc.firstChild
         return node.toxml().encode("utf-8")
-        #return content_buf.get_text(start,end)
         
     ### Deserialize : put all in the TextBuffer
     def __taskdeserial(self,register_buf, content_buf, ite, data, cr_tags, udata) :
-        #Currently the serializing is still trivial
-        #content_buf.insert(ite, data)
-        #fluo = self.table.lookup("fluo")
-        #content_buf.insert_with_tags(ite,data,fluo)
         if data :
             element = xml.dom.minidom.parseString(data)
             success = self.__parsexml(content_buf,ite,element.firstChild)
-        #content_buf.insert(ite, "\n- aze\n -qsd")
-        #self.insert_with_anchor("http://aze","http://eaz")
         return True
         
 ########### Private function ####################
@@ -409,8 +409,6 @@ class TaskView(gtk.TextView):
         tag = self.buff.create_tag(None)
         tag.set_data('is_subtask', True)
         tag.set_data('child',anchor)
-        #self.__insert_at_mark(start, "@@@")
-        #self.__insert_at_mark(end, "###")
         self.__apply_tag_to_mark(start,end,tag=tag)
         self.__insert_at_mark(end,"\n")
         self.buff.delete_mark(start)
@@ -433,9 +431,6 @@ class TaskView(gtk.TextView):
         
     #Function called each time the user input a letter   
     def _insert_at_cursor(self,tv,itera,tex,leng) :
-#        for t in itera.get_tags() :
-#            if t.get_data('is_subtask') :
-#                print "I'm in a subtask"
         #New line : the user pressed enter !
         #If the line begins with "-", it's a new subtask !
         if tex == '\n' :
@@ -452,44 +447,12 @@ class TaskView(gtk.TextView):
                 #Python 2.5 should allow both tests in one
                 if line.startswith('-') or line.startswith(' -') :
                     line = line.lstrip(' -')
-                    #From Tomboy : ('\u2022\u2218\u2023')
-                    #bullet = '%s%s%s' %(unichr(2022),unichr(2218),unichr(2023))
-                    #FIXME : we should insert the correct UTF-8 code
                     self.__newsubtask(line,line_nbr)
                     
                     #We must stop the signal because if not,
                     #\n will be inserted twice !
                     tv.emit_stop_by_name('insert-text')
                     return True
-#                    bullet =' ↪ '
-#                    newline = '%s\n' %(line)
-#                    newline.encode('utf-8')
-#                    starts = self.buff.get_iter_at_line(line_nbr)
-#                    ends = starts.copy()
-#                    ends.forward_line()
-#                    #self.buff.apply_tag_by_name('fluo',starts,ends)
-#                    self.buff.delete(starts,ends)
-#                    starts = self.buff.get_iter_at_line(line_nbr)
-#                    ends = starts.copy()
-#                    ends.forward_line()
-#                    #Inserting the bullet
-#                    self.buff.insert(starts,bullet)
-#                    starts = self.buff.get_iter_at_line(line_nbr)
-#                    ends = starts.copy()
-#                    ends.forward_line()
-#                    self.buff.apply_tag_by_name("bullet",starts,ends)
-#                    #Inserting the name of the subtask as a link
-#                    #TODO : anchor = get_task_by_title(newline)
-#                    anchor = "1@1"
-#                    starts = self.buff.get_iter_at_line(line_nbr)
-#                    ends = starts.copy()
-#                    ends.forward_line()
-#                    self.insert_with_anchor(newline,anchor,_iter=ends)
-#                    #All is wrapped in subtask tag
-#                    starts = self.buff.get_iter_at_line(line_nbr)
-#                    ends = starts.copy()
-#                    ends.forward_line()
-#                    self.buff.apply_tag_by_name("subtask",starts,ends)
 
     #The mouse is moving. We must change it to a hand when hovering a link
     def _motion(self, view, ev):

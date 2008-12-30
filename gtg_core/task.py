@@ -144,6 +144,12 @@ class Task :
         for i in self.children :
             zelist.append(i)
         return zelist
+    
+    def get_subtasks_tid(self) :
+        zelist = []
+        for i in self.children :
+            zelist.append(i.get_id())
+        return zelist
         
     #Take a task object as parameter
     def add_parent(self,task) :
