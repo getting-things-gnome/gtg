@@ -257,7 +257,10 @@ class TaskBrowser:
             model, selection_iter = selection.get_selected()
             if selection_iter :
                 uid = self.taskdone_ts.get_value(selection_iter, 0)
-        tid,pid = uid.split('@')
+        if uid :
+            tid,pid = uid.split('@')
+        else :
+            pid = None
         return pid, uid
         
     def get_selected_project(self) :
