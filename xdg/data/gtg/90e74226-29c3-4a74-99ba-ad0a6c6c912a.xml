@@ -2,7 +2,7 @@
 <project name="adqs">
 	<task id="1@2" status="Active">
 		<title>
-			test
+			suos
 		</title>
 	</task>
 	<task id="0@2" status="Active">
@@ -10,10 +10,10 @@
 			My new task
 		</title>
 		<subtask>
-			1@2
+			2@2
 		</subtask>
 		<subtask>
-			2@2
+			1@2
 		</subtask>
 		<content>
 			&lt;subtask&gt;2@2&lt;/subtask&gt;&lt;subtask&gt;1@2&lt;/subtask&gt;

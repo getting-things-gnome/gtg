@@ -167,7 +167,6 @@ class Task :
     #Take a task object as parameter
     def remove_parent(self,task) :
         self.parents.remove(task)
-        #TODO
         if task.can_be_deleted :
             task.delete()
     
@@ -186,7 +185,11 @@ class Task :
             i.remove_subtask(self)
         for j in self.get_subtasks() :
             j.remove_parent(self)
-        #FIXME : the task should be really deleted with a callback
+        #then we remove effectively the task
+        self.purge(self.get_id())
+        
+    def set_delete_func(self,func) :
+        self.purge = func
         
     #This is a callback
     def set_newtask_func(self,newtask) :
@@ -281,6 +284,7 @@ class Project :
         self.list[str(tid)] = task
         task.set_project(self.get_pid())
         task.set_newtask_func(self.new_task)
+        task.set_delete_func(self.purge_task)
         
     def new_task(self) :
         tid = self.__free_tid()
@@ -290,6 +294,8 @@ class Project :
     
     def delete_task(self,tid) :
         self.list[tid].delete()
+    
+    def purge_task(self,tid) :
         del self.list[tid]
         self.sync()
     
