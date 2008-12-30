@@ -146,6 +146,8 @@ class Task :
         self.children.remove(task)
         if task.can_be_deleted :
             task.delete()
+        else :
+            self.sync()
         
     def get_subtasks(self) :
         zelist = []

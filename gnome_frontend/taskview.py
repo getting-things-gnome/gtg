@@ -91,6 +91,7 @@ class TaskView(gtk.TextView):
         #The signal emitted each time the buffer is modified
         self.buff.connect("modified_changed",self._modified)
         self.buff.connect('insert-text',self._insert_at_cursor)
+        self.buff.connect("delete-range",self._delete_range)
         
         #All the typical properties of our textview
         self.set_wrap_mode(gtk.WRAP_WORD)
@@ -390,6 +391,20 @@ class TaskView(gtk.TextView):
         
         #Ok, we took care of the modification
         self.buff.set_modified(False)
+        
+    def _delete_range(self,buff,start,end) :
+        it = start.copy()
+        while (it.get_offset() <= end.get_offset()) and (it.get_char() != '\0'):
+            if it.begins_tag() :
+                tags = it.get_tags()
+                for ta in tags :
+                    if ta.get_data('is_subtask') :
+                        target = ta.get_data('child')
+                        print target
+            it.forward_char()
+        #print self.buff.get_text(start,end)
+        return False
+            
         
     def __newsubtask(self,title,line_nbr) :
         anchor = self.new_subtask_callback(title)
