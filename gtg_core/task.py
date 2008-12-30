@@ -143,11 +143,12 @@ class Task :
     
     #Take a task object as parameter 
     def remove_subtask(self,task) :
-        self.children.remove(task)
-        if task.can_be_deleted :
-            task.delete()
-        else :
-            self.sync()
+        if task in self.children :
+            self.children.remove(task)
+            if task.can_be_deleted :
+                task.delete()
+            else :
+                self.sync()
             
     def remove_subtask_tid(self,tid) :
         st = self.get_subtask_tid(tid)

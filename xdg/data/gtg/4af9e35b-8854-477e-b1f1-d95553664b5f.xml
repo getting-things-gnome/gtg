@@ -1,5 +1,10 @@
 <?xml version="1.0" ?>
 <project name="aze">
+	<task id="3@1" status="Active">
+		<title>
+			enfant3
+		</title>
+	</task>
 	<task id="0@1" status="Active">
 		<title>
 			My new task
@@ -14,10 +19,5 @@ wxc
 aze
 &lt;subtask&gt;3@1&lt;/subtask&gt;
 		</content>
-	</task>
-	<task id="3@1" status="Active">
-		<title>
-			enfant3
-		</title>
 	</task>
 </project>
