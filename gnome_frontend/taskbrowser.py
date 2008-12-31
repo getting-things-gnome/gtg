@@ -31,6 +31,7 @@ class TaskBrowser:
         self.window = self.wTree.get_widget("MainWindow")
         if (self.window):
             self.window.connect("destroy", gtk.main_quit)
+        self.window.set_icon_from_file("data/gtg.svg")
 
         self.popup = self.wTree.get_widget("ProjectContextMenu")
         
@@ -145,6 +146,7 @@ class TaskBrowser:
     def refresh_tb(self):
         self.refresh_list()
         self.refresh_tags()
+        self.refresh_projects()
 
     #We refresh the tag list. Not needed very often
     def refresh_tags(self) :
