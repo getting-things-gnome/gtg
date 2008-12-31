@@ -142,10 +142,15 @@ class TaskBrowser:
             p_str  = "%s (%d)" % (title, at_num)
             self.project_ts.append(None,[p_key, p_str])
 
+    def refresh_tb(self):
+        self.refresh_list()
+        self.refresh_tags()
+
     #We refresh the tag list. Not needed very often
     def refresh_tags(self) :
         self.tag_ts.clear()
         self.tag_ts.append(None,[-1,"<span weight=\"bold\">All tags</span>"])
+        self.ds.reload_tags()
         tags = self.ds.get_all_tags()
         tags.sort()
         for tag in tags:
@@ -200,7 +205,7 @@ class TaskBrowser:
             backend = self.ds.get_all_projects()[pid][0]
             #We give to the task the callback to synchronize the list
             t.set_sync_func(backend.sync_task)
-            tv = TaskEditor(t,self.refresh_list,self.on_delete_task,
+            tv = TaskEditor(t,self.refresh_tb,self.on_delete_task,
                             self.close_task,self.open_task_byid,self.get_tasktitle)
             #registering as opened
             self.opened_task[uid] = tv

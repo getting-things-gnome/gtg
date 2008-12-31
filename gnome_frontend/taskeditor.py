@@ -55,12 +55,13 @@ class TaskEditor :
         textview = self.wTree.get_widget("textview")
         scrolled = self.wTree.get_widget("scrolledtask")
         scrolled.remove(textview)
-        self.open_task = opentask_callback
+        self.open_task  = opentask_callback
         self.task_title = tasktitle_callback
-        self.textview       = TaskView()
+        self.textview   = TaskView()
         self.textview.show()
         self.textview.refresh_callback(self.refresh_editor)
         self.textview.set_subtask_callback(self.new_subtask)
+        self.textview.set_set_tag_callback(self.set_tag)
         self.textview.open_task_callback(self.open_task)
         self.textview.tasktitle_callback(self.task_title)
         scrolled.add(self.textview)
@@ -190,6 +191,10 @@ class TaskEditor :
             print "No callback to delete"
         #if the task was deleted, we close the window
         if result : self.window.destroy()
+
+    #Take the title as argument and return the subtask ID
+    def set_tag(self, my_tags) :
+        self.task.set_tags(my_tags)
     
     #Take the title as argument and return the subtask ID
     def new_subtask(self,title) :

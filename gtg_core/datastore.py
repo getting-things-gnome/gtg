@@ -52,8 +52,16 @@ class DataStore:
 
     def get_all_projects(self):
         return self.projects
+    
     def get_all_tags(self):
         return self.tags
+
+    def reload_tags(self):
+        self.tags = []
+        for p in self.projects:
+            for tid in self.projects[p][1].list_tasks():
+                for tag in self.projects[p][1].get_task(tid).get_tags():
+                    if tag not in self.tags: self.tags.append(tag)
 
     def get_project_with_pid(self, pid):
         return self.projects[pid]

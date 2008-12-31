@@ -122,7 +122,10 @@ class Backend :
             t = self.project.get_task(tid)
             t_xml = doc.createElement("task")
             t_xml.setAttribute("id",str(tid))
-            t_xml.setAttribute("status",t.get_status())
+            t_xml.setAttribute("status" , t.get_status())
+            tags_str = ""
+            for tag in t.get_tags(): tags_str = tags_str + str(tag) + ","
+            t_xml.setAttribute("tags"   , tags_str[:-1])
             p_xml.appendChild(t_xml)
             self.__write_textnode(doc,t_xml,"title",t.get_title())
             self.__write_textnode(doc,t_xml,"duedate",t.get_due_date())
