@@ -221,6 +221,9 @@ class Task :
     def get_tags(self):
         return self.tags
 
+    def set_tags(self, my_tags):
+        self.tags = my_tags
+
     def add_tag(self, t):
         self.can_be_deleted = False
         self.tags.append(t)
