@@ -363,44 +363,49 @@ class TaskView(gtk.TextView):
         taglist = self.get_tagslist()
         print "parseXML"
         print taglist
-        for n in element.childNodes :
-            itera = buf.get_iter_at_mark(end)
-            if n.nodeType == n.ELEMENT_NODE :
-                #print "<%s>" %n.nodeName
-                if n.nodeName == "subtask" :
-                    tid = n.firstChild.nodeValue
-                    #We remove the added subtask from the list
-                    #Of known subtasks
-                    #If the subtask is not in the list, we don't write it
-                    if tid in subtasks :
-                        subtasks.remove(tid)
-                        line_nbr = itera.get_line()
-                        self.__subtask(line_nbr,tid)
-                elif n.nodeName == "tag" :
-                    text = n.firstChild.nodeValue
-                    self.insert_tag(text,itera)
-                    #We remove the added tag from the tag list
-                    #of known tag for this task
-                    if text[1:] in taglist :
-                        taglist.remove(text[1:])
-                else :
-                    self.__parsexml(buf,itera,n)
-                    s = buf.get_iter_at_mark(start)
-                    e = buf.get_iter_at_mark(end)
-                    if n.nodeName == "link" :
-                        anchor = n.getAttribute("target")
-                        tag = self.create_anchor_tag(buf,anchor,None)
-                        buf.apply_tag(tag,s,e)
+        if element :
+            for n in element.childNodes :
+                itera = buf.get_iter_at_mark(end)
+                if n.nodeType == n.ELEMENT_NODE :
+                    #print "<%s>" %n.nodeName
+                    if n.nodeName == "subtask" :
+                        tid = n.firstChild.nodeValue
+                        #We remove the added subtask from the list
+                        #Of known subtasks
+                        #If the subtask is not in the list, we don't write it
+                        if tid in subtasks :
+                            subtasks.remove(tid)
+                            line_nbr = itera.get_line()
+                            self.__subtask(line_nbr,tid)
+                    elif n.nodeName == "tag" :
+                        text = n.firstChild.nodeValue
+                        self.insert_tag(text,itera)
+                        #We remove the added tag from the tag list
+                        #of known tag for this task
+                        if text[1:] in taglist :
+                            taglist.remove(text[1:])
                     else :
-                        buf.apply_tag_by_name(n.nodeName,s,e)
-            elif n.nodeType == n.TEXT_NODE :
-                buf.insert(itera,n.nodeValue)
+                        self.__parsexml(buf,itera,n)
+                        s = buf.get_iter_at_mark(start)
+                        e = buf.get_iter_at_mark(end)
+                        if n.nodeName == "link" :
+                            anchor = n.getAttribute("target")
+                            tag = self.create_anchor_tag(buf,anchor,None)
+                            buf.apply_tag(tag,s,e)
+                        else :
+                            buf.apply_tag_by_name(n.nodeName,s,e)
+                elif n.nodeType == n.TEXT_NODE :
+                    buf.insert(itera,n.nodeValue)
         #Now, we insert the remaining subtasks
         self.insert_subtasks(subtasks)
-        #We also insert the remaining tags
+        #We also insert the remaining tags (a a new line)
+        if len(taglist) > 0 :
+            self.__insert_at_mark(end,"\n")
         for t in taglist :
             print "inserting tag %s" %t
-            self.insert_tag(t[1:],end)
+            it = buf.get_iter_at_mark(end)
+            self.insert_tag("@%s"%t,it)
+            self.__insert_at_mark(end,", ")
         buf.delete_mark(start)
         buf.delete_mark(end)
         return True
@@ -427,6 +432,8 @@ class TaskView(gtk.TextView):
         if data :
             element = xml.dom.minidom.parseString(data)
             success = self.__parsexml(content_buf,ite,element.firstChild)
+        else :
+            success = self.__parsexml(content_buf,ite,None)
         return True
         
 ### PRIVATE FUNCTIONS ##########################################################
