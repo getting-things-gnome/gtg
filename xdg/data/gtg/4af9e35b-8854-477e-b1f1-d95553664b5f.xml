@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <project name="aze">
-	<task id="0@1" status="Active">
+	<task id="0@1" status="Active" tags="">
 		<title>
 			My new task
 		</title>
@@ -15,9 +15,13 @@ aze
 &lt;subtask&gt;1@1&lt;/subtask&gt;
 		</content>
 	</task>
-	<task id="1@1" status="Active">
+	<task id="1@1" status="Active" tags="test">
 		<title>
 			aze
 		</title>
+		<content>
+			&lt;tag&gt;@test&lt;/tag&gt;
+
+		</content>
 	</task>
 </project>
