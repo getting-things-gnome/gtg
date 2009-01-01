@@ -102,6 +102,12 @@ class TaskEditor :
             subtasks = task.get_subtasks_tid()
             if subtasks :
                 self.textview.insert_subtasks(subtasks)
+            #And also tags
+            tags = task.get_tags()
+            print tags
+            if tags :
+                for t in tags :
+                    self.textview.insert_tag(t)
             
         self.window.connect("destroy", self.destruction)
         self.refresh_editor()

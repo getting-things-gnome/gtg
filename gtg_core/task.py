@@ -239,7 +239,8 @@ class Task :
             self.tags.append(t)
 
     def remove_tag(self, t):
-        self.tags.remove(t)
+        if t in self.tags :
+            self.tags.remove(t)
 
     def has_tags(self, tag_list):
         for my_tag in tag_list:

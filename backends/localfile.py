@@ -77,10 +77,10 @@ class Backend :
                 subtasks.append([cur_task,t.getElementsByTagName("subtask")])
                 tasktext = t.getElementsByTagName("content")
                 if len(tasktext) > 0 :
-                    #cur_task.set_text(tasktext[0].toxml())
-                    tas = "<content>%s</content>" %tasktext[0].firstChild.nodeValue
-                    content = xml.dom.minidom.parseString(tas)
-                    cur_task.set_text(content.firstChild.toxml())
+                    if tasktext[0].firstChild :
+                        tas = "<content>%s</content>" %tasktext[0].firstChild.nodeValue
+                        content = xml.dom.minidom.parseString(tas)
+                        cur_task.set_text(content.firstChild.toxml())
                 cur_task.set_due_date(self.__read_textnode(t,"duedate"))
                 cur_task.set_start_date(self.__read_textnode(t,"startdate"))
                 cur_tags = t.getAttribute("tags").replace(' ','').split(",")

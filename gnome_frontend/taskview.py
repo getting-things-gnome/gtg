@@ -67,8 +67,8 @@ class TaskView(gtk.TextView):
         # Tag for bullets
         bullet_tag = self.buff.create_tag("bullet", scale=1.6)
         # Tag for tags
-        tags_tag = self.buff.create_tag("tag", background="#FFFF66", foreground="#FF0000")
-        tags_tag.set_data('is_tag', True)
+#        tags_tag = self.buff.create_tag("tag", background="#FFFF66", foreground="#FF0000")
+#        tags_tag.set_data('is_tag', True)
         #subtask_tag = self.buff.create_tag("subtask",background="#FF0")
         #start = self.buff.get_start_iter()
         end = self.buff.get_end_iter()
@@ -196,7 +196,9 @@ class TaskView(gtk.TextView):
             
     #insert a GTG tag with its TextView tag.
     #Yes, we know : the word tag is used for two different concepts here.
-    def insert_tag(self,tag,itera) :
+    def insert_tag(self,tag,itera=None) :
+        if not itera :
+            itera = self.buff.get_end_iter()
         if tag :
             sm = self.buff.create_mark(None,itera,True)
             em = self.buff.create_mark(None,itera,False)
@@ -360,9 +362,7 @@ class TaskView(gtk.TextView):
         start = buf.create_mark(None,ite,True)
         end   = buf.create_mark(None,ite,False)
         subtasks = self.get_subtasks()
-        taglist = self.get_tagslist()
-        print "parseXML"
-        print taglist
+        taglist2 = []
         if element :
             for n in element.childNodes :
                 itera = buf.get_iter_at_mark(end)
@@ -382,8 +382,7 @@ class TaskView(gtk.TextView):
                         self.insert_tag(text,itera)
                         #We remove the added tag from the tag list
                         #of known tag for this task
-                        if text[1:] in taglist :
-                            taglist.remove(text[1:])
+                        taglist2.append(text[1:])
                     else :
                         self.__parsexml(buf,itera,n)
                         s = buf.get_iter_at_mark(start)
@@ -399,6 +398,10 @@ class TaskView(gtk.TextView):
         #Now, we insert the remaining subtasks
         self.insert_subtasks(subtasks)
         #We also insert the remaining tags (a a new line)
+        taglist = self.get_tagslist()
+        for t in taglist2 :
+            if t in taglist :
+                taglist.remove(t)
         if len(taglist) > 0 :
             self.__insert_at_mark(end,"\n")
         for t in taglist :
@@ -484,13 +487,14 @@ class TaskView(gtk.TextView):
         # Detect tags
         #-------------
         
-#        tag_list = []
+        tag_list = []
         #Removing all texttag related to GTG tags
         #self.buff.remove_tag_by_name ('tag', body_start, body_end)
         table = self.buff.get_tag_table()
         def remove_tag_tag(texttag,data) :
             if texttag.get_data("is_tag") :
                 table.remove(texttag)
+                #print "removing %s" %texttag.get_data("tagname")
         table.foreach(remove_tag_tag)
 
         # Set iterators for word
@@ -519,7 +523,7 @@ class TaskView(gtk.TextView):
                 do_word_check = True
                 
             if char_end.compare(body_end) == 0:
-                do_word_check = True
+              do_word_check = True
                 
             # We have a new word
             if do_word_check:
@@ -531,7 +535,7 @@ class TaskView(gtk.TextView):
                         self.apply_tag_tag(my_word,word_start,word_end)
                         #self.buff.apply_tag_by_name("tag", word_start, word_end)
                         #adding tag to a local list
-#                        tag_list.append(my_word[1:])
+                        tag_list.append(my_word[1:])
                         #adding tag to the model
                         self.add_tag_callback(my_word[1:])
     
@@ -548,9 +552,9 @@ class TaskView(gtk.TextView):
         
         # Update tags in model : 
         # we remove tags that are not in the description anymore
-#        for t in self.get_tagslist() :
-#            if not t in tag_list :
-#                self.remove_tag_callback(t)
+        for t in self.get_tagslist() :
+            if not t in tag_list :
+                self.remove_tag_callback(t)
         
         # Remove all tags from the task
         # Loop over each line
