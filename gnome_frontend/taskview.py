@@ -112,6 +112,10 @@ class TaskView(gtk.TextView):
     def set_set_tag_callback(self,funct) :
         self.set_tag_callback = funct
         
+    #This callback is called to have the list of tags of a task
+    def set_get_tagslist_callback(self,funct) :
+        self.get_tagslist = funct
+        
     #This callback is called to create a new subtask
     def set_subtask_callback(self,funct) :
         self.new_subtask_callback = funct
@@ -328,6 +332,8 @@ class TaskView(gtk.TextView):
         start = buf.create_mark(None,ite,True)
         end   = buf.create_mark(None,ite,False)
         subtasks = self.get_subtasks()
+        taglist = self.get_tagslist()
+        print taglist
         for n in element.childNodes :
             itera = buf.get_iter_at_mark(end)
             if n.nodeType == n.ELEMENT_NODE :
@@ -343,12 +349,11 @@ class TaskView(gtk.TextView):
                         self.__subtask(line_nbr,tid)
                 elif n.nodeName == "tag" :
                     text = n.firstChild.nodeValue
-                    sm = buf.create_mark(None,itera,True)
-                    em = buf.create_mark(None,itera,False)
-                    buf.insert(itera,text)
-                    s = buf.get_iter_at_mark(sm)
-                    e = buf.get_iter_at_mark(em)
-                    buf.apply_tag_by_name("tag",s,e)
+                    self.insert_tag(text,itera)
+                    #We remove the added tag from the tag list
+                    #of known tag for this task
+                    if text in taglist :
+                        taglist.remove(text)
                 else :
                     self.__parsexml(buf,itera,n)
                     s = buf.get_iter_at_mark(start)
@@ -363,9 +368,22 @@ class TaskView(gtk.TextView):
                 buf.insert(itera,n.nodeValue)
         #Now, we insert the remaining subtasks
         self.insert_subtasks(subtasks)
+        #We also insert the remaining tags
+        for t in taglist :
+            self.insert_tag(t,end)
         buf.delete_mark(start)
         buf.delete_mark(end)
         return True
+        
+    #insert a GTG tag with its TextView tag.
+    #Yes, we know : the word tag is used for two different concepts here.
+    def insert_tag(self,tag,itera) :
+        sm = self.buff.create_mark(None,itera,True)
+        em = self.buff.create_mark(None,itera,False)
+        self.buff.insert(itera,tag)
+        s = self.buff.get_iter_at_mark(sm)
+        e = self.buff.get_iter_at_mark(em)
+        self.buff.apply_tag_by_name("tag",s,e)
                 
     ### Serialize the task : transform it's content in something
     #we can store

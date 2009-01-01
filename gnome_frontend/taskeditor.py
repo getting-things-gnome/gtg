@@ -84,6 +84,7 @@ class TaskEditor :
         self.task = task
         self.textview.subtasks_callback(task.get_subtasks_tid)
         self.textview.removesubtask_callback(task.remove_subtask_tid)
+        self.textview.set_get_tagslist_callback(task.get_tags)
         self.refresh = refresh_callback
         self.textview.refresh_browser_callback(self.refresh)
         self.delete  = delete_callback

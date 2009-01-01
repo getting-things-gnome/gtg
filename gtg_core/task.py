@@ -70,7 +70,6 @@ class Task :
         return None
         
     def set_due_date(self,fulldate) :
-        self.can_be_deleted = False
         if fulldate :
             self.due_date = self.__strtodate(fulldate)
         else :
@@ -83,7 +82,6 @@ class Task :
             return ''
             
     def set_start_date(self,fulldate) :
-        self.can_be_deleted = False
         if fulldate :
             self.start_date = self.__strtodate(fulldate)
         else :
@@ -224,13 +222,17 @@ class Task :
         if self.sync_func :
             self.sync_func(self.tid)
     def get_tags(self):
-        return self.tags
+        print "Task %s has tags %s" %(self.get_title(),self.tags)
+        #Return a copy of the list of tags. Not the original object.
+        l = []
+        for t in self.tags :
+            l.append(t)
+        return l
 
     def set_tags(self, my_tags):
         self.tags = my_tags
 
     def add_tag(self, t):
-        self.can_be_deleted = False
         self.tags.append(t)
 
     def remove_tag(self, t):
