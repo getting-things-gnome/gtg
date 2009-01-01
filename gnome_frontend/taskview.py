@@ -361,6 +361,7 @@ class TaskView(gtk.TextView):
         end   = buf.create_mark(None,ite,False)
         subtasks = self.get_subtasks()
         taglist = self.get_tagslist()
+        print "parseXML"
         print taglist
         for n in element.childNodes :
             itera = buf.get_iter_at_mark(end)
