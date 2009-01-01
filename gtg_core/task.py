@@ -70,7 +70,6 @@ class Task :
         return None
         
     def set_due_date(self,fulldate) :
-        self.can_be_deleted = False
         if fulldate :
             self.due_date = self.__strtodate(fulldate)
         else :
@@ -83,7 +82,6 @@ class Task :
             return ''
             
     def set_start_date(self,fulldate) :
-        self.can_be_deleted = False
         if fulldate :
             self.start_date = self.__strtodate(fulldate)
         else :
@@ -130,10 +128,15 @@ class Task :
     #Take a task object as parameter
     def add_subtask(self,task) :
         self.can_be_deleted = False
+        #The if prevent an infinite loop
         if task not in self.children and task not in self.parents :
             self.children.append(task)
-            #The if prevent an infinite loop
             task.add_parent(self)
+            #now we set inherited attributes
+            task.set_due_date(self.get_due_date())
+            task.set_start_date(self.get_start_date())
+            for t in self.get_tags() :
+                task.add_tag(t)
     
     #Return the task added as a subtask
     def new_subtask(self) :
@@ -219,17 +222,25 @@ class Task :
         if self.sync_func :
             self.sync_func(self.tid)
     def get_tags(self):
-        return self.tags
+        #Return a copy of the list of tags. Not the original object.
+        l = []
+        for t in self.tags :
+            l.append(t)
+        return l
 
     def set_tags(self, my_tags):
+        print "This function is evil. Only add/remove should be allowed for tags"
+        print "Are we sure we want to keep it ?"
         self.tags = my_tags
 
     def add_tag(self, t):
-        self.can_be_deleted = False
-        self.tags.append(t)
+        #Do not add the same tag twice
+        if not t in self.tags :
+            self.tags.append(t)
 
     def remove_tag(self, t):
-        self.tags.remove(t)
+        if t in self.tags :
+            self.tags.remove(t)
 
     def has_tags(self, tag_list):
         for my_tag in tag_list:

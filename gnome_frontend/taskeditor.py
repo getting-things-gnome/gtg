@@ -61,7 +61,6 @@ class TaskEditor :
         self.textview.show()
         self.textview.refresh_callback(self.refresh_editor)
         self.textview.set_subtask_callback(self.new_subtask)
-        self.textview.set_set_tag_callback(self.set_tag)
         self.textview.open_task_callback(self.open_task)
         self.textview.tasktitle_callback(self.task_title)
         scrolled.add(self.textview)
@@ -82,8 +81,12 @@ class TaskEditor :
         self.window.add_accel_group(accelgroup)
      
         self.task = task
+        tags = task.get_tags()
         self.textview.subtasks_callback(task.get_subtasks_tid)
         self.textview.removesubtask_callback(task.remove_subtask_tid)
+        self.textview.set_get_tagslist_callback(task.get_tags)
+        self.textview.set_add_tag_callback(task.add_tag)
+        self.textview.set_remove_tag_callback(task.remove_tag)
         self.refresh = refresh_callback
         self.textview.refresh_browser_callback(self.refresh)
         self.delete  = delete_callback
@@ -100,6 +103,11 @@ class TaskEditor :
             subtasks = task.get_subtasks_tid()
             if subtasks :
                 self.textview.insert_subtasks(subtasks)
+            #And also tags
+            if tags :
+                for t in tags :
+                    #self.textview.insert_tag("@%s , "%t)
+                    self.textview.insert_text("@%s, "%t)
             
         self.window.connect("destroy", self.destruction)
         self.refresh_editor()
@@ -201,8 +209,8 @@ class TaskEditor :
         if result : self.window.destroy()
 
     #Take the title as argument and return the subtask ID
-    def set_tag(self, my_tags) :
-        self.task.set_tags(my_tags)
+    #def set_tag(self, my_tags) :
+    #    self.task.set_tags(my_tags)
     
     #Take the title as argument and return the subtask ID
     def new_subtask(self,title) :

@@ -1,19 +1,2 @@
 <?xml version="1.0" ?>
-<project name="adqs">
-	<task id="0@2" status="Active" tags="aeaz">
-		<title>
-			My new task
-		</title>
-		<content>
-			&lt;tag&gt;@aeaz&lt;/tag&gt;
-		</content>
-	</task>
-	<task id="2@2" status="Active" tags="test">
-		<title>
-			test2
-		</title>
-		<content>
-			&lt;tag&gt;@test&lt;/tag&gt;
-		</content>
-	</task>
-</project>
+<project name="adqs"/>
