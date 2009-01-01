@@ -133,6 +133,7 @@ class TaskBrowser:
     
     #We refresh the project list. Not needed very often
     def refresh_projects(self) :
+        p_model,p_path = self.project_tview.get_selection().get_selected_rows()
         self.project_ts.clear()
         self.project_ts.append(None,[-1, "<span weight=\"bold\">All projects</span>"])
         projects = self.ds.get_all_projects()
@@ -142,6 +143,10 @@ class TaskBrowser:
             at_num = len(p.active_tasks())
             p_str  = "%s (%d)" % (title, at_num)
             self.project_ts.append(None,[p_key, p_str])
+        #We reselect the selected project
+        if p_path :
+            for i in p_path :
+                self.project_tview.get_selection().select_path(i)
 
     def refresh_tb(self):
         self.refresh_list()
