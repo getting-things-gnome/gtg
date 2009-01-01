@@ -222,7 +222,6 @@ class Task :
         if self.sync_func :
             self.sync_func(self.tid)
     def get_tags(self):
-        print "Task %s has tags %s" %(self.get_title(),self.tags)
         #Return a copy of the list of tags. Not the original object.
         l = []
         for t in self.tags :
@@ -230,6 +229,8 @@ class Task :
         return l
 
     def set_tags(self, my_tags):
+        print "This function is evil. Only add/remove should be allowed for tags"
+        print "Are we sure we want to keep it ?"
         self.tags = my_tags
 
     def add_tag(self, t):

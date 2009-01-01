@@ -26,6 +26,7 @@ class TaskView(gtk.TextView):
         'link':  (gobject.TYPE_PYOBJECT, 'link color', 'link color of TextView', gobject.PARAM_READWRITE),
         'active':(gobject.TYPE_PYOBJECT, 'active color', 'active color of TextView', gobject.PARAM_READWRITE),
         'hover': (gobject.TYPE_PYOBJECT, 'link:hover color', 'link:hover color of TextView', gobject.PARAM_READWRITE),
+        'tag' :(gobject.TYPE_PYOBJECT, 'tag color', 'tag color of TextView', gobject.PARAM_READWRITE)
         }
 
     def do_get_property(self, prop):
@@ -52,6 +53,7 @@ class TaskView(gtk.TextView):
                                     'underline': pango.UNDERLINE_SINGLE}
         self.hover  = {'background': 'light gray', 'foreground': 'blue', 
                                     'underline': pango.UNDERLINE_SINGLE}
+        self.tag = {'background': "#FFFF66", 'foreground' : "#FF0000"}
         
         ###### Tag we will use ######
         # We use the tag table (tag are defined here but set in self.modified)
@@ -117,8 +119,8 @@ class TaskView(gtk.TextView):
         self.remove_tag_callback = funct
     
     #This callback is called to add a new tag
-    def set_set_tag_callback(self,funct) :
-        self.set_tag_callback = funct
+#    def set_set_tag_callback(self,funct) :
+#        self.set_tag_callback = funct
         
     #This callback is called to have the list of tags of a task
     def set_get_tagslist_callback(self,funct) :
@@ -191,6 +193,24 @@ class TaskView(gtk.TextView):
         for tid in st_list :
             line_nbr = self.buff.get_end_iter().get_line()
             self.__subtask(line_nbr,tid)
+            
+    #insert a GTG tag with its TextView tag.
+    #Yes, we know : the word tag is used for two different concepts here.
+    def insert_tag(self,tag,itera) :
+        if tag :
+            sm = self.buff.create_mark(None,itera,True)
+            em = self.buff.create_mark(None,itera,False)
+            self.buff.insert(itera,tag)
+            s = self.buff.get_iter_at_mark(sm)
+            e = self.buff.get_iter_at_mark(em)
+            self.apply_tag_tag(tag,s,e)
+        
+        
+    def apply_tag_tag(self,tag,s,e) :
+        texttag = self.buff.create_tag(None,**self.get_property('tag'))
+        texttag.set_data('is_tag', True)
+        texttag.set_data('tagname',tag)
+        self.buff.apply_tag(texttag,s,e)
 
         
  ##### The "Get text" group #########
@@ -360,8 +380,8 @@ class TaskView(gtk.TextView):
                     self.insert_tag(text,itera)
                     #We remove the added tag from the tag list
                     #of known tag for this task
-                    if text in taglist :
-                        taglist.remove(text)
+                    if text[1:] in taglist :
+                        taglist.remove(text[1:])
                 else :
                     self.__parsexml(buf,itera,n)
                     s = buf.get_iter_at_mark(start)
@@ -378,20 +398,12 @@ class TaskView(gtk.TextView):
         self.insert_subtasks(subtasks)
         #We also insert the remaining tags
         for t in taglist :
-            self.insert_tag(t,end)
+            print "inserting tag %s" %t
+            self.insert_tag(t[1:],end)
         buf.delete_mark(start)
         buf.delete_mark(end)
         return True
         
-    #insert a GTG tag with its TextView tag.
-    #Yes, we know : the word tag is used for two different concepts here.
-    def insert_tag(self,tag,itera) :
-        sm = self.buff.create_mark(None,itera,True)
-        em = self.buff.create_mark(None,itera,False)
-        self.buff.insert(itera,tag)
-        s = self.buff.get_iter_at_mark(sm)
-        e = self.buff.get_iter_at_mark(em)
-        self.buff.apply_tag_by_name("tag",s,e)
                 
     ### Serialize the task : transform it's content in something
     #we can store
@@ -464,8 +476,14 @@ class TaskView(gtk.TextView):
         # Detect tags
         #-------------
         
-        tag_list = []
-        self.buff.remove_tag_by_name ('tag', body_start, body_end)
+#        tag_list = []
+        #Removing all texttag related to GTG tags
+        #self.buff.remove_tag_by_name ('tag', body_start, body_end)
+        table = self.buff.get_tag_table()
+        def remove_tag_tag(texttag,data) :
+            if texttag.get_data("is_tag") :
+                table.remove(texttag)
+        table.foreach(remove_tag_tag)
 
         # Set iterators for word
         word_start = body_start.copy()
@@ -502,9 +520,10 @@ class TaskView(gtk.TextView):
                 
                     # We do something about it
                     if len(my_word) > 0 and my_word[0] == '@':
-                        self.buff.apply_tag_by_name("tag", word_start, word_end)
+                        self.apply_tag_tag(my_word,word_start,word_end)
+                        #self.buff.apply_tag_by_name("tag", word_start, word_end)
                         #adding tag to a local list
-                        tag_list.append(my_word[1:])
+#                        tag_list.append(my_word[1:])
                         #adding tag to the model
                         self.add_tag_callback(my_word[1:])
     
@@ -521,9 +540,9 @@ class TaskView(gtk.TextView):
         
         # Update tags in model : 
         # we remove tags that are not in the description anymore
-        for t in self.get_tagslist() :
-            if not t in tag_list :
-                self.remove_tag_callback(t)
+#        for t in self.get_tagslist() :
+#            if not t in tag_list :
+#                self.remove_tag_callback(t)
         
         # Remove all tags from the task
         # Loop over each line
@@ -543,12 +562,15 @@ class TaskView(gtk.TextView):
             if it.begins_tag() :
                 tags = it.get_tags()
                 for ta in tags :
+                    #removing deleted subtasks
                     if ta.get_data('is_subtask') :
                         target = ta.get_data('child')
                         self.remove_subtask(target)
                         self.refresh_browser()
+                    #removing deleted tags
+                    if ta.get_data('is_tag') :
+                        self.remove_tag_callback(ta.get_data('tagname'))
             it.forward_char()
-        #print self.buff.get_text(start,end)
         return False
             
         
@@ -644,7 +666,6 @@ class TaskView(gtk.TextView):
             button = ev.button
             cursor = gtk.gdk.Cursor(gtk.gdk.HAND2)
             if _type == gtk.gdk.BUTTON_RELEASE:
-                #print "anchor clicked : %s" %anchor
                 if typ == "subtask" :
                     self.open_task(anchor)
                 else :
