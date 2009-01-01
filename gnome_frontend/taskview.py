@@ -383,10 +383,11 @@ class TaskView(gtk.TextView):
                             self.__subtask(line_nbr,tid)
                     elif n.nodeName == "tag" :
                         text = n.firstChild.nodeValue
-                        self.insert_tag(text,itera)
-                        #We remove the added tag from the tag list
-                        #of known tag for this task
-                        taglist2.append(text[1:])
+                        if text :
+                            self.insert_tag(text,itera)
+                            #We remove the added tag from the tag list
+                            #of known tag for this task
+                            taglist2.append(text[1:])
                     else :
                         self.__parsexml(buf,itera,n)
                         s = buf.get_iter_at_mark(start)
