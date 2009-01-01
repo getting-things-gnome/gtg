@@ -150,6 +150,7 @@ class TaskBrowser:
 
     #We refresh the tag list. Not needed very often
     def refresh_tags(self) :
+        t_model,t_path = self.tag_tview.get_selection().get_selected_rows()
         self.tag_ts.clear()
         self.tag_ts.append(None,[-1,"<span weight=\"bold\">All tags</span>"])
         self.tag_ts.append(None,[-2,"<span weight=\"bold\">Task without tags</span>"])
@@ -158,6 +159,10 @@ class TaskBrowser:
         tags.sort()
         for tag in tags:
             self.tag_ts.append(None,[tag,tag])
+        #We reselect the selected tag
+        if t_path :
+            for i in t_path :
+                self.tag_tview.get_selection().select_path(i)
 
     #refresh list build/refresh your TreeStore of task
     #to keep it in sync with your self.projects   
