@@ -188,7 +188,7 @@ class TaskBrowser:
                     self.taskdone_ts.append(None,[tid,False,title,donedate])
                 #If tag_list is none, we display tasks without any tags
                 elif tag_list==[None] and t.get_tags()==[]:
-                    self.add_task_tree_to_list(p, self.task_ts, t, None)
+                    self.taskdone_ts.append(None,[tid,False,title,donedate])
         self.task_tview.expand_all()
 
     def add_task_tree_to_list(self, project, tree_store, task, parent):
