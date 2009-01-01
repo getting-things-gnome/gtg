@@ -130,10 +130,15 @@ class Task :
     #Take a task object as parameter
     def add_subtask(self,task) :
         self.can_be_deleted = False
+        #The if prevent an infinite loop
         if task not in self.children and task not in self.parents :
             self.children.append(task)
-            #The if prevent an infinite loop
             task.add_parent(self)
+            #now we set inherited attributes
+            task.set_due_date(self.get_due_date())
+            task.set_start_date(self.get_start_date())
+            for t in self.get_tags() :
+                task.add_tag(t)
     
     #Return the task added as a subtask
     def new_subtask(self) :
