@@ -166,6 +166,10 @@ class TaskView(gtk.TextView):
         #Ok, this line require an integer at some place !
         self.buff.deserialize(self.buff, self.mime_type, _iter, text)
         #self.buff.insert(_iter, text)
+    def insert_text(self,text, _iter=None) :
+        if _iter is None :
+            _iter = self.buff.get_end_iter()
+        self.buff.insert(_iter,text)
     def insert_with_anchor(self, text, anchor=None, _iter=None,typ=None):
         b = self.get_buffer()
         if _iter is None:
@@ -405,7 +409,6 @@ class TaskView(gtk.TextView):
         if len(taglist) > 0 :
             self.__insert_at_mark(end,"\n")
         for t in taglist :
-            print "inserting tag %s" %t
             it = buf.get_iter_at_mark(end)
             self.insert_tag("@%s"%t,it)
             self.__insert_at_mark(end,", ")

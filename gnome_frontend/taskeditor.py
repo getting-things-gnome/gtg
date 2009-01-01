@@ -81,6 +81,7 @@ class TaskEditor :
         self.window.add_accel_group(accelgroup)
      
         self.task = task
+        tags = task.get_tags()
         self.textview.subtasks_callback(task.get_subtasks_tid)
         self.textview.removesubtask_callback(task.remove_subtask_tid)
         self.textview.set_get_tagslist_callback(task.get_tags)
@@ -103,11 +104,10 @@ class TaskEditor :
             if subtasks :
                 self.textview.insert_subtasks(subtasks)
             #And also tags
-            tags = task.get_tags()
-            print tags
             if tags :
                 for t in tags :
-                    self.textview.insert_tag(t)
+                    #self.textview.insert_tag("@%s , "%t)
+                    self.textview.insert_text("@%s, "%t)
             
         self.window.connect("destroy", self.destruction)
         self.refresh_editor()
