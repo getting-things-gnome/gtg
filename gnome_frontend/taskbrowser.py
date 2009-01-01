@@ -152,6 +152,7 @@ class TaskBrowser:
     def refresh_tags(self) :
         self.tag_ts.clear()
         self.tag_ts.append(None,[-1,"<span weight=\"bold\">All tags</span>"])
+        self.tag_ts.append(None,[-2,"<span weight=\"bold\">Task without tags</span>"])
         self.ds.reload_tags()
         tags = self.ds.get_all_tags()
         tags.sort()
@@ -175,12 +176,18 @@ class TaskBrowser:
                 t = p.get_task(tid)
                 if not t.has_parents() and (tag_list==[] or t.has_tags(tag_list)):
                     self.add_task_tree_to_list(p, self.task_ts, t, None)
+                #If tag_list is none, we display tasks without any tags
+                elif not t.has_parents() and tag_list==[None] and t.get_tags()==[]:
+                    self.add_task_tree_to_list(p, self.task_ts, t, None)
             #then the one with tasks already done
             for tid in p.unactive_tasks() :
                 t = p.get_task(tid)
                 title = t.get_title()
                 donedate = t.get_done_date()
                 if tag_list==[] or t.has_tags(tag_list):
+                    self.taskdone_ts.append(None,[tid,False,title,donedate])
+                #If tag_list is none, we display tasks without any tags
+                elif tag_list==[None] and t.get_tags()==[]:
                     self.taskdone_ts.append(None,[tid,False,title,donedate])
         self.task_tview.expand_all()
 
@@ -290,6 +297,10 @@ class TaskBrowser:
         if t_iter :
             tag = [self.tag_ts.get_value(t_iter, 0)]
             if -1 in tag: tag.remove(-1)
+            #-2 means we want to display only tasks without any tag
+            if -2 in tag:
+                tag.remove(-2)
+                tag.append(None)
         #If no selection, we display all
         else :
             tag = []
