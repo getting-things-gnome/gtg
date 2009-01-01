@@ -42,7 +42,7 @@ aze
 			&lt;tag&gt;@test&lt;/tag&gt;
 		</content>
 	</task>
-	<task id="5@1" status="Active" tags="parenttag,aze,parenttag,aze,parenttag,aze,parenttag,aze">
+	<task id="5@1" status="Active" tags="parenttag,aze">
 		<title>
 			child with attributes
 		</title>

@@ -233,7 +233,9 @@ class Task :
         self.tags = my_tags
 
     def add_tag(self, t):
-        self.tags.append(t)
+        #Do not add the same tag twice
+        if not t in self.tags :
+            self.tags.append(t)
 
     def remove_tag(self, t):
         self.tags.remove(t)

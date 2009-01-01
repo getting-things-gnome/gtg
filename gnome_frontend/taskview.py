@@ -109,6 +109,14 @@ class TaskView(gtk.TextView):
     def refresh_callback(self,funct) :
         self.refresh = funct
     #This callback is called to add a new tag
+    def set_add_tag_callback(self,funct) :
+        self.add_tag_callback = funct
+        
+    #This callback is called to add a new tag
+    def set_remove_tag_callback(self,funct) :
+        self.remove_tag_callback = funct
+    
+    #This callback is called to add a new tag
     def set_set_tag_callback(self,funct) :
         self.set_tag_callback = funct
         
@@ -495,7 +503,10 @@ class TaskView(gtk.TextView):
                     # We do something about it
                     if len(my_word) > 0 and my_word[0] == '@':
                         self.buff.apply_tag_by_name("tag", word_start, word_end)
+                        #adding tag to a local list
                         tag_list.append(my_word[1:])
+                        #adding tag to the model
+                        self.add_tag_callback(my_word[1:])
     
                 # We set new word boundaries
                 word_start = char_end.copy()
@@ -508,8 +519,11 @@ class TaskView(gtk.TextView):
             char_start = char_end.copy()
             char_end.forward_char()
         
-        # Update tags in model
-        self.set_tag_callback(tag_list)
+        # Update tags in model : 
+        # we remove tags that are not in the description anymore
+        for t in self.get_tagslist() :
+            if not t in tag_list :
+                self.remove_tag_callback(t)
         
         # Remove all tags from the task
         # Loop over each line
