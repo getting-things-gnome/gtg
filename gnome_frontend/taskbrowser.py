@@ -51,12 +51,16 @@ class TaskBrowser:
                 "on_project_selected" : self.on_project_selected,
                 "on_treeview_button_press_event" : self.on_treeview_button_press_event,
                 "on_edit_item_activate"     : self.on_edit_item_activate,
-                "on_delete_item_activate" : self.on_delete_item_activate
+                "on_delete_item_activate" : self.on_delete_item_activate,
+                "on_task_tview_cursor_changed" : self.task_cursor_changed
 
               }
         self.wTree.signal_autoconnect(dic)
         
         self.ds = datastore
+        
+    def task_cursor_changed(self,a=None) :
+        self.refresh_list()
         
     def main(self):
         #Here we will define the main TaskList interface
@@ -174,8 +178,9 @@ class TaskBrowser:
 
     #refresh list build/refresh your TreeStore of task
     #to keep it in sync with your self.projects   
-    def refresh_list(self) :
+    def refresh_list(self,a=None) :
         #selected tasks :
+        pid, selected_uid = self.get_selected_task()
         t_model,t_path = self.task_tview.get_selection().get_selected_rows()
         d_model,d_path = self.taskdone_tview.get_selection().get_selected_rows()
         #to refresh the list we first empty it then rebuild it
@@ -191,10 +196,10 @@ class TaskBrowser:
             for tid in p.active_tasks() :
                 t = p.get_task(tid)
                 if not t.has_parents() and (tag_list==[] or t.has_tags(tag_list)):
-                    self.add_task_tree_to_list(p, self.task_ts, t, None)
+                    self.add_task_tree_to_list(p, self.task_ts, t, None,selected_uid)
                 #If tag_list is none, we display tasks without any tags
                 elif not t.has_parents() and tag_list==[None] and t.get_tags()==[]:
-                    self.add_task_tree_to_list(p, self.task_ts, t, None)
+                    self.add_task_tree_to_list(p, self.task_ts, t, None,selected_uid)
             #then the one with tasks already done
             for tid in p.unactive_tasks() :
                 t = p.get_task(tid)
@@ -214,15 +219,18 @@ class TaskBrowser:
             for i in d_path :
                 self.taskdone_tview.get_selection().select_path(i)
 
-    def add_task_tree_to_list(self, project, tree_store, task, parent):
+    def add_task_tree_to_list(self, project, tree_store, task, parent,selected_uid=None):
         tid     = task.get_id()
-        title   = task.get_title()
+        if selected_uid and selected_uid == tid:
+            title   = "<b><big>%s</big></b>\n<small><small>%s</small></small>" %(task.get_title(),task.get_excerpt())
+        else :
+            title = task.get_title()
         duedate = task.get_due_date()
         left    = task.get_days_left()
         my_row  = self.task_ts.append(parent, [tid,title,duedate,left])
         for c in task.get_subtasks():
             if c.get_id() in project.active_tasks():
-                self.add_task_tree_to_list(project, tree_store, c, my_row)
+                self.add_task_tree_to_list(project, tree_store, c, my_row,selected_uid)
 
     #If a Task editor is already opened for a given task, we present it
     #Else, we create a new one.
@@ -330,7 +338,7 @@ class TaskBrowser:
         return tag
         
     def on_edit_task(self,widget,row=None ,col=None) :
-        pid,tid = self.get_selected_task()
+        pid,uid = self.get_selected_task()
         if tid :
             zetask = self.ds.get_all_projects()[pid][1].get_task(tid)
             self.open_task(zetask)

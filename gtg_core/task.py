@@ -112,6 +112,24 @@ class Task :
             return str(self.content)
         else :
             return ""
+    
+    """
+    get_excerpt return the beginning of the content of the task.
+    If "lines" is provided and different than 0, it return the number X
+    of line (or the whole content if it contains less lines)
+    If "char" is provided, it returns the X first chars of content (or the 
+    whole contents if it contains less char)
+    If both char and lines are provided, the shorter one is returned.
+    If none of them are provided (or if they are 0), this function is equivalent
+    to get_text with with all XML stripped down.
+    Warning : all markup informations are stripped down.
+    """
+    def get_excerpt(self,lines=0,char=0) :
+        #defensive programmtion to avoid returning None
+        if self.content :
+            return str(self.content)
+        else :
+            return ""
         
     def set_text(self,texte) :
         self.can_be_deleted = False

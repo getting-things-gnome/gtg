@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Tue Nov 25 19:43:56 2008 -->
+<!--Generated with glade3 3.4.5 on Fri Jan  2 15:18:30 2009 -->
 <glade-interface>
   <widget class="GtkWindow" id="MainWindow">
     <property name="visible">True</property>
@@ -202,6 +202,7 @@
                         <property name="search_column">8</property>
                         <property name="rubber_banding">True</property>
                         <signal name="row_activated" handler="on_edit_task"/>
+                        <signal name="cursor_changed" handler="on_task_tview_cursor_changed"/>
                       </widget>
                     </child>
                   </widget>
@@ -641,7 +642,7 @@ Are you sure you to want delete this task ?</property>
           </packing>
         </child>
         <child>
-          <widget class="GtkHBox" id="hbox1">
+          <widget class="GtkHBox" id="hbox4">
             <property name="visible">True</property>
             <child>
               <placeholder/>
