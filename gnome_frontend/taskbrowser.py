@@ -61,29 +61,6 @@ class TaskBrowser:
         
         self.ds = datastore
         
-    def task_cursor_changed(self,selection=None) :
-        tid_row = 0
-        title_row = 1
-        #We reset the previously selected task
-        if self.selected_rows :
-            tid = self.task_ts.get_value(self.selected_rows, tid_row)
-            if tid :
-                uid,pid = tid.split('@')
-                task = self.ds.get_all_projects()[pid][1].get_task(tid)
-                title = self.__build_task_title(task,extended=False)
-                self.task_ts.set_value(self.selected_rows,title_row,title)
-        #We change the selection title
-        if selection :
-            ts,itera = selection.get_selected()
-            tid = self.task_ts.get_value(itera, tid_row)
-            if tid :
-                uid,pid = tid.split('@')
-                task = self.ds.get_all_projects()[pid][1].get_task(tid)
-                self.selected_rows = itera
-                title = self.__build_task_title(task,extended=True)
-                self.task_ts.set_value(self.selected_rows,title_row,title)
-        #self.refresh_list()
-        
     def main(self):
         #Here we will define the main TaskList interface
         self.c_title=1
@@ -244,6 +221,31 @@ class TaskBrowser:
         if d_path :
             for i in d_path :
                 selection.select_path(i)
+                
+    #This function is called when the selection change in the active task view
+    #It will displays the selected task differently
+    def task_cursor_changed(self,selection=None) :
+        tid_row = 0
+        title_row = 1
+        #We reset the previously selected task
+        if self.selected_rows and self.task_ts.iter_is_valid(self.selected_rows):
+            tid = self.task_ts.get_value(self.selected_rows, tid_row)
+            if tid :
+                uid,pid = tid.split('@')
+                task = self.ds.get_all_projects()[pid][1].get_task(tid)
+                title = self.__build_task_title(task,extended=False)
+                self.task_ts.set_value(self.selected_rows,title_row,title)
+        #We change the selection title
+        if selection :
+            ts,itera = selection.get_selected()
+            if itera and self.task_ts.iter_is_valid(itera) :
+                tid = self.task_ts.get_value(itera, tid_row)
+                if tid :
+                    uid,pid = tid.split('@')
+                    task = self.ds.get_all_projects()[pid][1].get_task(tid)
+                    self.selected_rows = itera
+                    title = self.__build_task_title(task,extended=True)
+                    self.task_ts.set_value(self.selected_rows,title_row,title)
     
     def __build_task_title(self,task,extended=False):
         if extended :
