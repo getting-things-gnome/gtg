@@ -172,6 +172,9 @@ class TaskBrowser:
     #refresh list build/refresh your TreeStore of task
     #to keep it in sync with your self.projects   
     def refresh_list(self) :
+        #selected tasks :
+        t_model,t_path = self.task_tview.get_selection().get_selected_rows()
+        d_model,d_path = self.taskdone_tview.get_selection().get_selected_rows()
         #to refresh the list we first empty it then rebuild it
         #is it acceptable to do that ?
         self.task_ts.clear()
@@ -200,6 +203,13 @@ class TaskBrowser:
                 elif tag_list==[None] and t.get_tags()==[]:
                     self.taskdone_ts.append(None,[tid,False,title,donedate])
         self.task_tview.expand_all()
+        #We reselect the selected tasks
+        if t_path :
+            for i in t_path :
+                self.task_tview.get_selection().select_path(i)
+        if d_path :
+            for i in d_path :
+                self.taskdone_tview.get_selection().select_path(i)
 
     def add_task_tree_to_list(self, project, tree_store, task, parent):
         tid     = task.get_id()
