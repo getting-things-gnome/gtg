@@ -27,6 +27,7 @@
 		</subtask>
 		<content>
 			&lt;tag&gt;@aze&lt;/tag&gt;, &lt;tag&gt;@autre&lt;/tag&gt;
+une tâche parent
 &lt;subtask&gt;5@1&lt;/subtask&gt;
 		</content>
 	</task>
