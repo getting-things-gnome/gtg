@@ -129,6 +129,9 @@ class TaskBrowser:
     
     #We double clicked on a project in the project list
     def on_project_selected(self,widget,row=None ,col=None) :
+        #When you clic on a project, you want to unselect the tasks
+        self.task_tview.get_selection().unselect_all()
+        self.taskdone_tview.get_selection().unselect_all()
         self.refresh_list()
     
     #We refresh the project list. Not needed very often
@@ -369,6 +372,9 @@ class TaskBrowser:
             backend.sync_task(tid)
         
     def on_select_tag(self, widget, row=None ,col=None) :
+        #When you clic on a tag, you want to unselect the tasks
+        self.task_tview.get_selection().unselect_all()
+        self.taskdone_tview.get_selection().unselect_all()
         self.refresh_list()
 
     ##### Useful tools##################
