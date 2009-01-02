@@ -129,10 +129,14 @@ class TaskBrowser:
     
     #We double clicked on a project in the project list
     def on_project_selected(self,widget,row=None ,col=None) :
+        #When you clic on a project, you want to unselect the tasks
+        self.task_tview.get_selection().unselect_all()
+        self.taskdone_tview.get_selection().unselect_all()
         self.refresh_list()
     
     #We refresh the project list. Not needed very often
     def refresh_projects(self) :
+        p_model,p_path = self.project_tview.get_selection().get_selected_rows()
         self.project_ts.clear()
         self.project_ts.append(None,[-1, "<span weight=\"bold\">All projects</span>"])
         projects = self.ds.get_all_projects()
@@ -142,6 +146,10 @@ class TaskBrowser:
             at_num = len(p.active_tasks())
             p_str  = "%s (%d)" % (title, at_num)
             self.project_ts.append(None,[p_key, p_str])
+        #We reselect the selected project
+        if p_path :
+            for i in p_path :
+                self.project_tview.get_selection().select_path(i)
 
     def refresh_tb(self):
         self.refresh_list()
@@ -150,6 +158,7 @@ class TaskBrowser:
 
     #We refresh the tag list. Not needed very often
     def refresh_tags(self) :
+        t_model,t_path = self.tag_tview.get_selection().get_selected_rows()
         self.tag_ts.clear()
         self.tag_ts.append(None,[-1,"<span weight=\"bold\">All tags</span>"])
         self.tag_ts.append(None,[-2,"<span weight=\"bold\">Task without tags</span>"])
@@ -158,10 +167,17 @@ class TaskBrowser:
         tags.sort()
         for tag in tags:
             self.tag_ts.append(None,[tag,tag])
+        #We reselect the selected tag
+        if t_path :
+            for i in t_path :
+                self.tag_tview.get_selection().select_path(i)
 
     #refresh list build/refresh your TreeStore of task
     #to keep it in sync with your self.projects   
     def refresh_list(self) :
+        #selected tasks :
+        t_model,t_path = self.task_tview.get_selection().get_selected_rows()
+        d_model,d_path = self.taskdone_tview.get_selection().get_selected_rows()
         #to refresh the list we first empty it then rebuild it
         #is it acceptable to do that ?
         self.task_ts.clear()
@@ -190,6 +206,13 @@ class TaskBrowser:
                 elif tag_list==[None] and t.get_tags()==[]:
                     self.taskdone_ts.append(None,[tid,False,title,donedate])
         self.task_tview.expand_all()
+        #We reselect the selected tasks
+        if t_path :
+            for i in t_path :
+                self.task_tview.get_selection().select_path(i)
+        if d_path :
+            for i in d_path :
+                self.taskdone_tview.get_selection().select_path(i)
 
     def add_task_tree_to_list(self, project, tree_store, task, parent):
         tid     = task.get_id()
@@ -349,6 +372,9 @@ class TaskBrowser:
             backend.sync_task(tid)
         
     def on_select_tag(self, widget, row=None ,col=None) :
+        #When you clic on a tag, you want to unselect the tasks
+        self.task_tview.get_selection().unselect_all()
+        self.taskdone_tview.get_selection().unselect_all()
         self.refresh_list()
 
     ##### Useful tools##################
