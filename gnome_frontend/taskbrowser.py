@@ -88,7 +88,7 @@ class TaskBrowser:
         self.__add_active_column("Left",3)
         self.task_ts = gtk.TreeStore(gobject.TYPE_PYOBJECT, str, str, str)
         self.task_tview.set_model(self.task_ts)
-        self.task_ts.set_sort_column_id(self.c_title, gtk.SORT_ASCENDING)
+        #self.task_ts.set_sort_column_id(self.c_title, gtk.SORT_ASCENDING)
      
         #The done/dismissed taks treeview
         self.taskdone_tview = self.wTree.get_widget("taskdone_tview")
@@ -222,7 +222,11 @@ class TaskBrowser:
     def add_task_tree_to_list(self, project, tree_store, task, parent,selected_uid=None):
         tid     = task.get_id()
         if selected_uid and selected_uid == tid:
-            title   = "<b><big>%s</big></b>\n<small><small>%s</small></small>" %(task.get_title(),task.get_excerpt())
+            excerpt = task.get_excerpt(lines=2)
+            if excerpt.strip() != "" :
+                title   = "<b><big>%s</big></b>\n<small><small>%s</small></small>" %(task.get_title(),excerpt)
+            else : 
+                title   = "<b><big>%s</big></b>" %task.get_title()
         else :
             title = task.get_title()
         duedate = task.get_due_date()

@@ -1,6 +1,7 @@
 import sys, time, os
 from datetime import date
 import string
+import xml.dom.minidom
 
 
 #This class represent a task in GTG.
@@ -122,14 +123,39 @@ class Task :
     If both char and lines are provided, the shorter one is returned.
     If none of them are provided (or if they are 0), this function is equivalent
     to get_text with with all XML stripped down.
-    Warning : all markup informations are stripped down.
+    Warning : all markup informations are stripped down. Empty lines are also
+    removed
     """
     def get_excerpt(self,lines=0,char=0) :
         #defensive programmtion to avoid returning None
         if self.content :
-            return str(self.content)
+            element = xml.dom.minidom.parseString(self.content)
+            txt = self.__strip_content(element)
+            txt = txt.strip()
+            #We keep the desired number of lines
+            if lines > 0 :
+                liste = txt.splitlines()
+                for i in liste :
+                    if i.strip() == "" :
+                        liste.remove(i)
+                to_keep = liste[:lines]
+                txt = '\n'.join(to_keep)
+            #We keep the desired number of char
+            if char > 0 :
+                txt = txt[:char]
+            return txt
         else :
             return ""
+            
+    def __strip_content(self,element) :
+        txt = ""
+        if element :
+            for n in element.childNodes :
+                if n.nodeType == n.ELEMENT_NODE :
+                    txt+= self.__strip_content(n)
+                elif n.nodeType == n.TEXT_NODE :
+                    txt += n.nodeValue
+        return txt
         
     def set_text(self,texte) :
         self.can_be_deleted = False
