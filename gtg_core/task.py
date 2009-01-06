@@ -297,10 +297,14 @@ class Task :
             self.tags.remove(t)
 
     def has_tags(self, tag_list):
+        if self.get_title() == "enfant" :
+            print "I'm in has_tags for %s" %self.get_title()
+            print tag_list
+            print self.tags
         #We want to see if the task has no tags
         if tag_list == [None] :
             return self.tags == []
-        elif tag_list == [] :
+        elif tag_list == [] or tag_list == None:
             return True
         else :
             for my_tag in tag_list:
