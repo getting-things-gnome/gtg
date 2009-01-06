@@ -6,7 +6,7 @@ import xml.dom.minidom
 
 #This class represent a task in GTG.
 class Task :
-    def __init__(self, ze_id) :
+    def __init__(self, ze_id, newtask=False) :
         #the id of this task in the project
         #tid is a string ! (we have to choose a type and stick to it)
         self.tid = str(ze_id)
@@ -22,7 +22,7 @@ class Task :
         self.parents = []
         self.children = []
         self.new_task_func = None
-        self.can_be_deleted = True
+        self.can_be_deleted = newtask
         # tags
         self.tags = []
         
@@ -176,11 +176,12 @@ class Task :
         if task not in self.children and task not in self.parents :
             self.children.append(task)
             task.add_parent(self)
-            #now we set inherited attributes
-            task.set_due_date(self.get_due_date())
-            task.set_start_date(self.get_start_date())
-            for t in self.get_tags() :
-                task.add_tag(t)
+            #now we set inherited attributes only if it's a new task
+            if task.can_be_deleted :
+                task.set_due_date(self.get_due_date())
+                task.set_start_date(self.get_start_date())
+                for t in self.get_tags() :
+                    task.add_tag(t)
     
     #Return the task added as a subtask
     def new_subtask(self) :
@@ -239,8 +240,18 @@ class Task :
             zelist.append(i)
         return zelist
  
-    def has_parents(self):
-        return len(self.parents)!=0
+    #Return true is the task has parent
+    #If tag is provided, return True only
+    #if the parent has this particular tag
+    def has_parents(self,tag=None):
+        #The "all tag" argument
+        if tag and len(self.parents)!=0 :
+            a = 0
+            for p in self.parents :
+                a+= p.has_tags(tag)
+            return a
+        else :
+            return len(self.parents)!=0
        
     #Method called before the task is deleted
     def delete(self) :
@@ -287,8 +298,14 @@ class Task :
             self.tags.remove(t)
 
     def has_tags(self, tag_list):
-        for my_tag in tag_list:
-            if my_tag in self.tags: return True
+        #We want to see if the task has no tags
+        if tag_list == [None] :
+            return self.tags == []
+        elif tag_list == [] or tag_list == None:
+            return True
+        else :
+            for my_tag in tag_list:
+                if my_tag in self.tags: return True
         return False
 
     def __str__(self):
@@ -362,7 +379,7 @@ class Project :
         
     def new_task(self) :
         tid = self.__free_tid()
-        task = Task(tid)
+        task = Task(tid,newtask=True)
         self.add_task(task)
         return task
     

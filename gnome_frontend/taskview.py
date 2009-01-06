@@ -254,23 +254,6 @@ class TaskView(gtk.TextView):
         
 ########### Serializing functions ###############
 
-    # TextIter.ends_tag doesn't work (see bug #561916)
-    #Let's reimplement it manually
-    def __istagend(self,it, tag=None) :
-        #FIXME : we should handle the None case
-        #if we currently have a tag
-        has = it.has_tag(tag)
-        it.forward_char()
-        #But the tag is not there anymore on next char
-        if has and not it.has_tag(tag) :
-            #it means we were at the end of a tag
-            val = True
-            it.backward_char()
-        else :
-            val = False
-            it.backward_char()
-        return val
-
     def __parsebuf(self, buf, start, end, name, doc) :
         """
         Parse the buffer and output an XML representation.

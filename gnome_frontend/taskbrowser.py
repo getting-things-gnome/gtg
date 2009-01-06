@@ -197,11 +197,11 @@ class TaskBrowser:
             #we first build the active_tasks pane
             for tid in p.active_tasks() :
                 t = p.get_task(tid)
-                if not t.has_parents() and (tag_list==[] or t.has_tags(tag_list)):
-                    self.add_task_tree_to_list(p, self.task_ts, t, None,selected_uid)
+                if not t.has_parents(tag=tag_list) and (tag_list==[] or t.has_tags(tag_list)):
+                    self.add_task_tree_to_list(p, self.task_ts, t, None,selected_uid,tags=tag_list)
                 #If tag_list is none, we display tasks without any tags
-                elif not t.has_parents() and tag_list==[None] and t.get_tags()==[]:
-                    self.add_task_tree_to_list(p, self.task_ts, t, None,selected_uid)
+                elif not t.has_parents(tag=tag_list) and tag_list==[None] and t.get_tags()==[]:
+                    self.add_task_tree_to_list(p, self.task_ts, t, None,selected_uid,tags=tag_list)
             #then the one with tasks already done
             for tid in p.unactive_tasks() :
                 t = p.get_task(tid)
@@ -258,18 +258,19 @@ class TaskBrowser:
             title = task.get_title()
         return title
 
-    def add_task_tree_to_list(self, project, tree_store, task, parent,selected_uid=None):
-        tid     = task.get_id()
-        if selected_uid and selected_uid == tid:
-            title = self.__build_task_title(task,extended=True)
-        else :
-            title = self.__build_task_title(task,extended=False)
-        duedate = task.get_due_date()
-        left    = task.get_days_left()
-        my_row  = self.task_ts.append(parent, [tid,title,duedate,left])
-        for c in task.get_subtasks():
-            if c.get_id() in project.active_tasks():
-                self.add_task_tree_to_list(project, tree_store, c, my_row,selected_uid)
+    def add_task_tree_to_list(self, project, tree_store, task, parent,selected_uid=None,tags=None):
+        if task.has_tags(tags) :
+            tid     = task.get_id()
+            if selected_uid and selected_uid == tid:
+                title = self.__build_task_title(task,extended=True)
+            else :
+                title = self.__build_task_title(task,extended=False)
+            duedate = task.get_due_date()
+            left    = task.get_days_left()
+            my_row  = self.task_ts.append(parent, [tid,title,duedate,left])
+            for c in task.get_subtasks():
+                if c.get_id() in project.active_tasks():
+                    self.add_task_tree_to_list(project, tree_store, c, my_row,selected_uid,tags=tags)
 
     #If a Task editor is already opened for a given task, we present it
     #Else, we create a new one.
