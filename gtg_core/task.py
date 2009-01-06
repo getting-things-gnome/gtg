@@ -239,8 +239,18 @@ class Task :
             zelist.append(i)
         return zelist
  
-    def has_parents(self):
-        return len(self.parents)!=0
+    #Return true is the task has parent
+    #If tag is provided, return True only
+    #if the parent has this particular tag
+    def has_parents(self,tag=None):
+        #The "all tag" argument
+        if tag and len(self.parents)!=0 :
+            a = 0
+            for p in self.parents :
+                a+= p.has_tags(tag)
+            return a
+        else :
+            return len(self.parents)!=0
        
     #Method called before the task is deleted
     def delete(self) :
@@ -287,8 +297,14 @@ class Task :
             self.tags.remove(t)
 
     def has_tags(self, tag_list):
-        for my_tag in tag_list:
-            if my_tag in self.tags: return True
+        #We want to see if the task has no tags
+        if tag_list == [None] :
+            return self.tags == []
+        elif tag_list == [] :
+            return True
+        else :
+            for my_tag in tag_list:
+                if my_tag in self.tags: return True
         return False
 
     def __str__(self):
