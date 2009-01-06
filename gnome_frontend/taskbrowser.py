@@ -271,8 +271,6 @@ class TaskBrowser:
             for c in task.get_subtasks():
                 if c.get_id() in project.active_tasks():
                     self.add_task_tree_to_list(project, tree_store, c, my_row,selected_uid,tags=tags)
-        else :
-            print "not adding %s" %task.get_title()
 
     #If a Task editor is already opened for a given task, we present it
     #Else, we create a new one.

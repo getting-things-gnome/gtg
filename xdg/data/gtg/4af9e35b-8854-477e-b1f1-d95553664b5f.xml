@@ -41,7 +41,7 @@ une tâche parent
 	</task>
 	<task id="1@1" status="Active" tags="tag,autro">
 		<title>
-			enfant
+			enfant2
 		</title>
 		<subtask>
 			6@1
@@ -54,7 +54,7 @@ une tâche parent
 &lt;subtask&gt;6@1&lt;/subtask&gt;&lt;subtask&gt;7@1&lt;/subtask&gt;
 		</content>
 	</task>
-	<task id="5@1" status="Active" tags="aze,autre,test">
+	<task id="5@1" status="Active" tags="aze,autre">
 		<title>
 			child
 		</title>
@@ -65,7 +65,7 @@ une tâche parent
 			2008-11-11
 		</startdate>
 		<content>
-			&lt;tag&gt;@aze&lt;/tag&gt;, &lt;tag&gt;@autre&lt;/tag&gt;, 
+			&lt;tag&gt;@aze&lt;/tag&gt;, &lt;tag&gt;@autre&lt;/tag&gt;,
 		</content>
 	</task>
 	<task id="2@1" status="Done" tags="">
@@ -97,7 +97,7 @@ une tâche parent
 	</task>
 	<task id="7@1" status="Active" tags="autro">
 		<title>
-			enfant
+			enfant3
 		</title>
 		<subtask>
 			8@1
