@@ -1,3 +1,6 @@
+import os
+from gtg_core   import CoreConfig
+
 class DataStore:
 
     def __init__ (self):
@@ -21,7 +24,12 @@ class DataStore:
         self.cur_pid = self.cur_pid + 1
 
     def remove_project(self, project):
-        self.projects.pop(project.get_pid())
+        pid = project.get_pid()
+        b  = self.get_project_with_pid(pid)[0]
+        self.projects.pop(pid)
+        self.unregister_backend(b)
+        fn = b.get_filename()
+        os.remove(os.path.join(CoreConfig.DATA_DIR,fn))
 
     def load_data(self):
         for b in self.backends:

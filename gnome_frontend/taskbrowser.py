@@ -128,9 +128,6 @@ class TaskBrowser:
         b  = self.ds.get_project_with_pid(ppid)[0]
         p  = self.ds.get_project_with_pid(ppid)[1]
         self.ds.remove_project(p)
-        self.ds.unregister_backend(b)
-        fn = b.get_filename()
-        os.remove(os.path.join(CoreConfig.DATA_DIR,fn))
         self.refresh_projects()
     
     #We double clicked on a project in the project list
