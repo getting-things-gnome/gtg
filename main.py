@@ -36,6 +36,7 @@ from gnome_frontend.taskbrowser import TaskBrowser
 from gtg_core.datastore   import DataStore
 from backends.localfile import Backend
 from gtg_core   import CoreConfig
+from tools import cleanxml
 
 #=== OBJECTS ===================================================================
 
@@ -60,7 +61,7 @@ class Gtg:
             f = open(CoreConfig.DATA_DIR + CoreConfig.DATA_FILE,mode='r')
             # sanitize the pretty XML
             doc=xml.dom.minidom.parse(CoreConfig.DATA_DIR + CoreConfig.DATA_FILE)
-            self.__cleanDoc(doc,"\t","\n")
+            cleanxml.cleanDoc(doc,"\t","\n")
             self.__xmlproject = doc.getElementsByTagName("backend")
             # collect configred backends
             for xp in self.__xmlproject:
@@ -99,23 +100,6 @@ class Gtg:
         f = open(CoreConfig.DATA_DIR + CoreConfig.DATA_FILE,mode='w')
         f.write(s)
         f.close()
-
-    #Those two functions are there only to be able to read prettyXML
-    #Source : http://yumenokaze.free.fr/?/Informatique/Snipplet/Python/cleandom       
-    def __cleanDoc(self,document,indent="",newl=""):
-        node=document.documentElement
-        self.__cleanNode(node,indent,newl)
- 
-    def __cleanNode(self,currentNode,indent,newl):
-        filter=indent+newl
-        if currentNode.hasChildNodes:
-            for node in currentNode.childNodes:
-                if node.nodeType == 3 :
-                    node.nodeValue = node.nodeValue.lstrip(filter).strip(filter)
-                    if node.nodeValue == "":
-                        currentNode.removeChild(node)
-            for node in currentNode.childNodes:
-                self.__cleanNode(node,indent,newl)
 
 #=== EXECUTION =================================================================
 
