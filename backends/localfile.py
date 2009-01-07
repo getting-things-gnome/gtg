@@ -3,6 +3,7 @@ import string, threading
 
 from gtg_core.task      import Task, Project
 from gtg_core   import CoreConfig
+from tools import cleanxml
 
 #This is for the awful pretty xml things
 tab = "\t"
@@ -21,7 +22,7 @@ class Backend :
         if os.path.exists(self.zefile) :
             f = open(self.zefile,mode='r')
             doc=xml.dom.minidom.parse(self.zefile)
-            self.__cleanDoc(doc,tab,enter)
+            cleanxml.cleanDoc(doc,tab,enter)
             self.__xmlproject = doc.getElementsByTagName("project")
             proj_name = str(self.__xmlproject[0].getAttribute("name"))
             self.project = Project(proj_name)
@@ -38,25 +39,6 @@ class Backend :
 
     def get_filename(self):
         return self.filename
-     
-    #Those two functions are there only to be able to read prettyXML
-    #Source : http://yumenokaze.free.fr/?/Informatique/Snipplet/Python/cleandom       
-    def __cleanDoc(self,document,indent="",newl=""):
-        node=document.documentElement
-        self.__cleanNode(node,indent,newl)
- 
-    def __cleanNode(self,currentNode,indent,newl):
-        filter=indent+newl
-        if currentNode.hasChildNodes :
-        #and currentNode.nodeName != "content":
-            for node in currentNode.childNodes:
-                if node.nodeType == 3 :
-                    node.nodeValue = node.nodeValue.lstrip(filter).strip(filter)
-                    if node.nodeValue == "":
-                        currentNode.removeChild(node)
-            for node in currentNode.childNodes:
-                self.__cleanNode(node,indent,newl)
-#        elif currentNode.nodeName == "content" :
         
     #This function should return a project object with all the current tasks in it.
     def get_project(self) :
