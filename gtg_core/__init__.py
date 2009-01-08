@@ -62,3 +62,6 @@ class CoreConfig:
         f = open(self.DATA_DIR + self.DATA_FILE,mode='w')
         f.write(s)
         f.close()
+        #Saving the tagstore
+        ts = ds.get_tagstore()
+        ts.save()
