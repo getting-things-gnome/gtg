@@ -165,11 +165,11 @@ class TaskBrowser:
         self.tag_ts.clear()
         self.tag_ts.append(None,[-1,"<span weight=\"bold\">All tags</span>"])
         self.tag_ts.append(None,[-2,"<span weight=\"bold\">Task without tags</span>"])
-        self.ds.reload_tags()
-        tags = self.ds.get_all_tags()
-        tags.sort()
+#        self.ds.reload_tags()
+        tags = self.ds.get_used_tags()
+        #tags.sort()
         for tag in tags:
-            self.tag_ts.append(None,[tag,tag])
+            self.tag_ts.append(None,[tag,tag.get_name()])
         #We reselect the selected tag
         if t_path :
             for i in t_path :
@@ -197,7 +197,7 @@ class TaskBrowser:
                 if not t.has_parents(tag=tag_list) and (tag_list==[] or t.has_tags(tag_list)):
                     self.add_task_tree_to_list(p, self.task_ts, t, None,selected_uid,tags=tag_list)
                 #If tag_list is none, we display tasks without any tags
-                elif not t.has_parents(tag=tag_list) and tag_list==[None] and t.get_tags()==[]:
+                elif not t.has_parents(tag=tag_list) and tag_list==[None] and t.get_tags_name()==[]:
                     self.add_task_tree_to_list(p, self.task_ts, t, None,selected_uid,tags=tag_list)
             #then the one with tasks already done
             for tid in p.unactive_tasks() :
@@ -207,7 +207,7 @@ class TaskBrowser:
                 if tag_list==[] or t.has_tags(tag_list):
                     self.taskdone_ts.append(None,[tid,False,title,donedate])
                 #If tag_list is none, we display tasks without any tags
-                elif tag_list==[None] and t.get_tags()==[]:
+                elif tag_list==[None] and t.get_tags_name()==[]:
                     self.taskdone_ts.append(None,[tid,False,title,donedate])
         self.task_tview.expand_all()
         #We reselect the selected tasks
@@ -363,12 +363,16 @@ class TaskBrowser:
         t_selected = self.tag_tview.get_selection()
         tmodel, t_iter = t_selected.get_selected()
         if t_iter :
-            tag = [self.tag_ts.get_value(t_iter, 0)]
-            if -1 in tag: tag.remove(-1)
+            selected = [self.tag_ts.get_value(t_iter, 0)]
+            tag = []
+            if -1 in selected: selected.remove(-1)
             #-2 means we want to display only tasks without any tag
-            if -2 in tag:
-                tag.remove(-2)
+            if -2 in selected:
+                selected.remove(-2)
                 tag.append(None)
+            for t in selected :
+                if t :
+                    tag.append(t.get_name())
         #If no selection, we display all
         else :
             tag = []
@@ -389,6 +393,7 @@ class TaskBrowser:
         pr.delete_task(self.tid_todelete)
         self.tid_todelete = None
         self.refresh_list()
+        self.refresh_tags()
         
     def on_delete_task(self,widget,tid=None) :
         #If we don't have a parameter, then take the selection in the treeview

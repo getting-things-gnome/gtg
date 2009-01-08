@@ -84,7 +84,7 @@ class TaskEditor :
         tags = task.get_tags()
         self.textview.subtasks_callback(task.get_subtasks_tid)
         self.textview.removesubtask_callback(task.remove_subtask_tid)
-        self.textview.set_get_tagslist_callback(task.get_tags)
+        self.textview.set_get_tagslist_callback(task.get_tags_name)
         self.textview.set_add_tag_callback(task.add_tag)
         self.textview.set_remove_tag_callback(task.remove_tag)
         self.refresh = refresh_callback
@@ -107,7 +107,7 @@ class TaskEditor :
             if tags :
                 for t in tags :
                     #self.textview.insert_tag("@%s , "%t)
-                    self.textview.insert_text("@%s, "%t)
+                    self.textview.insert_text("@%s, "%t.get_name())
             
         self.window.connect("destroy", self.destruction)
         self.refresh_editor()

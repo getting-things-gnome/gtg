@@ -6,7 +6,7 @@ import xml.dom.minidom
 
 #This class represent a task in GTG.
 class Task :
-    def __init__(self, ze_id, newtask=False) :
+    def __init__(self, ze_id, tagstore, newtask=False) :
         #the id of this task in the project
         #tid is a string ! (we have to choose a type and stick to it)
         self.tid = str(ze_id)
@@ -25,6 +25,7 @@ class Task :
         self.can_be_deleted = newtask
         # tags
         self.tags = []
+        self.tagstore = tagstore
         
     def set_project(self,pid) :
         tid = self.get_id()
@@ -181,7 +182,7 @@ class Task :
                 task.set_due_date(self.get_due_date())
                 task.set_start_date(self.get_start_date())
                 for t in self.get_tags() :
-                    task.add_tag(t)
+                    task.add_tag(t.get_name())
     
     #Return the task added as a subtask
     def new_subtask(self) :
@@ -276,36 +277,57 @@ class Task :
     def sync(self) :
         if self.sync_func :
             self.sync_func(self.tid)
-    def get_tags(self):
+            
+            
+    ######## Tag functions ##############
+    #####################################
+        
+    def get_tags_name(self):
         #Return a copy of the list of tags. Not the original object.
+        l = []
+        for t in self.tags :
+            name = t.get_name()
+            l.append(name)
+        return l
+        
+    #return a copy of the list of tag objects
+    def get_tags(self) :
         l = []
         for t in self.tags :
             l.append(t)
         return l
 
-    def set_tags(self, my_tags):
-        print "This function is evil. Only add/remove should be allowed for tags"
-        print "Are we sure we want to keep it ?"
-        self.tags = my_tags
-
-    def add_tag(self, t):
+    #This function add tag by name
+    def add_tag(self, tagname):
+        t = self.tagstore.new_tag(tagname)
         #Do not add the same tag twice
         if not t in self.tags :
             self.tags.append(t)
-
-    def remove_tag(self, t):
+            
+    #remove by tagname
+    def remove_tag(self, tagname):
+        t = self.tagstore.get_tag(tagname)
         if t in self.tags :
             self.tags.remove(t)
 
+    #tag_list is a list of tagnames
+    #return true if at least of the list is in the task
     def has_tags(self, tag_list):
         #We want to see if the task has no tags
+        #[None] is our convention for that
         if tag_list == [None] :
             return self.tags == []
+        #Here, the user ask for the "empty" tag
+        #And virtually every task has it.
         elif tag_list == [] or tag_list == None:
             return True
         else :
-            for my_tag in tag_list:
-                if my_tag in self.tags: return True
+            for tagname in tag_list:
+                if self.tagstore :
+                    t = self.tagstore.new_tag(tagname)
+                    if t in self.tags: return True
+                else :
+                    print "Error : no tagstore liaison"
         return False
 
     def __str__(self):
@@ -321,11 +343,12 @@ class Task :
         
 #This class represent a project : a list of tasks sharing the same backend
 class Project :
-    def __init__(self, name) :
+    def __init__(self, name,tagstore) :
         self.name = name
         self.list = {}
         self.sync_func = None
         self.pid = None
+        self.tagstore = tagstore
         
     def set_pid(self,pid) :
         self.pid = pid 
@@ -379,7 +402,7 @@ class Project :
         
     def new_task(self) :
         tid = self.__free_tid()
-        task = Task(tid,newtask=True)
+        task = Task(tid,self.tagstore,newtask=True)
         self.add_task(task)
         return task
     

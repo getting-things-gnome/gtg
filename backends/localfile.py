@@ -11,8 +11,10 @@ enter = "\n"
 
 #todo : Backend should only provide one big "project" object and should 
 #not provide get_task and stuff like that.
+#Passing the tagstore as argument is a ugly hack that should be corrected
 class Backend :
-    def __init__(self,zefile,default_folder=True) :
+    def __init__(self,zefile,tagstore,default_folder=True) :
+        self.tagstore = tagstore
         if default_folder :
             self.zefile = os.path.join(CoreConfig.DATA_DIR,zefile)
             self.filename = zefile
@@ -25,7 +27,7 @@ class Backend :
             cleanxml.cleanDoc(doc,tab,enter)
             self.__xmlproject = doc.getElementsByTagName("project")
             proj_name = str(self.__xmlproject[0].getAttribute("name"))
-            self.project = Project(proj_name)
+            self.project = Project(proj_name,self.tagstore)
         
         #the file didn't exist, create it now
         else :
@@ -48,7 +50,7 @@ class Backend :
             for t in self.__xmlproject[0].childNodes:
                 cur_id = "%s" %t.getAttribute("id")
                 cur_stat = "%s" %t.getAttribute("status")
-                cur_task = Task(cur_id)
+                cur_task = Task(cur_id,self.tagstore)
                 donedate = self.__read_textnode(t,"donedate")
                 cur_task.set_status(cur_stat,donedate=donedate)
                 #we will fill the task with its content
@@ -106,7 +108,7 @@ class Backend :
             t_xml.setAttribute("id",str(tid))
             t_xml.setAttribute("status" , t.get_status())
             tags_str = ""
-            for tag in t.get_tags(): tags_str = tags_str + str(tag) + ","
+            for tag in t.get_tags_name(): tags_str = tags_str + str(tag) + ","
             t_xml.setAttribute("tags"   , tags_str[:-1])
             p_xml.appendChild(t_xml)
             self.__write_textnode(doc,t_xml,"title",t.get_title())
