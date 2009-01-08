@@ -8,7 +8,7 @@ class DataStore:
         self.projects = {}
         self.tasks    = []
         self.cur_pid  = 1
-        self.tags     = []
+#        self.tags     = []
         self.tagstore = tagstore.TagStore()
 
 #    def add_task(self, task):
@@ -41,14 +41,13 @@ class DataStore:
         for b in self.backends:
             p = b.get_project()
             p.set_pid(str(self.cur_pid))
-            p.set_tagstore(self.tagstore)
             p.set_sync_func(b.sync_project)
             self.projects[str(self.cur_pid)] = [b, p]
             tid_list = p.list_tasks()
             self.tasks.append(tid_list)
-            for t in tid_list:
-                for tag in p.get_task(t).get_tags():
-                    if tag not in self.tags: self.tags.append(tag)
+#            for t in tid_list:
+#                for tag in p.get_task(t).get_tags_name():
+#                    if tag not in self.tags: self.tags.append(tag)
             self.cur_pid=self.cur_pid+1
 
     def register_backend(self, backend):
@@ -69,7 +68,7 @@ class DataStore:
         return self.projects
     
     def get_all_tags(self):
-        return self.tags
+        return self.tagstore.get_all_tags_name()
 
     def reload_tags(self):
         print "reload_tags called"

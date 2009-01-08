@@ -48,13 +48,15 @@ class Gtg:
         config = CoreConfig()
         bl = config.get_backends_list()
         
+        # Load data store
+        ds = DataStore()
+        tagstore = ds.get_tagstore()
+        
         # Create & init backends
         backends = []
         for b in bl:
-            backends.append(Backend(b))
+            backends.append(Backend(b,tagstore))
 
-        # Load data store
-        ds = DataStore()
         for b in backends:
             ds.register_backend(b)
         ds.load_data()

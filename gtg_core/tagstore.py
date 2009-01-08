@@ -8,12 +8,12 @@ class TagStore :
     #or return the existing one with corresponding name
     def new_tag(self,tagname) :
         #we create a new tag from a name
-        if not self.store.has_key(name) :
+        if not self.store.has_key(tagname) :
             tag = Tag(tagname)
             self.add_tag(tag)
             return tag
         else :
-            return self.store[name]
+            return self.store[tagname]
         
     def add_tag(self,tag) :
         name = tag.get_name()
@@ -33,7 +33,16 @@ class TagStore :
                     
     
     def get_tag(self,tagname) :
-        return self.store[tagname]
+        if self.store.has_key(tagname) :
+            return self.store[tagname]
+        else :
+            return None
+    
+    def get_all_tags_name(self) :
+        l = []
+        for t in self.store :
+            l.append(self.store[t].get_name())
+        return l
     
         
     def save(self) :
@@ -53,11 +62,9 @@ class Tag :
         return self.get_attribute("name")
         
     def set_attribute(self,att_name,att_value) :
-        if att_name == "name" :
-            #FIXME
-            print "renaming a tag is not currently supported (it should be checked)"
-        else :
-            self.attributes[att_name] = att_value
+        #FIXME : we have to be careful when changing the name
+        #if att_name == "name" :   
+        self.attributes[att_name] = att_value
         
     def get_attribute(self,att_name) :
         if self.attributes.has_key(att_name) :
@@ -66,5 +73,5 @@ class Tag :
             return None
             
     def get_all_attributes(self) :
-        return d.keys()
+        return self.attributes.keys()
 

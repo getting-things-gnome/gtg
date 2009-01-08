@@ -197,7 +197,7 @@ class TaskBrowser:
                 if not t.has_parents(tag=tag_list) and (tag_list==[] or t.has_tags(tag_list)):
                     self.add_task_tree_to_list(p, self.task_ts, t, None,selected_uid,tags=tag_list)
                 #If tag_list is none, we display tasks without any tags
-                elif not t.has_parents(tag=tag_list) and tag_list==[None] and t.get_tags()==[]:
+                elif not t.has_parents(tag=tag_list) and tag_list==[None] and t.get_tags_name()==[]:
                     self.add_task_tree_to_list(p, self.task_ts, t, None,selected_uid,tags=tag_list)
             #then the one with tasks already done
             for tid in p.unactive_tasks() :
@@ -207,7 +207,7 @@ class TaskBrowser:
                 if tag_list==[] or t.has_tags(tag_list):
                     self.taskdone_ts.append(None,[tid,False,title,donedate])
                 #If tag_list is none, we display tasks without any tags
-                elif tag_list==[None] and t.get_tags()==[]:
+                elif tag_list==[None] and t.get_tags_name()==[]:
                     self.taskdone_ts.append(None,[tid,False,title,donedate])
         self.task_tview.expand_all()
         #We reselect the selected tasks
