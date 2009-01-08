@@ -68,15 +68,17 @@ class DataStore:
         return self.projects
     
     def get_all_tags(self):
-        return self.tagstore.get_all_tags_name()
-
-    def reload_tags(self):
-        print "reload_tags called"
-#        self.tags = []
-#        for p in self.projects:
-#            for tid in self.projects[p][1].list_tasks():
-#                for tag in self.projects[p][1].get_task(tid).get_tags():
-#                    if tag not in self.tags: self.tags.append(tag)
+        return self.tagstore.get_all_tags()
+    
+    #return only tags that are currently used in a task
+    def get_used_tags(self) :
+        l = []
+        for p in self.projects :
+            for tid in self.projects[p][1].list_tasks():
+                t = self.projects[p][1].get_task(tid)
+                for tag in t.get_tags() :
+                    if tag not in l: l.append(tag)
+        return l
 
     def get_project_with_pid(self, pid):
         return self.projects[pid]

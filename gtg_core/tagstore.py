@@ -43,6 +43,12 @@ class TagStore :
         for t in self.store :
             l.append(self.store[t].get_name())
         return l
+        
+    def get_all_tags(self) :
+        l = []
+        for t in self.store :
+            l.append(self.store[t])
+        return l
     
         
     def save(self) :

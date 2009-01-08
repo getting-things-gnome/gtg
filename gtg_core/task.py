@@ -182,7 +182,7 @@ class Task :
                 task.set_due_date(self.get_due_date())
                 task.set_start_date(self.get_start_date())
                 for t in self.get_tags() :
-                    task.add_tag(t)
+                    task.add_tag(t.get_name())
     
     #Return the task added as a subtask
     def new_subtask(self) :
