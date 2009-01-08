@@ -283,11 +283,6 @@ class Task :
             l.append(t)
         return l
 
-    def set_tags(self, my_tags):
-        print "This function is evil. Only add/remove should be allowed for tags"
-        print "Are we sure we want to keep it ?"
-        self.tags = my_tags
-
     def add_tag(self, t):
         #Do not add the same tag twice
         if not t in self.tags :
@@ -326,6 +321,7 @@ class Project :
         self.list = {}
         self.sync_func = None
         self.pid = None
+        self.tagstore = None
         
     def set_pid(self,pid) :
         self.pid = pid 
@@ -344,6 +340,9 @@ class Project :
     
     def get_name(self) :
         return self.name
+        
+    def set_tagstore(self,store) :
+        self.tagstore = store
         
     def list_tasks(self):
         result = self.list.keys()
@@ -376,6 +375,7 @@ class Project :
         task.set_project(self.get_pid())
         task.set_newtask_func(self.new_task)
         task.set_delete_func(self.purge_task)
+        #task.set_tagstore(self.tagstore)
         
     def new_task(self) :
         tid = self.__free_tid()
