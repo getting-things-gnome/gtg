@@ -85,6 +85,7 @@ class TaskBrowser:
    
         #The Active tasks treeview
         self.task_tview = self.wTree.get_widget("task_tview")
+        self.task_tview.set_rules_hint(True)
         self.__add_active_column("Actions",1)
         self.__add_active_column("Due date",2)
         self.__add_active_column("Left",3)
@@ -94,6 +95,7 @@ class TaskBrowser:
      
         #The done/dismissed taks treeview
         self.taskdone_tview = self.wTree.get_widget("taskdone_tview")
+        self.taskdone_tview.set_rules_hint(True)
         self.__add_closed_column("Closed",2)
         self.__add_closed_column("Done date",3)
         self.taskdone_ts = gtk.TreeStore(gobject.TYPE_PYOBJECT, bool,str,str)
