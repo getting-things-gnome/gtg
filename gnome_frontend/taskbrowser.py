@@ -70,14 +70,14 @@ class TaskBrowser:
         
         #The project list
         self.project_tview = self.wTree.get_widget("project_tview")
-        self.__add_project_column("Projects",1)
-        self.project_ts = gtk.TreeStore(gobject.TYPE_PYOBJECT,str)
+        self.__add_project_column("Projects",2)
+        self.project_ts = gtk.TreeStore(gobject.TYPE_PYOBJECT,str,str)
         self.project_tview.set_model(self.project_ts)
         #self.project_ts.set_sort_column_id(self.c_title, gtk.SORT_ASCENDING)
         
         #The tags treeview
         self.tag_tview = self.wTree.get_widget("tag_tview")
-        self.__add_tag_column("Tags",1)
+        self.__add_tag_column("Tags",2)
         self.tag_ts = gtk.TreeStore(gobject.TYPE_PYOBJECT,str,str)
         self.tag_tview.set_model(self.tag_ts)
    
@@ -96,7 +96,7 @@ class TaskBrowser:
         self.taskdone_tview.set_rules_hint(False)
         self.__add_closed_column("Closed",2)
         self.__add_closed_column("Done date",3)
-        self.taskdone_ts = gtk.TreeStore(gobject.TYPE_PYOBJECT, bool,str,str)
+        self.taskdone_ts = gtk.TreeStore(gobject.TYPE_PYOBJECT, str,str,str)
         self.taskdone_tview.set_model(self.taskdone_ts)
         self.taskdone_ts.set_sort_column_id(self.c_title, gtk.SORT_ASCENDING)
         
@@ -168,16 +168,17 @@ class TaskBrowser:
     
     #We refresh the project list. Not needed very often
     def refresh_projects(self) :
+        color = None
         p_model,p_path = self.project_tview.get_selection().get_selected_rows()
         self.project_ts.clear()
-        self.project_ts.append(None,[-1, "<span weight=\"bold\">All projects</span>"])
+        self.project_ts.append(None,[-1, color, "<span weight=\"bold\">All projects</span>"])
         projects = self.ds.get_all_projects()
         for p_key in projects:
             p = projects[p_key][1]
             title = p.get_name()
             at_num = len(p.active_tasks())
             p_str  = "%s (%d)" % (title, at_num)
-            self.project_ts.append(None,[p_key, p_str])
+            self.project_ts.append(None,[p_key, color, p_str])
         #We reselect the selected project
         if p_path :
             for i in p_path :
@@ -192,16 +193,14 @@ class TaskBrowser:
     def refresh_tags(self) :
         t_model,t_path = self.tag_tview.get_selection().get_selected_rows()
         self.tag_ts.clear()
-        self.tag_ts.append(None,[-1,"<span weight=\"bold\">All tags</span>","#FFF"])
-        self.tag_ts.append(None,[-2,"<span weight=\"bold\">Task without tags</span>","#FFF"])
+        self.tag_ts.append(None,[-1,None,"<span weight=\"bold\">All tags</span>"])
+        self.tag_ts.append(None,[-2,None,"<span weight=\"bold\">Task without tags</span>"])
 #        self.ds.reload_tags()
         tags = self.ds.get_used_tags()
         #tags.sort()
         for tag in tags:
             color = tag.get_attribute("color")
-            if not color :
-                color = "#FFF"
-            self.tag_ts.append(None,[tag,tag.get_name(),tag.get_attribute("color")])
+            self.tag_ts.append(None,[tag,tag.get_attribute("color"),tag.get_name()])
         #We reselect the selected tag
         if t_path :
             for i in t_path :
@@ -240,10 +239,10 @@ class TaskBrowser:
                 title = t.get_title()
                 donedate = t.get_done_date()
                 if tag_list==[] or t.has_tags(tagname_list):
-                    self.taskdone_ts.append(None,[tid,False,title,donedate])
+                    self.taskdone_ts.append(None,[tid,t.get_color(),title,donedate])
                 #If tag_list is none, we display tasks without any tags
                 elif tag_list==[None] and t.get_tags_name()==[]:
-                    self.taskdone_ts.append(None,[tid,False,title,donedate])
+                    self.taskdone_ts.append(None,[tid,t.get_color(),title,donedate])
         self.task_tview.expand_all()
         #We reselect the selected tasks
         selection = self.task_tview.get_selection()
@@ -299,7 +298,7 @@ class TaskBrowser:
                 title = self.__build_task_title(task,extended=False)
             duedate = task.get_due_date()
             left    = task.get_days_left()
-            color = "#539"
+            color = task.get_color()
             my_row  = self.task_ts.append(parent, [tid,color,title,duedate,left])
             for c in task.get_subtasks():
                 if c.get_id() in project.active_tasks():
@@ -511,8 +510,7 @@ class TaskBrowser:
         col.set_resizable(True)        
         col.set_sort_column_id(value)
         col.set_attributes(renderer, markup=value)
-        if name == "Tags" :
-            col.add_attribute(renderer, "cell_background",2)
+        col.add_attribute(renderer, "cell_background",1)
         return col
         
     ######Closing the window

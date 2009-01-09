@@ -329,6 +329,15 @@ class Task :
                 else :
                     print "Error : no tagstore liaison"
         return False
+        
+    #return the color of one tag that have it
+    def get_color(self) :
+        color = None
+        for t in self.get_tags() :
+            c = t.get_attribute("color")
+            if c :
+                color = c
+        return color
 
     def __str__(self):
         s = ""

@@ -78,8 +78,6 @@ class Tag :
             self.set_attribute("color","#AE4D4D")
         elif name == "test" :
             self.set_attribute("color","#50FDFD")
-        else :
-            self.set_attribute("color","#FE3D9D")
         
     def get_name(self) :
         return self.get_attribute("name")
