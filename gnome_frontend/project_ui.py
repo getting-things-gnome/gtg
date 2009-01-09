@@ -62,6 +62,9 @@ class ProjectEditDialog:
         if self.project == None:
             #NOTE: not sure it is right to do this here => DataStore?
             # Create project
+            #FIXME : this is a bug, a project need a TagStore
+            #Major refactoring needed here
+            print "this is a bug, a project need a TagStore"
             p = Project(text)
             # Create backend
             bid = uuid.uuid4()
