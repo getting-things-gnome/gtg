@@ -330,7 +330,8 @@ class Task :
                     print "Error : no tagstore liaison"
         return False
         
-    #return the color of one tag that have it
+    #return the color of one tag that have a color defined
+    #Yes, the choosen color is a bit random in case of multiple colored tags
     def get_color(self) :
         color = None
         for t in self.get_tags() :

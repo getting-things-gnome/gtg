@@ -257,7 +257,7 @@ class TaskBrowser:
     #It will displays the selected task differently
     def task_cursor_changed(self,selection=None) :
         tid_row = 0
-        title_row = 1
+        title_row = 2
         #We reset the previously selected task
         if self.selected_rows and self.task_ts.iter_is_valid(self.selected_rows):
             tid = self.task_ts.get_value(self.selected_rows, tid_row)
@@ -292,7 +292,7 @@ class TaskBrowser:
     def add_task_tree_to_list(self, project, tree_store, task, parent,selected_uid=None,tags=None):
         if task.has_tags(tags) :
             tid     = task.get_id()
-            if selected_uid and selected_uid == tid:
+            if selected_uid and selected_uid == tid :
                 title = self.__build_task_title(task,extended=True)
             else :
                 title = self.__build_task_title(task,extended=False)
