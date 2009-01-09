@@ -1,8 +1,13 @@
+import sys, time, os, xml.dom.minidom
+
+from gtg_core   import CoreConfig
+
 #There's only one Tag store by user. It will store all the tag used and their attribute.
 class TagStore :
     def __init__(self) :
         self.store = {}
         #TODO : init store from file
+        filename = os.path.join(CoreConfig.DATA_DIR,"tags.xml")
         
     #create a new tag and return it
     #or return the existing one with corresponding name
@@ -72,12 +77,6 @@ class Tag :
     def __init__(self,name) :
         self.attributes = {}
         self.set_attribute("name",name)
-        
-        #Debug code
-        if name == "tag" :
-            self.set_attribute("color","#AE4D4D")
-        elif name == "test" :
-            self.set_attribute("color","#50FDFD")
         
     def get_name(self) :
         return self.get_attribute("name")

@@ -16,3 +16,24 @@ def cleanNode(currentNode,indent,newl):
                     currentNode.removeChild(node)
         for node in currentNode.childNodes:
             cleanNode(node,indent,newl)
+            
+#This function open an XML file if it exists and return the XML object
+#If the file doesn't exist, it is created with an empty XML tree    
+def openxmlfile(zefile,root ):
+    if os.path.exists(zefile) :
+        f = open(zefile,mode='r')
+        doc=xml.dom.minidom.parse(zefile)
+        cleanxml.cleanDoc(doc,tab,enter)
+        xmlproject = doc.getElementsByTagName(root)
+    
+    #the file didn't exist, create it now
+    else :
+        doc = xml.dom.minidom.Document()
+        xmlproject = doc.createElement(root)
+        doc.appendChild(xmlproject)
+        #then we create the file
+        f = open(zefile, mode='a+')
+        f.write(doc.toxml().encode("utf-8"))
+        f.close()
+        
+    return xmlproject
