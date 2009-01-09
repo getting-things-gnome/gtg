@@ -134,7 +134,21 @@ class TaskBrowser:
         self.refresh_projects()
         
     def on_colorchooser_activate(self,widget) :
+        #TODO : This should be refactorized in its own class
+        wTree = gtk.glade.XML(self.gladefile, "ColorChooser") 
+        #Create our dictionay and connect it
+        dic = {
+                "on_color_response" : self.on_color_response
+              }
+        wTree.signal_autoconnect(dic)
+        window = wTree.get_widget("ColorChooser")
+        window.show()
         print "color activated"
+    
+    def on_color_response(self,a,b) :
+        print "color response %s - %s" %(a,b)
+        a.destroy()
+    
     
     #We double clicked on a project in the project list
     def on_project_selected(self,widget,row=None ,col=None) :
