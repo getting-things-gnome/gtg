@@ -145,9 +145,9 @@ class TaskBrowser:
         window.show()
         print "color activated"
     
-    def on_color_response(self,a,b) :
-        print "color response %s - %s" %(a,b)
-        a.destroy()
+    def on_color_response(self,widget,response) :
+        print "color response %s - %s" %(widget.colorsel,response)
+        widget.destroy()
     
     
     #We double clicked on a project in the project list
