@@ -76,12 +76,12 @@ une tâche parent
 			2009-01-01
 		</donedate>
 	</task>
-	<task id="6@1" status="Active" tags="tag,autro">
+	<task id="6@1" status="Active" tags="tag,test">
 		<title>
 			sous-sous
 		</title>
 		<content>
-			&lt;tag&gt;@tag&lt;/tag&gt;
+			&lt;tag&gt;@tag&lt;/tag&gt;, &lt;tag&gt;@test&lt;/tag&gt;
 		</content>
 	</task>
 	<task id="3@1" status="Done" tags="donetask">

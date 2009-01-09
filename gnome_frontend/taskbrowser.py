@@ -135,6 +135,8 @@ class TaskBrowser:
         
     def on_colorchooser_activate(self,widget) :
         #TODO : This should be refactorized in its own class
+        #Well, in fact we should have a TagPropertiesEditor (like for project)
+        #Also, color change should be immediate. There's no reason for a Ok/Cancel
         wTree = gtk.glade.XML(self.gladefile, "ColorChooser") 
         #Create our dictionay and connect it
         dic = {
@@ -143,10 +145,17 @@ class TaskBrowser:
         wTree.signal_autoconnect(dic)
         window = wTree.get_widget("ColorChooser")
         window.show()
-        print "color activated"
     
     def on_color_response(self,widget,response) :
-        print "color response %s - %s" %(widget.colorsel,response)
+        #the OK button return -5. Don't ask me why.
+        if response == -5 :
+            colorsel = widget.colorsel
+            gtkcolor = colorsel.get_current_color()
+            strcolor = gtk.color_selection_palette_to_string([gtkcolor])
+            tags = self.get_selected_tags()
+            for t in tags :
+                t.set_attribute("color",strcolor)
+        self.refresh_tb()
         widget.destroy()
     
     
@@ -207,6 +216,9 @@ class TaskBrowser:
         self.task_ts.clear()
         self.taskdone_ts.clear()
         tag_list = self.get_selected_tags()
+        tagname_list = []
+        for t in tag_list :
+            tagname_list.append(t.get_name())
         #We display only tasks of the active projects
         #TODO: implement queries in DataStore, and use it here
         for p_key in self.get_selected_project() :
@@ -214,17 +226,17 @@ class TaskBrowser:
             #we first build the active_tasks pane
             for tid in p.active_tasks() :
                 t = p.get_task(tid)
-                if not t.has_parents(tag=tag_list) and (tag_list==[] or t.has_tags(tag_list)):
-                    self.add_task_tree_to_list(p, self.task_ts, t, None,selected_uid,tags=tag_list)
+                if not t.has_parents(tag=tagname_list) and (tag_list==[] or t.has_tags(tagname_list)):
+                    self.add_task_tree_to_list(p, self.task_ts, t, None,selected_uid,tags=tagname_list)
                 #If tag_list is none, we display tasks without any tags
-                elif not t.has_parents(tag=tag_list) and tag_list==[None] and t.get_tags_name()==[]:
-                    self.add_task_tree_to_list(p, self.task_ts, t, None,selected_uid,tags=tag_list)
+                elif not t.has_parents(tag=tagname_list) and tag_list==[None] and t.get_tags_name()==[]:
+                    self.add_task_tree_to_list(p, self.task_ts, t, None,selected_uid,tags=tagname_list)
             #then the one with tasks already done
             for tid in p.unactive_tasks() :
                 t = p.get_task(tid)
                 title = t.get_title()
                 donedate = t.get_done_date()
-                if tag_list==[] or t.has_tags(tag_list):
+                if tag_list==[] or t.has_tags(tagname_list):
                     self.taskdone_ts.append(None,[tid,False,title,donedate])
                 #If tag_list is none, we display tasks without any tags
                 elif tag_list==[None] and t.get_tags_name()==[]:
@@ -405,7 +417,7 @@ class TaskBrowser:
                 tag.append(None)
             for t in selected :
                 if t :
-                    tag.append(t.get_name())
+                    tag.append(t)
         #If no selection, we display all
         else :
             tag = []

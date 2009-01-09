@@ -61,7 +61,7 @@ class TagStore :
                 tagname = t.get_name()
                 for a in attr :
                     value = t.get_attribute(a)
-        print "TODO : save tag store"
+                    print "TODO : save tag %s with attribute %s = %s"%(tagname,a,value)
 
 #########################################################################
 ######################### Tag ###########################################
