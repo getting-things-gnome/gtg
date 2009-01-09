@@ -125,10 +125,7 @@ class Backend :
         #it's maybe not optimal to open/close the file each time we sync
         # but I'm not sure that those operations are so frequent
         # might be changed in the future.
-        f = open(self.zefile, mode='w+')
-        f.write(doc.toprettyxml(tab,enter).encode("utf-8"))
-#        f.write(doc.toxml().encode("utf-8"))
-        f.close()
+        cleanxml.savexml(self.zefile,doc)
      
     #Method to add a text node in the doc to the parent node   
     def __write_textnode(self,doc,parent,title,content) :
