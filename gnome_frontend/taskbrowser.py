@@ -84,10 +84,10 @@ class TaskBrowser:
         #The Active tasks treeview
         self.task_tview = self.wTree.get_widget("task_tview")
         self.task_tview.set_rules_hint(False)
-        self.__add_active_column("Actions",1)
-        self.__add_active_column("Due date",2)
-        self.__add_active_column("Left",3)
-        self.task_ts = gtk.TreeStore(gobject.TYPE_PYOBJECT, str, str, str)
+        self.__add_active_column("Actions",2)
+        self.__add_active_column("Due date",3)
+        self.__add_active_column("Left",4)
+        self.task_ts = gtk.TreeStore(gobject.TYPE_PYOBJECT, str, str, str,str)
         self.task_tview.set_model(self.task_ts)
         #self.task_ts.set_sort_column_id(self.c_title, gtk.SORT_ASCENDING)
      
@@ -299,7 +299,8 @@ class TaskBrowser:
                 title = self.__build_task_title(task,extended=False)
             duedate = task.get_due_date()
             left    = task.get_days_left()
-            my_row  = self.task_ts.append(parent, [tid,title,duedate,left])
+            color = "#539"
+            my_row  = self.task_ts.append(parent, [tid,color,title,duedate,left])
             for c in task.get_subtasks():
                 if c.get_id() in project.active_tasks():
                     self.add_task_tree_to_list(project, tree_store, c, my_row,selected_uid,tags=tags)
