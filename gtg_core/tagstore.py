@@ -1,8 +1,26 @@
+import sys, time, os, xml.dom.minidom
+
+from gtg_core   import CoreConfig
+from tools import cleanxml
+
 #There's only one Tag store by user. It will store all the tag used and their attribute.
 class TagStore :
     def __init__(self) :
         self.store = {}
-        #TODO : init store from file
+        self.filename = os.path.join(CoreConfig.DATA_DIR,"tags.xml")
+        self.doc,xmlstorelist = cleanxml.openxmlfile(self.filename,"tagstore")
+        self.xmlstore = xmlstorelist[0]
+        for t in self.xmlstore.childNodes:
+            tagname = t.getAttribute("name")
+            tag = self.new_tag(tagname)
+            attr = t.attributes
+            i = 0
+            while i < attr.length :
+                at_name = attr.item(i).name
+                at_val = t.getAttribute(at_name)
+                tag.set_attribute(at_name,at_val)
+                i+=1
+            
         
     #create a new tag and return it
     #or return the existing one with corresponding name
@@ -52,7 +70,22 @@ class TagStore :
     
         
     def save(self) :
-        print "TODO : save tag store"
+        tags = self.get_all_tags()
+        #we don't save tags with no attributes
+        #It saves space and allow the saved list growth to be controlled
+        for t in tags :
+            attr = t.get_all_attributes(butname=True)
+            if len(attr) > 0 :
+                tagname = t.get_name()
+                t_xml = self.doc.createElement("tag")
+                t_xml.setAttribute("name",tagname)
+                for a in attr :
+                    value = t.get_attribute(a)
+                    t_xml.setAttribute(a,value)
+                self.xmlstore.appendChild(t_xml)          
+                cleanxml.savexml(self.filename,self.doc)
+                
+                #print "TODO : save tag %s with attribute %s = %s"%(tagname,a,value)
 
 #########################################################################
 ######################### Tag ###########################################
@@ -78,6 +111,14 @@ class Tag :
         else :
             return None
             
-    def get_all_attributes(self) :
-        return self.attributes.keys()
+    #if butname argument is set, the "name" attributes is removed
+    #from the list
+    def get_all_attributes(self,butname=False) :
+        l = self.attributes.keys()
+        if butname :
+            #Normally this condition is not necessary
+            #Defensiveness...
+            if "name" in l :
+                l.remove("name")
+        return l
 

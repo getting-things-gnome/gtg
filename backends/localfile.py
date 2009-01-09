@@ -5,9 +5,9 @@ from gtg_core.task      import Task, Project
 from gtg_core   import CoreConfig
 from tools import cleanxml
 
-#This is for the awful pretty xml things
-tab = "\t"
-enter = "\n"
+##This is for the awful pretty xml things
+#tab = "\t"
+#enter = "\n"
 
 #todo : Backend should only provide one big "project" object and should 
 #not provide get_task and stuff like that.
@@ -21,23 +21,17 @@ class Backend :
         else :
             self.zefile = zefile
             self.filename = zefile
-        if os.path.exists(self.zefile) :
-            f = open(self.zefile,mode='r')
-            doc=xml.dom.minidom.parse(self.zefile)
-            cleanxml.cleanDoc(doc,tab,enter)
-            self.__xmlproject = doc.getElementsByTagName("project")
-            proj_name = str(self.__xmlproject[0].getAttribute("name"))
-            self.project = Project(proj_name,self.tagstore)
         
-        #the file didn't exist, create it now
-        else :
-            doc = xml.dom.minidom.Document()
-            self.__xmlproject = doc.createElement("project")
-            doc.appendChild(self.__xmlproject)
-            #then we create the file
-            f = open(self.zefile, mode='a+')
-            f.write(doc.toxml().encode("utf-8"))
-            f.close()
+        self.doc, self.__xmlproject = cleanxml.openxmlfile(self.zefile,"project")
+        
+        proj_name = "Unknown"
+        if self.__xmlproject.length > 0 :
+            xmlproj = self.__xmlproject[0]
+            if xmlproj.hasAttribute("name") :
+                proj_name = str(xmlproj.getAttribute("name"))
+            
+        self.project = Project(proj_name,self.tagstore)
+                
 
     def get_filename(self):
         return self.filename
@@ -131,35 +125,7 @@ class Backend :
         #it's maybe not optimal to open/close the file each time we sync
         # but I'm not sure that those operations are so frequent
         # might be changed in the future.
-        f = open(self.zefile, mode='w+')
-        f.write(doc.toprettyxml(tab,enter).encode("utf-8"))
-#        f.write(doc.toxml().encode("utf-8"))
-        f.close()
-    
-#    #our own method that will print pretty xml
-#    def __prettyxml(self,doc) :
-#        txt = ""
-#        if doc.nodeType == doc.TEXT_NODE :
-#            txt += doc.toxml()
-#        elif doc.nodeName == "content" :
-#            txt += "\n"
-#            txt += doc.toxml()
-#            #txt += "\n"
-#        else :
-#            childs = doc.childNodes
-#            if len(childs) == 1 :
-#                if doc.firstChild.nodeType == doc.TEXT_NODE :
-#                    txt += "\n"
-#                    txt += doc.toxml()
-#                    #txt += "\n"
-#                else :
-#                    txt += "\n"
-#                    txt += "<%s>"
-#                    txt += self.__prettyxml(childs[0])
-#            else :
-#                for n in childs :
-#                    txt += self.__prettyxml(n)
-#        return txt
+        cleanxml.savexml(self.zefile,doc)
      
     #Method to add a text node in the doc to the parent node   
     def __write_textnode(self,doc,parent,title,content) :
