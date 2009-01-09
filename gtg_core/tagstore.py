@@ -52,6 +52,15 @@ class TagStore :
     
         
     def save(self) :
+        tags = self.get_all_tags()
+        #we don't save tags with no attributes
+        #It saves space and allow the saved list growth to be controlled
+        for t in tags :
+            attr = t.get_all_attributes(butname=True)
+            if len(attr) > 0 :
+                tagname = t.get_name()
+                for a in attr :
+                    value = t.get_attribute(a)
         print "TODO : save tag store"
 
 #########################################################################
@@ -78,6 +87,14 @@ class Tag :
         else :
             return None
             
-    def get_all_attributes(self) :
-        return self.attributes.keys()
+    #if butname argument is set, the "name" attributes is removed
+    #from the list
+    def get_all_attributes(self,butname=False) :
+        l = self.attributes.keys()
+        if butname :
+            #Normally this condition is not necessary
+            #Defensiveness...
+            if "name" in l :
+                l.remove("name")
+        return l
 

@@ -33,7 +33,8 @@ class TaskBrowser:
             self.window.connect("destroy", gtk.main_quit)
         self.window.set_icon_from_file("data/gtg.svg")
 
-        self.popup = self.wTree.get_widget("ProjectContextMenu")
+        self.projectpopup = self.wTree.get_widget("ProjectContextMenu")
+        self.tagpopup = self.wTree.get_widget("TagContextMenu")
         
         #self.delete_dialog.connect("destroy", self.delete_dialog.hide)
 
@@ -49,9 +50,11 @@ class TaskBrowser:
                 "on_delete_confirm"   : self.on_delete_confirm,
                 "on_delete_cancel"    : lambda x : x.hide,
                 "on_project_selected" : self.on_project_selected,
-                "on_treeview_button_press_event" : self.on_treeview_button_press_event,
+                "on_project_treeview_button_press_event" : self.on_project_treeview_button_press_event,
+                "on_tag_treeview_button_press_event" : self.on_tag_treeview_button_press_event,
                 "on_edit_item_activate"     : self.on_edit_item_activate,
-                "on_delete_item_activate" : self.on_delete_item_activate
+                "on_delete_item_activate" : self.on_delete_item_activate,
+                "on_colorchooser_activate" : self.on_colorchooser_activate
                 #This signal cancel on_edit_task
                 #"on_task_tview_cursor_changed" : self.task_cursor_changed
 
@@ -129,6 +132,9 @@ class TaskBrowser:
         p  = self.ds.get_project_with_pid(ppid)[1]
         self.ds.remove_project(p)
         self.refresh_projects()
+        
+    def on_colorchooser_activate(self,widget) :
+        print "color activated"
     
     #We double clicked on a project in the project list
     def on_project_selected(self,widget,row=None ,col=None) :
@@ -300,7 +306,7 @@ class TaskBrowser:
         if self.opened_task.has_key(tid) :
             del self.opened_task[tid]
 
-    def on_treeview_button_press_event(self, treeview, event):
+    def on_project_treeview_button_press_event(self, treeview, event):
         if event.button == 3:
             x = int(event.x)
             y = int(event.y)
@@ -310,8 +316,21 @@ class TaskBrowser:
                 path, col, cellx, celly = pthinfo
                 treeview.grab_focus()
                 treeview.set_cursor( path, col, 0)
-                self.popup.popup( None, None, None, event.button, time)
+                self.projectpopup.popup( None, None, None, event.button, time)
             return 1        
+    
+    def on_tag_treeview_button_press_event(self,treeview,event) :
+        if event.button == 3:
+            x = int(event.x)
+            y = int(event.y)
+            time = event.time
+            pthinfo = treeview.get_path_at_pos(x, y)
+            if pthinfo is not None:
+                path, col, cellx, celly = pthinfo
+                treeview.grab_focus()
+                treeview.set_cursor( path, col, 0)
+                self.tagpopup.popup( None, None, None, event.button, time)
+            return 1
             
     def on_add_task(self,widget) :
         #We have to select the project to which we should add a task

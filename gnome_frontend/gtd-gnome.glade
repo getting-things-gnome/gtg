@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Fri Jan  2 16:28:36 2009 -->
+<!--Generated with glade3 3.4.5 on Fri Jan  9 12:25:49 2009 -->
 <glade-interface>
   <widget class="GtkWindow" id="MainWindow">
     <property name="visible">True</property>
@@ -160,7 +160,7 @@
                   <widget class="GtkTreeView" id="project_tview">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <signal name="button_press_event" handler="on_treeview_button_press_event"/>
+                    <signal name="button_press_event" handler="on_project_treeview_button_press_event"/>
                     <signal name="row_activated" handler="on_project_selected"/>
                     <signal name="cursor_changed" handler="on_project_selected"/>
                   </widget>
@@ -169,6 +169,7 @@
                   <widget class="GtkTreeView" id="tag_tview">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <signal name="button_press_event" handler="on_tag_treeview_button_press_event"/>
                     <signal name="row_activated" handler="on_select_tag"/>
                     <signal name="cursor_changed" handler="on_select_tag"/>
                   </widget>
@@ -707,6 +708,23 @@ Are you sure you to want delete this task ?</property>
         <property name="use_underline">True</property>
         <property name="use_stock">True</property>
         <signal name="activate" handler="on_delete_item_activate"/>
+      </widget>
+    </child>
+  </widget>
+  <widget class="GtkMenu" id="TagContextMenu">
+    <property name="visible">True</property>
+    <child>
+      <widget class="GtkImageMenuItem" id="colorchooser">
+        <property name="visible">True</property>
+        <property name="label" translatable="yes">Color Chooser</property>
+        <property name="use_underline">True</property>
+        <signal name="activate" handler="on_colorchooser_activate"/>
+        <child internal-child="image">
+          <widget class="GtkImage" id="menu-item-image1">
+            <property name="visible">True</property>
+            <property name="stock">gtk-select-color</property>
+          </widget>
+        </child>
       </widget>
     </child>
   </widget>
