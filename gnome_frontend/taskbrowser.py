@@ -67,8 +67,6 @@ class TaskBrowser:
     def main(self):
         #Here we will define the main TaskList interface
         self.c_title=1
-        self.cellBool = gtk.CellRendererToggle()
-        self.cell     = gtk.CellRendererText()
         
         #The project list
         self.project_tview = self.wTree.get_widget("project_tview")
@@ -80,12 +78,12 @@ class TaskBrowser:
         #The tags treeview
         self.tag_tview = self.wTree.get_widget("tag_tview")
         self.__add_tag_column("Tags",1)
-        self.tag_ts = gtk.TreeStore(gobject.TYPE_PYOBJECT,str)
+        self.tag_ts = gtk.TreeStore(gobject.TYPE_PYOBJECT,str,str)
         self.tag_tview.set_model(self.tag_ts)
    
         #The Active tasks treeview
         self.task_tview = self.wTree.get_widget("task_tview")
-        self.task_tview.set_rules_hint(True)
+        self.task_tview.set_rules_hint(False)
         self.__add_active_column("Actions",1)
         self.__add_active_column("Due date",2)
         self.__add_active_column("Left",3)
@@ -95,7 +93,7 @@ class TaskBrowser:
      
         #The done/dismissed taks treeview
         self.taskdone_tview = self.wTree.get_widget("taskdone_tview")
-        self.taskdone_tview.set_rules_hint(True)
+        self.taskdone_tview.set_rules_hint(False)
         self.__add_closed_column("Closed",2)
         self.__add_closed_column("Done date",3)
         self.taskdone_ts = gtk.TreeStore(gobject.TYPE_PYOBJECT, bool,str,str)
@@ -194,13 +192,16 @@ class TaskBrowser:
     def refresh_tags(self) :
         t_model,t_path = self.tag_tview.get_selection().get_selected_rows()
         self.tag_ts.clear()
-        self.tag_ts.append(None,[-1,"<span weight=\"bold\">All tags</span>"])
-        self.tag_ts.append(None,[-2,"<span weight=\"bold\">Task without tags</span>"])
+        self.tag_ts.append(None,[-1,"<span weight=\"bold\">All tags</span>","#FFF"])
+        self.tag_ts.append(None,[-2,"<span weight=\"bold\">Task without tags</span>","#FFF"])
 #        self.ds.reload_tags()
         tags = self.ds.get_used_tags()
         #tags.sort()
         for tag in tags:
-            self.tag_ts.append(None,[tag,tag.get_name()])
+            color = tag.get_attribute("color")
+            if not color :
+                color = "#FFF"
+            self.tag_ts.append(None,[tag,tag.get_name(),tag.get_attribute("color")])
         #We reselect the selected tag
         if t_path :
             for i in t_path :
@@ -220,7 +221,7 @@ class TaskBrowser:
         tag_list = self.get_selected_tags()
         tagname_list = []
         for t in tag_list :
-            tagname_list.append(t.get_name())
+            if t : tagname_list.append(t.get_name())
         #We display only tasks of the active projects
         #TODO: implement queries in DataStore, and use it here
         for p_key in self.get_selected_project() :
@@ -503,11 +504,14 @@ class TaskBrowser:
         self.tag_tview.append_column(col)
 
     def __add_column(self,name,value) :
-        col = gtk.TreeViewColumn(name)
-        col.pack_start(self.cell)
+        renderer     = gtk.CellRendererText()
+        col = gtk.TreeViewColumn(name,renderer)
+        #col.pack_start(renderer)
         col.set_resizable(True)        
         col.set_sort_column_id(value)
-        col.set_attributes(self.cell, markup=value)
+        col.set_attributes(renderer, markup=value)
+        if name == "Tags" :
+            col.add_attribute(renderer, "cell_background",2)
         return col
         
     ######Closing the window
