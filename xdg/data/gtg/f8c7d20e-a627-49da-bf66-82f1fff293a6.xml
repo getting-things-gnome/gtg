@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<project name="gh">
+	<task id="0@2" status="Active" tags="">
+		<title>
+			My new task
+		</title>
+		<content>
+			mù
+		</content>
+	</task>
+</project>
