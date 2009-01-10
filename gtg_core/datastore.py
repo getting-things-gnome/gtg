@@ -1,5 +1,5 @@
 import os
-import uuid
+
 from gtg_core   import CoreConfig, tagstore
 from gtg_core.task import Task,Project
 #Here we import the default backend
@@ -27,8 +27,7 @@ class DataStore:
         project = Project(name,self)
         if not backend :
             # Create backend
-            bid = "%s.xml" %(uuid.uuid4())
-            backend   = Backend(bid,self,project=project)
+            backend   = Backend(None,self,project=project)
             backend.sync_project()
             # Register it in datastore
             self.register_backend(backend)
