@@ -10,7 +10,6 @@ class DataStore:
     def __init__ (self):
         self.backends = []
         self.projects = {}
-        self.tasks    = []
         self.cur_pid  = 1
         self.tagstore = tagstore.TagStore()
         
@@ -29,16 +28,15 @@ class DataStore:
         if not backend :
             # Create backend
             bid = "%s.xml" %(uuid.uuid4())
-            b   = Backend(bid,self,project=project)
-            b.sync_project()
+            backend   = Backend(bid,self,project=project)
+            backend.sync_project()
             # Register it in datastore
-            self.register_backend(b)
-            # Register it in datastore
-            #FIXME : this should be merged with load_data
-            project.set_pid(str(self.cur_pid))
-            self.projects[str(self.cur_pid)] = [b, project]
-            self.cur_pid = self.cur_pid + 1
-        
+            self.register_backend(backend)
+            
+        project.set_pid(str(self.cur_pid))
+        project.set_sync_func(backend.sync_project)
+        self.projects[str(self.cur_pid)] = [backend, project]
+        self.cur_pid = self.cur_pid + 1
         return project
 
 
@@ -56,12 +54,6 @@ class DataStore:
     def load_data(self):
         for b in self.backends:
             p = b.get_project()
-            p.set_pid(str(self.cur_pid))
-            p.set_sync_func(b.sync_project)
-            self.projects[str(self.cur_pid)] = [b, p]
-            tid_list = p.list_tasks()
-            self.tasks.append(tid_list)
-            self.cur_pid=self.cur_pid+1
 
     def register_backend(self, backend):
         if backend!=None:
@@ -70,9 +62,6 @@ class DataStore:
     def unregister_backend(self, backend):
         if backend!=None:
             self.backends.remove(backend)
-
-    def get_all_tasks(self):
-        return self.tasks
 
     def get_all_projects(self):
         return self.projects
