@@ -1,5 +1,6 @@
 import os
 from gtg_core   import CoreConfig, tagstore
+from gtg_core.task import Task,Project
 
 class DataStore:
 
@@ -8,21 +9,21 @@ class DataStore:
         self.projects = {}
         self.tasks    = []
         self.cur_pid  = 1
-#        self.tags     = []
         self.tagstore = tagstore.TagStore()
+        
+    #Create a new task and return it.
+    #newtask should be True if you create a task
+    #it should be task if you are importing an existing Task
+    def new_task(self,tid,newtask=False) :
+        task = Task(tid,self,newtask=True)
+        return task
+        
+    def new_project(self,name) :
+        project = Project(name,self)
+        return project
 
-#    def add_task(self, task):
-#        print "add_task called"
-#        self.tasks.append(task)
-
-    def remove_task(self, task):
-        self.tasks.remove(task)
-
-    #p = project
-    #b = backend
     def add_project(self, p, b):
         p.set_pid(str(self.cur_pid))
-        p.set_tagstore(self.tagstore)
         self.projects[str(self.cur_pid)] = [b, p]
         self.cur_pid = self.cur_pid + 1
 
@@ -45,9 +46,6 @@ class DataStore:
             self.projects[str(self.cur_pid)] = [b, p]
             tid_list = p.list_tasks()
             self.tasks.append(tid_list)
-#            for t in tid_list:
-#                for tag in p.get_task(t).get_tags_name():
-#                    if tag not in self.tags: self.tags.append(tag)
             self.cur_pid=self.cur_pid+1
 
     def register_backend(self, backend):
@@ -57,9 +55,6 @@ class DataStore:
     def unregister_backend(self, backend):
         if backend!=None:
             self.backends.remove(backend)
-
-    def get_tasks_for_query(self):
-        pass
 
     def get_all_tasks(self):
         return self.tasks
@@ -82,9 +77,6 @@ class DataStore:
 
     def get_project_with_pid(self, pid):
         return self.projects[pid]
-
-    def get_projects_for_query(self):
-        pass
 
     def get_all_backends(self):
         return self.backends

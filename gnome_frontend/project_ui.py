@@ -62,13 +62,10 @@ class ProjectEditDialog:
         if self.project == None:
             #NOTE: not sure it is right to do this here => DataStore?
             # Create project
-            #FIXME : this is a bug, a project need a TagStore
-            #Major refactoring needed here
-            print "this is a bug, a project need a TagStore"
-            p = Project(text)
+            p = self.ds.new_project(text)
             # Create backend
             bid = uuid.uuid4()
-            b   = Backend(str(bid)+".xml")
+            b   = Backend(str(bid)+".xml",self.ds)
             b.set_project(p)
             b.sync_project()
             # Register it in datastore

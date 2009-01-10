@@ -1,7 +1,6 @@
 import sys, time, os, xml.dom.minidom
 import string, threading
 
-from gtg_core.task      import Task, Project
 from gtg_core   import CoreConfig
 from tools import cleanxml
 
@@ -11,10 +10,9 @@ from tools import cleanxml
 
 #todo : Backend should only provide one big "project" object and should 
 #not provide get_task and stuff like that.
-#Passing the tagstore as argument is a ugly hack that should be corrected
 class Backend :
-    def __init__(self,zefile,tagstore,default_folder=True) :
-        self.tagstore = tagstore
+    def __init__(self,zefile,datastore,default_folder=True) :
+        self.ds = datastore
         if default_folder :
             self.zefile = os.path.join(CoreConfig.DATA_DIR,zefile)
             self.filename = zefile
@@ -30,7 +28,7 @@ class Backend :
             if xmlproj.hasAttribute("name") :
                 proj_name = str(xmlproj.getAttribute("name"))
             
-        self.project = Project(proj_name,self.tagstore)
+        self.project = self.ds.new_project(proj_name)
                 
 
     def get_filename(self):
@@ -44,7 +42,7 @@ class Backend :
             for t in self.__xmlproject[0].childNodes:
                 cur_id = "%s" %t.getAttribute("id")
                 cur_stat = "%s" %t.getAttribute("status")
-                cur_task = Task(cur_id,self.tagstore)
+                cur_task = self.ds.new_task(cur_id)
                 donedate = self.__read_textnode(t,"donedate")
                 cur_task.set_status(cur_stat,donedate=donedate)
                 #we will fill the task with its content
