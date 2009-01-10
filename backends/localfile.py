@@ -11,7 +11,7 @@ from tools import cleanxml
 #todo : Backend should only provide one big "project" object and should 
 #not provide get_task and stuff like that.
 class Backend :
-    def __init__(self,zefile,datastore,default_folder=True) :
+    def __init__(self,zefile,datastore,default_folder=True,project=None) :
         self.ds = datastore
         if default_folder :
             self.zefile = os.path.join(CoreConfig.DATA_DIR,zefile)
@@ -28,7 +28,10 @@ class Backend :
             if xmlproj.hasAttribute("name") :
                 proj_name = str(xmlproj.getAttribute("name"))
             
-        self.project = self.ds.new_project(proj_name)
+        if project :
+            self.project = project
+        else :
+            self.project = self.ds.new_project(proj_name,backend=self)
                 
 
     def get_filename(self):
@@ -71,8 +74,9 @@ class Backend :
                     t[0].add_subtask(subt)
         return self.project
 
-    def set_project(self, project):
-        self.project = project
+    #FIXME : c'est quoi cette fonction ?
+#    def set_project(self, project):
+#        self.project = project
         
         
     #This function will sync the whole project

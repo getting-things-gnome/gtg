@@ -1,6 +1,9 @@
 import os
+import uuid
 from gtg_core   import CoreConfig, tagstore
 from gtg_core.task import Task,Project
+#Here we import the default backend
+from backends.localfile import Backend
 
 class DataStore:
 
@@ -17,15 +20,27 @@ class DataStore:
     def new_task(self,tid,newtask=False) :
         task = Task(tid,self,newtask=True)
         return task
-        
-    def new_project(self,name) :
+    
+    #We create a new project with a given backend
+    #If the backend is None, then we use the default one
+    #Default backend is localfile and we add a new one.
+    def new_project(self,name,backend=None) :
         project = Project(name,self)
+        if not backend :
+            # Create backend
+            bid = "%s.xml" %(uuid.uuid4())
+            b   = Backend(bid,self,project=project)
+            b.sync_project()
+            # Register it in datastore
+            self.register_backend(b)
+            # Register it in datastore
+            #FIXME : this should be merged with load_data
+            project.set_pid(str(self.cur_pid))
+            self.projects[str(self.cur_pid)] = [b, project]
+            self.cur_pid = self.cur_pid + 1
+        
         return project
 
-    def add_project(self, p, b):
-        p.set_pid(str(self.cur_pid))
-        self.projects[str(self.cur_pid)] = [b, p]
-        self.cur_pid = self.cur_pid + 1
 
     def remove_project(self, project):
         pid = project.get_pid()

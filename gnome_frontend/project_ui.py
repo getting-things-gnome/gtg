@@ -4,10 +4,8 @@ import pygtk
 pygtk.require('2.0')
 import gtk
 import gobject
-import xml.dom.minidom
 import gtk.glade
 import datetime, time, sys
-import uuid
 
 #our own imports
 from gtg_core.task      import Task, Project
@@ -60,18 +58,8 @@ class ProjectEditDialog:
         text = buff.get_text(buff.get_start_iter(),buff.get_end_iter())
         
         if self.project == None:
-            #NOTE: not sure it is right to do this here => DataStore?
             # Create project
             p = self.ds.new_project(text)
-            # Create backend
-            bid = uuid.uuid4()
-            b   = Backend(str(bid)+".xml",self.ds)
-            b.set_project(p)
-            b.sync_project()
-            # Register it in datastore
-            self.ds.register_backend(b)
-            # Register it in datastore
-            self.ds.add_project(p, b)
         else:
             p = self.project
             p.set_name(text)
