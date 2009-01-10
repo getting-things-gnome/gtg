@@ -50,12 +50,11 @@ class Gtg:
         
         # Load data store
         ds = DataStore()
-        tagstore = ds.get_tagstore()
         
         # Create & init backends
         backends = []
         for b in bl:
-            backends.append(Backend(b,tagstore))
+            backends.append(Backend(b,ds))
 
         for b in backends:
             ds.register_backend(b)

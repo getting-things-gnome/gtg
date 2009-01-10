@@ -5,8 +5,9 @@ import xml.dom.minidom
 
 
 #This class represent a task in GTG.
+#You should never create a Task directly. Use the datastore.new_task() function.
 class Task :
-    def __init__(self, ze_id, tagstore, newtask=False) :
+    def __init__(self, ze_id, datastore, newtask=False) :
         #the id of this task in the project
         #tid is a string ! (we have to choose a type and stick to it)
         self.tid = str(ze_id)
@@ -25,7 +26,8 @@ class Task :
         self.can_be_deleted = newtask
         # tags
         self.tags = []
-        self.tagstore = tagstore
+        self.datastore = datastore
+        self.tagstore = self.datastore.get_tagstore()
         
     def set_project(self,pid) :
         tid = self.get_id()
@@ -352,13 +354,14 @@ class Task :
 ###########################################################################
         
 #This class represent a project : a list of tasks sharing the same backend
+#You should never create a Project directly. Use the datastore.new_project() function.
 class Project :
-    def __init__(self, name,tagstore) :
+    def __init__(self, name,datastore) :
         self.name = name
         self.list = {}
         self.sync_func = None
         self.pid = None
-        self.tagstore = tagstore
+        self.datastore = datastore
         
     def set_pid(self,pid) :
         self.pid = pid 
@@ -412,7 +415,7 @@ class Project :
         
     def new_task(self) :
         tid = self.__free_tid()
-        task = Task(tid,self.tagstore,newtask=True)
+        task = self.datastore.new_task(tid,newtask=True)
         self.add_task(task)
         return task
     

@@ -1,30 +1,44 @@
 import os
+import uuid
 from gtg_core   import CoreConfig, tagstore
+from gtg_core.task import Task,Project
+#Here we import the default backend
+from backends.localfile import Backend
 
 class DataStore:
 
     def __init__ (self):
         self.backends = []
         self.projects = {}
-        self.tasks    = []
         self.cur_pid  = 1
-#        self.tags     = []
         self.tagstore = tagstore.TagStore()
-
-#    def add_task(self, task):
-#        print "add_task called"
-#        self.tasks.append(task)
-
-    def remove_task(self, task):
-        self.tasks.remove(task)
-
-    #p = project
-    #b = backend
-    def add_project(self, p, b):
-        p.set_pid(str(self.cur_pid))
-        p.set_tagstore(self.tagstore)
-        self.projects[str(self.cur_pid)] = [b, p]
+        
+    #Create a new task and return it.
+    #newtask should be True if you create a task
+    #it should be task if you are importing an existing Task
+    def new_task(self,tid,newtask=False) :
+        task = Task(tid,self,newtask=True)
+        return task
+    
+    #We create a new project with a given backend
+    #If the backend is None, then we use the default one
+    #Default backend is localfile and we add a new one.
+    def new_project(self,name,backend=None) :
+        project = Project(name,self)
+        if not backend :
+            # Create backend
+            bid = "%s.xml" %(uuid.uuid4())
+            backend   = Backend(bid,self,project=project)
+            backend.sync_project()
+            # Register it in datastore
+            self.register_backend(backend)
+            
+        project.set_pid(str(self.cur_pid))
+        project.set_sync_func(backend.sync_project)
+        self.projects[str(self.cur_pid)] = [backend, project]
         self.cur_pid = self.cur_pid + 1
+        return project
+
 
     def remove_project(self, project):
         pid = project.get_pid()
@@ -40,15 +54,6 @@ class DataStore:
     def load_data(self):
         for b in self.backends:
             p = b.get_project()
-            p.set_pid(str(self.cur_pid))
-            p.set_sync_func(b.sync_project)
-            self.projects[str(self.cur_pid)] = [b, p]
-            tid_list = p.list_tasks()
-            self.tasks.append(tid_list)
-#            for t in tid_list:
-#                for tag in p.get_task(t).get_tags_name():
-#                    if tag not in self.tags: self.tags.append(tag)
-            self.cur_pid=self.cur_pid+1
 
     def register_backend(self, backend):
         if backend!=None:
@@ -57,12 +62,6 @@ class DataStore:
     def unregister_backend(self, backend):
         if backend!=None:
             self.backends.remove(backend)
-
-    def get_tasks_for_query(self):
-        pass
-
-    def get_all_tasks(self):
-        return self.tasks
 
     def get_all_projects(self):
         return self.projects
@@ -82,9 +81,6 @@ class DataStore:
 
     def get_project_with_pid(self, pid):
         return self.projects[pid]
-
-    def get_projects_for_query(self):
-        pass
 
     def get_all_backends(self):
         return self.backends
