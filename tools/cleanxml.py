@@ -42,9 +42,11 @@ def readTextNode(node,title) :
 #If the file doesn't exist, it is created with an empty XML tree    
 def openxmlfile(zefile,root ):
     if os.path.exists(zefile) :
+        #We should be more defensive here
         doc=xml.dom.minidom.parse(zefile)
         cleanDoc(doc,tab,enter)
-        xmlproject = doc.getElementsByTagName(root)
+        #We should be more defensive here
+        xmlproject = doc.getElementsByTagName(root)[0]
     #the file didn't exist, create it now
     else :
         doc,xmlproject = emptydoc(root)
@@ -59,8 +61,7 @@ def emptydoc(root) :
     doc = xml.dom.minidom.Document()
     rootproject = doc.createElement(root)
     doc.appendChild(rootproject)
-    xmlroot = doc.getElementsByTagName(root)[0]
-    return doc, xmlroot
+    return doc, rootproject
     
 def savexml(zefile,doc) :
     f = open(zefile, mode='w+')

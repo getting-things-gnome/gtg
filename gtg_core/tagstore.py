@@ -8,8 +8,8 @@ class TagStore :
     def __init__(self) :
         self.store = {}
         self.filename = os.path.join(CoreConfig.DATA_DIR,"tags.xml")
-        doc,xmlstorelist = cleanxml.openxmlfile(self.filename,"tagstore")
-        self.xmlstore = xmlstorelist[0]
+        doc,self.xmlstore = cleanxml.openxmlfile(self.filename,"tagstore")
+        #self.xmlstore = xmlstorelist[0]
         for t in self.xmlstore.childNodes:
             tagname = t.getAttribute("name")
             tag = self.new_tag(tagname)

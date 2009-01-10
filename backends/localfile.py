@@ -20,13 +20,11 @@ class Backend :
             self.zefile = zefile
             self.filename = zefile
         
-        self.doc, self.__xmlproject = cleanxml.openxmlfile(self.zefile,"project")
+        self.doc, self.xmlproj = cleanxml.openxmlfile(self.zefile,"project")
         
         proj_name = "Unknown"
-        if self.__xmlproject.length > 0 :
-            xmlproj = self.__xmlproject[0]
-            if xmlproj.hasAttribute("name") :
-                proj_name = str(xmlproj.getAttribute("name"))
+        if self.xmlproj.hasAttribute("name") :
+            proj_name = str(self.xmlproj.getAttribute("name"))
             
         if project :
             self.project = project
@@ -39,10 +37,10 @@ class Backend :
         
     #This function should return a project object with all the current tasks in it.
     def get_project(self) :
-        if self.__xmlproject[0] :
+        if self.xmlproj :
             subtasks = []
             #t is the xml of each task
-            for t in self.__xmlproject[0].childNodes:
+            for t in self.xmlproj.childNodes:
                 cur_id = "%s" %t.getAttribute("id")
                 cur_stat = "%s" %t.getAttribute("status")
                 cur_task = self.ds.new_task(cur_id)
@@ -82,12 +80,10 @@ class Backend :
     #This function will sync the whole project
     def sync_project(self) :
         #Currently, we are not saving the tag table.
-        doc = xml.dom.minidom.Document()
-        p_xml = doc.createElement("project")
+        doc,p_xml = cleanxml.emptydoc("project")
         p_name = self.project.get_name()
         if p_name :
             p_xml.setAttribute("name", p_name)
-        doc.appendChild(p_xml)
         for tid in self.project.list_tasks():
             t = self.project.get_task(tid)
             t_xml = doc.createElement("task")
