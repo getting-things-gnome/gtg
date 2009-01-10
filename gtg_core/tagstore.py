@@ -3,13 +3,15 @@ import sys, time, os, xml.dom.minidom
 from gtg_core   import CoreConfig
 from tools import cleanxml
 
+XMLFILE = "tags.xml"
+XMLROOT = "tagstore"
+
 #There's only one Tag store by user. It will store all the tag used and their attribute.
 class TagStore :
     def __init__(self) :
         self.store = {}
-        self.filename = os.path.join(CoreConfig.DATA_DIR,"tags.xml")
-        doc,self.xmlstore = cleanxml.openxmlfile(self.filename,"tagstore")
-        #self.xmlstore = xmlstorelist[0]
+        self.filename = os.path.join(CoreConfig.DATA_DIR,XMLFILE)
+        doc,self.xmlstore = cleanxml.openxmlfile(self.filename,XMLROOT)
         for t in self.xmlstore.childNodes:
             tagname = t.getAttribute("name")
             tag = self.new_tag(tagname)
@@ -70,7 +72,7 @@ class TagStore :
     
         
     def save(self) :
-        doc,xmlroot = cleanxml.emptydoc("tagstore")
+        doc,xmlroot = cleanxml.emptydoc(XMLROOT)
         tags = self.get_all_tags()
         already_saved = [] #We avoid saving the same tag twice
         #we don't save tags with no attributes

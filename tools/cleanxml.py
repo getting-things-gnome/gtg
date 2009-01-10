@@ -63,6 +63,7 @@ def emptydoc(root) :
     doc.appendChild(rootproject)
     return doc, rootproject
     
+#write a XML doc to a file
 def savexml(zefile,doc) :
     f = open(zefile, mode='w+')
     f.write(doc.toprettyxml(tab,enter).encode("utf-8"))

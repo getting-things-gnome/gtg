@@ -10,6 +10,9 @@ from tools import cleanxml
 
 #todo : Backend should only provide one big "project" object and should 
 #not provide get_task and stuff like that.
+
+#If a project is provided as parameter, it means that we are creating
+#a new backend for this new project
 class Backend :
     def __init__(self,zefile,datastore,default_folder=True,project=None) :
         self.ds = datastore
@@ -70,12 +73,7 @@ class Backend :
                     sub = s.childNodes[0].nodeValue
                     subt = self.project.get_task(sub)
                     t[0].add_subtask(subt)
-        return self.project
-
-    #FIXME : c'est quoi cette fonction ?
-#    def set_project(self, project):
-#        self.project = project
-        
+        return self.project   
         
     #This function will sync the whole project
     def sync_project(self) :
