@@ -43,11 +43,10 @@ class Backend :
                 cur_id = "%s" %t.getAttribute("id")
                 cur_stat = "%s" %t.getAttribute("status")
                 cur_task = self.ds.new_task(cur_id)
-                donedate = self.__read_textnode(t,"donedate")
+                donedate = cleanxml.readTextNode(t,"donedate")
                 cur_task.set_status(cur_stat,donedate=donedate)
                 #we will fill the task with its content
-                cur_task.set_title(self.__read_textnode(t,"title"))
-                #cur_task.set_text(self.__read_textnode(t,"content"))
+                cur_task.set_title(cleanxml.readTextNode(t,"title"))
                 #the subtasks should be processed later, when all tasks
                 #are in the project. We put all the information in a list.
                 subtasks.append([cur_task,t.getElementsByTagName("subtask")])
@@ -57,8 +56,8 @@ class Backend :
                         tas = "<content>%s</content>" %tasktext[0].firstChild.nodeValue
                         content = xml.dom.minidom.parseString(tas)
                         cur_task.set_text(content.firstChild.toxml())
-                cur_task.set_due_date(self.__read_textnode(t,"duedate"))
-                cur_task.set_start_date(self.__read_textnode(t,"startdate"))
+                cur_task.set_due_date(cleanxml.readTextNode(t,"duedate"))
+                cur_task.set_start_date(cleanxml.readTextNode(t,"startdate"))
                 cur_tags = t.getAttribute("tags").replace(' ','').split(",")
                 if "" in cur_tags: cur_tags.remove("")
                 for tag in cur_tags: cur_task.add_tag(tag)
@@ -74,15 +73,6 @@ class Backend :
 
     def set_project(self, project):
         self.project = project
-    
-    #This is a method to read the textnode of the XML
-    def __read_textnode(self,node,title) :
-        n = node.getElementsByTagName(title)
-        if n and n[0].hasChildNodes() :
-            content = n[0].childNodes[0].nodeValue
-            if content :
-                return content
-        return None
         
         
     #This function will sync the whole project
@@ -103,13 +93,13 @@ class Backend :
             for tag in t.get_tags_name(): tags_str = tags_str + str(tag) + ","
             t_xml.setAttribute("tags"   , tags_str[:-1])
             p_xml.appendChild(t_xml)
-            self.__write_textnode(doc,t_xml,"title",t.get_title())
-            self.__write_textnode(doc,t_xml,"duedate",t.get_due_date())
-            self.__write_textnode(doc,t_xml,"startdate",t.get_start_date())
-            self.__write_textnode(doc,t_xml,"donedate",t.get_done_date())
+            cleanxml.addTextNode(doc,t_xml,"title",t.get_title())
+            cleanxml.addTextNode(doc,t_xml,"duedate",t.get_due_date())
+            cleanxml.addTextNode(doc,t_xml,"startdate",t.get_start_date())
+            cleanxml.addTextNode(doc,t_xml,"donedate",t.get_done_date())
             childs = t.get_subtasks()
             for c in childs :
-                self.__write_textnode(doc,t_xml,"subtask",c.get_id())
+                cleanxml.addTextNode(doc,t_xml,"subtask",c.get_id())
             tex = t.get_text()
             if tex :
                 #We take the xml text and convert it to a string
@@ -118,19 +108,12 @@ class Backend :
                 temp = element.firstChild.toxml().partition("<content>")[2]
                 desc = temp.partition("</content>")[0]
                 #t_xml.appendChild(element.firstChild)
-                self.__write_textnode(doc,t_xml,"content",desc)
+                cleanxml.addTextNode(doc,t_xml,"content",desc)
             #self.__write_textnode(doc,t_xml,"content",t.get_text())
         #it's maybe not optimal to open/close the file each time we sync
         # but I'm not sure that those operations are so frequent
         # might be changed in the future.
         cleanxml.savexml(self.zefile,doc)
-     
-    #Method to add a text node in the doc to the parent node   
-    def __write_textnode(self,doc,parent,title,content) :
-        if content :
-            element = doc.createElement(title)
-            parent.appendChild(element)
-            element.appendChild(doc.createTextNode(content))
 
     #It's easier to save the whole project each time we change a task
     def sync_task(self,task_id) :

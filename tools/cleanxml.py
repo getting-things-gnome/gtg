@@ -20,6 +20,23 @@ def cleanNode(currentNode,indent,newl):
                     currentNode.removeChild(node)
         for node in currentNode.childNodes:
             cleanNode(node,indent,newl)
+
+#This add a text node to the node parent. We don't return anything
+#Because the doc object itself is modified.
+def addTextNode(doc,parent,title,content) :
+    if content :
+        element = doc.createElement(title)
+        parent.appendChild(element)
+        element.appendChild(doc.createTextNode(content))
+        
+#This is a method to read the textnode of the XML
+def readTextNode(node,title) :
+    n = node.getElementsByTagName(title)
+    if n and n[0].hasChildNodes() :
+        content = n[0].childNodes[0].nodeValue
+        if content :
+            return content
+    return None
             
 #This function open an XML file if it exists and return the XML object
 #If the file doesn't exist, it is created with an empty XML tree    
