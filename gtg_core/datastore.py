@@ -1,6 +1,6 @@
 import os
 
-from gtg_core   import CoreConfig, tagstore
+from gtg_core   import CoreConfig, tagstore, requester
 from gtg_core.task import Task,Project
 #Here we import the default backend
 from backends.localfile import Backend
@@ -12,6 +12,7 @@ class DataStore:
         self.projects = {}
         self.cur_pid  = 1
         self.tagstore = tagstore.TagStore()
+        self.requester = requester.Requester(self)
         
     #Create a new task and return it.
     #newtask should be True if you create a task
@@ -49,6 +50,9 @@ class DataStore:
         
     def get_tagstore(self) :
         return self.tagstore
+        
+    def get_requester(self) :
+        return self.requester
 
     def load_data(self):
         for b in self.backends:
@@ -64,19 +68,6 @@ class DataStore:
 
     def get_all_projects(self):
         return self.projects
-    
-    def get_all_tags(self):
-        return self.tagstore.get_all_tags()
-    
-    #return only tags that are currently used in a task
-    def get_used_tags(self) :
-        l = []
-        for p in self.projects :
-            for tid in self.projects[p][1].list_tasks():
-                t = self.projects[p][1].get_task(tid)
-                for tag in t.get_tags() :
-                    if tag not in l: l.append(tag)
-        return l
 
     def get_project_with_pid(self, pid):
         return self.projects[pid]

@@ -63,6 +63,7 @@ class TaskBrowser:
         self.selected_rows = None
         
         self.ds = datastore
+        self.req = self.ds.get_requester()
         
     def main(self):
         #Here we will define the main TaskList interface
@@ -196,7 +197,7 @@ class TaskBrowser:
         self.tag_ts.append(None,[-1,None,"<span weight=\"bold\">All tags</span>"])
         self.tag_ts.append(None,[-2,None,"<span weight=\"bold\">Task without tags</span>"])
 #        self.ds.reload_tags()
-        tags = self.ds.get_used_tags()
+        tags = self.req.get_used_tags()
         #tags.sort()
         for tag in tags:
             color = tag.get_attribute("color")
