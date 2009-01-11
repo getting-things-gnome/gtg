@@ -1,20 +1,19 @@
 import sys, time, os, xml.dom.minidom
-import string, threading
+import uuid
 
 from gtg_core   import CoreConfig
 from tools import cleanxml
-
-##This is for the awful pretty xml things
-#tab = "\t"
-#enter = "\n"
 
 #todo : Backend should only provide one big "project" object and should 
 #not provide get_task and stuff like that.
 
 #If a project is provided as parameter, it means that we are creating
-#a new backend for this new project
+#a new backend for this new project. It generally means that zefile will be "None"
 class Backend :
     def __init__(self,zefile,datastore,default_folder=True,project=None) :
+        #If zefile is None, we create a new file
+        if not zefile :
+            zefile = "%s.xml" %(uuid.uuid4())
         self.ds = datastore
         if default_folder :
             self.zefile = os.path.join(CoreConfig.DATA_DIR,zefile)
