@@ -1,5 +1,21 @@
 <?xml version="1.0" ?>
 <project name="gh">
+	<task id="0@2" status="Done" tags="">
+		<title>
+			My new task
+		</title>
+		<donedate>
+			2009-01-12
+		</donedate>
+		<content>
+			kml
+		</content>
+	</task>
+	<task id="4@2" status="Active" tags="">
+		<title>
+			with a child
+		</title>
+	</task>
 	<task id="1@2" status="Done" tags="closed">
 		<title>
 			My new task
@@ -12,16 +28,10 @@
 &lt;tag&gt;@closed&lt;/tag&gt;
 		</content>
 	</task>
-	<task id="0@2" status="Done" tags="">
+	<task id="5@2" status="Active" tags="">
 		<title>
-			My new task
+			and another child
 		</title>
-		<donedate>
-			2009-01-12
-		</donedate>
-		<content>
-			kml
-		</content>
 	</task>
 	<task id="2@2" status="Active" tags="autro">
 		<title>
@@ -29,6 +39,20 @@
 		</title>
 		<content>
 			&lt;tag&gt;@autro&lt;/tag&gt;
+		</content>
+	</task>
+	<task id="3@2" status="Active" tags="">
+		<title>
+			This a parent
+		</title>
+		<subtask>
+			4@2
+		</subtask>
+		<subtask>
+			5@2
+		</subtask>
+		<content>
+			&lt;subtask&gt;4@2&lt;/subtask&gt;&lt;subtask&gt;5@2&lt;/subtask&gt;
 		</content>
 	</task>
 </project>

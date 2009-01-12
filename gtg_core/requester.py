@@ -91,18 +91,21 @@ class Requester :
     #Workable means that the task have no pending subtasks and can be done directly
     def get_active_tasks_list(self,projects=None,tags=None,notag_only=False,\
                             started_only=True,is_root=False,workable=False) :
+        l_tasks = []
         if workable :
-            l_tasks = self.get_active_tasks_list(projects=projects, tags=tags, \
+            temp_tasks = self.get_active_tasks_list(projects=projects, tags=tags, \
                     notag_only=notag_only, started_only=True,is_root=False,workable=False)
-            for tid in l_tasks :
+            for tid in temp_tasks :
                 t = self.get_task(tid)
-                if not t.is_workable() :
-                    l_tasks.remove(tid)
+                if t.is_workable() :
+                    l_tasks.append(tid)
             return l_tasks
         else :
             active = ["Active"]
-            l_tasks = self.get_tasks_list(projects=projects,tags=tags,status=active,\
+            temp_tasks = self.get_tasks_list(projects=projects,tags=tags,status=active,\
                  notag_only=notag_only,started_only=started_only,is_root=is_root)
+            for t in temp_tasks :
+                l_tasks.append(t)
             return l_tasks
         
     def get_closed_tasks_list(self,projects=None,tags=None,notag_only=False,\
