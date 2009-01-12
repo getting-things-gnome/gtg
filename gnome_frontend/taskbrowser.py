@@ -19,6 +19,11 @@ from gnome_frontend import GnomeConfig
 
 #=== MAIN CLASS ================================================================
 
+MARK_DONE="Mark as done"
+MARK_UNDONE="Undone"
+MARK_DISMISS="Dismiss"
+MARK_UNDISMISS="Undismiss"
+
 class TaskBrowser:
 
     def __init__(self, datastore):
@@ -35,6 +40,8 @@ class TaskBrowser:
 
         self.projectpopup = self.wTree.get_widget("ProjectContextMenu")
         self.tagpopup = self.wTree.get_widget("TagContextMenu")
+        self.donebutton = self.wTree.get_widget("mark_as_done_b")
+        self.dismissbutton = self.wTree.get_widget("dismiss")
         
         #self.delete_dialog.connect("destroy", self.delete_dialog.hide)
 
@@ -269,8 +276,17 @@ class TaskBrowser:
     def taskdone_cursor_changed(self,selection=None) :
         #We unselect all in the active task view
         #Only if something is selected in the closed task list
+        #And we change the status of the Done/dismiss button
         if selection.count_selected_rows() > 0 :
+            tid = self.get_selected_task(self.taskdone_tview)
+            task = self.req.get_task(tid)
             self.task_tview.get_selection().unselect_all()
+            if task.get_status() == "Dismiss" :
+                self.dismissbutton.set_label(MARK_UNDISMISS)
+                self.donebutton.set_label(MARK_DONE)
+            else :
+                self.donebutton.set_label(MARK_UNDONE)
+                self.dismissbutton.set_label(MARK_DISMISS)
                 
     #This function is called when the selection change in the active task view
     #It will displays the selected task differently
@@ -281,6 +297,8 @@ class TaskBrowser:
         #Only if something is selected in the active task list
         if selection.count_selected_rows() > 0 :
             self.taskdone_tview.get_selection().unselect_all()
+            self.donebutton.set_label(MARK_DONE)
+            self.dismissbutton.set_label(MARK_DISMISS)
         #We reset the previously selected task
         if self.selected_rows and self.task_ts.iter_is_valid(self.selected_rows):
             tid = self.task_ts.get_value(self.selected_rows, tid_row)

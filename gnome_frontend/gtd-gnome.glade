@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Mon Jan 12 22:16:35 2009 -->
+<!--Generated with glade3 3.4.5 on Mon Jan 12 22:25:55 2009 -->
 <glade-interface>
   <widget class="GtkWindow" id="MainWindow">
     <property name="visible">True</property>
@@ -133,7 +133,7 @@
             <child>
               <widget class="GtkToolButton" id="dismiss">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">Dismiss task</property>
+                <property name="label" translatable="yes">Dismiss</property>
                 <property name="stock_id">gtk-clear</property>
                 <signal name="clicked" handler="on_dismiss_task"/>
               </widget>
