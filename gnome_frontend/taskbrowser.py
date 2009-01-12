@@ -173,13 +173,10 @@ class TaskBrowser:
         p_model,p_path = self.project_tview.get_selection().get_selected_rows()
         self.project_ts.clear()
         self.project_ts.append(None,[-1, color, "<span weight=\"bold\">All projects</span>"])
-        projects = self.ds.get_all_projects()
-        for p_key in projects:
-            p = projects[p_key][1]
-            title = p.get_name()
-            at_num = len(p.active_tasks())
-            p_str  = "%s (%d)" % (title, at_num)
-            self.project_ts.append(None,[p_key, color, p_str])
+        projects = self.req.get_projects()
+        for p in projects:
+            p_str  = "%s (%d)" % (p["name"], p["nbr"])
+            self.project_ts.append(None,[p["pid"], color, p_str])
         #We reselect the selected project
         if p_path :
             for i in p_path :
