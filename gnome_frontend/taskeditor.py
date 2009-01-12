@@ -34,6 +34,8 @@ class TaskEditor :
         self.gladefile = GnomeConfig.GLADE_FILE
         self.wTree = gtk.glade.XML(self.gladefile, "TaskEditor")
         self.cal_tree = gtk.glade.XML(self.gladefile, "calendar")
+        self.donebutton = self.wTree.get_widget("mark_as_done_editor")
+        self.dismissbutton = self.wTree.get_widget("dismiss_editor")
         #Create our dictionay and connect it
         dic = {
                 "mark_as_done_clicked"  : self.change_status,
@@ -125,6 +127,18 @@ class TaskEditor :
             self.window.set_title(title)
         else :
             self.window.set_title(self.task.get_title())
+           
+        status = self.task.get_status() 
+        if status == "Dismiss" :
+            self.donebutton.set_label(GnomeConfig.MARK_DONE)
+            self.dismissbutton.set_label(GnomeConfig.MARK_UNDISMISS)
+        elif status == "Done" :
+            self.donebutton.set_label(GnomeConfig.MARK_UNDONE)
+            self.dismissbutton.set_label(GnomeConfig.MARK_DISMISS)
+        else :
+            self.donebutton.set_label(GnomeConfig.MARK_DONE)
+            self.dismissbutton.set_label(GnomeConfig.MARK_DISMISS)
+            
         #refreshing the due date field
         duedate = self.task.get_due_date()
         if duedate :
@@ -200,6 +214,7 @@ class TaskEditor :
             toclose=False
         self.task.set_status(toset)
         if toclose : self.close(None)
+        else : self.refresh_editor()
         self.refresh()
     
     def change_status(self,widget) :
@@ -212,6 +227,7 @@ class TaskEditor :
             toclose=False
         self.task.set_status(toset)
         if toclose : self.close(None)
+        else : self.refresh_editor()
         self.refresh()
     
     def delete_task(self,widget) :

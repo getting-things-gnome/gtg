@@ -19,11 +19,6 @@ from gnome_frontend import GnomeConfig
 
 #=== MAIN CLASS ================================================================
 
-MARK_DONE="Mark as done"
-MARK_UNDONE="Undone"
-MARK_DISMISS="Dismiss"
-MARK_UNDISMISS="Undismiss"
-
 class TaskBrowser:
 
     def __init__(self, datastore):
@@ -282,11 +277,11 @@ class TaskBrowser:
             task = self.req.get_task(tid)
             self.task_tview.get_selection().unselect_all()
             if task.get_status() == "Dismiss" :
-                self.dismissbutton.set_label(MARK_UNDISMISS)
-                self.donebutton.set_label(MARK_DONE)
+                self.dismissbutton.set_label(GnomeConfig.MARK_UNDISMISS)
+                self.donebutton.set_label(GnomeConfig.MARK_DONE)
             else :
-                self.donebutton.set_label(MARK_UNDONE)
-                self.dismissbutton.set_label(MARK_DISMISS)
+                self.donebutton.set_label(GnomeConfig.MARK_UNDONE)
+                self.dismissbutton.set_label(GnomeConfig.MARK_DISMISS)
                 
     #This function is called when the selection change in the active task view
     #It will displays the selected task differently
@@ -297,8 +292,8 @@ class TaskBrowser:
         #Only if something is selected in the active task list
         if selection.count_selected_rows() > 0 :
             self.taskdone_tview.get_selection().unselect_all()
-            self.donebutton.set_label(MARK_DONE)
-            self.dismissbutton.set_label(MARK_DISMISS)
+            self.donebutton.set_label(GnomeConfig.MARK_DONE)
+            self.dismissbutton.set_label(GnomeConfig.MARK_DISMISS)
         #We reset the previously selected task
         if self.selected_rows and self.task_ts.iter_is_valid(self.selected_rows):
             tid = self.task_ts.get_value(self.selected_rows, tid_row)

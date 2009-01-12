@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Mon Jan 12 22:25:55 2009 -->
+<!--Generated with glade3 3.4.5 on Mon Jan 12 22:34:28 2009 -->
 <glade-interface>
   <widget class="GtkWindow" id="MainWindow">
     <property name="visible">True</property>
@@ -301,7 +301,7 @@
             <property name="visible">True</property>
             <property name="toolbar_style">GTK_TOOLBAR_BOTH</property>
             <child>
-              <widget class="GtkToolButton" id="mark_as_done_b1">
+              <widget class="GtkToolButton" id="mark_as_done_editor">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">Mark as done</property>
                 <property name="stock_id">gtk-apply</property>
@@ -312,7 +312,7 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkToolButton" id="toolbutton2">
+              <widget class="GtkToolButton" id="dismiss_editor">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">Dismiss</property>
                 <property name="stock_id">gtk-clear</property>
@@ -323,7 +323,7 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkToolButton" id="delete_b1">
+              <widget class="GtkToolButton" id="delete_editor">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">Delete</property>
                 <property name="stock_id">gtk-delete</property>
