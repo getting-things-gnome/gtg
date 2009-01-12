@@ -65,6 +65,14 @@ class Task :
     def get_status(self) :
         return self.status
         
+    #A task is workable if all children are done/deleted/dismiss
+    def is_workable(self) :
+        workable = True
+        for c in self.get_subtasks() :
+            if c.get_status() == "Active" :
+                workable = False
+        return workable
+        
     #function to convert a string of the form XXXX-XX-XX
     #to a date (where X are integer)
     def __strtodate(self,stri) :
@@ -329,6 +337,7 @@ class Task :
         #Here, the user ask for the "empty" tag
         #And virtually every task has it.
         elif tag_list == [] or tag_list == None:
+            print tag_list
             return True
         elif tag_list :
             for tag in tag_list:

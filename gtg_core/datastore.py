@@ -5,6 +5,9 @@ from gtg_core.task import Task,Project
 #Here we import the default backend
 from backends.localfile import Backend
 
+BACKEND_COLUMN = 0
+PROJ_COLUMN = 1
+
 class DataStore:
 
     def __init__ (self):
@@ -19,6 +22,9 @@ class DataStore:
     #it should be task if you are importing an existing Task
     def new_task(self,tid,newtask=False) :
         task = Task(tid,self,newtask=True)
+        uid,pid = tid.split('@')
+        backend = self.projects[pid][BACKEND_COLUMN]
+        task.set_sync_func(backend.sync_task)
         return task
     
     #We create a new project with a given backend
