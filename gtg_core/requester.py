@@ -22,8 +22,12 @@ class Requester :
         
     #Pid is the project in which the new task will be created
     #MODIFICATION class (the data will be modified)
-    def new_task(self,pid) :
-        return self.ds.get_all_projects()[pid][PROJ_COLUMN].new_task()
+    def new_task(self,pid,tags=None) :
+        task = self.ds.get_all_projects()[pid][PROJ_COLUMN].new_task()
+        if tags :
+            for t in tags :
+                task.add_tag(t.get_name())
+        return task
         
     #MODIFICATION class (the data will be modified)
     def delete_task(self,tid) :

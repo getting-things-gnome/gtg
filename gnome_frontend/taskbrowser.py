@@ -57,8 +57,6 @@ class TaskBrowser:
                 "on_delete_item_activate" : self.on_delete_item_activate,
                 "on_colorchooser_activate" : self.on_colorchooser_activate,
                 "on_workview_toggled" : self.on_workview_toggled
-                #This signal cancel on_edit_task
-                #"on_task_tview_cursor_changed" : self.task_cursor_changed
 
               }
         self.wTree.signal_autoconnect(dic)
@@ -114,6 +112,8 @@ class TaskBrowser:
         
         selection = self.task_tview.get_selection()
         selection.connect("changed",self.task_cursor_changed)
+        closed_selection = self.taskdone_tview.get_selection()
+        closed_selection.connect("changed",self.taskdone_cursor_changed)
         
         gtk.main()
         return 0
@@ -213,6 +213,7 @@ class TaskBrowser:
     def refresh_list(self,a=None) :
         #selected tasks :
         selected_uid = self.get_selected_task(self.task_tview)
+        #selected_closed_uid = self.get_selected_task(self.taskdone_tview)
         t_model,t_path = self.task_tview.get_selection().get_selected_rows()
         d_model,d_path = self.taskdone_tview.get_selection().get_selected_rows()
         #to refresh the list we first empty it then rebuild it
@@ -254,18 +255,31 @@ class TaskBrowser:
         self.task_tview.expand_all()
         #We reselect the selected tasks
         selection = self.task_tview.get_selection()
+        closed_selection = self.taskdone_tview.get_selection()
         if t_path :
             for i in t_path :
                 selection.select_path(i)
         if d_path :
             for i in d_path :
-                selection.select_path(i)
+                closed_selection.select_path(i)
+    
+    #This function is called when the selection change in the closed task view
+    #It will displays the selected task differently           
+    def taskdone_cursor_changed(self,selection=None) :
+        #We unselect all in the active task view
+        #Only if something is selected in the closed task list
+        if selection.count_selected_rows() > 0 :
+            self.task_tview.get_selection().unselect_all()
                 
     #This function is called when the selection change in the active task view
     #It will displays the selected task differently
     def task_cursor_changed(self,selection=None) :
         tid_row = 0
         title_row = 2
+        #We unselect all in the closed task view
+        #Only if something is selected in the active task list
+        if selection.count_selected_rows() > 0 :
+            self.taskdone_tview.get_selection().unselect_all()
         #We reset the previously selected task
         if self.selected_rows and self.task_ts.iter_is_valid(self.selected_rows):
             tid = self.task_ts.get_value(self.selected_rows, tid_row)
@@ -365,7 +379,8 @@ class TaskBrowser:
         #TODO : what if multiple projects are selected ?
         #Currently, we take the first one
         p = self.get_selected_project()[0]
-        task = self.req.new_task(p)
+        tags,notagonly = self.get_selected_tags() 
+        task = self.req.new_task(p,tags=tags)
         uid = task.get_id()
         self.open_task(uid)
     
@@ -377,6 +392,11 @@ class TaskBrowser:
         if not tview : tview = self.task_tview
         # Get the selection in the gtk.TreeView
         selection = tview.get_selection()
+        #If we don't have anything and no tview specified
+        #Let's have a look in the closed task view
+        if selection.count_selected_rows() <= 0 and not tview :
+            tview = self.taskdone_tview
+            selection = tview.get_selection()
         # Get the selection iter
         model, selection_iter = selection.get_selected()
         if selection_iter :
