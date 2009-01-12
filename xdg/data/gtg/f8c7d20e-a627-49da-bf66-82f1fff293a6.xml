@@ -23,7 +23,7 @@
 			kml
 		</content>
 	</task>
-	<task id="2@2" status="Active" tags="autro">
+	<task id="2@2" status="Dismiss" tags="autro">
 		<title>
 			task with autro tag
 		</title>

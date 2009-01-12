@@ -34,9 +34,12 @@ class TaskEditor :
         self.gladefile = GnomeConfig.GLADE_FILE
         self.wTree = gtk.glade.XML(self.gladefile, "TaskEditor")
         self.cal_tree = gtk.glade.XML(self.gladefile, "calendar")
+        self.donebutton = self.wTree.get_widget("mark_as_done_editor")
+        self.dismissbutton = self.wTree.get_widget("dismiss_editor")
         #Create our dictionay and connect it
         dic = {
                 "mark_as_done_clicked"  : self.change_status,
+                "on_dismiss"            : self.dismiss,
                 "delete_clicked"        : self.delete_task,
                 "on_duedate_pressed"    : (self.on_date_pressed,"due"),
                 "on_startdate_pressed"    : (self.on_date_pressed,"start"),
@@ -124,6 +127,18 @@ class TaskEditor :
             self.window.set_title(title)
         else :
             self.window.set_title(self.task.get_title())
+           
+        status = self.task.get_status() 
+        if status == "Dismiss" :
+            self.donebutton.set_label(GnomeConfig.MARK_DONE)
+            self.dismissbutton.set_label(GnomeConfig.MARK_UNDISMISS)
+        elif status == "Done" :
+            self.donebutton.set_label(GnomeConfig.MARK_UNDONE)
+            self.dismissbutton.set_label(GnomeConfig.MARK_DISMISS)
+        else :
+            self.donebutton.set_label(GnomeConfig.MARK_DONE)
+            self.dismissbutton.set_label(GnomeConfig.MARK_DISMISS)
+            
         #refreshing the due date field
         duedate = self.task.get_due_date()
         if duedate :
@@ -189,15 +204,30 @@ class TaskEditor :
             self.task.set_start_date(None)
         self.refresh_editor()
         self.__close_calendar()
+        
+    def dismiss(self,widget) :
+        stat = self.task.get_status()
+        toset = "Dismiss"
+        toclose=True
+        if stat == "Dismiss" :
+            toset = "Active"
+            toclose=False
+        self.task.set_status(toset)
+        if toclose : self.close(None)
+        else : self.refresh_editor()
+        self.refresh()
     
     def change_status(self,widget) :
         stat = self.task.get_status()
         if stat == "Active" :
             toset = "Done"
-        elif stat == "Done" :
+            toclose=True
+        else :
             toset = "Active"
+            toclose=False
         self.task.set_status(toset)
-        self.close(None)
+        if toclose : self.close(None)
+        else : self.refresh_editor()
         self.refresh()
     
     def delete_task(self,widget) :

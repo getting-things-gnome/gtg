@@ -28,3 +28,8 @@
 
 class GnomeConfig :
     GLADE_FILE = "gnome_frontend/gtd-gnome.glade"
+    
+    MARK_DONE="Mark as done"
+    MARK_UNDONE="Undone"
+    MARK_DISMISS="Dismiss"
+    MARK_UNDISMISS="Undismiss"
