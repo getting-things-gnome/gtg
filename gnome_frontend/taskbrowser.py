@@ -213,6 +213,7 @@ class TaskBrowser:
     def refresh_list(self,a=None) :
         #selected tasks :
         selected_uid = self.get_selected_task(self.task_tview)
+        #selected_closed_uid = self.get_selected_task(self.taskdone_tview)
         t_model,t_path = self.task_tview.get_selection().get_selected_rows()
         d_model,d_path = self.taskdone_tview.get_selection().get_selected_rows()
         #to refresh the list we first empty it then rebuild it
@@ -254,12 +255,13 @@ class TaskBrowser:
         self.task_tview.expand_all()
         #We reselect the selected tasks
         selection = self.task_tview.get_selection()
+        closed_selection = self.taskdone_tview.get_selection()
         if t_path :
             for i in t_path :
                 selection.select_path(i)
         if d_path :
             for i in d_path :
-                selection.select_path(i)
+                closed_selection.select_path(i)
     
     #This function is called when the selection change in the closed task view
     #It will displays the selected task differently           
@@ -390,6 +392,11 @@ class TaskBrowser:
         if not tview : tview = self.task_tview
         # Get the selection in the gtk.TreeView
         selection = tview.get_selection()
+        #If we don't have anything and no tview specified
+        #Let's have a look in the closed task view
+        if selection.count_selected_rows() <= 0 and not tview :
+            tview = self.taskdone_tview
+            selection = tview.get_selection()
         # Get the selection iter
         model, selection_iter = selection.get_selected()
         if selection_iter :
