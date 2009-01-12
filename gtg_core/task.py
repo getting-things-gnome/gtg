@@ -15,7 +15,7 @@ class Task :
         #self.content = "<content>Press Escape or close this task to save it</content>"
         self.sync_func = None
         self.title = "My new task"
-        #available status are : Active - Done - Dismiss - Deleted
+        #available status are : Active - Done - Dismiss - Deleted 
         self.status = "Active"
         self.done_date = None
         self.due_date = None
@@ -60,6 +60,7 @@ class Task :
                 #or to today
                 else : 
                     self.done_date = date.today()
+        self.sync()
         
     def get_status(self) :
         return self.status
@@ -96,6 +97,13 @@ class Task :
             return str(self.start_date)
         else :
             return ''
+            
+    def is_started(self) :
+        if self.start_date :
+            difference = date.today() - self.start_date
+            return difference.days >= 0
+        else :
+            return True
             
     def get_done_date(self) :
         if self.done_date :
@@ -314,22 +322,20 @@ class Task :
 
     #tag_list is a list of tagnames
     #return true if at least of the list is in the task
-    def has_tags(self, tag_list):
+    def has_tags(self, tag_list=None,notag_only=False):
         #We want to see if the task has no tags
-        #[None] is our convention for that
-        if tag_list == [None] :
+        if notag_only :
             return self.tags == []
         #Here, the user ask for the "empty" tag
         #And virtually every task has it.
         elif tag_list == [] or tag_list == None:
             return True
+        elif tag_list :
+            for tag in tag_list:
+                if tag in self.tags: return True
         else :
-            for tagname in tag_list:
-                if self.tagstore :
-                    t = self.tagstore.new_tag(tagname)
-                    if t in self.tags: return True
-                else :
-                    print "Error : no tagstore liaison"
+            #Well, if we don't filter on tags or notag, it's true, of course
+            return True
         return False
         
     #return the color of one tag that have a color defined

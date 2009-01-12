@@ -122,16 +122,14 @@ class TaskBrowser:
 
     def on_edit_item_activate(self, widget):
         ppid = self.get_selected_project()[0]
-        p  = self.ds.get_project_with_pid(ppid)[1]
+        p  = self.req.get_project_from_pid(ppid)
         pd = ProjectEditDialog(self.ds, p)
         pd.set_on_close_cb(self.refresh_projects)
         pd.main()
 
     def on_delete_item_activate(self, widget):
         ppid = self.get_selected_project()[0]
-        b  = self.ds.get_project_with_pid(ppid)[0]
-        p  = self.ds.get_project_with_pid(ppid)[1]
-        self.ds.remove_project(p)
+        self.req.remove_project(ppid)
         self.refresh_projects()
         
     def on_colorchooser_activate(self,widget) :
@@ -153,7 +151,7 @@ class TaskBrowser:
             colorsel = widget.colorsel
             gtkcolor = colorsel.get_current_color()
             strcolor = gtk.color_selection_palette_to_string([gtkcolor])
-            tags = self.get_selected_tags()
+            tags,notag_only = self.get_selected_tags()
             for t in tags :
                 t.set_attribute("color",strcolor)
         self.refresh_tb()
@@ -173,13 +171,10 @@ class TaskBrowser:
         p_model,p_path = self.project_tview.get_selection().get_selected_rows()
         self.project_ts.clear()
         self.project_ts.append(None,[-1, color, "<span weight=\"bold\">All projects</span>"])
-        projects = self.ds.get_all_projects()
-        for p_key in projects:
-            p = projects[p_key][1]
-            title = p.get_name()
-            at_num = len(p.active_tasks())
-            p_str  = "%s (%d)" % (title, at_num)
-            self.project_ts.append(None,[p_key, color, p_str])
+        projects = self.req.get_projects()
+        for p in projects:
+            p_str  = "%s (%d)" % (p["name"], p["nbr"])
+            self.project_ts.append(None,[p["pid"], color, p_str])
         #We reselect the selected project
         if p_path :
             for i in p_path :
@@ -196,7 +191,6 @@ class TaskBrowser:
         self.tag_ts.clear()
         self.tag_ts.append(None,[-1,None,"<span weight=\"bold\">All tags</span>"])
         self.tag_ts.append(None,[-2,None,"<span weight=\"bold\">Task without tags</span>"])
-#        self.ds.reload_tags()
         tags = self.req.get_used_tags()
         #tags.sort()
         for tag in tags:
@@ -211,39 +205,39 @@ class TaskBrowser:
     #to keep it in sync with your self.projects   
     def refresh_list(self,a=None) :
         #selected tasks :
-        pid, selected_uid = self.get_selected_task()
+        selected_uid = self.get_selected_task()
         t_model,t_path = self.task_tview.get_selection().get_selected_rows()
         d_model,d_path = self.taskdone_tview.get_selection().get_selected_rows()
         #to refresh the list we first empty it then rebuild it
         #is it acceptable to do that ?
         self.task_ts.clear()
         self.taskdone_ts.clear()
-        tag_list = self.get_selected_tags()
+        tag_list,notag_only = self.get_selected_tags()
         tagname_list = []
         for t in tag_list :
-            if t : tagname_list.append(t.get_name())
+            if t : tagname_list.append(t)
         #We display only tasks of the active projects
-        #TODO: implement queries in DataStore, and use it here
-        for p_key in self.get_selected_project() :
-            p = self.ds.get_all_projects()[p_key][1]  
-            #we first build the active_tasks pane
-            for tid in p.active_tasks() :
-                t = p.get_task(tid)
-                if not t.has_parents(tag=tagname_list) and (tag_list==[] or t.has_tags(tagname_list)):
-                    self.add_task_tree_to_list(p, self.task_ts, t, None,selected_uid,tags=tagname_list)
-                #If tag_list is none, we display tasks without any tags
-                elif not t.has_parents(tag=tagname_list) and tag_list==[None] and t.get_tags_name()==[]:
-                    self.add_task_tree_to_list(p, self.task_ts, t, None,selected_uid,tags=tagname_list)
-            #then the one with tasks already done
-            for tid in p.unactive_tasks() :
-                t = p.get_task(tid)
-                title = t.get_title()
-                donedate = t.get_done_date()
-                if tag_list==[] or t.has_tags(tagname_list):
-                    self.taskdone_ts.append(None,[tid,t.get_color(),title,donedate])
-                #If tag_list is none, we display tasks without any tags
-                elif tag_list==[None] and t.get_tags_name()==[]:
-                    self.taskdone_ts.append(None,[tid,t.get_color(),title,donedate])
+        p_list = self.get_selected_project()
+        
+        
+        #We build the active tasks pane
+        active_root_tasks = self.req.get_active_tasks_list(projects=p_list,\
+                            tags=tag_list, notag_only=notag_only,is_root=True)
+        active_tasks = self.req.get_active_tasks_list(projects=p_list,\
+                            tags=tag_list, notag_only=notag_only,is_root=False)
+        for tid in active_root_tasks :
+            self.add_task_tree_to_list(self.task_ts, tid, None,selected_uid,active_tasks=active_tasks)
+            
+        
+        #We build the closed tasks pane
+        closed_tasks = self.req.get_closed_tasks_list(projects=p_list,tags=tag_list,\
+                                                    notag_only=notag_only)
+        for tid in closed_tasks :
+            t = self.req.get_task(tid)
+            title = t.get_title()
+            donedate = t.get_done_date()
+            self.taskdone_ts.append(None,[tid,t.get_color(),title,donedate])
+
         self.task_tview.expand_all()
         #We reselect the selected tasks
         selection = self.task_tview.get_selection()
@@ -262,22 +256,18 @@ class TaskBrowser:
         #We reset the previously selected task
         if self.selected_rows and self.task_ts.iter_is_valid(self.selected_rows):
             tid = self.task_ts.get_value(self.selected_rows, tid_row)
-            if tid :
-                uid,pid = tid.split('@')
-                task = self.ds.get_all_projects()[pid][1].get_task(tid)
-                title = self.__build_task_title(task,extended=False)
-                self.task_ts.set_value(self.selected_rows,title_row,title)
+            task = self.req.get_task(tid)
+            title = self.__build_task_title(task,extended=False)
+            self.task_ts.set_value(self.selected_rows,title_row,title)
         #We change the selection title
         if selection :
             ts,itera = selection.get_selected()
             if itera and self.task_ts.iter_is_valid(itera) :
                 tid = self.task_ts.get_value(itera, tid_row)
-                if tid :
-                    uid,pid = tid.split('@')
-                    task = self.ds.get_all_projects()[pid][1].get_task(tid)
-                    self.selected_rows = itera
-                    title = self.__build_task_title(task,extended=True)
-                    self.task_ts.set_value(self.selected_rows,title_row,title)
+                task = self.req.get_task(tid)
+                self.selected_rows = itera
+                title = self.__build_task_title(task,extended=True)
+                self.task_ts.set_value(self.selected_rows,title_row,title)
     
     def __build_task_title(self,task,extended=False):
         if extended :
@@ -290,46 +280,40 @@ class TaskBrowser:
             title = task.get_title()
         return title
 
-    def add_task_tree_to_list(self, project, tree_store, task, parent,selected_uid=None,tags=None):
-        if task.has_tags(tags) :
-            tid     = task.get_id()
-            if selected_uid and selected_uid == tid :
-                title = self.__build_task_title(task,extended=True)
-            else :
-                title = self.__build_task_title(task,extended=False)
-            duedate = task.get_due_date()
-            left    = task.get_days_left()
-            color = task.get_color()
-            my_row  = self.task_ts.append(parent, [tid,color,title,duedate,left])
-            for c in task.get_subtasks():
-                if c.get_id() in project.active_tasks():
-                    self.add_task_tree_to_list(project, tree_store, c, my_row,selected_uid,tags=tags)
+    def add_task_tree_to_list(self, tree_store, tid, parent,selected_uid=None,active_tasks=[]):
+        task = self.req.get_task(tid)
+        if selected_uid and selected_uid == tid :
+            title = self.__build_task_title(task,extended=True)
+        else :
+            title = self.__build_task_title(task,extended=False)
+        duedate = task.get_due_date()
+        left    = task.get_days_left()
+        color = task.get_color()
+        my_row  = self.task_ts.append(parent, [tid,color,title,duedate,left])
+        for c in task.get_subtasks():
+            cid = c.get_id()
+            if cid in active_tasks:
+                self.add_task_tree_to_list(tree_store, cid, my_row,selected_uid,active_tasks=active_tasks)
 
     #If a Task editor is already opened for a given task, we present it
     #Else, we create a new one.
-    def open_task(self,task) :
-        t = task
-        uid = t.get_id()
+    def open_task(self,uid) :
+        t = self.req.get_task(uid)
         if self.opened_task.has_key(uid) :
             self.opened_task[uid].present()
         else :
-            #We need the pid number to get the backend
-            tid,pid = uid.split('@')
-            backend = self.ds.get_all_projects()[pid][0]
+            #FIXME : wow, why are we doing that here ?
+            backend = self.req.get_backend_from_uid(uid)
             #We give to the task the callback to synchronize the list
             t.set_sync_func(backend.sync_task)
             tv = TaskEditor(t,self.refresh_tb,self.on_delete_task,
-                            self.close_task,self.open_task_byid,self.get_tasktitle)
+                            self.close_task,self,self.get_tasktitle)
             #registering as opened
             self.opened_task[uid] = tv
             
     def get_tasktitle(self,tid) :
-        task = self.__get_task_byid(tid)
+        task = self.req.get_task(tid)
         return task.get_title()
-            
-    def open_task_byid(self,tid) :
-        task = self.__get_task_byid(tid)
-        self.open_task(task)
     
     #When an editor is closed, it should deregister itself
     def close_task(self,tid) :
@@ -367,13 +351,12 @@ class TaskBrowser:
         #TODO : what if multiple projects are selected ?
         #Currently, we take the first one
         p = self.get_selected_project()[0]
-        task = self.ds.get_all_projects()[p][1].new_task()
-        self.open_task(task)
+        task = self.req.new_task(p)
+        uid = task.get_id()
+        self.open_task(uid)
     
-    #Get_selected_task returns two value :
-    # pid (example : '1')
+    #Get_selected_task returns the uid :
     # uid (example : '21@1')
-    #Yes, indeed, it means that the pid appears twice.
     def get_selected_task(self) :
         uid = None
         # Get the selection in the gtk.TreeView
@@ -388,11 +371,7 @@ class TaskBrowser:
             model, selection_iter = selection.get_selected()
             if selection_iter :
                 uid = self.taskdone_ts.get_value(selection_iter, 0)
-        if uid :
-            tid,pid = uid.split('@')
-        else :
-            pid = None
-        return pid, uid
+        return uid
         
     def get_selected_project(self) :
         #We have to select the project
@@ -402,53 +381,48 @@ class TaskBrowser:
         pmodel, p_iter = p_selected.get_selected()
         if p_iter :
             pid = [self.project_ts.get_value(p_iter, 0)]
-            if -1 in pid: pid = self.ds.get_all_projects().keys()
+            if -1 in pid: pid = self.req.get_projects_list()
         #If no selection, we display all
         else :
-            pid = self.ds.get_all_projects().keys() 
+            pid = self.req.get_projects_list()
         return pid
 
     def get_selected_tags(self) :
         t_selected = self.tag_tview.get_selection()
         tmodel, t_iter = t_selected.get_selected()
+        notag_only = False
+        tag = []
         if t_iter :
             selected = [self.tag_ts.get_value(t_iter, 0)]
-            tag = []
             if -1 in selected: selected.remove(-1)
             #-2 means we want to display only tasks without any tag
             if -2 in selected:
                 selected.remove(-2)
-                tag.append(None)
-            for t in selected :
-                if t :
-                    tag.append(t)
+                notag_only = True
+            if not notag_only :
+                for t in selected :
+                    if t :
+                        tag.append(t)
         #If no selection, we display all
-        else :
-            tag = []
-        return tag
+        return tag,notag_only
         
     def on_edit_task(self,widget,row=None ,col=None) :
-        pid,tid = self.get_selected_task()
+        tid = self.get_selected_task()
         if tid :
-            zetask = self.ds.get_all_projects()[pid][1].get_task(tid)
-            self.open_task(zetask)
+            self.open_task(tid)
      
     #if we pass a tid as a parameter, we delete directly
     #otherwise, we will look which tid is selected   
     def on_delete_confirm(self,widget) :
-        uid = self.tid_todelete
-        pid = uid.split('@')[1]
-        pr = self.ds.get_all_projects()[pid][1]
-        pr.delete_task(self.tid_todelete)
+        self.req.delete_task(self.tid_todelete)
         self.tid_todelete = None
-        self.refresh_list()
-        self.refresh_tags()
+        self.refresh_tb()
         
     def on_delete_task(self,widget,tid=None) :
         #If we don't have a parameter, then take the selection in the treeview
         if not tid :
             #tid_to_delete is a [project,task] tuple
-            pid, self.tid_todelete = self.get_selected_task()
+            self.tid_todelete = self.get_selected_task()
         else :
             self.tid_todelete = tid
         #We must at least have something to delete !
@@ -462,13 +436,11 @@ class TaskBrowser:
             return False
         
     def on_mark_as_done(self,widget) :
-        pid,tid = self.get_selected_task()
-        if tid :
-            backend = self.ds.get_all_projects()[pid][0]
-            zetask = self.ds.get_all_projects()[pid][1].get_task(tid)
+        uid = self.get_selected_task()
+        if uid :
+            zetask = self.req.get_task(uid)
             zetask.set_status("Done")
             self.refresh_list()
-            backend.sync_task(tid)
         
     def on_select_tag(self, widget, row=None ,col=None) :
         #When you clic on a tag, you want to unselect the tasks
@@ -477,13 +449,6 @@ class TaskBrowser:
         self.refresh_list()
 
     ##### Useful tools##################
-    
-    #Getting a task by its ID
-    def __get_task_byid(self,tid) :
-        tiid,pid = tid.split('@')
-        proj = self.ds.get_project_with_pid(pid)[1]
-        task = proj.get_task(tid)
-        return task
     
     #    Functions that help to build the GUI. Nothing really interesting.
     def __add_active_column(self,name,value) :

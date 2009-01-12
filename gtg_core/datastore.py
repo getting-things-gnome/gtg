@@ -40,8 +40,7 @@ class DataStore:
         return project
 
 
-    def remove_project(self, project):
-        pid = project.get_pid()
+    def remove_project(self, pid):
         b  = self.get_project_with_pid(pid)[0]
         self.projects.pop(pid)
         self.unregister_backend(b)
