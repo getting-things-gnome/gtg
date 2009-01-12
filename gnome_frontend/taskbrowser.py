@@ -319,6 +319,10 @@ class TaskBrowser:
         if self.opened_task.has_key(uid) :
             self.opened_task[uid].present()
         else :
+#            #FIXME : wow, why are we doing that here ?
+#            backend = self.req.get_backend_from_uid(uid)
+#            #We give to the task the callback to synchronize the list
+#            t.set_sync_func(backend.sync_task)
             tv = TaskEditor(t,self.refresh_tb,self.on_delete_task,
                             self.close_task,self,self.get_tasktitle)
             #registering as opened
