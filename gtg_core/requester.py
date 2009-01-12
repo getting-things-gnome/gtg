@@ -27,16 +27,23 @@ class Requester :
     #Return a list of active tasks tid
     # projects = []. All the tasks will belong to one of those project
     # If none, all tasks are eligible
+    #
     # tags = []. All tasks will have at least one of those tags.
     # If None, all tasks are eligible
+    #
     # Status = [] : a list of status to choose from
     # available status are : Active - Done - Dismiss - Deleted
     # If none, all tasks are eligible
+    #
     # notag_only : if True, only tasks without tags are selected
+    #
     # started_only : if True, only tasks with an already passed started date are selected
     # (task with no startdate are considered as started)
+    #
+    # is_root : if True, only tasks that have no parent in the current selection
+    # are eligible. If False, all tasks are eligible
     def get_tasks_list(self,projects=None,tags=None,\
-            status=["Active"],notag_only=False,started_only=True) :
+            status=["Active"],notag_only=False,started_only=True,is_root=False) :
         l_tasks = []
         if projects == None :
             p = self.get_projects_list()
@@ -55,6 +62,9 @@ class Requester :
                 if task and tags :
                     if not task.has_tags(tags) :
                         task = None
+                    #Checking here the is_root because it has sense only with tags
+                    elif is_root and task.has_parents(tag=tags) :
+                        task = None
                 #Now checking if it has no tag
                 if task and notag_only :
                     if not task.has_tags(notag_only=notag_only) :
@@ -69,15 +79,22 @@ class Requester :
                     l_tasks.append(tid)
         return l_tasks
         
-    def get_closed_tasks_list(self,projects=None,tags=None,notag_only=False,started_only=True) :
+    def get_active_tasks_list(self,projects=None,tags=None,notag_only=False,\
+                            started_only=True,is_root=False) :
+        active = ["Active"]
+        return self.get_tasks_list(projects=projects,tags=tags,status=active,\
+                 notag_only=notag_only,started_only=started_only,is_root=is_root)
+        
+    def get_closed_tasks_list(self,projects=None,tags=None,notag_only=False,\
+                            started_only=True,is_root=False) :
         closed = ["Done","Dismiss","Deleted"]
         return self.get_tasks_list(projects=projects,tags=tags,status=closed,\
-                            notag_only=notag_only,started_only=started_only)
+                 notag_only=notag_only,started_only=started_only,is_root=is_root)
     
-    def get_tasks_tree(self,projects=None,tags=None,\
-            status=["Active"],notag_only=False,started_only=True) :
-        pass
-    
+#    def get_tasks_tree(self,projects=None,tags=None,\
+#            status=["Active"],notag_only=False,started_only=True) :
+#        pass
+#    
         
     ############## Projects #######################
     ###############################################

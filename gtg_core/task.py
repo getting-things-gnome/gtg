@@ -324,8 +324,7 @@ class Task :
     #return true if at least of the list is in the task
     def has_tags(self, tag_list=None,notag_only=False):
         #We want to see if the task has no tags
-        #[None] is our convention for that
-        if tag_list == [None] or notag_only :
+        if notag_only :
             return self.tags == []
         #Here, the user ask for the "empty" tag
         #And virtually every task has it.
