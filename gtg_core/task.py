@@ -332,12 +332,8 @@ class Task :
         elif tag_list == [] or tag_list == None:
             return True
         elif tag_list :
-            for tagname in tag_list:
-                if self.tagstore :
-                    t = self.tagstore.new_tag(tagname)
-                    if t in self.tags: return True
-                else :
-                    print "Error : no tagstore liaison"
+            for tag in tag_list:
+                if tag in self.tags: return True
         else :
             #Well, if we don't filter on tags or notag, it's true, of course
             return True

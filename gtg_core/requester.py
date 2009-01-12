@@ -38,7 +38,7 @@ class Requester :
     def get_tasks_list(self,projects=None,tags=None,\
             status=["Active"],notag_only=False,started_only=True) :
         l_tasks = []
-        if projects = None :
+        if projects == None :
             p = self.get_projects_list()
         else :
             p = projects
@@ -57,7 +57,7 @@ class Requester :
                         task = None
                 #Now checking if it has no tag
                 if task and notag_only :
-                    if not task.had_tags(notag_only) :
+                    if not task.has_tags(notag_only=notag_only) :
                         task = None
                 #This is started filtering
                 if task and started_only :
@@ -68,6 +68,11 @@ class Requester :
                 if task :
                     l_tasks.append(tid)
         return l_tasks
+        
+    def get_closed_tasks_list(self,projects=None,tags=None,notag_only=False,started_only=True) :
+        closed = ["Done","Dismiss","Deleted"]
+        return self.get_tasks_list(projects=projects,tags=tags,status=closed,\
+                            notag_only=notag_only,started_only=started_only)
     
     def get_tasks_tree(self,projects=None,tags=None,\
             status=["Active"],notag_only=False,started_only=True) :

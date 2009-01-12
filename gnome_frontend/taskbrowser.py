@@ -152,7 +152,7 @@ class TaskBrowser:
             colorsel = widget.colorsel
             gtkcolor = colorsel.get_current_color()
             strcolor = gtk.color_selection_palette_to_string([gtkcolor])
-            tags = self.get_selected_tags()
+            tags,notag_only = self.get_selected_tags()
             for t in tags :
                 t.set_attribute("color",strcolor)
         self.refresh_tb()
@@ -213,14 +213,15 @@ class TaskBrowser:
         #is it acceptable to do that ?
         self.task_ts.clear()
         self.taskdone_ts.clear()
-        tag_list = self.get_selected_tags()
+        tag_list,notag_only = self.get_selected_tags()
         tagname_list = []
         for t in tag_list :
-            if t : tagname_list.append(t.get_name())
+            if t : tagname_list.append(t)
         #We display only tasks of the active projects
         #TODO: implement queries in DataStore, and use it here
         #TODO : refactorize get_selected_project
-        for p_key in self.get_selected_project() :
+        p_list = self.get_selected_project()
+        for p_key in p_list :
             p = self.req.get_project_from_pid(p_key) 
             #we first build the active_tasks pane
             for tid in p.active_tasks() :
@@ -230,16 +231,26 @@ class TaskBrowser:
                 #If tag_list is none, we display tasks without any tags
                 elif not t.has_parents(tag=tagname_list) and tag_list==[None] and t.get_tags_name()==[]:
                     self.add_task_tree_to_list(p, self.task_ts, t, None,selected_uid,tags=tagname_list)
-            #then the one with tasks already done
-            for tid in p.unactive_tasks() :
-                t = p.get_task(tid)
-                title = t.get_title()
-                donedate = t.get_done_date()
-                if tag_list==[] or t.has_tags(tagname_list):
-                    self.taskdone_ts.append(None,[tid,t.get_color(),title,donedate])
-                #If tag_list is none, we display tasks without any tags
-                elif tag_list==[None] and t.get_tags_name()==[]:
-                    self.taskdone_ts.append(None,[tid,t.get_color(),title,donedate])
+        
+        #We build the closed tasks pane
+        closed_tasks = self.req.get_closed_tasks_list(projects=p_list,tags=tag_list,\
+                                                    notag_only=notag_only)
+        for tid in closed_tasks :
+            t = self.req.get_task(tid)
+            title = t.get_title()
+            donedate = t.get_done_date()
+            self.taskdone_ts.append(None,[tid,t.get_color(),title,donedate])
+            
+#            #then the one with tasks already done
+#            for tid in p.unactive_tasks() :
+#                t = p.get_task(tid)
+#                title = t.get_title()
+#                donedate = t.get_done_date()
+#                if tag_list==[] or t.has_tags(tagname_list):
+#                    self.taskdone_ts.append(None,[tid,t.get_color(),title,donedate])
+#                #If tag_list is none, we display tasks without any tags
+#                elif tag_list==[None] and t.get_tags_name()==[]:
+#                    self.taskdone_ts.append(None,[tid,t.get_color(),title,donedate])
         self.task_tview.expand_all()
         #We reselect the selected tasks
         selection = self.task_tview.get_selection()
@@ -393,21 +404,21 @@ class TaskBrowser:
     def get_selected_tags(self) :
         t_selected = self.tag_tview.get_selection()
         tmodel, t_iter = t_selected.get_selected()
+        notag_only = False
+        tag = []
         if t_iter :
             selected = [self.tag_ts.get_value(t_iter, 0)]
-            tag = []
             if -1 in selected: selected.remove(-1)
             #-2 means we want to display only tasks without any tag
             if -2 in selected:
                 selected.remove(-2)
-                tag.append(None)
-            for t in selected :
-                if t :
-                    tag.append(t)
+                notag_only = True
+            if not notag_only :
+                for t in selected :
+                    if t :
+                        tag.append(t)
         #If no selection, we display all
-        else :
-            tag = []
-        return tag
+        return tag,notag_only
         
     def on_edit_task(self,widget,row=None ,col=None) :
         tid = self.get_selected_task()
