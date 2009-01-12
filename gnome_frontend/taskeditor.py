@@ -37,6 +37,7 @@ class TaskEditor :
         #Create our dictionay and connect it
         dic = {
                 "mark_as_done_clicked"  : self.change_status,
+                "on_dismiss"            : self.dismiss,
                 "delete_clicked"        : self.delete_task,
                 "on_duedate_pressed"    : (self.on_date_pressed,"due"),
                 "on_startdate_pressed"    : (self.on_date_pressed,"start"),
@@ -189,15 +190,28 @@ class TaskEditor :
             self.task.set_start_date(None)
         self.refresh_editor()
         self.__close_calendar()
+        
+    def dismiss(self,widget) :
+        stat = self.task.get_status()
+        toset = "Dismiss"
+        toclose=True
+        if stat == "Dismiss" :
+            toset = "Active"
+            toclose=False
+        self.task.set_status(toset)
+        if toclose : self.close(None)
+        self.refresh()
     
     def change_status(self,widget) :
         stat = self.task.get_status()
         if stat == "Active" :
             toset = "Done"
-        elif stat == "Done" :
+            toclose=True
+        else :
             toset = "Active"
+            toclose=False
         self.task.set_status(toset)
-        self.close(None)
+        if toclose : self.close(None)
         self.refresh()
     
     def delete_task(self,widget) :

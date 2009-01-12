@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Mon Jan 12 17:39:43 2009 -->
+<!--Generated with glade3 3.4.5 on Mon Jan 12 22:16:35 2009 -->
 <glade-interface>
   <widget class="GtkWindow" id="MainWindow">
     <property name="visible">True</property>
@@ -125,6 +125,17 @@
                 <property name="label" translatable="yes">Mark as done</property>
                 <property name="stock_id">gtk-apply</property>
                 <signal name="clicked" handler="on_mark_as_done"/>
+              </widget>
+              <packing>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkToolButton" id="dismiss">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">Dismiss task</property>
+                <property name="stock_id">gtk-clear</property>
+                <signal name="clicked" handler="on_dismiss_task"/>
               </widget>
               <packing>
                 <property name="homogeneous">True</property>
@@ -295,6 +306,17 @@
                 <property name="label" translatable="yes">Mark as done</property>
                 <property name="stock_id">gtk-apply</property>
                 <signal name="clicked" handler="mark_as_done_clicked"/>
+              </widget>
+              <packing>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkToolButton" id="toolbutton2">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">Dismiss</property>
+                <property name="stock_id">gtk-clear</property>
+                <signal name="clicked" handler="on_dismiss"/>
               </widget>
               <packing>
                 <property name="homogeneous">True</property>

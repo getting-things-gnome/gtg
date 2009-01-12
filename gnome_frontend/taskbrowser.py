@@ -46,6 +46,7 @@ class TaskBrowser:
                 "on_edit_done_task" :   self.on_edit_done_task,
                 "on_delete_task"      : self.on_delete_task,
                 "on_mark_as_done"     : self.on_mark_as_done,
+                "on_dismiss_task"   : self.on_dismiss_task,
                 "gtk_main_quit"       : self.close,
                 "on_select_tag"       : self.on_select_tag,
                 "on_delete_confirm"   : self.on_delete_confirm,
@@ -475,6 +476,13 @@ class TaskBrowser:
         if uid :
             zetask = self.req.get_task(uid)
             zetask.set_status("Done")
+            self.refresh_list()
+    
+    def on_dismiss_task(self,widget) :
+        uid = self.get_selected_task()
+        if uid :
+            zetask = self.req.get_task(uid)
+            zetask.set_status("Dismiss")
             self.refresh_list()
         
     def on_select_tag(self, widget, row=None ,col=None) :
