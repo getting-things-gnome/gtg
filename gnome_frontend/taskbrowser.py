@@ -57,8 +57,6 @@ class TaskBrowser:
                 "on_delete_item_activate" : self.on_delete_item_activate,
                 "on_colorchooser_activate" : self.on_colorchooser_activate,
                 "on_workview_toggled" : self.on_workview_toggled
-                #This signal cancel on_edit_task
-                #"on_task_tview_cursor_changed" : self.task_cursor_changed
 
               }
         self.wTree.signal_autoconnect(dic)
@@ -114,6 +112,8 @@ class TaskBrowser:
         
         selection = self.task_tview.get_selection()
         selection.connect("changed",self.task_cursor_changed)
+        closed_selection = self.taskdone_tview.get_selection()
+        closed_selection.connect("changed",self.taskdone_cursor_changed)
         
         gtk.main()
         return 0
@@ -260,12 +260,24 @@ class TaskBrowser:
         if d_path :
             for i in d_path :
                 selection.select_path(i)
+    
+    #This function is called when the selection change in the closed task view
+    #It will displays the selected task differently           
+    def taskdone_cursor_changed(self,selection=None) :
+        #We unselect all in the active task view
+        #Only if something is selected in the closed task list
+        if selection.count_selected_rows() > 0 :
+            self.task_tview.get_selection().unselect_all()
                 
     #This function is called when the selection change in the active task view
     #It will displays the selected task differently
     def task_cursor_changed(self,selection=None) :
         tid_row = 0
         title_row = 2
+        #We unselect all in the closed task view
+        #Only if something is selected in the active task list
+        if selection.count_selected_rows() > 0 :
+            self.taskdone_tview.get_selection().unselect_all()
         #We reset the previously selected task
         if self.selected_rows and self.task_ts.iter_is_valid(self.selected_rows):
             tid = self.task_ts.get_value(self.selected_rows, tid_row)
