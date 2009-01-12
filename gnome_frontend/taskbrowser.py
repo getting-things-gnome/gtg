@@ -219,6 +219,7 @@ class TaskBrowser:
             if t : tagname_list.append(t.get_name())
         #We display only tasks of the active projects
         #TODO: implement queries in DataStore, and use it here
+        #TODO : refactorize get_selected_project
         for p_key in self.get_selected_project() :
             p = self.req.get_project_from_pid(p_key) 
             #we first build the active_tasks pane
@@ -298,7 +299,6 @@ class TaskBrowser:
 
     #If a Task editor is already opened for a given task, we present it
     #Else, we create a new one.
-    #TODO : refactorize to open task only with UID (delete the open_task_byid)
     def open_task(self,uid) :
         t = self.req.get_task(uid)
         if self.opened_task.has_key(uid) :
