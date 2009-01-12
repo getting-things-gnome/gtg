@@ -42,7 +42,8 @@ class TaskBrowser:
         dic = {
                 "on_add_project"      : self.on_add_project,
                 "on_add_task"         : self.on_add_task,
-                "on_edit_task"        : self.on_edit_task,
+                "on_edit_active_task"        : self.on_edit_active_task,
+                "on_edit_done_task" :   self.on_edit_done_task,
                 "on_delete_task"      : self.on_delete_task,
                 "on_mark_as_done"     : self.on_mark_as_done,
                 "gtk_main_quit"       : self.close,
@@ -374,20 +375,17 @@ class TaskBrowser:
     
     #Get_selected_task returns the uid :
     # uid (example : '21@1')
-    def get_selected_task(self) :
+    #By default, we select in the task_tview
+    def get_selected_task(self,tview=None) :
         uid = None
+        if not tview : tview = self.task_tview
         # Get the selection in the gtk.TreeView
-        selection = self.task_tview.get_selection()
+        selection = tview.get_selection()
         # Get the selection iter
         model, selection_iter = selection.get_selected()
         if selection_iter :
-            uid = self.task_ts.get_value(selection_iter, 0)
-        #maybe the selection is in the taskdone_tview ?
-        else :
-            selection = self.taskdone_tview.get_selection()
-            model, selection_iter = selection.get_selected()
-            if selection_iter :
-                uid = self.taskdone_ts.get_value(selection_iter, 0)
+            ts = tview.get_model()
+            uid = ts.get_value(selection_iter, 0)
         return uid
         
     def get_selected_project(self) :
@@ -423,8 +421,12 @@ class TaskBrowser:
         #If no selection, we display all
         return tag,notag_only
         
-    def on_edit_task(self,widget,row=None ,col=None) :
-        tid = self.get_selected_task()
+    def on_edit_active_task(self,widget,row=None ,col=None) :
+        tid = self.get_selected_task(self.task_tview)
+        if tid :
+            self.open_task(tid)
+    def on_edit_done_task(self,widget,row=None ,col=None) :
+        tid = self.get_selected_task(self.taskdone_tview)
         if tid :
             self.open_task(tid)
      

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Mon Jan 12 15:57:33 2009 -->
+<!--Generated with glade3 3.4.5 on Mon Jan 12 17:39:43 2009 -->
 <glade-interface>
   <widget class="GtkWindow" id="MainWindow">
     <property name="visible">True</property>
@@ -221,7 +221,7 @@
                         <property name="reorderable">True</property>
                         <property name="search_column">8</property>
                         <property name="rubber_banding">True</property>
-                        <signal name="row_activated" handler="on_edit_task"/>
+                        <signal name="row_activated" handler="on_edit_active_task"/>
                         <signal name="cursor_changed" handler="on_task_tview_cursor_changed"/>
                       </widget>
                     </child>
@@ -243,7 +243,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="search_column">8</property>
-                        <signal name="row_activated" handler="on_edit_task"/>
+                        <signal name="row_activated" handler="on_edit_done_task"/>
                       </widget>
                     </child>
                   </widget>

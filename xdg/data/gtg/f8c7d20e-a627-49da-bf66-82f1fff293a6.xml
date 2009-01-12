@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <project name="gh">
-	<task id="1@2" status="Done" tags="closed">
+	<task id="1@2" status="Active" tags="closed">
 		<title>
 			My new task
 		</title>
@@ -10,25 +10,6 @@
 		<content>
 			kùlm
 &lt;tag&gt;@closed&lt;/tag&gt;
-		</content>
-	</task>
-	<task id="0@2" status="Done" tags="">
-		<title>
-			My new task
-		</title>
-		<donedate>
-			2009-01-12
-		</donedate>
-		<content>
-			kml
-		</content>
-	</task>
-	<task id="2@2" status="Active" tags="autro">
-		<title>
-			My new task
-		</title>
-		<content>
-			&lt;tag&gt;@autro&lt;/tag&gt;
 		</content>
 	</task>
 </project>
