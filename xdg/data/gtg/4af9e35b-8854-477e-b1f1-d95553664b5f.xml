@@ -4,12 +4,15 @@
 		<title>
 			My new task
 		</title>
+		<subtask>
+			1@1
+		</subtask>
 		<content>
 			&lt;tag&gt;@tag&lt;/tag&gt;
 &lt;subtask&gt;1@1&lt;/subtask&gt;
 		</content>
 	</task>
-	<task id="4@1" status="Done" tags="aze,autre,test">
+	<task id="4@1" status="Active" tags="aze,autre,test">
 		<title>
 			parent
 		</title>
@@ -19,9 +22,9 @@
 		<startdate>
 			2008-11-11
 		</startdate>
-		<donedate>
-			2009-01-12
-		</donedate>
+		<subtask>
+			5@1
+		</subtask>
 		<content>
 			&lt;tag&gt;@aze&lt;/tag&gt;, &lt;tag&gt;@autre&lt;/tag&gt;, &lt;tag&gt;@test&lt;/tag&gt;
 une tâche parent
@@ -40,9 +43,15 @@ une tâche parent
 		<title>
 			enfant2
 		</title>
+		<subtask>
+			6@1
+		</subtask>
+		<subtask>
+			7@1
+		</subtask>
 		<content>
 			&lt;tag&gt;@tag&lt;/tag&gt;, &lt;tag&gt;@autro&lt;/tag&gt;
-
+&lt;subtask&gt;6@1&lt;/subtask&gt;&lt;subtask&gt;7@1&lt;/subtask&gt;
 		</content>
 	</task>
 	<task id="5@1" status="Active" tags="aze,autre">
@@ -81,6 +90,29 @@ une tâche parent
 		</title>
 		<content>
 			&lt;tag&gt;@tag&lt;/tag&gt;
+		</content>
+	</task>
+	<task id="3@1" status="Done" tags="donetask">
+		<title>
+			done task with tag
+		</title>
+		<donedate>
+			2009-01-01
+		</donedate>
+		<content>
+			&lt;tag&gt;@donetask&lt;/tag&gt;
+		</content>
+	</task>
+	<task id="7@1" status="Active" tags="autro">
+		<title>
+			enfant3
+		</title>
+		<subtask>
+			8@1
+		</subtask>
+		<content>
+			&lt;tag&gt;@autro&lt;/tag&gt;, 
+&lt;subtask&gt;8@1&lt;/subtask&gt;
 		</content>
 	</task>
 </project>
