@@ -60,6 +60,7 @@ class Task :
                 #or to today
                 else : 
                     self.done_date = date.today()
+        self.sync()
         
     def get_status(self) :
         return self.status

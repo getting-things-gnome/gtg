@@ -1,12 +1,28 @@
 #Requester is a pure View object. It will not do anything but it will
 #be used by any Interface to handle the requests to the datastore
 
+BACKEND_COLUMN = 0
 PROJ_COLUMN = 1
 
 class Requester :
     def __init__(self,datastore) :
         self.ds = datastore
         self.tagstore = self.ds.get_tagstore()
+        
+        
+    ############## Tasks ##########################
+    ###############################################
+    
+    def get_task(self,tid) :
+        task = None
+        if tid :
+            uid,pid = tid.split('@')
+            task = self.ds.get_all_projects()[pid][PROJ_COLUMN].get_task(tid)
+        return task
+        
+    #Pid is the project in which the new task will be created
+    def new_task(self,pid) :
+        return self.ds.get_all_projects()[pid][PROJ_COLUMN].new_task()
         
     ############## Projects #######################
     ###############################################
@@ -27,7 +43,20 @@ class Requester :
             l.append(d)
             
         return l
-            
+        
+    def get_project_from_pid(self,pid) :
+        projects = self.ds.get_all_projects()
+        return projects[pid][PROJ_COLUMN]
+        
+    def get_project_from_uid(self,uid) :
+        tid,pid = uid.split('@')
+        project = self.ds.get_all_projects()[pid][PROJ_COLUMN]
+        return project
+    
+    def get_backend_from_uid(self,uid) :
+        tid,pid = uid.split('@')
+        backend = self.ds.get_all_projects()[pid][BACKEND_COLUMN]
+        return backend
     
     ############### Tags ##########################
     ###############################################    

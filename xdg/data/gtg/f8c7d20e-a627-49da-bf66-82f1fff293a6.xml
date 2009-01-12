@@ -1,11 +1,14 @@
 <?xml version="1.0" ?>
 <project name="gh">
-	<task id="0@2" status="Active" tags="">
+	<task id="0@2" status="Done" tags="">
 		<title>
 			My new task
 		</title>
+		<donedate>
+			2009-01-12
+		</donedate>
 		<content>
-			mù
+			kml
 		</content>
 	</task>
 </project>

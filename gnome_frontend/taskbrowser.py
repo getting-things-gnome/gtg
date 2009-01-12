@@ -122,15 +122,14 @@ class TaskBrowser:
 
     def on_edit_item_activate(self, widget):
         ppid = self.get_selected_project()[0]
-        p  = self.ds.get_project_with_pid(ppid)[1]
+        p  = self.req.get_project_from_pid(ppid)
         pd = ProjectEditDialog(self.ds, p)
         pd.set_on_close_cb(self.refresh_projects)
         pd.main()
 
     def on_delete_item_activate(self, widget):
         ppid = self.get_selected_project()[0]
-        b  = self.ds.get_project_with_pid(ppid)[0]
-        p  = self.ds.get_project_with_pid(ppid)[1]
+        p  = self.req.get_project_from_pid(ppid)
         self.ds.remove_project(p)
         self.refresh_projects()
         
@@ -193,7 +192,6 @@ class TaskBrowser:
         self.tag_ts.clear()
         self.tag_ts.append(None,[-1,None,"<span weight=\"bold\">All tags</span>"])
         self.tag_ts.append(None,[-2,None,"<span weight=\"bold\">Task without tags</span>"])
-#        self.ds.reload_tags()
         tags = self.req.get_used_tags()
         #tags.sort()
         for tag in tags:
@@ -208,7 +206,7 @@ class TaskBrowser:
     #to keep it in sync with your self.projects   
     def refresh_list(self,a=None) :
         #selected tasks :
-        pid, selected_uid = self.get_selected_task()
+        selected_uid = self.get_selected_task()
         t_model,t_path = self.task_tview.get_selection().get_selected_rows()
         d_model,d_path = self.taskdone_tview.get_selection().get_selected_rows()
         #to refresh the list we first empty it then rebuild it
@@ -222,7 +220,7 @@ class TaskBrowser:
         #We display only tasks of the active projects
         #TODO: implement queries in DataStore, and use it here
         for p_key in self.get_selected_project() :
-            p = self.ds.get_all_projects()[p_key][1]  
+            p = self.req.get_project_from_pid(p_key) 
             #we first build the active_tasks pane
             for tid in p.active_tasks() :
                 t = p.get_task(tid)
@@ -259,22 +257,18 @@ class TaskBrowser:
         #We reset the previously selected task
         if self.selected_rows and self.task_ts.iter_is_valid(self.selected_rows):
             tid = self.task_ts.get_value(self.selected_rows, tid_row)
-            if tid :
-                uid,pid = tid.split('@')
-                task = self.ds.get_all_projects()[pid][1].get_task(tid)
-                title = self.__build_task_title(task,extended=False)
-                self.task_ts.set_value(self.selected_rows,title_row,title)
+            task = self.req.get_task(tid)
+            title = self.__build_task_title(task,extended=False)
+            self.task_ts.set_value(self.selected_rows,title_row,title)
         #We change the selection title
         if selection :
             ts,itera = selection.get_selected()
             if itera and self.task_ts.iter_is_valid(itera) :
                 tid = self.task_ts.get_value(itera, tid_row)
-                if tid :
-                    uid,pid = tid.split('@')
-                    task = self.ds.get_all_projects()[pid][1].get_task(tid)
-                    self.selected_rows = itera
-                    title = self.__build_task_title(task,extended=True)
-                    self.task_ts.set_value(self.selected_rows,title_row,title)
+                task = self.req.get_task(tid)
+                self.selected_rows = itera
+                title = self.__build_task_title(task,extended=True)
+                self.task_ts.set_value(self.selected_rows,title_row,title)
     
     def __build_task_title(self,task,extended=False):
         if extended :
@@ -304,15 +298,14 @@ class TaskBrowser:
 
     #If a Task editor is already opened for a given task, we present it
     #Else, we create a new one.
+    #TODO : refactorize to open task only with UID (delete the open_task_byid)
     def open_task(self,task) :
         t = task
         uid = t.get_id()
         if self.opened_task.has_key(uid) :
             self.opened_task[uid].present()
         else :
-            #We need the pid number to get the backend
-            tid,pid = uid.split('@')
-            backend = self.ds.get_all_projects()[pid][0]
+            backend = self.req.get_backend_from_uid(uid)
             #We give to the task the callback to synchronize the list
             t.set_sync_func(backend.sync_task)
             tv = TaskEditor(t,self.refresh_tb,self.on_delete_task,
@@ -321,11 +314,11 @@ class TaskBrowser:
             self.opened_task[uid] = tv
             
     def get_tasktitle(self,tid) :
-        task = self.__get_task_byid(tid)
+        task = self.req.get_task(tid)
         return task.get_title()
             
     def open_task_byid(self,tid) :
-        task = self.__get_task_byid(tid)
+        task = self.req.get_task(tid)
         self.open_task(task)
     
     #When an editor is closed, it should deregister itself
@@ -364,13 +357,11 @@ class TaskBrowser:
         #TODO : what if multiple projects are selected ?
         #Currently, we take the first one
         p = self.get_selected_project()[0]
-        task = self.ds.get_all_projects()[p][1].new_task()
+        task = self.req.new_task(p)
         self.open_task(task)
     
-    #Get_selected_task returns two value :
-    # pid (example : '1')
+    #Get_selected_task returns the uid :
     # uid (example : '21@1')
-    #Yes, indeed, it means that the pid appears twice.
     def get_selected_task(self) :
         uid = None
         # Get the selection in the gtk.TreeView
@@ -385,12 +376,9 @@ class TaskBrowser:
             model, selection_iter = selection.get_selected()
             if selection_iter :
                 uid = self.taskdone_ts.get_value(selection_iter, 0)
-        if uid :
-            tid,pid = uid.split('@')
-        else :
-            pid = None
-        return pid, uid
+        return uid
         
+    #TODO : refactorise with requester
     def get_selected_project(self) :
         #We have to select the project
         #if pid is none, we should handle a default project
@@ -425,27 +413,25 @@ class TaskBrowser:
         return tag
         
     def on_edit_task(self,widget,row=None ,col=None) :
-        pid,tid = self.get_selected_task()
+        tid = self.get_selected_task()
         if tid :
-            zetask = self.ds.get_all_projects()[pid][1].get_task(tid)
+            zetask = self.req.get_task(tid)
             self.open_task(zetask)
      
     #if we pass a tid as a parameter, we delete directly
     #otherwise, we will look which tid is selected   
     def on_delete_confirm(self,widget) :
         uid = self.tid_todelete
-        pid = uid.split('@')[1]
-        pr = self.ds.get_all_projects()[pid][1]
+        pr = self.req.get_project_from_uid(uid)
         pr.delete_task(self.tid_todelete)
         self.tid_todelete = None
-        self.refresh_list()
-        self.refresh_tags()
+        self.refresh_tb()
         
     def on_delete_task(self,widget,tid=None) :
         #If we don't have a parameter, then take the selection in the treeview
         if not tid :
             #tid_to_delete is a [project,task] tuple
-            pid, self.tid_todelete = self.get_selected_task()
+            self.tid_todelete = self.get_selected_task()
         else :
             self.tid_todelete = tid
         #We must at least have something to delete !
@@ -459,13 +445,11 @@ class TaskBrowser:
             return False
         
     def on_mark_as_done(self,widget) :
-        pid,tid = self.get_selected_task()
-        if tid :
-            backend = self.ds.get_all_projects()[pid][0]
-            zetask = self.ds.get_all_projects()[pid][1].get_task(tid)
+        uid = self.get_selected_task()
+        if uid :
+            zetask = self.req.get_task(uid)
             zetask.set_status("Done")
             self.refresh_list()
-            backend.sync_task(tid)
         
     def on_select_tag(self, widget, row=None ,col=None) :
         #When you clic on a tag, you want to unselect the tasks
@@ -474,13 +458,6 @@ class TaskBrowser:
         self.refresh_list()
 
     ##### Useful tools##################
-    
-    #Getting a task by its ID
-    def __get_task_byid(self,tid) :
-        tiid,pid = tid.split('@')
-        proj = self.ds.get_project_with_pid(pid)[1]
-        task = proj.get_task(tid)
-        return task
     
     #    Functions that help to build the GUI. Nothing really interesting.
     def __add_active_column(self,name,value) :
