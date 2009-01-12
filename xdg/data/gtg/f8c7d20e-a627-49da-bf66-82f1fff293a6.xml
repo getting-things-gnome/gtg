@@ -1,5 +1,13 @@
 <?xml version="1.0" ?>
 <project name="gh">
+	<task id="1@2" status="Active" tags="">
+		<title>
+			My new task
+		</title>
+		<content>
+			kùlm
+		</content>
+	</task>
 	<task id="0@2" status="Done" tags="">
 		<title>
 			My new task

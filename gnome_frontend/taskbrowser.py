@@ -299,27 +299,23 @@ class TaskBrowser:
     #If a Task editor is already opened for a given task, we present it
     #Else, we create a new one.
     #TODO : refactorize to open task only with UID (delete the open_task_byid)
-    def open_task(self,task) :
-        t = task
-        uid = t.get_id()
+    def open_task(self,uid) :
+        t = self.req.get_task(uid)
         if self.opened_task.has_key(uid) :
             self.opened_task[uid].present()
         else :
+            #FIXME : wow, why are we doing that here ?
             backend = self.req.get_backend_from_uid(uid)
             #We give to the task the callback to synchronize the list
             t.set_sync_func(backend.sync_task)
             tv = TaskEditor(t,self.refresh_tb,self.on_delete_task,
-                            self.close_task,self.open_task_byid,self.get_tasktitle)
+                            self.close_task,self,self.get_tasktitle)
             #registering as opened
             self.opened_task[uid] = tv
             
     def get_tasktitle(self,tid) :
         task = self.req.get_task(tid)
         return task.get_title()
-            
-    def open_task_byid(self,tid) :
-        task = self.req.get_task(tid)
-        self.open_task(task)
     
     #When an editor is closed, it should deregister itself
     def close_task(self,tid) :
@@ -358,7 +354,8 @@ class TaskBrowser:
         #Currently, we take the first one
         p = self.get_selected_project()[0]
         task = self.req.new_task(p)
-        self.open_task(task)
+        uid = task.get_id()
+        self.open_task(uid)
     
     #Get_selected_task returns the uid :
     # uid (example : '21@1')
@@ -415,8 +412,7 @@ class TaskBrowser:
     def on_edit_task(self,widget,row=None ,col=None) :
         tid = self.get_selected_task()
         if tid :
-            zetask = self.req.get_task(tid)
-            self.open_task(zetask)
+            self.open_task(tid)
      
     #if we pass a tid as a parameter, we delete directly
     #otherwise, we will look which tid is selected   
