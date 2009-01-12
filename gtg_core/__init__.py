@@ -13,7 +13,7 @@
 #a task. A project is a group of task meant to achieve one goal.
 
 #=== IMPORT ====================================================================
-import sys, os, xml.dom.minidom
+import os, xml.dom.minidom
 from xdg.BaseDirectory import *
 from tools import cleanxml
 

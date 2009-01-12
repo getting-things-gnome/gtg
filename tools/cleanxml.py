@@ -1,4 +1,4 @@
-import sys, os, xml.dom.minidom
+import os, xml.dom.minidom
 
 #This is for the awful pretty xml things
 tab = "\t"

@@ -1,4 +1,4 @@
-import sys, time, os, xml.dom.minidom
+import os, xml.dom.minidom
 import uuid
 
 from gtg_core   import CoreConfig

@@ -6,10 +6,8 @@
 #It's the window you see when you double-clic on a Task
 #The main text widget is a home-made TextView called TaskView (see taskview.py)
 #The rest are the logic of the widget : date changing widgets, buttons, ...
+import sys
 
-import sys, time, os
-import string, threading
-from gtg_core.task import Task
 from gnome_frontend.taskview import TaskView
 from gnome_frontend import GnomeConfig
 
@@ -21,8 +19,6 @@ except:
 try:
     import gtk
     from gtk import gdk
-    import gtk.glade
-    import gobject
 except:
     sys.exit(1)
     

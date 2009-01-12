@@ -61,7 +61,7 @@ class DataStore:
 
     def load_data(self):
         for b in self.backends:
-            p = b.get_project()
+            b.get_project()
 
     def register_backend(self, backend):
         if backend!=None:

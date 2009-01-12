@@ -1,4 +1,4 @@
-import sys, time, os, xml.dom.minidom
+import os
 
 from gtg_core   import CoreConfig
 from tools import cleanxml

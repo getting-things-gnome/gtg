@@ -27,16 +27,12 @@
 #=============================================================================== 
 
 #=== IMPORT ====================================================================
-import sys, os, xml.dom.minidom
 
 #our own imports
-from gtg_core.task import Task, Project
-from gnome_frontend.taskeditor  import TaskEditor
 from gnome_frontend.taskbrowser import TaskBrowser
 from gtg_core.datastore   import DataStore
 from backends.localfile import Backend
 from gtg_core   import CoreConfig
-from tools import cleanxml
 
 #=== OBJECTS ===================================================================
 

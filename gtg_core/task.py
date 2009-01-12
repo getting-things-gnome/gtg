@@ -1,6 +1,4 @@
-import sys, time, os
 from datetime import date
-import string
 import xml.dom.minidom
 
 

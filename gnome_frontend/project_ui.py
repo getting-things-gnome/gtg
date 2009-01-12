@@ -2,15 +2,9 @@
 #system imports
 import pygtk
 pygtk.require('2.0')
-import gtk
-import gobject
 import gtk.glade
-import datetime, time, sys
 
 #our own imports
-from gtg_core.task      import Task, Project
-from gtg_core.datastore import DataStore
-from backends.localfile import Backend
 from gnome_frontend import GnomeConfig
 
 #=== OBJECTS ===================================================================

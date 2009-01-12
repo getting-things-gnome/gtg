@@ -1,16 +1,11 @@
 #=== IMPORT ====================================================================
 #system imports
-import os
 import pygtk
 pygtk.require('2.0')
-import gtk
 import gobject
-import xml.dom.minidom
 import gtk.glade
-import datetime, time, sys
 
 #our own imports
-from gtg_core.task import Task, Project
 from gnome_frontend.taskeditor import TaskEditor
 from gnome_frontend.project_ui import ProjectEditDialog
 from gnome_frontend import GnomeConfig
@@ -205,7 +200,7 @@ class TaskBrowser:
         #tags.sort()
         for tag in tags:
             color = tag.get_attribute("color")
-            self.tag_ts.append(None,[tag,tag.get_attribute("color"),tag.get_name()])
+            self.tag_ts.append(None,[tag,color,tag.get_name()])
         #We reselect the selected tag
         if t_path :
             for i in t_path :
@@ -537,8 +532,6 @@ class TaskBrowser:
         
     ######Closing the window
     def close(self,widget=None) :
-        #Saving all projects
-        for p in self.projects :
-            self.projects[p][1].sync()
+        #Saving is now done in main.py
         gtk.main_quit()
 
