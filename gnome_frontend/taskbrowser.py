@@ -365,7 +365,8 @@ class TaskBrowser:
         #TODO : what if multiple projects are selected ?
         #Currently, we take the first one
         p = self.get_selected_project()[0]
-        task = self.req.new_task(p)
+        tags,notagonly = self.get_selected_tags() 
+        task = self.req.new_task(p,tags=tags)
         uid = task.get_id()
         self.open_task(uid)
     

@@ -2,7 +2,7 @@
 <project name="aze">
 	<task id="0@1" status="Active" tags="tag">
 		<title>
-			My new task
+			Parent task tag
 		</title>
 		<subtask>
 			1@1
