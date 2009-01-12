@@ -76,6 +76,14 @@ une tâche parent
 			2009-01-01
 		</donedate>
 	</task>
+	<task id="9@1" status="Active" tags="">
+		<title>
+			No tag task
+		</title>
+		<content>
+			no tag
+		</content>
+	</task>
 	<task id="6@1" status="Active" tags="tag,autro">
 		<title>
 			sous-sous

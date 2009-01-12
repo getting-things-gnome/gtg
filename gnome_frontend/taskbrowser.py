@@ -54,7 +54,8 @@ class TaskBrowser:
                 "on_tag_treeview_button_press_event" : self.on_tag_treeview_button_press_event,
                 "on_edit_item_activate"     : self.on_edit_item_activate,
                 "on_delete_item_activate" : self.on_delete_item_activate,
-                "on_colorchooser_activate" : self.on_colorchooser_activate
+                "on_colorchooser_activate" : self.on_colorchooser_activate,
+                "on_workview_toggled" : self.on_workview_toggled
                 #This signal cancel on_edit_task
                 #"on_task_tview_cursor_changed" : self.task_cursor_changed
 
@@ -63,6 +64,7 @@ class TaskBrowser:
         self.selected_rows = None
         
         self.ds = datastore
+        self.workview = False
         self.req = self.ds.get_requester()
         
     def main(self):
@@ -157,6 +159,10 @@ class TaskBrowser:
         self.refresh_tb()
         widget.destroy()
     
+    def on_workview_toggled(self,widget) :
+        self.workview = not self.workview
+        self.refresh_tb()
+    
     
     #We double clicked on a project in the project list
     def on_project_selected(self,widget,row=None ,col=None) :
@@ -213,20 +219,26 @@ class TaskBrowser:
         self.task_ts.clear()
         self.taskdone_ts.clear()
         tag_list,notag_only = self.get_selected_tags()
-        tagname_list = []
-        for t in tag_list :
-            if t : tagname_list.append(t)
         #We display only tasks of the active projects
         p_list = self.get_selected_project()
         
-        
         #We build the active tasks pane
-        active_root_tasks = self.req.get_active_tasks_list(projects=p_list,\
-                            tags=tag_list, notag_only=notag_only,is_root=True)
-        active_tasks = self.req.get_active_tasks_list(projects=p_list,\
-                            tags=tag_list, notag_only=notag_only,is_root=False)
-        for tid in active_root_tasks :
-            self.add_task_tree_to_list(self.task_ts, tid, None,selected_uid,active_tasks=active_tasks)
+        if self.workview :
+            tasks = self.req.get_active_tasks_list(projects=p_list,tags=tag_list,\
+                                            notag_only=notag_only,workable=True)
+            for tid in tasks :
+                self.add_task_tree_to_list(self.task_ts,tid,None,selected_uid,\
+                                                        treeview=False)
+                            
+        else :
+            #building the classical treeview
+            active_root_tasks = self.req.get_active_tasks_list(projects=p_list,\
+                                tags=tag_list, notag_only=notag_only,is_root=True)
+            active_tasks = self.req.get_active_tasks_list(projects=p_list,\
+                                tags=tag_list, notag_only=notag_only,is_root=False)
+            for tid in active_root_tasks :
+                self.add_task_tree_to_list(self.task_ts, tid, None,selected_uid,\
+                                                        active_tasks=active_tasks)
             
         
         #We build the closed tasks pane
@@ -280,7 +292,9 @@ class TaskBrowser:
             title = task.get_title()
         return title
 
-    def add_task_tree_to_list(self, tree_store, tid, parent,selected_uid=None,active_tasks=[]):
+    #Add tasks to a treeview. If treeview is False, it becomes a flat list
+    def add_task_tree_to_list(self, tree_store, tid, parent,selected_uid=None,\
+                                        active_tasks=[],treeview=True):
         task = self.req.get_task(tid)
         if selected_uid and selected_uid == tid :
             title = self.__build_task_title(task,extended=True)
@@ -290,10 +304,13 @@ class TaskBrowser:
         left    = task.get_days_left()
         color = task.get_color()
         my_row  = self.task_ts.append(parent, [tid,color,title,duedate,left])
-        for c in task.get_subtasks():
-            cid = c.get_id()
-            if cid in active_tasks:
-                self.add_task_tree_to_list(tree_store, cid, my_row,selected_uid,active_tasks=active_tasks)
+        #If treeview, we add add the active childs
+        if treeview :
+            for c in task.get_subtasks():
+                cid = c.get_id()
+                if cid in active_tasks:
+                    self.add_task_tree_to_list(tree_store, cid, my_row,selected_uid,\
+                                        active_tasks=active_tasks)
 
     #If a Task editor is already opened for a given task, we present it
     #Else, we create a new one.

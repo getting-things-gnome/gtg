@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Fri Jan  9 12:36:59 2009 -->
+<!--Generated with glade3 3.4.5 on Mon Jan 12 15:57:33 2009 -->
 <glade-interface>
   <widget class="GtkWindow" id="MainWindow">
     <property name="visible">True</property>
@@ -136,6 +136,25 @@
                 <property name="label" translatable="yes">Delete</property>
                 <property name="stock_id">gtk-delete</property>
                 <signal name="clicked" handler="on_delete_task"/>
+              </widget>
+              <packing>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkSeparatorToolItem" id="toolbutton1">
+                <property name="visible">True</property>
+              </widget>
+              <packing>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkToggleToolButton" id="Work View">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">Work View</property>
+                <property name="stock_id">gtk-index</property>
+                <signal name="toggled" handler="on_workview_toggled"/>
               </widget>
               <packing>
                 <property name="homogeneous">True</property>
@@ -754,7 +773,6 @@ Are you sure you to want delete this task ?</property>
         <property name="can_default">True</property>
         <property name="receives_default">True</property>
         <property name="label" translatable="yes">gtk-help</property>
-        <property name="use_underline">True</property>
         <property name="use_stock">True</property>
         <property name="response_id">0</property>
       </widget>
@@ -766,7 +784,6 @@ Are you sure you to want delete this task ?</property>
         <property name="can_default">True</property>
         <property name="receives_default">True</property>
         <property name="label" translatable="yes">gtk-cancel</property>
-        <property name="use_underline">True</property>
         <property name="use_stock">True</property>
         <property name="response_id">0</property>
       </widget>
@@ -779,7 +796,6 @@ Are you sure you to want delete this task ?</property>
         <property name="has_default">True</property>
         <property name="receives_default">True</property>
         <property name="label" translatable="yes">gtk-ok</property>
-        <property name="use_underline">True</property>
         <property name="use_stock">True</property>
         <property name="response_id">0</property>
       </widget>

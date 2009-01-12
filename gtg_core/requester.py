@@ -71,6 +71,9 @@ class Requester :
                     #Checking here the is_root because it has sense only with tags
                     elif is_root and task.has_parents(tag=tags) :
                         task = None
+                #If tags = [], we still check the is_root
+                elif task and is_root :
+                    if task.has_parents() : task = None
                 #Now checking if it has no tag
                 if task and notag_only :
                     if not task.has_tags(notag_only=notag_only) :
@@ -85,11 +88,22 @@ class Requester :
                     l_tasks.append(tid)
         return l_tasks
         
+    #Workable means that the task have no pending subtasks and can be done directly
     def get_active_tasks_list(self,projects=None,tags=None,notag_only=False,\
-                            started_only=True,is_root=False) :
-        active = ["Active"]
-        return self.get_tasks_list(projects=projects,tags=tags,status=active,\
+                            started_only=True,is_root=False,workable=False) :
+        if workable :
+            l_tasks = self.get_active_tasks_list(projects=projects, tags=tags, \
+                    notag_only=notag_only, started_only=True,is_root=False,workable=False)
+            for tid in l_tasks :
+                t = self.get_task(tid)
+                if not t.is_workable() :
+                    l_tasks.remove(tid)
+            return l_tasks
+        else :
+            active = ["Active"]
+            l_tasks = self.get_tasks_list(projects=projects,tags=tags,status=active,\
                  notag_only=notag_only,started_only=started_only,is_root=is_root)
+            return l_tasks
         
     def get_closed_tasks_list(self,projects=None,tags=None,notag_only=False,\
                             started_only=True,is_root=False) :
@@ -126,7 +140,7 @@ class Requester :
         self.ds.remove_project(pid)
         
     def get_projects_list(self) :
-        return self.ds.get_all_projects()
+        return self.ds.get_all_projects().keys()
         
     def get_project_from_pid(self,pid) :
         projects = self.ds.get_all_projects()
