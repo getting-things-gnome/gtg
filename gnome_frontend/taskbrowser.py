@@ -129,8 +129,7 @@ class TaskBrowser:
 
     def on_delete_item_activate(self, widget):
         ppid = self.get_selected_project()[0]
-        p  = self.req.get_project_from_pid(ppid)
-        self.ds.remove_project(p)
+        self.req.remove_project(ppid)
         self.refresh_projects()
         
     def on_colorchooser_activate(self,widget) :
@@ -218,10 +217,10 @@ class TaskBrowser:
         for t in tag_list :
             if t : tagname_list.append(t)
         #We display only tasks of the active projects
-        #TODO: implement queries in DataStore, and use it here
-        #TODO : refactorize get_selected_project
         p_list = self.get_selected_project()
         
+        
+        #We build the active tasks pane
         active_root_tasks = self.req.get_active_tasks_list(projects=p_list,\
                             tags=tag_list, notag_only=notag_only,is_root=True)
         active_tasks = self.req.get_active_tasks_list(projects=p_list,\
@@ -229,16 +228,6 @@ class TaskBrowser:
         for tid in active_root_tasks :
             self.add_task_tree_to_list(self.task_ts, tid, None,selected_uid,active_tasks=active_tasks)
             
-#        for p_key in p_list :
-#            p = self.req.get_project_from_pid(p_key) 
-#            #we first build the active_tasks pane
-#            for tid in p.active_tasks() :
-#                t = p.get_task(tid)
-#                if not t.has_parents(tag=tagname_list) and (tag_list==[] or t.has_tags(tagname_list)):
-#                    self.add_task_tree_to_list(p, self.task_ts, t, None,selected_uid,tags=tagname_list)
-#                #If tag_list is none, we display tasks without any tags
-#                elif not t.has_parents(tag=tagname_list) and tag_list==[None] and t.get_tags_name()==[]:
-#                    self.add_task_tree_to_list(p, self.task_ts, t, None,selected_uid,tags=tagname_list)
         
         #We build the closed tasks pane
         closed_tasks = self.req.get_closed_tasks_list(projects=p_list,tags=tag_list,\
@@ -384,7 +373,6 @@ class TaskBrowser:
                 uid = self.taskdone_ts.get_value(selection_iter, 0)
         return uid
         
-    #TODO : refactorise with requester
     def get_selected_project(self) :
         #We have to select the project
         #if pid is none, we should handle a default project
@@ -393,10 +381,10 @@ class TaskBrowser:
         pmodel, p_iter = p_selected.get_selected()
         if p_iter :
             pid = [self.project_ts.get_value(p_iter, 0)]
-            if -1 in pid: pid = self.ds.get_all_projects().keys()
+            if -1 in pid: pid = self.req.get_projects_list()
         #If no selection, we display all
         else :
-            pid = self.ds.get_all_projects().keys() 
+            pid = self.req.get_projects_list()
         return pid
 
     def get_selected_tags(self) :
@@ -426,9 +414,7 @@ class TaskBrowser:
     #if we pass a tid as a parameter, we delete directly
     #otherwise, we will look which tid is selected   
     def on_delete_confirm(self,widget) :
-        uid = self.tid_todelete
-        pr = self.req.get_project_from_uid(uid)
-        pr.delete_task(self.tid_todelete)
+        self.req.delete_task(self.tid_todelete)
         self.tid_todelete = None
         self.refresh_tb()
         

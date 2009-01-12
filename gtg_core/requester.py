@@ -21,8 +21,14 @@ class Requester :
         return task
         
     #Pid is the project in which the new task will be created
+    #MODIFICATION class (the data will be modified)
     def new_task(self,pid) :
         return self.ds.get_all_projects()[pid][PROJ_COLUMN].new_task()
+        
+    #MODIFICATION class (the data will be modified)
+    def delete_task(self,tid) :
+        pr = self.get_project_from_uid(tid)
+        pr.delete_task(tid)
         
     #Return a list of active tasks tid
     # projects = []. All the tasks will belong to one of those project
@@ -114,6 +120,10 @@ class Requester :
             d["nbr"] = len(p.active_tasks())
             l.append(d)  
         return l
+    
+    #MODIFICATION class (the data will be modified)
+    def remove_project(self,pid) :
+        self.ds.remove_project(pid)
         
     def get_projects_list(self) :
         return self.ds.get_all_projects()
