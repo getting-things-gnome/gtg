@@ -2,7 +2,7 @@
 <project name="gh">
 	<task id="1@2" status="Done" tags="closed">
 		<title>
-			My new task
+			closed task with closed tag
 		</title>
 		<donedate>
 			2009-01-12
@@ -14,7 +14,7 @@
 	</task>
 	<task id="0@2" status="Done" tags="">
 		<title>
-			My new task
+			closed task without tag
 		</title>
 		<donedate>
 			2009-01-12
