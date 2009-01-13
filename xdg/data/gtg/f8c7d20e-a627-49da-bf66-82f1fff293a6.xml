@@ -25,7 +25,7 @@
 	</task>
 	<task id="2@2" status="Dismiss" tags="autro">
 		<title>
-			task with autro tag
+			dismiss with autro tag
 		</title>
 		<content>
 			&lt;tag&gt;@autro&lt;/tag&gt;

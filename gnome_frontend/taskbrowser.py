@@ -189,6 +189,9 @@ class TaskBrowser:
         self.refresh_list()
         self.refresh_tags()
         self.refresh_projects()
+        #Refreshing the opened editors
+        for uid in self.opened_task :
+            self.opened_task[uid].refresh_editor()
 
     #We refresh the tag list. Not needed very often
     def refresh_tags(self) :
@@ -343,8 +346,8 @@ class TaskBrowser:
         if self.opened_task.has_key(uid) :
             self.opened_task[uid].present()
         else :
-            tv = TaskEditor(t,self.refresh_tb,self.on_delete_task,
-                            self.close_task,self,self.get_tasktitle)
+            tv = TaskEditor(self.req,t,self.refresh_tb,self.on_delete_task,
+                            self.close_task,self.open_task,self.get_tasktitle)
             #registering as opened
             self.opened_task[uid] = tv
             
@@ -396,14 +399,15 @@ class TaskBrowser:
     #Get_selected_task returns the uid :
     # uid (example : '21@1')
     #By default, we select in the task_tview
-    def get_selected_task(self,tview=None) :
+    def get_selected_task(self,tv=None) :
         uid = None
-        if not tview : tview = self.task_tview
+        if not tv : tview = self.task_tview
+        else : tview = tv
         # Get the selection in the gtk.TreeView
         selection = tview.get_selection()
         #If we don't have anything and no tview specified
         #Let's have a look in the closed task view
-        if selection.count_selected_rows() <= 0 and not tview :
+        if selection.count_selected_rows() <= 0 and not tv :
             tview = self.taskdone_tview
             selection = tview.get_selection()
         # Get the selection iter
@@ -483,15 +487,21 @@ class TaskBrowser:
         uid = self.get_selected_task()
         if uid :
             zetask = self.req.get_task(uid)
-            zetask.set_status("Done")
-            self.refresh_list()
+            status = zetask.get_status() 
+            if status == "Done" :
+                zetask.set_status("Active")
+            else : zetask.set_status("Done")
+            self.refresh_tb()
     
     def on_dismiss_task(self,widget) :
         uid = self.get_selected_task()
         if uid :
             zetask = self.req.get_task(uid)
-            zetask.set_status("Dismiss")
-            self.refresh_list()
+            status = zetask.get_status() 
+            if status == "Dismiss" :
+                zetask.set_status("Active")
+            else : zetask.set_status("Dismiss")
+            self.refresh_tb()
         
     def on_select_tag(self, widget, row=None ,col=None) :
         #When you clic on a tag, you want to unselect the tasks
