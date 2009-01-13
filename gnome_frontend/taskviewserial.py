@@ -1,7 +1,8 @@
 import xml.dom.minidom
 
-CONTENT = "content"
 
+#The following functions are used by the gtk.TextBuffer to serialize
+#and unserialize the content of the task
 
 ########### Serializing functions ###############
 
@@ -15,7 +16,7 @@ def serialize(register_buf, content_buf, start, end, udata) :
     #the content of the buffer.
     doc = xml.dom.minidom.Document()
     tag_stack = {}
-    doc.appendChild(parse_buffer(content_buf,its, ite,CONTENT,doc,tag_stack))
+    doc.appendChild(parse_buffer(content_buf,its, ite,"content",doc,tag_stack))
     #We don't want the whole doc with the XML declaration
     #we only take the first node (the "content" one)
     node = doc.firstChild

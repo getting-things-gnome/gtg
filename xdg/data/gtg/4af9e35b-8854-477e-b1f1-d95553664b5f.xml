@@ -35,6 +35,9 @@ une tâche parent
 		<title>
 			sous tache
 		</title>
+		<content>
+			&lt;tag&gt;@new_tag&lt;/tag&gt;, 
+		</content>
 	</task>
 	<task id="8@1" status="Active" tags="tag,autro">
 		<title>
