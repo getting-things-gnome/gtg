@@ -17,9 +17,8 @@
 import gtk
 import gobject
 import pango
-import xml.dom.minidom
 
-from gnome_frontend import taskviewserial
+from gnome_frontend import taskviewserial,taskviewunserial
 
 class TaskView(gtk.TextView):
     __gtype_name__ = 'HyperTextView'
@@ -97,8 +96,10 @@ class TaskView(gtk.TextView):
         
         #Let's try with serializing
         self.mime_type = 'application/x-gtg-task'
-        self.buff.register_serialize_format(self.mime_type, taskviewserial.serialize, None)
-        self.buff.register_deserialize_format(self.mime_type, self.__taskdeserial, None)
+        serializer = taskviewserial.Serializer()
+        unserializer = taskviewunserial.Unserializer(self)
+        self.buff.register_serialize_format(self.mime_type, serializer.serialize, None)
+        self.buff.register_deserialize_format(self.mime_type, unserializer.unserialize, None)
 
     
     #This function is called to refresh the editor 
@@ -182,32 +183,13 @@ class TaskView(gtk.TextView):
         tag.connect('event', self._tag_event, text, anchor,typ)
         self.__tags.append(tag)
         return tag
-    
-    #Insert a list of subtasks at the end of the buffer
-    def insert_subtasks(self,st_list) :
-        for tid in st_list :
-            line_nbr = self.buff.get_end_iter().get_line()
-            self.__subtask(line_nbr,tid)
-            
-    #insert a GTG tag with its TextView tag.
-    #Yes, we know : the word tag is used for two different concepts here.
-    def insert_tag(self,tag,itera=None) :
-        if not itera :
-            itera = self.buff.get_end_iter()
-        if tag :
-            sm = self.buff.create_mark(None,itera,True)
-            em = self.buff.create_mark(None,itera,False)
-            self.buff.insert(itera,tag)
-            s = self.buff.get_iter_at_mark(sm)
-            e = self.buff.get_iter_at_mark(em)
-            self.apply_tag_tag(tag,s,e)
         
         
-    def apply_tag_tag(self,tag,s,e) :
-        texttag = self.buff.create_tag(None,**self.get_property('tag'))
+    def apply_tag_tag(self,buff,tag,s,e) :
+        texttag = buff.create_tag(None,**self.get_property('tag'))
         texttag.set_data('is_tag', True)
         texttag.set_data('tagname',tag)
-        self.buff.apply_tag(texttag,s,e)
+        buff.apply_tag(texttag,s,e)
 
         
  ##### The "Get text" group #########
@@ -219,7 +201,6 @@ class TaskView(gtk.TextView):
         table = self.buff.get_tag_table()
         
         #we get the text
-        #texte = self.buff.get_text(self.buff.get_start_iter(),self.buff.get_end_iter())
         start = self.buff.get_start_iter()
         conti = True
         while conti and not start.ends_tag(self.table.lookup("title")) :
@@ -242,74 +223,6 @@ class TaskView(gtk.TextView):
         #Let's strip blank lines
         stripped = title.strip(' \n\t')
         return stripped
-        
-
-        
-    #parse the XML and put the content in the buffer
-    def __parsexml(self,buf,ite,element) :
-        start = buf.create_mark(None,ite,True)
-        end   = buf.create_mark(None,ite,False)
-        subtasks = self.get_subtasks()
-        taglist2 = []
-        if element :
-            for n in element.childNodes :
-                itera = buf.get_iter_at_mark(end)
-                if n.nodeType == n.ELEMENT_NODE :
-                    #print "<%s>" %n.nodeName
-                    if n.nodeName == "subtask" :
-                        tid = n.firstChild.nodeValue
-                        #We remove the added subtask from the list
-                        #Of known subtasks
-                        #If the subtask is not in the list, we don't write it
-                        if tid in subtasks :
-                            subtasks.remove(tid)
-                            line_nbr = itera.get_line()
-                            self.__subtask(line_nbr,tid)
-                    elif n.nodeName == "tag" :
-                        text = n.firstChild.nodeValue
-                        if text :
-                            self.insert_tag(text,itera)
-                            #We remove the added tag from the tag list
-                            #of known tag for this task
-                            taglist2.append(text[1:])
-                    else :
-                        self.__parsexml(buf,itera,n)
-                        s = buf.get_iter_at_mark(start)
-                        e = buf.get_iter_at_mark(end)
-                        if n.nodeName == "link" :
-                            anchor = n.getAttribute("target")
-                            tag = self.create_anchor_tag(buf,anchor,None)
-                            buf.apply_tag(tag,s,e)
-                        else :
-                            buf.apply_tag_by_name(n.nodeName,s,e)
-                elif n.nodeType == n.TEXT_NODE :
-                    buf.insert(itera,n.nodeValue)
-        #Now, we insert the remaining subtasks
-        self.insert_subtasks(subtasks)
-        #We also insert the remaining tags (a a new line)
-        taglist = self.get_tagslist()
-        for t in taglist2 :
-            if t in taglist :
-                taglist.remove(t)
-        if len(taglist) > 0 :
-            self.__insert_at_mark(end,"\n")
-        for t in taglist :
-            it = buf.get_iter_at_mark(end)
-            self.insert_tag("@%s"%t,it)
-            self.__insert_at_mark(end,", ")
-        buf.delete_mark(start)
-        buf.delete_mark(end)
-        return True
-        
-        
-    ### Deserialize : put all in the TextBuffer
-    def __taskdeserial(self,register_buf, content_buf, ite, data, cr_tags, udata) :
-        if data :
-            element = xml.dom.minidom.parseString(data)
-            success = self.__parsexml(content_buf,ite,element.firstChild)
-        else :
-            success = self.__parsexml(content_buf,ite,None)
-        return True
         
 ### PRIVATE FUNCTIONS ##########################################################
         
@@ -382,13 +295,6 @@ class TaskView(gtk.TextView):
         while char_end.compare(body_end) <= 0:
             do_word_check = False
             my_char       = self.buff.get_text(char_start, char_end)
-#            if my_char in [' ','.',',','/','\n','\t','!','?',';']:
-#                if char_start.compare(word_end) > 0:
-#                    word_end   = char_start.copy()
-#                else:
-#                    word_start = char_end.copy()
-#                    word_end   = char_end.copy()
-
             if my_char not in [' ','.',',','/','\n','\t','!','?',';']:
                 word_end = char_end.copy()
             else:
@@ -404,8 +310,7 @@ class TaskView(gtk.TextView):
                 
                     # We do something about it
                     if len(my_word) > 0 and my_word[0] == '@':
-                        self.apply_tag_tag(my_word,word_start,word_end)
-                        #self.buff.apply_tag_by_name("tag", word_start, word_end)
+                        self.apply_tag_tag(self.buff,my_word,word_start,word_end)
                         #adding tag to a local list
                         tag_list.append(my_word[1:])
                         #adding tag to the model
@@ -458,32 +363,32 @@ class TaskView(gtk.TextView):
         return False
             
         
-    def __newsubtask(self,title,line_nbr) :
+    def __newsubtask(self,buff,title,line_nbr) :
         anchor = self.new_subtask_callback(title)
-        self.__subtask(line_nbr,anchor)
+        self.write_subtask(buff,line_nbr,anchor)
         self.refresh_browser()
         
-    def __subtask(self,line_nbr,anchor) :
-        start_i = self.buff.get_iter_at_line(line_nbr)
-        start   = self.buff.create_mark("start",start_i,True)
+    def write_subtask(self,buff,line_nbr,anchor) :
+        start_i = buff.get_iter_at_line(line_nbr)
+        start   = buff.create_mark("start",start_i,True)
         end_i   = start_i.copy()
         end_i.forward_line()
-        end     = self.buff.create_mark("end",end_i,False)
-        self.buff.delete(start_i,end_i)
+        end     = buff.create_mark("end",end_i,False)
+        buff.delete(start_i,end_i)
         bullet ='  ↪ '
-        self.__insert_at_mark(start,bullet)
+        self.__insert_at_mark(buff,start,bullet)
         self.__apply_tag_to_mark(start,end,name="bullet")
         newline = self.get_subtasktitle(anchor)
-        self.__insert_at_mark(end,newline,anchor=anchor)
+        self.__insert_at_mark(buff,end,newline,anchor=anchor)
         #The invisible "subtask" tag
         #It must be the last tag set as it's around everything else
-        tag = self.buff.create_tag(None)
+        tag = buff.create_tag(None)
         tag.set_data('is_subtask', True)
         tag.set_data('child',anchor)
         self.__apply_tag_to_mark(start,end,tag=tag)
-        self.__insert_at_mark(end,"\n")
-        self.buff.delete_mark(start)
-        self.buff.delete_mark(end)
+        self.__insert_at_mark(buff,end,"\n")
+        buff.delete_mark(start)
+        buff.delete_mark(end)
         
     def __apply_tag_to_mark(self,start,end,tag=None,name=None) :
         start_i = self.buff.get_iter_at_mark(start)
@@ -493,12 +398,12 @@ class TaskView(gtk.TextView):
         elif name :
             self.buff.apply_tag_by_name(name,start_i,end_i)
     
-    def __insert_at_mark(self,mark,text,anchor=None) :
-        ite = self.buff.get_iter_at_mark(mark)
+    def __insert_at_mark(self,buff,mark,text,anchor=None) :
+        ite = buff.get_iter_at_mark(mark)
         if anchor :
             self.insert_with_anchor(text,anchor,_iter=ite,typ="subtask")
         else :
-            self.buff.insert(ite,text)
+            buff.insert(ite,text)
         
     #Function called each time the user input a letter   
     def _insert_at_cursor(self, tv, itera, tex, leng) :
@@ -518,7 +423,7 @@ class TaskView(gtk.TextView):
                 #Python 2.5 should allow both tests in one
                 if line.startswith('-') or line.startswith(' -') :
                     line = line.lstrip(' -')
-                    self.__newsubtask(line,line_nbr)
+                    self.__newsubtask(self.buff,line,line_nbr)
                     
                     #We must stop the signal because if not,
                     #\n will be inserted twice !
