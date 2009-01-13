@@ -27,7 +27,9 @@ class TaskView(gtk.TextView):
         'link':  (gobject.TYPE_PYOBJECT, 'link color', 'link color of TextView', gobject.PARAM_READWRITE),
         'active':(gobject.TYPE_PYOBJECT, 'active color', 'active color of TextView', gobject.PARAM_READWRITE),
         'hover': (gobject.TYPE_PYOBJECT, 'link:hover color', 'link:hover color of TextView', gobject.PARAM_READWRITE),
-        'tag' :(gobject.TYPE_PYOBJECT, 'tag color', 'tag color of TextView', gobject.PARAM_READWRITE)
+        'tag' :(gobject.TYPE_PYOBJECT, 'tag color', 'tag color of TextView', gobject.PARAM_READWRITE),
+        'done':  (gobject.TYPE_PYOBJECT, 'link color', 'link color of TextView', gobject.PARAM_READWRITE),
+        
         }
 
     def do_get_property(self, prop):
@@ -42,19 +44,22 @@ class TaskView(gtk.TextView):
         else:
             raise AttributeError, 'unknown property %s' % prop.name
 
-    def __init__(self, buffer=None):
+    def __init__(self, requester, buffer=None):
         gtk.TextView.__init__(self, buffer)
         self.buff = self.get_buffer()
+        self.req = requester
         #Buffer init
         #self.buff.set_text("%s\n"%title)
         
         self.link   = {'background': 'white', 'foreground': 'blue', 
-                                    'underline': pango.UNDERLINE_SINGLE}
+                                    'underline': pango.UNDERLINE_SINGLE, 'strikethrough':False}
+        self.done   = {'background': 'white', 'foreground': 'gray', 
+                                    'strikethrough': True}
         self.active = {'background': 'light gray', 'foreground': 'red', 
                                     'underline': pango.UNDERLINE_SINGLE}
-        self.hover  = {'background': 'light gray', 'foreground': 'blue', 
-                                    'underline': pango.UNDERLINE_SINGLE}
+        self.hover  = {'background': 'light gray'}
         self.tag = {'background': "#FFFF66", 'foreground' : "#FF0000"}
+        
         
         ###### Tag we will use ######
         # We use the tag table (tag are defined here but set in self.modified)
@@ -175,7 +180,12 @@ class TaskView(gtk.TextView):
         #We cannot have two tags with the same name
         #That's why the link tag has no name
         #but it has a "is_anchor" property
-        tag = b.create_tag(None, **self.get_property('link'))
+        task = self.req.get_task(anchor)
+        if task and task.get_status() == "Active" :
+            linktype = 'link'
+        else :
+            linktype = 'done'
+        tag = b.create_tag(None, **self.get_property(linktype))
         tag.set_data('is_anchor', True)
         tag.set_data('link',anchor)
         if typ :
@@ -466,8 +476,11 @@ class TaskView(gtk.TextView):
 
     def __tag_reset(self, tag, window):
         if tag.get_data('is_anchor'):
+            #We need to get the normal cursor back
             editing_cursor = gtk.gdk.Cursor(gtk.gdk.XTERM)
-            self.__set_anchor(window, tag, editing_cursor, self.get_property('link'))
+            if tag.get_property('strikethrough') : linktype = 'done'
+            else : linktype = 'link'
+            self.__set_anchor(window, tag, editing_cursor, self.get_property(linktype))
 
     def __set_anchor(self, window, tag, cursor, prop):
         window.set_cursor(cursor)

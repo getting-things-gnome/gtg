@@ -31,13 +31,16 @@ une tâche parent
 &lt;subtask&gt;5@1&lt;/subtask&gt;
 		</content>
 	</task>
-	<task id="11@1" status="Active" tags="new_tag">
+	<task id="11@1" status="Done" tags="new_tag">
 		<title>
 			sous tache
 		</title>
+		<donedate>
+			2009-01-14
+		</donedate>
 		<content>
 			&lt;tag&gt;@new_tag&lt;/tag&gt;, 
-&lt;subtask&gt;12@1&lt;/subtask&gt;
+
 		</content>
 	</task>
 	<task id="8@1" status="Active" tags="tag,autro">
@@ -70,10 +73,13 @@ une tâche parent
 		<subtask>
 			11@1
 		</subtask>
+		<subtask>
+			12@1
+		</subtask>
 		<content>
 			&lt;tag&gt;@new_tag&lt;/tag&gt;
 pour voir
-&lt;subtask&gt;11@1&lt;/subtask&gt;
+&lt;subtask&gt;11@1&lt;/subtask&gt;&lt;subtask&gt;12@1&lt;/subtask&gt;
 		</content>
 	</task>
 	<task id="5@1" status="Active" tags="aze">
@@ -123,6 +129,14 @@ pour voir
 		</donedate>
 		<content>
 			&lt;tag&gt;@donetask&lt;/tag&gt;
+		</content>
+	</task>
+	<task id="12@1" status="Active" tags="new_tag">
+		<title>
+			une tautre
+		</title>
+		<content>
+			&lt;tag&gt;@new_tag&lt;/tag&gt;, 
 		</content>
 	</task>
 	<task id="7@1" status="Active" tags="autro">

@@ -343,7 +343,7 @@ class TaskBrowser:
         if self.opened_task.has_key(uid) :
             self.opened_task[uid].present()
         else :
-            tv = TaskEditor(t,self.refresh_tb,self.on_delete_task,
+            tv = TaskEditor(self.req,t,self.refresh_tb,self.on_delete_task,
                             self.close_task,self.open_task,self.get_tasktitle)
             #registering as opened
             self.opened_task[uid] = tv
