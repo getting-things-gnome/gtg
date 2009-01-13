@@ -31,7 +31,7 @@ une tâche parent
 &lt;subtask&gt;5@1&lt;/subtask&gt;
 		</content>
 	</task>
-	<task id="8@1" status="Active" tags="tag,autro">
+	<task id="8@1" status="Active" tags="tag">
 		<title>
 			4ème level
 		</title>

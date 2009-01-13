@@ -113,6 +113,6 @@ class Backend :
         cleanxml.savexml(self.zefile,doc)
 
     #It's easier to save the whole project each time we change a task
-    def sync_task(self,task_id) :
+    def sync_task(self,task) :
         self.sync_project()
         
