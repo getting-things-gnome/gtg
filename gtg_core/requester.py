@@ -1,13 +1,15 @@
+from tools.listes import *
 #Requester is a pure View object. It will not do anything but it will
 #be used by any Interface to handle the requests to the datastore
 
 BACKEND_COLUMN = 0
 PROJ_COLUMN = 1
 
+#There could be multiple requester. It means that a requester should never
+#Hold any data except a reference to its datastore.
 class Requester :
     def __init__(self,datastore) :
         self.ds = datastore
-        self.tagstore = self.ds.get_tagstore()
         
         
     ############## Tasks ##########################
@@ -117,11 +119,7 @@ class Requester :
         closed = ["Done","Dismiss","Deleted"]
         return self.get_tasks_list(projects=projects,tags=tags,status=closed,\
                  notag_only=notag_only,started_only=started_only,is_root=is_root)
-    
-#    def get_tasks_tree(self,projects=None,tags=None,\
-#            status=["Active"],notag_only=False,started_only=True) :
-#        pass
-#    
+                 
         
     ############## Projects #######################
     ###############################################
@@ -167,7 +165,8 @@ class Requester :
     ###############################################    
     #Not used currently because it returns every tag that was ever used
     def get_all_tags(self):
-        return self.tagstore.get_all_tags()
+        return returnlist(self.ds.get_tagstore().get_all_tags())
+        
         
     #return only tags that are currently used in a task
     #FIXME it should be only active and visible tasks
