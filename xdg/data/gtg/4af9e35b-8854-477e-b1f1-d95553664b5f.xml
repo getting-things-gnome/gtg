@@ -40,7 +40,6 @@ une tâche parent
 		</donedate>
 		<content>
 			&lt;tag&gt;@new_tag&lt;/tag&gt;, 
-
 		</content>
 	</task>
 	<task id="8@1" status="Active" tags="tag,autro">
@@ -135,6 +134,9 @@ pour voir
 		<title>
 			une tautre
 		</title>
+		<donedate>
+			2009-01-14
+		</donedate>
 		<content>
 			&lt;tag&gt;@new_tag&lt;/tag&gt;, 
 		</content>
