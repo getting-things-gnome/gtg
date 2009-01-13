@@ -415,7 +415,6 @@ class TaskBrowser:
         if selection_iter :
             ts = tview.get_model()
             uid = ts.get_value(selection_iter, 0)
-        print uid
         return uid
         
     def get_selected_project(self) :
@@ -492,7 +491,7 @@ class TaskBrowser:
             if status == "Done" :
                 zetask.set_status("Active")
             else : zetask.set_status("Done")
-            self.refresh_list()
+            self.refresh_tb()
     
     def on_dismiss_task(self,widget) :
         uid = self.get_selected_task()
@@ -502,7 +501,7 @@ class TaskBrowser:
             if status == "Dismiss" :
                 zetask.set_status("Active")
             else : zetask.set_status("Dismiss")
-            self.refresh_list()
+            self.refresh_tb()
         
     def on_select_tag(self, widget, row=None ,col=None) :
         #When you clic on a tag, you want to unselect the tasks

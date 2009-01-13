@@ -42,7 +42,7 @@ une tâche parent
 			&lt;tag&gt;@new_tag&lt;/tag&gt;, 
 		</content>
 	</task>
-	<task id="8@1" status="Active" tags="tag,autro">
+	<task id="8@1" status="Active" tags="tag">
 		<title>
 			4ème level
 		</title>
@@ -81,7 +81,7 @@ pour voir
 &lt;subtask&gt;11@1&lt;/subtask&gt;&lt;subtask&gt;12@1&lt;/subtask&gt;
 		</content>
 	</task>
-	<task id="5@1" status="Active" tags="aze">
+	<task id="5@1" status="Done" tags="aze">
 		<title>
 			child
 		</title>
@@ -91,6 +91,9 @@ pour voir
 		<startdate>
 			2008-11-11
 		</startdate>
+		<donedate>
+			2009-01-14
+		</donedate>
 		<content>
 			&lt;tag&gt;@aze&lt;/tag&gt;,
 		</content>

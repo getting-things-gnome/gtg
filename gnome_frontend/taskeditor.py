@@ -126,7 +126,6 @@ class TaskEditor :
             self.window.set_title(self.task.get_title())
            
         status = self.task.get_status() 
-        print "refreshing status %s" %status
         if status == "Dismiss" :
             self.donebutton.set_label(GnomeConfig.MARK_DONE)
             self.dismissbutton.set_label(GnomeConfig.MARK_UNDISMISS)
