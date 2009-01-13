@@ -19,6 +19,8 @@ import gobject
 import pango
 import xml.dom.minidom
 
+from gnome_frontend import taskviewserial
+
 class TaskView(gtk.TextView):
     __gtype_name__ = 'HyperTextView'
     __gsignals__ = {'anchor-clicked': (gobject.SIGNAL_RUN_LAST, None, (str, str, int))}
@@ -66,14 +68,7 @@ class TaskView(gtk.TextView):
         fluo_tag   = self.buff.create_tag("fluo",background="#F0F")
         # Tag for bullets
         bullet_tag = self.buff.create_tag("bullet", scale=1.6)
-        # Tag for tags
-#        tags_tag = self.buff.create_tag("tag", background="#FFFF66", foreground="#FF0000")
-#        tags_tag.set_data('is_tag', True)
-        #subtask_tag = self.buff.create_tag("subtask",background="#FF0")
-        #start = self.buff.get_start_iter()
         end = self.buff.get_end_iter()
-        #We have to find a way to keep this tag for the first line
-        #Even when the task is edited
 
         #This is the list of all the links in our task
         self.__tags = []
@@ -102,7 +97,7 @@ class TaskView(gtk.TextView):
         
         #Let's try with serializing
         self.mime_type = 'application/x-gtg-task'
-        self.buff.register_serialize_format(self.mime_type, self.__taskserial, None)
+        self.buff.register_serialize_format(self.mime_type, taskviewserial.serialize, None)
         self.buff.register_deserialize_format(self.mime_type, self.__taskdeserial, None)
 
     
@@ -117,10 +112,6 @@ class TaskView(gtk.TextView):
     #This callback is called to add a new tag
     def set_remove_tag_callback(self,funct) :
         self.remove_tag_callback = funct
-    
-    #This callback is called to add a new tag
-#    def set_set_tag_callback(self,funct) :
-#        self.set_tag_callback = funct
         
     #This callback is called to have the list of tags of a task
     def set_get_tagslist_callback(self,funct) :
@@ -165,7 +156,7 @@ class TaskView(gtk.TextView):
             _iter = self.buff.get_end_iter()
         #Ok, this line require an integer at some place !
         self.buff.deserialize(self.buff, self.mime_type, _iter, text)
-        #self.buff.insert(_iter, text)
+    #This insert raw text without deserializing
     def insert_text(self,text, _iter=None) :
         if _iter is None :
             _iter = self.buff.get_end_iter()
@@ -252,97 +243,7 @@ class TaskView(gtk.TextView):
         stripped = title.strip(' \n\t')
         return stripped
         
-########### Serializing functions ###############
 
-    def __parsebuf(self, buf, start, end, name, doc) :
-        """
-        Parse the buffer and output an XML representation.
-        
-          @var buf  : the buffer to parse from start to end
-          @var name : the name of the XML element and doc is the XML dom
-          
-        """
-        
-        txt    = ""
-        it     = start.copy()
-        parent = doc.createElement(name)
-        
-        while (it.get_offset() < end.get_offset()) and (it.get_char() != '\0'):
-            
-            # If a tag begin, we will parse until the end
-            if it.begins_tag() :
-                
-                # We take the tag with the highest priority
-                # The last of the list is the highest priority
-                ta_list = it.get_tags()
-                ta      = ta_list.pop()
-                
-                #remove the tag (to avoid infinite loop)
-                #buf.remove_tag(ta,startit,endit)
-                #But we are modifying the buffer. So instead,
-                #We put the tag in the stack so we remember it was
-                #already processed.
-                startit = it.copy()
-                offset  = startit.get_offset()
-                
-                #a boolean to know if we have processed all tags here
-                all_processed = False
-                
-                #Have we already processed a tag a this point ?
-                if self.__tag_stack.has_key(offset) :
-                    #Have we already processed this particular tag ?
-                    while (not all_processed) and ta.props.name in self.__tag_stack[offset]:
-                        #Yes, so we take another tag (if there's one)
-                        if len(ta_list) <= 0 :
-                            all_processed = True
-                        else :
-                            ta = ta_list.pop()
-                else :
-                    #if we process the first tag of this offset, we add an entry
-                    self.__tag_stack[offset] = []
-                    
-                #No tag to process, we are in the text mode
-                if all_processed :
-                    #same code below. Should we make a separate function ?
-                    parent.appendChild(doc.createTextNode(it.get_char()))
-                    it.forward_char()
-                else :
-                    #So now, we are in tag "ta"
-                    #Let's get the end of the tag
-                    it.forward_to_tag_toggle(ta)
-                    endit   = it.copy()
-                    tagname = ta.props.name
-                    #Let's add this tag to the stack so we remember
-                    #it's already processed
-                    self.__tag_stack[offset].append(tagname)
-                    if ta.get_data('is_subtask') :
-                        tagname = "subtask"
-                        subt    = doc.createElement(tagname)
-                        target  = ta.get_data('child')
-                        subt.appendChild(doc.createTextNode(target))
-                        parent.appendChild(subt)
-                        it.forward_line()
-                    elif ta.get_data('is_tag') :
-                        #Recursive call !!!!! (we handle tag in tags)
-                        child = self.__parsebuf(buf,startit,endit,"tag",doc)
-                        parent.appendChild(child)
-                    else :
-                        #The link tag has noname but has "is_anchor" properties
-                        if ta.get_data('is_anchor'): tagname = "link"
-                        #Recursive call !!!!! (we handle tag in tags)
-                        child = self.__parsebuf(buf,startit,endit,tagname,doc)
-                        #handling special tags
-                        if ta.get_data('is_anchor') :
-                            child.setAttribute("target",ta.get_data('link'))
-                        parent.appendChild(child)
-            #else, we just add the text
-            else :
-                parent.appendChild(doc.createTextNode(it.get_char()))
-                it.forward_char()
-                
-        #This function concatenate all the adjacent text node of the XML
-        parent.normalize()
-        return parent
         
     #parse the XML and put the content in the buffer
     def __parsexml(self,buf,ite,element) :
@@ -400,22 +301,6 @@ class TaskView(gtk.TextView):
         buf.delete_mark(end)
         return True
         
-                
-    ### Serialize the task : transform it's content in something
-    #we can store
-    def __taskserial(self,register_buf, content_buf, start, end, udata) :
-        #Currently we serialize in XML
-        its = start.copy()
-        ite = end.copy()
-        #Warning : the serialization process cannot be allowed to modify 
-        #the content of the buffer.
-        doc = xml.dom.minidom.Document()
-        self.__tag_stack = {}
-        doc.appendChild(self.__parsebuf(content_buf,its, ite,"content",doc))
-        #We don't want the whole doc with the XML declaration
-        #we only take the first node (the "content" one)
-        node = doc.firstChild
-        return node.toxml().encode("utf-8")
         
     ### Deserialize : put all in the TextBuffer
     def __taskdeserial(self,register_buf, content_buf, ite, data, cr_tags, udata) :
