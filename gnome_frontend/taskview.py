@@ -44,7 +44,8 @@ class TaskView(gtk.TextView):
         else:
             raise AttributeError, 'unknown property %s' % prop.name
 
-    def __init__(self, requester, buffer=None):
+    #Yes, we want to redefine the buffer. Disabling pylint on that error.
+    def __init__(self, requester, buffer=None): #pylint: disable-msg=W0622
         gtk.TextView.__init__(self, buffer)
         self.buff = self.get_buffer()
         self.req = requester
@@ -68,11 +69,11 @@ class TaskView(gtk.TextView):
         title_tag  = self.buff.create_tag("title",foreground="#12F",scale=1.6,underline=1)
         title_tag.set_property("pixels-above-lines",10)
         title_tag.set_property("pixels-below-lines",10)
-        # Tag for highlight
-        fluo_tag   = self.buff.create_tag("fluo",background="#F0F")
+        # Tag for highlight (tags are automatically added to the tag table)
+        self.buff.create_tag("fluo",background="#F0F")
         # Tag for bullets
-        bullet_tag = self.buff.create_tag("bullet", scale=1.6)
-        end = self.buff.get_end_iter()
+        self.buff.create_tag("bullet", scale=1.6)
+        #end = self.buff.get_end_iter()
 
         #This is the list of all the links in our task
         self.__tags = []
@@ -105,6 +106,15 @@ class TaskView(gtk.TextView):
         unserializer = taskviewunserial.Unserializer(self)
         self.buff.register_serialize_format(self.mime_type, serializer.serialize, None)
         self.buff.register_deserialize_format(self.mime_type, unserializer.unserialize, None)
+        
+        #The list of callbacks we have to set
+        self.remove_tag_callback = None
+        self.add_tag_callback = None
+        self.get_tagslist = None
+        self.get_subtasks = None
+        self.refresh_browser = None
+        self.remove_subtask =None
+        
 
     
     #This function is called to refresh the editor 
@@ -185,7 +195,7 @@ class TaskView(gtk.TextView):
             linktype = 'link'
         else :
             linktype = 'done'
-        tag = b.create_tag(None, **self.get_property(linktype))
+        tag = b.create_tag(None, **self.get_property(linktype)) #pylint: disable-msg=W0142
         tag.set_data('is_anchor', True)
         tag.set_data('link',anchor)
         if typ :
@@ -196,7 +206,7 @@ class TaskView(gtk.TextView):
         
         
     def apply_tag_tag(self,buff,tag,s,e) :
-        texttag = buff.create_tag(None,**self.get_property('tag'))
+        texttag = buff.create_tag(None,**self.get_property('tag'))#pylint: disable-msg=W0142
         texttag.set_data('is_tag', True)
         texttag.set_data('tagname',tag)
         buff.apply_tag(texttag,s,e)
@@ -206,10 +216,6 @@ class TaskView(gtk.TextView):
     #Get the complete serialized text
     #But without the title
     def get_text(self) :
-        #the tag table
-        #Currently, we are not saving the tag table
-        table = self.buff.get_tag_table()
-        
         #we get the text
         start = self.buff.get_start_iter()
         conti = True
@@ -236,7 +242,7 @@ class TaskView(gtk.TextView):
         
 ### PRIVATE FUNCTIONS ##########################################################
         
-    def _modified(self,a=None) :
+    def _modified(self,a=None) : #pylint: disable-msg=W0613
         """
         This function is called when the buffer has been modified,
         it reflects the changes by:
@@ -286,7 +292,7 @@ class TaskView(gtk.TextView):
         #Removing all texttag related to GTG tags
         #self.buff.remove_tag_by_name ('tag', body_start, body_end)
         table = self.buff.get_tag_table()
-        def remove_tag_tag(texttag,data) :
+        def remove_tag_tag(texttag,data) : #pylint: disable-msg=W0613
             if texttag.get_data("is_tag") :
                 table.remove(texttag)
                 #print "removing %s" %texttag.get_data("tagname")
@@ -311,8 +317,8 @@ class TaskView(gtk.TextView):
                 do_word_check = True
                 
             if char_end.compare(body_end) == 0:
-              do_word_check = True
-                
+                do_word_check = True
+            
             # We have a new word
             if do_word_check:
                 if (word_end.compare(word_start) > 0):
@@ -331,7 +337,8 @@ class TaskView(gtk.TextView):
                 word_end   = char_end.copy()
 
             # Stop loop if we are at the end
-            if char_end.compare(body_end) == 0: break
+            if char_end.compare(body_end) == 0: 
+                break
             
             # We search the next word
             char_start = char_end.copy()
@@ -355,7 +362,7 @@ class TaskView(gtk.TextView):
         #Ok, we took care of the modification
         self.buff.set_modified(False)
         
-    def _delete_range(self,buff,start,end) :
+    def _delete_range(self,buff,start,end) : #pylint: disable-msg=W0613
         it = start.copy()
         while (it.get_offset() <= end.get_offset()) and (it.get_char() != '\0'):
             if it.begins_tag() :
@@ -370,6 +377,7 @@ class TaskView(gtk.TextView):
                     if ta.get_data('is_tag') :
                         self.remove_tag_callback(ta.get_data('tagname'))
             it.forward_char()
+        #We return false so the parent still get the signal
         return False
             
         
@@ -416,7 +424,7 @@ class TaskView(gtk.TextView):
             buff.insert(ite,text)
         
     #Function called each time the user input a letter   
-    def _insert_at_cursor(self, tv, itera, tex, leng) :
+    def _insert_at_cursor(self, tv, itera, tex, leng) : #pylint: disable-msg=W0613
         #New line : the user pressed enter !
         #If the line begins with "-", it's a new subtask !
         if tex == '\n' :
@@ -457,7 +465,7 @@ class TaskView(gtk.TextView):
             tag_table.foreach(self.__tag_reset, window)
 
     #We clicked on a link
-    def _tag_event(self, tag, view, ev, _iter, text, anchor,typ):
+    def _tag_event(self, tag, view, ev, _iter, text, anchor,typ): #pylint: disable-msg=W0613
         _type = ev.type
         if _type == gtk.gdk.MOTION_NOTIFY:
             return
@@ -478,8 +486,10 @@ class TaskView(gtk.TextView):
         if tag.get_data('is_anchor'):
             #We need to get the normal cursor back
             editing_cursor = gtk.gdk.Cursor(gtk.gdk.XTERM)
-            if tag.get_property('strikethrough') : linktype = 'done'
-            else : linktype = 'link'
+            if tag.get_property('strikethrough') : 
+                linktype = 'done'
+            else : 
+                linktype = 'link'
             self.__set_anchor(window, tag, editing_cursor, self.get_property(linktype))
 
     def __set_anchor(self, window, tag, cursor, prop):

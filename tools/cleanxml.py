@@ -7,15 +7,15 @@ enter = "\n"
 #Those two functions are there only to be able to read prettyXML
 #Source : http://yumenokaze.free.fr/?/Informatique/Snipplet/Python/cleandom       
 def cleanDoc(document,indent="",newl=""):
-    node=document.documentElement
+    node = document.documentElement
     cleanNode(node,indent,newl)
 
 def cleanNode(currentNode,indent,newl):
-    filter=indent+newl
+    myfilter = indent+newl
     if currentNode.hasChildNodes:
         for node in currentNode.childNodes:
             if node.nodeType == 3 :
-                node.nodeValue = node.nodeValue.lstrip(filter).strip(filter)
+                node.nodeValue = node.nodeValue.lstrip(myfilter).strip(myfilter)
                 if node.nodeValue == "":
                     currentNode.removeChild(node)
         for node in currentNode.childNodes:
@@ -43,7 +43,7 @@ def readTextNode(node,title) :
 def openxmlfile(zefile,root ):
     if os.path.exists(zefile) :
         #We should be more defensive here
-        doc=xml.dom.minidom.parse(zefile)
+        doc = xml.dom.minidom.parse(zefile)
         cleanDoc(doc,tab,enter)
         #We should be more defensive here
         xmlproject = doc.getElementsByTagName(root)[0]

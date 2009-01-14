@@ -37,7 +37,7 @@ class CoreConfig:
         if os.path.exists(self.DATA_DIR + self.DATA_FILE) :
             f = open(self.DATA_DIR + self.DATA_FILE,mode='r')
             # sanitize the pretty XML
-            doc=xml.dom.minidom.parse(self.DATA_DIR + self.DATA_FILE)
+            doc = xml.dom.minidom.parse(self.DATA_DIR + self.DATA_FILE)
             cleanxml.cleanDoc(doc,"\t","\n")
             xmlproject = doc.getElementsByTagName("backend")
             # collect configred backends

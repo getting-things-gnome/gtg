@@ -21,7 +21,10 @@ class Task :
         self.start_date = None
         self.parents = []
         self.children = []
+        #callbacks
         self.new_task_func = None
+        self.purge = None
+        
         self.can_be_deleted = newtask
         # tags
         self.tags = []
@@ -72,8 +75,8 @@ class Task :
                 workable = False
         return workable
         
-    #function to convert a string of the form XXXX-XX-XX
-    #to a date (where X are integer)
+    #function to convert a string of the form YYYY-MM-DD
+    #to a date
     def __strtodate(self,stri) :
         if stri :
             y,m,d = stri.split('-')
@@ -170,7 +173,7 @@ class Task :
         if element :
             for n in element.childNodes :
                 if n.nodeType == n.ELEMENT_NODE :
-                    txt+= self.__strip_content(n)
+                    txt += self.__strip_content(n)
                 elif n.nodeType == n.TEXT_NODE :
                     txt += n.nodeValue
         return txt
@@ -260,7 +263,7 @@ class Task :
         if tag and len(self.parents)!=0 :
             a = 0
             for p in self.parents :
-                a+= p.has_tags(tag)
+                a += p.has_tags(tag)
             return a
         else :
             return len(self.parents)!=0

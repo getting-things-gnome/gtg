@@ -11,7 +11,7 @@ class TagStore :
     def __init__(self) :
         self.store = {}
         self.filename = os.path.join(CoreConfig.DATA_DIR,XMLFILE)
-        doc,self.xmlstore = cleanxml.openxmlfile(self.filename,XMLROOT)
+        doc,self.xmlstore = cleanxml.openxmlfile(self.filename,XMLROOT) #pylint: disable-msg=W0612
         for t in self.xmlstore.childNodes:
             tagname = t.getAttribute("name")
             tag = self.new_tag(tagname)
@@ -21,7 +21,7 @@ class TagStore :
                 at_name = attr.item(i).name
                 at_val = t.getAttribute(at_name)
                 tag.set_attribute(at_name,at_val)
-                i+=1
+                i += 1
             
         
     #create a new tag and return it

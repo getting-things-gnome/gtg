@@ -10,14 +10,15 @@ class Unserializer :
         #We keep a reference to the original taskview
         #Not very pretty but convenient
         self.tv = taskview
-
-    def unserialize(self,register_buf, content_buf, ite, data, cr_tags, udata) :
+    
+    #Disabling pylint argument usage since we know we are not using all args
+    def unserialize(self,register_buf, content_buf, ite, data, cr_tags, udata) : #pylint: disable-msg=W0613
         if data :
             element = xml.dom.minidom.parseString(data)
-            success = self.parsexml(content_buf,ite,element.firstChild)
+            success = self.parsexml(content_buf,ite,element.firstChild) #pylint: disable-msg=E1103
         else :
             success = self.parsexml(content_buf,ite,None)
-        return True
+        return success
         
     #Insert a list of subtasks at the end of the buffer
     def insert_subtasks(self,buff,st_list) :

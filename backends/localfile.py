@@ -58,7 +58,7 @@ class Backend :
                     if tasktext[0].firstChild :
                         tas = "<content>%s</content>" %tasktext[0].firstChild.nodeValue
                         content = xml.dom.minidom.parseString(tas)
-                        cur_task.set_text(content.firstChild.toxml())
+                        cur_task.set_text(content.firstChild.toxml()) #pylint: disable-msg=E1103 
                 cur_task.set_due_date(cleanxml.readTextNode(t,"duedate"))
                 cur_task.set_start_date(cleanxml.readTextNode(t,"startdate"))
                 cur_tags = t.getAttribute("tags").replace(' ','').split(",")
@@ -102,7 +102,7 @@ class Backend :
                 #We take the xml text and convert it to a string
                 #but without the "<content />" 
                 element = xml.dom.minidom.parseString(tex)
-                temp = element.firstChild.toxml().partition("<content>")[2]
+                temp = element.firstChild.toxml().partition("<content>")[2] #pylint: disable-msg=E1103
                 desc = temp.partition("</content>")[0]
                 #t_xml.appendChild(element.firstChild)
                 cleanxml.addTextNode(doc,t_xml,"content",desc)
@@ -113,6 +113,6 @@ class Backend :
         cleanxml.savexml(self.zefile,doc)
 
     #It's easier to save the whole project each time we change a task
-    def sync_task(self,task) :
+    def sync_task(self,task) : #pylint: disable-msg=W0613
         self.sync_project()
         
