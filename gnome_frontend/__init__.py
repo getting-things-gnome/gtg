@@ -21,6 +21,11 @@
 #TaskView is an implementation of the gtk.TextView widget. TaskView widget
 #is used in the TaskEditor.
 
+#Taskviewserial.py
+#-----------------
+#Contains the functions used to serialize and deserialize the content of
+#the Gtk.TextBuffer (our task)
+
 #Gtg-gnome.glade
 #---------------
 #This is the glade file of the interface. It should be noted that the TextView

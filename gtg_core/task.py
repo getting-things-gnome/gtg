@@ -1,6 +1,7 @@
 from datetime import date
 import xml.dom.minidom
 
+from tools.listes import *
 
 #This class represent a task in GTG.
 #You should never create a Task directly. Use the datastore.new_task() function.
@@ -229,10 +230,7 @@ class Task :
         return to_ret
     
     def get_subtasks(self) :
-        zelist = []
-        for i in self.children :
-            zelist.append(i)
-        return zelist
+        return returnlist(self.children)
     
     def get_subtasks_tid(self) :
         zelist = []
@@ -252,10 +250,7 @@ class Task :
         self.parents.remove(task)
     
     def get_parents(self):
-        zelist = []
-        for i in self.parents :
-            zelist.append(i)
-        return zelist
+        return returnlist(self.parents)
  
     #Return true is the task has parent
     #If tag is provided, return True only
@@ -308,10 +303,7 @@ class Task :
         
     #return a copy of the list of tag objects
     def get_tags(self) :
-        l = []
-        for t in self.tags :
-            l.append(t)
-        return l
+        return returnlist(self.tags)
 
     #This function add tag by name
     def add_tag(self, tagname):
