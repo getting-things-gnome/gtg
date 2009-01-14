@@ -3,7 +3,7 @@ from tools.listes import *
 #be used by any Interface to handle the requests to the datastore
 
 BACKEND_COLUMN = 0
-PROJ_COLUMN = 1
+PROJ_COLUMN    = 1
 
 #There could be multiple requester. It means that a requester should never
 #Hold any data except a reference to its datastore.

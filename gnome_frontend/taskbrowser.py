@@ -122,14 +122,14 @@ class TaskBrowser:
 #        pd.main()
 
     def on_edit_item_activate(self, widget):
-        ppid = self.req.get_projects_list()
+        ppid = self.req.get_projects_list()[0]
         p  = self.req.get_project_from_pid(ppid)
         pd = ProjectEditDialog(self.ds, p)
         pd.set_on_close_cb(self.refresh_projects)
         pd.main()
 
     def on_delete_item_activate(self, widget):
-        ppid = self.req.get_projects_list()
+        ppid = self.req.get_projects_list()[0]
         self.req.remove_project(ppid)
         self.refresh_projects()
         
@@ -392,7 +392,7 @@ class TaskBrowser:
         #We have to select the project to which we should add a task
         #TODO : what if multiple projects are selected ?
         #Currently, we take the first one
-        p = self.req.get_projects_list()
+        p = self.req.get_projects_list()[0]
         tags,notagonly = self.get_selected_tags() 
         task = self.req.new_task(p,tags=tags)
         uid = task.get_id()
