@@ -78,7 +78,7 @@ class TaskBrowser:
         #The tags treeview
         self.tag_tview = self.wTree.get_widget("tag_tview")
         self.__add_tag_column("Tags",3)
-        self.tag_ts = gtk.TreeStore(gobject.TYPE_PYOBJECT,str,gtk.gdk.Pixbuf,str)
+        self.tag_ts = gtk.ListStore(gobject.TYPE_PYOBJECT,str,gtk.gdk.Pixbuf,str)
         self.tag_tview.set_model(self.tag_ts)
    
         #The Active tasks treeview
@@ -199,13 +199,15 @@ class TaskBrowser:
         self.tag_ts.clear()
         icon_alltask = gtk.gdk.pixbuf_new_from_file("data/16x16/icons/tags_alltasks.png")
         icon_notag   = gtk.gdk.pixbuf_new_from_file("data/16x16/icons/tags_notag.png")
-        self.tag_ts.append(None,[-1,None,icon_alltask,"<span weight=\"bold\">All tags</span>"])
-        self.tag_ts.append(None,[-2,None,icon_notag,"<span weight=\"bold\">Task without tags</span>"])
+        self.tag_ts.append([-1,None,icon_alltask,"<span weight=\"bold\">All tags</span>"])
+        self.tag_ts.append([-2,None,icon_notag,"<span weight=\"bold\">Tasks without tags</span>"])
+        self.tag_ts.append([-3,None,None,"---------------"])
+
         tags = self.req.get_used_tags()
         #tags.sort()
         for tag in tags:
             color = tag.get_attribute("color")
-            self.tag_ts.append(None,[tag,color,None,tag.get_name()])
+            self.tag_ts.append([tag,color,None,tag.get_name()])
         #We reselect the selected tag
         if t_path :
             for i in t_path :
@@ -230,7 +232,7 @@ class TaskBrowser:
         #We build the active tasks pane
         if self.workview :
             tasks = self.req.get_active_tasks_list(projects=p_list,tags=tag_list,\
-                                            notag_only=notag_only,workable=True)
+                                            notag_only=notag_only,workable=True, started_only=False)
             for tid in tasks :
                 self.add_task_tree_to_list(self.task_ts,tid,None,selected_uid,\
                                                         treeview=False)
@@ -238,9 +240,9 @@ class TaskBrowser:
         else :
             #building the classical treeview
             active_root_tasks = self.req.get_active_tasks_list(projects=p_list,\
-                                tags=tag_list, notag_only=notag_only,is_root=True)
+                                tags=tag_list, notag_only=notag_only,is_root=True, started_only=False)
             active_tasks = self.req.get_active_tasks_list(projects=p_list,\
-                                tags=tag_list, notag_only=notag_only,is_root=False)
+                                tags=tag_list, notag_only=notag_only,is_root=False, started_only=False)
             for tid in active_root_tasks :
                 self.add_task_tree_to_list(self.task_ts, tid, None,selected_uid,\
                                                         active_tasks=active_tasks)
@@ -536,11 +538,12 @@ class TaskBrowser:
   
         col = gtk.TreeViewColumn()
         col.set_title(name)
-        
+
         if icon:
             render_pixbuf = gtk.CellRendererPixbuf()
             col.pack_start(render_pixbuf, expand=False)
             col.add_attribute(render_pixbuf, 'pixbuf', 2)
+            col.add_attribute(render_pixbuf, "cell_background",1)
 
         render_text = gtk.CellRendererText()
         col.pack_start(render_text, expand=True)
