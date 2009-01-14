@@ -10,7 +10,8 @@ import xml.dom.minidom
 #we can store. This function signature is defined in PyGTK
 class Serializer :
 
-    def serialize(self,register_buf, content_buf, start, end, udata) :
+    #Disabling pylint argument usage since we know we are not using all args
+    def serialize(self,register_buf, content_buf, start, end, udata) : #pylint: disable-msg=W0613
         #Currently we serialize in XML
         its = start.copy()
         ite = end.copy()
@@ -21,7 +22,7 @@ class Serializer :
         doc.appendChild(self.parse_buffer(content_buf,its, ite,"content",doc,tag_stack))
         #We don't want the whole doc with the XML declaration
         #we only take the first node (the "content" one)
-        node = doc.firstChild
+        node = doc.firstChild #pylint: disable-msg=E1101
         return node.toxml().encode("utf-8")
 
     def parse_buffer(self,buf, start, end, name, doc,tag_stack) :

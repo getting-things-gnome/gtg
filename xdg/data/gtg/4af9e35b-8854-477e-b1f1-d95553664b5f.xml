@@ -122,11 +122,6 @@ pour voir
 			&lt;tag&gt;@tag&lt;/tag&gt;
 		</content>
 	</task>
-	<task id="13@1" status="Active" tags="">
-		<title>
-			My new task
-		</title>
-	</task>
 	<task id="3@1" status="Done" tags="donetask">
 		<title>
 			done task with tag
