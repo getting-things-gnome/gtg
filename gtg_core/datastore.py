@@ -22,7 +22,7 @@ class DataStore:
     #it should be task if you are importing an existing Task
     def new_task(self,tid,newtask=False) :
         task = Task(tid,self,newtask=newtask)
-        uid,pid = tid.split('@')
+        uid,pid = tid.split('@') #pylint: disable-msg=W0612
         backend = self.projects[pid][BACKEND_COLUMN]
         task.set_sync_func(backend.sync_task)
         return task
@@ -64,11 +64,11 @@ class DataStore:
             b.get_project()
 
     def register_backend(self, backend):
-        if backend!=None:
+        if backend != None:
             self.backends.append(backend)
 
     def unregister_backend(self, backend):
-        if backend!=None:
+        if backend != None:
             self.backends.remove(backend)
 
     def get_all_projects(self):

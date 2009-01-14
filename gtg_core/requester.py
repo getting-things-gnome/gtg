@@ -18,7 +18,7 @@ class Requester :
     def get_task(self,tid) :
         task = None
         if tid :
-            uid,pid = tid.split('@')
+            uid,pid = tid.split('@') #pylint: disable-msg=W0612
             task = self.ds.get_all_projects()[pid][PROJ_COLUMN].get_task(tid)
         return task
         
@@ -152,12 +152,12 @@ class Requester :
         return projects[pid][PROJ_COLUMN]
         
     def get_project_from_uid(self,uid) :
-        tid,pid = uid.split('@')
+        tid,pid = uid.split('@') #pylint: disable-msg=W0612
         project = self.ds.get_all_projects()[pid][PROJ_COLUMN]
         return project
     
     def get_backend_from_uid(self,uid) :
-        tid,pid = uid.split('@')
+        tid,pid = uid.split('@') #pylint: disable-msg=W0612
         backend = self.ds.get_all_projects()[pid][BACKEND_COLUMN]
         return backend
     

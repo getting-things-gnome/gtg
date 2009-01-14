@@ -32,15 +32,28 @@
 #W0232 : no __init__() (if I don't write it, I don't need it)
 #W0105 : string statement has no effect(=documentation)
 #C0321 : more than one statement on the same line (is that bad ?)
-disabled="C0324,C0103,C0301,C0111,R0914,R0903,R0915,R0904,R0912,R0201,R0913,C0323,R0902,W0102,W0232,W0105,C0321"
+#W0401 : * wildcard import (yes, we use them)
+
+#pylint argument :
+disabled="C0324,C0103,C0301,C0111,R0914,R0903,R0915,R0904,R0912,R0201,R0913,C0323,R0902,W0102,W0232,W0105,C0321,W0401"
+args="--rcfile=/dev/null --include-ids=y --reports=n"
+grepped_out="Locally disabling"
+
+echo "Running pychecker"
+echo "#################"
 pychecker -9 -T     -8  -# 200 --changetypes main.py
+
+echo "Running pyflakes"
+echo "#################"
 #pyflakes triggers a false positive with import *
 pyflakes .|grep -v "import \*"
-pylint -e main.py
+
+echo "Running pylint"
+echo "#################"
+pylint --rcfile=/dev/null --include-ids=y --reports=n --disable-msg=$disabled  main.py|grep -v "$grepped_out"
 for i in *; do
-	if test -d $i; then
+	if test -d $i && [ $i != "data" ]; then
 		#echo $i
-		#pylint trigger a false positive with XML
-		pylint --include-ids=y --reports=n --disable-msg=$disabled $i |grep -v "Locally disabling"
+		pylint --rcfile=/dev/null --include-ids=y --reports=n --disable-msg=$disabled $i |grep -v "$grepped_out"
 	fi
 done
