@@ -4,25 +4,12 @@
 		<title>
 			Parent task tag
 		</title>
+		<subtask>
+			1@1
+		</subtask>
 		<content>
 			&lt;tag&gt;@tag&lt;/tag&gt;
 &lt;subtask&gt;1@1&lt;/subtask&gt;
-		</content>
-	</task>
-	<task id="4@1" status="Active" tags="aze">
-		<title>
-			parent
-		</title>
-		<duedate>
-			2009-01-11
-		</duedate>
-		<startdate>
-			2008-11-11
-		</startdate>
-		<content>
-			&lt;tag&gt;@aze&lt;/tag&gt;,
-une tâche parent
-&lt;subtask&gt;5@1&lt;/subtask&gt;
 		</content>
 	</task>
 	<task id="11@1" status="Done" tags="new_tag">
@@ -48,6 +35,12 @@ une tâche parent
 		<title>
 			enfant2
 		</title>
+		<subtask>
+			6@1
+		</subtask>
+		<subtask>
+			7@1
+		</subtask>
 		<content>
 			&lt;tag&gt;@tag&lt;/tag&gt;, &lt;tag&gt;@autro&lt;/tag&gt;
 &lt;subtask&gt;6@1&lt;/subtask&gt;&lt;subtask&gt;7@1&lt;/subtask&gt;
@@ -57,6 +50,12 @@ une tâche parent
 		<title>
 			Tentative
 		</title>
+		<subtask>
+			11@1
+		</subtask>
+		<subtask>
+			12@1
+		</subtask>
 		<content>
 			&lt;tag&gt;@new_tag&lt;/tag&gt;
 pour voir
@@ -88,6 +87,14 @@ pour voir
 			2009-01-01
 		</donedate>
 	</task>
+	<task id="14@1" status="Dismiss" tags="new_tag">
+		<title>
+			encore un
+		</title>
+		<content>
+			&lt;tag&gt;@new_tag&lt;/tag&gt;, 
+		</content>
+	</task>
 	<task id="9@1" status="Active" tags="">
 		<title>
 			No tag task
@@ -102,6 +109,14 @@ pour voir
 		</title>
 		<content>
 			&lt;tag&gt;@tag&lt;/tag&gt;
+		</content>
+	</task>
+	<task id="16@1" status="Active" tags="tag">
+		<title>
+			child with tag
+		</title>
+		<content>
+			&lt;tag&gt;@tag&lt;/tag&gt;, 
 		</content>
 	</task>
 	<task id="3@1" status="Done" tags="donetask">
@@ -119,8 +134,23 @@ pour voir
 		<title>
 			une tautre
 		</title>
+		<subtask>
+			14@1
+		</subtask>
 		<content>
 			&lt;tag&gt;@new_tag&lt;/tag&gt;, 
+&lt;subtask&gt;14@1&lt;/subtask&gt;
+		</content>
+	</task>
+	<task id="7@1" status="Active" tags="autro">
+		<title>
+			enfant3
+		</title>
+		<subtask>
+			8@1
+		</subtask>
+		<content>
+			&lt;subtask&gt;8@1&lt;/subtask&gt;&lt;tag&gt;@autro&lt;/tag&gt;, 
 		</content>
 	</task>
 </project>
