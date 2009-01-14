@@ -7,7 +7,7 @@ import gtk.glade
 
 #our own imports
 from gnome_frontend.taskeditor import TaskEditor
-from gnome_frontend.project_ui import ProjectEditDialog
+#from gnome_frontend.project_ui import ProjectEditDialog
 from gnome_frontend import GnomeConfig
 
 #=== OBJECTS ===================================================================
@@ -26,9 +26,9 @@ class TaskBrowser:
         self.window = self.wTree.get_widget("MainWindow")
         if (self.window):
             self.window.connect("destroy", gtk.main_quit)
-        self.window.set_icon_from_file("data/gtg.svg")
+        self.window.set_icon_from_file("data/16x16/app/gtg.png")
 
-        self.projectpopup = self.wTree.get_widget("ProjectContextMenu")
+#        self.projectpopup = self.wTree.get_widget("ProjectContextMenu")
         self.tagpopup = self.wTree.get_widget("TagContextMenu")
         self.donebutton = self.wTree.get_widget("mark_as_done_b")
         self.dismissbutton = self.wTree.get_widget("dismiss")
@@ -37,7 +37,7 @@ class TaskBrowser:
 
         #Create our dictionay and connect it
         dic = {
-                "on_add_project"      : self.on_add_project,
+#                "on_add_project"      : self.on_add_project,
                 "on_add_task"         : self.on_add_task,
                 "on_edit_active_task"        : self.on_edit_active_task,
                 "on_edit_done_task" :   self.on_edit_done_task,
@@ -48,8 +48,8 @@ class TaskBrowser:
                 "on_select_tag"       : self.on_select_tag,
                 "on_delete_confirm"   : self.on_delete_confirm,
                 "on_delete_cancel"    : lambda x : x.hide,
-                "on_project_selected" : self.on_project_selected,
-                "on_project_treeview_button_press_event" : self.on_project_treeview_button_press_event,
+#                "on_project_selected" : self.on_project_selected,
+#                "on_project_treeview_button_press_event" : self.on_project_treeview_button_press_event,
                 "on_tag_treeview_button_press_event" : self.on_tag_treeview_button_press_event,
                 "on_edit_item_activate"     : self.on_edit_item_activate,
                 "on_delete_item_activate" : self.on_delete_item_activate,
@@ -69,16 +69,16 @@ class TaskBrowser:
         self.c_title=1
         
         #The project list
-        self.project_tview = self.wTree.get_widget("project_tview")
-        self.__add_project_column("Projects",2)
-        self.project_ts = gtk.TreeStore(gobject.TYPE_PYOBJECT,str,str)
-        self.project_tview.set_model(self.project_ts)
-        #self.project_ts.set_sort_column_id(self.c_title, gtk.SORT_ASCENDING)
+#        self.project_tview = self.wTree.get_widget("project_tview")
+#        self.__add_project_column("Projects",2)
+#        self.project_ts = gtk.TreeStore(gobject.TYPE_PYOBJECT,str,str)
+#        self.project_tview.set_model(self.project_ts)
+#        #self.project_ts.set_sort_column_id(self.c_title, gtk.SORT_ASCENDING)
         
         #The tags treeview
         self.tag_tview = self.wTree.get_widget("tag_tview")
-        self.__add_tag_column("Tags",2)
-        self.tag_ts = gtk.TreeStore(gobject.TYPE_PYOBJECT,str,str)
+        self.__add_tag_column("Tags",3)
+        self.tag_ts = gtk.TreeStore(gobject.TYPE_PYOBJECT,str,gtk.gdk.Pixbuf,str)
         self.tag_tview.set_model(self.tag_ts)
    
         #The Active tasks treeview
@@ -101,7 +101,7 @@ class TaskBrowser:
         self.taskdone_ts.set_sort_column_id(self.c_title, gtk.SORT_ASCENDING)
         
         #put the content in those treeviews
-        self.refresh_projects()
+#        self.refresh_projects()
         self.refresh_tags()
         self.refresh_list()
         #This is the list of tasks that are already opened in an editor
@@ -116,20 +116,20 @@ class TaskBrowser:
         gtk.main()
         return 0
 
-    def on_add_project(self, widget):
-        pd = ProjectEditDialog(self.ds)
-        pd.set_on_close_cb(self.refresh_projects)
-        pd.main()
+#    def on_add_project(self, widget):
+#        pd = ProjectEditDialog(self.ds)
+#        pd.set_on_close_cb(self.refresh_projects)
+#        pd.main()
 
     def on_edit_item_activate(self, widget):
-        ppid = self.get_selected_project()[0]
+        ppid = self.req.get_projects_list()
         p  = self.req.get_project_from_pid(ppid)
         pd = ProjectEditDialog(self.ds, p)
         pd.set_on_close_cb(self.refresh_projects)
         pd.main()
 
     def on_delete_item_activate(self, widget):
-        ppid = self.get_selected_project()[0]
+        ppid = self.req.get_projects_list()
         self.req.remove_project(ppid)
         self.refresh_projects()
         
@@ -163,44 +163,46 @@ class TaskBrowser:
         self.refresh_tb()
     
     
-    #We double clicked on a project in the project list
-    def on_project_selected(self,widget,row=None ,col=None) :
-        #When you clic on a project, you want to unselect the tasks
-        self.task_tview.get_selection().unselect_all()
-        self.taskdone_tview.get_selection().unselect_all()
-        self.refresh_list()
+#    #We double clicked on a project in the project list
+#    def on_project_selected(self,widget,row=None ,col=None) :
+#        #When you clic on a project, you want to unselect the tasks
+#        self.task_tview.get_selection().unselect_all()
+#        self.taskdone_tview.get_selection().unselect_all()
+#        self.refresh_list()
     
     #We refresh the project list. Not needed very often
-    def refresh_projects(self) :
-        color = None
-        p_model,p_path = self.project_tview.get_selection().get_selected_rows()
-        self.project_ts.clear()
-        self.project_ts.append(None,[-1, color, "<span weight=\"bold\">All projects</span>"])
-        projects = self.req.get_projects()
-        for p in projects:
-            p_str  = "%s (%d)" % (p["name"], p["nbr"])
-            self.project_ts.append(None,[p["pid"], color, p_str])
-        #We reselect the selected project
-        if p_path :
-            for i in p_path :
-                self.project_tview.get_selection().select_path(i)
+#    def refresh_projects(self) :
+#        color = None
+#        p_model,p_path = self.project_tview.get_selection().get_selected_rows()
+#        self.project_ts.clear()
+#        self.project_ts.append(None,[-1, color, "<span weight=\"bold\">All projects</span>"])
+#        projects = self.req.get_projects()
+#        for p in projects:
+#            p_str  = "%s (%d)" % (p["name"], p["nbr"])
+#            self.project_ts.append(None,[p["pid"], color, p_str])
+#        #We reselect the selected project
+#        if p_path :
+#            for i in p_path :
+#                self.project_tview.get_selection().select_path(i)
 
     def refresh_tb(self):
         self.refresh_list()
         self.refresh_tags()
-        self.refresh_projects()
+#        self.refresh_projects()
 
     #We refresh the tag list. Not needed very often
     def refresh_tags(self) :
         t_model,t_path = self.tag_tview.get_selection().get_selected_rows()
         self.tag_ts.clear()
-        self.tag_ts.append(None,[-1,None,"<span weight=\"bold\">All tags</span>"])
-        self.tag_ts.append(None,[-2,None,"<span weight=\"bold\">Task without tags</span>"])
+        icon_alltask = gtk.gdk.pixbuf_new_from_file("data/16x16/icons/tags_alltasks.png")
+        icon_notag   = gtk.gdk.pixbuf_new_from_file("data/16x16/icons/tags_notag.png")
+        self.tag_ts.append(None,[-1,None,icon_alltask,"<span weight=\"bold\">All tags</span>"])
+        self.tag_ts.append(None,[-2,None,icon_notag,"<span weight=\"bold\">Task without tags</span>"])
         tags = self.req.get_used_tags()
         #tags.sort()
         for tag in tags:
             color = tag.get_attribute("color")
-            self.tag_ts.append(None,[tag,color,tag.get_name()])
+            self.tag_ts.append(None,[tag,color,None,tag.get_name()])
         #We reselect the selected tag
         if t_path :
             for i in t_path :
@@ -220,7 +222,7 @@ class TaskBrowser:
         self.taskdone_ts.clear()
         tag_list,notag_only = self.get_selected_tags()
         #We display only tasks of the active projects
-        p_list = self.get_selected_project()
+        p_list = self.req.get_projects_list()
         
         #We build the active tasks pane
         if self.workview :
@@ -387,7 +389,7 @@ class TaskBrowser:
         #We have to select the project to which we should add a task
         #TODO : what if multiple projects are selected ?
         #Currently, we take the first one
-        p = self.get_selected_project()[0]
+        p = self.req.get_projects_list()
         tags,notagonly = self.get_selected_tags() 
         task = self.req.new_task(p,tags=tags)
         uid = task.get_id()
@@ -413,19 +415,19 @@ class TaskBrowser:
             uid = ts.get_value(selection_iter, 0)
         return uid
         
-    def get_selected_project(self) :
-        #We have to select the project
-        #if pid is none, we should handle a default project
-        #and display all tasks
-        p_selected = self.project_tview.get_selection()
-        pmodel, p_iter = p_selected.get_selected()
-        if p_iter :
-            pid = [self.project_ts.get_value(p_iter, 0)]
-            if -1 in pid: pid = self.req.get_projects_list()
-        #If no selection, we display all
-        else :
-            pid = self.req.get_projects_list()
-        return pid
+#    def get_selected_project(self) :
+#        #We have to select the project
+#        #if pid is none, we should handle a default project
+#        #and display all tasks
+#        p_selected = self.project_tview.get_selection()
+#        pmodel, p_iter = p_selected.get_selected()
+#        if p_iter :
+#            pid = [self.project_ts.get_value(p_iter, 0)]
+#            if -1 in pid: pid = self.req.get_projects_list()
+#        #If no selection, we display all
+#        else :
+#            pid = self.req.get_projects_list()
+#        return pid
 
     def get_selected_tags(self) :
         t_selected = self.tag_tview.get_selection()
@@ -516,18 +518,28 @@ class TaskBrowser:
         self.taskdone_tview.append_column(col)
 
     def __add_tag_column(self,name,value) :
-        col = self.__add_column(name,value)
+        col = self.__add_column(name,value,icon=True)
         col.set_clickable(False)
         self.tag_tview.append_column(col)
 
-    def __add_column(self,name,value) :
-        renderer     = gtk.CellRendererText()
-        col = gtk.TreeViewColumn(name,renderer)
+    def __add_column(self,name, value, icon=False) :
+  
+        col = gtk.TreeViewColumn()
+        col.set_title(name)
+        
+        if icon:
+            render_pixbuf = gtk.CellRendererPixbuf()
+            col.pack_start(render_pixbuf, expand=False)
+            col.add_attribute(render_pixbuf, 'pixbuf', 2)
+
+        render_text = gtk.CellRendererText()
+        col.pack_start(render_text, expand=True)
+        col.set_attributes(render_text, markup=value)
+        col.add_attribute(render_text, "cell_background",1)
+        
         #col.pack_start(renderer)
         col.set_resizable(True)        
         col.set_sort_column_id(value)
-        col.set_attributes(renderer, markup=value)
-        col.add_attribute(renderer, "cell_background",1)
         return col
         
     ######Closing the window
