@@ -51,8 +51,8 @@ class TaskBrowser:
 #                "on_project_selected" : self.on_project_selected,
 #                "on_project_treeview_button_press_event" : self.on_project_treeview_button_press_event,
                 "on_tag_treeview_button_press_event" : self.on_tag_treeview_button_press_event,
-                "on_edit_item_activate"     : self.on_edit_item_activate,
-                "on_delete_item_activate" : self.on_delete_item_activate,
+#                "on_edit_item_activate"     : self.on_edit_item_activate,
+#                "on_delete_item_activate" : self.on_delete_item_activate,
                 "on_colorchooser_activate" : self.on_colorchooser_activate,
                 "on_workview_toggled" : self.on_workview_toggled
 
@@ -121,17 +121,17 @@ class TaskBrowser:
 #        pd.set_on_close_cb(self.refresh_projects)
 #        pd.main()
 
-    def on_edit_item_activate(self, widget):
-        ppid = self.req.get_projects_list()[0]
-        p  = self.req.get_project_from_pid(ppid)
-        pd = ProjectEditDialog(self.ds, p)
-        pd.set_on_close_cb(self.refresh_projects)
-        pd.main()
+#    def on_edit_item_activate(self, widget):
+#        ppid = self.req.get_projects_list()[0]
+#        p  = self.req.get_project_from_pid(ppid)
+#        pd = ProjectEditDialog(self.ds, p)
+#        pd.set_on_close_cb(self.refresh_projects)
+#        pd.main()
 
-    def on_delete_item_activate(self, widget):
-        ppid = self.req.get_projects_list()[0]
-        self.req.remove_project(ppid)
-        self.refresh_projects()
+#    def on_delete_item_activate(self, widget):
+#        ppid = self.req.get_projects_list()[0]
+#        self.req.remove_project(ppid)
+#        self.refresh_projects()
         
     def on_colorchooser_activate(self,widget) :
         #TODO : This should be refactorized in its own class
@@ -362,18 +362,18 @@ class TaskBrowser:
         if self.opened_task.has_key(tid) :
             del self.opened_task[tid]
 
-    def on_project_treeview_button_press_event(self, treeview, event):
-        if event.button == 3:
-            x = int(event.x)
-            y = int(event.y)
-            time = event.time
-            pthinfo = treeview.get_path_at_pos(x, y)
-            if pthinfo is not None:
-                path, col, cellx, celly = pthinfo
-                treeview.grab_focus()
-                treeview.set_cursor( path, col, 0)
-                self.projectpopup.popup( None, None, None, event.button, time)
-            return 1        
+#    def on_project_treeview_button_press_event(self, treeview, event):
+#        if event.button == 3:
+#            x = int(event.x)
+#            y = int(event.y)
+#            time = event.time
+#            pthinfo = treeview.get_path_at_pos(x, y)
+#            if pthinfo is not None:
+#                path, col, cellx, celly = pthinfo
+#                treeview.grab_focus()
+#                treeview.set_cursor( path, col, 0)
+#                self.projectpopup.popup( None, None, None, event.button, time)
+#            return 1        
     
     def on_tag_treeview_button_press_event(self,treeview,event) :
         if event.button == 3:
@@ -518,10 +518,10 @@ class TaskBrowser:
         col = self.__add_column(name,value)
         self.task_tview.append_column(col)
         
-    def __add_project_column(self,name,value) :
-        col = self.__add_column(name,value)
-        col.set_clickable(False)
-        self.project_tview.append_column(col)
+#    def __add_project_column(self,name,value) :
+#        col = self.__add_column(name,value)
+#        col.set_clickable(False)
+#        self.project_tview.append_column(col)
         
     def __add_closed_column(self,name,value) :
         col = self.__add_column(name,value)
