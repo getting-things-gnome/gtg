@@ -4,9 +4,6 @@
 		<title>
 			Parent task tag
 		</title>
-		<subtask>
-			1@1
-		</subtask>
 		<content>
 			&lt;tag&gt;@tag&lt;/tag&gt;
 &lt;subtask&gt;1@1&lt;/subtask&gt;
@@ -22,9 +19,6 @@
 		<startdate>
 			2008-11-11
 		</startdate>
-		<subtask>
-			5@1
-		</subtask>
 		<content>
 			&lt;tag&gt;@aze&lt;/tag&gt;,
 une tâche parent
@@ -54,12 +48,6 @@ une tâche parent
 		<title>
 			enfant2
 		</title>
-		<subtask>
-			6@1
-		</subtask>
-		<subtask>
-			7@1
-		</subtask>
 		<content>
 			&lt;tag&gt;@tag&lt;/tag&gt;, &lt;tag&gt;@autro&lt;/tag&gt;
 &lt;subtask&gt;6@1&lt;/subtask&gt;&lt;subtask&gt;7@1&lt;/subtask&gt;
@@ -69,12 +57,6 @@ une tâche parent
 		<title>
 			Tentative
 		</title>
-		<subtask>
-			11@1
-		</subtask>
-		<subtask>
-			12@1
-		</subtask>
 		<content>
 			&lt;tag&gt;@new_tag&lt;/tag&gt;
 pour voir
@@ -139,17 +121,6 @@ pour voir
 		</title>
 		<content>
 			&lt;tag&gt;@new_tag&lt;/tag&gt;, 
-		</content>
-	</task>
-	<task id="7@1" status="Active" tags="autro">
-		<title>
-			enfant3
-		</title>
-		<subtask>
-			8@1
-		</subtask>
-		<content>
-			&lt;subtask&gt;8@1&lt;/subtask&gt;&lt;tag&gt;@autro&lt;/tag&gt;, 
 		</content>
 	</task>
 </project>

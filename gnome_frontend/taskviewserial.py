@@ -34,8 +34,7 @@ class Serializer :
             @tag_stack : the list of parsed tags
             
         """
-
-        txt    = ""
+        
         it     = start.copy()
         parent = doc.createElement(name)
 
@@ -100,7 +99,8 @@ class Serializer :
                         parent.appendChild(child)
                     else :
                         #The link tag has noname but has "is_anchor" properties
-                        if ta.get_data('is_anchor'): tagname = "link"
+                        if ta.get_data('is_anchor'): 
+                            tagname = "link"
                         #Recursive call !!!!! (we handle tag in tags)
                         child = self.parse_buffer(buf,startit,endit,tagname,doc,tag_stack)
                         #handling special tags

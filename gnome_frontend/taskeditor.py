@@ -15,14 +15,14 @@ try:
     import pygtk
     pygtk.require("2.0")
 except:
-      pass
+    sys.exit(1)
 try:
     import gtk
     from gtk import gdk
 except:
     sys.exit(1)
     
-date_separator="/"
+date_separator = "/"
 
 class TaskEditor :
     def __init__(self, requester, task, refresh_callback=None,delete_callback=None,
@@ -164,11 +164,11 @@ class TaskEditor :
         else :
             self.startdate_widget.set_text('')
         
-    def on_date_pressed(self, widget,data):
+    def on_date_pressed(self, widget,data): 
         """Called when the due button is clicked."""
         rect = widget.get_allocation()
         x, y = widget.window.get_origin()
-        cal_width, cal_height = self.calendar.get_size()
+        cal_width, cal_height = self.calendar.get_size() #pylint: disable-msg=W0612
         self.calendar.move((x + rect.x - cal_width + rect.width)
                                             , (y + rect.y + rect.height))
         self.calendar.show()
@@ -191,10 +191,10 @@ class TaskEditor :
             self.task.set_start_date("%s-%s-%s"%(y,m+1,d))
         self.refresh_editor()
     
-    def day_selected_double(self,widget) :
+    def day_selected_double(self,widget) : #pylint: disable-msg=W0613
         self.__close_calendar()
         
-    def nodate_pressed(self,widget) :
+    def nodate_pressed(self,widget) : #pylint: disable-msg=W0613
         if self.__opened_date == "due" :
             self.task.set_due_date(None)
         elif self.__opened_date == "start" :
@@ -202,26 +202,26 @@ class TaskEditor :
         self.refresh_editor()
         self.__close_calendar()
         
-    def dismiss(self,widget) :
+    def dismiss(self,widget) : #pylint: disable-msg=W0613
         stat = self.task.get_status()
         toset = "Dismiss"
-        toclose=True
+        toclose = True
         if stat == "Dismiss" :
             toset = "Active"
-            toclose=False
+            toclose = False
         self.task.set_status(toset)
         if toclose : self.close(None)
         else : self.refresh_editor()
         self.refresh()
     
-    def change_status(self,widget) :
+    def change_status(self,widget) : #pylint: disable-msg=W0613
         stat = self.task.get_status()
         if stat == "Active" :
             toset = "Done"
-            toclose=True
+            toclose = True
         else :
             toset = "Active"
-            toclose=False
+            toclose = False
         self.task.set_status(toset)
         if toclose : self.close(None)
         else : self.refresh_editor()
@@ -235,9 +235,6 @@ class TaskEditor :
         #if the task was deleted, we close the window
         if result : self.window.destroy()
 
-    #Take the title as argument and return the subtask ID
-    #def set_tag(self, my_tags) :
-    #    self.task.set_tags(my_tags)
     
     #Take the title as argument and return the subtask ID
     def new_subtask(self,title) :
@@ -258,8 +255,7 @@ class TaskEditor :
         self.window.present()
         
     #We define dummy variable for when close is called from a callback
-    def close(self,window,a=None,b=None,c=None) :
-        #TODO : verify that destroy the window is enough ! 
+    def close(self,window,a=None,b=None,c=None) : #pylint: disable-msg=W0613
         #We should also destroy the whole taskeditor object.
         self.window.destroy()
     
@@ -267,7 +263,7 @@ class TaskEditor :
     #destroy in the close function, this will cause the close to be called twice
     #To solve that, close will just call "destroy" and the destroy signal
     #Will be linked to this destruction method that will save the task
-    def destruction(self,a=None) :
+    def destruction(self,a=None) :#pylint: disable-msg=W0613
         #Save should be also called when buffer is modified
         self.save()
         self.closing(self.task.get_id())
@@ -276,7 +272,7 @@ class TaskEditor :
 ############# Private functions #################
         
     
-    def __focus_out(self,w=None,e=None) :
+    def __focus_out(self,w=None,e=None) : #pylint: disable-msg=W0613
         #We should only close if the pointer clic is out of the calendar !
         p = self.calendar.window.get_pointer()
         s = self.calendar.get_size()
@@ -284,7 +280,7 @@ class TaskEditor :
             self.__close_calendar()
         
     
-    def __close_calendar(self,widget=None,e=None) :
+    def __close_calendar(self,widget=None,e=None) : #pylint: disable-msg=W0613
         self.calendar.hide()
         self.__opened_date = ''
         gtk.gdk.pointer_ungrab()

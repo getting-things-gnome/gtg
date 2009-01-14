@@ -32,8 +32,9 @@ class ProjectEditDialog:
         self.wTree.signal_autoconnect(dic)
         self.ds = datastore
         self.project = project
+        self.on_close_cb = None
 
-        if self.project!=None:
+        if self.project != None:
             tv   = self.wTree.get_widget("project_desc_tv")
             buff = tv.get_buffer()
             buff.set_text(self.project.get_name())
@@ -45,7 +46,7 @@ class ProjectEditDialog:
     def set_on_close_cb(self, cb):
         self.on_close_cb = cb
 
-    def on_save_btn_clicked(self, widget):
+    def on_save_btn_clicked(self, widget): #pylint: disable-msg=W0613
         # Extract project name
         tv   = self.wTree.get_widget("project_desc_tv")
         buff = tv.get_buffer()
@@ -66,7 +67,7 @@ class ProjectEditDialog:
         self.on_close_cb()
         return 0
 
-    def on_cancel_btn_clicked(self, widget):
+    def on_cancel_btn_clicked(self, widget): #pylint: disable-msg=W0613
         self.on_close_cb()
         self.window.destroy()
 
