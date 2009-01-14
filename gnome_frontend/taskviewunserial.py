@@ -66,7 +66,7 @@ class Unserializer :
                             #of known tag for this task
                             taglist2.append(text[1:])
                     else :
-                        parsexml(buf,itera,n)
+                        self.parsexml(buf,itera,n)
                         s = buf.get_iter_at_mark(start)
                         e = buf.get_iter_at_mark(end)
                         if n.nodeName == "link" :
