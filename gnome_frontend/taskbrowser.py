@@ -85,10 +85,7 @@ class TaskBrowser:
         
         #The tags treeview
         self.__add_tag_column("Tags",3)
-<<<<<<< TREE
         self.tag_ts = gtk.ListStore(gobject.TYPE_PYOBJECT,str,gtk.gdk.Pixbuf,str)
-=======
->>>>>>> MERGE-SOURCE
         self.tag_tview.set_model(self.tag_ts)
    
         #The Active tasks treeview
