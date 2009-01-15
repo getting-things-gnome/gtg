@@ -30,3 +30,31 @@ def task_from_xml(req,xmlnode) :
     for tag in cur_tags: cur_task.add_tag(tag)
     
     return cur_task
+
+#Task as parameter the doc where to put the XML node
+def task_to_xml(doc,task) :
+    t_xml = doc.createElement("task")
+    t_xml.setAttribute("id",task.get_id())
+    t_xml.setAttribute("status" , task.get_status())
+    tags_str = ""
+    for tag in task.get_tags_name(): 
+        tags_str = tags_str + str(tag) + ","
+    t_xml.setAttribute("tags", tags_str[:-1])
+    cleanxml.addTextNode(doc,t_xml,"title",task.get_title())
+    cleanxml.addTextNode(doc,t_xml,"duedate",task.get_due_date())
+    cleanxml.addTextNode(doc,t_xml,"startdate",task.get_start_date())
+    cleanxml.addTextNode(doc,t_xml,"donedate",task.get_done_date())
+    childs = task.get_subtasks_tid()
+    for c in childs :
+        cleanxml.addTextNode(doc,t_xml,"subtask",c)
+    tex = task.get_text()
+    if tex :
+        #We take the xml text and convert it to a string
+        #but without the "<content />" 
+        element = xml.dom.minidom.parseString(tex)
+        temp = element.firstChild.toxml().partition("<content>")[2] #pylint: disable-msg=E1103
+        desc = temp.partition("</content>")[0]
+        #t_xml.appendChild(element.firstChild)
+        cleanxml.addTextNode(doc,t_xml,"content",desc)
+    #self.__write_textnode(doc,t_xml,"content",t.get_text())
+    return t_xml

@@ -23,12 +23,9 @@
 			kml
 		</content>
 	</task>
-	<task id="2@2" status="Dismiss" tags="autro">
+	<task id="2@2" status="Dismiss" tags="">
 		<title>
-			dismiss with autro tag
+			My new task
 		</title>
-		<content>
-			&lt;tag&gt;@autro&lt;/tag&gt;
-		</content>
 	</task>
 </project>

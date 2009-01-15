@@ -51,37 +51,14 @@ class Backend :
         
     #This function will sync the whole project
     def sync_project(self) :
-        #Currently, we are not saving the tag table.
         doc,p_xml = cleanxml.emptydoc("project")
         p_name = self.project.get_name()
         if p_name :
             p_xml.setAttribute("name", p_name)
         for tid in self.project.list_tasks():
-            t = self.project.get_task(tid)
-            t_xml = doc.createElement("task")
-            t_xml.setAttribute("id",str(tid))
-            t_xml.setAttribute("status" , t.get_status())
-            tags_str = ""
-            for tag in t.get_tags_name(): tags_str = tags_str + str(tag) + ","
-            t_xml.setAttribute("tags"   , tags_str[:-1])
+            task = self.project.get_task(tid)
+            t_xml = taskxml.task_to_xml(doc,task)
             p_xml.appendChild(t_xml)
-            cleanxml.addTextNode(doc,t_xml,"title",t.get_title())
-            cleanxml.addTextNode(doc,t_xml,"duedate",t.get_due_date())
-            cleanxml.addTextNode(doc,t_xml,"startdate",t.get_start_date())
-            cleanxml.addTextNode(doc,t_xml,"donedate",t.get_done_date())
-            childs = t.get_subtasks()
-            for c in childs :
-                cleanxml.addTextNode(doc,t_xml,"subtask",c.get_id())
-            tex = t.get_text()
-            if tex :
-                #We take the xml text and convert it to a string
-                #but without the "<content />" 
-                element = xml.dom.minidom.parseString(tex)
-                temp = element.firstChild.toxml().partition("<content>")[2] #pylint: disable-msg=E1103
-                desc = temp.partition("</content>")[0]
-                #t_xml.appendChild(element.firstChild)
-                cleanxml.addTextNode(doc,t_xml,"content",desc)
-            #self.__write_textnode(doc,t_xml,"content",t.get_text())
         #it's maybe not optimal to open/close the file each time we sync
         # but I'm not sure that those operations are so frequent
         # might be changed in the future.
