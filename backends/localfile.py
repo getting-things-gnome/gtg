@@ -2,7 +2,7 @@ import os, xml.dom.minidom
 import uuid
 
 from gtg_core   import CoreConfig
-from tools import cleanxml
+from tools import cleanxml, taskxml
 
 #todo : Backend should only provide one big "project" object and should 
 #not provide get_task and stuff like that.
@@ -15,6 +15,7 @@ class Backend :
         if not zefile :
             zefile = "%s.xml" %(uuid.uuid4())
         self.ds = datastore
+        self.req = self.ds.get_requester()
         if default_folder :
             self.zefile = os.path.join(CoreConfig.DATA_DIR,zefile)
             self.filename = zefile
@@ -43,35 +44,9 @@ class Backend :
             subtasks = []
             #t is the xml of each task
             for t in self.xmlproj.childNodes:
-                cur_id = "%s" %t.getAttribute("id")
-                cur_stat = "%s" %t.getAttribute("status")
-                cur_task = self.ds.new_task(cur_id)
-                donedate = cleanxml.readTextNode(t,"donedate")
-                cur_task.set_status(cur_stat,donedate=donedate)
-                #we will fill the task with its content
-                cur_task.set_title(cleanxml.readTextNode(t,"title"))
-                #the subtasks should be processed later, when all tasks
-                #are in the project. We put all the information in a list.
-                subtasks.append([cur_task,t.getElementsByTagName("subtask")])
-                tasktext = t.getElementsByTagName("content")
-                if len(tasktext) > 0 :
-                    if tasktext[0].firstChild :
-                        tas = "<content>%s</content>" %tasktext[0].firstChild.nodeValue
-                        content = xml.dom.minidom.parseString(tas)
-                        cur_task.set_text(content.firstChild.toxml()) #pylint: disable-msg=E1103 
-                cur_task.set_due_date(cleanxml.readTextNode(t,"duedate"))
-                cur_task.set_start_date(cleanxml.readTextNode(t,"startdate"))
-                cur_tags = t.getAttribute("tags").replace(' ','').split(",")
-                if "" in cur_tags: cur_tags.remove("")
-                for tag in cur_tags: cur_task.add_tag(tag)
+                cur_task = taskxml.task_from_xml(self.req,t)
                 #adding task to the project
                 self.project.add_task(cur_task)
-            #Now we can process the subtasks
-            for t in subtasks :
-                for s in t[1] :
-                    sub = s.childNodes[0].nodeValue
-                    subt = self.project.get_task(sub)
-                    t[0].add_subtask(sub)
         return self.project   
         
     #This function will sync the whole project

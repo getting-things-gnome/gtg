@@ -194,9 +194,9 @@ class Task :
     def add_subtask(self,tid) :
         self.can_be_deleted = False
         #The if prevent an infinite loop
-        task = self.req.get_task(tid)
         if tid not in self.children and tid not in self.parents :
             self.children.append(tid)
+            task = self.req.get_task(tid)
             task.add_parent(self.get_id())
             #now we set inherited attributes only if it's a new task
             if task.can_be_deleted :
@@ -210,12 +210,6 @@ class Task :
         subt = self.new_task_func()
         self.add_subtask(subt.get_id())
         return subt
-    
-#    #Take a task object as parameter 
-#    def remove_subtask(self,task) :
-#        if task :
-#            tid = task.get_id()
-#            self.remove_subtask_tid(tid)
             
     def remove_subtask(self,tid) :
         if tid in self.children :
@@ -236,12 +230,14 @@ class Task :
         return returnlist(self.children)
         
         
-        
+    #add and remove parents are private
+    #Only the task itself can play with it's parent
+    
     #Take a tid object as parameter
     def add_parent(self,tid) :
+        #The if prevent a loop
         if tid not in self.children and tid not in self.parents :
             self.parents.append(tid)
-            #The if prevent an infinite loop
             task = self.req.get_task(tid)
             task.add_subtask(self.get_id())
             
@@ -262,9 +258,10 @@ class Task :
             for tid in self.parents :
                 p = self.req.get_task(tid)
                 a += p.has_tags(tag)
-            return a
+            to_return = a
         else :
-            return len(self.parents)!=0
+            to_return = len(self.parents)!=0
+        return to_return
        
     #Method called before the task is deleted
     def delete(self) :
@@ -328,7 +325,6 @@ class Task :
         #Here, the user ask for the "empty" tag
         #And virtually every task has it.
         elif tag_list == [] or tag_list == None:
-            print tag_list
             return True
         elif tag_list :
             for tag in tag_list:
@@ -408,16 +404,20 @@ class Project :
                     result.append(tid)
         return result
             
-        
+    #Will return None if the project doesn't have this task
     def get_task(self,ze_id) :
-        return self.list[str(ze_id)]
+        if self.list.has_key(ze_id) :
+            return self.list[str(ze_id)]
+        else :
+            return None
         
     def add_task(self,task) :
         tid = task.get_id()
-        self.list[str(tid)] = task
-        task.set_project(self.get_pid())
-        task.set_newtask_func(self.new_task)
-        task.set_delete_func(self.purge_task)
+        if not self.list.has_key(tid) :
+            self.list[str(tid)] = task
+            task.set_project(self.get_pid())
+            task.set_newtask_func(self.new_task)
+            task.set_delete_func(self.purge_task)
         
     def new_task(self) :
         tid = self.__free_tid()
