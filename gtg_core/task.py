@@ -214,6 +214,7 @@ class Task :
     def remove_subtask(self,tid) :
         if tid in self.children :
             self.children.remove(tid)
+            task = self.req.get_task(tid)
             if task.can_be_deleted :
                 task.delete()
             else :

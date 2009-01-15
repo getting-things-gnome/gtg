@@ -1,5 +1,5 @@
 #Functions to convert a Task object to an XML string and back
-import os, xml.dom.minidom
+import xml.dom.minidom
 
 from tools import cleanxml
 

@@ -1,4 +1,4 @@
-import os, xml.dom.minidom
+import os
 import uuid
 
 from gtg_core   import CoreConfig
@@ -41,7 +41,6 @@ class Backend :
     #This function should return a project object with all the current tasks in it.
     def get_project(self) :
         if self.xmlproj :
-            subtasks = []
             #t is the xml of each task
             for t in self.xmlproj.childNodes:
                 cur_task = taskxml.task_from_xml(self.req,t)
