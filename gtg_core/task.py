@@ -270,7 +270,7 @@ class Task :
             task = self.req.get_task(i)
             task.remove_subtask(self.get_id())
         for j in self.get_subtasks() :
-            task = self.req.get_task(i)
+            task = self.req.get_task(j)
             task.remove_parent(self.get_id())
         #then we remove effectively the task
         self.purge(self.get_id())
