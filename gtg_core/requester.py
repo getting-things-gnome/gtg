@@ -31,6 +31,11 @@ class Requester :
                 task.add_tag(t.get_name())
         return task
         
+    # Return a new Task object with a forced tid. Used only for import
+    def new_imported_task(self,tid) :
+        task = self.ds.new_task(tid,newtask=False)
+        return task
+        
     #MODIFICATION class (the data will be modified)
     def delete_task(self,tid) :
         pr = self.get_project_from_uid(tid)
@@ -163,6 +168,15 @@ class Requester :
     
     ############### Tags ##########################
     ###############################################    
+    
+    
+    #MODIFICATION
+    def new_tag(self,tagname) :
+        return self.ds.get_tagstore().new_tag(tagname)
+        
+    def get_tag(self,tagname) :
+        return self.ds.get_tagstore().get_tag(tagname)
+    
     #Not used currently because it returns every tag that was ever used
     def get_all_tags(self):
         return returnlist(self.ds.get_tagstore().get_all_tags())

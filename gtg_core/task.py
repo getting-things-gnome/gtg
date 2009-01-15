@@ -6,7 +6,7 @@ from tools.listes import *
 #This class represent a task in GTG.
 #You should never create a Task directly. Use the datastore.new_task() function.
 class Task :
-    def __init__(self, ze_id, datastore, newtask=False) :
+    def __init__(self, ze_id, requester, newtask=False) :
         #the id of this task in the project
         #tid is a string ! (we have to choose a type and stick to it)
         self.tid = str(ze_id)
@@ -28,8 +28,8 @@ class Task :
         self.can_be_deleted = newtask
         # tags
         self.tags = []
-        self.datastore = datastore
-        self.tagstore = self.datastore.get_tagstore()
+        self.req = requester
+        #self.tagstore = self.datastore.get_tagstore()
         
     def set_project(self,pid) :
         tid = self.get_id()
@@ -310,14 +310,14 @@ class Task :
 
     #This function add tag by name
     def add_tag(self, tagname):
-        t = self.tagstore.new_tag(tagname)
+        t = self.req.new_tag(tagname)
         #Do not add the same tag twice
         if not t in self.tags :
             self.tags.append(t)
             
     #remove by tagname
     def remove_tag(self, tagname):
-        t = self.tagstore.get_tag(tagname)
+        t = self.req.get_tag(tagname)
         if t in self.tags :
             self.tags.remove(t)
 
