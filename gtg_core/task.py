@@ -267,9 +267,11 @@ class Task :
     #Method called before the task is deleted
     def delete(self) :
         for i in self.get_parents() :
-            i.remove_subtask(self.get_id())
+            task = self.req.get_task(i)
+            task.remove_subtask(self.get_id())
         for j in self.get_subtasks() :
-            j.remove_parent(self.get_id())
+            task = self.req.get_task(i)
+            task.remove_parent(self.get_id())
         #then we remove effectively the task
         self.purge(self.get_id())
         
