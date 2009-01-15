@@ -188,6 +188,7 @@ class TaskBrowser:
         tag_list,notag_only = self.get_selected_tags()
         #We display only tasks of the active projects
         p_list = self.req.get_projects_list()
+        nbr_of_tasks = 0
         
         #We build the active tasks pane
         if self.workview :
@@ -196,6 +197,7 @@ class TaskBrowser:
             for tid in tasks :
                 self.add_task_tree_to_list(self.task_ts,tid,None,selected_uid,\
                                                         treeview=False)
+            nbr_of_tasks = len(tasks)
                             
         else :
             #building the classical treeview
@@ -206,7 +208,16 @@ class TaskBrowser:
             for tid in active_root_tasks :
                 self.add_task_tree_to_list(self.task_ts, tid, None,selected_uid,\
                                                         active_tasks=active_tasks)
+            nbr_of_tasks = len(active_tasks)
             
+        #Set the title of the window :
+        if nbr_of_tasks == 0 :
+            parenthesis = "(no active task)"
+        elif nbr_of_tasks == 1 :
+            parenthesis = "(1 active task)"
+        else :
+            parenthesis = "(%s actives tasks)"%nbr_of_tasks
+        self.window.set_title("Getting Things Gnome %s"%parenthesis)
         
         #We build the closed tasks pane
         closed_tasks = self.req.get_closed_tasks_list(projects=p_list,tags=tag_list,\
