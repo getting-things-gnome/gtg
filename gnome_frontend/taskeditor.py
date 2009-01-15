@@ -122,6 +122,7 @@ class TaskEditor :
         #title of the window 
         if title :
             self.window.set_title(title)
+            self.save()
         else :
             self.window.set_title(self.task.get_title())
            
