@@ -21,7 +21,7 @@ class DataStore:
     #newtask should be True if you create a task
     #it should be task if you are importing an existing Task
     def new_task(self,tid,newtask=False) :
-        task = Task(tid,self,newtask=newtask)
+        task = Task(tid,self.requester,newtask=newtask)
         uid,pid = tid.split('@') #pylint: disable-msg=W0612
         backend = self.projects[pid][BACKEND_COLUMN]
         task.set_sync_func(backend.sync_task)

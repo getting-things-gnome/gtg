@@ -6,7 +6,7 @@ from tools.listes import *
 #This class represent a task in GTG.
 #You should never create a Task directly. Use the datastore.new_task() function.
 class Task :
-    def __init__(self, ze_id, datastore, newtask=False) :
+    def __init__(self, ze_id, requester, newtask=False) :
         #the id of this task in the project
         #tid is a string ! (we have to choose a type and stick to it)
         self.tid = str(ze_id)
@@ -20,6 +20,7 @@ class Task :
         self.due_date = None
         self.start_date = None
         self.parents = []
+        #The list of children tid
         self.children = []
         #callbacks
         self.new_task_func = None
@@ -28,8 +29,7 @@ class Task :
         self.can_be_deleted = newtask
         # tags
         self.tags = []
-        self.datastore = datastore
-        self.tagstore = self.datastore.get_tagstore()
+        self.req = requester
         
     def set_project(self,pid) :
         tid = self.get_id()
@@ -191,12 +191,13 @@ class Task :
             self.content = ''
     
     #Take a task object as parameter
-    def add_subtask(self,task) :
+    def add_subtask(self,tid) :
         self.can_be_deleted = False
         #The if prevent an infinite loop
-        if task not in self.children and task not in self.parents :
-            self.children.append(task)
-            task.add_parent(self)
+        if tid not in self.children and tid not in self.parents :
+            self.children.append(tid)
+            task = self.req.get_task(tid)
+            task.add_parent(self.get_id())
             #now we set inherited attributes only if it's a new task
             if task.can_be_deleted :
                 task.set_due_date(self.get_due_date())
@@ -207,50 +208,43 @@ class Task :
     #Return the task added as a subtask
     def new_subtask(self) :
         subt = self.new_task_func()
-        self.add_subtask(subt)
+        self.add_subtask(subt.get_id())
         return subt
-    
-    #Take a task object as parameter 
-    def remove_subtask(self,task) :
-        if task in self.children :
-            self.children.remove(task)
+            
+    def remove_subtask(self,tid) :
+        if tid in self.children :
+            self.children.remove(tid)
+            task = self.req.get_task(tid)
             if task.can_be_deleted :
                 task.delete()
             else :
-                task.remove_parent(self)
+                task.remove_parent(self.get_id())
                 self.sync()
-            
-    def remove_subtask_tid(self,tid) :
-        st = self.get_subtask_tid(tid)
-        if st :
-            self.remove_subtask(st)
-    
-    def get_subtask_tid(self,tid) :
-        to_ret = None
-        for i in self.children :
-            if i.get_id() == tid :
-                to_ret = i
-        return to_ret
     
     def get_subtasks(self) :
-        return returnlist(self.children)
-    
-    def get_subtasks_tid(self) :
         zelist = []
         for i in self.children :
-            zelist.append(i.get_id())
+            zelist.append(self.req.get_task(i))
         return zelist
+    
+    def get_subtasks_tid(self) :
+        return returnlist(self.children)
         
-    #Take a task object as parameter
-    def add_parent(self,task) :
-        if task not in self.children and task not in self.parents :
-            self.parents.append(task)
-            #The if prevent an infinite loop
-            task.add_subtask(self)
+        
+    #add and remove parents are private
+    #Only the task itself can play with it's parent
+    
+    #Take a tid object as parameter
+    def add_parent(self,tid) :
+        #The if prevent a loop
+        if tid not in self.children and tid not in self.parents :
+            self.parents.append(tid)
+            task = self.req.get_task(tid)
+            task.add_subtask(self.get_id())
             
-    #Take a task object as parameter
-    def remove_parent(self,task) :
-        self.parents.remove(task)
+    #Take a tid as parameter
+    def remove_parent(self,tid) :
+        self.parents.remove(tid)
     
     def get_parents(self):
         return returnlist(self.parents)
@@ -262,18 +256,22 @@ class Task :
         #The "all tag" argument
         if tag and len(self.parents)!=0 :
             a = 0
-            for p in self.parents :
+            for tid in self.parents :
+                p = self.req.get_task(tid)
                 a += p.has_tags(tag)
-            return a
+            to_return = a
         else :
-            return len(self.parents)!=0
+            to_return = len(self.parents)!=0
+        return to_return
        
     #Method called before the task is deleted
     def delete(self) :
         for i in self.get_parents() :
-            i.remove_subtask(self)
+            task = self.req.get_task(i)
+            task.remove_subtask(self.get_id())
         for j in self.get_subtasks() :
-            j.remove_parent(self)
+            task = self.req.get_task(j)
+            task.remove_parent(self.get_id())
         #then we remove effectively the task
         self.purge(self.get_id())
         
@@ -310,14 +308,14 @@ class Task :
 
     #This function add tag by name
     def add_tag(self, tagname):
-        t = self.tagstore.new_tag(tagname)
+        t = self.req.new_tag(tagname)
         #Do not add the same tag twice
         if not t in self.tags :
             self.tags.append(t)
             
     #remove by tagname
     def remove_tag(self, tagname):
-        t = self.tagstore.get_tag(tagname)
+        t = self.req.get_tag(tagname)
         if t in self.tags :
             self.tags.remove(t)
 
@@ -330,7 +328,6 @@ class Task :
         #Here, the user ask for the "empty" tag
         #And virtually every task has it.
         elif tag_list == [] or tag_list == None:
-            print tag_list
             return True
         elif tag_list :
             for tag in tag_list:
@@ -410,16 +407,20 @@ class Project :
                     result.append(tid)
         return result
             
-        
+    #Will return None if the project doesn't have this task
     def get_task(self,ze_id) :
-        return self.list[str(ze_id)]
+        if self.list.has_key(ze_id) :
+            return self.list[str(ze_id)]
+        else :
+            return None
         
     def add_task(self,task) :
         tid = task.get_id()
-        self.list[str(tid)] = task
-        task.set_project(self.get_pid())
-        task.set_newtask_func(self.new_task)
-        task.set_delete_func(self.purge_task)
+        if not self.list.has_key(tid) :
+            self.list[str(tid)] = task
+            task.set_project(self.get_pid())
+            task.set_newtask_func(self.new_task)
+            task.set_delete_func(self.purge_task)
         
     def new_task(self) :
         tid = self.__free_tid()

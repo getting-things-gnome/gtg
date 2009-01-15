@@ -15,11 +15,19 @@ class Requester :
     ############## Tasks ##########################
     ###############################################
     
+    #Get the task with the given pid
+    #If the task doesn't exist, we create it and force the pid
     def get_task(self,tid) :
         task = None
         if tid :
             uid,pid = tid.split('@') #pylint: disable-msg=W0612
-            task = self.ds.get_all_projects()[pid][PROJ_COLUMN].get_task(tid)
+            proj = self.ds.get_all_projects()[pid][PROJ_COLUMN]
+            task = proj.get_task(tid)
+            #If the task doesn't exist, we create it with a forced pid
+            if not task :
+                task = self.ds.new_task(tid,newtask=False)
+                #Adding the task to its project
+                proj.add_task(task)
         return task
         
     #Pid is the project in which the new task will be created
@@ -30,6 +38,11 @@ class Requester :
             for t in tags :
                 task.add_tag(t.get_name())
         return task
+        
+#    # Return a new Task object with a forced tid. Used only for import
+#    def new_imported_task(self,tid) :
+#        
+#        return task
         
     #MODIFICATION class (the data will be modified)
     def delete_task(self,tid) :
@@ -163,6 +176,15 @@ class Requester :
     
     ############### Tags ##########################
     ###############################################    
+    
+    
+    #MODIFICATION
+    def new_tag(self,tagname) :
+        return self.ds.get_tagstore().new_tag(tagname)
+        
+    def get_tag(self,tagname) :
+        return self.ds.get_tagstore().get_tag(tagname)
+    
     #Not used currently because it returns every tag that was ever used
     def get_all_tags(self):
         return returnlist(self.ds.get_tagstore().get_all_tags())
