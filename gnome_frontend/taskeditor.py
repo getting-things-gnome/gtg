@@ -83,7 +83,7 @@ class TaskEditor :
         self.task = task
         tags = task.get_tags()
         self.textview.subtasks_callback(task.get_subtasks_tid)
-        self.textview.removesubtask_callback(task.remove_subtask_tid)
+        self.textview.removesubtask_callback(task.remove_subtask)
         self.textview.set_get_tagslist_callback(task.get_tags_name)
         self.textview.set_add_tag_callback(task.add_tag)
         self.textview.set_remove_tag_callback(task.remove_tag)

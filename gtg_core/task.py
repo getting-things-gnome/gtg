@@ -20,6 +20,7 @@ class Task :
         self.due_date = None
         self.start_date = None
         self.parents = []
+        #The list of children tid
         self.children = []
         #callbacks
         self.new_task_func = None
@@ -29,7 +30,6 @@ class Task :
         # tags
         self.tags = []
         self.req = requester
-        #self.tagstore = self.datastore.get_tagstore()
         
     def set_project(self,pid) :
         tid = self.get_id()
@@ -191,12 +191,13 @@ class Task :
             self.content = ''
     
     #Take a task object as parameter
-    def add_subtask(self,task) :
+    def add_subtask(self,tid) :
         self.can_be_deleted = False
         #The if prevent an infinite loop
-        if task not in self.children and task not in self.parents :
-            self.children.append(task)
-            task.add_parent(self)
+        task = self.req.get_task(tid)
+        if tid not in self.children and tid not in self.parents :
+            self.children.append(tid)
+            task.add_parent(self.get_id())
             #now we set inherited attributes only if it's a new task
             if task.can_be_deleted :
                 task.set_due_date(self.get_due_date())
@@ -207,50 +208,46 @@ class Task :
     #Return the task added as a subtask
     def new_subtask(self) :
         subt = self.new_task_func()
-        self.add_subtask(subt)
+        self.add_subtask(subt.get_id())
         return subt
     
-    #Take a task object as parameter 
-    def remove_subtask(self,task) :
-        if task in self.children :
-            self.children.remove(task)
+#    #Take a task object as parameter 
+#    def remove_subtask(self,task) :
+#        if task :
+#            tid = task.get_id()
+#            self.remove_subtask_tid(tid)
+            
+    def remove_subtask(self,tid) :
+        if tid in self.children :
+            self.children.remove(tid)
             if task.can_be_deleted :
                 task.delete()
             else :
-                task.remove_parent(self)
+                task.remove_parent(self.get_id())
                 self.sync()
-            
-    def remove_subtask_tid(self,tid) :
-        st = self.get_subtask_tid(tid)
-        if st :
-            self.remove_subtask(st)
-    
-    def get_subtask_tid(self,tid) :
-        to_ret = None
-        for i in self.children :
-            if i.get_id() == tid :
-                to_ret = i
-        return to_ret
     
     def get_subtasks(self) :
-        return returnlist(self.children)
-    
-    def get_subtasks_tid(self) :
         zelist = []
         for i in self.children :
-            zelist.append(i.get_id())
+            zelist.append(self.req.get_task(i))
         return zelist
+    
+    def get_subtasks_tid(self) :
+        return returnlist(self.children)
         
-    #Take a task object as parameter
-    def add_parent(self,task) :
-        if task not in self.children and task not in self.parents :
-            self.parents.append(task)
+        
+        
+    #Take a tid object as parameter
+    def add_parent(self,tid) :
+        if tid not in self.children and tid not in self.parents :
+            self.parents.append(tid)
             #The if prevent an infinite loop
-            task.add_subtask(self)
+            task = self.req.get_task(tid)
+            task.add_subtask(self.get_id())
             
-    #Take a task object as parameter
-    def remove_parent(self,task) :
-        self.parents.remove(task)
+    #Take a tid as parameter
+    def remove_parent(self,tid) :
+        self.parents.remove(tid)
     
     def get_parents(self):
         return returnlist(self.parents)
@@ -262,7 +259,8 @@ class Task :
         #The "all tag" argument
         if tag and len(self.parents)!=0 :
             a = 0
-            for p in self.parents :
+            for tid in self.parents :
+                p = self.req.get_task(tid)
                 a += p.has_tags(tag)
             return a
         else :
@@ -271,9 +269,9 @@ class Task :
     #Method called before the task is deleted
     def delete(self) :
         for i in self.get_parents() :
-            i.remove_subtask(self)
+            i.remove_subtask(self.get_id())
         for j in self.get_subtasks() :
-            j.remove_parent(self)
+            j.remove_parent(self.get_id())
         #then we remove effectively the task
         self.purge(self.get_id())
         

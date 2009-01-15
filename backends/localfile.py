@@ -71,7 +71,7 @@ class Backend :
                 for s in t[1] :
                     sub = s.childNodes[0].nodeValue
                     subt = self.project.get_task(sub)
-                    t[0].add_subtask(subt)
+                    t[0].add_subtask(sub)
         return self.project   
         
     #This function will sync the whole project

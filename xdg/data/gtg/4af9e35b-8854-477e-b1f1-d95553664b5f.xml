@@ -12,6 +12,11 @@
 &lt;subtask&gt;1@1&lt;/subtask&gt;
 		</content>
 	</task>
+	<task id="4@1" status="Active" tags="">
+		<title>
+			My new task
+		</title>
+	</task>
 	<task id="11@1" status="Done" tags="new_tag">
 		<title>
 			sous tache
