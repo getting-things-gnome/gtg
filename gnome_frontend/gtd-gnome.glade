@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Wed Jan 14 01:06:41 2009 -->
+<!--Generated with glade3 3.4.5 on Fri Jan 16 17:40:55 2009 -->
 <glade-interface>
   <widget class="GtkWindow" id="MainWindow">
     <property name="visible">True</property>
@@ -185,6 +185,9 @@
                 <property name="label" translatable="yes">Undo</property>
                 <property name="stock_id">gtk-undo</property>
               </widget>
+              <packing>
+                <property name="homogeneous">True</property>
+              </packing>
             </child>
             <child>
               <widget class="GtkToolButton" id="Redo">
@@ -192,6 +195,9 @@
                 <property name="label" translatable="yes">Redo</property>
                 <property name="stock_id">gtk-redo</property>
               </widget>
+              <packing>
+                <property name="homogeneous">True</property>
+              </packing>
             </child>
             <child>
               <widget class="GtkSeparatorToolItem" id="toolbutton2">
@@ -687,9 +693,6 @@ Are you sure you to want delete this task ?</property>
           <widget class="GtkCalendar" id="calendar1">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="year">2008</property>
-            <property name="month">10</property>
-            <property name="day">9</property>
             <signal name="day_selected_double_click" handler="on_dayselected_double"/>
             <signal name="day_selected" handler="on_dayselected"/>
           </widget>
