@@ -28,6 +28,7 @@ def task_from_xml(req,xmlnode) :
     cur_tags = xmlnode.getAttribute("tags").replace(' ','').split(",")
     if "" in cur_tags: cur_tags.remove("")
     for tag in cur_tags: cur_task.add_tag(tag)
+    cur_task.sync()
     
     return cur_task
 

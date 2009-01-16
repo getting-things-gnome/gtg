@@ -421,6 +421,8 @@ class Project :
             task.set_project(self.get_pid())
             task.set_newtask_func(self.new_task)
             task.set_delete_func(self.purge_task)
+        else :
+            print task
         
     def new_task(self) :
         tid = self.__free_tid()

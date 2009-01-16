@@ -44,8 +44,8 @@ class Backend :
             #t is the xml of each task
             for t in self.xmlproj.childNodes:
                 cur_task = taskxml.task_from_xml(self.req,t)
-                #adding task to the project
-                self.project.add_task(cur_task)
+                #The sync is done in the task_from_xml method
+                #cur_task.sync()
         return self.project   
         
     #This function will sync the whole project
@@ -58,6 +58,7 @@ class Backend :
             task = self.project.get_task(tid)
             t_xml = taskxml.task_to_xml(doc,task)
             p_xml.appendChild(t_xml)
+        
         #it's maybe not optimal to open/close the file each time we sync
         # but I'm not sure that those operations are so frequent
         # might be changed in the future.
