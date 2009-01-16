@@ -126,4 +126,7 @@ class Tag :
             if "name" in l :
                 l.remove("name")
         return l
+        
+    def __str__(self):
+        return "Tag: %s" %self.get_name()
 
