@@ -52,7 +52,7 @@ class ProjectEditDialog:
         buff = tv.get_buffer()
         text = buff.get_text(buff.get_start_iter(),buff.get_end_iter())
         
-        if self.project == None:
+        if not self.project :
             # Create project
             p = self.ds.new_project(text)
         else:
