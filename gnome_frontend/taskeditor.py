@@ -10,7 +10,7 @@ import sys
 
 from gnome_frontend.taskview import TaskView
 from gnome_frontend import GnomeConfig
-
+from tools.dates import *
 try:
     import pygtk
     pygtk.require("2.0")
@@ -40,7 +40,9 @@ class TaskEditor :
                 "delete_clicked"        : self.delete_task,
                 "on_duedate_pressed"    : (self.on_date_pressed,"due"),
                 "on_startdate_pressed"    : (self.on_date_pressed,"start"),
-                "close_clicked"         : self.close
+                "close_clicked"         : self.close,
+                "startingdate_edited" : (self.date_edited,"start"),
+                "startingdate_backspaced" : (self.date_backspaced,"start"),
               }
         self.wTree.signal_autoconnect(dic)
         cal_dic = {
@@ -164,6 +166,33 @@ class TaskEditor :
             self.startdate_widget.set_text(startdate.replace("-",date_separator))
         else :
             self.startdate_widget.set_text('')
+            
+        
+    def date_backspaced(self,widget,data):
+        text = widget.get_text()
+        datetoset = None
+        validdate = False
+        #If it's empty, we unset the date
+        if not text :
+            validdate = True
+        if not validdate :
+            dateobject = strtodate(text)
+            #strtodate return None if not a valid date
+            if dateobject :
+                validdate = True
+                datetoset = text
+        #Now we can set the date
+        if validdate :
+            #We set the date
+            if data == "start" :
+                print "start date set to %s from %s" %(datetoset,text)
+                self.task.set_start_date(datetoset)
+        else :
+            #We write the content in red
+            print "no good date"
+    
+    def date_edited(self,widget,char, a,b,data) :
+        self.date_backspaced(widget,data)
         
     def on_date_pressed(self, widget,data): 
         """Called when the due button is clicked."""
