@@ -154,28 +154,30 @@ class TaskEditor :
         duedate = self.task.get_due_date()
         if duedate :
             zedate = duedate.replace("-",date_separator)
-            self.duedate_widget.set_text(zedate)
-            #refreshing the day left label
-            result = self.task.get_days_left()
-            if result == 1 :
-                txt = "Due tomorrow !"
-            elif result > 0 :
-                txt = "%s days left" %result
-            elif result == 0 :
-                txt = "Due today !"
-            elif result == -1 :
-                txt = "Due for yesterday"
-            elif result < 0 :
-                txt = "Was %s days ago" %result
-            self.dayleft_label.set_markup("<span color='#666666'>"+txt+"</span>") 
-                
-        else :
+            if zedate != self.duedate_widget.get_text() :
+                self.duedate_widget.set_text(zedate)
+                #refreshing the day left label
+                result = self.task.get_days_left()
+                if result == 1 :
+                    txt = "Due tomorrow !"
+                elif result > 0 :
+                    txt = "%s days left" %result
+                elif result == 0 :
+                    txt = "Due today !"
+                elif result == -1 :
+                    txt = "Due for yesterday"
+                elif result < 0 :
+                    txt = "Was %s days ago" %result
+                self.dayleft_label.set_markup("<span color='#666666'>"+txt+"</span>")    
+        elif self.duedate_widget.get_text() != ''  :
             self.dayleft_label.set_text('')
             self.duedate_widget.set_text('')
         startdate = self.task.get_start_date()
         if startdate :
-            self.startdate_widget.set_text(startdate.replace("-",date_separator))
-        else :
+            zedate = startdate.replace("-",date_separator)
+            if zedate != self.startdate_widget.get_text() :
+                self.startdate_widget.set_text(zedate)
+        elif self.startdate_widget.get_text() != '' :
             self.startdate_widget.set_text('')
             
         if to_save :
