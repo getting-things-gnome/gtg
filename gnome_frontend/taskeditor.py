@@ -181,13 +181,17 @@ class TaskEditor :
                 datetoset = text
                 
         if validdate :
+            #If the date is valid, we write in black in the widget
+            widget.modify_text(gtk.STATE_NORMAL, gtk.gdk.color_parse("#000"))
             if data == "start" :
                 self.task.set_start_date(datetoset)
             elif data == "due" :
                 self.task.set_due_date(datetoset)
         else :
-            #We should write in red in the entry
-            print "no valid date"
+            #We should write in red in the entry if the date is not valid
+            widget.modify_text(gtk.STATE_NORMAL, gtk.gdk.color_parse("#F00"))
+
+
         
         
     def on_date_pressed(self, widget,data): 

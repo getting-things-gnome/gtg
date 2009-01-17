@@ -4,6 +4,9 @@
 		<title>
 			Parent task tag
 		</title>
+		<duedate>
+			2009-03-02
+		</duedate>
 		<subtask>
 			1@1
 		</subtask>
@@ -17,7 +20,7 @@
 			4ème level
 		</title>
 		<startdate>
-			2009-01-18
+			2009-01-01
 		</startdate>
 		<content>
 			&lt;tag&gt;@tag&lt;/tag&gt;
@@ -48,7 +51,7 @@
 		<content>
 			&lt;tag&gt;@new_tag&lt;/tag&gt;
 pour voir
-&lt;subtask&gt;11@1&lt;/subtask&gt;&lt;subtask&gt;12@1&lt;/subtask&gt;
+&lt;subtask&gt;12@1&lt;/subtask&gt;
 		</content>
 	</task>
 	<task id="5@1" status="Done" tags="aze">
