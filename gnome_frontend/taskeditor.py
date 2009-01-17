@@ -41,8 +41,8 @@ class TaskEditor :
                 "on_duedate_pressed"    : (self.on_date_pressed,"due"),
                 "on_startdate_pressed"    : (self.on_date_pressed,"start"),
                 "close_clicked"         : self.close,
-                "startingdate_edited" : (self.date_edited,"start"),
-                "startingdate_backspaced" : (self.date_backspaced,"start"),
+                "startingdate_changed" : (self.date_changed,"start"),
+                "duedate_changed" : (self.date_changed,"due")
               }
         self.wTree.signal_autoconnect(dic)
         cal_dic = {
@@ -168,31 +168,27 @@ class TaskEditor :
             self.startdate_widget.set_text('')
             
         
-    def date_backspaced(self,widget,data):
+    def date_changed(self,widget,data):
         text = widget.get_text()
         datetoset = None
         validdate = False
-        #If it's empty, we unset the date
         if not text :
             validdate = True
-        if not validdate :
+        else :
             dateobject = strtodate(text)
-            #strtodate return None if not a valid date
             if dateobject :
                 validdate = True
                 datetoset = text
-        #Now we can set the date
+                
         if validdate :
-            #We set the date
             if data == "start" :
-                print "start date set to %s from %s" %(datetoset,text)
                 self.task.set_start_date(datetoset)
+            elif data == "due" :
+                self.task.set_due_date(datetoset)
         else :
-            #We write the content in red
-            print "no good date"
-    
-    def date_edited(self,widget,char, a,b,data) :
-        self.date_backspaced(widget,data)
+            #We should write in red in the entry
+            print "no valid date"
+        
         
     def on_date_pressed(self, widget,data): 
         """Called when the due button is clicked."""

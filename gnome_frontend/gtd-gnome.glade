@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Sat Jan 17 20:19:54 2009 -->
+<!--Generated with glade3 3.4.5 on Sat Jan 17 21:19:47 2009 -->
 <glade-interface>
   <widget class="GtkWindow" id="MainWindow">
     <property name="visible">True</property>
@@ -475,8 +475,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="width_chars">10</property>
-                        <signal name="insert_text" handler="startingdate_edited"/>
-                        <signal name="backspace" handler="startingdate_backspaced"/>
+                        <signal name="changed" handler="startingdate_changed"/>
                       </widget>
                       <packing>
                         <property name="expand">False</property>
@@ -529,6 +528,7 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="width_chars">10</property>
+                        <signal name="changed" handler="duedate_changed"/>
                       </widget>
                       <packing>
                         <property name="expand">False</property>
