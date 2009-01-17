@@ -2,6 +2,7 @@ from datetime import date
 
 #function to convert a string of the form YYYY-MM-DD
 #to a date
+#If the date is not correct, the function returns None
 def strtodate(stri) :
     toreturn = None
     zedate = []
@@ -19,7 +20,7 @@ def strtodate(stri) :
                 yy = int(y)
                 mm = int(m)
                 dd = int(d)
-                #FIXME: we should catch exceptions here
+                # we catch exceptions here
                 try :
                     toreturn = date(yy,mm,dd)
                 except ValueError:

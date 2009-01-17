@@ -52,6 +52,7 @@ class TaskEditor :
         }
         self.cal_tree.signal_autoconnect(cal_dic)
         self.window         = self.wTree.get_widget("TaskEditor")
+        self.__refresh_cb = None
         #Removing the Normal textview to replace it by our own
         #So don't try to change anything with glade, this is a home-made widget
         textview = self.wTree.get_widget("textview")
@@ -65,6 +66,7 @@ class TaskEditor :
         self.textview.set_subtask_callback(self.new_subtask)
         self.textview.open_task_callback(self.open_task)
         self.textview.tasktitle_callback(self.task_title)
+        self.textview.refresh_browser_callback(self.refresh)
         scrolled.add(self.textview)
         #Voila! it's done
         self.calendar       = self.cal_tree.get_widget("calendar")
@@ -89,8 +91,6 @@ class TaskEditor :
         self.textview.set_get_tagslist_callback(task.get_tags_name)
         self.textview.set_add_tag_callback(task.add_tag)
         self.textview.set_remove_tag_callback(task.remove_tag)
-        self.refresh = refresh_callback
-        self.textview.refresh_browser_callback(self.refresh)
         self.delete  = delete_callback
         self.closing = close_callback
         texte = self.task.get_text()
@@ -112,16 +112,27 @@ class TaskEditor :
                     self.textview.insert_text("@%s, "%t.get_name())
             
         self.window.connect("destroy", self.destruction)
+        
+        self.__refresh_cb = refresh_callback
+        #Putting the refresh callback at the end make the start a lot faster
+        print "refresh from taskeditor 115"
         self.refresh_editor()
 
         self.window.show()
 
+    #The refresh callback is None for all the initialization
+    #It's an optimisation that save us a low of unneeded refresh
+    #When the editor is starting
+    def refresh(self) :
+        if self.__refresh_cb :
+            self.__refresh_cb()
+            
     #Can be called at any time to reflect the status of the Task
     #Refresh should never interfer with the TaskView
     #If a title is passed as a parameter, it will become
     #The new window title. If not, we will look for the task title
     def refresh_editor(self,title=None) :
-        print refreshed
+        print "refreshed"
         #title of the window 
         if title :
             self.window.set_title(title)
@@ -220,6 +231,7 @@ class TaskEditor :
             self.task.set_due_date("%s-%s-%s"%(y,m+1,d))
         elif self.__opened_date == "start" :
             self.task.set_start_date("%s-%s-%s"%(y,m+1,d))
+        print "refresh from taskeditor 224"
         self.refresh_editor()
     
     def day_selected_double(self,widget) : #pylint: disable-msg=W0613
@@ -230,6 +242,7 @@ class TaskEditor :
             self.task.set_due_date(None)
         elif self.__opened_date == "start" :
             self.task.set_start_date(None)
+        print "refresh from taskeditor 235"
         self.refresh_editor()
         self.__close_calendar()
         
@@ -242,7 +255,9 @@ class TaskEditor :
             toclose = False
         self.task.set_status(toset)
         if toclose : self.close(None)
-        else : self.refresh_editor()
+        else :
+            print "refresh from taskeditor 249" 
+            self.refresh_editor()
         self.refresh()
     
     def change_status(self,widget) : #pylint: disable-msg=W0613
@@ -255,7 +270,9 @@ class TaskEditor :
             toclose = False
         self.task.set_status(toset)
         if toclose : self.close(None)
-        else : self.refresh_editor()
+        else :
+            print "refresh from taskeditor 264" 
+            self.refresh_editor()
         self.refresh()
     
     def delete_task(self,widget) :

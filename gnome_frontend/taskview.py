@@ -81,7 +81,7 @@ class TaskView(gtk.TextView):
         self.__tag_stack = {}
         
         # Callbacks 
-        self.refresh              = None # refresh the editor window
+        self.__refresh_cb = None  # refresh the editor window
         self.open_task            = None # open another task
         self.new_subtask_callback = None # create a subtask
         self.get_subtasktitle     = None
@@ -119,8 +119,11 @@ class TaskView(gtk.TextView):
     
     #This function is called to refresh the editor 
     #Specially when we change the title
+    def refresh(self,title) :
+        if self.__refresh_cb :
+            self.__refresh_cb(title)
     def refresh_callback(self,funct) :
-        self.refresh = funct
+        self.__refresh_cb = funct
     #This callback is called to add a new tag
     def set_add_tag_callback(self,funct) :
         self.add_tag_callback = funct
@@ -278,7 +281,7 @@ class TaskView(gtk.TextView):
         self.buff.remove_tag_by_name ('title', title_end   , end)
 
         # Refresh title of the window
-        
+        print "refresh from taskview : 281"
         self.refresh(self.buff.get_text(title_start,title_end).strip('\n\t'))
         
         # Set iterators for body

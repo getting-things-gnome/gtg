@@ -7,12 +7,15 @@
 		<duedate>
 			2009-03-02
 		</duedate>
+		<startdate>
+			2009-01-08
+		</startdate>
 		<subtask>
 			1@1
 		</subtask>
 		<content>
 			&lt;tag&gt;@tag&lt;/tag&gt;
-&lt;subtask&gt;1@1&lt;/subtask&gt;
+&lt;subtask&gt;1@1&lt;/subtask&gt;zdq ds
 		</content>
 	</task>
 	<task id="8@1" status="Active" tags="tag">
@@ -142,7 +145,7 @@ pour voir
 			8@1
 		</subtask>
 		<content>
-			&lt;subtask&gt;8@1&lt;/subtask&gt;&lt;tag&gt;@autro&lt;/tag&gt;, 
+			&lt;subtask&gt;8@1&lt;/subtask&gt;&lt;tag&gt;@autro&lt;/tag&gt;, za
 		</content>
 	</task>
 </project>
