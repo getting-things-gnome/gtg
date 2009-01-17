@@ -66,7 +66,7 @@ class TaskEditor :
         self.textview.set_subtask_callback(self.new_subtask)
         self.textview.open_task_callback(self.open_task)
         self.textview.tasktitle_callback(self.task_title)
-        self.textview.refresh_browser_callback(self.refresh)
+        self.textview.refresh_browser_callback(self.refresh_browser)
         scrolled.add(self.textview)
         #Voila! it's done
         self.calendar       = self.cal_tree.get_widget("calendar")
@@ -115,7 +115,6 @@ class TaskEditor :
         
         self.__refresh_cb = refresh_callback
         #Putting the refresh callback at the end make the start a lot faster
-        print "refresh from taskeditor 115"
         self.refresh_editor()
 
         self.window.show()
@@ -123,20 +122,20 @@ class TaskEditor :
     #The refresh callback is None for all the initialization
     #It's an optimisation that save us a low of unneeded refresh
     #When the editor is starting
-    def refresh(self) :
+    def refresh_browser(self,fromtask=None) :
         if self.__refresh_cb :
-            self.__refresh_cb()
+            self.__refresh_cb(fromtask)
             
     #Can be called at any time to reflect the status of the Task
     #Refresh should never interfer with the TaskView
     #If a title is passed as a parameter, it will become
     #The new window title. If not, we will look for the task title
     def refresh_editor(self,title=None) :
-        print "refreshed"
+        to_save = False
         #title of the window 
         if title :
             self.window.set_title(title)
-            self.save()
+            to_save = True
         else :
             self.window.set_title(self.task.get_title())
            
@@ -178,6 +177,9 @@ class TaskEditor :
             self.startdate_widget.set_text(startdate.replace("-",date_separator))
         else :
             self.startdate_widget.set_text('')
+            
+        if to_save :
+            self.save()
             
         
     def date_changed(self,widget,data):
@@ -231,7 +233,6 @@ class TaskEditor :
             self.task.set_due_date("%s-%s-%s"%(y,m+1,d))
         elif self.__opened_date == "start" :
             self.task.set_start_date("%s-%s-%s"%(y,m+1,d))
-        print "refresh from taskeditor 224"
         self.refresh_editor()
     
     def day_selected_double(self,widget) : #pylint: disable-msg=W0613
@@ -242,7 +243,6 @@ class TaskEditor :
             self.task.set_due_date(None)
         elif self.__opened_date == "start" :
             self.task.set_start_date(None)
-        print "refresh from taskeditor 235"
         self.refresh_editor()
         self.__close_calendar()
         
@@ -255,10 +255,9 @@ class TaskEditor :
             toclose = False
         self.task.set_status(toset)
         if toclose : self.close(None)
-        else :
-            print "refresh from taskeditor 249" 
+        else : 
             self.refresh_editor()
-        self.refresh()
+        self.refresh_browser()
     
     def change_status(self,widget) : #pylint: disable-msg=W0613
         stat = self.task.get_status()
@@ -270,16 +269,13 @@ class TaskEditor :
             toclose = False
         self.task.set_status(toset)
         if toclose : self.close(None)
-        else :
-            print "refresh from taskeditor 264" 
+        else : 
             self.refresh_editor()
-        self.refresh()
+        self.refresh_browser()
     
     def delete_task(self,widget) :
         if self.delete :
             result = self.delete(widget,self.task.get_id())
-        else :
-            print "No callback to delete"
         #if the task was deleted, we close the window
         if result : self.window.destroy()
 
@@ -294,8 +290,7 @@ class TaskEditor :
     def save(self) :
         self.task.set_title(self.textview.get_title())
         self.task.set_text(self.textview.get_text()) 
-        if self.refresh :
-            self.refresh()
+        self.refresh_browser(fromtask=self.task.get_id())
         self.task.sync()
     
     #This will bring the Task Editor to front    

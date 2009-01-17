@@ -5,7 +5,7 @@
 			Parent task tag
 		</title>
 		<duedate>
-			2009-03-02
+			2009-01-23
 		</duedate>
 		<startdate>
 			2009-01-08
@@ -15,8 +15,13 @@
 		</subtask>
 		<content>
 			&lt;tag&gt;@tag&lt;/tag&gt;
-&lt;subtask&gt;1@1&lt;/subtask&gt;zdq ds
+&lt;subtask&gt;1@1&lt;/subtask&gt;zdq dsfhe 
 		</content>
+	</task>
+	<task id="4@1" status="Active" tags="">
+		<title>
+			azeazeaze
+		</title>
 	</task>
 	<task id="8@1" status="Active" tags="tag">
 		<title>

@@ -281,7 +281,6 @@ class TaskView(gtk.TextView):
         self.buff.remove_tag_by_name ('title', title_end   , end)
 
         # Refresh title of the window
-        print "refresh from taskview : 281"
         self.refresh(self.buff.get_text(title_start,title_end).strip('\n\t'))
         
         # Set iterators for body
@@ -298,7 +297,6 @@ class TaskView(gtk.TextView):
         def remove_tag_tag(texttag,data) : #pylint: disable-msg=W0613
             if texttag.get_data("is_tag") :
                 table.remove(texttag)
-                #print "removing %s" %texttag.get_data("tagname")
         table.foreach(remove_tag_tag)
 
         # Set iterators for word
