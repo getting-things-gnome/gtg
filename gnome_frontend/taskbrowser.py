@@ -145,13 +145,15 @@ class TaskBrowser:
         self.workview = not self.workview
         self.refresh_tb()
 
-    def refresh_tb(self):
+    #If a task asked for the refresh, we don't refresh it to avoid a loop
+    def refresh_tb(self,fromtask=None):
         self.refresh_list()
         self.refresh_tags()
         #self.refresh_projects()
         #Refreshing the opened editors
         for uid in self.opened_task :
-            self.opened_task[uid].refresh_editor()
+            if uid != fromtask :
+                self.opened_task[uid].refresh_editor()
 
     #We refresh the tag list. Not needed very often
     def refresh_tags(self) :

@@ -2,6 +2,7 @@ from datetime import date
 import xml.dom.minidom
 
 from tools.listes import *
+from tools.dates import *
 
 #This class represent a task in GTG.
 #You should never create a Task directly. Use the datastore.new_task() function.
@@ -75,18 +76,9 @@ class Task :
                 workable = False
         return workable
         
-    #function to convert a string of the form YYYY-MM-DD
-    #to a date
-    def __strtodate(self,stri) :
-        if stri :
-            y,m,d = stri.split('-')
-            if y and m and d :
-                return date(int(y),int(m),int(d))
-        return None
-        
     def set_due_date(self,fulldate) :
         if fulldate :
-            self.due_date = self.__strtodate(fulldate)
+            self.due_date = strtodate(fulldate)
         else :
             self.due_date = None
         
@@ -98,7 +90,7 @@ class Task :
             
     def set_start_date(self,fulldate) :
         if fulldate :
-            self.start_date = self.__strtodate(fulldate)
+            self.start_date = strtodate(fulldate)
         else :
             self.start_date = None
         
