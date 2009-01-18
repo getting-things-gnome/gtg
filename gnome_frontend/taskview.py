@@ -18,7 +18,7 @@ import gtk
 import gobject
 import pango
 
-from gnome_frontend import taskviewserial,taskviewunserial
+from gnome_frontend import taskviewserial
 
 class TaskView(gtk.TextView):
     __gtype_name__ = 'HyperTextView'
@@ -89,8 +89,6 @@ class TaskView(gtk.TextView):
         #Signals
         self.connect('motion-notify-event'   , self._motion)
         self.connect('focus-out-event'       , lambda w, e: self.table.foreach(self.__tag_reset, e.window))
-        #The signal emitted each time the buffer is modified
-        self.buff.connect("modified_changed" , self._modified)
         self.buff.connect('insert-text'      , self._insert_at_cursor)
         self.buff.connect("delete-range",self._delete_range)
         
@@ -103,7 +101,7 @@ class TaskView(gtk.TextView):
         #Let's try with serializing
         self.mime_type = 'application/x-gtg-task'
         serializer = taskviewserial.Serializer()
-        unserializer = taskviewunserial.Unserializer(self)
+        unserializer = taskviewserial.Unserializer(self)
         self.buff.register_serialize_format(self.mime_type, serializer.serialize, None)
         self.buff.register_deserialize_format(self.mime_type, unserializer.unserialize, None)
         
@@ -115,6 +113,12 @@ class TaskView(gtk.TextView):
         self.refresh_browser = None
         self.remove_subtask =None
         
+        #The signal emitted each time the buffer is modified
+        #Putting it at the end to avoid doing it too much when starting
+        self.buff.connect("changed" , self._modified)
+        
+    def _changed(self,widget) :
+        print "changed"
 
     
     #This function is called to refresh the editor 
@@ -122,6 +126,7 @@ class TaskView(gtk.TextView):
     def refresh(self,title) :
         if self.__refresh_cb :
             self.__refresh_cb(title)
+
     def refresh_callback(self,funct) :
         self.__refresh_cb = funct
     #This callback is called to add a new tag
@@ -244,7 +249,8 @@ class TaskView(gtk.TextView):
         return stripped
         
 ### PRIVATE FUNCTIONS ##########################################################
-        
+    
+    #This function is called so frequently that we should optimize it more.    
     def _modified(self,a=None) : #pylint: disable-msg=W0613
         """
         This function is called when the buffer has been modified,

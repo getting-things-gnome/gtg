@@ -28,16 +28,13 @@ class TaskBrowser:
             self.window.connect("destroy", gtk.main_quit)
         self.window.set_icon_from_file("data/16x16/app/gtg.png")
 
-#        self.projectpopup = self.wTree.get_widget("ProjectContextMenu")
         self.tagpopup = self.wTree.get_widget("TagContextMenu")
         self.donebutton = self.wTree.get_widget("mark_as_done_b")
         self.dismissbutton = self.wTree.get_widget("dismiss")
         
-        #self.delete_dialog.connect("destroy", self.delete_dialog.hide)
 
         #Create our dictionay and connect it
         dic = {
-#                "on_add_project"      : self.on_add_project,
                 "on_add_task"         : self.on_add_task,
                 "on_edit_active_task"        : self.on_edit_active_task,
                 "on_edit_done_task" :   self.on_edit_done_task,
@@ -48,11 +45,7 @@ class TaskBrowser:
                 "on_select_tag"       : self.on_select_tag,
                 "on_delete_confirm"   : self.on_delete_confirm,
                 "on_delete_cancel"    : lambda x : x.hide,
-#                "on_project_selected" : self.on_project_selected,
-#                "on_project_treeview_button_press_event" : self.on_project_treeview_button_press_event,
                 "on_tag_treeview_button_press_event" : self.on_tag_treeview_button_press_event,
-#                "on_edit_item_activate"     : self.on_edit_item_activate,
-#                "on_delete_item_activate" : self.on_delete_item_activate,
                 "on_colorchooser_activate" : self.on_colorchooser_activate,
                 "on_workview_toggled" : self.on_workview_toggled
 
@@ -71,6 +64,13 @@ class TaskBrowser:
         self.tag_ts = gtk.TreeStore(gobject.TYPE_PYOBJECT,str,gtk.gdk.Pixbuf,str)
         self.task_tview = self.wTree.get_widget("task_tview")
         self.task_ts = gtk.TreeStore(gobject.TYPE_PYOBJECT, str, str, str,str)
+        #Be sure that we are reorderable (not needed normaly)
+        self.task_tview.set_reorderable(True)
+        
+        #this is our manual drag-n-drop handling
+        #self.task_ts.connect("row-changed",self.row_inserted,"insert")
+        #self.task_ts.connect("row-deleted",self.row_deleted,"delete")
+
         
         #The tid that will be deleted
         self.tid_todelete = None
@@ -80,6 +80,24 @@ class TaskBrowser:
         #of course it's empty right now
         self.opened_task = {}
         
+#    def row_inserted(self,tree, path, it,data=None) :
+#        def check(model, path, it,data):
+#            if model.get(it,0) == data :
+#                self.path_inserted = path
+#                return True
+#            else :
+#                self.path_inserted = None
+
+#        print "row inserted"
+#        itera = tree.get_iter(path)
+#        self.path_inserted = path
+#        tid = tree.get(it,0)
+#        tree.foreach(check,tid)
+#        
+#    def row_deleted(self,tree,path,data=None) :
+#        print "row deleted %s -%s"%(self.path_inserted,path)
+        
+ 
     def main(self):
         #Here we will define the main TaskList interface
         
