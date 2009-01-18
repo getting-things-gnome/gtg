@@ -68,7 +68,7 @@ class TaskBrowser:
         self.taskdone_tview = self.wTree.get_widget("taskdone_tview")
         self.taskdone_ts = gtk.TreeStore(gobject.TYPE_PYOBJECT, str,str,str)
         self.tag_tview = self.wTree.get_widget("tag_tview")
-        self.tag_ts = gtk.TreeStore(gobject.TYPE_PYOBJECT,str,gtk.gdk.Pixbuf,str)
+        self.tag_ts = gtk.ListStore(gobject.TYPE_PYOBJECT,str,gtk.gdk.Pixbuf,str)
         self.task_tview = self.wTree.get_widget("task_tview")
         self.task_ts = gtk.TreeStore(gobject.TYPE_PYOBJECT, str, str, str,str)
         
@@ -85,14 +85,15 @@ class TaskBrowser:
         
         #The tags treeview
         self.__add_tag_column("Tags",3)
-        self.tag_ts = gtk.ListStore(gobject.TYPE_PYOBJECT,str,gtk.gdk.Pixbuf,str)
         self.tag_tview.set_model(self.tag_ts)
    
         #The Active tasks treeview
         self.task_tview.set_rules_hint(False)
-        self.__add_active_column("Actions",2)
-        self.__add_active_column("Due date",3)
-        self.__add_active_column("Left",4)
+        self.__add_active_column("Tags"      ,1)
+        mycol = self.__add_active_column("Title"   ,2)
+        self.task_tview.set_expander_column(mycol)
+        self.__add_active_column("Due date"  ,3)
+        self.__add_active_column("Days left" ,4)
         self.task_tview.set_model(self.task_ts)
         #self.task_ts.set_sort_column_id(self.c_title, gtk.SORT_ASCENDING)
      
@@ -217,7 +218,7 @@ class TaskBrowser:
             parenthesis = "(1 active task)"
         else :
             parenthesis = "(%s actives tasks)"%nbr_of_tasks
-        self.window.set_title("Getting Things Gnome %s"%parenthesis)
+        self.window.set_title("Getting Things Gnome! %s"%parenthesis)
         
         #We build the closed tasks pane
         closed_tasks = self.req.get_closed_tasks_list(projects=p_list,tags=tag_list,\
@@ -287,7 +288,7 @@ class TaskBrowser:
         if extended :
             excerpt = task.get_excerpt(lines=2)
             if excerpt.strip() != "" :
-                title   = "<b><big>%s</big></b>\n<small><small>%s</small></small>" %(task.get_title(),excerpt)
+                title   = "<b><big>%s</big></b>\n<small>%s</small>" %(task.get_title(),excerpt)
             else : 
                 title   = "<b><big>%s</big></b>" %task.get_title()
         else :
@@ -295,8 +296,8 @@ class TaskBrowser:
         return title
 
     #Add tasks to a treeview. If treeview is False, it becomes a flat list
-    def add_task_tree_to_list(self, tree_store, tid, parent,selected_uid=None,\
-                                        active_tasks=[],treeview=True):
+    def add_task_tree_to_list(self, tree_store, tid, parent, selected_uid=None,\
+                                        active_tasks=[], treeview=True):
         task = self.req.get_task(tid)
         if selected_uid and selected_uid == tid :
             title = self.__build_task_title(task,extended=True)
@@ -304,8 +305,14 @@ class TaskBrowser:
             title = self.__build_task_title(task,extended=False)
         duedate = task.get_due_date()
         left    = task.get_days_left()
-        color = task.get_color()
-        my_row  = self.task_ts.append(parent, [tid,color,title,duedate,left])
+        color   = task.get_color()
+        if   treeview and parent==None and len(task.get_subtasks())==0:
+            my_row = self.task_ts.insert_before(None, tree_store.get_iter_first(), row=[tid,color,title,duedate,left])
+        elif treeview and parent==None:
+            title  = "<span weight='bold' size='large'>%s</span>" % title
+            my_row = self.task_ts.append(parent, [tid,color,title,duedate,left])
+        else:
+            my_row = self.task_ts.append(parent, [tid,color,title,duedate,left])
         #If treeview, we add add the active childs
         if treeview :
             for c in task.get_subtasks():
@@ -465,17 +472,20 @@ class TaskBrowser:
     def __add_active_column(self,name,value) :
         col = self.__add_column(name,value)
         self.task_tview.append_column(col)
+        return col
         
     def __add_closed_column(self,name,value) :
         col = self.__add_column(name,value)
         self.taskdone_tview.append_column(col)
+        return col
 
     def __add_tag_column(self,name,value) :
-        col = self.__add_column(name,value,icon=True)
+        col = self.__add_column(name,value,icon=True,padding=4)
         col.set_clickable(False)
         self.tag_tview.append_column(col)
+        return col
 
-    def __add_column(self,name, value, icon=False) :
+    def __add_column(self,name, value, icon=False, padding=None) :
   
         col = gtk.TreeViewColumn()
         col.set_title(name)
@@ -484,13 +494,17 @@ class TaskBrowser:
             render_pixbuf = gtk.CellRendererPixbuf()
             col.pack_start(render_pixbuf, expand=False)
             col.add_attribute(render_pixbuf, 'pixbuf', 2)
-            col.add_attribute(render_pixbuf, "cell_background",1)
+            #col.add_attribute(render_pixbuf, "cell_background",1)
+            render_pixbuf.set_property("xpad",2)
 
         render_text = gtk.CellRendererText()
         col.pack_start(render_text, expand=True)
         col.set_attributes(render_text, markup=value)
-        col.add_attribute(render_text, "cell_background",1)
-        
+        #col.add_attribute(render_text, "cell_background",1)
+        if padding:
+            render_text.set_property("ypad",padding)        
+
+        #col.pack_start(renderer)
         col.set_resizable(True)        
         col.set_sort_column_id(value)
         return col
@@ -499,4 +513,5 @@ class TaskBrowser:
     def close(self,widget=None) : #pylint: disable-msg=W0613
         #Saving is now done in main.py
         gtk.main_quit()
+
 

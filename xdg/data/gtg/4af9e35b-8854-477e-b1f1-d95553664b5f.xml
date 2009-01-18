@@ -1,16 +1,9 @@
 <?xml version="1.0" ?>
 <project name="aze">
-	<task id="0@1" status="Active" tags="tag">
+	<task id="11@1" status="Active" tags="">
 		<title>
-			Parent task tag
+			interdum, massa nibh
 		</title>
-		<subtask>
-			1@1
-		</subtask>
-		<content>
-			&lt;tag&gt;@tag&lt;/tag&gt;
-&lt;subtask&gt;1@1&lt;/subtask&gt;
-		</content>
 	</task>
 	<task id="8@1" status="Active" tags="tag">
 		<title>
@@ -21,21 +14,6 @@
 		</startdate>
 		<content>
 			&lt;tag&gt;@tag&lt;/tag&gt;
-		</content>
-	</task>
-	<task id="1@1" status="Active" tags="tag,autro">
-		<title>
-			enfant2
-		</title>
-		<subtask>
-			6@1
-		</subtask>
-		<subtask>
-			7@1
-		</subtask>
-		<content>
-			&lt;tag&gt;@tag&lt;/tag&gt;, &lt;tag&gt;@autro&lt;/tag&gt;
-&lt;subtask&gt;6@1&lt;/subtask&gt;&lt;subtask&gt;7@1&lt;/subtask&gt;
 		</content>
 	</task>
 	<task id="10@1" status="Active" tags="new_tag">
@@ -50,6 +28,68 @@
 pour voir
 &lt;subtask&gt;11@1&lt;/subtask&gt;&lt;subtask&gt;12@1&lt;/subtask&gt;
 		</content>
+	</task>
+	<task id="6@1" status="Active" tags="tag">
+		<title>
+			sous-sous
+		</title>
+		<content>
+			&lt;tag&gt;@tag&lt;/tag&gt;
+		</content>
+	</task>
+	<task id="13@1" status="Active" tags="">
+		<title>
+			aliquet risus, vitae lobortis
+		</title>
+	</task>
+	<task id="12@1" status="Active" tags="new_tag">
+		<title>
+			une tautre
+		</title>
+		<subtask>
+			14@1
+		</subtask>
+		<content>
+			&lt;tag&gt;@new_tag&lt;/tag&gt;, 
+&lt;subtask&gt;14@1&lt;/subtask&gt;
+		</content>
+	</task>
+	<task id="7@1" status="Active" tags="">
+		<title>
+			My new task
+		</title>
+	</task>
+	<task id="20@1" status="Active" tags="">
+		<title>
+			Aenean elementum laoreet ipsum.
+		</title>
+	</task>
+	<task id="4@1" status="Active" tags="">
+		<title>
+			Monsectetur adipiscing elit
+		</title>
+		<subtask>
+			11@1
+		</subtask>
+		<subtask>
+			13@1
+		</subtask>
+		<subtask>
+			15@1
+		</subtask>
+		<subtask>
+			17@1
+		</subtask>
+		<content>
+			Vestibulum molestie dapibus augue. Cras volutpat tristique leo. Duis nibh. Fusce varius. Vestibulum scelerisque malesuada pede
+
+&lt;subtask&gt;11@1&lt;/subtask&gt;&lt;subtask&gt;13@1&lt;/subtask&gt;&lt;subtask&gt;15@1&lt;/subtask&gt;&lt;subtask&gt;17@1&lt;/subtask&gt;
+		</content>
+	</task>
+	<task id="21@1" status="Active" tags="">
+		<title>
+			Duis eget lorem.
+		</title>
 	</task>
 	<task id="5@1" status="Done" tags="aze">
 		<title>
@@ -76,36 +116,23 @@ pour voir
 			2009-01-01
 		</donedate>
 	</task>
-	<task id="9@1" status="Active" tags="">
+	<task id="18@1" status="Active" tags="">
 		<title>
-			No tag task
+			Donec tortor arcu, tempus vel
 		</title>
+		<subtask>
+			19@1
+		</subtask>
+		<subtask>
+			20@1
+		</subtask>
+		<subtask>
+			21@1
+		</subtask>
 		<content>
-			no tag but I'm editing
-		</content>
-	</task>
-	<task id="6@1" status="Active" tags="tag">
-		<title>
-			sous-sous
-		</title>
-		<content>
-			&lt;tag&gt;@tag&lt;/tag&gt;
-		</content>
-	</task>
-	<task id="14@1" status="Dismiss" tags="new_tag">
-		<title>
-			encore un
-		</title>
-		<content>
-			&lt;tag&gt;@new_tag&lt;/tag&gt;, 
-		</content>
-	</task>
-	<task id="16@1" status="Active" tags="tag">
-		<title>
-			child with tag
-		</title>
-		<content>
-			&lt;tag&gt;@tag&lt;/tag&gt;, 
+			Integer scelerisque pellentesque felis. Morbi et dolor. Sed rhoncus, leo eu dictum dignissim, lacus est consectetur massa, sit amet condimentum pede ipsum id diam.
+
+&lt;subtask&gt;19@1&lt;/subtask&gt;&lt;subtask&gt;20@1&lt;/subtask&gt;&lt;subtask&gt;21@1&lt;/subtask&gt;
 		</content>
 	</task>
 	<task id="3@1" status="Done" tags="donetask">
@@ -119,27 +146,70 @@ pour voir
 			&lt;tag&gt;@donetask&lt;/tag&gt;
 		</content>
 	</task>
-	<task id="12@1" status="Active" tags="new_tag">
+	<task id="0@1" status="Active" tags="tag">
 		<title>
-			une tautre
+			Parent task tag
 		</title>
 		<subtask>
-			14@1
+			1@1
 		</subtask>
 		<content>
-			&lt;tag&gt;@new_tag&lt;/tag&gt;, 
-&lt;subtask&gt;14@1&lt;/subtask&gt;
+			&lt;tag&gt;@tag&lt;/tag&gt;
+&lt;subtask&gt;1@1&lt;/subtask&gt;
 		</content>
 	</task>
-	<task id="7@1" status="Active" tags="autro">
+	<task id="1@1" status="Active" tags="tag,autro">
 		<title>
-			enfant3
+			enfant2
 		</title>
 		<subtask>
-			8@1
+			6@1
+		</subtask>
+		<subtask>
+			7@1
 		</subtask>
 		<content>
-			&lt;subtask&gt;8@1&lt;/subtask&gt;&lt;tag&gt;@autro&lt;/tag&gt;, 
+			&lt;tag&gt;@tag&lt;/tag&gt;, &lt;tag&gt;@autro&lt;/tag&gt;
+&lt;subtask&gt;6@1&lt;/subtask&gt;&lt;subtask&gt;7@1&lt;/subtask&gt;
+		</content>
+	</task>
+	<task id="19@1" status="Active" tags="">
+		<title>
+			Etiam aliquam dolor nec dui.
+		</title>
+	</task>
+	<task id="15@1" status="Active" tags="">
+		<title>
+			Lorem ipsum dolor
+		</title>
+	</task>
+	<task id="14@1" status="Dismiss" tags="new_tag">
+		<title>
+			encore un
+		</title>
+		<content>
+			&lt;tag&gt;@new_tag&lt;/tag&gt;, 
+		</content>
+	</task>
+	<task id="17@1" status="Active" tags="">
+		<title>
+			Integer scelerisque pellentesque
+		</title>
+	</task>
+	<task id="9@1" status="Active" tags="">
+		<title>
+			No tag task
+		</title>
+		<content>
+			no tag but I'm editing
+		</content>
+	</task>
+	<task id="16@1" status="Active" tags="tag">
+		<title>
+			child with tag
+		</title>
+		<content>
+			&lt;tag&gt;@tag&lt;/tag&gt;, 
 		</content>
 	</task>
 </project>

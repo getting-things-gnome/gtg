@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Fri Jan 16 17:40:55 2009 -->
+<!--Generated with glade3 3.4.5 on Sun Jan 18 02:21:14 2009 -->
 <glade-interface>
   <widget class="GtkWindow" id="MainWindow">
     <property name="visible">True</property>
@@ -208,11 +208,10 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkToolButton" id="mark_as_done_b">
+              <widget class="GtkMenuToolButton" id="mark_as_done_b">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">Mark as done</property>
                 <property name="icon">task_done.png</property>
-                <signal name="clicked" handler="on_mark_as_done"/>
               </widget>
               <packing>
                 <property name="homogeneous">True</property>
@@ -309,8 +308,11 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="reorderable">True</property>
+                        <property name="rules_hint">True</property>
+                        <property name="enable_search">False</property>
                         <property name="search_column">8</property>
                         <property name="rubber_banding">True</property>
+                        <property name="enable_tree_lines">True</property>
                         <signal name="row_activated" handler="on_edit_active_task"/>
                         <signal name="cursor_changed" handler="on_task_tview_cursor_changed"/>
                       </widget>
@@ -332,6 +334,7 @@
                       <widget class="GtkTreeView" id="taskdone_tview">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
+                        <property name="rules_hint">True</property>
                         <property name="search_column">8</property>
                         <signal name="row_activated" handler="on_edit_done_task"/>
                       </widget>
