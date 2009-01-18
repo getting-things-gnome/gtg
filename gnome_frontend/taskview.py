@@ -18,7 +18,7 @@ import gtk
 import gobject
 import pango
 
-from gnome_frontend import taskviewserial,taskviewunserial
+from gnome_frontend import taskviewserial
 
 class TaskView(gtk.TextView):
     __gtype_name__ = 'HyperTextView'
@@ -101,7 +101,7 @@ class TaskView(gtk.TextView):
         #Let's try with serializing
         self.mime_type = 'application/x-gtg-task'
         serializer = taskviewserial.Serializer()
-        unserializer = taskviewunserial.Unserializer(self)
+        unserializer = taskviewserial.Unserializer(self)
         self.buff.register_serialize_format(self.mime_type, serializer.serialize, None)
         self.buff.register_deserialize_format(self.mime_type, unserializer.unserialize, None)
         
@@ -249,7 +249,8 @@ class TaskView(gtk.TextView):
         return stripped
         
 ### PRIVATE FUNCTIONS ##########################################################
-        
+    
+    #This function is called so frequently that we should optimize it more.    
     def _modified(self,a=None) : #pylint: disable-msg=W0613
         """
         This function is called when the buffer has been modified,
