@@ -131,7 +131,6 @@ class TaskEditor :
     #If a title is passed as a parameter, it will become
     #The new window title. If not, we will look for the task title
     def refresh_editor(self,title=None) :
-        print "refresh_editor"
         to_save = False
         #title of the window 
         if title :

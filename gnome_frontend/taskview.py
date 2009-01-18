@@ -89,8 +89,6 @@ class TaskView(gtk.TextView):
         #Signals
         self.connect('motion-notify-event'   , self._motion)
         self.connect('focus-out-event'       , lambda w, e: self.table.foreach(self.__tag_reset, e.window))
-        #The signal emitted each time the buffer is modified
-        self.buff.connect("modified_changed" , self._modified)
         self.buff.connect('insert-text'      , self._insert_at_cursor)
         self.buff.connect("delete-range",self._delete_range)
         
@@ -115,13 +113,18 @@ class TaskView(gtk.TextView):
         self.refresh_browser = None
         self.remove_subtask =None
         
+        #The signal emitted each time the buffer is modified
+        #Putting it at the end to avoid doing it too much when starting
+        self.buff.connect("changed" , self._modified)
+        
+    def _changed(self,widget) :
+        print "changed"
 
     
     #This function is called to refresh the editor 
     #Specially when we change the title
     def refresh(self,title) :
         if self.__refresh_cb :
-            print "refresh cb in taskview"
             self.__refresh_cb(title)
 
     def refresh_callback(self,funct) :
