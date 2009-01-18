@@ -14,13 +14,10 @@
 	</task>
 	<task id="0@2" status="Done" tags="">
 		<title>
-			closed task without tag
+			My new task
 		</title>
 		<donedate>
 			2009-01-12
 		</donedate>
-		<content>
-			kml
-		</content>
 	</task>
 </project>
