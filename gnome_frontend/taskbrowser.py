@@ -6,8 +6,8 @@ import gobject
 import gtk.glade
 
 #our own imports
-from gnome_frontend.taskeditor import TaskEditor
-#from gnome_frontend.project_ui import ProjectEditDialog
+from gnome_frontend.taskeditor       import TaskEditor
+from gnome_frontend.CellRendererTags import CellRendererTags
 from gnome_frontend import GnomeConfig
 
 #=== OBJECTS ===================================================================
@@ -70,8 +70,20 @@ class TaskBrowser:
         self.tag_tview = self.wTree.get_widget("tag_tview")
         self.tag_ts = gtk.ListStore(gobject.TYPE_PYOBJECT,str,gtk.gdk.Pixbuf,str)
         self.task_tview = self.wTree.get_widget("task_tview")
-        self.task_ts = gtk.TreeStore(gobject.TYPE_PYOBJECT, str, str, str,str)
+        self.task_ts = gtk.TreeStore(gobject.TYPE_PYOBJECT,str,str,str,gobject.TYPE_PYOBJECT)
         
+        # Model constants
+        self.TASK_MODEL_OBJ   = 0
+        self.TASK_MODEL_TITLE = 1
+        self.TASK_MODEL_DDATE = 2
+        self.TASK_MODEL_DLEFT = 3
+        self.TASK_MODEL_TAGS  = 4
+
+        self.TAGS_MODEL_OBJ   = 0
+        self.TAGS_MODEL_COLOR = 1
+        self.TAGS_MODEL_ICON  = 2
+        self.TAGS_MODEL_NAME  = 3
+
         #The tid that will be deleted
         self.tid_todelete = None
         self.c_title = 1
@@ -84,16 +96,12 @@ class TaskBrowser:
         #Here we will define the main TaskList interface
         
         #The tags treeview
-        self.__add_tag_column("Tags",3)
+        self.__create_tags_tview()
         self.tag_tview.set_model(self.tag_ts)
    
         #The Active tasks treeview
         self.task_tview.set_rules_hint(False)
-        self.__add_active_column("Tags"      ,1)
-        mycol = self.__add_active_column("Title"   ,2)
-        self.task_tview.set_expander_column(mycol)
-        self.__add_active_column("Due date"  ,3)
-        self.__add_active_column("Days left" ,4)
+        self.__create_task_tview()
         self.task_tview.set_model(self.task_ts)
         #self.task_ts.set_sort_column_id(self.c_title, gtk.SORT_ASCENDING)
      
@@ -260,8 +268,6 @@ class TaskBrowser:
     #This function is called when the selection change in the active task view
     #It will displays the selected task differently
     def task_cursor_changed(self,selection=None) :
-        tid_row = 0
-        title_row = 2
         #We unselect all in the closed task view
         #Only if something is selected in the active task list
         if selection.count_selected_rows() > 0 :
@@ -270,19 +276,19 @@ class TaskBrowser:
             self.dismissbutton.set_label(GnomeConfig.MARK_DISMISS)
         #We reset the previously selected task
         if self.selected_rows and self.task_ts.iter_is_valid(self.selected_rows):
-            tid = self.task_ts.get_value(self.selected_rows, tid_row)
+            tid = self.task_ts.get_value(self.selected_rows, self.TASK_MODEL_OBJ)
             task = self.req.get_task(tid)
             title = self.__build_task_title(task,extended=False)
-            self.task_ts.set_value(self.selected_rows,title_row,title)
+            self.task_ts.set_value(self.selected_rows,self.TASK_MODEL_TITLE,title)
         #We change the selection title
         if selection :
             ts,itera = selection.get_selected() #pylint: disable-msg=W0612
             if itera and self.task_ts.iter_is_valid(itera) :
-                tid = self.task_ts.get_value(itera, tid_row)
+                tid = self.task_ts.get_value(itera, self.TASK_MODEL_OBJ)
                 task = self.req.get_task(tid)
                 self.selected_rows = itera
                 title = self.__build_task_title(task,extended=True)
-                self.task_ts.set_value(self.selected_rows,title_row,title)
+                self.task_ts.set_value(self.selected_rows,self.TASK_MODEL_TITLE,title)
     
     def __build_task_title(self,task,extended=False):
         if extended :
@@ -292,7 +298,11 @@ class TaskBrowser:
             else : 
                 title   = "<b><big>%s</big></b>" %task.get_title()
         else :
-            title = task.get_title()
+            alone = (task.has_parents()==False and len(task.get_subtasks())!=0)
+            if (self.workview==False) and alone:
+                title = "<span weight='bold' size='large'>%s</span>" % task.get_title()
+            else:
+                title = task.get_title()
         return title
 
     #Add tasks to a treeview. If treeview is False, it becomes a flat list
@@ -305,14 +315,11 @@ class TaskBrowser:
             title = self.__build_task_title(task,extended=False)
         duedate = task.get_due_date()
         left    = task.get_days_left()
-        color   = task.get_color()
+        tags    = task.get_tags()
         if   treeview and parent==None and len(task.get_subtasks())==0:
-            my_row = self.task_ts.insert_before(None, tree_store.get_iter_first(), row=[tid,color,title,duedate,left])
-        elif treeview and parent==None:
-            title  = "<span weight='bold' size='large'>%s</span>" % title
-            my_row = self.task_ts.append(parent, [tid,color,title,duedate,left])
+            my_row = self.task_ts.insert_before(None, tree_store.get_iter_first(), row=[tid,title,duedate,left,tags])
         else:
-            my_row = self.task_ts.append(parent, [tid,color,title,duedate,left])
+            my_row = self.task_ts.append(parent, [tid,title,duedate,left,tags])
         #If treeview, we add add the active childs
         if treeview :
             for c in task.get_subtasks():
@@ -479,12 +486,6 @@ class TaskBrowser:
         self.taskdone_tview.append_column(col)
         return col
 
-    def __add_tag_column(self,name,value) :
-        col = self.__add_column(name,value,icon=True,padding=4)
-        col.set_clickable(False)
-        self.tag_tview.append_column(col)
-        return col
-
     def __add_column(self,name, value, icon=False, padding=None) :
   
         col = gtk.TreeViewColumn()
@@ -508,10 +509,78 @@ class TaskBrowser:
         col.set_resizable(True)        
         col.set_sort_column_id(value)
         return col
+
+    def __create_tags_tview(self):
+         
+        # Tag column
+        self.TAGS_TV_COL_TAG = 1
+        tag_col     = gtk.TreeViewColumn()
+        render_text = gtk.CellRendererText()
+        render_tags = CellRendererTags()
+        tag_col.set_title             ("Tags")
+        tag_col.set_clickable         (False)
+        tag_col.pack_start            (render_tags, expand=False)
+        tag_col.set_attributes        (render_tags, tag=self.TAGS_MODEL_OBJ)
+        tag_col.pack_start            (render_text, expand=False)
+        tag_col.set_attributes        (render_text, markup=self.TAGS_MODEL_NAME)
+        tag_col.set_resizable         (False)
+        tag_col.set_sort_column_id    (self.TAGS_TV_COL_TAG)
+        self.tag_tview.append_column  (tag_col)
         
+        # Global treeview properties
+        # none
+
+    def __create_task_tview(self):
+  
+        # Tag column
+        self.TV_COL_TAG = 1
+        tag_col     = gtk.TreeViewColumn()
+        render_text = gtk.CellRendererText()
+        render_tags = CellRendererTags()
+        tag_col.set_title          ("Tags")
+        tag_col.pack_start         (render_tags, expand=False)
+        tag_col.set_attributes     (render_tags, tag_list=self.TASK_MODEL_TAGS)
+        tag_col.set_resizable      (False)
+        tag_col.set_sort_column_id (self.TV_COL_TAG)
+        self.task_tview.append_column(tag_col)
+        
+        # Title column
+        self.TV_COL_TITLE = 2
+        title_col   = gtk.TreeViewColumn()
+        render_text = gtk.CellRendererText()
+        title_col.set_title          ("Title")
+        title_col.pack_start         (render_text, expand=False)
+        title_col.set_attributes     (render_text, markup=self.TASK_MODEL_TITLE)
+        title_col.set_resizable      (True)
+        title_col.set_sort_column_id (self.TV_COL_TITLE)
+        self.task_tview.append_column(title_col)
+        
+        # Due date column
+        self.TV_COL_DDATE = 3
+        ddate_col   = gtk.TreeViewColumn()
+        render_text = gtk.CellRendererText()
+        ddate_col.set_title          ("Due date")
+        ddate_col.pack_start         (render_text, expand=False)
+        ddate_col.set_attributes     (render_text, markup=self.TASK_MODEL_DDATE)
+        ddate_col.set_resizable      (False)
+        ddate_col.set_sort_column_id (self.TV_COL_DDATE)
+        self.task_tview.append_column(ddate_col)
+        
+        # Title column
+        self.TV_COL_DLEFT = 4
+        dleft_col   = gtk.TreeViewColumn()
+        render_text = gtk.CellRendererText()
+        dleft_col.set_title          ("Days left")
+        dleft_col.pack_start         (render_text, expand=False)
+        dleft_col.set_attributes     (render_text, markup=self.TASK_MODEL_DLEFT)
+        dleft_col.set_resizable      (False)
+        dleft_col.set_sort_column_id (self.TV_COL_DLEFT)
+        self.task_tview.append_column(dleft_col)
+
+        # Global treeview properties
+        self.task_tview.set_property("expander-column", title_col)
+       
     ######Closing the window
     def close(self,widget=None) : #pylint: disable-msg=W0613
         #Saving is now done in main.py
         gtk.main_quit()
-
-
