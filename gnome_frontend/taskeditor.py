@@ -10,7 +10,7 @@ import sys
 
 from gnome_frontend.taskview import TaskView
 from gnome_frontend import GnomeConfig
-
+from tools.dates import *
 try:
     import pygtk
     pygtk.require("2.0")
@@ -40,7 +40,9 @@ class TaskEditor :
                 "delete_clicked"        : self.delete_task,
                 "on_duedate_pressed"    : (self.on_date_pressed,"due"),
                 "on_startdate_pressed"    : (self.on_date_pressed,"start"),
-                "close_clicked"         : self.close
+                "close_clicked"         : self.close,
+                "startingdate_changed" : (self.date_changed,"start"),
+                "duedate_changed" : (self.date_changed,"due")
               }
         self.wTree.signal_autoconnect(dic)
         cal_dic = {
@@ -50,6 +52,7 @@ class TaskEditor :
         }
         self.cal_tree.signal_autoconnect(cal_dic)
         self.window         = self.wTree.get_widget("TaskEditor")
+        self.__refresh_cb = None
         #Removing the Normal textview to replace it by our own
         #So don't try to change anything with glade, this is a home-made widget
         textview = self.wTree.get_widget("textview")
@@ -63,6 +66,7 @@ class TaskEditor :
         self.textview.set_subtask_callback(self.new_subtask)
         self.textview.open_task_callback(self.open_task)
         self.textview.tasktitle_callback(self.task_title)
+        self.textview.refresh_browser_callback(self.refresh_browser)
         scrolled.add(self.textview)
         #Voila! it's done
         self.calendar       = self.cal_tree.get_widget("calendar")
@@ -87,8 +91,6 @@ class TaskEditor :
         self.textview.set_get_tagslist_callback(task.get_tags_name)
         self.textview.set_add_tag_callback(task.add_tag)
         self.textview.set_remove_tag_callback(task.remove_tag)
-        self.refresh = refresh_callback
-        self.textview.refresh_browser_callback(self.refresh)
         self.delete  = delete_callback
         self.closing = close_callback
         texte = self.task.get_text()
@@ -110,19 +112,30 @@ class TaskEditor :
                     self.textview.insert_text("@%s, "%t.get_name())
             
         self.window.connect("destroy", self.destruction)
+        
+        self.__refresh_cb = refresh_callback
+        #Putting the refresh callback at the end make the start a lot faster
         self.refresh_editor()
 
         self.window.show()
 
+    #The refresh callback is None for all the initialization
+    #It's an optimisation that save us a low of unneeded refresh
+    #When the editor is starting
+    def refresh_browser(self,fromtask=None) :
+        if self.__refresh_cb :
+            self.__refresh_cb(fromtask)
+            
     #Can be called at any time to reflect the status of the Task
     #Refresh should never interfer with the TaskView
     #If a title is passed as a parameter, it will become
     #The new window title. If not, we will look for the task title
     def refresh_editor(self,title=None) :
+        to_save = False
         #title of the window 
         if title :
             self.window.set_title(title)
-            self.save()
+            to_save = True
         else :
             self.window.set_title(self.task.get_title())
            
@@ -141,29 +154,61 @@ class TaskEditor :
         duedate = self.task.get_due_date()
         if duedate :
             zedate = duedate.replace("-",date_separator)
-            self.duedate_widget.set_text(zedate)
-            #refreshing the day left label
-            result = self.task.get_days_left()
-            if result == 1 :
-                txt = "Due tomorrow !"
-            elif result > 0 :
-                txt = "%s days left" %result
-            elif result == 0 :
-                txt = "Due today !"
-            elif result == -1 :
-                txt = "Due for yesterday"
-            elif result < 0 :
-                txt = "Was %s days ago" %result
-            self.dayleft_label.set_markup("<span color='#666666'>"+txt+"</span>") 
-                
-        else :
+            if zedate != self.duedate_widget.get_text() :
+                self.duedate_widget.set_text(zedate)
+                #refreshing the day left label
+                result = self.task.get_days_left()
+                if result == 1 :
+                    txt = "Due tomorrow !"
+                elif result > 0 :
+                    txt = "%s days left" %result
+                elif result == 0 :
+                    txt = "Due today !"
+                elif result == -1 :
+                    txt = "Due for yesterday"
+                elif result < 0 :
+                    txt = "Was %s days ago" %result
+                self.dayleft_label.set_markup("<span color='#666666'>"+txt+"</span>")    
+        elif self.duedate_widget.get_text() != ''  :
             self.dayleft_label.set_text('')
             self.duedate_widget.set_text('')
         startdate = self.task.get_start_date()
         if startdate :
-            self.startdate_widget.set_text(startdate.replace("-",date_separator))
-        else :
+            zedate = startdate.replace("-",date_separator)
+            if zedate != self.startdate_widget.get_text() :
+                self.startdate_widget.set_text(zedate)
+        elif self.startdate_widget.get_text() != '' :
             self.startdate_widget.set_text('')
+            
+        if to_save :
+            self.save()
+            
+        
+    def date_changed(self,widget,data):
+        text = widget.get_text()
+        datetoset = None
+        validdate = False
+        if not text :
+            validdate = True
+        else :
+            dateobject = strtodate(text)
+            if dateobject :
+                validdate = True
+                datetoset = text
+                
+        if validdate :
+            #If the date is valid, we write in black in the widget
+            widget.modify_text(gtk.STATE_NORMAL, gtk.gdk.color_parse("#000"))
+            if data == "start" :
+                self.task.set_start_date(datetoset)
+            elif data == "due" :
+                self.task.set_due_date(datetoset)
+        else :
+            #We should write in red in the entry if the date is not valid
+            widget.modify_text(gtk.STATE_NORMAL, gtk.gdk.color_parse("#F00"))
+
+
+        
         
     def on_date_pressed(self, widget,data): 
         """Called when the due button is clicked."""
@@ -212,8 +257,9 @@ class TaskEditor :
             toclose = False
         self.task.set_status(toset)
         if toclose : self.close(None)
-        else : self.refresh_editor()
-        self.refresh()
+        else : 
+            self.refresh_editor()
+        self.refresh_browser()
     
     def change_status(self,widget) : #pylint: disable-msg=W0613
         stat = self.task.get_status()
@@ -225,14 +271,13 @@ class TaskEditor :
             toclose = False
         self.task.set_status(toset)
         if toclose : self.close(None)
-        else : self.refresh_editor()
-        self.refresh()
+        else : 
+            self.refresh_editor()
+        self.refresh_browser()
     
     def delete_task(self,widget) :
         if self.delete :
             result = self.delete(widget,self.task.get_id())
-        else :
-            print "No callback to delete"
         #if the task was deleted, we close the window
         if result : self.window.destroy()
 
@@ -247,8 +292,7 @@ class TaskEditor :
     def save(self) :
         self.task.set_title(self.textview.get_title())
         self.task.set_text(self.textview.get_text()) 
-        if self.refresh :
-            self.refresh()
+        self.refresh_browser(fromtask=self.task.get_id())
         self.task.sync()
     
     #This will bring the Task Editor to front    
