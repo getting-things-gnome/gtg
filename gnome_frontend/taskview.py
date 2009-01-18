@@ -121,7 +121,9 @@ class TaskView(gtk.TextView):
     #Specially when we change the title
     def refresh(self,title) :
         if self.__refresh_cb :
+            print "refresh cb in taskview"
             self.__refresh_cb(title)
+
     def refresh_callback(self,funct) :
         self.__refresh_cb = funct
     #This callback is called to add a new tag

@@ -62,7 +62,6 @@ class TaskEditor :
         self.task_title = tasktitle_callback
         self.textview   = TaskView(self.req)
         self.textview.show()
-        self.textview.refresh_callback(self.refresh_editor)
         self.textview.set_subtask_callback(self.new_subtask)
         self.textview.open_task_callback(self.open_task)
         self.textview.tasktitle_callback(self.task_title)
@@ -115,6 +114,7 @@ class TaskEditor :
         
         self.__refresh_cb = refresh_callback
         #Putting the refresh callback at the end make the start a lot faster
+        self.textview.refresh_callback(self.refresh_editor)
         self.refresh_editor()
 
         self.window.show()
@@ -131,6 +131,7 @@ class TaskEditor :
     #If a title is passed as a parameter, it will become
     #The new window title. If not, we will look for the task title
     def refresh_editor(self,title=None) :
+        print "refresh_editor"
         to_save = False
         #title of the window 
         if title :
