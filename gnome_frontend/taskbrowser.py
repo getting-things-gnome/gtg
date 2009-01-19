@@ -108,7 +108,6 @@ class TaskBrowser:
         self.tag_tview.set_model(self.tag_ts)
    
         #The Active tasks treeview
-        self.task_tview.set_rules_hint(False)
         self.__create_task_tview()
         self.task_tview.set_model(self.task_ts)
         #self.task_ts.set_sort_column_id(self.c_title, gtk.SORT_ASCENDING)
@@ -177,6 +176,8 @@ class TaskBrowser:
         self.tag_ts.clear()
         icon_alltask = gtk.gdk.pixbuf_new_from_file("data/16x16/icons/tags_alltasks.png")
         icon_notag   = gtk.gdk.pixbuf_new_from_file("data/16x16/icons/tags_notag.png")
+        # FIXME: We should instead find a better way to handle non-tags
+        #        elements in the tag list
         self.tag_ts.append([-1,None,icon_alltask,"<span weight=\"bold\">All tags</span>"])
         self.tag_ts.append([-2,None,icon_notag,"<span weight=\"bold\">Tasks without tags</span>"])
         self.tag_ts.append([-3,None,None,"---------------"])
@@ -620,7 +621,7 @@ class TaskBrowser:
     def __create_task_tview(self):
   
         # Tag column
-        self.TV_COL_TAG = 1
+        self.TASKS_TV_COL_TAG = 1
         tag_col     = gtk.TreeViewColumn()
         render_text = gtk.CellRendererText()
         render_tags = CellRendererTags()
@@ -628,44 +629,45 @@ class TaskBrowser:
         tag_col.pack_start         (render_tags, expand=False)
         tag_col.set_attributes     (render_tags, tag_list=self.TASK_MODEL_TAGS)
         tag_col.set_resizable      (False)
-        tag_col.set_sort_column_id (self.TV_COL_TAG)
+        tag_col.set_sort_column_id (self.TASKS_TV_COL_TAG)
         self.task_tview.append_column(tag_col)
         
         # Title column
-        self.TV_COL_TITLE = 2
+        self.TASKS_TV_COL_TITLE = 2
         title_col   = gtk.TreeViewColumn()
         render_text = gtk.CellRendererText()
         title_col.set_title          ("Title")
         title_col.pack_start         (render_text, expand=False)
         title_col.set_attributes     (render_text, markup=self.TASK_MODEL_TITLE)
         title_col.set_resizable      (True)
-        title_col.set_sort_column_id (self.TV_COL_TITLE)
+        title_col.set_sort_column_id (self.TASKS_TV_COL_TITLE)
         self.task_tview.append_column(title_col)
         
         # Due date column
-        self.TV_COL_DDATE = 3
+        self.TASKS_TV_COL_DDATE = 3
         ddate_col   = gtk.TreeViewColumn()
         render_text = gtk.CellRendererText()
         ddate_col.set_title          ("Due date")
         ddate_col.pack_start         (render_text, expand=False)
         ddate_col.set_attributes     (render_text, markup=self.TASK_MODEL_DDATE)
         ddate_col.set_resizable      (False)
-        ddate_col.set_sort_column_id (self.TV_COL_DDATE)
+        ddate_col.set_sort_column_id (self.TASKS_TV_COL_DDATE)
         self.task_tview.append_column(ddate_col)
         
         # Title column
-        self.TV_COL_DLEFT = 4
+        self.TASKS_TV_COL_DLEFT = 4
         dleft_col   = gtk.TreeViewColumn()
         render_text = gtk.CellRendererText()
         dleft_col.set_title          ("Days left")
         dleft_col.pack_start         (render_text, expand=False)
         dleft_col.set_attributes     (render_text, markup=self.TASK_MODEL_DLEFT)
         dleft_col.set_resizable      (False)
-        dleft_col.set_sort_column_id (self.TV_COL_DLEFT)
+        dleft_col.set_sort_column_id (self.TASKS_TV_COL_DLEFT)
         self.task_tview.append_column(dleft_col)
 
         # Global treeview properties
         self.task_tview.set_property("expander-column", title_col)
+        self.task_tview.set_rules_hint(True)
        
     ######Closing the window
     def close(self,widget=None) : #pylint: disable-msg=W0613

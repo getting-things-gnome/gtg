@@ -83,23 +83,30 @@ class CellRendererTags(gtk.GenericCellRenderer):
             tags = [self.tag]
         else:
             return
-        
+
         for my_tag in tags:
-            my_tag_color = my_tag.get_attribute("color")
-            if my_tag_color != None:
-                my_color = gtk.gdk.color_parse(my_tag_color)
-                x_align = self.get_property("xalign")
-                y_align = self.get_property("yalign")
-                orig_x  = cell_area.x + int((cell_area.width  -  16*vw_tags - self.PADDING*2*(vw_tags-1)) * x_align)
-                orig_y  = cell_area.y + int((cell_area.height -  16        ) * y_align)
-                rect_x  = orig_x + self.PADDING*2*count + 16*count
-                rect_y  = orig_y
-                cr = window.cairo_create()
-                cr.set_source_color(my_color)
-                #cr.rectangle(rect_x, rect_y, 16, 16)
-                self.__roundedrec(cr,rect_x,rect_y,16,16,8)
-                cr.fill()
-                count = count + 1
+
+            # TEST IF TYPE == INT
+            # FIXME: We should instead find a better way to handle non-tags
+            #        elements in the tag list
+            if type(my_tag) != type(1):
+                my_tag_color = my_tag.get_attribute("color")
+                if my_tag_color != None:
+                    my_color = gtk.gdk.color_parse(my_tag_color)
+                    x_align = self.get_property("xalign")
+                    y_align = self.get_property("yalign")
+                    orig_x  = cell_area.x + int((cell_area.width  -  16*vw_tags - self.PADDING*2*(vw_tags-1)) * x_align)
+                    orig_y  = cell_area.y + int((cell_area.height -  16        ) * y_align)
+                    rect_x  = orig_x + self.PADDING*2*count + 16*count
+                    rect_y  = orig_y
+                    cr = window.cairo_create()
+                    cr.set_source_color(my_color)
+                    #cr.rectangle(rect_x, rect_y, 16, 16)
+                    self.__roundedrec(cr,rect_x,rect_y,16,16,8)
+                    cr.fill()
+                    count = count + 1
+            else:
+                return
     
     def on_get_size(self, widget, cell_area=None):
 
