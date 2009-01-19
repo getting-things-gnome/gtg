@@ -86,9 +86,6 @@ pour voir
 		<title>
 			No tag task
 		</title>
-		<content>
-			no tag but I'm editing
-		</content>
 	</task>
 	<task id="6@1" status="Active" tags="tag">
 		<title>
@@ -141,6 +138,9 @@ pour voir
 		<title>
 			enfant3
 		</title>
+		<subtask>
+			8@1
+		</subtask>
 		<content>
 			&lt;subtask&gt;8@1&lt;/subtask&gt;&lt;tag&gt;@autro&lt;/tag&gt;, za
 		</content>

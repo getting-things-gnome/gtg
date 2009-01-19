@@ -236,7 +236,7 @@ class Task :
             
     #Take a tid as parameter
     def remove_parent(self,tid) :
-        if tid :
+        if tid and tid in self.parents:
             self.parents.remove(tid)
             parent = self.req.get_task(tid)
             if parent :
