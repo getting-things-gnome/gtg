@@ -68,8 +68,9 @@ class TaskBrowser:
         self.task_tview.set_reorderable(True)
         
         #this is our manual drag-n-drop handling
-        #self.task_ts.connect("row-changed",self.row_inserted,"insert")
-        #self.task_ts.connect("row-deleted",self.row_deleted,"delete")
+        self.task_ts.connect("row-changed",self.row_inserted,"insert")
+        self.task_ts.connect("row-deleted",self.row_deleted,"delete")
+
         
         # Model constants
         self.TASK_MODEL_OBJ   = 0
@@ -91,23 +92,13 @@ class TaskBrowser:
         #of course it's empty right now
         self.opened_task = {}
         
-#    def row_inserted(self,tree, path, it,data=None) :
-#        def check(model, path, it,data):
-#            if model.get(it,0) == data :
-#                self.path_inserted = path
-#                return True
-#            else :
-#                self.path_inserted = None
-
-#        print "row inserted"
-#        itera = tree.get_iter(path)
-#        self.path_inserted = path
-#        tid = tree.get(it,0)
-#        tree.foreach(check,tid)
-#        
-#    def row_deleted(self,tree,path,data=None) :
-#        print "row deleted %s -%s"%(self.path_inserted,path)
-        
+        #Variables used during drag-n-drop
+        self.drag_sources = []
+        self.path_source = None
+        self.path_target = None
+        self.tid_tomove = None
+        self.tid_source_parent = None
+        self.tid_target_parent = None
  
     def main(self):
         #Here we will define the main TaskList interface
@@ -130,7 +121,6 @@ class TaskBrowser:
         self.taskdone_ts.set_sort_column_id(self.c_title, gtk.SORT_ASCENDING)
         
         #put the content in those treeviews
-#        self.refresh_projects()
         self.refresh_tags()
         self.refresh_list()
         
@@ -221,7 +211,7 @@ class TaskBrowser:
         #We build the active tasks pane
         if self.workview :
             tasks = self.req.get_active_tasks_list(projects=p_list,tags=tag_list,\
-                                            notag_only=notag_only,workable=True, started_only=False)
+                        notag_only=notag_only,workable=True, started_only=False)
             for tid in tasks :
                 self.add_task_tree_to_list(self.task_ts,tid,None,selected_uid,\
                                                         treeview=False)
@@ -230,12 +220,14 @@ class TaskBrowser:
         else :
             #building the classical treeview
             active_root_tasks = self.req.get_active_tasks_list(projects=p_list,\
-                                tags=tag_list, notag_only=notag_only,is_root=True, started_only=False)
+                                tags=tag_list, notag_only=notag_only,\
+                                is_root=True, started_only=False)
             active_tasks = self.req.get_active_tasks_list(projects=p_list,\
-                                tags=tag_list, notag_only=notag_only,is_root=False, started_only=False)
+                            tags=tag_list, notag_only=notag_only,\
+                            is_root=False, started_only=False)
             for tid in active_root_tasks :
-                self.add_task_tree_to_list(self.task_ts, tid, None,selected_uid,\
-                                                        active_tasks=active_tasks)
+                self.add_task_tree_to_list(self.task_ts, tid, None,\
+                                selected_uid,active_tasks=active_tasks)
             nbr_of_tasks = len(active_tasks)
             
         #Set the title of the window :
@@ -432,6 +424,82 @@ class TaskBrowser:
                         tag.append(t)
         #If no selection, we display all
         return tag,notag_only
+    
+    ###################
+    #Drag-drop support#
+    ###################
+    #Because of bug in pygtk, the rows-reordered signal is never emitted
+    #We workaoround this bug by connecting to row_insert and row_deleted
+    #Basically, we do the following :
+    # 1. If a row is inserted for a task X, look if the task already
+    #     exist elsewhere.
+    # 2. If yes, it's probably a drag-n-drop so we save those information
+    # 3. If the "elsewhere from point 1 is deleted, we are sure it's a 
+    #    drag-n-drop so we change the parent of the moved task
+    def row_inserted(self,tree, path, it,data=None) : #pylint: disable-msg=W0613
+        #If the row inserted already exists in another position
+        #We are in a drag n drop case
+        def findsource(model, path, it,data):
+            path_move = tree.get_path(data[1])
+            path_actual = tree.get_path(it)
+            if model.get(it,0) == data[0] and path_move != path_actual:
+                self.drag_sources.append(path)
+                self.path_source = path
+                return True
+            else :
+                self.path_source = None
+
+        #print "row inserted"
+        self.path_target = path
+        tid = tree.get(it,0)
+        tree.foreach(findsource,[tid,it])
+        if self.path_source :
+            #We will prepare the drag-n-drop
+            iter_source = tree.get_iter(self.path_source)
+            iter_target = tree.get_iter(self.path_target)
+            iter_source_parent = tree.iter_parent(iter_source)
+            iter_target_parent = tree.iter_parent(iter_target)
+            #the tid_parent will be None for root tasks
+            if iter_source_parent :
+                sparent = tree.get(iter_source_parent,0)[0]
+            else :
+                sparent = None
+            if iter_target_parent :
+                tparent = tree.get(iter_target_parent,0)[0]
+            else :
+                tparent = None
+            #If target and source are the same, we are moving
+            #a child of the deplaced task. Indeed, children are 
+            #also moved in the tree but their parents remain !
+            if sparent != tparent :
+                self.tid_source_parent = sparent
+                self.tid_target_parent = tparent
+                self.tid_tomove = tid[0]
+                #print "row %s will move from %s to %s"%(self.tid_tomove,\
+                #          self.tid_source_parent,self.tid_target_parent)
+    def row_deleted(self,tree,path,data=None) : #pylint: disable-msg=W0613
+        #If we are removing the path source guessed during the insertion
+        #It confirms that we are in a drag-n-drop
+        if path in self.drag_sources and self.tid_tomove :
+            self.drag_sources.remove(path)
+            #print "row %s moved from %s to %s"%(self.tid_tomove,\
+            #              self.tid_source_parent,self.tid_target_parent)
+            tomove = self.req.get_task(self.tid_tomove)
+            tomove.remove_parent(self.tid_source_parent)
+            tomove.add_parent(self.tid_target_parent)
+            #DO NOT self.refresh_list()
+            #Refreshing here make things crash. Don't refresh
+            self.drag_sources = []
+            self.path_source = None
+            self.path_target = None
+            self.tid_tomove = None
+            self.tid_source_parent = None
+            self.tid_target_parent = None
+            
+    ###############################
+    ##### End of the drag-n-drop part
+    ###############################
+        
         
     def on_edit_active_task(self,widget,row=None ,col=None) : #pylint: disable-msg=W0613
         tid = self.get_selected_task(self.task_tview)
