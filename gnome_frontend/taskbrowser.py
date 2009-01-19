@@ -70,7 +70,16 @@ class TaskBrowser:
         #this is our manual drag-n-drop handling
         self.task_ts.connect("row-changed",self.row_inserted,"insert")
         self.task_ts.connect("row-deleted",self.row_deleted,"delete")
-
+        
+        #Tag column
+        self.TASKS_TV_COL_TAG = 1
+        self.TAGS_TV_COL_TAG = 1
+        #Title column
+        self.TASKS_TV_COL_TITLE = 2
+        #due date column
+        self.TASKS_TV_COL_DDATE = 3
+        #days left column
+        self.TASKS_TV_COL_DLEFT = 4
         
         # Model constants
         self.TASK_MODEL_OBJ   = 0
@@ -176,11 +185,11 @@ class TaskBrowser:
         self.tag_ts.clear()
         icon_alltask = gtk.gdk.pixbuf_new_from_file("data/16x16/icons/tags_alltasks.png")
         icon_notag   = gtk.gdk.pixbuf_new_from_file("data/16x16/icons/tags_notag.png")
-        # FIXME: We should instead find a better way to handle non-tags
-        #        elements in the tag list
-        self.tag_ts.append([-1,None,icon_alltask,"<span weight=\"bold\">All tags</span>"])
-        self.tag_ts.append([-2,None,icon_notag,"<span weight=\"bold\">Tasks without tags</span>"])
-        self.tag_ts.append([-3,None,None,"---------------"])
+        alltag = self.req.get_alltag_tag()
+        notag = self.req.get_notag_tag()
+        self.tag_ts.append([alltag,None,icon_alltask,"<span weight=\"bold\">All tags</span>"])
+        self.tag_ts.append([notag,None,icon_notag,"<span weight=\"bold\">Tasks without tags</span>"])
+        self.tag_ts.append([alltag,None,None,"---------------"])
 
         tags = self.req.get_used_tags()
         #tags.sort()
@@ -310,8 +319,8 @@ class TaskBrowser:
             else : 
                 title   = "<b><big>%s</big></b>" %task.get_title()
         else :
-            alone = (task.has_parents()==False and len(task.get_subtasks())!=0)
-            if (self.workview==False) and alone:
+            alone = (not task.has_parents() and len(task.get_subtasks())!=0)
+            if (not self.workview) and alone:
                 title = "<span weight='bold' size='large'>%s</span>" % task.get_title()
             else:
                 title = task.get_title()
@@ -328,7 +337,7 @@ class TaskBrowser:
         duedate = task.get_due_date()
         left    = task.get_days_left()
         tags    = task.get_tags()
-        if   treeview and parent==None and len(task.get_subtasks())==0:
+        if treeview and not parent and len(task.get_subtasks()) == 0:
             my_row = self.task_ts.insert_before(None, tree_store.get_iter_first(), row=[tid,title,duedate,left,tags])
         else:
             my_row = self.task_ts.append(parent, [tid,title,duedate,left,tags])
@@ -412,17 +421,16 @@ class TaskBrowser:
         notag_only = False
         tag = []
         if t_iter :
-            selected = [self.tag_ts.get_value(t_iter, 0)]
-            if -1 in selected: 
-                selected.remove(-1)
-            #-2 means we want to display only tasks without any tag
-            if -2 in selected:
-                selected.remove(-2)
+            selected = self.tag_ts.get_value(t_iter, 0)
+            special = selected.get_attribute("special")
+            if special == "all" : 
+                tag = []
+                selected = None
+            #notag means we want to display only tasks without any tag
+            if special == "notag" :
                 notag_only = True
-            if not notag_only :
-                for t in selected :
-                    if t :
-                        tag.append(t)
+            if not notag_only and selected :
+                tag.append(selected)
         #If no selection, we display all
         return tag,notag_only
     
@@ -601,7 +609,6 @@ class TaskBrowser:
     def __create_tags_tview(self):
          
         # Tag column
-        self.TAGS_TV_COL_TAG = 1
         tag_col     = gtk.TreeViewColumn()
         render_text = gtk.CellRendererText()
         render_tags = CellRendererTags()
@@ -621,7 +628,6 @@ class TaskBrowser:
     def __create_task_tview(self):
   
         # Tag column
-        self.TASKS_TV_COL_TAG = 1
         tag_col     = gtk.TreeViewColumn()
         render_text = gtk.CellRendererText()
         render_tags = CellRendererTags()
@@ -633,7 +639,6 @@ class TaskBrowser:
         self.task_tview.append_column(tag_col)
         
         # Title column
-        self.TASKS_TV_COL_TITLE = 2
         title_col   = gtk.TreeViewColumn()
         render_text = gtk.CellRendererText()
         title_col.set_title          ("Title")
@@ -644,7 +649,6 @@ class TaskBrowser:
         self.task_tview.append_column(title_col)
         
         # Due date column
-        self.TASKS_TV_COL_DDATE = 3
         ddate_col   = gtk.TreeViewColumn()
         render_text = gtk.CellRendererText()
         ddate_col.set_title          ("Due date")
@@ -654,8 +658,7 @@ class TaskBrowser:
         ddate_col.set_sort_column_id (self.TASKS_TV_COL_DDATE)
         self.task_tview.append_column(ddate_col)
         
-        # Title column
-        self.TASKS_TV_COL_DLEFT = 4
+        # days left
         dleft_col   = gtk.TreeViewColumn()
         render_text = gtk.CellRendererText()
         dleft_col.set_title          ("Days left")

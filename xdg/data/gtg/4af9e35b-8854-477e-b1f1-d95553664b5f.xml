@@ -18,6 +18,14 @@
 &lt;subtask&gt;1@1&lt;/subtask&gt;zdq dsfhe ee hh e zek
 		</content>
 	</task>
+	<task id="4@1" status="Active" tags="aze">
+		<title>
+			My new task
+		</title>
+		<content>
+			&lt;tag&gt;@aze&lt;/tag&gt;, 
+		</content>
+	</task>
 	<task id="8@1" status="Active" tags="tag">
 		<title>
 			4ème level

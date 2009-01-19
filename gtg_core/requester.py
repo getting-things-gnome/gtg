@@ -189,6 +189,11 @@ class Requester :
     def get_all_tags(self):
         return returnlist(self.ds.get_tagstore().get_all_tags())
         
+    def get_notag_tag(self) :
+        return self.ds.get_tagstore().get_notag_tag()
+    def get_alltag_tag(self) :
+        return self.ds.get_tagstore().get_alltag_tag()
+        
         
     #return only tags that are currently used in a task
     #FIXME it should be only active and visible tasks
