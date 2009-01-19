@@ -125,6 +125,9 @@ class TaskBrowser:
         if self.path_source == path :
             print "row %s moved from %s to %s"%(self.tid_tomove,\
                           self.tid_source_parent,self.tid_target_parent)
+            tomove = self.req.get_task(self.tid_tomove)
+            tomove.remove_parent(self.tid_source_parent)
+            tomove.add_parent(self.tid_target_parent)
             self.refresh_list()
         self.path_source = None
         self.path_target = None

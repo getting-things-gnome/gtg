@@ -238,6 +238,9 @@ class Task :
     def remove_parent(self,tid) :
         if tid :
             self.parents.remove(tid)
+            parent = self.req.get_task(tid)
+            if parent :
+                parent.remove_subtask(self.get_id())
     
     def get_parents(self):
         return returnlist(self.parents)
