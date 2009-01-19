@@ -123,8 +123,8 @@ class TaskBrowser:
         #If we are removing the path source guessed during the insertion
         #It confirms that we are in a drag-n-drop
         if self.path_source == path :
-            print "row %s moved from %s to %s"%(self.tid_tomove,\
-                          self.tid_source_parent,self.tid_target_parent)
+            #print "row %s moved from %s to %s"%(self.tid_tomove,\
+            #              self.tid_source_parent,self.tid_target_parent)
             tomove = self.req.get_task(self.tid_tomove)
             tomove.remove_parent(self.tid_source_parent)
             tomove.add_parent(self.tid_target_parent)
@@ -160,7 +160,6 @@ class TaskBrowser:
         self.taskdone_ts.set_sort_column_id(self.c_title, gtk.SORT_ASCENDING)
         
         #put the content in those treeviews
-#        self.refresh_projects()
         self.refresh_tags()
         self.refresh_list()
         

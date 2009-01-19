@@ -86,6 +86,9 @@ pour voir
 		<title>
 			No tag task
 		</title>
+		<content>
+			no tag but I'm editing
+		</content>
 	</task>
 	<task id="6@1" status="Active" tags="tag">
 		<title>
