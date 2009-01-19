@@ -13,6 +13,8 @@ class TagStore :
         self.filename = os.path.join(CoreConfig.DATA_DIR,XMLFILE)
         doc,self.xmlstore = cleanxml.openxmlfile(self.filename,XMLROOT) #pylint: disable-msg=W0612
         for t in self.xmlstore.childNodes:
+            #We should only care about tag with a name beginning with "@"
+            #Other are special tags
             tagname = t.getAttribute("name")
             tag = self.new_tag(tagname)
             attr = t.attributes
@@ -22,6 +24,17 @@ class TagStore :
                 at_val = t.getAttribute(at_name)
                 tag.set_attribute(at_name,at_val)
                 i += 1
+        
+        #Now we build special tags. Special tags are not
+        #in the traditionnal tag list
+        #Their name doesn't begin with "@"
+        
+        #Build the "all tags tag"
+        self.alltag_tag = Tag("alltags_tag")
+        self.alltag_tag.set_attribute("special","all")
+        #Build the "without tag tag"
+        self.notag_tag = Tag("notag_tag")
+        self.notag_tag.set_attribute("special","notag")
             
         
     #create a new tag and return it
@@ -57,6 +70,12 @@ class TagStore :
             return self.store[tagname]
         else :
             return None
+    
+    #Return the special tag "All tags"
+    def get_alltag_tag(self) :
+        return self.alltag_tag
+    def get_notag_tag(self) :
+        return self.notag_tag
     
     def get_all_tags_name(self) :
         l = []
