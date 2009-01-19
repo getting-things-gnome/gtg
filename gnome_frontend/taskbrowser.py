@@ -188,10 +188,8 @@ class TaskBrowser:
         #selected tasks :
         selected_uid = self.get_selected_task(self.task_tview)
         #selected_closed_uid = self.get_selected_task(self.taskdone_tview)
-        t_model,t_path = self.task_tview.get_selection().get_selected_rows() \
-                                                #pylint: disable-msg=W0612
-        d_model,d_path = self.taskdone_tview.get_selection().get_selected_rows() \
-                                                    #pylint: disable-msg=W0612
+        t_model,t_path = self.task_tview.get_selection().get_selected_rows() #pylint: disable-msg=W0612
+        d_model,d_path = self.taskdone_tview.get_selection().get_selected_rows() #pylint: disable-msg=W0612
         #to refresh the list we first empty it then rebuild it
         #is it acceptable to do that ?
         self.task_ts.clear()
@@ -424,7 +422,7 @@ class TaskBrowser:
     # 2. If yes, it's probably a drag-n-drop so we save those information
     # 3. If the "elsewhere from point 1 is deleted, we are sure it's a 
     #    drag-n-drop so we change the parent of the moved task
-    def row_inserted(self,tree, path, it,data=None) :
+    def row_inserted(self,tree, path, it,data=None) : #pylint: disable-msg=W0613
         #If the row inserted already exists in another position
         #We are in a drag n drop case
         def findsource(model, path, it,data):
@@ -438,7 +436,6 @@ class TaskBrowser:
                 self.path_source = None
 
         #print "row inserted"
-        itera = tree.get_iter(path)
         self.path_target = path
         tid = tree.get(it,0)
         tree.foreach(findsource,[tid,it])
@@ -466,7 +463,7 @@ class TaskBrowser:
                 self.tid_tomove = tid[0]
                 #print "row %s will move from %s to %s"%(self.tid_tomove,\
                 #          self.tid_source_parent,self.tid_target_parent)
-    def row_deleted(self,tree,path,data=None) :
+    def row_deleted(self,tree,path,data=None) : #pylint: disable-msg=W0613
         #If we are removing the path source guessed during the insertion
         #It confirms that we are in a drag-n-drop
         if path in self.drag_sources and self.tid_tomove :

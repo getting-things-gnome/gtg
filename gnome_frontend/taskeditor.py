@@ -10,7 +10,7 @@ import sys
 
 from gnome_frontend.taskview import TaskView
 from gnome_frontend import GnomeConfig
-from tools.dates import *
+from tools import dates
 try:
     import pygtk
     pygtk.require("2.0")
@@ -191,7 +191,7 @@ class TaskEditor :
         if not text :
             validdate = True
         else :
-            dateobject = strtodate(text)
+            dateobject = dates.strtodate(text)
             if dateobject :
                 validdate = True
                 datetoset = text

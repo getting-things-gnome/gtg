@@ -116,10 +116,6 @@ class TaskView(gtk.TextView):
         #The signal emitted each time the buffer is modified
         #Putting it at the end to avoid doing it too much when starting
         self.buff.connect("changed" , self._modified)
-        
-    def _changed(self,widget) :
-        print "changed"
-
     
     #This function is called to refresh the editor 
     #Specially when we change the title
