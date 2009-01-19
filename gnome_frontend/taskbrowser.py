@@ -498,7 +498,7 @@ class TaskBrowser:
             tomove.add_parent(self.tid_target_parent)
             #DO NOT self.refresh_list()
             #Refreshing here make things crash. Don't refresh
-            self.drag_sources = []
+            #self.drag_sources = []
             self.path_source = None
             self.path_target = None
             self.tid_tomove = None
