@@ -229,14 +229,15 @@ class Task :
     #Take a tid object as parameter
     def add_parent(self,tid) :
         #The if prevent a loop
-        if tid not in self.children and tid not in self.parents :
+        if tid and tid not in self.children and tid not in self.parents :
             self.parents.append(tid)
             task = self.req.get_task(tid)
             task.add_subtask(self.get_id())
             
     #Take a tid as parameter
     def remove_parent(self,tid) :
-        self.parents.remove(tid)
+        if tid :
+            self.parents.remove(tid)
     
     def get_parents(self):
         return returnlist(self.parents)

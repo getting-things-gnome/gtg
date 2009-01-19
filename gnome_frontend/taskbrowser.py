@@ -68,8 +68,8 @@ class TaskBrowser:
         self.task_tview.set_reorderable(True)
         
         #this is our manual drag-n-drop handling
-        #self.task_ts.connect("row-changed",self.row_inserted,"insert")
-        #self.task_ts.connect("row-deleted",self.row_deleted,"delete")
+        self.task_ts.connect("row-changed",self.row_inserted,"insert")
+        self.task_ts.connect("row-deleted",self.row_deleted,"delete")
 
         
         #The tid that will be deleted
@@ -80,22 +80,57 @@ class TaskBrowser:
         #of course it's empty right now
         self.opened_task = {}
         
-#    def row_inserted(self,tree, path, it,data=None) :
-#        def check(model, path, it,data):
-#            if model.get(it,0) == data :
-#                self.path_inserted = path
-#                return True
-#            else :
-#                self.path_inserted = None
+        #Variables used during drag-n-drop
+        self.tid_source_parent = None
+        self.tid_target_parent = None
+        
+    def row_inserted(self,tree, path, it,data=None) :
+        #If the row inserted already exists in another position
+        #We are in a drag n drop case
+        def check(model, path, it,data):
+            path_move = tree.get_path(data[1])
+            path_actual = tree.get_path(it)
+            if model.get(it,0) == data[0] and path_move != path_actual:
+                self.path_source = path
+                return True
+            else :
+                self.path_source = None
 
-#        print "row inserted"
-#        itera = tree.get_iter(path)
-#        self.path_inserted = path
-#        tid = tree.get(it,0)
-#        tree.foreach(check,tid)
-#        
-#    def row_deleted(self,tree,path,data=None) :
-#        print "row deleted %s -%s"%(self.path_inserted,path)
+        #print "row inserted"
+        itera = tree.get_iter(path)
+        self.path_target = path
+        tid = tree.get(it,0)
+        tree.foreach(check,[tid,it])
+        if self.path_source :
+            #We will prepare the drag-n-drop
+            self.tid_tomove = tid[0]
+            iter_source = tree.get_iter(self.path_source)
+            iter_target = tree.get_iter(self.path_target)
+            iter_source_parent = tree.iter_parent(iter_source)
+            iter_target_parent = tree.iter_parent(iter_target)
+            #the tid_parent will be None for root tasks
+            if iter_source_parent :
+                self.tid_source_parent = tree.get(iter_source_parent,0)[0]
+            else :
+                self.tid_source_parent = None
+            if iter_target_parent :
+                self.tid_target_parent = tree.get(iter_target_parent,0)[0]
+            else :
+                self.tid_target_parent = None
+            
+        
+    def row_deleted(self,tree,path,data=None) :
+        #If we are removing the path source guessed during the insertion
+        #It confirms that we are in a drag-n-drop
+        if self.path_source == path :
+            print "row %s moved from %s to %s"%(self.tid_tomove,\
+                          self.tid_source_parent,self.tid_target_parent)
+            self.refresh_list()
+        self.path_source = None
+        self.path_target = None
+        self.tid_tomove = None
+        self.tid_source_parent = None
+        self.tid_target_parent = None
         
  
     def main(self):
@@ -199,8 +234,10 @@ class TaskBrowser:
         #selected tasks :
         selected_uid = self.get_selected_task(self.task_tview)
         #selected_closed_uid = self.get_selected_task(self.taskdone_tview)
-        t_model,t_path = self.task_tview.get_selection().get_selected_rows() #pylint: disable-msg=W0612
-        d_model,d_path = self.taskdone_tview.get_selection().get_selected_rows() #pylint: disable-msg=W0612
+        t_model,t_path = self.task_tview.get_selection().get_selected_rows() \
+                                                #pylint: disable-msg=W0612
+        d_model,d_path = self.taskdone_tview.get_selection().get_selected_rows() \
+                                                    #pylint: disable-msg=W0612
         #to refresh the list we first empty it then rebuild it
         #is it acceptable to do that ?
         self.task_ts.clear()
@@ -213,7 +250,7 @@ class TaskBrowser:
         #We build the active tasks pane
         if self.workview :
             tasks = self.req.get_active_tasks_list(projects=p_list,tags=tag_list,\
-                                            notag_only=notag_only,workable=True, started_only=False)
+                        notag_only=notag_only,workable=True, started_only=False)
             for tid in tasks :
                 self.add_task_tree_to_list(self.task_ts,tid,None,selected_uid,\
                                                         treeview=False)
@@ -222,12 +259,14 @@ class TaskBrowser:
         else :
             #building the classical treeview
             active_root_tasks = self.req.get_active_tasks_list(projects=p_list,\
-                                tags=tag_list, notag_only=notag_only,is_root=True, started_only=False)
+                                tags=tag_list, notag_only=notag_only,\
+                                is_root=True, started_only=False)
             active_tasks = self.req.get_active_tasks_list(projects=p_list,\
-                                tags=tag_list, notag_only=notag_only,is_root=False, started_only=False)
+                            tags=tag_list, notag_only=notag_only,\
+                            is_root=False, started_only=False)
             for tid in active_root_tasks :
-                self.add_task_tree_to_list(self.task_ts, tid, None,selected_uid,\
-                                                        active_tasks=active_tasks)
+                self.add_task_tree_to_list(self.task_ts, tid, None,\
+                                selected_uid,active_tasks=active_tasks)
             nbr_of_tasks = len(active_tasks)
             
         #Set the title of the window :
