@@ -481,6 +481,10 @@ class TaskBrowser:
             self.tid_tomove = None
             self.tid_source_parent = None
             self.tid_target_parent = None
+            
+    ###############################
+    ##### End of the drag-n-drop part
+    ###############################
         
         
     def on_edit_active_task(self,widget,row=None ,col=None) : #pylint: disable-msg=W0613
