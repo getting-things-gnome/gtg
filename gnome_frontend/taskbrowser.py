@@ -81,60 +81,12 @@ class TaskBrowser:
         self.opened_task = {}
         
         #Variables used during drag-n-drop
-        self.tid_source_parent = None
-        self.tid_target_parent = None
-        
-    def row_inserted(self,tree, path, it,data=None) :
-        #If the row inserted already exists in another position
-        #We are in a drag n drop case
-        def check(model, path, it,data):
-            path_move = tree.get_path(data[1])
-            path_actual = tree.get_path(it)
-            if model.get(it,0) == data[0] and path_move != path_actual:
-                self.path_source = path
-                return True
-            else :
-                self.path_source = None
-
-        #print "row inserted"
-        itera = tree.get_iter(path)
-        self.path_target = path
-        tid = tree.get(it,0)
-        tree.foreach(check,[tid,it])
-        if self.path_source :
-            #We will prepare the drag-n-drop
-            self.tid_tomove = tid[0]
-            iter_source = tree.get_iter(self.path_source)
-            iter_target = tree.get_iter(self.path_target)
-            iter_source_parent = tree.iter_parent(iter_source)
-            iter_target_parent = tree.iter_parent(iter_target)
-            #the tid_parent will be None for root tasks
-            if iter_source_parent :
-                self.tid_source_parent = tree.get(iter_source_parent,0)[0]
-            else :
-                self.tid_source_parent = None
-            if iter_target_parent :
-                self.tid_target_parent = tree.get(iter_target_parent,0)[0]
-            else :
-                self.tid_target_parent = None
-            
-        
-    def row_deleted(self,tree,path,data=None) :
-        #If we are removing the path source guessed during the insertion
-        #It confirms that we are in a drag-n-drop
-        if self.path_source == path :
-            print "row %s moved from %s to %s"%(self.tid_tomove,\
-                          self.tid_source_parent,self.tid_target_parent)
-            tomove = self.req.get_task(self.tid_tomove)
-            tomove.remove_parent(self.tid_source_parent)
-            tomove.add_parent(self.tid_target_parent)
-            self.refresh_list()
+        self.drag_sources = []
         self.path_source = None
         self.path_target = None
         self.tid_tomove = None
         self.tid_source_parent = None
         self.tid_target_parent = None
-        
  
     def main(self):
         #Here we will define the main TaskList interface
@@ -460,6 +412,79 @@ class TaskBrowser:
                         tag.append(t)
         #If no selection, we display all
         return tag,notag_only
+    
+    ###################
+    #Drag-drop support#
+    ###################
+    #Because of bug in pygtk, the rows-reordered signal is never emitted
+    #We workaoround this bug by connecting to row_insert and row_deleted
+    #Basically, we do the following :
+    # 1. If a row is inserted for a task X, look if the task already
+    #     exist elsewhere.
+    # 2. If yes, it's probably a drag-n-drop so we save those information
+    # 3. If the "elsewhere from point 1 is deleted, we are sure it's a 
+    #    drag-n-drop so we change the parent of the moved task
+    def row_inserted(self,tree, path, it,data=None) :
+        #If the row inserted already exists in another position
+        #We are in a drag n drop case
+        def findsource(model, path, it,data):
+            path_move = tree.get_path(data[1])
+            path_actual = tree.get_path(it)
+            if model.get(it,0) == data[0] and path_move != path_actual:
+                self.drag_sources.append(path)
+                self.path_source = path
+                return True
+            else :
+                self.path_source = None
+
+        #print "row inserted"
+        itera = tree.get_iter(path)
+        self.path_target = path
+        tid = tree.get(it,0)
+        tree.foreach(findsource,[tid,it])
+        if self.path_source :
+            #We will prepare the drag-n-drop
+            iter_source = tree.get_iter(self.path_source)
+            iter_target = tree.get_iter(self.path_target)
+            iter_source_parent = tree.iter_parent(iter_source)
+            iter_target_parent = tree.iter_parent(iter_target)
+            #the tid_parent will be None for root tasks
+            if iter_source_parent :
+                sparent = tree.get(iter_source_parent,0)[0]
+            else :
+                sparent = None
+            if iter_target_parent :
+                tparent = tree.get(iter_target_parent,0)[0]
+            else :
+                tparent = None
+            #If target and source are the same, we are moving
+            #a child of the deplaced task. Indeed, children are 
+            #also moved in the tree but their parents remain !
+            if sparent != tparent :
+                self.tid_source_parent = sparent
+                self.tid_target_parent = tparent
+                self.tid_tomove = tid[0]
+                #print "row %s will move from %s to %s"%(self.tid_tomove,\
+                #          self.tid_source_parent,self.tid_target_parent)
+    def row_deleted(self,tree,path,data=None) :
+        #If we are removing the path source guessed during the insertion
+        #It confirms that we are in a drag-n-drop
+        if path in self.drag_sources and self.tid_tomove :
+            self.drag_sources.remove(path)
+            #print "row %s moved from %s to %s"%(self.tid_tomove,\
+            #              self.tid_source_parent,self.tid_target_parent)
+            tomove = self.req.get_task(self.tid_tomove)
+            tomove.remove_parent(self.tid_source_parent)
+            tomove.add_parent(self.tid_target_parent)
+            #DO NOT self.refresh_list()
+            #Refreshing here make things crash. Don't refresh
+            self.drag_sources = []
+            self.path_source = None
+            self.path_target = None
+            self.tid_tomove = None
+            self.tid_source_parent = None
+            self.tid_target_parent = None
+        
         
     def on_edit_active_task(self,widget,row=None ,col=None) : #pylint: disable-msg=W0613
         tid = self.get_selected_task(self.task_tview)
