@@ -6,6 +6,7 @@ pygtk.require('2.0')
 import gobject
 import gtk
 import math
+import cairo
 
 #=== MAIN CLASS ================================================================
 
@@ -42,7 +43,9 @@ class CellRendererTags(gtk.GenericCellRenderer):
                 
         if self.tag_list != None:
             for my_tag in self.tag_list:
-                if my_tag.get_attribute("color")!=None: count = count + 1
+                my_tag_color = my_tag.get_attribute("color")
+                my_tag_icon  = my_tag.get_attribute("icon")
+                if my_tag_color!=None or my_tag_icon!=None: count = count + 1
         elif self.tag != None:
             count = 1
         else:
@@ -75,8 +78,9 @@ class CellRendererTags(gtk.GenericCellRenderer):
     def on_render(self, window, widget, background_area, cell_area, expose_area, flags):
         
         vw_tags = self.__count_viewable_tags()
-        count = 0
+        count   = 0
         
+        # Select source
         if self.tag_list != None:
             tags = self.tag_list
         elif self.tag != None:
@@ -84,29 +88,54 @@ class CellRendererTags(gtk.GenericCellRenderer):
         else:
             return
 
+        # Drawing context
+        cr         = window.cairo_create()
+        gdkcontext = gtk.gdk.CairoContext(cr)
+        gdkcontext.set_antialias(cairo.ANTIALIAS_NONE)
+        
+        # Coordinates of the origin point
+        x_align = self.get_property("xalign")
+        y_align = self.get_property("yalign")
+        orig_x  = cell_area.x + int((cell_area.width  -  16*vw_tags - self.PADDING*2*(vw_tags-1)) * x_align)
+        orig_y  = cell_area.y + int((cell_area.height -  16                                     ) * y_align)
+
+        # We draw the icons & squares
         for my_tag in tags:
 
-            # TEST IF TYPE == INT
-            # FIXME: We should instead find a better way to handle non-tags
-            #        elements in the tag list
-            if type(my_tag) != type(1):
-                my_tag_color = my_tag.get_attribute("color")
-                if my_tag_color != None:
-                    my_color = gtk.gdk.color_parse(my_tag_color)
-                    x_align = self.get_property("xalign")
-                    y_align = self.get_property("yalign")
-                    orig_x  = cell_area.x + int((cell_area.width  -  16*vw_tags - self.PADDING*2*(vw_tags-1)) * x_align)
-                    orig_y  = cell_area.y + int((cell_area.height -  16        ) * y_align)
-                    rect_x  = orig_x + self.PADDING*2*count + 16*count
-                    rect_y  = orig_y
-                    cr = window.cairo_create()
-                    cr.set_source_color(my_color)
-                    #cr.rectangle(rect_x, rect_y, 16, 16)
-                    self.__roundedrec(cr,rect_x,rect_y,16,16,8)
-                    cr.fill()
-                    count = count + 1
-            else:
-                return
+            my_tag_icon  = my_tag.get_attribute("icon")
+            my_tag_color = my_tag.get_attribute("color")
+
+            rect_x  = orig_x + self.PADDING*2*count + 16*count
+            rect_y  = orig_y
+            
+            if   my_tag_icon  != None:
+
+                pixbuf     = gtk.gdk.pixbuf_new_from_file(my_tag_icon)
+                gdkcontext.set_source_pixbuf(pixbuf, rect_x, rect_y)
+                gdkcontext.paint()
+                count = count + 1
+                
+            elif my_tag_color != None:
+
+                my_color = gtk.gdk.color_parse(my_tag_color)
+                gdkcontext.set_source_color(my_color)
+                self.__roundedrec(gdkcontext,rect_x,rect_y,16,16,8)    
+                gdkcontext.fill()        
+                count = count + 1
+                
+        if self.tag != None:
+            
+            my_tag_icon  = my_tag.get_attribute("icon")
+            my_tag_color = my_tag.get_attribute("color")
+            
+            if   my_tag_icon == None and my_tag_color == None:
+                
+                my_color = gtk.gdk.color_parse("#d3d7cf")
+                gdkcontext.set_source_color(my_color)
+                gdkcontext.set_line_width(1.0)
+                self.__roundedrec(gdkcontext,rect_x,rect_y,16,16,8)
+                gdkcontext.stroke()
+            
     
     def on_get_size(self, widget, cell_area=None):
 

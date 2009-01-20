@@ -4,6 +4,7 @@ import pygtk
 pygtk.require('2.0')
 import gobject
 import gtk.glade
+import pango
 
 #our own imports
 from gnome_frontend.taskeditor       import TaskEditor
@@ -59,11 +60,11 @@ class TaskBrowser:
         
         #The tview and their model
         self.taskdone_tview = self.wTree.get_widget("taskdone_tview")
-        self.taskdone_ts = gtk.TreeStore(gobject.TYPE_PYOBJECT, str,str,str)
-        self.tag_tview = self.wTree.get_widget("tag_tview")
-        self.tag_ts = gtk.ListStore(gobject.TYPE_PYOBJECT,str,gtk.gdk.Pixbuf,str)
-        self.task_tview = self.wTree.get_widget("task_tview")
-        self.task_ts = gtk.TreeStore(gobject.TYPE_PYOBJECT,str,str,str,gobject.TYPE_PYOBJECT)
+        self.taskdone_ts    = gtk.TreeStore(gobject.TYPE_PYOBJECT, str,str,str)
+        self.tag_tview      = self.wTree.get_widget("tag_tview")
+        self.tag_ts         = gtk.ListStore(gobject.TYPE_PYOBJECT,str,str,str,bool)
+        self.task_tview     = self.wTree.get_widget("task_tview")
+        self.task_ts        = gtk.TreeStore(gobject.TYPE_PYOBJECT,str,str,str,gobject.TYPE_PYOBJECT)
         #Be sure that we are reorderable (not needed normaly)
         self.task_tview.set_reorderable(True)
         
@@ -71,15 +72,13 @@ class TaskBrowser:
         self.task_ts.connect("row-changed",self.row_inserted,"insert")
         self.task_ts.connect("row-deleted",self.row_deleted,"delete")
         
-        #Tag column
-        self.TASKS_TV_COL_TAG = 1
-        self.TAGS_TV_COL_TAG = 1
-        #Title column
+        # Column constants
+        self.TASKS_TV_COL_TAG   = 1
         self.TASKS_TV_COL_TITLE = 2
-        #due date column
         self.TASKS_TV_COL_DDATE = 3
-        #days left column
         self.TASKS_TV_COL_DLEFT = 4
+        
+        self.TAGS_TV_COL_TAG    = 1
         
         # Model constants
         self.TASK_MODEL_OBJ   = 0
@@ -90,9 +89,10 @@ class TaskBrowser:
 
         self.TAGS_MODEL_OBJ   = 0
         self.TAGS_MODEL_COLOR = 1
-        self.TAGS_MODEL_ICON  = 2
-        self.TAGS_MODEL_NAME  = 3
-
+        self.TAGS_MODEL_NAME  = 2
+        self.TAGS_MODEL_COUNT = 3
+        self.TAGS_MODEL_SEP   = 4
+               
         #The tid that will be deleted
         self.tid_todelete = None
         self.c_title = 1
@@ -183,23 +183,27 @@ class TaskBrowser:
     def refresh_tags(self) :
         t_model,t_path = self.tag_tview.get_selection().get_selected_rows() #pylint: disable-msg=W0612
         self.tag_ts.clear()
-        icon_alltask = gtk.gdk.pixbuf_new_from_file("data/16x16/icons/tags_alltasks.png")
-        icon_notag   = gtk.gdk.pixbuf_new_from_file("data/16x16/icons/tags_notag.png")
-        alltag = self.req.get_alltag_tag()
-        notag = self.req.get_notag_tag()
-        self.tag_ts.append([alltag,None,icon_alltask,"<span weight=\"bold\">All tags</span>"])
-        self.tag_ts.append([notag,None,icon_notag,"<span weight=\"bold\">Tasks without tags</span>"])
-        self.tag_ts.append([alltag,None,None,"---------------"])
+        alltag       = self.req.get_alltag_tag()
+        notag        = self.req.get_notag_tag()
+        self.tag_ts.append([alltag,None,"<span weight=\"bold\">All tags</span>","",False])
+        self.tag_ts.append([notag,None,"<span weight=\"bold\">Tasks without tags</span>","",False])
+        self.tag_ts.append([None,None,"","",True])
 
         tags = self.req.get_used_tags()
-        #tags.sort()
+        
         for tag in tags:
             color = tag.get_attribute("color")
-            self.tag_ts.append([tag,color,None,tag.get_name()])
+            count = len(self.req.get_tasks_list(tags=[tag]))
+            self.tag_ts.append([tag,color,tag.get_name(), str(count), False])
+            
         #We reselect the selected tag
         if t_path :
             for i in t_path :
                 self.tag_tview.get_selection().select_path(i)
+
+    def tag_separator_filter(self, model, iter, user_data=None):
+        return model.get_value(iter, self.TAGS_MODEL_SEP)
+        
 
     #refresh list build/refresh your TreeStore of task
     #to keep it in sync with your self.projects   
@@ -609,21 +613,27 @@ class TaskBrowser:
     def __create_tags_tview(self):
          
         # Tag column
-        tag_col     = gtk.TreeViewColumn()
-        render_text = gtk.CellRendererText()
-        render_tags = CellRendererTags()
+        tag_col      = gtk.TreeViewColumn()
+        render_text  = gtk.CellRendererText()
+        render_count = gtk.CellRendererText()
+        render_tags  = CellRendererTags()
         tag_col.set_title             ("Tags")
         tag_col.set_clickable         (False)
-        tag_col.pack_start            (render_tags, expand=False)
-        tag_col.set_attributes        (render_tags, tag=self.TAGS_MODEL_OBJ)
-        tag_col.pack_start            (render_text, expand=False)
-        tag_col.set_attributes        (render_text, markup=self.TAGS_MODEL_NAME)
-        tag_col.set_resizable         (False)
+        tag_col.pack_start            (render_tags  , expand=False)
+        tag_col.set_attributes        (render_tags  , tag=self.TAGS_MODEL_OBJ)
+        tag_col.pack_start            (render_text  , expand=False)
+        tag_col.set_attributes        (render_text  , markup=self.TAGS_MODEL_NAME)
+        tag_col.pack_end            (render_count , expand=False)
+        tag_col.set_attributes        (render_count , markup=self.TAGS_MODEL_COUNT)
+        render_count.set_property     ("foreground","#888a85")
+        render_count.set_property     ('xalign', 1.0)
+        render_tags.set_property      ('ypad'  , 3)
+        render_text.set_property      ('ypad'  , 3)
+        render_count.set_property     ('ypad'  , 3)
         tag_col.set_sort_column_id    (self.TAGS_TV_COL_TAG)
         self.tag_tview.append_column  (tag_col)
-        
         # Global treeview properties
-        # none
+        self.tag_tview.set_row_separator_func(self.tag_separator_filter)
 
     def __create_task_tview(self):
   
@@ -631,12 +641,13 @@ class TaskBrowser:
         tag_col     = gtk.TreeViewColumn()
         render_text = gtk.CellRendererText()
         render_tags = CellRendererTags()
-        tag_col.set_title          ("Tags")
-        tag_col.pack_start         (render_tags, expand=False)
-        tag_col.set_attributes     (render_tags, tag_list=self.TASK_MODEL_TAGS)
-        tag_col.set_resizable      (False)
-        tag_col.set_sort_column_id (self.TASKS_TV_COL_TAG)
-        self.task_tview.append_column(tag_col)
+        tag_col.set_title             ("Tags")
+        tag_col.pack_start            (render_tags, expand=False)
+        tag_col.set_attributes        (render_tags, tag_list=self.TASK_MODEL_TAGS)
+        render_tags.set_property      ('xalign', 0.0)
+        tag_col.set_resizable         (False)
+        tag_col.set_sort_column_id    (self.TASKS_TV_COL_TAG)
+        self.task_tview.append_column (tag_col)
         
         # Title column
         title_col   = gtk.TreeViewColumn()
