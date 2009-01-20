@@ -191,6 +191,8 @@ class TaskBrowser:
 
         tags = self.req.get_used_tags()
         
+        tags.sort(cmp=lambda x,y: cmp(x.get_name(),y.get_name()))
+
         for tag in tags:
             color = tag.get_attribute("color")
             count = len(self.req.get_tasks_list(tags=[tag]))
@@ -630,7 +632,7 @@ class TaskBrowser:
         render_tags.set_property      ('ypad'  , 3)
         render_text.set_property      ('ypad'  , 3)
         render_count.set_property     ('ypad'  , 3)
-        tag_col.set_sort_column_id    (self.TAGS_TV_COL_TAG)
+        tag_col.set_sort_column_id    (-1)
         self.tag_tview.append_column  (tag_col)
         # Global treeview properties
         self.tag_tview.set_row_separator_func(self.tag_separator_filter)
