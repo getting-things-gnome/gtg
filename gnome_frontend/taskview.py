@@ -266,14 +266,6 @@ class TaskView(gtk.TextView):
                         old_tags.append(ta.get_data('tagname')[1:])
                         table.remove(ta)
             it.forward_char()
-        
-#        tag_list = []
-#        #Removing all texttag related to @tags in the current selection
-#        table = self.buff.get_tag_table()
-#        def remove_tag_tag(texttag,data) : #pylint: disable-msg=W0613
-#            if texttag.get_data("is_tag") :
-#                table.remove(texttag)
-#        table.foreach(remove_tag_tag)
 
         # Set iterators for word
         word_start = start.copy()
@@ -350,9 +342,13 @@ class TaskView(gtk.TextView):
 
         end       = self.buff.get_end_iter()
         body_start = title_end.copy()
-        
+        #We analyse only the current line
+        local_start = cursor_iter.copy()
+        local_start.backward_line()
+        local_end = cursor_iter.copy()
+        local_end.forward_line()
         #FIXME : we should detect tag only on the current line
-        self._detect_tag(buff,body_start,end)
+        self._detect_tag(buff,local_start,local_end)
         
         #Ok, we took care of the modification
         self.buff.set_modified(False)
