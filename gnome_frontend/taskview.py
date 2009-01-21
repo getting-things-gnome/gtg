@@ -262,9 +262,9 @@ class TaskView(gtk.TextView):
                 for ta in tags :
                     #removing deleted tags
                     if ta.get_data('is_tag') :
-                        print "removing tag %s" %ta.get_data('tagname')
+                        #We whould remove the "@" from the tag
+                        old_tags.append(ta.get_data('tagname')[1:])
                         table.remove(ta)
-                        old_tags.append(ta.get_data('tagname'))
             it.forward_char()
         
 #        tag_list = []
@@ -287,7 +287,7 @@ class TaskView(gtk.TextView):
         # Iterate over characters of the line to get words
         while char_end.compare(end) <= 0:
             do_word_check = False
-            my_char       = self.buff.get_text(char_start, char_end)
+            my_char       = buff.get_text(char_start, char_end)
             if my_char not in separators :
                 word_end = char_end.copy()
             else:
@@ -299,13 +299,12 @@ class TaskView(gtk.TextView):
             # We have a new word
             if do_word_check:
                 if (word_end.compare(word_start) > 0):
-                    my_word = self.buff.get_text(word_start, word_end)
+                    my_word = buff.get_text(word_start, word_end)
                 
                     # We do something about it
                     if len(my_word) > 0 and my_word[0] == '@':
-                        self.apply_tag_tag(self.buff,my_word,word_start,word_end)
+                        self.apply_tag_tag(buff,my_word,word_start,word_end)
                         #adding tag to a local list
-                        print "New tag %s" %my_word
                         new_tags.append(my_word[1:])
                         #TODO : Keeping the @ is better 
                         #adding tag to the model
@@ -327,17 +326,8 @@ class TaskView(gtk.TextView):
         # we remove tags that are not in the description anymore
         for t in old_tags :
             if not t in new_tags :
-                print "definitely remove of %s" %t
                 self.remove_tag_callback(t)
         
-        # Remove all tags from the task
-        # Loop over each line
-        
-        
-        # Loop over each word of the line
-        # Check if the word starts by '@'
-            # Apply tag on the word
-            # Add tag to list
     
     #This function is called so frequently that we should optimize it more.    
     def _modified(self,buff=None) : #pylint: disable-msg=W0613
@@ -361,6 +351,7 @@ class TaskView(gtk.TextView):
         end       = self.buff.get_end_iter()
         body_start = title_end.copy()
         
+        #FIXME : we should detect tag only on the current line
         self._detect_tag(buff,body_start,end)
         
         #Ok, we took care of the modification

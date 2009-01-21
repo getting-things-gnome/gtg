@@ -315,6 +315,9 @@ class Task :
             
     #remove by tagname
     def remove_tag(self, tagname):
+        #Fixme : we should remove this anti"@" crazyness
+        if tagname and tagname[0] == "@" :
+            tagname = tagname[1:]
         t = self.req.get_tag(tagname)
         if t in self.tags :
             self.tags.remove(t)
