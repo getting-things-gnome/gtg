@@ -20,6 +20,8 @@ import pango
 
 from gnome_frontend import taskviewserial
 
+separators = [' ','.',',','/','\n','\t','!','?',';']
+
 class TaskView(gtk.TextView):
     __gtype_name__ = 'HyperTextView'
     __gsignals__ = {'anchor-clicked': (gobject.SIGNAL_RUN_LAST, None, (str, str, int))}
@@ -66,9 +68,9 @@ class TaskView(gtk.TextView):
         # We use the tag table (tag are defined here but set in self.modified)
         self.table = self.buff.get_tag_table()
         # Tag for title
-        title_tag  = self.buff.create_tag("title",foreground="#12F",scale=1.6,underline=1)
-        title_tag.set_property("pixels-above-lines",10)
-        title_tag.set_property("pixels-below-lines",10)
+        self.title_tag  = self.buff.create_tag("title",foreground="#12F",scale=1.6,underline=1)
+        self.title_tag.set_property("pixels-above-lines",10)
+        self.title_tag.set_property("pixels-below-lines",10)
         # Tag for highlight (tags are automatically added to the tag table)
         self.buff.create_tag("fluo",background="#F0F")
         # Tag for bullets
@@ -115,7 +117,9 @@ class TaskView(gtk.TextView):
         
         #The signal emitted each time the buffer is modified
         #Putting it at the end to avoid doing it too much when starting
-        self.buff.connect("changed" , self._modified)
+        self.buff.connect("changed" , self.modified)
+        self.tobe_refreshed = False
+
     
     #This function is called to refresh the editor 
     #Specially when we change the title
@@ -208,12 +212,15 @@ class TaskView(gtk.TextView):
         self.__tags.append(tag)
         return tag
         
-        
+    #Apply the tag tag to a set of TextMarks (not Iter)
     def apply_tag_tag(self,buff,tag,s,e) :
         texttag = buff.create_tag(None,**self.get_property('tag'))#pylint: disable-msg=W0142
         texttag.set_data('is_tag', True)
         texttag.set_data('tagname',tag)
-        buff.apply_tag(texttag,s,e)
+        #This line if for iter
+        #buff.apply_tag(texttag,s,e)
+        #This one is for marks
+        self.__apply_tag_to_mark(s,e,tag=texttag)
 
         
  ##### The "Get text" group #########
@@ -245,93 +252,118 @@ class TaskView(gtk.TextView):
         return stripped
         
 ### PRIVATE FUNCTIONS ##########################################################
-    
+
+        
     #This function is called so frequently that we should optimize it more.    
-    def _modified(self,a=None) : #pylint: disable-msg=W0613
+    def modified(self,buff=None,full=False) : #pylint: disable-msg=W0613
         """
         This function is called when the buffer has been modified,
         it reflects the changes by:
           1. Applying the title style on the first line
           2. Changing the name of the window if title change
         """
+        tags_before = self.get_tagslist()
+        if not buff : buff = self.buff   
+        cursor_mark = buff.get_insert()
+        cursor_iter = buff.get_iter_at_mark(cursor_mark)
         
-        start     = self.buff.get_start_iter()
-        end       = self.buff.get_end_iter()
-        line_nbr  = 1
-        linecount = self.buff.get_line_count()
-        
-        # Apply the title tag on the first line 
-        #---------------------------------------
-        
-        # Determine the iterators for title
-        title_start = start.copy() 
-        if linecount > line_nbr :
-            # Applying title on the first line
-            title_end = self.buff.get_iter_at_line(line_nbr)
-            stripped  = self.buff.get_text(title_start,title_end).strip('\n\t ')
-            # Here we ignore lines that are blank
-            # Title is the first written line
-            while line_nbr <= linecount and not stripped :
-                line_nbr  += 1
-                title_end  = self.buff.get_iter_at_line(line_nbr)
-                stripped   = self.buff.get_text(title_start, title_end).strip('\n\t ')
-        # Or to all the buffer if there is only one line
-        else :
-            title_end = end.copy()            
-            
-        self.buff.apply_tag_by_name  ('title', title_start , title_end)
-        self.buff.remove_tag_by_name ('title', title_end   , end)
+        #This should be called only if we are on the title line
+        #As an optimisation
+        #But we should still get the title_end iter
+        if full or self.is_at_title(buff,cursor_iter) :
+            #The apply title is very expensive because
+            #It involves refreshing the whole task tree
+            title_end = self._apply_title(buff)
 
-        # Refresh title of the window
-        self.refresh(self.buff.get_text(title_start,title_end).strip('\n\t'))
+        if full :
+            local_start = title_end.copy()
+            local_end = buff.get_end_iter()
+        else :
+            #We analyse only the current line
+            local_start = cursor_iter.copy()
+            local_start.backward_line()
+            local_end = cursor_iter.copy()
+            local_end.forward_lines(2)
+        #if full=False we detect tag only on the current line
+        self._detect_tag(buff,local_start,local_end)
         
-        # Set iterators for body
-        body_start = title_end.copy()
-        body_end   = end.copy()
+        #Now we apply the tag tag to the marks
+        for t in self.get_tagslist() :
+            if t and t[0] != '@' :
+                t = "@%s"%t
+            start_mark = buff.get_mark(t)
+            end_mark = buff.get_mark("/%s"%t)
+            #print "applying %s to %s - %s"%(t,start_mark,end_mark)
+            if start_mark and end_mark :
+                self.apply_tag_tag(buff,t,start_mark,end_mark)
         
-        # Detect tags
-        #-------------
-        
-        tag_list = []
-        #Removing all texttag related to GTG tags
-        #self.buff.remove_tag_by_name ('tag', body_start, body_end)
-        table = self.buff.get_tag_table()
-        def remove_tag_tag(texttag,data) : #pylint: disable-msg=W0613
-            if texttag.get_data("is_tag") :
-                table.remove(texttag)
-        table.foreach(remove_tag_tag)
+        #Ok, we took care of the modification
+        self.buff.set_modified(False)
+        #If tags have been modified, we update the browser
+        if tags_before != self.get_tagslist() :
+            self.refresh_browser()
+
+    #Detect tags in buff in the regio between start iter and end iter
+    def _detect_tag(self,buff,start,end) :
+        # Removing already existing tag in the current selection
+        # out of the tag table
+        it = start.copy()
+        table = buff.get_tag_table()
+        old_tags = []
+        new_tags = []
+        while (it.get_offset() <= end.get_offset()) and (it.get_char() != '\0'):
+            if it.begins_tag() :
+                tags = it.get_tags()
+                for ta in tags :
+                    #removing deleted tags
+                    if ta.get_data('is_tag') :
+                        #We whould remove the "@" from the tag
+                        tagname = ta.get_data('tagname')
+                        old_tags.append(tagname[1:])
+                        table.remove(ta)
+                        #Removing the marks if they exist
+                        if buff.get_mark(tagname) :
+                            buff.delete_mark_by_name(tagname)
+                        if buff.get_mark("%s"%tagname) :
+                            buff.delete_mark_by_name("/%s"%tagname)
+            it.forward_char()
 
         # Set iterators for word
-        word_start = body_start.copy()
-        word_end   = body_start.copy()
+        word_start = start.copy()
+        word_end   = start.copy()
 
         # Set iterators for char
-        char_start = body_start.copy()
-        char_end   = body_start.copy()
+        char_start = start.copy()
+        char_end   = start.copy()
         char_end.forward_char()
         
         # Iterate over characters of the line to get words
-        while char_end.compare(body_end) <= 0:
+        while char_end.compare(end) <= 0:
             do_word_check = False
-            my_char       = self.buff.get_text(char_start, char_end)
-            if my_char not in [' ','.',',','/','\n','\t','!','?',';']:
+            my_char       = buff.get_text(char_start, char_end)
+            if my_char not in separators :
                 word_end = char_end.copy()
             else:
                 do_word_check = True
                 
-            if char_end.compare(body_end) == 0:
+            if char_end.compare(end) == 0:
                 do_word_check = True
             
             # We have a new word
             if do_word_check:
                 if (word_end.compare(word_start) > 0):
-                    my_word = self.buff.get_text(word_start, word_end)
+                    my_word = buff.get_text(word_start, word_end)
                 
                     # We do something about it
-                    if len(my_word) > 0 and my_word[0] == '@':
-                        self.apply_tag_tag(self.buff,my_word,word_start,word_end)
+                    #We want a tag bigger than the simple "@"
+                    if len(my_word) > 1 and my_word[0] == '@':
+                        #self.apply_tag_tag(buff,my_word,word_start,word_end)
+                        #We will add mark where tag should be applied
+                        buff.create_mark(my_word,word_start,True)
+                        buff.create_mark("/%s"%my_word,word_end,False)
                         #adding tag to a local list
-                        tag_list.append(my_word[1:])
+                        new_tags.append(my_word[1:])
+                        #TODO : Keeping the @ is better 
                         #adding tag to the model
                         self.add_tag_callback(my_word[1:])
     
@@ -340,31 +372,33 @@ class TaskView(gtk.TextView):
                 word_end   = char_end.copy()
 
             # Stop loop if we are at the end
-            if char_end.compare(body_end) == 0: 
+            if char_end.compare(end) == 0: 
                 break
             
             # We search the next word
             char_start = char_end.copy()
             char_end.forward_char()
-        
+            
         # Update tags in model : 
         # we remove tags that are not in the description anymore
-        for t in self.get_tagslist() :
-            if not t in tag_list :
+        for t in old_tags :
+            if not t in new_tags :
                 self.remove_tag_callback(t)
+                
+    def is_at_title(self,buff,itera) :
+        to_return = False
+        if itera.get_line() == 0 :
+            to_return = True
+        #We are at a line with the title tag applied
+        elif self.title_tag in itera.get_tags() :
+            to_return = True
+        #else, we look if there's something between us and buffer start
+        elif not buff.get_text(buff.get_start_iter(),itera).strip('\n\t ') :
+            to_return = True
+        return to_return
         
-        # Remove all tags from the task
-        # Loop over each line
-        
-        
-        # Loop over each word of the line
-        # Check if the word starts by '@'
-            # Apply tag on the word
-            # Add tag to list
-        
-        #Ok, we took care of the modification
-        self.buff.set_modified(False)
-        
+    #When the user remove a selection, we remove subtasks and @tags
+    #from this selection
     def _delete_range(self,buff,start,end) : #pylint: disable-msg=W0613
         it = start.copy()
         while (it.get_offset() <= end.get_offset()) and (it.get_char() != '\0'):
@@ -378,10 +412,50 @@ class TaskView(gtk.TextView):
                         self.refresh_browser()
                     #removing deleted tags
                     if ta.get_data('is_tag') :
-                        self.remove_tag_callback(ta.get_data('tagname'))
+                        tagname = ta.get_data('tagname')
+                        self.remove_tag_callback(tagname)
+                        if buff.get_mark(tagname) :
+                            buff.delete_mark_by_name(tagname)
+                        if buff.get_mark("/%s"%tagname) :
+                            buff.delete_mark_by_name("/%s"%tagname)
+                        self.refresh_browser()
             it.forward_char()
         #We return false so the parent still get the signal
         return False
+        
+    #Apply the title and return an iterator after that title.
+    def _apply_title(self,buff) :
+        start     = buff.get_start_iter()
+        end       = buff.get_end_iter()
+        line_nbr  = 1
+        linecount = buff.get_line_count()
+    
+        # Apply the title tag on the first line 
+        #---------------------------------------
+        
+        # Determine the iterators for title
+        title_start = start.copy() 
+        if linecount > line_nbr :
+            # Applying title on the first line
+            title_end = buff.get_iter_at_line(line_nbr)
+            stripped  = buff.get_text(title_start,title_end).strip('\n\t ')
+            # Here we ignore lines that are blank
+            # Title is the first written line
+            while line_nbr <= linecount and not stripped :
+                line_nbr  += 1
+                title_end  = buff.get_iter_at_line(line_nbr)
+                stripped   = buff.get_text(title_start, title_end).strip('\n\t ')
+        # Or to all the buffer if there is only one line
+        else :
+            title_end = end.copy()            
+            
+        buff.apply_tag_by_name  ('title', title_start , title_end)
+        buff.remove_tag_by_name ('title', title_end   , end)
+
+        # Refresh title of the window
+        self.refresh(buff.get_text(title_start,title_end).strip('\n\t'))
+        return title_end
+    
             
         
     def __newsubtask(self,buff,title,line_nbr) :
@@ -397,17 +471,17 @@ class TaskView(gtk.TextView):
         end     = buff.create_mark("end",end_i,False)
         buff.delete(start_i,end_i)
         bullet ='  ↪ '
-        self.__insert_at_mark(buff,start,bullet)
+        self.insert_at_mark(buff,start,bullet)
         self.__apply_tag_to_mark(start,end,name="bullet")
         newline = self.get_subtasktitle(anchor)
-        self.__insert_at_mark(buff,end,newline,anchor=anchor)
+        self.insert_at_mark(buff,end,newline,anchor=anchor)
         #The invisible "subtask" tag
         #It must be the last tag set as it's around everything else
         tag = buff.create_tag(None)
         tag.set_data('is_subtask', True)
         tag.set_data('child',anchor)
         self.__apply_tag_to_mark(start,end,tag=tag)
-        self.__insert_at_mark(buff,end,"\n")
+        self.insert_at_mark(buff,end,"\n")
         buff.delete_mark(start)
         buff.delete_mark(end)
         
@@ -419,7 +493,7 @@ class TaskView(gtk.TextView):
         elif name :
             self.buff.apply_tag_by_name(name,start_i,end_i)
     
-    def __insert_at_mark(self,buff,mark,text,anchor=None) :
+    def insert_at_mark(self,buff,mark,text,anchor=None) :
         ite = buff.get_iter_at_mark(mark)
         if anchor :
             self.insert_with_anchor(text,anchor,_iter=ite,typ="subtask")
