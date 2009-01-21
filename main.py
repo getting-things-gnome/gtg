@@ -44,6 +44,7 @@ class Gtg:
         bl = config.get_backends_list()
         #TODO : list available backends
         #TODO : get backend list
+        #TODO : if we have no backend, we create an empty one using default backend
         #Currently we will use bl to build a fake backend list of dic
         backend_list = []
         for i in bl :
@@ -60,9 +61,9 @@ class Gtg:
         for b in backend_list :
             #We need to remove the module name from the dictionnary
             #We dynamically import modules needed
-            module_name = "backends.%s"%b.pop("module")
+            module_name = "backends.%s"%b["module"]
             module = __import__(module_name)
-            classobj = getattr(module, "localfile")
+            classobj = getattr(module, b["module"])
             
             back = classobj.Backend(b,ds)
             ds.register_backend(back)
