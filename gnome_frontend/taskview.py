@@ -68,9 +68,9 @@ class TaskView(gtk.TextView):
         # We use the tag table (tag are defined here but set in self.modified)
         self.table = self.buff.get_tag_table()
         # Tag for title
-        title_tag  = self.buff.create_tag("title",foreground="#12F",scale=1.6,underline=1)
-        title_tag.set_property("pixels-above-lines",10)
-        title_tag.set_property("pixels-below-lines",10)
+        self.title_tag  = self.buff.create_tag("title",foreground="#12F",scale=1.6,underline=1)
+        self.title_tag.set_property("pixels-above-lines",10)
+        self.title_tag.set_property("pixels-below-lines",10)
         # Tag for highlight (tags are automatically added to the tag table)
         self.buff.create_tag("fluo",background="#F0F")
         # Tag for bullets
@@ -319,6 +319,20 @@ class TaskView(gtk.TextView):
         for t in old_tags :
             if not t in new_tags :
                 self.remove_tag_callback(t)
+                
+    def is_at_title(self,buff,itera) :
+        to_return = False
+        if itera.get_line() == 0 :
+            to_return = True
+        #We are at a line with the title tag applied
+        elif self.title_tag in itera.get_tags() :
+            print "We are in title tag"
+            to_return = True
+        #else, we look if there's something between us and buffer start
+        elif not buff.get_text(buff.get_start_iter(),itera).strip('\n\t ') :
+            print "we are the new title line"
+            to_return = True
+        return to_return
         
     
     #This function is called so frequently that we should optimize it more.    
@@ -329,6 +343,7 @@ class TaskView(gtk.TextView):
           1. Applying the title style on the first line
           2. Changing the name of the window if title change
         """
+        if not buff : buff = self.buff
         
         #cursor_pos = buff.get_property("cursor-position")
         cursor_mark = buff.get_insert()
@@ -338,10 +353,9 @@ class TaskView(gtk.TextView):
         #This should be called only if we are on the title line
         #As an optimisation
         #But we should still get the title_end iter
-        title_end = self._apply_title(buff)
+        if self.is_at_title(buff,cursor_iter) :
+            title_end = self._apply_title(buff)
 
-        end       = self.buff.get_end_iter()
-        body_start = title_end.copy()
         #We analyse only the current line
         local_start = cursor_iter.copy()
         local_start.backward_line()

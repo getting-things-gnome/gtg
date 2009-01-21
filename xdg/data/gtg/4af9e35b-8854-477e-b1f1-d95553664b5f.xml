@@ -85,10 +85,8 @@ pour voir
 	<task id="9@1" status="Active" tags="">
 		<title>
 			No tag task
+no tag but I'm editing
 		</title>
-		<content>
-			no tag but I'm editing
-		</content>
 	</task>
 	<task id="6@1" status="Active" tags="tag">
 		<title>
@@ -106,13 +104,10 @@ pour voir
 			&lt;tag&gt;@new_tag&lt;/tag&gt;, 
 		</content>
 	</task>
-	<task id="16@1" status="Active" tags="tag,aze">
+	<task id="16@1" status="Active" tags="">
 		<title>
 			child with tag
 		</title>
-		<content>
-			&lt;tag&gt;@tag&lt;/tag&gt;, &lt;tag&gt;@aze&lt;/tag&gt;,
-		</content>
 	</task>
 	<task id="3@1" status="Done" tags="donetask">
 		<title>
@@ -125,7 +120,7 @@ pour voir
 			&lt;tag&gt;@donetask&lt;/tag&gt;
 		</content>
 	</task>
-	<task id="12@1" status="Active" tags="new_tag,ici">
+	<task id="12@1" status="Active" tags="ici">
 		<title>
 			Lorem Ipsum
 		</title>
@@ -133,7 +128,7 @@ pour voir
 			14@1
 		</subtask>
 		<content>
-			&lt;tag&gt;@new_tag&lt;/tag&gt;, 
+			@new_tag, 
 &lt;subtask&gt;14@1&lt;/subtask&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce euismod massa id ipsum. Praesent at nunc id nulla scelerisque fringilla. Nullam congue, elit non placerat hendrerit, enim lacus laoreet ipsum, at ornare odio augue in lectus. Praesent hendrerit lacus ut dolor. Suspendisse mi augue, tincidunt sit amet, tincidunt nec, convallis gravida, ligula. Ut quis nisi eu sem placerat vulputate. Fusce sem lectus, luctus et, facilisis sagittis, laoreet et, arcu. Integer posuere convallis erat. Integer pharetra. Pellentesque nec sem. Curabitur ornare lectus nec augue feugiat interdum. Nulla vehicula, ante molestie sagittis venenatis, nulla elit imperdiet massa, id pulvinar lacus diam a diam. Morbi dui nulla, convallis vitae, pharetra eu, aliquet in, ligula. Vestibulum accumsan tellus a erat. Donec arcu mauris, commodo non, tincidunt at, semper eu, tortor. Duis congue justo ultrices lorem fringilla consequat.
 
 Nulla facilisi. Morbi eu odi
