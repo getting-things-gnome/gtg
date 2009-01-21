@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date,datetime
 import xml.dom.minidom
 
 from tools.listes import *
@@ -79,15 +79,28 @@ class Task :
     def set_due_date(self,fulldate) :
         if fulldate :
             self.due_date = strtodate(fulldate)
+            for child in self.get_subtasks() :
+                child.set_due_date(fulldate)
         else :
             self.due_date = None
         
+    #Due date return the most urgent date of all parents
     def get_due_date(self) :
         if self.due_date :
-            return str(self.due_date)
+            zedate = self.due_date
         else :
+            zedate = date.max
+        for par in self.get_parents() :
+            pardate_str = self.req.get_task(par).get_due_date()
+            if pardate_str :
+                pardate = datetime.strptime(pardate_str,"%Y-%M-%d").date()
+                if pardate and zedate > pardate :
+                    zedate = pardate
+        if zedate == date.max :
             return ''
-            
+        else :
+            return str(zedate)
+
     def set_start_date(self,fulldate) :
         if fulldate :
             self.start_date = strtodate(fulldate)
@@ -191,8 +204,10 @@ class Task :
             task = self.req.get_task(tid)
             task.add_parent(self.get_id())
             #now we set inherited attributes only if it's a new task
+            #Except for due date because a child always has to be due
+            #before its parent
+            task.set_due_date(self.get_due_date())
             if task.can_be_deleted :
-                task.set_due_date(self.get_due_date())
                 task.set_start_date(self.get_start_date())
                 for t in self.get_tags() :
                     task.add_tag(t.get_name())
@@ -234,6 +249,7 @@ class Task :
             self.sync()
             task = self.req.get_task(tid)
             task.add_subtask(self.get_id())
+            duedate = task.get_due_date()
             task.sync()
             
     #Take a tid as parameter
