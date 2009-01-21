@@ -29,7 +29,7 @@
 #=== IMPORT ====================================================================
 
 #our own imports
-from gnome_frontend.taskbrowser import TaskBrowser
+from taskbrowser.browser import TaskBrowser
 from gtg_core.datastore   import DataStore
 from backends.localfile import Backend
 from gtg_core   import CoreConfig

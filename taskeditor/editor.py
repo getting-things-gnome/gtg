@@ -8,9 +8,9 @@
 #The rest are the logic of the widget : date changing widgets, buttons, ...
 import sys
 
-from gnome_frontend.taskview import TaskView
-from gnome_frontend import GnomeConfig
+from taskeditor import GnomeConfig
 from tools import dates
+from taskeditor.taskview import TaskView
 try:
     import pygtk
     pygtk.require("2.0")

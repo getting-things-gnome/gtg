@@ -3,10 +3,6 @@
 
 #Files are :
 
-#project_ui.py
-#-------------
-#This is the interface to create or edit a project.
-
 #Taskbrowser.py
 #--------------
 #This is the main interface with the list of tasks
@@ -32,7 +28,7 @@
 #widget in the TaskEditor is dummy and is replaced at runtime by a TaskView.
 
 class GnomeConfig :
-    GLADE_FILE = "gnome_frontend/gtd-gnome.glade"
+    GLADE_FILE = "taskbrowser/gtd-gnome.glade"
     
     MARK_DONE = "Mark as done"
     MARK_UNDONE = "Undone"

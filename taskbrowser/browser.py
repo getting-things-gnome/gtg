@@ -7,9 +7,9 @@ import gtk.glade
 import pango
 
 #our own imports
-from gnome_frontend.taskeditor       import TaskEditor
-from gnome_frontend.CellRendererTags import CellRendererTags
-from gnome_frontend import GnomeConfig
+from taskeditor.editor       import TaskEditor
+from taskbrowser.CellRendererTags import CellRendererTags
+from taskbrowser import GnomeConfig
 
 #=== OBJECTS ===================================================================
 
