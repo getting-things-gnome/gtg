@@ -20,6 +20,8 @@ import pango
 
 from gnome_frontend import taskviewserial
 
+separators = [' ','.',',','/','\n','\t','!','?',';']
+
 class TaskView(gtk.TextView):
     __gtype_name__ = 'HyperTextView'
     __gsignals__ = {'anchor-clicked': (gobject.SIGNAL_RUN_LAST, None, (str, str, int))}
@@ -245,21 +247,14 @@ class TaskView(gtk.TextView):
         return stripped
         
 ### PRIVATE FUNCTIONS ##########################################################
-    
-    #This function is called so frequently that we should optimize it more.    
-    def _modified(self,a=None) : #pylint: disable-msg=W0613
-        """
-        This function is called when the buffer has been modified,
-        it reflects the changes by:
-          1. Applying the title style on the first line
-          2. Changing the name of the window if title change
-        """
-        
-        start     = self.buff.get_start_iter()
-        end       = self.buff.get_end_iter()
+
+    #Apply the title and return an iterator after that title.
+    def _apply_title(self,buff) :
+        start     = buff.get_start_iter()
+        end       = buff.get_end_iter()
         line_nbr  = 1
-        linecount = self.buff.get_line_count()
-        
+        linecount = buff.get_line_count()
+    
         # Apply the title tag on the first line 
         #---------------------------------------
         
@@ -267,23 +262,49 @@ class TaskView(gtk.TextView):
         title_start = start.copy() 
         if linecount > line_nbr :
             # Applying title on the first line
-            title_end = self.buff.get_iter_at_line(line_nbr)
-            stripped  = self.buff.get_text(title_start,title_end).strip('\n\t ')
+            title_end = buff.get_iter_at_line(line_nbr)
+            stripped  = buff.get_text(title_start,title_end).strip('\n\t ')
             # Here we ignore lines that are blank
             # Title is the first written line
             while line_nbr <= linecount and not stripped :
                 line_nbr  += 1
-                title_end  = self.buff.get_iter_at_line(line_nbr)
-                stripped   = self.buff.get_text(title_start, title_end).strip('\n\t ')
+                title_end  = buff.get_iter_at_line(line_nbr)
+                stripped   = buff.get_text(title_start, title_end).strip('\n\t ')
         # Or to all the buffer if there is only one line
         else :
             title_end = end.copy()            
             
-        self.buff.apply_tag_by_name  ('title', title_start , title_end)
-        self.buff.remove_tag_by_name ('title', title_end   , end)
+        buff.apply_tag_by_name  ('title', title_start , title_end)
+        buff.remove_tag_by_name ('title', title_end   , end)
 
         # Refresh title of the window
-        self.refresh(self.buff.get_text(title_start,title_end).strip('\n\t'))
+        self.refresh(buff.get_text(title_start,title_end).strip('\n\t'))
+        return title_end
+    
+    #This function is called so frequently that we should optimize it more.    
+    def _modified(self,buff=None) : #pylint: disable-msg=W0613
+        """
+        This function is called when the buffer has been modified,
+        it reflects the changes by:
+          1. Applying the title style on the first line
+          2. Changing the name of the window if title change
+        """
+        
+        #cursor_pos = buff.get_property("cursor-position")
+        cursor_mark = buff.get_insert()
+        cursor_iter = buff.get_iter_at_mark(cursor_mark)
+        cursor_line = cursor_iter.get_line()
+        
+        
+        title_end = self._apply_title(buff)
+
+        
+        start     = self.buff.get_start_iter()
+        end       = self.buff.get_end_iter()
+        line_nbr  = 1
+        linecount = self.buff.get_line_count()
+        
+        
         
         # Set iterators for body
         body_start = title_end.copy()
@@ -294,7 +315,6 @@ class TaskView(gtk.TextView):
         
         tag_list = []
         #Removing all texttag related to GTG tags
-        #self.buff.remove_tag_by_name ('tag', body_start, body_end)
         table = self.buff.get_tag_table()
         def remove_tag_tag(texttag,data) : #pylint: disable-msg=W0613
             if texttag.get_data("is_tag") :
@@ -314,7 +334,7 @@ class TaskView(gtk.TextView):
         while char_end.compare(body_end) <= 0:
             do_word_check = False
             my_char       = self.buff.get_text(char_start, char_end)
-            if my_char not in [' ','.',',','/','\n','\t','!','?',';']:
+            if my_char not in separators :
                 word_end = char_end.copy()
             else:
                 do_word_check = True
