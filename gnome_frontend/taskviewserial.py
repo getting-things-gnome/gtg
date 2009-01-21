@@ -151,9 +151,7 @@ class Unserializer :
             sm = buff.create_mark(None,itera,True)
             em = buff.create_mark(None,itera,False)
             buff.insert(itera,tag)
-            s = buff.get_iter_at_mark(sm)
-            e = buff.get_iter_at_mark(em)
-            self.tv.apply_tag_tag(buff,tag,s,e)
+            self.tv.apply_tag_tag(buff,tag,sm,em)
         
     #parse the XML and put the content in the buffer
     def parsexml(self,buf,ite,element) :

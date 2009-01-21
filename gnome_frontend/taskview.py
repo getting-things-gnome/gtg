@@ -216,12 +216,15 @@ class TaskView(gtk.TextView):
         self.__tags.append(tag)
         return tag
         
-        
+    #Apply the tag tag to a set of TextMarks (not Iter)
     def apply_tag_tag(self,buff,tag,s,e) :
         texttag = buff.create_tag(None,**self.get_property('tag'))#pylint: disable-msg=W0142
         texttag.set_data('is_tag', True)
         texttag.set_data('tagname',tag)
-        buff.apply_tag(texttag,s,e)
+        #This line if for iter
+        #buff.apply_tag(texttag,s,e)
+        #This one is for marks
+        self.__apply_tag_to_mark(s,e,tag=texttag)
 
         
  ##### The "Get text" group #########
@@ -286,9 +289,19 @@ class TaskView(gtk.TextView):
             local_start = cursor_iter.copy()
             local_start.backward_line()
             local_end = cursor_iter.copy()
-            local_end.forward_line()
+            local_end.forward_lines(2)
         #if full=False we detect tag only on the current line
         self._detect_tag(buff,local_start,local_end)
+        
+        #Now we apply the tag tag to the marks
+        for t in self.get_tagslist() :
+            if t and t[0] != '@' :
+                t = "@%s"%t
+            start_mark = buff.get_mark(t)
+            end_mark = buff.get_mark("/%s"%t)
+            #print "applying %s to %s - %s"%(t,start_mark,end_mark)
+            if start_mark and end_mark :
+                self.apply_tag_tag(buff,t,start_mark,end_mark)
         
         #Ok, we took care of the modification
 #        if full :
@@ -310,8 +323,14 @@ class TaskView(gtk.TextView):
                     #removing deleted tags
                     if ta.get_data('is_tag') :
                         #We whould remove the "@" from the tag
-                        old_tags.append(ta.get_data('tagname')[1:])
+                        tagname = ta.get_data('tagname')
+                        old_tags.append(tagname[1:])
                         table.remove(ta)
+                        #Removing the marks if they exist
+                        if buff.get_mark(tagname) :
+                            buff.delete_mark_by_name(tagname)
+                        if buff.get_mark("%s"%tagname) :
+                            buff.delete_mark_by_name("/%s"%tagname)
             it.forward_char()
 
         # Set iterators for word
@@ -341,8 +360,12 @@ class TaskView(gtk.TextView):
                     my_word = buff.get_text(word_start, word_end)
                 
                     # We do something about it
-                    if len(my_word) > 0 and my_word[0] == '@':
-                        self.apply_tag_tag(buff,my_word,word_start,word_end)
+                    #We want a tag bigger than the simple "@"
+                    if len(my_word) > 1 and my_word[0] == '@':
+                        #self.apply_tag_tag(buff,my_word,word_start,word_end)
+                        #We will add mark where tag should be applied
+                        buff.create_mark(my_word,word_start,True)
+                        buff.create_mark("/%s"%my_word,word_end,False)
                         #adding tag to a local list
                         new_tags.append(my_word[1:])
                         #TODO : Keeping the @ is better 
@@ -360,7 +383,7 @@ class TaskView(gtk.TextView):
             # We search the next word
             char_start = char_end.copy()
             char_end.forward_char()
-        
+            
         # Update tags in model : 
         # we remove tags that are not in the description anymore
         for t in old_tags :
@@ -373,11 +396,9 @@ class TaskView(gtk.TextView):
             to_return = True
         #We are at a line with the title tag applied
         elif self.title_tag in itera.get_tags() :
-            print "We are in title tag"
             to_return = True
         #else, we look if there's something between us and buffer start
         elif not buff.get_text(buff.get_start_iter(),itera).strip('\n\t ') :
-            print "we are the new title line"
             to_return = True
         return to_return
         
@@ -396,7 +417,10 @@ class TaskView(gtk.TextView):
                         self.refresh_browser()
                     #removing deleted tags
                     if ta.get_data('is_tag') :
-                        self.remove_tag_callback(ta.get_data('tagname'))
+                        tagname = ta.get_data('tagname')
+                        self.remove_tag_callback(tagname)
+                        buff.delete_mark_by_name(tagname)
+                        buff.delete_mark_by_name("/%s"%tagname)
             it.forward_char()
         #We return false so the parent still get the signal
         return False
