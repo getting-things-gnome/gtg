@@ -124,6 +124,8 @@ class TaskEditor :
     #When the editor is starting
     def refresh_browser(self,fromtask=None) :
         if self.__refresh_cb :
+            if not fromtask :
+                fromtask = self.task.get_id()
             self.__refresh_cb(fromtask)
             
     #Can be called at any time to reflect the status of the Task

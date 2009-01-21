@@ -118,12 +118,8 @@ class TaskView(gtk.TextView):
         #The signal emitted each time the buffer is modified
         #Putting it at the end to avoid doing it too much when starting
         self.buff.connect("changed" , self.modified)
-#        self.buff.connect("insert-text",self.inserted)
         self.tobe_refreshed = False
-        
-#    def inserted(self,buff,itera, string,length, data=None) :
-#        if "\n" in string :
-#            tobe_refreshed = True
+
     
     #This function is called to refresh the editor 
     #Specially when we change the title
@@ -266,10 +262,8 @@ class TaskView(gtk.TextView):
           1. Applying the title style on the first line
           2. Changing the name of the window if title change
         """
-        if not buff : buff = self.buff
-#        if not full :
-#            full = self.tobe_refreshed
-        
+        tags_before = self.get_tagslist()
+        if not buff : buff = self.buff   
         cursor_mark = buff.get_insert()
         cursor_iter = buff.get_iter_at_mark(cursor_mark)
         
@@ -304,9 +298,10 @@ class TaskView(gtk.TextView):
                 self.apply_tag_tag(buff,t,start_mark,end_mark)
         
         #Ok, we took care of the modification
-#        if full :
-#            self.tobe_refreshed = False
         self.buff.set_modified(False)
+        #If tags have been modified, we update the browser
+        if tags_before != self.get_tagslist() :
+            self.refresh_browser()
 
     #Detect tags in buff in the regio between start iter and end iter
     def _detect_tag(self,buff,start,end) :
@@ -419,8 +414,11 @@ class TaskView(gtk.TextView):
                     if ta.get_data('is_tag') :
                         tagname = ta.get_data('tagname')
                         self.remove_tag_callback(tagname)
-                        buff.delete_mark_by_name(tagname)
-                        buff.delete_mark_by_name("/%s"%tagname)
+                        if buff.get_mark(tagname) :
+                            buff.delete_mark_by_name(tagname)
+                        if buff.get_mark("/%s"%tagname) :
+                            buff.delete_mark_by_name("/%s"%tagname)
+                        self.refresh_browser()
             it.forward_char()
         #We return false so the parent still get the signal
         return False
