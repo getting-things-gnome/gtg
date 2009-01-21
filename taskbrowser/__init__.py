@@ -28,7 +28,7 @@
 #widget in the TaskEditor is dummy and is replaced at runtime by a TaskView.
 
 class GnomeConfig :
-    GLADE_FILE = "gnome_frontend/gtd-gnome.glade"
+    GLADE_FILE = "taskbrowser/gtd-gnome.glade"
     
     MARK_DONE = "Mark as done"
     MARK_UNDONE = "Undone"
