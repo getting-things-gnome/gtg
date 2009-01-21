@@ -248,6 +248,132 @@ class TaskView(gtk.TextView):
         
 ### PRIVATE FUNCTIONS ##########################################################
 
+    #Detect tags in buff in the regio between start iter and end iter
+    def _detect_tag(self,buff,start,end) :
+        # Detect tags
+        #-------------
+        
+        tag_list = []
+        #Removing all texttag related to GTG tags
+        table = self.buff.get_tag_table()
+        def remove_tag_tag(texttag,data) : #pylint: disable-msg=W0613
+            if texttag.get_data("is_tag") :
+                table.remove(texttag)
+        table.foreach(remove_tag_tag)
+
+        # Set iterators for word
+        word_start = start.copy()
+        word_end   = start.copy()
+
+        # Set iterators for char
+        char_start = start.copy()
+        char_end   = start.copy()
+        char_end.forward_char()
+        
+        # Iterate over characters of the line to get words
+        while char_end.compare(end) <= 0:
+            do_word_check = False
+            my_char       = self.buff.get_text(char_start, char_end)
+            if my_char not in separators :
+                word_end = char_end.copy()
+            else:
+                do_word_check = True
+                
+            if char_end.compare(end) == 0:
+                do_word_check = True
+            
+            # We have a new word
+            if do_word_check:
+                if (word_end.compare(word_start) > 0):
+                    my_word = self.buff.get_text(word_start, word_end)
+                
+                    # We do something about it
+                    if len(my_word) > 0 and my_word[0] == '@':
+                        self.apply_tag_tag(self.buff,my_word,word_start,word_end)
+                        #adding tag to a local list
+                        tag_list.append(my_word[1:])
+                        #adding tag to the model
+                        self.add_tag_callback(my_word[1:])
+    
+                # We set new word boundaries
+                word_start = char_end.copy()
+                word_end   = char_end.copy()
+
+            # Stop loop if we are at the end
+            if char_end.compare(end) == 0: 
+                break
+            
+            # We search the next word
+            char_start = char_end.copy()
+            char_end.forward_char()
+        
+        # Update tags in model : 
+        # we remove tags that are not in the description anymore
+        for t in self.get_tagslist() :
+            if not t in tag_list :
+                self.remove_tag_callback(t)
+        
+        # Remove all tags from the task
+        # Loop over each line
+        
+        
+        # Loop over each word of the line
+        # Check if the word starts by '@'
+            # Apply tag on the word
+            # Add tag to list
+    
+    #This function is called so frequently that we should optimize it more.    
+    def _modified(self,buff=None) : #pylint: disable-msg=W0613
+        """
+        This function is called when the buffer has been modified,
+        it reflects the changes by:
+          1. Applying the title style on the first line
+          2. Changing the name of the window if title change
+        """
+        
+        #cursor_pos = buff.get_property("cursor-position")
+        cursor_mark = buff.get_insert()
+        cursor_iter = buff.get_iter_at_mark(cursor_mark)
+        cursor_line = cursor_iter.get_line()
+        
+        #This should be called only if we are on the title line
+        #As an optimisation
+        title_end = self._apply_title(buff)
+
+        
+        start     = self.buff.get_start_iter()
+        end       = self.buff.get_end_iter()
+        line_nbr  = 1
+        linecount = self.buff.get_line_count()
+        # Set iterators for body
+        body_start = title_end.copy()
+        body_end   = end.copy()
+        
+        self._detect_tag(buff,body_start,body_end)
+        
+        #Ok, we took care of the modification
+        self.buff.set_modified(False)
+        
+    #When the user remove a selection, we remove subtasks and @tags
+    #from this selection
+    def _delete_range(self,buff,start,end) : #pylint: disable-msg=W0613
+        it = start.copy()
+        while (it.get_offset() <= end.get_offset()) and (it.get_char() != '\0'):
+            if it.begins_tag() :
+                tags = it.get_tags()
+                for ta in tags :
+                    #removing deleted subtasks
+                    if ta.get_data('is_subtask') :
+                        target = ta.get_data('child')
+                        self.remove_subtask(target)
+                        self.refresh_browser()
+                    #removing deleted tags
+                    if ta.get_data('is_tag') :
+                        self.remove_tag_callback(ta.get_data('tagname'))
+            it.forward_char()
+        #We return false so the parent still get the signal
+        return False
+        
     #Apply the title and return an iterator after that title.
     def _apply_title(self,buff) :
         start     = buff.get_start_iter()
@@ -281,127 +407,6 @@ class TaskView(gtk.TextView):
         self.refresh(buff.get_text(title_start,title_end).strip('\n\t'))
         return title_end
     
-    #This function is called so frequently that we should optimize it more.    
-    def _modified(self,buff=None) : #pylint: disable-msg=W0613
-        """
-        This function is called when the buffer has been modified,
-        it reflects the changes by:
-          1. Applying the title style on the first line
-          2. Changing the name of the window if title change
-        """
-        
-        #cursor_pos = buff.get_property("cursor-position")
-        cursor_mark = buff.get_insert()
-        cursor_iter = buff.get_iter_at_mark(cursor_mark)
-        cursor_line = cursor_iter.get_line()
-        
-        
-        title_end = self._apply_title(buff)
-
-        
-        start     = self.buff.get_start_iter()
-        end       = self.buff.get_end_iter()
-        line_nbr  = 1
-        linecount = self.buff.get_line_count()
-        
-        
-        
-        # Set iterators for body
-        body_start = title_end.copy()
-        body_end   = end.copy()
-        
-        # Detect tags
-        #-------------
-        
-        tag_list = []
-        #Removing all texttag related to GTG tags
-        table = self.buff.get_tag_table()
-        def remove_tag_tag(texttag,data) : #pylint: disable-msg=W0613
-            if texttag.get_data("is_tag") :
-                table.remove(texttag)
-        table.foreach(remove_tag_tag)
-
-        # Set iterators for word
-        word_start = body_start.copy()
-        word_end   = body_start.copy()
-
-        # Set iterators for char
-        char_start = body_start.copy()
-        char_end   = body_start.copy()
-        char_end.forward_char()
-        
-        # Iterate over characters of the line to get words
-        while char_end.compare(body_end) <= 0:
-            do_word_check = False
-            my_char       = self.buff.get_text(char_start, char_end)
-            if my_char not in separators :
-                word_end = char_end.copy()
-            else:
-                do_word_check = True
-                
-            if char_end.compare(body_end) == 0:
-                do_word_check = True
-            
-            # We have a new word
-            if do_word_check:
-                if (word_end.compare(word_start) > 0):
-                    my_word = self.buff.get_text(word_start, word_end)
-                
-                    # We do something about it
-                    if len(my_word) > 0 and my_word[0] == '@':
-                        self.apply_tag_tag(self.buff,my_word,word_start,word_end)
-                        #adding tag to a local list
-                        tag_list.append(my_word[1:])
-                        #adding tag to the model
-                        self.add_tag_callback(my_word[1:])
-    
-                # We set new word boundaries
-                word_start = char_end.copy()
-                word_end   = char_end.copy()
-
-            # Stop loop if we are at the end
-            if char_end.compare(body_end) == 0: 
-                break
-            
-            # We search the next word
-            char_start = char_end.copy()
-            char_end.forward_char()
-        
-        # Update tags in model : 
-        # we remove tags that are not in the description anymore
-        for t in self.get_tagslist() :
-            if not t in tag_list :
-                self.remove_tag_callback(t)
-        
-        # Remove all tags from the task
-        # Loop over each line
-        
-        
-        # Loop over each word of the line
-        # Check if the word starts by '@'
-            # Apply tag on the word
-            # Add tag to list
-        
-        #Ok, we took care of the modification
-        self.buff.set_modified(False)
-        
-    def _delete_range(self,buff,start,end) : #pylint: disable-msg=W0613
-        it = start.copy()
-        while (it.get_offset() <= end.get_offset()) and (it.get_char() != '\0'):
-            if it.begins_tag() :
-                tags = it.get_tags()
-                for ta in tags :
-                    #removing deleted subtasks
-                    if ta.get_data('is_subtask') :
-                        target = ta.get_data('child')
-                        self.remove_subtask(target)
-                        self.refresh_browser()
-                    #removing deleted tags
-                    if ta.get_data('is_tag') :
-                        self.remove_tag_callback(ta.get_data('tagname'))
-            it.forward_char()
-        #We return false so the parent still get the signal
-        return False
             
         
     def __newsubtask(self,buff,title,line_nbr) :

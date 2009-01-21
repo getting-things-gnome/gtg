@@ -125,7 +125,7 @@ pour voir
 			&lt;tag&gt;@donetask&lt;/tag&gt;
 		</content>
 	</task>
-	<task id="12@1" status="Active" tags="new_tag">
+	<task id="12@1" status="Active" tags="new_tag,vampire">
 		<title>
 			Lorem Ipsum
 		</title>
@@ -133,7 +133,7 @@ pour voir
 			14@1
 		</subtask>
 		<content>
-			&lt;tag&gt;@new_tag&lt;/tag&gt;, 
+			&lt;tag&gt;@new_tag&lt;/tag&gt;, &lt;tag&gt;@vampire&lt;/tag&gt;, 
 &lt;subtask&gt;14@1&lt;/subtask&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce euismod massa id ipsum. Praesent at nunc id nulla scelerisque fringilla. Nullam congue, elit non placerat hendrerit, enim lacus laoreet ipsum, at ornare odio augue in lectus. Praesent hendrerit lacus ut dolor. Suspendisse mi augue, tincidunt sit amet, tincidunt nec, convallis gravida, ligula. Ut quis nisi eu sem placerat vulputate. Fusce sem lectus, luctus et, facilisis sagittis, laoreet et, arcu. Integer posuere convallis erat. Integer pharetra. Pellentesque nec sem. Curabitur ornare lectus nec augue feugiat interdum. Nulla vehicula, ante molestie sagittis venenatis, nulla elit imperdiet massa, id pulvinar lacus diam a diam. Morbi dui nulla, convallis vitae, pharetra eu, aliquet in, ligula. Vestibulum accumsan tellus a erat. Donec arcu mauris, commodo non, tincidunt at, semper eu, tortor. Duis congue justo ultrices lorem fringilla consequat.
 
 Nulla facilisi. Morbi eu odio. Quisque convallis felis. Nulla sit amet justo. Nunc elementum. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Vivamus porta tellus scelerisque enim. Vestibulum sagittis nibh id pede. Donec eu nunc non nunc cursus pulvinar. Praesent pede mauris, feugiat quis, scelerisque id, condimentum et, elit. Nulla facilisi. Ut nunc. Phasellus placerat ornare ante. Integer posuere elit eu nisi. Sed ac lacus. Suspendisse eleifend.
