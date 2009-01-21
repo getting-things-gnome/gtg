@@ -31,7 +31,6 @@
 #our own imports
 from taskbrowser.browser import TaskBrowser
 from gtg_core.datastore   import DataStore
-from backends.localfile import Backend
 from gtg_core   import CoreConfig
 
 #=== OBJECTS ===================================================================
@@ -42,22 +41,20 @@ class Gtg:
  
     def main(self):
         config = CoreConfig()
-        #bl = config.get_backends_list()
+        bl = config.get_backends_list()
         #TODO : list available backends
         #TODO : get backend list
         #Currently we will use bl to build a fake backend list of dic
-        bl = ['4af9e35b-8854-477e-b1f1-d95553664b5f.xml', \
-                            'f8c7d20e-a627-49da-bf66-82f1fff293a6.xml']
         backend_list = []
         for i in bl :
             dic = {}
             dic["filename"] = i
             dic["module"] = "localfile"
             backend_list.append(dic)
+        #End of the fake list
         
         # Load data store
         ds = DataStore()
-        backends = []
         
         #Now we import all the backends
         for b in backend_list :
@@ -68,15 +65,8 @@ class Gtg:
             classobj = getattr(module, "localfile")
             
             back = classobj.Backend(b,ds)
-            backends.append(back)
-        
-#        # Create & init backends
-#        backends = []
-#        for b in bl:
-#            backends.append(Backend(b,ds))
-
-        for b in backends:
-            ds.register_backend(b)
+            ds.register_backend(back)
+            
         ds.load_data()
 
         # Launch task browser
