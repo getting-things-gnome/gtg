@@ -117,7 +117,13 @@ class TaskView(gtk.TextView):
         
         #The signal emitted each time the buffer is modified
         #Putting it at the end to avoid doing it too much when starting
-        self.buff.connect("changed" , self._modified)
+        self.buff.connect("changed" , self.modified)
+#        self.buff.connect("insert-text",self.inserted)
+        self.tobe_refreshed = False
+        
+#    def inserted(self,buff,itera, string,length, data=None) :
+#        if "\n" in string :
+#            tobe_refreshed = True
     
     #This function is called to refresh the editor 
     #Specially when we change the title
@@ -248,6 +254,47 @@ class TaskView(gtk.TextView):
         
 ### PRIVATE FUNCTIONS ##########################################################
 
+        
+    #This function is called so frequently that we should optimize it more.    
+    def modified(self,buff=None,full=False) : #pylint: disable-msg=W0613
+        """
+        This function is called when the buffer has been modified,
+        it reflects the changes by:
+          1. Applying the title style on the first line
+          2. Changing the name of the window if title change
+        """
+        if not buff : buff = self.buff
+#        if not full :
+#            full = self.tobe_refreshed
+        
+        cursor_mark = buff.get_insert()
+        cursor_iter = buff.get_iter_at_mark(cursor_mark)
+        
+        #This should be called only if we are on the title line
+        #As an optimisation
+        #But we should still get the title_end iter
+        if full or self.is_at_title(buff,cursor_iter) :
+            #The apply title is very expensive because
+            #It involves refreshing the whole task tree
+            title_end = self._apply_title(buff)
+
+        if full :
+            local_start = title_end.copy()
+            local_end = buff.get_end_iter()
+        else :
+            #We analyse only the current line
+            local_start = cursor_iter.copy()
+            local_start.backward_line()
+            local_end = cursor_iter.copy()
+            local_end.forward_line()
+        #if full=False we detect tag only on the current line
+        self._detect_tag(buff,local_start,local_end)
+        
+        #Ok, we took care of the modification
+#        if full :
+#            self.tobe_refreshed = False
+        self.buff.set_modified(False)
+
     #Detect tags in buff in the regio between start iter and end iter
     def _detect_tag(self,buff,start,end) :
         # Removing already existing tag in the current selection
@@ -333,39 +380,6 @@ class TaskView(gtk.TextView):
             print "we are the new title line"
             to_return = True
         return to_return
-        
-    
-    #This function is called so frequently that we should optimize it more.    
-    def _modified(self,buff=None) : #pylint: disable-msg=W0613
-        """
-        This function is called when the buffer has been modified,
-        it reflects the changes by:
-          1. Applying the title style on the first line
-          2. Changing the name of the window if title change
-        """
-        if not buff : buff = self.buff
-        
-        #cursor_pos = buff.get_property("cursor-position")
-        cursor_mark = buff.get_insert()
-        cursor_iter = buff.get_iter_at_mark(cursor_mark)
-        cursor_line = cursor_iter.get_line()
-        
-        #This should be called only if we are on the title line
-        #As an optimisation
-        #But we should still get the title_end iter
-        if self.is_at_title(buff,cursor_iter) :
-            title_end = self._apply_title(buff)
-
-        #We analyse only the current line
-        local_start = cursor_iter.copy()
-        local_start.backward_line()
-        local_end = cursor_iter.copy()
-        local_end.forward_line()
-        #FIXME : we should detect tag only on the current line
-        self._detect_tag(buff,local_start,local_end)
-        
-        #Ok, we took care of the modification
-        self.buff.set_modified(False)
         
     #When the user remove a selection, we remove subtasks and @tags
     #from this selection

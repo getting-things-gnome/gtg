@@ -85,8 +85,10 @@ pour voir
 	<task id="9@1" status="Active" tags="">
 		<title>
 			No tag task
-no tag but I'm editing
 		</title>
+		<content>
+			no tag but I'm editing
+		</content>
 	</task>
 	<task id="6@1" status="Active" tags="tag">
 		<title>
@@ -108,6 +110,10 @@ no tag but I'm editing
 		<title>
 			child with tag
 		</title>
+		<content>
+			
+@tag, 
+		</content>
 	</task>
 	<task id="3@1" status="Done" tags="donetask">
 		<title>
@@ -120,7 +126,7 @@ no tag but I'm editing
 			&lt;tag&gt;@donetask&lt;/tag&gt;
 		</content>
 	</task>
-	<task id="12@1" status="Active" tags="ici">
+	<task id="12@1" status="Active" tags="new_tag,vampire">
 		<title>
 			Lorem Ipsum
 		</title>
@@ -128,11 +134,10 @@ no tag but I'm editing
 			14@1
 		</subtask>
 		<content>
-			@new_tag, 
+			&lt;tag&gt;@new_tag&lt;/tag&gt;, &lt;tag&gt;@vampire&lt;/tag&gt;, 
 &lt;subtask&gt;14@1&lt;/subtask&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce euismod massa id ipsum. Praesent at nunc id nulla scelerisque fringilla. Nullam congue, elit non placerat hendrerit, enim lacus laoreet ipsum, at ornare odio augue in lectus. Praesent hendrerit lacus ut dolor. Suspendisse mi augue, tincidunt sit amet, tincidunt nec, convallis gravida, ligula. Ut quis nisi eu sem placerat vulputate. Fusce sem lectus, luctus et, facilisis sagittis, laoreet et, arcu. Integer posuere convallis erat. Integer pharetra. Pellentesque nec sem. Curabitur ornare lectus nec augue feugiat interdum. Nulla vehicula, ante molestie sagittis venenatis, nulla elit imperdiet massa, id pulvinar lacus diam a diam. Morbi dui nulla, convallis vitae, pharetra eu, aliquet in, ligula. Vestibulum accumsan tellus a erat. Donec arcu mauris, commodo non, tincidunt at, semper eu, tortor. Duis congue justo ultrices lorem fringilla consequat.
 
-Nulla facilisi. Morbi eu odi
-je vais tenter de placer un tag &lt;tag&gt;@ici&lt;/tag&gt; o. Quisque convallis felis. Nulla sit amet justo. Nunc elementum. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Vivamus porta tellus scelerisque enim. Vestibulum sagittis nibh id pede. Donec eu nunc non nunc cursus pulvinar. Praesent pede mauris, feugiat quis, scelerisque id, condimentum et, elit. Nulla facilisi. Ut nunc. Phasellus placerat ornare ante. Integer posuere elit eu nisi. Sed ac lacus. Suspendisse eleifend.
+Nulla facilisi. Morbi eu odio. Quisque convallis felis. Nulla sit amet justo. Nunc elementum. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Vivamus porta tellus scelerisque enim. Vestibulum sagittis nibh id pede. Donec eu nunc non nunc cursus pulvinar. Praesent pede mauris, feugiat quis, scelerisque id, condimentum et, elit. Nulla facilisi. Ut nunc. Phasellus placerat ornare ante. Integer posuere elit eu nisi. Sed ac lacus. Suspendisse eleifend.
 
 Duis nec felis. Suspendisse massa. In ac purus nec mi ullamcorper molestie. Vestibulum diam nunc, lobortis at, tincidunt et, consectetur non, leo. Donec mauris. Aliquam sodales elementum lectus. Cras sit amet tortor non lacus gravida bibendum. Mauris vel elit quis sem interdum dignissim. Aliquam dui urna, rutrum vitae, aliquam ut, tincidunt in, orci. Phasellus velit nunc, vehicula vitae, faucibus non, fermentum ut, est. Curabitur imperdiet arcu sit amet felis. Ut eu nulla et enim tristique elementum. Nullam sodales. Etiam tristique dapibus metus. Vivamus quis diam vel odio tincidunt consequat. Quisque eu mi. Nam dictum volutpat mauris. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Aliquam eleifend, leo et congue pellentesque, nisl sem volutpat odio, ut hendrerit tortor neque non nisi. Cras fringilla faucibus turpis.
 
