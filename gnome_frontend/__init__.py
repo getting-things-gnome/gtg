@@ -3,10 +3,6 @@
 
 #Files are :
 
-#project_ui.py
-#-------------
-#This is the interface to create or edit a project.
-
 #Taskbrowser.py
 #--------------
 #This is the main interface with the list of tasks

@@ -8,7 +8,7 @@
 #The rest are the logic of the widget : date changing widgets, buttons, ...
 import sys
 
-from gnome_frontend.taskview import TaskView
+from taskeditor.taskview import TaskView
 from gnome_frontend import GnomeConfig
 from tools import dates
 try:
@@ -28,7 +28,7 @@ class TaskEditor :
     def __init__(self, requester, task, refresh_callback=None,delete_callback=None,
                 close_callback=None,opentask_callback=None, tasktitle_callback=None) :
         self.req = requester
-        self.gladefile = GnomeConfig.GLADE_FILE
+        self.gladefile = "taskeditor.glade"
         self.wTree = gtk.glade.XML(self.gladefile, "TaskEditor")
         self.cal_tree = gtk.glade.XML(self.gladefile, "calendar")
         self.donebutton = self.wTree.get_widget("mark_as_done_editor")

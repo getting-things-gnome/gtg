@@ -18,7 +18,7 @@ import gtk
 import gobject
 import pango
 
-from gnome_frontend import taskviewserial
+from taskeditor import taskviewserial
 
 separators = [' ','.',',','/','\n','\t','!','?',';']
 
