@@ -106,12 +106,15 @@ pour voir
 			&lt;tag&gt;@new_tag&lt;/tag&gt;, 
 		</content>
 	</task>
-	<task id="16@1" status="Active" tags="tag">
+	<task id="16@1" status="Active" tags="tag,a,az,aze">
 		<title>
 			child with tag
 		</title>
 		<content>
 			&lt;tag&gt;@tag&lt;/tag&gt;, 
+
+&lt;tag&gt;@aze&lt;/tag&gt;
+&lt;tag&gt;@a&lt;/tag&gt;, &lt;tag&gt;@az&lt;/tag&gt;, 
 		</content>
 	</task>
 	<task id="3@1" status="Done" tags="donetask">

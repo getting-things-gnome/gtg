@@ -250,16 +250,30 @@ class TaskView(gtk.TextView):
 
     #Detect tags in buff in the regio between start iter and end iter
     def _detect_tag(self,buff,start,end) :
-        # Detect tags
-        #-------------
+        # Removing already existing tag in the current selection
+        # out of the tag table
+        it = start.copy()
+        table = buff.get_tag_table()
+        old_tags = []
+        new_tags = []
+        while (it.get_offset() <= end.get_offset()) and (it.get_char() != '\0'):
+            if it.begins_tag() :
+                tags = it.get_tags()
+                for ta in tags :
+                    #removing deleted tags
+                    if ta.get_data('is_tag') :
+                        print "removing tag %s" %ta.get_data('tagname')
+                        table.remove(ta)
+                        old_tags.append(ta.get_data('tagname'))
+            it.forward_char()
         
-        tag_list = []
-        #Removing all texttag related to GTG tags
-        table = self.buff.get_tag_table()
-        def remove_tag_tag(texttag,data) : #pylint: disable-msg=W0613
-            if texttag.get_data("is_tag") :
-                table.remove(texttag)
-        table.foreach(remove_tag_tag)
+#        tag_list = []
+#        #Removing all texttag related to @tags in the current selection
+#        table = self.buff.get_tag_table()
+#        def remove_tag_tag(texttag,data) : #pylint: disable-msg=W0613
+#            if texttag.get_data("is_tag") :
+#                table.remove(texttag)
+#        table.foreach(remove_tag_tag)
 
         # Set iterators for word
         word_start = start.copy()
@@ -291,7 +305,9 @@ class TaskView(gtk.TextView):
                     if len(my_word) > 0 and my_word[0] == '@':
                         self.apply_tag_tag(self.buff,my_word,word_start,word_end)
                         #adding tag to a local list
-                        tag_list.append(my_word[1:])
+                        print "New tag %s" %my_word
+                        new_tags.append(my_word[1:])
+                        #TODO : Keeping the @ is better 
                         #adding tag to the model
                         self.add_tag_callback(my_word[1:])
     
@@ -309,8 +325,9 @@ class TaskView(gtk.TextView):
         
         # Update tags in model : 
         # we remove tags that are not in the description anymore
-        for t in self.get_tagslist() :
-            if not t in tag_list :
+        for t in old_tags :
+            if not t in new_tags :
+                print "definitely remove of %s" %t
                 self.remove_tag_callback(t)
         
         # Remove all tags from the task
@@ -338,18 +355,13 @@ class TaskView(gtk.TextView):
         
         #This should be called only if we are on the title line
         #As an optimisation
+        #But we should still get the title_end iter
         title_end = self._apply_title(buff)
 
-        
-        start     = self.buff.get_start_iter()
         end       = self.buff.get_end_iter()
-        line_nbr  = 1
-        linecount = self.buff.get_line_count()
-        # Set iterators for body
         body_start = title_end.copy()
-        body_end   = end.copy()
         
-        self._detect_tag(buff,body_start,body_end)
+        self._detect_tag(buff,body_start,end)
         
         #Ok, we took care of the modification
         self.buff.set_modified(False)
@@ -422,17 +434,17 @@ class TaskView(gtk.TextView):
         end     = buff.create_mark("end",end_i,False)
         buff.delete(start_i,end_i)
         bullet ='  ↪ '
-        self.__insert_at_mark(buff,start,bullet)
+        self.insert_at_mark(buff,start,bullet)
         self.__apply_tag_to_mark(start,end,name="bullet")
         newline = self.get_subtasktitle(anchor)
-        self.__insert_at_mark(buff,end,newline,anchor=anchor)
+        self.insert_at_mark(buff,end,newline,anchor=anchor)
         #The invisible "subtask" tag
         #It must be the last tag set as it's around everything else
         tag = buff.create_tag(None)
         tag.set_data('is_subtask', True)
         tag.set_data('child',anchor)
         self.__apply_tag_to_mark(start,end,tag=tag)
-        self.__insert_at_mark(buff,end,"\n")
+        self.insert_at_mark(buff,end,"\n")
         buff.delete_mark(start)
         buff.delete_mark(end)
         
@@ -444,7 +456,7 @@ class TaskView(gtk.TextView):
         elif name :
             self.buff.apply_tag_by_name(name,start_i,end_i)
     
-    def __insert_at_mark(self,buff,mark,text,anchor=None) :
+    def insert_at_mark(self,buff,mark,text,anchor=None) :
         ite = buff.get_iter_at_mark(mark)
         if anchor :
             self.insert_with_anchor(text,anchor,_iter=ite,typ="subtask")
