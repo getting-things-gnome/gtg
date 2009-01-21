@@ -10,7 +10,8 @@ from tools import cleanxml, taskxml
 #If a project is provided as parameter, it means that we are creating
 #a new backend for this new project. It generally means that zefile will be "None"
 class Backend :
-    def __init__(self,zefile,datastore,default_folder=True,project=None) :
+    def __init__(self,parameters,datastore,default_folder=True,project=None) :
+        zefile = parameters["filename"]
         #If zefile is None, we create a new file
         if not zefile :
             zefile = "%s.xml" %(uuid.uuid4())
