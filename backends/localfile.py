@@ -107,6 +107,8 @@ class Backend :
         cleanxml.savexml(self.zefile,self.doc)
         #We will now backup the file
         backup_nbr = BACKUP_NBR
+        #We keep BACKUP_NBR versions of the file
+        #The 0 is the youngest one
         while backup_nbr > 0 :
             older = "%s.bak.%s" %(self.zefile,backup_nbr)
             backup_nbr -= 1
