@@ -69,10 +69,8 @@ class Gtg:
             back = classobj.Backend(b)
             ds.register_backend(back,b)
             
-#        ds.load_data()
-        req = ds.get_requester()
-
         # Launch task browser
+        req = ds.get_requester()
         tb = TaskBrowser(req)
         tb.main()
 

@@ -15,8 +15,6 @@ class DataStore:
     def __init__ (self):
         self.backends = {}
         self.tasks = {}
-        #self.projects = {}
-        #self.cur_pid  = 1
         self.tagstore = tagstore.TagStore()
         self.requester = requester.Requester(self)
         
@@ -70,12 +68,6 @@ class DataStore:
     def get_requester(self) :
         return self.requester
 
-#    def load_data(self):
-#        #FIXME
-#        print "datastore : load_data"
-#        for b in self.backends:
-#            b.get_project()
-
     def register_backend(self, backend,dic):
         pid = dic["pid"]
         source = TaskSource(backend,dic)
@@ -112,7 +104,8 @@ class TaskSource() :
         return self.backend.get_task(empty_task,tid)
 
     def set_task(self,task) :
-        return self.backend.set_task(task)
+        print "sync task %s" %task.get_id()
+        #return self.backend.set_task(task)
     
     def remove_task(self,tid) :
         return self.backend.remove_task(tid)
@@ -127,7 +120,6 @@ class TaskSource() :
 ###############################################
 
 #Those functions are only for TaskSource
-
     def get_parameters(self) :
         return self.dic
 
