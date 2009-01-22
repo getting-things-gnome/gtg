@@ -1,12 +1,15 @@
 <?xml version="1.0" ?>
 <project name="aze">
-	<task id="0@1" status="Active" tags="">
+	<task id="0@1" status="Active" tags="tag">
 		<title>
 			Parent task tag
 		</title>
 		<duedate>
 			2009-01-23
 		</duedate>
+		<startdate>
+			2009-01-08
+		</startdate>
 		<subtask>
 			1@1
 		</subtask>
@@ -30,9 +33,6 @@
 		<title>
 			enfant2
 		</title>
-		<duedate>
-			2009-01-23
-		</duedate>
 		<subtask>
 			6@1
 		</subtask>
