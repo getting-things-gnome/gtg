@@ -1,4 +1,4 @@
-from datetime import date,datetime
+from datetime import date
 import xml.dom.minidom
 
 from tools.listes import *
@@ -83,10 +83,10 @@ class Task :
         else :
             zedate = date.max
         for par in self.get_parents() :
+            #Here we compare with the parent's due date
             pardate_str = self.req.get_task(par).get_due_date()
             if pardate_str :
-                #We should use our own strtodate instead !
-                pardate = datetime.strptime(pardate_str,"%Y-%M-%d").date()
+                pardate = strtodate(pardate_str)
                 if pardate and zedate > pardate :
                     zedate = pardate
         if zedate == date.max :

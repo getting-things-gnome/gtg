@@ -1,4 +1,5 @@
 import os
+import time
 
 from gtg_core   import CoreConfig, tagstore, requester
 from gtg_core.task import Task
@@ -101,6 +102,7 @@ class TaskSource() :
         self.backend = backend
         self.dic = parameters
         self.tasks = {}
+        self.time = time.time()
 
 ##### The Backend interface ###############
 ##########################################
@@ -120,8 +122,17 @@ class TaskSource() :
 
     def set_task(self,task) :
         #print "we should sync less %s" %task.get_id()
+        #difference = datetime.today - self.time
         self.tasks[task.get_id()] = task
+        diffe = time.time() - self.time
+        print diffe
         return self.backend.set_task(task)
+#        if diffe > 2 :
+#            print "syncing"
+#            self.time = time.time()    
+#            return self.backend.set_task(task)
+#        else :
+#            return True
     
     def remove_task(self,tid) :
         self.tasks.pop(tid)
