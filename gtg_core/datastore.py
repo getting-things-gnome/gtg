@@ -34,9 +34,11 @@ class DataStore:
         if tid :
             uid,pid = tid.split('@') #pylint: disable-msg=W0612
             back = self.backends[pid]
-            back.get_task(empty_task,tid)
+            task = back.get_task(empty_task,tid)
+        else :
+            task = empty_task
         #If the task doesn't exist, we create it with a forced pid
-        return empty_task
+        return task
         
     def delete_task(self,tid) :
         if tid and self.tasks.has_key(tid) :
@@ -92,6 +94,7 @@ class TaskSource() :
     def __init__(self,backend,parameters) :
         self.backend = backend
         self.dic = parameters
+        self.tasks = {}
 
 ##### The Backend interface ###############
 ##########################################
@@ -101,13 +104,20 @@ class TaskSource() :
         return self.backend.get_tasks_list()
         
     def get_task(self,empty_task,tid) :
-        return self.backend.get_task(empty_task,tid)
+        if self.tasks.has_key(tid) :
+            task = self.tasks[tid]
+        else :
+            task = self.backend.get_task(empty_task,tid)
+            self.tasks[tid] = task
+        return task
 
     def set_task(self,task) :
         print "sync task %s" %task.get_id()
-        #return self.backend.set_task(task)
+        self.tasks[task.get_id()] = task
+        return self.backend.set_task(task)
     
     def remove_task(self,tid) :
+        self.tasks.pop(tid)
         return self.backend.remove_task(tid)
         
     def new_task_id(self) :

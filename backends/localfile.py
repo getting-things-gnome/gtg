@@ -60,7 +60,7 @@ class Backend :
         for node in self.xmlproj.childNodes :
             if node.getAttribute("id") == tid :
                 return taskxml.task_from_xml(task_to_fill,node)
-        return False
+        return task_to_fill
     
     #Save the task in the backend
     def set_task(self,task) :
