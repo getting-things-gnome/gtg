@@ -80,12 +80,6 @@ class TaskView(gtk.TextView):
         #This is a simple stack used by the serialization
         self.__tag_stack = {}
         
-        # Callbacks 
-        self.__refresh_cb = None  # refresh the editor window
-        self.open_task            = None # open another task
-        self.new_subtask_callback = None # create a subtask
-        self.get_subtasktitle     = None
-        
         #Signals
         self.connect('motion-notify-event'   , self._motion)
         self.connect('focus-out-event'       , lambda w, e: self.table.foreach(self.__tag_reset, e.window))
@@ -112,6 +106,11 @@ class TaskView(gtk.TextView):
         self.get_subtasks = None
         self.refresh_browser = None
         self.remove_subtask =None
+        self.__refresh_cb = None  # refresh the editor window
+        self.open_task            = None # open another task
+        self.new_subtask_callback = None # create a subtask
+        self.get_subtasktitle     = None
+        self.save_task = None #This will save the task without refreshing all
         
         #The signal emitted each time the buffer is modified
         #Putting it at the end to avoid doing it too much when starting
@@ -163,6 +162,9 @@ class TaskView(gtk.TextView):
     #This callback refresh the task browser
     def refresh_browser_callback(self,funct) :
         self.refresh_browser = funct
+    
+    def save_task_callback(self,funct) :
+        self.save_task = funct
     
     #Buffer related functions
     #Those functions are higly related and should always be symetrical
@@ -296,6 +298,9 @@ class TaskView(gtk.TextView):
         #If tags have been modified, we update the browser
         if tags_before != self.get_tagslist() :
             self.refresh_browser()
+        #Else we save the task anyway (but without refreshing all)
+        elif self.save_task :
+            self.save_task()
 
     #Detect tags in buff in the regio between start iter and end iter
     def _detect_tag(self,buff,start,end) :

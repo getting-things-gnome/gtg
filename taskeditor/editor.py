@@ -7,6 +7,7 @@
 #The main text widget is a home-made TextView called TaskView (see taskview.py)
 #The rest are the logic of the widget : date changing widgets, buttons, ...
 import sys
+import time
 
 from taskeditor import GnomeConfig
 from tools import dates
@@ -28,6 +29,7 @@ class TaskEditor :
     def __init__(self, requester, task, refresh_callback=None,delete_callback=None,
                 close_callback=None,opentask_callback=None, tasktitle_callback=None) :
         self.req = requester
+        self.time = time.time()
         self.gladefile = GnomeConfig.GLADE_FILE
         self.wTree = gtk.glade.XML(self.gladefile, "TaskEditor")
         self.cal_tree = gtk.glade.XML(self.gladefile, "calendar")
@@ -90,6 +92,7 @@ class TaskEditor :
         self.textview.set_get_tagslist_callback(task.get_tags_name)
         self.textview.set_add_tag_callback(task.add_tag)
         self.textview.set_remove_tag_callback(task.remove_tag)
+        self.textview.save_task_callback(self.light_save)
         self.delete  = delete_callback
         self.closing = close_callback
         texte = self.task.get_text()
@@ -295,7 +298,16 @@ class TaskEditor :
         self.task.set_text(self.textview.get_text()) 
         self.refresh_browser(fromtask=self.task.get_id())
         self.task.sync()
-    
+    #light_save save the task without refreshing every 30seconds
+    #We will reduce the time when the get_text will be in another thread
+    def light_save(self) :
+        diff = time.time() - self.time
+        if diff > 30 :
+            self.task.set_text(self.textview.get_text())
+            self.task.sync()
+            self.time = time.time()
+        
+        
     #This will bring the Task Editor to front    
     def present(self) :
         self.window.present()

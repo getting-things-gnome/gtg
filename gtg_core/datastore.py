@@ -125,14 +125,11 @@ class TaskSource() :
         #difference = datetime.today - self.time
         self.tasks[task.get_id()] = task
         diffe = time.time() - self.time
-        print diffe
-        return self.backend.set_task(task)
-#        if diffe > 2 :
-#            print "syncing"
-#            self.time = time.time()    
-#            return self.backend.set_task(task)
-#        else :
-#            return True
+        if diffe > 2 :
+            self.time = time.time()    
+            return self.backend.set_task(task)
+        else :
+            return True
     
     def remove_task(self,tid) :
         self.tasks.pop(tid)
