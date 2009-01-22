@@ -219,6 +219,12 @@ class TaskView(gtk.TextView):
         texttag.set_data('tagname',tag)
         #This one is for marks
         self.__apply_tag_to_mark(s,e,tag=texttag)
+    
+    #Insert a list of subtasks at the end of the buffer
+    def insert_subtasks(self,st_list) :
+        for tid in st_list :
+            line_nbr = self.buff.get_end_iter().get_line()
+            self.write_subtask(self.buff,line_nbr,tid)
 
         
  ##### The "Get text" group #########
