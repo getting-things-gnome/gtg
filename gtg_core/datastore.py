@@ -2,12 +2,6 @@ import os
 
 from gtg_core   import CoreConfig, tagstore, requester
 from gtg_core.task import Task
-#Here we import the default backend
-#from backends.localfile import Backend
-
-#BACKEND_COLUMN = 0
-#PROJ_COLUMN = 1
-
 #Only the datastore should access to the backend
 
 class DataStore:
@@ -57,7 +51,7 @@ class DataStore:
             task = Task(tid,self.requester,newtask=newtask)
             uid,pid = tid.split('@') #pylint: disable-msg=W0612
             backend = self.backends[pid]
-            task.set_sync_func(backend.set_task)
+            #task.set_sync_func(backend.set_task)
             self.tasks[tid] = task
             return task
         else :
@@ -108,6 +102,7 @@ class TaskSource() :
             task = self.tasks[tid]
         else :
             task = self.backend.get_task(empty_task,tid)
+            task.set_sync_func(self.set_task)
             self.tasks[tid] = task
         return task
 
