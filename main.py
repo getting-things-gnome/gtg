@@ -67,7 +67,7 @@ class Gtg:
             module = __import__(module_name)
             classobj = getattr(module, b["module"])
             back = classobj.Backend(b)
-            ds.register_backend(back,b["pid"])
+            ds.register_backend(back,b)
             
 #        ds.load_data()
         req = ds.get_requester()

@@ -121,57 +121,11 @@ class Requester :
         closed = ["Done","Dismiss","Deleted"]
         return self.get_tasks_list(tags=tags,status=closed,\
                  notag_only=notag_only,started_only=started_only,is_root=is_root)
+       
+       
                  
-        
-    ############## Projects #######################
-    ###############################################
-    
-    #This method will return  a list 3-tuple :
-    #pid : the pid of the project
-    #name : the name of the project
-    #nbr : the number of active tasks in this project
-    def get_projects(self) :
-        print "requester : get_projects to remove"
-#        l = []
-#        projects = self.ds.get_all_projects()
-#        for p_key in projects:
-#            d = {}
-#            p = projects[p_key][PROJ_COLUMN]
-#            d["pid"] = p_key
-#            d["name"] = p.get_name()
-#            d["nbr"] = len(p.active_tasks())
-#            l.append(d)  
-#        return l
-    
-    #MODIFICATION class (the data will be modified)
-    def remove_project(self,pid) :
-        print "requester : remove_project to remove"
-#        self.ds.remove_project(pid)
-        
-    def get_projects_list(self) :
-        print "requester : get_projects_list"
-#        return self.ds.get_all_projects().keys()
-        
-    def get_project_from_pid(self,pid) :
-        print "requester : get_project_from_pid"
-#        projects = self.ds.get_all_projects()
-#        return projects[pid][PROJ_COLUMN]
-        
-    def get_project_from_uid(self,uid) :
-        print "requester : get_project_from_uid"
-#        tid,pid = uid.split('@') #pylint: disable-msg=W0612
-#        project = self.ds.get_all_projects()[pid][PROJ_COLUMN]
-#        return project
-    
-    def get_backend_from_uid(self,uid) :
-        print "requester : get_backend_from_uid"
-#        tid,pid = uid.split('@') #pylint: disable-msg=W0612
-#        backend = self.ds.get_all_projects()[pid][BACKEND_COLUMN]
-#        return backend
-    
     ############### Tags ##########################
     ###############################################    
-    
     
     #MODIFICATION
     def new_tag(self,tagname) :
@@ -201,3 +155,50 @@ class Requester :
         return l
     
     
+                 
+        
+    ############## Projects #######################
+    ###############################################
+    
+#    #This method will return  a list 3-tuple :
+#    #pid : the pid of the project
+#    #name : the name of the project
+#    #nbr : the number of active tasks in this project
+#    def get_projects(self) :
+#        print "requester : get_projects to remove"
+##        l = []
+##        projects = self.ds.get_all_projects()
+##        for p_key in projects:
+##            d = {}
+##            p = projects[p_key][PROJ_COLUMN]
+##            d["pid"] = p_key
+##            d["name"] = p.get_name()
+##            d["nbr"] = len(p.active_tasks())
+##            l.append(d)  
+##        return l
+#    
+#    #MODIFICATION class (the data will be modified)
+#    def remove_project(self,pid) :
+#        print "requester : remove_project to remove"
+##        self.ds.remove_project(pid)
+#        
+#    def get_projects_list(self) :
+#        print "requester : get_projects_list"
+##        return self.ds.get_all_projects().keys()
+#        
+#    def get_project_from_pid(self,pid) :
+#        print "requester : get_project_from_pid"
+##        projects = self.ds.get_all_projects()
+##        return projects[pid][PROJ_COLUMN]
+#        
+#    def get_project_from_uid(self,uid) :
+#        print "requester : get_project_from_uid"
+##        tid,pid = uid.split('@') #pylint: disable-msg=W0612
+##        project = self.ds.get_all_projects()[pid][PROJ_COLUMN]
+##        return project
+#    
+#    def get_backend_from_uid(self,uid) :
+#        print "requester : get_backend_from_uid"
+##        tid,pid = uid.split('@') #pylint: disable-msg=W0612
+##        backend = self.ds.get_all_projects()[pid][BACKEND_COLUMN]
+##        return backend

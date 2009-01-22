@@ -63,12 +63,80 @@ class DataStore:
         else :
             print "new_task with existing tid = bug"
             return self.tasks[tid]
+        
+    def get_tagstore(self) :
+        return self.tagstore
+        
+    def get_requester(self) :
+        return self.requester
+
+#    def load_data(self):
+#        #FIXME
+#        print "datastore : load_data"
+#        for b in self.backends:
+#            b.get_project()
+
+    def register_backend(self, backend,dic):
+        pid = dic["pid"]
+        source = TaskSource(backend,dic)
+        if backend != None:
+            self.backends[pid] = source
+
+    def unregister_backend(self, backend):
+        print "unregister backend not implemented"
+#        if backend != None:
+#            self.backends.remove(backend)
+
+    def get_all_backends(self):
+        l = []
+        for key in self.backends :
+            l.append(self.backends[key])
+        return l
+        
+
+#Task source is an transparent interface between the real backend and datastore
+#Task source has also more functionnalities
+class TaskSource() :
+    def __init__(self,backend,parameters) :
+        self.backend = backend
+        self.dic = parameters
+
+##### The Backend interface ###############
+##########################################
+# All functions here are proxied from the backend itself
+
+    def get_tasks_list(self) :
+        return self.backend.get_tasks_list()
+        
+    def get_task(self,empty_task,tid) :
+        return self.backend.get_task(empty_task,tid)
+
+    def set_task(self,task) :
+        return self.backend.set_task(task)
     
+    def remove_task(self,tid) :
+        return self.backend.remove_task(tid)
+        
+    def new_task_id(self) :
+        return self.backend.new_task_id()
+
+    def quit(self) :
+        return self.backend.quit()
+        
+########## End of Backend interface ###########
+###############################################
+
+#Those functions are only for TaskSource
+
+    def get_parameters(self) :
+        return self.dic
+
+        
     #We create a new project with a given backend
     #If the backend is None, then we use the default one
     #Default backend is localfile and we add a new one.
-    def new_project(self,name,backend=None) :
-        print "datastore : new_project not implemented"
+#    def new_project(self,name,backend=None) :
+#        print "datastore : new_project not implemented"
 #        project = Project(name,self)
 #        if not backend :
 #            # Create backend
@@ -84,42 +152,17 @@ class DataStore:
 #        return project
 
 
-    def remove_project(self, pid):
-        print "datastore : remove_project not implemented"
+#    def remove_project(self, pid):
+#        print "datastore : remove_project not implemented"
 #        b  = self.get_project_with_pid(pid)[0]
 #        self.projects.pop(pid)
 #        self.unregister_backend(b)
 #        fn = b.get_filename()
 #        os.remove(os.path.join(CoreConfig.DATA_DIR,fn))
-        
-    def get_tagstore(self) :
-        return self.tagstore
-        
-    def get_requester(self) :
-        return self.requester
+#    def get_all_projects(self):
+#        print "datastore : get_all_projects not implemented"
+#        #return self.projects
 
-#    def load_data(self):
-#        #FIXME
-#        print "datastore : load_data"
-#        for b in self.backends:
-#            b.get_project()
-
-    def register_backend(self, backend,pid):
-        if backend != None:
-            self.backends[pid] = backend
-
-    def unregister_backend(self, backend):
-        print "unregister backend not implemented"
-#        if backend != None:
-#            self.backends.remove(backend)
-
-    def get_all_projects(self):
-        print "datastore : get_all_projects not implemented"
-        #return self.projects
-
-    def get_project_with_pid(self, pid):
-        print "datastore : get_project_with_pid not implemented"
-        #return self.projects[pid]
-
-    def get_all_backends(self):
-        return self.backends
+#    def get_project_with_pid(self, pid):
+#        print "datastore : get_project_with_pid not implemented"
+#        #return self.projects[pid]
