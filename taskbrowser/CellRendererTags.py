@@ -5,7 +5,6 @@ import pygtk
 pygtk.require('2.0')
 import gobject
 import gtk
-import math
 import cairo
 
 #=== MAIN CLASS ================================================================

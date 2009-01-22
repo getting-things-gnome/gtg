@@ -1,7 +1,6 @@
-import os
 import time
 
-from gtg_core   import CoreConfig, tagstore, requester
+from gtg_core   import tagstore, requester
 from gtg_core.task import Task
 
 

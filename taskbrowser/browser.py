@@ -4,7 +4,6 @@ import pygtk
 pygtk.require('2.0')
 import gobject
 import gtk.glade
-import pango
 
 #our own imports
 from taskeditor.editor       import TaskEditor
@@ -357,9 +356,9 @@ class TaskBrowser:
                 color_dict["green"] = color_dict["green"] + my_color.green
                 color_dict["blue"]  = color_dict["blue"]  + my_color.blue
         if color_count!=0:
-            red        = color_dict["red"]   / color_count
-            green      = color_dict["green"] / color_count
-            blue       = color_dict["blue"]  / color_count
+            red        = int(color_dict["red"]   / color_count)
+            green      = int(color_dict["green"] / color_count)
+            blue       = int(color_dict["blue"]  / color_count)
             brightness = (red+green+blue) / 3.0
             while brightness<55000:
                 red        = int( (red   + 65535) / 2)
