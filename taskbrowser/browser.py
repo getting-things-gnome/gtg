@@ -518,7 +518,7 @@ class TaskBrowser:
         if path in self.drag_sources and self.tid_tomove :
             self.drag_sources.remove(path)
             # "row %s moved from %s to %s"%(self.tid_tomove,\
-            #              self.tid_source_parent,self.tid_target_parent)
+            #             self.tid_source_parent,self.tid_target_parent)
             tomove = self.req.get_task(self.tid_tomove)
             tomove.remove_parent(self.tid_source_parent)
             tomove.add_parent(self.tid_target_parent)

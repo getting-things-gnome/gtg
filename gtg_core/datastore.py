@@ -120,15 +120,15 @@ class TaskSource() :
         return task
 
     def set_task(self,task) :
-        #print "we should sync less %s" %task.get_id()
-        #difference = datetime.today - self.time
-        self.tasks[task.get_id()] = task
-        diffe = time.time() - self.time
-        if diffe > 2 :
-            self.time = time.time()    
-            return self.backend.set_task(task)
-        else :
-            return True
+        #This is foireux : imagine qu'on skipe un save et puis on quitte
+#        self.tasks[task.get_id()] = task
+#        diffe = time.time() - self.time
+#        if diffe > 2 :
+#            self.time = time.time()    
+#            return self.backend.set_task(task)
+#        else :
+#            return True
+        return self.backend.set_task(task)
     
     def remove_task(self,tid) :
         self.tasks.pop(tid)
