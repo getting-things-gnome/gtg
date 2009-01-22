@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <project name="aze">
-	<task id="0@1" status="Active" tags="tag">
+	<task id="0@1" status="Active" tags="@tag">
 		<title>
 			Parent task tag
 		</title>
@@ -18,21 +18,28 @@
 &lt;subtask&gt;1@1&lt;/subtask&gt;zdq dsfhe ee hh e zek
 		</content>
 	</task>
-	<task id="8@1" status="Active" tags="tag">
+	<task id="8@1" status="Active" tags="@tag">
 		<title>
 			4ème level
 		</title>
+		<duedate>
+			2009-01-23
+		</duedate>
 		<startdate>
 			2009-01-18
 		</startdate>
 		<content>
 			&lt;tag&gt;@tag&lt;/tag&gt;
+tag, 
 		</content>
 	</task>
-	<task id="1@1" status="Active" tags="tag,autro">
+	<task id="1@1" status="Active" tags="@tag,@autro">
 		<title>
 			enfant2
 		</title>
+		<duedate>
+			2009-01-23
+		</duedate>
 		<subtask>
 			6@1
 		</subtask>
@@ -42,9 +49,10 @@
 		<content>
 			&lt;tag&gt;@tag&lt;/tag&gt;, &lt;tag&gt;@autro&lt;/tag&gt;
 &lt;subtask&gt;6@1&lt;/subtask&gt;&lt;subtask&gt;7@1&lt;/subtask&gt;
+tag, autro, 
 		</content>
 	</task>
-	<task id="10@1" status="Active" tags="new_tag,aze">
+	<task id="10@1" status="Active" tags="@new_tag,@aze">
 		<title>
 			Tentative
 		</title>
@@ -57,7 +65,7 @@ pour voir
 &lt;subtask&gt;12@1&lt;/subtask&gt;
 		</content>
 	</task>
-	<task id="5@1" status="Done" tags="aze">
+	<task id="5@1" status="Done" tags="@aze">
 		<title>
 			child
 		</title>
@@ -72,6 +80,7 @@ pour voir
 		</donedate>
 		<content>
 			&lt;tag&gt;@aze&lt;/tag&gt;,
+aze, 
 		</content>
 	</task>
 	<task id="2@1" status="Done" tags="">
@@ -90,15 +99,19 @@ pour voir
 			no tag but I'm editing
 		</content>
 	</task>
-	<task id="6@1" status="Active" tags="tag">
+	<task id="6@1" status="Active" tags="@tag">
 		<title>
 			sous-sous
 		</title>
+		<duedate>
+			2009-01-23
+		</duedate>
 		<content>
 			&lt;tag&gt;@tag&lt;/tag&gt;
+tag, 
 		</content>
 	</task>
-	<task id="14@1" status="Dismiss" tags="new_tag">
+	<task id="14@1" status="Dismiss" tags="@new_tag">
 		<title>
 			encore un
 		</title>
@@ -106,15 +119,16 @@ pour voir
 			&lt;tag&gt;@new_tag&lt;/tag&gt;, 
 		</content>
 	</task>
-	<task id="16@1" status="Active" tags="tag">
+	<task id="16@1" status="Active" tags="@tag">
 		<title>
 			child with tag
 		</title>
 		<content>
 			&lt;tag&gt;@tag&lt;/tag&gt;, 
+tag, 
 		</content>
 	</task>
-	<task id="3@1" status="Done" tags="donetask">
+	<task id="3@1" status="Done" tags="@donetask">
 		<title>
 			done task with tag
 		</title>
@@ -125,7 +139,7 @@ pour voir
 			&lt;tag&gt;@donetask&lt;/tag&gt;
 		</content>
 	</task>
-	<task id="12@1" status="Active" tags="new_tag">
+	<task id="12@1" status="Active" tags="@new_tag">
 		<title>
 			une tautre
 		</title>
@@ -137,28 +151,34 @@ pour voir
 &lt;subtask&gt;14@1&lt;/subtask&gt;
 		</content>
 	</task>
-	<task id="7@1" status="Active" tags="autro">
+	<task id="7@1" status="Active" tags="@autro">
 		<title>
 			enfant3
 		</title>
+		<duedate>
+			2009-01-23
+		</duedate>
 		<subtask>
 			8@1
 		</subtask>
 		<content>
-			&lt;subtask&gt;8@1&lt;/subtask&gt;&lt;tag&gt;@autro&lt;/tag&gt;, za
+			&lt;subtask&gt;8@1&lt;/subtask&gt;&lt;tag&gt;@autro&lt;/tag&gt;, 
 		</content>
 	</task>
-	<task id="4@1" status="Active" tags="vampire,lorem_ipsum,tag">
+	<task id="4@1" status="Active" tags="@lorem_ipsum,@vampire">
 		<title>
 			Lorem Ipsum
 		</title>
+		<subtask>
+			11@1
+		</subtask>
 		<content>
-			Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+			&lt;subtask&gt;11@1&lt;/subtask&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.
  Proin rhoncus tincidunt diam. Morbi facilisis interdum
  tellus. Sed et lacus nec nisi mattis malesuada. Cras
- rutrum ornare ipsum. Nullam vestibulum mauris quis diam. Fusce augue. Vivamus tristique sem vitae tortor iaculis faucibus. Suspendisse eleifend ipsum. Maecenas nec neque. Vestibulum accumsan. Phasellus auctor. Phasellus sollicitudin, pede in iaculis rhoncus, sem enim rhoncus ante, ut sodales neque ante et felis. Donec ac erat.
+ rutrum ornare ipsum. Nullam vestibulum mauris quis diam. Fusce augue. Vivamus tristique sem vitae tortor iaculis faucibus. Suspendisse eleifend ipsum. Maecenas nec neque. Vetibulum accumsan. Phasellus auctor. Phasellus sollicitudin, pede in iaculis rhoncus, sem enim rhoncus kante, u t sodales neque ante et felis. Donec ac erat.
 
-&lt;tag&gt;@tag&lt;/tag&gt;, &lt;tag&gt;@vampire&lt;/tag&gt;, &lt;tag&gt;@lorem_ipsum&lt;/tag&gt;
+@t2, &lt;tag&gt;@lorem_ipsum&lt;/tag&gt;, &lt;tag&gt;@vampire&lt;/tag&gt;
 
 Ut in urna. Nam quis ipsum. Donec eros. Aliquam iaculis interdum sapien. Integer nisl. Nam id orci nec sapien congue venenatis. Vestibulum dignissim felis sed massa. Aliquam erat volutpat. Nulla fermentum risus vel metus. Vivamus pulvinar augue et orci. Curabitur hendrerit elit. Donec viverra nisi ac enim. Aliquam tincidunt libero sit amet ligula. Sed arcu ligula, fermentum vel, lacinia sit amet, pharetra eu, ante. Mauris nunc turpis, sollicitudin vel, porta volutpat, posuere eget, arcu. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nulla facilisi. Nulla facilisi. Maecenas a mauris quis nunc rhoncus iaculis.
 
@@ -187,9 +207,6 @@ Nulla facilisi. Duis pharetra massa non neque. Sed ultrices sapien quis urna. Ut
 Aenean mollis neque et magna fringilla volutpat. Donec elementum, justo vitae rhoncus auctor, ligula lacus eleifend purus, et semper risus pede vitae nunc. Nullam sit amet felis. Duis eu diam. Cras fringilla augue a justo. Aenean nec quam vitae neque luctus convallis. Cras dolor risus, scelerisque imperdiet, lobortis quis, iaculis id, diam. Nulla pulvinar, massa sollicitudin interdum hendrerit, nisi nulla vehicula ipsum, eget pretium purus mauris non ligula. Nulla fringilla lobortis lacus. Nulla auctor. Quisque ut justo. Maecenas tellus.
 
 Sed tincidunt. Nunc vel felis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Sed luctus massa et orci. Duis dictum convallis purus. Donec mattis quam nec ante. Aliquam gravida fermentum risus. Nullam in felis eget tortor ultricies porttitor. Vestibulum nibh. Sed euismod pede ac erat. Fusce ac odio. Fusce ultricies mauris at justo pulvinar ultrices. Nullam eget enim nec nibh pellentesque scelerisque. Proin porttitor. Nunc in purus.
-
-
-&lt;tag&gt;@tag&lt;/tag&gt;, 
 		</content>
 	</task>
 </project>

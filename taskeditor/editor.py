@@ -107,8 +107,7 @@ class TaskEditor :
             #And also tags
             if tags :
                 for t in tags :
-                    #self.textview.insert_tag("@%s , "%t)
-                    self.textview.insert_text("@%s, "%t.get_name())
+                    self.textview.insert_text("%s, "%t.get_name())
         self.textview.modified(full=True)
         self.window.connect("destroy", self.destruction)
         

@@ -217,8 +217,6 @@ class TaskView(gtk.TextView):
         texttag = buff.create_tag(None,**self.get_property('tag'))#pylint: disable-msg=W0142
         texttag.set_data('is_tag', True)
         texttag.set_data('tagname',tag)
-        #This line if for iter
-        #buff.apply_tag(texttag,s,e)
         #This one is for marks
         self.__apply_tag_to_mark(s,e,tag=texttag)
 
@@ -288,9 +286,8 @@ class TaskView(gtk.TextView):
         self._detect_tag(buff,local_start,local_end)
         
         #Now we apply the tag tag to the marks
+        #FIXME : remove 
         for t in self.get_tagslist() :
-            if t and t[0] != '@' :
-                t = "@%s"%t
             start_mark = buff.get_mark(t)
             end_mark = buff.get_mark("/%s"%t)
             #print "applying %s to %s - %s"%(t,start_mark,end_mark)
@@ -317,9 +314,8 @@ class TaskView(gtk.TextView):
                 for ta in tags :
                     #removing deleted tags
                     if ta.get_data('is_tag') :
-                        #We whould remove the "@" from the tag
                         tagname = ta.get_data('tagname')
-                        old_tags.append(tagname[1:])
+                        old_tags.append(tagname)
                         table.remove(ta)
                         #Removing the marks if they exist
                         if buff.get_mark(tagname) :
@@ -362,10 +358,9 @@ class TaskView(gtk.TextView):
                         buff.create_mark(my_word,word_start,True)
                         buff.create_mark("/%s"%my_word,word_end,False)
                         #adding tag to a local list
-                        new_tags.append(my_word[1:])
-                        #TODO : Keeping the @ is better 
+                        new_tags.append(my_word)
                         #adding tag to the model
-                        self.add_tag_callback(my_word[1:])
+                        self.add_tag_callback(my_word)
     
                 # We set new word boundaries
                 word_start = char_end.copy()

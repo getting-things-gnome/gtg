@@ -147,38 +147,3 @@ class TaskSource() :
     def get_parameters(self) :
         return self.dic
 
-        
-    #We create a new project with a given backend
-    #If the backend is None, then we use the default one
-    #Default backend is localfile and we add a new one.
-#    def new_project(self,name,backend=None) :
-#        print "datastore : new_project not implemented"
-#        project = Project(name,self)
-#        if not backend :
-#            # Create backend
-#            backend   = Backend(None,self,project=project)
-#            backend.sync_project()
-#            # Register it in datastore
-#            self.register_backend(backend)
-#            
-#        project.set_pid(str(self.cur_pid))
-#        project.set_sync_func(backend.sync_project)
-#        self.projects[str(self.cur_pid)] = [backend, project]
-#        self.cur_pid = self.cur_pid + 1
-#        return project
-
-
-#    def remove_project(self, pid):
-#        print "datastore : remove_project not implemented"
-#        b  = self.get_project_with_pid(pid)[0]
-#        self.projects.pop(pid)
-#        self.unregister_backend(b)
-#        fn = b.get_filename()
-#        os.remove(os.path.join(CoreConfig.DATA_DIR,fn))
-#    def get_all_projects(self):
-#        print "datastore : get_all_projects not implemented"
-#        #return self.projects
-
-#    def get_project_with_pid(self, pid):
-#        print "datastore : get_project_with_pid not implemented"
-#        #return self.projects[pid]
