@@ -79,10 +79,18 @@ class Backend :
         #This is inherent to the XML file backend
         cleanxml.savexml(self.zefile,self.doc)
         return True
+        
+    #Completely remove the task with ID = tid
+    def remove_task(self,tid) :
+        for node in self.xmlproj.childNodes :
+            if node.getAttribute("id") == tid :
+                self.xmlproj.removeChild(node)
+        cleanxml.savexml(self.zefile,self.doc)
 
     #Return an available ID for a new task so that a task with this ID
     #can be saved with set_task later.
     #If None, then GTG will create a new ID by itself
+    #The ID cannot contain the character "@"
     def new_task_id(self) :
         return None
 

@@ -17,7 +17,7 @@ from taskbrowser import GnomeConfig
 
 class TaskBrowser:
 
-    def __init__(self, datastore):
+    def __init__(self, requester):
         
         #Set the Glade file
         self.gladefile = GnomeConfig.GLADE_FILE  
@@ -54,9 +54,8 @@ class TaskBrowser:
         self.wTree.signal_autoconnect(dic)
         self.selected_rows = None
         
-        self.ds = datastore
         self.workview = False
-        self.req = self.ds.get_requester()
+        self.req = requester
         
         #The tview and their model
         self.taskdone_tview = self.wTree.get_widget("taskdone_tview")
