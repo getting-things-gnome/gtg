@@ -30,10 +30,7 @@ class Requester :
         
     #MODIFICATION class (the data will be modified)
     def delete_task(self,tid) :
-        #FIXME
-        print "requester : delete_task not implemented"
-#        pr = self.get_project_from_uid(tid)
-#        pr.delete_task(tid)
+        self.ds.delete_task(tid)
         
     #Return a list of active tasks tid
     # projects = []. All the tasks will belong to one of those project

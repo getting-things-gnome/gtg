@@ -416,9 +416,7 @@ class TaskBrowser:
     def on_add_task(self,widget) : #pylint: disable-msg=W0613
         tags,notagonly = self.get_selected_tags() #pylint: disable-msg=W0612
         task = self.req.new_task(tags=tags,newtask=True)
-        print task
         uid = task.get_id()
-        print "uid : %s" %uid
         self.open_task(uid)
     
     #Get_selected_task returns the uid :

@@ -118,7 +118,7 @@ class TaskSource() :
         return task
 
     def set_task(self,task) :
-        print "we should sync less %s" %task.get_id()
+        #print "we should sync less %s" %task.get_id()
         self.tasks[task.get_id()] = task
         return self.backend.set_task(task)
     
