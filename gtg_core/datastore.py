@@ -27,16 +27,32 @@ class DataStore:
             all_tasks += tlist
         return all_tasks
         
+    def get_task(self,tid) :
+        empty_task = self.new_task(tid,newtask=False)
+        if tid :
+            uid,pid = tid.split('@') #pylint: disable-msg=W0612
+            back = self.backends[pid]
+            back.get_task(empty_task,uid)
+        #If the task doesn't exist, we create it with a forced pid
+        return empty_task
+        
+    def delete_task(self,tid) :
+        if tid :
+            uid,pid = tid.split('@') #pylint: disable-msg=W0612
+            back = self.backends[pid]
+            back.remove_task(tid)
+        
     #Create a new task and return it.
     #newtask should be True if you create a task
     #it should be task if you are importing an existing Task
     def new_task(self,tid,newtask=False) :
-        print "datastore : new_task not implemented"
-#        task = Task(tid,self.requester,newtask=newtask)
-#        uid,pid = tid.split('@') #pylint: disable-msg=W0612
-#        backend = self.projects[pid][BACKEND_COLUMN]
-#        task.set_sync_func(backend.sync_task)
-#        return task
+        #FIXME : we should also handle the case where tid = None
+        #And create a real new task
+        task = Task(tid,self.requester,newtask=newtask)
+        uid,pid = tid.split('@') #pylint: disable-msg=W0612
+        backend = self.backends[pid]
+        task.set_sync_func(backend.set_task)
+        return task
     
     #We create a new project with a given backend
     #If the backend is None, then we use the default one
@@ -72,9 +88,9 @@ class DataStore:
     def get_requester(self) :
         return self.requester
 
-    def load_data(self):
-        #FIXME
-        print "datastore : load_data"
+#    def load_data(self):
+#        #FIXME
+#        print "datastore : load_data"
 #        for b in self.backends:
 #            b.get_project()
 

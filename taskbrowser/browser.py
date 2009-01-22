@@ -416,11 +416,12 @@ class TaskBrowser:
     def on_add_task(self,widget) : #pylint: disable-msg=W0613
         #We have to select the project to which we should add a task
         #Currently, we take the first project as the default
-        p = self.req.get_projects_list()[0]
-        tags,notagonly = self.get_selected_tags() #pylint: disable-msg=W0612
-        task = self.req.new_task(p,tags=tags)
-        uid = task.get_id()
-        self.open_task(uid)
+        #FIXME: we don't have a project anymore
+        print "browser : on_add_task not implemented"
+        #tags,notagonly = self.get_selected_tags() #pylint: disable-msg=W0612
+        #task = self.req.new_task(p,tags=tags)
+        #uid = task.get_id()
+        #self.open_task(uid)
     
     #Get_selected_task returns the uid :
     # uid (example : '21@1')

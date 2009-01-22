@@ -69,7 +69,7 @@ class Gtg:
             back = classobj.Backend(b)
             ds.register_backend(back,b["pid"])
             
-        ds.load_data()
+#        ds.load_data()
         req = ds.get_requester()
 
         # Launch task browser

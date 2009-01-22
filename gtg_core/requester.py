@@ -18,19 +18,8 @@ class Requester :
     #Get the task with the given pid
     #If the task doesn't exist, we create it and force the pid
     def get_task(self,tid) :
-        #FIXME
-        print "requester : get_task not implemented"
-#        task = None
-#        if tid :
-#            uid,pid = tid.split('@') #pylint: disable-msg=W0612
-#            proj = self.ds.get_all_projects()[pid][PROJ_COLUMN]
-#            task = proj.get_task(tid)
-#            #If the task doesn't exist, we create it with a forced pid
-#            if not task :
-#                task = self.ds.new_task(tid,newtask=False)
-#                #Adding the task to its project
-#                proj.add_task(task)
-#        return task
+        self.ds.get_task(tid)
+        return task
         
     #Pid is the project in which the new task will be created
     #MODIFICATION class (the data will be modified)
