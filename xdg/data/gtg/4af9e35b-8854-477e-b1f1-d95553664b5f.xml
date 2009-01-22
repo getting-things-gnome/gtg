@@ -213,17 +213,4 @@ Sed tincidunt. Nunc vel felis. Vestibulum ante ipsum primis in faucibus orci luc
 			2009-01-22
 		</donedate>
 	</task>
-	<task id="11@1" status="Active" tags="">
-		<title>
-			youppie
-		</title>
-		<subtask>
-			13@1
-		</subtask>
-	</task>
-	<task id="13@1" status="Active" tags="">
-		<title>
-			ça marche pas
-		</title>
-	</task>
 </project>
