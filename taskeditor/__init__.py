@@ -5,3 +5,6 @@ class GnomeConfig :
     MARK_UNDONE = "Undone"
     MARK_DISMISS = "Dismiss"
     MARK_UNDISMISS = "Undismiss"
+    
+    #Number of second between to save in the task editor
+    SAVETIME = 30

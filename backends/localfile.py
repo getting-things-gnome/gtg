@@ -1,8 +1,12 @@
 import os
 import uuid
+import shutil
 
 from gtg_core   import CoreConfig
 from tools import cleanxml, taskxml
+
+
+BACKUP_NBR = 3
 
 #Return the name of the backend as it should be displayed in the UI
 def get_name() :
@@ -101,4 +105,14 @@ class Backend :
     #You might pass here.
     def quit(self) :
         cleanxml.savexml(self.zefile,self.doc)
+        #We will now backup the file
+        backup_nbr = BACKUP_NBR
+        while backup_nbr > 0 :
+            older = "%s.bak.%s" %(self.zefile,backup_nbr)
+            backup_nbr -= 1
+            newer = "%s.bak.%s" %(self.zefile,backup_nbr)
+            if os.path.exists(newer) :
+                shutil.move(newer,older)
         
+        current = "%s.bak.0" %(self.zefile)
+        shutil.copy(self.zefile,current)

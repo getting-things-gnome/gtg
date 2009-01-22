@@ -298,11 +298,12 @@ class TaskEditor :
         self.task.set_text(self.textview.get_text()) 
         self.refresh_browser(fromtask=self.task.get_id())
         self.task.sync()
+        self.time = time.time()
     #light_save save the task without refreshing every 30seconds
     #We will reduce the time when the get_text will be in another thread
     def light_save(self) :
         diff = time.time() - self.time
-        if diff > 30 :
+        if diff > GnomeConfig.SAVETIME :
             self.task.set_text(self.textview.get_text())
             self.task.sync()
             self.time = time.time()
