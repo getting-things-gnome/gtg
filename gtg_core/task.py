@@ -79,24 +79,20 @@ class Task :
     #Due date return the most urgent date of all parents
     def get_due_date(self) :
         if self.due_date :
-            return str(self.due_date)
+            zedate = self.due_date
         else :
+            zedate = date.max
+        for par in self.get_parents() :
+            pardate_str = self.req.get_task(par).get_due_date()
+            if pardate_str :
+                #We should use our own strtodate instead !
+                pardate = datetime.strptime(pardate_str,"%Y-%M-%d").date()
+                if pardate and zedate > pardate :
+                    zedate = pardate
+        if zedate == date.max :
             return ''
-#        if self.due_date :
-#            zedate = self.due_date
-#        else :
-#            zedate = date.max
-#        for par in self.get_parents() :
-#            pardate_str = self.req.get_task(par).get_due_date()
-#            if pardate_str :
-#                #We should use our own strtodate instead !
-#                pardate = datetime.strptime(pardate_str,"%Y-%M-%d").date()
-#                if pardate and zedate > pardate :
-#                    zedate = pardate
-#        if zedate == date.max :
-#            return ''
-#        else :
-#            return str(zedate)
+        else :
+            return str(zedate)
 
     def set_start_date(self,fulldate) :
         if fulldate :
