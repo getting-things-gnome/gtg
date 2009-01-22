@@ -35,6 +35,8 @@ class Backend :
         #If zefile is None, we create a new file
         if not zefile :
             zefile = "%s.xml" %(uuid.uuid4())
+        #For the day we want to open files somewhere else
+        default_folder = True
         if default_folder :
             self.zefile = os.path.join(CoreConfig.DATA_DIR,zefile)
             self.filename = zefile
@@ -49,6 +51,7 @@ class Backend :
         tid_list = []
         for node in self.xmlproj.childNodes :
             tid_list.append(node.getAttribute("id"))
+        return tid_list
     
     
     #Fill the task "task_to_fill" with the information of the task TID
@@ -67,7 +70,7 @@ class Backend :
         for node in self.xmlproj.childNodes :
             if node.getAttribute("id") == tid :
                 existing = node
-        t_xml = taskxml.task_to_xml(doc,task)
+        t_xml = taskxml.task_to_xml(self.doc,task)
         #We then replace the existing node
         if existing :
             self.xmlproj.replaceChild(t_xml,existing)

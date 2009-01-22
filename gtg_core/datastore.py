@@ -1,7 +1,7 @@
 import os
 
 from gtg_core   import CoreConfig, tagstore, requester
-from gtg_core.task import Task,Project
+from gtg_core.task import Task
 #Here we import the default backend
 #from backends.localfile import Backend
 
@@ -14,6 +14,7 @@ class DataStore:
 
     def __init__ (self):
         self.backends = {}
+        self.tasks = {}
         #self.projects = {}
         #self.cur_pid  = 1
         self.tagstore = tagstore.TagStore()
@@ -28,19 +29,23 @@ class DataStore:
         return all_tasks
         
     def get_task(self,tid) :
-        empty_task = self.new_task(tid,newtask=False)
+        if self.tasks.has_key(tid) :
+            empty_task = self.tasks[tid]
+        else :
+            empty_task = self.new_task(tid,newtask=False)
         if tid :
             uid,pid = tid.split('@') #pylint: disable-msg=W0612
             back = self.backends[pid]
-            back.get_task(empty_task,uid)
+            back.get_task(empty_task,tid)
         #If the task doesn't exist, we create it with a forced pid
         return empty_task
         
     def delete_task(self,tid) :
-        if tid :
+        if tid and self.tasks.has_key(tid) :
             uid,pid = tid.split('@') #pylint: disable-msg=W0612
             back = self.backends[pid]
             back.remove_task(tid)
+            self.tasks.pop(tid)
         
     #Create a new task and return it.
     #newtask should be True if you create a task
@@ -48,11 +53,16 @@ class DataStore:
     def new_task(self,tid,newtask=False) :
         #FIXME : we should also handle the case where tid = None
         #And create a real new task
-        task = Task(tid,self.requester,newtask=newtask)
-        uid,pid = tid.split('@') #pylint: disable-msg=W0612
-        backend = self.backends[pid]
-        task.set_sync_func(backend.set_task)
-        return task
+        if not self.tasks.has_key(tid) :
+            task = Task(tid,self.requester,newtask=newtask)
+            uid,pid = tid.split('@') #pylint: disable-msg=W0612
+            backend = self.backends[pid]
+            task.set_sync_func(backend.set_task)
+            self.tasks[tid] = task
+            return task
+        else :
+            print "new_task with existing tid = bug"
+            return self.tasks[tid]
     
     #We create a new project with a given backend
     #If the backend is None, then we use the default one

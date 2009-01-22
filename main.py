@@ -52,7 +52,7 @@ class Gtg:
             dic = {}
             dic["filename"] = i
             dic["module"] = "localfile"
-            dic["pid"] = pid
+            dic["pid"] = str(pid)
             pid += 1
             backend_list.append(dic)
         #End of the fake list

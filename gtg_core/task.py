@@ -303,8 +303,9 @@ class Task :
         self.sync_func = sync
         
     def sync(self) :
-        if self.sync_func :
-            self.sync_func(self.tid)
+        print "we do not sync right now for %s" %self.get_id()
+        #if self.sync_func :
+         #   self.sync_func(self)
             
             
     ######## Tag functions ##############

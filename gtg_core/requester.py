@@ -18,7 +18,7 @@ class Requester :
     #Get the task with the given pid
     #If the task doesn't exist, we create it and force the pid
     def get_task(self,tid) :
-        self.ds.get_task(tid)
+        task = self.ds.get_task(tid)
         return task
         
     #Pid is the project in which the new task will be created
