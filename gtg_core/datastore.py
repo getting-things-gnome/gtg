@@ -2,7 +2,10 @@ import os
 
 from gtg_core   import CoreConfig, tagstore, requester
 from gtg_core.task import Task
+
+
 #Only the datastore should access to the backend
+DEFAULT_BACKEND = "1"
 
 class DataStore:
 
@@ -44,19 +47,27 @@ class DataStore:
     #Create a new task and return it.
     #newtask should be True if you create a task
     #it should be task if you are importing an existing Task
-    def new_task(self,tid,newtask=False) :
-        #FIXME : we should also handle the case where tid = None
-        #And create a real new task
-        if not self.tasks.has_key(tid) :
+    def new_task(self,tid=None,pid=None,newtask=False) :
+        #If we don't have anything, we use the default PID
+        if not pid : pid = DEFAULT_BACKEND
+        #If tid, we force that tid and create a real new task
+        if tid and not self.tasks.has_key(tid) :
             task = Task(tid,self.requester,newtask=newtask)
             uid,pid = tid.split('@') #pylint: disable-msg=W0612
-            backend = self.backends[pid]
-            #task.set_sync_func(backend.set_task)
             self.tasks[tid] = task
             return task
-        else :
+        #Else we create a new task in the given pid
+        elif pid and self.backends.has_key(pid):
+            newtid = self.backends[pid].new_task_id()
+            task = Task(newtid,self.requester,newtask=newtask)
+            self.tasks[newtid] = task
+            return task
+        elif tid :
             print "new_task with existing tid = bug"
             return self.tasks[tid]
+        else :
+            print "not possible to build the task = bug"
+            return None
         
     def get_tagstore(self) :
         return self.tagstore
@@ -107,7 +118,7 @@ class TaskSource() :
         return task
 
     def set_task(self,task) :
-        print "sync task %s" %task.get_id()
+        print "we should sync less %s" %task.get_id()
         self.tasks[task.get_id()] = task
         return self.backend.set_task(task)
     
@@ -116,7 +127,15 @@ class TaskSource() :
         return self.backend.remove_task(tid)
         
     def new_task_id(self) :
-        return self.backend.new_task_id()
+        newid = self.backend.new_task_id()
+        if not newid :
+            k = 0
+            pid = self.dic["pid"]
+            newid = "%s@%s" %(k,pid)
+            while self.tasks.has_key(str(newid)) :
+                k += 1
+                newid = "%s@%s" %(k,pid)
+        return newid
 
     def quit(self) :
         return self.backend.quit()

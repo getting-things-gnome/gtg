@@ -414,14 +414,12 @@ class TaskBrowser:
             return 1
             
     def on_add_task(self,widget) : #pylint: disable-msg=W0613
-        #We have to select the project to which we should add a task
-        #Currently, we take the first project as the default
-        #FIXME: we don't have a project anymore
-        print "browser : on_add_task not implemented"
-        #tags,notagonly = self.get_selected_tags() #pylint: disable-msg=W0612
-        #task = self.req.new_task(p,tags=tags)
-        #uid = task.get_id()
-        #self.open_task(uid)
+        tags,notagonly = self.get_selected_tags() #pylint: disable-msg=W0612
+        task = self.req.new_task(tags=tags,newtask=True)
+        print task
+        uid = task.get_id()
+        print "uid : %s" %uid
+        self.open_task(uid)
     
     #Get_selected_task returns the uid :
     # uid (example : '21@1')
@@ -489,7 +487,6 @@ class TaskBrowser:
             else :
                 self.path_source = None
 
-        #print "row inserted"
         self.path_target = path
         tid = tree.get(it,0)
         tree.foreach(findsource,[tid,it])
@@ -515,14 +512,14 @@ class TaskBrowser:
                 self.tid_source_parent = sparent
                 self.tid_target_parent = tparent
                 self.tid_tomove = tid[0]
-                #print "row %s will move from %s to %s"%(self.tid_tomove,\
+                # "row %s will move from %s to %s"%(self.tid_tomove,\
                 #          self.tid_source_parent,self.tid_target_parent)
     def row_deleted(self,tree,path,data=None) : #pylint: disable-msg=W0613
         #If we are removing the path source guessed during the insertion
         #It confirms that we are in a drag-n-drop
         if path in self.drag_sources and self.tid_tomove :
             self.drag_sources.remove(path)
-            #print "row %s moved from %s to %s"%(self.tid_tomove,\
+            # "row %s moved from %s to %s"%(self.tid_tomove,\
             #              self.tid_source_parent,self.tid_target_parent)
             tomove = self.req.get_task(self.tid_tomove)
             tomove.remove_parent(self.tid_source_parent)

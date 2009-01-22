@@ -23,9 +23,9 @@ class Task :
         self.parents = []
         #The list of children tid
         self.children = []
-        #callbacks
-        self.new_task_func = None
-        self.purge = None
+#        #callbacks
+#        self.new_task_func = None
+#        self.purge = None
         
         self.can_be_deleted = newtask
         # tags
@@ -219,7 +219,7 @@ class Task :
     
     #Return the task added as a subtask
     def new_subtask(self) :
-        subt = self.new_task_func()
+        subt = self.req.new_task()
         self.add_subtask(subt.get_id())
         return subt
             
@@ -294,14 +294,14 @@ class Task :
             task = self.req.get_task(j)
             task.remove_parent(self.get_id())
         #then we remove effectively the task
-        self.purge(self.get_id())
+        self.req.delete_task(self.get_id())
         
-    def set_delete_func(self,func) :
-        self.purge = func
+#    def set_delete_func(self,func) :
+#        self.purge = func
         
-    #This is a callback
-    def set_newtask_func(self,newtask) :
-        self.new_task_func = newtask
+#    #This is a callback
+#    def set_newtask_func(self,newtask) :
+#        self.new_task_func = newtask
         
     #This is a callback. The "sync" function has to be set
     def set_sync_func(self,sync) :

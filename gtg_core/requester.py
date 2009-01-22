@@ -2,9 +2,6 @@ from tools.listes import *
 #Requester is a pure View object. It will not do anything but it will
 #be used by any Interface to handle the requests to the datastore
 
-BACKEND_COLUMN = 0
-PROJ_COLUMN    = 1
-
 #There could be multiple requester. It means that a requester should never
 #Hold any data except a reference to its datastore.
 class Requester :
@@ -23,19 +20,13 @@ class Requester :
         
     #Pid is the project in which the new task will be created
     #MODIFICATION class (the data will be modified)
-    def new_task(self,pid,tags=None) :
-        #FIXME
-        print "requester : new_task not implemented"
-#        task = self.ds.get_all_projects()[pid][PROJ_COLUMN].new_task()
-#        if tags :
-#            for t in tags :
-#                task.add_tag(t.get_name())
-#        return task
+    def new_task(self,pid=None,tags=None,newtask=True) :
+        task = self.ds.new_task(pid=pid,newtask=newtask)
+        if tags :
+            for t in tags :
+                task.add_tag(t.get_name())
+        return task
         
-#    # Return a new Task object with a forced tid. Used only for import
-#    def new_imported_task(self,tid) :
-#        
-#        return task
         
     #MODIFICATION class (the data will be modified)
     def delete_task(self,tid) :
