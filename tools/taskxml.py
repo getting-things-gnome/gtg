@@ -5,7 +5,6 @@ from tools import cleanxml
 
 #Take an empty task, an XML node and return a Task.
 def task_from_xml(task,xmlnode) :
-    cur_id = task.get_id()
     cur_task = task
     cur_stat = "%s" %xmlnode.getAttribute("status")
     donedate = cleanxml.readTextNode(xmlnode,"donedate")

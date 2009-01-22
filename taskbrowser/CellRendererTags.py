@@ -44,7 +44,7 @@ class CellRendererTags(gtk.GenericCellRenderer):
             for my_tag in self.tag_list:
                 my_tag_color = my_tag.get_attribute("color")
                 my_tag_icon  = my_tag.get_attribute("icon")
-                if my_tag_color!=None or my_tag_icon!=None: count = count + 1
+                if my_tag_color or my_tag_icon : count = count + 1
         elif self.tag != None:
             count = 1
         else:
@@ -54,7 +54,7 @@ class CellRendererTags(gtk.GenericCellRenderer):
     
     # Class methods
     
-    def __init__(self):
+    def __init__(self): #pylint: disable-msg=W0231
         self.__gobject_init__()
         self.tag_list = None
         self.tag      = None
@@ -74,7 +74,7 @@ class CellRendererTags(gtk.GenericCellRenderer):
         else:
             return getattr(self, pspec.name)
     
-    def on_render(self, window, widget, background_area, cell_area, expose_area, flags):
+    def on_render(self, window, widget, background_area, cell_area, expose_area, flags): #pylint: disable-msg=W0613
         
         vw_tags = self.__count_viewable_tags()
         count   = 0
@@ -107,14 +107,14 @@ class CellRendererTags(gtk.GenericCellRenderer):
             rect_x  = orig_x + self.PADDING*2*count + 16*count
             rect_y  = orig_y
             
-            if   my_tag_icon  != None:
+            if   my_tag_icon :
 
                 pixbuf     = gtk.gdk.pixbuf_new_from_file(my_tag_icon)
                 gdkcontext.set_source_pixbuf(pixbuf, rect_x, rect_y)
                 gdkcontext.paint()
                 count = count + 1
                 
-            elif my_tag_color != None:
+            elif my_tag_color :
 
                 my_color = gtk.gdk.color_parse(my_tag_color)
                 gdkcontext.set_source_color(my_color)
@@ -122,12 +122,12 @@ class CellRendererTags(gtk.GenericCellRenderer):
                 gdkcontext.fill()        
                 count = count + 1
                 
-        if self.tag != None:
+        if self.tag and my_tag : #pylint: disable-msg=W0631
             
-            my_tag_icon  = my_tag.get_attribute("icon")
-            my_tag_color = my_tag.get_attribute("color")
+            my_tag_icon  = my_tag.get_attribute("icon") #pylint: disable-msg=W0631
+            my_tag_color = my_tag.get_attribute("color")#pylint: disable-msg=W0631
             
-            if   my_tag_icon == None and my_tag_color == None:
+            if   not my_tag_icon and not my_tag_color :
                 
                 my_color = gtk.gdk.color_parse("#d3d7cf")
                 gdkcontext.set_source_color(my_color)
@@ -136,11 +136,11 @@ class CellRendererTags(gtk.GenericCellRenderer):
                 gdkcontext.stroke()
             
     
-    def on_get_size(self, widget, cell_area=None):
+    def on_get_size(self, widget, cell_area=None): #pylint: disable-msg=W0613
 
         count = self.__count_viewable_tags()
 
-        if count!=0:
+        if count != 0:
             return (self.xpad, self.ypad, self.xpad*2 + 16*count + 2*count*self.PADDING, 16 + 2*self.ypad)
         else:
             return (self.xpad, self.ypad, self.xpad*2, self.ypad*2)

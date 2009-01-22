@@ -207,7 +207,7 @@ class Task :
     
     #Return the task added as a subtask
     def new_subtask(self) :
-        uid,pid = self.get_id().split('@')
+        uid,pid = self.get_id().split('@') #pylint: disable-msg=W0612
         subt = self.req.new_task(pid=pid,newtask=True)
         self.add_subtask(subt.get_id())
         return subt
@@ -243,7 +243,6 @@ class Task :
             self.sync()
             task = self.req.get_task(tid)
             task.add_subtask(self.get_id())
-            duedate = task.get_due_date()
             task.sync()
             
     #Take a tid as parameter

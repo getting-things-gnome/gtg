@@ -206,8 +206,8 @@ class TaskBrowser:
             for i in t_path :
                 self.tag_tview.get_selection().select_path(i)
 
-    def tag_separator_filter(self, model, iter, user_data=None):
-        return model.get_value(iter, self.TAGS_MODEL_SEP)
+    def tag_separator_filter(self, model, itera, user_data=None):#pylint: disable-msg=W0613
+        return model.get_value(itera, self.TAGS_MODEL_SEP)
         
 
     #refresh list build/refresh your TreeStore of task
@@ -349,23 +349,23 @@ class TaskBrowser:
         color_dict  = {"red":0,"green":0,"blue":0}
         for my_tag in tags:
             my_color_str = my_tag.get_attribute("color")
-            if my_color_str!=None:
+            if my_color_str :
                 my_color = gtk.gdk.color_parse(my_color_str)
                 color_count = color_count + 1
                 color_dict["red"]   = color_dict["red"]   + my_color.red
                 color_dict["green"] = color_dict["green"] + my_color.green
                 color_dict["blue"]  = color_dict["blue"]  + my_color.blue
-        if color_count!=0:
+        if color_count != 0:
             red        = int(color_dict["red"]   / color_count)
             green      = int(color_dict["green"] / color_count)
             blue       = int(color_dict["blue"]  / color_count)
             brightness = (red+green+blue) / 3.0
-            while brightness<55000:
+            while brightness < 55000:
                 red        = int( (red   + 65535) / 2)
                 green      = int( (green + 65535) / 2)
                 blue       = int( (blue  + 65535) / 2)
                 brightness = (red+green+blue) / 3.0
-            my_color=gtk.gdk.Color(red, green, blue).to_string()
+            my_color = gtk.gdk.Color(red, green, blue).to_string()
         
         if treeview and not parent and len(task.get_subtasks()) == 0:
             my_row = self.task_ts.insert_before(None, tree_store.get_iter_first(), row=[tid,title,duedate,left,tags,my_color])

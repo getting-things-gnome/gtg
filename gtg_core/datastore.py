@@ -83,7 +83,7 @@ class DataStore:
             self.backends[pid] = source
 
     def unregister_backend(self, backend):
-        print "unregister backend not implemented"
+        print "unregister backend %s not implemented" %backend
 #        if backend != None:
 #            self.backends.remove(backend)
 
