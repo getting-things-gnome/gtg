@@ -97,6 +97,7 @@ aze,
 		</title>
 		<content>
 			no tag but I'm editing
+&lt;subtask&gt;11@1&lt;/subtask&gt;
 		</content>
 	</task>
 	<task id="6@1" status="Active" tags="@tag">
@@ -125,7 +126,6 @@ tag,
 		</title>
 		<content>
 			&lt;tag&gt;@tag&lt;/tag&gt;, 
-tag, 
 		</content>
 	</task>
 	<task id="3@1" status="Done" tags="@donetask">
@@ -165,20 +165,17 @@ tag,
 			&lt;subtask&gt;8@1&lt;/subtask&gt;&lt;tag&gt;@autro&lt;/tag&gt;, 
 		</content>
 	</task>
-	<task id="4@1" status="Active" tags="@lorem_ipsum,@vampire">
+	<task id="4@1" status="Active" tags="@lorem_ipsum,@vampire,@t2">
 		<title>
 			Lorem Ipsum
 		</title>
-		<subtask>
-			11@1
-		</subtask>
 		<content>
-			&lt;subtask&gt;11@1&lt;/subtask&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+			Lorem ipsum dolor sit amet, consectetur adipiscing elit.
  Proin rhoncus tincidunt diam. Morbi facilisis interdum
  tellus. Sed et lacus nec nisi mattis malesuada. Cras
  rutrum ornare ipsum. Nullam vestibulum mauris quis diam. Fusce augue. Vivamus tristique sem vitae tortor iaculis faucibus. Suspendisse eleifend ipsum. Maecenas nec neque. Vetibulum accumsan. Phasellus auctor. Phasellus sollicitudin, pede in iaculis rhoncus, sem enim rhoncus kante, u t sodales neque ante et felis. Donec ac erat.
 
-@t2, &lt;tag&gt;@lorem_ipsum&lt;/tag&gt;, &lt;tag&gt;@vampire&lt;/tag&gt;
+&lt;tag&gt;@t2&lt;/tag&gt;, &lt;tag&gt;@lorem_ipsum&lt;/tag&gt;, &lt;tag&gt;@vampire&lt;/tag&gt;
 
 Ut in urna. Nam quis ipsum. Donec eros. Aliquam iaculis interdum sapien. Integer nisl. Nam id orci nec sapien congue venenatis. Vestibulum dignissim felis sed massa. Aliquam erat volutpat. Nulla fermentum risus vel metus. Vivamus pulvinar augue et orci. Curabitur hendrerit elit. Donec viverra nisi ac enim. Aliquam tincidunt libero sit amet ligula. Sed arcu ligula, fermentum vel, lacinia sit amet, pharetra eu, ante. Mauris nunc turpis, sollicitudin vel, porta volutpat, posuere eget, arcu. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nulla facilisi. Nulla facilisi. Maecenas a mauris quis nunc rhoncus iaculis.
 
@@ -208,5 +205,13 @@ Aenean mollis neque et magna fringilla volutpat. Donec elementum, justo vitae rh
 
 Sed tincidunt. Nunc vel felis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Sed luctus massa et orci. Duis dictum convallis purus. Donec mattis quam nec ante. Aliquam gravida fermentum risus. Nullam in felis eget tortor ultricies porttitor. Vestibulum nibh. Sed euismod pede ac erat. Fusce ac odio. Fusce ultricies mauris at justo pulvinar ultrices. Nullam eget enim nec nibh pellentesque scelerisque. Proin porttitor. Nunc in purus.
 		</content>
+	</task>
+	<task id="15@1" status="Done" tags="">
+		<title>
+			My new task
+		</title>
+		<donedate>
+			2009-01-22
+		</donedate>
 	</task>
 </project>

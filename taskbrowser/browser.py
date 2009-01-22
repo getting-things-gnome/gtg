@@ -199,7 +199,8 @@ class TaskBrowser:
         for tag in tags:
             color = tag.get_attribute("color")
             count = len(self.req.get_tasks_list(tags=[tag]))
-            self.tag_ts.append([tag,color,tag.get_name(), str(count), False])
+            #We display the tags without the "@" (but we could)
+            self.tag_ts.append([tag,color,tag.get_name()[1:], str(count), False])
             
         #We reselect the selected tag
         if t_path :

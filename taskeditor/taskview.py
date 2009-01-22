@@ -52,8 +52,6 @@ class TaskView(gtk.TextView):
         self.buff = self.get_buffer()
         self.req = requester
         #Buffer init
-        #self.buff.set_text("%s\n"%title)
-        
         self.link   = {'background': 'white', 'foreground': 'blue', 
                                     'underline': pango.UNDERLINE_SINGLE, 'strikethrough':False}
         self.done   = {'background': 'white', 'foreground': 'gray', 
@@ -286,11 +284,10 @@ class TaskView(gtk.TextView):
         self._detect_tag(buff,local_start,local_end)
         
         #Now we apply the tag tag to the marks
-        #FIXME : remove 
         for t in self.get_tagslist() :
             start_mark = buff.get_mark(t)
             end_mark = buff.get_mark("/%s"%t)
-            #print "applying %s to %s - %s"%(t,start_mark,end_mark)
+            # "applying %s to %s - %s"%(t,start_mark,end_mark)
             if start_mark and end_mark :
                 self.apply_tag_tag(buff,t,start_mark,end_mark)
         
@@ -308,7 +305,9 @@ class TaskView(gtk.TextView):
         table = buff.get_tag_table()
         old_tags = []
         new_tags = []
-        while (it.get_offset() <= end.get_offset()) and (it.get_char() != '\0'):
+        #We must be strictly < than the end_offset. If not, we might
+        #found the beginning of a tag on the nextline
+        while (it.get_offset() < end.get_offset()) and (it.get_char() != '\0'):
             if it.begins_tag() :
                 tags = it.get_tags()
                 for ta in tags :
@@ -318,10 +317,16 @@ class TaskView(gtk.TextView):
                         old_tags.append(tagname)
                         table.remove(ta)
                         #Removing the marks if they exist
-                        if buff.get_mark(tagname) :
-                            buff.delete_mark_by_name(tagname)
-                        if buff.get_mark("%s"%tagname) :
-                            buff.delete_mark_by_name("/%s"%tagname)
+                        mark1 = buff.get_mark(tagname)
+                        if mark1 :
+                            offset1 = buff.get_iter_at_mark(mark1).get_offset()
+                            if start.get_offset() <= offset1 <= end.get_offset() :
+                                buff.delete_mark_by_name(tagname)
+                        mark2 = buff.get_mark("%s"%tagname)
+                        if mark2 :
+                            offset2 = buff.get_iter_at_mark(mark2).get_offset()
+                            if start.get_offset() <= offset2 <= end.get_offset():
+                                buff.delete_mark_by_name("/%s"%tagname)
             it.forward_char()
 
         # Set iterators for word

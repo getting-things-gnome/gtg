@@ -23,19 +23,10 @@ class Task :
         self.parents = []
         #The list of children tid
         self.children = []
-#        #callbacks
-#        self.new_task_func = None
-#        self.purge = None
-        
         self.can_be_deleted = newtask
         # tags
         self.tags = []
         self.req = requester
-        
-#    def set_project(self,pid) :
-#        tid = self.get_id()
-#        result = tid.split('@')
-#        self.tid = "%s@%s" %(result[0],pid)
                 
     def get_id(self) :
         return str(self.tid)
@@ -50,6 +41,7 @@ class Task :
             self.title = title.strip('\t\n')
         else :
             self.title = "(no title task)"
+        self.sync()
         
     def set_status(self,status,donedate=None) :
         self.can_be_deleted = False
@@ -219,7 +211,8 @@ class Task :
     
     #Return the task added as a subtask
     def new_subtask(self) :
-        subt = self.req.new_task()
+        uid,pid = self.get_id().split('@')
+        subt = self.req.new_task(pid=pid,newtask=True)
         self.add_subtask(subt.get_id())
         return subt
             
@@ -231,7 +224,7 @@ class Task :
                 task.delete()
             else :
                 task.remove_parent(self.get_id())
-                self.sync()
+            self.sync()
     
     def get_subtasks(self) :
         zelist = []
@@ -286,6 +279,8 @@ class Task :
         return to_return
        
     #Method called before the task is deleted
+    #This method is called by the datastore and should not be called directly
+    #Use the requester
     def delete(self) :
         for i in self.get_parents() :
             task = self.req.get_task(i)
@@ -294,14 +289,7 @@ class Task :
             task = self.req.get_task(j)
             task.remove_parent(self.get_id())
         #then we remove effectively the task
-        self.req.delete_task(self.get_id())
-        
-#    def set_delete_func(self,func) :
-#        self.purge = func
-        
-#    #This is a callback
-#    def set_newtask_func(self,newtask) :
-#        self.new_task_func = newtask
+        #self.req.delete_task(self.get_id())
         
     #This is a callback. The "sync" function has to be set
     def set_sync_func(self,sync) :

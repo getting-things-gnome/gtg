@@ -33,8 +33,6 @@ class Requester :
         self.ds.delete_task(tid)
         
     #Return a list of active tasks tid
-    # projects = []. All the tasks will belong to one of those project
-    # If none, all tasks are eligible
     #
     # tags = []. All tasks will have at least one of those tags.
     # If None, all tasks are eligible
