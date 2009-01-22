@@ -223,13 +223,11 @@ class TaskBrowser:
         self.task_ts.clear()
         self.taskdone_ts.clear()
         tag_list,notag_only = self.get_selected_tags()
-        #We display only tasks of the active projects
-        p_list = self.req.get_projects_list()
         nbr_of_tasks = 0
         
         #We build the active tasks pane
         if self.workview :
-            tasks = self.req.get_active_tasks_list(projects=p_list,tags=tag_list,\
+            tasks = self.req.get_active_tasks_list(tags=tag_list,\
                         notag_only=notag_only,workable=True, started_only=False)
             for tid in tasks :
                 self.add_task_tree_to_list(self.task_ts,tid,None,selected_uid,\
@@ -238,12 +236,10 @@ class TaskBrowser:
                             
         else :
             #building the classical treeview
-            active_root_tasks = self.req.get_active_tasks_list(projects=p_list,\
-                                tags=tag_list, notag_only=notag_only,\
-                                is_root=True, started_only=False)
-            active_tasks = self.req.get_active_tasks_list(projects=p_list,\
-                            tags=tag_list, notag_only=notag_only,\
-                            is_root=False, started_only=False)
+            active_root_tasks = self.req.get_active_tasks_list(tags=tag_list,\
+                            notag_only=notag_only, is_root=True, started_only=False)
+            active_tasks = self.req.get_active_tasks_list(tags=tag_list,\
+                            notag_only=notag_only, is_root=False, started_only=False)
             for tid in active_root_tasks :
                 self.add_task_tree_to_list(self.task_ts, tid, None,\
                                 selected_uid,active_tasks=active_tasks)
@@ -259,7 +255,7 @@ class TaskBrowser:
         self.window.set_title("Getting Things Gnome! %s"%parenthesis)
         
         #We build the closed tasks pane
-        closed_tasks = self.req.get_closed_tasks_list(projects=p_list,tags=tag_list,\
+        closed_tasks = self.req.get_closed_tasks_list(tags=tag_list,\
                                                     notag_only=notag_only)
         for tid in closed_tasks :
             t = self.req.get_task(tid)

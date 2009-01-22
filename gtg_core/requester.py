@@ -76,8 +76,6 @@ class Requester :
     def get_tasks_list(self,tags=None, status=["Active"],notag_only=False,\
                                 started_only=True,is_root=False) :
         l_tasks = []
-        #TODO : ds.all_tasks
-        print "requester.get_taks_list : ds.all_tasks not implemented"
         for tid in self.ds.all_tasks() :
             task = self.get_task(tid)
             #This is status filtering
@@ -207,12 +205,10 @@ class Requester :
     #FIXME it should be only active and visible tasks
     def get_used_tags(self) :
         l = []
-        projects = self.ds.get_all_projects()
-        for p in projects :
-            for tid in projects[p][PROJ_COLUMN].list_tasks():
-                t = projects[p][PROJ_COLUMN].get_task(tid)
-                for tag in t.get_tags() :
-                    if tag not in l: l.append(tag)
+        for tid in self.ds.all_tasks():
+            t = self.get_task(tid)
+            for tag in t.get_tags() :
+                if tag not in l: l.append(tag)
         return l
     
     

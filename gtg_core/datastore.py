@@ -3,10 +3,12 @@ import os
 from gtg_core   import CoreConfig, tagstore, requester
 from gtg_core.task import Task,Project
 #Here we import the default backend
-from backends.localfile import Backend
+#from backends.localfile import Backend
 
-BACKEND_COLUMN = 0
-PROJ_COLUMN = 1
+#BACKEND_COLUMN = 0
+#PROJ_COLUMN = 1
+
+#Only the datastore should access to the backend
 
 class DataStore:
 
@@ -16,6 +18,14 @@ class DataStore:
         #self.cur_pid  = 1
         self.tagstore = tagstore.TagStore()
         self.requester = requester.Requester(self)
+        
+    def all_tasks(self) :
+        all_tasks = []
+        for key in self.backends :
+            b = self.backends[key]
+            tlist = b.get_tasks_list()
+            all_tasks += tlist
+        return all_tasks
         
     #Create a new task and return it.
     #newtask should be True if you create a task
@@ -63,6 +73,7 @@ class DataStore:
         return self.requester
 
     def load_data(self):
+        #FIXME
         print "datastore : load_data"
 #        for b in self.backends:
 #            b.get_project()
