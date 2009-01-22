@@ -1,4 +1,4 @@
-from datetime import date,datetime
+from datetime import date
 import xml.dom.minidom
 
 from tools.listes import *
@@ -23,19 +23,10 @@ class Task :
         self.parents = []
         #The list of children tid
         self.children = []
-        #callbacks
-        self.new_task_func = None
-        self.purge = None
-        
         self.can_be_deleted = newtask
         # tags
         self.tags = []
         self.req = requester
-        
-    def set_project(self,pid) :
-        tid = self.get_id()
-        result = tid.split('@')
-        self.tid = "%s@%s" %(result[0],pid)
                 
     def get_id(self) :
         return str(self.tid)
@@ -50,6 +41,7 @@ class Task :
             self.title = title.strip('\t\n')
         else :
             self.title = "(no title task)"
+        self.sync()
         
     def set_status(self,status,donedate=None) :
         self.can_be_deleted = False
@@ -91,9 +83,10 @@ class Task :
         else :
             zedate = date.max
         for par in self.get_parents() :
+            #Here we compare with the parent's due date
             pardate_str = self.req.get_task(par).get_due_date()
             if pardate_str :
-                pardate = datetime.strptime(pardate_str,"%Y-%M-%d").date()
+                pardate = strtodate(pardate_str)
                 if pardate and zedate > pardate :
                     zedate = pardate
         if zedate == date.max :
@@ -214,7 +207,8 @@ class Task :
     
     #Return the task added as a subtask
     def new_subtask(self) :
-        subt = self.new_task_func()
+        uid,pid = self.get_id().split('@') #pylint: disable-msg=W0612
+        subt = self.req.new_task(pid=pid,newtask=True)
         self.add_subtask(subt.get_id())
         return subt
             
@@ -226,7 +220,7 @@ class Task :
                 task.delete()
             else :
                 task.remove_parent(self.get_id())
-                self.sync()
+            self.sync()
     
     def get_subtasks(self) :
         zelist = []
@@ -249,7 +243,6 @@ class Task :
             self.sync()
             task = self.req.get_task(tid)
             task.add_subtask(self.get_id())
-            duedate = task.get_due_date()
             task.sync()
             
     #Take a tid as parameter
@@ -281,22 +274,16 @@ class Task :
         return to_return
        
     #Method called before the task is deleted
+    #This method is called by the datastore and should not be called directly
+    #Use the requester
     def delete(self) :
         for i in self.get_parents() :
             task = self.req.get_task(i)
             task.remove_subtask(self.get_id())
-        for j in self.get_subtasks() :
-            task = self.req.get_task(j)
+        for task in self.get_subtasks() :
             task.remove_parent(self.get_id())
         #then we remove effectively the task
-        self.purge(self.get_id())
-        
-    def set_delete_func(self,func) :
-        self.purge = func
-        
-    #This is a callback
-    def set_newtask_func(self,newtask) :
-        self.new_task_func = newtask
+        #self.req.delete_task(self.get_id())
         
     #This is a callback. The "sync" function has to be set
     def set_sync_func(self,sync) :
@@ -304,7 +291,7 @@ class Task :
         
     def sync(self) :
         if self.sync_func :
-            self.sync_func(self.tid)
+            self.sync_func(self)
             
             
     ######## Tag functions ##############
@@ -331,9 +318,6 @@ class Task :
             
     #remove by tagname
     def remove_tag(self, tagname):
-        #Fixme : we should remove this anti"@" crazyness
-        if tagname and tagname[0] == "@" :
-            tagname = tagname[1:]
         t = self.req.get_tag(tagname)
         if t in self.tags :
             self.tags.remove(t)
@@ -374,103 +358,4 @@ class Task :
         s = s + "Status: " + self.status + "\n"
         s = s + "Tags:   "  + str(self.tags)
         return s
-        
-###########################################################################
-        
-#This class represent a project : a list of tasks sharing the same backend
-#You should never create a Project directly. Use the datastore.new_project() function.
-class Project :
-    def __init__(self, name,datastore) :
-        self.name = name
-        self.list = {}
-        self.sync_func = None
-        self.pid = None
-        self.datastore = datastore
-        
-    def set_pid(self,pid) :
-        self.pid = pid 
-        for tid in self.list_tasks() :
-            t = self.list.pop(tid)
-            #We must inform the tasks of our pid
-            t.set_project(pid)
-            #then we re-add the task
-            self.add_task(t)
-        
-    def get_pid(self) :
-        return self.pid
-    
-    def set_name(self,name) :
-        self.name = name
-    
-    def get_name(self) :
-        return self.name
-        
-    def list_tasks(self):
-        result = self.list.keys()
-        #we must ensure that we not return a None
-        if not result :
-            result = []
-        return result
-        
-    def active_tasks(self) :
-        return self.__list_by_status(["Active"])
-        
-    def unactive_tasks(self) :
-        return self.__list_by_status(["Done","Dismissed"])
-    
-    def __list_by_status(self,status) :
-        result = []
-        for st in status :
-            for tid in self.list.keys() :
-                if self.get_task(tid).get_status() == st :
-                    result.append(tid)
-        return result
-            
-    #Will return None if the project doesn't have this task
-    def get_task(self,ze_id) :
-        if self.list.has_key(ze_id) :
-            return self.list[str(ze_id)]
-        else :
-            return None
-        
-    def add_task(self,task) :
-        tid = task.get_id()
-        if not self.list.has_key(tid) :
-            self.list[str(tid)] = task
-            task.set_project(self.get_pid())
-            task.set_newtask_func(self.new_task)
-            task.set_delete_func(self.purge_task)
-        else :
-            print task
-        
-    def new_task(self) :
-        tid = self.__free_tid()
-        task = self.datastore.new_task(tid,newtask=True)
-        self.add_task(task)
-        return task
-    
-    def delete_task(self,tid) :
-        self.list[tid].delete()
-    
-    def purge_task(self,tid) :
-        del self.list[tid]
-        self.sync()
-    
-    def __free_tid(self) :
-        k = 0
-        pid = self.get_pid()
-        kk = "%s@%s" %(k,pid)
-        while self.list.has_key(str(kk)) :
-            k += 1
-            kk = "%s@%s" %(k,pid)
-        return str(kk)
-        
-    #This is a callback. The "sync" function has to be set
-    def set_sync_func(self,sync) :
-        self.sync_func = sync
-        
-    def sync(self) :
-        self.sync_func()
-        
-        
-    
+

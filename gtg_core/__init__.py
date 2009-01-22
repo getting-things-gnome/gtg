@@ -57,9 +57,11 @@ class CoreConfig:
     def save_datastore(self,ds) :
         s = "<?xml version=\"1.0\" ?><config>\n"
         for b in ds.get_all_backends():
-            s = s + "\t<backend filename=\"%s\"/>\n" % b.get_filename()
+            param = b.get_parameters()
+            #FIXME : we have to be generic here !
+            s = s + "\t<backend filename=\"%s\"/>\n" % param["filename"]
             #Saving all the projects at close
-            b.sync_project()
+            b.quit()
         s = s + "</config>\n"
         f = open(self.DATA_DIR + self.DATA_FILE,mode='w')
         f.write(s)

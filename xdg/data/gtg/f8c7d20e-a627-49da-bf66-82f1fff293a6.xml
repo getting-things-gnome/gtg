@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <project name="gh">
-	<task id="1@2" status="Done" tags="closed">
+	<task id="1@2" status="Done" tags="@closed">
 		<title>
 			closed task with closed tag
 		</title>

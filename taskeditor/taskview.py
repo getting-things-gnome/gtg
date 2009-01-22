@@ -52,8 +52,6 @@ class TaskView(gtk.TextView):
         self.buff = self.get_buffer()
         self.req = requester
         #Buffer init
-        #self.buff.set_text("%s\n"%title)
-        
         self.link   = {'background': 'white', 'foreground': 'blue', 
                                     'underline': pango.UNDERLINE_SINGLE, 'strikethrough':False}
         self.done   = {'background': 'white', 'foreground': 'gray', 
@@ -82,12 +80,6 @@ class TaskView(gtk.TextView):
         #This is a simple stack used by the serialization
         self.__tag_stack = {}
         
-        # Callbacks 
-        self.__refresh_cb = None  # refresh the editor window
-        self.open_task            = None # open another task
-        self.new_subtask_callback = None # create a subtask
-        self.get_subtasktitle     = None
-        
         #Signals
         self.connect('motion-notify-event'   , self._motion)
         self.connect('focus-out-event'       , lambda w, e: self.table.foreach(self.__tag_reset, e.window))
@@ -114,6 +106,11 @@ class TaskView(gtk.TextView):
         self.get_subtasks = None
         self.refresh_browser = None
         self.remove_subtask =None
+        self.__refresh_cb = None  # refresh the editor window
+        self.open_task            = None # open another task
+        self.new_subtask_callback = None # create a subtask
+        self.get_subtasktitle     = None
+        self.save_task = None #This will save the task without refreshing all
         
         #The signal emitted each time the buffer is modified
         #Putting it at the end to avoid doing it too much when starting
@@ -166,6 +163,9 @@ class TaskView(gtk.TextView):
     def refresh_browser_callback(self,funct) :
         self.refresh_browser = funct
     
+    def save_task_callback(self,funct) :
+        self.save_task = funct
+    
     #Buffer related functions
     #Those functions are higly related and should always be symetrical
     #See also the serializing functions
@@ -217,10 +217,14 @@ class TaskView(gtk.TextView):
         texttag = buff.create_tag(None,**self.get_property('tag'))#pylint: disable-msg=W0142
         texttag.set_data('is_tag', True)
         texttag.set_data('tagname',tag)
-        #This line if for iter
-        #buff.apply_tag(texttag,s,e)
         #This one is for marks
         self.__apply_tag_to_mark(s,e,tag=texttag)
+    
+    #Insert a list of subtasks at the end of the buffer
+    def insert_subtasks(self,st_list) :
+        for tid in st_list :
+            line_nbr = self.buff.get_end_iter().get_line()
+            self.write_subtask(self.buff,line_nbr,tid)
 
         
  ##### The "Get text" group #########
@@ -289,11 +293,9 @@ class TaskView(gtk.TextView):
         
         #Now we apply the tag tag to the marks
         for t in self.get_tagslist() :
-            if t and t[0] != '@' :
-                t = "@%s"%t
             start_mark = buff.get_mark(t)
             end_mark = buff.get_mark("/%s"%t)
-            #print "applying %s to %s - %s"%(t,start_mark,end_mark)
+            # "applying %s to %s - %s"%(t,start_mark,end_mark)
             if start_mark and end_mark :
                 self.apply_tag_tag(buff,t,start_mark,end_mark)
         
@@ -302,6 +304,9 @@ class TaskView(gtk.TextView):
         #If tags have been modified, we update the browser
         if tags_before != self.get_tagslist() :
             self.refresh_browser()
+        #Else we save the task anyway (but without refreshing all)
+        elif self.save_task :
+            self.save_task()
 
     #Detect tags in buff in the regio between start iter and end iter
     def _detect_tag(self,buff,start,end) :
@@ -311,21 +316,28 @@ class TaskView(gtk.TextView):
         table = buff.get_tag_table()
         old_tags = []
         new_tags = []
-        while (it.get_offset() <= end.get_offset()) and (it.get_char() != '\0'):
+        #We must be strictly < than the end_offset. If not, we might
+        #found the beginning of a tag on the nextline
+        while (it.get_offset() < end.get_offset()) and (it.get_char() != '\0'):
             if it.begins_tag() :
                 tags = it.get_tags()
                 for ta in tags :
                     #removing deleted tags
                     if ta.get_data('is_tag') :
-                        #We whould remove the "@" from the tag
                         tagname = ta.get_data('tagname')
-                        old_tags.append(tagname[1:])
+                        old_tags.append(tagname)
                         table.remove(ta)
                         #Removing the marks if they exist
-                        if buff.get_mark(tagname) :
-                            buff.delete_mark_by_name(tagname)
-                        if buff.get_mark("%s"%tagname) :
-                            buff.delete_mark_by_name("/%s"%tagname)
+                        mark1 = buff.get_mark(tagname)
+                        if mark1 :
+                            offset1 = buff.get_iter_at_mark(mark1).get_offset()
+                            if start.get_offset() <= offset1 <= end.get_offset() :
+                                buff.delete_mark_by_name(tagname)
+                        mark2 = buff.get_mark("%s"%tagname)
+                        if mark2 :
+                            offset2 = buff.get_iter_at_mark(mark2).get_offset()
+                            if start.get_offset() <= offset2 <= end.get_offset():
+                                buff.delete_mark_by_name("/%s"%tagname)
             it.forward_char()
 
         # Set iterators for word
@@ -362,10 +374,9 @@ class TaskView(gtk.TextView):
                         buff.create_mark(my_word,word_start,True)
                         buff.create_mark("/%s"%my_word,word_end,False)
                         #adding tag to a local list
-                        new_tags.append(my_word[1:])
-                        #TODO : Keeping the @ is better 
+                        new_tags.append(my_word)
                         #adding tag to the model
-                        self.add_tag_callback(my_word[1:])
+                        self.add_tag_callback(my_word)
     
                 # We set new word boundaries
                 word_start = char_end.copy()

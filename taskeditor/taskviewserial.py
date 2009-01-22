@@ -179,7 +179,7 @@ class Unserializer :
                             self.insert_tag(buf,text,itera)
                             #We remove the added tag from the tag list
                             #of known tag for this task
-                            taglist2.append(text[1:])
+                            taglist2.append(text)
                     else :
                         self.parsexml(buf,itera,n)
                         s = buf.get_iter_at_mark(start)
@@ -203,7 +203,7 @@ class Unserializer :
             self.tv.insert_at_mark(buf,end,"\n")
         for t in taglist :
             it = buf.get_iter_at_mark(end)
-            self.insert_tag(buf,"@%s"%t,it)
+            self.insert_tag(buf,t,it)
             self.tv.insert_at_mark(buf,end,", ")
         buf.delete_mark(start)
         buf.delete_mark(end)

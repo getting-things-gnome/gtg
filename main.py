@@ -47,10 +47,13 @@ class Gtg:
         #TODO : if we have no backend, we create an empty one using default backend
         #Currently we will use bl to build a fake backend list of dic
         backend_list = []
+        pid = 1
         for i in bl :
             dic = {}
             dic["filename"] = i
             dic["module"] = "localfile"
+            dic["pid"] = str(pid)
+            pid += 1
             backend_list.append(dic)
         #End of the fake list
         
@@ -59,19 +62,16 @@ class Gtg:
         
         #Now we import all the backends
         for b in backend_list :
-            #We need to remove the module name from the dictionnary
             #We dynamically import modules needed
             module_name = "backends.%s"%b["module"]
             module = __import__(module_name)
             classobj = getattr(module, b["module"])
+            back = classobj.Backend(b)
+            ds.register_backend(back,b)
             
-            back = classobj.Backend(b,ds)
-            ds.register_backend(back)
-            
-        ds.load_data()
-
         # Launch task browser
-        tb = TaskBrowser(ds)
+        req = ds.get_requester()
+        tb = TaskBrowser(req)
         tb.main()
 
         # Ideally we should load window geometry configuration from a config.

@@ -3,10 +3,9 @@ import xml.dom.minidom
 
 from tools import cleanxml
 
-#Take a requester, an XML node and return a Task.
-def task_from_xml(req,xmlnode) :
-    cur_id = "%s" %xmlnode.getAttribute("id")
-    cur_task = req.get_task(cur_id)
+#Take an empty task, an XML node and return a Task.
+def task_from_xml(task,xmlnode) :
+    cur_task = task
     cur_stat = "%s" %xmlnode.getAttribute("status")
     donedate = cleanxml.readTextNode(xmlnode,"donedate")
     cur_task.set_status(cur_stat,donedate=donedate)
@@ -28,7 +27,8 @@ def task_from_xml(req,xmlnode) :
     cur_tags = xmlnode.getAttribute("tags").replace(' ','').split(",")
     if "" in cur_tags: cur_tags.remove("")
     for tag in cur_tags: cur_task.add_tag(tag)
-    cur_task.sync()
+    #Why should we sync here ? It makes no sense
+    #cur_task.sync()
     
     return cur_task
 

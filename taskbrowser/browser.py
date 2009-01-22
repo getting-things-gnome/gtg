@@ -4,7 +4,6 @@ import pygtk
 pygtk.require('2.0')
 import gobject
 import gtk.glade
-import pango
 
 #our own imports
 from taskeditor.editor       import TaskEditor
@@ -17,7 +16,7 @@ from taskbrowser import GnomeConfig
 
 class TaskBrowser:
 
-    def __init__(self, datastore):
+    def __init__(self, requester):
         
         #Set the Glade file
         self.gladefile = GnomeConfig.GLADE_FILE  
@@ -54,9 +53,8 @@ class TaskBrowser:
         self.wTree.signal_autoconnect(dic)
         self.selected_rows = None
         
-        self.ds = datastore
         self.workview = False
-        self.req = self.ds.get_requester()
+        self.req = requester
         
         #The tview and their model
         self.taskdone_tview = self.wTree.get_widget("taskdone_tview")
@@ -200,15 +198,16 @@ class TaskBrowser:
         for tag in tags:
             color = tag.get_attribute("color")
             count = len(self.req.get_tasks_list(tags=[tag]))
-            self.tag_ts.append([tag,color,tag.get_name(), str(count), False])
+            #We display the tags without the "@" (but we could)
+            self.tag_ts.append([tag,color,tag.get_name()[1:], str(count), False])
             
         #We reselect the selected tag
         if t_path :
             for i in t_path :
                 self.tag_tview.get_selection().select_path(i)
 
-    def tag_separator_filter(self, model, iter, user_data=None):
-        return model.get_value(iter, self.TAGS_MODEL_SEP)
+    def tag_separator_filter(self, model, itera, user_data=None):#pylint: disable-msg=W0613
+        return model.get_value(itera, self.TAGS_MODEL_SEP)
         
 
     #refresh list build/refresh your TreeStore of task
@@ -224,13 +223,11 @@ class TaskBrowser:
         self.task_ts.clear()
         self.taskdone_ts.clear()
         tag_list,notag_only = self.get_selected_tags()
-        #We display only tasks of the active projects
-        p_list = self.req.get_projects_list()
         nbr_of_tasks = 0
         
         #We build the active tasks pane
         if self.workview :
-            tasks = self.req.get_active_tasks_list(projects=p_list,tags=tag_list,\
+            tasks = self.req.get_active_tasks_list(tags=tag_list,\
                         notag_only=notag_only,workable=True, started_only=False)
             for tid in tasks :
                 self.add_task_tree_to_list(self.task_ts,tid,None,selected_uid,\
@@ -239,12 +236,10 @@ class TaskBrowser:
                             
         else :
             #building the classical treeview
-            active_root_tasks = self.req.get_active_tasks_list(projects=p_list,\
-                                tags=tag_list, notag_only=notag_only,\
-                                is_root=True, started_only=False)
-            active_tasks = self.req.get_active_tasks_list(projects=p_list,\
-                            tags=tag_list, notag_only=notag_only,\
-                            is_root=False, started_only=False)
+            active_root_tasks = self.req.get_active_tasks_list(tags=tag_list,\
+                            notag_only=notag_only, is_root=True, started_only=False)
+            active_tasks = self.req.get_active_tasks_list(tags=tag_list,\
+                            notag_only=notag_only, is_root=False, started_only=False)
             for tid in active_root_tasks :
                 self.add_task_tree_to_list(self.task_ts, tid, None,\
                                 selected_uid,active_tasks=active_tasks)
@@ -260,7 +255,7 @@ class TaskBrowser:
         self.window.set_title("Getting Things Gnome! %s"%parenthesis)
         
         #We build the closed tasks pane
-        closed_tasks = self.req.get_closed_tasks_list(projects=p_list,tags=tag_list,\
+        closed_tasks = self.req.get_closed_tasks_list(tags=tag_list,\
                                                     notag_only=notag_only)
         for tid in closed_tasks :
             t = self.req.get_task(tid)
@@ -354,23 +349,23 @@ class TaskBrowser:
         color_dict  = {"red":0,"green":0,"blue":0}
         for my_tag in tags:
             my_color_str = my_tag.get_attribute("color")
-            if my_color_str!=None:
+            if my_color_str :
                 my_color = gtk.gdk.color_parse(my_color_str)
                 color_count = color_count + 1
                 color_dict["red"]   = color_dict["red"]   + my_color.red
                 color_dict["green"] = color_dict["green"] + my_color.green
                 color_dict["blue"]  = color_dict["blue"]  + my_color.blue
-        if color_count!=0:
-            red        = color_dict["red"]   / color_count
-            green      = color_dict["green"] / color_count
-            blue       = color_dict["blue"]  / color_count
+        if color_count != 0:
+            red        = int(color_dict["red"]   / color_count)
+            green      = int(color_dict["green"] / color_count)
+            blue       = int(color_dict["blue"]  / color_count)
             brightness = (red+green+blue) / 3.0
-            while brightness<55000:
+            while brightness < 55000:
                 red        = int( (red   + 65535) / 2)
                 green      = int( (green + 65535) / 2)
                 blue       = int( (blue  + 65535) / 2)
                 brightness = (red+green+blue) / 3.0
-            my_color=gtk.gdk.Color(red, green, blue).to_string()
+            my_color = gtk.gdk.Color(red, green, blue).to_string()
         
         if treeview and not parent and len(task.get_subtasks()) == 0:
             my_row = self.task_ts.insert_before(None, tree_store.get_iter_first(), row=[tid,title,duedate,left,tags,my_color])
@@ -419,11 +414,8 @@ class TaskBrowser:
             return 1
             
     def on_add_task(self,widget) : #pylint: disable-msg=W0613
-        #We have to select the project to which we should add a task
-        #Currently, we take the first project as the default
-        p = self.req.get_projects_list()[0]
         tags,notagonly = self.get_selected_tags() #pylint: disable-msg=W0612
-        task = self.req.new_task(p,tags=tags)
+        task = self.req.new_task(tags=tags,newtask=True)
         uid = task.get_id()
         self.open_task(uid)
     
@@ -493,7 +485,6 @@ class TaskBrowser:
             else :
                 self.path_source = None
 
-        #print "row inserted"
         self.path_target = path
         tid = tree.get(it,0)
         tree.foreach(findsource,[tid,it])
@@ -519,15 +510,15 @@ class TaskBrowser:
                 self.tid_source_parent = sparent
                 self.tid_target_parent = tparent
                 self.tid_tomove = tid[0]
-                #print "row %s will move from %s to %s"%(self.tid_tomove,\
+                # "row %s will move from %s to %s"%(self.tid_tomove,\
                 #          self.tid_source_parent,self.tid_target_parent)
     def row_deleted(self,tree,path,data=None) : #pylint: disable-msg=W0613
         #If we are removing the path source guessed during the insertion
         #It confirms that we are in a drag-n-drop
         if path in self.drag_sources and self.tid_tomove :
             self.drag_sources.remove(path)
-            #print "row %s moved from %s to %s"%(self.tid_tomove,\
-            #              self.tid_source_parent,self.tid_target_parent)
+            # "row %s moved from %s to %s"%(self.tid_tomove,\
+            #             self.tid_source_parent,self.tid_target_parent)
             tomove = self.req.get_task(self.tid_tomove)
             tomove.remove_parent(self.tid_source_parent)
             tomove.add_parent(self.tid_target_parent)
