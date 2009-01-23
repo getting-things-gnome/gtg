@@ -35,10 +35,12 @@ def get_type() :
 #None or do not exist in the dictionnary.
 class Backend :
     def __init__(self,parameters) :
-        zefile = parameters["filename"]
+        if parameters.has_key("filename") :
+            zefile = parameters["filename"]
         #If zefile is None, we create a new file
-        if not zefile :
+        else :
             zefile = "%s.xml" %(uuid.uuid4())
+            parameters["filename"] = zefile
         #For the day we want to open files somewhere else
         default_folder = True
         if default_folder :
