@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Fri Jan 23 11:41:47 2009 -->
+<!--Generated with glade3 3.4.5 on Fri Jan 23 16:15:29 2009 -->
 <glade-interface>
   <widget class="GtkWindow" id="MainWindow">
     <property name="visible">True</property>
@@ -97,6 +97,14 @@
                         <property name="label" translatable="yes">_Closed Tasks</property>
                         <property name="use_underline">True</property>
                         <signal name="toggled" handler="on_view_closed_toggled"/>
+                      </widget>
+                    </child>
+                    <child>
+                      <widget class="GtkCheckMenuItem" id="view_quickadd">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">Quick Add</property>
+                        <property name="use_underline">True</property>
+                        <signal name="toggled" handler="on_view_quickadd_toggled"/>
                       </widget>
                     </child>
                   </widget>
@@ -381,13 +389,54 @@
           </packing>
         </child>
         <child>
+          <widget class="GtkHBox" id="quickadd_pane">
+            <property name="visible">True</property>
+            <property name="spacing">5</property>
+            <child>
+              <widget class="GtkEntry" id="quickadd_field">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="width_chars">40</property>
+                <signal name="activate" handler="on_quickadd_field_activate"/>
+              </widget>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="padding">3</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkButton" id="quickadd_button">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="has_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="label" translatable="yes">Quick Task</property>
+                <property name="response_id">0</property>
+                <signal name="clicked" handler="on_quickadd_button_activate"/>
+              </widget>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="padding">13</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </widget>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
+            <property name="position">3</property>
+          </packing>
+        </child>
+        <child>
           <widget class="GtkStatusbar" id="statusbar1">
             <property name="visible">True</property>
             <property name="spacing">2</property>
           </widget>
           <packing>
             <property name="expand">False</property>
-            <property name="position">3</property>
+            <property name="position">4</property>
           </packing>
         </child>
       </widget>
