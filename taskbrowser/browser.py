@@ -83,7 +83,7 @@ class TaskBrowser:
         
         #The buttons
         self.toggle_workview = self.wTree.get_widget("workview_toggle")
-        self.quickadd = self.wTree.get_widget("quickadd_field")
+        self.quickadd_entry = self.wTree.get_widget("quickadd_field")
         
         #The panes
         self.sidebar = self.wTree.get_widget("sidebar")
@@ -228,12 +228,12 @@ class TaskBrowser:
             self.quickadd_pane.hide()
             
     def quickadd(self,widget) :
-        text = self.quickadd.get_text()
+        text = self.quickadd_entry.get_text()
         if text :
             tags,notagonly = self.get_selected_tags() #pylint: disable-msg=W0612
             task = self.req.new_task(tags=tags,newtask=True)
             task.set_title(text)
-            self.quickadd.set_text('')
+            self.quickadd_entry.set_text('')
             self.refresh_tb()
 
     #If a task asked for the refresh, we don't refresh it to avoid a loop

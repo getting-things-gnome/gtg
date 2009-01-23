@@ -45,7 +45,7 @@ class CoreConfig:
 
         # Read configuration file, if it does not exist, create one
         conffile = self.DATA_DIR + self.DATA_FILE
-        doc, configxml = cleanxml.openxmlfile(conffile,"config")
+        doc, configxml = cleanxml.openxmlfile(conffile,"config") #pylint: disable-msg=W0612
         xmlproject = doc.getElementsByTagName("backend")
         # collect configred backends
         pid = 1
