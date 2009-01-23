@@ -57,6 +57,13 @@ class Gtg:
             backend_list.append(dic)
         #End of the fake list
         
+        #If no backend available, we create a new using localfile
+        if len(backend_list) == 0 :
+            dic = {}
+            dic["module"] = "localfile"
+            dic["pid"] = 1
+            backend_list.append(dic)
+        
         # Load data store
         ds = DataStore()
         
