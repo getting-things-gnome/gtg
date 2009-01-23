@@ -23,11 +23,10 @@ class CoreConfig:
     #Don't forget the "/" at the end.
     DATA_DIR = os.path.join(xdg_data_home,'gtg/')
     DATA_FILE = "projects.xml"
-    DATA_FILE_TEMPLATE = "<?xml version=\"1.0\" ?><config></config>"
     #We currently have no real config
     
     def get_backends_list(self) :
-        backends_fn = []
+        backend_fn = []
 
         # Check if config dir exists, if not create it
         if not os.path.exists(self.DATA_DIR):
@@ -39,10 +38,50 @@ class CoreConfig:
         xmlproject = doc.getElementsByTagName("backend")
         # collect configred backends
         for xp in xmlproject:
-            zefile = str(xp.getAttribute("filename"))
-            backends_fn.append(str(zefile))
+            dic = {}
+            pid = 1
+            #We have some retrocompatibility code
+            #A backend without the module attribute is pre-rev.105
+            #and is considered as "filename"
+            if xp.hasAttribute("module") :
+                dic["module"] = str(xp.getAttribute("module"))
+                dic["pid"] = str(xp.getAttribute("pid"))
+                
+            #The following else could be remove later
+            else :
+                dic["module"] = "localfile"
+                dic["pid"] = str(pid)
             
-        return backends_fn
+            dic["xmlobject"] = xp
+                
+            pid += 1
+            backend_fn.append(dic)
+                
+        #If no backend available, we create a new using localfile
+        if len(backend_fn) == 0 :
+            dic = {}
+            dic["module"] = "localfile"
+            dic["pid"] = 1
+            backend_fn.append(dic)
+            
+        #Now that the backend list is build, we will construct them
+        
+        for b in backend_fn :
+            #We dynamically import modules needed
+            module_name = "backends.%s"%b["module"]
+            module = __import__(module_name)
+            classobj = getattr(module, b["module"])
+            back = classobj.Backend(b)
+            #We put the backend itself in the dic
+            b["backend"] = back
+            b["parameters"] = classobj.get_parameters()
+            xp = b.pop("xmlobject")
+            #We will try to get the parameters
+            for key in b["parameters"] :
+                if xp.hasAttribute(key) :
+                    b[key] = str(xp.hasAttribute(key))
+            
+        return backend_fn
   
     
     def save_datastore(self,ds) :

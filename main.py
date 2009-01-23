@@ -41,40 +41,12 @@ class Gtg:
  
     def main(self):
         config = CoreConfig()
-        bl = config.get_backends_list()
-        #TODO : list available backends
-        #TODO : get backend list
-        #TODO : if we have no backend, we create an empty one using default backend
-        #Currently we will use bl to build a fake backend list of dic
-        backend_list = []
-        pid = 1
-        for i in bl :
-            dic = {}
-            dic["filename"] = i
-            dic["module"] = "localfile"
-            dic["pid"] = str(pid)
-            pid += 1
-            backend_list.append(dic)
-        #End of the fake list
-        
-        #If no backend available, we create a new using localfile
-        if len(backend_list) == 0 :
-            dic = {}
-            dic["module"] = "localfile"
-            dic["pid"] = 1
-            backend_list.append(dic)
-        
+        backends_list = config.get_backends_list()
         # Load data store
         ds = DataStore()
         
-        #Now we import all the backends
-        for b in backend_list :
-            #We dynamically import modules needed
-            module_name = "backends.%s"%b["module"]
-            module = __import__(module_name)
-            classobj = getattr(module, b["module"])
-            back = classobj.Backend(b)
-            ds.register_backend(back,b)
+        for backend_dic in backends_list :
+            ds.register_backend(backend_dic)
             
         # Launch task browser
         req = ds.get_requester()

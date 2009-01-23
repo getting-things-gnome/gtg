@@ -10,22 +10,26 @@ BACKUP_NBR = 3
 
 #Return the name of the backend as it should be displayed in the UI
 def get_name() :
-    return "backend name"
+    return "Local File"
     
 #Return a description of the backend
 def get_description() :
-    return "description"
+    return "Your tasks are saved in an XML file located in your HOME folder"
     
 #Return a dictionnary of parameters. Keys should be strings and
 #are the name of the parameter.
 #Value are string with value : string, password, int, bool
 #and are an information about the type of the parameter
+#Currently, only string is supported
 def get_parameters() :
-    return {}
+    dic = {}
+    dic["filename"] = "string"
+    return dic
 
 def get_features() :
     return {}
 
+#Types is one of : readwrite, readonly,import,export
 def get_type() :
     return "readwrite"
 

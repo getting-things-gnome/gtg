@@ -76,11 +76,14 @@ class DataStore:
     def get_requester(self) :
         return self.requester
 
-    def register_backend(self, backend,dic):
-        pid = dic["pid"]
-        source = TaskSource(backend,dic)
-        if backend != None:
+    def register_backend(self, dic):
+        if dic.has_key("backend") :
+            pid = dic["pid"]
+            backend = dic["backend"]
+            source = TaskSource(backend,dic)
             self.backends[pid] = source
+        else :
+            print "Register a dic without backend key:  BUG"
 
     def unregister_backend(self, backend):
         print "unregister backend %s not implemented" %backend
