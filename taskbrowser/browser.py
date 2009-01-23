@@ -14,6 +14,11 @@ from taskbrowser import GnomeConfig
 
 #=== MAIN CLASS ================================================================
 
+#Some default preferences that we should save in a file
+WORKVIEW = False
+SIDEBAR = True
+CLOSED_PANE = True
+
 class TaskBrowser:
 
     def __init__(self, requester):
@@ -48,7 +53,9 @@ class TaskBrowser:
                 "on_tag_treeview_button_press_event" : self.on_tag_treeview_button_press_event,
                 "on_colorchooser_activate" : self.on_colorchooser_activate,
                 "on_workview_toggled" : self.on_workview_toggled,
-                "on_view_workview_toggled": self.on_workview_toggled
+                "on_view_workview_toggled": self.on_workview_toggled,
+                "on_view_closed_toggled" : self.on_closed_toggled,
+                "on_view_sidebar_toggled" : self.on_sidebar_toggled
 
               }
         self.wTree.signal_autoconnect(dic)
@@ -72,6 +79,12 @@ class TaskBrowser:
         
         #The buttons
         self.toggle_workview = self.wTree.get_widget("workview_toggle")
+        
+        
+        #The panes
+        self.sidebar = self.wTree.get_widget("sidebar")
+        self.closed_pane = self.wTree.get_widget("closed_pane")
+
         
         #this is our manual drag-n-drop handling
         self.task_ts.connect("row-changed",self.row_inserted,"insert")
@@ -114,6 +127,11 @@ class TaskBrowser:
         self.tid_tomove = None
         self.tid_source_parent = None
         self.tid_target_parent = None
+        
+        #setting the default
+        self.menu_view_workview.set_active(WORKVIEW)
+        self.wTree.get_widget("view_sidebar").set_active(SIDEBAR)
+        self.wTree.get_widget("view_closed").set_active(CLOSED_PANE)
  
     def main(self):
         #Here we will define the main TaskList interface
@@ -184,6 +202,18 @@ class TaskBrowser:
                 self.toggle_workview.set_active(tobeset)
             self.workview = tobeset
             self.refresh_tb()
+    
+    def on_sidebar_toggled(self,widget) :
+        if widget.get_active() :
+            self.sidebar.show()
+        else :
+            self.sidebar.hide()
+    
+    def on_closed_toggled(self,widget) :
+        if widget.get_active() :
+            self.closed_pane.show()
+        else :
+            self.closed_pane.hide()
 
     #If a task asked for the refresh, we don't refresh it to avoid a loop
     def refresh_tb(self,fromtask=None):
