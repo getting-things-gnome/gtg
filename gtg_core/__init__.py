@@ -24,7 +24,7 @@
 #Requester also provides an interface for the tagstore
 
 #=== IMPORT ====================================================================
-import os, xml.dom.minidom
+import os
 from xdg.BaseDirectory import *
 from tools import cleanxml
 
