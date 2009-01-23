@@ -47,7 +47,8 @@ class TaskBrowser:
                 "on_delete_cancel"    : lambda x : x.hide,
                 "on_tag_treeview_button_press_event" : self.on_tag_treeview_button_press_event,
                 "on_colorchooser_activate" : self.on_colorchooser_activate,
-                "on_workview_toggled" : self.on_workview_toggled
+                "on_workview_toggled" : self.on_workview_toggled,
+                "on_view_workview_toggled": self.on_workview_toggled
 
               }
         self.wTree.signal_autoconnect(dic)
@@ -65,6 +66,12 @@ class TaskBrowser:
         self.task_ts        = gtk.TreeStore(gobject.TYPE_PYOBJECT,str,str,str,gobject.TYPE_PYOBJECT,str)
         #Be sure that we are reorderable (not needed normaly)
         self.task_tview.set_reorderable(True)
+        
+        #The menu items widget
+        self.menu_view_workview = self.wTree.get_widget("view_workview")
+        
+        #The buttons
+        self.toggle_workview = self.wTree.get_widget("workview_toggle")
         
         #this is our manual drag-n-drop handling
         self.task_ts.connect("row-changed",self.row_inserted,"insert")
@@ -165,8 +172,18 @@ class TaskBrowser:
         widget.destroy()
     
     def on_workview_toggled(self,widget) : #pylint: disable-msg=W0613
-        self.workview = not self.workview
-        self.refresh_tb()
+        #We have to be careful here to avoid a loop of signals
+        menu_state = self.menu_view_workview.get_active()
+        button_state = self.toggle_workview.get_active()
+        #We do something only if both widget are in different state
+        if menu_state != button_state :
+            tobeset = not self.workview
+            if widget == self.toggle_workview :
+                self.menu_view_workview.set_active(tobeset)
+            elif widget == self.menu_view_workview :
+                self.toggle_workview.set_active(tobeset)
+            self.workview = tobeset
+            self.refresh_tb()
 
     #If a task asked for the refresh, we don't refresh it to avoid a loop
     def refresh_tb(self,fromtask=None):

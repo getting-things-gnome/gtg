@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Wed Jan 21 19:58:34 2009 -->
+<!--Generated with glade3 3.4.5 on Fri Jan 23 11:18:55 2009 -->
 <glade-interface>
   <widget class="GtkWindow" id="MainWindow">
     <property name="visible">True</property>
@@ -74,6 +74,29 @@
                         <property name="visible">True</property>
                         <property name="label" translatable="yes">_Work view</property>
                         <property name="use_underline">True</property>
+                        <signal name="toggled" handler="on_view_workview_toggled"/>
+                      </widget>
+                    </child>
+                    <child>
+                      <widget class="GtkSeparatorMenuItem" id="separation">
+                        <property name="visible">True</property>
+                        <property name="use_underline">True</property>
+                      </widget>
+                    </child>
+                    <child>
+                      <widget class="GtkCheckMenuItem" id="view_sidebar">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">_Sidebar</property>
+                        <property name="use_underline">True</property>
+                        <signal name="toggled" handler="on_view_sidebar_toggled"/>
+                      </widget>
+                    </child>
+                    <child>
+                      <widget class="GtkCheckMenuItem" id="view_closed">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">_Closed Tasks</property>
+                        <property name="use_underline">True</property>
+                        <signal name="toggled" handler="on_view_closed_toggled"/>
                       </widget>
                     </child>
                   </widget>
@@ -249,7 +272,7 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkToggleToolButton" id="Work View">
+              <widget class="GtkToggleToolButton" id="workview_toggle">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">Work View</property>
                 <property name="stock_id">gtk-index</property>
