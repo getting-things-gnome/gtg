@@ -37,9 +37,9 @@ class CoreConfig:
         doc, configxml = cleanxml.openxmlfile(conffile,"config")
         xmlproject = doc.getElementsByTagName("backend")
         # collect configred backends
+        pid = 1
         for xp in xmlproject:
             dic = {}
-            pid = 1
             #We have some retrocompatibility code
             #A backend without the module attribute is pre-rev.105
             #and is considered as "filename"
@@ -71,15 +71,15 @@ class CoreConfig:
             module_name = "backends.%s"%b["module"]
             module = __import__(module_name)
             classobj = getattr(module, b["module"])
-            back = classobj.Backend(b)
-            #We put the backend itself in the dic
-            b["backend"] = back
             b["parameters"] = classobj.get_parameters()
             xp = b.pop("xmlobject")
             #We will try to get the parameters
             for key in b["parameters"] :
                 if xp.hasAttribute(key) :
-                    b[key] = str(xp.hasAttribute(key))
+                    b[key] = str(xp.getAttribute(key))
+            back = classobj.Backend(b)
+            #We put the backend itself in the dic
+            b["backend"] = back
             
         return backend_fn
   
@@ -91,11 +91,12 @@ class CoreConfig:
             #FIXME : we have to be generic here !
             s = s + "\t<backend filename=\"%s\"/>\n" % param["filename"]
             #Saving all the projects at close
-            b.quit()
+            #b.quit()
         s = s + "</config>\n"
-        f = open(self.DATA_DIR + self.DATA_FILE,mode='w')
-        f.write(s)
-        f.close()
-        #Saving the tagstore
-        ts = ds.get_tagstore()
-        ts.save()
+        print s
+#        f = open(self.DATA_DIR + self.DATA_FILE,mode='w')
+#        f.write(s)
+#        f.close()
+#        #Saving the tagstore
+#        ts = ds.get_tagstore()
+#        ts.save()
