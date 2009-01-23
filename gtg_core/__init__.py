@@ -34,22 +34,13 @@ class CoreConfig:
             os.mkdir(self.DATA_DIR)
 
         # Read configuration file, if it does not exist, create one
-        if os.path.exists(self.DATA_DIR + self.DATA_FILE) :
-            f = open(self.DATA_DIR + self.DATA_FILE,mode='r')
-            # sanitize the pretty XML
-            doc = xml.dom.minidom.parse(self.DATA_DIR + self.DATA_FILE)
-            cleanxml.cleanDoc(doc,"\t","\n")
-            xmlproject = doc.getElementsByTagName("backend")
-            # collect configred backends
-            for xp in xmlproject:
-                zefile = str(xp.getAttribute("filename"))
-                backends_fn.append(str(zefile))
-            f.close()
-        else:
-            print "No config file found! Creating one."
-            f = open(self.DATA_DIR + self.DATA_FILE,mode='w')
-            f.write(self.DATA_FILE_TEMPLATE)
-            f.close()
+        conffile = self.DATA_DIR + self.DATA_FILE
+        doc, configxml = cleanxml.openxmlfile(conffile,"config")
+        xmlproject = doc.getElementsByTagName("backend")
+        # collect configred backends
+        for xp in xmlproject:
+            zefile = str(xp.getAttribute("filename"))
+            backends_fn.append(str(zefile))
             
         return backends_fn
   
