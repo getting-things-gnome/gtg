@@ -4,13 +4,24 @@
 
 #datastore.py
 #------------
-#datastore contain the list of projects currently in use by the user.
-#For each project, datastore link a backend.
-
+#datastore is the heart of GTG. It contains a list of "TagSource".
+#Each TagSource is a proxy between a backend and the datastore itself
+#
+#tagstore.py
+#-----------
+#Tagstore is to tag as datastore is to task. Of course, the tagstore is easier
+#The Tag object is also provided in this file.
+#
 #task.py
 #-------
-#task.py contains the Task and Project object. A task represent, guess what,
-#a task. A project is a group of task meant to achieve one goal.
+#task.py contains the Task. A task represent, guess what,a task. 
+#
+#requester.py
+#---------
+#In order to not interact directly with the datastore, we provide "requesters"
+#The requester is only an interface and there can be as many requester as 
+#you want as long as they are all from the same datastore.
+#Requester also provides an interface for the tagstore
 
 #=== IMPORT ====================================================================
 import os, xml.dom.minidom
@@ -46,14 +57,12 @@ class CoreConfig:
             if xp.hasAttribute("module") :
                 dic["module"] = str(xp.getAttribute("module"))
                 dic["pid"] = str(xp.getAttribute("pid"))
-                
-            #The following else could be remove later
+            #The following "else" could be removed later
             else :
                 dic["module"] = "localfile"
                 dic["pid"] = str(pid)
             
             dic["xmlobject"] = xp
-                
             pid += 1
             backend_fn.append(dic)
                 
