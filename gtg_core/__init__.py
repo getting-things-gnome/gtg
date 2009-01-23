@@ -65,10 +65,11 @@ class CoreConfig:
             backend_fn.append(dic)
             
         #Now that the backend list is build, we will construct them
-        
+        #Remember that b is a dictionnary
         for b in backend_fn :
             #We dynamically import modules needed
             module_name = "backends.%s"%b["module"]
+            #FIXME : we should throw an error if the backend is not importable
             module = __import__(module_name)
             classobj = getattr(module, b["module"])
             b["parameters"] = classobj.get_parameters()
@@ -85,18 +86,22 @@ class CoreConfig:
   
     
     def save_datastore(self,ds) :
-        s = "<?xml version=\"1.0\" ?><config>\n"
+        doc,xmlconfig = cleanxml.emptydoc("config")
+    
         for b in ds.get_all_backends():
             param = b.get_parameters()
-            #FIXME : we have to be generic here !
-            s = s + "\t<backend filename=\"%s\"/>\n" % param["filename"]
+            t_xml = doc.createElement("backend")
+            for key in param :
+                #We dont want parameters,backend,xmlobject
+                if key not in ["backend","parameters","xmlobject"] :
+                    t_xml.setAttribute(key,param[key])
             #Saving all the projects at close
-            #b.quit()
-        s = s + "</config>\n"
-        print s
-#        f = open(self.DATA_DIR + self.DATA_FILE,mode='w')
-#        f.write(s)
-#        f.close()
-#        #Saving the tagstore
-#        ts = ds.get_tagstore()
-#        ts.save()
+            xmlconfig.appendChild(t_xml)
+            b.quit()
+
+        conffile = self.DATA_DIR + self.DATA_FILE
+        cleanxml.savexml(conffile,doc)
+
+        #Saving the tagstore
+        ts = ds.get_tagstore()
+        ts.save()
