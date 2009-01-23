@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <tagstore>
-	<tag color="#FF0B0B" name="@autro"/>
 	<tag color="#404040" name="@vampire"/>
-	<tag color="#04FFCE" name="@tag"/>
 	<tag color="#FFC7F7" name="@aze"/>
+	<tag color="#04FFCE" name="@tag"/>
+	<tag color="#FF0B0B" name="@autro"/>
 </tagstore>
