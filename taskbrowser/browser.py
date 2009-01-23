@@ -240,7 +240,7 @@ class TaskBrowser:
 
         tags = self.req.get_used_tags()
         
-        tags.sort(cmp=lambda x,y: cmp(x.get_name(),y.get_name()))
+        tags.sort(cmp=lambda x,y: cmp(x.get_name().lower(),y.get_name().lower()))
 
         for tag in tags:
             color = tag.get_attribute("color")
@@ -360,7 +360,9 @@ class TaskBrowser:
                 tid = self.task_ts.get_value(itera, self.TASK_MODEL_OBJ)
                 task = self.req.get_task(tid)
                 self.selected_rows = itera
-                title = self.__build_task_title(task,extended=True)
+                # Extended title is temporarily disabled
+                #title = self.__build_task_title(task,extended=True)
+                title = self.__build_task_title(task,extended=False)
                 self.task_ts.set_value(self.selected_rows,self.TASK_MODEL_TITLE,title)
     
     def __build_task_title(self,task,extended=False):
@@ -407,7 +409,7 @@ class TaskBrowser:
             green      = int(color_dict["green"] / color_count)
             blue       = int(color_dict["blue"]  / color_count)
             brightness = (red+green+blue) / 3.0
-            while brightness < 55000:
+            while brightness < 60000:
                 red        = int( (red   + 65535) / 2)
                 green      = int( (green + 65535) / 2)
                 blue       = int( (blue  + 65535) / 2)
@@ -714,7 +716,7 @@ class TaskBrowser:
         tag_col.add_attribute         (render_tags, "tag_list", self.TASK_MODEL_TAGS)
         render_tags.set_property      ('xalign', 0.0)
         tag_col.set_resizable         (False)
-        tag_col.set_sort_column_id    (self.TASKS_TV_COL_TAG)
+        tag_col.set_sort_column_id    (self.TASK_MODEL_TAGS)
         tag_col.add_attribute         (render_tags, "cell-background", self.TASK_MODEL_BGCOL)
         self.task_tview.append_column (tag_col)
         
@@ -725,7 +727,7 @@ class TaskBrowser:
         title_col.pack_start         (render_text, expand=False)
         title_col.add_attribute      (render_text, "markup", self.TASK_MODEL_TITLE)
         title_col.set_resizable      (True)
-        title_col.set_sort_column_id (self.TASKS_TV_COL_TITLE)
+        title_col.set_sort_column_id (self.TASK_MODEL_TITLE)
         title_col.add_attribute      (render_text, "cell_background", self.TASK_MODEL_BGCOL)
         self.task_tview.append_column(title_col)
         
@@ -736,7 +738,7 @@ class TaskBrowser:
         ddate_col.pack_start         (render_text, expand=False)
         ddate_col.add_attribute      (render_text, "markup", self.TASK_MODEL_DDATE)
         ddate_col.set_resizable      (False)
-        ddate_col.set_sort_column_id (self.TASKS_TV_COL_DDATE)
+        ddate_col.set_sort_column_id (self.TASK_MODEL_DDATE)
         ddate_col.add_attribute      (render_text, "cell_background", self.TASK_MODEL_BGCOL)
         self.task_tview.append_column(ddate_col)
         
@@ -747,13 +749,13 @@ class TaskBrowser:
         dleft_col.pack_start         (render_text, expand=False)
         dleft_col.add_attribute      (render_text, "markup", self.TASK_MODEL_DLEFT)
         dleft_col.set_resizable      (False)
-        dleft_col.set_sort_column_id (self.TASKS_TV_COL_DLEFT)
+        dleft_col.set_sort_column_id (self.TASK_MODEL_DLEFT)
         dleft_col.add_attribute      (render_text, "cell_background", self.TASK_MODEL_BGCOL)
         self.task_tview.append_column(dleft_col)
 
         # Global treeview properties
         self.task_tview.set_property("expander-column", title_col)
-        self.task_tview.set_rules_hint(True)
+        self.task_tview.set_rules_hint(False)
        
     ######Closing the window
     def close(self,widget=None) : #pylint: disable-msg=W0613
