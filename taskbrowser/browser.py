@@ -73,8 +73,16 @@ class TaskBrowser:
         self.taskdone_ts    = gtk.TreeStore(gobject.TYPE_PYOBJECT, str,str,str)
         self.tag_tview      = self.wTree.get_widget("tag_tview")
         self.tag_ts         = gtk.ListStore(gobject.TYPE_PYOBJECT,str,str,str,bool)
+        # TASK MODEL:
+        # PYOBJECT:tid, STR:title, STR:due date string,
+        # STR:days left string, PYOBJECT:tags, str:my_color
         self.task_tview     = self.wTree.get_widget("task_tview")
-        self.task_ts        = gtk.TreeStore(gobject.TYPE_PYOBJECT,str,str,str,gobject.TYPE_PYOBJECT,str)
+        self.task_ts        = gtk.TreeStore( gobject.TYPE_PYOBJECT, \
+                                             str,                   \
+                                             str,                   \
+                                             str,                   \
+                                             gobject.TYPE_PYOBJECT, \
+                                             str)
         #Be sure that we are reorderable (not needed normaly)
         self.task_tview.set_reorderable(True)
         
@@ -104,12 +112,12 @@ class TaskBrowser:
         self.TAGS_TV_COL_TAG    = 1
         
         # Model constants
-        self.TASK_MODEL_OBJ   = 0
-        self.TASK_MODEL_TITLE = 1
-        self.TASK_MODEL_DDATE = 2
-        self.TASK_MODEL_DLEFT = 3
-        self.TASK_MODEL_TAGS  = 4
-        self.TASK_MODEL_BGCOL = 5
+        self.TASK_MODEL_OBJ       = 0
+        self.TASK_MODEL_TITLE     = 1
+        self.TASK_MODEL_DDATE_STR = 2
+        self.TASK_MODEL_DLEFT_STR = 3
+        self.TASK_MODEL_TAGS      = 4
+        self.TASK_MODEL_BGCOL     = 5
         
         self.TAGS_MODEL_OBJ   = 0
         self.TAGS_MODEL_COLOR = 1
@@ -409,9 +417,11 @@ class TaskBrowser:
             title = self.__build_task_title(task,extended=True)
         else :
             title = self.__build_task_title(task,extended=False)
-        duedate = task.get_due_date()
-        left    = task.get_days_left()
-        tags    = task.get_tags()
+
+        # Extract data
+        duedate_str = task.get_due_date()
+        left_str    = task.get_days_left()
+        tags        = task.get_tags()
         
         # Compute color
         my_color    = None
@@ -420,7 +430,7 @@ class TaskBrowser:
         for my_tag in tags:
             my_color_str = my_tag.get_attribute("color")
             if my_color_str :
-                my_color = gtk.gdk.color_parse(my_color_str)
+                my_color    = gtk.gdk.color_parse(my_color_str)
                 color_count = color_count + 1
                 color_dict["red"]   = color_dict["red"]   + my_color.red
                 color_dict["green"] = color_dict["green"] + my_color.green
@@ -436,11 +446,11 @@ class TaskBrowser:
                 blue       = int( (blue  + 65535) / 2)
                 brightness = (red+green+blue) / 3.0
             my_color = gtk.gdk.Color(red, green, blue).to_string()
-        
+
         if treeview and not parent and len(task.get_subtasks()) == 0:
-            my_row = self.task_ts.insert_before(None, tree_store.get_iter_first(), row=[tid,title,duedate,left,tags,my_color])
+            my_row = self.task_ts.insert_before(None, tree_store.get_iter_first(), row=[tid,title,duedate_str,left_str,tags,my_color])
         else:
-            my_row = self.task_ts.append(parent, [tid,title,duedate,left,tags,my_color])
+            my_row = self.task_ts.append(parent, [tid,title,duedate_str,left_str,tags,my_color])
         #If treeview, we add add the active childs
         if treeview :
             for c in task.get_subtasks():
@@ -757,9 +767,9 @@ class TaskBrowser:
         render_text = gtk.CellRendererText()
         ddate_col.set_title          ("Due date")
         ddate_col.pack_start         (render_text, expand=False)
-        ddate_col.add_attribute      (render_text, "markup", self.TASK_MODEL_DDATE)
+        ddate_col.add_attribute      (render_text, "markup", self.TASK_MODEL_DDATE_STR)
         ddate_col.set_resizable      (False)
-        ddate_col.set_sort_column_id (self.TASK_MODEL_DDATE)
+        ddate_col.set_sort_column_id (self.TASK_MODEL_DDATE_STR)
         ddate_col.add_attribute      (render_text, "cell_background", self.TASK_MODEL_BGCOL)
         self.task_tview.append_column(ddate_col)
         
@@ -768,9 +778,9 @@ class TaskBrowser:
         render_text = gtk.CellRendererText()
         dleft_col.set_title          ("Days left")
         dleft_col.pack_start         (render_text, expand=False)
-        dleft_col.add_attribute      (render_text, "markup", self.TASK_MODEL_DLEFT)
+        dleft_col.add_attribute      (render_text, "markup", self.TASK_MODEL_DLEFT_STR)
         dleft_col.set_resizable      (False)
-        dleft_col.set_sort_column_id (self.TASK_MODEL_DLEFT)
+        dleft_col.set_sort_column_id (self.TASK_MODEL_DDATE_STR)
         dleft_col.add_attribute      (render_text, "cell_background", self.TASK_MODEL_BGCOL)
         self.task_tview.append_column(dleft_col)
 
