@@ -47,7 +47,7 @@ class DataStore:
         
     #Create a new task and return it.
     #newtask should be True if you create a task
-    #it should be task if you are importing an existing Task
+    #it should be False if you are importing an existing Task
     def new_task(self,tid=None,pid=None,newtask=False) :
         #If we don't have anything, we use the default PID
         if not pid : pid = DEFAULT_BACKEND
@@ -61,7 +61,7 @@ class DataStore:
         elif pid and self.backends.has_key(pid):
             newtid = self.backends[pid].new_task_id()
             task = Task(newtid,self.requester,newtask=newtask)
-            self.tasks[newtid] = task
+            self.tasks[newtid] = self.backends[pid].get_task(task,newtid)
             return task
         elif tid :
             print "new_task with existing tid = bug"

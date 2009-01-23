@@ -18,6 +18,7 @@ from taskbrowser import GnomeConfig
 WORKVIEW = False
 SIDEBAR = True
 CLOSED_PANE = True
+QUICKADD_PANE = True
 
 class TaskBrowser:
 
@@ -55,7 +56,10 @@ class TaskBrowser:
                 "on_workview_toggled" : self.on_workview_toggled,
                 "on_view_workview_toggled": self.on_workview_toggled,
                 "on_view_closed_toggled" : self.on_closed_toggled,
-                "on_view_sidebar_toggled" : self.on_sidebar_toggled
+                "on_view_sidebar_toggled" : self.on_sidebar_toggled,
+                "on_quickadd_field_activate" : self.quickadd,
+                "on_quickadd_button_activate" : self.quickadd,
+                "on_view_quickadd_toggled" : self.toggle_quickadd
 
               }
         self.wTree.signal_autoconnect(dic)
@@ -79,11 +83,12 @@ class TaskBrowser:
         
         #The buttons
         self.toggle_workview = self.wTree.get_widget("workview_toggle")
-        
+        self.quickadd = self.wTree.get_widget("quickadd_field")
         
         #The panes
         self.sidebar = self.wTree.get_widget("sidebar")
         self.closed_pane = self.wTree.get_widget("closed_pane")
+        self.quickadd_pane = self.wTree.get_widget("quickadd_pane")
 
         
         #this is our manual drag-n-drop handling
@@ -132,6 +137,7 @@ class TaskBrowser:
         self.menu_view_workview.set_active(WORKVIEW)
         self.wTree.get_widget("view_sidebar").set_active(SIDEBAR)
         self.wTree.get_widget("view_closed").set_active(CLOSED_PANE)
+        self.wTree.get_widget("view_quickadd").set_active(QUICKADD_PANE)
  
     def main(self):
         #Here we will define the main TaskList interface
@@ -214,6 +220,21 @@ class TaskBrowser:
             self.closed_pane.show()
         else :
             self.closed_pane.hide()
+            
+    def toggle_quickadd(self,widget) :
+        if widget.get_active() :
+            self.quickadd_pane.show()
+        else :
+            self.quickadd_pane.hide()
+            
+    def quickadd(self,widget) :
+        text = self.quickadd.get_text()
+        if text :
+            tags,notagonly = self.get_selected_tags() #pylint: disable-msg=W0612
+            task = self.req.new_task(tags=tags,newtask=True)
+            task.set_title(text)
+            self.quickadd.set_text('')
+            self.refresh_tb()
 
     #If a task asked for the refresh, we don't refresh it to avoid a loop
     def refresh_tb(self,fromtask=None):
