@@ -1,31 +1,31 @@
 import os
 import uuid
-import shutil
 
 from gtg_core   import CoreConfig
 from tools import cleanxml, taskxml
 
-
-BACKUP_NBR = 3
-
 #Return the name of the backend as it should be displayed in the UI
 def get_name() :
-    return "backend name"
+    return "Local File"
     
 #Return a description of the backend
 def get_description() :
-    return "description"
+    return "Your tasks are saved in an XML file located in your HOME folder"
     
 #Return a dictionnary of parameters. Keys should be strings and
 #are the name of the parameter.
 #Value are string with value : string, password, int, bool
 #and are an information about the type of the parameter
+#Currently, only string is supported
 def get_parameters() :
-    return {}
+    dic = {}
+    dic["filename"] = "string"
+    return dic
 
 def get_features() :
     return {}
 
+#Types is one of : readwrite, readonly,import,export
 def get_type() :
     return "readwrite"
 
@@ -106,17 +106,4 @@ class Backend :
     #Called when GTG quit or disconnect the backend
     #You might pass here.
     def quit(self) :
-        cleanxml.savexml(self.zefile,self.doc)
-        #We will now backup the file
-        backup_nbr = BACKUP_NBR
-        #We keep BACKUP_NBR versions of the file
-        #The 0 is the youngest one
-        while backup_nbr > 0 :
-            older = "%s.bak.%s" %(self.zefile,backup_nbr)
-            backup_nbr -= 1
-            newer = "%s.bak.%s" %(self.zefile,backup_nbr)
-            if os.path.exists(newer) :
-                shutil.move(newer,older)
-        
-        current = "%s.bak.0" %(self.zefile)
-        shutil.copy(self.zefile,current)
+        cleanxml.savexml(self.zefile,self.doc,backup=True)

@@ -41,9 +41,6 @@ tag,
 			2009-01-23
 		</duedate>
 		<subtask>
-			6@1
-		</subtask>
-		<subtask>
 			7@1
 		</subtask>
 		<content>
@@ -58,6 +55,9 @@ tag, autro,
 		</title>
 		<subtask>
 			12@1
+		</subtask>
+		<subtask>
+			8@1
 		</subtask>
 		<content>
 			&lt;tag&gt;@new_tag&lt;/tag&gt;,&lt;tag&gt;@aze&lt;/tag&gt;
@@ -158,7 +158,7 @@ tag,
 			2009-01-23
 		</duedate>
 		<subtask>
-			8@1
+			6@1
 		</subtask>
 		<content>
 			&lt;subtask&gt;8@1&lt;/subtask&gt;&lt;tag&gt;@autro&lt;/tag&gt;, 
@@ -172,7 +172,7 @@ tag,
 			Lorem ipsum dolor sit amet, consectetur adipiscing elit.
  Proin rhoncus tincidunt diam. Morbi facilisis interdum
  tellus. Sed et lacus nec nisi mattis malesuada. Cras
- rutrum ornare ipsum. Nullam vestibulum mauris quis diam. Fusce augue. Vivamus tristique sem vitae tortor iaculis faucibus. Suspendisse eleifend ipsum. Maecenas nec neque. Vetibulum accumsan. Phasellus auctor. Phasellus sollicitudin, pede in iaculis rezhoncus, sem enim rhoncus kante, u t sodales neque ante et felis. Donec ac erat.
+ rutrum ornare ipsum. Nullam vestibulum mauris quis diam. Fusce augue. Vivamus tristique sem vitae tortor iaculis faucibus. Suspendisse eleifend ipmsum. Maecenas nec neque. Vetibulum accumsan. Phasellus auctor. Phasellus sollicitudin, pede in iaculis rezhoncus, sem enim rhoncus kante, u t sodales neque ante et felis. Donec ac erat.
 
 &lt;tag&gt;@t2&lt;/tag&gt;, &lt;tag&gt;@lorem_ipsum&lt;/tag&gt;, &lt;tag&gt;@vampire&lt;/tag&gt;
 
