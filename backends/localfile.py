@@ -106,4 +106,4 @@ class Backend :
     #Called when GTG quit or disconnect the backend
     #You might pass here.
     def quit(self) :
-        cleanxml.savexml(self.zefile,self.doc)
+        cleanxml.savexml(self.zefile,self.doc,backup=True)

@@ -109,7 +109,7 @@ class CoreConfig:
             b.quit()
 
         conffile = self.DATA_DIR + self.DATA_FILE
-        cleanxml.savexml(conffile,doc)
+        cleanxml.savexml(conffile,doc,backup=True)
 
         #Saving the tagstore
         ts = ds.get_tagstore()

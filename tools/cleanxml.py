@@ -66,21 +66,22 @@ def emptydoc(root) :
     return doc, rootproject
     
 #write a XML doc to a file
-def savexml(zefile,doc) :
+def savexml(zefile,doc,backup=False) :
     f = open(zefile, mode='w+')
     f.write(doc.toprettyxml(tab,enter).encode("utf-8"))
     f.close()
-    #We will now backup the file
-    backup_nbr = BACKUP_NBR
-    #We keep BACKUP_NBR versions of the file
-    #The 0 is the youngest one
-    while backup_nbr > 0 :
-        older = "%s.bak.%s" %(zefile,backup_nbr)
-        backup_nbr -= 1
-        newer = "%s.bak.%s" %(zefile,backup_nbr)
-        if os.path.exists(newer) :
-            shutil.move(newer,older)
-    #The bak.0 is always a fresh copy of the closed file
-    #So that it's not touched in case of bad opening next time
-    current = "%s.bak.0" %(zefile)
-    shutil.copy(zefile,current)
+    if backup :
+        #We will now backup the file
+        backup_nbr = BACKUP_NBR
+        #We keep BACKUP_NBR versions of the file
+        #The 0 is the youngest one
+        while backup_nbr > 0 :
+            older = "%s.bak.%s" %(zefile,backup_nbr)
+            backup_nbr -= 1
+            newer = "%s.bak.%s" %(zefile,backup_nbr)
+            if os.path.exists(newer) :
+                shutil.move(newer,older)
+        #The bak.0 is always a fresh copy of the closed file
+        #So that it's not touched in case of bad opening next time
+        current = "%s.bak.0" %(zefile)
+        shutil.copy(zefile,current)
