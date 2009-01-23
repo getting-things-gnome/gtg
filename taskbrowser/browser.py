@@ -227,7 +227,7 @@ class TaskBrowser:
         else :
             self.quickadd_pane.hide()
             
-    def quickadd(self,widget) :
+    def quickadd(self,widget) : #pylint: disable-msg=W0613
         text = self.quickadd_entry.get_text()
         if text :
             tags,notagonly = self.get_selected_tags() #pylint: disable-msg=W0612
