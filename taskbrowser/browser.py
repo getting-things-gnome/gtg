@@ -310,6 +310,8 @@ class TaskBrowser:
         #selected tasks :
         selected_uid = self.get_selected_task(self.task_tview)
         tselect = self.task_tview.get_selection()
+        t_path = None
+        d_path = None
         if tselect :
             t_model,t_path = tselect.get_selected_rows() #pylint: disable-msg=W0612
         dselect = self.taskdone_tview.get_selection()
@@ -547,7 +549,9 @@ class TaskBrowser:
 
     def get_selected_tags(self) :
         t_selected = self.tag_tview.get_selection()
-        tmodel, t_iter = t_selected.get_selected() #pylint: disable-msg=W0612
+        t_iter = None
+        if t_selected :
+            tmodel, t_iter = t_selected.get_selected() #pylint: disable-msg=W0612
         notag_only = False
         tag = []
         if t_iter :
