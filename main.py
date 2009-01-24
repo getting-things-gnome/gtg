@@ -51,7 +51,13 @@ class Gtg:
         # Launch task browser
         req = ds.get_requester()
         tb = TaskBrowser(req)
+        #Registering the GUI refresh function with the datastore
+        register_id = ds.register_ui(tb.refresh_tb)
+        
         tb.main()
+        
+        #Unregistering the GUI
+        ds.unregister_ui(register_id)
 
         # Ideally we should load window geometry configuration from a config.
         # backend like gconf at some point, and restore the appearance of the

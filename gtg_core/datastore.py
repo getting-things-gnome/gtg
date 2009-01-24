@@ -7,7 +7,7 @@ from gtg_core.task import Task
 
 #Only the datastore should access to the backend
 DEFAULT_BACKEND = "1"
-THREADING = False
+THREADING = True
 
 class DataStore:
 
@@ -16,6 +16,7 @@ class DataStore:
         self.tasks = {}
         self.tagstore = tagstore.TagStore()
         self.requester = requester.Requester(self)
+        self.registration = {}
         
     def all_tasks(self) :
         all_tasks = []
@@ -82,7 +83,7 @@ class DataStore:
         if dic.has_key("backend") :
             pid = dic["pid"]
             backend = dic["backend"]
-            source = TaskSource(backend,dic)
+            source = TaskSource(backend,dic,self.refresh_ui)
             self.backends[pid] = source
         else :
             print "Register a dic without backend key:  BUG"
@@ -98,16 +99,33 @@ class DataStore:
             l.append(self.backends[key])
         return l
         
+    ## Handle the registered UI
+    def register_ui(self,refresh_func) :
+        rid = 1
+        while self.registration.has_key(rid) :
+            rid += 1
+        self.registration[rid] = refresh_func
+        return rid
+        
+    def unregister_ui(self,reg_id) :
+        if self.registration.has_key(reg_id) :
+            self.registration.pop(reg_id)
+    
+    def refresh_ui(self) :
+        for rid in sel.registration :
+            self.registration[rid]()
+        
 
 #Task source is an transparent interface between the real backend and datastore
 #Task source has also more functionnalities
 class TaskSource() :
-    def __init__(self,backend,parameters) :
+    def __init__(self,backend,parameters,refresh_cllbck) :
         self.backend = backend
         self.dic = parameters
         self.tasks = {}
         self.time = time.time()
         self.mutex = True
+        self.refresh = refresh_cllbck
 
 ##### The Backend interface ###############
 ##########################################
@@ -119,10 +137,13 @@ class TaskSource() :
     def get_task(self,empty_task,tid) :
         #Our thread
         def getting(empty_task,tid) :
+            time.sleep(4)
             self.backend.get_task(empty_task,tid)
             empty_task.set_sync_func(self.set_task)
             self.tasks[tid] = empty_task
-            
+            self.refresh
+            #TODO : send signal to refresh the GUI
+            #FIXME : do not display not fetched tasks
         ##########
         if self.tasks.has_key(tid) :
             task = self.tasks[tid]
