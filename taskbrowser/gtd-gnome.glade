@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Sat Jan 24 19:42:35 2009 -->
+<!--Generated with glade3 3.4.5 on Sat Jan 24 19:52:23 2009 -->
 <glade-interface>
   <widget class="GtkWindow" id="MainWindow">
     <property name="visible">True</property>
@@ -622,7 +622,7 @@ Are you sure you to want delete this task ?</property>
     <property name="resizable">False</property>
     <property name="window_position">GTK_WIN_POS_CENTER_ON_PARENT</property>
     <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
-    <property name="program_name">Getting Things Gnome</property>
+    <property name="program_name">Getting Things Gnome!</property>
     <property name="version">0.0.1</property>
     <property name="copyright" translatable="yes">Copyrights: Lionel Dricot, Bertrand Rousseau</property>
     <property name="comments" translatable="yes">

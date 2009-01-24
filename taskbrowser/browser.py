@@ -198,7 +198,7 @@ class TaskBrowser:
         self.about.show()
 
     def on_about_close(self, widget, response):
-        self.about.destroy()
+        self.about.hide()
 
     def on_colorchooser_activate(self,widget) : #pylint: disable-msg=W0613
         #TODO : Color chooser should be refactorized in its own class

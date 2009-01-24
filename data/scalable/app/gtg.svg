@@ -15,8 +15,11 @@
    sodipodi:version="0.32"
    inkscape:version="0.46"
    sodipodi:docbase="/home/jimmac/src/cvs/tango-icon-theme/scalable/actions"
-   sodipodi:docname="edit-paste.svg"
-   inkscape:output_extension="org.inkscape.output.svg.inkscape">
+   sodipodi:docname="gtg.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   inkscape:export-filename="/home/rousseau/workspace/gtg/trunk/data/scalable/app/gtg.png"
+   inkscape:export-xdpi="360.28998"
+   inkscape:export-ydpi="360.28998">
   <defs
      id="defs12362">
     <inkscape:perspective
@@ -199,16 +202,6 @@
        gradientUnits="userSpaceOnUse" />
     <linearGradient
        inkscape:collect="always"
-       xlink:href="#linearGradient15218"
-       id="linearGradient15224"
-       x1="22.308331"
-       y1="18.992140"
-       x2="35.785294"
-       y2="39.498238"
-       gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(1.065698,0.000000,0.000000,0.987595,-1.564439,7.487332e-2)" />
-    <linearGradient
-       inkscape:collect="always"
        xlink:href="#linearGradient15234"
        id="linearGradient15240"
        x1="25.404572"
@@ -361,7 +354,7 @@
        rx="1.3879371"
        ry="1.3879364" />
     <rect
-       style="opacity:1;fill:url(#linearGradient15224);fill-opacity:1;fill-rule:evenodd;stroke:#888a85;stroke-width:1.00000024;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:#888a85;stroke-width:1.00000024000000010;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="rect12413"
        width="30.951559"
        height="35.976688"
