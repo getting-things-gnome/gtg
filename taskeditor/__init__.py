@@ -7,4 +7,4 @@ class GnomeConfig :
     MARK_UNDISMISS = "Undismiss"
     
     #Number of second between to save in the task editor
-    SAVETIME = 30
+    SAVETIME = 10

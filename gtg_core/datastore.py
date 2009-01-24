@@ -1,4 +1,5 @@
 import time
+import threading
 
 from gtg_core   import tagstore, requester
 from gtg_core.task import Task
@@ -105,6 +106,7 @@ class TaskSource() :
         self.dic = parameters
         self.tasks = {}
         self.time = time.time()
+        self.mutex = True
 
 ##### The Backend interface ###############
 ##########################################
@@ -114,13 +116,19 @@ class TaskSource() :
         return self.backend.get_tasks_list()
         
     def get_task(self,empty_task,tid) :
+        #Our thread
+        def getting(empty_task,tid) :
+            self.backend.get_task(empty_task,tid)
+        ##########
         if self.tasks.has_key(tid) :
             task = self.tasks[tid]
         else :
-            task = self.backend.get_task(empty_task,tid)
-            task.set_sync_func(self.set_task)
-            self.tasks[tid] = task
-        return task
+            t = threading.Thread(target=getting,args=[empty_task,tid])
+            t.start()
+            #task = self.backend.get_task(empty_task,tid)
+            empty_task.set_sync_func(self.set_task)
+            self.tasks[tid] = empty_task
+        return empty_task
 
     def set_task(self,task) :
         #This is foireux : imagine qu'on skipe un save et puis on quitte
@@ -131,7 +139,14 @@ class TaskSource() :
 #            return self.backend.set_task(task)
 #        else :
 #            return True
-        return self.backend.set_task(task)
+        if self.mutex :
+            self.mutex = False
+            print "syncing task"
+            toreturn = self.backend.set_task(task)
+            self.mutex = True
+        else :
+            toreturn = True
+        return toreturn
     
     def remove_task(self,tid) :
         self.tasks.pop(tid)
