@@ -34,75 +34,44 @@ class TaskBrowser:
             self.window.connect("destroy", gtk.main_quit)
         self.window.set_icon_from_file("data/16x16/app/gtg.png")
 
-        self.tagpopup = self.wTree.get_widget("TagContextMenu")
-        self.donebutton = self.wTree.get_widget("mark_as_done_b")
-        self.dismissbutton = self.wTree.get_widget("dismiss")
-        
+        self.tagpopup           = self.wTree.get_widget("TagContextMenu")
+        self.tb_task_menu_popup = self.wTree.get_widget("TbTaskMenu")
+        self.donebutton         = self.wTree.get_widget("mark_as_done_b")
+        self.dismissbutton      = self.wTree.get_widget("dismiss")
+        self.about              = self.wTree.get_widget("aboutdialog1")
+
+        # Initialize menu
 
         #Create our dictionay and connect it
         dic = {
                 "on_add_task"         : self.on_add_task,
-                "on_edit_active_task"        : self.on_edit_active_task,
-                "on_edit_done_task" :   self.on_edit_done_task,
+                "on_edit_active_task" : self.on_edit_active_task,
+                "on_edit_done_task"   :   self.on_edit_done_task,
                 "on_delete_task"      : self.on_delete_task,
                 "on_mark_as_done"     : self.on_mark_as_done,
-                "on_dismiss_task"   : self.on_dismiss_task,
+                "on_dismiss_task"     : self.on_dismiss_task,
                 "gtk_main_quit"       : self.close,
                 "on_select_tag"       : self.on_select_tag,
                 "on_delete_confirm"   : self.on_delete_confirm,
                 "on_delete_cancel"    : lambda x : x.hide,
                 "on_tag_treeview_button_press_event" : self.on_tag_treeview_button_press_event,
-                "on_colorchooser_activate" : self.on_colorchooser_activate,
-                "on_workview_toggled" : self.on_workview_toggled,
-                "on_view_workview_toggled": self.on_workview_toggled,
-                "on_view_closed_toggled" : self.on_closed_toggled,
-                "on_view_sidebar_toggled" : self.on_sidebar_toggled,
-                "on_quickadd_field_activate" : self.quickadd,
-                "on_quickadd_button_activate" : self.quickadd,
-                "on_view_quickadd_toggled" : self.toggle_quickadd
-
+                "on_colorchooser_activate"           : self.on_colorchooser_activate,
+                "on_workview_toggled"                : self.on_workview_toggled,
+                "on_view_workview_toggled"           : self.on_workview_toggled,
+                "on_view_closed_toggled"             : self.on_closed_toggled,
+                "on_view_sidebar_toggled"            : self.on_sidebar_toggled,
+                "on_quickadd_field_activate"         : self.quickadd,
+                "on_quickadd_button_activate"        : self.quickadd,
+                "on_view_quickadd_toggled"           : self.toggle_quickadd,
+                "on_about_clicked"                   : self.on_about_clicked,
+                "on_about_close"                     : self.on_about_close
               }
         self.wTree.signal_autoconnect(dic)
         self.selected_rows = None
         
         self.workview = False
         self.req = requester
-        
-        #The tview and their model
-        self.taskdone_tview = self.wTree.get_widget("taskdone_tview")
-        self.taskdone_ts    = gtk.TreeStore(gobject.TYPE_PYOBJECT, str,str,str)
-        self.tag_tview      = self.wTree.get_widget("tag_tview")
-        self.tag_ts         = gtk.ListStore(gobject.TYPE_PYOBJECT,str,str,str,bool)
-        # TASK MODEL:
-        # PYOBJECT:tid, STR:title, STR:due date string,
-        # STR:days left string, PYOBJECT:tags, str:my_color
-        self.task_tview     = self.wTree.get_widget("task_tview")
-        self.task_ts        = gtk.TreeStore( gobject.TYPE_PYOBJECT, \
-                                             str,                   \
-                                             str,                   \
-                                             str,                   \
-                                             gobject.TYPE_PYOBJECT, \
-                                             str)
-        #Be sure that we are reorderable (not needed normaly)
-        self.task_tview.set_reorderable(True)
-        
-        #The menu items widget
-        self.menu_view_workview = self.wTree.get_widget("view_workview")
-        
-        #The buttons
-        self.toggle_workview = self.wTree.get_widget("workview_toggle")
-        self.quickadd_entry = self.wTree.get_widget("quickadd_field")
-        
-        #The panes
-        self.sidebar = self.wTree.get_widget("sidebar")
-        self.closed_pane = self.wTree.get_widget("closed_pane")
-        self.quickadd_pane = self.wTree.get_widget("quickadd_pane")
 
-        
-        #this is our manual drag-n-drop handling
-        self.task_ts.connect("row-changed",self.row_inserted,"insert")
-        self.task_ts.connect("row-deleted",self.row_deleted,"delete")
-        
         # Column constants
         self.TASKS_TV_COL_TAG   = 1
         self.TASKS_TV_COL_TITLE = 2
@@ -124,6 +93,43 @@ class TaskBrowser:
         self.TAGS_MODEL_NAME  = 2
         self.TAGS_MODEL_COUNT = 3
         self.TAGS_MODEL_SEP   = 4
+
+        #The tview and their model
+        self.taskdone_tview = self.wTree.get_widget("taskdone_tview")
+        self.taskdone_ts    = gtk.TreeStore(gobject.TYPE_PYOBJECT, str,str,str)
+        self.tag_tview      = self.wTree.get_widget("tag_tview")
+        self.tag_ts         = gtk.ListStore(gobject.TYPE_PYOBJECT,str,str,str,bool)
+        # TASK MODEL:
+        # PYOBJECT:tid, STR:title, STR:due date string,
+        # STR:days left string, PYOBJECT:tags, str:my_color
+        self.task_tview     = self.wTree.get_widget("task_tview")
+        self.task_ts        = gtk.TreeStore( gobject.TYPE_PYOBJECT, \
+                                             str,                   \
+                                             str,                   \
+                                             str,                   \
+                                             gobject.TYPE_PYOBJECT, \
+                                             str)
+        self.task_ts.set_sort_func      (self.TASK_MODEL_DDATE_STR, self.compare_task_rows)
+        self.task_ts.set_sort_column_id (self.TASK_MODEL_DDATE_STR, gtk.SORT_ASCENDING)
+        #Be sure that we are reorderable (not needed normaly)
+        self.task_tview.set_reorderable(True)
+        
+        #The menu items widget
+        self.menu_view_workview = self.wTree.get_widget("view_workview")
+        
+        #The buttons
+        self.toggle_workview = self.wTree.get_widget("workview_toggle")
+        self.quickadd_entry = self.wTree.get_widget("quickadd_field")
+        
+        #The panes
+        self.sidebar = self.wTree.get_widget("sidebar")
+        self.closed_pane = self.wTree.get_widget("closed_pane")
+        self.quickadd_pane = self.wTree.get_widget("quickadd_pane")
+
+        
+        #this is our manual drag-n-drop handling
+        self.task_ts.connect("row-changed",self.row_inserted,"insert")
+        self.task_ts.connect("row-deleted",self.row_deleted,"delete")
                
         #The tid that will be deleted
         self.tid_todelete = None
@@ -178,6 +184,22 @@ class TaskBrowser:
         gtk.main()
         return 0
 
+    def compare_task_rows(self, treemodel, iter1, iter2):
+        tid1 = treemodel.get_value(iter1,self.TASK_MODEL_OBJ)
+        tid2 = treemodel.get_value(iter2,self.TASK_MODEL_OBJ)
+        task1 = self.req.get_task(tid1)
+        task2 = self.req.get_task(tid2)
+        if   not task1.get_due_date() and not task2.get_due_date() : return 0
+        elif not task1.get_due_date() and     task2.get_due_date() : return 1
+        elif     task1.get_due_date() and not task2.get_due_date() : return -1
+        else: return cmp(task1.get_due_date(), task2.get_due_date())
+
+    def on_about_clicked(self, widget):
+        self.about.show()
+
+    def on_about_close(self, widget, response):
+        self.about.destroy()
+
     def on_colorchooser_activate(self,widget) : #pylint: disable-msg=W0613
         #TODO : Color chooser should be refactorized in its own class
         #Well, in fact we should have a TagPropertiesEditor (like for project)
@@ -190,7 +212,7 @@ class TaskBrowser:
         wTree.signal_autoconnect(dic)
         window = wTree.get_widget("ColorChooser")
         window.show()
-    
+
     def on_color_response(self,widget,response) :
         #the OK button return -5. Don't ask me why.
         if response == -5 :
@@ -761,6 +783,7 @@ class TaskBrowser:
         title_col.add_attribute      (render_text, "markup", self.TASK_MODEL_TITLE)
         title_col.set_resizable      (True)
         title_col.set_sort_column_id (self.TASK_MODEL_TITLE)
+        title_col.set_expand         (True)
         title_col.add_attribute      (render_text, "cell_background", self.TASK_MODEL_BGCOL)
         self.task_tview.append_column(title_col)
         
@@ -773,6 +796,8 @@ class TaskBrowser:
         ddate_col.set_resizable      (False)
         ddate_col.set_sort_column_id (self.TASK_MODEL_DDATE_STR)
         ddate_col.add_attribute      (render_text, "cell_background", self.TASK_MODEL_BGCOL)
+        ddate_col.set_sort_order     (gtk.SORT_DESCENDING)
+        ddate_col.set_sort_indicator (True)
         self.task_tview.append_column(ddate_col)
         
         # days left
@@ -784,6 +809,8 @@ class TaskBrowser:
         dleft_col.set_resizable      (False)
         dleft_col.set_sort_column_id (self.TASK_MODEL_DDATE_STR)
         dleft_col.add_attribute      (render_text, "cell_background", self.TASK_MODEL_BGCOL)
+        dleft_col.set_sort_order     (gtk.SORT_DESCENDING)
+        dleft_col.set_sort_indicator (True)
         self.task_tview.append_column(dleft_col)
 
         # Global treeview properties
