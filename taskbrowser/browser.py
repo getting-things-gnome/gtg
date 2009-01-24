@@ -254,15 +254,18 @@ class TaskBrowser:
     def do_refresh(self,sender=None,param=None) :
         print "refresh received with param %s" %param
         print self.req.get_active_tasks_list()
-        while self.lock :
-            self.refresh_tb()
+        self.refresh_tb()
+#        self.lock.acquire()
+#        t = threading.Thread(target=self.refresh_tb())
+#        t.start()
+#        self.lock.release()
 
     #If a task asked for the refresh, we don't refresh it to avoid a loop
     def refresh_tb(self,fromtask=None):
         #print "0@1 : %s" %self.req.get_task("0@1").get_title()
         print "refresh called"
         self.refresh_list()
-        self.refresh_tags()
+#        self.refresh_tags()
         #self.refresh_projects()
         #Refreshing the opened editors
         for uid in self.opened_task :
@@ -306,8 +309,12 @@ class TaskBrowser:
     def refresh_list(self,a=None) : #pylint: disable-msg=W0613
         #selected tasks :
         selected_uid = self.get_selected_task(self.task_tview)
-        t_model,t_path = self.task_tview.get_selection().get_selected_rows() #pylint: disable-msg=W0612
-        d_model,d_path = self.taskdone_tview.get_selection().get_selected_rows() #pylint: disable-msg=W0612
+        tselect = self.task_tview.get_selection()
+        if tselect :
+            t_model,t_path = tselect.get_selected_rows() #pylint: disable-msg=W0612
+        dselect = self.taskdone_tview.get_selection()
+        if dselect :
+            d_model,d_path = dselect.get_selected_rows() #pylint: disable-msg=W0612
         #to refresh the list we first empty it then rebuild it
         #is it acceptable to do that ?
         self.task_ts.clear()
@@ -426,52 +433,53 @@ class TaskBrowser:
     #Add tasks to a treeview. If treeview is False, it becomes a flat list
     def add_task_tree_to_list(self, tree_store, tid, parent, selected_uid=None,\
                                         active_tasks=[], treeview=True):
-        task = self.req.get_task(tid)
-        if selected_uid and selected_uid == tid :
-            title = self.__build_task_title(task,extended=True)
-        else :
-            title = self.__build_task_title(task,extended=False)
+        pass
+#        task = self.req.get_task(tid)
+#        if selected_uid and selected_uid == tid :
+#            title = self.__build_task_title(task,extended=True)
+#        else :
+#            title = self.__build_task_title(task,extended=False)
 
-        # Extract data
-        duedate_str = task.get_due_date()
-        left_str    = task.get_days_left()
-        tags        = task.get_tags()
-        
-        # Compute color
-        my_color    = None
-        color_count = 0.0
-        color_dict  = {"red":0,"green":0,"blue":0}
-        for my_tag in tags:
-            my_color_str = my_tag.get_attribute("color")
-            if my_color_str :
-                my_color    = gtk.gdk.color_parse(my_color_str)
-                color_count = color_count + 1
-                color_dict["red"]   = color_dict["red"]   + my_color.red
-                color_dict["green"] = color_dict["green"] + my_color.green
-                color_dict["blue"]  = color_dict["blue"]  + my_color.blue
-        if color_count != 0:
-            red        = int(color_dict["red"]   / color_count)
-            green      = int(color_dict["green"] / color_count)
-            blue       = int(color_dict["blue"]  / color_count)
-            brightness = (red+green+blue) / 3.0
-            while brightness < 60000:
-                red        = int( (red   + 65535) / 2)
-                green      = int( (green + 65535) / 2)
-                blue       = int( (blue  + 65535) / 2)
-                brightness = (red+green+blue) / 3.0
-            my_color = gtk.gdk.Color(red, green, blue).to_string()
+#        # Extract data
+#        duedate_str = task.get_due_date()
+#        left_str    = task.get_days_left()
+#        tags        = task.get_tags()
+#        
+#        # Compute color
+#        my_color    = None
+#        color_count = 0.0
+#        color_dict  = {"red":0,"green":0,"blue":0}
+#        for my_tag in tags:
+#            my_color_str = my_tag.get_attribute("color")
+#            if my_color_str :
+#                my_color    = gtk.gdk.color_parse(my_color_str)
+#                color_count = color_count + 1
+#                color_dict["red"]   = color_dict["red"]   + my_color.red
+#                color_dict["green"] = color_dict["green"] + my_color.green
+#                color_dict["blue"]  = color_dict["blue"]  + my_color.blue
+#        if color_count != 0:
+#            red        = int(color_dict["red"]   / color_count)
+#            green      = int(color_dict["green"] / color_count)
+#            blue       = int(color_dict["blue"]  / color_count)
+#            brightness = (red+green+blue) / 3.0
+#            while brightness < 60000:
+#                red        = int( (red   + 65535) / 2)
+#                green      = int( (green + 65535) / 2)
+#                blue       = int( (blue  + 65535) / 2)
+#                brightness = (red+green+blue) / 3.0
+#            my_color = gtk.gdk.Color(red, green, blue).to_string()
 
-        if treeview and not parent and len(task.get_subtasks()) == 0:
-            my_row = self.task_ts.insert_before(None, tree_store.get_iter_first(), row=[tid,title,duedate_str,left_str,tags,my_color])
-        else:
-            my_row = self.task_ts.append(parent, [tid,title,duedate_str,left_str,tags,my_color])
-        #If treeview, we add add the active childs
-        if treeview :
-            for c in task.get_subtasks():
-                cid = c.get_id()
-                if cid in active_tasks:
-                    self.add_task_tree_to_list(tree_store, cid, my_row,selected_uid,\
-                                        active_tasks=active_tasks)
+#        if treeview and not parent and len(task.get_subtasks()) == 0:
+#            my_row = self.task_ts.insert_before(None, tree_store.get_iter_first(), row=[tid,title,duedate_str,left_str,tags,my_color])
+#        else:
+#            my_row = self.task_ts.append(parent, [tid,title,duedate_str,left_str,tags,my_color])
+#        #If treeview, we add add the active childs
+#        if treeview :
+#            for c in task.get_subtasks():
+#                cid = c.get_id()
+#                if cid in active_tasks:
+#                    self.add_task_tree_to_list(tree_store, cid, my_row,selected_uid,\
+#                                        active_tasks=active_tasks)
 
     #If a Task editor is already opened for a given task, we present it
     #Else, we create a new one.
@@ -526,14 +534,15 @@ class TaskBrowser:
         selection = tview.get_selection()
         #If we don't have anything and no tview specified
         #Let's have a look in the closed task view
-        if selection.count_selected_rows() <= 0 and not tv :
+        if selection and selection.count_selected_rows() <= 0 and not tv :
             tview = self.taskdone_tview
             selection = tview.get_selection()
         # Get the selection iter
-        model, selection_iter = selection.get_selected() #pylint: disable-msg=W0612
-        if selection_iter :
-            ts = tview.get_model()
-            uid = ts.get_value(selection_iter, 0)
+        if selection :
+            model, selection_iter = selection.get_selected() #pylint: disable-msg=W0612
+            if selection_iter :
+                ts = tview.get_model()
+                uid = ts.get_value(selection_iter, 0)
         return uid
 
     def get_selected_tags(self) :

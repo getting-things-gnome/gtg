@@ -52,7 +52,7 @@ class Gtg:
         req = ds.get_requester()
         tb = TaskBrowser(req)
         #Registering the GUI refresh function with the datastore
-        register_id = ds.register_ui(tb.refresh_tb)
+        register_id = ds.register_ui(tb.do_refresh)
         
         tb.main()
         

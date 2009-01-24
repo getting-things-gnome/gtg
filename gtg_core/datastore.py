@@ -35,12 +35,10 @@ class DataStore(gobject.GObject):
             empty_task = self.tasks[tid]
         else :
             empty_task = self.new_task(tid,newtask=False)
-        if tid :
+        if tid and not empty_task.is_loaded() :
             uid,pid = tid.split('@') #pylint: disable-msg=W0612
             back = self.backends[pid]
             task = back.get_task(empty_task,tid)
-            if not task :
-                task = empty_task
         else :
             task = empty_task
         #If the task doesn't exist, we create it with a forced pid
@@ -92,6 +90,9 @@ class DataStore(gobject.GObject):
             backend = dic["backend"]
             source = TaskSource(backend,dic,self.refresh_ui)
             self.backends[pid] = source
+            #Filling the backend
+#            for tid in source.get_tasks_list() :
+#                task = self.new_task(tid=tid)
         else :
             print "Register a dic without backend key:  BUG"
 
@@ -152,7 +153,7 @@ class TaskSource() :
         #Our thread
         def getting(empty_task,tid) :
             if THREADING :
-                time.sleep(self.tosleep)
+                time.sleep(1)
                 self.tosleep += 1
             self.backend.get_task(empty_task,tid)
             empty_task.set_sync_func(self.set_task)
