@@ -7,6 +7,7 @@ from gtg_core.task import Task
 
 #Only the datastore should access to the backend
 DEFAULT_BACKEND = "1"
+THREADING = False
 
 class DataStore:
 
@@ -126,10 +127,11 @@ class TaskSource() :
         if self.tasks.has_key(tid) :
             task = self.tasks[tid]
         else :
-            t = threading.Thread(target=getting,args=[empty_task,tid])
-            t.start()
-            #task = self.backend.get_task(empty_task,tid)
-            
+            if THREADING :
+                t = threading.Thread(target=getting,args=[empty_task,tid])
+                t.start()
+            else :
+                getting(empty_task,tid)
         return empty_task
 
     def set_task(self,task) :
