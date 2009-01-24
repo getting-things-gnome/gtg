@@ -265,6 +265,7 @@ class TaskBrowser:
     def refresh_tb(self,fromtask=None):
         print "refresh called"
         self.refresh_list()
+        self.refresh_closed()
         self.refresh_tags()
         #Refreshing the opened editors
         for uid in self.opened_task :
@@ -310,19 +311,12 @@ class TaskBrowser:
         selected_uid = self.get_selected_task(self.task_tview)
         tselect = self.task_tview.get_selection()
         t_path = None
-        d_path = None
         if tselect :
             t_model,t_path = tselect.get_selected_rows() #pylint: disable-msg=W0612
-        dselect = self.taskdone_tview.get_selection()
-        if dselect :
-            d_model,d_path = dselect.get_selected_rows() #pylint: disable-msg=W0612
         #to refresh the list we first empty it then rebuild it
-        #is it acceptable to do that ?
         self.task_ts.clear()
-        self.taskdone_ts.clear()
         tag_list,notag_only = self.get_selected_tags()
         nbr_of_tasks = 0
-        
         #We build the active tasks pane
         if self.workview :
             tasks = self.req.get_active_tasks_list(tags=tag_list,\
@@ -331,7 +325,6 @@ class TaskBrowser:
                 self.add_task_tree_to_list(self.task_ts,tid,None,selected_uid,\
                                                         treeview=False)
             nbr_of_tasks = len(tasks)
-                            
         else :
             #building the classical treeview
             active_root_tasks = self.req.get_active_tasks_list(tags=tag_list,\
@@ -342,7 +335,6 @@ class TaskBrowser:
                 self.add_task_tree_to_list(self.task_ts, tid, None,\
                                 selected_uid,active_tasks=active_tasks)
             nbr_of_tasks = len(active_tasks)
-            
         #Set the title of the window :
         if nbr_of_tasks == 0 :
             parenthesis = "(no active task)"
@@ -351,8 +343,24 @@ class TaskBrowser:
         else :
             parenthesis = "(%s actives tasks)"%nbr_of_tasks
         self.window.set_title("Getting Things Gnome! %s"%parenthesis)
-        
+        self.task_tview.expand_all()
+        #We reselect the selected tasks
+        selection = self.task_tview.get_selection()
+        if t_path :
+            for i in t_path :
+                selection.select_path(i)
+
+    
+    def refresh_closed(self) :
         #We build the closed tasks pane
+        dselect = self.taskdone_tview.get_selection()
+        d_path = None
+        if dselect :
+            d_model,d_path = dselect.get_selected_rows() #pylint: disable-msg=W0612
+        #We empty the pane
+        self.taskdone_ts.clear()
+        #We rebuild it
+        tag_list,notag_only = self.get_selected_tags()
         closed_tasks = self.req.get_closed_tasks_list(tags=tag_list,\
                                                     notag_only=notag_only)
         for tid in closed_tasks :
@@ -360,14 +368,7 @@ class TaskBrowser:
             title = t.get_title()
             donedate = t.get_done_date()
             self.taskdone_ts.append(None,[tid,t.get_color(),title,donedate])
-
-        self.task_tview.expand_all()
-        #We reselect the selected tasks
-        selection = self.task_tview.get_selection()
         closed_selection = self.taskdone_tview.get_selection()
-        if t_path :
-            for i in t_path :
-                selection.select_path(i)
         if d_path :
             for i in d_path :
                 closed_selection.select_path(i)
@@ -572,7 +573,6 @@ class TaskBrowser:
                 return True
             else :
                 self.path_source = None
-
         self.path_target = path
         tid = tree.get(it,0)
         tree.foreach(findsource,[tid,it])
