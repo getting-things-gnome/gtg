@@ -116,21 +116,46 @@ class CellRendererTags(gtk.GenericCellRenderer):
                 
             elif my_tag_color :
 
+                # Draw rounded rectangle
                 my_color = gtk.gdk.color_parse(my_tag_color)
                 gdkcontext.set_source_color(my_color)
                 self.__roundedrec(gdkcontext,rect_x,rect_y,16,16,8)    
                 gdkcontext.fill()        
                 count = count + 1
+
+                # Superpose gradient
+                linear = cairo.LinearGradient(rect_x, rect_y, rect_x+8, rect_y+16)
+                linear.add_color_stop_rgba(0.00,  0, 0, 0, 0)
+                linear.add_color_stop_rgba(0.75,  0, 0, 0, 0)
+                linear.add_color_stop_rgba(1.00,  0.5, 0.5, 0.5, 0.2)
+                self.__roundedrec(gdkcontext,rect_x,rect_y,16,16,8)
+                gdkcontext.set_source(linear)
+                gdkcontext.fill()
+
+                # Outer line
+                gdkcontext.set_source_rgba(0, 0, 0, 0.40)
+                gdkcontext.set_line_width(1.0)
+                self.__roundedrec(gdkcontext,rect_x,rect_y,16,16,8)
+                gdkcontext.stroke()
                 
         if self.tag and my_tag : #pylint: disable-msg=W0631
             
             my_tag_icon  = my_tag.get_attribute("icon") #pylint: disable-msg=W0631
             my_tag_color = my_tag.get_attribute("color")#pylint: disable-msg=W0631
             
-            if   not my_tag_icon and not my_tag_color :
-                
-                my_color = gtk.gdk.color_parse("#d3d7cf")
-                gdkcontext.set_source_color(my_color)
+            if   not my_tag_icon and not my_tag_color:
+
+                # Draw rounded rectangle
+                linear = cairo.LinearGradient(rect_x, rect_y, rect_x+8, rect_y+16)
+                linear.add_color_stop_rgba(0.00,  0.95, 0.95, 0.95, 1)
+                linear.add_color_stop_rgba(0.75,  0.95, 0.95, 0.95, 1)
+                linear.add_color_stop_rgba(1.00,  0.90, 0.90, 0.90, 1)
+                self.__roundedrec(gdkcontext,rect_x,rect_y,16,16,8)
+                gdkcontext.set_source(linear)
+                gdkcontext.fill()
+
+                # Outer line
+                gdkcontext.set_source_rgba(0, 0, 0, 0.20)
                 gdkcontext.set_line_width(1.0)
                 self.__roundedrec(gdkcontext,rect_x,rect_y,16,16,8)
                 gdkcontext.stroke()

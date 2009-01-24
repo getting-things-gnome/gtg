@@ -749,7 +749,7 @@ class TaskBrowser:
         tag_col.set_attributes        (render_tags  , tag=self.TAGS_MODEL_OBJ)
         tag_col.pack_start            (render_text  , expand=False)
         tag_col.set_attributes        (render_text  , markup=self.TAGS_MODEL_NAME)
-        tag_col.pack_end            (render_count , expand=False)
+        tag_col.pack_end              (render_count , expand=False)
         tag_col.set_attributes        (render_count , markup=self.TAGS_MODEL_COUNT)
         render_count.set_property     ("foreground","#888a85")
         render_count.set_property     ('xalign', 1.0)
@@ -757,6 +757,7 @@ class TaskBrowser:
         render_text.set_property      ('ypad'  , 3)
         render_count.set_property     ('ypad'  , 3)
         tag_col.set_sort_column_id    (-1)
+        tag_col.set_expand            (True)
         self.tag_tview.append_column  (tag_col)
         # Global treeview properties
         self.tag_tview.set_row_separator_func(self.tag_separator_filter)

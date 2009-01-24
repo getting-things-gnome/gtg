@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Wed Jan 21 19:18:24 2009 -->
+<!--Generated with glade3 3.4.5 on Sat Jan 24 21:42:36 2009 -->
 <glade-interface>
   <widget class="GtkWindow" id="TaskEditor">
     <property name="title" translatable="yes">Task</property>
@@ -19,7 +19,7 @@
               <widget class="GtkToolButton" id="mark_as_done_editor">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">Mark as done</property>
-                <property name="stock_id">gtk-apply</property>
+                <property name="icon">task_done.png</property>
                 <signal name="clicked" handler="mark_as_done_clicked"/>
               </widget>
               <packing>
@@ -30,7 +30,7 @@
               <widget class="GtkToolButton" id="dismiss_editor">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">Dismiss</property>
-                <property name="stock_id">gtk-clear</property>
+                <property name="icon">task_dismiss.png</property>
                 <signal name="clicked" handler="on_dismiss"/>
               </widget>
               <packing>
@@ -41,7 +41,7 @@
               <widget class="GtkToolButton" id="delete_editor">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">Delete</property>
-                <property name="stock_id">gtk-delete</property>
+                <property name="icon_name">edit-delete</property>
                 <signal name="clicked" handler="delete_clicked"/>
               </widget>
               <packing>
