@@ -119,6 +119,9 @@ class TaskSource() :
         #Our thread
         def getting(empty_task,tid) :
             self.backend.get_task(empty_task,tid)
+            empty_task.set_sync_func(self.set_task)
+            self.tasks[tid] = empty_task
+            
         ##########
         if self.tasks.has_key(tid) :
             task = self.tasks[tid]
@@ -126,8 +129,7 @@ class TaskSource() :
             t = threading.Thread(target=getting,args=[empty_task,tid])
             t.start()
             #task = self.backend.get_task(empty_task,tid)
-            empty_task.set_sync_func(self.set_task)
-            self.tasks[tid] = empty_task
+            
         return empty_task
 
     def set_task(self,task) :
