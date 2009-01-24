@@ -246,6 +246,7 @@ class TaskBrowser:
 
     #If a task asked for the refresh, we don't refresh it to avoid a loop
     def refresh_tb(self,fromtask=None):
+        #print "0@1 : %s" %self.req.get_task("0@1").get_title()
         self.refresh_list()
         self.refresh_tags()
         #self.refresh_projects()
@@ -291,7 +292,6 @@ class TaskBrowser:
     def refresh_list(self,a=None) : #pylint: disable-msg=W0613
         #selected tasks :
         selected_uid = self.get_selected_task(self.task_tview)
-        #selected_closed_uid = self.get_selected_task(self.taskdone_tview)
         t_model,t_path = self.task_tview.get_selection().get_selected_rows() #pylint: disable-msg=W0612
         d_model,d_path = self.taskdone_tview.get_selection().get_selected_rows() #pylint: disable-msg=W0612
         #to refresh the list we first empty it then rebuild it

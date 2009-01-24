@@ -54,7 +54,7 @@ class Requester :
         for tid in self.ds.all_tasks() :
             task = self.get_task(tid)
             #This is status filtering
-            if not task.get_status() in status :
+            if task and not task.get_status() in status :
                 task = None
             #This is tag filtering
             #If we still have a task and we need to filter tags
@@ -91,7 +91,7 @@ class Requester :
                                 started_only=True,is_root=False,workable=False)
             for tid in temp_tasks :
                 t = self.get_task(tid)
-                if t.is_workable() :
+                if t and t.is_workable() :
                     l_tasks.append(tid)
             return l_tasks
         else :
@@ -136,7 +136,8 @@ class Requester :
         l = []
         for tid in self.ds.all_tasks():
             t = self.get_task(tid)
-            for tag in t.get_tags() :
-                if tag not in l: l.append(tag)
+            if t :
+                for tag in t.get_tags() :
+                    if tag not in l: l.append(tag)
         return l
         

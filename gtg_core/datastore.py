@@ -7,7 +7,7 @@ from gtg_core.task import Task
 
 #Only the datastore should access to the backend
 DEFAULT_BACKEND = "1"
-THREADING = True
+THREADING = False
 
 class DataStore:
 
@@ -35,6 +35,8 @@ class DataStore:
             uid,pid = tid.split('@') #pylint: disable-msg=W0612
             back = self.backends[pid]
             task = back.get_task(empty_task,tid)
+            if not task :
+                task = empty_task
         else :
             task = empty_task
         #If the task doesn't exist, we create it with a forced pid
@@ -64,7 +66,8 @@ class DataStore:
         elif pid and self.backends.has_key(pid):
             newtid = self.backends[pid].new_task_id()
             task = Task(newtid,self.requester,newtask=newtask)
-            self.tasks[newtid] = self.backends[pid].get_task(task,newtid)
+            self.tasks[newtid] = task
+            task = self.backends[pid].get_task(task,newtid)
             return task
         elif tid :
             print "new_task with existing tid = bug"
@@ -90,8 +93,6 @@ class DataStore:
 
     def unregister_backend(self, backend):
         print "unregister backend %s not implemented" %backend
-#        if backend != None:
-#            self.backends.remove(backend)
 
     def get_all_backends(self):
         l = []
@@ -112,7 +113,8 @@ class DataStore:
             self.registration.pop(reg_id)
     
     def refresh_ui(self) :
-        for rid in sel.registration :
+        for rid in self.registration :
+            #print "datastore.refresh_ui %s" %rid
             self.registration[rid]()
         
 
@@ -126,33 +128,50 @@ class TaskSource() :
         self.time = time.time()
         self.mutex = True
         self.refresh = refresh_cllbck
+        self.locks = {}
 
 ##### The Backend interface ###############
 ##########################################
 # All functions here are proxied from the backend itself
 
     def get_tasks_list(self) :
-        return self.backend.get_tasks_list()
+        tlist = self.backend.get_tasks_list()
+        for t in tlist :
+            if not self.locks.has_key(t) :
+                self.locks[t] = threading.Lock()
+        return tlist
         
     def get_task(self,empty_task,tid) :
         #Our thread
         def getting(empty_task,tid) :
-            time.sleep(4)
+            #time.sleep(1)
             self.backend.get_task(empty_task,tid)
             empty_task.set_sync_func(self.set_task)
-            self.tasks[tid] = empty_task
-            self.refresh
-            #TODO : send signal to refresh the GUI
+            #TODO : block access to the task if the thread is running
             #FIXME : do not display not fetched tasks
         ##########
         if self.tasks.has_key(tid) :
             task = self.tasks[tid]
+            if task :
+                empty_task = task
+#            else :
+#                empty_task = None
         else :
+#            self.locks[tid].acquire()
+#            print "lock acquired"
+            #By putting the task in the dic, we say :
+            #"This task is already fetched (or at least in fetching process)
+            self.tasks[tid] = False
             if THREADING :
                 t = threading.Thread(target=getting,args=[empty_task,tid])
                 t.start()
+                self.tasks[tid] = empty_task
+                self.refresh()
             else :
                 getting(empty_task,tid)
+                self.tasks[tid] = empty_task
+#            print "lock released"
+#            self.locks[tid].release()
         return empty_task
 
     def set_task(self,task) :
@@ -175,6 +194,7 @@ class TaskSource() :
     
     def remove_task(self,tid) :
         self.tasks.pop(tid)
+        self.locks.pop(tid)
         return self.backend.remove_task(tid)
         
     def new_task_id(self) :
@@ -186,6 +206,8 @@ class TaskSource() :
             while self.tasks.has_key(str(newid)) :
                 k += 1
                 newid = "%s@%s" %(k,pid)
+        if not self.locks.has_key(newid) :
+            self.locks[newid] = threading.Lock()
         return newid
 
     def quit(self) :
