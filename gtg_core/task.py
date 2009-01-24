@@ -27,7 +27,15 @@ class Task :
         # tags
         self.tags = []
         self.req = requester
+        #If we don't have a newtask, we will have to load it.
+        self.loaded = newtask
                 
+    def is_loaded(self) :
+        return self.loaded
+        
+    def set_loaded(self) :
+        self.loaded = True
+    
     def get_id(self) :
         return str(self.tid)
         

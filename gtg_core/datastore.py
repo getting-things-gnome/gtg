@@ -1,5 +1,6 @@
 import time
 import threading
+import gobject
 
 from gtg_core   import tagstore, requester
 from gtg_core.task import Task
@@ -7,11 +8,14 @@ from gtg_core.task import Task
 
 #Only the datastore should access to the backend
 DEFAULT_BACKEND = "1"
-THREADING = False
+THREADING = True
 
-class DataStore:
+class DataStore(gobject.GObject):
+    __gsignals__ = { 'refresh': (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE,
+                                   (str,)) }
 
     def __init__ (self):
+        gobject.GObject.__init__(self)
         self.backends = {}
         self.tasks = {}
         self.tagstore = tagstore.TagStore()
@@ -113,9 +117,11 @@ class DataStore:
             self.registration.pop(reg_id)
     
     def refresh_ui(self) :
-        for rid in self.registration :
+        print "we will send the signal"
+        self.emit("refresh","1")
+        #for rid in self.registration :
             #print "datastore.refresh_ui %s" %rid
-            self.registration[rid]()
+            #self.registration[rid]()
         
 
 #Task source is an transparent interface between the real backend and datastore
@@ -129,6 +135,7 @@ class TaskSource() :
         self.mutex = True
         self.refresh = refresh_cllbck
         self.locks = {}
+        self.tosleep = 0
 
 ##### The Backend interface ###############
 ##########################################
@@ -144,9 +151,13 @@ class TaskSource() :
     def get_task(self,empty_task,tid) :
         #Our thread
         def getting(empty_task,tid) :
-            #time.sleep(1)
+            if THREADING :
+                time.sleep(self.tosleep)
+                self.tosleep += 1
             self.backend.get_task(empty_task,tid)
             empty_task.set_sync_func(self.set_task)
+            empty_task.set_loaded()
+            self.refresh()
             #TODO : block access to the task if the thread is running
             #FIXME : do not display not fetched tasks
         ##########
@@ -166,7 +177,6 @@ class TaskSource() :
                 t = threading.Thread(target=getting,args=[empty_task,tid])
                 t.start()
                 self.tasks[tid] = empty_task
-                self.refresh()
             else :
                 getting(empty_task,tid)
                 self.tasks[tid] = empty_task

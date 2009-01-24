@@ -4,6 +4,7 @@ import pygtk
 pygtk.require('2.0')
 import gobject
 import gtk.glade
+import threading
 
 #our own imports
 from taskeditor.editor       import TaskEditor
@@ -100,8 +101,8 @@ class TaskBrowser:
 
         
         #this is our manual drag-n-drop handling
-        self.task_ts.connect("row-changed",self.row_inserted,"insert")
-        self.task_ts.connect("row-deleted",self.row_deleted,"delete")
+#        self.task_ts.connect("row-changed",self.row_inserted,"insert")
+#        self.task_ts.connect("row-deleted",self.row_deleted,"delete")
         
         # Column constants
         self.TASKS_TV_COL_TAG   = 1
@@ -146,6 +147,10 @@ class TaskBrowser:
         self.wTree.get_widget("view_sidebar").set_active(SIDEBAR)
         self.wTree.get_widget("view_closed").set_active(CLOSED_PANE)
         self.wTree.get_widget("view_quickadd").set_active(QUICKADD_PANE)
+        
+        #connecting the refresh signal from the requester
+        self.lock = threading.Lock()
+        self.req.connect("refresh",self.do_refresh)
  
     def main(self):
         #Here we will define the main TaskList interface
@@ -167,8 +172,9 @@ class TaskBrowser:
         self.taskdone_ts.set_sort_column_id(self.c_title, gtk.SORT_ASCENDING)
         
         #put the content in those treeviews
-        self.refresh_tags()
-        self.refresh_list()
+#        self.refresh_tags()
+#        self.refresh_list()
+        self.do_refresh()
         
         selection = self.task_tview.get_selection()
         selection.connect("changed",self.task_cursor_changed)
@@ -200,7 +206,7 @@ class TaskBrowser:
             tags,notag_only = self.get_selected_tags() #pylint: disable-msg=W0612
             for t in tags :
                 t.set_attribute("color",strcolor)
-        self.refresh_tb()
+        self.do_refresh()
         widget.destroy()
     
     def on_workview_toggled(self,widget) : #pylint: disable-msg=W0613
@@ -215,7 +221,7 @@ class TaskBrowser:
             elif widget == self.menu_view_workview :
                 self.toggle_workview.set_active(tobeset)
             self.workview = tobeset
-            self.refresh_tb()
+            self.do_refresh()
     
     def on_sidebar_toggled(self,widget) :
         if widget.get_active() :
@@ -242,11 +248,19 @@ class TaskBrowser:
             task = self.req.new_task(tags=tags,newtask=True)
             task.set_title(text)
             self.quickadd_entry.set_text('')
+            self.do_refresh()
+    
+    
+    def do_refresh(self,sender=None,param=None) :
+        print "refresh received with param %s" %param
+        print self.req.get_active_tasks_list()
+        while self.lock :
             self.refresh_tb()
 
     #If a task asked for the refresh, we don't refresh it to avoid a loop
     def refresh_tb(self,fromtask=None):
         #print "0@1 : %s" %self.req.get_task("0@1").get_title()
+        print "refresh called"
         self.refresh_list()
         self.refresh_tags()
         #self.refresh_projects()
@@ -466,7 +480,7 @@ class TaskBrowser:
         if self.opened_task.has_key(uid) :
             self.opened_task[uid].present()
         else :
-            tv = TaskEditor(self.req,t,self.refresh_tb,self.on_delete_task,
+            tv = TaskEditor(self.req,t,self.do_refresh,self.on_delete_task,
                             self.close_task,self.open_task,self.get_tasktitle)
             #registering as opened
             self.opened_task[uid] = tv
@@ -552,64 +566,64 @@ class TaskBrowser:
     # 2. If yes, it's probably a drag-n-drop so we save those information
     # 3. If the "elsewhere from point 1 is deleted, we are sure it's a 
     #    drag-n-drop so we change the parent of the moved task
-    def row_inserted(self,tree, path, it,data=None) : #pylint: disable-msg=W0613
-        #If the row inserted already exists in another position
-        #We are in a drag n drop case
-        def findsource(model, path, it,data):
-            path_move = tree.get_path(data[1])
-            path_actual = tree.get_path(it)
-            if model.get(it,0) == data[0] and path_move != path_actual:
-                self.drag_sources.append(path)
-                self.path_source = path
-                return True
-            else :
-                self.path_source = None
+#    def row_inserted(self,tree, path, it,data=None) : #pylint: disable-msg=W0613
+#        #If the row inserted already exists in another position
+#        #We are in a drag n drop case
+#        def findsource(model, path, it,data):
+#            path_move = tree.get_path(data[1])
+#            path_actual = tree.get_path(it)
+#            if model.get(it,0) == data[0] and path_move != path_actual:
+#                self.drag_sources.append(path)
+#                self.path_source = path
+#                return True
+#            else :
+#                self.path_source = None
 
-        self.path_target = path
-        tid = tree.get(it,0)
-        tree.foreach(findsource,[tid,it])
-        if self.path_source :
-            #We will prepare the drag-n-drop
-            iter_source = tree.get_iter(self.path_source)
-            iter_target = tree.get_iter(self.path_target)
-            iter_source_parent = tree.iter_parent(iter_source)
-            iter_target_parent = tree.iter_parent(iter_target)
-            #the tid_parent will be None for root tasks
-            if iter_source_parent :
-                sparent = tree.get(iter_source_parent,0)[0]
-            else :
-                sparent = None
-            if iter_target_parent :
-                tparent = tree.get(iter_target_parent,0)[0]
-            else :
-                tparent = None
-            #If target and source are the same, we are moving
-            #a child of the deplaced task. Indeed, children are 
-            #also moved in the tree but their parents remain !
-            if sparent != tparent :
-                self.tid_source_parent = sparent
-                self.tid_target_parent = tparent
-                self.tid_tomove = tid[0]
-                # "row %s will move from %s to %s"%(self.tid_tomove,\
-                #          self.tid_source_parent,self.tid_target_parent)
-    def row_deleted(self,tree,path,data=None) : #pylint: disable-msg=W0613
-        #If we are removing the path source guessed during the insertion
-        #It confirms that we are in a drag-n-drop
-        if path in self.drag_sources and self.tid_tomove :
-            self.drag_sources.remove(path)
-            # "row %s moved from %s to %s"%(self.tid_tomove,\
-            #             self.tid_source_parent,self.tid_target_parent)
-            tomove = self.req.get_task(self.tid_tomove)
-            tomove.remove_parent(self.tid_source_parent)
-            tomove.add_parent(self.tid_target_parent)
-            #DO NOT self.refresh_list()
-            #Refreshing here make things crash. Don't refresh
-            #self.drag_sources = []
-            self.path_source = None
-            self.path_target = None
-            self.tid_tomove = None
-            self.tid_source_parent = None
-            self.tid_target_parent = None
+#        self.path_target = path
+#        tid = tree.get(it,0)
+#        tree.foreach(findsource,[tid,it])
+#        if self.path_source :
+#            #We will prepare the drag-n-drop
+#            iter_source = tree.get_iter(self.path_source)
+#            iter_target = tree.get_iter(self.path_target)
+#            iter_source_parent = tree.iter_parent(iter_source)
+#            iter_target_parent = tree.iter_parent(iter_target)
+#            #the tid_parent will be None for root tasks
+#            if iter_source_parent :
+#                sparent = tree.get(iter_source_parent,0)[0]
+#            else :
+#                sparent = None
+#            if iter_target_parent :
+#                tparent = tree.get(iter_target_parent,0)[0]
+#            else :
+#                tparent = None
+#            #If target and source are the same, we are moving
+#            #a child of the deplaced task. Indeed, children are 
+#            #also moved in the tree but their parents remain !
+#            if sparent != tparent :
+#                self.tid_source_parent = sparent
+#                self.tid_target_parent = tparent
+#                self.tid_tomove = tid[0]
+#                # "row %s will move from %s to %s"%(self.tid_tomove,\
+#                #          self.tid_source_parent,self.tid_target_parent)
+#    def row_deleted(self,tree,path,data=None) : #pylint: disable-msg=W0613
+#        #If we are removing the path source guessed during the insertion
+#        #It confirms that we are in a drag-n-drop
+#        if path in self.drag_sources and self.tid_tomove :
+#            self.drag_sources.remove(path)
+#            # "row %s moved from %s to %s"%(self.tid_tomove,\
+#            #             self.tid_source_parent,self.tid_target_parent)
+#            tomove = self.req.get_task(self.tid_tomove)
+#            tomove.remove_parent(self.tid_source_parent)
+#            tomove.add_parent(self.tid_target_parent)
+#            #DO NOT self.refresh_list()
+#            #Refreshing here make things crash. Don't refresh
+#            #self.drag_sources = []
+#            self.path_source = None
+#            self.path_target = None
+#            self.tid_tomove = None
+#            self.tid_source_parent = None
+#            self.tid_target_parent = None
             
     ###############################
     ##### End of the drag-n-drop part
@@ -630,7 +644,7 @@ class TaskBrowser:
     def on_delete_confirm(self,widget) : #pylint: disable-msg=W0613
         self.req.delete_task(self.tid_todelete)
         self.tid_todelete = None
-        self.refresh_tb()
+        self.do_refresh()
         
     def on_delete_task(self,widget,tid=None) : #pylint: disable-msg=W0613
         #If we don't have a parameter, then take the selection in the treeview
@@ -657,7 +671,7 @@ class TaskBrowser:
             if status == "Done" :
                 zetask.set_status("Active")
             else : zetask.set_status("Done")
-            self.refresh_tb()
+            self.do_refresh()
     
     def on_dismiss_task(self,widget) : #pylint: disable-msg=W0613
         uid = self.get_selected_task()
@@ -667,7 +681,7 @@ class TaskBrowser:
             if status == "Dismiss" :
                 zetask.set_status("Active")
             else : zetask.set_status("Dismiss")
-            self.refresh_tb()
+            self.do_refresh()
         
     def on_select_tag(self, widget, row=None ,col=None) : #pylint: disable-msg=W0613
         #When you clic on a tag, you want to unselect the tasks

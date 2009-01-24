@@ -8,7 +8,8 @@ class Requester :
     def __init__(self,datastore) :
         self.ds = datastore
         
-        
+    def connect(self,signal,func) :
+        self.ds.connect(signal,func)
     ############## Tasks ##########################
     ###############################################
     
@@ -53,6 +54,8 @@ class Requester :
         l_tasks = []
         for tid in self.ds.all_tasks() :
             task = self.get_task(tid)
+            if task and not task.is_loaded() :
+                task = None
             #This is status filtering
             if task and not task.get_status() in status :
                 task = None
