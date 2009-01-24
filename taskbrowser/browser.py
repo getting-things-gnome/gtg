@@ -252,21 +252,19 @@ class TaskBrowser:
     
     
     def do_refresh(self,sender=None,param=None) :
-        print "refresh received with param %s" %param
-        print self.req.get_active_tasks_list()
-        self.refresh_tb()
+#        print "refresh received with param %s" %param
+#        print self.req.get_active_tasks_list()
 #        self.lock.acquire()
 #        t = threading.Thread(target=self.refresh_tb())
 #        t.start()
+        self.refresh_tb()
 #        self.lock.release()
 
     #If a task asked for the refresh, we don't refresh it to avoid a loop
     def refresh_tb(self,fromtask=None):
-        #print "0@1 : %s" %self.req.get_task("0@1").get_title()
-        print "refresh called"
+#        print "refresh called"
         self.refresh_list()
-#        self.refresh_tags()
-        #self.refresh_projects()
+        self.refresh_tags()
         #Refreshing the opened editors
         for uid in self.opened_task :
             if uid != fromtask :
@@ -435,53 +433,57 @@ class TaskBrowser:
     #Add tasks to a treeview. If treeview is False, it becomes a flat list
     def add_task_tree_to_list(self, tree_store, tid, parent, selected_uid=None,\
                                         active_tasks=[], treeview=True):
-        pass
-#        task = self.req.get_task(tid)
-#        if selected_uid and selected_uid == tid :
-#            title = self.__build_task_title(task,extended=True)
-#        else :
-#            title = self.__build_task_title(task,extended=False)
+        task = self.req.get_task(tid)
+        if selected_uid and selected_uid == tid :
+            title = self.__build_task_title(task,extended=True)
+        else :
+            title = self.__build_task_title(task,extended=False)
 
-#        # Extract data
-#        duedate_str = task.get_due_date()
-#        left_str    = task.get_days_left()
-#        tags        = task.get_tags()
-#        
-#        # Compute color
-#        my_color    = None
-#        color_count = 0.0
-#        color_dict  = {"red":0,"green":0,"blue":0}
-#        for my_tag in tags:
-#            my_color_str = my_tag.get_attribute("color")
-#            if my_color_str :
-#                my_color    = gtk.gdk.color_parse(my_color_str)
-#                color_count = color_count + 1
-#                color_dict["red"]   = color_dict["red"]   + my_color.red
-#                color_dict["green"] = color_dict["green"] + my_color.green
-#                color_dict["blue"]  = color_dict["blue"]  + my_color.blue
-#        if color_count != 0:
-#            red        = int(color_dict["red"]   / color_count)
-#            green      = int(color_dict["green"] / color_count)
-#            blue       = int(color_dict["blue"]  / color_count)
-#            brightness = (red+green+blue) / 3.0
-#            while brightness < 60000:
-#                red        = int( (red   + 65535) / 2)
-#                green      = int( (green + 65535) / 2)
-#                blue       = int( (blue  + 65535) / 2)
-#                brightness = (red+green+blue) / 3.0
-#            my_color = gtk.gdk.Color(red, green, blue).to_string()
+        # Extract data
+        duedate_str = task.get_due_date()
+        left_str    = task.get_days_left()
+        tags        = task.get_tags()
+        
+        # Compute color
+        my_color    = None
+        color_count = 0.0
+        color_dict  = {"red":0,"green":0,"blue":0}
+        for my_tag in tags:
+            my_color_str = my_tag.get_attribute("color")
+            if my_color_str :
+                my_color    = gtk.gdk.color_parse(my_color_str)
+                color_count = color_count + 1
+                color_dict["red"]   = color_dict["red"]   + my_color.red
+                color_dict["green"] = color_dict["green"] + my_color.green
+                color_dict["blue"]  = color_dict["blue"]  + my_color.blue
+        if color_count != 0:
+            red        = int(color_dict["red"]   / color_count)
+            green      = int(color_dict["green"] / color_count)
+            blue       = int(color_dict["blue"]  / color_count)
+            brightness = (red+green+blue) / 3.0
+            while brightness < 60000:
+                red        = int( (red   + 65535) / 2)
+                green      = int( (green + 65535) / 2)
+                blue       = int( (blue  + 65535) / 2)
+                brightness = (red+green+blue) / 3.0
+            my_color = gtk.gdk.Color(red, green, blue).to_string()
 
-#        if treeview and not parent and len(task.get_subtasks()) == 0:
-#            my_row = self.task_ts.insert_before(None, tree_store.get_iter_first(), row=[tid,title,duedate_str,left_str,tags,my_color])
-#        else:
-#            my_row = self.task_ts.append(parent, [tid,title,duedate_str,left_str,tags,my_color])
-#        #If treeview, we add add the active childs
-#        if treeview :
-#            for c in task.get_subtasks():
-#                cid = c.get_id()
-#                if cid in active_tasks:
-#                    self.add_task_tree_to_list(tree_store, cid, my_row,selected_uid,\
-#                                        active_tasks=active_tasks)
+        if treeview and not parent and len(task.get_subtasks()) == 0:
+            itera = tree_store.get_iter_first()
+            if itera and tree_store.iter_is_valid(itera) :
+                my_row = tree_store.insert_before(None, itera, row=[tid,title,duedate_str,left_str,tags,my_color])
+        else:
+            #None should be "parent" but crashing with thread
+            my_row = tree_store.append(parent,\
+                        [tid,title,duedate_str,left_str,tags,my_color])
+        #If treeview, we add add the active childs
+        if treeview :
+            for c in task.get_subtasks():
+                cid = c.get_id()
+                if cid in active_tasks:
+                    #None should be cid
+                    self.add_task_tree_to_list(tree_store, cid, my_row,selected_uid,\
+                                        active_tasks=active_tasks)
 
     #If a Task editor is already opened for a given task, we present it
     #Else, we create a new one.
@@ -579,64 +581,64 @@ class TaskBrowser:
     # 2. If yes, it's probably a drag-n-drop so we save those information
     # 3. If the "elsewhere from point 1 is deleted, we are sure it's a 
     #    drag-n-drop so we change the parent of the moved task
-#    def row_inserted(self,tree, path, it,data=None) : #pylint: disable-msg=W0613
-#        #If the row inserted already exists in another position
-#        #We are in a drag n drop case
-#        def findsource(model, path, it,data):
-#            path_move = tree.get_path(data[1])
-#            path_actual = tree.get_path(it)
-#            if model.get(it,0) == data[0] and path_move != path_actual:
-#                self.drag_sources.append(path)
-#                self.path_source = path
-#                return True
-#            else :
-#                self.path_source = None
+    def row_inserted(self,tree, path, it,data=None) : #pylint: disable-msg=W0613
+        #If the row inserted already exists in another position
+        #We are in a drag n drop case
+        def findsource(model, path, it,data):
+            path_move = tree.get_path(data[1])
+            path_actual = tree.get_path(it)
+            if model.get(it,0) == data[0] and path_move != path_actual:
+                self.drag_sources.append(path)
+                self.path_source = path
+                return True
+            else :
+                self.path_source = None
 
-#        self.path_target = path
-#        tid = tree.get(it,0)
-#        tree.foreach(findsource,[tid,it])
-#        if self.path_source :
-#            #We will prepare the drag-n-drop
-#            iter_source = tree.get_iter(self.path_source)
-#            iter_target = tree.get_iter(self.path_target)
-#            iter_source_parent = tree.iter_parent(iter_source)
-#            iter_target_parent = tree.iter_parent(iter_target)
-#            #the tid_parent will be None for root tasks
-#            if iter_source_parent :
-#                sparent = tree.get(iter_source_parent,0)[0]
-#            else :
-#                sparent = None
-#            if iter_target_parent :
-#                tparent = tree.get(iter_target_parent,0)[0]
-#            else :
-#                tparent = None
-#            #If target and source are the same, we are moving
-#            #a child of the deplaced task. Indeed, children are 
-#            #also moved in the tree but their parents remain !
-#            if sparent != tparent :
-#                self.tid_source_parent = sparent
-#                self.tid_target_parent = tparent
-#                self.tid_tomove = tid[0]
-#                # "row %s will move from %s to %s"%(self.tid_tomove,\
-#                #          self.tid_source_parent,self.tid_target_parent)
-#    def row_deleted(self,tree,path,data=None) : #pylint: disable-msg=W0613
-#        #If we are removing the path source guessed during the insertion
-#        #It confirms that we are in a drag-n-drop
-#        if path in self.drag_sources and self.tid_tomove :
-#            self.drag_sources.remove(path)
-#            # "row %s moved from %s to %s"%(self.tid_tomove,\
-#            #             self.tid_source_parent,self.tid_target_parent)
-#            tomove = self.req.get_task(self.tid_tomove)
-#            tomove.remove_parent(self.tid_source_parent)
-#            tomove.add_parent(self.tid_target_parent)
-#            #DO NOT self.refresh_list()
-#            #Refreshing here make things crash. Don't refresh
-#            #self.drag_sources = []
-#            self.path_source = None
-#            self.path_target = None
-#            self.tid_tomove = None
-#            self.tid_source_parent = None
-#            self.tid_target_parent = None
+        self.path_target = path
+        tid = tree.get(it,0)
+        tree.foreach(findsource,[tid,it])
+        if self.path_source :
+            #We will prepare the drag-n-drop
+            iter_source = tree.get_iter(self.path_source)
+            iter_target = tree.get_iter(self.path_target)
+            iter_source_parent = tree.iter_parent(iter_source)
+            iter_target_parent = tree.iter_parent(iter_target)
+            #the tid_parent will be None for root tasks
+            if iter_source_parent :
+                sparent = tree.get(iter_source_parent,0)[0]
+            else :
+                sparent = None
+            if iter_target_parent :
+                tparent = tree.get(iter_target_parent,0)[0]
+            else :
+                tparent = None
+            #If target and source are the same, we are moving
+            #a child of the deplaced task. Indeed, children are 
+            #also moved in the tree but their parents remain !
+            if sparent != tparent :
+                self.tid_source_parent = sparent
+                self.tid_target_parent = tparent
+                self.tid_tomove = tid[0]
+                # "row %s will move from %s to %s"%(self.tid_tomove,\
+                #          self.tid_source_parent,self.tid_target_parent)
+    def row_deleted(self,tree,path,data=None) : #pylint: disable-msg=W0613
+        #If we are removing the path source guessed during the insertion
+        #It confirms that we are in a drag-n-drop
+        if path in self.drag_sources and self.tid_tomove :
+            self.drag_sources.remove(path)
+            # "row %s moved from %s to %s"%(self.tid_tomove,\
+            #             self.tid_source_parent,self.tid_target_parent)
+            tomove = self.req.get_task(self.tid_tomove)
+            tomove.remove_parent(self.tid_source_parent)
+            tomove.add_parent(self.tid_target_parent)
+            #DO NOT self.refresh_list()
+            #Refreshing here make things crash. Don't refresh
+            #self.drag_sources = []
+            self.path_source = None
+            self.path_target = None
+            self.tid_tomove = None
+            self.tid_source_parent = None
+            self.tid_target_parent = None
             
     ###############################
     ##### End of the drag-n-drop part

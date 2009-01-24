@@ -8,7 +8,7 @@ from gtg_core.task import Task
 
 #Only the datastore should access to the backend
 DEFAULT_BACKEND = "1"
-THREADING = True
+THREADING = False
 
 class DataStore(gobject.GObject):
     __gsignals__ = { 'refresh': (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE,
@@ -118,7 +118,6 @@ class DataStore(gobject.GObject):
             self.registration.pop(reg_id)
     
     def refresh_ui(self) :
-        print "we will send the signal"
         self.emit("refresh","1")
         #for rid in self.registration :
             #print "datastore.refresh_ui %s" %rid
@@ -133,7 +132,6 @@ class TaskSource() :
         self.dic = parameters
         self.tasks = {}
         self.time = time.time()
-        self.mutex = True
         self.refresh = refresh_cllbck
         self.locks = {}
         self.tosleep = 0
@@ -194,13 +192,7 @@ class TaskSource() :
 #            return self.backend.set_task(task)
 #        else :
 #            return True
-        if self.mutex :
-            self.mutex = False
-            print "syncing task"
-            toreturn = self.backend.set_task(task)
-            self.mutex = True
-        else :
-            toreturn = True
+        toreturn = self.backend.set_task(task)
         return toreturn
     
     def remove_task(self,tid) :
