@@ -87,7 +87,7 @@ class Backend :
         #In this particular backend, we write all the tasks
         #This is inherent to the XML file backend
         cleanxml.savexml(self.zefile,self.doc)
-        return True
+        return None
         
     #Completely remove the task with ID = tid
     def remove_task(self,tid) :

@@ -51,6 +51,7 @@ class Gtg:
         # Launch task browser
         req = ds.get_requester()
         tb = TaskBrowser(req)
+        
         tb.main()
 
         # Ideally we should load window geometry configuration from a config.
