@@ -9,7 +9,7 @@ from gtg_core.task import Task
 #Only the datastore should access to the backend
 DEFAULT_BACKEND = "1"
 #If you want to debug a backend, it can be useful to disable the threads
-THREADING = False
+THREADING = True
 
 class DataStore(gobject.GObject):
     __gsignals__ = { 'refresh': (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE,
