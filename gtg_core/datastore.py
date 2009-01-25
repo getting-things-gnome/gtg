@@ -9,7 +9,7 @@ from gtg_core.task import Task
 #Only the datastore should access to the backend
 DEFAULT_BACKEND = "1"
 #If you want to debug a backend, it can be useful to disable the threads
-THREADING = True
+THREADING = False
 
 class DataStore(gobject.GObject):
     __gsignals__ = { 'refresh': (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE,
@@ -21,6 +21,7 @@ class DataStore(gobject.GObject):
         self.tasks = {}
         self.tagstore = tagstore.TagStore()
         self.requester = requester.Requester(self)
+        self.locks = {}
         
     def all_tasks(self) :
         all_tasks = []
@@ -28,6 +29,13 @@ class DataStore(gobject.GObject):
             b = self.backends[key]
             tlist = b.get_tasks_list()
             all_tasks += tlist
+        #We also add tasks that are still not in a backend (because of threads)
+        for t in self.tasks :
+            if t not in all_tasks :
+                task = self.tasks[t]
+                if task.is_loaded() :
+                    task.sync()
+                    all_tasks.append(t)
         return all_tasks
         
     def get_task(self,tid) :
@@ -65,14 +73,13 @@ class DataStore(gobject.GObject):
             self.tasks[tid] = task
             return task
         #Else we create a new task in the given pid
-        elif pid and self.backends.has_key(pid):
+        elif not tid and pid and self.backends.has_key(pid):
             newtid = self.backends[pid].new_task_id()
             task = Task(newtid,self.requester,newtask=newtask)
             self.tasks[newtid] = task
             task = self.backends[pid].get_task(task,newtid)
             return task
         elif tid :
-            print "new_task with existing tid = bug"
             return self.tasks[tid]
         else :
             print "not possible to build the task = bug"
@@ -88,7 +95,7 @@ class DataStore(gobject.GObject):
         if dic.has_key("backend") :
             pid = dic["pid"]
             backend = dic["backend"]
-            source = TaskSource(backend,dic,self.refresh_ui)
+            source = TaskSource(backend,dic,self.locks,self.refresh_ui)
             self.backends[pid] = source
             #Filling the backend
             #Doing this at start is more efficient than after the GUI is launched
@@ -115,13 +122,13 @@ class DataStore(gobject.GObject):
 #Task source is an transparent interface between the real backend and datastore
 #Task source has also more functionnalities
 class TaskSource() :
-    def __init__(self,backend,parameters,refresh_cllbck) :
+    def __init__(self,backend,parameters,locks,refresh_cllbck) :
         self.backend = backend
         self.dic = parameters
         self.tasks = {}
         self.time = time.time()
         self.refresh = refresh_cllbck
-        self.locks = {}
+        self.locks = locks
         self.tosleep = 0
 
 ##### The Backend interface ###############
@@ -139,9 +146,11 @@ class TaskSource() :
     def get_task(self,empty_task,tid) :
         #Our thread
         def getting(empty_task,tid) :
+            self.locks[tid].acquire()
             self.backend.get_task(empty_task,tid)
             empty_task.set_sync_func(self.set_task)
             empty_task.set_loaded()
+            self.locks[tid].release()
             self.refresh()
         ##########
         if self.tasks.has_key(tid) :
