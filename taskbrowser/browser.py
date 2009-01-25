@@ -5,7 +5,6 @@ pygtk.require('2.0')
 import gobject
 import gtk.glade
 import threading
-import time
 
 #our own imports
 from taskeditor.editor       import TaskEditor
@@ -248,7 +247,7 @@ class TaskBrowser:
             self.do_refresh()
     
     
-    def do_refresh(self,sender=None,param=None) :
+    def do_refresh(self,sender=None,param=None) : #pylint: disable-msg=W0613
         #We ask to do the refresh in a gtk thread
         gobject.idle_add(self.refresh_tb,param)
 

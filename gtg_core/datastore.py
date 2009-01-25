@@ -21,7 +21,6 @@ class DataStore(gobject.GObject):
         self.tasks = {}
         self.tagstore = tagstore.TagStore()
         self.requester = requester.Requester(self)
-        self.registration = {}
         
     def all_tasks(self) :
         all_tasks = []
@@ -92,8 +91,10 @@ class DataStore(gobject.GObject):
             source = TaskSource(backend,dic,self.refresh_ui)
             self.backends[pid] = source
             #Filling the backend
+            #Doing this at start is more efficient than after the GUI is launched
             for tid in source.get_tasks_list() :
-                task = self.new_task(tid=tid)
+                #Just calling new_task then get_task is enough
+                self.new_task(tid=tid)
                 self.get_task(tid)
         else :
             print "Register a dic without backend key:  BUG"
