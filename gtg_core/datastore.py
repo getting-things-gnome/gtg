@@ -8,7 +8,7 @@ from gtg_core.task import Task
 
 #Only the datastore should access to the backend
 DEFAULT_BACKEND = "1"
-THREADING = False
+THREADING = True
 
 class DataStore(gobject.GObject):
     __gsignals__ = { 'refresh': (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE,
@@ -105,24 +105,9 @@ class DataStore(gobject.GObject):
         for key in self.backends :
             l.append(self.backends[key])
         return l
-        
-    ## Handle the registered UI
-    def register_ui(self,refresh_func) :
-        rid = 1
-        while self.registration.has_key(rid) :
-            rid += 1
-        self.registration[rid] = refresh_func
-        return rid
-        
-    def unregister_ui(self,reg_id) :
-        if self.registration.has_key(reg_id) :
-            self.registration.pop(reg_id)
     
     def refresh_ui(self) :
         self.emit("refresh","1")
-        #for rid in self.registration :
-            #print "datastore.refresh_ui %s" %rid
-            #self.registration[rid]()
         
 
 #Task source is an transparent interface between the real backend and datastore
@@ -151,25 +136,16 @@ class TaskSource() :
     def get_task(self,empty_task,tid) :
         #Our thread
         def getting(empty_task,tid) :
-            if THREADING :
-                time.sleep(1)
-                self.tosleep += 1
             self.backend.get_task(empty_task,tid)
             empty_task.set_sync_func(self.set_task)
             empty_task.set_loaded()
             self.refresh()
-            #TODO : block access to the task if the thread is running
-            #FIXME : do not display not fetched tasks
         ##########
         if self.tasks.has_key(tid) :
             task = self.tasks[tid]
             if task :
                 empty_task = task
-#            else :
-#                empty_task = None
         else :
-#            self.locks[tid].acquire()
-#            print "lock acquired"
             #By putting the task in the dic, we say :
             #"This task is already fetched (or at least in fetching process)
             self.tasks[tid] = False
@@ -180,8 +156,6 @@ class TaskSource() :
             else :
                 getting(empty_task,tid)
                 self.tasks[tid] = empty_task
-#            print "lock released"
-#            self.locks[tid].release()
         return empty_task
 
     def set_task(self,task) :
