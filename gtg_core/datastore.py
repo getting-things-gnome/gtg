@@ -122,12 +122,12 @@ class TaskSource() :
         self.refresh = refresh_cllbck
         self.locks = {}
         self.tosleep = 0
-        self.to_set = []
 
 ##### The Backend interface ###############
 ##########################################
 # All functions here are proxied from the backend itself
 
+    #This has to be threaded too
     def get_tasks_list(self) :
         tlist = self.backend.get_tasks_list()
         for t in tlist :
@@ -169,25 +169,25 @@ class TaskSource() :
 #            return self.backend.set_task(task)
 #        else :
 #            return True
-#        tid = task.get_id()
-#        if not task in self.to_set() :
-#            self.to_set.append(task)
-        #toreturn = self.backend.set_task(task)
         t = threading.Thread(target=self.__write,args=[task])
         t.start()
         return None
-        
+    
+    #This function, called in a thread, write to the backend.
+    #It acquires a lock to avoid multiple thread writing the same task
     def __write(self,task) :
         tid = task.get_id()
         self.locks[tid].acquire()
         self.backend.set_task(task)
         self.locks[tid].release()
     
+    #This has to be threaded too
     def remove_task(self,tid) :
         self.tasks.pop(tid)
         self.locks.pop(tid)
         return self.backend.remove_task(tid)
-        
+    
+    #This has to be threaded too
     def new_task_id(self) :
         newid = self.backend.new_task_id()
         if not newid :
@@ -200,7 +200,8 @@ class TaskSource() :
         if not self.locks.has_key(newid) :
             self.locks[newid] = threading.Lock()
         return newid
-
+    
+    #This has to be threaded too
     def quit(self) :
         return self.backend.quit()
         
