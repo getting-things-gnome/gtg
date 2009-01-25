@@ -85,7 +85,7 @@ aze,
 	</task>
 	<task id="2@1" status="Done" tags="">
 		<title>
-			Done task without tag
+			aze
 		</title>
 		<donedate>
 			2009-01-01
@@ -212,5 +212,15 @@ Sed tincidunt. Nunc vel felis. Vestibulum ante ipsum primis in faucibus orci luc
 		<donedate>
 			2009-01-22
 		</donedate>
+	</task>
+	<task id="20@1" status="Active" tags="">
+		<title>
+			Threading adqs
+		</title>
+		<content>
+			Je 
+Ce qui est curieux c'est que ça plante pour certains refresh
+et pas pour d'autres.
+		</content>
 	</task>
 </project>

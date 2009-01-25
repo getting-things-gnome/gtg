@@ -5,11 +5,13 @@ pygtk.require('2.0')
 import gobject
 import gtk.glade
 import threading
+import time
 
 #our own imports
 from taskeditor.editor       import TaskEditor
 from taskbrowser.CellRendererTags import CellRendererTags
 from taskbrowser import GnomeConfig
+from taskbrowser import treetools
 from tools import colors
 
 #=== OBJECTS ===================================================================
@@ -79,12 +81,7 @@ class TaskBrowser:
         # PYOBJECT:tid, STR:title, STR:due date string,
         # STR:days left string, PYOBJECT:tags, str:my_color
         self.task_tview     = self.wTree.get_widget("task_tview")
-        self.task_ts        = gtk.TreeStore( gobject.TYPE_PYOBJECT, \
-                                             str,                   \
-                                             str,                   \
-                                             str,                   \
-                                             gobject.TYPE_PYOBJECT, \
-                                             str)
+        self.task_ts        = treetools.new_task_ts()
         #Be sure that we are reorderable (not needed normaly)
         self.task_tview.set_reorderable(True)
         
@@ -102,8 +99,8 @@ class TaskBrowser:
 
         
         #this is our manual drag-n-drop handling
-#        self.task_ts.connect("row-changed",self.row_inserted,"insert")
-#        self.task_ts.connect("row-deleted",self.row_deleted,"delete")
+        self.task_ts.connect("row-changed",self.row_inserted,"insert")
+        self.task_ts.connect("row-deleted",self.row_deleted,"delete")
         
         # Column constants
         self.TASKS_TV_COL_TAG   = 1
@@ -173,8 +170,6 @@ class TaskBrowser:
         self.taskdone_ts.set_sort_column_id(self.c_title, gtk.SORT_ASCENDING)
         
         #put the content in those treeviews
-#        self.refresh_tags()
-#        self.refresh_list()
         self.do_refresh()
         
         selection = self.task_tview.get_selection()
@@ -253,28 +248,34 @@ class TaskBrowser:
     
     
     def do_refresh(self,sender=None,param=None) :
-#        print "refresh received with param %s" %param
-#        print self.req.get_active_tasks_list()
-#        self.lock.acquire()
-#        t = threading.Thread(target=self.refresh_tb())
-#        t.start()
-        self.refresh_tb()
-#        self.lock.release()
+        t = threading.Thread(target=self.refresh_tb)
+        t.start()
+        #self.refresh_tb
 
     #If a task asked for the refresh, we don't refresh it to avoid a loop
     def refresh_tb(self,fromtask=None):
-        print "refresh called"
-        self.refresh_list()
-        self.refresh_closed()
-        self.refresh_tags()
-        #Refreshing the opened editors
-        for uid in self.opened_task :
-            if uid != fromtask :
-                self.opened_task[uid].refresh_editor()
+        if self.lock.acquire(False) :
+        #if True :
+            print "refresh begin"
+            self.refresh_list()
+            #self.refresh_closed()
+            #self.refresh_tags()
+            #Refreshing the opened editors
+            for uid in self.opened_task :
+                if uid != fromtask :
+                    self.opened_task[uid].refresh_editor()
+            print "refresh end"
+            self.lock.release()
+        else :
+            #Todo : rafraichir encore une fois apres ceci
+            print "blocked"
 
     #We refresh the tag list. Not needed very often
     def refresh_tags(self) :
-        t_model,t_path = self.tag_tview.get_selection().get_selected_rows() #pylint: disable-msg=W0612
+        select = self.tag_tview.get_selection()
+        t_path = None
+        if select :
+            t_model,t_path = select.get_selected_rows() #pylint: disable-msg=W0612
         self.tag_ts.clear()
         alltag       = self.req.get_alltag_tag()
         notag        = self.req.get_notag_tag()
@@ -350,7 +351,7 @@ class TaskBrowser:
             for i in t_path :
                 selection.select_path(i)
 
-    
+    #Refresh the closed tasks pane
     def refresh_closed(self) :
         #We build the closed tasks pane
         dselect = self.taskdone_tview.get_selection()
@@ -372,6 +373,37 @@ class TaskBrowser:
         if d_path :
             for i in d_path :
                 closed_selection.select_path(i)
+                
+    #Add tasks to a treeview. If treeview is False, it becomes a flat list
+    def add_task_tree_to_list(self, tree_store, tid, parent, selected_uid=None,\
+                                        active_tasks=[], treeview=True):
+        task = self.req.get_task(tid)
+        if selected_uid and selected_uid == tid :
+            title = self.__build_task_title(task,extended=True)
+        else :
+            title = self.__build_task_title(task,extended=False)
+
+        # Extract data
+        duedate_str = task.get_due_date()
+        left_str    = task.get_days_left()
+        tags        = task.get_tags()
+        my_color = colors.background_color(tags)
+        
+        if not parent and len(task.get_subtasks()) == 0:
+            itera = tree_store.get_iter_first()
+            my_row = tree_store.insert_before(None, itera, row=[tid,title,duedate_str,left_str,tags,my_color])
+        else:
+            #None should be "parent" but crashing with thread
+            my_row = tree_store.append(parent,\
+                        [tid,title,duedate_str,left_str,tags,my_color])
+        #If treeview, we add add the active childs
+        if treeview :
+            for c in task.get_subtasks():
+                cid = c.get_id()
+                if cid in active_tasks:
+                    #None should be cid
+                    self.add_task_tree_to_list(tree_store, cid, my_row,selected_uid,\
+                                        active_tasks=active_tasks)
     
     #This function is called when the selection change in the closed task view
     #It will displays the selected task differently           
@@ -431,39 +463,6 @@ class TaskBrowser:
             else:
                 title = task.get_title()
         return title
-
-    #Add tasks to a treeview. If treeview is False, it becomes a flat list
-    def add_task_tree_to_list(self, tree_store, tid, parent, selected_uid=None,\
-                                        active_tasks=[], treeview=True):
-        task = self.req.get_task(tid)
-        if selected_uid and selected_uid == tid :
-            title = self.__build_task_title(task,extended=True)
-        else :
-            title = self.__build_task_title(task,extended=False)
-
-        # Extract data
-        duedate_str = task.get_due_date()
-        left_str    = task.get_days_left()
-        tags        = task.get_tags()
-        
-        my_color = colors.background_color(tags)
-
-        if treeview and not parent and len(task.get_subtasks()) == 0:
-            itera = tree_store.get_iter_first()
-            if itera and tree_store.iter_is_valid(itera) :
-                my_row = tree_store.insert_before(None, itera, row=[tid,title,duedate_str,left_str,tags,my_color])
-        else:
-            #None should be "parent" but crashing with thread
-            my_row = tree_store.append(parent,\
-                        [tid,title,duedate_str,left_str,tags,my_color])
-        #If treeview, we add add the active childs
-        if treeview :
-            for c in task.get_subtasks():
-                cid = c.get_id()
-                if cid in active_tasks:
-                    #None should be cid
-                    self.add_task_tree_to_list(tree_store, cid, my_row,selected_uid,\
-                                        active_tasks=active_tasks)
 
     #If a Task editor is already opened for a given task, we present it
     #Else, we create a new one.
@@ -687,37 +686,13 @@ class TaskBrowser:
     
     #    Functions that help to build the GUI. Nothing really interesting.
     def __add_active_column(self,name,value) :
-        col = self.__add_column(name,value)
+        col = treetools.add_column(name,value)
         self.task_tview.append_column(col)
         return col
         
     def __add_closed_column(self,name,value) :
-        col = self.__add_column(name,value)
+        col = treetools.add_column(name,value)
         self.taskdone_tview.append_column(col)
-        return col
-
-    def __add_column(self,name, value, icon=False, padding=None) :
-  
-        col = gtk.TreeViewColumn()
-        col.set_title(name)
-
-        if icon:
-            render_pixbuf = gtk.CellRendererPixbuf()
-            col.pack_start(render_pixbuf, expand=False)
-            col.add_attribute(render_pixbuf, 'pixbuf', 2)
-            #col.add_attribute(render_pixbuf, "cell_background",1)
-            render_pixbuf.set_property("xpad",2)
-
-        render_text = gtk.CellRendererText()
-        col.pack_start(render_text, expand=True)
-        col.set_attributes(render_text, markup=value)
-        #col.add_attribute(render_text, "cell_background",1)
-        if padding:
-            render_text.set_property("ypad",padding)        
-
-        #col.pack_start(renderer)
-        col.set_resizable(True)        
-        col.set_sort_column_id(value)
         return col
 
     def __create_tags_tview(self):

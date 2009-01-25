@@ -91,8 +91,9 @@ class DataStore(gobject.GObject):
             source = TaskSource(backend,dic,self.refresh_ui)
             self.backends[pid] = source
             #Filling the backend
-#            for tid in source.get_tasks_list() :
-#                task = self.new_task(tid=tid)
+            for tid in source.get_tasks_list() :
+                task = self.new_task(tid=tid)
+                self.get_task(tid)
         else :
             print "Register a dic without backend key:  BUG"
 
