@@ -315,7 +315,8 @@ class TaskBrowser:
         if tselect :
             t_model,t_path = tselect.get_selected_rows() #pylint: disable-msg=W0612
         #to refresh the list we first empty it then rebuild it
-        self.task_ts.clear()
+        #self.task_ts.clear()
+        new_taskts = treetools.new_task_ts()
         tag_list,notag_only = self.get_selected_tags()
         nbr_of_tasks = 0
         #We build the active tasks pane
@@ -323,7 +324,7 @@ class TaskBrowser:
             tasks = self.req.get_active_tasks_list(tags=tag_list,\
                         notag_only=notag_only,workable=True, started_only=False)
             for tid in tasks :
-                self.add_task_tree_to_list(self.task_ts,tid,None,selected_uid,\
+                self.add_task_tree_to_list(new_taskts,tid,None,selected_uid,\
                                                         treeview=False)
             nbr_of_tasks = len(tasks)
         else :
@@ -333,9 +334,11 @@ class TaskBrowser:
             active_tasks = self.req.get_active_tasks_list(tags=tag_list,\
                             notag_only=notag_only, is_root=False, started_only=False)
             for tid in active_root_tasks :
-                self.add_task_tree_to_list(self.task_ts, tid, None,\
+                self.add_task_tree_to_list(new_taskts, tid, None,\
                                 selected_uid,active_tasks=active_tasks)
             nbr_of_tasks = len(active_tasks)
+        self.task_ts = new_taskts
+        self.task_tview.set_model(new_taskts)
         #Set the title of the window :
         if nbr_of_tasks == 0 :
             parenthesis = "(no active task)"

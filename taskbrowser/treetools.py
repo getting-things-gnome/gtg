@@ -17,17 +17,16 @@ def new_task_ts():
 ######## Tree View Tools #######################################
 
 def add_column(name, value, icon=False, padding=None) :
-
     col = gtk.TreeViewColumn()
     col.set_title(name)
-
+    
     if icon:
         render_pixbuf = gtk.CellRendererPixbuf()
         col.pack_start(render_pixbuf, expand=False)
         col.add_attribute(render_pixbuf, 'pixbuf', 2)
         #col.add_attribute(render_pixbuf, "cell_background",1)
         render_pixbuf.set_property("xpad",2)
-
+        
     render_text = gtk.CellRendererText()
     col.pack_start(render_text, expand=True)
     col.set_attributes(render_text, markup=value)
