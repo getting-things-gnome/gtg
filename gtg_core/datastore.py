@@ -8,6 +8,7 @@ from gtg_core.task import Task
 
 #Only the datastore should access to the backend
 DEFAULT_BACKEND = "1"
+#If you want to debug a backend, it can be useful to disable the threads
 THREADING = True
 
 class DataStore(gobject.GObject):
@@ -121,6 +122,7 @@ class TaskSource() :
         self.refresh = refresh_cllbck
         self.locks = {}
         self.tosleep = 0
+        self.to_set = []
 
 ##### The Backend interface ###############
 ##########################################
@@ -167,8 +169,19 @@ class TaskSource() :
 #            return self.backend.set_task(task)
 #        else :
 #            return True
-        toreturn = self.backend.set_task(task)
-        return toreturn
+#        tid = task.get_id()
+#        if not task in self.to_set() :
+#            self.to_set.append(task)
+        #toreturn = self.backend.set_task(task)
+        t = threading.Thread(target=self.__write,args=[task])
+        t.start()
+        return None
+        
+    def __write(self,task) :
+        tid = task.get_id()
+        self.locks[tid].acquire()
+        self.backend.set_task(task)
+        self.locks[tid].release()
     
     def remove_task(self,tid) :
         self.tasks.pop(tid)

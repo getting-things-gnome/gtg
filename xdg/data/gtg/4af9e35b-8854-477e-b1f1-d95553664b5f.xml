@@ -22,9 +22,6 @@
 		<title>
 			4ème level
 		</title>
-		<duedate>
-			2009-01-23
-		</duedate>
 		<startdate>
 			2009-01-18
 		</startdate>
@@ -218,7 +215,7 @@ Sed tincidunt. Nunc vel felis. Vestibulum ante ipsum primis in faucibus orci luc
 			Threading
 		</title>
 		<content>
-			Je 
+			Je
 Ce qui est curieux c'est que ça plante pour certains refresh
 et pas pour d'autres.
 		</content>
