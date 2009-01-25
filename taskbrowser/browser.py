@@ -152,6 +152,7 @@ class TaskBrowser:
  
     def main(self):
         #Here we will define the main TaskList interface
+        gobject.threads_init()
         
         #The tags treeview
         self.__create_tags_tview()
@@ -248,27 +249,18 @@ class TaskBrowser:
     
     
     def do_refresh(self,sender=None,param=None) :
-        t = threading.Thread(target=self.refresh_tb)
-        t.start()
-        #self.refresh_tb
+        #We ask to do the refresh in a gtk thread
+        gobject.idle_add(self.refresh_tb,param)
 
     #If a task asked for the refresh, we don't refresh it to avoid a loop
     def refresh_tb(self,fromtask=None):
-        if self.lock.acquire(False) :
-        #if True :
-            print "refresh begin"
-            self.refresh_list()
-            #self.refresh_closed()
-            self.refresh_tags()
-            #Refreshing the opened editors
-            for uid in self.opened_task :
-                if uid != fromtask :
-                    self.opened_task[uid].refresh_editor()
-            print "refresh end"
-            self.lock.release()
-        else :
-            #Todo : rafraichir encore une fois apres ceci
-            print "blocked"
+        self.refresh_list()
+        self.refresh_closed()
+        self.refresh_tags()
+        #Refreshing the opened editors
+        for uid in self.opened_task :
+            if uid != fromtask :
+                self.opened_task[uid].refresh_editor()
 
     #We refresh the tag list. Not needed very often
     def refresh_tags(self) :
@@ -309,7 +301,6 @@ class TaskBrowser:
     #to keep it in sync with your self.projects   
     def refresh_list(self,a=None) : #pylint: disable-msg=W0613
         #selected tasks :
-        print "step 1"
         selected_uid = self.get_selected_task(self.task_tview)
         tselect = self.task_tview.get_selection()
         t_path = None
@@ -319,7 +310,6 @@ class TaskBrowser:
         new_taskts = treetools.new_task_ts()
         tag_list,notag_only = self.get_selected_tags()
         nbr_of_tasks = 0
-        print "step 2"
         #We build the active tasks pane
         if self.workview :
             tasks = self.req.get_active_tasks_list(tags=tag_list,\
@@ -330,17 +320,14 @@ class TaskBrowser:
             nbr_of_tasks = len(tasks)
         else :
             #building the classical treeview
-            print "step 3"
             active_root_tasks = self.req.get_active_tasks_list(tags=tag_list,\
                             notag_only=notag_only, is_root=True, started_only=False)
             active_tasks = self.req.get_active_tasks_list(tags=tag_list,\
                             notag_only=notag_only, is_root=False, started_only=False)
-            print "step 4"
             for tid in active_root_tasks :
                 self.add_task_tree_to_list(new_taskts, tid, None,\
                                 selected_uid,active_tasks=active_tasks)
             nbr_of_tasks = len(active_tasks)
-            print "step 5"
         #Set the title of the window :
         if nbr_of_tasks == 0 :
             parenthesis = "(no active task)"
@@ -349,18 +336,14 @@ class TaskBrowser:
         else :
             parenthesis = "(%s actives tasks)"%nbr_of_tasks
         self.window.set_title("Getting Things Gnome! %s"%parenthesis)
-        print "step 6"
         self.task_tview.set_model(new_taskts)
-        print "step 7"
         self.task_ts = new_taskts
-        print "step 8"
         self.task_tview.expand_all()
-        print "step 9"
         #We reselect the selected tasks
-#        selection = self.task_tview.get_selection()
-#        if t_path :
-#            for i in t_path :
-#                selection.select_path(i)
+        selection = self.task_tview.get_selection()
+        if t_path :
+            for i in t_path :
+                selection.select_path(i)
 
     #Refresh the closed tasks pane
     def refresh_closed(self) :
@@ -436,30 +419,29 @@ class TaskBrowser:
     #This function is called when the selection change in the active task view
     #It will displays the selected task differently
     def task_cursor_changed(self,selection=None) :
-        print "task cursor changed"
         #We unselect all in the closed task view
         #Only if something is selected in the active task list
-#        if selection.count_selected_rows() > 0 :
-#            self.taskdone_tview.get_selection().unselect_all()
-#            self.donebutton.set_label(GnomeConfig.MARK_DONE)
-#            self.dismissbutton.set_label(GnomeConfig.MARK_DISMISS)
-#        #We reset the previously selected task
-#        if self.selected_rows and self.task_ts.iter_is_valid(self.selected_rows):
-#            tid = self.task_ts.get_value(self.selected_rows, self.TASK_MODEL_OBJ)
-#            task = self.req.get_task(tid)
-#            title = self.__build_task_title(task,extended=False)
-#            self.task_ts.set_value(self.selected_rows,self.TASK_MODEL_TITLE,title)
-#        #We change the selection title
-#        if selection :
-#            ts,itera = selection.get_selected() #pylint: disable-msg=W0612
-#            if itera and self.task_ts.iter_is_valid(itera) :
-#                tid = self.task_ts.get_value(itera, self.TASK_MODEL_OBJ)
-#                task = self.req.get_task(tid)
-#                self.selected_rows = itera
-#                # Extended title is temporarily disabled
-#                #title = self.__build_task_title(task,extended=True)
-#                title = self.__build_task_title(task,extended=False)
-#                self.task_ts.set_value(self.selected_rows,self.TASK_MODEL_TITLE,title)
+        if selection.count_selected_rows() > 0 :
+            self.taskdone_tview.get_selection().unselect_all()
+            self.donebutton.set_label(GnomeConfig.MARK_DONE)
+            self.dismissbutton.set_label(GnomeConfig.MARK_DISMISS)
+        #We reset the previously selected task
+        if self.selected_rows and self.task_ts.iter_is_valid(self.selected_rows):
+            tid = self.task_ts.get_value(self.selected_rows, self.TASK_MODEL_OBJ)
+            task = self.req.get_task(tid)
+            title = self.__build_task_title(task,extended=False)
+            self.task_ts.set_value(self.selected_rows,self.TASK_MODEL_TITLE,title)
+        #We change the selection title
+        if selection :
+            ts,itera = selection.get_selected() #pylint: disable-msg=W0612
+            if itera and self.task_ts.iter_is_valid(itera) :
+                tid = self.task_ts.get_value(itera, self.TASK_MODEL_OBJ)
+                task = self.req.get_task(tid)
+                self.selected_rows = itera
+                # Extended title is temporarily disabled
+                #title = self.__build_task_title(task,extended=True)
+                title = self.__build_task_title(task,extended=False)
+                self.task_ts.set_value(self.selected_rows,self.TASK_MODEL_TITLE,title)
     
     def __build_task_title(self,task,extended=False):
         if extended :

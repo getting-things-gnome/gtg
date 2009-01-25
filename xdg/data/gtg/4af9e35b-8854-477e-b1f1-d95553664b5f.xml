@@ -215,17 +215,12 @@ Sed tincidunt. Nunc vel felis. Vestibulum ante ipsum primis in faucibus orci luc
 	</task>
 	<task id="20@1" status="Active" tags="">
 		<title>
-			Threading  eazfddfdfez
+			Threading
 		</title>
 		<content>
 			Je 
 Ce qui est curieux c'est que ça plante pour certains refresh
 et pas pour d'autres.
 		</content>
-	</task>
-	<task id="21@1" status="Active" tags="">
-		<title>
-			editing therzerrze
-		</title>
 	</task>
 </project>
