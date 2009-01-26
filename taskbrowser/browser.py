@@ -493,7 +493,9 @@ class TaskBrowser:
                                         active_tasks=[], treeview=True):
         task = self.req.get_task(tid)
         if selected_uid and selected_uid == tid :
-            title = self.__build_task_title(task,extended=True)
+            # Temporarily disabled
+            #title = self.__build_task_title(task,extended=True)
+            title = self.__build_task_title(task,extended=False)
         else :
             title = self.__build_task_title(task,extended=False)
 
