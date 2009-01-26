@@ -134,19 +134,26 @@ class TaskSource() :
         self.tosleep = 0
         self.backend_lock = threading.Lock()
         self.removed = []
+        self.tlist = []
 
 ##### The Backend interface ###############
 ##########################################
 # All functions here are proxied from the backend itself
 
-    #This has to be threaded too
+    #TODO : This has to be threaded too
+    #Then test by putting some articial sleeps in the localfile.py
     def get_tasks_list(self) :
-        self.backend_lock.acquire()
-        tlist = self.backend.get_tasks_list()
-        for t in tlist :
-            self.locks.create_lock(t)
-        self.backend_lock.release()
-        return tlist
+        def getall() :
+            self.backend_lock.acquire()
+            self.tlist = self.backend.get_tasks_list()
+            for t in self.tlist :
+                self.locks.create_lock(t)
+            self.backend_lock.release()
+        tlist = []
+        t = threading.Thread(target=getall)
+        t.start()
+        #getall()
+        return self.tlist
         
     def get_task(self,empty_task,tid) :
         #Our thread
@@ -198,7 +205,7 @@ class TaskSource() :
         self.backend.set_task(task)
         self.locks.release(tid)
     
-    #This has to be threaded too
+    #TODO : This has to be threaded too
     def remove_task(self,tid) :
         self.backend_lock.acquire()
         self.locks.acquire(tid)
@@ -209,7 +216,7 @@ class TaskSource() :
         self.backend_lock.release()
         return toreturn
     
-    #This has to be threaded too
+    #TODO: This has to be threaded too
     def new_task_id(self) :
         newid = self.backend.new_task_id()
         if not newid :
@@ -224,7 +231,7 @@ class TaskSource() :
         self.locks.create_lock(newid)
         return newid
     
-    #This has to be threaded too
+    #TODO : This has to be threaded too
     def quit(self) :
         return self.backend.quit()
         

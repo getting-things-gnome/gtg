@@ -27,7 +27,7 @@
 import os
 from xdg.BaseDirectory import *
 from tools             import cleanxml
-from tools.configobj   import ConfigObj
+from configobj   import ConfigObj
 
 class CoreConfig:
     
