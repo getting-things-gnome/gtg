@@ -77,12 +77,34 @@ class Task :
         return workable
         
     def set_due_date(self,fulldate) :
+        #We retrieve the most urgent due date from parent
+        parent_date = None
+        for par in self.get_parents() :
+            pardate_str = self.req.get_task(par).get_due_date()
+            if pardate_str :
+                pardate = strtodate(pardate_str)
+                if not parent_date or pardate < strtodate(parent_date) :
+                    parent_date = pardate_str
+        if parent_date :
+            if not fulldate or strtodate(parent_date) < strtodate(fulldate) :
+                fulldate = parent_date
+        #Now we set the duedate
         if fulldate :
             self.due_date = strtodate(fulldate)
+            #We set the due date for children only 
+            #if their due date is "larger" (or none)
             for child in self.get_subtasks() :
-                child.set_due_date(fulldate)
+                actual_date = child.get_due_date()
+                if actual_date :
+                    rfulldate = strtodate(fulldate)
+                    ractual = strtodate(actual_date)
+                    if rfulldate < ractual :
+                        child.set_due_date(fulldate)
+                else :
+                    child.set_due_date(fulldate)
         else :
             self.due_date = None
+        self.sync()
         
     #Due date return the most urgent date of all parents
     def get_due_date(self) :
