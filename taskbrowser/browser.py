@@ -71,6 +71,7 @@ class TaskBrowser:
                 "on_view_workview_toggled"           : self.on_workview_toggled,
                 "on_view_closed_toggled"             : self.on_closed_toggled,
                 "on_view_sidebar_toggled"            : self.on_sidebar_toggled,
+                "on_bg_color_toggled"                : self.on_bg_color_toggled,
                 "on_quickadd_field_activate"         : self.quickadd,
                 "on_quickadd_button_activate"        : self.quickadd,
                 "on_view_quickadd_toggled"           : self.toggle_quickadd,
@@ -159,6 +160,7 @@ class TaskBrowser:
         self.wTree.get_widget("view_sidebar").set_active(SIDEBAR)
         self.wTree.get_widget("view_closed").set_active(CLOSED_PANE)
         self.wTree.get_widget("view_quickadd").set_active(QUICKADD_PANE)
+        self.priv["bg_color_enable"] = True
     
 		#connecting the refresh signal from the requester
         self.lock = threading.Lock()
@@ -200,6 +202,11 @@ class TaskBrowser:
             if not quickadd_pane    :
                 self.quickadd_pane.hide()
                 self.wTree.get_widget("view_quickadd").set_active(False)
+                
+        if self.config["browser"].has_key("bg_color_enable"):
+            bgcol_enable = eval(self.config["browser"]["bg_color_enable"])
+            self.priv["bg_color_enable"] = bgcol_enable
+            self.wTree.get_widget("bgcol_enable").set_active(bgcol_enable)
 
     def on_move(self, widget, data):
         xpos, ypos = self.window.get_position()
@@ -227,7 +234,7 @@ class TaskBrowser:
         self.config["browser"]["tag_pane"]         = tag_sidebar
         self.config["browser"]["closed_task_pane"] = closed_pane
         self.config["browser"]["quick_add"]        = quickadd_pane
-        self.config["browser"]["bg_color_enable"]  = True
+        self.config["browser"]["bg_color_enable"]  = self.priv["bg_color_enable"]
  
     def on_close(self):
         self.__save_state_to_conf()
@@ -333,6 +340,13 @@ class TaskBrowser:
             self.closed_pane.show()
         else :
             self.closed_pane.hide()
+
+    def on_bg_color_toggled(self,widget) :
+        if widget.get_active() :
+            self.priv["bg_color_enable"] = True
+        else :
+            self.priv["bg_color_enable"] = False
+        self.refresh_list()
             
     def toggle_quickadd(self,widget) :
         if widget.get_active() :
@@ -487,7 +501,10 @@ class TaskBrowser:
         duedate_str = task.get_due_date()
         left_str    = task.get_days_left()
         tags        = task.get_tags()
-        my_color = colors.background_color(tags)
+        if self.priv["bg_color_enable"] == True:
+            my_color = colors.background_color(tags)
+        else:
+            my_color = None
         
         if not parent and len(task.get_subtasks()) == 0:
             itera = tree_store.get_iter_first()
@@ -841,45 +858,45 @@ class TaskBrowser:
         # Title column
         title_col   = gtk.TreeViewColumn()
         render_text = gtk.CellRendererText()
-        title_col.set_title          ("Title")
-        title_col.pack_start         (render_text, expand=False)
-        title_col.add_attribute      (render_text, "markup", self.TASK_MODEL_TITLE)
-        title_col.set_resizable      (True)
-        title_col.set_sort_column_id (self.TASK_MODEL_TITLE)
-        title_col.set_expand         (True)
-        title_col.add_attribute      (render_text, "cell_background", self.TASK_MODEL_BGCOL)
-        self.task_tview.append_column(title_col)
+        title_col.set_title           ("Title")
+        title_col.pack_start          (render_text, expand=False)
+        title_col.add_attribute       (render_text, "markup", self.TASK_MODEL_TITLE)
+        title_col.set_resizable       (True)
+        title_col.set_sort_column_id  (self.TASK_MODEL_TITLE)
+        title_col.set_expand          (True)
+        title_col.add_attribute       (render_text, "cell_background", self.TASK_MODEL_BGCOL)
+        self.task_tview.append_column (title_col)
         
         # Due date column
         ddate_col   = gtk.TreeViewColumn()
         render_text = gtk.CellRendererText()
-        ddate_col.set_title          ("Due date")
-        ddate_col.pack_start         (render_text, expand=False)
-        ddate_col.add_attribute      (render_text, "markup", self.TASK_MODEL_DDATE_STR)
-        ddate_col.set_resizable      (False)
-        ddate_col.set_sort_column_id (self.TASK_MODEL_DDATE_STR)
-        ddate_col.add_attribute      (render_text, "cell_background", self.TASK_MODEL_BGCOL)
-        ddate_col.set_sort_order     (gtk.SORT_DESCENDING)
-        ddate_col.set_sort_indicator (True)
-        self.task_tview.append_column(ddate_col)
+        ddate_col.set_title           ("Due date")
+        ddate_col.pack_start          (render_text, expand=False)
+        ddate_col.add_attribute       (render_text, "markup", self.TASK_MODEL_DDATE_STR)
+        ddate_col.set_resizable       (False)
+        ddate_col.set_sort_column_id  (self.TASK_MODEL_DDATE_STR)
+        ddate_col.add_attribute       (render_text, "cell_background", self.TASK_MODEL_BGCOL)
+        ddate_col.set_sort_order      (gtk.SORT_DESCENDING)
+        ddate_col.set_sort_indicator  (True)
+        self.task_tview.append_column (ddate_col)
         
         # days left
         dleft_col   = gtk.TreeViewColumn()
         render_text = gtk.CellRendererText()
-        dleft_col.set_title          ("Days left")
-        dleft_col.pack_start         (render_text, expand=False)
-        dleft_col.add_attribute      (render_text, "markup", self.TASK_MODEL_DLEFT_STR)
-        dleft_col.set_resizable      (False)
-        dleft_col.set_sort_column_id (self.TASK_MODEL_DDATE_STR)
-        dleft_col.add_attribute      (render_text, "cell_background", self.TASK_MODEL_BGCOL)
-        dleft_col.set_sort_order     (gtk.SORT_DESCENDING)
-        dleft_col.set_sort_indicator (True)
-        self.task_tview.append_column(dleft_col)
+        dleft_col.set_title           ("Days left")
+        dleft_col.pack_start          (render_text, expand=False)
+        dleft_col.add_attribute       (render_text, "markup", self.TASK_MODEL_DLEFT_STR)
+        dleft_col.set_resizable       (False)
+        dleft_col.set_sort_column_id  (self.TASK_MODEL_DDATE_STR)
+        dleft_col.add_attribute       (render_text, "cell_background", self.TASK_MODEL_BGCOL)
+        dleft_col.set_sort_order      (gtk.SORT_DESCENDING)
+        dleft_col.set_sort_indicator  (True)
+        self.task_tview.append_column (dleft_col)
 
         # Global treeview properties
-        self.task_tview.set_property("expander-column", title_col)
-        self.task_tview.set_property("enable-tree-lines", False)
-        self.task_tview.set_rules_hint(False)
+        self.task_tview.set_property   ("expander-column", title_col)
+        self.task_tview.set_property   ("enable-tree-lines", False)
+        self.task_tview.set_rules_hint (False)
        
     ######Closing the window
     def close(self,widget=None) : #pylint: disable-msg=W0613
