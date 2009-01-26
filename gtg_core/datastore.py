@@ -238,9 +238,12 @@ class TaskSource() :
         return self.dic
         
 
+#This is the lock library. Each task has a lock to avoir concurrency 
+#on the same task when writing/reading on/from the backend
 class lockslibrary :
     def __init__(self) :
         self.locks = {}
+        #The lock library itself is protected by a lock to avoid deadlock
         self.glob = threading.Lock()
         
     def create_lock(self,tid) :
@@ -250,6 +253,7 @@ class lockslibrary :
         self.glob.release()
     
     #To be removed, a lock should be acquired before !
+    #So acquire the lock before calling this function !
     def remove_lock(self,tid) :
         self.glob.acquire()
         if self.locks.has_key(tid) :

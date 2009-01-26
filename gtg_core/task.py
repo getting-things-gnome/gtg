@@ -225,7 +225,7 @@ class Task :
             self.children.remove(tid)
             task = self.req.get_task(tid)
             if task.can_be_deleted :
-                task.delete()
+                self.req.delete_task(tid)
             else :
                 task.remove_parent(self.get_id())
             self.sync()
