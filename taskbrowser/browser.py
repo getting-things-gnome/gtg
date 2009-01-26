@@ -481,8 +481,8 @@ class TaskBrowser:
         for tid in closed_tasks :
             t = self.req.get_task(tid)
             title = t.get_title()
-            donedate = t.get_done_date()
-            self.taskdone_ts.append(None,[tid,t.get_color(),title,donedate])
+            closeddate = t.get_closed_date()
+            self.taskdone_ts.append(None,[tid,t.get_color(),title,closeddate])
         closed_selection = self.taskdone_tview.get_selection()
         if d_path :
             for i in d_path :

@@ -44,7 +44,7 @@ def task_to_xml(doc,task) :
     cleanxml.addTextNode(doc,t_xml,"title",task.get_title())
     cleanxml.addTextNode(doc,t_xml,"duedate",task.get_due_date())
     cleanxml.addTextNode(doc,t_xml,"startdate",task.get_start_date())
-    cleanxml.addTextNode(doc,t_xml,"donedate",task.get_done_date())
+    cleanxml.addTextNode(doc,t_xml,"donedate",task.get_closed_date())
     childs = task.get_subtasks_tid()
     for c in childs :
         cleanxml.addTextNode(doc,t_xml,"subtask",c)

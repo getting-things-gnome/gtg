@@ -17,7 +17,7 @@ class Task :
         self.title = "My new task"
         #available status are : Active - Done - Dismiss - Deleted 
         self.status = "Active"
-        self.done_date = None
+        self.closed_date = None
         self.due_date = None
         self.start_date = None
         self.parents = []
@@ -56,13 +56,13 @@ class Task :
         if status :
             self.status = status
             #If Done, we set the done date
-            if status == "Done" :
+            if status in ["Done","Dismiss"] :
                 #to the specified date (if any)
                 if donedate :
-                    self.done_date = donedate
+                    self.closed_date = donedate
                 #or to today
                 else : 
-                    self.done_date = date.today()
+                    self.closed_date = date.today()
         self.sync()
         
     def get_status(self) :
@@ -121,9 +121,9 @@ class Task :
         else :
             return True
             
-    def get_done_date(self) :
-        if self.done_date :
-            return str(self.done_date)
+    def get_closed_date(self) :
+        if self.closed_date :
+            return str(self.closed_date)
         else :
             return ''
     
@@ -225,7 +225,7 @@ class Task :
             self.children.remove(tid)
             task = self.req.get_task(tid)
             if task.can_be_deleted :
-                task.delete()
+                self.req.delete_task(tid)
             else :
                 task.remove_parent(self.get_id())
             self.sync()
@@ -323,12 +323,18 @@ class Task :
         #Do not add the same tag twice
         if not t in self.tags :
             self.tags.append(t)
+            for child in self.get_subtasks() :
+                if child.can_be_deleted :
+                    child.add_tag(tagname)
             
     #remove by tagname
     def remove_tag(self, tagname):
         t = self.req.get_tag(tagname)
         if t in self.tags :
             self.tags.remove(t)
+            for child in self.get_subtasks() :
+                if child.can_be_deleted :
+                    child.remove_tag(tagname)
 
     #tag_list is a list of tagnames
     #return true if at least of the list is in the task
