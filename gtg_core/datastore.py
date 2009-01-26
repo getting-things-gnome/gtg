@@ -21,7 +21,6 @@ class DataStore(gobject.GObject):
         self.tasks = {}
         self.tagstore = tagstore.TagStore()
         self.requester = requester.Requester(self)
-        self.locks = lockslibrary()
         
     def all_tasks(self) :
         all_tasks = []
@@ -98,7 +97,7 @@ class DataStore(gobject.GObject):
         if dic.has_key("backend") :
             pid = dic["pid"]
             backend = dic["backend"]
-            source = TaskSource(backend,dic,self.locks,self.refresh_ui)
+            source = TaskSource(backend,dic,self.refresh_ui)
             self.backends[pid] = source
             #Filling the backend
             #Doing this at start is more efficient than after the GUI is launched
@@ -125,7 +124,7 @@ class DataStore(gobject.GObject):
 #Task source is an transparent interface between the real backend and datastore
 #Task source has also more functionnalities
 class TaskSource() :
-    def __init__(self,backend,parameters,locks,refresh_cllbck) :
+    def __init__(self,backend,parameters,refresh_cllbck) :
         self.backend = backend
         self.dic = parameters
         self.tasks = {}
@@ -187,7 +186,6 @@ class TaskSource() :
 #            return self.backend.set_task(task)
 #        else :
 #            return True
-        tid = task.get_id()
         t = threading.Thread(target=self.__write,args=[task])
         t.start()
         return None
