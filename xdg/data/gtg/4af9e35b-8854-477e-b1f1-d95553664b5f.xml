@@ -106,12 +106,16 @@ aze,
 		<content>
 			&lt;tag&gt;@tag&lt;/tag&gt;
 tag, 
+&lt;subtask&gt;25@1&lt;/subtask&gt;
 		</content>
 	</task>
 	<task id="14@1" status="Dismiss" tags="@new_tag">
 		<title>
 			encore un
 		</title>
+		<donedate>
+			2009-01-26
+		</donedate>
 		<content>
 			&lt;tag&gt;@new_tag&lt;/tag&gt;, 
 		</content>
@@ -147,7 +151,7 @@ tag,
 &lt;subtask&gt;14@1&lt;/subtask&gt;
 		</content>
 	</task>
-	<task id="7@1" status="Active" tags="@autro">
+	<task id="7@1" status="Active" tags="@tagdetest">
 		<title>
 			enfant3
 		</title>
@@ -158,7 +162,8 @@ tag,
 			6@1
 		</subtask>
 		<content>
-			&lt;subtask&gt;8@1&lt;/subtask&gt;&lt;tag&gt;@autro&lt;/tag&gt;, 
+			&lt;subtask&gt;6@1&lt;/subtask&gt;&lt;tag&gt;@tagdetest&lt;/tag&gt;
+&lt;subtask&gt;13@1&lt;/subtask&gt;
 		</content>
 	</task>
 	<task id="4@1" status="Active" tags="@lorem_ipsum,@vampire,@t2">
@@ -222,5 +227,61 @@ Sed tincidunt. Nunc vel felis. Vestibulum ante ipsum primis in faucibus orci luc
 Ce qui est curieux c'est que ça plante pour certains refresh
 et pas pour d'autres.
 		</content>
+	</task>
+	<task id="11@1" status="Active" tags="">
+		<title>
+			My new task
+		</title>
+	</task>
+	<task id="13@1" status="Active" tags="">
+		<title>
+			My new task
+		</title>
+	</task>
+	<task id="17@1" status="Active" tags="">
+		<title>
+			My new task
+		</title>
+	</task>
+	<task id="18@1" status="Active" tags="">
+		<title>
+			My new task
+		</title>
+	</task>
+	<task id="19@1" status="Active" tags="">
+		<title>
+			My new task
+		</title>
+	</task>
+	<task id="21@1" status="Active" tags="@tag">
+		<title>
+			zerzer
+		</title>
+		<duedate>
+			2009-01-23
+		</duedate>
+		<content>
+			&lt;tag&gt;@tag&lt;/tag&gt;, 
+		</content>
+	</task>
+	<task id="22@1" status="Active" tags="">
+		<title>
+			My new task
+		</title>
+	</task>
+	<task id="23@1" status="Active" tags="">
+		<title>
+			My new task
+		</title>
+	</task>
+	<task id="24@1" status="Active" tags="">
+		<title>
+			My new task
+		</title>
+	</task>
+	<task id="25@1" status="Active" tags="">
+		<title>
+			My new task
+		</title>
 	</task>
 </project>

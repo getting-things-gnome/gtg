@@ -323,6 +323,9 @@ class Task :
         #Do not add the same tag twice
         if not t in self.tags :
             self.tags.append(t)
+            for child in self.get_subtasks() :
+                if child.can_be_deleted :
+                    child.add_tag(tagname)
             
     #remove by tagname
     def remove_tag(self, tagname):

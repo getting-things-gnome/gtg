@@ -162,6 +162,8 @@ class TaskSource() :
             #"This task is already fetched (or at least in fetching process)
             self.tasks[tid] = False
             if THREADING :
+                if not self.locks.has_key(tid) :
+                    self.locks[tid] = threading.Lock()
                 t = threading.Thread(target=getting,args=[empty_task,tid])
                 t.start()
                 self.tasks[tid] = empty_task
@@ -179,6 +181,9 @@ class TaskSource() :
 #            return self.backend.set_task(task)
 #        else :
 #            return True
+        tid = task.get_id()
+        if not self.locks.has_key(tid) :
+                self.locks[tid] = threading.Lock()
         t = threading.Thread(target=self.__write,args=[task])
         t.start()
         return None
@@ -187,15 +192,20 @@ class TaskSource() :
     #It acquires a lock to avoid multiple thread writing the same task
     def __write(self,task) :
         tid = task.get_id()
-        self.locks[tid].acquire()
+        zelock = self.locks[tid]
+        zelock.acquire()
         self.backend.set_task(task)
-        self.locks[tid].release()
+        zelock.release()
     
     #This has to be threaded too
     def remove_task(self,tid) :
+        zelock = self.locks[tid]
+        zelock.acquire()
         self.tasks.pop(tid)
         self.locks.pop(tid)
-        return self.backend.remove_task(tid)
+        toreturn = self.backend.remove_task(tid)
+        zelock.release()
+        return toreturn
     
     #This has to be threaded too
     def new_task_id(self) :
