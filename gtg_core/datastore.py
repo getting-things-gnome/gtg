@@ -134,6 +134,7 @@ class TaskSource() :
         self.locks = lockslibrary()
         self.tosleep = 0
         self.backend_lock = threading.Lock()
+        self.removed = []
 
 ##### The Backend interface ###############
 ##########################################
@@ -162,7 +163,8 @@ class TaskSource() :
             task = self.tasks[tid]
             if task :
                 empty_task = task
-        else :
+        #We will not try to get a removed task
+        elif tid not in self.removed :
             #By putting the task in the dic, we say :
             #"This task is already fetched (or at least in fetching process)
             self.tasks[tid] = False
@@ -202,7 +204,7 @@ class TaskSource() :
     def remove_task(self,tid) :
         self.backend_lock.acquire()
         self.locks.acquire(tid)
-        #self.tasks.pop(tid)
+        self.removed.append(tid)
         toreturn = self.backend.remove_task(tid)
         self.tasks.pop(tid)
         self.locks.remove_lock(tid)
@@ -219,6 +221,8 @@ class TaskSource() :
             while self.tasks.has_key(str(newid)) :
                 k += 1
                 newid = "%s@%s" %(k,pid)
+        if newid in self.removed :
+            self.removed.remove(newid)
         self.locks.create_lock(newid)
         return newid
     

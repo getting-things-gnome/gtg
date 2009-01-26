@@ -88,6 +88,14 @@ aze,
 			2009-01-01
 		</donedate>
 	</task>
+	<task id="9@1" status="Active" tags="">
+		<title>
+			No tag task
+		</title>
+		<content>
+			no tag but I'm editing
+		</content>
+	</task>
 	<task id="6@1" status="Active" tags="@tag">
 		<title>
 			sous-sous
@@ -109,6 +117,14 @@ tag,
 		</donedate>
 		<content>
 			&lt;tag&gt;@new_tag&lt;/tag&gt;, 
+		</content>
+	</task>
+	<task id="16@1" status="Active" tags="@tag">
+		<title>
+			child with tag
+		</title>
+		<content>
+			&lt;tag&gt;@tag&lt;/tag&gt;, juste pour voir quand j'édite
 		</content>
 	</task>
 	<task id="3@1" status="Done" tags="@donetask">
@@ -197,9 +213,14 @@ Sed tincidunt. Nunc vel felis. Vestibulum ante ipsum primis in faucibus orci luc
 			2009-01-22
 		</donedate>
 	</task>
-	<task id="9@1" status="Active" tags="">
+	<task id="20@1" status="Active" tags="">
 		<title>
-			My new task
+			Threading
 		</title>
+		<content>
+			Je
+Ce qui est curieux c'est que ça plante pour certains refresh
+et pas pour d'autres.
+		</content>
 	</task>
 </project>
