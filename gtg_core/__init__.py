@@ -36,14 +36,17 @@ class CoreConfig:
     #Don't forget the "/" at the end.
     DATA_DIR  = os.path.join(xdg_data_home,'gtg/')
     DATA_FILE = "projects.xml"
+    CONF_DIR = os.path.join(xdg_config_home,'gtg/')
     CONF_FILE = "gtg.conf"
     conf_dict = None
     
     def __init__(self):
-        if not os.path.exists(self.DATA_DIR + self.CONF_FILE):
-            f = open(self.DATA_DIR + self.CONF_FILE, "w")
+        if not os.path.exists(self.CONF_DIR) :
+            os.mkdir(self.CONF_DIR)
+        if not os.path.exists(self.CONF_DIR + self.CONF_FILE):
+            f = open(self.CONF_DIR + self.CONF_FILE, "w")
             f.close()
-        self.conf_dict = ConfigObj(self.DATA_DIR + self.CONF_FILE)
+        self.conf_dict = ConfigObj(self.CONF_DIR + self.CONF_FILE)
     
     def save_config(self):
         self.conf_dict.write()
