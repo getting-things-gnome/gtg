@@ -88,14 +88,6 @@ aze,
 			2009-01-01
 		</donedate>
 	</task>
-	<task id="9@1" status="Active" tags="">
-		<title>
-			No tag task
-		</title>
-		<content>
-			no tag but I'm editing
-		</content>
-	</task>
 	<task id="6@1" status="Active" tags="@tag">
 		<title>
 			sous-sous
@@ -106,7 +98,6 @@ aze,
 		<content>
 			&lt;tag&gt;@tag&lt;/tag&gt;
 tag, 
-&lt;subtask&gt;25@1&lt;/subtask&gt;
 		</content>
 	</task>
 	<task id="14@1" status="Dismiss" tags="@new_tag">
@@ -118,14 +109,6 @@ tag,
 		</donedate>
 		<content>
 			&lt;tag&gt;@new_tag&lt;/tag&gt;, 
-		</content>
-	</task>
-	<task id="16@1" status="Active" tags="@tag">
-		<title>
-			child with tag
-		</title>
-		<content>
-			&lt;tag&gt;@tag&lt;/tag&gt;, juste pour voir quand j'édite
 		</content>
 	</task>
 	<task id="3@1" status="Done" tags="@donetask">
@@ -151,7 +134,7 @@ tag,
 &lt;subtask&gt;14@1&lt;/subtask&gt;
 		</content>
 	</task>
-	<task id="7@1" status="Active" tags="@tagdetest">
+	<task id="7@1" status="Active" tags="@autro">
 		<title>
 			enfant3
 		</title>
@@ -162,8 +145,7 @@ tag,
 			6@1
 		</subtask>
 		<content>
-			&lt;subtask&gt;6@1&lt;/subtask&gt;&lt;tag&gt;@tagdetest&lt;/tag&gt;
-&lt;subtask&gt;13@1&lt;/subtask&gt;
+			&lt;subtask&gt;8@1&lt;/subtask&gt;&lt;tag&gt;@autro&lt;/tag&gt;, 
 		</content>
 	</task>
 	<task id="4@1" status="Active" tags="@lorem_ipsum,@vampire,@t2">
@@ -215,71 +197,7 @@ Sed tincidunt. Nunc vel felis. Vestibulum ante ipsum primis in faucibus orci luc
 			2009-01-22
 		</donedate>
 	</task>
-	<task id="20@1" status="Dismiss" tags="">
-		<title>
-			Threading
-		</title>
-		<donedate>
-			2009-01-26
-		</donedate>
-		<content>
-			Je
-Ce qui est curieux c'est que ça plante pour certains refresh
-et pas pour d'autres.
-		</content>
-	</task>
-	<task id="11@1" status="Active" tags="">
-		<title>
-			My new task
-		</title>
-	</task>
-	<task id="13@1" status="Active" tags="">
-		<title>
-			My new task
-		</title>
-	</task>
-	<task id="17@1" status="Active" tags="">
-		<title>
-			My new task
-		</title>
-	</task>
-	<task id="18@1" status="Active" tags="">
-		<title>
-			My new task
-		</title>
-	</task>
-	<task id="19@1" status="Active" tags="">
-		<title>
-			My new task
-		</title>
-	</task>
-	<task id="21@1" status="Active" tags="@tag">
-		<title>
-			zerzer
-		</title>
-		<duedate>
-			2009-01-23
-		</duedate>
-		<content>
-			&lt;tag&gt;@tag&lt;/tag&gt;, 
-		</content>
-	</task>
-	<task id="22@1" status="Active" tags="">
-		<title>
-			My new task
-		</title>
-	</task>
-	<task id="23@1" status="Active" tags="">
-		<title>
-			My new task
-		</title>
-	</task>
-	<task id="24@1" status="Active" tags="">
-		<title>
-			My new task
-		</title>
-	</task>
-	<task id="25@1" status="Active" tags="">
+	<task id="9@1" status="Active" tags="">
 		<title>
 			My new task
 		</title>

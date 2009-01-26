@@ -21,7 +21,7 @@ class DataStore(gobject.GObject):
         self.tasks = {}
         self.tagstore = tagstore.TagStore()
         self.requester = requester.Requester(self)
-        self.locks = {}
+        self.locks = lockslibrary()
         
     def all_tasks(self) :
         all_tasks = []
@@ -57,8 +57,11 @@ class DataStore(gobject.GObject):
             self.tasks[tid].delete()
             uid,pid = tid.split('@') #pylint: disable-msg=W0612
             back = self.backends[pid]
-            back.remove_task(tid)
+            #self.locks.acquire(tid)
             self.tasks.pop(tid)
+            back.remove_task(tid)
+            #The following line should not be necessary
+            #self.locks.release(tid)
         
     #Create a new task and return it.
     #newtask should be True if you create a task
@@ -128,8 +131,9 @@ class TaskSource() :
         self.tasks = {}
         self.time = time.time()
         self.refresh = refresh_cllbck
-        self.locks = locks
+        self.locks = lockslibrary()
         self.tosleep = 0
+        self.backend_lock = threading.Lock()
 
 ##### The Backend interface ###############
 ##########################################
@@ -137,20 +141,21 @@ class TaskSource() :
 
     #This has to be threaded too
     def get_tasks_list(self) :
+        self.backend_lock.acquire()
         tlist = self.backend.get_tasks_list()
         for t in tlist :
-            if not self.locks.has_key(t) :
-                self.locks[t] = threading.Lock()
+            self.locks.create_lock(t)
+        self.backend_lock.release()
         return tlist
         
     def get_task(self,empty_task,tid) :
         #Our thread
         def getting(empty_task,tid) :
-            self.locks[tid].acquire()
+            self.locks.acquire(tid)
             self.backend.get_task(empty_task,tid)
             empty_task.set_sync_func(self.set_task)
             empty_task.set_loaded()
-            self.locks[tid].release()
+            self.locks.release(tid)
             self.refresh()
         ##########
         if self.tasks.has_key(tid) :
@@ -162,8 +167,7 @@ class TaskSource() :
             #"This task is already fetched (or at least in fetching process)
             self.tasks[tid] = False
             if THREADING :
-                if not self.locks.has_key(tid) :
-                    self.locks[tid] = threading.Lock()
+                self.locks.create_lock(tid)
                 t = threading.Thread(target=getting,args=[empty_task,tid])
                 t.start()
                 self.tasks[tid] = empty_task
@@ -182,8 +186,6 @@ class TaskSource() :
 #        else :
 #            return True
         tid = task.get_id()
-        if not self.locks.has_key(tid) :
-                self.locks[tid] = threading.Lock()
         t = threading.Thread(target=self.__write,args=[task])
         t.start()
         return None
@@ -192,19 +194,19 @@ class TaskSource() :
     #It acquires a lock to avoid multiple thread writing the same task
     def __write(self,task) :
         tid = task.get_id()
-        zelock = self.locks[tid]
-        zelock.acquire()
+        self.locks.acquire(tid)
         self.backend.set_task(task)
-        zelock.release()
+        self.locks.release(tid)
     
     #This has to be threaded too
     def remove_task(self,tid) :
-        zelock = self.locks[tid]
-        zelock.acquire()
-        self.tasks.pop(tid)
-        self.locks.pop(tid)
+        self.backend_lock.acquire()
+        self.locks.acquire(tid)
+        #self.tasks.pop(tid)
         toreturn = self.backend.remove_task(tid)
-        zelock.release()
+        self.tasks.pop(tid)
+        self.locks.remove_lock(tid)
+        self.backend_lock.release()
         return toreturn
     
     #This has to be threaded too
@@ -217,8 +219,7 @@ class TaskSource() :
             while self.tasks.has_key(str(newid)) :
                 k += 1
                 newid = "%s@%s" %(k,pid)
-        if not self.locks.has_key(newid) :
-            self.locks[newid] = threading.Lock()
+        self.locks.create_lock(newid)
         return newid
     
     #This has to be threaded too
@@ -231,4 +232,40 @@ class TaskSource() :
 #Those functions are only for TaskSource
     def get_parameters(self) :
         return self.dic
+        
 
+class lockslibrary :
+    def __init__(self) :
+        self.locks = {}
+        self.glob = threading.Lock()
+        
+    def create_lock(self,tid) :
+        self.glob.acquire()
+        if not self.locks.has_key(tid) :
+            self.locks[tid] = threading.Lock()
+        self.glob.release()
+    
+    #To be removed, a lock should be acquired before !
+    def remove_lock(self,tid) :
+        self.glob.acquire()
+        if self.locks.has_key(tid) :
+            zelock = self.locks[tid]
+            #zelock.acquire()
+            self.locks.pop(tid)
+            zelock.release()
+        self.glob.release()
+        
+    def acquire(self,tid) :
+        self.glob.acquire()
+        if self.locks.has_key(tid) :
+            self.locks[tid].acquire()
+        else :
+            print "acquiring non-existing lock = BUG"
+        self.glob.release()
+        
+    def release(self,tid) :
+        if self.locks.has_key(tid) :
+            self.locks[tid].release()
+        else :
+            print "removing non-existing lock = BUG"
+        
