@@ -332,6 +332,9 @@ class Task :
         t = self.req.get_tag(tagname)
         if t in self.tags :
             self.tags.remove(t)
+            for child in self.get_subtasks() :
+                if child.can_be_deleted :
+                    child.remove_tag(tagname)
 
     #tag_list is a list of tagnames
     #return true if at least of the list is in the task
