@@ -112,6 +112,9 @@ tag,
 		<title>
 			encore un
 		</title>
+		<donedate>
+			2009-01-26
+		</donedate>
 		<content>
 			&lt;tag&gt;@new_tag&lt;/tag&gt;, 
 		</content>
