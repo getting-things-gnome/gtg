@@ -17,7 +17,7 @@ class Task :
         self.title = "My new task"
         #available status are : Active - Done - Dismiss - Deleted 
         self.status = "Active"
-        self.done_date = None
+        self.closed_date = None
         self.due_date = None
         self.start_date = None
         self.parents = []
@@ -56,13 +56,13 @@ class Task :
         if status :
             self.status = status
             #If Done, we set the done date
-            if status == "Done" :
+            if status in ["Done","Dismiss"] :
                 #to the specified date (if any)
                 if donedate :
-                    self.done_date = donedate
+                    self.closed_date = donedate
                 #or to today
                 else : 
-                    self.done_date = date.today()
+                    self.closed_date = date.today()
         self.sync()
         
     def get_status(self) :
@@ -121,9 +121,9 @@ class Task :
         else :
             return True
             
-    def get_done_date(self) :
-        if self.done_date :
-            return str(self.done_date)
+    def get_closed_date(self) :
+        if self.closed_date :
+            return str(self.closed_date)
         else :
             return ''
     
