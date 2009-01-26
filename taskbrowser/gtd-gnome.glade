@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Sat Jan 24 22:23:07 2009 -->
+<!--Generated with glade3 3.4.5 on Sun Jan 25 23:46:15 2009 -->
 <glade-interface>
   <widget class="GtkWindow" id="MainWindow">
     <property name="visible">True</property>
     <property name="title" translatable="yes">Getting Things Gnome!</property>
     <property name="default_width">800</property>
     <property name="default_height">600</property>
+    <signal name="configure_event" handler="on_move"/>
+    <signal name="size_allocate" handler="on_size_allocate"/>
+    <signal name="delete_event" handler="on_delete"/>
     <child>
       <widget class="GtkVBox" id="vbox1">
         <property name="visible">True</property>

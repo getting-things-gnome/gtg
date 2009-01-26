@@ -40,8 +40,9 @@ from gtg_core   import CoreConfig
 class Gtg:
  
     def main(self):
-        config = CoreConfig()
+        config        = CoreConfig()
         backends_list = config.get_backends_list()
+        
         # Load data store
         ds = DataStore()
         
@@ -50,8 +51,7 @@ class Gtg:
             
         # Launch task browser
         req = ds.get_requester()
-        tb = TaskBrowser(req)
-        
+        tb  = TaskBrowser(req, config.conf_dict)
         tb.main()
 
         # Ideally we should load window geometry configuration from a config.
@@ -59,6 +59,7 @@ class Gtg:
         # application as the user last exited it.
 
         # Ending the application: we save configuration
+        config.save_config()
         config.save_datastore(ds)
 
 #=== EXECUTION =================================================================

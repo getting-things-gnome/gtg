@@ -26,15 +26,27 @@
 #=== IMPORT ====================================================================
 import os
 from xdg.BaseDirectory import *
-from tools import cleanxml
+from tools             import cleanxml
+from configobj         import ConfigObj
 
 class CoreConfig:
+    
     #The projects and tasks are of course DATA !
     #We then use XDG_DATA for them
     #Don't forget the "/" at the end.
-    DATA_DIR = os.path.join(xdg_data_home,'gtg/')
+    DATA_DIR  = os.path.join(xdg_data_home,'gtg/')
     DATA_FILE = "projects.xml"
-    #We currently have no real config
+    CONF_FILE = "gtg.conf"
+    conf_dict = None
+    
+    def __init__(self):
+        if not os.path.exists(self.DATA_DIR + self.CONF_FILE):
+            f = open(self.DATA_DIR + self.CONF_FILE, "w")
+            f.close()
+        self.conf_dict = ConfigObj(self.DATA_DIR + self.CONF_FILE)
+    
+    def save_config(self):
+        self.conf_dict.write()
     
     def get_backends_list(self) :
         backend_fn = []
@@ -44,8 +56,8 @@ class CoreConfig:
             os.mkdir(self.DATA_DIR)
 
         # Read configuration file, if it does not exist, create one
-        conffile = self.DATA_DIR + self.DATA_FILE
-        doc, configxml = cleanxml.openxmlfile(conffile,"config") #pylint: disable-msg=W0612
+        datafile = self.DATA_DIR + self.DATA_FILE
+        doc, configxml = cleanxml.openxmlfile(datafile,"config") #pylint: disable-msg=W0612
         xmlproject = doc.getElementsByTagName("backend")
         # collect configred backends
         pid = 1
@@ -108,8 +120,8 @@ class CoreConfig:
             xmlconfig.appendChild(t_xml)
             b.quit()
 
-        conffile = self.DATA_DIR + self.DATA_FILE
-        cleanxml.savexml(conffile,doc,backup=True)
+        datafile = self.DATA_DIR + self.DATA_FILE
+        cleanxml.savexml(datafile,doc,backup=True)
 
         #Saving the tagstore
         ts = ds.get_tagstore()

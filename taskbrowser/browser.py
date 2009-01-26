@@ -25,7 +25,12 @@ QUICKADD_PANE = True
 
 class TaskBrowser:
 
-    def __init__(self, requester):
+    def __init__(self, requester, config):
+        
+        self.priv = {}
+        
+        # Set the configuration dictionary
+        self.config = config
         
         #Set the Glade file
         self.gladefile = GnomeConfig.GLADE_FILE  
@@ -49,10 +54,13 @@ class TaskBrowser:
         dic = {
                 "on_add_task"         : self.on_add_task,
                 "on_edit_active_task" : self.on_edit_active_task,
-                "on_edit_done_task"   :   self.on_edit_done_task,
+                "on_edit_done_task"   : self.on_edit_done_task,
                 "on_delete_task"      : self.on_delete_task,
                 "on_mark_as_done"     : self.on_mark_as_done,
                 "on_dismiss_task"     : self.on_dismiss_task,
+                "on_delete"           : self.on_delete,
+                "on_move"             : self.on_move,
+                "on_size_allocate"    : self.on_size_allocate,
                 "gtk_main_quit"       : self.close,
                 "on_select_tag"       : self.on_select_tag,
                 "on_delete_confirm"   : self.on_delete_confirm,
@@ -108,7 +116,6 @@ class TaskBrowser:
         # PYOBJECT:tid, STR:title, STR:due date string,
         # STR:days left string, PYOBJECT:tags, str:my_color
         self.task_tview     = self.wTree.get_widget("task_tview")
-
         self.task_ts        = treetools.new_task_ts(sort_func=self.compare_task_rows)
         
         #Be sure that we are reorderable (not needed normaly)
@@ -122,8 +129,8 @@ class TaskBrowser:
         self.quickadd_entry = self.wTree.get_widget("quickadd_field")
         
         #The panes
-        self.sidebar = self.wTree.get_widget("sidebar")
-        self.closed_pane = self.wTree.get_widget("closed_pane")
+        self.sidebar       = self.wTree.get_widget("sidebar")
+        self.closed_pane   = self.wTree.get_widget("closed_pane")
         self.quickadd_pane = self.wTree.get_widget("quickadd_pane")
 
         
@@ -152,10 +159,79 @@ class TaskBrowser:
         self.wTree.get_widget("view_sidebar").set_active(SIDEBAR)
         self.wTree.get_widget("view_closed").set_active(CLOSED_PANE)
         self.wTree.get_widget("view_quickadd").set_active(QUICKADD_PANE)
-        
-        #connecting the refresh signal from the requester
+    
+		#connecting the refresh signal from the requester
         self.lock = threading.Lock()
         self.req.connect("refresh",self.do_refresh)
+
+    def __restore_state_from_conf(self):
+        
+        # Extract state from configuration dictionary
+        if not self.config.has_key("browser"): return
+        
+        if self.config["browser"].has_key("width") and \
+           self.config["browser"].has_key("height"):
+               
+            width  = int(self.config["browser"]["width"])
+            height = int(self.config["browser"]["height"])
+            self.window.resize (width, height)
+   
+        if self.config["browser"].has_key("x_pos") and \
+           self.config["browser"].has_key("y_pos"):
+               
+            xpos   = int(self.config["browser"]["x_pos"])
+            ypos   = int(self.config["browser"]["y_pos"])
+            self.window.move   (xpos, ypos)
+            
+        if self.config["browser"].has_key("tag_pane"):
+            tag_pane         = eval(self.config["browser"]["tag_pane"])
+            if not tag_pane:
+                self.sidebar.hide()
+                self.wTree.get_widget("view_sidebar").set_active(False)
+                
+        if self.config["browser"].has_key("closed_task_pane"):
+            closed_task_pane = eval(self.config["browser"]["closed_task_pane"])
+            if not closed_task_pane :
+                self.closed_pane.hide()
+                self.wTree.get_widget("view_closed").set_active(False)
+                
+        if self.config["browser"].has_key("quick_add"):
+            quickadd_pane    = eval(self.config["browser"]["quick_add"])
+            if not quickadd_pane    :
+                self.quickadd_pane.hide()
+                self.wTree.get_widget("view_quickadd").set_active(False)
+
+    def on_move(self, widget, data):
+        xpos, ypos = self.window.get_position()
+        self.priv["window_xpos"] = xpos
+        self.priv["window_ypos"] = ypos
+
+    def on_size_allocate(self, widget, data):
+        width, height = self.window.get_size()
+        self.priv["window_width"]  = width
+        self.priv["window_height"] = height
+        
+    def on_delete(self, widget, user_data):
+        
+        # Get configuration values
+        tag_sidebar   = self.sidebar.get_property("visible")
+        closed_pane   = self.closed_pane.get_property("visible")
+        quickadd_pane = self.quickadd_pane.get_property("visible")
+        
+        # Populate configuration dictionary
+        self.config["browser"] = {}
+        self.config["browser"]["width"]            = self.priv["window_width"]
+        self.config["browser"]["height"]           = self.priv["window_height"]
+        self.config["browser"]["x_pos"]            = self.priv["window_xpos"]
+        self.config["browser"]["y_pos"]            = self.priv["window_ypos"]
+        self.config["browser"]["tag_pane"]         = tag_sidebar
+        self.config["browser"]["closed_task_pane"] = closed_pane
+        self.config["browser"]["quick_add"]        = quickadd_pane
+        self.config["browser"]["bg_color_enable"]  = True
+ 
+    def on_close(self):
+        self.__save_state_to_conf()
+        self.close
  
     def main(self):
         #Here we will define the main TaskList interface
@@ -184,6 +260,9 @@ class TaskBrowser:
         selection.connect("changed",self.task_cursor_changed)
         closed_selection = self.taskdone_tview.get_selection()
         closed_selection.connect("changed",self.taskdone_cursor_changed)
+        
+        # Restore state from config
+        self.__restore_state_from_conf()
         
         gtk.main()
         return 0
@@ -242,7 +321,7 @@ class TaskBrowser:
                 self.toggle_workview.set_active(tobeset)
             self.workview = tobeset
             self.do_refresh()
-    
+
     def on_sidebar_toggled(self,widget) :
         if widget.get_active() :
             self.sidebar.show()
@@ -284,6 +363,7 @@ class TaskBrowser:
         for uid in self.opened_task :
             if uid != fromtask :
                 self.opened_task[uid].refresh_editor()
+
 
     #We refresh the tag list. Not needed very often
     def refresh_tags(self) :
@@ -333,6 +413,7 @@ class TaskBrowser:
         new_taskts = treetools.new_task_ts(sort_func=self.compare_task_rows)
         tag_list,notag_only = self.get_selected_tags()
         nbr_of_tasks = 0
+        
         #We build the active tasks pane
         if self.workview :
             tasks = self.req.get_active_tasks_list(tags=tag_list,\
@@ -341,6 +422,7 @@ class TaskBrowser:
                 self.add_task_tree_to_list(new_taskts,tid,None,selected_uid,\
                                                         treeview=False)
             nbr_of_tasks = len(tasks)
+                            
         else :
             #building the classical treeview
             active_root_tasks = self.req.get_active_tasks_list(tags=tag_list,\
@@ -351,6 +433,7 @@ class TaskBrowser:
                 self.add_task_tree_to_list(new_taskts, tid, None,\
                                 selected_uid,active_tasks=active_tasks)
             nbr_of_tasks = len(active_tasks)
+            
         #Set the title of the window :
         if nbr_of_tasks == 0 :
             parenthesis = "(no active task)"
@@ -589,6 +672,7 @@ class TaskBrowser:
                 return True
             else :
                 self.path_source = None
+
         self.path_target = path
         tid = tree.get(it,0)
         tree.foreach(findsource,[tid,it])
@@ -724,7 +808,7 @@ class TaskBrowser:
         tag_col.set_clickable         (False)
         tag_col.pack_start            (render_tags  , expand=False)
         tag_col.set_attributes        (render_tags  , tag=self.TAGS_MODEL_OBJ)
-        tag_col.pack_start            (render_text  , expand=False)
+        tag_col.pack_start            (render_text  , expand=True)
         tag_col.set_attributes        (render_text  , markup=self.TAGS_MODEL_NAME)
         tag_col.pack_end              (render_count , expand=False)
         tag_col.set_attributes        (render_count , markup=self.TAGS_MODEL_COUNT)
@@ -732,6 +816,7 @@ class TaskBrowser:
         render_count.set_property     ('xalign', 1.0)
         render_tags.set_property      ('ypad'  , 3)
         render_text.set_property      ('ypad'  , 3)
+        render_count.set_property     ('xpad'  , 3)
         render_count.set_property     ('ypad'  , 3)
         tag_col.set_sort_column_id    (-1)
         tag_col.set_expand            (True)
@@ -793,6 +878,7 @@ class TaskBrowser:
 
         # Global treeview properties
         self.task_tview.set_property("expander-column", title_col)
+        self.task_tview.set_property("enable-tree-lines", False)
         self.task_tview.set_rules_hint(False)
        
     ######Closing the window
