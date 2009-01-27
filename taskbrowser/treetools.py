@@ -16,7 +16,7 @@ def new_task_ts(sort_func=None):
                                             str)
     if sort_func :
         task_ts.set_sort_func      (TASK_MODEL_DDATE_STR, sort_func)
-    task_ts.set_sort_column_id (TASK_MODEL_DDATE_STR, gtk.SORT_ASCENDING)
+    #task_ts.set_sort_column_id (TASK_MODEL_DDATE_STR, gtk.SORT_ASCENDING)
     return task_ts
     
 ######## Tree View Tools #######################################

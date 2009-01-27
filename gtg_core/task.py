@@ -150,8 +150,9 @@ class Task :
             return ''
     
     def get_days_left(self) :
-        if self.due_date :
-            difference = self.due_date - date.today()
+        due_date = self.get_due_date()
+        if due_date :
+            difference = strtodate(due_date) - date.today()
             return difference.days
         else :
             return None
