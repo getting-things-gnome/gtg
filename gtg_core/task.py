@@ -29,6 +29,7 @@ class Task :
         self.req = requester
         #If we don't have a newtask, we will have to load it.
         self.loaded = newtask
+        self.sync_count = 0
                 
     def is_loaded(self) :
         return self.loaded
@@ -320,7 +321,9 @@ class Task :
         self.sync_func = sync
         
     def sync(self) :
-        if self.sync_func :
+        if self.sync_func and self.is_loaded() :
+            self.sync_count += 1
+            print "task %s sync nbr %s" %(self.get_id(),self.sync_count)
             self.sync_func(self)
             
             
