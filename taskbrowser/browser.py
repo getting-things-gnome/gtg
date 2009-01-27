@@ -479,9 +479,12 @@ class TaskBrowser:
         closed_tasks = self.req.get_closed_tasks_list(tags=tag_list,\
                                                     notag_only=notag_only)
         for tid in closed_tasks :
-            t = self.req.get_task(tid)
-            title = t.get_title()
+            t          = self.req.get_task(tid)
+            title      = t.get_title()
             closeddate = t.get_closed_date()
+            if t.get_status() == "Dismiss":
+                title      = "<span color=\"#AAAAAA\">%s</span>" % title
+                closeddate = "<span color=\"#AAAAAA\">%s</span>" % closeddate
             self.taskdone_ts.append(None,[tid,t.get_color(),title,closeddate])
         closed_selection = self.taskdone_tview.get_selection()
         if d_path :
