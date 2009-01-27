@@ -251,7 +251,6 @@ class TaskBrowser:
         #The Active tasks treeview
         self.__create_task_tview()
         self.task_tview.set_model(self.task_ts)
-        #self.task_ts.set_sort_column_id(self.c_title, gtk.SORT_ASCENDING)
      
         #The done/dismissed taks treeview
         self.taskdone_tview.set_rules_hint(False)
@@ -869,6 +868,10 @@ class TaskBrowser:
         title_col.set_resizable       (True)
         title_col.set_sort_column_id  (self.TASK_MODEL_TITLE)
         title_col.set_expand          (True)
+        #The following line seems to fix bug #317469
+        #I don't understand why !!! It's voodoo !
+        #Is there a Rubber Chicken With a Pulley in the Middle ?
+        title_col.set_max_width       (100)
         title_col.add_attribute       (render_text, "cell_background", self.TASK_MODEL_BGCOL)
         self.task_tview.append_column (title_col)
         
