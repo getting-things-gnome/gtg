@@ -3,7 +3,6 @@ import uuid
 
 from gtg_core   import CoreConfig
 from tools import cleanxml, taskxml
-import time
 
 #Return the name of the backend as it should be displayed in the UI
 def get_name() :
@@ -55,7 +54,7 @@ class Backend :
 
     #Return the list of the task ID available in this backend
     def get_tasks_list(self) :
-        #time.sleep(4)
+        #time.sleep(2)
         tid_list = []
         for node in self.xmlproj.childNodes :
             tid_list.append(node.getAttribute("id"))
@@ -65,7 +64,7 @@ class Backend :
     #Fill the task "task_to_fill" with the information of the task TID
     #Return True if successful, False otherwhise
     def get_task(self,task_to_fill,tid) :
-        #time.sleep(4)
+        #time.sleep(2)
         for node in self.xmlproj.childNodes :
             if node.getAttribute("id") == tid :
                 return taskxml.task_from_xml(task_to_fill,node)
