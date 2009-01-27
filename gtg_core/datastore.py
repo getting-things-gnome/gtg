@@ -1,6 +1,6 @@
-import time
 import threading
 import gobject
+import time
 
 from gtg_core   import tagstore, requester
 from gtg_core.task import Task
@@ -24,17 +24,17 @@ class DataStore(gobject.GObject):
         
     def all_tasks(self) :
         all_tasks = []
-        for key in self.backends :
-            b = self.backends[key]
-            tlist = b.get_tasks_list()
-            all_tasks += tlist
+        #Call this only when we want to force a refresh
+#        for key in self.backends :
+#            b = self.backends[key]
+#            tlist = b.get_tasks_list()
+#            all_tasks += tlist
         #We also add tasks that are still not in a backend (because of threads)
-        for t in self.tasks :
-            if t not in all_tasks :
-                task = self.tasks[t]
-                if task.is_loaded() :
-                    task.sync()
-                    all_tasks.append(t)
+        tlist = self.tasks.keys()
+        for t in tlist :
+            task = self.tasks[t]
+            if task.is_loaded() :
+                all_tasks.append(t)
         return all_tasks
         
     def get_task(self,tid) :
@@ -101,10 +101,8 @@ class DataStore(gobject.GObject):
             self.backends[pid] = source
             #Filling the backend
             #Doing this at start is more efficient than after the GUI is launched
-            for tid in source.get_tasks_list() :
-                #Just calling new_task then get_task is enough
-                self.new_task(tid=tid)
-                self.get_task(tid)
+            source.get_tasks_list(func=self.refresh_tasklist)
+            
         else :
             print "Register a dic without backend key:  BUG"
 
@@ -118,7 +116,14 @@ class DataStore(gobject.GObject):
         return l
     
     def refresh_ui(self) :
+        #print "refresh %s" %self.tasks
         self.emit("refresh","1")
+        
+    def refresh_tasklist(self,task_list) :
+        for tid in task_list :
+            #Just calling new_task then get_task is enough
+            self.new_task(tid=tid)
+            self.get_task(tid)
         
 
 #Task source is an transparent interface between the real backend and datastore
@@ -134,31 +139,30 @@ class TaskSource() :
         self.tosleep = 0
         self.backend_lock = threading.Lock()
         self.removed = []
-        self.tlist = []
 
 ##### The Backend interface ###############
 ##########################################
 # All functions here are proxied from the backend itself
 
-    #TODO : This has to be threaded too
     #Then test by putting some articial sleeps in the localfile.py
-    def get_tasks_list(self) :
+    def get_tasks_list(self,func) :
         def getall() :
             self.backend_lock.acquire()
-            self.tlist = self.backend.get_tasks_list()
-            for t in self.tlist :
+            tlist = self.backend.get_tasks_list()
+            for t in tlist :
                 self.locks.create_lock(t)
             self.backend_lock.release()
-        tlist = []
+            func(tlist)
         t = threading.Thread(target=getall)
         t.start()
         #getall()
-        return self.tlist
+        return None
         
     def get_task(self,empty_task,tid) :
         #Our thread
         def getting(empty_task,tid) :
             self.locks.acquire(tid)
+            #if self.locks.ifnotblocked(tid) :
             self.backend.get_task(empty_task,tid)
             empty_task.set_sync_func(self.set_task)
             empty_task.set_loaded()
@@ -266,6 +270,14 @@ class lockslibrary :
             #zelock.acquire()
             self.locks.pop(tid)
             zelock.release()
+        self.glob.release()
+        
+    def ifnotblocked(self,tid) :
+        self.glob.acquire()
+        if self.locks.has_key(tid) :
+            return self.locks[tid].acquire(False)
+        else :
+            print "ifnotblock on non-existing lock %s = BUG" %tid
         self.glob.release()
         
     def acquire(self,tid) :

@@ -320,7 +320,7 @@ class Task :
         self.sync_func = sync
         
     def sync(self) :
-        if self.sync_func :
+        if self.sync_func and self.is_loaded() :
             self.sync_func(self)
             
             
