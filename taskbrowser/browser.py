@@ -31,6 +31,8 @@ class TaskBrowser:
         
         # Set the configuration dictionary
         self.config = config
+        #The expanded tasks (to be saved)
+        self.expanded_tid = []
         
         #Set the Glade file
         self.gladefile = GnomeConfig.GLADE_FILE  
@@ -251,7 +253,6 @@ class TaskBrowser:
         #The Active tasks treeview
         self.__create_task_tview()
         self.task_tview.set_model(self.task_ts)
-        #self.task_ts.set_sort_column_id(self.c_title, gtk.SORT_ASCENDING)
      
         #The done/dismissed taks treeview
         self.taskdone_tview.set_rules_hint(False)
@@ -413,10 +414,27 @@ class TaskBrowser:
     def tag_separator_filter(self, model, itera, user_data=None):#pylint: disable-msg=W0613
         return model.get_value(itera, self.TAGS_MODEL_SEP)
         
-
+    
+    #Those two functions store/restore the expanded tid in the treeview
+    #They are called with "map_expanded_rows" which is only called
+    #For expanded rows.
+    def store_expand(self,treeview,path,data) :
+        itera = self.task_ts.get_iter(path)
+        tid = self.task_ts.get_value(itera,0)
+        self.expanded_tid.append(tid)
+    def restore_expand(self,treeview,path,data) :
+        itera = self.task_ts.get_iter(path)
+        tid = self.task_ts.get_value(itera,0)
+        if tid not in self.expanded_tid :
+            treeview.collapse_row(path)
+        
     #refresh list build/refresh your TreeStore of task
     #to keep it in sync with your self.projects   
     def refresh_list(self,a=None) : #pylint: disable-msg=W0613
+        #reinitializing the expanded list
+        self.expanded_tid = []
+        #Building the expanded list
+        self.task_tview.map_expanded_rows(self.store_expand,None)
         #selected tasks :
         selected_uid = self.get_selected_task(self.task_tview)
         tselect = self.task_tview.get_selection()
@@ -458,7 +476,9 @@ class TaskBrowser:
         self.window.set_title("Getting Things Gnome! %s"%parenthesis)
         self.task_tview.set_model(new_taskts)
         self.task_ts = new_taskts
+        #We expand all the we close the tasks who were not saved as "expanded"
         self.task_tview.expand_all()
+        self.task_tview.map_expanded_rows(self.restore_expand,None)
         #We reselect the selected tasks
         selection = self.task_tview.get_selection()
         if t_path :
@@ -869,6 +889,10 @@ class TaskBrowser:
         title_col.set_resizable       (True)
         title_col.set_sort_column_id  (self.TASK_MODEL_TITLE)
         title_col.set_expand          (True)
+        #The following line seems to fix bug #317469
+        #I don't understand why !!! It's voodoo !
+        #Is there a Rubber Chicken With a Pulley in the Middle ?
+        title_col.set_max_width       (100)
         title_col.add_attribute       (render_text, "cell_background", self.TASK_MODEL_BGCOL)
         self.task_tview.append_column (title_col)
         
