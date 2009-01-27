@@ -7,7 +7,7 @@ import gobject
 TASK_MODEL_DDATE_STR = 2
 
 #Returning a tree store to handle the active task
-def new_task_ts(sort_func=None): 
+def new_task_ts(sort_func=None,dnd_func=None): 
     task_ts        = gtk.TreeStore( gobject.TYPE_PYOBJECT, \
                                             str,                   \
                                             str,                   \
@@ -17,6 +17,10 @@ def new_task_ts(sort_func=None):
     if sort_func :
         task_ts.set_sort_func      (TASK_MODEL_DDATE_STR, sort_func)
     #task_ts.set_sort_column_id (TASK_MODEL_DDATE_STR, gtk.SORT_ASCENDING)
+    #this is our manual drag-n-drop handling
+    if dnd_func : 
+        task_ts.connect("row-changed",dnd_func,"insert")
+        task_ts.connect("row-deleted",dnd_func,None,"delete")
     return task_ts
     
 ######## Tree View Tools #######################################

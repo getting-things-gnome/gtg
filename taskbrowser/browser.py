@@ -119,7 +119,8 @@ class TaskBrowser:
         # PYOBJECT:tid, STR:title, STR:due date string,
         # STR:days left string, PYOBJECT:tags, str:my_color
         self.task_tview     = self.wTree.get_widget("task_tview")
-        self.task_ts        = treetools.new_task_ts(sort_func=self.compare_task_rows)
+        self.task_ts        = treetools.new_task_ts(\
+                sort_func=self.compare_task_rows,dnd_func=self.row_dragndrop)
         
         #Be sure that we are reorderable (not needed normaly)
         self.task_tview.set_reorderable(True)
@@ -138,8 +139,10 @@ class TaskBrowser:
 
         
         #this is our manual drag-n-drop handling
-        self.task_ts.connect("row-changed",self.row_inserted,"insert")
-        self.task_ts.connect("row-deleted",self.row_deleted,"delete")
+#        self.task_ts.connect("row-changed",self.row_inserted,"insert")
+#        self.task_ts.connect("row-deleted",self.row_deleted,"delete")
+#        self.task_ts.connect("row-inserted",self.row_inserted,"insert")
+#        self.task_ts.connect("rows-reordered",self.row_inserted,"insert")
                
         #The tid that will be deleted
         self.tid_todelete = None
@@ -442,7 +445,8 @@ class TaskBrowser:
         if tselect :
             t_model,t_path = tselect.get_selected_rows() #pylint: disable-msg=W0612
         #to refresh the list we build a new treestore then replace the existing
-        new_taskts = treetools.new_task_ts(sort_func=self.compare_task_rows)
+        new_taskts = treetools.new_task_ts(sort_func=self.compare_task_rows,\
+                                        dnd_func=self.row_dragndrop)
         tag_list,notag_only = self.get_selected_tags()
         nbr_of_tasks = 0
         
@@ -700,66 +704,68 @@ class TaskBrowser:
     # 1. If a row is inserted for a task X, look if the task already
     #     exist elsewhere.
     # 2. If yes, it's probably a drag-n-drop so we save those information
-    # 3. If the "elsewhere from point 1 is deleted, we are sure it's a 
+    # 3. If the "elsewhere" from point 1 is deleted, we are sure it's a 
     #    drag-n-drop so we change the parent of the moved task
-    def row_inserted(self,tree, path, it,data=None) : #pylint: disable-msg=W0613
-        #If the row inserted already exists in another position
-        #We are in a drag n drop case
-        def findsource(model, path, it,data):
-            path_move = tree.get_path(data[1])
-            path_actual = tree.get_path(it)
-            if model.get(it,0) == data[0] and path_move != path_actual:
-                self.drag_sources.append(path)
-                self.path_source = path
-                return True
-            else :
-                self.path_source = None
+    def row_dragndrop(self,tree, path, it,data=None) : #pylint: disable-msg=W0613
+        if data == "insert" :
+            #If the row inserted already exists in another position
+            #We are in a drag n drop case
+            def findsource(model, path, it,data):
+                path_move = tree.get_path(data[1])
+                path_actual = tree.get_path(it)
+                if model.get(it,0) == data[0] and path_move != path_actual:
+                    self.drag_sources.append(path)
+                    self.path_source = path
+                    return True
+                else :
+                    self.path_source = None
 
-        self.path_target = path
-        tid = tree.get(it,0)
-        tree.foreach(findsource,[tid,it])
-        if self.path_source :
-            #We will prepare the drag-n-drop
-            iter_source = tree.get_iter(self.path_source)
-            iter_target = tree.get_iter(self.path_target)
-            iter_source_parent = tree.iter_parent(iter_source)
-            iter_target_parent = tree.iter_parent(iter_target)
-            #the tid_parent will be None for root tasks
-            if iter_source_parent :
-                sparent = tree.get(iter_source_parent,0)[0]
-            else :
-                sparent = None
-            if iter_target_parent :
-                tparent = tree.get(iter_target_parent,0)[0]
-            else :
-                tparent = None
-            #If target and source are the same, we are moving
-            #a child of the deplaced task. Indeed, children are 
-            #also moved in the tree but their parents remain !
-            if sparent != tparent :
-                self.tid_source_parent = sparent
-                self.tid_target_parent = tparent
-                self.tid_tomove = tid[0]
-                # "row %s will move from %s to %s"%(self.tid_tomove,\
-                #          self.tid_source_parent,self.tid_target_parent)
-    def row_deleted(self,tree,path,data=None) : #pylint: disable-msg=W0613
-        #If we are removing the path source guessed during the insertion
-        #It confirms that we are in a drag-n-drop
-        if path in self.drag_sources and self.tid_tomove :
-            self.drag_sources.remove(path)
-            # "row %s moved from %s to %s"%(self.tid_tomove,\
-            #             self.tid_source_parent,self.tid_target_parent)
-            tomove = self.req.get_task(self.tid_tomove)
-            tomove.remove_parent(self.tid_source_parent)
-            tomove.add_parent(self.tid_target_parent)
-            #DO NOT self.refresh_list()
-            #Refreshing here make things crash. Don't refresh
-            #self.drag_sources = []
-            self.path_source = None
-            self.path_target = None
-            self.tid_tomove = None
-            self.tid_source_parent = None
-            self.tid_target_parent = None
+            self.path_target = path
+            tid = tree.get(it,0)
+            tree.foreach(findsource,[tid,it])
+            if self.path_source :
+                #We will prepare the drag-n-drop
+                iter_source = tree.get_iter(self.path_source)
+                iter_target = tree.get_iter(self.path_target)
+                iter_source_parent = tree.iter_parent(iter_source)
+                iter_target_parent = tree.iter_parent(iter_target)
+                #the tid_parent will be None for root tasks
+                if iter_source_parent :
+                    sparent = tree.get(iter_source_parent,0)[0]
+                else :
+                    sparent = None
+                if iter_target_parent :
+                    tparent = tree.get(iter_target_parent,0)[0]
+                else :
+                    tparent = None
+                #If target and source are the same, we are moving
+                #a child of the deplaced task. Indeed, children are 
+                #also moved in the tree but their parents remain !
+                if sparent != tparent :
+                    self.tid_source_parent = sparent
+                    self.tid_target_parent = tparent
+                    self.tid_tomove = tid[0]
+                    # "row %s will move from %s to %s"%(self.tid_tomove,\
+                    #          self.tid_source_parent,self.tid_target_parent)
+#    def row_deleted(self,tree,path,data=None) : #pylint: disable-msg=W0613
+        elif data == "delete" :
+            #If we are removing the path source guessed during the insertion
+            #It confirms that we are in a drag-n-drop
+            if path in self.drag_sources and self.tid_tomove :
+                self.drag_sources.remove(path)
+                # "row %s moved from %s to %s"%(self.tid_tomove,\
+                #             self.tid_source_parent,self.tid_target_parent)
+                tomove = self.req.get_task(self.tid_tomove)
+                tomove.remove_parent(self.tid_source_parent)
+                tomove.add_parent(self.tid_target_parent)
+                #DO NOT self.refresh_list()
+                #Refreshing here make things crash. Don't refresh
+                #self.drag_sources = []
+                self.path_source = None
+                self.path_target = None
+                self.tid_tomove = None
+                self.tid_source_parent = None
+                self.tid_target_parent = None
             
     ###############################
     ##### End of the drag-n-drop part
