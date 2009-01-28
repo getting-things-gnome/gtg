@@ -232,6 +232,7 @@ class TaskBrowser:
     def on_delete(self, widget, user_data):
         
         # Get configuration values
+        self.task_tview.map_expanded_rows(self.store_expand,None)
         tag_sidebar   = self.sidebar.get_property("visible")
         closed_pane   = self.closed_pane.get_property("visible")
         quickadd_pane = self.quickadd_pane.get_property("visible")
