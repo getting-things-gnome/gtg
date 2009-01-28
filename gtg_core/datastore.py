@@ -36,6 +36,9 @@ class DataStore(gobject.GObject):
             if task.is_loaded() :
                 all_tasks.append(t)
         return all_tasks
+
+    def has_task(self,tid) :
+        return self.tasks.has_key(tid)
         
     def get_task(self,tid) :
         if self.tasks.has_key(tid) :

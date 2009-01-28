@@ -10,9 +10,15 @@ class Requester :
         
     def connect(self,signal,func) :
         self.ds.connect(signal,func)
+        
     ############## Tasks ##########################
     ###############################################
-    
+
+
+    #Return True if the task exists
+    def has_task(self,tid) :
+        return self.ds.has_task(tid)
+            
     #Get the task with the given pid
     #If the task doesn't exist, we create it and force the pid
     def get_task(self,tid) :

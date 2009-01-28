@@ -31,8 +31,9 @@ class TaskBrowser:
         
         # Set the configuration dictionary
         self.config = config
-        #The expanded tasks (to be saved)
-        self.expanded_tid = []
+        
+        #The collapsed tasks
+        self.priv["collapsed_tid"] = []
         
         #Set the Glade file
         self.gladefile = GnomeConfig.GLADE_FILE  
@@ -122,9 +123,6 @@ class TaskBrowser:
         self.task_ts        = treetools.new_task_ts(\
                 sort_func=self.compare_task_rows,dnd_func=self.row_dragndrop)
 
-        # Expanded list handling
-        self.expanded_tid = []
-        
         #Be sure that we are reorderable (not needed normaly)
         self.task_tview.set_reorderable(True)
         
@@ -216,8 +214,8 @@ class TaskBrowser:
             self.priv["bg_color_enable"] = bgcol_enable
             self.wTree.get_widget("bgcol_enable").set_active(bgcol_enable)
             
-        if self.config["browser"].has_key("expanded_tasks"):
-            self.expanded_tid = self.config["browser"]["expanded_tasks"]
+        if self.config["browser"].has_key("collapsed_tasks"):
+            self.priv["collapsed_tid"] = self.config["browser"]["collapsed_tasks"]
 
     def on_move(self, widget, data):
         xpos, ypos = self.window.get_position()
@@ -231,8 +229,14 @@ class TaskBrowser:
         
     def on_delete(self, widget, user_data):
         
+        # Save expanded rows
+        self.task_ts.foreach(self.update_collapsed_row, None)
+        
+        # Cleanup collapsed row list
+        for tid in self.priv["collapsed_tid"]:
+            if not self.req.has_task(tid): self.priv["collapsed_tid"].remove(tid)
+        
         # Get configuration values
-        self.task_tview.map_expanded_rows(self.store_expand,None)
         tag_sidebar   = self.sidebar.get_property("visible")
         closed_pane   = self.closed_pane.get_property("visible")
         quickadd_pane = self.quickadd_pane.get_property("visible")
@@ -247,7 +251,7 @@ class TaskBrowser:
         self.config["browser"]["closed_task_pane"] = closed_pane
         self.config["browser"]["quick_add"]        = quickadd_pane
         self.config["browser"]["bg_color_enable"]  = self.priv["bg_color_enable"]
-        self.config["browser"]["expanded_tasks"]   = self.expanded_tid
+        self.config["browser"]["collapsed_tasks"]  = self.priv["collapsed_tid"]
  
     def on_close(self):
         self.__save_state_to_conf()
@@ -372,7 +376,6 @@ class TaskBrowser:
             tags,notagonly = self.get_selected_tags() #pylint: disable-msg=W0612
             task = self.req.new_task(tags=tags,newtask=True)
             task.set_title(text)
-            self.expanded_tid.append(task.get_id())
             self.quickadd_entry.set_text('')
             self.do_refresh()
     
@@ -426,27 +429,40 @@ class TaskBrowser:
     def tag_separator_filter(self, model, itera, user_data=None):#pylint: disable-msg=W0613
         return model.get_value(itera, self.TAGS_MODEL_SEP)
         
-    
-    #Those two functions store/restore the expanded tid in the treeview
-    #They are called with "map_expanded_rows" which is only called
-    #For expanded rows.        
-    def store_expand(self,treeview,path,data) :
-        itera = self.task_ts.get_iter(path)
-        tid   = self.task_ts.get_value(itera,0)
-        if tid not in self.expanded_tid:
-            self.expanded_tid.append(tid)
+    def update_collapsed_row(self, model, path, itera, user_data):
+        """Build a list of task that must showed as collapsed in Treeview"""
+
+        tid = self.task_ts.get_value(itera,0)
+
+        # Remove expanded rows
+        if   self.task_ts.iter_has_child(itera) and \
+             self.task_tview.row_expanded(path) and \
+             tid in self.priv["collapsed_tid"]:
+
+            self.priv["collapsed_tid"].remove(tid)
+
+        # Append collapsed rows
+        elif self.task_ts.iter_has_child(itera)     and \
+             not self.task_tview.row_expanded(path) and \
+             tid not in self.priv["collapsed_tid"]:
+
+            self.priv["collapsed_tid"].append(tid)
+
+        return False # Return False or the TreeModel.foreach() function ends
                     
-    def restore_expand(self,treeview,path,data) :
+    def restore_collapsed(self,treeview,path,data) :
         itera = self.task_ts.get_iter(path)
         tid   = self.task_ts.get_value(itera,0)
-        if tid not in self.expanded_tid :
+        if tid in self.priv["collapsed_tid"] :
             treeview.collapse_row(path)
         
     #refresh list build/refresh your TreeStore of task
     #to keep it in sync with your self.projects   
     def refresh_list(self,a=None) : #pylint: disable-msg=W0613
-        # Save expanded rows
-        self.task_tview.map_expanded_rows(self.store_expand,None)
+        
+        # Save collapsed rows
+        self.task_ts.foreach(self.update_collapsed_row, None)
+        
         #selected tasks :
         selected_uid = self.get_selected_task(self.task_tview)
         tselect = self.task_tview.get_selection()
@@ -491,7 +507,7 @@ class TaskBrowser:
         self.task_ts = new_taskts
         #We expand all the we close the tasks who were not saved as "expanded"
         self.task_tview.expand_all()
-        self.task_tview.map_expanded_rows(self.restore_expand,None)
+        self.task_tview.map_expanded_rows(self.restore_collapsed,None)
         #We reselect the selected tasks
         selection = self.task_tview.get_selection()
         if t_path :
@@ -657,7 +673,6 @@ class TaskBrowser:
         tags,notagonly = self.get_selected_tags() #pylint: disable-msg=W0612
         task = self.req.new_task(tags=tags,newtask=True)
         uid = task.get_id()
-        self.expanded_tid.append(uid)
         self.open_task(uid)
     
     #Get_selected_task returns the uid :
