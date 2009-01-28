@@ -147,11 +147,14 @@ class TaskSource() :
     #Then test by putting some articial sleeps in the localfile.py
     def get_tasks_list(self,func) :
         def getall() :
+            #print "acquiring lock to getall" 
             self.backend_lock.acquire()
+            #print "acquired lock to getall" 
             tlist = self.backend.get_tasks_list()
             for t in tlist :
                 self.locks.create_lock(t)
             self.backend_lock.release()
+            #print "releasing lock  to getall" 
             func(tlist)
         t = threading.Thread(target=getall)
         t.start()
@@ -205,18 +208,22 @@ class TaskSource() :
     #It acquires a lock to avoid multiple thread writing the same task
     def __write(self,task) :
         tid = task.get_id()
-        self.locks.acquire(tid)
-        self.backend.set_task(task)
-        self.locks.release(tid)
+        if tid not in self.removed :
+            self.locks.acquire(tid)
+            self.backend.set_task(task)
+            self.locks.release(tid)
     
     #TODO : This has to be threaded too
     def remove_task(self,tid) :
         self.backend_lock.acquire()
-        self.locks.acquire(tid)
-        self.removed.append(tid)
-        toreturn = self.backend.remove_task(tid)
-        self.tasks.pop(tid)
-        self.locks.remove_lock(tid)
+        if tid not in self.removed :
+            self.removed.append(tid)
+        if self.locks.acquire(tid) :
+            toreturn = self.backend.remove_task(tid)
+            self.tasks.pop(tid)
+            self.locks.remove_lock(tid)
+        else :
+            toreturn = False
         self.backend_lock.release()
         return toreturn
     
@@ -260,17 +267,23 @@ class lockslibrary :
         if not self.locks.has_key(tid) :
             self.locks[tid] = threading.Lock()
         self.glob.release()
+        
+    def lock_exist(self,tid) :
+        self.glob.acquire()
+        self.glob.release()
     
     #To be removed, a lock should be acquired before !
     #So acquire the lock before calling this function !
     def remove_lock(self,tid) :
-        self.glob.acquire()
-        if self.locks.has_key(tid) :
-            zelock = self.locks[tid]
-            #zelock.acquire()
-            self.locks.pop(tid)
-            zelock.release()
-        self.glob.release()
+        if self.glob.acquire(False) :
+            if self.locks.has_key(tid) :
+                zelock = self.locks[tid]
+                self.locks.pop(tid)
+                zelock.release()
+            self.glob.release()
+        #else :
+        #print "This is a very rare bug : we were unable to remove the lock"
+        #But this not really a problem because the lock alone does do anything
         
     def ifnotblocked(self,tid) :
         self.glob.acquire()
@@ -284,13 +297,15 @@ class lockslibrary :
         self.glob.acquire()
         if self.locks.has_key(tid) :
             self.locks[tid].acquire()
+            toreturn = True
         else :
-            print "acquiring non-existing lock = BUG"
+            toreturn = False
         self.glob.release()
+        return toreturn
         
     def release(self,tid) :
         if self.locks.has_key(tid) :
             self.locks[tid].release()
-        else :
-            print "removing non-existing lock = BUG"
+#        else :
+#            print "removing non-existing lock = BUG"
         
