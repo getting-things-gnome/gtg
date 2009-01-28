@@ -121,6 +121,9 @@ class TaskBrowser:
         self.task_tview     = self.wTree.get_widget("task_tview")
         self.task_ts        = treetools.new_task_ts(\
                 sort_func=self.compare_task_rows,dnd_func=self.row_dragndrop)
+
+        # Expanded list handling
+        self.expanded_tid = []
         
         #Be sure that we are reorderable (not needed normaly)
         self.task_tview.set_reorderable(True)
@@ -212,6 +215,9 @@ class TaskBrowser:
             bgcol_enable = eval(self.config["browser"]["bg_color_enable"])
             self.priv["bg_color_enable"] = bgcol_enable
             self.wTree.get_widget("bgcol_enable").set_active(bgcol_enable)
+            
+        if self.config["browser"].has_key("expanded_tasks"):
+            self.expanded_tid = self.config["browser"]["expanded_tasks"]
 
     def on_move(self, widget, data):
         xpos, ypos = self.window.get_position()
@@ -240,6 +246,7 @@ class TaskBrowser:
         self.config["browser"]["closed_task_pane"] = closed_pane
         self.config["browser"]["quick_add"]        = quickadd_pane
         self.config["browser"]["bg_color_enable"]  = self.priv["bg_color_enable"]
+        self.config["browser"]["expanded_tasks"]   = self.expanded_tid
  
     def on_close(self):
         self.__save_state_to_conf()
@@ -364,6 +371,7 @@ class TaskBrowser:
             tags,notagonly = self.get_selected_tags() #pylint: disable-msg=W0612
             task = self.req.new_task(tags=tags,newtask=True)
             task.set_title(text)
+            self.expanded_tid.append(task.get_id())
             self.quickadd_entry.set_text('')
             self.do_refresh()
     
@@ -420,23 +428,23 @@ class TaskBrowser:
     
     #Those two functions store/restore the expanded tid in the treeview
     #They are called with "map_expanded_rows" which is only called
-    #For expanded rows.
+    #For expanded rows.        
     def store_expand(self,treeview,path,data) :
         itera = self.task_ts.get_iter(path)
-        tid = self.task_ts.get_value(itera,0)
-        self.expanded_tid.append(tid)
+        tid   = self.task_ts.get_value(itera,0)
+        if tid not in self.expanded_tid:
+            self.expanded_tid.append(tid)
+                    
     def restore_expand(self,treeview,path,data) :
         itera = self.task_ts.get_iter(path)
-        tid = self.task_ts.get_value(itera,0)
+        tid   = self.task_ts.get_value(itera,0)
         if tid not in self.expanded_tid :
             treeview.collapse_row(path)
         
     #refresh list build/refresh your TreeStore of task
     #to keep it in sync with your self.projects   
     def refresh_list(self,a=None) : #pylint: disable-msg=W0613
-        #reinitializing the expanded list
-        self.expanded_tid = []
-        #Building the expanded list
+        # Save expanded rows
         self.task_tview.map_expanded_rows(self.store_expand,None)
         #selected tasks :
         selected_uid = self.get_selected_task(self.task_tview)
@@ -648,6 +656,7 @@ class TaskBrowser:
         tags,notagonly = self.get_selected_tags() #pylint: disable-msg=W0612
         task = self.req.new_task(tags=tags,newtask=True)
         uid = task.get_id()
+        self.expanded_tid.append(uid)
         self.open_task(uid)
     
     #Get_selected_task returns the uid :
