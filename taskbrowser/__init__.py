@@ -30,7 +30,7 @@
 class GnomeConfig :
     GLADE_FILE = "taskbrowser/gtd-gnome.glade"
     
-    MARK_DONE = "Mark as done"
-    MARK_UNDONE = "Undone"
-    MARK_DISMISS = "Dismiss"
+    MARK_DONE      = "Mark as done"
+    MARK_UNDONE    = "Mark as not done"
+    MARK_DISMISS   = "Dismiss"
     MARK_UNDISMISS = "Undismiss"

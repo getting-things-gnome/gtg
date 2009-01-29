@@ -91,12 +91,13 @@ class TaskBrowser:
         self.req = requester
 
         # Column constants
-        self.TASKS_TV_COL_TAG   = 1
-        self.TASKS_TV_COL_TITLE = 2
-        self.TASKS_TV_COL_DDATE = 3
-        self.TASKS_TV_COL_DLEFT = 4
-        
-        self.TAGS_TV_COL_TAG    = 1
+        self.TASKS_TV_COL_TAG    = 1
+        self.TASKS_TV_COL_TITLE  = 2
+        self.TASKS_TV_COL_DDATE  = 3
+        self.TASKS_TV_COL_DLEFT  = 4
+        self.TAGS_TV_COL_TAG     = 1
+        self.CTASKS_TV_COL_TITLE = 2
+        self.CTASKS_TV_COL_DDATE = 3
         
         # Model constants
         self.TASK_MODEL_OBJ       = 0
@@ -107,13 +108,14 @@ class TaskBrowser:
         self.TASK_MODEL_DLEFT_STR = 3
         self.TASK_MODEL_TAGS      = 4
         self.TASK_MODEL_BGCOL     = 5
+        self.TAGS_MODEL_OBJ       = 0
+        self.TAGS_MODEL_COLOR     = 1
+        self.TAGS_MODEL_NAME      = 2
+        self.TAGS_MODEL_COUNT     = 3
+        self.TAGS_MODEL_SEP       = 4
+        self.CTASKS_MODEL_TITLE   = 2
+        self.CTASKS_MODEL_DDATE   = 3
         
-        self.TAGS_MODEL_OBJ   = 0
-        self.TAGS_MODEL_COLOR = 1
-        self.TAGS_MODEL_NAME  = 2
-        self.TAGS_MODEL_COUNT = 3
-        self.TAGS_MODEL_SEP   = 4
-
         #The tview and their model
         self.taskdone_tview = self.wTree.get_widget("taskdone_tview")
         self.taskdone_ts    = gtk.TreeStore(gobject.TYPE_PYOBJECT, str,str,str)
@@ -150,7 +152,6 @@ class TaskBrowser:
                
         #The tid that will be deleted
         self.tid_todelete = None
-        self.c_title = 1
         
         #This is the list of tasks that are already opened in an editor
         #of course it's empty right now
@@ -287,12 +288,9 @@ class TaskBrowser:
         self.task_tview.set_model(self.task_ts)
      
         #The done/dismissed taks treeview
-        self.taskdone_tview.set_rules_hint(False)
-        self.__add_closed_column("Closed",2)
-        self.__add_closed_column("Done date",3)
+        self.__create_closed_tasks_tview()
         self.taskdone_tview.set_model(self.taskdone_ts)
-        self.taskdone_ts.set_sort_column_id(self.c_title, gtk.SORT_ASCENDING)
-        
+                
         #put the content in those treeviews
         self.do_refresh()
         
@@ -564,6 +562,7 @@ class TaskBrowser:
         if d_path :
             for i in d_path :
                 closed_selection.select_path(i)
+        self.taskdone_ts.set_sort_column_id(self.CTASKS_MODEL_DDATE, gtk.SORT_DESCENDING)
                 
     #Add tasks to a treeview. If treeview is False, it becomes a flat list
     def add_task_tree_to_list(self, tree_store, tid, parent, selected_uid=None,\
@@ -909,17 +908,6 @@ class TaskBrowser:
         #self.do_refresh()
 
     ##### Useful tools##################
-    
-    #    Functions that help to build the GUI. Nothing really interesting.
-    def __add_active_column(self,name,value) :
-        col = treetools.add_column(name,value)
-        self.task_tview.append_column(col)
-        return col
-        
-    def __add_closed_column(self,name,value) :
-        col = treetools.add_column(name,value)
-        self.taskdone_tview.append_column(col)
-        return col
 
     def __create_tags_tview(self):
          
@@ -1008,6 +996,31 @@ class TaskBrowser:
         self.task_tview.set_property   ("expander-column", title_col)
         self.task_tview.set_property   ("enable-tree-lines", False)
         self.task_tview.set_rules_hint (False)
+
+    def __create_closed_tasks_tview(self):
+         
+        # Done date column
+        ddate_col    = gtk.TreeViewColumn()
+        render_text  = gtk.CellRendererText()
+        ddate_col.set_title                ("Done date")
+        ddate_col.pack_start               (render_text  , expand=True)
+        ddate_col.set_attributes           (render_text  , markup=self.CTASKS_MODEL_DDATE)
+        ddate_col.set_sort_column_id       (self.CTASKS_MODEL_DDATE)
+        self.taskdone_tview.append_column  (ddate_col)
+         
+        # Title column
+        title_col    = gtk.TreeViewColumn()
+        render_text  = gtk.CellRendererText()
+        title_col.set_title                ("Title")
+        title_col.pack_start               (render_text  , expand=True)
+        title_col.set_attributes           (render_text  , markup=self.CTASKS_MODEL_TITLE)
+        title_col.set_sort_column_id       (self.CTASKS_MODEL_TITLE)
+        title_col.set_expand               (True)
+        self.taskdone_tview.append_column  (title_col)
+
+        # Global treeview properties
+        self.taskdone_ts.set_sort_column_id(self.CTASKS_MODEL_DDATE, gtk.SORT_DESCENDING)
+
        
     ######Closing the window
     def close(self,widget=None) : #pylint: disable-msg=W0613

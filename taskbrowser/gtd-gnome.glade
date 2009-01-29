@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Thu Jan 29 01:23:59 2009 -->
+<!--Generated with glade3 3.4.5 on Thu Jan 29 02:01:30 2009 -->
 <glade-interface>
   <widget class="GtkWindow" id="MainWindow">
     <property name="visible">True</property>
@@ -763,9 +763,9 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
   <widget class="GtkMenu" id="ClosedTaskContextMenu">
     <property name="visible">True</property>
     <child>
-      <widget class="GtkImageMenuItem" id="ctcm_unmark_as_done">
+      <widget class="GtkImageMenuItem" id="ctcm_mark_as_not_done">
         <property name="visible">True</property>
-        <property name="label" translatable="yes">Unmark as done</property>
+        <property name="label" translatable="yes">Mark as not done</property>
         <property name="use_underline">True</property>
         <signal name="activate" handler="on_mark_as_done"/>
         <child internal-child="image">
