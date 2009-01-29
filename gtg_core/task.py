@@ -368,7 +368,7 @@ class Task :
                     child.remove_tag(tagname)
 
     #tag_list is a list of tagnames
-    #return true if at least of the list is in the task
+    #return true if at least one of the list is in the task
     def has_tags(self, tag_list=None,notag_only=False):
         #We want to see if the task has no tags
         if notag_only :

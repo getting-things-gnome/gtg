@@ -82,7 +82,8 @@ class TaskBrowser:
                 "on_quickadd_button_activate"         : self.quickadd,
                 "on_view_quickadd_toggled"            : self.toggle_quickadd,
                 "on_about_clicked"                    : self.on_about_clicked,
-                "on_about_close"                      : self.on_about_close
+                "on_about_close"                      : self.on_about_close,
+                "on_nonworkviewtag_toggled"           : self.on_nonworkviewtag_toggled
               }
         self.wTree.signal_autoconnect(dic)
         self.selected_rows = None
@@ -691,7 +692,31 @@ class TaskBrowser:
                 treeview.grab_focus()
                 treeview.set_cursor( path, col, 0)
                 self.tagpopup.popup( None, None, None, event.button, time)
+                tags = self.get_selected_tags()[0]
+                nonworkview_item = self.tagpopup.get_children()[1]
+                nonworkview_item.hide()
+                if len(tags) > 0 :
+                    tag = tags[0]
+                    attri = tag.get_attribute("nonworkview")
+                    #We must inverse because the tagstore has True
+                    #for tasks that are not in workview
+                    if attri == "True" : toset = False
+                    else : toset = True
+                    nonworkview_item.set_active(toset)
+                    nonworkview_item.show()
+                else :
+                    nonworkview_item.hide()
             return 1
+            
+    def on_nonworkviewtag_toggled(self,widget) :
+        tags = self.get_selected_tags()[0]
+        nonworkview_item = self.tagpopup.get_children()[1]
+        #We must inverse because the tagstore has True
+        #for tasks that are not in workview (and also convert to string)
+        toset = str(not nonworkview_item.get_active())
+        if len(tags) > 0 :
+            tags[0].set_attribute("nonworkview",toset)
+        self.refresh_tb()
 
     def on_task_treeview_button_press_event(self,treeview,event) :
         if event.button == 3:

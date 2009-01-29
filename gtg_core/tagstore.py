@@ -79,10 +79,17 @@ class TagStore :
     def get_notag_tag(self) :
         return self.notag_tag
     
-    def get_all_tags_name(self) :
+    #Return the name of all tags
+    #Optionnaly, if you pass the attname and attvalue argument, it will
+    #only add tags that have the given value for the given attribute
+    #excluding tags that don't have this attribute (except if attvalue is None)
+    def get_all_tags_name(self,attname=None,attvalue=None) :
         l = []
         for t in self.store :
-            l.append(self.store[t].get_name())
+            if not attname :
+                l.append(self.store[t].get_name())
+            elif self.store[t].get_attribute(attname) == attvalue :
+                l.append(self.store[t].get_name())
         return l
         
     def get_all_tags(self) :
@@ -131,10 +138,11 @@ class Tag :
     def set_attribute(self,att_name,att_value) :
         #warning : only the constructor can set the "name"  
         if att_name != "name" :
-            self.attributes[att_name] = att_value
+            #Attributes should all be strings
+            self.attributes[att_name] = str(att_value)
             self.save()
         elif self.name == att_value :
-            self.attributes[att_name] = att_value
+            self.attributes[att_name] = str(att_value)
         
     def get_attribute(self,att_name) :
         if self.attributes.has_key(att_name) :
