@@ -59,7 +59,8 @@ class Task :
             #If Done, we set the done date
             if status in ["Done","Dismiss"] :
                 for c in self.get_subtasks() :
-                    c.set_status(status,donedate=donedate)
+                    if c.get_status() in ["Active"] :
+                        c.set_status(status,donedate=donedate)
                 #to the specified date (if any)
                 if donedate :
                     self.closed_date = donedate
@@ -75,7 +76,6 @@ class Task :
                     for p_tid in self.get_parents() :
                         par = self.req.get_task(p_tid)
                         if par.is_loaded() and par.get_status != "Active" :
-                            print "removing parent"
                             self.remove_parent(p_tid)
                 #We dont mark the children as Active because
                 #They might be already completed after all
