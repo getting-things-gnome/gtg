@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Thu Jan 29 02:01:30 2009 -->
+<!--Generated with glade3 3.4.5 on Thu Jan 29 10:15:58 2009 -->
 <glade-interface>
   <widget class="GtkWindow" id="MainWindow">
     <property name="visible">True</property>
@@ -605,6 +605,7 @@ Deleting a task cannot be undone.</property>
   </widget>
   <widget class="GtkMenu" id="TagContextMenu">
     <property name="visible">True</property>
+    <property name="no_show_all">True</property>
     <child>
       <widget class="GtkImageMenuItem" id="colorchooser">
         <property name="visible">True</property>
@@ -617,6 +618,15 @@ Deleting a task cannot be undone.</property>
             <property name="stock">gtk-select-color</property>
           </widget>
         </child>
+      </widget>
+    </child>
+    <child>
+      <widget class="GtkCheckMenuItem" id="nonworkviewtag">
+        <property name="visible">True</property>
+        <property name="label" translatable="yes">Tag is displayed in the workview</property>
+        <property name="use_underline">True</property>
+        <property name="active">True</property>
+        <signal name="toggled" handler="on_nonworkviewtag_toggled"/>
       </widget>
     </child>
   </widget>

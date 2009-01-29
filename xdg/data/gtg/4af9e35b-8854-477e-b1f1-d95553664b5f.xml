@@ -10,6 +10,9 @@
 		<startdate>
 			2009-01-08
 		</startdate>
+		<donedate>
+			2009-01-29
+		</donedate>
 		<subtask>
 			1@1
 		</subtask>
@@ -34,6 +37,9 @@ tag,
 		<title>
 			enfant2
 		</title>
+		<duedate>
+			2009-01-23
+		</duedate>
 		<subtask>
 			7@1
 		</subtask>
