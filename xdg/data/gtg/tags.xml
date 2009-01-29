@@ -2,9 +2,9 @@
 <tagstore>
 	<tag color="#404040" name="@vampire"/>
 	<tag color="#FFC7F7" name="@aze" nonworkview="False"/>
-	<tag color="#FFE000" name="@t2"/>
-	<tag color="#04FFCE" name="@tag" nonworkview="True"/>
-	<tag name="@closed" nonworkview="True"/>
+	<tag color="#FFE000" name="@t2" nonworkview="False"/>
+	<tag color="#04FFCE" name="@tag" nonworkview="False"/>
+	<tag name="@closed" nonworkview="False"/>
 	<tag color="#FF0B0B" name="@autro"/>
 	<tag name="@donetask" nonworkview="False"/>
 </tagstore>

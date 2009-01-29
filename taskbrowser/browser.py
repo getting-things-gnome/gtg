@@ -711,9 +711,12 @@ class TaskBrowser:
     def on_nonworkviewtag_toggled(self,widget) :
         tags = self.get_selected_tags()[0]
         nonworkview_item = self.tagpopup.get_children()[1]
+        #We must inverse because the tagstore has True
+        #for tasks that are not in workview (and also convert to string)
         toset = str(not nonworkview_item.get_active())
         if len(tags) > 0 :
             tags[0].set_attribute("nonworkview",toset)
+        self.refresh_tb()
 
     def on_task_treeview_button_press_event(self,treeview,event) :
         if event.button == 3:
