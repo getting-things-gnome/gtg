@@ -47,6 +47,7 @@ class TaskBrowser:
 
         self.tagpopup           = self.wTree.get_widget("TagContextMenu")
         self.taskpopup          = self.wTree.get_widget("TaskContextMenu")
+        self.closedtaskpopup    = self.wTree.get_widget("ClosedTaskContextMenu")
         self.donebutton         = self.wTree.get_widget("mark_as_done_b")
         self.dismissbutton      = self.wTree.get_widget("dismiss")
         self.about              = self.wTree.get_widget("aboutdialog1")
@@ -68,6 +69,7 @@ class TaskBrowser:
                 "on_select_tag"       : self.on_select_tag,
                 "on_delete_confirm"   : self.on_delete_confirm,
                 "on_delete_cancel"    : lambda x : x.hide,
+                "on_closed_task_treeview_button_press_event" : self.on_closed_task_treeview_button_press_event,
                 "on_task_treeview_button_press_event" : self.on_task_treeview_button_press_event,
                 "on_tag_treeview_button_press_event"  : self.on_tag_treeview_button_press_event,
                 "on_colorchooser_activate"            : self.on_colorchooser_activate,
@@ -681,6 +683,19 @@ class TaskBrowser:
                 treeview.grab_focus()
                 treeview.set_cursor( path, col, 0)
                 self.taskpopup.popup( None, None, None, event.button, time)
+            return 1
+
+    def on_closed_task_treeview_button_press_event(self,treeview,event) :
+        if event.button == 3:
+            x = int(event.x)
+            y = int(event.y)
+            time = event.time
+            pthinfo = treeview.get_path_at_pos(x, y)
+            if pthinfo is not None:
+                path, col, cellx, celly = pthinfo #pylint: disable-msg=W0612
+                treeview.grab_focus()
+                treeview.set_cursor( path, col, 0)
+                self.closedtaskpopup.popup( None, None, None, event.button, time)
             return 1
             
     def on_add_task(self,widget) : #pylint: disable-msg=W0613
