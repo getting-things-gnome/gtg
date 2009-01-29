@@ -18,9 +18,9 @@ from tools import colors
 #=== MAIN CLASS ================================================================
 
 #Some default preferences that we should save in a file
-WORKVIEW = False
-SIDEBAR = True
-CLOSED_PANE = True
+WORKVIEW      = False
+SIDEBAR       = True
+CLOSED_PANE   = True
 QUICKADD_PANE = True
 
 class TaskBrowser:
@@ -46,7 +46,7 @@ class TaskBrowser:
         self.window.set_icon_from_file("data/16x16/app/gtg.png")
 
         self.tagpopup           = self.wTree.get_widget("TagContextMenu")
-        self.tb_task_menu_popup = self.wTree.get_widget("TbTaskMenu")
+        self.taskpopup          = self.wTree.get_widget("TaskContextMenu")
         self.donebutton         = self.wTree.get_widget("mark_as_done_b")
         self.dismissbutton      = self.wTree.get_widget("dismiss")
         self.about              = self.wTree.get_widget("aboutdialog1")
@@ -68,18 +68,19 @@ class TaskBrowser:
                 "on_select_tag"       : self.on_select_tag,
                 "on_delete_confirm"   : self.on_delete_confirm,
                 "on_delete_cancel"    : lambda x : x.hide,
-                "on_tag_treeview_button_press_event" : self.on_tag_treeview_button_press_event,
-                "on_colorchooser_activate"           : self.on_colorchooser_activate,
-                "on_workview_toggled"                : self.on_workview_toggled,
-                "on_view_workview_toggled"           : self.on_workview_toggled,
-                "on_view_closed_toggled"             : self.on_closed_toggled,
-                "on_view_sidebar_toggled"            : self.on_sidebar_toggled,
-                "on_bg_color_toggled"                : self.on_bg_color_toggled,
-                "on_quickadd_field_activate"         : self.quickadd,
-                "on_quickadd_button_activate"        : self.quickadd,
-                "on_view_quickadd_toggled"           : self.toggle_quickadd,
-                "on_about_clicked"                   : self.on_about_clicked,
-                "on_about_close"                     : self.on_about_close
+                "on_task_treeview_button_press_event" : self.on_task_treeview_button_press_event,
+                "on_tag_treeview_button_press_event"  : self.on_tag_treeview_button_press_event,
+                "on_colorchooser_activate"            : self.on_colorchooser_activate,
+                "on_workview_toggled"                 : self.on_workview_toggled,
+                "on_view_workview_toggled"            : self.on_workview_toggled,
+                "on_view_closed_toggled"              : self.on_closed_toggled,
+                "on_view_sidebar_toggled"             : self.on_sidebar_toggled,
+                "on_bg_color_toggled"                 : self.on_bg_color_toggled,
+                "on_quickadd_field_activate"          : self.quickadd,
+                "on_quickadd_button_activate"         : self.quickadd,
+                "on_view_quickadd_toggled"            : self.toggle_quickadd,
+                "on_about_clicked"                    : self.on_about_clicked,
+                "on_about_close"                      : self.on_about_close
               }
         self.wTree.signal_autoconnect(dic)
         self.selected_rows = None
@@ -667,6 +668,19 @@ class TaskBrowser:
                 treeview.grab_focus()
                 treeview.set_cursor( path, col, 0)
                 self.tagpopup.popup( None, None, None, event.button, time)
+            return 1
+
+    def on_task_treeview_button_press_event(self,treeview,event) :
+        if event.button == 3:
+            x = int(event.x)
+            y = int(event.y)
+            time = event.time
+            pthinfo = treeview.get_path_at_pos(x, y)
+            if pthinfo is not None:
+                path, col, cellx, celly = pthinfo #pylint: disable-msg=W0612
+                treeview.grab_focus()
+                treeview.set_cursor( path, col, 0)
+                self.taskpopup.popup( None, None, None, event.button, time)
             return 1
             
     def on_add_task(self,widget) : #pylint: disable-msg=W0613

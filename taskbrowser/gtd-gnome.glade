@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Mon Jan 26 01:53:50 2009 -->
+<!--Generated with glade3 3.4.5 on Thu Jan 29 01:16:54 2009 -->
 <glade-interface>
   <widget class="GtkWindow" id="MainWindow">
     <property name="visible">True</property>
@@ -255,11 +255,10 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkMenuToolButton" id="mark_as_done_b">
+              <widget class="GtkToolButton" id="mark_as_done_b">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">Mark as done</property>
                 <property name="icon">task_done.png</property>
-                <property name="menu">TbTaskMenu</property>
                 <signal name="clicked" handler="on_mark_as_done"/>
               </widget>
               <packing>
@@ -268,6 +267,7 @@
             </child>
             <child>
               <widget class="GtkToolButton" id="dismiss">
+                <property name="visible">True</property>
                 <property name="label" translatable="yes">Dismiss</property>
                 <property name="icon">task_dismiss.png</property>
                 <signal name="clicked" handler="on_dismiss_task"/>
@@ -278,6 +278,7 @@
             </child>
             <child>
               <widget class="GtkToolButton" id="delete_b">
+                <property name="visible">True</property>
                 <property name="label" translatable="yes">Delete</property>
                 <property name="icon_name">edit-delete</property>
                 <signal name="clicked" handler="on_delete_task"/>
@@ -396,6 +397,7 @@
                             <property name="search_column">8</property>
                             <property name="rubber_banding">True</property>
                             <property name="enable_tree_lines">True</property>
+                            <signal name="button_press_event" handler="on_task_treeview_button_press_event"/>
                             <signal name="row_activated" handler="on_edit_active_task"/>
                             <signal name="cursor_changed" handler="on_task_tview_cursor_changed"/>
                           </widget>
@@ -459,7 +461,7 @@
   </widget>
   <widget class="GtkDialog" id="confirm_delete">
     <property name="border_width">5</property>
-    <property name="title" translatable="yes">Confirm your delete action</property>
+    <property name="title" translatable="yes">Confirm task deletion</property>
     <property name="window_position">GTK_WIN_POS_CENTER_ON_PARENT</property>
     <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
     <property name="has_separator">False</property>
@@ -469,12 +471,36 @@
         <property name="visible">True</property>
         <property name="spacing">2</property>
         <child>
-          <widget class="GtkLabel" id="label1">
+          <widget class="GtkHBox" id="hbox3">
             <property name="visible">True</property>
-            <property name="label" translatable="yes">Deleting a task cannot be undone. 
-Are you sure you to want delete this task ?</property>
+            <child>
+              <widget class="GtkImage" id="image3">
+                <property name="visible">True</property>
+                <property name="stock">gtk-dialog-question</property>
+                <property name="icon_size">6</property>
+              </widget>
+              <packing>
+                <property name="fill">False</property>
+                <property name="padding">16</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkLabel" id="label1">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">&lt;span weight="bold" size="large"&gt;Are you sure you want delete this task?&lt;/span&gt;
+
+Deleting a task cannot be undone.</property>
+                <property name="use_markup">True</property>
+                <property name="wrap">True</property>
+              </widget>
+              <packing>
+                <property name="padding">16</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
           </widget>
           <packing>
+            <property name="padding">16</property>
             <property name="position">1</property>
           </packing>
         </child>
@@ -487,9 +513,30 @@ Are you sure you to want delete this task ?</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="label" translatable="yes">Cancel</property>
                 <property name="response_id">0</property>
                 <signal name="released" handler="on_delete_cancel"/>
+                <child>
+                  <widget class="GtkHBox" id="hbox1">
+                    <property name="visible">True</property>
+                    <child>
+                      <widget class="GtkImage" id="image1">
+                        <property name="visible">True</property>
+                        <property name="stock">gtk-cancel</property>
+                      </widget>
+                    </child>
+                    <child>
+                      <widget class="GtkLabel" id="label2">
+                        <property name="visible">True</property>
+                        <property name="xalign">0</property>
+                        <property name="label" translatable="yes">_Keep selected task</property>
+                        <property name="use_underline">True</property>
+                      </widget>
+                      <packing>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </widget>
+                </child>
               </widget>
             </child>
             <child>
@@ -497,9 +544,29 @@ Are you sure you to want delete this task ?</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="label" translatable="yes">Delete it</property>
                 <property name="response_id">0</property>
                 <signal name="released" handler="on_delete_confirm"/>
+                <child>
+                  <widget class="GtkHBox" id="hbox2">
+                    <property name="visible">True</property>
+                    <child>
+                      <widget class="GtkImage" id="image2">
+                        <property name="visible">True</property>
+                        <property name="stock">gtk-delete</property>
+                      </widget>
+                    </child>
+                    <child>
+                      <widget class="GtkLabel" id="label3">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">Permanently _remove task</property>
+                        <property name="use_underline">True</property>
+                      </widget>
+                      <packing>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </widget>
+                </child>
               </widget>
               <packing>
                 <property name="position">1</property>
@@ -606,37 +673,6 @@ Are you sure you to want delete this task ?</property>
       </widget>
     </child>
   </widget>
-  <widget class="GtkMenu" id="TbTaskMenu">
-    <property name="visible">True</property>
-    <child>
-      <widget class="GtkImageMenuItem" id="tb_task_menu_dismiss">
-        <property name="visible">True</property>
-        <property name="label" translatable="yes">D_ismiss task</property>
-        <property name="use_underline">True</property>
-        <signal name="activate" handler="on_dismiss_task"/>
-        <child internal-child="image">
-          <widget class="GtkImage" id="menu-item-image9">
-            <property name="visible">True</property>
-            <property name="pixbuf">task_dismiss.png</property>
-          </widget>
-        </child>
-      </widget>
-    </child>
-    <child>
-      <widget class="GtkImageMenuItem" id="tb_task_menu_delete">
-        <property name="visible">True</property>
-        <property name="label" translatable="yes">_Delete task</property>
-        <property name="use_underline">True</property>
-        <signal name="activate" handler="on_delete_task"/>
-        <child internal-child="image">
-          <widget class="GtkImage" id="menu-item-image10">
-            <property name="visible">True</property>
-            <property name="stock">gtk-delete</property>
-          </widget>
-        </child>
-      </widget>
-    </child>
-  </widget>
   <widget class="GtkAboutDialog" id="aboutdialog1">
     <property name="border_width">5</property>
     <property name="title" translatable="yes">À propos de GTG!</property>
@@ -674,6 +710,51 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
             <property name="expand">False</property>
             <property name="pack_type">GTK_PACK_END</property>
           </packing>
+        </child>
+      </widget>
+    </child>
+  </widget>
+  <widget class="GtkMenu" id="TaskContextMenu">
+    <property name="visible">True</property>
+    <child>
+      <widget class="GtkImageMenuItem" id="tcm_mark_as_done">
+        <property name="visible">True</property>
+        <property name="label" translatable="yes">Mark as done</property>
+        <property name="use_underline">True</property>
+        <signal name="activate" handler="on_mark_as_done"/>
+        <child internal-child="image">
+          <widget class="GtkImage" id="menu-item-image8">
+            <property name="visible">True</property>
+            <property name="pixbuf">task_done_small.png</property>
+          </widget>
+        </child>
+      </widget>
+    </child>
+    <child>
+      <widget class="GtkImageMenuItem" id="tcm_dismiss">
+        <property name="visible">True</property>
+        <property name="label" translatable="yes">Dismiss</property>
+        <property name="use_underline">True</property>
+        <signal name="activate" handler="on_dismiss_task"/>
+        <child internal-child="image">
+          <widget class="GtkImage" id="menu-item-image9">
+            <property name="visible">True</property>
+            <property name="pixbuf">task_dismiss_small.png</property>
+          </widget>
+        </child>
+      </widget>
+    </child>
+    <child>
+      <widget class="GtkImageMenuItem" id="tcm_delete">
+        <property name="visible">True</property>
+        <property name="label" translatable="yes">Delete</property>
+        <property name="use_underline">True</property>
+        <signal name="activate" handler="on_delete_task"/>
+        <child internal-child="image">
+          <widget class="GtkImage" id="menu-item-image10">
+            <property name="visible">True</property>
+            <property name="stock">gtk-delete</property>
+          </widget>
         </child>
       </widget>
     </child>
