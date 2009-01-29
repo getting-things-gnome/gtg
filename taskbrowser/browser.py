@@ -223,25 +223,25 @@ class TaskBrowser:
             self.priv["collapsed_tid"] = self.config["browser"]["collapsed_tasks"]
             
         if self.config["browser"].has_key("sort_col_id"):
-            id, order = self.config["browser"]["sort_col_id"]
+            col_id, order = self.config["browser"]["sort_col_id"]
             try:
-                id, order = int(id), int(order)
-                if order==0: self.priv["sort_column_id"] = (id, gtk.SORT_ASCENDING)
-                if order==1: self.priv["sort_column_id"] = (id, gtk.SORT_DESCENDING)
+                col_id, order = int(col_id), int(order)
+                if order == 0 : self.priv["sort_column_id"] = (col_id, gtk.SORT_ASCENDING)
+                if order == 1 : self.priv["sort_column_id"] = (col_id, gtk.SORT_DESCENDING)
             except:
                 print "Invalid configuration for sorting columns"
 
-    def on_move(self, widget, data):
+    def on_move(self, widget, data): #pylint: disable-msg=W0613
         xpos, ypos = self.window.get_position()
         self.priv["window_xpos"] = xpos
         self.priv["window_ypos"] = ypos
 
-    def on_size_allocate(self, widget, data):
+    def on_size_allocate(self, widget, data): #pylint: disable-msg=W0613
         width, height = self.window.get_size()
         self.priv["window_width"]  = width
         self.priv["window_height"] = height
         
-    def on_delete(self, widget, user_data):
+    def on_delete(self, widget, user_data): #pylint: disable-msg=W0613
         
         # Save expanded rows
         self.task_ts.foreach(self.update_collapsed_row, None)
@@ -267,14 +267,14 @@ class TaskBrowser:
         self.config["browser"]["quick_add"]        = quickadd_pane
         self.config["browser"]["bg_color_enable"]  = self.priv["bg_color_enable"]
         self.config["browser"]["collapsed_tasks"]  = self.priv["collapsed_tid"]
-        if   task_tv_sort_id[0] and task_tv_sort_id[1]==gtk.SORT_ASCENDING:
+        if   task_tv_sort_id[0] and task_tv_sort_id[1] == gtk.SORT_ASCENDING :
             self.config["browser"]["sort_col_id"]  = [task_tv_sort_id[0],0]
-        elif task_tv_sort_id[0] and task_tv_sort_id[1]==gtk.SORT_DESCENDING:
+        elif task_tv_sort_id[0] and task_tv_sort_id[1] == gtk.SORT_DESCENDING :
             self.config["browser"]["sort_col_id"]  = [task_tv_sort_id[0],1]
              
     def on_close(self):
         self.__save_state_to_conf()
-        self.close
+        self.close()
  
     def main(self):
         #Here we will define the main TaskList interface
@@ -316,10 +316,10 @@ class TaskBrowser:
         elif     task1.get_due_date() and not task2.get_due_date() : return -1
         else: return cmp(task1.get_due_date(), task2.get_due_date())
 
-    def on_about_clicked(self, widget):
+    def on_about_clicked(self, widget): #pylint: disable-msg=W0613
         self.about.show()
 
-    def on_about_close(self, widget, response):
+    def on_about_close(self, widget, response): #pylint: disable-msg=W0613
         self.about.hide()
 
     def on_colorchooser_activate(self,widget) : #pylint: disable-msg=W0613
@@ -530,8 +530,8 @@ class TaskBrowser:
         self.task_tview.map_expanded_rows(self.restore_collapsed,None)
         # Restore sorting
         if self.priv.has_key("sort_column_id"):
-            id, order = self.priv["sort_column_id"]
-            self.task_ts.set_sort_column_id(id, order)
+            col_id, order = self.priv["sort_column_id"]
+            self.task_ts.set_sort_column_id(col_id, order)
         #We reselect the selected tasks
         selection = self.task_tview.get_selection()
         if t_path :
@@ -708,7 +708,7 @@ class TaskBrowser:
                     nonworkview_item.hide()
             return 1
             
-    def on_nonworkviewtag_toggled(self,widget) :
+    def on_nonworkviewtag_toggled(self,widget) : #pylint: disable-msg=W0613
         tags = self.get_selected_tags()[0]
         nonworkview_item = self.tagpopup.get_children()[1]
         #We must inverse because the tagstore has True

@@ -15,7 +15,7 @@ class Task :
         #self.content = "<content>Press Escape or close this task to save it</content>"
         self.sync_func = None
         self.title = "My new task"
-        #available status are : Active - Done - Dismiss - Deleted 
+        #available status are : Active - Done - Dismiss 
         self.status = "Active"
         self.closed_date = None
         self.due_date = None
@@ -52,17 +52,34 @@ class Task :
         self.sync()
         
     def set_status(self,status,donedate=None) :
+        old_status = self.status
         self.can_be_deleted = False
         if status :
             self.status = status
             #If Done, we set the done date
             if status in ["Done","Dismiss"] :
+                for c in self.get_subtasks() :
+                    c.set_status(status,donedate=donedate)
                 #to the specified date (if any)
                 if donedate :
                     self.closed_date = donedate
                 #or to today
                 else : 
                     self.closed_date = date.today()
+            #If we mark a task as Active and that some parent are not
+            #Active, we break the parent/child relation
+            #It has no sense to have an active subtask of a done parent.
+            # (old_status check is necessary to avoid false positive a start)
+            elif status in ["Active"] and old_status in ["Done","Dismiss"] :
+                if self.has_parents() :
+                    for p_tid in self.get_parents() :
+                        par = self.req.get_task(p_tid)
+                        if par.is_loaded() and par.get_status != "Active" :
+                            print "removing parent"
+                            self.remove_parent(p_tid)
+                #We dont mark the children as Active because
+                #They might be already completed after all
+                
         self.sync()
         
     def get_status(self) :
