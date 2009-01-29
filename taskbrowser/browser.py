@@ -219,6 +219,15 @@ class TaskBrowser:
             
         if self.config["browser"].has_key("collapsed_tasks"):
             self.priv["collapsed_tid"] = self.config["browser"]["collapsed_tasks"]
+            
+        if self.config["browser"].has_key("sort_col_id"):
+            id, order = self.config["browser"]["sort_col_id"]
+            try:
+                id, order = int(id), int(order)
+                if order==0: self.priv["sort_column_id"] = (id, gtk.SORT_ASCENDING)
+                if order==1: self.priv["sort_column_id"] = (id, gtk.SORT_DESCENDING)
+            except:
+                print "Invalid configuration for sorting columns"
 
     def on_move(self, widget, data):
         xpos, ypos = self.window.get_position()
@@ -240,9 +249,10 @@ class TaskBrowser:
             if not self.req.has_task(tid): self.priv["collapsed_tid"].remove(tid)
         
         # Get configuration values
-        tag_sidebar   = self.sidebar.get_property("visible")
-        closed_pane   = self.closed_pane.get_property("visible")
-        quickadd_pane = self.quickadd_pane.get_property("visible")
+        tag_sidebar     = self.sidebar.get_property("visible")
+        closed_pane     = self.closed_pane.get_property("visible")
+        quickadd_pane   = self.quickadd_pane.get_property("visible")
+        task_tv_sort_id = self.task_ts.get_sort_column_id()
         
         # Populate configuration dictionary
         self.config["browser"] = {}
@@ -255,7 +265,11 @@ class TaskBrowser:
         self.config["browser"]["quick_add"]        = quickadd_pane
         self.config["browser"]["bg_color_enable"]  = self.priv["bg_color_enable"]
         self.config["browser"]["collapsed_tasks"]  = self.priv["collapsed_tid"]
- 
+        if   task_tv_sort_id[0] and task_tv_sort_id[1]==gtk.SORT_ASCENDING:
+            self.config["browser"]["sort_col_id"]  = [task_tv_sort_id[0],0]
+        elif task_tv_sort_id[0] and task_tv_sort_id[1]==gtk.SORT_DESCENDING:
+            self.config["browser"]["sort_col_id"]  = [task_tv_sort_id[0],1]
+             
     def on_close(self):
         self.__save_state_to_conf()
         self.close
@@ -465,6 +479,10 @@ class TaskBrowser:
         
         # Save collapsed rows
         self.task_ts.foreach(self.update_collapsed_row, None)
+        # Save sorting
+        task_tv_sort_id = self.task_ts.get_sort_column_id()
+        if task_tv_sort_id[0]:
+            self.priv["sort_column_id"] = task_tv_sort_id
         
         #selected tasks :
         selected_uid = self.get_selected_task(self.task_tview)
@@ -511,6 +529,10 @@ class TaskBrowser:
         #We expand all the we close the tasks who were not saved as "expanded"
         self.task_tview.expand_all()
         self.task_tview.map_expanded_rows(self.restore_collapsed,None)
+        # Restore sorting
+        if self.priv.has_key("sort_column_id"):
+            id, order = self.priv["sort_column_id"]
+            self.task_ts.set_sort_column_id(id, order)
         #We reselect the selected tasks
         selection = self.task_tview.get_selection()
         if t_path :
