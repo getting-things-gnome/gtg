@@ -96,13 +96,16 @@ aze,
 			no tag but I'm editing
 		</content>
 	</task>
-	<task id="6@1" status="Active" tags="@tag">
+	<task id="6@1" status="Done" tags="@tag">
 		<title>
 			sous-sous
 		</title>
 		<duedate>
 			2009-01-23
 		</duedate>
+		<donedate>
+			2009-01-29
+		</donedate>
 		<content>
 			&lt;tag&gt;@tag&lt;/tag&gt;
 tag, 

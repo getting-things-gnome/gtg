@@ -92,34 +92,35 @@ class TaskBrowser:
         self.req = requester
 
         # Column constants
-        self.TASKS_TV_COL_TAG    = 1
-        self.TASKS_TV_COL_TITLE  = 2
-        self.TASKS_TV_COL_DDATE  = 3
-        self.TASKS_TV_COL_DLEFT  = 4
-        self.TAGS_TV_COL_TAG     = 1
-        self.CTASKS_TV_COL_TITLE = 2
-        self.CTASKS_TV_COL_DDATE = 3
+        self.TASKS_TV_COL_TAG        = 1
+        self.TASKS_TV_COL_TITLE      = 2
+        self.TASKS_TV_COL_DDATE      = 3
+        self.TASKS_TV_COL_DLEFT      = 4
+        self.TAGS_TV_COL_TAG         = 1
+        self.CTASKS_TV_COL_TITLE     = 2
+        self.CTASKS_TV_COL_DDATE     = 3
         
         # Model constants
-        self.TASK_MODEL_OBJ       = 0
-        self.TASK_MODEL_TITLE     = 1
+        self.TASK_MODEL_OBJ         = 0
+        self.TASK_MODEL_TITLE       = 1
         #Warning : this one is duplicated in treetools.py
         #They all should go in treetools
-        self.TASK_MODEL_DDATE_STR = 2
-        self.TASK_MODEL_DLEFT_STR = 3
-        self.TASK_MODEL_TAGS      = 4
-        self.TASK_MODEL_BGCOL     = 5
-        self.TAGS_MODEL_OBJ       = 0
-        self.TAGS_MODEL_COLOR     = 1
-        self.TAGS_MODEL_NAME      = 2
-        self.TAGS_MODEL_COUNT     = 3
-        self.TAGS_MODEL_SEP       = 4
-        self.CTASKS_MODEL_TITLE   = 2
-        self.CTASKS_MODEL_DDATE   = 3
+        self.TASK_MODEL_DDATE_STR   = 2
+        self.TASK_MODEL_DLEFT_STR   = 3
+        self.TASK_MODEL_TAGS        = 4
+        self.TASK_MODEL_BGCOL       = 5
+        self.TAGS_MODEL_OBJ         = 0
+        self.TAGS_MODEL_COLOR       = 1
+        self.TAGS_MODEL_NAME        = 2
+        self.TAGS_MODEL_COUNT       = 3
+        self.TAGS_MODEL_SEP         = 4
+        self.CTASKS_MODEL_TITLE     = 2
+        self.CTASKS_MODEL_DDATE     = 3
+        self.CTASKS_MODEL_DDATE_STR = 4
         
         #The tview and their model
         self.taskdone_tview = self.wTree.get_widget("taskdone_tview")
-        self.taskdone_ts    = gtk.TreeStore(gobject.TYPE_PYOBJECT, str,str,str)
+        self.taskdone_ts    = gtk.TreeStore(gobject.TYPE_PYOBJECT, str,str,str,str)
         self.tag_tview      = self.wTree.get_widget("tag_tview")
         self.tag_ts         = gtk.ListStore(gobject.TYPE_PYOBJECT,str,str,str,bool)
         # TASK MODEL:
@@ -550,13 +551,14 @@ class TaskBrowser:
         closed_tasks = self.req.get_closed_tasks_list(tags=tag_list,\
                                                     notag_only=notag_only)
         for tid in closed_tasks :
-            t          = self.req.get_task(tid)
-            title      = t.get_title()
-            closeddate = t.get_closed_date()
+            t              = self.req.get_task(tid)
+            title_str      = t.get_title()
+            closeddate     = t.get_closed_date()
+            closeddate_str = closeddate
             if t.get_status() == "Dismiss":
-                title      = "<span color=\"#AAAAAA\">%s</span>" % title
-                closeddate = "<span color=\"#AAAAAA\">%s</span>" % closeddate
-            self.taskdone_ts.append(None,[tid,t.get_color(),title,closeddate])
+                title_str      = "<span color=\"#AAAAAA\">%s</span>" % title_str
+                closeddate_str = "<span color=\"#AAAAAA\">%s</span>" % closeddate
+            self.taskdone_ts.append(None,[tid,t.get_color(),title_str,closeddate,closeddate_str])
         closed_selection = self.taskdone_tview.get_selection()
         if d_path :
             for i in d_path :
@@ -1025,9 +1027,9 @@ class TaskBrowser:
         # Done date column
         ddate_col    = gtk.TreeViewColumn()
         render_text  = gtk.CellRendererText()
-        ddate_col.set_title                ("Done date")
+        ddate_col.set_title                ("Closing date")
         ddate_col.pack_start               (render_text  , expand=True)
-        ddate_col.set_attributes           (render_text  , markup=self.CTASKS_MODEL_DDATE)
+        ddate_col.set_attributes           (render_text  , markup=self.CTASKS_MODEL_DDATE_STR)
         ddate_col.set_sort_column_id       (self.CTASKS_MODEL_DDATE)
         self.taskdone_tview.append_column  (ddate_col)
          
