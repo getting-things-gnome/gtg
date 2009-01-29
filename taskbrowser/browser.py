@@ -445,11 +445,9 @@ class TaskBrowser:
     def tag_separator_filter(self, model, itera, user_data=None):#pylint: disable-msg=W0613
         return model.get_value(itera, self.TAGS_MODEL_SEP)
         
-    def update_collapsed_row(self, model, path, itera, user_data):
+    def update_collapsed_row(self, model, path, itera, user_data): #pylint: disable-msg=W0613
         """Build a list of task that must showed as collapsed in Treeview"""
-
         tid = self.task_ts.get_value(itera,0)
-
         # Remove expanded rows
         if   self.task_ts.iter_has_child(itera) and \
              self.task_tview.row_expanded(path) and \
@@ -580,7 +578,7 @@ class TaskBrowser:
         duedate_str = task.get_due_date()
         left_str    = task.get_days_left()
         tags        = task.get_tags()
-        if self.priv["bg_color_enable"] == True:
+        if self.priv["bg_color_enable"] :
             my_color = colors.background_color(tags)
         else:
             my_color = None
