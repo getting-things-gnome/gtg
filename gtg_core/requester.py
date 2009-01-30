@@ -93,21 +93,28 @@ class Requester :
         
     #Workable means that the task have no pending subtasks and can be done directly
     #It also means that all tags are to be "workview" tags (which is the default for tags)
+    #Except if the tag is explicitely selected
     def get_active_tasks_list(self,tags=None,notag_only=False,\
                             started_only=True,is_root=False,workable=False) :
         l_tasks = []
         if workable :
-            nonworkview_tags_name = self.ds.get_tagstore().get_all_tags_name(\
+            nonwork_tag = self.ds.get_tagstore().get_all_tags(\
                                                     attname="nonworkview",\
                                                     attvalue="True")
-            nonwork_tag = []
-            for name in nonworkview_tags_name :
-                nonwork_tag.append(self.get_tag(name))
+            #nonwork_tag = []
+            #We build the list of tags we will skip
+            for nwtag in nonwork_tag :
+                #If the tag is explicitely selected, it doesn't go in the
+                #nonwork_tag
+                if nwtag in tags :
+                    nonwork_tag.remove(nwtag)
+            #We build the task list
             temp_tasks = self.get_active_tasks_list(tags=tags, notag_only=notag_only,\
                                 started_only=True,is_root=False,workable=False)
+            #Now we verify that the tasks are workable and doesn't have
+            #a nonwork_tag.
             for tid in temp_tasks :
                 t = self.get_task(tid)
-                #print "%s has non active tag %s" %(tid,t.has_tags(nonwork))
                 if t and t.is_workable() :
                     if len(nonwork_tag) == 0 :
                         l_tasks.append(tid)
