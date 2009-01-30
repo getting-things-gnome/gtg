@@ -92,10 +92,13 @@ class TagStore :
                 l.append(self.store[t].get_name())
         return l
         
-    def get_all_tags(self) :
+    def get_all_tags(self,attname=None,attvalue=None) :
         l = []
         for t in self.store :
-            l.append(self.store[t])
+            if not attname :
+                l.append(self.store[t])
+            elif self.store[t].get_attribute(attname) == attvalue :
+                l.append(self.store[t])
         return l
     
         
