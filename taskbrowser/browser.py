@@ -32,8 +32,11 @@ class TaskBrowser:
         # Set the configuration dictionary
         self.config = config
         
-        #The collapsed tasks
-        self.priv["collapsed_tid"] = []
+        # Setup default values for view
+        self.priv["collapsed_tid"]           = []
+        self.priv["tasklist"]                = {}
+        self.priv["tasklist"]["sort_column"] = None
+        self.priv["tasklist"]["sort_order"]  = gtk.SORT_ASCENDING
         
         #Set the Glade file
         self.gladefile = GnomeConfig.GLADE_FILE  
@@ -69,6 +72,7 @@ class TaskBrowser:
                 "on_select_tag"       : self.on_select_tag,
                 "on_delete_confirm"   : self.on_delete_confirm,
                 "on_delete_cancel"    : lambda x : x.hide,
+                "on"
                 "on_closed_task_treeview_button_press_event" : self.on_closed_task_treeview_button_press_event,
                 "on_task_treeview_button_press_event" : self.on_task_treeview_button_press_event,
                 "on_tag_treeview_button_press_event"  : self.on_tag_treeview_button_press_event,
@@ -90,25 +94,17 @@ class TaskBrowser:
         
         self.workview = False
         self.req = requester
-
-        # Column constants
-        self.TASKS_TV_COL_TAG        = 1
-        self.TASKS_TV_COL_TITLE      = 2
-        self.TASKS_TV_COL_DDATE      = 3
-        self.TASKS_TV_COL_DLEFT      = 4
-        self.TAGS_TV_COL_TAG         = 1
-        self.CTASKS_TV_COL_TITLE     = 2
-        self.CTASKS_TV_COL_DDATE     = 3
         
         # Model constants
         self.TASK_MODEL_OBJ         = 0
         self.TASK_MODEL_TITLE       = 1
+        self.TASK_MODEL_TITLE_STR   = 2
         #Warning : this one is duplicated in treetools.py
         #They all should go in treetools
-        self.TASK_MODEL_DDATE_STR   = 2
-        self.TASK_MODEL_DLEFT_STR   = 3
-        self.TASK_MODEL_TAGS        = 4
-        self.TASK_MODEL_BGCOL       = 5
+        self.TASK_MODEL_DDATE_STR   = 3
+        self.TASK_MODEL_DLEFT_STR   = 4
+        self.TASK_MODEL_TAGS        = 5
+        self.TASK_MODEL_BGCOL       = 6
         self.TAGS_MODEL_OBJ         = 0
         self.TAGS_MODEL_COLOR       = 1
         self.TAGS_MODEL_NAME        = 2
@@ -127,8 +123,7 @@ class TaskBrowser:
         # PYOBJECT:tid, STR:title, STR:due date string,
         # STR:days left string, PYOBJECT:tags, str:my_color
         self.task_tview     = self.wTree.get_widget("task_tview")
-        self.task_ts        = treetools.new_task_ts(\
-                sort_func=self.compare_task_rows,dnd_func=self.row_dragndrop)
+        self.task_ts        = treetools.new_task_ts(dnd_func=self.row_dragndrop)
 
         #Be sure that we are reorderable (not needed normaly)
         self.task_tview.set_reorderable(True)
@@ -223,12 +218,15 @@ class TaskBrowser:
         if self.config["browser"].has_key("collapsed_tasks"):
             self.priv["collapsed_tid"] = self.config["browser"]["collapsed_tasks"]
             
-        if self.config["browser"].has_key("sort_col_id"):
-            col_id, order = self.config["browser"]["sort_col_id"]
+        if self.config["browser"].has_key("tasklist_sort"):
+            col_id, order = self.config["browser"]["tasklist_sort"]
+            self.priv["sort_column"] = col_id
             try:
                 col_id, order = int(col_id), int(order)
-                if order == 0 : self.priv["sort_column_id"] = (col_id, gtk.SORT_ASCENDING)
-                if order == 1 : self.priv["sort_column_id"] = (col_id, gtk.SORT_DESCENDING)
+                sort_col = self.priv["tasklist"]["columns"][col_id]
+                self.priv["tasklist"]["sort_column"] = sort_col
+                if order == 0 : self.priv["tasklist"]["sort_order"] = gtk.SORT_ASCENDING
+                if order == 1 : self.priv["tasklist"]["sort_order"] = gtk.SORT_DESCENDING
             except:
                 print "Invalid configuration for sorting columns"
 
@@ -256,7 +254,9 @@ class TaskBrowser:
         closed_pane     = self.closed_pane.get_property("visible")
         quickadd_pane   = self.quickadd_pane.get_property("visible")
         task_tv_sort_id = self.task_ts.get_sort_column_id()
-        
+        sort_column     = self.priv["tasklist"]["sort_column"]
+        sort_order      = self.priv["tasklist"]["sort_order"]
+                
         # Populate configuration dictionary
         self.config["browser"] = {}
         self.config["browser"]["width"]            = self.priv["window_width"]
@@ -268,10 +268,12 @@ class TaskBrowser:
         self.config["browser"]["quick_add"]        = quickadd_pane
         self.config["browser"]["bg_color_enable"]  = self.priv["bg_color_enable"]
         self.config["browser"]["collapsed_tasks"]  = self.priv["collapsed_tid"]
-        if   task_tv_sort_id[0] and task_tv_sort_id[1] == gtk.SORT_ASCENDING :
-            self.config["browser"]["sort_col_id"]  = [task_tv_sort_id[0],0]
-        elif task_tv_sort_id[0] and task_tv_sort_id[1] == gtk.SORT_DESCENDING :
-            self.config["browser"]["sort_col_id"]  = [task_tv_sort_id[0],1]
+        if   sort_column is not None and sort_order == gtk.SORT_ASCENDING :
+            sort_col_id = self.priv["tasklist"]["columns"].index(sort_column)
+            self.config["browser"]["tasklist_sort"]  = [sort_col_id, 0]
+        elif sort_column is not None and sort_order == gtk.SORT_DESCENDING :
+            sort_col_id = self.priv["tasklist"]["columns"].index(sort_column)
+            self.config["browser"]["tasklist_sort"]  = [sort_col_id, 1]
              
     def on_close(self):
         self.__save_state_to_conf()
@@ -306,16 +308,6 @@ class TaskBrowser:
         
         gtk.main()
         return 0
-
-    def compare_task_rows(self, treemodel, iter1, iter2):
-        tid1 = treemodel.get_value(iter1,self.TASK_MODEL_OBJ)
-        tid2 = treemodel.get_value(iter2,self.TASK_MODEL_OBJ)
-        task1 = self.req.get_task(tid1)
-        task2 = self.req.get_task(tid2)
-        if   not task1.get_due_date() and not task2.get_due_date() : return 0
-        elif not task1.get_due_date() and     task2.get_due_date() : return 1
-        elif     task1.get_due_date() and not task2.get_due_date() : return -1
-        else: return cmp(task1.get_due_date(), task2.get_due_date())
 
     def on_about_clicked(self, widget): #pylint: disable-msg=W0613
         self.about.show()
@@ -477,10 +469,6 @@ class TaskBrowser:
         
         # Save collapsed rows
         self.task_ts.foreach(self.update_collapsed_row, None)
-        # Save sorting
-        task_tv_sort_id = self.task_ts.get_sort_column_id()
-        if task_tv_sort_id[0]:
-            self.priv["sort_column_id"] = task_tv_sort_id
         
         #selected tasks :
         selected_uid = self.get_selected_task(self.task_tview)
@@ -489,8 +477,7 @@ class TaskBrowser:
         if tselect :
             t_model,t_path = tselect.get_selected_rows() #pylint: disable-msg=W0612
         #to refresh the list we build a new treestore then replace the existing
-        new_taskts = treetools.new_task_ts(sort_func=self.compare_task_rows,\
-                                        dnd_func=self.row_dragndrop)
+        new_taskts = treetools.new_task_ts(dnd_func=self.row_dragndrop)
         tag_list,notag_only = self.get_selected_tags()
         nbr_of_tasks = 0
         
@@ -528,9 +515,12 @@ class TaskBrowser:
         self.task_tview.expand_all()
         self.task_tview.map_expanded_rows(self.restore_collapsed,None)
         # Restore sorting
-        if self.priv.has_key("sort_column_id"):
-            col_id, order = self.priv["sort_column_id"]
-            self.task_ts.set_sort_column_id(col_id, order)
+        if self.priv["tasklist"].has_key("sort_column") and \
+           self.priv["tasklist"].has_key("sort_order")      :
+            if self.priv["tasklist"]["sort_column"] is not None and \
+               self.priv["tasklist"]["sort_order"]  is not None     :
+                self.sort_tasklist_rows(self.priv["tasklist"]["sort_column"], \
+                                        self.priv["tasklist"]["sort_order"])
         #We reselect the selected tasks
         selection = self.task_tview.get_selection()
         if t_path :
@@ -568,15 +558,16 @@ class TaskBrowser:
     #Add tasks to a treeview. If treeview is False, it becomes a flat list
     def add_task_tree_to_list(self, tree_store, tid, parent, selected_uid=None,\
                                         active_tasks=[], treeview=True):
-        task = self.req.get_task(tid)
+        task  = self.req.get_task(tid)
         if selected_uid and selected_uid == tid :
             # Temporarily disabled
             #title = self.__build_task_title(task,extended=True)
-            title = self.__build_task_title(task,extended=False)
+            title_str = self.__build_task_title(task,extended=False)
         else :
-            title = self.__build_task_title(task,extended=False)
+            title_str = self.__build_task_title(task,extended=False)
 
         # Extract data
+        title       = task.get_title() 
         duedate_str = task.get_due_date()
         left_str    = task.get_days_left()
         tags        = task.get_tags()
@@ -587,11 +578,11 @@ class TaskBrowser:
         
         if not parent and len(task.get_subtasks()) == 0:
             itera = tree_store.get_iter_first()
-            my_row = tree_store.insert_before(None, itera, row=[tid,title,duedate_str,left_str,tags,my_color])
+            my_row = tree_store.insert_before(None, itera, row=[tid,title,title_str,duedate_str,left_str,tags,my_color])
         else:
             #None should be "parent" but crashing with thread
             my_row = tree_store.append(parent,\
-                        [tid,title,duedate_str,left_str,tags,my_color])
+                        [tid,title,title_str,duedate_str,left_str,tags,my_color])
         #If treeview, we add add the active childs
         if treeview :
             for c in task.get_subtasks():
@@ -961,9 +952,72 @@ class TaskBrowser:
         # Global treeview properties
         self.tag_tview.set_row_separator_func(self.tag_separator_filter)
 
+    def cmp_duedate_str(self, key1, key2):
+        if self.priv["tasklist"]["sort_order"] == gtk.SORT_ASCENDING:
+            if   key1 == "" and key2 == "" : return  0
+            elif key1 == "" and key2 != "" : return -1
+            elif key1 != "" and key2 == "" : return  1
+            else                           : return cmp(key1,key2)
+        else:
+            if   key1 == "" and key2 == "" : return  0
+            elif key1 == "" and key2 != "" : return  1
+            elif key1 != "" and key2 == "" : return -1
+            else                           : return cmp(key1,key2)
+        
+    def sort_tasklist_rows(self, column, sort_order=None):        
+        """ Sort the rows based on the given column """
+    
+        # Extract sorting state
+        last_sort_col   = self.priv["tasklist"]["sort_column"]
+        last_sort_order = self.priv["tasklist"]["sort_order"]
+        
+        # Cleanup
+        if last_sort_col is not None:
+           last_sort_col.set_sort_indicator(False)
+    
+        # Ascending or descending?
+        if sort_order is None:
+            if last_sort_col == column:
+                if last_sort_order == gtk.SORT_ASCENDING:
+                    sort_order = gtk.SORT_DESCENDING
+                else:
+                    sort_order = gtk.SORT_ASCENDING
+            else:
+                sort_order = gtk.SORT_DESCENDING
+
+        # Store sorting state
+        self.priv["tasklist"]["sort_column"] = column
+        self.priv["tasklist"]["sort_order"]  = sort_order
+
+        # Determine row sorting depending on column
+        if column == self.priv["tasklist"]["columns"][self.TASKLIST_COL_TITLE]:
+            cmp_func = lambda x,y: cmp(x.lower(),y.lower())
+            sort_key = lambda x:x[self.TASK_MODEL_TITLE]
+        else:
+            cmp_func = self.cmp_duedate_str
+            sort_key = lambda x:x[self.TASK_MODEL_DDATE_STR]
+            
+        # Determine sorting direction
+        if sort_order == gtk.SORT_ASCENDING: sort_reverse=True
+        else                               : sort_reverse=False
+
+        # Sort rows
+        rows = [tuple(r) + (i,) for i, r in enumerate(self.task_ts)]
+        if len(rows) != 0:
+            rows.sort(key=lambda x:x[self.TASK_MODEL_TITLE].lower())
+            rows.sort(cmp=cmp_func,key=sort_key,reverse=sort_reverse)
+            self.task_ts.reorder(None, [r[-1] for r in rows])
+    
+        # Display the sort indicator
+        column.set_sort_indicator(True)
+        column.set_sort_order(sort_order)
+
     def __create_task_tview(self):
   
+        self.priv["tasklist"]["columns"] = []
+  
         # Tag column
+        self.TASKLIST_COL_TAGS = 0
         tag_col     = gtk.TreeViewColumn()
         render_tags = CellRendererTags()
         tag_col.set_title             ("Tags")
@@ -971,51 +1025,58 @@ class TaskBrowser:
         tag_col.add_attribute         (render_tags, "tag_list", self.TASK_MODEL_TAGS)
         render_tags.set_property      ('xalign', 0.0)
         tag_col.set_resizable         (False)
-        tag_col.set_sort_column_id    (self.TASK_MODEL_TAGS)
         tag_col.add_attribute         (render_tags, "cell-background", self.TASK_MODEL_BGCOL)
+        #tag_col.set_clickable         (True)
+        #tag_col.connect               ('clicked', self.sort_tasklist_rows)
         self.task_tview.append_column (tag_col)
+        self.priv["tasklist"]["columns"].insert(self.TASKLIST_COL_TAGS, tag_col)
         
         # Title column
+        self.TASKLIST_COL_TITLE = 1
         title_col   = gtk.TreeViewColumn()
         render_text = gtk.CellRendererText()
         title_col.set_title           ("Title")
         title_col.pack_start          (render_text, expand=False)
-        title_col.add_attribute       (render_text, "markup", self.TASK_MODEL_TITLE)
+        title_col.add_attribute       (render_text, "markup", self.TASK_MODEL_TITLE_STR)
         title_col.set_resizable       (True)
-        title_col.set_sort_column_id  (self.TASK_MODEL_TITLE)
         title_col.set_expand          (True)
         #The following line seems to fix bug #317469
         #I don't understand why !!! It's voodoo !
         #Is there a Rubber Chicken With a Pulley in the Middle ?
         title_col.set_max_width       (100)
         title_col.add_attribute       (render_text, "cell_background", self.TASK_MODEL_BGCOL)
+        title_col.set_clickable       (True)
+        title_col.connect             ('clicked', self.sort_tasklist_rows)
         self.task_tview.append_column (title_col)
+        self.priv["tasklist"]["columns"].insert(self.TASKLIST_COL_TITLE, title_col)
         
         # Due date column
+        self.TASKLIST_COL_DDATE = 2
         ddate_col   = gtk.TreeViewColumn()
         render_text = gtk.CellRendererText()
         ddate_col.set_title           ("Due date")
         ddate_col.pack_start          (render_text, expand=False)
         ddate_col.add_attribute       (render_text, "markup", self.TASK_MODEL_DDATE_STR)
         ddate_col.set_resizable       (False)
-        ddate_col.set_sort_column_id  (self.TASK_MODEL_DDATE_STR)
         ddate_col.add_attribute       (render_text, "cell_background", self.TASK_MODEL_BGCOL)
-        ddate_col.set_sort_order      (gtk.SORT_DESCENDING)
-        ddate_col.set_sort_indicator  (True)
+        ddate_col.set_clickable       (True)
+        ddate_col.connect             ('clicked', self.sort_tasklist_rows)
         self.task_tview.append_column (ddate_col)
+        self.priv["tasklist"]["columns"].insert(self.TASKLIST_COL_DDATE, ddate_col)
         
         # days left
+        self.TASKLIST_COL_DLEFT = 3
         dleft_col   = gtk.TreeViewColumn()
         render_text = gtk.CellRendererText()
         dleft_col.set_title           ("Days left")
         dleft_col.pack_start          (render_text, expand=False)
         dleft_col.add_attribute       (render_text, "markup", self.TASK_MODEL_DLEFT_STR)
         dleft_col.set_resizable       (False)
-        dleft_col.set_sort_column_id  (self.TASK_MODEL_DDATE_STR)
         dleft_col.add_attribute       (render_text, "cell_background", self.TASK_MODEL_BGCOL)
-        dleft_col.set_sort_order      (gtk.SORT_DESCENDING)
-        dleft_col.set_sort_indicator  (True)
+        dleft_col.set_clickable       (True)
+        dleft_col.connect             ('clicked', self.sort_tasklist_rows)
         self.task_tview.append_column (dleft_col)
+        self.priv["tasklist"]["columns"].insert(self.TASKLIST_COL_DLEFT, dleft_col)
 
         # Global treeview properties
         self.task_tview.set_property   ("expander-column", title_col)
