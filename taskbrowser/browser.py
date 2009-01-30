@@ -476,6 +476,11 @@ class TaskBrowser:
         t_path = None
         if tselect :
             t_model,t_path = tselect.get_selected_rows() #pylint: disable-msg=W0612
+            
+        #Scroll position :
+        vscroll_value = self.task_tview.get_vadjustment().get_value()
+        hscroll_value = self.task_tview.get_hadjustment().get_value()    
+        
         #to refresh the list we build a new treestore then replace the existing
         new_taskts = treetools.new_task_ts(dnd_func=self.row_dragndrop)
         tag_list,notag_only = self.get_selected_tags()
@@ -526,6 +531,13 @@ class TaskBrowser:
         if t_path :
             for i in t_path :
                 selection.select_path(i)
+                
+        #scroll position
+        #Setting the vadjustement without delay doesnt work
+        #We add a 50 millisecond delay (it doesn't work with a smaller value
+        #Unfortunatly, it also add a "flickering" effect :-(
+        gobject.timeout_add(50, self.task_tview.get_vadjustment().set_value,vscroll_value)
+        gobject.timeout_add(50, self.task_tview.get_hadjustment().set_value,hscroll_value)
 
     #Refresh the closed tasks pane
     def refresh_closed(self) :
