@@ -248,11 +248,8 @@ et pas pour d'autres.
 		<subtask>
 			17@1
 		</subtask>
-		<subtask>
-			18@1
-		</subtask>
 		<content>
-			&lt;subtask&gt;17@1&lt;/subtask&gt;&lt;subtask&gt;18@1&lt;/subtask&gt;
+			&lt;subtask&gt;17@1&lt;/subtask&gt;
 		</content>
 	</task>
 	<task id="17@1" status="Active" tags="">
@@ -268,11 +265,6 @@ et pas pour d'autres.
 	<task id="21@1" status="Active" tags="">
 		<title>
 			This is wonderful!
-		</title>
-	</task>
-	<task id="18@1" status="Active" tags="">
-		<title>
-			My new task
 		</title>
 	</task>
 </project>
