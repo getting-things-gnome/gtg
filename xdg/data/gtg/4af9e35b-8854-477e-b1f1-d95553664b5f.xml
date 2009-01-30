@@ -240,6 +240,9 @@ et pas pour d'autres.
 		<duedate>
 			2009-01-31
 		</duedate>
+		<content>
+			&lt;tag&gt;@lorem_ipsum&lt;/tag&gt;, &lt;tag&gt;@vampire&lt;/tag&gt;, &lt;tag&gt;@t2&lt;/tag&gt;, 
+		</content>
 	</task>
 	<task id="13@1" status="Active" tags="">
 		<title>
