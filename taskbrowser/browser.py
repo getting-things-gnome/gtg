@@ -533,11 +533,9 @@ class TaskBrowser:
                 selection.select_path(i)
                 
         #scroll position
-        #Setting the vadjustement without delay doesnt work
-        #We add a 50 millisecond delay (it doesn't work with a smaller value
-        #Unfortunatly, it also add a "flickering" effect :-(
-        gobject.timeout_add(50, self.task_tview.get_vadjustment().set_value,vscroll_value)
-        gobject.timeout_add(50, self.task_tview.get_hadjustment().set_value,hscroll_value)
+        #We have to call that in another thread, else it will not work
+        gobject.idle_add(self.task_tview.get_vadjustment().set_value,vscroll_value)
+        gobject.idle_add(self.task_tview.get_hadjustment().set_value,hscroll_value)
 
     #Refresh the closed tasks pane
     def refresh_closed(self) :
