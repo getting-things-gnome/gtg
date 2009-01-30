@@ -5,17 +5,14 @@
 			Parent task tag
 		</title>
 		<duedate>
-			2009-01-23
+			2009-02-01
 		</duedate>
 		<startdate>
 			2009-01-08
 		</startdate>
-		<subtask>
-			1@1
-		</subtask>
 		<content>
 			&lt;tag&gt;@tag&lt;/tag&gt;
-&lt;subtask&gt;1@1&lt;/subtask&gt;zdq dsfhe ee hh e zek
+zdq dsfhe ee hh e zek
 		</content>
 	</task>
 	<task id="8@1" status="Active" tags="@tag">
@@ -42,7 +39,7 @@ tag,
 		</subtask>
 		<content>
 			&lt;tag&gt;@tag&lt;/tag&gt;, &lt;tag&gt;@autro&lt;/tag&gt;
-&lt;subtask&gt;6@1&lt;/subtask&gt;&lt;subtask&gt;7@1&lt;/subtask&gt;
+&lt;subtask&gt;7@1&lt;/subtask&gt;
 tag, autro, 
 		</content>
 	</task>
@@ -52,9 +49,6 @@ tag, autro,
 		</title>
 		<subtask>
 			12@1
-		</subtask>
-		<subtask>
-			8@1
 		</subtask>
 		<content>
 			&lt;tag&gt;@new_tag&lt;/tag&gt;,&lt;tag&gt;@aze&lt;/tag&gt;
@@ -92,6 +86,9 @@ aze,
 		<title>
 			No tag task
 		</title>
+		<duedate>
+			2009-02-03
+		</duedate>
 		<content>
 			no tag but I'm editing
 		</content>
@@ -171,12 +168,19 @@ tag,
 		<title>
 			Lorem Ipsum
 		</title>
+		<duedate>
+			2009-01-31
+		</duedate>
+		<subtask>
+			11@1
+		</subtask>
 		<content>
 			Lorem ipsum dolor sit amet, consectetur adipiscing elit.
  Proin rhoncus tincidunt diam. Morbi facilisis interdum
  tellus. Sed et lacus nec nisi mattis malesuada. Cras
  rutrum ornare ipsum. Nullam vestibulum mauris quis diam. Fusce augue. Vivamus tristique sem vitae tortor iaculis faucibus. Suspendisse eleifend ipmsum. Maecenas nec neque. Vetibulum accumsan. Phasellus auctor. Phasellus sollicitudin, pede in iaculis rezhoncus, sem enim rhoncus kante, u t sodales neque ante et felis. Donec ac erat.
 
+&lt;subtask&gt;11@1&lt;/subtask&gt;
 &lt;tag&gt;@t2&lt;/tag&gt;, &lt;tag&gt;@lorem_ipsum&lt;/tag&gt;, &lt;tag&gt;@vampire&lt;/tag&gt;
 
 Ut in urna. Nam quis ipsum. Donec eros. Aliquam iaculis interdum sapien. Integer nisl. Nam id orci nec sapien congue venenatis. Vestibulum dignissim felis sed massa. Aliquam erat volutpat. Nulla fermentum risus vel metus. Vivamus pulvinar augue et orci. Curabitur hendrerit elit. Donec viverra nisi ac enim. Aliquam tincidunt libero sit amet ligula. Sed arcu ligula, fermentum vel, lacinia sit amet, pharetra eu, ante. Mauris nunc turpis, sollicitudin vel, porta volutpat, posuere eget, arcu. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nulla facilisi. Nulla facilisi. Maecenas a mauris quis nunc rhoncus iaculis.
@@ -228,5 +232,47 @@ Sed tincidunt. Nunc vel felis. Vestibulum ante ipsum primis in faucibus orci luc
 Ce qui est curieux c'est que ça plante pour certains refresh
 et pas pour d'autres.
 		</content>
+	</task>
+	<task id="11@1" status="Active" tags="@lorem_ipsum,@vampire,@t2">
+		<title>
+			test
+		</title>
+		<duedate>
+			2009-01-31
+		</duedate>
+	</task>
+	<task id="13@1" status="Active" tags="">
+		<title>
+			My new task
+		</title>
+		<subtask>
+			17@1
+		</subtask>
+		<subtask>
+			18@1
+		</subtask>
+		<content>
+			&lt;subtask&gt;17@1&lt;/subtask&gt;&lt;subtask&gt;18@1&lt;/subtask&gt;
+		</content>
+	</task>
+	<task id="17@1" status="Active" tags="">
+		<title>
+			one
+		</title>
+	</task>
+	<task id="19@1" status="Active" tags="">
+		<title>
+			A shiny new task
+		</title>
+	</task>
+	<task id="21@1" status="Active" tags="">
+		<title>
+			This is wonderful!
+		</title>
+	</task>
+	<task id="18@1" status="Active" tags="">
+		<title>
+			My new task
+		</title>
 	</task>
 </project>
