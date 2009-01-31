@@ -29,6 +29,9 @@ class TaskBrowser:
         
         self.priv = {}
         
+        #The locks used to avoid unecessary refresh
+        self.refresh_lock = threading.Lock()
+        self.refresh_lock_lock = threading.Lock()
         # Set the configuration dictionary
         self.config = config
         
@@ -371,7 +374,7 @@ class TaskBrowser:
             self.priv["bg_color_enable"] = True
         else :
             self.priv["bg_color_enable"] = False
-        self.refresh_list()
+        self.do_refresh()
             
     def toggle_quickadd(self,widget) :
         if widget.get_active() :
@@ -391,10 +394,16 @@ class TaskBrowser:
     
     def do_refresh(self,sender=None,param=None) : #pylint: disable-msg=W0613
         #We ask to do the refresh in a gtk thread
-        gobject.idle_add(self.refresh_tb,param)
+        #We use a lock_lock like described in 
+        #http://ploum.frimouvy.org/?202-the-signals-and-threads-flying-circus
+        if self.refresh_lock_lock.acquire(False) :
+            gobject.idle_add(self.refresh_tb,param)
 
     #If a task asked for the refresh, we don't refresh it to avoid a loop
+    #New use refresh_tb directly, use "do_refresh"
     def refresh_tb(self,fromtask=None):
+        self.refresh_lock.acquire()
+        self.refresh_lock_lock.release()
         self.refresh_list()
         self.refresh_closed()
         self.refresh_tags()
@@ -402,6 +411,7 @@ class TaskBrowser:
         for uid in self.opened_task :
             if uid != fromtask :
                 self.opened_task[uid].refresh_editor()
+        self.refresh_lock.release()
 
 
     #We refresh the tag list. Not needed very often
@@ -717,7 +727,7 @@ class TaskBrowser:
         toset = str(not nonworkview_item.get_active())
         if len(tags) > 0 :
             tags[0].set_attribute("nonworkview",toset)
-        self.refresh_tb()
+        self.do_refresh()
 
     def on_task_treeview_button_press_event(self,treeview,event) :
         if event.button == 3:
@@ -930,7 +940,7 @@ class TaskBrowser:
         #When you clic on a tag, you want to unselect the tasks
         self.task_tview.get_selection().unselect_all()
         self.taskdone_tview.get_selection().unselect_all()
-        self.refresh_list()
+        self.do_refresh()
         #self.do_refresh()
 
     ##### Useful tools##################
