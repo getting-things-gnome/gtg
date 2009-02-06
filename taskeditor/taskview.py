@@ -22,6 +22,8 @@ from taskeditor import taskviewserial
 
 separators = [' ','.',',','/','\n','\t','!','?',';']
 
+bullet1 ='  ↪ '
+
 class TaskView(gtk.TextView):
     __gtype_name__ = 'HyperTextView'
     __gsignals__ = {'anchor-clicked': (gobject.SIGNAL_RUN_LAST, None, (str, str, int))}
@@ -31,7 +33,7 @@ class TaskView(gtk.TextView):
         'hover': (gobject.TYPE_PYOBJECT, 'link:hover color', 'link:hover color of TextView', gobject.PARAM_READWRITE),
         'tag' :(gobject.TYPE_PYOBJECT, 'tag color', 'tag color of TextView', gobject.PARAM_READWRITE),
         'done':  (gobject.TYPE_PYOBJECT, 'link color', 'link color of TextView', gobject.PARAM_READWRITE),
-        
+        'indent':  (gobject.TYPE_PYOBJECT, 'indent color', 'indent color of TextView', gobject.PARAM_READWRITE),
         }
 
     def do_get_property(self, prop):
@@ -60,6 +62,7 @@ class TaskView(gtk.TextView):
                                     'underline': pango.UNDERLINE_SINGLE}
         self.hover  = {'background': 'light gray'}
         self.tag = {'background': "#FFFF66", 'foreground' : "#FF0000"}
+        self.indent = {'scale': 1.4}
         
         
         ###### Tag we will use ######
@@ -219,6 +222,12 @@ class TaskView(gtk.TextView):
         texttag.set_data('tagname',tag)
         #This one is for marks
         self.__apply_tag_to_mark(s,e,tag=texttag)
+        
+    def create_indent_tag(self,buff,level) :
+        tag = buff.create_tag(None, **self.get_property('indent'))#pylint: disable-msg=W0142
+        tag.set_data('is_indent',True)
+        tag.set_data('ident_lever',level)
+        return tag
     
     #Insert a list of subtasks at the end of the buffer
     def insert_subtasks(self,st_list) :
@@ -481,9 +490,9 @@ class TaskView(gtk.TextView):
         end_i.forward_line()
         end     = buff.create_mark("end",end_i,False)
         buff.delete(start_i,end_i)
-        bullet ='  ↪ '
-        self.insert_at_mark(buff,start,bullet)
-        self.__apply_tag_to_mark(start,end,name="bullet")
+        self.insert_at_mark(buff,start,bullet1)
+        indenttag = self.create_indent_tag(buff,1)
+        self.__apply_tag_to_mark(start,end,tag=indenttag)
         newline = self.get_subtasktitle(anchor)
         self.insert_at_mark(buff,end,newline,anchor=anchor)
         #The invisible "subtask" tag

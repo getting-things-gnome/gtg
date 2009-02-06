@@ -39,8 +39,7 @@ tag,
 		</subtask>
 		<content>
 			&lt;tag&gt;@tag&lt;/tag&gt;, &lt;tag&gt;@autro&lt;/tag&gt;
-&lt;subtask&gt;7@1&lt;/subtask&gt;
-tag, autro, 
+&lt;subtask&gt;7@1&lt;/subtask&gt;&lt;subtask&gt;18@1&lt;/subtask&gt;tag, autro, 
 		</content>
 	</task>
 	<task id="10@1" status="Active" tags="@new_tag,@aze">
