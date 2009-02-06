@@ -97,6 +97,8 @@ class Serializer :
                         #Recursive call !!!!! (we handle tag in tags)
                         child = self.parse_buffer(buf,startit,endit,"tag",doc,tag_stack)
                         parent.appendChild(child)
+                    elif ta.get_data('is_indent') :
+                        pass
                     else :
                         #The link tag has noname but has "is_anchor" properties
                         if ta.get_data('is_anchor'): 
