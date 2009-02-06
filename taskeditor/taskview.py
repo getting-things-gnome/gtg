@@ -226,7 +226,7 @@ class TaskView(gtk.TextView):
     def create_indent_tag(self,buff,level) :
         tag = buff.create_tag(None, **self.get_property('indent'))#pylint: disable-msg=W0142
         tag.set_data('is_indent',True)
-        tag.set_data('ident_lever',level)
+        tag.set_data('indent_level',level)
         return tag
     
     #Insert a list of subtasks at the end of the buffer
@@ -501,9 +501,16 @@ class TaskView(gtk.TextView):
         tag.set_data('is_subtask', True)
         tag.set_data('child',anchor)
         self.__apply_tag_to_mark(start,end,tag=tag)
+        #Following line should go in the "insert" and should have the indent tag
+        #It should also go in the unserial
         self.insert_at_mark(buff,end,"\n")
         buff.delete_mark(start)
         buff.delete_mark(end)
+        
+    def insert_indent(self,buff,start_mark,level) :
+        self.insert_at_mark(buff,start,bullet1)
+        indenttag = self.create_indent_tag(buff,1)
+        self.__apply_tag_to_mark(start,end,tag=indenttag)
         
     def __apply_tag_to_mark(self,start,end,tag=None,name=None) :
         start_i = self.buff.get_iter_at_mark(start)
@@ -534,12 +541,30 @@ class TaskView(gtk.TextView):
             #Because it's the title
             if line_nbr > 0 :
                 line = start_line.get_slice(end_line)
+                #First, we will get the actual indentation value
+                tags = start_line.get_tags()
+                current_indent = 0
+                for ta in tags :
+                    #removing deleted subtasks
+                    if ta.get_data('is_indent') :
+                        level = ta.get_data('indent_level')
+                        curerent_indent = level
+                        print level
+                
+                #If indent is 0, We check if we created a new task
                 #the "-" might be after a space
                 #Python 2.5 should allow both tests in one
                 if line.startswith('-') or line.startswith(' -') :
                     line = line.lstrip(' -')
                     self.__newsubtask(self.buff,line,line_nbr)
                     
+                #Then, if indent > 0, we increment it
+                #First step : we preserve it.
+                
+                #if indent = 0, we just keep it that way
+                    
+                
+                #Following lines should be back-tabbed.
                     #We must stop the signal because if not,
                     #\n will be inserted twice !
                     tv.emit_stop_by_name('insert-text')
