@@ -22,7 +22,9 @@ from taskeditor import taskviewserial
 
 separators = [' ','.',',','/','\n','\t','!','?',';']
 
-bullet1 ='↪'
+bullet1 = '→'
+bullet2 = '↳'
+#bullet ='↪'
 
 class TaskView(gtk.TextView):
     __gtype_name__ = 'HyperTextView'
@@ -62,7 +64,7 @@ class TaskView(gtk.TextView):
                                     'underline': pango.UNDERLINE_SINGLE}
         self.hover  = {'background': 'light gray'}
         self.tag = {'background': "#FFFF66", 'foreground' : "#FF0000"}
-        self.indent = {'background': "#F00", 'scale': 1.4}
+        self.indent = {'background': "#F00", 'scale': 1.4, 'editable' : False}
         
         
         ###### Tag we will use ######
@@ -494,9 +496,6 @@ class TaskView(gtk.TextView):
         end     = buff.create_mark("end",end_i,False)
         buff.delete(start_i,end_i)
         self.insert_indent(buff,start_i,1)
-        #self.insert_at_mark(buff,start,bullet1)
-        #indenttag = self.create_indent_tag(buff,1)
-        #self.__apply_tag_to_mark(start,end,tag=indenttag)
         newline = self.get_subtasktitle(anchor)
         self.insert_at_mark(buff,end,newline,anchor=anchor)
         #The invisible "subtask" tag
