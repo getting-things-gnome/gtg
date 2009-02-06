@@ -483,7 +483,8 @@ class TaskView(gtk.TextView):
         end_i = self.write_subtask(buff,line_nbr,anchor)
         self.refresh_browser()
         return end_i
-        
+    
+    #Write the subtask then return the iterator at the end of the line
     def write_subtask(self,buff,line_nbr,anchor) :
         start_i = buff.get_iter_at_line(line_nbr)
         end_i   = start_i.copy()
@@ -512,10 +513,13 @@ class TaskView(gtk.TextView):
         return end_i
         
     def insert_indent(self,buff,start_i,level) :
-        start   = buff.create_mark("start",start_i,True)
-        end_i   = start_i.copy()
-        end     = buff.create_mark("end",end_i,False)
-        indentation = "\n"
+#        start   = buff.create_mark("start",start_i,True)
+#        end_i   = start_i.copy()
+        end     = buff.create_mark("end",start_i,False)
+        buff.insert(start_i,"\n")
+        itera = buff.get_iter_at_mark(end)
+        start   = buff.create_mark("start",itera,True)
+        indentation = ""
         #adding two spaces by level
         spaces = "  "
         indentation = indentation + level*spaces
@@ -575,12 +579,25 @@ class TaskView(gtk.TextView):
                         #Here, we should increment indent level
                         self.insert_indent(self.buff,end_i,1)
                         tv.emit_stop_by_name('insert-text')
+                        
                     
                 #Then, if indent > 0, we increment it
                 #First step : we preserve it.
-                elif current_indent == 1 :
-                    self.insert_indent(self.buff,itera,current_indent)
-                    tv.emit_stop_by_name('insert-text')
+                else :
+                    #If nothing on the line, we go back to indent 0
+                    if not line.lstrip("%s "%bullet1) :
+                        line = itera.get_line()
+                        startline = self.buff.get_iter_at_line(line)
+                        startline.backward_char()
+                        self.buff.delete(startline,itera)
+                        newiter = self.buff.get_iter_at_line(line-1)
+                        newiter.forward_to_line_end()
+                        self.insert_indent(self.buff,newiter,0)
+                        tv.emit_stop_by_name('insert-text')
+                        
+                    elif current_indent == 1 :
+                        self.insert_indent(self.buff,itera,current_indent)
+                        tv.emit_stop_by_name('insert-text')
         self.insert_sigid = self.buff.connect('insert-text', self._insert_at_cursor)
 
     #The mouse is moving. We must change it to a hand when hovering a link
