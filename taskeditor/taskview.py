@@ -120,6 +120,7 @@ class TaskView(gtk.TextView):
         #The signal emitted each time the buffer is modified
         #Putting it at the end to avoid doing it too much when starting
         self.buff.connect("changed" , self.modified)
+        self.connect("backspace",self.backspace)
         self.tobe_refreshed = False
 
     
@@ -566,7 +567,6 @@ class TaskView(gtk.TextView):
                 for ta in tags :
                     if ta.get_data('is_indent') :
                         current_indent = ta.get_data('indent_level')
-                        print current_indent
                 
                 #If indent is 0, We check if we created a new task
                 #the "-" might be after a space
@@ -585,18 +585,45 @@ class TaskView(gtk.TextView):
                 else :
                     #If nothing on the line, we go back to indent 0
                     if not line.lstrip("%s "%bullet1) :
-                        line = itera.get_line()
-                        startline = self.buff.get_iter_at_line(line)
-                        startline.backward_char()
-                        self.buff.delete(startline,itera)
-                        newiter = self.buff.get_iter_at_line(line-1)
-                        newiter.forward_to_line_end()
-                        self.insert_indent(self.buff,newiter,0)
+                        self.deindent(itera,newlevel=0)
                         tv.emit_stop_by_name('insert-text')
                         
                     elif current_indent == 1 :
                         self.insert_indent(self.buff,itera,current_indent)
                         tv.emit_stop_by_name('insert-text')
+        self.insert_sigid = self.buff.connect('insert-text', self._insert_at_cursor)
+        
+    #Deindent the current line of one level
+    #If newlevel is set, force to go to that level
+    def deindent(self,itera,newlevel=-1) :
+        line = itera.get_line()
+        startline = self.buff.get_iter_at_line(line)
+        if newlevel < 0 :
+            for t in itera.get_toggled_tags(False) :
+                if t.get_data('is_indent') :
+                    newlevel = t.get_data('indent_level')
+                    
+            if newlevel > 0 :
+                newlevel -= 1
+        if newlevel < 0 :
+            print "bug : no is_indent tag on that line"
+        startline.backward_char()
+        self.buff.delete(startline,itera)
+        newiter = self.buff.get_iter_at_line(line-1)
+        newiter.forward_to_line_end()
+        self.insert_indent(self.buff,newiter,newlevel)
+        
+        
+    def backspace(self,tv) :
+        self.buff.disconnect(self.insert_sigid)
+        insert_mark = self.buff.get_insert()
+        insert_iter = self.buff.get_iter_at_mark(insert_mark)
+        #All that craps to find if we are at the end of an indent tag
+        if insert_iter.ends_tag() :
+            for t in insert_iter.get_toggled_tags(False) :
+                if t.get_data('is_indent') :
+                    self.deindent(insert_iter)
+                    tv.emit_stop_by_name('backspace')
         self.insert_sigid = self.buff.connect('insert-text', self._insert_at_cursor)
 
     #The mouse is moving. We must change it to a hand when hovering a link
