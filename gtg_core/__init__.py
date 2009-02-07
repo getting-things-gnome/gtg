@@ -113,18 +113,17 @@ class CoreConfig:
     
     def save_datastore(self,ds) :
         doc,xmlconfig = cleanxml.emptydoc("config")
-    
         for b in ds.get_all_backends():
             param = b.get_parameters()
             t_xml = doc.createElement("backend")
             for key in param :
                 #We dont want parameters,backend,xmlobject
                 if key not in ["backend","parameters","xmlobject"] :
-                    t_xml.setAttribute(key,param[key])
+                    t_xml.setAttribute(str(key),str(param[key]))
             #Saving all the projects at close
             xmlconfig.appendChild(t_xml)
             b.quit()
-
+            
         datafile = self.DATA_DIR + self.DATA_FILE
         cleanxml.savexml(datafile,doc,backup=True)
 
