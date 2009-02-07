@@ -37,9 +37,15 @@ tag,
 		<subtask>
 			7@1
 		</subtask>
+		<subtask>
+			25@1
+		</subtask>
+		<subtask>
+			26@1
+		</subtask>
 		<content>
 			&lt;tag&gt;@tag&lt;/tag&gt;, &lt;tag&gt;@autro&lt;/tag&gt;
-&lt;subtask&gt;7@1&lt;/subtask&gt;
+&lt;subtask&gt;7@1&lt;/subtask&gt;&lt;subtask&gt;25@1&lt;/subtask&gt;&lt;subtask&gt;26@1&lt;/subtask&gt;
 		</content>
 	</task>
 	<task id="10@1" status="Active" tags="@new_tag,@aze">
@@ -81,13 +87,16 @@ aze,
 			2009-01-01
 		</donedate>
 	</task>
-	<task id="9@1" status="Active" tags="">
+	<task id="9@1" status="Done" tags="">
 		<title>
 			No tag task
 		</title>
 		<duedate>
 			2009-02-03
 		</duedate>
+		<donedate>
+			2009-02-07
+		</donedate>
 		<content>
 			no tag but I'm editing
 		</content>
@@ -122,6 +131,9 @@ tag,
 		<title>
 			child with tag
 		</title>
+		<subtask>
+			27@1
+		</subtask>
 		<content>
 			&lt;tag&gt;@tag&lt;/tag&gt;, juste pour voir quand j'édite
 		</content>
@@ -149,13 +161,16 @@ tag,
 &lt;subtask&gt;14@1&lt;/subtask&gt;
 		</content>
 	</task>
-	<task id="7@1" status="Active" tags="">
+	<task id="7@1" status="Done" tags="">
 		<title>
 			enfant3
 		</title>
 		<duedate>
 			2009-01-23
 		</duedate>
+		<donedate>
+			2009-02-07
+		</donedate>
 		<subtask>
 			6@1
 		</subtask>
@@ -254,10 +269,13 @@ et pas pour d'autres.
 			&lt;subtask&gt;17@1&lt;/subtask&gt;
 		</content>
 	</task>
-	<task id="17@1" status="Active" tags="">
+	<task id="17@1" status="Done" tags="">
 		<title>
 			one
 		</title>
+		<donedate>
+			2009-02-07
+		</donedate>
 	</task>
 	<task id="19@1" status="Active" tags="">
 		<title>
@@ -267,6 +285,137 @@ et pas pour d'autres.
 	<task id="21@1" status="Active" tags="">
 		<title>
 			This is wonderful!
+		</title>
+	</task>
+	<task id="22@1" status="Active" tags="">
+		<title>
+			My new task
+		</title>
+		<duedate>
+			2009-02-07
+		</duedate>
+		<subtask>
+			23@1
+		</subtask>
+		<subtask>
+			24@1
+		</subtask>
+		<content>
+			I want to that
+&lt;subtask&gt;23@1&lt;/subtask&gt;&lt;subtask&gt;24@1&lt;/subtask&gt;
+		</content>
+	</task>
+	<task id="24@1" status="Active" tags="">
+		<title>
+			Another subtask
+		</title>
+		<duedate>
+			2009-02-07
+		</duedate>
+		<subtask>
+			31@1
+		</subtask>
+		<subtask>
+			32@1
+		</subtask>
+		<content>
+			&lt;subtask&gt;31@1&lt;/subtask&gt;&lt;subtask&gt;32@1&lt;/subtask&gt;
+		</content>
+	</task>
+	<task id="23@1" status="Active" tags="@fosdem">
+		<title>
+			I will subtask
+		</title>
+		<duedate>
+			2009-02-07
+		</duedate>
+		<content>
+			&lt;tag&gt;@fosdem&lt;/tag&gt;
+		</content>
+	</task>
+	<task id="18@1" status="Active" tags="@fosdem">
+		<title>
+			New task
+		</title>
+		<startdate>
+			2009-02-08
+		</startdate>
+		<content>
+			&lt;tag&gt;@fosdem&lt;/tag&gt;
+		</content>
+	</task>
+	<task id="25@1" status="Active" tags="@tag,@autro">
+		<title>
+			edzqds
+		</title>
+		<duedate>
+			2009-01-23
+		</duedate>
+	</task>
+	<task id="26@1" status="Active" tags="@tag,@autro">
+		<title>
+			dsq
+		</title>
+		<duedate>
+			2009-01-23
+		</duedate>
+	</task>
+	<task id="27@1" status="Done" tags="@tag">
+		<title>
+			other child
+		</title>
+		<donedate>
+			2009-02-07
+		</donedate>
+	</task>
+	<task id="29@1" status="Active" tags="@fosdem">
+		<title>
+			hjgkjgh
+		</title>
+		<subtask>
+			30@1
+		</subtask>
+		<content>
+			jhgkkg
+&lt;subtask&gt;30@1&lt;/subtask&gt;&lt;tag&gt;@fosdem&lt;/tag&gt;
+
+		</content>
+	</task>
+	<task id="32@1" status="Active" tags="">
+		<title>
+			ljhkj
+		</title>
+		<duedate>
+			2009-02-07
+		</duedate>
+	</task>
+	<task id="28@1" status="Active" tags="">
+		<title>
+			jhfjjfgh
+		</title>
+		<content>
+			hubjhbihj
+nhijhlm
+jkbhbl
+
+		</content>
+	</task>
+	<task id="34@1" status="Active" tags="@fosdem">
+		<title>
+			igkjgjk
+		</title>
+		<subtask>
+			35@1
+		</subtask>
+		<content>
+			gkg
+&lt;subtask&gt;35@1&lt;/subtask&gt;&lt;tag&gt;@fosdem&lt;/tag&gt;
+
+		</content>
+	</task>
+	<task id="35@1" status="Active" tags="">
+		<title>
+			first subtask
 		</title>
 	</task>
 </project>

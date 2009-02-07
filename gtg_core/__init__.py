@@ -97,11 +97,13 @@ class CoreConfig:
             module = __import__(module_name)
             classobj = getattr(module, b["module"])
             b["parameters"] = classobj.get_parameters()
-            xp = b.pop("xmlobject")
-            #We will try to get the parameters
-            for key in b["parameters"] :
-                if xp.hasAttribute(key) :
-                    b[key] = str(xp.getAttribute(key))
+            #If creating the default backend, we don't have the xmlobject yet
+            if b.has_key("xmlobject") :
+                xp = b.pop("xmlobject")
+                #We will try to get the parameters
+                for key in b["parameters"] :
+                    if xp.hasAttribute(key) :
+                        b[key] = str(xp.getAttribute(key))
             back = classobj.Backend(b)
             #We put the backend itself in the dic
             b["backend"] = back
