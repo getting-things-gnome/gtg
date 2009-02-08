@@ -85,7 +85,7 @@ class CoreConfig:
         if len(backend_fn) == 0 :
             dic = {}
             dic["module"] = "localfile"
-            dic["pid"] = 1
+            dic["pid"] = "1"
             backend_fn.append(dic)
             
         #Now that the backend list is build, we will construct them
