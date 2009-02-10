@@ -64,7 +64,7 @@ class TaskView(gtk.TextView):
                                     'underline': pango.UNDERLINE_SINGLE}
         self.hover  = {'background': 'light gray'}
         self.tag = {'background': "#FFFF66", 'foreground' : "#FF0000"}
-        self.indent = {'background': "#F00", 'scale': 1.4, 'editable' : False}
+        self.indent = {'scale': 1.4, 'editable' : False}
         
         
         ###### Tag we will use ######
@@ -293,6 +293,7 @@ class TaskView(gtk.TextView):
         if not buff : buff = self.buff   
         cursor_mark = buff.get_insert()
         cursor_iter = buff.get_iter_at_mark(cursor_mark)
+        table = buff.get_tag_table()
         
         #This should be called only if we are on the title line
         #As an optimisation
@@ -321,7 +322,18 @@ class TaskView(gtk.TextView):
             # "applying %s to %s - %s"%(t,start_mark,end_mark)
             if start_mark and end_mark :
                 self.apply_tag_tag(buff,t,start_mark,end_mark)
-                
+        
+        #subt_list = self.get_subtasks()
+        #First, we remove the olds tags
+        tag_list = []
+        def subfunc(texttag,data=None) :
+            if texttag.get_data('is_subtask') :
+                tag_list.append(texttag)
+        table.foreach(subfunc)
+        start,end = buff.get_bounds()
+        for t in tag_list :
+            buff.remove_tag(t,start,end)
+            table.remove(t)
         #We apply the hyperlink tag to subtask
         for s in self.get_subtasks() :
             start_mark = buff.get_mark(s)
@@ -519,16 +531,10 @@ class TaskView(gtk.TextView):
         newline = self.get_subtasktitle(anchor)
         end_i = buff.get_iter_at_mark(end)
         buff.create_mark(anchor,end_i,True)
+        #Putting the subtask marks around the title
         self.insert_at_mark(buff,end,newline)
         end_i = buff.get_iter_at_mark(end)
         buff.create_mark("/%s"%anchor,end_i,False)
-#        self.insert_at_mark(buff,end,newline,anchor=anchor)
-        #The invisible "subtask" tag
-        #It must be the last tag set as it's around everything else
-#        tag = buff.create_tag(None)
-#        tag.set_data('is_subtask', True)
-#        tag.set_data('child',anchor)
-#        self.__apply_tag_to_mark(start,end,tag=tag)
         #Following line should go in the "insert" and should have the indent tag
         #It should also go in the unserial
         buff.delete_mark(start)
@@ -588,9 +594,14 @@ class TaskView(gtk.TextView):
                 #First, we will get the actual indentation value
                 tags = start_line.get_tags()
                 current_indent = 0
+                task_before = None
                 for ta in tags :
                     if ta.get_data('is_indent') :
                         current_indent = ta.get_data('indent_level')
+                tags = itera.get_tags()
+                for ta in tags :
+                    if ta.get_data('is_subtask') :
+                        task_before = ta.get_data('child')
                 
                 #If indent is 0, We check if we created a new task
                 #the "-" might be after a space
@@ -607,6 +618,15 @@ class TaskView(gtk.TextView):
                 #Then, if indent > 0, we increment it
                 #First step : we preserve it.
                 else :
+                    #We move the end_subtask mark to here
+                    #We have to create a temporary mark with left gravity
+                    #It will be later replaced by the good one with right gravity
+                    temp_mark = self.buff.create_mark("temp",itera,True)
+                    if task_before :
+                        mark = self.buff.move_mark_by_name("/%s"%task_before,itera)
+                    else :
+                        print "indentation without subtask = bug"
+                        print "pray and close your eyes or report a bug"
                     #If nothing on the line, we go back to indent 0
                     if not line.lstrip("%s "%bullet1) :
                         self.deindent(itera,newlevel=0)
@@ -615,6 +635,11 @@ class TaskView(gtk.TextView):
                     elif current_indent == 1 :
                         self.insert_indent(self.buff,itera,current_indent)
                         tv.emit_stop_by_name('insert-text')
+                    #Now we can move the mark
+                    if task_before :
+                        temp_it = self.buff.get_iter_at_mark(temp_mark)
+                        mark = self.buff.move_mark_by_name("/%s"%task_before,temp_it)
+        self.modified()
         self.insert_sigid = self.buff.connect('insert-text', self._insert_at_cursor)
         
     #Deindent the current line of one level
