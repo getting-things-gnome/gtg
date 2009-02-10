@@ -228,7 +228,9 @@ class TaskView(gtk.TextView):
         
     #Apply the tag tag to a set of TextMarks (not Iter)
     def apply_subtask_tag(self,buff,subtask,s,e) :
-        tex = buff.get_text(s,e)
+        i_s = buff.get_iter_at_mark(s)
+        i_e = buff.get_iter_at_mark(e)
+        tex = buff.get_text(i_s,i_e)
         texttag = self.create_anchor_tag(buff,subtask,text=tex,typ="subtask")
         texttag.set_data('is_subtask', True)
         texttag.set_data('child',subtask)
@@ -326,7 +328,7 @@ class TaskView(gtk.TextView):
             end_mark = buff.get_mark("/%s"%s)
             # "applying %s to %s - %s"%(s,start_mark,end_mark)
             if start_mark and end_mark :
-                self.
+                self.apply_subtask_tag(buff,s,start_mark,end_mark)
         
         #Ok, we took care of the modification
         self.buff.set_modified(False)
@@ -515,13 +517,18 @@ class TaskView(gtk.TextView):
         buff.delete(start_i,end_i)
         self.insert_indent(buff,start_i,1)
         newline = self.get_subtasktitle(anchor)
-        self.insert_at_mark(buff,end,newline,anchor=anchor)
+        end_i = buff.get_iter_at_mark(end)
+        buff.create_mark(anchor,end_i,True)
+        self.insert_at_mark(buff,end,newline)
+        end_i = buff.get_iter_at_mark(end)
+        buff.create_mark("/%s"%anchor,end_i,False)
+#        self.insert_at_mark(buff,end,newline,anchor=anchor)
         #The invisible "subtask" tag
         #It must be the last tag set as it's around everything else
-        tag = buff.create_tag(None)
-        tag.set_data('is_subtask', True)
-        tag.set_data('child',anchor)
-        self.__apply_tag_to_mark(start,end,tag=tag)
+#        tag = buff.create_tag(None)
+#        tag.set_data('is_subtask', True)
+#        tag.set_data('child',anchor)
+#        self.__apply_tag_to_mark(start,end,tag=tag)
         #Following line should go in the "insert" and should have the indent tag
         #It should also go in the unserial
         buff.delete_mark(start)
