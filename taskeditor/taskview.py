@@ -56,7 +56,7 @@ class TaskView(gtk.TextView):
         self.buff = self.get_buffer()
         self.req = requester
         #Buffer init
-        self.link   = {'background': 'white', 'foreground': 'blue', 
+        self.link   = {'background': 'cyan', 'foreground': 'blue', 
                                     'underline': pango.UNDERLINE_SINGLE, 'strikethrough':False}
         self.done   = {'background': 'white', 'foreground': 'gray', 
                                     'strikethrough': True}
@@ -226,6 +226,15 @@ class TaskView(gtk.TextView):
         #This one is for marks
         self.__apply_tag_to_mark(s,e,tag=texttag)
         
+    #Apply the tag tag to a set of TextMarks (not Iter)
+    def apply_subtask_tag(self,buff,subtask,s,e) :
+        tex = buff.get_text(s,e)
+        texttag = self.create_anchor_tag(buff,subtask,text=tex,typ="subtask")
+        texttag.set_data('is_subtask', True)
+        texttag.set_data('child',subtask)
+        #This one is for marks
+        self.__apply_tag_to_mark(s,e,tag=texttag)
+        
     def create_indent_tag(self,buff,level) :
         tag = buff.create_tag(None, **self.get_property('indent'))#pylint: disable-msg=W0142
         tag.set_data('is_indent',True)
@@ -310,6 +319,14 @@ class TaskView(gtk.TextView):
             # "applying %s to %s - %s"%(t,start_mark,end_mark)
             if start_mark and end_mark :
                 self.apply_tag_tag(buff,t,start_mark,end_mark)
+                
+        #We apply the hyperlink tag to subtask
+        for s in self.get_subtasks() :
+            start_mark = buff.get_mark(s)
+            end_mark = buff.get_mark("/%s"%s)
+            # "applying %s to %s - %s"%(s,start_mark,end_mark)
+            if start_mark and end_mark :
+                self.
         
         #Ok, we took care of the modification
         self.buff.set_modified(False)
