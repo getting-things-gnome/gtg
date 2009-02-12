@@ -344,6 +344,8 @@ class Task :
     #This is a callback. The "sync" function has to be set
     def set_sync_func(self,sync) :
         self.sync_func = sync
+        #We call it immediatly to save stuffs that were set before this
+        self.sync()
         
     def sync(self) :
         if self.sync_func and self.is_loaded() :

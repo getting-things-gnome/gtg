@@ -549,7 +549,6 @@ class TaskView(gtk.TextView):
                     if ta.get_data('is_indent') :
                         level = ta.get_data('indent_level')
                         curerent_indent = level
-                        print level
                 
                 #If indent is 0, We check if we created a new task
                 #the "-" might be after a space
