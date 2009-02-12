@@ -15,7 +15,7 @@
 zdq dsfhe ee hh e zek
 		</content>
 	</task>
-	<task id="8@1" status="Active" tags="@tag">
+	<task id="8@1" status="Active" tags="">
 		<title>
 			4ème level
 		</title>
@@ -23,8 +23,8 @@ zdq dsfhe ee hh e zek
 			2009-01-18
 		</startdate>
 		<content>
-			&lt;tag&gt;@tag&lt;/tag&gt;
-tag, 
+			qsdqds
+&lt;subtask&gt;13@1&lt;/subtask&gt;
 		</content>
 	</task>
 	<task id="1@1" status="Active" tags="@tag,@autro">
@@ -243,22 +243,6 @@ et pas pour d'autres.
 			&lt;tag&gt;@lorem_ipsum&lt;/tag&gt;, &lt;tag&gt;@vampire&lt;/tag&gt;, &lt;tag&gt;@t2&lt;/tag&gt;, 
 		</content>
 	</task>
-	<task id="13@1" status="Active" tags="">
-		<title>
-			My new task
-		</title>
-		<subtask>
-			17@1
-		</subtask>
-		<content>
-			&lt;subtask&gt;17@1&lt;/subtask&gt;
-		</content>
-	</task>
-	<task id="17@1" status="Active" tags="">
-		<title>
-			one
-		</title>
-	</task>
 	<task id="19@1" status="Active" tags="">
 		<title>
 			A shiny new task
@@ -269,7 +253,7 @@ et pas pour d'autres.
 	</task>
 	<task id="21@1" status="Active" tags="">
 		<title>
-			This is wonderful!
+			This is wonderfully buggy
 		</title>
 	</task>
 </project>

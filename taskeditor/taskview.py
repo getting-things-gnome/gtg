@@ -334,6 +334,7 @@ class TaskView(gtk.TextView):
         for t in tag_list :
             buff.remove_tag(t,start,end)
             table.remove(t)
+        
         #We apply the hyperlink tag to subtask
         for s in self.get_subtasks() :
             start_mark = buff.get_mark(s)
@@ -530,13 +531,13 @@ class TaskView(gtk.TextView):
         self.insert_indent(buff,start_i,1)
         newline = self.get_subtasktitle(anchor)
         end_i = buff.get_iter_at_mark(end)
-        buff.create_mark(anchor,end_i,True)
+        startm = buff.create_mark(anchor,end_i,True)
         #Putting the subtask marks around the title
         self.insert_at_mark(buff,end,newline)
         end_i = buff.get_iter_at_mark(end)
-        buff.create_mark("/%s"%anchor,end_i,False)
-        #Following line should go in the "insert" and should have the indent tag
-        #It should also go in the unserial
+        endm = buff.create_mark("/%s"%anchor,end_i,False)
+        #put the tag on the marks
+        self.apply_subtask_tag(buff,anchor,startm,endm)
         buff.delete_mark(start)
         end_i = buff.get_iter_at_mark(end)
         buff.delete_mark(end)
@@ -545,8 +546,39 @@ class TaskView(gtk.TextView):
     def insert_indent(self,buff,start_i,level) :
 #        start   = buff.create_mark("start",start_i,True)
 #        end_i   = start_i.copy()
+        #We will close the current subtask tag
+        list_stag = start_i.get_toggled_tags(False)
+        stag = None
+        for t in list_stag :
+            if t.get_data('is_subtask') :
+                stag = t
+        #maybe the tag was not toggled off here but we were in the middle
+        if not stag :
+            list_stag = start_i.get_tags()
+            for t in list_stag :
+                if t.get_data('is_subtask') :
+                    stag = t
+        if stag :
+            #We will remove the tag from the whole text
+            subtid = stag.get_data('child')
+#            si,ei = buff.get_bounds()
+#            buff.remove_tag(stag,si,ei)
+        #We move the end_subtask mark to here
+        #We have to create a temporary mark with left gravity
+        #It will be later replaced by the good one with right gravity
+        temp_mark = self.buff.create_mark("temp",start_i,True)
+        
         end     = buff.create_mark("end",start_i,False)
         buff.insert(start_i,"\n")
+        
+        #Moving the end of subtask mark to the position of the temp mark
+        if stag :
+            itera = buff.get_iter_at_mark(temp_mark)
+            mark = buff.move_mark_by_name("/%s"%subtid,itera)
+        buff.delete_mark(temp_mark)
+        #The mark has right gravity but because we putted it on the left
+        #of the newly inserted \n, it will not move anymore.
+        
         itera = buff.get_iter_at_mark(end)
         start   = buff.create_mark("start",itera,True)
         indentation = ""
@@ -559,6 +591,7 @@ class TaskView(gtk.TextView):
         self.insert_at_mark(buff,start,indentation)
         indenttag = self.create_indent_tag(buff,1)
         self.__apply_tag_to_mark(start,end,tag=indenttag)
+
         
     def __apply_tag_to_mark(self,start,end,tag=None,name=None) :
         start_i = self.buff.get_iter_at_mark(start)
@@ -579,29 +612,31 @@ class TaskView(gtk.TextView):
     def _insert_at_cursor(self, tv, itera, tex, leng) : #pylint: disable-msg=W0613
         #disable the insert signal to avoid recursion 
         self.buff.disconnect(self.insert_sigid)
+        
+        #First, we will get the actual indentation value
+        #The nbr just before the \n
+        line_nbr   = itera.get_line()
+        start_line = itera.copy()
+        start_line.set_line(line_nbr)
+        end_line   = itera.copy()
+        tags = start_line.get_tags()
+        current_indent = 0
+        task_before = None
+        for ta in tags :
+            if ta.get_data('is_indent') :
+                current_indent = ta.get_data('indent_level')
+        tags = itera.get_tags()
+        for ta in tags :
+            if ta.get_data('is_subtask') :
+                task_before = ta.get_data('child')
+        
         #New line : the user pressed enter !
         #If the line begins with "-", it's a new subtask !
         if tex == '\n' :
-            #The nbr just before the \n
-            line_nbr   = itera.get_line()
-            start_line = itera.copy()
-            start_line.set_line(line_nbr)
-            end_line   = itera.copy()
             #We add a bullet list but not on the first line
             #Because it's the title
             if line_nbr > 0 :
                 line = start_line.get_slice(end_line)
-                #First, we will get the actual indentation value
-                tags = start_line.get_tags()
-                current_indent = 0
-                task_before = None
-                for ta in tags :
-                    if ta.get_data('is_indent') :
-                        current_indent = ta.get_data('indent_level')
-                tags = itera.get_tags()
-                for ta in tags :
-                    if ta.get_data('is_subtask') :
-                        task_before = ta.get_data('child')
                 
                 #If indent is 0, We check if we created a new task
                 #the "-" might be after a space
@@ -614,20 +649,9 @@ class TaskView(gtk.TextView):
                         self.insert_indent(self.buff,end_i,1)
                         tv.emit_stop_by_name('insert-text')
                         
-                    
                 #Then, if indent > 0, we increment it
                 #First step : we preserve it.
                 else :
-                    #We move the end_subtask mark to here
-                    #We have to create a temporary mark with left gravity
-                    #It will be later replaced by the good one with right gravity
-                    temp_mark = self.buff.create_mark("temp",itera,True)
-                    if task_before :
-                        mark = self.buff.move_mark_by_name("/%s"%task_before,itera)
-                    else :
-                        print "indentation without subtask = bug"
-                        print "pray and close your eyes or report a bug"
-                    #If nothing on the line, we go back to indent 0
                     if not line.lstrip("%s "%bullet1) :
                         self.deindent(itera,newlevel=0)
                         tv.emit_stop_by_name('insert-text')
@@ -635,11 +659,9 @@ class TaskView(gtk.TextView):
                     elif current_indent == 1 :
                         self.insert_indent(self.buff,itera,current_indent)
                         tv.emit_stop_by_name('insert-text')
-                    #Now we can move the mark
-                    if task_before :
-                        temp_it = self.buff.get_iter_at_mark(temp_mark)
-                        mark = self.buff.move_mark_by_name("/%s"%task_before,temp_it)
-        self.modified()
+        #The user entered something else than \n
+#        else :
+#            pass
         self.insert_sigid = self.buff.connect('insert-text', self._insert_at_cursor)
         
     #Deindent the current line of one level
