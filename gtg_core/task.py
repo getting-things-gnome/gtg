@@ -42,14 +42,22 @@ class Task :
     def get_title(self) :
         return self.title
     
+    #Return True if the title was changed. 
+    #False if the title was already the same.
     def set_title(self,title) :
         #We should check for other task with the same title
         #In that case, we should add a number (like Tomboy does)
+        old_title = self.title
         if title :
             self.title = title.strip('\t\n')
         else :
             self.title = "(no title task)"
-        self.sync()
+        #Avoid unecessary sync
+        if self.title != old_title :
+            self.sync()
+            return True
+        else :
+            return False
         
     def set_status(self,status,donedate=None) :
         old_status = self.status

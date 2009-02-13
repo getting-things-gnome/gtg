@@ -227,15 +227,22 @@ class TaskView(gtk.TextView):
         self.__apply_tag_to_mark(s,e,tag=texttag)
         
     #Apply the tag tag to a set of TextMarks (not Iter)
+    #Also change the subtask title if needed
     def apply_subtask_tag(self,buff,subtask,s,e) :
         i_s = buff.get_iter_at_mark(s)
         i_e = buff.get_iter_at_mark(e)
         tex = buff.get_text(i_s,i_e)
-        texttag = self.create_anchor_tag(buff,subtask,text=tex,typ="subtask")
-        texttag.set_data('is_subtask', True)
-        texttag.set_data('child',subtask)
-        #This one is for marks
-        self.__apply_tag_to_mark(s,e,tag=texttag)
+        if len(tex) > 0 :
+            self.req.get_task(subtask).set_title(tex)
+            texttag = self.create_anchor_tag(buff,subtask,text=tex,typ="subtask")
+            texttag.set_data('is_subtask', True)
+            texttag.set_data('child',subtask)
+            #This one is for marks
+            self.__apply_tag_to_mark(s,e,tag=texttag)
+        else :
+            self.remove_subtask(subtask)
+            buff.delete_mark(s)
+            buff.delete_mark(e)
         
     def create_indent_tag(self,buff,level) :
         tag = buff.create_tag(None, **self.get_property('indent'))#pylint: disable-msg=W0142
