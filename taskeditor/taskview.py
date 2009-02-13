@@ -523,12 +523,18 @@ class TaskView(gtk.TextView):
     def write_subtask(self,buff,line_nbr,anchor) :
         start_i = buff.get_iter_at_line(line_nbr)
         end_i   = start_i.copy()
+        #We go back at the end of the previous line
         start_i.backward_char()
+        #But only if this is not the title.
+        insert_enter = True
+        if start_i.has_tag(self.title_tag) :
+            start_i.forward_char()
+            insert_enter = False
         start   = buff.create_mark("start",start_i,True)
         end_i.forward_line()
         end     = buff.create_mark("end",end_i,False)
         buff.delete(start_i,end_i)
-        self.insert_indent(buff,start_i,1)
+        self.insert_indent(buff,start_i,1, enter=insert_enter)
         newline = self.get_subtasktitle(anchor)
         end_i = buff.get_iter_at_mark(end)
         startm = buff.create_mark(anchor,end_i,True)
@@ -543,9 +549,7 @@ class TaskView(gtk.TextView):
         buff.delete_mark(end)
         return end_i
         
-    def insert_indent(self,buff,start_i,level) :
-#        start   = buff.create_mark("start",start_i,True)
-#        end_i   = start_i.copy()
+    def insert_indent(self,buff,start_i,level,enter=True) :
         #We will close the current subtask tag
         list_stag = start_i.get_toggled_tags(False)
         stag = None
@@ -561,15 +565,14 @@ class TaskView(gtk.TextView):
         if stag :
             #We will remove the tag from the whole text
             subtid = stag.get_data('child')
-#            si,ei = buff.get_bounds()
-#            buff.remove_tag(stag,si,ei)
         #We move the end_subtask mark to here
         #We have to create a temporary mark with left gravity
         #It will be later replaced by the good one with right gravity
         temp_mark = self.buff.create_mark("temp",start_i,True)
         
         end     = buff.create_mark("end",start_i,False)
-        buff.insert(start_i,"\n")
+        if enter : 
+            buff.insert(start_i,"\n")
         
         #Moving the end of subtask mark to the position of the temp mark
         if stag :
