@@ -13,6 +13,7 @@
 		<content>
 			&lt;tag&gt;@tag&lt;/tag&gt;
 zdq dsfhe ee hh e zek
+&lt;subtask&gt;18@1&lt;/subtask&gt;&lt;subtask&gt;22@1&lt;/subtask&gt;&lt;subtask&gt;23@1&lt;/subtask&gt;
 		</content>
 	</task>
 	<task id="8@1" status="Active" tags="">
@@ -49,6 +50,7 @@ zdq dsfhe ee hh e zek
 		<content>
 			&lt;tag&gt;@new_tag&lt;/tag&gt;,&lt;tag&gt;@aze&lt;/tag&gt;
 pour voir
+&lt;subtask&gt;13@1&lt;/subtask&gt;
 		</content>
 	</task>
 	<task id="5@1" status="Done" tags="@aze">
@@ -131,6 +133,18 @@ tag,
 		</donedate>
 		<content>
 			&lt;tag&gt;@donetask&lt;/tag&gt;
+		</content>
+	</task>
+	<task id="12@1" status="Active" tags="@new_tag">
+		<title>
+			une tautre
+		</title>
+		<subtask>
+			14@1
+		</subtask>
+		<content>
+			&lt;tag&gt;@new_tag&lt;/tag&gt;, 
+&lt;subtask&gt;14@1&lt;/subtask&gt;
 		</content>
 	</task>
 	<task id="7@1" status="Active" tags="">
@@ -239,11 +253,5 @@ et pas pour d'autres.
 		<title>
 			This is wonderfully buggy
 		</title>
-		<subtask>
-			10@1
-		</subtask>
-		<content>
-			&lt;subtask&gt;10@1&lt;/subtask&gt;
-		</content>
 	</task>
 </project>

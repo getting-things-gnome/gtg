@@ -119,7 +119,7 @@ class TaskView(gtk.TextView):
         
         #The signal emitted each time the buffer is modified
         #Putting it at the end to avoid doing it too much when starting
-        self.buff.connect("changed" , self.modified)
+        self.modified_sigid = self.buff.connect("changed" , self.modified)
         self.connect("backspace",self.backspace)
         self.tobe_refreshed = False
 
@@ -520,14 +520,26 @@ class TaskView(gtk.TextView):
     
             
         
-    def __newsubtask(self,buff,title,line_nbr) :
+    def __newsubtask(self,buff,title,line_nbr, level=1) :
         anchor = self.new_subtask_callback(title)
-        end_i = self.write_subtask(buff,line_nbr,anchor)
+        end_i = self.write_subtask(buff,line_nbr,anchor,level=level)
         self.refresh_browser()
         return end_i
     
     #Write the subtask then return the iterator at the end of the line
-    def write_subtask(self,buff,line_nbr,anchor) :
+    def write_subtask(self,buff,line_nbr,anchor,level=1) :
+        #disable the insert signal to avoid recursion
+        reconnect_insert = False
+        reconnect_modified = False
+        if self.insert_sigid :
+            self.buff.disconnect(self.insert_sigid)
+            self.insert_sigid = False
+            reconnect_insert = True
+        if self.modified_sigid :
+            self.buff.disconnect(self.modified_sigid)
+            self.modified_sigid = False
+            reconnect_modified = True
+        
         start_i = buff.get_iter_at_line(line_nbr)
         end_i   = start_i.copy()
         #We go back at the end of the previous line
@@ -541,7 +553,7 @@ class TaskView(gtk.TextView):
         end_i.forward_line()
         end     = buff.create_mark("end",end_i,False)
         buff.delete(start_i,end_i)
-        self.insert_indent(buff,start_i,1, enter=insert_enter)
+        self.insert_indent(buff,start_i,level, enter=insert_enter)
         newline = self.get_subtasktitle(anchor)
         end_i = buff.get_iter_at_mark(end)
         startm = buff.create_mark(anchor,end_i,True)
@@ -551,9 +563,15 @@ class TaskView(gtk.TextView):
         endm = buff.create_mark("/%s"%anchor,end_i,False)
         #put the tag on the marks
         self.apply_subtask_tag(buff,anchor,startm,endm)
-        buff.delete_mark(start)
+        #buff.delete_mark(start)
         end_i = buff.get_iter_at_mark(end)
-        buff.delete_mark(end)
+        #buff.delete_mark(end)
+        
+        
+        if reconnect_insert :
+            self.insert_sigid = self.buff.connect('insert-text', self._insert_at_cursor)
+        if reconnect_modified :
+            self.modified_sigid = self.buff.connect("changed" , self.modified)
         return end_i
         
     def insert_indent(self,buff,start_i,level,enter=True) :
@@ -598,8 +616,8 @@ class TaskView(gtk.TextView):
         #adding the symbol 
         if level == 1 :
             indentation = "%s%s "%(indentation,bullet1)
-        self.insert_at_mark(buff,start,indentation)
-        indenttag = self.create_indent_tag(buff,1)
+        buff.insert(itera,indentation)
+        indenttag = self.create_indent_tag(buff,level)
         self.__apply_tag_to_mark(start,end,tag=indenttag)
 
         
@@ -622,6 +640,9 @@ class TaskView(gtk.TextView):
     def _insert_at_cursor(self, tv, itera, tex, leng) : #pylint: disable-msg=W0613
         #disable the insert signal to avoid recursion 
         self.buff.disconnect(self.insert_sigid)
+        self.insert_sigid = False
+        self.buff.disconnect(self.modified_sigid)
+        self.modified_sigid = False
         
         #First, we will get the actual indentation value
         #The nbr just before the \n
@@ -631,15 +652,20 @@ class TaskView(gtk.TextView):
         end_line   = itera.copy()
         tags = start_line.get_tags()
         current_indent = 0
-        task_before = None
+        subtask_nbr = None
         for ta in tags :
             if ta.get_data('is_indent') :
                 current_indent = ta.get_data('indent_level')
         tags = itera.get_tags()
         for ta in tags :
             if ta.get_data('is_subtask') :
-                task_before = ta.get_data('child')
-        
+                subtask_nbr = ta.get_data('child')
+        #Maybe we are simply at the end of the tag
+        if not subtask_nbr and itera.ends_tag():
+            for ta in itera.get_toggled_tags(False) :
+                if ta.get_data('is_subtask') :
+                    subtask_nbr = ta.get_data('child')
+            
         #New line : the user pressed enter !
         #If the line begins with "-", it's a new subtask !
         if tex == '\n' :
@@ -670,9 +696,16 @@ class TaskView(gtk.TextView):
                         self.insert_indent(self.buff,itera,current_indent)
                         tv.emit_stop_by_name('insert-text')
         #The user entered something else than \n
-#        else :
-#            pass
+        elif tex :
+            #We are on an indented line without subtask ? Create it !
+            if current_indent > 0 and not subtask_nbr :
+                #self.__newsubtask(self.buff,tex,line_nbr, level=current_indent)
+                anchor = self.new_subtask_callback(tex)
+                startm = self.buff.create_mark(anchor,itera,True)
+                endm = self.buff.create_mark("/%s"%anchor,itera,False)
         self.insert_sigid = self.buff.connect('insert-text', self._insert_at_cursor)
+        self.modified_sigid = self.buff.connect("changed" , self.modified)
+        #self.modified()
         
     #Deindent the current line of one level
     #If newlevel is set, force to go to that level
