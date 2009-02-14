@@ -722,9 +722,11 @@ class TaskView(gtk.TextView):
         if newlevel < 0 :
             print "bug : no is_indent tag on that line"
         startline.backward_char()
+        #We make a temp mark where we should insert the new indent
+        tempm = self.buff.create_mark("temp",startline)
         self.buff.delete(startline,itera)
-        newiter = self.buff.get_iter_at_line(line-1)
-        newiter.forward_to_line_end()
+        newiter = self.buff.get_iter_at_mark(tempm)
+        self.buff.delete_mark(tempm)
         self.insert_indent(self.buff,newiter,newlevel)
         
         
