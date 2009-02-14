@@ -345,9 +345,12 @@ class TaskView(gtk.TextView):
         #We apply the hyperlink tag to subtask
         for s in self.get_subtasks() :
             start_mark = buff.get_mark(s)
-            end_mark = buff.get_mark("/%s"%s)
             # "applying %s to %s - %s"%(s,start_mark,end_mark)
-            if start_mark and end_mark :
+            if start_mark :
+                #In fact, the subtask mark always go to the end of line.
+                start_i = buff.get_iter_at_mark(start_mark)
+                start_i.forward_to_line_end()
+                end_mark = buff.create_mark("/%s"%s,start_i,False)
                 self.apply_subtask_tag(buff,s,start_mark,end_mark)
         
         #Ok, we took care of the modification
@@ -540,6 +543,13 @@ class TaskView(gtk.TextView):
             self.modified_sigid = False
             reconnect_modified = True
         
+        #First, we insert the request \n
+        #If we don't do this, the content of next line will automatically
+        #be in the subtask title
+        start_i = buff.get_iter_at_line(line_nbr)
+        start_i.forward_to_line_end()
+        buff.insert(start_i,"\n")
+        #Ok, now we can start working
         start_i = buff.get_iter_at_line(line_nbr)
         end_i   = start_i.copy()
         #We go back at the end of the previous line
@@ -551,8 +561,12 @@ class TaskView(gtk.TextView):
             insert_enter = False
         start   = buff.create_mark("start",start_i,True)
         end_i.forward_line()
+#        end_temp     = buff.create_mark("end",end_i,True)
+#        buff.insert(end_i,"\n")
+#        end_i = buff.get_iter_at_mark(end_temp)
         end     = buff.create_mark("end",end_i,False)
         buff.delete(start_i,end_i)
+        start_i = buff.get_iter_at_mark(start)
         self.insert_indent(buff,start_i,level, enter=insert_enter)
         newline = self.get_subtasktitle(anchor)
         end_i = buff.get_iter_at_mark(end)
@@ -564,7 +578,6 @@ class TaskView(gtk.TextView):
         #put the tag on the marks
         self.apply_subtask_tag(buff,anchor,startm,endm)
         #buff.delete_mark(start)
-        end_i = buff.get_iter_at_mark(end)
         #buff.delete_mark(end)
         
         
@@ -682,7 +695,7 @@ class TaskView(gtk.TextView):
                         line = line.lstrip(' -')
                         end_i = self.__newsubtask(self.buff,line,line_nbr)
                         #Here, we should increment indent level
-                        self.insert_indent(self.buff,end_i,1)
+                        self.insert_indent(self.buff,end_i,1,enter=True)
                         tv.emit_stop_by_name('insert-text')
                         
                 #Then, if indent > 0, we increment it

@@ -253,4 +253,14 @@ et pas pour d'autres.
 			This is wonderfully buggy
 		</title>
 	</task>
+	<task id="13@1" status="Active" tags="">
+		<title>
+			a
+		</title>
+	</task>
+	<task id="17@1" status="Active" tags="">
+		<title>
+			r
+		</title>
+	</task>
 </project>

@@ -92,6 +92,7 @@ class Serializer :
                         target  = ta.get_data('child')
                         subt.appendChild(doc.createTextNode(target))
                         parent.appendChild(subt)
+                        parent.appendChild(doc.createTextNode("\n"))
                         it.forward_line()
                     elif ta.get_data('is_tag') :
                         #Recursive call !!!!! (we handle tag in tags)
