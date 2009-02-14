@@ -98,7 +98,10 @@ class Serializer :
                         child = self.parse_buffer(buf,startit,endit,"tag",doc,tag_stack)
                         parent.appendChild(child)
                     elif ta.get_data('is_indent') :
-                        pass
+                        indent = buf.get_text(startit,endit)
+                        if '\n' in indent :
+                            parent.appendChild(doc.createTextNode('\n'))
+                        it = endit
                     else :
                         #The link tag has noname but has "is_anchor" properties
                         if ta.get_data('is_anchor'): 
