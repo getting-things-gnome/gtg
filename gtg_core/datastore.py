@@ -60,7 +60,10 @@ class DataStore(gobject.GObject):
             uid,pid = tid.split('@') #pylint: disable-msg=W0612
             back = self.backends[pid]
             #self.locks.acquire(tid)
-            self.tasks.pop(tid)
+            #Check that the task still exist. It might have been deleted
+            #by its parent a few line earlier :
+            if self.tasks.has_key(tid) :
+                self.tasks.pop(tid)
             back.remove_task(tid)
             #The following line should not be necessary
             #self.locks.release(tid)
