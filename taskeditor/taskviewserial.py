@@ -118,6 +118,11 @@ class Serializer :
                 parent.appendChild(doc.createTextNode(it.get_char()))
                 it.forward_char()
                 
+        #Finishing with an \n before closing </content>
+        if name == "content" :
+            last_val = parent.lastChild
+            if last_val and last_val.nodeValue != '\n' :
+                parent.appendChild(doc.createTextNode('\n'))
         #This function concatenate all the adjacent text node of the XML
         parent.normalize()
         return parent
