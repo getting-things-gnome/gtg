@@ -464,8 +464,20 @@ class TaskView(gtk.TextView):
         
     #When the user remove a selection, we remove subtasks and @tags
     #from this selection
-    def _delete_range(self,buff,start,end) : #pylint: disable-msg=W0613
+    def _delete_range(self,buff,start,end) :
         it = start.copy()
+        #If the begining of the selection is in the middle of an indent
+        #We want to start at the begining
+        indent_tag = None
+        tags = it.get_tags()+it.get_toggled_tags(False)
+        for ta in tags :
+            if (ta.get_data('is_indent') and not it.begins_tag(ta)) :
+                it.backward_to_tag_toggle(ta)
+                start.backward_to_tag_toggle(ta)
+                endindent = it.copy()
+                endindent.forward_to_tag_toggle(ta)
+                buff.remove_tag(ta,start,endindent)
+        #Now we delete all, char after char
         while (it.get_offset() <= end.get_offset()) and (it.get_char() != '\0'):
             if it.begins_tag() :
                 tags = it.get_tags()
@@ -484,6 +496,16 @@ class TaskView(gtk.TextView):
                         if buff.get_mark("/%s"%tagname) :
                             buff.delete_mark_by_name("/%s"%tagname)
                         self.refresh_browser()
+                    if ta.get_data('is_indent') :
+                        #Because the indent tag is read only, we will remove it
+                        endtag = it.copy()
+                        endtag.forward_to_tag_toggle(ta)
+                        buff.remove_tag(ta,it,endtag)
+                        #Also, we want to delete the indent completely,
+                        #Even if the selection was in the middle of an indent
+                        if endtag.compare(end) :
+                            end = endtag
+                        
             it.forward_char()
         #We return false so the parent still get the signal
         return False
@@ -561,9 +583,6 @@ class TaskView(gtk.TextView):
             insert_enter = False
         start   = buff.create_mark("start",start_i,True)
         end_i.forward_line()
-#        end_temp     = buff.create_mark("end",end_i,True)
-#        buff.insert(end_i,"\n")
-#        end_i = buff.get_iter_at_mark(end_temp)
         end     = buff.create_mark("end",end_i,False)
         buff.delete(start_i,end_i)
         start_i = buff.get_iter_at_mark(start)
@@ -732,6 +751,7 @@ class TaskView(gtk.TextView):
                     
             if newlevel > 0 :
                 newlevel -= 1
+        #If it's still < 0
         if newlevel < 0 :
             print "bug : no is_indent tag on that line"
         startline.backward_char()

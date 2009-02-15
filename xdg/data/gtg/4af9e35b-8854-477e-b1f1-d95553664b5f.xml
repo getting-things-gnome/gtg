@@ -49,7 +49,6 @@ zdq dsfhe ee hh e zek
 		</title>
 		<content>
 			&lt;tag&gt;@new_tag&lt;/tag&gt;,&lt;tag&gt;@aze&lt;/tag&gt;
-&lt;subtask&gt;13@1&lt;/subtask&gt;
 		</content>
 	</task>
 	<task id="5@1" status="Done" tags="@aze">
@@ -251,16 +250,6 @@ et pas pour d'autres.
 	<task id="21@1" status="Active" tags="">
 		<title>
 			This is wonderfully buggy
-		</title>
-	</task>
-	<task id="13@1" status="Active" tags="">
-		<title>
-			a
-		</title>
-	</task>
-	<task id="17@1" status="Active" tags="">
-		<title>
-			r
 		</title>
 	</task>
 </project>
