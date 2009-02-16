@@ -10,9 +10,6 @@
 #For your information, a gtkTextView always contains a gtk.TextBuffer which
 #Contains the text. Ours is called self.buff (how original !)
 #
-#The Taskview should not be called anywhere else than in the taskeditor !
-#As a rule of thumb, the taskview should not have any logic (so no link 
-#to Tasks/Projects or whatever)
 
 import gtk
 import gobject
@@ -24,7 +21,6 @@ separators = [' ','.',',','/','\n','\t','!','?',';']
 
 bullet1 = '→'
 bullet2 = '↳'
-#bullet ='↪'
 
 class TaskView(gtk.TextView):
     __gtype_name__ = 'HyperTextView'
@@ -56,22 +52,23 @@ class TaskView(gtk.TextView):
         self.buff = self.get_buffer()
         self.req = requester
         #Buffer init
-        self.link   = {'background': 'cyan', 'foreground': 'blue', 
+        self.link   = {'background': 'white', 'foreground': '#007bff', 
                                     'underline': pango.UNDERLINE_SINGLE, 'strikethrough':False}
         self.done   = {'background': 'white', 'foreground': 'gray', 
                                     'strikethrough': True}
-        self.active = {'background': 'light gray', 'foreground': 'red', 
+        self.active = {'background': 'light gray', 'foreground': '#ff1e00', 
                                     'underline': pango.UNDERLINE_SINGLE}
         self.hover  = {'background': 'light gray'}
-        self.tag = {'background': "#FFFF66", 'foreground' : "#FF0000"}
-        self.indent = {'scale': 1.4, 'editable' : False}
+        self.tag = {'background': "#FFea00", 'foreground' : 'black'}
+        self.indent = {'scale': 1.4, 'editable' : False, 'left-margin': 10,
+                                     "accumulative-margin" : True}
         
         
         ###### Tag we will use ######
         # We use the tag table (tag are defined here but set in self.modified)
         self.table = self.buff.get_tag_table()
         # Tag for title
-        self.title_tag  = self.buff.create_tag("title",foreground="#12F",scale=1.6,underline=1)
+        self.title_tag  = self.buff.create_tag("title",foreground="#007bff",scale=1.6,underline=1)
         self.title_tag.set_property("pixels-above-lines",10)
         self.title_tag.set_property("pixels-below-lines",10)
         # Tag for highlight (tags are automatically added to the tag table)
@@ -333,7 +330,7 @@ class TaskView(gtk.TextView):
         #subt_list = self.get_subtasks()
         #First, we remove the olds tags
         tag_list = []
-        def subfunc(texttag,data=None) :
+        def subfunc(texttag,data=None) : #pylint: disable-msg=W0613
             if texttag.get_data('is_subtask') :
                 tag_list.append(texttag)
         table.foreach(subfunc)
@@ -468,7 +465,6 @@ class TaskView(gtk.TextView):
         it = start.copy()
         #If the begining of the selection is in the middle of an indent
         #We want to start at the begining
-        indent_tag = None
         tags = it.get_tags()+it.get_toggled_tags(False)
         for ta in tags :
             if (ta.get_data('is_indent') and not it.begins_tag(ta)) :
@@ -634,7 +630,7 @@ class TaskView(gtk.TextView):
         #Moving the end of subtask mark to the position of the temp mark
         if stag :
             itera = buff.get_iter_at_mark(temp_mark)
-            mark = buff.move_mark_by_name("/%s"%subtid,itera)
+            buff.move_mark_by_name("/%s"%subtid,itera)
         buff.delete_mark(temp_mark)
         #The mark has right gravity but because we putted it on the left
         #of the newly inserted \n, it will not move anymore.
@@ -644,7 +640,7 @@ class TaskView(gtk.TextView):
         indentation = ""
         #adding two spaces by level
         spaces = "  "
-        indentation = indentation + level*spaces
+        indentation = indentation + (level-1)*spaces
         #adding the symbol 
         if level == 1 :
             indentation = "%s%s "%(indentation,bullet1)
@@ -733,11 +729,10 @@ class TaskView(gtk.TextView):
             if current_indent > 0 and not subtask_nbr :
                 #self.__newsubtask(self.buff,tex,line_nbr, level=current_indent)
                 anchor = self.new_subtask_callback(tex)
-                startm = self.buff.create_mark(anchor,itera,True)
-                endm = self.buff.create_mark("/%s"%anchor,itera,False)
+                self.buff.create_mark(anchor,itera,True)
+                self.buff.create_mark("/%s"%anchor,itera,False)
         self.insert_sigid = self.buff.connect('insert-text', self._insert_at_cursor)
         self.modified_sigid = self.buff.connect("changed" , self.modified)
-        #self.modified()
         
     #Deindent the current line of one level
     #If newlevel is set, force to go to that level

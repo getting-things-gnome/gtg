@@ -142,13 +142,6 @@ class TaskBrowser:
         self.sidebar       = self.wTree.get_widget("sidebar")
         self.closed_pane   = self.wTree.get_widget("closed_pane")
         self.quickadd_pane = self.wTree.get_widget("quickadd_pane")
-
-        
-        #this is our manual drag-n-drop handling
-#        self.task_ts.connect("row-changed",self.row_inserted,"insert")
-#        self.task_ts.connect("row-deleted",self.row_deleted,"delete")
-#        self.task_ts.connect("row-inserted",self.row_inserted,"insert")
-#        self.task_ts.connect("rows-reordered",self.row_inserted,"insert")
                
         #The tid that will be deleted
         self.tid_todelete = None
@@ -993,7 +986,7 @@ class TaskBrowser:
         
         # Cleanup
         if last_sort_col is not None:
-           last_sort_col.set_sort_indicator(False)
+            last_sort_col.set_sort_indicator(False)
     
         # Ascending or descending?
         if sort_order is None:
@@ -1018,8 +1011,8 @@ class TaskBrowser:
             sort_key = lambda x:x[self.TASK_MODEL_DDATE_STR]
             
         # Determine sorting direction
-        if sort_order == gtk.SORT_ASCENDING: sort_reverse=True
-        else                               : sort_reverse=False
+        if sort_order == gtk.SORT_ASCENDING: sort_reverse = True
+        else                               : sort_reverse = False
 
         # Sort rows
         rows = [tuple(r) + (i,) for i, r in enumerate(self.task_ts)]

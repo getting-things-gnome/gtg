@@ -68,6 +68,8 @@ class TaskEditor :
         self.textview.open_task_callback(self.open_task)
         self.textview.tasktitle_callback(self.task_title)
         self.textview.refresh_browser_callback(self.refresh_browser)
+        self.textview.set_left_margin(7)
+        self.textview.set_right_margin(5)
         scrolled.add(self.textview)
         #Voila! it's done
         self.calendar       = self.cal_tree.get_widget("calendar")
