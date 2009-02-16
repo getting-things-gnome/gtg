@@ -44,7 +44,8 @@ class TaskEditor :
                 "on_startdate_pressed"    : (self.on_date_pressed,"start"),
                 "close_clicked"         : self.close,
                 "startingdate_changed" : (self.date_changed,"start"),
-                "duedate_changed" : (self.date_changed,"due")
+                "duedate_changed" : (self.date_changed,"due"),
+                "on_insert_subtask_clicked" : self.insert_subtask
               }
         self.wTree.signal_autoconnect(dic)
         cal_dic = {
@@ -295,6 +296,10 @@ class TaskEditor :
         subt.set_title(title)
         tid = subt.get_id()
         return tid
+        
+    def insert_subtask(self,widget) :
+        itera =  self.textview.get_insert()
+        self.textview.insert_newtask()
     
     def save(self) :
         self.task.set_title(self.textview.get_title())

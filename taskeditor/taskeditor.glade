@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Sat Jan 24 21:42:36 2009 -->
+<!--Generated with glade3 3.4.5 on Mon Feb 16 20:45:45 2009 -->
 <glade-interface>
   <widget class="GtkWindow" id="TaskEditor">
     <property name="title" translatable="yes">Task</property>
@@ -43,6 +43,25 @@
                 <property name="label" translatable="yes">Delete</property>
                 <property name="icon_name">edit-delete</property>
                 <signal name="clicked" handler="delete_clicked"/>
+              </widget>
+              <packing>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkSeparatorToolItem" id="toolbutton1">
+                <property name="visible">True</property>
+              </widget>
+              <packing>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkToolButton" id="insert_subtask">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">Insert subtask</property>
+                <property name="stock_id">gtk-indent</property>
+                <signal name="clicked" handler="on_insert_subtask_clicked"/>
               </widget>
               <packing>
                 <property name="homogeneous">True</property>
