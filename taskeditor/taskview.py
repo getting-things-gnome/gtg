@@ -188,6 +188,15 @@ class TaskView(gtk.TextView):
         if _iter is None :
             _iter = self.buff.get_end_iter()
         self.buff.insert(_iter,text)
+    
+    #We cannot get an insert in the title
+    def get_insert(self) :
+        mark = self.buff.get_insert()
+        itera = self.buff.get_iter_at_mark(mark)
+        if itera.get_line() == 0 :
+            itera.forward_line()
+        return itera
+    
     def insert_with_anchor(self, text, anchor=None, _iter=None,typ=None):
         b = self.get_buffer()
         if _iter is None:
@@ -602,6 +611,39 @@ class TaskView(gtk.TextView):
             self.modified_sigid = self.buff.connect("changed" , self.modified)
         return end_i
         
+    def insert_newtask(self,fitera=None) :
+        if not fitera :
+            fitera = self.get_insert()
+        #First, find a line without subtask
+        line = fitera.get_line()
+        startl = self.buff.get_iter_at_line(line)
+        itera = None
+        while not itera :
+            found = True
+            for t in startl.get_tags() :
+                if t.get_data('is_indent') :
+                    line += 1
+                    startl = self.buff.get_iter_at_line(line)
+                    found = False
+            if found :
+                itera = startl 
+                    
+        #If we are not on the end of line, go there
+        #but if we are at the start of line, then create the subtask
+        #before the current line
+        enter = True
+        if itera.starts_line() :
+            mark = self.buff.create_mark("temp",itera,True)
+            self.buff.insert(itera,"\n")
+            itera = self.buff.get_iter_at_mark(mark)
+            self.buff.delete_mark(mark)
+            enter = False
+        elif not itera.ends_line() :
+            itera.forward_to_line_end()
+        endm = self.insert_indent(self.buff,itera,1,enter=enter)
+        end = self.buff.get_iter_at_mark(endm)
+        self.buff.place_cursor(end)
+        
     def insert_indent(self,buff,start_i,level,enter=True) :
         #We will close the current subtask tag
         list_stag = start_i.get_toggled_tags(False)
@@ -647,6 +689,7 @@ class TaskView(gtk.TextView):
         buff.insert(itera,indentation)
         indenttag = self.create_indent_tag(buff,level)
         self.__apply_tag_to_mark(start,end,tag=indenttag)
+        return end
 
         
     def __apply_tag_to_mark(self,start,end,tag=None,name=None) :
