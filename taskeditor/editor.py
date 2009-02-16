@@ -105,14 +105,15 @@ class TaskEditor :
         if texte : 
             self.textview.insert("%s"%texte)
         else :
+            #If not text, we insert tags
+            if tags :
+                for t in tags :
+                    self.textview.insert_text("%s, "%t.get_name())
+                self.textview.insert_text("\n")
             #If we don't have text, we still need to insert subtasks if any
             subtasks = task.get_subtasks_tid()
             if subtasks :
                 self.textview.insert_subtasks(subtasks)
-            #And also tags
-            if tags :
-                for t in tags :
-                    self.textview.insert_text("%s, "%t.get_name())
         self.textview.modified(full=True)
         self.window.connect("destroy", self.destruction)
         

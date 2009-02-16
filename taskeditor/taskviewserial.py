@@ -149,9 +149,15 @@ class Unserializer :
         
     #Insert a list of subtasks at the end of the buffer
     def insert_subtasks(self,buff,st_list) :
+        #It the lastline of the buffer is not empty, we add an extra \n
+        end_end = buff.get_end_iter()
+        end_line = end_end.get_line()
+        start_end = buff.get_iter_at_line(end_line)
+        if buff.get_text(start_end,end_end).strip() :
+            end_line += 1
         for tid in st_list :
-            line_nbr = buff.get_end_iter().get_line()
-            self.tv.write_subtask(buff,line_nbr,tid)
+            self.tv.write_subtask(buff,end_line,tid)
+            end_line += 1
             
     #insert a GTG tag with its TextView tag.
     #Yes, we know : the word tag is used for two different concepts here.
@@ -211,11 +217,16 @@ class Unserializer :
             if t in taglist :
                 taglist.remove(t)
         if len(taglist) > 0 :
-            self.tv.insert_at_mark(buf,end,"\n")
+            #We insert them just after the title
+            firstline = buf.get_iter_at_line(0)
+            firstline.forward_to_line_end()
+            line_mark = buf.create_mark("firstline",firstline,False)
+            self.tv.insert_at_mark(buf,line_mark,"\n")
         for t in taglist :
-            it = buf.get_iter_at_mark(end)
+            it = buf.get_iter_at_mark(line_mark)
             self.insert_tag(buf,t,it)
-            self.tv.insert_at_mark(buf,end,", ")
+            self.tv.insert_at_mark(buf,line_mark,", ")
+        #self.tv.insert_at_mark(buf,line_mark,"\n")
         buf.delete_mark(start)
         buf.delete_mark(end)
         return True

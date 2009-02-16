@@ -860,6 +860,7 @@ class TaskBrowser:
                 # "row %s moved from %s to %s"%(self.tid_tomove,\
                 #             self.tid_source_parent,self.tid_target_parent)
                 tomove = self.req.get_task(self.tid_tomove)
+                tomove.set_to_keep()
                 tomove.remove_parent(self.tid_source_parent)
                 tomove.add_parent(self.tid_target_parent)
                 #DO NOT self.refresh_list()
