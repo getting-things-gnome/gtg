@@ -23,7 +23,6 @@ class Serializer :
         #We don't want the whole doc with the XML declaration
         #we only take the first node (the "content" one)
         node = doc.firstChild #pylint: disable-msg=E1101
-        print node.toxml()
         return node.toxml().encode("utf-8")
 
     def parse_buffer(self,buf, start, end, name, doc,tag_stack) :

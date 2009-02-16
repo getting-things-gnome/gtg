@@ -35,6 +35,9 @@ class Task :
         
     def set_loaded(self) :
         self.loaded = True
+        
+    def set_to_keep(self) :
+        self.can_be_deleted = False
     
     def get_id(self) :
         return str(self.tid)
