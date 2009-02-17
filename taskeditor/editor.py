@@ -39,6 +39,7 @@ class TaskEditor :
         dic = {
                 "mark_as_done_clicked"  : self.change_status,
                 "on_dismiss"            : self.dismiss,
+                "on_keepnote_clicked"   : self.keepnote,
                 "delete_clicked"        : self.delete_task,
                 "on_duedate_pressed"    : (self.on_date_pressed,"due"),
                 "on_startdate_pressed"    : (self.on_date_pressed,"start"),
@@ -79,6 +80,8 @@ class TaskEditor :
         self.startdate_widget = self.wTree.get_widget("startdate_entry")
         self.dayleft_label  = self.wTree.get_widget("dayleft")
         self.inserttag_button = self.wTree.get_widget("inserttag")
+        self.tasksidebar = self.wTree.get_widget("tasksidebar")
+        self.keepnote_button = self.wTree.get_widget("keepnote")
         #We will keep the name of the opened calendar
         #Empty means that no calendar is opened
         self.__opened_date = ''
@@ -159,6 +162,15 @@ class TaskEditor :
         else :
             self.donebutton.set_label(GnomeConfig.MARK_DONE)
             self.dismissbutton.set_label(GnomeConfig.MARK_DISMISS)
+            
+        if status == "Note" :
+            self.donebutton.hide()
+            self.tasksidebar.hide()
+            self.keepnote_button.set_label(GnomeConfig.MAKE_TASK)
+        else :
+            self.donebutton.show()
+            self.tasksidebar.show()
+            self.keepnote_button.set_label(GnomeConfig.KEEP_NOTE)
             
         #refreshing the due date field
         duedate = self.task.get_due_date()
@@ -284,6 +296,15 @@ class TaskEditor :
         if toclose : self.close(None)
         else : 
             self.refresh_editor()
+        self.refresh_browser()
+    
+    def keepnote(self,widget) : #pylint: disable-msg=W0613
+        stat = self.task.get_status()
+        toset = "Note"
+        if stat == "Note" :
+            toset = "Active"
+        self.task.set_status(toset)
+        self.refresh_editor()
         self.refresh_browser()
     
     def change_status(self,widget) : #pylint: disable-msg=W0613

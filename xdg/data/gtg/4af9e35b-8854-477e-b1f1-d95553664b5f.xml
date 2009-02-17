@@ -27,6 +27,7 @@ zdq dsfhe ee hh e zek
 aze   
 qsd
 cw 
+
 		</content>
 	</task>
 	<task id="1@1" status="Active" tags="@tag,@autro">
@@ -288,9 +289,6 @@ aze
 
 
 &lt;tag&gt;@aze&lt;/tag&gt;
-
-&lt;subtask&gt;13@1&lt;/subtask&gt;
-&lt;subtask&gt;22@1&lt;/subtask&gt;
 		</content>
 	</task>
 	<task id="23@1" status="Active" tags="@fosdem">

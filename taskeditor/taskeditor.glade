@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Tue Feb 17 21:16:14 2009 -->
+<!--Generated with glade3 3.4.5 on Tue Feb 17 22:30:32 2009 -->
 <glade-interface>
   <widget class="GtkWindow" id="TaskEditor">
     <property name="title" translatable="yes">Task</property>
@@ -29,7 +29,7 @@
             <child>
               <widget class="GtkToolButton" id="mark_as_done_editor">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">Mark as done</property>
+                <property name="label" translatable="yes">Mark Done</property>
                 <property name="icon">task_done.png</property>
                 <signal name="clicked" handler="mark_as_done_clicked"/>
               </widget>
@@ -131,7 +131,7 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkVBox" id="vbox2">
+              <widget class="GtkVBox" id="tasksidebar">
                 <property name="visible">True</property>
                 <property name="border_width">2</property>
                 <child>
