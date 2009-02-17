@@ -24,10 +24,9 @@ zdq dsfhe ee hh e zek
 		</startdate>
 		<content>
 			&lt;tag&gt;@tag&lt;/tag&gt;
-aze
+aze   
 qsd
-cwx
-
+cw 
 		</content>
 	</task>
 	<task id="1@1" status="Active" tags="@tag,@autro">
@@ -267,12 +266,6 @@ et pas pour d'autres.
 		<title>
 			A shiny new task
 		</title>
-		<subtask>
-			24@1
-		</subtask>
-		<content>
-			&lt;subtask&gt;24@1&lt;/subtask&gt;
-		</content>
 	</task>
 	<task id="21@1" status="Active" tags="">
 		<title>
@@ -296,7 +289,9 @@ aze
 
 &lt;tag&gt;@aze&lt;/tag&gt;
 
-sdfsfdfsd
+&lt;subtask&gt;13@1&lt;/subtask&gt;
+&lt;subtask&gt;22@1&lt;/subtask&gt;
+
 		</content>
 	</task>
 	<task id="23@1" status="Active" tags="@fosdem">

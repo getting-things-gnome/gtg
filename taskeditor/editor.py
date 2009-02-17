@@ -45,7 +45,8 @@ class TaskEditor :
                 "close_clicked"         : self.close,
                 "startingdate_changed" : (self.date_changed,"start"),
                 "duedate_changed" : (self.date_changed,"due"),
-                "on_insert_subtask_clicked" : self.insert_subtask
+                "on_insert_subtask_clicked" : self.insert_subtask,
+                "on_inserttag_clicked" : self.inserttag_clicked,
               }
         self.wTree.signal_autoconnect(dic)
         cal_dic = {
@@ -77,6 +78,7 @@ class TaskEditor :
         self.duedate_widget = self.wTree.get_widget("duedate_entry")
         self.startdate_widget = self.wTree.get_widget("startdate_entry")
         self.dayleft_label  = self.wTree.get_widget("dayleft")
+        self.inserttag_button = self.wTree.get_widget("inserttag")
         #We will keep the name of the opened calendar
         #Empty means that no calendar is opened
         self.__opened_date = ''
@@ -187,6 +189,21 @@ class TaskEditor :
                 self.startdate_widget.set_text(zedate)
         elif self.startdate_widget.get_text() != '' :
             self.startdate_widget.set_text('')
+            
+        #Refreshing the tag list in the insert tag button
+        taglist = self.req.get_used_tags()
+        menu = gtk.Menu()
+        tag_count = 0
+        for t in taglist :
+            tt = t.get_name()
+            if not self.task.has_tags(tag_list=[t]) :
+                tag_count += 1
+                mi = gtk.MenuItem(label=tt)
+                mi.connect("activate",self.inserttag,tt)
+                mi.show()
+                menu.append(mi)
+        if tag_count > 0 :
+            self.inserttag_button.set_menu(menu)
             
         if to_save :
             self.save()
@@ -300,6 +317,16 @@ class TaskEditor :
     def insert_subtask(self,widget) :
         itera =  self.textview.get_insert()
         self.textview.insert_newtask()
+        
+    def inserttag_clicked(self,widget) :
+        itera = self.textview.get_insert()
+        if itera.begins_line() :
+            self.textview.insert_text("@",itera)
+        else :
+            self.textview.insert_text(" @",itera)
+        
+    def inserttag(self,widget,tag) :
+        self.textview.insert_tags([tag])
     
     def save(self) :
         self.task.set_title(self.textview.get_title())

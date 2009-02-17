@@ -261,7 +261,33 @@ class TaskView(gtk.TextView):
         for tid in st_list :
             line_nbr = self.buff.get_end_iter().get_line()
             self.write_subtask(self.buff,line_nbr,tid)
-
+            
+    #Insert a list of tag in the first line of the buffer
+    def insert_tags(self,tag_list) :
+        #We insert them just after the title
+        #We use the current first line if it begins with a tag
+        firstline = self.buff.get_iter_at_line(1)
+        newline = True
+        for tt in firstline.get_tags() :
+            if tt.get_data('is_tag') :
+                newline = False
+                firstline.forward_to_line_end()
+                #Now we should check if the current char is a separator or not
+                #Currently, we insert a space
+                self.insert_text(" ",firstline)
+        if newline :
+            firstline = self.buff.get_iter_at_line(0)
+            firstline.forward_to_line_end()
+            self.insert_text("\n",firstline)
+            firstline = self.buff.get_iter_at_line(1)
+        line_mark = self.buff.create_mark("firstline",firstline,False)
+        #self.tv.insert_at_mark(buf,line_mark,"\n")
+        for t in tag_list :
+            it = self.buff.get_iter_at_mark(line_mark)
+            self.insert_at_mark(self.buff,line_mark,t)
+            self.insert_at_mark(self.buff,line_mark,",")
+        self.buff.delete_mark(line_mark)
+        self.modified(full=True)
         
  ##### The "Get text" group #########
     #Get the complete serialized text
