@@ -341,7 +341,7 @@ class TaskEditor :
         
     def inserttag_clicked(self,widget) :
         itera = self.textview.get_insert()
-        if itera.begins_line() :
+        if itera.starts_line() :
             self.textview.insert_text("@",itera)
         else :
             self.textview.insert_text(" @",itera)
