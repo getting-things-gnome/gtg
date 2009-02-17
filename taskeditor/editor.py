@@ -319,10 +319,13 @@ class TaskEditor :
         self.textview.insert_newtask()
         
     def inserttag_clicked(self,widget) :
-        print "inserttag clicked"
+        itera = self.textview.get_insert()
+        if itera.begins_line() :
+            self.textview.insert_text("@",itera)
+        else :
+            self.textview.insert_text(" @",itera)
         
     def inserttag(self,widget,tag) :
-        print "show menu %s" %tag
         self.textview.insert_tags([tag])
     
     def save(self) :

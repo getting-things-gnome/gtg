@@ -276,7 +276,8 @@ class TaskView(gtk.TextView):
                 #Currently, we insert a space
                 self.insert_text(" ",firstline)
         if newline :
-            firstline = self.buff.get_iter_at_line(1)
+            firstline = self.buff.get_iter_at_line(0)
+            firstline.forward_to_line_end()
             self.insert_text("\n",firstline)
             firstline = self.buff.get_iter_at_line(1)
         line_mark = self.buff.create_mark("firstline",firstline,False)
@@ -285,8 +286,6 @@ class TaskView(gtk.TextView):
             it = self.buff.get_iter_at_mark(line_mark)
             self.insert_at_mark(self.buff,line_mark,t)
             self.insert_at_mark(self.buff,line_mark,",")
-        if newline :
-            self.insert_at_mark(self.buff,line_mark,"\n")
         self.buff.delete_mark(line_mark)
         self.modified(full=True)
         

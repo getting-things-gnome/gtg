@@ -217,16 +217,7 @@ class Unserializer :
             if t in taglist :
                 taglist.remove(t)
         if len(taglist) > 0 :
-            #We insert them just after the title
-            firstline = buf.get_iter_at_line(0)
-            firstline.forward_to_line_end()
-            line_mark = buf.create_mark("firstline",firstline,False)
-            self.tv.insert_at_mark(buf,line_mark,"\n")
-        for t in taglist :
-            it = buf.get_iter_at_mark(line_mark)
-            self.insert_tag(buf,t,it)
-            self.tv.insert_at_mark(buf,line_mark,", ")
-        #self.tv.insert_at_mark(buf,line_mark,"\n")
+            self.tv.insert_tags(taglist)
         buf.delete_mark(start)
         buf.delete_mark(end)
         return True
