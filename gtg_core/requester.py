@@ -76,7 +76,12 @@ class Requester :
                     task = None
             #If tags = [], we still check the is_root
             elif task and is_root :
-                if task.has_parents() : task = None
+                if task.has_parents() :
+                    #We accept children of a note
+                    for p in task.get_parents() :
+                        pp = self.get_task(p)
+                        if pp.get_status() != "Note" :
+                            task = None
             #Now checking if it has no tag
             if task and notag_only :
                 if not task.has_tags(notag_only=notag_only) :
