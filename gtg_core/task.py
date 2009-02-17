@@ -15,7 +15,7 @@ class Task :
         #self.content = "<content>Press Escape or close this task to save it</content>"
         self.sync_func = None
         self.title = "My new task"
-        #available status are : Active - Done - Dismiss 
+        #available status are : Active - Done - Dismiss - Note
         self.status = "Active"
         self.closed_date = None
         self.due_date = None
@@ -117,7 +117,7 @@ class Task :
             pardate_str = self.req.get_task(par).get_due_date()
             if pardate_str :
                 pardate = strtodate(pardate_str)
-                if not parent_date or pardate < strtodate(parent_date) :
+                if not strtodate(parent_date) or pardate < strtodate(parent_date) :
                     parent_date = pardate_str
         #We compare it to the date we want to set
         if parent_date and strtodate(parent_date) :

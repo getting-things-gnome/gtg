@@ -65,6 +65,7 @@ class TaskBrowser:
                 "on_add_task"         : self.on_add_task,
                 "on_edit_active_task" : self.on_edit_active_task,
                 "on_edit_done_task"   : self.on_edit_done_task,
+                "on_edit_note"        : self.on_edit_note,
                 "on_delete_task"      : self.on_delete_task,
                 "on_mark_as_done"     : self.on_mark_as_done,
                 "on_dismiss_task"     : self.on_dismiss_task,
@@ -120,6 +121,8 @@ class TaskBrowser:
         #The tview and their model
         self.taskdone_tview = self.wTree.get_widget("taskdone_tview")
         self.taskdone_ts    = gtk.TreeStore(gobject.TYPE_PYOBJECT, str,str,str,str)
+        self.note_tview = self.wTree.get_widget("note_tview")
+        self.note_ts = gtk.TreeStore(gobject.TYPE_PYOBJECT, str,str)
         self.tag_tview      = self.wTree.get_widget("tag_tview")
         self.tag_ts         = gtk.ListStore(gobject.TYPE_PYOBJECT,str,str,str,bool)
         # TASK MODEL:
@@ -290,6 +293,10 @@ class TaskBrowser:
         #The done/dismissed taks treeview
         self.__create_closed_tasks_tview()
         self.taskdone_tview.set_model(self.taskdone_ts)
+        
+        #The treeview for notes
+        self.__create_note_tview()
+        self.note_tview.set_model(self.note_ts)
                 
         #put the content in those treeviews
         self.do_refresh()
@@ -298,6 +305,8 @@ class TaskBrowser:
         selection.connect("changed",self.task_cursor_changed)
         closed_selection = self.taskdone_tview.get_selection()
         closed_selection.connect("changed",self.taskdone_cursor_changed)
+        note_selection = self.note_tview.get_selection()
+        note_selection.connect("changed",self.note_cursor_changed)
         
         # Restore state from config
         self.__restore_state_from_conf()
@@ -400,6 +409,7 @@ class TaskBrowser:
         self.refresh_list()
         self.refresh_closed()
         self.refresh_tags()
+        self.refresh_note()
         #Refreshing the opened editors
         for uid in self.opened_task :
             if uid != fromtask :
@@ -567,6 +577,28 @@ class TaskBrowser:
             for i in d_path :
                 closed_selection.select_path(i)
         self.taskdone_ts.set_sort_column_id(self.CTASKS_MODEL_DDATE, gtk.SORT_DESCENDING)
+        
+    #Refresh the notes pane
+    def refresh_note(self) :
+        #We build the notes pane
+        dselect = self.note_tview.get_selection()
+        d_path = None
+        if dselect :
+            d_model,d_path = dselect.get_selected_rows() #pylint: disable-msg=W0612
+        #We empty the pane
+        self.note_ts.clear()
+        #We rebuild it
+        tag_list,notag_only = self.get_selected_tags()
+        notes = self.req.get_notes_list(tags=tag_list, notag_only=notag_only)
+        for tid in notes :
+            t              = self.req.get_task(tid)
+            title_str      = t.get_title()
+            self.note_ts.append(None,[tid,t.get_color(),title_str])
+        note_selection = self.note_tview.get_selection()
+        if d_path :
+            for i in d_path :
+                note_selection.select_path(i)
+        #self.note_ts.set_sort_column_id(self.CTASKS_MODEL_DDATE, gtk.SORT_DESCENDING)
                 
     #Add tasks to a treeview. If treeview is False, it becomes a flat list
     def add_task_tree_to_list(self, tree_store, tid, parent, selected_uid=None,\
@@ -615,6 +647,7 @@ class TaskBrowser:
             tid = self.get_selected_task(self.taskdone_tview)
             task = self.req.get_task(tid)
             self.task_tview.get_selection().unselect_all()
+            self.note_tview.get_selection().unselect_all()
             if task.get_status() == "Dismiss" :
                 self.dismissbutton.set_label(GnomeConfig.MARK_UNDISMISS)
                 self.donebutton.set_label(GnomeConfig.MARK_DONE)
@@ -629,6 +662,7 @@ class TaskBrowser:
         #Only if something is selected in the active task list
         if selection.count_selected_rows() > 0 :
             self.taskdone_tview.get_selection().unselect_all()
+            self.note_tview.get_selection().unselect_all()
             self.donebutton.set_label(GnomeConfig.MARK_DONE)
             self.dismissbutton.set_label(GnomeConfig.MARK_DISMISS)
         #We reset the previously selected task
@@ -648,6 +682,13 @@ class TaskBrowser:
                 #title = self.__build_task_title(task,extended=True)
                 title = self.__build_task_title(task,extended=False)
                 self.task_ts.set_value(self.selected_rows,self.TASK_MODEL_TITLE,title)
+                
+    def note_cursor_changed(self,selection=None) :
+        #We unselect all in the closed task view
+        #Only if something is selected in the active task list
+        if selection.count_selected_rows() > 0 :
+            self.taskdone_tview.get_selection().unselect_all()
+            self.task_tview.get_selection().unselect_all()
     
     def __build_task_title(self,task,extended=False):
         if extended :
@@ -770,6 +811,10 @@ class TaskBrowser:
         if selection and selection.count_selected_rows() <= 0 and not tv :
             tview = self.taskdone_tview
             selection = tview.get_selection()
+        #Then in the notes pane
+        if selection and selection.count_selected_rows() <= 0 and not tv :
+            tview = self.note_tview
+            selection = tview.get_selection()
         # Get the selection iter
         if selection :
             model, selection_iter = selection.get_selected() #pylint: disable-msg=W0612
@@ -883,6 +928,10 @@ class TaskBrowser:
             self.open_task(tid)
     def on_edit_done_task(self,widget,row=None ,col=None) : #pylint: disable-msg=W0613
         tid = self.get_selected_task(self.taskdone_tview)
+        if tid :
+            self.open_task(tid)
+    def on_edit_note(self,widget,row=None,col=None) : #pylint: disable-msg=W0613
+        tid = self.get_selected_task(self.note_tview)
         if tid :
             self.open_task(tid)
      
@@ -1120,6 +1169,20 @@ class TaskBrowser:
 
         # Global treeview properties
         self.taskdone_ts.set_sort_column_id(self.CTASKS_MODEL_DDATE, gtk.SORT_DESCENDING)
+        
+    def __create_note_tview(self):
+        # Title column
+        title_col    = gtk.TreeViewColumn()
+        render_text  = gtk.CellRendererText()
+        title_col.set_title                ("Notes")
+        title_col.pack_start               (render_text  , expand=True)
+        title_col.set_attributes           (render_text  , markup=self.CTASKS_MODEL_TITLE)
+        title_col.set_sort_column_id       (self.CTASKS_MODEL_TITLE)
+        title_col.set_expand               (True)
+        self.note_tview.append_column  (title_col)
+
+        # Global treeview properties
+        #self.taskdone_ts.set_sort_column_id(self.CTASKS_MODEL_DDATE, gtk.SORT_DESCENDING)
 
        
     ######Closing the window
