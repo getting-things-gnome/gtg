@@ -15,7 +15,7 @@ class Task :
         #self.content = "<content>Press Escape or close this task to save it</content>"
         self.sync_func = None
         self.title = "My new task"
-        #available status are : Active - Done - Dismiss 
+        #available status are : Active - Done - Dismiss - Note
         self.status = "Active"
         self.closed_date = None
         self.due_date = None

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Thu Jan 29 10:15:58 2009 -->
+<!--Generated with glade3 3.4.5 on Tue Feb 17 21:25:45 2009 -->
 <glade-interface>
   <widget class="GtkWindow" id="MainWindow">
     <property name="visible">True</property>
@@ -322,16 +322,21 @@
               <widget class="GtkVBox" id="sidebar">
                 <property name="visible">True</property>
                 <child>
-                  <widget class="GtkTreeView" id="tag_tview">
+                  <widget class="GtkScrolledWindow" id="scrolledwindow1">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <signal name="button_press_event" handler="on_tag_treeview_button_press_event"/>
-                    <signal name="row_activated" handler="on_select_tag"/>
-                    <signal name="cursor_changed" handler="on_select_tag"/>
+                    <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+                    <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
+                    <child>
+                      <widget class="GtkTreeView" id="tag_tview">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <signal name="button_press_event" handler="on_tag_treeview_button_press_event"/>
+                        <signal name="row_activated" handler="on_select_tag"/>
+                        <signal name="cursor_changed" handler="on_select_tag"/>
+                      </widget>
+                    </child>
                   </widget>
-                </child>
-                <child>
-                  <placeholder/>
                 </child>
               </widget>
               <packing>
