@@ -86,7 +86,7 @@ class Task :
                 if self.has_parents() :
                     for p_tid in self.get_parents() :
                         par = self.req.get_task(p_tid)
-                        if par.is_loaded() and par.get_status != "Active" :
+                        if par.is_loaded() and par.get_status in ["Done","Dismiss"] :
                             self.remove_parent(p_tid)
                 #We dont mark the children as Active because
                 #They might be already completed after all
