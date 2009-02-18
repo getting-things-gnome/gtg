@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Tue Feb 17 22:30:32 2009 -->
+<!--Generated with glade3 3.4.5 on Wed Feb 18 15:02:01 2009 -->
 <glade-interface>
   <widget class="GtkWindow" id="TaskEditor">
     <property name="title" translatable="yes">Task</property>
@@ -15,17 +15,6 @@
           <widget class="GtkToolbar" id="task_tb1">
             <property name="visible">True</property>
             <property name="toolbar_style">GTK_TOOLBAR_BOTH</property>
-            <child>
-              <widget class="GtkToolButton" id="keepnote">
-                <property name="visible">True</property>
-                <property name="label" translatable="yes">Keep as Note</property>
-                <property name="stock_id">gtk-file</property>
-                <signal name="clicked" handler="on_keepnote_clicked"/>
-              </widget>
-              <packing>
-                <property name="homogeneous">True</property>
-              </packing>
-            </child>
             <child>
               <widget class="GtkToolButton" id="mark_as_done_editor">
                 <property name="visible">True</property>
@@ -86,6 +75,25 @@
                 <signal name="show_menu" handler="on_inserttag_show_menu"/>
                 <signal name="show_menu" handler="on_inserttag_show_menu"/>
                 <signal name="clicked" handler="on_inserttag_clicked"/>
+              </widget>
+              <packing>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkSeparatorToolItem" id="separator2">
+                <property name="visible">True</property>
+              </widget>
+              <packing>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkToolButton" id="keepnote">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">Keep as Note</property>
+                <property name="stock_id">gtk-file</property>
+                <signal name="clicked" handler="on_keepnote_clicked"/>
               </widget>
               <packing>
                 <property name="homogeneous">True</property>
