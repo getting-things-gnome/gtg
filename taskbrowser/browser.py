@@ -82,6 +82,7 @@ class TaskBrowser:
                 "on_tag_treeview_button_press_event"  : self.on_tag_treeview_button_press_event,
                 "on_colorchooser_activate"            : self.on_colorchooser_activate,
                 "on_workview_toggled"                 : self.on_workview_toggled,
+                "on_note_toggled"                     : self.on_note_toggled,
                 "on_view_workview_toggled"            : self.on_workview_toggled,
                 "on_view_closed_toggled"              : self.on_closed_toggled,
                 "on_view_sidebar_toggled"             : self.on_sidebar_toggled,
@@ -98,6 +99,9 @@ class TaskBrowser:
         
         self.workview = False
         self.req = requester
+        
+        self.noteview = False
+        self.note_toggle = self.wTree.get_widget("note_toggle")
         
         # Model constants
         self.TASK_MODEL_OBJ         = 0
@@ -121,7 +125,9 @@ class TaskBrowser:
         #The tview and their model
         self.taskdone_tview = self.wTree.get_widget("taskdone_tview")
         self.taskdone_ts    = gtk.TreeStore(gobject.TYPE_PYOBJECT, str,str,str,str)
-        self.note_tview = self.wTree.get_widget("note_tview")
+        #self.note_tview = self.wTree.get_widget("note_tview")
+        self.note_tview = gtk.TreeView()
+        self.note_tview.show()
         self.note_ts = gtk.TreeStore(gobject.TYPE_PYOBJECT, str,str)
         self.tag_tview      = self.wTree.get_widget("tag_tview")
         self.tag_ts         = gtk.ListStore(gobject.TYPE_PYOBJECT,str,str,str,bool)
@@ -130,6 +136,7 @@ class TaskBrowser:
         # STR:days left string, PYOBJECT:tags, str:my_color
         self.task_tview     = self.wTree.get_widget("task_tview")
         self.task_ts        = treetools.new_task_ts(dnd_func=self.row_dragndrop)
+        self.main_pane      = self.wTree.get_widget("main_pane")
 
         #Be sure that we are reorderable (not needed normaly)
         self.task_tview.set_reorderable(True)
@@ -349,6 +356,9 @@ class TaskBrowser:
         #We have to be careful here to avoid a loop of signals
         menu_state = self.menu_view_workview.get_active()
         button_state = self.toggle_workview.get_active()
+        #We cannot have note and workview at the same time
+        if not self.workview and self.note_toggle.get_active() :
+            self.note_toggle.set_active(False)
         #We do something only if both widget are in different state
         if menu_state != button_state :
             tobeset = not self.workview
@@ -364,6 +374,13 @@ class TaskBrowser:
             self.sidebar.show()
         else :
             self.sidebar.hide()
+            
+    def on_note_toggled(self,widget) :
+        self.noteview = not self.noteview
+        workview_state = self.toggle_workview.get_active()
+        if workview_state :
+            self.toggle_workview.set_active(False)
+        self.do_refresh()
     
     def on_closed_toggled(self,widget) :
         if widget.get_active() :
@@ -406,10 +423,15 @@ class TaskBrowser:
     def refresh_tb(self,fromtask=None):
         self.refresh_lock.acquire()
         self.refresh_lock_lock.release()
-        self.refresh_list()
+        self.main_pane.remove(self.main_pane.get_child())
+        if self.noteview :
+            self.main_pane.add(self.note_tview)
+            self.refresh_note()
+        else :
+            self.main_pane.add(self.task_tview)
+            self.refresh_list()
         self.refresh_closed()
         self.refresh_tags()
-        self.refresh_note()
         #Refreshing the opened editors
         for uid in self.opened_task :
             if uid != fromtask :
@@ -533,12 +555,13 @@ class TaskBrowser:
         self.task_tview.expand_all()
         self.task_tview.map_expanded_rows(self.restore_collapsed,None)
         # Restore sorting
-        if self.priv["tasklist"].has_key("sort_column") and \
-           self.priv["tasklist"].has_key("sort_order")      :
-            if self.priv["tasklist"]["sort_column"] is not None and \
-               self.priv["tasklist"]["sort_order"]  is not None     :
-                self.sort_tasklist_rows(self.priv["tasklist"]["sort_column"], \
-                                        self.priv["tasklist"]["sort_order"])
+        if not self.noteview :
+            if self.priv["tasklist"].has_key("sort_column") and \
+               self.priv["tasklist"].has_key("sort_order")      :
+                if self.priv["tasklist"]["sort_column"] is not None and \
+                   self.priv["tasklist"]["sort_order"]  is not None     :
+                    self.sort_tasklist_rows(self.priv["tasklist"]["sort_column"], \
+                                            self.priv["tasklist"]["sort_order"])
         #We reselect the selected tasks
         selection = self.task_tview.get_selection()
         if t_path :

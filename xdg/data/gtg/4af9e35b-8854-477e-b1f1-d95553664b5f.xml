@@ -27,7 +27,6 @@ zdq dsfhe ee hh e zek
 aze   
 qsd
 cw 
-
 		</content>
 	</task>
 	<task id="1@1" status="Active" tags="@tag,@autro">
@@ -263,7 +262,7 @@ et pas pour d'autres.
 			2009-02-07
 		</donedate>
 	</task>
-	<task id="19@1" status="Active" tags="">
+	<task id="19@1" status="Note" tags="">
 		<title>
 			A shiny new task
 		</title>
