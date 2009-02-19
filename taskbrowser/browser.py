@@ -579,8 +579,18 @@ class TaskBrowser:
                 
         #scroll position
         #We have to call that in another thread, else it will not work
-        gobject.idle_add(self.task_tview.get_vadjustment().set_value,vscroll_value)
-        gobject.idle_add(self.task_tview.get_hadjustment().set_value,hscroll_value)
+        def restore_vscroll(old_position) :
+            vadjust = self.task_tview.get_vadjustment()
+            #We ensure that we will not scroll out of the window
+            #It was bug #331285
+            vscroll = min(old_position,(vadjust.upper - vadjust.page_size))
+            vadjust.set_value(vscroll)
+        def restore_hscroll(old_position) :
+            hadjust = self.task_tview.get_hadjustment()
+            hscroll = min(old_position,(hadjust.upper - hadjust.page_size))
+            hadjust.set_value(hscroll)
+        gobject.idle_add(restore_vscroll,vscroll_value)
+        gobject.idle_add(restore_hscroll,hscroll_value)
 
     #Refresh the closed tasks pane
     def refresh_closed(self) :
