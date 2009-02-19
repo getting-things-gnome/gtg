@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Tue Feb 17 22:24:33 2009 -->
+<!--Generated with glade3 3.4.5 on Thu Feb 19 11:24:50 2009 -->
 <glade-interface>
   <widget class="GtkWindow" id="MainWindow">
     <property name="visible">True</property>
@@ -306,6 +306,17 @@
                 <property name="homogeneous">True</property>
               </packing>
             </child>
+            <child>
+              <widget class="GtkToggleToolButton" id="note_toggle">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">View Notes</property>
+                <property name="stock_id">gtk-file</property>
+                <signal name="toggled" handler="on_note_toggled"/>
+              </widget>
+              <packing>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
           </widget>
           <packing>
             <property name="expand">False</property>
@@ -344,23 +355,7 @@
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkScrolledWindow" id="scrolledwindow2">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
-                    <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
-                    <child>
-                      <widget class="GtkTreeView" id="note_tview">
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <signal name="row_activated" handler="on_edit_note"/>
-                      </widget>
-                    </child>
-                  </widget>
-                  <packing>
-                    <property name="resize">False</property>
-                    <property name="shrink">True</property>
-                  </packing>
+                  <placeholder/>
                 </child>
               </widget>
               <packing>
@@ -411,7 +406,7 @@
                     <property name="position">330</property>
                     <property name="position_set">True</property>
                     <child>
-                      <widget class="GtkScrolledWindow" id="scrolledwindow4">
+                      <widget class="GtkScrolledWindow" id="main_pane">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>

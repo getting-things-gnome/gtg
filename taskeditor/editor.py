@@ -27,7 +27,8 @@ date_separator = "/"
 
 class TaskEditor :
     def __init__(self, requester, task, refresh_callback=None,delete_callback=None,
-                close_callback=None,opentask_callback=None, tasktitle_callback=None) :
+                close_callback=None,opentask_callback=None, tasktitle_callback=None,
+                notes=False) :
         self.req = requester
         self.time = time.time()
         self.gladefile = GnomeConfig.GLADE_FILE
@@ -82,6 +83,10 @@ class TaskEditor :
         self.inserttag_button = self.wTree.get_widget("inserttag")
         self.tasksidebar = self.wTree.get_widget("tasksidebar")
         self.keepnote_button = self.wTree.get_widget("keepnote")
+        if not notes :
+            self.keepnote_button.hide()
+            separator = self.wTree.get_widget("separator_note")
+            separator.hide()
         #We will keep the name of the opened calendar
         #Empty means that no calendar is opened
         self.__opened_date = ''

@@ -39,10 +39,11 @@ class CoreConfig:
     CONF_DIR = os.path.join(xdg_config_home,'gtg/')
     CONF_FILE = "gtg.conf"
     conf_dict = None
+    FIRSTRUN_FILE = "firstrun_tasks.xml"
     
     def __init__(self):
         if not os.path.exists(self.CONF_DIR) :
-            os.mkdir(self.CONF_DIR)
+            os.makedirs(self.CONF_DIR)
         if not os.path.exists(self.CONF_DIR + self.CONF_FILE):
             f = open(self.CONF_DIR + self.CONF_FILE, "w")
             f.close()
@@ -56,7 +57,7 @@ class CoreConfig:
 
         # Check if config dir exists, if not create it
         if not os.path.exists(self.DATA_DIR):
-            os.mkdir(self.DATA_DIR)
+            os.makedirs(self.DATA_DIR)
 
         # Read configuration file, if it does not exist, create one
         datafile = self.DATA_DIR + self.DATA_FILE
@@ -81,12 +82,14 @@ class CoreConfig:
             pid += 1
             backend_fn.append(dic)
                 
+        firstrun = False
         #If no backend available, we create a new using localfile
         if len(backend_fn) == 0 :
             dic = {}
             dic["module"] = "localfile"
             dic["pid"] = "1"
             backend_fn.append(dic)
+            firstrun = True
             
         #Now that the backend list is build, we will construct them
         #Remember that b is a dictionnary
@@ -104,7 +107,10 @@ class CoreConfig:
                 for key in b["parameters"] :
                     if xp.hasAttribute(key) :
                         b[key] = str(xp.getAttribute(key))
-            back = classobj.Backend(b)
+            if firstrun :
+                back = classobj.Backend(b,firstrunfile=self.FIRSTRUN_FILE)
+            else :
+                back = classobj.Backend(b)
             #We put the backend itself in the dic
             b["backend"] = back
             
