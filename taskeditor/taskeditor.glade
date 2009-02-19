@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Wed Feb 18 15:02:01 2009 -->
+<!--Generated with glade3 3.4.5 on Thu Feb 19 11:51:57 2009 -->
 <glade-interface>
   <widget class="GtkWindow" id="TaskEditor">
     <property name="title" translatable="yes">Task</property>
@@ -81,7 +81,7 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkSeparatorToolItem" id="separator2">
+              <widget class="GtkSeparatorToolItem" id="separator_note">
                 <property name="visible">True</property>
               </widget>
               <packing>

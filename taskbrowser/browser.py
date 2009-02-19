@@ -23,6 +23,8 @@ SIDEBAR       = True
 CLOSED_PANE   = True
 QUICKADD_PANE = True
 
+EXPERIMENTAL_NOTES = True
+
 class TaskBrowser:
 
     def __init__(self, requester, config):
@@ -102,6 +104,8 @@ class TaskBrowser:
         
         self.noteview = False
         self.note_toggle = self.wTree.get_widget("note_toggle")
+        if not EXPERIMENTAL_NOTES :
+            self.note_toggle.hide()
         
         # Model constants
         self.TASK_MODEL_OBJ         = 0
@@ -741,7 +745,8 @@ class TaskBrowser:
             self.opened_task[uid].present()
         else :
             tv = TaskEditor(self.req,t,self.do_refresh,self.on_delete_task,
-                            self.close_task,self.open_task,self.get_tasktitle)
+                            self.close_task,self.open_task,self.get_tasktitle,
+                            notes=EXPERIMENTAL_NOTES)
             #registering as opened
             self.opened_task[uid] = tv
             
