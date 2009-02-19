@@ -127,6 +127,7 @@ class TaskBrowser:
         self.taskdone_ts    = gtk.TreeStore(gobject.TYPE_PYOBJECT, str,str,str,str)
         #self.note_tview = self.wTree.get_widget("note_tview")
         self.note_tview = gtk.TreeView()
+        self.note_tview.connect("row-activated",self.on_edit_note)
         self.note_tview.show()
         self.note_ts = gtk.TreeStore(gobject.TYPE_PYOBJECT, str,str)
         self.tag_tview      = self.wTree.get_widget("tag_tview")
@@ -423,12 +424,16 @@ class TaskBrowser:
     def refresh_tb(self,fromtask=None):
         self.refresh_lock.acquire()
         self.refresh_lock_lock.release()
-        self.main_pane.remove(self.main_pane.get_child())
+        current_pane = self.main_pane.get_child()
         if self.noteview :
-            self.main_pane.add(self.note_tview)
+            if current_pane == self.task_tview :
+                self.main_pane.remove(current_pane)
+                self.main_pane.add(self.note_tview)
             self.refresh_note()
         else :
-            self.main_pane.add(self.task_tview)
+            if current_pane == self.note_tview :
+                self.main_pane.remove(current_pane)
+                self.main_pane.add(self.task_tview)
             self.refresh_list()
         self.refresh_closed()
         self.refresh_tags()
