@@ -1,4 +1,4 @@
-import os
+import os,shutil
 import uuid
 
 from gtg_core   import CoreConfig
@@ -33,8 +33,9 @@ def get_type() :
 #The parameters dictionnary should match the dictionnary returned in 
 #get_parameters. Anyway, the backend should care if one expected value is
 #None or do not exist in the dictionnary.
+#firstrun is only needed for the default backend. You can ignore it.
 class Backend :
-    def __init__(self,parameters) :
+    def __init__(self,parameters,firstrunfile=None) :
         if parameters.has_key("filename") :
             zefile = parameters["filename"]
         #If zefile is None, we create a new file
@@ -49,6 +50,9 @@ class Backend :
         else :
             self.zefile = zefile
             self.filename = zefile
+        #Create the defaut tasks for the first run.
+        if firstrunfile and not os.path.exists(zefile) :
+            shutil.copy(firstrunfile,self.zefile)
         self.doc, self.xmlproj = cleanxml.openxmlfile(self.zefile,"project")
 
 

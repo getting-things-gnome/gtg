@@ -51,6 +51,11 @@ def openxmlfile(zefile,root ):
         xmlproject = doc.getElementsByTagName(root)[0]
     #the file didn't exist, create it now
     else :
+#        if os.path.exists(firstrun_file) :
+#            doc = xml.dom.minidom.parse(firstrun_file)
+#            cleanDoc(doc,tab,enter)
+#            xmlproject = doc.getElementsByTagName(root)[0]
+#        else :
         doc,xmlproject = emptydoc(root)
         #then we create the file
         f = open(zefile, mode='a+')
