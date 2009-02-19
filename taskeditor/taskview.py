@@ -182,7 +182,27 @@ class TaskView(gtk.TextView):
         if _iter is None:
             _iter = self.buff.get_end_iter()
         #Ok, this line require an integer at some place !
+        #disable the insert and modified signals
+        reconnect_insert = False
+        reconnect_modified = False
+        if self.insert_sigid :
+            self.buff.disconnect(self.insert_sigid)
+            self.insert_sigid = False
+            reconnect_insert = True
+        if self.modified_sigid :
+            self.buff.disconnect(self.modified_sigid)
+            self.modified_sigid = False
+            reconnect_modified = True
+            
+        #deserialize
         self.buff.deserialize(self.buff, self.mime_type, _iter, text)
+        
+        #reconnect
+        if reconnect_insert :
+            self.insert_sigid = self.buff.connect('insert-text', self._insert_at_cursor)
+        if reconnect_modified :
+            self.modified_sigid = self.buff.connect("changed" , self.modified)
+            
     #This insert raw text without deserializing
     def insert_text(self,text, _iter=None) :
         if _iter is None :
@@ -354,14 +374,6 @@ class TaskView(gtk.TextView):
         #if full=False we detect tag only on the current line
         self._detect_tag(buff,local_start,local_end)
         
-        #Now we apply the tag tag to the marks
-        for t in self.get_tagslist() :
-            start_mark = buff.get_mark(t)
-            end_mark = buff.get_mark("/%s"%t)
-            # "applying %s to %s - %s"%(t,start_mark,end_mark)
-            if start_mark and end_mark :
-                self.apply_tag_tag(buff,t,start_mark,end_mark)
-        
         #subt_list = self.get_subtasks()
         #First, we remove the olds tags
         tag_list = []
@@ -384,6 +396,15 @@ class TaskView(gtk.TextView):
                 start_i.forward_to_line_end()
                 end_mark = buff.create_mark("/%s"%s,start_i,False)
                 self.apply_subtask_tag(buff,s,start_mark,end_mark)
+    
+                
+        #Now we apply the tag tag to the marks
+        for t in self.get_tagslist() :
+            start_mark = buff.get_mark(t)
+            end_mark = buff.get_mark("/%s"%t)
+            # "applying %s to %s - %s"%(t,start_mark,end_mark)
+            if start_mark and end_mark :
+                self.apply_tag_tag(buff,t,start_mark,end_mark)
         
         #Ok, we took care of the modification
         self.buff.set_modified(False)
