@@ -81,7 +81,7 @@ class TaskBrowser:
                 "on_select_tag"       : self.on_select_tag,
                 "on_delete_confirm"   : self.on_delete_confirm,
                 "on_delete_cancel"    : lambda x : x.hide,
-                "on"
+                "on_add_subtask"      : self.on_add_subtask,
                 "on_closed_task_treeview_button_press_event" : self.on_closed_task_treeview_button_press_event,
                 "on_task_treeview_button_press_event" : self.on_task_treeview_button_press_event,
                 "on_tag_treeview_button_press_event"  : self.on_tag_treeview_button_press_event,
@@ -848,6 +848,17 @@ class TaskBrowser:
         task = self.req.new_task(tags=tags,newtask=True)
         uid = task.get_id()
         self.open_task(uid)
+
+    def on_add_subtask(self,widget) : #pylint: disable-msg=W0613
+        uid = self.get_selected_task()
+        if uid :
+            zetask = self.req.get_task(uid)    
+            tags   = zetask.get_tags()
+            task   = self.req.new_task(tags=tags,newtask=True)
+            task.add_parent(uid)
+            zetask.add_subtask(task.get_id())
+            self.open_task(task.get_id())
+            self.do_refresh()
     
     #Get_selected_task returns the uid :
     # uid (example : '21@1')
