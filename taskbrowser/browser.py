@@ -200,7 +200,7 @@ class TaskBrowser:
                
             width  = int(self.config["browser"]["width"])
             height = int(self.config["browser"]["height"])
-            self.window.resize (width, height)
+            self.window.resize(width, height)
    
         if self.config["browser"].has_key("x_pos") and \
            self.config["browser"].has_key("y_pos"):
@@ -326,8 +326,10 @@ class TaskBrowser:
         note_selection = self.note_tview.get_selection()
         note_selection.connect("changed",self.note_cursor_changed)
         
+        
         # Restore state from config
         self.__restore_state_from_conf()
+        self.window.show()
         
         gtk.main()
         return 0
