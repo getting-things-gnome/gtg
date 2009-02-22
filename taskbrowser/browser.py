@@ -38,11 +38,14 @@ class TaskBrowser:
         self.config = config
         
         # Setup default values for view
-        self.priv["collapsed_tid"]           = []
-        self.priv["tasklist"]                = {}
-        self.priv["tasklist"]["sort_column"] = None
-        self.priv["tasklist"]["sort_order"]  = gtk.SORT_ASCENDING
-        
+        self.priv["collapsed_tid"]            = []
+        self.priv["tasklist"]                 = {}
+        self.priv["tasklist"]["sort_column"]  = None
+        self.priv["tasklist"]["sort_order"]   = gtk.SORT_ASCENDING
+        self.priv["ctasklist"]                = {}
+        self.priv["ctasklist"]["sort_column"] = None
+        self.priv["ctasklist"]["sort_order"]  = gtk.SORT_ASCENDING
+               
         #Set the Glade file
         self.gladefile = GnomeConfig.GLADE_FILE  
         self.wTree = gtk.glade.XML(self.gladefile) 
@@ -122,13 +125,16 @@ class TaskBrowser:
         self.TAGS_MODEL_NAME        = 2
         self.TAGS_MODEL_COUNT       = 3
         self.TAGS_MODEL_SEP         = 4
+        self.CTASKS_MODEL_OBJ       = 0
         self.CTASKS_MODEL_TITLE     = 2
         self.CTASKS_MODEL_DDATE     = 3
         self.CTASKS_MODEL_DDATE_STR = 4
-        
+        self.CTASKS_MODEL_BGCOL     = 5
+        self.CTASKS_MODEL_TAGS      = 6
+                
         #The tview and their model
         self.taskdone_tview = self.wTree.get_widget("taskdone_tview")
-        self.taskdone_ts    = gtk.TreeStore(gobject.TYPE_PYOBJECT, str,str,str,str)
+        self.taskdone_ts    = gtk.TreeStore(gobject.TYPE_PYOBJECT, str,str,str,str,str,gobject.TYPE_PYOBJECT)
         #self.note_tview = self.wTree.get_widget("note_tview")
         self.note_tview = gtk.TreeView()
         self.note_tview.connect("row-activated",self.on_edit_note)
@@ -610,10 +616,15 @@ class TaskBrowser:
             title_str      = t.get_title()
             closeddate     = t.get_closed_date()
             closeddate_str = closeddate
+            tags           = t.get_tags()
+            if self.priv["bg_color_enable"] and t.has_tags() :
+                my_color = colors.background_color(t.get_tags())
+            else:
+                my_color = None
             if t.get_status() == "Dismiss":
                 title_str      = "<span color=\"#AAAAAA\">%s</span>" % title_str
                 closeddate_str = "<span color=\"#AAAAAA\">%s</span>" % closeddate
-            self.taskdone_ts.append(None,[tid,t.get_color(),title_str,closeddate,closeddate_str])
+            self.taskdone_ts.append(None,[tid,t.get_color(),title_str,closeddate,closeddate_str,my_color,tags])
         closed_selection = self.taskdone_tview.get_selection()
         if d_path :
             for i in d_path :
@@ -742,7 +753,7 @@ class TaskBrowser:
         else :
             alone = (not task.has_parents() and len(task.get_subtasks())!=0)
             if (not self.workview) and alone:
-                title = "<span weight='bold' size='large'>%s</span>" % task.get_title()
+                title = "<span weight=\"bold\" size=\"large\">%s (%s)</span>" % (task.get_title(), len(task.get_subtasks()) )
             else:
                 title = task.get_title()
         return title
@@ -1190,17 +1201,38 @@ class TaskBrowser:
         self.task_tview.set_rules_hint (False)
 
     def __create_closed_tasks_tview(self):
+
+        self.priv["ctasklist"]["columns"] = []
+
+        # Tag column
+        self.CTASKLIST_COL_TAGS = 0
+        tag_col     = gtk.TreeViewColumn()
+        render_tags = CellRendererTags()
+        tag_col.set_title             ("Tags")
+        tag_col.pack_start            (render_tags, expand=False)
+        tag_col.add_attribute         (render_tags, "tag_list", self.CTASKS_MODEL_TAGS)
+        render_tags.set_property      ('xalign', 0.0)
+        tag_col.set_resizable         (False)
+        tag_col.add_attribute         (render_tags, "cell-background", self.CTASKS_MODEL_BGCOL)
+        #tag_col.set_clickable         (True)
+        #tag_col.connect               ('clicked', self.sort_tasklist_rows)
+        self.taskdone_tview.append_column (tag_col)
+        self.priv["ctasklist"]["columns"].insert(self.CTASKLIST_COL_TAGS, tag_col)
          
         # Done date column
+        self.CTASKLIST_COL_DDATE = 1
         ddate_col    = gtk.TreeViewColumn()
         render_text  = gtk.CellRendererText()
         ddate_col.set_title                ("Closing date")
         ddate_col.pack_start               (render_text  , expand=True)
         ddate_col.set_attributes           (render_text  , markup=self.CTASKS_MODEL_DDATE_STR)
         ddate_col.set_sort_column_id       (self.CTASKS_MODEL_DDATE)
+        ddate_col.add_attribute            (render_text, "cell_background", self.CTASKS_MODEL_BGCOL)
         self.taskdone_tview.append_column  (ddate_col)
-         
+        self.priv["ctasklist"]["columns"].insert(self.CTASKLIST_COL_DDATE, ddate_col)
+                 
         # Title column
+        self.CTASKLIST_COL_TITLE = 2
         title_col    = gtk.TreeViewColumn()
         render_text  = gtk.CellRendererText()
         title_col.set_title                ("Title")
@@ -1208,8 +1240,10 @@ class TaskBrowser:
         title_col.set_attributes           (render_text  , markup=self.CTASKS_MODEL_TITLE)
         title_col.set_sort_column_id       (self.CTASKS_MODEL_TITLE)
         title_col.set_expand               (True)
+        title_col.add_attribute            (render_text, "cell_background", self.CTASKS_MODEL_BGCOL)
         self.taskdone_tview.append_column  (title_col)
-
+        self.priv["ctasklist"]["columns"].insert(self.CTASKLIST_COL_TITLE, title_col)
+        
         # Global treeview properties
         self.taskdone_ts.set_sort_column_id(self.CTASKS_MODEL_DDATE, gtk.SORT_DESCENDING)
         
