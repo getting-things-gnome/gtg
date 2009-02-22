@@ -57,7 +57,6 @@ zdq dsfhe ee hh e zek
 			&lt;tag&gt;@new_tag&lt;/tag&gt;,&lt;tag&gt;@aze&lt;/tag&gt;
 pour voir
 &lt;subtask&gt;12@1&lt;/subtask&gt;
-
 		</content>
 	</task>
 	<task id="5@1" status="Done" tags="@aze">
@@ -139,7 +138,6 @@ tag,
 		<content>
 			&lt;subtask&gt;27@1&lt;/subtask&gt;
 &lt;subtask&gt;1@1&lt;/subtask&gt;
-
 		</content>
 	</task>
 	<task id="3@1" status="Done" tags="@donetask">
@@ -225,7 +223,6 @@ Aenean mollis neque et magna fringilla volutpat. Donec elementum, justo vitae rh
 
 Sed tincidunt. Nunc vel felis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Sed luctus massa et orci. Duis dictum convallis purus. Donec mattis quam nec ante. Aliquam gravida fermentum risus. Nullam in felis eget tortor ultricies porttitor. Vestibulum nibh. Sed euismod pede ac erat. Fusce ac odio. Fusce ultricies mauris at justo pulvinar ultrices. Nullam eget enim nec nibh pellentesque scelerisque. Proin porttitor. Nunc in purus.
 &lt;tag&gt;@lorem_ipsum&lt;/tag&gt;, &lt;tag&gt;@vampire&lt;/tag&gt;, &lt;tag&gt;@t2&lt;/tag&gt;, 
-
 		</content>
 	</task>
 	<task id="15@1" status="Done" tags="">
@@ -258,7 +255,6 @@ et pas pour d'autres.
 		</duedate>
 		<content>
 			&lt;tag&gt;@lorem_ipsum&lt;/tag&gt;, &lt;tag&gt;@vampire&lt;/tag&gt;, &lt;tag&gt;@t2&lt;/tag&gt;, 
-
 		</content>
 	</task>
 	<task id="17@1" status="Done" tags="">
@@ -283,7 +279,6 @@ et pas pour d'autres.
 		</subtask>
 		<content>
 			&lt;subtask&gt;18@1&lt;/subtask&gt;
-
 		</content>
 	</task>
 	<task id="24@1" status="Active" tags="@aze">
