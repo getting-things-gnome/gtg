@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Sun Feb 22 20:10:14 2009 -->
+<!--Generated with glade3 3.4.5 on Sun Feb 22 20:29:46 2009 -->
 <glade-interface>
   <widget class="GtkWindow" id="MainWindow">
-    <property name="visible">True</property>
     <property name="title" translatable="yes">Getting Things Gnome!</property>
     <property name="default_width">800</property>
     <property name="default_height">600</property>
