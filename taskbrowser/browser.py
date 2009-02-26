@@ -750,6 +750,16 @@ class TaskBrowser:
         if selection.count_selected_rows() > 0 :
             self.taskdone_tview.get_selection().unselect_all()
             self.task_tview.get_selection().unselect_all()
+
+    def __count_tasks_rec(self, my_task):
+        count = 0
+        for t in my_task.get_subtasks():
+            if t.get_status() == "Active" and t.is_started():
+                if len(t.get_subtasks()) != 0:
+                    count = count + 1 + self.__count_tasks_rec(t)
+                else:
+                    count = count + 1
+        return count
     
     def __build_task_title(self,task,extended=False):
         if extended :
@@ -761,7 +771,7 @@ class TaskBrowser:
         else :
             alone = (not task.has_parents() and len(task.get_subtasks())!=0)
             if (not self.workview) and alone:
-                title = "<span weight=\"bold\" size=\"large\">%s (%s)</span>" % (task.get_title(), len(task.get_subtasks()) )
+                title = "<span weight=\"bold\" size=\"large\">%s (%s)</span>" % (task.get_title(), self.__count_tasks_rec(task) )
             else:
                 title = task.get_title()
         return title
