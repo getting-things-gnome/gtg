@@ -220,6 +220,10 @@ class TaskBrowser:
             if not closed_task_pane :
                 self.closed_pane.hide()
                 self.wTree.get_widget("view_closed").set_active(False)
+
+        if self.config["browser"].has_key("ctask_pane_height"):
+            ctask_pane_height = eval(self.config["browser"]["ctask_pane_height"])
+            self.wTree.get_widget("vpaned1").set_position(ctask_pane_height)
                 
         if self.config["browser"].has_key("quick_add"):
             quickadd_pane    = eval(self.config["browser"]["quick_add"])
@@ -273,18 +277,20 @@ class TaskBrowser:
         task_tv_sort_id = self.task_ts.get_sort_column_id()
         sort_column     = self.priv["tasklist"]["sort_column"]
         sort_order      = self.priv["tasklist"]["sort_order"]
+        closed_pane_height = self.wTree.get_widget("vpaned1").get_position()
                 
         # Populate configuration dictionary
         self.config["browser"] = {}
-        self.config["browser"]["width"]            = self.priv["window_width"]
-        self.config["browser"]["height"]           = self.priv["window_height"]
-        self.config["browser"]["x_pos"]            = self.priv["window_xpos"]
-        self.config["browser"]["y_pos"]            = self.priv["window_ypos"]
-        self.config["browser"]["tag_pane"]         = tag_sidebar
-        self.config["browser"]["closed_task_pane"] = closed_pane
-        self.config["browser"]["quick_add"]        = quickadd_pane
-        self.config["browser"]["bg_color_enable"]  = self.priv["bg_color_enable"]
-        self.config["browser"]["collapsed_tasks"]  = self.priv["collapsed_tid"]
+        self.config["browser"]["width"]             = self.priv["window_width"]
+        self.config["browser"]["height"]            = self.priv["window_height"]
+        self.config["browser"]["x_pos"]             = self.priv["window_xpos"]
+        self.config["browser"]["y_pos"]             = self.priv["window_ypos"]
+        self.config["browser"]["tag_pane"]          = tag_sidebar
+        self.config["browser"]["closed_task_pane"]  = closed_pane
+        self.config["browser"]["ctask_pane_height"] = closed_pane_height
+        self.config["browser"]["quick_add"]         = quickadd_pane
+        self.config["browser"]["bg_color_enable"]   = self.priv["bg_color_enable"]
+        self.config["browser"]["collapsed_tasks"]   = self.priv["collapsed_tid"]
         if   sort_column is not None and sort_order == gtk.SORT_ASCENDING :
             sort_col_id = self.priv["tasklist"]["columns"].index(sort_column)
             self.config["browser"]["tasklist_sort"]  = [sort_col_id, 0]
