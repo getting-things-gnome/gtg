@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Fri Feb 27 14:29:53 2009 -->
+<!--Generated with glade3 3.4.5 on Fri Feb 27 17:13:26 2009 -->
 <glade-interface>
   <widget class="GtkWindow" id="MainWindow">
     <property name="title" translatable="yes">Getting Things Gnome!</property>
@@ -215,6 +215,17 @@
                 <property name="label" translatable="yes">New task</property>
                 <property name="icon_name">gtg-task-new</property>
                 <signal name="clicked" handler="on_add_task"/>
+              </widget>
+              <packing>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkToolButton" id="new_note_button">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">New note</property>
+                <property name="icon_name">gtg-note-new</property>
+                <signal name="clicked" handler="on_add_note"/>
               </widget>
               <packing>
                 <property name="homogeneous">True</property>
