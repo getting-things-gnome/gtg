@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Sun Feb 22 20:29:46 2009 -->
+<!--Generated with glade3 3.4.5 on Fri Feb 27 14:29:53 2009 -->
 <glade-interface>
   <widget class="GtkWindow" id="MainWindow">
     <property name="title" translatable="yes">Getting Things Gnome!</property>
@@ -143,7 +143,7 @@
                         <child internal-child="image">
                           <widget class="GtkImage" id="menu-item-image5">
                             <property name="visible">True</property>
-                            <property name="pixbuf">task_done_small.png</property>
+                            <property name="icon_name">gtg-task-done</property>
                           </widget>
                         </child>
                       </widget>
@@ -156,7 +156,7 @@
                         <signal name="activate" handler="on_dismiss_task"/>
                         <child internal-child="image">
                           <widget class="GtkImage" id="menu-item-image6">
-                            <property name="pixbuf">task_dismiss_small.png</property>
+                            <property name="icon_name">gtg-task-dismiss</property>
                           </widget>
                         </child>
                       </widget>
@@ -213,7 +213,7 @@
               <widget class="GtkToolButton" id="new_task_b">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">New task</property>
-                <property name="icon">task_new.png</property>
+                <property name="icon_name">gtg-task-new</property>
                 <signal name="clicked" handler="on_add_task"/>
               </widget>
               <packing>
@@ -257,7 +257,7 @@
               <widget class="GtkToolButton" id="mark_as_done_b">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">Mark as done</property>
-                <property name="icon">task_done.png</property>
+                <property name="icon_name">gtg-task-done</property>
                 <signal name="clicked" handler="on_mark_as_done"/>
               </widget>
               <packing>
@@ -268,7 +268,7 @@
               <widget class="GtkToolButton" id="dismiss">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">Dismiss</property>
-                <property name="icon">task_dismiss.png</property>
+                <property name="icon_name">gtg-task-dismiss</property>
                 <signal name="clicked" handler="on_dismiss_task"/>
               </widget>
               <packing>
@@ -720,15 +720,14 @@ Deleting a task cannot be undone.</property>
 Getting Things Gnome! is an organizer for the GNOME desktop environment.</property>
     <property name="website">http://www.gtg-project.org</property>
     <property name="website_label" translatable="yes">GTG website</property>
-    <property name="license" translatable="yes">Getting Things Gnome! est un logiciel libre ; vous pouvez le redistribuer et/ou le modifier selon les termes de la Licence Publique Générale GNU, telle que publiée par la Free Software Foundation ; version 3 de la licence, ou (à votre discrétion) toute version ultérieure.
+    <property name="license" translatable="yes">Getting Things Gnome! is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
 
-Getting Things Gnome! est distribué dans l'espoir qu'il sera utile, mais SANS AUCUNE GARANTIE ; sans même la garantie implicite de VALEUR MARCHANDE ou D'ADÉQUATION À UN BESOIN PARTICULIER. Pour plus de détails, voir la Licence Publique Générale GNU.
+Getting Things Gnome! is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 
-Un exemplaire de la Licence Publique Générale GNU doit être fourni avec Getting Things Gnome! ; si ce n'est pas le cas, écrivez à la Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-</property>
+You should have received a copy of the GNU General Public License along with Getting Things Gnome!; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.</property>
     <property name="authors">Lionel Dricot (ploum@ploum.net),
 Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
-    <property name="logo">gtg.svg</property>
+    <property name="logo_icon_name">gtg</property>
     <property name="wrap_license">True</property>
     <signal name="response" handler="on_about_close"/>
     <child internal-child="vbox">
@@ -759,7 +758,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
         <child internal-child="image">
           <widget class="GtkImage" id="menu-item-image14">
             <property name="visible">True</property>
-            <property name="pixbuf">task_new_small.png</property>
+            <property name="icon_name">gtg-task-new</property>
           </widget>
         </child>
       </widget>
@@ -778,7 +777,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
         <child internal-child="image">
           <widget class="GtkImage" id="menu-item-image8">
             <property name="visible">True</property>
-            <property name="pixbuf">task_done_small.png</property>
+            <property name="icon_name">gtg-task-done</property>
           </widget>
         </child>
       </widget>
@@ -792,7 +791,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
         <child internal-child="image">
           <widget class="GtkImage" id="menu-item-image9">
             <property name="visible">True</property>
-            <property name="pixbuf">task_dismiss_small.png</property>
+            <property name="icon_name">gtg-task-dismiss</property>
           </widget>
         </child>
       </widget>
@@ -823,7 +822,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
         <child internal-child="image">
           <widget class="GtkImage" id="menu-item-image18">
             <property name="visible">True</property>
-            <property name="pixbuf">task_done_small.png</property>
+            <property name="icon_name">gtg-task-undone</property>
           </widget>
         </child>
       </widget>
@@ -837,7 +836,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
         <child internal-child="image">
           <widget class="GtkImage" id="menu-item-image19">
             <property name="visible">True</property>
-            <property name="pixbuf">task_dismiss_small.png</property>
+            <property name="icon_name">gtg-task-undismiss</property>
           </widget>
         </child>
       </widget>

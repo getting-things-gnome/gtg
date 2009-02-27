@@ -5,6 +5,7 @@ pygtk.require('2.0')
 import gobject
 import gtk.glade
 import threading
+import os
 
 #our own imports
 from taskeditor.editor       import TaskEditor
@@ -12,6 +13,7 @@ from taskbrowser.CellRendererTags import CellRendererTags
 from taskbrowser import GnomeConfig
 from taskbrowser import treetools
 from tools import colors
+from gtg_core   import CoreConfig
 
 #=== OBJECTS ===================================================================
 
@@ -54,7 +56,15 @@ class TaskBrowser:
         self.window = self.wTree.get_widget("MainWindow")
         if (self.window):
             self.window.connect("destroy", gtk.main_quit)
-        self.window.set_icon_from_file("data/16x16/app/gtg.png")
+
+        icon_dirs = [
+            CoreConfig.SHARED_DATA_DIR,
+            os.path.join(CoreConfig.SHARED_DATA_DIR,"icons")
+                    ] 
+
+        for i in icon_dirs:
+            gtk.icon_theme_get_default().prepend_search_path(i)
+            gtk.window_set_default_icon_name("gtg")
 
         self.tagpopup           = self.wTree.get_widget("TagContextMenu")
         self.taskpopup          = self.wTree.get_widget("TaskContextMenu")
