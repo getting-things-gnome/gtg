@@ -326,7 +326,7 @@ class TaskBrowser:
         self.do_refresh()
         
         selection = self.task_tview.get_selection()
-        selection.connect("changed",self.task_cursor_changed)
+        #selection.connect("changed",self.task_cursor_changed)
         closed_selection = self.taskdone_tview.get_selection()
         closed_selection.connect("changed",self.taskdone_cursor_changed)
         note_selection = self.note_tview.get_selection()
@@ -664,13 +664,14 @@ class TaskBrowser:
     #Add tasks to a treeview. If treeview is False, it becomes a flat list
     def add_task_tree_to_list(self, tree_store, tid, parent, selected_uid=None,\
                                         active_tasks=[], treeview=True):
-        task  = self.req.get_task(tid)
+        task     = self.req.get_task(tid)
+        st_count = self.__count_tasks_rec(task, active_tasks)
         if selected_uid and selected_uid == tid :
             # Temporarily disabled
             #title = self.__build_task_title(task,extended=True)
-            title_str = self.__build_task_title(task,extended=False)
+            title_str = self.__build_task_title(task, st_count, extended=False)
         else :
-            title_str = self.__build_task_title(task,extended=False)
+            title_str = self.__build_task_title(task, st_count, extended=False)
 
         # Extract data
         title       = task.get_title() 
@@ -733,16 +734,16 @@ class TaskBrowser:
             title = self.__build_task_title(task,extended=False)
             self.task_ts.set_value(self.selected_rows,self.TASK_MODEL_TITLE,title)
         #We change the selection title
-        if selection :
-            ts,itera = selection.get_selected() #pylint: disable-msg=W0612
-            if itera and self.task_ts.iter_is_valid(itera) :
-                tid = self.task_ts.get_value(itera, self.TASK_MODEL_OBJ)
-                task = self.req.get_task(tid)
-                self.selected_rows = itera
+        #if selection :
+            #ts,itera = selection.get_selected() #pylint: disable-msg=W0612
+            #if itera and self.task_ts.iter_is_valid(itera) :
+                #tid = self.task_ts.get_value(itera, self.TASK_MODEL_OBJ)
+                #task = self.req.get_task(tid)
+                #self.selected_rows = itera
                 # Extended title is temporarily disabled
                 #title = self.__build_task_title(task,extended=True)
-                title = self.__build_task_title(task,extended=False)
-                self.task_ts.set_value(self.selected_rows,self.TASK_MODEL_TITLE,title)
+                #title = self.__build_task_title(task,extended=False)
+                #self.task_ts.set_value(self.selected_rows,self.TASK_MODEL_TITLE,title)
                 
     def note_cursor_changed(self,selection=None) :
         #We unselect all in the closed task view
@@ -751,17 +752,17 @@ class TaskBrowser:
             self.taskdone_tview.get_selection().unselect_all()
             self.task_tview.get_selection().unselect_all()
 
-    def __count_tasks_rec(self, my_task):
+    def __count_tasks_rec(self, my_task, active_tasks):
         count = 0
         for t in my_task.get_subtasks():
-            if t.get_status() == "Active" and t.is_started():
+            if t.get_id() in active_tasks:
                 if len(t.get_subtasks()) != 0:
-                    count = count + 1 + self.__count_tasks_rec(t)
+                    count = count + 1 + self.__count_tasks_rec(t, active_tasks)
                 else:
                     count = count + 1
         return count
     
-    def __build_task_title(self,task,extended=False):
+    def __build_task_title(self,task,count,extended=False):
         if extended :
             excerpt = task.get_excerpt(lines=2)
             if excerpt.strip() != "" :
@@ -771,7 +772,10 @@ class TaskBrowser:
         else :
             alone = (not task.has_parents() and len(task.get_subtasks())!=0)
             if (not self.workview) and alone:
-                title = "<span weight=\"bold\" size=\"large\">%s (%s)</span>" % (task.get_title(), self.__count_tasks_rec(task) )
+                if count == 0:
+                    title = "<span weight=\"bold\" size=\"large\">%s</span>" % (task.get_title() )
+                else:
+                    title = "<span weight=\"bold\" size=\"large\">%s (%s)</span>" % (task.get_title(), count )
             else:
                 title = task.get_title()
         return title
