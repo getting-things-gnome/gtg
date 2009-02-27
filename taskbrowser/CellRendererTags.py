@@ -109,7 +109,8 @@ class CellRendererTags(gtk.GenericCellRenderer):
             
             if   my_tag_icon :
 
-                pixbuf     = gtk.gdk.pixbuf_new_from_file(my_tag_icon)
+#                pixbuf     = gtk.gdk.pixbuf_new_from_file(my_tag_icon)
+                pixbuf = gtk.icon_theme_get_default().load_icon(my_tag_icon, 16, 0)
                 gdkcontext.set_source_pixbuf(pixbuf, rect_x, rect_y)
                 gdkcontext.paint()
                 count = count + 1

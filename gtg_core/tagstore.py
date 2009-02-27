@@ -32,11 +32,11 @@ class TagStore :
         #Build the "all tags tag"
         self.alltag_tag = Tag("alltags_tag",save_cllbk=self.save)
         self.alltag_tag.set_attribute("special","all")
-        self.alltag_tag.set_attribute("icon","data/16x16/icons/tags_alltasks.png")
+        self.alltag_tag.set_attribute("icon","gtg-tags-all")
         #Build the "without tag tag"
         self.notag_tag = Tag("notag_tag",save_cllbk=self.save)
         self.notag_tag.set_attribute("special","notag")
-        self.notag_tag.set_attribute("icon","data/16x16/icons/tags_notag.png")
+        self.notag_tag.set_attribute("icon","gtg-tags-none")
             
         
     #create a new tag and return it

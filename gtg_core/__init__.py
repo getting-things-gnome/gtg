@@ -40,6 +40,11 @@ class CoreConfig:
     CONF_FILE = "gtg.conf"
     conf_dict = None
     FIRSTRUN_FILE = "firstrun_tasks.xml"
+
+    DIRECTORY       = os.path.abspath(os.path.join(os.path.dirname(__file__), '..')) 
+    VERSION         = "0.0.1" 
+    SHARED_DATA_DIR = os.path.join(DIRECTORY, "data") 
+    LOCALE_DIR      = os.path.join(DIRECTORY, "po") 
     
     def __init__(self):
         if not os.path.exists(self.CONF_DIR) :
