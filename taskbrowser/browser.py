@@ -78,6 +78,7 @@ class TaskBrowser:
         #Create our dictionay and connect it
         dic = {
                 "on_add_task"         : self.on_add_task,
+                "on_add_note"         : (self.on_add_task,'Note'),
                 "on_edit_active_task" : self.on_edit_active_task,
                 "on_edit_done_task"   : self.on_edit_done_task,
                 "on_edit_note"        : self.on_edit_note,
@@ -116,9 +117,11 @@ class TaskBrowser:
         self.req = requester
         
         self.noteview = False
+        self.new_note_button = self.wTree.get_widget("new_note_button")
         self.note_toggle = self.wTree.get_widget("note_toggle")
         if not EXPERIMENTAL_NOTES :
             self.note_toggle.hide()
+            self.new_note_button.hide()
         
         # Model constants
         self.TASK_MODEL_OBJ         = 0
@@ -875,10 +878,14 @@ class TaskBrowser:
                 self.closedtaskpopup.popup( None, None, None, event.button, time)
             return 1
             
-    def on_add_task(self,widget) : #pylint: disable-msg=W0613
+    def on_add_task(self,widget,status=None) : #pylint: disable-msg=W0613
         tags,notagonly = self.get_selected_tags() #pylint: disable-msg=W0612
         task = self.req.new_task(tags=tags,newtask=True)
         uid = task.get_id()
+        print status
+        if status :
+            print "set"
+            task.set_status(status)
         self.open_task(uid)
 
     def on_add_subtask(self,widget) : #pylint: disable-msg=W0613
