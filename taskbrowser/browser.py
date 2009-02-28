@@ -264,6 +264,10 @@ class TaskBrowser:
             except:
                 print "Invalid configuration for sorting columns"
 
+        if self.config["browser"].has_key("view"):
+            view = self.config["browser"]["view"]
+            if view == "workview": self.do_toggle_workview()
+
     def on_move(self, widget, data): #pylint: disable-msg=W0613
         xpos, ypos = self.window.get_position()
         self.priv["window_xpos"] = xpos
@@ -291,7 +295,10 @@ class TaskBrowser:
         sort_column     = self.priv["tasklist"]["sort_column"]
         sort_order      = self.priv["tasklist"]["sort_order"]
         closed_pane_height = self.wTree.get_widget("vpaned1").get_position()
-                
+        
+        if self.workview : view = "workview"
+        else             : view = "default"
+
         # Populate configuration dictionary
         self.config["browser"] = {}
         self.config["browser"]["width"]             = self.priv["window_width"]
@@ -310,6 +317,7 @@ class TaskBrowser:
         elif sort_column is not None and sort_order == gtk.SORT_DESCENDING :
             sort_col_id = self.priv["tasklist"]["columns"].index(sort_column)
             self.config["browser"]["tasklist_sort"]  = [sort_col_id, 1]
+        self.config["browser"]["view"]              = view
              
     def on_close(self):
         self.__save_state_to_conf()
@@ -385,21 +393,21 @@ class TaskBrowser:
         widget.destroy()
     
     def on_workview_toggled(self,widget) : #pylint: disable-msg=W0613
+        self.do_toggle_workview()
+    
+    def do_toggle_workview(self):
         #We have to be careful here to avoid a loop of signals
-        menu_state = self.menu_view_workview.get_active()
+        menu_state   = self.menu_view_workview.get_active()
         button_state = self.toggle_workview.get_active()
         #We cannot have note and workview at the same time
         if not self.workview and self.note_toggle.get_active() :
             self.note_toggle.set_active(False)
         #We do something only if both widget are in different state
-        if menu_state != button_state :
-            tobeset = not self.workview
-            if widget == self.toggle_workview :
-                self.menu_view_workview.set_active(tobeset)
-            elif widget == self.menu_view_workview :
-                self.toggle_workview.set_active(tobeset)
-            self.workview = tobeset
-            self.do_refresh()
+        tobeset = not self.workview
+        self.menu_view_workview.set_active(tobeset)
+        self.toggle_workview.set_active(tobeset)
+        self.workview = tobeset
+        self.do_refresh()
 
     def on_sidebar_toggled(self,widget) :
         if widget.get_active() :
