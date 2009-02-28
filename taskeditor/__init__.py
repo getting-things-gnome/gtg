@@ -2,7 +2,7 @@ class GnomeConfig :
     GLADE_FILE = "taskeditor/taskeditor.glade"
     
     MARK_DONE = "Mark as done"
-    MARK_UNDONE = "Undone"
+    MARK_UNDONE = "Mark as not done"
     MARK_DISMISS = "Dismiss"
     MARK_UNDISMISS = "Undismiss"
     KEEP_NOTE = "Keep as Note"
