@@ -499,7 +499,8 @@ class TaskBrowser:
             color = tag.get_attribute("color")
             count = len(self.req.get_tasks_list(tags=[tag]))
             #We display the tags without the "@" (but we could)
-            self.tag_ts.append([tag,color,tag.get_name()[1:], str(count), False])
+            if count != 0:
+                self.tag_ts.append([tag,color,tag.get_name()[1:], str(count), False])
             
         #We reselect the selected tag
         if t_path :
@@ -789,8 +790,7 @@ class TaskBrowser:
             else : 
                 title   = "<b><big>%s</big></b>" %task.get_title()
         else :
-            alone = (not task.has_parents() and len(task.get_subtasks())!=0)
-            if (not self.workview) and alone:
+            if (not self.workview):
                 if count == 0:
                     title = "<span>%s</span>" % (task.get_title() )
                 else:
