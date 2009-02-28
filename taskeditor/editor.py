@@ -161,8 +161,10 @@ class TaskEditor :
         if status == "Dismiss" :
             self.donebutton.set_label(GnomeConfig.MARK_DONE)
             self.dismissbutton.set_label(GnomeConfig.MARK_UNDISMISS)
+            self.dismissbutton.set_icon_name("gtg-task-undismiss")
         elif status == "Done" :
             self.donebutton.set_label(GnomeConfig.MARK_UNDONE)
+            self.donebutton.set_icon_name("gtg-task-undone")
             self.dismissbutton.set_label(GnomeConfig.MARK_DISMISS)
         else :
             self.donebutton.set_label(GnomeConfig.MARK_DONE)

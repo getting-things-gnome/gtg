@@ -25,7 +25,7 @@ SIDEBAR       = True
 CLOSED_PANE   = True
 QUICKADD_PANE = True
 
-EXPERIMENTAL_NOTES = True
+EXPERIMENTAL_NOTES = False
 
 class TaskBrowser:
 
@@ -339,7 +339,7 @@ class TaskBrowser:
         self.do_refresh()
         
         selection = self.task_tview.get_selection()
-        #selection.connect("changed",self.task_cursor_changed)
+        selection.connect("changed",self.task_cursor_changed)
         closed_selection = self.taskdone_tview.get_selection()
         closed_selection.connect("changed",self.taskdone_cursor_changed)
         note_selection = self.note_tview.get_selection()
@@ -718,6 +718,8 @@ class TaskBrowser:
         #We unselect all in the active task view
         #Only if something is selected in the closed task list
         #And we change the status of the Done/dismiss button
+        self.donebutton.set_icon_name("gtg-task-done")
+        self.dismissbutton.set_icon_name("gtg-task-dismiss")
         if selection.count_selected_rows() > 0 :
             tid = self.get_selected_task(self.taskdone_tview)
             task = self.req.get_task(tid)
@@ -726,15 +728,19 @@ class TaskBrowser:
             if task.get_status() == "Dismiss" :
                 self.dismissbutton.set_label(GnomeConfig.MARK_UNDISMISS)
                 self.donebutton.set_label(GnomeConfig.MARK_DONE)
+                self.dismissbutton.set_icon_name("gtg-task-undismiss")
             else :
                 self.donebutton.set_label(GnomeConfig.MARK_UNDONE)
                 self.dismissbutton.set_label(GnomeConfig.MARK_DISMISS)
+                self.donebutton.set_icon_name("gtg-task-undone")
                 
     #This function is called when the selection change in the active task view
     #It will displays the selected task differently
     def task_cursor_changed(self,selection=None) :
         #We unselect all in the closed task view
         #Only if something is selected in the active task list
+        self.donebutton.set_icon_name("gtg-task-done")
+        self.dismissbutton.set_icon_name("gtg-task-dismiss")
         if selection.count_selected_rows() > 0 :
             self.taskdone_tview.get_selection().unselect_all()
             self.note_tview.get_selection().unselect_all()
@@ -786,9 +792,9 @@ class TaskBrowser:
             alone = (not task.has_parents() and len(task.get_subtasks())!=0)
             if (not self.workview) and alone:
                 if count == 0:
-                    title = "<span weight=\"bold\" size=\"large\">%s</span>" % (task.get_title() )
+                    title = "<span>%s</span>" % (task.get_title() )
                 else:
-                    title = "<span weight=\"bold\" size=\"large\">%s (%s)</span>" % (task.get_title(), count )
+                    title = "<span>%s (%s)</span>" % (task.get_title(), count )
             else:
                 title = task.get_title()
         return title
