@@ -26,8 +26,8 @@ import sys
 
 ### CONSTANTS ##################################################################
 
-DATA_DIR        = "/usr/share/gtg"
-GLOBAL_ICON_DIR = "/usr/share/icons/hicolor"
+DATA_DIR        = "usr/share/gtg"
+GLOBAL_ICON_DIR = "usr/share/icons/hicolor"
 
 ### TOOLS ######################################################################
 
@@ -48,11 +48,11 @@ def create_data_files():
     icons = create_icon_list()
     data_files.extend(icons)
     # gtg .desktop icon
-    data_files.append(('/usr/share/icons/hicolor/16x16/apps', ['data/icons/hicolor/16x16/apps/gtg.png']))
-    data_files.append(('/usr/share/icons/hicolor/scalable/apps', ['data/icons/hicolor/scalable/apps/gtg.svg']))
+    data_files.append(('usr/share/icons/hicolor/16x16/apps', ['data/icons/hicolor/16x16/apps/gtg.png']))
+    data_files.append(('usr/share/icons/hicolor/scalable/apps', ['data/icons/hicolor/scalable/apps/gtg.svg']))
     # misc
     data_files.append((DATA_DIR, ['data/firstrun_tasks.xml']))
-    data_files.append(('/usr/share/applications', ['gtg.desktop']))
+    data_files.append(('usr/share/applications', ['gtg.desktop']))
     return data_files
     
 ### SETUPT SCRIPT ##############################################################
