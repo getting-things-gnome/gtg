@@ -1,0 +1,50 @@
+====== Getting Things Gnome! ======
+
+Getting Things Gnome! (gtg) is a personnal organizer for the gnome desktop who was inspired by the Getting Things Done methodology (GTD). It is not a GTD only software as it aims for flexibility, adaptability and ease of use.
+
+GTG wants to help you to track everything you need to do and need to know, from very small tasks to big projects.
+
+===== Dependencies =====
+
+GTG depends on Python (>= 2.5), PyGTK, python ConfigObj, python gobject, python XDG. Please refer to your system documentation for information on how to install these modules if they're not currently available.
+
+For debian based distributions, you need to install the following packages :
+python-gtk2, python-glade2, python-xdg, python-gobject, python-configobj
+
+===== Installing and Running =====
+
+GTG is available as a seutptools enabled package. Installation procedures for those are easy:
+
+Either unpack the tarball 
+    
+    $ tar xvfz gtg.tar.gz
+
+or check out our bazaar branch for a development version (we try to keep those 
+unbroken and ready for production use)
+    
+    $ bzr branch lp:gtg
+
+From there, you can either run pyroom from commandline
+
+    $ cd gtg/
+    $ ./gtg
+
+Or install it system wide
+
+    $ cd gtg
+    $ python setup.py install # as root
+    $ gtg
+
+==== Usage ====
+
+When editing a task, keep in mind that :
+1) A line beginning with "-" will automatically create a subtask on this line
+2) A word beginning with "@" is a tag
+
+Please refer to http://gtg.fritalk.com/pages/documentation
+
+===== Want to know more? =====
+
+  * GTG Website: http://gtg.fritalk.com/
+  * GTG project page on Launchpad: https://launchpad.net/gtg
+  * GTG Wiki: not available yet
