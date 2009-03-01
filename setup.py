@@ -36,10 +36,19 @@ def create_icon_list():
     rootdir  = "data/icons"
     for root, subFolders, files in os.walk(rootdir):
         dirList = []
+        print root, subFolders, files
         for file in files:
+            #myfile = file.lstrip("data/icons/hicolor/")
             dirList.append(os.path.join(root,file))
         if len(dirList)!=0:
-            fileList.append( (os.path.join(DATA_DIR,root),dirList) )
+            #icon = dirList.lstrip("data/icons/hicolor")
+            #print GLOBAL_ICON_DIR, icon
+            #print dirList
+            newroot = root.replace("data/icons/hicolor/","")
+            print "###############"
+            print root
+            print newroot
+            fileList.append( (os.path.join(DATA_DIR,newroot),dirList) )
     return fileList
 
 def create_data_files():
