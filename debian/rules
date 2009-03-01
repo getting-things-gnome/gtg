@@ -3,16 +3,16 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
-include /usr/share/dpatch/dpatch.make
+#include /usr/share/dpatch/dpatch.make
 
 build: build-stamp
 
-build-stamp: patch-stamp
+build-stamp: 
 	dh_testdir
 	python setup.py build
 	touch $@
 
-clean: unpatch
+clean: 
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp
@@ -30,13 +30,13 @@ install: build
 	python setup.py install --no-compile \
 				--prefix=$(CURDIR)/debian/gtg/usr
 
-binary-arch: build install
+binary-arch: binary-indep
 
 binary-indep: build install
 	dh_testdir
 	dh_testroot
 	dh_installchangelogs 
-	dh_installdocs #
+	dh_installdocs
 	dh_install 
 	dh_installmenu 
 	#dh_installman -i gtg.1
@@ -49,5 +49,5 @@ binary-indep: build install
 	dh_md5sums 
 	dh_builddeb
 
-binary: binary-indep binary-arch
+binary: binary-indep
 .PHONY: build clean binary-indep binary-arch binary install
