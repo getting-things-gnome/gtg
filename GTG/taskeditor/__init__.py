@@ -1,5 +1,8 @@
+import os
+
 class GnomeConfig :
-    GLADE_FILE = "GTG/taskeditor/taskeditor.glade"
+    current_rep = os.path.dirname(os.path.abspath(__file__))
+    GLADE_FILE    = os.path.join(current_rep,"taskeditor.glade")
     
     MARK_DONE = "Mark as done"
     MARK_UNDONE = "Mark as not done"

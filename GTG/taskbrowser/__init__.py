@@ -26,9 +26,11 @@
 #---------------
 #This is the glade file of the interface. It should be noted that the TextView
 #widget in the TaskEditor is dummy and is replaced at runtime by a TaskView.
+import os
 
 class GnomeConfig :
-    GLADE_FILE    = "GTG/taskbrowser/taskbrowser.glade"
+    current_rep = os.path.dirname(os.path.abspath(__file__))
+    GLADE_FILE    = os.path.join(current_rep,"taskbrowser.glade")
     
     MARK_DONE      = "Mark as done"
     MARK_UNDONE    = "Mark as not done"
