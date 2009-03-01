@@ -1,3 +1,8 @@
-2009-03-01 Getting Things Gnome! 0.0.9rc1
+2009-03-01 Getting Things Gnome! 0.0.9rc3
+	* pane/sidebar not saved
 
+2009-03-01 Getting Things Gnome! 0.0.9rc2
+	* firstrun_tasks.xml not found on first launch
+
+2009-03-01 Getting Things Gnome! 0.0.9rc1
 	* First official release 0.1rc1
