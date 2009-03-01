@@ -60,7 +60,7 @@ def create_data_files():
 author = 'The GTG Team'
 
 setup(
-  name         = 'GTG',
+  name         = 'gtg',
   version      = GTG.VERSION,
   url          = GTG.URL,
   author       = author,

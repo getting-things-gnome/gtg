@@ -1,3 +1,6 @@
 include GTG/taskbrowser/taskbrowser.glade
 include GTG/taskeditor/taskeditor.glade
+include data/firstrun_tasks.xml
+include gtg.desktop
+include CHANGELOG
 recursive-include data/icons *
