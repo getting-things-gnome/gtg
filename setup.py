@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Gettings Things Gnome! - a personnal organizer for the GNOME desktop
+# Gettings Things Gnome! - a personal organizer for the GNOME desktop
 # Copyright (c) 2008-2009 - Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
@@ -26,7 +26,8 @@ import sys
 
 ### CONSTANTS ##################################################################
 
-DATA_DIR = "/usr/share/gtg"
+DATA_DIR        = "/usr/share/gtg"
+GLOBAL_ICON_DIR = "/usr/share/icons/hicolor"
 
 ### TOOLS ######################################################################
 
@@ -38,7 +39,7 @@ def create_icon_list():
         for file in files:
             dirList.append(os.path.join(root,file))
         if len(dirList)!=0:
-            fileList.append( (DATA_DIR+"/"+root,dirList) )
+            fileList.append( (os.path.join(DATA_DIR,root),dirList) )
     return fileList
 
 def create_data_files():
@@ -46,8 +47,12 @@ def create_data_files():
     # icons
     icons = create_icon_list()
     data_files.extend(icons)
+    # gtg .desktop icon
+    data_files.append(('/usr/share/icons/hicolor/16x16/apps', ['data/icons/hicolor/16x16/apps/gtg.png']))
+    data_files.append(('/usr/share/icons/hicolor/scalable/apps', ['data/icons/hicolor/scalable/apps/gtg.svg']))
     # misc
     data_files.append((DATA_DIR, ['data/firstrun_tasks.xml']))
+    data_files.append(('/usr/share/applications', ['gtg.desktop']))
     return data_files
     
 ### SETUPT SCRIPT ##############################################################
