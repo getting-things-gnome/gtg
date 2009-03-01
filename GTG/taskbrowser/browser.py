@@ -256,12 +256,18 @@ class TaskBrowser:
             if not tag_pane:
                 self.sidebar.hide()
                 self.wTree.get_widget("view_sidebar").set_active(False)
+            else:
+                self.sidebar.show()
+                self.wTree.get_widget("view_sidebar").set_active(True)
                 
         if self.config["browser"].has_key("closed_task_pane"):
             closed_task_pane = eval(self.config["browser"]["closed_task_pane"])
             if not closed_task_pane :
                 self.closed_pane.hide()
                 self.wTree.get_widget("view_closed").set_active(False)
+            else:
+                self.closed_pane.show()
+                self.wTree.get_widget("view_closed").set_active(True)
 
         if self.config["browser"].has_key("ctask_pane_height"):
             ctask_pane_height = eval(self.config["browser"]["ctask_pane_height"])
