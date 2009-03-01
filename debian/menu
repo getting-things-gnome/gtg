@@ -1,2 +1,2 @@
-?package(gtg):needs="X11" section="Applications/office"\
+?package(gtg):needs="X11" section="Applications/utilities"\
   title="gtg" command="/usr/bin/gtg"

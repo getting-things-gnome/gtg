@@ -1,2 +1,0 @@
-python:Versions=2.5
-python:Depends=python (<< 2.6), python (>= 2.5), python-central (>= 0.6.7)

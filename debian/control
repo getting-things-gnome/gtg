@@ -1,5 +1,5 @@
 Source: gtg
-Section: office
+Section: x11
 Priority: optional
 Maintainer: Lionel Dricot <ploum@ploum.net>
 Build-Depends: debhelper (>= 7)
