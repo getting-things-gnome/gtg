@@ -1,0 +1,3 @@
+include GTG/taskbrowser/taskbrowser.glade
+include GTG/taskeditor/taskeditor.glade
+recursive-include data/icons *

@@ -15,7 +15,7 @@ setup(
   author_email = GTG.EMAIL,
   description  = 'GTG is a personal organizer for the GNOME desktop environment.',
   packages     = ['GTG','GTG.backends','GTG.core','GTG.taskbrowser','GTG.taskeditor','GTG.tools'],
-  package_data = {'GTG.taskbrowser':['GTG/taskbrowser/taskbrowser.glade'], 'GTG.taskeditor':['GTG/taskeditor/taskeditor.glade']},
+  package_data = {'GTG.taskbrowser':['taskbrowser.glade'],'GTG.taskeditor':['taskeditor.glade']},
   data_files   = [
     ('/usr/share/gtg', ['data/icons','data/firstrun_tasks.xml']),
                  ],
