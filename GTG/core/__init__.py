@@ -49,6 +49,8 @@ from xdg.BaseDirectory import *
 from GTG.tools         import cleanxml
 from configobj         import ConfigObj
 
+import GTG
+
 class CoreConfig:
     
     #The projects and tasks are of course DATA !
@@ -129,7 +131,8 @@ class CoreConfig:
                     if xp.hasAttribute(key) :
                         b[key] = str(xp.getAttribute(key))
             if firstrun :
-                back = classobj.Backend(b,firstrunfile=self.FIRSTRUN_FILE)
+		frf = os.path.join(GTG.DATA_DIR,self.FIRSTRUN_FILE)
+                back = classobj.Backend(b,firstrunfile=frf)
             else :
                 back = classobj.Backend(b)
             #We put the backend itself in the dic

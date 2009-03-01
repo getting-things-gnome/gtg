@@ -43,8 +43,8 @@ from GTG.core                         import CoreConfig
 
 #Some default preferences that we should save in a file
 WORKVIEW      = False
-SIDEBAR       = True
-CLOSED_PANE   = True
+SIDEBAR       = False
+CLOSED_PANE   = False
 QUICKADD_PANE = True
 
 EXPERIMENTAL_NOTES = False

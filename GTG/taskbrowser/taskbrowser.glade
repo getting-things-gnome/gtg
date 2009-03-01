@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Sun Mar  1 15:31:48 2009 -->
+<!--Generated with glade3 3.4.5 on Sun Mar  1 23:08:51 2009 -->
 <glade-interface>
   <widget class="GtkWindow" id="MainWindow">
     <property name="title" translatable="yes">Getting Things Gnome!</property>
-    <property name="default_width">800</property>
-    <property name="default_height">600</property>
+    <property name="default_width">640</property>
+    <property name="default_height">480</property>
     <signal name="configure_event" handler="on_move"/>
     <signal name="size_allocate" handler="on_size_allocate"/>
     <signal name="delete_event" handler="on_delete"/>
@@ -340,36 +340,22 @@
             <property name="position">200</property>
             <property name="position_set">True</property>
             <child>
-              <widget class="GtkVPaned" id="sidebar">
-                <property name="visible">True</property>
+              <widget class="GtkScrolledWindow" id="sidebar">
                 <property name="can_focus">True</property>
+                <property name="hscrollbar_policy">GTK_POLICY_NEVER</property>
+                <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
                 <child>
-                  <widget class="GtkScrolledWindow" id="scrolledwindow1">
+                  <widget class="GtkTreeView" id="tag_tview">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="hscrollbar_policy">GTK_POLICY_NEVER</property>
-                    <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
-                    <child>
-                      <widget class="GtkTreeView" id="tag_tview">
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <signal name="button_press_event" handler="on_tag_treeview_button_press_event"/>
-                        <signal name="row_activated" handler="on_select_tag"/>
-                        <signal name="cursor_changed" handler="on_select_tag"/>
-                      </widget>
-                    </child>
+                    <signal name="button_press_event" handler="on_tag_treeview_button_press_event"/>
+                    <signal name="row_activated" handler="on_select_tag"/>
+                    <signal name="cursor_changed" handler="on_select_tag"/>
                   </widget>
-                  <packing>
-                    <property name="resize">True</property>
-                    <property name="shrink">True</property>
-                  </packing>
-                </child>
-                <child>
-                  <placeholder/>
                 </child>
               </widget>
               <packing>
-                <property name="resize">False</property>
+                <property name="resize">True</property>
                 <property name="shrink">True</property>
               </packing>
             </child>
@@ -445,7 +431,6 @@
                     <child>
                       <widget class="GtkScrolledWindow" id="closed_pane">
                         <property name="height_request">200</property>
-                        <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="hscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
                         <property name="vscrollbar_policy">GTK_POLICY_AUTOMATIC</property>
