@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Fri Feb 27 17:13:26 2009 -->
+<!--Generated with glade3 3.4.5 on Sun Mar  1 14:26:52 2009 -->
 <glade-interface>
   <widget class="GtkWindow" id="MainWindow">
     <property name="title" translatable="yes">Getting Things Gnome!</property>
@@ -306,22 +306,22 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkToggleToolButton" id="workview_toggle">
+              <widget class="GtkToggleToolButton" id="note_toggle">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">Work view</property>
-                <property name="stock_id">gtk-index</property>
-                <signal name="toggled" handler="on_workview_toggled"/>
+                <property name="label" translatable="yes">View Notes</property>
+                <property name="stock_id">gtk-file</property>
+                <signal name="toggled" handler="on_note_toggled"/>
               </widget>
               <packing>
                 <property name="homogeneous">True</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkToggleToolButton" id="note_toggle">
+              <widget class="GtkToggleToolButton" id="workview_toggle">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">View Notes</property>
-                <property name="stock_id">gtk-file</property>
-                <signal name="toggled" handler="on_note_toggled"/>
+                <property name="label" translatable="yes">Work view</property>
+                <property name="stock_id">gtk-index</property>
+                <signal name="toggled" handler="on_workview_toggled"/>
               </widget>
               <packing>
                 <property name="homogeneous">True</property>

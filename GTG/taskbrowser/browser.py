@@ -39,6 +39,7 @@ class TaskBrowser:
         self.refresh_lock_lock = threading.Lock()
         # Set the configuration dictionary
         self.config = config
+        self.notes = EXPERIMENTAL_NOTES
         
         # Setup default values for view
         self.priv["collapsed_tid"]            = []
@@ -120,7 +121,7 @@ class TaskBrowser:
         self.noteview = False
         self.new_note_button = self.wTree.get_widget("new_note_button")
         self.note_toggle = self.wTree.get_widget("note_toggle")
-        if not EXPERIMENTAL_NOTES :
+        if not self.notes :
             self.note_toggle.hide()
             self.new_note_button.hide()
         
@@ -268,6 +269,16 @@ class TaskBrowser:
         if self.config["browser"].has_key("view"):
             view = self.config["browser"]["view"]
             if view == "workview": self.do_toggle_workview()
+            
+        if self.config["browser"].has_key("experimental_notes") :
+            self.notes = eval(self.config["browser"]["experimental_notes"])
+            if self.notes :
+                self.note_toggle.show()
+                self.new_note_button.show()
+            else :
+                self.note_toggle.hide()
+                self.new_note_button.hide()
+            
 
     def on_move(self, widget, data): #pylint: disable-msg=W0613
         xpos, ypos = self.window.get_position()
@@ -319,6 +330,8 @@ class TaskBrowser:
             sort_col_id = self.priv["tasklist"]["columns"].index(sort_column)
             self.config["browser"]["tasklist_sort"]  = [sort_col_id, 1]
         self.config["browser"]["view"]              = view
+        if self.notes :
+            self.config["browser"]["experimental_notes"] = True
              
     def on_close(self):
         self.__save_state_to_conf()
@@ -817,7 +830,7 @@ class TaskBrowser:
         else :
             tv = TaskEditor(self.req,t,self.do_refresh,self.on_delete_task,
                             self.close_task,self.open_task,self.get_tasktitle,
-                            notes=EXPERIMENTAL_NOTES)
+                            notes=self.notes)
             #registering as opened
             self.opened_task[uid] = tv
             
@@ -897,9 +910,7 @@ class TaskBrowser:
         tags,notagonly = self.get_selected_tags() #pylint: disable-msg=W0612
         task = self.req.new_task(tags=tags,newtask=True)
         uid = task.get_id()
-        print status
         if status :
-            print "set"
             task.set_status(status)
         self.open_task(uid)
 
