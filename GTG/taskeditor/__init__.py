@@ -1,5 +1,5 @@
 class GnomeConfig :
-    GLADE_FILE = "taskeditor/taskeditor.glade"
+    GLADE_FILE = "GTG/taskeditor/taskeditor.glade"
     
     MARK_DONE = "Mark as done"
     MARK_UNDONE = "Mark as not done"

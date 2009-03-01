@@ -1,4 +1,4 @@
-from tools.listes import *
+from GTG.tools.listes import *
 #Requester is a pure View object. It will not do anything but it will
 #be used by any Interface to handle the requests to the datastore
 

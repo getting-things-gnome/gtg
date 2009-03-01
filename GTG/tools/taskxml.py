@@ -1,7 +1,7 @@
 #Functions to convert a Task object to an XML string and back
 import xml.dom.minidom
 
-from tools import cleanxml
+from GTG.tools import cleanxml
 
 #Take an empty task, an XML node and return a Task.
 def task_from_xml(task,xmlnode) :

@@ -1,8 +1,8 @@
 import os,shutil
 import uuid
 
-from gtg_core   import CoreConfig
-from tools import cleanxml, taskxml
+from GTG.core  import CoreConfig
+from GTG.tools import cleanxml, taskxml
 
 #Return the name of the backend as it should be displayed in the UI
 def get_name() :

@@ -29,41 +29,38 @@
 #=== IMPORT ====================================================================
 
 #our own imports
-from taskbrowser.browser import TaskBrowser
-from gtg_core.datastore   import DataStore
-from gtg_core   import CoreConfig
+from GTG.taskbrowser.browser import TaskBrowser
+from GTG.core.datastore      import DataStore
+from GTG.core                import CoreConfig
 
 #=== OBJECTS ===================================================================
 
 #=== MAIN CLASS ================================================================
 
-class Gtg:
- 
-    def main(self):
-        config        = CoreConfig()
-        backends_list = config.get_backends_list()
+def main():
+    config        = CoreConfig()
+    backends_list = config.get_backends_list()
+    
+    # Load data store
+    ds = DataStore()
+    
+    for backend_dic in backends_list :
+        ds.register_backend(backend_dic)
         
-        # Load data store
-        ds = DataStore()
-        
-        for backend_dic in backends_list :
-            ds.register_backend(backend_dic)
-            
-        # Launch task browser
-        req = ds.get_requester()
-        tb  = TaskBrowser(req, config.conf_dict)
-        tb.main()
+    # Launch task browser
+    req = ds.get_requester()
+    tb  = TaskBrowser(req, config.conf_dict)
+    tb.main()
 
-        # Ideally we should load window geometry configuration from a config.
-        # backend like gconf at some point, and restore the appearance of the
-        # application as the user last exited it.
+    # Ideally we should load window geometry configuration from a config.
+    # backend like gconf at some point, and restore the appearance of the
+    # application as the user last exited it.
 
-        # Ending the application: we save configuration
-        config.save_config()
-        config.save_datastore(ds)
+    # Ending the application: we save configuration
+    config.save_config()
+    config.save_datastore(ds)
 
 #=== EXECUTION =================================================================
 
 if __name__ == "__main__":
-    gtg = Gtg()
-    gtg.main()
+    main()

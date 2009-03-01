@@ -9,9 +9,9 @@
 import sys
 import time
 
-from taskeditor import GnomeConfig
-from tools import dates
-from taskeditor.taskview import TaskView
+from GTG.taskeditor          import GnomeConfig
+from GTG.tools               import dates
+from GTG.taskeditor.taskview import TaskView
 try:
     import pygtk
     pygtk.require("2.0")

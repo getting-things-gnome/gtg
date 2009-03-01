@@ -1,7 +1,7 @@
 import os
 
-from gtg_core   import CoreConfig
-from tools import cleanxml
+from GTG.core  import CoreConfig
+from GTG.tools import cleanxml
 
 XMLFILE = "tags.xml"
 XMLROOT = "tagstore"

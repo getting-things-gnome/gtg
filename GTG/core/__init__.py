@@ -26,8 +26,8 @@
 #=== IMPORT ====================================================================
 import os
 from xdg.BaseDirectory import *
-from tools             import cleanxml
-from configobj   import ConfigObj
+from GTG.tools         import cleanxml
+from configobj         import ConfigObj
 
 class CoreConfig:
     
@@ -41,11 +41,6 @@ class CoreConfig:
     conf_dict = None
     FIRSTRUN_FILE = "firstrun_tasks.xml"
 
-    DIRECTORY       = os.path.abspath(os.path.join(os.path.dirname(__file__), '..')) 
-    VERSION         = "0.0.1" 
-    SHARED_DATA_DIR = os.path.join(DIRECTORY, "data") 
-    LOCALE_DIR      = os.path.join(DIRECTORY, "po") 
-    
     def __init__(self):
         if not os.path.exists(self.CONF_DIR) :
             os.makedirs(self.CONF_DIR)
@@ -100,9 +95,10 @@ class CoreConfig:
         #Remember that b is a dictionnary
         for b in backend_fn :
             #We dynamically import modules needed
-            module_name = "backends.%s"%b["module"]
+            module_name = "GTG.backends.%s"%b["module"]
             #FIXME : we should throw an error if the backend is not importable
-            module = __import__(module_name)
+            module   = __import__(module_name)
+            module   = getattr(module, "backends")
             classobj = getattr(module, b["module"])
             b["parameters"] = classobj.get_parameters()
             #If creating the default backend, we don't have the xmlobject yet

@@ -8,12 +8,13 @@ import threading
 import os
 
 #our own imports
-from taskeditor.editor       import TaskEditor
-from taskbrowser.CellRendererTags import CellRendererTags
-from taskbrowser import GnomeConfig
-from taskbrowser import treetools
-from tools import colors
-from gtg_core   import CoreConfig
+import GTG
+from GTG.taskeditor.editor            import TaskEditor
+from GTG.taskbrowser.CellRendererTags import CellRendererTags
+from GTG.taskbrowser                  import GnomeConfig
+from GTG.taskbrowser                  import treetools
+from GTG.tools                        import colors
+from GTG.core                         import CoreConfig
 
 #=== OBJECTS ===================================================================
 
@@ -58,8 +59,8 @@ class TaskBrowser:
             self.window.connect("destroy", gtk.main_quit)
 
         icon_dirs = [
-            CoreConfig.SHARED_DATA_DIR,
-            os.path.join(CoreConfig.SHARED_DATA_DIR,"icons")
+            GTG.SHARED_DATA_DIR,
+            os.path.join(GTG.SHARED_DATA_DIR,"icons")
                     ] 
 
         for i in icon_dirs:

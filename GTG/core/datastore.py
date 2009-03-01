@@ -2,8 +2,8 @@ import threading
 import gobject
 import time
 
-from gtg_core   import tagstore, requester
-from gtg_core.task import Task
+from GTG.core      import tagstore, requester
+from GTG.core.task import Task
 
 
 #Only the datastore should access to the backend
