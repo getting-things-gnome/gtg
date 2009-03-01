@@ -1,3 +1,9 @@
+gtg (0.0.9rc2-1) intrepid; urgency=low
+
+  * firstrun_tasks.xml was not found on first run.
+
+ -- Lionel Dricot <ploum@ploum.net>  Sun, 01 Mar 2009 17:15:58 +0100
+
 gtg (0.0.9rc1-7) intrepid; urgency=low
 
   * Initial release
