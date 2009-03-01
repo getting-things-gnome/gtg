@@ -1,0 +1,13 @@
+Source: gtg
+Section: office
+Priority: optional
+Maintainer: Lionel Dricot <ploum@ploum.net>
+Build-Depends: debhelper (>= 7)
+Standards-Version: 3.7.3
+Homepage: http://gtg.fritalk.com
+
+Package: gtg
+Architecture: any
+Depends: python (>= 2.5), python-gtk2, python-glade2, python-xdg, python-gobject, python-configobj
+Description: Getting Thing Gnome, a todo/notes applications for Gnome
+ Getting Things Gnome is a Gnome application inspired by the Getting Things Done (GTD) theory but built with flexibility and simplicity in mind. It supports hierachical tasks, tags, notes, ...

@@ -1,0 +1,2 @@
+?package(gtg):needs="X11" section="Applications/office"\
+  title="gtg" command="/usr/bin/gtg"

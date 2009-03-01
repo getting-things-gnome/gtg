@@ -1,0 +1,13 @@
+# Automatically added by dh_installmenu
+if [ "$1" = "configure" ] && [ -x "`which update-menus 2>/dev/null`" ]; then
+	update-menus
+fi
+# End automatically added section
+# Automatically added by dh_pycentral
+if which pycentral >/dev/null 2>&1; then
+	pycentral pkginstall gtg
+	if grep -qs '^gtg$' /var/lib/pycentral/delayed-pkgs; then
+		sed -i '/^gtg$/d' /var/lib/pycentral/delayed-pkgs
+	fi
+fi
+# End automatically added section
