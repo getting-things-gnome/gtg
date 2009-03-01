@@ -36,18 +36,10 @@ def create_icon_list():
     rootdir  = "data/icons"
     for root, subFolders, files in os.walk(rootdir):
         dirList = []
-        print root, subFolders, files
         for file in files:
-            #myfile = file.lstrip("data/icons/hicolor/")
-            dirList.append(os.path.join(root,file))
+            if file.endswith(".png") or file.endswith(".svg"):
+                dirList.append(os.path.join(root,file))
         if len(dirList)!=0:
-            #icon = dirList.lstrip("data/icons/hicolor")
-            #print GLOBAL_ICON_DIR, icon
-            #print dirList
-            #newroot = root.replace("data/icons/hicolor/","")
-            print "###############"
-            print root
-            #print newroot
             fileList.append( (os.path.join(DATA_DIR,root),dirList) )
     return fileList
 
@@ -58,6 +50,8 @@ def create_data_files():
     data_files.extend(icons)
     # gtg .desktop icon
     data_files.append(('share/icons/hicolor/16x16/apps', ['data/icons/hicolor/16x16/apps/gtg.png']))
+    data_files.append(('share/icons/hicolor/22x22/apps', ['data/icons/hicolor/22x22/apps/gtg.png']))
+    data_files.append(('share/icons/hicolor/24x24/apps', ['data/icons/hicolor/24x24/apps/gtg.png']))
     data_files.append(('share/icons/hicolor/scalable/apps', ['data/icons/hicolor/scalable/apps/gtg.svg']))
     # misc
     data_files.append((DATA_DIR, ['data/firstrun_tasks.xml']))
