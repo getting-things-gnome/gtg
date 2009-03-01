@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Sun Mar  1 14:26:52 2009 -->
+<!--Generated with glade3 3.4.5 on Sun Mar  1 15:31:48 2009 -->
 <glade-interface>
   <widget class="GtkWindow" id="MainWindow">
     <property name="title" translatable="yes">Getting Things Gnome!</property>
@@ -725,11 +725,9 @@ Deleting a task cannot be undone.</property>
     <property name="window_position">GTK_WIN_POS_CENTER_ON_PARENT</property>
     <property name="type_hint">GDK_WINDOW_TYPE_HINT_DIALOG</property>
     <property name="program_name">Getting Things Gnome!</property>
-    <property name="version">0.0.1</property>
     <property name="copyright" translatable="yes">Copyrights© 2008, 2009 Lionel Dricot, Bertrand Rousseau</property>
     <property name="comments" translatable="yes">
 Getting Things Gnome! is an organizer for the GNOME desktop environment.</property>
-    <property name="website">http://www.gtg-project.org</property>
     <property name="website_label" translatable="yes">GTG website</property>
     <property name="license" translatable="yes">Getting Things Gnome! is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
 

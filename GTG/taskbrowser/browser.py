@@ -6,6 +6,7 @@ import gobject
 import gtk.glade
 import threading
 import os
+from gnome import url_show
 
 #our own imports
 import GTG
@@ -60,8 +61,8 @@ class TaskBrowser:
             self.window.connect("destroy", gtk.main_quit)
 
         icon_dirs = [
-            GTG.SHARED_DATA_DIR,
-            os.path.join(GTG.SHARED_DATA_DIR,"icons")
+            GTG.DATA_DIR,
+            os.path.join(GTG.DATA_DIR,"icons")
                     ] 
 
         for i in icon_dirs:
@@ -75,6 +76,12 @@ class TaskBrowser:
         self.dismissbutton      = self.wTree.get_widget("dismiss")
         self.about              = self.wTree.get_widget("aboutdialog1")
 
+        # Initialize "About" dialog
+        gtk.about_dialog_set_url_hook(lambda dialog, url: url_show(url))
+        self.about.set_website(GTG.URL)
+        self.about.set_website_label(GTG.URL)
+        self.about.set_version(GTG.VERSION)
+        
         # Initialize menu
 
         #Create our dictionay and connect it
