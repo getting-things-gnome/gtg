@@ -1,10 +1,14 @@
+gtg (0.1~intrepid1) intrepid; urgency=low
+
+  * 0.1 release
+
+ -- Lionel Dricot <ploum@ploum.net>  Sun, 01 Mar 2009 17:15:58 +0100
+
 gtg (0.0.9rc3-1) intrepid; urgency=low
 
   * Pane/sidebar position was not saved
 
  -- Lionel Dricot <ploum@ploum.net>  Sun, 01 Mar 2009 17:15:58 +0100
-
-
 
 gtg (0.0.9rc2-1) intrepid; urgency=low
 
