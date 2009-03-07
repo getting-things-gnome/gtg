@@ -28,7 +28,8 @@ install: build
 	dh_installdirs
 
 	python setup.py install --no-compile \
-				--prefix=$(CURDIR)/debian/gtg/usr
+				--prefix=$(CURDIR)/debian/gtg/usr \
+				--install-layout=deb
 
 binary-arch: binary-indep
 
