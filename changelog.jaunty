@@ -1,0 +1,19 @@
+gtg (0.1~jaunty2) jaunty; urgency=low
+
+  * Bad python dependancy in the package
+
+ -- Lionel Dricot <ploum@ploum.net>  Sat, 07 Mar 2009 01:09:43 +0100
+
+gtg (0.1~jaunty1) jaunty; urgency=low
+
+  * 0.1 release
+  * Jaunty package now in /usr (not /usr/local)
+
+ -- Lionel Dricot <ploum@ploum.net>  Mon, 02 Mar 2009 22:50:58 +0100
+
+ gtg (0.0.9rc3-1~jaunty1) jaunty; urgency=low
+
+  * Initial Jaunty release
+
+ -- Lionel Dricot <ploum@ploum.net>  Mon, 02 Mar 2009 22:50:58 +0100
+
