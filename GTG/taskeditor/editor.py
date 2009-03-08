@@ -148,6 +148,7 @@ class TaskEditor :
         #Putting the refresh callback at the end make the start a lot faster
         self.textview.refresh_callback(self.refresh_editor)
         self.refresh_editor()
+        self.textview.grab_focus()
 
         self.window.show()
 
