@@ -566,6 +566,7 @@ Deleting a task cannot be undone.</property>
                 <property name="receives_default">True</property>
                 <property name="response_id">0</property>
                 <signal name="released" handler="on_delete_confirm"/>
+                <signal name="activate" handler="on_delete_confirm"/>
                 <child>
                   <widget class="GtkHBox" id="hbox2">
                     <property name="visible">True</property>
