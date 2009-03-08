@@ -26,7 +26,7 @@ In GTG, everything is a task. From building a bridge over the Pacific Ocean to c
 
 Once a task is done, you can push the &amp;quot;Mark as done&amp;quot; button. If the task is not relevant anymore, simply press &amp;quot;Dismiss&amp;quot;. 
 
-A task might be composed of multiple subtasks that appear as links in the description. Simply clic on the following link :
+A task might be composed of multiple subtasks that appear as links in the description. Simply click on the following link :
 
 &lt;subtask&gt;1@1&lt;/subtask&gt;
 
@@ -79,7 +79,7 @@ It becomes yellow, it's a tag.
 
 Tag are useful to sort your tasks. In the view menu, you can enable a sidebar which display all the tags you are using so you can easily see tasks for a given tag. There's no limit to the number of tag a task can have.
 
-If you right clic on a tag in the sidebar, you can also set its color. It will permit you to have a more colorful list of task, if you want it that way.
+If you right click on a tag in the sidebar, you can also set its color. It will permit you to have a more colorful list of task, if you want it that way.
 
 		</content>
 	</task>
@@ -98,7 +98,7 @@ It's a task that don't have opened subtasks. So it means you can do the task dir
 
 Thus, the workview will only show you tasks you should do right now.
 
-If you use tags, you can right clic on a tag in the sidebar and choose to not display tasks with this particular tag in the workview. It's very useful if you have a tag like &amp;quot;someday&amp;quot; that you use for task you would like to do but are no particularly urgent.
+If you use tags, you can right click on a tag in the sidebar and choose to not display tasks with this particular tag in the workview. It's very useful if you have a tag like &amp;quot;someday&amp;quot; that you use for task you would like to do but are no particularly urgent.
 
 		</content>
 	</task>
