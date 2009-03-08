@@ -225,14 +225,6 @@ Sed tincidunt. Nunc vel felis. Vestibulum ante ipsum primis in faucibus orci luc
 &lt;tag&gt;@lorem_ipsum&lt;/tag&gt;, &lt;tag&gt;@vampire&lt;/tag&gt;, &lt;tag&gt;@t2&lt;/tag&gt;, 
 		</content>
 	</task>
-	<task id="15@1" status="Done" tags="">
-		<title>
-			My new task
-		</title>
-		<donedate>
-			2009-01-22
-		</donedate>
-	</task>
 	<task id="20@1" status="Dismiss" tags="">
 		<title>
 			Threading

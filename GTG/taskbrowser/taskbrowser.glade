@@ -445,6 +445,7 @@
                             <property name="rules_hint">True</property>
                             <property name="search_column">8</property>
                             <signal name="button_press_event" handler="on_closed_task_treeview_button_press_event"/>
+                            <signal name="key_press_event" handler="on_closed_task_treeview_key_press_event"/>
                             <signal name="row_activated" handler="on_edit_done_task"/>
                           </widget>
                         </child>

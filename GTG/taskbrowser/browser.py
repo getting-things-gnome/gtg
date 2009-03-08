@@ -123,6 +123,7 @@ class TaskBrowser:
                 "on_delete_cancel"    : lambda x : x.hide,
                 "on_add_subtask"      : self.on_add_subtask,
                 "on_closed_task_treeview_button_press_event" : self.on_closed_task_treeview_button_press_event,
+                "on_closed_task_treeview_key_press_event" : self.on_closed_task_treeview_key_press_event,
                 "on_task_treeview_button_press_event" : self.on_task_treeview_button_press_event,
                 "on_task_treeview_key_press_event" : self.on_task_treeview_key_press_event,
                 "on_tag_treeview_button_press_event"  : self.on_tag_treeview_button_press_event,
@@ -944,6 +945,10 @@ class TaskBrowser:
                 self.closedtaskpopup.popup( None, None, None, event.button, time)
             return 1
             
+    def on_closed_task_treeview_key_press_event(self,treeview,event) :
+        if gtk.gdk.keyval_name(event.keyval) == "Delete":
+            self.on_delete_task()
+
     def on_add_task(self,widget,status=None) : #pylint: disable-msg=W0613
         tags,notagonly = self.get_selected_tags() #pylint: disable-msg=W0612
         task = self.req.new_task(tags=tags,newtask=True)
