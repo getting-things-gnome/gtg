@@ -369,6 +369,9 @@
                       <widget class="GtkEntry" id="quickadd_field">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
+			<property name="has_focus">True</property>
+			<property name="is_focus">True</property>
+			<property name="can_default">True</property>
                         <signal name="activate" handler="on_quickadd_field_activate"/>
                       </widget>
                     </child>
