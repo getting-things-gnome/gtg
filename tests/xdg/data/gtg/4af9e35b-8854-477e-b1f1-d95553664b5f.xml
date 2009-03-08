@@ -29,7 +29,6 @@ zdq dsfhe ee hh e zek
 			 &lt;tag&gt;@tag&lt;/tag&gt;,
 
 &lt;subtask&gt;13@1&lt;/subtask&gt;
-
 		</content>
 	</task>
 	<task id="1@1" status="Active" tags="@tag,@autro">
@@ -247,17 +246,6 @@ Ce qui est curieux c'est que ça plante pour certains refresh
 et pas pour d'autres.
 		</content>
 	</task>
-	<task id="11@1" status="Active" tags="@lorem_ipsum,@vampire,@t2">
-		<title>
-			test
-		</title>
-		<duedate>
-			2009-01-31
-		</duedate>
-		<content>
-			&lt;tag&gt;@lorem_ipsum&lt;/tag&gt;, &lt;tag&gt;@vampire&lt;/tag&gt;, &lt;tag&gt;@t2&lt;/tag&gt;, 
-		</content>
-	</task>
 	<task id="17@1" status="Done" tags="">
 		<title>
 			one
@@ -315,7 +303,6 @@ et pas pour d'autres.
 		</startdate>
 		<content>
 			&lt;tag&gt;@aze&lt;/tag&gt;
-
 		</content>
 	</task>
 </project>

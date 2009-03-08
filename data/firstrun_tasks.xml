@@ -24,20 +24,20 @@
 
 In GTG, everything is a task. From building a bridge over the Pacific Ocean to changing a light bulb or organizing a party. When you edit a task, it is automatically saved.
 
-Once a task is done, you can push the &amp;quot;Mark as done&amp;quot; button. If the task is not relevant anymore, simply press &amp;quot;Dismiss&amp;quot;. 
+Once a task is done, you can push the &amp;quot;Mark as done&amp;quot; button. If the task is not relevant any-more, simply press &amp;quot;Dismiss&amp;quot;. 
 
-A task might be composed of multiple subtasks that appear as links in the description. Simply clic on the following link :
+A task might be composed of multiple subtasks that appear as links in the description. Simply click on the following link :
 
 &lt;subtask&gt;1@1&lt;/subtask&gt;
 
 Don't forget to mark this subtask as done !
 
-Other stuffs you should read
+Other stuff you should read
 &lt;subtask&gt;2@1&lt;/subtask&gt;
 &lt;subtask&gt;3@1&lt;/subtask&gt;
 &lt;subtask&gt;4@1&lt;/subtask&gt;
 
-We hope that you will appreciate GTG. Please send us bug reports and ideas of improvement on :
+We hope that you will appreciate GTG. Please send us bug reports and ideas for improvement using :
 https://bugs.launchpad.net/gtg
 
 Thank you for trying out GTG :-)
@@ -77,28 +77,28 @@ Try to type a word beginning with @ here :
 
 It becomes yellow, it's a tag.
 
-Tag are useful to sort your tasks. In the view menu, you can enable a sidebar which display all the tags you are using so you can easily see tasks for a given tag. There's no limit to the number of tag a task can have.
+Tags are useful to sort your tasks. In the view menu, you can enable a sidebar which displays all the tags you are using so you can easily see tasks for a given tag. There's no limit to the number of tags a task can have.
 
-If you right clic on a tag in the sidebar, you can also set its color. It will permit you to have a more colorful list of task, if you want it that way.
+If you right click on a tag in the sidebar you can also set its color. It will permit you to have a more colorful list of tasks, if you want it that way.
 
 		</content>
 	</task>
 	<task id="3@1" status="Active" tags="">
 		<title>
-			Using the workview
+			Using the Workview
 		</title>
 		<content>
-			If you press the &amp;quot;workview&amp;quot; button, only actionnable task will be displayed.
+			If you press the &amp;quot;Workview&amp;quot; button, only actionable tasks will be displayed.
 
-What is an actionnable task ? It's a task you can do directly right now.
+What is an actionable task? It's a task you can do directly, right now.
 
-It's a task that is already &amp;quot;startable&amp;quot;, so the start date is already over. 
+It's a task that is already &amp;quot;start-able&amp;quot;, i.e. the start date is already over. 
 
-It's a task that don't have opened subtasks. So it means you can do the task directly.
+It's a task that doesn't have open subtasks, i.e. you can do the task itself directly.
 
 Thus, the workview will only show you tasks you should do right now.
 
-If you use tags, you can right clic on a tag in the sidebar and choose to not display tasks with this particular tag in the workview. It's very useful if you have a tag like &amp;quot;someday&amp;quot; that you use for task you would like to do but are no particularly urgent.
+If you use tags, you can right click on a tag in the sidebar and choose to not display tasks with this particular tag in the workview. It's very useful if you have a tag like &amp;quot;someday&amp;quot; that you use for tasks you would like to do but are not particularly urgent.
 
 		</content>
 	</task>
@@ -107,7 +107,7 @@ If you use tags, you can right clic on a tag in the sidebar and choose to not di
 			Reporting bugs
 		</title>
 		<content>
-			GTG is still very alpha software. We like it and use it everyday but you will encounter some bug.
+			GTG is still very alpha software. We like it and use it everyday but you will encounter some bugs.
 
 Please, report them ! We need you to make this software better. Any contribution, any idea is welcome.
 
