@@ -421,6 +421,7 @@
                             <property name="rubber_banding">True</property>
                             <property name="enable_tree_lines">True</property>
                             <signal name="button_press_event" handler="on_task_treeview_button_press_event"/>
+                            <signal name="key_press_event" handler="on_task_treeview_key_press_event"/>
                             <signal name="row_activated" handler="on_edit_active_task"/>
                             <signal name="cursor_changed" handler="on_task_tview_cursor_changed"/>
                           </widget>
