@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <tagstore>
 	<tag color="#404040" name="@vampire" nonworkview="True"/>
-	<tag color="#FFC7F7" name="@aze" nonworkview="False"/>
+	<tag color="#64FF47" name="@aze" nonworkview="False"/>
 	<tag color="#FFE000" name="@t2" nonworkview="False"/>
 	<tag color="#04FFCE" name="@tag" nonworkview="True"/>
 	<tag name="@closed" nonworkview="False"/>

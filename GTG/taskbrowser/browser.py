@@ -639,7 +639,7 @@ class TaskBrowser:
         elif nbr_of_tasks == 1 :
             parenthesis = "(1 active task)"
         else :
-            parenthesis = "(%s actives tasks)"%nbr_of_tasks
+            parenthesis = "(%s active tasks)"%nbr_of_tasks
         self.window.set_title("Getting Things Gnome! %s"%parenthesis)
         self.task_tview.set_model(new_taskts)
         self.task_ts = new_taskts
