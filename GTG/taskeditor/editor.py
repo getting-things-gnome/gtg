@@ -362,6 +362,7 @@ class TaskEditor :
     def insert_subtask(self,widget) :
         itera =  self.textview.get_insert()
         self.textview.insert_newtask()
+        self.textview.grab_focus()
         
     def inserttag_clicked(self,widget) :
         itera = self.textview.get_insert()
@@ -369,9 +370,11 @@ class TaskEditor :
             self.textview.insert_text("@",itera)
         else :
             self.textview.insert_text(" @",itera)
+        self.textview.grab_focus()
         
     def inserttag(self,widget,tag) :
         self.textview.insert_tags([tag])
+        self.textview.grab_focus()
     
     def save(self) :
         self.task.set_title(self.textview.get_title())
