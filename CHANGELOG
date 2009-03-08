@@ -1,6 +1,7 @@
 	- Focus in the editor : Bug #339269, Bug #339195, Bug #339389
 	- Bug #339269 : Quickadd has the focus on launch
-	- Bug #339583 : patch enter key to confirm a delete (thanks Gérôme Fournier)
+	- Bug #339583, Bug #336314 : patches delete key and
+	    enter key to confirm a delete (thanks Gérôme Fournier)
 	- Typos : Bug #339268 Bug #339492 and other patches from Gérôme Fournier.
 
 2009-06-01 Getting Things Gnome ! 0.1
