@@ -148,6 +148,7 @@ class TaskEditor :
         #Putting the refresh callback at the end make the start a lot faster
         self.textview.refresh_callback(self.refresh_editor)
         self.refresh_editor()
+        self.textview.grab_focus()
 
         self.window.show()
 
@@ -361,6 +362,7 @@ class TaskEditor :
     def insert_subtask(self,widget) :
         itera =  self.textview.get_insert()
         self.textview.insert_newtask()
+        self.textview.grab_focus()
         
     def inserttag_clicked(self,widget) :
         itera = self.textview.get_insert()
@@ -368,9 +370,11 @@ class TaskEditor :
             self.textview.insert_text("@",itera)
         else :
             self.textview.insert_text(" @",itera)
+        self.textview.grab_focus()
         
     def inserttag(self,widget,tag) :
         self.textview.insert_tags([tag])
+        self.textview.grab_focus()
     
     def save(self) :
         self.task.set_title(self.textview.get_title())
