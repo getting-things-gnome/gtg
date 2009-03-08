@@ -652,7 +652,7 @@ Deleting a task cannot be undone.</property>
   </widget>
   <widget class="GtkColorSelectionDialog" id="ColorChooser">
     <property name="border_width">5</property>
-    <property name="title" translatable="yes">Sélecteur de couleurs</property>
+    <property name="title" translatable="yes">Choose a color</property>
     <property name="window_position">GTK_WIN_POS_CENTER_ON_PARENT</property>
     <property name="type_hint">GDK_WINDOW_TYPE_HINT_MENU</property>
     <signal name="response" handler="on_color_response"/>
