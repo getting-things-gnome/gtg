@@ -1,3 +1,5 @@
+	
+	- Bug #339269 : Quickadd has the focus on launch
 	- Bug #339583 : patch enter key to confirm a delete (thanks Gérôme Fournier)
 	- Typos : Bug #339268 Bug #339492 and other patches from Gérôme Fournier.
 
