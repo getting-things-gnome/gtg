@@ -1,3 +1,4 @@
+	- Escape title in the treeview : Bug ##339874
 	- Focus in the editor : Bug #339269, Bug #339195, Bug #339389
 	- Bug #339269 : Quickadd has the focus on launch
 	- Bug #339583, Bug #336314 : patches delete key and
