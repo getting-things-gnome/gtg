@@ -25,6 +25,7 @@ pygtk.require('2.0')
 import gobject
 import gtk.glade
 import threading
+import xml.sax.saxutils as saxutils
 import os
 from gnome import url_show
 
@@ -691,7 +692,7 @@ class TaskBrowser:
                                                     notag_only=notag_only)
         for tid in closed_tasks :
             t              = self.req.get_task(tid)
-            title_str      = t.get_title()
+            title_str      = saxutils.escape(t.get_title())
             closeddate     = t.get_closed_date()
             closeddate_str = closeddate
             tags           = t.get_tags()
@@ -723,7 +724,7 @@ class TaskBrowser:
         notes = self.req.get_notes_list(tags=tag_list, notag_only=notag_only)
         for tid in notes :
             t              = self.req.get_task(tid)
-            title_str      = t.get_title()
+            title_str      = saxutils.escape(t.get_title())
             self.note_ts.append(None,[tid,t.get_color(),title_str])
         note_selection = self.note_tview.get_selection()
         if d_path :
@@ -742,9 +743,10 @@ class TaskBrowser:
             title_str = self.__build_task_title(task, st_count, extended=False)
         else :
             title_str = self.__build_task_title(task, st_count, extended=False)
+    
 
         # Extract data
-        title       = task.get_title() 
+        title       = saxutils.escape(task.get_title()) 
         duedate_str = task.get_due_date()
         left_str    = task.get_days_left()
         tags        = task.get_tags()
@@ -839,20 +841,21 @@ class TaskBrowser:
         return count
     
     def __build_task_title(self,task,count,extended=False):
+        simple_title = saxutils.escape(task.get_title())
         if extended :
             excerpt = task.get_excerpt(lines=2)
             if excerpt.strip() != "" :
-                title   = "<b><big>%s</big></b>\n<small>%s</small>" %(task.get_title(),excerpt)
+                title   = "<b><big>%s</big></b>\n<small>%s</small>" %(simple_title,excerpt)
             else : 
-                title   = "<b><big>%s</big></b>" %task.get_title()
+                title   = "<b><big>%s</big></b>" %simple_title 
         else :
             if (not self.workview):
                 if count == 0:
-                    title = "<span>%s</span>" % (task.get_title() )
+                    title = "<span>%s</span>" % (simple_title )
                 else:
-                    title = "<span>%s (%s)</span>" % (task.get_title(), count )
+                    title = "<span>%s (%s)</span>" % (simple_title , count )
             else:
-                title = task.get_title()
+                title = simple_title 
         return title
 
     #If a Task editor is already opened for a given task, we present it
