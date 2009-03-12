@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Sun Mar  1 23:08:51 2009 -->
+<!--Generated with glade3 3.4.5 on Wed Mar 11 22:55:17 2009 -->
 <glade-interface>
   <widget class="GtkWindow" id="MainWindow">
     <property name="title" translatable="yes">Getting Things Gnome!</property>
@@ -135,6 +135,15 @@
                   <widget class="GtkMenu" id="menu4">
                     <property name="visible">True</property>
                     <child>
+                      <widget class="GtkImageMenuItem" id="edit_mi">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">gtk-edit</property>
+                        <property name="use_underline">True</property>
+                        <property name="use_stock">True</property>
+                        <signal name="activate" handler="on_edit_active_task"/>
+                      </widget>
+                    </child>
+                    <child>
                       <widget class="GtkImageMenuItem" id="mark_done_mi">
                         <property name="visible">True</property>
                         <property name="label" translatable="yes">_Mark as done</property>
@@ -208,7 +217,6 @@
         <child>
           <widget class="GtkToolbar" id="task_tb">
             <property name="visible">True</property>
-            <property name="toolbar_style">GTK_TOOLBAR_BOTH</property>
             <child>
               <widget class="GtkToolButton" id="new_task_b">
                 <property name="visible">True</property>
@@ -259,6 +267,17 @@
             <child>
               <widget class="GtkSeparatorToolItem" id="toolbutton2">
                 <property name="visible">True</property>
+              </widget>
+              <packing>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkToolButton" id="edit_b">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">Edit</property>
+                <property name="stock_id">gtk-edit</property>
+                <signal name="clicked" handler="on_edit_active_task"/>
               </widget>
               <packing>
                 <property name="homogeneous">True</property>
@@ -369,9 +388,9 @@
                       <widget class="GtkEntry" id="quickadd_field">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-			<property name="has_focus">True</property>
-			<property name="is_focus">True</property>
-			<property name="can_default">True</property>
+                        <property name="has_focus">True</property>
+                        <property name="is_focus">True</property>
+                        <property name="can_default">True</property>
                         <signal name="activate" handler="on_quickadd_field_activate"/>
                       </widget>
                     </child>
@@ -570,8 +589,8 @@ Deleting a task cannot be undone.</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="response_id">0</property>
-                <signal name="released" handler="on_delete_confirm"/>
                 <signal name="activate" handler="on_delete_confirm"/>
+                <signal name="released" handler="on_delete_confirm"/>
                 <child>
                   <widget class="GtkHBox" id="hbox2">
                     <property name="visible">True</property>
@@ -769,6 +788,15 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
       </widget>
     </child>
     <child>
+      <widget class="GtkImageMenuItem" id="tcm_edit">
+        <property name="visible">True</property>
+        <property name="label" translatable="yes">gtk-edit</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">True</property>
+        <signal name="activate" handler="on_edit_active_task"/>
+      </widget>
+    </child>
+    <child>
       <widget class="GtkImageMenuItem" id="tcm_mark_as_done">
         <property name="visible">True</property>
         <property name="label" translatable="yes">Mark as done</property>
@@ -813,6 +841,15 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
   </widget>
   <widget class="GtkMenu" id="ClosedTaskContextMenu">
     <property name="visible">True</property>
+    <child>
+      <widget class="GtkImageMenuItem" id="ctcm_edit">
+        <property name="visible">True</property>
+        <property name="label" translatable="yes">gtk-edit</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">True</property>
+        <signal name="activate" handler="on_edit_done_task"/>
+      </widget>
+    </child>
     <child>
       <widget class="GtkImageMenuItem" id="ctcm_mark_as_not_done">
         <property name="visible">True</property>
