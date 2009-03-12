@@ -441,6 +441,20 @@ class TaskView(gtk.TextView):
     #Detect URL in the tasks
     #It's ugly...
     def _detect_url(self,buff,start,end) :
+        #firtst, we remove the old tags :
+        #subt_list = self.get_subtasks()
+        #First, we remove the olds tags
+        tag_list = []
+        table = buff.get_tag_table()
+        def subfunc(texttag,data=None) : #pylint: disable-msg=W0613
+            if texttag.get_data('is_anchor') :
+                tag_list.append(texttag)
+        table.foreach(subfunc)
+        for t in tag_list :
+            buff.remove_tag(t,start,end)
+            table.remove(t)
+        
+        #Now we add the tag URL
         it = start.copy()
         prev = start.copy()
         while (it.get_offset() < end.get_offset()) and (it.get_char() != '\0') :
