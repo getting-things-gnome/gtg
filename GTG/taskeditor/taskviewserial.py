@@ -124,15 +124,21 @@ class Serializer :
                             parent.appendChild(doc.createTextNode('\n'))
                         it = endit
                     else :
-                        #The link tag has noname but has "is_anchor" properties
-                        if ta.get_data('is_anchor'): 
-                            tagname = "link"
-                        #Recursive call !!!!! (we handle tag in tags)
-                        child = self.parse_buffer(buf,startit,endit,tagname,doc,tag_stack)
-                        #handling special tags
-                        if ta.get_data('is_anchor') :
-                            child.setAttribute("target",ta.get_data('link'))
-                        parent.appendChild(child)
+                        #We currently ignore other tags
+                        text = buf.get_text(startit,endit)
+                        parent.appendChild(doc.createTextNode(text))
+                        
+#The following commented code add links in the serialization
+#                        #The link tag has noname but has "is_anchor" properties
+#                        if ta.get_data('is_anchor'): 
+#                            tagname = "link"
+#                        #Recursive call !!!!! (we handle tag in tags)
+#                        child = self.parse_buffer(buf,startit,endit,tagname,doc,tag_stack)
+#                        #handling special tags
+#                        if ta.get_data('is_anchor') :
+#                            child.setAttribute("target",ta.get_data('link'))
+#                        parent.appendChild(child)
+
             #else, we just add the text
             else :
                 parent.appendChild(doc.createTextNode(it.get_char()))

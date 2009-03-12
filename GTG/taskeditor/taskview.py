@@ -33,8 +33,10 @@ import gobject
 import pango
 
 from GTG.taskeditor import taskviewserial
+from GTG.tools import openurl
 
-separators = [' ','.',',','/','\n','\t','!','?',';']
+separators = [' ','.',',','/','\n','\t','!','?',';','\0']
+url_separators = [' ',',','\n','\t',';','\0']
 
 bullet1 = '→'
 bullet2 = '↳'
@@ -247,11 +249,15 @@ class TaskView(gtk.TextView):
         #We cannot have two tags with the same name
         #That's why the link tag has no name
         #but it has a "is_anchor" property
-        task = self.req.get_task(anchor)
-        if task and task.get_status() == "Active" :
+        if typ == "http" :
             linktype = 'link'
+        #By default, the type is a subtask
         else :
-            linktype = 'done'
+            task = self.req.get_task(anchor)
+            if task and task.get_status() == "Active" :
+                linktype = 'link'
+            else :
+                linktype = 'done'
         tag = b.create_tag(None, **self.get_property(linktype)) #pylint: disable-msg=W0142
         tag.set_data('is_anchor', True)
         tag.set_data('link',anchor)
@@ -390,6 +396,7 @@ class TaskView(gtk.TextView):
             local_end.forward_lines(2)
         #if full=False we detect tag only on the current line
         self._detect_tag(buff,local_start,local_end)
+        self._detect_url(buff,local_start,local_end)
         
         #subt_list = self.get_subtasks()
         #First, we remove the olds tags
@@ -431,6 +438,38 @@ class TaskView(gtk.TextView):
         #Else we save the task anyway (but without refreshing all)
         elif self.save_task :
             self.save_task()
+            
+    #Detect URL in the tasks
+    #It's ugly...
+    def _detect_url(self,buff,start,end) :
+        #firtst, we remove the old tags :
+        #subt_list = self.get_subtasks()
+        #First, we remove the olds tags
+        tag_list = []
+        table = buff.get_tag_table()
+        def subfunc(texttag,data=None) : #pylint: disable-msg=W0613
+            if texttag.get_data('is_anchor') :
+                tag_list.append(texttag)
+        table.foreach(subfunc)
+        for t in tag_list :
+            buff.remove_tag(t,start,end)
+        #Now we add the tag URL
+        it = start.copy()
+        prev = start.copy()
+        while (it.get_offset() < end.get_offset()) and (it.get_char() != '\0') :
+            it.forward_word_end()
+            prev = it.copy()
+            prev.backward_word_start()
+            text = buff.get_text(prev,it)
+            if text in ["http","https"] :
+                while it.get_char() not in url_separators and (it.get_char() != '\0') :
+                    it.forward_char()
+                url = buff.get_text(prev,it)
+                if url.startswith("http://") or url.startswith("https://") :
+                    texttag = self.create_anchor_tag(buff,url,text=None,typ="http")
+                    buff.apply_tag(texttag, prev , it)
+                
+        
 
     #Detect tags in buff in the regio between start iter and end iter
     def _detect_tag(self,buff,start,end) :
@@ -489,7 +528,6 @@ class TaskView(gtk.TextView):
             if do_word_check:
                 if (word_end.compare(word_start) > 0):
                     my_word = buff.get_text(word_start, word_end)
-                
                     # We do something about it
                     #We want a tag bigger than the simple "@"
                     if len(my_word) > 1 and my_word[0] == '@':
@@ -536,11 +574,17 @@ class TaskView(gtk.TextView):
     #from this selection
     def _delete_range(self,buff,start,end) :
         it = start.copy()
+#        #If we are at the beginning of a mark, put this mark at the end
+#        marks = start.get_marks()
+#        for m in marks :
+#            print m.get_name()
+#            buff.move_mark(m,end)
         #If the begining of the selection is in the middle of an indent
         #We want to start at the begining
         tags = it.get_tags()+it.get_toggled_tags(False)
         for ta in tags :
-            if (ta.get_data('is_indent') and not it.begins_tag(ta)) :
+            if (ta.get_data('is_indent') and not it.begins_tag(ta) \
+                                            and not it.ends_tag(ta)) :
                 it.backward_to_tag_toggle(ta)
                 start.backward_to_tag_toggle(ta)
                 endindent = it.copy()
@@ -552,9 +596,10 @@ class TaskView(gtk.TextView):
                 tags = it.get_tags()
                 for ta in tags :
                     #removing deleted subtasks
+                    #it looks like it works without that.
                     if ta.get_data('is_subtask') :
-                        target = ta.get_data('child')
-                        self.remove_subtask(target)
+#                        target = ta.get_data('child')
+#                        #self.remove_subtask(target)
                         self.refresh_browser()
                     #removing deleted tags
                     if ta.get_data('is_tag') :
@@ -904,6 +949,8 @@ class TaskView(gtk.TextView):
             if _type == gtk.gdk.BUTTON_RELEASE:
                 if typ == "subtask" :
                     self.open_task(anchor)
+                elif typ == "http" :
+                    openurl.openurl(anchor)
                 else :
                     print "Unknown link type for %s" %anchor
                 self.emit('anchor-clicked', text, anchor, button)
