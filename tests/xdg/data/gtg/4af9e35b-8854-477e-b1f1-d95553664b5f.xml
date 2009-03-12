@@ -97,7 +97,6 @@ aze,
 		</donedate>
 		<content>
 			no tag but I'm editing
-
 		</content>
 	</task>
 	<task id="6@1" status="Done" tags="@tag">
@@ -139,6 +138,7 @@ tag,
 		<content>
 			&lt;subtask&gt;27@1&lt;/subtask&gt;
 &lt;subtask&gt;1@1&lt;/subtask&gt;
+htt
 		</content>
 	</task>
 	<task id="3@1" status="Done" tags="@donetask">
@@ -296,6 +296,7 @@ et pas pour d'autres.
 		</startdate>
 		<content>
 			&lt;tag&gt;@aze&lt;/tag&gt;
+
 		</content>
 	</task>
 </project>

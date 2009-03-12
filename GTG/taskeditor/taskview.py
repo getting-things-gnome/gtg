@@ -34,7 +34,8 @@ import pango
 
 from GTG.taskeditor import taskviewserial
 
-separators = [' ','.',',','/','\n','\t','!','?',';']
+separators = [' ','.',',','/','\n','\t','!','?',';','\0']
+url_separators = [' ',',','\n','\t',';','\0']
 
 bullet1 = '→'
 bullet2 = '↳'
@@ -390,6 +391,7 @@ class TaskView(gtk.TextView):
             local_end.forward_lines(2)
         #if full=False we detect tag only on the current line
         self._detect_tag(buff,local_start,local_end)
+        self._detect_url(buff,local_start,local_end)
         
         #subt_list = self.get_subtasks()
         #First, we remove the olds tags
@@ -431,6 +433,26 @@ class TaskView(gtk.TextView):
         #Else we save the task anyway (but without refreshing all)
         elif self.save_task :
             self.save_task()
+            
+    #Detect URL in the tasks
+    #It's ugly...
+    def _detect_url(self,buff,start,end) :
+        it = start.copy()
+        prev = start.copy()
+        while (it.get_offset() < end.get_offset()) and (it.get_char() != '\0') :
+            it.forward_word_end()
+            prev = it.copy()
+            prev.backward_word_start()
+            text = buff.get_text(prev,it)
+            if text in ["http","https"] :
+                while it.get_char() not in url_separators and (it.get_char() != '\0') :
+                    it.forward_char()
+                url = buff.get_text(prev,it)
+                if url.startswith("http://") or url.startswith("https://") :
+                    #TODO now that we have the URL, we will put marks
+                    print url
+                
+        
 
     #Detect tags in buff in the regio between start iter and end iter
     def _detect_tag(self,buff,start,end) :
@@ -489,7 +511,6 @@ class TaskView(gtk.TextView):
             if do_word_check:
                 if (word_end.compare(word_start) > 0):
                     my_word = buff.get_text(word_start, word_end)
-                
                     # We do something about it
                     #We want a tag bigger than the simple "@"
                     if len(my_word) > 1 and my_word[0] == '@':
