@@ -453,8 +453,6 @@ class TaskView(gtk.TextView):
                     it.forward_char()
                 url = buff.get_text(prev,it)
                 if url.startswith("http://") or url.startswith("https://") :
-                    #TODO now that we have the URL, we will put marks
-                    print url
                     texttag = self.create_anchor_tag(buff,url,text=None,typ="http")
                     buff.apply_tag(texttag, prev , it)
                 
