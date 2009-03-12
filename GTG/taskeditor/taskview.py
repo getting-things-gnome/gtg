@@ -33,6 +33,7 @@ import gobject
 import pango
 
 from GTG.taskeditor import taskviewserial
+from GTG.tools import openurl
 
 separators = [' ','.',',','/','\n','\t','!','?',';','\0']
 url_separators = [' ',',','\n','\t',';','\0']
@@ -452,8 +453,6 @@ class TaskView(gtk.TextView):
         table.foreach(subfunc)
         for t in tag_list :
             buff.remove_tag(t,start,end)
-            table.remove(t)
-        
         #Now we add the tag URL
         it = start.copy()
         prev = start.copy()
@@ -943,6 +942,8 @@ class TaskView(gtk.TextView):
             if _type == gtk.gdk.BUTTON_RELEASE:
                 if typ == "subtask" :
                     self.open_task(anchor)
+                elif typ == "http" :
+                    openurl.openurl(anchor)
                 else :
                     print "Unknown link type for %s" %anchor
                 self.emit('anchor-clicked', text, anchor, button)
