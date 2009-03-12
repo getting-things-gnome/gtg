@@ -297,6 +297,9 @@ et pas pour d'autres.
 		<content>
 			&lt;tag&gt;@aze&lt;/tag&gt;
 
+&lt;link target=&quot;http://aze&quot;&gt;http://aze&lt;/link&gt;
+
+
 		</content>
 	</task>
 </project>

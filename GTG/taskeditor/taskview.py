@@ -248,11 +248,15 @@ class TaskView(gtk.TextView):
         #We cannot have two tags with the same name
         #That's why the link tag has no name
         #but it has a "is_anchor" property
-        task = self.req.get_task(anchor)
-        if task and task.get_status() == "Active" :
+        if typ == "http" :
             linktype = 'link'
+        #By default, the type is a subtask
         else :
-            linktype = 'done'
+            task = self.req.get_task(anchor)
+            if task and task.get_status() == "Active" :
+                linktype = 'link'
+            else :
+                linktype = 'done'
         tag = b.create_tag(None, **self.get_property(linktype)) #pylint: disable-msg=W0142
         tag.set_data('is_anchor', True)
         tag.set_data('link',anchor)
@@ -451,6 +455,8 @@ class TaskView(gtk.TextView):
                 if url.startswith("http://") or url.startswith("https://") :
                     #TODO now that we have the URL, we will put marks
                     print url
+                    texttag = self.create_anchor_tag(buff,url,text=None,typ="http")
+                    buff.apply_tag(texttag, prev , it)
                 
         
 
