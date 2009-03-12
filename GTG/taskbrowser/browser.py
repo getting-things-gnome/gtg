@@ -93,9 +93,11 @@ class TaskBrowser:
         self.tagpopup           = self.wTree.get_widget("TagContextMenu")
         self.taskpopup          = self.wTree.get_widget("TaskContextMenu")
         self.closedtaskpopup    = self.wTree.get_widget("ClosedTaskContextMenu")
+        self.editbutton         = self.wTree.get_widget("edit_b")
         self.donebutton         = self.wTree.get_widget("mark_as_done_b")
         self.dismissbutton      = self.wTree.get_widget("dismiss")
         self.about              = self.wTree.get_widget("aboutdialog1")
+        self.edit_mi            = self.wTree.get_widget("edit_mi")
 
         # Initialize "About" dialog
         gtk.about_dialog_set_url_hook(lambda dialog, url: url_show(url))
@@ -789,10 +791,17 @@ class TaskBrowser:
                 self.dismissbutton.set_label(GnomeConfig.MARK_UNDISMISS)
                 self.donebutton.set_label(GnomeConfig.MARK_DONE)
                 self.dismissbutton.set_icon_name("gtg-task-undismiss")
+                #TODO: fix here
+                self.editbutton.connect('clicked', self.on_edit_done_task)
+                self.edit_mi.connect('activate', self.on_edit_done_task)
+                
             else :
                 self.donebutton.set_label(GnomeConfig.MARK_UNDONE)
                 self.dismissbutton.set_label(GnomeConfig.MARK_DISMISS)
                 self.donebutton.set_icon_name("gtg-task-undone")
+                
+                self.editbutton.connect('clicked', self.on_edit_active_task)
+                self.edit_mi.connect('activate', self.on_edit_active_task)
                 
     #This function is called when the selection change in the active task view
     #It will displays the selected task differently
