@@ -1,3 +1,5 @@
+	- http:// links now open in the browser
+	- fix bug #339383 (delete subtask when deleting first char)
 	- Edit buttons : patches from Antons Rebguns 
 	- Escape title in the treeview : Bug ##339874
 	- Focus in the editor : Bug #339269, Bug #339195, Bug #339389
