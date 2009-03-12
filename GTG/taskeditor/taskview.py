@@ -574,11 +574,17 @@ class TaskView(gtk.TextView):
     #from this selection
     def _delete_range(self,buff,start,end) :
         it = start.copy()
+#        #If we are at the beginning of a mark, put this mark at the end
+#        marks = start.get_marks()
+#        for m in marks :
+#            print m.get_name()
+#            buff.move_mark(m,end)
         #If the begining of the selection is in the middle of an indent
         #We want to start at the begining
         tags = it.get_tags()+it.get_toggled_tags(False)
         for ta in tags :
-            if (ta.get_data('is_indent') and not it.begins_tag(ta)) :
+            if (ta.get_data('is_indent') and not it.begins_tag(ta) \
+                                            and not it.ends_tag(ta)) :
                 it.backward_to_tag_toggle(ta)
                 start.backward_to_tag_toggle(ta)
                 endindent = it.copy()
@@ -590,9 +596,10 @@ class TaskView(gtk.TextView):
                 tags = it.get_tags()
                 for ta in tags :
                     #removing deleted subtasks
+                    #it looks like it works without that.
                     if ta.get_data('is_subtask') :
-                        target = ta.get_data('child')
-                        self.remove_subtask(target)
+#                        target = ta.get_data('child')
+#                        #self.remove_subtask(target)
                         self.refresh_browser()
                     #removing deleted tags
                     if ta.get_data('is_tag') :
