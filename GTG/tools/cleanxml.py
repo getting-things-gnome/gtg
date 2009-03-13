@@ -19,6 +19,7 @@
 
 import os, xml.dom.minidom
 import shutil
+import sys
 
 #This is for the awful pretty xml things
 tab = "\t"
@@ -62,20 +63,24 @@ def readTextNode(node,title) :
 #This function open an XML file if it exists and return the XML object
 #If the file doesn't exist, it is created with an empty XML tree    
 def openxmlfile(zefile,root ):
-    if os.path.exists(zefile) :
-        #We should be more defensive here
-        doc = xml.dom.minidom.parse(zefile)
-        cleanDoc(doc,tab,enter)
-        #We should be more defensive here
-        xmlproject = doc.getElementsByTagName(root)[0]
-    #the file didn't exist, create it now
-    else :
-        doc,xmlproject = emptydoc(root)
-        #then we create the file
-        f = open(zefile, mode='a+')
-        f.write(doc.toxml().encode("utf-8"))
-        f.close()
-    return doc,xmlproject
+    try :
+        if os.path.exists(zefile) :
+            #We should be more defensive here
+            doc = xml.dom.minidom.parse(zefile)
+            cleanDoc(doc,tab,enter)
+            #We should be more defensive here
+            xmlproject = doc.getElementsByTagName(root)[0]
+        #the file didn't exist, create it now
+        else :
+            doc,xmlproject = emptydoc(root)
+            #then we create the file
+            f = open(zefile, mode='a+')
+            f.write(doc.toxml().encode("utf-8"))
+            f.close()
+        return doc,xmlproject
+    except IOError, msg:
+        print msg
+        sys.exit(1)
 
 #Return a doc element with only one root element of the name "root"
 def emptydoc(root) :

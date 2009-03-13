@@ -81,11 +81,10 @@ class TagStore :
         #This allow us to keep attributes of the old tag
         #that might be not set in the new one
         else :
-            att = tag.get_all_attributes()
-            for a in att :
-                att_name = a.get_name()
+            atts = tag.get_all_attributes()
+            for att_name in atts :
                 val = tag.get_attribute(att_name)
-                if val :
+                if att_name != 'name' and val :
                     self.store[name].set_attribute(att_name,val)
                     
     
