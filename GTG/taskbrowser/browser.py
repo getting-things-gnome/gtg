@@ -233,9 +233,33 @@ class TaskBrowser:
         self.wTree.get_widget("view_quickadd").set_active(QUICKADD_PANE)
         self.priv["bg_color_enable"] = True
     
-		#connecting the refresh signal from the requester
+        #connecting the refresh signal from the requester
         self.lock = threading.Lock()
         self.req.connect("refresh",self.do_refresh)
+        
+        agr = gtk.AccelGroup()
+        self.wTree.get_widget("MainWindow").add_accel_group(agr)
+
+        # define accelerator keys
+        file_quit = self.wTree.get_widget("file_quit")
+        key, mod = gtk.accelerator_parse("<Control>q")
+        file_quit.add_accelerator("activate", agr, key, mod, gtk.ACCEL_VISIBLE)
+
+        edit_undo = self.wTree.get_widget("edit_undo")
+        key, mod = gtk.accelerator_parse("<Control>z")
+        edit_undo.add_accelerator("activate", agr, key, mod, gtk.ACCEL_VISIBLE)
+
+        edit_redo = self.wTree.get_widget("edit_redo")
+        key, mod = gtk.accelerator_parse("<Control>y")
+        edit_redo.add_accelerator("activate", agr, key, mod, gtk.ACCEL_VISIBLE)
+
+        new_task_mi = self.wTree.get_widget("new_task_mi")
+        key, mod = gtk.accelerator_parse("<Control>n")
+        new_task_mi.add_accelerator("activate", agr, key, mod, gtk.ACCEL_VISIBLE)
+
+        new_subtask_mi = self.wTree.get_widget("new_subtask_mi")
+        key, mod = gtk.accelerator_parse("<Control><Shift>n")
+        new_subtask_mi.add_accelerator("activate", agr, key, mod, gtk.ACCEL_VISIBLE)
 
     def __restore_state_from_conf(self):
         
@@ -370,7 +394,7 @@ class TaskBrowser:
         self.config["browser"]["view"]              = view
         if self.notes :
             self.config["browser"]["experimental_notes"] = True
-             
+            
     def on_close(self):
         self.__save_state_to_conf()
         self.close()
