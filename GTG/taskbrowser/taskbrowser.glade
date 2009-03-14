@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Wed Mar 11 22:55:17 2009 -->
+<!--Generated with glade3 3.4.5 on Fri Mar 13 17:18:48 2009 -->
 <glade-interface>
   <widget class="GtkWindow" id="MainWindow">
     <property name="title" translatable="yes">Getting Things Gnome!</property>
@@ -74,7 +74,7 @@
                     <child>
                       <widget class="GtkCheckMenuItem" id="view_workview">
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">_Work view</property>
+                        <property name="label" translatable="yes">_Work View</property>
                         <property name="use_underline">True</property>
                         <signal name="toggled" handler="on_view_workview_toggled"/>
                       </widget>
@@ -87,7 +87,7 @@
                     <child>
                       <widget class="GtkCheckMenuItem" id="bgcol_enable">
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">_Background colors</property>
+                        <property name="label" translatable="yes">_Background Colors</property>
                         <property name="use_underline">True</property>
                         <property name="active">True</property>
                         <signal name="toggled" handler="on_bg_color_toggled"/>
@@ -101,7 +101,7 @@
                     <child>
                       <widget class="GtkCheckMenuItem" id="view_sidebar">
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">_Tags sidebar</property>
+                        <property name="label" translatable="yes">_Tags Sidebar</property>
                         <property name="use_underline">True</property>
                         <signal name="toggled" handler="on_view_sidebar_toggled"/>
                       </widget>
@@ -109,7 +109,7 @@
                     <child>
                       <widget class="GtkCheckMenuItem" id="view_closed">
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">_Closed tasks pane</property>
+                        <property name="label" translatable="yes">_Closed Tasks Pane</property>
                         <property name="use_underline">True</property>
                         <signal name="toggled" handler="on_view_closed_toggled"/>
                       </widget>
@@ -117,7 +117,7 @@
                     <child>
                       <widget class="GtkCheckMenuItem" id="view_quickadd">
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">_Quick add entry</property>
+                        <property name="label" translatable="yes">_Quick Add Entry</property>
                         <property name="use_underline">True</property>
                         <signal name="toggled" handler="on_view_quickadd_toggled"/>
                       </widget>
@@ -135,6 +135,34 @@
                   <widget class="GtkMenu" id="menu4">
                     <property name="visible">True</property>
                     <child>
+                      <widget class="GtkImageMenuItem" id="new_task_mi">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">New _Task</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="on_add_task"/>
+                        <child internal-child="image">
+                          <widget class="GtkImage" id="menu-item-image17">
+                            <property name="visible">True</property>
+                            <property name="icon_name">gtg-task-new</property>
+                          </widget>
+                        </child>
+                      </widget>
+                    </child>
+                    <child>
+                      <widget class="GtkImageMenuItem" id="new_subtask_mi">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">New _Subtask</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="on_add_subtask"/>
+                        <child internal-child="image">
+                          <widget class="GtkImage" id="menu-item-image16">
+                            <property name="visible">True</property>
+                            <property name="icon_name">gtg-task-new</property>
+                          </widget>
+                        </child>
+                      </widget>
+                    </child>
+                    <child>
                       <widget class="GtkImageMenuItem" id="edit_mi">
                         <property name="visible">True</property>
                         <property name="label" translatable="yes">gtk-edit</property>
@@ -146,7 +174,7 @@
                     <child>
                       <widget class="GtkImageMenuItem" id="mark_done_mi">
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">_Mark as done</property>
+                        <property name="label" translatable="yes">_Mark as Done</property>
                         <property name="use_underline">True</property>
                         <signal name="activate" handler="on_mark_as_done"/>
                         <child internal-child="image">
@@ -220,9 +248,24 @@
             <child>
               <widget class="GtkToolButton" id="new_task_b">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">New task</property>
+                <property name="label" translatable="yes">New Task</property>
                 <property name="icon_name">gtg-task-new</property>
                 <signal name="clicked" handler="on_add_task"/>
+                <accelerator key="n" modifiers="GDK_CONTROL_MASK" signal="clicked"/>
+                <accelerator key="N" modifiers="GDK_CONTROL_MASK" signal="clicked"/>
+              </widget>
+              <packing>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkToolButton" id="new_subtask_b">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">New Subtask</property>
+                <property name="icon_name">gtg-task-new</property>
+                <signal name="clicked" handler="on_add_subtask"/>
+                <accelerator key="N" modifiers="GDK_SHIFT_MASK | GDK_CONTROL_MASK" signal="clicked"/>
+                <accelerator key="n" modifiers="GDK_SHIFT_MASK | GDK_CONTROL_MASK" signal="clicked"/>
               </widget>
               <packing>
                 <property name="homogeneous">True</property>
@@ -231,7 +274,7 @@
             <child>
               <widget class="GtkToolButton" id="new_note_button">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">New note</property>
+                <property name="label" translatable="yes">New Note</property>
                 <property name="icon_name">gtg-note-new</property>
                 <signal name="clicked" handler="on_add_note"/>
               </widget>
@@ -286,7 +329,7 @@
             <child>
               <widget class="GtkToolButton" id="mark_as_done_b">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">Mark as done</property>
+                <property name="label" translatable="yes">Mark as Done</property>
                 <property name="icon_name">gtg-task-done</property>
                 <signal name="clicked" handler="on_mark_as_done"/>
               </widget>
@@ -338,7 +381,7 @@
             <child>
               <widget class="GtkToggleToolButton" id="workview_toggle">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">Work view</property>
+                <property name="label" translatable="yes">Work View</property>
                 <property name="stock_id">gtk-index</property>
                 <signal name="toggled" handler="on_workview_toggled"/>
               </widget>
@@ -771,7 +814,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
     <child>
       <widget class="GtkImageMenuItem" id="tcm_add_subtask">
         <property name="visible">True</property>
-        <property name="label" translatable="yes">Add subtask</property>
+        <property name="label" translatable="yes">New Subtask</property>
         <property name="use_underline">True</property>
         <signal name="activate" handler="on_add_subtask"/>
         <child internal-child="image">
