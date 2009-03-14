@@ -39,25 +39,24 @@ class Serializer :
         #the content of the buffer.
         doc = xml.dom.minidom.Document()
         tag_stack = {}
-        doc.appendChild(self.parse_buffer(content_buf,its, ite,"content",doc,tag_stack))
+        parent = doc.createElement("content")
+        doc.appendChild(self.parse_buffer(content_buf,its, ite,parent,doc,tag_stack))
         #We don't want the whole doc with the XML declaration
         #we only take the first node (the "content" one)
         node = doc.firstChild #pylint: disable-msg=E1101
         return node.toxml().encode("utf-8")
 
-    def parse_buffer(self,buf, start, end, name, doc,tag_stack) :
+    def parse_buffer(self,buf, start, end, parent, doc,tag_stack) :
         """
         Parse the buffer and output an XML representation.
 
-            @var buf  : the buffer to parse from start to end
-            @var name : the name of the XML element and doc is the XML dom
+            @var buf, start, end  : the buffer to parse from start to end
+            @var parent, doc: the XML element to add data and doc is the XML dom
             @tag_stack : the list of parsed tags
             
         """
         
         it     = start.copy()
-        parent = doc.createElement(name)
-
         while (it.get_offset() < end.get_offset()) and (it.get_char() != '\0'):
             
             # If a tag begin, we will parse until the end
@@ -116,7 +115,8 @@ class Serializer :
                         it.forward_line()
                     elif ta.get_data('is_tag') :
                         #Recursive call !!!!! (we handle tag in tags)
-                        child = self.parse_buffer(buf,startit,endit,"tag",doc,tag_stack)
+                        nparent = doc.createElement("tag")
+                        child = self.parse_buffer(buf,startit,endit,nparent,doc,tag_stack)
                         parent.appendChild(child)
                     elif ta.get_data('is_indent') :
                         indent = buf.get_text(startit,endit)
@@ -125,29 +125,21 @@ class Serializer :
                         it = endit
                     else :
                         #We currently ignore other tags
-                        text = buf.get_text(startit,endit)
-                        parent.appendChild(doc.createTextNode(text))
+                        #recursive call
+                        #Nothing has change except that there is one more
+                        #tag in the tag_stack
+                        child = self.parse_buffer(buf,startit,endit,parent,doc,tag_stack)
                         
-#The following commented code add links in the serialization
-#                        #The link tag has noname but has "is_anchor" properties
-#                        if ta.get_data('is_anchor'): 
-#                            tagname = "link"
-#                        #Recursive call !!!!! (we handle tag in tags)
-#                        child = self.parse_buffer(buf,startit,endit,tagname,doc,tag_stack)
-#                        #handling special tags
-#                        if ta.get_data('is_anchor') :
-#                            child.setAttribute("target",ta.get_data('link'))
-#                        parent.appendChild(child)
-
             #else, we just add the text
             else :
                 parent.appendChild(doc.createTextNode(it.get_char()))
                 it.forward_char()
                 
         #Finishing with an \n before closing </content>
-        if name == "content" :
+        if parent.localName == "content" :
             last_val = parent.lastChild
-            if last_val and last_val.nodeValue != '\n' :
+            #We add a \n only if needed
+            if last_val and last_val.nodeValue[-1] != '\n' :
                 parent.appendChild(doc.createTextNode('\n'))
         #This function concatenate all the adjacent text node of the XML
         parent.normalize()

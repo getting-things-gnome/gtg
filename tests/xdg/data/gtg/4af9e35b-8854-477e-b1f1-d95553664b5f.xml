@@ -293,9 +293,11 @@ et pas pour d'autres.
 			2009-01-18
 		</startdate>
 		<content>
-			&lt;tag&gt;@aze&lt;/tag&gt; 
-qsdf
-http://fritalk.com
+			&lt;tag&gt;@aze&lt;/tag&gt;, 
+last line
+http://firtalk
+
+
 		</content>
 	</task>
 </project>
