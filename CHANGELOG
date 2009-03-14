@@ -1,3 +1,4 @@
+	- Ctrl+N and Ctrl+shift+N hotkeys (thanks Antons Rebguns)
 	- Error, no crash if the XML file cannot be read (thanks Carl Chenet)
 	- http:// links now open in the browser
 	- fix bug #339383 (delete subtask when deleting first char)
