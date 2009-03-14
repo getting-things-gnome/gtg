@@ -640,7 +640,7 @@ class TaskBrowser:
             
         #Set the title of the window :
         if nbr_of_tasks == 0 :
-            parenthesis = "(no active task)"
+            parenthesis = "(no active tasks)"
         elif nbr_of_tasks == 1 :
             parenthesis = "(1 active task)"
         else :
@@ -791,15 +791,12 @@ class TaskBrowser:
                 self.dismissbutton.set_label(GnomeConfig.MARK_UNDISMISS)
                 self.donebutton.set_label(GnomeConfig.MARK_DONE)
                 self.dismissbutton.set_icon_name("gtg-task-undismiss")
-                #TODO: fix here
                 self.editbutton.connect('clicked', self.on_edit_done_task)
                 self.edit_mi.connect('activate', self.on_edit_done_task)
-                
             else :
                 self.donebutton.set_label(GnomeConfig.MARK_UNDONE)
                 self.dismissbutton.set_label(GnomeConfig.MARK_DISMISS)
                 self.donebutton.set_icon_name("gtg-task-undone")
-                
                 self.editbutton.connect('clicked', self.on_edit_active_task)
                 self.edit_mi.connect('activate', self.on_edit_active_task)
                 
