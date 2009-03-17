@@ -95,10 +95,19 @@ class TaskBrowser:
         self.closedtaskpopup    = self.wTree.get_widget("ClosedTaskContextMenu")
         self.editbutton         = self.wTree.get_widget("edit_b")
         self.donebutton         = self.wTree.get_widget("mark_as_done_b")
+        self.newtask            = self.wTree.get_widget("new_task_b")
+        self.newsubtask         = self.wTree.get_widget("new_subtask_b")
         self.dismissbutton      = self.wTree.get_widget("dismiss")
         self.about              = self.wTree.get_widget("aboutdialog1")
         self.edit_mi            = self.wTree.get_widget("edit_mi")
-
+        
+        #Set the tooltip for the toolbar buttons
+        self.donebutton.set_tooltip_text("Mark the selected task as done")
+        self.editbutton.set_tooltip_text("Edit the selected task")
+        self.dismissbutton.set_tooltip_text("Dismiss the selected task")
+        self.newtask.set_tooltip_text("Create a new task")
+        self.newsubtask.set_tooltip_text("Create a new subtask")
+  
         # Initialize "About" dialog
         gtk.about_dialog_set_url_hook(lambda dialog, url: url_show(url))
         self.about.set_website(GTG.URL)
@@ -156,7 +165,10 @@ class TaskBrowser:
         if not self.notes :
             self.note_toggle.hide()
             self.new_note_button.hide()
-        
+            
+        #Set the tooltip for the toolbar button
+        self.new_note_button.set_tooltip_text("Create a new note")
+                
         # Model constants
         self.TASK_MODEL_OBJ         = 0
         self.TASK_MODEL_TITLE       = 1
@@ -205,6 +217,9 @@ class TaskBrowser:
         #The buttons
         self.toggle_workview = self.wTree.get_widget("workview_toggle")
         self.quickadd_entry = self.wTree.get_widget("quickadd_field")
+        
+        #Set the tooltip for the toolbar button
+        self.toggle_workview.set_tooltip_text("Toggle the work view")
         
         #The panes
         self.sidebar       = self.wTree.get_widget("sidebar")
@@ -256,11 +271,11 @@ class TaskBrowser:
         new_task_mi = self.wTree.get_widget("new_task_mi")
         key, mod = gtk.accelerator_parse("<Control>n")
         new_task_mi.add_accelerator("activate", agr, key, mod, gtk.ACCEL_VISIBLE)
-
+        
         new_subtask_mi = self.wTree.get_widget("new_subtask_mi")
         key, mod = gtk.accelerator_parse("<Control><Shift>n")
         new_subtask_mi.add_accelerator("activate", agr, key, mod, gtk.ACCEL_VISIBLE)
-
+        
     def __restore_state_from_conf(self):
         
         # Extract state from configuration dictionary
