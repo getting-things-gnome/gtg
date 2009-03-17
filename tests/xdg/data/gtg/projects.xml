@@ -1,5 +1,0 @@
-<?xml version="1.0" ?>
-<config>
-	<backend filename="4af9e35b-8854-477e-b1f1-d95553664b5f.xml" module="localfile" pid="1"/>
-	<backend filename="f8c7d20e-a627-49da-bf66-82f1fff293a6.xml" module="localfile" pid="2"/>
-</config>

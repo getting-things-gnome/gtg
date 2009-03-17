@@ -1,50 +1,61 @@
 ====== Getting Things Gnome! ======
 
-Getting Things Gnome! (gtg) is a personnal organizer for the gnome desktop who was inspired by the Getting Things Done methodology (GTD). It is not a GTD only software as it aims for flexibility, adaptability and ease of use.
+Getting Things Gnome! (GTG) is a personal organizer for the GNOME desktop 
+environment inspired by the Getting Things Done (GTD) methodology. GTG is 
+designed with flexibility, adaptability, and ease of use in mind so it can be 
+used as more than just GTD software. 
 
-GTG wants to help you to track everything you need to do and need to know, from very small tasks to big projects.
+GTG is intended to help you track everything you needto do and need to know, 
+from small tasks to large projects.
 
 ===== Dependencies =====
 
-GTG depends on Python (>= 2.5), PyGTK, python ConfigObj, python gobject, python XDG. Please refer to your system documentation for information on how to install these modules if they're not currently available.
+GTG depends on the following packages:
+ * Python, version 2.5 or above
+ * PyGTK
+ * python ConfigObj
+ * python gobject
+ * python XDG
+Please refer to your system documentation for information on how to install 
+these modules if they're not currently available.
 
-For debian based distributions, you need to install the following packages :
-python-gtk2, python-glade2, python-xdg, python-gobject, python-configobj
+To install these packages on Debian-based systems, execute the following 
+command:
+    # aptitude install python-gtk2, python-glade2, python-xdg, python-gobject,\
+         python-configobj
 
 ===== Installing and Running =====
 
-GTG is available as a seutptools enabled package. Installation procedures for those are easy:
-
-Either unpack the tarball 
+To install GTG, either unpack the tarball:
     
-    $ tar xvfz gtg.tar.gz
+    $ tar xzvf gtg.tar.gz
 
 or check out our bazaar branch for a development version (we try to keep those 
-unbroken and ready for production use)
+unbroken and ready for production use):
     
     $ bzr branch lp:gtg
 
-From there, you can either run pyroom from commandline
+To run GTG, either execute it directly from the source folder:
 
     $ cd gtg/
     $ ./gtg
 
-Or install it system wide
+or install it system-wide (must install as root to install system-wide):
 
     $ cd gtg
-    $ python setup.py install # as root
+    $ sudo python setup.py install # must be root to install system-wide
     $ gtg
 
 ==== Usage ====
 
-When editing a task, keep in mind that :
-1) A line beginning with "-" will automatically create a subtask on this line
-2) A word beginning with "@" is a tag
+When writing a task, keep in mind that:
+ 1) A line beginning with "-" will automatically create a subtask on that line
+ 2) A word beginning with "@" is a tag
 
 Please refer to http://gtg.fritalk.com/pages/documentation
 
 ===== Want to know more? =====
 
-  * GTG Website: http://gtg.fritalk.com/
-  * GTG project page on Launchpad: https://launchpad.net/gtg
-  * GTG Wiki: not available yet
+ * GTG Website: http://gtg.fritalk.com/
+ * GTG project page on Launchpad: https://launchpad.net/gtg
+ * GTG Wiki: not available yet
