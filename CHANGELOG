@@ -1,9 +1,9 @@
-	- Ctrl+N and Ctrl+shift+N hotkeys (thanks Antons Rebguns)
+	- Hotkeys goodness (patches from Antons Rebguns)
 	- Error, no crash if the XML file cannot be read (thanks Carl Chenet)
 	- http:// links now open in the browser
 	- fix bug #339383 (delete subtask when deleting first char)
 	- Edit buttons : patches from Antons Rebguns 
-	- Escape title in the treeview : Bug ##339874
+	- Escape title in the treeview : Bug #339874
 	- Focus in the editor : Bug #339269, Bug #339195, Bug #339389
 	- Bug #339269 : Quickadd has the focus on launch
 	- Bug #339583, Bug #336314 : patches delete key and
