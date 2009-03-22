@@ -27,6 +27,7 @@ import gtk.glade
 import threading
 import xml.sax.saxutils as saxutils
 import os
+import locale
 from gnome import url_show
 
 #our own imports
@@ -1275,7 +1276,7 @@ class TaskBrowser:
 
         # Determine row sorting depending on column
         if column == self.priv["tasklist"]["columns"][self.TASKLIST_COL_TITLE]:
-            cmp_func = lambda x,y: cmp(x.lower(),y.lower())
+            cmp_func = lambda x,y: locale.strcoll(x.lower(),y.lower())
             sort_key = lambda x:x[self.TASK_MODEL_TITLE]
         else:
             cmp_func = self.cmp_duedate_str
