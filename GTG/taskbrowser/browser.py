@@ -828,12 +828,16 @@ class TaskBrowser:
             self.task_tview.get_selection().unselect_all()
             self.note_tview.get_selection().unselect_all()
             if task.get_status() == "Dismiss" :
+                self.wTree.get_widget("ctcm_mark_as_not_done").set_sensitive(False)
+                self.wTree.get_widget("ctcm_undismiss").set_sensitive(True)
                 self.dismissbutton.set_label(GnomeConfig.MARK_UNDISMISS)
                 self.donebutton.set_label(GnomeConfig.MARK_DONE)
                 self.dismissbutton.set_icon_name("gtg-task-undismiss")
                 self.editbutton.connect('clicked', self.on_edit_done_task)
                 self.edit_mi.connect('activate', self.on_edit_done_task)
             else :
+                self.wTree.get_widget("ctcm_mark_as_not_done").set_sensitive(True)
+                self.wTree.get_widget("ctcm_undismiss").set_sensitive(False)
                 self.donebutton.set_label(GnomeConfig.MARK_UNDONE)
                 self.dismissbutton.set_label(GnomeConfig.MARK_DISMISS)
                 self.donebutton.set_icon_name("gtg-task-undone")
