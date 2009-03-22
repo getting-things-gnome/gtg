@@ -57,6 +57,7 @@ def create_data_files():
     # misc
     data_files.append((DATA_DIR, ['data/firstrun_tasks.xml']))
     data_files.append(('share/applications', ['gtg.desktop']))
+    data_files.append(('man/man1', ['doc/gtg.1']))
     return data_files
     
 ### SETUPT SCRIPT ##############################################################
