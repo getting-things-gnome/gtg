@@ -26,7 +26,7 @@ class GnomeConfig :
     current_rep = os.path.dirname(os.path.abspath(__file__))
     GLADE_FILE    = os.path.join(current_rep,"taskbrowser.glade")
     
-    MARK_DONE      = "Mark as done"
-    MARK_UNDONE    = "Mark as not done"
-    MARK_DISMISS   = "Dismiss"
-    MARK_UNDISMISS = "Undismiss"
+    MARK_DONE      = _("Mark as done2")
+    MARK_UNDONE    = _("Mark as not done2")
+    MARK_DISMISS   = _("Dismiss2")
+    MARK_UNDISMISS = _("Undismiss2")
