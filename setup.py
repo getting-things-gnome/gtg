@@ -18,7 +18,9 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-from distutils.core import setup
+from distutils.core     import setup
+from distutils.command.install_data import install_data 
+
 import glob
 import GTG
 import os
