@@ -205,15 +205,15 @@ class TaskEditor :
                 #refreshing the day left label
                 result = self.task.get_days_left()
                 if result == 1 :
-                    txt = "Due tomorrow !"
+                    txt = _("Due tomorrow !")
                 elif result > 0 :
-                    txt = "%s days left" %result
+                    txt = _("%s days left") %result
                 elif result == 0 :
-                    txt = "Due today !"
+                    txt = _("Due today !")
                 elif result == -1 :
-                    txt = "Due for yesterday"
+                    txt = _("Due for yesterday")
                 elif result < 0 :
-                    txt = "Was %s days ago" %result
+                    txt = _("Was %s days ago") %result
                 self.dayleft_label.set_markup("<span color='#666666'>"+txt+"</span>")    
         elif self.duedate_widget.get_text() != ''  :
             self.dayleft_label.set_text('')
