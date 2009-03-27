@@ -1,3 +1,4 @@
+	- Support for i18n
 	- TaskSerial refactorization (by pitijo)
 	- Tooltips on buttons (thanks to Jerome Guelfucci)
 	- First unit tests by Carl Chenet

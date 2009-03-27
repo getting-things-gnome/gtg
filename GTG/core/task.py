@@ -389,7 +389,7 @@ class Task :
         #Return a copy of the list of tags. Not the original object.
         l = []
         for t in self.tags :
-            name = t.get_name()
+            name = t.get_name().encode("UTF-8")
             l.append(name)
         return l
         
@@ -399,7 +399,7 @@ class Task :
 
     #This function add tag by name
     def add_tag(self, tagname):
-        t = self.req.new_tag(tagname)
+        t = self.req.new_tag(tagname.encode("UTF-8"))
         #Do not add the same tag twice
         if not t in self.tags :
             self.tags.append(t)

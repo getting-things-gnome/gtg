@@ -605,11 +605,17 @@ class TaskBrowser:
         self.tag_ts.clear()
         alltag       = self.req.get_alltag_tag()
         notag        = self.req.get_notag_tag()
-
-        count_all_task = len(self.req.get_tasks_list())
-        count_no_tags  = len(self.req.get_tasks_list(notag_only=True))
-        self.tag_ts.append([alltag,None,_("<span weight=\"bold\">All tags</span>"),str(count_all_task),False])
-        self.tag_ts.append([notag,None,_("<span weight=\"bold\">Tasks without tags</span>"),str(count_no_tags),False])
+        if self.workview :
+            count_all_task = len(self.req.get_active_tasks_list(workable=True))
+            count_no_tags  = len(self.req.get_active_tasks_list(notag_only=True,\
+                                                                workable=True))
+        else :
+            count_all_task = len(self.req.get_tasks_list(started_only=False))
+            count_no_tags  = len(self.req.get_tasks_list(notag_only=True,\
+                                                         started_only=False))
+            
+        self.tag_ts.append([alltag,None,"<span weight=\"bold\">All tags</span>",str(count_all_task),False])
+        self.tag_ts.append([notag,None,"<span weight=\"bold\">Tasks without tags</span>",str(count_no_tags),False])
         self.tag_ts.append([None,None,"","",True])
 
         tags = self.req.get_used_tags()
@@ -618,7 +624,10 @@ class TaskBrowser:
 
         for tag in tags:
             color = tag.get_attribute("color")
-            count = len(self.req.get_tasks_list(tags=[tag]))
+            if self.workview :
+                count = len(self.req.get_active_tasks_list(tags=[tag],workable=True))
+            else :
+                count = len(self.req.get_tasks_list(started_only=False,tags=[tag]))
             #We display the tags without the "@" (but we could)
             if count != 0:
                 self.tag_ts.append([tag,color,tag.get_name()[1:], str(count), False])

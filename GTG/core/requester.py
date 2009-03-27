@@ -131,7 +131,7 @@ class Requester :
             for nwtag in nonwork_tag :
                 #If the tag is explicitely selected, it doesn't go in the
                 #nonwork_tag
-                if nwtag in tags :
+                if tags and nwtag in tags :
                     nonwork_tag.remove(nwtag)
             #We build the task list
             temp_tasks = self.get_active_tasks_list(tags=tags, notag_only=notag_only,\

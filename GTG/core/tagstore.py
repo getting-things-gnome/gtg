@@ -153,10 +153,7 @@ class Tag :
 
     def __init__(self,name,save_cllbk=None) :
         self.attributes = {}
-        try :
-            self.name = unicode(name,"UTF-8")
-        except:
-            self.name = name.decode("UTF-8")
+        self.name = name
         self.set_attribute("name",self.name)
         self.save = save_cllbk
         
