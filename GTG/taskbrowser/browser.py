@@ -104,11 +104,11 @@ class TaskBrowser:
         self.edit_mi            = self.wTree.get_widget("edit_mi")
         
         #Set the tooltip for the toolbar buttons
-        self.donebutton.set_tooltip_text("Mark the selected task as done")
-        self.editbutton.set_tooltip_text("Edit the selected task")
-        self.dismissbutton.set_tooltip_text("Dismiss the selected task")
-        self.newtask.set_tooltip_text("Create a new task")
-        self.newsubtask.set_tooltip_text("Create a new subtask")
+        self.donebutton.set_tooltip_text(_("Mark the selected task as done"))
+        self.editbutton.set_tooltip_text(_("Edit the selected task"))
+        self.dismissbutton.set_tooltip_text(_("Dismiss the selected task"))
+        self.newtask.set_tooltip_text(_("Create a new task"))
+        self.newsubtask.set_tooltip_text(_("Create a new subtask"))
   
         # Initialize "About" dialog
         gtk.about_dialog_set_url_hook(lambda dialog, url: url_show(url))
@@ -608,8 +608,8 @@ class TaskBrowser:
 
         count_all_task = len(self.req.get_tasks_list())
         count_no_tags  = len(self.req.get_tasks_list(notag_only=True))
-        self.tag_ts.append([alltag,None,"<span weight=\"bold\">All tags</span>",str(count_all_task),False])
-        self.tag_ts.append([notag,None,"<span weight=\"bold\">Tasks without tags</span>",str(count_no_tags),False])
+        self.tag_ts.append([alltag,None,_("<span weight=\"bold\">All tags</span>"),str(count_all_task),False])
+        self.tag_ts.append([notag,None,_("<span weight=\"bold\">Tasks without tags</span>"),str(count_no_tags),False])
         self.tag_ts.append([None,None,"","",True])
 
         tags = self.req.get_used_tags()
@@ -701,12 +701,12 @@ class TaskBrowser:
             
         #Set the title of the window :
         if nbr_of_tasks == 0 :
-            parenthesis = "(no active tasks)"
+            parenthesis = _("(no active tasks)")
         elif nbr_of_tasks == 1 :
-            parenthesis = "(1 active task)"
+            parenthesis = _("(1 active task)")
         else :
             parenthesis = "(%s active tasks)"%nbr_of_tasks
-        self.window.set_title("Getting Things Gnome! %s"%parenthesis)
+        self.window.set_title("Getting Things GNOME! %s"%parenthesis)
         self.task_tview.set_model(new_taskts)
         self.task_ts = new_taskts
         #We expand all the we close the tasks who were not saved as "expanded"
@@ -1330,7 +1330,7 @@ class TaskBrowser:
         self.TASKLIST_COL_TAGS = 0
         tag_col     = gtk.TreeViewColumn()
         render_tags = CellRendererTags()
-        tag_col.set_title             ("Tags")
+        tag_col.set_title             (_("Tags"))
         tag_col.pack_start            (render_tags, expand=False)
         tag_col.add_attribute         (render_tags, "tag_list", self.TASK_MODEL_TAGS)
         render_tags.set_property      ('xalign', 0.0)
@@ -1345,7 +1345,7 @@ class TaskBrowser:
         self.TASKLIST_COL_TITLE = 1
         title_col   = gtk.TreeViewColumn()
         render_text = gtk.CellRendererText()
-        title_col.set_title           ("Title")
+        title_col.set_title           (_("Title"))
         title_col.pack_start          (render_text, expand=False)
         title_col.add_attribute       (render_text, "markup", self.TASK_MODEL_TITLE_STR)
         title_col.set_resizable       (True)
@@ -1364,7 +1364,7 @@ class TaskBrowser:
         self.TASKLIST_COL_DDATE = 2
         ddate_col   = gtk.TreeViewColumn()
         render_text = gtk.CellRendererText()
-        ddate_col.set_title           ("Due date")
+        ddate_col.set_title           (_("Due date"))
         ddate_col.pack_start          (render_text, expand=False)
         ddate_col.add_attribute       (render_text, "markup", self.TASK_MODEL_DDATE_STR)
         ddate_col.set_resizable       (False)
@@ -1378,7 +1378,7 @@ class TaskBrowser:
         self.TASKLIST_COL_DLEFT = 3
         dleft_col   = gtk.TreeViewColumn()
         render_text = gtk.CellRendererText()
-        dleft_col.set_title           ("Days left")
+        dleft_col.set_title           (_("Days left"))
         dleft_col.pack_start          (render_text, expand=False)
         dleft_col.add_attribute       (render_text, "markup", self.TASK_MODEL_DLEFT_STR)
         dleft_col.set_resizable       (False)
@@ -1401,7 +1401,7 @@ class TaskBrowser:
         self.CTASKLIST_COL_TAGS = 0
         tag_col     = gtk.TreeViewColumn()
         render_tags = CellRendererTags()
-        tag_col.set_title             ("Tags")
+        tag_col.set_title             (_("Tags"))
         tag_col.pack_start            (render_tags, expand=False)
         tag_col.add_attribute         (render_tags, "tag_list", self.CTASKS_MODEL_TAGS)
         render_tags.set_property      ('xalign', 0.0)
@@ -1416,7 +1416,7 @@ class TaskBrowser:
         self.CTASKLIST_COL_DDATE = 1
         ddate_col    = gtk.TreeViewColumn()
         render_text  = gtk.CellRendererText()
-        ddate_col.set_title                ("Closing date")
+        ddate_col.set_title                (_("Closing date"))
         ddate_col.pack_start               (render_text  , expand=True)
         ddate_col.set_attributes           (render_text  , markup=self.CTASKS_MODEL_DDATE_STR)
         ddate_col.set_sort_column_id       (self.CTASKS_MODEL_DDATE)
@@ -1428,7 +1428,7 @@ class TaskBrowser:
         self.CTASKLIST_COL_TITLE = 2
         title_col    = gtk.TreeViewColumn()
         render_text  = gtk.CellRendererText()
-        title_col.set_title                ("Title")
+        title_col.set_title                (_("Title"))
         title_col.pack_start               (render_text  , expand=True)
         title_col.set_attributes           (render_text  , markup=self.CTASKS_MODEL_TITLE)
         title_col.set_sort_column_id       (self.CTASKS_MODEL_TITLE)
@@ -1444,7 +1444,7 @@ class TaskBrowser:
         # Title column
         title_col    = gtk.TreeViewColumn()
         render_text  = gtk.CellRendererText()
-        title_col.set_title                ("Notes")
+        title_col.set_title                (_("Notes"))
         title_col.pack_start               (render_text  , expand=True)
         title_col.set_attributes           (render_text  , markup=self.CTASKS_MODEL_TITLE)
         title_col.set_sort_column_id       (self.CTASKS_MODEL_TITLE)
