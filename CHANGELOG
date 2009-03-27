@@ -1,3 +1,4 @@
+	- TaskSerial refactorization (by pitijo)
 	- Tooltips on buttons (thanks to Jerome Guelfucci)
 	- First unit tests by Carl Chenet
 	- Hotkeys goodness (patches from Antons Rebguns)
