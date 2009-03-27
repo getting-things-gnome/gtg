@@ -28,6 +28,7 @@ import threading
 import xml.sax.saxutils as saxutils
 import os
 import locale
+import re
 from gnome import url_show
 
 #our own imports
@@ -537,9 +538,29 @@ class TaskBrowser:
         text = self.quickadd_entry.get_text()
         if text :
             tags,notagonly = self.get_selected_tags() #pylint: disable-msg=W0612
+            # Get attributes
+            regexp = r'([\s]*)([a-zA-Z0-9_-]+):([^\s]+)'
+            for spaces,attribute, args in re.findall(regexp, text) :
+                valid_attribute = True
+                if attribute.lower() == "tags" :
+                    for tag in args.split(",") :
+                        tags.append(GTG.core.tagstore.Tag("@"+tag))
+                # Here you can add new commands
+                #elif attribute.lower() == "defer" :
+                #elif attribute.lower() == "due" :
+                else :
+                    # attribute is unknown
+                    valid_attribute = False
+                if valid_attribute :
+                    # if the command is valid we have to remove it
+                    # from the task title
+                    text = text.replace("%s%s:%s" % (spaces,attribute,args), "")
+            # Create the new task
             task = self.req.new_task(tags=tags,newtask=True)
-            task.set_title(text)
+            if text != "" :
+                task.set_title(text)
             self.quickadd_entry.set_text('')
+            # Refresh the treeview
             self.do_refresh()
     
     

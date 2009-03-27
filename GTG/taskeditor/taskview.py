@@ -392,6 +392,8 @@ class TaskView(gtk.TextView):
             #We analyse only the current line
             local_start = cursor_iter.copy()
             local_start.backward_line()
+            while self.is_at_title(buff,local_start):
+                local_start.forward_line()
             local_end = cursor_iter.copy()
             local_end.forward_lines(2)
         #if full=False we detect tag only on the current line
