@@ -40,72 +40,70 @@ class Serializer :
         doc = xml.dom.minidom.Document()
         tag_stack = {}
         parent = doc.createElement("content")
-        doc.appendChild(self.parse_buffer(content_buf,its, ite,parent,doc,tag_stack))
+        doc.appendChild(self.parse_buffer(content_buf,its, ite,parent,doc))
         #We don't want the whole doc with the XML declaration
         #we only take the first node (the "content" one)
         node = doc.firstChild #pylint: disable-msg=E1101
         return node.toxml().encode("utf-8")
 
-    def parse_buffer(self,buf, start, end, parent, doc,tag_stack) :
+    def parse_buffer(self,buff,start,end,parent,doc,done=[]) :
         """
         Parse the buffer and output an XML representation.
 
-            @var buf, start, end  : the buffer to parse from start to end
+            @var buff, start, end  : the buffer to parse from start to end
             @var parent, doc: the XML element to add data and doc is the XML dom
-            @tag_stack : the list of parsed tags
+            @done : the list of parsed tags
             
         """
-        
-        it     = start.copy()
-        while (it.get_offset() < end.get_offset()) and (it.get_char() != '\0'):
-            
-            # If a tag begin, we will parse until the end
-            if it.begins_tag() :
-                
-                # We take the tag with the highest priority
-                # The last of the list is the highest priority
-                ta_list = it.get_tags()
-                ta      = ta_list.pop()
-                
-                #remove the tag (to avoid infinite loop)
-                #buf.remove_tag(ta,startit,endit)
-                #But we are modifying the buffer. So instead,
-                #We put the tag in the stack so we remember it was
-                #already processed.
-                startit = it.copy()
-                offset  = startit.get_offset()
-                
-                #a boolean to know if we have processed all tags here
-                all_processed = False
-                
-                #Have we already processed a tag a this point ?
-                if tag_stack.has_key(offset) :
-                    #Have we already processed this particular tag ?
-                    while (not all_processed) and ta.props.name in tag_stack[offset]:
-                        #Yes, so we take another tag (if there's one)
-                        if len(ta_list) <= 0 :
-                            all_processed = True
-                        else :
-                            ta = ta_list.pop()
+        def is_know_tag(tag) :
+            """
+            Return True if "tag" is a know tag. "tag" must be a gtk.TextTag.
+            """
+            know_tags = ["is_subtask", "is_indent", "is_tag"]
+            for know in know_tags :
+                if tag.get_data(know) :
+                    return True
+            return False
+        it = start.copy()
+        tag = None
+        start_it = start.copy()
+        end_it = start.copy()
+
+        buffer_end = False
+        while not buffer_end:
+            if tag is None :
+                # We are not in a tag context
+                # Get list of know tags witch begin here
+                # and are not already process
+                tags = []
+                for ta in it.get_tags() :
+                    if it.begins_tag(ta) and ta not in done and is_know_tag(ta) :
+                        tags.append(ta)
+                if it.begins_tag() and len(tags) > 0:
+                    # We enter in a tag context
+                    tag = tags[0]
+                    done.append(tag)
+                    start_it = it.copy()
                 else :
-                    #if we process the first tag of this offset, we add an entry
-                    tag_stack[offset] = []
-                    
-                #No tag to process, we are in the text mode
-                if all_processed :
-                    #same code below. Should we make a separate function ?
-                    parent.appendChild(doc.createTextNode(it.get_char()))
-                    it.forward_char()
-                else :
-                    #So now, we are in tag "ta"
-                    #Let's get the end of the tag
-                    it.forward_to_tag_toggle(ta)
-                    endit   = it.copy()
-                    tagname = ta.props.name
-                    #Let's add this tag to the stack so we remember
-                    #it's already processed
-                    tag_stack[offset].append(tagname)
-                    if ta.get_data('is_subtask') :
+                    # We stay out of a tag context
+                    # We write the char in the xml node
+                    if it.get_char() != "\0" :
+                        parent.appendChild(doc.createTextNode(it.get_char()))
+            else :
+                # We are in a tag context
+                if it.ends_tag(tag) or it.equal(end) :
+                    # There is the end of the gtkTextTag
+                    # We process the tag
+                    end_it = it.copy()
+                    end_it.backward_char()
+                    if tag.get_data("is_tag") :
+                        #The current gtkTextTag is a tag
+                        #Recursive call
+                        nparent = doc.createElement("tag")
+                        child = self.parse_buffer(buff,start_it,end_it,nparent,doc,done=done)
+                        parent.appendChild(child)
+                    elif ta.get_data('is_subtask') :
+                        #The current gtkTextTag is a subtask
                         tagname = "subtask"
                         subt    = doc.createElement(tagname)
                         target  = ta.get_data('child')
@@ -113,33 +111,27 @@ class Serializer :
                         parent.appendChild(subt)
                         parent.appendChild(doc.createTextNode("\n"))
                         it.forward_line()
-                    elif ta.get_data('is_tag') :
-                        #Recursive call !!!!! (we handle tag in tags)
-                        nparent = doc.createElement("tag")
-                        child = self.parse_buffer(buf,startit,endit,nparent,doc,tag_stack)
                         parent.appendChild(child)
                     elif ta.get_data('is_indent') :
-                        indent = buf.get_text(startit,endit)
+                        #The current gtkTextTag is a indent
+                        indent = buff.get_text(start_it,end_it)
                         if '\n' in indent :
                             parent.appendChild(doc.createTextNode('\n'))
-                        it = endit
-                    else :
-                        #We currently ignore other tags
-                        #recursive call
-                        #Nothing has change except that there is one more
-                        #tag in the tag_stack
-                        child = self.parse_buffer(buf,startit,endit,parent,doc,tag_stack)
-                        
-            #else, we just add the text
+                        it = end_it
+                    # We go out the tag context
+                    tag = None
+                    if not it.equal(end) :
+                        it.backward_char()
+            if it.equal(end) :
+                buffer_end = True
             else :
-                parent.appendChild(doc.createTextNode(it.get_char()))
                 it.forward_char()
-                
+        
         #Finishing with an \n before closing </content>
         if parent.localName == "content" :
             last_val = parent.lastChild
-            #We add a \n only if needed
-            if last_val and last_val.nodeValue[-1] != '\n' :
+            #We add a \n only if needed (= we don't have a "\n" at the end)
+            if last_val and last_val.nodeType == 3 and last_val.nodeValue[-1] != '\n' :
                 parent.appendChild(doc.createTextNode('\n'))
         #This function concatenate all the adjacent text node of the XML
         parent.normalize()
