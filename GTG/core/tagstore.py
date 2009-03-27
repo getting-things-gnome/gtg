@@ -65,12 +65,13 @@ class TagStore :
     #or return the existing one with corresponding name
     def new_tag(self,tagname) :
         #we create a new tag from a name
-        if not self.store.has_key(tagname) :
-            tag = Tag(tagname,save_cllbk=self.save)
+        tname = tagname.encode("UTF-8")
+        if not self.store.has_key(tname) :
+            tag = Tag(tname,save_cllbk=self.save)
             self.add_tag(tag)
             return tag
         else :
-            return self.store[tagname]
+            return self.store[tname]
         
     def add_tag(self,tag) :
         name = tag.get_name()
@@ -152,8 +153,11 @@ class Tag :
 
     def __init__(self,name,save_cllbk=None) :
         self.attributes = {}
-        self.name = name
-        self.set_attribute("name",name)
+        try :
+            self.name = unicode(name,"UTF-8")
+        except:
+            self.name = name.decode("UTF-8")
+        self.set_attribute("name",self.name)
         self.save = save_cllbk
         
     def get_name(self) :
