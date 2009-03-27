@@ -111,7 +111,6 @@ class Serializer :
                         parent.appendChild(subt)
                         parent.appendChild(doc.createTextNode("\n"))
                         it.forward_line()
-                        parent.appendChild(child)
                     elif ta.get_data('is_indent') :
                         #The current gtkTextTag is a indent
                         indent = buff.get_text(start_it,end_it)
