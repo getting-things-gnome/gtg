@@ -538,6 +538,11 @@ class TaskBrowser:
         text = self.quickadd_entry.get_text()
         if text :
             tags,notagonly = self.get_selected_tags() #pylint: disable-msg=W0612
+            # Get tags in the title
+            for match in re.findall(r'[\s](@[^@,\s]+)',text) :
+                tags.append(GTG.core.tagstore.Tag(match))
+                # Remove the @
+                #text =text.replace(match,match[1:],1)
             # Get attributes
             regexp = r'([\s]*)([a-zA-Z0-9_-]+):([^\s]+)'
             for spaces,attribute, args in re.findall(regexp, text) :
