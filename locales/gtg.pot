@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-03-27 22:22+0100\n"
+"POT-Creation-Date: 2009-03-28 00:24+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -60,6 +60,28 @@ msgstr ""
 msgid "gtk-close"
 msgstr ""
 
+#: GTG/taskeditor/editor.py:208
+msgid "Due tomorrow !"
+msgstr ""
+
+#: GTG/taskeditor/editor.py:210
+#, python-format
+msgid "%s days left"
+msgstr ""
+
+#: GTG/taskeditor/editor.py:212
+msgid "Due today !"
+msgstr ""
+
+#: GTG/taskeditor/editor.py:214
+msgid "Due for yesterday"
+msgstr ""
+
+#: GTG/taskeditor/editor.py:216
+#, python-format
+msgid "Was %s days ago"
+msgstr ""
+
 #: GTG/taskbrowser/__init__.py:29
 msgid "Mark as done2"
 msgstr ""
@@ -96,43 +118,35 @@ msgstr ""
 msgid "Create a new subtask"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:611
-msgid "<span weight=\"bold\">All tags</span>"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:612
-msgid "<span weight=\"bold\">Tasks without tags</span>"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:704
+#: GTG/taskbrowser/browser.py:713
 msgid "(no active tasks)"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:706
+#: GTG/taskbrowser/browser.py:715
 msgid "(1 active task)"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:1333 GTG/taskbrowser/browser.py:1404
+#: GTG/taskbrowser/browser.py:1342 GTG/taskbrowser/browser.py:1413
 msgid "Tags"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:1348 GTG/taskbrowser/browser.py:1431
+#: GTG/taskbrowser/browser.py:1357 GTG/taskbrowser/browser.py:1440
 msgid "Title"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:1367
+#: GTG/taskbrowser/browser.py:1376
 msgid "Due date"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:1381
+#: GTG/taskbrowser/browser.py:1390
 msgid "Days left"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:1419
+#: GTG/taskbrowser/browser.py:1428
 msgid "Closing date"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:1447
+#: GTG/taskbrowser/browser.py:1456
 msgid "Notes"
 msgstr ""
 
