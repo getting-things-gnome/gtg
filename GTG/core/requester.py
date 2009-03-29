@@ -155,7 +155,7 @@ class Requester :
             return l_tasks
         
     def get_closed_tasks_list(self,tags=None,notag_only=False,\
-                            started_only=True,is_root=False) :
+                            started_only=False,is_root=False) :
         closed = ["Done","Dismiss","Deleted"]
         return self.get_tasks_list(tags=tags,status=closed,\
                  notag_only=notag_only,started_only=started_only,is_root=is_root)
