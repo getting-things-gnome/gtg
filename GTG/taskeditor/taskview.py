@@ -303,7 +303,8 @@ class TaskView(gtk.TextView):
     def insert_subtasks(self,st_list) :
         for tid in st_list :
             line_nbr = self.buff.get_end_iter().get_line()
-            self.write_subtask(self.buff,line_nbr,tid)
+            #Warning, we have to take the next line !
+            self.write_subtask(self.buff,line_nbr+1,tid)
             
     #Insert a list of tag in the first line of the buffer
     def insert_tags(self,tag_list) :
