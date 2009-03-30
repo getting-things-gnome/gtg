@@ -564,21 +564,55 @@ class TaskBrowser:
             task = self.req.new_task(tags=tags,newtask=True)
             if text != "" :
                 task.set_title(text)
+            id_toselect = task.get_id()
+            #############
             self.quickadd_entry.set_text('')
             # Refresh the treeview
-            self.do_refresh()
+            self.do_refresh(toselect=id_toselect)
+            #self.select_task(id_toselect)
+            
+    #This works only in the main task_tview
+    #If it cannot find the requested task, nothing is selected and False is returned
+    def select_task(self,id_toselect) :
+        #We will loop over all task_tview element to find the newly added one
+        model = self.task_tview.get_model()
+        tempit = model.get_iter_first()
+        it = None
+        while (tempit and not it) :
+            if tempit :
+                tid = model.get_value(tempit, 0)
+                if tid == id_toselect :
+                    it = tempit
+            #First we try to see if there is child task
+            tempit2 = model.iter_children(tempit)
+            #if no children, then take the tasks on the same level
+            if not tempit2 :
+                tempit2 = model.iter_next(tempit)
+            #if no task on the same level, go back to the parent
+            #and then to the next task on the parent level
+            if not tempit2 :
+                tempit2 = model.iter_parent(tempit)
+                if tempit2 :
+                    tempit2 = model.iter_next(tempit2)
+            tempit = tempit2
+        if it :
+            selection = self.task_tview.get_selection() 
+            selection.select_iter(it)
+            return True
+        else :
+            return False
     
     
-    def do_refresh(self,sender=None,param=None) : #pylint: disable-msg=W0613
+    def do_refresh(self,sender=None,param=None,toselect=None) : #pylint: disable-msg=W0613
         #We ask to do the refresh in a gtk thread
         #We use a lock_lock like described in 
         #http://ploum.frimouvy.org/?202-the-signals-and-threads-flying-circus
         if self.refresh_lock_lock.acquire(False) :
-            gobject.idle_add(self.refresh_tb,param)
+            gobject.idle_add(self.refresh_tb,sender,toselect)
 
     #If a task asked for the refresh, we don't refresh it to avoid a loop
     #New use refresh_tb directly, use "do_refresh"
-    def refresh_tb(self,fromtask=None):
+    def refresh_tb(self,fromtask=None,toselect=None):
         self.refresh_lock.acquire()
         self.refresh_lock_lock.release()
         current_pane = self.main_pane.get_child()
@@ -591,7 +625,7 @@ class TaskBrowser:
             if current_pane == self.note_tview :
                 self.main_pane.remove(current_pane)
                 self.main_pane.add(self.task_tview)
-            self.refresh_list()
+            self.refresh_list(toselect=toselect)
         self.refresh_closed()
         self.refresh_tags()
         #Refreshing the opened editors
@@ -672,7 +706,7 @@ class TaskBrowser:
         
     #refresh list build/refresh your TreeStore of task
     #to keep it in sync with your self.projects   
-    def refresh_list(self,a=None) : #pylint: disable-msg=W0613
+    def refresh_list(self,a=None,toselect=None) : #pylint: disable-msg=W0613
         
         # Save collapsed rows
         self.task_ts.foreach(self.update_collapsed_row, None)
@@ -735,8 +769,10 @@ class TaskBrowser:
                     self.sort_tasklist_rows(self.priv["tasklist"]["sort_column"], \
                                             self.priv["tasklist"]["sort_order"])
         #We reselect the selected tasks
-        selection = self.task_tview.get_selection()
-        if t_path :
+        if toselect :
+            self.select_task(toselect)
+        elif t_path :
+            selection = self.task_tview.get_selection()
             for i in t_path :
                 selection.select_path(i)
                 

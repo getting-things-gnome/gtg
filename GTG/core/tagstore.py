@@ -164,7 +164,8 @@ class Tag :
         #warning : only the constructor can set the "name"  
         if att_name != "name" :
             #Attributes should all be strings
-            self.attributes[att_name] = str(att_value)
+            val = unicode(str(att_value),"UTF-8")
+            self.attributes[att_name] = val
             self.save()
         elif self.name == att_value :
             self.attributes[att_name] = str(att_value)
