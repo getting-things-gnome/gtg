@@ -559,9 +559,36 @@ class TaskBrowser:
             task = self.req.new_task(tags=tags,newtask=True)
             if text != "" :
                 task.set_title(text)
+            id_toselect = task.get_id()
+            #############
             self.quickadd_entry.set_text('')
             # Refresh the treeview
             self.do_refresh()
+            #self.select_task(id_toselect)
+            
+    #This works only in the main task_tview
+    #Warning : currently, it only select root tasks.
+    #If it cannot find the requested task, nothing is selected and False is returned
+    def select_task(self,id_toselect) :
+        #We will loop over all task_tview element to find the newly added one
+        model = self.task_tview.get_model()
+        tempit = model.get_iter_first()
+        it = None
+        while (tempit and not it) :
+            if tempit :
+                tid = model.get_value(tempit, 0)
+                print "tid : %s - id_toselect : %s (%s)"%(tid,id_toselect,tid==id_toselect)
+                de_task = self.req.get_task(tid)
+                print de_task.get_title()
+                if tid == id_toselect :
+                    it = tempit
+            tempit = model.iter_next(tempit)
+        if it :
+            selection = self.task_tview.get_selection() 
+            selection.select_iter(it)
+            return True
+        else :
+            return False
     
     
     def do_refresh(self,sender=None,param=None) : #pylint: disable-msg=W0613
@@ -569,7 +596,8 @@ class TaskBrowser:
         #We use a lock_lock like described in 
         #http://ploum.frimouvy.org/?202-the-signals-and-threads-flying-circus
         if self.refresh_lock_lock.acquire(False) :
-            gobject.idle_add(self.refresh_tb,param)
+            print sender, param
+            gobject.idle_add(self.refresh_tb,sender)
 
     #If a task asked for the refresh, we don't refresh it to avoid a loop
     #New use refresh_tb directly, use "do_refresh"
