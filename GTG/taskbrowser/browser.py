@@ -614,25 +614,27 @@ class TaskBrowser:
     #New use refresh_tb directly, use "do_refresh"
     def refresh_tb(self,fromtask=None,toselect=None):
         self.refresh_lock.acquire()
-        self.refresh_lock_lock.release()
-        current_pane = self.main_pane.get_child()
-        if self.noteview :
-            if current_pane == self.task_tview :
-                self.main_pane.remove(current_pane)
-                self.main_pane.add(self.note_tview)
-            self.refresh_note()
-        else :
-            if current_pane == self.note_tview :
-                self.main_pane.remove(current_pane)
-                self.main_pane.add(self.task_tview)
-            self.refresh_list(toselect=toselect)
-        self.refresh_closed()
-        self.refresh_tags()
-        #Refreshing the opened editors
-        for uid in self.opened_task :
-            if uid != fromtask :
-                self.opened_task[uid].refresh_editor()
-        self.refresh_lock.release()
+        try :
+            self.refresh_lock_lock.release()
+            current_pane = self.main_pane.get_child()
+            if self.noteview :
+                if current_pane == self.task_tview :
+                    self.main_pane.remove(current_pane)
+                    self.main_pane.add(self.note_tview)
+                self.refresh_note()
+            else :
+                if current_pane == self.note_tview :
+                    self.main_pane.remove(current_pane)
+                    self.main_pane.add(self.task_tview)
+                self.refresh_list(toselect=toselect)
+            self.refresh_closed()
+            self.refresh_tags()
+            #Refreshing the opened editors
+            for uid in self.opened_task :
+                if uid != fromtask :
+                    self.opened_task[uid].refresh_editor()
+        finally :
+            self.refresh_lock.release()
 
 
     #We refresh the tag list. Not needed very often
