@@ -131,7 +131,7 @@ class CoreConfig:
                     if xp.hasAttribute(key) :
                         b[key] = str(xp.getAttribute(key))
             if firstrun :
-		frf = os.path.join(GTG.DATA_DIR,self.FIRSTRUN_FILE)
+                frf = os.path.join(GTG.DATA_DIR,self.FIRSTRUN_FILE)
                 back = classobj.Backend(b,firstrunfile=frf)
             else :
                 back = classobj.Backend(b)
@@ -139,7 +139,7 @@ class CoreConfig:
             b["backend"] = back
             
         return backend_fn
-  
+        
     
     def save_datastore(self,ds) :
         doc,xmlconfig = cleanxml.emptydoc("config")

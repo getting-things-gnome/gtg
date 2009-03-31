@@ -38,7 +38,6 @@ from GTG.taskbrowser.CellRendererTags import CellRendererTags
 from GTG.taskbrowser                  import GnomeConfig
 from GTG.taskbrowser                  import treetools
 from GTG.tools                        import colors
-from GTG.core                         import CoreConfig
 
 #=== OBJECTS ===================================================================
 
@@ -382,7 +381,7 @@ class TaskBrowser:
         tag_sidebar     = self.sidebar.get_property("visible")
         closed_pane     = self.closed_pane.get_property("visible")
         quickadd_pane   = self.quickadd_pane.get_property("visible")
-        task_tv_sort_id = self.task_ts.get_sort_column_id()
+        #task_tv_sort_id = self.task_ts.get_sort_column_id()
         sort_column     = self.priv["tasklist"]["sort_column"]
         sort_order      = self.priv["tasklist"]["sort_order"]
         closed_pane_height = self.wTree.get_widget("vpaned1").get_position()
@@ -411,10 +410,6 @@ class TaskBrowser:
         self.config["browser"]["view"]              = view
         if self.notes :
             self.config["browser"]["experimental_notes"] = True
-            
-    def on_close(self):
-        self.__save_state_to_conf()
-        self.close()
  
     def main(self):
         #Here we will define the main TaskList interface

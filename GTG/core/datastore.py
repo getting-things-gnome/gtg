@@ -304,9 +304,6 @@ class lockslibrary :
         finally :
             self.glob.release()
         
-    def lock_exist(self,tid) :
-        self.glob.acquire()
-        self.glob.release()
     
     #To be removed, a lock should be acquired before !
     #So acquire the lock before calling this function !
