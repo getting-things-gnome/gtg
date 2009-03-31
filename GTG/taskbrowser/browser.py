@@ -257,6 +257,10 @@ class TaskBrowser:
         self.wTree.get_widget("MainWindow").add_accel_group(agr)
 
         # define accelerator keys
+        view_sidebar = self.wTree.get_widget("view_sidebar")
+        key, mod = gtk.accelerator_parse("F9")
+        view_sidebar.add_accelerator("activate", agr, key, mod, gtk.ACCEL_VISIBLE)
+
         file_quit = self.wTree.get_widget("file_quit")
         key, mod = gtk.accelerator_parse("<Control>q")
         file_quit.add_accelerator("activate", agr, key, mod, gtk.ACCEL_VISIBLE)
