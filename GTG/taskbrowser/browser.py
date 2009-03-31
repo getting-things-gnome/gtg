@@ -29,6 +29,7 @@ import xml.sax.saxutils as saxutils
 import os
 import locale
 import re
+import datetime
 from gnome import url_show
 
 #our own imports
@@ -536,9 +537,82 @@ class TaskBrowser:
             self.quickadd_pane.show()
         else :
             self.quickadd_pane.hide()
-            
+    
+    def canonical_date(self, arg) :
+        """
+        Transform "arg" in a valid yyyy-mm-dd date or return None.
+        "arg" can be a yyyy-mm-dd, yyyymmdd, mmdd, today or a weekday name.
+        """
+        day_names_en = ["monday", "tuesday", "wednesday", "thursday",
+                        "friday", "saturday", "sunday"]
+        day_names = [_("monday"), _("tuesday"), _("wednesday"),
+                     _("thursday"), _("friday"), _("saturday"),
+                     _("sunday")]
+        if re.match(r'\d{4}-\d{2}-\d{2}', arg) :
+            date = arg
+        elif arg.isdigit() :
+            if len(arg) == 8 :
+                date = "%s-%s-%s" % (arg[:4],arg[4:6],arg[6:])
+            elif len(arg) == 4 :
+                year = datetime.date.today().year
+                date = "%i-%s-%s" % (year,arg[:2],arg[2:])
+        elif arg.lower() == "today" or arg.lower() == _("today"):
+            today = datetime.date.today()
+            year = today.year
+            month = today.month
+            day = today.day
+            date = "%i-%i-%i" % (year,month,day)
+        elif arg.lower() == "tomorrow" or\
+          arg.lower() == _("tomorrow") :
+            today = datetime.date.today()
+            tomorrow = today + datetime.timedelta(days=1)
+            year = tomorrow.year
+            month = tomorrow.month
+            day = tomorrow.day
+            date = "%i-%i-%i" % (year,month,day)
+        elif arg.lower() in day_names_en or arg.lower() in day_names:
+            today = datetime.date.today()
+            today_day = today.weekday()
+            if arg.lower() in day_names_en :
+                arg_day = day_names_en.index(arg)
+            else :
+                arg_day = day_names.index(arg)
+            if arg_day > today_day :
+                delta = datetime.timedelta(days = arg_day-today_day)
+            else :
+                delta = datetime.timedelta(days = arg_day-today_day+7)
+            next_date = today + delta
+            year = next_date.year
+            month = next_date.month
+            day = next_date.day
+            date = "%i-%i-%i" % (year,month,day)
+        else :
+            return None
+        if self.is_date_valid(date) :
+            return date
+        else :
+            return None
+    
+    def is_date_valid(self, fulldate) :
+        """
+        Return True if the date exists. False else.
+        "fulldate" is yyyy-mm-dd
+        """
+        splited_date = fulldate.split("-")
+        if len(splited_date) != 3 :
+            return False
+        year,month,day = splited_date
+        try :
+            date = datetime.date(int(year),int(month),int(day))
+        except ValueError :
+            return False
+        else :
+            return True
+    
     def quickadd(self,widget) : #pylint: disable-msg=W0613
         text = self.quickadd_entry.get_text()
+        due_date = None
+        defer_date = None
         if text :
             tags,notagonly = self.get_selected_tags() #pylint: disable-msg=W0612
             # Get tags in the title
@@ -550,12 +624,17 @@ class TaskBrowser:
             regexp = r'([\s]*)([a-zA-Z0-9_-]+):([^\s]+)'
             for spaces,attribute, args in re.findall(regexp, text) :
                 valid_attribute = True
-                if attribute.lower() == "tags" :
+                if attribute.lower() == "tags" or attribute.lower() == _("tags"):
                     for tag in args.split(",") :
                         tags.append(GTG.core.tagstore.Tag("@"+tag))
-                # Here you can add new commands
-                #elif attribute.lower() == "defer" :
-                #elif attribute.lower() == "due" :
+                elif attribute.lower() == "defer" or attribute.lower() == _("defer"):
+                    defer_date = self.canonical_date(args)
+                    if defer_date is None :
+                        valid_attribute = False
+                elif attribute.lower() == "due" or attribute.lower() == _("due"):
+                    due_date = self.canonical_date(args)
+                    if due_date is None :
+                        valid_attribute = False
                 else :
                     # attribute is unknown
                     valid_attribute = False
@@ -567,6 +646,10 @@ class TaskBrowser:
             task = self.req.new_task(tags=tags,newtask=True)
             if text != "" :
                 task.set_title(text)
+            if not due_date is None :
+                task.set_due_date(due_date)
+            if not defer_date is None :
+                task.set_start_date(defer_date)
             id_toselect = task.get_id()
             #############
             self.quickadd_entry.set_text('')

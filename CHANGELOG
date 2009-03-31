@@ -1,7 +1,8 @@
-        - Some UI love for the sidebar and the tag icons, shamelessy copied from f-spot
+        - Quickadd now accepts attributes (by Jonathan Barnoud)
+	- Some UI love for the sidebar and the tag icons, shamelessy copied from f-spot
         - Shortcut for sidebar (F9): fixes bug #339710
 	- Support for i18n
-	- TaskSerial refactorization (by pitijo)
+	- TaskSerial refactorization (by Jonathan Barnoud)
 	- Tooltips on buttons (thanks to Jerome Guelfucci)
 	- First unit tests by Carl Chenet
 	- Hotkeys goodness (patches from Antons Rebguns)
