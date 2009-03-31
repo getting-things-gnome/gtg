@@ -624,14 +624,14 @@ class TaskBrowser:
             regexp = r'([\s]*)([a-zA-Z0-9_-]+):([^\s]+)'
             for spaces,attribute, args in re.findall(regexp, text) :
                 valid_attribute = True
-                if attribute.lower() == "tags" :
+                if attribute.lower() == "tags" or attribute.lower() == _("tags"):
                     for tag in args.split(",") :
                         tags.append(GTG.core.tagstore.Tag("@"+tag))
-                elif attribute.lower() == "defer" :
+                elif attribute.lower() == "defer" or attribute.lower() == _("defer"):
                     defer_date = self.canonical_date(args)
                     if defer_date is None :
                         valid_attribute = False
-                elif attribute.lower() == "due" :
+                elif attribute.lower() == "due" or attribute.lower() == _("due"):
                     due_date = self.canonical_date(args)
                     if due_date is None :
                         valid_attribute = False
