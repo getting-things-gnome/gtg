@@ -545,6 +545,9 @@ class TaskBrowser:
         """
         day_names_en = ["monday", "tuesday", "wednesday", "thursday",
                         "friday", "saturday", "sunday"]
+        day_names = [_("monday"), _("tuesday"), _("wednesday"),
+                     _("thursday"), _("friday"), _("saturday"),
+                     _("sunday")]
         if re.match(r'\d{4}-\d{2}-\d{2}', arg) :
             date = arg
         elif arg.isdigit() :
@@ -553,16 +556,27 @@ class TaskBrowser:
             elif len(arg) == 4 :
                 year = datetime.date.today().year
                 date = "%i-%s-%s" % (year,arg[:2],arg[2:])
-        elif arg.lower() == "today" :
+        elif arg.lower() == "today" or arg.lower() == _("today"):
             today = datetime.date.today()
             year = today.year
             month = today.month
             day = today.day
             date = "%i-%i-%i" % (year,month,day)
-        elif arg.lower() in day_names_en :
+        elif arg.lower() == "tomorrow" or\
+          arg.lower() == _("tomorrow") :
+            today = datetime.date.today()
+            tomorrow = today + datetime.timedelta(days=1)
+            year = tomorrow.year
+            month = tomorrow.month
+            day = tomorrow.day
+            date = "%i-%i-%i" % (year,month,day)
+        elif arg.lower() in day_names_en or arg.lower() in day_names:
             today = datetime.date.today()
             today_day = today.weekday()
-            arg_day = day_names_en.index(arg)
+            if arg.lower() in day_names_en :
+                arg_day = day_names_en.index(arg)
+            else :
+                arg_day = day_names.index(arg)
             if arg_day > today_day :
                 delta = datetime.timedelta(days = arg_day-today_day)
             else :
