@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Fri Feb 27 14:30:40 2009 -->
+<!--Generated with glade3 3.4.5 on Tue Mar 31 15:02:16 2009 -->
 <glade-interface>
   <widget class="GtkWindow" id="TaskEditor">
     <property name="title" translatable="yes">Task</property>
@@ -71,7 +71,7 @@
               <widget class="GtkMenuToolButton" id="inserttag">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">Insert tag</property>
-                <property name="stock_id">gtk-bold</property>
+                <property name="icon_name">gtg-tag-new</property>
                 <signal name="show_menu" handler="on_inserttag_show_menu"/>
                 <signal name="show_menu" handler="on_inserttag_show_menu"/>
                 <signal name="clicked" handler="on_inserttag_clicked"/>

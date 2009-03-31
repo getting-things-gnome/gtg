@@ -303,11 +303,12 @@ class TaskBrowser:
         if self.config["browser"].has_key("tag_pane"):
             tag_pane         = eval(self.config["browser"]["tag_pane"])
             if not tag_pane:
-                self.sidebar.hide()
                 self.wTree.get_widget("view_sidebar").set_active(False)
+                self.sidebar.hide()
             else:
-                self.sidebar.show()
                 self.wTree.get_widget("view_sidebar").set_active(True)
+                self.sidebar.show()
+
                 
         if self.config["browser"].has_key("closed_task_pane"):
             closed_task_pane = eval(self.config["browser"]["closed_task_pane"])
@@ -502,10 +503,13 @@ class TaskBrowser:
         self.do_refresh()
 
     def on_sidebar_toggled(self,widget) :
-        if widget.get_active() :
-            self.sidebar.show()
-        else :
+        view_sidebar = self.wTree.get_widget("view_sidebar")
+        if self.sidebar.get_property("visible"):
+            view_sidebar.set_active(False)
             self.sidebar.hide()
+        else :
+            view_sidebar.set_active(True)
+            self.sidebar.show()
             
     def on_note_toggled(self,widget) :
         self.noteview = not self.noteview
@@ -1311,7 +1315,8 @@ class TaskBrowser:
         tag_col.set_expand            (True)
         self.tag_tview.append_column  (tag_col)
         # Global treeview properties
-        self.tag_tview.set_row_separator_func(self.tag_separator_filter)
+        self.tag_tview.set_row_separator_func (self.tag_separator_filter)
+        self.tag_tview.set_headers_visible    (False)
 
     def cmp_duedate_str(self, key1, key2):
         if self.priv["tasklist"]["sort_order"] == gtk.SORT_ASCENDING:
