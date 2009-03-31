@@ -327,7 +327,6 @@ class TaskView(gtk.TextView):
         line_mark = self.buff.create_mark("firstline",firstline,False)
         #self.tv.insert_at_mark(buf,line_mark,"\n")
         for t in tag_list :
-            it = self.buff.get_iter_at_mark(line_mark)
             self.insert_at_mark(self.buff,line_mark,t)
             self.insert_at_mark(self.buff,line_mark,",")
         self.buff.delete_mark(line_mark)

@@ -38,7 +38,6 @@ class Serializer :
         #Warning : the serialization process cannot be allowed to modify 
         #the content of the buffer.
         doc = xml.dom.minidom.Document()
-        tag_stack = {}
         parent = doc.createElement("content")
         doc.appendChild(self.parse_buffer(content_buf,its, ite,parent,doc))
         #We don't want the whole doc with the XML declaration

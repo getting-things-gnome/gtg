@@ -485,8 +485,8 @@ class TaskBrowser:
     
     def do_toggle_workview(self):
         #We have to be careful here to avoid a loop of signals
-        menu_state   = self.menu_view_workview.get_active()
-        button_state = self.toggle_workview.get_active()
+        #menu_state   = self.menu_view_workview.get_active()
+        #button_state = self.toggle_workview.get_active()
         #We cannot have note and workview at the same time
         if not self.workview and self.note_toggle.get_active() :
             self.note_toggle.set_active(False)
