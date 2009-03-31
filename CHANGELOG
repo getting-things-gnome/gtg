@@ -1,3 +1,4 @@
+        - Shortcut for sidebar (F9): fixes bug #339710
 	- Support for i18n
 	- TaskSerial refactorization (by pitijo)
 	- Tooltips on buttons (thanks to Jerome Guelfucci)
