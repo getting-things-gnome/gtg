@@ -575,7 +575,7 @@ class TaskBrowser:
             #self.select_task(id_toselect)
             
     #This works only in the main task_tview
-    #If it cannot find the requested task, nothing is selected and False is returned
+    #If it cannot find the requested task, nothing is selected
     def select_task(self,id_toselect) :
         #We will loop over all task_tview element to find the newly added one
         model = self.task_tview.get_model()
@@ -601,9 +601,7 @@ class TaskBrowser:
         if it :
             selection = self.task_tview.get_selection() 
             selection.select_iter(it)
-            return True
-        else :
-            return False
+
     
     
     def do_refresh(self,sender=None,param=None,toselect=None) : #pylint: disable-msg=W0613
@@ -612,6 +610,9 @@ class TaskBrowser:
         #http://ploum.frimouvy.org/?202-the-signals-and-threads-flying-circus
         if self.refresh_lock_lock.acquire(False) :
             gobject.idle_add(self.refresh_tb,sender,toselect)
+        #If we have something toselect, we cannot skip the refresh
+        elif toselect :
+            gobject.idle_add(self.select_task,toselect)
 
     #If a task asked for the refresh, we don't refresh it to avoid a loop
     #New use refresh_tb directly, use "do_refresh"
