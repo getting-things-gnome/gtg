@@ -116,7 +116,8 @@ class TagStore :
         
     def get_all_tags(self,attname=None,attvalue=None) :
         l = []
-        for t in self.store :
+        keys = self.store.keys()
+        for t in keys :
             if not attname :
                 l.append(self.store[t])
             elif self.store[t].get_attribute(attname) == attvalue :
