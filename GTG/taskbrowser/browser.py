@@ -38,7 +38,6 @@ from GTG.taskbrowser.CellRendererTags import CellRendererTags
 from GTG.taskbrowser                  import GnomeConfig
 from GTG.taskbrowser                  import treetools
 from GTG.tools                        import colors
-from GTG.core                         import CoreConfig
 
 #=== OBJECTS ===================================================================
 
@@ -382,7 +381,7 @@ class TaskBrowser:
         tag_sidebar     = self.sidebar.get_property("visible")
         closed_pane     = self.closed_pane.get_property("visible")
         quickadd_pane   = self.quickadd_pane.get_property("visible")
-        task_tv_sort_id = self.task_ts.get_sort_column_id()
+        #task_tv_sort_id = self.task_ts.get_sort_column_id()
         sort_column     = self.priv["tasklist"]["sort_column"]
         sort_order      = self.priv["tasklist"]["sort_order"]
         closed_pane_height = self.wTree.get_widget("vpaned1").get_position()
@@ -411,10 +410,6 @@ class TaskBrowser:
         self.config["browser"]["view"]              = view
         if self.notes :
             self.config["browser"]["experimental_notes"] = True
-            
-    def on_close(self):
-        self.__save_state_to_conf()
-        self.close()
  
     def main(self):
         #Here we will define the main TaskList interface
@@ -490,8 +485,8 @@ class TaskBrowser:
     
     def do_toggle_workview(self):
         #We have to be careful here to avoid a loop of signals
-        menu_state   = self.menu_view_workview.get_active()
-        button_state = self.toggle_workview.get_active()
+        #menu_state   = self.menu_view_workview.get_active()
+        #button_state = self.toggle_workview.get_active()
         #We cannot have note and workview at the same time
         if not self.workview and self.note_toggle.get_active() :
             self.note_toggle.set_active(False)
@@ -614,25 +609,27 @@ class TaskBrowser:
     #New use refresh_tb directly, use "do_refresh"
     def refresh_tb(self,fromtask=None,toselect=None):
         self.refresh_lock.acquire()
-        self.refresh_lock_lock.release()
-        current_pane = self.main_pane.get_child()
-        if self.noteview :
-            if current_pane == self.task_tview :
-                self.main_pane.remove(current_pane)
-                self.main_pane.add(self.note_tview)
-            self.refresh_note()
-        else :
-            if current_pane == self.note_tview :
-                self.main_pane.remove(current_pane)
-                self.main_pane.add(self.task_tview)
-            self.refresh_list(toselect=toselect)
-        self.refresh_closed()
-        self.refresh_tags()
-        #Refreshing the opened editors
-        for uid in self.opened_task :
-            if uid != fromtask :
-                self.opened_task[uid].refresh_editor()
-        self.refresh_lock.release()
+        try :
+            self.refresh_lock_lock.release()
+            current_pane = self.main_pane.get_child()
+            if self.noteview :
+                if current_pane == self.task_tview :
+                    self.main_pane.remove(current_pane)
+                    self.main_pane.add(self.note_tview)
+                self.refresh_note()
+            else :
+                if current_pane == self.note_tview :
+                    self.main_pane.remove(current_pane)
+                    self.main_pane.add(self.task_tview)
+                self.refresh_list(toselect=toselect)
+            self.refresh_closed()
+            self.refresh_tags()
+            #Refreshing the opened editors
+            for uid in self.opened_task :
+                if uid != fromtask :
+                    self.opened_task[uid].refresh_editor()
+        finally :
+            self.refresh_lock.release()
 
 
     #We refresh the tag list. Not needed very often

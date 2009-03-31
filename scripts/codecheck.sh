@@ -33,25 +33,29 @@
 #W0105 : string statement has no effect(=documentation)
 #C0321 : more than one statement on the same line (is that bad ?)
 #W0401 : * wildcard import (yes, we use them)
+#W0142 : use of * and ** arguments (yes, I find that handy)
+#I0011 : Locally disabling. We don't care if we disabled locally
 
 #pylint argument :
-disabled="C0324,C0103,C0301,C0111,R0914,R0903,R0915,R0904,R0912,R0201,R0913,C0323,R0902,W0102,W0232,W0105,C0321,W0401"
+disabled="C0324,C0103,C0301,C0111,R0914,R0903,R0915,R0904,R0912,R0201,R0913,C0323,R0902,W0102,W0232,W0105,C0321,W0401,W0142,I0011"
 args="--rcfile=/dev/null --include-ids=y --reports=n"
-grepped_out="Locally disabling"
+#grepped_out="Locally disabling"
+#pylint doesn't recognize gettext _()
+grepped_out="Undefined variable '_'"
 
 echo "Running pychecker"
 echo "#################"
-pychecker -9 -T     -8  -# 200 --changetypes main.py
+pychecker -9 -T     -8  -# 200 --changetypes GTG/gtg.py
 
 echo "Running pyflakes"
 echo "#################"
-#pyflakes triggers a false positive with import *
-pyflakes .|grep -v "import \*"
+#pyflakes triggers a false positive with import * and with gettext _()
+pyflakes GTG|grep -v "import \*"|grep -v "undefined name '_'"
 
 echo "Running pylint"
 echo "#################"
-pylint --rcfile=/dev/null --include-ids=y --reports=n --disable-msg=$disabled  main.py|grep -v "$grepped_out"
-for i in *; do
+pylint --rcfile=/dev/null --include-ids=y --reports=n --disable-msg=$disabled GTG/gtg.py|grep -v "$grepped_out"
+for i in GTG/*; do
 	if test -d $i && [ $i != "data" ]; then
 		#echo $i
 		pylint --rcfile=/dev/null --include-ids=y --reports=n --disable-msg=$disabled $i |grep -v "$grepped_out"

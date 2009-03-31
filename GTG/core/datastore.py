@@ -175,11 +175,13 @@ class TaskSource() :
         def getall() :
             #print "acquiring lock to getall" 
             self.backend_lock.acquire()
-            #print "acquired lock to getall" 
-            tlist = self.backend.get_tasks_list()
-            for t in tlist :
-                self.locks.create_lock(t)
-            self.backend_lock.release()
+            try :
+                #print "acquired lock to getall" 
+                tlist = self.backend.get_tasks_list()
+                for t in tlist :
+                    self.locks.create_lock(t)
+            finally :
+                self.backend_lock.release()
             #print "releasing lock  to getall" 
             func(tlist)
         t = threading.Thread(target=getall)
@@ -191,11 +193,13 @@ class TaskSource() :
         #Our thread
         def getting(empty_task,tid) :
             self.locks.acquire(tid)
-            #if self.locks.ifnotblocked(tid) :
-            self.backend.get_task(empty_task,tid)
-            empty_task.set_sync_func(self.set_task)
-            empty_task.set_loaded()
-            self.locks.release(tid)
+            try :
+                #if self.locks.ifnotblocked(tid) :
+                self.backend.get_task(empty_task,tid)
+                empty_task.set_sync_func(self.set_task)
+                empty_task.set_loaded()
+            finally :
+                self.locks.release(tid)
             self.refresh()
         ##########
         if self.tasks.has_key(tid) :
@@ -236,21 +240,25 @@ class TaskSource() :
         tid = task.get_id()
         if tid not in self.removed :
             self.locks.acquire(tid)
-            self.backend.set_task(task)
-            self.locks.release(tid)
+            try :
+                self.backend.set_task(task)
+            finally :
+                self.locks.release(tid)
     
     #TODO : This has to be threaded too
     def remove_task(self,tid) :
         self.backend_lock.acquire()
-        if tid not in self.removed :
-            self.removed.append(tid)
-        if self.locks.acquire(tid) :
-            toreturn = self.backend.remove_task(tid)
-            self.tasks.pop(tid)
-            self.locks.remove_lock(tid)
-        else :
-            toreturn = False
-        self.backend_lock.release()
+        try :
+            if tid not in self.removed :
+                self.removed.append(tid)
+            if self.locks.acquire(tid) :
+                toreturn = self.backend.remove_task(tid)
+                self.tasks.pop(tid)
+                self.locks.remove_lock(tid)
+            else :
+                toreturn = False
+        finally :
+            self.backend_lock.release()
         return toreturn
     
     #TODO: This has to be threaded too
@@ -290,13 +298,12 @@ class lockslibrary :
         
     def create_lock(self,tid) :
         self.glob.acquire()
-        if not self.locks.has_key(tid) :
-            self.locks[tid] = threading.Lock()
-        self.glob.release()
+        try :
+            if not self.locks.has_key(tid) :
+                self.locks[tid] = threading.Lock()
+        finally :
+            self.glob.release()
         
-    def lock_exist(self,tid) :
-        self.glob.acquire()
-        self.glob.release()
     
     #To be removed, a lock should be acquired before !
     #So acquire the lock before calling this function !
@@ -313,20 +320,24 @@ class lockslibrary :
         
     def ifnotblocked(self,tid) :
         self.glob.acquire()
-        if self.locks.has_key(tid) :
-            return self.locks[tid].acquire(False)
-        else :
-            print "ifnotblock on non-existing lock %s = BUG" %tid
-        self.glob.release()
+        try :
+            if self.locks.has_key(tid) :
+                return self.locks[tid].acquire(False)
+            else :
+                print "ifnotblock on non-existing lock %s = BUG" %tid
+        finally :
+            self.glob.release()
         
     def acquire(self,tid) :
         self.glob.acquire()
-        if self.locks.has_key(tid) :
-            self.locks[tid].acquire()
-            toreturn = True
-        else :
-            toreturn = False
-        self.glob.release()
+        try :
+            if self.locks.has_key(tid) :
+                self.locks[tid].acquire()
+                toreturn = True
+            else :
+                toreturn = False
+        finally :
+            self.glob.release()
         return toreturn
         
     def release(self,tid) :
