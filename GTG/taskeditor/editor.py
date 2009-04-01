@@ -95,7 +95,7 @@ class TaskEditor :
         #Voila! it's done
         self.calendar       = self.cal_tree.get_widget("calendar")
         self.cal_widget       = self.cal_tree.get_widget("calendar1")
-        self.cal_widget.set_property("no-month-change",True)
+        #self.cal_widget.set_property("no-month-change",True)
         self.sigid = None
         self.duedate_widget = self.wTree.get_widget("duedate_entry")
         self.startdate_widget = self.wTree.get_widget("startdate_entry")
