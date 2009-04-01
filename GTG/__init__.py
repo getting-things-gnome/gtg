@@ -30,6 +30,27 @@ VERSION         = '0.1'
 LOCAL_ROOTDIR   = os.path.abspath(os.path.join(os.path.dirname(__file__), '..')) 
 DIST_ROOTDIR    = "/usr/share/gtg"
 
+# CREDITS
+AUTHORS     = ["Main developers:", \
+               "\tLionel Dricot <ploum@ploum.net>", \
+               "\tBertrand Rousseau <bertrand.rousseau@gmail.com>", \
+               "Contributors:", \
+               "\tGérôme Fournier <>", \
+               "\tAntons Rebguns <arebgun@gmail.com>", \
+               "\tCarl Chenet <chaica@ohmytux.com>", \
+               "\tJérôme Guelfucci <jerome.guelfucci@gmail.com>",      \
+               "\tLuca Falavigna <dktrkranz@ubuntu.com>", \
+               "\tKalle Persson <kalle@kallepersson.se>", \
+               "\tJonathan Barnoud <jonathan@barnoud.net>"]
+ARTISTS     = ["Kalle Persson <kalle@kallepersson.se>"]
+ARTISTS.sort()
+TRANSLATORS = \
+"""Belarusian: Sontan, puccha
+French: Lionel Dricot, Rafik Ouerchefani, Bertrand Rousseau, Pititjo
+Russian: Alexey Kostyuk, Alexey Nedilko, wiz
+Spanish: DiegoJ, Pititjo
+Swedish: Kalle Persson"""
+
 #Translation setup (from pyroom)
 GETTEXT_DOMAIN = 'gtg'
 LOCALE_PATH = abspath(join(dirname(__file__), pardir, 'locales'))
