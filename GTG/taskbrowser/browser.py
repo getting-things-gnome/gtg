@@ -115,6 +115,9 @@ class TaskBrowser:
         self.about.set_website(GTG.URL)
         self.about.set_website_label(GTG.URL)
         self.about.set_version(GTG.VERSION)
+        self.about.set_authors(GTG.AUTHORS)
+        self.about.set_artists(GTG.ARTISTS)
+        self.about.set_translator_credits(GTG.TRANSLATORS)
         
         # Initialize menu
 
