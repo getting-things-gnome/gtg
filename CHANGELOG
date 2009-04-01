@@ -1,23 +1,28 @@
-        - Quickadd now accepts attributes (by Jonathan Barnoud)
-	- Some UI love for the sidebar and the tag icons, shamelessy copied from f-spot
-        - Shortcut for sidebar (F9): fixes bug #339710
-	- Support for i18n
-	- TaskSerial refactorization (by Jonathan Barnoud)
-	- Tooltips on buttons (thanks to Jerome Guelfucci)
-	- First unit tests by Carl Chenet
-	- Hotkeys goodness (patches from Antons Rebguns)
-	- Error, no crash if the XML file cannot be read (thanks to Carl Chenet)
-	- http:// links now open in the browser
-	- fix bug #339383 (delete subtask when deleting first char)
-	- Edit buttons : patches from Antons Rebguns 
-	- Escape title in the treeview : Bug #339874
-	- Focus in the editor : Bug #339269, Bug #339195, Bug #339389
-	- Bug #339269 : Quickadd has the focus on launch
-	- Bug #339583, Bug #336314 : patches delete key and
+2009-04-01 Getting Things GNOME! 0.1.1
+	* New icon from Kalle Persson
+	* Translations are now possible
+	* New features :
+	  - Quickadd now accepts attributes (by Jonathan Barnoud)
+	  - http:// links now open in the browser
+          - Shortcut for sidebar (F9): fixes bug #339710
+	  - Some UI love for the sidebar and the tag icons, shamelessy copied from f-spot
+	  - Hotkeys goodness (patches from Antons Rebguns)
+	  - Edit buttons : patches from Antons Rebguns 
+	  - Bug #339583, Bug #336314 : patches delete key and
+	* Bug fixes :
+	  - Calendar open at the correct date
+	  - TaskSerial refactorization (by Jonathan Barnoud)
+	  - Tooltips on buttons (thanks to Jerome Guelfucci)
+	  - First unit tests by Carl Chenet
+	  - Error, no crash if the XML file cannot be read (thanks to Carl Chenet)
+	  - fix bug #339383 (delete subtask when deleting first char)
+	  - Escape title in the treeview : Bug #339874
+	  - Focus in the editor : Bug #339269, Bug #339195, Bug #339389
+	  - Bug #339269 : Quickadd has the focus on launch
 	    enter key to confirm a delete (thanks Gérôme Fournier)
-	- Typos : Bug #339268 Bug #339492 and other patches from Gérôme Fournier.
+	  - Typos : Bug #339268 Bug #339492 and other patches from Gérôme Fournier.
 
-2009-06-01 Getting Things Gnome ! 0.1
+2009-03-06 Getting Things Gnome ! 0.1
 	* Bumping version number. First release of GTG
 
 2009-03-01 Getting Things Gnome! 0.0.9rc3

@@ -379,12 +379,11 @@ class TaskEditor :
         tid = subt.get_id()
         return tid
         
-    def insert_subtask(self,widget) :
-        itera =  self.textview.get_insert()
+    def insert_subtask(self,widget) : #pylint: disable-msg=W0613
         self.textview.insert_newtask()
         self.textview.grab_focus()
         
-    def inserttag_clicked(self,widget) :
+    def inserttag_clicked(self,widget) : #pylint: disable-msg=W0613
         itera = self.textview.get_insert()
         if itera.starts_line() :
             self.textview.insert_text("@",itera)
@@ -392,7 +391,7 @@ class TaskEditor :
             self.textview.insert_text(" @",itera)
         self.textview.grab_focus()
         
-    def inserttag(self,widget,tag) :
+    def inserttag(self,widget,tag) : #pylint: disable-msg=W0613
         self.textview.insert_tags([tag])
         self.textview.grab_focus()
     
