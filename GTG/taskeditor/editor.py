@@ -24,6 +24,7 @@
 #The rest are the logic of the widget : date changing widgets, buttons, ...
 import sys
 import time
+from datetime import date
 
 from GTG.taskeditor          import GnomeConfig
 from GTG.tools               import dates
@@ -69,7 +70,7 @@ class TaskEditor :
         self.wTree.signal_autoconnect(dic)
         cal_dic = {
                 "on_nodate"             : self.nodate_pressed,
-                "on_dayselected"        : self.day_selected,
+                #"on_dayselected"        : self.day_selected,
                 "on_dayselected_double" : self.day_selected_double,
         }
         self.cal_tree.signal_autoconnect(cal_dic)
@@ -93,6 +94,9 @@ class TaskEditor :
         scrolled.add(self.textview)
         #Voila! it's done
         self.calendar       = self.cal_tree.get_widget("calendar")
+        self.cal_widget       = self.cal_tree.get_widget("calendar1")
+        #self.cal_widget.set_property("no-month-change",True)
+        self.sigid = None
         self.duedate_widget = self.wTree.get_widget("duedate_entry")
         self.startdate_widget = self.wTree.get_widget("startdate_entry")
         self.dayleft_label  = self.wTree.get_widget("dayleft")
@@ -288,7 +292,23 @@ class TaskEditor :
         gdk.pointer_grab(self.calendar.window, True,gdk.BUTTON1_MASK|gdk.MOD2_MASK)
         #we will close the calendar if the user clic outside
         self.__opened_date = data
+        if self.__opened_date == "due" :
+            toset = self.task.get_due_date()
+        elif self.__opened_date == "start" :
+            toset = self.task.get_start_date()
+        if toset :
+            y,m,d = toset.split("-")
+        else :
+            dd = date.today()
+            y = dd.year
+            m = dd.month
+            d = dd.day
+        #Else, we set the widget to today's date
+        
+        self.cal_widget.select_month(int(m)-1,int(y))
+        self.cal_widget.select_day(int(d))
         self.calendar.connect('button-press-event', self.__focus_out)
+        self.sigid = self.cal_widget.connect("day-selected",self.day_selected)
         
     def day_selected(self,widget) :
         y,m,d = widget.get_date()
@@ -427,6 +447,9 @@ class TaskEditor :
         self.__opened_date = ''
         gtk.gdk.pointer_ungrab()
         self.calendar.grab_remove()
+        if self.sigid :
+            self.cal_widget.disconnect(self.sigid)
+            self.sigid = None
         
 
     
