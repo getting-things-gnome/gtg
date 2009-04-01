@@ -746,8 +746,8 @@ class TaskBrowser:
             count_no_tags  = len(self.req.get_tasks_list(notag_only=True,\
                                                          started_only=False))
             
-        self.tag_ts.append([alltag,None,"<span weight=\"bold\">All tags</span>",str(count_all_task),False])
-        self.tag_ts.append([notag,None,"<span weight=\"bold\">Tasks without tags</span>",str(count_no_tags),False])
+        self.tag_ts.append([alltag,None,_("<span weight=\"bold\">All tags</span>"),str(count_all_task),False])
+        self.tag_ts.append([notag,None,_("<span weight=\"bold\">Tasks without tags</span>"),str(count_no_tags),False])
         self.tag_ts.append([None,None,"","",True])
 
         tags = self.req.get_used_tags()
