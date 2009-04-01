@@ -291,7 +291,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="label" translatable="yes">gtk-close</property>
+                <property name="label">gtk-close</property>
                 <property name="use_stock">True</property>
                 <property name="response_id">0</property>
                 <signal name="clicked" handler="close_clicked"/>
@@ -334,7 +334,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
-            <property name="label" translatable="yes">gtk-clear</property>
+            <property name="label">gtk-clear</property>
             <property name="use_stock">True</property>
             <property name="response_id">0</property>
             <signal name="released" handler="on_nodate"/>

@@ -282,6 +282,10 @@ class TaskBrowser:
         key, mod = gtk.accelerator_parse("<Control><Shift>n")
         new_subtask_mi.add_accelerator("activate", agr, key, mod, gtk.ACCEL_VISIBLE)
         
+        edit_button = self.wTree.get_widget("edit_b")
+        key, mod = gtk.accelerator_parse("<Control>e")
+        edit_button.add_accelerator("clicked", agr, key, mod, gtk.ACCEL_VISIBLE)
+        
     def __restore_state_from_conf(self):
         
         # Extract state from configuration dictionary
@@ -742,8 +746,8 @@ class TaskBrowser:
             count_no_tags  = len(self.req.get_tasks_list(notag_only=True,\
                                                          started_only=False))
             
-        self.tag_ts.append([alltag,None,"<span weight=\"bold\">All tags</span>",str(count_all_task),False])
-        self.tag_ts.append([notag,None,"<span weight=\"bold\">Tasks without tags</span>",str(count_no_tags),False])
+        self.tag_ts.append([alltag,None,_("<span weight=\"bold\">All tags</span>"),str(count_all_task),False])
+        self.tag_ts.append([notag,None,_("<span weight=\"bold\">Tasks without tags</span>"),str(count_no_tags),False])
         self.tag_ts.append([None,None,"","",True])
 
         tags = self.req.get_used_tags()
