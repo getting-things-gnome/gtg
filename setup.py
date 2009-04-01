@@ -57,7 +57,6 @@ def create_data_files():
     data_files.append(('share/icons/hicolor/24x24/apps', ['data/icons/hicolor/24x24/apps/gtg.png']))
     data_files.append(('share/icons/hicolor/scalable/apps', ['data/icons/hicolor/scalable/apps/gtg.svg']))
     # misc
-    data_files.append((DATA_DIR, ['data/firstrun_tasks.xml']))
     data_files.append(('share/applications', ['gtg.desktop']))
     data_files.append(('man/man1', ['doc/gtg.1']))
     return data_files

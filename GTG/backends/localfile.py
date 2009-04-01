@@ -58,7 +58,7 @@ def get_type() :
 #None or do not exist in the dictionnary.
 #firstrun is only needed for the default backend. You can ignore it.
 class Backend :
-    def __init__(self,parameters,firstrunfile=None) :
+    def __init__(self,parameters,firstrunxml=None) :
         if parameters.has_key("filename") :
             zefile = parameters["filename"]
         #If zefile is None, we create a new file
@@ -74,8 +74,10 @@ class Backend :
             self.zefile = zefile
             self.filename = zefile
         #Create the defaut tasks for the first run.
-        if firstrunfile and not os.path.exists(zefile) :
-            shutil.copy(firstrunfile,self.zefile)
+        #We write the XML object in a file
+        if firstrunxml and not os.path.exists(zefile) :
+            #shutil.copy(firstrunfile,self.zefile)
+            cleanxml.savexml(self.zefile,firstrunxml)
         self.doc, self.xmlproj = cleanxml.openxmlfile(self.zefile,"project")
 
 
