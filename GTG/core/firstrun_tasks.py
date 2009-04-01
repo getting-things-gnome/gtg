@@ -22,7 +22,7 @@ def populate() :
     text1 += "<subtask>3@1</subtask>\n"
     text1 += "<subtask>4@1</subtask>\n"
     text1 += "\n\n"
-    text1 += _("We hope that you will appreciate GTG. Please send us bug reports and ideas for improvement using :")
+    text1 += _("We hope that you will appreciate GTG. Please send us bug reports and ideas for improvement using : ")
     text1 += "https://bugs.launchpad.net/gtg"
     text1 += "\n\n"
     text1 += _("Thank you for trying out GTG :-)")
@@ -31,7 +31,7 @@ def populate() :
     
     #Task 1@1 : Learn to use subtasks
     title2 = _("Learn to use subtasks")
-    text2 = _("In the task description (this window), if you begin a line with &quot;-&aquot;, it will be considered as a &quot;subtask&quot;, something that needs to be done in order to accomplish your task. Just try to write &quot;- test subtask&quot; on the next line and press enter.")
+    text2 = _("In the task description (this window), if you begin a line with &quot;-&quot;, it will be considered as a &quot;subtask&quot;, something that needs to be done in order to accomplish your task. Just try to write &quot;- test subtask&quot; on the next line and press enter.")
     text2 += "\n\n"
     text2 += _("You can also use the &quot;insert subtask&quot; button.")
     text2 += "\n\n\n"
