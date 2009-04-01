@@ -54,6 +54,8 @@ def populate() :
     text3 += _("Tags are useful to sort your tasks. In the view menu, you can enable a sidebar which displays all the tags you are using so you can easily see tasks for a given tag. There's no limit to the number of tags a task can have.")
     text3 += "\n\n"
     text3 += _("If you right click on a tag in the sidebar you can also set its color. It will permit you to have a more colorful list of tasks, if you want it that way.")
+    text3 += "\n\n"
+    text3 += _("A new tag is only added to the current task. There's no recursivity and the tag is not applied to subtasks. But when you create a new subtask, this subtask will inherit the tags of its parent as a good primary default (it will also be the case if you add a tag to a parent just after creating a subtask). Of course, you can modify at any time the tags of this particular subtask. It will never be changed by the parent.")
     t3 = addtask(doc,"2@1",title3,text3,[])
     root.appendChild(t3)
     
