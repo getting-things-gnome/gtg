@@ -43,17 +43,44 @@ def populate() :
     t2 = addtask(doc,"1@1",title2,text2,[])
     root.appendChild(t2)
     
-    #Task 2@1
-    
+    #Task 2@1 : Learn to use tags
+    title3 = _("Learn to use tags")
+    text3 = _("A tag is a simple word that begin with &quot;@&quot;.")
+    text3 += "\n\n"
+    text3 += _("Try to type a word beginning with @ here :")
+    text3 += "\n\n"
+    text3 += _("It becomes yellow, it's a tag.")
+    text3 += "\n\n"
+    text3 += _("Tags are useful to sort your tasks. In the view menu, you can enable a sidebar which displays all the tags you are using so you can easily see tasks for a given tag. There's no limit to the number of tags a task can have.")
+    text3 += "\n\n"
+    text3 += _("If you right click on a tag in the sidebar you can also set its color. It will permit you to have a more colorful list of tasks, if you want it that way.")
     t3 = addtask(doc,"2@1",title3,text3,[])
     root.appendChild(t3)
     
-    #Task 3@1
+    #Task 3@1 : Using the Workview
+    title4 = _("Using the Workview")
+    text4 = _("If you press the &quot;Workview&quot; button, only actionable tasks will be displayed.")
+    text4 += "\n\n"
+    text4 += _("What is an actionable task? It's a task you can do directly, right now.")
+    text4 += "\n\n"
+    text4 += _("It's a task that is already &quot;start-able&quot;, i.e. the start date is already over.")
+    text4 += "\n\n"
+    text4 += _("It's a task that doesn't have open subtasks, i.e. you can do the task itself directly.")
+    text4 += "\n\n"
+    text4 += _("Thus, the workview will only show you tasks you should do right now.")
+    text4 += "\n\n"
+    text4 += _("If you use tags, you can right click on a tag in the sidebar and choose to not display tasks with this particular tag in the workview. It's very useful if you have a tag like &quot;someday&quot; that you use for tasks you would like to do but are not particularly urgent.")
     
     t4 = addtask(doc,"3@1",title4,text4,[])
     root.appendChild(t4)
     
-    #Task 4@1
+    #Task 4@1 : Reporting bugs
+    title5 = _("Reporting bugs")
+    text5 = _("GTG is still very alpha software. We like it and use it everyday but you will encounter some bugs.")
+    text5 += "\n\n"
+    text5 += _("Please, report them ! We need you to make this software better. Any contribution, any idea is welcome.")
+    text5 += "\n\n"
+    text5 += _("If you have some trouble with GTG, we might be able to help you or to solve your problem really quickly.")
     
     t5 = addtask(doc,"4@1",title5,text5,[])
     root.appendChild(t5)
