@@ -70,7 +70,7 @@ class TaskEditor :
         self.wTree.signal_autoconnect(dic)
         cal_dic = {
                 "on_nodate"             : self.nodate_pressed,
-                "on_dayselected"        : self.day_selected,
+                #"on_dayselected"        : self.day_selected,
                 "on_dayselected_double" : self.day_selected_double,
         }
         self.cal_tree.signal_autoconnect(cal_dic)
@@ -95,6 +95,7 @@ class TaskEditor :
         #Voila! it's done
         self.calendar       = self.cal_tree.get_widget("calendar")
         self.cal_widget       = self.cal_tree.get_widget("calendar1")
+        self.sigid = None
         self.duedate_widget = self.wTree.get_widget("duedate_entry")
         self.startdate_widget = self.wTree.get_widget("startdate_entry")
         self.dayleft_label  = self.wTree.get_widget("dayleft")
@@ -306,8 +307,10 @@ class TaskEditor :
         self.cal_widget.select_month(int(m)-1,int(y))
         self.cal_widget.select_day(int(d))
         self.calendar.connect('button-press-event', self.__focus_out)
+        self.sigid = self.cal_widget.connect("day-selected",self.day_selected)
         
     def day_selected(self,widget) :
+        print "day_selected"
         y,m,d = widget.get_date()
         if self.__opened_date == "due" :
             self.task.set_due_date("%s-%s-%s"%(y,m+1,d))
@@ -444,6 +447,9 @@ class TaskEditor :
         self.__opened_date = ''
         gtk.gdk.pointer_ungrab()
         self.calendar.grab_remove()
+        if self.sigid :
+            self.cal_widget.disconnect(self.sigid)
+            self.sigid = None
         
 
     
