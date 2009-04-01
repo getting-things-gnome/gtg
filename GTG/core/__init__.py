@@ -50,6 +50,7 @@ from GTG.tools         import cleanxml
 from configobj         import ConfigObj
 
 import GTG
+from GTG.core          import firstrun_tasks
 
 class CoreConfig:
     
@@ -131,8 +132,9 @@ class CoreConfig:
                     if xp.hasAttribute(key) :
                         b[key] = str(xp.getAttribute(key))
             if firstrun :
-                frf = os.path.join(GTG.DATA_DIR,self.FIRSTRUN_FILE)
-                back = classobj.Backend(b,firstrunfile=frf)
+                #frf = os.path.join(GTG.DATA_DIR,self.FIRSTRUN_FILE)
+                frx = firstrun_tasks.populate()
+                back = classobj.Backend(b,firstrunxml=frx)
             else :
                 back = classobj.Backend(b)
             #We put the backend itself in the dic
