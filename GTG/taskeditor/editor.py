@@ -95,6 +95,7 @@ class TaskEditor :
         #Voila! it's done
         self.calendar       = self.cal_tree.get_widget("calendar")
         self.cal_widget       = self.cal_tree.get_widget("calendar1")
+        self.cal_widget.set_property("no-month-change",True)
         self.sigid = None
         self.duedate_widget = self.wTree.get_widget("duedate_entry")
         self.startdate_widget = self.wTree.get_widget("startdate_entry")
@@ -310,7 +311,6 @@ class TaskEditor :
         self.sigid = self.cal_widget.connect("day-selected",self.day_selected)
         
     def day_selected(self,widget) :
-        print "day_selected"
         y,m,d = widget.get_date()
         if self.__opened_date == "due" :
             self.task.set_due_date("%s-%s-%s"%(y,m+1,d))
