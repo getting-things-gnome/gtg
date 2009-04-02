@@ -60,11 +60,6 @@ def create_data_files():
     # misc
     data_files.append(('share/applications', ['gtg.desktop']))
     data_files.append(('man/man1', ['doc/gtg.1']))
-    #LOCALES
-    for mo in glob.glob(os.path.join(MO_DIR, '*','gtg.mo')):
-        lang = os.path.basename(os.path.dirname(mo))
-        dest = os.path.join('share', 'locale', lang, 'LC_MESSAGES')
-        data_files.append((dest, [mo]))
     return data_files
     
     
@@ -115,6 +110,6 @@ setup(
   package_data = {'GTG.taskbrowser':['taskbrowser.glade'],'GTG.taskeditor':['taskeditor.glade']},
   data_files   = create_data_files(),
   scripts=['gtg',],
-  #cmdclass={'install_data': InstallData},
+  cmdclass={'install_data': InstallData},
 )
 
