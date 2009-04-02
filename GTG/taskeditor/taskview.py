@@ -468,6 +468,23 @@ class TaskView(gtk.TextView):
                 if url.startswith("http://") or url.startswith("https://") :
                     texttag = self.create_anchor_tag(buff,url,text=None,typ="http")
                     buff.apply_tag(texttag, prev , it)
+            elif text in ["bug","lp","bgo"] :
+                if it.get_char() == " " :
+                    it.forward_char()
+                if it.get_char() == "#" :
+                    it.forward_char()
+                    while it.get_char().isdigit() and (it.get_char() != '\0') :
+                        it.forward_char()
+                    url = buff.get_text(prev,it)
+                    nbr = url.split("#")[1]
+                    if url.startswith("bug #") or url.startswith("lp #") :
+                        topoint = "https://launchpad.net/bugs/%s" %nbr
+                    elif url.startswith("bgo #") :
+                        topoint = "http://bugzilla.gnome.org/show_bug.cgi?id=%s" %nbr
+                    if topoint :
+                        texttag = self.create_anchor_tag(buff,\
+                                                topoint,text=None,typ="http")
+                        buff.apply_tag(texttag, prev , it)
                 
         
 
