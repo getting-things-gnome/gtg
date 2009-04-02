@@ -1,8 +1,8 @@
-gtg (0.1~intrepid1) intrepid; urgency=low
+gtg (0.1.0.9~intrepid1) intrepid; urgency=low
 
-  * 0.1 release
+  * 0.1.1RC1 release (with translations)
 
- -- Lionel Dricot <ploum@ploum.net>  Sun, 01 Mar 2009 17:15:58 +0100
+ -- Lionel Dricot <ploum@nout>  Thu, 02 Apr 2009 11:26:48 +0200
 
 gtg (0.0.9rc3-1) intrepid; urgency=low
 

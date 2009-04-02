@@ -29,7 +29,6 @@ install: build
 
 	python setup.py install --no-compile \
 				--prefix=$(CURDIR)/debian/gtg/usr \
-				--install-layout=deb
 
 binary-arch: binary-indep
 
