@@ -1,12 +1,16 @@
-#, fuzzy
+# Swedish translation for gtg
+# Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
+# This file is distributed under the same license as the gtg package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
+"Project-Id-Version: gtg\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2009-04-01 12:00+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2009-03-31 21:26+0000\n"
+"Last-Translator: Kalle Persson <Unknown>\n"
+"Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -215,46 +219,48 @@ msgstr ""
 
 #: GTG/taskeditor/taskeditor.glade.h:1
 msgid "<span weight=\"bold\">Due for</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Förfaller den</span>"
 
 #: GTG/taskeditor/taskeditor.glade.h:2
 msgid "<span weight=\"bold\">Starting on</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Börjar den</span>"
 
 #: GTG/taskeditor/taskeditor.glade.h:3 GTG/taskbrowser/taskbrowser.glade.h:12
 msgid "Delete"
-msgstr ""
+msgstr "Ta bort"
 
 #: GTG/taskeditor/taskeditor.glade.h:4 GTG/taskbrowser/taskbrowser.glade.h:13
 #: GTG/taskbrowser/__init__.py:31
 msgid "Dismiss"
-msgstr ""
+msgstr "Avfärda"
 
 #: GTG/taskeditor/taskeditor.glade.h:5
 msgid "Insert subtask"
-msgstr ""
+msgstr "Infoga deluppgift"
 
 #: GTG/taskeditor/taskeditor.glade.h:6
 msgid "Insert tag"
-msgstr ""
+msgstr "Infoga etikett"
 
 #: GTG/taskeditor/taskeditor.glade.h:7
 msgid "Keep as Note"
-msgstr ""
+msgstr "Behåll som anteckning"
 
 #: GTG/taskeditor/taskeditor.glade.h:8
 msgid "Mark Done"
-msgstr ""
+msgstr "Markera som färdigt"
 
 #: GTG/taskeditor/taskeditor.glade.h:9
 msgid "Task"
-msgstr ""
+msgstr "Uppgift"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:1
 msgid ""
 "\n"
 "Getting Things Gnome! is an organizer for the GNOME desktop environment."
 msgstr ""
+"\n"
+"Getting Things GNOME! är en organiserare för GNOME-skrivbordsmiljön."
 
 #: GTG/taskbrowser/taskbrowser.glade.h:3
 msgid ""
@@ -263,6 +269,8 @@ msgid ""
 "\n"
 "Deleting a task cannot be undone."
 msgstr ""
+"<span weight=\"bold\" size=\"large\">Är du säker på att du vill ta bort den "
+"här uppgiften?</span>"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:6
 msgid "About GTG!"
@@ -270,11 +278,11 @@ msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:7
 msgid "Choose a color"
-msgstr ""
+msgstr "Välj en färg"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:8
 msgid "Confirm task deletion"
-msgstr ""
+msgstr "Bekräfta uppgiftsborttagning"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:9
 msgid "Copyrights© 2008, 2009 Lionel Dricot, Bertrand Rousseau"
@@ -282,7 +290,7 @@ msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:10 GTG/taskbrowser/browser.py:110
 msgid "Create a new task"
-msgstr ""
+msgstr "Skapa en ny uppgift"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:11
 msgid "D_ismiss"
@@ -290,15 +298,15 @@ msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:14
 msgid "Edit"
-msgstr ""
+msgstr "Redigera"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:15
 msgid "GTG website"
-msgstr ""
+msgstr "GTG:s webbplats"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:16
 msgid "Getting Things Gnome!"
-msgstr ""
+msgstr "Getting Things GNOME!"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:17
 msgid ""
@@ -316,10 +324,25 @@ msgid ""
 "Getting Things Gnome!; if not, write to the Free Software Foundation, Inc., "
 "51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA."
 msgstr ""
+"Följande text är en informell översättning som enbart tillhandahålls i "
+"informativt syfte. För alla juridiska tolkningar gäller den engelska "
+"originaltexten. Getting Things GNOME är fri programvara. Du kan distribuera "
+"det och/eller modifiera det under villkoren i GNU General Public License, "
+"publicerad av Free Software Foundation, antingen version 3 eller (om du så "
+"vill) någon senare version.\n"
+"\n"
+"Getting Things GNOME distribueras i hopp om att det ska vara användbart, men "
+"UTAN NÅGON GARANTI, även utan underförstådd garanti vid SÄLJBARHET eller "
+"LÄMPLIGHET FÖR NÅGOT SPECIELLT ÄNDAMÅL. Se GNU General Public License för "
+"ytterligare information.\n"
+"\n"
+"Du bör ha fått en kopia av GNU General Public License tillsammans med "
+"Nautilus. Om inte, skriv till Free Software Foundation, Inc., 51 Franklin "
+"Street, Fifth Floor, Boston, MA 02110-1301 USA"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:22
 msgid "Mark as Done"
-msgstr ""
+msgstr "Markera som färdig"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:23
 msgid "Mark as Not Done"
@@ -331,15 +354,15 @@ msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:25
 msgid "New Note"
-msgstr ""
+msgstr "Ny anteckning"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:26
 msgid "New Subtask"
-msgstr ""
+msgstr "Ny deluppgift"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:27
 msgid "New Task"
-msgstr ""
+msgstr "Ny uppgift"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:28
 msgid "New _Subtask"
@@ -347,24 +370,24 @@ msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:29
 msgid "New _Task"
-msgstr ""
+msgstr "Ny _Uppgift"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:30
 msgid "Permanently _remove task"
-msgstr ""
+msgstr "Ta _bort uppgift permanent"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:31
 msgid "Redo"
-msgstr ""
+msgstr "Gör om"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:32
 msgid "Tag is displayed in the workview"
-msgstr ""
+msgstr "Visa etikett i arbetsvyn"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:33 GTG/taskbrowser/browser.py:1477
 #: GTG/taskbrowser/browser.py:1548
 msgid "Tags"
-msgstr ""
+msgstr "Etiketter"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:34
 msgid "Und_ismiss"
@@ -372,91 +395,91 @@ msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:35
 msgid "Undo"
-msgstr ""
+msgstr "Ångra"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:36
 msgid "View Notes"
-msgstr ""
+msgstr "Visa anteckningar"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:37
 msgid "Work View"
-msgstr ""
+msgstr "Arbetsvy"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:38
 msgid "_Background Colors"
-msgstr ""
+msgstr "_Bakgrundsfärger"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:39
 msgid "_Closed Tasks Pane"
-msgstr ""
+msgstr "_Avslutade uppgifterpanelen"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:40
 msgid "_Edit"
-msgstr ""
+msgstr "_Redigera"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:41
 msgid "_File"
-msgstr ""
+msgstr "_Arkiv"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:42
 msgid "_Help"
-msgstr ""
+msgstr "_Hjälp"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:43
 msgid "_Keep selected task"
-msgstr ""
+msgstr "_Behåll markerade uppgift"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:44
 msgid "_Quick Add Entry"
-msgstr ""
+msgstr "_Snabbtilläggsfält"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:45
 msgid "_Tags Sidebar"
-msgstr ""
+msgstr "_Etikettsidofält"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:46
 msgid "_Tasks"
-msgstr ""
+msgstr "_Uppgifter"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:47
 msgid "_View"
-msgstr ""
+msgstr "_Visa"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:48
 msgid "_Work View"
-msgstr ""
+msgstr "_Arbetsvy"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:49
 msgid "gtk-add"
-msgstr ""
+msgstr "gtk-add"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:50
 msgid "gtk-cancel"
-msgstr ""
+msgstr "gtk-cancel"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:51
 msgid "gtk-help"
-msgstr ""
+msgstr "gtk-help"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:52
 msgid "gtk-ok"
-msgstr ""
+msgstr "gtk-ok"
 
 #: GTG/taskbrowser/browser.py:107
 msgid "Mark the selected task as done"
-msgstr ""
+msgstr "Markera den valda uppgiften som färdig"
 
 #: GTG/taskbrowser/browser.py:108
 msgid "Edit the selected task"
-msgstr ""
+msgstr "Redigera den valda uppgiften"
 
 #: GTG/taskbrowser/browser.py:109
 msgid "Dismiss the selected task"
-msgstr ""
+msgstr "Avfärda den valda uppgiften"
 
 #: GTG/taskbrowser/browser.py:111
 msgid "Create a new subtask"
-msgstr ""
+msgstr "Skapa en ny underuppgift"
 
 #: GTG/taskbrowser/browser.py:552
 msgid "monday"
@@ -508,39 +531,39 @@ msgstr ""
 
 #: GTG/taskbrowser/browser.py:749
 msgid "<span weight=\"bold\">All tags</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Alla etiketter</span>"
 
 #: GTG/taskbrowser/browser.py:750
 msgid "<span weight=\"bold\">Tasks without tags</span>"
-msgstr ""
+msgstr "<span weight=\"bold\">Uppgifter utan etiketter</span>"
 
 #: GTG/taskbrowser/browser.py:845
 msgid "(no active tasks)"
-msgstr ""
+msgstr "(inga aktiva uppgifter)"
 
 #: GTG/taskbrowser/browser.py:847
 msgid "(1 active task)"
-msgstr ""
+msgstr "(en aktiv uppgift)"
 
 #: GTG/taskbrowser/browser.py:1492 GTG/taskbrowser/browser.py:1575
 msgid "Title"
-msgstr ""
+msgstr "Titel"
 
 #: GTG/taskbrowser/browser.py:1511
 msgid "Due date"
-msgstr ""
+msgstr "Förfallodatum"
 
 #: GTG/taskbrowser/browser.py:1525
 msgid "Days left"
-msgstr ""
+msgstr "Dagar kvar"
 
 #: GTG/taskbrowser/browser.py:1563
 msgid "Closing date"
-msgstr ""
+msgstr "Sista datum"
 
 #: GTG/taskbrowser/browser.py:1591
 msgid "Notes"
-msgstr ""
+msgstr "Anteckningar"
 
 #: GTG/taskbrowser/__init__.py:29
 msgid "Mark as done"

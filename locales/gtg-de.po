@@ -1,12 +1,16 @@
-#, fuzzy
+# German translation for gtg
+# Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
+# This file is distributed under the same license as the gtg package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
+"Project-Id-Version: gtg\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2009-04-01 12:00+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2009-04-01 21:18+0000\n"
+"Last-Translator: Philip Stewart <philip.stewart@gmx.net>\n"
+"Language-Team: German <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,7 +23,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:7
 msgid "Welcome in Getting Things Gnome!, your new task manager."
-msgstr ""
+msgstr "Wilkommen zu Getting Things Gnome!, deinem neuen Aufgabenplaner."
 
 #: GTG/core/firstrun_tasks.py:9
 msgid ""
@@ -27,26 +31,34 @@ msgid ""
 "to changing a light bulb or organizing a party. When you edit a task, it is "
 "automatically saved."
 msgstr ""
+"In GTG ist alles eine Aufgabe. Vom Bau einer Brücke über den Pazifischen "
+"Ozean bis zum Wechseln einer Glühbirne oder dem Organisieren einer Party.  "
+"Wenn du eine Aufgabe bearbeitest, wird sie automatisch gespeichert."
 
 #: GTG/core/firstrun_tasks.py:11
 msgid ""
 "Once a task is done, you can push the &quot;Mark as done&quot; button. If "
 "the task is not relevant any-more, simply press &quot;Dismiss&quot;."
 msgstr ""
+"Sobald eine Aufgabe erledigt ist, kannst auf den Button &quot;Als erledigt "
+"markieren&quot; klicken. Wenn die Aufgabe nicht mehr relevant ist, klicke "
+"einfach auf &quot;Verwerfen&quot;."
 
 #: GTG/core/firstrun_tasks.py:13
 msgid ""
 "A task might be composed of multiple subtasks that appear as links in the "
 "description. Simply click on the following link :"
 msgstr ""
+"Eine Aufgabe kann aus mehreren Unteraufgaben bestehen, die in der "
+"Beschreibung als Links erscheinen. Klicke einfach auf den folgenden Link:"
 
 #: GTG/core/firstrun_tasks.py:17
 msgid "Don't forget to mark this subtask as done !"
-msgstr ""
+msgstr "Vergesse nicht die Unteraufgabe als erledigt zu markieren!"
 
 #: GTG/core/firstrun_tasks.py:19
 msgid "Other stuff you should read :"
-msgstr ""
+msgstr "Andere Sachen die du lesen solltest:"
 
 #: GTG/core/firstrun_tasks.py:25
 msgid ""
@@ -56,11 +68,11 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:28
 msgid "Thank you for trying out GTG :-)"
-msgstr ""
+msgstr "Danke, dass du GTG ausprobiert hast :-)"
 
 #: GTG/core/firstrun_tasks.py:33
 msgid "Learn to use subtasks"
-msgstr ""
+msgstr "Lerne Unteraufgaben zu nutzen"
 
 #: GTG/core/firstrun_tasks.py:34
 msgid ""
@@ -524,15 +536,15 @@ msgstr ""
 
 #: GTG/taskbrowser/browser.py:1492 GTG/taskbrowser/browser.py:1575
 msgid "Title"
-msgstr ""
+msgstr "Überschrift"
 
 #: GTG/taskbrowser/browser.py:1511
 msgid "Due date"
-msgstr ""
+msgstr "Fälligkeitsdatum"
 
 #: GTG/taskbrowser/browser.py:1525
 msgid "Days left"
-msgstr ""
+msgstr "Tage verbleibend"
 
 #: GTG/taskbrowser/browser.py:1563
 msgid "Closing date"
@@ -540,15 +552,15 @@ msgstr ""
 
 #: GTG/taskbrowser/browser.py:1591
 msgid "Notes"
-msgstr ""
+msgstr "Notizen"
 
 #: GTG/taskbrowser/__init__.py:29
 msgid "Mark as done"
-msgstr ""
+msgstr "Als erledigt markieren"
 
 #: GTG/taskbrowser/__init__.py:30
 msgid "Mark as not done"
-msgstr ""
+msgstr "Als nicht erledigt markieren"
 
 #: GTG/taskbrowser/__init__.py:32
 msgid "Undismiss"
