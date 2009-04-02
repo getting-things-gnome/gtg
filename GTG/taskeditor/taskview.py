@@ -725,6 +725,9 @@ class TaskView(gtk.TextView):
             fitera = self.get_insert()
         #First, find a line without subtask
         line = fitera.get_line()
+        #Avoid the title at all cost
+        if line <= 0 :
+            line = 1
         startl = self.buff.get_iter_at_line(line)
         itera = None
         while not itera :
@@ -787,6 +790,10 @@ class TaskView(gtk.TextView):
         #of the newly inserted \n, it will not move anymore.
         
         itera = buff.get_iter_at_mark(end)
+        #We should never have an indentation at 0.
+        #This is normally not needed and purely defensive
+        if itera.get_line() <= 0 :
+            itera = buff.get_iter_at_line(1)
         start   = buff.create_mark("start",itera,True)
         indentation = ""
         #adding two spaces by level
