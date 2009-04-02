@@ -1,3 +1,15 @@
+gtg (0.1.0.9~intrepid6) intrepid; urgency=low
+
+  * Don't you find this completely stupid ?
+
+ -- Lionel Dricot <ploum@ploum.net>  Fri, 03 Apr 2009 01:20:45 +0200
+
+gtg (0.1.0.9~intrepid4) jaunty; urgency=low
+
+  * Well, just for the pleasure of making another package
+
+ -- Lionel Dricot <ploum@ploum.net>  Fri, 03 Apr 2009 01:08:36 +0200
+
 gtg (0.1.0.9~intrepid3) intrepid; urgency=low
 
   *Nomdidju, I hate debian packaging 
