@@ -1,3 +1,9 @@
+gtg (0.1.0.9~intrepid7) intrepid; urgency=low
+
+  * no install-layout in intrepid distutils
+
+ -- Lionel Dricot <ploum@ploum.net>  Fri, 03 Apr 2009 01:41:44 +0200
+
 gtg (0.1.0.9~intrepid6) intrepid; urgency=low
 
   * Don't you find this completely stupid ?
