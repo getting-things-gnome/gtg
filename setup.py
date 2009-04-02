@@ -20,6 +20,7 @@
 
 from distutils.core     import setup
 from distutils.command.install_data import install_data 
+from subprocess import call
 
 import glob
 import GTG
@@ -69,7 +70,7 @@ MO_DIR = os.path.join('build', 'locales')
 
 for po in glob.glob(os.path.join(PO_DIR, '*.po')):
     lang = os.path.basename(po[:-3])[4:]
-    mo = os.path.join(MO_DIR, lang, 'LC_MESSAGES', 'gtg.mo')
+    mo = os.path.join(MO_DIR, lang, 'gtg.mo')
     target_dir = os.path.dirname(mo)
     if not os.path.isdir(target_dir):
         os.makedirs(target_dir)

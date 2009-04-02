@@ -5,3 +5,4 @@ include CHANGELOG
 recursive-include data/icons *.png
 recursive-include data/icons *.svg
 include doc/gtg.1
+recursive-include locales *.po
