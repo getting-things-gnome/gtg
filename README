@@ -21,7 +21,7 @@ these modules if they're not currently available.
 
 To install these packages on Debian-based systems, execute the following 
 command:
-    # aptitude install python-gtk2, python-glade2, python-xdg, python-gobject,\
+    $ sudo aptitude install python-gtk2 python-glade2 python-xdg python-gobject\
          python-configobj
 
 ===== Installing and Running =====
