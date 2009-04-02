@@ -468,6 +468,23 @@ class TaskView(gtk.TextView):
                 if url.startswith("http://") or url.startswith("https://") :
                     texttag = self.create_anchor_tag(buff,url,text=None,typ="http")
                     buff.apply_tag(texttag, prev , it)
+            elif text in ["bug","lp","bgo"] :
+                if it.get_char() == " " :
+                    it.forward_char()
+                if it.get_char() == "#" :
+                    it.forward_char()
+                    while it.get_char().isdigit() and (it.get_char() != '\0') :
+                        it.forward_char()
+                    url = buff.get_text(prev,it)
+                    nbr = url.split("#")[1]
+                    if url.startswith("bug #") or url.startswith("lp #") :
+                        topoint = "https://launchpad.net/bugs/%s" %nbr
+                    elif url.startswith("bgo #") :
+                        topoint = "http://bugzilla.gnome.org/show_bug.cgi?id=%s" %nbr
+                    if topoint :
+                        texttag = self.create_anchor_tag(buff,\
+                                                topoint,text=None,typ="http")
+                        buff.apply_tag(texttag, prev , it)
                 
         
 
@@ -725,6 +742,9 @@ class TaskView(gtk.TextView):
             fitera = self.get_insert()
         #First, find a line without subtask
         line = fitera.get_line()
+        #Avoid the title at all cost
+        if line <= 0 :
+            line = 1
         startl = self.buff.get_iter_at_line(line)
         itera = None
         while not itera :
@@ -787,6 +807,10 @@ class TaskView(gtk.TextView):
         #of the newly inserted \n, it will not move anymore.
         
         itera = buff.get_iter_at_mark(end)
+        #We should never have an indentation at 0.
+        #This is normally not needed and purely defensive
+        if itera.get_line() <= 0 :
+            itera = buff.get_iter_at_line(1)
         start   = buff.create_mark("start",itera,True)
         indentation = ""
         #adding two spaces by level

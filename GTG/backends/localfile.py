@@ -109,16 +109,22 @@ class Backend :
             if node.getAttribute("id") == tid :
                 existing = node
         t_xml = taskxml.task_to_xml(self.doc,task)
+        modified = False
         #We then replace the existing node
         if existing :
-            self.xmlproj.replaceChild(t_xml,existing)
+            #We will write only if the task has changed
+            if t_xml.toxml() != existing.toxml() :
+                self.xmlproj.replaceChild(t_xml,existing)
+                modified = True
         #If the node doesn't exist, we create it
         # (it might not be the case in all backends
         else :
             self.xmlproj.appendChild(t_xml)
+            modified = True
         #In this particular backend, we write all the tasks
         #This is inherent to the XML file backend
-        cleanxml.savexml(self.zefile,self.doc)
+        if modified :
+            cleanxml.savexml(self.zefile,self.doc)
         return None
         
     #Completely remove the task with ID = tid
