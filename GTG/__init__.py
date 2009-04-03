@@ -18,7 +18,11 @@
 # -----------------------------------------------------------------------------
 import os
 import locale
-locale.setlocale(locale.LC_ALL, '')
+#Fallback to LANG C if unsupported locale
+try :
+    locale.setlocale(locale.LC_ALL, '')
+except :
+    locale.setlocale(locale.LC_ALL,'C')
 
 import gettext
 from gtk import glade
@@ -42,7 +46,8 @@ AUTHORS     = ["Main developers:", \
                "\tLuca Falavigna <dktrkranz@ubuntu.com>", \
                "\tKalle Persson <kalle@kallepersson.se>", \
                "\tJonathan Barnoud <jonathan@barnoud.net>"]
-ARTISTS     = ["Kalle Persson <kalle@kallepersson.se>"]
+ARTISTS     = ["Kalle Persson <kalle@kallepersson.se>", \
+                "Bertrand Rousseau <bertrand.rousseau@gmail.com>"]
 ARTISTS.sort()
 TRANSLATORS = \
 """Belarusian: Sontan, puccha
