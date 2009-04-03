@@ -201,7 +201,7 @@ class TaskBrowser:
         #The tview and their model
         self.taskdone_tview = self.wTree.get_widget("taskdone_tview")
         self.taskdone_ts    = gtk.TreeStore(gobject.TYPE_PYOBJECT, str,str,str,str,str,gobject.TYPE_PYOBJECT)
-        #self.note_tview = self.wTree.get_widget("note_tview")
+        self.note_tview = self.wTree.get_widget("note_tview")
         self.note_tview = gtk.TreeView()
         self.note_tview.connect("row-activated",self.on_edit_note)
         self.note_tview.show()
@@ -1004,8 +1004,8 @@ class TaskBrowser:
                 self.donebutton.set_tooltip_text(GnomeConfig.MARK_DONE_TOOLTIP)
                 self.dismissbutton.set_icon_name("gtg-task-undismiss")
                 self.dismissbutton.set_tooltip_text(GnomeConfig.MARK_UNDISMISS_TOOLTIP)
-                self.editbutton.connect('clicked', self.on_edit_done_task)
-                self.edit_mi.connect('activate', self.on_edit_done_task)
+#                self.editbutton.connect('clicked', self.on_edit_done_task)
+#                self.edit_mi.connect('activate', self.on_edit_done_task)
             else :
                 self.wTree.get_widget("ctcm_mark_as_not_done").set_sensitive(True)
                 self.wTree.get_widget("ctcm_undismiss").set_sensitive(False)
@@ -1014,8 +1014,8 @@ class TaskBrowser:
                 self.dismissbutton.set_label(GnomeConfig.MARK_DISMISS)
                 self.dismissbutton.set_tooltip_text(GnomeConfig.MARK_DISMISS_TOOLTIP)
                 self.donebutton.set_icon_name("gtg-task-undone")
-                self.editbutton.connect('clicked', self.on_edit_active_task)
-                self.edit_mi.connect('activate', self.on_edit_active_task)
+#                self.editbutton.connect('clicked', self.on_edit_active_task)
+#                self.edit_mi.connect('activate', self.on_edit_active_task)
                 
     #This function is called when the selection change in the active task view
     #It will displays the selected task differently
@@ -1323,7 +1323,7 @@ class TaskBrowser:
         
         
     def on_edit_active_task(self,widget,row=None ,col=None) : #pylint: disable-msg=W0613
-        tid = self.get_selected_task(self.task_tview)
+        tid = self.get_selected_task()
         if tid :
             self.open_task(tid)
     def on_edit_done_task(self,widget,row=None ,col=None) : #pylint: disable-msg=W0613
