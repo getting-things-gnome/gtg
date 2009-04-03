@@ -27,6 +27,10 @@ class GnomeConfig :
     GLADE_FILE    = os.path.join(current_rep,"taskbrowser.glade")
     
     MARK_DONE      = _("Mark as done")
+    MARK_DONE_TOOLTIP = _("Mark the selected task as done")
     MARK_UNDONE    = _("Mark as not done")
+    MARK_UNDONE_TOOLTIP = _("Mark the selected task as to be done")
     MARK_DISMISS   = _("Dismiss")
+    MARK_DISMISS_TOOLTIP = _("Dismiss the selected task")
     MARK_UNDISMISS = _("Undismiss")
+    MARK_UNDISMISS_TOOLTIP = _("Mark the selected task as to be done")
