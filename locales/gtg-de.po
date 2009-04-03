@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2009-04-01 12:00+0200\n"
+"POT-Creation-Date: 2009-04-03 20:19+0200\n"
 "PO-Revision-Date: 2009-04-01 21:18+0000\n"
 "Last-Translator: Philip Stewart <philip.stewart@gmx.net>\n"
 "Language-Team: German <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2009-04-02 08:32+0000\n"
+"X-Launchpad-Export-Date: 2009-04-03 20:56+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: GTG/core/firstrun_tasks.py:6
@@ -203,64 +203,139 @@ msgid ""
 "your problem really quickly."
 msgstr ""
 
-#: GTG/taskeditor/editor.py:208
-msgid "Due tomorrow !"
+#: GTG/taskbrowser/__init__.py:29
+msgid "Mark as done"
+msgstr "Als erledigt markieren"
+
+#: GTG/taskbrowser/__init__.py:30
+msgid "Mark the selected task as done"
 msgstr ""
 
-#: GTG/taskeditor/editor.py:210
-#, python-format
-msgid "%s days left"
-msgstr ""
-
-#: GTG/taskeditor/editor.py:212
-msgid "Due today !"
-msgstr ""
-
-#: GTG/taskeditor/editor.py:214
-msgid "Due for yesterday"
-msgstr ""
-
-#: GTG/taskeditor/editor.py:216
-#, python-format
-msgid "Was %s days ago"
-msgstr ""
-
-#: GTG/taskeditor/taskeditor.glade.h:1
-msgid "<span weight=\"bold\">Due for</span>"
-msgstr ""
-
-#: GTG/taskeditor/taskeditor.glade.h:2
-msgid "<span weight=\"bold\">Starting on</span>"
-msgstr ""
-
-#: GTG/taskeditor/taskeditor.glade.h:3 GTG/taskbrowser/taskbrowser.glade.h:12
-msgid "Delete"
-msgstr ""
-
-#: GTG/taskeditor/taskeditor.glade.h:4 GTG/taskbrowser/taskbrowser.glade.h:13
 #: GTG/taskbrowser/__init__.py:31
+msgid "Mark as not done"
+msgstr "Als nicht erledigt markieren"
+
+#: GTG/taskbrowser/__init__.py:32 GTG/taskbrowser/__init__.py:36
+msgid "Mark the selected task as to be done"
+msgstr ""
+
+#: GTG/taskbrowser/__init__.py:33 GTG/taskbrowser/taskbrowser.glade.h:13
+#: GTG/taskeditor/taskeditor.glade.h:4
 msgid "Dismiss"
 msgstr ""
 
-#: GTG/taskeditor/taskeditor.glade.h:5
-msgid "Insert subtask"
+#: GTG/taskbrowser/__init__.py:34
+msgid "Mark the task as not to be done anymore"
 msgstr ""
 
-#: GTG/taskeditor/taskeditor.glade.h:6
-msgid "Insert tag"
+#: GTG/taskbrowser/__init__.py:35
+msgid "Undismiss"
 msgstr ""
 
-#: GTG/taskeditor/taskeditor.glade.h:7
-msgid "Keep as Note"
+#: GTG/taskbrowser/__init__.py:37
+msgid "Permanently remove the selected task"
 msgstr ""
 
-#: GTG/taskeditor/taskeditor.glade.h:8
-msgid "Mark Done"
+#: GTG/taskbrowser/browser.py:109
+msgid "Edit the selected task"
 msgstr ""
 
-#: GTG/taskeditor/taskeditor.glade.h:9
-msgid "Task"
+#: GTG/taskbrowser/browser.py:111 GTG/taskbrowser/taskbrowser.glade.h:10
+msgid "Create a new task"
 msgstr ""
+
+#: GTG/taskbrowser/browser.py:112
+msgid "Create a new subtask"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:557
+msgid "monday"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:557
+msgid "tuesday"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:557
+msgid "wednesday"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:558
+msgid "thursday"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:558
+msgid "friday"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:558
+msgid "saturday"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:559
+msgid "sunday"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:568
+msgid "today"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:575
+msgid "tomorrow"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:636
+msgid "tags"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:639
+msgid "defer"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:643
+msgid "due"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:754
+msgid "<span weight=\"bold\">All tags</span>"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:755
+msgid "<span weight=\"bold\">Tasks without tags</span>"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:850
+msgid "(no active tasks)"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:852
+msgid "(1 active task)"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:1487 GTG/taskbrowser/browser.py:1558
+#: GTG/taskbrowser/taskbrowser.glade.h:33
+msgid "Tags"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:1502 GTG/taskbrowser/browser.py:1585
+msgid "Title"
+msgstr "Überschrift"
+
+#: GTG/taskbrowser/browser.py:1521
+msgid "Due date"
+msgstr "Fälligkeitsdatum"
+
+#: GTG/taskbrowser/browser.py:1535
+msgid "Days left"
+msgstr "Tage verbleibend"
+
+#: GTG/taskbrowser/browser.py:1573
+msgid "Closing date"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:1601
+msgid "Notes"
+msgstr "Notizen"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:1
 msgid ""
@@ -292,12 +367,12 @@ msgstr ""
 msgid "Copyrights© 2008, 2009 Lionel Dricot, Bertrand Rousseau"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:10 GTG/taskbrowser/browser.py:110
-msgid "Create a new task"
-msgstr ""
-
 #: GTG/taskbrowser/taskbrowser.glade.h:11
 msgid "D_ismiss"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:12 GTG/taskeditor/taskeditor.glade.h:3
+msgid "Delete"
 msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:14
@@ -373,11 +448,6 @@ msgstr ""
 msgid "Tag is displayed in the workview"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:33 GTG/taskbrowser/browser.py:1477
-#: GTG/taskbrowser/browser.py:1548
-msgid "Tags"
-msgstr ""
-
 #: GTG/taskbrowser/taskbrowser.glade.h:34
 msgid "Und_ismiss"
 msgstr ""
@@ -439,129 +509,103 @@ msgid "_Work View"
 msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:49
-msgid "gtk-add"
+msgid "gtk-about"
 msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:50
-msgid "gtk-cancel"
+msgid "gtk-add"
 msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:51
-msgid "gtk-help"
+msgid "gtk-cancel"
 msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:52
+msgid "gtk-delete"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:53
+msgid "gtk-edit"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:54
+msgid "gtk-help"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:55
 msgid "gtk-ok"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:107
-msgid "Mark the selected task as done"
+#: GTG/taskbrowser/taskbrowser.glade.h:56
+msgid "gtk-quit"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:108
-msgid "Edit the selected task"
+#: GTG/taskbrowser/taskbrowser.glade.h:57
+msgid "gtk-redo"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:109
-msgid "Dismiss the selected task"
+#: GTG/taskbrowser/taskbrowser.glade.h:58
+msgid "gtk-select-color"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:111
-msgid "Create a new subtask"
+#: GTG/taskbrowser/taskbrowser.glade.h:59
+msgid "gtk-undo"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:552
-msgid "monday"
+#: GTG/taskeditor/editor.py:212
+msgid "Due tomorrow !"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:552
-msgid "tuesday"
+#: GTG/taskeditor/editor.py:214
+#, python-format
+msgid "%s days left"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:552
-msgid "wednesday"
+#: GTG/taskeditor/editor.py:216
+msgid "Due today !"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:553
-msgid "thursday"
+#: GTG/taskeditor/editor.py:218
+msgid "Due for yesterday"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:553
-msgid "friday"
+#: GTG/taskeditor/editor.py:220
+#, python-format
+msgid "Was %s days ago"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:553
-msgid "saturday"
+#: GTG/taskeditor/taskeditor.glade.h:1
+msgid "<span weight=\"bold\">Due for</span>"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:554
-msgid "sunday"
+#: GTG/taskeditor/taskeditor.glade.h:2
+msgid "<span weight=\"bold\">Starting on</span>"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:563
-msgid "today"
+#: GTG/taskeditor/taskeditor.glade.h:5
+msgid "Insert subtask"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:570
-msgid "tomorrow"
+#: GTG/taskeditor/taskeditor.glade.h:6
+msgid "Insert tag"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:631
-msgid "tags"
+#: GTG/taskeditor/taskeditor.glade.h:7
+msgid "Keep as Note"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:634
-msgid "defer"
+#: GTG/taskeditor/taskeditor.glade.h:8
+msgid "Mark Done"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:638
-msgid "due"
+#: GTG/taskeditor/taskeditor.glade.h:9
+msgid "Task"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:749
-msgid "<span weight=\"bold\">All tags</span>"
+#: GTG/taskeditor/taskeditor.glade.h:10
+msgid "gtk-clear"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:750
-msgid "<span weight=\"bold\">Tasks without tags</span>"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:845
-msgid "(no active tasks)"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:847
-msgid "(1 active task)"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:1492 GTG/taskbrowser/browser.py:1575
-msgid "Title"
-msgstr "Überschrift"
-
-#: GTG/taskbrowser/browser.py:1511
-msgid "Due date"
-msgstr "Fälligkeitsdatum"
-
-#: GTG/taskbrowser/browser.py:1525
-msgid "Days left"
-msgstr "Tage verbleibend"
-
-#: GTG/taskbrowser/browser.py:1563
-msgid "Closing date"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:1591
-msgid "Notes"
-msgstr "Notizen"
-
-#: GTG/taskbrowser/__init__.py:29
-msgid "Mark as done"
-msgstr "Als erledigt markieren"
-
-#: GTG/taskbrowser/__init__.py:30
-msgid "Mark as not done"
-msgstr "Als nicht erledigt markieren"
-
-#: GTG/taskbrowser/__init__.py:32
-msgid "Undismiss"
+#: GTG/taskeditor/taskeditor.glade.h:11
+msgid "gtk-close"
 msgstr ""
