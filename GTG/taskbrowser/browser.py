@@ -100,15 +100,17 @@ class TaskBrowser:
         self.newtask            = self.wTree.get_widget("new_task_b")
         self.newsubtask         = self.wTree.get_widget("new_subtask_b")
         self.dismissbutton      = self.wTree.get_widget("dismiss")
+        self.deletebutton      = self.wTree.get_widget("delete_b")
         self.about              = self.wTree.get_widget("aboutdialog1")
         self.edit_mi            = self.wTree.get_widget("edit_mi")
         
         #Set the tooltip for the toolbar buttons
-        self.donebutton.set_tooltip_text(_("Mark the selected task as done"))
+        self.donebutton.set_tooltip_text(GnomeConfig.MARK_DONE_TOOLTIP)
         self.editbutton.set_tooltip_text(_("Edit the selected task"))
-        self.dismissbutton.set_tooltip_text(_("Dismiss the selected task"))
+        self.dismissbutton.set_tooltip_text(GnomeConfig.MARK_DISMISS_TOOLTIP)
         self.newtask.set_tooltip_text(_("Create a new task"))
         self.newsubtask.set_tooltip_text(_("Create a new subtask"))
+        self.deletebutton.set_tooltip_text(GnomeConfig.DELETE_TOOLTIP)
   
         # Initialize "About" dialog
         gtk.about_dialog_set_url_hook(lambda dialog, url: url_show(url))
@@ -999,14 +1001,18 @@ class TaskBrowser:
                 self.wTree.get_widget("ctcm_undismiss").set_sensitive(True)
                 self.dismissbutton.set_label(GnomeConfig.MARK_UNDISMISS)
                 self.donebutton.set_label(GnomeConfig.MARK_DONE)
+                self.donebutton.set_tooltip_text(GnomeConfig.MARK_DONE_TOOLTIP)
                 self.dismissbutton.set_icon_name("gtg-task-undismiss")
+                self.dismissbutton.set_tooltip_text(GnomeConfig.MARK_UNDISMISS_TOOLTIP)
                 self.editbutton.connect('clicked', self.on_edit_done_task)
                 self.edit_mi.connect('activate', self.on_edit_done_task)
             else :
                 self.wTree.get_widget("ctcm_mark_as_not_done").set_sensitive(True)
                 self.wTree.get_widget("ctcm_undismiss").set_sensitive(False)
                 self.donebutton.set_label(GnomeConfig.MARK_UNDONE)
+                self.donebutton.set_tooltip_text(GnomeConfig.MARK_UNDONE_TOOLTIP)
                 self.dismissbutton.set_label(GnomeConfig.MARK_DISMISS)
+                self.dismissbutton.set_tooltip_text(GnomeConfig.MARK_DISMISS_TOOLTIP)
                 self.donebutton.set_icon_name("gtg-task-undone")
                 self.editbutton.connect('clicked', self.on_edit_active_task)
                 self.edit_mi.connect('activate', self.on_edit_active_task)
@@ -1022,6 +1028,7 @@ class TaskBrowser:
             self.taskdone_tview.get_selection().unselect_all()
             self.note_tview.get_selection().unselect_all()
             self.donebutton.set_label(GnomeConfig.MARK_DONE)
+            self.donebutton.set_tooltip_text(GnomeConfig.MARK_DONE_TOOLTIP)
             self.dismissbutton.set_label(GnomeConfig.MARK_DISMISS)
         #We reset the previously selected task
         if self.selected_rows and self.task_ts.iter_is_valid(self.selected_rows):
