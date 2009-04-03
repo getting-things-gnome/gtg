@@ -2,6 +2,9 @@ include GTG/taskbrowser/taskbrowser.glade
 include GTG/taskeditor/taskeditor.glade
 include gtg.desktop
 include CHANGELOG
+include README
+include LICENSE
+include AUTHORS
 recursive-include data/icons *.png
 recursive-include data/icons *.svg
 include doc/gtg.1
