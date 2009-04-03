@@ -477,6 +477,7 @@ class TaskView(gtk.TextView):
                         it.forward_char()
                     url = buff.get_text(prev,it)
                     nbr = url.split("#")[1]
+                    topoint = None
                     if url.startswith("bug #") or url.startswith("lp #") :
                         topoint = "https://launchpad.net/bugs/%s" %nbr
                     elif url.startswith("bgo #") :
