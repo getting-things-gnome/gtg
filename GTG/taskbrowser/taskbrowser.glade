@@ -26,7 +26,7 @@
                     <child>
                       <widget class="GtkImageMenuItem" id="file_quit">
                         <property name="visible">True</property>
-                        <property name="label">gtk-quit</property>
+                        <property name="label" translatable="yes">gtk-quit</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <signal name="activate" handler="gtk_main_quit"/>
@@ -46,7 +46,7 @@
                     <child>
                       <widget class="GtkImageMenuItem" id="edit_undo">
                         <property name="visible">True</property>
-                        <property name="label">gtk-undo</property>
+                        <property name="label" translatable="yes">gtk-undo</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                       </widget>
@@ -54,7 +54,7 @@
                     <child>
                       <widget class="GtkImageMenuItem" id="edit_redo">
                         <property name="visible">True</property>
-                        <property name="label">gtk-redo</property>
+                        <property name="label" translatable="yes">gtk-redo</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                       </widget>
@@ -168,7 +168,7 @@
                     <child>
                       <widget class="GtkImageMenuItem" id="edit_mi">
                         <property name="visible">True</property>
-                        <property name="label">gtk-edit</property>
+                        <property name="label" translatable="yes">gtk-edit</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <signal name="activate" handler="on_edit_active_task"/>
@@ -212,7 +212,7 @@
                     <child>
                       <widget class="GtkImageMenuItem" id="delete_mi">
                         <property name="visible">True</property>
-                        <property name="label">gtk-delete</property>
+                        <property name="label" translatable="yes">gtk-delete</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <signal name="activate" handler="on_delete_task"/>
@@ -233,7 +233,7 @@
                     <child>
                       <widget class="GtkImageMenuItem" id="imagemenuitem10">
                         <property name="visible">True</property>
-                        <property name="label">gtk-about</property>
+                        <property name="label" translatable="yes">gtk-about</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <signal name="activate" handler="on_about_clicked"/>
@@ -739,7 +739,7 @@ Deleting a task cannot be undone.</property>
     <child>
       <widget class="GtkImageMenuItem" id="edit_item">
         <property name="visible">True</property>
-        <property name="label">gtk-edit</property>
+        <property name="label" translatable="yes">gtk-edit</property>
         <property name="use_underline">True</property>
         <property name="use_stock">True</property>
         <signal name="activate" handler="on_edit_item_activate"/>
@@ -748,7 +748,7 @@ Deleting a task cannot be undone.</property>
     <child>
       <widget class="GtkImageMenuItem" id="delete_item">
         <property name="visible">True</property>
-        <property name="label">gtk-delete</property>
+        <property name="label" translatable="yes">gtk-delete</property>
         <property name="use_underline">True</property>
         <property name="use_stock">True</property>
         <signal name="activate" handler="on_delete_item_activate"/>
@@ -761,7 +761,7 @@ Deleting a task cannot be undone.</property>
     <child>
       <widget class="GtkImageMenuItem" id="colorchooser">
         <property name="visible">True</property>
-        <property name="label">gtk-select-color</property>
+        <property name="label" translatable="yes">gtk-select-color</property>
         <property name="use_underline">True</property>
         <property name="use_stock">True</property>
         <signal name="activate" handler="on_colorchooser_activate"/>
@@ -888,7 +888,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
     <child>
       <widget class="GtkImageMenuItem" id="tcm_edit">
         <property name="visible">True</property>
-        <property name="label">gtk-edit</property>
+        <property name="label" translatable="yes">gtk-edit</property>
         <property name="use_underline">True</property>
         <property name="use_stock">True</property>
         <signal name="activate" handler="on_edit_active_task"/>
@@ -932,7 +932,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
     <child>
       <widget class="GtkImageMenuItem" id="tcm_delete">
         <property name="visible">True</property>
-        <property name="label">gtk-delete</property>
+        <property name="label" translatable="yes">gtk-delete</property>
         <property name="use_underline">True</property>
         <property name="use_stock">True</property>
         <signal name="activate" handler="on_delete_task"/>
@@ -944,7 +944,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
     <child>
       <widget class="GtkImageMenuItem" id="ctcm_edit">
         <property name="visible">True</property>
-        <property name="label">gtk-edit</property>
+        <property name="label" translatable="yes">gtk-edit</property>
         <property name="use_underline">True</property>
         <property name="use_stock">True</property>
         <signal name="activate" handler="on_edit_done_task"/>
@@ -987,7 +987,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
     <child>
       <widget class="GtkImageMenuItem" id="ctcm_delete">
         <property name="visible">True</property>
-        <property name="label">gtk-delete</property>
+        <property name="label" translatable="yes">gtk-delete</property>
         <property name="use_underline">True</property>
         <property name="use_stock">True</property>
         <signal name="activate" handler="on_delete_task"/>
