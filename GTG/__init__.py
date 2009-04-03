@@ -30,7 +30,7 @@ from os.path import pardir, abspath, dirname, join
 
 URL             = "http://gtg.fritalk.com"
 EMAIL           = "gtg@lists.launchpad.net"
-VERSION         = '0.1.0.9'
+VERSION         = '0.1.1'
 LOCAL_ROOTDIR   = os.path.abspath(os.path.join(os.path.dirname(__file__), '..')) 
 DIST_ROOTDIR    = "/usr/share/gtg"
 
