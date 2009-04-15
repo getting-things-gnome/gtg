@@ -895,8 +895,9 @@ class TaskView(gtk.TextView):
             stag = None
             for t in list_stag :
                 if t.get_data('is_tag') :
-                    stag = t
-                    closed_tag = stag.get_data('tagname')
+                    closed_tag = t.get_data('tagname')
+                elif t.get_data('is_subtask') :
+                    closed_tag = t.get_data('child')
             #We add a bullet list but not on the first line
             #Because it's the title
             if line_nbr > 0 :
