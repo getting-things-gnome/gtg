@@ -887,6 +887,7 @@ class TaskView(gtk.TextView):
             #First, we close tag tags.
             #If we are at the end of a tag, we look for closed tags
             closed_tag = None
+            cutting_subtask = False
             if itera.ends_tag() :
                 list_stag = itera.get_toggled_tags(False)
             #Or maybe we are in the middle of a tag
@@ -897,6 +898,7 @@ class TaskView(gtk.TextView):
                 if t.get_data('is_tag') :
                     closed_tag = t.get_data('tagname')
                 elif t.get_data('is_subtask') :
+                    cutting_subtask = True
                     closed_tag = t.get_data('child')
             #We add a bullet list but not on the first line
             #Because it's the title
@@ -932,8 +934,16 @@ class TaskView(gtk.TextView):
                     insert_mark = self.buff.get_mark("insert_point")
                     insert_iter = self.buff.get_iter_at_mark(insert_mark)
                     self.buff.move_mark_by_name("/%s"%closed_tag,insert_iter)
-                    #self.buff.insert(insert_iter,"#")
                     self.buff.delete_mark(insert_mark)
+                    if cutting_subtask :
+                        cursor = self.buff.get_iter_at_mark(self.buff.get_insert())
+                        endl = cursor.copy()
+                        if not endl.ends_line() :
+                            endl.forward_to_line_end()
+                        text = self.buff.get_text(cursor,endl)
+                        anchor = self.new_subtask_callback(text)
+                        self.buff.create_mark(anchor,cursor,True)
+                        self.buff.create_mark("/%s"%anchor,endl,False)
                     self.modified(full=True)
         #The user entered something else than \n
         elif tex :
