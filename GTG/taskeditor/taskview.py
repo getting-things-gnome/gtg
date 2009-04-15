@@ -883,6 +883,20 @@ class TaskView(gtk.TextView):
         #New line : the user pressed enter !
         #If the line begins with "-", it's a new subtask !
         if tex == '\n' :
+            insert_point = self.buff.create_mark("insert_point",itera,True)
+            #First, we close tag tags.
+            #If we are at the end of a tag, we look for closed tags
+            closed_tag = None
+            if itera.ends_tag() :
+                list_stag = itera.get_toggled_tags(False)
+            #Or maybe we are in the middle of a tag
+            else :
+                list_stag = itera.get_tags()
+            stag = None
+            for t in list_stag :
+                if t.get_data('is_tag') :
+                    stag = t
+                    closed_tag = stag.get_data('tagname')
             #We add a bullet list but not on the first line
             #Because it's the title
             if line_nbr > 0 :
@@ -898,6 +912,9 @@ class TaskView(gtk.TextView):
                         #Here, we should increment indent level
                         self.insert_indent(self.buff,end_i,1,enter=True)
                         tv.emit_stop_by_name('insert-text')
+                    else :
+                        self.buff.insert(itera,"\n")
+                        tv.emit_stop_by_name('insert-text')
                         
                 #Then, if indent > 0, we increment it
                 #First step : we preserve it.
@@ -909,6 +926,14 @@ class TaskView(gtk.TextView):
                     elif current_indent == 1 :
                         self.insert_indent(self.buff,itera,current_indent)
                         tv.emit_stop_by_name('insert-text')
+                #Then we close the tag tag
+                if closed_tag :
+                    insert_mark = self.buff.get_mark("insert_point")
+                    insert_iter = self.buff.get_iter_at_mark(insert_mark)
+                    self.buff.move_mark_by_name("/%s"%closed_tag,insert_iter)
+                    #self.buff.insert(insert_iter,"#")
+                    self.buff.delete_mark(insert_mark)
+                    self.modified(full=True)
         #The user entered something else than \n
         elif tex :
             #We are on an indented line without subtask ? Create it !
