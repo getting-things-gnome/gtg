@@ -332,6 +332,13 @@ class TaskView(gtk.TextView):
         self.buff.delete_mark(line_mark)
         self.modified(full=True)
         
+    #this function select and highligth the title (first line)
+    def select_title(self) :
+        start = self.buff.get_start_iter()
+        stop = start.copy()
+        stop.forward_to_line_end()
+        self.buff.select_range(start, stop)
+        
  ##### The "Get text" group #########
     #Get the complete serialized text
     #But without the title

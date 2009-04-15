@@ -145,6 +145,9 @@ class TaskEditor :
             subtasks = task.get_subtasks_tid()
             if subtasks :
                 self.textview.insert_subtasks(subtasks)
+        #We select the title if it's a new task
+        if self.task.is_new() :
+            self.textview.select_title()
         self.textview.modified(full=True)
         self.window.connect("destroy", self.destruction)
         

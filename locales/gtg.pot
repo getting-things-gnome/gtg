@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-15 15:10+0200\n"
+"POT-Creation-Date: 2009-04-15 15:13+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -61,24 +61,24 @@ msgstr ""
 msgid "gtk-close"
 msgstr ""
 
-#: GTG/taskeditor/editor.py:212
+#: GTG/taskeditor/editor.py:214
 msgid "Due tomorrow !"
 msgstr ""
 
-#: GTG/taskeditor/editor.py:214
+#: GTG/taskeditor/editor.py:216
 #, python-format
 msgid "%s days left"
 msgstr ""
 
-#: GTG/taskeditor/editor.py:216
+#: GTG/taskeditor/editor.py:218
 msgid "Due today !"
 msgstr ""
 
-#: GTG/taskeditor/editor.py:218
+#: GTG/taskeditor/editor.py:220
 msgid "Due for yesterday"
 msgstr ""
 
-#: GTG/taskeditor/editor.py:220
+#: GTG/taskeditor/editor.py:222
 #, python-format
 msgid "Was %s days ago"
 msgstr ""

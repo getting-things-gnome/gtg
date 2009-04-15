@@ -57,6 +57,9 @@ class Task :
         
     def set_to_keep(self) :
         self.can_be_deleted = False
+        
+    def is_new(self) :
+        return self.can_be_deleted
     
     def get_id(self) :
         return str(self.tid)
