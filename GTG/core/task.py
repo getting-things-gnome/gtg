@@ -33,7 +33,7 @@ class Task :
         self.content = ""
         #self.content = "<content>Press Escape or close this task to save it</content>"
         self.sync_func = None
-        self.title = "My new task"
+        self.title = _("My new task")
         #available status are : Active - Done - Dismiss - Note
         self.status = "Active"
         self.closed_date = None
@@ -57,6 +57,9 @@ class Task :
         
     def set_to_keep(self) :
         self.can_be_deleted = False
+        
+    def is_new(self) :
+        return self.can_be_deleted
     
     def get_id(self) :
         return str(self.tid)

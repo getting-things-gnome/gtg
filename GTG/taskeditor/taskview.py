@@ -319,6 +319,16 @@ class TaskView(gtk.TextView):
                 #Now we should check if the current char is a separator or not
                 #Currently, we insert a space
                 self.insert_text(" ",firstline)
+        #Now we check if this newline is empty (it contains only " " and ",")
+#        if newline :
+#            endline = firstline.copy()
+#            if not endline.ends_line() :
+#                endline.forward_to_line_end()
+#            text = self.buff.get_text(firstline,endline)
+#            if not text.strip(", ") :
+#                newline = False
+#                firstline.forward_to_line_end()
+        #Now we can process
         if newline :
             firstline = self.buff.get_iter_at_line(0)
             firstline.forward_to_line_end()
@@ -331,6 +341,13 @@ class TaskView(gtk.TextView):
             self.insert_at_mark(self.buff,line_mark,",")
         self.buff.delete_mark(line_mark)
         self.modified(full=True)
+        
+    #this function select and highligth the title (first line)
+    def select_title(self) :
+        start = self.buff.get_start_iter()
+        stop = start.copy()
+        stop.forward_to_line_end()
+        self.buff.select_range(start, stop)
         
  ##### The "Get text" group #########
     #Get the complete serialized text
@@ -395,7 +412,13 @@ class TaskView(gtk.TextView):
             local_end = cursor_iter.copy()
             local_end.forward_lines(2)
         #if full=False we detect tag only on the current line
-        self._detect_tag(buff,local_start,local_end)
+        
+        #The following 3 lines are a quick ugly fix for bug #359469
+        temp = buff.get_iter_at_line(1)
+        temp.backward_char()
+        self._detect_tag(buff,temp,buff.get_end_iter())
+        #This should be the good line
+#        self._detect_tag(buff,local_start,local_end)
         self._detect_url(buff,local_start,local_end)
         
         #subt_list = self.get_subtasks()
@@ -516,7 +539,7 @@ class TaskView(gtk.TextView):
                             offset1 = buff.get_iter_at_mark(mark1).get_offset()
                             if start.get_offset() <= offset1 <= end.get_offset() :
                                 buff.delete_mark_by_name(tagname)
-                        mark2 = buff.get_mark("%s"%tagname)
+                        mark2 = buff.get_mark("/%s"%tagname)
                         if mark2 :
                             offset2 = buff.get_iter_at_mark(mark2).get_offset()
                             if start.get_offset() <= offset2 <= end.get_offset():
@@ -876,6 +899,23 @@ class TaskView(gtk.TextView):
         #New line : the user pressed enter !
         #If the line begins with "-", it's a new subtask !
         if tex == '\n' :
+            insert_point = self.buff.create_mark("insert_point",itera,True)
+            #First, we close tag tags.
+            #If we are at the end of a tag, we look for closed tags
+            closed_tag = None
+            cutting_subtask = False
+            if itera.ends_tag() :
+                list_stag = itera.get_toggled_tags(False)
+            #Or maybe we are in the middle of a tag
+            else :
+                list_stag = itera.get_tags()
+            stag = None
+            for t in list_stag :
+                if t.get_data('is_tag') :
+                    closed_tag = t.get_data('tagname')
+                elif t.get_data('is_subtask') :
+                    cutting_subtask = True
+                    closed_tag = t.get_data('child')
             #We add a bullet list but not on the first line
             #Because it's the title
             if line_nbr > 0 :
@@ -891,6 +931,9 @@ class TaskView(gtk.TextView):
                         #Here, we should increment indent level
                         self.insert_indent(self.buff,end_i,1,enter=True)
                         tv.emit_stop_by_name('insert-text')
+                    else :
+                        self.buff.insert(itera,"\n")
+                        tv.emit_stop_by_name('insert-text')
                         
                 #Then, if indent > 0, we increment it
                 #First step : we preserve it.
@@ -902,6 +945,22 @@ class TaskView(gtk.TextView):
                     elif current_indent == 1 :
                         self.insert_indent(self.buff,itera,current_indent)
                         tv.emit_stop_by_name('insert-text')
+                #Then we close the tag tag
+                if closed_tag :
+                    insert_mark = self.buff.get_mark("insert_point")
+                    insert_iter = self.buff.get_iter_at_mark(insert_mark)
+                    self.buff.move_mark_by_name("/%s"%closed_tag,insert_iter)
+                    self.buff.delete_mark(insert_mark)
+                    if cutting_subtask :
+                        cursor = self.buff.get_iter_at_mark(self.buff.get_insert())
+                        endl = cursor.copy()
+                        if not endl.ends_line() :
+                            endl.forward_to_line_end()
+                        text = self.buff.get_text(cursor,endl)
+                        anchor = self.new_subtask_callback(text)
+                        self.buff.create_mark(anchor,cursor,True)
+                        self.buff.create_mark("/%s"%anchor,endl,False)
+                    self.modified(full=True)
         #The user entered something else than \n
         elif tex :
             #We are on an indented line without subtask ? Create it !

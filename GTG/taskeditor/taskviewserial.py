@@ -78,9 +78,10 @@ class Serializer :
                 for ta in it.get_tags() :
                     if it.begins_tag(ta) and ta not in done and is_know_tag(ta) :
                         tags.append(ta)
+                        #print ta.get_data("tagname")
                 if it.begins_tag() and len(tags) > 0:
                     # We enter in a tag context
-                    tag = tags[0]
+                    tag = tags.pop()
                     done.append(tag)
                     start_it = it.copy()
                 else :
@@ -224,6 +225,11 @@ class Unserializer :
         for t in taglist2 :
             if t in taglist :
                 taglist.remove(t)
+        #We remove duplicates
+        for t in taglist :
+            while t in taglist :
+                taglist.remove(t)
+            taglist.append(t)
         if len(taglist) > 0 :
             self.tv.insert_tags(taglist)
         buf.delete_mark(start)

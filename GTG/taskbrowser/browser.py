@@ -30,7 +30,6 @@ import os
 import locale
 import re
 import datetime
-from gnome import url_show
 
 #our own imports
 import GTG
@@ -38,7 +37,7 @@ from GTG.taskeditor.editor            import TaskEditor
 from GTG.taskbrowser.CellRendererTags import CellRendererTags
 from GTG.taskbrowser                  import GnomeConfig
 from GTG.taskbrowser                  import treetools
-from GTG.tools                        import colors
+from GTG.tools                        import colors, openurl
 
 #=== OBJECTS ===================================================================
 
@@ -113,7 +112,7 @@ class TaskBrowser:
         self.deletebutton.set_tooltip_text(GnomeConfig.DELETE_TOOLTIP)
   
         # Initialize "About" dialog
-        gtk.about_dialog_set_url_hook(lambda dialog, url: url_show(url))
+        gtk.about_dialog_set_url_hook(lambda dialog, url: openurl.openurl(url))
         self.about.set_website(GTG.URL)
         self.about.set_website_label(GTG.URL)
         self.about.set_version(GTG.VERSION)
