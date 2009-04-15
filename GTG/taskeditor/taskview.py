@@ -319,6 +319,16 @@ class TaskView(gtk.TextView):
                 #Now we should check if the current char is a separator or not
                 #Currently, we insert a space
                 self.insert_text(" ",firstline)
+        #Now we check if this newline is empty (it contains only " " and ",")
+#        if newline :
+#            endline = firstline.copy()
+#            if not endline.ends_line() :
+#                endline.forward_to_line_end()
+#            text = self.buff.get_text(firstline,endline)
+#            if not text.strip(", ") :
+#                newline = False
+#                firstline.forward_to_line_end()
+        #Now we can process
         if newline :
             firstline = self.buff.get_iter_at_line(0)
             firstline.forward_to_line_end()
@@ -402,7 +412,13 @@ class TaskView(gtk.TextView):
             local_end = cursor_iter.copy()
             local_end.forward_lines(2)
         #if full=False we detect tag only on the current line
-        self._detect_tag(buff,local_start,local_end)
+        
+        #The following 3 lines are a quick ugly fix for bug #359469
+        temp = buff.get_iter_at_line(1)
+        temp.backward_char()
+        self._detect_tag(buff,temp,buff.get_end_iter())
+        #This should be the good line
+#        self._detect_tag(buff,local_start,local_end)
         self._detect_url(buff,local_start,local_end)
         
         #subt_list = self.get_subtasks()
@@ -523,7 +539,7 @@ class TaskView(gtk.TextView):
                             offset1 = buff.get_iter_at_mark(mark1).get_offset()
                             if start.get_offset() <= offset1 <= end.get_offset() :
                                 buff.delete_mark_by_name(tagname)
-                        mark2 = buff.get_mark("%s"%tagname)
+                        mark2 = buff.get_mark("/%s"%tagname)
                         if mark2 :
                             offset2 = buff.get_iter_at_mark(mark2).get_offset()
                             if start.get_offset() <= offset2 <= end.get_offset():
