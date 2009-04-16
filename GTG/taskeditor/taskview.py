@@ -269,11 +269,24 @@ class TaskView(gtk.TextView):
         
     #Apply the tag tag to a set of TextMarks (not Iter)
     def apply_tag_tag(self,buff,tag,s,e) :
-        texttag = buff.create_tag(None,**self.get_property('tag'))#pylint: disable-msg=W0142
-        texttag.set_data('is_tag', True)
-        texttag.set_data('tagname',tag)
-        #This one is for marks
-        self.__apply_tag_to_mark(s,e,tag=texttag)
+        ss = buff.get_iter_at_mark(s)
+        ee = buff.get_iter_at_mark(e)
+        #If the tag is already applied, we do nothing
+        t_list = ss.get_tags()
+        texttag = None
+        already = False
+        for t in t_list :
+            if t.get_data('is_tag') and t.get_data('tagname') == tag :
+                texttag = t
+                if ss.begins_tag(t) and ee.ends_tag(t) :
+                    already = True
+        if not texttag :
+            texttag = buff.create_tag(None,**self.get_property('tag'))#pylint: disable-msg=W0142
+            texttag.set_data('is_tag', True)
+            texttag.set_data('tagname',tag)
+            #This one is for marks
+        if not already :
+            self.__apply_tag_to_mark(s,e,tag=texttag)
         
     #Apply the tag tag to a set of TextMarks (not Iter)
     #Also change the subtask title if needed
@@ -414,11 +427,11 @@ class TaskView(gtk.TextView):
         #if full=False we detect tag only on the current line
         
         #The following 3 lines are a quick ugly fix for bug #359469
-        temp = buff.get_iter_at_line(1)
-        temp.backward_char()
-        self._detect_tag(buff,temp,buff.get_end_iter())
+#        temp = buff.get_iter_at_line(1)
+#        temp.backward_char()
+#        self._detect_tag(buff,temp,buff.get_end_iter())
         #This should be the good line
-#        self._detect_tag(buff,local_start,local_end)
+        self._detect_tag(buff,local_start,local_end)
         self._detect_url(buff,local_start,local_end)
         
         #subt_list = self.get_subtasks()
@@ -526,12 +539,13 @@ class TaskView(gtk.TextView):
         #found the beginning of a tag on the nextline
         while (it.get_offset() < end.get_offset()) and (it.get_char() != '\0'):
             if it.begins_tag() :
-                tags = it.get_tags()
+                tags = it.get_toggled_tags(True)
                 for ta in tags :
                     #removing deleted tags
                     if ta.get_data('is_tag') :
                         tagname = ta.get_data('tagname')
                         old_tags.append(tagname)
+                        buff.remove_tag(ta,start,end)
                         table.remove(ta)
                         #Removing the marks if they exist
                         mark1 = buff.get_mark(tagname)
