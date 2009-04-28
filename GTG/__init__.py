@@ -67,7 +67,7 @@ if lc:
     languages_used = [lc]
 lang_in_env = os.environ.get('LANGUAGE', None)
 if lang_in_env:
-    languages_used.append(lang_in_env.split())
+    languages_used.extend(lang_in_env.split(':'))
 
 for module in gettext, glade:
     module.bindtextdomain(GETTEXT_DOMAIN, LOCALE_PATH)
