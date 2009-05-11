@@ -1611,4 +1611,5 @@ class TaskBrowser:
     ######Closing the window
     def close(self,widget=None) : #pylint: disable-msg=W0613
         #Saving is now done in main.py
+        self.on_delete(None, None)
         gtk.main_quit()
