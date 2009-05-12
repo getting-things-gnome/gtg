@@ -114,6 +114,12 @@
                         <signal name="toggled" handler="on_view_closed_toggled"/>
                       </widget>
                     </child>
+                    <child><widget class="GtkCheckMenuItem" id="view_toolbar">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">T_oolbar</property>
+                        <property name="use_underline">True</property>
+                        <signal name="toggled" handler="on_view_toolbar_toggled" />
+                      </widget></child>
                     <child>
                       <widget class="GtkCheckMenuItem" id="view_quickadd">
                         <property name="visible">True</property>
@@ -121,8 +127,7 @@
                         <property name="use_underline">True</property>
                         <signal name="toggled" handler="on_view_quickadd_toggled"/>
                       </widget>
-                    </child>
-                  </widget>
+                    </child></widget>
                 </child>
               </widget>
             </child>
