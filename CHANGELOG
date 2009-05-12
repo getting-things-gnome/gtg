@@ -1,3 +1,4 @@
+    * Apply patch to fix bug #374745 by ekspiulo
     * Title for newly created task is now selected to allow easy editing
     * Fixed some bugs in the task editor
 
