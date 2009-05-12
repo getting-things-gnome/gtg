@@ -31,3 +31,5 @@ tags.xml.bak.3
 .pydevproject
 .project
 .settings
+.bzrignore
+
