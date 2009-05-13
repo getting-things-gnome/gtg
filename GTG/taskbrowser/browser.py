@@ -47,6 +47,7 @@ from GTG.tools                        import colors, openurl
 WORKVIEW      = False
 SIDEBAR       = False
 CLOSED_PANE   = False
+TOOLBAR       = True
 QUICKADD_PANE = True
 
 EXPERIMENTAL_NOTES = False
@@ -154,6 +155,7 @@ class TaskBrowser:
                 "on_bg_color_toggled"                 : self.on_bg_color_toggled,
                 "on_quickadd_field_activate"          : self.quickadd,
                 "on_quickadd_button_activate"         : self.quickadd,
+                "on_view_toolbar_toggled"             : self.on_toolbar_toggled,
                 "on_view_quickadd_toggled"            : self.toggle_quickadd,
                 "on_about_clicked"                    : self.on_about_clicked,
                 "on_about_close"                      : self.on_about_close,
@@ -230,6 +232,7 @@ class TaskBrowser:
         #The panes
         self.sidebar       = self.wTree.get_widget("sidebar")
         self.closed_pane   = self.wTree.get_widget("closed_pane")
+        self.toolbar       = self.wTree.get_widget("task_tb")
         self.quickadd_pane = self.wTree.get_widget("quickadd_pane")
                
         #The tid that will be deleted
@@ -251,6 +254,7 @@ class TaskBrowser:
         self.menu_view_workview.set_active(WORKVIEW)
         self.wTree.get_widget("view_sidebar").set_active(SIDEBAR)
         self.wTree.get_widget("view_closed").set_active(CLOSED_PANE)
+        self.wTree.get_widget("view_toolbar").set_active(TOOLBAR)
         self.wTree.get_widget("view_quickadd").set_active(QUICKADD_PANE)
         self.priv["bg_color_enable"] = True
     
@@ -331,12 +335,19 @@ class TaskBrowser:
         if self.config["browser"].has_key("ctask_pane_height"):
             ctask_pane_height = eval(self.config["browser"]["ctask_pane_height"])
             self.wTree.get_widget("vpaned1").set_position(ctask_pane_height)
+            
+        if self.config["browser"].has_key("toolbar"):
+            toolbar    = eval(self.config["browser"]["toolbar"])
+            if not toolbar    :
+                self.toolbar.hide()
+                self.wTree.get_widget("view_toolbar").set_active(False)
                 
         if self.config["browser"].has_key("quick_add"):
             quickadd_pane    = eval(self.config["browser"]["quick_add"])
             if not quickadd_pane    :
                 self.quickadd_pane.hide()
                 self.wTree.get_widget("view_quickadd").set_active(False)
+                
                 
         if self.config["browser"].has_key("bg_color_enable"):
             bgcol_enable = eval(self.config["browser"]["bg_color_enable"])
@@ -394,6 +405,7 @@ class TaskBrowser:
         # Get configuration values
         tag_sidebar     = self.sidebar.get_property("visible")
         closed_pane     = self.closed_pane.get_property("visible")
+        toolbar         = self.toolbar.get_property("visible")
         quickadd_pane   = self.quickadd_pane.get_property("visible")
         #task_tv_sort_id = self.task_ts.get_sort_column_id()
         sort_column     = self.priv["tasklist"]["sort_column"]
@@ -412,6 +424,7 @@ class TaskBrowser:
         self.config["browser"]["tag_pane"]          = tag_sidebar
         self.config["browser"]["closed_task_pane"]  = closed_pane
         self.config["browser"]["ctask_pane_height"] = closed_pane_height
+        self.config["browser"]["toolbar"]           = toolbar
         self.config["browser"]["quick_add"]         = quickadd_pane
         self.config["browser"]["bg_color_enable"]   = self.priv["bg_color_enable"]
         self.config["browser"]["collapsed_tasks"]   = self.priv["collapsed_tid"]
@@ -540,6 +553,12 @@ class TaskBrowser:
             self.priv["bg_color_enable"] = False
         self.do_refresh()
             
+    def on_toolbar_toggled(self,widget) :
+        if widget.get_active() :
+            self.toolbar.show()
+        else :
+            self.toolbar.hide()
+
     def toggle_quickadd(self,widget) :
         if widget.get_active() :
             self.quickadd_pane.show()
