@@ -23,9 +23,7 @@ import gobject
 
 from GTG.taskbrowser.CellRendererTags import CellRendererTags
 
-######### TreeStore Tools ######################################
-
-# Model constants
+# ACTIVE TASKS MODEL ###########################################################
 
 TASK_MODEL_OBJ         = 0
 TASK_MODEL_TITLE       = 1
@@ -34,20 +32,6 @@ TASK_MODEL_DDATE_STR   = 3
 TASK_MODEL_DLEFT_STR   = 4
 TASK_MODEL_TAGS        = 5
 TASK_MODEL_BGCOL       = 6
-
-TAGS_MODEL_OBJ         = 0
-TAGS_MODEL_COLOR       = 1
-TAGS_MODEL_NAME        = 2
-TAGS_MODEL_COUNT       = 3
-TAGS_MODEL_SEP         = 4
-
-CTASKS_MODEL_OBJ       = 0
-CTASKS_MODEL_TITLE     = 2
-CTASKS_MODEL_DDATE     = 3
-CTASKS_MODEL_DDATE_STR = 4
-CTASKS_MODEL_BGCOL     = 5
-CTASKS_MODEL_TAGS      = 6
-
 
 def new_task_ts (dnd_func=None): 
     """Returning a tree store to handle the active tasks"""
@@ -65,6 +49,14 @@ def new_task_ts (dnd_func=None):
         task_ts.connect("row-deleted",dnd_func,None,"delete")
     return task_ts
 
+# TAGS MODEL ###################################################################
+
+TAGS_MODEL_OBJ         = 0
+TAGS_MODEL_COLOR       = 1
+TAGS_MODEL_NAME        = 2
+TAGS_MODEL_COUNT       = 3
+TAGS_MODEL_SEP         = 4
+
 def new_tag_ts():
     """Returning a tree store to handle the tags"""
     
@@ -74,6 +66,15 @@ def new_tag_ts():
                                     str,                   \
                                     bool)
     return tag_ts
+
+# CLOSED TASKS MODEL ###########################################################
+
+CTASKS_MODEL_OBJ       = 0
+CTASKS_MODEL_TITLE     = 2
+CTASKS_MODEL_DDATE     = 3
+CTASKS_MODEL_DDATE_STR = 4
+CTASKS_MODEL_BGCOL     = 5
+CTASKS_MODEL_TAGS      = 6
 
 def new_ctask_ts():
     """Returning a tree store to handle the closed tasks"""

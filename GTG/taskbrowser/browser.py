@@ -83,22 +83,22 @@ class TaskBrowser:
         self.__init_browser_config()
                        
         # Setup GTG icon theme
-        self.__setup_icon_theme()
+        self.__init_icon_theme()
 
         # Load window tree
         self.wTree = gtk.glade.XML(GnomeConfig.GLADE_FILE) 
         
         # Define aliases for specific widgets
-        self.__set_widget_aliases()
+        self.__init_widget_aliases()
                 
         #Set the tooltip for the toolbar buttons
-        self.__set_toolbar_tooltips()
+        self.__init_toolbar_tooltips()
   
         # Initialize "About" dialog
         self.__init_about_dialog()
 
         #Create our dictionay and connect it
-        self.__set_signal_connections()
+        self.__init_signal_connections()
                
         # The tview and their model
         self.ctask_ts = browsertools.new_ctask_ts ()
@@ -108,13 +108,13 @@ class TaskBrowser:
         # Setting the default for the view
         # When there is no config, this should define the first configuration
         # of the UI
-        self.__set_view_defaults()
+        self.__init_view_defaults()
     
         # Connecting the refresh signal from the requester
         self.req.connect("refresh",self.do_refresh)
 
         # Define accelerator keys
-        self.__set_accelerators()
+        self.__init_accelerators()
         
         # NOTES
         self.__init_note_support()
@@ -133,7 +133,7 @@ class TaskBrowser:
         self.priv['workview']                 = False
         self.priv['noteview']                 = False
 
-    def __setup_icon_theme(self):
+    def __init_icon_theme(self):
         icon_dirs = [
             GTG.DATA_DIR,
             os.path.join(GTG.DATA_DIR,"icons")
@@ -142,7 +142,7 @@ class TaskBrowser:
             gtk.icon_theme_get_default().prepend_search_path(i)
             gtk.window_set_default_icon_name("gtg")
 
-    def __set_widget_aliases(self):
+    def __init_widget_aliases(self):
         self.window             = self.wTree.get_widget("MainWindow")
         self.taskpopup          = self.wTree.get_widget("TaskContextMenu")
         self.editbutton         = self.wTree.get_widget("edit_b")
@@ -168,7 +168,7 @@ class TaskBrowser:
         self.new_note_button    = self.wTree.get_widget("new_note_button")
         self.note_toggle        = self.wTree.get_widget("note_toggle")
         
-    def __set_toolbar_tooltips(self):
+    def __init_toolbar_tooltips(self):
         self.donebutton.set_tooltip_text      (GnomeConfig.MARK_DONE_TOOLTIP)
         self.editbutton.set_tooltip_text      (GnomeConfig.EDIT_TOOLTIP)
         self.dismissbutton.set_tooltip_text   (GnomeConfig.MARK_DISMISS_TOOLTIP)
@@ -186,7 +186,7 @@ class TaskBrowser:
         self.about.set_artists              (GTG.ARTISTS)
         self.about.set_translator_credits   (GTG.TRANSLATORS)
 
-    def __set_signal_connections(self):
+    def __init_signal_connections(self):
         
         SIGNAL_CONNECTIONS_DIC = {
             "on_add_task"                         : self.on_add_task,
@@ -228,7 +228,7 @@ class TaskBrowser:
         self.wTree.signal_autoconnect(SIGNAL_CONNECTIONS_DIC)
         if (self.window): self.window.connect("destroy", gtk.main_quit)
 
-    def __set_view_defaults(self):
+    def __init_view_defaults(self):
         self.menu_view_workview.set_active(WORKVIEW)
         self.wTree.get_widget("view_sidebar").set_active(SIDEBAR)
         self.wTree.get_widget("view_closed").set_active(CLOSED_PANE)
@@ -236,7 +236,7 @@ class TaskBrowser:
         self.priv["bg_color_enable"] = BG_COLOR
         self.ctask_ts.set_sort_column_id(browsertools.CTASKS_MODEL_DDATE, gtk.SORT_DESCENDING)
 
-    def __set_accelerators(self):
+    def __init_accelerators(self):
         
         agr = gtk.AccelGroup()
         self.wTree.get_widget("MainWindow").add_accel_group(agr)
