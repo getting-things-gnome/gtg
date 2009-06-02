@@ -1,3 +1,4 @@
+    * Add polish translation by Tomasz Maciejewski
     * Apply patch to fix bug #326388 by ekspiulo
     * Apply patch to fix bug #374745 by ekspiulo
     * Title for newly created task is now selected to allow easy editing
