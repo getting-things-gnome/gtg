@@ -984,8 +984,30 @@ class TaskView(gtk.TextView):
                 self.buff.create_mark(anchor,itera,True)
                 self.buff.create_mark("/%s"%anchor,itera,False)
         self.insert_sigid = self.buff.connect('insert-text', self._insert_at_cursor)
+        self.keypress_sigid = self.connect('key_press_event', self._keypress)
         self.modified_sigid = self.buff.connect("changed" , self.modified)
         
+    def _keypress(self, widget, event):
+        # Check for Ctrl-Return/Enter
+        if event.state & gtk.gdk.CONTROL_MASK and event.keyval in (gtk.keysyms.Return, gtk.keysyms.KP_Enter):
+            buff = self.buff   
+            cursor_mark = buff.get_insert()
+            cursor_iter = buff.get_iter_at_mark(cursor_mark)
+            table = buff.get_tag_table()
+			
+            local_start = cursor_iter.copy()
+
+            for tag in local_start.get_tags():
+                anchor =  tag.get_data('link')
+                typ =  tag.get_data('type')
+                if(anchor):
+                    if typ == "subtask" :
+                        self.open_task(anchor)
+                    elif typ == "http" :
+                        openurl.openurl(anchor)
+					
+            return True
+
     #Deindent the current line of one level
     #If newlevel is set, force to go to that level
     def deindent(self,itera,newlevel=-1) :
