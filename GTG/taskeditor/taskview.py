@@ -999,11 +999,11 @@ class TaskView(gtk.TextView):
 
             for tag in local_start.get_tags():
                 anchor =  tag.get_data('link')
-                type =  tag.get_data('type')
+                typ =  tag.get_data('type')
                 if(anchor):
-                    if type == "subtask" :
+                    if typ == "subtask" :
                         self.open_task(anchor)
-                    elif type == "http" :
+                    elif typ == "http" :
                         openurl.openurl(anchor)
 					
             return True
