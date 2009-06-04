@@ -36,7 +36,7 @@ from GTG.taskeditor import taskviewserial
 from GTG.tools import openurl
 
 separators = [' ','.',',','/','\n','\t','!','?',';','\0']
-url_separators = [' ',',','\n','\t',';','\0']
+url_separators = [' ',',','\n','\t','\0']
 
 bullet1 = '→'
 bullet2 = '↳'
