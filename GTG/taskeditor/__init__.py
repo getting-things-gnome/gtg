@@ -31,5 +31,11 @@ class GnomeConfig :
     KEEP_NOTE = "Keep as Note"
     MAKE_TASK = "Make a Task"
     
+    MARK_DONE_TOOLTIP = _("Mark this task as done")
+    MARK_UNDONE_TOOLTIP = _("Mark this task as to be done")
+    MARK_DISMISS_TOOLTIP = _("Mark this task as not to be done anymore")
+    MARK_UNDISMISS_TOOLTIP = _("Mark this task as to be done")
+    DELETE_TOOLTIP = _("Permanently remove this task")
+    
     #Number of second between to save in the task editor
     SAVETIME = 10
