@@ -53,6 +53,12 @@ class TaskEditor :
         self.cal_tree = gtk.glade.XML(self.gladefile, "calendar")
         self.donebutton = self.wTree.get_widget("mark_as_done_editor")
         self.dismissbutton = self.wTree.get_widget("dismiss_editor")
+        self.deletebutton = self.wTree.get_widget("delete_editor")
+        self.deletebutton.set_tooltip_text(GnomeConfig.DELETE_TOOLTIP)
+        self.deletebutton = self.wTree.get_widget("insert_subtask")
+        self.deletebutton.set_tooltip_text(GnomeConfig.SUBTASK_TOOLTIP)
+        self.deletebutton = self.wTree.get_widget("inserttag")
+        self.deletebutton.set_tooltip_text(GnomeConfig.TAG_TOOLTIP)
         #Create our dictionay and connect it
         dic = {
                 "mark_as_done_clicked"  : self.change_status,
