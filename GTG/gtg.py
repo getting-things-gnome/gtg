@@ -43,6 +43,7 @@
 #=============================================================================== 
 
 #=== IMPORT ====================================================================
+import sys, os
 
 #our own imports
 from GTG.taskbrowser.browser import TaskBrowser
@@ -51,10 +52,40 @@ from GTG.core                import CoreConfig
 
 #=== OBJECTS ===================================================================
 
+#code borrowed from Specto. Avoid having multiples instances of gtg
+#reading the same tasks
+#that's why we put the pid file in the data directory :
+#we allow one instance of gtg by data directory.
+def check_instance(directory):
+    """ Check if gtg is already running. """
+    pidfile = directory  + "gtg.pid"
+    if not os.path.exists(pidfile):
+        f = open(pidfile, "w")
+        f.close()
+    os.chmod(pidfile, 0600)
+
+    #see if gtg is already running
+    f = open(pidfile, "r")
+    pid = f.readline()
+    f.close()
+    if pid:
+        p = os.system("ps --no-heading --pid " + pid)
+        p_name = os.popen("ps -f --pid " + pid).read()
+        if p == 0 and "gtg" in p_name:
+            print _("gtg is already running!")
+            #todo : expose the browser (will be possible when we have dbus)
+            sys.exit(0)
+            
+    #write the pid file
+    f = open(pidfile, "w")
+    f.write(str(os.getpid()))
+    f.close()
+
 #=== MAIN CLASS ================================================================
 
 def main():
     config        = CoreConfig()
+    check_instance(config.DATA_DIR)
     backends_list = config.get_backends_list()
     
     # Load data store

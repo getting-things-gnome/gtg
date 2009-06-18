@@ -66,6 +66,8 @@ class CoreConfig:
     def __init__(self):
         if not os.path.exists(self.CONF_DIR) :
             os.makedirs(self.CONF_DIR)
+        if not os.path.exists(self.DATA_DIR) :
+            os.makedirs(self.DATA_DIR)
         if not os.path.exists(self.CONF_DIR + self.CONF_FILE):
             f = open(self.CONF_DIR + self.CONF_FILE, "w")
             f.close()
