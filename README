@@ -52,6 +52,17 @@ When writing a task, keep in mind that:
  1) A line beginning with "-" will automatically create a subtask on that line
  2) A word beginning with "@" is a tag
 
+===== Quick add =====
+
+In the quickadd line you can use "attribue:argument" with any title. 
+Valid attributes are: "tags", "defer", "due"
+E.g.:
+ "due:friday task description"
+ "more work due:today"
+ "due:tomorrow foo work"
+ "my bar task tags:@foo"
+
+
 Please refer to http://gtg.fritalk.com/pages/documentation
 
 ===== Want to know more? =====
