@@ -504,17 +504,11 @@ class TaskBrowser:
             treeview.collapse_row(path)
 
     #Add tasks to a treeview. If treeview is False, it becomes a flat list
-    def __add_task_tree_to_list(self, tree_store, tid, parent, selected_uid=None,\
+    def __add_task_tree_to_list(self, tree_store, tid, parent, \
                                         active_tasks=[], treeview=True):
-        task     = self.req.get_task(tid)
-        st_count = self.__count_tasks_rec(task, active_tasks)
-        if selected_uid and selected_uid == tid :
-            # Temporarily disabled
-            #title = self.__build_task_title(task,extended=True)
-            title_str = self.__build_task_title(task, st_count, extended=False)
-        else :
-            title_str = self.__build_task_title(task, st_count, extended=False)
-    
+        task      = self.req.get_task(tid)
+        st_count  = self.__count_tasks_rec(task, active_tasks)   
+        title_str = self.__build_task_title(task, st_count, extended=False)
 
         # Extract data
         title       = saxutils.escape(task.get_title()) 
@@ -539,7 +533,7 @@ class TaskBrowser:
                 cid = c.get_id()
                 if cid in active_tasks:
                     #None should be cid
-                    self.__add_task_tree_to_list(tree_store, cid, my_row,selected_uid,\
+                    self.__add_task_tree_to_list(tree_store, cid, my_row,\
                                         active_tasks=active_tasks)
 
     #This works only in the main task_tview
@@ -1212,89 +1206,107 @@ class TaskBrowser:
     #refresh list build/refresh your TreeStore of task
     #to keep it in sync with your self.projects   
     def refresh_list(self,a=None,toselect=None) : #pylint: disable-msg=W0613
-        
+        print "Refresh..."
         # Save collapsed rows
-        self.task_ts.foreach(self.__update_collapsed_rows, None)
+        #self.task_ts.foreach(self.__update_collapsed_rows, None)
         
-        #selected tasks :
-        selected_uid = self.get_selected_task(self.task_tview)
-        tselect = self.task_tview.get_selection()
-        t_path = None
-        if tselect :
-            t_model,t_path = tselect.get_selected_rows() #pylint: disable-msg=W0612
+        # Save selected tasks
+        #selected_uid = self.get_selected_task(self.task_tview)
+        #tselect = self.task_tview.get_selection()
+        #t_path = None
+        #if tselect :
+        #    t_model,t_path = tselect.get_selected_rows() #pylint: disable-msg=W0612
             
-        #Scroll position :
-        vscroll_value = self.task_tview.get_vadjustment().get_value()
-        hscroll_value = self.task_tview.get_hadjustment().get_value()    
+        # Save scroll position :
+        #vscroll_value = self.task_tview.get_vadjustment().get_value()
+        #hscroll_value = self.task_tview.get_hadjustment().get_value()    
         
         #to refresh the list we build a new treestore then replace the existing
-        new_taskts = browsertools.new_task_ts(dnd_func=self.__row_dragndrop)
-        tag_list,notag_only = self.get_selected_tags()
-        nbr_of_tasks = 0
+        #new_taskts          = browsertools.new_task_ts(dnd_func=self.__row_dragndrop)
+        #tag_list,notag_only = self.get_selected_tags()
+        #nbr_of_tasks = 0
         
         #We build the active tasks pane
-        if self.priv['workview'] :
-            tasks = self.req.get_active_tasks_list(tags=tag_list,\
-                        notag_only=notag_only,workable=True, started_only=False)
-            for tid in tasks :
-                self.__add_task_tree_to_list(new_taskts,tid,None,selected_uid,\
-                                                        treeview=False)
-            nbr_of_tasks = len(tasks)
-                            
-        else :
-            #building the classical treeview
-            active_root_tasks = self.req.get_active_tasks_list(tags=tag_list,\
-                            notag_only=notag_only, is_root=True, started_only=False)
-            active_tasks = self.req.get_active_tasks_list(tags=tag_list,\
-                            notag_only=notag_only, is_root=False, started_only=False)
-            for tid in active_root_tasks :
-                self.__add_task_tree_to_list(new_taskts, tid, None,\
-                                selected_uid,active_tasks=active_tasks)
-            nbr_of_tasks = len(active_tasks)
-            
-        #Set the title of the window :
-        if nbr_of_tasks == 0 :
-            parenthesis = _("(no active tasks)")
-        elif nbr_of_tasks == 1 :
-            parenthesis = _("(1 active task)")
-        else :
-            parenthesis = "(%s active tasks)"%nbr_of_tasks
-        self.window.set_title("Getting Things GNOME! %s"%parenthesis)
-        self.task_tview.set_model(new_taskts)
-        self.task_ts = new_taskts
+        #if self.priv['workview'] :
+        #    tasks = self.req.get_active_tasks_list(tags=tag_list,\
+        #                notag_only=notag_only,workable=True, started_only=False)
+        #    for tid in tasks :
+        #        self.__add_task_tree_to_list(new_taskts,tid,None,\
+        #                                                treeview=False)
+        #    nbr_of_tasks = len(tasks)
+        #                    
+        #else :
+        #building the classical treeview
+        #active_root_tasks = self.req.get_active_tasks_list(tags=tag_list,\
+        #                notag_only=notag_only, is_root=True, started_only=False)
+        #active_tasks      = self.req.get_active_tasks_list(tags=tag_list,\
+        #                notag_only=notag_only, is_root=False, started_only=False)
+        #for tid in active_root_tasks :
+        #    self.__add_task_tree_to_list(new_taskts, tid, None, \
+        #                                 active_tasks=active_tasks)
+        #self.task_tview.set_model(new_taskts)
+        #self.task_ts = new_taskts
+        #nbr_of_tasks = len(active_tasks)
+
+        tag_list,notag_only = self.get_selected_tags()
+
+        active_root_tasks   = self.req.get_active_tasks_list ( \
+                                tags         = tag_list,       \
+                                notag_only   = notag_only,     \
+                                is_root      = True,           \
+                                started_only = False )
+
+        active_tasks        = self.req.get_active_tasks_list ( \
+                                tags         = tag_list,       \
+                                notag_only   = notag_only,     \
+                                is_root      = False,          \
+                                started_only = False )
+        print active_root_tasks
+        for tid in active_root_tasks :
+            self.__add_task_tree_to_list(self.task_ts, tid, None, \
+                                         active_tasks=active_tasks)
+
+        # Set the title of the window :
+        #if nbr_of_tasks == 0 :
+        #    parenthesis = _("(no active tasks)")
+        #elif nbr_of_tasks == 1 :
+        #    parenthesis = _("(1 active task)")
+        #else :
+        #    parenthesis = "(%s active tasks)"%nbr_of_tasks
+        #self.window.set_title("Getting Things GNOME! %s"%parenthesis)
         #We expand all the we close the tasks who were not saved as "expanded"
-        self.task_tview.expand_all()
-        self.task_tview.map_expanded_rows(self.__restore_collapsed_rows,None)
+        #self.task_tview.expand_all()
+        #self.task_tview.map_expanded_rows(self.__restore_collapsed_rows,None)
         # Restore sorting
-        if not self.priv['noteview'] :
-            if self.priv["tasklist"].has_key("sort_column") and \
-               self.priv["tasklist"].has_key("sort_order")      :
-                if self.priv["tasklist"]["sort_column"] is not None and \
-                   self.priv["tasklist"]["sort_order"]  is not None     :
-                    self.__sort_tasklist_rows(self.priv["tasklist"]["sort_column"], \
-                                            self.priv["tasklist"]["sort_order"])
+        #if not self.priv['noteview'] :
+        #    if self.priv["tasklist"].has_key("sort_column") and \
+        #       self.priv["tasklist"].has_key("sort_order")      :
+        #        if self.priv["tasklist"]["sort_column"] is not None and \
+        #           self.priv["tasklist"]["sort_order"]  is not None     :
+        #            self.__sort_tasklist_rows(self.priv["tasklist"]["sort_column"], \
+        #                                    self.priv["tasklist"]["sort_order"])
         #We reselect the selected tasks
-        if toselect :
-            self.__select_task(toselect)
-        elif t_path :
-            selection = self.task_tview.get_selection()
-            for i in t_path :
-                selection.select_path(i)
+        #if toselect :
+        #    self.__select_task(toselect)
+        #elif t_path :
+        #    selection = self.task_tview.get_selection()
+        #    for i in t_path :
+        #        selection.select_path(i)
                 
-        #scroll position
+        # Restore scroll position
         #We have to call that in another thread, else it will not work
-        def restore_vscroll(old_position) :
-            vadjust = self.task_tview.get_vadjustment()
-            #We ensure that we will not scroll out of the window
-            #It was bug #331285
-            vscroll = min(old_position,(vadjust.upper - vadjust.page_size))
-            vadjust.set_value(vscroll)
-        def restore_hscroll(old_position) :
-            hadjust = self.task_tview.get_hadjustment()
-            hscroll = min(old_position,(hadjust.upper - hadjust.page_size))
-            hadjust.set_value(hscroll)
-        gobject.idle_add(restore_vscroll,vscroll_value)
-        gobject.idle_add(restore_hscroll,hscroll_value)
+        #def restore_vscroll(old_position) :
+        #    vadjust = self.task_tview.get_vadjustment()
+        #    #We ensure that we will not scroll out of the window
+        #    #It was bug #331285
+        #    vscroll = min(old_position,(vadjust.upper - vadjust.page_size))
+        #    vadjust.set_value(vscroll)
+        #def restore_hscroll(old_position) :
+        #    hadjust = self.task_tview.get_hadjustment()
+        #    hscroll = min(old_position,(hadjust.upper - hadjust.page_size))
+        #    hadjust.set_value(hscroll)
+        #gobject.idle_add(restore_vscroll,vscroll_value)
+        #gobject.idle_add(restore_hscroll,hscroll_value)
 
     #Refresh the closed tasks pane
     def refresh_closed(self) :
@@ -1404,6 +1416,9 @@ class TaskBrowser:
         
 ### MAIN #######################################################################
 
+    def _visible_func(self, model, titer):
+        return True
+
     def main(self):
 
         # Here we will define the main TaskList interface
@@ -1416,7 +1431,10 @@ class TaskBrowser:
         # The Active tasks treeview
         col = browsertools.init_task_tview(self.task_tview, self.__sort_tasklist_rows)
         self.priv["tasklist"]["columns"] = col
-        self.task_tview.set_model(self.task_ts)
+        modelfilter = self.task_ts.filter_new()
+        modelfilter.set_visible_func(self._visible_func)
+        self.task_tview.set_model(modelfilter)
+        #self.task_tview.set_model(self.task_ts)
      
         # The done/dismissed taks treeview
         col = browsertools.init_closed_tasks_tview(self.ctask_tview, self.__sort_tasklist_rows)
