@@ -1,3 +1,4 @@
+    * Remember color (by Zach Sheperd)   
     * URLs can now include ';' characters. Fixes bug 360969
     * Added support for opening subtasks and links with the keyboard: Fixes bug 369272
     * Add polish translation by Tomasz Maciejewski
