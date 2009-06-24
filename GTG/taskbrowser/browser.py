@@ -493,6 +493,15 @@ class TaskBrowser:
               }
         wTree.signal_autoconnect(dic)
         window = wTree.get_widget("ColorChooser")
+	# Get previous color
+        tags,notag_only = self.get_selected_tags() #pylint: disable-msg=W0612
+        if len(tags) == 1:
+                color = tags[0].get_attribute("color")
+                if color != None:
+			colorspec = gtk.gdk.Color(color)
+			colorsel = window.colorsel
+			colorsel.set_previous_color(colorspec)
+			colorsel.set_current_color(colorspec)
         window.show()
 
     def on_color_response(self,widget,response) :
