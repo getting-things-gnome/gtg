@@ -28,6 +28,54 @@ from GTG.tools import cleanxml
 XMLFILE = "tags.xml"
 XMLROOT = "tagstore"
 
+### PRIME OBJECT ###############################################################
+# Base object of this class
+
+#A tag is defined by its name (in most cases, it will be "@something") and it can have multiple attributes
+class Tag :
+
+    def __init__(self,name): #,save_cllbk=None) :
+        self.attributes = {}
+        self.name = name
+        self.set_attribute("name",self.name)
+        #self.save = save_cllbk
+        
+    def get_name(self) :
+        return self.get_attribute("name")
+        
+    def set_attribute(self,att_name,att_value) :
+        #warning : only the constructor can set the "name"  
+        if att_name != "name" :
+            #Attributes should all be strings
+            val = unicode(str(att_value),"UTF-8")
+            self.attributes[att_name] = val
+            #self.save()
+        elif self.name == att_value :
+            self.attributes[att_name] = str(att_value)
+        
+    def get_attribute(self,att_name) :
+        if self.attributes.has_key(att_name) :
+            return self.attributes[att_name]
+        else :
+            return None
+            
+    #if butname argument is set, the "name" attributes is removed
+    #from the list
+    def get_all_attributes(self,butname=False) :
+        l = self.attributes.keys()
+        if butname :
+            #Normally this condition is not necessary
+            #Defensiveness...
+            if "name" in l :
+                l.remove("name")
+        return l
+        
+    def __str__(self):
+        return "Tag: %s" %self.get_name()
+
+### DATA STRUCTURE FOR OBJECT STORAGE AND MANIPULATIONS ########################
+# Typically for intenal data handling, do not for UI!
+
 #There's only one Tag store by user. It will store all the tag used and their attribute.
 class TagStore :
     def __init__(self) :
@@ -52,11 +100,11 @@ class TagStore :
         #Their name doesn't begin with "@"
         
         #Build the "all tags tag"
-        self.alltag_tag = Tag("alltags_tag",save_cllbk=self.save)
+        self.alltag_tag = Tag("alltags_tag")
         self.alltag_tag.set_attribute("special","all")
         self.alltag_tag.set_attribute("icon","gtg-tags-all")
         #Build the "without tag tag"
-        self.notag_tag = Tag("notag_tag",save_cllbk=self.save)
+        self.notag_tag = Tag("notag_tag")
         self.notag_tag.set_attribute("special","notag")
         self.notag_tag.set_attribute("icon","gtg-tags-none")
             
@@ -144,50 +192,4 @@ class TagStore :
                         t_xml.setAttribute(a,value)
                     xmlroot.appendChild(t_xml)          
                     cleanxml.savexml(self.filename,doc)
-                
-
-#########################################################################
-######################### Tag ###########################################
-
-#A tag is defined by its name (in most cases, it will be "@something") and it can have multiple attributes
-class Tag :
-
-    def __init__(self,name,save_cllbk=None) :
-        self.attributes = {}
-        self.name = name
-        self.set_attribute("name",self.name)
-        self.save = save_cllbk
-        
-    def get_name(self) :
-        return self.get_attribute("name")
-        
-    def set_attribute(self,att_name,att_value) :
-        #warning : only the constructor can set the "name"  
-        if att_name != "name" :
-            #Attributes should all be strings
-            val = unicode(str(att_value),"UTF-8")
-            self.attributes[att_name] = val
-            self.save()
-        elif self.name == att_value :
-            self.attributes[att_name] = str(att_value)
-        
-    def get_attribute(self,att_name) :
-        if self.attributes.has_key(att_name) :
-            return self.attributes[att_name]
-        else :
-            return None
-            
-    #if butname argument is set, the "name" attributes is removed
-    #from the list
-    def get_all_attributes(self,butname=False) :
-        l = self.attributes.keys()
-        if butname :
-            #Normally this condition is not necessary
-            #Defensiveness...
-            if "name" in l :
-                l.remove("name")
-        return l
-        
-    def __str__(self):
-        return "Tag: %s" %self.get_name()
 
