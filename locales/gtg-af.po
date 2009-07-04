@@ -1,88 +1,86 @@
-# French translation for gtg
-# Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
-# This file is distributed under the same license as the gtg package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
-#
+# Walter Leibbrandt <walter@translate.org.za>, 2009
+# Walter <walter+t@translate.org.za>, 2009.
 msgid ""
 msgstr ""
-"Project-Id-Version: gtg\n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2009-04-15 15:13+0200\n"
-"PO-Revision-Date: 2009-04-03 20:49+0000\n"
-"Last-Translator: Lionel Dricot <ploum@ploum.net>\n"
-"Language-Team: French <fr@li.org>\n"
+"PO-Revision-Date: 2009-06-19 10:27+0000\n"
+"Last-Translator: Walter Leibbrandt <Unknown>\n"
+"Language-Team: Translate.org.za\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Launchpad-Export-Date: 2009-07-04 13:00+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
+"Language: af\n"
 
 #: GTG/taskeditor/taskeditor.glade.h:1
 msgid "<span weight=\"bold\">Due for</span>"
-msgstr "<span weight=\"bold\">A terminer pour</span>"
+msgstr "<span weight=\"bold\">Voltooi teen</span>"
 
 #: GTG/taskeditor/taskeditor.glade.h:2
 msgid "<span weight=\"bold\">Starting on</span>"
-msgstr "<span weight=\"bold\">Commence le</span>"
+msgstr "<span weight=\"bold\">Begin op</span>"
 
 #: GTG/taskeditor/taskeditor.glade.h:3 GTG/taskbrowser/taskbrowser.glade.h:12
 msgid "Delete"
-msgstr "Supprimer"
+msgstr "Skrap"
 
 #: GTG/taskeditor/taskeditor.glade.h:4 GTG/taskbrowser/taskbrowser.glade.h:13
 #: GTG/taskbrowser/__init__.py:33
 msgid "Dismiss"
-msgstr "Abandonner"
+msgstr "Laat vaar"
 
 #: GTG/taskeditor/taskeditor.glade.h:5
 msgid "Insert subtask"
-msgstr "Ajouter une sous-tâche"
+msgstr "Voeg subtaak in"
 
 #: GTG/taskeditor/taskeditor.glade.h:6
 msgid "Insert tag"
-msgstr "Ajouter une étiquette"
+msgstr "Voeg etiket in"
 
 #: GTG/taskeditor/taskeditor.glade.h:7
 msgid "Keep as Note"
-msgstr "Conserver comme note"
+msgstr "Hou as nota"
 
 #: GTG/taskeditor/taskeditor.glade.h:8
 msgid "Mark Done"
-msgstr "Marquer comme fait"
+msgstr "Merk as gedoen"
 
 #: GTG/taskeditor/taskeditor.glade.h:9
 msgid "Task"
-msgstr "Tâche"
+msgstr "Taak"
 
 #: GTG/taskeditor/taskeditor.glade.h:10
 msgid "gtk-clear"
-msgstr "gtk-clear"
+msgstr ""
 
 #: GTG/taskeditor/taskeditor.glade.h:11
 msgid "gtk-close"
-msgstr "gtk-close"
+msgstr ""
 
 #: GTG/taskeditor/editor.py:214
 msgid "Due tomorrow !"
-msgstr "Pour demain!"
+msgstr "Moet môre voltooi word!"
 
 #: GTG/taskeditor/editor.py:216
 #, python-format
 msgid "%s days left"
-msgstr "Il reste %s jours"
+msgstr "%s dae oor"
 
 #: GTG/taskeditor/editor.py:218
 msgid "Due today !"
-msgstr "Pour aujourd'hui!"
+msgstr "Moet vandag voltooi word!"
 
 #: GTG/taskeditor/editor.py:220
 msgid "Due for yesterday"
-msgstr "Dépassé depuis hier"
+msgstr "Moes gister voltooi wees"
 
 #: GTG/taskeditor/editor.py:222
 #, python-format
 msgid "Was %s days ago"
-msgstr "Dépassé depuis %s jours"
+msgstr "Was %s dae gelede"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:1
 msgid ""
@@ -90,8 +88,7 @@ msgid ""
 "Getting Things Gnome! is an organizer for the GNOME desktop environment."
 msgstr ""
 "\n"
-"Getting Things GNOME! est un outil d'organisation personnel pour "
-"l'environnement de bureau GNOME."
+"Getting Things Gnome! is 'n organiseerder vir die GNOME werkskermomgewing."
 
 #: GTG/taskbrowser/taskbrowser.glade.h:3
 msgid ""
@@ -100,555 +97,46 @@ msgid ""
 "\n"
 "Deleting a task cannot be undone."
 msgstr ""
-"<span weight=\"bold\" size=\"large\">Êtes-vous certain de vouloir supprimer "
-"cette tâche ?</span>\n"
+"<span weight=\"bold\" size=\"large\">Is u seker dat u die taak wil "
+"skrap?</span>\n"
 "\n"
-"La suppression d'une tâche ne peut pas être annulée."
+"Die skrap van 'n taak kan nie ongedaan gemaak word nie."
 
 #: GTG/taskbrowser/taskbrowser.glade.h:6
 msgid "About GTG!"
-msgstr "À propos de GTG"
+msgstr "Omtrent GTG"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:7
 msgid "Choose a color"
-msgstr "Choisissez une couleur"
+msgstr "Kies 'n kleur"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:8
 msgid "Confirm task deletion"
-msgstr "Confirmer la suppression de la tâche"
+msgstr "Bevestig skrapping van taak"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:9
 msgid "Copyrights© 2008, 2009 Lionel Dricot, Bertrand Rousseau"
-msgstr "Copyrights© 2008, 2009 Lionel Dricot, Bertrand Rousseau"
+msgstr "Kopiereg© 2008, 2009 Lionel Dricot, Bertrand Rousseau"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:10 GTG/taskbrowser/browser.py:110
 msgid "Create a new task"
-msgstr "Créer une nouvelle tâche"
+msgstr "Skep 'n nuwe taak"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:11
 msgid "D_ismiss"
-msgstr "_Abandonner"
+msgstr "L_aat vaar"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:14
 msgid "Edit"
-msgstr "Modifier"
+msgstr "Redigeer"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:15
 msgid "GTG website"
-msgstr "Site web de GTG"
+msgstr "GTG webtuiste"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:16
 msgid "Getting Things Gnome!"
 msgstr "Getting Things Gnome!"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:22
-msgid "Mark as Done"
-msgstr "Marquer comme fait"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:23
-msgid "Mark as Not Done"
-msgstr "Marquer comme non fait"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:24
-msgid "Mark as _Done"
-msgstr "Marquer comme _fait"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:25
-msgid "New Note"
-msgstr "Nouvelle note"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:26
-msgid "New Subtask"
-msgstr "Nouvelle tâche enfant"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:27
-msgid "New Task"
-msgstr "Nouvelle tâche"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:28
-msgid "New _Subtask"
-msgstr "Nouvelle tâche _enfant"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:29
-msgid "New _Task"
-msgstr "Nouvelle _tâche"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:30
-msgid "Permanently _remove task"
-msgstr "Supprimer la tâche définitivement"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:31
-msgid "Redo"
-msgstr "Refaire"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:32
-msgid "Tag is displayed in the workview"
-msgstr "Afficher l'étiquette dans la vue de travail"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:33 GTG/taskbrowser/browser.py:1486
-#: GTG/taskbrowser/browser.py:1557
-msgid "Tags"
-msgstr "Étiquettes"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:34
-msgid "Und_ismiss"
-msgstr "Annuler l'a_bandon"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:35
-msgid "Undo"
-msgstr "Annuler"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:36
-msgid "View Notes"
-msgstr "Voir les notes"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:37
-msgid "Work View"
-msgstr "Vue de travail"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:38
-msgid "_Background Colors"
-msgstr "Couleur de _fond"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:39
-msgid "_Closed Tasks Pane"
-msgstr "Panneau des tâches _cloturées"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:40
-msgid "_Edit"
-msgstr "É_dition"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:41
-msgid "_File"
-msgstr "_Fichier"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:42
-msgid "_Help"
-msgstr "Aid_e"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:43
-msgid "_Keep selected task"
-msgstr "_Conserver la tâche sélectionnée"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:44
-msgid "_Quick Add Entry"
-msgstr "Entrée d'_ajout rapide"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:45
-msgid "_Tags Sidebar"
-msgstr "Panneau latéral d'étiquettes"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:46
-msgid "_Tasks"
-msgstr "_Tâches"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:47
-msgid "_View"
-msgstr "_Vue"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:48
-msgid "_Work View"
-msgstr "Vue de _travail"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:49
-msgid "gtk-about"
-msgstr "gtk-about"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:50
-msgid "gtk-add"
-msgstr "gtk-add"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:51
-msgid "gtk-cancel"
-msgstr "gtk-cancel"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:52
-msgid "gtk-delete"
-msgstr "gtk-delete"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:53
-msgid "gtk-edit"
-msgstr "gtk-edit"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:54
-msgid "gtk-help"
-msgstr "gtk-help"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:55
-msgid "gtk-ok"
-msgstr "gtk-ok"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:56
-msgid "gtk-quit"
-msgstr "gtk-quit"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:57
-msgid "gtk-redo"
-msgstr "gtk-redo"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:58
-msgid "gtk-select-color"
-msgstr "gtk-select-color"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:59
-msgid "gtk-undo"
-msgstr "gtk-undo"
-
-#: GTG/taskbrowser/__init__.py:29
-msgid "Mark as done"
-msgstr "Marquer comme fait"
-
-#: GTG/taskbrowser/__init__.py:30
-msgid "Mark the selected task as done"
-msgstr "Marquer la tâche sélectionnée comme faite"
-
-#: GTG/taskbrowser/__init__.py:31
-msgid "Mark as not done"
-msgstr "Marquer comme non fait"
-
-#: GTG/taskbrowser/__init__.py:32 GTG/taskbrowser/__init__.py:36
-msgid "Mark the selected task as to be done"
-msgstr "Marquer la tâche sélectionnée comme à faire"
-
-#: GTG/taskbrowser/__init__.py:34
-msgid "Mark the task as not to be done anymore"
-msgstr "Marquer la tâche sélectionnée comme à ne pas faire"
-
-#: GTG/taskbrowser/__init__.py:35
-msgid "Undismiss"
-msgstr "Annuler l'abandon"
-
-#: GTG/taskbrowser/__init__.py:37
-msgid "Permanently remove the selected task"
-msgstr "Supprimer la tâche sélectionnée de façon permanente"
-
-#: GTG/taskbrowser/browser.py:108
-msgid "Edit the selected task"
-msgstr "Modifier la tache selectionnée"
-
-#: GTG/taskbrowser/browser.py:111
-msgid "Create a new subtask"
-msgstr "Créer une nouvelle tâche enfant"
-
-#: GTG/taskbrowser/browser.py:556
-msgid "monday"
-msgstr "lundi"
-
-#: GTG/taskbrowser/browser.py:556
-msgid "tuesday"
-msgstr "mardi"
-
-#: GTG/taskbrowser/browser.py:556
-msgid "wednesday"
-msgstr "mercredi"
-
-#: GTG/taskbrowser/browser.py:557
-msgid "thursday"
-msgstr "jeudi"
-
-#: GTG/taskbrowser/browser.py:557
-msgid "friday"
-msgstr "vendredi"
-
-#: GTG/taskbrowser/browser.py:557
-msgid "saturday"
-msgstr "samedi"
-
-#: GTG/taskbrowser/browser.py:558
-msgid "sunday"
-msgstr "dimanche"
-
-#: GTG/taskbrowser/browser.py:567
-msgid "today"
-msgstr "aujourd'hui"
-
-#: GTG/taskbrowser/browser.py:574
-msgid "tomorrow"
-msgstr "demain"
-
-#: GTG/taskbrowser/browser.py:635
-msgid "tags"
-msgstr "tags"
-
-#: GTG/taskbrowser/browser.py:638
-msgid "defer"
-msgstr "reporter"
-
-#: GTG/taskbrowser/browser.py:642
-msgid "due"
-msgstr "échéance"
-
-#: GTG/taskbrowser/browser.py:753
-msgid "<span weight=\"bold\">All tags</span>"
-msgstr "<span weight=\"bold\">Toutes les étiquettes</span>"
-
-#: GTG/taskbrowser/browser.py:754
-msgid "<span weight=\"bold\">Tasks without tags</span>"
-msgstr "<span weight=\"bold\">Tâches sans étiquette</span>"
-
-#: GTG/taskbrowser/browser.py:849
-msgid "(no active tasks)"
-msgstr "(pas de tâche active)"
-
-#: GTG/taskbrowser/browser.py:851
-msgid "(1 active task)"
-msgstr "(1 tâche active)"
-
-#: GTG/taskbrowser/browser.py:1501 GTG/taskbrowser/browser.py:1584
-msgid "Title"
-msgstr "Titre"
-
-#: GTG/taskbrowser/browser.py:1520
-msgid "Due date"
-msgstr "Date de fin"
-
-#: GTG/taskbrowser/browser.py:1534
-msgid "Days left"
-msgstr "Jours restants"
-
-#: GTG/taskbrowser/browser.py:1572
-msgid "Closing date"
-msgstr "Date de cloture"
-
-#: GTG/taskbrowser/browser.py:1600
-msgid "Notes"
-msgstr "Notes"
-
-#: GTG/core/firstrun_tasks.py:6
-msgid "Getting started with GTG"
-msgstr "Débuter avec GTG"
-
-#: GTG/core/firstrun_tasks.py:7
-msgid "Welcome in Getting Things Gnome!, your new task manager."
-msgstr "Bienvenue dans Getting Things Gnome!, votre gersionnaire de tâches."
-
-#: GTG/core/firstrun_tasks.py:9
-msgid ""
-"In GTG, everything is a task. From building a bridge over the Pacific Ocean "
-"to changing a light bulb or organizing a party. When you edit a task, it is "
-"automatically saved."
-msgstr ""
-"Dans GTG, tout est une tâche. Que ce soit \"contruire un pont au-dessus de "
-"l'océan pacifique\", \"changer une ampoule\" ou \"organiser une fête\". "
-"Quand vous modifiez une tâche, elle est automatiquement sauvée."
-
-#: GTG/core/firstrun_tasks.py:11
-msgid ""
-"Once a task is done, you can push the &quot;Mark as done&quot; button. If "
-"the task is not relevant any-more, simply press &quot;Dismiss&quot;."
-msgstr ""
-"Une fois la tâche faite, vous pouvez appuyer sur le bouton &quot;Marquer "
-"comme fait&quot;. Si la tâche n'est plus d'actualité, appuyez simplement sur "
-"&quot;Abandonner&quot;."
-
-#: GTG/core/firstrun_tasks.py:13
-msgid ""
-"A task might be composed of multiple subtasks that appear as links in the "
-"description. Simply click on the following link :"
-msgstr ""
-"Une tâche peut être composée de multiples sous-tâches qui apparaissent comme "
-"liens dans la description. Cliquez simplement sur le lien suivant."
-
-#: GTG/core/firstrun_tasks.py:17
-msgid "Don't forget to mark this subtask as done !"
-msgstr "N'oubliez pas de marquer cette sous-tâche comme faite !"
-
-#: GTG/core/firstrun_tasks.py:19
-msgid "Other stuff you should read :"
-msgstr "Autres sujets d'intérêt :"
-
-#: GTG/core/firstrun_tasks.py:25
-msgid ""
-"We hope that you will appreciate GTG. Please send us bug reports and ideas "
-"for improvement using : "
-msgstr ""
-"Nous espérons que vous apprécierez GTG. Veuillez reporter bogues et idées "
-"d'améliorations en utilisant : "
-
-#: GTG/core/firstrun_tasks.py:28
-msgid "Thank you for trying out GTG :-)"
-msgstr "Merci d'avoir essayé GTG :-)"
-
-#: GTG/core/firstrun_tasks.py:33
-msgid "Learn to use subtasks"
-msgstr "Apprendre à utiliser les sous-tâches"
-
-#: GTG/core/firstrun_tasks.py:34
-msgid ""
-"In the task description (this window), if you begin a line with &quot;-"
-"&quot;, it will be considered as a &quot;subtask&quot;, something that needs "
-"to be done in order to accomplish your task. Just try to write &quot;- test "
-"subtask&quot; on the next line and press enter."
-msgstr ""
-"Dans la description de la tâche (cette fenêtre), si vous commencez une ligne "
-"avec &quot;-&quot;, elle sera considérée comme &quot;sous-tâche&quot;, "
-"quelque chose à faire pour accomplir votre tâche. Essayez d'écrire &quot;- "
-"test sous-tâche&quot; dans la ligne suivante et appuyer sur Entrée."
-
-#: GTG/core/firstrun_tasks.py:36
-msgid "You can also use the &quot;insert subtask&quot; button."
-msgstr ""
-"Vous pouvez utiliser aussi le bouton  &quot;Ajouter une sous-tâche&quot;."
-
-#: GTG/core/firstrun_tasks.py:38
-msgid ""
-"Task and subtasks can be re-organized by drag-n-drop in the tasks list."
-msgstr ""
-"Les tâches et les sous-tâches se réorganisent en faisant du glisser-déposer "
-"dans la liste des tâches."
-
-#: GTG/core/firstrun_tasks.py:40
-msgid ""
-"Some concept come with subtasks : for example, a subtask due date can never "
-"be after its parent due date."
-msgstr ""
-"Quelques concepts découlent logiquement des sous-tâches : par exemple, "
-"l'échéance d'une sous-tâche ne peut jamais être après l'échéance de sa tâche "
-"parente."
-
-#: GTG/core/firstrun_tasks.py:42
-msgid "Also, marking a parent as done will mark all the subtasks as done."
-msgstr ""
-"Également, marquer une tâche parent comme faîte entraînera le marquage comme "
-"faites des sous-tâches."
-
-#: GTG/core/firstrun_tasks.py:47
-msgid "Learn to use tags"
-msgstr "Apprendre à utiliser les étiquettes"
-
-#: GTG/core/firstrun_tasks.py:48
-msgid "A tag is a simple word that begin with &quot;@&quot;."
-msgstr "Une étiquette est un mot commençant par le caractère &quot;@&quot;."
-
-#: GTG/core/firstrun_tasks.py:50
-msgid "Try to type a word beginning with @ here :"
-msgstr "Essayez de taper un mot commençant par @ ici :"
-
-#: GTG/core/firstrun_tasks.py:52
-msgid "It becomes yellow, it's a tag."
-msgstr "Il devient jaune, c'est une étiquette."
-
-#: GTG/core/firstrun_tasks.py:54
-msgid ""
-"Tags are useful to sort your tasks. In the view menu, you can enable a "
-"sidebar which displays all the tags you are using so you can easily see "
-"tasks for a given tag. There's no limit to the number of tags a task can "
-"have."
-msgstr ""
-"Les étiquettes sont utiles pour classer vos tâches. Dans le menu 'Vue', vous "
-"pouvez activer l'affichage d'un panneau latéral qui affiche toutes les "
-"étiquettes que vous utilisez. De cette façon vous pouvez facilement voir les "
-"tâches qui se rapportent à une certaine étiquette. Il n'y a pas de limites "
-"au nombre d'étiquettes qu'une tâche peut avoir."
-
-#: GTG/core/firstrun_tasks.py:56
-msgid ""
-"If you right click on a tag in the sidebar you can also set its color. It "
-"will permit you to have a more colorful list of tasks, if you want it that "
-"way."
-msgstr ""
-"Si vous cliquez sur une étiquette dans le panneau latéral, vous pouvez aussi "
-"lui donner une certaine couleur. Cela vous permet d'obtenir une liste plus "
-"colorée de tâche, si le préférez."
-
-#: GTG/core/firstrun_tasks.py:58
-msgid ""
-"A new tag is only added to the current task. There's no recursivity and the "
-"tag is not applied to subtasks. But when you create a new subtask, this "
-"subtask will inherit the tags of its parent as a good primary default (it "
-"will also be the case if you add a tag to a parent just after creating a "
-"subtask). Of course, you can modify at any time the tags of this particular "
-"subtask. It will never be changed by the parent."
-msgstr ""
-"Une nouvelle étiquette n'est toujours ajoutée qu'à la tâche courante. Il n'y "
-"a pas de récursivité, l'étiquette n'est pas appliquée aux sous-tâches. Mais "
-"lorsque vous créez une nouvelle sous-tâches, celle-ci héritera des "
-"étiquettes de son parent par défaut (ce sera aussi le cas si vous ajoutez "
-"une étiquette à un parent après avoir créé une sous-tâche). Evidemment, vous "
-"pouvez modifier les étiquettes d'une sous-tâche en particulier à tout "
-"moment. Cela ne changera rien à la tâche parente."
-
-#: GTG/core/firstrun_tasks.py:63
-msgid "Using the Workview"
-msgstr "En utilisant la vue de travail"
-
-#: GTG/core/firstrun_tasks.py:64
-msgid ""
-"If you press the &quot;Workview&quot; button, only actionable tasks will be "
-"displayed."
-msgstr ""
-"Si vous pressez le boutont &quot;Vue de travail&quot;, seules les actions "
-"réalisables seront affichées."
-
-#: GTG/core/firstrun_tasks.py:66
-msgid ""
-"What is an actionable task? It's a task you can do directly, right now."
-msgstr ""
-"Qu'est-ce qu'une tâche réalisable? Une tâche que vous pouvez faire "
-"directement, maintenant,"
-
-#: GTG/core/firstrun_tasks.py:68
-msgid ""
-"It's a task that is already &quot;start-able&quot;, i.e. the start date is "
-"already over."
-msgstr ""
-"C'est une tâche qui peut être commencée: sa date de début est déja dépassée."
-
-#: GTG/core/firstrun_tasks.py:70
-msgid ""
-"It's a task that doesn't have open subtasks, i.e. you can do the task itself "
-"directly."
-msgstr ""
-"C'est une tâche qui n'a pas de sous-tâches actives, vous pouvez la faire "
-"directement."
-
-#: GTG/core/firstrun_tasks.py:72
-msgid "Thus, the workview will only show you tasks you should do right now."
-msgstr ""
-"Donc la vue de travail ne vous montreras que les tâches que vous pouvez "
-"faire maintenant."
-
-#: GTG/core/firstrun_tasks.py:74
-msgid ""
-"If you use tags, you can right click on a tag in the sidebar and choose to "
-"not display tasks with this particular tag in the workview. It's very useful "
-"if you have a tag like &quot;someday&quot; that you use for tasks you would "
-"like to do but are not particularly urgent."
-msgstr ""
-"Si vous utilisez les étiquettes, vous pouvez faire un clic droit sur un "
-"étiquette dans le panneau latéral et choisir de ne pas afficher les tâches "
-"avec cette étiquette dans la vue de travail. C'est très utile si vous avez "
-"une étiquette comme &quot;Un jour peut-être&quot; que vous utilisez pour les "
-"tâches qui ne sont pas particulièrement urgentes."
-
-#: GTG/core/firstrun_tasks.py:80
-msgid "Reporting bugs"
-msgstr "Rapporter les bugs"
-
-#: GTG/core/firstrun_tasks.py:81
-msgid ""
-"GTG is still very alpha software. We like it and use it everyday but you "
-"will encounter some bugs."
-msgstr ""
-"GTG est encore un logiciel immature. Nous l'apprécions et l'utilisons tous "
-"les jours mais vous risquez certainement de rencontrer des bugs."
-
-#: GTG/core/firstrun_tasks.py:83
-msgid ""
-"Please, report them ! We need you to make this software better. Any "
-"contribution, any idea is welcome."
-msgstr ""
-"S'il vous plaît, rapportez-les nous ! Nous avons besoin de vos retours pour "
-"rendre ce logiciel meilleur. Toute contribution, toute idée d'amélioration "
-"est la bienvenue."
-
-#: GTG/core/firstrun_tasks.py:85
-msgid ""
-"If you have some trouble with GTG, we might be able to help you or to solve "
-"your problem really quickly."
-msgstr ""
-"Si vous avez un problème avec GTG, nous pouvons peut-être vous aider ou "
-"résoudre votre problème rapidement."
 
 #: GTG/taskbrowser/taskbrowser.glade.h:17
 msgid ""
@@ -667,6 +155,507 @@ msgid ""
 "51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA."
 msgstr ""
 
+#: GTG/taskbrowser/taskbrowser.glade.h:22
+msgid "Mark as Done"
+msgstr "Merk as gedoen"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:23
+msgid "Mark as Not Done"
+msgstr "Merk as nie gedoen"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:24
+msgid "Mark as _Done"
+msgstr "Merk as _gedoen"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:25
+msgid "New Note"
+msgstr "Nuwe nota"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:26
+msgid "New Subtask"
+msgstr "Nuwe subtaak"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:27
+msgid "New Task"
+msgstr "Nuwe taak"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:28
+msgid "New _Subtask"
+msgstr "Nuwe _subtaak"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:29
+msgid "New _Task"
+msgstr "Nuwe _taak"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:30
+msgid "Permanently _remove task"
+msgstr "Wis taak permanent uit"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:31
+msgid "Redo"
+msgstr "Herdoen"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:32
+msgid "Tag is displayed in the workview"
+msgstr "Etiket word in die werksaansig vertoon"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:33 GTG/taskbrowser/browser.py:1486
+#: GTG/taskbrowser/browser.py:1557
+msgid "Tags"
+msgstr "Etikette"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:34
+msgid "Und_ismiss"
+msgstr "Br_ing terug"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:35
+msgid "Undo"
+msgstr "Ontdoen"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:36
+msgid "View Notes"
+msgstr "Bekyk notas"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:37
+msgid "Work View"
+msgstr "Werksaansig"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:38
+msgid "_Background Colors"
+msgstr "_Agtergrond kleure"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:39
+msgid "_Closed Tasks Pane"
+msgstr "_Geslote take venster"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:40
+msgid "_Edit"
+msgstr "_Redigeer"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:41
+msgid "_File"
+msgstr "_Lêer"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:42
+msgid "_Help"
+msgstr "_Hulp"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:43
+msgid "_Keep selected task"
+msgstr "_Hou gekose taak"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:44
+msgid "_Quick Add Entry"
+msgstr "Skep kitsinskrywing"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:45
+msgid "_Tags Sidebar"
+msgstr "_Etiket kantbalk"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:46
+msgid "_Tasks"
+msgstr "_Take"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:47
+msgid "_View"
+msgstr "_Bekyk"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:48
+msgid "_Work View"
+msgstr "_Werksaansig"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:49
+msgid "gtk-about"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:50
+msgid "gtk-add"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:51
+msgid "gtk-cancel"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:52
+msgid "gtk-delete"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:53
+msgid "gtk-edit"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:54
+msgid "gtk-help"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:55
+msgid "gtk-ok"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:56
+msgid "gtk-quit"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:57
+msgid "gtk-redo"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:58
+msgid "gtk-select-color"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:59
+msgid "gtk-undo"
+msgstr ""
+
+#: GTG/taskbrowser/__init__.py:29
+msgid "Mark as done"
+msgstr "Merk as gedoen"
+
+#: GTG/taskbrowser/__init__.py:30
+msgid "Mark the selected task as done"
+msgstr "Merk die geselekteerde taak as gedoen"
+
+#: GTG/taskbrowser/__init__.py:31
+msgid "Mark as not done"
+msgstr "Merk as nie gedoen"
+
+#: GTG/taskbrowser/__init__.py:32 GTG/taskbrowser/__init__.py:36
+msgid "Mark the selected task as to be done"
+msgstr "Merk die geselekteerde taak as \"om te gedoen\""
+
+#: GTG/taskbrowser/__init__.py:34
+msgid "Mark the task as not to be done anymore"
+msgstr "Merk die taak as \"nie te doen\""
+
+#: GTG/taskbrowser/__init__.py:35
+msgid "Undismiss"
+msgstr "Bring terug"
+
+#: GTG/taskbrowser/__init__.py:37
+msgid "Permanently remove the selected task"
+msgstr "Verwyder die geselekteerde taak"
+
+#: GTG/taskbrowser/browser.py:108
+msgid "Edit the selected task"
+msgstr "Redigeer geselekteerde taak"
+
+#: GTG/taskbrowser/browser.py:111
+msgid "Create a new subtask"
+msgstr "Skep 'n nuwe subtaak"
+
+#: GTG/taskbrowser/browser.py:556
+msgid "monday"
+msgstr "maandag"
+
+#: GTG/taskbrowser/browser.py:556
+msgid "tuesday"
+msgstr "dinsdag"
+
+#: GTG/taskbrowser/browser.py:556
+msgid "wednesday"
+msgstr "woensdag"
+
+#: GTG/taskbrowser/browser.py:557
+msgid "thursday"
+msgstr "donderdag"
+
+#: GTG/taskbrowser/browser.py:557
+msgid "friday"
+msgstr "vrydag"
+
+#: GTG/taskbrowser/browser.py:557
+msgid "saturday"
+msgstr "saterdag"
+
+#: GTG/taskbrowser/browser.py:558
+msgid "sunday"
+msgstr "sondag"
+
+#: GTG/taskbrowser/browser.py:567
+msgid "today"
+msgstr "vandag"
+
+#: GTG/taskbrowser/browser.py:574
+msgid "tomorrow"
+msgstr "môre"
+
+#: GTG/taskbrowser/browser.py:635
+msgid "tags"
+msgstr "etikette"
+
+#: GTG/taskbrowser/browser.py:638
+msgid "defer"
+msgstr "stel uit"
+
+#: GTG/taskbrowser/browser.py:642
+msgid "due"
+msgstr "verval"
+
+#: GTG/taskbrowser/browser.py:753
+msgid "<span weight=\"bold\">All tags</span>"
+msgstr "<span weight=\"bold\">Alle etikette</span>"
+
+#: GTG/taskbrowser/browser.py:754
+msgid "<span weight=\"bold\">Tasks without tags</span>"
+msgstr "<span weight=\"bold\">Take sonder etikette</span>"
+
+#: GTG/taskbrowser/browser.py:849
+msgid "(no active tasks)"
+msgstr "(geen aktiewe take)"
+
+#: GTG/taskbrowser/browser.py:851
+msgid "(1 active task)"
+msgstr "(1 aktiewe taak)"
+
+#: GTG/taskbrowser/browser.py:1501 GTG/taskbrowser/browser.py:1584
+msgid "Title"
+msgstr "Titel"
+
+#: GTG/taskbrowser/browser.py:1520
+msgid "Due date"
+msgstr "Voltooiingsdatum"
+
+#: GTG/taskbrowser/browser.py:1534
+msgid "Days left"
+msgstr "Dae oor"
+
+#: GTG/taskbrowser/browser.py:1572
+msgid "Closing date"
+msgstr "Sluitingsdatum"
+
+#: GTG/taskbrowser/browser.py:1600
+msgid "Notes"
+msgstr "Notas"
+
 #: GTG/core/task.py:36
 msgid "My new task"
+msgstr "My nuwe taak"
+
+#: GTG/core/firstrun_tasks.py:6
+msgid "Getting started with GTG"
+msgstr "Kom aan die gang met GTG"
+
+#: GTG/core/firstrun_tasks.py:7
+msgid "Welcome in Getting Things Gnome!, your new task manager."
+msgstr "Welkom tot Getting Things Gnome!, jou nuwe taakbestuurder."
+
+#: GTG/core/firstrun_tasks.py:9
+msgid ""
+"In GTG, everything is a task. From building a bridge over the Pacific Ocean "
+"to changing a light bulb or organizing a party. When you edit a task, it is "
+"automatically saved."
 msgstr ""
+"Alles in GTG is 'n taak. Van die bou van 'n brug oor die Stille Oseaan tot "
+"die omruil van 'n gloeilamp tot die organiseering van 'n partytjie. Wanneer "
+"'n taak geredigeer word, word dit outomaties gestoor."
+
+#: GTG/core/firstrun_tasks.py:11
+msgid ""
+"Once a task is done, you can push the &quot;Mark as done&quot; button. If "
+"the task is not relevant any-more, simply press &quot;Dismiss&quot;."
+msgstr ""
+"Sodra 'n taak gedoen is, kan die &quot;Merk as gedoen&quot; knoppie gedruk "
+"word. As die taak nie meer relevant is nie, druk eenvoudig "
+"&quot;Dismiss&quot;."
+
+#: GTG/core/firstrun_tasks.py:13
+msgid ""
+"A task might be composed of multiple subtasks that appear as links in the "
+"description. Simply click on the following link :"
+msgstr ""
+"'n Taak kan bestaan uit veelvoudige subtake wat voorgestel word as skakels "
+"in die beskrywing. Kliek op die volgende skakel:"
+
+#: GTG/core/firstrun_tasks.py:17
+msgid "Don't forget to mark this subtask as done !"
+msgstr "Moenie vergeet om hierdie subtaak as gedoen te merk nie."
+
+#: GTG/core/firstrun_tasks.py:19
+msgid "Other stuff you should read :"
+msgstr "Ander goed om te lees:"
+
+#: GTG/core/firstrun_tasks.py:25
+msgid ""
+"We hope that you will appreciate GTG. Please send us bug reports and ideas "
+"for improvement using : "
+msgstr ""
+"Ons hoop dat u GTG sal waardeer. Stuur asseblief foutverslae en idees deur "
+"gebruik te maak van: "
+
+#: GTG/core/firstrun_tasks.py:28
+msgid "Thank you for trying out GTG :-)"
+msgstr "Dankie vir u gebruik van GTG :-)"
+
+#: GTG/core/firstrun_tasks.py:33
+msgid "Learn to use subtasks"
+msgstr "Leer om subtake te gebruik"
+
+#: GTG/core/firstrun_tasks.py:34
+msgid ""
+"In the task description (this window), if you begin a line with &quot;-"
+"&quot;, it will be considered as a &quot;subtask&quot;, something that needs "
+"to be done in order to accomplish your task. Just try to write &quot;- test "
+"subtask&quot; on the next line and press enter."
+msgstr ""
+"As 'n lyn in die taakbeskrywing (hierdie venster) met 'n &quot;-&quot; "
+"begin, sal dit as 'n subtaak gesien word: iets wat gedoen moet word om die "
+"hooftaak af te handel. Tik &quot;- toets subtaak&quot; op die volgende lyn "
+"en druk enter."
+
+#: GTG/core/firstrun_tasks.py:36
+msgid "You can also use the &quot;insert subtask&quot; button."
+msgstr "Die &quot;Voeg subtaak&quot; knoppie kan ook gebruik word."
+
+#: GTG/core/firstrun_tasks.py:38
+msgid ""
+"Task and subtasks can be re-organized by drag-n-drop in the tasks list."
+msgstr ""
+"Take en subtake kan hergeorganiseer word deur dit te sleep in die taaklys."
+
+#: GTG/core/firstrun_tasks.py:40
+msgid ""
+"Some concept come with subtasks : for example, a subtask due date can never "
+"be after its parent due date."
+msgstr ""
+"Daar is 'n paar konsepte rakende subtake om te verstaan: 'n subtaak se "
+"voltooiingsdatum kan, byvoorbeeld, nie na die hooftaak s'n wees nie."
+
+#: GTG/core/firstrun_tasks.py:42
+msgid "Also, marking a parent as done will mark all the subtasks as done."
+msgstr ""
+"Verder, met die merk van 'n taak as gedoen, sal alle subtake ook as gedoen "
+"gemerk word."
+
+#: GTG/core/firstrun_tasks.py:47
+msgid "Learn to use tags"
+msgstr "Leer om etikette te gebruik"
+
+#: GTG/core/firstrun_tasks.py:48
+msgid "A tag is a simple word that begin with &quot;@&quot;."
+msgstr "'n Etiket is 'n eenvoudige woord wat met 'n &quot;@&quot; begin."
+
+#: GTG/core/firstrun_tasks.py:50
+msgid "Try to type a word beginning with @ here :"
+msgstr "Tik hier 'n woord wat met @ begin:"
+
+#: GTG/core/firstrun_tasks.py:52
+msgid "It becomes yellow, it's a tag."
+msgstr "Dit word geel, dit is 'n etiket."
+
+#: GTG/core/firstrun_tasks.py:54
+msgid ""
+"Tags are useful to sort your tasks. In the view menu, you can enable a "
+"sidebar which displays all the tags you are using so you can easily see "
+"tasks for a given tag. There's no limit to the number of tags a task can "
+"have."
+msgstr ""
+"Etikette is nuttig om take te sorteer. Onder die \"Redigeer\" kieslys kan 'n "
+"kantbalk geaktiveer word waarin alle etikette in huidige gebruik gewys word, "
+"sodat enige take vir 'n gegewe etiket gesien kan word. Daar is geen "
+"beperking op die aantal etikette wat 'n taak kan hê nie."
+
+#: GTG/core/firstrun_tasks.py:56
+msgid ""
+"If you right click on a tag in the sidebar you can also set its color. It "
+"will permit you to have a more colorful list of tasks, if you want it that "
+"way."
+msgstr ""
+"Die kleur van 'n taak kan ook verander word deur daarop te regskliek. Dit "
+"maak dit moontlik om die taaklys meer kleurvol te maak, as dit gewens is."
+
+#: GTG/core/firstrun_tasks.py:58
+msgid ""
+"A new tag is only added to the current task. There's no recursivity and the "
+"tag is not applied to subtasks. But when you create a new subtask, this "
+"subtask will inherit the tags of its parent as a good primary default (it "
+"will also be the case if you add a tag to a parent just after creating a "
+"subtask). Of course, you can modify at any time the tags of this particular "
+"subtask. It will never be changed by the parent."
+msgstr ""
+"'n Nuwe etiket word slegs by 'n nuwe taak gevoeg. Daar is geen rekursiwiteit "
+"nie en 'n etiket word nie op subtake toegepas nie. Wanneer 'n subtaak geskep "
+"word, daarenteen, sal die subtaak al die etikette van sy ouer oorerf as 'n "
+"goeie verstek (ook vir die geval waar 'n etiket toegepas word op 'n ouertaak "
+"nadat 'n subtaak geskep is). Natuurlik kan die etikette van hierdie subtaak "
+"ten enige tyd verander word. Dit sal nooit deur die ouer verander word nie."
+
+#: GTG/core/firstrun_tasks.py:63
+msgid "Using the Workview"
+msgstr "Gebruik van die werksaansig"
+
+#: GTG/core/firstrun_tasks.py:64
+msgid ""
+"If you press the &quot;Workview&quot; button, only actionable tasks will be "
+"displayed."
+msgstr ""
+"Wanneer die &quot;Werksaansig&quot; knoppie gedruk word, sal slegs take wat "
+"'n aksie benodig gewys word."
+
+#: GTG/core/firstrun_tasks.py:66
+msgid ""
+"What is an actionable task? It's a task you can do directly, right now."
+msgstr ""
+"Wat is 'n taak wat aksie benodig? Dit is 'n taak wat dadelik en direk gedoen "
+"kan word."
+
+#: GTG/core/firstrun_tasks.py:68
+msgid ""
+"It's a task that is already &quot;start-able&quot;, i.e. the start date is "
+"already over."
+msgstr ""
+"Dit is 'n taak wat reeds &quot;beginbaar&quot; is, d.w.s. die begindatum is "
+"verby."
+
+#: GTG/core/firstrun_tasks.py:70
+msgid ""
+"It's a task that doesn't have open subtasks, i.e. you can do the task itself "
+"directly."
+msgstr ""
+"Dis 'n taak wat nie oop subtake het nie, d.w.s. die taak kan self direk "
+"gedoen word."
+
+#: GTG/core/firstrun_tasks.py:72
+msgid "Thus, the workview will only show you tasks you should do right now."
+msgstr ""
+"Dus sal die werksaansig slegs take vertoon wat huidiglik gedoen moet word."
+
+#: GTG/core/firstrun_tasks.py:74
+msgid ""
+"If you use tags, you can right click on a tag in the sidebar and choose to "
+"not display tasks with this particular tag in the workview. It's very useful "
+"if you have a tag like &quot;someday&quot; that you use for tasks you would "
+"like to do but are not particularly urgent."
+msgstr ""
+"As etikette gebruik word, kan u regskliek op 'n etiket in die kantbalk en "
+"kies om nie take in die werksaansig te sien wat die etiket bevat nie. Dis "
+"veral nuttig vir etikette soos &quot;eendag&quot; wat gebruik word vir take "
+"wat nie regtig dringend is nie."
+
+#: GTG/core/firstrun_tasks.py:80
+msgid "Reporting bugs"
+msgstr "Foutrapportering"
+
+#: GTG/core/firstrun_tasks.py:81
+msgid ""
+"GTG is still very alpha software. We like it and use it everyday but you "
+"will encounter some bugs."
+msgstr ""
+"GTG is nogsteeds alfa-sagteware. Ons hou daarvan en gebruik dit daagliks. "
+"Daar sal wel, ongelukkig foute voorkom."
+
+#: GTG/core/firstrun_tasks.py:83
+msgid ""
+"Please, report them ! We need you to make this software better. Any "
+"contribution, any idea is welcome."
+msgstr ""
+"Rapporteer foute, asseblief! Ons het u nodig om die sagteware beter te maak. "
+"Enige bydrae, enige idees is welkom."
+
+#: GTG/core/firstrun_tasks.py:85
+msgid ""
+"If you have some trouble with GTG, we might be able to help you or to solve "
+"your problem really quickly."
+msgstr ""
+"As daar enige probleme with GTG is kan ons dalk help om dit spoedig op te "
+"los."

@@ -1,16 +1,16 @@
-# French translation for gtg
+# Finnish translation for gtg
 # Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
 # This file is distributed under the same license as the gtg package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+# Mika Tapojärvi <mika.tapojarvi@sse.fi>, 2009.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"Report-Msgid-Bugs-To: Mika Tapojärvi <mika.tapojarvi@sse.fi>\n"
 "POT-Creation-Date: 2009-04-15 15:13+0200\n"
-"PO-Revision-Date: 2009-04-03 20:49+0000\n"
-"Last-Translator: Lionel Dricot <ploum@ploum.net>\n"
-"Language-Team: French <fr@li.org>\n"
+"PO-Revision-Date: 2009-06-17 15:32+0000\n"
+"Last-Translator: Mika Tapojärvi <mika.tapojarvi@sse.fi>\n"
+"Language-Team: Finnish <fi@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,40 +19,40 @@ msgstr ""
 
 #: GTG/taskeditor/taskeditor.glade.h:1
 msgid "<span weight=\"bold\">Due for</span>"
-msgstr "<span weight=\"bold\">A terminer pour</span>"
+msgstr "<span weight=\"bold\">Valmistumispäivämäärä</span>"
 
 #: GTG/taskeditor/taskeditor.glade.h:2
 msgid "<span weight=\"bold\">Starting on</span>"
-msgstr "<span weight=\"bold\">Commence le</span>"
+msgstr "<span weight=\"bold\">Alkamispäivämäärä</span>"
 
 #: GTG/taskeditor/taskeditor.glade.h:3 GTG/taskbrowser/taskbrowser.glade.h:12
 msgid "Delete"
-msgstr "Supprimer"
+msgstr "Poista"
 
 #: GTG/taskeditor/taskeditor.glade.h:4 GTG/taskbrowser/taskbrowser.glade.h:13
 #: GTG/taskbrowser/__init__.py:33
 msgid "Dismiss"
-msgstr "Abandonner"
+msgstr "Hylkää"
 
 #: GTG/taskeditor/taskeditor.glade.h:5
 msgid "Insert subtask"
-msgstr "Ajouter une sous-tâche"
+msgstr "Lisää alitehtävä"
 
 #: GTG/taskeditor/taskeditor.glade.h:6
 msgid "Insert tag"
-msgstr "Ajouter une étiquette"
+msgstr "Lisää leima"
 
 #: GTG/taskeditor/taskeditor.glade.h:7
 msgid "Keep as Note"
-msgstr "Conserver comme note"
+msgstr "Pidä muistilappuna"
 
 #: GTG/taskeditor/taskeditor.glade.h:8
 msgid "Mark Done"
-msgstr "Marquer comme fait"
+msgstr "Merkitse tehdyksi"
 
 #: GTG/taskeditor/taskeditor.glade.h:9
 msgid "Task"
-msgstr "Tâche"
+msgstr "Tehtävä"
 
 #: GTG/taskeditor/taskeditor.glade.h:10
 msgid "gtk-clear"
@@ -64,25 +64,25 @@ msgstr "gtk-close"
 
 #: GTG/taskeditor/editor.py:214
 msgid "Due tomorrow !"
-msgstr "Pour demain!"
+msgstr "Tehtävä huomiseksi!"
 
 #: GTG/taskeditor/editor.py:216
 #, python-format
 msgid "%s days left"
-msgstr "Il reste %s jours"
+msgstr "%s päivää jäljellä"
 
 #: GTG/taskeditor/editor.py:218
 msgid "Due today !"
-msgstr "Pour aujourd'hui!"
+msgstr "Tehtävä tänään!"
 
 #: GTG/taskeditor/editor.py:220
 msgid "Due for yesterday"
-msgstr "Dépassé depuis hier"
+msgstr "Tehtävä eiliseksi"
 
 #: GTG/taskeditor/editor.py:222
 #, python-format
 msgid "Was %s days ago"
-msgstr "Dépassé depuis %s jours"
+msgstr "Oli %s päivää sitten"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:1
 msgid ""
@@ -90,8 +90,7 @@ msgid ""
 "Getting Things Gnome! is an organizer for the GNOME desktop environment."
 msgstr ""
 "\n"
-"Getting Things GNOME! est un outil d'organisation personnel pour "
-"l'environnement de bureau GNOME."
+"Getting Things Gnome! on tehtävien hallinta GNOME-työpöytäympäristölle."
 
 #: GTG/taskbrowser/taskbrowser.glade.h:3
 msgid ""
@@ -100,155 +99,188 @@ msgid ""
 "\n"
 "Deleting a task cannot be undone."
 msgstr ""
-"<span weight=\"bold\" size=\"large\">Êtes-vous certain de vouloir supprimer "
-"cette tâche ?</span>\n"
+"<span weight=\"bold\" size=\"large\">Oletko varma, että haluat poistaa tämän "
+"tehtävän?</span>\n"
 "\n"
-"La suppression d'une tâche ne peut pas être annulée."
+"Poistettua tehtävää ei voi palauttaa."
 
 #: GTG/taskbrowser/taskbrowser.glade.h:6
 msgid "About GTG!"
-msgstr "À propos de GTG"
+msgstr "Tietoja GTGstä!"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:7
 msgid "Choose a color"
-msgstr "Choisissez une couleur"
+msgstr "Valitse väri"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:8
 msgid "Confirm task deletion"
-msgstr "Confirmer la suppression de la tâche"
+msgstr "Varmista, että tehtävä todella poistetaan"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:9
 msgid "Copyrights© 2008, 2009 Lionel Dricot, Bertrand Rousseau"
-msgstr "Copyrights© 2008, 2009 Lionel Dricot, Bertrand Rousseau"
+msgstr "Tekijänoikeudet© 2008, 2009 Lionel Dricot, Bertrand Rousseau"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:10 GTG/taskbrowser/browser.py:110
 msgid "Create a new task"
-msgstr "Créer une nouvelle tâche"
+msgstr "Luo uusi tehtävä"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:11
 msgid "D_ismiss"
-msgstr "_Abandonner"
+msgstr "_Hylkää"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:14
 msgid "Edit"
-msgstr "Modifier"
+msgstr "Muokkaa"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:15
 msgid "GTG website"
-msgstr "Site web de GTG"
+msgstr "GTGn webbiosoite"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:16
 msgid "Getting Things Gnome!"
 msgstr "Getting Things Gnome!"
 
+#: GTG/taskbrowser/taskbrowser.glade.h:17
+msgid ""
+"Getting Things Gnome! is free software; you can redistribute it and/or "
+"modify it under the terms of the GNU General Public License as published by "
+"the Free Software Foundation; either version 3 of the License, or (at your "
+"option) any later version.\n"
+"\n"
+"Getting Things Gnome! is distributed in the hope that it will be useful, but "
+"WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY "
+"or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
+"more details.\n"
+"\n"
+"You should have received a copy of the GNU General Public License along with "
+"Getting Things Gnome!; if not, write to the Free Software Foundation, Inc., "
+"51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA."
+msgstr ""
+"Getting Things Gnome! on vapaa; tätä ohjelmaa on sallittu levittää edelleen "
+"ja muuttaa GNU yleisen lisenssin (GPL lisenssin) ehtojen mukaan sellaisina "
+"kuin Free Software Foundation on ne julkaissut; joko Lisenssin version 2, "
+"tai (valinnan mukaan) minkä tahansa myöhemmän version mukaisesti.\n"
+"\n"
+"Getting Things Gnome!a levitetään siinä toivossa, että se olisi hyödyllinen, "
+"mutta ilman mitään takuuta; ilman edes hiljaista takuuta kaupallisesti "
+"hyväksyttävästä laadusta tai soveltuvuudesta tiettyyn tarkoitukseen. Katso "
+"GPL lisenssistä lisää yksityiskohtia.\n"
+"\n"
+"Getting Things Gnome!n mukana pitäisi tulla kopio GPL lisenssistä; jos näin "
+"ei ole, kirjoita osoitteeseen Free Software Foundation Inc., 51 Franklin "
+"Street, Fifth Floor, Boston, MA 02110-1301, USA.\n"
+"\n"
+"Käännös lainattu osoitteesta: "
+"http://www.debian.org/releases/stable/s390/apf.html.fi"
+
 #: GTG/taskbrowser/taskbrowser.glade.h:22
 msgid "Mark as Done"
-msgstr "Marquer comme fait"
+msgstr "Merkitse valmiiksi"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:23
 msgid "Mark as Not Done"
-msgstr "Marquer comme non fait"
+msgstr "Merkitse keskeneräiseksi"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:24
 msgid "Mark as _Done"
-msgstr "Marquer comme _fait"
+msgstr "Merkitse _valmiiksi"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:25
 msgid "New Note"
-msgstr "Nouvelle note"
+msgstr "Uusi tehtävä"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:26
 msgid "New Subtask"
-msgstr "Nouvelle tâche enfant"
+msgstr "Uusi alitehtävä"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:27
 msgid "New Task"
-msgstr "Nouvelle tâche"
+msgstr "Uusi tehtävä"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:28
 msgid "New _Subtask"
-msgstr "Nouvelle tâche _enfant"
+msgstr "Uusi _alitehtävä"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:29
 msgid "New _Task"
-msgstr "Nouvelle _tâche"
+msgstr "_Uusi tehtävä"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:30
 msgid "Permanently _remove task"
-msgstr "Supprimer la tâche définitivement"
+msgstr "_Poista tehtävä lopullisesti"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:31
 msgid "Redo"
-msgstr "Refaire"
+msgstr "Tee uudelleen"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:32
 msgid "Tag is displayed in the workview"
-msgstr "Afficher l'étiquette dans la vue de travail"
+msgstr "Leima näytetään työnäkymässä"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:33 GTG/taskbrowser/browser.py:1486
 #: GTG/taskbrowser/browser.py:1557
 msgid "Tags"
-msgstr "Étiquettes"
+msgstr "Leimat"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:34
 msgid "Und_ismiss"
-msgstr "Annuler l'a_bandon"
+msgstr "_Hylätyn palauttaminen"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:35
 msgid "Undo"
-msgstr "Annuler"
+msgstr "Kumoa"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:36
 msgid "View Notes"
-msgstr "Voir les notes"
+msgstr "Näytä muistiinpanot"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:37
 msgid "Work View"
-msgstr "Vue de travail"
+msgstr "Työnäkymä"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:38
 msgid "_Background Colors"
-msgstr "Couleur de _fond"
+msgstr "Tausta_värit"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:39
 msgid "_Closed Tasks Pane"
-msgstr "Panneau des tâches _cloturées"
+msgstr "_Suljettujen tehtävien ruutu"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:40
 msgid "_Edit"
-msgstr "É_dition"
+msgstr "_Muokkaa"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:41
 msgid "_File"
-msgstr "_Fichier"
+msgstr "_Tiedosto"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:42
 msgid "_Help"
-msgstr "Aid_e"
+msgstr "_Apua"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:43
 msgid "_Keep selected task"
-msgstr "_Conserver la tâche sélectionnée"
+msgstr "Pidä _valittu tehtävä"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:44
 msgid "_Quick Add Entry"
-msgstr "Entrée d'_ajout rapide"
+msgstr "_Pikalisäyskenttä"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:45
 msgid "_Tags Sidebar"
-msgstr "Panneau latéral d'étiquettes"
+msgstr "_Leimat-sivupalkki"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:46
 msgid "_Tasks"
-msgstr "_Tâches"
+msgstr "_Tehtävät"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:47
 msgid "_View"
-msgstr "_Vue"
+msgstr "_Näytä"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:48
 msgid "_Work View"
-msgstr "Vue de _travail"
+msgstr "_Työnäkymä"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:49
 msgid "gtk-about"
@@ -296,131 +328,137 @@ msgstr "gtk-undo"
 
 #: GTG/taskbrowser/__init__.py:29
 msgid "Mark as done"
-msgstr "Marquer comme fait"
+msgstr "Merkitse valmiiksi"
 
 #: GTG/taskbrowser/__init__.py:30
 msgid "Mark the selected task as done"
-msgstr "Marquer la tâche sélectionnée comme faite"
+msgstr "Merkitse valittu tehtävä valmiiksi"
 
 #: GTG/taskbrowser/__init__.py:31
 msgid "Mark as not done"
-msgstr "Marquer comme non fait"
+msgstr "Merkitse tekemättömäksi"
 
 #: GTG/taskbrowser/__init__.py:32 GTG/taskbrowser/__init__.py:36
 msgid "Mark the selected task as to be done"
-msgstr "Marquer la tâche sélectionnée comme à faire"
+msgstr "Merkitse valittu tehtävä tehtävien joukkoon"
 
 #: GTG/taskbrowser/__init__.py:34
 msgid "Mark the task as not to be done anymore"
-msgstr "Marquer la tâche sélectionnée comme à ne pas faire"
+msgstr "Merkitse tehtävä sellaiseksi, jota ei enää tarvitse tehdä"
 
 #: GTG/taskbrowser/__init__.py:35
 msgid "Undismiss"
-msgstr "Annuler l'abandon"
+msgstr "Hylätyn palauttaminen"
 
 #: GTG/taskbrowser/__init__.py:37
 msgid "Permanently remove the selected task"
-msgstr "Supprimer la tâche sélectionnée de façon permanente"
+msgstr "Poista valittu tehtävä pysyvästi"
 
 #: GTG/taskbrowser/browser.py:108
 msgid "Edit the selected task"
-msgstr "Modifier la tache selectionnée"
+msgstr "Muokkaa valittua tehtävää"
 
 #: GTG/taskbrowser/browser.py:111
 msgid "Create a new subtask"
-msgstr "Créer une nouvelle tâche enfant"
+msgstr "Luo uusi alitehtävä"
 
 #: GTG/taskbrowser/browser.py:556
 msgid "monday"
-msgstr "lundi"
+msgstr "maanantai"
 
 #: GTG/taskbrowser/browser.py:556
 msgid "tuesday"
-msgstr "mardi"
+msgstr "tiistai"
 
 #: GTG/taskbrowser/browser.py:556
 msgid "wednesday"
-msgstr "mercredi"
+msgstr "keskiviikko"
 
 #: GTG/taskbrowser/browser.py:557
 msgid "thursday"
-msgstr "jeudi"
+msgstr "torstai"
 
 #: GTG/taskbrowser/browser.py:557
 msgid "friday"
-msgstr "vendredi"
+msgstr "perjantai"
 
 #: GTG/taskbrowser/browser.py:557
 msgid "saturday"
-msgstr "samedi"
+msgstr "lauantai"
 
 #: GTG/taskbrowser/browser.py:558
 msgid "sunday"
-msgstr "dimanche"
+msgstr "sunnuntai"
 
 #: GTG/taskbrowser/browser.py:567
 msgid "today"
-msgstr "aujourd'hui"
+msgstr "tänään"
 
 #: GTG/taskbrowser/browser.py:574
 msgid "tomorrow"
-msgstr "demain"
+msgstr "huomenna"
 
 #: GTG/taskbrowser/browser.py:635
 msgid "tags"
-msgstr "tags"
+msgstr "leimat"
 
 #: GTG/taskbrowser/browser.py:638
 msgid "defer"
-msgstr "reporter"
+msgstr "lykkää"
 
 #: GTG/taskbrowser/browser.py:642
 msgid "due"
-msgstr "échéance"
+msgstr "tehtävä"
 
 #: GTG/taskbrowser/browser.py:753
 msgid "<span weight=\"bold\">All tags</span>"
-msgstr "<span weight=\"bold\">Toutes les étiquettes</span>"
+msgstr "<span weight=\"bold\">Kaikki leimat</span>"
 
 #: GTG/taskbrowser/browser.py:754
 msgid "<span weight=\"bold\">Tasks without tags</span>"
-msgstr "<span weight=\"bold\">Tâches sans étiquette</span>"
+msgstr "<span weight=\"bold\">Leimattomat tehtävät</span>"
 
 #: GTG/taskbrowser/browser.py:849
 msgid "(no active tasks)"
-msgstr "(pas de tâche active)"
+msgstr "(ei aktiivisia tehtäviä)"
 
 #: GTG/taskbrowser/browser.py:851
 msgid "(1 active task)"
-msgstr "(1 tâche active)"
+msgstr "(1 aktiivinen tehtävä)"
 
 #: GTG/taskbrowser/browser.py:1501 GTG/taskbrowser/browser.py:1584
 msgid "Title"
-msgstr "Titre"
+msgstr "Otsikko"
 
 #: GTG/taskbrowser/browser.py:1520
 msgid "Due date"
-msgstr "Date de fin"
+msgstr "Valmistumispäivämäärä"
 
 #: GTG/taskbrowser/browser.py:1534
 msgid "Days left"
-msgstr "Jours restants"
+msgstr "Päiviä jäljellä"
 
 #: GTG/taskbrowser/browser.py:1572
 msgid "Closing date"
-msgstr "Date de cloture"
+msgstr "Sulkemispäivämäärä"
 
 #: GTG/taskbrowser/browser.py:1600
 msgid "Notes"
-msgstr "Notes"
+msgstr "Muistiinpanot"
+
+#: GTG/core/task.py:36
+msgid "My new task"
+msgstr "Uusi tehtäväni"
 
 #: GTG/core/firstrun_tasks.py:6
 msgid "Getting started with GTG"
-msgstr "Débuter avec GTG"
+msgstr "GTGn käytön aloittaminen"
 
 #: GTG/core/firstrun_tasks.py:7
 msgid "Welcome in Getting Things Gnome!, your new task manager."
-msgstr "Bienvenue dans Getting Things Gnome!, votre gersionnaire de tâches."
+msgstr ""
+"Tervetuloa käyttämään Getting Things Gnome! -sovellusta, uutta "
+"tehtävänhallintaasi."
 
 #: GTG/core/firstrun_tasks.py:9
 msgid ""
@@ -428,50 +466,49 @@ msgid ""
 "to changing a light bulb or organizing a party. When you edit a task, it is "
 "automatically saved."
 msgstr ""
-"Dans GTG, tout est une tâche. Que ce soit \"contruire un pont au-dessus de "
-"l'océan pacifique\", \"changer une ampoule\" ou \"organiser une fête\". "
-"Quand vous modifiez une tâche, elle est automatiquement sauvée."
+"GTG:ssä jokainen asia on tehtävä, alkaen Tyynen valtameren ylittävän sillan "
+"tekemisestä ja päättyen lampun vaihtamiseen tai juhlien järjestämiseen. Kun "
+"muokkaat tehtävää, se talletetaan automaattisesti."
 
 #: GTG/core/firstrun_tasks.py:11
 msgid ""
 "Once a task is done, you can push the &quot;Mark as done&quot; button. If "
 "the task is not relevant any-more, simply press &quot;Dismiss&quot;."
 msgstr ""
-"Une fois la tâche faite, vous pouvez appuyer sur le bouton &quot;Marquer "
-"comme fait&quot;. Si la tâche n'est plus d'actualité, appuyez simplement sur "
-"&quot;Abandonner&quot;."
+"Kun tehtävä on valmis, voit painaa &quot;Merkitse valmiiksi&quot; nappia. "
+"Jos tehtävä ei ole enää tarpeellinen, paina vaan &quot;Hylkää&quot;."
 
 #: GTG/core/firstrun_tasks.py:13
 msgid ""
 "A task might be composed of multiple subtasks that appear as links in the "
 "description. Simply click on the following link :"
 msgstr ""
-"Une tâche peut être composée de multiples sous-tâches qui apparaissent comme "
-"liens dans la description. Cliquez simplement sur le lien suivant."
+"Tehtävä voi koostua useammasta alitehtävästä, jotka näkyvät linkkeinä "
+"kuvauksessa. Napsauta vaan seuraavaa linkkiä :"
 
 #: GTG/core/firstrun_tasks.py:17
 msgid "Don't forget to mark this subtask as done !"
-msgstr "N'oubliez pas de marquer cette sous-tâche comme faite !"
+msgstr "Älä unohda merkitä tätä alitehtävää valmiiksi!"
 
 #: GTG/core/firstrun_tasks.py:19
 msgid "Other stuff you should read :"
-msgstr "Autres sujets d'intérêt :"
+msgstr "Muita juttuja, joita sinun kannattaisi lukea :"
 
 #: GTG/core/firstrun_tasks.py:25
 msgid ""
 "We hope that you will appreciate GTG. Please send us bug reports and ideas "
 "for improvement using : "
 msgstr ""
-"Nous espérons que vous apprécierez GTG. Veuillez reporter bogues et idées "
-"d'améliorations en utilisant : "
+"Toivomme, että arvostat GTG:tä. Ole hyvä ja lähetä meille vikailmoituksia ja "
+"parannusideoita käyttämällä : "
 
 #: GTG/core/firstrun_tasks.py:28
 msgid "Thank you for trying out GTG :-)"
-msgstr "Merci d'avoir essayé GTG :-)"
+msgstr "Kiitos kun kokeilet GTG:tä :-)"
 
 #: GTG/core/firstrun_tasks.py:33
 msgid "Learn to use subtasks"
-msgstr "Apprendre à utiliser les sous-tâches"
+msgstr "Opettele käyttämään alitehtäviä"
 
 #: GTG/core/firstrun_tasks.py:34
 msgid ""
@@ -480,53 +517,51 @@ msgid ""
 "to be done in order to accomplish your task. Just try to write &quot;- test "
 "subtask&quot; on the next line and press enter."
 msgstr ""
-"Dans la description de la tâche (cette fenêtre), si vous commencez une ligne "
-"avec &quot;-&quot;, elle sera considérée comme &quot;sous-tâche&quot;, "
-"quelque chose à faire pour accomplir votre tâche. Essayez d'écrire &quot;- "
-"test sous-tâche&quot; dans la ligne suivante et appuyer sur Entrée."
+"Jos aloitat rivin &quot;-&quot; -merkillä tehtävän kuvauksessa (tämä "
+"ikkuna), siitä tehdään &quot;alitehtävä&quot;. Alitehtävien tulee valmistua "
+"jotta päätehdävä voisi valmistua. Kokeile kirjoittaa &quot;testataan "
+"alitehtävää&quot; seuraavalle riville ja paina enteriä."
 
 #: GTG/core/firstrun_tasks.py:36
 msgid "You can also use the &quot;insert subtask&quot; button."
-msgstr ""
-"Vous pouvez utiliser aussi le bouton  &quot;Ajouter une sous-tâche&quot;."
+msgstr "Voit myös käyttää &quot;lisää alitehtävä&quot; -nappia."
 
 #: GTG/core/firstrun_tasks.py:38
 msgid ""
 "Task and subtasks can be re-organized by drag-n-drop in the tasks list."
 msgstr ""
-"Les tâches et les sous-tâches se réorganisent en faisant du glisser-déposer "
-"dans la liste des tâches."
+"Tehtäviä ja alitehtäviä voi järjestellä raahaamalla niitä tehtävälistassa."
 
 #: GTG/core/firstrun_tasks.py:40
 msgid ""
 "Some concept come with subtasks : for example, a subtask due date can never "
 "be after its parent due date."
 msgstr ""
-"Quelques concepts découlent logiquement des sous-tâches : par exemple, "
-"l'échéance d'une sous-tâche ne peut jamais être après l'échéance de sa tâche "
-"parente."
+"Tiettyjä asioita on huomioitava alitehtävien kanssa : esimerkiksi "
+"alitehtävän valmistumispäivämäärä ei voi olla myöhempänä kuin varsinaisen "
+"päätehtävän valmistumispäivämäärä."
 
 #: GTG/core/firstrun_tasks.py:42
 msgid "Also, marking a parent as done will mark all the subtasks as done."
 msgstr ""
-"Également, marquer une tâche parent comme faîte entraînera le marquage comme "
-"faites des sous-tâches."
+"Toisaalta päätehtävän merkitseminen valmistuneeksi merkitsee myös kaikki "
+"alitehtävät valmistuneeksi."
 
 #: GTG/core/firstrun_tasks.py:47
 msgid "Learn to use tags"
-msgstr "Apprendre à utiliser les étiquettes"
+msgstr "Opettele käyttämään leimoja"
 
 #: GTG/core/firstrun_tasks.py:48
 msgid "A tag is a simple word that begin with &quot;@&quot;."
-msgstr "Une étiquette est un mot commençant par le caractère &quot;@&quot;."
+msgstr "Leima on yksinkertainen sana, joka alkaa &quot;@&quot;-merkillä."
 
 #: GTG/core/firstrun_tasks.py:50
 msgid "Try to type a word beginning with @ here :"
-msgstr "Essayez de taper un mot commençant par @ ici :"
+msgstr "Kokeile kirjoittamalla tähän sana, jonka alussa on @-merkki :"
 
 #: GTG/core/firstrun_tasks.py:52
 msgid "It becomes yellow, it's a tag."
-msgstr "Il devient jaune, c'est une étiquette."
+msgstr "Jos se muuttuu keltaiseksi, siitä on tullut leima."
 
 #: GTG/core/firstrun_tasks.py:54
 msgid ""
@@ -535,11 +570,10 @@ msgid ""
 "tasks for a given tag. There's no limit to the number of tags a task can "
 "have."
 msgstr ""
-"Les étiquettes sont utiles pour classer vos tâches. Dans le menu 'Vue', vous "
-"pouvez activer l'affichage d'un panneau latéral qui affiche toutes les "
-"étiquettes que vous utilisez. De cette façon vous pouvez facilement voir les "
-"tâches qui se rapportent à une certaine étiquette. Il n'y a pas de limites "
-"au nombre d'étiquettes qu'une tâche peut avoir."
+"Leimat ovat käytännöllisiä tehtävien järjestämisessä. Näytä-valikosta voi "
+"valita sivupalkin, jossa näytetään kaikki käytössäsi olevat leimat, ja voit "
+"helposti nähdä tiettyyn leimaan liittyvät tehtävät. Tehtävään liitettyjen "
+"leimojen määrää ei ole rajoitettu."
 
 #: GTG/core/firstrun_tasks.py:56
 msgid ""
@@ -547,9 +581,8 @@ msgid ""
 "will permit you to have a more colorful list of tasks, if you want it that "
 "way."
 msgstr ""
-"Si vous cliquez sur une étiquette dans le panneau latéral, vous pouvez aussi "
-"lui donner une certaine couleur. Cela vous permet d'obtenir une liste plus "
-"colorée de tâche, si le préférez."
+"Jos napsautat sivupalkista leimaa hiiren oikealla napilla, voit asettaa sen "
+"värin. Näin saat värikkäämmän tehtävälistan haluamallasi tavalla."
 
 #: GTG/core/firstrun_tasks.py:58
 msgid ""
@@ -560,53 +593,49 @@ msgid ""
 "subtask). Of course, you can modify at any time the tags of this particular "
 "subtask. It will never be changed by the parent."
 msgstr ""
-"Une nouvelle étiquette n'est toujours ajoutée qu'à la tâche courante. Il n'y "
-"a pas de récursivité, l'étiquette n'est pas appliquée aux sous-tâches. Mais "
-"lorsque vous créez une nouvelle sous-tâches, celle-ci héritera des "
-"étiquettes de son parent par défaut (ce sera aussi le cas si vous ajoutez "
-"une étiquette à un parent après avoir créé une sous-tâche). Evidemment, vous "
-"pouvez modifier les étiquettes d'une sous-tâche en particulier à tout "
-"moment. Cela ne changera rien à la tâche parente."
+"Uusi leima lisätään vain valittuna olevaan tehtävään. Sitä ei lisätä "
+"rekursiivisesti eli leimaa ei lisätä alitehtäviin. Mutta kun luot alitaskin, "
+"se perii leimat päätehtävältä (näin käy myös, jos lisäät leiman päätehtävään "
+"heti alitehtävän luonnin jälkeen). Voit tietenkin muokata kyseisen "
+"alitehtävän leimoja. Niitä ei myöskään muuteta, jos päätehtävää muutetaan."
 
 #: GTG/core/firstrun_tasks.py:63
 msgid "Using the Workview"
-msgstr "En utilisant la vue de travail"
+msgstr "Työnäkymän käyttäminen"
 
 #: GTG/core/firstrun_tasks.py:64
 msgid ""
 "If you press the &quot;Workview&quot; button, only actionable tasks will be "
 "displayed."
 msgstr ""
-"Si vous pressez le boutont &quot;Vue de travail&quot;, seules les actions "
-"réalisables seront affichées."
+"Jos painat &quot;Työnäkymä&quot;-nappia, niin vain pikatehtävät näytetään."
 
 #: GTG/core/firstrun_tasks.py:66
 msgid ""
 "What is an actionable task? It's a task you can do directly, right now."
-msgstr ""
-"Qu'est-ce qu'une tâche réalisable? Une tâche que vous pouvez faire "
-"directement, maintenant,"
+msgstr "Mikä on pikatehtävä? Se on tehtävä, jonka voit tehdä heti samantien."
 
 #: GTG/core/firstrun_tasks.py:68
 msgid ""
 "It's a task that is already &quot;start-able&quot;, i.e. the start date is "
 "already over."
 msgstr ""
-"C'est une tâche qui peut être commencée: sa date de début est déja dépassée."
+"Se on tehtävä, joka on &quot;startattu&quot;, eli aloituspäivämäärä on jo "
+"mennyt."
 
 #: GTG/core/firstrun_tasks.py:70
 msgid ""
 "It's a task that doesn't have open subtasks, i.e. you can do the task itself "
 "directly."
 msgstr ""
-"C'est une tâche qui n'a pas de sous-tâches actives, vous pouvez la faire "
-"directement."
+"Se on tehtävä, jolla ei ole avoimia alitehtäviä, eli voit tehdä varsinaisen "
+"päätehtävän suoraan."
 
 #: GTG/core/firstrun_tasks.py:72
 msgid "Thus, the workview will only show you tasks you should do right now."
 msgstr ""
-"Donc la vue de travail ne vous montreras que les tâches que vous pouvez "
-"faire maintenant."
+"Toisinsanoen työnäkymä näyttää vain ne tehtävät, jotka sinun pitäisi alkaa "
+"tekemään heti."
 
 #: GTG/core/firstrun_tasks.py:74
 msgid ""
@@ -615,58 +644,34 @@ msgid ""
 "if you have a tag like &quot;someday&quot; that you use for tasks you would "
 "like to do but are not particularly urgent."
 msgstr ""
-"Si vous utilisez les étiquettes, vous pouvez faire un clic droit sur un "
-"étiquette dans le panneau latéral et choisir de ne pas afficher les tâches "
-"avec cette étiquette dans la vue de travail. C'est très utile si vous avez "
-"une étiquette comme &quot;Un jour peut-être&quot; que vous utilisez pour les "
-"tâches qui ne sont pas particulièrement urgentes."
+"Jos käytät leimoja, voit napsauttaa hiiren oikealla napilla sivupalkkia ja "
+"valita, että juuri tällä kyseisellä leimalla leimattuja tehtäviä ei näytetä "
+"työnäkymässä."
 
 #: GTG/core/firstrun_tasks.py:80
 msgid "Reporting bugs"
-msgstr "Rapporter les bugs"
+msgstr "Vikailmoitusten tekeminen"
 
 #: GTG/core/firstrun_tasks.py:81
 msgid ""
 "GTG is still very alpha software. We like it and use it everyday but you "
 "will encounter some bugs."
 msgstr ""
-"GTG est encore un logiciel immature. Nous l'apprécions et l'utilisons tous "
-"les jours mais vous risquez certainement de rencontrer des bugs."
+"GTG on vielä kehityksensä alkuvaiheessa oleva ohjelmisto. Me pidämme siitä "
+"ja käytämme sitä joka päivä, mutta tulet vielä törmäämään vikoihin."
 
 #: GTG/core/firstrun_tasks.py:83
 msgid ""
 "Please, report them ! We need you to make this software better. Any "
 "contribution, any idea is welcome."
 msgstr ""
-"S'il vous plaît, rapportez-les nous ! Nous avons besoin de vos retours pour "
-"rendre ce logiciel meilleur. Toute contribution, toute idée d'amélioration "
-"est la bienvenue."
+"Ole hyvä ja raportoi ne! Tämän ohjelmiston parantamisessa me tarvitsemme "
+"apuasi. Kaikki apu ja jokainen idea on tervetullut."
 
 #: GTG/core/firstrun_tasks.py:85
 msgid ""
 "If you have some trouble with GTG, we might be able to help you or to solve "
 "your problem really quickly."
 msgstr ""
-"Si vous avez un problème avec GTG, nous pouvons peut-être vous aider ou "
-"résoudre votre problème rapidement."
-
-#: GTG/taskbrowser/taskbrowser.glade.h:17
-msgid ""
-"Getting Things Gnome! is free software; you can redistribute it and/or "
-"modify it under the terms of the GNU General Public License as published by "
-"the Free Software Foundation; either version 3 of the License, or (at your "
-"option) any later version.\n"
-"\n"
-"Getting Things Gnome! is distributed in the hope that it will be useful, but "
-"WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY "
-"or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
-"more details.\n"
-"\n"
-"You should have received a copy of the GNU General Public License along with "
-"Getting Things Gnome!; if not, write to the Free Software Foundation, Inc., "
-"51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA."
-msgstr ""
-
-#: GTG/core/task.py:36
-msgid "My new task"
-msgstr ""
+"Jos sinulla on ongelmia GTGn kanssa, me pystymme ehkä auttamaan tai "
+"ratkaisemaan ongelmasi todella nopeasti."
