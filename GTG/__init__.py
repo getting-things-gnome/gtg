@@ -45,12 +45,12 @@ AUTHORS     = ["Main developers:", \
                "\tJérôme Guelfucci <jerome.guelfucci@gmail.com>",      \
                "\tLuca Falavigna <dktrkranz@ubuntu.com>", \
                "\tKalle Persson <kalle@kallepersson.se>", \
-               "\tJonathan Barnoud <jonathan@barnoud.net>" \
-               "\tMichael Vogt <michael.vogt@ubuntu.com>" \
-               "\tBen Dowling <ben.m.dowling@gmail.com>" \
-               "\tBrian Kennedy <ekspiulo@gmail.com>" \
-               "\tZach Shepherd <eightball1989@gmail.com>" \
-               "\tJean-François Fortin Tam <nekohayo@gmail.com>" \
+               "\tJonathan Barnoud <jonathan@barnoud.net>", \
+               "\tMichael Vogt <michael.vogt@ubuntu.com>", \
+               "\tBen Dowling <ben.m.dowling@gmail.com>", \
+               "\tBrian Kennedy <ekspiulo@gmail.com>", \
+               "\tZach Shepherd <eightball1989@gmail.com>", \
+               "\tJean-François Fortin Tam <nekohayo@gmail.com>", \
 ]
 ARTISTS     = ["Kalle Persson <kalle@kallepersson.se>", \
                 "Bertrand Rousseau <bertrand.rousseau@gmail.com>"]
