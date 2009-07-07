@@ -29,6 +29,8 @@ from datetime import date
 from GTG.taskeditor          import GnomeConfig
 from GTG.tools               import dates
 from GTG.taskeditor.taskview import TaskView
+from GTG.core.plugins.engine import PluginEngine
+from GTG.core.plugins.engine import PluginAPI
 try:
     import pygtk
     pygtk.require("2.0")
@@ -43,7 +45,7 @@ except:
 date_separator = "/"
 
 class TaskEditor :
-    def __init__(self, requester, task, refresh_callback=None,delete_callback=None,
+    def __init__(self, requester, task, plugins, refresh_callback=None,delete_callback=None,
                 close_callback=None,opentask_callback=None, tasktitle_callback=None,
                 notes=False) :
         self.req = requester
@@ -156,6 +158,12 @@ class TaskEditor :
             self.textview.select_title()
         self.textview.modified(full=True)
         self.window.connect("destroy", self.destruction)
+        
+        # plugins
+        self.plugins = plugins
+        pengine = PluginEngine(GTG.PLUGIN_DIR)
+        plugin_api = PluginAPI(pengine, self.window, self.wTree, self.req, task, self.textview)
+        pengine.onTaskLoad(self.plugins, plugin_api)
         
         self.__refresh_cb = refresh_callback
         #Putting the refresh callback at the end make the start a lot faster

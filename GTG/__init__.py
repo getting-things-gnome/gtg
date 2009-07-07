@@ -103,3 +103,9 @@ if not os.path.isdir( os.path.join(LOCAL_ROOTDIR,'data') ) :
     DATA_DIR = DIST_ROOTDIR
 else:
     DATA_DIR = os.path.join(LOCAL_ROOTDIR,'data')
+    
+#GTG plugin dir setup
+if not os.path.isdir( os.path.join(LOCAL_ROOTDIR,'GTG/plugins/') ) :
+    PLUGIN_DIR = [DIST_ROOTDIR]
+else:
+    PLUGIN_DIR = [os.path.join(LOCAL_ROOTDIR,'GTG/plugins/')]

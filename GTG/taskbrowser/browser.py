@@ -38,6 +38,9 @@ from GTG.taskbrowser.CellRendererTags import CellRendererTags
 from GTG.taskbrowser                  import GnomeConfig
 from GTG.taskbrowser                  import treetools
 from GTG.tools                        import colors, openurl
+from GTG.core.plugins.manager         import PluginManager
+from GTG.core.plugins.engine          import PluginEngine
+from GTG.core.plugins.engine          import PluginAPI
 
 #=== OBJECTS ===================================================================
 
@@ -159,7 +162,8 @@ class TaskBrowser:
                 "on_view_quickadd_toggled"            : self.toggle_quickadd,
                 "on_about_clicked"                    : self.on_about_clicked,
                 "on_about_close"                      : self.on_about_close,
-                "on_nonworkviewtag_toggled"           : self.on_nonworkviewtag_toggled
+                "on_nonworkviewtag_toggled"           : self.on_nonworkviewtag_toggled,
+                "on_pluginmanager_activate"              : self.on_pluginmanager_activate
               }
         self.wTree.signal_autoconnect(dic)
         self.selected_rows = None
@@ -293,6 +297,30 @@ class TaskBrowser:
         edit_button = self.wTree.get_widget("edit_b")
         key, mod = gtk.accelerator_parse("<Control>e")
         edit_button.add_accelerator("clicked", agr, key, mod, gtk.ACCEL_VISIBLE)
+        
+        # plugins - Init
+        self.pengine = PluginEngine(GTG.PLUGIN_DIR)
+        # loads the plugins in the plugin dir
+        self.plugins = self.pengine.LoadPlugins()
+        
+        # checks the conf for user settings
+        if self.config.has_key("plugins"):
+            if self.config["plugins"].has_key("enabled"):
+                plugins_enabled = self.config["plugins"]["enabled"]
+                for p in self.plugins:
+                    if p['name'] in plugins_enabled:
+                        p['state'] = True
+                    
+            if self.config["plugins"].has_key("disabled"):
+                plugins_disabled = self.config["plugins"]["disabled"]
+                for p in self.plugins:    
+                    if p['name'] in plugins_disabled:
+                        p['state'] = False
+        
+        # initializes the plugin api class
+        self.plugin_api = PluginAPI(self.pengine, self.window, self.wTree, self.req)
+        # initializes and activates each plugin (that is enabled)
+        self.pengine.activatePlugins(self.plugins, self.plugin_api)
         
     def __restore_state_from_conf(self):
         
@@ -437,6 +465,11 @@ class TaskBrowser:
         self.config["browser"]["view"]              = view
         if self.notes :
             self.config["browser"]["experimental_notes"] = True
+        
+        # adds the plugin settings to the conf
+        self.config["plugins"] = {}
+        self.config["plugins"]["disabled"] = self.pengine.disabledPlugins(self.plugins)
+        self.config["plugins"]["enabled"] = self.pengine.enabledPlugins(self.plugins)
  
     def main(self):
         #Here we will define the main TaskList interface
@@ -1405,6 +1438,9 @@ class TaskBrowser:
                 zetask.set_status("Active")
             else : zetask.set_status("Dismiss")
             self.do_refresh()
+            
+    def on_pluginmanager_activate(self, widget) :
+        PluginManager(self.window, self.plugins, self.pengine, self.plugin_api)
         
     def on_select_tag(self, widget, row=None ,col=None) : #pylint: disable-msg=W0613
         #When you clic on a tag, you want to unselect the tasks
