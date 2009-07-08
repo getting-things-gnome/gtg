@@ -1,54 +1,19 @@
-gtg (0.1.0.9~intrepid7) intrepid; urgency=low
+gtg (0.1~jaunty2) jaunty; urgency=low
 
-  * no install-layout in intrepid distutils
+  * Bad python dependancy in the package
 
- -- Lionel Dricot <ploum@ploum.net>  Fri, 03 Apr 2009 01:41:44 +0200
+ -- Lionel Dricot <ploum@ploum.net>  Sat, 07 Mar 2009 01:09:43 +0100
 
-gtg (0.1.0.9~intrepid6) intrepid; urgency=low
+gtg (0.1~jaunty1) jaunty; urgency=low
 
-  * Don't you find this completely stupid ?
+  * 0.1 release
+  * Jaunty package now in /usr (not /usr/local)
 
- -- Lionel Dricot <ploum@ploum.net>  Fri, 03 Apr 2009 01:20:45 +0200
+ -- Lionel Dricot <ploum@ploum.net>  Mon, 02 Mar 2009 22:50:58 +0100
 
-gtg (0.1.0.9~intrepid4) jaunty; urgency=low
+ gtg (0.0.9rc3-1~jaunty1) jaunty; urgency=low
 
-  * Well, just for the pleasure of making another package
+  * Initial Jaunty release
 
- -- Lionel Dricot <ploum@ploum.net>  Fri, 03 Apr 2009 01:08:36 +0200
-
-gtg (0.1.0.9~intrepid3) intrepid; urgency=low
-
-  *Nomdidju, I hate debian packaging 
-
- -- Lionel Dricot <ploum@ploum.net>  Fri, 03 Apr 2009 00:54:21 +0200
-
-gtg (0.1.0.9~intrepid2) intrepid; urgency=low
-
-  * Build depends of python-glade
-
- -- Lionel Dricot <ploum@ploum.net>  Fri, 03 Apr 2009 00:43:18 +0200
-
-gtg (0.1.0.9~intrepid1) intrepid; urgency=low
-
-  * 0.1.1RC1 release (with translations)  
-
- -- Lionel Dricot <ploum@ploum.net>  Fri, 03 Apr 2009 00:09:31 +0200
-
-gtg (0.0.9rc3-1) intrepid; urgency=low
-
-  * Pane/sidebar position was not saved
-
- -- Lionel Dricot <ploum@ploum.net>  Sun, 01 Mar 2009 17:15:58 +0100
-
-gtg (0.0.9rc2-1) intrepid; urgency=low
-
-  * firstrun_tasks.xml was not found on first run.
-
- -- Lionel Dricot <ploum@ploum.net>  Sun, 01 Mar 2009 17:15:58 +0100
-
-gtg (0.0.9rc1-7) intrepid; urgency=low
-
-  * Initial release
-
- -- Lionel Dricot <ploum@ploum.net>  Sun, 01 Mar 2009 17:15:58 +0100
+ -- Lionel Dricot <ploum@ploum.net>  Mon, 02 Mar 2009 22:50:58 +0100
 
