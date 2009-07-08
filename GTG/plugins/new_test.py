@@ -30,7 +30,7 @@ class NewTest:
 	def onTaskOpened(self, plugin_api):
 		print "A task was opened"
 		
-	def deactivate(self):
+	def deactivate(self, plugin_api):
 		pass
 		
 	def onTesteMenu(self, widget):

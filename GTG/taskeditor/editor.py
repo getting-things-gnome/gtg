@@ -26,6 +26,7 @@ import sys
 import time
 from datetime import date
 
+import GTG
 from GTG.taskeditor          import GnomeConfig
 from GTG.tools               import dates
 from GTG.taskeditor.taskview import TaskView
