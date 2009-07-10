@@ -48,6 +48,7 @@ import sys, os
 #our own imports
 from GTG.taskbrowser.browser import TaskBrowser
 from GTG.core.datastore      import DataStore
+from GTG.core.dbuswrapper    import DBusTaskWrapper
 from GTG.core                import CoreConfig
 
 #=== OBJECTS ===================================================================
@@ -100,6 +101,7 @@ def main():
     # Launch task browser
     req = ds.get_requester()
     tb  = TaskBrowser(req, config.conf_dict)
+    DBusTaskWrapper(req, tb)
     tb.main()
 
     # Ideally we should load window geometry configuration from a config.
