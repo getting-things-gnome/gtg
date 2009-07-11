@@ -113,11 +113,8 @@ class PluginEngine:
         for plgin in plugins:
             if plgin['state']:
                 plgin['instance'].onTaskOpened(plugin_api)
-	
-    # actions to do when a task is deleted
-    def onTaskDelete():
-        pass
-	
+                
+	# rechecks the plug-ins to see if any changes where done to the state
     def recheckPlugins(self, plugins, plugin_api):
         for plgin in plugins:
             if plgin['instance'] != None and plgin['state'] == False:
