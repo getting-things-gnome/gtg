@@ -18,7 +18,8 @@
 # -----------------------------------------------------------------------------
 
 
-from GTG.tools.listes import *
+from copy import deepcopy
+
 #Requester is a pure View object. It will not do anything but it will
 #be used by any Interface to handle the requests to the datastore
 
@@ -179,7 +180,7 @@ class Requester :
     
     #Not used currently because it returns every tag that was ever used
     def get_all_tags(self):
-        return returnlist(self.ds.get_tagstore().get_all_tags())
+        return deepcopy(self.ds.get_tagstore().get_all_tags())
         
     def get_notag_tag(self) :
         return self.ds.get_tagstore().get_notag_tag()
