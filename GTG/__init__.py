@@ -51,6 +51,7 @@ AUTHORS     = ["Main developers:", \
                "\tBrian Kennedy <ekspiulo@gmail.com>", \
                "\tZach Shepherd <eightball1989@gmail.com>", \
                "\tJean-François Fortin Tam <nekohayo@gmail.com>", \
+               "\tJonathan Lange <jml@mumak.net>", \
 ]
 ARTISTS     = ["Kalle Persson <kalle@kallepersson.se>", \
                 "Bertrand Rousseau <bertrand.rousseau@gmail.com>"]
