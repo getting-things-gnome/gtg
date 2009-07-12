@@ -293,7 +293,12 @@ class TaskBrowser:
         edit_button = self.wTree.get_widget("edit_b")
         key, mod = gtk.accelerator_parse("<Control>e")
         edit_button.add_accelerator("clicked", agr, key, mod, gtk.ACCEL_VISIBLE)
-        
+
+        quickadd_field = self.wTree.get_widget('quickadd_field')
+        key, mod = gtk.accelerator_parse('<Control>l')
+        quickadd_field.add_accelerator(
+            'grab-focus', agr, key, mod, gtk.ACCEL_VISIBLE)
+
     def __restore_state_from_conf(self):
         
         # Extract state from configuration dictionary
