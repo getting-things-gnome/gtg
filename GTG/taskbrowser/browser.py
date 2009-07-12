@@ -299,6 +299,17 @@ class TaskBrowser:
         quickadd_field.add_accelerator(
             'grab-focus', agr, key, mod, gtk.ACCEL_VISIBLE)
 
+        mark_done_mi = self.wTree.get_widget('mark_done_mi')
+        key, mod = gtk.accelerator_parse('<Control>d')
+        mark_done_mi.add_accelerator(
+            'activate', agr, key, mod, gtk.ACCEL_VISIBLE)
+
+        task_dismiss = self.wTree.get_widget('task_dismiss')
+        key, mod = gtk.accelerator_parse('<Control>i')
+        task_dismiss.add_accelerator(
+            'activate', agr, key, mod, gtk.ACCEL_VISIBLE)
+
+
     def __restore_state_from_conf(self):
         
         # Extract state from configuration dictionary
