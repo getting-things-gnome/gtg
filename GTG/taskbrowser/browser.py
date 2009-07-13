@@ -100,7 +100,6 @@ class TaskBrowser:
         self.newtask            = self.wTree.get_widget("new_task_b")
         self.newsubtask         = self.wTree.get_widget("new_subtask_b")
         self.dismissbutton      = self.wTree.get_widget("dismiss")
-        self.deletebutton      = self.wTree.get_widget("delete_b")
         self.about              = self.wTree.get_widget("aboutdialog1")
         self.edit_mi            = self.wTree.get_widget("edit_mi")
         
@@ -110,7 +109,6 @@ class TaskBrowser:
         self.dismissbutton.set_tooltip_text(GnomeConfig.MARK_DISMISS_TOOLTIP)
         self.newtask.set_tooltip_text(_("Create a new task"))
         self.newsubtask.set_tooltip_text(_("Create a new subtask"))
-        self.deletebutton.set_tooltip_text(GnomeConfig.DELETE_TOOLTIP)
   
         # Initialize "About" dialog
         gtk.about_dialog_set_url_hook(lambda dialog, url: openurl.openurl(url))
