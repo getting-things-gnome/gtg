@@ -19,12 +19,18 @@
 
 
 from GTG.tools.listes import *
-#Requester is a pure View object. It will not do anything but it will
-#be used by any Interface to handle the requests to the datastore
 
-#There could be multiple requester. It means that a requester should never
-#Hold any data except a reference to its datastore.
+
 class Requester :
+    """A view on a GTG datastore.
+
+    `Requester` is a stateless object that simply provides a nice API for user
+    interfaces to use for datastore operations.
+
+    Multiple `Requester`s can exist on the same datastore, so they should
+    never have state of their own.
+    """
+    
     def __init__(self,datastore) :
         self.ds = datastore
         
