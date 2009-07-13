@@ -37,7 +37,7 @@
 #I0011 : Locally disabling. We don't care if we disabled locally
 
 #pylint argument :
-disabled="C0324,C0103,C0301,C0111,R0914,R0903,R0915,R0904,R0912,R0201,R0913,C0323,R0902,W0102,W0232,W0105,C0321,W0401,W0142,I0011,C0302,W0613,W0511"
+disabled="C0324,C0103,C0301,C0111,R0914,R0903,R0915,R0904,R0912,R0201,R0913,C0323,R0902,W0102,W0232,W0105,C0321,W0401,W0142,I0011,C0302,W0613,W0511,W0622,R0911"
 args="--rcfile=/dev/null --include-ids=y --reports=n"
 #grepped_out="Locally disabling"
 #pylint doesn't recognize gettext _()
@@ -49,8 +49,7 @@ pychecker -9 -T     -8  -# 200 --changetypes GTG/gtg.py
 
 echo "Running pyflakes"
 echo "#################"
-#pyflakes triggers a false positive with import * and with gettext _()
-pyflakes GTG|grep -v "import \*"|grep -v "undefined name '_'"
+pyflakes GTG
 
 echo "Running pylint"
 echo "#################"

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# pylint: disable-msg=W0201
 # -----------------------------------------------------------------------------
 # Gettings Things Gnome! - a personnal organizer for the GNOME desktop
 # Copyright (c) 2008-2009 - Lionel Dricot & Bertrand Rousseau

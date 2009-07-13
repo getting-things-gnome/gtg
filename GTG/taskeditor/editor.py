@@ -33,12 +33,12 @@ from GTG.taskeditor.taskview import TaskView
 try:
     import pygtk
     pygtk.require("2.0")
-except:
+except: # pylint: disable-msg=W0702
     sys.exit(1)
 try:
     import gtk
     from gtk import gdk
-except:
+except: # pylint: disable-msg=W0702
     sys.exit(1)
     
 date_separator = "/"
