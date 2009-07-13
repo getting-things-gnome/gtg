@@ -1,4 +1,4 @@
-    * Refactorization work by Jonathan Lange
+    * Refactorization and PEP8ification work by Jonathan Lange
     * New keyboard bindings for 'Mark as done' and 'Dismiss' actions
     * New keyboard bindings and accelerators by Jonathan Lange
     * DBus interface by Ryan Paul
