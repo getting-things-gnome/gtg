@@ -17,11 +17,11 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-from copy import deepcopy
 from datetime import date
 import xml.dom.minidom
 
 from GTG.tools.dates import *
+from GTG.tools.listes import *
 
 #This class represent a task in GTG.
 #You should never create a Task directly. Use the datastore.new_task() function.
@@ -318,7 +318,7 @@ class Task :
         return zelist
     
     def get_subtasks_tid(self) :
-        return deepcopy(self.children)
+        return returnlist(self.children)
         
         
     #add and remove parents are private
@@ -345,7 +345,7 @@ class Task :
                 parent.sync()
     
     def get_parents(self):
-        return deepcopy(self.parents)
+        return returnlist(self.parents)
  
     #Return true is the task has parent
     #If tag is provided, return True only
@@ -398,7 +398,7 @@ class Task :
         
     #return a copy of the list of tag objects
     def get_tags(self) :
-        return deepcopy(self.tags)
+        return returnlist(self.tags)
 
     #This function add tag by name
     def add_tag(self, tagname):
