@@ -355,17 +355,6 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkToolButton" id="delete_b">
-                <property name="visible">True</property>
-                <property name="label" translatable="yes">Delete</property>
-                <property name="icon_name">edit-delete</property>
-                <signal name="clicked" handler="on_delete_task"/>
-              </widget>
-              <packing>
-                <property name="homogeneous">True</property>
-              </packing>
-            </child>
-            <child>
               <widget class="GtkSeparatorToolItem" id="toolbutton1">
                 <property name="visible">True</property>
               </widget>
