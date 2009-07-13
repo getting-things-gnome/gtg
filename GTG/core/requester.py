@@ -32,6 +32,7 @@ class Requester :
     """
 
     def __init__(self, datastore):
+        """Construct a `Requester`."""
         self.ds = datastore
 
     def connect(self, signal, func):
@@ -40,29 +41,47 @@ class Requester :
     ############## Tasks ##########################
     ###############################################
 
-
-    #Return True if the task exists
     def has_task(self, tid):
+        """Does the task 'tid' exist?"""
         return self.ds.has_task(tid)
 
-    #Get the task with the given pid
-    #If the task doesn't exist, we create it and force the pid
     def get_task(self, tid):
+        """Get the task with the given 'tid'.
+
+        If no such task exists, create it and force the tid to be 'tid'.
+
+        :param tid: The task id.
+        :return: A task.
+        """
         task = self.ds.get_task(tid)
         return task
 
-    #Pid is the project in which the new task will be created
-    #MODIFICATION class (the data will be modified)
     def new_task(self, pid=None, tags=None, newtask=True):
+        """Create a new task.
+
+        Note: this modifies the datastore.
+
+        :param pid: The project where the new task will be created.
+        :param tags: The tags for the new task. If not provided, then the
+            task will have no tags.
+        :param newtask: 'True' if this is creating a task, 'False' if
+            importing an existing task.
+        """
+        # XXX: The docs don't make it clear why you'd ever need to pass in
+        # newtask or how newtask is used.
         task = self.ds.new_task(pid=pid, newtask=newtask)
         if tags:
             for t in tags:
                 task.add_tag(t.get_name())
         return task
 
-
-    #MODIFICATION class (the data will be modified)
     def delete_task(self, tid):
+        """Delete the task 'tid'.
+
+        Note: this modifies the datastore.
+
+        :param tid: The id of the task to be deleted.
+        """
         self.ds.delete_task(tid)
 
     #Return a list of active tasks tid
@@ -82,7 +101,7 @@ class Requester :
     # is_root : if True, only tasks that have no parent in the current selection
     # are eligible. If False, all tasks are eligible
     def get_tasks_list(self, tags=None, status=["Active"], notag_only=False,
-                       started_only=True,is_root=False):
+                       started_only=True, is_root=False):
         l_tasks = []
         for tid in self.ds.all_tasks():
             task = self.get_task(tid)
@@ -169,7 +188,7 @@ class Requester :
             tags=tags, status=closed, notag_only=notag_only,
             started_only=started_only, is_root=is_root)
 
-    def get_notes_list(self,tags=None,notag_only=False):
+    def get_notes_list(self, tags=None, notag_only=False):
         note = ["Note"]
         return self.get_tasks_list(
             tags=tags, status=note, notag_only=notag_only, started_only=False,
@@ -179,15 +198,22 @@ class Requester :
     ############### Tags ##########################
     ###############################################
 
-    #MODIFICATION
     def new_tag(self, tagname):
+        """Create a new tag called 'tagname'.
+
+        Note: this modifies the datastore.
+
+        :param tagname: The name of the new tag.
+        :return: The newly-created tag.
+        """
         return self.ds.get_tagstore().new_tag(tagname)
 
     def get_tag(self, tagname):
         return self.ds.get_tagstore().get_tag(tagname)
 
-    #Not used currently because it returns every tag that was ever used
     def get_all_tags(self):
+        """Return a list of every tag that was ever used."""
+        # XXX: Not actually used.
         return returnlist(self.ds.get_tagstore().get_all_tags())
 
     def get_notag_tag(self):
@@ -196,13 +222,17 @@ class Requester :
     def get_alltag_tag(self):
         return self.ds.get_tagstore().get_alltag_tag()
 
-    #return only tags that are currently used in a task
-    #FIXME it should be only active and visible tasks
     def get_used_tags(self):
+        """Return tags currently used by a task.
+
+        :return: A list of tags used by a task.
+        """
+        # FIXME: it should be only active and visible tasks
         l = []
         for tid in self.ds.all_tasks():
             t = self.get_task(tid)
             if t:
                 for tag in t.get_tags():
-                    if tag not in l: l.append(tag)
+                    if tag not in l:
+                        l.append(tag)
         return l
