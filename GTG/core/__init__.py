@@ -49,7 +49,6 @@ from xdg.BaseDirectory import *
 from GTG.tools         import cleanxml
 from configobj         import ConfigObj
 
-import GTG
 from GTG.core          import firstrun_tasks
 
 class CoreConfig:

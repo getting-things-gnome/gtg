@@ -909,11 +909,11 @@ class TaskView(gtk.TextView):
             for ta in itera.get_toggled_tags(False) :
                 if ta.get_data('is_subtask') :
                     subtask_nbr = ta.get_data('child')
-            
+
         #New line : the user pressed enter !
         #If the line begins with "-", it's a new subtask !
         if tex == '\n' :
-            insert_point = self.buff.create_mark("insert_point",itera,True)
+            self.buff.create_mark("insert_point", itera, True)
             #First, we close tag tags.
             #If we are at the end of a tag, we look for closed tags
             closed_tag = None
@@ -923,7 +923,6 @@ class TaskView(gtk.TextView):
             #Or maybe we are in the middle of a tag
             else :
                 list_stag = itera.get_tags()
-            stag = None
             for t in list_stag :
                 if t.get_data('is_tag') :
                     closed_tag = t.get_data('tagname')
@@ -984,17 +983,15 @@ class TaskView(gtk.TextView):
                 self.buff.create_mark(anchor,itera,True)
                 self.buff.create_mark("/%s"%anchor,itera,False)
         self.insert_sigid = self.buff.connect('insert-text', self._insert_at_cursor)
-        self.keypress_sigid = self.connect('key_press_event', self._keypress)
+        self.connect('key_press_event', self._keypress)
         self.modified_sigid = self.buff.connect("changed" , self.modified)
         
     def _keypress(self, widget, event):
         # Check for Ctrl-Return/Enter
         if event.state & gtk.gdk.CONTROL_MASK and event.keyval in (gtk.keysyms.Return, gtk.keysyms.KP_Enter):
-            buff = self.buff   
+            buff = self.buff
             cursor_mark = buff.get_insert()
             cursor_iter = buff.get_iter_at_mark(cursor_mark)
-            table = buff.get_tag_table()
-
             local_start = cursor_iter.copy()
 
             for tag in local_start.get_tags():

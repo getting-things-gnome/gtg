@@ -653,7 +653,7 @@ class TaskBrowser:
             return False
         year,month,day = splited_date
         try :
-            date = datetime.date(int(year),int(month),int(day))
+            datetime.date(int(year),int(month),int(day))
         except ValueError :
             return False
         else :

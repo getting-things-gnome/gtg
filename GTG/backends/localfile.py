@@ -21,7 +21,7 @@
 #Localfile is a read/write backend that will store your tasks in an XML file
 #This file will be in your $XDG_DATA_DIR/gtg folder.
 
-import os,shutil
+import os
 import uuid
 
 from GTG.core  import CoreConfig
