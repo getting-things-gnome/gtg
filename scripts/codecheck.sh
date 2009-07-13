@@ -61,3 +61,8 @@ for i in GTG/*; do
 		pylint --rcfile=/dev/null --include-ids=y --reports=n --disable-msg=$disabled $i |grep -v "$grepped_out"
 	fi
 done
+
+
+echo "Running pep8"
+echo "############"
+find . -name '*.py' -print0 | xargs -0 ./scripts/pep8.py
