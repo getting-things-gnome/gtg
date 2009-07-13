@@ -84,59 +84,62 @@ class Requester :
         """
         self.ds.delete_task(tid)
 
-    #Return a list of active tasks tid
-    #
-    # tags = []. All tasks will have at least one of those tags.
-    # If None, all tasks are eligible
-    #
-    # Status = [] : a list of status to choose from
-    # available status are : Active - Done - Dismiss - Deleted
-    # If none, all tasks are eligible
-    #
-    # notag_only : if True, only tasks without tags are selected
-    #
-    # started_only : if True, only tasks with an already passed started date are selected
-    # (task with no startdate are considered as started)
-    #
-    # is_root : if True, only tasks that have no parent in the current selection
-    # are eligible. If False, all tasks are eligible
     def get_tasks_list(self, tags=None, status=["Active"], notag_only=False,
                        started_only=True, is_root=False):
+        """Return a list of tids of tasks.
+
+        By default, returns a list of all the tids of all active tasks.
+
+        :param tags: A list of tags. If provided, restricts the list of
+            returned tasks to those that have one or more of these tags.
+        :param status: A list of statuses. If provided, restricts the list of
+            returned tasks to those that are in one of these states.
+        :param notag_only: If True, only include tasks without tags. Defaults
+            to False.
+        :param started_only: If True, only include tasks that have been
+            started. That is, tasks that have an already-passed start date or
+            tasks with no startdate. Defaults to 'True'.
+        :param is_root: If True, only include tasks that have no parent in the
+            current selection. Defaults to False.
+
+        :return: A list of task ids (tids).
+        """
         l_tasks = []
         for tid in self.ds.all_tasks():
             task = self.get_task(tid)
             if task and not task.is_loaded():
                 task = None
-            #This is status filtering
+            # This is status filtering.
             if task and not task.get_status() in status:
                 task = None
-            #This is tag filtering
-            #If we still have a task and we need to filter tags
-            #(if tags is None, this test is skipped)
+            # This is tag filtering.
+            # If we still have a task and we need to filter tags
+            # (if tags is None, this test is skipped)
             if task and tags:
                 if not task.has_tags(tags):
                     task = None
-                #Checking here the is_root because it has sense only with tags
+                # Checking here the is_root because it has sense only with
+                # tags.
                 elif is_root and task.has_parents(tag=tags):
                     task = None
-            #If tags = [], we still check the is_root
+            #If tags = [], we still check the is_root.
             elif task and is_root:
                 if task.has_parents():
-                    #We accept children of a note
+                    # We accept children of a note.
                     for p in task.get_parents():
                         pp = self.get_task(p)
                         if pp.get_status() != "Note":
                             task = None
-            #Now checking if it has no tag
+            # Now checking if it has no tag.
             if task and notag_only:
                 if not task.has_tags(notag_only=notag_only):
                     task = None
-            #This is started filtering
+            # This is started filtering.
             if task and started_only:
                 if not task.is_started():
                     task = None
 
-            #If we still have a task, we return it
+            # If we still have a task, we return it.
             if task:
                 l_tasks.append(tid)
         return l_tasks
