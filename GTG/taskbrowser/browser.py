@@ -1144,8 +1144,8 @@ class TaskBrowser:
     #When an editor is closed, it should deregister itself
     def close_task(self,tid) :
         if self.opened_task.has_key(tid) :
-            del self.opened_task[tid]       
-    
+            del self.opened_task[tid]
+
     def on_tag_treeview_button_press_event(self,treeview,event) :
         if event.button == 3:
             x = int(event.x)
@@ -1155,24 +1155,26 @@ class TaskBrowser:
             if pthinfo is not None:
                 path, col, cellx, celly = pthinfo #pylint: disable-msg=W0612
                 treeview.grab_focus()
-                treeview.set_cursor( path, col, 0)
-                self.tagpopup.popup( None, None, None, event.button, time)
-                tags = self.get_selected_tags()[0]
-                nonworkview_item = self.tagpopup.get_children()[1]
-                nonworkview_item.hide()
-                if len(tags) > 0 :
-                    tag = tags[0]
-                    attri = tag.get_attribute("nonworkview")
-                    #We must inverse because the tagstore has True
-                    #for tasks that are not in workview
-                    if attri == "True" : toset = False
-                    else : toset = True
-                    nonworkview_item.set_active(toset)
-                    nonworkview_item.show()
-                else :
-                    nonworkview_item.hide()
+                treeview.set_cursor(path, col, 0)
+                selected_tags = self.get_selected_tags()[0]
+                if len(selected_tags) > 0:
+                    # Then we are looking at single, normal tag rather than
+                    # the special 'All tags' or 'Tasks without tags'. We only
+                    # want to popup the menu for normal tags.
+                    display_in_workview_item = self.tagpopup.get_children()[1]
+                    selected_tag = selected_tags[0]
+                    nonworkview = selected_tag.get_attribute("nonworkview")
+                    # We must invert because the tagstore has "True" for tasks
+                    # that are *not* in workview, and the checkbox is set if the
+                    # tag *is* shown in the workview.
+                    if nonworkview == "True":
+                        shown = False
+                    else:
+                        shown = True
+                    display_in_workview_item.set_active(shown)
+                    self.tagpopup.popup(None, None, None, event.button, time)
             return 1
-            
+
     def on_nonworkviewtag_toggled(self,widget) : #pylint: disable-msg=W0613
         tags = self.get_selected_tags()[0]
         nonworkview_item = self.tagpopup.get_children()[1]
