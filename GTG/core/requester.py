@@ -30,13 +30,13 @@ class Requester :
     Multiple `Requester`s can exist on the same datastore, so they should
     never have state of their own.
     """
-    
+
     def __init__(self,datastore) :
         self.ds = datastore
-        
+
     def connect(self,signal,func) :
         self.ds.connect(signal,func)
-        
+
     ############## Tasks ##########################
     ###############################################
 
@@ -44,13 +44,13 @@ class Requester :
     #Return True if the task exists
     def has_task(self,tid) :
         return self.ds.has_task(tid)
-            
+
     #Get the task with the given pid
     #If the task doesn't exist, we create it and force the pid
     def get_task(self,tid) :
         task = self.ds.get_task(tid)
         return task
-        
+
     #Pid is the project in which the new task will be created
     #MODIFICATION class (the data will be modified)
     def new_task(self,pid=None,tags=None,newtask=True) :
@@ -59,12 +59,12 @@ class Requester :
             for t in tags :
                 task.add_tag(t.get_name())
         return task
-        
-        
+
+
     #MODIFICATION class (the data will be modified)
     def delete_task(self,tid) :
         self.ds.delete_task(tid)
-        
+
     #Return a list of active tasks tid
     #
     # tags = []. All tasks will have at least one of those tags.
@@ -116,12 +116,12 @@ class Requester :
             if task and started_only :
                 if not task.is_started() :
                     task = None
-                    
+
             #If we still have a task, we return it
             if task :
                 l_tasks.append(tid)
         return l_tasks
-        
+
     #Workable means that the task have no pending subtasks and can be done directly
     #It also means that all tags are to be "workview" tags (which is the default for tags)
     #Except if the tag is explicitely selected
@@ -159,40 +159,40 @@ class Requester :
             for t in temp_tasks :
                 l_tasks.append(t)
             return l_tasks
-        
+
     def get_closed_tasks_list(self,tags=None,notag_only=False,\
                             started_only=False,is_root=False) :
         closed = ["Done","Dismiss","Deleted"]
         return self.get_tasks_list(tags=tags,status=closed,\
                  notag_only=notag_only,started_only=started_only,is_root=is_root)
-                 
+
     def get_notes_list(self,tags=None,notag_only=False) :
         note = ["Note"]
         return self.get_tasks_list(tags=tags,status=note,\
                  notag_only=notag_only,started_only=False,is_root=False)
-       
-       
-                 
+
+
+
     ############### Tags ##########################
-    ###############################################    
-    
+    ###############################################
+
     #MODIFICATION
     def new_tag(self,tagname) :
         return self.ds.get_tagstore().new_tag(tagname)
-        
+
     def get_tag(self,tagname) :
         return self.ds.get_tagstore().get_tag(tagname)
-    
+
     #Not used currently because it returns every tag that was ever used
     def get_all_tags(self):
         return returnlist(self.ds.get_tagstore().get_all_tags())
-        
+
     def get_notag_tag(self) :
         return self.ds.get_tagstore().get_notag_tag()
     def get_alltag_tag(self) :
         return self.ds.get_tagstore().get_alltag_tag()
-        
-        
+
+
     #return only tags that are currently used in a task
     #FIXME it should be only active and visible tasks
     def get_used_tags(self) :
@@ -203,4 +203,3 @@ class Requester :
                 for tag in t.get_tags() :
                     if tag not in l: l.append(tag)
         return l
-        
