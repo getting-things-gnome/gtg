@@ -154,19 +154,18 @@ class Requester :
         if workable:
             nonwork_tag = self.ds.get_tagstore().get_all_tags(
                 attname="nonworkview", attvalue="True")
-            #nonwork_tag = []
-            #We build the list of tags we will skip
+            # We build the list of tags we will skip.
             for nwtag in nonwork_tag:
-                #If the tag is explicitely selected, it doesn't go in the
-                #nonwork_tag
+                # If the tag is explicitly selected, it doesn't go in the
+                # nonwork_tag.
                 if tags and nwtag in tags:
                     nonwork_tag.remove(nwtag)
-            #We build the task list
+            # We build the task list
             temp_tasks = self.get_active_tasks_list(
                 tags=tags, notag_only=notag_only, started_only=True,
                 is_root=False, workable=False)
-            #Now we verify that the tasks are workable and doesn't have
-            #a nonwork_tag.
+            # Now we verify that the tasks are workable and don't have a
+            # nonwork_tag.
             for tid in temp_tasks:
                 t = self.get_task(tid)
                 if t and t.is_workable():
