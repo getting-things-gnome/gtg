@@ -18,8 +18,6 @@
 # -----------------------------------------------------------------------------
 
 
-from GTG.tools.listes import *
-
 #Requester is a pure View object. It will not do anything but it will
 #be used by any Interface to handle the requests to the datastore
 
@@ -236,7 +234,7 @@ class Requester :
 
     def get_all_tags(self):
         """Return a list of every tag that was ever used."""
-        return returnlist(self.ds.get_tagstore().get_all_tags())
+        return list(self.ds.get_tagstore().get_all_tags())
         
     def get_notag_tag(self) :
         return self.ds.get_tagstore().get_notag_tag()
