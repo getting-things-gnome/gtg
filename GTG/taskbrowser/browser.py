@@ -1158,19 +1158,23 @@ class TaskBrowser:
                 path, col, cellx, celly = pthinfo #pylint: disable-msg=W0612
                 treeview.grab_focus()
                 treeview.set_cursor(path, col, 0)
-                self.tagpopup.popup(None, None, None, event.button, time)
-                # There will always be exactly one selected tag.
-                selected_tag = self.get_selected_tags()[0][0]
-                display_in_workview_item = self.tagpopup.get_children()[1]
-                nonworkview = selected_tag.get_attribute("nonworkview")
-                # We must invert because the tagstore has "True" for tasks
-                # that are *not* in workview, and the checkbox is set if the
-                # tag *is* shown in the workview.
-                if nonworkview == "True":
-                    shown = False
-                else:
-                    shown = True
-                display_in_workview_item.set_active(shown)
+                selected_tags = self.get_selected_tags()[0]
+                if len(selected_tags) > 0:
+                    # Then we are looking at single, normal tag rather than
+                    # the special 'All tags' or 'Tasks without tags'. We only
+                    # want to popup the menu for normal tags.
+                    display_in_workview_item = self.tagpopup.get_children()[1]
+                    selected_tag = selected_tags[0]
+                    nonworkview = selected_tag.get_attribute("nonworkview")
+                    # We must invert because the tagstore has "True" for tasks
+                    # that are *not* in workview, and the checkbox is set if the
+                    # tag *is* shown in the workview.
+                    if nonworkview == "True":
+                        shown = False
+                    else:
+                        shown = True
+                    display_in_workview_item.set_active(shown)
+                    self.tagpopup.popup(None, None, None, event.button, time)
             return 1
 
     def on_nonworkviewtag_toggled(self,widget) : #pylint: disable-msg=W0613
