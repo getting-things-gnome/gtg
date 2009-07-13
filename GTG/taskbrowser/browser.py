@@ -1161,7 +1161,6 @@ class TaskBrowser:
                 self.tagpopup.popup( None, None, None, event.button, time)
                 tags = self.get_selected_tags()[0]
                 nonworkview_item = self.tagpopup.get_children()[1]
-                nonworkview_item.hide()
                 if len(tags) > 0 :
                     tag = tags[0]
                     attri = tag.get_attribute("nonworkview")
@@ -1170,9 +1169,6 @@ class TaskBrowser:
                     if attri == "True" : toset = False
                     else : toset = True
                     nonworkview_item.set_active(toset)
-                    nonworkview_item.show()
-                else :
-                    nonworkview_item.hide()
             return 1
             
     def on_nonworkviewtag_toggled(self,widget) : #pylint: disable-msg=W0613
