@@ -20,8 +20,10 @@
 from datetime import date
 import xml.dom.minidom
 
-from GTG.tools.dates import *
-from GTG.tools.listes import *
+from GTG import _
+from GTG.tools.dates import strtodate
+from GTG.tools.listes import returnlist
+
 
 #This class represent a task in GTG.
 #You should never create a Task directly. Use the datastore.new_task() function.
