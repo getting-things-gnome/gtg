@@ -160,7 +160,7 @@ class Requester :
                 # nonwork_tag.
                 if tags and nwtag in tags:
                     nonwork_tag.remove(nwtag)
-            # We build the task list
+            # We build the task list.
             temp_tasks = self.get_active_tasks_list(
                 tags=tags, notag_only=notag_only, started_only=True,
                 is_root=False, workable=False)
