@@ -185,12 +185,22 @@ class Requester :
 
     def get_closed_tasks_list(self, tags=None, notag_only=False,
                               started_only=False, is_root=False):
+        """Return a list of task ids for closed tasks.
+
+        "Closed" means either "done", "dismissed" or "deleted".
+
+        See `get_tasks_list` for more information about the parameters.
+        """
         closed = ["Done", "Dismiss", "Deleted"]
         return self.get_tasks_list(
             tags=tags, status=closed, notag_only=notag_only,
             started_only=started_only, is_root=is_root)
 
     def get_notes_list(self, tags=None, notag_only=False):
+        """Return a list of task ids for notes.
+
+        See `get_tasks_list` for more information about the parameters.
+        """
         note = ["Note"]
         return self.get_tasks_list(
             tags=tags, status=note, notag_only=notag_only, started_only=False,
