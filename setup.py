@@ -43,7 +43,7 @@ def create_icon_list():
             if file.endswith(".png") or file.endswith(".svg"):
                 dirList.append(os.path.join(root,file))
         if len(dirList)!=0:
-	    newroot = root.replace("data/","")
+            newroot = root.replace("data/","")
             fileList.append( (os.path.join(DATA_DIR,newroot),dirList) )
     return fileList
 

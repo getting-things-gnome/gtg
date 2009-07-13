@@ -994,7 +994,7 @@ class TaskView(gtk.TextView):
             cursor_mark = buff.get_insert()
             cursor_iter = buff.get_iter_at_mark(cursor_mark)
             table = buff.get_tag_table()
-			
+
             local_start = cursor_iter.copy()
 
             for tag in local_start.get_tags():
@@ -1005,7 +1005,7 @@ class TaskView(gtk.TextView):
                         self.open_task(anchor)
                     elif typ == "http" :
                         openurl.openurl(anchor)
-					
+
             return True
 
     #Deindent the current line of one level
