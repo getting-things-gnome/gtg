@@ -21,7 +21,6 @@ from datetime import date
 import xml.dom.minidom
 
 from GTG.tools.dates import *
-from GTG.tools.listes import *
 
 #This class represent a task in GTG.
 #You should never create a Task directly. Use the datastore.new_task() function.
