@@ -144,12 +144,18 @@ class Requester :
                 l_tasks.append(tid)
         return l_tasks
 
-    #Workable means that the task have no pending subtasks and can be done directly
-    #It also means that all tags are to be "workview" tags (which is the default for tags)
-    #Except if the tag is explicitely selected
     def get_active_tasks_list(self, tags=None, notag_only=False,
                               started_only=True, is_root=False,
                               workable=False):
+        """Return a list of task ids for all active tasks.
+
+        See `get_tasks_list` for more information about the parameters.
+
+        :param workable: If True, then only include tasks with no pending
+            subtasks and that can be done directly and exclude any tasks that
+            have a 'nonworkview' tag which is not explicitly provided in the
+            'tags' parameter. Defaults to False.
+        """
         l_tasks = []
         if workable:
             nonwork_tag = self.ds.get_tagstore().get_all_tags(
@@ -239,7 +245,7 @@ class Requester :
 
         :return: A list of tags used by a task.
         """
-        # FIXME: it should be only active and visible tasks
+        # FIXME: it should be only active and visible tasks.
         l = []
         for tid in self.ds.all_tasks():
             t = self.get_task(tid)
