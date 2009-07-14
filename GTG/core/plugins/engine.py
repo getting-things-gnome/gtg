@@ -19,6 +19,7 @@
 
 import pkgutil
 import imp
+import os
 
 try:
     import pygtk
@@ -45,9 +46,17 @@ class PluginEngine:
     # loads the plugins from the plugin dir
     def LoadPlugins(self):
         plugins = {}
+        
+        # find all the folders in the plugin dir
+        plugin_dirs = []
+        plugin_dirs.append(self.plugin_path[0])
+        for f in os.listdir(self.plugin_path[0]):
+            if os.path.isdir(os.path.join(self.plugin_path[0], f)):
+                plugin_dirs.append(os.path.join(self.plugin_path[0], f))
+        
         try:
-            for loader, name, ispkg in pkgutil.iter_modules(self.plugin_path):
-                file, pathname, desc = imp.find_module(name, self.plugin_path)
+            for loader, name, ispkg in pkgutil.iter_modules(plugin_dirs):
+                file, pathname, desc = imp.find_module(name, plugin_dirs)
                 plugins[name] = imp.load_module(name, file, pathname, desc)
         except Exception, e:
             print "Error: %s" % e
