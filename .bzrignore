@@ -33,3 +33,5 @@ tags.xml.bak.3
 .settings
 .bzrignore
 
+debug_data
+_trial_temp

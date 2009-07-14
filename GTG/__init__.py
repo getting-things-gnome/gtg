@@ -96,8 +96,8 @@ for module in gettext, glade:
 translation = gettext.translation(GETTEXT_DOMAIN, LOCALE_PATH,
                                   languages=languages_used,
                                   fallback=True)
-import __builtin__
-__builtin__._ = translation.gettext
+
+_ = translation.gettext
 
 #GTG directories setup
 if not os.path.isdir( os.path.join(LOCAL_ROOTDIR,'data') ) :

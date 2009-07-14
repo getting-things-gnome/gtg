@@ -1,3 +1,4 @@
+from GTG import _
 from GTG.tools import cleanxml
 
 def populate():

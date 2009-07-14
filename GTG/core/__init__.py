@@ -45,11 +45,10 @@
 
 #=== IMPORT ====================================================================
 import os
-from xdg.BaseDirectory import *
+from xdg.BaseDirectory import xdg_data_home, xdg_config_home
 from GTG.tools         import cleanxml
 from configobj         import ConfigObj
 
-import GTG
 from GTG.core          import firstrun_tasks
 
 class CoreConfig:

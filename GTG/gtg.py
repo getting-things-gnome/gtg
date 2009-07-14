@@ -46,6 +46,7 @@
 import sys, os
 
 #our own imports
+from GTG import _
 from GTG.taskbrowser.browser import TaskBrowser
 from GTG.core.datastore      import DataStore
 from GTG.core.dbuswrapper    import DBusTaskWrapper

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# pylint: disable-msg=W0201
 # -----------------------------------------------------------------------------
 # Gettings Things Gnome! - a personnal organizer for the GNOME desktop
 # Copyright (c) 2008-2009 - Lionel Dricot & Bertrand Rousseau
@@ -33,6 +34,7 @@ import datetime
 
 #our own imports
 import GTG
+from GTG import _
 from GTG.taskeditor.editor            import TaskEditor
 from GTG.taskbrowser.CellRendererTags import CellRendererTags
 from GTG.taskbrowser                  import GnomeConfig
@@ -507,15 +509,15 @@ class TaskBrowser:
               }
         wTree.signal_autoconnect(dic)
         window = wTree.get_widget("ColorChooser")
-	# Get previous color
+        # Get previous color
         tags,notag_only = self.get_selected_tags() #pylint: disable-msg=W0612
         if len(tags) == 1:
-                color = tags[0].get_attribute("color")
-                if color != None:
-			colorspec = gtk.gdk.Color(color)
-			colorsel = window.colorsel
-			colorsel.set_previous_color(colorspec)
-			colorsel.set_current_color(colorspec)
+            color = tags[0].get_attribute("color")
+            if color != None:
+                colorspec = gtk.gdk.Color(color)
+                colorsel = window.colorsel
+                colorsel.set_previous_color(colorspec)
+                colorsel.set_current_color(colorspec)
         window.show()
 
     def on_color_response(self,widget,response) :
@@ -653,7 +655,7 @@ class TaskBrowser:
             return False
         year,month,day = splited_date
         try :
-            date = datetime.date(int(year),int(month),int(day))
+            datetime.date(int(year),int(month),int(day))
         except ValueError :
             return False
         else :
