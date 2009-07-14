@@ -9,6 +9,9 @@ You can run the unit tests for GTG with::
 
   make check
 
+If you are so inclined and have the right software installed, you can also run
+the tests with ``trial GTG``.
+
 You can also manually test your changes with debugging data with::
 
   ./scripts/debug.sh
