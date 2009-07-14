@@ -18,8 +18,9 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-"""Unittests for GTG
-Some of these tests will generated files in 
+"""Tests for GTG backends.
+
+Some of these tests will generate files in
 xdg.BaseDirectory.xdg_data_home/gtg directory.
 """
 
@@ -35,7 +36,7 @@ from GTG.tools import cleanxml
 
 
 class GtgBackendsUniTests(unittest.TestCase):
-    """Unittests for GTG backends"""
+    """Tests for GTG backends."""
 
     def __init__(self, test):
         unittest.TestCase.__init__(self, test)
@@ -43,7 +44,6 @@ class GtgBackendsUniTests(unittest.TestCase):
         self.datafile = ''
         self.taskpath = ''
         self.datapath = ''
-        
 
     def test_localfile_get_name(self):
         """Tests for localfile/get_name function :
@@ -58,12 +58,12 @@ class GtgBackendsUniTests(unittest.TestCase):
         - a string is expected.
         """
         res = localfile.get_description()
-        expectedres = "Your tasks are saved in an XML file located in \
-your HOME folder"
+        expectedres = ("Your tasks are saved in an XML file located in "
+                       "your HOME folder")
         self.assertEqual(res, expectedres)
 
     def test_localfile_get_parameters(self):
-        """Tests for localfile/get_parameters function : 
+        """Tests for localfile/get_parameters function:
         - a string is expected.
         """
         res = localfile.get_parameters()
@@ -71,7 +71,7 @@ your HOME folder"
         self.assertEqual(res['filename'], expectedres)
 
     def test_localfile_get_features(self):
-        """Tests for localfile/get_features function : 
+        """Tests for localfile/get_features function:
         - an empty dictionary is expected.
         """
         res = localfile.get_features()
@@ -79,7 +79,7 @@ your HOME folder"
         self.assertEqual(res, expectedres)
 
     def test_localfile_get_type(self):
-        """Tests for localfile/get_type function : 
+        """Tests for localfile/get_type function:
         - a string is expected.
         """
         res = localfile.get_type()
@@ -87,7 +87,7 @@ your HOME folder"
         self.assertEqual(res, expectedres)
 
     def test_localfile_backend(self):
-        """Tests for localfile/Backend Class : 
+        """Tests for localfile/Backend Class:
         - an empty list is expected
         """
         res = localfile.Backend({})
@@ -95,7 +95,7 @@ your HOME folder"
         self.assertEqual(res.get_tasks_list(), expectedres)
 
     def test_localfile_backend_method1(self):
-        """Tests for localfile/Backend/new_task_id method : 
+        """Tests for localfile/Backend/new_task_id method:
         - None value is expected.
         """
         res = localfile.Backend({})
@@ -103,7 +103,7 @@ your HOME folder"
         self.assertEqual(res.new_task_id(), expectedres)
 
     def test_localfile_backend_method2(self):
-        """Tests for localfile/Backend/get_tasks_list method : 
+        """Tests for localfile/Backend/get_tasks_list method:
         - an integer value is expected.
         """
         self.create_test_environment()
@@ -111,7 +111,7 @@ your HOME folder"
         xmlproject = doc.getElementsByTagName('backend')
         for domobj in xmlproject:
             dic = {}
-            if domobj.hasAttribute("module") :
+            if domobj.hasAttribute("module"):
                 dic["module"] = str(domobj.getAttribute("module"))
                 dic["pid"] = str(domobj.getAttribute("pid"))
                 dic["xmlobject"] = domobj
@@ -121,7 +121,7 @@ your HOME folder"
         self.assertEqual(len(res.get_tasks_list()), expectedres)
 
     def test_localfile_backend_method3(self):
-        """Tests for localfile/Backend/remove_task method : 
+        """Tests for localfile/Backend/remove_task method:
         - parse task file to check if task has been removed.
         """
         self.create_test_environment()
@@ -129,7 +129,7 @@ your HOME folder"
         xmlproject = doc.getElementsByTagName('backend')
         for domobj in xmlproject:
             dic = {}
-            if domobj.hasAttribute("module") :
+            if domobj.hasAttribute("module"):
                 dic["module"] = str(domobj.getAttribute("module"))
                 dic["pid"] = str(domobj.getAttribute("pid"))
                 dic["xmlobject"] = domobj
@@ -146,7 +146,7 @@ your HOME folder"
         self.assertEqual(res, expectedres)
 
     def test_localfile_backend_method4(self):
-        """Tests for localfile/Backend/get_task method : 
+        """Tests for localfile/Backend/get_task method:
         - Compares task titles to check if method works.
         """
         self.create_test_environment()
@@ -154,7 +154,7 @@ your HOME folder"
         xmlproject = doc.getElementsByTagName('backend')
         for domobj in xmlproject:
             dic = {}
-            if domobj.hasAttribute("module") :
+            if domobj.hasAttribute("module"):
                 dic["module"] = str(domobj.getAttribute("module"))
                 dic["pid"] = str(domobj.getAttribute("pid"))
                 dic["xmlobject"] = domobj
@@ -166,7 +166,7 @@ your HOME folder"
         self.assertEqual(newtask.get_title(), u"Ceci est un test")
 
     def test_localfile_backend_method5(self):
-        """Tests for localfile/Backend/set_task method : 
+        """Tests for localfile/Backend/set_task method:
         - parses task file to check if new task has been stored.
         """
         self.create_test_environment()
@@ -174,7 +174,7 @@ your HOME folder"
         xmlproject = doc.getElementsByTagName('backend')
         for domobj in xmlproject:
             dic = {}
-            if domobj.hasAttribute("module") :
+            if domobj.hasAttribute("module"):
                 dic["module"] = str(domobj.getAttribute("module"))
                 dic["pid"] = str(domobj.getAttribute("pid"))
                 dic["xmlobject"] = domobj
@@ -195,13 +195,22 @@ your HOME folder"
         """Create the test environment"""
         self.taskfile = 'test.xml'
         self.datafile = 'projectstest.xml'
-        tasks = ['<?xml version="1.0" ?>\n', '<project>\n', 
-            '\t<task id="0@1" status="Active" tags="">\n', '\t\t<title>\n', 
-            '\t\t\tCeci est un test\n', '\t\t</title>\n', '\t</task>\n', 
-            '</project>\n']
-        data = ['<?xml version="1.0" ?>\n', '<config>\n', 
-            '\t<backend filename="test.xml" module="localfile" pid="1"/>\n', 
-            '</config>\n']
+        tasks = [
+            '<?xml version="1.0" ?>\n',
+            '<project>\n',
+            '\t<task id="0@1" status="Active" tags="">\n',
+            '\t\t<title>\n',
+            '\t\t\tCeci est un test\n',
+            '\t\t</title>\n',
+            '\t</task>\n',
+            '</project>\n',
+            ]
+        data = [
+            '<?xml version="1.0" ?>\n',
+            '<config>\n',
+            '\t<backend filename="test.xml" module="localfile" pid="1"/>\n',
+            '</config>\n',
+            ]
         testdir = os.path.join(xdg.BaseDirectory.xdg_data_home, 'gtg')
         if not os.path.exists(testdir):
             os.makedirs(testdir)
@@ -210,6 +219,6 @@ your HOME folder"
         open(self.taskpath, 'w').writelines(tasks)
         open(self.datapath, 'w').writelines(data)
 
-if __name__ == '__main__': 
-    unittest.main()
 
+if __name__ == '__main__':
+    unittest.main()
