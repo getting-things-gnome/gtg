@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
 # Gettings Things Gnome! - a personnal organizer for the GNOME desktop
@@ -220,5 +219,5 @@ class GtgBackendsUniTests(unittest.TestCase):
         open(self.datapath, 'w').writelines(data)
 
 
-if __name__ == '__main__':
-    unittest.main()
+def test_suite():
+    return unittest.TestLoader().loadTestsFromName(__name__)

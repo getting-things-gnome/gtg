@@ -1,7 +1,7 @@
 
 # Run all of the tests.
 check:
-	./tests/unit.sh backends
+	./run-tests
 
 # Check for common & easily catchable Python mistakes.
 pyflakes:
