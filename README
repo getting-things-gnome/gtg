@@ -46,6 +46,11 @@ or install it system-wide (must install as root to install system-wide):
     $ sudo python setup.py install # must be root to install system-wide
     $ gtg
 
+Please note you have to pass --install-layout=deb option to setup.py script
+to correctly install GTG on recent Ubuntu versions (9.04 "Jaunty" or later):
+
+    $ sudo python setup.py install --install-layout=deb
+
 ==== Usage ====
 
 When writing a task, keep in mind that:
