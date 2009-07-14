@@ -19,9 +19,12 @@
 
 """Unit tests for GTG."""
 
+import unittest
 
 from GTG.tests import backends
 
 
 def test_suite():
-    return backends.test_suite()
+    return unittest.TestSuite([
+        backends.test_suite(),
+        ])
