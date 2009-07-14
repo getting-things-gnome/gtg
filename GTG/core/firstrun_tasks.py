@@ -37,7 +37,7 @@ def populate():
     text2 += "\n\n\n"
     text2 += _("Task and subtasks can be re-organized by drag-n-drop in the tasks list.")
     text2 += "\n\n"
-    text2 += _("Some concept come with subtasks: for example, a subtask due date can never be after its parent due date.")
+    text2 += _("Some concepts come with subtasks: for example, a subtask due date can never be after its parent due date.")
     text2 += "\n\n"
     text2 += _("Also, marking a parent as done will mark all the subtasks as done.")
     t2 = addtask(doc,"1@1",title2,text2,[])
