@@ -42,6 +42,7 @@ W warnings
 400 imports
 500 line length
 600 deprecation
+700 statements
 
 You can add checks to this program by writing plugins. Each plugin is
 a simple function that is called for each line of source code, either
@@ -61,7 +62,7 @@ the first argument:
 
 def maximum_line_length(physical_line)
 def extraneous_whitespace(logical_line)
-def indentation(logical_line, indent_level, state)
+def blank_lines(logical_line, blank_lines, indent_level, line_number)
 
 The last example above demonstrates how check plugins can request
 additional information with extra arguments. All attributes of the
@@ -69,8 +70,12 @@ Checker object are available. Some examples:
 
 lines: a list of the raw lines from the input file
 tokens: the tokens that contribute to this logical line
-state: dictionary for passing information across lines
+line_number: line number in the input file
+blank_lines: blank lines before this one
+indent_char: first indentation character in this file (' ' or '\t')
 indent_level: indentation (with tabs expanded to multiples of 8)
+previous_indent_level: indentation on previous line
+previous_logical: previous logical line
 
 The docstring of each check function shall be the relevant part of
 text from PEP 8. It is printed if the user enables --show-pep8.
@@ -88,7 +93,7 @@ from keyword import iskeyword
 from fnmatch import fnmatch
 
 __version__ = '0.2.0'
-__revision__ = '$Rev: 930 $'
+__revision__ = '$Rev: 2208 $'
 
 default_exclude = '.svn,CVS,*.pyc,*.pyo'
 
@@ -111,7 +116,7 @@ args = None
 ##############################################################################
 
 
-def tabs_or_spaces(physical_line, state):
+def tabs_or_spaces(physical_line, indent_char):
     """
     Never mix tabs and spaces.
 
@@ -123,13 +128,6 @@ def tabs_or_spaces(physical_line, state):
     these warnings become errors.  These options are highly recommended!
     """
     indent = indent_match(physical_line).group(1)
-    if not indent:
-        return
-    if 'indent_char' in state:
-        indent_char = state['indent_char']
-    else:
-        indent_char = indent[0]
-        state['indent_char'] = indent_char
     for offset, char in enumerate(indent):
         if char != indent_char:
             return offset, "E101 indentation contains mixed spaces and tabs"
@@ -157,6 +155,22 @@ def trailing_whitespace(physical_line):
         return len(stripped), "W291 trailing whitespace"
 
 
+def trailing_blank_lines(physical_line, lines, line_number):
+    """
+    JCR: Trailing blank lines are superfluous.
+    """
+    if physical_line.strip() == '' and line_number == len(lines):
+        return 0, "W391 blank line at end of file"
+
+
+def missing_newline(physical_line):
+    """
+    JCR: The last line should have a newline.
+    """
+    if physical_line.rstrip() == physical_line:
+        return len(physical_line), "W292 no newline at end of file"
+
+
 def maximum_line_length(physical_line):
     """
     Limit all lines to a maximum of 79 characters.
@@ -178,7 +192,8 @@ def maximum_line_length(physical_line):
 ##############################################################################
 
 
-def blank_lines(logical_line, state, indent_level):
+def blank_lines(logical_line, blank_lines, indent_level, line_number,
+                previous_logical):
     """
     Separate top-level function and class definitions with two blank lines.
 
@@ -190,9 +205,13 @@ def blank_lines(logical_line, state, indent_level):
 
     Use blank lines in functions, sparingly, to indicate logical sections.
     """
-    line = logical_line
-    blank_lines = state.get('blank_lines', 0)
-    if line.startswith('def '):
+    if line_number == 1:
+        return # Don't expect blank lines before the first line
+    if previous_logical.startswith('@'):
+        return # Don't expect blank lines after function decorator
+    if (logical_line.startswith('def ') or
+        logical_line.startswith('class ') or
+        logical_line.startswith('@')):
         if indent_level > 0 and blank_lines != 1:
             return 0, "E301 expected 1 blank line, found %d" % blank_lines
         if indent_level == 0 and blank_lines != 2:
@@ -224,24 +243,34 @@ def extraneous_whitespace(logical_line):
             return found, "E203 whitespace before '%s'" % char
 
 
-def indentation(logical_line, indent_level, state):
+def missing_whitespace(logical_line):
+    """
+    JCR: Each comma, semicolon or colon should be followed by whitespace.
+    """
+    line = logical_line
+    for index in range(len(line) - 1):
+        char = line[index]
+        if char in ',;:' and line[index + 1] != ' ':
+            before = line[:index]
+            if char == ':' and before.count('[') > before.count(']'):
+                continue # Slice syntax, no space required
+            return index, "E231 missing whitespace after '%s'" % char
+
+
+def indentation(logical_line, previous_logical, indent_char,
+                indent_level, previous_indent_level):
     """
     Use 4 spaces per indentation level.
 
     For really old code that you don't want to mess up, you can continue to
     use 8-space tabs.
     """
-    line = logical_line
-    previous_level = state.get('indent_level', 0)
-    indent_expect = state.get('indent_expect', False)
-    state['indent_expect'] = line.rstrip('#').rstrip().endswith(':')
-    indent_char = state.get('indent_char', ' ')
-    state['indent_level'] = indent_level
     if indent_char == ' ' and indent_level % 4:
         return 0, "E111 indentation is not a multiple of four"
-    if indent_expect and indent_level <= previous_level:
+    indent_expect = previous_logical.endswith(':')
+    if indent_expect and indent_level <= previous_indent_level:
         return 0, "E112 expected an indented block"
-    if not indent_expect and indent_level > previous_level:
+    if indent_level > previous_indent_level and not indent_expect:
         return 0, "E113 unexpected indentation"
 
 
@@ -284,9 +313,34 @@ def whitespace_around_operator(logical_line):
         found = line.find('  ' + operator)
         if found > -1:
             return found, "E221 multiple spaces before operator"
+        found = line.find(operator + '  ')
+        if found > -1:
+            return found, "E222 multiple spaces after operator"
         found = line.find('\t' + operator)
         if found > -1:
-            return found, "E222 tab before operator"
+            return found, "E223 tab before operator"
+        found = line.find(operator + '\t')
+        if found > -1:
+            return found, "E224 tab after operator"
+
+
+def whitespace_around_comma(logical_line):
+    """
+    Avoid extraneous whitespace in the following situations:
+
+    - More than one space around an assignment (or other) operator to
+      align it with another.
+
+    JCR: This should also be applied around comma etc.
+    """
+    line = logical_line
+    for separator in ',;:':
+        found = line.find(separator + '  ')
+        if found > -1:
+            return found + 1, "E241 multiple spaces after '%s'" % separator
+        found = line.find(separator + '\t')
+        if found > -1:
+            return found + 1, "E242 tab after '%s'" % separator
 
 
 def imports_on_separate_lines(logical_line):
@@ -298,6 +352,24 @@ def imports_on_separate_lines(logical_line):
         found = line.find(',')
         if found > -1:
             return found, "E401 multiple imports on one line"
+
+
+def compound_statements(logical_line):
+    """
+    Compound statements (multiple statements on the same line) are
+    generally discouraged.
+    """
+    line = logical_line
+    found = line.find(':')
+    if -1 < found < len(line) - 1:
+        before = line[:found]
+        if (before.count('{') <= before.count('}') and # {'a': 1} (dict)
+            before.count('[') <= before.count(']') and # [1:2] (slice)
+            not re.search(r'\blambda\b', before)):     # lambda x: x
+            return found, "E701 multiple statements on one line (colon)"
+    found = line.find(';')
+    if -1 < found:
+        return found, "E702 multiple statements on one line (semicolon)"
 
 
 def python_3000_has_key(logical_line):
@@ -441,7 +513,8 @@ class Checker:
         used to feed tokenize.generate_tokens.
         """
         line = self.readline()
-        self.check_physical(line)
+        if line:
+            self.check_physical(line)
         return line
 
     def run_check(self, check, argument_names):
@@ -458,6 +531,8 @@ class Checker:
         Run all physical checks on a raw input line.
         """
         self.physical_line = line
+        if self.indent_char is None and len(line) and line[0] in ' \t':
+            self.indent_char = line[0]
         for name, check, argument_names in self.physical_checks:
             result = self.run_check(check, argument_names)
             if result is not None:
@@ -496,6 +571,8 @@ class Checker:
             length += len(text)
             previous = token
         self.logical_line = ''.join(logical)
+        assert self.logical_line.lstrip() == self.logical_line
+        assert self.logical_line.rstrip() == self.logical_line
 
     def check_logical(self):
         """
@@ -506,6 +583,7 @@ class Checker:
         self.build_tokens_line()
         first_line = self.lines[self.mapping[0][1][2][0] - 1]
         indent = first_line[:self.mapping[0][1][2][1]]
+        self.previous_indent_level = self.indent_level
         self.indent_level = expand_indent(indent)
         if options.verbose >= 2:
             print self.logical_line[:80].rstrip()
@@ -525,6 +603,7 @@ class Checker:
                                                + offset - token_offset)
                 self.report_error(original_number, original_offset,
                                   text, check)
+        self.previous_logical = self.logical_line
 
     def check_all(self):
         """
@@ -532,7 +611,10 @@ class Checker:
         """
         self.file_errors = 0
         self.line_number = 0
-        self.state = {'blank_lines': 0}
+        self.indent_char = None
+        self.indent_level = 0
+        self.previous_logical = ''
+        self.blank_lines = 0
         self.tokens = []
         parens = 0
         for token in tokenize.generate_tokens(self.readline_check_physical):
@@ -545,11 +627,16 @@ class Checker:
                 parens -= 1
             if token_type == tokenize.NEWLINE and not parens:
                 self.check_logical()
-                self.state['blank_lines'] = 0
+                self.blank_lines = 0
                 self.tokens = []
-            if token_type == tokenize.NL and len(self.tokens) == 1:
-                self.state['blank_lines'] += 1
+            if token_type == tokenize.NL and not parens:
+                self.blank_lines += 1
                 self.tokens = []
+            if token_type == tokenize.COMMENT:
+                source_line = token[4]
+                token_start = token[2][1]
+                if source_line[:token_start].strip() == '':
+                    self.blank_lines = 0
         return self.file_errors
 
     def report_error(self, line_number, offset, text, check):
@@ -622,8 +709,10 @@ def excluded(filename):
     """
     Check if options.exclude contains a pattern that matches filename.
     """
+    basename = os.path.basename(filename)
     for pattern in options.exclude:
-        if fnmatch(filename, pattern):
+        if fnmatch(basename, pattern):
+            # print basename, 'excluded because it matches', pattern
             return True
 
 
@@ -747,6 +836,7 @@ def process_options(arglist=None):
     options.messages = {}
 
     return options, args
+
 
 def _main():
     """
