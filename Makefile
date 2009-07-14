@@ -1,4 +1,7 @@
 
+check:
+	./tests/unit.sh backends
+
 pyflakes:
 	pyflakes GTG
 
@@ -10,4 +13,4 @@ pep8:
 
 lint: pyflakes pep8
 
-.PHONY: lint pyflakes pep8
+.PHONY: check lint pyflakes pep8
