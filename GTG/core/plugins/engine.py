@@ -211,7 +211,8 @@ class PluginAPI:
     # the task
     def add_tag(self, tag):
         self.task.add_tag("@" + tag)
-        self.textview.insert_text("\n@" + tag)
+        #self.textview.insert_text("@" + tag)
+        self.textview.insert_tag("@" + tag)
         
     # adds a attribute to a tag
     def add_tag_attribute(self, tag, attrib_name, attrib_value):

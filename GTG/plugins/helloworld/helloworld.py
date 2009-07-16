@@ -11,7 +11,7 @@ class pluginTest:
     PLUGIN_AUTHORS = 'Paulo Cabido <paulo.cabido@gmail.com>'
     PLUGIN_VERSION = '0.1.1'
     PLUGIN_DESCRIPTION = 'Plugin Description goes here. Helo World!'
-    PLUGIN_ENABLED = True
+    PLUGIN_ENABLED = False
 
     def __init__(self):
         self.menu_item = gtk.MenuItem("Hello World Plugin")
