@@ -21,10 +21,14 @@
 
 import unittest
 
-from GTG.tests import test_backends
+from GTG.tests import (
+    test_backends,
+    test_tagstore,
+    )
 
 
 def test_suite():
     return unittest.TestSuite([
         test_backends.test_suite(),
+        test_tagstore.test_suite(),
         ])
