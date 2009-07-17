@@ -162,10 +162,10 @@ class TaskEditor :
         self.window.connect("destroy", self.destruction)
         
         # plugins
-        self.plugins = plugins
-        pengine = PluginEngine(GTG.PLUGIN_DIR)
-        plugin_api = PluginAPI(pengine, self.window, self.wTree, self.req, task, self.textview)
-        pengine.onTaskLoad(self.plugins, plugin_api)
+        #self.plugins = plugins
+        #self.te_pengine = PluginEngine(GTG.PLUGIN_DIR)
+        #self.te_plugin_api = PluginAPI("editor", self.window, self.wTree, self.req, task, self.textview)
+        #self.te_pengine.onTaskLoad(plugins, self.te_plugin_api)
         
         self.__refresh_cb = refresh_callback
         #Putting the refresh callback at the end make the start a lot faster

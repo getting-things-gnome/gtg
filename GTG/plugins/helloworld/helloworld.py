@@ -27,8 +27,9 @@ class pluginTest:
 		# add a menu item to the menu bar
         plugin_api.AddMenuItem(self.menu_item)
         		
+        # saves the separator's index to later remove it
+        self.separator = plugin_api.AddToolbarItem(gtk.SeparatorToolItem())
         # add a item (button) to the ToolBar
-        plugin_api.AddToolbarItem(gtk.SeparatorToolItem())
         plugin_api.AddToolbarItem(self.tb_button)
 
     def onTaskOpened(self, plugin_api):
@@ -39,9 +40,10 @@ class pluginTest:
         plugin_api.AddTaskToolbarItem(gtk.SeparatorToolItem())
         plugin_api.AddTaskToolbarItem(self.tb_Taskbutton)
 		
-    def deactivate(self, plugin_api):	
+    def deactivate(self, plugin_api):
         plugin_api.RemoveMenuItem(self.menu_item)
         plugin_api.RemoveToolbarItem(self.tb_button)
+        plugin_api.RemoveToolbarItem(None, self.separator)
 		
     #load a dialog with a String
     def loadDialog(self, msg):
@@ -72,4 +74,7 @@ class pluginTest:
         self.loadDialog("Hello World! The tag @hello_world was just added to the end of the task!")
         plugin_api.add_tag("hello_world")
 		#plugin_api.add_tag_attribute("@addingtag", "atrrib_teste", "teste")
+        
+    def teste(self):
+        print "TESTE!"
 	

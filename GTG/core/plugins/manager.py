@@ -51,6 +51,9 @@ class PluginManager:
         self.lblPluginVersion = self.wTree.get_widget("lblPluginVersion")
         self.lblPluginAuthors = self.wTree.get_widget("lblPluginAuthors")
         self.txtPluginDescription = self.wTree.get_widget("txtPluginDescription")
+        
+        #self.btnClose = self.wTree.get_widget("close_btn")
+        #self.btnClose.connect('clicked', self.close, None)
 		
         # liststore
         self.PluginList = gtk.ListStore(gobject.TYPE_BOOLEAN, gobject.TYPE_STRING, gobject.TYPE_STRING)
@@ -90,12 +93,16 @@ class PluginManager:
         self.dialog.show_all()
 		
 
-    def close(self, widget, data=None):
+    def close(self, widget, response=None):
         # get the plugins that are going to be initialized and the ones
         # that are going do be desabled
         self.pengine.recheckPlugins(self.plugins, self.plugin_api)
         self.dialog.destroy()
         return True
+    
+    #def delete(self, widget, response=None):
+    #    self.dialog.destroy()
+    #    return True
 
     def colToggledClicked(self, cell, path, model):
         model[path][0] = not model[path][0]

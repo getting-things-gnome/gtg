@@ -127,28 +127,34 @@ class PluginEngine:
     def recheckPlugins(self, plugins, plugin_api):
         for plgin in plugins:
             if plgin['instance'] != None and plgin['state'] == False:
-                print "deactivating plugin: " + plgin['name']
-                plgin['instance'].deactivate(plugin_api)
-                plgin['instance'] = None
-			
-            if plgin['instance'] == None and plgin['state'] == True:
-                print "activating plugin: " + plgin['name']
-                plgin['instance'] = plgin['class']()
-                plgin['instance'].activate(plugin_api)
+                try:
+                    print "deactivating plugin: " + plgin['name']
+                    plgin['instance'].deactivate(plugin_api)
+                    plgin['instance'] = None
+                except Exception, e:
+                    print "Error: %s" % e
+            elif plgin['instance'] == None and plgin['state'] == True:
+                try:    
+                    print "activating plugin: " + plgin['name']
+                    plgin['instance'] = plgin['class']()
+                    plgin['instance'].activate(plugin_api)
+                except Exception, e:
+                    print "Error: %s" % e
                 
                 
 #
 # extends GTK actions
 #
 class PluginAPI:
-    def __init__(self, plugin_engine, window, wTree, requester, task=None, textview=None):
+    def __init__(self, name, window, wTree, requester, task=None, textview=None):
         # private vars
         global  __wTree, __window, __plugin_engine, __requester
-        
-        __plugin_engine = plugin_engine
+       
         __window = window
         __wTree = wTree
         __requester = requester
+        
+        self.nome = name
         
         if task:
             self.task = task
@@ -156,7 +162,7 @@ class PluginAPI:
         if textview:
             self.textview = textview
             
-		
+	    
     # adds items to the MenuBar of the Main Window (TaskBrowser)
     def AddMenuItem(self, item):
         __wTree.get_widget('menu_plugin').get_submenu().append(item)
@@ -178,12 +184,20 @@ class PluginAPI:
                 i = i + 1
             __wTree.get_widget('task_tb').insert(item, i)
             item.show()
+            return i
         except Exception, e:
             print "Error adding a toolbar item: %s" % e
 	
-    def RemoveToolbarItem(self, item):
+    def RemoveToolbarItem(self, item, n=None):
         try:
-            __wTree.get_widget('task_tb').remove(item)
+            if not n:
+                __wTree.get_widget('task_tb').remove(item)
+            else:
+                i = 0
+                while __wTree.get_widget('task_tb').get_nth_item(i) is not None:
+                    if i == n:
+                        __wTree.get_widget('task_tb').remove(__wTree.get_widget('task_tb').get_nth_item(i))
+                    i = i + 1
         except Exception, e:
             print "Error removing a toolbar item: %s" % e
     
@@ -232,3 +246,6 @@ class PluginAPI:
     # this will allow plugins to use the textview properties
     def get_textview(self):
         return self.textview
+    
+    def pname(self):
+        return self.nome
