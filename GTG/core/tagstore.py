@@ -168,9 +168,8 @@ class Tag:
         :param save_cllbk: A nullary callable, called whenever an attribute
             is set.
         """
-        self.attributes = {}
-        self.name = name
-        self.set_attribute("name", self.name)
+        self.name = str(name)
+        self.attributes = {'name': self.name}
         self.save = save_cllbk
 
     def get_name(self):
@@ -192,8 +191,6 @@ class Tag:
             val = unicode(str(att_value), "UTF-8")
             self.attributes[att_name] = val
             self.save()
-        elif self.name == att_value:
-            self.attributes[att_name] = str(att_value)
 
     def get_attribute(self, att_name):
         """Get the attribute 'att_name'.
