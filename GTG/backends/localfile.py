@@ -94,7 +94,7 @@ class Backend:
     def get_task(self, task_to_fill, tid):
         #time.sleep(2)
         for node in self.xmlproj.childNodes:
-            if node.getAttribute("id") == ti:
+            if node.getAttribute("id") == tid:
                 return taskxml.task_from_xml(task_to_fill, node)
         return task_to_fill
 
