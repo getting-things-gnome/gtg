@@ -149,7 +149,7 @@ class TagStore :
 #########################################################################
 ######################### Tag ###########################################
 
-class Tag :
+class Tag:
     """A short name that can be applied to Tasks.
 
     I mean, surely you must know what a tag is by now. Think Gmail,
@@ -160,7 +160,7 @@ class Tag :
     for tags is 'name', which always matches `Tag.get_name()`.
     """
 
-    def __init__(self,name,save_cllbk=None) :
+    def __init__(self, name, save_cllbk=None):
         """Construct a tag.
 
         :param name: The name of the tag. Should be a string, generally a
@@ -170,14 +170,14 @@ class Tag :
         """
         self.attributes = {}
         self.name = name
-        self.set_attribute("name",self.name)
+        self.set_attribute("name", self.name)
         self.save = save_cllbk
-        
-    def get_name(self) :
+
+    def get_name(self):
         """Return the name of the tag."""
         return self.get_attribute("name")
-        
-    def set_attribute(self,att_name,att_value) :
+
+    def set_attribute(self, att_name, att_value):
         """Set an arbitrary attribute.
 
         This will call the 'save_cllbk' callback passed to the constructor.
@@ -186,41 +186,38 @@ class Tag :
         :param att_value: The value of the attribute. Will be converted to a
             string.
         """
-        #warning : only the constructor can set the "name"  
-        if att_name != "name" :
-            #Attributes should all be strings
-            val = unicode(str(att_value),"UTF-8")
+        # Warning : only the constructor can set the "name".
+        if att_name != "name":
+            # Attributes should all be strings.
+            val = unicode(str(att_value), "UTF-8")
             self.attributes[att_name] = val
             self.save()
-        elif self.name == att_value :
+        elif self.name == att_value:
             self.attributes[att_name] = str(att_value)
-        
-    def get_attribute(self,att_name) :
+
+    def get_attribute(self, att_name):
         """Get the attribute 'att_name'.
 
         Returns None if there is no attribute matching 'att_name'.
         """
-        if self.attributes.has_key(att_name) :
+        if att_name in self.attributes:
             return self.attributes[att_name]
-        else :
+        else:
             return None
-            
-    #if butname argument is set, the "name" attributes is removed
-    #from the list
-    def get_all_attributes(self,butname=False) :
+
+    def get_all_attributes(self, butname=False):
         """Return a list of all attribute names.
 
         :param butname: If True, exclude 'name' from the list of attribute
             names.
         """
         l = self.attributes.keys()
-        if butname :
-            #Normally this condition is not necessary
-            #Defensiveness...
-            if "name" in l :
+        if butname:
+            # Normally this condition is not necessary
+            # Defensiveness...
+            if "name" in l:
                 l.remove("name")
         return l
-        
-    def __str__(self):
-        return "Tag: %s" %self.get_name()
 
+    def __str__(self):
+        return "Tag: %s" % self.get_name()
