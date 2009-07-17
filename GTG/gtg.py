@@ -97,7 +97,7 @@ def main():
     for backend_dict in backends_list:
         ds.register_backend(backend_dict)
 
-    #save directly the backends to be sure to write projects.xml
+    # Save directly the backends to be sure to write projects.xml.
     config.save_datastore(ds)
 
     # Launch task browser
