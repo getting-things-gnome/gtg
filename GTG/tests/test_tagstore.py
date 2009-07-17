@@ -87,6 +87,11 @@ class TestTag(unittest.TestCase):
         tag.set_attribute('bar', 'baz')
         self.assertEqual(['bar'], tag.get_all_attributes(butname=True))
 
+    def test_str(self):
+        # str(tag) is 'Tag: <name>'
+        tag = Tag('foo')
+        self.assertEqual('Tag: foo', str(tag))
+
 
 def test_suite():
     return unittest.TestLoader().loadTestsFromName(__name__)
