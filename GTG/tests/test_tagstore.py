@@ -92,6 +92,14 @@ class TestTag(unittest.TestCase):
         tag = Tag('foo')
         self.assertEqual('Tag: foo', str(tag))
 
+    def test_set_name_attribute_does_nothing(self):
+        # The 'name' attribute is set by the constructor. After it is set, it
+        # cannot be changed with further calls to set_attribute.
+        tag = Tag('old', lambda: None)
+        tag.set_attribute('name', 'new')
+        self.assertEqual('old', tag.get_name())
+        self.assertEqual('old', tag.get_attribute('name'))
+
 
 def test_suite():
     return unittest.TestLoader().loadTestsFromName(__name__)
