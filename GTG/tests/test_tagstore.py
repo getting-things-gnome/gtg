@@ -17,18 +17,24 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-"""Unit tests for GTG."""
+"""Tests for the tagstore."""
 
 import unittest
 
-from GTG.tests import (
-    test_backends,
-    test_tagstore,
-    )
+from GTG.core.tagstore import Tag
+
+
+class TestTag(unittest.TestCase):
+    """Tests for `Tag`."""
+
+    def test_name(self):
+        tag = Tag('foo')
+        self.assertEqual('foo', tag.get_name())
+
+    def test_name_is_attribute(self):
+        tag = Tag('foo')
+        self.assertEqual('foo', tag.get_attribute('name'))
 
 
 def test_suite():
-    return unittest.TestSuite([
-        test_backends.test_suite(),
-        test_tagstore.test_suite(),
-        ])
+    return unittest.TestLoader().loadTestsFromName(__name__)
