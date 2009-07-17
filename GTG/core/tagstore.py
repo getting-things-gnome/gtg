@@ -168,9 +168,9 @@ class Tag:
         :param save_cllbk: A nullary callable, called whenever an attribute
             is set.
         """
-        self.name = str(name)
-        self.attributes = {'name': self.name}
-        self.save = save_cllbk
+        self._name = str(name)
+        self._attributes = {'name': self._name}
+        self._save = save_cllbk
 
     def get_name(self):
         """Return the name of the tag."""
@@ -194,15 +194,15 @@ class Tag:
             return
         # Attributes should all be strings.
         val = unicode(str(att_value), "UTF-8")
-        self.attributes[att_name] = val
-        self.save()
+        self._attributes[att_name] = val
+        self._save()
 
     def get_attribute(self, att_name):
         """Get the attribute 'att_name'.
 
         Returns None if there is no attribute matching 'att_name'.
         """
-        return self.attributes.get(att_name, None)
+        return self._attributes.get(att_name, None)
 
     def get_all_attributes(self, butname=False):
         """Return a list of all attribute names.
@@ -210,7 +210,7 @@ class Tag:
         :param butname: If True, exclude 'name' from the list of attribute
             names.
         """
-        attributes = self.attributes.keys()
+        attributes = self._attributes.keys()
         if butname:
             attributes.remove('name')
         return attributes
