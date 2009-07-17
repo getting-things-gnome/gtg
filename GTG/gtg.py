@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-#===============================================================================
+#==============================================================================
 #
 # Getting things Gnome!: a gtd-inspired organizer for GNOME
 #
@@ -38,35 +38,36 @@
 #   Each id are *strings*
 #   tid are the form "X@Y" where Y is the pid.
 #   For example : 21@2 is the 21th task of the 2nd project
-#   This way, we are sure that a tid is unique accross multiple projects 
+#   This way, we are sure that a tid is unique accross multiple projects
 #
-#=============================================================================== 
+#==============================================================================
 
-#=== IMPORT ====================================================================
-import sys, os
+# === IMPORT ==================================================================
+import os
+import sys
 
-#our own imports
+# Our own imports
 from GTG import _
 from GTG.taskbrowser.browser import TaskBrowser
 from GTG.core.datastore      import DataStore
 from GTG.core.dbuswrapper    import DBusTaskWrapper
 from GTG.core                import CoreConfig
 
-#=== OBJECTS ===================================================================
+# === OBJECTS =================================================================
 
-#code borrowed from Specto. Avoid having multiples instances of gtg
-#reading the same tasks
-#that's why we put the pid file in the data directory :
-#we allow one instance of gtg by data directory.
+# Code borrowed from Specto. Avoid having multiples instances of gtg reading
+# the same tasks. That's why we put the pid file in the data directory: we
+# allow one instance of gtg by data directory.
+
 def check_instance(directory):
-    """ Check if gtg is already running. """
-    pidfile = directory  + "gtg.pid"
+    """Check if gtg is already running."""
+    pidfile = directory + "gtg.pid"
     if not os.path.exists(pidfile):
         f = open(pidfile, "w")
         f.close()
     os.chmod(pidfile, 0600)
 
-    #see if gtg is already running
+    # See if gtg is already running.
     f = open(pidfile, "r")
     pid = f.readline()
     f.close()
@@ -75,33 +76,33 @@ def check_instance(directory):
         p_name = os.popen("ps -f --pid " + pid).read()
         if p == 0 and "gtg" in p_name:
             print _("gtg is already running!")
-            #todo : expose the browser (will be possible when we have dbus)
+            # TODO: expose the browser (will be possible when we have dbus)
             sys.exit(0)
-            
-    #write the pid file
+
+    # Write the pid file.
     f = open(pidfile, "w")
     f.write(str(os.getpid()))
     f.close()
 
-#=== MAIN CLASS ================================================================
+# === MAIN CLASS ==============================================================
 
 def main():
-    config        = CoreConfig()
+    config = CoreConfig()
     check_instance(config.DATA_DIR)
     backends_list = config.get_backends_list()
-    
+
     # Load data store
     ds = DataStore()
-    
-    for backend_dic in backends_list :
-        ds.register_backend(backend_dic)
-    
+
+    for backend_dict in backends_list:
+        ds.register_backend(backend_dict)
+
     #save directly the backends to be sure to write projects.xml
     config.save_datastore(ds)
-        
+
     # Launch task browser
     req = ds.get_requester()
-    tb  = TaskBrowser(req, config.conf_dict)
+    tb = TaskBrowser(req, config.conf_dict)
     DBusTaskWrapper(req, tb)
     tb.main()
 
@@ -113,7 +114,7 @@ def main():
     config.save_config()
     config.save_datastore(ds)
 
-#=== EXECUTION =================================================================
+# === EXECUTION ===============================================================
 
 if __name__ == "__main__":
     main()
