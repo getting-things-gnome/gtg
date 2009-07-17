@@ -100,6 +100,23 @@ class TestTag(unittest.TestCase):
         self.assertEqual('old', tag.get_name())
         self.assertEqual('old', tag.get_attribute('name'))
 
+    # XXX: The following tests check the current behaviour of the Tag class,
+    # but I'm not sure if they're correct behaviour. -- jml, 2009-07-17
+
+    def test_save_not_called_on_construction(self):
+        # The save callback isn't called by the constructor, despite the fact
+        # that it sets the name attribute.
+        save_calls = []
+        Tag('old', lambda: save_calls.append(None))
+        self.assertEqual(0, len(save_calls))
+
+    def test_set_name_doesnt_call_save(self):
+        # Setting the name attribute doesn't call save.
+        save_calls = []
+        tag = Tag('old', lambda: save_calls.append(None))
+        tag.set_attribute('name', 'new')
+        self.assertEqual(0, len(save_calls))
+
 
 def test_suite():
     return unittest.TestLoader().loadTestsFromName(__name__)
