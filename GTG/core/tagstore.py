@@ -200,10 +200,7 @@ class Tag:
 
         Returns None if there is no attribute matching 'att_name'.
         """
-        if att_name in self.attributes:
-            return self.attributes[att_name]
-        else:
-            return None
+        return self.attributes.get(att_name, None)
 
     def get_all_attributes(self, butname=False):
         """Return a list of all attribute names.
@@ -211,13 +208,10 @@ class Tag:
         :param butname: If True, exclude 'name' from the list of attribute
             names.
         """
-        l = self.attributes.keys()
+        attributes = self.attributes.keys()
         if butname:
-            # Normally this condition is not necessary
-            # Defensiveness...
-            if "name" in l:
-                l.remove("name")
-        return l
+            attributes.remove('name')
+        return attributes
 
     def __str__(self):
         return "Tag: %s" % self.get_name()
