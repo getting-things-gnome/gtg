@@ -40,7 +40,7 @@ from GTG.taskbrowser                  import treetools
 from GTG.tools                        import colors, openurl
 from GTG.core.plugins.manager         import PluginManager
 from GTG.core.plugins.engine          import PluginEngine
-from GTG.core.plugins.engine          import PluginAPI
+from GTG.core.plugins.api             import PluginAPI
 
 #=== OBJECTS ===================================================================
 
@@ -331,7 +331,7 @@ class TaskBrowser:
                         p['state'] = False
         
         # initializes the plugin api class
-        self.plugin_api = PluginAPI("browser", self.window, self.wTree, self.req)
+        self.plugin_api = PluginAPI(self.window, self.wTree, self.req)
         # initializes and activates each plugin (that is enabled)
         self.pengine.activatePlugins(self.plugins, self.plugin_api)
         

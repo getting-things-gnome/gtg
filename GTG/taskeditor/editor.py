@@ -31,7 +31,7 @@ from GTG.taskeditor          import GnomeConfig
 from GTG.tools               import dates
 from GTG.taskeditor.taskview import TaskView
 from GTG.core.plugins.engine import PluginEngine
-from GTG.core.plugins.engine import PluginAPI
+from GTG.core.plugins.api    import PluginAPI
 try:
     import pygtk
     pygtk.require("2.0")
@@ -162,10 +162,10 @@ class TaskEditor :
         self.window.connect("destroy", self.destruction)
         
         # plugins
-        #self.plugins = plugins
-        #self.te_pengine = PluginEngine(GTG.PLUGIN_DIR)
-        #self.te_plugin_api = PluginAPI("editor", self.window, self.wTree, self.req, task, self.textview)
-        #self.te_pengine.onTaskLoad(plugins, self.te_plugin_api)
+        self.plugins = plugins
+        self.pengine = PluginEngine(GTG.PLUGIN_DIR)
+        self.te_plugin_api = PluginAPI(self.window, self.wTree, self.req, task, self.textview)
+        self.pengine.onTaskLoad(self.plugins, self.te_plugin_api)
         
         self.__refresh_cb = refresh_callback
         #Putting the refresh callback at the end make the start a lot faster

@@ -2,9 +2,6 @@
 import gtk, pygtk
 import os
 
-from GTG.core.plugins.engine import PluginEngine
-
-
 class pluginTest:
 
     PLUGIN_NAME = 'Hello World'
