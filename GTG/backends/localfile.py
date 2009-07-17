@@ -27,12 +27,13 @@ import uuid
 from GTG.core  import CoreConfig
 from GTG.tools import cleanxml, taskxml
 
+
 #Return the name of the backend as it should be displayed in the UI
-def get_name() :
+def get_name():
     return "Local File"
     
 #Return a description of the backend
-def get_description() :
+def get_description():
     return "Your tasks are saved in an XML file located in your HOME folder"
     
 #Return a dictionnary of parameters. Keys should be strings and
@@ -51,7 +52,6 @@ def get_features() :
 #Types is one of : readwrite, readonly,import,export
 def get_type() :
     return "readwrite"
-
 
 #The parameters dictionnary should match the dictionnary returned in 
 #get_parameters. Anyway, the backend should care if one expected value is
