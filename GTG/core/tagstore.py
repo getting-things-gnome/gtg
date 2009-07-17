@@ -180,6 +180,8 @@ class Tag :
     def set_attribute(self,att_name,att_value) :
         """Set an arbitrary attribute.
 
+        This will call the 'save_cllbk' callback passed to the constructor.
+
         :param att_name: The name of the attribute.
         :param att_value: The value of the attribute. Will be converted to a
             string.
