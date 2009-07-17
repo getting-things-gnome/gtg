@@ -149,19 +149,41 @@ class TagStore :
 #########################################################################
 ######################### Tag ###########################################
 
-#A tag is defined by its name (in most cases, it will be "@something") and it can have multiple attributes
 class Tag :
+    """A short name that can be applied to Tasks.
+
+    I mean, surely you must know what a tag is by now. Think Gmail,
+    del.icio.us, Flickr et al.
+
+    A tag is defined by its name, which in most cases is '@something'. A tag
+    can also have multiple arbitrary attributes. The only attribute enforced
+    for tags is 'name', which always matches `Tag.get_name()`.
+    """
 
     def __init__(self,name,save_cllbk=None) :
+        """Construct a tag.
+
+        :param name: The name of the tag. Should be a string, generally a
+            short one.
+        :param save_cllbk: A nullary callable, called whenever an attribute
+            is set.
+        """
         self.attributes = {}
         self.name = name
         self.set_attribute("name",self.name)
         self.save = save_cllbk
         
     def get_name(self) :
+        """Return the name of the tag."""
         return self.get_attribute("name")
         
     def set_attribute(self,att_name,att_value) :
+        """Set an arbitrary attribute.
+
+        :param att_name: The name of the attribute.
+        :param att_value: The value of the attribute. Will be converted to a
+            string.
+        """
         #warning : only the constructor can set the "name"  
         if att_name != "name" :
             #Attributes should all be strings
@@ -172,6 +194,10 @@ class Tag :
             self.attributes[att_name] = str(att_value)
         
     def get_attribute(self,att_name) :
+        """Get the attribute 'att_name'.
+
+        Returns None if there is no attribute matching 'att_name'.
+        """
         if self.attributes.has_key(att_name) :
             return self.attributes[att_name]
         else :
@@ -180,6 +206,11 @@ class Tag :
     #if butname argument is set, the "name" attributes is removed
     #from the list
     def get_all_attributes(self,butname=False) :
+        """Return a list of all attribute names.
+
+        :param butname: If True, exclude 'name' from the list of attribute
+            names.
+        """
         l = self.attributes.keys()
         if butname :
             #Normally this condition is not necessary
