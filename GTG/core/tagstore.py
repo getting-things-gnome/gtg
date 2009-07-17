@@ -185,12 +185,17 @@ class Tag:
         :param att_value: The value of the attribute. Will be converted to a
             string.
         """
-        # Warning : only the constructor can set the "name".
-        if att_name != "name":
-            # Attributes should all be strings.
-            val = unicode(str(att_value), "UTF-8")
-            self.attributes[att_name] = val
-            self.save()
+        if att_name == "name":
+            # Warning : only the constructor can set the "name".
+            #
+            # XXX: This should actually raise an exception, or warn, or
+            # something. The Zen of Python says "Errors should never pass
+            # silently." -- jml, 2009-07-17
+            return
+        # Attributes should all be strings.
+        val = unicode(str(att_value), "UTF-8")
+        self.attributes[att_name] = val
+        self.save()
 
     def get_attribute(self, att_name):
         """Get the attribute 'att_name'.
