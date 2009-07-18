@@ -1626,16 +1626,16 @@ class TaskBrowser:
         render_text = gtk.CellRendererText()
         title_col.set_title(_("Title"))
         title_col.pack_start(render_text, expand=False)
-        title_col.add_attribute
-        (render_text, "markup", self.TASK_MODEL_TITLE_STR)
+        title_col.add_attribute(
+            render_text, "markup", self.TASK_MODEL_TITLE_STR)
         title_col.set_resizable(True)
         title_col.set_expand(True)
         #The following line seems to fix bug #317469
         #I don't understand why !!! It's voodoo !
         #Is there a Rubber Chicken With a Pulley in the Middle ?
         title_col.set_max_width(100)
-        title_col.add_attribute
-        (render_text, "cell_background", self.TASK_MODEL_BGCOL)
+        title_col.add_attribute(
+            render_text, "cell_background", self.TASK_MODEL_BGCOL)
         title_col.set_clickable(True)
         title_col.connect('clicked', self.sort_tasklist_rows)
         self.task_tview.append_column(title_col)
