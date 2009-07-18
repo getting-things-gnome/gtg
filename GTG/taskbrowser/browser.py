@@ -446,25 +446,27 @@ class TaskBrowser:
             view = "default"
 
         # Populate configuration dictionary
-        self.config["browser"] = {}
-        self.config["browser"]["width"] = self.priv["window_width"]
-        self.config["browser"]["height"] = self.priv["window_height"]
-        self.config["browser"]["x_pos"] = self.priv["window_xpos"]
-        self.config["browser"]["y_pos"] = self.priv["window_ypos"]
-        self.config["browser"]["tag_pane"] = tag_sidebar
-        self.config["browser"]["closed_task_pane"] = closed_pane
-        self.config["browser"]["ctask_pane_height"] = closed_pane_height
-        self.config["browser"]["toolbar"] = toolbar
-        self.config["browser"]["quick_add"] = quickadd_pane
-        self.config["browser"]["bg_color_enable"] = self.priv["bg_color_enable"]
-        self.config["browser"]["collapsed_tasks"] = self.priv["collapsed_tid"]
-        if   sort_column is not None and sort_order == gtk.SORT_ASCENDING:
+        self.config["browser"] = {
+            'width': self.priv["window_width"],
+            'height': self.priv["window_height"],
+            'x_pos': self.priv["window_xpos"],
+            'y_pos': self.priv["window_ypos"],
+            'bg_color_enable': self.priv["bg_color_enable"],
+            'collapsed_tasks': self.priv["collapsed_tid"],
+            'tag_pane': tag_sidebar,
+            'closed_task_pane': closed_pane,
+            'ctask_pane_height': closed_pane_height,
+            'toolbar': toolbar,
+            'quick_add': quickadd_pane,
+            'view': view,
+            }
+
+        if sort_column is not None and sort_order == gtk.SORT_ASCENDING:
             sort_col_id = self.priv["tasklist"]["columns"].index(sort_column)
             self.config["browser"]["tasklist_sort"] = [sort_col_id, 0]
         elif sort_column is not None and sort_order == gtk.SORT_DESCENDING:
             sort_col_id = self.priv["tasklist"]["columns"].index(sort_column)
             self.config["browser"]["tasklist_sort"] = [sort_col_id, 1]
-        self.config["browser"]["view"] = view
         if self.notes:
             self.config["browser"]["experimental_notes"] = True
 
