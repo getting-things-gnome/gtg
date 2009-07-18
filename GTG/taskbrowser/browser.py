@@ -856,16 +856,16 @@ class TaskBrowser:
         """Build a list of task that must showed as collapsed in Treeview"""
         tid = self.task_ts.get_value(itera, 0)
         # Remove expanded rows
-        if   self.task_ts.iter_has_child(itera) and \
-             self.task_tview.row_expanded(path) and \
-             tid in self.priv["collapsed_tid"]:
+        if (self.task_ts.iter_has_child(itera) and
+            self.task_tview.row_expanded(path) and
+            tid in self.priv["collapsed_tid"]):
 
             self.priv["collapsed_tid"].remove(tid)
 
         # Append collapsed rows
-        elif self.task_ts.iter_has_child(itera)     and \
-             not self.task_tview.row_expanded(path) and \
-             tid not in self.priv["collapsed_tid"]:
+        elif (self.task_ts.iter_has_child(itera) and
+              not self.task_tview.row_expanded(path) and
+              tid not in self.priv["collapsed_tid"]):
 
             self.priv["collapsed_tid"].append(tid)
 
