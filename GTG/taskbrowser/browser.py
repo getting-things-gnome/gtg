@@ -435,8 +435,10 @@ class TaskBrowser:
         sort_order = self.priv["tasklist"]["sort_order"]
         closed_pane_height = self.wTree.get_widget("vpaned1").get_position()
 
-        if self.workview: view = "workview"
-        else: view = "default"
+        if self.workview:
+            view = "workview"
+        else:
+            view = "default"
 
         # Populate configuration dictionary
         self.config["browser"] = {}
@@ -1470,15 +1472,23 @@ class TaskBrowser:
 
     def cmp_duedate_str(self, key1, key2):
         if self.priv["tasklist"]["sort_order"] == gtk.SORT_ASCENDING:
-            if   key1 == "" and key2 == "": return  0
-            elif key1 == "" and key2 != "": return -1
-            elif key1 != "" and key2 == "": return  1
-            else: return cmp(key1, key2)
+            if key1 == "" and key2 == "":
+                return 0
+            elif key1 == "" and key2 != "":
+                return -1
+            elif key1 != "" and key2 == "":
+                return  1
+            else:
+                return cmp(key1, key2)
         else:
-            if   key1 == "" and key2 == "": return  0
-            elif key1 == "" and key2 != "": return  1
-            elif key1 != "" and key2 == "": return -1
-            else: return cmp(key1, key2)
+            if key1 == "" and key2 == "":
+                return  0
+            elif key1 == "" and key2 != "":
+                return  1
+            elif key1 != "" and key2 == "":
+                return -1
+            else:
+                return cmp(key1, key2)
 
     def sort_tasklist_rows(self, column, sort_order=None):
         """ Sort the rows based on the given column """
@@ -1514,8 +1524,10 @@ class TaskBrowser:
             sort_key = lambda x:x[self.TASK_MODEL_DDATE_STR]
 
         # Determine sorting direction
-        if sort_order == gtk.SORT_ASCENDING: sort_reverse = True
-        else: sort_reverse = False
+        if sort_order == gtk.SORT_ASCENDING:
+            sort_reverse = True
+        else:
+            sort_reverse = False
 
         # Sort rows
         rows = [tuple(r) + (i,) for i, r in enumerate(self.task_ts)]
