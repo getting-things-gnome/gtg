@@ -1128,7 +1128,7 @@ class TaskBrowser:
                 if count == 0:
                     title = "<span>%s</span>" % (simple_title )
                 else:
-                    title = "<span>%s (%s)</span>" % (simple_title , count )
+                    title = "<span>%s (%s)</span>" % (simple_title, count )
             else:
                 title = simple_title
         return title
@@ -1374,11 +1374,11 @@ class TaskBrowser:
     ###############################
 
 
-    def on_edit_active_task(self,widget,row=None ,col=None) : #pylint: disable-msg=W0613
+    def on_edit_active_task(self,widget,row=None,col=None) : #pylint: disable-msg=W0613
         tid = self.get_selected_task()
         if tid :
             self.open_task(tid)
-    def on_edit_done_task(self,widget,row=None ,col=None) : #pylint: disable-msg=W0613
+    def on_edit_done_task(self,widget,row=None,col=None) : #pylint: disable-msg=W0613
         tid = self.get_selected_task(self.taskdone_tview)
         if tid :
             self.open_task(tid)
@@ -1431,7 +1431,7 @@ class TaskBrowser:
             else : zetask.set_status("Dismiss")
             self.do_refresh()
 
-    def on_select_tag(self, widget, row=None ,col=None) : #pylint: disable-msg=W0613
+    def on_select_tag(self, widget, row=None,col=None) : #pylint: disable-msg=W0613
         #When you clic on a tag, you want to unselect the tasks
         self.task_tview.get_selection().unselect_all()
         self.taskdone_tview.get_selection().unselect_all()
@@ -1449,18 +1449,18 @@ class TaskBrowser:
         render_tags = CellRendererTags()
         tag_col.set_title("Tags")
         tag_col.set_clickable(False)
-        tag_col.pack_start(render_tags  , expand=False)
-        tag_col.set_attributes(render_tags  , tag=self.TAGS_MODEL_OBJ)
-        tag_col.pack_start(render_text  , expand=True)
-        tag_col.set_attributes(render_text  , markup=self.TAGS_MODEL_NAME)
-        tag_col.pack_end(render_count , expand=False)
-        tag_col.set_attributes(render_count , markup=self.TAGS_MODEL_COUNT)
+        tag_col.pack_start(render_tags, expand=False)
+        tag_col.set_attributes(render_tags, tag=self.TAGS_MODEL_OBJ)
+        tag_col.pack_start(render_text, expand=True)
+        tag_col.set_attributes(render_text, markup=self.TAGS_MODEL_NAME)
+        tag_col.pack_end(render_count, expand=False)
+        tag_col.set_attributes(render_count, markup=self.TAGS_MODEL_COUNT)
         render_count.set_property("foreground","#888a85")
         render_count.set_property('xalign', 1.0)
-        render_tags.set_property('ypad'  , 3)
-        render_text.set_property('ypad'  , 3)
-        render_count.set_property('xpad'  , 3)
-        render_count.set_property('ypad'  , 3)
+        render_tags.set_property('ypad', 3)
+        render_text.set_property('ypad', 3)
+        render_count.set_property('xpad', 3)
+        render_count.set_property('ypad', 3)
         tag_col.set_sort_column_id(-1)
         tag_col.set_expand(True)
         self.tag_tview.append_column(tag_col)
@@ -1619,8 +1619,8 @@ class TaskBrowser:
         ddate_col = gtk.TreeViewColumn()
         render_text = gtk.CellRendererText()
         ddate_col.set_title(_("Closing date"))
-        ddate_col.pack_start(render_text  , expand=True)
-        ddate_col.set_attributes(render_text  , markup=self.CTASKS_MODEL_DDATE_STR)
+        ddate_col.pack_start(render_text, expand=True)
+        ddate_col.set_attributes(render_text, markup=self.CTASKS_MODEL_DDATE_STR)
         ddate_col.set_sort_column_id(self.CTASKS_MODEL_DDATE)
         ddate_col.add_attribute(render_text, "cell_background", self.CTASKS_MODEL_BGCOL)
         self.taskdone_tview.append_column(ddate_col)
@@ -1631,8 +1631,8 @@ class TaskBrowser:
         title_col = gtk.TreeViewColumn()
         render_text = gtk.CellRendererText()
         title_col.set_title(_("Title"))
-        title_col.pack_start(render_text  , expand=True)
-        title_col.set_attributes(render_text  , markup=self.CTASKS_MODEL_TITLE)
+        title_col.pack_start(render_text, expand=True)
+        title_col.set_attributes(render_text, markup=self.CTASKS_MODEL_TITLE)
         title_col.set_sort_column_id(self.CTASKS_MODEL_TITLE)
         title_col.set_expand(True)
         title_col.add_attribute(render_text, "cell_background", self.CTASKS_MODEL_BGCOL)
@@ -1647,8 +1647,8 @@ class TaskBrowser:
         title_col = gtk.TreeViewColumn()
         render_text = gtk.CellRendererText()
         title_col.set_title(_("Notes"))
-        title_col.pack_start(render_text  , expand=True)
-        title_col.set_attributes(render_text  , markup=self.CTASKS_MODEL_TITLE)
+        title_col.pack_start(render_text, expand=True)
+        title_col.set_attributes(render_text, markup=self.CTASKS_MODEL_TITLE)
         title_col.set_sort_column_id(self.CTASKS_MODEL_TITLE)
         title_col.set_expand(True)
         self.note_tview.append_column(title_col)
