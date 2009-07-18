@@ -42,22 +42,23 @@
 #
 #==============================================================================
 
-# === IMPORT ==================================================================
-import os
+#=== IMPORT ===================================================================
 import sys
+import os
 
-# Our own imports
+#our own imports
 from GTG import _
 from GTG.taskbrowser.browser import TaskBrowser
-from GTG.core.datastore      import DataStore
-from GTG.core.dbuswrapper    import DBusTaskWrapper
-from GTG.core                import CoreConfig
+from GTG.core.datastore import DataStore
+from GTG.core.dbuswrapper import DBusTaskWrapper
+from GTG.core import CoreConfig
 
-# === OBJECTS =================================================================
+#=== OBJECTS ==================================================================
 
-# Code borrowed from Specto. Avoid having multiples instances of gtg reading
-# the same tasks. That's why we put the pid file in the data directory: we
-# allow one instance of gtg by data directory.
+#code borrowed from Specto. Avoid having multiples instances of gtg
+#reading the same tasks
+#that's why we put the pid file in the data directory :
+#we allow one instance of gtg by data directory.
 
 def check_instance(directory):
     """Check if gtg is already running."""
@@ -67,7 +68,7 @@ def check_instance(directory):
         f.close()
     os.chmod(pidfile, 0600)
 
-    # See if gtg is already running.
+    #see if gtg is already running
     f = open(pidfile, "r")
     pid = f.readline()
     f.close()
@@ -76,30 +77,30 @@ def check_instance(directory):
         p_name = os.popen("ps -f --pid " + pid).read()
         if p == 0 and "gtg" in p_name:
             print _("gtg is already running!")
-            # TODO: expose the browser (will be possible when we have dbus)
+            #todo : expose the browser (will be possible when we have dbus)
             sys.exit(0)
-
-    # Write the pid file.
+            
+    #write the pid file
     f = open(pidfile, "w")
     f.write(str(os.getpid()))
     f.close()
 
-# === MAIN CLASS ==============================================================
+#=== MAIN CLASS ===============================================================
 
 def main():
     config = CoreConfig()
     check_instance(config.DATA_DIR)
     backends_list = config.get_backends_list()
-
+    
     # Load data store
     ds = DataStore()
-
-    for backend_dict in backends_list:
-        ds.register_backend(backend_dict)
-
-    # Save directly the backends to be sure to write projects.xml.
+    
+    for backend_dic in backends_list:
+        ds.register_backend(backend_dic)
+    
+    #save directly the backends to be sure to write projects.xml
     config.save_datastore(ds)
-
+        
     # Launch task browser
     req = ds.get_requester()
     tb = TaskBrowser(req, config.conf_dict)
@@ -114,7 +115,7 @@ def main():
     config.save_config()
     config.save_datastore(ds)
 
-# === EXECUTION ===============================================================
+#=== EXECUTION ================================================================
 
 if __name__ == "__main__":
     main()
