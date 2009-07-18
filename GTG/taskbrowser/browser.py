@@ -932,11 +932,11 @@ class TaskBrowser:
             vadjust = self.task_tview.get_vadjustment()
             #We ensure that we will not scroll out of the window
             #It was bug #331285
-            vscroll = min(old_position,(vadjust.upper - vadjust.page_size))
+            vscroll = min(old_position, (vadjust.upper - vadjust.page_size))
             vadjust.set_value(vscroll)
         def restore_hscroll(old_position):
             hadjust = self.task_tview.get_hadjustment()
-            hscroll = min(old_position,(hadjust.upper - hadjust.page_size))
+            hscroll = min(old_position, (hadjust.upper - hadjust.page_size))
             hadjust.set_value(hscroll)
         gobject.idle_add(restore_vscroll, vscroll_value)
         gobject.idle_add(restore_hscroll, hscroll_value)
@@ -967,7 +967,7 @@ class TaskBrowser:
             if t.get_status() == "Dismiss":
                 title_str = "<span color=\"#AAAAAA\">%s</span>" % title_str
                 closeddate_str = "<span color=\"#AAAAAA\">%s</span>" % closeddate
-            self.taskdone_ts.append(None,[tid, t.get_color(), title_str, closeddate, closeddate_str, my_color, tags])
+            self.taskdone_ts.append(None, [tid, t.get_color(), title_str, closeddate, closeddate_str, my_color, tags])
         closed_selection = self.taskdone_tview.get_selection()
         if d_path:
             for i in d_path:
@@ -989,7 +989,7 @@ class TaskBrowser:
         for tid in notes:
             t = self.req.get_task(tid)
             title_str = saxutils.escape(t.get_title())
-            self.note_ts.append(None,[tid, t.get_color(), title_str])
+            self.note_ts.append(None, [tid, t.get_color(), title_str])
         note_selection = self.note_tview.get_selection()
         if d_path:
             for i in d_path:
@@ -1325,7 +1325,7 @@ class TaskBrowser:
 
             self.path_target = path
             tid = tree.get(it, 0)
-            tree.foreach(findsource,[tid, it])
+            tree.foreach(findsource, [tid, it])
             if self.path_source:
                 #We will prepare the drag-n-drop
                 iter_source = tree.get_iter(self.path_source)
@@ -1420,7 +1420,8 @@ class TaskBrowser:
             status = zetask.get_status()
             if status == "Done":
                 zetask.set_status("Active")
-            else: zetask.set_status("Done")
+            else:
+                zetask.set_status("Done")
             self.do_refresh()
 
     def on_dismiss_task(self, widget): #pylint: disable-msg=W0613
@@ -1430,7 +1431,8 @@ class TaskBrowser:
             status = zetask.get_status()
             if status == "Dismiss":
                 zetask.set_status("Active")
-            else: zetask.set_status("Dismiss")
+            else:
+                zetask.set_status("Dismiss")
             self.do_refresh()
 
     def on_select_tag(self, widget, row=None, col=None): #pylint: disable-msg=W0613
