@@ -1177,9 +1177,9 @@ class TaskBrowser:
         else:
             if (not self.workview):
                 if count == 0:
-                    title = "<span>%s</span>" % (simple_title )
+                    title = "<span>%s</span>" % simple_title
                 else:
-                    title = "<span>%s (%s)</span>" % (simple_title, count )
+                    title = "<span>%s (%s)</span>" % (simple_title, count)
             else:
                 title = simple_title
         return title
@@ -1510,7 +1510,7 @@ class TaskBrowser:
         tag_col.set_attributes(render_text, markup=self.TAGS_MODEL_NAME)
         tag_col.pack_end(render_count, expand=False)
         tag_col.set_attributes(render_count, markup=self.TAGS_MODEL_COUNT)
-        render_count.set_property("foreground","#888a85")
+        render_count.set_property("foreground", "#888a85")
         render_count.set_property('xalign', 1.0)
         render_tags.set_property('ypad', 3)
         render_text.set_property('ypad', 3)
