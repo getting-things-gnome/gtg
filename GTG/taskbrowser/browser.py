@@ -485,11 +485,11 @@ class TaskBrowser:
         self.do_refresh()
 
         selection = self.task_tview.get_selection()
-        selection.connect("changed",self.task_cursor_changed)
+        selection.connect("changed", self.task_cursor_changed)
         closed_selection = self.taskdone_tview.get_selection()
-        closed_selection.connect("changed",self.taskdone_cursor_changed)
+        closed_selection.connect("changed", self.taskdone_cursor_changed)
         note_selection = self.note_tview.get_selection()
-        note_selection.connect("changed",self.note_cursor_changed)
+        note_selection.connect("changed", self.note_cursor_changed)
 
 
         # Restore state from config
@@ -505,7 +505,7 @@ class TaskBrowser:
     def on_about_close(self, widget, response): #pylint: disable-msg=W0613
         self.about.hide()
 
-    def on_colorchooser_activate(self,widget): #pylint: disable-msg=W0613
+    def on_colorchooser_activate(self, widget): #pylint: disable-msg=W0613
         #TODO: Color chooser should be refactorized in its own class
         #Well, in fact we should have a TagPropertiesEditor (like for project)
         #Also, color change should be immediate. There's no reason for a Ok/Cancel
@@ -517,7 +517,7 @@ class TaskBrowser:
         wTree.signal_autoconnect(dic)
         window = wTree.get_widget("ColorChooser")
         # Get previous color
-        tags,notag_only = self.get_selected_tags() #pylint: disable-msg=W0612
+        tags, notag_only = self.get_selected_tags() #pylint: disable-msg=W0612
         if len(tags) == 1:
             color = tags[0].get_attribute("color")
             if color != None:
@@ -527,19 +527,19 @@ class TaskBrowser:
                 colorsel.set_current_color(colorspec)
         window.show()
 
-    def on_color_response(self,widget,response):
+    def on_color_response(self, widget, response):
         #the OK button return -5. Don't ask me why.
         if response == -5:
             colorsel = widget.colorsel
             gtkcolor = colorsel.get_current_color()
             strcolor = gtk.color_selection_palette_to_string([gtkcolor])
-            tags,notag_only = self.get_selected_tags() #pylint: disable-msg=W0612
+            tags, notag_only = self.get_selected_tags() #pylint: disable-msg=W0612
             for t in tags:
-                t.set_attribute("color",strcolor)
+                t.set_attribute("color", strcolor)
         self.do_refresh()
         widget.destroy()
 
-    def on_workview_toggled(self,widget): #pylint: disable-msg=W0613
+    def on_workview_toggled(self, widget): #pylint: disable-msg=W0613
         self.do_toggle_workview()
 
     def do_toggle_workview(self):
@@ -556,7 +556,7 @@ class TaskBrowser:
         self.workview = tobeset
         self.do_refresh()
 
-    def on_sidebar_toggled(self,widget):
+    def on_sidebar_toggled(self, widget):
         view_sidebar = self.wTree.get_widget("view_sidebar")
         if self.sidebar.get_property("visible"):
             view_sidebar.set_active(False)
@@ -565,33 +565,33 @@ class TaskBrowser:
             view_sidebar.set_active(True)
             self.sidebar.show()
 
-    def on_note_toggled(self,widget):
+    def on_note_toggled(self, widget):
         self.noteview = not self.noteview
         workview_state = self.toggle_workview.get_active()
         if workview_state:
             self.toggle_workview.set_active(False)
         self.do_refresh()
 
-    def on_closed_toggled(self,widget):
+    def on_closed_toggled(self, widget):
         if widget.get_active():
             self.closed_pane.show()
         else:
             self.closed_pane.hide()
 
-    def on_bg_color_toggled(self,widget):
+    def on_bg_color_toggled(self, widget):
         if widget.get_active():
             self.priv["bg_color_enable"] = True
         else:
             self.priv["bg_color_enable"] = False
         self.do_refresh()
 
-    def on_toolbar_toggled(self,widget):
+    def on_toolbar_toggled(self, widget):
         if widget.get_active():
             self.toolbar.show()
         else:
             self.toolbar.hide()
 
-    def toggle_quickadd(self,widget):
+    def toggle_quickadd(self, widget):
         if widget.get_active():
             self.quickadd_pane.show()
         else:
@@ -611,16 +611,16 @@ class TaskBrowser:
             date = arg
         elif arg.isdigit():
             if len(arg) == 8:
-                date = "%s-%s-%s" % (arg[:4],arg[4:6],arg[6:])
+                date = "%s-%s-%s" % (arg[:4], arg[4:6], arg[6:])
             elif len(arg) == 4:
                 year = datetime.date.today().year
-                date = "%i-%s-%s" % (year,arg[:2],arg[2:])
+                date = "%i-%s-%s" % (year, arg[:2], arg[2:])
         elif arg.lower() == "today" or arg.lower() == _("today"):
             today = datetime.date.today()
             year = today.year
             month = today.month
             day = today.day
-            date = "%i-%i-%i" % (year,month,day)
+            date = "%i-%i-%i" % (year, month, day)
         elif arg.lower() == "tomorrow" or\
           arg.lower() == _("tomorrow"):
             today = datetime.date.today()
@@ -628,7 +628,7 @@ class TaskBrowser:
             year = tomorrow.year
             month = tomorrow.month
             day = tomorrow.day
-            date = "%i-%i-%i" % (year,month,day)
+            date = "%i-%i-%i" % (year, month, day)
         elif arg.lower() in day_names_en or arg.lower() in day_names:
             today = datetime.date.today()
             today_day = today.weekday()
@@ -644,7 +644,7 @@ class TaskBrowser:
             year = next_date.year
             month = next_date.month
             day = next_date.day
-            date = "%i-%i-%i" % (year,month,day)
+            date = "%i-%i-%i" % (year, month, day)
         else:
             return None
         if self.is_date_valid(date):
@@ -660,28 +660,28 @@ class TaskBrowser:
         splited_date = fulldate.split("-")
         if len(splited_date) != 3:
             return False
-        year,month,day = splited_date
+        year, month, day = splited_date
         try:
-            datetime.date(int(year),int(month),int(day))
+            datetime.date(int(year), int(month), int(day))
         except ValueError:
             return False
         else:
             return True
 
-    def quickadd(self,widget): #pylint: disable-msg=W0613
+    def quickadd(self, widget): #pylint: disable-msg=W0613
         text = self.quickadd_entry.get_text()
         due_date = None
         defer_date = None
         if text:
-            tags,notagonly = self.get_selected_tags() #pylint: disable-msg=W0612
+            tags, notagonly = self.get_selected_tags() #pylint: disable-msg=W0612
             # Get tags in the title
-            for match in re.findall(r'[\s](@[^@,\s]+)',text):
+            for match in re.findall(r'[\s](@[^@,\s]+)', text):
                 tags.append(GTG.core.tagstore.Tag(match))
                 # Remove the @
-                #text =text.replace(match,match[1:],1)
+                #text =text.replace(match, match[1:], 1)
             # Get attributes
             regexp = r'([\s]*)([a-zA-Z0-9_-]+):([^\s]+)'
-            for spaces,attribute, args in re.findall(regexp, text):
+            for spaces, attribute, args in re.findall(regexp, text):
                 valid_attribute = True
                 if attribute.lower() == "tags" or attribute.lower() == _("tags"):
                     for tag in args.split(","):
@@ -700,9 +700,9 @@ class TaskBrowser:
                 if valid_attribute:
                     # if the command is valid we have to remove it
                     # from the task title
-                    text = text.replace("%s%s:%s" % (spaces,attribute,args), "")
+                    text = text.replace("%s%s:%s" % (spaces, attribute, args), "")
             # Create the new task
-            task = self.req.new_task(tags=tags,newtask=True)
+            task = self.req.new_task(tags=tags, newtask=True)
             if text != "":
                 task.set_title(text)
             if not due_date is None:
@@ -718,7 +718,7 @@ class TaskBrowser:
 
     #This works only in the main task_tview
     #If it cannot find the requested task, nothing is selected
-    def select_task(self,id_toselect):
+    def select_task(self, id_toselect):
         #We will loop over all task_tview element to find the newly added one
         model = self.task_tview.get_model()
         tempit = model.get_iter_first()
@@ -746,19 +746,19 @@ class TaskBrowser:
 
 
 
-    def do_refresh(self,sender=None,param=None,toselect=None): #pylint: disable-msg=W0613
+    def do_refresh(self, sender=None, param=None, toselect=None): #pylint: disable-msg=W0613
         #We ask to do the refresh in a gtk thread
         #We use a lock_lock like described in
         #http://ploum.frimouvy.org/?202-the-signals-and-threads-flying-circus
         if self.refresh_lock_lock.acquire(False):
-            gobject.idle_add(self.refresh_tb,sender,toselect)
+            gobject.idle_add(self.refresh_tb, sender, toselect)
         #If we have something toselect, we cannot skip the refresh
         elif toselect:
-            gobject.idle_add(self.select_task,toselect)
+            gobject.idle_add(self.select_task, toselect)
 
     #If a task asked for the refresh, we don't refresh it to avoid a loop
     #New use refresh_tb directly, use "do_refresh"
-    def refresh_tb(self,fromtask=None,toselect=None):
+    def refresh_tb(self, fromtask=None, toselect=None):
         self.refresh_lock.acquire()
         try:
             self.refresh_lock_lock.release()
@@ -788,7 +788,7 @@ class TaskBrowser:
         select = self.tag_tview.get_selection()
         t_path = None
         if select:
-            t_model,t_path = select.get_selected_rows() #pylint: disable-msg=W0612
+            t_model, t_path = select.get_selected_rows() #pylint: disable-msg=W0612
         self.tag_ts.clear()
         alltag = self.req.get_alltag_tag()
         notag = self.req.get_notag_tag()
@@ -801,23 +801,23 @@ class TaskBrowser:
             count_no_tags = len(self.req.get_tasks_list(notag_only=True,\
                                                          started_only=False))
 
-        self.tag_ts.append([alltag,None,_("<span weight=\"bold\">All tags</span>"),str(count_all_task),False])
-        self.tag_ts.append([notag,None,_("<span weight=\"bold\">Tasks without tags</span>"),str(count_no_tags),False])
-        self.tag_ts.append([None,None,"","",True])
+        self.tag_ts.append([alltag, None,_("<span weight=\"bold\">All tags</span>"), str(count_all_task), False])
+        self.tag_ts.append([notag, None,_("<span weight=\"bold\">Tasks without tags</span>"), str(count_no_tags), False])
+        self.tag_ts.append([None, None,"","", True])
 
         tags = self.req.get_used_tags()
 
-        tags.sort(cmp=lambda x,y: cmp(x.get_name().lower(),y.get_name().lower()))
+        tags.sort(cmp=lambda x, y: cmp(x.get_name().lower(), y.get_name().lower()))
 
         for tag in tags:
             color = tag.get_attribute("color")
             if self.workview:
-                count = len(self.req.get_active_tasks_list(tags=[tag],workable=True))
+                count = len(self.req.get_active_tasks_list(tags=[tag], workable=True))
             else:
-                count = len(self.req.get_tasks_list(started_only=False,tags=[tag]))
+                count = len(self.req.get_tasks_list(started_only=False, tags=[tag]))
             #We display the tags without the "@" (but we could)
             if count != 0:
-                self.tag_ts.append([tag,color,tag.get_name()[1:], str(count), False])
+                self.tag_ts.append([tag, color, tag.get_name()[1:], str(count), False])
 
         #We reselect the selected tag
         if t_path:
@@ -829,7 +829,7 @@ class TaskBrowser:
 
     def update_collapsed_row(self, model, path, itera, user_data): #pylint: disable-msg=W0613
         """Build a list of task that must showed as collapsed in Treeview"""
-        tid = self.task_ts.get_value(itera,0)
+        tid = self.task_ts.get_value(itera, 0)
         # Remove expanded rows
         if   self.task_ts.iter_has_child(itera) and \
              self.task_tview.row_expanded(path) and \
@@ -846,15 +846,15 @@ class TaskBrowser:
 
         return False # Return False or the TreeModel.foreach() function ends
 
-    def restore_collapsed(self,treeview,path,data):
+    def restore_collapsed(self, treeview, path, data):
         itera = self.task_ts.get_iter(path)
-        tid = self.task_ts.get_value(itera,0)
+        tid = self.task_ts.get_value(itera, 0)
         if tid in self.priv["collapsed_tid"]:
             treeview.collapse_row(path)
 
     #refresh list build/refresh your TreeStore of task
     #to keep it in sync with your self.projects
-    def refresh_list(self,a=None,toselect=None): #pylint: disable-msg=W0613
+    def refresh_list(self, a=None, toselect=None): #pylint: disable-msg=W0613
 
         # Save collapsed rows
         self.task_ts.foreach(self.update_collapsed_row, None)
@@ -864,7 +864,7 @@ class TaskBrowser:
         tselect = self.task_tview.get_selection()
         t_path = None
         if tselect:
-            t_model,t_path = tselect.get_selected_rows() #pylint: disable-msg=W0612
+            t_model, t_path = tselect.get_selected_rows() #pylint: disable-msg=W0612
 
         #Scroll position:
         vscroll_value = self.task_tview.get_vadjustment().get_value()
@@ -872,15 +872,15 @@ class TaskBrowser:
 
         #to refresh the list we build a new treestore then replace the existing
         new_taskts = treetools.new_task_ts(dnd_func=self.row_dragndrop)
-        tag_list,notag_only = self.get_selected_tags()
+        tag_list, notag_only = self.get_selected_tags()
         nbr_of_tasks = 0
 
         #We build the active tasks pane
         if self.workview:
             tasks = self.req.get_active_tasks_list(tags=tag_list,\
-                        notag_only=notag_only,workable=True, started_only=False)
+                        notag_only=notag_only, workable=True, started_only=False)
             for tid in tasks:
-                self.add_task_tree_to_list(new_taskts,tid,None,selected_uid,\
+                self.add_task_tree_to_list(new_taskts, tid, None, selected_uid,\
                                                         treeview=False)
             nbr_of_tasks = len(tasks)
 
@@ -892,7 +892,7 @@ class TaskBrowser:
                             notag_only=notag_only, is_root=False, started_only=False)
             for tid in active_root_tasks:
                 self.add_task_tree_to_list(new_taskts, tid, None,\
-                                selected_uid,active_tasks=active_tasks)
+                                selected_uid, active_tasks=active_tasks)
             nbr_of_tasks = len(active_tasks)
 
         #Set the title of the window:
@@ -907,7 +907,7 @@ class TaskBrowser:
         self.task_ts = new_taskts
         #We expand all the we close the tasks who were not saved as "expanded"
         self.task_tview.expand_all()
-        self.task_tview.map_expanded_rows(self.restore_collapsed,None)
+        self.task_tview.map_expanded_rows(self.restore_collapsed, None)
         # Restore sorting
         if not self.noteview:
             if self.priv["tasklist"].has_key("sort_column") and \
@@ -936,8 +936,8 @@ class TaskBrowser:
             hadjust = self.task_tview.get_hadjustment()
             hscroll = min(old_position,(hadjust.upper - hadjust.page_size))
             hadjust.set_value(hscroll)
-        gobject.idle_add(restore_vscroll,vscroll_value)
-        gobject.idle_add(restore_hscroll,hscroll_value)
+        gobject.idle_add(restore_vscroll, vscroll_value)
+        gobject.idle_add(restore_hscroll, hscroll_value)
 
     #Refresh the closed tasks pane
     def refresh_closed(self):
@@ -945,11 +945,11 @@ class TaskBrowser:
         dselect = self.taskdone_tview.get_selection()
         d_path = None
         if dselect:
-            d_model,d_path = dselect.get_selected_rows() #pylint: disable-msg=W0612
+            d_model, d_path = dselect.get_selected_rows() #pylint: disable-msg=W0612
         #We empty the pane
         self.taskdone_ts.clear()
         #We rebuild it
-        tag_list,notag_only = self.get_selected_tags()
+        tag_list, notag_only = self.get_selected_tags()
         closed_tasks = self.req.get_closed_tasks_list(tags=tag_list,\
                                                     notag_only=notag_only)
         for tid in closed_tasks:
@@ -965,7 +965,7 @@ class TaskBrowser:
             if t.get_status() == "Dismiss":
                 title_str = "<span color=\"#AAAAAA\">%s</span>" % title_str
                 closeddate_str = "<span color=\"#AAAAAA\">%s</span>" % closeddate
-            self.taskdone_ts.append(None,[tid,t.get_color(),title_str,closeddate,closeddate_str,my_color,tags])
+            self.taskdone_ts.append(None,[tid, t.get_color(), title_str, closeddate, closeddate_str, my_color, tags])
         closed_selection = self.taskdone_tview.get_selection()
         if d_path:
             for i in d_path:
@@ -978,16 +978,16 @@ class TaskBrowser:
         dselect = self.note_tview.get_selection()
         d_path = None
         if dselect:
-            d_model,d_path = dselect.get_selected_rows() #pylint: disable-msg=W0612
+            d_model, d_path = dselect.get_selected_rows() #pylint: disable-msg=W0612
         #We empty the pane
         self.note_ts.clear()
         #We rebuild it
-        tag_list,notag_only = self.get_selected_tags()
+        tag_list, notag_only = self.get_selected_tags()
         notes = self.req.get_notes_list(tags=tag_list, notag_only=notag_only)
         for tid in notes:
             t = self.req.get_task(tid)
             title_str = saxutils.escape(t.get_title())
-            self.note_ts.append(None,[tid,t.get_color(),title_str])
+            self.note_ts.append(None,[tid, t.get_color(), title_str])
         note_selection = self.note_tview.get_selection()
         if d_path:
             for i in d_path:
@@ -1001,7 +1001,7 @@ class TaskBrowser:
         st_count = self.__count_tasks_rec(task, active_tasks)
         if selected_uid and selected_uid == tid:
             # Temporarily disabled
-            #title = self.__build_task_title(task,extended=True)
+            #title = self.__build_task_title(task, extended=True)
             title_str = self.__build_task_title(task, st_count, extended=False)
         else:
             title_str = self.__build_task_title(task, st_count, extended=False)
@@ -1019,23 +1019,23 @@ class TaskBrowser:
 
         if not parent and len(task.get_subtasks()) == 0:
             itera = tree_store.get_iter_first()
-            my_row = tree_store.insert_before(None, itera, row=[tid,title,title_str,duedate_str,left_str,tags,my_color])
+            my_row = tree_store.insert_before(None, itera, row=[tid, title, title_str, duedate_str, left_str, tags, my_color])
         else:
             #None should be "parent" but crashing with thread
             my_row = tree_store.append(parent,\
-                        [tid,title,title_str,duedate_str,left_str,tags,my_color])
+                        [tid, title, title_str, duedate_str, left_str, tags, my_color])
         #If treeview, we add add the active childs
         if treeview:
             for c in task.get_subtasks():
                 cid = c.get_id()
                 if cid in active_tasks:
                     #None should be cid
-                    self.add_task_tree_to_list(tree_store, cid, my_row,selected_uid,\
+                    self.add_task_tree_to_list(tree_store, cid, my_row, selected_uid,\
                                         active_tasks=active_tasks)
 
     #This function is called when the selection change in the closed task view
     #It will displays the selected task differently
-    def taskdone_cursor_changed(self,selection=None):
+    def taskdone_cursor_changed(self, selection=None):
         #We unselect all in the active task view
         #Only if something is selected in the closed task list
         #And we change the status of the Done/dismiss button
@@ -1069,7 +1069,7 @@ class TaskBrowser:
 
     #This function is called when the selection change in the active task view
     #It will displays the selected task differently
-    def task_cursor_changed(self,selection=None):
+    def task_cursor_changed(self, selection=None):
         #We unselect all in the closed task view
         #Only if something is selected in the active task list
         self.donebutton.set_icon_name("gtg-task-done")
@@ -1084,21 +1084,21 @@ class TaskBrowser:
         if self.selected_rows and self.task_ts.iter_is_valid(self.selected_rows):
             tid = self.task_ts.get_value(self.selected_rows, self.TASK_MODEL_OBJ)
             task = self.req.get_task(tid)
-            title = self.__build_task_title(task,extended=False)
-            self.task_ts.set_value(self.selected_rows,self.TASK_MODEL_TITLE,title)
+            title = self.__build_task_title(task, extended=False)
+            self.task_ts.set_value(self.selected_rows, self.TASK_MODEL_TITLE, title)
         #We change the selection title
         #if selection:
-            #ts,itera = selection.get_selected() #pylint: disable-msg=W0612
+            #ts, itera = selection.get_selected() #pylint: disable-msg=W0612
             #if itera and self.task_ts.iter_is_valid(itera):
                 #tid = self.task_ts.get_value(itera, self.TASK_MODEL_OBJ)
                 #task = self.req.get_task(tid)
                 #self.selected_rows = itera
                 # Extended title is temporarily disabled
-                #title = self.__build_task_title(task,extended=True)
-                #title = self.__build_task_title(task,extended=False)
-                #self.task_ts.set_value(self.selected_rows,self.TASK_MODEL_TITLE,title)
+                #title = self.__build_task_title(task, extended=True)
+                #title = self.__build_task_title(task, extended=False)
+                #self.task_ts.set_value(self.selected_rows, self.TASK_MODEL_TITLE, title)
 
-    def note_cursor_changed(self,selection=None):
+    def note_cursor_changed(self, selection=None):
         #We unselect all in the closed task view
         #Only if something is selected in the active task list
         if selection.count_selected_rows() > 0:
@@ -1115,12 +1115,12 @@ class TaskBrowser:
                     count = count + 1
         return count
 
-    def __build_task_title(self,task,count,extended=False):
+    def __build_task_title(self, task, count, extended=False):
         simple_title = saxutils.escape(task.get_title())
         if extended:
             excerpt = task.get_excerpt(lines=2)
             if excerpt.strip() != "":
-                title = "<b><big>%s</big></b>\n<small>%s</small>" %(simple_title,excerpt)
+                title = "<b><big>%s</big></b>\n<small>%s</small>" %(simple_title, excerpt)
             else:
                 title = "<b><big>%s</big></b>" %simple_title
         else:
@@ -1135,27 +1135,27 @@ class TaskBrowser:
 
     #If a Task editor is already opened for a given task, we present it
     #Else, we create a new one.
-    def open_task(self,uid):
+    def open_task(self, uid):
         t = self.req.get_task(uid)
         if self.opened_task.has_key(uid):
             self.opened_task[uid].present()
         else:
-            tv = TaskEditor(self.req,t,self.do_refresh,self.on_delete_task,
-                            self.close_task,self.open_task,self.get_tasktitle,
+            tv = TaskEditor(self.req, t, self.do_refresh, self.on_delete_task,
+                            self.close_task, self.open_task, self.get_tasktitle,
                             notes=self.notes)
             #registering as opened
             self.opened_task[uid] = tv
 
-    def get_tasktitle(self,tid):
+    def get_tasktitle(self, tid):
         task = self.req.get_task(tid)
         return task.get_title()
 
     #When an editor is closed, it should deregister itself
-    def close_task(self,tid):
+    def close_task(self, tid):
         if self.opened_task.has_key(tid):
             del self.opened_task[tid]
 
-    def on_tag_treeview_button_press_event(self,treeview,event):
+    def on_tag_treeview_button_press_event(self, treeview, event):
         if event.button == 3:
             x = int(event.x)
             y = int(event.y)
@@ -1184,17 +1184,17 @@ class TaskBrowser:
                     self.tagpopup.popup(None, None, None, event.button, time)
             return 1
 
-    def on_nonworkviewtag_toggled(self,widget): #pylint: disable-msg=W0613
+    def on_nonworkviewtag_toggled(self, widget): #pylint: disable-msg=W0613
         tags = self.get_selected_tags()[0]
         nonworkview_item = self.tagpopup.get_children()[1]
         #We must inverse because the tagstore has True
         #for tasks that are not in workview (and also convert to string)
         toset = str(not nonworkview_item.get_active())
         if len(tags) > 0:
-            tags[0].set_attribute("nonworkview",toset)
+            tags[0].set_attribute("nonworkview", toset)
         self.do_refresh()
 
-    def on_task_treeview_button_press_event(self,treeview,event):
+    def on_task_treeview_button_press_event(self, treeview, event):
         if event.button == 3:
             x = int(event.x)
             y = int(event.y)
@@ -1207,11 +1207,11 @@ class TaskBrowser:
                 self.taskpopup.popup( None, None, None, event.button, time)
             return 1
 
-    def on_task_treeview_key_press_event(self,treeview,event):
+    def on_task_treeview_key_press_event(self, treeview, event):
         if gtk.gdk.keyval_name(event.keyval) == "Delete":
             self.on_delete_task()
 
-    def on_closed_task_treeview_button_press_event(self,treeview,event):
+    def on_closed_task_treeview_button_press_event(self, treeview, event):
         if event.button == 3:
             x = int(event.x)
             y = int(event.y)
@@ -1224,24 +1224,24 @@ class TaskBrowser:
                 self.closedtaskpopup.popup( None, None, None, event.button, time)
             return 1
 
-    def on_closed_task_treeview_key_press_event(self,treeview,event):
+    def on_closed_task_treeview_key_press_event(self, treeview, event):
         if gtk.gdk.keyval_name(event.keyval) == "Delete":
             self.on_delete_task()
 
-    def on_add_task(self,widget,status=None): #pylint: disable-msg=W0613
-        tags,notagonly = self.get_selected_tags() #pylint: disable-msg=W0612
-        task = self.req.new_task(tags=tags,newtask=True)
+    def on_add_task(self, widget, status=None): #pylint: disable-msg=W0613
+        tags, notagonly = self.get_selected_tags() #pylint: disable-msg=W0612
+        task = self.req.new_task(tags=tags, newtask=True)
         uid = task.get_id()
         if status:
             task.set_status(status)
         self.open_task(uid)
 
-    def on_add_subtask(self,widget): #pylint: disable-msg=W0613
+    def on_add_subtask(self, widget): #pylint: disable-msg=W0613
         uid = self.get_selected_task()
         if uid:
             zetask = self.req.get_task(uid)
             tags = zetask.get_tags()
-            task = self.req.new_task(tags=tags,newtask=True)
+            task = self.req.new_task(tags=tags, newtask=True)
             task.add_parent(uid)
             zetask.add_subtask(task.get_id())
             self.open_task(task.get_id())
@@ -1250,7 +1250,7 @@ class TaskBrowser:
     #Get_selected_task returns the uid:
     # uid (example: '21@1')
     #By default, we select in the task_tview
-    def get_selected_task(self,tv=None):
+    def get_selected_task(self, tv=None):
         uid = None
         if not tv:
             tview = self.task_tview
@@ -1294,7 +1294,7 @@ class TaskBrowser:
             if not notag_only and selected:
                 tag.append(selected)
         #If no selection, we display all
-        return tag,notag_only
+        return tag, notag_only
 
     ###################
     #Drag-drop support#
@@ -1307,14 +1307,14 @@ class TaskBrowser:
     # 2. If yes, it's probably a drag-n-drop so we save those information
     # 3. If the "elsewhere" from point 1 is deleted, we are sure it's a
     #    drag-n-drop so we change the parent of the moved task
-    def row_dragndrop(self,tree, path, it,data=None): #pylint: disable-msg=W0613
+    def row_dragndrop(self, tree, path, it, data=None): #pylint: disable-msg=W0613
         if data == "insert":
             #If the row inserted already exists in another position
             #We are in a drag n drop case
-            def findsource(model, path, it,data):
+            def findsource(model, path, it, data):
                 path_move = tree.get_path(data[1])
                 path_actual = tree.get_path(it)
-                if model.get(it,0) == data[0] and path_move != path_actual:
+                if model.get(it, 0) == data[0] and path_move != path_actual:
                     self.drag_sources.append(path)
                     self.path_source = path
                     return True
@@ -1322,8 +1322,8 @@ class TaskBrowser:
                     self.path_source = None
 
             self.path_target = path
-            tid = tree.get(it,0)
-            tree.foreach(findsource,[tid,it])
+            tid = tree.get(it, 0)
+            tree.foreach(findsource,[tid, it])
             if self.path_source:
                 #We will prepare the drag-n-drop
                 iter_source = tree.get_iter(self.path_source)
@@ -1332,11 +1332,11 @@ class TaskBrowser:
                 iter_target_parent = tree.iter_parent(iter_target)
                 #the tid_parent will be None for root tasks
                 if iter_source_parent:
-                    sparent = tree.get(iter_source_parent,0)[0]
+                    sparent = tree.get(iter_source_parent, 0)[0]
                 else:
                     sparent = None
                 if iter_target_parent:
-                    tparent = tree.get(iter_target_parent,0)[0]
+                    tparent = tree.get(iter_target_parent, 0)[0]
                 else:
                     tparent = None
                 #If target and source are the same, we are moving
@@ -1347,15 +1347,15 @@ class TaskBrowser:
                     self.tid_target_parent = tparent
                     self.tid_tomove = tid[0]
                     # "row %s will move from %s to %s"%(self.tid_tomove,\
-                    #          self.tid_source_parent,self.tid_target_parent)
-#    def row_deleted(self,tree,path,data=None): #pylint: disable-msg=W0613
+                    #          self.tid_source_parent, self.tid_target_parent)
+#    def row_deleted(self, tree, path, data=None): #pylint: disable-msg=W0613
         elif data == "delete":
             #If we are removing the path source guessed during the insertion
             #It confirms that we are in a drag-n-drop
             if path in self.drag_sources and self.tid_tomove:
                 self.drag_sources.remove(path)
                 # "row %s moved from %s to %s"%(self.tid_tomove,\
-                #             self.tid_source_parent,self.tid_target_parent)
+                #             self.tid_source_parent, self.tid_target_parent)
                 tomove = self.req.get_task(self.tid_tomove)
                 tomove.set_to_keep()
                 tomove.remove_parent(self.tid_source_parent)
@@ -1374,30 +1374,30 @@ class TaskBrowser:
     ###############################
 
 
-    def on_edit_active_task(self,widget,row=None,col=None): #pylint: disable-msg=W0613
+    def on_edit_active_task(self, widget, row=None, col=None): #pylint: disable-msg=W0613
         tid = self.get_selected_task()
         if tid:
             self.open_task(tid)
-    def on_edit_done_task(self,widget,row=None,col=None): #pylint: disable-msg=W0613
+    def on_edit_done_task(self, widget, row=None, col=None): #pylint: disable-msg=W0613
         tid = self.get_selected_task(self.taskdone_tview)
         if tid:
             self.open_task(tid)
-    def on_edit_note(self,widget,row=None,col=None): #pylint: disable-msg=W0613
+    def on_edit_note(self, widget, row=None, col=None): #pylint: disable-msg=W0613
         tid = self.get_selected_task(self.note_tview)
         if tid:
             self.open_task(tid)
 
     #if we pass a tid as a parameter, we delete directly
     #otherwise, we will look which tid is selected
-    def on_delete_confirm(self,widget): #pylint: disable-msg=W0613
+    def on_delete_confirm(self, widget): #pylint: disable-msg=W0613
         self.req.delete_task(self.tid_todelete)
         self.tid_todelete = None
         self.do_refresh()
 
-    def on_delete_task(self,widget=None,tid=None): #pylint: disable-msg=W0613
+    def on_delete_task(self, widget=None, tid=None): #pylint: disable-msg=W0613
         #If we don't have a parameter, then take the selection in the treeview
         if not tid:
-            #tid_to_delete is a [project,task] tuple
+            #tid_to_delete is a [project, task] tuple
             self.tid_todelete = self.get_selected_task()
         else:
             self.tid_todelete = tid
@@ -1411,7 +1411,7 @@ class TaskBrowser:
         else:
             return False
 
-    def on_mark_as_done(self,widget): #pylint: disable-msg=W0613
+    def on_mark_as_done(self, widget): #pylint: disable-msg=W0613
         uid = self.get_selected_task()
         if uid:
             zetask = self.req.get_task(uid)
@@ -1421,7 +1421,7 @@ class TaskBrowser:
             else: zetask.set_status("Done")
             self.do_refresh()
 
-    def on_dismiss_task(self,widget): #pylint: disable-msg=W0613
+    def on_dismiss_task(self, widget): #pylint: disable-msg=W0613
         uid = self.get_selected_task()
         if uid:
             zetask = self.req.get_task(uid)
@@ -1431,7 +1431,7 @@ class TaskBrowser:
             else: zetask.set_status("Dismiss")
             self.do_refresh()
 
-    def on_select_tag(self, widget, row=None,col=None): #pylint: disable-msg=W0613
+    def on_select_tag(self, widget, row=None, col=None): #pylint: disable-msg=W0613
         #When you clic on a tag, you want to unselect the tasks
         self.task_tview.get_selection().unselect_all()
         self.taskdone_tview.get_selection().unselect_all()
@@ -1473,12 +1473,12 @@ class TaskBrowser:
             if   key1 == "" and key2 == "": return  0
             elif key1 == "" and key2 != "": return -1
             elif key1 != "" and key2 == "": return  1
-            else: return cmp(key1,key2)
+            else: return cmp(key1, key2)
         else:
             if   key1 == "" and key2 == "": return  0
             elif key1 == "" and key2 != "": return  1
             elif key1 != "" and key2 == "": return -1
-            else: return cmp(key1,key2)
+            else: return cmp(key1, key2)
 
     def sort_tasklist_rows(self, column, sort_order=None):
         """ Sort the rows based on the given column """
@@ -1507,7 +1507,7 @@ class TaskBrowser:
 
         # Determine row sorting depending on column
         if column == self.priv["tasklist"]["columns"][self.TASKLIST_COL_TITLE]:
-            cmp_func = lambda x,y: locale.strcoll(x.lower(),y.lower())
+            cmp_func = lambda x, y: locale.strcoll(x.lower(), y.lower())
             sort_key = lambda x:x[self.TASK_MODEL_TITLE]
         else:
             cmp_func = self.cmp_duedate_str
@@ -1521,7 +1521,7 @@ class TaskBrowser:
         rows = [tuple(r) + (i,) for i, r in enumerate(self.task_ts)]
         if len(rows) != 0:
             rows.sort(key=lambda x:x[self.TASK_MODEL_TITLE].lower())
-            rows.sort(cmp=cmp_func,key=sort_key,reverse=sort_reverse)
+            rows.sort(cmp=cmp_func, key=sort_key, reverse=sort_reverse)
             self.task_ts.reorder(None, [r[-1] for r in rows])
 
         # Display the sort indicator
