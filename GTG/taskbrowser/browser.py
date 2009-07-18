@@ -876,9 +876,8 @@ class TaskBrowser:
         if tid in self.priv["collapsed_tid"]:
             treeview.collapse_row(path)
 
-    #refresh list build/refresh your TreeStore of task
-    #to keep it in sync with your self.projects
-    def refresh_list(self, a=None, toselect=None): #pylint: disable-msg=W0613
+    def refresh_list(self, a=None, toselect=None):
+        """Refresh or build the TreeStore of tasks."""
 
         # Save collapsed rows
         self.task_ts.foreach(self.update_collapsed_row, None)
@@ -953,8 +952,6 @@ class TaskBrowser:
             for i in t_path:
                 selection.select_path(i)
 
-        #scroll position
-        #We have to call that in another thread, else it will not work
         def restore_vscroll(old_position):
             vadjust = self.task_tview.get_vadjustment()
             #We ensure that we will not scroll out of the window
@@ -966,6 +963,9 @@ class TaskBrowser:
             hadjust = self.task_tview.get_hadjustment()
             hscroll = min(old_position, (hadjust.upper - hadjust.page_size))
             hadjust.set_value(hscroll)
+
+        #scroll position
+        #We have to call that in another thread, else it will not work
         gobject.idle_add(restore_vscroll, vscroll_value)
         gobject.idle_add(restore_hscroll, hscroll_value)
 
@@ -1030,9 +1030,12 @@ class TaskBrowser:
         #self.note_ts.set_sort_column_id(self.CTASKS_MODEL_DDATE,
         #gtk.SORT_DESCENDING)
 
-    #Add tasks to a treeview. If treeview is False, it becomes a flat list
     def add_task_tree_to_list(self, tree_store, tid, parent, selected_uid=None,
                               active_tasks=[], treeview=True):
+        """Add tasks to a treeview.
+
+        If 'treeview' is False, it becomes a flat list.
+        """
         task = self.req.get_task(tid)
         st_count = self.__count_tasks_rec(task, active_tasks)
         if selected_uid and selected_uid == tid:
@@ -1074,9 +1077,11 @@ class TaskBrowser:
                         tree_store, cid, my_row, selected_uid,
                         active_tasks=active_tasks)
 
-    #This function is called when the selection change in the closed task view
-    #It will displays the selected task differently
     def taskdone_cursor_changed(self, selection=None):
+        """Called when selection changes in closed task view.
+
+        Changes the way the selected task is displayed.
+        """
         #We unselect all in the active task view
         #Only if something is selected in the closed task list
         #And we change the status of the Done/dismiss button
@@ -1113,9 +1118,11 @@ class TaskBrowser:
 #                self.editbutton.connect('clicked', self.on_edit_active_task)
 #                self.edit_mi.connect('activate', self.on_edit_active_task)
 
-    #This function is called when the selection change in the active task view
-    #It will displays the selected task differently
     def task_cursor_changed(self, selection=None):
+        """Called when selection changes in the active task view.
+
+        Changes the way the selected task is displayed.
+        """
         #We unselect all in the closed task view
         #Only if something is selected in the active task list
         self.donebutton.set_icon_name("gtg-task-done")
@@ -1184,9 +1191,12 @@ class TaskBrowser:
                 title = simple_title
         return title
 
-    #If a Task editor is already opened for a given task, we present it
-    #Else, we create a new one.
     def open_task(self, uid):
+        """Open the task identified by 'uid'.
+
+        If a Task editor is already opened for a given task, we present it.
+        Else, we create a new one.
+        """
         t = self.req.get_task(uid)
         if self.opened_task.has_key(uid):
             self.opened_task[uid].present()
@@ -1202,8 +1212,8 @@ class TaskBrowser:
         task = self.req.get_task(tid)
         return task.get_title()
 
-    #When an editor is closed, it should deregister itself
     def close_task(self, tid):
+        # When an editor is closed, it should deregister itself.
         if self.opened_task.has_key(tid):
             del self.opened_task[tid]
 
@@ -1255,8 +1265,8 @@ class TaskBrowser:
             if pthinfo is not None:
                 path, col, cellx, celly = pthinfo #pylint: disable-msg=W0612
                 treeview.grab_focus()
-                treeview.set_cursor( path, col, 0)
-                self.taskpopup.popup( None, None, None, event.button, time)
+                treeview.set_cursor(path, col, 0)
+                self.taskpopup.popup(None, None, None, event.button, time)
             return 1
 
     def on_task_treeview_key_press_event(self, treeview, event):
@@ -1272,7 +1282,7 @@ class TaskBrowser:
             if pthinfo is not None:
                 path, col, cellx, celly = pthinfo #pylint: disable-msg=W0612
                 treeview.grab_focus()
-                treeview.set_cursor( path, col, 0)
+                treeview.set_cursor(path, col, 0)
                 self.closedtaskpopup.popup(
                     None, None, None, event.button, time)
             return 1
@@ -1300,10 +1310,12 @@ class TaskBrowser:
             self.open_task(task.get_id())
             self.do_refresh()
 
-    #Get_selected_task returns the uid:
-    # uid (example: '21@1')
-    #By default, we select in the task_tview
     def get_selected_task(self, tv=None):
+        """Return the 'uid' of the selected task
+
+        :param tv: The tree view to find the selected task in. Defaults to
+            the task_tview.
+        """
         uid = None
         if not tv:
             tview = self.task_tview
@@ -1349,21 +1361,20 @@ class TaskBrowser:
         #If no selection, we display all
         return tag, notag_only
 
-    ###################
-    #Drag-drop support#
-    ###################
-    #Because of bug in pygtk, the rows-reordered signal is never emitted
-    #We workaoround this bug by connecting to row_insert and row_deleted
-    #Basically, we do the following:
-    # 1. If a row is inserted for a task X, look if the task already
-    #     exist elsewhere.
-    # 2. If yes, it's probably a drag-n-drop so we save those information
-    # 3. If the "elsewhere" from point 1 is deleted, we are sure it's a
-    #    drag-n-drop so we change the parent of the moved task
     def row_dragndrop(self, tree, path, it, data=None):
+        """Drag and drop support."""
+        #Because of bug in pygtk, the rows-reordered signal is never emitted
+        #We workaoround this bug by connecting to row_insert and row_deleted
+        #Basically, we do the following:
+        # 1. If a row is inserted for a task X, look if the task already
+        #     exist elsewhere.
+        # 2. If yes, it's probably a drag-n-drop so we save those information
+        # 3. If the "elsewhere" from point 1 is deleted, we are sure it's a
+        #    drag-n-drop so we change the parent of the moved task
         if data == "insert":
             #If the row inserted already exists in another position
             #We are in a drag n drop case
+
             def findsource(model, path, it, data):
                 path_move = tree.get_path(data[1])
                 path_actual = tree.get_path(it)
@@ -1422,27 +1433,22 @@ class TaskBrowser:
                 self.tid_source_parent = None
                 self.tid_target_parent = None
 
-    ###############################
-    ##### End of the drag-n-drop part
-    ###############################
-
-
     def on_edit_active_task(self, widget, row=None, col=None):
         tid = self.get_selected_task()
         if tid:
             self.open_task(tid)
+
     def on_edit_done_task(self, widget, row=None, col=None):
         tid = self.get_selected_task(self.taskdone_tview)
         if tid:
             self.open_task(tid)
+
     def on_edit_note(self, widget, row=None, col=None):
         tid = self.get_selected_task(self.note_tview)
         if tid:
             self.open_task(tid)
 
-    #if we pass a tid as a parameter, we delete directly
-    #otherwise, we will look which tid is selected
-    def on_delete_confirm(self, widget): #pylint: disable-msg=W0613
+    def on_delete_confirm(self, widget):
         self.req.delete_task(self.tid_todelete)
         self.tid_todelete = None
         self.do_refresh()
