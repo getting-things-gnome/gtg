@@ -453,11 +453,11 @@ class TaskBrowser:
         self.config["browser"]["collapsed_tasks"] = self.priv["collapsed_tid"]
         if   sort_column is not None and sort_order == gtk.SORT_ASCENDING:
             sort_col_id = self.priv["tasklist"]["columns"].index(sort_column)
-            self.config["browser"]["tasklist_sort"]  = [sort_col_id, 0]
+            self.config["browser"]["tasklist_sort"] = [sort_col_id, 0]
         elif sort_column is not None and sort_order == gtk.SORT_DESCENDING:
             sort_col_id = self.priv["tasklist"]["columns"].index(sort_column)
-            self.config["browser"]["tasklist_sort"]  = [sort_col_id, 1]
-        self.config["browser"]["view"]              = view
+            self.config["browser"]["tasklist_sort"] = [sort_col_id, 1]
+        self.config["browser"]["view"] = view
         if self.notes :
             self.config["browser"]["experimental_notes"] = True
 
@@ -544,7 +544,7 @@ class TaskBrowser:
 
     def do_toggle_workview(self):
         #We have to be careful here to avoid a loop of signals
-        #menu_state   = self.menu_view_workview.get_active()
+        #menu_state = self.menu_view_workview.get_active()
         #button_state = self.toggle_workview.get_active()
         #We cannot have note and workview at the same time
         if not self.workview and self.note_toggle.get_active() :
@@ -790,15 +790,15 @@ class TaskBrowser:
         if select :
             t_model,t_path = select.get_selected_rows() #pylint: disable-msg=W0612
         self.tag_ts.clear()
-        alltag       = self.req.get_alltag_tag()
-        notag        = self.req.get_notag_tag()
+        alltag = self.req.get_alltag_tag()
+        notag = self.req.get_notag_tag()
         if self.workview :
             count_all_task = len(self.req.get_active_tasks_list(workable=True))
-            count_no_tags  = len(self.req.get_active_tasks_list(notag_only=True,\
+            count_no_tags = len(self.req.get_active_tasks_list(notag_only=True,\
                                                                 workable=True))
         else :
             count_all_task = len(self.req.get_tasks_list(started_only=False))
-            count_no_tags  = len(self.req.get_tasks_list(notag_only=True,\
+            count_no_tags = len(self.req.get_tasks_list(notag_only=True,\
                                                          started_only=False))
 
         self.tag_ts.append([alltag,None,_("<span weight=\"bold\">All tags</span>"),str(count_all_task),False])
@@ -848,7 +848,7 @@ class TaskBrowser:
 
     def restore_collapsed(self,treeview,path,data) :
         itera = self.task_ts.get_iter(path)
-        tid   = self.task_ts.get_value(itera,0)
+        tid = self.task_ts.get_value(itera,0)
         if tid in self.priv["collapsed_tid"] :
             treeview.collapse_row(path)
 
@@ -953,17 +953,17 @@ class TaskBrowser:
         closed_tasks = self.req.get_closed_tasks_list(tags=tag_list,\
                                                     notag_only=notag_only)
         for tid in closed_tasks :
-            t              = self.req.get_task(tid)
-            title_str      = saxutils.escape(t.get_title())
-            closeddate     = t.get_closed_date()
+            t = self.req.get_task(tid)
+            title_str = saxutils.escape(t.get_title())
+            closeddate = t.get_closed_date()
             closeddate_str = closeddate
-            tags           = t.get_tags()
+            tags = t.get_tags()
             if self.priv["bg_color_enable"] and t.has_tags() :
                 my_color = colors.background_color(t.get_tags())
             else:
                 my_color = None
             if t.get_status() == "Dismiss":
-                title_str      = "<span color=\"#AAAAAA\">%s</span>" % title_str
+                title_str = "<span color=\"#AAAAAA\">%s</span>" % title_str
                 closeddate_str = "<span color=\"#AAAAAA\">%s</span>" % closeddate
             self.taskdone_ts.append(None,[tid,t.get_color(),title_str,closeddate,closeddate_str,my_color,tags])
         closed_selection = self.taskdone_tview.get_selection()
@@ -985,8 +985,8 @@ class TaskBrowser:
         tag_list,notag_only = self.get_selected_tags()
         notes = self.req.get_notes_list(tags=tag_list, notag_only=notag_only)
         for tid in notes :
-            t              = self.req.get_task(tid)
-            title_str      = saxutils.escape(t.get_title())
+            t = self.req.get_task(tid)
+            title_str = saxutils.escape(t.get_title())
             self.note_ts.append(None,[tid,t.get_color(),title_str])
         note_selection = self.note_tview.get_selection()
         if d_path :
@@ -997,7 +997,7 @@ class TaskBrowser:
     #Add tasks to a treeview. If treeview is False, it becomes a flat list
     def add_task_tree_to_list(self, tree_store, tid, parent, selected_uid=None,\
                                         active_tasks=[], treeview=True):
-        task     = self.req.get_task(tid)
+        task = self.req.get_task(tid)
         st_count = self.__count_tasks_rec(task, active_tasks)
         if selected_uid and selected_uid == tid :
             # Temporarily disabled
@@ -1008,10 +1008,10 @@ class TaskBrowser:
 
 
         # Extract data
-        title       = saxutils.escape(task.get_title())
+        title = saxutils.escape(task.get_title())
         duedate_str = task.get_due_date()
-        left_str    = task.get_days_left()
-        tags        = task.get_tags()
+        left_str = task.get_days_left()
+        tags = task.get_tags()
         if self.priv["bg_color_enable"] :
             my_color = colors.background_color(tags)
         else:
@@ -1120,9 +1120,9 @@ class TaskBrowser:
         if extended :
             excerpt = task.get_excerpt(lines=2)
             if excerpt.strip() != "" :
-                title   = "<b><big>%s</big></b>\n<small>%s</small>" %(simple_title,excerpt)
+                title = "<b><big>%s</big></b>\n<small>%s</small>" %(simple_title,excerpt)
             else :
-                title   = "<b><big>%s</big></b>" %simple_title
+                title = "<b><big>%s</big></b>" %simple_title
         else :
             if (not self.workview):
                 if count == 0:
@@ -1240,8 +1240,8 @@ class TaskBrowser:
         uid = self.get_selected_task()
         if uid :
             zetask = self.req.get_task(uid)
-            tags   = zetask.get_tags()
-            task   = self.req.new_task(tags=tags,newtask=True)
+            tags = zetask.get_tags()
+            task = self.req.new_task(tags=tags,newtask=True)
             task.add_parent(uid)
             zetask.add_subtask(task.get_id())
             self.open_task(task.get_id())
@@ -1443,10 +1443,10 @@ class TaskBrowser:
     def __create_tags_tview(self):
 
         # Tag column
-        tag_col      = gtk.TreeViewColumn()
-        render_text  = gtk.CellRendererText()
+        tag_col = gtk.TreeViewColumn()
+        render_text = gtk.CellRendererText()
         render_count = gtk.CellRendererText()
-        render_tags  = CellRendererTags()
+        render_tags = CellRendererTags()
         tag_col.set_title             ("Tags")
         tag_col.set_clickable         (False)
         tag_col.pack_start            (render_tags  , expand=False)
@@ -1484,7 +1484,7 @@ class TaskBrowser:
         """ Sort the rows based on the given column """
 
         # Extract sorting state
-        last_sort_col   = self.priv["tasklist"]["sort_column"]
+        last_sort_col = self.priv["tasklist"]["sort_column"]
         last_sort_order = self.priv["tasklist"]["sort_order"]
 
         # Cleanup
@@ -1503,7 +1503,7 @@ class TaskBrowser:
 
         # Store sorting state
         self.priv["tasklist"]["sort_column"] = column
-        self.priv["tasklist"]["sort_order"]  = sort_order
+        self.priv["tasklist"]["sort_order"] = sort_order
 
         # Determine row sorting depending on column
         if column == self.priv["tasklist"]["columns"][self.TASKLIST_COL_TITLE]:
@@ -1534,7 +1534,7 @@ class TaskBrowser:
 
         # Tag column
         self.TASKLIST_COL_TAGS = 0
-        tag_col     = gtk.TreeViewColumn()
+        tag_col = gtk.TreeViewColumn()
         render_tags = CellRendererTags()
         tag_col.set_title             (_("Tags"))
         tag_col.pack_start            (render_tags, expand=False)
@@ -1549,7 +1549,7 @@ class TaskBrowser:
 
         # Title column
         self.TASKLIST_COL_TITLE = 1
-        title_col   = gtk.TreeViewColumn()
+        title_col = gtk.TreeViewColumn()
         render_text = gtk.CellRendererText()
         title_col.set_title           (_("Title"))
         title_col.pack_start          (render_text, expand=False)
@@ -1568,7 +1568,7 @@ class TaskBrowser:
 
         # Due date column
         self.TASKLIST_COL_DDATE = 2
-        ddate_col   = gtk.TreeViewColumn()
+        ddate_col = gtk.TreeViewColumn()
         render_text = gtk.CellRendererText()
         ddate_col.set_title           (_("Due date"))
         ddate_col.pack_start          (render_text, expand=False)
@@ -1582,7 +1582,7 @@ class TaskBrowser:
 
         # days left
         self.TASKLIST_COL_DLEFT = 3
-        dleft_col   = gtk.TreeViewColumn()
+        dleft_col = gtk.TreeViewColumn()
         render_text = gtk.CellRendererText()
         dleft_col.set_title           (_("Days left"))
         dleft_col.pack_start          (render_text, expand=False)
@@ -1605,7 +1605,7 @@ class TaskBrowser:
 
         # Tag column
         self.CTASKLIST_COL_TAGS = 0
-        tag_col     = gtk.TreeViewColumn()
+        tag_col = gtk.TreeViewColumn()
         render_tags = CellRendererTags()
         tag_col.set_title             (_("Tags"))
         tag_col.pack_start            (render_tags, expand=False)
@@ -1620,8 +1620,8 @@ class TaskBrowser:
 
         # Done date column
         self.CTASKLIST_COL_DDATE = 1
-        ddate_col    = gtk.TreeViewColumn()
-        render_text  = gtk.CellRendererText()
+        ddate_col = gtk.TreeViewColumn()
+        render_text = gtk.CellRendererText()
         ddate_col.set_title                (_("Closing date"))
         ddate_col.pack_start               (render_text  , expand=True)
         ddate_col.set_attributes           (render_text  , markup=self.CTASKS_MODEL_DDATE_STR)
@@ -1632,8 +1632,8 @@ class TaskBrowser:
 
         # Title column
         self.CTASKLIST_COL_TITLE = 2
-        title_col    = gtk.TreeViewColumn()
-        render_text  = gtk.CellRendererText()
+        title_col = gtk.TreeViewColumn()
+        render_text = gtk.CellRendererText()
         title_col.set_title                (_("Title"))
         title_col.pack_start               (render_text  , expand=True)
         title_col.set_attributes           (render_text  , markup=self.CTASKS_MODEL_TITLE)
@@ -1648,8 +1648,8 @@ class TaskBrowser:
 
     def __create_note_tview(self):
         # Title column
-        title_col    = gtk.TreeViewColumn()
-        render_text  = gtk.CellRendererText()
+        title_col = gtk.TreeViewColumn()
+        render_text = gtk.CellRendererText()
         title_col.set_title                (_("Notes"))
         title_col.pack_start               (render_text  , expand=True)
         title_col.set_attributes           (render_text  , markup=self.CTASKS_MODEL_TITLE)
