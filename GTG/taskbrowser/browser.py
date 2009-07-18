@@ -323,14 +323,14 @@ class TaskBrowser:
         if not "browser" in self.config:
             return
 
-        if "width" in self.config["browser"] and \
-           "height" in self.config["browser"]:
+        if ("width" in self.config["browser"] and
+            "height" in self.config["browser"]):
             width = int(self.config["browser"]["width"])
             height = int(self.config["browser"]["height"])
             self.window.resize(width, height)
 
-        if "x_pos" in self.config["browser"] and \
-           "y_pos" in self.config["browser"]:
+        if ("x_pos" in self.config["browser"] and
+            "y_pos" in self.config["browser"]):
 
             xpos = int(self.config["browser"]["x_pos"])
             ypos = int(self.config["browser"]["y_pos"])
@@ -379,8 +379,8 @@ class TaskBrowser:
             self.wTree.get_widget("bgcol_enable").set_active(bgcol_enable)
 
         if "collapsed_tasks" in self.config["browser"]:
-            self.priv["collapsed_tid"] = \
-                self.config["browser"]["collapsed_tasks"]
+            self.priv["collapsed_tid"] = self.config[
+                "browser"]["collapsed_tasks"]
 
         if "tasklist_sort" in self.config["browser"]:
             col_id, order = self.config["browser"]["tasklist_sort"]
@@ -628,8 +628,7 @@ class TaskBrowser:
             month = today.month
             day = today.day
             date = "%i-%i-%i" % (year, month, day)
-        elif arg.lower() == "tomorrow" or\
-          arg.lower() == _("tomorrow"):
+        elif arg.lower() == "tomorrow" or arg.lower() == _("tomorrow"):
             today = datetime.date.today()
             tomorrow = today + datetime.timedelta(days=1)
             year = tomorrow.year
@@ -815,8 +814,8 @@ class TaskBrowser:
                 self.req.get_active_tasks_list(notag_only=True, workable=True))
         else:
             count_all_task = len(self.req.get_tasks_list(started_only=False))
-            count_no_tags = len(self.req.get_tasks_list(notag_only=True,\
-                                                         started_only=False))
+            count_no_tags = len(
+                self.req.get_tasks_list(notag_only=True, started_only=False))
 
         self.tag_ts.append(
             [alltag, None, _("<span weight=\"bold\">All tags</span>"),
@@ -981,8 +980,8 @@ class TaskBrowser:
         self.taskdone_ts.clear()
         #We rebuild it
         tag_list, notag_only = self.get_selected_tags()
-        closed_tasks = self.req.get_closed_tasks_list(tags=tag_list,\
-                                                    notag_only=notag_only)
+        closed_tasks = self.req.get_closed_tasks_list(
+            tags=tag_list, notag_only=notag_only)
         for tid in closed_tasks:
             t = self.req.get_task(tid)
             title_str = saxutils.escape(t.get_title())
