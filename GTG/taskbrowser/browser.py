@@ -19,8 +19,8 @@
 # -----------------------------------------------------------------------------
 
 
-#=== IMPORT ====================================================================
-#system imports
+# === IMPORT ==================================================================
+# System imports
 import pygtk
 pygtk.require('2.0')
 import gobject
@@ -32,49 +32,52 @@ import locale
 import re
 import datetime
 
-#our own imports
+# Our own imports
 import GTG
 from GTG import _
-from GTG.taskeditor.editor            import TaskEditor
+from GTG.taskbrowser import GnomeConfig, treetools
 from GTG.taskbrowser.CellRendererTags import CellRendererTags
-from GTG.taskbrowser                  import GnomeConfig
-from GTG.taskbrowser                  import treetools
-from GTG.tools                        import colors, openurl
+from GTG.taskeditor.editor import TaskEditor
+from GTG.tools import colors, openurl
 
-#=== OBJECTS ===================================================================
+# === OBJECTS =================================================================
 
-#=== MAIN CLASS ================================================================
+# === MAIN CLASS ==============================================================
 
-#Some default preferences that we should save in a file
-WORKVIEW      = False
-SIDEBAR       = False
-CLOSED_PANE   = False
-TOOLBAR       = True
+# Some default preferences that we should save in a file.
+WORKVIEW = False
+SIDEBAR = False
+CLOSED_PANE = False
+TOOLBAR = True
 QUICKADD_PANE = True
 
 EXPERIMENTAL_NOTES = False
+
 
 class TaskBrowser:
 
     def __init__(self, requester, config):
 
-        self.priv = {}
-
-        #The locks used to avoid unecessary refresh
+        # The locks used to avoid unecessary refresh
         self.refresh_lock = threading.Lock()
         self.refresh_lock_lock = threading.Lock()
         # Set the configuration dictionary
         self.config = config
         self.notes = EXPERIMENTAL_NOTES
 
-        # Setup default values for view
-        self.priv["collapsed_tid"]            = []
-        self.priv["tasklist"]                 = {}
-        self.priv["tasklist"]["sort_column"]  = None
-        self.priv["tasklist"]["sort_order"]   = gtk.SORT_ASCENDING
-        self.priv["ctasklist"]                = {}
-        self.priv["ctasklist"]["sort_column"] = None
-        self.priv["ctasklist"]["sort_order"]  = gtk.SORT_ASCENDING
+        # Set up default values for view.
+        self.priv = {
+            'collapsed_tid': [],
+            'tasklist': {
+                'sort_column': None,
+                'sort_order': gtk.SORT_ASCENDING,
+                },
+            'ctasklist': {
+                'sort_column': None,
+                'sort_order': gtk.SORT_ASCENDING,
+                },
+            }
+
 
         #Set the Glade file
         self.gladefile = GnomeConfig.GLADE_FILE
