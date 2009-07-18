@@ -1657,12 +1657,8 @@ class TaskBrowser:
         title_col.set_expand               (True)
         self.note_tview.append_column  (title_col)
 
-        # Global treeview properties
-        #self.taskdone_ts.set_sort_column_id(self.CTASKS_MODEL_DDATE, gtk.SORT_DESCENDING)
-
-
-    ######Closing the window
-    def close(self,widget=None) : #pylint: disable-msg=W0613
+    def close(self, widget=None):
+        """Closing the window."""
         #Saving is now done in main.py
         self.on_delete(None, None)
         gtk.main_quit()
