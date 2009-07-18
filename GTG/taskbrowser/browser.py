@@ -937,8 +937,10 @@ class TaskBrowser:
         self.task_tview.map_expanded_rows(self.restore_collapsed, None)
         # Restore sorting
         if not self.noteview:
-            if (self.priv["tasklist"].has_key("sort_column") and
-                self.priv["tasklist"].has_key("sort_order")):
+            # XXX: This can be done much more simply using {}.get(). -- jml,
+            # 2009-07-18.
+            if ('sort_column' in self.priv["tasklist"] and
+                'sort_order' in self.priv["tasklist"]):
                 if (self.priv["tasklist"]["sort_column"] is not None and
                     self.priv["tasklist"]["sort_order"] is not None):
                     self.sort_tasklist_rows(
@@ -1198,7 +1200,7 @@ class TaskBrowser:
         Else, we create a new one.
         """
         t = self.req.get_task(uid)
-        if self.opened_task.has_key(uid):
+        if uid in self.opened_task:
             self.opened_task[uid].present()
         else:
             tv = TaskEditor(
@@ -1214,7 +1216,7 @@ class TaskBrowser:
 
     def close_task(self, tid):
         # When an editor is closed, it should deregister itself.
-        if self.opened_task.has_key(tid):
+        if tid in self.opened_task:
             del self.opened_task[tid]
 
     def on_tag_treeview_button_press_event(self, treeview, event):
