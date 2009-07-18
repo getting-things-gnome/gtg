@@ -727,9 +727,12 @@ class TaskBrowser:
             self.do_refresh(toselect=id_toselect)
             #self.select_task(id_toselect)
 
-    #This works only in the main task_tview
-    #If it cannot find the requested task, nothing is selected
     def select_task(self, id_toselect):
+        """Select a task with tid 'id_toselect'.
+
+        This works only in the main task_tview. If it cannot find the
+        requested task, nothing is selected.
+        """
         #We will loop over all task_tview element to find the newly added one
         model = self.task_tview.get_model()
         tempit = model.get_iter_first()
@@ -755,8 +758,6 @@ class TaskBrowser:
             selection = self.task_tview.get_selection()
             selection.select_iter(it)
 
-
-
     def do_refresh(self, sender=None, param=None, toselect=None):
         #We ask to do the refresh in a gtk thread
         #We use a lock_lock like described in
@@ -767,9 +768,12 @@ class TaskBrowser:
         elif toselect:
             gobject.idle_add(self.select_task, toselect)
 
-    #If a task asked for the refresh, we don't refresh it to avoid a loop
-    #New use refresh_tb directly, use "do_refresh"
     def refresh_tb(self, fromtask=None, toselect=None):
+        """Refresh the task browser.
+
+        If a task asked for the refresh, we don't refresh it to avoid a loop
+        New use refresh_tb directly, use "do_refresh".
+        """
         self.refresh_lock.acquire()
         try:
             self.refresh_lock_lock.release()
@@ -793,9 +797,11 @@ class TaskBrowser:
         finally:
             self.refresh_lock.release()
 
-
-    #We refresh the tag list. Not needed very often
     def refresh_tags(self):
+        """Refresh the tag list.
+
+        Not needed very often.
+        """
         select = self.tag_tview.get_selection()
         t_path = None
         if select:
@@ -816,7 +822,7 @@ class TaskBrowser:
             [alltag, None, _("<span weight=\"bold\">All tags</span>"),
              str(count_all_task), False])
         self.tag_ts.append(
-            [notag, None,_("<span weight=\"bold\">Tasks without tags</span>"),
+            [notag, None, _("<span weight=\"bold\">Tasks without tags</span>"),
              str(count_no_tags), False])
         self.tag_ts.append([None, None, "", "", True])
 
@@ -907,7 +913,7 @@ class TaskBrowser:
         else:
             #building the classical treeview
             active_root_tasks = self.req.get_active_tasks_list(
-                tags=tag_list,notag_only=notag_only, is_root=True,
+                tags=tag_list, notag_only=notag_only, is_root=True,
                 started_only=False)
             active_tasks = self.req.get_active_tasks_list(
                 tags=tag_list, notag_only=notag_only, is_root=False,
@@ -956,6 +962,7 @@ class TaskBrowser:
             #It was bug #331285
             vscroll = min(old_position, (vadjust.upper - vadjust.page_size))
             vadjust.set_value(vscroll)
+
         def restore_hscroll(old_position):
             hadjust = self.task_tview.get_hadjustment()
             hscroll = min(old_position, (hadjust.upper - hadjust.page_size))
@@ -963,8 +970,8 @@ class TaskBrowser:
         gobject.idle_add(restore_vscroll, vscroll_value)
         gobject.idle_add(restore_hscroll, hscroll_value)
 
-    #Refresh the closed tasks pane
     def refresh_closed(self):
+        """Refresh the closed tasks pane."""
         #We build the closed tasks pane
         dselect = self.taskdone_tview.get_selection()
         d_path = None
@@ -1001,8 +1008,8 @@ class TaskBrowser:
         self.taskdone_ts.set_sort_column_id(
             self.CTASKS_MODEL_DDATE, gtk.SORT_DESCENDING)
 
-    #Refresh the notes pane
     def refresh_note(self):
+        """Refresh the notes pane."""
         #We build the notes pane
         dselect = self.note_tview.get_selection()
         d_path = None
