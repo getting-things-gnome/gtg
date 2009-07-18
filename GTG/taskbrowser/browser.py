@@ -1571,10 +1571,10 @@ class TaskBrowser:
         # Determine row sorting depending on column
         if column == self.priv["tasklist"]["columns"][self.TASKLIST_COL_TITLE]:
             cmp_func = lambda x, y: locale.strcoll(x.lower(), y.lower())
-            sort_key = lambda x:x[self.TASK_MODEL_TITLE]
+            sort_key = lambda x: x[self.TASK_MODEL_TITLE]
         else:
             cmp_func = self.cmp_duedate_str
-            sort_key = lambda x:x[self.TASK_MODEL_DDATE_STR]
+            sort_key = lambda x: x[self.TASK_MODEL_DDATE_STR]
 
         # Determine sorting direction
         if sort_order == gtk.SORT_ASCENDING:
@@ -1585,7 +1585,7 @@ class TaskBrowser:
         # Sort rows
         rows = [tuple(r) + (i,) for i, r in enumerate(self.task_ts)]
         if len(rows) != 0:
-            rows.sort(key=lambda x:x[self.TASK_MODEL_TITLE].lower())
+            rows.sort(key=lambda x: x[self.TASK_MODEL_TITLE].lower())
             rows.sort(cmp=cmp_func, key=sort_key, reverse=sort_reverse)
             self.task_ts.reorder(None, [r[-1] for r in rows])
 
