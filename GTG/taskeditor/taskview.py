@@ -399,8 +399,8 @@ class TaskView(gtk.TextView):
 
         It reflects the changes by:
 
-        1. Applying the title style on the first line
-        2. Changing the name of the window if title change
+          1. Applying the title style on the first line
+          2. Changing the name of the window if title change
         """
         tags_before = self.get_tagslist()
         if not buff : buff = self.buff   

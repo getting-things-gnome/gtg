@@ -25,8 +25,7 @@ apidocs:
 	python -W ignore::DeprecationWarning ~/src/pydoctor/trunk/bin/pydoctor \
 		--add-package GTG --make-html --html-output=doc/api \
 		--project-name=GTG --project-url=http://gtg.fritalk.com/ \
-		--docformat=restructuredtext -q -q \
-		--verbose-about=epydoc2stan2 --verbose-about=epydoc2stan2
+		-q -q --verbose-about=epydoc2stan2 --verbose-about=epydoc2stan2
 
 # Check for coding standard violations & flakes.
 lint: pyflakes pep8
