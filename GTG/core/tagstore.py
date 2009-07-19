@@ -150,7 +150,7 @@ class TagStore :
 ######################### Tag ###########################################
 
 class Tag:
-    """A short name that can be applied to Tasks.
+    """A short name that can be applied to L{Task}s.
 
     I mean, surely you must know what a tag is by now. Think Gmail,
     del.icio.us, Flickr et al.
@@ -198,9 +198,9 @@ class Tag:
         self._save()
 
     def get_attribute(self, att_name):
-        """Get the attribute 'att_name'.
+        """Get the attribute C{att_name}.
 
-        Returns None if there is no attribute matching 'att_name'.
+        Returns C{None} if there is no attribute matching C{att_name}.
         """
         return self._attributes.get(att_name, None)
 
