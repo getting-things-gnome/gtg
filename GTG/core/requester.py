@@ -18,13 +18,7 @@
 # -----------------------------------------------------------------------------
 
 
-#Requester is a pure View object. It will not do anything but it will
-#be used by any Interface to handle the requests to the datastore
-
-#There could be multiple requester. It means that a requester should never
-#Hold any data except a reference to its datastore.
-
-class Requester :
+class Requester:
     """A view on a GTG datastore.
 
     `Requester` is a stateless object that simply provides a nice API for user
@@ -235,8 +229,8 @@ class Requester :
     def get_all_tags(self):
         """Return a list of every tag that was ever used."""
         return list(self.ds.get_tagstore().get_all_tags())
-        
-    def get_notag_tag(self) :
+
+    def get_notag_tag(self):
         return self.ds.get_tagstore().get_notag_tag()
 
     def get_alltag_tag(self):
