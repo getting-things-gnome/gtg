@@ -27,6 +27,8 @@ command:
     $ sudo aptitude install python-gtk2 python-glade2 python-xdg python-gobject\
          python-configobj python-pydoctor
 
+Note that the python-pydoctor package is broken in karmic.
+
 ===== Installing and Running =====
 
 To install GTG, either unpack the tarball:
