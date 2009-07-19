@@ -1,11 +1,11 @@
 ====== Getting Things GNOME! ======
 
-Getting Things GNOME! (GTG) is a personal organizer for the GNOME desktop 
-environment inspired by the Getting Things Done (GTD) methodology. GTG is 
-designed with flexibility, adaptability, and ease of use in mind so it can be 
-used as more than just GTD software. 
+Getting Things GNOME! (GTG) is a personal organizer for the GNOME desktop
+environment inspired by the Getting Things Done (GTD) methodology. GTG is
+designed with flexibility, adaptability, and ease of use in mind so it can be
+used as more than just GTD software.
 
-GTG is intended to help you track everything you needto do and need to know, 
+GTG is intended to help you track everything you needto do and need to know,
 from small tasks to large projects.
 
 ===== Dependencies =====
@@ -16,10 +16,10 @@ GTG depends on the following packages:
  * python ConfigObj
  * python gobject
  * python XDG
-Please refer to your system documentation for information on how to install 
+Please refer to your system documentation for information on how to install
 these modules if they're not currently available.
 
-To install these packages on Debian-based systems, execute the following 
+To install these packages on Debian-based systems, execute the following
 command:
     $ sudo aptitude install python-gtk2 python-glade2 python-xdg python-gobject\
          python-configobj
@@ -27,12 +27,12 @@ command:
 ===== Installing and Running =====
 
 To install GTG, either unpack the tarball:
-    
+
     $ tar xzvf gtg.tar.gz
 
-or check out our bazaar branch for a development version (we try to keep those 
+or check out our bazaar branch for a development version (we try to keep those
 unbroken and ready for production use):
-    
+
     $ bzr branch lp:gtg
 
 To run GTG, either execute it directly from the source folder:
@@ -59,7 +59,7 @@ When writing a task, keep in mind that:
 
 ===== Quick add =====
 
-In the quickadd line you can use "attribue:argument" with any title. 
+In the quickadd line you can use "attribue:argument" with any title.
 Valid attributes are: "tags", "defer", "due"
 E.g.:
  "due:friday task description"
