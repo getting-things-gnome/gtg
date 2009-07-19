@@ -62,7 +62,9 @@ class PluginEngine:
             print "Error: %s" % e
             
         for name, plugin in plugins.items():
-            self.Plugins.append(self.loadPlugin(plugin))
+            tmp_plgin = self.loadPlugin(plugin)
+            if tmp_plgin:
+                self.Plugins.append(tmp_plgin)
 			
         return self.Plugins
 		
@@ -93,7 +95,9 @@ class PluginEngine:
                     loaded_plugin['instance'] = None
                 except:
                     continue
-				
+		
+        if not loaded_plugin:
+            return None	
         return loaded_plugin
 	
     def enabledPlugins(self, plugins):

@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
+import gtk
 
 class PluginAPI:
     def __init__(self, window, wTree, requester, task=None, textview=None):
@@ -88,6 +89,9 @@ class PluginAPI:
         task_tview = self.__wTree.get_widget("task_tview")
         task_tview.set_model(treestore)
         
+    def get_task_title(self):
+        return self.task.get_title() 
+    
     # adds a tag, updated the text buffer, inserting the tag at the end of
     # the task
     def add_tag(self, tag):
