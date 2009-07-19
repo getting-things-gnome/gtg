@@ -77,7 +77,7 @@ class Requester:
 
         Note: this modifies the datastore.
 
-        :param tid: The id of the task to be deleted.
+        @param tid: The id of the task to be deleted.
         """
         self.ds.delete_task(tid)
 
@@ -192,7 +192,7 @@ class Requester:
 
         "Closed" means either "done", "dismissed" or "deleted".
 
-        See `get_tasks_list` for more information about the parameters.
+        See L{get_tasks_list} for more information about the parameters.
         """
         closed = ["Done", "Dismiss", "Deleted"]
         return self.get_tasks_list(
@@ -218,8 +218,8 @@ class Requester:
 
         Note: this modifies the datastore.
 
-        :param tagname: The name of the new tag.
-        :return: The newly-created tag.
+        @param tagname: The name of the new tag.
+        @return: The newly-created tag.
         """
         return self.ds.get_tagstore().new_tag(tagname)
 
@@ -239,7 +239,7 @@ class Requester:
     def get_used_tags(self):
         """Return tags currently used by a task.
 
-        :return: A list of tags used by a task.
+        @return: A list of tags used by a task.
         """
         # FIXME: it should be only active and visible tasks.
         l = []
