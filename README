@@ -59,7 +59,7 @@ When writing a task, keep in mind that:
 
 ===== Quick add =====
 
-In the quickadd line you can use "attribue:argument" with any title.
+In the quickadd line you can use "attribute:argument" with any title.
 Valid attributes are: "tags", "defer", "due"
 E.g.:
  "due:friday task description"
