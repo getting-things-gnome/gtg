@@ -16,13 +16,16 @@ GTG depends on the following packages:
  * python ConfigObj
  * python gobject
  * python XDG
+
+To generate the API documentation, you'll also need to install 'pydoctor'.
+
 Please refer to your system documentation for information on how to install
 these modules if they're not currently available.
 
 To install these packages on Debian-based systems, execute the following
 command:
     $ sudo aptitude install python-gtk2 python-glade2 python-xdg python-gobject\
-         python-configobj
+         python-configobj python-pydoctor
 
 ===== Installing and Running =====
 
