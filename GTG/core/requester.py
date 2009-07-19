@@ -30,7 +30,7 @@ class Requester :
     `Requester` is a stateless object that simply provides a nice API for user
     interfaces to use for datastore operations.
 
-    Multiple `Requester`s can exist on the same datastore, so they should
+    Multiple `Requester`\s can exist on the same datastore, so they should
     never have state of their own.
     """
 
