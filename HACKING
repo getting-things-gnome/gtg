@@ -144,6 +144,17 @@ you are running GNOME, you can open it in your browser with::
 
   gnome-open doc/api/index.html
 
+You can also run::
+
+  make edit-apidocs
+
+To launch a pydoctor server at http://localhost:8080/ that will let you edit
+API documentation in place. The feature has a few rough edges, but can be
+really useful for editing and extending API docs. To actually apply your edits
+to the tree::
+
+  wget http://localhost:8080/rawBigDiff -q -O- | bzr patch
+
 Remember, docstrings should be written for people who don't know much about
 the code. Focus on ''why'' things are the way they are, and on describing
 ''what'' they are in the first place.
