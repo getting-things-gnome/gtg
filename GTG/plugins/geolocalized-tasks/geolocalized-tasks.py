@@ -53,32 +53,16 @@ class geolocalizedTasks:
         # define the icon for the button
         btn_set_location = gtk.ToolButton()
         btn_set_location.set_icon_widget(icon_map)
-        btn_set_location.set_label("Set location")
+        btn_set_location.set_label("Set/View location")
         btn_set_location.connect('clicked', self.set_task_location, plugin_api)
         plugin_api.AddTaskToolbarItem(btn_set_location)
-        
-        #TODO: image for the button
-        # only add this button if the task has a position defined
-        tags = plugin_api.get_tags()
-        view_location = False
-        for tag in tags:
-            for attr in tag.get_all_attributes():
-                if attr == "position":
-                    view_location = True
-                    break
-        
-        if view_location:
-            btn_view_location = gtk.ToolButton(gtk.STOCK_ZOOM_100) #STOCK_ZOOM_FIT
-            btn_view_location.set_label("View location")
-            btn_view_location.connect('clicked', self.view_task_location, plugin_api.get_task_title(), plugin_api.get_tags())
-            plugin_api.AddTaskToolbarItem(btn_view_location)
             
     def on_geolocalized_preferences(self, widget):
         pass
     
     def set_task_location(self, widget, plugin_api, location=None):
         location = self.geoclue.get_location_info()
-        self.plugin_api
+        self.plugin_api = plugin_api
         
         wTree = gtk.glade.XML(self.glade_file, "SetTaskLocation")
         dialog = wTree.get_widget("SetTaskLocation")
@@ -87,11 +71,13 @@ class geolocalizedTasks:
         btn_zoom_out = wTree.get_widget("btn_zoom_out")
         
         self.radiobutton1 = wTree.get_widget("radiobutton1")
-        self.radiobutton2 = gtk.RadioButton(self.radiobutton1, "Associate with existing tag")
+        self.radiobutton2 = wTree.get_widget("radiobutton2")
         self.txt_new_tag = wTree.get_widget("txt_new_tag")
-        tabela = wTree.get_widget("tabela_set_task")
+        self.cmb_existing_tag = wTree.get_widget("cmb_existing_tag")
         
+        tabela = wTree.get_widget("tabela_set_task")
         vbox = wTree.get_widget("vbox_map")
+        vbox_opt = wTree.get_widget("vbox_opt")
         
         champlain_view = champlain.View()
         champlain_view.set_property("scroll-mode", champlain.SCROLL_MODE_KINETIC)
@@ -105,6 +91,18 @@ class geolocalizedTasks:
                     tag_attr_color = self.HTMLColorToRGB(tag.get_attribute(attr))
                     break   
         
+        # check if the task has a location defined
+        tag_attr_location = None
+        for tag in self.plugin_api.get_tags():
+            for attr in tag.get_all_attributes():
+                if attr == "location":
+                    tag_attr_location = attr
+                    break
+                
+        if tag_attr_location:
+            location['latitude'] = tag_attr_location[0]
+            location['longitude'] = tag_attr_location[1] 
+        
         layer = MarkerLayer()
         try:
             if location['latitude'] and location['longitude']:
@@ -116,6 +114,7 @@ class geolocalizedTasks:
         
         embed = cluttergtk.Embed()
         embed.set_size_request(400, 300)
+        
         # method that will change the marker's position
         champlain_view.set_reactive(True)
         champlain_view.connect("button-release-event", self.champlain_change_marker, champlain_view, self.marker)
@@ -140,18 +139,28 @@ class geolocalizedTasks:
         btn_zoom_out.connect("clicked", self.zoom_out, champlain_view)
         dialog.connect("response", self.set_task_location_close)
         
-        # add the options to associate the location with a tag
-        if len(plugin_api.get_tags()) > 0:
-            tabela.attach(self.radiobutton2, 0, 2, 1, 2)
-            self.radiobutton2.show()
-            self.cmb_existing_tag = gtk.combo_box_entry_new_text()
-            tabela.attach(self.cmb_existing_tag, 1, 2, 1, 2)
-            for tag in plugin_api.get_tags():
-                self.cmb_existing_tag.append_text(tag.get_attribute("name"))
-            self.cmb_existing_tag.set_active(0)
-            self.cmb_existing_tag.show()
+        #if there is no location set, we want to set it
+        if not tag_attr_location:
+            self.location_defined = False
+            if len(plugin_api.get_tags()) > 0:
+                liststore = gtk.ListStore(str)
+                self.cmb_existing_tag.set_model(liststore)
+                for tag in plugin_api.get_tags():    
+                    liststore.append([tag.get_attribute("name")])
+                self.cmb_existing_tag.set_text_column(0)
+                self.cmb_existing_tag.set_active(0)             
+            else:
+                #remove radiobutton2 and the comboboxentry
+                tabela.remove(self.radiobutton1)
+                tabela.remove(self.radiobutton2)
+                tabela.remove(self.cmb_existing_tag)
+                label = gtk.Label()
+                label.set_text("Associate with new tag: ")
+                tabela.attach(label, 0, 1, 0, 1)
+                label.show()
         else:
-            self.radiobutton2.hide() 
+            self.location_defined = True
+            vbox_opt.remove(tabela)
         
         dialog.show_all()
         
@@ -164,30 +173,33 @@ class geolocalizedTasks:
     def set_task_location_close(self, dialog, response=None):
         if response == gtk.RESPONSE_OK:
             # ok
-            if self.radiobutton1.get_active():
-                # radiobutton1
-                if self.txt_new_tag.get_text() != "":
+            # tries to get the radiobuttons value, witch may not exist
+            if not self.location_defined:
+                if self.radiobutton1.get_active():
+                    # radiobutton1
+                    if self.txt_new_tag.get_text() != "":
+                        print self.marker.get_position()
+                       
+                       # # because users sometimes make mistakes, I'll check if the tag exists
+                       # tmp_tag = ""
+                       # for tag in self.plugin_api.get_tags():
+                       #     t = "@" + self.txt_new_tag.get_text().replace("@", "")
+                       #     if tag.get_attribute("name") == t:
+                       #         tmp_tag = t
+                       # if tmp_tag:
+                       #     self.plugin_api.add_tag_attribute(self.txt_new_tag.get_text().replace("@", ""), 
+                       #                                       location,  
+                       #                                       self.marker.get_position())
+                       # else:
+                       #     self.plugin_api.add_tag(self.txt_new_tag.get_text().replace("@", ""))
+                       #     self.plugin_api.add_tag_attribute(self.txt_new_tag.get_text().replace("@", ""), 
+                       #                                       location,  
+                       #                                       self.marker.get_position())        
+                else:
+                    # radiobutton2
                     print self.marker.get_position()
-                   
-                   # # because users sometimes make mistakes, I'll check if the tag exists
-                   # tmp_tag = ""
-                   # for tag in self.plugin_api.get_tags():
-                   #     t = "@" + self.txt_new_tag.get_text().replace("@", "")
-                   #     if tag.get_attribute("name") == t:
-                   #         tmp_tag = t
-                   # if tmp_tag:
-                   #     self.plugin_api.add_tag_attribute(self.txt_new_tag.get_text().replace("@", ""), 
-                   #                                       location,  
-                   #                                       self.marker.get_position())
-                   # else:
-                   #     self.plugin_api.add_tag(self.txt_new_tag.get_text().replace("@", ""))
-                   #     self.plugin_api.add_tag_attribute(self.txt_new_tag.get_text().replace("@", ""), 
-                   #                                       location,  
-                   #                                       self.marker.get_position())        
-            else:
-                # radiobutton2
-                print self.marker.get_position()
-                #self.plugin_api.add_tag_attribute( self.cmb_existing_tag.get_text_column(), "location", marker.get_position() )
+                    #self.plugin_api.add_tag_attribute( self.cmb_existing_tag.get_text_column(), "location", marker.get_position() )
+            
             #dialog.destroy()
         else:
             # cancel
@@ -199,67 +211,6 @@ class geolocalizedTasks:
         
         (latitude, longitude) = view.get_coords_at(int(event.x), int(event.y))
         marker.set_position(latitude, longitude)
-    
-    # a dialog to view the task's location
-    def view_task_location(self, widget, title, tags):
-        wTree = gtk.glade.XML(self.glade_file, "ViewTaskLocation")
-        dialog = wTree.get_widget("ViewTaskLocation")
-        
-        btn_zoom_in = wTree.get_widget("btn_zoom_in")
-        btn_zoom_out = wTree.get_widget("btn_zoom_out")
-        
-        vbox = wTree.get_widget("vbox1")
-        
-        champlain_view = champlain.View()
-        champlain_view.set_property("scroll-mode", champlain.SCROLL_MODE_KINETIC)
-        
-        # connect the window signals
-        # get the tag with the location attributes
-        tag_attr_location = []
-        for tag in tags:
-            for attr in tag.get_all_attributes():
-                if attr == "location":
-                    tag_attr_location = attr
-                    break
-        
-        # get one of the task's color
-        tag_attr_color = None
-        for tag in tags:
-            for attr in tag.get_all_attributes():
-                if attr == "color":
-                    tag_attr_color = self.HTMLColorToRGB(tag.get_attribute(attr))
-                    break          
-        
-        # add the champlain view to the window
-        champlain_view = champlain.View()
-        champlain_view.set_property("scroll-mode", champlain.SCROLL_MODE_KINETIC)
-        
-        layer = MarkerLayer()
-        layer.add_marker(title, tag_attr_location[0], tag_attr_location[1], tag_attr_color)
-        
-        champlain_view.add_layer(layer)
-        
-        embed = cluttergtk.Embed()
-        embed.set_size_request(400, 300)
-        
-        layer.show_all()
-        
-        champlain_view.set_property("zoom-level", 10)
-            
-        vbox.add(embed)
-        
-        embed.realize()
-        stage = embed.get_stage()
-        champlain_view.set_size(400, 300)
-        stage.add(champlain_view)
-        
-         # connect the toolbar buttons for zoom
-        btn_zoom_in.connect("clicked", self.zoom_in, champlain_view)
-        btn_zoom_out.connect("clicked", self.zoom_out, champlain_view)
-        
-        dialog.show_all()
-        
-        champlain_view.center_on(tag_attr_position[0], tag_attr_position[1])
                 
     def zoom_in(self, widget, view):
         view.zoom_in()
