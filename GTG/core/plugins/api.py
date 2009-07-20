@@ -89,6 +89,9 @@ class PluginAPI:
         task_tview = self.__wTree.get_widget("task_tview")
         task_tview.set_model(treestore)
         
+    def get_task(self):
+        return self.task
+    
     def get_task_title(self):
         return self.task.get_title() 
     

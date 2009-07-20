@@ -37,6 +37,8 @@ class geolocalizedTasks:
         plugin_api.RemoveMenuItem(self.menu_item)
     
     def onTaskOpened(self, plugin_api):
+        plugin_api.AddTaskToolbarItem(gtk.SeparatorToolItem())
+        
         # create the pixbuf with the icon and it's size.
         # 24,24 is the TaskEditor's toolbar icon size
         path = os.path.dirname(os.path.abspath(__file__))
@@ -49,50 +51,118 @@ class geolocalizedTasks:
         icon_map.show()
         
         # define the icon for the button
-        btn_task_location = gtk.ToolButton()
-        btn_task_location.set_icon_widget(icon_map)
-        btn_task_location.set_label("Task location")
-        btn_task_location.connect('clicked', self.set_task_location, plugin_api.get_task_title(), plugin_api.get_tags())
-        plugin_api.AddTaskToolbarItem(btn_task_location)
+        btn_set_location = gtk.ToolButton()
+        btn_set_location.set_icon_widget(icon_map)
+        btn_set_location.set_label("Set location")
+        btn_set_location.connect('clicked', self.set_task_location, plugin_api)
+        plugin_api.AddTaskToolbarItem(btn_set_location)
         
+        #TODO: image for the button
+        # only add this button if the task has a position defined
+        tags = plugin_api.get_tags()
+        view_location = False
+        for tag in tags:
+            for attr in tag.get_all_attributes():
+                if attr == "position":
+                    view_location = True
+                    break
+        
+        if view_location:
+            btn_view_location = gtk.ToolButton(gtk.STOCK_ZOOM_100) #STOCK_ZOOM_FIT
+            btn_view_location.set_label("View location")
+            btn_view_location.connect('clicked', self.view_task_location, plugin_api.get_task_title(), plugin_api.get_tags())
+            plugin_api.AddTaskToolbarItem(btn_view_location)
             
     def on_geolocalized_preferences(self, widget):
         pass
     
-    def set_task_location(self, widget, task):
-        pass
+    def champlain_view_click(self, widget, event, view):
+        if event.button != 1:
+            return False
+        
+        view.get_coords_from_event(event)
     
-    def view_task_location(self, widget, title, tags):
-        wTree = gtk.glade.XML(self.glade_file, "ViewTaskLocation")
-        window = wTree.get_widget("ViewTaskLocation")
+    def set_task_location(self, widget, plugin_api, location=None):
+        location = self.geoclue.get_location_info()
+        
+        wTree = gtk.glade.XML(self.glade_file, "SetTaskLocation")
+        dialog = wTree.get_widget("SetTaskLocation")
         
         vbox = wTree.get_widget("vbox1")
         
+        champlain_view = champlain.View()
+        champlain_view.set_property("scroll-mode", champlain.SCROLL_MODE_KINETIC)
+        # because I can't get the number of clicks
+        champlain_view.set_property("zoom-on-double-click", False)
+        
+        layer = MarkerLayer()
+        try:
+            if location['latitude'] and location['longitude']:
+                marker = layer.add_marker(plugin_api.get_task_title(), location['latitude'], location['longitude'])
+        except:
+            pass
+        
+        champlain_view.add_layer(layer)
+        
+        embed = cluttergtk.Embed()
+        embed.set_size_request(400, 300)
+        embed.connect("button-release-event", self.champlain_view_click, champlain_view)
+        
+        layer.show_all()
+        
+        try:
+            if location['latitude'] and location['longitude']:
+                champlain_view.set_property("zoom-level", 9)
+        except:
+            champlain_view.set_property("zoom-level", 1)
+            
+        vbox.add(embed)
+        
+        embed.realize()
+        stage = embed.get_stage()
+        champlain_view.set_size(400, 300)
+        stage.add(champlain_view)
+        
+        dialog.show_all()
+        
+        try:
+            if location['latitude'] and location['longitude']:
+                champlain_view.center_on(location['latitude'], location['longitude'])
+        except:
+            pass
+    
+    def view_task_location(self, widget, title, tags):
+        wTree = gtk.glade.XML(self.glade_file, "ViewTaskLocation")
+        dialog = wTree.get_widget("ViewTaskLocation")
+        
+        vbox = wTree.get_widget("vbox1")
+        
+        champlain_view = champlain.View()
+        champlain_view.set_property("scroll-mode", champlain.SCROLL_MODE_KINETIC)
+        
         # connect the window signals
-        
         # get the tag with the location attributes
-        #tag_attr_position = []
-        #for tag in tags:
-        #    for attr in tag.get_all_attributes():
-        #        if attr == "position":
-        #            tag_attr_position = attr
-        tag_attr_position = [38.575935, -7.921326]
+        tag_attr_location = []
+        for tag in tags:
+            for attr in tag.get_all_attributes():
+                if attr == "location":
+                    tag_attr_location = attr
+                    break
         
-        tag_attr_color = ""
+        # get one of the task's color
+        tag_attr_color = None
         for tag in tags:
             for attr in tag.get_all_attributes():
                 if attr == "color":
-                    tag_attr_color = tag.get_attribute(attr)
-                    break
-        
-        print tag_attr_color            
+                    tag_attr_color = self.HTMLColorToRGB(tag.get_attribute(attr))
+                    break          
         
         # add the champlain view to the window
         champlain_view = champlain.View()
         champlain_view.set_property("scroll-mode", champlain.SCROLL_MODE_KINETIC)
         
         layer = MarkerLayer()
-        layer.add_marker(title, tag_attr_position[0], tag_attr_position[1], self.HTMLColorToRGB(tag_attr_color))
+        layer.add_marker(title, tag_attr_location[0], tag_attr_location[1], tag_attr_color)
         
         champlain_view.add_layer(layer)
         
@@ -110,9 +180,7 @@ class geolocalizedTasks:
         champlain_view.set_size(400, 300)
         stage.add(champlain_view)
         
-        # add the associte with a existing tag to the vbox
-        
-        window.show_all()
+        dialog.show_all()
         
         champlain_view.center_on(tag_attr_position[0], tag_attr_position[1])
 
@@ -144,7 +212,6 @@ class MarkerLayer(champlain.Layer):
         self.hide()
         
     def add_marker(self, text, latitude, longitude, bg_color=None, text_color=None, font="Airmole 8"):
-        
         if not text_color:
             text_color = self.white
             
@@ -156,3 +223,4 @@ class MarkerLayer(champlain.Layer):
         #marker.set_position(38.575935, -7.921326)
         marker.set_position(latitude, longitude)
         self.add(marker)
+        return marker
