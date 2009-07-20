@@ -89,6 +89,9 @@ class geolocalizedTasks:
         wTree = gtk.glade.XML(self.glade_file, "SetTaskLocation")
         dialog = wTree.get_widget("SetTaskLocation")
         
+        btn_zoom_in = wTree.get_widget("btn_zoom_in")
+        btn_zoom_out = wTree.get_widget("btn_zoom_out")
+        
         vbox = wTree.get_widget("vbox1")
         
         champlain_view = champlain.View()
@@ -135,6 +138,10 @@ class geolocalizedTasks:
         champlain_view.set_size(400, 300)
         stage.add(champlain_view)
         
+        # connect the toolbar buttons for zoom
+        btn_zoom_in.connect("clicked", self.zoom_in, champlain_view)
+        btn_zoom_out.connect("clicked", self.zoom_out, champlain_view)
+        
         dialog.show_all()
         
         try:
@@ -147,6 +154,9 @@ class geolocalizedTasks:
     def view_task_location(self, widget, title, tags):
         wTree = gtk.glade.XML(self.glade_file, "ViewTaskLocation")
         dialog = wTree.get_widget("ViewTaskLocation")
+        
+        btn_zoom_in = wTree.get_widget("btn_zoom_in")
+        btn_zoom_out = wTree.get_widget("btn_zoom_out")
         
         vbox = wTree.get_widget("vbox1")
         
@@ -193,10 +203,20 @@ class geolocalizedTasks:
         champlain_view.set_size(400, 300)
         stage.add(champlain_view)
         
+         # connect the toolbar buttons for zoom
+        btn_zoom_in.connect("clicked", self.zoom_in, champlain_view)
+        btn_zoom_out.connect("clicked", self.zoom_out, champlain_view)
+        
         dialog.show_all()
         
         champlain_view.center_on(tag_attr_position[0], tag_attr_position[1])
+                
+    def zoom_in(self, widget, view):
+        view.zoom_in()
 
+    def zoom_out(self, widget, view):
+        view.zoom_out()
+        
     # http://code.activestate.com/recipes/266466/
     # original by Paul Winkler
     def HTMLColorToRGB(self, colorstring):
