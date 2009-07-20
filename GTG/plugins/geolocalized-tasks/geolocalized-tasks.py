@@ -76,19 +76,12 @@ class geolocalizedTasks:
     def on_geolocalized_preferences(self, widget):
         pass
     
-    def champlain_view_click(self, widget, event, view, marker, actor):
-        if event.button != 1:
+    def champlain_change_marker(self, widget, event, view, marker):
+        if event.button != 1 or event.click_count > 1:
             return False
         
-        map_source = view.get_map_source()
-        latitude = map_source.get_latitude(view.get_property("zoom-level"), int(event.y))
-        longitude = map_source.get_longitude(view.get_property("zoom-level"), int(event.x))
-        
-        #(w,h) = actor.get_stage().get_size() # 400, 300
-        #print "latitude: " + str(latitude) + " longitude: " + str(longitude)
-        #print view.get_coords_from_even(event)
-        
-        #marker.set_position(latitude, longitude)
+        (latitude, longitude) = view.get_coords_at(int(event.x), int(event.y))
+        marker.set_position(latitude, longitude)
     
     def set_task_location(self, widget, plugin_api, location=None):
         location = self.geoclue.get_location_info()
@@ -101,12 +94,21 @@ class geolocalizedTasks:
         champlain_view = champlain.View()
         champlain_view.set_property("scroll-mode", champlain.SCROLL_MODE_KINETIC)
         # because I can't get the number of clicks
-        champlain_view.set_property("zoom-on-double-click", False)
+        # FIXED! :D
+        #champlain_view.set_property("zoom-on-double-click", False)
+        
+         # get one of the task's color
+        tag_attr_color = None
+        for tag in plugin_api.get_tags():
+            for attr in tag.get_all_attributes():
+                if attr == "color":
+                    tag_attr_color = self.HTMLColorToRGB(tag.get_attribute(attr))
+                    break   
         
         layer = MarkerLayer()
         try:
             if location['latitude'] and location['longitude']:
-                marker = layer.add_marker(plugin_api.get_task_title(), location['latitude'], location['longitude'])
+                marker = layer.add_marker(plugin_api.get_task_title(), location['latitude'], location['longitude'], tag_attr_color)
         except:
             pass
         
@@ -114,7 +116,9 @@ class geolocalizedTasks:
         
         embed = cluttergtk.Embed()
         embed.set_size_request(400, 300)
-        embed.connect("button-release-event", self.champlain_view_click, champlain_view, marker, embed)
+        # method that will change the marker's position
+        champlain_view.set_reactive(True)
+        champlain_view.connect("button-release-event", self.champlain_change_marker, champlain_view, marker)
         
         layer.show_all()
         
