@@ -96,9 +96,10 @@ class geolocalizedTasks:
         for tag in self.plugin_api.get_tags():
             for attr in tag.get_all_attributes():
                 if attr == "location":
-                    tag_attr_location = attr
+                    tag_attr_location = eval(tag.get_attribute(attr))
                     break
                 
+        print tag_attr_location[0]
         if tag_attr_location:
             location['latitude'] = tag_attr_location[0]
             location['longitude'] = tag_attr_location[1] 
@@ -108,7 +109,7 @@ class geolocalizedTasks:
             if location['latitude'] and location['longitude']:
                 self.marker = layer.add_marker(plugin_api.get_task_title(), location['latitude'], location['longitude'], tag_attr_color)
         except:
-            pass
+            self.marker = layer.add_marker(plugin_api.get_task_title(), None, None)
         
         champlain_view.add_layer(layer)
         
@@ -117,7 +118,7 @@ class geolocalizedTasks:
         
         # method that will change the marker's position
         champlain_view.set_reactive(True)
-        champlain_view.connect("button-release-event", self.champlain_change_marker, champlain_view, self.marker)
+        champlain_view.connect("button-release-event", self.champlain_change_marker, champlain_view)
         
         layer.show_all()
         
@@ -161,6 +162,7 @@ class geolocalizedTasks:
         else:
             self.location_defined = True
             vbox_opt.remove(tabela)
+            dialog.set_title("View the task's location")
         
         dialog.show_all()
         
@@ -178,39 +180,40 @@ class geolocalizedTasks:
                 if self.radiobutton1.get_active():
                     # radiobutton1
                     if self.txt_new_tag.get_text() != "":
-                        print self.marker.get_position()
+                        marker_position = (self.marker.get_property('latitude'), self.marker.get_property('longitude'))
                        
-                       # # because users sometimes make mistakes, I'll check if the tag exists
-                       # tmp_tag = ""
-                       # for tag in self.plugin_api.get_tags():
-                       #     t = "@" + self.txt_new_tag.get_text().replace("@", "")
-                       #     if tag.get_attribute("name") == t:
-                       #         tmp_tag = t
-                       # if tmp_tag:
-                       #     self.plugin_api.add_tag_attribute(self.txt_new_tag.get_text().replace("@", ""), 
-                       #                                       location,  
-                       #                                       self.marker.get_position())
-                       # else:
-                       #     self.plugin_api.add_tag(self.txt_new_tag.get_text().replace("@", ""))
-                       #     self.plugin_api.add_tag_attribute(self.txt_new_tag.get_text().replace("@", ""), 
-                       #                                       location,  
-                       #                                       self.marker.get_position())        
+                        # because users sometimes make mistakes, I'll check if the tag exists
+                        tmp_tag = ""
+                        for tag in self.plugin_api.get_tags():
+                            t = "@" + self.txt_new_tag.get_text().replace("@", "")
+                            if tag.get_attribute("name") == t:
+                                tmp_tag = t
+                        if tmp_tag:
+                            self.plugin_api.add_tag_attribute(self.txt_new_tag.get_text().replace("@", ""), 
+                                                              "location",  
+                                                              marker_position)
+                        else:
+                            self.plugin_api.add_tag(self.txt_new_tag.get_text().replace("@", ""))
+                            self.plugin_api.add_tag_attribute("@" + self.txt_new_tag.get_text().replace("@", ""), 
+                                                              "location",  
+                                                              marker_position)        
                 else:
                     # radiobutton2
-                    print self.marker.get_position()
-                    #self.plugin_api.add_tag_attribute( self.cmb_existing_tag.get_text_column(), "location", marker.get_position() )
+                    #print "latitude: " + str(self.marker.get_property('latitude')) + " longitude: " + str(self.marker.get_property('longitude'))
+                    marker_position = (self.marker.get_property('latitude'), self.marker.get_property('longitude'))
+                    #self.plugin_api.add_tag_attribute(self.cmb_existing_tag.get_text_column(), "location", marker_position )
             
-            #dialog.destroy()
+            dialog.destroy()
         else:
             # cancel
             dialog.destroy()
     
-    def champlain_change_marker(self, widget, event, view, marker):
+    def champlain_change_marker(self, widget, event, view):
         if event.button != 1 or event.click_count > 1:
             return False
         
         (latitude, longitude) = view.get_coords_at(int(event.x), int(event.y))
-        marker.set_position(latitude, longitude)
+        self.marker.set_position(latitude, longitude)
                 
     def zoom_in(self, widget, view):
         view.zoom_in()
@@ -255,6 +258,7 @@ class MarkerLayer(champlain.Layer):
         marker = champlain.marker_new_with_text(text, font, text_color, bg_color)
 
         #marker.set_position(38.575935, -7.921326)
-        marker.set_position(latitude, longitude)
+        if latitude and longitude:
+            marker.set_position(latitude, longitude)
         self.add(marker)
         return marker
