@@ -76,11 +76,19 @@ class geolocalizedTasks:
     def on_geolocalized_preferences(self, widget):
         pass
     
-    def champlain_view_click(self, widget, event, view):
+    def champlain_view_click(self, widget, event, view, marker, actor):
         if event.button != 1:
             return False
         
-        view.get_coords_from_event(event)
+        map_source = view.get_map_source()
+        latitude = map_source.get_latitude(view.get_property("zoom-level"), int(event.y))
+        longitude = map_source.get_longitude(view.get_property("zoom-level"), int(event.x))
+        
+        #(w,h) = actor.get_stage().get_size() # 400, 300
+        #print "latitude: " + str(latitude) + " longitude: " + str(longitude)
+        #print view.get_coords_from_even(event)
+        
+        #marker.set_position(latitude, longitude)
     
     def set_task_location(self, widget, plugin_api, location=None):
         location = self.geoclue.get_location_info()
@@ -106,7 +114,7 @@ class geolocalizedTasks:
         
         embed = cluttergtk.Embed()
         embed.set_size_request(400, 300)
-        embed.connect("button-release-event", self.champlain_view_click, champlain_view)
+        embed.connect("button-release-event", self.champlain_view_click, champlain_view, marker, embed)
         
         layer.show_all()
         
@@ -130,7 +138,8 @@ class geolocalizedTasks:
                 champlain_view.center_on(location['latitude'], location['longitude'])
         except:
             pass
-    
+        
+    # a dialog to view the task's location
     def view_task_location(self, widget, title, tags):
         wTree = gtk.glade.XML(self.glade_file, "ViewTaskLocation")
         dialog = wTree.get_widget("ViewTaskLocation")
