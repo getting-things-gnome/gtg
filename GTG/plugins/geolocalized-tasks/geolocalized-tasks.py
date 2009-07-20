@@ -76,15 +76,9 @@ class geolocalizedTasks:
     def on_geolocalized_preferences(self, widget):
         pass
     
-    def champlain_change_marker(self, widget, event, view, marker):
-        if event.button != 1 or event.click_count > 1:
-            return False
-        
-        (latitude, longitude) = view.get_coords_at(int(event.x), int(event.y))
-        marker.set_position(latitude, longitude)
-    
     def set_task_location(self, widget, plugin_api, location=None):
         location = self.geoclue.get_location_info()
+        self.plugin_api
         
         wTree = gtk.glade.XML(self.glade_file, "SetTaskLocation")
         dialog = wTree.get_widget("SetTaskLocation")
@@ -92,12 +86,15 @@ class geolocalizedTasks:
         btn_zoom_in = wTree.get_widget("btn_zoom_in")
         btn_zoom_out = wTree.get_widget("btn_zoom_out")
         
-        vbox = wTree.get_widget("vbox1")
+        self.radiobutton1 = wTree.get_widget("radiobutton1")
+        self.radiobutton2 = gtk.RadioButton(self.radiobutton1, "Associate with existing tag")
+        self.txt_new_tag = wTree.get_widget("txt_new_tag")
+        tabela = wTree.get_widget("tabela_set_task")
+        
+        vbox = wTree.get_widget("vbox_map")
         
         champlain_view = champlain.View()
         champlain_view.set_property("scroll-mode", champlain.SCROLL_MODE_KINETIC)
-        # because I can't get the number of clicks
-        # FIXED! :D
         #champlain_view.set_property("zoom-on-double-click", False)
         
          # get one of the task's color
@@ -111,7 +108,7 @@ class geolocalizedTasks:
         layer = MarkerLayer()
         try:
             if location['latitude'] and location['longitude']:
-                marker = layer.add_marker(plugin_api.get_task_title(), location['latitude'], location['longitude'], tag_attr_color)
+                self.marker = layer.add_marker(plugin_api.get_task_title(), location['latitude'], location['longitude'], tag_attr_color)
         except:
             pass
         
@@ -121,7 +118,7 @@ class geolocalizedTasks:
         embed.set_size_request(400, 300)
         # method that will change the marker's position
         champlain_view.set_reactive(True)
-        champlain_view.connect("button-release-event", self.champlain_change_marker, champlain_view, marker)
+        champlain_view.connect("button-release-event", self.champlain_change_marker, champlain_view, self.marker)
         
         layer.show_all()
         
@@ -141,6 +138,20 @@ class geolocalizedTasks:
         # connect the toolbar buttons for zoom
         btn_zoom_in.connect("clicked", self.zoom_in, champlain_view)
         btn_zoom_out.connect("clicked", self.zoom_out, champlain_view)
+        dialog.connect("response", self.set_task_location_close)
+        
+        # add the options to associate the location with a tag
+        if len(plugin_api.get_tags()) > 0:
+            tabela.attach(self.radiobutton2, 0, 2, 1, 2)
+            self.radiobutton2.show()
+            self.cmb_existing_tag = gtk.combo_box_entry_new_text()
+            tabela.attach(self.cmb_existing_tag, 1, 2, 1, 2)
+            for tag in plugin_api.get_tags():
+                self.cmb_existing_tag.append_text(tag.get_attribute("name"))
+            self.cmb_existing_tag.set_active(0)
+            self.cmb_existing_tag.show()
+        else:
+            self.radiobutton2.hide() 
         
         dialog.show_all()
         
@@ -149,7 +160,46 @@ class geolocalizedTasks:
                 champlain_view.center_on(location['latitude'], location['longitude'])
         except:
             pass
+    
+    def set_task_location_close(self, dialog, response=None):
+        if response == gtk.RESPONSE_OK:
+            # ok
+            if self.radiobutton1.get_active():
+                # radiobutton1
+                if self.txt_new_tag.get_text() != "":
+                    print self.marker.get_position()
+                   
+                   # # because users sometimes make mistakes, I'll check if the tag exists
+                   # tmp_tag = ""
+                   # for tag in self.plugin_api.get_tags():
+                   #     t = "@" + self.txt_new_tag.get_text().replace("@", "")
+                   #     if tag.get_attribute("name") == t:
+                   #         tmp_tag = t
+                   # if tmp_tag:
+                   #     self.plugin_api.add_tag_attribute(self.txt_new_tag.get_text().replace("@", ""), 
+                   #                                       location,  
+                   #                                       self.marker.get_position())
+                   # else:
+                   #     self.plugin_api.add_tag(self.txt_new_tag.get_text().replace("@", ""))
+                   #     self.plugin_api.add_tag_attribute(self.txt_new_tag.get_text().replace("@", ""), 
+                   #                                       location,  
+                   #                                       self.marker.get_position())        
+            else:
+                # radiobutton2
+                print self.marker.get_position()
+                #self.plugin_api.add_tag_attribute( self.cmb_existing_tag.get_text_column(), "location", marker.get_position() )
+            #dialog.destroy()
+        else:
+            # cancel
+            dialog.destroy()
+    
+    def champlain_change_marker(self, widget, event, view, marker):
+        if event.button != 1 or event.click_count > 1:
+            return False
         
+        (latitude, longitude) = view.get_coords_at(int(event.x), int(event.y))
+        marker.set_position(latitude, longitude)
+    
     # a dialog to view the task's location
     def view_task_location(self, widget, title, tags):
         wTree = gtk.glade.XML(self.glade_file, "ViewTaskLocation")
@@ -216,7 +266,7 @@ class geolocalizedTasks:
 
     def zoom_out(self, widget, view):
         view.zoom_out()
-        
+
     # http://code.activestate.com/recipes/266466/
     # original by Paul Winkler
     def HTMLColorToRGB(self, colorstring):
