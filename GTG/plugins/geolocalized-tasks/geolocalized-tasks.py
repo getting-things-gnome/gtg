@@ -204,7 +204,7 @@ class geolocalizedTasks:
             if not self.location_defined:
                 if self.radiobutton1.get_active():
                     # radiobutton1
-                    if self.txt_new_tag.get_text() != "":
+                    if self.txt_new_tag.get_text().strip() != "":
                         marker_position = (self.marker_list[0].get_property('latitude'), self.marker_list[0].get_property('longitude'))
                        
                         # because users sometimes make mistakes, I'll check if the tag exists
@@ -221,15 +221,16 @@ class geolocalizedTasks:
                             self.plugin_api.add_tag(self.txt_new_tag.get_text().replace("@", ""))
                             self.plugin_api.add_tag_attribute("@" + self.txt_new_tag.get_text().replace("@", ""), 
                                                               "location",  
-                                                              marker_position)        
+                                                              marker_position)
+                        dialog.destroy()
+                    else:
+                        self.errorDialog(dialog, "Error: No tag defined", "The tag has to be defined so that the location can be associated with it.")
                 else:
                     # radiobutton2
                     marker_position = (self.marker_list[0].get_property('latitude'), self.marker_list[0].get_property('longitude'))
                     index = self.cmb_existing_tag.get_active()
                     model = self.cmb_existing_tag.get_model()
                     self.plugin_api.add_tag_attribute(model[index][0], "location", marker_position)
-            
-            dialog.destroy()
         else:
             # cancel
             dialog.destroy()
@@ -258,6 +259,22 @@ class geolocalizedTasks:
         r, g, b = colorstring[:2], colorstring[2:4], colorstring[4:]
         r, g, b = [int(n, 16) for n in (r, g, b)]
         return clutter.Color(r, g, b)
+    
+    def errorDialog(self, parent, header, msg):
+         """
+         Show an error message.
+         """
+
+         dialog = gtk.MessageDialog(parent,
+                               flags=gtk.DIALOG_MODAL,
+                               type=gtk.MESSAGE_ERROR,
+                               buttons=gtk.BUTTONS_CLOSE)
+         dialog.set_title("")
+         dialog.set_markup("<big><b>%s</b></big>\n\n%s" % (header, msg))
+         dialog.realize()
+         #dialog.window.set_functions(gtk.gdk.FUNC_MOVE)
+         dialog.run()
+         dialog.destroy()
 
 
 
