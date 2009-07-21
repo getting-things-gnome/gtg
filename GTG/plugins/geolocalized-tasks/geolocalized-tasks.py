@@ -76,59 +76,80 @@ class geolocalizedTasks:
         self.cmb_existing_tag = wTree.get_widget("cmb_existing_tag")
         
         tabela = wTree.get_widget("tabela_set_task")
-        vbox = wTree.get_widget("vbox_map")
+        vbox_map = wTree.get_widget("vbox_map")
         vbox_opt = wTree.get_widget("vbox_opt")
         
         champlain_view = champlain.View()
         champlain_view.set_property("scroll-mode", champlain.SCROLL_MODE_KINETIC)
         #champlain_view.set_property("zoom-on-double-click", False)
         
-         # get one of the task's color
-        tag_attr_color = None
+        # create a list of the tags and their attributes
+        tag_list = []
         for tag in plugin_api.get_tags():
+            tmp_tag = {}
             for attr in tag.get_all_attributes():
                 if attr == "color":
-                    tag_attr_color = self.HTMLColorToRGB(tag.get_attribute(attr))
-                    break   
-        
-        # check if the task has a location defined
-        tag_attr_location = None
-        for tag in self.plugin_api.get_tags():
-            for attr in tag.get_all_attributes():
-                if attr == "location":
-                    tag_attr_location = eval(tag.get_attribute(attr))
+                    tmp_tag[attr] = self.HTMLColorToRGB(tag.get_attribute(attr))
+                    tmp_tag['has_color'] = "yes"
+                elif attr == "location":
+                    tmp_tag[attr] = eval(tag.get_attribute(attr))
+                else:
+                    tmp_tag[attr] = tag.get_attribute(attr)
+            tag_list.append(tmp_tag)                 
+           
+        # checks if there is one tag with a location     
+        task_has_location = False
+        for tag in tag_list:
+            for key, item in tag.items():
+                if key == "location":
+                    task_has_location = True
                     break
-                
-        print tag_attr_location[0]
-        if tag_attr_location:
-            location['latitude'] = tag_attr_location[0]
-            location['longitude'] = tag_attr_location[1] 
         
+        # set the markers
         layer = MarkerLayer()
-        try:
-            if location['latitude'] and location['longitude']:
-                self.marker = layer.add_marker(plugin_api.get_task_title(), location['latitude'], location['longitude'], tag_attr_color)
-        except:
-            self.marker = layer.add_marker(plugin_api.get_task_title(), None, None)
+        
+        self.marker_list = []
+        if task_has_location:
+            for tag in tag_list:
+                for key, item in tag.items():
+                    if key == "location":
+                        color = None
+                        try:
+                            if tag['has_color'] == "yes":
+                                color = tag['color']
+                        except:
+                            # PROBLEM: the tag doesn't have color
+                            # Possibility, use a color from another tag
+                            pass
+                        
+                        self.marker_list.append(layer.add_marker(plugin_api.get_task_title(), tag['location'][0], tag['location'][1], color))
+        else:
+            try:
+                if location['longitude'] and location['latitude']:
+                    self.marker_list.append(layer.add_marker(plugin_api.get_task_title(), location['latitude'], location['longitude']))
+            except:
+                self.marker_list.append(layer.add_marker(plugin_api.get_task_title(), None, None))
         
         champlain_view.add_layer(layer)
         
         embed = cluttergtk.Embed()
         embed.set_size_request(400, 300)
         
-        # method that will change the marker's position
-        champlain_view.set_reactive(True)
-        champlain_view.connect("button-release-event", self.champlain_change_marker, champlain_view)
+        if not task_has_location:
+            # method that will change the marker's position
+            champlain_view.set_reactive(True)
+            champlain_view.connect("button-release-event", self.champlain_change_marker, champlain_view)
         
         layer.show_all()
         
-        try:
-            if location['latitude'] and location['longitude']:
-                champlain_view.set_property("zoom-level", 9)
-        except:
+        if task_has_location:
+            champlain_view.set_property("zoom-level", 9)
+        elif location:
+            champlain_view.set_property("zoom-level", 5)
+        else:
             champlain_view.set_property("zoom-level", 1)
             
-        vbox.add(embed)
+        vbox_map.add(embed)
         
         embed.realize()
         stage = embed.get_stage()
@@ -141,7 +162,7 @@ class geolocalizedTasks:
         dialog.connect("response", self.set_task_location_close)
         
         #if there is no location set, we want to set it
-        if not tag_attr_location:
+        if not task_has_location:
             self.location_defined = False
             if len(plugin_api.get_tags()) > 0:
                 liststore = gtk.ListStore(str)
@@ -166,11 +187,15 @@ class geolocalizedTasks:
         
         dialog.show_all()
         
-        try:
-            if location['latitude'] and location['longitude']:
-                champlain_view.center_on(location['latitude'], location['longitude'])
-        except:
-            pass
+        if task_has_location:
+            marker_position = (self.marker_list[0].get_property('latitude'), self.marker_list[0].get_property('longitude'))
+            champlain_view.center_on(marker_position[0], marker_position[1])
+        else:
+            try:
+                if location['longitude'] and location['latitude']:
+                    champlain_view.center_on(location['latitude'], location['longitude'])
+            except:
+                pass
     
     def set_task_location_close(self, dialog, response=None):
         if response == gtk.RESPONSE_OK:
@@ -180,7 +205,7 @@ class geolocalizedTasks:
                 if self.radiobutton1.get_active():
                     # radiobutton1
                     if self.txt_new_tag.get_text() != "":
-                        marker_position = (self.marker.get_property('latitude'), self.marker.get_property('longitude'))
+                        marker_position = (self.marker_list[0].get_property('latitude'), self.marker_list[0].get_property('longitude'))
                        
                         # because users sometimes make mistakes, I'll check if the tag exists
                         tmp_tag = ""
@@ -200,7 +225,7 @@ class geolocalizedTasks:
                 else:
                     # radiobutton2
                     #print "latitude: " + str(self.marker.get_property('latitude')) + " longitude: " + str(self.marker.get_property('longitude'))
-                    marker_position = (self.marker.get_property('latitude'), self.marker.get_property('longitude'))
+                    marker_position = (self.marker_list[0].get_property('latitude'), self.marker_list[0].get_property('longitude'))
                     #self.plugin_api.add_tag_attribute(self.cmb_existing_tag.get_text_column(), "location", marker_position )
             
             dialog.destroy()
@@ -213,7 +238,7 @@ class geolocalizedTasks:
             return False
         
         (latitude, longitude) = view.get_coords_at(int(event.x), int(event.y))
-        self.marker.set_position(latitude, longitude)
+        self.marker_list[0].set_position(latitude, longitude)
                 
     def zoom_in(self, widget, view):
         view.zoom_in()
