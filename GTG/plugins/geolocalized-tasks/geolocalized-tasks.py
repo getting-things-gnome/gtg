@@ -66,6 +66,7 @@ class geolocalizedTasks:
         
         wTree = gtk.glade.XML(self.glade_file, "SetTaskLocation")
         dialog = wTree.get_widget("SetTaskLocation")
+        self.plugin_api.set_parent_window(dialog)
         
         btn_zoom_in = wTree.get_widget("btn_zoom_in")
         btn_zoom_out = wTree.get_widget("btn_zoom_out")
@@ -272,7 +273,6 @@ class geolocalizedTasks:
          dialog.set_title("")
          dialog.set_markup("<big><b>%s</b></big>\n\n%s" % (header, msg))
          dialog.realize()
-         #dialog.window.set_functions(gtk.gdk.FUNC_MOVE)
          dialog.run()
          dialog.destroy()
 

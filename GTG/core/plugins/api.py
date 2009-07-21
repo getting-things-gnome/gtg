@@ -120,3 +120,7 @@ class PluginAPI:
     # this will allow plugins to use the textview properties
     def get_textview(self):
         return self.textview
+    
+    # defines the child's parent window
+    def set_parent_window(self, child):
+        child.set_transient_for(self.__window)
