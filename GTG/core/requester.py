@@ -18,24 +18,18 @@
 # -----------------------------------------------------------------------------
 
 
-#Requester is a pure View object. It will not do anything but it will
-#be used by any Interface to handle the requests to the datastore
-
-#There could be multiple requester. It means that a requester should never
-#Hold any data except a reference to its datastore.
-
-class Requester :
+class Requester:
     """A view on a GTG datastore.
 
-    `Requester` is a stateless object that simply provides a nice API for user
-    interfaces to use for datastore operations.
+    L{Requester} is a stateless object that simply provides a nice API for
+    user interfaces to use for datastore operations.
 
-    Multiple `Requester`s can exist on the same datastore, so they should
+    Multiple L{Requester}s can exist on the same datastore, so they should
     never have state of their own.
     """
 
     def __init__(self, datastore):
-        """Construct a `Requester`."""
+        """Construct a L{Requester}."""
         self.ds = datastore
 
     def connect(self, signal, func):
@@ -49,12 +43,12 @@ class Requester :
         return self.ds.has_task(tid)
 
     def get_task(self, tid):
-        """Get the task with the given 'tid'.
+        """Get the task with the given C{tid}.
 
-        If no such task exists, create it and force the tid to be 'tid'.
+        If no such task exists, create it and force the tid to be C{tid}.
 
-        :param tid: The task id.
-        :return: A task.
+        @param tid: The task id.
+        @return: A task.
         """
         task = self.ds.get_task(tid)
         return task
@@ -64,10 +58,10 @@ class Requester :
 
         Note: this modifies the datastore.
 
-        :param pid: The project where the new task will be created.
-        :param tags: The tags for the new task. If not provided, then the
+        @param pid: The project where the new task will be created.
+        @param tags: The tags for the new task. If not provided, then the
             task will have no tags.
-        :param newtask: 'True' if this is creating a task, 'False' if
+        @param newtask: C{True} if this is creating a task, C{False} if
             importing an existing task.
         """
         # XXX: The docs don't make it clear why you'd ever need to pass in
@@ -83,7 +77,7 @@ class Requester :
 
         Note: this modifies the datastore.
 
-        :param tid: The id of the task to be deleted.
+        @param tid: The id of the task to be deleted.
         """
         self.ds.delete_task(tid)
 
@@ -93,19 +87,19 @@ class Requester :
 
         By default, returns a list of all the tids of all active tasks.
 
-        :param tags: A list of tags. If provided, restricts the list of
+        @param tags: A list of tags. If provided, restricts the list of
             returned tasks to those that have one or more of these tags.
-        :param status: A list of statuses. If provided, restricts the list of
+        @param status: A list of statuses. If provided, restricts the list of
             returned tasks to those that are in one of these states.
-        :param notag_only: If True, only include tasks without tags. Defaults
-            to False.
-        :param started_only: If True, only include tasks that have been
+        @param notag_only: If True, only include tasks without tags. Defaults
+            to C{False}.
+        @param started_only: If True, only include tasks that have been
             started. That is, tasks that have an already-passed start date or
-            tasks with no startdate. Defaults to 'True'.
-        :param is_root: If True, only include tasks that have no parent in the
+            tasks with no startdate. Defaults to C{True}.
+        @param is_root: If True, only include tasks that have no parent in the
             current selection. Defaults to False.
 
-        :return: A list of task ids (tids).
+        @return: A list of task ids (tids).
         """
         l_tasks = []
         for tid in self.ds.all_tasks():
@@ -152,12 +146,12 @@ class Requester :
                               workable=False):
         """Return a list of task ids for all active tasks.
 
-        See `get_tasks_list` for more information about the parameters.
+        See L{get_tasks_list} for more information about the parameters.
 
-        :param workable: If True, then only include tasks with no pending
+        @param workable: If C{True}, then only include tasks with no pending
             subtasks and that can be done directly and exclude any tasks that
-            have a 'nonworkview' tag which is not explicitly provided in the
-            'tags' parameter. Defaults to False.
+            have a C{nonworkview} tag which is not explicitly provided in the
+            C{tags} parameter. Defaults to C{False}.
         """
         l_tasks = []
         if workable:
@@ -198,7 +192,7 @@ class Requester :
 
         "Closed" means either "done", "dismissed" or "deleted".
 
-        See `get_tasks_list` for more information about the parameters.
+        See L{get_tasks_list} for more information about the parameters.
         """
         closed = ["Done", "Dismiss", "Deleted"]
         return self.get_tasks_list(
@@ -224,8 +218,8 @@ class Requester :
 
         Note: this modifies the datastore.
 
-        :param tagname: The name of the new tag.
-        :return: The newly-created tag.
+        @param tagname: The name of the new tag.
+        @return: The newly-created tag.
         """
         return self.ds.get_tagstore().new_tag(tagname)
 
@@ -235,8 +229,8 @@ class Requester :
     def get_all_tags(self):
         """Return a list of every tag that was ever used."""
         return list(self.ds.get_tagstore().get_all_tags())
-        
-    def get_notag_tag(self) :
+
+    def get_notag_tag(self):
         return self.ds.get_tagstore().get_notag_tag()
 
     def get_alltag_tag(self):
@@ -245,7 +239,7 @@ class Requester :
     def get_used_tags(self):
         """Return tags currently used by a task.
 
-        :return: A list of tags used by a task.
+        @return: A list of tags used by a task.
         """
         # FIXME: it should be only active and visible tasks.
         l = []

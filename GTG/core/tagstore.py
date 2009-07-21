@@ -150,22 +150,22 @@ class TagStore :
 ######################### Tag ###########################################
 
 class Tag:
-    """A short name that can be applied to Tasks.
+    """A short name that can be applied to L{Task}s.
 
     I mean, surely you must know what a tag is by now. Think Gmail,
     del.icio.us, Flickr et al.
 
-    A tag is defined by its name, which in most cases is '@something'. A tag
+    A tag is defined by its name, which in most cases is C{@something}. A tag
     can also have multiple arbitrary attributes. The only attribute enforced
-    for tags is 'name', which always matches `Tag.get_name()`.
+    for tags is C{name}, which always matches L{Tag.get_name()}.
     """
 
     def __init__(self, name, save_cllbk=None):
         """Construct a tag.
 
-        :param name: The name of the tag. Should be a string, generally a
+        @param name: The name of the tag. Should be a string, generally a
             short one.
-        :param save_cllbk: A nullary callable, called whenever an attribute
+        @param save_cllbk: A nullary callable, called whenever an attribute
             is set.
         """
         self._name = str(name)
@@ -179,10 +179,10 @@ class Tag:
     def set_attribute(self, att_name, att_value):
         """Set an arbitrary attribute.
 
-        This will call the 'save_cllbk' callback passed to the constructor.
+        This will call the C{save_cllbk} callback passed to the constructor.
 
-        :param att_name: The name of the attribute.
-        :param att_value: The value of the attribute. Will be converted to a
+        @param att_name: The name of the attribute.
+        @param att_value: The value of the attribute. Will be converted to a
             string.
         """
         if att_name == "name":
@@ -198,16 +198,16 @@ class Tag:
         self._save()
 
     def get_attribute(self, att_name):
-        """Get the attribute 'att_name'.
+        """Get the attribute C{att_name}.
 
-        Returns None if there is no attribute matching 'att_name'.
+        Returns C{None} if there is no attribute matching C{att_name}.
         """
         return self._attributes.get(att_name, None)
 
     def get_all_attributes(self, butname=False):
         """Return a list of all attribute names.
 
-        :param butname: If True, exclude 'name' from the list of attribute
+        @param butname: If True, exclude C{name} from the list of attribute
             names.
         """
         attributes = self._attributes.keys()

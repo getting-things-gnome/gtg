@@ -395,9 +395,10 @@ class TaskView(gtk.TextView):
         
     #This function is called so frequently that we should optimize it more.    
     def modified(self,buff=None,full=False) : #pylint: disable-msg=W0613
-        """
-        This function is called when the buffer has been modified,
-        it reflects the changes by:
+        """Called when the buffer has been modified.
+
+        It reflects the changes by:
+
           1. Applying the title style on the first line
           2. Changing the name of the window if title change
         """
