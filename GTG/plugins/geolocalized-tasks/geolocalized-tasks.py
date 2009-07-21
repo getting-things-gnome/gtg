@@ -224,9 +224,10 @@ class geolocalizedTasks:
                                                               marker_position)        
                 else:
                     # radiobutton2
-                    #print "latitude: " + str(self.marker.get_property('latitude')) + " longitude: " + str(self.marker.get_property('longitude'))
                     marker_position = (self.marker_list[0].get_property('latitude'), self.marker_list[0].get_property('longitude'))
-                    #self.plugin_api.add_tag_attribute(self.cmb_existing_tag.get_text_column(), "location", marker_position )
+                    index = self.cmb_existing_tag.get_active()
+                    model = self.cmb_existing_tag.get_model()
+                    self.plugin_api.add_tag_attribute(model[index][0], "location", marker_position)
             
             dialog.destroy()
         else:
