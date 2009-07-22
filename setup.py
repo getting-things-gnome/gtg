@@ -23,9 +23,10 @@ from distutils.command.install_data import install_data
 from subprocess import call
 
 import glob
-import GTG
 import os
 import sys
+
+import info
 
 ### CONSTANTS ##################################################################
 
@@ -102,11 +103,11 @@ author = 'The GTG Team'
 
 setup(
   name         = 'gtg',
-  version      = GTG.VERSION,
-  url          = GTG.URL,
+  version      = info.VERSION,
+  url          = info.URL,
   author       = author,
-  author_email = GTG.EMAIL,
-  description  = 'GTG is a personal organizer for the GNOME desktop environment.',
+  author_email = info.EMAIL,
+  description  = infor.SHORT_DESCRIPTION,
   packages     = ['GTG','GTG.backends','GTG.core','GTG.taskbrowser','GTG.taskeditor','GTG.tools'],
   package_data = {'GTG.taskbrowser':['taskbrowser.glade'],'GTG.taskeditor':['taskeditor.glade']},
   data_files   = create_data_files(),

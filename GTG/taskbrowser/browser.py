@@ -34,6 +34,7 @@ import datetime
 
 #our own imports
 import GTG
+import info
 from GTG import _
 from GTG.taskeditor.editor            import TaskEditor
 from GTG.taskbrowser                  import GnomeConfig
@@ -182,12 +183,12 @@ class TaskBrowser:
 
     def init_about_dialog(self):
         gtk.about_dialog_set_url_hook(lambda dialog, url: openurl.openurl(url))
-        self.about.set_website(GTG.URL)
-        self.about.set_website_label(GTG.URL)
-        self.about.set_version(GTG.VERSION)
-        self.about.set_authors(GTG.AUTHORS)
-        self.about.set_artists(GTG.ARTISTS)
-        self.about.set_translator_credits(GTG.TRANSLATORS)
+        self.about.set_website(info.URL)
+        self.about.set_website_label(info.URL)
+        self.about.set_version(info.VERSION)
+        self.about.set_authors(info.AUTHORS)
+        self.about.set_artists(info.ARTISTS)
+        self.about.set_translator_credits(info.TRANSLATORS)
 
     def init_signal_connections(self):
 
