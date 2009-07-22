@@ -19,9 +19,9 @@
 import os
 import locale
 #Fallback to LANG C if unsupported locale
-try :
+try:
     locale.setlocale(locale.LC_ALL, '')
-except :
+except:
     locale.setlocale(locale.LC_ALL,'C')
 
 import gettext

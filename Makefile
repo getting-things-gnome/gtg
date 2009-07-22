@@ -17,8 +17,8 @@ pyflakes:
 
 # Check for coding standard violations.
 pep8:
-	find . -name '*.py' -print0 | xargs -0 ./scripts/pep8.py
-	find . -name '*.py' -print0 | xargs -0 ./scripts/pep8.py --repeat | wc -l
+	find . -name '*.py' -print0 | xargs -0 ./scripts/pep8.py --ignore E221,E222
+	find . -name '*.py' -print0 | xargs -0 ./scripts/pep8.py --ignore E221,E222 --repeat | wc -l
 
 # Build API documentation.
 apidocs:

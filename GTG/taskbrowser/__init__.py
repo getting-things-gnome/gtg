@@ -24,10 +24,11 @@ import os
 
 from GTG import _
 
-class GnomeConfig :
+
+class GnomeConfig:
     current_rep = os.path.dirname(os.path.abspath(__file__))
-    GLADE_FILE  = os.path.join(current_rep,"taskbrowser.glade")
-    
+    GLADE_FILE  = os.path.join(current_rep, "taskbrowser.glade")
+
     MARK_DONE               = _("Mark as done")
     MARK_DONE_TOOLTIP       = _("Mark the selected task as done")
     MARK_UNDONE             = _("Mark as not done")
