@@ -17,14 +17,18 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-#Return a copy of the list and avoid a to keep the same object
-#It handles multilple dimension matrix through recursion
-def returnlist(liste) :
-    if liste.__class__ is list :
-        to_return = []
-        for i in liste :
-            elem = returnlist(i)
-            to_return.append(elem)
-    else :
-        to_return = liste
-    return to_return
+"""Unit tests for GTG."""
+
+import unittest
+
+from GTG.tests import (
+    test_backends,
+    test_tagstore,
+    )
+
+
+def test_suite():
+    return unittest.TestSuite([
+        test_backends.test_suite(),
+        test_tagstore.test_suite(),
+        ])

@@ -26,18 +26,19 @@ import sys
 import time
 from datetime import date
 
+from GTG import _
 from GTG.taskeditor          import GnomeConfig
 from GTG.tools               import dates
 from GTG.taskeditor.taskview import TaskView
 try:
     import pygtk
     pygtk.require("2.0")
-except:
+except: # pylint: disable-msg=W0702
     sys.exit(1)
 try:
     import gtk
     from gtk import gdk
-except:
+except: # pylint: disable-msg=W0702
     sys.exit(1)
     
 date_separator = "/"
@@ -53,6 +54,12 @@ class TaskEditor :
         self.cal_tree = gtk.glade.XML(self.gladefile, "calendar")
         self.donebutton = self.wTree.get_widget("mark_as_done_editor")
         self.dismissbutton = self.wTree.get_widget("dismiss_editor")
+        self.deletebutton = self.wTree.get_widget("delete_editor")
+        self.deletebutton.set_tooltip_text(GnomeConfig.DELETE_TOOLTIP)
+        self.deletebutton = self.wTree.get_widget("insert_subtask")
+        self.deletebutton.set_tooltip_text(GnomeConfig.SUBTASK_TOOLTIP)
+        self.deletebutton = self.wTree.get_widget("inserttag")
+        self.deletebutton.set_tooltip_text(GnomeConfig.TAG_TOOLTIP)
         #Create our dictionay and connect it
         dic = {
                 "mark_as_done_clicked"  : self.change_status,
@@ -184,15 +191,21 @@ class TaskEditor :
         status = self.task.get_status() 
         if status == "Dismiss" :
             self.donebutton.set_label(GnomeConfig.MARK_DONE)
+            self.donebutton.set_tooltip_text(GnomeConfig.MARK_DONE_TOOLTIP)
             self.dismissbutton.set_label(GnomeConfig.MARK_UNDISMISS)
+            self.dismissbutton.set_tooltip_text(GnomeConfig.MARK_UNDISMISS_TOOLTIP)
             self.dismissbutton.set_icon_name("gtg-task-undismiss")
         elif status == "Done" :
             self.donebutton.set_label(GnomeConfig.MARK_UNDONE)
+            self.donebutton.set_tooltip_text(GnomeConfig.MARK_UNDONE_TOOLTIP)
             self.donebutton.set_icon_name("gtg-task-undone")
             self.dismissbutton.set_label(GnomeConfig.MARK_DISMISS)
+            self.dismissbutton.set_tooltip_text(GnomeConfig.MARK_DISMISS_TOOLTIP)
         else :
             self.donebutton.set_label(GnomeConfig.MARK_DONE)
+            self.donebutton.set_tooltip_text(GnomeConfig.MARK_DONE_TOOLTIP)
             self.dismissbutton.set_label(GnomeConfig.MARK_DISMISS)
+            self.dismissbutton.set_tooltip_text(GnomeConfig.MARK_UNDISMISS_TOOLTIP)
             
         if status == "Note" :
             self.donebutton.hide()

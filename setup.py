@@ -43,7 +43,7 @@ def create_icon_list():
             if file.endswith(".png") or file.endswith(".svg"):
                 dirList.append(os.path.join(root,file))
         if len(dirList)!=0:
-	    newroot = root.replace("data/","")
+            newroot = root.replace("data/","")
             fileList.append( (os.path.join(DATA_DIR,newroot),dirList) )
     return fileList
 
@@ -56,6 +56,7 @@ def create_data_files():
     data_files.append(('share/icons/hicolor/16x16/apps', ['data/icons/hicolor/16x16/apps/gtg.png']))
     data_files.append(('share/icons/hicolor/22x22/apps', ['data/icons/hicolor/22x22/apps/gtg.png']))
     data_files.append(('share/icons/hicolor/24x24/apps', ['data/icons/hicolor/24x24/apps/gtg.png']))
+    data_files.append(('share/icons/hicolor/32x32/apps', ['data/icons/hicolor/32x32/apps/gtg.png']))
     data_files.append(('share/icons/hicolor/scalable/apps', ['data/icons/hicolor/scalable/apps/gtg.svg']))
     # misc
     data_files.append(('share/applications', ['gtg.desktop']))

@@ -1,58 +1,59 @@
-# French translation for gtg
+# Polish translation for gtg
 # Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
 # This file is distributed under the same license as the gtg package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
 #
+# Tomasz Maciejewski <ponton@jabster.pl>, 2009.
 msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2009-04-15 15:13+0200\n"
-"PO-Revision-Date: 2009-04-03 20:49+0000\n"
-"Last-Translator: Lionel Dricot <ploum@ploum.net>\n"
-"Language-Team: French <fr@li.org>\n"
+"PO-Revision-Date: 2009-06-02 12:36+0000\n"
+"Last-Translator: Tomasz Maciejewski <ponton@jabster.pl>\n"
+"Language-Team: Polish <ponton@jabster.pl>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Launchpad-Export-Date: 2009-07-04 13:00+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: GTG/taskeditor/taskeditor.glade.h:1
 msgid "<span weight=\"bold\">Due for</span>"
-msgstr "<span weight=\"bold\">A terminer pour</span>"
+msgstr "<span weight=\"bold\">Termin końcowy</span>"
 
 #: GTG/taskeditor/taskeditor.glade.h:2
 msgid "<span weight=\"bold\">Starting on</span>"
-msgstr "<span weight=\"bold\">Commence le</span>"
+msgstr "<span weight=\"bold\">Termin początkowy</span>"
 
 #: GTG/taskeditor/taskeditor.glade.h:3 GTG/taskbrowser/taskbrowser.glade.h:12
 msgid "Delete"
-msgstr "Supprimer"
+msgstr "Usuń"
 
 #: GTG/taskeditor/taskeditor.glade.h:4 GTG/taskbrowser/taskbrowser.glade.h:13
 #: GTG/taskbrowser/__init__.py:33
 msgid "Dismiss"
-msgstr "Abandonner"
+msgstr "Oddal"
 
 #: GTG/taskeditor/taskeditor.glade.h:5
 msgid "Insert subtask"
-msgstr "Ajouter une sous-tâche"
+msgstr "Wstaw zadanie podrzędne"
 
 #: GTG/taskeditor/taskeditor.glade.h:6
 msgid "Insert tag"
-msgstr "Ajouter une étiquette"
+msgstr "Wstaw znacznik"
 
 #: GTG/taskeditor/taskeditor.glade.h:7
 msgid "Keep as Note"
-msgstr "Conserver comme note"
+msgstr "Zachowaj jako notatkę"
 
 #: GTG/taskeditor/taskeditor.glade.h:8
 msgid "Mark Done"
-msgstr "Marquer comme fait"
+msgstr "Oznacz jako wykonane"
 
 #: GTG/taskeditor/taskeditor.glade.h:9
 msgid "Task"
-msgstr "Tâche"
+msgstr "Zadanie"
 
 #: GTG/taskeditor/taskeditor.glade.h:10
 msgid "gtk-clear"
@@ -64,25 +65,25 @@ msgstr "gtk-close"
 
 #: GTG/taskeditor/editor.py:214
 msgid "Due tomorrow !"
-msgstr "Pour demain!"
+msgstr "Na jutro!"
 
 #: GTG/taskeditor/editor.py:216
 #, python-format
 msgid "%s days left"
-msgstr "Il reste %s jours"
+msgstr "Zostało %s dni"
 
 #: GTG/taskeditor/editor.py:218
 msgid "Due today !"
-msgstr "Pour aujourd'hui!"
+msgstr "Na dzisiaj!"
 
 #: GTG/taskeditor/editor.py:220
 msgid "Due for yesterday"
-msgstr "Dépassé depuis hier"
+msgstr "Na wczoraj"
 
 #: GTG/taskeditor/editor.py:222
 #, python-format
 msgid "Was %s days ago"
-msgstr "Dépassé depuis %s jours"
+msgstr "Było %s dni temu"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:1
 msgid ""
@@ -90,8 +91,7 @@ msgid ""
 "Getting Things Gnome! is an organizer for the GNOME desktop environment."
 msgstr ""
 "\n"
-"Getting Things GNOME! est un outil d'organisation personnel pour "
-"l'environnement de bureau GNOME."
+"Getting Things Gnome! to organizer dla środowiska GNOME."
 
 #: GTG/taskbrowser/taskbrowser.glade.h:3
 msgid ""
@@ -100,22 +100,22 @@ msgid ""
 "\n"
 "Deleting a task cannot be undone."
 msgstr ""
-"<span weight=\"bold\" size=\"large\">Êtes-vous certain de vouloir supprimer "
-"cette tâche ?</span>\n"
+"<span weight=\"bold\" size=\"large\">Czy na pewno chcesz usunąć to "
+"zadanie?</span>\n"
 "\n"
-"La suppression d'une tâche ne peut pas être annulée."
+"Tej czynności nie da się cofnąć."
 
 #: GTG/taskbrowser/taskbrowser.glade.h:6
 msgid "About GTG!"
-msgstr "À propos de GTG"
+msgstr "O programie GTG!"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:7
 msgid "Choose a color"
-msgstr "Choisissez une couleur"
+msgstr "Wybierz kolor"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:8
 msgid "Confirm task deletion"
-msgstr "Confirmer la suppression de la tâche"
+msgstr "Potwierdź usunięcie zadania"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:9
 msgid "Copyrights© 2008, 2009 Lionel Dricot, Bertrand Rousseau"
@@ -123,132 +123,162 @@ msgstr "Copyrights© 2008, 2009 Lionel Dricot, Bertrand Rousseau"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:10 GTG/taskbrowser/browser.py:110
 msgid "Create a new task"
-msgstr "Créer une nouvelle tâche"
+msgstr "Utwórz nowe zadanie"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:11
 msgid "D_ismiss"
-msgstr "_Abandonner"
+msgstr "_Oddal"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:14
 msgid "Edit"
-msgstr "Modifier"
+msgstr "Edycja"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:15
 msgid "GTG website"
-msgstr "Site web de GTG"
+msgstr "witryna GTG"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:16
 msgid "Getting Things Gnome!"
 msgstr "Getting Things Gnome!"
 
+#: GTG/taskbrowser/taskbrowser.glade.h:17
+msgid ""
+"Getting Things Gnome! is free software; you can redistribute it and/or "
+"modify it under the terms of the GNU General Public License as published by "
+"the Free Software Foundation; either version 3 of the License, or (at your "
+"option) any later version.\n"
+"\n"
+"Getting Things Gnome! is distributed in the hope that it will be useful, but "
+"WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY "
+"or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
+"more details.\n"
+"\n"
+"You should have received a copy of the GNU General Public License along with "
+"Getting Things Gnome!; if not, write to the Free Software Foundation, Inc., "
+"51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA."
+msgstr ""
+"Getting Things Gnome! is free software; you can redistribute it and/or "
+"modify it under the terms of the GNU General Public License as published by "
+"the Free Software Foundation; either version 3 of the License, or (at your "
+"option) any later version.\n"
+"\n"
+"Getting Things Gnome! is distributed in the hope that it will be useful, but "
+"WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY "
+"or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
+"more details.\n"
+"\n"
+"You should have received a copy of the GNU General Public License along with "
+"Getting Things Gnome!; if not, write to the Free Software Foundation, Inc., "
+"51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA."
+
 #: GTG/taskbrowser/taskbrowser.glade.h:22
 msgid "Mark as Done"
-msgstr "Marquer comme fait"
+msgstr "Uznacz jako wykonane"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:23
 msgid "Mark as Not Done"
-msgstr "Marquer comme non fait"
+msgstr "Oznacz jako niewykonane"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:24
 msgid "Mark as _Done"
-msgstr "Marquer comme _fait"
+msgstr "Oznacz jako _wykonane"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:25
 msgid "New Note"
-msgstr "Nouvelle note"
+msgstr "Nowa notatka"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:26
 msgid "New Subtask"
-msgstr "Nouvelle tâche enfant"
+msgstr "Nowe zadanie podrzędne"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:27
 msgid "New Task"
-msgstr "Nouvelle tâche"
+msgstr "Nowe zadanie"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:28
 msgid "New _Subtask"
-msgstr "Nouvelle tâche _enfant"
+msgstr "Nowe zadanie _podrzędne"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:29
 msgid "New _Task"
-msgstr "Nouvelle _tâche"
+msgstr "Nowe _zadanie"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:30
 msgid "Permanently _remove task"
-msgstr "Supprimer la tâche définitivement"
+msgstr "_Usuń zadanie"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:31
 msgid "Redo"
-msgstr "Refaire"
+msgstr "Ponów"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:32
 msgid "Tag is displayed in the workview"
-msgstr "Afficher l'étiquette dans la vue de travail"
+msgstr "Znacznik jest wyświetlony w widoku roboczym"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:33 GTG/taskbrowser/browser.py:1486
 #: GTG/taskbrowser/browser.py:1557
 msgid "Tags"
-msgstr "Étiquettes"
+msgstr "Znaczniki"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:34
 msgid "Und_ismiss"
-msgstr "Annuler l'a_bandon"
+msgstr "Cofnij o_ddalenie"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:35
 msgid "Undo"
-msgstr "Annuler"
+msgstr "Cofnij"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:36
 msgid "View Notes"
-msgstr "Voir les notes"
+msgstr "Przejrzyj notatki"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:37
 msgid "Work View"
-msgstr "Vue de travail"
+msgstr "Widok roboczy"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:38
 msgid "_Background Colors"
-msgstr "Couleur de _fond"
+msgstr "Kolory _tła"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:39
 msgid "_Closed Tasks Pane"
-msgstr "Panneau des tâches _cloturées"
+msgstr "Panel _zamkniętych zadań"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:40
 msgid "_Edit"
-msgstr "É_dition"
+msgstr "_Edycja"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:41
 msgid "_File"
-msgstr "_Fichier"
+msgstr "_Plik"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:42
 msgid "_Help"
-msgstr "Aid_e"
+msgstr "Po_moc"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:43
 msgid "_Keep selected task"
-msgstr "_Conserver la tâche sélectionnée"
+msgstr "_Zachowaj zaznaczone zadanie"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:44
 msgid "_Quick Add Entry"
-msgstr "Entrée d'_ajout rapide"
+msgstr "_Szybkie dodanie wpisu"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:45
 msgid "_Tags Sidebar"
-msgstr "Panneau latéral d'étiquettes"
+msgstr "Panel _boczny znaczników"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:46
 msgid "_Tasks"
-msgstr "_Tâches"
+msgstr "_Zadania"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:47
 msgid "_View"
-msgstr "_Vue"
+msgstr "_Widok"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:48
 msgid "_Work View"
-msgstr "Vue de _travail"
+msgstr "Widok _roboczy"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:49
 msgid "gtk-about"
@@ -296,131 +326,135 @@ msgstr "gtk-undo"
 
 #: GTG/taskbrowser/__init__.py:29
 msgid "Mark as done"
-msgstr "Marquer comme fait"
+msgstr "Oznacz jako wykonane"
 
 #: GTG/taskbrowser/__init__.py:30
 msgid "Mark the selected task as done"
-msgstr "Marquer la tâche sélectionnée comme faite"
+msgstr "Ustaw zaznaczone zadania jako wykonane"
 
 #: GTG/taskbrowser/__init__.py:31
 msgid "Mark as not done"
-msgstr "Marquer comme non fait"
+msgstr "Oznacz jako niewykonane"
 
 #: GTG/taskbrowser/__init__.py:32 GTG/taskbrowser/__init__.py:36
 msgid "Mark the selected task as to be done"
-msgstr "Marquer la tâche sélectionnée comme à faire"
+msgstr "Ustaw zaznaczone zadania do wykonania"
 
 #: GTG/taskbrowser/__init__.py:34
 msgid "Mark the task as not to be done anymore"
-msgstr "Marquer la tâche sélectionnée comme à ne pas faire"
+msgstr "Ustaw zaznaczone zadania jako nieistotne"
 
 #: GTG/taskbrowser/__init__.py:35
 msgid "Undismiss"
-msgstr "Annuler l'abandon"
+msgstr "Cofnij oddalenie"
 
 #: GTG/taskbrowser/__init__.py:37
 msgid "Permanently remove the selected task"
-msgstr "Supprimer la tâche sélectionnée de façon permanente"
+msgstr "Całkowicie usuń zaznaczone zadania"
 
 #: GTG/taskbrowser/browser.py:108
 msgid "Edit the selected task"
-msgstr "Modifier la tache selectionnée"
+msgstr "Edytuj zaznaczone zadania"
 
 #: GTG/taskbrowser/browser.py:111
 msgid "Create a new subtask"
-msgstr "Créer une nouvelle tâche enfant"
+msgstr "Utwórz nowe zadania podrzędne"
 
 #: GTG/taskbrowser/browser.py:556
 msgid "monday"
-msgstr "lundi"
+msgstr "poniedziałek"
 
 #: GTG/taskbrowser/browser.py:556
 msgid "tuesday"
-msgstr "mardi"
+msgstr "wtorek"
 
 #: GTG/taskbrowser/browser.py:556
 msgid "wednesday"
-msgstr "mercredi"
+msgstr "środa"
 
 #: GTG/taskbrowser/browser.py:557
 msgid "thursday"
-msgstr "jeudi"
+msgstr "czwartek"
 
 #: GTG/taskbrowser/browser.py:557
 msgid "friday"
-msgstr "vendredi"
+msgstr "piątek"
 
 #: GTG/taskbrowser/browser.py:557
 msgid "saturday"
-msgstr "samedi"
+msgstr "sobota"
 
 #: GTG/taskbrowser/browser.py:558
 msgid "sunday"
-msgstr "dimanche"
+msgstr "niedziela"
 
 #: GTG/taskbrowser/browser.py:567
 msgid "today"
-msgstr "aujourd'hui"
+msgstr "dziś"
 
 #: GTG/taskbrowser/browser.py:574
 msgid "tomorrow"
-msgstr "demain"
+msgstr "jutro"
 
 #: GTG/taskbrowser/browser.py:635
 msgid "tags"
-msgstr "tags"
+msgstr "znaczniki"
 
 #: GTG/taskbrowser/browser.py:638
 msgid "defer"
-msgstr "reporter"
+msgstr "odrocz"
 
 #: GTG/taskbrowser/browser.py:642
 msgid "due"
-msgstr "échéance"
+msgstr "due"
 
 #: GTG/taskbrowser/browser.py:753
 msgid "<span weight=\"bold\">All tags</span>"
-msgstr "<span weight=\"bold\">Toutes les étiquettes</span>"
+msgstr "<span weight=\"bold\">Wszystkie znaczniki</span>"
 
 #: GTG/taskbrowser/browser.py:754
 msgid "<span weight=\"bold\">Tasks without tags</span>"
-msgstr "<span weight=\"bold\">Tâches sans étiquette</span>"
+msgstr "<span weight=\"bold\">Zadania bez znaczników</span>"
 
 #: GTG/taskbrowser/browser.py:849
 msgid "(no active tasks)"
-msgstr "(pas de tâche active)"
+msgstr "(żadnych aktywnych zadań)"
 
 #: GTG/taskbrowser/browser.py:851
 msgid "(1 active task)"
-msgstr "(1 tâche active)"
+msgstr "(1 aktywne zadanie)"
 
 #: GTG/taskbrowser/browser.py:1501 GTG/taskbrowser/browser.py:1584
 msgid "Title"
-msgstr "Titre"
+msgstr "Tytuł"
 
 #: GTG/taskbrowser/browser.py:1520
 msgid "Due date"
-msgstr "Date de fin"
+msgstr "Do dnia"
 
 #: GTG/taskbrowser/browser.py:1534
 msgid "Days left"
-msgstr "Jours restants"
+msgstr "Pozostało dni"
 
 #: GTG/taskbrowser/browser.py:1572
 msgid "Closing date"
-msgstr "Date de cloture"
+msgstr "Data zamknięcia"
 
 #: GTG/taskbrowser/browser.py:1600
 msgid "Notes"
-msgstr "Notes"
+msgstr "Notatki"
+
+#: GTG/core/task.py:36
+msgid "My new task"
+msgstr "Moje nowe zadanie"
 
 #: GTG/core/firstrun_tasks.py:6
 msgid "Getting started with GTG"
-msgstr "Débuter avec GTG"
+msgstr "Początku z GTG"
 
 #: GTG/core/firstrun_tasks.py:7
 msgid "Welcome in Getting Things Gnome!, your new task manager."
-msgstr "Bienvenue dans Getting Things Gnome!, votre gersionnaire de tâches."
+msgstr "Witamy w Getting Things Gnome!, twoim nowym organizerze."
 
 #: GTG/core/firstrun_tasks.py:9
 msgid ""
@@ -428,50 +462,49 @@ msgid ""
 "to changing a light bulb or organizing a party. When you edit a task, it is "
 "automatically saved."
 msgstr ""
-"Dans GTG, tout est une tâche. Que ce soit \"contruire un pont au-dessus de "
-"l'océan pacifique\", \"changer une ampoule\" ou \"organiser une fête\". "
-"Quand vous modifiez une tâche, elle est automatiquement sauvée."
+"W GTG wszystkie jest traktowane jako zadanie. Od budowy mostu przez Pacyfik "
+"po wymianę żarówki czy zorganizowanie imprezy. Gdy edytujesz zadane, jest "
+"ono automatycznie zapisywane."
 
 #: GTG/core/firstrun_tasks.py:11
 msgid ""
 "Once a task is done, you can push the &quot;Mark as done&quot; button. If "
 "the task is not relevant any-more, simply press &quot;Dismiss&quot;."
 msgstr ""
-"Une fois la tâche faite, vous pouvez appuyer sur le bouton &quot;Marquer "
-"comme fait&quot;. Si la tâche n'est plus d'actualité, appuyez simplement sur "
-"&quot;Abandonner&quot;."
+"Gdy zadanie jest zakończone, możesz nacisnąć przycisk &quot;Oznacz jako "
+"wykonane&quot;. Jeśli zadanie przestało już być istotne, po prostu naciśnij "
+"przycisk &quot;Oddal&quot;."
 
 #: GTG/core/firstrun_tasks.py:13
 msgid ""
 "A task might be composed of multiple subtasks that appear as links in the "
 "description. Simply click on the following link :"
 msgstr ""
-"Une tâche peut être composée de multiples sous-tâches qui apparaissent comme "
-"liens dans la description. Cliquez simplement sur le lien suivant."
+"Zadanie może zawierać wiele zadań podrzędnych, pokazywanych jako odnośniki w "
+"opisie. Wystarczy kliknąć na dany odnośnik."
 
 #: GTG/core/firstrun_tasks.py:17
 msgid "Don't forget to mark this subtask as done !"
-msgstr "N'oubliez pas de marquer cette sous-tâche comme faite !"
+msgstr "Nie zapomnij oznaczyć zadania podrzędnego jako wykonanego!"
 
 #: GTG/core/firstrun_tasks.py:19
 msgid "Other stuff you should read :"
-msgstr "Autres sujets d'intérêt :"
+msgstr "Pozostałe rzeczy, które powinieneś przeczytać:"
 
 #: GTG/core/firstrun_tasks.py:25
 msgid ""
 "We hope that you will appreciate GTG. Please send us bug reports and ideas "
 "for improvement using : "
 msgstr ""
-"Nous espérons que vous apprécierez GTG. Veuillez reporter bogues et idées "
-"d'améliorations en utilisant : "
+"Mamy nadzieję, że docenisz GTG. Zgłaszaj nam wszelkie błędy i pomysły. "
 
 #: GTG/core/firstrun_tasks.py:28
 msgid "Thank you for trying out GTG :-)"
-msgstr "Merci d'avoir essayé GTG :-)"
+msgstr "Dziękujemy za wypróbowanie GTG. :-)"
 
 #: GTG/core/firstrun_tasks.py:33
 msgid "Learn to use subtasks"
-msgstr "Apprendre à utiliser les sous-tâches"
+msgstr "Naucz się używać zadań podrzędnych."
 
 #: GTG/core/firstrun_tasks.py:34
 msgid ""
@@ -480,53 +513,50 @@ msgid ""
 "to be done in order to accomplish your task. Just try to write &quot;- test "
 "subtask&quot; on the next line and press enter."
 msgstr ""
-"Dans la description de la tâche (cette fenêtre), si vous commencez une ligne "
-"avec &quot;-&quot;, elle sera considérée comme &quot;sous-tâche&quot;, "
-"quelque chose à faire pour accomplir votre tâche. Essayez d'écrire &quot;- "
-"test sous-tâche&quot; dans la ligne suivante et appuyer sur Entrée."
+"Jeśli w opisie zadanie (w tym oknie) na początku wiersza umieścisz &quot;-"
+"&quot;, to całe zadanie zostanie zinterpretowane jako &quot;podrzędne&quot;, "
+"coś co jest wymagane do zakończenia całego zadania. Spróbuj napisać &quot;- "
+"test&quot; w następnym wierszu i nacisnąć enter."
 
 #: GTG/core/firstrun_tasks.py:36
 msgid "You can also use the &quot;insert subtask&quot; button."
-msgstr ""
-"Vous pouvez utiliser aussi le bouton  &quot;Ajouter une sous-tâche&quot;."
+msgstr "Możesz także użyć przycisku &quot;Wstaw zadanie podrzędne&quot;."
 
 #: GTG/core/firstrun_tasks.py:38
 msgid ""
 "Task and subtasks can be re-organized by drag-n-drop in the tasks list."
 msgstr ""
-"Les tâches et les sous-tâches se réorganisent en faisant du glisser-déposer "
-"dans la liste des tâches."
+"Zadania i zadania podrzędne mogą być szeregowane metodą przeciągnij-i-upuść."
 
 #: GTG/core/firstrun_tasks.py:40
 msgid ""
 "Some concept come with subtasks : for example, a subtask due date can never "
 "be after its parent due date."
 msgstr ""
-"Quelques concepts découlent logiquement des sous-tâches : par exemple, "
-"l'échéance d'une sous-tâche ne peut jamais être après l'échéance de sa tâche "
-"parente."
+"Z zadaniami podrzędnymi związane są pewne ograniczenia, np. zadanie "
+"podrzędne nie może mieć terminu końcowego później niż zadanie nadrzędne."
 
 #: GTG/core/firstrun_tasks.py:42
 msgid "Also, marking a parent as done will mark all the subtasks as done."
 msgstr ""
-"Également, marquer une tâche parent comme faîte entraînera le marquage comme "
-"faites des sous-tâches."
+"Dodatkowo, oznaczenie zadania nadrzędnego jako wykonanego, spowoduje takie "
+"oznaczenie również wśród zadań podrzędnych."
 
 #: GTG/core/firstrun_tasks.py:47
 msgid "Learn to use tags"
-msgstr "Apprendre à utiliser les étiquettes"
+msgstr "Naucz się używać znaczników."
 
 #: GTG/core/firstrun_tasks.py:48
 msgid "A tag is a simple word that begin with &quot;@&quot;."
-msgstr "Une étiquette est un mot commençant par le caractère &quot;@&quot;."
+msgstr "Znacznik jest słowem, które zaczyna się &quot;@&quot;."
 
 #: GTG/core/firstrun_tasks.py:50
 msgid "Try to type a word beginning with @ here :"
-msgstr "Essayez de taper un mot commençant par @ ici :"
+msgstr "Spróbuj wpisać słowo zaczynające się @:"
 
 #: GTG/core/firstrun_tasks.py:52
 msgid "It becomes yellow, it's a tag."
-msgstr "Il devient jaune, c'est une étiquette."
+msgstr "Znacznik przyjmuje kolor żółty."
 
 #: GTG/core/firstrun_tasks.py:54
 msgid ""
@@ -535,11 +565,10 @@ msgid ""
 "tasks for a given tag. There's no limit to the number of tags a task can "
 "have."
 msgstr ""
-"Les étiquettes sont utiles pour classer vos tâches. Dans le menu 'Vue', vous "
-"pouvez activer l'affichage d'un panneau latéral qui affiche toutes les "
-"étiquettes que vous utilisez. De cette façon vous pouvez facilement voir les "
-"tâches qui se rapportent à une certaine étiquette. Il n'y a pas de limites "
-"au nombre d'étiquettes qu'une tâche peut avoir."
+"Znaczniki są użyteczne do sortowania zadań. W menu Widok możesz włączyć "
+"panel boczny, które wyświetla wszystkie użyte znaczniki. Dzięki temu można "
+"łatwo zobaczyć zadania oznaczone danym słowem. Nie ma żadnego ograniczenia "
+"na liczbę znaczników, jakie może mieć pojedyncze zadanie."
 
 #: GTG/core/firstrun_tasks.py:56
 msgid ""
@@ -547,9 +576,8 @@ msgid ""
 "will permit you to have a more colorful list of tasks, if you want it that "
 "way."
 msgstr ""
-"Si vous cliquez sur une étiquette dans le panneau latéral, vous pouvez aussi "
-"lui donner une certaine couleur. Cela vous permet d'obtenir une liste plus "
-"colorée de tâche, si le préférez."
+"Jeśli klikniesz prawym przyciskiem myszy na znaczniku w panelu bocznym, "
+"możesz ustawić mu kolor. Dzięki temu łatwiej rozróżnisz zadania na liście."
 
 #: GTG/core/firstrun_tasks.py:58
 msgid ""
@@ -560,53 +588,52 @@ msgid ""
 "subtask). Of course, you can modify at any time the tags of this particular "
 "subtask. It will never be changed by the parent."
 msgstr ""
-"Une nouvelle étiquette n'est toujours ajoutée qu'à la tâche courante. Il n'y "
-"a pas de récursivité, l'étiquette n'est pas appliquée aux sous-tâches. Mais "
-"lorsque vous créez une nouvelle sous-tâches, celle-ci héritera des "
-"étiquettes de son parent par défaut (ce sera aussi le cas si vous ajoutez "
-"une étiquette à un parent après avoir créé une sous-tâche). Evidemment, vous "
-"pouvez modifier les étiquettes d'une sous-tâche en particulier à tout "
-"moment. Cela ne changera rien à la tâche parente."
+"Nowy znacznik jest dodawany tylko do bieżącego zadania. Nie ma żadnej "
+"rekurencji i znacznik nie jest dodawany do zadań podrzędnych. Jednak kiedy "
+"utworzysz nowe zadanie podrzędne, domyślnie odziedziczy ono znaczniki po "
+"swoim zadaniu nadrzędnym. Oczywiście możesz zmodyfikować znaczniki, kiedy "
+"chcesz, ale nie zmienią się znaczniki zadania podrzędnego."
 
 #: GTG/core/firstrun_tasks.py:63
 msgid "Using the Workview"
-msgstr "En utilisant la vue de travail"
+msgstr "Użycie widoku roboczego"
 
 #: GTG/core/firstrun_tasks.py:64
 msgid ""
 "If you press the &quot;Workview&quot; button, only actionable tasks will be "
 "displayed."
 msgstr ""
-"Si vous pressez le boutont &quot;Vue de travail&quot;, seules les actions "
-"réalisables seront affichées."
+"Jeśli wciśniesz przycisk &quot;Widok roboczy&quot;, tylko zadania z akcjami "
+"zostaną wyświetlone."
 
 #: GTG/core/firstrun_tasks.py:66
 msgid ""
 "What is an actionable task? It's a task you can do directly, right now."
 msgstr ""
-"Qu'est-ce qu'une tâche réalisable? Une tâche que vous pouvez faire "
-"directement, maintenant,"
+"Co to jest zadanie z akcjami? To zadanie, które możesz od razu zacząć "
+"wykonywać."
 
 #: GTG/core/firstrun_tasks.py:68
 msgid ""
 "It's a task that is already &quot;start-able&quot;, i.e. the start date is "
 "already over."
 msgstr ""
-"C'est une tâche qui peut être commencée: sa date de début est déja dépassée."
+"To zadanie zadanie, które można zaraz zacząć, np. data rozpoczęcia już "
+"minęła."
 
 #: GTG/core/firstrun_tasks.py:70
 msgid ""
 "It's a task that doesn't have open subtasks, i.e. you can do the task itself "
 "directly."
 msgstr ""
-"C'est une tâche qui n'a pas de sous-tâches actives, vous pouvez la faire "
-"directement."
+"To zadanie, które nie ma żadnych zadań podrzędnych, np. możesz je wykonać "
+"bezpośrednio."
 
 #: GTG/core/firstrun_tasks.py:72
 msgid "Thus, the workview will only show you tasks you should do right now."
 msgstr ""
-"Donc la vue de travail ne vous montreras que les tâches que vous pouvez "
-"faire maintenant."
+"Zatem widok roboczy wyświetli tylko te zadania, które pierwsze powinieneś "
+"wykonać."
 
 #: GTG/core/firstrun_tasks.py:74
 msgid ""
@@ -615,58 +642,34 @@ msgid ""
 "if you have a tag like &quot;someday&quot; that you use for tasks you would "
 "like to do but are not particularly urgent."
 msgstr ""
-"Si vous utilisez les étiquettes, vous pouvez faire un clic droit sur un "
-"étiquette dans le panneau latéral et choisir de ne pas afficher les tâches "
-"avec cette étiquette dans la vue de travail. C'est très utile si vous avez "
-"une étiquette comme &quot;Un jour peut-être&quot; que vous utilisez pour les "
-"tâches qui ne sont pas particulièrement urgentes."
+"Jeśli używasz znaczników, możesz kliknąć prawym przyciskiem myszy na "
+"znaczniku w panelu bocznym i ustawić, by nie wyświetlały się w widoku "
+"roboczym. Jest to przydatne, gdy masz znacznik w rodzaju &quot;kiedyś&quot;, "
+"który używasz do zadań, które chciałbyś kiedyś wykonać, ale nie są "
+"szczególnie ważne."
 
 #: GTG/core/firstrun_tasks.py:80
 msgid "Reporting bugs"
-msgstr "Rapporter les bugs"
+msgstr "Zgłaszanie błędów"
 
 #: GTG/core/firstrun_tasks.py:81
 msgid ""
 "GTG is still very alpha software. We like it and use it everyday but you "
 "will encounter some bugs."
 msgstr ""
-"GTG est encore un logiciel immature. Nous l'apprécions et l'utilisons tous "
-"les jours mais vous risquez certainement de rencontrer des bugs."
+"GTG jest wciąż we wczesnej fazie rozwoju. Możesz niestety napotkać parę "
+"błędów."
 
 #: GTG/core/firstrun_tasks.py:83
 msgid ""
 "Please, report them ! We need you to make this software better. Any "
 "contribution, any idea is welcome."
-msgstr ""
-"S'il vous plaît, rapportez-les nous ! Nous avons besoin de vos retours pour "
-"rendre ce logiciel meilleur. Toute contribution, toute idée d'amélioration "
-"est la bienvenue."
+msgstr "Prosimy o ich zgłoszenie! Dzięki temu będziemy w stanie je poprawić."
 
 #: GTG/core/firstrun_tasks.py:85
 msgid ""
 "If you have some trouble with GTG, we might be able to help you or to solve "
 "your problem really quickly."
 msgstr ""
-"Si vous avez un problème avec GTG, nous pouvons peut-être vous aider ou "
-"résoudre votre problème rapidement."
-
-#: GTG/taskbrowser/taskbrowser.glade.h:17
-msgid ""
-"Getting Things Gnome! is free software; you can redistribute it and/or "
-"modify it under the terms of the GNU General Public License as published by "
-"the Free Software Foundation; either version 3 of the License, or (at your "
-"option) any later version.\n"
-"\n"
-"Getting Things Gnome! is distributed in the hope that it will be useful, but "
-"WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY "
-"or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
-"more details.\n"
-"\n"
-"You should have received a copy of the GNU General Public License along with "
-"Getting Things Gnome!; if not, write to the Free Software Foundation, Inc., "
-"51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA."
-msgstr ""
-
-#: GTG/core/task.py:36
-msgid "My new task"
-msgstr ""
+"Jeśli napotkałeś problemy z GTG, możliwe że będziemy w mogli Ci pomóc szybko "
+"je rozwiązać."

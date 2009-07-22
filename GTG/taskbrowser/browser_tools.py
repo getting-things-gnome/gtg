@@ -22,6 +22,7 @@ import gtk
 import gobject
 
 from GTG.taskbrowser.CellRendererTags import CellRendererTags
+from GTG import _
 
 # ACTIVE TASKS MODEL ###########################################################
 
@@ -100,7 +101,7 @@ def init_tags_tview(tv):
     render_text  = gtk.CellRendererText()
     render_count = gtk.CellRendererText()
     render_tags  = CellRendererTags()
-    tag_col.set_title             ("Tags")
+    tag_col.set_title             (_("Tags"))
     tag_col.set_clickable         (False)
     tag_col.pack_start            (render_tags  , expand=False)
     tag_col.set_attributes        (render_tags  , tag=TAGS_MODEL_OBJ)

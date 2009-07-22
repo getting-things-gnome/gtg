@@ -7,19 +7,446 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2009-04-03 20:19+0200\n"
-"PO-Revision-Date: 2009-04-01 21:18+0000\n"
-"Last-Translator: Philip Stewart <philip.stewart@gmx.net>\n"
+"POT-Creation-Date: 2009-04-15 15:13+0200\n"
+"PO-Revision-Date: 2009-04-12 16:26+0000\n"
+"Last-Translator: Thomas Pitlik <Unknown>\n"
 "Language-Team: German <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2009-04-03 20:56+0000\n"
+"X-Launchpad-Export-Date: 2009-07-04 13:00+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
+
+#: GTG/taskeditor/taskeditor.glade.h:1
+msgid "<span weight=\"bold\">Due for</span>"
+msgstr "<span weight=\"bold\">Fällig am</span>"
+
+#: GTG/taskeditor/taskeditor.glade.h:2
+msgid "<span weight=\"bold\">Starting on</span>"
+msgstr "<span weight=\"bold\">Beginnt am</span>"
+
+#: GTG/taskeditor/taskeditor.glade.h:3 GTG/taskbrowser/taskbrowser.glade.h:12
+msgid "Delete"
+msgstr "Löschen"
+
+#: GTG/taskeditor/taskeditor.glade.h:4 GTG/taskbrowser/taskbrowser.glade.h:13
+#: GTG/taskbrowser/__init__.py:33
+msgid "Dismiss"
+msgstr "Verwerfen"
+
+#: GTG/taskeditor/taskeditor.glade.h:5
+msgid "Insert subtask"
+msgstr "Unteraufgabe einfügen"
+
+#: GTG/taskeditor/taskeditor.glade.h:6
+msgid "Insert tag"
+msgstr "Schlagwort einfügen"
+
+#: GTG/taskeditor/taskeditor.glade.h:7
+msgid "Keep as Note"
+msgstr "Als Notiz behalten"
+
+#: GTG/taskeditor/taskeditor.glade.h:8
+msgid "Mark Done"
+msgstr "Als erledigt markieren"
+
+#: GTG/taskeditor/taskeditor.glade.h:9
+msgid "Task"
+msgstr "Aufgabe"
+
+#: GTG/taskeditor/taskeditor.glade.h:10
+msgid "gtk-clear"
+msgstr "gtk-bereinigen"
+
+#: GTG/taskeditor/taskeditor.glade.h:11
+msgid "gtk-close"
+msgstr "gtk-schließen"
+
+#: GTG/taskeditor/editor.py:214
+msgid "Due tomorrow !"
+msgstr "Morgen fällig!"
+
+#: GTG/taskeditor/editor.py:216
+#, python-format
+msgid "%s days left"
+msgstr "noch %s Tage"
+
+#: GTG/taskeditor/editor.py:218
+msgid "Due today !"
+msgstr "Heute fällig!"
+
+#: GTG/taskeditor/editor.py:220
+msgid "Due for yesterday"
+msgstr "Gestern fällig!"
+
+#: GTG/taskeditor/editor.py:222
+#, python-format
+msgid "Was %s days ago"
+msgstr "Vor %s Tagen fällig"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:1
+msgid ""
+"\n"
+"Getting Things Gnome! is an organizer for the GNOME desktop environment."
+msgstr ""
+"\n"
+"Getting Things Gnome! ist ein Organizer für die GNOME Desktopumgebung."
+
+#: GTG/taskbrowser/taskbrowser.glade.h:3
+msgid ""
+"<span weight=\"bold\" size=\"large\">Are you sure you want delete this "
+"task?</span>\n"
+"\n"
+"Deleting a task cannot be undone."
+msgstr ""
+"<span weight=\"bold\" size=\"large\">Bist du sicher, dass du diese Aufgabe "
+"löschen möchtest?</span>\n"
+"\n"
+"Die Aufgabe kann danach nicht wiederhergestellt werden."
+
+#: GTG/taskbrowser/taskbrowser.glade.h:6
+msgid "About GTG!"
+msgstr "Über GTG!"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:7
+msgid "Choose a color"
+msgstr "Wähle eine Farbe"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:8
+msgid "Confirm task deletion"
+msgstr "Bestätige die Löschung der Aufgabe"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:9
+msgid "Copyrights© 2008, 2009 Lionel Dricot, Bertrand Rousseau"
+msgstr "Copyrights© 2008, 2009 Lionel Dricot, Bertrand Rousseau"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:10 GTG/taskbrowser/browser.py:110
+msgid "Create a new task"
+msgstr "Eine neue Aufgabe anlegen"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:11
+msgid "D_ismiss"
+msgstr "V_erwerfen"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:14
+msgid "Edit"
+msgstr "Bearbeiten"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:15
+msgid "GTG website"
+msgstr "GTG-Webseite"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:16
+msgid "Getting Things Gnome!"
+msgstr "Getting Things Gnome!"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:17
+msgid ""
+"Getting Things Gnome! is free software; you can redistribute it and/or "
+"modify it under the terms of the GNU General Public License as published by "
+"the Free Software Foundation; either version 3 of the License, or (at your "
+"option) any later version.\n"
+"\n"
+"Getting Things Gnome! is distributed in the hope that it will be useful, but "
+"WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY "
+"or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
+"more details.\n"
+"\n"
+"You should have received a copy of the GNU General Public License along with "
+"Getting Things Gnome!; if not, write to the Free Software Foundation, Inc., "
+"51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA."
+msgstr ""
+"Getting Things Gnome! ist freie Software. Du kannst sie unter den "
+"Bedingungen der GNU General Public License der Free Software Foundation "
+"(entweder Version 3 der Lizenz, oder - nach Wahl - einer späteren Version) "
+"weiterverteilen und/oder verändern.\n"
+"\n"
+"Getting Things Gnome! wird in der Hoffnung nützlich zu sein zur Verfügung "
+"gestellt, jedoch OHNE JEGLICHE GEWÄHRLEISTUNG. Dies schließt auch die "
+"Garantie auf ALLGEMEINE GEBRAUCHSTAUGLICHKEIT oder TAUGLICHKEIT ZU EINEM "
+"BESTIMMTEN ZWECK aus. Nähere Details findest du in der GNU General Public "
+"License. \n"
+"\n"
+"Du solltest eine Kopie der GNU General Public License mit Getting Things "
+"Gnome! erhalten haben. Falls nicht, schreibe der Free Software Foundation, "
+"Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA."
+
+#: GTG/taskbrowser/taskbrowser.glade.h:22
+msgid "Mark as Done"
+msgstr "Als erledigt markieren"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:23
+msgid "Mark as Not Done"
+msgstr "Als unerledigt markieren"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:24
+msgid "Mark as _Done"
+msgstr "Als _erledigt markieren"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:25
+msgid "New Note"
+msgstr "Neue Notiz"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:26
+msgid "New Subtask"
+msgstr "Neue Unteraufgabe"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:27
+msgid "New Task"
+msgstr "Neue Aufgabe"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:28
+msgid "New _Subtask"
+msgstr "Neue _Unteraufgabe"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:29
+msgid "New _Task"
+msgstr "Neue _Aufgabe"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:30
+msgid "Permanently _remove task"
+msgstr "Aufgabe dauerhaft _löschen"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:31
+msgid "Redo"
+msgstr "Wiederherstellen"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:32
+msgid "Tag is displayed in the workview"
+msgstr "Schlagwort wird in der Arbeitsansicht angezeigt"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:33 GTG/taskbrowser/browser.py:1486
+#: GTG/taskbrowser/browser.py:1557
+msgid "Tags"
+msgstr "Schlagworte"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:34
+msgid "Und_ismiss"
+msgstr "Wieder_herstellen"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:35
+msgid "Undo"
+msgstr "Rückgängig"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:36
+msgid "View Notes"
+msgstr "Notizen anzeigen"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:37
+msgid "Work View"
+msgstr "Arbeitsansicht"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:38
+msgid "_Background Colors"
+msgstr "Hintergrund_farben"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:39
+msgid "_Closed Tasks Pane"
+msgstr "_Beendete Aufgaben"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:40
+msgid "_Edit"
+msgstr "_Bearbeiten"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:41
+msgid "_File"
+msgstr "_Datei"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:42
+msgid "_Help"
+msgstr "_Hilfe"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:43
+msgid "_Keep selected task"
+msgstr "_Ausgewählte Aufgabe behalten"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:44
+msgid "_Quick Add Entry"
+msgstr "_Schnelleintrag"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:45
+msgid "_Tags Sidebar"
+msgstr "_Schlagwort-Seitenleiste"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:46
+msgid "_Tasks"
+msgstr "_Aufgaben"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:47
+msgid "_View"
+msgstr "_Ansicht"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:48
+msgid "_Work View"
+msgstr "A_rbeitsansicht"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:49
+msgid "gtk-about"
+msgstr "gtk-über"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:50
+msgid "gtk-add"
+msgstr "gtk-hinzufügen"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:51
+msgid "gtk-cancel"
+msgstr "gtk-abbrechen"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:52
+msgid "gtk-delete"
+msgstr "gtk-löschen"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:53
+msgid "gtk-edit"
+msgstr "gtk-bearbeiten"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:54
+msgid "gtk-help"
+msgstr "gtk-hilfe"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:55
+msgid "gtk-ok"
+msgstr "gtk-ok"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:56
+msgid "gtk-quit"
+msgstr "gtk-beenden"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:57
+msgid "gtk-redo"
+msgstr "gtk-wiederherstellen"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:58
+msgid "gtk-select-color"
+msgstr "gtk-farbe-wählen"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:59
+msgid "gtk-undo"
+msgstr "gtk-rückgängig"
+
+#: GTG/taskbrowser/__init__.py:29
+msgid "Mark as done"
+msgstr "Als erledigt markieren"
+
+#: GTG/taskbrowser/__init__.py:30
+msgid "Mark the selected task as done"
+msgstr "Die gewählte Aufgabe als erledigt markieren"
+
+#: GTG/taskbrowser/__init__.py:31
+msgid "Mark as not done"
+msgstr "Als unerledigt markieren"
+
+#: GTG/taskbrowser/__init__.py:32 GTG/taskbrowser/__init__.py:36
+msgid "Mark the selected task as to be done"
+msgstr "Die gewählte Aufgabe als zu erledigen markieren"
+
+#: GTG/taskbrowser/__init__.py:34
+msgid "Mark the task as not to be done anymore"
+msgstr "Die Aufgabe als nicht mehr zu erledigen markieren."
+
+#: GTG/taskbrowser/__init__.py:35
+msgid "Undismiss"
+msgstr "Wiederherstellen"
+
+#: GTG/taskbrowser/__init__.py:37
+msgid "Permanently remove the selected task"
+msgstr "Die gewählte Aufgabe dauerhaft löschen"
+
+#: GTG/taskbrowser/browser.py:108
+msgid "Edit the selected task"
+msgstr "Ausgewählte Aufgabe bearbeiten"
+
+#: GTG/taskbrowser/browser.py:111
+msgid "Create a new subtask"
+msgstr "Eine neue Unteraufgabe anlegen"
+
+#: GTG/taskbrowser/browser.py:556
+msgid "monday"
+msgstr "Montag"
+
+#: GTG/taskbrowser/browser.py:556
+msgid "tuesday"
+msgstr "Dienstag"
+
+#: GTG/taskbrowser/browser.py:556
+msgid "wednesday"
+msgstr "Mittwoch"
+
+#: GTG/taskbrowser/browser.py:557
+msgid "thursday"
+msgstr "Donnerstag"
+
+#: GTG/taskbrowser/browser.py:557
+msgid "friday"
+msgstr "Freitag"
+
+#: GTG/taskbrowser/browser.py:557
+msgid "saturday"
+msgstr "Samstag"
+
+#: GTG/taskbrowser/browser.py:558
+msgid "sunday"
+msgstr "Sonntag"
+
+#: GTG/taskbrowser/browser.py:567
+msgid "today"
+msgstr "Heute"
+
+#: GTG/taskbrowser/browser.py:574
+msgid "tomorrow"
+msgstr "Morgen"
+
+#: GTG/taskbrowser/browser.py:635
+msgid "tags"
+msgstr "Schlagworte"
+
+#: GTG/taskbrowser/browser.py:638
+msgid "defer"
+msgstr "verschieben"
+
+#: GTG/taskbrowser/browser.py:642
+msgid "due"
+msgstr "fällig"
+
+#: GTG/taskbrowser/browser.py:753
+msgid "<span weight=\"bold\">All tags</span>"
+msgstr "<span weight=\"bold\">Alle Schlagworte</span>"
+
+#: GTG/taskbrowser/browser.py:754
+msgid "<span weight=\"bold\">Tasks without tags</span>"
+msgstr "<span weight=\"bold\">Aufgaben ohne Schlagworte</span>"
+
+#: GTG/taskbrowser/browser.py:849
+msgid "(no active tasks)"
+msgstr "(keine aktiven Aufgaben)"
+
+#: GTG/taskbrowser/browser.py:851
+msgid "(1 active task)"
+msgstr "(eine aktive Aufgabe)"
+
+#: GTG/taskbrowser/browser.py:1501 GTG/taskbrowser/browser.py:1584
+msgid "Title"
+msgstr "Titel"
+
+#: GTG/taskbrowser/browser.py:1520
+msgid "Due date"
+msgstr "Fälligkeitsdatum"
+
+#: GTG/taskbrowser/browser.py:1534
+msgid "Days left"
+msgstr "Tage verbleibend"
+
+#: GTG/taskbrowser/browser.py:1572
+msgid "Closing date"
+msgstr "Abschlussdatum"
+
+#: GTG/taskbrowser/browser.py:1600
+msgid "Notes"
+msgstr "Notizen"
 
 #: GTG/core/firstrun_tasks.py:6
 msgid "Getting started with GTG"
-msgstr ""
+msgstr "GTG verwenden"
 
 #: GTG/core/firstrun_tasks.py:7
 msgid "Welcome in Getting Things Gnome!, your new task manager."
@@ -54,7 +481,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:17
 msgid "Don't forget to mark this subtask as done !"
-msgstr "Vergesse nicht die Unteraufgabe als erledigt zu markieren!"
+msgstr "Vergiss nicht die Unteraufgabe als erledigt zu markieren!"
 
 #: GTG/core/firstrun_tasks.py:19
 msgid "Other stuff you should read :"
@@ -65,6 +492,8 @@ msgid ""
 "We hope that you will appreciate GTG. Please send us bug reports and ideas "
 "for improvement using : "
 msgstr ""
+"Wir hoffen, dass dir GTG gefällt. Bitte sende uns Fehlerberichte und Ideen "
+"zur Verbesserung des Programms: "
 
 #: GTG/core/firstrun_tasks.py:28
 msgid "Thank you for trying out GTG :-)"
@@ -81,41 +510,54 @@ msgid ""
 "to be done in order to accomplish your task. Just try to write &quot;- test "
 "subtask&quot; on the next line and press enter."
 msgstr ""
+"Wenn du in der Aufgabenbeschreibung (dieses Fenster) die Zeile mit &quot;-"
+"&quot; beginnst, wird die Aufgabe als Unteraufgabe angelegt. Tippe zum "
+"Testen &quot;- Test-Unteraufgabe&quot; in die nächste Zeile ein und drücke "
+"Eingabe."
 
 #: GTG/core/firstrun_tasks.py:36
 msgid "You can also use the &quot;insert subtask&quot; button."
 msgstr ""
+"Du kannst auch die &quot;Unteraufgabe einfügen&quot; Schaltfläche verwenden."
 
 #: GTG/core/firstrun_tasks.py:38
 msgid ""
 "Task and subtasks can be re-organized by drag-n-drop in the tasks list."
 msgstr ""
+"Aufgaben und Unteraufgaben können mittels Drag-n-Drop in der Aufgabenliste "
+"umorganisiert werden."
 
 #: GTG/core/firstrun_tasks.py:40
 msgid ""
 "Some concept come with subtasks : for example, a subtask due date can never "
 "be after its parent due date."
 msgstr ""
+"Für Unteraufgaben gelten folgende Grundsätze: das Fälligkeitsdatum einer "
+"Unteraufgabe kann zum Beispiel niemals nach dem Fälligkeitsdatum der "
+"Hauptaufgabe liegen."
 
 #: GTG/core/firstrun_tasks.py:42
 msgid "Also, marking a parent as done will mark all the subtasks as done."
 msgstr ""
+"Das Markieren der Hauptaufgabe als erledigt wird auch alle Unteraufgaben auf "
+"den Status erledigt setzen."
 
 #: GTG/core/firstrun_tasks.py:47
 msgid "Learn to use tags"
-msgstr ""
+msgstr "Lerne Schlagworte zu verwenden"
 
 #: GTG/core/firstrun_tasks.py:48
 msgid "A tag is a simple word that begin with &quot;@&quot;."
-msgstr ""
+msgstr "Ein Schlagwort ist ein einfaches Wort das mit &quot;@&quot; beginnt."
 
 #: GTG/core/firstrun_tasks.py:50
 msgid "Try to type a word beginning with @ here :"
-msgstr ""
+msgstr "Tippe zum Testen ein Wort und beginne mit @:"
 
 #: GTG/core/firstrun_tasks.py:52
 msgid "It becomes yellow, it's a tag."
 msgstr ""
+"Wenn sie die Farbe zu gelb verändert, hast du ein Schlagwort definiert."
 
 #: GTG/core/firstrun_tasks.py:54
 msgid ""
@@ -124,6 +566,11 @@ msgid ""
 "tasks for a given tag. There's no limit to the number of tags a task can "
 "have."
 msgstr ""
+"Schlagworte können dir helfen deine Aufgaben zu sortieren. Im Ansicht-Menü "
+"kannst du eine Seitenleiste aktivieren, die dir alle verwendeten Schlagworte "
+"anzeigt, so dass du auf einfachem Wege alle Aufgaben zu einem bestimmten "
+"Schlagwort darstellen lassen kannst. Die Anzahl der möglichen Schlagworte zu "
+"einer bestimmte Aufgabe ist nicht begrenzt."
 
 #: GTG/core/firstrun_tasks.py:56
 msgid ""
@@ -131,6 +578,9 @@ msgid ""
 "will permit you to have a more colorful list of tasks, if you want it that "
 "way."
 msgstr ""
+"Mit einem Rechtsklick auf ein Schlagwort in der Seitenleiste kannst du "
+"dessen Farbe verändern. Dies erlaubt dir - sofern gewünscht - eine "
+"farbenfrohere Aufgabenlistengestaltung."
 
 #: GTG/core/firstrun_tasks.py:58
 msgid ""
@@ -141,37 +591,55 @@ msgid ""
 "subtask). Of course, you can modify at any time the tags of this particular "
 "subtask. It will never be changed by the parent."
 msgstr ""
+"Ein neues Schlagwort wird ausschließlich der aktuellen Aufgabe zugewiesen. "
+"Eine rekursive Zuweisung ist nicht möglich und das Schlagwort wird nicht auf "
+"Unteraufgaben angewendet. Wenn du jedoch eine neue Unteraufgabe erstellst, "
+"wird diese Unteraufgabe die Schlagworte der Hauptaufgabe als Standard "
+"übernehmen (dies ist auch der Fall, wenn du ein Schlagwort zur Hauptaufgabe "
+"hinzufügst, nachdem du eine Unteraufgabe erstellt hast). Natürlich kannst du "
+"die Schlagworte dieser Unteraufgabe jederzeit verändern. Sie werden niemals "
+"durch die Hauptaufgabe verändert."
 
 #: GTG/core/firstrun_tasks.py:63
 msgid "Using the Workview"
-msgstr ""
+msgstr "Verwendung der Arbeitsansicht"
 
 #: GTG/core/firstrun_tasks.py:64
 msgid ""
 "If you press the &quot;Workview&quot; button, only actionable tasks will be "
 "displayed."
 msgstr ""
+"Durch klicken auf die &quot;Arbeitsansicht&quot;-Schaltfläche werden nur "
+"jene Aufgaben angezeigt die primär erledigt werden müssen."
 
 #: GTG/core/firstrun_tasks.py:66
 msgid ""
 "What is an actionable task? It's a task you can do directly, right now."
 msgstr ""
+"Was ist eine primär zu erledigende Aufgabe? Es handelt sich um eine Aufgabe "
+"die du sofort erledigen kannst und eventuell für eine andere Aufgabe "
+"benötigt wird."
 
 #: GTG/core/firstrun_tasks.py:68
 msgid ""
 "It's a task that is already &quot;start-able&quot;, i.e. the start date is "
 "already over."
 msgstr ""
+"Diese Aufgabe ist bereits &quot;startbar&quot; (z.B.: wenn das Start-Datum "
+"bereits erreicht wurde)."
 
 #: GTG/core/firstrun_tasks.py:70
 msgid ""
 "It's a task that doesn't have open subtasks, i.e. you can do the task itself "
 "directly."
 msgstr ""
+"Es handelt sich um eine Aufgabe, zu der keine offenen Unteraufgaben bestehen "
+"(diese Aufgabe kannst du zum Beispiel sofort erledigen)."
 
 #: GTG/core/firstrun_tasks.py:72
 msgid "Thus, the workview will only show you tasks you should do right now."
 msgstr ""
+"Die Arbeitsansicht zeigt nur Aufgaben an die aktuell erledigt werden sollten."
 
 #: GTG/core/firstrun_tasks.py:74
 msgid ""
@@ -180,432 +648,41 @@ msgid ""
 "if you have a tag like &quot;someday&quot; that you use for tasks you would "
 "like to do but are not particularly urgent."
 msgstr ""
+"Wenn du Schlagworte verwendest, kannst du mittels Rechtsklick auf ein "
+"Schlagwort in der Seitenleiste definieren um Aufgaben mit diesem bestimmten "
+"Schlagwort in der Arbeitsansicht anzuzeigen. Dies ist sehr nützlich, wenn du "
+"zum Beistpiel ein Schlagwort wie &quot;irgendwann&quot; für Aufgaben die du "
+"zwar erledigen möchtest, die allerdings nicht sonderlich dringend sind, "
+"verwendest."
 
 #: GTG/core/firstrun_tasks.py:80
 msgid "Reporting bugs"
-msgstr ""
+msgstr "Fehler melden"
 
 #: GTG/core/firstrun_tasks.py:81
 msgid ""
 "GTG is still very alpha software. We like it and use it everyday but you "
 "will encounter some bugs."
 msgstr ""
+"GTG befindet sich noch in einer frühen Alpha-Phase. Wir mögen es und "
+"verwenden es jeden Tag - dennoch werden vielleicht einige Fehler auftreten."
 
 #: GTG/core/firstrun_tasks.py:83
 msgid ""
 "Please, report them ! We need you to make this software better. Any "
 "contribution, any idea is welcome."
 msgstr ""
+"Bitte melde sie! Wir brauchen dich um diese Software besser zu machen. Jede "
+"Hilfe, jede Idee ist willkommen."
 
 #: GTG/core/firstrun_tasks.py:85
 msgid ""
 "If you have some trouble with GTG, we might be able to help you or to solve "
 "your problem really quickly."
 msgstr ""
-
-#: GTG/taskbrowser/__init__.py:29
-msgid "Mark as done"
-msgstr "Als erledigt markieren"
-
-#: GTG/taskbrowser/__init__.py:30
-msgid "Mark the selected task as done"
-msgstr ""
-
-#: GTG/taskbrowser/__init__.py:31
-msgid "Mark as not done"
-msgstr "Als nicht erledigt markieren"
-
-#: GTG/taskbrowser/__init__.py:32 GTG/taskbrowser/__init__.py:36
-msgid "Mark the selected task as to be done"
-msgstr ""
-
-#: GTG/taskbrowser/__init__.py:33 GTG/taskbrowser/taskbrowser.glade.h:13
-#: GTG/taskeditor/taskeditor.glade.h:4
-msgid "Dismiss"
-msgstr ""
-
-#: GTG/taskbrowser/__init__.py:34
-msgid "Mark the task as not to be done anymore"
-msgstr ""
-
-#: GTG/taskbrowser/__init__.py:35
-msgid "Undismiss"
-msgstr ""
-
-#: GTG/taskbrowser/__init__.py:37
-msgid "Permanently remove the selected task"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:109
-msgid "Edit the selected task"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:111 GTG/taskbrowser/taskbrowser.glade.h:10
-msgid "Create a new task"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:112
-msgid "Create a new subtask"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:557
-msgid "monday"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:557
-msgid "tuesday"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:557
-msgid "wednesday"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:558
-msgid "thursday"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:558
-msgid "friday"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:558
-msgid "saturday"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:559
-msgid "sunday"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:568
-msgid "today"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:575
-msgid "tomorrow"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:636
-msgid "tags"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:639
-msgid "defer"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:643
-msgid "due"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:754
-msgid "<span weight=\"bold\">All tags</span>"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:755
-msgid "<span weight=\"bold\">Tasks without tags</span>"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:850
-msgid "(no active tasks)"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:852
-msgid "(1 active task)"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:1487 GTG/taskbrowser/browser.py:1558
-#: GTG/taskbrowser/taskbrowser.glade.h:33
-msgid "Tags"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:1502 GTG/taskbrowser/browser.py:1585
-msgid "Title"
-msgstr "Überschrift"
-
-#: GTG/taskbrowser/browser.py:1521
-msgid "Due date"
-msgstr "Fälligkeitsdatum"
-
-#: GTG/taskbrowser/browser.py:1535
-msgid "Days left"
-msgstr "Tage verbleibend"
-
-#: GTG/taskbrowser/browser.py:1573
-msgid "Closing date"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:1601
-msgid "Notes"
-msgstr "Notizen"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:1
-msgid ""
-"\n"
-"Getting Things Gnome! is an organizer for the GNOME desktop environment."
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:3
-msgid ""
-"<span weight=\"bold\" size=\"large\">Are you sure you want delete this "
-"task?</span>\n"
-"\n"
-"Deleting a task cannot be undone."
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:6
-msgid "About GTG!"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:7
-msgid "Choose a color"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:8
-msgid "Confirm task deletion"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:9
-msgid "Copyrights© 2008, 2009 Lionel Dricot, Bertrand Rousseau"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:11
-msgid "D_ismiss"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:12 GTG/taskeditor/taskeditor.glade.h:3
-msgid "Delete"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:14
-msgid "Edit"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:15
-msgid "GTG website"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:16
-msgid "Getting Things Gnome!"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:17
-msgid ""
-"Getting Things Gnome! is free software; you can redistribute it and/or "
-"modify it under the terms of the GNU General Public License as published by "
-"the Free Software Foundation; either version 3 of the License, or (at your "
-"option) any later version.\n"
-"\n"
-"Getting Things Gnome! is distributed in the hope that it will be useful, but "
-"WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY "
-"or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
-"more details.\n"
-"\n"
-"You should have received a copy of the GNU General Public License along with "
-"Getting Things Gnome!; if not, write to the Free Software Foundation, Inc., "
-"51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA."
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:22
-msgid "Mark as Done"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:23
-msgid "Mark as Not Done"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:24
-msgid "Mark as _Done"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:25
-msgid "New Note"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:26
-msgid "New Subtask"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:27
-msgid "New Task"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:28
-msgid "New _Subtask"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:29
-msgid "New _Task"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:30
-msgid "Permanently _remove task"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:31
-msgid "Redo"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:32
-msgid "Tag is displayed in the workview"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:34
-msgid "Und_ismiss"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:35
-msgid "Undo"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:36
-msgid "View Notes"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:37
-msgid "Work View"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:38
-msgid "_Background Colors"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:39
-msgid "_Closed Tasks Pane"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:40
-msgid "_Edit"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:41
-msgid "_File"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:42
-msgid "_Help"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:43
-msgid "_Keep selected task"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:44
-msgid "_Quick Add Entry"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:45
-msgid "_Tags Sidebar"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:46
-msgid "_Tasks"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:47
-msgid "_View"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:48
-msgid "_Work View"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:49
-msgid "gtk-about"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:50
-msgid "gtk-add"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:51
-msgid "gtk-cancel"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:52
-msgid "gtk-delete"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:53
-msgid "gtk-edit"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:54
-msgid "gtk-help"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:55
-msgid "gtk-ok"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:56
-msgid "gtk-quit"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:57
-msgid "gtk-redo"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:58
-msgid "gtk-select-color"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:59
-msgid "gtk-undo"
-msgstr ""
-
-#: GTG/taskeditor/editor.py:212
-msgid "Due tomorrow !"
-msgstr ""
-
-#: GTG/taskeditor/editor.py:214
-#, python-format
-msgid "%s days left"
-msgstr ""
-
-#: GTG/taskeditor/editor.py:216
-msgid "Due today !"
-msgstr ""
-
-#: GTG/taskeditor/editor.py:218
-msgid "Due for yesterday"
-msgstr ""
-
-#: GTG/taskeditor/editor.py:220
-#, python-format
-msgid "Was %s days ago"
-msgstr ""
-
-#: GTG/taskeditor/taskeditor.glade.h:1
-msgid "<span weight=\"bold\">Due for</span>"
-msgstr ""
-
-#: GTG/taskeditor/taskeditor.glade.h:2
-msgid "<span weight=\"bold\">Starting on</span>"
-msgstr ""
-
-#: GTG/taskeditor/taskeditor.glade.h:5
-msgid "Insert subtask"
-msgstr ""
-
-#: GTG/taskeditor/taskeditor.glade.h:6
-msgid "Insert tag"
-msgstr ""
-
-#: GTG/taskeditor/taskeditor.glade.h:7
-msgid "Keep as Note"
-msgstr ""
-
-#: GTG/taskeditor/taskeditor.glade.h:8
-msgid "Mark Done"
-msgstr ""
-
-#: GTG/taskeditor/taskeditor.glade.h:9
-msgid "Task"
-msgstr ""
-
-#: GTG/taskeditor/taskeditor.glade.h:10
-msgid "gtk-clear"
-msgstr ""
-
-#: GTG/taskeditor/taskeditor.glade.h:11
-msgid "gtk-close"
+"Solltest du Schwierigkeiten mit GTG haben, können wir dir vielleicht helfen "
+"oder das Problem schnell lösen."
+
+#: GTG/core/task.py:36
+msgid "My new task"
 msgstr ""

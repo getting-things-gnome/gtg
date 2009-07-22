@@ -28,3 +28,11 @@ tags.xml.bak.0
 tags.xml.bak.1
 tags.xml.bak.2
 tags.xml.bak.3
+.pydevproject
+.project
+.settings
+.bzrignore
+
+debug_data
+_trial_temp
+doc/api

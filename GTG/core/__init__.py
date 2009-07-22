@@ -45,11 +45,10 @@
 
 #=== IMPORT ====================================================================
 import os
-from xdg.BaseDirectory import *
+from xdg.BaseDirectory import xdg_data_home, xdg_config_home
 from GTG.tools         import cleanxml
 from configobj         import ConfigObj
 
-import GTG
 from GTG.core          import firstrun_tasks
 
 class CoreConfig:
@@ -66,6 +65,8 @@ class CoreConfig:
     def __init__(self):
         if not os.path.exists(self.CONF_DIR) :
             os.makedirs(self.CONF_DIR)
+        if not os.path.exists(self.DATA_DIR) :
+            os.makedirs(self.DATA_DIR)
         if not os.path.exists(self.CONF_DIR + self.CONF_FILE):
             f = open(self.CONF_DIR + self.CONF_FILE, "w")
             f.close()

@@ -27,7 +27,8 @@ Getting Things Gnome! - A personal organizer for the GNOME desktop
 :license: GNU General Public License, version 3 or later
 """
 
-import sys, GTG.gtg
+import sys
+import GTG.gtg
 
 try:
     sys.exit(GTG.gtg.main())
