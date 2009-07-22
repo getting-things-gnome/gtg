@@ -35,8 +35,7 @@ import datetime
 import GTG
 from GTG.taskeditor.editor            import TaskEditor
 from GTG.taskbrowser                  import GnomeConfig
-from GTG.taskbrowser                  import browser_tools
-from GTG.taskbrowser                  import tag_model
+from GTG.taskbrowser                  import browsertools
 from GTG.tools                        import colors, openurl
 
 #=== OBJECTS ===================================================================
@@ -59,8 +58,6 @@ class TaskBrowser:
         self.priv       = {}
         self.req        = requester
         self.gtg_config = config
-        #self.tagstore   = self.req.get_tag_store()
-        #self.taskstore  = self.req.get_task_store()
 
         ### YOU CAN DEFINE YOUR INTERNAL MECHANICS VARIABLES BELOW
         # Task deletion
@@ -102,11 +99,11 @@ class TaskBrowser:
 
         #Create our dictionay and connect it
         self.__init_signal_connections()
-              
+               
         # The tview and their model
-        self.tag_ts   = tag_model.TagTreeModel()
-        self.task_ts  = browser_tools.new_task_ts  (dnd_func=self.__row_dragndrop)        
-        self.ctask_ts = browser_tools.new_ctask_ts ()
+        self.ctask_ts = browsertools.new_ctask_ts ()
+        self.tag_ts   = browsertools.new_tag_ts   ()
+        self.task_ts  = browsertools.new_task_ts  (dnd_func=self.__row_dragndrop)        
                
         # Setting the default for the view
         # When there is no config, this should define the first configuration
@@ -237,7 +234,7 @@ class TaskBrowser:
         self.wTree.get_widget("view_closed").set_active(CLOSED_PANE)
         self.wTree.get_widget("view_quickadd").set_active(QUICKADD_PANE)
         self.priv["bg_color_enable"] = BG_COLOR
-        self.ctask_ts.set_sort_column_id(browser_tools.CTASKS_MODEL_DDATE, gtk.SORT_DESCENDING)
+        self.ctask_ts.set_sort_column_id(browsertools.CTASKS_MODEL_DDATE, gtk.SORT_DESCENDING)
 
     def __init_accelerators(self):
         
@@ -700,12 +697,12 @@ class TaskBrowser:
         self.priv["tasklist"]["sort_order"]  = sort_order
 
         # Determine row sorting depending on column
-        if column == self.priv["tasklist"]["columns"][browser_tools.TASKLIST_COL_TITLE]:
+        if column == self.priv["tasklist"]["columns"][browsertools.TASKLIST_COL_TITLE]:
             cmp_func = lambda x,y: locale.strcoll(x.lower(),y.lower())
-            sort_key = lambda x:x[browser_tools.TASK_MODEL_TITLE]
+            sort_key = lambda x:x[browsertools.TASK_MODEL_TITLE]
         else:
             cmp_func = self.__cmp_duedate_str
-            sort_key = lambda x:x[browser_tools.TASK_MODEL_DDATE_STR]
+            sort_key = lambda x:x[browsertools.TASK_MODEL_DDATE_STR]
             
         # Determine sorting direction
         if sort_order == gtk.SORT_ASCENDING: sort_reverse = True
@@ -714,7 +711,7 @@ class TaskBrowser:
         # Sort rows
         rows = [tuple(r) + (i,) for i, r in enumerate(self.task_ts)]
         if len(rows) != 0:
-            rows.sort(key=lambda x:x[browser_tools.TASK_MODEL_TITLE].lower())
+            rows.sort(key=lambda x:x[browsertools.TASK_MODEL_TITLE].lower())
             rows.sort(cmp=cmp_func,key=sort_key,reverse=sort_reverse)
             self.task_ts.reorder(None, [r[-1] for r in rows])
     
@@ -1098,21 +1095,21 @@ class TaskBrowser:
             self.dismissbutton.set_label(GnomeConfig.MARK_DISMISS)
         #We reset the previously selected task
         if self.priv['selected_rows'] and self.task_ts.iter_is_valid(self.priv['selected_rows']):
-            tid = self.task_ts.get_value(self.priv['selected_rows'], browser_tools.TASK_MODEL_OBJ)
+            tid = self.task_ts.get_value(self.priv['selected_rows'], browsertools.TASK_MODEL_OBJ)
             task = self.req.get_task(tid)
             title = self.__build_task_title(task,extended=False)
-            self.task_ts.set_value(self.priv['selected_rows'],browser_tools.TASK_MODEL_TITLE,title)
+            self.task_ts.set_value(self.priv['selected_rows'],browsertools.TASK_MODEL_TITLE,title)
         #We change the selection title
         #if selection :
             #ts,itera = selection.get_selected() #pylint: disable-msg=W0612
             #if itera and self.task_ts.iter_is_valid(itera) :
-                #tid = self.task_ts.get_value(itera, browser_tools.TASK_MODEL_OBJ)
+                #tid = self.task_ts.get_value(itera, browsertools.TASK_MODEL_OBJ)
                 #task = self.req.get_task(tid)
                 #self.priv['selected_rows'] = itera
                 # Extended title is temporarily disabled
                 #title = self.__build_task_title(task,extended=True)
                 #title = self.__build_task_title(task,extended=False)
-                #self.task_ts.set_value(self.priv['selected_rows'],browser_tools.TASK_MODEL_TITLE,title)
+                #self.task_ts.set_value(self.priv['selected_rows'],browsertools.TASK_MODEL_TITLE,title)
                 
     def on_note_cursor_changed(self,selection=None) :
         #We unselect all in the closed task view
@@ -1167,50 +1164,49 @@ class TaskBrowser:
 
     #We refresh the tag list. Not needed very often
     def refresh_tags(self) :
-        print "Refresh tags..."
-        #select = self.tag_tview.get_selection()
-        #t_path = None
-        #if select :
-        #    t_model,t_path = select.get_selected_rows() #pylint: disable-msg=W0612
-        #self.tag_ts.clear()
-        #alltag       = self.req.get_alltag_tag()
-        #notag        = self.req.get_notag_tag()
-        #if self.priv['workview'] :
-        #    count_all_task = len(self.req.get_active_tasks_list(workable=True))
-        #    count_no_tags  = len(self.req.get_active_tasks_list(notag_only=True,\
-        #                                                        workable=True))
-        #else :
-        #    count_all_task = len(self.req.get_tasks_list(started_only=False))
-        #    count_no_tags  = len(self.req.get_tasks_list(notag_only=True,\
-        #                                                 started_only=False))
-        #    
-        #self.tag_ts.append([alltag,None,_("<span weight=\"bold\">All tags</span>"),str(count_all_task),False])
-        #self.tag_ts.append([notag,None,_("<span weight=\"bold\">Tasks without tags</span>"),str(count_no_tags),False])
-        #self.tag_ts.append([None,None,"","",True])
+        select = self.tag_tview.get_selection()
+        t_path = None
+        if select :
+            t_model,t_path = select.get_selected_rows() #pylint: disable-msg=W0612
+        self.tag_ts.clear()
+        alltag       = self.req.get_alltag_tag()
+        notag        = self.req.get_notag_tag()
+        if self.priv['workview'] :
+            count_all_task = len(self.req.get_active_tasks_list(workable=True))
+            count_no_tags  = len(self.req.get_active_tasks_list(notag_only=True,\
+                                                                workable=True))
+        else :
+            count_all_task = len(self.req.get_tasks_list(started_only=False))
+            count_no_tags  = len(self.req.get_tasks_list(notag_only=True,\
+                                                         started_only=False))
+            
+        self.tag_ts.append([alltag,None,_("<span weight=\"bold\">All tags</span>"),str(count_all_task),False])
+        self.tag_ts.append([notag,None,_("<span weight=\"bold\">Tasks without tags</span>"),str(count_no_tags),False])
+        self.tag_ts.append([None,None,"","",True])
 
-        #tags = self.req.get_used_tags()
+        tags = self.req.get_used_tags()
         
-        #tags.sort(cmp=lambda x,y: cmp(x.get_name().lower(),y.get_name().lower()))
+        tags.sort(cmp=lambda x,y: cmp(x.get_name().lower(),y.get_name().lower()))
 
-        #for tag in tags:
-        #    color = tag.get_attribute("color")
-        #    if self.priv['workview'] :
-        #        count = len(self.req.get_active_tasks_list(tags=[tag],workable=True))
-        #    else :
-        #        count = len(self.req.get_tasks_list(started_only=False,tags=[tag]))
-        #    #We display the tags without the "@" (but we could)
-        #    if count != 0:
-        #        self.tag_ts.append([tag,color,tag.get_name()[1:], str(count), False])
+        for tag in tags:
+            color = tag.get_attribute("color")
+            if self.priv['workview'] :
+                count = len(self.req.get_active_tasks_list(tags=[tag],workable=True))
+            else :
+                count = len(self.req.get_tasks_list(started_only=False,tags=[tag]))
+            #We display the tags without the "@" (but we could)
+            if count != 0:
+                self.tag_ts.append([tag,color,tag.get_name()[1:], str(count), False])
             
         #We reselect the selected tag
-        #if t_path :
-        #    for i in t_path :
-        #        self.tag_tview.get_selection().select_path(i)
+        if t_path :
+            for i in t_path :
+                self.tag_tview.get_selection().select_path(i)
         
     #refresh list build/refresh your TreeStore of task
     #to keep it in sync with your self.projects   
     def refresh_list(self,a=None,toselect=None) : #pylint: disable-msg=W0613
-        print "Refresh list..."
+        print "Refresh..."
         # Save collapsed rows
         #self.task_ts.foreach(self.__update_collapsed_rows, None)
         
@@ -1226,7 +1222,7 @@ class TaskBrowser:
         #hscroll_value = self.task_tview.get_hadjustment().get_value()    
         
         #to refresh the list we build a new treestore then replace the existing
-        #new_taskts          = browser_tools.new_task_ts(dnd_func=self.__row_dragndrop)
+        #new_taskts          = browsertools.new_task_ts(dnd_func=self.__row_dragndrop)
         #tag_list,notag_only = self.get_selected_tags()
         #nbr_of_tasks = 0
         
@@ -1343,7 +1339,7 @@ class TaskBrowser:
         if d_path :
             for i in d_path :
                 closed_selection.select_path(i)
-        self.ctask_ts.set_sort_column_id(browser_tools.CTASKS_MODEL_DDATE, gtk.SORT_DESCENDING)
+        self.ctask_ts.set_sort_column_id(browsertools.CTASKS_MODEL_DDATE, gtk.SORT_DESCENDING)
         
     #Refresh the notes pane
     def refresh_note(self) :
@@ -1365,7 +1361,7 @@ class TaskBrowser:
         if d_path :
             for i in d_path :
                 note_selection.select_path(i)
-        #self.note_ts.set_sort_column_id(browser_tools.CTASKS_MODEL_DDATE, gtk.SORT_DESCENDING)     
+        #self.note_ts.set_sort_column_id(browsertools.CTASKS_MODEL_DDATE, gtk.SORT_DESCENDING)     
 
 ### PUBLIC METHODS #############################################################
     
@@ -1429,11 +1425,11 @@ class TaskBrowser:
         gobject.threads_init()
         
         # The tags treeview
-        browser_tools.init_tags_tview(self.tag_tview)
+        browsertools.init_tags_tview(self.tag_tview)
         self.tag_tview.set_model(self.tag_ts)
    
         # The Active tasks treeview
-        col = browser_tools.init_task_tview(self.task_tview, self.__sort_tasklist_rows)
+        col = browsertools.init_task_tview(self.task_tview, self.__sort_tasklist_rows)
         self.priv["tasklist"]["columns"] = col
         modelfilter = self.task_ts.filter_new()
         modelfilter.set_visible_func(self._visible_func)
@@ -1441,12 +1437,12 @@ class TaskBrowser:
         #self.task_tview.set_model(self.task_ts)
      
         # The done/dismissed taks treeview
-        col = browser_tools.init_closed_tasks_tview(self.ctask_tview, self.__sort_tasklist_rows)
+        col = browsertools.init_closed_tasks_tview(self.ctask_tview, self.__sort_tasklist_rows)
         self.priv["ctasklist"]["columns"] = col
         self.ctask_tview.set_model(self.ctask_ts)
         
         # The treeview for notes
-        browser_tools.init_note_tview(self.note_tview)
+        browsertools.init_note_tview(self.note_tview)
         self.note_tview.set_model(self.note_ts)
                 
         # Put the content in those treeviews

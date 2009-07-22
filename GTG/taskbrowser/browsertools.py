@@ -21,7 +21,6 @@
 import gtk
 import gobject
 
-from GTG.taskbrowser.tag_model        import TagTreeModel
 from GTG.taskbrowser.CellRendererTags import CellRendererTags
 
 # ACTIVE TASKS MODEL ###########################################################
@@ -50,6 +49,24 @@ def new_task_ts (dnd_func=None):
         task_ts.connect("row-deleted",dnd_func,None,"delete")
     return task_ts
 
+# TAGS MODEL ###################################################################
+
+TAGS_MODEL_OBJ         = 0
+TAGS_MODEL_COLOR       = 1
+TAGS_MODEL_NAME        = 2
+TAGS_MODEL_COUNT       = 3
+TAGS_MODEL_SEP         = 4
+
+def new_tag_ts():
+    """Returning a tree store to handle the tags"""
+    
+    tag_ts         = gtk.ListStore( gobject.TYPE_PYOBJECT, \
+                                    str,                   \
+                                    str,                   \
+                                    str,                   \
+                                    bool)
+    return tag_ts
+
 # CLOSED TASKS MODEL ###########################################################
 
 CTASKS_MODEL_OBJ       = 0
@@ -74,7 +91,7 @@ def new_ctask_ts():
 ### TAGS TREEVIEW ##############################################################
 
 def tag_separator_filter(model, itera, user_data=None):#pylint: disable-msg=W0613
-    return model.get_value(itera, TagTreeModel.TAGS_MODEL_SEP)
+    return model.get_value(itera, TAGS_MODEL_SEP)
 
 def init_tags_tview(tv):
      
@@ -86,11 +103,11 @@ def init_tags_tview(tv):
     tag_col.set_title             ("Tags")
     tag_col.set_clickable         (False)
     tag_col.pack_start            (render_tags  , expand=False)
-    tag_col.set_attributes        (render_tags  , tag=TagTreeModel.TAGS_MODEL_OBJ)
+    tag_col.set_attributes        (render_tags  , tag=TAGS_MODEL_OBJ)
     tag_col.pack_start            (render_text  , expand=True)
-    tag_col.set_attributes        (render_text  , markup=TagTreeModel.TAGS_MODEL_NAME)
+    tag_col.set_attributes        (render_text  , markup=TAGS_MODEL_NAME)
     tag_col.pack_end              (render_count , expand=False)
-    tag_col.set_attributes        (render_count , markup=TagTreeModel.TAGS_MODEL_COUNT)
+    tag_col.set_attributes        (render_count , markup=TAGS_MODEL_COUNT)
     render_count.set_property     ("foreground","#888a85")
     render_count.set_property     ('xalign', 1.0)
     render_tags.set_property      ('ypad'  , 3)

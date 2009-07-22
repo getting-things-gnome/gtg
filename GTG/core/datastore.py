@@ -22,7 +22,7 @@ import threading
 import gobject
 import time
 
-from GTG.core      import gtg_tags, requester
+from GTG.core      import tagstore, requester
 from GTG.core.task import Task
 
 
@@ -39,7 +39,7 @@ class DataStore(gobject.GObject):
         gobject.GObject.__init__(self)
         self.backends = {}
         self.tasks = {}
-        self.tagstore = gtg_tags.TagStore()
+        self.tagstore = tagstore.TagStore()
         self.requester = requester.Requester(self)
         
     def all_tasks(self) :
