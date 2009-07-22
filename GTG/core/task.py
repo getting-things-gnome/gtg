@@ -26,6 +26,7 @@ from GTG.tools.dates import strtodate
 #This class represent a task in GTG.
 #You should never create a Task directly. Use the datastore.new_task() function.
 class Task :
+
     def __init__(self, ze_id, requester, newtask=False) :
         #the id of this task in the project
         #tid is a string ! (we have to choose a type and stick to it)
@@ -48,7 +49,26 @@ class Task :
         self.req = requester
         #If we don't have a newtask, we will have to load it.
         self.loaded = newtask
+
+    def get_id(self):
+        print self.tid
+        return str(self.tid)
+        
+    def get_title(self) :
+        return self.title
+
+    def get_closed_date(self):
+        return self.closed_date
+
+    def get_due_date(self):
+        return self.due_date
                 
+    def get_start_date(self):
+        return self.start_date
+
+    def get_tags(self):
+        return self.tags
+
     def is_loaded(self) :
         return self.loaded
         
@@ -60,12 +80,6 @@ class Task :
         
     def is_new(self) :
         return self.can_be_deleted
-    
-    def get_id(self) :
-        return str(self.tid)
-        
-    def get_title(self) :
-        return self.title
     
     #Return True if the title was changed. 
     #False if the title was already the same.
