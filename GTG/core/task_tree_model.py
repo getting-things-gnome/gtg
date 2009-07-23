@@ -29,7 +29,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
             if not my_task.has_parents():
                 self.root_tasks.append(tid)
 
-    def get_n_root_task(self):
+    def get_n_root_tasks(self):
         return len(self.root_tasks)
 
     def get_nth_root_task(self, index):
@@ -116,20 +116,21 @@ class TaskTreeModel(gtk.GenericTreeModel):
         cur_tid = rowref[rowref.rfind('/')+1:]
         if rowref.rfind('/') == 0:
             next_idx   = self.get_root_task_index(cur_tid) + 1
-            if self.get_n_root_task()-1 < next_idx:
+            next_task = self.get_nth_root_task(next_idx)
+            if next_idx >= self.get_n_root_tasks():
                 return None
             else:
-                next_task = self.get_nth_root_task(next_idx)
                 return "/" + str(next_task.get_id())
         else:
-            par_rowref = rowref[:rowref.rfind('/')-1]
+            par_rowref = rowref[:rowref.rfind('/')]
             par_tid    = par_rowref[par_rowref.rfind('/')+1:]
             par_task   = self.req.get_task(par_tid)
             next_idx   = par_task.get_subtask_index(cur_tid) + 1
-            if par_task.get_n_children()-1 < next_idx:
+            if next_idx >= par_task.get_n_subtasks():
                 return None
             else:
-                next_task = par_task.get_nth_child(next_idx)
+                next_tid  = par_task.get_nth_subtask(next_idx)
+                next_task = self.req.get_task(next_tid)
                 return par_rowref + "/" + str(next_task.get_id())
 
     def on_iter_children(self, rowref):

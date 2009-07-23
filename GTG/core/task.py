@@ -365,8 +365,7 @@ class Task :
 
         @param index: the index of the task to return.
         """
-        k = self.children.keys()[index]
-        return self.children[k]
+        return self.children[index]
 
     def get_subtask_index(self, tid):
         """Return the index of a given subtask.
