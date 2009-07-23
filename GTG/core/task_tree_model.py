@@ -1,5 +1,6 @@
 import gtk
-from GTG import tools.colors
+import gobject
+from GTG.tools import colors
 
 class TaskTreeModel(gtk.GenericTreeModel):
 
@@ -10,27 +11,63 @@ class TaskTreeModel(gtk.GenericTreeModel):
     COL_TAGS  = 5
     COL_BGCOL = 6
 
-    column_types = gtk.TreeStore(gobject.TYPE_PYOBJECT, \
-                                 str,                   \
-                                 str,                   \
-                                 str,                   \
-                                 str,                   \
-                                 gobject.TYPE_PYOBJECT, \
-                                 str)
+    column_types = (\
+        gobject.TYPE_PYOBJECT,\
+        str,\
+        str,\
+        str,\
+        str,\
+        gobject.TYPE_PYOBJECT,\
+        str)
 
-    def __init__(self, tasks=None):
+    def __init__(self, requester, tasks=None):
         gtk.GenericTreeModel.__init__(self)
         self.tasks = tasks
+        self.req   = requester
 
-    def __task_for_tm_path(self, task, tm_path):
-        if len(tm_path) == 1: return task.get_nth_child(tm_path[0])
+    def get_nth_task(self, index):
+        k = self.tasks.keys()[index]
+        return self.tasks[k]
+
+    def rowref_from_path(self, task, path):
+        """Return a row reference for a given treemodel path
+        
+         @param task    : the root from which the treemodel path starts. Set it
+                          to None to start from the uppest level.
+         @param path : the treemodel path
+        """
+        if len(path) == 1:
+            if task == None:
+                return "/" + str(self.get_nth_task(path[0]).get_id())
+            else:
+                return "/" + str(task.get_nth_child(path[0]).get_id())
         else:
-            task    = task.get_nth_child(tm_path[0])
-            tm_path = tm_path[1:]
-            return self.__task_for_tm_path(task, tm_path)
+            if task == None:
+                task = self.get_nth_task(path[0])
+            else:
+                task = task.get_nth_child(path[0])
+            path = path[1:]
+            return "/" + str(task.get_nth_child(path[0]).get_id()) + \
+                self.rowref_from_path(task, path)
 
-    def set_tree(self, mtree):
-        self.tree = mtree
+    def path_for_rowref(self, task, rowref):
+        if rowref.rfind('/') == 0:
+            if task == None:
+                return (self.tasks.keys().index(rowref[1:]),)
+            else:
+                return (task.get_subtask_index(rowref[1:]),)
+        else:
+            cur_tid  = rowref[1:rowref.find('/', 1)]
+            task     = self.req.get_task(cur_tid)
+            cur_path = (task.get_subtask_index(rowref[1:]),)
+            rowref   = rowref[rowref.find(cur_tid)+len(cur_tid):]
+            return cur_path + self.path_for_rowref(task, rowref)
+
+    def get_path_from_rowref(self, rowref):
+        return self.path_for_rowref(None, rowref)
+
+    def set_tasks(self, tasks):
+        self.tasks = tasks
 
 ### TREEMODEL INTERFACE ######################################################
 #
@@ -43,11 +80,8 @@ class TaskTreeModel(gtk.GenericTreeModel):
     def on_get_column_type(self, n):
         return self.column_types[n]
 
-
-
-
     def on_get_value(self, rowref, column):
-        task = self.tree.get_task_from_path(rowref)
+        task = self.req.get_task(rowref)
         if   column == self.COL_OBJ:
             return task
         elif column == self.COL_TITLE:
@@ -55,61 +89,79 @@ class TaskTreeModel(gtk.GenericTreeModel):
         elif column == self.COL_DDATE:
             return task.get_due_date()
         elif column == self.COL_DLEFT:
-            return task.get_day_left()
+            return task.get_days_left()
         elif column == self.COL_TAGS:
             return task.get_tags()
         elif column == self.COL_BGCOL:
             return colors.background_color(task.get_tags())
 
-    def on_get_iter(self, tm_path):
-        task = self.__task_for_tm_path(self.tree.get_root(), tm_path)
-        return task.path
+    def on_get_iter(self, path):
+        print "on_get_iter: %s" % (path)
+        return self.rowref_from_path(None, path)
 
     def on_get_path(self, rowref):
-        task = self.tree.get_task_from_path(rowref)
-        return self.tree.get_tree_path_for_task(task)
+        print "on_get_path: %s" % (rowref)
+        return self.get_path_from_rowref(rowref)
 
     def on_iter_next(self, rowref):
-        #print "on_iter_next: %s" % (rowref)
-        task        = self.tree.get_task_from_path(rowref)
-        parent_task = task.get_parent()
-        if parent_task:
-            next_idx    = parent_task.get_child_index(task) + 1
-            if parent_task.get_n_children()-1 < next_idx: return None
-            else: return parent_task.get_nth_child(next_idx).path
-        else: return None
+        print "on_iter_next: %s" % (rowref)
+        cur_tid = rowref[rowref.rfind('/')+1:]
+        if rowref.rfind('/') == 0:
+            next_idx   = self.tasks.keys().index(cur_tid) + 1
+            if len(self.tasks)-1 < next_idx:
+                return None
+            else:
+                next_task = self.get_nth_task(next_idx)
+                return "/" + str(next_task.get_id())
+        else:
+            par_rowref = rowref[:rowref.rfind('/')-1]
+            par_tid    = par_rowref[par_rowref.rfind('/')+1:]
+            par_task   = self.req.get_task(par_tid)
+            next_idx   = par_task.get_subtask_index(cur_tid) + 1
+            if par_task.get_n_children()-1 < next_idx:
+                return None
+            else:
+                next_task = par_task.get_nth_child(next_idx)
+                return par_rowref + "/" + str(next_task.get_id())
 
     def on_iter_children(self, rowref):
-        #print "on_iter_children: %s" % (rowref)
+        print "on_iter_children: %s" % (rowref)
         if rowref:
-            task = self.tree.get_task_from_path(rowref)
-            if task.has_child(): return task.get_nth_child(0).path
-            else               : return None
+            cur_tid = rowref[rowref.rfind('/')+1:]
+            task    = self.req.get_task(cur_tid)
+            if task.has_subtask():
+                child_tid = task.get_nth_subtask(0)
+                return rowref + "/" + str(child_tid)
+            else:
+                return None
         else:
-            self.root.get_nth_child(0).path
+            return "/" + str(self.get_nth_task(0))
 
     def on_iter_has_child(self, rowref):
-        #print "on_iter_has_child: %s" % (rowref)
-        task = self.tree.get_task_from_path(rowref)
-        return task.has_child()
+        print "on_iter_has_child: %s" % (rowref)
+        cur_tid = rowref[rowref.rfind('/')+1:]
+        task    = self.req.get_task(cur_tid)
+        return task.has_subtask()
 
     def on_iter_n_children(self, rowref):
-        #print "on_iter_n_children: %s" % (rowref)
-        if rowref: task = self.tree.get_task_from_path(rowref)
-        else     : task = self.tree.get_root()
-        return task.get_n_children()
-        
+        print "on_iter_n_children: %s" % (rowref)
+        cur_tid = rowref[rowref.rfind('/')+1:]
+        task    = self.req.get_task(cur_tid)
+        return task.get_n_subtasks()
 
     def on_iter_nth_child(self, parent, n):
-        #print "on_iter_nth_child: %s %d" % (parent, n)
+        print "on_iter_nth_child: %s %d" % (parent, n)
         if parent:
-            task = self.tree.get_task_from_path(parent)
+            par_tid  = parent[parent.rfind('/')+1:]
+            par_task = self.req.get_task(par_tid)
+            return parent + "/" + str(task.get_nth_subtasks(n))
         else:
-            task = self.tree.get_root()
-        return task.get_nth_child(n).path
+            return "/" + self.get_nth_task(n).get_id()
 
     def on_iter_parent(self, child):
-        #print "on_iter_parent: %s" % (child)
-        task = self.tree.get_task_from_path(child)
-        if task.has_parent(): return task.get_parent().path
-        else                : return None
+        print "on_iter_parent: %s" % (child)
+        if child.rfind('/') == 0:
+            return None
+        else:
+            par_rowref = child[:child.rfind('/')-1]
+            return par_rowref

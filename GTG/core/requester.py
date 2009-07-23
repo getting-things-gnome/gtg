@@ -210,6 +210,11 @@ class Requester:
             is_root=False)
 
 
+    def get_model(self):
+        """Return the TreeModel for the tasks.
+        """
+        return self.ds.get_model()
+
     ############### Tags ##########################
     ###############################################
 

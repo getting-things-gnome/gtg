@@ -22,7 +22,7 @@ import threading
 import gobject
 import time
 
-from GTG.core      import tagstore, requester
+from GTG.core      import tagstore, requester, task_tree_model
 from GTG.core.task import Task
 
 
@@ -119,6 +119,11 @@ class DataStore(gobject.GObject):
     def get_requester(self) :
         return self.requester
 
+    def get_model(self):
+        """Return the TreeModel for the tasks"""
+        model = task_tree_model.TaskTreeModel(self.requester, self.tasks)
+        return model
+
     def register_backend(self, dic):
         if dic.has_key("backend") :
             pid = dic["pid"]
@@ -129,7 +134,7 @@ class DataStore(gobject.GObject):
             #Doing this at start is more efficient than after the GUI is launched
             source.get_tasks_list(func=self.refresh_tasklist)
             
-        else :
+        else:
             print "Register a dic without backend key:  BUG"
 
     def unregister_backend(self, backend):
@@ -150,7 +155,6 @@ class DataStore(gobject.GObject):
             #Just calling new_task then get_task is enough
             self.new_task(tid=tid)
             self.get_task(tid)
-        
 
 #Task source is an transparent interface between the real backend and datastore
 #Task source has also more functionnalities

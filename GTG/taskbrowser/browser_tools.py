@@ -22,6 +22,7 @@ import gtk
 import gobject
 
 from GTG.taskbrowser.CellRendererTags import CellRendererTags
+from GTG.core.task_tree_model import TaskTreeModel
 from GTG import _
 
 # ACTIVE TASKS MODEL ##########################################################
@@ -143,10 +144,10 @@ def init_task_tview(tv, tv_sort_cb):
     render_tags = CellRendererTags()
     tag_col.set_title(_("Tags"))
     tag_col.pack_start(render_tags, expand=False)
-    tag_col.add_attribute(render_tags, "tag_list", TASK_MODEL_TAGS)
+    tag_col.add_attribute(render_tags, "tag_list", TaskTreeModel.COL_TAGS)
     render_tags.set_property('xalign', 0.0)
     tag_col.set_resizable(False)
-    tag_col.add_attribute(render_tags, "cell-background", TASK_MODEL_BGCOL)
+    tag_col.add_attribute(render_tags, "cell-background", TaskTreeModel.COL_BGCOL)
     #tag_col.set_clickable         (True)
     #tag_col.connect               ('clicked', tv_sort_cb)
     tv.append_column(tag_col)
@@ -157,14 +158,14 @@ def init_task_tview(tv, tv_sort_cb):
     render_text = gtk.CellRendererText()
     title_col.set_title(_("Title"))
     title_col.pack_start(render_text, expand=False)
-    title_col.add_attribute(render_text, "markup", TASK_MODEL_TITLE_STR)
+    title_col.add_attribute(render_text, "markup", TaskTreeModel.COL_TITLE)
     title_col.set_resizable(True)
     title_col.set_expand(True)
     #The following line seems to fix bug #317469
     #I don't understand why !!! It's voodoo !
     #Is there a Rubber Chicken With a Pulley in the Middle ?
     title_col.set_max_width(100)
-    title_col.add_attribute(render_text, "cell_background", TASK_MODEL_BGCOL)
+    title_col.add_attribute(render_text, "cell_background", TaskTreeModel.COL_BGCOL)
     title_col.set_clickable(True)
     title_col.connect('clicked', tv_sort_cb)
     tv.append_column(title_col)
@@ -175,9 +176,9 @@ def init_task_tview(tv, tv_sort_cb):
     render_text = gtk.CellRendererText()
     ddate_col.set_title(_("Due date"))
     ddate_col.pack_start(render_text, expand=False)
-    ddate_col.add_attribute(render_text, "markup", TASK_MODEL_DDATE_STR)
+    ddate_col.add_attribute(render_text, "markup", TaskTreeModel.COL_DDATE)
     ddate_col.set_resizable(False)
-    ddate_col.add_attribute(render_text, "cell_background", TASK_MODEL_BGCOL)
+    ddate_col.add_attribute(render_text, "cell_background", TaskTreeModel.COL_BGCOL)
     ddate_col.set_clickable(True)
     ddate_col.connect('clicked', tv_sort_cb)
     tv.append_column(ddate_col)
@@ -188,9 +189,9 @@ def init_task_tview(tv, tv_sort_cb):
     render_text = gtk.CellRendererText()
     dleft_col.set_title(_("Days left"))
     dleft_col.pack_start(render_text, expand=False)
-    dleft_col.add_attribute(render_text, "markup", TASK_MODEL_DLEFT_STR)
+    dleft_col.add_attribute(render_text, "markup", TaskTreeModel.COL_DLEFT)
     dleft_col.set_resizable(False)
-    dleft_col.add_attribute(render_text, "cell_background", TASK_MODEL_BGCOL)
+    dleft_col.add_attribute(render_text, "cell_background", TaskTreeModel.COL_BGCOL)
     dleft_col.set_clickable(True)
     dleft_col.connect('clicked', tv_sort_cb)
     tv.append_column(dleft_col)
