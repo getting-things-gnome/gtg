@@ -4,7 +4,7 @@ from GTG.tools import colors
 
 class TaskTreeModel(gtk.GenericTreeModel):
 
-    COL_OBJ   = 0
+    COL_TID   = 0
     COL_TITLE = 1
     COL_DDATE = 3
     COL_DLEFT = 4
@@ -12,7 +12,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
     COL_BGCOL = 6
 
     column_types = (\
-        gobject.TYPE_PYOBJECT,\
+        str,\
         str,\
         str,\
         str,\
@@ -33,8 +33,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
         return len(self.root_tasks)
 
     def get_nth_root_task(self, index):
-        my_tid = self.root_tasks[index]
-        return self.req.get_task(my_tid)
+        return self.root_tasks[index]
 
     def get_root_task_index(self, tid):
         return self.root_tasks.index(tid)
@@ -48,16 +47,18 @@ class TaskTreeModel(gtk.GenericTreeModel):
         """
         if len(path) == 1:
             if task == None:
-                return "/" + str(self.get_nth_root_task(path[0]).get_id())
+                my_tid = self.get_nth_root_task(path[0])
             else:
-                return "/" + str(task.get_nth_child(path[0]).get_id())
+                my_tid = task.get_nth_subtask(path[0])
+            return "/" + str(my_tid)
         else:
             if task == None:
-                task = self.get_nth_root_task(path[0])
+                my_tid = self.get_nth_root_task(path[0])
             else:
-                task = task.get_nth_child(path[0])
+                my_tid = task.get_nth_subtask(path[0])
+            task = self.req.get_task(my_tid)
             path = path[1:]
-            return "/" + str(task.get_nth_child(path[0]).get_id()) + \
+            return "/" + str(my_tid) + \
                 self.rowref_from_path(task, path)
 
     def path_for_rowref(self, task, rowref):
@@ -90,8 +91,8 @@ class TaskTreeModel(gtk.GenericTreeModel):
     def on_get_value(self, rowref, column):
         cur_tid = rowref[rowref.rfind('/')+1:]
         task    = self.req.get_task(cur_tid)
-        if   column == self.COL_OBJ:
-            return task
+        if   column == self.COL_TID:
+            return task.get_id()
         elif column == self.COL_TITLE:
             return task.get_title()
         elif column == self.COL_DDATE:
@@ -104,27 +105,28 @@ class TaskTreeModel(gtk.GenericTreeModel):
             return colors.background_color(task.get_tags())
 
     def on_get_iter(self, path):
-        print "on_get_iter: %s" % (path)
+        #print "on_get_iter: " + str(path)
         return self.rowref_from_path(None, path)
 
     def on_get_path(self, rowref):
-        print "on_get_path: %s" % (rowref)
+        #print "on_get_path: %s" % (rowref)
         return self.get_path_from_rowref(rowref)
 
     def on_iter_next(self, rowref):
-        print "on_iter_next: %s" % (rowref)
+        #print "on_iter_next: %s" % (rowref)
         cur_tid = rowref[rowref.rfind('/')+1:]
         if rowref.rfind('/') == 0:
-            next_idx   = self.get_root_task_index(cur_tid) + 1
-            next_task = self.get_nth_root_task(next_idx)
+            next_idx  = self.get_root_task_index(cur_tid) + 1
             if next_idx >= self.get_n_root_tasks():
                 return None
             else:
-                return "/" + str(next_task.get_id())
+                next_tid = self.get_nth_root_task(next_idx)
+                return "/" + str(next_tid)
         else:
             par_rowref = rowref[:rowref.rfind('/')]
             par_tid    = par_rowref[par_rowref.rfind('/')+1:]
             par_task   = self.req.get_task(par_tid)
+            #print cur_tid
             next_idx   = par_task.get_subtask_index(cur_tid) + 1
             if next_idx >= par_task.get_n_subtasks():
                 return None
@@ -134,7 +136,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
                 return par_rowref + "/" + str(next_task.get_id())
 
     def on_iter_children(self, rowref):
-        print "on_iter_children: %s" % (rowref)
+        #print "on_iter_children: %s" % (rowref)
         if rowref:
             cur_tid = rowref[rowref.rfind('/')+1:]
             task    = self.req.get_task(cur_tid)
@@ -144,33 +146,36 @@ class TaskTreeModel(gtk.GenericTreeModel):
             else:
                 return None
         else:
-            return "/" + str(self.get_nth_root_task(0))
+            my_tid = self.get_nth_root_task(0)
+            return "/" + str(my_tid)
 
     def on_iter_has_child(self, rowref):
-        print "on_iter_has_child: %s" % (rowref)
+        #print "on_iter_has_child: %s" % (rowref)
         cur_tid = rowref[rowref.rfind('/')+1:]
         task    = self.req.get_task(cur_tid)
         return task.has_subtask()
 
     def on_iter_n_children(self, rowref):
-        print "on_iter_n_children: %s" % (rowref)
+        #print "on_iter_n_children: %s" % (rowref)
         cur_tid = rowref[rowref.rfind('/')+1:]
         task    = self.req.get_task(cur_tid)
         return task.get_n_subtasks()
 
     def on_iter_nth_child(self, parent, n):
-        print "on_iter_nth_child: %s %d" % (parent, n)
+        #print "on_iter_nth_child: %s %d" % (parent, n)
         if parent:
             par_tid  = parent[parent.rfind('/')+1:]
             par_task = self.req.get_task(par_tid)
-            return parent + "/" + str(task.get_nth_subtasks(n))
+            subtask_tid = par_task.get_nth_subtasks(n)
+            return parent + "/" + str(subtask_tid)
         else:
-            return "/" + self.get_nth_root_task(n).get_id()
+            my_tid = self.get_nth_root_task(n)
+            return "/" + str(my_tid)
 
     def on_iter_parent(self, child):
-        print "on_iter_parent: %s" % (child)
+        #print "on_iter_parent: %s" % (child)
         if child.rfind('/') == 0:
             return None
         else:
-            par_rowref = child[:child.rfind('/')-1]
+            par_rowref = child[:child.rfind('/')]
             return par_rowref

@@ -1572,7 +1572,7 @@ class TaskBrowser:
             model, selection_iter = selection.get_selected()
             if selection_iter:
                 ts = tview.get_model()
-                uid = ts.get_value(selection_iter, 0)
+                uid = ts.get_value(selection_iter, model.COL_TID)
         return uid
 
     def get_selected_tags(self):
