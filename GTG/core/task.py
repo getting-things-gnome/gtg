@@ -59,9 +59,6 @@ class Task :
     def get_closed_date(self):
         return self.closed_date
 
-    def get_tags(self):
-        return self.tags
-
     def is_loaded(self) :
         return self.loaded
         

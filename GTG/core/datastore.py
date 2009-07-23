@@ -119,9 +119,10 @@ class DataStore(gobject.GObject):
     def get_requester(self) :
         return self.requester
 
-    def get_model(self):
+    def get_model(self, is_tree=True):
         """Return the TreeModel for the tasks"""
-        model = task_tree_model.TaskTreeModel(self.requester, self.tasks)
+        model = task_tree_model.TaskTreeModel(\
+            self.requester, self.tasks, is_tree)
         return model
 
     def register_backend(self, dic):

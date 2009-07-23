@@ -825,6 +825,29 @@ class TaskBrowser:
         column.set_sort_indicator(True)
         column.set_sort_order(sort_order)
 
+    def active_task_visible_func(self, model, iter, user_data=None):
+        """Return True if the row must be displayed in the treeview.
+        @param model: the model of the filtered treeview
+        @param iter: the iter whose visiblity must be evaluated
+        @param user_data:
+        """
+        tag_list, notag_only = self.get_selected_tags()
+        tid  = model.get_value(iter, model.COL_TID)
+        task = self.req.get_task(tid)
+        if task.get_status() != "Active":
+            return False
+        return task.has_tags(tag_list=tag_list, notag_only=notag_only)
+
+    def closed_task_visible_func(self, model, iter, user_data=None):
+        """Return True if the row must be displayed in the treeview.
+        @param model: the model of the filtered treeview
+        @param iter: the iter whose visiblity must be evaluated
+        @param user_data:
+        """
+        tid  = model.get_value(iter, model.COL_TID)
+        task = self.req.get_task(tid)
+        return task.get_status() != "Active"
+
 ### SIGNAL CALLBACKS ##########################################################
 # Typically, reaction to user input @ interactions with the GUI
 #
@@ -1191,7 +1214,9 @@ class TaskBrowser:
         #When you clic on a tag, you want to unselect the tasks
         self.task_tview.get_selection().unselect_all()
         self.ctask_tview.get_selection().unselect_all()
-        self.do_refresh()
+        task_model = self.task_tview.get_model()
+        task_model.refilter()
+        #self.do_refresh()
 
     def on_taskdone_cursor_changed(self, selection=None):
         """Called when selection changes in closed task view.
@@ -1285,8 +1310,16 @@ class TaskBrowser:
 
     def on_refresh(self, widget):
         #TODO: this is used for debug of the TreeModel, please delete me once it's done
-        modelfilter = self.req.get_model()
-        self.task_tview.set_model(modelfilter)
+
+        task_model = self.req.get_model()
+        task_modelfilter = task_model.filter_new()
+        task_modelfilter.set_visible_func(self.active_task_visible_func)
+        self.task_tview.set_model(task_modelfilter)
+
+        ctask_model = self.req.get_model(is_tree=False)
+        ctask_modelfilter = ctask_model.filter_new()
+        ctask_modelfilter.set_visible_func(self.closed_task_visible_func)
+        self.ctask_tview.set_model(ctask_modelfilter)
 
 ### LIST REFRESH FUNCTIONS ####################################################
 #
@@ -1482,66 +1515,66 @@ class TaskBrowser:
     def refresh_closed(self):
         """Refresh the closed tasks pane."""
 
-        #We build the closed tasks pane
-        dselect = self.ctask_tview.get_selection()
-        d_path = None
-        if dselect:
-            d_model, d_path = dselect.get_selected_rows()
-        #We empty the pane
-        self.ctask_ts.clear()
-        #We rebuild it
-        tag_list, notag_only = self.get_selected_tags()
-        closed_tasks = self.req.get_closed_tasks_list(tags=tag_list,\
-                                                    notag_only=notag_only)
-        for tid in closed_tasks:
-            t              = self.req.get_task(tid)
-            title_str      = saxutils.escape(t.get_title())
-            closeddate     = t.get_closed_date()
-            closeddate_str = closeddate
-            tags           = t.get_tags()
-            if self.priv["bg_color_enable"] and t.has_tags():
-                my_color = colors.background_color(t.get_tags())
-            else:
-                my_color = None
-            if t.get_status() == "Dismiss":
-                title_str =\
-                     "<span color=\"#AAAAAA\">%s</span>" % title_str
-                closeddate_str =\
-                     "<span color=\"#AAAAAA\">%s</span>" % closeddate
-            self.ctask_ts.append(None, [\
-                tid, t.get_color(), title_str, closeddate, closeddate_str,
-                my_color, tags])
-        closed_selection = self.ctask_tview.get_selection()
-        if d_path:
-            for i in d_path:
-                closed_selection.select_path(i)
-        self.ctask_ts.set_sort_column_id(\
-            browser_tools.CTASKS_MODEL_DDATE, gtk.SORT_DESCENDING)
+#        #We build the closed tasks pane
+#        dselect = self.ctask_tview.get_selection()
+#        d_path = None
+#        if dselect:
+#            d_model, d_path = dselect.get_selected_rows()
+#        #We empty the pane
+#        self.ctask_ts.clear()
+#        #We rebuild it
+#        tag_list, notag_only = self.get_selected_tags()
+#        closed_tasks = self.req.get_closed_tasks_list(tags=tag_list,\
+#                                                    notag_only=notag_only)
+#        for tid in closed_tasks:
+#            t              = self.req.get_task(tid)
+#            title_str      = saxutils.escape(t.get_title())
+#            closeddate     = t.get_closed_date()
+#            closeddate_str = closeddate
+#            tags           = t.get_tags()
+#            if self.priv["bg_color_enable"] and t.has_tags():
+#                my_color = colors.background_color(t.get_tags())
+#            else:
+#                my_color = None
+#            if t.get_status() == "Dismiss":
+#                title_str =\
+#                     "<span color=\"#AAAAAA\">%s</span>" % title_str
+#                closeddate_str =\
+#                     "<span color=\"#AAAAAA\">%s</span>" % closeddate
+#            self.ctask_ts.append(None, [\
+#                tid, t.get_color(), title_str, closeddate, closeddate_str,
+#                my_color, tags])
+#        closed_selection = self.ctask_tview.get_selection()
+#        if d_path:
+#            for i in d_path:
+#                closed_selection.select_path(i)
+#        self.ctask_ts.set_sort_column_id(\
+#            browser_tools.CTASKS_MODEL_DDATE, gtk.SORT_DESCENDING)
 
     def refresh_note(self):
         """Refresh the notes pane."""
 
-        #We build the notes pane
-        dselect = self.note_tview.get_selection()
-        d_path = None
-        if dselect:
-            d_model, d_path = dselect.get_selected_rows()
-        #We empty the pane
-        self.note_ts.clear()
-        #We rebuild it
-        tag_list, notag_only = self.get_selected_tags()
-        notes = self.req.get_notes_list(tags=tag_list, notag_only=notag_only)
-        for tid in notes:
-            t              = self.req.get_task(tid)
-            title_str      = saxutils.escape(t.get_title())
-            self.note_ts.append(None, [tid, t.get_color(), title_str])
-        note_selection = self.note_tview.get_selection()
-        if d_path:
-            for i in d_path:
-                note_selection.select_path(i)
-        #self.note_ts.set_sort_column_id\
-        #(browser_tools.CTASKS_MODEL_DDATE, gtk.SORT_DESCENDING)
-        return
+#        #We build the notes pane
+#        dselect = self.note_tview.get_selection()
+#        d_path = None
+#        if dselect:
+#            d_model, d_path = dselect.get_selected_rows()
+#        #We empty the pane
+#        self.note_ts.clear()
+#        #We rebuild it
+#        tag_list, notag_only = self.get_selected_tags()
+#        notes = self.req.get_notes_list(tags=tag_list, notag_only=notag_only)
+#        for tid in notes:
+#            t              = self.req.get_task(tid)
+#            title_str      = saxutils.escape(t.get_title())
+#            self.note_ts.append(None, [tid, t.get_color(), title_str])
+#        note_selection = self.note_tview.get_selection()
+#        if d_path:
+#            for i in d_path:
+#                note_selection.select_path(i)
+#        #self.note_ts.set_sort_column_id\
+#        #(browser_tools.CTASKS_MODEL_DDATE, gtk.SORT_DESCENDING)
+#        return
 
 ### PUBLIC METHODS ############################################################
 #
@@ -1571,8 +1604,8 @@ class TaskBrowser:
         if selection:
             model, selection_iter = selection.get_selected()
             if selection_iter:
-                ts = tview.get_model()
-                uid = ts.get_value(selection_iter, model.COL_TID)
+                ts  = tview.get_model()
+                uid = ts.get_value(selection_iter, model.get_model().COL_TID)
         return uid
 
     def get_selected_tags(self):
@@ -1615,7 +1648,7 @@ class TaskBrowser:
             self.task_tview, self.sort_tasklist_rows)
         self.priv["tasklist"]["columns"] = col
         #modelfilter = self.task_ts.filter_new()
-        modelfilter = self.req.get_model()
+        #modelfilter = self.req.get_model()
         #modelfilter.set_visible_func(self._visible_func)
         #self.task_tview.set_model(modelfilter)
         #self.task_tview.set_model(self.task_ts)
@@ -1624,7 +1657,7 @@ class TaskBrowser:
         col = browser_tools.init_closed_tasks_tview(\
             self.ctask_tview, self.sort_tasklist_rows)
         self.priv["ctasklist"]["columns"] = col
-        self.ctask_tview.set_model(self.ctask_ts)
+        #self.ctask_tview.set_model(self.ctask_ts)
 
         # The treeview for notes
         browser_tools.init_note_tview(self.note_tview)

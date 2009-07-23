@@ -20,13 +20,15 @@ class TaskTreeModel(gtk.GenericTreeModel):
         gobject.TYPE_PYOBJECT,\
         str)
 
-    def __init__(self, requester, tasks=None):
+    def __init__(self, requester, tasks=None, is_tree=True):
         gtk.GenericTreeModel.__init__(self)
         self.req = requester
         self.root_tasks = []
+        self.is_tree = is_tree
         for tid in tasks:
             my_task = self.req.get_task(tid)
-            if not my_task.has_parents():
+            if is_tree and not my_task.has_parents() or \
+               not is_tree:
                 self.root_tasks.append(tid)
 
     def get_n_root_tasks(self):
@@ -137,6 +139,8 @@ class TaskTreeModel(gtk.GenericTreeModel):
 
     def on_iter_children(self, rowref):
         #print "on_iter_children: %s" % (rowref)
+        if not self.is_tree:
+            return None
         if rowref:
             cur_tid = rowref[rowref.rfind('/')+1:]
             task    = self.req.get_task(cur_tid)
@@ -151,12 +155,18 @@ class TaskTreeModel(gtk.GenericTreeModel):
 
     def on_iter_has_child(self, rowref):
         #print "on_iter_has_child: %s" % (rowref)
+        if not self.is_tree:
+            return False
         cur_tid = rowref[rowref.rfind('/')+1:]
         task    = self.req.get_task(cur_tid)
         return task.has_subtask()
 
     def on_iter_n_children(self, rowref):
         #print "on_iter_n_children: %s" % (rowref)
+        if not rowref:
+            return self.get_n_root_tasks()
+        if not self.is_tree:
+            return 0
         cur_tid = rowref[rowref.rfind('/')+1:]
         task    = self.req.get_task(cur_tid)
         return task.get_n_subtasks()
@@ -166,7 +176,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
         if parent:
             par_tid  = parent[parent.rfind('/')+1:]
             par_task = self.req.get_task(par_tid)
-            subtask_tid = par_task.get_nth_subtasks(n)
+            subtask_tid = par_task.get_nth_subtask(n)
             return parent + "/" + str(subtask_tid)
         else:
             my_tid = self.get_nth_root_task(n)
@@ -174,6 +184,8 @@ class TaskTreeModel(gtk.GenericTreeModel):
 
     def on_iter_parent(self, child):
         #print "on_iter_parent: %s" % (child)
+        if not self.is_tree:
+            return None
         if child.rfind('/') == 0:
             return None
         else:
