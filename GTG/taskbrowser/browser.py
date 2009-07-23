@@ -34,7 +34,7 @@ import datetime
 
 #our own imports
 import GTG
-import info
+from GTG import info
 from GTG import _
 from GTG.taskeditor.editor            import TaskEditor
 from GTG.taskbrowser                  import GnomeConfig

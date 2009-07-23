@@ -26,7 +26,7 @@ import glob
 import os
 import sys
 
-import info
+from GTG import info
 
 ### CONSTANTS ##################################################################
 
@@ -107,7 +107,7 @@ setup(
   url          = info.URL,
   author       = author,
   author_email = info.EMAIL,
-  description  = infor.SHORT_DESCRIPTION,
+  description  = info.SHORT_DESCRIPTION,
   packages     = ['GTG','GTG.backends','GTG.core','GTG.taskbrowser','GTG.taskeditor','GTG.tools'],
   package_data = {'GTG.taskbrowser':['taskbrowser.glade'],'GTG.taskeditor':['taskeditor.glade']},
   data_files   = create_data_files(),
