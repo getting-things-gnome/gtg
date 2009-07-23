@@ -44,11 +44,6 @@ class DataStore(gobject.GObject):
         
     def all_tasks(self) :
         all_tasks = []
-        #Call this only when we want to force a refresh
-#        for key in self.backends :
-#            b = self.backends[key]
-#            tlist = b.get_tasks_list()
-#            all_tasks += tlist
         #We also add tasks that are still not in a backend (because of threads)
         tlist = self.tasks.keys()
         for t in tlist :
@@ -79,14 +74,11 @@ class DataStore(gobject.GObject):
             self.tasks[tid].delete()
             uid,pid = tid.split('@') #pylint: disable-msg=W0612
             back = self.backends[pid]
-            #self.locks.acquire(tid)
             #Check that the task still exist. It might have been deleted
             #by its parent a few line earlier :
             if self.tasks.has_key(tid) :
                 self.tasks.pop(tid)
             back.remove_task(tid)
-            #The following line should not be necessary
-            #self.locks.release(tid)
         
     #Create a new task and return it.
     #newtask should be True if you create a task
@@ -184,9 +176,11 @@ class TaskSource() :
                 self.backend_lock.release()
             #print "releasing lock  to getall" 
             func(tlist)
-        t = threading.Thread(target=getall)
-        t.start()
-        #getall()
+        if THREADING :
+            t = threading.Thread(target=getall)
+            t.start()
+        else:
+            getall()
         return None
         
     def get_task(self,empty_task,tid) :
@@ -222,16 +216,11 @@ class TaskSource() :
         return empty_task
 
     def set_task(self,task) :
-        #This is foireux : imagine qu'on skipe un save et puis on quitte
-#        self.tasks[task.get_id()] = task
-#        diffe = time.time() - self.time
-#        if diffe > 2 :
-#            self.time = time.time()    
-#            return self.backend.set_task(task)
-#        else :
-#            return True
-        t = threading.Thread(target=self.__write,args=[task])
-        t.start()
+        if THREADING:
+            t = threading.Thread(target=self.__write,args=[task])
+            t.start()
+        else:
+            self.__write(task)
         return None
     
     #This function, called in a thread, write to the backend.
