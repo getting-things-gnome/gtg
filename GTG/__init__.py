@@ -25,7 +25,11 @@ except:
     locale.setlocale(locale.LC_ALL,'C')
 
 import gettext
-from gtk import glade
+try:
+    from gtk import glade
+except:
+    #that's not pretty but it looks functionnal.
+    glade = None
 from os.path import pardir, abspath, dirname, join
 
 import info
@@ -48,8 +52,10 @@ if lang_in_env:
     languages_used.extend(lang_in_env.split(':'))
 
 for module in gettext, glade:
-    module.bindtextdomain(GETTEXT_DOMAIN, LOCALE_PATH)
-    module.textdomain(GETTEXT_DOMAIN)
+    #check if glade is well loaded to avoid error in Fedora build farm
+    if module :
+        module.bindtextdomain(GETTEXT_DOMAIN, LOCALE_PATH)
+        module.textdomain(GETTEXT_DOMAIN)
 
 translation = gettext.translation(GETTEXT_DOMAIN, LOCALE_PATH,
                                   languages=languages_used,
