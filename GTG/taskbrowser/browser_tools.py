@@ -27,30 +27,30 @@ from GTG import _
 
 # ACTIVE TASKS MODEL ##########################################################
 
-TASK_MODEL_OBJ         = 0
-TASK_MODEL_TITLE       = 1
-TASK_MODEL_TITLE_STR   = 2
-TASK_MODEL_DDATE_STR   = 3
-TASK_MODEL_DLEFT_STR   = 4
-TASK_MODEL_TAGS        = 5
-TASK_MODEL_BGCOL       = 6
+#TASK_MODEL_OBJ         = 0
+#TASK_MODEL_TITLE       = 1
+#TASK_MODEL_TITLE_STR   = 2
+#TASK_MODEL_DDATE_STR   = 3
+#TASK_MODEL_DLEFT_STR   = 4
+#TASK_MODEL_TAGS        = 5
+#TASK_MODEL_BGCOL       = 6
 
 
-def new_task_ts(dnd_func=None):
-    """Returning a tree store to handle the active tasks"""
+#def new_task_ts(dnd_func=None):
+#    """Returning a tree store to handle the active tasks"""
 
-    task_ts        = gtk.TreeStore(gobject.TYPE_PYOBJECT, \
-                                   str,                   \
-                                   str,                   \
-                                   str,                   \
-                                   str,                   \
-                                   gobject.TYPE_PYOBJECT, \
-                                   str)
-    #this is our manual drag-n-drop handling
-    if dnd_func:
-        task_ts.connect("row-changed", dnd_func, "insert")
-        task_ts.connect("row-deleted", dnd_func, None, "delete")
-    return task_ts
+#    task_ts        = gtk.TreeStore(gobject.TYPE_PYOBJECT, \
+#                                   str,                   \
+#                                   str,                   \
+#                                   str,                   \
+#                                   str,                   \
+#                                   gobject.TYPE_PYOBJECT, \
+#                                   str)
+#    #this is our manual drag-n-drop handling
+#    if dnd_func:
+#        task_ts.connect("row-changed", dnd_func, "insert")
+#        task_ts.connect("row-deleted", dnd_func, None, "delete")
+#    return task_ts
 
 # TAGS MODEL ##################################################################
 
