@@ -61,6 +61,9 @@ class CoreConfig:
     CONF_DIR = os.path.join(xdg_config_home,'gtg/')
     CONF_FILE = "gtg.conf"
     conf_dict = None
+    #DBUS
+    BUSNAME = "org.GTG"
+    BUSINTERFACE = "/org/GTG"
 
     def __init__(self):
         if not os.path.exists(self.CONF_DIR) :

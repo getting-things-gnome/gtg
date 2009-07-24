@@ -1,3 +1,4 @@
+    * When GTG is already running, use DBUS to raise existing instance rather than failing silently
     * Refactorization and PEP8ification work by Jonathan Lange
     * New keyboard bindings for 'Mark as done' and 'Dismiss' actions
     * New keyboard bindings and accelerators by Jonathan Lange
