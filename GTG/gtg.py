@@ -77,7 +77,10 @@ def check_instance(directory):
         p_name = os.popen("ps -f --pid " + pid).read()
         if p == 0 and "gtg" in p_name:
             print _("gtg is already running!")
-            #todo : expose the browser (will be possible when we have dbus)
+            import dbus
+            d=dbus.SessionBus().get_object(CoreConfig.BUSNAME,\
+                                           CoreConfig.BUSINTERFACE)
+            d.show_task_browser()
             sys.exit(0)
             
     #write the pid file
