@@ -262,6 +262,8 @@
             <child>
               <widget class="GtkToolButton" id="new_note_button">
                 <property name="visible">True</property>
+                <property name="visible_horizontal">False</property>
+                <property name="visible_vertical">False</property>
                 <property name="label" translatable="yes">New Note</property>
                 <property name="icon_name">gtg-note-new</property>
                 <signal name="clicked" handler="on_add_note"/>
@@ -355,6 +357,8 @@
             <child>
               <widget class="GtkToggleToolButton" id="note_toggle">
                 <property name="visible">True</property>
+                <property name="visible_horizontal">False</property>
+                <property name="visible_vertical">False</property>
                 <property name="label" translatable="yes">View Notes</property>
                 <property name="stock_id">gtk-file</property>
                 <signal name="toggled" handler="on_note_toggled"/>
@@ -543,20 +547,7 @@
                         <property name="hscrollbar_policy">automatic</property>
                         <property name="vscrollbar_policy">automatic</property>
                         <child>
-                          <widget class="GtkTreeView" id="task_tview">
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="reorderable">True</property>
-                            <property name="rules_hint">True</property>
-                            <property name="enable_search">False</property>
-                            <property name="search_column">8</property>
-                            <property name="rubber_banding">True</property>
-                            <property name="enable_tree_lines">True</property>
-                            <signal name="button_press_event" handler="on_task_treeview_button_press_event"/>
-                            <signal name="key_press_event" handler="on_task_treeview_key_press_event"/>
-                            <signal name="cursor_changed" handler="on_task_tview_cursor_changed"/>
-                            <signal name="row_activated" handler="on_edit_active_task"/>
-                          </widget>
+                          <placeholder/>
                         </child>
                       </widget>
                       <packing>
@@ -571,15 +562,7 @@
                         <property name="hscrollbar_policy">automatic</property>
                         <property name="vscrollbar_policy">automatic</property>
                         <child>
-                          <widget class="GtkTreeView" id="taskdone_tview">
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="rules_hint">True</property>
-                            <property name="search_column">8</property>
-                            <signal name="button_press_event" handler="on_closed_task_treeview_button_press_event"/>
-                            <signal name="key_press_event" handler="on_closed_task_treeview_key_press_event"/>
-                            <signal name="row_activated" handler="on_edit_done_task"/>
-                          </widget>
+                          <placeholder/>
                         </child>
                       </widget>
                       <packing>

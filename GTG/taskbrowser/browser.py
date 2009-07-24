@@ -38,6 +38,10 @@ from GTG import _
 from GTG.taskeditor.editor            import TaskEditor
 from GTG.taskbrowser                  import GnomeConfig
 from GTG.taskbrowser                  import browser_tools
+from GTG.taskbrowser                  import tasktree
+from GTG.taskbrowser.tasktree         import TaskTreeModel,\
+                                             ActiveTaskTreeView,\
+                                             ClosedTaskTreeView
 from GTG.tools                        import colors, openurl
 
 #=== OBJECTS ==================================================================
@@ -51,8 +55,7 @@ CLOSED_PANE        = False
 QUICKADD_PANE      = True
 TOOLBAR            = True
 BG_COLOR           = True
-EXPERIMENTAL_NOTES = False
-
+#EXPERIMENTAL_NOTES = False
 
 class TaskBrowser:
 
@@ -70,13 +73,6 @@ class TaskBrowser:
         self.opened_task  = {}   # This is the list of tasks that are already
                                  # opened in an editor of course it's empty
                                  # right now
-        # Drag & drop
-#        self.drag_sources      = []
-#        self.path_source       = None
-#        self.path_target       = None
-#        self.tid_tomove        = None
-#        self.tid_source_parent = None
-#        self.tid_target_parent = None
 
         # Define various locks for multi-threading
         self.refresh_lock      = threading.Lock()
@@ -84,48 +80,51 @@ class TaskBrowser:
         self.lock              = threading.Lock()
 
         # Setup default values for view
-        self.init_browser_config()
+        self._init_browser_config()
 
         # Setup GTG icon theme
-        self.init_icon_theme()
+        self._init_icon_theme()
 
         # Load window tree
         self.wTree = gtk.glade.XML(GnomeConfig.GLADE_FILE)
 
         # Define aliases for specific widgets
-        self.init_widget_aliases()
+        self._init_widget_aliases()
+
+        # Init non-glade widgets
+        self._init_ui_widget()
 
         #Set the tooltip for the toolbar buttons
-        self.init_toolbar_tooltips()
+        self._init_toolbar_tooltips()
 
         # Initialize "About" dialog
-        self.init_about_dialog()
+        self._init_about_dialog()
 
         #Create our dictionay and connect it
-        self.init_signal_connections()
+        self._init_signal_connections()
 
         # The tview and their model
-        self.ctask_ts = browser_tools.new_ctask_ts()
+        #self.ctask_ts = browser_tools.new_ctask_ts()
         self.tag_ts   = browser_tools.new_tag_ts()
         #self.task_ts  = browser_tools.new_task_ts(dnd_func=self.row_dragndrop)
 
         # Setting the default for the view
         # When there is no config, this should define the first configuration
         # of the UI
-        self.init_view_defaults()
+        self._init_view_defaults()
 
         # Connecting the refresh signal from the requester
         #self.req.connect("refresh", self.do_refresh)
 
         # Define accelerator keys
-        self.init_accelerators()
+        self._init_accelerators()
 
         # NOTES
-        self.init_note_support()
+        #self._init_note_support()
 
 ### INIT HELPER FUNCTIONS #####################################################
 #
-    def init_browser_config(self):
+    def _init_browser_config(self):
         self.priv["collapsed_tid"]            = []
         self.priv["tasklist"]                 = {}
         self.priv["tasklist"]["sort_column"]  = None
@@ -135,15 +134,15 @@ class TaskBrowser:
         self.priv["ctasklist"]["sort_order"]  = gtk.SORT_ASCENDING
         self.priv['selected_rows']            = None
         self.priv['workview']                 = False
-        self.priv['noteview']                 = False
+        #self.priv['noteview']                 = False
 
-    def init_icon_theme(self):
+    def _init_icon_theme(self):
         icon_dirs = [GTG.DATA_DIR, os.path.join(GTG.DATA_DIR, "icons")]
         for i in icon_dirs:
             gtk.icon_theme_get_default().prepend_search_path(i)
             gtk.window_set_default_icon_name("gtg")
 
-    def init_widget_aliases(self):
+    def _init_widget_aliases(self):
         self.window             = self.wTree.get_widget("MainWindow")
         self.tagpopup           = self.wTree.get_widget("TagContextMenu")
         self.taskpopup          = self.wTree.get_widget("TaskContextMenu")
@@ -165,14 +164,21 @@ class TaskBrowser:
         self.toolbar            = self.wTree.get_widget("task_tb")
         self.quickadd_pane      = self.wTree.get_widget("quickadd_pane")
         # Tree views
-        self.task_tview         = self.wTree.get_widget("task_tview")
-        self.tag_tview          = self.wTree.get_widget("tag_tview")
-        self.ctask_tview        = self.wTree.get_widget("taskdone_tview")
+        self.tag_tv             = self.wTree.get_widget("tag_tview")
         # NOTES
-        self.new_note_button    = self.wTree.get_widget("new_note_button")
-        self.note_toggle        = self.wTree.get_widget("note_toggle")
+        #self.new_note_button    = self.wTree.get_widget("new_note_button")
+        #self.note_toggle        = self.wTree.get_widget("note_toggle")
 
-    def init_toolbar_tooltips(self):
+    def _init_ui_widget(self):
+        # The Active tasks treeview
+        self.task_tv = ActiveTaskTreeView()#sort_func=self.sort_tasklist_rows)
+        self.main_pane.add(self.task_tv)
+
+        # The done/dismissed taks treeview
+        self.ctask_tv = ClosedTaskTreeView(sort_func=self.sort_tasklist_rows)
+        self.closed_pane.add(self.ctask_tv)
+
+    def _init_toolbar_tooltips(self):
         self.donebutton.set_tooltip_text(GnomeConfig.MARK_DONE_TOOLTIP)
         self.editbutton.set_tooltip_text(GnomeConfig.EDIT_TOOLTIP)
         self.dismissbutton.set_tooltip_text(GnomeConfig.MARK_DISMISS_TOOLTIP)
@@ -181,7 +187,7 @@ class TaskBrowser:
         self.toggle_workview.set_tooltip_text(\
             GnomeConfig.WORKVIEW_TOGGLE_TOOLTIP)
 
-    def init_about_dialog(self):
+    def _init_about_dialog(self):
         gtk.about_dialog_set_url_hook(lambda dialog, url: openurl.openurl(url))
         self.about.set_website(GTG.URL)
         self.about.set_website_label(GTG.URL)
@@ -190,19 +196,19 @@ class TaskBrowser:
         self.about.set_artists(GTG.ARTISTS)
         self.about.set_translator_credits(GTG.TRANSLATORS)
 
-    def init_signal_connections(self):
+    def _init_signal_connections(self):
 
         SIGNAL_CONNECTIONS_DIC = {
             "on_add_task":
                 self.on_add_task,
-            "on_add_note":
-                (self.on_add_task, 'Note'),
+#            "on_add_note":
+#                (self.on_add_task, 'Note'),
             "on_edit_active_task":
                 self.on_edit_active_task,
             "on_edit_done_task":
                 self.on_edit_done_task,
-            "on_edit_note":
-                self.on_edit_note,
+#            "on_edit_note":
+#                self.on_edit_note,
             "on_delete_task":
                 self.on_delete_task,
             "on_mark_as_done":
@@ -239,8 +245,8 @@ class TaskBrowser:
                 self.on_colorchooser_activate,
             "on_workview_toggled":
                 self.on_workview_toggled,
-            "on_note_toggled":
-                self.on_note_toggled,
+#            "on_note_toggled":
+#                self.on_note_toggled,
             "on_view_workview_toggled":
                 self.on_workview_toggled,
             "on_view_closed_toggled":
@@ -266,20 +272,37 @@ class TaskBrowser:
             }
 
         self.wTree.signal_autoconnect(SIGNAL_CONNECTIONS_DIC)
+
         if (self.window):
             self.window.connect("destroy", gtk.main_quit)
 
-    def init_view_defaults(self):
+        # Active tasks TreeView
+        self.task_tv.connect('row-activated',\
+            self.on_edit_active_task)
+        self.task_tv.connect('button-press-event',\
+            self.on_task_treeview_button_press_event)
+        self.task_tv.connect('key-press-event',\
+            self.on_task_treeview_key_press_event)
+
+        # Closed tasks TreeView
+        self.ctask_tv.connect('row-activated',\
+            self.on_edit_done_task)
+        self.ctask_tv.connect('button-press-event',\
+            self.on_closed_task_treeview_button_press_event)
+        self.ctask_tv.connect('key-press-event',\
+            self.on_closed_task_treeview_key_press_event)
+
+    def _init_view_defaults(self):
         self.menu_view_workview.set_active(WORKVIEW)
         self.wTree.get_widget("view_sidebar").set_active(SIDEBAR)
         self.wTree.get_widget("view_closed").set_active(CLOSED_PANE)
         self.wTree.get_widget("view_quickadd").set_active(QUICKADD_PANE)
         self.wTree.get_widget("view_toolbar").set_active(TOOLBAR)
         self.priv["bg_color_enable"] = BG_COLOR
-        self.ctask_ts.set_sort_column_id(browser_tools.CTASKS_MODEL_DDATE,\
-            gtk.SORT_DESCENDING)
+        #self.ctask_ts.set_sort_column_id(browser_tools.CTASKS_MODEL_DDATE,\
+        #    gtk.SORT_DESCENDING)
 
-    def init_accelerators(self):
+    def _init_accelerators(self):
 
         agr = gtk.AccelGroup()
         self.wTree.get_widget("MainWindow").add_accel_group(agr)
@@ -331,21 +354,22 @@ class TaskBrowser:
         task_dismiss.add_accelerator(
             'activate', agr, key, mod, gtk.ACCEL_VISIBLE)
 
-    def init_note_support(self):
-        self.notes  = EXPERIMENTAL_NOTES
-        # Hide notes if disabled
-        if not self.notes:
-            self.note_toggle.hide()
-            self.new_note_button.hide()
-        #Set the tooltip for the toolbar button
-        self.new_note_button.set_tooltip_text("Create a new note")
-        self.note_tview = self.wTree.get_widget("note_tview")
-        self.note_tview = gtk.TreeView()
-        self.note_tview.connect("row-activated", self.on_edit_note)
-        self.note_tview.show()
-        self.note_ts    = gtk.TreeStore(gobject.TYPE_PYOBJECT, str, str)
+#    def _init_note_support(self):
+#        self.notes  = EXPERIMENTAL_NOTES
+#        # Hide notes if disabled
+#        if not self.notes:
+#            self.note_toggle.hide()
+#            self.new_note_button.hide()
+#        #Set the tooltip for the toolbar button
+#        self.new_note_button.set_tooltip_text("Create a new note")
+#        self.note_tview = self.wTree.get_widget("note_tview")
+#        self.note_tview = gtk.TreeView()
+#        self.note_tview.connect("row-activated", self.on_edit_note)
+#        self.note_tview.show()
+#        self.note_ts    = gtk.TreeStore(gobject.TYPE_PYOBJECT, str, str)
 
 ### HELPER FUNCTIONS ##########################################################
+#
     def restore_state_from_conf(self):
 
         # Extract state from configuration dictionary
@@ -416,7 +440,7 @@ class TaskBrowser:
             self.priv["sort_column"] = col_id
             try:
                 col_id, order = int(col_id), int(order)
-                sort_col = self.priv["tasklist"]["columns"][col_id]
+                sort_col = self.task_tv.get_column(col_id)
                 self.priv["tasklist"]["sort_column"] = sort_col
                 if order == 0:
                     self.priv["tasklist"]["sort_order"] = gtk.SORT_ASCENDING
@@ -430,14 +454,14 @@ class TaskBrowser:
             if view == "workview":
                 self.do_toggle_workview()
 
-        if "experimental_notes" in self.config["browser"]:
-            self.notes = eval(self.config["browser"]["experimental_notes"])
-            if self.notes:
-                self.note_toggle.show()
-                self.new_note_button.show()
-            else:
-                self.note_toggle.hide()
-                self.new_note_button.hide()
+#        if "experimental_notes" in self.config["browser"]:
+#            self.notes = eval(self.config["browser"]["experimental_notes"])
+#            if self.notes:
+#                self.note_toggle.show()
+#                self.new_note_button.show()
+#            else:
+#                self.note_toggle.hide()
+#                self.new_note_button.hide()
 
     def count_tasks_rec(self, my_task, active_tasks):
         count = 0
@@ -473,8 +497,8 @@ class TaskBrowser:
         #menu_state   = self.menu_view_workview.get_active()
         #button_state = self.toggle_workview.get_active()
         #We cannot have note and workview at the same time
-        if not self.priv['workview'] and self.note_toggle.get_active():
-            self.note_toggle.set_active(False)
+#        if not self.priv['workview'] and self.note_toggle.get_active():
+#            self.note_toggle.set_active(False)
         #We do something only if both widget are in different state
         tobeset = not self.priv['workview']
         self.menu_view_workview.set_active(tobeset)
@@ -555,102 +579,23 @@ class TaskBrowser:
 
     def update_collapsed_row(self, model, path, itera, user_data):
         """Build a list of task that must showed as collapsed in Treeview"""
-        model = self.task_tview.get_model()
+        model = self.task_tv.get_model()
         tid = model.get_value(itera, 0)
         # Remove expanded rows
         if (model.iter_has_child(itera) and
-            self.task_tview.row_expanded(path) and
+            self.task_tv.row_expanded(path) and
             tid in self.priv["collapsed_tid"]):
 
             self.priv["collapsed_tid"].remove(tid)
 
         # Append collapsed rows
         elif (model.iter_has_child(itera) and
-              not self.task_tview.row_expanded(path) and
+              not self.task_tv.row_expanded(path) and
               tid not in self.priv["collapsed_tid"]):
 
             self.priv["collapsed_tid"].append(tid)
 
         return False # Return False or the TreeModel.foreach() function ends
-
-    def add_task_tree_to_list(self, tree_store, tid, parent, selected_uid=None,
-                              active_tasks=[], treeview=True):
-        """Add tasks to a treeview.
-
-        If 'treeview' is False, it becomes a flat list.
-        """
-        task = self.req.get_task(tid)
-        st_count = self.count_tasks_rec(task, active_tasks)
-        if selected_uid and selected_uid == tid:
-            # Temporarily disabled
-            #title = self.build_task_title(task, extended=True)
-            title_str = self.build_task_title(task, st_count, extended=False)
-        else:
-            title_str = self.build_task_title(task, st_count, extended=False)
-
-
-        # Extract data
-        title = saxutils.escape(task.get_title())
-        duedate_str = task.get_due_date()
-        left_str = task.get_days_left()
-        tags = task.get_tags()
-        if self.priv["bg_color_enable"]:
-            my_color = colors.background_color(tags)
-        else:
-            my_color = None
-
-        if not parent and len(task.get_subtasks()) == 0:
-            itera = tree_store.get_iter_first()
-            my_row = tree_store.insert_before(
-                None, itera,
-                row=[tid, title, title_str, duedate_str, left_str, tags,
-                     my_color])
-        else:
-            #None should be "parent" but crashing with thread
-            my_row = tree_store.append(
-                parent,
-                [tid, title, title_str, duedate_str, left_str, tags, my_color])
-        #If treeview, we add add the active childs
-        if treeview:
-            for c in task.get_subtasks():
-                cid = c.get_id()
-                if cid in active_tasks:
-                    #None should be cid
-                    self.add_task_tree_to_list(
-                        tree_store, cid, my_row, selected_uid,
-                        active_tasks=active_tasks)
-
-    def select_task(self, id_toselect):
-        """Select a task with tid 'id_toselect'.
-
-        This works only in the main task_tview. If it cannot find the
-        requested task, nothing is selected.
-        """
-
-        #We will loop over all task_tview element to find the newly added one
-        model = self.task_tview.get_model()
-        tempit = model.get_iter_first()
-        it = None
-        while (tempit and not it):
-            if tempit:
-                tid = model.get_value(tempit, 0)
-                if tid == id_toselect:
-                    it = tempit
-            #First we try to see if there is child task
-            tempit2 = model.iter_children(tempit)
-            #if no children, then take the tasks on the same level
-            if not tempit2:
-                tempit2 = model.iter_next(tempit)
-            #if no task on the same level, go back to the parent
-            #and then to the next task on the parent level
-            if not tempit2:
-                tempit2 = model.iter_parent(tempit)
-                if tempit2:
-                    tempit2 = model.iter_next(tempit2)
-            tempit = tempit2
-        if it:
-            selection = self.task_tview.get_selection()
-            selection.select_iter(it)
 
     def open_task(self, uid):
         """Open the task identified by 'uid'.
@@ -664,8 +609,8 @@ class TaskBrowser:
         else:
             tv = TaskEditor(
                 self.req, t, None, self.on_delete_task,
-                self.close_task, self.open_task, self.get_tasktitle,
-                notes=self.notes)
+                self.close_task, self.open_task, self.get_tasktitle)
+                #notes=self.notes)
             #registering as opened
             self.opened_task[uid] = tv
 
@@ -677,77 +622,6 @@ class TaskBrowser:
         # When an editor is closed, it should deregister itself.
         if tid in self.opened_task:
             del self.opened_task[tid]
-
-#    def row_dragndrop(self, tree, path, it, data=None):
-#        """Drag and drop support."""
-#        #Because of bug in pygtk, the rows-reordered signal is never emitted
-#        #We workaoround this bug by connecting to row_insert and row_deleted
-#        #Basically, we do the following:
-#        # 1. If a row is inserted for a task X, look if the task already
-#        #     exist elsewhere.
-#        # 2. If yes, it's probably a drag-n-drop so we save those information
-#        # 3. If the "elsewhere" from point 1 is deleted, we are sure it's a
-#        #    drag-n-drop so we change the parent of the moved task
-#        if data == "insert":
-#            #If the row inserted already exists in another position
-#            #We are in a drag n drop case
-#            def findsource(model, path, it, data):
-#                path_move = tree.get_path(data[1])
-#                path_actual = tree.get_path(it)
-#                if model.get(it, 0) == data[0] and path_move != path_actual:
-#                    self.drag_sources.append(path)
-#                    self.path_source = path
-#                    return True
-#                else:
-#                    self.path_source = None
-
-#            self.path_target = path
-#            tid = tree.get(it, 0)
-#            tree.foreach(findsource, [tid, it])
-#            if self.path_source:
-#                #We will prepare the drag-n-drop
-#                iter_source = tree.get_iter(self.path_source)
-#                iter_target = tree.get_iter(self.path_target)
-#                iter_source_parent = tree.iter_parent(iter_source)
-#                iter_target_parent = tree.iter_parent(iter_target)
-#                #the tid_parent will be None for root tasks
-#                if iter_source_parent:
-#                    sparent = tree.get(iter_source_parent, 0)[0]
-#                else:
-#                    sparent = None
-#                if iter_target_parent:
-#                    tparent = tree.get(iter_target_parent, 0)[0]
-#                else:
-#                    tparent = None
-#                #If target and source are the same, we are moving
-#                #a child of the deplaced task. Indeed, children are
-#                #also moved in the tree but their parents remain !
-#                if sparent != tparent:
-#                    self.tid_source_parent = sparent
-#                    self.tid_target_parent = tparent
-#                    self.tid_tomove = tid[0]
-#                    # "row %s will move from %s to %s"%(self.tid_tomove,\
-#                    #          self.tid_source_parent, self.tid_target_parent)
-##    def row_deleted(self, tree, path, data=None): #pylint: disable-msg=W0613
-#        elif data == "delete":
-#            #If we are removing the path source guessed during the insertion
-#            #It confirms that we are in a drag-n-drop
-#            if path in self.drag_sources and self.tid_tomove:
-#                self.drag_sources.remove(path)
-#                # "row %s moved from %s to %s"%(self.tid_tomove,\
-#                #             self.tid_source_parent, self.tid_target_parent)
-#                tomove = self.req.get_task(self.tid_tomove)
-#                tomove.set_to_keep()
-#                tomove.remove_parent(self.tid_source_parent)
-#                tomove.add_parent(self.tid_target_parent)
-#                #DO NOT self.refresh_list()
-#                #Refreshing here make things crash. Don't refresh
-#                #self.drag_sources = []
-#                self.path_source = None
-#                self.path_target = None
-#                self.tid_tomove = None
-#                self.tid_source_parent = None
-#                self.tid_target_parent = None
 
     def cmp_duedate_str(self, key1, key2):
         if self.priv["tasklist"]["sort_order"] == gtk.SORT_ASCENDING:
@@ -795,13 +669,12 @@ class TaskBrowser:
         self.priv["tasklist"]["sort_order"]  = sort_order
 
         # Determine row sorting depending on column
-        if column == self.priv["tasklist"]["columns"]\
-            [browser_tools.TASKLIST_COL_TITLE]:
+        if column == self.task_tv.get_column(tasktree.COL_TITLE):
             cmp_func = lambda x, y: locale.strcoll(x.lower(), y.lower())
-            sort_key = lambda x: x[browser_tools.TASK_MODEL_TITLE]
+            sort_key = lambda x: x[tasktree.COL_TITLE]
         else:
             cmp_func = self.cmp_duedate_str
-            sort_key = lambda x: x[browser_tools.TASK_MODEL_DDATE_STR]
+            sort_key = lambda x: x[tasktree.COL_DDATE]
 
         # Determine sorting direction
         if sort_order == gtk.SORT_ASCENDING:
@@ -813,7 +686,7 @@ class TaskBrowser:
         model = self.task_model
         rows = [tuple(r) + (i, ) for i, r in enumerate(model)]
         if len(rows) != 0:
-            rows.sort(key=lambda x: x[browser_tools.TASK_MODEL_TITLE].lower())
+            rows.sort(key=lambda x: x[tasktree.COL_TITLE].lower())
             rows.sort(cmp=cmp_func, key=sort_key, reverse=sort_reverse)
             model.reorder(None, [r[-1] for r in rows])
 
@@ -828,10 +701,8 @@ class TaskBrowser:
         @param user_data:
         """
         tag_list, notag_only = self.get_selected_tags()
-        tid  = model.get_value(iter, self.task_model.COL_TID)
+        tid  = model.get_value(iter, tasktree.COL_TID)
         task = self.req.get_task(tid)
-        if task.get_status() != "Active":
-            return False
         return task.has_tags(tag_list=tag_list, notag_only=notag_only)
 
     def closed_task_visible_func(self, model, iter, user_data=None):
@@ -840,20 +711,18 @@ class TaskBrowser:
         @param iter: the iter whose visiblity must be evaluated
         @param user_data:
         """
-        tid  = model.get_value(iter, self.ctask_model.COL_TID)
-        task = self.req.get_task(tid)
-        return task.get_status() != "Active"
+        return True
 
     def restore_collapsed(self, treeview, path, data):
-        model = self.task_tview.get_model()
+        model = self.task_tv.get_model()
         itera = model.get_iter(path)
-        tid   = model.get_value(itera, self.task_model.COL_TID)
+        tid   = model.get_value(itera, tasktree.COL_TID)
         if tid in self.priv["collapsed_tid"]:
             treeview.collapse_row(path)
 
     def restore_collapsed_rows(self):
-        self.task_tview.expand_all()
-        self.task_tview.map_expanded_rows(self.restore_collapsed, None)
+        self.task_tv.expand_all()
+        self.task_tv.map_expanded_rows(self.restore_collapsed, None)
 
 ### SIGNAL CALLBACKS ##########################################################
 # Typically, reaction to user input & interactions with the GUI
@@ -871,7 +740,7 @@ class TaskBrowser:
     def on_delete(self, widget, user_data):
 
         # Save expanded rows
-        self.task_tview.get_model().foreach(self.update_collapsed_row, None)
+        self.task_tv.get_model().foreach(self.update_collapsed_row, None)
 
         # Cleanup collapsed row list
         for tid in self.priv["collapsed_tid"]:
@@ -922,14 +791,14 @@ class TaskBrowser:
             }
 
         if   sort_column is not None and sort_order == gtk.SORT_ASCENDING:
-            sort_col_id = self.priv["tasklist"]["columns"].index(sort_column)
+            sort_col_id = self.task_tv.get_column_index(sort_column)
             self.config["browser"]["tasklist_sort"]  = [sort_col_id, 0]
         elif sort_column is not None and sort_order == gtk.SORT_DESCENDING:
-            sort_col_id = self.priv["tasklist"]["columns"].index(sort_column)
+            sort_col_id = self.task_tv.get_column_index(sort_column)
             self.config["browser"]["tasklist_sort"]  = [sort_col_id, 1]
         self.config["browser"]["view"] = view
-        if self.notes:
-            self.config["browser"]["experimental_notes"] = True
+#        if self.notes:
+#            self.config["browser"]["experimental_notes"] = True
 
     def on_about_clicked(self, widget):
         self.about.show()
@@ -981,12 +850,12 @@ class TaskBrowser:
             view_sidebar.set_active(True)
             self.sidebar.show()
 
-    def on_note_toggled(self, widget):
-        self.priv['noteview'] = not self.priv['noteview']
-        workview_state = self.toggle_workview.get_active()
-        if workview_state:
-            self.toggle_workview.set_active(False)
-        #self.do_refresh()
+#    def on_note_toggled(self, widget):
+#        self.priv['noteview'] = not self.priv['noteview']
+#        workview_state = self.toggle_workview.get_active()
+#        if workview_state:
+#            self.toggle_workview.set_active(False)
+#        #self.do_refresh()
 
     def on_closed_toggled(self, widget):
         if widget.get_active():
@@ -1162,14 +1031,14 @@ class TaskBrowser:
             self.open_task(tid)
 
     def on_edit_done_task(self, widget, row=None, col=None):
-        tid = self.get_selected_task(self.ctask_tview)
+        tid = self.get_selected_task(self.ctask_tv)
         if tid:
             self.open_task(tid)
 
-    def on_edit_note(self, widget, row=None, col=None):
-        tid = self.get_selected_task(self.note_tview)
-        if tid:
-            self.open_task(tid)
+#    def on_edit_note(self, widget, row=None, col=None):
+#        tid = self.get_selected_task(self.note_tview)
+#        if tid:
+#            self.open_task(tid)
 
     def on_delete_confirm(self, widget):
         """if we pass a tid as a parameter, we delete directly
@@ -1219,9 +1088,9 @@ class TaskBrowser:
 
     def on_select_tag(self, widget, row=None, col=None):
         #When you clic on a tag, you want to unselect the tasks
-        self.task_tview.get_selection().unselect_all()
-        self.ctask_tview.get_selection().unselect_all()
-        task_model = self.task_tview.get_model()
+        self.task_tv.get_selection().unselect_all()
+        self.ctask_tv.get_selection().unselect_all()
+        task_model = self.task_tv.get_model()
         task_model.foreach(self.update_collapsed_row, None)
         task_model.refilter()
         self.restore_collapsed_rows()
@@ -1237,10 +1106,10 @@ class TaskBrowser:
         self.donebutton.set_icon_name("gtg-task-done")
         self.dismissbutton.set_icon_name("gtg-task-dismiss")
         if selection.count_selected_rows() > 0:
-            tid = self.get_selected_task(self.ctask_tview)
+            tid = self.get_selected_task(self.ctask_tv)
             task = self.req.get_task(tid)
-            self.task_tview.get_selection().unselect_all()
-            self.note_tview.get_selection().unselect_all()
+            self.task_tv.get_selection().unselect_all()
+#            self.note_tview.get_selection().unselect_all()
             if task.get_status() == "Dismiss":
                 self.wTree.get_widget(
                     "ctcm_mark_as_not_done").set_sensitive(False)
@@ -1251,8 +1120,6 @@ class TaskBrowser:
                 self.dismissbutton.set_icon_name("gtg-task-undismiss")
                 self.dismissbutton.set_tooltip_text(
                     GnomeConfig.MARK_UNDISMISS_TOOLTIP)
-#                self.editbutton.connect('clicked', self.on_edit_done_task)
-#                self.edit_mi.connect('activate', self.on_edit_done_task)
             else:
                 self.wTree.get_widget(
                     "ctcm_mark_as_not_done").set_sensitive(True)
@@ -1275,8 +1142,8 @@ class TaskBrowser:
         self.donebutton.set_icon_name("gtg-task-done")
         self.dismissbutton.set_icon_name("gtg-task-dismiss")
         if selection.count_selected_rows() > 0:
-            self.ctask_tview.get_selection().unselect_all()
-            self.note_tview.get_selection().unselect_all()
+            self.ctask_tv.get_selection().unselect_all()
+#            self.note_tview.get_selection().unselect_all()
             self.donebutton.set_label(GnomeConfig.MARK_DONE)
             self.donebutton.set_tooltip_text(GnomeConfig.MARK_DONE_TOOLTIP)
             self.dismissbutton.set_label(GnomeConfig.MARK_DISMISS)
@@ -1284,31 +1151,19 @@ class TaskBrowser:
         if (self.priv["selected_rows"]
             and self.task_ts.iter_is_valid(self.priv["selected_rows"])):
             tid = self.task_ts.get_value(
-                self.priv["selected_rows"], self.TASK_MODEL_OBJ)
+                self.priv["selected_rows"], tasktree.COL_OBJ)
             task = self.req.get_task(tid)
             title = self.build_task_title(task, extended=False)
             self.task_ts.set_value(
-                self.priv["selected_rows"], self.TASK_MODEL_TITLE, title)
-        #We change the selection title
-        #if selection:
-            #ts, itera = selection.get_selected() #pylint: disable-msg=W0612
-            #if itera and self.task_ts.iter_is_valid(itera):
-                #tid = self.task_ts.get_value(itera, self.TASK_MODEL_OBJ)
-                #task = self.req.get_task(tid)
-                #self.priv["selected_rows"] = itera
-                # Extended title is temporarily disabled
-                #title = self.build_task_title(task, extended=True)
-                #title = self.build_task_title(task, extended=False)
-                #self.task_ts.set_value(
-                #    self.priv["selected_rows"], self.TASK_MODEL_TITLE, title)
+                self.priv["selected_rows"], tasktree.COL_TITLE, title)
         return
 
-    def on_note_cursor_changed(self, selection=None):
-        #We unselect all in the closed task view
-        #Only if something is selected in the active task list
-        if selection.count_selected_rows() > 0:
-            self.ctask_tview.get_selection().unselect_all()
-            self.task_tview.get_selection().unselect_all()
+#    def on_note_cursor_changed(self, selection=None):
+#        #We unselect all in the closed task view
+#        #Only if something is selected in the active task list
+#        if selection.count_selected_rows() > 0:
+#            self.ctask_tv.get_selection().unselect_all()
+#            self.task_tv.get_selection().unselect_all()
 
     def on_close(self, widget=None):
         """Closing the window."""
@@ -1319,273 +1174,28 @@ class TaskBrowser:
     def on_refresh(self, widget):
         #TODO: this is used for debug of the TreeModel, please delete me once it's done
 
-        self.task_model  = self.req.get_model()
-        self.ctask_model = self.req.get_model(is_tree=False)
+        active_tasks = self.req.get_active_tasks_list()
+        self.task_model  = TaskTreeModel(\
+                                requester=self.req,\
+                                tasks=active_tasks)
+        closed_tasks = self.req.get_closed_tasks_list()
+        self.ctask_model = TaskTreeModel(\
+                                requester=self.req,\
+                                tasks=closed_tasks,\
+                                is_tree=False)
 
         task_modelfilter = self.task_model.filter_new()
         task_modelfilter.set_visible_func(self.active_task_visible_func)
-        self.task_tview.set_model(task_modelfilter)
+        task_modelsort = gtk.TreeModelSort(task_modelfilter)
+        task_modelsort.set_sort_column_id(tasktree.COL_DLEFT, gtk.SORT_ASCENDING)
+        self.task_tv.set_model(task_modelsort)
         self.restore_collapsed_rows()
 
         ctask_modelfilter = self.ctask_model.filter_new()
         ctask_modelfilter.set_visible_func(self.closed_task_visible_func)
         ctask_modelsort   = gtk.TreeModelSort(ctask_modelfilter)
-        self.ctask_tview.set_model(ctask_modelsort)
-
-### LIST REFRESH FUNCTIONS ####################################################
-#
-#    def do_refresh(self, sender=None, param=None, toselect=None):
-#        #We ask to do the refresh in a gtk thread
-#        #We use a lock_lock like described in
-#        #http://ploum.frimouvy.org/?202-the-signals-and-threads-flying-circus
-#        if self.refresh_lock_lock.acquire(False):
-#            gobject.idle_add(self.refresh_tb, sender, toselect)
-#        #If we have something toselect, we cannot skip the refresh
-#        elif toselect:
-#            gobject.idle_add(self.select_task, toselect)
-
-#    def refresh_tb(self, fromtask=None, toselect=None):
-#        """Refresh the task browser.
-
-#        If a task asked for the refresh, we don't refresh it to avoid a loop
-#        New use refresh_tb directly, use "do_refresh".
-#        """
-#        self.refresh_lock.acquire()
-#        try:
-#            self.refresh_lock_lock.release()
-#            current_pane = self.main_pane.get_child()
-#            if self.priv['noteview']:
-#                if current_pane == self.task_tview:
-#                    self.main_pane.remove(current_pane)
-#                    self.main_pane.add(self.note_tview)
-#                self.refresh_note()
-#            else:
-#                if current_pane == self.note_tview:
-#                    self.main_pane.remove(current_pane)
-#                    self.main_pane.add(self.task_tview)
-#                self.refresh_list(toselect=toselect)
-#            self.refresh_closed()
-#            self.refresh_tags()
-#            #Refreshing the opened editors
-#            for uid in self.opened_task:
-#                if uid != fromtask:
-#                    self.opened_task[uid].refresh_editor()
-#        finally:
-#            self.refresh_lock.release()
-
-#    def refresh_tags(self):
-#        """Refresh the tag list.
-
-#        Not needed very often.
-#        """
-#        select = self.tag_tview.get_selection()
-#        t_path = None
-#        if select:
-#            t_model, t_path = select.get_selected_rows()
-#        self.tag_ts.clear()
-#        alltag       = self.req.get_alltag_tag()
-#        notag        = self.req.get_notag_tag()
-#        if self.priv['workview']:
-#            count_all_task = len(self.req.get_active_tasks_list(workable=True))
-#            count_no_tags  = len(\
-#                self.req.get_active_tasks_list(notag_only=True, workable=True))
-#        else:
-#            count_all_task = len(self.req.get_tasks_list(started_only=False))
-#            count_no_tags  = len(self.req.get_tasks_list(notag_only=True,\
-#                                                         started_only=False))
-
-#        self.tag_ts.append([alltag, None,
-#            _("<span weight=\"bold\">All tags</span>"),
-#            str(count_all_task), False])
-#        self.tag_ts.append([notag, None,
-#            _("<span weight=\"bold\">Tasks without tags</span>"),
-#            str(count_no_tags), False])
-#        self.tag_ts.append([None, None, "", "", True])
-
-#        tags = self.req.get_used_tags()
-
-#        tags.sort(cmp=lambda x, y: cmp(x.get_name().lower(),\
-#            y.get_name().lower()))
-
-#        for tag in tags:
-#            color = tag.get_attribute("color")
-#            if self.priv['workview']:
-#                count = len(\
-#                    self.req.get_active_tasks_list(tags=[tag], workable=True))
-#            else:
-#                count = len(\
-#                    self.req.get_tasks_list(started_only=False, tags=[tag]))
-#            #We display the tags without the "@" (but we could)
-#            if count != 0:
-#                self.tag_ts.append([tag, color, tag.get_name()[1:],\
-#                    str(count), False])
-
-#        #We reselect the selected tag
-#        if t_path:
-#            for i in t_path:
-#                self.tag_tview.get_selection().select_path(i)
-
-#    def refresh_list(self, a=None, toselect=None):
-#        """Refresh or build the TreeStore of tasks."""
-
-#        # Save collapsed rows
-#        self.task_ts.foreach(self.update_collapsed_row, None)
-
-#        #selected tasks:
-#        selected_uid = self.get_selected_task(self.task_tview)
-#        tselect = self.task_tview.get_selection()
-#        t_path = None
-#        if tselect:
-#            t_model, t_path = tselect.get_selected_rows()
-
-#        #Scroll position:
-#        vscroll_value = self.task_tview.get_vadjustment().get_value()
-#        hscroll_value = self.task_tview.get_hadjustment().get_value()
-
-#        #to refresh the list we build a new treestore then replace the existing
-#        new_taskts = browser_tools.new_task_ts(dnd_func=self.row_dragndrop)
-#        tag_list, notag_only = self.get_selected_tags()
-#        nbr_of_tasks = 0
-
-#        #We build the active tasks pane
-#        if self.priv["workview"]:
-#            tasks = self.req.get_active_tasks_list(
-#                tags=tag_list, notag_only=notag_only, workable=True,
-#                started_only=False)
-#            for tid in tasks:
-#                self.add_task_tree_to_list(
-#                    new_taskts, tid, None, selected_uid, treeview=False)
-#            nbr_of_tasks = len(tasks)
-
-#        else:
-#            #building the classical treeview
-#            active_root_tasks = self.req.get_active_tasks_list(
-#                tags=tag_list, notag_only=notag_only, is_root=True,
-#                started_only=False)
-#            active_tasks = self.req.get_active_tasks_list(
-#                tags=tag_list, notag_only=notag_only, is_root=False,
-#                started_only=False)
-#            for tid in active_root_tasks:
-#                self.add_task_tree_to_list(
-#                    new_taskts, tid, None, selected_uid,
-#                    active_tasks=active_tasks)
-#            nbr_of_tasks = len(active_tasks)
-
-#        #Set the title of the window:
-#        if nbr_of_tasks == 0:
-#            parenthesis = _("(no active tasks)")
-#        elif nbr_of_tasks == 1:
-#            parenthesis = _("(1 active task)")
-#        else:
-#            parenthesis = "(%s active tasks)"%nbr_of_tasks
-#        self.window.set_title("Getting Things GNOME! %s"%parenthesis)
-#        self.task_tview.set_model(new_taskts)
-#        self.task_ts = new_taskts
-
-#        #We expand all the we close the tasks who were not saved as "expanded"
-#        self.task_tview.expand_all()
-#        self.task_tview.map_expanded_rows(self.restore_collapsed, None)
-
-#        # Restore sorting
-#        if not self.priv["noteview"]:
-#            # XXX: This can be done much more simply using {}.get(). -- jml,
-#            # 2009-07-18.
-#            if ('sort_column' in self.priv["tasklist"] and
-#                'sort_order' in self.priv["tasklist"]):
-#                if (self.priv["tasklist"]["sort_column"] is not None and
-#                    self.priv["tasklist"]["sort_order"] is not None):
-#                    self.sort_tasklist_rows(
-#                        self.priv["tasklist"]["sort_column"],
-#                        self.priv["tasklist"]["sort_order"])
-
-#        #We reselect the selected tasks
-#        if toselect:
-#            self.select_task(toselect)
-#        elif t_path:
-#            selection = self.task_tview.get_selection()
-#            for i in t_path:
-#                selection.select_path(i)
-
-#        def restore_vscroll(old_position):
-#            vadjust = self.task_tview.get_vadjustment()
-#            #We ensure that we will not scroll out of the window
-#            #It was bug #331285
-#            vscroll = min(old_position, (vadjust.upper - vadjust.page_size))
-#            vadjust.set_value(vscroll)
-
-#        def restore_hscroll(old_position):
-#            hadjust = self.task_tview.get_hadjustment()
-#            hscroll = min(old_position, (hadjust.upper - hadjust.page_size))
-#            hadjust.set_value(hscroll)
-
-#        #scroll position
-#        #We have to call that in another thread, else it will not work
-#        gobject.idle_add(restore_vscroll, vscroll_value)
-#        gobject.idle_add(restore_hscroll, hscroll_value)
-
-#    def refresh_closed(self):
-#        """Refresh the closed tasks pane."""
-
-#        #We build the closed tasks pane
-#        dselect = self.ctask_tview.get_selection()
-#        d_path = None
-#        if dselect:
-#            d_model, d_path = dselect.get_selected_rows()
-#        #We empty the pane
-#        self.ctask_ts.clear()
-#        #We rebuild it
-#        tag_list, notag_only = self.get_selected_tags()
-#        closed_tasks = self.req.get_closed_tasks_list(tags=tag_list,\
-#                                                    notag_only=notag_only)
-#        for tid in closed_tasks:
-#            t              = self.req.get_task(tid)
-#            title_str      = saxutils.escape(t.get_title())
-#            closeddate     = t.get_closed_date()
-#            closeddate_str = closeddate
-#            tags           = t.get_tags()
-#            if self.priv["bg_color_enable"] and t.has_tags():
-#                my_color = colors.background_color(t.get_tags())
-#            else:
-#                my_color = None
-#            if t.get_status() == "Dismiss":
-#                title_str =\
-#                     "<span color=\"#AAAAAA\">%s</span>" % title_str
-#                closeddate_str =\
-#                     "<span color=\"#AAAAAA\">%s</span>" % closeddate
-#            self.ctask_ts.append(None, [\
-#                tid, t.get_color(), title_str, closeddate, closeddate_str,
-#                my_color, tags])
-#        closed_selection = self.ctask_tview.get_selection()
-#        if d_path:
-#            for i in d_path:
-#                closed_selection.select_path(i)
-#        self.ctask_ts.set_sort_column_id(\
-#            browser_tools.CTASKS_MODEL_DDATE, gtk.SORT_DESCENDING)
-
-#    def refresh_note(self):
-#        """Refresh the notes pane."""
-
-#        #We build the notes pane
-#        dselect = self.note_tview.get_selection()
-#        d_path = None
-#        if dselect:
-#            d_model, d_path = dselect.get_selected_rows()
-#        #We empty the pane
-#        self.note_ts.clear()
-#        #We rebuild it
-#        tag_list, notag_only = self.get_selected_tags()
-#        notes = self.req.get_notes_list(tags=tag_list, notag_only=notag_only)
-#        for tid in notes:
-#            t              = self.req.get_task(tid)
-#            title_str      = saxutils.escape(t.get_title())
-#            self.note_ts.append(None, [tid, t.get_color(), title_str])
-#        note_selection = self.note_tview.get_selection()
-#        if d_path:
-#            for i in d_path:
-#                note_selection.select_path(i)
-#        #self.note_ts.set_sort_column_id\
-#        #(browser_tools.CTASKS_MODEL_DDATE, gtk.SORT_DESCENDING)
-#        return
+        ctask_modelsort.set_sort_column_id(tasktree.COL_DDATE, gtk.SORT_DESCENDING)
+        self.ctask_tv.set_model(ctask_modelsort)
 
 ### PUBLIC METHODS ############################################################
 #
@@ -1597,7 +1207,7 @@ class TaskBrowser:
         """
         uid = None
         if not tv:
-            tview = self.task_tview
+            tview = self.task_tv
         else:
             tview = tv
         # Get the selection in the gtk.TreeView
@@ -1605,22 +1215,22 @@ class TaskBrowser:
         #If we don't have anything and no tview specified
         #Let's have a look in the closed task view
         if selection and selection.count_selected_rows() <= 0 and not tv:
-            tview = self.ctask_tview
+            tview = self.ctask_tv
             selection = tview.get_selection()
         #Then in the notes pane
-        if selection and selection.count_selected_rows() <= 0 and not tv:
-            tview = self.note_tview
-            selection = tview.get_selection()
+#        if selection and selection.count_selected_rows() <= 0 and not tv:
+#            tview = self.note_tview
+#            selection = tview.get_selection()
         # Get the selection iter
         if selection:
             model, selection_iter = selection.get_selected()
             if selection_iter:
                 ts  = tview.get_model()
-                uid = ts.get_value(selection_iter, model.get_model().COL_TID)
+                uid = ts.get_value(selection_iter, tasktree.COL_TID)
         return uid
 
     def get_selected_tags(self):
-        t_selected = self.tag_tview.get_selection()
+        t_selected = self.tag_tv.get_selection()
         t_iter = None
         if t_selected:
             tmodel, t_iter = t_selected.get_selected()
@@ -1644,41 +1254,38 @@ class TaskBrowser:
 #
     def main(self):
 
+        # Set up models
+        active_tasks = self.req.get_active_tasks_list()
+        self.task_model  = TaskTreeModel(\
+                                requester=self.req,\
+                                tasks=active_tasks)
+        closed_tasks = self.req.get_closed_tasks_list()
+        self.ctask_model = TaskTreeModel(\
+                                requester=self.req,\
+                                tasks=closed_tasks,\
+                                is_tree=False)
+
         # Here we will define the main TaskList interface
         gobject.threads_init()
 
-        # Set up models
-        #self.task_model  = self.req.get_model()
-        #self.ctask_model = self.req.get_model(is_tree=False)
-
         # The tags treeview
-        browser_tools.init_tags_tview(self.tag_tview)
-        self.tag_tview.set_model(self.tag_ts)
-
-        # The Active tasks treeview
-        col = browser_tools.init_task_tview(\
-            self.task_tview, self.sort_tasklist_rows)
-        self.priv["tasklist"]["columns"] = col
-
-        # The done/dismissed taks treeview
-        col = browser_tools.init_closed_tasks_tview(\
-            self.ctask_tview, self.sort_tasklist_rows)
-        self.priv["ctasklist"]["columns"] = col
+        browser_tools.init_tags_tview(self.tag_tv)
+        self.tag_tv.set_model(self.tag_ts)
 
         # The treeview for notes
-        browser_tools.init_note_tview(self.note_tview)
-        self.note_tview.set_model(self.note_ts)
+        #browser_tools.init_note_tview(self.note_tview)
+        #self.note_tview.set_model(self.note_ts)
 
         # Put the content in those treeviews
         #self.do_refresh()
 
         # Watch for selections in the treeview
-        selection = self.task_tview.get_selection()
-        closed_selection = self.ctask_tview.get_selection()
-        note_selection = self.note_tview.get_selection()
+        selection = self.task_tv.get_selection()
+        closed_selection = self.ctask_tv.get_selection()
+        #note_selection = self.note_tview.get_selection()
         selection.connect("changed", self.on_task_cursor_changed)
         closed_selection.connect("changed", self.on_taskdone_cursor_changed)
-        note_selection.connect("changed", self.on_note_cursor_changed)
+        #note_selection.connect("changed", self.on_note_cursor_changed)
 
         # Restore state from config
         self.restore_state_from_conf()

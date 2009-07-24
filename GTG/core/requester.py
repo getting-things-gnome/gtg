@@ -209,12 +209,6 @@ class Requester:
             tags=tags, status=note, notag_only=notag_only, started_only=False,
             is_root=False)
 
-
-    def get_model(self, is_tree=True):
-        """Return the TreeModel for the tasks.
-        """
-        return self.ds.get_model(is_tree)
-
     ############### Tags ##########################
     ###############################################
 
