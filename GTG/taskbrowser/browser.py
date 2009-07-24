@@ -555,28 +555,23 @@ class TaskBrowser:
 
     def update_collapsed_row(self, model, path, itera, user_data):
         """Build a list of task that must showed as collapsed in Treeview"""
-        tid = self.task_ts.get_value(itera, 0)
+        model = self.task_tview.get_model()
+        tid = model.get_value(itera, 0)
         # Remove expanded rows
-        if (self.task_ts.iter_has_child(itera) and
+        if (model.iter_has_child(itera) and
             self.task_tview.row_expanded(path) and
             tid in self.priv["collapsed_tid"]):
 
             self.priv["collapsed_tid"].remove(tid)
 
         # Append collapsed rows
-        elif (self.task_ts.iter_has_child(itera) and
+        elif (model.iter_has_child(itera) and
               not self.task_tview.row_expanded(path) and
               tid not in self.priv["collapsed_tid"]):
 
             self.priv["collapsed_tid"].append(tid)
 
         return False # Return False or the TreeModel.foreach() function ends
-
-    def restore_collapsed(self, treeview, path, data):
-        itera = self.task_ts.get_iter(path)
-        tid = self.task_ts.get_value(itera, 0)
-        if tid in self.priv["collapsed_tid"]:
-            treeview.collapse_row(path)
 
     def add_task_tree_to_list(self, tree_store, tid, parent, selected_uid=None,
                               active_tasks=[], treeview=True):
@@ -815,11 +810,12 @@ class TaskBrowser:
             sort_reverse = False
 
         # Sort rows
-        rows = [tuple(r) + (i, ) for i, r in enumerate(self.task_ts)]
+        model = self.task_model
+        rows = [tuple(r) + (i, ) for i, r in enumerate(model)]
         if len(rows) != 0:
             rows.sort(key=lambda x: x[browser_tools.TASK_MODEL_TITLE].lower())
             rows.sort(cmp=cmp_func, key=sort_key, reverse=sort_reverse)
-            self.task_ts.reorder(None, [r[-1] for r in rows])
+            model.reorder(None, [r[-1] for r in rows])
 
         # Display the sort indicator
         column.set_sort_indicator(True)
@@ -832,7 +828,7 @@ class TaskBrowser:
         @param user_data:
         """
         tag_list, notag_only = self.get_selected_tags()
-        tid  = model.get_value(iter, model.COL_TID)
+        tid  = model.get_value(iter, self.task_model.COL_TID)
         task = self.req.get_task(tid)
         if task.get_status() != "Active":
             return False
@@ -844,12 +840,23 @@ class TaskBrowser:
         @param iter: the iter whose visiblity must be evaluated
         @param user_data:
         """
-        tid  = model.get_value(iter, model.COL_TID)
+        tid  = model.get_value(iter, self.ctask_model.COL_TID)
         task = self.req.get_task(tid)
         return task.get_status() != "Active"
 
+    def restore_collapsed(self, treeview, path, data):
+        model = self.task_tview.get_model()
+        itera = model.get_iter(path)
+        tid   = model.get_value(itera, self.task_model.COL_TID)
+        if tid in self.priv["collapsed_tid"]:
+            treeview.collapse_row(path)
+
+    def restore_collapsed_rows(self):
+        self.task_tview.expand_all()
+        self.task_tview.map_expanded_rows(self.restore_collapsed, None)
+
 ### SIGNAL CALLBACKS ##########################################################
-# Typically, reaction to user input @ interactions with the GUI
+# Typically, reaction to user input & interactions with the GUI
 #
     def on_move(self, widget, data):
         xpos, ypos = self.window.get_position()
@@ -1215,8 +1222,9 @@ class TaskBrowser:
         self.task_tview.get_selection().unselect_all()
         self.ctask_tview.get_selection().unselect_all()
         task_model = self.task_tview.get_model()
+        task_model.foreach(self.update_collapsed_row, None)
         task_model.refilter()
-        #self.do_refresh()
+        self.restore_collapsed_rows()
 
     def on_taskdone_cursor_changed(self, selection=None):
         """Called when selection changes in closed task view.
@@ -1311,15 +1319,18 @@ class TaskBrowser:
     def on_refresh(self, widget):
         #TODO: this is used for debug of the TreeModel, please delete me once it's done
 
-        task_model = self.req.get_model()
-        task_modelfilter = task_model.filter_new()
+        self.task_model  = self.req.get_model()
+        self.ctask_model = self.req.get_model(is_tree=False)
+
+        task_modelfilter = self.task_model.filter_new()
         task_modelfilter.set_visible_func(self.active_task_visible_func)
         self.task_tview.set_model(task_modelfilter)
+        self.restore_collapsed_rows()
 
-        ctask_model = self.req.get_model(is_tree=False)
-        ctask_modelfilter = ctask_model.filter_new()
+        ctask_modelfilter = self.ctask_model.filter_new()
         ctask_modelfilter.set_visible_func(self.closed_task_visible_func)
-        self.ctask_tview.set_model(ctask_modelfilter)
+        ctask_modelsort   = gtk.TreeModelSort(ctask_modelfilter)
+        self.ctask_tview.set_model(ctask_modelsort)
 
 ### LIST REFRESH FUNCTIONS ####################################################
 #
@@ -1639,6 +1650,10 @@ class TaskBrowser:
         # Here we will define the main TaskList interface
         gobject.threads_init()
 
+        # Set up models
+        #self.task_model  = self.req.get_model()
+        #self.ctask_model = self.req.get_model(is_tree=False)
+
         # The tags treeview
         browser_tools.init_tags_tview(self.tag_tview)
         self.tag_tview.set_model(self.tag_ts)
@@ -1647,17 +1662,11 @@ class TaskBrowser:
         col = browser_tools.init_task_tview(\
             self.task_tview, self.sort_tasklist_rows)
         self.priv["tasklist"]["columns"] = col
-        #modelfilter = self.task_ts.filter_new()
-        #modelfilter = self.req.get_model()
-        #modelfilter.set_visible_func(self._visible_func)
-        #self.task_tview.set_model(modelfilter)
-        #self.task_tview.set_model(self.task_ts)
 
         # The done/dismissed taks treeview
         col = browser_tools.init_closed_tasks_tview(\
             self.ctask_tview, self.sort_tasklist_rows)
         self.priv["ctasklist"]["columns"] = col
-        #self.ctask_tview.set_model(self.ctask_ts)
 
         # The treeview for notes
         browser_tools.init_note_tview(self.note_tview)
