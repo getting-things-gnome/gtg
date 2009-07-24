@@ -769,57 +769,57 @@ class TaskBrowser:
             else:
                 return cmp(key1, key2)
 
-    def sort_tasklist_rows(self, column, sort_order=None):
-        """ Sort the rows based on the given column """
+#    def sort_tasklist_rows(self, column, sort_order=None):
+#        """ Sort the rows based on the given column """
 
-        # Extract sorting state
-        last_sort_col   = self.priv["tasklist"]["sort_column"]
-        last_sort_order = self.priv["tasklist"]["sort_order"]
+#        # Extract sorting state
+#        last_sort_col   = self.priv["tasklist"]["sort_column"]
+#        last_sort_order = self.priv["tasklist"]["sort_order"]
 
-        # Cleanup
-        if last_sort_col is not None:
-            last_sort_col.set_sort_indicator(False)
+#        # Cleanup
+#        if last_sort_col is not None:
+#            last_sort_col.set_sort_indicator(False)
 
-        # Ascending or descending?
-        if sort_order is None:
-            if last_sort_col == column:
-                if last_sort_order == gtk.SORT_ASCENDING:
-                    sort_order = gtk.SORT_DESCENDING
-                else:
-                    sort_order = gtk.SORT_ASCENDING
-            else:
-                sort_order = gtk.SORT_DESCENDING
+#        # Ascending or descending?
+#        if sort_order is None:
+#            if last_sort_col == column:
+#                if last_sort_order == gtk.SORT_ASCENDING:
+#                    sort_order = gtk.SORT_DESCENDING
+#                else:
+#                    sort_order = gtk.SORT_ASCENDING
+#            else:
+#                sort_order = gtk.SORT_DESCENDING
 
-        # Store sorting state
-        self.priv["tasklist"]["sort_column"] = column
-        self.priv["tasklist"]["sort_order"]  = sort_order
+#        # Store sorting state
+#        self.priv["tasklist"]["sort_column"] = column
+#        self.priv["tasklist"]["sort_order"]  = sort_order
 
-        # Determine row sorting depending on column
-        if column == self.priv["tasklist"]["columns"]\
-            [browser_tools.TASKLIST_COL_TITLE]:
-            cmp_func = lambda x, y: locale.strcoll(x.lower(), y.lower())
-            sort_key = lambda x: x[browser_tools.TASK_MODEL_TITLE]
-        else:
-            cmp_func = self.cmp_duedate_str
-            sort_key = lambda x: x[browser_tools.TASK_MODEL_DDATE_STR]
+#        # Determine row sorting depending on column
+#        if column == self.priv["tasklist"]["columns"]\
+#            [browser_tools.TASKLIST_COL_TITLE]:
+#            cmp_func = lambda x, y: locale.strcoll(x.lower(), y.lower())
+#            sort_key = lambda x: x[browser_tools.TASK_MODEL_TITLE]
+#        else:
+#            cmp_func = self.cmp_duedate_str
+#            sort_key = lambda x: x[browser_tools.TASK_MODEL_DDATE_STR]
 
-        # Determine sorting direction
-        if sort_order == gtk.SORT_ASCENDING:
-            sort_reverse = True
-        else:
-            sort_reverse = False
+#        # Determine sorting direction
+#        if sort_order == gtk.SORT_ASCENDING:
+#            sort_reverse = True
+#        else:
+#            sort_reverse = False
 
-        # Sort rows
-        model = self.task_model
-        rows = [tuple(r) + (i, ) for i, r in enumerate(model)]
-        if len(rows) != 0:
-            rows.sort(key=lambda x: x[browser_tools.TASK_MODEL_TITLE].lower())
-            rows.sort(cmp=cmp_func, key=sort_key, reverse=sort_reverse)
-            model.reorder(None, [r[-1] for r in rows])
+#        # Sort rows
+#        model = self.task_model
+#        rows = [tuple(r) + (i, ) for i, r in enumerate(model)]
+#        if len(rows) != 0:
+#            rows.sort(key=lambda x: x[browser_tools.TASK_MODEL_TITLE].lower())
+#            rows.sort(cmp=cmp_func, key=sort_key, reverse=sort_reverse)
+#            model.reorder(None, [r[-1] for r in rows])
 
-        # Display the sort indicator
-        column.set_sort_indicator(True)
-        column.set_sort_order(sort_order)
+#        # Display the sort indicator
+#        column.set_sort_indicator(True)
+#        column.set_sort_order(sort_order)
 
     def active_task_visible_func(self, model, iter, user_data=None):
         """Return True if the row must be displayed in the treeview.
@@ -951,7 +951,7 @@ class TaskBrowser:
         if len(tags) == 1:
             color = tags[0].get_attribute("color")
             if color != None:
-                colorspec = gtk.gdk.Color(color)
+                colorspec = gtk.gdk.color_parse(color)
                 colorsel = window.colorsel
                 colorsel.set_previous_color(colorspec)
                 colorsel.set_current_color(colorspec)
