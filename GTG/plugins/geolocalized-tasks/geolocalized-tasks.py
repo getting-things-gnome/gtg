@@ -25,7 +25,6 @@ class geolocalizedTasks:
         
         # the preference menu for the plugin
         self.menu_item = gtk.MenuItem("Geolocalized Task Preferences")
-        self.menu_item.connect('activate', self.on_geolocalized_preferences)
         
         # the menu intem for the tag context
         self.context_item = gtk.MenuItem("Location")
@@ -36,6 +35,7 @@ class geolocalizedTasks:
         
     
     def activate(self, plugin_api):
+        self.menu_item.connect('activate', self.on_geolocalized_preferences)
         plugin_api.AddMenuItem(self.menu_item)
         
         self.context_item.connect('activate', self.on_contextmenu_tag_location, plugin_api)
@@ -323,7 +323,7 @@ class geolocalizedTasks:
         # connect the toolbar buttons for zoom
         btn_zoom_in.connect("clicked", self.zoom_in, champlain_view)
         btn_zoom_out.connect("clicked", self.zoom_out, champlain_view)
-        dialog.connect("response", self.tag_location_close)
+        dialog.connect("response", self.tag_location_close, tag, marker_tag)
         
         dialog.show_all()
         
@@ -344,11 +344,13 @@ class geolocalizedTasks:
         (latitude, longitude) = view.get_coords_at(int(event.x), int(event.y))
         marker.set_position(latitude, longitude)
     
-    def tag_location_close(self, dialog, response=None):
+    def tag_location_close(self, dialog, response=None, tag=None, marker=None):
         if response == gtk.RESPONSE_OK:
-            print "update/create location"
+            tag_location = str((marker.get_property('latitude'), marker.get_property('longitude')))
+            tag.set_attribute("location", tag_location)
+            dialog.destroy()
         else:
-            print "cancel"
+            dialog.destroy()
     
     def zoom_in(self, widget, view):
         view.zoom_in()

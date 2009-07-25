@@ -137,6 +137,7 @@ class PluginAPI:
     def remove_menu_tagpopup(self, item):
         self.__tagpopup.remove(item)
         
+    # get's the selected tag in the tag view
     def get_tagpopup_tag(self):
         selected = self.tagview.get_selection()
         model, iter = selected.get_selected()
