@@ -35,7 +35,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
                not is_tree:
                 self.root_tasks.append(tid)
 
-### TREE MODEL ################################################################
+### TREE MODEL HELPER FUNCTIONS ###############################################
 
     def get_n_root_tasks(self):
         return len(self.root_tasks)
@@ -49,8 +49,8 @@ class TaskTreeModel(gtk.GenericTreeModel):
     def rowref_from_path(self, task, path):
         """Return a row reference for a given treemodel path
         
-         @param task    : the root from which the treemodel path starts. Set it
-                          to None to start from the uppest level.
+         @param task : the root from which the treemodel path starts. Set it
+                       to None to start from the uppest level.
          @param path : the treemodel path
         """
         if len(path) == 1:
@@ -198,6 +198,8 @@ class TaskTreeModel(gtk.GenericTreeModel):
             par_rowref = child[:child.rfind('/')]
             return par_rowref
 
+    def move(self, parent, iter):
+        print "Moving %s below %s" % (iter, parent)
 
 class TaskTreeView(gtk.TreeView):
     """TreeView for display of a list of task. Handles DnD primitives too."""
@@ -218,7 +220,7 @@ class ActiveTaskTreeView(TaskTreeView):
     """TreeView for display of a list of task. Handles DnD primitives too."""
 
     DND_TARGETS = [
-        ('gtg/task_tree_model_tid', gtk.TARGET_SAME_WIDGET, 0)
+        ('gtg/task-iter-str', gtk.TARGET_SAME_WIDGET, 0)
     ]
 
     def __init__(self, model=None):
@@ -315,40 +317,61 @@ class ActiveTaskTreeView(TaskTreeView):
         self.emit_stop_by_name('drag_drop')
 
     def on_drag_data_get(self, treeview, context, selection, info, timestamp):
+        """Extract data from the source of the DnD operation. Here the id of
+        the parent task and the id of the selected task is passed to the
+        destination"""
         print "Drag data get"
         treeselection = treeview.get_selection()
         model, iter = treeselection.get_selected()
-        tid = model.get_value(iter, COL_TID)
-        selection.set('gtg/task-id', 0, tid)
+        iter_str = model.get_string_from_iter(iter)
+        selection.set('gtg/task-iter-str', 0, iter_str)
         return
 
     def on_drag_data_received(self, treeview, context, x, y, selection, info,\
                               timestamp):
-        print "Drag data received"
-        model = treeview.get_model()
-        data = selection.data
+
+        model          = treeview.get_model()
+        model_filter   = model.get_model()
+        tasktree_model = model_filter.get_model()
+
         drop_info = treeview.get_dest_row_at_pos(x, y)
+
         if drop_info:
             path, position = drop_info
             iter = model.get_iter(path)
-            if position == gtk.TREE_VIEW_DROP_BEFORE:
-                # Must move task before the next iter
-                # This must not work if the TV is sorted
-                print "Dropped before"
-            elif position == gtk.TREE_VIEW_DROP_AFTER:
-                # Must move task before the next iter
-                # This must not work if the TV is sorted
-                print "Dropped after"
-                #model.insert_after(iter, [data])
+            if position == gtk.TREE_VIEW_DROP_BEFORE or\
+               position == gtk.TREE_VIEW_DROP_AFTER:
+                # Must add the task to the parent of the task situated\
+                # before/after
+                # Get sibling parent
+                par_iter = model.iter_parent(iter)
             else:
                 # Must add task as a child of the dropped-on iter
-                print "Dropped into"
-                #model.insert_before(iter, [data])
+                # Get parent
+                par_iter = iter
         else:
-            print "Appending"
-            #model.append([data])
+            # Must add the task to the root
+            # Parent = root => iter=None
+            par_iter = None
+
+        # Get parent iter as a TaskTreeModel iter
+        if par_iter:
+            par_iter_filter   =\
+                model.convert_iter_to_child_iter(None, par_iter)
+            par_iter_tasktree =\
+                model_filter.convert_iter_to_child_iter(par_iter_filter)
+        else:
+            par_iter_tasktree = None
+
+        # Get dragged iter as a TaskTreeModel iter
+        drag_iter = model.get_iter_from_string(selection.data)
+        drag_iter_filter   =\
+            model.convert_iter_to_child_iter(None, drag_iter)
+        drag_iter_tasktree =\
+            model_filter.convert_iter_to_child_iter(drag_iter_filter)
+        tasktree_model.move(par_iter_tasktree, drag_iter_tasktree)
+
         self.emit_stop_by_name('drag_data_received')
-        return
 
 
 class ClosedTaskTreeView(TaskTreeView):

@@ -724,6 +724,25 @@ class TaskBrowser:
         self.task_tv.expand_all()
         self.task_tv.map_expanded_rows(self.restore_collapsed, None)
 
+    def dleft_sort_func(self, model, iter1, iter2, user_data=None):
+        order = self.task_tv.get_model().get_sort_column_id()[0]
+        t1_dleft = model.get_value(iter1, tasktree.COL_DLEFT)
+        t2_dleft = model.get_value(iter2, tasktree.COL_DLEFT)
+        if not t1_dleft and not t2_dleft:
+            return 0
+        elif not t1_dleft and t2_dleft:
+            if order == gtk.SORT_ASCENDING:
+                return 1
+            else:
+                return -1
+        elif t1_dleft and not t2_dleft:
+            if order == gtk.SORT_ASCENDING:
+                return -1
+            else:
+                return 1
+        else:
+            return cmp(t1_dleft, t2_dleft)
+
 ### SIGNAL CALLBACKS ##########################################################
 # Typically, reaction to user input & interactions with the GUI
 #
@@ -1172,7 +1191,8 @@ class TaskBrowser:
         gtk.main_quit()
 
     def on_refresh(self, widget):
-        #TODO: this is used for debug of the TreeModel, please delete me once it's done
+        #TODO: this is used for debug of the TreeModel,
+        #      please delete me once it's done
 
         active_tasks = self.req.get_active_tasks_list()
         self.task_model  = TaskTreeModel(\
@@ -1187,14 +1207,17 @@ class TaskBrowser:
         task_modelfilter = self.task_model.filter_new()
         task_modelfilter.set_visible_func(self.active_task_visible_func)
         task_modelsort = gtk.TreeModelSort(task_modelfilter)
-        task_modelsort.set_sort_column_id(tasktree.COL_DLEFT, gtk.SORT_ASCENDING)
+        task_modelsort.set_sort_func(tasktree.COL_DLEFT, self.dleft_sort_func)
+        task_modelsort.set_sort_column_id(\
+            tasktree.COL_DLEFT, gtk.SORT_DESCENDING)
         self.task_tv.set_model(task_modelsort)
         self.restore_collapsed_rows()
 
         ctask_modelfilter = self.ctask_model.filter_new()
         ctask_modelfilter.set_visible_func(self.closed_task_visible_func)
         ctask_modelsort   = gtk.TreeModelSort(ctask_modelfilter)
-        ctask_modelsort.set_sort_column_id(tasktree.COL_DDATE, gtk.SORT_DESCENDING)
+        ctask_modelsort.set_sort_column_id(\
+            tasktree.COL_DDATE, gtk.SORT_DESCENDING)
         self.ctask_tv.set_model(ctask_modelsort)
 
 ### PUBLIC METHODS ############################################################
