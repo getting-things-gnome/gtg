@@ -1,4 +1,21 @@
 # -*- coding: utf-8 -*-
+# -----------------------------------------------------------------------------
+# Hamster Task Tracker Plugin for Gettings Things Gnome!
+# Copyright (c) 2009 Kevin Mehall
+#
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program.  If not, see <http://www.gnu.org/licenses/>.
+# -----------------------------------------------------------------------------
 import gtk, pygtk
 import os
 import dbus
@@ -35,8 +52,10 @@ class hamsterPlugin:
         self.menu_item = gtk.MenuItem("Start task in Hamster")
         self.menu_item.connect('activate', self.browser_cb, plugin_api)
         
-        self.tb_button=gtk.ToolButton(gtk.STOCK_EXECUTE)
+        self.tb_button=gtk.ToolButton()
         self.tb_button.set_label("Start")
+        self.tb_button.set_icon_name('hamster-applet')
+        self.tb_button.set_tooltip_text("Start a new activity in Hamster Time Tracker based on the selected task")
         self.tb_button.connect('clicked', self.browser_cb, plugin_api)
         
         # add a menu item to the menu bar
@@ -49,8 +68,10 @@ class hamsterPlugin:
 
     def onTaskOpened(self, plugin_api):
         # add a item (button) to the ToolBar
-        self.tb_Taskbutton = gtk.ToolButton(gtk.STOCK_EXECUTE)
+        self.tb_Taskbutton = gtk.ToolButton()
         self.tb_Taskbutton.set_label("Start")
+        self.tb_Taskbutton.set_icon_name('hamster-applet')
+        self.tb_Taskbutton.set_tooltip_text("Start a new activity in Hamster Time Tracker based on this task")
         self.tb_Taskbutton.connect('clicked', self.task_cb, plugin_api)
         plugin_api.AddTaskToolbarItem(gtk.SeparatorToolItem())
         plugin_api.AddTaskToolbarItem(self.tb_Taskbutton)
