@@ -31,6 +31,7 @@ class hamsterPlugin:
         self.hamster=dbus.SessionBus().get_object('org.gnome.Hamster', '/org/gnome/Hamster')
         
     def sendTask(self, task):
+        if task is None: return
         title=task.get_title()
         tags=task.get_tags_name()
         
