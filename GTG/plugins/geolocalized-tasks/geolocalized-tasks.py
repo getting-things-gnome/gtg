@@ -34,7 +34,7 @@ class geolocalizedTasks:
     PLUGIN_AUTHORS = 'Paulo Cabido <paulo.cabido@gmail.com>'
     PLUGIN_VERSION = '0.1'
     PLUGIN_DESCRIPTION = 'This plugin adds geolocalization to GTG!.'
-    PLUGIN_ENABLED = True
+    PLUGIN_ENABLED = False
     
     def __init__(self):
         self.plugin_path = os.path.dirname(os.path.abspath(__file__))
