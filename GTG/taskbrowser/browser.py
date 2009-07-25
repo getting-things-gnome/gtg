@@ -171,11 +171,11 @@ class TaskBrowser:
 
     def _init_ui_widget(self):
         # The Active tasks treeview
-        self.task_tv = ActiveTaskTreeView()#sort_func=self.sort_tasklist_rows)
+        self.task_tv = ActiveTaskTreeView()
         self.main_pane.add(self.task_tv)
 
         # The done/dismissed taks treeview
-        self.ctask_tv = ClosedTaskTreeView(sort_func=self.sort_tasklist_rows)
+        self.ctask_tv = ClosedTaskTreeView()
         self.closed_pane.add(self.ctask_tv)
 
     def _init_toolbar_tooltips(self):
@@ -643,57 +643,6 @@ class TaskBrowser:
             else:
                 return cmp(key1, key2)
 
-    def sort_tasklist_rows(self, column, sort_order=None):
-        """ Sort the rows based on the given column """
-
-        # Extract sorting state
-        last_sort_col   = self.priv["tasklist"]["sort_column"]
-        last_sort_order = self.priv["tasklist"]["sort_order"]
-
-        # Cleanup
-        if last_sort_col is not None:
-            last_sort_col.set_sort_indicator(False)
-
-        # Ascending or descending?
-        if sort_order is None:
-            if last_sort_col == column:
-                if last_sort_order == gtk.SORT_ASCENDING:
-                    sort_order = gtk.SORT_DESCENDING
-                else:
-                    sort_order = gtk.SORT_ASCENDING
-            else:
-                sort_order = gtk.SORT_DESCENDING
-
-        # Store sorting state
-        self.priv["tasklist"]["sort_column"] = column
-        self.priv["tasklist"]["sort_order"]  = sort_order
-
-        # Determine row sorting depending on column
-        if column == self.task_tv.get_column(tasktree.COL_TITLE):
-            cmp_func = lambda x, y: locale.strcoll(x.lower(), y.lower())
-            sort_key = lambda x: x[tasktree.COL_TITLE]
-        else:
-            cmp_func = self.cmp_duedate_str
-            sort_key = lambda x: x[tasktree.COL_DDATE]
-
-        # Determine sorting direction
-        if sort_order == gtk.SORT_ASCENDING:
-            sort_reverse = True
-        else:
-            sort_reverse = False
-
-        # Sort rows
-        model = self.task_model
-        rows = [tuple(r) + (i, ) for i, r in enumerate(model)]
-        if len(rows) != 0:
-            rows.sort(key=lambda x: x[tasktree.COL_TITLE].lower())
-            rows.sort(cmp=cmp_func, key=sort_key, reverse=sort_reverse)
-            model.reorder(None, [r[-1] for r in rows])
-
-        # Display the sort indicator
-        column.set_sort_indicator(True)
-        column.set_sort_order(sort_order)
-
     def active_task_visible_func(self, model, iter, user_data=None):
         """Return True if the row must be displayed in the treeview.
         @param model: the model of the filtered treeview
@@ -725,7 +674,7 @@ class TaskBrowser:
         self.task_tv.map_expanded_rows(self.restore_collapsed, None)
 
     def dleft_sort_func(self, model, iter1, iter2, user_data=None):
-        order = self.task_tv.get_model().get_sort_column_id()[0]
+        order = self.task_tv.get_model().get_sort_column_id()[1]
         t1_dleft = model.get_value(iter1, tasktree.COL_DLEFT)
         t2_dleft = model.get_value(iter2, tasktree.COL_DLEFT)
         if not t1_dleft and not t2_dleft:
@@ -741,7 +690,7 @@ class TaskBrowser:
             else:
                 return 1
         else:
-            return cmp(t1_dleft, t2_dleft)
+            return cmp(t2_dleft, t1_dleft)
 
 ### SIGNAL CALLBACKS ##########################################################
 # Typically, reaction to user input & interactions with the GUI
@@ -1207,9 +1156,10 @@ class TaskBrowser:
         task_modelfilter = self.task_model.filter_new()
         task_modelfilter.set_visible_func(self.active_task_visible_func)
         task_modelsort = gtk.TreeModelSort(task_modelfilter)
+        task_modelsort.set_sort_func(tasktree.COL_DDATE, self.dleft_sort_func)
         task_modelsort.set_sort_func(tasktree.COL_DLEFT, self.dleft_sort_func)
         task_modelsort.set_sort_column_id(\
-            tasktree.COL_DLEFT, gtk.SORT_DESCENDING)
+            tasktree.COL_DLEFT, gtk.SORT_ASCENDING)
         self.task_tv.set_model(task_modelsort)
         self.restore_collapsed_rows()
 
