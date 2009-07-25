@@ -331,7 +331,7 @@ class TaskBrowser:
                         p['state'] = False
         
         # initializes the plugin api class
-        self.plugin_api = PluginAPI(self.window, self.wTree, self.req)
+        self.plugin_api = PluginAPI(self.window, self.wTree, self.req, self.tagpopup, self.tag_tview, None, None)
         # initializes and activates each plugin (that is enabled)
         self.pengine.activatePlugins(self.plugins, self.plugin_api)
         

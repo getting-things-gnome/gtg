@@ -19,11 +19,15 @@
 import gtk
 
 class PluginAPI:
-    def __init__(self, window, wTree, requester, task=None, textview=None):
+    def __init__(self, window, wTree, requester, tagpopup, tagview=None, task=None, textview=None):
         # private vars       
         self.__window = window
         self.__wTree = wTree
         self.__requester = requester
+        self.__tagpopup = tagpopup 
+        
+        if tagview:
+            self.tagview = tagview
         
         if task:
             self.task = task
@@ -124,3 +128,17 @@ class PluginAPI:
     # defines the child's parent window
     def set_parent_window(self, child):
         child.set_transient_for(self.__window)
+        
+    # add's a menu to the tagpopup
+    def add_menu_tagpopup(self, item):
+        self.__tagpopup.append(item)
+        item.show()
+        
+    def remove_menu_tagpopup(self, item):
+        self.__tagpopup.remove(item)
+        
+    def get_tagpopup_tag(self):
+        selected = self.tagview.get_selection()
+        model, iter = selected.get_selected()
+        tag = model.get_value(iter, 0)
+        return tag

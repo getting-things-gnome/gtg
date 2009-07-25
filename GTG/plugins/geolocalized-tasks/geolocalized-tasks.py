@@ -27,14 +27,25 @@ class geolocalizedTasks:
         self.menu_item = gtk.MenuItem("Geolocalized Task Preferences")
         self.menu_item.connect('activate', self.on_geolocalized_preferences)
         
+        # the menu intem for the tag context
+        self.context_item = gtk.MenuItem("Location")
+        
         self.geoclue = Geoclue.DiscoverLocation()
         self.geoclue.init()
+        
+        
     
     def activate(self, plugin_api):
         plugin_api.AddMenuItem(self.menu_item)
+        
+        self.context_item.connect('activate', self.on_contextmenu_tag_location, plugin_api)
+        plugin_api.add_menu_tagpopup(self.context_item)
+        
     
     def deactivate(self, plugin_api):
         plugin_api.RemoveMenuItem(self.menu_item)
+        
+        plugin_api.remove_menu_tagpopup(self.context_item)
     
     def onTaskOpened(self, plugin_api):
         plugin_api.AddTaskToolbarItem(gtk.SeparatorToolItem())
@@ -242,7 +253,103 @@ class geolocalizedTasks:
         
         (latitude, longitude) = view.get_coords_at(int(event.x), int(event.y))
         self.marker_list[0].set_position(latitude, longitude)
-                
+    
+    def on_contextmenu_tag_location(self, widget, plugin_api):
+        location = self.geoclue.get_location_info()
+        self.plugin_api_context = plugin_api
+        
+        wTree = gtk.glade.XML(self.glade_file, "TagLocation")
+        dialog = wTree.get_widget("TagLocation")
+        self.plugin_api_context.set_parent_window(dialog)
+        
+        btn_zoom_in = wTree.get_widget("btn_zoom_in")
+        btn_zoom_out = wTree.get_widget("btn_zoom_out")
+        vbox_map = wTree.get_widget("vbox_map")
+        
+        tag = self.plugin_api_context.get_tagpopup_tag()
+        dialog.set_title(tag.get_attribute("name") + "'s Location")
+        
+        # get the tag's location
+        try:
+            tag_location = eval(tag.get_attribute("location"))
+        except:
+            tag_location = None
+            
+        # get the tag's color
+        try:
+            tag_color = self.HTMLColorToRGB(tag.get_attribute("color"))
+        except:
+            tag_color = None
+        
+        champlain_view = champlain.View()
+        champlain_view.set_property("scroll-mode", champlain.SCROLL_MODE_KINETIC)
+        
+        layer = MarkerLayer()
+        
+        marker_tag = None
+        if tag_location:
+            marker_tag = layer.add_marker(tag.get_attribute("name"), tag_location[0], tag_location[1], tag_color)
+        else:
+            try:
+                if location['longitude'] and location['latitude']:
+                    marker_tag = layer.add_marker(tag.get_attribute("name"), location['latitude'], location['longitude'], tag_color)
+            except:
+                marker_tag = layer.add_marker(tag.get_attribute("name"), None, None)
+        
+        champlain_view.add_layer(layer)
+        
+        embed = cluttergtk.Embed()
+        embed.set_size_request(400, 300)
+        
+        champlain_view.set_reactive(True)
+        champlain_view.connect("button-release-event", self.champlain__tag_change_marker, champlain_view, marker_tag)
+        
+        layer.show_all()
+        
+        if tag_location:
+            champlain_view.set_property("zoom-level", 9)
+        elif location:
+            champlain_view.set_property("zoom-level", 5)
+        else:
+            champlain_view.set_property("zoom-level", 1)      
+        
+        vbox_map.add(embed)
+        
+        embed.realize()
+        stage = embed.get_stage()
+        champlain_view.set_size(400, 300)
+        stage.add(champlain_view)
+        
+        # connect the toolbar buttons for zoom
+        btn_zoom_in.connect("clicked", self.zoom_in, champlain_view)
+        btn_zoom_out.connect("clicked", self.zoom_out, champlain_view)
+        dialog.connect("response", self.tag_location_close)
+        
+        dialog.show_all()
+        
+        if tag_location:
+            marker_position = (marker_tag.get_property('latitude'), marker_tag.get_property('longitude'))
+            champlain_view.center_on(marker_position[0], marker_position[1])
+        else:
+            try:
+                if location['longitude'] and location['latitude']:
+                    champlain_view.center_on(location['latitude'], location['longitude'])
+            except:
+                pass
+    
+    def champlain__tag_change_marker(self, widget, event, view, marker):
+        if event.button != 1 or event.click_count > 1:
+            return False
+        
+        (latitude, longitude) = view.get_coords_at(int(event.x), int(event.y))
+        marker.set_position(latitude, longitude)
+    
+    def tag_location_close(self, dialog, response=None):
+        if response == gtk.RESPONSE_OK:
+            print "update/create location"
+        else:
+            print "cancel"
+    
     def zoom_in(self, widget, view):
         view.zoom_in()
 
