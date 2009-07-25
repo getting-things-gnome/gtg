@@ -19,12 +19,17 @@
 import gtk
 
 class PluginAPI:
-    def __init__(self, window, wTree, requester, tagpopup, tagview=None, task=None, textview=None):
+    def __init__(self, window, wTree, requester, taskview=None, tagpopup=None, tagview=None, task=None, textview=None):
         # private vars       
         self.__window = window
         self.__wTree = wTree
         self.__requester = requester
-        self.__tagpopup = tagpopup 
+        
+        if taskview:
+            self.taskview = taskview
+        
+        if tagpopup:
+            self.__tagpopup = tagpopup
         
         if tagview:
             self.tagview = tagview
@@ -143,3 +148,17 @@ class PluginAPI:
         model, iter = selected.get_selected()
         tag = model.get_value(iter, 0)
         return tag
+    
+    # returns the task view in the main window (task browser)
+    def get_taskview(self):
+        return self.taskview
+    
+    # returns the selected task in the task view
+    def get_selected_task(self):
+        selected = self.taskview.get_selection()
+        model, iter = selected.get_selected()
+        if iter:
+            return self.__requester.get_task(model.get_value(iter, 0))
+        else:
+            return None
+        

@@ -22,7 +22,7 @@ import Geoclue
 import clutter, cluttergtk
 import champlain, champlaingtk 
 
-# IMPORTANT This add's the plugin path to python sys path
+# IMPORTANT This add's the plugin's path to python sys path
 sys.path.insert(0,os.path.dirname(os.path.abspath(__file__)))
 from marker import MarkerLayer
 
@@ -46,9 +46,25 @@ class geolocalizedTasks:
         # the menu intem for the tag context
         self.context_item = gtk.MenuItem("Location")
         
+        # toolbar button for the new Location view
+        # create the pixbuf with the icon and it's size.
+        # 24,24 is the TaskEditor's toolbar icon size
+        icon_path = os.path.join(self.plugin_path, "map.png")
+        pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(icon_path , 24, 24)
+        
+        # create the image and associate the pixbuf
+        self.icon_map = gtk.Image()
+        self.icon_map.set_from_pixbuf(pixbuf)
+        self.icon_map.show()
+        
+        # toolbar button for the location_view
+        self.btn_location_view = gtk.ToolButton()
+        self.btn_location_view.set_icon_widget(self.icon_map)
+        self.btn_location_view.set_label("Location View")
+        
+        
         self.geoclue = Geoclue.DiscoverLocation()
         self.geoclue.init()
-        
         
     
     def activate(self, plugin_api):
@@ -58,29 +74,19 @@ class geolocalizedTasks:
         self.context_item.connect('activate', self.on_contextmenu_tag_location, plugin_api)
         plugin_api.add_menu_tagpopup(self.context_item)
         
+        self.seperator_location_view = plugin_api.AddToolbarItem(gtk.SeparatorToolItem())
+        plugin_api.AddToolbarItem(self.btn_location_view)
     
     def deactivate(self, plugin_api):
         plugin_api.RemoveMenuItem(self.menu_item)
-        
         plugin_api.remove_menu_tagpopup(self.context_item)
+        plugin_apo.RemoveToolbarItem(None, self.seperator_location_view)
     
     def onTaskOpened(self, plugin_api):
         plugin_api.AddTaskToolbarItem(gtk.SeparatorToolItem())
         
-        # create the pixbuf with the icon and it's size.
-        # 24,24 is the TaskEditor's toolbar icon size
-        path = os.path.dirname(os.path.abspath(__file__))
-        icon_path = os.path.join(path, "map.png")
-        pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(icon_path , 24, 24)
-        
-        # create the image and associate the pixbuf
-        icon_map = gtk.Image()
-        icon_map.set_from_pixbuf(pixbuf)
-        icon_map.show()
-        
-        # define the icon for the button
         btn_set_location = gtk.ToolButton()
-        btn_set_location.set_icon_widget(icon_map)
+        btn_set_location.set_icon_widget(self.icon_map)
         btn_set_location.set_label("Set/View location")
         btn_set_location.connect('clicked', self.set_task_location, plugin_api)
         plugin_api.AddTaskToolbarItem(btn_set_location)
@@ -393,6 +399,7 @@ class geolocalizedTasks:
         r, g, b = [int(n, 16) for n in (r, g, b)]
         return clutter.Color(r, g, b)
     
+    # error dialog
     def errorDialog(self, parent, header, msg):
          """
          Show an error message.
