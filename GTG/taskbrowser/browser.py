@@ -331,7 +331,7 @@ class TaskBrowser:
                         p['state'] = False
         
         # initializes the plugin api class
-        self.plugin_api = PluginAPI(self.window, self.wTree, self.req, self.task_tview, self.tagpopup, self.tag_tview, None, None)
+        self.plugin_api = PluginAPI(self.window, self.config, self.wTree, self.req, self.task_tview, self.tagpopup, self.tag_tview, None, None)
         # initializes and activates each plugin (that is enabled)
         self.pengine.activatePlugins(self.plugins, self.plugin_api)
         
@@ -456,6 +456,9 @@ class TaskBrowser:
         
         if self.workview : view = "workview"
         else             : view = "default"
+        
+        # plugins are deactivated
+        self.pengine.deactivatePlugins(self.plugins, self.plugin_api)
 
         # Populate configuration dictionary
         self.config["browser"] = {}

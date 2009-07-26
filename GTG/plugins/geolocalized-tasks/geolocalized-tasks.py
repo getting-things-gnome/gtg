@@ -17,6 +17,9 @@
 import gtk, pygtk
 import os, sys
 
+from xdg.BaseDirectory import *
+from configobj import ConfigObj
+
 import Geoclue
 
 import clutter, cluttergtk
@@ -71,10 +74,8 @@ class geolocalizedTasks:
         self.LOCATION_DETERMINATION_METHOD = []
         for provider in self.geoclue.get_available_providers():
             if provider['position'] and (provider['provider'] != "Example Provider" and provider['provider'] != "Plazes"):
-                self.LOCATION_DETERMINATION_METHOD.append(provider)
-        
-        # the plugin's config file, it stores the preferences for the users.
-        # gtg.conf will be used to store the plugins values
+                self.LOCATION_DETERMINATION_METHOD.append(provider["provider"])
+            
         
     
     def activate(self, plugin_api):
@@ -88,11 +89,27 @@ class geolocalizedTasks:
         self.btn_location_view.connect('toggled', self.change_to_location_view, plugin_api)
         plugin_api.AddToolbarItem(self.btn_location_view)
         
+        # get the user settings from the config file
+        self.config = plugin_api.get_config()
+        if self.config.has_key("geolocalized-tasks"):
+            if self.config["geolocalized-tasks"].has_key("proximity_factor"):
+                self.PROXIMITY_FACTOR = self.config["geolocalized-tasks"]["proximity_factor"]
+            
+            if self.config["geolocalized-tasks"].has_key("accuracy"):
+                self.LOCATION_ACCURACY = self.config["geolocalized-tasks"]["accuracy"]
+        
+            if self.config["geolocalized-tasks"].has_key("location_determination_method"):
+                self.LOCATION_DETERMINATION_METHOD = self.config["geolocalized-tasks"]["location_determination_method"]
     
     def deactivate(self, plugin_api):
         plugin_api.RemoveMenuItem(self.menu_item)
         plugin_api.remove_menu_tagpopup(self.context_item)
-        plugin_apo.RemoveToolbarItem(None, self.seperator_location_view)
+        plugin_api.RemoveToolbarItem(None, self.seperator_location_view)
+        
+        self.config["geolocalized-tasks"] = {}
+        self.config["geolocalized-tasks"]["proximity_factor"] = self.PROXIMITY_FACTOR
+        self.config["geolocalized-tasks"]["accuracy"] = self.LOCATION_ACCURACY
+        self.config["geolocalized-tasks"]["location_determination_method"] = self.LOCATION_DETERMINATION_METHOD
     
     def onTaskOpened(self, plugin_api):
         plugin_api.AddTaskToolbarItem(gtk.SeparatorToolItem())

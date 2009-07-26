@@ -19,9 +19,10 @@
 import gtk
 
 class PluginAPI:
-    def __init__(self, window, wTree, requester, taskview=None, tagpopup=None, tagview=None, task=None, textview=None):
+    def __init__(self, window, config, wTree, requester, taskview=None, tagpopup=None, tagview=None, task=None, textview=None):
         # private vars       
         self.__window = window
+        self.config = config
         self.__wTree = wTree
         self.__requester = requester
         
@@ -175,4 +176,8 @@ class PluginAPI:
             return self.__requester.get_task(model.get_value(iter, 0))
         else:
             return None
+        
+    # returns the config object
+    def get_config(self):
+        return self.config
         

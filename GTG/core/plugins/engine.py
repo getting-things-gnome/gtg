@@ -120,6 +120,12 @@ class PluginEngine:
             if plgin['state']:
                 plgin['instance'] = plgin['class']()
                 plgin['instance'].activate(plugin_api)
+                
+    # deactivate the enabled plugins
+    def deactivatePlugins(self, plugins, plugin_api):
+        for plgin in plugins:
+            if plgin['state']:
+                plgin['instance'].deactivate(plugin_api)
 				
     # loads the plug-in features for a task
     def onTaskLoad(self, plugins, plugin_api):
