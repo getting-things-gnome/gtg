@@ -212,7 +212,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
             return par_rowref
 
     def move(self, parent, child):
-        print "Moving %s below %s" % (child, parent)
+        #print "Moving %s below %s" % (child, parent)
         # Get child
         child_tid  = self.get_value(child, COL_TID)
         child_task = self.req.get_task(child_tid)
@@ -243,7 +243,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
             new_par_task.add_subtask(child_tid)
         else:
             self.root_tasks.append(child_tid)
-        # Warn tree about inserted row
+        # Warn tree about deleted row
         self.row_deleted(child_path)
         # Warn tree about inserted row
         if new_par_task:
