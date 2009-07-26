@@ -50,7 +50,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
     def get_root_task_index(self, tid):
         return self.root_tasks.index(tid)
 
-    def rowref_from_path(self, task, path):
+    def _rowref_from_path(self, task, path):
         """Return a row reference for a given treemodel path
         
          @param task : the root from which the treemodel path starts. Set it
@@ -71,23 +71,29 @@ class TaskTreeModel(gtk.GenericTreeModel):
             task = self.req.get_task(my_tid)
             path = path[1:]
             return "/" + str(my_tid) + \
-                self.rowref_from_path(task, path)
+                self._rowref_from_path(task, path)
 
-    def path_for_rowref(self, task, rowref):
+    def _path_for_rowref(self, task, rowref):
         if rowref.rfind('/') == 0:
-            if task == None:
-                return (self.get_root_task_index(rowref[1:]),)
-            else:
+            if task:
                 return (task.get_subtask_index(rowref[1:]),)
+            else:
+                return (self.get_root_task_index(rowref[1:]),)
         else:
             cur_tid  = rowref[1:rowref.find('/', 1)]
-            task     = self.req.get_task(cur_tid)
-            cur_path = (task.get_subtask_index(rowref[1:]),)
+            cur_task = self.req.get_task(cur_tid)
+            if task:
+                cur_path = (task.get_subtask_index(cur_tid),)
+            else:
+                cur_path = (self.get_root_task_index(cur_tid),)
             rowref   = rowref[rowref.find(cur_tid)+len(cur_tid):]
-            return cur_path + self.path_for_rowref(task, rowref)
+            return cur_path + self._path_for_rowref(cur_task, rowref)
 
     def get_path_from_rowref(self, rowref):
-        return self.path_for_rowref(None, rowref)
+        return self._path_for_rowref(None, rowref)
+
+    def get_rowref_from_path(self, path):
+        return self._rowref_for_path(None, path)
 
 ### TREEMODEL INTERFACE ######################################################
 #
@@ -119,7 +125,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
     def on_get_iter(self, path):
         #print "on_get_iter: " + str(path)
         try:
-            return self.rowref_from_path(None, path)
+            return self._rowref_from_path(None, path)
         except(ValueError):
             return None
 
@@ -205,8 +211,51 @@ class TaskTreeModel(gtk.GenericTreeModel):
             par_rowref = child[:child.rfind('/')]
             return par_rowref
 
-    def move(self, parent, iter):
-        print "Moving %s below %s" % (iter, parent)
+    def move(self, parent, child):
+        print "Moving %s below %s" % (child, parent)
+        # Get child
+        child_tid  = self.get_value(child, COL_TID)
+        child_task = self.req.get_task(child_tid)
+        child_path = self.get_path(child)
+        # Get old parent
+        old_par = self.iter_parent(child)
+        if old_par:
+            old_par_tid  = self.get_value(old_par, COL_TID)
+            old_par_task = self.req.get_task(old_par_tid)
+        else:
+            old_par_task = None
+        # Get new parent
+        if parent:
+            new_par_tid  = self.get_value(parent, COL_TID)
+            new_par_task = self.req.get_task(new_par_tid)
+        else:
+            new_par_task = None
+        # Remove child from parent
+        if old_par_task:
+            old_par_task.remove_subtask(child_tid)
+        else:
+            self.root_tasks.remove(child_tid)
+        # Remove parent from child
+        if old_par_task:
+            child_task.remove_parent(old_par_tid)
+        # Add child to new parent
+        if new_par_task:
+            new_par_task.add_subtask(child_tid)
+        else:
+            self.root_tasks.append(child_tid)
+        # Warn tree about inserted row
+        self.row_deleted(child_path)
+        # Warn tree about inserted row
+        if new_par_task:
+            new_child_index = new_par_task.get_subtask_index(child_tid)
+        else:
+            new_child_index = self.root_tasks.index(child_tid)
+        if parent:
+            new_child_path = self.get_path(parent) + (new_child_index,)
+        else:
+            new_child_path = (new_child_index,)
+        new_child_iter = self.get_iter(new_child_path)
+        self.row_inserted(new_child_path, new_child_iter)
 
 class TaskTreeView(gtk.TreeView):
     """TreeView for display of a list of task. Handles DnD primitives too."""
