@@ -362,7 +362,10 @@ class Task :
 
         @param index: the index of the task to return.
         """
-        return self.children[index]
+        try:
+            return self.children[index]
+        except(IndexError):
+            raise ValueError("Index is not in task list")
 
     def get_subtask_index(self, tid):
         """Return the index of a given subtask.

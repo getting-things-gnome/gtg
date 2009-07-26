@@ -85,6 +85,9 @@ class TaskBrowser:
         # Setup GTG icon theme
         self._init_icon_theme()
 
+        # Set up models
+        self._init_models()
+
         # Load window tree
         self.wTree = gtk.glade.XML(GnomeConfig.GLADE_FILE)
 
@@ -142,6 +145,26 @@ class TaskBrowser:
             gtk.icon_theme_get_default().prepend_search_path(i)
             gtk.window_set_default_icon_name("gtg")
 
+    def _init_models(self):
+        # Active Tasks
+        self.task_model = TaskTreeModel(requester=self.req)
+        self.task_modelfilter = self.task_model.filter_new()
+        self.task_modelfilter.set_visible_func(self.active_task_visible_func)
+        self.task_modelsort = gtk.TreeModelSort(self.task_modelfilter)
+        self.task_modelsort.set_sort_func(\
+            tasktree.COL_DDATE, self.dleft_sort_func)
+        self.task_modelsort.set_sort_func(\
+            tasktree.COL_DLEFT, self.dleft_sort_func)
+        self.task_modelsort.set_sort_column_id(\
+            tasktree.COL_DLEFT, gtk.SORT_ASCENDING)
+        # Closed Tasks: dimissed and done
+        self.ctask_model = TaskTreeModel(requester=self.req, is_tree=False)
+        self.ctask_modelfilter = self.ctask_model.filter_new()
+        self.ctask_modelfilter.set_visible_func(self.closed_task_visible_func)
+        self.ctask_modelsort   = gtk.TreeModelSort(self.ctask_modelfilter)
+        self.ctask_modelsort.set_sort_column_id(\
+            tasktree.COL_DDATE, gtk.SORT_DESCENDING)
+
     def _init_widget_aliases(self):
         self.window             = self.wTree.get_widget("MainWindow")
         self.tagpopup           = self.wTree.get_widget("TagContextMenu")
@@ -172,10 +195,12 @@ class TaskBrowser:
     def _init_ui_widget(self):
         # The Active tasks treeview
         self.task_tv = ActiveTaskTreeView()
+        self.task_tv.set_model(self.task_modelsort)
         self.main_pane.add(self.task_tv)
 
         # The done/dismissed taks treeview
         self.ctask_tv = ClosedTaskTreeView()
+        self.ctask_tv.set_model(self.ctask_modelsort)
         self.closed_pane.add(self.ctask_tv)
 
     def _init_toolbar_tooltips(self):
@@ -1153,22 +1178,22 @@ class TaskBrowser:
                                 tasks=closed_tasks,\
                                 is_tree=False)
 
-        task_modelfilter = self.task_model.filter_new()
-        task_modelfilter.set_visible_func(self.active_task_visible_func)
-        task_modelsort = gtk.TreeModelSort(task_modelfilter)
-        task_modelsort.set_sort_func(tasktree.COL_DDATE, self.dleft_sort_func)
-        task_modelsort.set_sort_func(tasktree.COL_DLEFT, self.dleft_sort_func)
-        task_modelsort.set_sort_column_id(\
+        self.task_modelfilter = self.task_model.filter_new()
+        self.task_modelfilter.set_visible_func(self.active_task_visible_func)
+        self.task_modelsort = gtk.TreeModelSort(self.task_modelfilter)
+        self.task_modelsort.set_sort_func(tasktree.COL_DDATE, self.dleft_sort_func)
+        self.task_modelsort.set_sort_func(tasktree.COL_DLEFT, self.dleft_sort_func)
+        self.task_modelsort.set_sort_column_id(\
             tasktree.COL_DLEFT, gtk.SORT_ASCENDING)
-        self.task_tv.set_model(task_modelsort)
+        self.task_tv.set_model(self.task_modelsort)
         self.restore_collapsed_rows()
 
-        ctask_modelfilter = self.ctask_model.filter_new()
-        ctask_modelfilter.set_visible_func(self.closed_task_visible_func)
-        ctask_modelsort   = gtk.TreeModelSort(ctask_modelfilter)
-        ctask_modelsort.set_sort_column_id(\
+        self.ctask_modelfilter = self.ctask_model.filter_new()
+        self.ctask_modelfilter.set_visible_func(self.closed_task_visible_func)
+        self.ctask_modelsort   = gtk.TreeModelSort(self.ctask_modelfilter)
+        self.ctask_modelsort.set_sort_column_id(\
             tasktree.COL_DDATE, gtk.SORT_DESCENDING)
-        self.ctask_tv.set_model(ctask_modelsort)
+        self.ctask_tv.set_model(self.ctask_modelsort)
 
 ### PUBLIC METHODS ############################################################
 #
@@ -1226,17 +1251,6 @@ class TaskBrowser:
 ### MAIN ######################################################################
 #
     def main(self):
-
-        # Set up models
-        active_tasks = self.req.get_active_tasks_list()
-        self.task_model  = TaskTreeModel(\
-                                requester=self.req,\
-                                tasks=active_tasks)
-        closed_tasks = self.req.get_closed_tasks_list()
-        self.ctask_model = TaskTreeModel(\
-                                requester=self.req,\
-                                tasks=closed_tasks,\
-                                is_tree=False)
 
         # Here we will define the main TaskList interface
         gobject.threads_init()

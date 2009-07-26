@@ -29,11 +29,12 @@ class TaskTreeModel(gtk.GenericTreeModel):
         self.req = requester
         self.root_tasks = []
         self.is_tree = is_tree
-        for tid in tasks:
-            my_task = self.req.get_task(tid)
-            if is_tree and not my_task.has_parents() or \
-               not is_tree:
-                self.root_tasks.append(tid)
+        if tasks:
+            for tid in tasks:
+                my_task = self.req.get_task(tid)
+                if is_tree and not my_task.has_parents() or \
+                   not is_tree:
+                    self.root_tasks.append(tid)
 
 ### TREE MODEL HELPER FUNCTIONS ###############################################
 
@@ -41,7 +42,10 @@ class TaskTreeModel(gtk.GenericTreeModel):
         return len(self.root_tasks)
 
     def get_nth_root_task(self, index):
-        return self.root_tasks[index]
+        try:
+            return self.root_tasks[index]
+        except(IndexError):
+            raise ValueError('Index is not in task list')
 
     def get_root_task_index(self, tid):
         return self.root_tasks.index(tid)
@@ -114,7 +118,10 @@ class TaskTreeModel(gtk.GenericTreeModel):
 
     def on_get_iter(self, path):
         #print "on_get_iter: " + str(path)
-        return self.rowref_from_path(None, path)
+        try:
+            return self.rowref_from_path(None, path)
+        except(ValueError):
+            return None
 
     def on_get_path(self, rowref):
         #print "on_get_path: %s" % (rowref)
@@ -223,7 +230,7 @@ class ActiveTaskTreeView(TaskTreeView):
         ('gtg/task-iter-str', gtk.TARGET_SAME_WIDGET, 0)
     ]
 
-    def __init__(self, model=None):
+    def __init__(self):
         TaskTreeView.__init__(self)
         self._init_tree_view()
 
@@ -320,7 +327,6 @@ class ActiveTaskTreeView(TaskTreeView):
         """Extract data from the source of the DnD operation. Here the id of
         the parent task and the id of the selected task is passed to the
         destination"""
-        print "Drag data get"
         treeselection = treeview.get_selection()
         model, iter = treeselection.get_selected()
         iter_str = model.get_string_from_iter(iter)
@@ -377,11 +383,11 @@ class ActiveTaskTreeView(TaskTreeView):
 class ClosedTaskTreeView(TaskTreeView):
     """TreeView for display of a list of task. Handles DnD primitives too."""
 
-    def __init__(self, model=None, sort_func=None):
+    def __init__(self):
         TaskTreeView.__init__(self)
-        self._init_tree_view(sort_func)
+        self._init_tree_view()
 
-    def _init_tree_view(self, sort_func=None):
+    def _init_tree_view(self):
         # Tag column
         tag_col     = gtk.TreeViewColumn()
         render_tags = CellRendererTags()
