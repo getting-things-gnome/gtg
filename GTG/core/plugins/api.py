@@ -97,21 +97,34 @@ class PluginAPI:
     def changeTaskTreeStore(self, treestore):
         task_tview = self.__wTree.get_widget("task_tview")
         task_tview.set_model(treestore)
-        
-    def get_task(self):
-        return self.task
     
+    def get_all_tasks(self):
+        return self.__requester.get_tasks_list()    
+    
+    # this method returns the task by tid or the current task in case 
+    # of the edit task window
+    # by default returns the current task, in other words, it's default action
+    # is to use with the onTaskOpened method
+    def get_task(self, tid=None):
+        if tid:
+            return self.__requester.get_task(tid)
+        else:
+            return self.task
+    
+    # this method only works for the onTaskOpened method 
     def get_task_title(self):
         return self.task.get_title() 
     
     # adds a tag, updated the text buffer, inserting the tag at the end of
     # the task
+    # this method only works for the onTaskOpened method
     def add_tag(self, tag):
         self.task.add_tag("@" + tag)
         #self.textview.insert_text("@" + tag)
         self.textview.insert_tag("@" + tag)
         
     # adds a attribute to a tag
+    # this method only works for the onTaskOpened method
     def add_tag_attribute(self, tag, attrib_name, attrib_value):
         try:
             tags = self.task.get_tags()
@@ -123,6 +136,7 @@ class PluginAPI:
             return False
     
     # pass all the tags to the plug-in
+    # this method only works for the onTaskOpened method
     def get_tags(self):
         return self.task.get_tags()
         

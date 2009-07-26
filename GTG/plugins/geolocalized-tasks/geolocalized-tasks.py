@@ -58,13 +58,23 @@ class geolocalizedTasks:
         self.icon_map.show()
         
         # toolbar button for the location_view
-        self.btn_location_view = gtk.ToolButton()
+        self.btn_location_view = gtk.ToggleToolButton()
         self.btn_location_view.set_icon_widget(self.icon_map)
         self.btn_location_view.set_label("Location View")
         
         
         self.geoclue = Geoclue.DiscoverLocation()
         self.geoclue.init()
+        
+        self.PROXIMITY_FACTOR = 5  # 5 km
+        self.LOCATION_ACCURACY = 3 # Locality
+        self.LOCATION_DETERMINATION_METHOD = []
+        for provider in self.geoclue.get_available_providers():
+            if provider['position'] and (provider['provider'] != "Example Provider" and provider['provider'] != "Plazes"):
+                self.LOCATION_DETERMINATION_METHOD.append(provider)
+        
+        # the plugin's config file, it stores the preferences for the users.
+        # gtg.conf will be used to store the plugins values
         
     
     def activate(self, plugin_api):
@@ -75,7 +85,9 @@ class geolocalizedTasks:
         plugin_api.add_menu_tagpopup(self.context_item)
         
         self.seperator_location_view = plugin_api.AddToolbarItem(gtk.SeparatorToolItem())
+        self.btn_location_view.connect('toggled', self.change_to_location_view, plugin_api)
         plugin_api.AddToolbarItem(self.btn_location_view)
+        
     
     def deactivate(self, plugin_api):
         plugin_api.RemoveMenuItem(self.menu_item)
@@ -93,6 +105,28 @@ class geolocalizedTasks:
             
     def on_geolocalized_preferences(self, widget):
         pass
+    
+    def change_to_location_view(self, widget, plugin_api):
+        print "change the view"
+        if widget.get_active():
+            location = self.geoclue.get_location_info()
+            taskview = plugin_api.get_taskview()
+            tasks = plugin_api.get_all_tasks()
+            
+            tasks_with_location = []
+            tasks_without_location = []
+            
+            for tid in tasks:
+                tags = plugin_api.get_task(tid).get_tags()
+                if tags:
+                    print tags[0].get_all_attributes()
+                    if "location" in tags[0].get_all_attributes():
+                        tasks_with_location.append(plugin_api.get_task(tid))
+                    else:
+                        tasks_without_location.append(plugin_api.get_task(tid))
+            
+        
+            
     
     #=== SET TASK LOCATION =========================================================
     def set_task_location(self, widget, plugin_api, location=None):
