@@ -52,10 +52,10 @@ class geolocalizedTasks:
         # toolbar button for the new Location view
         # create the pixbuf with the icon and it's size.
         # 24,24 is the TaskEditor's toolbar icon size
-        image_geolocalization_path = os.path.join(self.plugin_path, "geolocalization.png")
+        image_geolocalization_path = os.path.join(self.plugin_path, "icons/hicolor/24x24/geolocalization.png")
         pixbuf_geolocalization = gtk.gdk.pixbuf_new_from_file_at_size(image_geolocalization_path, 24, 24)
         
-        image_assign_location_path = os.path.join(self.plugin_path, "assign-location.png")
+        image_assign_location_path = os.path.join(self.plugin_path, "icons/hicolor/16x16/assign-location.png")
         pixbug_assign_location = gtk.gdk.pixbuf_new_from_file_at_size(image_assign_location_path, 16, 16)
         
         # create the image and associate the pixbuf
