@@ -123,6 +123,7 @@ class TaskBrowser:
 
         # NOTES
         self.init_note_support()
+        
 
 ### INIT HELPER FUNCTIONS #####################################################
     def init_browser_config(self):
@@ -1351,10 +1352,6 @@ class TaskBrowser:
         self.tag_ts.append([None, None, "", "", True])
 
         tags = self.req.get_used_tags()
-
-        tags.sort(cmp=lambda x, y: cmp(x.get_name().lower(),\
-            y.get_name().lower()))
-
         for tag in tags:
             color = tag.get_attribute("color")
             if self.priv['workview']:
