@@ -25,6 +25,9 @@ import Geoclue
 import clutter, cluttergtk
 import champlain, champlaingtk 
 
+from GTG.tools import colors
+import xml.sax.saxutils as saxutils
+
 # IMPORTANT This add's the plugin's path to python sys path
 sys.path.insert(0,os.path.dirname(os.path.abspath(__file__)))
 from marker import MarkerLayer
@@ -46,25 +49,32 @@ class geolocalizedTasks:
         # the preference menu for the plugin
         self.menu_item = gtk.MenuItem("Geolocalized Task Preferences")
         
-        # the menu intem for the tag context
-        self.context_item = gtk.MenuItem("Location")
-        
         # toolbar button for the new Location view
         # create the pixbuf with the icon and it's size.
         # 24,24 is the TaskEditor's toolbar icon size
-        icon_path = os.path.join(self.plugin_path, "map.png")
-        pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(icon_path , 24, 24)
+        image_geolocalization_path = os.path.join(self.plugin_path, "geolocalization.png")
+        pixbuf_geolocalization = gtk.gdk.pixbuf_new_from_file_at_size(image_geolocalization_path, 24, 24)
+        
+        image_assign_location_path = os.path.join(self.plugin_path, "assign-location.png")
+        pixbug_assign_location = gtk.gdk.pixbuf_new_from_file_at_size(image_assign_location_path, 16, 16)
         
         # create the image and associate the pixbuf
-        self.icon_map = gtk.Image()
-        self.icon_map.set_from_pixbuf(pixbuf)
-        self.icon_map.show()
+        self.icon_geolocalization = gtk.Image()
+        self.icon_geolocalization.set_from_pixbuf(pixbuf_geolocalization)
+        self.icon_geolocalization.show()
+        
+        image_assign_location = gtk.Image()
+        image_assign_location.set_from_pixbuf(pixbug_assign_location)
+        image_assign_location.show()
+        
+        # the menu intem for the tag context
+        self.context_item = gtk.ImageMenuItem("Assign a location to this tag")
+        self.context_item.set_image(image_assign_location)
         
         # toolbar button for the location_view
         self.btn_location_view = gtk.ToggleToolButton()
-        self.btn_location_view.set_icon_widget(self.icon_map)
+        self.btn_location_view.set_icon_widget(self.icon_geolocalization)
         self.btn_location_view.set_label("Location View")
-        
         
         self.geoclue = Geoclue.DiscoverLocation()
         self.geoclue.init()
@@ -85,9 +95,9 @@ class geolocalizedTasks:
         self.context_item.connect('activate', self.on_contextmenu_tag_location, plugin_api)
         plugin_api.add_menu_tagpopup(self.context_item)
         
-        self.seperator_location_view = plugin_api.AddToolbarItem(gtk.SeparatorToolItem())
-        self.btn_location_view.connect('toggled', self.change_to_location_view, plugin_api)
-        plugin_api.AddToolbarItem(self.btn_location_view)
+        #self.seperator_location_view = plugin_api.AddToolbarItem(gtk.SeparatorToolItem())
+        #self.btn_location_view.connect('toggled', self.change_to_location_view, plugin_api)
+        #plugin_api.AddToolbarItem(self.btn_location_view)
         
         # get the user settings from the config file
         self.config = plugin_api.get_config()
@@ -104,7 +114,7 @@ class geolocalizedTasks:
     def deactivate(self, plugin_api):
         plugin_api.RemoveMenuItem(self.menu_item)
         plugin_api.remove_menu_tagpopup(self.context_item)
-        plugin_api.RemoveToolbarItem(None, self.seperator_location_view)
+        #plugin_api.RemoveToolbarItem(None, self.seperator_location_view)
         
         self.config["geolocalized-tasks"] = {}
         self.config["geolocalized-tasks"]["proximity_factor"] = self.PROXIMITY_FACTOR
@@ -136,14 +146,39 @@ class geolocalizedTasks:
             for tid in tasks:
                 tags = plugin_api.get_task(tid).get_tags()
                 if tags:
-                    print tags[0].get_all_attributes()
                     if "location" in tags[0].get_all_attributes():
                         tasks_with_location.append(plugin_api.get_task(tid))
                     else:
                         tasks_without_location.append(plugin_api.get_task(tid))
             
-        
+            model = taskview.get_model()
             
+            # clear the data in the current treeview
+            model.clear()
+            
+            # add the tasks that are in the current location
+            # or in the proximity factor's range to the new model
+            
+            # TODO: 
+            # - Ver o status
+            # - Ver as subtasks
+            
+            for t in tasks_with_location:
+                position = eval(t.get_tags()[0].get_attribute("location"))
+                if self.geoclue.compare_position(position[0], position[1], self.PROXIMITY_FACTOR):
+                    # it's true, the task is in the correct position (range)
+                    tid         = t.get_id()
+                    title       = saxutils.escape(t.get_title())
+                    title_str   = "<span>%s</span>" % title
+                    duedate_str = t.get_due_date()
+                    left_str    = t.get_days_left()
+                    tags        = t.get_tags()
+                    my_color    = colors.background_color(tags)
+
+                    print title
+                    iter = model.get_iter_first()
+                    my_row = model.insert_before(None, iter, row=[tid,title,title_str,duedate_str,left_str,tags,my_color])
+    
     
     #=== SET TASK LOCATION =========================================================
     def set_task_location(self, widget, plugin_api, location=None):
