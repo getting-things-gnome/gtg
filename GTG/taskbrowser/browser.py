@@ -52,7 +52,7 @@ CLOSED_PANE        = False
 QUICKADD_PANE      = True
 TOOLBAR            = True
 BG_COLOR           = True
-EXPERIMENTAL_NOTES = False
+EXPERIMENTAL_NOTES = True
 
 
 class TaskBrowser:
