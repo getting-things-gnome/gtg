@@ -227,8 +227,21 @@ class Requester:
         return self.ds.get_tagstore().get_tag(tagname)
 
     def get_all_tags(self):
-        """Return a list of every tag that was ever used."""
-        return list(self.ds.get_tagstore().get_all_tags())
+        """Return a list of every tag that was used.
+        We don't return tag that were used only on permanently deleted tasks.
+
+        @return: A list of tags used by a open or closed task.
+        """
+        l = []
+        for tid in self.ds.all_tasks():
+            t = self.get_task(tid)
+            if t:
+                for tag in t.get_tags():
+                    if tag not in l:
+                        l.append(tag)
+        l.sort(cmp=lambda x, y: cmp(x.get_name().lower(),\
+            y.get_name().lower()))
+        return l
 
     def get_notag_tag(self):
         return self.ds.get_tagstore().get_notag_tag()
@@ -241,12 +254,13 @@ class Requester:
 
         @return: A list of tags used by a task.
         """
-        # FIXME: it should be only active and visible tasks.
         l = []
-        for tid in self.ds.all_tasks():
+        for tid in self.get_tasks_list(started_only=False):
             t = self.get_task(tid)
             if t:
                 for tag in t.get_tags():
                     if tag not in l:
                         l.append(tag)
+        l.sort(cmp=lambda x, y: cmp(x.get_name().lower(),\
+            y.get_name().lower()))
         return l
