@@ -35,6 +35,8 @@ class DataStore(gobject.GObject):
     __gsignals__ = { 'refresh': (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE,
                                    (str,)),
                     'task-added': (gobject.SIGNAL_RUN_FIRST, \
+                                    gobject.TYPE_NONE, (str,)),
+                    'task-deleted': (gobject.SIGNAL_RUN_FIRST, \
                                     gobject.TYPE_NONE, (str,)) }
 
 

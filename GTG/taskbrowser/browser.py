@@ -117,12 +117,17 @@ class TaskBrowser:
 
         # Connecting the refresh signal from the requester
         self.req.connect("refresh", self.do_refresh)
+        self.req.connect("task-added",self.debugadd)
 
         # Define accelerator keys
         self.init_accelerators()
 
         # NOTES
         self.init_note_support()
+        
+    
+    def debugadd(self,sender,param):
+        print "Task added: %s" %param
         
 
 ### INIT HELPER FUNCTIONS #####################################################
