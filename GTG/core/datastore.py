@@ -37,6 +37,8 @@ class DataStore(gobject.GObject):
                     'task-added': (gobject.SIGNAL_RUN_FIRST, \
                                     gobject.TYPE_NONE, (str,)),
                     'task-deleted': (gobject.SIGNAL_RUN_FIRST, \
+                                    gobject.TYPE_NONE, (str,)),
+                    'task-modified': (gobject.SIGNAL_RUN_FIRST, \
                                     gobject.TYPE_NONE, (str,)) }
 
 
@@ -125,7 +127,7 @@ class DataStore(gobject.GObject):
         if dic.has_key("backend") :
             pid = dic["pid"]
             backend = dic["backend"]
-            source = TaskSource(backend,dic,self.refresh_ui)
+            source = TaskSource(backend,dic,self.refresh_ui,self.task_modified)
             self.backends[pid] = source
             #Filling the backend
             #Doing this at start is more efficient than after the GUI is launched
@@ -143,9 +145,12 @@ class DataStore(gobject.GObject):
             l.append(self.backends[key])
         return l
     
+    #TODO : remove refresh_ui
     def refresh_ui(self) :
         #print "refresh %s" %self.tasks
         self.emit("refresh","1")
+    def task_modified(self,tid) :
+        self.emit("task-modified",tid)
         
     def refresh_tasklist(self,task_list) :
         for tid in task_list :
@@ -157,12 +162,13 @@ class DataStore(gobject.GObject):
 #Task source is an transparent interface between the real backend and datastore
 #Task source has also more functionnalities
 class TaskSource() :
-    def __init__(self,backend,parameters,refresh_cllbck) :
+    def __init__(self,backend,parameters,refresh_cllbck,taskmodif_cllbck) :
         self.backend = backend
         self.dic = parameters
         self.tasks = {}
         self.time = time.time()
         self.refresh = refresh_cllbck
+        self.task_modified = taskmodif_cllbck
         self.locks = lockslibrary()
         self.tosleep = 0
         self.backend_lock = threading.Lock()
@@ -231,6 +237,8 @@ class TaskSource() :
             t.start()
         else:
             self.__write(task)
+        #emiting the signal
+        self.task_modified(task.get_id())
         return None
     
     #This function, called in a thread, write to the backend.
