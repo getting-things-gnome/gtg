@@ -169,6 +169,8 @@ class TaskBrowser:
         self.workview = False
         self.req = requester
         
+        self.workview_task_filter = []
+        
         self.noteview = False
         self.new_note_button = self.wTree.get_widget("new_note_button")
         self.note_toggle = self.wTree.get_widget("note_toggle")
@@ -331,7 +333,9 @@ class TaskBrowser:
                         p['state'] = False
         
         # initializes the plugin api class
-        self.plugin_api = PluginAPI(self.window, self.config, self.wTree, self.req, self.task_tview, self.tagpopup, self.tag_tview, None, None)
+        self.plugin_api = PluginAPI(self.window, self.config, self.wTree, self.req, \
+                                    self.task_tview, self.workview_task_filter, \
+                                    self.tagpopup, self.tag_tview, None, None)
         # initializes and activates each plugin (that is enabled)
         self.pengine.activatePlugins(self.plugins, self.plugin_api)
         
@@ -820,7 +824,7 @@ class TaskBrowser:
         alltag       = self.req.get_alltag_tag()
         notag        = self.req.get_notag_tag()
         if self.workview :
-            count_all_task = len(self.req.get_active_tasks_list(workable=True))
+            count_all_task = len(self.req.get_active_tasks_list(workable=True)) - len(self.workview_task_filter)
             count_no_tags  = len(self.req.get_active_tasks_list(notag_only=True,\
                                                                 workable=True))
         else :
@@ -840,6 +844,10 @@ class TaskBrowser:
             color = tag.get_attribute("color")
             if self.workview :
                 count = len(self.req.get_active_tasks_list(tags=[tag],workable=True))
+                for tid in self.workview_task_filter:
+                    for t in self.req.get_task(tid).get_tags():
+                        if tag == t:
+                            count = count -1
             else :
                 count = len(self.req.get_tasks_list(started_only=False,tags=[tag]))
             #We display the tags without the "@" (but we could)
@@ -906,10 +914,11 @@ class TaskBrowser:
         if self.workview :
             tasks = self.req.get_active_tasks_list(tags=tag_list,\
                         notag_only=notag_only,workable=True, started_only=False)
-            for tid in tasks :
-                self.add_task_tree_to_list(new_taskts,tid,None,selected_uid,\
-                                                        treeview=False)
-            nbr_of_tasks = len(tasks)
+            for tid in tasks:
+                if tid not in self.workview_task_filter: # this filters out tasks
+                    self.add_task_tree_to_list(new_taskts,tid,None,selected_uid,\
+                                               treeview=False)
+            nbr_of_tasks = len(tasks) - len(self.workview_task_filter)
                             
         else :
             #building the classical treeview

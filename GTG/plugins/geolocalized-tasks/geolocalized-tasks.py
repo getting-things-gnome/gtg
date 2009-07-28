@@ -25,9 +25,6 @@ import Geoclue
 import clutter, cluttergtk
 import champlain, champlaingtk 
 
-from GTG.tools import colors
-import xml.sax.saxutils as saxutils
-
 # IMPORTANT This add's the plugin's path to python sys path
 sys.path.insert(0,os.path.dirname(os.path.abspath(__file__)))
 from marker import MarkerLayer
@@ -70,6 +67,7 @@ class geolocalizedTasks:
         # the menu intem for the tag context
         self.context_item = gtk.ImageMenuItem("Assign a location to this tag")
         self.context_item.set_image(image_assign_location)
+        # TODO: add a short cut to the menu
         
         # toolbar button for the location_view
         self.btn_location_view = gtk.ToggleToolButton()
@@ -95,9 +93,8 @@ class geolocalizedTasks:
         self.context_item.connect('activate', self.on_contextmenu_tag_location, plugin_api)
         plugin_api.add_menu_tagpopup(self.context_item)
         
-        #self.seperator_location_view = plugin_api.AddToolbarItem(gtk.SeparatorToolItem())
-        #self.btn_location_view.connect('toggled', self.change_to_location_view, plugin_api)
-        #plugin_api.AddToolbarItem(self.btn_location_view)
+        # filter the tasks location for the workview
+        self.change_to_location_view(plugin_api)
         
         # get the user settings from the config file
         self.config = plugin_api.get_config()
@@ -125,7 +122,7 @@ class geolocalizedTasks:
         plugin_api.AddTaskToolbarItem(gtk.SeparatorToolItem())
         
         btn_set_location = gtk.ToolButton()
-        btn_set_location.set_icon_widget(self.icon_map)
+        btn_set_location.set_icon_widget(self.icon_geolocalization)
         btn_set_location.set_label("Set/View location")
         btn_set_location.connect('clicked', self.set_task_location, plugin_api)
         plugin_api.AddTaskToolbarItem(btn_set_location)
@@ -133,51 +130,34 @@ class geolocalizedTasks:
     def on_geolocalized_preferences(self, widget):
         pass
     
-    def change_to_location_view(self, widget, plugin_api):
-        print "change the view"
-        if widget.get_active():
-            location = self.geoclue.get_location_info()
-            taskview = plugin_api.get_taskview()
-            tasks = plugin_api.get_all_tasks()
+    def change_to_location_view(self, plugin_api):
+        tasks = plugin_api.get_all_tasks()
             
-            tasks_with_location = []
-            tasks_without_location = []
+        tasks_with_location = []
+        tasks_without_location = []
             
-            for tid in tasks:
-                tags = plugin_api.get_task(tid).get_tags()
-                if tags:
-                    if "location" in tags[0].get_all_attributes():
-                        tasks_with_location.append(plugin_api.get_task(tid))
-                    else:
-                        tasks_without_location.append(plugin_api.get_task(tid))
+        for tid in tasks:
+            task = plugin_api.get_task(tid)
+            tags = task.get_tags()
+            for tag in tags:
+                if "location" in tag.get_all_attributes():
+                    tasks_with_location.append(task)
+                else:
+                    tasks_without_location.append(task)
             
-            model = taskview.get_model()
+        # add the tasks that are in the current location
+        # or in the proximity factor's range to the new model
             
-            # clear the data in the current treeview
-            model.clear()
+        # TODO: 
+        # - check the task status
             
-            # add the tasks that are in the current location
-            # or in the proximity factor's range to the new model
-            
-            # TODO: 
-            # - Ver o status
-            # - Ver as subtasks
-            
-            for t in tasks_with_location:
-                position = eval(t.get_tags()[0].get_attribute("location"))
-                if self.geoclue.compare_position(position[0], position[1], self.PROXIMITY_FACTOR):
-                    # it's true, the task is in the correct position (range)
-                    tid         = t.get_id()
-                    title       = saxutils.escape(t.get_title())
-                    title_str   = "<span>%s</span>" % title
-                    duedate_str = t.get_due_date()
-                    left_str    = t.get_days_left()
-                    tags        = t.get_tags()
-                    my_color    = colors.background_color(tags)
-
-                    print title
-                    iter = model.get_iter_first()
-                    my_row = model.insert_before(None, iter, row=[tid,title,title_str,duedate_str,left_str,tags,my_color])
+        for task in tasks_with_location:
+            tags = task.get_tags()
+            for tag in tags:
+                if tag.get_attribute("location"):
+                    position = eval(tag.get_attribute("location"))
+                    if not self.geoclue.compare_position(position[0], position[1], self.PROXIMITY_FACTOR):
+                        plugin_api.add_task_to_workview_filter(task.get_id())
     
     
     #=== SET TASK LOCATION =========================================================
@@ -353,6 +333,7 @@ class geolocalizedTasks:
                     index = self.cmb_existing_tag.get_active()
                     model = self.cmb_existing_tag.get_model()
                     self.plugin_api.add_tag_attribute(model[index][0], "location", marker_position)
+            dialog.destroy()
         else:
             # cancel
             dialog.destroy()
