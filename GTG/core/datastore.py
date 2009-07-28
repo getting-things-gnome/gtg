@@ -33,7 +33,10 @@ THREADING = True
 
 class DataStore(gobject.GObject):
     __gsignals__ = { 'refresh': (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE,
-                                   (str,)) }
+                                   (str,)),
+                    'task-added': (gobject.SIGNAL_RUN_FIRST, \
+                                    gobject.TYPE_NONE, (str,)) }
+
 
     def __init__ (self):
         gobject.GObject.__init__(self)
@@ -91,19 +94,23 @@ class DataStore(gobject.GObject):
             task = Task(tid,self.requester,newtask=newtask)
             uid,pid = tid.split('@') #pylint: disable-msg=W0612
             self.tasks[tid] = task
-            return task
+            toreturn = task
         #Else we create a new task in the given pid
         elif not tid and pid and self.backends.has_key(pid):
             newtid = self.backends[pid].new_task_id()
             task = Task(newtid,self.requester,newtask=newtask)
             self.tasks[newtid] = task
             task = self.backends[pid].get_task(task,newtid)
-            return task
+            toreturn = task
+            tid = newtid
         elif tid :
-            return self.tasks[tid]
+            toreturn = self.tasks[tid]
         else :
             print "not possible to build the task = bug"
-            return None
+            toreturn = None
+        #emitting the task-added signal
+        self.emit("task-added",tid)
+        return toreturn
         
     def get_tagstore(self) :
         return self.tagstore

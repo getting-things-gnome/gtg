@@ -33,6 +33,7 @@ class Requester:
         self.ds = datastore
 
     def connect(self, signal, func):
+        #Signals need to be connected to the datastore
         self.ds.connect(signal, func)
 
     ############## Tasks ##########################
@@ -61,11 +62,9 @@ class Requester:
         @param pid: The project where the new task will be created.
         @param tags: The tags for the new task. If not provided, then the
             task will have no tags.
-        @param newtask: C{True} if this is creating a task, C{False} if
-            importing an existing task.
+        @param newtask: C{True} if this is creating a new task that never
+            existed, C{False} if importing an existing task from a backend.
         """
-        # XXX: The docs don't make it clear why you'd ever need to pass in
-        # newtask or how newtask is used.
         task = self.ds.new_task(pid=pid, newtask=newtask)
         if tags:
             for t in tags:
