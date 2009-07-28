@@ -49,7 +49,7 @@ class geolocalizedTasks:
         self.glade_file = os.path.join(self.plugin_path, "geolocalized.glade")
         
         # the preference menu for the plugin
-        self.menu_item = gtk.MenuItem("Geolocalized Task Preferences")
+        self.menu_item = gtk.MenuItem("Geolocalized-tasks Preferences")
         
         # toolbar button for the new Location view
         # create the pixbuf with the icon and it's size.
@@ -89,7 +89,7 @@ class geolocalizedTasks:
         
     
     def activate(self, plugin_api):
-        self.menu_item.connect('activate', self.on_geolocalized_preferences)
+        self.menu_item.connect('activate', self.on_geolocalized_preferences, plugin_api)
         plugin_api.AddMenuItem(self.menu_item)
         
         self.context_item.connect('activate', self.on_contextmenu_tag_location, plugin_api)
@@ -128,9 +128,6 @@ class geolocalizedTasks:
         btn_set_location.set_label("Set/View location")
         btn_set_location.connect('clicked', self.set_task_location, plugin_api)
         plugin_api.AddTaskToolbarItem(btn_set_location)
-            
-    def on_geolocalized_preferences(self, widget):
-        pass
     
     def filter_workview_by_location(self, plugin_api):
         # TODO: if the location has a delay in being calculated it may not exist at
@@ -157,8 +154,82 @@ class geolocalizedTasks:
                         position = eval(tag.get_attribute("location"))
                         if not self.geoclue.compare_position(position[0], position[1], float(self.PROXIMITY_FACTOR)):
                             plugin_api.add_task_to_workview_filter(task.get_id())
-
+                                
+                                
+    #=== GEOLOCALIZED PREFERENCES===================================================    
+    def on_geolocalized_preferences(self, widget, plugin_api):
+        wTree = gtk.glade.XML(self.glade_file, "Preferences")
+        dialog = wTree.get_widget("Preferences")
+        dialog.connect("response", self.preferences_close)
+        plugin_api.set_parent_window(dialog)
+        
+        cmb_accuracy = wTree.get_widget("cmb_accuracy")
+        for i in range(len(cmb_accuracy.get_model())):
+            if str(self.accuracy_to_value(cmb_accuracy.get_model()[i][0])) == str(self.LOCATION_ACCURACY):
+                cmb_accuracy.set_active(i)
+        cmb_accuracy.connect("changed", self.cmb_accuracy_changed)
+        self.tmp_location_accuracy = self.LOCATION_ACCURACY
+        
+        spin_proximityfactor = wTree.get_widget("spin_proximityfactor")
+        spin_proximityfactor.set_value(float(self.PROXIMITY_FACTOR))
+        spin_proximityfactor.connect("changed", self.spin_proximityfactor_changed)
+        self.tmp_proximityfactor = float(self.PROXIMITY_FACTOR)
+        
+        dialog.show_all()
+        
+    # converts the accuracy to a value
+    def accuracy_to_value(self, accuracy):
+        if not accuracy:
+            return 0
+        elif accuracy.lower() == "Country".lower():
+            return 1
+        elif accuracy.lower() == "Region".lower():
+            return 2
+        elif accuracy.lower() == "Locality".lower():
+            return 3
+        elif accuracy.lower() == "Postalcode".lower():
+            return 4
+        elif accuracy.lower() == "Street".lower():
+            return 5
+        elif accuracy.lower() == "Detailed".lower():
+            return 6
+        return 0 
     
+    # converts the value of a accuracy to the accuracy
+    def value_to_accuracy(self, value):
+        if not value:
+            return None
+        elif value == 1:
+            return "Country"
+        elif value == 2:
+            return "Region"
+        elif value == 3:
+            return "Locality"
+        elif value == 4:
+            return "Postalcode"
+        elif value == 5:
+            return "Street"
+        elif value == 6:
+            return "Detailed"
+        return None
+        
+    def cmb_accuracy_changed(self, comboboxentry):
+        index = comboboxentry.get_active()
+        model = comboboxentry.get_model()
+        self.tmp_location_accuracy = self.accuracy_to_value(model[index][0])
+        
+    def spin_proximityfactor_changed(self, spinbutton):
+        self.tmp_proximityfactor = spinbutton.get_value()
+        
+    def preferences_close(self, dialog, response=None):
+        if response == gtk.RESPONSE_OK:
+            self.LOCATION_ACCURACY = self.tmp_location_accuracy 
+            self.PROXIMITY_FACTOR = float(self.tmp_proximityfactor) 
+            dialog.destroy()
+        else:
+            dialog.destroy()
+            
+    #=== GEOLOCALIZED PREFERENCES===================================================
     
     #=== SET TASK LOCATION =========================================================
     def set_task_location(self, widget, plugin_api, location=None):
