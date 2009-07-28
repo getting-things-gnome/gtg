@@ -16,6 +16,7 @@
 
 import gtk, pygtk
 import os, sys
+from time import sleep
 
 from xdg.BaseDirectory import *
 from configobj import ConfigObj
@@ -40,6 +41,10 @@ class geolocalizedTasks:
     PLUGIN_ENABLED = True
     
     def __init__(self):
+        self.geoclue = Geoclue.DiscoverLocation()
+        self.geoclue.init()
+        self.location = self.geoclue.get_location_info()
+        
         self.plugin_path = os.path.dirname(os.path.abspath(__file__))
         self.glade_file = os.path.join(self.plugin_path, "geolocalized.glade")
         
@@ -74,9 +79,6 @@ class geolocalizedTasks:
         self.btn_location_view.set_icon_widget(self.icon_geolocalization)
         self.btn_location_view.set_label("Location View")
         
-        self.geoclue = Geoclue.DiscoverLocation()
-        self.geoclue.init()
-        
         self.PROXIMITY_FACTOR = 5  # 5 km
         self.LOCATION_ACCURACY = 3 # Locality
         self.LOCATION_DETERMINATION_METHOD = []
@@ -93,9 +95,6 @@ class geolocalizedTasks:
         self.context_item.connect('activate', self.on_contextmenu_tag_location, plugin_api)
         plugin_api.add_menu_tagpopup(self.context_item)
         
-        # filter the tasks location for the workview
-        self.change_to_location_view(plugin_api)
-        
         # get the user settings from the config file
         self.config = plugin_api.get_config()
         if self.config.has_key("geolocalized-tasks"):
@@ -107,6 +106,9 @@ class geolocalizedTasks:
         
             if self.config["geolocalized-tasks"].has_key("location_determination_method"):
                 self.LOCATION_DETERMINATION_METHOD = self.config["geolocalized-tasks"]["location_determination_method"]
+                
+        # filter the tasks location for the workview
+        self.filter_workview_by_location(plugin_api)
     
     def deactivate(self, plugin_api):
         plugin_api.RemoveMenuItem(self.menu_item)
@@ -130,34 +132,32 @@ class geolocalizedTasks:
     def on_geolocalized_preferences(self, widget):
         pass
     
-    def change_to_location_view(self, plugin_api):
-        tasks = plugin_api.get_all_tasks()
+    def filter_workview_by_location(self, plugin_api):
+        # TODO: if the location has a delay in being calculated it may not exist at
+        # this point
+        if self.location.has_key("latitude") and self.location.has_key("longitude"):
+            tasks = plugin_api.get_all_tasks()
+                
+            tasks_with_location = []
+            tasks_without_location = []
             
-        tasks_with_location = []
-        tasks_without_location = []
-            
-        for tid in tasks:
-            task = plugin_api.get_task(tid)
-            tags = task.get_tags()
-            for tag in tags:
-                if "location" in tag.get_all_attributes():
-                    tasks_with_location.append(task)
-                else:
-                    tasks_without_location.append(task)
-            
-        # add the tasks that are in the current location
-        # or in the proximity factor's range to the new model
-            
-        # TODO: 
-        # - check the task status
-            
-        for task in tasks_with_location:
-            tags = task.get_tags()
-            for tag in tags:
-                if tag.get_attribute("location"):
-                    position = eval(tag.get_attribute("location"))
-                    if not self.geoclue.compare_position(position[0], position[1], self.PROXIMITY_FACTOR):
-                        plugin_api.add_task_to_workview_filter(task.get_id())
+            for tid in tasks:
+                task = plugin_api.get_task(tid)
+                tags = task.get_tags()
+                for tag in tags:
+                    if "location" in tag.get_all_attributes():
+                        tasks_with_location.append(task)
+                    else:
+                        tasks_without_location.append(task)
+                
+            for task in tasks_with_location:
+                tags = task.get_tags()
+                for tag in tags:
+                    if tag.get_attribute("location"):
+                        position = eval(tag.get_attribute("location"))
+                        if not self.geoclue.compare_position(position[0], position[1], float(self.PROXIMITY_FACTOR)):
+                            plugin_api.add_task_to_workview_filter(task.get_id())
+
     
     
     #=== SET TASK LOCATION =========================================================
