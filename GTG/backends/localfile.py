@@ -92,6 +92,7 @@ class Backend:
     #Fill the task "task_to_fill" with the information of the task TID
     #Return True if successful, False otherwhise
     def get_task(self, task_to_fill, tid):
+        #import time
         #time.sleep(2)
         for node in self.xmlproj.childNodes:
             if node.getAttribute("id") == tid:

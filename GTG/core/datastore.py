@@ -33,7 +33,14 @@ THREADING = True
 
 class DataStore(gobject.GObject):
     __gsignals__ = { 'refresh': (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE,
-                                   (str,)) }
+                                   (str,)),
+                    'task-added': (gobject.SIGNAL_RUN_FIRST, \
+                                    gobject.TYPE_NONE, (str,)),
+                    'task-deleted': (gobject.SIGNAL_RUN_FIRST, \
+                                    gobject.TYPE_NONE, (str,)),
+                    'task-modified': (gobject.SIGNAL_RUN_FIRST, \
+                                    gobject.TYPE_NONE, (str,)) }
+
 
     def __init__ (self):
         gobject.GObject.__init__(self)
@@ -79,6 +86,7 @@ class DataStore(gobject.GObject):
             if self.tasks.has_key(tid) :
                 self.tasks.pop(tid)
             back.remove_task(tid)
+            self.emit("task-deleted",tid)
         
     #Create a new task and return it.
     #newtask should be True if you create a task
@@ -91,19 +99,23 @@ class DataStore(gobject.GObject):
             task = Task(tid,self.requester,newtask=newtask)
             uid,pid = tid.split('@') #pylint: disable-msg=W0612
             self.tasks[tid] = task
-            return task
+            toreturn = task
         #Else we create a new task in the given pid
         elif not tid and pid and self.backends.has_key(pid):
             newtid = self.backends[pid].new_task_id()
             task = Task(newtid,self.requester,newtask=newtask)
             self.tasks[newtid] = task
             task = self.backends[pid].get_task(task,newtid)
-            return task
+            toreturn = task
+            tid = newtid
         elif tid :
-            return self.tasks[tid]
+            toreturn = self.tasks[tid]
         else :
             print "not possible to build the task = bug"
-            return None
+            toreturn = None
+        #emitting the task-added signal
+        self.emit("task-added",tid)
+        return toreturn
         
     def get_tagstore(self) :
         return self.tagstore
@@ -115,7 +127,7 @@ class DataStore(gobject.GObject):
         if dic.has_key("backend") :
             pid = dic["pid"]
             backend = dic["backend"]
-            source = TaskSource(backend,dic,self.refresh_ui)
+            source = TaskSource(backend,dic,self.refresh_ui,self.task_modified)
             self.backends[pid] = source
             #Filling the backend
             #Doing this at start is more efficient than after the GUI is launched
@@ -133,9 +145,12 @@ class DataStore(gobject.GObject):
             l.append(self.backends[key])
         return l
     
+    #TODO : remove refresh_ui
     def refresh_ui(self) :
         #print "refresh %s" %self.tasks
         self.emit("refresh","1")
+    def task_modified(self,tid) :
+        self.emit("task-modified",tid)
         
     def refresh_tasklist(self,task_list) :
         for tid in task_list :
@@ -147,12 +162,13 @@ class DataStore(gobject.GObject):
 #Task source is an transparent interface between the real backend and datastore
 #Task source has also more functionnalities
 class TaskSource() :
-    def __init__(self,backend,parameters,refresh_cllbck) :
+    def __init__(self,backend,parameters,refresh_cllbck,taskmodif_cllbck) :
         self.backend = backend
         self.dic = parameters
         self.tasks = {}
         self.time = time.time()
         self.refresh = refresh_cllbck
+        self.task_modified = taskmodif_cllbck
         self.locks = lockslibrary()
         self.tosleep = 0
         self.backend_lock = threading.Lock()
@@ -221,6 +237,8 @@ class TaskSource() :
             t.start()
         else:
             self.__write(task)
+        #emiting the signal
+        self.task_modified(task.get_id())
         return None
     
     #This function, called in a thread, write to the backend.
