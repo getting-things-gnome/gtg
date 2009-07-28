@@ -118,6 +118,7 @@ class TaskBrowser:
         # Connecting the refresh signal from the requester
         self.req.connect("refresh", self.do_refresh)
         self.req.connect("task-added",self.debugadd)
+        self.req.connect("task-deleted",self.debugdel)
 
         # Define accelerator keys
         self.init_accelerators()
@@ -128,6 +129,8 @@ class TaskBrowser:
     
     def debugadd(self,sender,param):
         print "Task added: %s" %param
+    def debugdel(self,sender,param):
+        print "Task deleted: %s" %param
         
 
 ### INIT HELPER FUNCTIONS #####################################################

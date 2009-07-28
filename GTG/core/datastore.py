@@ -84,6 +84,7 @@ class DataStore(gobject.GObject):
             if self.tasks.has_key(tid) :
                 self.tasks.pop(tid)
             back.remove_task(tid)
+            self.emit("task-deleted",tid)
         
     #Create a new task and return it.
     #newtask should be True if you create a task
