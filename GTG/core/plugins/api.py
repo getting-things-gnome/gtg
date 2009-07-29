@@ -40,18 +40,18 @@ class PluginAPI:
             self.textview = textview
         
     # adds items to the MenuBar of the Main Window (TaskBrowser)
-    def AddMenuItem(self, item):
+    def add_menu_item(self, item):
         self.__wTree.get_widget('menu_plugin').get_submenu().append(item)
         item.show()
     
     # removes the item from the MenuBar        
-    def RemoveMenuItem(self, item):
+    def remove_menu_item(self, item):
         try:
             self.__wTree.get_widget('menu_plugin').get_submenu().remove(item)
         except Exception, e:
             print "Error removing menu item: %s" % e
         
-    def AddToolbarItem(self, item):
+    def add_toolbar_item(self, item):
         # calculates the number of items on the ToolBar and adds the item 
         # on the end
         try:
@@ -64,7 +64,7 @@ class PluginAPI:
         except Exception, e:
             print "Error adding a toolbar item: %s" % e
     
-    def RemoveToolbarItem(self, item, n=None):
+    def remove_toolbar_item(self, item, n=None):
         try:
             if not n:
                 self.__wTree.get_widget('task_tb').remove(item)
@@ -78,7 +78,7 @@ class PluginAPI:
             print "Error removing a toolbar item: %s" % e
     
     # adds items to the Task Menu 
-    def AddTaskToolbarItem(self, item):
+    def add_task_toolbar_item(self, item):
         try:
             i = 0
             while self.__wTree.get_widget('task_tb1').get_nth_item(i) is not None:
@@ -89,11 +89,11 @@ class PluginAPI:
             print "Error adding a toolbar item in to the TaskEditor: %s" % e
             
     # passes the requester to the plugin
-    def getRequester(self):
+    def get_requester(self):
         return self.__requester
             
     # changes the tasks TreeStore
-    def changeTaskTreeStore(self, treestore):
+    def change_task_tree_store(self, treestore):
         task_tview = self.__wTree.get_widget("task_tview")
         task_tview.set_model(treestore)
     

@@ -92,7 +92,7 @@ class geolocalizedTasks:
     
     def activate(self, plugin_api):
         self.menu_item.connect('activate', self.on_geolocalized_preferences, plugin_api)
-        plugin_api.AddMenuItem(self.menu_item)
+        plugin_api.add_menu_item(self.menu_item)
         
         self.context_item.connect('activate', self.on_contextmenu_tag_location, plugin_api)
         plugin_api.add_menu_tagpopup(self.context_item)
@@ -113,7 +113,7 @@ class geolocalizedTasks:
         self.filter_workview_by_location(plugin_api)
     
     def deactivate(self, plugin_api):
-        plugin_api.RemoveMenuItem(self.menu_item)
+        plugin_api.remove_menu_item(self.menu_item)
         plugin_api.remove_menu_tagpopup(self.context_item)
         #plugin_api.RemoveToolbarItem(None, self.seperator_location_view)
         
@@ -129,7 +129,7 @@ class geolocalizedTasks:
         btn_set_location.set_icon_widget(self.icon_geolocalization)
         btn_set_location.set_label("Set/View location")
         btn_set_location.connect('clicked', self.set_task_location, plugin_api)
-        plugin_api.AddTaskToolbarItem(btn_set_location)
+        plugin_api.add_task_toolbar_item(btn_set_location)
     
     # the task location filter
     def filter_workview_by_location(self, plugin_api):
