@@ -26,7 +26,8 @@ import sys
 import time
 from datetime import date
 
-import GTG
+from GTG import _
+from GTG import PLUGIN_DIR
 from GTG.taskeditor          import GnomeConfig
 from GTG.tools               import dates
 from GTG.taskeditor.taskview import TaskView
@@ -35,20 +36,20 @@ from GTG.core.plugins.api    import PluginAPI
 try:
     import pygtk
     pygtk.require("2.0")
-except:
+except: # pylint: disable-msg=W0702
     sys.exit(1)
 try:
     import gtk
     from gtk import gdk
-except:
+except: # pylint: disable-msg=W0702
     sys.exit(1)
     
 date_separator = "/"
 
 class TaskEditor :
-    def __init__(self, requester, task, plugins, refresh_callback=None,delete_callback=None,
-                close_callback=None,opentask_callback=None, tasktitle_callback=None,
-                notes=False) :
+    def __init__(self, requester, task, plugins, refresh_callback=None,
+                delete_callback=None, close_callback=None,opentask_callback=None, 
+                tasktitle_callback=None, notes=False) :
         self.req = requester
         self.time = time.time()
         self.gladefile = GnomeConfig.GLADE_FILE
@@ -129,7 +130,6 @@ class TaskEditor :
      
         self.task = task
         tags = task.get_tags()
-        
         self.textview.subtasks_callback(task.get_subtasks_tid)
         self.textview.removesubtask_callback(task.remove_subtask)
         self.textview.set_get_tagslist_callback(task.get_tags_name)
@@ -163,7 +163,7 @@ class TaskEditor :
         
         # plugins
         self.plugins = plugins
-        self.pengine = PluginEngine(GTG.PLUGIN_DIR)
+        self.pengine = PluginEngine(PLUGIN_DIR)
         self.te_plugin_api = PluginAPI(self.window, None, self.wTree, self.req, None, None, None, None, task, self.textview)
         self.pengine.onTaskLoad(self.plugins, self.te_plugin_api)
         
@@ -287,8 +287,10 @@ class TaskEditor :
                 datetoset = text
                 
         if validdate :
-            #If the date is valid, we write in black in the widget
-            widget.modify_text(gtk.STATE_NORMAL, gtk.gdk.color_parse("#000"))
+            #If the date is valid, we write with default color in the widget
+            # "none" will set the default color.
+            widget.modify_text(gtk.STATE_NORMAL, None)
+            widget.modify_base(gtk.STATE_NORMAL, None)
             if data == "start" :
                 self.task.set_start_date(datetoset)
             elif data == "due" :
@@ -296,6 +298,7 @@ class TaskEditor :
         else :
             #We should write in red in the entry if the date is not valid
             widget.modify_text(gtk.STATE_NORMAL, gtk.gdk.color_parse("#F00"))
+            widget.modify_base(gtk.STATE_NORMAL, gtk.gdk.color_parse("#F88"))
 
 
         

@@ -29,11 +29,19 @@ from GTG.core.task import Task
 #Only the datastore should access to the backend
 DEFAULT_BACKEND = "1"
 #If you want to debug a backend, it can be useful to disable the threads
+#Currently, it's using idle_add instead of threads
 THREADING = True
 
 class DataStore(gobject.GObject):
     __gsignals__ = { 'refresh': (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE,
-                                   (str,)) }
+                                   (str,)),
+                    'task-added': (gobject.SIGNAL_RUN_FIRST, \
+                                    gobject.TYPE_NONE, (str,)),
+                    'task-deleted': (gobject.SIGNAL_RUN_FIRST, \
+                                    gobject.TYPE_NONE, (str,)),
+                    'task-modified': (gobject.SIGNAL_RUN_FIRST, \
+                                    gobject.TYPE_NONE, (str,)) }
+
 
     def __init__ (self):
         gobject.GObject.__init__(self)
@@ -44,11 +52,6 @@ class DataStore(gobject.GObject):
         
     def all_tasks(self) :
         all_tasks = []
-        #Call this only when we want to force a refresh
-#        for key in self.backends :
-#            b = self.backends[key]
-#            tlist = b.get_tasks_list()
-#            all_tasks += tlist
         #We also add tasks that are still not in a backend (because of threads)
         tlist = self.tasks.keys()
         for t in tlist :
@@ -79,14 +82,12 @@ class DataStore(gobject.GObject):
             self.tasks[tid].delete()
             uid,pid = tid.split('@') #pylint: disable-msg=W0612
             back = self.backends[pid]
-            #self.locks.acquire(tid)
             #Check that the task still exist. It might have been deleted
             #by its parent a few line earlier :
             if self.tasks.has_key(tid) :
                 self.tasks.pop(tid)
             back.remove_task(tid)
-            #The following line should not be necessary
-            #self.locks.release(tid)
+            self.emit("task-deleted",tid)
         
     #Create a new task and return it.
     #newtask should be True if you create a task
@@ -99,19 +100,24 @@ class DataStore(gobject.GObject):
             task = Task(tid,self.requester,newtask=newtask)
             uid,pid = tid.split('@') #pylint: disable-msg=W0612
             self.tasks[tid] = task
-            return task
+            toreturn = task
         #Else we create a new task in the given pid
         elif not tid and pid and self.backends.has_key(pid):
             newtid = self.backends[pid].new_task_id()
             task = Task(newtid,self.requester,newtask=newtask)
             self.tasks[newtid] = task
             task = self.backends[pid].get_task(task,newtid)
-            return task
+            toreturn = task
+            tid = newtid
         elif tid :
-            return self.tasks[tid]
+            toreturn = self.tasks[tid]
         else :
             print "not possible to build the task = bug"
-            return None
+            toreturn = None
+        #emitting the task-added signal
+        #gobject.idle_add(self.emit,"task-added",tid)
+        self.emit("task-added",tid)
+        return toreturn
         
     def get_tagstore(self) :
         return self.tagstore
@@ -123,13 +129,13 @@ class DataStore(gobject.GObject):
         if dic.has_key("backend") :
             pid = dic["pid"]
             backend = dic["backend"]
-            source = TaskSource(backend,dic,self.refresh_ui)
+            source = TaskSource(backend,dic,self.refresh_ui,self.task_modified)
             self.backends[pid] = source
             #Filling the backend
             #Doing this at start is more efficient than after the GUI is launched
             source.get_tasks_list(func=self.refresh_tasklist)
             
-        else :
+        else:
             print "Register a dic without backend key:  BUG"
 
     def unregister_backend(self, backend):
@@ -141,26 +147,30 @@ class DataStore(gobject.GObject):
             l.append(self.backends[key])
         return l
     
+    #TODO : remove refresh_ui
     def refresh_ui(self) :
         #print "refresh %s" %self.tasks
         self.emit("refresh","1")
+        
+    def task_modified(self,tid) :
+        self.emit("task-modified",tid)
         
     def refresh_tasklist(self,task_list) :
         for tid in task_list :
             #Just calling new_task then get_task is enough
             self.new_task(tid=tid)
             self.get_task(tid)
-        
 
 #Task source is an transparent interface between the real backend and datastore
 #Task source has also more functionnalities
 class TaskSource() :
-    def __init__(self,backend,parameters,refresh_cllbck) :
+    def __init__(self,backend,parameters,refresh_cllbck,taskmodif_cllbck) :
         self.backend = backend
         self.dic = parameters
         self.tasks = {}
         self.time = time.time()
         self.refresh = refresh_cllbck
+        self.task_modified = taskmodif_cllbck
         self.locks = lockslibrary()
         self.tosleep = 0
         self.backend_lock = threading.Lock()
@@ -184,9 +194,12 @@ class TaskSource() :
                 self.backend_lock.release()
             #print "releasing lock  to getall" 
             func(tlist)
-        t = threading.Thread(target=getall)
-        t.start()
-        #getall()
+        if THREADING :
+#            t = threading.Thread(target=getall)
+#            t.start()
+            gobject.idle_add(getall)
+        else:
+            getall()
         return None
         
     def get_task(self,empty_task,tid) :
@@ -213,25 +226,24 @@ class TaskSource() :
             self.tasks[tid] = False
             if THREADING :
                 self.locks.create_lock(tid)
-                t = threading.Thread(target=getting,args=[empty_task,tid])
-                t.start()
-                self.tasks[tid] = empty_task
+                gobject.idle_add(getting,empty_task,tid)
+#                t = threading.Thread(target=getting,args=[empty_task,tid])
+#                t.start()
             else :
+                self.locks.create_lock(tid)
                 getting(empty_task,tid)
-                self.tasks[tid] = empty_task
+            self.tasks[tid] = empty_task
         return empty_task
 
     def set_task(self,task) :
-        #This is foireux : imagine qu'on skipe un save et puis on quitte
-#        self.tasks[task.get_id()] = task
-#        diffe = time.time() - self.time
-#        if diffe > 2 :
-#            self.time = time.time()    
-#            return self.backend.set_task(task)
-#        else :
-#            return True
-        t = threading.Thread(target=self.__write,args=[task])
-        t.start()
+        if THREADING:
+            gobject.idle_add(self.__write,task)
+#            t = threading.Thread(target=self.__write,args=[task])
+#            t.start()
+        else:
+            self.__write(task)
+        #emiting the signal
+        self.task_modified(task.get_id())
         return None
     
     #This function, called in a thread, write to the backend.

@@ -1,11 +1,11 @@
 ====== Getting Things GNOME! ======
 
-Getting Things GNOME! (GTG) is a personal organizer for the GNOME desktop 
-environment inspired by the Getting Things Done (GTD) methodology. GTG is 
-designed with flexibility, adaptability, and ease of use in mind so it can be 
-used as more than just GTD software. 
+Getting Things GNOME! (GTG) is a personal organizer for the GNOME desktop
+environment inspired by the Getting Things Done (GTD) methodology. GTG is
+designed with flexibility, adaptability, and ease of use in mind so it can be
+used as more than just GTD software.
 
-GTG is intended to help you track everything you needto do and need to know, 
+GTG is intended to help you track everything you needto do and need to know,
 from small tasks to large projects.
 
 ===== Dependencies =====
@@ -16,23 +16,28 @@ GTG depends on the following packages:
  * python ConfigObj
  * python gobject
  * python XDG
-Please refer to your system documentation for information on how to install 
+
+To generate the API documentation, you'll also need to install 'pydoctor'.
+
+Please refer to your system documentation for information on how to install
 these modules if they're not currently available.
 
-To install these packages on Debian-based systems, execute the following 
+To install these packages on Debian-based systems, execute the following
 command:
     $ sudo aptitude install python-gtk2 python-glade2 python-xdg python-gobject\
-         python-configobj
+         python-configobj python-pydoctor
+
+Note that the python-pydoctor package is broken in karmic.
 
 ===== Installing and Running =====
 
 To install GTG, either unpack the tarball:
-    
+
     $ tar xzvf gtg.tar.gz
 
-or check out our bazaar branch for a development version (we try to keep those 
+or check out our bazaar branch for a development version (we try to keep those
 unbroken and ready for production use):
-    
+
     $ bzr branch lp:gtg
 
 To run GTG, either execute it directly from the source folder:
@@ -46,6 +51,11 @@ or install it system-wide (must install as root to install system-wide):
     $ sudo python setup.py install # must be root to install system-wide
     $ gtg
 
+Please note you have to pass --install-layout=deb option to setup.py script
+to correctly install GTG on recent Ubuntu versions (9.04 "Jaunty" or later):
+
+    $ sudo python setup.py install --install-layout=deb
+
 ==== Usage ====
 
 When writing a task, keep in mind that:
@@ -54,7 +64,7 @@ When writing a task, keep in mind that:
 
 ===== Quick add =====
 
-In the quickadd line you can use "attribue:argument" with any title. 
+In the quickadd line you can use "attribute:argument" with any title.
 Valid attributes are: "tags", "defer", "due"
 E.g.:
  "due:friday task description"
