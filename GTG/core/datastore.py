@@ -29,6 +29,7 @@ from GTG.core.task import Task
 #Only the datastore should access to the backend
 DEFAULT_BACKEND = "1"
 #If you want to debug a backend, it can be useful to disable the threads
+#Currently, it's using idle_add instead of threads
 THREADING = True
 
 class DataStore(gobject.GObject):
@@ -114,6 +115,7 @@ class DataStore(gobject.GObject):
             print "not possible to build the task = bug"
             toreturn = None
         #emitting the task-added signal
+        #gobject.idle_add(self.emit,"task-added",tid)
         self.emit("task-added",tid)
         return toreturn
         
@@ -133,7 +135,7 @@ class DataStore(gobject.GObject):
             #Doing this at start is more efficient than after the GUI is launched
             source.get_tasks_list(func=self.refresh_tasklist)
             
-        else :
+        else:
             print "Register a dic without backend key:  BUG"
 
     def unregister_backend(self, backend):
@@ -149,6 +151,7 @@ class DataStore(gobject.GObject):
     def refresh_ui(self) :
         #print "refresh %s" %self.tasks
         self.emit("refresh","1")
+        
     def task_modified(self,tid) :
         self.emit("task-modified",tid)
         
@@ -157,7 +160,6 @@ class DataStore(gobject.GObject):
             #Just calling new_task then get_task is enough
             self.new_task(tid=tid)
             self.get_task(tid)
-        
 
 #Task source is an transparent interface between the real backend and datastore
 #Task source has also more functionnalities
@@ -193,8 +195,9 @@ class TaskSource() :
             #print "releasing lock  to getall" 
             func(tlist)
         if THREADING :
-            t = threading.Thread(target=getall)
-            t.start()
+#            t = threading.Thread(target=getall)
+#            t.start()
+            gobject.idle_add(getall)
         else:
             getall()
         return None
@@ -223,18 +226,20 @@ class TaskSource() :
             self.tasks[tid] = False
             if THREADING :
                 self.locks.create_lock(tid)
-                t = threading.Thread(target=getting,args=[empty_task,tid])
-                t.start()
-                self.tasks[tid] = empty_task
+                gobject.idle_add(getting,empty_task,tid)
+#                t = threading.Thread(target=getting,args=[empty_task,tid])
+#                t.start()
             else :
+                self.locks.create_lock(tid)
                 getting(empty_task,tid)
-                self.tasks[tid] = empty_task
+            self.tasks[tid] = empty_task
         return empty_task
 
     def set_task(self,task) :
         if THREADING:
-            t = threading.Thread(target=self.__write,args=[task])
-            t.start()
+            gobject.idle_add(self.__write,task)
+#            t = threading.Thread(target=self.__write,args=[task])
+#            t.start()
         else:
             self.__write(task)
         #emiting the signal

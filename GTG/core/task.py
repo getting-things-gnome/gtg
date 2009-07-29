@@ -27,7 +27,7 @@ from GTG.tools.dates import strtodate
 #You should never create a Task directly. Use the datastore.new_task() function.
 class Task :
     def __init__(self, ze_id, requester, newtask=False) :
-        #the id of this task in the project
+        #the id of this task in the project should be set
         #tid is a string ! (we have to choose a type and stick to it)
         self.tid = str(ze_id)
         self.content = ""
