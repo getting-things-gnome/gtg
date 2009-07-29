@@ -211,6 +211,16 @@ class TaskTreeModel(gtk.GenericTreeModel):
             par_rowref = child[:child.rfind('/')]
             return par_rowref
 
+    def add_task(self, tid):
+        print "Add task: %s" % tid
+        task = self.req.get_task(tid)
+        #for p in task.get_parents():
+        #    print p
+        
+        # 1. get the task
+        # 2. get every path from parents
+        
+
     def move(self, parent, child):
         #print "Moving %s below %s" % (child, parent)
         # Get child

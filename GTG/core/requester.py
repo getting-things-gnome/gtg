@@ -33,6 +33,7 @@ class Requester:
         self.ds = datastore
 
     def connect(self, signal, func):
+        #Signals need to be connected to the datastore
         self.ds.connect(signal, func)
 
     ############## Tasks ##########################
@@ -61,11 +62,9 @@ class Requester:
         @param pid: The project where the new task will be created.
         @param tags: The tags for the new task. If not provided, then the
             task will have no tags.
-        @param newtask: C{True} if this is creating a task, C{False} if
-            importing an existing task.
+        @param newtask: C{True} if this is creating a new task that never
+            existed, C{False} if importing an existing task from a backend.
         """
-        # XXX: The docs don't make it clear why you'd ever need to pass in
-        # newtask or how newtask is used.
         task = self.ds.new_task(pid=pid, newtask=newtask)
         if tags:
             for t in tags:
@@ -226,8 +225,21 @@ class Requester:
         return self.ds.get_tagstore().get_tag(tagname)
 
     def get_all_tags(self):
-        """Return a list of every tag that was ever used."""
-        return list(self.ds.get_tagstore().get_all_tags())
+        """Return a list of every tag that was used.
+        We don't return tag that were used only on permanently deleted tasks.
+
+        @return: A list of tags used by a open or closed task.
+        """
+        l = []
+        for tid in self.ds.all_tasks():
+            t = self.get_task(tid)
+            if t:
+                for tag in t.get_tags():
+                    if tag not in l:
+                        l.append(tag)
+        l.sort(cmp=lambda x, y: cmp(x.get_name().lower(),\
+            y.get_name().lower()))
+        return l
 
     def get_notag_tag(self):
         return self.ds.get_tagstore().get_notag_tag()
@@ -240,12 +252,13 @@ class Requester:
 
         @return: A list of tags used by a task.
         """
-        # FIXME: it should be only active and visible tasks.
         l = []
-        for tid in self.ds.all_tasks():
+        for tid in self.get_tasks_list(started_only=False):
             t = self.get_task(tid)
             if t:
                 for tag in t.get_tags():
                     if tag not in l:
                         l.append(tag)
+        l.sort(cmp=lambda x, y: cmp(x.get_name().lower(),\
+            y.get_name().lower()))
         return l

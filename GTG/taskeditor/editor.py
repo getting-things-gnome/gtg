@@ -278,8 +278,10 @@ class TaskEditor :
                 datetoset = text
                 
         if validdate :
-            #If the date is valid, we write in black in the widget
-            widget.modify_text(gtk.STATE_NORMAL, gtk.gdk.color_parse("#000"))
+            #If the date is valid, we write with default color in the widget
+            # "none" will set the default color.
+            widget.modify_text(gtk.STATE_NORMAL, None)
+            widget.modify_base(gtk.STATE_NORMAL, None)
             if data == "start" :
                 self.task.set_start_date(datetoset)
             elif data == "due" :
@@ -287,6 +289,7 @@ class TaskEditor :
         else :
             #We should write in red in the entry if the date is not valid
             widget.modify_text(gtk.STATE_NORMAL, gtk.gdk.color_parse("#F00"))
+            widget.modify_base(gtk.STATE_NORMAL, gtk.gdk.color_parse("#F88"))
 
 
         

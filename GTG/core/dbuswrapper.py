@@ -2,8 +2,10 @@ import dbus
 import dbus.glib
 import dbus.service
 
+from GTG.core import CoreConfig
 
-BUSNAME = "org.GTG"
+BUSNAME = CoreConfig.BUSNAME
+BUSFACE = CoreConfig.BUSINTERFACE
 
 def dsanitize(data):
     # Clean up a dict so that it can be transmitted through D-Bus
@@ -43,7 +45,7 @@ class DBusTaskWrapper(dbus.service.Object):
         # Attach the object to D-Bus
         self.bus = dbus.SessionBus()
         bus_name = dbus.service.BusName(BUSNAME, bus=self.bus)
-        dbus.service.Object.__init__(self, bus_name, "/org/GTG")
+        dbus.service.Object.__init__(self, bus_name, BUSFACE)
         self.req = req
         self.ui = ui
 

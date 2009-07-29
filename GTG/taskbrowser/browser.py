@@ -34,6 +34,7 @@ import datetime
 
 #our own imports
 import GTG
+from GTG import info
 from GTG import _
 from GTG.taskeditor.editor            import TaskEditor
 from GTG.taskbrowser                  import GnomeConfig
@@ -214,12 +215,12 @@ class TaskBrowser:
 
     def _init_about_dialog(self):
         gtk.about_dialog_set_url_hook(lambda dialog, url: openurl.openurl(url))
-        self.about.set_website(GTG.URL)
-        self.about.set_website_label(GTG.URL)
-        self.about.set_version(GTG.VERSION)
-        self.about.set_authors(GTG.AUTHORS)
-        self.about.set_artists(GTG.ARTISTS)
-        self.about.set_translator_credits(GTG.TRANSLATORS)
+        self.about.set_website(info.URL)
+        self.about.set_website_label(info.URL)
+        self.about.set_version(info.VERSION)
+        self.about.set_authors(info.AUTHORS)
+        self.about.set_artists(info.ARTISTS)
+        self.about.set_translator_credits(info.TRANSLATORS)
 
     def _init_signal_connections(self):
 
@@ -317,6 +318,11 @@ class TaskBrowser:
         self.ctask_tv.connect('key-press-event',\
             self.on_closed_task_treeview_key_press_event)
 
+        # Connect requester signals to TreeModels
+        self.req.connect("task-added", self.on_task_added) 
+        self.req.connect("task-deleted", self.on_task_added)
+        self.req.connect("task-modified", self.on_task_modified)
+        
     def _init_view_defaults(self):
         self.menu_view_workview.set_active(WORKVIEW)
         self.wTree.get_widget("view_sidebar").set_active(SIDEBAR)
@@ -1163,6 +1169,16 @@ class TaskBrowser:
         #Saving is now done in main.py
         self.on_delete(None, None)
         gtk.main_quit()
+
+    def on_task_added(self, sender, tid):
+        print "Task added: %s, %s" % (sender, tid)
+        self.task_model.add_task(tid)
+
+    def on_task_deleted(self, sender, tid):
+        print "Task deleted: %s, %s" % (sender, tid)
+
+    def on_task_modified(self, sender, tid):
+        print "Task modified: %s, %s" % (sender, tid)
 
     def on_refresh(self, widget):
         #TODO: this is used for debug of the TreeModel,
