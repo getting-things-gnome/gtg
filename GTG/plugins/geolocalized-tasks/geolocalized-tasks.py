@@ -81,10 +81,10 @@ class geolocalizedTasks:
         
         self.PROXIMITY_FACTOR = 5  # 5 km
         self.LOCATION_ACCURACY = 3 # Locality
-        self.LOCATION_DETERMINATION_METHOD = []
-        for provider in self.geoclue.get_available_providers():
-            if provider['position'] and (provider['provider'] != "Example Provider" and provider['provider'] != "Plazes"):
-                self.LOCATION_DETERMINATION_METHOD.append(provider["provider"])
+        self.LOCATION_DETERMINATION_METHOD = ["network", "gps", "cellphone"]
+        #for provider in self.geoclue.get_available_providers():
+        #    if provider['position'] and (provider['provider'] != "Example Provider" and provider['provider'] != "Plazes"):
+        #        self.LOCATION_DETERMINATION_METHOD.append(provider["provider"])
             
         
     
@@ -129,6 +129,7 @@ class geolocalizedTasks:
         btn_set_location.connect('clicked', self.set_task_location, plugin_api)
         plugin_api.AddTaskToolbarItem(btn_set_location)
     
+    # the task location filter
     def filter_workview_by_location(self, plugin_api):
         # TODO: if the location has a delay in being calculated it may not exist at
         # this point
@@ -148,12 +149,13 @@ class geolocalizedTasks:
                         tasks_without_location.append(task)
                 
             for task in tasks_with_location:
-                tags = task.get_tags()
-                for tag in tags:
-                    if tag.get_attribute("location"):
-                        position = eval(tag.get_attribute("location"))
-                        if not self.geoclue.compare_position(position[0], position[1], float(self.PROXIMITY_FACTOR)):
-                            plugin_api.add_task_to_workview_filter(task.get_id())
+                if task.is_workable():
+                    tags = task.get_tags()
+                    for tag in tags:
+                        if tag.get_attribute("location"):
+                            position = eval(tag.get_attribute("location"))
+                            if not self.geoclue.compare_position(position[0], position[1], float(self.PROXIMITY_FACTOR)):
+                                plugin_api.add_task_to_workview_filter(task.get_id())
                                 
                                 
     #=== GEOLOCALIZED PREFERENCES===================================================    
@@ -169,6 +171,20 @@ class geolocalizedTasks:
                 cmb_accuracy.set_active(i)
         cmb_accuracy.connect("changed", self.cmb_accuracy_changed)
         self.tmp_location_accuracy = self.LOCATION_ACCURACY
+        
+        check_network = wTree.get_widget("check_network")
+        check_cellphone = wTree.get_widget("check_cellphone")
+        check_gps = wTree.get_widget("check_gps")
+        
+        if "network" in self.LOCATION_DETERMINATION_METHOD:
+            check_network.set_active(True)
+            
+        if "cellphone" in self.LOCATION_DETERMINATION_METHOD:
+            check_cellphone.set_active(True)
+            
+        if "gps" in self.LOCATION_DETERMINATION_METHOD:
+            check_gps.set_active(True)
+        
         
         spin_proximityfactor = wTree.get_widget("spin_proximityfactor")
         spin_proximityfactor.set_value(float(self.PROXIMITY_FACTOR))
