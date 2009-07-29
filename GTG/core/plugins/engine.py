@@ -72,7 +72,7 @@ class PluginEngine:
                             break
                         
                 except Exception, e:
-                    print "Error while trying to load a python module: %s" % e
+                    #print "Error while trying to load a python module: %s" % e
                     continue
             
         for name, plugin in plugins.items():

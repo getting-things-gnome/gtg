@@ -22,7 +22,7 @@ class pluginTest:
     PLUGIN_NAME = 'Hello World'
     PLUGIN_AUTHORS = 'Paulo Cabido <paulo.cabido@gmail.com>'
     PLUGIN_VERSION = '0.1.1'
-    PLUGIN_DESCRIPTION = 'Plugin Description goes here. Helo World!'
+    PLUGIN_DESCRIPTION = 'Plugin Description goes here. Hello World!'
     PLUGIN_ENABLED = False
 
     def __init__(self):
