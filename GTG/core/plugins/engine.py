@@ -144,14 +144,14 @@ class PluginEngine:
         for plgin in plugins:
             if plgin['instance'] != None and plgin['state'] == False:
                 try:
-                    print "deactivating plugin: " + plgin['name']
+                    #print "deactivating plugin: " + plgin['name']
                     plgin['instance'].deactivate(plugin_api)
                     plgin['instance'] = None
                 except Exception, e:
                     print "Error: %s" % e
             elif plgin['instance'] == None and plgin['state'] == True:
                 try:    
-                    print "activating plugin: " + plgin['name']
+                    #print "activating plugin: " + plgin['name']
                     plgin['instance'] = plgin['class']()
                     plgin['instance'].activate(plugin_api)
                 except Exception, e:
