@@ -29,6 +29,7 @@ from GTG.core.task import Task
 #Only the datastore should access to the backend
 DEFAULT_BACKEND = "1"
 #If you want to debug a backend, it can be useful to disable the threads
+#Currently, it's using idle_add instead of threads
 THREADING = True
 
 class DataStore(gobject.GObject):
@@ -114,6 +115,7 @@ class DataStore(gobject.GObject):
             print "not possible to build the task = bug"
             toreturn = None
         #emitting the task-added signal
+        #gobject.idle_add(self.emit,"task-added",tid)
         self.emit("task-added",tid)
         return toreturn
         
@@ -193,8 +195,9 @@ class TaskSource() :
             #print "releasing lock  to getall" 
             func(tlist)
         if THREADING :
-            t = threading.Thread(target=getall)
-            t.start()
+#            t = threading.Thread(target=getall)
+#            t.start()
+            gobject.idle_add(getall)
         else:
             getall()
         return None
@@ -223,18 +226,20 @@ class TaskSource() :
             self.tasks[tid] = False
             if THREADING :
                 self.locks.create_lock(tid)
-                t = threading.Thread(target=getting,args=[empty_task,tid])
-                t.start()
-                self.tasks[tid] = empty_task
+                gobject.idle_add(getting,empty_task,tid)
+#                t = threading.Thread(target=getting,args=[empty_task,tid])
+#                t.start()
             else :
+                self.locks.create_lock(tid)
                 getting(empty_task,tid)
-                self.tasks[tid] = empty_task
+            self.tasks[tid] = empty_task
         return empty_task
 
     def set_task(self,task) :
         if THREADING:
-            t = threading.Thread(target=self.__write,args=[task])
-            t.start()
+            gobject.idle_add(self.__write,task)
+#            t = threading.Thread(target=self.__write,args=[task])
+#            t.start()
         else:
             self.__write(task)
         #emiting the signal

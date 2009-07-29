@@ -27,8 +27,12 @@ from GTG.tools.dates import strtodate
 #You should never create a Task directly. Use the datastore.new_task() function.
 class Task :
 
+    STA_ACTIVE    = "Active"
+    STA_DISMISSED = "Dismiss"
+    STA_DONE      = "Done"
+
     def __init__(self, ze_id, requester, newtask=False) :
-        #the id of this task in the project
+        #the id of this task in the project should be set
         #tid is a string ! (we have to choose a type and stick to it)
         self.tid = str(ze_id)
         self.content = ""
@@ -36,7 +40,7 @@ class Task :
         self.sync_func = None
         self.title = _("My new task")
         #available status are : Active - Done - Dismiss - Note
-        self.status = "Active"
+        self.status = self.STA_ACTIVE
         self.closed_date = None
         self.due_date = None
         self.start_date = None
@@ -94,9 +98,9 @@ class Task :
         if status :
             self.status = status
             #If Done, we set the done date
-            if status in ["Done","Dismiss"] :
+            if status in [self.STA_DONE,self.STA_DISMISSED] :
                 for c in self.get_subtasks() :
-                    if c.get_status() in ["Active"] :
+                    if c.get_status() in [self.STA_ACTIVE] :
                         c.set_status(status,donedate=donedate)
                 #to the specified date (if any)
                 if donedate :
@@ -108,11 +112,11 @@ class Task :
             #Active, we break the parent/child relation
             #It has no sense to have an active subtask of a done parent.
             # (old_status check is necessary to avoid false positive a start)
-            elif status in ["Active"] and old_status in ["Done","Dismiss"] :
+            elif status in [self.STA_ACTIVE] and old_status in [self.STA_DONE,self.STA_DISMISSED] :
                 if self.has_parents() :
                     for p_tid in self.get_parents() :
                         par = self.req.get_task(p_tid)
-                        if par.is_loaded() and par.get_status in ["Done","Dismiss"] :
+                        if par.is_loaded() and par.get_status in [self.STA_DONE,self.STA_DISMISSED] :
                             self.remove_parent(p_tid)
                 #We dont mark the children as Active because
                 #They might be already completed after all
@@ -126,7 +130,7 @@ class Task :
     def is_workable(self) :
         workable = True
         for c in self.get_subtasks() :
-            if c.get_status() == "Active" :
+            if c.get_status() == self.STA_ACTIVE :
                 workable = False
         return workable
         
@@ -326,7 +330,7 @@ class Task :
                 task.remove_parent(self.get_id())
             self.sync()
 
-    def has_subtask(self):
+    def has_subtasks(self):
         """Returns True if task has subtasks.
         """
         return len(self.children) != 0

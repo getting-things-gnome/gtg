@@ -36,6 +36,7 @@ import datetime
 import GTG
 from GTG import info
 from GTG import _
+from GTG.core.task                    import Task
 from GTG.taskeditor.editor            import TaskEditor
 from GTG.taskbrowser                  import GnomeConfig
 from GTG.taskbrowser                  import browser_tools
@@ -320,7 +321,7 @@ class TaskBrowser:
 
         # Connect requester signals to TreeModels
         self.req.connect("task-added", self.on_task_added) 
-        self.req.connect("task-deleted", self.on_task_added)
+        self.req.connect("task-deleted", self.on_task_deleted)
         self.req.connect("task-modified", self.on_task_modified)
         
     def _init_view_defaults(self):
@@ -683,8 +684,9 @@ class TaskBrowser:
         tag_list, notag_only = self.get_selected_tags()
         tid  = model.get_value(iter, tasktree.COL_TID)
         task = self.req.get_task(tid)
-        return task.has_tags(tag_list=tag_list, notag_only=notag_only)
-
+        return task.has_tags(tag_list=tag_list, notag_only=notag_only) and\
+               task.get_status() is Task.STA_ACTIVE
+               
     def closed_task_visible_func(self, model, iter, user_data=None):
         """Return True if the row must be displayed in the treeview.
         @param model: the model of the filtered treeview
@@ -1176,9 +1178,12 @@ class TaskBrowser:
 
     def on_task_deleted(self, sender, tid):
         print "Task deleted: %s, %s" % (sender, tid)
+        self.task_model.remove_task(tid)
 
     def on_task_modified(self, sender, tid):
         print "Task modified: %s, %s" % (sender, tid)
+        self.task_model.remove_task(tid)
+        self.task_model.add_task(tid)
 
     def on_refresh(self, widget):
         #TODO: this is used for debug of the TreeModel,
