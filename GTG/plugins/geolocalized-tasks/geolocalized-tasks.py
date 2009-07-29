@@ -129,6 +129,7 @@ class geolocalizedTasks:
         btn_set_location.connect('clicked', self.set_task_location, plugin_api)
         plugin_api.AddTaskToolbarItem(btn_set_location)
     
+    # the task location filter
     def filter_workview_by_location(self, plugin_api):
         # TODO: if the location has a delay in being calculated it may not exist at
         # this point
@@ -148,12 +149,13 @@ class geolocalizedTasks:
                         tasks_without_location.append(task)
                 
             for task in tasks_with_location:
-                tags = task.get_tags()
-                for tag in tags:
-                    if tag.get_attribute("location"):
-                        position = eval(tag.get_attribute("location"))
-                        if not self.geoclue.compare_position(position[0], position[1], float(self.PROXIMITY_FACTOR)):
-                            plugin_api.add_task_to_workview_filter(task.get_id())
+                if task.is_workable():
+                    tags = task.get_tags()
+                    for tag in tags:
+                        if tag.get_attribute("location"):
+                            position = eval(tag.get_attribute("location"))
+                            if not self.geoclue.compare_position(position[0], position[1], float(self.PROXIMITY_FACTOR)):
+                                plugin_api.add_task_to_workview_filter(task.get_id())
                                 
                                 
     #=== GEOLOCALIZED PREFERENCES===================================================    
