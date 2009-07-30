@@ -20,13 +20,14 @@
 from datetime import date
 import xml.dom.minidom
 
-from GTG.tools.dates import *
+from GTG import _
+from GTG.tools.dates import strtodate
 
 #This class represent a task in GTG.
 #You should never create a Task directly. Use the datastore.new_task() function.
 class Task :
     def __init__(self, ze_id, requester, newtask=False) :
-        #the id of this task in the project
+        #the id of this task in the project should be set
         #tid is a string ! (we have to choose a type and stick to it)
         self.tid = str(ze_id)
         self.content = ""
@@ -47,12 +48,17 @@ class Task :
         self.req = requester
         #If we don't have a newtask, we will have to load it.
         self.loaded = newtask
+        if self.loaded :
+            self.req._task_loaded(self.tid)
                 
     def is_loaded(self) :
         return self.loaded
         
     def set_loaded(self) :
-        self.loaded = True
+        #avoid doing it multiple times
+        if not self.loaded :
+            self.loaded = True
+            self.req._task_loaded(self.tid)
         
     def set_to_keep(self) :
         self.can_be_deleted = False
@@ -374,14 +380,16 @@ class Task :
         #self.req.delete_task(self.get_id())
         
     #This is a callback. The "sync" function has to be set
-    def set_sync_func(self,sync) :
+    def set_sync_func(self,sync,callsync=True) :
         self.sync_func = sync
         #We call it immediatly to save stuffs that were set before this
-        self.sync()
+        if callsync and self.is_loaded() :
+            self.sync()
         
     def sync(self) :
         if self.sync_func and self.is_loaded() :
             self.sync_func(self)
+            self.req._task_modified(self.tid)
             
             
     ######## Tag functions ##############

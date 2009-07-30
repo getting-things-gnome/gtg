@@ -299,7 +299,7 @@
             <property name="layout_style">end</property>
             <child>
               <widget class="GtkButton" id="close_btn">
-                <property name="label" translatable="yes">gtk-close</property>
+                <property name="label">gtk-close</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -349,7 +349,7 @@
         </child>
         <child>
           <widget class="GtkButton" id="button2">
-            <property name="label" translatable="yes">gtk-clear</property>
+            <property name="label">gtk-clear</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>

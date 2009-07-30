@@ -17,29 +17,18 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
+"""Unit tests for GTG."""
 
-import os
+import unittest
 
-from GTG import _
+from GTG.tests import (
+    test_backends,
+    test_tagstore,
+    )
 
-class GnomeConfig :
-    current_rep = os.path.dirname(os.path.abspath(__file__))
-    GLADE_FILE    = os.path.join(current_rep,"taskeditor.glade")
-    
-    MARK_DONE = _("Mark as done")
-    MARK_UNDONE = _("Mark as not done")
-    MARK_DISMISS = _("Dismiss")
-    MARK_UNDISMISS = _("Undismiss")
-    KEEP_NOTE = _("Keep as Note")
-    MAKE_TASK = _("Make a Task")
-    
-    MARK_DONE_TOOLTIP = _("Mark this task as done")
-    MARK_UNDONE_TOOLTIP = _("Mark this task as to be done")
-    MARK_DISMISS_TOOLTIP = _("Mark this task as not to be done anymore")
-    MARK_UNDISMISS_TOOLTIP = _("Mark this task as to be done")
-    DELETE_TOOLTIP = _("Permanently remove this task")
-    SUBTASK_TOOLTIP = _("Insert a subtask in this task")
-    TAG_TOOLTIP = _("Insert a tag in this task")
-    
-    #Number of second between to save in the task editor
-    SAVETIME = 10
+
+def test_suite():
+    return unittest.TestSuite([
+        test_backends.test_suite(),
+        test_tagstore.test_suite(),
+        ])

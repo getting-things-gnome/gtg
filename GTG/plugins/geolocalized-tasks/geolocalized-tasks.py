@@ -16,6 +16,10 @@
 
 import gtk, pygtk
 import os, sys
+from time import sleep
+
+from xdg.BaseDirectory import *
+from configobj import ConfigObj
 
 import Geoclue
 
@@ -33,66 +37,217 @@ class geolocalizedTasks:
     PLUGIN_NAME = 'Geolocalized Tasks'
     PLUGIN_AUTHORS = 'Paulo Cabido <paulo.cabido@gmail.com>'
     PLUGIN_VERSION = '0.1'
-    PLUGIN_DESCRIPTION = 'This plugin adds geolocalization to GTG!.'
+    PLUGIN_DESCRIPTION = 'This plugin adds geolocalized tasks to GTG!.\n \
+                          WARNING: This plugin is still heavy development.'
+                          
     PLUGIN_ENABLED = False
     
     def __init__(self):
+        self.geoclue = Geoclue.DiscoverLocation()
+        self.geoclue.init()
+        self.location = self.geoclue.get_location_info()
+        
         self.plugin_path = os.path.dirname(os.path.abspath(__file__))
         self.glade_file = os.path.join(self.plugin_path, "geolocalized.glade")
         
         # the preference menu for the plugin
-        self.menu_item = gtk.MenuItem("Geolocalized Task Preferences")
-        
-        # the menu intem for the tag context
-        self.context_item = gtk.MenuItem("Location")
+        self.menu_item = gtk.MenuItem("Geolocalized-tasks Preferences")
         
         # toolbar button for the new Location view
         # create the pixbuf with the icon and it's size.
         # 24,24 is the TaskEditor's toolbar icon size
-        icon_path = os.path.join(self.plugin_path, "map.png")
-        pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(icon_path , 24, 24)
+        image_geolocalization_path = os.path.join(self.plugin_path, "icons/hicolor/24x24/geolocalization.png")
+        pixbuf_geolocalization = gtk.gdk.pixbuf_new_from_file_at_size(image_geolocalization_path, 24, 24)
+        
+        image_assign_location_path = os.path.join(self.plugin_path, "icons/hicolor/16x16/assign-location.png")
+        pixbug_assign_location = gtk.gdk.pixbuf_new_from_file_at_size(image_assign_location_path, 16, 16)
         
         # create the image and associate the pixbuf
-        self.icon_map = gtk.Image()
-        self.icon_map.set_from_pixbuf(pixbuf)
-        self.icon_map.show()
+        self.icon_geolocalization = gtk.Image()
+        self.icon_geolocalization.set_from_pixbuf(pixbuf_geolocalization)
+        self.icon_geolocalization.show()
+        
+        image_assign_location = gtk.Image()
+        image_assign_location.set_from_pixbuf(pixbug_assign_location)
+        image_assign_location.show()
+        
+        # the menu intem for the tag context
+        self.context_item = gtk.ImageMenuItem("Assign a location to this tag")
+        self.context_item.set_image(image_assign_location)
+        # TODO: add a short cut to the menu
         
         # toolbar button for the location_view
-        self.btn_location_view = gtk.ToolButton()
-        self.btn_location_view.set_icon_widget(self.icon_map)
+        self.btn_location_view = gtk.ToggleToolButton()
+        self.btn_location_view.set_icon_widget(self.icon_geolocalization)
         self.btn_location_view.set_label("Location View")
         
-        
-        self.geoclue = Geoclue.DiscoverLocation()
-        self.geoclue.init()
+        self.PROXIMITY_FACTOR = 5  # 5 km
+        self.LOCATION_ACCURACY = 3 # Locality
+        self.LOCATION_DETERMINATION_METHOD = ["network", "gps", "cellphone"]
+        #for provider in self.geoclue.get_available_providers():
+        #    if provider['position'] and (provider['provider'] != "Example Provider" and provider['provider'] != "Plazes"):
+        #        self.LOCATION_DETERMINATION_METHOD.append(provider["provider"])
+            
         
     
     def activate(self, plugin_api):
-        self.menu_item.connect('activate', self.on_geolocalized_preferences)
-        plugin_api.AddMenuItem(self.menu_item)
+        self.menu_item.connect('activate', self.on_geolocalized_preferences, plugin_api)
+        plugin_api.add_menu_item(self.menu_item)
         
         self.context_item.connect('activate', self.on_contextmenu_tag_location, plugin_api)
         plugin_api.add_menu_tagpopup(self.context_item)
         
-        self.seperator_location_view = plugin_api.AddToolbarItem(gtk.SeparatorToolItem())
-        plugin_api.AddToolbarItem(self.btn_location_view)
+        # get the user settings from the config file
+        self.config = plugin_api.get_config()
+        if self.config.has_key("geolocalized-tasks"):
+            if self.config["geolocalized-tasks"].has_key("proximity_factor"):
+                self.PROXIMITY_FACTOR = self.config["geolocalized-tasks"]["proximity_factor"]
+            
+            if self.config["geolocalized-tasks"].has_key("accuracy"):
+                self.LOCATION_ACCURACY = self.config["geolocalized-tasks"]["accuracy"]
+        
+            if self.config["geolocalized-tasks"].has_key("location_determination_method"):
+                self.LOCATION_DETERMINATION_METHOD = self.config["geolocalized-tasks"]["location_determination_method"]
+                
+        # filter the tasks location for the workview
+        self.filter_workview_by_location(plugin_api)
     
     def deactivate(self, plugin_api):
-        plugin_api.RemoveMenuItem(self.menu_item)
+        plugin_api.remove_menu_item(self.menu_item)
         plugin_api.remove_menu_tagpopup(self.context_item)
-        plugin_apo.RemoveToolbarItem(None, self.seperator_location_view)
+        #plugin_api.RemoveToolbarItem(None, self.seperator_location_view)
+        
+        self.config["geolocalized-tasks"] = {}
+        self.config["geolocalized-tasks"]["proximity_factor"] = self.PROXIMITY_FACTOR
+        self.config["geolocalized-tasks"]["accuracy"] = self.LOCATION_ACCURACY
+        self.config["geolocalized-tasks"]["location_determination_method"] = self.LOCATION_DETERMINATION_METHOD
     
     def onTaskOpened(self, plugin_api):
         plugin_api.AddTaskToolbarItem(gtk.SeparatorToolItem())
         
         btn_set_location = gtk.ToolButton()
-        btn_set_location.set_icon_widget(self.icon_map)
+        btn_set_location.set_icon_widget(self.icon_geolocalization)
         btn_set_location.set_label("Set/View location")
         btn_set_location.connect('clicked', self.set_task_location, plugin_api)
-        plugin_api.AddTaskToolbarItem(btn_set_location)
+        plugin_api.add_task_toolbar_item(btn_set_location)
+    
+    # the task location filter
+    def filter_workview_by_location(self, plugin_api):
+        # TODO: if the location has a delay in being calculated it may not exist at
+        # this point
+        if self.location.has_key("latitude") and self.location.has_key("longitude"):
+            tasks = plugin_api.get_all_tasks()
+                
+            tasks_with_location = []
+            tasks_without_location = []
             
-    def on_geolocalized_preferences(self, widget):
-        pass
+            for tid in tasks:
+                task = plugin_api.get_task(tid)
+                tags = task.get_tags()
+                for tag in tags:
+                    if "location" in tag.get_all_attributes():
+                        tasks_with_location.append(task)
+                    else:
+                        tasks_without_location.append(task)
+                
+            for task in tasks_with_location:
+                if task.is_workable():
+                    tags = task.get_tags()
+                    for tag in tags:
+                        if tag.get_attribute("location"):
+                            position = eval(tag.get_attribute("location"))
+                            if not self.geoclue.compare_position(position[0], position[1], float(self.PROXIMITY_FACTOR)):
+                                plugin_api.add_task_to_workview_filter(task.get_id())
+                                
+                                
+    #=== GEOLOCALIZED PREFERENCES===================================================    
+    def on_geolocalized_preferences(self, widget, plugin_api):
+        wTree = gtk.glade.XML(self.glade_file, "Preferences")
+        dialog = wTree.get_widget("Preferences")
+        dialog.connect("response", self.preferences_close)
+        plugin_api.set_parent_window(dialog)
+        
+        cmb_accuracy = wTree.get_widget("cmb_accuracy")
+        for i in range(len(cmb_accuracy.get_model())):
+            if str(self.accuracy_to_value(cmb_accuracy.get_model()[i][0])) == str(self.LOCATION_ACCURACY):
+                cmb_accuracy.set_active(i)
+        cmb_accuracy.connect("changed", self.cmb_accuracy_changed)
+        self.tmp_location_accuracy = self.LOCATION_ACCURACY
+        
+        check_network = wTree.get_widget("check_network")
+        check_cellphone = wTree.get_widget("check_cellphone")
+        check_gps = wTree.get_widget("check_gps")
+        
+        if "network" in self.LOCATION_DETERMINATION_METHOD:
+            check_network.set_active(True)
+            
+        if "cellphone" in self.LOCATION_DETERMINATION_METHOD:
+            check_cellphone.set_active(True)
+            
+        if "gps" in self.LOCATION_DETERMINATION_METHOD:
+            check_gps.set_active(True)
+        
+        
+        spin_proximityfactor = wTree.get_widget("spin_proximityfactor")
+        spin_proximityfactor.set_value(float(self.PROXIMITY_FACTOR))
+        spin_proximityfactor.connect("changed", self.spin_proximityfactor_changed)
+        self.tmp_proximityfactor = float(self.PROXIMITY_FACTOR)
+        
+        dialog.show_all()
+        
+    # converts the accuracy to a value
+    def accuracy_to_value(self, accuracy):
+        if not accuracy:
+            return 0
+        elif accuracy.lower() == "Country".lower():
+            return 1
+        elif accuracy.lower() == "Region".lower():
+            return 2
+        elif accuracy.lower() == "Locality".lower():
+            return 3
+        elif accuracy.lower() == "Postalcode".lower():
+            return 4
+        elif accuracy.lower() == "Street".lower():
+            return 5
+        elif accuracy.lower() == "Detailed".lower():
+            return 6
+        return 0 
+    
+    # converts the value of a accuracy to the accuracy
+    def value_to_accuracy(self, value):
+        if not value:
+            return None
+        elif value == 1:
+            return "Country"
+        elif value == 2:
+            return "Region"
+        elif value == 3:
+            return "Locality"
+        elif value == 4:
+            return "Postalcode"
+        elif value == 5:
+            return "Street"
+        elif value == 6:
+            return "Detailed"
+        return None
+        
+    def cmb_accuracy_changed(self, comboboxentry):
+        index = comboboxentry.get_active()
+        model = comboboxentry.get_model()
+        self.tmp_location_accuracy = self.accuracy_to_value(model[index][0])
+        
+    def spin_proximityfactor_changed(self, spinbutton):
+        self.tmp_proximityfactor = spinbutton.get_value()
+        
+    def preferences_close(self, dialog, response=None):
+        if response == gtk.RESPONSE_OK:
+            self.LOCATION_ACCURACY = self.tmp_location_accuracy 
+            self.PROXIMITY_FACTOR = float(self.tmp_proximityfactor) 
+            dialog.destroy()
+        else:
+            dialog.destroy()
+            
+    #=== GEOLOCALIZED PREFERENCES===================================================
     
     #=== SET TASK LOCATION =========================================================
     def set_task_location(self, widget, plugin_api, location=None):
@@ -267,6 +422,7 @@ class geolocalizedTasks:
                     index = self.cmb_existing_tag.get_active()
                     model = self.cmb_existing_tag.get_model()
                     self.plugin_api.add_tag_attribute(model[index][0], "location", marker_position)
+            dialog.destroy()
         else:
             # cancel
             dialog.destroy()

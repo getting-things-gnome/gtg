@@ -54,12 +54,26 @@ class PluginEngine:
             if os.path.isdir(os.path.join(self.plugin_path[0], f)):
                 plugin_dirs.append(os.path.join(self.plugin_path[0], f))
         
-        try:
+        
             for loader, name, ispkg in pkgutil.iter_modules(plugin_dirs):
-                file, pathname, desc = imp.find_module(name, plugin_dirs)
-                plugins[name] = imp.load_module(name, file, pathname, desc)
-        except Exception, e:
-            print "Error: %s" % e
+                try:
+                    file, pathname, desc = imp.find_module(name, plugin_dirs)
+                    #plugins[name] = imp.load_module(name, file, pathname, desc)
+                    tmp_load = imp.load_module(name, file, pathname, desc)
+                    is_plugin = False
+                    for key in tmp_load.__dict__.keys():
+                        try:
+                            is_plugin = getattr(tmp_load.__dict__[key], 'PLUGIN_NAME', None)
+                        except TypeError:
+                            continue
+                    
+                        if is_plugin:
+                            plugins[name] = [tmp_load, key]
+                            break
+                        
+                except Exception, e:
+                    #print "Error while trying to load a python module: %s" % e
+                    continue
             
         for name, plugin in plugins.items():
             tmp_plgin = self.loadPlugin(plugin)
@@ -70,31 +84,23 @@ class PluginEngine:
 		
     # checks if the module loaded is a plugin and gets the main class
     def loadPlugin(self, plugin):
-        plugin_locals = plugin.__dict__
-        is_plugin = False
+        plugin_locals = plugin[0].__dict__
+        key = plugin[1]
         loaded_plugin = {}
-        
-        # find the plugin class
-        for key in plugin_locals.keys():
-            try:
-                is_plugin = getattr(plugin_locals[key], 'PLUGIN_NAME', None)
-            except TypeError:
-                continue
-            
-            # loads the plugin info
-            if is_plugin:
-                try:
-                    loaded_plugin['plugin'] = plugin.__name__
-                    loaded_plugin['class_name'] = key
-                    loaded_plugin['class'] = plugin_locals[key]
-                    loaded_plugin['name'] = plugin_locals[key].PLUGIN_NAME
-                    loaded_plugin['version'] = plugin_locals[key].PLUGIN_VERSION
-                    loaded_plugin['authors'] = plugin_locals[key].PLUGIN_AUTHORS
-                    loaded_plugin['description'] = plugin_locals[key].PLUGIN_DESCRIPTION
-                    loaded_plugin['state'] = plugin_locals[key].PLUGIN_ENABLED
-                    loaded_plugin['instance'] = None
-                except:
-                    continue
+         
+        # loads the plugin info
+        try:
+            loaded_plugin['plugin'] = plugin[0].__name__
+            loaded_plugin['class_name'] = key
+            loaded_plugin['class'] = plugin_locals[key]
+            loaded_plugin['name'] = plugin_locals[key].PLUGIN_NAME
+            loaded_plugin['version'] = plugin_locals[key].PLUGIN_VERSION
+            loaded_plugin['authors'] = plugin_locals[key].PLUGIN_AUTHORS
+            loaded_plugin['description'] = plugin_locals[key].PLUGIN_DESCRIPTION
+            loaded_plugin['state'] = plugin_locals[key].PLUGIN_ENABLED
+            loaded_plugin['instance'] = None
+        except Exception, e:
+            print "Erro: %s" % e
 		
         if not loaded_plugin:
             return None	
@@ -120,6 +126,12 @@ class PluginEngine:
             if plgin['state']:
                 plgin['instance'] = plgin['class']()
                 plgin['instance'].activate(plugin_api)
+                
+    # deactivate the enabled plugins
+    def deactivatePlugins(self, plugins, plugin_api):
+        for plgin in plugins:
+            if plgin['state']:
+                plgin['instance'].deactivate(plugin_api)
 				
     # loads the plug-in features for a task
     def onTaskLoad(self, plugins, plugin_api):
@@ -132,14 +144,14 @@ class PluginEngine:
         for plgin in plugins:
             if plgin['instance'] != None and plgin['state'] == False:
                 try:
-                    print "deactivating plugin: " + plgin['name']
+                    #print "deactivating plugin: " + plgin['name']
                     plgin['instance'].deactivate(plugin_api)
                     plgin['instance'] = None
                 except Exception, e:
                     print "Error: %s" % e
             elif plgin['instance'] == None and plgin['state'] == True:
                 try:    
-                    print "activating plugin: " + plgin['name']
+                    #print "activating plugin: " + plgin['name']
                     plgin['instance'] = plgin['class']()
                     plgin['instance'].activate(plugin_api)
                 except Exception, e:

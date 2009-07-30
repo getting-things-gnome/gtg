@@ -23,9 +23,10 @@ from distutils.command.install_data import install_data
 from subprocess import call
 
 import glob
-import GTG
 import os
 import sys
+
+from GTG import info
 
 ### CONSTANTS ##################################################################
 
@@ -43,7 +44,7 @@ def create_icon_list():
             if file.endswith(".png") or file.endswith(".svg"):
                 dirList.append(os.path.join(root,file))
         if len(dirList)!=0:
-	    newroot = root.replace("data/","")
+            newroot = root.replace("data/","")
             fileList.append( (os.path.join(DATA_DIR,newroot),dirList) )
     return fileList
 
@@ -102,11 +103,11 @@ author = 'The GTG Team'
 
 setup(
   name         = 'gtg',
-  version      = GTG.VERSION,
-  url          = GTG.URL,
+  version      = info.VERSION,
+  url          = info.URL,
   author       = author,
-  author_email = GTG.EMAIL,
-  description  = 'GTG is a personal organizer for the GNOME desktop environment.',
+  author_email = info.EMAIL,
+  description  = info.SHORT_DESCRIPTION,
   packages     = ['GTG','GTG.backends','GTG.core','GTG.taskbrowser','GTG.taskeditor','GTG.tools'],
   package_data = {'GTG.taskbrowser':['taskbrowser.glade'],'GTG.taskeditor':['taskeditor.glade']},
   data_files   = create_data_files(),

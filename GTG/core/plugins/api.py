@@ -19,20 +19,19 @@
 import gtk
 
 class PluginAPI:
-    def __init__(self, window, wTree, requester, taskview=None, tagpopup=None, tagview=None, task=None, textview=None):
+    def __init__(self, window, config, wTree, requester, taskview, workview_task_filter, \
+                 tagpopup, tagview, task=None, textview=None):
         # private vars       
         self.__window = window
+        self.config = config
         self.__wTree = wTree
         self.__requester = requester
         
-        if taskview:
-            self.taskview = taskview
+        self.taskview = taskview
+        self.__workview_task_filter = workview_task_filter
         
-        if tagpopup:
-            self.__tagpopup = tagpopup
-        
-        if tagview:
-            self.tagview = tagview
+        self.__tagpopup = tagpopup
+        self.tagview = tagview
         
         if task:
             self.task = task
@@ -41,18 +40,18 @@ class PluginAPI:
             self.textview = textview
         
     # adds items to the MenuBar of the Main Window (TaskBrowser)
-    def AddMenuItem(self, item):
+    def add_menu_item(self, item):
         self.__wTree.get_widget('menu_plugin').get_submenu().append(item)
         item.show()
     
     # removes the item from the MenuBar        
-    def RemoveMenuItem(self, item):
+    def remove_menu_item(self, item):
         try:
             self.__wTree.get_widget('menu_plugin').get_submenu().remove(item)
         except Exception, e:
             print "Error removing menu item: %s" % e
         
-    def AddToolbarItem(self, item):
+    def add_toolbar_item(self, item):
         # calculates the number of items on the ToolBar and adds the item 
         # on the end
         try:
@@ -65,7 +64,7 @@ class PluginAPI:
         except Exception, e:
             print "Error adding a toolbar item: %s" % e
     
-    def RemoveToolbarItem(self, item, n=None):
+    def remove_toolbar_item(self, item, n=None):
         try:
             if not n:
                 self.__wTree.get_widget('task_tb').remove(item)
@@ -79,7 +78,7 @@ class PluginAPI:
             print "Error removing a toolbar item: %s" % e
     
     # adds items to the Task Menu 
-    def AddTaskToolbarItem(self, item):
+    def add_task_toolbar_item(self, item):
         try:
             i = 0
             while self.__wTree.get_widget('task_tb1').get_nth_item(i) is not None:
@@ -90,28 +89,41 @@ class PluginAPI:
             print "Error adding a toolbar item in to the TaskEditor: %s" % e
             
     # passes the requester to the plugin
-    def getRequester(self):
+    def get_requester(self):
         return self.__requester
             
     # changes the tasks TreeStore
-    def changeTaskTreeStore(self, treestore):
+    def change_task_tree_store(self, treestore):
         task_tview = self.__wTree.get_widget("task_tview")
         task_tview.set_model(treestore)
-        
-    def get_task(self):
-        return self.task
     
+    def get_all_tasks(self):
+        return self.__requester.get_tasks_list()    
+    
+    # this method returns the task by tid or the current task in case 
+    # of the edit task window
+    # by default returns the current task, in other words, it's default action
+    # is to use with the onTaskOpened method
+    def get_task(self, tid=None):
+        if tid:
+            return self.__requester.get_task(tid)
+        else:
+            return self.task
+    
+    # this method only works for the onTaskOpened method 
     def get_task_title(self):
         return self.task.get_title() 
     
     # adds a tag, updated the text buffer, inserting the tag at the end of
     # the task
+    # this method only works for the onTaskOpened method
     def add_tag(self, tag):
         self.task.add_tag("@" + tag)
         #self.textview.insert_text("@" + tag)
         self.textview.insert_tag("@" + tag)
         
     # adds a attribute to a tag
+    # this method only works for the onTaskOpened method
     def add_tag_attribute(self, tag, attrib_name, attrib_value):
         try:
             tags = self.task.get_tags()
@@ -123,6 +135,7 @@ class PluginAPI:
             return False
     
     # pass all the tags to the plug-in
+    # this method only works for the onTaskOpened method
     def get_tags(self):
         return self.task.get_tags()
         
@@ -161,4 +174,12 @@ class PluginAPI:
             return self.__requester.get_task(model.get_value(iter, 0))
         else:
             return None
+        
+    # returns the config object
+    def get_config(self):
+        return self.config
+    
+    # add's a tid to the workview filter
+    def add_task_to_workview_filter(self, tid):
+        self.__workview_task_filter.append(tid)
         

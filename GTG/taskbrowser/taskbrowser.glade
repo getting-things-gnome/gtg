@@ -258,7 +258,7 @@
 		      <property name="visible">True</property>
 		      <property name="label" translatable="yes">_Plugin Preferences</property>
 		      <property name="use_underline">True</property>
-		      <signal name="activate" handler="on_pluginmanager_activate" last_modification_time="Tue, 14 Jul 2009 11:04:01 GMT"/>
+		      <signal name="activate" handler="on_pluginmanager_activate" last_modification_time="Wed, 29 Jul 2009 14:36:59 GMT"/>
 		    </widget>
 		  </child>
 		</widget>

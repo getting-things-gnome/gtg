@@ -1,3 +1,4 @@
+from GTG import _
 from GTG.tools import cleanxml
 
 def populate():
@@ -37,7 +38,7 @@ def populate():
     text2 += "\n\n\n"
     text2 += _("Task and subtasks can be re-organized by drag-n-drop in the tasks list.")
     text2 += "\n\n"
-    text2 += _("Some concept come with subtasks: for example, a subtask due date can never be after its parent due date.")
+    text2 += _("Some concepts come with subtasks: for example, a subtask due date can never be after its parent due date.")
     text2 += "\n\n"
     text2 += _("Also, marking a parent as done will mark all the subtasks as done.")
     t2 = addtask(doc,"1@1",title2,text2,[])
@@ -80,7 +81,10 @@ def populate():
     title5 = _("Reporting bugs")
     text5 = _("GTG is still very alpha software. We like it and use it everyday but you will encounter some bugs.")
     text5 += "\n\n"
-    text5 += _("Please, report them! We need you to make this software better. Any contribution, any idea is welcome.")
+    text5 += _("Please, report them on our Launchpad page:")
+    text5 += "https://bugs.launchpad.net/gtg"
+    text5 += "\n"
+    text5 += _("We need you to make this software better. Any contribution, any idea is welcome.")
     text5 += "\n\n"
     text5 += _("If you have some trouble with GTG, we might be able to help you or to solve your problem really quickly.")
     
