@@ -39,11 +39,13 @@ from GTG import _
 from GTG.core.task                    import Task
 from GTG.taskeditor.editor            import TaskEditor
 from GTG.taskbrowser                  import GnomeConfig
-from GTG.taskbrowser                  import browser_tools
 from GTG.taskbrowser                  import tasktree
 from GTG.taskbrowser.tasktree         import TaskTreeModel,\
                                              ActiveTaskTreeView,\
                                              ClosedTaskTreeView
+from GTG.taskbrowser                  import tagtree
+from GTG.taskbrowser.tagtree          import TagTreeModel,\
+                                             TagTreeView
 from GTG.tools                        import colors, openurl
 
 #=== OBJECTS ==================================================================
@@ -108,11 +110,6 @@ class TaskBrowser:
         #Create our dictionay and connect it
         self._init_signal_connections()
 
-        # The tview and their model
-        #self.ctask_ts = browser_tools.new_ctask_ts()
-        self.tag_ts   = browser_tools.new_tag_ts()
-        #self.task_ts  = browser_tools.new_task_ts(dnd_func=self.row_dragndrop)
-
         # Setting the default for the view
         # When there is no config, this should define the first configuration
         # of the UI
@@ -156,13 +153,20 @@ class TaskBrowser:
             tasktree.COL_DLEFT, self.dleft_sort_func)
         self.task_modelsort.set_sort_column_id(\
             tasktree.COL_DLEFT, gtk.SORT_ASCENDING)
-        # Closed Tasks: dimissed and done
+        # Closed Tasks: dismissed and done
         self.ctask_model = TaskTreeModel(requester=self.req, is_tree=False)
         self.ctask_modelfilter = self.ctask_model.filter_new()
         self.ctask_modelfilter.set_visible_func(self.closed_task_visible_func)
         self.ctask_modelsort   = gtk.TreeModelSort(self.ctask_modelfilter)
         self.ctask_modelsort.set_sort_column_id(\
             tasktree.COL_DDATE, gtk.SORT_DESCENDING)
+        # Tags
+        self.tag_model = TagTreeModel(requester=self.req)
+        self.tag_modelfilter = self.tag_model.filter_new()
+        self.tag_modelfilter.set_visible_func(self.tag_visible_func)
+        self.tag_modelsort   = gtk.TreeModelSort(self.tag_modelfilter)
+        self.tag_modelsort.set_sort_column_id(\
+            tagtree.COL_ID, gtk.SORT_ASCENDING)
 
     def _init_widget_aliases(self):
         self.window             = self.wTree.get_widget("MainWindow")
@@ -181,12 +185,13 @@ class TaskBrowser:
         self.menu_view_workview = self.wTree.get_widget("view_workview")
         self.toggle_workview    = self.wTree.get_widget("workview_toggle")
         self.quickadd_entry     = self.wTree.get_widget("quickadd_field")
-        self.sidebar            = self.wTree.get_widget("sidebar")
         self.closed_pane        = self.wTree.get_widget("closed_pane")
         self.toolbar            = self.wTree.get_widget("task_tb")
         self.quickadd_pane      = self.wTree.get_widget("quickadd_pane")
+        self.sidebar            = self.wTree.get_widget("sidebar")
+        self.sidebar_container  = self.wTree.get_widget("sidebar-scroll")
         # Tree views
-        self.tag_tv             = self.wTree.get_widget("tag_tview")
+        #self.tags_tv             = self.wTree.get_widget("tag_tview")
         # NOTES
         #self.new_note_button    = self.wTree.get_widget("new_note_button")
         #self.note_toggle        = self.wTree.get_widget("note_toggle")
@@ -201,6 +206,11 @@ class TaskBrowser:
         self.ctask_tv = ClosedTaskTreeView()
         self.ctask_tv.set_model(self.ctask_modelsort)
         self.closed_pane.add(self.ctask_tv)
+
+        # The tags treeview
+        self.tags_tv = TagTreeView()
+        self.tags_tv.set_model(self.tag_modelsort)
+        self.sidebar_container.add(self.tags_tv)
 
     def _init_toolbar_tooltips(self):
         self.donebutton.set_tooltip_text(GnomeConfig.MARK_DONE_TOOLTIP)
@@ -290,9 +300,7 @@ class TaskBrowser:
             "on_about_close":
                 self.on_about_close,
             "on_nonworkviewtag_toggled":
-                self.on_nonworkviewtag_toggled,
-            "on_refresh":
-                self.on_refresh,
+                self.on_nonworkviewtag_toggled
             }
 
         self.wTree.signal_autoconnect(SIGNAL_CONNECTIONS_DIC)
@@ -692,6 +700,15 @@ class TaskBrowser:
         """
         return True
 
+    def tag_visible_func(self, model, iter, user_data=None):
+        """Return True if the row must be displayed in the treeview.
+        @param model: the model of the filtered treeview
+        @param iter: the iter whose visiblity must be evaluated
+        @param user_data:
+        """
+        count = int(model.get_value(iter, tagtree.COL_COUNT))
+        return count != 0
+
     def restore_collapsed(self, treeview, path, data):
         model = self.task_tv.get_model()
         itera = model.get_iter(path)
@@ -705,10 +722,17 @@ class TaskBrowser:
 
     def dleft_sort_func(self, model, iter1, iter2, user_data=None):
         order = self.task_tv.get_model().get_sort_column_id()[1]
+        t1_title = model.get_value(iter1, tasktree.COL_TITLE)
+        t1_title = locale.strxfrm(t1_title)
+        t2_title = model.get_value(iter2, tasktree.COL_TITLE)
+        t2_title = locale.strxfrm(t2_title)
         t1_dleft = model.get_value(iter1, tasktree.COL_DLEFT)
         t2_dleft = model.get_value(iter2, tasktree.COL_DLEFT)
         if not t1_dleft and not t2_dleft:
-            return 0
+            if order == gtk.SORT_ASCENDING:
+                return cmp(t1_title, t2_title)
+            else:
+                return cmp(t2_title, t1_title)
         elif not t1_dleft and t2_dleft:
             if order == gtk.SORT_ASCENDING:
                 return 1
@@ -1172,48 +1196,19 @@ class TaskBrowser:
     def on_task_added(self, sender, tid):
         #print "Task added: %s, %s" % (sender, tid)
         self.task_model.add_task(tid)
+        self.ctask_model.add_task(tid)
 
     def on_task_deleted(self, sender, tid):
         #print "Task deleted: %s, %s" % (sender, tid)
         self.task_model.remove_task(tid)
+        self.ctask_model.remove_task(tid)
 
     def on_task_modified(self, sender, tid):
         #print "Task modified: %s, %s" % (sender, tid)
         self.task_model.remove_task(tid)
+        self.ctask_model.remove_task(tid)
         self.task_model.add_task(tid)
-
-    def on_refresh(self, widget):
-        #TODO: this is used for debug of the TreeModel,
-        #      please delete me once it's done
-
-        self.task_modelfilter.refilter()
-
-#        active_tasks = self.req.get_active_tasks_list()
-#        self.task_model  = TaskTreeModel(\
-#                                requester=self.req,\
-#                                tasks=active_tasks)
-#        closed_tasks = self.req.get_closed_tasks_list()
-#        self.ctask_model = TaskTreeModel(\
-#                                requester=self.req,\
-#                                tasks=closed_tasks,\
-#                                is_tree=False)
-#
-#        self.task_modelfilter = self.task_model.filter_new()
-#        self.task_modelfilter.set_visible_func(self.active_task_visible_func)
-#        self.task_modelsort = gtk.TreeModelSort(self.task_modelfilter)
-#        self.task_modelsort.set_sort_func(tasktree.COL_DDATE, self.dleft_sort_func)
-#        self.task_modelsort.set_sort_func(tasktree.COL_DLEFT, self.dleft_sort_func)
-#        self.task_modelsort.set_sort_column_id(\
-#            tasktree.COL_DLEFT, gtk.SORT_ASCENDING)
-#        self.task_tv.set_model(self.task_modelsort)
-#        self.restore_collapsed_rows()
-#
-#        self.ctask_modelfilter = self.ctask_model.filter_new()
-#        self.ctask_modelfilter.set_visible_func(self.closed_task_visible_func)
-#        self.ctask_modelsort   = gtk.TreeModelSort(self.ctask_modelfilter)
-#        self.ctask_modelsort.set_sort_column_id(\
-#            tasktree.COL_DDATE, gtk.SORT_DESCENDING)
-#        self.ctask_tv.set_model(self.ctask_modelsort)
+        self.ctask_model.add_task(tid)
 
 ### PUBLIC METHODS ############################################################
 #
@@ -1248,7 +1243,7 @@ class TaskBrowser:
         return uid
 
     def get_selected_tags(self):
-        t_selected = self.tag_tv.get_selection()
+        t_selected = self.tags_tv.get_selection()
         t_iter = None
         if t_selected:
             tmodel, t_iter = t_selected.get_selected()
@@ -1274,17 +1269,6 @@ class TaskBrowser:
 
         # Here we will define the main TaskList interface
         gobject.threads_init()
-
-        # The tags treeview
-        browser_tools.init_tags_tview(self.tag_tv)
-        self.tag_tv.set_model(self.tag_ts)
-
-        # The treeview for notes
-        #browser_tools.init_note_tview(self.note_tview)
-        #self.note_tview.set_model(self.note_ts)
-
-        # Put the content in those treeviews
-        #self.do_refresh()
 
         # Watch for selections in the treeview
         selection = self.task_tv.get_selection()

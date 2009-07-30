@@ -224,6 +224,9 @@ class Requester(gobject.GObject):
     ############### Tags ##########################
     ###############################################
 
+    def get_tag_tree(self):
+        return self.ds.get_tagstore().get_tree()
+
     def new_tag(self, tagname):
         """Create a new tag called 'tagname'.
 

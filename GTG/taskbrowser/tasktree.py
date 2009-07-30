@@ -8,15 +8,14 @@ from GTG.taskbrowser.CellRendererTags import CellRendererTags
 
 COL_TID   = 0
 COL_TITLE = 1
-COL_DDATE = 3
-COL_DLEFT = 4
-COL_TAGS  = 5
-COL_BGCOL = 6
+COL_DDATE = 2
+COL_DLEFT = 3
+COL_TAGS  = 4
+COL_BGCOL = 5
 
 class TaskTreeModel(gtk.GenericTreeModel):
 
     column_types = (\
-        str,\
         str,\
         str,\
         str,\

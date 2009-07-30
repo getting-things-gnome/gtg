@@ -408,27 +408,6 @@
                 <property name="homogeneous">True</property>
               </packing>
             </child>
-            <child>
-              <widget class="GtkSeparatorToolItem" id="separatortoolitem1">
-                <property name="visible">True</property>
-              </widget>
-              <packing>
-                <property name="expand">False</property>
-              </packing>
-            </child>
-            <child>
-              <widget class="GtkToolButton" id="tb_refresh">
-                <property name="visible">True</property>
-                <property name="label" translatable="yes">toolbutton</property>
-                <property name="use_underline">True</property>
-                <property name="stock_id">gtk-refresh</property>
-                <signal name="clicked" handler="on_refresh"/>
-              </widget>
-              <packing>
-                <property name="expand">False</property>
-                <property name="homogeneous">True</property>
-              </packing>
-            </child>
           </widget>
           <packing>
             <property name="expand">False</property>
@@ -501,13 +480,7 @@
                     <property name="vscrollbar_policy">automatic</property>
                     <property name="shadow_type">in</property>
                     <child>
-                      <widget class="GtkTreeView" id="tag_tview">
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <signal name="button_press_event" handler="on_tag_treeview_button_press_event"/>
-                        <signal name="cursor_changed" handler="on_select_tag"/>
-                        <signal name="row_activated" handler="on_select_tag"/>
-                      </widget>
+                      <placeholder/>
                     </child>
                   </widget>
                   <packing>
