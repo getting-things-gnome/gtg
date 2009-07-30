@@ -121,13 +121,9 @@ class TaskEditor :
         #Empty means that no calendar is opened
         self.__opened_date = ''
         
-        #We will intercept the "Escape" button
-        accelgroup = gtk.AccelGroup()
-        key, modifier = gtk.accelerator_parse('Escape')
-        #Escape call close()
-        accelgroup.connect_group(key, modifier, gtk.ACCEL_VISIBLE, self.close)
-        self.window.add_accel_group(accelgroup)
-     
+        # Define accelerator keys
+        self.init_accelerators()
+        
         self.task = task
         tags = task.get_tags()
         self.textview.subtasks_callback(task.get_subtasks_tid)
@@ -175,6 +171,19 @@ class TaskEditor :
 
         self.window.show()
 
+    # Define accelerator-keys for this dialog
+    def init_accelerators(self):
+        accelgroup = gtk.AccelGroup()
+        
+        # Escape and Ctrl-W close the dialog
+        key, modifier = gtk.accelerator_parse('Escape')
+        accelgroup.connect_group(key, modifier, gtk.ACCEL_VISIBLE, self.close)
+        
+        key, modifier = gtk.accelerator_parse('<Control>w')
+        accelgroup.connect_group(key, modifier, gtk.ACCEL_VISIBLE, self.close)
+        
+        self.window.add_accel_group(accelgroup)
+    
     #The refresh callback is None for all the initialization
     #It's an optimisation that save us a low of unneeded refresh
     #When the editor is starting
