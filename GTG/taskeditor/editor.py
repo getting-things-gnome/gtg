@@ -175,17 +175,21 @@ class TaskEditor :
         key, modifier = gtk.accelerator_parse('<Control>w')
         agr.connect_group(key, modifier, gtk.ACCEL_VISIBLE, self.close)
         
+        # Ctrl-N creates a new task
         key, modifier = gtk.accelerator_parse('<Control>n')
         agr.connect_group(key, modifier, gtk.ACCEL_VISIBLE, self.new_task)
         
+        # Ctrl-Shift-N creates a new subtask
         insert_subtask = self.wTree.get_widget("insert_subtask")
         key, mod       = gtk.accelerator_parse("<Control><Shift>n")
         insert_subtask.add_accelerator('clicked', agr, key, mod, gtk.ACCEL_VISIBLE)
         
+        # Ctrl-D marks task as done
         mark_as_done_editor = self.wTree.get_widget('mark_as_done_editor')
         key, mod = gtk.accelerator_parse('<Control>d')
         mark_as_done_editor.add_accelerator('clicked', agr, key, mod, gtk.ACCEL_VISIBLE)
         
+        # Ctrl-I marks task as dismissed
         dismiss_editor = self.wTree.get_widget('dismiss_editor')
         key, mod = gtk.accelerator_parse('<Control>i')
         dismiss_editor.add_accelerator('clicked', agr, key, mod, gtk.ACCEL_VISIBLE)
