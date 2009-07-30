@@ -48,12 +48,17 @@ class Task :
         self.req = requester
         #If we don't have a newtask, we will have to load it.
         self.loaded = newtask
+        if self.loaded :
+            self.req._task_loaded(self.tid)
                 
     def is_loaded(self) :
         return self.loaded
         
     def set_loaded(self) :
-        self.loaded = True
+        #avoid doing it multiple times
+        if not self.loaded :
+            self.loaded = True
+            self.req._task_loaded(self.tid)
         
     def set_to_keep(self) :
         self.can_be_deleted = False
@@ -383,6 +388,7 @@ class Task :
     def sync(self) :
         if self.sync_func and self.is_loaded() :
             self.sync_func(self)
+            self.req._task_modified(self.tid)
             
             
     ######## Tag functions ##############

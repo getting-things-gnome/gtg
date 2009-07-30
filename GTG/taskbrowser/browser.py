@@ -129,8 +129,7 @@ class TaskBrowser:
 
         # NOTES
         self.init_note_support()
-        
-        
+
 
 ### INIT HELPER FUNCTIONS #####################################################
     def init_browser_config(self):
