@@ -100,6 +100,9 @@ class TaskTreeModel(gtk.GenericTreeModel):
         if task.has_parents():
             for par_tid in task.get_parents():
                 par_task  = self.req.get_task(par_tid)
+                if not par_task.is_loaded():
+                    print "%s is not loaded." % par_tid
+                    continue
                 par_paths = self._get_paths_for_task(par_task)
                 task_idx  = par_task.get_subtask_index(task.get_id())
                 for pp in par_paths:
@@ -111,14 +114,15 @@ class TaskTreeModel(gtk.GenericTreeModel):
 
     def _add_all_subtasks(self, task, path):
         if task.has_subtasks():
-            for c_tid in task.get_subtasks():
+            for c_tid in task.get_subtask_tids():
                 c_task = self.req.get_task(c_tid)
                 if not c_task.is_loaded():
+                    print "%s is not loaded." % c_tid
                     continue
                 else:
                     c_idx   = task.get_subtask_index(c_tid)
-                    c_paths = self._get_paths_for_task(par_task)
-                    for path in c_paths:
+                    paths = self._get_paths_for_task(task)
+                    for path in paths:
                         c_path = path + (c_idx,)
                         c_iter = self.get_iter(c_path)
                         self.row_inserted(c_path, c_iter)
@@ -247,6 +251,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
         task = self.req.get_task(tid)
         # is task loaded?
         if not task.is_loaded():
+            print "%s is not loaded." % tid
             return
         # has the task parents?
         paths = []
@@ -257,6 +262,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
             for par_tid in par_list:
                 par_task = self.req.get_task(par_tid)
                 if not par_task.is_loaded():
+                    print "%s is not loaded." % par_tid
                     continue
                 else:
                     par_paths = self._get_paths_for_task(par_task)
@@ -286,6 +292,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
         task = self.req.get_task(tid)
         # is task loaded?
         if not task.is_loaded():
+            print "%s is not loaded." % tid
             return
         # Remove every row of this task
         if task.has_parents():
