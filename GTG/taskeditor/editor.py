@@ -378,16 +378,13 @@ class TaskEditor :
         
     def dismiss(self,widget) : #pylint: disable-msg=W0613
         stat = self.task.get_status()
-        toset = "Dismiss"
-        toclose = True
-        if stat == "Dismiss" :
-            toset = "Active"
-            toclose = False
-        self.task.set_status(toset)
-        if toclose : self.close(None)
-        else : 
+        if stat == "Dismiss":
+            self.task.set_status("Active")
             self.refresh_editor()
-        self.refresh_browser()
+            self.refresh_browser()
+        else:
+            self.task.set_status("Dismiss")
+            self.close(None)
     
     def keepnote(self,widget) : #pylint: disable-msg=W0613
         stat = self.task.get_status()
@@ -400,17 +397,13 @@ class TaskEditor :
     
     def change_status(self,widget) : #pylint: disable-msg=W0613
         stat = self.task.get_status()
-        if stat == "Active" :
-            toset = "Done"
-            toclose = True
-        else :
-            toset = "Active"
-            toclose = False
-        self.task.set_status(toset)
-        if toclose : self.close(None)
-        else : 
+        if stat == "Done":
+            self.task.set_status("Active")
             self.refresh_editor()
-        self.refresh_browser()
+            self.refresh_browser()
+        else:
+            self.task.set_status("Done")
+            self.close(None)
     
     def delete_task(self,widget) :
         if self.delete :
