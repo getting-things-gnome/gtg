@@ -25,11 +25,14 @@ from calendar import timegm
 class hamsterPlugin:
     PLUGIN_NAME = 'Hamster Time Tracker Integration'
     PLUGIN_AUTHORS = 'Kevin Mehall <km@kevinmehall.net>'
-    PLUGIN_VERSION = '0.1'
+    PLUGIN_VERSION = '0.2'
     PLUGIN_DESCRIPTION = 'Adds the ability to send a task to the Hamster time tracking applet'
     PLUGIN_ENABLED = False
-        
+    PLUGIN_NAMESPACE = 'hamster-plugin'
+    
+    #### Interaction with Hamster
     def sendTask(self, task):
+        """Send a gtg task to hamster-applet"""
         if task is None: return
         title=task.get_title()
         tags=task.get_tags_name()
@@ -47,18 +50,19 @@ class hamsterPlugin:
             
         hamster_id=self.hamster.AddFact('%s,%s'%(activity, title), 0, 0)
         
-        ids=get_hamster_ids(task)
+        ids=self.get_hamster_ids(task)
         ids.append(str(hamster_id))
-        set_hamster_ids(task, ids)
+        self.set_hamster_ids(task, ids)
         
     def get_records(self, task):
-        ids = get_hamster_ids(task)
+        """Get a list of hamster facts for a task"""
+        ids = self.get_hamster_ids(task)
         records=[]
         modified=False
         valid_ids=[]
         for i in ids:
             d=self.hamster.GetFactById(i)
-            if d.get("id", None): # check if fact exists
+            if d.get("id", None): # check if fact still exists
                 records.append(d)
                 valid_ids.append(i)
             else:
@@ -67,17 +71,19 @@ class hamsterPlugin:
         if modified:
             set_hamster_ids(task, valid_ids)
         return records
+    
+    #### Datastore  
+    def get_hamster_ids(self, task):
+        a = task.get_attribute("id-list", namespace=self.PLUGIN_NAMESPACE)
+        if not a: return []
+        else: return a.split(',')
+        
+    def set_hamster_ids(self, task, ids):
+        task.set_attribute("id-list", ",".join(ids), namespace=self.PLUGIN_NAMESPACE)
 
-    def hamsterError(self):
-        d=gtk.MessageDialog(buttons=gtk.BUTTONS_CANCEL)
-        d.set_markup("<big>Error loading plugin</big>")
-        d.format_secondary_markup("This plugin requires hamster-applet 2.27.3 or greater\n\
-Please install hamster-applet and make sure the applet is added to the panel")
-        d.run()
-        d.destroy()
-
-    # plugin engine methods    
+    #### Plugin api methods   
     def activate(self, plugin_api):
+        # connect to hamster-applet
         try:
             self.hamster=dbus.SessionBus().get_object('org.gnome.Hamster', '/org/gnome/Hamster')
             self.hamster.GetActivities()
@@ -85,25 +91,22 @@ Please install hamster-applet and make sure the applet is added to the panel")
             self.hamsterError()
             return False
         
+        # add menu item
         self.menu_item = gtk.MenuItem("Start task in Hamster")
         self.menu_item.connect('activate', self.browser_cb, plugin_api)
+        plugin_api.add_menu_item(self.menu_item)
         
+        # and button
         self.button=gtk.ToolButton()
         self.button.set_label("Start")
         self.button.set_icon_name('hamster-applet')
         self.button.set_tooltip_text("Start a new activity in Hamster Time Tracker based on the selected task")
         self.button.connect('clicked', self.browser_cb, plugin_api)
-        
-        # add a menu item to the menu bar
-        plugin_api.add_menu_item(self.menu_item)
-                
-        # saves the separator's index to later remove it
-        self.separator = plugin_api.add_toolbar_item(gtk.SeparatorToolItem())
-        # add a item (button) to the ToolBar
+        self.separator = plugin_api.add_toolbar_item(gtk.SeparatorToolItem()) # saves the separator's index to later remove it
         plugin_api.add_toolbar_item(self.button)
 
     def onTaskOpened(self, plugin_api):
-        # add a item (button) to the ToolBar
+        # add button
         self.taskbutton = gtk.ToolButton()
         self.taskbutton.set_label("Start")
         self.taskbutton.set_icon_name('hamster-applet')
@@ -116,35 +119,29 @@ Please install hamster-applet and make sure the applet is added to the panel")
         records = self.get_records(task)
         
         if len(records):
+            # add section to bottom of window
             w = gtk.Table(rows=len(records)+1, columns=2)
-            
             total = 0
             
-            for offset,i in enumerate(records):
-                t = calc_duration(i)    
-                total += t
-                
-                dateLabel=gtk.Label(format_date(i))
+            def add(a, b, offset):
+                dateLabel=gtk.Label(a)
                 dateLabel.set_use_markup(True)
                 dateLabel.set_alignment(xalign=0.0, yalign=0.5)
                 w.attach(dateLabel,
                     left_attach=0, right_attach=1, top_attach=offset, bottom_attach=offset+1, xoptions=gtk.FILL, xpadding=20)
                 
-                durLabel=gtk.Label(format_duration(t))
+                durLabel=gtk.Label(b)
+                durLabel.set_use_markup(True)
                 durLabel.set_alignment(xalign=1.0, yalign=0.5)
                 w.attach(durLabel,
                     left_attach=1, right_attach=2, top_attach=offset, bottom_attach=offset+1, xoptions=gtk.FILL)
-            offset+=1
-            l=gtk.Label("<big><b>Total</b></big>")
-            l.set_use_markup(True)
-            l.set_alignment(xalign=0.0, yalign=0.5)
-            w.attach(l,
-                left_attach=0, right_attach=1, top_attach=offset, bottom_attach=offset+1, xoptions=gtk.FILL, xpadding=20)
-            l=gtk.Label("<big><b>%s</b></big>"%format_duration(total))
-            l.set_use_markup(True)
-            l.set_alignment(xalign=1.0, yalign=0.5)
-            w.attach(l,
-                left_attach=1, right_attach=2, top_attach=offset, bottom_attach=offset+1, xoptions=gtk.FILL)
+            
+            for offset,i in enumerate(records):
+                t = calc_duration(i)    
+                total += t
+                add(format_date(i), format_duration(t), offset)
+                
+            add("<big><b>Total</b></big>", "<big><b>%s</b></big>"%format_duration(total), offset+1)
             
             plugin_api.add_task_window_region(w)
         
@@ -159,28 +156,28 @@ Please install hamster-applet and make sure the applet is added to the panel")
     def task_cb(self, widget, plugin_api):
         self.sendTask(plugin_api.get_task())
         
-def get_hamster_ids(task):
-    a = task.get_attribute("id-list", namespace="hamster-plugin")
-    if not a: return []
-    else: return a.split(',')
-    
-def set_hamster_ids(task, ids):
-    task.set_attribute("id-list", ",".join(ids), namespace="hamster-plugin")
-    
+    def hamsterError(self):
+        """Display error dialog"""
+        d=gtk.MessageDialog(buttons=gtk.BUTTONS_CANCEL)
+        d.set_markup("<big>Error loading plugin</big>")
+        d.format_secondary_markup("This plugin requires hamster-applet 2.27.3 or greater\n\
+Please install hamster-applet and make sure the applet is added to the panel")
+        d.run()
+        d.destroy()
+        
+#### Helper Functions  
 def format_date(task):
     return time.strftime("<b>%A, %b %e</b> %l:%M %p", time.gmtime(task['start_time']))
     
-
 def calc_duration(fact):
     start=fact['start_time']
     end=fact['end_time']
     if not end: end=timegm(time.localtime())
     return end-start
-    
-# Based on hamster-applet -  hamster/stuff.py   
+
 def format_duration(seconds):
-    """formats duration in a human readable format.
-    accepts # of seconds"""
+    # Based on hamster-applet code -  hamster/stuff.py   
+    """formats duration in a human readable format."""
     
     minutes = seconds / 60
         
@@ -202,8 +199,4 @@ def format_duration(seconds):
         formatted_duration += "%dh %dmin" % (hours, minutes % 60)
 
     return formatted_duration
-    
-
-    
-           
-    
+   
