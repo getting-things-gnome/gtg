@@ -349,11 +349,23 @@ class TaskView(gtk.TextView):
             firstline = self.buff.get_iter_at_line(1)
         line_mark = self.buff.create_mark("firstline",firstline,False)
         #self.tv.insert_at_mark(buf,line_mark,"\n")
+        ntags = len(tag_list)
         for t in tag_list :
+            ntags = ntags - 1
             self.insert_at_mark(self.buff,line_mark,t)
-            self.insert_at_mark(self.buff,line_mark,",")
+            if ntags != 0:
+                self.insert_at_mark(self.buff,line_mark,",")
         self.buff.delete_mark(line_mark)
         self.modified(full=True)
+        
+    # add a tag to the last line of the task
+    def insert_tag(self, tag):
+        lastline = self.buff.get_end_iter()
+        lastline.forward_to_line_end()
+        self.insert_text("\n", lastline)
+        
+        line_mark = self.buff.create_mark("lastline", lastline, False)
+        self.insert_at_mark(self.buff, line_mark, tag)
         
     #this function select and highligth the title (first line)
     def select_title(self) :

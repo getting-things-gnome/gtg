@@ -40,6 +40,9 @@ from GTG.taskeditor.editor            import TaskEditor
 from GTG.taskbrowser                  import GnomeConfig
 from GTG.taskbrowser                  import browser_tools
 from GTG.tools                        import colors, openurl
+from GTG.core.plugins.manager         import PluginManager
+from GTG.core.plugins.engine          import PluginEngine
+from GTG.core.plugins.api             import PluginAPI
 
 #=== OBJECTS ==================================================================
 
@@ -115,16 +118,26 @@ class TaskBrowser:
         # of the UI
         self.init_view_defaults()
 
-        # Connecting the refresh signal from the requester
-        self.req.connect("refresh", self.do_refresh)
-
         # Define accelerator keys
         self.init_accelerators()
+        
+        # Initialize the plugin-engine
+        self.init_plugin_engine()
 
         # NOTES
         self.init_note_support()
         
-        
+#THIS IS A QUICK HACK TO HAVE PROPER REFRESH
+#Bertrand, you can now get rid of this
+        self.req.connect("task-added",self.debug)
+        self.req.connect("task-modified",self.debug)
+        self.req.connect("task-deleted",self.debug)      
+    def debug(self, sender, tid) :
+        #print "task %s added" %tid
+        self.do_refresh()
+#Remove until here
+#END OF QUICK HACK
+
 
 ### INIT HELPER FUNCTIONS #####################################################
     def init_browser_config(self):
@@ -138,6 +151,7 @@ class TaskBrowser:
         self.priv['selected_rows']            = None
         self.priv['workview']                 = False
         self.priv['noteview']                 = False
+        self.priv['workview_task_filter']     = []
 
     def init_icon_theme(self):
         icon_dirs = [GTG.DATA_DIR, os.path.join(GTG.DATA_DIR, "icons")]
@@ -262,7 +276,10 @@ class TaskBrowser:
             "on_about_close":
                 self.on_about_close,
             "on_nonworkviewtag_toggled":
-                self.on_nonworkviewtag_toggled}
+                self.on_nonworkviewtag_toggled,
+            "on_pluginmanager_activate": 
+                self.on_pluginmanager_activate
+        }
 
         self.wTree.signal_autoconnect(SIGNAL_CONNECTIONS_DIC)
         if (self.window):
@@ -329,6 +346,33 @@ class TaskBrowser:
         key, mod = gtk.accelerator_parse('<Control>i')
         task_dismiss.add_accelerator(
             'activate', agr, key, mod, gtk.ACCEL_VISIBLE)
+        
+    def init_plugin_engine(self):
+        # plugins - Init
+        self.pengine = PluginEngine(GTG.PLUGIN_DIR)
+        # loads the plugins in the plugin dir
+        self.plugins = self.pengine.LoadPlugins()
+        
+        # checks the conf for user settings
+        if self.config.has_key("plugins"):
+            if self.config["plugins"].has_key("enabled"):
+                plugins_enabled = self.config["plugins"]["enabled"]
+                for p in self.plugins:
+                    if p['name'] in plugins_enabled:
+                        p['state'] = True
+                    
+            if self.config["plugins"].has_key("disabled"):
+                plugins_disabled = self.config["plugins"]["disabled"]
+                for p in self.plugins:    
+                    if p['name'] in plugins_disabled:
+                        p['state'] = False
+        
+        # initializes the plugin api class
+        self.plugin_api = PluginAPI(self.window, self.config, self.wTree, self.req, \
+                                    self.task_tview, self.priv['workview_task_filter'], \
+                                    self.tagpopup, self.tag_tview, None, None)
+        # initializes and activates each plugin (that is enabled)
+        self.pengine.activatePlugins(self.plugins, self.plugin_api)
 
     def init_note_support(self):
         self.notes  = EXPERIMENTAL_NOTES
@@ -667,9 +711,9 @@ class TaskBrowser:
             self.opened_task[uid].present()
         else:
             tv = TaskEditor(
-                self.req, t, self.do_refresh, self.on_delete_task,
-                self.close_task, self.open_task, self.get_tasktitle,
-                notes=self.notes)
+                self.req, t, self.plugins, self.do_refresh, 
+                self.on_delete_task, self.close_task, self.open_task, 
+                self.get_tasktitle, notes=self.notes)
             #registering as opened
             self.opened_task[uid] = tv
 
@@ -861,6 +905,9 @@ class TaskBrowser:
             view = "workview"
         else:
             view = "default"
+            
+        # plugins are deactivated
+        self.pengine.deactivatePlugins(self.plugins, self.plugin_api)
 
         # Populate configuration dictionary
         self.config["browser"] = {
@@ -899,6 +946,11 @@ class TaskBrowser:
         self.config["browser"]["view"]              = view
         if self.notes:
             self.config["browser"]["experimental_notes"] = True
+        
+        # adds the plugin settings to the conf
+        self.config["plugins"] = {}
+        self.config["plugins"]["disabled"] = self.pengine.disabledPlugins(self.plugins)
+        self.config["plugins"]["enabled"] = self.pengine.enabledPlugins(self.plugins)
 
     def on_about_clicked(self, widget):
         self.about.show()
@@ -1275,6 +1327,9 @@ class TaskBrowser:
         if selection.count_selected_rows() > 0:
             self.ctask_tview.get_selection().unselect_all()
             self.task_tview.get_selection().unselect_all()
+    
+    def on_pluginmanager_activate(self, widget) :
+        PluginManager(self.window, self.plugins, self.pengine, self.plugin_api)
 
     def on_close(self, widget=None):
         """Closing the window."""
@@ -1358,6 +1413,10 @@ class TaskBrowser:
             if self.priv['workview']:
                 count = len(\
                     self.req.get_active_tasks_list(tags=[tag], workable=True))
+                for tid in self.priv['workview_task_filter']:
+                    for t in self.req.get_task(tid).get_tags():
+                        if tag == t:
+                            count = count -1
             else:
                 count = len(\
                     self.req.get_tasks_list(started_only=False, tags=[tag]))
@@ -1399,9 +1458,10 @@ class TaskBrowser:
                 tags=tag_list, notag_only=notag_only, workable=True,
                 started_only=False)
             for tid in tasks:
-                self.add_task_tree_to_list(
-                    new_taskts, tid, None, selected_uid, treeview=False)
-            nbr_of_tasks = len(tasks)
+                if tid not in self.priv['workview_task_filter']: # this filters out tasks
+                    self.add_task_tree_to_list(new_taskts,tid, None,\
+                                               selected_uid, treeview=False)
+            nbr_of_tasks = len(tasks) - len(self.priv['workview_task_filter'])
 
         else:
             #building the classical treeview

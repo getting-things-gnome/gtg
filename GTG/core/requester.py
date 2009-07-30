@@ -17,8 +17,9 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
+import gobject
 
-class Requester:
+class Requester(gobject.GObject):
     """A view on a GTG datastore.
 
     L{Requester} is a stateless object that simply provides a nice API for
@@ -27,14 +28,25 @@ class Requester:
     Multiple L{Requester}s can exist on the same datastore, so they should
     never have state of their own.
     """
+    __gsignals__ = {'task-added': (gobject.SIGNAL_RUN_FIRST, \
+                                    gobject.TYPE_NONE, (str,)),
+                    'task-deleted': (gobject.SIGNAL_RUN_FIRST, \
+                                    gobject.TYPE_NONE, (str,)),
+                    'task-modified': (gobject.SIGNAL_RUN_FIRST, \
+                                    gobject.TYPE_NONE, (str,)) }
 
     def __init__(self, datastore):
         """Construct a L{Requester}."""
         self.ds = datastore
+        gobject.GObject.__init__(self)
 
-    def connect(self, signal, func):
-        #Signals need to be connected to the datastore
-        self.ds.connect(signal, func)
+    ############# Signals #########################   
+    #Used by the tasks to emit the task added/modified signal
+    #Should NOT be used by anyone else
+    def _task_loaded(self,tid) :
+        self.emit("task-added",tid)
+    def _task_modified(self,tid) :
+        self.emit("task-modified",tid)
 
     ############## Tasks ##########################
     ###############################################
@@ -79,6 +91,7 @@ class Requester:
         @param tid: The id of the task to be deleted.
         """
         self.ds.delete_task(tid)
+        self.emit("task-deleted",tid)
 
     def get_tasks_list(self, tags=None, status=["Active"], notag_only=False,
                        started_only=True, is_root=False):
