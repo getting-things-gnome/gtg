@@ -17,8 +17,9 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
+import gobject
 
-class Requester:
+class Requester(gobject.GObject):
     """A view on a GTG datastore.
 
     L{Requester} is a stateless object that simply provides a nice API for
@@ -27,14 +28,29 @@ class Requester:
     Multiple L{Requester}s can exist on the same datastore, so they should
     never have state of their own.
     """
+    __gsignals__ = {'task-added': (gobject.SIGNAL_RUN_FIRST, \
+                                    gobject.TYPE_NONE, (str,)),
+                    'task-deleted': (gobject.SIGNAL_RUN_FIRST, \
+                                    gobject.TYPE_NONE, (str,)),
+                    'task-modified': (gobject.SIGNAL_RUN_FIRST, \
+                                    gobject.TYPE_NONE, (str,)) }
 
     def __init__(self, datastore):
         """Construct a L{Requester}."""
         self.ds = datastore
+        gobject.GObject.__init__(self)
 
+    ############# Signals #########################
     def connect(self, signal, func):
         #Signals need to be connected to the datastore
-        self.ds.connect(signal, func)
+        if signal == "task-added" :
+            gobject.GObject.connect(self,signal,func)
+        else :
+            self.ds.connect(signal, func)
+        
+    #Used by the tasks to emit the task added signal
+    def _task_loaded(self,tid) :
+        self.emit("task-added",tid)
 
     ############## Tasks ##########################
     ###############################################

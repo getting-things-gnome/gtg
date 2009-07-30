@@ -35,8 +35,6 @@ THREADING = True
 class DataStore(gobject.GObject):
     __gsignals__ = { 'refresh': (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE,
                                    (str,)),
-                    'task-added': (gobject.SIGNAL_RUN_FIRST, \
-                                    gobject.TYPE_NONE, (str,)),
                     'task-deleted': (gobject.SIGNAL_RUN_FIRST, \
                                     gobject.TYPE_NONE, (str,)),
                     'task-modified': (gobject.SIGNAL_RUN_FIRST, \
@@ -114,9 +112,6 @@ class DataStore(gobject.GObject):
         else :
             print "not possible to build the task = bug"
             toreturn = None
-        #emitting the task-added signal
-        #gobject.idle_add(self.emit,"task-added",tid)
-        self.emit("task-added",tid)
         return toreturn
         
     def get_tagstore(self) :

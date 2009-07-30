@@ -130,7 +130,11 @@ class TaskBrowser:
         # NOTES
         self.init_note_support()
         
+        self.req.connect("task-added",self.debug1)
         
+    def debug1(self,sender,tid) :
+        print "task %s added" %tid
+        print self.req.get_task(tid)
 
 ### INIT HELPER FUNCTIONS #####################################################
     def init_browser_config(self):
