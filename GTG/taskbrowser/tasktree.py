@@ -133,7 +133,10 @@ class TaskTreeModel(gtk.GenericTreeModel):
 ### TREEMODEL INTERFACE ######################################################
 #
     def on_get_flags(self):
-        return gtk.TREE_MODEL_ITERS_PERSIST
+        if self.is_tree:
+            return gtk.TREE_MODEL_ITERS_PERSIST
+        else:
+            return gtk.TREE_MODEL_ITERS_PERSIST|gtk.TREE_MODEL_LIST_ONLY
 
     def on_get_n_columns(self):
         return len(self.column_types)
@@ -217,13 +220,12 @@ class TaskTreeModel(gtk.GenericTreeModel):
 
     def on_iter_n_children(self, rowref):
         #print "on_iter_n_children: %s" % (rowref)
-        if not rowref:
+        if rowref:
+            cur_tid = rowref[rowref.rfind('/')+1:]
+            task    = self.req.get_task(cur_tid)
+            return task.get_n_subtasks()
+        else:
             return self._get_n_root_tasks()
-        if not self.is_tree:
-            return 0
-        cur_tid = rowref[rowref.rfind('/')+1:]
-        task    = self.req.get_task(cur_tid)
-        return task.get_n_subtasks()
 
     def on_iter_nth_child(self, parent, n):
         #print "on_iter_nth_child: %s %d" % (parent, n)
@@ -251,7 +253,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
         task = self.req.get_task(tid)
         # has the task parents?
         paths = []
-        if task.has_parents():
+        if self.is_tree and task.has_parents():
             # get every path from parents
             par_list = task.get_parents()
             # get every paths going to each parent
@@ -281,14 +283,15 @@ class TaskTreeModel(gtk.GenericTreeModel):
             self.row_inserted(task_path, task_iter)
             paths = task_path
         # has the task children?
-        for path in paths:
-            self._add_all_subtasks(task, path)
+        if self.is_tree:
+            for path in paths:
+                self._add_all_subtasks(task, path)
 
     def remove_task(self, tid):
         # get the task
         task = self.req.get_task(tid)
         # Remove every row of this task
-        if task.has_parents():
+        if self.is_tree and task.has_parents():
             # get every paths leading to this task
             path_list = self._get_paths_for_task(task)
             # remove every path
@@ -558,7 +561,6 @@ class ClosedTaskTreeView(TaskTreeView):
         title_col.pack_start(render_text, expand=True)
         title_col.set_attributes(render_text, markup=COL_TITLE)
         title_col.set_sort_column_id(COL_TITLE)
-        title_col.set_expand(True)
         title_col.add_attribute(render_text, "cell_background", COL_BGCOL)
         title_col.set_sort_column_id(COL_TITLE)
         self.append_column(title_col)

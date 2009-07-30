@@ -257,24 +257,12 @@ class TaskBrowser:
                 self.on_size_allocate,
             "gtk_main_quit":
                 self.on_close,
-            "on_select_tag":
-                self.on_select_tag,
             "on_delete_confirm":
                 self.on_delete_confirm,
             "on_delete_cancel":
                 lambda x: x.hide,
             "on_add_subtask":
                 self.on_add_subtask,
-            "on_closed_task_treeview_button_press_event":
-                self.on_closed_task_treeview_button_press_event,
-            "on_closed_task_treeview_key_press_event":
-                self.on_closed_task_treeview_key_press_event,
-            "on_task_treeview_button_press_event":
-                self.on_task_treeview_button_press_event,
-            "on_task_treeview_key_press_event":
-                self.on_task_treeview_key_press_event,
-            "on_tag_treeview_button_press_event":
-                self.on_tag_treeview_button_press_event,
             "on_colorchooser_activate":
                 self.on_colorchooser_activate,
             "on_workview_toggled":
@@ -323,6 +311,14 @@ class TaskBrowser:
             self.on_closed_task_treeview_button_press_event)
         self.ctask_tv.connect('key-press-event',\
             self.on_closed_task_treeview_key_press_event)
+
+        # Closed tasks TreeView
+        self.tags_tv.connect('cursor-changed',\
+            self.on_select_tag)
+        self.tags_tv.connect('row-activated',\
+            self.on_select_tag)
+        self.tags_tv.connect('button-press-event',\
+            self.on_tag_treeview_button_press_event)
 
         # Connect requester signals to TreeModels
         self.req.connect("task-added", self.on_task_added) 
@@ -1114,7 +1110,7 @@ class TaskBrowser:
         self.ctask_tv.get_selection().unselect_all()
         task_model = self.task_tv.get_model()
         task_model.foreach(self.update_collapsed_row, None)
-        task_model.refilter()
+        self.task_modelfilter.refilter()
         self.restore_collapsed_rows()
 
     def on_taskdone_cursor_changed(self, selection=None):
@@ -1197,11 +1193,17 @@ class TaskBrowser:
         #print "Task added: %s, %s" % (sender, tid)
         self.task_model.add_task(tid)
         self.ctask_model.add_task(tid)
+        task = self.req.get_task(tid)
+        if task.get_status() == Task.STA_ACTIVE:
+            self.tag_model.update_tags_for_task(tid)
 
     def on_task_deleted(self, sender, tid):
         #print "Task deleted: %s, %s" % (sender, tid)
         self.task_model.remove_task(tid)
         self.ctask_model.remove_task(tid)
+        task = self.req.get_task(tid)
+        if task.get_status() == Task.STA_ACTIVE:
+            self.tag_model.update_tags_for_task(tid)
 
     def on_task_modified(self, sender, tid):
         #print "Task modified: %s, %s" % (sender, tid)
@@ -1209,6 +1211,9 @@ class TaskBrowser:
         self.ctask_model.remove_task(tid)
         self.task_model.add_task(tid)
         self.ctask_model.add_task(tid)
+        task = self.req.get_task(tid)
+        if task.get_status() == Task.STA_ACTIVE:
+            self.tag_model.update_tags_for_task(tid)
 
 ### PUBLIC METHODS ############################################################
 #
@@ -1244,14 +1249,15 @@ class TaskBrowser:
 
     def get_selected_tags(self):
         t_selected = self.tags_tv.get_selection()
+        model      = self.tags_tv.get_model()
         t_iter = None
         if t_selected:
             tmodel, t_iter = t_selected.get_selected()
         notag_only = False
         tag = []
         if t_iter:
-            selected = self.tag_ts.get_value(t_iter, 0)
-            special = selected.get_attribute("special")
+            selected = model.get_value(t_iter, tagtree.COL_OBJ)
+            special  = selected.get_attribute("special")
             if special == "all":
                 tag = []
                 selected = None

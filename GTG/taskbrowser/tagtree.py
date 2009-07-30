@@ -3,11 +3,12 @@ import gtk
 import gobject
 
 from GTG import _
+from GTG.core.task import Task
 from GTG.tools import colors
 from GTG.taskbrowser.CellRendererTags import CellRendererTags
 
 COL_ID    = 0
-COL_LIST  = 1
+COL_OBJ  = 1
 COL_COLOR = 2
 COL_COUNT = 3
 COL_SEP   = 4
@@ -25,10 +26,17 @@ class TagTreeModel(gtk.GenericTreeModel):
         self.req  = requester
         self.tree = self.req.get_tag_tree()
 
+    def update_tags_for_task(self, tid):
+        task = self.req.get_task(tid)
+        for t in task.get_tags():
+            path = self.tree.get_path_for_node(t)
+            iter = self.get_iter(path)
+            self.row_changed(path, iter)
+
 ### TREEMODEL INTERFACE ######################################################
 #
     def on_get_flags(self):
-        return gtk.TREE_MODEL_ITERS_PERSIST
+        return gtk.TREE_MODEL_ITERS_PERSIST|gtk.TREE_MODEL_LIST_ONLY
 
     def on_get_n_columns(self):
         return len(self.column_types)
@@ -48,13 +56,13 @@ class TagTreeModel(gtk.GenericTreeModel):
         tag = self.tree.get_node_for_rowref(rowref)
         if   column == COL_ID:
             return tag.get_name()
-        if   column == COL_LIST:
+        if   column == COL_OBJ:
             return tag
         elif column == COL_COLOR:
             return task.get_attribute("color")
         elif column == COL_COUNT:
             count = len(\
-                self.req.get_active_tasks_list(tags=[tag], workable=True))
+                self.req.get_active_tasks_list(tags=[tag]))
             return  count
         elif column == COL_SEP:
             return False
@@ -265,7 +273,7 @@ class TagTreeView(gtk.TreeView):
         tag_col.set_title(_("Tags"))
         tag_col.set_clickable(False)
         tag_col.pack_start(render_tags, expand=False)
-        tag_col.set_attributes(render_tags, tag=COL_LIST)
+        tag_col.set_attributes(render_tags, tag=COL_OBJ)
         tag_col.pack_start(render_text, expand=True)
         tag_col.set_attributes(render_text, markup=COL_ID)
         tag_col.pack_end(render_count, expand=False)

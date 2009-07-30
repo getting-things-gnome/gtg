@@ -21,6 +21,9 @@ class Tree():
     def get_rowref_for_node(self, node):
         return self._rowref_for_node(node)
 
+    def get_path_for_node(self, node):
+        return self._path_for_node(node)
+
     def get_root(self):
         return self.root
 
@@ -72,6 +75,14 @@ class Tree():
         else:
             parent = node.get_parent()
             return self._rowref_for_node(parent) + "/" + str(node.get_id())
+
+    def _path_for_node(self, node):
+        if not node.has_parent():
+            return ()
+        else:
+            parent = node.get_parent()
+            index  = parent.get_child_index(node.get_id())
+            return self._path_for_node(parent) + (index,)
 
     def _print_from_node(self, node, prefix=""):
         print prefix + node.id
