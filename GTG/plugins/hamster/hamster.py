@@ -26,9 +26,6 @@ class hamsterPlugin:
     PLUGIN_VERSION = '0.1'
     PLUGIN_DESCRIPTION = 'Adds the ability to send a task to the Hamster time tracking applet'
     PLUGIN_ENABLED = False
-
-    def __init__(self):
-        self.hamster=dbus.SessionBus().get_object('org.gnome.Hamster', '/org/gnome/Hamster')
         
     def sendTask(self, task):
         if task is None: return
@@ -48,8 +45,23 @@ class hamsterPlugin:
             
         self.hamster.AddFact('%s,%s'%(activity, title), 0, 0)
 
+    def hamsterError(self):
+        d=gtk.MessageDialog(buttons=gtk.BUTTONS_CANCEL)
+        d.set_markup("<big>Error loading plugin</big>")
+        d.format_secondary_markup("This plugin requires hamster-applet 2.27.3 or greater\n\
+Please install hamster-applet and make sure the applet is added to the panel")
+        d.run()
+        d.destroy()
+
     # plugin engine methods    
     def activate(self, plugin_api):
+        try:
+            self.hamster=dbus.SessionBus().get_object('org.gnome.Hamster', '/org/gnome/Hamster')
+            self.hamster.GetActivities()
+        except:
+            self.hamsterError()
+            return False
+        
         self.menu_item = gtk.MenuItem("Start task in Hamster")
         self.menu_item.connect('activate', self.browser_cb, plugin_api)
         
