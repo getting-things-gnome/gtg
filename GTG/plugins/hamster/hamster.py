@@ -53,34 +53,34 @@ class hamsterPlugin:
         self.menu_item = gtk.MenuItem("Start task in Hamster")
         self.menu_item.connect('activate', self.browser_cb, plugin_api)
         
-        self.tb_button=gtk.ToolButton()
-        self.tb_button.set_label("Start")
-        self.tb_button.set_icon_name('hamster-applet')
-        self.tb_button.set_tooltip_text("Start a new activity in Hamster Time Tracker based on the selected task")
-        self.tb_button.connect('clicked', self.browser_cb, plugin_api)
+        self.button=gtk.ToolButton()
+        self.button.set_label("Start")
+        self.button.set_icon_name('hamster-applet')
+        self.button.set_tooltip_text("Start a new activity in Hamster Time Tracker based on the selected task")
+        self.button.connect('clicked', self.browser_cb, plugin_api)
         
         # add a menu item to the menu bar
-        plugin_api.AddMenuItem(self.menu_item)
+        plugin_api.add_menu_item(self.menu_item)
                 
         # saves the separator's index to later remove it
-        self.separator = plugin_api.AddToolbarItem(gtk.SeparatorToolItem())
+        self.separator = plugin_api.add_toolbar_item(gtk.SeparatorToolItem())
         # add a item (button) to the ToolBar
-        plugin_api.AddToolbarItem(self.tb_button)
+        plugin_api.add_toolbar_item(self.button)
 
     def onTaskOpened(self, plugin_api):
         # add a item (button) to the ToolBar
-        self.tb_Taskbutton = gtk.ToolButton()
-        self.tb_Taskbutton.set_label("Start")
-        self.tb_Taskbutton.set_icon_name('hamster-applet')
-        self.tb_Taskbutton.set_tooltip_text("Start a new activity in Hamster Time Tracker based on this task")
-        self.tb_Taskbutton.connect('clicked', self.task_cb, plugin_api)
-        plugin_api.AddTaskToolbarItem(gtk.SeparatorToolItem())
-        plugin_api.AddTaskToolbarItem(self.tb_Taskbutton)
+        self.taskbutton = gtk.ToolButton()
+        self.taskbutton.set_label("Start")
+        self.taskbutton.set_icon_name('hamster-applet')
+        self.taskbutton.set_tooltip_text("Start a new activity in Hamster Time Tracker based on this task")
+        self.taskbutton.connect('clicked', self.task_cb, plugin_api)
+        plugin_api.add_task_toolbar_item(gtk.SeparatorToolItem())
+        plugin_api.add_task_toolbar_item(self.taskbutton)
         
     def deactivate(self, plugin_api):
-        plugin_api.RemoveMenuItem(self.menu_item)
-        plugin_api.RemoveToolbarItem(self.tb_button)
-        plugin_api.RemoveToolbarItem(None, self.separator)
+        plugin_api.remove_menu_item(self.menu_item)
+        plugin_api.remove_toolbar_item(self.button)
+        plugin_api.remove_toolbar_item(None, self.separator)
         
     def browser_cb(self, widget, plugin_api):
         self.sendTask(plugin_api.get_selected_task())
