@@ -163,17 +163,36 @@ class TaskEditor :
         self.window.show()
 
     # Define accelerator-keys for this dialog
+    # TODO: undo/redo
     def init_accelerators(self):
-        accelgroup = gtk.AccelGroup()
+        agr = gtk.AccelGroup()
         
-        # Escape and Ctrl-W close the dialog
+        # Escape and Ctrl-W close the dialog. It's faster to call close
+        # directly, rather than use the close button widget
         key, modifier = gtk.accelerator_parse('Escape')
-        accelgroup.connect_group(key, modifier, gtk.ACCEL_VISIBLE, self.close)
+        agr.connect_group(key, modifier, gtk.ACCEL_VISIBLE, self.close)
         
         key, modifier = gtk.accelerator_parse('<Control>w')
-        accelgroup.connect_group(key, modifier, gtk.ACCEL_VISIBLE, self.close)
+        agr.connect_group(key, modifier, gtk.ACCEL_VISIBLE, self.close)
         
-        self.window.add_accel_group(accelgroup)
+        #new_task_mi = self.wTree.get_widget("new_task_mi")
+        #key, mod    = gtk.accelerator_parse("<Control>n")
+        #new_task_mi.add_accelerator("activate", agr, key, mod,\
+        #    gtk.ACCEL_VISIBLE)
+        #
+        insert_subtask = self.wTree.get_widget("insert_subtask")
+        key, mod       = gtk.accelerator_parse("<Control><Shift>n")
+        insert_subtask.add_accelerator('clicked', agr, key, mod, gtk.ACCEL_VISIBLE)
+        
+        mark_as_done_editor = self.wTree.get_widget('mark_as_done_editor')
+        key, mod = gtk.accelerator_parse('<Control>d')
+        mark_as_done_editor.add_accelerator('clicked', agr, key, mod, gtk.ACCEL_VISIBLE)
+        
+        dismiss_editor = self.wTree.get_widget('dismiss_editor')
+        key, mod = gtk.accelerator_parse('<Control>i')
+        dismiss_editor.add_accelerator('clicked', agr, key, mod, gtk.ACCEL_VISIBLE)
+        
+        self.window.add_accel_group(agr)
     
     #The refresh callback is None for all the initialization
     #It's an optimisation that save us a low of unneeded refresh
