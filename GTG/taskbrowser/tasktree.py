@@ -319,15 +319,15 @@ class TaskTreeModel(gtk.GenericTreeModel):
             new_par_task = self.req.get_task(new_par_tid)
         else:
             new_par_task = None
-        # Remove child from parent
+        # Remove child from old parent
         if old_par_task:
             old_par_task.remove_subtask(child_tid)
         else:
             self.root_tasks.remove(child_tid)
-        # Remove parent from child
+        # Remove old parent from child
         if old_par_task:
             child_task.remove_parent(old_par_tid)
-        # Add child to new parent
+        # Add child to new parent (add_subtask also add new parent to child)
         if new_par_task:
             new_par_task.add_subtask(child_tid)
         else:
