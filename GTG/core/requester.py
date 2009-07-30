@@ -43,14 +43,17 @@ class Requester(gobject.GObject):
     ############# Signals #########################
     def connect(self, signal, func):
         #Signals need to be connected to the datastore
-        if signal == "task-added" :
-            gobject.GObject.connect(self,signal,func)
-        else :
+        if signal == "refresh" :
             self.ds.connect(signal, func)
+        else :
+            gobject.GObject.connect(self,signal,func)
         
     #Used by the tasks to emit the task added signal
+    #Should NOT be used by anyone else
     def _task_loaded(self,tid) :
         self.emit("task-added",tid)
+    def _task_modified(self,tid) :
+        self.emit("task-modified",tid)
 
     ############## Tasks ##########################
     ###############################################
@@ -95,6 +98,7 @@ class Requester(gobject.GObject):
         @param tid: The id of the task to be deleted.
         """
         self.ds.delete_task(tid)
+        self.emit("task-deleted",tid)
 
     def get_tasks_list(self, tags=None, status=["Active"], notag_only=False,
                        started_only=True, is_root=False):

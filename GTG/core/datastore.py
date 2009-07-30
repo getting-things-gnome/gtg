@@ -29,16 +29,12 @@ from GTG.core.task import Task
 #Only the datastore should access to the backend
 DEFAULT_BACKEND = "1"
 #If you want to debug a backend, it can be useful to disable the threads
-#Currently, it's using idle_add instead of threads
+#Currently, it's python threads (and not idle_add, which is not useful)
 THREADING = True
 
 class DataStore(gobject.GObject):
     __gsignals__ = { 'refresh': (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE,
-                                   (str,)),
-                    'task-deleted': (gobject.SIGNAL_RUN_FIRST, \
-                                    gobject.TYPE_NONE, (str,)),
-                    'task-modified': (gobject.SIGNAL_RUN_FIRST, \
-                                    gobject.TYPE_NONE, (str,)) }
+                                   (str,))}
 
 
     def __init__ (self):
@@ -85,7 +81,6 @@ class DataStore(gobject.GObject):
             if self.tasks.has_key(tid) :
                 self.tasks.pop(tid)
             back.remove_task(tid)
-            self.emit("task-deleted",tid)
         
     #Create a new task and return it.
     #newtask should be True if you create a task
@@ -124,7 +119,7 @@ class DataStore(gobject.GObject):
         if dic.has_key("backend") :
             pid = dic["pid"]
             backend = dic["backend"]
-            source = TaskSource(backend,dic,self.refresh_ui,self.task_modified)
+            source = TaskSource(backend,dic,self.refresh_ui)
             self.backends[pid] = source
             #Filling the backend
             #Doing this at start is more efficient than after the GUI is launched
@@ -147,8 +142,6 @@ class DataStore(gobject.GObject):
         #print "refresh %s" %self.tasks
         self.emit("refresh","1")
         
-    def task_modified(self,tid) :
-        self.emit("task-modified",tid)
         
     def refresh_tasklist(self,task_list) :
         for tid in task_list :
@@ -159,13 +152,12 @@ class DataStore(gobject.GObject):
 #Task source is an transparent interface between the real backend and datastore
 #Task source has also more functionnalities
 class TaskSource() :
-    def __init__(self,backend,parameters,refresh_cllbck,taskmodif_cllbck) :
+    def __init__(self,backend,parameters,refresh_cllbck) :
         self.backend = backend
         self.dic = parameters
         self.tasks = {}
         self.time = time.time()
         self.refresh = refresh_cllbck
-        self.task_modified = taskmodif_cllbck
         self.locks = lockslibrary()
         self.tosleep = 0
         self.backend_lock = threading.Lock()
@@ -190,9 +182,9 @@ class TaskSource() :
             #print "releasing lock  to getall" 
             func(tlist)
         if THREADING :
-#            t = threading.Thread(target=getall)
-#            t.start()
-            gobject.idle_add(getall)
+            t = threading.Thread(target=getall)
+            t.start()
+#            gobject.idle_add(getall)
         else:
             getall()
         return None
@@ -221,9 +213,9 @@ class TaskSource() :
             self.tasks[tid] = False
             if THREADING :
                 self.locks.create_lock(tid)
-                gobject.idle_add(getting,empty_task,tid)
-#                t = threading.Thread(target=getting,args=[empty_task,tid])
-#                t.start()
+#                gobject.idle_add(getting,empty_task,tid)
+                t = threading.Thread(target=getting,args=[empty_task,tid])
+                t.start()
             else :
                 self.locks.create_lock(tid)
                 getting(empty_task,tid)
@@ -232,13 +224,11 @@ class TaskSource() :
 
     def set_task(self,task) :
         if THREADING:
-            gobject.idle_add(self.__write,task)
-#            t = threading.Thread(target=self.__write,args=[task])
-#            t.start()
+#            gobject.idle_add(self.__write,task)
+            t = threading.Thread(target=self.__write,args=[task])
+            t.start()
         else:
             self.__write(task)
-        #emiting the signal
-        self.task_modified(task.get_id())
         return None
     
     #This function, called in a thread, write to the backend.

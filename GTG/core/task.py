@@ -388,6 +388,7 @@ class Task :
     def sync(self) :
         if self.sync_func and self.is_loaded() :
             self.sync_func(self)
+            self.req._task_modified(self.tid)
             
             
     ######## Tag functions ##############
