@@ -390,7 +390,7 @@ class TaskEditor :
     
     def change_status(self,widget) : #pylint: disable-msg=W0613
         stat = self.task.get_status()
-        if stat == "Active" :
+        if stat in ["Active","Dismiss"] :
             toset = "Done"
             toclose = True
         else :
