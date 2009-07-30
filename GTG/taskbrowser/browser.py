@@ -118,9 +118,6 @@ class TaskBrowser:
         # of the UI
         self.init_view_defaults()
 
-        # Connecting the refresh signal from the requester
-        self.req.connect("refresh", self.do_refresh)
-
         # Define accelerator keys
         self.init_accelerators()
         
@@ -129,6 +126,17 @@ class TaskBrowser:
 
         # NOTES
         self.init_note_support()
+        
+#THIS IS A QUICK HACK TO HAVE PROPER REFRESH
+#Bertrand, you can now get rid of this
+        self.req.connect("task-added",self.debug)
+        self.req.connect("task-modified",self.debug)
+        self.req.connect("task-deleted",self.debug)      
+    def debug(self, sender, tid) :
+        #print "task %s added" %tid
+        self.do_refresh()
+#Remove until here
+#END OF QUICK HACK
 
 
 ### INIT HELPER FUNCTIONS #####################################################
