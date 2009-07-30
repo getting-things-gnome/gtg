@@ -129,6 +129,15 @@ class TaskBrowser:
 
         # NOTES
         self.init_note_support()
+        
+#THIS IS A QUICK HACK TO HAVE PROPER REFRESH
+#Bertrand, you can now get rid of this
+        self.req.connect("task-added",self.debug)      
+    def debug(self, sender, tid) :
+        #print "task %s added" %tid
+        self.do_refresh()
+#Remove until here
+#END OF QUICK HACK
 
 
 ### INIT HELPER FUNCTIONS #####################################################

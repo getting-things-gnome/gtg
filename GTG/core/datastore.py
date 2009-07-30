@@ -196,8 +196,16 @@ class TaskSource() :
             try :
                 #if self.locks.ifnotblocked(tid) :
                 self.backend.get_task(empty_task,tid)
-                empty_task.set_sync_func(self.set_task)
-                empty_task.set_loaded()
+                #calling sync in a thread might cause a segfault
+                #thus callsync to false
+                empty_task.set_sync_func(self.set_task,callsync=False)
+                #set_loaded is a function that emits a signal. 
+                #Emiting a signal in a thread is likely to segfault
+                #by wrapping it in idle_add, we ensure that gobject mainloop
+                #handles the signal and not the tread itself.
+                #it's not a problem to not know when it is executed
+                #since it's the last instruction of the tread
+                gobject.idle_add(empty_task.set_loaded)
             finally :
                 self.locks.release(tid)
             self.refresh()
