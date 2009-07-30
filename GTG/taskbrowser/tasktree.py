@@ -101,7 +101,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
             for par_tid in task.get_parents():
                 par_task  = self.req.get_task(par_tid)
                 if not par_task.is_loaded():
-                    print "%s is not loaded." % par_tid
+                    #print "%s is not loaded." % par_tid
                     continue
                 par_paths = self._get_paths_for_task(par_task)
                 task_idx  = par_task.get_subtask_index(task.get_id())
@@ -117,7 +117,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
             for c_tid in task.get_subtask_tids():
                 c_task = self.req.get_task(c_tid)
                 if not c_task.is_loaded():
-                    print "%s is not loaded." % c_tid
+                    #print "%s is not loaded." % c_tid
                     continue
                 else:
                     c_idx   = task.get_subtask_index(c_tid)
@@ -125,6 +125,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
                     for path in paths:
                         c_path = path + (c_idx,)
                         c_iter = self.get_iter(c_path)
+                        self.row_deleted(c_path)
                         self.row_inserted(c_path, c_iter)
                         self._add_all_subtasks(c_task, c_path)
         else:
@@ -249,10 +250,6 @@ class TaskTreeModel(gtk.GenericTreeModel):
     def add_task(self, tid):
         # get the task
         task = self.req.get_task(tid)
-        # is task loaded?
-        if not task.is_loaded():
-            print "%s is not loaded." % tid
-            return
         # has the task parents?
         paths = []
         if task.has_parents():
@@ -262,7 +259,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
             for par_tid in par_list:
                 par_task = self.req.get_task(par_tid)
                 if not par_task.is_loaded():
-                    print "%s is not loaded." % par_tid
+                    #print "%s is not loaded." % par_tid
                     continue
                 else:
                     par_paths = self._get_paths_for_task(par_task)
@@ -273,6 +270,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
                         # get t-under-p iter
                         task_iter  = self.get_iter(task_path)
                         # insert t-under-p
+                        self.row_deleted(task_path)
                         self.row_inserted(task_path, task_iter)
                         paths.append(task_path)
         else:
@@ -290,10 +288,6 @@ class TaskTreeModel(gtk.GenericTreeModel):
     def remove_task(self, tid):
         # get the task
         task = self.req.get_task(tid)
-        # is task loaded?
-        if not task.is_loaded():
-            print "%s is not loaded." % tid
-            return
         # Remove every row of this task
         if task.has_parents():
             # get every paths leading to this task
@@ -301,11 +295,12 @@ class TaskTreeModel(gtk.GenericTreeModel):
             # remove every path
             for task_path in path_list:
                 self.row_deleted(task_path)
-        else:
+        if tid in self.root_tasks:
             task_index = self._get_root_task_index(tid)
             task_path  = (task_index,)
-            self.root_tasks.remove(tid)
+            task_iter  = self.get_iter(task_path)
             self.row_deleted(task_path)
+            self.root_tasks.remove(tid)
                     
     def move_task(self, parent, child):
         #print "Moving %s below %s" % (child, parent)

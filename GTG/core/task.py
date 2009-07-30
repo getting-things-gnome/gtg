@@ -439,10 +439,11 @@ class Task :
         #self.req.delete_task(self.get_id())
         
     #This is a callback. The "sync" function has to be set
-    def set_sync_func(self,sync) :
+    def set_sync_func(self,sync,callsync=True) :
         self.sync_func = sync
         #We call it immediatly to save stuffs that were set before this
-        self.sync()
+        if callsync and self.is_loaded() :
+            self.sync()
         
     def sync(self) :
         if self.sync_func and self.is_loaded() :

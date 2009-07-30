@@ -118,9 +118,6 @@ class TaskBrowser:
         # of the UI
         self._init_view_defaults()
 
-        # Connecting the refresh signal from the requester
-        #self.req.connect("refresh", self.do_refresh)
-
         # Define accelerator keys
         self._init_accelerators()
 
@@ -684,9 +681,8 @@ class TaskBrowser:
         tag_list, notag_only = self.get_selected_tags()
         tid  = model.get_value(iter, tasktree.COL_TID)
         task = self.req.get_task(tid)
-        return task.has_tags(tag_list=tag_list, notag_only=notag_only)
-#        return task.has_tags(tag_list=tag_list, notag_only=notag_only) and\
-#               task.get_status() is Task.STA_ACTIVE
+        return task.has_tags(tag_list=tag_list, notag_only=notag_only) and\
+               task.get_status() == Task.STA_ACTIVE
                
     def closed_task_visible_func(self, model, iter, user_data=None):
         """Return True if the row must be displayed in the treeview.
@@ -1190,32 +1186,34 @@ class TaskBrowser:
         #TODO: this is used for debug of the TreeModel,
         #      please delete me once it's done
 
-        active_tasks = self.req.get_active_tasks_list()
-        self.task_model  = TaskTreeModel(\
-                                requester=self.req,\
-                                tasks=active_tasks)
-        closed_tasks = self.req.get_closed_tasks_list()
-        self.ctask_model = TaskTreeModel(\
-                                requester=self.req,\
-                                tasks=closed_tasks,\
-                                is_tree=False)
+        self.task_modelfilter.refilter()
 
-        self.task_modelfilter = self.task_model.filter_new()
-        self.task_modelfilter.set_visible_func(self.active_task_visible_func)
-        self.task_modelsort = gtk.TreeModelSort(self.task_modelfilter)
-        self.task_modelsort.set_sort_func(tasktree.COL_DDATE, self.dleft_sort_func)
-        self.task_modelsort.set_sort_func(tasktree.COL_DLEFT, self.dleft_sort_func)
-        self.task_modelsort.set_sort_column_id(\
-            tasktree.COL_DLEFT, gtk.SORT_ASCENDING)
-        self.task_tv.set_model(self.task_modelsort)
-        self.restore_collapsed_rows()
-
-        self.ctask_modelfilter = self.ctask_model.filter_new()
-        self.ctask_modelfilter.set_visible_func(self.closed_task_visible_func)
-        self.ctask_modelsort   = gtk.TreeModelSort(self.ctask_modelfilter)
-        self.ctask_modelsort.set_sort_column_id(\
-            tasktree.COL_DDATE, gtk.SORT_DESCENDING)
-        self.ctask_tv.set_model(self.ctask_modelsort)
+#        active_tasks = self.req.get_active_tasks_list()
+#        self.task_model  = TaskTreeModel(\
+#                                requester=self.req,\
+#                                tasks=active_tasks)
+#        closed_tasks = self.req.get_closed_tasks_list()
+#        self.ctask_model = TaskTreeModel(\
+#                                requester=self.req,\
+#                                tasks=closed_tasks,\
+#                                is_tree=False)
+#
+#        self.task_modelfilter = self.task_model.filter_new()
+#        self.task_modelfilter.set_visible_func(self.active_task_visible_func)
+#        self.task_modelsort = gtk.TreeModelSort(self.task_modelfilter)
+#        self.task_modelsort.set_sort_func(tasktree.COL_DDATE, self.dleft_sort_func)
+#        self.task_modelsort.set_sort_func(tasktree.COL_DLEFT, self.dleft_sort_func)
+#        self.task_modelsort.set_sort_column_id(\
+#            tasktree.COL_DLEFT, gtk.SORT_ASCENDING)
+#        self.task_tv.set_model(self.task_modelsort)
+#        self.restore_collapsed_rows()
+#
+#        self.ctask_modelfilter = self.ctask_model.filter_new()
+#        self.ctask_modelfilter.set_visible_func(self.closed_task_visible_func)
+#        self.ctask_modelsort   = gtk.TreeModelSort(self.ctask_modelfilter)
+#        self.ctask_modelsort.set_sort_column_id(\
+#            tasktree.COL_DDATE, gtk.SORT_DESCENDING)
+#        self.ctask_tv.set_model(self.ctask_modelsort)
 
 ### PUBLIC METHODS ############################################################
 #
