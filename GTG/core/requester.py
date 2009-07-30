@@ -40,15 +40,8 @@ class Requester(gobject.GObject):
         self.ds = datastore
         gobject.GObject.__init__(self)
 
-    ############# Signals #########################
-#    def connect(self, signal, func):
-#        #Signals need to be connected to the datastore
-#        if signal == "refresh" :
-#            self.ds.connect(signal, func)
-#        else :
-#            gobject.GObject.connect(self,signal,func)
-        
-    #Used by the tasks to emit the task added signal
+    ############# Signals #########################   
+    #Used by the tasks to emit the task added/modified signal
     #Should NOT be used by anyone else
     def _task_loaded(self,tid) :
         self.emit("task-added",tid)
