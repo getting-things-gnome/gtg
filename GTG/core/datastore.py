@@ -32,13 +32,9 @@ DEFAULT_BACKEND = "1"
 #Currently, it's python threads (and not idle_add, which is not useful)
 THREADING = True
 
-class DataStore(gobject.GObject):
-    __gsignals__ = { 'refresh': (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE,
-                                   (str,))}
-
+class DataStore:
 
     def __init__ (self):
-        gobject.GObject.__init__(self)
         self.backends = {}
         self.tasks = {}
         self.tagstore = tagstore.TagStore()
@@ -119,7 +115,7 @@ class DataStore(gobject.GObject):
         if dic.has_key("backend") :
             pid = dic["pid"]
             backend = dic["backend"]
-            source = TaskSource(backend,dic,self.refresh_ui)
+            source = TaskSource(backend,dic)
             self.backends[pid] = source
             #Filling the backend
             #Doing this at start is more efficient than after the GUI is launched
@@ -136,12 +132,6 @@ class DataStore(gobject.GObject):
         for key in self.backends :
             l.append(self.backends[key])
         return l
-    
-    #TODO : remove refresh_ui
-    def refresh_ui(self) :
-        #print "refresh %s" %self.tasks
-        self.emit("refresh","1")
-        
         
     def refresh_tasklist(self,task_list) :
         for tid in task_list :
@@ -152,12 +142,11 @@ class DataStore(gobject.GObject):
 #Task source is an transparent interface between the real backend and datastore
 #Task source has also more functionnalities
 class TaskSource() :
-    def __init__(self,backend,parameters,refresh_cllbck) :
+    def __init__(self,backend,parameters) :
         self.backend = backend
         self.dic = parameters
         self.tasks = {}
         self.time = time.time()
-        self.refresh = refresh_cllbck
         self.locks = lockslibrary()
         self.tosleep = 0
         self.backend_lock = threading.Lock()
@@ -208,7 +197,6 @@ class TaskSource() :
                 gobject.idle_add(empty_task.set_loaded)
             finally :
                 self.locks.release(tid)
-            self.refresh()
         ##########
         if self.tasks.has_key(tid) :
             task = self.tasks[tid]
