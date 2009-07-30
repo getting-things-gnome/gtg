@@ -175,11 +175,9 @@ class TaskEditor :
         key, modifier = gtk.accelerator_parse('<Control>w')
         agr.connect_group(key, modifier, gtk.ACCEL_VISIBLE, self.close)
         
-        #new_task_mi = self.wTree.get_widget("new_task_mi")
-        #key, mod    = gtk.accelerator_parse("<Control>n")
-        #new_task_mi.add_accelerator("activate", agr, key, mod,\
-        #    gtk.ACCEL_VISIBLE)
-        #
+        key, modifier = gtk.accelerator_parse('<Control>n')
+        agr.connect_group(key, modifier, gtk.ACCEL_VISIBLE, self.new_task)
+        
         insert_subtask = self.wTree.get_widget("insert_subtask")
         key, mod       = gtk.accelerator_parse("<Control><Shift>n")
         insert_subtask.add_accelerator('clicked', agr, key, mod, gtk.ACCEL_VISIBLE)
@@ -418,6 +416,13 @@ class TaskEditor :
         subt.set_title(title)
         tid = subt.get_id()
         return tid
+
+    # Create a new task
+    def new_task(self, *args):
+        task = self.req.new_task(tags=None, newtask=True)
+        task_id = task.get_id()
+        self.refresh_browser()
+        self.open_task(task_id)
         
     def insert_subtask(self,widget) : #pylint: disable-msg=W0613
         self.textview.insert_newtask()
