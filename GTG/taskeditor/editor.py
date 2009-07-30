@@ -166,6 +166,7 @@ class TaskEditor :
     # TODO: undo/redo
     def init_accelerators(self):
         agr = gtk.AccelGroup()
+        self.window.add_accel_group(agr)
         
         # Escape and Ctrl-W close the dialog. It's faster to call close
         # directly, rather than use the close button widget
@@ -194,7 +195,6 @@ class TaskEditor :
         key, mod = gtk.accelerator_parse('<Control>i')
         dismiss_editor.add_accelerator('clicked', agr, key, mod, gtk.ACCEL_VISIBLE)
         
-        self.window.add_accel_group(agr)
     
     #The refresh callback is None for all the initialization
     #It's an optimisation that save us a low of unneeded refresh
