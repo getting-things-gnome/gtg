@@ -50,6 +50,7 @@ class Task :
         self.loaded = newtask
         if self.loaded :
             self.req._task_loaded(self.tid)
+        self.attributes={}
                 
     def is_loaded(self) :
         return self.loaded
@@ -366,6 +367,24 @@ class Task :
         else :
             to_return = len(self.parents)!=0
         return to_return
+        
+    def set_attribute(self, att_name, att_value, namespace=""):
+        """Set an arbitrary attribute.
+
+        @param att_name: The name of the attribute.
+        @param att_value: The value of the attribute. Will be converted to a
+            string.
+        """
+        val = unicode(str(att_value), "UTF-8")
+        self.attributes[(namespace,att_name)] = val
+        self.sync()
+        
+    def get_attribute(self, att_name, namespace=""):
+        """Get the attribute C{att_name}.
+
+        Returns C{None} if there is no attribute matching C{att_name}.
+        """
+        return self.attributes.get((namespace,att_name), None)
        
     #Method called before the task is deleted
     #This method is called by the datastore and should not be called directly
