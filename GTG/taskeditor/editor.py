@@ -172,17 +172,38 @@ class TaskEditor :
         self.window.show()
 
     # Define accelerator-keys for this dialog
+    # TODO: undo/redo
     def init_accelerators(self):
-        accelgroup = gtk.AccelGroup()
+        agr = gtk.AccelGroup()
+        self.window.add_accel_group(agr)
         
-        # Escape and Ctrl-W close the dialog
+        # Escape and Ctrl-W close the dialog. It's faster to call close
+        # directly, rather than use the close button widget
         key, modifier = gtk.accelerator_parse('Escape')
-        accelgroup.connect_group(key, modifier, gtk.ACCEL_VISIBLE, self.close)
+        agr.connect_group(key, modifier, gtk.ACCEL_VISIBLE, self.close)
         
         key, modifier = gtk.accelerator_parse('<Control>w')
-        accelgroup.connect_group(key, modifier, gtk.ACCEL_VISIBLE, self.close)
+        agr.connect_group(key, modifier, gtk.ACCEL_VISIBLE, self.close)
         
-        self.window.add_accel_group(accelgroup)
+        # Ctrl-N creates a new task
+        key, modifier = gtk.accelerator_parse('<Control>n')
+        agr.connect_group(key, modifier, gtk.ACCEL_VISIBLE, self.new_task)
+        
+        # Ctrl-Shift-N creates a new subtask
+        insert_subtask = self.wTree.get_widget("insert_subtask")
+        key, mod       = gtk.accelerator_parse("<Control><Shift>n")
+        insert_subtask.add_accelerator('clicked', agr, key, mod, gtk.ACCEL_VISIBLE)
+        
+        # Ctrl-D marks task as done
+        mark_as_done_editor = self.wTree.get_widget('mark_as_done_editor')
+        key, mod = gtk.accelerator_parse('<Control>d')
+        mark_as_done_editor.add_accelerator('clicked', agr, key, mod, gtk.ACCEL_VISIBLE)
+        
+        # Ctrl-I marks task as dismissed
+        dismiss_editor = self.wTree.get_widget('dismiss_editor')
+        key, mod = gtk.accelerator_parse('<Control>i')
+        dismiss_editor.add_accelerator('clicked', agr, key, mod, gtk.ACCEL_VISIBLE)
+        
     
     #The refresh callback is None for all the initialization
     #It's an optimisation that save us a low of unneeded refresh
@@ -368,16 +389,13 @@ class TaskEditor :
         
     def dismiss(self,widget) : #pylint: disable-msg=W0613
         stat = self.task.get_status()
-        toset = "Dismiss"
-        toclose = True
-        if stat == "Dismiss" :
-            toset = "Active"
-            toclose = False
-        self.task.set_status(toset)
-        if toclose : self.close(None)
-        else : 
+        if stat == "Dismiss":
+            self.task.set_status("Active")
             self.refresh_editor()
-        self.refresh_browser()
+            self.refresh_browser()
+        else:
+            self.task.set_status("Dismiss")
+            self.close(None)
     
     def keepnote(self,widget) : #pylint: disable-msg=W0613
         stat = self.task.get_status()
@@ -390,17 +408,13 @@ class TaskEditor :
     
     def change_status(self,widget) : #pylint: disable-msg=W0613
         stat = self.task.get_status()
-        if stat in ["Active","Dismiss"] :
-            toset = "Done"
-            toclose = True
-        else :
-            toset = "Active"
-            toclose = False
-        self.task.set_status(toset)
-        if toclose : self.close(None)
-        else : 
+        if stat == "Done":
+            self.task.set_status("Active")
             self.refresh_editor()
-        self.refresh_browser()
+            self.refresh_browser()
+        else:
+            self.task.set_status("Done")
+            self.close(None)
     
     def delete_task(self,widget) :
         if self.delete :
@@ -415,6 +429,13 @@ class TaskEditor :
         subt.set_title(title)
         tid = subt.get_id()
         return tid
+
+    # Create a new task
+    def new_task(self, *args):
+        task = self.req.new_task(tags=None, newtask=True)
+        task_id = task.get_id()
+        self.refresh_browser()
+        self.open_task(task_id)
         
     def insert_subtask(self,widget) : #pylint: disable-msg=W0613
         self.textview.insert_newtask()
