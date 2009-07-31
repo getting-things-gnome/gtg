@@ -27,6 +27,7 @@ class TagTreeModel(gtk.GenericTreeModel):
         gtk.GenericTreeModel.__init__(self)
         self.req  = requester
         self.tree = self.req.get_tag_tree()
+        self.workable_only = False
 
 ### MODEL METHODS ############################################################
 
@@ -36,6 +37,9 @@ class TagTreeModel(gtk.GenericTreeModel):
             path = self.tree.get_path_for_node(t)
             iter = self.get_iter(path)
             self.row_changed(path, iter)
+
+    def set_workable_only(self, val):
+        self.workable_only = val
 
 ### TREEMODEL INTERFACE ######################################################
 #
@@ -74,8 +78,8 @@ class TagTreeModel(gtk.GenericTreeModel):
         elif column == COL_COUNT:
             sp_id = tag.get_attribute("special")
             if not sp_id:
-                count = len(\
-                    self.req.get_active_tasks_list(tags=[tag]))
+                count = len(self.req.get_active_tasks_list(\
+                       tags=[tag], workable=self.workable_only))
                 return  count
             else:
                 if sp_id == "all":
@@ -255,6 +259,12 @@ class TagTreeView(gtk.TreeView):
 #        self.connect('drag_drop', self.on_drag_drop)
 #        self.connect('drag_data_get', self.on_drag_data_get)
 #        self.connect('drag_data_received', self.on_drag_data_received)
+
+    def refresh(self):
+        self.get_model().foreach(self._refresh_func)
+
+    def _refresh_func(self, model, path, iter, user_data=None):
+        model.row_changed(path, iter)
 
     def _tag_separator_filter(self, model, itera, user_data=None):
         return self.get_model().get_value(itera, COL_SEP)

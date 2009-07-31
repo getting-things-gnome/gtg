@@ -576,10 +576,12 @@ class TaskBrowser:
         self.menu_view_workview.set_active(tobeset)
         self.toggle_workview.set_active(tobeset)
         self.priv['workview'] = tobeset
+        self.tag_model.set_workable_only(self.priv['workview'])
         if self.priv['workview']:
             self.task_tv.set_model(self.wv_modelsort)
         else:
             self.task_tv.set_model(self.task_modelsort)
+        self.tags_tv.refresh()
 
     def get_canonical_date(self, arg):
         """
