@@ -44,7 +44,7 @@ class hamsterPlugin:
         if len(activity_candidates)>=1:
             activity=list(activity_candidates)[0]
             #TODO: if >1, how to choose best one?
-        elif len(activity_candidates)>0:
+        elif len(tags):
             #TODO: is there anything more reasonable that can be done?
             activity=tags[0]
         else:
