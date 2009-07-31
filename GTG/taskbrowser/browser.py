@@ -461,7 +461,6 @@ class TaskBrowser:
                 self.wTree.get_widget("view_sidebar").set_active(True)
                 self.sidebar.show()
 
-
         if "closed_task_pane" in self.config["browser"]:
             closed_task_pane = eval(
                 self.config["browser"]["closed_task_pane"])
@@ -503,12 +502,14 @@ class TaskBrowser:
             self.priv["sort_column"] = col_id
             try:
                 col_id, order = int(col_id), int(order)
-                sort_col = self.task_tv.get_column(col_id)
-                self.priv["tasklist"]["sort_column"] = sort_col
+                self.priv["tasklist"]["sort_column"] = col_id
                 if order == 0:
                     self.priv["tasklist"]["sort_order"] = gtk.SORT_ASCENDING
                 if order == 1:
                     self.priv["tasklist"]["sort_order"] = gtk.SORT_DESCENDING
+                self.task_modelsort.set_sort_column_id(\
+                    col_id,\
+                    self.priv["tasklist"]["sort_order"])
             except:
                 print "Invalid configuration for sorting columns"
 
@@ -751,17 +752,6 @@ class TaskBrowser:
         else:
             return True
 
-    def restore_collapsed(self, treeview, path, data):
-        model = self.task_tv.get_model()
-        itera = model.get_iter(path)
-        tid   = model.get_value(itera, tasktree.COL_TID)
-        if tid in self.priv["collapsed_tids"]:
-            treeview.collapse_row(path)
-
-    def restore_collapsed_rows(self):
-        self.task_tv.expand_all()
-        self.task_tv.map_expanded_rows(self.restore_collapsed, None)
-
     def dleft_sort_func(self, model, iter1, iter2, user_data=None):
         order = self.task_tv.get_model().get_sort_column_id()[1]
         t1_title = model.get_value(iter1, tasktree.COL_TITLE)
@@ -845,8 +835,7 @@ class TaskBrowser:
         quickadd_pane      = self.quickadd_pane.get_property("visible")
         toolbar            = self.toolbar.get_property("visible")
         #task_tv_sort_id    = self.task_ts.get_sort_column_id()
-        sort_column        = self.priv["tasklist"]["sort_column"]
-        sort_order         = self.priv["tasklist"]["sort_order"]
+        sort_column, sort_order = self.task_modelsort.get_sort_column_id()
         closed_pane_height = self.wTree.get_widget("vpaned1").get_position()
 
         if self.priv['workview']:
@@ -881,13 +870,10 @@ class TaskBrowser:
             'view':
                 view,
             }
-
         if   sort_column is not None and sort_order == gtk.SORT_ASCENDING:
-            sort_col_id = self.task_tv.get_column_index(sort_column)
-            self.config["browser"]["tasklist_sort"]  = [sort_col_id, 0]
+            self.config["browser"]["tasklist_sort"]  = [sort_column, 0]
         elif sort_column is not None and sort_order == gtk.SORT_DESCENDING:
-            sort_col_id = self.task_tv.get_column_index(sort_column)
-            self.config["browser"]["tasklist_sort"]  = [sort_col_id, 1]
+            self.config["browser"]["tasklist_sort"]  = [sort_column, 1]
         self.config["browser"]["view"] = view
 #        if self.notes:
 #            self.config["browser"]["experimental_notes"] = True
