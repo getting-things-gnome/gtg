@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # pylint: disable-msg=W0201
 # -----------------------------------------------------------------------------
-# Gettings Things Gnome! - a personnal organizer for the GNOME desktop
+# Getting Things Gnome! - a personal organizer for the GNOME desktop
 # Copyright (c) 2008-2009 - Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
@@ -125,7 +125,7 @@ class TaskBrowser:
 ### INIT HELPER FUNCTIONS #####################################################
 #
     def _init_browser_config(self):
-        self.priv["collapsed_tid"]            = []
+        self.priv["collapsed_tids"]            = []
         self.priv["tasklist"]                 = {}
         self.priv["tasklist"]["sort_column"]  = None
         self.priv["tasklist"]["sort_order"]   = gtk.SORT_ASCENDING
@@ -346,7 +346,10 @@ class TaskBrowser:
         self.req.connect("task-added", self.on_task_added) 
         self.req.connect("task-deleted", self.on_task_deleted)
         self.req.connect("task-modified", self.on_task_modified)
-        
+
+        # Connect signals from models
+        self.task_modelsort.connect("row-has-child-toggled", self.on_child_toggled)
+
     def _init_view_defaults(self):
         self.menu_view_workview.set_active(WORKVIEW)
         self.wTree.get_widget("view_sidebar").set_active(SIDEBAR)
@@ -492,7 +495,7 @@ class TaskBrowser:
             self.wTree.get_widget("bgcol_enable").set_active(bgcol_enable)
 
         if "collapsed_tasks" in self.config["browser"]:
-            self.priv["collapsed_tid"] = self.config[
+            self.priv["collapsed_tids"] = self.config[
                 "browser"]["collapsed_tasks"]
 
         if "tasklist_sort" in self.config["browser"]:
@@ -560,12 +563,12 @@ class TaskBrowser:
 #        if not self.priv['workview'] and self.note_toggle.get_active():
 #            self.note_toggle.set_active(False)
         #We do something only if both widget are in different state
+        self.task_modelsort.foreach(self.update_collapsed_row, None)
         tobeset = not self.priv['workview']
         self.menu_view_workview.set_active(tobeset)
         self.toggle_workview.set_active(tobeset)
         self.priv['workview'] = tobeset
         self.tag_model.set_workable_only(self.priv['workview'])
-        self.task_tv.expand_all()
         self.task_modelfilter.refilter()
         self.tags_tv.refresh()
 
@@ -640,23 +643,20 @@ class TaskBrowser:
         else:
             return True
 
-    def update_collapsed_row(self, model, path, itera, user_data):
+    def update_collapsed_row(self, model, path, iter, user_data):
         """Build a list of task that must showed as collapsed in Treeview"""
         model = self.task_tv.get_model()
-        tid = model.get_value(itera, 0)
+        tid   = model.get_value(iter, tasktree.COL_TID)
         # Remove expanded rows
-        if (model.iter_has_child(itera) and
+        if (model.iter_has_child(iter) and
             self.task_tv.row_expanded(path) and
-            tid in self.priv["collapsed_tid"]):
-
-            self.priv["collapsed_tid"].remove(tid)
-
+            tid in self.priv["collapsed_tids"]):
+            self.priv["collapsed_tids"].remove(tid)
         # Append collapsed rows
-        elif (model.iter_has_child(itera) and
+        elif (model.iter_has_child(iter) and
               not self.task_tv.row_expanded(path) and
-              tid not in self.priv["collapsed_tid"]):
-
-            self.priv["collapsed_tid"].append(tid)
+              tid not in self.priv["collapsed_tids"]):
+            self.priv["collapsed_tids"].append(tid)
 
         return False # Return False or the TreeModel.foreach() function ends
 
@@ -755,7 +755,7 @@ class TaskBrowser:
         model = self.task_tv.get_model()
         itera = model.get_iter(path)
         tid   = model.get_value(itera, tasktree.COL_TID)
-        if tid in self.priv["collapsed_tid"]:
+        if tid in self.priv["collapsed_tids"]:
             treeview.collapse_row(path)
 
     def restore_collapsed_rows(self):
@@ -835,9 +835,9 @@ class TaskBrowser:
         self.task_tv.get_model().foreach(self.update_collapsed_row, None)
 
         # Cleanup collapsed row list
-        for tid in self.priv["collapsed_tid"]:
+        for tid in self.priv["collapsed_tids"]:
             if not self.req.has_task(tid):
-                self.priv["collapsed_tid"].remove(tid)
+                self.priv["collapsed_tids"].remove(tid)
 
         # Get configuration values
         tag_sidebar        = self.sidebar.get_property("visible")
@@ -867,7 +867,7 @@ class TaskBrowser:
             'bg_color_enable':
                 self.priv["bg_color_enable"],
             'collapsed_tasks':
-                self.priv["collapsed_tid"],
+                self.priv["collapsed_tids"],
             'tag_pane':
                 tag_sidebar,
             'closed_task_pane':
@@ -976,6 +976,12 @@ class TaskBrowser:
             self.quickadd_pane.show()
         else:
             self.quickadd_pane.hide()
+
+    def on_child_toggled(self, model, path, iter):
+        #print "on_child_toggled"
+        tid = model.get_value(iter, tasktree.COL_TID)
+        if tid not in self.priv.get("collapsed_tids", []):
+            self.task_tv.expand_row(path, True)
 
     def on_quickadd_activate(self, widget):
         text = self.quickadd_entry.get_text()
@@ -1188,7 +1194,6 @@ class TaskBrowser:
         task_model = self.task_tv.get_model()
         task_model.foreach(self.update_collapsed_row, None)
         self.task_modelfilter.refilter()
-        self.restore_collapsed_rows()
 
     def on_taskdone_cursor_changed(self, selection=None):
         """Called when selection changes in closed task view.
@@ -1268,19 +1273,16 @@ class TaskBrowser:
 
     def on_task_added(self, sender, tid):
         #print "Task added: %s, %s" % (sender, tid)
-        task = self.req.get_task(tid)
         self.task_tree_model.add_task(tid)
         self.tag_model.update_tags_for_task(tid)
         
     def on_task_deleted(self, sender, tid):
         #print "Task deleted: %s, %s" % (sender, tid)
-        task = self.req.get_task(tid)
         self.task_tree_model.remove_task(tid)
         self.tag_model.update_tags_for_task(tid)
         
     def on_task_modified(self, sender, tid):
         #print "Task modified: %s, %s" % (sender, tid)
-        task = self.req.get_task(tid)
         self.task_tree_model.remove_task(tid)
         self.task_tree_model.add_task(tid)
         self.tag_model.update_tags_for_task(tid)

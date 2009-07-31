@@ -34,9 +34,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
         self.root_tasks = []
         if tasks:
             for tid in tasks:
-                my_task = self.req.get_task(tid)
-                if not my_task.has_parents():
-                    self.root_tasks.append(tid)
+                self.root_tasks.append(tid)
         # Default config
         self.bg_color_enable = True
 
@@ -312,12 +310,12 @@ class TaskTreeModel(gtk.GenericTreeModel):
             # remove every path
             for task_path in path_list:
                 self.row_deleted(task_path)
-        if tid in self.root_tasks:
-            task_index = self._get_root_task_index(tid)
-            task_path  = (task_index,)
-            task_iter  = self.get_iter(task_path)
-            self.row_deleted(task_path)
-            self.root_tasks.remove(tid)
+        # Remove from root as well
+        task_index = self._get_root_task_index(tid)
+        task_path  = (task_index,)
+        task_iter  = self.get_iter(task_path)
+        self.row_deleted(task_path)
+        self.root_tasks.remove(tid)
                     
     def move_task(self, parent, child):
         #print "Moving %s below %s" % (child, parent)
@@ -341,18 +339,12 @@ class TaskTreeModel(gtk.GenericTreeModel):
         # Remove child from old parent
         if old_par_task:
             old_par_task.remove_subtask(child_tid)
-        else:
-            self.root_tasks.remove(child_tid)
         # Remove old parent from child
         if old_par_task:
             child_task.remove_parent(old_par_tid)
         # Add child to new parent (add_subtask also add new parent to child)
         if new_par_task:
             new_par_task.add_subtask(child_tid)
-        else:
-            self.root_tasks.append(child_tid)
-        # Warn tree about deleted row
-        self.row_deleted(child_path)
         # Warn tree about inserted row
         if new_par_task:
             new_child_index = new_par_task.get_subtask_index(child_tid)
@@ -363,7 +355,6 @@ class TaskTreeModel(gtk.GenericTreeModel):
         else:
             new_child_path = (new_child_index,)
         new_child_iter = self.get_iter(new_child_path)
-        self.row_inserted(new_child_path, new_child_iter)
 
     def set_bg_color(self, val):
         self.bg_color_enable = val
