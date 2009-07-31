@@ -146,7 +146,6 @@ class TaskBrowser:
 
         # Base models
         self.task_tree_model = TaskTreeModel(requester=self.req)
-        self.task_list_model = TaskTreeModel(requester=self.req, is_tree=False)
         
         # Active Tasks
         self.task_modelfilter = self.task_tree_model.filter_new()
@@ -158,18 +157,9 @@ class TaskBrowser:
             tasktree.COL_DLEFT, self.dleft_sort_func)
         
         # Closed Tasks: dismissed and done
-        self.ctask_modelfilter = self.task_list_model.filter_new()
-        #self.ctask_modelfilter.set_visible_func(self.closed_task_visible_func)
+        self.ctask_modelfilter = self.task_tree_model.filter_new()
+        self.ctask_modelfilter.set_visible_func(self.closed_task_visible_func)
         self.ctask_modelsort   = gtk.TreeModelSort(self.ctask_modelfilter)
-
-        # Workview
-        self.wv_modelfilter = self.task_list_model.filter_new()
-        self.wv_modelfilter.set_visible_func(self.workview_visible_func)
-        self.wv_modelsort = gtk.TreeModelSort(self.wv_modelfilter)
-        self.wv_modelsort.set_sort_func(\
-            tasktree.COL_DDATE, self.dleft_sort_func)
-        self.wv_modelsort.set_sort_func(\
-            tasktree.COL_DLEFT, self.dleft_sort_func)
         
         # Tags
         self.tag_model = TagTreeModel(requester=self.req)
@@ -335,7 +325,7 @@ class TaskBrowser:
             self.on_task_treeview_button_press_event)
         self.task_tv.connect('key-press-event',\
             self.on_task_treeview_key_press_event)
-
+        
         # Closed tasks TreeView
         self.ctask_tv.connect('row-activated',\
             self.on_edit_done_task)
@@ -366,8 +356,6 @@ class TaskBrowser:
         self.priv["bg_color_enable"] = BG_COLOR
         # Set sorting order
         self.task_modelsort.set_sort_column_id(\
-            tasktree.COL_DLEFT, gtk.SORT_ASCENDING)
-        self.wv_modelsort.set_sort_column_id(\
             tasktree.COL_DLEFT, gtk.SORT_ASCENDING)
         self.ctask_modelsort.set_sort_column_id(\
             tasktree.COL_DDATE, gtk.SORT_DESCENDING)
@@ -577,10 +565,8 @@ class TaskBrowser:
         self.toggle_workview.set_active(tobeset)
         self.priv['workview'] = tobeset
         self.tag_model.set_workable_only(self.priv['workview'])
-        if self.priv['workview']:
-            self.task_tv.set_model(self.wv_modelsort)
-        else:
-            self.task_tv.set_model(self.task_modelsort)
+        self.task_tv.expand_all()
+        self.task_modelfilter.refilter()
         self.tags_tv.refresh()
 
     def get_canonical_date(self, arg):
@@ -720,30 +706,25 @@ class TaskBrowser:
             else:
                 return cmp(key1, key2)
 
-    def workview_visible_func(self, model, iter, user_data=None):
-        """Return True if the row must be displayed in the treeview.
-        @param model: the model of the filtered treeview
-        @param iter: the iter whose visiblity must be evaluated
-        @param user_data:
-        """
-        tag_list, notag_only = self.get_selected_tags()
-        tid  = model.get_value(iter, tasktree.COL_TID)
-        task = self.req.get_task(tid)
-        return task.is_workable() and\
-               task.has_tags(tag_list=tag_list, notag_only=notag_only) and\
-               task.get_status() == Task.STA_ACTIVE      
-
     def active_task_visible_func(self, model, iter, user_data=None):
         """Return True if the row must be displayed in the treeview.
         @param model: the model of the filtered treeview
         @param iter: the iter whose visiblity must be evaluated
         @param user_data:
         """
+        
         tag_list, notag_only = self.get_selected_tags()
-        tid  = model.get_value(iter, tasktree.COL_TID)
-        task = self.req.get_task(tid)
-        return task.has_tags(tag_list=tag_list, notag_only=notag_only) and\
-               task.get_status() == Task.STA_ACTIVE                       
+        task = model.get_value(iter, tasktree.COL_OBJ)
+        
+        if not task.has_tags(tag_list=tag_list, notag_only=notag_only) or\
+                   task.get_status() != Task.STA_ACTIVE:
+            return False
+        
+        if self.priv['workview']:
+            return task.is_workable() and not model.iter_parent(iter)
+        else:
+            return not (task.has_parents() and not model.iter_parent(iter))
+                                          
                
     def closed_task_visible_func(self, model, iter, user_data=None):
         """Return True if the row must be displayed in the treeview.
@@ -751,7 +732,11 @@ class TaskBrowser:
         @param iter: the iter whose visiblity must be evaluated
         @param user_data:
         """
-        return True
+        tag_list, notag_only = self.get_selected_tags()
+        task = model.get_value(iter, tasktree.COL_OBJ)
+        return task.get_status() != Task.STA_ACTIVE and\
+            not model.iter_parent(iter)
+                  
 
     def tag_visible_func(self, model, iter, user_data=None):
         """Return True if the row must be displayed in the treeview.
@@ -974,11 +959,9 @@ class TaskBrowser:
         if widget.get_active():
             self.priv["bg_color_enable"] = True
             self.task_tree_model.set_bg_color(True)
-            self.task_list_model.set_bg_color(True)
         else:
             self.priv["bg_color_enable"] = False
             self.task_tree_model.set_bg_color(False)
-            self.task_list_model.set_bg_color(False)
         self.task_tv.refresh()
         self.ctask_tv.refresh()
 
@@ -1205,7 +1188,6 @@ class TaskBrowser:
         task_model = self.task_tv.get_model()
         task_model.foreach(self.update_collapsed_row, None)
         self.task_modelfilter.refilter()
-        self.wv_modelfilter.refilter()
         self.restore_collapsed_rows()
 
     def on_taskdone_cursor_changed(self, selection=None):
@@ -1288,23 +1270,19 @@ class TaskBrowser:
         #print "Task added: %s, %s" % (sender, tid)
         task = self.req.get_task(tid)
         self.task_tree_model.add_task(tid)
-        self.task_list_model.add_task(tid)
         self.tag_model.update_tags_for_task(tid)
-
+        
     def on_task_deleted(self, sender, tid):
         #print "Task deleted: %s, %s" % (sender, tid)
         task = self.req.get_task(tid)
         self.task_tree_model.remove_task(tid)
-        self.task_list_model.remove_task(tid)
         self.tag_model.update_tags_for_task(tid)
-
+        
     def on_task_modified(self, sender, tid):
         #print "Task modified: %s, %s" % (sender, tid)
         task = self.req.get_task(tid)
         self.task_tree_model.remove_task(tid)
         self.task_tree_model.add_task(tid)
-        self.task_list_model.remove_task(tid)
-        self.task_list_model.add_task(tid)
         self.tag_model.update_tags_for_task(tid)
 
 ### PUBLIC METHODS ############################################################

@@ -8,17 +8,19 @@ from GTG.core.task import Task
 from GTG.taskbrowser.CellRendererTags import CellRendererTags
 
 COL_TID   = 0
-COL_TITLE = 1
-COL_DDATE = 2
-COL_DLEFT = 3
-COL_TAGS  = 4
-COL_BGCOL = 5
-COL_LABEL = 6
+COL_OBJ   = 1
+COL_TITLE = 2
+COL_DDATE = 3
+COL_DLEFT = 4
+COL_TAGS  = 5
+COL_BGCOL = 6
+COL_LABEL = 7
 
 class TaskTreeModel(gtk.GenericTreeModel):
 
     column_types = (\
         str,\
+        gobject.TYPE_PYOBJECT,\
         str,\
         str,\
         str,\
@@ -26,16 +28,14 @@ class TaskTreeModel(gtk.GenericTreeModel):
         str,\
         str)
 
-    def __init__(self, requester, tasks=None, is_tree=True):
+    def __init__(self, requester, tasks=None):
         gtk.GenericTreeModel.__init__(self)
         self.req = requester
         self.root_tasks = []
-        self.is_tree    = is_tree
         if tasks:
             for tid in tasks:
                 my_task = self.req.get_task(tid)
-                if is_tree and not my_task.has_parents() or \
-                   not is_tree:
+                if not my_task.has_parents():
                     self.root_tasks.append(tid)
         # Default config
         self.bg_color_enable = True
@@ -147,10 +147,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
 ### TREEMODEL INTERFACE ######################################################
 #
     def on_get_flags(self):
-        if self.is_tree:
-            return gtk.TREE_MODEL_ITERS_PERSIST
-        else:
-            return gtk.TREE_MODEL_ITERS_PERSIST|gtk.TREE_MODEL_LIST_ONLY
+        return gtk.TREE_MODEL_ITERS_PERSIST
 
     def on_get_n_columns(self):
         return len(self.column_types)
@@ -163,6 +160,8 @@ class TaskTreeModel(gtk.GenericTreeModel):
         task    = self.req.get_task(cur_tid)
         if   column == COL_TID:
             return task.get_id()
+        elif column == COL_OBJ:
+            return task
         elif column == COL_TITLE:
             return task.get_title()
         elif column == COL_DDATE:
@@ -220,8 +219,6 @@ class TaskTreeModel(gtk.GenericTreeModel):
 
     def on_iter_children(self, rowref):
         #print "on_iter_children: %s" % (rowref)
-        if not self.is_tree:
-            return None
         if rowref:
             cur_tid = rowref[rowref.rfind('/')+1:]
             task    = self.req.get_task(cur_tid)
@@ -236,8 +233,6 @@ class TaskTreeModel(gtk.GenericTreeModel):
 
     def on_iter_has_child(self, rowref):
         #print "on_iter_has_child: %s" % (rowref)
-        if not self.is_tree:
-            return False
         cur_tid = rowref[rowref.rfind('/')+1:]
         task    = self.req.get_task(cur_tid)
         return task.has_subtasks()
@@ -264,8 +259,6 @@ class TaskTreeModel(gtk.GenericTreeModel):
 
     def on_iter_parent(self, child):
         #print "on_iter_parent: %s" % (child)
-        if not self.is_tree:
-            return None
         if child.rfind('/') == 0:
             return None
         else:
@@ -277,7 +270,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
         task = self.req.get_task(tid)
         # has the task parents?
         paths = []
-        if self.is_tree and task.has_parents():
+        if task.has_parents():
             # get every path from parents
             par_list = task.get_parents()
             # get every paths going to each parent
@@ -298,24 +291,22 @@ class TaskTreeModel(gtk.GenericTreeModel):
                         self.row_deleted(task_path)
                         self.row_inserted(task_path, task_iter)
                         paths.append(task_path)
-        else:
-            # insert the task in the tree (root)
-            self.root_tasks.append(tid)
-            task_index = self._get_root_task_index(tid)
-            task_path  = (task_index,)
-            task_iter  = self.get_iter(task_path)
-            self.row_inserted(task_path, task_iter)
-            paths = task_path
+        # insert the task in the tree (root)
+        self.root_tasks.append(tid)
+        task_index = self._get_root_task_index(tid)
+        task_path  = (task_index,)
+        task_iter  = self.get_iter(task_path)
+        self.row_inserted(task_path, task_iter)
+        paths = task_path
         # has the task children?
-        if self.is_tree:
-            for path in paths:
-                self._add_all_subtasks(task, path)
+        for path in paths:
+            self._add_all_subtasks(task, path)
 
     def remove_task(self, tid):
         # get the task
         task = self.req.get_task(tid)
         # Remove every row of this task
-        if self.is_tree and task.has_parents():
+        if task.has_parents():
             # get every paths leading to this task
             path_list = self._get_paths_for_task(task)
             # remove every path
@@ -391,10 +382,15 @@ class TaskTreeView(gtk.TreeView):
     def get_column_index(self, col_id):
         return self.columns.index(col_id)
 
-    def refresh(self):
-        self.get_model().foreach(self._refresh_func)
+    def refresh(self, collapsed_rows=None):
+        self.expand_all()
+        self.get_model().foreach(self._refresh_func, collapsed_rows)
 
-    def _refresh_func(self, model, path, iter, user_data=None):
+    def _refresh_func(self, model, path, iter, collapsed_rows=None):
+        if collapsed_rows:
+            tid = model.get_value(iter, COL_TID)
+            if tid in collapsed_rows:
+                self.collapse_row(path)
         model.row_changed(path, iter)
 
 class ActiveTaskTreeView(TaskTreeView):
@@ -597,3 +593,5 @@ class ClosedTaskTreeView(TaskTreeView):
         title_col.set_sort_column_id(COL_TITLE)
         self.append_column(title_col)
         self.columns.insert(COL_TITLE, title_col)
+        
+        self.set_show_expanders(False)

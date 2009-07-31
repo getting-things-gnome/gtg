@@ -304,6 +304,8 @@
             <child>
               <widget class="GtkToolButton" id="edit_b">
                 <property name="visible">True</property>
+                <property name="visible_horizontal">False</property>
+                <property name="visible_vertical">False</property>
                 <property name="label" translatable="yes">Edit</property>
                 <property name="stock_id">gtk-edit</property>
                 <signal name="clicked" handler="on_edit_active_task"/>
