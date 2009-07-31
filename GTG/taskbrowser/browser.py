@@ -79,10 +79,10 @@ class TaskBrowser:
                                  # opened in an editor of course it's empty
                                  # right now
 
-        # Define various locks for multi-threading
-        self.refresh_lock      = threading.Lock()
-        self.refresh_lock_lock = threading.Lock()
-        self.lock              = threading.Lock()
+#        # Define various locks for multi-threading
+#        self.refresh_lock      = threading.Lock()
+#        self.refresh_lock_lock = threading.Lock()
+#        self.lock              = threading.Lock()
 
         # Setup default values for view
         self._init_browser_config()
@@ -180,7 +180,7 @@ class TaskBrowser:
         self.notag_tag.set_attribute("label",_("Tasks with no tags"))
         self.notag_tag.set_attribute("icon","gtg-tags-none")
         self.notag_tag.set_attribute("order",1)
-        # Build the spearator
+        # Build the separator
         self.sep_tag = Tag("gtg-tags-sep")
         self.sep_tag.set_attribute("special","sep")
         self.sep_tag.set_attribute("order",2)
@@ -188,7 +188,6 @@ class TaskBrowser:
         self.tag_model.add_tag(self.alltag_tag.get_name(), self.alltag_tag)
         self.tag_model.add_tag(self.notag_tag.get_name(), self.notag_tag)
         self.tag_model.add_tag(self.sep_tag.get_name(), self.sep_tag)
-        self.tag_modelfilter.refilter()
 
     def _init_widget_aliases(self):
         self.window             = self.wTree.get_widget("MainWindow")

@@ -21,6 +21,7 @@
 #the tag object implementation
 
 import os
+import copy
 
 from GTG.core      import CoreConfig
 from GTG.core.tree import Tree, TreeNode
@@ -142,6 +143,8 @@ class TagStore :
         #It saves space and allow the saved list growth to be controlled
         for t in tags:
             attr = t.get_all_attributes(butname=True)
+            if "special" in attr:
+                continue
             if len(attr) > 0 :
                 tagname = t.get_name()
                 if not tagname in already_saved :

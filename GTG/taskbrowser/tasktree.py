@@ -3,7 +3,8 @@ import gtk
 import gobject
 
 from GTG import _
-from GTG.tools import colors
+from GTG.tools     import colors
+from GTG.core.task import Task
 from GTG.taskbrowser.CellRendererTags import CellRendererTags
 
 COL_TID   = 0
@@ -12,6 +13,7 @@ COL_DDATE = 2
 COL_DLEFT = 3
 COL_TAGS  = 4
 COL_BGCOL = 5
+COL_LABEL = 6
 
 class TaskTreeModel(gtk.GenericTreeModel):
 
@@ -21,6 +23,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
         str,\
         str,\
         gobject.TYPE_PYOBJECT,\
+        str,\
         str)
 
     def __init__(self, requester, tasks=None, is_tree=True):
@@ -130,6 +133,15 @@ class TaskTreeModel(gtk.GenericTreeModel):
         else:
             return
 
+    def _count_active_subtasks_rec(self, task):
+        count = 0
+        if task.has_subtasks():
+            for tid in task.get_subtask_tids():
+                task = self.req.get_task(tid)
+                if task.get_status() == Task.STA_ACTIVE:
+                    count = count + 1 + self._count_active_subtasks_rec(task)
+        return count
+
 ### TREEMODEL INTERFACE ######################################################
 #
     def on_get_flags(self):
@@ -159,6 +171,13 @@ class TaskTreeModel(gtk.GenericTreeModel):
             return task.get_tags()
         elif column == COL_BGCOL:
             return colors.background_color(task.get_tags())
+        elif column == COL_LABEL:
+            count = self._count_active_subtasks_rec(task)
+            if count != 0:
+                title = task.get_title() + " (%s)" % count
+            else:
+                title = task.get_title()  
+            return title
 
     def on_get_iter(self, path):
         #print "on_get_iter: " + str(path)
@@ -419,7 +438,7 @@ class ActiveTaskTreeView(TaskTreeView):
         render_text = gtk.CellRendererText()
         title_col.set_title(_("Title"))
         title_col.pack_start(render_text, expand=False)
-        title_col.add_attribute(render_text, "markup", COL_TITLE)
+        title_col.add_attribute(render_text, "markup", COL_LABEL)
         title_col.set_resizable(True)
         title_col.set_expand(True)
         #The following line seems to fix bug #317469

@@ -106,7 +106,8 @@ class TreeNode():
     def __init__(self, id, parent=None):
         self.parent   = parent
         self.id       = id
-        self.children = {}
+        self.ids      = []
+        self.children = []
 
     def __str__(self):
         return "<TreeNode: '%s'>" % (self.path)
@@ -124,26 +125,31 @@ class TreeNode():
         self.parent = par
 
     def has_child(self):
-        return len(self.children) != 0
+        return len(self.ids) != 0
 
     def get_children(self):
-        return self.children.keys()
+        return self.ids
 
     def get_n_children(self):
-        return len(self.children)
+        return len(self.ids)
 
     def get_nth_child(self, index):
-        k = self.children.keys()[index]
-        return self.children[k]
+        return self.children[index]
 
     def get_child(self, id):
-        return self.children[id]
+        idx = self.ids.index(id)
+        return self.children[idx]
 
     def get_child_index(self, id):
-        return self.children.keys().index(id)
+        return self.ids.index(id)
 
     def add_child(self, id, child):
-        self.children[id] = child
+        self.ids.append(id)
+        self.children.append(child)
 
     def remove_child(self, id):
-        return self.children.pop(id)
+        idx   = self.ids.index(id)
+        child = self.children[idx]
+        self.ids.remove(idx)
+        self.children.remove(idx)
+        return child

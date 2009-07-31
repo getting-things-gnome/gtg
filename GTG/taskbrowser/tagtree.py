@@ -28,6 +28,8 @@ class TagTreeModel(gtk.GenericTreeModel):
         self.req  = requester
         self.tree = self.req.get_tag_tree()
 
+### MODEL METHODS ############################################################
+
     def update_tags_for_task(self, tid):
         task = self.req.get_task(tid)
         for t in task.get_tags():
