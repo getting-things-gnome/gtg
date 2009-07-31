@@ -69,7 +69,7 @@ class hamsterPlugin:
                 modified=True
                 print "Removing invalid fact", i
         if modified:
-            set_hamster_ids(task, valid_ids)
+            self.set_hamster_ids(task, valid_ids)
         return records
     
     #### Datastore  
@@ -120,30 +120,48 @@ class hamsterPlugin:
         
         if len(records):
             # add section to bottom of window
-            w = gtk.Table(rows=len(records)+1, columns=2)
+            vbox = gtk.VBox()
+            inner_table = gtk.Table(rows=len(records), columns=2)
+            if len(records)>8:
+                s = gtk.ScrolledWindow()
+                s.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+                v=gtk.Viewport()
+                v.add(inner_table)
+                s.add(v)
+                v.set_shadow_type(gtk.SHADOW_NONE)
+                s.set_size_request(-1, 150)
+            else:
+                s=inner_table
+            
+            outer_table = gtk.Table(rows=1, columns=2)
+            vbox.pack_start(s)
+            vbox.pack_start(outer_table)
+            vbox.pack_end(gtk.HSeparator())
+            
             total = 0
             
-            def add(a, b, offset):
+            def add(w, a, b, offset):
                 dateLabel=gtk.Label(a)
                 dateLabel.set_use_markup(True)
                 dateLabel.set_alignment(xalign=0.0, yalign=0.5)
+                dateLabel.set_size_request(200, -1)
                 w.attach(dateLabel, left_attach=0, right_attach=1, top_attach=offset, 
                     bottom_attach=offset+1, xoptions=gtk.FILL, xpadding=20, yoptions=0)
                 
                 durLabel=gtk.Label(b)
                 durLabel.set_use_markup(True)
-                durLabel.set_alignment(xalign=1.0, yalign=0.5)
+                durLabel.set_alignment(xalign=0.0, yalign=0.5)
                 w.attach(durLabel, left_attach=1, right_attach=2, top_attach=offset, 
                 bottom_attach=offset+1, xoptions=gtk.FILL, yoptions=0)
             
             for offset,i in enumerate(records):
                 t = calc_duration(i)    
                 total += t
-                add(format_date(i), format_duration(t), offset)
+                add(inner_table, format_date(i), format_duration(t), offset)
                 
-            add("<big><b>Total</b></big>", "<big><b>%s</b></big>"%format_duration(total), offset+1)
+            add(outer_table, "<big><b>Total</b></big>", "<big><b>%s</b></big>"%format_duration(total), 1)
             
-            plugin_api.add_task_window_region(w)
+            plugin_api.add_task_window_region(vbox)
         
     def deactivate(self, plugin_api):
         plugin_api.remove_menu_item(self.menu_item)
