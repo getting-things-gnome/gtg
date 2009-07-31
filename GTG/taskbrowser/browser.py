@@ -156,7 +156,7 @@ class TaskBrowser:
         # Closed Tasks: dismissed and done
         self.ctask_model = TaskTreeModel(requester=self.req, is_tree=False)
         self.ctask_modelfilter = self.ctask_model.filter_new()
-        self.ctask_modelfilter.set_visible_func(self.closed_task_visible_func)
+        #self.ctask_modelfilter.set_visible_func(self.closed_task_visible_func)
         self.ctask_modelsort   = gtk.TreeModelSort(self.ctask_modelfilter)
         self.ctask_modelsort.set_sort_column_id(\
             tasktree.COL_DDATE, gtk.SORT_DESCENDING)
@@ -685,7 +685,8 @@ class TaskBrowser:
         tag_list, notag_only = self.get_selected_tags()
         tid  = model.get_value(iter, tasktree.COL_TID)
         task = self.req.get_task(tid)
-        return task.has_tags(tag_list=tag_list, notag_only=notag_only)
+        return task.has_tags(tag_list=tag_list, notag_only=notag_only) and\
+               task.get_status() == Task.STA_ACTIVE
                
     def closed_task_visible_func(self, model, iter, user_data=None):
         """Return True if the row must be displayed in the treeview.

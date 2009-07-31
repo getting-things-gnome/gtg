@@ -8,14 +8,16 @@ from GTG.tools import colors
 from GTG.taskbrowser.CellRendererTags import CellRendererTags
 
 COL_ID    = 0
-COL_OBJ  = 1
-COL_COLOR = 2
-COL_COUNT = 3
-COL_SEP   = 4
+COL_NAME  = 1
+COL_OBJ   = 2
+COL_COLOR = 3
+COL_COUNT = 4
+COL_SEP   = 5
 
 class TagTreeModel(gtk.GenericTreeModel):
 
     column_types = (str,\
+                    str,\
                     gobject.TYPE_PYOBJECT,\
                     str,\
                     str,\
@@ -56,6 +58,8 @@ class TagTreeModel(gtk.GenericTreeModel):
         tag = self.tree.get_node_for_rowref(rowref)
         if   column == COL_ID:
             return tag.get_name()
+        if   column == COL_NAME:
+            return tag.get_name()[1:]
         if   column == COL_OBJ:
             return tag
         elif column == COL_COLOR:
@@ -275,7 +279,7 @@ class TagTreeView(gtk.TreeView):
         tag_col.pack_start(render_tags, expand=False)
         tag_col.set_attributes(render_tags, tag=COL_OBJ)
         tag_col.pack_start(render_text, expand=True)
-        tag_col.set_attributes(render_text, markup=COL_ID)
+        tag_col.set_attributes(render_text, markup=COL_NAME)
         tag_col.pack_end(render_count, expand=False)
         tag_col.set_attributes(render_count, markup=COL_COUNT)
         render_count.set_property("foreground", "#888a85")
