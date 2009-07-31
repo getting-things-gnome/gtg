@@ -44,9 +44,11 @@ class hamsterPlugin:
         if len(activity_candidates)>=1:
             activity=list(activity_candidates)[0]
             #TODO: if >1, how to choose best one?
-        else:
+        elif len(activity_candidates)>0:
             #TODO: is there anything more reasonable that can be done?
             activity=tags[0]
+        else:
+            activity = "Other"
             
         hamster_id=self.hamster.AddFact('%s,%s'%(activity, title), 0, 0)
         
