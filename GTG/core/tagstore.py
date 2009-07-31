@@ -55,14 +55,14 @@ class TagStore :
         #in the traditional tag list
         #Their name doesn't begin with "@"
         
-        #Build the "all tags tag"
-        self.alltag_tag = Tag("alltags_tag",save_cllbk=self.save)
-        self.alltag_tag.set_attribute("special","all")
-        self.alltag_tag.set_attribute("icon","gtg-tags-all")
-        #Build the "without tag tag"
-        self.notag_tag = Tag("notag_tag",save_cllbk=self.save)
-        self.notag_tag.set_attribute("special","notag")
-        self.notag_tag.set_attribute("icon","gtg-tags-none")
+#        #Build the "all tags tag"
+#        self.alltag_tag = Tag("alltags_tag",save_cllbk=self.save)
+#        self.alltag_tag.set_attribute("special","all")
+#        self.alltag_tag.set_attribute("icon","gtg-tags-all")
+#        #Build the "without tag tag"
+#        self.notag_tag = Tag("notag_tag",save_cllbk=self.save)
+#        self.notag_tag.set_attribute("special","notag")
+#        self.notag_tag.set_attribute("icon","gtg-tags-none")
 
     def get_tree(self):
         return self.tree
@@ -102,13 +102,13 @@ class TagStore :
         else :
             return None
 
-    def get_alltag_tag(self):
-        """Return the special tag 'All tags'"""
-        return self.alltag_tag
-    
-    def get_notag_tag(self):
-        """Return the special tag 'No tags'"""
-        return self.notag_tag
+#    def get_alltag_tag(self):
+#        """Return the special tag 'All tags'"""
+#        return self.alltag_tag
+#    
+#    def get_notag_tag(self):
+#        """Return the special tag 'No tags'"""
+#        return self.notag_tag
     
     def get_all_tags_name(self, attname=None, attvalue=None):
         """Return the name of all tags
@@ -203,7 +203,8 @@ class Tag(TreeNode):
         # Attributes should all be strings.
         val = unicode(str(att_value), "UTF-8")
         self._attributes[att_name] = val
-        self._save()
+        if self._save:
+            self._save()
 
     def get_attribute(self, att_name):
         """Get the attribute C{att_name}.

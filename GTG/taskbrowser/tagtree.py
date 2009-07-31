@@ -3,8 +3,8 @@ import gtk
 import gobject
 
 from GTG import _
-from GTG.core.task import Task
-from GTG.tools import colors
+from GTG.core.task     import Task
+from GTG.tools         import colors
 from GTG.taskbrowser.CellRendererTags import CellRendererTags
 
 COL_ID    = 0
@@ -55,21 +55,40 @@ class TagTreeModel(gtk.GenericTreeModel):
         return self.tree.get_path_for_rowref(rowref)
 
     def on_get_value(self, rowref, column):
+        #print "on_get_value: %s" % rowref
         tag = self.tree.get_node_for_rowref(rowref)
         if   column == COL_ID:
             return tag.get_name()
         if   column == COL_NAME:
-            return tag.get_name()[1:]
+            if not tag.get_attribute("label"):
+                return tag.get_name()[1:]
+            else:
+                return "<span weight=\'bold\'>"+\
+                    tag.get_attribute("label")+"</span>"
         if   column == COL_OBJ:
             return tag
         elif column == COL_COLOR:
             return task.get_attribute("color")
         elif column == COL_COUNT:
-            count = len(\
-                self.req.get_active_tasks_list(tags=[tag]))
-            return  count
+            sp_id = tag.get_attribute("special")
+            if not sp_id:
+                count = len(\
+                    self.req.get_active_tasks_list(tags=[tag]))
+                return  count
+            else:
+                if sp_id == "all":
+                    return len(self.req.get_active_tasks_list())
+                elif sp_id == "notag":
+                    return len(self.req.get_active_tasks_list(notag_only=True))
+                else:
+                    return 0
         elif column == COL_SEP:
-            return False
+            sp_id = tag.get_attribute("special")
+            if not sp_id:
+                return False
+            else:
+                if sp_id == "sep":
+                    return True
 
     def on_iter_next(self, rowref):
         #print "on_iter_next: %s" % (rowref)
@@ -128,43 +147,14 @@ class TagTreeModel(gtk.GenericTreeModel):
         else:
             return None
 
-#    def add_task(self, tid):
-#        # get the task
-#        task = self.req.get_task(tid)
-#        # has the task parents?
-#        paths = []
-#        if task.has_parents():
-#            # get every path from parents
-#            par_list = task.get_parents()
-#            # get every paths going to each parent
-#            for par_tid in par_list:
-#                par_task = self.req.get_task(par_tid)
-#                if not par_task.is_loaded():
-#                    #print "%s is not loaded." % par_tid
-#                    continue
-#                else:
-#                    par_paths = self._get_paths_for_task(par_task)
-#                    for par_path in par_paths:
-#                        # compute t-under-p path
-#                        task_index = par_task.get_subtask_index(tid)
-#                        task_path  = par_path + (task_index,)
-#                        # get t-under-p iter
-#                        task_iter  = self.get_iter(task_path)
-#                        # insert t-under-p
-#                        self.row_deleted(task_path)
-#                        self.row_inserted(task_path, task_iter)
-#                        paths.append(task_path)
-#        else:
-#            # insert the task in the tree (root)
-#            self.root_tasks.append(tid)
-#            task_index = self._get_root_task_index(tid)
-#            task_path  = (task_index,)
-#            task_iter  = self.get_iter(task_path)
-#            self.row_inserted(task_path, task_iter)
-#            paths = task_path
-#        # has the task children?
-#        for path in paths:
-#            self._add_all_subtasks(task, path)
+    def add_tag(self, tname, tag):
+        root      = self.tree.get_root()
+        root.add_child(tname, tag)
+        tag.set_parent(root)
+        tag_index = root.get_child_index(tname)
+        tag_path  = (tag_index,)
+        tag_iter  = self.get_iter(tag_path)
+        self.row_inserted(tag_path, tag_iter)
 #
 #    def remove_task(self, tid):
 #        # get the task
@@ -264,8 +254,8 @@ class TagTreeView(gtk.TreeView):
 #        self.connect('drag_data_get', self.on_drag_data_get)
 #        self.connect('drag_data_received', self.on_drag_data_received)
 
-#    def _tag_separator_filter(model, itera, user_data=None):
-#        return self.model.get_value(itera, TAGS_MODEL_SEP)
+    def _tag_separator_filter(self, model, itera, user_data=None):
+        return self.get_model().get_value(itera, COL_SEP)
 
     def _init_tree_view(self):
         
@@ -293,7 +283,7 @@ class TagTreeView(gtk.TreeView):
         self.append_column(tag_col)
 
         # Global treeview properties
-        #tv.set_row_separator_func(tag_separator_filter)
+        self.set_row_separator_func(self._tag_separator_filter)
         self.set_headers_visible(False)
 
     ### DRAG AND DROP ########################################################

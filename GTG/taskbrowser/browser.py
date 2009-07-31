@@ -37,6 +37,7 @@ import GTG
 from GTG import info
 from GTG import _
 from GTG.core.task                    import Task
+from GTG.core.tagstore                import Tag
 from GTG.taskeditor.editor            import TaskEditor
 from GTG.taskbrowser                  import GnomeConfig
 from GTG.taskbrowser                  import tasktree
@@ -142,6 +143,7 @@ class TaskBrowser:
             gtk.window_set_default_icon_name("gtg")
 
     def _init_models(self):
+        
         # Active Tasks
         self.task_model = TaskTreeModel(requester=self.req)
         self.task_modelfilter = self.task_model.filter_new()
@@ -151,22 +153,42 @@ class TaskBrowser:
             tasktree.COL_DDATE, self.dleft_sort_func)
         self.task_modelsort.set_sort_func(\
             tasktree.COL_DLEFT, self.dleft_sort_func)
-        self.task_modelsort.set_sort_column_id(\
-            tasktree.COL_DLEFT, gtk.SORT_ASCENDING)
+        
         # Closed Tasks: dismissed and done
         self.ctask_model = TaskTreeModel(requester=self.req, is_tree=False)
         self.ctask_modelfilter = self.ctask_model.filter_new()
         #self.ctask_modelfilter.set_visible_func(self.closed_task_visible_func)
         self.ctask_modelsort   = gtk.TreeModelSort(self.ctask_modelfilter)
-        self.ctask_modelsort.set_sort_column_id(\
-            tasktree.COL_DDATE, gtk.SORT_DESCENDING)
+                
         # Tags
         self.tag_model = TagTreeModel(requester=self.req)
         self.tag_modelfilter = self.tag_model.filter_new()
         self.tag_modelfilter.set_visible_func(self.tag_visible_func)
         self.tag_modelsort   = gtk.TreeModelSort(self.tag_modelfilter)
-        self.tag_modelsort.set_sort_column_id(\
-            tagtree.COL_ID, gtk.SORT_ASCENDING)
+        self.tag_modelsort.set_sort_func(\
+            tagtree.COL_ID, self.tag_sort_func)
+
+        # Build the "all tags tag"
+        self.alltag_tag = Tag("gtg-tags-all")
+        self.alltag_tag.set_attribute("special","all")
+        self.alltag_tag.set_attribute("label",_("All tags"))
+        self.alltag_tag.set_attribute("icon","gtg-tags-all")
+        self.alltag_tag.set_attribute("order",0)
+        # Build the "without tag tag"
+        self.notag_tag = Tag("gtg-tags-none")
+        self.notag_tag.set_attribute("special","notag")
+        self.notag_tag.set_attribute("label",_("Tasks with no tags"))
+        self.notag_tag.set_attribute("icon","gtg-tags-none")
+        self.notag_tag.set_attribute("order",1)
+        # Build the spearator
+        self.sep_tag = Tag("gtg-tags-sep")
+        self.sep_tag.set_attribute("special","sep")
+        self.sep_tag.set_attribute("order",2)
+        # Add them to the model
+        self.tag_model.add_tag(self.alltag_tag.get_name(), self.alltag_tag)
+        self.tag_model.add_tag(self.notag_tag.get_name(), self.notag_tag)
+        self.tag_model.add_tag(self.sep_tag.get_name(), self.sep_tag)
+        self.tag_modelfilter.refilter()
 
     def _init_widget_aliases(self):
         self.window             = self.wTree.get_widget("MainWindow")
@@ -332,8 +354,13 @@ class TaskBrowser:
         self.wTree.get_widget("view_quickadd").set_active(QUICKADD_PANE)
         self.wTree.get_widget("view_toolbar").set_active(TOOLBAR)
         self.priv["bg_color_enable"] = BG_COLOR
-        #self.ctask_ts.set_sort_column_id(browser_tools.CTASKS_MODEL_DDATE,\
-        #    gtk.SORT_DESCENDING)
+        # Set sorting order
+        self.task_modelsort.set_sort_column_id(\
+            tasktree.COL_DLEFT, gtk.SORT_ASCENDING)
+        self.ctask_modelsort.set_sort_column_id(\
+            tasktree.COL_DDATE, gtk.SORT_DESCENDING)
+        self.tag_modelsort.set_sort_column_id(\
+            tagtree.COL_ID, gtk.SORT_ASCENDING)
 
     def _init_accelerators(self):
 
@@ -702,8 +729,12 @@ class TaskBrowser:
         @param iter: the iter whose visiblity must be evaluated
         @param user_data:
         """
-        count = int(model.get_value(iter, tagtree.COL_COUNT))
-        return count != 0
+        tag = model.get_value(iter, tagtree.COL_OBJ)
+        if not tag.get_attribute("special"):
+            count = int(model.get_value(iter, tagtree.COL_COUNT))
+            return count != 0
+        else:
+            return True
 
     def restore_collapsed(self, treeview, path, data):
         model = self.task_tv.get_model()
@@ -741,6 +772,34 @@ class TaskBrowser:
                 return 1
         else:
             return cmp(t2_dleft, t1_dleft)
+
+    def tag_sort_func(self, model, iter1, iter2, user_data=None):
+        order = self.tags_tv.get_model().get_sort_column_id()[1]
+        t1 = model.get_value(iter1, tagtree.COL_OBJ)
+        t2 = model.get_value(iter2, tagtree.COL_OBJ)
+        t1_sp = t1.get_attribute("special")
+        t2_sp = t2.get_attribute("special")
+        t1_name = locale.strxfrm(t1.get_name())
+        t2_name = locale.strxfrm(t2.get_name())
+        if not t1_sp and not t2_sp:
+            return cmp(t1_name, t2_name)
+        elif not t1_sp and t2_sp:
+            if order == gtk.SORT_ASCENDING:
+                return 1
+            else:
+                return -1
+        elif t1_sp and not t2_sp:
+            if order == gtk.SORT_ASCENDING:
+                return -1
+            else:
+                return 1
+        else:
+            t1_order = t1.get_attribute("order")
+            t2_order = t2.get_attribute("order")
+            if order == gtk.SORT_ASCENDING:
+                return cmp(t1_order, t2_order)
+            else:
+                return cmp(t2_order, t1_order)            
 
 ### SIGNAL CALLBACKS ##########################################################
 # Typically, reaction to user input & interactions with the GUI
