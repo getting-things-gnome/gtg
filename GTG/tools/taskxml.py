@@ -37,7 +37,10 @@ def task_from_xml(task,xmlnode) :
         cur_task.add_subtask(sub_tid)
     attr_list = xmlnode.getElementsByTagName("attribute")
     for a in attr_list:
-        content = a.childNodes[0].nodeValue
+        if len(a.childNodes):
+            content = a.childNodes[0].nodeValue
+        else:
+            content = ""
         key = a.getAttribute("key")
         namespace = a.getAttribute("namespace")
         cur_task.set_attribute(key, content, namespace=namespace)
@@ -74,12 +77,12 @@ def task_to_xml(doc,task) :
     for c in childs :
         cleanxml.addTextNode(doc,t_xml,"subtask",c)
     for a in task.attributes:
-    	namespace,key=a
-    	content=task.attributes[a]
-    	element = doc.createElement('attribute')
-    	element.setAttribute("namespace", namespace)
-    	element.setAttribute("key", key)
-    	element.appendChild(doc.createTextNode(content))
+        namespace,key=a
+        content=task.attributes[a]
+        element = doc.createElement('attribute')
+        element.setAttribute("namespace", namespace)
+        element.setAttribute("key", key)
+        element.appendChild(doc.createTextNode(content))
         t_xml.appendChild(element)
     tex = task.get_text()
     if tex :
