@@ -685,8 +685,7 @@ class TaskBrowser:
         tag_list, notag_only = self.get_selected_tags()
         tid  = model.get_value(iter, tasktree.COL_TID)
         task = self.req.get_task(tid)
-        return task.has_tags(tag_list=tag_list, notag_only=notag_only) and\
-               task.get_status() == Task.STA_ACTIVE
+        return task.has_tags(tag_list=tag_list, notag_only=notag_only)
                
     def closed_task_visible_func(self, model, iter, user_data=None):
         """Return True if the row must be displayed in the treeview.
@@ -1191,29 +1190,32 @@ class TaskBrowser:
 
     def on_task_added(self, sender, tid):
         #print "Task added: %s, %s" % (sender, tid)
-        self.task_model.add_task(tid)
-        self.ctask_model.add_task(tid)
         task = self.req.get_task(tid)
         if task.get_status() == Task.STA_ACTIVE:
+            self.task_model.add_task(tid)
             self.tag_model.update_tags_for_task(tid)
+        else:
+            self.ctask_model.add_task(tid)
 
     def on_task_deleted(self, sender, tid):
         #print "Task deleted: %s, %s" % (sender, tid)
-        self.task_model.remove_task(tid)
-        self.ctask_model.remove_task(tid)
         task = self.req.get_task(tid)
         if task.get_status() == Task.STA_ACTIVE:
+            self.task_model.remove_task(tid)
             self.tag_model.update_tags_for_task(tid)
+        else:
+            self.ctask_model.remove_task(tid)
 
     def on_task_modified(self, sender, tid):
         #print "Task modified: %s, %s" % (sender, tid)
-        self.task_model.remove_task(tid)
-        self.ctask_model.remove_task(tid)
-        self.task_model.add_task(tid)
-        self.ctask_model.add_task(tid)
         task = self.req.get_task(tid)
         if task.get_status() == Task.STA_ACTIVE:
+            self.task_model.remove_task(tid)
+            self.task_model.add_task(tid)
             self.tag_model.update_tags_for_task(tid)
+        else:
+            self.ctask_model.remove_task(tid)
+            self.ctask_model.add_task(tid)
 
 ### PUBLIC METHODS ############################################################
 #
