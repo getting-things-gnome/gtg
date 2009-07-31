@@ -1,20 +1,23 @@
 
 import gtk
 import gobject
+import time
 
 from GTG import _
 from GTG.tools     import colors
 from GTG.core.task import Task
 from GTG.taskbrowser.CellRendererTags import CellRendererTags
 
-COL_TID   = 0
-COL_OBJ   = 1
-COL_TITLE = 2
-COL_DDATE = 3
-COL_DLEFT = 4
-COL_TAGS  = 5
-COL_BGCOL = 6
-COL_LABEL = 7
+COL_TID       = 0
+COL_OBJ       = 1
+COL_TITLE     = 2
+COL_DDATE     = 3
+COL_CDATE     = 4
+COL_CDATE_STR = 5
+COL_DLEFT     = 6
+COL_TAGS      = 7
+COL_BGCOL     = 8
+COL_LABEL     = 9
 
 class TaskTreeModel(gtk.GenericTreeModel):
 
@@ -22,6 +25,8 @@ class TaskTreeModel(gtk.GenericTreeModel):
         str,\
         gobject.TYPE_PYOBJECT,\
         str,\
+        str,\
+        int,\
         str,\
         str,\
         gobject.TYPE_PYOBJECT,\
@@ -164,6 +169,11 @@ class TaskTreeModel(gtk.GenericTreeModel):
             return task.get_title()
         elif column == COL_DDATE:
             return task.get_due_date()
+        elif column == COL_CDATE:
+            date = time.strptime(task.get_closed_date(),"%Y-%m-%d")
+            return time.mktime(date)
+        elif column == COL_CDATE_STR:
+            return task.get_closed_date()
         elif column == COL_DLEFT:
             return task.get_days_left()
         elif column == COL_TAGS:
@@ -561,17 +571,16 @@ class ClosedTaskTreeView(TaskTreeView):
         self.append_column(tag_col)
         self.columns.insert(COL_TAGS, tag_col)
 
-        # Done date column
-        ddate_col    = gtk.TreeViewColumn()
+        # CLosed date column
+        cdate_col    = gtk.TreeViewColumn()
         render_text  = gtk.CellRendererText()
-        ddate_col.set_title(_("Closing date"))
-        ddate_col.pack_start(render_text, expand=True)
-        ddate_col.set_attributes(render_text, markup=COL_DDATE)
-        ddate_col.set_sort_column_id(COL_DDATE)
-        ddate_col.add_attribute(render_text, "cell_background", COL_BGCOL)
-        ddate_col.set_sort_column_id(COL_DDATE)
-        self.append_column(ddate_col)
-        self.columns.insert(COL_DDATE, ddate_col)
+        cdate_col.set_title(_("Closing date"))
+        cdate_col.pack_start(render_text, expand=True)
+        cdate_col.set_attributes(render_text, markup=COL_CDATE_STR)
+        cdate_col.add_attribute(render_text, "cell_background", COL_BGCOL)
+        cdate_col.set_sort_column_id(COL_CDATE_STR)
+        self.append_column(cdate_col)
+        self.columns.insert(COL_CDATE_STR, cdate_col)
 
         # Title column
         title_col    = gtk.TreeViewColumn()
@@ -579,7 +588,6 @@ class ClosedTaskTreeView(TaskTreeView):
         title_col.set_title(_("Title"))
         title_col.pack_start(render_text, expand=True)
         title_col.set_attributes(render_text, markup=COL_TITLE)
-        title_col.set_sort_column_id(COL_TITLE)
         title_col.add_attribute(render_text, "cell_background", COL_BGCOL)
         title_col.set_sort_column_id(COL_TITLE)
         self.append_column(title_col)

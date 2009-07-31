@@ -97,21 +97,21 @@ class Task :
         else :
             return False
         
-    def set_status(self,status,donedate=None) :
+    def set_status(self, status, donedate=None):
         old_status = self.status
         self.can_be_deleted = False
-        if status :
+        if status:
             self.status = status
             #If Done, we set the done date
-            if status in [self.STA_DONE,self.STA_DISMISSED] :
+            if status in [self.STA_DONE, self.STA_DISMISSED]:
                 for c in self.get_subtasks() :
-                    if c.get_status() in [self.STA_ACTIVE] :
-                        c.set_status(status,donedate=donedate)
+                    if c.get_status() in [self.STA_ACTIVE]:
+                        c.set_status(status, donedate=donedate)
                 #to the specified date (if any)
-                if donedate :
+                if donedate:
                     self.closed_date = donedate
                 #or to today
-                else : 
+                else:
                     self.closed_date = date.today()
             #If we mark a task as Active and that some parent are not
             #Active, we break the parent/child relation

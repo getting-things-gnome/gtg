@@ -361,7 +361,7 @@ class TaskBrowser:
         self.task_modelsort.set_sort_column_id(\
             tasktree.COL_DLEFT, gtk.SORT_ASCENDING)
         self.ctask_modelsort.set_sort_column_id(\
-            tasktree.COL_DDATE, gtk.SORT_DESCENDING)
+            tasktree.COL_CDATE_STR, gtk.SORT_DESCENDING)
         self.tag_modelsort.set_sort_column_id(\
             tagtree.COL_ID, gtk.SORT_ASCENDING)
 
@@ -687,26 +687,6 @@ class TaskBrowser:
         if tid in self.opened_task:
             del self.opened_task[tid]
 
-    def cmp_duedate_str(self, key1, key2):
-        if self.priv["tasklist"]["sort_order"] == gtk.SORT_ASCENDING:
-            if   key1 == "" and key2 == "":
-                return  0
-            elif key1 == "" and key2 != "":
-                return -1
-            elif key1 != "" and key2 == "":
-                return  1
-            else:
-                return cmp(key1, key2)
-        else:
-            if   key1 == "" and key2 == "":
-                return  0
-            elif key1 == "" and key2 != "":
-                return  1
-            elif key1 != "" and key2 == "":
-                return -1
-            else:
-                return cmp(key1, key2)
-
     def active_task_visible_func(self, model, iter, user_data=None):
         """Return True if the row must be displayed in the treeview.
         @param model: the model of the filtered treeview
@@ -913,7 +893,7 @@ class TaskBrowser:
             tags, notag_only = self.get_selected_tags()
             for t in tags:
                 t.set_attribute("color", strcolor)
-        #self.do_refresh()
+        self.task_tv.refresh()
         widget.destroy()
 
     def on_workview_toggled(self, widget):
@@ -1156,10 +1136,10 @@ class TaskBrowser:
         if uid:
             zetask = self.req.get_task(uid)
             status = zetask.get_status()
-            if status == "Done":
-                zetask.set_status("Active")
+            if status == Task.STA_DONE:
+                zetask.set_status(Task.STA_ACTIVE)
             else:
-                zetask.set_status("Done")
+                zetask.set_status(Task.STA_DONE)
             #self.do_refresh()
 
     def on_dismiss_task(self, widget):
