@@ -971,9 +971,14 @@ class TaskBrowser:
     def on_bg_color_toggled(self, widget):
         if widget.get_active():
             self.priv["bg_color_enable"] = True
+            self.task_tree_model.set_bg_color(True)
+            self.task_list_model.set_bg_color(True)
         else:
             self.priv["bg_color_enable"] = False
-        #self.do_refresh()
+            self.task_tree_model.set_bg_color(False)
+            self.task_list_model.set_bg_color(False)
+        self.task_tv.refresh()
+        self.ctask_tv.refresh()
 
     def on_toolbar_toggled(self, widget):
         if widget.get_active():

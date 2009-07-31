@@ -30,13 +30,15 @@ class TaskTreeModel(gtk.GenericTreeModel):
         gtk.GenericTreeModel.__init__(self)
         self.req = requester
         self.root_tasks = []
-        self.is_tree = is_tree
+        self.is_tree    = is_tree
         if tasks:
             for tid in tasks:
                 my_task = self.req.get_task(tid)
                 if is_tree and not my_task.has_parents() or \
                    not is_tree:
                     self.root_tasks.append(tid)
+        # Default config
+        self.bg_color_enable = True
 
 ### TREE MODEL HELPER FUNCTIONS ###############################################
 
@@ -170,7 +172,10 @@ class TaskTreeModel(gtk.GenericTreeModel):
         elif column == COL_TAGS:
             return task.get_tags()
         elif column == COL_BGCOL:
-            return colors.background_color(task.get_tags())
+            if self.bg_color_enable:
+                return colors.background_color(task.get_tags())
+            else:
+                return None
         elif column == COL_LABEL:
             count = self._count_active_subtasks_rec(task)
             if count != 0:
@@ -369,6 +374,9 @@ class TaskTreeModel(gtk.GenericTreeModel):
         new_child_iter = self.get_iter(new_child_path)
         self.row_inserted(new_child_path, new_child_iter)
 
+    def set_bg_color(self, val):
+        self.bg_color_enable = val
+
 class TaskTreeView(gtk.TreeView):
     """TreeView for display of a list of task. Handles DnD primitives too."""
 
@@ -383,6 +391,11 @@ class TaskTreeView(gtk.TreeView):
     def get_column_index(self, col_id):
         return self.columns.index(col_id)
 
+    def refresh(self):
+        self.get_model().foreach(self._refresh_func)
+
+    def _refresh_func(self, model, path, iter, user_data=None):
+        model.row_changed(path, iter)
 
 class ActiveTaskTreeView(TaskTreeView):
     """TreeView for display of a list of task. Handles DnD primitives too."""
