@@ -127,14 +127,14 @@ class hamsterPlugin:
                 dateLabel=gtk.Label(a)
                 dateLabel.set_use_markup(True)
                 dateLabel.set_alignment(xalign=0.0, yalign=0.5)
-                w.attach(dateLabel,
-                    left_attach=0, right_attach=1, top_attach=offset, bottom_attach=offset+1, xoptions=gtk.FILL, xpadding=20)
+                w.attach(dateLabel, left_attach=0, right_attach=1, top_attach=offset, 
+                    bottom_attach=offset+1, xoptions=gtk.FILL, xpadding=20, yoptions=0)
                 
                 durLabel=gtk.Label(b)
                 durLabel.set_use_markup(True)
                 durLabel.set_alignment(xalign=1.0, yalign=0.5)
-                w.attach(durLabel,
-                    left_attach=1, right_attach=2, top_attach=offset, bottom_attach=offset+1, xoptions=gtk.FILL)
+                w.attach(durLabel, left_attach=1, right_attach=2, top_attach=offset, 
+                bottom_attach=offset+1, xoptions=gtk.FILL, yoptions=0)
             
             for offset,i in enumerate(records):
                 t = calc_duration(i)    
@@ -182,7 +182,7 @@ def format_duration(seconds):
     minutes = seconds / 60
         
     if not minutes:
-        return ""
+        return "0min"
     
     hours = minutes / 60
     minutes = minutes % 60
