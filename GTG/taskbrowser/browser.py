@@ -53,6 +53,8 @@ from GTG.tools                        import colors, openurl
 
 #=== MAIN CLASS ===============================================================
 
+WINDOW_TITLE = "Getting Things GNOME!"
+
 #Some default preferences that we should save in a file
 WORKVIEW           = False
 SIDEBAR            = False
@@ -346,7 +348,7 @@ class TaskBrowser:
         self.req.connect("task-added", self.on_task_added) 
         self.req.connect("task-deleted", self.on_task_deleted)
         self.req.connect("task-modified", self.on_task_modified)
-
+        
         # Connect signals from models
         self.task_modelsort.connect("row-has-child-toggled", self.on_child_toggled)
 
@@ -537,24 +539,13 @@ class TaskBrowser:
                     count = count + 1
         return count
 
-    def build_task_title(self, task, count, extended=False):
-        simple_title = saxutils.escape(task.get_title())
-        if extended:
-            excerpt = task.get_excerpt(lines=2)
-            if excerpt.strip() != "":
-                title   = "<b><big>%s</big></b>\n<small>%s</small>"\
-                     % (simple_title, excerpt)
-            else:
-                title   = "<b><big>%s</big></b>" % simple_title
-        else:
-            if (not self.priv['workview']):
-                if count == 0:
-                    title = "<span>%s</span>" % (simple_title)
-                else:
-                    title = "<span>%s (%s)</span>" % (simple_title, count)
-            else:
-                title = simple_title
-        return title
+    def _count_subtask(self, model, iter):
+        count = 0
+        c = model.iter_children(iter)
+        while c:
+            count = count + 1 + self._count_subtask(model, c)
+            c = model.iter_next(c)
+        return count
 
     def do_toggle_workview(self):
         #We have to be careful here to avoid a loop of signals
@@ -571,7 +562,20 @@ class TaskBrowser:
         self.priv['workview'] = tobeset
         self.tag_model.set_workable_only(self.priv['workview'])
         self.task_modelfilter.refilter()
+        self._update_window_title()
         self.tags_tv.refresh()
+
+    def _update_window_title(self):
+        count = self.get_n_active_tasks()
+        #Set the title of the window:
+        parenthesis = ""
+        if count == 0:
+            parenthesis = _("(no active tasks)")
+        elif count == 1:
+            parenthesis = _("(1 active task)")
+        else:
+            parenthesis = "(%s active tasks)" % count
+        self.window.set_title(WINDOW_TITLE + " %s" % parenthesis)
 
     def get_canonical_date(self, arg):
         """
@@ -1160,6 +1164,7 @@ class TaskBrowser:
         task_model = self.task_tv.get_model()
         task_model.foreach(self.update_collapsed_row, None)
         self.task_modelfilter.refilter()
+        self._update_window_title()
 
     def on_taskdone_cursor_changed(self, selection=None):
         """Called when selection changes in closed task view.
@@ -1213,16 +1218,6 @@ class TaskBrowser:
             self.donebutton.set_label(GnomeConfig.MARK_DONE)
             self.donebutton.set_tooltip_text(GnomeConfig.MARK_DONE_TOOLTIP)
             self.dismissbutton.set_label(GnomeConfig.MARK_DISMISS)
-        #We reset the previously selected task
-        if (self.priv["selected_rows"]
-            and self.task_ts.iter_is_valid(self.priv["selected_rows"])):
-            tid = self.task_ts.get_value(
-                self.priv["selected_rows"], tasktree.COL_OBJ)
-            task = self.req.get_task(tid)
-            title = self.build_task_title(task, extended=False)
-            self.task_ts.set_value(
-                self.priv["selected_rows"], tasktree.COL_TITLE, title)
-        return
 
 #    def on_note_cursor_changed(self, selection=None):
 #        #We unselect all in the closed task view
@@ -1241,11 +1236,13 @@ class TaskBrowser:
         #print "Task added: %s, %s" % (sender, tid)
         self.task_tree_model.add_task(tid)
         self.tag_model.update_tags_for_task(tid)
+        self._update_window_title()
         
     def on_task_deleted(self, sender, tid):
         #print "Task deleted: %s, %s" % (sender, tid)
         self.task_tree_model.remove_task(tid)
         self.tag_model.update_tags_for_task(tid)
+        self._update_window_title()
         
     def on_task_modified(self, sender, tid):
         #print "Task modified: %s, %s" % (sender, tid)
@@ -1306,6 +1303,15 @@ class TaskBrowser:
                 tag.append(selected)
         #If no selection, we display all
         return tag, notag_only
+
+    def get_n_active_tasks(self):
+        count = 0
+        model = self.task_modelsort
+        c = model.get_iter_first()
+        while c:
+            count = count + 1 + self._count_subtask(model, c)
+            c     = model.iter_next(c)
+        return count
 
 ### MAIN ######################################################################
 #

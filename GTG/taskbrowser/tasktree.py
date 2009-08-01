@@ -2,6 +2,7 @@
 import gtk
 import gobject
 import time
+import pango
 
 from GTG import _
 from GTG.tools     import colors
@@ -454,15 +455,12 @@ class ActiveTaskTreeView(TaskTreeView):
         # Title column
         title_col   = gtk.TreeViewColumn()
         render_text = gtk.CellRendererText()
+        render_text.set_property("ellipsize", pango.ELLIPSIZE_END)
         title_col.set_title(_("Title"))
-        title_col.pack_start(render_text, expand=False)
+        title_col.pack_start(render_text, expand=True)
         title_col.add_attribute(render_text, "markup", COL_LABEL)
         title_col.set_resizable(True)
         title_col.set_expand(True)
-        #The following line seems to fix bug #317469
-        #I don't understand why !!! It's voodoo !
-        #Is there a Rubber Chicken With a Pulley in the Middle ?
-        title_col.set_max_width(100)
         title_col.add_attribute(render_text, "cell_background", COL_BGCOL)
         title_col.set_sort_column_id(COL_TITLE)
         self.append_column(title_col)
@@ -593,6 +591,7 @@ class ClosedTaskTreeView(TaskTreeView):
         # Title column
         title_col    = gtk.TreeViewColumn()
         render_text  = gtk.CellRendererText()
+        render_text.set_property("ellipsize", pango.ELLIPSIZE_END)
         title_col.set_title(_("Title"))
         title_col.pack_start(render_text, expand=True)
         title_col.set_attributes(render_text, markup=COL_LABEL)
