@@ -361,7 +361,7 @@ class TaskBrowser:
         self.task_modelsort.set_sort_column_id(\
             tasktree.COL_DLEFT, gtk.SORT_ASCENDING)
         self.ctask_modelsort.set_sort_column_id(\
-            tasktree.COL_CDATE_STR, gtk.SORT_DESCENDING)
+            tasktree.COL_CDATE, gtk.SORT_DESCENDING)
         self.tag_modelsort.set_sort_column_id(\
             tagtree.COL_ID, gtk.SORT_ASCENDING)
 

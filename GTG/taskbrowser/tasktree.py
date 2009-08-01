@@ -26,7 +26,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
         gobject.TYPE_PYOBJECT,\
         str,\
         str,\
-        int,\
+        str,\
         str,\
         str,\
         gobject.TYPE_PYOBJECT,\
@@ -170,10 +170,13 @@ class TaskTreeModel(gtk.GenericTreeModel):
         elif column == COL_DDATE:
             return task.get_due_date()
         elif column == COL_CDATE:
-            date = time.strptime(task.get_closed_date(),"%Y-%m-%d")
-            return time.mktime(date)
-        elif column == COL_CDATE_STR:
             return task.get_closed_date()
+        elif column == COL_CDATE_STR:
+            if task.get_status() == Task.STA_DISMISSED:
+                date = "<span color='#AAAAAA'>" + task.get_closed_date() + "</span>"
+            else:
+                date = task.get_closed_date()
+            return date
         elif column == COL_DLEFT:
             return task.get_days_left()
         elif column == COL_TAGS:
@@ -184,11 +187,16 @@ class TaskTreeModel(gtk.GenericTreeModel):
             else:
                 return None
         elif column == COL_LABEL:
-            count = self._count_active_subtasks_rec(task)
-            if count != 0:
-                title = task.get_title() + " (%s)" % count
+            if task.get_status() == Task.STA_ACTIVE:
+                count = self._count_active_subtasks_rec(task)
+                if count != 0:
+                    title = task.get_title() + " (%s)" % count
+                else:
+                    title = task.get_title()
+            elif task.get_status() == Task.STA_DISMISSED:
+                  title = "<span color='#AAAAAA'>" + task.get_title() + "</span>"
             else:
-                title = task.get_title()  
+                title = task.get_title()
             return title
 
     def on_get_iter(self, path):
@@ -578,7 +586,7 @@ class ClosedTaskTreeView(TaskTreeView):
         cdate_col.pack_start(render_text, expand=True)
         cdate_col.set_attributes(render_text, markup=COL_CDATE_STR)
         cdate_col.add_attribute(render_text, "cell_background", COL_BGCOL)
-        cdate_col.set_sort_column_id(COL_CDATE_STR)
+        cdate_col.set_sort_column_id(COL_CDATE)
         self.append_column(cdate_col)
         self.columns.insert(COL_CDATE_STR, cdate_col)
 
@@ -587,7 +595,7 @@ class ClosedTaskTreeView(TaskTreeView):
         render_text  = gtk.CellRendererText()
         title_col.set_title(_("Title"))
         title_col.pack_start(render_text, expand=True)
-        title_col.set_attributes(render_text, markup=COL_TITLE)
+        title_col.set_attributes(render_text, markup=COL_LABEL)
         title_col.add_attribute(render_text, "cell_background", COL_BGCOL)
         title_col.set_sort_column_id(COL_TITLE)
         self.append_column(title_col)
