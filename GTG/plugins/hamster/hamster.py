@@ -163,7 +163,7 @@ class hamsterPlugin:
                 
             add(outer_table, "<big><b>Total</b></big>", "<big><b>%s</b></big>"%format_duration(total), 1)
             
-            plugin_api.add_task_window_region(vbox)
+            plugin_api.add_widget_to_taskeditor(vbox)
         
     def deactivate(self, plugin_api):
         plugin_api.remove_menu_item(self.menu_item)

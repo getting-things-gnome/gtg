@@ -88,11 +88,11 @@ class PluginAPI:
         except Exception, e:
             print "Error adding a toolbar item in to the TaskEditor: %s" % e
             
-    def add_task_window_region(self, widget):
+    def add_widget_to_taskeditor(self, widget):
         "Adds a widget to the bottom of the task editor dialog"
-        v = self.__wTree.get_widget('vbox4')
-        v.pack_start(widget)
-        v.reorder_child(widget, -2)
+        vbox = self.__wTree.get_widget('vbox4')
+        vbox.pack_start(widget)
+        vbox.reorder_child(widget, -2)
         widget.show_all()
             
     # passes the requester to the plugin
