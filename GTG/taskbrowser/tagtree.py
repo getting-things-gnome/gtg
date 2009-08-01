@@ -9,14 +9,16 @@ from GTG.taskbrowser.CellRendererTags import CellRendererTags
 
 COL_ID    = 0
 COL_NAME  = 1
-COL_OBJ   = 2
-COL_COLOR = 3
-COL_COUNT = 4
-COL_SEP   = 5
+COL_LABEL = 2
+COL_OBJ   = 3
+COL_COLOR = 4
+COL_COUNT = 5
+COL_SEP   = 6
 
 class TagTreeModel(gtk.GenericTreeModel):
 
     column_types = (str,\
+                    str,\
                     str,\
                     gobject.TYPE_PYOBJECT,\
                     str,\
@@ -66,11 +68,20 @@ class TagTreeModel(gtk.GenericTreeModel):
         if   column == COL_ID:
             return tag.get_name()
         if   column == COL_NAME:
-            if not tag.get_attribute("label"):
-                return tag.get_name()[1:]
+            return tag.get_name()[1:]
+        if   column == COL_LABEL:
+            if tag.get_attribute("label"):
+                return tag.get_attribute("label")
             else:
-                return "<span weight=\'bold\'>"+\
-                    tag.get_attribute("label")+"</span>"
+                if tag.get_attribute("nonworkview"):
+                    nwv = eval(tag.get_attribute("nonworkview"))
+                else:
+                    nwv = False
+                if nwv:
+                    return "<span color='#AAAAAA'>%s</span>"\
+                         % tag.get_name()[1:]
+                else:
+                    return tag.get_name()[1:]
         if   column == COL_OBJ:
             return tag
         elif column == COL_COLOR:
@@ -83,9 +94,11 @@ class TagTreeModel(gtk.GenericTreeModel):
                 return  count
             else:
                 if sp_id == "all":
-                    return len(self.req.get_active_tasks_list())
+                    return len(self.req.get_active_tasks_list(\
+                        workable=self.workable_only))
                 elif sp_id == "notag":
-                    return len(self.req.get_active_tasks_list(notag_only=True))
+                    return len(self.req.get_active_tasks_list(\
+                        workable=self.workable_only, notag_only=True))
                 else:
                     return 0
         elif column == COL_SEP:
@@ -281,7 +294,7 @@ class TagTreeView(gtk.TreeView):
         tag_col.pack_start(render_tags, expand=False)
         tag_col.set_attributes(render_tags, tag=COL_OBJ)
         tag_col.pack_start(render_text, expand=True)
-        tag_col.set_attributes(render_text, markup=COL_NAME)
+        tag_col.set_attributes(render_text, markup=COL_LABEL)
         tag_col.pack_end(render_count, expand=False)
         tag_col.set_attributes(render_count, markup=COL_COUNT)
         render_count.set_property("foreground", "#888a85")

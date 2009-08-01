@@ -174,13 +174,15 @@ class TaskBrowser:
         # Build the "all tags tag"
         self.alltag_tag = Tag("gtg-tags-all")
         self.alltag_tag.set_attribute("special","all")
-        self.alltag_tag.set_attribute("label",_("All tags"))
+        self.alltag_tag.set_attribute("label","<span weight='bold'>%s</span>"\
+                                             % _("All tags"))
         self.alltag_tag.set_attribute("icon","gtg-tags-all")
         self.alltag_tag.set_attribute("order",0)
         # Build the "without tag tag"
         self.notag_tag = Tag("gtg-tags-none")
         self.notag_tag.set_attribute("special","notag")
-        self.notag_tag.set_attribute("label",_("Tasks with no tags"))
+        self.notag_tag.set_attribute("label","<span weight='bold'>%s</span>"\
+                                             % _("Tasks with no tags"))
         self.notag_tag.set_attribute("icon","gtg-tags-none")
         self.notag_tag.set_attribute("order",1)
         # Build the separator
@@ -562,8 +564,8 @@ class TaskBrowser:
         self.priv['workview'] = tobeset
         self.tag_model.set_workable_only(self.priv['workview'])
         self.task_modelfilter.refilter()
+        self.tag_modelfilter.refilter()
         self._update_window_title()
-        self.tags_tv.refresh()
 
     def _update_window_title(self):
         count = self.get_n_active_tasks()
@@ -698,6 +700,7 @@ class TaskBrowser:
         @param user_data:
         """
         
+        res = True
         tag_list, notag_only = self.get_selected_tags()
         task = model.get_value(iter, tasktree.COL_OBJ)
         
@@ -706,7 +709,10 @@ class TaskBrowser:
             return False
         
         if self.priv['workview']:
-            return task.is_workable() and not model.iter_parent(iter)
+            for t in task.get_tags():
+                if t.get_attribute("nonworkview"):
+                    res = res and (not eval(t.get_attribute("nonworkview")))
+            return res and task.is_workable() and not model.iter_parent(iter)
         else:
             return not (task.has_parents() and not model.iter_parent(iter))
                                           
@@ -1041,7 +1047,9 @@ class TaskBrowser:
         toset = str(not nonworkview_item.get_active())
         if len(tags) > 0:
             tags[0].set_attribute("nonworkview", toset)
-        #self.do_refresh()
+        if self.priv['workview']:
+            self.task_modelfilter.refilter()
+            self.tag_modelfilter.refilter()
 
     def on_task_treeview_button_press_event(self, treeview, event):
         if event.button == 3:
