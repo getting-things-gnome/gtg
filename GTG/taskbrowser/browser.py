@@ -714,9 +714,9 @@ class TaskBrowser:
             self.opened_task[uid].present()
         else:
             tv = TaskEditor(
-                self.req, t, self.plugins, None, 
+                self.req, t, self.plugins, 
                 self.on_delete_task, self.close_task, self.open_task, 
-                self.get_tasktitle, notes=self.notes)
+                self.get_tasktitle)
             #registering as opened
             self.opened_task[uid] = tv
 
