@@ -1,3 +1,6 @@
+	* Fixed #406851, incorrect behaviour marking a dismissed task as done by Patrick Coleman
+	* Added accelerators to the task editor by Patrick Coleman
+    * Add plugin engine by Paulo Cabido
     * When GTG is already running, use DBUS to raise existing instance rather than failing silently
     * Refactorization and PEP8ification work by Jonathan Lange
     * New keyboard bindings for 'Mark as done' and 'Dismiss' actions

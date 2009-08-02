@@ -27,9 +27,12 @@ import time
 from datetime import date
 
 from GTG import _
+from GTG import PLUGIN_DIR
 from GTG.taskeditor          import GnomeConfig
 from GTG.tools               import dates
 from GTG.taskeditor.taskview import TaskView
+from GTG.core.plugins.engine import PluginEngine
+from GTG.core.plugins.api    import PluginAPI
 try:
     import pygtk
     pygtk.require("2.0")
@@ -44,9 +47,9 @@ except: # pylint: disable-msg=W0702
 date_separator = "/"
 
 class TaskEditor :
-    def __init__(self, requester, task, refresh_callback=None,delete_callback=None,
-                close_callback=None,opentask_callback=None, tasktitle_callback=None,
-                notes=False) :
+    def __init__(self, requester, task, plugins, refresh_callback=None,
+                delete_callback=None, close_callback=None,opentask_callback=None, 
+                tasktitle_callback=None, notes=False) :
         self.req = requester
         self.time = time.time()
         self.gladefile = GnomeConfig.GLADE_FILE
@@ -118,13 +121,9 @@ class TaskEditor :
         #Empty means that no calendar is opened
         self.__opened_date = ''
         
-        #We will intercept the "Escape" button
-        accelgroup = gtk.AccelGroup()
-        key, modifier = gtk.accelerator_parse('Escape')
-        #Escape call close()
-        accelgroup.connect_group(key, modifier, gtk.ACCEL_VISIBLE, self.close)
-        self.window.add_accel_group(accelgroup)
-     
+        # Define accelerator keys
+        self.init_accelerators()
+        
         self.task = task
         tags = task.get_tags()
         self.textview.subtasks_callback(task.get_subtask_tids)
@@ -158,6 +157,12 @@ class TaskEditor :
         self.textview.modified(full=True)
         self.window.connect("destroy", self.destruction)
         
+        # plugins
+        self.plugins = plugins
+        self.pengine = PluginEngine(PLUGIN_DIR)
+        self.te_plugin_api = PluginAPI(self.window, None, self.wTree, self.req, None, None, None, None, task, self.textview)
+        self.pengine.onTaskLoad(self.plugins, self.te_plugin_api)
+        
         self.__refresh_cb = refresh_callback
         #Putting the refresh callback at the end make the start a lot faster
         self.textview.refresh_callback(self.refresh_editor)
@@ -166,6 +171,40 @@ class TaskEditor :
 
         self.window.show()
 
+    # Define accelerator-keys for this dialog
+    # TODO: undo/redo
+    def init_accelerators(self):
+        agr = gtk.AccelGroup()
+        self.window.add_accel_group(agr)
+        
+        # Escape and Ctrl-W close the dialog. It's faster to call close
+        # directly, rather than use the close button widget
+        key, modifier = gtk.accelerator_parse('Escape')
+        agr.connect_group(key, modifier, gtk.ACCEL_VISIBLE, self.close)
+        
+        key, modifier = gtk.accelerator_parse('<Control>w')
+        agr.connect_group(key, modifier, gtk.ACCEL_VISIBLE, self.close)
+        
+        # Ctrl-N creates a new task
+        key, modifier = gtk.accelerator_parse('<Control>n')
+        agr.connect_group(key, modifier, gtk.ACCEL_VISIBLE, self.new_task)
+        
+        # Ctrl-Shift-N creates a new subtask
+        insert_subtask = self.wTree.get_widget("insert_subtask")
+        key, mod       = gtk.accelerator_parse("<Control><Shift>n")
+        insert_subtask.add_accelerator('clicked', agr, key, mod, gtk.ACCEL_VISIBLE)
+        
+        # Ctrl-D marks task as done
+        mark_as_done_editor = self.wTree.get_widget('mark_as_done_editor')
+        key, mod = gtk.accelerator_parse('<Control>d')
+        mark_as_done_editor.add_accelerator('clicked', agr, key, mod, gtk.ACCEL_VISIBLE)
+        
+        # Ctrl-I marks task as dismissed
+        dismiss_editor = self.wTree.get_widget('dismiss_editor')
+        key, mod = gtk.accelerator_parse('<Control>i')
+        dismiss_editor.add_accelerator('clicked', agr, key, mod, gtk.ACCEL_VISIBLE)
+        
+    
     #The refresh callback is None for all the initialization
     #It's an optimisation that save us a low of unneeded refresh
     #When the editor is starting
@@ -350,16 +389,13 @@ class TaskEditor :
         
     def dismiss(self,widget) : #pylint: disable-msg=W0613
         stat = self.task.get_status()
-        toset = "Dismiss"
-        toclose = True
-        if stat == "Dismiss" :
-            toset = "Active"
-            toclose = False
-        self.task.set_status(toset)
-        if toclose : self.close(None)
-        else : 
+        if stat == "Dismiss":
+            self.task.set_status("Active")
             self.refresh_editor()
-        self.refresh_browser()
+            self.refresh_browser()
+        else:
+            self.task.set_status("Dismiss")
+            self.close(None)
     
     def keepnote(self,widget) : #pylint: disable-msg=W0613
         stat = self.task.get_status()
@@ -372,17 +408,13 @@ class TaskEditor :
     
     def change_status(self,widget) : #pylint: disable-msg=W0613
         stat = self.task.get_status()
-        if stat == "Active" :
-            toset = "Done"
-            toclose = True
-        else :
-            toset = "Active"
-            toclose = False
-        self.task.set_status(toset)
-        if toclose : self.close(None)
-        else : 
+        if stat == "Done":
+            self.task.set_status("Active")
             self.refresh_editor()
-        self.refresh_browser()
+            self.refresh_browser()
+        else:
+            self.task.set_status("Done")
+            self.close(None)
     
     def delete_task(self,widget) :
         if self.delete :
@@ -397,6 +429,13 @@ class TaskEditor :
         subt.set_title(title)
         tid = subt.get_id()
         return tid
+
+    # Create a new task
+    def new_task(self, *args):
+        task = self.req.new_task(tags=None, newtask=True)
+        task_id = task.get_id()
+        self.refresh_browser()
+        self.open_task(task_id)
         
     def insert_subtask(self,widget) : #pylint: disable-msg=W0613
         self.textview.insert_newtask()

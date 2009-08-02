@@ -48,6 +48,9 @@ from GTG.taskbrowser                  import tagtree
 from GTG.taskbrowser.tagtree          import TagTreeModel,\
                                              TagTreeView
 from GTG.tools                        import colors, openurl
+from GTG.core.plugins.manager         import PluginManager
+from GTG.core.plugins.engine          import PluginEngine
+from GTG.core.plugins.api             import PluginAPI
 
 #=== OBJECTS ==================================================================
 
@@ -120,6 +123,9 @@ class TaskBrowser:
 
         # Define accelerator keys
         self._init_accelerators()
+        
+        # Initialize the plugin-engine
+        self._init_plugin_engine()
 
         # NOTES
         #self._init_note_support()
@@ -137,6 +143,7 @@ class TaskBrowser:
         self.priv['selected_rows']            = None
         self.priv['workview']                 = False
         #self.priv['noteview']                 = False
+        self.priv['workview_task_filter']     = []
 
     def _init_icon_theme(self):
         icon_dirs = [GTG.DATA_DIR, os.path.join(GTG.DATA_DIR, "icons")]
@@ -314,8 +321,10 @@ class TaskBrowser:
             "on_about_close":
                 self.on_about_close,
             "on_nonworkviewtag_toggled":
-                self.on_nonworkviewtag_toggled
-            }
+                self.on_nonworkviewtag_toggled,
+            "on_pluginmanager_activate": 
+                self.on_pluginmanager_activate
+        }
 
         self.wTree.signal_autoconnect(SIGNAL_CONNECTIONS_DIC)
 
@@ -420,6 +429,33 @@ class TaskBrowser:
         key, mod = gtk.accelerator_parse('<Control>i')
         task_dismiss.add_accelerator(
             'activate', agr, key, mod, gtk.ACCEL_VISIBLE)
+        
+    def _init_plugin_engine(self):
+        # plugins - Init
+        self.pengine = PluginEngine(GTG.PLUGIN_DIR)
+        # loads the plugins in the plugin dir
+        self.plugins = self.pengine.LoadPlugins()
+        
+        # checks the conf for user settings
+        if self.config.has_key("plugins"):
+            if self.config["plugins"].has_key("enabled"):
+                plugins_enabled = self.config["plugins"]["enabled"]
+                for p in self.plugins:
+                    if p['name'] in plugins_enabled:
+                        p['state'] = True
+                    
+            if self.config["plugins"].has_key("disabled"):
+                plugins_disabled = self.config["plugins"]["disabled"]
+                for p in self.plugins:    
+                    if p['name'] in plugins_disabled:
+                        p['state'] = False
+        
+        # initializes the plugin api class
+        self.plugin_api = PluginAPI(self.window, self.config, self.wTree, self.req, \
+                                    self.task_tv, self.priv['workview_task_filter'], \
+                                    self.tagpopup, self.tags_tv, None, None)
+        # initializes and activates each plugin (that is enabled)
+        self.pengine.activatePlugins(self.plugins, self.plugin_api)
 
 #    def _init_note_support(self):
 #        self.notes  = EXPERIMENTAL_NOTES
@@ -678,9 +714,9 @@ class TaskBrowser:
             self.opened_task[uid].present()
         else:
             tv = TaskEditor(
-                self.req, t, None, self.on_delete_task,
-                self.close_task, self.open_task, self.get_tasktitle)
-                #notes=self.notes)
+                self.req, t, self.plugins, None, 
+                self.on_delete_task, self.close_task, self.open_task, 
+                self.get_tasktitle, notes=self.notes)
             #registering as opened
             self.opened_task[uid] = tv
 
@@ -703,6 +739,9 @@ class TaskBrowser:
         res = True
         tag_list, notag_only = self.get_selected_tags()
         task = model.get_value(iter, tasktree.COL_OBJ)
+        
+        if task in self.priv['workview_task_filter']:
+            return False
         
         if not task.has_tags(tag_list=tag_list, notag_only=notag_only) or\
                    task.get_status() != Task.STA_ACTIVE:
@@ -832,6 +871,9 @@ class TaskBrowser:
             view = "workview"
         else:
             view = "default"
+            
+        # plugins are deactivated
+        self.pengine.deactivatePlugins(self.plugins, self.plugin_api)
 
         # Populate configuration dictionary
         self.config["browser"] = {
@@ -867,6 +909,13 @@ class TaskBrowser:
         self.config["browser"]["view"] = view
 #        if self.notes:
 #            self.config["browser"]["experimental_notes"] = True
+        
+        # adds the plugin settings to the conf
+        self.config["plugins"] = {}
+        self.config["plugins"]["disabled"] =\
+            self.pengine.disabledPlugins(self.plugins)
+        self.config["plugins"]["enabled"]  =\
+            self.pengine.enabledPlugins(self.plugins)
 
     def on_about_clicked(self, widget):
         self.about.show()
@@ -1233,6 +1282,9 @@ class TaskBrowser:
 #        if selection.count_selected_rows() > 0:
 #            self.ctask_tv.get_selection().unselect_all()
 #            self.task_tv.get_selection().unselect_all()
+    
+    def on_pluginmanager_activate(self, widget) :
+        PluginManager(self.window, self.plugins, self.pengine, self.plugin_api)
 
     def on_close(self, widget=None):
         """Closing the window."""

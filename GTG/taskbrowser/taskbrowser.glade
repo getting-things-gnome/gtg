@@ -152,7 +152,7 @@
                         <property name="always_show_image">True</property>
                         <signal name="activate" handler="on_add_task"/>
                         <child internal-child="image">
-                          <widget class="GtkImage" id="image1">
+                          <widget class="GtkImage" id="image2">
                             <property name="visible">True</property>
                             <property name="icon_name">gtg-task-new</property>
                           </widget>
@@ -168,7 +168,7 @@
                         <property name="always_show_image">True</property>
                         <signal name="activate" handler="on_add_subtask"/>
                         <child internal-child="image">
-                          <widget class="GtkImage" id="image2">
+                          <widget class="GtkImage" id="image3">
                             <property name="visible">True</property>
                             <property name="icon_name">gtg-task-new</property>
                           </widget>
@@ -198,7 +198,7 @@
                         <property name="always_show_image">True</property>
                         <signal name="activate" handler="on_mark_as_done"/>
                         <child internal-child="image">
-                          <widget class="GtkImage" id="image3">
+                          <widget class="GtkImage" id="image4">
                             <property name="visible">True</property>
                             <property name="icon_name">gtg-task-done</property>
                           </widget>
@@ -214,7 +214,7 @@
                         <property name="always_show_image">True</property>
                         <signal name="activate" handler="on_dismiss_task"/>
                         <child internal-child="image">
-                          <widget class="GtkImage" id="image4">
+                          <widget class="GtkImage" id="image5">
                             <property name="visible">True</property>
                             <property name="icon_name">gtg-task-dismiss</property>
                           </widget>
@@ -228,6 +228,34 @@
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <signal name="activate" handler="on_delete_task"/>
+                      </widget>
+                    </child>
+                  </widget>
+                </child>
+              </widget>
+            </child>
+            <child>
+              <widget class="GtkMenuItem" id="menu_plugin">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">_Plugins</property>
+                <property name="use_underline">True</property>
+                <child>
+                  <widget class="GtkMenu" id="menu6">
+                    <property name="visible">True</property>
+                    <child>
+                      <widget class="GtkImageMenuItem" id="pluginmanager_menu">
+                        <property name="label" translatable="yes">Plugin _Preferences</property>
+                        <property name="visible">True</property>
+                        <property name="use_underline">True</property>
+                        <property name="use_stock">False</property>
+                        <signal name="activate" handler="on_pluginmanager_activate"/>
+                        <child internal-child="image">
+                          <widget class="GtkImage" id="image1">
+                            <property name="visible">True</property>
+                            <property name="pixel_size">16</property>
+                            <property name="icon_name">preferences-other</property>
+                          </widget>
+                        </child>
                       </widget>
                     </child>
                   </widget>
@@ -369,6 +397,18 @@
                 <property name="label" translatable="yes">Dismiss</property>
                 <property name="icon_name">gtg-task-dismiss</property>
                 <signal name="clicked" handler="on_dismiss_task"/>
+              </widget>
+              <packing>
+                <property name="expand">False</property>
+                <property name="homogeneous">True</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkToolButton" id="delete_b">
+                <property name="visible">False</property>
+                <property name="label" translatable="yes">Delete</property>
+                <property name="icon_name">edit-delete</property>
+                <signal name="clicked" handler="on_delete_task"/>
               </widget>
               <packing>
                 <property name="expand">False</property>
