@@ -154,6 +154,7 @@
                         <child internal-child="image">
                           <widget class="GtkImage" id="image2">
                             <property name="visible">True</property>
+                            <property name="pixel_size">16</property>
                             <property name="icon_name">gtg-task-new</property>
                           </widget>
                         </child>
@@ -170,6 +171,7 @@
                         <child internal-child="image">
                           <widget class="GtkImage" id="image3">
                             <property name="visible">True</property>
+                            <property name="pixel_size">16</property>
                             <property name="icon_name">gtg-task-new</property>
                           </widget>
                         </child>
@@ -200,6 +202,7 @@
                         <child internal-child="image">
                           <widget class="GtkImage" id="image4">
                             <property name="visible">True</property>
+                            <property name="pixel_size">16</property>
                             <property name="icon_name">gtg-task-done</property>
                           </widget>
                         </child>
@@ -216,6 +219,7 @@
                         <child internal-child="image">
                           <widget class="GtkImage" id="image5">
                             <property name="visible">True</property>
+                            <property name="pixel_size">16</property>
                             <property name="icon_name">gtg-task-dismiss</property>
                           </widget>
                         </child>
@@ -405,7 +409,6 @@
             </child>
             <child>
               <widget class="GtkToolButton" id="delete_b">
-                <property name="visible">False</property>
                 <property name="label" translatable="yes">Delete</property>
                 <property name="icon_name">edit-delete</property>
                 <signal name="clicked" handler="on_delete_task"/>
@@ -924,6 +927,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
         <child internal-child="image">
           <widget class="GtkImage" id="image1">
             <property name="visible">True</property>
+            <property name="pixel_size">16</property>
             <property name="icon_name">gtg-task-new</property>
           </widget>
         </child>
@@ -954,6 +958,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
         <child internal-child="image">
           <widget class="GtkImage" id="image2">
             <property name="visible">True</property>
+            <property name="pixel_size">16</property>
             <property name="icon_name">gtg-task-done</property>
           </widget>
         </child>
@@ -970,6 +975,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
         <child internal-child="image">
           <widget class="GtkImage" id="image3">
             <property name="visible">True</property>
+            <property name="pixel_size">16</property>
             <property name="icon_name">gtg-task-dismiss</property>
           </widget>
         </child>
@@ -1012,6 +1018,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
         <child internal-child="image">
           <widget class="GtkImage" id="image1">
             <property name="visible">True</property>
+            <property name="pixel_size">16</property>
             <property name="icon_name">gtg-task-undone</property>
           </widget>
         </child>
@@ -1028,6 +1035,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
         <child internal-child="image">
           <widget class="GtkImage" id="image2">
             <property name="visible">True</property>
+            <property name="pixel_size">16</property>
             <property name="icon_name">gtg-task-undismiss</property>
           </widget>
         </child>
