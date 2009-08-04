@@ -103,7 +103,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
     def _get_rowref_from_path(self, path):
         return self._rowref_for_path(None, path)
 
-    def _get_paths_for_task(self, task):
+    def _get_paths_for_task_rec(self, task):
         paths = []
         if task.has_parents():
             for par_tid in task.get_parents():
@@ -111,14 +111,13 @@ class TaskTreeModel(gtk.GenericTreeModel):
                 if not par_task.is_loaded():
                     #print "%s is not loaded." % par_tid
                     continue
-                par_paths = self._get_paths_for_task(par_task)
+                par_paths = self._get_paths_for_task_rec(par_task)
                 task_idx  = par_task.get_subtask_index(task.get_id())
                 for pp in par_paths:
                     paths.append( pp + (task_idx,) )
-            return paths
-        else:
-            idx = self._get_root_task_index(task.get_id())
-            return [(idx,)]
+        idx = self._get_root_task_index(task.get_id())
+        paths.append( (idx,) )
+        return paths
 
     def _add_all_subtasks(self, task, path):
         if task.has_subtasks():
@@ -129,7 +128,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
                     continue
                 else:
                     c_idx   = task.get_subtask_index(c_tid)
-                    paths = self._get_paths_for_task(task)
+                    paths = self._get_paths_for_task_rec(task)
                     for path in paths:
                         c_path = path + (c_idx,)
                         c_iter = self.get_iter(c_path)
@@ -297,7 +296,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
                     #print "%s is not loaded." % par_tid
                     continue
                 else:
-                    par_paths = self._get_paths_for_task(par_task)
+                    par_paths = self._get_paths_for_task_rec(par_task)
                     for par_path in par_paths:
                         # compute t-under-p path
                         task_index = par_task.get_subtask_index(tid)
@@ -325,7 +324,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
         # Remove every row of this task
         if task.has_parents():
             # get every paths leading to this task
-            path_list = self._get_paths_for_task(task)
+            path_list = self._get_paths_for_task_rec(task)
             # remove every path
             for task_path in path_list:
                 self.row_deleted(task_path)
@@ -377,6 +376,9 @@ class TaskTreeModel(gtk.GenericTreeModel):
 
     def set_bg_color(self, val):
         self.bg_color_enable = val
+
+    def get_paths_for_task(self, task):
+        return self._get_paths_for_task_rec(task)
 
 class TaskTreeView(gtk.TreeView):
     """TreeView for display of a list of task. Handles DnD primitives too."""

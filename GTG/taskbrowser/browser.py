@@ -729,32 +729,57 @@ class TaskBrowser:
         if tid in self.opened_task:
             del self.opened_task[tid]
 
+    def is_task_visible(self, task):
+        """Returns True if the task meets the criterion to be displayed
+        @param  task: the task to assess
+        """
+
+        tag_list, notag_only = self.get_selected_tags()
+        
+        if task in self.priv['workview_task_filter']:
+            return False
+
+        if not task.has_tags(tag_list=tag_list, notag_only=notag_only):
+            return False
+
+        if self.priv['workview']:
+            res = True
+            for t in task.get_tags():
+                if t.get_attribute("nonworkview"):
+                    res = res and (not eval(t.get_attribute("nonworkview")))
+            return res and task.is_workable()
+        else:
+            return True
+
+    def is_lineage_visible(self, task):
+        """Returns True if at least one set of tasks that compose a lineage of
+        the given task can be found where all the tasks meets the criterion
+        to be displayed. (i.e.: there exists a chain of tasks from root to task
+        that can all be displayed)
+        @param task: the task whose lineage will be assessed
+        """
+        res = False
+        parents = task.get_parents()
+        for par_tid in parents:
+            par_task = self.req.get_task(par_tid)
+            if par_task.has_parents():
+                res = res or (self.is_task_visible(par_task) and self.is_lineage_visible(par_task))
+            else:
+                res = res or self.is_task_visible(par_task)
+        return res
+
     def active_task_visible_func(self, model, iter, user_data=None):
         """Return True if the row must be displayed in the treeview.
         @param model: the model of the filtered treeview
         @param iter: the iter whose visiblity must be evaluated
         @param user_data:
         """
-        
-        res = True
-        tag_list, notag_only = self.get_selected_tags()
         task = model.get_value(iter, tasktree.COL_OBJ)
-        
-        if task in self.priv['workview_task_filter']:
+        if task.get_status() != Task.STA_ACTIVE:
             return False
-        
-        if not task.has_tags(tag_list=tag_list, notag_only=notag_only) or\
-                   task.get_status() != Task.STA_ACTIVE:
-            return False
-        
-        if self.priv['workview']:
-            for t in task.get_tags():
-                if t.get_attribute("nonworkview"):
-                    res = res and (not eval(t.get_attribute("nonworkview")))
-            return res and task.is_workable() and not model.iter_parent(iter)
-        else:
-            return not (task.has_parents() and not model.iter_parent(iter))
-                                          
+        if not model.iter_parent(iter):
+            return self.is_task_visible(task) and not self.is_lineage_visible(task)
+        return self.is_task_visible(task)
                
     def closed_task_visible_func(self, model, iter, user_data=None):
         """Return True if the row must be displayed in the treeview.
@@ -1293,19 +1318,19 @@ class TaskBrowser:
         gtk.main_quit()
 
     def on_task_added(self, sender, tid):
-        #print "Task added: %s, %s" % (sender, tid)
+        print "Task added: %s, %s" % (sender, tid)
         self.task_tree_model.add_task(tid)
         self.tag_model.update_tags_for_task(tid)
         self._update_window_title()
         
     def on_task_deleted(self, sender, tid):
-        #print "Task deleted: %s, %s" % (sender, tid)
+        print "Task deleted: %s, %s" % (sender, tid)
         self.task_tree_model.remove_task(tid)
         self.tag_model.update_tags_for_task(tid)
         self._update_window_title()
         
     def on_task_modified(self, sender, tid):
-        #print "Task modified: %s, %s" % (sender, tid)
+        print "Task modified: %s, %s" % (sender, tid)
         self.task_tree_model.remove_task(tid)
         self.task_tree_model.add_task(tid)
         self.tag_model.update_tags_for_task(tid)
