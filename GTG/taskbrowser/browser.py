@@ -182,7 +182,7 @@ class TaskBrowser:
         self.alltag_tag = Tag("gtg-tags-all")
         self.alltag_tag.set_attribute("special","all")
         self.alltag_tag.set_attribute("label","<span weight='bold'>%s</span>"\
-                                             % _("All tags"))
+                                             % _("All tasks"))
         self.alltag_tag.set_attribute("icon","gtg-tags-all")
         self.alltag_tag.set_attribute("order",0)
         # Build the "without tag tag"

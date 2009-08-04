@@ -98,8 +98,8 @@ class TagStore :
                     self.root.get_child(name).set_attribute(att_name,val)
 
     def get_tag(self, tagname):
-        if self.root.has_child(tagname) :
-            return self.root.get_child[tagname]
+        if tagname in self.root.get_children() :
+            return self.root.get_child(tagname)
         else :
             return None
 
