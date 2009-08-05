@@ -30,7 +30,7 @@ from GTG.core.task import Task
 DEFAULT_BACKEND = "1"
 #If you want to debug a backend, it can be useful to disable the threads
 #Currently, it's python threads (and not idle_add, which is not useful)
-THREADING = False
+THREADING = True
 
 class DataStore:
 

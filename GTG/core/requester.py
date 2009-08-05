@@ -91,7 +91,7 @@ class Requester(gobject.GObject):
         @param tid: The id of the task to be deleted.
         """
         self.ds.delete_task(tid)
-        self.emit("task-deleted",tid)
+        gobject.idle_add(self.emit,"task-deleted",tid)
 
     def get_tasks_list(self, tags=None, status=["Active"], notag_only=False,
                        started_only=True, is_root=False):

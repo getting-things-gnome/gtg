@@ -1028,7 +1028,7 @@ class TaskBrowser:
             self.quickadd_pane.hide()
 
     def on_child_toggled(self, model, path, iter):
-        #print "on_child_toggled"
+        #print "on_child_toggled: %s" % model.get_value(iter, tasktree.COL_TID)
         tid = model.get_value(iter, tasktree.COL_TID)
         if tid not in self.priv.get("collapsed_tids", []):
             self.task_tv.expand_row(path, True)
@@ -1324,13 +1324,13 @@ class TaskBrowser:
         self._update_window_title()
         
     def on_task_deleted(self, sender, tid):
-        print "Task deleted: %s" % tid
+        #print "Task deleted: %s" % tid
         self.task_tree_model.remove_task(tid)
         self.tags_tv.refresh()
         self._update_window_title()
         
     def on_task_modified(self, sender, tid):
-        print "Task modified: %s" % tid
+        #print "Task modified: %s" % tid
         self.task_tree_model.remove_task(tid)
         self.task_tree_model.add_task(tid)
         self.tag_model.update_tags_for_task(tid)
