@@ -52,14 +52,22 @@ class PluginManager:
         self.lblPluginAuthors = self.wTree.get_widget("lblPluginAuthors")
         self.txtPluginDescription = self.wTree.get_widget("txtPluginDescription")
         
+        self.vbox_frame = self.wTree.get_widget("vbox_frame")
+        self.box_error = self.wTree.get_widget("box_error")
+        self.box_error.hide()
+        self.lblErrorTitle = self.wTree.get_widget("lblErrorTitle")
+        self.lblPluginMM = self.wTree.get_widget("lblPluginMM")
         #self.btnClose = self.wTree.get_widget("close_btn")
         #self.btnClose.connect('clicked', self.close, None)
 		
         # liststore
-        self.PluginList = gtk.ListStore(gobject.TYPE_BOOLEAN, gobject.TYPE_STRING, gobject.TYPE_STRING)
+        self.PluginList = gtk.ListStore('gboolean', str, str, 'gboolean', 'gboolean')
+        
         for plgin in self.plugins:
-            #print "file name :", name
-            self.PluginList.append([plgin['state'], plgin['name'], plgin['version']])
+            if not plgin['missing_modules']:
+                self.PluginList.append([plgin['state'], plgin['name'], plgin['version'], True, False])
+            else:
+                self.PluginList.append([plgin['state'], plgin['name'], plgin['version'], False, True])
         # end - liststore
 		
         # treeview
@@ -68,12 +76,18 @@ class PluginManager:
         self.rendererToggle = gtk.CellRendererToggle()
         self.rendererToggle.set_property('activatable', True)
         self.rendererToggle.connect('toggled', self.colToggledClicked, self.PluginList)
+        
         self.colToggle = gtk.TreeViewColumn("Enabled", self.rendererToggle)
         self.colToggle.add_attribute(self.rendererToggle, "active", 0)
+        self.colToggle.add_attribute(self.rendererToggle, "activatable", 3)
 		
-        self.rendererText = gtk.CellRendererText()
-        self.colName = gtk.TreeViewColumn("Name", self.rendererText, text=1)
-        self.colVersion = gtk.TreeViewColumn("Version", self.rendererText, text=2)
+        self.rendererName = gtk.CellRendererText()
+        self.rendererName.set_property('foreground', 'gray')
+        self.colName = gtk.TreeViewColumn("Name", self.rendererName, text=1, foreground_set=4)
+        
+        self.rendererVersion = gtk.CellRendererText()
+        self.rendererVersion.set_property('foreground', 'gray')
+        self.colVersion = gtk.TreeViewColumn("Version", self.rendererVersion, text=2, foreground_set=4)
 		
         self.pluginTree.append_column(self.colToggle)
         self.pluginTree.append_column(self.colName)
@@ -83,6 +97,8 @@ class PluginManager:
         self.pluginTree.set_search_column(2)
         # end - treeview
 		
+        # properties
+        
         self.dialog.set_transient_for(parent)
 		
         # connect signals 
@@ -123,4 +139,51 @@ class PluginManager:
                     self.lblPluginName.set_label("<b>" + plgin['name'] + "</b>")
                     self.lblPluginVersion.set_label(plgin['version'])
                     self.lblPluginAuthors.set_label(plgin['authors'])
-                    self.txtPluginDescription.get_buffer().set_text(plgin['description'].replace("\n", " ").replace(r'\n', "\n"))
+                    self.txtPluginDescription.get_buffer().set_text(\
+                                plgin['description'].replace("\n", " ").replace(r'\n', "\n"))
+                    
+                    if plgin['error']:
+                        # set the title label
+                        if plgin['missing_modules'] and not plgin['missing_dbus']:
+                            self.lblErrorTitle.set_markup("<small><b>The plugin can not be loaded</b>. \n"
+                                                          "Some modules are missing:</small>")
+                        elif plgin['missing_dbus'] and not plgin['missing_modules']:
+                            self.lblErrorTitle.set_markup("<small><b>The plugin can not be loaded</b>. \n"
+                                                          "Some remote dbus objects are missing:</small>")
+                        elif plgin['missing_modules'] and plgin['missing_dbus']:
+                            self.lblErrorTitle.set_markup("<small><b>The plugin can not be loaded</b>. \n"
+                                                          "Some modules and remote dbus objects are missing:</small>")
+                        else:
+                            self.lblErrorTitle.set_markup("<small><b>The plugin can not be loaded</b>. \n"
+                                                          "Unknown error while loading the plugin.</small>")
+                            self.box_error.show_all()
+                            
+                        #set the missing/info
+                        if plgin['missing_modules'] and not plgin['missing_dbus']:
+                            missing = ""
+                            for element in plgin['missing_modules']:
+                                missing = missing + ", " + element
+                            
+                            self.lblPluginMM.set_markup("<small><b>" + missing[2:] + "</b></small>")
+                            self.lblPluginMM.set_line_wrap(True)
+                            self.box_error.show_all()
+                        elif plgin['missing_dbus'] and not plgin['missing_modules']:
+                            missing_dbus = ""
+                            for element in plgin['missing_dbus']:
+                                missing_dbus = missing_dbus + "; " + str(element)
+                            
+                            self.lblPluginMM.set_markup("<small><b>" + missing_dbus[2:] + "</b></small>")
+                            self.box_error.show_all()
+                        elif plgin['missing_modules'] and plgin['missing_dbus']:
+                            missing = ""
+                            for element in plgin['missing_modules']:
+                                missing = missing + ", " + element
+                            
+                            missing_dbus = ""
+                            for element in plgin['missing_dbus']:
+                                missing_dbus = missing_dbus + "; " + str(element)
+                                
+                            self.lblPluginMM.set_markup("<small><b>" + missing[2:] + "</b>\n\n" + "<b>" + missing_dbus[2:] + "</b></small>")
+                    else:
+                        self.box_error.hide()
+                        

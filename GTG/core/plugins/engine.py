@@ -20,18 +20,8 @@
 import pkgutil
 import imp
 import os
+import dbus
 from configobj import ConfigObj
-
-try:
-    import pygtk
-    pygtk.require("2.0")
-except:
-    sys.exit(1)
-try:
-    import gtk
-except:
-    sys.exit(1)
-
 
 
 # this class manages the plug-ins
@@ -61,17 +51,54 @@ class PluginEngine:
         for config in plugin_configs:
             error = False
             missing = []
+            missing_dbus = []
             configobj = ConfigObj(config)
             if configobj.has_key("GTG Plugin"):
                 name = configobj["GTG Plugin"]["Module"]
                 try:
                     file, pathname, desc = imp.find_module(name, self.plugin_path)
                     tmp_load = imp.load_module(name, file, pathname, desc)
-                except Exception, e:
-                    #print e
-                    missing.append(str(e).split(" ")[3])
+                except ImportError, e:
+                    if configobj["GTG Plugin"].has_key("Dependencies"):
+                        for module in configobj["GTG Plugin"]["Dependencies"]:
+                            try:
+                                __import__(module)
+                            except:
+                                missing.append(module)
+                    else:
+                        missing.append(str(e).split(" ")[3])
                     error = True
-                                
+                except Exception, e:
+                    error = True
+                
+                # TODO: check DBus dependencies
+                if configobj["GTG Plugin"].has_key("Dbus-dependencies"):
+                    if "str" in str(type(configobj["GTG Plugin"]["Dbus-dependencies"])):
+                        dbobj = configobj["GTG Plugin"]["Dbus-dependencies"]
+                        if len(dbobj.split(":")) > 1 and len(dbobj.split(":")) < 3:
+                            try:
+                                tmp_dbus = dbobj.split(":")
+                                self.hamster=dbus.SessionBus().get_object(tmp_dbus[0], tmp_dbus[1])
+                            except Exception, e:
+                                error = True
+                                missing_dbus.append((dbobj.split(":")[0],dbobj.split(":")[1]))
+                        else:
+                            if dbobj:
+                                missing_dbus.append((dbobj))
+                                error = True    
+                    elif "list" in str(type(configobj["GTG Plugin"]["Dbus-dependencies"])):
+                        for dbobj in configobj["GTG Plugin"]["Dbus-dependencies"]:
+                            if len(dbobj.split(":")) > 1 and len(dbobj.split(":")) < 3:
+                                try:
+                                    tmp_dbus = dbobj.split(":")
+                                    self.hamster=dbus.SessionBus().get_object(tmp_dbus[0], tmp_dbus[1])
+                                except Exception, e:
+                                    error = True
+                                    missing_dbus.append((dbobj.split(":")[0],dbobj.split(":")[1]))
+                            else:
+                                if dbobj:
+                                    missing_dbus.append((dbobj))
+                                    error = True
                 
                 # find the class object
                 if not error:
@@ -88,16 +115,23 @@ class PluginEngine:
                     plugin['class_name'] = c.__dict__["__module__"].split(".")[1]
                     plugin['class'] = c
                     plugin['state'] = eval(configobj["GTG Plugin"]["Enabled"])
+                    plugin['error'] = False
+                    plugin['missing_modules'] = []
+                    plugin['missing_dbus'] = []
                 else:
+                    plugin['class_name'] = ""
                     plugin['class'] = None
                     plugin['state'] = False
+                    plugin['error'] = True
+                    plugin['missing_modules'] = missing
+                    plugin['missing_dbus'] = missing_dbus
                     
                 plugin['name'] = configobj["GTG Plugin"]["Name"]
                 plugin['version'] = configobj["GTG Plugin"]["Version"]
                 plugin['authors'] = configobj["GTG Plugin"]["Authors"]
                 plugin['description'] = configobj["GTG Plugin"]["Description"]
                 plugin['instance'] = None
-                plugin['missing_modules'] = missing
+                
                 
                 self.Plugins.append(plugin)
                 
@@ -120,14 +154,14 @@ class PluginEngine:
     # activates the plugins
     def activatePlugins(self, plugins, plugin_api):
         for plgin in plugins:
-            if plgin['state'] and not plgin['missing_modules']:
+            if plgin['state'] and not plgin['error']:
                 plgin['instance'] = plgin['class']()
                 plgin['instance'].activate(plugin_api)
                 
     # deactivate the enabled plugins
     def deactivatePlugins(self, plugins, plugin_api):
         for plgin in plugins:
-            if plgin['state'] and not plgin['missing_modules']:
+            if plgin['state'] and not plgin['error']:
                 plgin['instance'].deactivate(plugin_api)
 				
     # loads the plug-in features for a task
@@ -149,7 +183,7 @@ class PluginEngine:
             elif plgin['instance'] == None and plgin['state'] == True:
                 try:    
                     #print "activating plugin: " + plgin['name']
-                    if not plgin['missing_modules']:
+                    if not plgin['error']:
                         plgin['instance'] = plgin['class']()
                         plgin['instance'].activate(plugin_api)
                     else:

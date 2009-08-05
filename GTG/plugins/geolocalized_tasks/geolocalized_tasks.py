@@ -116,7 +116,7 @@ class geolocalizedTasks:
         self.config["geolocalized-tasks"]["location_determination_method"] = self.LOCATION_DETERMINATION_METHOD
     
     def onTaskOpened(self, plugin_api):
-        plugin_api.AddTaskToolbarItem(gtk.SeparatorToolItem())
+        plugin_api.add_task_toolbar_item(gtk.SeparatorToolItem())
         
         btn_set_location = gtk.ToolButton()
         btn_set_location.set_icon_widget(self.icon_geolocalization)
