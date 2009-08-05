@@ -44,9 +44,9 @@ class Requester(gobject.GObject):
     #Used by the tasks to emit the task added/modified signal
     #Should NOT be used by anyone else
     def _task_loaded(self,tid) :
-        self.emit("task-added",tid)
+        gobject.idle_add(self.emit,"task-added",tid)
     def _task_modified(self,tid) :
-        self.emit("task-modified",tid)
+        gobject.idle_add(self.emit,"task-modified",tid)
 
     ############## Tasks ##########################
     ###############################################
@@ -91,7 +91,7 @@ class Requester(gobject.GObject):
         @param tid: The id of the task to be deleted.
         """
         self.ds.delete_task(tid)
-        self.emit("task-deleted",tid)
+        gobject.idle_add(self.emit,"task-deleted",tid)
 
     def get_tasks_list(self, tags=None, status=["Active"], notag_only=False,
                        started_only=True, is_root=False):
@@ -170,11 +170,11 @@ class Requester(gobject.GObject):
             nonwork_tag = self.ds.get_tagstore().get_all_tags(
                 attname="nonworkview", attvalue="True")
             # We build the list of tags we will skip.
-            for nwtag in nonwork_tag:
+            #for nwtag in nonwork_tag:
                 # If the tag is explicitly selected, it doesn't go in the
                 # nonwork_tag.
-                if tags and nwtag in tags:
-                    nonwork_tag.remove(nwtag)
+                #if tags and nwtag in tags:
+                #    nonwork_tag.remove(nwtag)
             # We build the task list.
             temp_tasks = self.get_active_tasks_list(
                 tags=tags, notag_only=notag_only, started_only=True,
@@ -221,9 +221,11 @@ class Requester(gobject.GObject):
             tags=tags, status=note, notag_only=notag_only, started_only=False,
             is_root=False)
 
-
     ############### Tags ##########################
     ###############################################
+
+    def get_tag_tree(self):
+        return self.ds.get_tagstore().get_tree()
 
     def new_tag(self, tagname):
         """Create a new tag called 'tagname'.

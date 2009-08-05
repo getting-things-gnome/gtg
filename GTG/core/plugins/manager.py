@@ -64,7 +64,7 @@ class PluginManager:
         self.PluginList = gtk.ListStore('gboolean', str, str, 'gboolean', 'gboolean')
         
         for plgin in self.plugins:
-            if not plgin['missing_modules']:
+            if not plgin['error']:
                 self.PluginList.append([plgin['state'], plgin['name'], plgin['version'], True, False])
             else:
                 self.PluginList.append([plgin['state'], plgin['name'], plgin['version'], False, True])

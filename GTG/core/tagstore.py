@@ -21,17 +21,22 @@
 #the tag object implementation
 
 import os
+import copy
 
-from GTG.core  import CoreConfig
-from GTG.tools import cleanxml
+from GTG.core      import CoreConfig
+from GTG.core.tree import Tree, TreeNode
+from GTG.tools     import cleanxml
 
 XMLFILE = "tags.xml"
 XMLROOT = "tagstore"
 
-#There's only one Tag store by user. It will store all the tag used and their attribute.
+# There's only one Tag store by user. It will store all the tag used
+# and their attribute.
 class TagStore :
-    def __init__(self) :
-        self.store = {}
+    
+    def __init__(self):
+        self.tree = Tree()
+        self.root = self.tree.get_root()
         self.filename = os.path.join(CoreConfig.DATA_DIR,XMLFILE)
         doc,self.xmlstore = cleanxml.openxmlfile(self.filename,XMLROOT) #pylint: disable-msg=W0612
         for t in self.xmlstore.childNodes:
@@ -48,91 +53,98 @@ class TagStore :
                 i += 1
         
         #Now we build special tags. Special tags are not
-        #in the traditionnal tag list
+        #in the traditional tag list
         #Their name doesn't begin with "@"
         
-        #Build the "all tags tag"
-        self.alltag_tag = Tag("alltags_tag",save_cllbk=self.save)
-        self.alltag_tag.set_attribute("special","all")
-        self.alltag_tag.set_attribute("icon","gtg-tags-all")
-        #Build the "without tag tag"
-        self.notag_tag = Tag("notag_tag",save_cllbk=self.save)
-        self.notag_tag.set_attribute("special","notag")
-        self.notag_tag.set_attribute("icon","gtg-tags-none")
-            
-        
-    #create a new tag and return it
-    #or return the existing one with corresponding name
-    def new_tag(self,tagname) :
+#        #Build the "all tags tag"
+#        self.alltag_tag = Tag("alltags_tag",save_cllbk=self.save)
+#        self.alltag_tag.set_attribute("special","all")
+#        self.alltag_tag.set_attribute("icon","gtg-tags-all")
+#        #Build the "without tag tag"
+#        self.notag_tag = Tag("notag_tag",save_cllbk=self.save)
+#        self.notag_tag.set_attribute("special","notag")
+#        self.notag_tag.set_attribute("icon","gtg-tags-none")
+
+    def get_tree(self):
+        return self.tree
+
+    def new_tag(self, tagname):
+        """Create a new tag and return it or return the existing one
+        with corresponding name"""
         #we create a new tag from a name
         tname = tagname.encode("UTF-8")
-        if not self.store.has_key(tname) :
-            tag = Tag(tname,save_cllbk=self.save)
-            self.add_tag(tag)
+        if tname not in self.root.get_children():
+            tag = Tag(tname, save_cllbk=self.save)
+            self.root.add_child(tname, tag)
+            tag.set_parent(self.root)
             return tag
-        else :
-            return self.store[tname]
+        else:
+            return self.root.get_child(tname)
         
-    def add_tag(self,tag) :
+    def add_tag(self, tag):
         name = tag.get_name()
         #If tag does not exist in the store, we add it
-        if not self.store.has_key(name) :
-            self.store[name] = tag
+        if not self.root.has_child(name):
+            self.root.add_child(name, tag)
+            tag.set_parent(self.root)
         #else, we just take the attributes of the new tag
         #This allow us to keep attributes of the old tag
         #that might be not set in the new one
         else :
             atts = tag.get_all_attributes()
-            for att_name in atts :
+            for att_name in atts:
                 val = tag.get_attribute(att_name)
-                if att_name != 'name' and val :
-                    self.store[name].set_attribute(att_name,val)
-                    
-    
-    def get_tag(self,tagname) :
-        if self.store.has_key(tagname) :
-            return self.store[tagname]
+                if att_name != 'name' and val:
+                    self.root.get_child(name).set_attribute(att_name,val)
+
+    def get_tag(self, tagname):
+        if tagname in self.root.get_children() :
+            return self.root.get_child(tagname)
         else :
             return None
+
+#    def get_alltag_tag(self):
+#        """Return the special tag 'All tags'"""
+#        return self.alltag_tag
+#    
+#    def get_notag_tag(self):
+#        """Return the special tag 'No tags'"""
+#        return self.notag_tag
     
-    #Return the special tag "All tags"
-    def get_alltag_tag(self) :
-        return self.alltag_tag
-    def get_notag_tag(self) :
-        return self.notag_tag
-    
-    #Return the name of all tags
-    #Optionnaly, if you pass the attname and attvalue argument, it will
-    #only add tags that have the given value for the given attribute
-    #excluding tags that don't have this attribute (except if attvalue is None)
-    def get_all_tags_name(self,attname=None,attvalue=None) :
+    def get_all_tags_name(self, attname=None, attvalue=None):
+        """Return the name of all tags
+        Optionaly, if you pass the attname and attvalue argument, it will
+        only add tags that have the given value for the given attribute
+        excluding tags that don't have this attribute
+        (except if attvalue is None)"""
         l = []
-        for t in self.store :
+        for t in self.root.get_children():
             if not attname :
-                l.append(self.store[t].get_name())
-            elif self.store[t].get_attribute(attname) == attvalue :
-                l.append(self.store[t].get_name())
+                l.append(self.root.get_child[t].get_name())
+            elif self.root.get_child[t].get_attribute(attname) == attvalue:
+                l.append(self.root.get_child[t].get_name())
         return l
         
-    def get_all_tags(self,attname=None,attvalue=None) :
+    def get_all_tags(self, attname=None, attvalue=None):
         l = []
-        keys = self.store.keys()
-        for t in keys :
-            if not attname :
-                l.append(self.store[t])
-            elif self.store[t].get_attribute(attname) == attvalue :
-                l.append(self.store[t])
+        for tname in self.root.get_children():
+            t = self.root.get_child(tname)
+            if not attname:
+                l.append(t)
+            elif t.get_attribute(attname) == attvalue:
+                l.append(t)
         return l
-    
-        
-    def save(self) :
+
+    def save(self):
         doc,xmlroot = cleanxml.emptydoc(XMLROOT)
         tags = self.get_all_tags()
         already_saved = [] #We avoid saving the same tag twice
         #we don't save tags with no attributes
         #It saves space and allow the saved list growth to be controlled
-        for t in tags :
+        for t in tags:
             attr = t.get_all_attributes(butname=True)
+            if "special" in attr:
+                continue
             if len(attr) > 0 :
                 tagname = t.get_name()
                 if not tagname in already_saved :
@@ -145,11 +157,9 @@ class TagStore :
                     xmlroot.appendChild(t_xml)          
                     cleanxml.savexml(self.filename,doc)
                 
-
-#########################################################################
-######################### Tag ###########################################
-
-class Tag:
+### Tag Objects ##############################################################
+#
+class Tag(TreeNode):
     """A short name that can be applied to L{Task}s.
 
     I mean, surely you must know what a tag is by now. Think Gmail,
@@ -168,6 +178,7 @@ class Tag:
         @param save_cllbk: A nullary callable, called whenever an attribute
             is set.
         """
+        TreeNode.__init__(self, name)
         self._name = str(name)
         self._attributes = {'name': self._name}
         self._save = save_cllbk
@@ -195,7 +206,8 @@ class Tag:
         # Attributes should all be strings.
         val = unicode(str(att_value), "UTF-8")
         self._attributes[att_name] = val
-        self._save()
+        if self._save:
+            self._save()
 
     def get_attribute(self, att_name):
         """Get the attribute C{att_name}.

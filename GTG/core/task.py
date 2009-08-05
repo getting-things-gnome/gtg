@@ -26,6 +26,11 @@ from GTG.tools.dates import strtodate
 #This class represent a task in GTG.
 #You should never create a Task directly. Use the datastore.new_task() function.
 class Task :
+
+    STA_ACTIVE    = "Active"
+    STA_DISMISSED = "Dismiss"
+    STA_DONE      = "Done"
+
     def __init__(self, ze_id, requester, newtask=False) :
         #the id of this task in the project should be set
         #tid is a string ! (we have to choose a type and stick to it)
@@ -35,7 +40,7 @@ class Task :
         self.sync_func = None
         self.title = _("My new task")
         #available status are : Active - Done - Dismiss - Note
-        self.status = "Active"
+        self.status = self.STA_ACTIVE
         self.closed_date = None
         self.due_date = None
         self.start_date = None
@@ -66,12 +71,15 @@ class Task :
         
     def is_new(self) :
         return self.can_be_deleted
-    
-    def get_id(self) :
+
+    def get_id(self):
         return str(self.tid)
         
     def get_title(self) :
         return self.title
+
+    def get_closed_date(self):
+        return self.closed_date
     
     #Return True if the title was changed. 
     #False if the title was already the same.
@@ -90,31 +98,31 @@ class Task :
         else :
             return False
         
-    def set_status(self,status,donedate=None) :
+    def set_status(self, status, donedate=None):
         old_status = self.status
         self.can_be_deleted = False
-        if status :
+        if status:
             self.status = status
             #If Done, we set the done date
-            if status in ["Done","Dismiss"] :
+            if status in [self.STA_DONE, self.STA_DISMISSED]:
                 for c in self.get_subtasks() :
-                    if c.get_status() in ["Active"] :
-                        c.set_status(status,donedate=donedate)
+                    if c.get_status() in [self.STA_ACTIVE]:
+                        c.set_status(status, donedate=donedate)
                 #to the specified date (if any)
-                if donedate :
+                if donedate:
                     self.closed_date = donedate
                 #or to today
-                else : 
+                else:
                     self.closed_date = date.today()
             #If we mark a task as Active and that some parent are not
             #Active, we break the parent/child relation
             #It has no sense to have an active subtask of a done parent.
             # (old_status check is necessary to avoid false positive a start)
-            elif status in ["Active"] and old_status in ["Done","Dismiss"] :
+            elif status in [self.STA_ACTIVE] and old_status in [self.STA_DONE,self.STA_DISMISSED] :
                 if self.has_parents() :
                     for p_tid in self.get_parents() :
                         par = self.req.get_task(p_tid)
-                        if par.is_loaded() and par.get_status in ["Done","Dismiss"] :
+                        if par.is_loaded() and par.get_status in [self.STA_DONE,self.STA_DISMISSED] :
                             self.remove_parent(p_tid)
                 #We dont mark the children as Active because
                 #They might be already completed after all
@@ -128,7 +136,7 @@ class Task :
     def is_workable(self) :
         workable = True
         for c in self.get_subtasks() :
-            if c.get_status() == "Active" :
+            if c.get_status() == self.STA_ACTIVE :
                 workable = False
         return workable
         
@@ -283,52 +291,103 @@ class Task :
         else :
             self.content = ''
     
-    #Take a task object as parameter
-    def add_subtask(self,tid) :
+    ### SUBTASKS #############################################################
+
+    def new_subtask(self):
+        """Add a newly created subtask to this task. Return the task added as
+        a subtask
+        """
+        uid, pid = self.get_id().split('@') #pylint: disable-msg=W0612
+        subt     = self.req.new_task(pid=pid, newtask=True)
+        self.add_subtask(subt.get_id())
+        return subt
+
+    def add_subtask(self, tid):
+        """Add a subtask to this task
+
+        @param tid: the ID of the added task
+        """
         self.can_be_deleted = False
         #The if prevent an infinite loop
-        if tid not in self.children and tid not in self.parents :
+        if tid not in self.children and tid not in self.parents:
             self.children.append(tid)
             task = self.req.get_task(tid)
             task.add_parent(self.get_id())
             #now we set inherited attributes only if it's a new task
             #Except for due date because a child always has to be due
             #before its parent
-            task.set_due_date(self.get_due_date(),fromparent=True)
-            if task.can_be_deleted :
+            task.set_due_date(self.get_due_date(), fromparent=True)
+            if task.can_be_deleted:
                 task.set_start_date(self.get_start_date())
-                for t in self.get_tags() :
+                for t in self.get_tags():
                     task.add_tag(t.get_name())
-    
-    #Return the task added as a subtask
-    def new_subtask(self) :
-        uid,pid = self.get_id().split('@') #pylint: disable-msg=W0612
-        subt = self.req.new_task(pid=pid,newtask=True)
-        self.add_subtask(subt.get_id())
-        return subt
             
-    def remove_subtask(self,tid) :
-        if tid in self.children :
+    def remove_subtask(self, tid):
+        """Removed a subtask from the task.
+
+        @param tid: the ID of the task to remove
+        """
+        if tid in self.children:
             self.children.remove(tid)
             task = self.req.get_task(tid)
-            if task.can_be_deleted :
+            if task.can_be_deleted:
                 self.req.delete_task(tid)
-            else :
+            else:
                 task.remove_parent(self.get_id())
             self.sync()
-    
-    def get_subtasks(self) :
+
+    def has_subtasks(self):
+        """Returns True if task has subtasks.
+        """
+        return len(self.children) != 0
+
+    def get_n_subtasks(self):
+        """Return the number of subtasks of a task.
+        """
+        return len(self.children)
+
+    def get_subtasks(self):
+        """Return the list of subtasks.
+        """
+        #XXX: is this useful?
         zelist = []
-        for i in self.children :
+        for i in self.children:
             zelist.append(self.req.get_task(i))
         return zelist
-    
-    def get_subtasks_tid(self) :
+
+    def get_subtask(self, tid):
+        """Return the task corresponding to a given ID.
+
+        @param tid: the ID of the task to return.
+        """
+        return self.req.get_task(tid)
+
+    def get_subtask_tids(self):
+        """Return the list of subtasks. Return a list of IDs.
+        """
         return list(self.children)
-        
+
+    def get_nth_subtask(self, index):
+        """Return the task ID stored at a given index.
+
+        @param index: the index of the task to return.
+        """
+        try:
+            return self.children[index]
+        except(IndexError):
+            raise ValueError("Index is not in task list")
+
+    def get_subtask_index(self, tid):
+        """Return the index of a given subtask.
+
+        @param tid: the tid of the task whose index must be returned.
+        """
+        return self.children.index(tid)
         
     #add and remove parents are private
     #Only the task itself can play with it's parent
+
+    ### PARENTS ##############################################################
     
     #Take a tid object as parameter
     def add_parent(self,tid) :
@@ -341,7 +400,7 @@ class Task :
             task.sync()
             
     #Take a tid as parameter
-    def remove_parent(self,tid) :
+    def remove_parent(self,tid):
         if tid and tid in self.parents:
             self.parents.remove(tid)
             self.sync()
@@ -390,10 +449,11 @@ class Task :
     #This method is called by the datastore and should not be called directly
     #Use the requester
     def delete(self) :
-        for i in self.get_parents() :
+        self.set_sync_func(None, callsync=False)
+        for i in self.get_parents():
             task = self.req.get_task(i)
             task.remove_subtask(self.get_id())
-        for task in self.get_subtasks() :
+        for task in self.get_subtasks():
             task.remove_parent(self.get_id())
         #then we remove effectively the task
         #self.req.delete_task(self.get_id())
