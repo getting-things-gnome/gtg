@@ -5,6 +5,7 @@ import time
 import pango
 
 from GTG import _
+from GTG.core.tree import Tree, TreeNode
 from GTG.tools     import colors
 from GTG.core.task import Task
 from GTG.taskbrowser.CellRendererTags import CellRendererTags
@@ -34,107 +35,29 @@ class TaskTreeModel(gtk.GenericTreeModel):
         str,\
         str)
 
-    def __init__(self, requester, tasks=None):
+    def __init__(self, requester):
+        
         gtk.GenericTreeModel.__init__(self)
-        self.req = requester
-        self.root_tasks = []
-        if tasks:
-            for tid in tasks:
-                self.root_tasks.append(tid)
+        self.req  = requester
+        self.tree = Tree()
+                
         # Default config
         self.bg_color_enable = True
 
 ### TREE MODEL HELPER FUNCTIONS ###############################################
 
-    def _get_n_root_tasks(self):
-        return len(self.root_tasks)
-
-    def _get_nth_root_task(self, index):
-        try:
-            return self.root_tasks[index]
-        except(IndexError):
-            raise ValueError('Index is not in task list')
-
-    def _get_root_task_index(self, tid):
-        return self.root_tasks.index(tid)
-
-    def _rowref_from_path(self, task, path):
-        """Return a row reference for a given treemodel path
-        
-         @param task : the root from which the treemodel path starts. Set it
-                       to None to start from the uppest level.
-         @param path : the treemodel path
-        """
-        if len(path) == 1:
-            if task == None:
-                my_tid = self._get_nth_root_task(path[0])
-            else:
-                my_tid = task.get_nth_subtask(path[0])
-            return "/" + str(my_tid)
-        else:
-            if task == None:
-                my_tid = self._get_nth_root_task(path[0])
-            else:
-                my_tid = task.get_nth_subtask(path[0])
-            task = self.req.get_task(my_tid)
-            path = path[1:]
-            return "/" + str(my_tid) + \
-                self._rowref_from_path(task, path)
-
-    def _path_for_rowref(self, task, rowref):
-        if rowref.rfind('/') == 0:
-            if task:
-                return (task.get_subtask_index(rowref[1:]),)
-            else:
-                return (self._get_root_task_index(rowref[1:]),)
-        else:
-            cur_tid  = rowref[1:rowref.find('/', 1)]
-            cur_task = self.req.get_task(cur_tid)
-            if task:
-                cur_path = (task.get_subtask_index(cur_tid),)
-            else:
-                cur_path = (self._get_root_task_index(cur_tid),)
-            rowref   = rowref[rowref.find(cur_tid)+len(cur_tid):]
-            return cur_path + self._path_for_rowref(cur_task, rowref)
-
-    def _get_path_from_rowref(self, rowref):
-        return self._path_for_rowref(None, rowref)
-
-    def _get_rowref_from_path(self, path):
-        return self._rowref_for_path(None, path)
-
-    def _get_paths_for_task_rec(self, task):
-        paths = []
-        if task.has_parents():
-            for par_tid in task.get_parents():
-                if par_tid not in self.root_tasks:
-                    #print "%s is not loaded." % par_tid
-                    continue
-                par_task  = self.req.get_task(par_tid)
-                par_paths = self._get_paths_for_task_rec(par_task)
-                task_idx  = par_task.get_subtask_index(task.get_id())
-                for pp in par_paths:
-                    paths.append( pp + (task_idx,) )
-        idx = self._get_root_task_index(task.get_id())
-        paths.append( (idx,) )
-        return paths
-
-    def _add_all_subtasks(self, task, path):
+    def _add_all_subtasks(self, node, task):
         if task.has_subtasks():
             for c_tid in task.get_subtask_tids():
-                if c_tid not in self.root_tasks:
-                    #print "%s is not loaded." % c_tid
-                    continue
-                else:
+                if self.tree.has_node(c_tid):
                     c_task = self.req.get_task(c_tid)
-                    c_idx   = task.get_subtask_index(c_tid)
-                    paths = self._get_paths_for_task_rec(task)
-                    for path in paths:
-                        c_path = path + (c_idx,)
-                        c_iter = self.get_iter(c_path)
-                        self.row_deleted(c_path)
-                        self.row_inserted(c_path, c_iter)
-                        self._add_all_subtasks(c_task, c_path)
+                    c_node = TreeNode(c_tid, c_task)
+                    self.tree.add_node(c_tid, c_node, node)
+                    c_node_path = self.tree.get_path_for_node(c_node)
+                    c_node_iter = self.get_iter(c_node_path)
+                    self.row_inserted(c_node_path, c_node_iter)
+                    self._add_all_subtasks(c_node, c_task)
+                    #print " - %s: adding %s as subtask." % (task.get_id(), c_tid)
         else:
             return
 
@@ -159,8 +82,8 @@ class TaskTreeModel(gtk.GenericTreeModel):
         return self.column_types[n]
 
     def on_get_value(self, rowref, column):
-        cur_tid = rowref[rowref.rfind('/')+1:]
-        task    = self.req.get_task(cur_tid)
+        node = self.tree.get_node_for_rowref(rowref)
+        task = node.get_obj()
         if   column == COL_TID:
             return task.get_id()
         elif column == COL_OBJ:
@@ -173,7 +96,8 @@ class TaskTreeModel(gtk.GenericTreeModel):
             return task.get_closed_date()
         elif column == COL_CDATE_STR:
             if task.get_status() == Task.STA_DISMISSED:
-                date = "<span color='#AAAAAA'>" + task.get_closed_date() + "</span>"
+                date = "<span color='#AAAAAA'>" +\
+                    task.get_closed_date() + "</span>"
             else:
                 date = task.get_closed_date()
             return date
@@ -194,153 +118,128 @@ class TaskTreeModel(gtk.GenericTreeModel):
                 else:
                     title = task.get_title()
             elif task.get_status() == Task.STA_DISMISSED:
-                  title = "<span color='#AAAAAA'>" + task.get_title() + "</span>"
+                  title = "<span color='#AAAAAA'>"\
+                      + task.get_title() + "</span>"
             else:
                 title = task.get_title()
             return title
 
     def on_get_iter(self, path):
         #print "on_get_iter: " + str(path)
-        try:
-            return self._rowref_from_path(None, path)
-        except(ValueError):
-            return None
+        return self.tree.get_rowref_for_path(path)
 
     def on_get_path(self, rowref):
         #print "on_get_path: %s" % (rowref)
-        return self._get_path_from_rowref(rowref)
+        return self.tree.get_path_for_rowref(rowref)
 
     def on_iter_next(self, rowref):
         #print "on_iter_next: %s" % (rowref)
-        cur_tid = rowref[rowref.rfind('/')+1:]
-        if rowref.rfind('/') == 0:
-            next_idx  = self._get_root_task_index(cur_tid) + 1
-            if next_idx >= self._get_n_root_tasks():
+        node        = self.tree.get_node_for_rowref(rowref)
+        parent_node = node.get_parent()
+        if parent_node:
+            next_idx = parent_node.get_child_index(node.get_id()) + 1
+            if parent_node.get_n_children()-1 < next_idx:
                 return None
             else:
-                next_tid = self._get_nth_root_task(next_idx)
-                return "/" + str(next_tid)
+                return self.tree.get_rowref_for_node(\
+                    parent_node.get_nth_child(next_idx))
         else:
-            par_rowref = rowref[:rowref.rfind('/')]
-            par_tid    = par_rowref[par_rowref.rfind('/')+1:]
-            par_task   = self.req.get_task(par_tid)
-            #print cur_tid
-            next_idx   = par_task.get_subtask_index(cur_tid) + 1
-            if next_idx >= par_task.get_n_subtasks():
-                return None
-            else:
-                next_tid  = par_task.get_nth_subtask(next_idx)
-                next_task = self.req.get_task(next_tid)
-                return par_rowref + "/" + str(next_task.get_id())
+            return None
 
     def on_iter_children(self, rowref):
         #print "on_iter_children: %s" % (rowref)
         if rowref:
-            cur_tid = rowref[rowref.rfind('/')+1:]
-            task    = self.req.get_task(cur_tid)
-            if task.has_subtasks():
-                child_tid = task.get_nth_subtask(0)
-                return rowref + "/" + str(child_tid)
+            node = self.tree.get_node_for_rowref(rowref)
+            if node.has_child():
+                return self.tree.get_rowref_for_node(node.get_nth_child(0))
             else:
                 return None
         else:
-            my_tid = self._get_nth_root_task(0)
-            return "/" + str(my_tid)
+            node = self.root.get_nth_child(0)
+            return self.tree.get_rowref_for_node(node)
 
     def on_iter_has_child(self, rowref):
         #print "on_iter_has_child: %s" % (rowref)
-        cur_tid = rowref[rowref.rfind('/')+1:]
-        task    = self.req.get_task(cur_tid)
-        return task.has_subtasks()
+        node = self.tree.get_node_for_rowref(rowref)
+        return node.has_child()
 
     def on_iter_n_children(self, rowref):
         #print "on_iter_n_children: %s" % (rowref)
         if rowref:
-            cur_tid = rowref[rowref.rfind('/')+1:]
-            task    = self.req.get_task(cur_tid)
-            return task.get_n_subtasks()
+            node = self.tree.get_node_for_rowref(rowref)
         else:
-            return self._get_n_root_tasks()
+            node = self.tree.get_root()
+        return node.get_n_children()
 
-    def on_iter_nth_child(self, parent, n):
-        #print "on_iter_nth_child: %s %d" % (parent, n)
-        if parent:
-            par_tid  = parent[parent.rfind('/')+1:]
-            par_task = self.req.get_task(par_tid)
-            subtask_tid = par_task.get_nth_subtask(n)
-            return parent + "/" + str(subtask_tid)
+    def on_iter_nth_child(self, rowref, n):
+        #print "on_iter_nth_child: %s %d" % (rowref, n)
+        if rowref:
+            node = self.tree.get_node_for_rowref(rowref)
         else:
-            my_tid = self._get_nth_root_task(n)
-            return "/" + str(my_tid)
+            node = self.tree.get_root()
+        nth_child = node.get_nth_child(n)
+        return self.tree.get_rowref_for_node(nth_child)
 
-    def on_iter_parent(self, child):
-        #print "on_iter_parent: %s" % (child)
-        if child.rfind('/') == 0:
+    def on_iter_parent(self, rowref):
+        #print "on_iter_parent: %s" % (rowref)
+        node = self.tree.get_node_for_rowref(rowref)
+        if node.has_parent():
+            parent = node.get_parent()
+            if parent == self.tree.get_root():
+                return None
+            else:
+                return self.tree.get_rowref_for_node(parent)
+        else:
             return None
-        else:
-            par_rowref = child[:child.rfind('/')]
-            return par_rowref
 
     def add_task(self, tid):
+        #print "Adding %s... " % tid
+        nodes = []
         # get the task
         task = self.req.get_task(tid)
+        # insert the task in the tree (root)
+        my_node = TreeNode(tid, task)
+        self.tree.add_node(tid, my_node, None)
+        node_path = self.tree.get_path_for_node(my_node)
+        node_iter = self.get_iter(node_path)
+        self.row_inserted(node_path, node_iter)
+        nodes.append(my_node)
         # has the task parents?
-        paths = []
         if task.has_parents():
             # get every path from parents
             par_list = task.get_parents()
             # get every paths going to each parent
             for par_tid in par_list:
-                if par_tid not in self.root_tasks:
-                    #print "%s is not loaded." % par_tid
+                if not self.tree.has_node(par_tid):
+                    #print " - %s: %s is not loaded." % (tid, par_tid)
                     continue
                 else:
-                    par_task  = self.req.get_task(par_tid)
-                    par_paths = self._get_paths_for_task_rec(par_task)
-                    for par_path in par_paths:
-                        # compute t-under-p path
-                        task_index = par_task.get_subtask_index(tid)
-                        task_path  = par_path + (task_index,)
-                        # get t-under-p iter
-                        task_iter  = self.get_iter(task_path)
-                        # insert t-under-p
-                        self.row_deleted(task_path)
-                        self.row_inserted(task_path, task_iter)
-                        paths.append(task_path)
-        # insert the task in the tree (root)
-        self.root_tasks.append(tid)
-        task_index = self._get_root_task_index(tid)
-        task_path  = (task_index,)
-        task_iter  = self.get_iter(task_path)
-        self.row_inserted(task_path, task_iter)
-        paths = task_path
+                    par_nodes = self.tree.get_nodes(par_tid)
+                    for par_node in par_nodes:
+                        my_node = TreeNode(tid, task)
+                        self.tree.add_node(tid, my_node, par_node)
+                        node_path = self.tree.get_path_for_node(my_node)
+                        node_iter = self.get_iter(node_path)
+                        self.row_inserted(node_path, node_iter)
+                        nodes.append(my_node)
         # has the task children?
-        for path in paths:
-            self._add_all_subtasks(task, path)
+        for node in nodes:
+            self._add_all_subtasks(node, task)
 
     def remove_task(self, tid):
-        # get the task
-        task = self.req.get_task(tid)
+        # get the nodes
+        nodes = self.tree.get_nodes(tid)
         # Remove every row of this task
-        if task.has_parents():
-            # get every paths leading to this task
-            path_list = self._get_paths_for_task_rec(task)
-            # remove every path
-            for task_path in path_list:
-                self.row_deleted(task_path)
-        # Remove from root as well
-        task_index = self._get_root_task_index(tid)
-        task_path  = (task_index,)
-        task_iter  = self.get_iter(task_path)
-        self.row_deleted(task_path)
-        self.root_tasks.remove(tid)
+        for node in nodes:
+            node_path = self.tree.get_path_for_node(node)
+            self.tree.remove_node(tid, node)
+            self.row_deleted(node_path)
                     
     def move_task(self, parent, child):
         #print "Moving %s below %s" % (child, parent)
         # Get child
         child_tid  = self.get_value(child, COL_TID)
         child_task = self.req.get_task(child_tid)
-        child_path = self.get_path(child)
         # Get old parent
         old_par = self.iter_parent(child)
         if old_par:
@@ -363,22 +262,9 @@ class TaskTreeModel(gtk.GenericTreeModel):
         # Add child to new parent (add_subtask also add new parent to child)
         if new_par_task:
             new_par_task.add_subtask(child_tid)
-        # Warn tree about inserted row
-        if new_par_task:
-            new_child_index = new_par_task.get_subtask_index(child_tid)
-        else:
-            new_child_index = self._get_root_task_index(child_tid)
-        if parent:
-            new_child_path = self.get_path(parent) + (new_child_index,)
-        else:
-            new_child_path = (new_child_index,)
-        new_child_iter = self.get_iter(new_child_path)
 
     def set_bg_color(self, val):
         self.bg_color_enable = val
-
-    def get_paths_for_task(self, task):
-        return self._get_paths_for_task_rec(task)
 
 class TaskTreeView(gtk.TreeView):
     """TreeView for display of a list of task. Handles DnD primitives too."""

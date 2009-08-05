@@ -1318,23 +1318,24 @@ class TaskBrowser:
         gtk.main_quit()
 
     def on_task_added(self, sender, tid):
-        #print "Task added: %s, %s" % (sender, tid)
+        #print "Task added: %s" % tid
         self.task_tree_model.add_task(tid)
         self.tag_model.update_tags_for_task(tid)
         self._update_window_title()
         
     def on_task_deleted(self, sender, tid):
-        #print "Task deleted: %s, %s" % (sender, tid)
+        print "Task deleted: %s" % tid
         self.task_tree_model.remove_task(tid)
-        self.tag_model.update_tags_for_task(tid)
+        self.tags_tv.refresh()
         self._update_window_title()
         
     def on_task_modified(self, sender, tid):
-        #print "Task modified: %s, %s" % (sender, tid)
+        print "Task modified: %s" % tid
         self.task_tree_model.remove_task(tid)
         self.task_tree_model.add_task(tid)
         self.tag_model.update_tags_for_task(tid)
         self._update_window_title()
+        self.tags_tv.refresh()
 
 ### PUBLIC METHODS ############################################################
 #

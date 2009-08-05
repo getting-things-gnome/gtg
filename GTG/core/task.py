@@ -400,7 +400,7 @@ class Task :
             task.sync()
             
     #Take a tid as parameter
-    def remove_parent(self,tid) :
+    def remove_parent(self,tid):
         if tid and tid in self.parents:
             self.parents.remove(tid)
             self.sync()
@@ -449,10 +449,11 @@ class Task :
     #This method is called by the datastore and should not be called directly
     #Use the requester
     def delete(self) :
-        for i in self.get_parents() :
+        self.set_sync_func(None, callsync=False)
+        for i in self.get_parents():
             task = self.req.get_task(i)
             task.remove_subtask(self.get_id())
-        for task in self.get_subtasks() :
+        for task in self.get_subtasks():
             task.remove_parent(self.get_id())
         #then we remove effectively the task
         #self.req.delete_task(self.get_id())
