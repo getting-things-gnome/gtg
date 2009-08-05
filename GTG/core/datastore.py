@@ -40,7 +40,7 @@ class DataStore:
         self.tagstore = tagstore.TagStore()
         self.requester = requester.Requester(self)
         
-    def all_tasks(self) :
+    def all_tasks(self):
         all_tasks = []
         #We also add tasks that are still not in a backend (because of threads)
         tlist = self.tasks.keys()
