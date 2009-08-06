@@ -23,11 +23,6 @@ import time
 from calendar import timegm
 
 class hamsterPlugin:
-    PLUGIN_NAME = 'Hamster Time Tracker Integration'
-    PLUGIN_AUTHORS = 'Kevin Mehall <km@kevinmehall.net>'
-    PLUGIN_VERSION = '0.2'
-    PLUGIN_DESCRIPTION = 'Adds the ability to send a task to the Hamster time tracking applet'
-    PLUGIN_ENABLED = False
     PLUGIN_NAMESPACE = 'hamster-plugin'
     
     #### Interaction with Hamster

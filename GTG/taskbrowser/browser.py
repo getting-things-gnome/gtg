@@ -436,26 +436,28 @@ class TaskBrowser:
         # loads the plugins in the plugin dir
         self.plugins = self.pengine.LoadPlugins()
         
-        # checks the conf for user settings
-        if self.config.has_key("plugins"):
-            if self.config["plugins"].has_key("enabled"):
-                plugins_enabled = self.config["plugins"]["enabled"]
-                for p in self.plugins:
-                    if p['name'] in plugins_enabled:
-                        p['state'] = True
-                    
-            if self.config["plugins"].has_key("disabled"):
-                plugins_disabled = self.config["plugins"]["disabled"]
-                for p in self.plugins:    
-                    if p['name'] in plugins_disabled:
-                        p['state'] = False
-        
         # initializes the plugin api class
         self.plugin_api = PluginAPI(self.window, self.config, self.wTree, self.req, \
                                     self.task_tv, self.priv['workview_task_filter'], \
                                     self.tagpopup, self.tags_tv, None, None)
-        # initializes and activates each plugin (that is enabled)
-        self.pengine.activatePlugins(self.plugins, self.plugin_api)
+        
+        if self.plugins:
+            # checks the conf for user settings
+            if self.config.has_key("plugins"):
+                if self.config["plugins"].has_key("enabled"):
+                    plugins_enabled = self.config["plugins"]["enabled"]
+                    for p in self.plugins:
+                        if p['name'] in plugins_enabled:
+                            p['state'] = True
+                        
+                if self.config["plugins"].has_key("disabled"):
+                    plugins_disabled = self.config["plugins"]["disabled"]
+                    for p in self.plugins:    
+                        if p['name'] in plugins_disabled:
+                            p['state'] = False
+            
+            # initializes and activates each plugin (that is enabled)
+            self.pengine.activatePlugins(self.plugins, self.plugin_api)
 
 #    def _init_note_support(self):
 #        self.notes  = EXPERIMENTAL_NOTES
@@ -898,7 +900,8 @@ class TaskBrowser:
             view = "default"
             
         # plugins are deactivated
-        self.pengine.deactivatePlugins(self.plugins, self.plugin_api)
+        if self.plugins:
+            self.pengine.deactivatePlugins(self.plugins, self.plugin_api)
 
         # Populate configuration dictionary
         self.config["browser"] = {
@@ -936,11 +939,13 @@ class TaskBrowser:
 #            self.config["browser"]["experimental_notes"] = True
         
         # adds the plugin settings to the conf
-        self.config["plugins"] = {}
-        self.config["plugins"]["disabled"] =\
-            self.pengine.disabledPlugins(self.plugins)
-        self.config["plugins"]["enabled"]  =\
-            self.pengine.enabledPlugins(self.plugins)
+        if self.plugins:
+            self.config["plugins"] = {}
+            self.config["plugins"]["disabled"] =\
+                self.pengine.disabledPlugins(self.plugins)
+            self.config["plugins"]["enabled"] =\
+                self.pengine.enabledPlugins(self.plugins)
+
 
     def on_about_clicked(self, widget):
         self.about.show()
