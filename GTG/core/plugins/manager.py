@@ -60,6 +60,9 @@ class PluginManager:
         #self.btnClose = self.wTree.get_widget("close_btn")
         #self.btnClose.connect('clicked', self.close, None)
 		
+        # recheck the plugins with errors
+        self.pengine.recheckPluginsErrors(self.plugins, self.plugin_api)
+        
         # liststore
         self.PluginList = gtk.ListStore('gboolean', str, str, 'gboolean', 'gboolean')
         
