@@ -78,7 +78,7 @@ class PluginEngine:
                         if len(dbobj.split(":")) > 1 and len(dbobj.split(":")) < 3:
                             try:
                                 tmp_dbus = dbobj.split(":")
-                                self.hamster=dbus.SessionBus().get_object(tmp_dbus[0], tmp_dbus[1])
+                                dbus.SessionBus().get_object(tmp_dbus[0], tmp_dbus[1])
                             except Exception, e:
                                 error = True
                                 missing_dbus.append((dbobj.split(":")[0],dbobj.split(":")[1]))
@@ -91,7 +91,7 @@ class PluginEngine:
                             if len(dbobj.split(":")) > 1 and len(dbobj.split(":")) < 3:
                                 try:
                                     tmp_dbus = dbobj.split(":")
-                                    self.hamster=dbus.SessionBus().get_object(tmp_dbus[0], tmp_dbus[1])
+                                    dbus.SessionBus().get_object(tmp_dbus[0], tmp_dbus[1])
                                 except Exception, e:
                                     error = True
                                     missing_dbus.append((dbobj.split(":")[0],dbobj.split(":")[1]))
@@ -210,12 +210,11 @@ class PluginEngine:
     			error = False
     			missing = []
     			missing_dbus = []
-
+    			
     			try:
     				file, pathname, desc = imp.find_module(plugin['plugin'], self.plugin_path)
-    				tmp_load = imp.load_module(name, file, pathname, desc)
+    				tmp_load = imp.load_module(plugin['plugin'], file, pathname, desc)
     			except ImportError, e:
-    				print e
     				if plugin["dependencies"]:
     					for module in plugin["dependencies"]:
     						try:
@@ -227,14 +226,14 @@ class PluginEngine:
     				error = True
     			except Exception, e:
     				error = True
-    				
+    			
     			if plugin["dbus-dependencies"]:
     				if "str" in str(type(plugin["dbus-dependencies"])):
     					dbobj = plugin["dbus-dependencies"]
     					if len(dbobj.split(":")) > 1 and len(dbobj.split(":")) < 3:
     						try:
     							tmp_dbus = dbobj.split(":")
-    							self.hamster=dbus.SessionBus().get_object(tmp_dbus[0], tmp_dbus[1])
+    							dbus.SessionBus().get_object(tmp_dbus[0], tmp_dbus[1])
     						except Exception, e:
     							error = True
     							missing_dbus.append((dbobj.split(":")[0],dbobj.split(":")[1]))
@@ -247,7 +246,7 @@ class PluginEngine:
     						if len(dbobj.split(":")) > 1 and len(dbobj.split(":")) < 3:
     							try:
     								tmp_dbus = dbobj.split(":")
-    								self.hamster=dbus.SessionBus().get_object(tmp_dbus[0], tmp_dbus[1])
+    								dbus.SessionBus().get_object(tmp_dbus[0], tmp_dbus[1])
     							except Exception, e:
     								error = True
     								missing_dbus.append((dbobj.split(":")[0],dbobj.split(":")[1]))
