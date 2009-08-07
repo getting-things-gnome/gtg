@@ -23,7 +23,7 @@ import pickle
 
 # IMPORTANT This add's the plugin's path to python sys path
 sys.path.insert(0,os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0,os.path.dirname(os.path.abspath(__file__)+'/pyrtm'))
+sys.path.insert(0,os.path.dirname(os.path.abspath(__file__))+'/pyrtm')
 import rtm
 from bijectivefunction import BijectiveFunction
 
