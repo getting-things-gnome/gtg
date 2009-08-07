@@ -167,7 +167,7 @@ class PluginAPI:
         selected = self.tagview.get_selection()
         model, iter = selected.get_selected()
         tag = model.get_value(iter, 0)
-        return tag
+        return self.__requester.get_tag(tag)
     
     # returns the task view in the main window (task browser)
     def get_taskview(self):

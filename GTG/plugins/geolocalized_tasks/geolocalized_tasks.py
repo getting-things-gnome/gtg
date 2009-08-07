@@ -34,11 +34,20 @@ from marker import MarkerLayer
 from GTG.core.plugins.engine import PluginEngine
 
 class geolocalizedTasks:
+    PLUGIN_NAME = 'Geolocalized Tasks'
+    PLUGIN_AUTHORS = 'Paulo Cabido <paulo.cabido@gmail.com>'
+    PLUGIN_VERSION = '0.1'
+    PLUGIN_DESCRIPTION = 'This plugin adds geolocalized tasks to GTG!.\n \
+                          WARNING: This plugin is still heavy development.'
+                          
+    PLUGIN_ENABLED = True
     
     def __init__(self):
         self.geoclue = Geoclue.DiscoverLocation()
+        self.geoclue.connect(self.location_changed)
         self.geoclue.init()
         self.location = self.geoclue.get_location_info()
+        
         
         self.plugin_path = os.path.dirname(os.path.abspath(__file__))
         self.glade_file = os.path.join(self.plugin_path, "geolocalized.glade")
@@ -81,7 +90,8 @@ class geolocalizedTasks:
         #    if provider['position'] and (provider['provider'] != "Example Provider" and provider['provider'] != "Plazes"):
         #        self.LOCATION_DETERMINATION_METHOD.append(provider["provider"])
             
-        
+    def location_changed(self):
+        self.location = self.geoclue.get_location_info()  
     
     def activate(self, plugin_api):
         self.menu_item.connect('activate', self.on_geolocalized_preferences, plugin_api)
@@ -244,7 +254,6 @@ class geolocalizedTasks:
     
     #=== SET TASK LOCATION =========================================================
     def set_task_location(self, widget, plugin_api, location=None):
-        location = self.geoclue.get_location_info()
         self.plugin_api = plugin_api
         
         wTree = gtk.glade.XML(self.glade_file, "SetTaskLocation")
@@ -254,12 +263,18 @@ class geolocalizedTasks:
         btn_zoom_in = wTree.get_widget("btn_zoom_in")
         btn_zoom_out = wTree.get_widget("btn_zoom_out")
         
+        dialog_action_area_btn = wTree.get_widget("dialog_action_area_btn")
+        btn_ok = wTree.get_widget("btn_ok")
+        btn_cancel = wTree.get_widget("btn_cancel")
+        btn_close = wTree.get_widget("btn_close")
+        
         self.radiobutton1 = wTree.get_widget("radiobutton1")
         self.radiobutton2 = wTree.get_widget("radiobutton2")
         self.txt_new_tag = wTree.get_widget("txt_new_tag")
         self.cmb_existing_tag = wTree.get_widget("cmb_existing_tag")
         
         tabela = wTree.get_widget("tabela_set_task")
+        
         vbox_map = wTree.get_widget("vbox_map")
         vbox_opt = wTree.get_widget("vbox_opt")
         
@@ -309,8 +324,8 @@ class geolocalizedTasks:
                         self.marker_list.append(layer.add_marker(plugin_api.get_task_title(), tag['location'][0], tag['location'][1], color))
         else:
             try:
-                if location['longitude'] and location['latitude']:
-                    self.marker_list.append(layer.add_marker(plugin_api.get_task_title(), location['latitude'], location['longitude']))
+                if self.location['longitude'] and self.location['latitude']:
+                    self.marker_list.append(layer.add_marker(plugin_api.get_task_title(), self.location['latitude'], self.location['longitude']))
             except:
                 self.marker_list.append(layer.add_marker(plugin_api.get_task_title(), None, None))
         
@@ -328,7 +343,7 @@ class geolocalizedTasks:
         
         if task_has_location:
             champlain_view.set_property("zoom-level", 9)
-        elif location:
+        elif self.location:
             champlain_view.set_property("zoom-level", 5)
         else:
             champlain_view.set_property("zoom-level", 1)
@@ -343,7 +358,15 @@ class geolocalizedTasks:
         # connect the toolbar buttons for zoom
         btn_zoom_in.connect("clicked", self.zoom_in, champlain_view)
         btn_zoom_out.connect("clicked", self.zoom_out, champlain_view)
-        dialog.connect("response", self.set_task_location_close)
+        
+        if task_has_location:
+            dialog_action_area_btn.remove(btn_ok)
+            dialog_action_area_btn.remove(btn_cancel)
+            dialog.connect("response", self.task_location_close)
+        else:
+            dialog_action_area_btn.remove(btn_close)
+            # show a close button or the ok/cancel
+            dialog.connect("response", self.set_task_location_close)
         
         #if there is no location set, we want to set it
         if not task_has_location:
@@ -376,10 +399,13 @@ class geolocalizedTasks:
             champlain_view.center_on(marker_position[0], marker_position[1])
         else:
             try:
-                if location['longitude'] and location['latitude']:
-                    champlain_view.center_on(location['latitude'], location['longitude'])
+                if self.location['longitude'] and self.location['latitude']:
+                    champlain_view.center_on(self.location['latitude'], self.location['longitude'])
             except:
                 pass
+    
+    def task_location_close(self, dialog, response=None):
+        dialog.destroy()
     
     def set_task_location_close(self, dialog, response=None):
         if response == gtk.RESPONSE_OK:
@@ -431,7 +457,6 @@ class geolocalizedTasks:
         
     #=== TAG VIEW CONTEXT MENU =====================================================
     def on_contextmenu_tag_location(self, widget, plugin_api):
-        location = self.geoclue.get_location_info()
         self.plugin_api_context = plugin_api
         
         wTree = gtk.glade.XML(self.glade_file, "TagLocation")
@@ -467,8 +492,8 @@ class geolocalizedTasks:
             marker_tag = layer.add_marker(tag.get_attribute("name"), tag_location[0], tag_location[1], tag_color)
         else:
             try:
-                if location['longitude'] and location['latitude']:
-                    marker_tag = layer.add_marker(tag.get_attribute("name"), location['latitude'], location['longitude'], tag_color)
+                if self.location['longitude'] and self.location['latitude']:
+                    marker_tag = layer.add_marker(tag.get_attribute("name"), self.location['latitude'], self.location['longitude'], tag_color)
             except:
                 marker_tag = layer.add_marker(tag.get_attribute("name"), None, None)
         
@@ -484,7 +509,7 @@ class geolocalizedTasks:
         
         if tag_location:
             champlain_view.set_property("zoom-level", 9)
-        elif location:
+        elif self.location:
             champlain_view.set_property("zoom-level", 5)
         else:
             champlain_view.set_property("zoom-level", 1)      
@@ -508,8 +533,8 @@ class geolocalizedTasks:
             champlain_view.center_on(marker_position[0], marker_position[1])
         else:
             try:
-                if location['longitude'] and location['latitude']:
-                    champlain_view.center_on(location['latitude'], location['longitude'])
+                if self.location['longitude'] and self.location['latitude']:
+                    champlain_view.center_on(self.location['latitude'], self.location['longitude'])
             except:
                 pass
     
