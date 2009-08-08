@@ -119,9 +119,15 @@ class SyncEngine:
         tasks_list_normalized = map(lambda x:  zip(x[0],[x[1]]*len(x[0]), \
                 map(lambda x: x.id,x[0])) if type(x[0]) == list \
                 else [(x[0],x[1],x[0].id)] ,tasks_list_wrapped)
-        tasks_list_unwrapped = reduce(lambda x,y: x+y , tasks_list_normalized)
-        task_objects_list,list_ids_list,taskseries_ids_list = \
-                self.unziplist(tasks_list_unwrapped)
+        tasks_list_unwrapped = []
+        task_objects_list = []
+        list_ids_list = []
+        taskseries_ids_list = []
+        if len(tasks_list_normalized)>0:
+            tasks_list_unwrapped = reduce(lambda x,y: x+y , tasks_list_normalized)
+            task_objects_list,list_ids_list,taskseries_ids_list = \
+                    self.unziplist(tasks_list_unwrapped)
+
 
         #TODO: RTM allows multiple task with the same name, gtg does not. Solve!
         #FIXME:  from here on we assume that purging of the multiple entries has
