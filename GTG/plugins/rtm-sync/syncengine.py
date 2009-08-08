@@ -252,12 +252,16 @@ class SyncEngine:
         #   but on gtg? need to keep a journal?  
         self.smartSaveToFile(cache_dir,'gtg_to_rtm_task_id_mapping',\
                         gtg_to_rtm_task_id_mapping)
+        self.update_status("Synchronization completed")
 
         self.update_progressbar(1.0)
         
     def update_progressbar(self,percent):
         self.this_plugin.progressbar_percent = percent
         gobject.idle_add(self.this_plugin.set_progressbar)
+    def update_status(self,status):
+        self.this_plugin.status = status
+        gobject.idle_add(self.this_plugin.set_status)
 
 
 

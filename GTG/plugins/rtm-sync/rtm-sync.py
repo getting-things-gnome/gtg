@@ -20,6 +20,7 @@ import os
 import sys
 from threading import Thread
 import time
+import gobject
 #import logging
 # IMPORTANT This add's the plugin's path to python sys path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -40,6 +41,8 @@ class pluginRtmSync:
     sync_engine = None
     progressbar = None
     progressbar_percent =0
+    status = None
+    lbl_dialog = None
 
     def __init__(self):
         self.menu_item = gtk.MenuItem("Synchronize with RTM")
@@ -79,8 +82,8 @@ class pluginRtmSync:
         wTree = gtk.glade.XML(glade_file, "dialogtoken")
         self.dialog = wTree.get_widget("dialogtoken")
         btn_ok = wTree.get_widget("btn_ok")
-        lbl_dialog = wTree.get_widget("lbl_dialog")
-        lbl_dialog.set_text(msg)
+        self.lbl_dialog = wTree.get_widget("lbl_dialog")
+        self.lbl_dialog.set_text(msg)
         self.dialog.connect("delete_event", self.close_dialog)
         btn_ok.connect("clicked", self.synchronization_from_dialog)
         self.dialog.show_all()
@@ -91,8 +94,8 @@ class pluginRtmSync:
         wTree = gtk.glade.XML(glade_file, "dialogsync")
         self.dialog = wTree.get_widget("dialogsync")
         btn_ok = wTree.get_widget("btn_ok")
-        lbl_dialog = wTree.get_widget("lbl_dialog")
-        lbl_dialog.set_text(msg)
+        self.lbl_dialog = wTree.get_widget("lbl_dialog")
+        self.lbl_dialog.set_text(msg)
         self.progressbar = wTree.get_widget("progressbar")
         self.dialog.connect("delete_event", self.close_dialog)
         btn_ok.connect("clicked", self.close_dialog)
@@ -117,10 +120,14 @@ class pluginRtmSync:
     def set_progressbar(self):
         self.progressbar.set_fraction(self.progressbar_percent)
 
+    def set_status(self):
+        self.lbl_dialog.set_text(self.status)
+
     def fake_update_progressbar(self):
-        self.progressbar_percent += 0.01
-        self.set_progressbar()
-        time.sleep(1)
+        while 1:
+            self.progressbar_percent += 0.01
+            gobject.idle_add(self.set_progressbar)
+            time.sleep(1)
 	
 	# plugin features
     def onTesteMenu(self, widget):
