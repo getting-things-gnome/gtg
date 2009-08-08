@@ -18,11 +18,14 @@ import gtk
 #import pygtk
 import os
 import sys
-#import time
+from threading import Thread
+import time
 #import logging
 # IMPORTANT This add's the plugin's path to python sys path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0,os.path.dirname(os.path.abspath(__file__))+'/pyrtm')
 import syncengine
+import rtm
 
 
 class pluginRtmSync:
@@ -32,7 +35,11 @@ class pluginRtmSync:
     PLUGIN_DESCRIPTION = 'Plugin for synchronization with the web service \
                         Remember the milk ( http://www.rememberthemilk.com )'
     PLUGIN_ENABLED = False
-    plugin_api=None
+    plugin_api = None
+    worker_thread = None
+    sync_engine = None
+    progressbar = None
+    progressbar_percent =0
 
     def __init__(self):
         self.menu_item = gtk.MenuItem("Synchronize with RTM")
@@ -66,33 +73,75 @@ class pluginRtmSync:
         plugin_api.remove_toolbar_item(None, self.separator)
 
     #load a dialog with a String
-    def loadDialog(self, msg):
+    def loadDialogToken(self, msg):
         path = os.path.dirname(os.path.abspath(__file__))
-        glade_file = os.path.join(path, "hello_world.glade")
-        wTree = gtk.glade.XML(glade_file, "helloworld")
-        self.dialog = wTree.get_widget("helloworld")
-        lblHelloWorld = wTree.get_widget("lbl_helloworld")
-        lblHelloWorld.set_text(msg)
-                
+        glade_file = os.path.join(path, "gtk.glade")
+        wTree = gtk.glade.XML(glade_file, "dialogtoken")
+        self.dialog = wTree.get_widget("dialogtoken")
+        btn_ok = wTree.get_widget("btn_ok")
+        lbl_dialog = wTree.get_widget("lbl_dialog")
+        lbl_dialog.set_text(msg)
         self.dialog.connect("delete_event", self.close_dialog)
-        self.dialog.connect("response", self.close_dialog)
-        
+        btn_ok.connect("clicked", self.synchronization_from_dialog)
         self.dialog.show_all()
 
-        syncengine.synchronize(self.plugin_api)
+    def loadDialogSync(self, msg):
+        path = os.path.dirname(os.path.abspath(__file__))
+        glade_file = os.path.join(path, "gtk.glade")
+        wTree = gtk.glade.XML(glade_file, "dialogsync")
+        self.dialog = wTree.get_widget("dialogsync")
+        btn_ok = wTree.get_widget("btn_ok")
+        lbl_dialog = wTree.get_widget("lbl_dialog")
+        lbl_dialog.set_text(msg)
+        self.progressbar = wTree.get_widget("progressbar")
+        self.dialog.connect("delete_event", self.close_dialog)
+        btn_ok.connect("clicked", self.close_dialog)
+        self.dialog.show_all()
+
 
     def close_dialog(self, widget, data=None):
     	self.dialog.destroy()
         return True    
+
+    def synchronization_from_dialog(self, widget, data=None):
+    	self.dialog.destroy()
+        try:
+            self.sync_engine.storeToken()
+        except rtm.RTMAPIError:
+            self.loadDialogToken("Please press ok *after* logging in")
+            self.sync_engine.getToken()
+            return True
+        self.lauchSynchronization()
+        return True    
+
+    def set_progressbar(self):
+        self.progressbar.set_fraction(self.progressbar_percent)
+
+    def fake_update_progressbar(self):
+        self.progressbar_percent += 0.01
+        self.set_progressbar()
+        time.sleep(1)
 	
 	# plugin features
     def onTesteMenu(self, widget):
-        self.loadDialog("Hello World! From the MenuBar! :-)")
+        #self.loadDialog("Hello World! From the MenuBar! :-)")
+        pass
+
+    def lauchSynchronization(self):
+        self.loadDialogSync("Synchronization started")
+        self.worker_thread = Thread(target=self.sync_engine.synchronize, args=(self.plugin_api,)).start()
+        self.worker_thread = Thread(target=self.fake_update_progressbar).start()
+
 		
     def onTbButton(self, widget):
-        self.loadDialog("Hello World! From the ToolBar! :-)")
+        self.sync_engine=syncengine.SyncEngine(self)
+        if (self.sync_engine.getToken()):
+            self.loadDialogToken("Please authenticate to Remember The Milk in the browser that is being opened now. When done, press OK")
+        else:
+            self.lauchSynchronization()
+        
 		
     def onTbTaskButton(self, widget, plugin_api):
-        self.loadDialog("Hello World! The tag @hello_world \
-                        was just added to the end of the task!")
-        plugin_api.add_tag("hello_world")
+        #self.loadDialog("Hello World! The tag @hello_world \
+        #                was just added to the end of the task!")
+        pass
