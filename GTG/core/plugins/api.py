@@ -19,7 +19,7 @@
 import gtk
 
 class PluginAPI:
-    def __init__(self, window, config, wTree, requester, taskview, workview_task_filter, \
+    def __init__(self, window, config, wTree, requester, taskview,\
                  tagpopup, tagview, task=None, textview=None):
         # private vars       
         self.__window = window
@@ -28,7 +28,6 @@ class PluginAPI:
         self.__requester = requester
         
         self.taskview = taskview
-        self.__workview_task_filter = workview_task_filter
         
         self.__tagpopup = tagpopup
         self.tagview = tagview
@@ -188,5 +187,6 @@ class PluginAPI:
     
     # add's a tid to the workview filter
     def add_task_to_workview_filter(self, tid):
-        self.__workview_task_filter.append(tid)
+        #self.__workview_task_filter.append(tid)
+        pass
         

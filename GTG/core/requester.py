@@ -38,6 +38,11 @@ class Requester(gobject.GObject):
     def __init__(self, datastore):
         """Construct a L{Requester}."""
         self.ds = datastore
+        
+        #filter
+        self.filter["tasks"] = []
+        self.filter["tags"] = []
+        
         gobject.GObject.__init__(self)
 
     ############# Signals #########################   
@@ -152,6 +157,32 @@ class Requester(gobject.GObject):
             if task:
                 l_tasks.append(tid)
         return l_tasks
+    
+    # filters
+    def set_filter(self, filter):
+        self.filter = filter
+        
+    def get_filter(self, filter):
+        return self.filter
+    
+    def apend_task_to_filter(self, tid):
+        self.filter["tasks"].append(tid)
+        
+    def apend_task_to_filter(self, tid):
+        if tid not in self.filter["tasks"]:
+            self.filter["tasks"].append(tid)
+        
+    def remove_task_from_filter(self, tid):
+        if tid in self.filter["tasks"]:
+            self.filter["tasks"].remove(tid)
+            
+    def apend_tag_to_filter(self, tag):
+        if tag not in self.filter["tags"]:
+            self.filter["tags"].append(tag)
+        
+    def remove_tag_from_filter(self, tag):
+        if tid in self.filter["tags"]:
+            self.filter["tags"].remove(tag)
 
     def get_active_tasks_list(self, tags=None, notag_only=False,
                               started_only=True, is_root=False,

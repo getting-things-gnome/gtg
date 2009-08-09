@@ -161,7 +161,8 @@ class geolocalizedTasks:
                             position = eval(tag.get_attribute("location"))
                             if not self.geoclue.compare_position(position[0], position[1], float(self.PROXIMITY_FACTOR)):
                                 plugin_api.add_task_to_workview_filter(task.get_id())
-                                
+                                print task.get_title()
+        
                                 
     #=== GEOLOCALIZED PREFERENCES===================================================    
     def on_geolocalized_preferences(self, widget, plugin_api):
@@ -434,14 +435,16 @@ class geolocalizedTasks:
                                                               marker_position)
                         dialog.destroy()
                     else:
-                        self.errorDialog(dialog, "Error: No tag defined", "The tag has to be defined so that the location can be associated with it.")
+                        pass
+                        # does nothing, no tag set.
+                        #self.errorDialog(dialog, "Error: No tag defined", "The tag has to be defined so that the location can be associated with it.")
                 else:
                     # radiobutton2
                     marker_position = (self.marker_list[0].get_property('latitude'), self.marker_list[0].get_property('longitude'))
                     index = self.cmb_existing_tag.get_active()
                     model = self.cmb_existing_tag.get_model()
                     self.plugin_api.add_tag_attribute(model[index][0], "location", marker_position)
-            dialog.destroy()
+                    dialog.destroy()
         else:
             # cancel
             dialog.destroy()

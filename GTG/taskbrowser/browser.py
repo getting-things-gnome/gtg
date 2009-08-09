@@ -143,7 +143,7 @@ class TaskBrowser:
         self.priv['selected_rows']            = None
         self.priv['workview']                 = False
         #self.priv['noteview']                 = False
-        self.priv['workview_task_filter']     = []
+        #self.priv['workview_task_filter']     = []
 
     def _init_icon_theme(self):
         icon_dirs = [GTG.DATA_DIR, os.path.join(GTG.DATA_DIR, "icons")]
@@ -437,9 +437,9 @@ class TaskBrowser:
         self.plugins = self.pengine.LoadPlugins()
         
         # initializes the plugin api class
-        self.plugin_api = PluginAPI(self.window, self.config, self.wTree, self.req, \
-                                    self.task_tv, self.priv['workview_task_filter'], \
-                                    self.tagpopup, self.tags_tv, None, None)
+        self.plugin_api = PluginAPI(self.window, self.config, self.wTree,\
+                                    self.req, self.task_tv, self.tagpopup,\
+                                    self.tags_tv, None, None)
         
         if self.plugins:
             # checks the conf for user settings
@@ -738,8 +738,8 @@ class TaskBrowser:
 
         tag_list, notag_only = self.get_selected_tags()
         
-        if task in self.priv['workview_task_filter']:
-            return False
+        #if task.get_id() in self.priv['workview_task_filter']:
+        #    return False
 
         if not task.has_tags(tag_list=tag_list, notag_only=notag_only):
             return False
