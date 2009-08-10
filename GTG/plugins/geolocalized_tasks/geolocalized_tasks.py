@@ -160,9 +160,7 @@ class geolocalizedTasks:
                         if tag.get_attribute("location"):
                             position = eval(tag.get_attribute("location"))
                             if not self.geoclue.compare_position(position[0], position[1], float(self.PROXIMITY_FACTOR)):
-                                plugin_api.add_task_to_workview_filter(task.get_id())
-                                print task.get_title()
-        
+                                plugin_api.add_task_to_filter(task.get_id())
                                 
     #=== GEOLOCALIZED PREFERENCES===================================================    
     def on_geolocalized_preferences(self, widget, plugin_api):

@@ -186,7 +186,8 @@ class PluginAPI:
         return self.config
     
     # add's a tid to the workview filter
-    def add_task_to_workview_filter(self, tid):
-        #self.__workview_task_filter.append(tid)
-        pass
+    def add_task_to_filter(self, tid):
+        self.__requester.add_task_to_filter(tid)
         
+    def add_tag_to_filter(self, tag):
+        self.__requester.add_tag_to_filter(tag)

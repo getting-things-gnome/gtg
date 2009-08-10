@@ -28,7 +28,6 @@ class TagTreeModel(gtk.GenericTreeModel):
     def __init__(self, requester):
         gtk.GenericTreeModel.__init__(self)
         self.req  = requester
-        self.workview_task_filter = workview_task_filter
         self.tree = self.req.get_tag_tree()
         self.workable_only = False
 

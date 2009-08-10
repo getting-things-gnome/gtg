@@ -737,16 +737,20 @@ class TaskBrowser:
         """
 
         tag_list, notag_only = self.get_selected_tags()
-        
-        #if task.get_id() in self.priv['workview_task_filter']:
-        #    return False
 
         if not task.has_tags(tag_list=tag_list, notag_only=notag_only):
             return False
 
         if self.priv['workview']:
             res = True
+            
+            # removes the filtered out tasks
+            if task.get_id() in self.req.get_filter()["tasks"]:
+                return False
+            
             for t in task.get_tags():
+                if t.get_attribute("name") in self.req.get_filter()["tags"]:
+                    return False
                 if t.get_attribute("nonworkview"):
                     res = res and (not eval(t.get_attribute("nonworkview")))
             return res and task.is_workable()
