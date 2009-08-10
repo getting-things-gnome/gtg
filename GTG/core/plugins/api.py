@@ -20,7 +20,8 @@ import gtk
 
 class PluginAPI:
     def __init__(self, window, config, wTree, requester, taskview,\
-                 tagpopup, tagview, task=None, textview=None):
+                 filter_cbs, tagpopup, tagview, task=None,\
+                 textview=None):
         # private vars       
         self.__window = window
         self.config = config
@@ -31,6 +32,8 @@ class PluginAPI:
         
         self.__tagpopup = tagpopup
         self.tagview = tagview
+        
+        self.__filter_cbs = filter_cbs
         
         if task:
             self.task = task
@@ -193,5 +196,21 @@ class PluginAPI:
     def add_task_to_filter(self, tid):
         self.__requester.add_task_to_filter(tid)
         
+    def remove_task_from_filter(self, tid):
+        self.__requester.remove_task_from_filter(tid)
+        
     def add_tag_to_filter(self, tag):
         self.__requester.add_tag_to_filter(tag)
+        
+    def remove_tag_from_filter(self, tag):
+        self.__requester.remove_tag_from_filter(tag)
+    
+    # register a callback with the filter callbacks    
+    def register_filter_cb(self, func):
+        if func not in self.__filter_cbs:
+            self.__filter_cbs.append(func)
+    
+    # unregister a callback from the filter callbacks
+    def unregister_filter_cb(self, func):
+        if func in self.__filter_cbs:
+            self.__filter_cbs.remove(func)

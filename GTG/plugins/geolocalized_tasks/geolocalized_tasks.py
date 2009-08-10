@@ -44,6 +44,9 @@ class geolocalizedTasks:
     
     def __init__(self):
         self.geoclue = Geoclue.DiscoverLocation()
+        self.geoclue.connect(self.location_changed)
+        self.geoclue.init()
+        self.location = self.geoclue.get_location_info()
         self.location_filter = []
         
         self.plugin_path = os.path.dirname(os.path.abspath(__file__))
@@ -107,15 +110,9 @@ class geolocalizedTasks:
         
             if self.config["geolocalized-tasks"].has_key("location_determination_method"):
                 self.LOCATION_DETERMINATION_METHOD = self.config["geolocalized-tasks"]["location_determination_method"]
-                
-        self.geoclue.connect(self.location_changed)
-        self.geoclue.init()
-        self.location = self.geoclue.get_location_info()
-                
-        # connect to the task signals
-        self.plugin_api.requester_connect("task-added", self.task_changes)
-        self.plugin_api.requester_connect("task-modified", self.task_changes)
-        #self.plugin_api.requester_connect("task-deleted", self.task_changes)
+        
+        # registers the filter callback method
+        plugin_api.register_filter_cb(self.task_location_filter)
     
     def deactivate(self, plugin_api):
         plugin_api.remove_menu_item(self.menu_item)
@@ -126,6 +123,15 @@ class geolocalizedTasks:
         self.config["geolocalized-tasks"]["proximity_factor"] = self.PROXIMITY_FACTOR
         self.config["geolocalized-tasks"]["accuracy"] = self.LOCATION_ACCURACY
         self.config["geolocalized-tasks"]["location_determination_method"] = self.LOCATION_DETERMINATION_METHOD
+        
+        # remove the filters
+        for tid in self.location_filter:
+            plugin_api.remove_task_from_filter(tid)
+        
+        # unregister the filter callback
+        plugin_api.unregister_filter_cb(self.task_location_filter)
+        
+        
     
     def onTaskOpened(self, plugin_api):
         plugin_api.add_task_toolbar_item(gtk.SeparatorToolItem())
@@ -137,53 +143,65 @@ class geolocalizedTasks:
         plugin_api.add_task_toolbar_item(btn_set_location)
     
     def location_changed(self):
+        # update the location
         self.location = self.geoclue.get_location_info()
-        self.filter_workview_by_location()
-        
-    def task_changes(self, sender, tid):
-        self.filter_workview_by_location()
-        #self.task_location_filter(tid)
+        # reset the filters
+        self.location_filter = []
         
     # filters by location only one task
     def task_location_filter(self, tid):
+        has_location = False
         task = self.plugin_api.get_task(tid)
         if task.get_status() == "Active":
             if task.is_workable():
                 tags = task.get_tags()
+                
+                #check if it has the location set
                 for tag in tags:
-                        if tag.get_attribute("location"):
-                            position = eval(tag.get_attribute("location"))
-                            if not self.geoclue.compare_position(position[0], position[1], float(self.PROXIMITY_FACTOR)):
-                                self.plugin_api.add_task_to_filter(tid)
+                    if "location" in tag.get_all_attributes():
+                        has_location = True
+                
+                if has_location:
+                    # do the actual filter
+                    for tag in tags:
+                            if tag.get_attribute("location"):
+                                position = eval(tag.get_attribute("location"))
+                                if not self.geoclue.compare_position(position[0], position[1], float(self.PROXIMITY_FACTOR)):
+                                    self.plugin_api.add_task_to_filter(tid)
+                                    if tid not in self.location_filter:
+                                        self.location_filter.append(tid)
+                                    return False
+        return True
                 
     
     # the task location filter (for all tasks)
-    def filter_workview_by_location(self):
-        if self.location.has_key("latitude") and self.location.has_key("longitude"):
-            # TODO: if the location has a delay in being calculated it may not exist at
-            # this point
-            tasks = self.plugin_api.get_all_tasks()
-            
-            tasks_with_location = []
-            tasks_without_location = []
-            
-            for tid in tasks:
-                task = self.plugin_api.get_task(tid)
-                tags = task.get_tags()
-                for tag in tags:
-                    if "location" in tag.get_all_attributes():
-                        tasks_with_location.append(task)
-                    else:
-                        tasks_without_location.append(task)
-                
-            for task in tasks_with_location:
-                if task.is_workable():
-                    tags = task.get_tags()
-                    for tag in tags:
-                        if tag.get_attribute("location"):
-                            position = eval(tag.get_attribute("location"))
-                            if not self.geoclue.compare_position(position[0], position[1], float(self.PROXIMITY_FACTOR)):
-                                self.plugin_api.add_task_to_filter(task.get_id())
+    # DEPRECATED
+    #def filter_workview_by_location(self):
+    #    if self.location.has_key("latitude") and self.location.has_key("longitude"):
+    #        # TODO: if the location has a delay in being calculated it may not exist at
+    #        # this point
+    #        tasks = self.plugin_api.get_all_tasks()
+    #        
+    #        tasks_with_location = []
+    #        tasks_without_location = []
+    #        
+    #        for tid in tasks:
+    #            task = self.plugin_api.get_task(tid)
+    #            tags = task.get_tags()
+    #            for tag in tags:
+    #                if "location" in tag.get_all_attributes():
+    #                    tasks_with_location.append(task)
+    #                else:
+    #                    tasks_without_location.append(task)
+    #            
+    #        for task in tasks_with_location:
+    #            if task.is_workable():
+    #                tags = task.get_tags()
+    #                for tag in tags:
+    #                    if tag.get_attribute("location"):
+    #                        position = eval(tag.get_attribute("location"))
+    #                        if not self.geoclue.compare_position(position[0], position[1], float(self.PROXIMITY_FACTOR)):
+    #                            self.plugin_api.add_task_to_filter(task.get_id())
                                 
     #=== GEOLOCALIZED PREFERENCES===================================================    
     def on_geolocalized_preferences(self, widget, plugin_api):

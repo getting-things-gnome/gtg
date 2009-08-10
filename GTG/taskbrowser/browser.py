@@ -133,7 +133,7 @@ class TaskBrowser:
 ### INIT HELPER FUNCTIONS #####################################################
 #
     def _init_browser_config(self):
-        self.priv["collapsed_tids"]            = []
+        self.priv["collapsed_tids"]           = []
         self.priv["tasklist"]                 = {}
         self.priv["tasklist"]["sort_column"]  = None
         self.priv["tasklist"]["sort_order"]   = gtk.SORT_ASCENDING
@@ -142,8 +142,8 @@ class TaskBrowser:
         self.priv["ctasklist"]["sort_order"]  = gtk.SORT_ASCENDING
         self.priv['selected_rows']            = None
         self.priv['workview']                 = False
-        #self.priv['noteview']                 = False
-        #self.priv['workview_task_filter']     = []
+        #self.priv['noteview']                = False
+        self.priv['filter_cbs']               = []
 
     def _init_icon_theme(self):
         icon_dirs = [GTG.DATA_DIR, os.path.join(GTG.DATA_DIR, "icons")]
@@ -438,8 +438,8 @@ class TaskBrowser:
         
         # initializes the plugin api class
         self.plugin_api = PluginAPI(self.window, self.config, self.wTree,\
-                                    self.req, self.task_tv, self.tagpopup,\
-                                    self.tags_tv, None, None)
+                                    self.req, self.task_tv, self.priv['filter_cbs'],\
+                                    self.tagpopup, self.tags_tv, None, None)
         
         if self.plugins:
             # checks the conf for user settings
@@ -744,13 +744,13 @@ class TaskBrowser:
         if self.priv['workview']:
             res = True
             
-            # removes the filtered out tasks
-            if task.get_id() in self.req.get_filter()["tasks"]:
-                return False
+            # filter tasks view callbacks
+            for cb in self.priv['filter_cbs']:
+                res = cb(task.get_id())
+                if res == False:
+                    return False
             
             for t in task.get_tags():
-                if t.get_attribute("name") in self.req.get_filter()["tags"]:
-                    return False
                 if t.get_attribute("nonworkview"):
                     res = res and (not eval(t.get_attribute("nonworkview")))
             return res and task.is_workable()
@@ -869,6 +869,14 @@ class TaskBrowser:
 ### SIGNAL CALLBACKS ##########################################################
 # Typically, reaction to user input & interactions with the GUI
 #
+    def register_filter_callback(self, cb):
+        if cb not in self.priv['filter_cbs']:
+            self.priv['filter_cbs'].append(cb)
+        
+    def unregister_filter_callback(self, cb):
+        if cb in self.priv['filter_cbs']:
+            self.priv['filter_cbs'].remove(cb)
+        
     def on_move(self, widget, data):
         xpos, ypos = self.window.get_position()
         self.priv["window_xpos"] = xpos
