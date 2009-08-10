@@ -44,10 +44,6 @@ class geolocalizedTasks:
     
     def __init__(self):
         self.geoclue = Geoclue.DiscoverLocation()
-        self.geoclue.connect(self.location_changed)
-        self.geoclue.init()
-        self.location = self.geoclue.get_location_info()
-        
         
         self.plugin_path = os.path.dirname(os.path.abspath(__file__))
         self.glade_file = os.path.join(self.plugin_path, "geolocalized.glade")
@@ -88,12 +84,11 @@ class geolocalizedTasks:
         self.LOCATION_DETERMINATION_METHOD = ["network", "gps", "cellphone"]
         #for provider in self.geoclue.get_available_providers():
         #    if provider['position'] and (provider['provider'] != "Example Provider" and provider['provider'] != "Plazes"):
-        #        self.LOCATION_DETERMINATION_METHOD.append(provider["provider"])
-            
-    def location_changed(self):
-        self.location = self.geoclue.get_location_info()  
+        #        self.LOCATION_DETERMINATION_METHOD.append(provider["provider"])        
     
     def activate(self, plugin_api):
+        self.plugin_api = plugin_api
+        
         self.menu_item.connect('activate', self.on_geolocalized_preferences, plugin_api)
         plugin_api.add_menu_item(self.menu_item)
         
@@ -112,8 +107,12 @@ class geolocalizedTasks:
             if self.config["geolocalized-tasks"].has_key("location_determination_method"):
                 self.LOCATION_DETERMINATION_METHOD = self.config["geolocalized-tasks"]["location_determination_method"]
                 
+        self.geoclue.connect(self.location_changed)
+        self.geoclue.init()
+        self.location = self.geoclue.get_location_info()
+                
         # filter the tasks location for the workview
-        self.filter_workview_by_location(plugin_api)
+        #self.filter_workview_by_location(plugin_api)
     
     def deactivate(self, plugin_api):
         plugin_api.remove_menu_item(self.menu_item)
@@ -134,18 +133,22 @@ class geolocalizedTasks:
         btn_set_location.connect('clicked', self.set_task_location, plugin_api)
         plugin_api.add_task_toolbar_item(btn_set_location)
     
+    def location_changed(self):
+        self.location = self.geoclue.get_location_info()
+        self.filter_workview_by_location()
+    
     # the task location filter
-    def filter_workview_by_location(self, plugin_api):
-        # TODO: if the location has a delay in being calculated it may not exist at
-        # this point
+    def filter_workview_by_location(self):
         if self.location.has_key("latitude") and self.location.has_key("longitude"):
-            tasks = plugin_api.get_all_tasks()
-                
+            # TODO: if the location has a delay in being calculated it may not exist at
+            # this point
+            tasks = self.plugin_api.get_all_tasks()
+            
             tasks_with_location = []
             tasks_without_location = []
             
             for tid in tasks:
-                task = plugin_api.get_task(tid)
+                task = self.plugin_api.get_task(tid)
                 tags = task.get_tags()
                 for tag in tags:
                     if "location" in tag.get_all_attributes():
@@ -160,7 +163,7 @@ class geolocalizedTasks:
                         if tag.get_attribute("location"):
                             position = eval(tag.get_attribute("location"))
                             if not self.geoclue.compare_position(position[0], position[1], float(self.PROXIMITY_FACTOR)):
-                                plugin_api.add_task_to_filter(task.get_id())
+                                self.plugin_api.add_task_to_filter(task.get_id())
                                 
     #=== GEOLOCALIZED PREFERENCES===================================================    
     def on_geolocalized_preferences(self, widget, plugin_api):
@@ -253,11 +256,9 @@ class geolocalizedTasks:
     
     #=== SET TASK LOCATION =========================================================
     def set_task_location(self, widget, plugin_api, location=None):
-        self.plugin_api = plugin_api
-        
         wTree = gtk.glade.XML(self.glade_file, "SetTaskLocation")
         dialog = wTree.get_widget("SetTaskLocation")
-        self.plugin_api.set_parent_window(dialog)
+        plugin_api.set_parent_window(dialog)
         
         btn_zoom_in = wTree.get_widget("btn_zoom_in")
         btn_zoom_out = wTree.get_widget("btn_zoom_out")
@@ -365,7 +366,7 @@ class geolocalizedTasks:
         else:
             dialog_action_area_btn.remove(btn_close)
             # show a close button or the ok/cancel
-            dialog.connect("response", self.set_task_location_close)
+            dialog.connect("response", self.set_task_location_close, plugin_api)
         
         #if there is no location set, we want to set it
         if not task_has_location:
@@ -406,7 +407,9 @@ class geolocalizedTasks:
     def task_location_close(self, dialog, response=None):
         dialog.destroy()
     
-    def set_task_location_close(self, dialog, response=None):
+    def set_task_location_close(self, dialog, response=None, plugin_api=None):
+        print plugin_api
+        #print response
         if response == gtk.RESPONSE_OK:
             # ok
             # tries to get the radiobuttons value, witch may not exist
@@ -418,17 +421,17 @@ class geolocalizedTasks:
                        
                         # because users sometimes make mistakes, I'll check if the tag exists
                         tmp_tag = ""
-                        for tag in self.plugin_api.get_tags():
+                        for tag in plugin_api.get_tags():
                             t = "@" + self.txt_new_tag.get_text().replace("@", "")
                             if tag.get_attribute("name") == t:
                                 tmp_tag = t
                         if tmp_tag:
-                            self.plugin_api.add_tag_attribute(self.txt_new_tag.get_text().replace("@", ""), 
+                            plugin_api.add_tag_attribute(self.txt_new_tag.get_text().replace("@", ""), 
                                                               "location",  
                                                               marker_position)
                         else:
-                            self.plugin_api.add_tag(self.txt_new_tag.get_text().replace("@", ""))
-                            self.plugin_api.add_tag_attribute("@" + self.txt_new_tag.get_text().replace("@", ""), 
+                            plugin_api.add_tag(self.txt_new_tag.get_text().replace("@", ""))
+                            plugin_api.add_tag_attribute("@" + self.txt_new_tag.get_text().replace("@", ""), 
                                                               "location",  
                                                               marker_position)
                         dialog.destroy()
@@ -441,7 +444,7 @@ class geolocalizedTasks:
                     marker_position = (self.marker_list[0].get_property('latitude'), self.marker_list[0].get_property('longitude'))
                     index = self.cmb_existing_tag.get_active()
                     model = self.cmb_existing_tag.get_model()
-                    self.plugin_api.add_tag_attribute(model[index][0], "location", marker_position)
+                    plugin_api.add_tag_attribute(model[index][0], "location", marker_position)
                     dialog.destroy()
         else:
             # cancel
@@ -457,18 +460,16 @@ class geolocalizedTasks:
     #=== SET TASK LOCATION =========================================================
         
     #=== TAG VIEW CONTEXT MENU =====================================================
-    def on_contextmenu_tag_location(self, widget, plugin_api):
-        self.plugin_api_context = plugin_api
-        
+    def on_contextmenu_tag_location(self, widget, plugin_api):      
         wTree = gtk.glade.XML(self.glade_file, "TagLocation")
         dialog = wTree.get_widget("TagLocation")
-        self.plugin_api_context.set_parent_window(dialog)
+        plugin_api.set_parent_window(dialog)
         
         btn_zoom_in = wTree.get_widget("btn_zoom_in")
         btn_zoom_out = wTree.get_widget("btn_zoom_out")
         vbox_map = wTree.get_widget("vbox_map")
         
-        tag = self.plugin_api_context.get_tagpopup_tag()
+        tag = plugin_api.get_tagpopup_tag()
         dialog.set_title(tag.get_attribute("name") + "'s Location")
         
         # get the tag's location
@@ -574,18 +575,3 @@ class geolocalizedTasks:
         r, g, b = [int(n, 16) for n in (r, g, b)]
         return clutter.Color(r, g, b)
     
-    # error dialog
-    def errorDialog(self, parent, header, msg):
-         """
-         Show an error message.
-         """
-
-         dialog = gtk.MessageDialog(parent,
-                               flags=gtk.DIALOG_MODAL,
-                               type=gtk.MESSAGE_ERROR,
-                               buttons=gtk.BUTTONS_CLOSE)
-         dialog.set_title("")
-         dialog.set_markup("<big><b>%s</b></big>\n\n%s" % (header, msg))
-         dialog.realize()
-         dialog.run()
-         dialog.destroy()
