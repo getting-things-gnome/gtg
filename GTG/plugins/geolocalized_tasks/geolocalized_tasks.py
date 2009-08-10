@@ -44,6 +44,7 @@ class geolocalizedTasks:
     
     def __init__(self):
         self.geoclue = Geoclue.DiscoverLocation()
+        self.location_filter = []
         
         self.plugin_path = os.path.dirname(os.path.abspath(__file__))
         self.glade_file = os.path.join(self.plugin_path, "geolocalized.glade")
@@ -141,8 +142,22 @@ class geolocalizedTasks:
         
     def task_changes(self, sender, tid):
         self.filter_workview_by_location()
+        #self.task_location_filter(tid)
+        
+    # filters by location only one task
+    def task_location_filter(self, tid):
+        task = self.plugin_api.get_task(tid)
+        if task.get_status() == "Active":
+            if task.is_workable():
+                tags = task.get_tags()
+                for tag in tags:
+                        if tag.get_attribute("location"):
+                            position = eval(tag.get_attribute("location"))
+                            if not self.geoclue.compare_position(position[0], position[1], float(self.PROXIMITY_FACTOR)):
+                                self.plugin_api.add_task_to_filter(tid)
+                
     
-    # the task location filter
+    # the task location filter (for all tasks)
     def filter_workview_by_location(self):
         if self.location.has_key("latitude") and self.location.has_key("longitude"):
             # TODO: if the location has a delay in being calculated it may not exist at

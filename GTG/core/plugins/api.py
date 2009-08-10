@@ -98,6 +98,7 @@ class PluginAPI:
     def get_requester(self):
         return self.__requester
     
+    # connects a function to a requester signal
     def requester_connect(self, action, func):
         self.__requester.connect(action, func)
             
