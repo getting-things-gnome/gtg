@@ -97,6 +97,9 @@ class PluginAPI:
     # passes the requester to the plugin
     def get_requester(self):
         return self.__requester
+    
+    def requester_connect(self, action, func):
+        self.__requester.connect(action, func)
             
     # changes the tasks TreeStore
     def change_task_tree_store(self, treestore):

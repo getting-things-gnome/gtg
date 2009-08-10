@@ -111,8 +111,10 @@ class geolocalizedTasks:
         self.geoclue.init()
         self.location = self.geoclue.get_location_info()
                 
-        # filter the tasks location for the workview
-        #self.filter_workview_by_location(plugin_api)
+        # connect to the task signals
+        self.plugin_api.requester_connect("task-added", self.task_changes)
+        self.plugin_api.requester_connect("task-modified", self.task_changes)
+        #self.plugin_api.requester_connect("task-deleted", self.task_changes)
     
     def deactivate(self, plugin_api):
         plugin_api.remove_menu_item(self.menu_item)
@@ -135,6 +137,9 @@ class geolocalizedTasks:
     
     def location_changed(self):
         self.location = self.geoclue.get_location_info()
+        self.filter_workview_by_location()
+        
+    def task_changes(self, sender, tid):
         self.filter_workview_by_location()
     
     # the task location filter
