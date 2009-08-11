@@ -467,7 +467,7 @@ class geolocalizedTasks:
                                                               "location",  
                                                               marker_position)
                         else:
-                            plugin_api.add_tag(self.txt_new_tag.get_text().replace("@", ""))
+                            plugin_api.insert_tag(self.txt_new_tag.get_text().replace("@", ""))
                             plugin_api.add_tag_attribute("@" + self.txt_new_tag.get_text().replace("@", ""), 
                                                               "location",  
                                                               marker_position)

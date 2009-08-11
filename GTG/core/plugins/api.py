@@ -127,13 +127,19 @@ class PluginAPI:
     def get_task_title(self):
         return self.task.get_title() 
     
-    # adds a tag, updated the text buffer, inserting the tag at the end of
-    # the task
+    # inserts a tag in the textview
     # this method only works for the onTaskOpened method
-    def add_tag(self, tag):
+    def insert_tag(self, tag):
+        itera = self.textview.get_insert()
+        if itera.starts_line() :
+            self.textview.insert_text("@" + tag,itera)
+        else :
+            self.textview.insert_text(" @" + tag,itera)
+        self.textview.grab_focus()
+    
+    # adds a tag to a task
+    def add_tag(self, tag):    
         self.task.add_tag("@" + tag)
-        #self.textview.insert_text("@" + tag)
-        self.textview.insert_tag("@" + tag)
         
     # adds a attribute to a tag
     # this method only works for the onTaskOpened method
