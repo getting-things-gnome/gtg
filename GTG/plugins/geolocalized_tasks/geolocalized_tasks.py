@@ -58,16 +58,8 @@ class geolocalizedTasks:
         # toolbar button for the new Location view
         # create the pixbuf with the icon and it's size.
         # 24,24 is the TaskEditor's toolbar icon size
-        image_geolocalization_path = os.path.join(self.plugin_path, "icons/hicolor/24x24/geolocalization.png")
-        pixbuf_geolocalization = gtk.gdk.pixbuf_new_from_file_at_size(image_geolocalization_path, 24, 24)
-        
         image_assign_location_path = os.path.join(self.plugin_path, "icons/hicolor/16x16/assign-location.png")
         pixbug_assign_location = gtk.gdk.pixbuf_new_from_file_at_size(image_assign_location_path, 16, 16)
-        
-        # create the image and associate the pixbuf
-        self.icon_geolocalization = gtk.Image()
-        self.icon_geolocalization.set_from_pixbuf(pixbuf_geolocalization)
-        self.icon_geolocalization.show()
         
         image_assign_location = gtk.Image()
         image_assign_location.set_from_pixbuf(pixbug_assign_location)
@@ -77,11 +69,6 @@ class geolocalizedTasks:
         self.context_item = gtk.ImageMenuItem("Assign a location to this tag")
         self.context_item.set_image(image_assign_location)
         # TODO: add a short cut to the menu
-        
-        # toolbar button for the location_view
-        self.btn_location_view = gtk.ToggleToolButton()
-        self.btn_location_view.set_icon_widget(self.icon_geolocalization)
-        self.btn_location_view.set_label("Location View")
         
         self.PROXIMITY_FACTOR = 5  # 5 km
         self.LOCATION_ACCURACY = 3 # Locality
@@ -134,6 +121,19 @@ class geolocalizedTasks:
         
     
     def onTaskOpened(self, plugin_api):
+        image_geolocalization_path = os.path.join(self.plugin_path, "icons/hicolor/24x24/geolocalization.png")
+        pixbuf_geolocalization = gtk.gdk.pixbuf_new_from_file_at_size(image_geolocalization_path, 24, 24)
+        
+        # create the image and associate the pixbuf
+        self.icon_geolocalization = gtk.Image()
+        self.icon_geolocalization.set_from_pixbuf(pixbuf_geolocalization)
+        self.icon_geolocalization.show()
+        
+        # toolbar button for the location_view
+        self.btn_location_view = gtk.ToggleToolButton()
+        self.btn_location_view.set_icon_widget(self.icon_geolocalization)
+        self.btn_location_view.set_label("Location View")
+        
         plugin_api.add_task_toolbar_item(gtk.SeparatorToolItem())
         
         btn_set_location = gtk.ToolButton()
@@ -473,9 +473,8 @@ class geolocalizedTasks:
                                                               marker_position)
                         dialog.destroy()
                     else:
-                        pass
                         # does nothing, no tag set.
-                        #self.errorDialog(dialog, "Error: No tag defined", "The tag has to be defined so that the location can be associated with it.")
+                        pass
                 else:
                     # radiobutton2
                     marker_position = (self.marker_list[0].get_property('latitude'), self.marker_list[0].get_property('longitude'))
