@@ -34,13 +34,6 @@ from marker import MarkerLayer
 from GTG.core.plugins.engine import PluginEngine
 
 class geolocalizedTasks:
-    PLUGIN_NAME = 'Geolocalized Tasks'
-    PLUGIN_AUTHORS = 'Paulo Cabido <paulo.cabido@gmail.com>'
-    PLUGIN_VERSION = '0.1'
-    PLUGIN_DESCRIPTION = 'This plugin adds geolocalized tasks to GTG!.\n \
-                          WARNING: This plugin is still heavy development.'
-                          
-    PLUGIN_ENABLED = False
     
     def __init__(self):
         self.geoclue = Geoclue.DiscoverLocation()
@@ -123,7 +116,7 @@ class geolocalizedTasks:
         self.config["geolocalized-tasks"]["location_determination_method"] = self.LOCATION_DETERMINATION_METHOD
     
     def onTaskOpened(self, plugin_api):
-        plugin_api.AddTaskToolbarItem(gtk.SeparatorToolItem())
+        plugin_api.add_task_toolbar_item(gtk.SeparatorToolItem())
         
         btn_set_location = gtk.ToolButton()
         btn_set_location.set_icon_widget(self.icon_geolocalization)
