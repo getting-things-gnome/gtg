@@ -192,16 +192,19 @@ class PluginAPI:
     def get_config(self):
         return self.config
     
-    # add's a tid to the workview filter
+    # add's a tid to the filter
     def add_task_to_filter(self, tid):
         self.__requester.add_task_to_filter(tid)
-        
+    
+    # removes a tid from the filter
     def remove_task_from_filter(self, tid):
         self.__requester.remove_task_from_filter(tid)
         
+    # adds a tag (tag name) to the filter
     def add_tag_to_filter(self, tag):
         self.__requester.add_tag_to_filter(tag)
         
+    # removes a tag (tag name) from the filter
     def remove_tag_from_filter(self, tag):
         self.__requester.remove_tag_from_filter(tag)
     

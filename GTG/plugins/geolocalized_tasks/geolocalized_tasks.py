@@ -143,6 +143,7 @@ class geolocalizedTasks:
         plugin_api.add_task_toolbar_item(btn_set_location)
     
     def location_changed(self):
+        # TODO: This should refresh the task ang tag list
         # update the location
         self.location = self.geoclue.get_location_info()
         # reset the filters
@@ -446,8 +447,6 @@ class geolocalizedTasks:
         dialog.destroy()
     
     def set_task_location_close(self, dialog, response=None, plugin_api=None):
-        print plugin_api
-        #print response
         if response == gtk.RESPONSE_OK:
             # ok
             # tries to get the radiobuttons value, witch may not exist
