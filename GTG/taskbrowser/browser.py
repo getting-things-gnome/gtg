@@ -814,13 +814,15 @@ class TaskBrowser:
 
     def dleft_sort_func(self, model, iter1, iter2, user_data=None):
         order = self.task_tv.get_model().get_sort_column_id()[1]
-        t1_title = model.get_value(iter1, tasktree.COL_TITLE)
-        t1_title = locale.strxfrm(t1_title)
-        t2_title = model.get_value(iter2, tasktree.COL_TITLE)
-        t2_title = locale.strxfrm(t2_title)
-        t1_dleft = model.get_value(iter1, tasktree.COL_DLEFT)
-        t2_dleft = model.get_value(iter2, tasktree.COL_DLEFT)
+        task1 = model.get_value(iter1, tasktree.COL_OBJ)
+        task2 = model.get_value(iter2, tasktree.COL_OBJ)
+        t1_dleft = task1.get_due_date()
+        t2_dleft = task2.get_due_date()
         if not t1_dleft and not t2_dleft:
+            t1_title = task1.get_title()
+            t2_title = task2.get_title()
+            t1_title = locale.strxfrm(t1_title)
+            t2_title = locale.strxfrm(t2_title)
             if order == gtk.SORT_ASCENDING:
                 return cmp(t1_title, t2_title)
             else:
