@@ -5,8 +5,8 @@
   <widget class="GtkWindow" id="TaskEditor">
     <property name="title" translatable="yes">Task</property>
     <property name="window_position">center-always</property>
-    <property name="default_width">316</property>
-    <property name="default_height">321</property>
+    <property name="default_width">350</property>
+    <property name="default_height">350</property>
     <child>
       <widget class="GtkVBox" id="vbox4">
         <property name="visible">True</property>

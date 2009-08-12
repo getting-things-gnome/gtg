@@ -4,8 +4,8 @@
   <!-- interface-naming-policy toplevel-contextual -->
   <widget class="GtkWindow" id="MainWindow">
     <property name="title" translatable="yes">Getting Things Gnome!</property>
-    <property name="default_width">640</property>
-    <property name="default_height">480</property>
+    <property name="default_width">700</property>
+    <property name="default_height">550</property>
     <signal name="configure_event" handler="on_move"/>
     <signal name="size_allocate" handler="on_size_allocate"/>
     <signal name="delete_event" handler="on_delete"/>
@@ -584,7 +584,7 @@
                   <widget class="GtkVPaned" id="vpaned1">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="position">330</property>
+                    <property name="position">300</property>
                     <property name="position_set">True</property>
                     <child>
                       <widget class="GtkScrolledWindow" id="main_pane">
