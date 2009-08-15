@@ -58,8 +58,10 @@ class geolocalizedTasks:
         # toolbar button for the new Location view
         # create the pixbuf with the icon and it's size.
         # 24,24 is the TaskEditor's toolbar icon size
-        image_assign_location_path = os.path.join(self.plugin_path, "icons/hicolor/16x16/assign-location.png")
-        pixbug_assign_location = gtk.gdk.pixbuf_new_from_file_at_size(image_assign_location_path, 16, 16)
+        image_assign_location_path = os.path.join(self.plugin_path,\
+                                                  "icons/hicolor/16x16/assign-location.png")
+        pixbug_assign_location = gtk.gdk.pixbuf_new_from_file_at_size(image_assign_location_path,\
+                                                                      16, 16)
         
         image_assign_location = gtk.Image()
         image_assign_location.set_from_pixbuf(pixbug_assign_location)
@@ -72,10 +74,22 @@ class geolocalizedTasks:
         
         self.PROXIMITY_FACTOR = 5  # 5 km
         self.LOCATION_ACCURACY = 3 # Locality
-        self.LOCATION_DETERMINATION_METHOD = ["network", "gps", "cellphone"]
-        #for provider in self.geoclue.get_available_providers():
-        #    if provider['position'] and (provider['provider'] != "Example Provider" and provider['provider'] != "Plazes"):
-        #        self.LOCATION_DETERMINATION_METHOD.append(provider["provider"])        
+        self.LOCATION_DETERMINATION_METHOD = [] # "network", "gps", "cellphone"
+        
+        for provider in self.geoclue.get_available_providers():
+            if provider['name'].lower() == "hostip":
+                if self.geoclue.provider_status(provider['object']) == "available" or\
+                self.geoclue.provider_status(provider['object']) == "acquiring":
+                    self.LOCATION_DETERMINATION_METHOD.append("network")
+            elif provider['name'].lower() == "gpsd" or provider['name'].lower() == "gypsy":
+                if self.geoclue.provider_status(provider['object']) == "available" or\
+                self.geoclue.provider_status(provider['object']) == "acquiring":
+                    self.LOCATION_DETERMINATION_METHOD.append("gps")
+            elif provider['name'].lower() == "gsmloc":
+                if self.geoclue.provider_status(provider['object']) == "available" or\
+                self.geoclue.provider_status(provider['object']) == "acquiring":
+                    self.LOCATION_DETERMINATION_METHOD.append("cellphone")
+                    
     
     def activate(self, plugin_api):
         self.plugin_api = plugin_api
@@ -96,7 +110,50 @@ class geolocalizedTasks:
                 self.LOCATION_ACCURACY = self.config["geolocalized-tasks"]["accuracy"]
         
             if self.config["geolocalized-tasks"].has_key("location_determination_method"):
-                self.LOCATION_DETERMINATION_METHOD = self.config["geolocalized-tasks"]["location_determination_method"]
+                self.LOCATION_DETERMINATION_METHOD =\
+                self.config["geolocalized-tasks"]["location_determination_method"]
+              
+        providers = self.geoclue.get_available_providers()
+        provider_name_list = []
+        
+        for provider in providers:
+            provider_name_list.append(provider['name'].lower())  
+            
+        # verify the location determination method
+        for method in self.LOCATION_DETERMINATION_METHOD:
+            if method == "network":
+                if "hostip" in provider_name_list:
+                    for provider in providers:
+                        if provider['name'].lower() == "hostip":
+                            if self.geoclue.provider_status(provider['object']) == "error" or\
+                            self.geoclue.provider_status(provider['object']) == "unavailable":
+                                if "network" in self.LOCATION_DETERMINATION_METHOD:
+                                    self.LOCATION_DETERMINATION_METHOD.remove("network")
+                                    break
+                else:
+                    self.LOCATION_DETERMINATION_METHOD.remove("network")
+            elif method == "gps":
+                if "gpsd" in provider_name_list or "gypsy" in provider_name_list:
+                    for provider in providers:
+                        if provider['name'].lower() == "gpsd" or provider['name'].lower() == "gypsy":
+                            if self.geoclue.provider_status(provider['object']) == "error" or\
+                            self.geoclue.provider_status(provider['object']) == "unavailable":
+                                if "gps" in self.LOCATION_DETERMINATION_METHOD:
+                                    self.LOCATION_DETERMINATION_METHOD.remove("gps")
+                                    break
+                else:
+                    self.LOCATION_DETERMINATION_METHOD.remove("gps")
+            elif method == "cellphone":
+                if "gsmloc" in provider_name_list:
+                    for provider in providers:
+                        if provider['name'].lower() == "gsmloc":
+                            if self.geoclue.provider_status(provider['object']) == "error" or\
+                            self.geoclue.provider_status(provider['object']) == "unavailable":
+                                if "cellphone" in self.LOCATION_DETERMINATION_METHOD:
+                                    self.LOCATION_DETERMINATION_METHOD.remove("cellphone")
+                                    break
+                else:
+                    self.LOCATION_DETERMINATION_METHOD.remove("cellphone")
         
         # registers the filter callback method
         plugin_api.register_filter_cb(self.task_location_filter)
@@ -109,7 +166,8 @@ class geolocalizedTasks:
         self.config["geolocalized-tasks"] = {}
         self.config["geolocalized-tasks"]["proximity_factor"] = self.PROXIMITY_FACTOR
         self.config["geolocalized-tasks"]["accuracy"] = self.LOCATION_ACCURACY
-        self.config["geolocalized-tasks"]["location_determination_method"] = self.LOCATION_DETERMINATION_METHOD
+        self.config["geolocalized-tasks"]["location_determination_method"] =\
+        self.LOCATION_DETERMINATION_METHOD
         
         # remove the filters
         for tid in self.location_filter:
@@ -121,8 +179,11 @@ class geolocalizedTasks:
         
     
     def onTaskOpened(self, plugin_api):
-        image_geolocalization_path = os.path.join(self.plugin_path, "icons/hicolor/24x24/geolocalization.png")
-        pixbuf_geolocalization = gtk.gdk.pixbuf_new_from_file_at_size(image_geolocalization_path, 24, 24)
+        image_geolocalization_path = os.path.join(self.plugin_path,\
+                                                  "icons/hicolor/24x24/geolocalization.png")
+        pixbuf_geolocalization = gtk.gdk.pixbuf_new_from_file_at_size(image_geolocalization_path,
+                                                                      24,
+                                                                      24)
         
         # create the image and associate the pixbuf
         self.icon_geolocalization = gtk.Image()
@@ -167,7 +228,10 @@ class geolocalizedTasks:
                     for tag in tags:
                             if tag.get_attribute("location"):
                                 position = eval(tag.get_attribute("location"))
-                                if not self.geoclue.compare_position(position[0], position[1], float(self.PROXIMITY_FACTOR)):
+                                if not self.geoclue.compare_position(position[0],
+                                                                     position[1],
+                                                                     float(self.PROXIMITY_FACTOR)
+                                                                     ):
                                     self.plugin_api.add_task_to_filter(tid)
                                     if tid not in self.location_filter:
                                         self.location_filter.append(tid)
@@ -222,16 +286,88 @@ class geolocalizedTasks:
         check_cellphone = wTree.get_widget("check_cellphone")
         check_gps = wTree.get_widget("check_gps")
         
-        if "network" in self.LOCATION_DETERMINATION_METHOD:
-            check_network.set_active(True)
-            
-        if "cellphone" in self.LOCATION_DETERMINATION_METHOD:
-            check_cellphone.set_active(True)
-            
-        if "gps" in self.LOCATION_DETERMINATION_METHOD:
-            check_gps.set_active(True)
+        providers = self.geoclue.get_available_providers() 
+        provider_name_list = []
         
+        for provider in providers:
+            provider_name_list.append(provider['name'].lower())  
         
+        if "hostip" not in provider_name_list:
+            check_network.set_active(False)
+            check_network.set_sensitive(False)
+        else:
+            if "network" in self.LOCATION_DETERMINATION_METHOD:
+                for provider in providers:
+                    if provider['name'].lower() == "hostip":
+                        if self.geoclue.provider_status(provider['object']) == "available" or\
+                        self.geoclue.provider_status(provider['object']) == "acquiring":
+                            check_network.set_active(True)
+                            break
+                        else:
+                            check_network.set_active(False)
+                            check_network.set_sensitive(False)
+                            break
+            else:
+                for provider in providers:
+                    if provider['name'].lower() == "hostip":
+                        if self.geoclue.provider_status(provider['object']) == "error" or\
+                        self.geoclue.provider_status(provider['object']) == "unavailable":
+                            check_network.set_active(False)
+                            check_network.set_sensitive(False)
+                            break
+                
+        if "gsmloc" not in provider_name_list:
+            check_cellphone.set_active(False)
+            check_cellphone.set_sensitive(False)
+        else:
+            if "cellphone" in self.LOCATION_DETERMINATION_METHOD:
+                for provider in providers:
+                    if provider['name'].lower() == "gsmloc":
+                        if self.geoclue.provider_status(provider['object']) == "available" or\
+                        self.geoclue.provider_status(provider['object']) == "acquiring":
+                            check_cellphone.set_active(True)
+                            break
+                        else:
+                            check_cellphone.set_active(False)
+                            check_cellphone.set_sensitive(False)
+                            break
+            else:
+                for provider in providers:
+                    if provider['name'].lower() == "gsmloc":
+                        if self.geoclue.provider_status(provider['object']) == "error" or\
+                        self.geoclue.provider_status(provider['object']) == "unavailable":
+                            check_cellphone.set_active(False)
+                            check_cellphone.set_sensitive(False)
+                            break
+        
+        # TODO: separate gypsy from gpsd
+        if "gpsd" not in provider_name_list:
+            if "gypsy" not in provider_name_list:
+                check_gps.set_active(False)
+                check_gps.set_sensitive(False)
+        else:
+            if "gps" in self.LOCATION_DETERMINATION_METHOD:
+                for provider in providers:
+                    if provider['name'].lower() == "gpsd" or\
+                    provider['name'].lower() == "gypsy":
+                        if self.geoclue.provider_status(provider['object']) == "available" or\
+                        self.geoclue.provider_status(provider['object']) == "acquiring":
+                            check_gps.set_active(True)
+                            break
+                        else:
+                            check_gps.set_active(False)
+                            check_gps.set_sensitive(False)
+                            break
+            else:
+                for provider in providers:
+                    if provider['name'].lower() == "gpsd" or\
+                    provider['name'].lower() == "gypsy":
+                        if self.geoclue.provider_status(provider['object']) == "error" or\
+                        self.geoclue.provider_status(provider['object']) == "unavailable":
+                            check_gps.set_active(False)
+                            check_gps.set_sensitive(False)
+                            break
+                        
         spin_proximityfactor = wTree.get_widget("spin_proximityfactor")
         spin_proximityfactor.set_value(float(self.PROXIMITY_FACTOR))
         spin_proximityfactor.connect("changed", self.spin_proximityfactor_changed)
@@ -360,11 +496,18 @@ class geolocalizedTasks:
                             # Possibility, use a color from another tag
                             pass
                         
-                        self.marker_list.append(layer.add_marker(plugin_api.get_task_title(), tag['location'][0], tag['location'][1], color))
+                        self.marker_list.append(layer.add_marker(plugin_api.get_task_title(),
+                                                                 tag['location'][0],
+                                                                 tag['location'][1],
+                                                                 color)
+                                                                 )
         else:
             try:
                 if self.location['longitude'] and self.location['latitude']:
-                    self.marker_list.append(layer.add_marker(plugin_api.get_task_title(), self.location['latitude'], self.location['longitude']))
+                    self.marker_list.append(layer.add_marker(plugin_api.get_task_title(),
+                                                             self.location['latitude'],
+                                                             self.location['longitude'])
+                                                             )
             except:
                 self.marker_list.append(layer.add_marker(plugin_api.get_task_title(), None, None))
         
@@ -376,7 +519,9 @@ class geolocalizedTasks:
         if not task_has_location:
             # method that will change the marker's position
             champlain_view.set_reactive(True)
-            champlain_view.connect("button-release-event", self.champlain_change_marker, champlain_view)
+            champlain_view.connect("button-release-event",\
+                                   self.champlain_change_marker,\
+                                   champlain_view)
         
         layer.show_all()
         

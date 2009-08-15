@@ -399,7 +399,7 @@ Detailed</property>
                             </child>
                             <child>
                               <widget class="GtkCheckButton" id="check_cellphone">
-                                <property name="label" translatable="yes">Use cellphone (if available)</property>
+                                <property name="label" translatable="yes">Use cellphone</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
@@ -414,7 +414,7 @@ Detailed</property>
                             </child>
                             <child>
                               <widget class="GtkCheckButton" id="check_gps">
-                                <property name="label" translatable="yes">Use gps (if available)</property>
+                                <property name="label" translatable="yes">Use gps</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
