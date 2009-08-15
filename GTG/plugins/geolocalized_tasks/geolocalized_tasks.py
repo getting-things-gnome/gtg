@@ -73,7 +73,7 @@ class geolocalizedTasks:
         # TODO: add a short cut to the menu
         
         self.PROXIMITY_FACTOR = 5  # 5 km
-        self.LOCATION_ACCURACY = 3 # Locality
+        #self.LOCATION_ACCURACY = 3 # Locality
         self.LOCATION_DETERMINATION_METHOD = [] # "network", "gps", "cellphone"
         
         for provider in self.geoclue.get_available_providers():
@@ -105,9 +105,6 @@ class geolocalizedTasks:
         if self.config.has_key("geolocalized-tasks"):
             if self.config["geolocalized-tasks"].has_key("proximity_factor"):
                 self.PROXIMITY_FACTOR = self.config["geolocalized-tasks"]["proximity_factor"]
-            
-            if self.config["geolocalized-tasks"].has_key("accuracy"):
-                self.LOCATION_ACCURACY = self.config["geolocalized-tasks"]["accuracy"]
         
             if self.config["geolocalized-tasks"].has_key("location_determination_method"):
                 self.LOCATION_DETERMINATION_METHOD =\
@@ -165,7 +162,6 @@ class geolocalizedTasks:
         
         self.config["geolocalized-tasks"] = {}
         self.config["geolocalized-tasks"]["proximity_factor"] = self.PROXIMITY_FACTOR
-        self.config["geolocalized-tasks"]["accuracy"] = self.LOCATION_ACCURACY
         self.config["geolocalized-tasks"]["location_determination_method"] =\
         self.LOCATION_DETERMINATION_METHOD
         
@@ -275,13 +271,6 @@ class geolocalizedTasks:
         dialog.connect("response", self.preferences_close)
         plugin_api.set_parent_window(dialog)
         
-        cmb_accuracy = wTree.get_widget("cmb_accuracy")
-        for i in range(len(cmb_accuracy.get_model())):
-            if str(self.accuracy_to_value(cmb_accuracy.get_model()[i][0])) == str(self.LOCATION_ACCURACY):
-                cmb_accuracy.set_active(i)
-        cmb_accuracy.connect("changed", self.cmb_accuracy_changed)
-        self.tmp_location_accuracy = self.LOCATION_ACCURACY
-        
         check_network = wTree.get_widget("check_network")
         check_cellphone = wTree.get_widget("check_cellphone")
         check_gps = wTree.get_widget("check_gps")
@@ -375,53 +364,11 @@ class geolocalizedTasks:
         
         dialog.show_all()
         
-    # converts the accuracy to a value
-    def accuracy_to_value(self, accuracy):
-        if not accuracy:
-            return 0
-        elif accuracy.lower() == "Country".lower():
-            return 1
-        elif accuracy.lower() == "Region".lower():
-            return 2
-        elif accuracy.lower() == "Locality".lower():
-            return 3
-        elif accuracy.lower() == "Postalcode".lower():
-            return 4
-        elif accuracy.lower() == "Street".lower():
-            return 5
-        elif accuracy.lower() == "Detailed".lower():
-            return 6
-        return 0 
-    
-    # converts the value of a accuracy to the accuracy
-    def value_to_accuracy(self, value):
-        if not value:
-            return None
-        elif value == 1:
-            return "Country"
-        elif value == 2:
-            return "Region"
-        elif value == 3:
-            return "Locality"
-        elif value == 4:
-            return "Postalcode"
-        elif value == 5:
-            return "Street"
-        elif value == 6:
-            return "Detailed"
-        return None
-        
-    def cmb_accuracy_changed(self, comboboxentry):
-        index = comboboxentry.get_active()
-        model = comboboxentry.get_model()
-        self.tmp_location_accuracy = self.accuracy_to_value(model[index][0])
-        
     def spin_proximityfactor_changed(self, spinbutton):
         self.tmp_proximityfactor = spinbutton.get_value()
         
     def preferences_close(self, dialog, response=None):
-        if response == gtk.RESPONSE_OK:
-            self.LOCATION_ACCURACY = self.tmp_location_accuracy 
+        if response == gtk.RESPONSE_OK: 
             self.PROXIMITY_FACTOR = float(self.tmp_proximityfactor) 
             dialog.destroy()
         else:
