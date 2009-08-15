@@ -38,6 +38,12 @@ class Requester(gobject.GObject):
     def __init__(self, datastore):
         """Construct a L{Requester}."""
         self.ds = datastore
+        
+        #filter
+        self.filter = {}
+        self.filter["tasks"] = []
+        self.filter["tags"] = []
+        
         gobject.GObject.__init__(self)
 
     ############# Signals #########################   
@@ -152,6 +158,30 @@ class Requester(gobject.GObject):
             if task:
                 l_tasks.append(tid)
         return l_tasks
+    
+    ############# Filters #########################
+    def set_filter(self, filter):
+        self.filter = filter
+        
+    def get_filter(self):
+        return self.filter
+        
+    def add_task_to_filter(self, tid):
+        if tid not in self.filter["tasks"]:
+            self.filter["tasks"].append(tid)
+        
+    def remove_task_from_filter(self, tid):
+        if tid in self.filter["tasks"]:
+            self.filter["tasks"].remove(tid)
+            
+    def add_tag_to_filter(self, tag):
+        if tag not in self.filter["tags"]:
+            self.filter["tags"].append(tag)
+        
+    def remove_tag_from_filter(self, tag):
+        if tid in self.filter["tags"]:
+            self.filter["tags"].remove(tag)
+    ############# Filters #########################
 
     def get_active_tasks_list(self, tags=None, notag_only=False,
                               started_only=True, is_root=False,
@@ -179,15 +209,37 @@ class Requester(gobject.GObject):
             temp_tasks = self.get_active_tasks_list(
                 tags=tags, notag_only=notag_only, started_only=True,
                 is_root=False, workable=False)
+            
+            #remove from temp_tasks the filtered out tasks
+            #for tid in temp_tasks:
+            #    if tid in self.filter["tasks"]:
+            #        temp_tasks.remove(tid)
+            #    else:
+            #        for filter_tag in self.get_task(tid).get_tags():
+            #            if filter_tag.get_attribute("name") in self.filter["tags"]:
+            #                print self.get_task(tid).get_title()
+            #                temp_tasks.remove(tid)
+            #                break
+            
             # Now we verify that the tasks are workable and don't have a
             # nonwork_tag.
             for tid in temp_tasks:
+                filtered_tag = False
                 t = self.get_task(tid)
-                if t and t.is_workable():
-                    if len(nonwork_tag) == 0:
-                        l_tasks.append(tid)
-                    elif not t.has_tags(nonwork_tag):
-                        l_tasks.append(tid)
+                if t and t.is_workable() and (tid not in self.filter["tasks"]):
+                    for filter_tag in t.get_tags():
+                        if filter_tag.get_attribute("name") in self.filter["tags"]:
+                            #print t.get_title()
+                            temp_tasks.remove(tid)
+                            filtered_tag = True
+                            
+                    if not filtered_tag:
+                        if len(nonwork_tag) == 0:
+                            #print t.get_title()
+                            l_tasks.append(tid)
+                        elif not t.has_tags(nonwork_tag):
+                            #print t.get_title()
+                            l_tasks.append(tid)
             return l_tasks
         else:
             active = ["Active"]

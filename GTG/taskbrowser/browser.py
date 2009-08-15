@@ -142,8 +142,8 @@ class TaskBrowser:
         self.priv["ctasklist"]["sort_order"]  = gtk.SORT_ASCENDING
         self.priv['selected_rows']            = None
         self.priv['workview']                 = False
-        #self.priv['noteview']                 = False
-        self.priv['workview_task_filter']     = []
+        #self.priv['noteview']                = False
+        self.priv['filter_cbs']               = []
 
     def _init_icon_theme(self):
         icon_dirs = [GTG.DATA_DIR, os.path.join(GTG.DATA_DIR, "icons")]
@@ -437,8 +437,8 @@ class TaskBrowser:
         self.plugins = self.pengine.LoadPlugins()
         
         # initializes the plugin api class
-        self.plugin_api = PluginAPI(self.window, self.config, self.wTree, self.req, \
-                                    self.task_tv, self.priv['workview_task_filter'], \
+        self.plugin_api = PluginAPI(self.window, self.config, self.wTree,\
+                                    self.req, self.task_tv, self.priv['filter_cbs'],\
                                     self.tagpopup, self.tags_tv, None, None)
         
         if self.plugins:
@@ -737,15 +737,19 @@ class TaskBrowser:
         """
 
         tag_list, notag_only = self.get_selected_tags()
-        
-        if task in self.priv['workview_task_filter']:
-            return False
 
         if not task.has_tags(tag_list=tag_list, notag_only=notag_only):
             return False
 
         if self.priv['workview']:
             res = True
+            
+            # filter tasks view callbacks
+            for cb in self.priv['filter_cbs']:
+                res = cb(task.get_id())
+                if res == False:
+                    return False
+            
             for t in task.get_tags():
                 if t.get_attribute("nonworkview"):
                     res = res and (not eval(t.get_attribute("nonworkview")))
@@ -867,6 +871,14 @@ class TaskBrowser:
 ### SIGNAL CALLBACKS ##########################################################
 # Typically, reaction to user input & interactions with the GUI
 #
+    def register_filter_callback(self, cb):
+        if cb not in self.priv['filter_cbs']:
+            self.priv['filter_cbs'].append(cb)
+        
+    def unregister_filter_callback(self, cb):
+        if cb in self.priv['filter_cbs']:
+            self.priv['filter_cbs'].remove(cb)
+        
     def on_move(self, widget, data):
         xpos, ypos = self.window.get_position()
         self.priv["window_xpos"] = xpos

@@ -69,6 +69,7 @@ class PluginEngine:
                 		missing.append(str(e).split(" ")[3])
                 	error = True
                 except Exception, e:
+                	print e
                 	error = True
                 
                 # check DBus dependencies

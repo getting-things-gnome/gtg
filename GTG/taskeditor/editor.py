@@ -158,7 +158,8 @@ class TaskEditor :
         # plugins
         self.plugins = plugins
         self.pengine = PluginEngine(PLUGIN_DIR)
-        self.te_plugin_api = PluginAPI(self.window, None, self.wTree, self.req, None, None, None, None, task, self.textview)
+        self.te_plugin_api = PluginAPI(self.window, None, self.wTree, self.req, 
+                                       None, None, None, None, task, self.textview)
         self.pengine.onTaskLoad(self.plugins, self.te_plugin_api)
         
         #Putting the refresh callback at the end make the start a lot faster

@@ -19,8 +19,9 @@
 import gtk
 
 class PluginAPI:
-    def __init__(self, window, config, wTree, requester, taskview, workview_task_filter, \
-                 tagpopup, tagview, task=None, textview=None):
+    def __init__(self, window, config, wTree, requester, taskview,\
+                 filter_cbs, tagpopup, tagview, task=None,\
+                 textview=None):
         # private vars       
         self.__window = window
         self.config = config
@@ -28,10 +29,11 @@ class PluginAPI:
         self.__requester = requester
         
         self.taskview = taskview
-        self.__workview_task_filter = workview_task_filter
         
         self.__tagpopup = tagpopup
         self.tagview = tagview
+        
+        self.__filter_cbs = filter_cbs
         
         if task:
             self.task = task
@@ -98,6 +100,10 @@ class PluginAPI:
     # passes the requester to the plugin
     def get_requester(self):
         return self.__requester
+    
+    # connects a function to a requester signal
+    def requester_connect(self, action, func):
+        self.__requester.connect(action, func)
             
     # changes the tasks TreeStore
     def change_task_tree_store(self, treestore):
@@ -121,13 +127,19 @@ class PluginAPI:
     def get_task_title(self):
         return self.task.get_title() 
     
-    # adds a tag, updated the text buffer, inserting the tag at the end of
-    # the task
+    # inserts a tag in the textview
     # this method only works for the onTaskOpened method
-    def add_tag(self, tag):
+    def insert_tag(self, tag):
+        itera = self.textview.get_insert()
+        if itera.starts_line() :
+            self.textview.insert_text("@" + tag,itera)
+        else :
+            self.textview.insert_text(" @" + tag,itera)
+        self.textview.grab_focus()
+    
+    # adds a tag to a task
+    def add_tag(self, tag):    
         self.task.add_tag("@" + tag)
-        #self.textview.insert_text("@" + tag)
-        self.textview.insert_tag("@" + tag)
         
     # adds a attribute to a tag
     # this method only works for the onTaskOpened method
@@ -167,7 +179,7 @@ class PluginAPI:
         selected = self.tagview.get_selection()
         model, iter = selected.get_selected()
         tag = model.get_value(iter, 0)
-        return tag
+        return self.__requester.get_tag(tag)
     
     # returns the task view in the main window (task browser)
     def get_taskview(self):
@@ -186,7 +198,28 @@ class PluginAPI:
     def get_config(self):
         return self.config
     
-    # add's a tid to the workview filter
-    def add_task_to_workview_filter(self, tid):
-        self.__workview_task_filter.append(tid)
+    # add's a tid to the filter
+    def add_task_to_filter(self, tid):
+        self.__requester.add_task_to_filter(tid)
+    
+    # removes a tid from the filter
+    def remove_task_from_filter(self, tid):
+        self.__requester.remove_task_from_filter(tid)
         
+    # adds a tag (tag name) to the filter
+    def add_tag_to_filter(self, tag):
+        self.__requester.add_tag_to_filter(tag)
+        
+    # removes a tag (tag name) from the filter
+    def remove_tag_from_filter(self, tag):
+        self.__requester.remove_tag_from_filter(tag)
+    
+    # register a callback with the filter callbacks    
+    def register_filter_cb(self, func):
+        if func not in self.__filter_cbs:
+            self.__filter_cbs.append(func)
+    
+    # unregister a callback from the filter callbacks
+    def unregister_filter_cb(self, func):
+        if func in self.__filter_cbs:
+            self.__filter_cbs.remove(func)
