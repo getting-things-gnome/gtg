@@ -45,9 +45,6 @@ class geolocalizedTasks:
     def __init__(self):
         self.geoclue = Geoclue.DiscoverLocation()
         self.geoclue.connect(self.location_changed)
-        self.geoclue.init()
-        self.location = self.geoclue.get_location_info()
-        self.location_filter = []
         
         self.plugin_path = os.path.dirname(os.path.abspath(__file__))
         self.glade_file = os.path.join(self.plugin_path, "geolocalized.glade")
@@ -151,6 +148,25 @@ class geolocalizedTasks:
                                     break
                 else:
                     self.LOCATION_DETERMINATION_METHOD.remove("cellphone")
+        
+        try:            
+            if len(self.LOCATION_DETERMINATION_METHOD) == 1 and\
+            "network" in self.LOCATION_DETERMINATION_METHOD:
+                self.geoclue.init()
+            elif len(self.LOCATION_DETERMINATION_METHOD) == 1 and\
+            "cellphone" in self.LOCATION_DETERMINATION_METHOD:
+                self.geoclue.init(resource=(1 << 1))
+            elif len(self.LOCATION_DETERMINATION_METHOD) == 1 and\
+            "gps" in self.LOCATION_DETERMINATION_METHOD:
+                self.geoclue.init(resource=(1 << 2))
+            else:
+                self.geoclue.init(resource=((1 << 10) - 1))
+        except Exception, e:
+            self.geoclue.init(resource=0)
+            
+        
+        self.location = self.geoclue.get_location_info()
+        self.location_filter = []
         
         # registers the filter callback method
         plugin_api.register_filter_cb(self.task_location_filter)
