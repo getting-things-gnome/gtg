@@ -227,6 +227,13 @@ class Tag(TreeNode):
         if butname:
             attributes.remove('name')
         return attributes
+        
+    def reparent(self, parent):
+        if isinstance(parent, Tag):
+            self.set_attribute('parent', parent.get_name())
+        else:
+            self.set_attribute('parent', '')
+        TreeNode.reparent(self, parent)
 
     def __str__(self):
         return "Tag: %s" % self.get_name()

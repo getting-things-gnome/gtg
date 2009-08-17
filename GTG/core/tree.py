@@ -101,7 +101,9 @@ class Tree():
 
     def _node_for_rowref(self, node, rowref):
         #print "_node_for_rowref: %s" % rowref
-        if rowref.rfind('/') == 0:
+        if rowref == '':
+            return self.root
+        elif rowref.rfind('/') == 0:
             return node.get_child(rowref[1:])
         else:
             cur_id   = rowref[1:rowref.find('/', 1)]
