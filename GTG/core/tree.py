@@ -201,3 +201,10 @@ class TreeNode():
         child = self.children[idx]
         self.ids.remove(id)
         self.children.remove(child)
+        
+    def reparent(self, parent):
+        if self.has_parent():
+            self.get_parent().remove_child(self.id)
+        self.set_parent(parent)
+        parent.add_child(self.id, self)
+        
