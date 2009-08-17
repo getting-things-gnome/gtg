@@ -55,7 +55,7 @@ class TagStore :
             parent = tag.get_attribute('parent')
             if parent:
                 pnode=self.new_tag(parent)
-                tag.reparent(pnode)
+                tag.reparent(pnode, update_attr=False)
         
         #Now we build special tags. Special tags are not
         #in the traditional tag list
@@ -103,7 +103,7 @@ class TagStore :
                     self.tags[name].set_attribute(att_name,val)
 
     def get_tag(self, tagname):
-        self.tags.get(tagname, None)
+        return self.tags.get(tagname, None)
 
 #    def get_alltag_tag(self):
 #        """Return the special tag 'All tags'"""
@@ -228,12 +228,19 @@ class Tag(TreeNode):
             attributes.remove('name')
         return attributes
         
-    def reparent(self, parent):
-        if isinstance(parent, Tag):
-            self.set_attribute('parent', parent.get_name())
-        else:
-            self.set_attribute('parent', '')
+    def reparent(self, parent, update_attr=True):
+        if update_attr:
+            if isinstance(parent, Tag):
+                self.set_attribute('parent', parent.get_name())
+            elif 'parent' in self._attributes:
+                del self._attributes['parent']
         TreeNode.reparent(self, parent)
+        
+    def all_children(self):
+        l = [self]
+        for i in self.get_children_objs():
+            l += i.all_children()
+        return l
 
     def __str__(self):
         return "Tag: %s" % self.get_name()

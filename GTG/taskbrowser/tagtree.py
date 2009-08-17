@@ -46,7 +46,7 @@ class TagTreeModel(gtk.GenericTreeModel):
 ### TREEMODEL INTERFACE ######################################################
 #
     def on_get_flags(self):
-        return gtk.TREE_MODEL_ITERS_PERSIST|gtk.TREE_MODEL_LIST_ONLY
+        return gtk.TREE_MODEL_ITERS_PERSIST
 
     def on_get_n_columns(self):
         return len(self.column_types)
@@ -91,6 +91,7 @@ class TagTreeModel(gtk.GenericTreeModel):
             if not sp_id:
                 count = len(self.req.get_active_tasks_list(\
                        tags=[tag], workable=self.workable_only))
+                if count == 0: return ''
                 return  count
             else:
                 if sp_id == "all":
@@ -206,9 +207,16 @@ class TagTreeModel(gtk.GenericTreeModel):
         # Get new parent
         if parent:
             new_par_tag  = self.get_value(parent, COL_OBJ)
-            child_tag.reparent(new_par_tag)
         else:
-            new_par_tag = None
+            new_par_tag = self.tree.root
+        
+        # prevent illegal moves
+        if child_tag is new_par_tag: return
+        if new_par_tag is not self.tree.root:
+        	if new_par_tag.get_name()[0]!='@': return
+        if child_tag.get_name()[0]!='@': return
+        
+        child_tag.reparent(new_par_tag)
 
         # Warn tree about deleted row
         self.row_deleted(child_path)

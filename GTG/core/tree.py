@@ -180,6 +180,9 @@ class TreeNode():
 
     def get_children(self):
         return list(self.ids)
+        
+    def get_children_objs(self):
+        return list(self.children)
 
     def get_n_children(self):
         return len(self.ids)
