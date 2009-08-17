@@ -34,6 +34,7 @@ from os.path import pardir, abspath, dirname, join
 
 import info
 
+from xdg.BaseDirectory import xdg_data_home, xdg_config_home
 
 LOCAL_ROOTDIR   = os.path.abspath(os.path.join(os.path.dirname(__file__), '..')) 
 DIST_ROOTDIR    = "/usr/share/gtg"
@@ -74,3 +75,6 @@ if not os.path.isdir( os.path.join(LOCAL_ROOTDIR,'GTG/plugins/') ) :
     PLUGIN_DIR = [DIST_ROOTDIR]
 else:
     PLUGIN_DIR = [os.path.join(LOCAL_ROOTDIR,'GTG/plugins/')]
+    
+if os.path.isdir( os.path.join(xdg_config_home,'gtg/plugins') ) :
+    PLUGIN_DIR.append(os.path.join(xdg_config_home,'gtg/plugins'))

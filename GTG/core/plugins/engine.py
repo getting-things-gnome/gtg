@@ -38,14 +38,15 @@ class PluginEngine:
     def LoadPlugins(self):       
         # find all the plugin config files (only!)
         plugin_configs = []
-        for f in os.listdir(self.plugin_path[0]):
-            try:
-                if not os.path.isdir(os.path.join(self.plugin_path[0], f)):
-                    if len(os.path.splitext(f)) > 1:
-                        if os.path.splitext(f)[1] == ".gtg-plugin":
-                            plugin_configs.append(os.path.join(self.plugin_path[0], f))
-            except Exception, e:
-                continue
+        for path in self.plugin_path:
+	        for f in os.listdir(path):
+	            try:
+	                if not os.path.isdir(os.path.join(path, f)):
+	                    if len(os.path.splitext(f)) > 1:
+	                        if os.path.splitext(f)[1] == ".gtg-plugin":
+	                            plugin_configs.append(os.path.join(path, f))
+	            except Exception, e:
+	                continue
                    
         # for each plugin (config) we load the info
         for config in plugin_configs:
