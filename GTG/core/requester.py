@@ -161,24 +161,50 @@ class Requester(gobject.GObject):
     
     ############# Filters #########################
     def set_filter(self, filter):
+        """Set a filter for the tasks.
+        
+        @param filter: A dictionary with two keys, 'tags' and 'tasks'.
+            The 'tags' key corresponds to a list of tag names and the 'tasks'
+            corresponds to a list of tids.
+        """
         self.filter = filter
         
     def get_filter(self):
+        """Return the current task filter.
+
+        @return: The filter object.
+        """
         return self.filter
         
     def add_task_to_filter(self, tid):
+        """Adds (appends) a task to the filter (task list).
+        
+        @param tid: A task id.
+        """
         if tid not in self.filter["tasks"]:
             self.filter["tasks"].append(tid)
         
     def remove_task_from_filter(self, tid):
+        """Removes a task from the filter (task list).
+        
+        @param tid: A task id.
+        """
         if tid in self.filter["tasks"]:
             self.filter["tasks"].remove(tid)
             
     def add_tag_to_filter(self, tag):
+        """Adds (appends) a tag to the filter (tag list).
+        
+        @param tag: A tag name.
+        """
         if tag not in self.filter["tags"]:
             self.filter["tags"].append(tag)
         
     def remove_tag_from_filter(self, tag):
+        """Removes a tag from the filter (tag list).
+        
+        @param tag: A tag name.
+        """
         if tid in self.filter["tags"]:
             self.filter["tags"].remove(tag)
     ############# Filters #########################
