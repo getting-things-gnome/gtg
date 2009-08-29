@@ -29,14 +29,15 @@ class PluginAPI:
     with the task editor.
     """
         
-    def __init__(self, window, config, wTree, requester, taskview,\
-                 filter_cbs, tagpopup, tagview, task=None,\
+    def __init__(self, window, config, data_dir, wTree, requester,\
+                 taskview, filter_cbs, tagpopup, tagview, task=None,\
                  textview=None):
         """Construct a L{PluginAPI} object.
         
         @param window: The window where the plugin API object is being 
         created.
         @param config: The config object.
+        @param data_dir: The data dir path.
         @param wTree: The window's wTree object.
         @param requester: The requester.
         @param taskview: The task view object.
@@ -48,6 +49,7 @@ class PluginAPI:
         """
         self.__window = window
         self.config = config
+        self.data_dir = data_dir
         self.__wTree = wTree
         self.__requester = requester
         
@@ -202,13 +204,34 @@ class PluginAPI:
         else:
             return None
         
-    # returns the config object
     def get_config(self):
         """Returns the config object.
         
         @return: The config dictionary.
         """
         return self.config
+    
+    def get_about_dialog(self):
+        """Returns the about dialog.
+        
+        @return: The about dialog.
+        """
+        return self.__wTree.get_widget("aboutdialog1")
+    
+    def get_data_dir(self):
+        """Returns the data dir path.
+        
+        @return: The data dir path.
+        """
+        return self.data_dir
+    
+    def hide_window(self):
+        """Hides the main GTG window (task browser)"""
+        self.__window.hide()
+        
+    def show_window(self):
+        """Shows the main GTG window (task browser)"""
+        self.__window.show()
 #=== General Methods ==========================================================
 
 
