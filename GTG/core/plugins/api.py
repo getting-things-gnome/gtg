@@ -19,39 +19,82 @@
 import gtk
 
 class PluginAPI:
-    def __init__(self, window, config, wTree, requester, taskview, workview_task_filter, \
-                 tagpopup, tagview, task=None, textview=None):
-        # private vars       
+    """The plugin engine's API.
+
+    L{PluginAPI} is a object that provides a nice API for
+    plugins to interact with GTG.
+    
+    Multiple L{PluginAPI}s can exist. A instance is created to be used
+    with the task browser and another instance is created to be used
+    with the task editor.
+    """
+        
+    def __init__(self, window, config, data_dir, wTree, requester,\
+                 taskview, filter_cbs, tagpopup, tagview, task=None,\
+                 textview=None):
+        """Construct a L{PluginAPI} object.
+        
+        @param window: The window where the plugin API object is being 
+        created.
+        @param config: The config object.
+        @param data_dir: The data dir path.
+        @param wTree: The window's wTree object.
+        @param requester: The requester.
+        @param taskview: The task view object.
+        @param filter_cbs: The filter callback list.
+        @param tagpopup: The tag popoup menu of the tag view.
+        @param tagview: The tag view object.
+        @param task: The current task (Only works with the task editor).
+        @param textview: The task editor's text view (Only works with the task editor).  
+        """
         self.__window = window
         self.config = config
+        self.data_dir = data_dir
         self.__wTree = wTree
         self.__requester = requester
         
         self.taskview = taskview
-        self.__workview_task_filter = workview_task_filter
         
         self.__tagpopup = tagpopup
         self.tagview = tagview
+        
+        self.__filter_cbs = filter_cbs
         
         if task:
             self.task = task
                  
         if textview:
             self.textview = textview
-        
-    # adds items to the MenuBar of the Main Window (TaskBrowser)
+
+#=== General Methods ==========================================================
     def add_menu_item(self, item):
+        """Adds a menu entry to the Plugin Menu of the Main Window 
+        (task browser).
+
+        @param item: The gtk.MenuItem that is going to be added.  
+        """
         self.__wTree.get_widget('menu_plugin').get_submenu().append(item)
         item.show()
-    
-    # removes the item from the MenuBar        
+         
     def remove_menu_item(self, item):
+        """Removes a menu entry from the Plugin Menu of the Main Window 
+        (task browser).
+
+        @param item: The gtk.MenuItem that is going to be removed.  
+        """
         try:
             self.__wTree.get_widget('menu_plugin').get_submenu().remove(item)
         except Exception, e:
             print "Error removing menu item: %s" % e
         
     def add_toolbar_item(self, item):
+        """Adds a button to the task browser's toolbar.  
+
+        @param item: The gtk.ToolButton that is going to be added to the 
+        toolbar.
+        @return: Integer that represents the position of the item in the 
+        toolbar.   
+        """
         # calculates the number of items on the ToolBar and adds the item 
         # on the end
         try:
@@ -65,6 +108,14 @@ class PluginAPI:
             print "Error adding a toolbar item: %s" % e
     
     def remove_toolbar_item(self, item, n=None):
+        """Removes a toolbar button from the task browser's toolbar.  
+
+        @param item: The gtk.ToolButton that is going to be removed.  
+        @param n: The position of the item to be removed.
+        
+        Note: It's useful to remove gtk.SeparatorToolItem(). 
+        ie, remove_toolbar_item(None, 14)
+        """
         try:
             if not n:
                 self.__wTree.get_widget('task_tb').remove(item)
@@ -79,6 +130,10 @@ class PluginAPI:
     
     # adds items to the Task Menu 
     def add_task_toolbar_item(self, item):
+        """Adds a button to the task editor's toolbar. 
+
+        @param item: The gtk.ToolButton that is going to be added to the toolbar.  
+        """
         try:
             i = 0
             while self.__wTree.get_widget('task_tb1').get_nth_item(i) is not None:
@@ -88,43 +143,170 @@ class PluginAPI:
         except Exception, e:
             print "Error adding a toolbar item in to the TaskEditor: %s" % e
             
-    # passes the requester to the plugin
-    def get_requester(self):
-        return self.__requester
+    def add_widget_to_taskeditor(self, widget):
+        """Adds a widget to the bottom of the task editor dialog
+        
+        @param widget: The gtk.Widget that is going to be added. 
+        """
+        vbox = self.__wTree.get_widget('vbox4')
+        vbox.pack_start(widget)
+        vbox.reorder_child(widget, -2)
+        widget.show_all()
             
-    # changes the tasks TreeStore
+    def get_requester(self):
+        """Returns the requester.
+        
+        @return: The requester.
+        """
+        return self.__requester
+    
+    def requester_connect(self, action, func):
+        """Connects a function to a requester signal. 
+        
+        @param action: The signal action. 
+        @param func: The function that is connected to the signal. 
+        """
+        self.__requester.connect(action, func)
+            
     def change_task_tree_store(self, treestore):
+        """Changes the TreeStore in the task browser's task view. 
+        
+        @param treestore: The new gtk.TreeStore model. 
+        """
         task_tview = self.__wTree.get_widget("task_tview")
         task_tview.set_model(treestore)
     
+    def set_parent_window(self, child):
+        """Sets the plugin dialog as a child of it's parent window, 
+        depending on were it is called the parent window can be either 
+        the task browser or the task editor.
+        
+        @param child: The dialog that is meant to be set as a child. 
+        """
+        child.set_transient_for(self.__window) 
+    
+    def get_taskview(self):
+        """Returns the task view object. 
+        
+        @return: The gtk.TreeView task view object.
+        """
+        return self.taskview
+    
+    def get_selected_task(self):
+        """Returns the selected task in the task view.
+        
+        @return: A task. 
+        """
+        selected = self.taskview.get_selection()
+        model, iter = selected.get_selected()
+        if iter:
+            return self.__requester.get_task(model.get_value(iter, 0))
+        else:
+            return None
+        
+    def get_config(self):
+        """Returns the config object.
+        
+        @return: The config dictionary.
+        """
+        return self.config
+    
+    def get_about_dialog(self):
+        """Returns the about dialog.
+        
+        @return: The about dialog.
+        """
+        return self.__wTree.get_widget("aboutdialog1")
+    
+    def get_data_dir(self):
+        """Returns the data dir path.
+        
+        @return: The data dir path.
+        """
+        return self.data_dir
+    
+    def hide_window(self):
+        """Hides the main GTG window (task browser)"""
+        self.__window.hide()
+        
+    def show_window(self):
+        """Shows the main GTG window (task browser)"""
+        self.__window.show()
+#=== General Methods ==========================================================
+
+
+#=== Task related methods =====================================================
     def get_all_tasks(self):
+        """Returns a list with all existing tasks. 
+        
+        @return: A list of tasks.
+        """
         return self.__requester.get_tasks_list()    
     
-    # this method returns the task by tid or the current task in case 
-    # of the edit task window
-    # by default returns the current task, in other words, it's default action
-    # is to use with the onTaskOpened method
     def get_task(self, tid=None):
+        """Returns the current or a matching task.
+        
+        Note: the default action is to be used with the task editor 
+        (onTaskOpened method).
+        
+        @param tid: The task's id.
+        @return: A task.
+        """
         if tid:
             return self.__requester.get_task(tid)
         else:
             return self.task
     
-    # this method only works for the onTaskOpened method 
-    def get_task_title(self):
-        return self.task.get_title() 
-    
-    # adds a tag, updated the text buffer, inserting the tag at the end of
-    # the task
-    # this method only works for the onTaskOpened method
-    def add_tag(self, tag):
-        self.task.add_tag("@" + tag)
-        #self.textview.insert_text("@" + tag)
-        self.textview.insert_tag("@" + tag)
+    def get_task_title(self, tid=None):
+        """Returns the current or a matching task's title.
         
-    # adds a attribute to a tag
-    # this method only works for the onTaskOpened method
+        Note: the default action is to be used with the task editor 
+        (onTaskOpened method).
+        
+        @param tid: The task's id.
+        @return: The task's title (String).
+        """
+        if tid:
+            return self.__requester.get_task(tid).get_title()
+        else:
+            return self.task.get_title() 
+        
+    def insert_tag(self, tag):
+        """Inserts a tag into the current task (in the textview).
+        
+        Note: this method only works with the onTaskOpened method. 
+        
+        @param tag: The tag's name (without the '@').  
+        """
+        itera = self.textview.get_insert()
+        if itera.starts_line() :
+            self.textview.insert_text("@" + tag,itera)
+        else :
+            self.textview.insert_text(" @" + tag,itera)
+        self.textview.grab_focus()
+    
+    def add_tag(self, tag, tid=None):
+        """Adds a tag directly to a task. 
+        
+        Note: the default action is to be used with the task editor 
+        (onTaskOpened method).
+        
+        @param tag: The tag's name (without the '@').  
+        @param tid: The task's id.
+        """
+        if tid:
+             self.__requester.get_task(tid).add_tag("@" + tag)
+        else:    
+            self.task.add_tag("@" + tag)
+        
     def add_tag_attribute(self, tag, attrib_name, attrib_value):
+        """Adds an attribute to a tag in the current task.
+        
+        Note: this method only works with the onTaskOpened method.
+        
+        @param attrib_name: The attribute's name.
+        @param attrib_value: The attribute's value.  
+        """
         try:
             tags = self.task.get_tags()
             for t in tags:
@@ -134,52 +316,103 @@ class PluginAPI:
         except:
             return False
     
-    # pass all the tags to the plug-in
-    # this method only works for the onTaskOpened method
-    def get_tags(self):
-        return self.task.get_tags()
+    def get_tags(self, tid=None):
+        """Returns all the tags the current task or a matching task has. 
         
-    # this will allow plugins to use the textview properties
-    def get_textview(self):
-        return self.textview
+        Note: the default action is to be used with the task editor 
+        (onTaskOpened method).
+        
+        @param tid: The task's id.
+        """
+        if tid:
+            return self.__requester.get_task(tid).get_tags()
+        else:
+            return self.task.get_tags()
     
-    # defines the child's parent window
-    def set_parent_window(self, child):
-        child.set_transient_for(self.__window)
+    def get_textview(self):
+        """Returns the task editor's text view (object).
         
-    # add's a menu to the tagpopup
+        Note: this method only works with the onTaskOpened method.
+        
+        @return: The task editor's text view (gtk.TextView)
+        """
+        return self.textview
+#=== Task related methods =====================================================
+
+    
+#=== Tag view methods =========================================================
     def add_menu_tagpopup(self, item):
+        """Adds a menu to the tag popup menu of the tag view. 
+        
+        @param item: The menu that is going to be removed from the tag 
+        popup menu. 
+        """
         self.__tagpopup.append(item)
         item.show()
         
     def remove_menu_tagpopup(self, item):
+        """Removes a menu from the tag popup menu of the tag view. 
+        
+        @param item: The menu that is going to be removed from the tag popup menu.
+        """
         self.__tagpopup.remove(item)
         
-    # get's the selected tag in the tag view
     def get_tagpopup_tag(self):
+        """ Returns the selected tag in the tag view. 
+        
+        @return: The selected tag (tag name) in the tag view.
+        """
         selected = self.tagview.get_selection()
         model, iter = selected.get_selected()
         tag = model.get_value(iter, 0)
-        return tag
+        return self.__requester.get_tag(tag)
+#=== Tag view methods =========================================================
+
     
-    # returns the task view in the main window (task browser)
-    def get_taskview(self):
-        return self.taskview
-    
-    # returns the selected task in the task view
-    def get_selected_task(self):
-        selected = self.taskview.get_selection()
-        model, iter = selected.get_selected()
-        if iter:
-            return self.__requester.get_task(model.get_value(iter, 0))
-        else:
-            return None
+#=== Filtering methods ========================================================
+    def add_task_to_filter(self, tid):
+        """Adds a task to the task filter. 
         
-    # returns the config object
-    def get_config(self):
-        return self.config
+        @param tid: The task's id. 
+        """
+        self.__requester.add_task_to_filter(tid)
     
-    # add's a tid to the workview filter
-    def add_task_to_workview_filter(self, tid):
-        self.__workview_task_filter.append(tid)
+    def remove_task_from_filter(self, tid):
+        """Removes a task from the task filter. 
         
+        @param tid: The task's id. 
+        """
+        self.__requester.remove_task_from_filter(tid)
+        
+    def add_tag_to_filter(self, tag):
+        """Adds all tasks that contain a certain tag to the task filter. 
+        
+        @param tag: The tag name.
+        """
+        self.__requester.add_tag_to_filter(tag)
+        
+    def remove_tag_from_filter(self, tag):
+        """Removes all tasks that contain a certain tag from the task 
+        filter.
+        
+        @param tag: The tag name.
+        """
+        self.__requester.remove_tag_from_filter(tag)
+      
+    def register_filter_cb(self, func):
+        """Registers a callback filter function with the callback filter. 
+        
+        @param func: The function that is going to be registered. 
+        
+        """
+        if func not in self.__filter_cbs:
+            self.__filter_cbs.append(func)
+    
+    def unregister_filter_cb(self, func):
+        """Unregisters a previously registered callback filter function. 
+        
+        @param func: The function that is going to be unregistered. 
+        """
+        if func in self.__filter_cbs:
+            self.__filter_cbs.remove(func)    
+#=== Filtering methods ========================================================

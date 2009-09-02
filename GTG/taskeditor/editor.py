@@ -28,6 +28,7 @@ from datetime import date
 
 from GTG import _
 from GTG import PLUGIN_DIR
+from GTG import DATA_DIR
 from GTG.taskeditor          import GnomeConfig
 from GTG.tools               import dates
 from GTG.taskeditor.taskview import TaskView
@@ -47,7 +48,7 @@ except: # pylint: disable-msg=W0702
 date_separator = "/"
 
 class TaskEditor :
-    def __init__(self, requester, task, plugins, refresh_callback=None,
+    def __init__(self, requester, task, plugins,
                 delete_callback=None, close_callback=None,opentask_callback=None, 
                 tasktitle_callback=None, notes=False) :
         self.req = requester
@@ -85,7 +86,6 @@ class TaskEditor :
         }
         self.cal_tree.signal_autoconnect(cal_dic)
         self.window         = self.wTree.get_widget("TaskEditor")
-        self.__refresh_cb = None
         #Removing the Normal textview to replace it by our own
         #So don't try to change anything with glade, this is a home-made widget
         textview = self.wTree.get_widget("textview")
@@ -98,7 +98,6 @@ class TaskEditor :
         self.textview.set_subtask_callback(self.new_subtask)
         self.textview.open_task_callback(self.open_task)
         self.textview.tasktitle_callback(self.task_title)
-        self.textview.refresh_browser_callback(self.refresh_browser)
         self.textview.set_left_margin(7)
         self.textview.set_right_margin(5)
         scrolled.add(self.textview)
@@ -126,7 +125,7 @@ class TaskEditor :
         
         self.task = task
         tags = task.get_tags()
-        self.textview.subtasks_callback(task.get_subtasks_tid)
+        self.textview.subtasks_callback(task.get_subtask_tids)
         self.textview.removesubtask_callback(task.remove_subtask)
         self.textview.set_get_tagslist_callback(task.get_tags_name)
         self.textview.set_add_tag_callback(task.add_tag)
@@ -148,7 +147,7 @@ class TaskEditor :
                     self.textview.insert_text("%s, "%t.get_name())
                 self.textview.insert_text("\n")
             #If we don't have text, we still need to insert subtasks if any
-            subtasks = task.get_subtasks_tid()
+            subtasks = task.get_subtask_tids()
             if subtasks :
                 self.textview.insert_subtasks(subtasks)
         #We select the title if it's a new task
@@ -160,10 +159,11 @@ class TaskEditor :
         # plugins
         self.plugins = plugins
         self.pengine = PluginEngine(PLUGIN_DIR)
-        self.te_plugin_api = PluginAPI(self.window, None, self.wTree, self.req, None, None, None, None, task, self.textview)
+        self.te_plugin_api = PluginAPI(self.window, None, DATA_DIR, self.wTree, 
+                                       self.req, None, None, None, None, task, 
+                                       self.textview)
         self.pengine.onTaskLoad(self.plugins, self.te_plugin_api)
         
-        self.__refresh_cb = refresh_callback
         #Putting the refresh callback at the end make the start a lot faster
         self.textview.refresh_callback(self.refresh_editor)
         self.refresh_editor()
@@ -205,15 +205,6 @@ class TaskEditor :
         dismiss_editor.add_accelerator('clicked', agr, key, mod, gtk.ACCEL_VISIBLE)
         
     
-    #The refresh callback is None for all the initialization
-    #It's an optimisation that save us a low of unneeded refresh
-    #When the editor is starting
-    def refresh_browser(self,fromtask=None) :
-        if self.__refresh_cb :
-            if not fromtask :
-                fromtask = self.task.get_id()
-            self.__refresh_cb(fromtask)
-            
     #Can be called at any time to reflect the status of the Task
     #Refresh should never interfer with the TaskView
     #If a title is passed as a parameter, it will become
@@ -272,7 +263,7 @@ class TaskEditor :
                 elif result == -1 :
                     txt = _("Due for yesterday")
                 elif result < 0 :
-                    txt = _("Was %s days ago") %result
+                    txt = _("Was %s days ago") % -result
                 self.dayleft_label.set_markup("<span color='#666666'>"+txt+"</span>")    
         elif self.duedate_widget.get_text() != ''  :
             self.dayleft_label.set_text('')
@@ -392,7 +383,6 @@ class TaskEditor :
         if stat == "Dismiss":
             self.task.set_status("Active")
             self.refresh_editor()
-            self.refresh_browser()
         else:
             self.task.set_status("Dismiss")
             self.close(None)
@@ -404,14 +394,12 @@ class TaskEditor :
             toset = "Active"
         self.task.set_status(toset)
         self.refresh_editor()
-        self.refresh_browser()
     
     def change_status(self,widget) : #pylint: disable-msg=W0613
         stat = self.task.get_status()
         if stat == "Done":
             self.task.set_status("Active")
             self.refresh_editor()
-            self.refresh_browser()
         else:
             self.task.set_status("Done")
             self.close(None)
@@ -434,7 +422,6 @@ class TaskEditor :
     def new_task(self, *args):
         task = self.req.new_task(tags=None, newtask=True)
         task_id = task.get_id()
-        self.refresh_browser()
         self.open_task(task_id)
         
     def insert_subtask(self,widget) : #pylint: disable-msg=W0613
@@ -456,7 +443,6 @@ class TaskEditor :
     def save(self) :
         self.task.set_title(self.textview.get_title())
         self.task.set_text(self.textview.get_text()) 
-        self.refresh_browser(fromtask=self.task.get_id())
         self.task.sync()
         self.time = time.time()
     #light_save save the task without refreshing every 30seconds

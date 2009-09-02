@@ -35,6 +35,15 @@ def task_from_xml(task,xmlnode) :
     for s in sub_list :
         sub_tid = s.childNodes[0].nodeValue
         cur_task.add_subtask(sub_tid)
+    attr_list = xmlnode.getElementsByTagName("attribute")
+    for a in attr_list:
+        if len(a.childNodes):
+            content = a.childNodes[0].nodeValue
+        else:
+            content = ""
+        key = a.getAttribute("key")
+        namespace = a.getAttribute("namespace")
+        cur_task.set_attribute(key, content, namespace=namespace)
     tasktext = xmlnode.getElementsByTagName("content")
     if len(tasktext) > 0 :
         if tasktext[0].firstChild :
@@ -64,9 +73,17 @@ def task_to_xml(doc,task) :
     cleanxml.addTextNode(doc,t_xml,"duedate",task.get_due_date())
     cleanxml.addTextNode(doc,t_xml,"startdate",task.get_start_date())
     cleanxml.addTextNode(doc,t_xml,"donedate",task.get_closed_date())
-    childs = task.get_subtasks_tid()
+    childs = task.get_subtask_tids()
     for c in childs :
         cleanxml.addTextNode(doc,t_xml,"subtask",c)
+    for a in task.attributes:
+        namespace,key=a
+        content=task.attributes[a]
+        element = doc.createElement('attribute')
+        element.setAttribute("namespace", namespace)
+        element.setAttribute("key", key)
+        element.appendChild(doc.createTextNode(content))
+        t_xml.appendChild(element)
     tex = task.get_text()
     if tex :
         #We take the xml text and convert it to a string

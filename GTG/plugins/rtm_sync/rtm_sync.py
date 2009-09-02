@@ -29,7 +29,7 @@ import syncengine
 import rtm
 
 
-class pluginRtmSync:
+class RtmSync:
     PLUGIN_NAME = 'Remember the Milk'
     PLUGIN_AUTHORS = 'Luca Invernizzi <invernizzi.l@gmail.com>'
     PLUGIN_VERSION = '0.1.1'

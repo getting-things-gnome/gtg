@@ -18,13 +18,7 @@ import gtk, pygtk
 import os
 
 class pluginTest:
-
-    PLUGIN_NAME = 'Hello World'
-    PLUGIN_AUTHORS = 'Paulo Cabido <paulo.cabido@gmail.com>'
-    PLUGIN_VERSION = '0.1.1'
-    PLUGIN_DESCRIPTION = 'Plugin Description goes here. Hello World!'
-    PLUGIN_ENABLED = False
-
+    
     def __init__(self):
         self.menu_item = gtk.MenuItem("Hello World Plugin")
         self.menu_item.connect('activate', self.onTesteMenu)

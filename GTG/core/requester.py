@@ -38,15 +38,21 @@ class Requester(gobject.GObject):
     def __init__(self, datastore):
         """Construct a L{Requester}."""
         self.ds = datastore
+        
+        #filter
+        self.filter = {}
+        self.filter["tasks"] = []
+        self.filter["tags"] = []
+        
         gobject.GObject.__init__(self)
 
     ############# Signals #########################   
     #Used by the tasks to emit the task added/modified signal
     #Should NOT be used by anyone else
     def _task_loaded(self,tid) :
-        self.emit("task-added",tid)
+        gobject.idle_add(self.emit,"task-added",tid)
     def _task_modified(self,tid) :
-        self.emit("task-modified",tid)
+        gobject.idle_add(self.emit,"task-modified",tid)
 
     ############## Tasks ##########################
     ###############################################
@@ -91,7 +97,7 @@ class Requester(gobject.GObject):
         @param tid: The id of the task to be deleted.
         """
         self.ds.delete_task(tid)
-        self.emit("task-deleted",tid)
+        gobject.idle_add(self.emit,"task-deleted",tid)
 
     def get_tasks_list(self, tags=None, status=["Active"], notag_only=False,
                        started_only=True, is_root=False):
@@ -152,6 +158,56 @@ class Requester(gobject.GObject):
             if task:
                 l_tasks.append(tid)
         return l_tasks
+    
+    ############# Filters #########################
+    def set_filter(self, filter):
+        """Set a filter for the tasks.
+        
+        @param filter: A dictionary with two keys, 'tags' and 'tasks'.
+            The 'tags' key corresponds to a list of tag names and the 'tasks'
+            corresponds to a list of tids.
+        """
+        self.filter = filter
+        
+    def get_filter(self):
+        """Return the current task filter.
+
+        @return: The filter object.
+        """
+        return self.filter
+        
+    def add_task_to_filter(self, tid):
+        """Adds (appends) a task to the filter (task list).
+        
+        @param tid: A task id.
+        """
+        if tid not in self.filter["tasks"]:
+            self.filter["tasks"].append(tid)
+        
+    def remove_task_from_filter(self, tid):
+        """Removes a task from the filter (task list).
+        
+        @param tid: A task id.
+        """
+        if tid in self.filter["tasks"]:
+            self.filter["tasks"].remove(tid)
+            
+    def add_tag_to_filter(self, tag):
+        """Adds (appends) a tag to the filter (tag list).
+        
+        @param tag: A tag name.
+        """
+        if tag not in self.filter["tags"]:
+            self.filter["tags"].append(tag)
+        
+    def remove_tag_from_filter(self, tag):
+        """Removes a tag from the filter (tag list).
+        
+        @param tag: A tag name.
+        """
+        if tid in self.filter["tags"]:
+            self.filter["tags"].remove(tag)
+    ############# Filters #########################
 
     def get_active_tasks_list(self, tags=None, notag_only=False,
                               started_only=True, is_root=False,
@@ -170,24 +226,46 @@ class Requester(gobject.GObject):
             nonwork_tag = self.ds.get_tagstore().get_all_tags(
                 attname="nonworkview", attvalue="True")
             # We build the list of tags we will skip.
-            for nwtag in nonwork_tag:
+            #for nwtag in nonwork_tag:
                 # If the tag is explicitly selected, it doesn't go in the
                 # nonwork_tag.
-                if tags and nwtag in tags:
-                    nonwork_tag.remove(nwtag)
+                #if tags and nwtag in tags:
+                #    nonwork_tag.remove(nwtag)
             # We build the task list.
             temp_tasks = self.get_active_tasks_list(
                 tags=tags, notag_only=notag_only, started_only=True,
                 is_root=False, workable=False)
+            
+            #remove from temp_tasks the filtered out tasks
+            #for tid in temp_tasks:
+            #    if tid in self.filter["tasks"]:
+            #        temp_tasks.remove(tid)
+            #    else:
+            #        for filter_tag in self.get_task(tid).get_tags():
+            #            if filter_tag.get_attribute("name") in self.filter["tags"]:
+            #                print self.get_task(tid).get_title()
+            #                temp_tasks.remove(tid)
+            #                break
+            
             # Now we verify that the tasks are workable and don't have a
             # nonwork_tag.
             for tid in temp_tasks:
+                filtered_tag = False
                 t = self.get_task(tid)
-                if t and t.is_workable():
-                    if len(nonwork_tag) == 0:
-                        l_tasks.append(tid)
-                    elif not t.has_tags(nonwork_tag):
-                        l_tasks.append(tid)
+                if t and t.is_workable() and (tid not in self.filter["tasks"]):
+                    for filter_tag in t.get_tags():
+                        if filter_tag.get_attribute("name") in self.filter["tags"]:
+                            #print t.get_title()
+                            temp_tasks.remove(tid)
+                            filtered_tag = True
+                            
+                    if not filtered_tag:
+                        if len(nonwork_tag) == 0:
+                            #print t.get_title()
+                            l_tasks.append(tid)
+                        elif not t.has_tags(nonwork_tag):
+                            #print t.get_title()
+                            l_tasks.append(tid)
             return l_tasks
         else:
             active = ["Active"]
@@ -221,9 +299,11 @@ class Requester(gobject.GObject):
             tags=tags, status=note, notag_only=notag_only, started_only=False,
             is_root=False)
 
-
     ############### Tags ##########################
     ###############################################
+
+    def get_tag_tree(self):
+        return self.ds.get_tagstore().get_tree()
 
     def new_tag(self, tagname):
         """Create a new tag called 'tagname'.

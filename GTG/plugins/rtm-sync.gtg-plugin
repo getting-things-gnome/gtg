@@ -1,0 +1,8 @@
+[GTG Plugin]
+Module=rtm_sync
+Name=Remember The Milk synchronization
+Description=Plugin for synchronization with the web service Remember the milk ( http://www.rememberthemilk.com )
+Authors=Luca Invernizzi <invernizzi.l@gmail.com>
+Version=0.1.1
+Dependencies=
+Enabled=False

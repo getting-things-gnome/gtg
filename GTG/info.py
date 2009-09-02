@@ -3,7 +3,7 @@
 
 URL             = "http://gtg.fritalk.com"
 EMAIL           = "gtg@lists.launchpad.net"
-VERSION         = '0.1.2'
+VERSION         = '0.1.2-dev'
 
 SHORT_DESCRIPTION = 'GTG is a personal organizer for the GNOME desktop environment.'
 
@@ -25,6 +25,7 @@ AUTHORS     = ["Main developers:", \
                "\tZach Shepherd <eightball1989@gmail.com>", \
                "\tJean-François Fortin Tam <nekohayo@gmail.com>", \
                "\tJonathan Lange <jml@mumak.net>", \
+               "\tPaulo Cabido <paulo.cabido@gmail.com>", \
 ]
 ARTISTS     = ["Kalle Persson <kalle@kallepersson.se>", \
                 "Bertrand Rousseau <bertrand.rousseau@gmail.com>"]

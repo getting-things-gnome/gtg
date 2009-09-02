@@ -125,7 +125,6 @@ class TaskView(gtk.TextView):
         self.add_tag_callback = None
         self.get_tagslist = None
         self.get_subtasks = None
-        self.refresh_browser = None
         self.remove_subtask =None
         self.__refresh_cb = None  # refresh the editor window
         self.open_task            = None # open another task
@@ -181,10 +180,6 @@ class TaskView(gtk.TextView):
     def removesubtask_callback(self,funct) :
         self.remove_subtask = funct
         
-    #This callback refresh the task browser
-    def refresh_browser_callback(self,funct) :
-        self.refresh_browser = funct
-    
     def save_task_callback(self,funct) :
         self.save_task = funct
     
@@ -481,11 +476,8 @@ class TaskView(gtk.TextView):
         
         #Ok, we took care of the modification
         self.buff.set_modified(False)
-        #If tags have been modified, we update the browser
-        if tags_before != self.get_tagslist() :
-            self.refresh_browser()
         #Else we save the task anyway (but without refreshing all)
-        elif self.save_task :
+        if self.save_task :
             self.save_task()
             
     #Detect URL in the tasks
@@ -667,10 +659,10 @@ class TaskView(gtk.TextView):
                 for ta in tags :
                     #removing deleted subtasks
                     #it looks like it works without that.
-                    if ta.get_data('is_subtask') :
+#                    if ta.get_data('is_subtask') :
 #                        target = ta.get_data('child')
 #                        #self.remove_subtask(target)
-                        self.refresh_browser()
+#                        self.refresh_browser()
                     #removing deleted tags
                     if ta.get_data('is_tag') :
                         tagname = ta.get_data('tagname')
@@ -679,7 +671,6 @@ class TaskView(gtk.TextView):
                             buff.delete_mark_by_name(tagname)
                         if buff.get_mark("/%s"%tagname) :
                             buff.delete_mark_by_name("/%s"%tagname)
-                        self.refresh_browser()
                     if ta.get_data('is_indent') :
                         #Because the indent tag is read only, we will remove it
                         endtag = it.copy()
@@ -732,7 +723,6 @@ class TaskView(gtk.TextView):
     def __newsubtask(self,buff,title,line_nbr, level=1) :
         anchor = self.new_subtask_callback(title)
         end_i = self.write_subtask(buff,line_nbr,anchor,level=level)
-        self.refresh_browser()
         return end_i
     
     #Write the subtask then return the iterator at the end of the line
