@@ -32,14 +32,22 @@ class TagTreeModel(gtk.GenericTreeModel):
         self.workable_only = False
 
 ### MODEL METHODS ############################################################
-
-    def update_tags_for_task(self, tid):
-        task = self.req.get_task(tid)
-        for t in task.get_tags():
-            path = self.tree.get_path_for_node(t)
-            iter = self.get_iter(path)
-            self.row_changed(path, iter)
-
+            
+    def update_tag(self, tag):
+        path = self.tree.get_path_for_node(tag)
+        iter = self.get_iter(path)
+        self.row_changed(path, iter)
+#        self.row_has_child_toggled(path, iter)
+#        print "update_tag:", tag.get_name(), self.iter_n_children(iter), iter, path
+    
+    def insert_tag(self, tag):
+        return
+#        print "insert_tag", tag.get_name()
+        path = self.tree.get_path_for_node(tag)
+        iter = self.get_iter(path)
+        self.row_deleted(path)
+        self.row_inserted(path, iter)
+       
     def set_workable_only(self, val):
         self.workable_only = val
 
@@ -83,6 +91,7 @@ class TagTreeModel(gtk.GenericTreeModel):
                 else:
                     return tag.get_name()[1:]
         if   column == COL_OBJ:
+            assert(tag)
             return tag
         elif column == COL_COLOR:
             return task.get_attribute("color")
@@ -213,7 +222,7 @@ class TagTreeModel(gtk.GenericTreeModel):
         # prevent illegal moves
         if child_tag is new_par_tag: return
         if new_par_tag is not self.tree.root:
-        	if new_par_tag.get_name()[0]!='@': return
+            if new_par_tag.get_name()[0]!='@': return
         if child_tag.get_name()[0]!='@': return
         
         child_tag.reparent(new_par_tag)
@@ -265,6 +274,7 @@ class TagTreeView(gtk.TreeView):
 
     def _refresh_func(self, model, path, iter, user_data=None):
         model.row_changed(path, iter)
+        model.row_has_child_toggled(path, iter)
 
     def _tag_separator_filter(self, model, itera, user_data=None):
         return self.get_model().get_value(itera, COL_SEP)

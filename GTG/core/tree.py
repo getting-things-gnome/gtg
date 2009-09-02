@@ -212,4 +212,9 @@ class TreeNode():
             self.get_parent().remove_child(self.id)
         self.set_parent(parent)
         parent.add_child(self.id, self)
-        
+    
+    def display(self, level=0):
+    	print '\t'*level+self.id
+    	for c in self.children:
+    		assert(c.get_parent() is self)
+    		c.display(level+1)      

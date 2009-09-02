@@ -17,7 +17,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-import gobject
+import gobject, glib
 
 class Requester(gobject.GObject):
     """A view on a GTG datastore.
@@ -33,7 +33,11 @@ class Requester(gobject.GObject):
                     'task-deleted': (gobject.SIGNAL_RUN_FIRST, \
                                     gobject.TYPE_NONE, (str,)),
                     'task-modified': (gobject.SIGNAL_RUN_FIRST, \
-                                    gobject.TYPE_NONE, (str,)) }
+                                    gobject.TYPE_NONE, (str,)),
+                    'tag-added': (gobject.SIGNAL_RUN_FIRST, \
+                                    gobject.TYPE_NONE, (str,)),
+                    'tag-modified': (gobject.SIGNAL_RUN_FIRST, \
+                                    gobject.TYPE_NONE, (str,))  }
 
     def __init__(self, datastore):
         """Construct a L{Requester}."""
@@ -44,15 +48,39 @@ class Requester(gobject.GObject):
         self.filter["tasks"] = []
         self.filter["tags"] = []
         
+        self.queues={}
+        
         gobject.GObject.__init__(self)
 
     ############# Signals #########################   
     #Used by the tasks to emit the task added/modified signal
     #Should NOT be used by anyone else
     def _task_loaded(self,tid) :
-        gobject.idle_add(self.emit,"task-added",tid)
+        gobject.idle_add(self._enqueue_signal,"task-added",tid, priority=glib.PRIORITY_HIGH_IDLE)
     def _task_modified(self,tid) :
-        gobject.idle_add(self.emit,"task-modified",tid)
+        gobject.idle_add(self._enqueue_signal,"task-modified",tid, priority=glib.PRIORITY_HIGH_IDLE)
+    def _tag_added(self,tagname) :
+        gobject.idle_add(self._enqueue_signal,"tag-added",tagname, priority=glib.PRIORITY_HIGH_IDLE)
+    def _tag_modified(self, tagname):
+        gobject.idle_add(self._enqueue_signal,"tag-modified",tagname, priority=glib.PRIORITY_HIGH_IDLE)
+        
+    def _run_callbacks_from_queue(self, signal):
+        for i in self.queues.get(signal, []):
+            self.emit(signal, i)
+        print "ran queue", signal, len(self.queues.get(signal, []))
+        del self.queues[signal]
+
+    
+    def _enqueue_signal(self, signal, obj):
+        if not signal in self.queues:
+            self.queues[signal] = []
+            gobject.idle_add(self._run_callbacks_from_queue, signal) 
+        if not obj in self.queues[signal]:
+            self.queues[signal].append(obj)
+#            print "enqueueing,", signal, obj
+#        else:
+#            print "was already enqueued,", signal, obj
+        
 
     ############## Tasks ##########################
     ###############################################

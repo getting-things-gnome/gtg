@@ -34,10 +34,12 @@ XMLROOT = "tagstore"
 # and their attribute.
 class TagStore :
     
-    def __init__(self):
+    def __init__(self, requester):
+        self.req=requester
         self.tree = Tree()
         self.tags={}
         self.root = self.tree.get_root()
+
         self.filename = os.path.join(CoreConfig.DATA_DIR,XMLFILE)
         doc,self.xmlstore = cleanxml.openxmlfile(self.filename,XMLROOT) #pylint: disable-msg=W0612
         for t in self.xmlstore.childNodes:
@@ -82,6 +84,7 @@ class TagStore :
             tag = Tag(tname, save_cllbk=self.save)
             tag.reparent(self.root)
             self.tags[tname]=tag
+            self.req._tag_added(tagname)
             return tag
         else:
             return self.tags[tname]
@@ -92,6 +95,7 @@ class TagStore :
         if name not in self.tags:
             tag.reparent(self.root)
             self.tags[name]=tag
+            self.req._tag_added(name)
         #else, we just take the attributes of the new tag
         #This allow us to keep attributes of the old tag
         #that might be not set in the new one
@@ -136,7 +140,12 @@ class TagStore :
                 l.append(t)
         return l
 
-    def save(self):
+    def save(self, changed_tag=None, do_serialize=True):
+        if changed_tag:
+            self.req._tag_modified(changed_tag.get_name())
+            
+        if not do_serialize: return
+           
         doc,xmlroot = cleanxml.emptydoc(XMLROOT)
         tags = self.get_all_tags()
         already_saved = [] #We avoid saving the same tag twice
@@ -183,6 +192,9 @@ class Tag(TreeNode):
         self._name = str(name)
         self._attributes = {'name': self._name}
         self._save = save_cllbk
+        
+    def modify(self):
+        self._save(self, do_serialize=False)
 
     def get_name(self):
         """Return the name of the tag."""
@@ -208,7 +220,7 @@ class Tag(TreeNode):
         val = unicode(str(att_value), "UTF-8")
         self._attributes[att_name] = val
         if self._save:
-            self._save()
+            self._save(self)
 
     def get_attribute(self, att_name):
         """Get the attribute C{att_name}.
