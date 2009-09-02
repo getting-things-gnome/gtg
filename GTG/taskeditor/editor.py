@@ -28,6 +28,7 @@ from datetime import date
 
 from GTG import _
 from GTG import PLUGIN_DIR
+from GTG import DATA_DIR
 from GTG.taskeditor          import GnomeConfig
 from GTG.tools               import dates
 from GTG.taskeditor.taskview import TaskView
@@ -158,8 +159,9 @@ class TaskEditor :
         # plugins
         self.plugins = plugins
         self.pengine = PluginEngine(PLUGIN_DIR)
-        self.te_plugin_api = PluginAPI(self.window, None, self.wTree, self.req, 
-                                       None, None, None, None, task, self.textview)
+        self.te_plugin_api = PluginAPI(self.window, None, DATA_DIR, self.wTree, 
+                                       self.req, None, None, None, None, task, 
+                                       self.textview)
         self.pengine.onTaskLoad(self.plugins, self.te_plugin_api)
         
         #Putting the refresh callback at the end make the start a lot faster
