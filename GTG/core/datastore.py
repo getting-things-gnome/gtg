@@ -37,8 +37,8 @@ class DataStore:
     def __init__ (self):
         self.backends = {}
         self.tasks = {}
+        self.tagstore = tagstore.TagStore()
         self.requester = requester.Requester(self)
-        self.tagstore = tagstore.TagStore(self.requester)
         
     def all_tasks(self):
         all_tasks = []

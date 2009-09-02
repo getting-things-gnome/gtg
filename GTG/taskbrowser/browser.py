@@ -243,6 +243,7 @@ class TaskBrowser:
         # The tags treeview
         self.tags_tv = TagTreeView()
         self.tags_tv.set_model(self.tag_modelsort)
+        self.tags_tv.expand_row('0', True)
         self.sidebar_container.add(self.tags_tv)
 
     def _init_toolbar_tooltips(self):
@@ -359,8 +360,6 @@ class TaskBrowser:
         self.req.connect("task-added", self.on_task_added) 
         self.req.connect("task-deleted", self.on_task_deleted)
         self.req.connect("task-modified", self.on_task_modified)
-        self.req.connect("tag-added", self.on_tag_added)
-        self.req.connect("tag-modified", self.on_tag_modified)
         
         # Connect signals from models
         self.task_modelsort.connect("row-has-child-toggled", self.on_child_toggled)
@@ -741,7 +740,7 @@ class TaskBrowser:
         tag_list, notag_only = self.get_selected_tags()
 
         if len(tag_list)==1: #include child tags
-            tag_list = tag_list[0].all_children()
+		    tag_list = tag_list[0].all_children()
 
         if not task.has_tags(tag_list=tag_list, notag_only=notag_only):
             return False
@@ -812,7 +811,7 @@ class TaskBrowser:
         """
         tag = model.get_value(iter, tagtree.COL_OBJ)
         if tag.has_child():
-            return True
+        	return True
         elif not tag.get_attribute("special"):
             count = model.get_value(iter, tagtree.COL_COUNT)
             return count != ''
@@ -1346,35 +1345,23 @@ class TaskBrowser:
     def on_task_added(self, sender, tid):
         #print "Task added: %s" % tid
         self.task_tree_model.add_task(tid)
-        #self.tag_model.update_tags_for_task(tid)
+        self.tag_model.update_tags_for_task(tid)
         self._update_window_title()
+        self.tags_tv.refresh()
         
-        for i in self.req.ds.tagstore.get_all_tags():
-        	i.modify()
-        	
     def on_task_deleted(self, sender, tid):
         #print "Task deleted: %s" % tid
         self.task_tree_model.remove_task(tid)
-        self.tags_tv.refresh() #TODO: run tag.modify() on tag delete, rather than refreshing all
+        self.tags_tv.refresh()
         self._update_window_title()
         
     def on_task_modified(self, sender, tid):
         #print "Task modified: %s" % tid
         self.task_tree_model.remove_task(tid)
         self.task_tree_model.add_task(tid)
-       # self.tag_model.update_tags_for_task(tid)
+        self.tag_model.update_tags_for_task(tid)
         self._update_window_title()
-       # self.tags_tv.refresh()
-       
-    def on_tag_added(self, sender, tagname):
-        tag = self.req.get_tag(tagname)
-        self.tag_model.insert_tag(tag)
-   
-    def on_tag_modified(self, sender, tagname):  
-       tag = self.req.get_tag(tagname)      
-       #self.tags_tv.refresh()
-       self.tag_model.update_tag(tag)
-                    
+        self.tags_tv.refresh()
 
 ### PUBLIC METHODS ############################################################
 #

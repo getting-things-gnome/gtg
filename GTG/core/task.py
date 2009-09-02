@@ -498,7 +498,6 @@ class Task:
         #Do not add the same tag twice
         if not t in self.tags:
             self.tags.append(t)
-            t.modify()
             for child in self.get_subtasks():
                 if child.can_be_deleted:
                     child.add_tag(tagname)
@@ -508,7 +507,6 @@ class Task:
         t = self.req.get_tag(tagname)
         if t in self.tags:
             self.tags.remove(t)
-            t.modify()
             for child in self.get_subtasks():
                 if child.can_be_deleted:
                     child.remove_tag(tagname)
