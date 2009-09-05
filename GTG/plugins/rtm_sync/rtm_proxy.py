@@ -13,13 +13,14 @@ sys.path.insert(0,os.path.dirname(os.path.abspath(__file__))+'/pyrtm')
 import rtm
 import utility
 from generic_task import RtmTask
+from generic_proxy import GenericProxy
 
 
 
-class RtmProxy:
+class RtmProxy(GenericProxy):
     def __init__(self):
+        super(RtmProxy, self).__init__()
         self.token = None
-        self.task_list = []
 
     def getToken(self):
         """gets a token from file (if a previous sync has been
@@ -46,7 +47,7 @@ class RtmProxy:
                                "ca078fee48d0bbfa", self.token );
         #NOTE: a timeline is an undo list for RTM. It can be used for journaling
         #      (timeline rollback is atomical)
-        timeline = self.rtm.timelines.create().timeline
+        self.timeline = self.rtm.timelines.create().timeline
 
     def generateTaskList(self):
         #NOTE: syncing only incomplete tasks for now
@@ -78,4 +79,15 @@ class RtmProxy:
         for task,list_id,taskseries_id in  \
             zip(task_objects_list, list_ids_list, taskseries_ids_list):
             self.task_list.append(RtmTask(task, list_id, taskseries_id))
+
+    def newTask(self, title):
+        #FIXME: possible bug? Don't know list_id, taskseries_id. Should 
+        #       never raise, though
+        new_task= RtmTask(self.rtm.tasks.add(timeline=self.timeline, name=title)\
+                        .list.taskseries.task,None,None)
+        self.task_list.append(new_task)
+        return new_task
+        
+
+
 

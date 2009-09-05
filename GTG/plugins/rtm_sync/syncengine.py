@@ -27,66 +27,57 @@ from datetime import date
 # IMPORTANT This add's the plugin's path to python sys path
 sys.path.insert(0,os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0,os.path.dirname(os.path.abspath(__file__))+'/pyrtm')
-import rtm
 from gtg_proxy import GtgProxy
 from rtm_proxy import RtmProxy
+from utility import *
 
 class SyncEngine:
-    rtm = None
-    this_plugin = None
 
     def __init__(self, this_plugin):
         self.this_plugin = this_plugin
 
-
     def synchronize(self):
-
         gtg_proxy = GtgProxy(self.this_plugin.plugin_api)
-        gtg_proxy.generateTaskList()
         rtm_proxy = RtmProxy()
         rtm_proxy.login()
+
+        gtg_proxy.generateTaskList()
         rtm_proxy.generateTaskList()
 
-        for task in gtg_proxy.task_list:
-            print task
-        for task in rtm_proxy.task_list:
-            print task
+        gtg_list = gtg_proxy.task_list
+        rtm_list = rtm_proxy.task_list
 
+        ## loading the mapping of the last sync
+        cache_dir = os.path.join(xdg_cache_home,'gtg/plugins/rtm-sync')
+        gtg_to_rtm_id_mapping = smartLoadFromFile (\
+                               cache_dir, 'gtg_to_rtm_id_mapping')
+        if   gtg_to_rtm_id_mapping is None: 
+            ###this is the first synchronization
+            print "first sync"
+            gtg_to_rtm_id_mapping = []
+            #generating sets to perform intersection of tasks
+            #NOTE: assuming different titles!
+            gtg_task_titles_set = set (map(lambda x: x.title, gtg_list))
+            rtm_task_titles_set = set (map(lambda x: x.title, rtm_list))
+            #tasks in common
+            for title in rtm_task_titles_set.intersection (gtg_task_titles_set):
+                gtg_to_rtm_id_mapping.append (
+                        (filterAttr(gtg_list, 'title', title)[0].id,
+                         filterAttr(rtm_list, 'title', title)[0].id))
 
+            #tasks that must be added to GTG
+            for title in rtm_task_titles_set.difference (gtg_task_titles_set):
+                new_task = gtg_proxy.newTask(title, True)
+                gtg_to_rtm_id_mapping.append ((new_task.id,
+                         filterAttr(rtm_list, 'title', title)[0].id))
 
-        
-#        gtg_task_titles_set = set (gtg_task_titles_list)
-#        rtm_task_titles_set = set (rtm_task_titles_list)
-#
-#
-#        
-#        ## loading the mapping of the last sync
-#        cache_dir = os.path.join(xdg_cache_home,'gtg/plugins/rtm-sync')
-#        gtg_to_rtm_task_id_mapping = self.smartLoadFromFile (\
-#                                        cache_dir, 'gtg_to_rtm_task_id_mapping')
-#        if   gtg_to_rtm_task_id_mapping is None: 
-#            ###this is the first synchronization
-#            gtg_to_rtm_task_id_mapping = []
-#            #tasks in common
-#            for title in rtm_task_titles_set.intersection (gtg_task_titles_set):
-#                gtg_to_rtm_task_id_mapping.append (\
-#                        (gtg_title_to_id_bijFun.leftFindElem(title), \
-#                         rtm_title_to_id_bijFun.leftFindElem(title)))
-#
-#            #tasks that must be added to GTG
-#            for title in rtm_task_titles_set.difference (gtg_task_titles_set):
-#                new_task = plugin_api.get_requester().new_task(newtask=True)
-#                new_task.set_title(title)
-#                gtg_to_rtm_task_id_mapping.append ((new_task.get_id(), \
-#                                    rtm_title_to_id_bijFun.leftFindElem(title)))
-#
-#            #tasks that must be added to RTM
-#            for title in gtg_task_titles_set.difference (rtm_task_titles_set):
-#                #TODO: this line should be a function with lots of nice parameters
-#                new_task= self.rtm.tasks.add(timeline=timeline, name=title)\
-#                        .list.taskseries.task
-#                gtg_to_rtm_task_id_mapping.append (\
-#                        (gtg_title_to_id_bijFun.leftFindElem(title), new_task.id))
+            #tasks that must be added to RTM
+            for title in gtg_task_titles_set.difference (rtm_task_titles_set):
+                new_task = rtm_proxy.newTask(title)
+                gtg_to_rtm_id_mapping.append (
+                        (filterAttr(gtg_list, 'title', title)[0].id,
+                         new_task.id))
+            print gtg_to_rtm_id_mapping
 #
 #        else:
 #            ###this is an update

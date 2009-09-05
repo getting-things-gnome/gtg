@@ -42,6 +42,7 @@ class GenericTask(object):
 class RtmTask (GenericTask):
 
     def __init__(self, task, list_id, taskseries_id):
+        super(RtmTask, self).__init__()
         self.task = task
         self.list_id = list_id
         self.taskseries_id = taskseries_id
@@ -60,14 +61,14 @@ class RtmTask (GenericTask):
 class GtgTask (GenericTask):
 
     def __init__(self, task):
+        super(GtgTask, self).__init__()
         self.task = task
 
     def _get_title(self):
         return self.task.get_title()
 
     def _set_title(self, title):
-        #TODO
-        pass
+        self.task.set_title(title)
 
     def _get_id(self):
         return self.task.get_id()

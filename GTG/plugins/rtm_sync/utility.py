@@ -1,6 +1,10 @@
 import pickle
 import os
 
+__all__ = [ "smartSaveToFile",
+            "smartLoadFromFile",
+            "filterAttr"]
+
 def smartLoadFromFile(dirname,filename):
     path=dirname+'/'+filename
     if os.path.isdir(dirname):
@@ -25,3 +29,6 @@ def smartSaveToFile(dirname,filename, item,**kwargs):
 
 def unziplist(a):
     return tuple(map(list,zip(*a)))
+
+def filterAttr (list, attr, value):
+    return filter (lambda elem: getattr(elem,attr) == value, list)
