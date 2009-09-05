@@ -136,16 +136,17 @@ class RtmSync:
 
     def lauchSynchronization(self):
         self.loadDialogSync("Synchronization started")
-        self.worker_thread = Thread(target=self.sync_engine.synchronize, args=(self.plugin_api,)).start()
+        self.worker_thread = Thread(target=self.sync_engine.synchronize).start()
         self.worker_thread = Thread(target=self.fake_update_progressbar).start()
 
 		
     def onTbButton(self, widget):
         self.sync_engine=syncengine.SyncEngine(self)
-        if (self.sync_engine.getToken()):
-            self.loadDialogToken("Please authenticate to Remember The Milk in the browser that is being opened now. When done, press OK")
-        else:
-            self.lauchSynchronization()
+#        if (self.sync_engine.getToken()):
+#           self.loadDialogToken("Please authenticate to Remember The Milk in the browser that is being opened now. When done, press OK")
+#        else:
+#            self.lauchSynchronization()
+        self.lauchSynchronization()
         
 		
     def onTbTaskButton(self, widget, plugin_api):
