@@ -76,14 +76,20 @@ class RtmTask (GenericTask):
         elif hasattr(self.task.tags,'list'):
             return map(lambda x: x.tag if hasattr(x,'tag') else None, \
                        self.task.tags.list)
-            return ["ciao"]
         return []
 
     def _set_tags (self, tags):
-#        print tags
-#        self.rtm.tasks.setTags(timeline=self.timeline, list_id =self.list_id,\
-#                   taskseries_id=self.taskseries_id,task_id=self.id,tags=tags)
-        pass
+        tagstxt=""
+        for tag in tags:
+            name = tag.get_name()
+            name_fixed = name[name.find('@')+1:]
+            if tagstxt == "":
+                tagstxt = name_fixed
+            else:
+                tagstxt = tagstxt+ ", " + name_fixed
+        print tagstxt
+        self.rtm.tasks.setTags(timeline=self.timeline, list_id =self.list_id,\
+                   taskseries_id=self.taskseries_id,task_id=self.id,tags=tagstxt)
 
 
 class GtgTask (GenericTask):

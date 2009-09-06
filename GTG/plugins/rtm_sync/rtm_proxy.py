@@ -53,7 +53,7 @@ class RtmProxy(GenericProxy):
         self.timeline = self.rtm.timelines.create().timeline
         return True
 
-    def generateTaskList(self):
+    def downloadFromWeb(self):
         #NOTE: syncing only incomplete tasks for now
         #(it's easier to debug the things you see)
         lists_id_list = map (lambda x: x.id,self.rtm.lists.getList().lists.list)
@@ -79,17 +79,21 @@ class RtmProxy(GenericProxy):
             tasks_list_unwrapped = reduce(lambda x,y: x+y , tasks_list_normalized)
             task_objects_list,list_ids_list,taskseries_ids_list = \
                     utility.unziplist(tasks_list_unwrapped)
+        
+        return zip(task_objects_list, list_ids_list, taskseries_ids_list)
 
-        for task,list_id,taskseries_id in  \
-            zip(task_objects_list, list_ids_list, taskseries_ids_list):
+
+
+    def generateTaskList(self):
+        self.downloadFromWeb()
+        for task,list_id,taskseries_id in  self.downloadFromWeb():
             self.task_list.append(RtmTask(task, list_id, taskseries_id, \
                                           self.rtm, self.timeline))
 
     def newTask(self, title):
-        #FIXME: possible bug? Don't know list_id, taskseries_id. Should 
-        #       never raise, though
-        new_task= RtmTask(self.rtm.tasks.add(timeline=self.timeline, name=title)\
-                        .list.taskseries.task,None,None, self.rtm, self.timeline)
+        result = self.rtm.tasks.add(timeline=self.timeline, name=title)
+        new_task= RtmTask(result.list.taskseries.task,result.list.id,\
+                          result.list.taskseries.id, self.rtm, self.timeline)
         self.task_list.append(new_task)
         return new_task
         
