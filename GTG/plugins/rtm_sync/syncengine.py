@@ -35,11 +35,14 @@ class SyncEngine:
 
     def __init__(self, this_plugin):
         self.this_plugin = this_plugin
+        self.rtm_proxy = RtmProxy ()
+
+    def rtmLogin (self):
+        return self.rtm_proxy.login()
 
     def synchronize(self):
         gtg_proxy = GtgProxy(self.this_plugin.plugin_api)
-        rtm_proxy = RtmProxy()
-        rtm_proxy.login()
+        rtm_proxy = self.rtm_proxy
 
         gtg_proxy.generateTaskList()
         rtm_proxy.generateTaskList()

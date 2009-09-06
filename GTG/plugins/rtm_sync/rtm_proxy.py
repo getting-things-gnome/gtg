@@ -27,27 +27,32 @@ class RtmProxy(GenericProxy):
             performed), or opens a browser to request a new one
             (in which case the function returns true). NOTE: token 
             is valid forever """
-        self.token = None
-        self.config_dir = os.path.join(xdg_config_home,'gtg/plugins/rtm-sync')
-        self.token = utility.smartLoadFromFile (self.config_dir, 'token')
+        if self.token == None:
+            self.config_dir = os.path.join(xdg_config_home,'gtg/plugins/rtm-sync')
+            self.token = utility.smartLoadFromFile (self.config_dir, 'token')
         if self.token == None:
             self.rtm=rtm.createRTM ("2a440fdfe9d890c343c25a91afd84c7e", \
                                    "ca078fee48d0bbfa");
             subprocess.Popen(['xdg-open', self.rtm.getAuthURL()])
-            utility.smartSaveToFile(self.config_dir,'token', self.token)
-            return True
-        return False
+            return False
+        return True
 
     def login(self):
         #TODO:  handling connection failures and denial of access, proper interface 
         #       assert (self.token != None), "Token must be requested before 
         #       calling synchronize"
-        self.getToken()
+        if hasattr(self,'rtm'):
+                self.token = self.rtm.getToken()
+        if (self.getToken() == False):
+            return False
+        print self.token
         self.rtm=rtm.createRTM ("2a440fdfe9d890c343c25a91afd84c7e",\
                                "ca078fee48d0bbfa", self.token );
+        utility.smartSaveToFile(self.config_dir,'token', self.token)
         #NOTE: a timeline is an undo list for RTM. It can be used for journaling
         #      (timeline rollback is atomical)
         self.timeline = self.rtm.timelines.create().timeline
+        return True
 
     def generateTaskList(self):
         #NOTE: syncing only incomplete tasks for now

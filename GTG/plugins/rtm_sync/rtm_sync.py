@@ -85,7 +85,7 @@ class RtmSync:
         self.lbl_dialog = wTree.get_widget("lbl_dialog")
         self.lbl_dialog.set_text(msg)
         self.dialog.connect("delete_event", self.close_dialog)
-        btn_ok.connect("clicked", self.synchronization_from_dialog)
+        btn_ok.connect("clicked", self.checkLogin)
         self.dialog.show_all()
 
     def loadDialogSync(self, msg):
@@ -104,17 +104,6 @@ class RtmSync:
 
     def close_dialog(self, widget, data=None):
     	self.dialog.destroy()
-        return True    
-
-    def synchronization_from_dialog(self, widget, data=None):
-    	self.dialog.destroy()
-        try:
-            self.sync_engine.storeToken()
-        except rtm.RTMAPIError:
-            self.loadDialogToken("Please press ok *after* logging in")
-            self.sync_engine.getToken()
-            return True
-        self.lauchSynchronization()
         return True    
 
     def set_progressbar(self):
@@ -142,11 +131,16 @@ class RtmSync:
 		
     def onTbButton(self, widget):
         self.sync_engine=syncengine.SyncEngine(self)
-#        if (self.sync_engine.getToken()):
-#           self.loadDialogToken("Please authenticate to Remember The Milk in the browser that is being opened now. When done, press OK")
-#        else:
-#            self.lauchSynchronization()
-        self.lauchSynchronization()
+        self.checkLogin(widget)
+
+
+    def checkLogin(self, widget):
+        if hasattr (self, 'dialog'):
+            self.dialog.destroy()
+        if self.sync_engine.rtmLogin() == False:
+           self.loadDialogToken("Please authenticate to Remember The Milk in the browser that is being opened now. When done, press OK")
+        else:
+            self.lauchSynchronization()
         
 		
     def onTbTaskButton(self, widget, plugin_api):
