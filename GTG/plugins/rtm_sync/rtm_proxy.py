@@ -85,8 +85,8 @@ class RtmProxy(GenericProxy):
 
 
     def generateTaskList(self):
-        self.downloadFromWeb()
-        for task,list_id,taskseries_id in  self.downloadFromWeb():
+        data = self.downloadFromWeb()
+        for task,list_id,taskseries_id in data:
             self.task_list.append(RtmTask(task, list_id, taskseries_id, \
                                           self.rtm, self.timeline))
 

@@ -15,6 +15,8 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 import sys
 import os
+import xml.dom.minidom
+
 sys.path.insert(0,os.path.dirname(os.path.abspath(__file__))+'/pyrtm')
 import rtm
 
@@ -26,9 +28,10 @@ class GenericTask(object):
                      lambda self,arg: self._set_title(arg)) 
 
     id = property(lambda self: self._get_id())
-
-    description = property(lambda self: self._get_description(),
-                     lambda self,arg: self._set_description(arg)) 
+    #NOTE: text is the task extended description (or notes
+    #      in rtm)
+    text = property(lambda self: self._get_text(),
+                     lambda self,arg: self._set_text(arg)) 
 
     modified = property(lambda self: self._get_modified())
 
@@ -44,6 +47,7 @@ class GenericTask(object):
     def copy (self, task):
         self.title = task.title
         self.tags = task.tags
+        self.text = task.text
 
 
 
@@ -87,10 +91,40 @@ class RtmTask (GenericTask):
                 tagstxt = name_fixed
             else:
                 tagstxt = tagstxt+ ", " + name_fixed
-        print tagstxt
         self.rtm.tasks.setTags(timeline=self.timeline, list_id =self.list_id,\
-                   taskseries_id=self.taskseries_id,task_id=self.id,tags=tagstxt)
+                taskseries_id=self.taskseries_id,task_id=self.id,tags=tagstxt)
+    
+    def _get_text(self):
+        if hasattr(self.task,'notes') and \
+           hasattr(self.task.notes,'note'):
+            #Rtm saves the notes text inside the member "$t". Don't ask me why.
+            if type(self.task.notes.note) == list:
+                return "".join (map(lambda note: getattr(note,'$t') + "\n", \
+                                self.task.notes.note))
+            else:
+                return getattr(self.task.notes.note, '$t')
+        else:
+            return ""
 
+
+    def _set_text(self, text):
+        #delete old notes
+        #FIXME: the first check *should* not be necessary (but it is?).
+        if hasattr(self.task,'notes') and \
+            hasattr(self.task.notes,'note'):
+            note_ids=map(lambda note: note.id, self.task.notes.note)
+            map ( lambda id: self.rtm.tasks.notes.delete(timeline=self.timeline, \
+                    note_id=id), note_ids)
+        #add a new one
+        #TODO: investigate what is "Note title", since there doesn't seem to be a note
+        # title in the web access.
+        #FIXME: minidom this way is ok, or do we suppose to get multiple 
+        #      nodes in "content"?
+        document = xml.dom.minidom.parseString(text)
+        content =document.getElementsByTagName("content")[0]
+        self.rtm.tasksNotes.add(timeline=self.timeline, list_id = self.list_id,\
+                taskseries_id = self.taskseries_id, task_id = self.id, note_title="",\
+                note_text = content.firstChild.data)
 
 class GtgTask (GenericTask):
 
@@ -113,8 +147,13 @@ class GtgTask (GenericTask):
     def _set_tags (self, tags):
         #NOTE: isn't there a better mode than removing all tags?
         #      need to add function in GTG/core/task.py
-        print tags
         old_tags = self.tags
         for tag in old_tags:
             self.task.remove_tag(tag)
         map (lambda tag: self.task.add_tag('@'+tag), tags)
+
+    def _get_text(self):
+        return self.task.get_text()
+
+    def _set_text(self,text):
+        self.task.set_text(text)
