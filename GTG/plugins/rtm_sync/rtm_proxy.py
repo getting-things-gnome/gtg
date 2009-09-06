@@ -45,7 +45,6 @@ class RtmProxy(GenericProxy):
                 self.token = self.rtm.getToken()
         if (self.getToken() == False):
             return False
-        print self.token
         self.rtm=rtm.createRTM ("2a440fdfe9d890c343c25a91afd84c7e",\
                                "ca078fee48d0bbfa", self.token );
         utility.smartSaveToFile(self.config_dir,'token', self.token)
@@ -83,13 +82,14 @@ class RtmProxy(GenericProxy):
 
         for task,list_id,taskseries_id in  \
             zip(task_objects_list, list_ids_list, taskseries_ids_list):
-            self.task_list.append(RtmTask(task, list_id, taskseries_id))
+            self.task_list.append(RtmTask(task, list_id, taskseries_id, \
+                                          self.rtm, self.timeline))
 
     def newTask(self, title):
         #FIXME: possible bug? Don't know list_id, taskseries_id. Should 
         #       never raise, though
         new_task= RtmTask(self.rtm.tasks.add(timeline=self.timeline, name=title)\
-                        .list.taskseries.task,None,None)
+                        .list.taskseries.task,None,None, self.rtm, self.timeline)
         self.task_list.append(new_task)
         return new_task
         

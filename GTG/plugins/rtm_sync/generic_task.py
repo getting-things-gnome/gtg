@@ -13,6 +13,10 @@
 #
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
+import sys
+import os
+sys.path.insert(0,os.path.dirname(os.path.abspath(__file__))+'/pyrtm')
+import rtm
 
 class GenericTask(object):
     """GenericTask is the abstract interface that represents a generic task.
@@ -37,12 +41,18 @@ class GenericTask(object):
     def __str__(self):
         return "Task " + self.title + "(" + self.id + ")"
 
+    def copy (self, task):
+        self.title = task.title
+        self.tags = task.tags
+
 
 
 class RtmTask (GenericTask):
 
-    def __init__(self, task, list_id, taskseries_id):
+    def __init__(self, task, list_id, taskseries_id, rtm, timeline):
         super(RtmTask, self).__init__()
+        self.rtm = rtm
+        self.timeline = timeline
         self.task = task
         self.list_id = list_id
         self.taskseries_id = taskseries_id
@@ -56,6 +66,24 @@ class RtmTask (GenericTask):
 
     def _get_id(self):
         return self.task.id
+
+    def _get_tags(self):
+        if hasattr(self.task.tags,'tag'):
+            if type (self.task.tags.tag) ==list:
+                return self.task.tags.tag
+            else:
+                return [self.task.tags.tag]
+        elif hasattr(self.task.tags,'list'):
+            return map(lambda x: x.tag if hasattr(x,'tag') else None, \
+                       self.task.tags.list)
+            return ["ciao"]
+        return []
+
+    def _set_tags (self, tags):
+#        print tags
+#        self.rtm.tasks.setTags(timeline=self.timeline, list_id =self.list_id,\
+#                   taskseries_id=self.taskseries_id,task_id=self.id,tags=tags)
+        pass
 
 
 class GtgTask (GenericTask):
@@ -72,3 +100,15 @@ class GtgTask (GenericTask):
 
     def _get_id(self):
         return self.task.get_id()
+
+    def _get_tags (self):
+        return self.task.get_tags()
+
+    def _set_tags (self, tags):
+        #NOTE: isn't there a better mode than removing all tags?
+        #      need to add function in GTG/core/task.py
+        print tags
+        old_tags = self.tags
+        for tag in old_tags:
+            self.task.remove_tag(tag)
+        map (lambda tag: self.task.add_tag('@'+tag), tags)

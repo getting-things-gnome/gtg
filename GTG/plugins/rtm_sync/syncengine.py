@@ -56,7 +56,6 @@ class SyncEngine:
                                cache_dir, 'gtg_to_rtm_id_mapping')
         if   gtg_to_rtm_id_mapping is None: 
             ###this is the first synchronization
-            print "first sync"
             gtg_to_rtm_id_mapping = []
             #generating sets to perform intersection of tasks
             #NOTE: assuming different titles!
@@ -70,17 +69,17 @@ class SyncEngine:
 
             #tasks that must be added to GTG
             for title in rtm_task_titles_set.difference (gtg_task_titles_set):
+                base_task = filterAttr(rtm_list,'title',title)[0]
                 new_task = gtg_proxy.newTask(title, True)
-                gtg_to_rtm_id_mapping.append ((new_task.id,
-                         filterAttr(rtm_list, 'title', title)[0].id))
+                new_task.copy(base_task)
+                gtg_to_rtm_id_mapping.append ((new_task.id, base_task.id))
 
             #tasks that must be added to RTM
             for title in gtg_task_titles_set.difference (rtm_task_titles_set):
+                base_task = filterAttr(gtg_list,'title',title)[0]
                 new_task = rtm_proxy.newTask(title)
-                gtg_to_rtm_id_mapping.append (
-                        (filterAttr(gtg_list, 'title', title)[0].id,
-                         new_task.id))
-            print gtg_to_rtm_id_mapping
+                new_task.copy(base_task)
+                gtg_to_rtm_id_mapping.append((base_task.id, new_task.id))
 #
 #        else:
 #            ###this is an update
