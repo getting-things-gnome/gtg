@@ -43,10 +43,12 @@ class SyncEngine:
     def synchronize(self):
         gtg_proxy = GtgProxy(self.this_plugin.plugin_api)
         rtm_proxy = self.rtm_proxy
+        self.update_progressbar(0.1)
 
         gtg_proxy.generateTaskList()
         rtm_proxy.generateTaskList()
 
+        self.update_progressbar(0.3)
         gtg_list = gtg_proxy.task_list
         rtm_list = rtm_proxy.task_list
 
@@ -80,6 +82,9 @@ class SyncEngine:
                 new_task = rtm_proxy.newTask(title)
                 new_task.copy(base_task)
                 gtg_to_rtm_id_mapping.append((base_task.id, new_task.id))
+    
+        self.update_status("Synchronization completed")
+        self.update_progressbar(1.0)
 #
 #        else:
 #            ###this is an update
@@ -178,12 +183,12 @@ class SyncEngine:
 #
 #        self.update_progressbar(1.0)
 #        
-#    def update_progressbar(self,percent):
-#        self.this_plugin.progressbar_percent = percent
-#        gobject.idle_add(self.this_plugin.set_progressbar)
-#    def update_status(self,status):
-#        self.this_plugin.status = status
-#        gobject.idle_add(self.this_plugin.set_status)
+    def update_progressbar(self,percent):
+        self.this_plugin.progressbar_percent = percent
+        gobject.idle_add(self.this_plugin.set_progressbar)
+    def update_status(self,status):
+        self.this_plugin.status = status
+        gobject.idle_add(self.this_plugin.set_status)
 #
 #
 #

@@ -129,13 +129,14 @@ class RtmTask (GenericTask):
             return
         document = xml.dom.minidom.parseString(text)
         content =document.getElementsByTagName("content")
-        if len(content)>0:
-            content = content[0]
+        if len(content)>0 and hasattr(content,'firstChild') \
+           and hasattr(content.firstChild,'data') :
+            content = content[0].firstChild.data
         else:
             return
         self.rtm.tasksNotes.add(timeline=self.timeline, list_id = self.list_id,\
                 taskseries_id = self.taskseries_id, task_id = self.id, note_title="",\
-                note_text = content.firstChild.data)
+                note_text = content)
 
     def _get_due_date(self):
         if not hasattr(self.task.task,'due') or self.task.task.due == "":

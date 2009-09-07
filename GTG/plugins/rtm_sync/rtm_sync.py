@@ -55,7 +55,7 @@ class RtmSync:
     def activate(self, plugin_api):
         self.plugin_api = plugin_api
 		# add a menu item to the menu bar
-        plugin_api.add_menu_item(self.menu_item)
+#        plugin_api.add_menu_item(self.menu_item)
 
         # saves the separator's index to later remove it
         self.separator = plugin_api.add_toolbar_item(gtk.SeparatorToolItem())
@@ -67,8 +67,8 @@ class RtmSync:
         self.tb_Taskbutton = gtk.ToolButton(gtk.STOCK_EXECUTE)
         self.tb_Taskbutton.set_label("Hello World")
         self.tb_Taskbutton.connect('clicked', self.onTbTaskButton, plugin_api)
-        plugin_api.add_task_toolbar_item(gtk.SeparatorToolItem())
-        plugin_api.add_task_toolbar_item(self.tb_Taskbutton)
+#        plugin_api.add_task_toolbar_item(gtk.SeparatorToolItem())
+#        plugin_api.add_task_toolbar_item(self.tb_Taskbutton)
 		
     def deactivate(self, plugin_api):
         plugin_api.remove_menu_item(self.menu_item)
@@ -108,6 +108,8 @@ class RtmSync:
 
     def set_progressbar(self):
         self.progressbar.set_fraction(self.progressbar_percent)
+        #if self.progressbar_percent == 1.0:
+        #    self.dialog.destroy()
 
     def set_status(self):
         self.lbl_dialog.set_text(self.status)
@@ -126,7 +128,7 @@ class RtmSync:
     def lauchSynchronization(self):
         self.loadDialogSync("Synchronization started")
         self.worker_thread = Thread(target=self.sync_engine.synchronize).start()
-        self.worker_thread = Thread(target=self.fake_update_progressbar).start()
+   #     self.worker_thread = Thread(target=self.fake_update_progressbar).start()
 
 		
     def onTbButton(self, widget):
