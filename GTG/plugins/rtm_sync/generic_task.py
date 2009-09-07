@@ -16,9 +16,13 @@
 import sys
 import os
 import xml.dom.minidom
+import xml.utils.iso8601
+from datetime import date
+
 
 sys.path.insert(0,os.path.dirname(os.path.abspath(__file__))+'/pyrtm')
 import rtm
+import utility
 
 class GenericTask(object):
     """GenericTask is the abstract interface that represents a generic task.
@@ -35,8 +39,8 @@ class GenericTask(object):
 
     modified = property(lambda self: self._get_modified())
 
-    due = property(lambda self: self._get_due(),
-                     lambda self,arg: self._set_due(arg)) 
+    due_date = property(lambda self: self._get_due_date(),
+                     lambda self,arg: self._set_due_date(arg)) 
 
     tags = property(lambda self: self._get_tags(),
                      lambda self,arg: self._set_tags(arg)) 
@@ -48,6 +52,7 @@ class GenericTask(object):
         self.title = task.title
         self.tags = task.tags
         self.text = task.text
+        self.due_date = task.due_date
 
 
 
@@ -120,11 +125,32 @@ class RtmTask (GenericTask):
         # title in the web access.
         #FIXME: minidom this way is ok, or do we suppose to get multiple 
         #      nodes in "content"?
+        if text == "":
+            return
         document = xml.dom.minidom.parseString(text)
-        content =document.getElementsByTagName("content")[0]
+        content =document.getElementsByTagName("content")
+        if len(content)>0:
+            content = content[0]
+        else:
+            return
         self.rtm.tasksNotes.add(timeline=self.timeline, list_id = self.list_id,\
                 taskseries_id = self.taskseries_id, task_id = self.id, note_title="",\
                 note_text = content.firstChild.data)
+
+    def _get_due_date(self):
+        if not hasattr(self.task,'due') or self.task.due == "":
+            return None
+        return utility.iso8601toTime(self.task.due)
+
+    def _set_due_date(self,due):
+        due_string = ""
+        if type(due) != type(None):
+            due_string = utility.timeToIso8601(due)
+        self.rtm.tasks.setDueDate(timeline=self.timeline, list_id = self.list_id,\
+                taskseries_id = self.taskseries_id, task_id = self.id, \
+                due=due_string)
+
+
 
 class GtgTask (GenericTask):
 
@@ -157,3 +183,18 @@ class GtgTask (GenericTask):
 
     def _set_text(self,text):
         self.task.set_text(text)
+
+    def _get_due_date(self):
+        due_string = self.task.get_due_date()
+        if due_string == "":
+            return None
+        return utility.iso8601toTime(due_string)
+
+    def _set_due_date(self,due):
+        due_string = ""
+        if type(due) == type(None):
+            due_string = utility.timeToIso8601(due)
+        print "gtg set due "+ due_string
+        self.task.set_due_date(due_string)
+
+

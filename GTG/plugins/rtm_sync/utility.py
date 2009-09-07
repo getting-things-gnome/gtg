@@ -1,9 +1,13 @@
 import pickle
 import os
+import xml.utils.iso8601
+from datetime import date
 
-__all__ = [ "smartSaveToFile",
-            "smartLoadFromFile",
-            "filterAttr"]
+__all__ = ["smartSaveToFile",
+           "smartLoadFromFile",
+           "filterAttr",
+           "iso8601toTime",
+           "timeToIso8601"]
 
 def smartLoadFromFile(dirname,filename):
     path=dirname+'/'+filename
@@ -32,3 +36,15 @@ def unziplist(a):
 
 def filterAttr (list, attr, value):
     return filter (lambda elem: getattr(elem,attr) == value, list)
+
+def iso8601toTime (string):
+    return date.fromtimestamp(xml.utils.iso8601.parse(string))
+
+def timeToIso8601 (timeobject):
+    print type(timeobject)
+    print timeobject
+    try:
+        return timeobject.strftime("%Y-%m-%dT%H:%M:%S")
+    except:
+        return ""
+

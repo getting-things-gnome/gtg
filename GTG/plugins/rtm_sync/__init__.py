@@ -18,4 +18,3 @@ import sys,os
 sys.path.insert(0,os.getcwd())
 
 from rtm_sync import RtmSync
-print "ciao"
