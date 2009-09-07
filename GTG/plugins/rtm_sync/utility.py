@@ -41,10 +41,4 @@ def iso8601toTime (string):
     return date.fromtimestamp(xml.utils.iso8601.parse(string))
 
 def timeToIso8601 (timeobject):
-    print type(timeobject)
-    print timeobject
-    try:
-        return timeobject.strftime("%Y-%m-%dT%H:%M:%S")
-    except:
-        return ""
-
+    return timeobject.strftime("%Y-%m-%dT%H:%M:%S")

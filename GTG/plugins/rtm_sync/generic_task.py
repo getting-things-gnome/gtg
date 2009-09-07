@@ -138,18 +138,19 @@ class RtmTask (GenericTask):
                 note_text = content.firstChild.data)
 
     def _get_due_date(self):
-        if not hasattr(self.task,'due') or self.task.due == "":
+        if not hasattr(self.task.task,'due') or self.task.task.due == "":
             return None
-        return utility.iso8601toTime(self.task.due)
+        return utility.iso8601toTime(self.task.task.due)
 
     def _set_due_date(self,due):
-        due_string = ""
         if type(due) != type(None):
-            due_string = utility.timeToIso8601(due)
-        self.rtm.tasks.setDueDate(timeline=self.timeline, list_id = self.list_id,\
-                taskseries_id = self.taskseries_id, task_id = self.id, \
-                due=due_string)
-
+            due_string = due.strftime("%Y-%m-%d")
+            self.rtm.tasks.setDueDate(timeline=self.timeline, list_id = self.list_id,\
+                    taskseries_id = self.taskseries_id, task_id = self.id, \
+                    due=due_string)
+        else:
+            self.rtm.tasks.setDueDate(timeline=self.timeline, list_id = self.list_id,\
+                    taskseries_id = self.taskseries_id, task_id = self.id)
 
 
 class GtgTask (GenericTask):
@@ -192,9 +193,8 @@ class GtgTask (GenericTask):
 
     def _set_due_date(self,due):
         due_string = ""
-        if type(due) == type(None):
-            due_string = utility.timeToIso8601(due)
-        print "gtg set due "+ due_string
+        if type(due) != type(None):
+            due_string = due.strftime("%Y-%m-%d")
         self.task.set_due_date(due_string)
 
 
