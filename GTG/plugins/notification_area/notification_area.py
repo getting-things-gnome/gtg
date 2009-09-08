@@ -43,7 +43,7 @@ class NotificationArea:
         #menuItem.set_image(image_new_task)
         ##menuItem.connect('activate', self.new_task)
         #menu.append(menuItem)
-        self.view_main_window = gtk.CheckMenuItem("View Main Window")
+        self.view_main_window = gtk.CheckMenuItem("_View Main Window")
         self.view_main_window.set_active(True)
         self.view_main_window.connect('activate', self.minimize, plugin_api)
         menu.append(self.view_main_window)
