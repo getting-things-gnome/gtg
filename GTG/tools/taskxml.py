@@ -26,6 +26,8 @@ from GTG.tools import cleanxml
 def task_from_xml(task,xmlnode) :
     cur_task = task
     cur_stat = "%s" %xmlnode.getAttribute("status")
+    uuid = "%s" %xmlnode.getAttribute("uuid")
+    cur_task.set_uuid(uuid)
     donedate = cleanxml.readTextNode(xmlnode,"donedate")
     cur_task.set_status(cur_stat,donedate=donedate)
     #we will fill the task with its content
@@ -65,6 +67,7 @@ def task_to_xml(doc,task) :
     t_xml = doc.createElement("task")
     t_xml.setAttribute("id",task.get_id())
     t_xml.setAttribute("status" , task.get_status())
+    t_xml.setAttribute("uuid" , task.get_uuid())
     tags_str = ""
     for tag in task.get_tags_name(): 
         tags_str = tags_str + str(tag) + ","

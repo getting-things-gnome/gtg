@@ -19,6 +19,7 @@
 
 from datetime import date
 import xml.dom.minidom
+import uuid
 
 from GTG import _
 from GTG.tools.dates import strtodate
@@ -37,6 +38,7 @@ class Task:
         #the id of this task in the project should be set
         #tid is a string ! (we have to choose a type and stick to it)
         self.tid = str(ze_id)
+        self.set_uuid(uuid.uuid4())
         self.content = ""
         #self.content = \
         #    "<content>Press Escape or close this task to save it</content>"
@@ -77,6 +79,18 @@ class Task:
 
     def get_id(self):
         return str(self.tid)
+
+    def set_uuid(self, value ):
+        self.uuid = str(value)
+
+    def get_uuid(self):
+        #NOTE: Transitional if switch, needed to add
+        #      the uuid field to tasks created before
+        #      adding this field to the task description.
+        if self.uuid == "":
+            self.set_uuid(uuid.uuid4())
+            self.sync()
+        return self.uuid
 
     def get_title(self):
         return self.title
