@@ -90,13 +90,19 @@ class SyncEngine:
             ###this is an update
             gtg_id_current_set = set(map(lambda x: x.id, self.gtg_list))
             rtm_id_current_set = set(map(lambda x: x.id, self.rtm_list))
-            gtg_id_previous_list, rtm_id_previous_list = unziplist \
+            if len(gtg_to_rtm_id_mapping)>0:
+                gtg_id_previous_list, rtm_id_previous_list = unziplist \
                     (gtg_to_rtm_id_mapping)
+            else:
+                gtg_id_previous_list,rtm_id_previous_list=[],[]
             gtg_id_previous_set = set (gtg_id_previous_list)
             rtm_id_previous_set = set (rtm_id_previous_list)
             gtg_to_rtm_id_dict = dict(gtg_to_rtm_id_mapping)
             rtm_to_gtg_id_dict = dict(zip(rtm_id_previous_list, \
                                           gtg_id_previous_list))
+
+            #We'll generate a new mapping between gtg and rtm task ids 
+            gtg_to_rtm_id_mapping = []
 
             #tasks removed from gtg since last synchronization
             gtg_removed = gtg_id_previous_set.difference(gtg_id_current_set)
@@ -107,7 +113,8 @@ class SyncEngine:
             #tasks added to rtm since last synchronization
             rtm_added = rtm_id_current_set.difference(rtm_id_previous_set)
             #tasks still in common (which may need to be updated)
-            common = rtm_id_current_set.intersection(gtg_id_current_set)
+            gtg_common = gtg_id_current_set.difference(gtg_added)\
+                    .difference(gtg_removed)
             
 
             #Delete from rtm the tasks that have been removed in gtg
@@ -121,6 +128,40 @@ class SyncEngine:
                 gtg_id = rtm_to_gtg_id_dict[rtm_id]
                 map(lambda task: task.delete(), \
                     filterAttr(self.gtg_list,'id',gtg_id))
+                gtg_common.discard(gtg_id)
+
+            #tasks that must be added to RTM
+            #NOTE: should we check if the title is already present in the 
+            #other backend, to be more robust? (Idem for vice-versa)
+            print "GTG ADDED" + str(gtg_added)
+            for gtg_id in gtg_added:
+                gtg_task = filterAttr(self.gtg_list, 'id', gtg_id)[0]
+                rtm_task = self.rtm_proxy.newTask(gtg_task.title)
+                rtm_task.copy(gtg_task)
+                gtg_to_rtm_id_mapping.append((gtg_id,rtm_task.id))
+
+            #tasks that must be added to GTG
+            for rtm_id in rtm_added:
+                rtm_task = filterAttr(self.rtm_list, 'id', rtm_id)[0]
+                gtg_task = self.gtg_proxy.newTask(rtm_task.title, True)
+                gtg_task.copy(rtm_task)
+                gtg_to_rtm_id_mapping.append((gtg_task.id, rtm_id))
+
+            for gtg_id in gtg_common:
+                rtm_id = gtg_to_rtm_id_dict[gtg_id]
+                gtg_task = filterAttr(self.gtg_list, 'id', gtg_id)[0]
+                rtm_task = filterAttr(self.rtm_list, 'id', rtm_id)[0]
+                print  rtm_task.title, gtg_task.title
+                print timeToIso8601(rtm_task.modified) , timeToIso8601(gtg_task.modified)
+                if rtm_task.modified > gtg_task.modified:
+                    print "rtm is latest"
+                    gtg_task.copy(rtm_task)
+                else:
+                    print "gtg is latest"
+                    rtm_task.copy(gtg_task)
+
+                gtg_to_rtm_id_mapping.append((gtg_id, rtm_id))
+
 
 
 
@@ -130,66 +171,7 @@ class SyncEngine:
         self.update_status("Synchronization completed")
         self.update_progressbar(1.0)
 
-#            if len (to_be_removed_from_gtg_extended) != 0:
-#                to_be_removed_from_gtg, temp = self.unziplist(\
-#                                to_be_removed_from_gtg_extended)
-#                map (lambda x: plugin_api.get_requester().delete_task(x),\
-#                                to_be_removed_from_gtg)
-#
-#            self.update_progressbar(0.8)
-#            ##task that need to be updated
-#            to_be_updated = filter (lambda x: x[0] != None and x[1] != None,\
-#                                    gtg_to_rtm_task_id_mapping_new)
-#            ##TODO:update
-#            for item in to_be_updated:
-#                if gtg_title_to_id_bijFun.rightFindElem(item[0])!=\
-#                        rtm_title_to_id_bijFun.rightFindElem(item[1]):
-#                    print "detected title change. still to implement"
-#                    rtm_due=None
-#                    gtg_due=None
-#                    if rtm_task_id_to_task[item[1]].task.due != "":
-#                        rtm_due = date.fromtimestamp(xml.utils.iso8601.parse(rtm_task_id_to_task[item[1]].task.due))
-#                        print rtm_due
-#                    if  plugin_api.get_task(item[0]).get_due_date() != "":
-#                       gtg_due = date.fromtimestamp(xml.utils.iso8601.parse(plugin_api.get_task(item[0]).get_due_date()))
-#                    if (gtg_due != None and rtm_due != None):
-#                        if (gtg_due < rtm_due):
-#                            print "gtg is before"
-#                            print [gtg_due, rtm_due]
-#                        else:
-#                            print "gtg is not before"
-#                            print [gtg_due, rtm_due]
-#
-#
-#
-#
-#                    
-#
-#            ##new tasks
-#            gtg_task_id_current_set = set (gtg_task_id_list)
-#            rtm_task_id_current_set = set (rtm_task_id_list)
-#            gtg_task_id_old_set, rtm_task_id_old_set = \
-#                    self.unziplist (gtg_to_rtm_task_id_mapping_new)
-#            gtg_new_tasks_set = \
-#                    gtg_task_id_current_set.difference (gtg_task_id_old_set)
-#            rtm_new_tasks_set = \
-#                    rtm_task_id_current_set.difference (rtm_task_id_old_set)
-#
-#            for id in rtm_new_tasks_set:
-#                new_task = plugin_api.get_requester().new_task(newtask=True)
-#                new_task.set_title(rtm_title_to_id_bijFun.rightFindElem(id))
-#                gtg_to_rtm_task_id_mapping_new.append ((new_task.get_id(), id))
-#            #FIXME:gtg reuses id! need uuid
-#            for id in gtg_new_tasks_set:
-#                new_task= self.rtm.tasks.add(timeline=timeline,\
-#                        name=gtg_title_to_id_bijFun.rightFindElem(id))\
-#                        .list.taskseries.task
-#                gtg_to_rtm_task_id_mapping.append ((id, new_task.id))
-#
 #        #TODO: ask if ok or undo (easy on rtm (see timeline),
-#        #   but on gtg? need to keep a journal?  
-#        self.smartSaveToFile(cache_dir,'gtg_to_rtm_task_id_mapping',\
-#                        gtg_to_rtm_task_id_mapping)
 
 
     def update_progressbar(self,percent):

@@ -53,6 +53,7 @@ def task_from_xml(task,xmlnode) :
             content = xml.dom.minidom.parseString(tas)
             cur_task.set_text(content.firstChild.toxml()) #pylint: disable-msg=E1103 
     cur_task.set_due_date(cleanxml.readTextNode(xmlnode,"duedate"))
+    cur_task.set_modified(cleanxml.readTextNode(xmlnode,"modified"))
     cur_task.set_start_date(cleanxml.readTextNode(xmlnode,"startdate"))
     cur_tags = xmlnode.getAttribute("tags").replace(' ','').split(",")
     if "" in cur_tags: cur_tags.remove("")
@@ -74,6 +75,7 @@ def task_to_xml(doc,task) :
     t_xml.setAttribute("tags", tags_str[:-1])
     cleanxml.addTextNode(doc,t_xml,"title",task.get_title())
     cleanxml.addTextNode(doc,t_xml,"duedate",task.get_due_date())
+    cleanxml.addTextNode(doc,t_xml,"modified",task.get_modified())
     cleanxml.addTextNode(doc,t_xml,"startdate",task.get_start_date())
     cleanxml.addTextNode(doc,t_xml,"donedate",task.get_closed_date())
     childs = task.get_subtask_tids()

@@ -75,11 +75,15 @@ class RtmTask (GenericTask):
         return self.task.name
 
     def _set_title(self, title):
-        #TODO
-        pass
+        self.rtm.tasks.setName(timeline=self.timeline, list_id =self.list_id,\
+                taskseries_id=self.taskseries_id,task_id=self.id,name = title)
+
 
     def _get_id(self):
-        return self.task.task.id
+        if hasattr(self.task,'task'):
+            return self.task.task.id
+        else:
+            return self.task.id
 
     def _get_tags(self):
         if hasattr(self.task.tags,'tag'):
@@ -122,8 +126,11 @@ class RtmTask (GenericTask):
         #FIXME: the first check *should* not be necessary (but it is?).
         if hasattr(self.task,'notes') and \
             hasattr(self.task.notes,'note'):
-            note_ids=map(lambda note: note.id, self.task.notes.note)
-            map ( lambda id: self.rtm.tasks.notes.delete(timeline=self.timeline, \
+            if type(self.task.notes.note) == list:
+                note_ids =map(lambda note: note.id, self.task.notes.note)
+            else:
+                note_ids = [self.task.notes.note.id]
+            map ( lambda id: self.rtm.tasksNotes.delete(timeline=self.timeline, \
                     note_id=id), note_ids)
         #add a new one
         #TODO: investigate what is "Note title", since there doesn't seem to be a note
@@ -150,16 +157,24 @@ class RtmTask (GenericTask):
 
     def _set_due_date(self,due):
         if type(due) != type(None):
-            due_string = due.strftime("%Y-%m-%d")
+            due_string = str(due.tm_year)+ "-" +\
+                    str(due.tm_mon)+ "-" + str(due.tm_mday) 
             self.rtm.tasks.setDueDate(timeline=self.timeline, list_id = self.list_id,\
                     taskseries_id = self.taskseries_id, task_id = self.id, \
                     due=due_string)
         else:
             self.rtm.tasks.setDueDate(timeline=self.timeline, list_id = self.list_id,\
                     taskseries_id = self.taskseries_id, task_id = self.id)
+
+    def _get_modified(self):
+        if not hasattr(self.task,'modified') or self.task.modified == "":
+            return None
+        return utility.iso8601toTime(self.task.modified)
+
     def delete(self):
         self.rtm.tasks.delete(timeline = self.timeline, list_id = self.list_id, \
                 taskseries_id = self.taskseries_id, task_id = self.id)
+
 
 class GtgTask (GenericTask):
 
@@ -203,8 +218,15 @@ class GtgTask (GenericTask):
     def _set_due_date(self,due):
         due_string = ""
         if type(due) != type(None):
-            due_string = due.strftime("%Y-%m-%d")
+            due_string = str(due.tm_year)+ "-" +\
+                    str(due.tm_mon)+ "-" + str(due.tm_mday) 
         self.task.set_due_date(due_string)
+
+    def _get_modified(self):
+        modified = self.task.get_modified()
+        if modified == None or modified == "":
+            return None
+        return utility.iso8601toTime(modified)
 
     def delete (self):
         self.plugin_api.get_requester().delete_task(self.task.get_id())

@@ -23,6 +23,7 @@ import uuid
 
 from GTG import _
 from GTG.tools.dates import strtodate
+from datetime import datetime
 
 
 class Task:
@@ -61,6 +62,7 @@ class Task:
         if self.loaded:
             self.req._task_loaded(self.tid)
         self.attributes={}
+        self._modified_update()
 
     def is_loaded(self):
         return self.loaded
@@ -158,6 +160,12 @@ class Task:
             if c.get_status() == self.STA_ACTIVE:
                 workable = False
         return workable
+
+    def get_modified(self):
+        return self.modified
+
+    def set_modified(self, string):
+        self.modified = string
 
     def set_due_date(self, fulldate, fromparent=False):
         # if fromparent, we set only a date if duedate is not set
@@ -487,9 +495,14 @@ class Task:
             self.sync()
 
     def sync(self):
+        self._modified_update()
         if self.sync_func and self.is_loaded():
             self.sync_func(self)
             self.req._task_modified(self.tid)
+
+    def _modified_update(self):
+        self.modified = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+
 
 
 ### TAG FUNCTIONS ############################################################

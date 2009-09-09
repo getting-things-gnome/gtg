@@ -1,7 +1,8 @@
 import pickle
 import os
 import xml.utils.iso8601
-from datetime import date
+from datetime import datetime
+import time
 
 __all__ = ["smartSaveToFile",
            "smartLoadFromFile",
@@ -33,13 +34,21 @@ def smartSaveToFile(dirname,filename, item,**kwargs):
             raise Exception ('saving critical object failed')
 
 def unziplist(a):
+    if len(a) == 0:
+        return [],[]
     return tuple(map(list,zip(*a)))
 
 def filterAttr (list, attr, value):
     return filter (lambda elem: getattr(elem,attr) == value, list)
 
 def iso8601toTime (string):
-    return date.fromtimestamp(xml.utils.iso8601.parse(string))
+    #FIXME: need to handle time with TIMEZONES!
+    string = string.split('.')[0].split('Z')[0]
+    if string.find('T') == -1:
+        return time.strptime(string.split(".")[0], "%Y-%m-%d")
+    return time.strptime(string.split(".")[0], "%Y-%m-%dT%H:%M:%S")
 
 def timeToIso8601 (timeobject):
-    return timeobject.strftime("%Y-%m-%dT%H:%M:%S")
+    t = timeobject
+    return str(t.tm_year)+ "-" + str(t.tm_mon)+ "-" + str(t.tm_mday) + \
+            "T" + str(t.tm_hour) + ":" + str(t.tm_min)+ ":" + str(t.tm_sec)
