@@ -7,7 +7,8 @@ __all__ = ["smartSaveToFile",
            "smartLoadFromFile",
            "filterAttr",
            "iso8601toTime",
-           "timeToIso8601"]
+           "timeToIso8601",
+           "unziplist"]
 
 def smartLoadFromFile(dirname,filename):
     path=dirname+'/'+filename

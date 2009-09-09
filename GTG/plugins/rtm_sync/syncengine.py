@@ -36,21 +36,47 @@ class SyncEngine:
     def __init__(self, this_plugin):
         self.this_plugin = this_plugin
         self.rtm_proxy = RtmProxy ()
+        self.gtg_proxy = GtgProxy(self.this_plugin.plugin_api)
 
     def rtmLogin (self):
         return self.rtm_proxy.login()
 
+    def _firstSynchronization(self):
+        gtg_to_rtm_id_mapping = []
+        #generating sets to perform intersection of tasks
+        #NOTE: assuming different titles!
+        gtg_task_titles_set = set (map(lambda x: x.title, self.gtg_list))
+        rtm_task_titles_set = set (map(lambda x: x.title, self.rtm_list))
+        #tasks in common
+        for title in rtm_task_titles_set.intersection (gtg_task_titles_set):
+            gtg_to_rtm_id_mapping.append (
+                    (filterAttr(self.gtg_list, 'title', title)[0].id,
+                     filterAttr(self.rtm_list, 'title', title)[0].id))
+
+        #tasks that must be added to GTG
+        for title in rtm_task_titles_set.difference (gtg_task_titles_set):
+            base_task = filterAttr(self.rtm_list,'title',title)[0]
+            new_task = self.gtg_proxy.newTask(title, True)
+            new_task.copy(base_task)
+            gtg_to_rtm_id_mapping.append ((new_task.id, base_task.id))
+
+        #tasks that must be added to RTM
+        for title in gtg_task_titles_set.difference (rtm_task_titles_set):
+            base_task = filterAttr(self.gtg_list,'title',title)[0]
+            new_task = self.rtm_proxy.newTask(title)
+            new_task.copy(base_task)
+            gtg_to_rtm_id_mapping.append((base_task.id, new_task.id))
+        return gtg_to_rtm_id_mapping
+
     def synchronize(self):
-        gtg_proxy = GtgProxy(self.this_plugin.plugin_api)
-        rtm_proxy = self.rtm_proxy
         self.update_progressbar(0.1)
 
-        gtg_proxy.generateTaskList()
-        rtm_proxy.generateTaskList()
+        self.gtg_proxy.generateTaskList()
+        self.rtm_proxy.generateTaskList()
 
         self.update_progressbar(0.3)
-        gtg_list = gtg_proxy.task_list
-        rtm_list = rtm_proxy.task_list
+        self.gtg_list = self.gtg_proxy.task_list
+        self.rtm_list = self.rtm_proxy.task_list
 
         ## loading the mapping of the last sync
         cache_dir = os.path.join(xdg_cache_home,'gtg/plugins/rtm-sync')
@@ -58,67 +84,52 @@ class SyncEngine:
                                cache_dir, 'gtg_to_rtm_id_mapping')
         if   gtg_to_rtm_id_mapping is None: 
             ###this is the first synchronization
-            gtg_to_rtm_id_mapping = []
-            #generating sets to perform intersection of tasks
-            #NOTE: assuming different titles!
-            gtg_task_titles_set = set (map(lambda x: x.title, gtg_list))
-            rtm_task_titles_set = set (map(lambda x: x.title, rtm_list))
-            #tasks in common
-            for title in rtm_task_titles_set.intersection (gtg_task_titles_set):
-                gtg_to_rtm_id_mapping.append (
-                        (filterAttr(gtg_list, 'title', title)[0].id,
-                         filterAttr(rtm_list, 'title', title)[0].id))
+            gtg_to_rtm_id_mapping = \
+                    self._firstSynchronization()
+        else:
+            ###this is an update
+            gtg_id_current_set = set(map(lambda x: x.id, self.gtg_list))
+            rtm_id_current_set = set(map(lambda x: x.id, self.rtm_list))
+            gtg_id_previous_list, rtm_id_previous_list = unziplist \
+                    (gtg_to_rtm_id_mapping)
+            gtg_id_previous_set = set (gtg_id_previous_list)
+            rtm_id_previous_set = set (rtm_id_previous_list)
+            gtg_to_rtm_id_dict = dict(gtg_to_rtm_id_mapping)
+            rtm_to_gtg_id_dict = dict(zip(rtm_id_previous_list, \
+                                          gtg_id_previous_list))
 
-            #tasks that must be added to GTG
-            for title in rtm_task_titles_set.difference (gtg_task_titles_set):
-                base_task = filterAttr(rtm_list,'title',title)[0]
-                new_task = gtg_proxy.newTask(title, True)
-                new_task.copy(base_task)
-                gtg_to_rtm_id_mapping.append ((new_task.id, base_task.id))
+            #tasks removed from gtg since last synchronization
+            gtg_removed = gtg_id_previous_set.difference(gtg_id_current_set)
+            #tasks removed from rtm since last synchronization
+            rtm_removed = rtm_id_previous_set.difference(rtm_id_current_set)
+            #tasks added to gtg since last synchronization
+            gtg_added = gtg_id_current_set.difference(gtg_id_previous_set)
+            #tasks added to rtm since last synchronization
+            rtm_added = rtm_id_current_set.difference(rtm_id_previous_set)
+            #tasks still in common (which may need to be updated)
+            common = rtm_id_current_set.intersection(gtg_id_current_set)
+            
 
-            #tasks that must be added to RTM
-            for title in gtg_task_titles_set.difference (rtm_task_titles_set):
-                base_task = filterAttr(gtg_list,'title',title)[0]
-                new_task = rtm_proxy.newTask(title)
-                new_task.copy(base_task)
-                gtg_to_rtm_id_mapping.append((base_task.id, new_task.id))
-    
+            #Delete from rtm the tasks that have been removed in gtg
+            for gtg_id in gtg_removed:
+                rtm_id = gtg_to_rtm_id_dict[gtg_id]
+                map(lambda task: task.delete(), \
+                    filterAttr(self.rtm_list,'id',rtm_id))
+
+            #Delete from gtg the tasks that have been removed in rtm
+            for rtm_id in rtm_removed:
+                gtg_id = rtm_to_gtg_id_dict[rtm_id]
+                map(lambda task: task.delete(), \
+                    filterAttr(self.gtg_list,'id',gtg_id))
+
+
+
+        smartSaveToFile(cache_dir,'gtg_to_rtm_id_mapping',\
+                        gtg_to_rtm_id_mapping)
+
         self.update_status("Synchronization completed")
         self.update_progressbar(1.0)
-#
-#        else:
-#            ###this is an update
-#
-#            ##updating the status of the task (present or removed)
-#            #if the task is still present,return the task id, else return None
-#            update_gtg_id = lambda x: x if \
-#                    len(filter( lambda y: y == x,gtg_task_id_list)) != 0 else None
-#            update_rtm_id = lambda x: x if \
-#                    len(filter( lambda y: y == x,rtm_task_id_list)) != 0 else None
-#            gtg_to_rtm_task_id_mapping_new = map ( lambda x: (update_gtg_id(x[0]),\
-#                                update_rtm_id(x[1])), gtg_to_rtm_task_id_mapping)
-#            #removing the tasks that have been removed in GTG or RTM
-#            to_be_removed = filter (lambda x: (x[0] == None or x[1] == None) \
-#                                    and not (x[0] == None and x[1] == None),\
-#                                    gtg_to_rtm_task_id_mapping_new)
-#            to_be_removed_from_rtm_extended = filter ( lambda x: x[0] == None , \
-#                                                      to_be_removed)
-#            to_be_removed_from_gtg_extended = filter ( lambda x: x[1] == None ,\
-#                                                      to_be_removed)
-#            to_be_removed_from_rtm = None
-#            to_be_removed_from_gtg = None
-#            self.update_progressbar(0.5)
-#            print to_be_removed_from_rtm_extended
-#            if len (to_be_removed_from_rtm_extended) != 0:
-#                temp,to_be_removed_from_rtm = self.unziplist(\
-#                                                to_be_removed_from_rtm_extended)
-#                print to_be_removed_from_rtm
-#                for elem in to_be_removed_from_rtm:
-#                    map (lambda x: self.rtm.tasks.delete(timeline = timeline, \
-#                            list_id = rtm_task_id_to_list_id[x], \
-#                            taskseries_id = rtm_task_id_to_taskseries_id[x], \
-#                            task_id = x), to_be_removed_from_rtm)
-#
+
 #            if len (to_be_removed_from_gtg_extended) != 0:
 #                to_be_removed_from_gtg, temp = self.unziplist(\
 #                                to_be_removed_from_gtg_extended)
@@ -179,27 +190,11 @@ class SyncEngine:
 #        #   but on gtg? need to keep a journal?  
 #        self.smartSaveToFile(cache_dir,'gtg_to_rtm_task_id_mapping',\
 #                        gtg_to_rtm_task_id_mapping)
-#        self.update_status("Synchronization completed")
-#
-#        self.update_progressbar(1.0)
-#        
+
+
     def update_progressbar(self,percent):
         self.this_plugin.progressbar_percent = percent
         gobject.idle_add(self.this_plugin.set_progressbar)
     def update_status(self,status):
         self.this_plugin.status = status
         gobject.idle_add(self.this_plugin.set_status)
-#
-#
-#
-#
-#
-#
-#
-#        
-#
-#
-#
-#
-#
-#

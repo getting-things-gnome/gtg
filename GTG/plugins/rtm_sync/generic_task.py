@@ -53,6 +53,11 @@ class GenericTask(object):
         self.tags = task.tags
         self.text = task.text
         self.due_date = task.due_date
+    
+    #Interface specification that will be overwritten 
+    # by the derived classes
+    def delete (self):
+        raise Exception()
 
 
 
@@ -74,7 +79,7 @@ class RtmTask (GenericTask):
         pass
 
     def _get_id(self):
-        return self.task.id
+        return self.task.task.id
 
     def _get_tags(self):
         if hasattr(self.task.tags,'tag'):
@@ -152,13 +157,16 @@ class RtmTask (GenericTask):
         else:
             self.rtm.tasks.setDueDate(timeline=self.timeline, list_id = self.list_id,\
                     taskseries_id = self.taskseries_id, task_id = self.id)
-
+    def delete(self):
+        self.rtm.tasks.delete(timeline = self.timeline, list_id = self.list_id, \
+                taskseries_id = self.taskseries_id, task_id = self.id)
 
 class GtgTask (GenericTask):
 
-    def __init__(self, task):
+    def __init__(self, task, plugin_api):
         super(GtgTask, self).__init__()
         self.task = task
+        self.plugin_api = plugin_api
 
     def _get_title(self):
         return self.task.get_title()
@@ -167,7 +175,7 @@ class GtgTask (GenericTask):
         self.task.set_title(title)
 
     def _get_id(self):
-        return self.task.get_id()
+        return self.task.get_uuid()
 
     def _get_tags (self):
         return self.task.get_tags()
@@ -198,4 +206,6 @@ class GtgTask (GenericTask):
             due_string = due.strftime("%Y-%m-%d")
         self.task.set_due_date(due_string)
 
+    def delete (self):
+        self.plugin_api.get_requester().delete_task(self.task.get_id())
 

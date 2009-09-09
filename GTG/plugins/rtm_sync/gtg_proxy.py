@@ -28,11 +28,12 @@ class GtgProxy(GenericProxy):
     def generateTaskList(self):
         tasks = map (self.plugin_api.get_task, \
                      self.plugin_api.get_requester().get_active_tasks_list())
-        map (lambda task: self.task_list.append(GtgTask(task)), tasks)
+        map (lambda task: self.task_list.append \
+             (GtgTask(task, self.plugin_api)), tasks)
 
     def newTask(self, title, never_seen_before):
         new_task =  GtgTask (self.plugin_api.get_requester().new_task(
-                             newtask=never_seen_before))
+                             newtask=never_seen_before), self.plugin_api)
         new_task.title = title
         self.task_list.append(new_task)
         return new_task
