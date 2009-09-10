@@ -143,3 +143,6 @@ The Milk in the browser that is being opened now. \
 When done, press OK")
         else:
             self.lauchSynchronization()
+
+    def onTaskOpened(self, plugin_api):
+        pass

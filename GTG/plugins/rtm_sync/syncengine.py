@@ -30,6 +30,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))+'/pyrtm')
 from gtg_proxy import GtgProxy
 from rtm_proxy import RtmProxy
 from utility import smartSaveToFile, smartLoadFromFile, filterAttr, unziplist
+import rtm
 
 
 class SyncEngine:
@@ -78,6 +79,14 @@ class SyncEngine:
         return gtg_to_rtm_id_mapping
 
     def synchronize(self):
+        try:
+            self.synchronizeWorker()
+        except rtm.RTMAPIError as exception:
+            self.close_gui(exception.message)
+        except:
+            self.close_gui("Synchronization failed.")
+
+    def synchronizeWorker(self):
         self.update_status("Downloading task list...")
         self.update_progressbar(0.1)
 
@@ -192,14 +201,16 @@ class SyncEngine:
         smartSaveToFile(cache_dir, 'gtg_to_rtm_id_mapping',\
                         gtg_to_rtm_id_mapping)
         #TODO: ask if ok or undo(easy on rtm(see timeline),
-        self.update_status("Synchronization completed.")
+        self.close_gui("Synchronization completed.")
+        
+
+    def close_gui(self,msg):
+        self.update_status(msg)
         self.update_progressbar(1.0)
         sleep(2)
         self.update_status("Closing in one second")
         sleep(1)
         gobject.idle_add(self.this_plugin.dialog.destroy)
-        
-
 
     def update_progressbar(self, percent):
         self.this_plugin.progressbar_percent = percent
