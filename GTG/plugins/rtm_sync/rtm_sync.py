@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright (c) 2009 - Luca Invernizzi <invernizzi.l@gmail.com>
+#                    - Paulo Cabido <paulo.cabido@gmail.com> (example file)
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -19,23 +20,15 @@ import gtk
 import os
 import sys
 from threading import Thread
-import time
-import gobject
+#import gobject
 #import logging
 # IMPORTANT This add's the plugin's path to python sys path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0,os.path.dirname(os.path.abspath(__file__))+'/pyrtm')
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))+'/pyrtm')
 import syncengine
-import rtm
 
 
 class RtmSync:
-    PLUGIN_NAME = 'Remember the Milk'
-    PLUGIN_AUTHORS = 'Luca Invernizzi <invernizzi.l@gmail.com>'
-    PLUGIN_VERSION = '0.1.1'
-    PLUGIN_DESCRIPTION = 'Plugin for synchronization with the web service \
-                        Remember the milk ( http://www.rememberthemilk.com )'
-    PLUGIN_ENABLED = False
     plugin_api = None
     worker_thread = None
     sync_engine = None
@@ -50,26 +43,18 @@ class RtmSync:
         self.tb_button = gtk.ToolButton(gtk.STOCK_INFO)
         self.tb_button.set_label("Synchronize RTM")
         self.tb_button.connect('clicked', self.onTbButton)
-        
+
         # plugin engine methods
     def activate(self, plugin_api):
         self.plugin_api = plugin_api
-		# add a menu item to the menu bar
-#        plugin_api.add_menu_item(self.menu_item)
+        # add a menu item to the menu bar
+        plugin_api.add_menu_item(self.menu_item)
 
         # saves the separator's index to later remove it
         self.separator = plugin_api.add_toolbar_item(gtk.SeparatorToolItem())
-        # add a item (button) to the ToolBar
+        # add a item(button) to the ToolBar
         plugin_api.add_toolbar_item(self.tb_button)
 
-    def onTaskOpened(self, plugin_api):
-		# add a item (button) to the ToolBar
-        self.tb_Taskbutton = gtk.ToolButton(gtk.STOCK_EXECUTE)
-        self.tb_Taskbutton.set_label("Hello World")
-        self.tb_Taskbutton.connect('clicked', self.onTbTaskButton, plugin_api)
-#        plugin_api.add_task_toolbar_item(gtk.SeparatorToolItem())
-#        plugin_api.add_task_toolbar_item(self.tb_Taskbutton)
-		
     def deactivate(self, plugin_api):
         plugin_api.remove_menu_item(self.menu_item)
         plugin_api.remove_toolbar_item(self.tb_button)
@@ -101,51 +86,34 @@ class RtmSync:
         btn_ok.connect("clicked", self.close_dialog)
         self.dialog.show_all()
 
-
     def close_dialog(self, widget, data=None):
-    	self.dialog.destroy()
-        return True    
+        self.dialog.destroy()
+        return True
 
     def set_progressbar(self):
         self.progressbar.set_fraction(self.progressbar_percent)
-        #if self.progressbar_percent == 1.0:
-        #    self.dialog.destroy()
 
     def set_status(self):
         self.lbl_dialog.set_text(self.status)
 
-    def fake_update_progressbar(self):
-        while 1:
-            self.progressbar_percent += 0.01
-            gobject.idle_add(self.set_progressbar)
-            time.sleep(1)
-	
-	# plugin features
     def onTesteMenu(self, widget):
-        #self.loadDialog("Hello World! From the MenuBar! :-)")
-        pass
+        self.onTbButton(widget)
 
     def lauchSynchronization(self):
         self.loadDialogSync("Synchronization started")
-        self.worker_thread = Thread(target=self.sync_engine.synchronize).start()
-   #     self.worker_thread = Thread(target=self.fake_update_progressbar).start()
+        self.worker_thread = Thread(target = \
+                                self.sync_engine.synchronize).start()
 
-		
     def onTbButton(self, widget):
         self.sync_engine=syncengine.SyncEngine(self)
         self.checkLogin(widget)
 
-
     def checkLogin(self, widget):
-        if hasattr (self, 'dialog'):
+        if hasattr(self, 'dialog'):
             self.dialog.destroy()
         if self.sync_engine.rtmLogin() == False:
-           self.loadDialogToken("Please authenticate to Remember The Milk in the browser that is being opened now. When done, press OK")
+            self.loadDialogToken("Please authenticate to Remember \
+                The Milk in the browser that is being opened now. \
+                When done, press OK")
         else:
             self.lauchSynchronization()
-        
-		
-    def onTbTaskButton(self, widget, plugin_api):
-        #self.loadDialog("Hello World! The tag @hello_world \
-        #                was just added to the end of the task!")
-        pass

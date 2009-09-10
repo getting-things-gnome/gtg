@@ -15,11 +15,10 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
 class GenericProxy(object):
+
     def __init__(self):
         super(GenericProxy, self).__init__()
         self.task_list = []
 
     def generateTaskList(self):
         raise Exception()
-
-

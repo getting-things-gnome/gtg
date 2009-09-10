@@ -14,7 +14,10 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import sys,os
-sys.path.insert(0,os.getcwd())
+import sys
+import os
+sys.path.insert(0, os.getcwd())
 
+#pyflakes gives a warning on the following line,
+# but it's needed for the plugin to work
 from rtm_sync import RtmSync
