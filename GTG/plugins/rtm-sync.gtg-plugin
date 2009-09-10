@@ -4,5 +4,5 @@ Name=GTG-Remember The Milk synchronization
 Description=Plugin for synchronising Getting Things Gnome! with the web service Remember the milk ( http://www.rememberthemilk.com ).\n\n\n Legal note: This product uses the Remember The Milk API but is not endorsed or certified by Remember The Milk.
 Authors=Luca Invernizzi <invernizzi.l@gmail.com>
 Version=0.1.1
-Dependencies=
+Dependencies=python-xml,python-simplejson
 Enabled=False
