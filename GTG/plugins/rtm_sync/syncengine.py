@@ -16,7 +16,7 @@
 
 import os
 import sys
-#import time
+from time import sleep
 #import subprocess
 import gobject
 from xdg.BaseDirectory import xdg_cache_home
@@ -55,14 +55,22 @@ class SyncEngine:
                      filterAttr(self.rtm_list, 'title', title)[0].id))
 
         #tasks that must be added to GTG
-        for title in rtm_task_titles_set.difference(gtg_task_titles_set):
+        rtm_added = rtm_task_titles_set.difference(gtg_task_titles_set)
+        if len(rtm_added) > 0:
+            self.update_status("Adding tasks to gtg..")
+            self.update_progressbar(0.4)
+        for title in rtm_added:
             base_task = filterAttr(self.rtm_list, 'title', title)[0]
             new_task = self.gtg_proxy.newTask(title, True)
             new_task.copy(base_task)
             gtg_to_rtm_id_mapping.append((new_task.id, base_task.id))
 
         #tasks that must be added to RTM
-        for title in gtg_task_titles_set.difference(rtm_task_titles_set):
+        gtg_added = gtg_task_titles_set.difference(rtm_task_titles_set)
+        if len(gtg_added) > 0:
+            self.update_status("Adding tasks to rtm..")
+            self.update_progressbar(0.5)
+        for title in gtg_added:
             base_task = filterAttr(self.gtg_list, 'title', title)[0]
             new_task = self.rtm_proxy.newTask(title)
             new_task.copy(base_task)
@@ -70,12 +78,14 @@ class SyncEngine:
         return gtg_to_rtm_id_mapping
 
     def synchronize(self):
+        self.update_status("Downloading task list...")
         self.update_progressbar(0.1)
 
         self.gtg_proxy.generateTaskList()
         self.rtm_proxy.generateTaskList()
 
-        self.update_progressbar(0.3)
+        self.update_status("Analyzing tasks...")
+        self.update_progressbar(0.2)
         self.gtg_list = self.gtg_proxy.task_list
         self.rtm_list = self.rtm_proxy.task_list
 
@@ -85,10 +95,14 @@ class SyncEngine:
                                cache_dir, 'gtg_to_rtm_id_mapping')
         if gtg_to_rtm_id_mapping is None:
             ###this is the first synchronization
+            self.update_status("Running first synchronization...")
+            self.update_progressbar(0.3)
             gtg_to_rtm_id_mapping = \
                     self._firstSynchronization()
         else:
             ###this is an update
+            self.update_status("Analyzing last sync...")
+            self.update_progressbar(0.3)
             gtg_id_current_set = set(map(lambda x: x.id, self.gtg_list))
             rtm_id_current_set = set(map(lambda x: x.id, self.rtm_list))
             if len(gtg_to_rtm_id_mapping)>0:
@@ -118,12 +132,18 @@ class SyncEngine:
                     .difference(gtg_removed)
 
             #Delete from rtm the tasks that have been removed in gtg
+            if len(gtg_removed) > 0:
+                self.update_status("Deleting tasks from rtm..")
+                self.update_progressbar(0.4)
             for gtg_id in gtg_removed:
                 rtm_id = gtg_to_rtm_id_dict[gtg_id]
                 map(lambda task: task.delete(), \
                     filterAttr(self.rtm_list, 'id', rtm_id))
 
             #Delete from gtg the tasks that have been removed in rtm
+            if len(rtm_removed) > 0:
+                self.update_status("Deleting tasks from gtg..")
+                self.update_progressbar(0.5)
             for rtm_id in rtm_removed:
                 gtg_id = rtm_to_gtg_id_dict[rtm_id]
                 map(lambda task: task.delete(), \
@@ -133,7 +153,9 @@ class SyncEngine:
             #tasks that must be added to RTM
             #NOTE: should we check if the title is already present in the
             #other backend, to be more robust?(Idem for vice-versa)
-            print "GTG ADDED" + str(gtg_added)
+            if len(gtg_added) >0:
+                self.update_status("Adding tasks to rtm..")
+                self.update_progressbar(0.6)
             for gtg_id in gtg_added:
                 gtg_task = filterAttr(self.gtg_list, 'id', gtg_id)[0]
                 rtm_task = self.rtm_proxy.newTask(gtg_task.title)
@@ -141,30 +163,43 @@ class SyncEngine:
                 gtg_to_rtm_id_mapping.append((gtg_id, rtm_task.id))
 
             #tasks that must be added to GTG
+            if len(rtm_added) >0:
+                self.update_status("Adding tasks to rtm..")
+                self.update_progressbar(0.7)
             for rtm_id in rtm_added:
                 rtm_task = filterAttr(self.rtm_list, 'id', rtm_id)[0]
                 gtg_task = self.gtg_proxy.newTask(rtm_task.title, True)
                 gtg_task.copy(rtm_task)
                 gtg_to_rtm_id_mapping.append((gtg_task.id, rtm_id))
 
+            if len(gtg_common) >0:
+                self.update_status("Updating remaining tasks..")
+                self.update_progressbar(0.8)
             for gtg_id in gtg_common:
                 rtm_id = gtg_to_rtm_id_dict[gtg_id]
                 gtg_task = filterAttr(self.gtg_list, 'id', gtg_id)[0]
                 rtm_task = filterAttr(self.rtm_list, 'id', rtm_id)[0]
                 if rtm_task.modified > gtg_task.modified:
-                    print "rtm is latest"
                     gtg_task.copy(rtm_task)
                 else:
-                    print "gtg is latest"
                     rtm_task.copy(gtg_task)
 
                 gtg_to_rtm_id_mapping.append((gtg_id, rtm_id))
 
+        self.update_status("Saving current state..")
+        self.update_progressbar(0.9)
+
         smartSaveToFile(cache_dir, 'gtg_to_rtm_id_mapping',\
                         gtg_to_rtm_id_mapping)
         #TODO: ask if ok or undo(easy on rtm(see timeline),
-        self.update_status("Synchronization completed")
+        self.update_status("Synchronization completed.")
         self.update_progressbar(1.0)
+        sleep(2)
+        self.update_status("Closing in one second")
+        sleep(1)
+        gobject.idle_add(self.this_plugin.dialog.destroy)
+        
+
 
     def update_progressbar(self, percent):
         self.this_plugin.progressbar_percent = percent

@@ -159,7 +159,6 @@ class RtmTask(GenericTask):
 
     def _get_due_date(self):
         if hasattr(self.task.task, 'due') and self.task.task.due != "":
-            print "td" + self.task.task.due
             return iso8601toTime(self.task.task.due) - timezone()
         return None
 
@@ -230,7 +229,6 @@ class GtgTask(GenericTask):
         return iso8601toTime(due_string)
 
     def _set_due_date(self, due):
-        print "setting due" + str(due)
         due_string = ""
         if type(due) != None:
             due_string = dateToIso8601(due)

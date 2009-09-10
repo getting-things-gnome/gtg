@@ -40,7 +40,7 @@ class RtmSync:
     def __init__(self):
         self.menu_item = gtk.MenuItem("Synchronize with RTM")
         self.menu_item.connect('activate', self.onTesteMenu)
-        self.tb_button = gtk.ToolButton(gtk.STOCK_INFO)
+        self.tb_button = gtk.ToolButton(gtk.STOCK_NETWORK)
         self.tb_button.set_label("Synchronize RTM")
         self.tb_button.connect('clicked', self.onTbButton)
 
@@ -66,11 +66,11 @@ class RtmSync:
         glade_file = os.path.join(path, "gtk.glade")
         wTree = gtk.glade.XML(glade_file, "dialogtoken")
         self.dialog = wTree.get_widget("dialogtoken")
-        btn_ok = wTree.get_widget("btn_ok")
+        self.btn_ok = wTree.get_widget("btn_ok")
         self.lbl_dialog = wTree.get_widget("lbl_dialog")
-        self.lbl_dialog.set_text(msg)
+        self.lbl_dialog.set_markup(msg)
         self.dialog.connect("delete_event", self.close_dialog)
-        btn_ok.connect("clicked", self.checkLogin)
+        self.btn_ok.connect("clicked", self.callback)
         self.dialog.show_all()
 
     def loadDialogSync(self, msg):
@@ -78,20 +78,31 @@ class RtmSync:
         glade_file = os.path.join(path, "gtk.glade")
         wTree = gtk.glade.XML(glade_file, "dialogsync")
         self.dialog = wTree.get_widget("dialogsync")
-        btn_ok = wTree.get_widget("btn_ok")
+        self.btn_ok = wTree.get_widget("btn_ok")
+        self.btn_ok.set_sensitive(False)
         self.lbl_dialog = wTree.get_widget("lbl_dialog")
         self.lbl_dialog.set_text(msg)
         self.progressbar = wTree.get_widget("progressbar")
         self.dialog.connect("delete_event", self.close_dialog)
-        btn_ok.connect("clicked", self.close_dialog)
+        self.btn_ok.connect("clicked", self.close_dialog)
+        self.dialog.show_all()
+
+    def loadDialogNotification(self, msg):
+        path = os.path.dirname(os.path.abspath(__file__))
+        glade_file = os.path.join(path, "gtk.glade")
+        wTree = gtk.glade.XML(glade_file, "notification")
+        self.dialog = wTree.get_widget("notification")
+        self.lbl_dialog = wTree.get_widget("lbl_dialog")
+        self.lbl_dialog.set_text(msg)
         self.dialog.show_all()
 
     def close_dialog(self, widget, data=None):
         self.dialog.destroy()
-        return True
 
     def set_progressbar(self):
         self.progressbar.set_fraction(self.progressbar_percent)
+        if self.progressbar_percent == 1.0:
+            self.btn_ok.set_sensitive(True)
 
     def set_status(self):
         self.lbl_dialog.set_text(self.status)
@@ -106,14 +117,29 @@ class RtmSync:
 
     def onTbButton(self, widget):
         self.sync_engine=syncengine.SyncEngine(self)
-        self.checkLogin(widget)
+        self.checkLogin()
 
-    def checkLogin(self, widget):
-        if hasattr(self, 'dialog'):
-            self.dialog.destroy()
-        if self.sync_engine.rtmLogin() == False:
-            self.loadDialogToken("Please authenticate to Remember \
-                The Milk in the browser that is being opened now. \
-                When done, press OK")
+    def checkLoginBtn(self, widget):
+        self.dialog.destroy()
+        self.checkLogin(False)
+
+    def checkLogin (self, firstime = True):
+        login = False
+        self.loadDialogNotification("Trying to access, please stand by...")
+        try:
+            login = self.sync_engine.rtmLogin() 
+        except:
+            pass
+        self.dialog.destroy()
+        if login == False:
+            if not firstime:
+                self.callback = self.close_dialog
+                self.loadDialogToken("<b>Authentication failed<b>. Please retry.")
+            else:
+                self.callback = self.close_dialog
+                self.callback = self.checkLoginBtn
+                self.loadDialogToken("Please authenticate to Remember \
+The Milk in the browser that is being opened now. \
+When done, press OK")
         else:
             self.lauchSynchronization()
