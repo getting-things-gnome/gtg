@@ -1,7 +1,7 @@
 import pickle
 import os
 import xml.utils.iso8601
-from datetime import datetime
+import datetime
 import time
 
 __all__ = ["smartSaveToFile",
@@ -9,7 +9,9 @@ __all__ = ["smartSaveToFile",
            "filterAttr",
            "iso8601toTime",
            "timeToIso8601",
-           "unziplist"]
+           "dateToIso8601",
+           "unziplist",
+           "timezone"]
 
 def smartLoadFromFile(dirname,filename):
     path=dirname+'/'+filename
@@ -45,10 +47,17 @@ def iso8601toTime (string):
     #FIXME: need to handle time with TIMEZONES!
     string = string.split('.')[0].split('Z')[0]
     if string.find('T') == -1:
-        return time.strptime(string.split(".")[0], "%Y-%m-%d")
-    return time.strptime(string.split(".")[0], "%Y-%m-%dT%H:%M:%S")
+        return datetime.datetime.strptime(string.split(".")[0], "%Y-%m-%d")
+    return datetime.datetime.strptime(string.split(".")[0], "%Y-%m-%dT%H:%M:%S")
 
 def timeToIso8601 (timeobject):
-    t = timeobject
-    return str(t.tm_year)+ "-" + str(t.tm_mon)+ "-" + str(t.tm_mday) + \
-            "T" + str(t.tm_hour) + ":" + str(t.tm_min)+ ":" + str(t.tm_sec)
+    return timeobject.strftime("%Y-%m-%dT%H:%M:%S")
+
+def dateToIso8601 (timeobject):
+    return timeobject.strftime("%Y-%m-%d")
+
+def timezone ():
+    if time.daylight:
+        return datetime.timedelta (seconds = time.altzone)
+    else:
+        return datetime.timedelta (seconds = time.timezone)

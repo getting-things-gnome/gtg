@@ -17,12 +17,13 @@ import sys
 import os
 import xml.dom.minidom
 import xml.utils.iso8601
-from datetime import date
+import datetime
+import time
 
 
 sys.path.insert(0,os.path.dirname(os.path.abspath(__file__))+'/pyrtm')
 import rtm
-import utility
+from utility import *
 
 class GenericTask(object):
     """GenericTask is the abstract interface that represents a generic task.
@@ -141,8 +142,8 @@ class RtmTask (GenericTask):
             return
         document = xml.dom.minidom.parseString(text)
         content =document.getElementsByTagName("content")
-        if len(content)>0 and hasattr(content,'firstChild') \
-           and hasattr(content.firstChild,'data') :
+        if len(content)>0 and hasattr(content[0],'firstChild') \
+           and hasattr(content[0].firstChild,'data') :
             content = content[0].firstChild.data
         else:
             return
@@ -151,14 +152,14 @@ class RtmTask (GenericTask):
                 note_text = content)
 
     def _get_due_date(self):
-        if not hasattr(self.task.task,'due') or self.task.task.due == "":
-            return None
-        return utility.iso8601toTime(self.task.task.due)
+        if hasattr(self.task.task,'due') and self.task.task.due != "":
+            print "td" + self.task.task.due
+            return iso8601toTime(self.task.task.due)  - timezone()
+        return None
 
     def _set_due_date(self,due):
         if type(due) != type(None):
-            due_string = str(due.tm_year)+ "-" +\
-                    str(due.tm_mon)+ "-" + str(due.tm_mday) 
+            due_string = timeToIso8601(due +  timezone()) 
             self.rtm.tasks.setDueDate(timeline=self.timeline, list_id = self.list_id,\
                     taskseries_id = self.taskseries_id, task_id = self.id, \
                     due=due_string)
@@ -169,7 +170,8 @@ class RtmTask (GenericTask):
     def _get_modified(self):
         if not hasattr(self.task,'modified') or self.task.modified == "":
             return None
-        return utility.iso8601toTime(self.task.modified)
+
+        return iso8601toTime(self.task.modified) - timezone()
 
     def delete(self):
         self.rtm.tasks.delete(timeline = self.timeline, list_id = self.list_id, \
@@ -213,20 +215,21 @@ class GtgTask (GenericTask):
         due_string = self.task.get_due_date()
         if due_string == "":
             return None
-        return utility.iso8601toTime(due_string)
+        return iso8601toTime(due_string)
 
     def _set_due_date(self,due):
+        print "setting due" + str (due)
         due_string = ""
-        if type(due) != type(None):
-            due_string = str(due.tm_year)+ "-" +\
-                    str(due.tm_mon)+ "-" + str(due.tm_mday) 
+        if type(due) != None:
+            due_string = dateToIso8601(due)
+            print "dstr"+due_string
         self.task.set_due_date(due_string)
 
     def _get_modified(self):
         modified = self.task.get_modified()
         if modified == None or modified == "":
             return None
-        return utility.iso8601toTime(modified)
+        return iso8601toTime(modified)
 
     def delete (self):
         self.plugin_api.get_requester().delete_task(self.task.get_id())
