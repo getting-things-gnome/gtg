@@ -47,8 +47,6 @@ class PluginManager:
         self.dialog = self.wTree.get_widget("PluginManagerDialog")
 		
         # stuff to populate
-        self.close_btn = self.wTree.get_widget("close_btn")
-        self.config_btn = self.wTree.get_widget("config_btn")
         self.lblPluginName = self.wTree.get_widget("lblPluginName")
         self.lblPluginVersion = self.wTree.get_widget("lblPluginVersion")
         self.lblPluginAuthors = self.wTree.get_widget("lblPluginAuthors")
@@ -105,13 +103,11 @@ class PluginManager:
         # properties
         
         self.dialog.set_transient_for(parent)
-        self.config_btn.set_sensitive(False)
 		
         # connect signals 
         self.dialog.connect("delete_event", self.close)
-        self.close_btn.connect("clicked", self.close)
+        self.dialog.connect("response", self.close)
         self.pluginTree.connect("cursor-changed", self.pluginExtraInfo, self.plugins)
-        self.config_btn.connect("clicked", self.plugin_configure_dialog)
 		
         self.dialog.show_all()
 		
@@ -134,7 +130,6 @@ class PluginManager:
             for plgin in self.plugins:
                 if model[path][1] == plgin['name'] and model[path][2] == plgin['version']:
                     plgin['state'] = not plgin['state']
-                    
 
     def pluginExtraInfo(self, treeview, plugins):
         path = treeview.get_cursor()[0]
@@ -195,18 +190,3 @@ class PluginManager:
                     else:
                         self.box_error.hide()
                         
-                    try:
-                        if plgin['state']:
-                            if not plgin['instance']:
-                                plgin['instance'] = plgin['class']()
-                                
-                            if plgin['instance'].is_configurable():
-                                self.config_btn.set_sensitive(True)
-                                self.current_plugin = plgin
-                        else:
-                            self.config_btn.set_sensitive(False)
-                    except Exception, e:
-                        self.config_btn.set_sensitive(False)
-                        
-    def plugin_configure_dialog(self, widget, data=None):
-        self.current_plugin['instance'].configure_dialog(self.plugin_api)

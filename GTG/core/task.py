@@ -82,7 +82,7 @@ class Task:
     def get_id(self):
         return str(self.tid)
 
-    def set_uuid(self, value ):
+    def set_uuid(self, value):
         self.uuid = str(value)
 
     def get_uuid(self):
