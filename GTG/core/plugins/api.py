@@ -80,12 +80,16 @@ class PluginAPI:
         """Removes a menu entry from the Plugin Menu of the Main Window 
         (task browser).
 
-        @param item: The gtk.MenuItem that is going to be removed.  
+        @param item: The gtk.MenuItem that is going to be removed.
+        @return: Returns C{True} if the operation has sucess or c{False} if it 
+        fails.  
         """
         try:
             self.__wTree.get_widget('menu_plugin').get_submenu().remove(item)
+            return True
         except Exception, e:
             print "Error removing menu item: %s" % e
+            return True
         
     def add_toolbar_item(self, item):
         """Adds a button to the task browser's toolbar.  
@@ -353,9 +357,16 @@ class PluginAPI:
     def remove_menu_tagpopup(self, item):
         """Removes a menu from the tag popup menu of the tag view. 
         
-        @param item: The menu that is going to be removed from the tag popup menu.
+        @param item: The menu that is going to be removed from the tag popup 
+        menu.
+        @return: Returns C{True} if the operation has sucess or c{False} if it 
+        fails.
         """
-        self.__tagpopup.remove(item)
+        try:
+            self.__tagpopup.remove(item)
+            return True
+        except Exception, e:
+            return False
         
     def get_tagpopup_tag(self):
         """ Returns the selected tag in the tag view. 

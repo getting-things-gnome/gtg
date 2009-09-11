@@ -34,13 +34,6 @@ from marker import MarkerLayer
 from GTG.core.plugins.engine import PluginEngine
 
 class geolocalizedTasks:
-    PLUGIN_NAME = 'Geolocalized Tasks'
-    PLUGIN_AUTHORS = 'Paulo Cabido <paulo.cabido@gmail.com>'
-    PLUGIN_VERSION = '0.1'
-    PLUGIN_DESCRIPTION = 'This plugin adds geolocalized tasks to GTG!.\n \
-                          WARNING: This plugin is still heavy development.'
-                          
-    PLUGIN_ENABLED = True
     
     def __init__(self):
         self.geoclue = Geoclue.DiscoverLocation()
@@ -51,23 +44,6 @@ class geolocalizedTasks:
         
         # the preference menu for the plugin
         self.menu_item = gtk.MenuItem("Geolocalized-tasks Preferences")
-        
-        # toolbar button for the new Location view
-        # create the pixbuf with the icon and it's size.
-        # 24,24 is the TaskEditor's toolbar icon size
-        image_assign_location_path = os.path.join(self.plugin_path,\
-                                                  "icons/hicolor/16x16/assign-location.png")
-        pixbug_assign_location = gtk.gdk.pixbuf_new_from_file_at_size(image_assign_location_path,\
-                                                                      16, 16)
-        
-        image_assign_location = gtk.Image()
-        image_assign_location.set_from_pixbuf(pixbug_assign_location)
-        image_assign_location.show()
-        
-        # the menu intem for the tag context
-        self.context_item = gtk.ImageMenuItem("Assign a location to this tag")
-        self.context_item.set_image(image_assign_location)
-        # TODO: add a short cut to the menu
         
         self.PROXIMITY_FACTOR = 5  # 5 km
         #self.LOCATION_ACCURACY = 3 # Locality
@@ -87,12 +63,31 @@ class geolocalizedTasks:
                 self.geoclue.provider_status(provider['object']) == "acquiring":
                     self.LOCATION_DETERMINATION_METHOD.append("cellphone")
                     
+        self.location_filter = []
+                    
     
     def activate(self, plugin_api):
         self.plugin_api = plugin_api
         
-        self.menu_item.connect('activate', self.on_geolocalized_preferences, plugin_api)
-        plugin_api.add_menu_item(self.menu_item)
+        #self.menu_item.connect('activate', self.on_geolocalized_preferences, plugin_api)
+        #plugin_api.add_menu_item(self.menu_item)
+        
+        # toolbar button for the new Location view
+        # create the pixbuf with the icon and it's size.
+        # 24,24 is the TaskEditor's toolbar icon size
+        image_assign_location_path = os.path.join(self.plugin_path,\
+                                                  "icons/hicolor/16x16/assign-location.png")
+        pixbug_assign_location = gtk.gdk.pixbuf_new_from_file_at_size(image_assign_location_path,\
+                                                                      16, 16)
+        
+        image_assign_location = gtk.Image()
+        image_assign_location.set_from_pixbuf(pixbug_assign_location)
+        image_assign_location.show()
+        
+        # the menu intem for the tag context
+        self.context_item = gtk.ImageMenuItem("Assign a location to this tag")
+        self.context_item.set_image(image_assign_location)
+        # TODO: add a short cut to the menu
         
         self.context_item.connect('activate', self.on_contextmenu_tag_location, plugin_api)
         plugin_api.add_menu_tagpopup(self.context_item)
@@ -166,20 +161,25 @@ class geolocalizedTasks:
             
         
         self.location = self.geoclue.get_location_info()
-        self.location_filter = []
         
         # registers the filter callback method
         plugin_api.register_filter_cb(self.task_location_filter)
     
     def deactivate(self, plugin_api):
-        plugin_api.remove_menu_item(self.menu_item)
-        plugin_api.remove_menu_tagpopup(self.context_item)
-        #plugin_api.RemoveToolbarItem(None, self.seperator_location_view)
+        try:
+            if self.context_item:
+                plugin_api.remove_menu_tagpopup(self.context_item)
+        except:
+            pass
         
-        self.config["geolocalized-tasks"] = {}
-        self.config["geolocalized-tasks"]["proximity_factor"] = self.PROXIMITY_FACTOR
-        self.config["geolocalized-tasks"]["location_determination_method"] =\
-        self.LOCATION_DETERMINATION_METHOD
+        try:
+            if self.config:
+                self.config["geolocalized-tasks"] = {}
+                self.config["geolocalized-tasks"]["proximity_factor"] = self.PROXIMITY_FACTOR
+                self.config["geolocalized-tasks"]["location_determination_method"] =\
+                self.LOCATION_DETERMINATION_METHOD
+        except:
+            pass
         
         # remove the filters
         for tid in self.location_filter:
@@ -187,8 +187,6 @@ class geolocalizedTasks:
         
         # unregister the filter callback
         plugin_api.unregister_filter_cb(self.task_location_filter)
-        
-        
     
     def onTaskOpened(self, plugin_api):
         image_geolocalization_path = os.path.join(self.plugin_path,\
@@ -214,6 +212,12 @@ class geolocalizedTasks:
         btn_set_location.set_label("Set/View location")
         btn_set_location.connect('clicked', self.set_task_location, plugin_api)
         plugin_api.add_task_toolbar_item(btn_set_location)
+    
+    def is_configurable(self):
+        return True
+    
+    def configure_dialog(self, plugin_api):
+        self.on_geolocalized_preferences(plugin_api)
     
     def location_changed(self):
         # TODO: This should refresh the task ang tag list
@@ -281,7 +285,7 @@ class geolocalizedTasks:
     #                            self.plugin_api.add_task_to_filter(task.get_id())
                                 
     #=== GEOLOCALIZED PREFERENCES===================================================    
-    def on_geolocalized_preferences(self, widget, plugin_api):
+    def on_geolocalized_preferences(self, plugin_api):
         wTree = gtk.glade.XML(self.glade_file, "Preferences")
         dialog = wTree.get_widget("Preferences")
         dialog.connect("response", self.preferences_close)
