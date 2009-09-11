@@ -38,9 +38,26 @@ class RtmSync:
     lbl_dialog = None
 
     def __init__(self):
-        self.menu_item = gtk.MenuItem("Synchronize with RTM")
+        #Icons! 
+        self.plugin_path = os.path.dirname(os.path.abspath(__file__))
+        rtm_image_path = os.path.join(self.plugin_path,\
+                   "icons/hicolor/16x16/rtm_image.png")
+        pixbug_rtm = gtk.gdk.\
+            pixbuf_new_from_file_at_size(rtm_image_path, 16, 16)
+        rtm_toolbar_image = gtk.Image()
+        rtm_menu_image = gtk.Image()
+        rtm_toolbar_image.set_from_pixbuf(pixbug_rtm)
+        rtm_menu_image.set_from_pixbuf(pixbug_rtm)
+        rtm_toolbar_image.show()
+        rtm_menu_image.show()
+
+        #drop down menu
+        self.menu_item = gtk.ImageMenuItem("Synchronize with RTM")
         self.menu_item.connect('activate', self.onTesteMenu)
-        self.tb_button = gtk.ToolButton(gtk.STOCK_NETWORK)
+        self.menu_item.set_image(rtm_menu_image)
+
+        #toolbar button
+        self.tb_button = gtk.ToolButton(rtm_toolbar_image)
         self.tb_button.set_label("Synchronize RTM")
         self.tb_button.connect('clicked', self.onTbButton)
 
