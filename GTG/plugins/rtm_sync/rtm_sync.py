@@ -107,6 +107,9 @@ class RtmSync:
     def set_status(self):
         self.lbl_dialog.set_text(self.status)
 
+    def set_substatus(self):
+        self.progressbar.set_text(self.substatus)
+
     def onTesteMenu(self, widget):
         self.onTbButton(widget)
 

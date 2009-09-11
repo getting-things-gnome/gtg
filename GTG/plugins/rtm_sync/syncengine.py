@@ -61,6 +61,7 @@ class SyncEngine:
             self.update_status("Adding tasks to gtg..")
             self.update_progressbar(0.4)
         for title in rtm_added:
+            self.update_substatus("Adding " + title)
             base_task = filterAttr(self.rtm_list, 'title', title)[0]
             new_task = self.gtg_proxy.newTask(title, True)
             new_task.copy(base_task)
@@ -72,6 +73,7 @@ class SyncEngine:
             self.update_status("Adding tasks to rtm..")
             self.update_progressbar(0.5)
         for title in gtg_added:
+            self.update_substatus("Adding " + title)
             base_task = filterAttr(self.gtg_list, 'title', title)[0]
             new_task = self.rtm_proxy.newTask(title)
             new_task.copy(base_task)
@@ -82,6 +84,8 @@ class SyncEngine:
         try:
             self.synchronizeWorker()
         except rtm.RTMAPIError as exception:
+            self.close_gui(exception.message)
+        except rtm.RTMError as exception:
             self.close_gui(exception.message)
         except:
             self.close_gui("Synchronization failed.")
@@ -146,8 +150,9 @@ class SyncEngine:
                 self.update_progressbar(0.4)
             for gtg_id in gtg_removed:
                 rtm_id = gtg_to_rtm_id_dict[gtg_id]
-                map(lambda task: task.delete(), \
-                    filterAttr(self.rtm_list, 'id', rtm_id))
+                rtm_task = filterAttr(self.rtm_list, 'id', rtm_id)
+                self.update_substatus("Deleting " + rtm_task.title)
+                map(lambda task: task.delete(), rtm_task)
 
             #Delete from gtg the tasks that have been removed in rtm
             if len(rtm_removed) > 0:
@@ -155,8 +160,9 @@ class SyncEngine:
                 self.update_progressbar(0.5)
             for rtm_id in rtm_removed:
                 gtg_id = rtm_to_gtg_id_dict[rtm_id]
-                map(lambda task: task.delete(), \
-                    filterAttr(self.gtg_list, 'id', gtg_id))
+                gtg_task = filterAttr(self.gtg_list, 'id', gtg_id)
+                self.update_substatus("Deleting " + gtg_task.title)
+                map(lambda task: task.delete(), gtg_task)
                 gtg_common.discard(gtg_id)
 
             #tasks that must be added to RTM
@@ -167,6 +173,7 @@ class SyncEngine:
                 self.update_progressbar(0.6)
             for gtg_id in gtg_added:
                 gtg_task = filterAttr(self.gtg_list, 'id', gtg_id)[0]
+                self.update_substatus("Adding " + gtg_task.title)
                 rtm_task = self.rtm_proxy.newTask(gtg_task.title)
                 rtm_task.copy(gtg_task)
                 gtg_to_rtm_id_mapping.append((gtg_id, rtm_task.id))
@@ -177,6 +184,7 @@ class SyncEngine:
                 self.update_progressbar(0.7)
             for rtm_id in rtm_added:
                 rtm_task = filterAttr(self.rtm_list, 'id', rtm_id)[0]
+                self.update_substatus("Adding " + rtm_task.title)
                 gtg_task = self.gtg_proxy.newTask(rtm_task.title, True)
                 gtg_task.copy(rtm_task)
                 gtg_to_rtm_id_mapping.append((gtg_task.id, rtm_id))
@@ -189,8 +197,10 @@ class SyncEngine:
                 gtg_task = filterAttr(self.gtg_list, 'id', gtg_id)[0]
                 rtm_task = filterAttr(self.rtm_list, 'id', rtm_id)[0]
                 if rtm_task.modified > gtg_task.modified:
+                    self.update_substatus("Updating " + rtm_task.title)
                     gtg_task.copy(rtm_task)
                 else:
+                    self.update_substatus("Updating " + gtg_task.title)
                     rtm_task.copy(gtg_task)
 
                 gtg_to_rtm_id_mapping.append((gtg_id, rtm_id))
@@ -219,3 +229,7 @@ class SyncEngine:
     def update_status(self, status):
         self.this_plugin.status = status
         gobject.idle_add(self.this_plugin.set_status)
+
+    def update_substatus(self, substatus):
+        self.this_plugin.substatus = substatus
+        gobject.idle_add(self.this_plugin.set_substatus)
