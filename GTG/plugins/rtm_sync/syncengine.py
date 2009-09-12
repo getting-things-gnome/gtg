@@ -34,15 +34,20 @@ from utility import smartSaveToFile, smartLoadFromFile, filterAttr, unziplist
 import rtm
 
 
-class SyncEngine:
+class SyncEngine (object):
 
     def __init__(self, this_plugin):
+        super(SyncEngine, self).__init__()
         self.this_plugin = this_plugin
         self.rtm_proxy = RtmProxy()
         self.gtg_proxy = GtgProxy(self.this_plugin.plugin_api)
+        self.rtm_has_logon = False
 
     def rtmLogin(self):
-        return self.rtm_proxy.login()
+        self.rtm_has_logon = self.rtm_proxy.login()
+
+    def rtmHasLogon(self):
+        return self.rtm_has_logon
 
     def _firstSynchronization(self):
         gtg_to_rtm_id_mapping = []

@@ -54,16 +54,18 @@ class RtmProxy(GenericProxy):
         return True
 
     def login(self):
-        #TODO:  handling connection failures and denial of access, proper
-        # interface
-        #       assert(self.token != None), "Token must be requested before
-        #       calling synchronize"
         if hasattr(self, 'rtm'):
+            try:
                 self.token = self.rtm.getToken()
+            except:
+                self.token = None
         if(self.getToken() == False):
             return False
-        self.rtm=rtm.createRTM("2a440fdfe9d890c343c25a91afd84c7e",\
+        try:
+            self.rtm = rtm.createRTM("2a440fdfe9d890c343c25a91afd84c7e",\
                                "ca078fee48d0bbfa", self.token)
+        except:
+            self.token = None
         utility.smartSaveToFile(self.config_dir, 'token', self.token)
         #NOTE: a timeline is an undo list for RTM. It can be used for
         # journaling(timeline rollback is atomical)

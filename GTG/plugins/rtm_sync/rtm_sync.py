@@ -20,6 +20,7 @@ import gtk
 import os
 import sys
 from threading import Thread
+import gobject
 #import gobject
 #import logging
 from GTG import _
@@ -65,6 +66,7 @@ class RtmSync:
         # plugin engine methods
     def activate(self, plugin_api):
         self.plugin_api = plugin_api
+        self.sync_engine = syncengine.SyncEngine(self)
         # add a menu item to the menu bar
         plugin_api.add_menu_item(self.menu_item)
 
@@ -137,7 +139,6 @@ class RtmSync:
                                 self.sync_engine.synchronize).start()
 
     def onTbButton(self, widget):
-        self.sync_engine=syncengine.SyncEngine(self)
         self.checkLogin()
 
     def checkLoginBtn(self, widget):
@@ -145,17 +146,41 @@ class RtmSync:
         self.checkLogin(False)
 
     def checkLogin (self, firstime = True):
-        login = False
+        self.firstime = firstime
         self.loadDialogNotification(_("Trying to access, please stand by..."))
+        Thread(target = self.checkLoginThreadWatchdog).start()
+
+    def checkLoginThreadWatchdog(self):
+        login_thread = Thread(target = self.checkLoginThread)
         try:
-            login = self.sync_engine.rtmLogin() 
+            login_thread.start()
+            login_thread.join(10)
         except:
             pass
+        if login_thread.isAlive():
+            #Can't connect to RTM server
+            gobject.idle_add(self.loginHasFailed)
+        else:
+            gobject.idle_add(self.checkHasLogon)
+
+    def loginHasFailed(self):
+        self.dialog.destroy()
+        self.callback = self.close_dialog
+        self.loadDialogToken(_("Couldn't connect to Remember The Milk"))
+
+    def checkLoginThread(self):
+        try:
+            self.sync_engine.rtmLogin()
+        except:
+            pass
+
+    def checkHasLogon(self):
+        login = self.sync_engine.rtmHasLogon() 
         self.dialog.destroy()
         if login == False:
-            if not firstime:
+            if not self.firstime:
                 self.callback = self.close_dialog
-                self.loadDialogToken(_("<b>Authentication failed<b>. Please retry."))
+                self.loadDialogToken(_("<b>Authentication failed</b>. Please retry."))
             else:
                 self.callback = self.close_dialog
                 self.callback = self.checkLoginBtn
