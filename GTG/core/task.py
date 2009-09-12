@@ -81,9 +81,6 @@ class Task:
     def get_title(self):
         return self.title
 
-    def get_closed_date(self):
-        return self.closed_date
-
     #Return True if the title was changed.
     #False if the title was already the same.
     def set_title(self, title):
