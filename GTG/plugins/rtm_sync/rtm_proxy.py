@@ -66,7 +66,6 @@ class RtmProxy(GenericProxy):
                                "ca078fee48d0bbfa", self.token)
         except:
             self.token = None
-            return False
         utility.smartSaveToFile(self.config_dir, 'token', self.token)
         #NOTE: a timeline is an undo list for RTM. It can be used for
         # journaling(timeline rollback is atomical)
