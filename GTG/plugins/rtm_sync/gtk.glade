@@ -65,7 +65,7 @@
 	  <child>
 	    <widget class="GtkLabel" id="lbl_title">
 	      <property name="visible">True</property>
-	      <property name="label" translatable="yes">&lt;b&gt;Remember the milk&lt;/b&gt;</property>
+	      <property name="label" translatable="no">&lt;b&gt;Remember the milk&lt;/b&gt;</property>
 	      <property name="use_underline">False</property>
 	      <property name="use_markup">True</property>
 	      <property name="justify">GTK_JUSTIFY_CENTER</property>
@@ -90,8 +90,6 @@
 	  <child>
 	    <widget class="GtkLabel" id="lbl_dialog">
 	      <property name="visible">True</property>
-	      <property name="label" translatable="yes">Please authenticate to Remember The Milk in the browser that is being opened now. When done, press OK
-</property>
 	      <property name="use_underline">False</property>
 	      <property name="use_markup">True</property>
 	      <property name="justify">GTK_JUSTIFY_CENTER</property>
@@ -300,7 +298,7 @@
 	  <child>
 	    <widget class="GtkLabel" id="lbl_title">
 	      <property name="visible">True</property>
-	      <property name="label" translatable="yes">&lt;b&gt;Remember the milk&lt;/b&gt;</property>
+	      <property name="label" translatable="no">&lt;b&gt;Remember the milk&lt;/b&gt;</property>
 	      <property name="use_underline">False</property>
 	      <property name="use_markup">True</property>
 	      <property name="justify">GTK_JUSTIFY_CENTER</property>
@@ -325,7 +323,6 @@
 	  <child>
 	    <widget class="GtkLabel" id="lbl_dialog">
 	      <property name="visible">True</property>
-	      <property name="label" translatable="yes">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</property>
 	      <property name="use_underline">False</property>
 	      <property name="use_markup">True</property>
 	      <property name="justify">GTK_JUSTIFY_CENTER</property>
