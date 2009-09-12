@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-09-12 17:17+0200\n"
+"POT-Creation-Date: 2009-09-13 01:03+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -640,27 +640,27 @@ msgstr ""
 msgid "Authentication"
 msgstr ""
 
-#: GTG/plugins/rtm_sync/rtm_sync.py:65 GTG/plugins/rtm_sync/rtm_sync.py:71
+#: GTG/plugins/rtm_sync/rtm_sync.py:67 GTG/plugins/rtm_sync/rtm_sync.py:73
 msgid "Synchronize with RTM"
 msgstr ""
 
-#: GTG/plugins/rtm_sync/rtm_sync.py:145
+#: GTG/plugins/rtm_sync/rtm_sync.py:147
 msgid "Synchronization started"
 msgstr ""
 
-#: GTG/plugins/rtm_sync/rtm_sync.py:158
+#: GTG/plugins/rtm_sync/rtm_sync.py:160
 msgid "Trying to access, please stand by..."
 msgstr ""
 
-#: GTG/plugins/rtm_sync/rtm_sync.py:176
+#: GTG/plugins/rtm_sync/rtm_sync.py:178
 msgid "Couldn't connect to Remember The Milk"
 msgstr ""
 
-#: GTG/plugins/rtm_sync/rtm_sync.py:190
+#: GTG/plugins/rtm_sync/rtm_sync.py:192
 msgid "<b>Authentication failed</b>.Please retry."
 msgstr ""
 
-#: GTG/plugins/rtm_sync/rtm_sync.py:195
+#: GTG/plugins/rtm_sync/rtm_sync.py:197
 msgid ""
 "Please authenticate to Remember The Milk in the browser that is being opened "
 "now. When done, press OK"
