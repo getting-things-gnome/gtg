@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-09-12 12:45+0200\n"
+"POT-Creation-Date: 2009-09-12 17:17+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -319,6 +319,10 @@ msgstr ""
 msgid "Version: "
 msgstr ""
 
+#: GTG/core/plugins/pluginmanager.glade.h:6
+msgid "gtk-preferences"
+msgstr ""
+
 #: GTG/core/task.py:47
 msgid "My new task"
 msgstr ""
@@ -575,6 +579,11 @@ msgstr ""
 msgid "(1 active task)"
 msgstr ""
 
+#: GTG/taskbrowser/browser.py:617
+#, python-format
+msgid "(%s active tasks)"
+msgstr ""
+
 #: GTG/taskbrowser/browser.py:627
 msgid "monday"
 msgstr ""
@@ -631,107 +640,107 @@ msgstr ""
 msgid "Authentication"
 msgstr ""
 
-#: GTG/plugins/rtm_sync/gtk.glade.h:2
-msgid "Synchronization with RTM"
-msgstr ""
-
-#: GTG/plugins/rtm_sync/rtm_sync.py:56 GTG/plugins/rtm_sync/rtm_sync.py:62
+#: GTG/plugins/rtm_sync/rtm_sync.py:65 GTG/plugins/rtm_sync/rtm_sync.py:71
 msgid "Synchronize with RTM"
 msgstr ""
 
-#: GTG/plugins/rtm_sync/rtm_sync.py:135
+#: GTG/plugins/rtm_sync/rtm_sync.py:145
 msgid "Synchronization started"
 msgstr ""
 
-#: GTG/plugins/rtm_sync/rtm_sync.py:149
+#: GTG/plugins/rtm_sync/rtm_sync.py:158
 msgid "Trying to access, please stand by..."
 msgstr ""
 
-#: GTG/plugins/rtm_sync/rtm_sync.py:158
-msgid "<b>Authentication failed<b>. Please retry."
+#: GTG/plugins/rtm_sync/rtm_sync.py:176
+msgid "Couldn't connect to Remember The Milk"
 msgstr ""
 
-#: GTG/plugins/rtm_sync/rtm_sync.py:162
+#: GTG/plugins/rtm_sync/rtm_sync.py:190
+msgid "<b>Authentication failed</b>.Please retry."
+msgstr ""
+
+#: GTG/plugins/rtm_sync/rtm_sync.py:195
 msgid ""
 "Please authenticate to Remember The Milk in the browser that is being opened "
 "now. When done, press OK"
 msgstr ""
 
-#: GTG/plugins/rtm_sync/pyrtm/rtm.py:55
+#: GTG/plugins/rtm_sync/pyrtm/rtm.py:56
 msgid "Invalid state"
 msgstr ""
 
-#: GTG/plugins/rtm_sync/pyrtm/rtm.py:104
+#: GTG/plugins/rtm_sync/pyrtm/rtm.py:105
 msgid "API call failed"
 msgstr ""
 
-#: GTG/plugins/rtm_sync/syncengine.py:62
+#: GTG/plugins/rtm_sync/syncengine.py:67
 msgid "Adding tasks to gtg.."
 msgstr ""
 
-#: GTG/plugins/rtm_sync/syncengine.py:65 GTG/plugins/rtm_sync/syncengine.py:77
-#: GTG/plugins/rtm_sync/syncengine.py:177
-#: GTG/plugins/rtm_sync/syncengine.py:188
+#: GTG/plugins/rtm_sync/syncengine.py:70 GTG/plugins/rtm_sync/syncengine.py:82
+#: GTG/plugins/rtm_sync/syncengine.py:182
+#: GTG/plugins/rtm_sync/syncengine.py:193
 msgid "Adding "
 msgstr ""
 
-#: GTG/plugins/rtm_sync/syncengine.py:74
-#: GTG/plugins/rtm_sync/syncengine.py:173
-#: GTG/plugins/rtm_sync/syncengine.py:184
+#: GTG/plugins/rtm_sync/syncengine.py:79
+#: GTG/plugins/rtm_sync/syncengine.py:178
+#: GTG/plugins/rtm_sync/syncengine.py:189
 msgid "Adding tasks to rtm.."
 msgstr ""
 
-#: GTG/plugins/rtm_sync/syncengine.py:92
+#: GTG/plugins/rtm_sync/syncengine.py:97
 msgid "Synchronization failed."
 msgstr ""
 
-#: GTG/plugins/rtm_sync/syncengine.py:95
+#: GTG/plugins/rtm_sync/syncengine.py:100
 msgid "Downloading task list..."
 msgstr ""
 
-#: GTG/plugins/rtm_sync/syncengine.py:101
+#: GTG/plugins/rtm_sync/syncengine.py:106
 msgid "Analyzing tasks..."
 msgstr ""
 
-#: GTG/plugins/rtm_sync/syncengine.py:112
+#: GTG/plugins/rtm_sync/syncengine.py:117
 msgid "Running first synchronization..."
 msgstr ""
 
-#: GTG/plugins/rtm_sync/syncengine.py:118
+#: GTG/plugins/rtm_sync/syncengine.py:123
 msgid "Analyzing last sync..."
 msgstr ""
 
-#: GTG/plugins/rtm_sync/syncengine.py:150
+#: GTG/plugins/rtm_sync/syncengine.py:155
 msgid "Deleting tasks from rtm.."
 msgstr ""
 
-#: GTG/plugins/rtm_sync/syncengine.py:155
-#: GTG/plugins/rtm_sync/syncengine.py:165
+#: GTG/plugins/rtm_sync/syncengine.py:160
+#: GTG/plugins/rtm_sync/syncengine.py:170
 msgid "Deleting "
 msgstr ""
 
-#: GTG/plugins/rtm_sync/syncengine.py:160
+#: GTG/plugins/rtm_sync/syncengine.py:165
 msgid "Deleting tasks from gtg.."
 msgstr ""
 
-#: GTG/plugins/rtm_sync/syncengine.py:194
+#: GTG/plugins/rtm_sync/syncengine.py:199
 msgid "Updating remaining tasks.."
 msgstr ""
 
-#: GTG/plugins/rtm_sync/syncengine.py:201
-#: GTG/plugins/rtm_sync/syncengine.py:204
+#: GTG/plugins/rtm_sync/syncengine.py:206
+#: GTG/plugins/rtm_sync/syncengine.py:209
 msgid "Updating "
 msgstr ""
 
-#: GTG/plugins/rtm_sync/syncengine.py:209
+#: GTG/plugins/rtm_sync/syncengine.py:214
 msgid "Saving current state.."
 msgstr ""
 
-#: GTG/plugins/rtm_sync/syncengine.py:215
+#: GTG/plugins/rtm_sync/syncengine.py:220
 msgid "Synchronization completed."
 msgstr ""
 
-#: GTG/plugins/rtm_sync/syncengine.py:222
+#: GTG/plugins/rtm_sync/syncengine.py:226
 msgid "Closing in one second"
 msgstr ""
 
