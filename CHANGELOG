@@ -1,3 +1,4 @@
+    * Patch from Luca Invernizzi to add XDG_CACHE redefinition in script/debug.sh
     * Patch from Luca Invernizzi to remove unsued get_closed_date
     * Added filtering capabilities by Paulo Cabido
       - Filter callbacks were added to the task browser
