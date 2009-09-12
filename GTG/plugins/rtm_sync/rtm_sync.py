@@ -39,7 +39,10 @@ class RtmSync:
     status = None
     lbl_dialog = None
 
-    def showDialog(self, dialog):
+    def purgeDialog(self):
+        self.showDialog(None)
+
+    def showDialog(self, dialog = None):
         if hasattr(self, 'dialog') and self.dialog != None:
             self.dialog.destroy()
         self.dialog = dialog

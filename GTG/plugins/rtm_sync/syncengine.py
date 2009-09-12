@@ -225,7 +225,7 @@ class SyncEngine (object):
         sleep(2)
         self.update_status(_("Closing in one second"))
         sleep(1)
-        gobject.idle_add(self.this_plugin.dialog.destroy)
+        gobject.idle_add(self.this_plugin.purgeDialog)
 
     def update_progressbar(self, percent):
         self.this_plugin.progressbar_percent = percent
