@@ -50,14 +50,16 @@ class RtmSync:
     def __init__(self):
         #Icons!
         self.plugin_path = os.path.dirname(os.path.abspath(__file__))
-        rtm_image_path = os.path.join(self.plugin_path,\
-                   "icons/hicolor/16x16/rtm_image.png")
-        pixbug_rtm = gtk.gdk.\
+        icons_subpath = "icons/hicolor/16x16/rtm_image.png"
+        rtm_image_path = os.path.join(self.plugin_path, icons_subpath)
+        pixbug_rtm_toolbar = gtk.gdk.\
+            pixbuf_new_from_file_at_size(rtm_image_path, 16, 16)
+        pixbug_rtm_menu = gtk.gdk.\
             pixbuf_new_from_file_at_size(rtm_image_path, 16, 16)
         rtm_toolbar_image = gtk.Image()
         rtm_menu_image = gtk.Image()
-        rtm_toolbar_image.set_from_pixbuf(pixbug_rtm)
-        rtm_menu_image.set_from_pixbuf(pixbug_rtm)
+        rtm_toolbar_image.set_from_pixbuf(pixbug_rtm_toolbar)
+        rtm_menu_image.set_from_pixbuf(pixbug_rtm_menu)
         rtm_toolbar_image.show()
         rtm_menu_image.show()
 
