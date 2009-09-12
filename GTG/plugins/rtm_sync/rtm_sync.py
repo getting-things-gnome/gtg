@@ -58,7 +58,7 @@ class RtmSync:
 
         #toolbar button
         self.tb_button = gtk.ToolButton(rtm_toolbar_image)
-        self.tb_button.set_label("Synchronize RTM")
+        self.tb_button.set_label("Synchronize with RTM")
         self.tb_button.connect('clicked', self.onTbButton)
 
         # plugin engine methods
