@@ -52,7 +52,9 @@ class AuthStateMachine(object):
 
     def dataReceived(self, state, datum):
         if state not in self.states:
-            raise RTMError, "Invalid state <%s>" % state
+            error_string = _("Invalid state")+" <%s>" 
+
+            raise RTMError, error_string % state
         self.data[state] = datum
 
     def get(self, state):
@@ -99,7 +101,8 @@ class RTM(object):
         rsp = data.rsp
 
         if rsp.stat == 'fail':
-            raise RTMAPIError, 'API call failed - %s (%s)' % (
+            error_string = _("API call failed")+ " - %s (%s)"
+            raise RTMAPIError, error_string % (
                 rsp.err.msg, rsp.err.code)
         else:
             return rsp

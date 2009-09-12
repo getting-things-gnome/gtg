@@ -18,6 +18,7 @@ import pickle
 import os
 import datetime
 import time
+from GTG import _
 
 __all__ = ["smartSaveToFile",
            "smartLoadFromFile",
@@ -50,7 +51,7 @@ def smartSaveToFile(dirname, filename, item, **kwargs):
             pickle.dump(item, file)
     except:
         if kwargs.get('critical', False):
-            raise Exception('saving critical object failed')
+            raise Exception(_("saving critical object failed"))
 
 
 def unziplist(a):

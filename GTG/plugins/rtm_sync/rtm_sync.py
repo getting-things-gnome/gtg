@@ -22,6 +22,7 @@ import sys
 from threading import Thread
 #import gobject
 #import logging
+from GTG import _
 # IMPORTANT This add's the plugin's path to python sys path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))+'/pyrtm')
@@ -52,13 +53,13 @@ class RtmSync:
         rtm_menu_image.show()
 
         #drop down menu
-        self.menu_item = gtk.ImageMenuItem("Synchronize with RTM")
+        self.menu_item = gtk.ImageMenuItem(_("Synchronize with RTM"))
         self.menu_item.connect('activate', self.onTesteMenu)
         self.menu_item.set_image(rtm_menu_image)
 
         #toolbar button
         self.tb_button = gtk.ToolButton(rtm_toolbar_image)
-        self.tb_button.set_label("Synchronize with RTM")
+        self.tb_button.set_label(_("Synchronize with RTM"))
         self.tb_button.connect('clicked', self.onTbButton)
 
         # plugin engine methods
@@ -131,7 +132,7 @@ class RtmSync:
         self.onTbButton(widget)
 
     def lauchSynchronization(self):
-        self.loadDialogSync("Synchronization started")
+        self.loadDialogSync(_("Synchronization started"))
         self.worker_thread = Thread(target = \
                                 self.sync_engine.synchronize).start()
 
@@ -145,7 +146,7 @@ class RtmSync:
 
     def checkLogin (self, firstime = True):
         login = False
-        self.loadDialogNotification("Trying to access, please stand by...")
+        self.loadDialogNotification(_("Trying to access, please stand by..."))
         try:
             login = self.sync_engine.rtmLogin() 
         except:
@@ -154,13 +155,13 @@ class RtmSync:
         if login == False:
             if not firstime:
                 self.callback = self.close_dialog
-                self.loadDialogToken("<b>Authentication failed<b>. Please retry.")
+                self.loadDialogToken(_("<b>Authentication failed<b>. Please retry."))
             else:
                 self.callback = self.close_dialog
                 self.callback = self.checkLoginBtn
-                self.loadDialogToken("Please authenticate to Remember \
+                self.loadDialogToken(_("Please authenticate to Remember \
 The Milk in the browser that is being opened now. \
-When done, press OK")
+When done, press OK"))
         else:
             self.lauchSynchronization()
 
