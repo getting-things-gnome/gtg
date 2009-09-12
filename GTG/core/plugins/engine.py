@@ -182,9 +182,15 @@ class PluginEngine:
 				
     # loads the plug-in features for a task
     def onTaskLoad(self, plugins, plugin_api):
+<<<<<<< TREE
         for plgin in plugins:
             if plgin['state'] and plugin['active']:
                 plgin['instance'].onTaskOpened(plugin_api)
+=======
+        for plugin in plugins:
+            if plugin['state'] and plugin['active']:
+                plugin['instance'].onTaskOpened(plugin_api)
+>>>>>>> MERGE-SOURCE
      
 	# rechecks the plug-ins to see if any changes where done to the state
     def recheckPlugins(self, plugins, plugin_api):
