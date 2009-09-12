@@ -614,7 +614,7 @@ class TaskBrowser:
         elif count == 1:
             parenthesis = _("(1 active task)")
         else:
-            parenthesis = "(%s active tasks)" % count
+            parenthesis = _("(%s active tasks)") % count
         self.window.set_title(WINDOW_TITLE + " %s" % parenthesis)
 
     def get_canonical_date(self, arg):
