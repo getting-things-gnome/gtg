@@ -39,8 +39,13 @@ class RtmSync:
     status = None
     lbl_dialog = None
 
+    def showDialog(self, dialog):
+        if hasattr(self, 'dialog') and self.dialog != None:
+            self.dialog.destroy()
+        self.dialog = dialog
+
     def __init__(self):
-        #Icons! 
+        #Icons!
         self.plugin_path = os.path.dirname(os.path.abspath(__file__))
         rtm_image_path = os.path.join(self.plugin_path,\
                    "icons/hicolor/16x16/rtm_image.png")
@@ -85,7 +90,7 @@ class RtmSync:
         path = os.path.dirname(os.path.abspath(__file__))
         glade_file = os.path.join(path, "gtk.glade")
         wTree = gtk.glade.XML(glade_file, "dialogtoken")
-        self.dialog = wTree.get_widget("dialogtoken")
+        self.showDialog(wTree.get_widget("dialogtoken"))
         self.btn_ok = wTree.get_widget("btn_ok")
         self.lbl_dialog = wTree.get_widget("lbl_dialog")
         self.lbl_dialog.set_markup(msg)
@@ -97,7 +102,7 @@ class RtmSync:
         path = os.path.dirname(os.path.abspath(__file__))
         glade_file = os.path.join(path, "gtk.glade")
         wTree = gtk.glade.XML(glade_file, "dialogsync")
-        self.dialog = wTree.get_widget("dialogsync")
+        self.showDialog(wTree.get_widget("dialogsync"))
         self.btn_ok = wTree.get_widget("btn_ok")
         self.btn_ok.set_sensitive(False)
         self.lbl_dialog = wTree.get_widget("lbl_dialog")
@@ -111,13 +116,13 @@ class RtmSync:
         path = os.path.dirname(os.path.abspath(__file__))
         glade_file = os.path.join(path, "gtk.glade")
         wTree = gtk.glade.XML(glade_file, "notification")
-        self.dialog = wTree.get_widget("notification")
+        self.showDialog(wTree.get_widget("notification"))
         self.lbl_dialog = wTree.get_widget("lbl_dialog")
         self.lbl_dialog.set_text(msg)
         self.dialog.show_all()
 
     def close_dialog(self, widget, data=None):
-        self.dialog.destroy()
+        self.showDialog(None)
 
     def set_progressbar(self):
         self.progressbar.set_fraction(self.progressbar_percent)
@@ -142,10 +147,10 @@ class RtmSync:
         self.checkLogin()
 
     def checkLoginBtn(self, widget):
-        self.dialog.destroy()
+        self.showDialog(None)
         self.checkLogin(False)
 
-    def checkLogin (self, firstime = True):
+    def checkLogin(self, firstime = True):
         self.firstime = firstime
         self.loadDialogNotification(_("Trying to access, please stand by..."))
         Thread(target = self.checkLoginThreadWatchdog).start()
@@ -164,7 +169,6 @@ class RtmSync:
             gobject.idle_add(self.checkHasLogon)
 
     def loginHasFailed(self):
-        self.dialog.destroy()
         self.callback = self.close_dialog
         self.loadDialogToken(_("Couldn't connect to Remember The Milk"))
 
@@ -175,12 +179,13 @@ class RtmSync:
             pass
 
     def checkHasLogon(self):
-        login = self.sync_engine.rtmHasLogon() 
-        self.dialog.destroy()
+        login = self.sync_engine.rtmHasLogon()
+        self.showDialog(None)
         if login == False:
             if not self.firstime:
                 self.callback = self.close_dialog
-                self.loadDialogToken(_("<b>Authentication failed</b>. Please retry."))
+                self.loadDialogToken(_("<b>Authentication failed</b>.\
+Please retry."))
             else:
                 self.callback = self.close_dialog
                 self.callback = self.checkLoginBtn

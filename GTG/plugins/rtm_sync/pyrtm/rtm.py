@@ -13,6 +13,7 @@ import warnings
 import urllib
 import logging
 from hashlib import md5
+from GTG import _
 
 warnings.simplefilter('default', ImportWarning)
 

@@ -218,9 +218,8 @@ class SyncEngine (object):
                         gtg_to_rtm_id_mapping)
         #TODO: ask if ok or undo(easy on rtm(see timeline),
         self.close_gui(_("Synchronization completed."))
-        
 
-    def close_gui(self,msg):
+    def close_gui(self, msg):
         self.update_status(msg)
         self.update_progressbar(1.0)
         sleep(2)
