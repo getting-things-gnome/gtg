@@ -19,9 +19,11 @@
 
 from datetime import date
 import xml.dom.minidom
+import uuid
 
 from GTG import _
 from GTG.tools.dates import strtodate
+from datetime import datetime
 
 
 class Task:
@@ -37,6 +39,7 @@ class Task:
         #the id of this task in the project should be set
         #tid is a string ! (we have to choose a type and stick to it)
         self.tid = str(ze_id)
+        self.set_uuid(uuid.uuid4())
         self.content = ""
         #self.content = \
         #    "<content>Press Escape or close this task to save it</content>"
@@ -59,6 +62,7 @@ class Task:
         if self.loaded:
             self.req._task_loaded(self.tid)
         self.attributes={}
+        self._modified_update()
 
     def is_loaded(self):
         return self.loaded
@@ -77,6 +81,18 @@ class Task:
 
     def get_id(self):
         return str(self.tid)
+
+    def set_uuid(self, value):
+        self.uuid = str(value)
+
+    def get_uuid(self):
+        #NOTE: Transitional if switch, needed to add
+        #      the uuid field to tasks created before
+        #      adding this field to the task description.
+        if self.uuid == "":
+            self.set_uuid(uuid.uuid4())
+            self.sync()
+        return self.uuid
 
     def get_title(self):
         return self.title
@@ -141,6 +157,12 @@ class Task:
             if c.get_status() == self.STA_ACTIVE:
                 workable = False
         return workable
+
+    def get_modified(self):
+        return self.modified
+
+    def set_modified(self, string):
+        self.modified = string
 
     def set_due_date(self, fulldate, fromparent=False):
         # if fromparent, we set only a date if duedate is not set
@@ -470,9 +492,14 @@ class Task:
             self.sync()
 
     def sync(self):
+        self._modified_update()
         if self.sync_func and self.is_loaded():
             self.sync_func(self)
             self.req._task_modified(self.tid)
+
+    def _modified_update(self):
+        self.modified = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+
 
 
 ### TAG FUNCTIONS ############################################################
