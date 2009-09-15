@@ -37,6 +37,7 @@ import info
 from xdg.BaseDirectory import xdg_data_home, xdg_config_home
 
 LOCAL_ROOTDIR   = os.path.abspath(os.path.join(os.path.dirname(__file__), '..')) 
+DIST_ROOTDIR_LOCAL    = "/usr/local/share/gtg"
 DIST_ROOTDIR    = "/usr/share/gtg"
 
 #Translation setup (from pyroom)
@@ -65,10 +66,12 @@ translation = gettext.translation(GETTEXT_DOMAIN, LOCALE_PATH,
 _ = translation.gettext
 
 #GTG directories setup
-if not os.path.isdir( os.path.join(LOCAL_ROOTDIR,'data') ) :
-    DATA_DIR = DIST_ROOTDIR
-else:
+if os.path.isdir(os.path.join(LOCAL_ROOTDIR,'data') ) :
     DATA_DIR = os.path.join(LOCAL_ROOTDIR,'data')
+elif os.path.isdir(DIST_ROOTDIR_LOCAL):
+    DATA_DIR = DIST_ROOTDIR_LOCAL
+else:
+    DATA_DIR = DIST_ROOTDIR
     
 #GTG plugin dir setup
 if not os.path.isdir( os.path.join(LOCAL_ROOTDIR,'GTG/plugins/') ) :
@@ -78,3 +81,4 @@ else:
     
 if os.path.isdir( os.path.join(xdg_config_home,'gtg/plugins') ) :
     PLUGIN_DIR.append(os.path.join(xdg_config_home,'gtg/plugins'))
+
