@@ -21,16 +21,21 @@ import dbus, gobject, dbus.glib
 class pluginTest:
     
     def __init__(self):
-        self.menu_item = gtk.MenuItem("Hello World Plugin")
-        self.menu_item.connect('activate', self.onTesteMenu)
-		
-        self.tb_button = gtk.ToolButton(gtk.STOCK_INFO)
-        self.tb_button.set_label("Hello World")
-        self.tb_button.connect('clicked', self.onTbButton)
-		
+        pass
 
 	# plugin engine methods	
     def activate(self, plugin_api):
+        self.menu_item = gtk.MenuItem("To remove")
+        self.menu_item.connect('activate', self.onTesteMenu)
+        tb_button_image = gtk.Image()
+        tb_button_image_path = "/usr/share/icons/hicolor/16x16/apps/tomboy.png"
+        tb_button_pixbuf=gtk.gdk.\
+                pixbuf_new_from_file_at_size(tb_button_image_path, 16, 16)
+        tb_button_image.show()
+        tb_button_image.set_from_pixbuf(tb_button_pixbuf)
+        self.tb_button = gtk.ToolButton(tb_button_image)
+        self.tb_button.set_label("To remove")
+        self.tb_button.connect('clicked', self.onTbButton)
 		# add a menu item to the menu bar
         plugin_api.add_menu_item(self.menu_item)
         		
@@ -50,6 +55,7 @@ class pluginTest:
 
 
     def onTaskOpened(self, plugin_api):
+        token = 'TOM'
 		# add a item (button) to the ToolBar
         self.tb_Taskbutton = gtk.ToolButton(gtk.STOCK_EXECUTE)
         self.tb_Taskbutton.set_label("Hello World")
@@ -60,6 +66,30 @@ class pluginTest:
         textview = plugin_api.get_textview()
         textview.drag_dest_set(0, [], 0)
         textview.connect('drag_motion', self.gettargets)
+        #find TOM
+        tom_position = 0
+        start_iter = textview.buff.get_start_iter()
+        end_iter = textview.buff.get_end_iter()
+        text = textview.buff.get_text(start_iter,end_iter)
+        tom_position = text.find(token,tom_position)
+        while not tom_position < 0:
+            print tom_position
+            if tom_position < 0:
+                break
+            iter_start = textview.buff.get_iter_at_offset(tom_position )# seetextv.add_mark
+            iter_end = textview.buff.get_iter_at_offset(tom_position + len(token))# seetextv.add_mark
+            textview.buff.delete(iter_start, iter_end)
+            widget =self.widgetCreate()
+            widget.connect('clicked', self.tomboyDisplay)
+            self.textviewInsertWidget(textview, widget, iter_start)
+            start_iter = textview.buff.get_start_iter()
+            end_iter = textview.buff.get_end_iter()
+            text = textview.buff.get_text(start_iter,end_iter)
+            tom_position = text.find(token,tom_position+1)
+
+
+
+
 		
     def deactivate(self, plugin_api):
         plugin_api.remove_menu_item(self.menu_item)
@@ -95,6 +125,28 @@ class pluginTest:
 		
     def onTbTaskButton(self, widget, plugin_api):
         #self.loadDialog("Hello World! The tag @hello_world was just added to the end of the task!")
+        tv = plugin_api.get_textview()
+        iter = tv.get_insert()
+        if iter.starts_line() :
+#            tv.insert_text("|",itera)
+            pass
+        else :
+#            tv.insert_text(" £$",itera)
+            widget =self.widgetCreate()
+            widget.connect('clicked', self.tomboyDisplay)
+            self.textviewInsertWidget(tv, widget, iter)
+            tv.grab_focus()
+
+    def widgetCreate(self):
+        image = gtk.Image()
+        image_path = "/usr/share/icons/hicolor/16x16/apps/tomboy.png"
+        pixbuf=gtk.gdk.\
+                pixbuf_new_from_file_at_size(image_path, 16, 16)
+        image.show()
+        image.set_from_pixbuf(pixbuf)
+        return gtk.ToolButton(image)
+
+    def tomboyDisplay(self,whatever=False):
         bus = dbus.SessionBus()
         obj = bus.get_object("org.gnome.Tomboy",
                                "/org/gnome/Tomboy/RemoteControl")
@@ -104,18 +156,11 @@ class pluginTest:
             print tomboy.GetNoteTitle(n)
             tomboy.DisplayNote(n)
             print tomboy.GetNoteContents(n)
-        tv = plugin_api.get_textview()
-        itera = tv.get_insert()
-        anchor = tv.buff.create_child_anchor(itera)
-        if itera.starts_line() :
-            tv.insert_text("|",itera)
-        else :
-            tv.insert_text(" £$",itera)
-            widget= gtk.ToolButton(gtk.STOCK_INFO)
-            tv.add_child_at_anchor(widget, anchor)
-            widget.show()
-            tv.grab_focus()
 
+    def textviewInsertWidget(self, textview, widget, iter):
+        anchor = textview.buff.create_child_anchor(iter)
+        widget.show()
+        textview.add_child_at_anchor(widget, anchor)
 
     
 
