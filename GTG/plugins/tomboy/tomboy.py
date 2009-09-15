@@ -21,7 +21,7 @@ import dbus, gobject, dbus.glib
 class pluginTest:
     
     def __init__(self):
-        pass
+        self.token = 'TOM'
 
 	# plugin engine methods	
     def activate(self, plugin_api):
@@ -53,41 +53,56 @@ class pluginTest:
             print t
         return True
 
+    def onTaskClosed(self, plugin_api):
+        textview = plugin_api.get_textview()
+        for mark_start,mark_end in self.marks:
+            iter_start=textview.buff.get_iter_at_mark(mark_start)
+            iter_end=textview.buff.get_iter_at_mark(mark_end)
+            textview.buff.delete(iter_start,iter_end)
+            textview.buff.insert(iter_start,'TOM')
+
+        start_iter = textview.buff.get_start_iter()
+        end_iter = textview.buff.get_end_iter()
+        print  "AA"+textview.buff.get_text(start_iter,end_iter)
+
+
 
     def onTaskOpened(self, plugin_api):
-        token = 'TOM'
 		# add a item (button) to the ToolBar
         self.tb_Taskbutton = gtk.ToolButton(gtk.STOCK_EXECUTE)
         self.tb_Taskbutton.set_label("Hello World")
         self.tb_Taskbutton.connect('clicked', self.onTbTaskButton, plugin_api)
         plugin_api.add_task_toolbar_item(gtk.SeparatorToolItem())
         plugin_api.add_task_toolbar_item(self.tb_Taskbutton)
+        #drag and drop support
         self.TARGET_TYPE_TEXT = 80
         textview = plugin_api.get_textview()
         textview.drag_dest_set(0, [], 0)
         textview.connect('drag_motion', self.gettargets)
-        #find TOM
-        tom_position = 0
+        #convert tokens in text to images
+        self.marks=[]
         start_iter = textview.buff.get_start_iter()
         end_iter = textview.buff.get_end_iter()
-        text = textview.buff.get_text(start_iter,end_iter)
-        self.marks=[]
-        tom_position = text.find(token,tom_position)
-        while not tom_position < 0:
-            print tom_position
-            if tom_position < 0:
-                break
-            iter_start = textview.buff.get_iter_at_offset(tom_position )# seetextv.add_mark
-            iter_end = textview.buff.get_iter_at_offset(tom_position + len(token))# seetextv.add_mark
-            textview.buff.delete(iter_start, iter_end)
-            self.marks.append(textview.buff.create_mark(None,iter_start))
+        text = textview.buff.get_slice(start_iter,end_iter)
+        text_offset = 0
+        token_position = text.find(self.token)
+        while not token_position < 0:
+            absolute_position = text_offset + token_position
+            start_iter = textview.buff.get_iter_at_offset(absolute_position)
+            end_iter = textview.buff.get_iter_at_offset(absolute_position + len(self.token))
+            mark_start = textview.buff.create_mark(None,start_iter,left_gravity = True)
+            textview.buff.delete(start_iter, end_iter)
+            mark_end = textview.buff.create_mark(None,end_iter,left_gravity = False)
+            self.marks.append((mark_start, mark_end))
             widget =self.widgetCreate()
             widget.connect('clicked', self.tomboyDisplay)
-            self.textviewInsertWidget(textview, widget, iter_start)
-            start_iter = textview.buff.get_start_iter()
+            self.textviewInsertWidget(textview, widget, start_iter)
+            start_iter=textview.buff.get_iter_at_mark(mark_end)
             end_iter = textview.buff.get_end_iter()
-            text = textview.buff.get_text(start_iter,end_iter)
-            tom_position = text.find(token,tom_position+1)
+            text = textview.buff.get_slice(start_iter,end_iter)
+            print "NE"+text
+            text_offset = start_iter.get_offset()
+            token_position = text.find(self.token)
 
 
 

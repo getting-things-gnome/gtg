@@ -186,6 +186,13 @@ class PluginEngine:
             if plugin['state'] and plugin['active']:
                 plugin['instance'].onTaskOpened(plugin_api)
      
+    # signals to the plug-ins that the task window is being closed
+    def onTaskClose(self, plugins, plugin_api):
+        for plugin in plugins:
+            if plugin['state'] and plugin['active']:
+                if hasattr(plugin['instance'],'onTaskClosed'):
+                    plugin['instance'].onTaskClosed(plugin_api)
+
 	# rechecks the plug-ins to see if any changes where done to the state
     def recheckPlugins(self, plugins, plugin_api):
         for plugin in plugins:

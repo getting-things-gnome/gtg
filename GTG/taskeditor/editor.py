@@ -470,6 +470,7 @@ class TaskEditor :
     #Will be linked to this destruction method that will save the task
     def destruction(self,a=None) :#pylint: disable-msg=W0613
         #Save should be also called when buffer is modified
+        self.pengine.onTaskClose(self.plugins, self.te_plugin_api)
         self.save()
         self.closing(self.task.get_id())
         
