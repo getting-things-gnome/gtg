@@ -21,7 +21,8 @@ import dbus, gobject, dbus.glib
 class pluginTest:
     
     def __init__(self):
-        self.token = 'TOM'
+        self.token_start = 'TOM'
+        self.token_end = '|'
 
 	# plugin engine methods	
     def activate(self, plugin_api):
@@ -55,11 +56,11 @@ class pluginTest:
 
     def onTaskClosed(self, plugin_api):
         textview = plugin_api.get_textview()
-        for mark_start,mark_end in self.marks:
+        for mark_start,mark_end,tomboy_note_title in self.marks:
             iter_start=textview.buff.get_iter_at_mark(mark_start)
             iter_end=textview.buff.get_iter_at_mark(mark_end)
             textview.buff.delete(iter_start,iter_end)
-            textview.buff.insert(iter_start,'TOM')
+            textview.buff.insert(iter_start,self.token_start+tomboy_note_title+self.token_end)
 
         start_iter = textview.buff.get_start_iter()
         end_iter = textview.buff.get_end_iter()
@@ -85,24 +86,26 @@ class pluginTest:
         end_iter = textview.buff.get_end_iter()
         text = textview.buff.get_slice(start_iter,end_iter)
         text_offset = 0
-        token_position = text.find(self.token)
-        while not token_position < 0:
-            absolute_position = text_offset + token_position
-            start_iter = textview.buff.get_iter_at_offset(absolute_position)
-            end_iter = textview.buff.get_iter_at_offset(absolute_position + len(self.token))
+        token_position = text.find(self.token_start)
+        token_ending = text.find(self.token_end, token_position)
+        while not token_position < 0 and not token_ending < 0:
+            tomboy_note_title = text[token_position+len(self.token_start):token_ending]
+            start_iter = textview.buff.get_iter_at_offset(text_offset + token_position)
+            end_iter = textview.buff.get_iter_at_offset(text_offset+ token_ending+1)
             mark_start = textview.buff.create_mark(None,start_iter,left_gravity = True)
             textview.buff.delete(start_iter, end_iter)
             mark_end = textview.buff.create_mark(None,end_iter,left_gravity = False)
-            self.marks.append((mark_start, mark_end))
+            self.marks.append((mark_start, mark_end, tomboy_note_title))
             widget =self.widgetCreate()
-            widget.connect('clicked', self.tomboyDisplay)
+            widget.tomboy_note_title = tomboy_note_title
+            widget.connect('clicked', self.tomboyDisplayNote)
             self.textviewInsertWidget(textview, widget, start_iter)
             start_iter=textview.buff.get_iter_at_mark(mark_end)
             end_iter = textview.buff.get_end_iter()
             text = textview.buff.get_slice(start_iter,end_iter)
-            print "NE"+text
             text_offset = start_iter.get_offset()
-            token_position = text.find(self.token)
+            token_position = text.find(self.token_start)
+            token_ending = text.find(self.token_end)
 
 
 
@@ -163,6 +166,15 @@ class pluginTest:
         image.set_from_pixbuf(pixbuf)
         widget= gtk.ToolButton(image)
         return widget
+
+    def tomboyDisplayNote(self,widget):
+        bus = dbus.SessionBus()
+        obj = bus.get_object("org.gnome.Tomboy",
+                               "/org/gnome/Tomboy/RemoteControl")
+        tomboy = dbus.Interface(obj, "org.gnome.Tomboy.RemoteControl")
+        # Display the title of every note
+        note = tomboy.FindNote(widget.tomboy_note_title)
+        tomboy.DisplayNote(note)
 
     def tomboyDisplay(self,whatever=False):
         bus = dbus.SessionBus()
