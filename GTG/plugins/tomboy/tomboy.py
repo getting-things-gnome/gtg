@@ -71,6 +71,7 @@ class pluginTest:
         start_iter = textview.buff.get_start_iter()
         end_iter = textview.buff.get_end_iter()
         text = textview.buff.get_text(start_iter,end_iter)
+        self.marks=[]
         tom_position = text.find(token,tom_position)
         while not tom_position < 0:
             print tom_position
@@ -79,6 +80,7 @@ class pluginTest:
             iter_start = textview.buff.get_iter_at_offset(tom_position )# seetextv.add_mark
             iter_end = textview.buff.get_iter_at_offset(tom_position + len(token))# seetextv.add_mark
             textview.buff.delete(iter_start, iter_end)
+            self.marks.append(textview.buff.create_mark(None,iter_start))
             widget =self.widgetCreate()
             widget.connect('clicked', self.tomboyDisplay)
             self.textviewInsertWidget(textview, widget, iter_start)
@@ -144,7 +146,8 @@ class pluginTest:
                 pixbuf_new_from_file_at_size(image_path, 16, 16)
         image.show()
         image.set_from_pixbuf(pixbuf)
-        return gtk.ToolButton(image)
+        widget= gtk.ToolButton(image)
+        return widget
 
     def tomboyDisplay(self,whatever=False):
         bus = dbus.SessionBus()
@@ -160,7 +163,9 @@ class pluginTest:
     def textviewInsertWidget(self, textview, widget, iter):
         anchor = textview.buff.create_child_anchor(iter)
         widget.show()
+        print widget
+        print str(widget)
         textview.add_child_at_anchor(widget, anchor)
 
-    
 
+    
