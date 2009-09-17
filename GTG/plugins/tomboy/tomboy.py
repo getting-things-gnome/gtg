@@ -56,11 +56,14 @@ class pluginTest:
 
     def onTaskClosed(self, plugin_api):
         textview = plugin_api.get_textview()
-        for mark_start,mark_end,tomboy_note_title in self.marks:
+        for mark_start,mark_end, anchor in self.marks:
             iter_start=textview.buff.get_iter_at_mark(mark_start)
             iter_end=textview.buff.get_iter_at_mark(mark_end)
-            textview.buff.delete(iter_start,iter_end)
-            textview.buff.insert(iter_start,self.token_start+tomboy_note_title+self.token_end)
+            widgets =  anchor.get_widgets()
+            if type(widgets) == list and len(widgets) !=0:
+                widget = widgets[0]
+                textview.buff.delete(iter_start,iter_end)
+                textview.buff.insert(iter_start,self.token_start+ widget.tomboy_note_title+self.token_end)
 
         start_iter = textview.buff.get_start_iter()
         end_iter = textview.buff.get_end_iter()
@@ -95,11 +98,11 @@ class pluginTest:
             mark_start = textview.buff.create_mark(None,start_iter,left_gravity = True)
             textview.buff.delete(start_iter, end_iter)
             mark_end = textview.buff.create_mark(None,end_iter,left_gravity = False)
-            self.marks.append((mark_start, mark_end, tomboy_note_title))
             widget =self.widgetCreate()
             widget.tomboy_note_title = tomboy_note_title
             widget.connect('clicked', self.tomboyDisplayNote)
-            self.textviewInsertWidget(textview, widget, start_iter)
+            anchor = self.textviewInsertWidget(textview, widget, start_iter)
+            self.marks.append((mark_start, mark_end,anchor))
             start_iter=textview.buff.get_iter_at_mark(mark_end)
             end_iter = textview.buff.get_end_iter()
             text = textview.buff.get_slice(start_iter,end_iter)
@@ -193,6 +196,7 @@ class pluginTest:
         print widget
         print str(widget)
         textview.add_child_at_anchor(widget, anchor)
+        return anchor
 
 
     

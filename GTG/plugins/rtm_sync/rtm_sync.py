@@ -1,4 +1,4 @@
-# -*- coding: utf-9 -*-
+# -*- coding: utf-8 -*-
 # Copyright (c) 2009 - Luca Invernizzi <invernizzi.l@gmail.com>
 #                    - Paulo Cabido <paulo.cabido@gmail.com> (example file)
 #
