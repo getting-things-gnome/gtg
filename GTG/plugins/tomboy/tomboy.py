@@ -62,6 +62,8 @@ class pluginTest:
         textview = plugin_api.get_textview()
         for anchor in self.anchors:
             widgets =  anchor.get_widgets()
+            if anchor.get_deleted():
+                continue
             iter_start = textview.buff.get_iter_at_child_anchor(anchor)
             iter_end = iter_start.copy()
             iter_end.forward_char()
