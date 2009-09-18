@@ -168,7 +168,18 @@ class pluginTomboy:
         if filter(lambda x: tomboy.GetNoteTitle(x)==supposed_title,
                   tomboy.ListAllNotes()) == []:
             self.label_caption.set_text(_("That note does not exist!"))
-            return
+            dialog = gtk.MessageDialog(parent = self.dialog,
+                                       flags = gtk.DIALOG_DESTROY_WITH_PARENT,
+                                       type = gtk.MESSAGE_QUESTION,
+                                       buttons=gtk.BUTTONS_YES_NO,
+                                       message_format=_("That note does not \
+exist. Do you want to create a new one?"))
+            response = dialog.run() 
+            dialog.destroy()
+            if response == gtk.RESPONSE_YES:
+                tomboy.CreateNamedNote(supposed_title)
+            else:
+                return
         mark_start = self.textview.buff.get_insert()
         iter_start = self.textview.buff.get_iter_at_mark(mark_start)
         tomboy_widget =self.widgetCreate(supposed_title)
