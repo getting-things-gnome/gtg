@@ -47,8 +47,8 @@ class RtmProxy(GenericProxy):
                 os.path.join(xdg_config_home, 'gtg/plugins/rtm-sync')
             self.token = utility.smartLoadFromFile(self.config_dir, 'token')
         if self.token == None:
-            self.rtm=rtm.createRTM("646052cf5bb8b638a356e052f6493150", \
-                                   "203a347c94c015b4")
+            self.rtm=rtm.createRTM("2a440fdfe9d890c343c25a91afd84c7e", \
+                                   "ca078fee48d0bbfa")
             subprocess.Popen(['xdg-open', self.rtm.getAuthURL()])
             return False
         return True
@@ -77,22 +77,14 @@ class RtmProxy(GenericProxy):
         #(it's easier to debug the things you see)
         lists_id_list = map(lambda x: x.id, \
                              self.rtm.lists.getList().lists.list)
-        print self.rtm
-        def get_list_of_taskseries(list_id):
-            try:
-                print list_id
-                print self.rtm
-                currentlist = self.rtm.tasks.getList(filter='status:incomplete AND includeArchived:false', \
-                                                 list_id = list_id)
-            except Exception as e:
-                print e
-                print "puppa"
-            if hasattr(currentlist,'task') and hasattr(currentlist, 'list'):
-                currentlist = currentlist.task.list
+
+        def get_list_of_taskseries(x):
+            currentlist = self.rtm.tasks.getList(filter='status:incomplete', \
+                                                 list_id=x).tasks
+            if hasattr(currentlist, 'list'):
+                return currentlist.list
             else:
                 return []
-
-        print lists_id_list
         task_list_global= map(get_list_of_taskseries, lists_id_list)
         taskseries_list = filter(lambda x: hasattr(x[0], 'taskseries'), \
                                   zip(task_list_global, lists_id_list))

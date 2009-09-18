@@ -14,7 +14,6 @@ import urllib
 import logging
 from hashlib import md5
 from GTG import _
-import httplib
 
 warnings.simplefilter('default', ImportWarning)
 
@@ -92,7 +91,7 @@ class RTM(object):
         params['format'] = 'json'
         params['api_sig'] = self._sign(params)
 
-        json = openURL(SERVICE_URL, params)
+        json = openURL(SERVICE_URL, params).read()
 
         LOG.debug("JSON response: \n%s" % json)
 
@@ -181,25 +180,9 @@ def sortedItems(dictionary):
 
 def openURL(url, queryArgs=None):
     if queryArgs:
-#        url = url + '?' + urllib.urlencode(queryArgs)
-        url =  urllib.urlencode(queryArgs)
+        url = url + '?' + urllib.urlencode(queryArgs)
     LOG.debug("URL> %s", url)
-    try:
-        print url
-        SERVICE_URL = 'http://api.rememberthemilk.com/services/rest/'
-        c = httplib.HTTPConnection("api.rememberthemilk.com",80)
-        c.request("POST", "/services/rest/",url)
-        r = c.getresponse()
-        data = r.read()
-
-        #url_retrieved = urllib.urlopen(url)
-#        data = url_retrieved.read()
-        print "mannaggia "+ str(len(data))
-        print data
-    except URLError as e:
-        print "Urllib error" + str(e.code)
-        print e.read()
-    return data
+    return urllib.urlopen(url)
 
 class dottedDict(object):
     "Make dictionary items accessible via the object-dot notation."
@@ -265,7 +248,7 @@ API = {
         'getList':
             [(), ()],
         'removeContact':
-            [('timeline', 'group_id', 'contact_id'), ()]
+            [('timeline', 'group_id', 'contact_id'), ()],
         },
     'lists': {
         'add':
