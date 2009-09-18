@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2009 - Paulo Cabido <paulo.cabido@gmail.com>
+# Copyright (c) 2009 - Luca Invernizzi <invernizzi.l@gmail.com> 
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -17,4 +17,4 @@
 import sys,os
 sys.path.insert(0,os.getcwd())
 #sys.path.insert(0,os.path.dirname(os.path.abspath(__file__)))
-from tomboy import pluginTest
+from tomboy import pluginTomboy

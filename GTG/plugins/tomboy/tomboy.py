@@ -17,68 +17,43 @@
 import gtk, pygtk
 import os
 import dbus, gobject, dbus.glib
-import pickle
+from gtk.gdk import keyval_name
 
-class pluginTest:
+
+class pluginTomboy:
     
     def __init__(self):
-        self.token_start = 'TOM'
+        self.token_start = 'TOMBOY__'
         self.token_end = '|'
+        self.path = os.path.dirname(os.path.abspath(__file__))
 
-	# plugin engine methods	
+	# Plug-in engine methods	
     def activate(self, plugin_api):
         self.plugin_api = plugin_api
-        #        self.menu_item = gtk.MenuItem("To remove")
-        #self.menu_item.connect('activate', self.onTesteMenu)
-#        tb_button_image = gtk.Image()
-#        tb_button_image_path = "/usr/share/icons/hicolor/16x16/apps/tomboy.png"
-#        tb_button_pixbuf=gtk.gdk.\
-#                pixbuf_new_from_file_at_size(tb_button_image_path, 16, 16)
-#        tb_button_image.show()
-#        tb_button_image.set_from_pixbuf(tb_button_pixbuf)
-#        self.tb_button = gtk.ToolButton(tb_button_image)
-#        self.tb_button.set_label("To remove")
-#        self.tb_button.connect('clicked', self.onTbButton)
-		# add a menu item to the menu bar
-        #        plugin_api.add_menu_item(self.menu_item)
-        		
-        # saves the separator's index to later remove it
-        #self.separator = plugin_api.add_toolbar_item(gtk.SeparatorToolItem())
-        # add a item (button) to the ToolBar
-        #plugin_api.add_toolbar_item(self.tb_button)
-        pass
 
-    def gettargets(self, wid, context, x, y, time):
-        print "drop"
-        print context
-        print context.source_window.title
-        print wid
-        print context.__class__
-        for t in context.targets:
-            print t
-        return True
+    def widgetTotext(self, widget):
+        return self.token_start+ widget.tomboy_note_title+self.token_end
 
+    # Converts all tomboy note widgets in the
+    # equivalent text
     def onTaskClosed(self, plugin_api):
-        textview = plugin_api.get_textview()
         for anchor in self.anchors:
             widgets =  anchor.get_widgets()
             if anchor.get_deleted():
+                #The note has been deleted, go 
                 continue
-            iter_start = textview.buff.get_iter_at_child_anchor(anchor)
+            iter_start = self.textview.buff.get_iter_at_child_anchor(anchor)
             iter_end = iter_start.copy()
             iter_end.forward_char()
             if type(widgets) == list and len(widgets) !=0:
+                #the anchor point contains a widget.
                 widget = widgets[0]
-                textview.buff.delete(iter_start,iter_end)
-                textview.buff.insert(iter_start,self.token_start+ widget.tomboy_note_title+self.token_end)
-
-        start_iter = textview.buff.get_start_iter()
-        end_iter = textview.buff.get_end_iter()
-        print  "AA"+textview.buff.get_text(start_iter,end_iter)
-
-
+                self.textview.buff.delete(iter_start,iter_end)
+                self.textview.buff.insert(iter_start,self.widgetTotext(widget))
 
     def onTaskOpened(self, plugin_api):
+        #get_textview() only works here (from GTG/core/plugins/api.py docs)
+        self.textview = plugin_api.get_textview()
 		# add a item (button) to the ToolBar, with a nice icon
         tb_Taskbutton_image = gtk.Image()
         tb_Taskbutton_image_path = "/usr/share/icons/hicolor/16x16/apps/tomboy.png"
@@ -91,153 +66,130 @@ class pluginTest:
         self.tb_Taskbutton.connect('clicked', self.onTbTaskButton, plugin_api)
         plugin_api.add_task_toolbar_item(gtk.SeparatorToolItem())
         plugin_api.add_task_toolbar_item(self.tb_Taskbutton)
-        #drag and drop support
-        self.TARGET_TYPE_TEXT = 80
-        textview = plugin_api.get_textview()
-        self.textview = textview
-        textview.drag_dest_set(0, [], 0)
-        textview.connect('drag_motion', self.gettargets)
         #convert tokens in text to images
         self.anchors=[]
-        start_iter = textview.buff.get_start_iter()
-        end_iter = textview.buff.get_end_iter()
-        text = textview.buff.get_slice(start_iter,end_iter)
+        start_iter = self.textview.buff.get_start_iter()
+        end_iter = self.textview.buff.get_end_iter()
+        text = self.textview.buff.get_slice(start_iter,end_iter)
         text_offset = 0
         token_position = text.find(self.token_start)
         token_ending = text.find(self.token_end, token_position)
         while not token_position < 0 and not token_ending < 0:
+            #delete the widget
             tomboy_note_title = text[token_position+len(self.token_start):token_ending]
-            start_iter = textview.buff.get_iter_at_offset(text_offset + token_position)
-            end_iter = textview.buff.get_iter_at_offset(text_offset+ token_ending+1)
-            textview.buff.delete(start_iter, end_iter)
-            widget =self.widgetCreate()
-            widget.tomboy_note_title = tomboy_note_title
-            widget.connect('clicked', self.tomboyDisplayNote)
-            anchor = self.textviewInsertWidget(textview, widget, start_iter)
+            start_iter = self.textview.buff.get_iter_at_offset(text_offset + token_position)
+            end_iter = self.textview.buff.get_iter_at_offset(text_offset+ token_ending+1)
+            self.textview.buff.delete(start_iter, end_iter)
+            #add the widget
+            widget =self.widgetCreate(tomboy_note_title)
+            anchor = self.textviewInsertWidget(widget, start_iter)
             self.anchors.append(anchor)
-            start_iter = textview.buff.get_iter_at_child_anchor(anchor)
+            #find the next
+            start_iter = self.textview.buff.get_iter_at_child_anchor(anchor)
             start_iter.forward_char()
-            end_iter = textview.buff.get_end_iter()
-            text = textview.buff.get_slice(start_iter,end_iter)
+            end_iter = self.textview.buff.get_end_iter()
+            text = self.textview.buff.get_slice(start_iter,end_iter)
             text_offset = start_iter.get_offset()
             token_position = text.find(self.token_start)
             token_ending = text.find(self.token_end)
 
-
-
-
-		
     def deactivate(self, plugin_api):
-        #        plugin_api.remove_menu_item(self.menu_item)
-        #plugin_api.remove_toolbar_item(self.tb_button)
-        #plugin_api.remove_toolbar_item(None, self.separator)
-		
-    #load a dialog with a String
+        #nothing to remove
         pass
-    def loadDialog(self, msg):
-        path = os.path.dirname(os.path.abspath(__file__))
-        glade_file = os.path.join(path, "tomboy.glade")
-        print glade_file
-        wTree = gtk.glade.XML(glade_file, "InsertNoteDialog")
-        self.dialog = wTree.get_widget("InsertNoteDialog")
-        self.dialog.connect("delete_event", self.close_dialog)
-        self.dialog.connect("response", self.close_dialog)
-        self.dialog.show_all()
-    
+
     def close_dialog(self, widget, data=None):
     	self.dialog.destroy()
         return True    
 	
-	# plugin features
-    def onTesteMenu(self, widget):
-        self.loadDialog("Hello World! From the MenuBar! :-)")
-		
-    def onTbButton(self, widget):
-        self.loadDialog("Hello World! From the ToolBar! :-)")
-
     def getTomboyObject(self):
         bus = dbus.SessionBus()
         obj = bus.get_object("org.gnome.Tomboy",
                                "/org/gnome/Tomboy/RemoteControl")
         return dbus.Interface(obj, "org.gnome.Tomboy.RemoteControl")
-
+    
+    def getTomboyNoteTitleList(self):
+        tomboy = self.getTomboyObject()
+        return map(lambda note: tomboy.GetNoteTitle(note),tomboy.ListAllNotes())
 		
     def onTbTaskButton(self, widget, plugin_api):
-        path = os.path.dirname(os.path.abspath(__file__))
-        glade_file = os.path.join(path, "tomboy.glade")
-        print glade_file
+        title_list = self.getTomboyNoteTitleList()
+        #Create the dialog
+        glade_file = os.path.join(self.path, "tomboy.glade")
         wTree = gtk.glade.XML(glade_file, "InsertNoteDialog")
+        #objects
         self.dialog = wTree.get_widget("InsertNoteDialog")
+        btn_add = wTree.get_widget("btn_add")
+        btn_cancel = wTree.get_widget("btn_cancel")
+        self.combobox = wTree.get_widget("titles_combobox")
+        self.label_caption = wTree.get_widget("label_caption")
+        title_entry = gtk.Entry()
+        clipboard = gtk.Clipboard()
+        #connects
         self.dialog.connect("delete_event", self.close_dialog)
-        self.dialog.connect("response", self.close_dialog)
-        combobox = wTree.get_widget("combobox1")
-        tomboy = self.getTomboyObject()
-        map (lambda note:\
-             combobox.append_text(tomboy.GetNoteTitle(note)),tomboy.ListAllNotes())
-        combobox.popup()
-        combobox.connect("changed", self.noteChosen)
-        textview = plugin_api.get_textview()
+        btn_cancel.connect("clicked", self.close_dialog)
+        btn_add.connect("clicked", self.noteChosen)
+        def comboKeyPress(combobox, event):
+            keyname = gtk.gdk.keyval_name(event.keyval)
+            if keyname == "Return":
+                self.noteChosen()
+        title_entry.connect("key-press-event",comboKeyPress)
+        #clipboard management (if a note title is in the clipboard,
+        # put that into the combobox
+        def clipboardCallback(clipboard, text, title_el):
+            title_entry= title_el[0]
+            title_list= title_el[1]
+            if len(filter(lambda x: x == text,title_list)) != 0:
+                title_entry.set_text(text)
+        clipboard.request_text(clipboardCallback, [title_entry, title_list])
+        self.combobox.add(title_entry)
+        #populate the combo-box
+        if title_list:
+            completion = gtk.EntryCompletion()
+            note_list_store = gtk.ListStore(str)
+            for title in title_list:
+                iter = note_list_store.append()
+                note_list_store.set(iter, 0, title)
+            title_entry.set_completion(completion)
+            completion.set_model(note_list_store)
+            completion.set_inline_completion(True)
+            completion.set_text_column(0)
         self.dialog.show_all()
 
-    def noteChosen(self, widget, data=None):
+    def noteChosen(self, widget=None, data=None):
+        tomboy = self.getTomboyObject()
+        supposed_title = self.combobox.get_active_text()
+        if filter(lambda x: tomboy.GetNoteTitle(x)==supposed_title,
+                  tomboy.ListAllNotes()) == []:
+            self.label_caption.set_text('That note does not exist!')
+            return
         mark_start = self.textview.buff.get_insert()
-        self.iter_start = self.textview.buff.get_iter_at_mark(mark_start)
-        tomboy_widget =self.widgetCreate()
-        tomboy_widget.tomboy_note_title = widget.get_active_text()
-        tomboy_widget.connect('clicked', self.tomboyDisplayNote)
-        anchor = self.textviewInsertWidget(self.textview, tomboy_widget,
-                                           self.iter_start)
+        iter_start = self.textview.buff.get_iter_at_mark(mark_start)
+        tomboy_widget =self.widgetCreate(supposed_title)
+        anchor = self.textviewInsertWidget(tomboy_widget, iter_start)
         self.anchors.append(anchor)
+    	self.dialog.destroy()
 
-#        tv = plugin_api.get_textview()
-#        iter = tv.get_insert()
-#        if iter.starts_line() :
-##            tv.insert_text("|",itera)
-#            pass
-#        else :
-##            tv.insert_text(" £$",itera)
-#            widget =self.widgetCreate()
-#            widget.connect('clicked', self.tomboyDisplay)
-#            self.textviewInsertWidget(tv, widget, iter)
-#            tv.grab_focus()
+    def tomboyDisplayNote(self,widget):
+        tomboy = self.getTomboyObject()
+        note = tomboy.FindNote(widget.tomboy_note_title)
+        tomboy.DisplayNote(note)
 
-    def widgetCreate(self):
+    def textviewInsertWidget(self,  widget, iter):
+        anchor = self.textview.buff.create_child_anchor(iter)
+        widget.show()
+        self.textview.add_child_at_anchor(widget, anchor)
+        return anchor
+
+    def widgetCreate(self, tomboy_note_title):
         image = gtk.Image()
         image_path = "/usr/share/icons/hicolor/16x16/apps/tomboy.png"
         pixbuf=gtk.gdk.\
                 pixbuf_new_from_file_at_size(image_path, 16, 16)
         image.show()
         image.set_from_pixbuf(pixbuf)
-        widget= gtk.ToolButton(image)
+        widget= gtk.Button()
+        widget.set_image(image)
+        widget.tomboy_note_title = tomboy_note_title
+        widget.set_label (tomboy_note_title)
+        widget.connect('clicked', self.tomboyDisplayNote)
         return widget
-
-    def tomboyDisplayNote(self,widget):
-        bus = dbus.SessionBus()
-        obj = bus.get_object("org.gnome.Tomboy",
-                               "/org/gnome/Tomboy/RemoteControl")
-        tomboy = dbus.Interface(obj, "org.gnome.Tomboy.RemoteControl")
-        # Display the title of every note
-        note = tomboy.FindNote(widget.tomboy_note_title)
-        tomboy.DisplayNote(note)
-
-    def tomboyDisplay(self,whatever=False):
-        bus = dbus.SessionBus()
-        obj = bus.get_object("org.gnome.Tomboy",
-                               "/org/gnome/Tomboy/RemoteControl")
-        tomboy = dbus.Interface(obj, "org.gnome.Tomboy.RemoteControl")
-        # Display the title of every note
-        for n in tomboy.ListAllNotes():
-            print tomboy.GetNoteTitle(n)
-            tomboy.DisplayNote(n)
-            print tomboy.GetNoteContents(n)
-
-    def textviewInsertWidget(self, textview, widget, iter):
-        anchor = textview.buff.create_child_anchor(iter)
-        widget.show()
-        print widget
-        print str(widget)
-        textview.add_child_at_anchor(widget, anchor)
-        return anchor
-
-
-    
