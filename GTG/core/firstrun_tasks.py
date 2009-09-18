@@ -5,7 +5,7 @@ def populate():
     doc,root = cleanxml.emptydoc("project")
     #Task 0@1: Getting started with GTG
     title1 = _("Getting started with GTG")
-    text1 = _("Welcome in Getting Things Gnome!, your new task manager.")
+    text1 = _("Welcome to Getting Things Gnome!, your new task manager.")
     text1 += "\n\n"
     text1 += _("In GTG, everything is a task. From building a bridge over the Pacific Ocean to changing a light bulb or organizing a party. When you edit a task, it is automatically saved.")
     text1 += "\n\n"
