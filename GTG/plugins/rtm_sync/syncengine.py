@@ -90,9 +90,9 @@ class SyncEngine (object):
         try:
             self.synchronizeWorker()
         except rtm.RTMAPIError as exception:
-            self.close_gui(exception.message)
+            self.close_gui(exception)
         except rtm.RTMError as exception:
-            self.close_gui(exception.message)
+            self.close_gui(exception)
         except Exception as exception:
             self.close_gui(_("Synchronization failed." + str(exception)))
 
