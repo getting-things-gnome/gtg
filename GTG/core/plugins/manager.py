@@ -128,14 +128,20 @@ class PluginManager:
     #    return True
 
     def colToggledClicked(self, cell, path, model):
-        print "toggle"
         model[path][0] = not model[path][0]
         if path:
             iter = model.get_iter(path)
             for plgin in self.plugins:
                 if model[path][1] == plgin['name'] and model[path][2] == plgin['version']:
                     plgin['state'] = not plgin['state']
-                    self.pengine.activatePlugins([plgin], self.plugin_api)
+                    #we instantly apply the plugin activation/deactivation
+                    #to respect HIG
+                    if plgin['state'] :
+                        print "enable"
+                        self.pengine.activatePlugins([plgin], self.plugin_api)
+                    else :
+                        print "disable"
+                        self.pengine.deactivatePlugins([plgin], self.plugin_api)
                     
 
     def pluginExtraInfo(self, treeview, plugins):

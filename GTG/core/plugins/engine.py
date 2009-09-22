@@ -176,8 +176,9 @@ class PluginEngine:
     # deactivate the enabled plugins
     def deactivatePlugins(self, plugins, plugin_api):
         for plugin in plugins:
-            if plugin['state'] and not plugin['error'] and plugin['active']:
+            if not plugin['state'] and not plugin['error'] and plugin['active']:
                 plugin['instance'].deactivate(plugin_api)
+                plugin['instance'] = None
                 plugin['active'] = False
 				
     # loads the plug-in features for a task
