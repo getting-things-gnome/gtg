@@ -137,10 +137,8 @@ class PluginManager:
                     #we instantly apply the plugin activation/deactivation
                     #to respect HIG
                     if plgin['state'] :
-                        print "enable"
                         self.pengine.activatePlugins([plgin], self.plugin_api)
                     else :
-                        print "disable"
                         self.pengine.deactivatePlugins([plgin], self.plugin_api)
                     
 
