@@ -30,15 +30,17 @@ from GTG.tools     import cleanxml
 XMLFILE = "tags.xml"
 XMLROOT = "tagstore"
 
+
 # There's only one Tag store by user. It will store all the tag used
 # and their attribute.
-class TagStore :
-    
+
+class TagStore:
+
     def __init__(self):
         self.tree = Tree()
         self.root = self.tree.get_root()
-        self.filename = os.path.join(CoreConfig.DATA_DIR,XMLFILE)
-        doc,self.xmlstore = cleanxml.openxmlfile(self.filename,XMLROOT) #pylint: disable-msg=W0612
+        self.filename = os.path.join(CoreConfig.DATA_DIR, XMLFILE)
+        doc, self.xmlstore = cleanxml.openxmlfile(self.filename, XMLROOT) #pylint: disable-msg=W0612
         for t in self.xmlstore.childNodes:
             #We should only care about tag with a name beginning with "@"
             #Other are special tags
@@ -46,16 +48,14 @@ class TagStore :
             tag = self.new_tag(tagname)
             attr = t.attributes
             i = 0
-            while i < attr.length :
+            while i < attr.length:
                 at_name = attr.item(i).name
                 at_val = t.getAttribute(at_name)
-                tag.set_attribute(at_name,at_val)
+                tag.set_attribute(at_name, at_val)
                 i += 1
-        
         #Now we build special tags. Special tags are not
         #in the traditional tag list
         #Their name doesn't begin with "@"
-        
 #        #Build the "all tags tag"
 #        self.alltag_tag = Tag("alltags_tag",save_cllbk=self.save)
 #        self.alltag_tag.set_attribute("special","all")
@@ -80,7 +80,7 @@ class TagStore :
             return tag
         else:
             return self.root.get_child(tname)
-        
+
     def add_tag(self, tag):
         name = tag.get_name()
         #If tag does not exist in the store, we add it
@@ -90,27 +90,27 @@ class TagStore :
         #else, we just take the attributes of the new tag
         #This allow us to keep attributes of the old tag
         #that might be not set in the new one
-        else :
+        else:
             atts = tag.get_all_attributes()
             for att_name in atts:
                 val = tag.get_attribute(att_name)
                 if att_name != 'name' and val:
-                    self.root.get_child(name).set_attribute(att_name,val)
+                    self.root.get_child(name).set_attribute(att_name, val)
 
     def get_tag(self, tagname):
-        if tagname in self.root.get_children() :
+        if tagname in self.root.get_children():
             return self.root.get_child(tagname)
-        else :
+        else:
             return None
 
 #    def get_alltag_tag(self):
 #        """Return the special tag 'All tags'"""
 #        return self.alltag_tag
-#    
+#
 #    def get_notag_tag(self):
 #        """Return the special tag 'No tags'"""
 #        return self.notag_tag
-    
+
     def get_all_tags_name(self, attname=None, attvalue=None):
         """Return the name of all tags
         Optionaly, if you pass the attname and attvalue argument, it will
@@ -119,12 +119,12 @@ class TagStore :
         (except if attvalue is None)"""
         l = []
         for t in self.root.get_children():
-            if not attname :
+            if not attname:
                 l.append(self.root.get_child[t].get_name())
             elif self.root.get_child[t].get_attribute(attname) == attvalue:
                 l.append(self.root.get_child[t].get_name())
         return l
-        
+
     def get_all_tags(self, attname=None, attvalue=None):
         l = []
         for tname in self.root.get_children():
@@ -136,7 +136,7 @@ class TagStore :
         return l
 
     def save(self):
-        doc,xmlroot = cleanxml.emptydoc(XMLROOT)
+        doc, xmlroot = cleanxml.emptydoc(XMLROOT)
         tags = self.get_all_tags()
         already_saved = [] #We avoid saving the same tag twice
         #we don't save tags with no attributes
@@ -145,20 +145,21 @@ class TagStore :
             attr = t.get_all_attributes(butname=True)
             if "special" in attr:
                 continue
-            if len(attr) > 0 :
+            if len(attr) > 0:
                 tagname = t.get_name()
-                if not tagname in already_saved :
+                if not tagname in already_saved:
                     t_xml = doc.createElement("tag")
-                    t_xml.setAttribute("name",tagname)
+                    t_xml.setAttribute("name", tagname)
                     already_saved.append(tagname)
-                    for a in attr :
+                    for a in attr:
                         value = t.get_attribute(a)
-                        t_xml.setAttribute(a,value)
-                    xmlroot.appendChild(t_xml)          
-                    cleanxml.savexml(self.filename,doc)
-                
+                        t_xml.setAttribute(a, value)
+                    xmlroot.appendChild(t_xml)
+                    cleanxml.savexml(self.filename, doc)
+
 ### Tag Objects ##############################################################
 #
+
 class Tag(TreeNode):
     """A short name that can be applied to L{Task}s.
 

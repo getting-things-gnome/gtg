@@ -7,6 +7,7 @@ from GTG.core import CoreConfig
 BUSNAME = CoreConfig.BUSNAME
 BUSFACE = CoreConfig.BUSINTERFACE
 
+
 def dsanitize(data):
     # Clean up a dict so that it can be transmitted through D-Bus
     for k, v in data.items():
