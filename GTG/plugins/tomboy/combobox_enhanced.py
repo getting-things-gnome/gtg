@@ -66,6 +66,7 @@ def smartifyComboboxEntry(combobox, list_obj, callback):
     cell = gtk.CellRendererText()
     combobox.pack_start(cell, True)
     combobox.add_attribute(cell, 'text', 0) 
+    return entry
 
 def setText(combobox, entry):
     model = combobox.get_model()
