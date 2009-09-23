@@ -158,8 +158,6 @@ class Requester(gobject.GObject):
             if task:
                 l_tasks.append(tid)
                 
-#        for t in l_tasks :
-#            print self.get_task(t).get_title()
         return l_tasks
     
     ############# Filters #########################

@@ -29,7 +29,7 @@ class TagTreeModel(gtk.GenericTreeModel):
         gtk.GenericTreeModel.__init__(self)
         self.req  = requester
         self.tree = self.req.get_tag_tree()
-        self.workable_only = False
+        self.workview = False
 
 ### MODEL METHODS ############################################################
 
@@ -40,8 +40,8 @@ class TagTreeModel(gtk.GenericTreeModel):
             iter = self.get_iter(path)
             self.row_changed(path, iter)
 
-    def set_workable_only(self, val):
-        self.workable_only = val
+    def set_workview(self, val):
+        self.workview = val
 
 ### TREEMODEL INTERFACE ######################################################
 #
@@ -90,15 +90,17 @@ class TagTreeModel(gtk.GenericTreeModel):
             sp_id = tag.get_attribute("special")
             if not sp_id:
                 count = len(self.req.get_active_tasks_list(\
-                       tags=[tag], workable=self.workable_only))
+                       tags=[tag], workable=self.workview, \
+                       started_only=self.workview))
                 return  count
             else:
                 if sp_id == "all":
                     return len(self.req.get_active_tasks_list(\
-                        workable=self.workable_only))
+                        workable=self.workview, started_only=self.workview))
                 elif sp_id == "notag":
                     return len(self.req.get_active_tasks_list(\
-                        workable=self.workable_only, notag_only=True))
+                        workable=self.workview, started_only=self.workview,\
+                        notag_only=True))
                 else:
                     return 0
         elif column == COL_SEP:

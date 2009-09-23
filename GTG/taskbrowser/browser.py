@@ -600,7 +600,7 @@ class TaskBrowser:
         self.menu_view_workview.set_active(tobeset)
         self.toggle_workview.set_active(tobeset)
         self.priv['workview'] = tobeset
-        self.tag_model.set_workable_only(self.priv['workview'])
+        self.tag_model.set_workview(self.priv['workview'])
         self.task_modelfilter.refilter()
         self.tag_modelfilter.refilter()
         self._update_window_title()
