@@ -236,6 +236,10 @@ class PluginAPI:
     def show_window(self):
         """Shows the main GTG window (task browser)"""
         self.__window.show()
+
+    def get_window(self):
+        """Returns the window for which the plug-in has been created"""
+        return self.__window
 #=== General Methods ==========================================================
 
 

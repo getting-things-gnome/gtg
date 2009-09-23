@@ -91,7 +91,7 @@
       </child>
 
       <child>
-	<widget class="GtkComboBoxEntry" id="titles_combobox">
+	<widget class="GtkComboBox" id="titles_combobox">
 	  <property name="visible">True</property>
 	  <property name="add_tearoffs">False</property>
 	  <property name="has_frame">True</property>
