@@ -12,10 +12,8 @@ __all__ = (
 import warnings
 import urllib
 import logging
-import time
 from hashlib import md5
 from GTG import _
-import httplib
 
 warnings.simplefilter('default', ImportWarning)
 
@@ -93,7 +91,7 @@ class RTM(object):
         params['format'] = 'json'
         params['api_sig'] = self._sign(params)
 
-        json = openURL(SERVICE_URL, params)
+        json = openURL(SERVICE_URL, params).read()
 
         LOG.debug("JSON response: \n%s" % json)
 
@@ -180,28 +178,11 @@ def sortedItems(dictionary):
     for key in keys:
         yield key, dictionary[key]
 
-def openURL(url, queryArgs = None):
+def openURL(url, queryArgs=None):
     if queryArgs:
         url = url + '?' + urllib.urlencode(queryArgs)
-        LOG.debug("URL> %s", url)
-    time_to_wait = 0
-    while True:
-        try:
-            if time_to_wait !=0:
-                time.sleep(time_to_wait)
-            http_connection = httplib.HTTPConnection("api.rememberthemilk.com",80)
-            http_connection.request("GET", url)
-            http_response = http_connection.getresponse()
-            http_response_data = http_response.read()
-            break
-        except httplib.IncompleteRead as exception:
-            #rtm server issues incomplete responses if we hammer it too much
-            # this way we can be fast *and* safe
-            if time_to_wait == 0:
-                time_to_wait = 2
-            else:
-                raise exception
-    return http_response_data
+    LOG.debug("URL> %s", url)
+    return urllib.urlopen(url)
 
 class dottedDict(object):
     "Make dictionary items accessible via the object-dot notation."
@@ -267,7 +248,7 @@ API = {
         'getList':
             [(), ()],
         'removeContact':
-            [('timeline', 'group_id', 'contact_id'), ()]
+            [('timeline', 'group_id', 'contact_id'), ()],
         },
     'lists': {
         'add':
