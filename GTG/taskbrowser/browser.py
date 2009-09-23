@@ -740,7 +740,8 @@ class TaskBrowser:
 
         if not task.has_tags(tag_list=tag_list, notag_only=notag_only):
             return False
-
+        
+        #if workview is enabled
         if self.priv['workview']:
             res = True
             
@@ -750,6 +751,11 @@ class TaskBrowser:
                 if res == False:
                     return False
             
+            #we verify that the task is started
+            if not task.is_started() :
+                return False
+                    
+            #we verify that there is no non-workview tag for this task
             for t in task.get_tags():
                 if t.get_attribute("nonworkview"):
                     res = res and (not eval(t.get_attribute("nonworkview")))

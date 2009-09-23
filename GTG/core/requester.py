@@ -157,6 +157,9 @@ class Requester(gobject.GObject):
             # If we still have a task, we return it.
             if task:
                 l_tasks.append(tid)
+                
+#        for t in l_tasks :
+#            print self.get_task(t).get_title()
         return l_tasks
     
     ############# Filters #########################
