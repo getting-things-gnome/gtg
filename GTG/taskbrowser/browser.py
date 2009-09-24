@@ -646,9 +646,9 @@ class TaskBrowser:
             today = datetime.date.today()
             today_day = today.weekday()
             if arg.lower() in day_names_en:
-                arg_day = day_names_en.index(arg)
+                arg_day = day_names_en.index(arg.lower())
             else:
-                arg_day = day_names.index(arg)
+                arg_day = day_names.index(arg.lower())
             if arg_day > today_day:
                 delta = datetime.timedelta(days = arg_day-today_day)
             else:
