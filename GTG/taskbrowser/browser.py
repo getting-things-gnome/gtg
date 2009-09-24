@@ -25,7 +25,6 @@ import pygtk
 pygtk.require('2.0')
 import gobject
 import gtk.glade
-import threading
 import xml.sax.saxutils as saxutils
 import os
 import locale
@@ -83,11 +82,6 @@ class TaskBrowser:
         self.opened_task  = {}   # This is the list of tasks that are already
                                  # opened in an editor of course it's empty
                                  # right now
-
-#        # Define various locks for multi-threading
-#        self.refresh_lock      = threading.Lock()
-#        self.refresh_lock_lock = threading.Lock()
-#        self.lock              = threading.Lock()
 
         # Setup default values for view
         self._init_browser_config()
@@ -1361,6 +1355,15 @@ class TaskBrowser:
         self.tag_model.update_tags_for_task(tid)
         self._update_window_title()
         self.tags_tv.refresh()
+        #We also refresh the opened windows for that tasks,
+        #his children and his parents
+        tlist = [tid]
+        task = self.req.get_task(tid)
+        tlist += task.get_parents()
+        tlist += task.get_subtask_tids()
+        for uid in tlist:
+            if self.opened_task.has_key(uid):
+                self.opened_task[uid].refresh_editor()
 
 ### PUBLIC METHODS ############################################################
 #
