@@ -133,6 +133,7 @@ class TaskEditor :
         self.textview.save_task_callback(self.light_save)
         self.delete  = delete_callback
         self.closing = close_callback
+
         texte = self.task.get_text()
         title = self.task.get_title()
         #the first line is the title
@@ -209,7 +210,7 @@ class TaskEditor :
     #Refresh should never interfer with the TaskView
     #If a title is passed as a parameter, it will become
     #The new window title. If not, we will look for the task title
-    def refresh_editor(self,title=None) :
+    def refresh_editor(self, title=None):
         to_save = False
         #title of the window 
         if title :
@@ -219,25 +220,29 @@ class TaskEditor :
             self.window.set_title(self.task.get_title())
            
         status = self.task.get_status() 
-        if status == "Dismiss" :
+        if status == "Dismiss":
             self.donebutton.set_label(GnomeConfig.MARK_DONE)
             self.donebutton.set_tooltip_text(GnomeConfig.MARK_DONE_TOOLTIP)
+            self.donebutton.set_icon_name("gtg-task-done")
             self.dismissbutton.set_label(GnomeConfig.MARK_UNDISMISS)
             self.dismissbutton.set_tooltip_text(GnomeConfig.MARK_UNDISMISS_TOOLTIP)
             self.dismissbutton.set_icon_name("gtg-task-undismiss")
-        elif status == "Done" :
+        elif status == "Done":
             self.donebutton.set_label(GnomeConfig.MARK_UNDONE)
             self.donebutton.set_tooltip_text(GnomeConfig.MARK_UNDONE_TOOLTIP)
             self.donebutton.set_icon_name("gtg-task-undone")
             self.dismissbutton.set_label(GnomeConfig.MARK_DISMISS)
             self.dismissbutton.set_tooltip_text(GnomeConfig.MARK_DISMISS_TOOLTIP)
-        else :
+            self.dismissbutton.set_icon_name("gtg-task-dismiss")
+        else:
             self.donebutton.set_label(GnomeConfig.MARK_DONE)
             self.donebutton.set_tooltip_text(GnomeConfig.MARK_DONE_TOOLTIP)
+            self.donebutton.set_icon_name("gtg-task-done")
             self.dismissbutton.set_label(GnomeConfig.MARK_DISMISS)
             self.dismissbutton.set_tooltip_text(GnomeConfig.MARK_UNDISMISS_TOOLTIP)
+            self.dismissbutton.set_icon_name("gtg-task-dismiss")
             
-        if status == "Note" :
+        if status == "Note":
             self.donebutton.hide()
             self.tasksidebar.hide()
             self.keepnote_button.set_label(GnomeConfig.MAKE_TASK)
@@ -248,32 +253,32 @@ class TaskEditor :
             
         #refreshing the due date field
         duedate = self.task.get_due_date()
-        if duedate :
-            zedate = duedate.replace("-",date_separator)
-            if zedate != self.duedate_widget.get_text() :
+        if duedate:
+            zedate = duedate.replace("-", date_separator)
+            if zedate != self.duedate_widget.get_text():
                 self.duedate_widget.set_text(zedate)
                 #refreshing the day left label
                 result = self.task.get_days_left()
-                if result == 1 :
+                if result == 1:
                     txt = _("Due tomorrow !")
-                elif result > 0 :
+                elif result > 0:
                     txt = _("%s days left") %result
-                elif result == 0 :
+                elif result == 0:
                     txt = _("Due today !")
-                elif result == -1 :
+                elif result == -1:
                     txt = _("Due for yesterday")
-                elif result < 0 :
+                elif result < 0:
                     txt = _("Was %s days ago") % -result
                 self.dayleft_label.set_markup("<span color='#666666'>"+txt+"</span>")    
-        elif self.duedate_widget.get_text() != ''  :
+        elif self.duedate_widget.get_text() != '':
             self.dayleft_label.set_text('')
             self.duedate_widget.set_text('')
         startdate = self.task.get_start_date()
-        if startdate :
+        if startdate:
             zedate = startdate.replace("-",date_separator)
-            if zedate != self.startdate_widget.get_text() :
+            if zedate != self.startdate_widget.get_text():
                 self.startdate_widget.set_text(zedate)
-        elif self.startdate_widget.get_text() != '' :
+        elif self.startdate_widget.get_text() != '':
             self.startdate_widget.set_text('')
             
         #Refreshing the tag list in the insert tag button
@@ -290,6 +295,8 @@ class TaskEditor :
                 menu.append(mi)
         if tag_count > 0 :
             self.inserttag_button.set_menu(menu)
+            
+        self.textview.modified()
             
         if to_save :
             self.save()

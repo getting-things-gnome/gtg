@@ -22,7 +22,7 @@ import locale
 try:
     locale.setlocale(locale.LC_ALL, '')
 except:
-    locale.setlocale(locale.LC_ALL,'C')
+    locale.setlocale(locale.LC_ALL, 'C')
 
 import gettext
 try:
@@ -36,9 +36,9 @@ import info
 
 from xdg.BaseDirectory import xdg_data_home, xdg_config_home
 
-LOCAL_ROOTDIR   = os.path.abspath(os.path.join(os.path.dirname(__file__), '..')) 
-DIST_ROOTDIR_LOCAL    = "/usr/local/share/gtg"
-DIST_ROOTDIR    = "/usr/share/gtg"
+LOCAL_ROOTDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+DIST_ROOTDIR_LOCAL = "/usr/local/share/gtg"
+DIST_ROOTDIR = "/usr/share/gtg"
 
 #Translation setup (from pyroom)
 GETTEXT_DOMAIN = 'gtg'
@@ -55,7 +55,7 @@ if lang_in_env:
 
 for module in gettext, glade:
     #check if glade is well loaded to avoid error in Fedora build farm
-    if module :
+    if module:
         module.bindtextdomain(GETTEXT_DOMAIN, LOCALE_PATH)
         module.textdomain(GETTEXT_DOMAIN)
 
@@ -66,19 +66,18 @@ translation = gettext.translation(GETTEXT_DOMAIN, LOCALE_PATH,
 _ = translation.gettext
 
 #GTG directories setup
-if os.path.isdir(os.path.join(LOCAL_ROOTDIR,'data') ) :
-    DATA_DIR = os.path.join(LOCAL_ROOTDIR,'data')
+if os.path.isdir(os.path.join(LOCAL_ROOTDIR, 'data')):
+    DATA_DIR = os.path.join(LOCAL_ROOTDIR, 'data')
 elif os.path.isdir(DIST_ROOTDIR_LOCAL):
     DATA_DIR = DIST_ROOTDIR_LOCAL
 else:
     DATA_DIR = DIST_ROOTDIR
-    
+
 #GTG plugin dir setup
-if not os.path.isdir( os.path.join(LOCAL_ROOTDIR,'GTG/plugins/') ) :
+if not os.path.isdir(os.path.join(LOCAL_ROOTDIR, 'GTG/plugins/')):
     PLUGIN_DIR = [DIST_ROOTDIR]
 else:
-    PLUGIN_DIR = [os.path.join(LOCAL_ROOTDIR,'GTG/plugins/')]
-    
-if os.path.isdir( os.path.join(xdg_config_home,'gtg/plugins') ) :
-    PLUGIN_DIR.append(os.path.join(xdg_config_home,'gtg/plugins'))
+    PLUGIN_DIR = [os.path.join(LOCAL_ROOTDIR, 'GTG/plugins/')]
 
+if os.path.isdir(os.path.join(xdg_config_home, 'gtg/plugins')):
+    PLUGIN_DIR.append(os.path.join(xdg_config_home, 'gtg/plugins'))
