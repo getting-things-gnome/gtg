@@ -464,8 +464,8 @@ class TaskView(gtk.TextView):
         #subt_list = self.get_subtasks()
         #First, we remove the olds tags
         tag_list = []
-        def subfunc(texttag,data=None) : #pylint: disable-msg=W0613
-            if texttag.get_data('is_subtask') :
+        def subfunc(texttag,data=None): #pylint: disable-msg=W0613
+            if texttag.get_data('is_subtask'):
                 tag_list.append(texttag)
         table.foreach(subfunc)
         start,end = buff.get_bounds()
@@ -480,9 +480,12 @@ class TaskView(gtk.TextView):
             if start_mark :
                 #In fact, the subtask mark always go to the end of line.
                 start_i = buff.get_iter_at_mark(start_mark)
-                start_i.forward_to_line_end()
-                end_mark = buff.create_mark("/%s"%s,start_i,False)
-                self.apply_subtask_tag(buff,s,start_mark,end_mark)
+                if self._get_indent_level(start_i) > 0:
+                    start_i.forward_to_line_end()
+                    end_mark = buff.create_mark("/%s"%s,start_i,False)
+                    self.apply_subtask_tag(buff,s,start_mark,end_mark)
+                else:
+                    self.remove_subtask(s)
     
                 
         #Now we apply the tag tag to the marks
@@ -507,8 +510,8 @@ class TaskView(gtk.TextView):
         #First, we remove the olds tags
         tag_list = []
         table = buff.get_tag_table()
-        def subfunc(texttag,data=None) : #pylint: disable-msg=W0613
-            if texttag.get_data('is_anchor') :
+        def subfunc(texttag,data=None):
+            if texttag.get_data('is_anchor'):
                 tag_list.append(texttag)
         table.foreach(subfunc)
         for t in tag_list :
@@ -521,7 +524,7 @@ class TaskView(gtk.TextView):
             prev = it.copy()
             prev.backward_word_start()
             text = buff.get_text(prev,it)
-            if text in ["http","https"] :
+            if text in ["http","https"]:
                 while it.get_char() not in url_separators and (it.get_char() != '\0') :
                     it.forward_char()
                 url = buff.get_text(prev,it)
@@ -901,6 +904,18 @@ class TaskView(gtk.TextView):
             self.insert_with_anchor(text,anchor,_iter=ite,typ="subtask")
         else :
             buff.insert(ite,text)
+            
+            
+    def _get_indent_level(self,itera) :
+        line_nbr   = itera.get_line()
+        start_line = itera.copy()
+        start_line.set_line(line_nbr)
+        tags = start_line.get_tags()
+        current_indent = 0
+        for ta in tags :
+            if ta.get_data('is_indent') :
+                current_indent = ta.get_data('indent_level')
+        return current_indent
         
     #Function called each time the user input a letter   
     def _insert_at_cursor(self, tv, itera, tex, leng) : #pylint: disable-msg=W0613
@@ -917,11 +932,8 @@ class TaskView(gtk.TextView):
         start_line.set_line(line_nbr)
         end_line   = itera.copy()
         tags = start_line.get_tags()
-        current_indent = 0
         subtask_nbr = None
-        for ta in tags :
-            if ta.get_data('is_indent') :
-                current_indent = ta.get_data('indent_level')
+        current_indent = self._get_indent_level(itera)
         tags = itera.get_tags()
         for ta in tags :
             if ta.get_data('is_subtask') :
@@ -1029,7 +1041,7 @@ class TaskView(gtk.TextView):
 
     #Deindent the current line of one level
     #If newlevel is set, force to go to that level
-    def deindent(self,itera,newlevel=-1) :
+    def deindent(self, itera, newlevel=-1):
         line = itera.get_line()
         startline = self.buff.get_iter_at_line(line)
         if newlevel < 0 :
@@ -1050,8 +1062,7 @@ class TaskView(gtk.TextView):
         self.buff.delete_mark(tempm)
         self.insert_indent(self.buff,newiter,newlevel)
         
-        
-    def backspace(self,tv) :
+    def backspace(self, tv):
         self.buff.disconnect(self.insert_sigid)
         insert_mark = self.buff.get_insert()
         insert_iter = self.buff.get_iter_at_mark(insert_mark)
@@ -1061,7 +1072,8 @@ class TaskView(gtk.TextView):
                 if t.get_data('is_indent') :
                     self.deindent(insert_iter)
                     tv.emit_stop_by_name('backspace')
-        self.insert_sigid = self.buff.connect('insert-text', self._insert_at_cursor)
+        self.insert_sigid = self.buff.connect('insert-text', \
+                                               self._insert_at_cursor)
 
     #The mouse is moving. We must change it to a hand when hovering a link
     def _motion(self, view, ev):
