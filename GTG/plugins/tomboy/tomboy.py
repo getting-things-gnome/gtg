@@ -221,4 +221,9 @@ exist. Do you want to create a new one?"))
         color = str(style.text[gtk.STATE_PRELIGHT])
         label.set_markup("<span underline='low' color='" + color +"'>" + tomboy_note_title + "</span>")
         eventbox.tomboy_note_title = tomboy_note_title
+        #cursor changes to a hand
+        def realize_callback(widget):
+            eventbox.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND2))
+        eventbox.connect("realize", realize_callback)
         return eventbox
+
