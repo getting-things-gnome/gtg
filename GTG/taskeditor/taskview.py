@@ -484,6 +484,8 @@ class TaskView(gtk.TextView):
                     start_i.forward_to_line_end()
                     end_mark = buff.create_mark("/%s"%s,start_i,False)
                     self.apply_subtask_tag(buff,s,start_mark,end_mark)
+                else:
+                    self.remove_subtask(s)
     
                 
         #Now we apply the tag tag to the marks
