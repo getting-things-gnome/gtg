@@ -34,7 +34,7 @@ class Task:
     STA_ACTIVE    = "Active"
     STA_DISMISSED = "Dismiss"
     STA_DONE      = "Done"
-
+    
     def __init__(self, ze_id, requester, newtask=False):
         #the id of this task in the project should be set
         #tid is a string ! (we have to choose a type and stick to it)
@@ -481,6 +481,8 @@ class Task:
             task.remove_subtask(self.get_id())
         for task in self.get_subtasks():
             task.remove_parent(self.get_id())
+            self.req.delete_task(task.get_id())
+            
         #then we remove effectively the task
         #self.req.delete_task(self.get_id())
 

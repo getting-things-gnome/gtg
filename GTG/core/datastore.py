@@ -67,8 +67,8 @@ class DataStore:
         #If the task doesn't exist, we create it with a forced pid
         return task
         
-    def delete_task(self,tid) :
-        if tid and self.tasks.has_key(tid) :
+    def delete_task(self,tid):
+        if tid and self.tasks.has_key(tid):
             self.tasks[tid].delete()
             uid,pid = tid.split('@') #pylint: disable-msg=W0612
             back = self.backends[pid]
