@@ -210,7 +210,9 @@ class TaskEditor :
     #Refresh should never interfer with the TaskView
     #If a title is passed as a parameter, it will become
     #The new window title. If not, we will look for the task title
-    def refresh_editor(self, title=None):
+    #Refreshtext is wheter or not we should refresh the TaskView
+    #(doing it all the time is dangerous if the task is empty)
+    def refresh_editor(self, title=None, refreshtext=False):
         to_save = False
         #title of the window 
         if title :
@@ -295,10 +297,10 @@ class TaskEditor :
                 menu.append(mi)
         if tag_count > 0 :
             self.inserttag_button.set_menu(menu)
-            
-        self.textview.modified()
-            
-        if to_save :
+
+        if refreshtext:
+            self.textview.modified()            
+        if to_save:
             self.save()
             
         
