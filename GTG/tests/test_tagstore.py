@@ -102,7 +102,6 @@ class TestTag(unittest.TestCase):
 
     # XXX: The following tests check the current behaviour of the Tag class,
     # but I'm not sure if they're correct behaviour. -- jml, 2009-07-17
-
     def test_save_not_called_on_construction(self):
         # The save callback isn't called by the constructor, despite the fact
         # that it sets the name attribute.
