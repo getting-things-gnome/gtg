@@ -1363,7 +1363,7 @@ class TaskBrowser:
         tlist += task.get_subtask_tids()
         for uid in tlist:
             if self.opened_task.has_key(uid):
-                self.opened_task[uid].refresh_editor()
+                self.opened_task[uid].refresh_editor(refreshtext=True)
 
 ### PUBLIC METHODS ############################################################
 #
