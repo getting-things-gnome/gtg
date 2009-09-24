@@ -25,7 +25,6 @@ import pygtk
 pygtk.require('2.0')
 import gobject
 import gtk.glade
-import xml.sax.saxutils as saxutils
 import os
 import locale
 import re
@@ -46,7 +45,7 @@ from GTG.taskbrowser.tasktree         import TaskTreeModel,\
 from GTG.taskbrowser                  import tagtree
 from GTG.taskbrowser.tagtree          import TagTreeModel,\
                                              TagTreeView
-from GTG.tools                        import colors, openurl
+from GTG.tools                        import openurl
 from GTG.core.plugins.manager         import PluginManager
 from GTG.core.plugins.engine          import PluginEngine
 from GTG.core.plugins.api             import PluginAPI

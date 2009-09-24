@@ -19,7 +19,6 @@
 
 import gtk
 import gobject
-import time
 import pango
 
 from GTG import _

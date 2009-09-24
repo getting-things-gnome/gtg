@@ -1,10 +1,25 @@
-
+# -*- coding: utf-8 -*-
+# -----------------------------------------------------------------------------
+# Gettings Things Gnome! - a personnal organizer for the GNOME desktop
+# Copyright (c) 2008-2009 - Lionel Dricot & Bertrand Rousseau
+#
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program.  If not, see <http://www.gnu.org/licenses/>.
+# -----------------------------------------------------------------------------
 import gtk
 import gobject
 
 from GTG import _
-from GTG.core.task     import Task
-from GTG.tools         import colors
 from GTG.taskbrowser.CellRendererTags import CellRendererTags
 
 COL_ID    = 0
@@ -85,7 +100,7 @@ class TagTreeModel(gtk.GenericTreeModel):
         if   column == COL_OBJ:
             return tag
         elif column == COL_COLOR:
-            return task.get_attribute("color")
+            return tag.get_attribute("color")
         elif column == COL_COUNT:
             sp_id = tag.get_attribute("special")
             if not sp_id:

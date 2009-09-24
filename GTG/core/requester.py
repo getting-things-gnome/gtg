@@ -206,7 +206,7 @@ class Requester(gobject.GObject):
         
         @param tag: A tag name.
         """
-        if tid in self.filter["tags"]:
+        if tag in self.filter["tags"]:
             self.filter["tags"].remove(tag)
     ############# Filters #########################
 
