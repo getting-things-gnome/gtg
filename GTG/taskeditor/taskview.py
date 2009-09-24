@@ -18,11 +18,12 @@
 # -----------------------------------------------------------------------------
 
 
-#This is a class taken originally from http://trac.atzm.org/index.cgi/wiki/PyGTK
+#This is a class taken originally from
+#http://trac.atzm.org/index.cgi/wiki/PyGTK
 #It was in Japanese and I didn't understood anything but the code.
 
-#This class implement a gtk.TextView but with many other features like hyperlink
-#others stuffs special for GTG
+#This class implement a gtk.TextView but with many other features
+#like hyperlink and others stuffs special for GTG
 #
 #For your information, a gtkTextView always contains a gtk.TextBuffer which
 #Contains the text. Ours is called self.buff (how original !)
@@ -35,36 +36,44 @@ import pango
 from GTG.taskeditor import taskviewserial
 from GTG.tools import openurl
 
-separators = [' ','.',',','/','\n','\t','!','?',';','\0']
-url_separators = [' ',',','\n','\t','\0']
+separators = [' ', '.', ',', '/', '\n', '\t', '!', '?', ';', '\0']
+url_separators = [' ', ',', '\n', '\t', '\0']
 
 bullet1_ltr = '→'
 bullet1_rtl = '←'
 bullet2 = '↳'
 
+
 class TaskView(gtk.TextView):
     __gtype_name__ = 'HyperTextView'
-    __gsignals__ = {'anchor-clicked': (gobject.SIGNAL_RUN_LAST, None, (str, str, int))}
+    __gsignals__ = {'anchor-clicked': (gobject.SIGNAL_RUN_LAST, \
+                     None, (str, str, int))}
     __gproperties__ = {
-        'link':  (gobject.TYPE_PYOBJECT, 'link color', 'link color of TextView', gobject.PARAM_READWRITE),
-        'active':(gobject.TYPE_PYOBJECT, 'active color', 'active color of TextView', gobject.PARAM_READWRITE),
-        'hover': (gobject.TYPE_PYOBJECT, 'link:hover color', 'link:hover color of TextView', gobject.PARAM_READWRITE),
-        'tag' :(gobject.TYPE_PYOBJECT, 'tag color', 'tag color of TextView', gobject.PARAM_READWRITE),
-        'done':  (gobject.TYPE_PYOBJECT, 'link color', 'link color of TextView', gobject.PARAM_READWRITE),
-        'indent':  (gobject.TYPE_PYOBJECT, 'indent color', 'indent color of TextView', gobject.PARAM_READWRITE),
+        'link': (gobject.TYPE_PYOBJECT, 'link color',\
+                  'link color of TextView', gobject.PARAM_READWRITE),
+        'active': (gobject.TYPE_PYOBJECT, 'active color', \
+                  'active color of TextView', gobject.PARAM_READWRITE),
+        'hover': (gobject.TYPE_PYOBJECT, 'link:hover color', \
+                  'link:hover color of TextView', gobject.PARAM_READWRITE),
+        'tag': (gobject.TYPE_PYOBJECT, 'tag color', \
+                  'tag color of TextView', gobject.PARAM_READWRITE),
+        'done': (gobject.TYPE_PYOBJECT, 'link color', \
+                  'link color of TextView', gobject.PARAM_READWRITE),
+        'indent': (gobject.TYPE_PYOBJECT, 'indent color', \
+                  'indent color of TextView', gobject.PARAM_READWRITE),
         }
 
     def do_get_property(self, prop):
         try:
             return getattr(self, prop.name)
         except AttributeError:
-            raise AttributeError, 'unknown property %s' % prop.name
+            raise AttributeError('unknown property %s' % prop.name)
 
     def do_set_property(self, prop, val):
         if prop.name in self.__gproperties__.keys():
             setattr(self, prop.name, val)
         else:
-            raise AttributeError, 'unknown property %s' % prop.name
+            raise AttributeError('unknown property %s' % prop.name)
 
     #Yes, we want to redefine the buffer. Disabling pylint on that error.
     def __init__(self, requester, buffer=None): #pylint: disable-msg=W0622
@@ -72,27 +81,29 @@ class TaskView(gtk.TextView):
         self.buff = self.get_buffer()
         self.req = requester
         #Buffer init
-        self.link   = {'background': 'white', 'foreground': '#007bff', 
-                                    'underline': pango.UNDERLINE_SINGLE, 'strikethrough':False}
-        self.done   = {'background': 'white', 'foreground': 'gray', 
+        self.link = {'background': 'white', 'foreground': '#007bff', \
+                      'underline': pango.UNDERLINE_SINGLE, \
+                      'strikethrough': False}
+        self.done   = {'background': 'white', 'foreground': 'gray',\
                                     'strikethrough': True}
-        self.active = {'background': 'light gray', 'foreground': '#ff1e00', 
+        self.active = {'background': 'light gray', 'foreground': '#ff1e00',\
                                     'underline': pango.UNDERLINE_SINGLE}
         self.hover  = {'background': 'light gray'}
-        self.tag = {'background': "#FFea00", 'foreground' : 'black'}
-        self.indent = {'scale': 1.4, 'editable' : False, 'left-margin': 10,
-                                     "accumulative-margin" : True}
-        
-        
+        self.tag = {'background': "#FFea00", 'foreground': 'black'}
+        self.indent = {'scale': 1.4, 'editable': False, 'left-margin': 10,
+                                 "accumulative-margin": True}
+
         ###### Tag we will use ######
-        # We use the tag table (tag are defined here but set in self.modified)
+        # We use the tag table (tag are defined here
+        # but set in self.modified)
         self.table = self.buff.get_tag_table()
         # Tag for title
-        self.title_tag  = self.buff.create_tag("title",foreground="#007bff",scale=1.6,underline=1)
-        self.title_tag.set_property("pixels-above-lines",10)
-        self.title_tag.set_property("pixels-below-lines",10)
+        self.title_tag  = self.buff.create_tag("title", foreground="#007bff", \
+                            scale=1.6, underline=1)
+        self.title_tag.set_property("pixels-above-lines", 10)
+        self.title_tag.set_property("pixels-below-lines", 10)
         # Tag for highlight (tags are automatically added to the tag table)
-        self.buff.create_tag("fluo",background="#F0F")
+        self.buff.create_tag("fluo", background="#F0F")
         # Tag for bullets
         self.buff.create_tag("bullet", scale=1.6)
         #end = self.buff.get_end_iter()
@@ -101,19 +112,21 @@ class TaskView(gtk.TextView):
         self.__tags = []
         #This is a simple stack used by the serialization
         self.__tag_stack = {}
-        
+
         #Signals
-        self.connect('motion-notify-event'   , self._motion)
-        self.connect('focus-out-event'       , lambda w, e: self.table.foreach(self.__tag_reset, e.window))
-        self.insert_sigid = self.buff.connect('insert-text', self._insert_at_cursor)
-        self.buff.connect("delete-range",self._delete_range)
-        
+        self.connect('motion-notify-event', self._motion)
+        self.connect('focus-out-event', lambda w, \
+                     e: self.table.foreach(self.__tag_reset, e.window))
+        self.insert_sigid = self.buff.connect('insert-text', \
+                                              self._insert_at_cursor)
+        self.buff.connect("delete-range", self._delete_range)
+
         #All the typical properties of our textview
         self.set_wrap_mode(gtk.WRAP_WORD)
         self.set_editable(True)
         self.set_cursor_visible(True)
         self.buff.set_modified(False)
-        
+
         #Let's try with serializing
         self.mime_type = 'application/x-gtg-task'
         serializer = taskviewserial.Serializer()
