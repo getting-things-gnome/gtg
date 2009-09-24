@@ -1327,7 +1327,7 @@ class TaskBrowser:
 #            self.ctask_tv.get_selection().unselect_all()
 #            self.task_tv.get_selection().unselect_all()
     
-    def on_pluginmanager_activate(self, widget) :
+    def on_pluginmanager_activate(self, widget):
         PluginManager(self.window, self.plugins, self.pengine, self.plugin_api)
 
     def on_close(self, widget=None):
@@ -1357,6 +1357,7 @@ class TaskBrowser:
         self.tags_tv.refresh()
         #We also refresh the opened windows for that tasks,
         #his children and his parents
+        #It might be faster to refresh every opened editor
         tlist = [tid]
         task = self.req.get_task(tid)
         tlist += task.get_parents()

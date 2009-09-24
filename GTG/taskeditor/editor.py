@@ -223,6 +223,7 @@ class TaskEditor :
         if status == "Dismiss" :
             self.donebutton.set_label(GnomeConfig.MARK_DONE)
             self.donebutton.set_tooltip_text(GnomeConfig.MARK_DONE_TOOLTIP)
+            self.donebutton.set_icon_name("gtg-task-done")
             self.dismissbutton.set_label(GnomeConfig.MARK_UNDISMISS)
             self.dismissbutton.set_tooltip_text(GnomeConfig.MARK_UNDISMISS_TOOLTIP)
             self.dismissbutton.set_icon_name("gtg-task-undismiss")
@@ -232,11 +233,14 @@ class TaskEditor :
             self.donebutton.set_icon_name("gtg-task-undone")
             self.dismissbutton.set_label(GnomeConfig.MARK_DISMISS)
             self.dismissbutton.set_tooltip_text(GnomeConfig.MARK_DISMISS_TOOLTIP)
+            self.dismissbutton.set_icon_name("gtg-task-dismiss")
         else :
             self.donebutton.set_label(GnomeConfig.MARK_DONE)
             self.donebutton.set_tooltip_text(GnomeConfig.MARK_DONE_TOOLTIP)
+            self.donebutton.set_icon_name("gtg-task-done")
             self.dismissbutton.set_label(GnomeConfig.MARK_DISMISS)
             self.dismissbutton.set_tooltip_text(GnomeConfig.MARK_UNDISMISS_TOOLTIP)
+            self.dismissbutton.set_icon_name("gtg-task-dismiss")
             
         if status == "Note" :
             self.donebutton.hide()
