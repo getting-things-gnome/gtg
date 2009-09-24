@@ -53,7 +53,7 @@ def smartifyComboboxEntry(combobox, list_obj, callback):
     ifKeyPressedCallback(entry, "Return", callback)
     #wrap the combo-box if it's too long
     if len(list_obj) > 15:
-        self.combobox.set_wrap_width(5)
+        combobox.set_wrap_width(5)
     #populate the combo-box
     if len(list_obj) > 0:
         list_store = listStoreFromList(list_obj)
@@ -66,6 +66,7 @@ def smartifyComboboxEntry(combobox, list_obj, callback):
     cell = gtk.CellRendererText()
     combobox.pack_start(cell, True)
     combobox.add_attribute(cell, 'text', 0) 
+    return entry
 
 def setText(combobox, entry):
     model = combobox.get_model()

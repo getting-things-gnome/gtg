@@ -149,14 +149,15 @@ class pluginTomboy:
         self.dialog.connect("delete_event", self.close_dialog)
         btn_cancel.connect("clicked", self.close_dialog)
         btn_add.connect("clicked", self.noteChosen)
-        combobox_enhanced.smartifyComboboxEntry(self.combobox,title_list,self.noteChosen)
+        self.combobox_entry = combobox_enhanced.\
+                smartifyComboboxEntry(self.combobox,title_list,self.noteChosen)
         self.dialog.show_all()
 
     #A title has been chosen by the user. If the note exists, it will be 
     # linked, otherwise the user will have the option to create the note.
     def noteChosen(self, widget=None, data=None):
         tomboy = self.getTomboyObject()
-        supposed_title = self.combobox.get_active_text()
+        supposed_title = self.combobox_entry.get_text()
         if filter(lambda x: tomboy.GetNoteTitle(x)==supposed_title,
                   tomboy.ListAllNotes()) == []:
             self.label_caption.set_text(_("That note does not exist!"))
