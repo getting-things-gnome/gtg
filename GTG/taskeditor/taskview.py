@@ -707,7 +707,7 @@ class TaskView(gtk.TextView):
         #We return false so the parent still get the signal
         return False
         
-    #Apply the title and return an iterator after that title.
+    #Apply the title and return an iterator after that title.buff.get_iter_at_mar
     def _apply_title(self,buff) :
         start     = buff.get_start_iter()
         end       = buff.get_end_iter()
@@ -893,10 +893,14 @@ class TaskView(gtk.TextView):
     def __apply_tag_to_mark(self,start,end,tag=None,name=None) :
         start_i = self.buff.get_iter_at_mark(start)
         end_i = self.buff.get_iter_at_mark(end)
-        if tag :
-            self.buff.apply_tag(tag,start_i,end_i)
-        elif name :
-            self.buff.apply_tag_by_name(name,start_i,end_i)
+        #we should apply the tag only if the mark are separated
+        if end_i.get_offset() - start_i.get_offset() > 0 :
+            if tag :
+                self.buff.apply_tag(tag,start_i,end_i)
+            elif name :
+                self.buff.apply_tag_by_name(name,start_i,end_i)
+        elif tag :
+            self.buff.remove_tag(tag,start_i,end_i)
     
     def insert_at_mark(self,buff,mark,text,anchor=None) :
         ite = buff.get_iter_at_mark(mark)
@@ -1054,13 +1058,13 @@ class TaskView(gtk.TextView):
         #If it's still < 0
         if newlevel < 0 :
             print "bug : no is_indent tag on that line"
-        startline.backward_char()
+        #startline.backward_char()
         #We make a temp mark where we should insert the new indent
         tempm = self.buff.create_mark("temp",startline)
         self.buff.delete(startline,itera)
         newiter = self.buff.get_iter_at_mark(tempm)
         self.buff.delete_mark(tempm)
-        self.insert_indent(self.buff,newiter,newlevel)
+        self.insert_indent(self.buff,newiter,newlevel,enter=False)
         
     def backspace(self, tv):
         self.buff.disconnect(self.insert_sigid)
