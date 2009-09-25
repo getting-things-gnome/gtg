@@ -52,7 +52,7 @@ class TaskEditor :
                 delete_callback=None, close_callback=None,opentask_callback=None, 
                 tasktitle_callback=None, notes=False) :
         self.req = requester
-        self.time = time.time()
+        self.time = None
         self.gladefile = GnomeConfig.GLADE_FILE
         self.wTree = gtk.glade.XML(self.gladefile, "TaskEditor")
         self.cal_tree = gtk.glade.XML(self.gladefile, "calendar")
@@ -299,7 +299,7 @@ class TaskEditor :
             self.inserttag_button.set_menu(menu)
 
         if refreshtext:
-            self.textview.modified()            
+            self.textview.modified(refresheditor=False)            
         if to_save:
             self.save()
             
@@ -457,11 +457,24 @@ class TaskEditor :
     #light_save save the task without refreshing every 30seconds
     #We will reduce the time when the get_text will be in another thread
     def light_save(self) :
-        diff = time.time() - self.time
-        if diff > GnomeConfig.SAVETIME :
-            self.task.set_text(self.textview.get_text())
-            self.task.sync()
-            self.time = time.time()
+        #if self.time is none, we never called any save
+        if self.time:
+            diff = time.time() - self.time
+            tosave = diff > GnomeConfig.SAVETIME
+        else:
+            self.time = 1
+            tosave = False
+            diff = None
+        if tosave:
+            #We don't want to save a new empty task
+            #so we check for the content
+            empty = "<content/>"
+            actual = self.textview.get_text()
+            isempty = (actual == empty or actual == "")
+            if not self.task.is_new() or not isempty:
+                self.task.set_text(self.textview.get_text())
+                self.task.sync()
+                self.time = time.time()
         
         
     #This will bring the Task Editor to front    
@@ -479,7 +492,10 @@ class TaskEditor :
     #Will be linked to this destruction method that will save the task
     def destruction(self,a=None) :#pylint: disable-msg=W0613
         #Save should be also called when buffer is modified
-        self.save()
+        if self.task.is_new():
+            print "we remove the task"
+        else:
+            self.save()
         self.closing(self.task.get_id())
         
         
