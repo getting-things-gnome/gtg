@@ -482,7 +482,7 @@ class TaskEditor :
         self.window.present()
         
     #We define dummy variable for when close is called from a callback
-    def close(self,window,a=None,b=None,c=None) : #pylint: disable-msg=W0613
+    def close(self,window=None,a=None,b=None,c=None) : #pylint: disable-msg=W0613
         #We should also destroy the whole taskeditor object.
         self.window.destroy()
     

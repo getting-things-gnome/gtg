@@ -1215,6 +1215,8 @@ class TaskBrowser:
         """if we pass a tid as a parameter, we delete directly
         otherwise, we will look which tid is selected"""
         self.req.delete_task(self.tid_todelete)
+        if self.tid_todelete in self.opened_task:
+            self.opened_task[self.tid_todelete].close()
         self.tid_todelete = None
         #self.do_refresh()
 
