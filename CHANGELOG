@@ -1,3 +1,4 @@
+    * Empty new tasks are deleted when editor is closed
     * lot of bug fixed in the editor while playing with subtasks
     * Works well with the "text besides icon" GNOME option
     * Merge RTM plugin branch from Luca Invernizzi

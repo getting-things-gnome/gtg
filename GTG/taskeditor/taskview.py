@@ -420,7 +420,7 @@ class TaskView(gtk.TextView):
 
         
     #This function is called so frequently that we should optimize it more.    
-    def modified(self,buff=None,full=False) : #pylint: disable-msg=W0613
+    def modified(self,buff=None,full=False,refresheditor=True) : 
         """Called when the buffer has been modified.
 
         It reflects the changes by:
@@ -440,7 +440,7 @@ class TaskView(gtk.TextView):
         if full or self.is_at_title(buff,cursor_iter) :
             #The apply title is very expensive because
             #It involves refreshing the whole task tree
-            title_end = self._apply_title(buff)
+            title_end = self._apply_title(buff,refresheditor)
 
         if full :
             local_start = title_end.copy()
@@ -708,7 +708,7 @@ class TaskView(gtk.TextView):
         return False
         
     #Apply the title and return an iterator after that title.buff.get_iter_at_mar
-    def _apply_title(self,buff) :
+    def _apply_title(self,buff,refresheditor=True) :
         start     = buff.get_start_iter()
         end       = buff.get_end_iter()
         line_nbr  = 1
@@ -737,7 +737,8 @@ class TaskView(gtk.TextView):
         buff.remove_tag_by_name ('title', title_end   , end)
 
         # Refresh title of the window
-        self.refresh(buff.get_text(title_start,title_end).strip('\n\t'))
+        if refresheditor:
+            self.refresh(buff.get_text(title_start,title_end).strip('\n\t'))
         return title_end
     
             
