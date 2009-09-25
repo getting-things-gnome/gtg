@@ -1,3 +1,5 @@
+    * lot of bug fixed in the editor while playing with subtasks
+    * Works well with the "text besides icon" GNOME option
     * Merge RTM plugin branch from Luca Invernizzi
     * i18n: fixed window title in GTG/taskbrowser/browser.py, by Dario Bertini 
     * Patch from Luca Invernizzi to add XDG_CACHE redefinition in script/debug.sh
