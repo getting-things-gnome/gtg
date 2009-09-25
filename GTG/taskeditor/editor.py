@@ -492,11 +492,12 @@ class TaskEditor :
     #Will be linked to this destruction method that will save the task
     def destruction(self,a=None) :#pylint: disable-msg=W0613
         #Save should be also called when buffer is modified
+        tid = self.task.get_id()
         if self.task.is_new():
-            print "we remove the task"
+            self.req.delete_task(tid)
         else:
             self.save()
-        self.closing(self.task.get_id())
+        self.closing(tid)
         
         
 ############# Private functions #################
