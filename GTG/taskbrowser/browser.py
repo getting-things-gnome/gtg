@@ -316,6 +316,8 @@ class TaskBrowser:
                 self.on_quickadd_activate,
             "on_view_quickadd_toggled":
                 self.on_toggle_quickadd,
+            "on_view_toolbar_toggled":
+                self.on_toolbar_toggled,
             "on_about_clicked":
                 self.on_about_clicked,
             "on_about_close":
