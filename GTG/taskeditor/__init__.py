@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Gettings Things Gnome! - a personnal organizer for the GNOME desktop
+# Gettings Things Gnome! - a personal organizer for the GNOME desktop
 # Copyright (c) 2008-2009 - Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
@@ -16,23 +16,22 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-
-
 import os
 
 from GTG import _
 
-class GnomeConfig :
+
+class GnomeConfig:
     current_rep = os.path.dirname(os.path.abspath(__file__))
-    GLADE_FILE    = os.path.join(current_rep,"taskeditor.glade")
-    
+    GLADE_FILE  = os.path.join(current_rep, "taskeditor.glade")
+
     MARK_DONE = _("Mark as done")
     MARK_UNDONE = _("Mark as not done")
     MARK_DISMISS = _("Dismiss")
     MARK_UNDISMISS = _("Undismiss")
     KEEP_NOTE = _("Keep as Note")
     MAKE_TASK = _("Make a Task")
-    
+
     MARK_DONE_TOOLTIP = _("Mark this task as done")
     MARK_UNDONE_TOOLTIP = _("Mark this task as to be done")
     MARK_DISMISS_TOOLTIP = _("Mark this task as not to be done anymore")
@@ -40,6 +39,6 @@ class GnomeConfig :
     DELETE_TOOLTIP = _("Permanently remove this task")
     SUBTASK_TOOLTIP = _("Insert a subtask in this task")
     TAG_TOOLTIP = _("Insert a tag in this task")
-    
+
     #Number of second between to save in the task editor
     SAVETIME = 10
