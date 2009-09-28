@@ -299,6 +299,7 @@
             <child>
               <widget class="GtkToolButton" id="new_task_b">
                 <property name="visible">True</property>
+                <property name="is_important">True</property>
                 <property name="label" translatable="yes">New Task</property>
                 <property name="icon_name">gtg-task-new</property>
                 <signal name="clicked" handler="on_add_task"/>
@@ -386,6 +387,7 @@
             <child>
               <widget class="GtkToolButton" id="mark_as_done_b">
                 <property name="visible">True</property>
+                <property name="is_important">True</property>
                 <property name="label" translatable="yes">Mark as Done</property>
                 <property name="icon_name">gtg-task-done</property>
                 <signal name="clicked" handler="on_mark_as_done"/>

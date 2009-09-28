@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Gettings Things Gnome! - a personnal organizer for the GNOME desktop
+# Gettings Things Gnome! - a personal organizer for the GNOME desktop
 # Copyright (c) 2008-2009 - Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
@@ -102,7 +102,6 @@ class TestTag(unittest.TestCase):
 
     # XXX: The following tests check the current behaviour of the Tag class,
     # but I'm not sure if they're correct behaviour. -- jml, 2009-07-17
-
     def test_save_not_called_on_construction(self):
         # The save callback isn't called by the constructor, despite the fact
         # that it sets the name attribute.

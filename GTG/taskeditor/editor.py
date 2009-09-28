@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Gettings Things Gnome! - a personnal organizer for the GNOME desktop
+# Gettings Things Gnome! - a personal organizer for the GNOME desktop
 # Copyright (c) 2008-2009 - Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
@@ -52,7 +52,7 @@ class TaskEditor :
                 delete_callback=None, close_callback=None,opentask_callback=None, 
                 tasktitle_callback=None, notes=False) :
         self.req = requester
-        self.time = time.time()
+        self.time = None
         self.gladefile = GnomeConfig.GLADE_FILE
         self.wTree = gtk.glade.XML(self.gladefile, "TaskEditor")
         self.cal_tree = gtk.glade.XML(self.gladefile, "calendar")
@@ -133,6 +133,7 @@ class TaskEditor :
         self.textview.save_task_callback(self.light_save)
         self.delete  = delete_callback
         self.closing = close_callback
+
         texte = self.task.get_text()
         title = self.task.get_title()
         #the first line is the title
@@ -209,7 +210,9 @@ class TaskEditor :
     #Refresh should never interfer with the TaskView
     #If a title is passed as a parameter, it will become
     #The new window title. If not, we will look for the task title
-    def refresh_editor(self,title=None) :
+    #Refreshtext is wheter or not we should refresh the TaskView
+    #(doing it all the time is dangerous if the task is empty)
+    def refresh_editor(self, title=None, refreshtext=False):
         to_save = False
         #title of the window 
         if title :
@@ -219,25 +222,29 @@ class TaskEditor :
             self.window.set_title(self.task.get_title())
            
         status = self.task.get_status() 
-        if status == "Dismiss" :
+        if status == "Dismiss":
             self.donebutton.set_label(GnomeConfig.MARK_DONE)
             self.donebutton.set_tooltip_text(GnomeConfig.MARK_DONE_TOOLTIP)
+            self.donebutton.set_icon_name("gtg-task-done")
             self.dismissbutton.set_label(GnomeConfig.MARK_UNDISMISS)
             self.dismissbutton.set_tooltip_text(GnomeConfig.MARK_UNDISMISS_TOOLTIP)
             self.dismissbutton.set_icon_name("gtg-task-undismiss")
-        elif status == "Done" :
+        elif status == "Done":
             self.donebutton.set_label(GnomeConfig.MARK_UNDONE)
             self.donebutton.set_tooltip_text(GnomeConfig.MARK_UNDONE_TOOLTIP)
             self.donebutton.set_icon_name("gtg-task-undone")
             self.dismissbutton.set_label(GnomeConfig.MARK_DISMISS)
             self.dismissbutton.set_tooltip_text(GnomeConfig.MARK_DISMISS_TOOLTIP)
-        else :
+            self.dismissbutton.set_icon_name("gtg-task-dismiss")
+        else:
             self.donebutton.set_label(GnomeConfig.MARK_DONE)
             self.donebutton.set_tooltip_text(GnomeConfig.MARK_DONE_TOOLTIP)
+            self.donebutton.set_icon_name("gtg-task-done")
             self.dismissbutton.set_label(GnomeConfig.MARK_DISMISS)
-            self.dismissbutton.set_tooltip_text(GnomeConfig.MARK_UNDISMISS_TOOLTIP)
+            self.dismissbutton.set_tooltip_text(GnomeConfig.MARK_DISMISS_TOOLTIP)
+            self.dismissbutton.set_icon_name("gtg-task-dismiss")
             
-        if status == "Note" :
+        if status == "Note":
             self.donebutton.hide()
             self.tasksidebar.hide()
             self.keepnote_button.set_label(GnomeConfig.MAKE_TASK)
@@ -248,32 +255,32 @@ class TaskEditor :
             
         #refreshing the due date field
         duedate = self.task.get_due_date()
-        if duedate :
-            zedate = duedate.replace("-",date_separator)
-            if zedate != self.duedate_widget.get_text() :
+        if duedate:
+            zedate = duedate.replace("-", date_separator)
+            if zedate != self.duedate_widget.get_text():
                 self.duedate_widget.set_text(zedate)
                 #refreshing the day left label
                 result = self.task.get_days_left()
-                if result == 1 :
+                if result == 1:
                     txt = _("Due tomorrow !")
-                elif result > 0 :
+                elif result > 0:
                     txt = _("%s days left") %result
-                elif result == 0 :
+                elif result == 0:
                     txt = _("Due today !")
-                elif result == -1 :
+                elif result == -1:
                     txt = _("Due for yesterday")
-                elif result < 0 :
+                elif result < 0:
                     txt = _("Was %s days ago") % -result
                 self.dayleft_label.set_markup("<span color='#666666'>"+txt+"</span>")    
-        elif self.duedate_widget.get_text() != ''  :
+        elif self.duedate_widget.get_text() != '':
             self.dayleft_label.set_text('')
             self.duedate_widget.set_text('')
         startdate = self.task.get_start_date()
-        if startdate :
+        if startdate:
             zedate = startdate.replace("-",date_separator)
-            if zedate != self.startdate_widget.get_text() :
+            if zedate != self.startdate_widget.get_text():
                 self.startdate_widget.set_text(zedate)
-        elif self.startdate_widget.get_text() != '' :
+        elif self.startdate_widget.get_text() != '':
             self.startdate_widget.set_text('')
             
         #Refreshing the tag list in the insert tag button
@@ -290,8 +297,10 @@ class TaskEditor :
                 menu.append(mi)
         if tag_count > 0 :
             self.inserttag_button.set_menu(menu)
-            
-        if to_save :
+
+        if refreshtext:
+            self.textview.modified(refresheditor=False)            
+        if to_save:
             self.save()
             
         
@@ -448,11 +457,24 @@ class TaskEditor :
     #light_save save the task without refreshing every 30seconds
     #We will reduce the time when the get_text will be in another thread
     def light_save(self) :
-        diff = time.time() - self.time
-        if diff > GnomeConfig.SAVETIME :
-            self.task.set_text(self.textview.get_text())
-            self.task.sync()
-            self.time = time.time()
+        #if self.time is none, we never called any save
+        if self.time:
+            diff = time.time() - self.time
+            tosave = diff > GnomeConfig.SAVETIME
+        else:
+            self.time = 1
+            tosave = False
+            diff = None
+        if tosave:
+            #We don't want to save a new empty task
+            #so we check for the content
+            empty = "<content/>"
+            actual = self.textview.get_text()
+            isempty = (actual == empty or actual == "")
+            if not self.task.is_new() or not isempty:
+                self.task.set_text(self.textview.get_text())
+                self.task.sync()
+                self.time = time.time()
         
         
     #This will bring the Task Editor to front    
@@ -460,7 +482,7 @@ class TaskEditor :
         self.window.present()
         
     #We define dummy variable for when close is called from a callback
-    def close(self,window,a=None,b=None,c=None) : #pylint: disable-msg=W0613
+    def close(self,window=None,a=None,b=None,c=None) : #pylint: disable-msg=W0613
         #We should also destroy the whole taskeditor object.
         self.window.destroy()
     
@@ -470,8 +492,12 @@ class TaskEditor :
     #Will be linked to this destruction method that will save the task
     def destruction(self,a=None) :#pylint: disable-msg=W0613
         #Save should be also called when buffer is modified
-        self.save()
-        self.closing(self.task.get_id())
+        tid = self.task.get_id()
+        if self.task.is_new():
+            self.req.delete_task(tid)
+        else:
+            self.save()
+        self.closing(tid)
         
         
 ############# Private functions #################
