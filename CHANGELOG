@@ -1,4 +1,4 @@
-    * The toolbar can now be hidden by Mikkel Kjær Jensen    
+    * The toolbar can now be hidden by Mikkel Kjær Jensen
     * Empty new tasks are deleted when editor is closed
     * lot of bug fixed in the editor while playing with subtasks
     * Works well with the "text besides icon" GNOME option

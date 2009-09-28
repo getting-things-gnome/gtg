@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Gettings Things Gnome! - a personnal organizer for the GNOME desktop
+# Gettings Things Gnome! - a personal organizer for the GNOME desktop
 # Copyright (c) 2008-2009 - Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
@@ -19,7 +19,6 @@
 
 import gtk
 import gobject
-import time
 import pango
 
 from GTG import _
