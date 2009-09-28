@@ -1,4 +1,4 @@
-    * The toolbar can now be hidden by Mikkel Kjær Jensen
+    * The toolbar can now be hidden by Mikkel Kjær Jensen    
     * Merge RTM plugin branch from Luca Invernizzi
     * i18n: fixed window title in GTG/taskbrowser/browser.py, by Dario Bertini 
     * Patch from Luca Invernizzi to add XDG_CACHE redefinition in script/debug.sh
