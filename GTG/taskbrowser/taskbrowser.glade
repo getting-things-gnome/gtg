@@ -676,7 +676,7 @@
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">&lt;span weight="bold" size="large"&gt;Are you sure you want delete this task?&lt;/span&gt;
 
-Deleting a task cannot be undone, and will also delete all subtasks.</property>
+Deleting a task cannot be undone, and will delete the following tasks: </property>
                 <property name="use_markup">True</property>
                 <property name="wrap">True</property>
               </widget>

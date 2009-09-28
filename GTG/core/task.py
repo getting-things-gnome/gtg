@@ -96,6 +96,12 @@ class Task:
 
     def get_title(self):
         return self.title
+        
+    def get_titles(self, list):
+        list.append(", " + self.title)
+        for task in self.get_subtasks():
+            list = task.get_titles(list)
+        return list
 
     #Return True if the title was changed.
     #False if the title was already the same.
