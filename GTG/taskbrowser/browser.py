@@ -904,7 +904,7 @@ class TaskBrowser:
         for tid in self.priv["collapsed_tids"]:
             if not self.req.has_task(tid):
                 self.priv["collapsed_tids"].remove(tid)
-        
+
         # Get configuration values
         tag_sidebar        = self.sidebar.get_property("visible")
         closed_pane        = self.closed_pane.get_property("visible")

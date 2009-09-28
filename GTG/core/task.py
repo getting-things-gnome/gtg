@@ -480,7 +480,6 @@ class Task:
             task = self.req.get_task(i)
             task.remove_subtask(self.get_id())
         for task in self.get_subtasks():
-          #  task.remove_parent(self.get_id())
             self.req.delete_task(task.get_id())
             
         #then we remove effectively the task

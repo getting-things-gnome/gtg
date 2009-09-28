@@ -1,4 +1,3 @@
-    * Deleting a task will also delete all subtasks
     * Merge RTM plugin branch from Luca Invernizzi
     * i18n: fixed window title in GTG/taskbrowser/browser.py, by Dario Bertini 
     * Patch from Luca Invernizzi to add XDG_CACHE redefinition in script/debug.sh
@@ -16,6 +15,7 @@
     * DBus interface by Ryan Paul
     * Remove the 'Delete' button from the toolbar by Jonathan Lange
     * Fix a spelling mistake in the manpage by Jonathan Lange
+    * Deleting a task will also delete all subtasks
 
 2009-07-04 Getting Things GNOME! 0.1.2
     * Available in 18 languages, with 12 languages being more than 99% translated
