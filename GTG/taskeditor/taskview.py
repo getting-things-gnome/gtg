@@ -398,7 +398,6 @@ class TaskView(gtk.TextView):
         while conti and not start.ends_tag(self.table.lookup("title")) :
             conti = start.forward_line()
         end = self.buff.get_end_iter()
-        #print "buffer is %s" %self.buff.get_text(start,end)
         texte = self.buff.serialize(self.buff, self.mime_type, start, end)
         
         return texte
