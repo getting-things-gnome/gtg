@@ -37,3 +37,5 @@ debug_data
 _trial_temp
 doc/api
 **/**.glade.h
+**/**.gladep
+**/**.gladep.bak

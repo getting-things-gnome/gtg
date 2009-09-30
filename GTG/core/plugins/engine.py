@@ -176,9 +176,8 @@ class PluginEngine:
     # deactivate the enabled plugins
     def deactivatePlugins(self, plugins, plugin_api):
         for plugin in plugins:
-            if not plugin['state'] and not plugin['error'] and plugin['active']:
+            if plugin['state'] and not plugin['error'] and plugin['active']:
                 plugin['instance'].deactivate(plugin_api)
-                plugin['instance'] = None
                 plugin['active'] = False
 				
     # loads the plug-in features for a task
@@ -187,19 +186,31 @@ class PluginEngine:
             if plugin['state'] and plugin['active']:
                 plugin['instance'].onTaskOpened(plugin_api)
      
+    # signals to the plug-ins that the task window is being closed
+    def onTaskClose(self, plugins, plugin_api):
+        for plugin in plugins:
+            if plugin['state'] and plugin['active']:
+                if hasattr(plugin['instance'],'onTaskClosed'):
+                    plugin['instance'].onTaskClosed(plugin_api)
+
 	# rechecks the plug-ins to see if any changes where done to the state
     def recheckPlugins(self, plugins, plugin_api):
         for plugin in plugins:
             if plugin['instance'] != None and plugin['state'] == False and plugin['active']:
                 try:
-                    self.deactivatePlugins([plugin],plugin_api)
+                    #print "deactivating plugin: " + plgin['name']
+                    plugin['instance'].deactivate(plugin_api)
+                    plugin['instance'] = None
+                    plugin['active'] = False
                 except Exception, e:
                     print "Error: %s" % e
             elif plugin['instance'] == None and plugin['state'] == True and not plugin['active']: 	
                 try:    
                     #print "activating plugin: " + plgin['name']
                     if not plugin['error']:
-                        self.activatePlugins([plugin],plugin_api)
+                        plugin['instance'] = plugin['class']()
+                        plugin['instance'].activate(plugin_api)
+                        plugin['active'] = True
                     else:
                         plugin['state'] = False
                 except Exception, e:

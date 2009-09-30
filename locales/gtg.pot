@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-09-13 01:03+0200\n"
+"POT-Creation-Date: 2009-09-18 15:51+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -632,6 +632,22 @@ msgstr ""
 msgid "due"
 msgstr ""
 
+#: GTG/plugins/tomboy/tomboy.py:67
+msgid "Add Tomboy note"
+msgstr ""
+
+#: GTG/plugins/tomboy/tomboy.py:170
+msgid "That note does not exist!"
+msgstr ""
+
+#: GTG/plugins/tomboy/tomboy.glade.h:1
+msgid "Insert Note"
+msgstr ""
+
+#: GTG/plugins/tomboy/tomboy.glade.h:2
+msgid "Insert the title of the tomboy note "
+msgstr ""
+
 #: GTG/plugins/rtm_sync/utility.py:54
 msgid "saving critical object failed"
 msgstr ""
@@ -666,11 +682,11 @@ msgid ""
 "now. When done, press OK"
 msgstr ""
 
-#: GTG/plugins/rtm_sync/pyrtm/rtm.py:56
+#: GTG/plugins/rtm_sync/pyrtm/rtm.py:57
 msgid "Invalid state"
 msgstr ""
 
-#: GTG/plugins/rtm_sync/pyrtm/rtm.py:105
+#: GTG/plugins/rtm_sync/pyrtm/rtm.py:106
 msgid "API call failed"
 msgstr ""
 
