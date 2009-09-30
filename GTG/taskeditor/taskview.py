@@ -394,9 +394,12 @@ class TaskView(gtk.TextView):
     def get_text(self) :
         #we get the text
         start = self.buff.get_start_iter()
+        start.forward_to_line_end()
         conti = True
         while conti and not start.ends_tag(self.table.lookup("title")) :
             conti = start.forward_line()
+            if conti :
+                conti = start.forward_to_line_end()
         end = self.buff.get_end_iter()
         texte = self.buff.serialize(self.buff, self.mime_type, start, end)
         
@@ -730,7 +733,8 @@ class TaskView(gtk.TextView):
             # Title is the first written line
             while line_nbr <= linecount and not stripped :
                 line_nbr  += 1
-                title_end  = buff.get_iter_at_line(line_nbr)
+                title_end  = buff.get_iter_at_line(line_nbr-1)
+                title_end.forward_to_line_end()
                 stripped   = buff.get_text(title_start, title_end).strip('\n\t ')
         # Or to all the buffer if there is only one line
         else :
