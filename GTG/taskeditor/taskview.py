@@ -398,6 +398,7 @@ class TaskView(gtk.TextView):
         while conti and not start.ends_tag(self.table.lookup("title")) :
             conti = start.forward_line()
         end = self.buff.get_end_iter()
+        #print "buffer is %s" %self.buff.get_text(start,end)
         texte = self.buff.serialize(self.buff, self.mime_type, start, end)
         
         return texte
@@ -405,10 +406,13 @@ class TaskView(gtk.TextView):
     def get_title(self) :
         start = self.buff.get_start_iter()
         end = self.buff.get_start_iter()
+        end.forward_to_line_end()
         #The boolean stays True as long as we are in the buffer
         conti = True
         while conti and not end.ends_tag(self.table.lookup("title")) :
             conti = end.forward_line()
+            if conti :
+                conti = end.forward_to_line_end()
         #We don't want to deserialize the title
         #Let's get the pure text directly
         title = self.buff.get_text(start,end)
@@ -433,7 +437,6 @@ class TaskView(gtk.TextView):
         cursor_mark = buff.get_insert()
         cursor_iter = buff.get_iter_at_mark(cursor_mark)
         table = buff.get_tag_table()
-        
         #This should be called only if we are on the title line
         #As an optimisation
         #But we should still get the title_end iter
@@ -721,7 +724,8 @@ class TaskView(gtk.TextView):
         title_start = start.copy() 
         if linecount > line_nbr :
             # Applying title on the first line
-            title_end = buff.get_iter_at_line(line_nbr)
+            title_end = buff.get_iter_at_line(line_nbr-1)
+            title_end.forward_to_line_end()
             stripped  = buff.get_text(title_start,title_end).strip('\n\t ')
             # Here we ignore lines that are blank
             # Title is the first written line
@@ -732,10 +736,8 @@ class TaskView(gtk.TextView):
         # Or to all the buffer if there is only one line
         else :
             title_end = end.copy()            
-            
         buff.apply_tag_by_name  ('title', title_start , title_end)
         buff.remove_tag_by_name ('title', title_end   , end)
-
         # Refresh title of the window
         if refresheditor:
             self.refresh(buff.get_text(title_start,title_end).strip('\n\t'))
