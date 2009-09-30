@@ -40,7 +40,8 @@ class TagStore:
         self.tree = Tree()
         self.root = self.tree.get_root()
         self.filename = os.path.join(CoreConfig.DATA_DIR, XMLFILE)
-        doc, self.xmlstore = cleanxml.openxmlfile(self.filename, XMLROOT) #pylint: disable-msg=W0612
+        doc, self.xmlstore = cleanxml.openxmlfile(self.filename,
+            XMLROOT) #pylint: disable-msg=W0612
         for t in self.xmlstore.childNodes:
             #We should only care about tag with a name beginning with "@"
             #Other are special tags
@@ -64,7 +65,6 @@ class TagStore:
 #        self.notag_tag = Tag("notag_tag",save_cllbk=self.save)
 #        self.notag_tag.set_attribute("special","notag")
 #        self.notag_tag.set_attribute("icon","gtg-tags-none")
-
     def get_tree(self):
         return self.tree
 
@@ -110,7 +110,6 @@ class TagStore:
 #    def get_notag_tag(self):
 #        """Return the special tag 'No tags'"""
 #        return self.notag_tag
-
     def get_all_tags_name(self, attname=None, attvalue=None):
         """Return the name of all tags
         Optionaly, if you pass the attname and attvalue argument, it will

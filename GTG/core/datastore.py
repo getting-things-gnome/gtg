@@ -17,7 +17,6 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-
 import threading
 import gobject
 import time
@@ -32,95 +31,96 @@ DEFAULT_BACKEND = "1"
 #Currently, it's python threads (and not idle_add, which is not useful)
 THREADING = True
 
+
 class DataStore:
 
-    def __init__ (self):
+    def __init__(self):
         self.backends = {}
         self.tasks = {}
         self.tagstore = tagstore.TagStore()
         self.requester = requester.Requester(self)
-        
+
     def all_tasks(self):
         all_tasks = []
         #We also add tasks that are still not in a backend (because of threads)
         tlist = self.tasks.keys()
-        for t in tlist :
+        for t in tlist:
             task = self.tasks[t]
-            if task.is_loaded() :
+            if task.is_loaded():
                 all_tasks.append(t)
         return all_tasks
 
-    def has_task(self,tid) :
+    def has_task(self, tid):
         return self.tasks.has_key(tid)
-        
-    def get_task(self,tid) :
-        if self.tasks.has_key(tid) :
+
+    def get_task(self, tid):
+        if self.tasks.has_key(tid):
             empty_task = self.tasks[tid]
-        else :
-            empty_task = self.new_task(tid,newtask=False)
-        if tid and not empty_task.is_loaded() :
-            uid,pid = tid.split('@') #pylint: disable-msg=W0612
+        else:
+            empty_task = self.new_task(tid, newtask=False)
+        if tid and not empty_task.is_loaded():
+            uid, pid = tid.split('@') #pylint: disable-msg=W0612
             back = self.backends[pid]
-            task = back.get_task(empty_task,tid)
-        else :
+            task = back.get_task(empty_task, tid)
+        else:
             task = empty_task
         #If the task doesn't exist, we create it with a forced pid
         return task
-        
-    def delete_task(self,tid) :
-        if tid and self.tasks.has_key(tid) :
+
+    def delete_task(self, tid):
+        if tid and self.tasks.has_key(tid):
             self.tasks[tid].delete()
-            uid,pid = tid.split('@') #pylint: disable-msg=W0612
+            uid, pid = tid.split('@') #pylint: disable-msg=W0612
             back = self.backends[pid]
             #Check that the task still exist. It might have been deleted
             #by its parent a few line earlier :
-            if self.tasks.has_key(tid) :
+            if self.tasks.has_key(tid):
                 self.tasks.pop(tid)
             back.remove_task(tid)
-        
+
     #Create a new task and return it.
     #newtask should be True if you create a task
     #it should be False if you are importing an existing Task
-    def new_task(self,tid=None,pid=None,newtask=False) :
+    def new_task(self, tid=None, pid=None, newtask=False):
         #If we don't have anything, we use the default PID
-        if not pid : pid = DEFAULT_BACKEND
+        if not pid: pid = DEFAULT_BACKEND
         #If tid, we force that tid and create a real new task
-        if tid and not self.tasks.has_key(tid) :
-            task = Task(tid,self.requester,newtask=newtask)
-            uid,pid = tid.split('@') #pylint: disable-msg=W0612
+        if tid and not self.tasks.has_key(tid):
+            task = Task(tid, self.requester, newtask=newtask)
+            uid, pid = tid.split('@') #pylint: disable-msg=W0612
             self.tasks[tid] = task
             toreturn = task
         #Else we create a new task in the given pid
         elif not tid and pid and self.backends.has_key(pid):
             newtid = self.backends[pid].new_task_id()
-            task = Task(newtid,self.requester,newtask=newtask)
+            task = Task(newtid, self.requester, newtask=newtask)
             self.tasks[newtid] = task
-            task = self.backends[pid].get_task(task,newtid)
+            task = self.backends[pid].get_task(task, newtid)
             toreturn = task
             tid = newtid
-        elif tid :
+        elif tid:
             toreturn = self.tasks[tid]
-        else :
+        else:
             print "not possible to build the task = bug"
             toreturn = None
         return toreturn
-        
-    def get_tagstore(self) :
+
+    def get_tagstore(self):
         return self.tagstore
-        
-    def get_requester(self) :
+
+    def get_requester(self):
         return self.requester
 
     def register_backend(self, dic):
-        if dic.has_key("backend") :
+        if dic.has_key("backend"):
             pid = dic["pid"]
             backend = dic["backend"]
-            source = TaskSource(backend,dic)
+            source = TaskSource(backend, dic)
             self.backends[pid] = source
             #Filling the backend
-            #Doing this at start is more efficient than after the GUI is launched
+            #Doing this at start is more efficient than
+            #after the GUI is launched
             source.get_tasks_list(func=self.refresh_tasklist)
-            
         else:
             print "Register a dic without backend key:  BUG"
 
@@ -129,20 +129,22 @@ class DataStore:
 
     def get_all_backends(self):
         l = []
-        for key in self.backends :
+        for key in self.backends:
             l.append(self.backends[key])
         return l
-        
-    def refresh_tasklist(self,task_list) :
-        for tid in task_list :
+
+    def refresh_tasklist(self, task_list):
+        for tid in task_list:
             #Just calling new_task then get_task is enough
             self.new_task(tid=tid)
             self.get_task(tid)
 
 #Task source is an transparent interface between the real backend and datastore
 #Task source has also more functionnalities
-class TaskSource() :
-    def __init__(self,backend,parameters) :
+
+class TaskSource():
+
+    def __init__(self, backend, parameters):
         self.backend = backend
         self.dic = parameters
         self.tasks = {}
@@ -157,185 +159,184 @@ class TaskSource() :
 # All functions here are proxied from the backend itself
 
     #Then test by putting some articial sleeps in the localfile.py
-    def get_tasks_list(self,func) :
-        def getall() :
-            #print "acquiring lock to getall" 
+    def get_tasks_list(self, func):
+
+        def getall():
+            #print "acquiring lock to getall"
             self.backend_lock.acquire()
-            try :
-                #print "acquired lock to getall" 
+            try:
+                #print "acquired lock to getall"
                 tlist = self.backend.get_tasks_list()
-                for t in tlist :
+                for t in tlist:
                     self.locks.create_lock(t)
-            finally :
+            finally:
                 self.backend_lock.release()
-            #print "releasing lock  to getall" 
+            #print "releasing lock  to getall"
             func(tlist)
-        if THREADING :
+        if THREADING:
             t = threading.Thread(target=getall)
             t.start()
 #            gobject.idle_add(getall)
         else:
             getall()
         return None
-        
-    def get_task(self,empty_task,tid) :
+
+    def get_task(self, empty_task, tid):
         #Our thread
-        def getting(empty_task,tid) :
+        def getting(empty_task, tid):
             self.locks.acquire(tid)
-            try :
-                #if self.locks.ifnotblocked(tid) :
-                self.backend.get_task(empty_task,tid)
+            try:
+                #if self.locks.ifnotblocked(tid):
+                self.backend.get_task(empty_task, tid)
                 #calling sync in a thread might cause a segfault
                 #thus callsync to false
-                empty_task.set_sync_func(self.set_task,callsync=False)
-                #set_loaded is a function that emits a signal. 
+                empty_task.set_sync_func(self.set_task, callsync=False)
+                #set_loaded is a function that emits a signal.
                 #Emiting a signal in a thread is likely to segfault
                 #by wrapping it in idle_add, we ensure that gobject mainloop
                 #handles the signal and not the tread itself.
                 #it's not a problem to not know when it is executed
                 #since it's the last instruction of the tread
                 gobject.idle_add(empty_task.set_loaded)
-            finally :
+            finally:
                 self.locks.release(tid)
         ##########
-        if self.tasks.has_key(tid) :
+        if self.tasks.has_key(tid):
             task = self.tasks[tid]
-            if task :
+            if task:
                 empty_task = task
         #We will not try to get a removed task
-        elif tid not in self.removed :
-            #By putting the task in the dic, we say :
+        elif tid not in self.removed:
+            #By putting the task in the dic, we say:
             #"This task is already fetched (or at least in fetching process)
             self.tasks[tid] = False
-            if THREADING :
+            if THREADING:
                 self.locks.create_lock(tid)
 #                gobject.idle_add(getting,empty_task,tid)
-                t = threading.Thread(target=getting,args=[empty_task,tid])
+                t = threading.Thread(target=getting, args=[empty_task, tid])
                 t.start()
-            else :
+            else:
                 self.locks.create_lock(tid)
-                getting(empty_task,tid)
+                getting(empty_task, tid)
             self.tasks[tid] = empty_task
         return empty_task
 
-    def set_task(self,task) :
+    def set_task(self, task):
         if THREADING:
 #            gobject.idle_add(self.__write,task)
-            t = threading.Thread(target=self.__write,args=[task])
+            t = threading.Thread(target=self.__write, args=[task])
             t.start()
         else:
             self.__write(task)
         return None
-    
+
     #This function, called in a thread, write to the backend.
     #It acquires a lock to avoid multiple thread writing the same task
-    def __write(self,task) :
+    def __write(self, task):
         tid = task.get_id()
-        if tid not in self.removed :
+        if tid not in self.removed:
             self.locks.acquire(tid)
-            try :
+            try:
                 self.backend.set_task(task)
-            finally :
+            finally:
                 self.locks.release(tid)
-    
+
     #TODO : This has to be threaded too
-    def remove_task(self,tid) :
+    def remove_task(self, tid):
         self.backend_lock.acquire()
-        try :
-            if tid not in self.removed :
+        try:
+            if tid not in self.removed:
                 self.removed.append(tid)
-            if self.locks.acquire(tid) :
+            if self.locks.acquire(tid):
                 toreturn = self.backend.remove_task(tid)
                 self.tasks.pop(tid)
                 self.locks.remove_lock(tid)
-            else :
+            else:
                 toreturn = False
-        finally :
+        finally:
             self.backend_lock.release()
         return toreturn
-    
+
     #TODO: This has to be threaded too
-    def new_task_id(self) :
+    def new_task_id(self):
         newid = self.backend.new_task_id()
-        if not newid :
+        if not newid:
             k = 0
             pid = self.dic["pid"]
-            newid = "%s@%s" %(k,pid)
-            while self.tasks.has_key(str(newid)) :
+            newid = "%s@%s" %(k, pid)
+            while self.tasks.has_key(str(newid)):
                 k += 1
-                newid = "%s@%s" %(k,pid)
-        if newid in self.removed :
+                newid = "%s@%s" %(k, pid)
+        if newid in self.removed:
             self.removed.remove(newid)
         self.locks.create_lock(newid)
         return newid
-    
+
     #TODO : This has to be threaded too
-    def quit(self) :
+    def quit(self):
         return self.backend.quit()
-        
+
 ########## End of Backend interface ###########
 ###############################################
 
 #Those functions are only for TaskSource
-    def get_parameters(self) :
+    def get_parameters(self):
         return self.dic
-        
 
-#This is the lock library. Each task has a lock to avoir concurrency 
+#This is the lock library. Each task has a lock to avoir concurrency
 #on the same task when writing/reading on/from the backend
-class lockslibrary :
-    def __init__(self) :
+
+class lockslibrary:
+
+    def __init__(self):
         self.locks = {}
         #The lock library itself is protected by a lock to avoid deadlock
         self.glob = threading.Lock()
-        
-    def create_lock(self,tid) :
+
+    def create_lock(self, tid):
         self.glob.acquire()
-        try :
-            if not self.locks.has_key(tid) :
+        try:
+            if not self.locks.has_key(tid):
                 self.locks[tid] = threading.Lock()
-        finally :
+        finally:
             self.glob.release()
-        
-    
+
     #To be removed, a lock should be acquired before !
     #So acquire the lock before calling this function !
-    def remove_lock(self,tid) :
-        if self.glob.acquire(False) :
-            if self.locks.has_key(tid) :
+    def remove_lock(self, tid):
+        if self.glob.acquire(False):
+            if self.locks.has_key(tid):
                 zelock = self.locks[tid]
                 self.locks.pop(tid)
                 zelock.release()
             self.glob.release()
-        #else :
+        #else:
         #print "This is a very rare bug : we were unable to remove the lock"
         #But this not really a problem because the lock alone does do anything
-        
-    def ifnotblocked(self,tid) :
+    def ifnotblocked(self, tid):
         self.glob.acquire()
-        try :
-            if self.locks.has_key(tid) :
+        try:
+            if self.locks.has_key(tid):
                 return self.locks[tid].acquire(False)
-            else :
+            else:
                 print "ifnotblock on non-existing lock %s = BUG" %tid
-        finally :
+        finally:
             self.glob.release()
-        
-    def acquire(self,tid) :
+
+    def acquire(self, tid):
         self.glob.acquire()
-        try :
-            if self.locks.has_key(tid) :
+        try:
+            if self.locks.has_key(tid):
                 self.locks[tid].acquire()
                 toreturn = True
-            else :
+            else:
                 toreturn = False
-        finally :
+        finally:
             self.glob.release()
         return toreturn
-        
-    def release(self,tid) :
-        if self.locks.has_key(tid) :
+
+    def release(self, tid):
+        if self.locks.has_key(tid):
             self.locks[tid].release()
-#        else :
+#        else:
 #            print "removing non-existing lock = BUG"
-        
