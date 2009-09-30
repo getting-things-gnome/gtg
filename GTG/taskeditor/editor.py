@@ -268,7 +268,7 @@ class TaskEditor :
                 elif result == 0:
                     txt = _("Due today !")
                 elif result == -1:
-                    txt = _("Due for yesterday")
+                    txt = _("Due yesterday")
                 elif result < 0:
                     txt = _("Was %s days ago") % -result
                 self.dayleft_label.set_markup("<span color='#666666'>"+txt+"</span>")    
