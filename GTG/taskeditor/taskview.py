@@ -778,12 +778,12 @@ class TaskView(gtk.TextView):
         start_i = buff.get_iter_at_line(line_nbr)
         end_i   = start_i.copy()
         #We go back at the end of the previous line
-        start_i.backward_char()
-        #But only if this is not the title.
-        insert_enter = True
-        if start_i.has_tag(self.title_tag) :
-            start_i.forward_char()
-            insert_enter = False
+#        start_i.backward_char()
+#        #But only if this is not the title.
+        insert_enter = False
+#        if start_i.has_tag(self.title_tag) :
+#            start_i.forward_char()
+#            insert_enter = False
         start   = buff.create_mark("start",start_i,True)
         end_i.forward_line()
         end     = buff.create_mark("end",end_i,False)
