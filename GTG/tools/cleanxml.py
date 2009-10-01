@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Gettings Things Gnome! - a personnal organizer for the GNOME desktop
+# Gettings Things Gnome! - a personal organizer for the GNOME desktop
 # Copyright (c) 2008-2009 - Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
@@ -24,7 +24,7 @@ import sys
 #This is for the awful pretty xml things
 tab = "\t"
 enter = "\n"
-BACKUP_NBR = 3
+BACKUP_NBR = 7
 
 #Those two functions are there only to be able to read prettyXML
 #Source : http://yumenokaze.free.fr/?/Informatique/Snipplet/Python/cleandom       

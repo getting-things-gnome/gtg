@@ -1,0 +1,7 @@
+[GTG Plugin]
+Module=tomboy
+Name=Tomboy plugin
+Description=This plugin lets you add as many links as you like to tomboy notes in your tasks.
+Authors=Luca Invernizzi <invernizzi.l@gmail.com>
+Version=0.1.1
+Enabled=True

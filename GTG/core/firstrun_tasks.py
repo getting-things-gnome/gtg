@@ -5,7 +5,7 @@ def populate():
     doc,root = cleanxml.emptydoc("project")
     #Task 0@1: Getting started with GTG
     title1 = _("Getting started with GTG")
-    text1 = _("Welcome in Getting Things Gnome!, your new task manager.")
+    text1 = _("Welcome to Getting Things Gnome!, your new task manager.")
     text1 += "\n\n"
     text1 += _("In GTG, everything is a task. From building a bridge over the Pacific Ocean to changing a light bulb or organizing a party. When you edit a task, it is automatically saved.")
     text1 += "\n\n"
@@ -15,7 +15,9 @@ def populate():
     text1 += "\n"
     text1 += "<subtask>1@1</subtask>\n"
     text1 += "\n\n"
-    text1 += _("Don't forget to mark this subtask as done!")
+    text1 += _("Once you've read the above subtask, mark it as Done. If you don't want to do the task, mark it as dismissed. Done and Dismissed tasks are keeped in the closed tasks pane, hidden by default but you can easily enable it in the View menu.")
+    text1 += "\n\n"
+    text1 += _("If you choose to close this current task, subtasks will be automatically closed too. We indeed consider that, if you achieve a given task, you don't need to do the subtask anymore.")
     text1 += "\n\n"
     text1 += _("Other stuff you should read:")
     text1 += "\n"

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Gettings Things Gnome! - a personnal organizer for the GNOME desktop
+# Gettings Things Gnome! - a personal organizer for the GNOME desktop
 # Copyright (c) 2008-2009 - Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
@@ -18,11 +18,12 @@
 # -----------------------------------------------------------------------------
 
 
-#This is a class taken originally from http://trac.atzm.org/index.cgi/wiki/PyGTK
+#This is a class taken originally from
+#http://trac.atzm.org/index.cgi/wiki/PyGTK
 #It was in Japanese and I didn't understood anything but the code.
 
-#This class implement a gtk.TextView but with many other features like hyperlink
-#others stuffs special for GTG
+#This class implement a gtk.TextView but with many other features
+#like hyperlink and others stuffs special for GTG
 #
 #For your information, a gtkTextView always contains a gtk.TextBuffer which
 #Contains the text. Ours is called self.buff (how original !)
@@ -35,35 +36,43 @@ import pango
 from GTG.taskeditor import taskviewserial
 from GTG.tools import openurl
 
-separators = [' ','.',',','/','\n','\t','!','?',';','\0']
-url_separators = [' ',',','\n','\t','\0']
+separators = [' ', '.', ',', '/', '\n', '\t', '!', '?', ';', '\0']
+url_separators = [' ', ',', '\n', '\t', '\0']
 
 bullet1 = '→'
 bullet2 = '↳'
 
+
 class TaskView(gtk.TextView):
     __gtype_name__ = 'HyperTextView'
-    __gsignals__ = {'anchor-clicked': (gobject.SIGNAL_RUN_LAST, None, (str, str, int))}
+    __gsignals__ = {'anchor-clicked': (gobject.SIGNAL_RUN_LAST, \
+                     None, (str, str, int))}
     __gproperties__ = {
-        'link':  (gobject.TYPE_PYOBJECT, 'link color', 'link color of TextView', gobject.PARAM_READWRITE),
-        'active':(gobject.TYPE_PYOBJECT, 'active color', 'active color of TextView', gobject.PARAM_READWRITE),
-        'hover': (gobject.TYPE_PYOBJECT, 'link:hover color', 'link:hover color of TextView', gobject.PARAM_READWRITE),
-        'tag' :(gobject.TYPE_PYOBJECT, 'tag color', 'tag color of TextView', gobject.PARAM_READWRITE),
-        'done':  (gobject.TYPE_PYOBJECT, 'link color', 'link color of TextView', gobject.PARAM_READWRITE),
-        'indent':  (gobject.TYPE_PYOBJECT, 'indent color', 'indent color of TextView', gobject.PARAM_READWRITE),
+        'link': (gobject.TYPE_PYOBJECT, 'link color',\
+                  'link color of TextView', gobject.PARAM_READWRITE),
+        'active': (gobject.TYPE_PYOBJECT, 'active color', \
+                  'active color of TextView', gobject.PARAM_READWRITE),
+        'hover': (gobject.TYPE_PYOBJECT, 'link:hover color', \
+                  'link:hover color of TextView', gobject.PARAM_READWRITE),
+        'tag': (gobject.TYPE_PYOBJECT, 'tag color', \
+                  'tag color of TextView', gobject.PARAM_READWRITE),
+        'done': (gobject.TYPE_PYOBJECT, 'link color', \
+                  'link color of TextView', gobject.PARAM_READWRITE),
+        'indent': (gobject.TYPE_PYOBJECT, 'indent color', \
+                  'indent color of TextView', gobject.PARAM_READWRITE),
         }
 
     def do_get_property(self, prop):
         try:
             return getattr(self, prop.name)
         except AttributeError:
-            raise AttributeError, 'unknown property %s' % prop.name
+            raise AttributeError('unknown property %s' % prop.name)
 
     def do_set_property(self, prop, val):
         if prop.name in self.__gproperties__.keys():
             setattr(self, prop.name, val)
         else:
-            raise AttributeError, 'unknown property %s' % prop.name
+            raise AttributeError('unknown property %s' % prop.name)
 
     #Yes, we want to redefine the buffer. Disabling pylint on that error.
     def __init__(self, requester, buffer=None): #pylint: disable-msg=W0622
@@ -71,27 +80,29 @@ class TaskView(gtk.TextView):
         self.buff = self.get_buffer()
         self.req = requester
         #Buffer init
-        self.link   = {'background': 'white', 'foreground': '#007bff', 
-                                    'underline': pango.UNDERLINE_SINGLE, 'strikethrough':False}
-        self.done   = {'background': 'white', 'foreground': 'gray', 
+        self.link = {'background': 'white', 'foreground': '#007bff', \
+                      'underline': pango.UNDERLINE_SINGLE, \
+                      'strikethrough': False}
+        self.done   = {'background': 'white', 'foreground': 'gray',\
                                     'strikethrough': True}
-        self.active = {'background': 'light gray', 'foreground': '#ff1e00', 
+        self.active = {'background': 'light gray', 'foreground': '#ff1e00',\
                                     'underline': pango.UNDERLINE_SINGLE}
         self.hover  = {'background': 'light gray'}
-        self.tag = {'background': "#FFea00", 'foreground' : 'black'}
-        self.indent = {'scale': 1.4, 'editable' : False, 'left-margin': 10,
-                                     "accumulative-margin" : True}
-        
-        
+        self.tag = {'background': "#FFea00", 'foreground': 'black'}
+        self.indent = {'scale': 1.4, 'editable': False, 'left-margin': 10,
+                                 "accumulative-margin": True}
+
         ###### Tag we will use ######
-        # We use the tag table (tag are defined here but set in self.modified)
+        # We use the tag table (tag are defined here
+        # but set in self.modified)
         self.table = self.buff.get_tag_table()
         # Tag for title
-        self.title_tag  = self.buff.create_tag("title",foreground="#007bff",scale=1.6,underline=1)
-        self.title_tag.set_property("pixels-above-lines",10)
-        self.title_tag.set_property("pixels-below-lines",10)
+        self.title_tag  = self.buff.create_tag("title", foreground="#007bff", \
+                            scale=1.6, underline=1)
+        self.title_tag.set_property("pixels-above-lines", 10)
+        self.title_tag.set_property("pixels-below-lines", 10)
         # Tag for highlight (tags are automatically added to the tag table)
-        self.buff.create_tag("fluo",background="#F0F")
+        self.buff.create_tag("fluo", background="#F0F")
         # Tag for bullets
         self.buff.create_tag("bullet", scale=1.6)
         #end = self.buff.get_end_iter()
@@ -100,19 +111,21 @@ class TaskView(gtk.TextView):
         self.__tags = []
         #This is a simple stack used by the serialization
         self.__tag_stack = {}
-        
+
         #Signals
-        self.connect('motion-notify-event'   , self._motion)
-        self.connect('focus-out-event'       , lambda w, e: self.table.foreach(self.__tag_reset, e.window))
-        self.insert_sigid = self.buff.connect('insert-text', self._insert_at_cursor)
-        self.buff.connect("delete-range",self._delete_range)
-        
+        self.connect('motion-notify-event', self._motion)
+        self.connect('focus-out-event', lambda w, \
+                     e: self.table.foreach(self.__tag_reset, e.window))
+        self.insert_sigid = self.buff.connect('insert-text', \
+                                              self._insert_at_cursor)
+        self.buff.connect("delete-range", self._delete_range)
+
         #All the typical properties of our textview
         self.set_wrap_mode(gtk.WRAP_WORD)
         self.set_editable(True)
         self.set_cursor_visible(True)
         self.buff.set_modified(False)
-        
+
         #Let's try with serializing
         self.mime_type = 'application/x-gtg-task'
         serializer = taskviewserial.Serializer()
@@ -316,42 +329,47 @@ class TaskView(gtk.TextView):
             
     #Insert a list of tag in the first line of the buffer
     def insert_tags(self,tag_list) :
-        #We insert them just after the title
-        #We use the current first line if it begins with a tag
-        firstline = self.buff.get_iter_at_line(1)
-        newline = True
-        for tt in firstline.get_tags() :
-            if tt.get_data('is_tag') :
-                newline = False
-                firstline.forward_to_line_end()
-                #Now we should check if the current char is a separator or not
-                #Currently, we insert a space
-                self.insert_text(" ",firstline)
-        #Now we check if this newline is empty (it contains only " " and ",")
-#        if newline :
-#            endline = firstline.copy()
-#            if not endline.ends_line() :
-#                endline.forward_to_line_end()
-#            text = self.buff.get_text(firstline,endline)
-#            if not text.strip(", ") :
-#                newline = False
-#                firstline.forward_to_line_end()
-        #Now we can process
-        if newline :
-            firstline = self.buff.get_iter_at_line(0)
-            firstline.forward_to_line_end()
-            self.insert_text("\n",firstline)
+        #First, we don't insert tags that are already present
+        for t in self.get_tagslist() :
+            if t in tag_list :
+                tag_list.remove(t)
+        if len(tag_list) > 0 :
+            #We insert them just after the title
+            #We use the current first line if it begins with a tag
             firstline = self.buff.get_iter_at_line(1)
-        line_mark = self.buff.create_mark("firstline",firstline,False)
-        #self.tv.insert_at_mark(buf,line_mark,"\n")
-        ntags = len(tag_list)
-        for t in tag_list :
-            ntags = ntags - 1
-            self.insert_at_mark(self.buff,line_mark,t)
-            if ntags != 0:
-                self.insert_at_mark(self.buff,line_mark,",")
-        self.buff.delete_mark(line_mark)
-        self.modified(full=True)
+            newline = True
+            for tt in firstline.get_tags() :
+                if tt.get_data('is_tag') :
+                    newline = False
+                    firstline.forward_to_line_end()
+                    #Now we should check if the current char is a separator or not
+                    #Currently, we insert a space
+                    self.insert_text(" ",firstline)
+            #Now we check if this newline is empty (it contains only " " and ",")
+    #        if newline :
+    #            endline = firstline.copy()
+    #            if not endline.ends_line() :
+    #                endline.forward_to_line_end()
+    #            text = self.buff.get_text(firstline,endline)
+    #            if not text.strip(", ") :
+    #                newline = False
+    #                firstline.forward_to_line_end()
+            #Now we can process
+            if newline :
+                firstline = self.buff.get_iter_at_line(0)
+                firstline.forward_to_line_end()
+                self.insert_text("\n",firstline)
+                firstline = self.buff.get_iter_at_line(1)
+            line_mark = self.buff.create_mark("firstline",firstline,False)
+            #self.tv.insert_at_mark(buf,line_mark,"\n")
+            ntags = len(tag_list)
+            for t in tag_list :
+                ntags = ntags - 1
+                self.insert_at_mark(self.buff,line_mark,t)
+                if ntags != 0:
+                    self.insert_at_mark(self.buff,line_mark,",")
+            self.buff.delete_mark(line_mark)
+            self.modified(full=True)
         
     # add a tag to the last line of the task
     def insert_tag(self, tag):
@@ -375,9 +393,14 @@ class TaskView(gtk.TextView):
     def get_text(self) :
         #we get the text
         start = self.buff.get_start_iter()
+        start.forward_to_line_end()
         conti = True
         while conti and not start.ends_tag(self.table.lookup("title")) :
             conti = start.forward_line()
+            if conti :
+                conti = start.forward_to_line_end()
+        #we go to the next line, just after the title
+        start.forward_line()
         end = self.buff.get_end_iter()
         texte = self.buff.serialize(self.buff, self.mime_type, start, end)
         
@@ -386,10 +409,13 @@ class TaskView(gtk.TextView):
     def get_title(self) :
         start = self.buff.get_start_iter()
         end = self.buff.get_start_iter()
+        end.forward_to_line_end()
         #The boolean stays True as long as we are in the buffer
         conti = True
         while conti and not end.ends_tag(self.table.lookup("title")) :
             conti = end.forward_line()
+            if conti :
+                conti = end.forward_to_line_end()
         #We don't want to deserialize the title
         #Let's get the pure text directly
         title = self.buff.get_text(start,end)
@@ -401,7 +427,7 @@ class TaskView(gtk.TextView):
 
         
     #This function is called so frequently that we should optimize it more.    
-    def modified(self,buff=None,full=False) : #pylint: disable-msg=W0613
+    def modified(self,buff=None,full=False,refresheditor=True) : 
         """Called when the buffer has been modified.
 
         It reflects the changes by:
@@ -414,14 +440,13 @@ class TaskView(gtk.TextView):
         cursor_mark = buff.get_insert()
         cursor_iter = buff.get_iter_at_mark(cursor_mark)
         table = buff.get_tag_table()
-        
         #This should be called only if we are on the title line
         #As an optimisation
         #But we should still get the title_end iter
         if full or self.is_at_title(buff,cursor_iter) :
             #The apply title is very expensive because
             #It involves refreshing the whole task tree
-            title_end = self._apply_title(buff)
+            title_end = self._apply_title(buff,refresheditor)
 
         if full :
             local_start = title_end.copy()
@@ -445,8 +470,8 @@ class TaskView(gtk.TextView):
         #subt_list = self.get_subtasks()
         #First, we remove the olds tags
         tag_list = []
-        def subfunc(texttag,data=None) : #pylint: disable-msg=W0613
-            if texttag.get_data('is_subtask') :
+        def subfunc(texttag,data=None): #pylint: disable-msg=W0613
+            if texttag.get_data('is_subtask'):
                 tag_list.append(texttag)
         table.foreach(subfunc)
         start,end = buff.get_bounds()
@@ -461,9 +486,12 @@ class TaskView(gtk.TextView):
             if start_mark :
                 #In fact, the subtask mark always go to the end of line.
                 start_i = buff.get_iter_at_mark(start_mark)
-                start_i.forward_to_line_end()
-                end_mark = buff.create_mark("/%s"%s,start_i,False)
-                self.apply_subtask_tag(buff,s,start_mark,end_mark)
+                if self._get_indent_level(start_i) > 0:
+                    start_i.forward_to_line_end()
+                    end_mark = buff.create_mark("/%s"%s,start_i,False)
+                    self.apply_subtask_tag(buff,s,start_mark,end_mark)
+                else:
+                    self.remove_subtask(s)
     
                 
         #Now we apply the tag tag to the marks
@@ -488,8 +516,8 @@ class TaskView(gtk.TextView):
         #First, we remove the olds tags
         tag_list = []
         table = buff.get_tag_table()
-        def subfunc(texttag,data=None) : #pylint: disable-msg=W0613
-            if texttag.get_data('is_anchor') :
+        def subfunc(texttag,data=None):
+            if texttag.get_data('is_anchor'):
                 tag_list.append(texttag)
         table.foreach(subfunc)
         for t in tag_list :
@@ -502,7 +530,7 @@ class TaskView(gtk.TextView):
             prev = it.copy()
             prev.backward_word_start()
             text = buff.get_text(prev,it)
-            if text in ["http","https"] :
+            if text in ["http","https"]:
                 while it.get_char() not in url_separators and (it.get_char() != '\0') :
                     it.forward_char()
                 url = buff.get_text(prev,it)
@@ -685,8 +713,8 @@ class TaskView(gtk.TextView):
         #We return false so the parent still get the signal
         return False
         
-    #Apply the title and return an iterator after that title.
-    def _apply_title(self,buff) :
+    #Apply the title and return an iterator after that title.buff.get_iter_at_mar
+    def _apply_title(self,buff,refresheditor=True) :
         start     = buff.get_start_iter()
         end       = buff.get_end_iter()
         line_nbr  = 1
@@ -699,23 +727,24 @@ class TaskView(gtk.TextView):
         title_start = start.copy() 
         if linecount > line_nbr :
             # Applying title on the first line
-            title_end = buff.get_iter_at_line(line_nbr)
+            title_end = buff.get_iter_at_line(line_nbr-1)
+            title_end.forward_to_line_end()
             stripped  = buff.get_text(title_start,title_end).strip('\n\t ')
             # Here we ignore lines that are blank
             # Title is the first written line
             while line_nbr <= linecount and not stripped :
                 line_nbr  += 1
-                title_end  = buff.get_iter_at_line(line_nbr)
+                title_end  = buff.get_iter_at_line(line_nbr-1)
+                title_end.forward_to_line_end()
                 stripped   = buff.get_text(title_start, title_end).strip('\n\t ')
         # Or to all the buffer if there is only one line
         else :
             title_end = end.copy()            
-            
         buff.apply_tag_by_name  ('title', title_start , title_end)
         buff.remove_tag_by_name ('title', title_end   , end)
-
         # Refresh title of the window
-        self.refresh(buff.get_text(title_start,title_end).strip('\n\t'))
+        if refresheditor:
+            self.refresh(buff.get_text(title_start,title_end).strip('\n\t'))
         return title_end
     
             
@@ -749,12 +778,12 @@ class TaskView(gtk.TextView):
         start_i = buff.get_iter_at_line(line_nbr)
         end_i   = start_i.copy()
         #We go back at the end of the previous line
-        start_i.backward_char()
-        #But only if this is not the title.
-        insert_enter = True
-        if start_i.has_tag(self.title_tag) :
-            start_i.forward_char()
-            insert_enter = False
+#        start_i.backward_char()
+#        #But only if this is not the title.
+        insert_enter = False
+#        if start_i.has_tag(self.title_tag) :
+#            start_i.forward_char()
+#            insert_enter = False
         start   = buff.create_mark("start",start_i,True)
         end_i.forward_line()
         end     = buff.create_mark("end",end_i,False)
@@ -871,10 +900,14 @@ class TaskView(gtk.TextView):
     def __apply_tag_to_mark(self,start,end,tag=None,name=None) :
         start_i = self.buff.get_iter_at_mark(start)
         end_i = self.buff.get_iter_at_mark(end)
-        if tag :
-            self.buff.apply_tag(tag,start_i,end_i)
-        elif name :
-            self.buff.apply_tag_by_name(name,start_i,end_i)
+        #we should apply the tag only if the mark are separated
+        if end_i.get_offset() - start_i.get_offset() > 0 :
+            if tag :
+                self.buff.apply_tag(tag,start_i,end_i)
+            elif name :
+                self.buff.apply_tag_by_name(name,start_i,end_i)
+        elif tag :
+            self.buff.remove_tag(tag,start_i,end_i)
     
     def insert_at_mark(self,buff,mark,text,anchor=None) :
         ite = buff.get_iter_at_mark(mark)
@@ -882,6 +915,18 @@ class TaskView(gtk.TextView):
             self.insert_with_anchor(text,anchor,_iter=ite,typ="subtask")
         else :
             buff.insert(ite,text)
+            
+            
+    def _get_indent_level(self,itera) :
+        line_nbr   = itera.get_line()
+        start_line = itera.copy()
+        start_line.set_line(line_nbr)
+        tags = start_line.get_tags()
+        current_indent = 0
+        for ta in tags :
+            if ta.get_data('is_indent') :
+                current_indent = ta.get_data('indent_level')
+        return current_indent
         
     #Function called each time the user input a letter   
     def _insert_at_cursor(self, tv, itera, tex, leng) : #pylint: disable-msg=W0613
@@ -898,11 +943,8 @@ class TaskView(gtk.TextView):
         start_line.set_line(line_nbr)
         end_line   = itera.copy()
         tags = start_line.get_tags()
-        current_indent = 0
         subtask_nbr = None
-        for ta in tags :
-            if ta.get_data('is_indent') :
-                current_indent = ta.get_data('indent_level')
+        current_indent = self._get_indent_level(itera)
         tags = itera.get_tags()
         for ta in tags :
             if ta.get_data('is_subtask') :
@@ -1010,7 +1052,7 @@ class TaskView(gtk.TextView):
 
     #Deindent the current line of one level
     #If newlevel is set, force to go to that level
-    def deindent(self,itera,newlevel=-1) :
+    def deindent(self, itera, newlevel=-1):
         line = itera.get_line()
         startline = self.buff.get_iter_at_line(line)
         if newlevel < 0 :
@@ -1023,16 +1065,15 @@ class TaskView(gtk.TextView):
         #If it's still < 0
         if newlevel < 0 :
             print "bug : no is_indent tag on that line"
-        startline.backward_char()
+        #startline.backward_char()
         #We make a temp mark where we should insert the new indent
         tempm = self.buff.create_mark("temp",startline)
         self.buff.delete(startline,itera)
         newiter = self.buff.get_iter_at_mark(tempm)
         self.buff.delete_mark(tempm)
-        self.insert_indent(self.buff,newiter,newlevel)
+        self.insert_indent(self.buff,newiter,newlevel,enter=False)
         
-        
-    def backspace(self,tv) :
+    def backspace(self, tv):
         self.buff.disconnect(self.insert_sigid)
         insert_mark = self.buff.get_insert()
         insert_iter = self.buff.get_iter_at_mark(insert_mark)
@@ -1042,7 +1083,8 @@ class TaskView(gtk.TextView):
                 if t.get_data('is_indent') :
                     self.deindent(insert_iter)
                     tv.emit_stop_by_name('backspace')
-        self.insert_sigid = self.buff.connect('insert-text', self._insert_at_cursor)
+        self.insert_sigid = self.buff.connect('insert-text', \
+                                               self._insert_at_cursor)
 
     #The mouse is moving. We must change it to a hand when hovering a link
     def _motion(self, view, ev):

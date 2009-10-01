@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Gettings Things Gnome! - a personnal organizer for the GNOME desktop
+# Gettings Things Gnome! - a personal organizer for the GNOME desktop
 # Copyright (c) 2008-2009 - Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
@@ -24,6 +24,7 @@ import unittest
 from GTG.tests import (
     test_backends,
     test_tagstore,
+    test_taskviewserial,
     )
 
 
@@ -31,4 +32,5 @@ def test_suite():
     return unittest.TestSuite([
         test_backends.test_suite(),
         test_tagstore.test_suite(),
+        test_taskviewserial.test_suite(),
         ])

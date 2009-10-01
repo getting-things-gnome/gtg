@@ -1,10 +1,25 @@
-
+# -*- coding: utf-8 -*-
+# -----------------------------------------------------------------------------
+# Gettings Things Gnome! - a personal organizer for the GNOME desktop
+# Copyright (c) 2008-2009 - Lionel Dricot & Bertrand Rousseau
+#
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program.  If not, see <http://www.gnu.org/licenses/>.
+# -----------------------------------------------------------------------------
 import gtk
 import gobject
 
 from GTG import _
-from GTG.core.task     import Task
-from GTG.tools         import colors
 from GTG.taskbrowser.CellRendererTags import CellRendererTags
 
 COL_ID    = 0
@@ -29,7 +44,7 @@ class TagTreeModel(gtk.GenericTreeModel):
         gtk.GenericTreeModel.__init__(self)
         self.req  = requester
         self.tree = self.req.get_tag_tree()
-        self.workable_only = False
+        self.workview = False
 
 ### MODEL METHODS ############################################################
 
@@ -40,8 +55,8 @@ class TagTreeModel(gtk.GenericTreeModel):
             iter = self.get_iter(path)
             self.row_changed(path, iter)
 
-    def set_workable_only(self, val):
-        self.workable_only = val
+    def set_workview(self, val):
+        self.workview = val
 
 ### TREEMODEL INTERFACE ######################################################
 #
@@ -85,21 +100,23 @@ class TagTreeModel(gtk.GenericTreeModel):
         if   column == COL_OBJ:
             return tag
         elif column == COL_COLOR:
-            return task.get_attribute("color")
+            return tag.get_attribute("color")
         elif column == COL_COUNT:
             sp_id = tag.get_attribute("special")
             if not sp_id:
                 count = len(self.req.get_active_tasks_list(\
-                       tags=[tag], workable=self.workable_only))
+                       tags=[tag], workable=self.workview, \
+                       started_only=self.workview))
                 if count == 0: return ''
                 return  count
             else:
                 if sp_id == "all":
                     return len(self.req.get_active_tasks_list(\
-                        workable=self.workable_only))
+                        workable=self.workview, started_only=self.workview))
                 elif sp_id == "notag":
                     return len(self.req.get_active_tasks_list(\
-                        workable=self.workable_only, notag_only=True))
+                        workable=self.workview, started_only=self.workview,\
+                        notag_only=True))
                 else:
                     return 0
         elif column == COL_SEP:

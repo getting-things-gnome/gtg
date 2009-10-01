@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Gettings Things Gnome! - a personnal organizer for the GNOME desktop
+# Gettings Things Gnome! - a personal organizer for the GNOME desktop
 # Copyright (c) 2008-2009 - Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
@@ -117,6 +117,7 @@ class PluginEngine:
                     plugin['class_name'] = c.__dict__["__module__"].split(".")[1]
                     plugin['class'] = c
                     plugin['state'] = eval(configobj["GTG Plugin"]["Enabled"])
+                    plugin['active'] = False
                     plugin['error'] = False
                     plugin['missing_modules'] = []
                     plugin['missing_dbus'] = []
@@ -124,6 +125,7 @@ class PluginEngine:
                     plugin['class_name'] = ""
                     plugin['class'] = None
                     plugin['state'] = False
+                    plugin['active'] = False
                     plugin['error'] = True
                     plugin['missing_modules'] = missing
                     plugin['missing_dbus'] = missing_dbus
@@ -165,41 +167,61 @@ class PluginEngine:
     
     # activates the plugins
     def activatePlugins(self, plugins, plugin_api):
-        for plgin in plugins:
-            if plgin['state'] and not plgin['error']:
-                plgin['instance'] = plgin['class']()
-                plgin['instance'].activate(plugin_api)
+        for plugin in plugins:
+            if plugin['state'] and not plugin['error'] and not plugin['active']:
+                plugin['instance'] = plugin['class']()
+                plugin['instance'].activate(plugin_api)
+                plugin['active'] = True
                 
     # deactivate the enabled plugins
     def deactivatePlugins(self, plugins, plugin_api):
-        for plgin in plugins:
-            if plgin['state'] and not plgin['error']:
-                plgin['instance'].deactivate(plugin_api)
+        for plugin in plugins:
+            if plugin['state'] and not plugin['error'] and plugin['active']:
+                plugin['instance'].deactivate(plugin_api)
+                plugin['active'] = False
 				
     # loads the plug-in features for a task
     def onTaskLoad(self, plugins, plugin_api):
-        for plgin in plugins:
-            if plgin['state']:
-                plgin['instance'].onTaskOpened(plugin_api)
+        for plugin in plugins:
+            if plugin['state'] and plugin['active']:
+                plugin['instance'].onTaskOpened(plugin_api)
      
+    # signals to the plug-ins that the task window is being closed
+    def onTaskClose(self, plugins, plugin_api):
+        for plugin in plugins:
+            if plugin['state'] and plugin['active']:
+                if hasattr(plugin['instance'],'onTaskClosed'):
+                    plugin['instance'].onTaskClosed(plugin_api)
 
-    	           
 	# rechecks the plug-ins to see if any changes where done to the state
     def recheckPlugins(self, plugins, plugin_api):
         for plugin in plugins:
-            if plugin['instance'] != None and plugin['state'] == False:
+            if plugin['instance'] != None and plugin['state'] == False and plugin['active']:
                 try:
                     #print "deactivating plugin: " + plgin['name']
                     plugin['instance'].deactivate(plugin_api)
                     plugin['instance'] = None
+                    plugin['active'] = False
                 except Exception, e:
                     print "Error: %s" % e
-            elif plugin['instance'] == None and plugin['state'] == True:
+            elif plugin['instance'] == None and plugin['state'] == True and not plugin['active']: 	
                 try:    
                     #print "activating plugin: " + plgin['name']
                     if not plugin['error']:
                         plugin['instance'] = plugin['class']()
                         plugin['instance'].activate(plugin_api)
+                        plugin['active'] = True
+                    else:
+                        plugin['state'] = False
+                except Exception, e:
+                    print "Error: %s" % e
+            elif plugin['instance'] != None and plugin['state'] == True and not plugin['active']: 	
+                try:    
+                    #print "activating plugin: " + plgin['name']
+                    if not plugin['error']:
+                        #plugin['instance'] = plugin['class']()
+                        plugin['instance'].activate(plugin_api)
+                        plugin['active'] = True
                     else:
                         plugin['state'] = False
                 except Exception, e:
@@ -267,6 +289,7 @@ class PluginEngine:
         			plugin['class_name'] = c.__dict__["__module__"].split(".")[1]
         			plugin['class'] = c
         			plugin['state'] = False
+        			plugin['active'] = False
         			plugin['error'] = False
         			plugin['missing_modules'] = []
         			plugin['missing_dbus'] = []

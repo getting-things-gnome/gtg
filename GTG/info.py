@@ -26,6 +26,7 @@ AUTHORS     = ["Main developers:", \
                "\tJean-François Fortin Tam <nekohayo@gmail.com>", \
                "\tJonathan Lange <jml@mumak.net>", \
                "\tPaulo Cabido <paulo.cabido@gmail.com>", \
+               "\tLuca Invernizzi <invernizzi.l@gmail.com>", \
 ]
 ARTISTS     = ["Kalle Persson <kalle@kallepersson.se>", \
                 "Bertrand Rousseau <bertrand.rousseau@gmail.com>"]
@@ -40,7 +41,7 @@ Dutch: puccha
 Finnish: Mika Tapojärvi
 French: Lionel Dricot, Rafik Ouerchefani, Bertrand Rousseau, Pititjo
 German: Philip Stewart, Thomas Pitlik
-Italian: Luca Falavigna
+Italian: Luca Falavigna, Luca Invernizzi
 Malay: melayubuntu
 Polish: Tomasz Maciejewski
 Portuguese: Paulo Cabido 

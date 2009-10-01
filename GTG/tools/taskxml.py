@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Gettings Things Gnome! - a personnal organizer for the GNOME desktop
+# Gettings Things Gnome! - a personal organizer for the GNOME desktop
 # Copyright (c) 2008-2009 - Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
@@ -26,6 +26,8 @@ from GTG.tools import cleanxml
 def task_from_xml(task,xmlnode) :
     cur_task = task
     cur_stat = "%s" %xmlnode.getAttribute("status")
+    uuid = "%s" %xmlnode.getAttribute("uuid")
+    cur_task.set_uuid(uuid)
     donedate = cleanxml.readTextNode(xmlnode,"donedate")
     cur_task.set_status(cur_stat,donedate=donedate)
     #we will fill the task with its content
@@ -51,6 +53,7 @@ def task_from_xml(task,xmlnode) :
             content = xml.dom.minidom.parseString(tas)
             cur_task.set_text(content.firstChild.toxml()) #pylint: disable-msg=E1103 
     cur_task.set_due_date(cleanxml.readTextNode(xmlnode,"duedate"))
+    cur_task.set_modified(cleanxml.readTextNode(xmlnode,"modified"))
     cur_task.set_start_date(cleanxml.readTextNode(xmlnode,"startdate"))
     cur_tags = xmlnode.getAttribute("tags").replace(' ','').split(",")
     if "" in cur_tags: cur_tags.remove("")
@@ -65,12 +68,14 @@ def task_to_xml(doc,task) :
     t_xml = doc.createElement("task")
     t_xml.setAttribute("id",task.get_id())
     t_xml.setAttribute("status" , task.get_status())
+    t_xml.setAttribute("uuid" , task.get_uuid())
     tags_str = ""
     for tag in task.get_tags_name(): 
         tags_str = tags_str + str(tag) + ","
     t_xml.setAttribute("tags", tags_str[:-1])
     cleanxml.addTextNode(doc,t_xml,"title",task.get_title())
     cleanxml.addTextNode(doc,t_xml,"duedate",task.get_due_date())
+    cleanxml.addTextNode(doc,t_xml,"modified",task.get_modified())
     cleanxml.addTextNode(doc,t_xml,"startdate",task.get_start_date())
     cleanxml.addTextNode(doc,t_xml,"donedate",task.get_closed_date())
     childs = task.get_subtask_tids()
