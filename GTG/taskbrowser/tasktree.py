@@ -303,6 +303,7 @@ class TaskTreeView(gtk.TreeView):
         return self.columns.index(col_id)
 
     def refresh(self, collapsed_rows=None):
+        print "manual refresh"
         self.expand_all()
         self.get_model().foreach(self._refresh_func, collapsed_rows)
 
