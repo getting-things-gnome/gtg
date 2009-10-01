@@ -394,6 +394,8 @@ class TaskView(gtk.TextView):
             conti = start.forward_line()
             if conti :
                 conti = start.forward_to_line_end()
+        #we go to the next line, just after the title
+        start.forward_line()
         end = self.buff.get_end_iter()
         texte = self.buff.serialize(self.buff, self.mime_type, start, end)
         

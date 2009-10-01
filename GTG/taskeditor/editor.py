@@ -139,7 +139,7 @@ class TaskEditor :
         #the first line is the title
         self.textview.set_text("%s\n"%title)
         #we insert the rest of the task
-        if texte : 
+        if texte :
             self.textview.insert("%s"%texte)
         else :
             #If not text, we insert tags
