@@ -329,42 +329,47 @@ class TaskView(gtk.TextView):
             
     #Insert a list of tag in the first line of the buffer
     def insert_tags(self,tag_list) :
-        #We insert them just after the title
-        #We use the current first line if it begins with a tag
-        firstline = self.buff.get_iter_at_line(1)
-        newline = True
-        for tt in firstline.get_tags() :
-            if tt.get_data('is_tag') :
-                newline = False
-                firstline.forward_to_line_end()
-                #Now we should check if the current char is a separator or not
-                #Currently, we insert a space
-                self.insert_text(" ",firstline)
-        #Now we check if this newline is empty (it contains only " " and ",")
-#        if newline :
-#            endline = firstline.copy()
-#            if not endline.ends_line() :
-#                endline.forward_to_line_end()
-#            text = self.buff.get_text(firstline,endline)
-#            if not text.strip(", ") :
-#                newline = False
-#                firstline.forward_to_line_end()
-        #Now we can process
-        if newline :
-            firstline = self.buff.get_iter_at_line(0)
-            firstline.forward_to_line_end()
-            self.insert_text("\n",firstline)
+        #First, we don't insert tags that are already present
+        for t in self.get_tagslist() :
+            if t in tag_list :
+                tag_list.remove(t)
+        if len(tag_list) > 0 :
+            #We insert them just after the title
+            #We use the current first line if it begins with a tag
             firstline = self.buff.get_iter_at_line(1)
-        line_mark = self.buff.create_mark("firstline",firstline,False)
-        #self.tv.insert_at_mark(buf,line_mark,"\n")
-        ntags = len(tag_list)
-        for t in tag_list :
-            ntags = ntags - 1
-            self.insert_at_mark(self.buff,line_mark,t)
-            if ntags != 0:
-                self.insert_at_mark(self.buff,line_mark,",")
-        self.buff.delete_mark(line_mark)
-        self.modified(full=True)
+            newline = True
+            for tt in firstline.get_tags() :
+                if tt.get_data('is_tag') :
+                    newline = False
+                    firstline.forward_to_line_end()
+                    #Now we should check if the current char is a separator or not
+                    #Currently, we insert a space
+                    self.insert_text(" ",firstline)
+            #Now we check if this newline is empty (it contains only " " and ",")
+    #        if newline :
+    #            endline = firstline.copy()
+    #            if not endline.ends_line() :
+    #                endline.forward_to_line_end()
+    #            text = self.buff.get_text(firstline,endline)
+    #            if not text.strip(", ") :
+    #                newline = False
+    #                firstline.forward_to_line_end()
+            #Now we can process
+            if newline :
+                firstline = self.buff.get_iter_at_line(0)
+                firstline.forward_to_line_end()
+                self.insert_text("\n",firstline)
+                firstline = self.buff.get_iter_at_line(1)
+            line_mark = self.buff.create_mark("firstline",firstline,False)
+            #self.tv.insert_at_mark(buf,line_mark,"\n")
+            ntags = len(tag_list)
+            for t in tag_list :
+                ntags = ntags - 1
+                self.insert_at_mark(self.buff,line_mark,t)
+                if ntags != 0:
+                    self.insert_at_mark(self.buff,line_mark,",")
+            self.buff.delete_mark(line_mark)
+            self.modified(full=True)
         
     # add a tag to the last line of the task
     def insert_tag(self, tag):
