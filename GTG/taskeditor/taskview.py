@@ -329,42 +329,47 @@ class TaskView(gtk.TextView):
             
     #Insert a list of tag in the first line of the buffer
     def insert_tags(self,tag_list) :
-        #We insert them just after the title
-        #We use the current first line if it begins with a tag
-        firstline = self.buff.get_iter_at_line(1)
-        newline = True
-        for tt in firstline.get_tags() :
-            if tt.get_data('is_tag') :
-                newline = False
-                firstline.forward_to_line_end()
-                #Now we should check if the current char is a separator or not
-                #Currently, we insert a space
-                self.insert_text(" ",firstline)
-        #Now we check if this newline is empty (it contains only " " and ",")
-#        if newline :
-#            endline = firstline.copy()
-#            if not endline.ends_line() :
-#                endline.forward_to_line_end()
-#            text = self.buff.get_text(firstline,endline)
-#            if not text.strip(", ") :
-#                newline = False
-#                firstline.forward_to_line_end()
-        #Now we can process
-        if newline :
-            firstline = self.buff.get_iter_at_line(0)
-            firstline.forward_to_line_end()
-            self.insert_text("\n",firstline)
+        #First, we don't insert tags that are already present
+        for t in self.get_tagslist() :
+            if t in tag_list :
+                tag_list.remove(t)
+        if len(tag_list) > 0 :
+            #We insert them just after the title
+            #We use the current first line if it begins with a tag
             firstline = self.buff.get_iter_at_line(1)
-        line_mark = self.buff.create_mark("firstline",firstline,False)
-        #self.tv.insert_at_mark(buf,line_mark,"\n")
-        ntags = len(tag_list)
-        for t in tag_list :
-            ntags = ntags - 1
-            self.insert_at_mark(self.buff,line_mark,t)
-            if ntags != 0:
-                self.insert_at_mark(self.buff,line_mark,",")
-        self.buff.delete_mark(line_mark)
-        self.modified(full=True)
+            newline = True
+            for tt in firstline.get_tags() :
+                if tt.get_data('is_tag') :
+                    newline = False
+                    firstline.forward_to_line_end()
+                    #Now we should check if the current char is a separator or not
+                    #Currently, we insert a space
+                    self.insert_text(" ",firstline)
+            #Now we check if this newline is empty (it contains only " " and ",")
+    #        if newline :
+    #            endline = firstline.copy()
+    #            if not endline.ends_line() :
+    #                endline.forward_to_line_end()
+    #            text = self.buff.get_text(firstline,endline)
+    #            if not text.strip(", ") :
+    #                newline = False
+    #                firstline.forward_to_line_end()
+            #Now we can process
+            if newline :
+                firstline = self.buff.get_iter_at_line(0)
+                firstline.forward_to_line_end()
+                self.insert_text("\n",firstline)
+                firstline = self.buff.get_iter_at_line(1)
+            line_mark = self.buff.create_mark("firstline",firstline,False)
+            #self.tv.insert_at_mark(buf,line_mark,"\n")
+            ntags = len(tag_list)
+            for t in tag_list :
+                ntags = ntags - 1
+                self.insert_at_mark(self.buff,line_mark,t)
+                if ntags != 0:
+                    self.insert_at_mark(self.buff,line_mark,",")
+            self.buff.delete_mark(line_mark)
+            self.modified(full=True)
         
     # add a tag to the last line of the task
     def insert_tag(self, tag):
@@ -394,6 +399,8 @@ class TaskView(gtk.TextView):
             conti = start.forward_line()
             if conti :
                 conti = start.forward_to_line_end()
+        #we go to the next line, just after the title
+        start.forward_line()
         end = self.buff.get_end_iter()
         texte = self.buff.serialize(self.buff, self.mime_type, start, end)
         
@@ -771,12 +778,12 @@ class TaskView(gtk.TextView):
         start_i = buff.get_iter_at_line(line_nbr)
         end_i   = start_i.copy()
         #We go back at the end of the previous line
-        start_i.backward_char()
-        #But only if this is not the title.
-        insert_enter = True
-        if start_i.has_tag(self.title_tag) :
-            start_i.forward_char()
-            insert_enter = False
+#        start_i.backward_char()
+#        #But only if this is not the title.
+        insert_enter = False
+#        if start_i.has_tag(self.title_tag) :
+#            start_i.forward_char()
+#            insert_enter = False
         start   = buff.create_mark("start",start_i,True)
         end_i.forward_line()
         end     = buff.create_mark("end",end_i,False)
