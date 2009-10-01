@@ -496,6 +496,11 @@ class Task:
         if self.sync_func and self.is_loaded():
             self.sync_func(self)
             self.req._task_modified(self.tid)
+            #we also modify parents and children
+            for p in self.get_parents() :
+                self.req._task_modified(p)
+            for s in self.get_subtask_tids() :
+                self.req._task_modified(s)
 
     def _modified_update(self):
         self.modified = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
