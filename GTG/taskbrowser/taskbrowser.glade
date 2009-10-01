@@ -465,7 +465,7 @@
           <widget class="GtkHPaned" id="hpaned1">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="position">200</property>
+            <property name="position">224</property>
             <property name="position_set">True</property>
             <child>
               <widget class="GtkVBox" id="sidebar">
