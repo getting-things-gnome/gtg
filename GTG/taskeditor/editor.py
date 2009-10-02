@@ -82,6 +82,7 @@ class TaskEditor :
         cal_dic = {
                 "on_nodate"             : self.nodate_pressed,
                 #"on_dayselected"        : self.day_selected,
+                #"on_month_changed"      : self.month_changed,
                 "on_dayselected_double" : self.day_selected_double,
         }
         self.cal_tree.signal_autoconnect(cal_dic)
@@ -106,6 +107,10 @@ class TaskEditor :
         self.cal_widget       = self.cal_tree.get_widget("calendar1")
         #self.cal_widget.set_property("no-month-change",True)
         self.sigid = None
+        self.sigid_month = None
+        #Do we have to close the calendar when date is changed ?
+        #This is a ugly hack to close the calendar on the first click
+        self.close_when_changed = True
         self.duedate_widget = self.wTree.get_widget("duedate_entry")
         self.startdate_widget = self.wTree.get_widget("startdate_entry")
         self.dayleft_label  = self.wTree.get_widget("dayleft")
@@ -367,6 +372,7 @@ class TaskEditor :
         self.cal_widget.select_day(int(d))
         self.calendar.connect('button-press-event', self.__focus_out)
         self.sigid = self.cal_widget.connect("day-selected",self.day_selected)
+        self.sigid_month = self.cal_widget.connect("month-changed",self.month_changed)
         
     def day_selected(self,widget) :
         y,m,d = widget.get_date()
@@ -374,7 +380,15 @@ class TaskEditor :
             self.task.set_due_date("%s-%s-%s"%(y,m+1,d))
         elif self.__opened_date == "start" :
             self.task.set_start_date("%s-%s-%s"%(y,m+1,d))
+        if self.close_when_changed :
+            self.__close_calendar()
+        else :
+            self.close_when_changed = True
         self.refresh_editor()
+        
+    def month_changed(self,widget) :
+        #This is a ugly hack to close the calendar on the first click
+        self.close_when_changed = False
     
     def day_selected_double(self,widget) : #pylint: disable-msg=W0613
         self.__close_calendar()
@@ -519,6 +533,9 @@ class TaskEditor :
         if self.sigid :
             self.cal_widget.disconnect(self.sigid)
             self.sigid = None
+        if self.sigid_month :
+            self.cal_widget.disconnect(self.sigid_month)
+            self.sigid_month = None
         
 
     

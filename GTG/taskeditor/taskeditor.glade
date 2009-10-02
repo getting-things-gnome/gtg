@@ -306,6 +306,7 @@
             <property name="can_focus">True</property>
             <signal name="day_selected_double_click" handler="on_dayselected_double"/>
             <signal name="day_selected" handler="on_dayselected"/>
+            <signal name="month_changed" handler="on_month_changed"/>
           </widget>
           <packing>
             <property name="position">0</property>
