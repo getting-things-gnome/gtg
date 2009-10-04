@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-09-18 15:51+0200\n"
+"POT-Creation-Date: 2009-10-04 21:10+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,74 +20,74 @@ msgstr ""
 msgid "gtg is already running!"
 msgstr ""
 
-#: GTG/taskeditor/editor.py:258
+#: GTG/taskeditor/editor.py:265
 msgid "Due tomorrow !"
 msgstr ""
 
-#: GTG/taskeditor/editor.py:260
+#: GTG/taskeditor/editor.py:267
 #, python-format
 msgid "%s days left"
 msgstr ""
 
-#: GTG/taskeditor/editor.py:262
+#: GTG/taskeditor/editor.py:269
 msgid "Due today !"
 msgstr ""
 
-#: GTG/taskeditor/editor.py:264
+#: GTG/taskeditor/editor.py:271
 msgid "Due for yesterday"
 msgstr ""
 
-#: GTG/taskeditor/editor.py:266
+#: GTG/taskeditor/editor.py:273
 #, python-format
 msgid "Was %s days ago"
 msgstr ""
 
-#: GTG/taskeditor/__init__.py:29 GTG/taskbrowser/__init__.py:32
+#: GTG/taskeditor/__init__.py:28 GTG/taskbrowser/__init__.py:32
 msgid "Mark as done"
 msgstr ""
 
-#: GTG/taskeditor/__init__.py:30 GTG/taskbrowser/__init__.py:34
+#: GTG/taskeditor/__init__.py:29 GTG/taskbrowser/__init__.py:34
 msgid "Mark as not done"
 msgstr ""
 
-#: GTG/taskeditor/__init__.py:31 GTG/taskeditor/taskeditor.glade.h:4
+#: GTG/taskeditor/__init__.py:30 GTG/taskeditor/taskeditor.glade.h:4
 #: GTG/taskbrowser/__init__.py:36 GTG/taskbrowser/taskbrowser.glade.h:14
 msgid "Dismiss"
 msgstr ""
 
-#: GTG/taskeditor/__init__.py:32 GTG/taskbrowser/__init__.py:38
+#: GTG/taskeditor/__init__.py:31 GTG/taskbrowser/__init__.py:38
 msgid "Undismiss"
 msgstr ""
 
-#: GTG/taskeditor/__init__.py:33 GTG/taskeditor/taskeditor.glade.h:7
+#: GTG/taskeditor/__init__.py:32 GTG/taskeditor/taskeditor.glade.h:7
 msgid "Keep as Note"
 msgstr ""
 
-#: GTG/taskeditor/__init__.py:34
+#: GTG/taskeditor/__init__.py:33
 msgid "Make a Task"
 msgstr ""
 
-#: GTG/taskeditor/__init__.py:36
+#: GTG/taskeditor/__init__.py:35
 msgid "Mark this task as done"
 msgstr ""
 
-#: GTG/taskeditor/__init__.py:37 GTG/taskeditor/__init__.py:39
+#: GTG/taskeditor/__init__.py:36 GTG/taskeditor/__init__.py:38
 msgid "Mark this task as to be done"
 msgstr ""
 
-#: GTG/taskeditor/__init__.py:38
+#: GTG/taskeditor/__init__.py:37
 msgid "Mark this task as not to be done anymore"
 msgstr ""
 
-#: GTG/taskeditor/__init__.py:40
+#: GTG/taskeditor/__init__.py:39
 msgid "Permanently remove this task"
 msgstr ""
 
-#: GTG/taskeditor/__init__.py:41
+#: GTG/taskeditor/__init__.py:40
 msgid "Insert a subtask in this task"
 msgstr ""
 
-#: GTG/taskeditor/__init__.py:42
+#: GTG/taskeditor/__init__.py:41
 msgid "Insert a tag in this task"
 msgstr ""
 
@@ -124,7 +124,7 @@ msgid "Getting started with GTG"
 msgstr ""
 
 #: GTG/core/firstrun_tasks.py:8
-msgid "Welcome in Getting Things Gnome!, your new task manager."
+msgid "Welcome to Getting Things Gnome!, your new task manager."
 msgstr ""
 
 #: GTG/core/firstrun_tasks.py:10
@@ -147,28 +147,39 @@ msgid ""
 msgstr ""
 
 #: GTG/core/firstrun_tasks.py:18
-msgid "Don't forget to mark this subtask as done!"
+msgid ""
+"Once you've read the above subtask, mark it as Done. If you don't want to do "
+"the task, mark it as dismissed. Done and Dismissed tasks are keeped in the "
+"closed tasks pane, hidden by default but you can easily enable it in the "
+"View menu."
 msgstr ""
 
 #: GTG/core/firstrun_tasks.py:20
+msgid ""
+"If you choose to close this current task, subtasks will be automatically "
+"closed too. We indeed consider that, if you achieve a given task, you don't "
+"need to do the subtask anymore."
+msgstr ""
+
+#: GTG/core/firstrun_tasks.py:22
 msgid "Other stuff you should read:"
 msgstr ""
 
-#: GTG/core/firstrun_tasks.py:26
+#: GTG/core/firstrun_tasks.py:28
 msgid ""
 "We hope that you will appreciate GTG. Please send us bug reports and ideas "
 "for improvement using: "
 msgstr ""
 
-#: GTG/core/firstrun_tasks.py:29
+#: GTG/core/firstrun_tasks.py:31
 msgid "Thank you for trying out GTG:-)"
 msgstr ""
 
-#: GTG/core/firstrun_tasks.py:34
+#: GTG/core/firstrun_tasks.py:36
 msgid "Learn to use subtasks"
 msgstr ""
 
-#: GTG/core/firstrun_tasks.py:35
+#: GTG/core/firstrun_tasks.py:37
 msgid ""
 "In the task description (this window), if you begin a line with &quot;-"
 "&quot;, it will be considered as a &quot;subtask&quot;, something that needs "
@@ -176,41 +187,41 @@ msgid ""
 "subtask&quot; on the next line and press enter."
 msgstr ""
 
-#: GTG/core/firstrun_tasks.py:37
+#: GTG/core/firstrun_tasks.py:39
 msgid "You can also use the &quot;insert subtask&quot; button."
 msgstr ""
 
-#: GTG/core/firstrun_tasks.py:39
+#: GTG/core/firstrun_tasks.py:41
 msgid "Task and subtasks can be re-organized by drag-n-drop in the tasks list."
 msgstr ""
 
-#: GTG/core/firstrun_tasks.py:41
+#: GTG/core/firstrun_tasks.py:43
 msgid ""
 "Some concepts come with subtasks: for example, a subtask due date can never "
 "be after its parent due date."
 msgstr ""
 
-#: GTG/core/firstrun_tasks.py:43
+#: GTG/core/firstrun_tasks.py:45
 msgid "Also, marking a parent as done will mark all the subtasks as done."
 msgstr ""
 
-#: GTG/core/firstrun_tasks.py:48
+#: GTG/core/firstrun_tasks.py:50
 msgid "Learn to use tags"
 msgstr ""
 
-#: GTG/core/firstrun_tasks.py:49
+#: GTG/core/firstrun_tasks.py:51
 msgid "A tag is a simple word that begin with &quot;@&quot;."
 msgstr ""
 
-#: GTG/core/firstrun_tasks.py:51
+#: GTG/core/firstrun_tasks.py:53
 msgid "Try to type a word beginning with @ here:"
 msgstr ""
 
-#: GTG/core/firstrun_tasks.py:53
+#: GTG/core/firstrun_tasks.py:55
 msgid "It becomes yellow, it's a tag."
 msgstr ""
 
-#: GTG/core/firstrun_tasks.py:55
+#: GTG/core/firstrun_tasks.py:57
 msgid ""
 "Tags are useful to sort your tasks. In the view menu, you can enable a "
 "sidebar which displays all the tags you are using so you can easily see "
@@ -218,14 +229,14 @@ msgid ""
 "have."
 msgstr ""
 
-#: GTG/core/firstrun_tasks.py:57
+#: GTG/core/firstrun_tasks.py:59
 msgid ""
 "If you right click on a tag in the sidebar you can also set its color. It "
 "will permit you to have a more colorful list of tasks, if you want it that "
 "way."
 msgstr ""
 
-#: GTG/core/firstrun_tasks.py:59
+#: GTG/core/firstrun_tasks.py:61
 msgid ""
 "A new tag is only added to the current task. There's no recursivity and the "
 "tag is not applied to subtasks. But when you create a new subtask, this "
@@ -235,37 +246,37 @@ msgid ""
 "subtask. It will never be changed by the parent."
 msgstr ""
 
-#: GTG/core/firstrun_tasks.py:64
+#: GTG/core/firstrun_tasks.py:66
 msgid "Using the Workview"
 msgstr ""
 
-#: GTG/core/firstrun_tasks.py:65
+#: GTG/core/firstrun_tasks.py:67
 msgid ""
 "If you press the &quot;Workview&quot; button, only actionable tasks will be "
 "displayed."
 msgstr ""
 
-#: GTG/core/firstrun_tasks.py:67
+#: GTG/core/firstrun_tasks.py:69
 msgid "What is an actionable task? It's a task you can do directly, right now."
 msgstr ""
 
-#: GTG/core/firstrun_tasks.py:69
+#: GTG/core/firstrun_tasks.py:71
 msgid ""
 "It's a task that is already &quot;start-able&quot;, i.e. the start date is "
 "already over."
 msgstr ""
 
-#: GTG/core/firstrun_tasks.py:71
+#: GTG/core/firstrun_tasks.py:73
 msgid ""
 "It's a task that doesn't have open subtasks, i.e. you can do the task itself "
 "directly."
 msgstr ""
 
-#: GTG/core/firstrun_tasks.py:73
+#: GTG/core/firstrun_tasks.py:75
 msgid "Thus, the workview will only show you tasks you should do right now."
 msgstr ""
 
-#: GTG/core/firstrun_tasks.py:75
+#: GTG/core/firstrun_tasks.py:77
 msgid ""
 "If you use tags, you can right click on a tag in the sidebar and choose to "
 "not display tasks with this particular tag in the workview. It's very useful "
@@ -273,27 +284,27 @@ msgid ""
 "like to do but are not particularly urgent."
 msgstr ""
 
-#: GTG/core/firstrun_tasks.py:81
+#: GTG/core/firstrun_tasks.py:83
 msgid "Reporting bugs"
 msgstr ""
 
-#: GTG/core/firstrun_tasks.py:82
+#: GTG/core/firstrun_tasks.py:84
 msgid ""
 "GTG is still very alpha software. We like it and use it everyday but you "
 "will encounter some bugs."
 msgstr ""
 
-#: GTG/core/firstrun_tasks.py:84
+#: GTG/core/firstrun_tasks.py:86
 msgid "Please, report them on our Launchpad page:"
 msgstr ""
 
-#: GTG/core/firstrun_tasks.py:87
+#: GTG/core/firstrun_tasks.py:89
 msgid ""
 "We need you to make this software better. Any contribution, any idea is "
 "welcome."
 msgstr ""
 
-#: GTG/core/firstrun_tasks.py:89
+#: GTG/core/firstrun_tasks.py:91
 msgid ""
 "If you have some trouble with GTG, we might be able to help you or to solve "
 "your problem really quickly."
@@ -478,8 +489,8 @@ msgstr ""
 msgid "Tag is displayed in the workview"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:36 GTG/taskbrowser/tasktree.py:337
-#: GTG/taskbrowser/tasktree.py:464 GTG/taskbrowser/tagtree.py:292
+#: GTG/taskbrowser/taskbrowser.glade.h:36 GTG/taskbrowser/tasktree.py:354
+#: GTG/taskbrowser/tasktree.py:481 GTG/taskbrowser/tagtree.py:309
 msgid "Tags"
 msgstr ""
 
@@ -547,97 +558,105 @@ msgstr ""
 msgid "_Work View"
 msgstr ""
 
-#: GTG/taskbrowser/tasktree.py:352 GTG/taskbrowser/tasktree.py:488
+#: GTG/taskbrowser/tasktree.py:369 GTG/taskbrowser/tasktree.py:505
 msgid "Title"
 msgstr ""
 
-#: GTG/taskbrowser/tasktree.py:365
+#: GTG/taskbrowser/tasktree.py:382
 msgid "Due date"
 msgstr ""
 
-#: GTG/taskbrowser/tasktree.py:377
+#: GTG/taskbrowser/tasktree.py:394
 msgid "Days left"
 msgstr ""
 
-#: GTG/taskbrowser/tasktree.py:476
+#: GTG/taskbrowser/tasktree.py:493
 msgid "Closing date"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:185
+#: GTG/taskbrowser/browser.py:178
 msgid "All tasks"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:192
+#: GTG/taskbrowser/browser.py:185
 msgid "Tasks with no tags"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:613
+#: GTG/taskbrowser/browser.py:606
 msgid "(no active tasks)"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:615
+#: GTG/taskbrowser/browser.py:608
 msgid "(1 active task)"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:617
+#: GTG/taskbrowser/browser.py:610
 #, python-format
 msgid "(%s active tasks)"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:627
+#: GTG/taskbrowser/browser.py:620
 msgid "monday"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:627
+#: GTG/taskbrowser/browser.py:620
 msgid "tuesday"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:627
+#: GTG/taskbrowser/browser.py:620
 msgid "wednesday"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:628
+#: GTG/taskbrowser/browser.py:621
 msgid "thursday"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:628
+#: GTG/taskbrowser/browser.py:621
 msgid "friday"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:628
+#: GTG/taskbrowser/browser.py:621
 msgid "saturday"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:629
+#: GTG/taskbrowser/browser.py:622
 msgid "sunday"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:638
+#: GTG/taskbrowser/browser.py:631
 msgid "today"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:645
+#: GTG/taskbrowser/browser.py:638
 msgid "tomorrow"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:1071
+#: GTG/taskbrowser/browser.py:1070
 msgid "tags"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:1075
+#: GTG/taskbrowser/browser.py:1074
 msgid "defer"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:1080
+#: GTG/taskbrowser/browser.py:1079
 msgid "due"
 msgstr ""
 
-#: GTG/plugins/tomboy/tomboy.py:67
+#: GTG/plugins/tomboy/tomboy.py:68
+msgid "Tomboy not found. Please install it or disable the Tomboy plugin in GTG"
+msgstr ""
+
+#: GTG/plugins/tomboy/tomboy.py:109
 msgid "Add Tomboy note"
 msgstr ""
 
-#: GTG/plugins/tomboy/tomboy.py:170
+#: GTG/plugins/tomboy/tomboy.py:202
 msgid "That note does not exist!"
+msgstr ""
+
+#: GTG/plugins/tomboy/tomboy.py:207
+msgid "That note does not exist. Do you want to create a new one?"
 msgstr ""
 
 #: GTG/plugins/tomboy/tomboy.glade.h:1
@@ -682,11 +701,11 @@ msgid ""
 "now. When done, press OK"
 msgstr ""
 
-#: GTG/plugins/rtm_sync/pyrtm/rtm.py:57
+#: GTG/plugins/rtm_sync/pyrtm/rtm.py:56
 msgid "Invalid state"
 msgstr ""
 
-#: GTG/plugins/rtm_sync/pyrtm/rtm.py:106
+#: GTG/plugins/rtm_sync/pyrtm/rtm.py:105
 msgid "API call failed"
 msgstr ""
 

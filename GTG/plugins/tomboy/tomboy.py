@@ -26,6 +26,8 @@ import combobox_enhanced
 
 class pluginTomboy:
 
+    TOMBOY_ICON_PATH_ENDING = "icons/hicolor/16x16/apps/tomboy.png"
+
     def __init__(self):
         #These tokens are used to identify the beginning and the end of the 
         #tomboy note point of insertion
@@ -33,9 +35,43 @@ class pluginTomboy:
         self.token_end = '|'
         self.path = os.path.dirname(os.path.abspath(__file__))
 
+    #Tomboy installation is checked through the presence of its icon
+    def findTomboyIconPath(self):
+        if os.path.isfile("/usr/share/" + self.TOMBOY_ICON_PATH_ENDING):
+            self.tomboy_icon_path = "/usr/share/" + self.\
+                                                TOMBOY_ICON_PATH_ENDING
+            return True
+        elif os.path.isfile("/usr/local/share/" + self.\
+                            TOMBOY_ICON_PATH_ENDING):
+            self.tomboy_icon_path = "/usr/local/share/" + self.\
+                                                    TOMBOY_ICON_PATH_ENDING
+            return True
+        return False
+
     #Function called upon plug-in activation
     def activate(self, plugin_api):
         self.plugin_api = plugin_api
+
+    #Returns true is Tomboy is present, otherwise shows a dialog (only once)
+    # and returns False 
+    def checkTomboyPresent(self):
+        if not hasattr(self, 'activated'):
+            self.activated = self.findTomboyIconPath()
+            #The notification to disable the plug-in to the user will be showed
+            # only once
+            if not self.activated:
+                dialog = gtk.MessageDialog(parent = \
+                     self.plugin_api.get_window(),
+                     flags = gtk.DIALOG_DESTROY_WITH_PARENT,
+                     type = gtk.MESSAGE_ERROR,
+                     buttons=gtk.BUTTONS_OK,
+                     message_format=_("Tomboy not found. \
+Please install it or disable the Tomboy plugin in GTG"))
+                dialog.run() 
+                dialog.destroy()
+        return self.activated
+
+
 
     #Return a textual token to represent the Tomboy widget. It's useful
     # since the task is saved as pure text
@@ -44,6 +80,8 @@ class pluginTomboy:
 
     # Converts all tomboy note widgets in the  equivalent text
     def onTaskClosed(self, plugin_api):
+        if not self.checkTomboyPresent():
+            return False
         for anchor in self.anchors:
             widgets = anchor.get_widgets()
             if anchor.get_deleted():
@@ -62,8 +100,7 @@ class pluginTomboy:
     # adds a item(button) to the ToolBar, with a nice icon
     def addButtonToToolbar(self, plugin_api):
         tb_Taskbutton_image = gtk.Image()
-        tb_Taskbutton_image_path =\
-            "/usr/share/icons/hicolor/16x16/apps/tomboy.png"
+        tb_Taskbutton_image_path = self.tomboy_icon_path
         tb_Taskbutton_pixbuf=gtk.gdk.\
                 pixbuf_new_from_file_at_size(tb_Taskbutton_image_path, 16, 16)
         tb_Taskbutton_image.set_from_pixbuf(tb_Taskbutton_pixbuf)
@@ -107,6 +144,8 @@ class pluginTomboy:
             token_ending = text.find(self.token_end)
 
     def onTaskOpened(self, plugin_api):
+        if not self.checkTomboyPresent():
+            return False
         #NOTE: get_textview() only works in this function
         # (see GTG/core/plugins/api.py docs)
         self.textview = plugin_api.get_textview()
@@ -185,7 +224,21 @@ exist. Do you want to create a new one?"))
     def tomboyDisplayNote(self, widget, data = None):
         tomboy = self.getTomboyObject()
         note = tomboy.FindNote(widget.tomboy_note_title)
-        tomboy.DisplayNote(note)
+        if str(note) == "":
+            dialog = gtk.MessageDialog(parent = \
+                 self.plugin_api.get_window(),
+                 flags = gtk.DIALOG_DESTROY_WITH_PARENT,
+                 type = gtk.MESSAGE_WARNING,
+                  buttons=gtk.BUTTONS_YES_NO,
+                  message_format=(_("This Tomboy note does not exist anymore. \
+Do you want to create it?")))
+            response = dialog.run() 
+            dialog.destroy()
+            if response == gtk.RESPONSE_YES:
+                tomboy.CreateNamedNote(widget.tomboy_note_title)
+                tomboy.DisplayNote(note)
+        else:
+            tomboy.DisplayNote(note)
 
     #inserts a widget in the textview
     def textviewInsertWidget(self, widget, iter):
