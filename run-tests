@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
 # Gettings Things Gnome! - a personal organizer for the GNOME desktop
