@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
 # Gettings Things Gnome! - a personal organizer for the GNOME desktop
@@ -43,6 +43,8 @@
 #==============================================================================
 
 #=== IMPORT ===================================================================
+from __future__ import with_statement
+
 import sys
 import os
 import dbus
@@ -63,19 +65,16 @@ from GTG.core import CoreConfig
 
 def check_instance(directory):
     """Check if gtg is already running."""
-    pidfile = directory + "gtg.pid"
+    pidfile = os.path.join(directory, "gtg.pid")
     if not os.path.exists(pidfile):
-        f = open(pidfile, "w")
-        f.close()
-    os.chmod(pidfile, 0600)
+        open(pidfile, "w").close()
+        os.chmod(pidfile, 0600)
 
     #see if gtg is already running
-    f = open(pidfile, "r")
-    pid = f.readline()
-    f.close()
+    pid = open(pidfile, "r").readline()
     if pid:
-        p = os.system("ps --no-heading --pid " + pid)
-        p_name = os.popen("ps -f --pid " + pid).read()
+        p = os.system("/bin/ps %s >/dev/null" % pid)
+        p_name = os.popen("/bin/ps -f %s" % pid).read()
         if p == 0 and "gtg" in p_name:
             print _("gtg is already running!")
             d=dbus.SessionBus().get_object(CoreConfig.BUSNAME,\
@@ -84,9 +83,8 @@ def check_instance(directory):
             sys.exit(0)
             
     #write the pid file
-    f = open(pidfile, "w")
-    f.write(str(os.getpid()))
-    f.close()
+    with open(pidfile, "w") as f:
+        f.write(`os.getpid()`)
 
 #=== MAIN CLASS ===============================================================
 

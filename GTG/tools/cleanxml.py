@@ -24,7 +24,7 @@ import sys
 #This is for the awful pretty xml things
 tab = "\t"
 enter = "\n"
-BACKUP_NBR = 3
+BACKUP_NBR = 7
 
 #Those two functions are there only to be able to read prettyXML
 #Source : http://yumenokaze.free.fr/?/Informatique/Snipplet/Python/cleandom       

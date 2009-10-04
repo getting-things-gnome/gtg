@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-04 21:10+0200\n"
+"POT-Creation-Date: 2009-10-04 21:32+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,28 +16,28 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: GTG/gtg.py:80
+#: GTG/gtg.py:79
 msgid "gtg is already running!"
 msgstr ""
 
-#: GTG/taskeditor/editor.py:265
+#: GTG/taskeditor/editor.py:270
 msgid "Due tomorrow !"
 msgstr ""
 
-#: GTG/taskeditor/editor.py:267
+#: GTG/taskeditor/editor.py:272
 #, python-format
 msgid "%s days left"
 msgstr ""
 
-#: GTG/taskeditor/editor.py:269
+#: GTG/taskeditor/editor.py:274
 msgid "Due today !"
 msgstr ""
 
-#: GTG/taskeditor/editor.py:271
-msgid "Due for yesterday"
+#: GTG/taskeditor/editor.py:276
+msgid "Due yesterday"
 msgstr ""
 
-#: GTG/taskeditor/editor.py:273
+#: GTG/taskeditor/editor.py:278
 #, python-format
 msgid "Was %s days ago"
 msgstr ""
@@ -659,6 +659,10 @@ msgstr ""
 msgid "That note does not exist. Do you want to create a new one?"
 msgstr ""
 
+#: GTG/plugins/tomboy/tomboy.py:233
+msgid "This Tomboy note does not exist anymore. Do you want to create it?"
+msgstr ""
+
 #: GTG/plugins/tomboy/tomboy.glade.h:1
 msgid "Insert Note"
 msgstr ""
@@ -667,7 +671,7 @@ msgstr ""
 msgid "Insert the title of the tomboy note "
 msgstr ""
 
-#: GTG/plugins/rtm_sync/utility.py:54
+#: GTG/plugins/rtm_sync/utility.py:56
 msgid "saving critical object failed"
 msgstr ""
 

@@ -52,7 +52,7 @@ class TaskEditor :
                 delete_callback=None, close_callback=None,opentask_callback=None, 
                 tasktitle_callback=None, notes=False) :
         self.req = requester
-        self.time = time.time()
+        self.time = None
         self.gladefile = GnomeConfig.GLADE_FILE
         self.wTree = gtk.glade.XML(self.gladefile, "TaskEditor")
         self.cal_tree = gtk.glade.XML(self.gladefile, "calendar")
@@ -82,6 +82,7 @@ class TaskEditor :
         cal_dic = {
                 "on_nodate"             : self.nodate_pressed,
                 #"on_dayselected"        : self.day_selected,
+                #"on_month_changed"      : self.month_changed,
                 "on_dayselected_double" : self.day_selected_double,
         }
         self.cal_tree.signal_autoconnect(cal_dic)
@@ -106,6 +107,10 @@ class TaskEditor :
         self.cal_widget       = self.cal_tree.get_widget("calendar1")
         #self.cal_widget.set_property("no-month-change",True)
         self.sigid = None
+        self.sigid_month = None
+        #Do we have to close the calendar when date is changed ?
+        #This is a ugly hack to close the calendar on the first click
+        self.close_when_changed = True
         self.duedate_widget = self.wTree.get_widget("duedate_entry")
         self.startdate_widget = self.wTree.get_widget("startdate_entry")
         self.dayleft_label  = self.wTree.get_widget("dayleft")
@@ -139,7 +144,7 @@ class TaskEditor :
         #the first line is the title
         self.textview.set_text("%s\n"%title)
         #we insert the rest of the task
-        if texte : 
+        if texte :
             self.textview.insert("%s"%texte)
         else :
             #If not text, we insert tags
@@ -268,7 +273,7 @@ class TaskEditor :
                 elif result == 0:
                     txt = _("Due today !")
                 elif result == -1:
-                    txt = _("Due for yesterday")
+                    txt = _("Due yesterday")
                 elif result < 0:
                     txt = _("Was %s days ago") % -result
                 self.dayleft_label.set_markup("<span color='#666666'>"+txt+"</span>")    
@@ -299,7 +304,7 @@ class TaskEditor :
             self.inserttag_button.set_menu(menu)
 
         if refreshtext:
-            self.textview.modified()            
+            self.textview.modified(refresheditor=False)            
         if to_save:
             self.save()
             
@@ -367,6 +372,7 @@ class TaskEditor :
         self.cal_widget.select_day(int(d))
         self.calendar.connect('button-press-event', self.__focus_out)
         self.sigid = self.cal_widget.connect("day-selected",self.day_selected)
+        self.sigid_month = self.cal_widget.connect("month-changed",self.month_changed)
         
     def day_selected(self,widget) :
         y,m,d = widget.get_date()
@@ -374,7 +380,15 @@ class TaskEditor :
             self.task.set_due_date("%s-%s-%s"%(y,m+1,d))
         elif self.__opened_date == "start" :
             self.task.set_start_date("%s-%s-%s"%(y,m+1,d))
+        if self.close_when_changed :
+            self.__close_calendar()
+        else :
+            self.close_when_changed = True
         self.refresh_editor()
+        
+    def month_changed(self,widget) :
+        #This is a ugly hack to close the calendar on the first click
+        self.close_when_changed = False
     
     def day_selected_double(self,widget) : #pylint: disable-msg=W0613
         self.__close_calendar()
@@ -457,11 +471,24 @@ class TaskEditor :
     #light_save save the task without refreshing every 30seconds
     #We will reduce the time when the get_text will be in another thread
     def light_save(self) :
-        diff = time.time() - self.time
-        if diff > GnomeConfig.SAVETIME :
-            self.task.set_text(self.textview.get_text())
-            self.task.sync()
-            self.time = time.time()
+        #if self.time is none, we never called any save
+        if self.time:
+            diff = time.time() - self.time
+            tosave = diff > GnomeConfig.SAVETIME
+        else:
+            self.time = 1
+            tosave = False
+            diff = None
+        if tosave:
+            #We don't want to save a new empty task
+            #so we check for the content
+            empty = "<content/>"
+            actual = self.textview.get_text()
+            isempty = (actual == empty or actual == "")
+            if not self.task.is_new() or not isempty:
+                self.task.set_text(self.textview.get_text())
+                self.task.sync()
+                self.time = time.time()
         
         
     #This will bring the Task Editor to front    
@@ -469,7 +496,7 @@ class TaskEditor :
         self.window.present()
         
     #We define dummy variable for when close is called from a callback
-    def close(self,window,a=None,b=None,c=None) : #pylint: disable-msg=W0613
+    def close(self,window=None,a=None,b=None,c=None) : #pylint: disable-msg=W0613
         #We should also destroy the whole taskeditor object.
         self.window.destroy()
     
@@ -480,9 +507,12 @@ class TaskEditor :
     def destruction(self,a=None) :#pylint: disable-msg=W0613
         #Save should be also called when buffer is modified
         self.pengine.onTaskClose(self.plugins, self.te_plugin_api)
-        self.save()
-        self.closing(self.task.get_id())
-        
+        tid = self.task.get_id()
+        if self.task.is_new():
+            self.req.delete_task(tid)
+        else:
+            self.save()
+        self.closing(tid)
         
 ############# Private functions #################
         
@@ -503,6 +533,9 @@ class TaskEditor :
         if self.sigid :
             self.cal_widget.disconnect(self.sigid)
             self.sigid = None
+        if self.sigid_month :
+            self.cal_widget.disconnect(self.sigid_month)
+            self.sigid_month = None
         
 
     

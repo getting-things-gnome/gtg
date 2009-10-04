@@ -17,20 +17,36 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-"""Unit tests for GTG."""
+"""Tests for GTG backends.
 
+Some of these tests will generate files in
+xdg.BaseDirectory.xdg_data_home/gtg directory.
+"""
+
+# Standard imports
 import unittest
+import os
+import xdg
 
-from GTG.tests import (
-    test_backends,
-    test_tagstore,
-    test_taskviewserial,
-    )
+from GTG.taskeditor import taskviewserial
+    
+class GtgBackendsUniTests(unittest.TestCase):
+    """Tests for GTG backends."""
 
+    def __init__(self, test):
+        unittest.TestCase.__init__(self, test)
+        self.taskfile = ''
+        self.datafile = ''
+        self.taskpath = ''
+        self.datapath = ''
 
+    def test_unserializer_parsexml(self):
+        """Tests for parsexml in unserializing :
+        - the task should be preserved
+        """
+        taskview = None
+        unserial = taskviewserial.Unserializer(taskview)
+        
+        
 def test_suite():
-    return unittest.TestSuite([
-        test_backends.test_suite(),
-        test_tagstore.test_suite(),
-        test_taskviewserial.test_suite(),
-        ])
+    return unittest.TestLoader().loadTestsFromName(__name__)
