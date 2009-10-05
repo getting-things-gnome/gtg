@@ -102,7 +102,10 @@ class TaskTreeModel(gtk.GenericTreeModel):
 
     def on_get_value(self, rowref, column):
         node = self.tree.get_node_for_rowref(rowref)
-        task = node.get_obj()
+        if not node:
+            return None
+        else:
+            task = node.get_obj()
         if   column == COL_TID:
             return task.get_id()
         elif column == COL_OBJ:
@@ -137,8 +140,8 @@ class TaskTreeModel(gtk.GenericTreeModel):
                 else:
                     title = task.get_title()
             elif task.get_status() == Task.STA_DISMISSED:
-                  title = "<span color='#AAAAAA'>"\
-                      + task.get_title() + "</span>"
+                    title = "<span color='#AAAAAA'>"\
+                        + task.get_title() + "</span>"
             else:
                 title = task.get_title()
             return title
@@ -169,7 +172,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
         #print "on_iter_children: %s" % (rowref)
         if rowref:
             node = self.tree.get_node_for_rowref(rowref)
-            if node.has_child():
+            if node and node.has_child():
                 return self.tree.get_rowref_for_node(node.get_nth_child(0))
             else:
                 return None
@@ -180,7 +183,10 @@ class TaskTreeModel(gtk.GenericTreeModel):
     def on_iter_has_child(self, rowref):
         #print "on_iter_has_child: %s" % (rowref)
         node = self.tree.get_node_for_rowref(rowref)
-        return node.has_child()
+        if node:
+            return node.has_child()
+        else:
+            return None
 
     def on_iter_n_children(self, rowref):
         #print "on_iter_n_children: %s" % (rowref)

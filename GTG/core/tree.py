@@ -186,11 +186,11 @@ class TreeNode():
         return self.children[index]
 
     def get_child(self, id):
-        try:
+        if id in self.ids:
             idx = self.ids.index(id)
-        except:
-            print "BUG: id %id not in idx list (tree.py)" %id
-        return self.children[idx]
+            return self.children[idx]
+        else:
+            return None
 
     def get_child_index(self, id):
         return self.ids.index(id)
