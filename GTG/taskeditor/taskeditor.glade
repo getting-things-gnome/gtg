@@ -4,9 +4,9 @@
   <!-- interface-naming-policy toplevel-contextual -->
   <widget class="GtkWindow" id="TaskEditor">
     <property name="title" translatable="yes">Task</property>
-    <property name="window_position">center-always</property>
-    <property name="default_width">350</property>
-    <property name="default_height">350</property>
+    <property name="window_position">mouse</property>
+    <property name="default_width">450</property>
+    <property name="default_height">400</property>
     <child>
       <widget class="GtkVBox" id="vbox4">
         <property name="visible">True</property>
@@ -150,6 +150,7 @@
           </widget>
           <packing>
             <property name="expand">False</property>
+            <property name="fill">False</property>
             <property name="position">2</property>
           </packing>
         </child>
@@ -219,6 +220,7 @@
               </widget>
               <packing>
                 <property name="expand">False</property>
+                <property name="fill">False</property>
                 <property name="padding">10</property>
                 <property name="position">2</property>
               </packing>
@@ -280,6 +282,7 @@
             </child>
           </widget>
           <packing>
+            <property name="expand">False</property>
             <property name="position">3</property>
           </packing>
         </child>
