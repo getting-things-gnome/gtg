@@ -234,17 +234,19 @@ class TaskSource() :
         return None
     
     #This function, called in a thread, write to the backend.
-    #It acquires a lock to avoid multiple thread writing the same task
+    #It acquires a lock to avoid multiple thread writing at the same time
+    #the lock is writing_lock
     def __write(self) :   
             while len(self.to_write) > 0:
                 task = self.to_write.pop()
                 tid = task.get_id()
                 if tid not in self.removed :
-                    self.locks.acquire(tid)
-                    try :
-                        self.backend.set_task(task)
-                    finally :
-                        self.locks.release(tid)
+#                    self.locks.acquire(tid)
+#                    try :
+#                    print self.locks.acquire(tid)
+                    self.backend.set_task(task)
+#                    finally :
+#                    self.locks.release(tid)
             self.writing_lock.release()
             
     
