@@ -780,7 +780,7 @@ class TaskBrowser:
         @param user_data:
         """
         task = model.get_value(iter, tasktree.COL_OBJ)
-        if task.get_status() != Task.STA_ACTIVE:
+        if not task or task.get_status() != Task.STA_ACTIVE:
             return False
         if not model.iter_parent(iter):
             return self.is_task_visible(task) and not self.is_lineage_visible(task)
