@@ -552,6 +552,10 @@ class TaskBrowser:
             view = self.config["browser"]["view"]
             if view == "workview":
                 self.do_toggle_workview()
+                
+        if "opened_tasks" in self.config["browser"]:
+            for t in self.config["browser"]["opened_tasks"]:
+                self.open_task(t)
 
 #        if "experimental_notes" in self.config["browser"]:
 #            self.notes = eval(self.config["browser"]["experimental_notes"])
@@ -707,7 +711,7 @@ class TaskBrowser:
         t = self.req.get_task(uid)
         if uid in self.opened_task:
             self.opened_task[uid].present()
-        else:
+        elif t:
             tv = TaskEditor(
                 self.req, t, self.plugins, 
                 self.on_delete_task, self.close_task, self.open_task, 
@@ -942,6 +946,8 @@ class TaskBrowser:
                 quickadd_pane,
             'view':
                 view,
+            'opened_tasks':
+                self.opened_task.keys(),
             }
         if   sort_column is not None and sort_order == gtk.SORT_ASCENDING:
             self.config["browser"]["tasklist_sort"]  = [sort_column, 0]
