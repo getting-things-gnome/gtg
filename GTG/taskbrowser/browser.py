@@ -554,8 +554,11 @@ class TaskBrowser:
                 self.do_toggle_workview()
                 
         if "opened_tasks" in self.config["browser"]:
-            for t in self.config["browser"]["opened_tasks"]:
-                self.open_task(t)
+            odic = self.config["browser"]["opened_tasks"]
+            for t in odic.keys():
+                ted = self.open_task(t)
+                #restoring position doesn't work, I don't know why
+                #ted.move(odic[t][0],odic[t][1])
 
 #        if "experimental_notes" in self.config["browser"]:
 #            self.notes = eval(self.config["browser"]["experimental_notes"])
@@ -709,8 +712,10 @@ class TaskBrowser:
         Else, we create a new one.
         """
         t = self.req.get_task(uid)
+        tv = None
         if uid in self.opened_task:
-            self.opened_task[uid].present()
+            tv = self.opened_task[uid]
+            tv.present()
         elif t:
             tv = TaskEditor(
                 self.req, t, self.plugins, 
@@ -718,6 +723,7 @@ class TaskBrowser:
                 self.get_tasktitle)
             #registering as opened
             self.opened_task[uid] = tv
+        return tv
 
     def get_tasktitle(self, tid):
         task = self.req.get_task(tid)
@@ -919,6 +925,12 @@ class TaskBrowser:
         # plugins are deactivated
         if self.plugins:
             self.pengine.deactivatePlugins(self.plugins, self.plugin_api)
+            
+        #save opened tasks and their positions.
+        open_task = dict()
+        for otid in self.opened_task.keys():     
+            open_task[otid] = self.opened_task[otid].get_position()
+            self.opened_task[otid].close()
 
         # Populate configuration dictionary
         self.config["browser"] = {
@@ -947,7 +959,7 @@ class TaskBrowser:
             'view':
                 view,
             'opened_tasks':
-                self.opened_task.keys(),
+                open_task,
             }
         if   sort_column is not None and sort_order == gtk.SORT_ASCENDING:
             self.config["browser"]["tasklist_sort"]  = [sort_column, 0]

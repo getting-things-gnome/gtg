@@ -492,8 +492,18 @@ class TaskEditor :
         
         
     #This will bring the Task Editor to front    
-    def present(self) :
+    def present(self):
         self.window.present()
+    def move(self,x,y):
+        try:
+            xx=int(x)
+            yy=int(y)
+            print "move to %s %s"%(xx,yy)
+            self.window.move(xx,yy)
+        except:
+            pass
+    def get_position(self):
+        return self.window.get_position()
         
     #We define dummy variable for when close is called from a callback
     def close(self,window=None,a=None,b=None,c=None) : #pylint: disable-msg=W0613
