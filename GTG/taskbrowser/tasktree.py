@@ -262,6 +262,8 @@ class TaskTreeModel(gtk.GenericTreeModel):
         # Get child
         child_tid  = self.get_value(child, COL_TID)
         child_task = self.req.get_task(child_tid)
+        #if we move a task, this task should be saved, even if new
+        child_task.set_to_keep()
         # Get old parent
         old_par = self.iter_parent(child)
         if old_par:
