@@ -25,8 +25,6 @@ import pygtk
 pygtk.require('2.0')
 import gobject
 import gtk.glade
-import threading
-import xml.sax.saxutils as saxutils
 import os
 import locale
 import re
@@ -47,7 +45,7 @@ from GTG.taskbrowser.tasktree         import TaskTreeModel,\
 from GTG.taskbrowser                  import tagtree
 from GTG.taskbrowser.tagtree          import TagTreeModel,\
                                              TagTreeView
-from GTG.tools                        import colors, openurl
+from GTG.tools                        import openurl
 from GTG.core.plugins.manager         import PluginManager
 from GTG.core.plugins.engine          import PluginEngine
 from GTG.core.plugins.api             import PluginAPI
@@ -83,11 +81,6 @@ class TaskBrowser:
         self.opened_task  = {}   # This is the list of tasks that are already
                                  # opened in an editor of course it's empty
                                  # right now
-
-#        # Define various locks for multi-threading
-#        self.refresh_lock      = threading.Lock()
-#        self.refresh_lock_lock = threading.Lock()
-#        self.lock              = threading.Lock()
 
         # Setup default values for view
         self._init_browser_config()
@@ -653,9 +646,9 @@ class TaskBrowser:
             today = datetime.date.today()
             today_day = today.weekday()
             if arg.lower() in day_names_en:
-                arg_day = day_names_en.index(arg)
+                arg_day = day_names_en.index(arg.lower())
             else:
-                arg_day = day_names.index(arg)
+                arg_day = day_names.index(arg.lower())
             if arg_day > today_day:
                 delta = datetime.timedelta(days = arg_day-today_day)
             else:
@@ -1228,6 +1221,8 @@ class TaskBrowser:
         """if we pass a tid as a parameter, we delete directly
         otherwise, we will look which tid is selected"""
         self.req.delete_task(self.tid_todelete)
+        if self.tid_todelete in self.opened_task:
+            self.opened_task[self.tid_todelete].close()
         self.tid_todelete = None
         #self.do_refresh()
 
@@ -1345,7 +1340,7 @@ class TaskBrowser:
 #            self.ctask_tv.get_selection().unselect_all()
 #            self.task_tv.get_selection().unselect_all()
     
-    def on_pluginmanager_activate(self, widget) :
+    def on_pluginmanager_activate(self, widget):
         PluginManager(self.window, self.plugins, self.pengine, self.plugin_api)
 
     def on_close(self, widget=None):
@@ -1373,6 +1368,16 @@ class TaskBrowser:
         self.tag_model.update_tags_for_task(tid)
         self._update_window_title()
         self.tags_tv.refresh()
+        #We also refresh the opened windows for that tasks,
+        #his children and his parents
+        #It might be faster to refresh every opened editor
+        tlist = [tid]
+        task = self.req.get_task(tid)
+        tlist += task.get_parents()
+        tlist += task.get_subtask_tids()
+        for uid in tlist:
+            if self.opened_task.has_key(uid):
+                self.opened_task[uid].refresh_editor(refreshtext=True)
 
 ### PUBLIC METHODS ############################################################
 #

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Gettings Things Gnome! - a personnal organizer for the GNOME desktop
+# Gettings Things Gnome! - a personal organizer for the GNOME desktop
 # Copyright (c) 2008-2009 - Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
@@ -206,7 +206,7 @@ class Requester(gobject.GObject):
         
         @param tag: A tag name.
         """
-        if tid in self.filter["tags"]:
+        if tag in self.filter["tags"]:
             self.filter["tags"].remove(tag)
     ############# Filters #########################
 

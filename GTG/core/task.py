@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Gettings Things Gnome! - a personnal organizer for the GNOME desktop
+# Gettings Things Gnome! - a personal organizer for the GNOME desktop
 # Copyright (c) 2008-2009 - Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
@@ -482,13 +482,12 @@ class Task:
     #Use the requester
     def delete(self):
         self.set_sync_func(None, callsync=False)
+        for task in self.get_subtasks():
+            self.req.delete_task(task.get_id())
         for i in self.get_parents():
             task = self.req.get_task(i)
             task.remove_subtask(self.get_id())
-        for task in self.get_subtasks():
-            self.req.delete_task(task.get_id())
-        #then we remove effectively the task
-        #self.req.delete_task(self.get_id())
+        
 
     #This is a callback. The "sync" function has to be set
     def set_sync_func(self, sync, callsync=True):
