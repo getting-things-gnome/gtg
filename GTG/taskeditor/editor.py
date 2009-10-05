@@ -484,9 +484,11 @@ class TaskEditor :
             #so we check for the content
             empty = "<content/>"
             actual = self.textview.get_text()
-            isempty = (actual == empty or actual == "")
+            isempty = (actual == empty or actual == "" or not actual)
             if not self.task.is_new() or not isempty:
-                self.task.set_text(self.textview.get_text())
+                #commented the following line because I don't know
+                #why we have it
+                #self.task.set_text(actual)
                 self.task.sync()
                 self.time = time.time()
         

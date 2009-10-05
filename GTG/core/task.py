@@ -72,6 +72,7 @@ class Task:
         if not self.loaded:
             self.loaded = True
             self.req._task_loaded(self.tid)
+            self.call_modified()
 
     def set_to_keep(self):
         self.can_be_deleted = False
@@ -495,12 +496,17 @@ class Task:
         self._modified_update()
         if self.sync_func and self.is_loaded():
             self.sync_func(self)
-            self.req._task_modified(self.tid)
-            #we also modify parents and children
-            for p in self.get_parents() :
-                self.req._task_modified(p)
-            for s in self.get_subtask_tids() :
-                self.req._task_modified(s)
+            self.call_modified()
+    
+    #This function send the modified signals for the tasks, 
+    #parents and childrens       
+    def call_modified(self):
+        self.req._task_modified(self.tid)
+        #we also modify parents and children
+        for p in self.get_parents() :
+            self.req._task_modified(p)
+        for s in self.get_subtask_tids() :
+            self.req._task_modified(s)
 
     def _modified_update(self):
         self.modified = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
