@@ -151,6 +151,8 @@ class TaskSource() :
         self.tosleep = 0
         self.backend_lock = threading.Lock()
         self.removed = []
+        self.to_write = []
+        self.writing_lock = threading.Lock()
 
 ##### The Backend interface ###############
 ##########################################
@@ -218,25 +220,33 @@ class TaskSource() :
             self.tasks[tid] = empty_task
         return empty_task
 
+    #only one thread is used to write the task
+    #if this thread is not started, we start it.
     def set_task(self,task) :
-        if THREADING:
-#            gobject.idle_add(self.__write,task)
-            t = threading.Thread(target=self.__write,args=[task])
-            t.start()
-        else:
-            self.__write(task)
+        self.to_write.append(task)
+        if self.writing_lock.acquire(False):
+            if THREADING:
+#               gobject.idle_add(self.__write,task)
+                t = threading.Thread(target=self.__write)
+                t.start()
+            else:
+                self.__write()
         return None
     
     #This function, called in a thread, write to the backend.
     #It acquires a lock to avoid multiple thread writing the same task
-    def __write(self,task) :
-        tid = task.get_id()
-        if tid not in self.removed :
-            self.locks.acquire(tid)
-            try :
-                self.backend.set_task(task)
-            finally :
-                self.locks.release(tid)
+    def __write(self) :   
+            while len(self.to_write) > 0:
+                task = self.to_write.pop()
+                tid = task.get_id()
+                if tid not in self.removed :
+                    self.locks.acquire(tid)
+                    try :
+                        self.backend.set_task(task)
+                    finally :
+                        self.locks.release(tid)
+            self.writing_lock.release()
+            
     
     #TODO : This has to be threaded too
     def remove_task(self,tid) :
