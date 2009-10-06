@@ -717,7 +717,7 @@ class TaskBrowser:
 
         return False # Return False or the TreeModel.foreach() function ends
 
-    def open_task(self, uid):
+    def open_task(self, uid,thisisnew=False):
         """Open the task identified by 'uid'.
 
         If a Task editor is already opened for a given task, we present it.
@@ -732,7 +732,7 @@ class TaskBrowser:
             tv = TaskEditor(
                 self.req, t, self.plugins, 
                 self.on_delete_task, self.close_task, self.open_task, 
-                self.get_tasktitle)
+                self.get_tasktitle,thisisnew=thisisnew)
             #registering as opened
             self.opened_task[uid] = tv
         return tv
@@ -1122,6 +1122,7 @@ class TaskBrowser:
             task = self.req.new_task(tags=tags, newtask=True)
             if text != "":
                 task.set_title(text)
+                task.set_to_keep()
             if not due_date is None:
                 task.set_due_date(due_date)
             if not defer_date is None:
@@ -1213,7 +1214,7 @@ class TaskBrowser:
         uid = task.get_id()
         if status:
             task.set_status(status)
-        self.open_task(uid)
+        self.open_task(uid,thisisnew=True)
 
     def on_add_subtask(self, widget):
         uid = self.get_selected_task()
@@ -1223,7 +1224,7 @@ class TaskBrowser:
             task   = self.req.new_task(tags=tags, newtask=True)
             task.add_parent(uid)
             zetask.add_subtask(task.get_id())
-            self.open_task(task.get_id())
+            self.open_task(task.get_id(),thisisnew=True)
             #self.do_refresh()
 
     def on_edit_active_task(self, widget, row=None, col=None):
