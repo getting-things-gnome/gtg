@@ -48,10 +48,12 @@ class DataStore:
             task = self.tasks[t]
             if task.is_loaded() :
                 all_tasks.append(t)
-#            else:
-#                if task.get_status() == "Active":
-#                    print "task %s is not loaded" %task.get_title()
-#        print "%s tasks but we return %s" %(len(tlist),len(all_tasks))
+            else:
+                if task.get_status() == "Active":
+#                    print "task %s is not loaded" %task.get_id()
+#                    print task.get_title()
+                    self.get_task(task.get_id())
+        #print "%s tasks but we return %s" %(len(tlist),len(all_tasks))
         return all_tasks
 
     def has_task(self,tid) :
@@ -69,6 +71,8 @@ class DataStore:
         else :
             task = empty_task
         #If the task doesn't exist, we create it with a forced pid
+#        if not self.tasks[tid].is_loaded():
+#            print "tid %s - %s" %(tid,self.tasks[tid].get_title())
         return task
         
     def delete_task(self,tid) :
@@ -209,10 +213,14 @@ class TaskSource() :
                 #self.locks.release(tid)
                 self.getting_lock.release()
         ##########
+        task = None
         if self.tasks.has_key(tid) :
             task = self.tasks[tid]
             if task :
+#                print "already existing"
                 empty_task = task
+            #this might not be needed
+                #gobject.idle_add(empty_task.set_loaded)
         #We will not try to get a removed task
         elif tid not in self.removed :
             #By putting the task in the dic, we say :
