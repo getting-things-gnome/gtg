@@ -50,7 +50,7 @@ date_separator = "/"
 class TaskEditor :
     def __init__(self, requester, task, plugins,
                 delete_callback=None, close_callback=None,opentask_callback=None, 
-                tasktitle_callback=None, notes=False) :
+                tasktitle_callback=None, notes=False,thisisnew=False) :
         self.req = requester
         self.time = None
         self.gladefile = GnomeConfig.GLADE_FILE
@@ -157,8 +157,10 @@ class TaskEditor :
             if subtasks :
                 self.textview.insert_subtasks(subtasks)
         #We select the title if it's a new task
-        if self.task.is_new() :
+        if thisisnew :
             self.textview.select_title()
+        else :
+            self.task.set_to_keep()
         self.textview.modified(full=True)
         self.window.connect("destroy", self.destruction)
         
