@@ -67,12 +67,13 @@ class Task:
     def is_loaded(self):
         return self.loaded
 
-    def set_loaded(self):
+    def set_loaded(self,signal=True):
         #avoid doing it multiple times
         if not self.loaded:
             self.loaded = True
-            self.req._task_loaded(self.tid)
-            self.call_modified()
+            if signal:
+                self.req._task_loaded(self.tid)
+                self.call_modified()
 
     def set_to_keep(self):
         self.can_be_deleted = False
