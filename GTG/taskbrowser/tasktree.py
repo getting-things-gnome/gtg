@@ -252,8 +252,9 @@ class TaskTreeModel(gtk.GenericTreeModel):
         for node in nodes:
             self._add_all_subtasks(node, task)
             node_path = self.tree.get_path_for_node(node)
-            node_iter = self.get_iter(node_path)
-            self.row_has_child_toggled(node_path, node_iter)
+            if node_path:
+                node_iter = self.get_iter(node_path)
+                self.row_has_child_toggled(node_path, node_iter)
 
     def remove_task(self, tid):
         # get the nodes

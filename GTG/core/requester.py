@@ -156,8 +156,7 @@ class Requester(gobject.GObject):
 
             # If we still have a task, we return it.
             if task:
-                l_tasks.append(tid)
-                
+                l_tasks.append(tid)  
         return l_tasks
     
     ############# Filters #########################

@@ -29,6 +29,8 @@ import os
 import locale
 import re
 import datetime
+import threading
+import time
 
 #our own imports
 import GTG
@@ -64,6 +66,14 @@ QUICKADD_PANE      = True
 TOOLBAR            = True
 BG_COLOR           = True
 #EXPERIMENTAL_NOTES = False
+TIME = 0
+
+class Timer:
+    def __init__(self,st):
+        self.st = st
+    def __enter__(self): self.start = time.time()
+    def __exit__(self, *args): 
+        print "%s : %s" %(self.st,time.time() - self.start)
 
 class TaskBrowser:
 
@@ -119,6 +129,8 @@ class TaskBrowser:
         
         # Initialize the plugin-engine
         self._init_plugin_engine()
+        
+        self.refresh_lock = threading.Lock()
 
         # NOTES
         #self._init_note_support()
@@ -1358,8 +1370,7 @@ class TaskBrowser:
     def on_task_added(self, sender, tid):
         #print "Task added: %s" % tid
         self.task_tree_model.add_task(tid)
-        self.tag_model.update_tags_for_task(tid)
-        self._update_window_title()
+        #no need to do more as task_modified will be called anyway
         
     def on_task_deleted(self, sender, tid):
         #print "Task deleted: %s" % tid
@@ -1372,7 +1383,6 @@ class TaskBrowser:
         self.task_tree_model.remove_task(tid)
         self.task_tree_model.add_task(tid)
         self.tag_model.update_tags_for_task(tid)
-        self._update_window_title()
         self.tags_tv.refresh()
         #We also refresh the opened windows for that tasks,
         #his children and his parents
@@ -1384,6 +1394,18 @@ class TaskBrowser:
         for uid in tlist:
             if self.opened_task.has_key(uid):
                 self.opened_task[uid].refresh_editor(refreshtext=True)
+        #if the modified task is active, we have to refresh everything
+        #to avoid some odd stuffs when loading
+        if task.get_status() == "Active" :
+            if self.refresh_lock.acquire(False):
+                gobject.idle_add(self.general_refresh)
+        
+    def general_refresh(self):
+        self.task_modelfilter.refilter()
+#        self.tag_modelfilter.refilter()
+#        self.tags_tv.refresh()
+        self._update_window_title()
+        self.refresh_lock.release()
 
 ### PUBLIC METHODS ############################################################
 #
@@ -1466,6 +1488,5 @@ class TaskBrowser:
         # Restore state from config
         self.restore_state_from_conf()
         self.window.show()
-
         gtk.main()
         return 0

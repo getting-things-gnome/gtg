@@ -48,6 +48,10 @@ class DataStore:
             task = self.tasks[t]
             if task.is_loaded() :
                 all_tasks.append(t)
+#            else:
+#                if task.get_status() == "Active":
+#                    print "task %s is not loaded" %task.get_title()
+#        print "%s tasks but we return %s" %(len(tlist),len(all_tasks))
         return all_tasks
 
     def has_task(self,tid) :
@@ -153,6 +157,8 @@ class TaskSource() :
         self.removed = []
         self.to_write = []
         self.writing_lock = threading.Lock()
+        self.to_get = []
+        self.getting_lock = threading.Lock()
 
 ##### The Backend interface ###############
 ##########################################
@@ -182,23 +188,26 @@ class TaskSource() :
         
     def get_task(self,empty_task,tid) :
         #Our thread
-        def getting(empty_task,tid) :
-            self.locks.acquire(tid)
+        def getting() :
+            #self.locks.acquire(tid)
             try :
-                #if self.locks.ifnotblocked(tid) :
-                self.backend.get_task(empty_task,tid)
-                #calling sync in a thread might cause a segfault
-                #thus callsync to false
-                empty_task.set_sync_func(self.set_task,callsync=False)
-                #set_loaded is a function that emits a signal. 
-                #Emiting a signal in a thread is likely to segfault
-                #by wrapping it in idle_add, we ensure that gobject mainloop
-                #handles the signal and not the tread itself.
-                #it's not a problem to not know when it is executed
-                #since it's the last instruction of the tread
-                gobject.idle_add(empty_task.set_loaded)
+                while len(self.to_get) > 0:
+                    tid,empty_task = self.to_get.pop()
+                    #if self.locks.ifnotblocked(tid) :
+                    self.backend.get_task(empty_task,tid)
+                    #calling sync in a thread might cause a segfault
+                    #thus callsync to false
+                    empty_task.set_sync_func(self.set_task,callsync=False)
+                    #set_loaded is a function that emits a signal. 
+                    #Emiting a signal in a thread is likely to segfault
+                    #by wrapping it in idle_add, we ensure that gobject mainloop
+                    #handles the signal and not the tread itself.
+                    #it's not a problem to not know when it is executed
+                    #since it's the last instruction of the tread
+                    gobject.idle_add(empty_task.set_loaded)
             finally :
-                self.locks.release(tid)
+                #self.locks.release(tid)
+                self.getting_lock.release()
         ##########
         if self.tasks.has_key(tid) :
             task = self.tasks[tid]
@@ -209,14 +218,16 @@ class TaskSource() :
             #By putting the task in the dic, we say :
             #"This task is already fetched (or at least in fetching process)
             self.tasks[tid] = False
-            if THREADING :
-                self.locks.create_lock(tid)
-#                gobject.idle_add(getting,empty_task,tid)
-                t = threading.Thread(target=getting,args=[empty_task,tid])
-                t.start()
-            else :
-                self.locks.create_lock(tid)
-                getting(empty_task,tid)
+            self.to_get.append([tid,empty_task])
+            if self.getting_lock.acquire(False):
+                if THREADING :
+#                    self.locks.create_lock(tid)
+    #                gobject.idle_add(getting,empty_task,tid)
+                    t = threading.Thread(target=getting)
+                    t.start()
+                else :
+#                    self.locks.create_lock(tid)
+                    getting(empty_task,tid)
             self.tasks[tid] = empty_task
         return empty_task
 
@@ -236,7 +247,8 @@ class TaskSource() :
     #This function, called in a thread, write to the backend.
     #It acquires a lock to avoid multiple thread writing at the same time
     #the lock is writing_lock
-    def __write(self) :   
+    def __write(self) : 
+        try:
             while len(self.to_write) > 0:
                 task = self.to_write.pop()
                 tid = task.get_id()
@@ -247,6 +259,7 @@ class TaskSource() :
                     self.backend.set_task(task)
 #                    finally :
 #                    self.locks.release(tid)
+        finally:
             self.writing_lock.release()
             
     
