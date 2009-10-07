@@ -182,6 +182,8 @@ class Tag(TreeNode):
         self._name = str(name)
         self._attributes = {'name': self._name}
         self._save = save_cllbk
+        #list of tasks associated with this tag
+        self.tasks = []
 
     def get_name(self):
         """Return the name of the tag."""
@@ -226,6 +228,28 @@ class Tag(TreeNode):
         if butname:
             attributes.remove('name')
         return attributes
+        
+    ### TASK relation ####      
+    def add_task(self, tid):
+        if tid not in self.tasks:
+            self.tasks.append(tid)      
+    def remove_task(self,tid):
+        if tid in self.tasks:
+            self.tasks.remove(tid)          
+    def get_tasks(self):
+        #return a copy of the list
+        toreturn = self.tasks[:]
+        return toreturn 
+    def get_tasks_nbr(self):
+        return len(self.tasks)
+    def is_used(self):
+        return len(self.tasks) > 0
+    def is_actively_used(self):
+        toreturn = False
+        for task in self.tasks :
+            if task.get_status == "Active":
+                toreturn = True
+        return toreturn
 
     def __str__(self):
         return "Tag: %s" % self.get_name()

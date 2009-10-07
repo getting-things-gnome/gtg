@@ -325,12 +325,16 @@ class Requester(gobject.GObject):
         @return: A list of tags used by a open or closed task.
         """
         l = []
-        for tid in self.ds.all_tasks():
-            t = self.get_task(tid)
-            if t:
-                for tag in t.get_tags():
-                    if tag not in l:
-                        l.append(tag)
+        for t in self.ds.get_tagstore().get_all_tags():
+            if t.is_used() and t not in l:
+                l.append(t)     
+#        l = []
+#        for tid in self.ds.all_tasks():
+#            t = self.get_task(tid)
+#            if t:
+#                for tag in t.get_tags():
+#                    if tag not in l:
+#                        l.append(tag)
         l.sort(cmp=lambda x, y: cmp(x.get_name().lower(),\
             y.get_name().lower()))
         return l
@@ -347,12 +351,15 @@ class Requester(gobject.GObject):
         @return: A list of tags used by a task.
         """
         l = []
-        for tid in self.get_tasks_list(started_only=False):
-            t = self.get_task(tid)
-            if t:
-                for tag in t.get_tags():
-                    if tag not in l:
-                        l.append(tag)
+        for t in self.ds.get_tagstore().get_all_tags():
+            if t.is_actively_used() and t not in l:
+                l.append(t) 
+#        for tid in self.get_tasks_list(started_only=False):
+#            t = self.get_task(tid)
+#            if t:
+#                for tag in t.get_tags():
+#                    if tag not in l:
+#                        l.append(tag)
         l.sort(cmp=lambda x, y: cmp(x.get_name().lower(),\
             y.get_name().lower()))
         return l

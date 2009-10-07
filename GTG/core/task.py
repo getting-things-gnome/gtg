@@ -531,6 +531,7 @@ class Task:
     #This function add tag by name
     def add_tag(self, tagname):
         t = self.req.new_tag(tagname.encode("UTF-8"))
+        t.add_task(self.get_id())
         #Do not add the same tag twice
         if not t in self.tags:
             self.tags.append(t)
@@ -541,6 +542,7 @@ class Task:
     #remove by tagname
     def remove_tag(self, tagname):
         t = self.req.get_tag(tagname)
+        t.remove_task(self.get_id())
         if t in self.tags:
             self.tags.remove(t)
             for child in self.get_subtasks():
