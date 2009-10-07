@@ -242,8 +242,20 @@ class Tag(TreeNode):
         #return a copy of the list
         toreturn = self.tasks[:]
         return toreturn 
-    def get_tasks_nbr(self):
-        return len(self.tasks)
+    def get_tasks_nbr(self,workview=False):
+        if workview:
+            if self.get_attribute("nonworkview") == "True":
+                toreturn = 0
+            else:
+                temp_list = []
+                for t in self.tasks:
+                    ta = self.req.get_task(t)
+                    if ta.get_status() == "Active" and ta.is_workable():
+                        temp_list.append(t)
+                toreturn = len(temp_list)
+        else:
+            toreturn = len(self.tasks)
+        return toreturn
     def is_used(self):
         return len(self.tasks) > 0
     def is_actively_used(self):
