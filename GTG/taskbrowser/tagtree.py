@@ -18,6 +18,7 @@
 # -----------------------------------------------------------------------------
 import gtk
 import gobject
+import time
 
 from GTG import _
 from GTG.taskbrowser.CellRendererTags import CellRendererTags
@@ -29,6 +30,10 @@ COL_OBJ   = 3
 COL_COLOR = 4
 COL_COUNT = 5
 COL_SEP   = 6
+
+class Timer():
+   def __enter__(self): self.start = time.time()
+   def __exit__(self, *args): print time.time() - self.start
 
 class TagTreeModel(gtk.GenericTreeModel):
 
@@ -104,9 +109,11 @@ class TagTreeModel(gtk.GenericTreeModel):
         elif column == COL_COUNT:
             sp_id = tag.get_attribute("special")
             if not sp_id:
-                count = len(self.req.get_active_tasks_list(\
-                       tags=[tag], workable=self.workview, \
-                       started_only=self.workview))
+                #This call is critical because called thousand of times
+#                    count = len(self.req.get_active_tasks_list(\
+#                            tags=[tag], workable=self.workview, \
+#                            started_only=self.workview))
+                count = tag.get_tasks_nbr(workview=self.workview)
                 return  count
             else:
                 if sp_id == "all":

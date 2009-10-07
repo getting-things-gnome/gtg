@@ -37,8 +37,8 @@ class DataStore:
     def __init__ (self):
         self.backends = {}
         self.tasks = {}
-        self.tagstore = tagstore.TagStore()
         self.requester = requester.Requester(self)
+        self.tagstore = tagstore.TagStore(self.requester)
         
     def all_tasks(self):
         all_tasks = []
@@ -73,6 +73,10 @@ class DataStore:
         #If the task doesn't exist, we create it with a forced pid
 #        if not self.tasks[tid].is_loaded():
 #            print "tid %s - %s" %(tid,self.tasks[tid].get_title())
+#            for t in self.tasks :
+#                print self.tasks[t]
+#                print "----------------"
+#            print "###########################"
         return task
         
     def delete_task(self,tid) :
