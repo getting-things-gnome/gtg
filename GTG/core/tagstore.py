@@ -250,11 +250,23 @@ class Tag(TreeNode):
                 temp_list = []
                 for t in self.tasks:
                     ta = self.req.get_task(t)
-                    if ta.get_status() == "Active" and ta.is_workable():
-                        temp_list.append(t)
+                    if ta.get_status() == "Active" and ta.is_workable() and\
+                                                       ta.is_started():
+                        #the task is workviewable but might have other tags
+                        toadd = True
+                        for tatag in ta.get_tags():
+                            if tatag.get_attribute("nonworkview") == "True":
+                                toadd = False
+                        if toadd:
+                            temp_list.append(t)
                 toreturn = len(temp_list)
         else:
-            toreturn = len(self.tasks)
+            temp_list = []
+            for t in self.tasks:
+                ta = self.req.get_task(t)
+                if ta.get_status() == "Active" :
+                    temp_list.append(t)
+            toreturn = len(temp_list)
         return toreturn
     def is_used(self):
         return len(self.tasks) > 0
