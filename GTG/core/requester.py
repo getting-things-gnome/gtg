@@ -120,7 +120,15 @@ class Requester(gobject.GObject):
         @return: A list of task ids (tids).
         """
         l_tasks = []
-        for tid in self.ds.all_tasks():
+        temp_list = []
+        if tags:
+            for t in tags :
+                for tid in t.get_tasks():
+                    if tid not in temp_list:
+                        temp_list.append(tid)
+        else:
+            temp_list = self.ds.all_tasks()
+        for tid in temp_list:
             task = self.get_task(tid)
             if task and not task.is_loaded():
                 task = None
@@ -130,13 +138,15 @@ class Requester(gobject.GObject):
             # This is tag filtering.
             # If we still have a task and we need to filter tags
             # (if tags is None, this test is skipped)
-            if task and tags:
-                if not task.has_tags(tags):
-                    task = None
-                # Checking here the is_root because it has sense only with
-                # tags.
-                elif is_root and task.has_parents(tag=tags):
-                    task = None
+#            if task and tags:
+#                if not task.has_tags(tags):
+#                    task = None
+#                # Checking here the is_root because it has sense only with
+#                # tags.
+#                elif is_root and task.has_parents(tag=tags):
+#                    task = None
+            if task and tags and is_root and task.has_parents(tag=tags):
+                task = None
             #If tags = [], we still check the is_root.
             elif task and is_root:
                 if task.has_parents():
