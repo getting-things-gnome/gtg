@@ -239,7 +239,8 @@ class TaskSource() :
                     t.start()
                 else :
 #                    self.locks.create_lock(tid)
-                    getting(empty_task,tid)
+                    #getting(empty_task,tid)
+                    getting()
             self.tasks[tid] = empty_task
         return empty_task
 
