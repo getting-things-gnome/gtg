@@ -20,14 +20,17 @@ class Bug:
     def __init__(self, base, nb):
         self.bug = Bugz(base).get(nb)
 
+    def _get_detail(self, detail):
+        return self.bug.find('//%s' % detail).text
+
     def get_title(self):
-        return self.bug.find('//%s' % 'short_desc').text
+        return self._get_detail('short_desc')
 
     def get_product(self):
-        return self.bug.find('//%s' % 'product').text
+        return self._get_detail('product')
 
     def get_component(self):
-        return self.bug.find('//%s' % 'component').text
+        return self._get_detail('component')
 
 if __name__ == '__main__':
      for bug in [Bug('http://bugzilla.gnome.org', '598354'),
