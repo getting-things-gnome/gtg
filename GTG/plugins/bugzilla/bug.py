@@ -19,6 +19,8 @@ from bugz import Bugz
 class Bug:
     def __init__(self, base, nb):
         self.bug = Bugz(base).get(nb)
+        if self.bug is None:
+            raise Exception('Failed to create bug')
 
     def _get_detail(self, detail):
         tmp = self.bug.find('//%s' % detail)

@@ -44,7 +44,10 @@ class pluginBugzilla:
         except IndexError:
             return
 
-        bug = Bug(base, nb)
+        try:
+            bug = Bug(base, nb)
+        except:
+            return
 
         title = bug.get_title()
         if title is None:
