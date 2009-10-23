@@ -29,6 +29,8 @@ class pluginBugzilla:
     def task_added_cb(self, task):
         url = task.get_title()
         r = urlparse(url)
+        if r.hostname is None:
+            return
 
         server = self.servers.get(r.hostname)
         if server is None:
