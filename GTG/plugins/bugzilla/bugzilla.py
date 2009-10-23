@@ -50,6 +50,3 @@ class pluginBugzilla:
 
     def onTaskOpened(self, plugin_api):
         pass
-
-    def _get_bug_title(self, url):
-        pass
