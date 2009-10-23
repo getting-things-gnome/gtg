@@ -21,7 +21,11 @@ class Bug:
         self.bug = Bugz(base).get(nb)
 
     def _get_detail(self, detail):
-        return self.bug.find('//%s' % detail).text
+        tmp = self.bug.find('//%s' % detail)
+        if tmp is None:
+            return None
+
+        return tmp.text
 
     def get_title(self):
         return self._get_detail('short_desc')

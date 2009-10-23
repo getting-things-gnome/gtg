@@ -46,7 +46,12 @@ class pluginBugzilla:
 
         bug = Bug(base, nb)
 
-        task.set_title('#%s: %s' % (nb, bug.get_title()))
+        title = bug.get_title()
+        if title is None:
+            # can't find the title of the bug
+            return
+
+        task.set_title('#%s: %s' % (nb, title))
         task.set_text(url)
 
         tag = server.get_tag(bug)
