@@ -37,7 +37,13 @@ class pluginBugzilla:
             return
 
         base = '%s://%s' % (r.scheme, server.name)
-        nb = r.query.split('id=')[1]
+
+        # get the number of the bug
+        try:
+            nb = r.query.split('id=')[1]
+        except IndexError:
+            return
+
         bug = Bug(base, nb)
 
         task.set_title('#%s: %s' % (nb, bug.get_title()))
