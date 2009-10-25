@@ -5,6 +5,6 @@ Description=This plugin lets you add as many links as you like to tomboy notes i
 Authors=Luca Invernizzi <invernizzi.l@gmail.com>
 Version=0.1.1
 Enabled=False
-Dbus-dependencies=org.gnome.Tomboy:/org/gnome/Tomboy
+#Dbus-dependencies=org.gnome.Tomboy:/org/gnome/Tomboy
 Dependencies=dbus
 
