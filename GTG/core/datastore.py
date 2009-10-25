@@ -60,6 +60,8 @@ class DataStore:
         return self.tasks.has_key(tid)
         
     def get_task(self,tid) :
+#        if tid == "46@1" :
+#            print "getting 46@1"
         if self.tasks.has_key(tid) :
             empty_task = self.tasks[tid]
         else :

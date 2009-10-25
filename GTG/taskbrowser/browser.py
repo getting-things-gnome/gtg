@@ -1380,9 +1380,8 @@ class TaskBrowser:
         self._update_window_title()
         
     def on_task_modified(self, sender, tid):
-        #print "Task modified: %s" % tid
-        self.task_tree_model.remove_task(tid)
-        self.task_tree_model.add_task(tid)
+        if self.task_tree_model.remove_task(tid):
+            self.task_tree_model.add_task(tid)
         self.tag_model.update_tags_for_task(tid)
         self.tags_tv.refresh()
         #We also refresh the opened windows for that tasks,

@@ -219,7 +219,6 @@ class TaskTreeModel(gtk.GenericTreeModel):
             return None
 
     def add_task(self, tid):
-        #print "Adding %s... " % tid
         nodes = []
         # get the task
         task = self.req.get_task(tid)
@@ -259,11 +258,14 @@ class TaskTreeModel(gtk.GenericTreeModel):
     def remove_task(self, tid):
         # get the nodes
         nodes = self.tree.get_nodes(tid)
+        removed = False
         # Remove every row of this task
         for node in nodes:
             node_path = self.tree.get_path_for_node(node)
             self.tree.remove_node(tid, node)
             self.row_deleted(node_path)
+            removed = True
+        return removed
                     
     def move_task(self, parent, child):
         #print "Moving %s below %s" % (child, parent)
