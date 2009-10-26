@@ -20,6 +20,7 @@
 import gtk
 import gobject
 import pango
+import xml.sax.saxutils as saxutils
 
 from GTG import _
 from GTG.core.tree import Tree, TreeNode
@@ -112,7 +113,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
         elif column == COL_OBJ:
             return task
         elif column == COL_TITLE:
-            return task.get_title()
+            return saxutils.escape(task.get_title())
         elif column == COL_DDATE:
             return task.get_due_date()
         elif column == COL_CDATE:
@@ -137,14 +138,14 @@ class TaskTreeModel(gtk.GenericTreeModel):
             if task.get_status() == Task.STA_ACTIVE:
                 count = self._count_active_subtasks_rec(task)
                 if count != 0:
-                    title = task.get_title() + " (%s)" % count
+                    title = saxutils.escape(task.get_title()) + " (%s)" % count
                 else:
-                    title = task.get_title()
+                    title = saxutils.escape(task.get_title())
             elif task.get_status() == Task.STA_DISMISSED:
                     title = "<span color='#AAAAAA'>"\
-                        + task.get_title() + "</span>"
+                        + saxutils.escape(task.get_title()) + "</span>"
             else:
-                title = task.get_title()
+                title = saxutils.escape(task.get_title())
             return title
 
     def on_get_iter(self, path):
