@@ -38,9 +38,15 @@ class Bug:
     def get_component(self):
         return self._get_detail('component')
 
+    def get_description(self):
+        comment = self.bug.findall('//long_desc')[0]
+        return comment.find('.//thetext').text
+
 if __name__ == '__main__':
      for bug in [Bug('http://bugzilla.gnome.org', '598354'),
          Bug('http://bugs.freedesktop.org', '24120')]:
         print "title:", bug.get_title()
         print "product:", bug.get_product()
         print "component:", bug.get_component()
+        print "description:", bug.get_description()
+        print ""
