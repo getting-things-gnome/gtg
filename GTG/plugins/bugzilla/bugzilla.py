@@ -56,7 +56,7 @@ class pluginBugzilla:
 
         task.set_title('#%s: %s' % (nb, title))
 
-        text = "%s\n%s" % (url, bug.get_description())
+        text = "%s\n\n%s" % (url, bug.get_description())
         task.set_text(text)
 
         tag = server.get_tag(bug)
