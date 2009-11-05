@@ -100,7 +100,7 @@ class Task:
         return self.title
         
     def get_titles(self, list):
-        list.append(", " + self.title)
+        list.append(self.title)
         for task in self.get_subtasks():
             list = task.get_titles(list)
         return list

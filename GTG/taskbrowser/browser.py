@@ -751,8 +751,10 @@ class TaskBrowser:
     def get_task_and_subtask_titles(self, tid):
         task = self.req.get_task(tid)
         titles_list = task.get_titles([])
-        titles_list[0] = titles_list[0][2:]
-        return "".join(titles_list)
+        toreturn = ""
+        for st in titles_list :
+            toreturn = "%s\n- %s" %(toreturn,st) 
+        return toreturn
 
     def close_task(self, tid):
         # When an editor is closed, it should deregister itself.
