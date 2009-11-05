@@ -502,7 +502,6 @@ class TaskEditor :
         try:
             xx=int(x)
             yy=int(y)
-            print "move to %s %s"%(xx,yy)
             self.window.move(xx,yy)
         except:
             pass

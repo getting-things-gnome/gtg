@@ -570,7 +570,7 @@ class TaskBrowser:
             for t in odic.keys():
                 ted = self.open_task(t)
                 #restoring position doesn't work, I don't know why
-                #ted.move(odic[t][0],odic[t][1])
+                ted.move(odic[t][0],odic[t][1])
 
 #        if "experimental_notes" in self.config["browser"]:
 #            self.notes = eval(self.config["browser"]["experimental_notes"])
