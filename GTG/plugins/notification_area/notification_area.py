@@ -27,9 +27,11 @@ class NotificationArea:
     def activate(self, plugin_api):
         data_dir = plugin_api.get_data_dir()
         icon = gtk.gdk.pixbuf_new_from_file_at_size(data_dir + "/icons/hicolor/16x16/apps/gtg.png", 16, 16)
-        statusicon = gtk.status_icon_new_from_pixbuf(icon)
-        statusicon.set_tooltip("Getting Things Gnome!")
-        statusicon.connect('activate', self.minimize, plugin_api)
+        if not hasattr(self,"statusicon"):
+            self.statusicon = gtk.status_icon_new_from_pixbuf(icon)
+            self.statusicon.set_tooltip("Getting Things Gnome!")
+            self.statusicon.connect('activate', self.minimize, plugin_api)
+        self.statusicon.set_visible(True)
         
         menu = gtk.Menu()
         
@@ -58,13 +60,13 @@ class NotificationArea:
         menu.append(gtk.SeparatorMenuItem())
         
         menuItem = gtk.ImageMenuItem(gtk.STOCK_QUIT)
-        menuItem.connect('activate', self.exit, statusicon)
+        menuItem.connect('activate', self.exit, self.statusicon)
         menu.append(menuItem)
         
-        statusicon.connect('popup-menu', self.on_icon_popup, menu)
+        self.statusicon.connect('popup-menu', self.on_icon_popup, menu)
         
     def deactivate(self, plugin_api):
-        pass
+        self.statusicon.set_visible(False)
     
     def onTaskOpened(self, plugin_api):
         pass
