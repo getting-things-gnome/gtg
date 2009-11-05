@@ -17,12 +17,45 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-from datetime import date
+from datetime import date, timedelta
+
+class FakeDate():
+    def __init__(self, offset, name):
+        self.name=name
+        self.proto = date.today()+timedelta(offset)
+        
+    def __str__(self):
+        return self.name
+        
+
+NOW = FakeDate(0, 'now')
+SOON = FakeDate(7, 'soon')
+LATER = FakeDate(365, 'later')
+
+def date_cmp(a, b):
+    if isinstance(a, FakeDate):
+        a = a.proto
+    if isinstance(b, FakeDate):
+        b = b.proto
+    return cmp(a,b)
+    
+def days_left(d):
+    if isinstance(d, date): 
+        return (d - date.today()).days
+    else:
+        return None
 
 #function to convert a string of the form YYYY-MM-DD
 #to a date
 #If the date is not correct, the function returns None
 def strtodate(stri) :
+    if stri == "now":
+        return NOW
+    elif stri == "soon":
+        return SOON
+    elif stri == "later":
+        return LATER
+        
     toreturn = None
     zedate = []
     if stri :

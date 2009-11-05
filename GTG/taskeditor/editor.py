@@ -333,6 +333,7 @@ class TaskEditor :
             elif data == "due" :
                 self.task.set_due_date(datetoset)
         else :
+            print text, dateobject, "invalid"
             #We should write in red in the entry if the date is not valid
             widget.modify_text(gtk.STATE_NORMAL, gtk.gdk.color_parse("#F00"))
             widget.modify_base(gtk.STATE_NORMAL, gtk.gdk.color_parse("#F88"))

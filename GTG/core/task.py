@@ -22,7 +22,7 @@ import xml.dom.minidom
 import uuid
 
 from GTG import _
-from GTG.tools.dates import strtodate
+from GTG.tools.dates import strtodate, FakeDate, days_left
 from datetime import datetime
 
 
@@ -252,8 +252,7 @@ class Task:
     def get_days_left(self):
         due_date = self.get_due_date()
         if due_date:
-            difference = strtodate(due_date) - date.today()
-            return difference.days
+            return days_left(strtodate(due_date))
         else:
             return None
 

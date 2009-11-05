@@ -48,6 +48,7 @@ from GTG.taskbrowser                  import tagtree
 from GTG.taskbrowser.tagtree          import TagTreeModel,\
                                              TagTreeView
 from GTG.tools                        import openurl
+from GTG.tools.dates                  import strtodate, date_cmp
 from GTG.core.plugins.manager         import PluginManager
 from GTG.core.plugins.engine          import PluginEngine
 from GTG.core.plugins.api             import PluginAPI
@@ -859,7 +860,7 @@ class TaskBrowser:
             else:
                 return 1
         else:
-            return cmp(t2_dleft, t1_dleft)
+            return date_cmp(strtodate(t2_dleft), strtodate(t1_dleft))
 
     def tag_sort_func(self, model, iter1, iter2, user_data=None):
         order = self.tags_tv.get_model().get_sort_column_id()[1]
