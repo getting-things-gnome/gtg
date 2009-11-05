@@ -85,6 +85,7 @@ class TaskEditor :
                 "duedate_changed" : (self.date_changed,"due"),
                 "on_insert_subtask_clicked" : self.insert_subtask,
                 "on_inserttag_clicked" : self.inserttag_clicked,
+                "on_move" : self.on_move,
               }
         self.wTree.signal_autoconnect(dic)
         cal_dic = {
@@ -193,7 +194,7 @@ class TaskEditor :
                 if "position" in self.config[tid]:
                     pos = self.config[tid]["position"]
                     self.move(pos[0],pos[1])
-                    print "restoring position %s %s" %(pos[0],pos[1])
+                    #print "restoring position %s %s" %(pos[0],pos[1])
 
         self.window.show()
 
@@ -487,13 +488,7 @@ class TaskEditor :
         self.task.set_title(self.textview.get_title())
         self.task.set_text(self.textview.get_text()) 
         self.task.sync()
-        #saving the position
         if self.config != None:
-            tid = self.task.get_id()
-            if not tid in self.config :
-                self.config[tid] = dict()
-            print "saving task position %s" %str(self.get_position())
-            self.config[tid]["position"] = self.get_position()
             self.config.write()
         self.time = time.time()
     #light_save save the task without refreshing every 30seconds
@@ -533,6 +528,15 @@ class TaskEditor :
             pass
     def get_position(self):
         return self.window.get_position()
+        
+    def on_move(self,widget,event):
+        #saving the position
+        if self.config != None:
+            tid = self.task.get_id()
+            if not tid in self.config :
+                self.config[tid] = dict()
+            #print "saving task position %s" %str(self.get_position())
+            self.config[tid]["position"] = self.get_position()
         
     #We define dummy variable for when close is called from a callback
     def close(self,window=None,a=None,b=None,c=None) : #pylint: disable-msg=W0613
