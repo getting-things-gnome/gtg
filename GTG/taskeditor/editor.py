@@ -48,9 +48,17 @@ except: # pylint: disable-msg=W0702
 date_separator = "/"
 
 class TaskEditor :
+    #delete_callback is the function called on deletion
+    #close_callback is the function called on close
+    #opentask_callback is the function to open a new editor
+    #tasktitle_callbakc is called when title change
+    #notes is experimental (bool)
+    #taskconfig is a ConfigObj dic to save infos about tasks
+    #thisisnew is True when a new task is created and opened
     def __init__(self, requester, task, plugins,
-                delete_callback=None, close_callback=None,opentask_callback=None, 
-                tasktitle_callback=None, notes=False,thisisnew=False) :
+                delete_callback=None, close_callback=None,opentask_callback=None, \
+                tasktitle_callback=None, notes=False,taskconfig=None,\
+                thisisnew=False) :
         self.req = requester
         self.time = None
         self.gladefile = GnomeConfig.GLADE_FILE
@@ -176,6 +184,16 @@ class TaskEditor :
         self.textview.refresh_callback(self.refresh_editor)
         self.refresh_editor()
         self.textview.grab_focus()
+        
+        #restoring size and position, spatial tasks
+        self.config = taskconfig
+        if self.config :
+            tid = self.task.get_id()
+            if tid in self.config:
+                if "position" in self.config[tid]:
+                    pos = self.config[tid]["position"]
+                    self.move(pos[0],pos[1])
+                    print "restoring position %s %s" %(pos[0],pos[1])
 
         self.window.show()
 
@@ -469,6 +487,14 @@ class TaskEditor :
         self.task.set_title(self.textview.get_title())
         self.task.set_text(self.textview.get_text()) 
         self.task.sync()
+        #saving the position
+        if self.config != None:
+            tid = self.task.get_id()
+            if not tid in self.config :
+                self.config[tid] = dict()
+            print "saving task position %s" %str(self.get_position())
+            self.config[tid]["position"] = self.get_position()
+            self.config.write()
         self.time = time.time()
     #light_save save the task without refreshing every 30seconds
     #We will reduce the time when the get_text will be in another thread
