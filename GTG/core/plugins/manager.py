@@ -134,6 +134,13 @@ class PluginManager:
             for plgin in self.plugins:
                 if model[path][1] == plgin['name'] and model[path][2] == plgin['version']:
                     plgin['state'] = not plgin['state']
+                    #we instantly apply the plugin activation/deactivation
+                    #to respect HIG
+                    if plgin['state'] :
+                        self.pengine.activatePlugins([plgin], self.plugin_api)
+                    else :
+                        self.pengine.deactivatePlugins([plgin], self.plugin_api)
+                    
                     
 
     def pluginExtraInfo(self, treeview, plugins):
@@ -210,3 +217,4 @@ class PluginManager:
                         
     def plugin_configure_dialog(self, widget, data=None):
         self.current_plugin['instance'].configure_dialog(self.plugin_api)
+

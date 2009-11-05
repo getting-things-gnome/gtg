@@ -39,9 +39,9 @@ from GTG.tools import openurl
 separators = [' ', '.', ',', '/', '\n', '\t', '!', '?', ';', '\0']
 url_separators = [' ', ',', '\n', '\t', '\0']
 
-bullet1 = '→'
+bullet1_ltr = '→'
+bullet1_rtl = '←'
 bullet2 = '↳'
-
 
 class TaskView(gtk.TextView):
     __gtype_name__ = 'HyperTextView'
@@ -150,6 +150,11 @@ class TaskView(gtk.TextView):
         self.modified_sigid = self.buff.connect("changed" , self.modified)
         self.connect("backspace",self.backspace)
         self.tobe_refreshed = False
+
+        if self.get_direction() == gtk.TEXT_DIR_RTL :
+            self.bullet1 = bullet1_rtl
+        else:
+            self.bullet1 = bullet1_ltr
 
     
     #This function is called to refresh the editor 
@@ -890,7 +895,7 @@ class TaskView(gtk.TextView):
         indentation = indentation + (level-1)*spaces
         #adding the symbol 
         if level == 1 :
-            indentation = "%s%s "%(indentation,bullet1)
+            indentation = "%s%s "%(indentation,self.bullet1)
         buff.insert(itera,indentation)
         indenttag = self.create_indent_tag(buff,level)
         self.__apply_tag_to_mark(start,end,tag=indenttag)
@@ -996,7 +1001,7 @@ class TaskView(gtk.TextView):
                 #Then, if indent > 0, we increment it
                 #First step : we preserve it.
                 else :
-                    if not line.lstrip("%s "%bullet1) :
+                    if not line.lstrip("%s "%self.bullet1) :
                         self.deindent(itera,newlevel=0)
                         tv.emit_stop_by_name('insert-text')
                         
