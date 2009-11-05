@@ -82,7 +82,8 @@ class TaskBrowser:
         # Object prime variables
         self.priv   = {}
         self.req    = requester
-        self.config = config
+        self.config = config.conf_dict
+        self.task_config = config.task_conf_dict
 
         ### YOU CAN DEFINE YOUR INTERNAL MECHANICS VARIABLES BELOW
         # Task deletion
@@ -568,7 +569,7 @@ class TaskBrowser:
                 
         if "opened_tasks" in self.config["browser"]:
             odic = self.config["browser"]["opened_tasks"]
-            for t in odic.keys():
+            for t in odic:
                 ted = self.open_task(t)
                 #restoring position doesn't work, I don't know why
                 #ted.move(odic[t][0],odic[t][1])
@@ -731,9 +732,10 @@ class TaskBrowser:
             tv.present()
         elif t:
             tv = TaskEditor(
-                self.req, t, self.plugins, 
-                self.on_delete_task, self.close_task, self.open_task, 
-                self.get_tasktitle,thisisnew=thisisnew)
+                self.req, t, self.plugins, \
+                self.on_delete_task, self.close_task, self.open_task, \
+                self.get_tasktitle,taskconfig=self.task_config, \
+                thisisnew=thisisnew)
             #registering as opened
             self.opened_task[uid] = tv
         return tv
@@ -945,9 +947,9 @@ class TaskBrowser:
             self.pengine.deactivatePlugins(self.plugins, self.plugin_api)
             
         #save opened tasks and their positions.
-        open_task = dict()
+        open_task = []
         for otid in self.opened_task.keys():     
-            open_task[otid] = self.opened_task[otid].get_position()
+            open_task.append(otid)
             self.opened_task[otid].close()
 
         # Populate configuration dictionary

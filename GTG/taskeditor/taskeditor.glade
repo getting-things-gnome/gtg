@@ -7,6 +7,7 @@
     <property name="window_position">mouse</property>
     <property name="default_width">450</property>
     <property name="default_height">400</property>
+    <signal name="configure_event" handler="on_move"/>
     <child>
       <widget class="GtkVBox" id="vbox4">
         <property name="visible">True</property>
