@@ -1,3 +1,4 @@
+    * When a task is deleted, all subtask are deleted as well by Mikkel Kjær Jensen
     * Groups for tags and subtags by Kevin Mehall
     * GNOME bugzilla plugin by Guillaume Desmottes
     * Handle tasks spatially (remember position & size)
@@ -5,6 +6,7 @@
     * Remove the "File" menu. We have no files, we have tasks!    
     * Patch from mrk to improve compatibility with non GNU systems
     * Close date selector widget on single click
+    * The toolbar can now be hidden by Mikkel Kjær Jensen
     * Empty new tasks are deleted when editor is closed
     * lot of bug fixed in the editor while playing with subtasks
     * Works well with the "text besides icon" GNOME option

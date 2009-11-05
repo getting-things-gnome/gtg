@@ -324,6 +324,8 @@ class TaskBrowser:
                 self.on_quickadd_activate,
             "on_view_quickadd_toggled":
                 self.on_toggle_quickadd,
+            "on_view_toolbar_toggled":
+                self.on_toolbar_toggled,
             "on_about_clicked":
                 self.on_about_clicked,
             "on_about_close":
@@ -745,6 +747,14 @@ class TaskBrowser:
     def get_tasktitle(self, tid):
         task = self.req.get_task(tid)
         return task.get_title()
+
+    def get_task_and_subtask_titles(self, tid):
+        task = self.req.get_task(tid)
+        titles_list = task.get_titles([])
+        toreturn = ""
+        for st in titles_list :
+            toreturn = "%s\n- %s" %(toreturn,st) 
+        return toreturn
 
     def close_task(self, tid):
         # When an editor is closed, it should deregister itself.
@@ -1272,6 +1282,12 @@ class TaskBrowser:
             self.tid_todelete = tid
         #We must at least have something to delete !
         if self.tid_todelete:
+            label = self.wTree.get_widget("label1") 
+            label_text = label.get_text()
+            label_text = label_text[0:label_text.find(":") + 1]
+            # I find the tasks that are going to be deleted
+            titles = self.get_task_and_subtask_titles(self.tid_todelete)
+            label.set_text("%s %s." % (label_text, titles))
             delete_dialog = self.wTree.get_widget("confirm_delete")
             delete_dialog.run()
             delete_dialog.hide()

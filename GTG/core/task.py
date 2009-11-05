@@ -98,6 +98,12 @@ class Task:
 
     def get_title(self):
         return self.title
+        
+    def get_titles(self, list):
+        list.append(self.title)
+        for task in self.get_subtasks():
+            list = task.get_titles(list)
+        return list
 
     #Return True if the title was changed.
     #False if the title was already the same.
@@ -478,11 +484,12 @@ class Task:
     #Use the requester
     def delete(self):
         self.set_sync_func(None, callsync=False)
+        for task in self.get_subtasks():
+            task.remove_parent(self.get_id())
+            self.req.delete_task(task.get_id())
         for i in self.get_parents():
             task = self.req.get_task(i)
             task.remove_subtask(self.get_id())
-        for task in self.get_subtasks():
-            task.remove_parent(self.get_id())
         for tag in self.tags:
             tag.remove_task(self.get_id())
         #then we remove effectively the task
