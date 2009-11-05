@@ -55,7 +55,9 @@ class pluginBugzilla:
             return
 
         task.set_title('#%s: %s' % (nb, title))
-        task.set_text(url)
+
+        text = "%s\n\n%s" % (url, bug.get_description())
+        task.set_text(text)
 
         tag = server.get_tag(bug)
         if tag is not None:
