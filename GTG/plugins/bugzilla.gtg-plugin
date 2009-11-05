@@ -1,0 +1,8 @@
+[GTG Plugin]
+Module=bugzilla
+Name=Bugzilla
+Description=Bugzilla integration
+Authors=Guillaume Desmottes <gdesmott@gnome.org>
+Version=0.0.1
+Dependencies=bugz,
+Enabled=False

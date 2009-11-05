@@ -31,7 +31,7 @@ class PluginAPI:
         
     def __init__(self, window, config, data_dir, wTree, requester,\
                  taskview, filter_cbs, tagpopup, tagview, task=None,\
-                 textview=None):
+                 textview=None, quick_add_cbs=[]):
         """Construct a L{PluginAPI} object.
         
         @param window: The window where the plugin API object is being 
@@ -59,6 +59,7 @@ class PluginAPI:
         self.tagview = tagview
         
         self.__filter_cbs = filter_cbs
+        self.__quick_add_cbs = quick_add_cbs
         
         if task:
             self.task = task
@@ -431,3 +432,21 @@ class PluginAPI:
         if func in self.__filter_cbs:
             self.__filter_cbs.remove(func)    
 #=== Filtering methods ========================================================
+
+    def register_quick_add_cb(self, func):
+        """Registers a callback that will be called each time a new task is
+        added using the "quick add" entry.
+
+        @param func: The function that is going to be registered.
+
+        """
+        if func not in self.__quick_add_cbs:
+            self.__quick_add_cbs.append(func)
+
+    def unregister_quick_add_cb(self, func):
+        """Unregisters a previously registered "quick add" callback.
+
+        @param func: The function that is going to be unregistered.
+        """
+        if func in self.__quick_add_cbs:
+            self.__quick_add_cbs.remove(func)

@@ -1,4 +1,6 @@
-    * Handle tasks spatially (remember position)
+    * Groups for tags and subtags by Kevin Mehall
+    * GNOME bugzilla plugin by Guillaume Desmottes
+    * Handle tasks spatially (remember position & size)
     * Opened tasks on quit are reopened on start
     * Remove the "File" menu. We have no files, we have tasks!    
     * Patch from mrk to improve compatibility with non GNU systems

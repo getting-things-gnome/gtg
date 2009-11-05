@@ -150,6 +150,7 @@ class TaskBrowser:
         self.priv['workview']                 = False
         #self.priv['noteview']                = False
         self.priv['filter_cbs']               = []
+        self.priv['quick_add_cbs']            = []
 
     def _init_icon_theme(self):
         icon_dirs = [GTG.DATA_DIR, os.path.join(GTG.DATA_DIR, "icons")]
@@ -446,7 +447,8 @@ class TaskBrowser:
         # initializes the plugin api class
         self.plugin_api = PluginAPI(self.window, self.config, GTG.DATA_DIR, self.wTree,\
                                     self.req, self.task_tv, self.priv['filter_cbs'],\
-                                    self.tagpopup, self.tags_tv, None, None)
+                                    self.tagpopup, self.tags_tv, None, None,\
+                                    self.priv['quick_add_cbs'])
         
         if self.plugins:
             # checks the conf for user settings
@@ -1140,6 +1142,8 @@ class TaskBrowser:
             self.quickadd_entry.set_text('')
             # Refresh the treeview
             #self.do_refresh(toselect=id_toselect)
+            for f in self.priv['quick_add_cbs']:
+                f(task)
 
     def on_tag_treeview_button_press_event(self, treeview, event):
         if event.button == 3:
