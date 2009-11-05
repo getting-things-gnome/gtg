@@ -748,6 +748,12 @@ class TaskBrowser:
         task = self.req.get_task(tid)
         return task.get_title()
 
+    def get_task_and_subtask_titles(self, tid):
+        task = self.req.get_task(tid)
+        titles_list = task.get_titles([])
+        titles_list[0] = titles_list[0][2:]
+        return "".join(titles_list)
+
     def close_task(self, tid):
         # When an editor is closed, it should deregister itself.
         if tid in self.opened_task:
@@ -1274,6 +1280,12 @@ class TaskBrowser:
             self.tid_todelete = tid
         #We must at least have something to delete !
         if self.tid_todelete:
+            label = self.wTree.get_widget("label1") 
+            label_text = label.get_text()
+            label_text = label_text[0:label_text.find(":") + 1]
+            # I find the tasks that are going to be deleted
+            titles = self.get_task_and_subtask_titles(self.tid_todelete)
+            label.set_text("%s %s." % (label_text, titles))
             delete_dialog = self.wTree.get_widget("confirm_delete")
             delete_dialog.run()
             delete_dialog.hide()
