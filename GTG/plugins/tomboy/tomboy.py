@@ -34,6 +34,7 @@ class pluginTomboy:
         self.token_start = 'TOMBOY__'
         self.token_end = '|'
         self.path = os.path.dirname(os.path.abspath(__file__))
+        self.findTomboyIconPath()
 
     #Tomboy installation is checked through the presence of its icon
     def findTomboyIconPath(self):
@@ -80,6 +81,10 @@ Please install it or disable the Tomboy plugin in GTG"))
 
     # Converts all tomboy note widgets in the  equivalent text
     def onTaskClosed(self, plugin_api):
+        if not  hasattr (self, "activated") or not self.activated == True:
+            #plugin has not been properly activated, (bug 475877 )
+            # closing without executing onTaskClosed
+            return
         if not self.checkTomboyPresent():
             return False
         for anchor in self.anchors:
@@ -144,6 +149,7 @@ Please install it or disable the Tomboy plugin in GTG"))
             token_ending = text.find(self.token_end)
 
     def onTaskOpened(self, plugin_api):
+        self.activated = True
         if not self.checkTomboyPresent():
             return False
         #NOTE: get_textview() only works in this function
