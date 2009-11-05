@@ -37,6 +37,7 @@ class TagStore :
     def __init__(self,requester):
         self.req = requester
         self.tree = Tree()
+        self.tags={}
         self.root = self.tree.get_root()
         self.filename = os.path.join(CoreConfig.DATA_DIR,XMLFILE)
         doc,self.xmlstore = cleanxml.openxmlfile(self.filename,XMLROOT) #pylint: disable-msg=W0612
@@ -52,6 +53,10 @@ class TagStore :
                 at_val = t.getAttribute(at_name)
                 tag.set_attribute(at_name,at_val)
                 i += 1
+            parent = tag.get_attribute('parent')
+            if parent:
+                pnode=self.new_tag(parent)
+                tag.reparent(pnode, update_attr=False)
         
         #Now we build special tags. Special tags are not
         #in the traditional tag list
@@ -74,20 +79,20 @@ class TagStore :
         with corresponding name"""
         #we create a new tag from a name
         tname = tagname.encode("UTF-8")
-        if tname not in self.root.get_children():
-            tag = Tag(tname, save_cllbk=self.save,req=self.req)
-            self.root.add_child(tname, tag)
-            tag.set_parent(self.root)
+        if tname not in self.tags:
+            tag = Tag(tname, save_cllbk=self.save, req=self.req)
+            tag.reparent(self.root)
+            self.tags[tname]=tag
             return tag
         else:
-            return self.root.get_child(tname)
+            return self.tags[tname]
         
     def add_tag(self, tag):
         name = tag.get_name()
         #If tag does not exist in the store, we add it
-        if not self.root.has_child(name):
-            self.root.add_child(name, tag)
-            tag.set_parent(self.root)
+        if name not in self.tags:
+            tag.reparent(self.root)
+            self.tags[name]=tag
         #else, we just take the attributes of the new tag
         #This allow us to keep attributes of the old tag
         #that might be not set in the new one
@@ -96,13 +101,10 @@ class TagStore :
             for att_name in atts:
                 val = tag.get_attribute(att_name)
                 if att_name != 'name' and val:
-                    self.root.get_child(name).set_attribute(att_name,val)
+                    self.tags[name].set_attribute(att_name,val)
 
     def get_tag(self, tagname):
-        if tagname in self.root.get_children() :
-            return self.root.get_child(tagname)
-        else :
-            return None
+        return self.tags.get(tagname, None)
 
 #    def get_alltag_tag(self):
 #        """Return the special tag 'All tags'"""
@@ -119,17 +121,16 @@ class TagStore :
         excluding tags that don't have this attribute
         (except if attvalue is None)"""
         l = []
-        for t in self.root.get_children():
+        for t in self.tags.values():
             if not attname :
-                l.append(self.root.get_child[t].get_name())
-            elif self.root.get_child[t].get_attribute(attname) == attvalue:
-                l.append(self.root.get_child[t].get_name())
+                l.append(t.get_name())
+            elif t.get_attribute(attname) == attvalue:
+                l.append(t.get_name())
         return l
         
     def get_all_tags(self, attname=None, attvalue=None):
         l = []
-        for tname in self.root.get_children():
-            t = self.root.get_child(tname)
+        for t in self.tags.values():
             if not attname:
                 l.append(t)
             elif t.get_attribute(attname) == attvalue:
@@ -230,7 +231,21 @@ class Tag(TreeNode):
         if butname:
             attributes.remove('name')
         return attributes
+
+    def reparent(self, parent, update_attr=True):
+        if update_attr:
+            if isinstance(parent, Tag):
+                self.set_attribute('parent', parent.get_name())
+            elif 'parent' in self._attributes:
+                del self._attributes['parent']
+        TreeNode.reparent(self, parent)
         
+    def all_children(self):
+        l = [self]
+        for i in self.get_children_objs():
+            l += i.all_children()
+        return l
+
     ### TASK relation ####      
     def add_task(self, tid):
         if tid not in self.tasks:
