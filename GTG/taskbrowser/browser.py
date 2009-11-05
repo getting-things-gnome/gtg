@@ -249,6 +249,7 @@ class TaskBrowser:
         # The tags treeview
         self.tags_tv = TagTreeView()
         self.tags_tv.set_model(self.tag_modelsort)
+        self.tags_tv.expand_row('0', True)
         self.sidebar_container.add(self.tags_tv)
 
     def _init_toolbar_tooltips(self):
@@ -755,6 +756,9 @@ class TaskBrowser:
 
         tag_list, notag_only = self.get_selected_tags()
 
+        if len(tag_list)==1: #include child tags
+		    tag_list = tag_list[0].all_children()
+
         if not task.has_tags(tag_list=tag_list, notag_only=notag_only):
             return False
         
@@ -829,9 +833,11 @@ class TaskBrowser:
         @param user_data:
         """
         tag = model.get_value(iter, tagtree.COL_OBJ)
-        if not tag.get_attribute("special"):
-            count = int(model.get_value(iter, tagtree.COL_COUNT))
-            return count != 0
+        if tag.has_child():
+        	return True
+        elif not tag.get_attribute("special"):
+            count = model.get_value(iter, tagtree.COL_COUNT)
+            return count != ''
         else:
             return True
 

@@ -101,7 +101,9 @@ class Tree():
 
     def _node_for_rowref(self, node, rowref):
         #print "_node_for_rowref: %s" % rowref
-        if rowref.rfind('/') == 0:
+        if rowref == '':
+            return self.root
+        elif rowref.rfind('/') == 0:
             return node.get_child(rowref[1:])
         else:
             cur_id   = rowref[1:rowref.find('/', 1)]
@@ -178,6 +180,9 @@ class TreeNode():
 
     def get_children(self):
         return list(self.ids)
+        
+    def get_children_objs(self):
+        return list(self.children)
 
     def get_n_children(self):
         return len(self.ids)
@@ -204,3 +209,10 @@ class TreeNode():
         child = self.children[idx]
         self.ids.remove(id)
         self.children.remove(child)
+        
+    def reparent(self, parent):
+        if self.has_parent():
+            self.get_parent().remove_child(self.id)
+        self.set_parent(parent)
+        parent.add_child(self.id, self)
+        
