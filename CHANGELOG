@@ -1,3 +1,4 @@
+    * Handle tasks spatially (remember position)
     * Opened tasks on quit are reopened on start
     * Remove the "File" menu. We have no files, we have tasks!    
     * Patch from mrk to improve compatibility with non GNU systems

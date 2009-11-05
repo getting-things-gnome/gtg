@@ -195,6 +195,11 @@ class TaskEditor :
                     pos = self.config[tid]["position"]
                     self.move(pos[0],pos[1])
                     #print "restoring position %s %s" %(pos[0],pos[1])
+                if "size" in self.config[tid]:
+                    size = self.config[tid]["size"]
+                    #print "size %s - %s" %(str(size[0]),str(size[1]))
+                    #this eval(str()) is a hack to accept both int and str
+                    self.window.resize(eval(str(size[0])),eval(str(size[1])))
 
         self.window.show()
 
@@ -537,6 +542,7 @@ class TaskEditor :
                 self.config[tid] = dict()
             #print "saving task position %s" %str(self.get_position())
             self.config[tid]["position"] = self.get_position()
+            self.config[tid]["size"] = self.window.get_size()
         
     #We define dummy variable for when close is called from a callback
     def close(self,window=None,a=None,b=None,c=None) : #pylint: disable-msg=W0613
