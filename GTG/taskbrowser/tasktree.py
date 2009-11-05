@@ -20,6 +20,7 @@
 import gtk
 import gobject
 import pango
+import xml.sax.saxutils as saxutils
 
 from GTG import _
 from GTG.core.tree import Tree, TreeNode
@@ -73,8 +74,9 @@ class TaskTreeModel(gtk.GenericTreeModel):
                     c_node = TreeNode(c_tid, c_task)
                     self.tree.add_node(c_tid, c_node, node)
                     c_node_path = self.tree.get_path_for_node(c_node)
-                    c_node_iter = self.get_iter(c_node_path)
-                    #self.row_inserted(c_node_path, c_node_iter)
+                    #if c_node_path:
+                        #c_node_iter = self.get_iter(c_node_path)
+                        #self.row_inserted(c_node_path, c_node_iter)
                     self._add_all_subtasks(c_node, c_task)
                     #print " - %s: adding %s as subtask." % (task.get_id(), c_tid)
         else:
@@ -102,13 +104,16 @@ class TaskTreeModel(gtk.GenericTreeModel):
 
     def on_get_value(self, rowref, column):
         node = self.tree.get_node_for_rowref(rowref)
-        task = node.get_obj()
+        if not node:
+            return None
+        else:
+            task = node.get_obj()
         if   column == COL_TID:
             return task.get_id()
         elif column == COL_OBJ:
             return task
         elif column == COL_TITLE:
-            return task.get_title()
+            return saxutils.escape(task.get_title())
         elif column == COL_DDATE:
             return task.get_due_date()
         elif column == COL_CDATE:
@@ -133,14 +138,14 @@ class TaskTreeModel(gtk.GenericTreeModel):
             if task.get_status() == Task.STA_ACTIVE:
                 count = self._count_active_subtasks_rec(task)
                 if count != 0:
-                    title = task.get_title() + " (%s)" % count
+                    title = saxutils.escape(task.get_title()) + " (%s)" % count
                 else:
-                    title = task.get_title()
+                    title = saxutils.escape(task.get_title())
             elif task.get_status() == Task.STA_DISMISSED:
-                  title = "<span color='#AAAAAA'>"\
-                      + task.get_title() + "</span>"
+                    title = "<span color='#AAAAAA'>"\
+                        + saxutils.escape(task.get_title()) + "</span>"
             else:
-                title = task.get_title()
+                title = saxutils.escape(task.get_title())
             return title
 
     def on_get_iter(self, path):
@@ -169,7 +174,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
         #print "on_iter_children: %s" % (rowref)
         if rowref:
             node = self.tree.get_node_for_rowref(rowref)
-            if node.has_child():
+            if node and node.has_child():
                 return self.tree.get_rowref_for_node(node.get_nth_child(0))
             else:
                 return None
@@ -180,7 +185,10 @@ class TaskTreeModel(gtk.GenericTreeModel):
     def on_iter_has_child(self, rowref):
         #print "on_iter_has_child: %s" % (rowref)
         node = self.tree.get_node_for_rowref(rowref)
-        return node.has_child()
+        if node:
+            return node.has_child()
+        else:
+            return None
 
     def on_iter_n_children(self, rowref):
         #print "on_iter_n_children: %s" % (rowref)
@@ -212,7 +220,6 @@ class TaskTreeModel(gtk.GenericTreeModel):
             return None
 
     def add_task(self, tid):
-        #print "Adding %s... " % tid
         nodes = []
         # get the task
         task = self.req.get_task(tid)
@@ -245,23 +252,29 @@ class TaskTreeModel(gtk.GenericTreeModel):
         for node in nodes:
             self._add_all_subtasks(node, task)
             node_path = self.tree.get_path_for_node(node)
-            node_iter = self.get_iter(node_path)
-            self.row_has_child_toggled(node_path, node_iter)
+            if node_path:
+                node_iter = self.get_iter(node_path)
+                self.row_has_child_toggled(node_path, node_iter)
 
     def remove_task(self, tid):
         # get the nodes
         nodes = self.tree.get_nodes(tid)
+        removed = False
         # Remove every row of this task
         for node in nodes:
             node_path = self.tree.get_path_for_node(node)
             self.tree.remove_node(tid, node)
             self.row_deleted(node_path)
+            removed = True
+        return removed
                     
     def move_task(self, parent, child):
         #print "Moving %s below %s" % (child, parent)
         # Get child
         child_tid  = self.get_value(child, COL_TID)
         child_task = self.req.get_task(child_tid)
+        #if we move a task, this task should be saved, even if new
+        child_task.set_to_keep()
         # Get old parent
         old_par = self.iter_parent(child)
         if old_par:

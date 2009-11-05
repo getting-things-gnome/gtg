@@ -34,7 +34,8 @@ XMLROOT = "tagstore"
 # and their attribute.
 class TagStore :
     
-    def __init__(self):
+    def __init__(self,requester):
+        self.req = requester
         self.tree = Tree()
         self.tags={}
         self.root = self.tree.get_root()
@@ -79,7 +80,7 @@ class TagStore :
         #we create a new tag from a name
         tname = tagname.encode("UTF-8")
         if tname not in self.tags:
-            tag = Tag(tname, save_cllbk=self.save)
+            tag = Tag(tname, save_cllbk=self.save, req=self.req)
             tag.reparent(self.root)
             self.tags[tname]=tag
             return tag
@@ -171,7 +172,7 @@ class Tag(TreeNode):
     for tags is C{name}, which always matches L{Tag.get_name()}.
     """
 
-    def __init__(self, name, save_cllbk=None):
+    def __init__(self, name, save_cllbk=None,req=None):
         """Construct a tag.
 
         @param name: The name of the tag. Should be a string, generally a
@@ -181,8 +182,11 @@ class Tag(TreeNode):
         """
         TreeNode.__init__(self, name)
         self._name = str(name)
+        self.req = req
         self._attributes = {'name': self._name}
         self._save = save_cllbk
+        #list of tasks associated with this tag
+        self.tasks = []
 
     def get_name(self):
         """Return the name of the tag."""
@@ -227,7 +231,7 @@ class Tag(TreeNode):
         if butname:
             attributes.remove('name')
         return attributes
-        
+
     def reparent(self, parent, update_attr=True):
         if update_attr:
             if isinstance(parent, Tag):
@@ -241,6 +245,52 @@ class Tag(TreeNode):
         for i in self.get_children_objs():
             l += i.all_children()
         return l
+
+    ### TASK relation ####      
+    def add_task(self, tid):
+        if tid not in self.tasks:
+            self.tasks.append(tid)      
+    def remove_task(self,tid):
+        if tid in self.tasks:
+            self.tasks.remove(tid)          
+    def get_tasks(self):
+        #return a copy of the list
+        toreturn = self.tasks[:]
+        return toreturn 
+    def get_tasks_nbr(self,workview=False):
+        if workview:
+            if self.get_attribute("nonworkview") == "True":
+                toreturn = 0
+            else:
+                temp_list = []
+                for t in self.tasks:
+                    ta = self.req.get_task(t)
+                    if ta.get_status() == "Active" and ta.is_workable() and\
+                                                       ta.is_started():
+                        #the task is workviewable but might have other tags
+                        toadd = True
+                        for tatag in ta.get_tags():
+                            if tatag.get_attribute("nonworkview") == "True":
+                                toadd = False
+                        if toadd:
+                            temp_list.append(t)
+                toreturn = len(temp_list)
+        else:
+            temp_list = []
+            for t in self.tasks:
+                ta = self.req.get_task(t)
+                if ta.get_status() == "Active" :
+                    temp_list.append(t)
+            toreturn = len(temp_list)
+        return toreturn
+    def is_used(self):
+        return len(self.tasks) > 0
+    def is_actively_used(self):
+        toreturn = False
+        for task in self.tasks :
+            if self.req.get_task(task).get_status() == "Active":
+                toreturn = True
+        return toreturn
 
     def __str__(self):
         return "Tag: %s" % self.get_name()

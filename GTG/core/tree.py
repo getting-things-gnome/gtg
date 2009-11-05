@@ -191,8 +191,11 @@ class TreeNode():
         return self.children[index]
 
     def get_child(self, id):
-        idx = self.ids.index(id)
-        return self.children[idx]
+        if id in self.ids:
+            idx = self.ids.index(id)
+            return self.children[idx]
+        else:
+            return None
 
     def get_child_index(self, id):
         return self.ids.index(id)

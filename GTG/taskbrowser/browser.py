@@ -29,6 +29,8 @@ import os
 import locale
 import re
 import datetime
+import threading
+import time
 
 #our own imports
 import GTG
@@ -64,6 +66,14 @@ QUICKADD_PANE      = True
 TOOLBAR            = True
 BG_COLOR           = True
 #EXPERIMENTAL_NOTES = False
+TIME = 0
+
+class Timer:
+    def __init__(self,st):
+        self.st = st
+    def __enter__(self): self.start = time.time()
+    def __exit__(self, *args): 
+        print "%s : %s" %(self.st,time.time() - self.start)
 
 class TaskBrowser:
 
@@ -119,6 +129,8 @@ class TaskBrowser:
         
         # Initialize the plugin-engine
         self._init_plugin_engine()
+        
+        self.refresh_lock = threading.Lock()
 
         # NOTES
         #self._init_note_support()
@@ -553,6 +565,13 @@ class TaskBrowser:
             view = self.config["browser"]["view"]
             if view == "workview":
                 self.do_toggle_workview()
+                
+        if "opened_tasks" in self.config["browser"]:
+            odic = self.config["browser"]["opened_tasks"]
+            for t in odic.keys():
+                ted = self.open_task(t)
+                #restoring position doesn't work, I don't know why
+                #ted.move(odic[t][0],odic[t][1])
 
 #        if "experimental_notes" in self.config["browser"]:
 #            self.notes = eval(self.config["browser"]["experimental_notes"])
@@ -699,22 +718,25 @@ class TaskBrowser:
 
         return False # Return False or the TreeModel.foreach() function ends
 
-    def open_task(self, uid):
+    def open_task(self, uid,thisisnew=False):
         """Open the task identified by 'uid'.
 
         If a Task editor is already opened for a given task, we present it.
         Else, we create a new one.
         """
         t = self.req.get_task(uid)
+        tv = None
         if uid in self.opened_task:
-            self.opened_task[uid].present()
-        else:
+            tv = self.opened_task[uid]
+            tv.present()
+        elif t:
             tv = TaskEditor(
                 self.req, t, self.plugins, 
                 self.on_delete_task, self.close_task, self.open_task, 
-                self.get_tasktitle)
+                self.get_tasktitle,thisisnew=thisisnew)
             #registering as opened
             self.opened_task[uid] = tv
+        return tv
 
     def get_tasktitle(self, tid):
         task = self.req.get_task(tid)
@@ -784,7 +806,7 @@ class TaskBrowser:
         @param user_data:
         """
         task = model.get_value(iter, tasktree.COL_OBJ)
-        if task.get_status() != Task.STA_ACTIVE:
+        if not task or task.get_status() != Task.STA_ACTIVE:
             return False
         if not model.iter_parent(iter):
             return self.is_task_visible(task) and not self.is_lineage_visible(task)
@@ -921,6 +943,12 @@ class TaskBrowser:
         # plugins are deactivated
         if self.plugins:
             self.pengine.deactivatePlugins(self.plugins, self.plugin_api)
+            
+        #save opened tasks and their positions.
+        open_task = dict()
+        for otid in self.opened_task.keys():     
+            open_task[otid] = self.opened_task[otid].get_position()
+            self.opened_task[otid].close()
 
         # Populate configuration dictionary
         self.config["browser"] = {
@@ -948,6 +976,8 @@ class TaskBrowser:
                 quickadd_pane,
             'view':
                 view,
+            'opened_tasks':
+                open_task,
             }
         if   sort_column is not None and sort_order == gtk.SORT_ASCENDING:
             self.config["browser"]["tasklist_sort"]  = [sort_column, 0]
@@ -1098,6 +1128,7 @@ class TaskBrowser:
             task = self.req.new_task(tags=tags, newtask=True)
             if text != "":
                 task.set_title(text)
+                task.set_to_keep()
             if not due_date is None:
                 task.set_due_date(due_date)
             if not defer_date is None:
@@ -1189,7 +1220,7 @@ class TaskBrowser:
         uid = task.get_id()
         if status:
             task.set_status(status)
-        self.open_task(uid)
+        self.open_task(uid,thisisnew=True)
 
     def on_add_subtask(self, widget):
         uid = self.get_selected_task()
@@ -1199,7 +1230,7 @@ class TaskBrowser:
             task   = self.req.new_task(tags=tags, newtask=True)
             task.add_parent(uid)
             zetask.add_subtask(task.get_id())
-            self.open_task(task.get_id())
+            self.open_task(task.get_id(),thisisnew=True)
             #self.do_refresh()
 
     def on_edit_active_task(self, widget, row=None, col=None):
@@ -1346,9 +1377,7 @@ class TaskBrowser:
     def on_task_added(self, sender, tid):
         #print "Task added: %s" % tid
         self.task_tree_model.add_task(tid)
-        self.tag_model.update_tags_for_task(tid)
-        self._update_window_title()
-        self.tags_tv.refresh()
+        #no need to do more as task_modified will be called anyway
         
     def on_task_deleted(self, sender, tid):
         #print "Task deleted: %s" % tid
@@ -1357,11 +1386,9 @@ class TaskBrowser:
         self._update_window_title()
         
     def on_task_modified(self, sender, tid):
-        #print "Task modified: %s" % tid
-        self.task_tree_model.remove_task(tid)
-        self.task_tree_model.add_task(tid)
+        if self.task_tree_model.remove_task(tid):
+            self.task_tree_model.add_task(tid)
         self.tag_model.update_tags_for_task(tid)
-        self._update_window_title()
         self.tags_tv.refresh()
         #We also refresh the opened windows for that tasks,
         #his children and his parents
@@ -1373,6 +1400,18 @@ class TaskBrowser:
         for uid in tlist:
             if self.opened_task.has_key(uid):
                 self.opened_task[uid].refresh_editor(refreshtext=True)
+        #if the modified task is active, we have to refresh everything
+        #to avoid some odd stuffs when loading
+        if task.get_status() == "Active" :
+            if self.refresh_lock.acquire(False):
+                gobject.idle_add(self.general_refresh)
+        
+    def general_refresh(self):
+        self.task_modelfilter.refilter()
+#        self.tag_modelfilter.refilter()
+#        self.tags_tv.refresh()
+        self._update_window_title()
+        self.refresh_lock.release()
 
 ### PUBLIC METHODS ############################################################
 #
@@ -1455,6 +1494,5 @@ class TaskBrowser:
         # Restore state from config
         self.restore_state_from_conf()
         self.window.show()
-
         gtk.main()
         return 0

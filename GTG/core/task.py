@@ -67,11 +67,13 @@ class Task:
     def is_loaded(self):
         return self.loaded
 
-    def set_loaded(self):
+    def set_loaded(self,signal=True):
         #avoid doing it multiple times
         if not self.loaded:
             self.loaded = True
-            self.req._task_loaded(self.tid)
+            if signal:
+                self.req._task_loaded(self.tid)
+                self.call_modified()
 
     def set_to_keep(self):
         self.can_be_deleted = False
@@ -481,6 +483,8 @@ class Task:
             task.remove_subtask(self.get_id())
         for task in self.get_subtasks():
             task.remove_parent(self.get_id())
+        for tag in self.tags:
+            tag.remove_task(self.get_id())
         #then we remove effectively the task
         #self.req.delete_task(self.get_id())
 
@@ -495,12 +499,17 @@ class Task:
         self._modified_update()
         if self.sync_func and self.is_loaded():
             self.sync_func(self)
-            self.req._task_modified(self.tid)
-            #we also modify parents and children
-            for p in self.get_parents() :
-                self.req._task_modified(p)
-            for s in self.get_subtask_tids() :
-                self.req._task_modified(s)
+            self.call_modified()
+    
+    #This function send the modified signals for the tasks, 
+    #parents and childrens       
+    def call_modified(self):
+        self.req._task_modified(self.tid)
+        #we also modify parents and children
+        for p in self.get_parents() :
+            self.req._task_modified(p)
+        for s in self.get_subtask_tids() :
+            self.req._task_modified(s)
 
     def _modified_update(self):
         self.modified = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
@@ -524,6 +533,7 @@ class Task:
     #This function add tag by name
     def add_tag(self, tagname):
         t = self.req.new_tag(tagname.encode("UTF-8"))
+        t.add_task(self.get_id())
         #Do not add the same tag twice
         if not t in self.tags:
             self.tags.append(t)
@@ -534,6 +544,7 @@ class Task:
     #remove by tagname
     def remove_tag(self, tagname):
         t = self.req.get_tag(tagname)
+        t.remove_task(self.get_id())
         if t in self.tags:
             self.tags.remove(t)
             for child in self.get_subtasks():

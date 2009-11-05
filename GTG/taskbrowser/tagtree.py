@@ -30,6 +30,7 @@ COL_COLOR = 4
 COL_COUNT = 5
 COL_SEP   = 6
 
+
 class TagTreeModel(gtk.GenericTreeModel):
 
     column_types = (str,\
@@ -104,9 +105,8 @@ class TagTreeModel(gtk.GenericTreeModel):
         elif column == COL_COUNT:
             sp_id = tag.get_attribute("special")
             if not sp_id:
-                count = len(self.req.get_active_tasks_list(\
-                       tags=[tag], workable=self.workview, \
-                       started_only=self.workview))
+                #This call is critical because called thousand of times
+                count = tag.get_tasks_nbr(workview=self.workview)
                 if count == 0: return ''
                 return  count
             else:
