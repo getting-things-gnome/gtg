@@ -28,7 +28,7 @@ class FakeDate():
         return self.name
         
 
-NOW = FakeDate(0, 'now')
+NOW = FakeDate(1, 'now')
 SOON = FakeDate(7, 'soon')
 LATER = FakeDate(365, 'later')
 
