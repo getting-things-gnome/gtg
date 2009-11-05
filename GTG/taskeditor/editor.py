@@ -48,9 +48,17 @@ except: # pylint: disable-msg=W0702
 date_separator = "/"
 
 class TaskEditor :
+    #delete_callback is the function called on deletion
+    #close_callback is the function called on close
+    #opentask_callback is the function to open a new editor
+    #tasktitle_callbakc is called when title change
+    #notes is experimental (bool)
+    #taskconfig is a ConfigObj dic to save infos about tasks
+    #thisisnew is True when a new task is created and opened
     def __init__(self, requester, task, plugins,
-                delete_callback=None, close_callback=None,opentask_callback=None, 
-                tasktitle_callback=None, notes=False,thisisnew=False) :
+                delete_callback=None, close_callback=None,opentask_callback=None, \
+                tasktitle_callback=None, notes=False,taskconfig=None,\
+                thisisnew=False) :
         self.req = requester
         self.time = None
         self.gladefile = GnomeConfig.GLADE_FILE
@@ -77,6 +85,7 @@ class TaskEditor :
                 "duedate_changed" : (self.date_changed,"due"),
                 "on_insert_subtask_clicked" : self.insert_subtask,
                 "on_inserttag_clicked" : self.inserttag_clicked,
+                "on_move" : self.on_move,
               }
         self.wTree.signal_autoconnect(dic)
         cal_dic = {
@@ -176,6 +185,21 @@ class TaskEditor :
         self.textview.refresh_callback(self.refresh_editor)
         self.refresh_editor()
         self.textview.grab_focus()
+        
+        #restoring size and position, spatial tasks
+        self.config = taskconfig
+        if self.config :
+            tid = self.task.get_id()
+            if tid in self.config:
+                if "position" in self.config[tid]:
+                    pos = self.config[tid]["position"]
+                    self.move(pos[0],pos[1])
+                    #print "restoring position %s %s" %(pos[0],pos[1])
+                if "size" in self.config[tid]:
+                    size = self.config[tid]["size"]
+                    #print "size %s - %s" %(str(size[0]),str(size[1]))
+                    #this eval(str()) is a hack to accept both int and str
+                    self.window.resize(eval(str(size[0])),eval(str(size[1])))
 
         self.window.show()
 
@@ -469,6 +493,8 @@ class TaskEditor :
         self.task.set_title(self.textview.get_title())
         self.task.set_text(self.textview.get_text()) 
         self.task.sync()
+        if self.config != None:
+            self.config.write()
         self.time = time.time()
     #light_save save the task without refreshing every 30seconds
     #We will reduce the time when the get_text will be in another thread
@@ -507,6 +533,16 @@ class TaskEditor :
             pass
     def get_position(self):
         return self.window.get_position()
+        
+    def on_move(self,widget,event):
+        #saving the position
+        if self.config != None:
+            tid = self.task.get_id()
+            if not tid in self.config :
+                self.config[tid] = dict()
+            #print "saving task position %s" %str(self.get_position())
+            self.config[tid]["position"] = self.get_position()
+            self.config[tid]["size"] = self.window.get_size()
         
     #We define dummy variable for when close is called from a callback
     def close(self,window=None,a=None,b=None,c=None) : #pylint: disable-msg=W0613
