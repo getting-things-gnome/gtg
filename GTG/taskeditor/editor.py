@@ -90,6 +90,9 @@ class TaskEditor :
         self.wTree.signal_autoconnect(dic)
         cal_dic = {
                 "on_nodate"             : self.nodate_pressed,
+                "on_set_fuzzydate_now"  : self.set_fuzzydate_now,
+                "on_set_fuzzydate_soon" : self.set_fuzzydate_soon,
+                "on_set_fuzzydate_later": self.set_fuzzydate_later,
                 #"on_dayselected"        : self.day_selected,
                 #"on_month_changed"      : self.month_changed,
                 "on_dayselected_double" : self.day_selected_double,
@@ -388,7 +391,7 @@ class TaskEditor :
             toset = self.task.get_due_date()
         elif self.__opened_date == "start" :
             toset = self.task.get_start_date()
-        if toset :
+        if toset and '-' in toset:
             y,m,d = toset.split("-")
         else :
             dd = date.today()
@@ -429,6 +432,14 @@ class TaskEditor :
             self.task.set_start_date(None)
         self.refresh_editor()
         self.__close_calendar()
+        
+    def set_fuzzydate(self, text):
+    	self.task.set_due_date(text)
+    	self.__close_calendar()
+    	
+    def set_fuzzydate_now(self, widget): self.set_fuzzydate('now')
+    def set_fuzzydate_soon(self, widget): self.set_fuzzydate('soon')
+    def set_fuzzydate_later(self, widget): self.set_fuzzydate('later')
         
     def dismiss(self,widget) : #pylint: disable-msg=W0613
         stat = self.task.get_status()
