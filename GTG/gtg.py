@@ -104,7 +104,7 @@ def main():
         
     # Launch task browser
     req = ds.get_requester()
-    tb = TaskBrowser(req, config.conf_dict)
+    tb = TaskBrowser(req, config)
     DBusTaskWrapper(req, tb)
     tb.main()
 

@@ -83,7 +83,8 @@ class TaskBrowser:
         # Object prime variables
         self.priv   = {}
         self.req    = requester
-        self.config = config
+        self.config = config.conf_dict
+        self.task_config = config.task_conf_dict
 
         ### YOU CAN DEFINE YOUR INTERNAL MECHANICS VARIABLES BELOW
         # Task deletion
@@ -150,6 +151,7 @@ class TaskBrowser:
         self.priv['workview']                 = False
         #self.priv['noteview']                = False
         self.priv['filter_cbs']               = []
+        self.priv['quick_add_cbs']            = []
 
     def _init_icon_theme(self):
         icon_dirs = [GTG.DATA_DIR, os.path.join(GTG.DATA_DIR, "icons")]
@@ -249,6 +251,7 @@ class TaskBrowser:
         # The tags treeview
         self.tags_tv = TagTreeView()
         self.tags_tv.set_model(self.tag_modelsort)
+        self.tags_tv.expand_row('0', True)
         self.sidebar_container.add(self.tags_tv)
 
     def _init_toolbar_tooltips(self):
@@ -445,7 +448,8 @@ class TaskBrowser:
         # initializes the plugin api class
         self.plugin_api = PluginAPI(self.window, self.config, GTG.DATA_DIR, self.wTree,\
                                     self.req, self.task_tv, self.priv['filter_cbs'],\
-                                    self.tagpopup, self.tags_tv, None, None)
+                                    self.tagpopup, self.tags_tv, None, None,\
+                                    self.priv['quick_add_cbs'])
         
         if self.plugins:
             # checks the conf for user settings
@@ -568,7 +572,7 @@ class TaskBrowser:
                 
         if "opened_tasks" in self.config["browser"]:
             odic = self.config["browser"]["opened_tasks"]
-            for t in odic.keys():
+            for t in odic:
                 ted = self.open_task(t)
                 #restoring position doesn't work, I don't know why
                 #ted.move(odic[t][0],odic[t][1])
@@ -731,9 +735,10 @@ class TaskBrowser:
             tv.present()
         elif t:
             tv = TaskEditor(
-                self.req, t, self.plugins, 
-                self.on_delete_task, self.close_task, self.open_task, 
-                self.get_tasktitle,thisisnew=thisisnew)
+                self.req, t, self.plugins, \
+                self.on_delete_task, self.close_task, self.open_task, \
+                self.get_tasktitle,taskconfig=self.task_config, \
+                thisisnew=thisisnew)
             #registering as opened
             self.opened_task[uid] = tv
         return tv
@@ -753,6 +758,9 @@ class TaskBrowser:
         """
 
         tag_list, notag_only = self.get_selected_tags()
+
+        if len(tag_list)==1: #include child tags
+		    tag_list = tag_list[0].all_children()
 
         if not task.has_tags(tag_list=tag_list, notag_only=notag_only):
             return False
@@ -828,9 +836,11 @@ class TaskBrowser:
         @param user_data:
         """
         tag = model.get_value(iter, tagtree.COL_OBJ)
-        if not tag.get_attribute("special"):
-            count = int(model.get_value(iter, tagtree.COL_COUNT))
-            return count != 0
+        if tag.has_child():
+        	return True
+        elif not tag.get_attribute("special"):
+            count = model.get_value(iter, tagtree.COL_COUNT)
+            return count != ''
         else:
             return True
 
@@ -940,9 +950,9 @@ class TaskBrowser:
             self.pengine.deactivatePlugins(self.plugins, self.plugin_api)
             
         #save opened tasks and their positions.
-        open_task = dict()
+        open_task = []
         for otid in self.opened_task.keys():     
-            open_task[otid] = self.opened_task[otid].get_position()
+            open_task.append(otid)
             self.opened_task[otid].close()
 
         # Populate configuration dictionary
@@ -1133,6 +1143,8 @@ class TaskBrowser:
             self.quickadd_entry.set_text('')
             # Refresh the treeview
             #self.do_refresh(toselect=id_toselect)
+            for f in self.priv['quick_add_cbs']:
+                f(task)
 
     def on_tag_treeview_button_press_event(self, treeview, event):
         if event.button == 3:
