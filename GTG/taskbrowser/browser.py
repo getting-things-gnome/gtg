@@ -328,6 +328,8 @@ class TaskBrowser:
                 self.on_toolbar_toggled,
             "on_about_clicked":
                 self.on_about_clicked,
+            "on_about_delete":
+                self.on_about_close,
             "on_about_close":
                 self.on_about_close,
             "on_nonworkviewtag_toggled":
@@ -1015,6 +1017,7 @@ class TaskBrowser:
 
     def on_about_close(self, widget, response):
         self.about.hide()
+        return True
 
     def on_colorchooser_activate(self, widget):
         #TODO: Color chooser should be refactorized in its own class. Well, in

@@ -891,6 +891,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
     <property name="logo_icon_name">gtg</property>
     <property name="wrap_license">True</property>
     <signal name="response" handler="on_about_close"/>
+    <signal name="delete_event" handler="on_about_delete"/>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="dialog-vbox2">
         <property name="visible">True</property>
