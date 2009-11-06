@@ -268,7 +268,9 @@ class TaskEditor :
                 self.duedate_widget.set_text(zedate)
                 #refreshing the day left label
                 result = self.task.get_days_left()
-                if result == 1:
+                if result is None:
+                    txt = ""
+                elif result == 1:
                     txt = _("Due tomorrow !")
                 elif result > 0:
                     txt = _("%s days left") %result
