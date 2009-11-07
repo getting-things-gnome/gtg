@@ -934,107 +934,110 @@ class TaskView(gtk.TextView):
         return current_indent
         
     #Function called each time the user input a letter   
-    def _insert_at_cursor(self, tv, itera, tex, leng) : #pylint: disable-msg=W0613
-        #disable the insert signal to avoid recursion 
-        self.buff.disconnect(self.insert_sigid)
-        self.insert_sigid = False
-        self.buff.disconnect(self.modified_sigid)
-        self.modified_sigid = False
-        
-        #First, we will get the actual indentation value
-        #The nbr just before the \n
-        line_nbr   = itera.get_line()
-        start_line = itera.copy()
-        start_line.set_line(line_nbr)
-        end_line   = itera.copy()
-        tags = start_line.get_tags()
-        subtask_nbr = None
-        current_indent = self._get_indent_level(itera)
-        tags = itera.get_tags()
-        for ta in tags :
-            if ta.get_data('is_subtask') :
-                subtask_nbr = ta.get_data('child')
-        #Maybe we are simply at the end of the tag
-        if not subtask_nbr and itera.ends_tag():
-            for ta in itera.get_toggled_tags(False) :
+    def _insert_at_cursor(self, tv, itera, tex, leng) :
+        #We don't paste the bullet
+        if tex.strip() != self.bullet1 and tex != "\n":
+            print "text ###%s### inserted length = %s" %(tex,leng)
+            #disable the insert signal to avoid recursion 
+            self.buff.disconnect(self.insert_sigid)
+            self.insert_sigid = False
+            self.buff.disconnect(self.modified_sigid)
+            self.modified_sigid = False
+            
+            #First, we will get the actual indentation value
+            #The nbr just before the \n
+            line_nbr   = itera.get_line()
+            start_line = itera.copy()
+            start_line.set_line(line_nbr)
+            end_line   = itera.copy()
+            tags = start_line.get_tags()
+            subtask_nbr = None
+            current_indent = self._get_indent_level(itera)
+            tags = itera.get_tags()
+            for ta in tags :
                 if ta.get_data('is_subtask') :
                     subtask_nbr = ta.get_data('child')
+            #Maybe we are simply at the end of the tag
+            if not subtask_nbr and itera.ends_tag():
+                for ta in itera.get_toggled_tags(False) :
+                    if ta.get_data('is_subtask') :
+                        subtask_nbr = ta.get_data('child')
 
-        #New line : the user pressed enter !
-        #If the line begins with "-", it's a new subtask !
-        if tex == '\n' :
-            self.buff.create_mark("insert_point", itera, True)
-            #First, we close tag tags.
-            #If we are at the end of a tag, we look for closed tags
-            closed_tag = None
-            cutting_subtask = False
-            if itera.ends_tag() :
-                list_stag = itera.get_toggled_tags(False)
-            #Or maybe we are in the middle of a tag
-            else :
-                list_stag = itera.get_tags()
-            for t in list_stag :
-                if t.get_data('is_tag') :
-                    closed_tag = t.get_data('tagname')
-                elif t.get_data('is_subtask') :
-                    cutting_subtask = True
-                    closed_tag = t.get_data('child')
-            #We add a bullet list but not on the first line
-            #Because it's the title
-            if line_nbr > 0 :
-                line = start_line.get_slice(end_line)
-                
-                #If indent is 0, We check if we created a new task
-                #the "-" might be after a space
-                #Python 2.5 should allow both tests in one
-                if current_indent == 0 :
-                    if line.startswith('-') or line.startswith(' -') :
-                        line = line.lstrip(' -')
-                        end_i = self.__newsubtask(self.buff,line,line_nbr)
-                        #Here, we should increment indent level
-                        self.insert_indent(self.buff,end_i,1,enter=True)
-                        tv.emit_stop_by_name('insert-text')
-                    else :
-                        self.buff.insert(itera,"\n")
-                        tv.emit_stop_by_name('insert-text')
-                        
-                #Then, if indent > 0, we increment it
-                #First step : we preserve it.
+            #New line : the user pressed enter !
+            #If the line begins with "-", it's a new subtask !
+            if tex == '\n' :
+                self.buff.create_mark("insert_point", itera, True)
+                #First, we close tag tags.
+                #If we are at the end of a tag, we look for closed tags
+                closed_tag = None
+                cutting_subtask = False
+                if itera.ends_tag() :
+                    list_stag = itera.get_toggled_tags(False)
+                #Or maybe we are in the middle of a tag
                 else :
-                    if not line.lstrip("%s "%self.bullet1) :
-                        self.deindent(itera,newlevel=0)
-                        tv.emit_stop_by_name('insert-text')
-                        
-                    elif current_indent == 1 :
-                        self.insert_indent(self.buff,itera,current_indent)
-                        tv.emit_stop_by_name('insert-text')
-                #Then we close the tag tag
-                if closed_tag :
-                    insert_mark = self.buff.get_mark("insert_point")
-                    insert_iter = self.buff.get_iter_at_mark(insert_mark)
-                    self.buff.move_mark_by_name("/%s"%closed_tag,insert_iter)
-                    self.buff.delete_mark(insert_mark)
-                    if cutting_subtask :
-                        cursor = self.buff.get_iter_at_mark(self.buff.get_insert())
-                        endl = cursor.copy()
-                        if not endl.ends_line() :
-                            endl.forward_to_line_end()
-                        text = self.buff.get_text(cursor,endl)
-                        anchor = self.new_subtask_callback(text)
-                        self.buff.create_mark(anchor,cursor,True)
-                        self.buff.create_mark("/%s"%anchor,endl,False)
-                    self.modified(full=True)
-        #The user entered something else than \n
-        elif tex :
-            #We are on an indented line without subtask ? Create it !
-            if current_indent > 0 and not subtask_nbr :
-                #self.__newsubtask(self.buff,tex,line_nbr, level=current_indent)
-                anchor = self.new_subtask_callback(tex)
-                self.buff.create_mark(anchor,itera,True)
-                self.buff.create_mark("/%s"%anchor,itera,False)
-        self.insert_sigid = self.buff.connect('insert-text', self._insert_at_cursor)
-        self.connect('key_press_event', self._keypress)
-        self.modified_sigid = self.buff.connect("changed" , self.modified)
+                    list_stag = itera.get_tags()
+                for t in list_stag :
+                    if t.get_data('is_tag') :
+                        closed_tag = t.get_data('tagname')
+                    elif t.get_data('is_subtask') :
+                        cutting_subtask = True
+                        closed_tag = t.get_data('child')
+                #We add a bullet list but not on the first line
+                #Because it's the title
+                if line_nbr > 0 :
+                    line = start_line.get_slice(end_line)
+                    
+                    #If indent is 0, We check if we created a new task
+                    #the "-" might be after a space
+                    #Python 2.5 should allow both tests in one
+                    if current_indent == 0 :
+                        if line.startswith('-') or line.startswith(' -') :
+                            line = line.lstrip(' -')
+                            end_i = self.__newsubtask(self.buff,line,line_nbr)
+                            #Here, we should increment indent level
+                            self.insert_indent(self.buff,end_i,1,enter=True)
+                            tv.emit_stop_by_name('insert-text')
+                        else :
+                            self.buff.insert(itera,"\n")
+                            tv.emit_stop_by_name('insert-text')
+                            
+                    #Then, if indent > 0, we increment it
+                    #First step : we preserve it.
+                    else :
+                        if not line.lstrip("%s "%self.bullet1) :
+                            self.deindent(itera,newlevel=0)
+                            tv.emit_stop_by_name('insert-text')
+                            
+                        elif current_indent == 1 :
+                            self.insert_indent(self.buff,itera,current_indent)
+                            tv.emit_stop_by_name('insert-text')
+                    #Then we close the tag tag
+                    if closed_tag :
+                        insert_mark = self.buff.get_mark("insert_point")
+                        insert_iter = self.buff.get_iter_at_mark(insert_mark)
+                        self.buff.move_mark_by_name("/%s"%closed_tag,insert_iter)
+                        self.buff.delete_mark(insert_mark)
+                        if cutting_subtask :
+                            cursor = self.buff.get_iter_at_mark(self.buff.get_insert())
+                            endl = cursor.copy()
+                            if not endl.ends_line() :
+                                endl.forward_to_line_end()
+                            text = self.buff.get_text(cursor,endl)
+                            anchor = self.new_subtask_callback(text)
+                            self.buff.create_mark(anchor,cursor,True)
+                            self.buff.create_mark("/%s"%anchor,endl,False)
+                        self.modified(full=True)
+            #The user entered something else than \n
+            elif tex :
+                #We are on an indented line without subtask ? Create it !
+                if current_indent > 0 and not subtask_nbr :
+                    #self.__newsubtask(self.buff,tex,line_nbr, level=current_indent)
+                    anchor = self.new_subtask_callback(tex)
+                    self.buff.create_mark(anchor,itera,True)
+                    self.buff.create_mark("/%s"%anchor,itera,False)
+            self.insert_sigid = self.buff.connect('insert-text', self._insert_at_cursor)
+            self.connect('key_press_event', self._keypress)
+            self.modified_sigid = self.buff.connect("changed" , self.modified)
         
     def _keypress(self, widget, event):
         # Check for Ctrl-Return/Enter
