@@ -147,11 +147,11 @@ class TaskView(gtk.TextView):
         
         #The signal emitted each time the buffer is modified
         #Putting it at the end to avoid doing it too much when starting
-        self.modified_sigid = self.buff.connect("changed" , self.modified)
+        self.modified_sigid = self.buff.connect("changed", self.modified)
         self.connect("backspace",self.backspace)
         self.tobe_refreshed = False
 
-        if self.get_direction() == gtk.TEXT_DIR_RTL :
+        if self.get_direction() == gtk.TEXT_DIR_RTL:
             self.bullet1 = bullet1_rtl
         else:
             self.bullet1 = bullet1_ltr
@@ -441,7 +441,8 @@ class TaskView(gtk.TextView):
           2. Changing the name of the window if title change
         """
         tags_before = self.get_tagslist()
-        if not buff : buff = self.buff   
+        if not buff: 
+            buff = self.buff   
         cursor_mark = buff.get_insert()
         cursor_iter = buff.get_iter_at_mark(cursor_mark)
         table = buff.get_tag_table()
@@ -744,9 +745,9 @@ class TaskView(gtk.TextView):
                 stripped   = buff.get_text(title_start, title_end).strip('\n\t ')
         # Or to all the buffer if there is only one line
         else :
-            title_end = end.copy()            
-        buff.apply_tag_by_name  ('title', title_start , title_end)
-        buff.remove_tag_by_name ('title', title_end   , end)
+            title_end = end.copy()
+        buff.apply_tag_by_name('title', title_start , title_end)
+        buff.remove_tag_by_name('title', title_end   , end)
         # Refresh title of the window
         if refresheditor:
             self.refresh(buff.get_text(title_start,title_end).strip('\n\t'))
@@ -806,7 +807,6 @@ class TaskView(gtk.TextView):
         self.apply_subtask_tag(buff,anchor,startm,endm)
         #buff.delete_mark(start)
         #buff.delete_mark(end)
-        
         
         if reconnect_insert :
             self.insert_sigid = self.buff.connect('insert-text', self._insert_at_cursor)
