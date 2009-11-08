@@ -30,6 +30,7 @@
 #
 
 import gtk
+from gtk import gdk
 import gobject
 import pango
 
@@ -119,6 +120,8 @@ class TaskView(gtk.TextView):
         self.insert_sigid = self.buff.connect('insert-text', \
                                               self._insert_at_cursor)
         self.buff.connect("delete-range", self._delete_range)
+        self.connect('copy-clipboard', self.copy_clipboard)
+        self.connect('cut-clipboard', self.copy_clipboard)
 
         #All the typical properties of our textview
         self.set_wrap_mode(gtk.WRAP_WORD)
@@ -933,8 +936,21 @@ class TaskView(gtk.TextView):
                 current_indent = ta.get_data('indent_level')
         return current_indent
         
+    def print_clip(self,clipboard,text,data=None):
+        print "Clip %s contains ##%s##" %(data,text)
+        
+    def copy_clipboard(self,widget,param=None):
+        clip = gtk.clipboard_get(gdk.SELECTION_CLIPBOARD)
+        self.buff.copy_clipboard(clip)
+        clip.request_text(self.print_clip,"CLIP")
+        
     #Function called each time the user input a letter   
     def _insert_at_cursor(self, tv, itera, tex, leng) :
+#        clip = gtk.clipboard_get(gdk.SELECTION_CLIPBOARD)
+#        prim = gtk.clipboard_get(gdk.SELECTION_PRIMARY)
+#        clip.request_text(self.print_clip,"CLIP")
+#        prim.request_text(self.print_clip,"PRIM")
+        
         #We don't paste the bullet
         if tex.strip() != self.bullet1 and tex != "\n":
             print "text ###%s### inserted length = %s" %(tex,leng)
