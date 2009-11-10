@@ -685,8 +685,7 @@ class TaskView(gtk.TextView):
         #We want to start at the begining
         tags = it.get_tags()+it.get_toggled_tags(False)
         for ta in tags :
-            if (ta.get_data('is_indent') and not it.begins_tag(ta) \
-                                            and not it.ends_tag(ta)) :
+            if (ta.get_data('is_indent')):
                 it.backward_to_tag_toggle(ta)
                 start.backward_to_tag_toggle(ta)
                 endindent = it.copy()
