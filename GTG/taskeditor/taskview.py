@@ -951,11 +951,9 @@ class TaskView(gtk.TextView):
         text = selec.wait_for_text()
         if text:
             newtext = text.replace(self.bullet1, "-")
-            newtext = text.replace("a", "-")
             clip.set_text(newtext)
-        print clip.wait_for_text()
         if param == "cut" :
-            print "cut"
+            self.buff.delete_selection(True,True)
             self.stop_emission("cut_clipboard")
         else :
             self.stop_emission("copy_clipboard")
@@ -966,14 +964,9 @@ class TaskView(gtk.TextView):
         
     #Function called each time the user input a letter   
     def _insert_at_cursor(self, tv, itera, tex, leng) :
-#        clip = gtk.clipboard_get(gdk.SELECTION_CLIPBOARD)
-#        prim = gtk.clipboard_get(gdk.SELECTION_PRIMARY)
-#        clip.request_text(self.print_clip,"CLIP")
-#        prim.request_text(self.print_clip,"PRIM")
-        
         #We don't paste the bullet
-        if tex.strip() != self.bullet1 and tex != "\n":
-            print "text ###%s### inserted length = %s" %(tex,leng)
+        if tex.strip() != self.bullet1 :
+            #print "text ###%s### inserted length = %s" %(tex,leng)
             #disable the insert signal to avoid recursion 
             self.buff.disconnect(self.insert_sigid)
             self.insert_sigid = False
