@@ -119,7 +119,7 @@ class TaskView(gtk.TextView):
                      e: self.table.foreach(self.__tag_reset, e.window))
         self.insert_sigid = self.buff.connect('insert-text', \
                                               self._insert_at_cursor)
-        self.buff.connect("delete-range", self._delete_range)
+        self.delete_sigid = self.buff.connect("delete-range", self._delete_range)
         self.connect('copy-clipboard', self.copy_clipboard,"copy")
         self.connect('cut-clipboard', self.copy_clipboard,"cut")
         self.connect('paste-clipboard', self.paste_clipboard)
@@ -1093,6 +1093,7 @@ class TaskView(gtk.TextView):
     #Deindent the current line of one level
     #If newlevel is set, force to go to that level
     def deindent(self, itera, newlevel=-1):
+        self.buff.disconnect(self.delete_sigid)
         line = itera.get_line()
         startline = self.buff.get_iter_at_line(line)
         if newlevel < 0 :
@@ -1112,7 +1113,8 @@ class TaskView(gtk.TextView):
         self.buff.delete(startline,itera)
         newiter = self.buff.get_iter_at_mark(tempm)
         self.buff.delete_mark(tempm)
-        self.insert_indent(self.buff,newiter,newlevel,enter=False)
+        #self.insert_indent(self.buff,newiter,newlevel,enter=False)
+        self.delete_sigid = self.buff.connect("delete-range", self._delete_range)
         
     def backspace(self, tv):
         self.buff.disconnect(self.insert_sigid)
