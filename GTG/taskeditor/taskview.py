@@ -723,8 +723,8 @@ class TaskView(gtk.TextView):
                         buff.remove_tag(ta,it,endtag)
                         #Also, we want to delete the indent completely,
                         #Even if the selection was in the middle of an indent
-                        if endtag.compare(end) :
-                            end = endtag
+#                        if endtag.compare(end) :
+#                            end = endtag
                         
             it.forward_char()
         #We return false so the parent still get the signal
@@ -1108,6 +1108,7 @@ class TaskView(gtk.TextView):
         #startline.backward_char()
         #We make a temp mark where we should insert the new indent
         tempm = self.buff.create_mark("temp",startline)
+        print "deindent from %s to %s" %(startline.get_offset(),itera.get_offset())
         self.buff.delete(startline,itera)
         newiter = self.buff.get_iter_at_mark(tempm)
         self.buff.delete_mark(tempm)
