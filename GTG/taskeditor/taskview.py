@@ -681,7 +681,6 @@ class TaskView(gtk.TextView):
     #When the user remove a selection, we remove subtasks and @tags
     #from this selection
     def _delete_range(self,buff,start,end) :
-        it = start.copy()
 #        #If we are at the beginning of a mark, put this mark at the end
 #        marks = start.get_marks()
 #        for m in marks :
@@ -689,17 +688,18 @@ class TaskView(gtk.TextView):
 #            buff.move_mark(m,end)
         #If the begining of the selection is in the middle of an indent
         #We want to start at the begining
-        tags = it.get_tags()+it.get_toggled_tags(False)
+        tags = start.get_tags()+start.get_toggled_tags(False)
         for ta in tags :
             if (ta.get_data('is_indent')):
-                it.backward_to_tag_toggle(ta)
                 line = start.get_line()
                 start = self.buff.get_iter_at_line(line)
-                #start.backward_to_tag_toggle(ta)
-                endindent = it.copy()
-                endindent.forward_to_tag_toggle(ta)
-                buff.remove_tag(ta,start,endindent)
+#                #it = self.buff.get_iter_at_line(line)
+#                #start.backward_to_tag_toggle(ta)
+#                endindent = start.copy()
+#                endindent.forward_to_tag_toggle(ta)
+#                buff.remove_tag(ta,start,endindent)
         #Now we delete all, char after char
+        it = start.copy()
         while (it.get_offset() <= end.get_offset()) and (it.get_char() != '\0'):
             if it.begins_tag() :
                 tags = it.get_tags()
@@ -710,7 +710,7 @@ class TaskView(gtk.TextView):
                         print "removing task %s" %target
                         self.remove_subtask(target)
                     #removing deleted tags
-                    if ta.get_data('is_tag') :
+                    if ta.get_data('is_tag') and it.begins_tag(ta):
                         tagname = ta.get_data('tagname')
                         self.remove_tag_callback(tagname)
                         if buff.get_mark(tagname) :
@@ -729,8 +729,13 @@ class TaskView(gtk.TextView):
                         
             it.forward_char()
         #We return false so the parent still get the signal
-        print "delete from %s to %s" %(start.get_offset(),end.get_offset())
-        return False
+        print "delete from %s to %s" %(start.get_line_offset(),end.get_line_offset())
+        print "deleted text is ##%s##" %self.buff.get_text(start,end)
+#        self.buff.disconnect(self.delete_sigid)
+#        self.buff.delete_selection(True,True)
+#        self.buff.stop_emission("delete-range")
+#        self.buff.connect("delete-range",self._delete_range)
+        return True
         
     #Apply the title and return an iterator after that title.buff.get_iter_at_mar
     def _apply_title(self,buff,refresheditor=True) :
@@ -957,7 +962,7 @@ class TaskView(gtk.TextView):
             newtext = text.replace(self.bullet1, "-")
             clip.set_text(newtext)
         if param == "cut" :
-            self.buff.delete_selection(True,True)
+            self.buff.delete_selection(False,True)
             self.stop_emission("cut_clipboard")
         else :
             self.stop_emission("copy_clipboard")
@@ -1108,14 +1113,15 @@ class TaskView(gtk.TextView):
             print "bug : no is_indent tag on that line"
         #startline.backward_char()
         #We make a temp mark where we should insert the new indent
-        tempm = self.buff.create_mark("temp",startline)
+        #tempm = self.buff.create_mark("temp",startline)
         self.buff.disconnect(self.delete_sigid)
+        #print "deintdent-delete : %s" %self.buff.get_text(startline,itera)
         self.buff.delete(startline,itera)
         self.delete_sigid = self.buff.connect("delete-range", \
                                                self._delete_range)
-        newiter = self.buff.get_iter_at_mark(tempm)
-        self.buff.delete_mark(tempm)
         #For the day when we will have different indent levels
+        #newiter = self.buff.get_iter_at_mark(tempm)
+        #self.buff.delete_mark(tempm)
         #self.insert_indent(self.buff,newiter,newlevel,enter=False)
         
     def backspace(self, tv):
