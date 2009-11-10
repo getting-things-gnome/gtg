@@ -738,7 +738,7 @@ class TaskBrowser:
             tv.present()
         elif t:
             tv = TaskEditor(
-                self.req, t, self.plugins, \
+                self.req, t, self.plugins, self.pengine,\
                 self.on_delete_task, self.close_task, self.open_task, \
                 self.get_tasktitle,taskconfig=self.task_config, \
                 thisisnew=thisisnew)

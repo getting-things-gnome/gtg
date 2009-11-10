@@ -55,7 +55,7 @@ class TaskEditor :
     #notes is experimental (bool)
     #taskconfig is a ConfigObj dic to save infos about tasks
     #thisisnew is True when a new task is created and opened
-    def __init__(self, requester, task, plugins,
+    def __init__(self, requester, task, plugins,pengine,\
                 delete_callback=None, close_callback=None,opentask_callback=None, \
                 tasktitle_callback=None, notes=False,taskconfig=None,\
                 thisisnew=False) :
@@ -175,7 +175,7 @@ class TaskEditor :
         
         # plugins
         self.plugins = plugins
-        self.pengine = PluginEngine(PLUGIN_DIR)
+        self.pengine = pengine
         self.te_plugin_api = PluginAPI(self.window, None, DATA_DIR, self.wTree, 
                                        self.req, None, None, None, None, task, 
                                        self.textview)
@@ -457,7 +457,8 @@ class TaskEditor :
         if self.delete :
             result = self.delete(widget,self.task.get_id())
         #if the task was deleted, we close the window
-        if result : self.window.destroy()
+        if result : 
+            self.window.destroy()
 
     
     #Take the title as argument and return the subtask ID

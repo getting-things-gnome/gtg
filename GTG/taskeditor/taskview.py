@@ -152,7 +152,7 @@ class TaskView(gtk.TextView):
         #The signal emitted each time the buffer is modified
         #Putting it at the end to avoid doing it too much when starting
         self.modified_sigid = self.buff.connect("changed", self.modified)
-        self.connect("backspace",self.backspace)
+        self.backspace_sigid = self.connect("backspace",self.backspace)
         self.tobe_refreshed = False
 
         if self.get_direction() == gtk.TEXT_DIR_RTL:
@@ -718,24 +718,31 @@ class TaskView(gtk.TextView):
                         if buff.get_mark("/%s"%tagname) :
                             buff.delete_mark_by_name("/%s"%tagname)
                     if ta.get_data('is_indent') :
-                        #Because the indent tag is read only, we will remove it
+                        #Because the indent tag is read only
+                        #we will remove it
                         endtag = it.copy()
                         endtag.forward_to_tag_toggle(ta)
                         buff.remove_tag(ta,it,endtag)
                         #Also, we want to delete the indent completely,
                         #Even if the selection was in the middle of an indent
-#                        if endtag.compare(end) :
-#                            end = endtag
                         
             it.forward_char()
-        #We return false so the parent still get the signal
-        print "delete from %s to %s" %(start.get_line_offset(),end.get_line_offset())
-        print "deleted text is ##%s##" %self.buff.get_text(start,end)
+        #now we really delete the selected stuffs
+        selec = self.buff.get_selection_bounds()
+        if selec:
+            print "deleted text is ##%s##" %self.buff.get_text(selec[0],selec[1])#(start,end)
 #        self.buff.disconnect(self.delete_sigid)
-#        self.buff.delete_selection(True,True)
+#        self.disconnect(self.backspace_sigid)
 #        self.buff.stop_emission("delete-range")
-#        self.buff.connect("delete-range",self._delete_range)
-        return True
+#        if self.buff.get_has_selection() :
+#            self.buff.delete_selection(True,True)
+#        else :
+#            end.forward_char()
+#            self.buff.backspace(end,True,True)
+#        self.delete_sigid = self.buff.connect("delete-range",self._delete_range)
+#        self.backspace_sigid = self.connect("backspace",self.backspace)
+        #We return false so the parent still get the signal
+        return False
         
     #Apply the title and return an iterator after that title.buff.get_iter_at_mar
     def _apply_title(self,buff,refresheditor=True) :
@@ -1136,9 +1143,7 @@ class TaskView(gtk.TextView):
                     tv.emit_stop_by_name('backspace')
                     #we stopped the signal, don't forget to erase 
                     #the selection if one
-                    select = self.buff.get_selection_bounds()
-                    if select :
-                        self.buff.delete(select[0],select[1])
+                    self.buff.delete_selection(True,True)
         self.insert_sigid = self.buff.connect('insert-text', \
                                                self._insert_at_cursor)
 
