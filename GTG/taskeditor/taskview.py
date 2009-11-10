@@ -705,8 +705,9 @@ class TaskView(gtk.TextView):
                 tags = it.get_tags()
                 for ta in tags :
                     #removing deleted subtasks
-                    if ta.get_data('is_subtask') :
+                    if ta.get_data('is_subtask') and it.begins_tag(ta) :
                         target = ta.get_data('child')
+                        print "removing task %s" %target
                         self.remove_subtask(target)
                     #removing deleted tags
                     if ta.get_data('is_tag') :
