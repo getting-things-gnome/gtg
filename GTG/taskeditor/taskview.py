@@ -320,6 +320,7 @@ class TaskView(gtk.TextView):
             self.__apply_tag_to_mark(s,e,tag=texttag)
         else :
             self.remove_subtask(subtask)
+            print "line 322 aply_subtask_tag"
             buff.delete_mark(s)
             buff.delete_mark(e)
         
@@ -502,6 +503,7 @@ class TaskView(gtk.TextView):
                     self.apply_subtask_tag(buff,s,start_mark,end_mark)
                 else:
                     self.remove_subtask(s)
+                    print "line 506 modified"
     
                 
         #Now we apply the tag tag to the marks
@@ -696,11 +698,9 @@ class TaskView(gtk.TextView):
                 tags = it.get_tags()
                 for ta in tags :
                     #removing deleted subtasks
-                    #it looks like it works without that.
-#                    if ta.get_data('is_subtask') :
-#                        target = ta.get_data('child')
-#                        #self.remove_subtask(target)
-#                        self.refresh_browser()
+                    if ta.get_data('is_subtask') :
+                        target = ta.get_data('child')
+                        self.remove_subtask(target)
                     #removing deleted tags
                     if ta.get_data('is_tag') :
                         tagname = ta.get_data('tagname')
@@ -718,6 +718,7 @@ class TaskView(gtk.TextView):
                         #Even if the selection was in the middle of an indent
                         if endtag.compare(end) :
                             end = endtag
+                        print "delete-range and is_indent"
                         
             it.forward_char()
         #We return false so the parent still get the signal
