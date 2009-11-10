@@ -1093,7 +1093,6 @@ class TaskView(gtk.TextView):
     #Deindent the current line of one level
     #If newlevel is set, force to go to that level
     def deindent(self, itera, newlevel=-1):
-        self.buff.disconnect(self.delete_sigid)
         line = itera.get_line()
         startline = self.buff.get_iter_at_line(line)
         if newlevel < 0 :
@@ -1109,12 +1108,14 @@ class TaskView(gtk.TextView):
         #startline.backward_char()
         #We make a temp mark where we should insert the new indent
         tempm = self.buff.create_mark("temp",startline)
-        print "deindent from %s to %s" %(startline.get_offset(),itera.get_offset())
+        self.buff.disconnect(self.delete_sigid)
         self.buff.delete(startline,itera)
+        self.delete_sigid = self.buff.connect("delete-range", \
+                                               self._delete_range)
         newiter = self.buff.get_iter_at_mark(tempm)
         self.buff.delete_mark(tempm)
+        #For the day when we will have different indent levels
         #self.insert_indent(self.buff,newiter,newlevel,enter=False)
-        self.delete_sigid = self.buff.connect("delete-range", self._delete_range)
         
     def backspace(self, tv):
         self.buff.disconnect(self.insert_sigid)
@@ -1126,6 +1127,11 @@ class TaskView(gtk.TextView):
                 if t.get_data('is_indent') :
                     self.deindent(insert_iter)
                     tv.emit_stop_by_name('backspace')
+                    #we stopped the signal, don't forget to erase 
+                    #the selection if one
+                    select = self.buff.get_selection_bounds()
+                    if select :
+                        self.buff.delete(select[0],select[1])
         self.insert_sigid = self.buff.connect('insert-text', \
                                                self._insert_at_cursor)
 
@@ -1139,7 +1145,8 @@ class TaskView(gtk.TextView):
             if tag.get_data('is_anchor'):
                 for t in set(self.__tags) - set([tag]):
                     self.__tag_reset(t, window)
-                self.__set_anchor(window, tag, gtk.gdk.Cursor(gtk.gdk.HAND2), self.get_property('hover'))
+                self.__set_anchor(window, tag, gtk.gdk.Cursor(gtk.gdk.HAND2), 
+                                  self.get_property('hover'))
                 break
         else:
             tag_table = self.buff.get_tag_table()
