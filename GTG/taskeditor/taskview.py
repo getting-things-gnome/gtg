@@ -311,6 +311,13 @@ class TaskView(gtk.TextView):
         i_s = buff.get_iter_at_mark(s)
         i_e = buff.get_iter_at_mark(e)
         tex = buff.get_text(i_s,i_e)
+        #we don't accept \n in a subtask title
+        if "\n" in tex :
+            i_e = i_s.copy()
+            while i_e.get_char() != "\n" :
+                i_e.forward_char()
+            buff.move_mark(e,i_e)
+            tex = buff.get_text(i_s,i_e)
         if len(tex) > 0 :
             self.req.get_task(subtask).set_title(tex)
             texttag = self.create_anchor_tag(buff,subtask,text=tex,typ="subtask")
@@ -320,7 +327,6 @@ class TaskView(gtk.TextView):
             self.__apply_tag_to_mark(s,e,tag=texttag)
         else :
             self.remove_subtask(subtask)
-            print "line 322 aply_subtask_tag"
             buff.delete_mark(s)
             buff.delete_mark(e)
         
@@ -717,7 +723,6 @@ class TaskView(gtk.TextView):
                         #Even if the selection was in the middle of an indent
                         if endtag.compare(end) :
                             end = endtag
-                        print "delete-range and is_indent"
                         
             it.forward_char()
         #We return false so the parent still get the signal
@@ -936,32 +941,26 @@ class TaskView(gtk.TextView):
             if ta.get_data('is_indent') :
                 current_indent = ta.get_data('indent_level')
         return current_indent
-        
-    def print_clip(self,clipboard,text,data=None):
-        print "Clip %s contains ##%s##" %(data,text)
-        newtext = text.replace(self.bullet1, "-")
-        clipboard.set_text(newtext)
-        
+    
+    #Method called on copy and cut actions
+    #param is either "cut" or "copy"
     def copy_clipboard(self,widget,param=None):
         selec = gtk.clipboard_get(gdk.SELECTION_PRIMARY)
         clip = gtk.clipboard_get(gdk.SELECTION_CLIPBOARD)
-        #self.buff.copy_clipboard(clip)
-        #clip.request_text(self.print_clip,"CLIP")
-        #text = clip.wait_for_text()
         text = selec.wait_for_text()
         if text:
+            #we replace the arrow by the original "-"
             newtext = text.replace(self.bullet1, "-")
             clip.set_text(newtext)
-            #clip.store()
         if param == "cut" :
             self.buff.delete_selection(True,True)
             self.stop_emission("cut_clipboard")
         else :
             self.stop_emission("copy_clipboard")
         
+    #Called on paste.
     def paste_clipboard(self,widget,param=None):
         clip = gtk.clipboard_get(gdk.SELECTION_CLIPBOARD)
-        print "pasting ##%s##" %clip.wait_for_text()
         
     #Function called each time the user input a letter   
     def _insert_at_cursor(self, tv, itera, tex, leng) :
