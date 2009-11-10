@@ -856,32 +856,36 @@ class TaskBrowser:
             return True
 
     def dleft_sort_func(self, model, iter1, iter2, user_data=None):
-        order = self.task_tv.get_model().get_sort_column_id()[1]
-        task1 = model.get_value(iter1, tasktree.COL_OBJ)
-        task2 = model.get_value(iter2, tasktree.COL_OBJ)
-        t1_dleft = task1.get_due_date()
-        t2_dleft = task2.get_due_date()
-        if not t1_dleft and not t2_dleft:
-            t1_title = task1.get_title()
-            t2_title = task2.get_title()
-            t1_title = locale.strxfrm(t1_title)
-            t2_title = locale.strxfrm(t2_title)
-            if order == gtk.SORT_ASCENDING:
-                return cmp(t1_title, t2_title)
+        tvmodel = self.task_tv.get_model()
+        if tvmodel :
+            order = tvmodel.get_sort_column_id()[1]
+            task1 = model.get_value(iter1, tasktree.COL_OBJ)
+            task2 = model.get_value(iter2, tasktree.COL_OBJ)
+            t1_dleft = task1.get_due_date()
+            t2_dleft = task2.get_due_date()
+            if not t1_dleft and not t2_dleft:
+                t1_title = task1.get_title()
+                t2_title = task2.get_title()
+                t1_title = locale.strxfrm(t1_title)
+                t2_title = locale.strxfrm(t2_title)
+                if order == gtk.SORT_ASCENDING:
+                    return cmp(t1_title, t2_title)
+                else:
+                    return cmp(t2_title, t1_title)
+            elif not t1_dleft and t2_dleft:
+                if order == gtk.SORT_ASCENDING:
+                    return 1
+                else:
+                    return -1
+            elif t1_dleft and not t2_dleft:
+                if order == gtk.SORT_ASCENDING:
+                    return -1
+                else:
+                    return 1
             else:
-                return cmp(t2_title, t1_title)
-        elif not t1_dleft and t2_dleft:
-            if order == gtk.SORT_ASCENDING:
-                return 1
-            else:
-                return -1
-        elif t1_dleft and not t2_dleft:
-            if order == gtk.SORT_ASCENDING:
-                return -1
-            else:
-                return 1
+                return cmp(t2_dleft, t1_dleft)
         else:
-            return cmp(t2_dleft, t1_dleft)
+            return None
 
     def tag_sort_func(self, model, iter1, iter2, user_data=None):
         order = self.tags_tv.get_model().get_sort_column_id()[1]
@@ -1100,9 +1104,11 @@ class TaskBrowser:
 
     def on_child_toggled(self, model, path, iter):
         #print "on_child_toggled: %s" % model.get_value(iter, tasktree.COL_TID)
-        tid = model.get_value(iter, tasktree.COL_TID)
-        if tid not in self.priv.get("collapsed_tids", []):
-            self.task_tv.expand_row(path, True)
+        #Be sure that we still have a model in the TreeView
+        if self.task_tv.get_model() != None :
+            tid = model.get_value(iter, tasktree.COL_TID)
+            if tid not in self.priv.get("collapsed_tids", []):
+                self.task_tv.expand_row(path, True)
 
     def on_quickadd_activate(self, widget):
         text = self.quickadd_entry.get_text()

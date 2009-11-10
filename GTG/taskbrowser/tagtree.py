@@ -278,7 +278,9 @@ class TagTreeView(gtk.TreeView):
         self.connect('drag_data_received', self.on_drag_data_received)
 
     def refresh(self):
-        self.get_model().foreach(self._refresh_func)
+        model = self.get_model()
+        if model :
+            model.foreach(self._refresh_func)
 
     def _refresh_func(self, model, path, iter, user_data=None):
         model.row_changed(path, iter)

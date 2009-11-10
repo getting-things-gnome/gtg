@@ -952,6 +952,7 @@ class TaskView(gtk.TextView):
         if text:
             newtext = text.replace(self.bullet1, "-")
             clip.set_text(newtext)
+            #clip.store()
         if param == "cut" :
             self.buff.delete_selection(True,True)
             self.stop_emission("cut_clipboard")
