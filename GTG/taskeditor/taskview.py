@@ -693,7 +693,9 @@ class TaskView(gtk.TextView):
         for ta in tags :
             if (ta.get_data('is_indent')):
                 it.backward_to_tag_toggle(ta)
-                start.backward_to_tag_toggle(ta)
+                line = start.get_line()
+                start = self.buff.get_iter_at_line(line)
+                #start.backward_to_tag_toggle(ta)
                 endindent = it.copy()
                 endindent.forward_to_tag_toggle(ta)
                 buff.remove_tag(ta,start,endindent)
@@ -726,6 +728,7 @@ class TaskView(gtk.TextView):
                         
             it.forward_char()
         #We return false so the parent still get the signal
+        print "delete from %s to %s" %(start.get_offset(),end.get_offset())
         return False
         
     #Apply the title and return an iterator after that title.buff.get_iter_at_mar
