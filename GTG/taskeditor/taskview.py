@@ -735,10 +735,10 @@ class TaskView(gtk.TextView):
 #        self.disconnect(self.backspace_sigid)
 #        self.buff.stop_emission("delete-range")
 #        if self.buff.get_has_selection() :
-#            self.buff.delete_selection(True,True)
+#            self.buff.delete_selection(False,True)
 #        else :
 #            end.forward_char()
-#            self.buff.backspace(end,True,True)
+#            self.buff.backspace(end,False,True)
 #        self.delete_sigid = self.buff.connect("delete-range",self._delete_range)
 #        self.backspace_sigid = self.connect("backspace",self.backspace)
         #We return false so the parent still get the signal
