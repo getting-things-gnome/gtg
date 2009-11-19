@@ -17,7 +17,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-from GTG.core.plugins 		 import GnomeConfig
+from GTG.core.plugins          import GnomeConfig
 # not being used
 #from GTG.core.plugins.engine import PluginEngine
 #from GTG.core.plugins.engine import PluginAPI
@@ -36,16 +36,16 @@ except:
     sys.exit(1)
 
 class PluginManager:
-	
+    
     def __init__(self, parent, plugins, pengine, plugin_api):
         self.plugins = plugins
         self.pengine = pengine
         self.plugin_api = plugin_api
         self.gladefile = GnomeConfig.GLADE_FILE
         self.wTree = gtk.glade.XML(self.gladefile, "PluginManagerDialog")
-		
+        
         self.dialog = self.wTree.get_widget("PluginManagerDialog")
-		
+        
         # stuff to populate
         self.close_btn = self.wTree.get_widget("close_btn")
         self.config_btn = self.wTree.get_widget("config_btn")
@@ -61,7 +61,7 @@ class PluginManager:
         self.lblPluginMM = self.wTree.get_widget("lblPluginMM")
         #self.btnClose = self.wTree.get_widget("close_btn")
         #self.btnClose.connect('clicked', self.close, None)
-		
+        
         # recheck the plugins with errors
         self.pengine.recheckPluginsErrors(self.plugins, self.plugin_api)
         
@@ -74,10 +74,10 @@ class PluginManager:
             else:
                 self.PluginList.append([plgin['state'], plgin['name'], plgin['version'], False, True])
         # end - liststore
-		
+        
         # treeview
         self.pluginTree = self.wTree.get_widget("pluginTree")
-		
+        
         self.rendererToggle = gtk.CellRendererToggle()
         self.rendererToggle.set_property('activatable', True)
         self.rendererToggle.connect('toggled', self.colToggledClicked, self.PluginList)
@@ -85,7 +85,7 @@ class PluginManager:
         self.colToggle = gtk.TreeViewColumn("Enabled", self.rendererToggle)
         self.colToggle.add_attribute(self.rendererToggle, "active", 0)
         self.colToggle.add_attribute(self.rendererToggle, "activatable", 3)
-		
+        
         self.rendererName = gtk.CellRendererText()
         self.rendererName.set_property('foreground', 'gray')
         self.colName = gtk.TreeViewColumn("Name", self.rendererName, text=1, foreground_set=4)
@@ -93,34 +93,37 @@ class PluginManager:
         self.rendererVersion = gtk.CellRendererText()
         self.rendererVersion.set_property('foreground', 'gray')
         self.colVersion = gtk.TreeViewColumn("Version", self.rendererVersion, text=2, foreground_set=4)
-		
+        
         self.pluginTree.append_column(self.colToggle)
         self.pluginTree.append_column(self.colName)
         self.pluginTree.append_column(self.colVersion)
-		
+        
         self.pluginTree.set_model(self.PluginList)
         self.pluginTree.set_search_column(2)
         # end - treeview
-		
+        
         # properties
         
         self.dialog.set_transient_for(parent)
         self.config_btn.set_sensitive(False)
-		
+        
         # connect signals 
         self.dialog.connect("delete_event", self.close)
         self.close_btn.connect("clicked", self.close)
         self.pluginTree.connect("cursor-changed", self.pluginExtraInfo, self.plugins)
         self.config_btn.connect("clicked", self.plugin_configure_dialog)
-		
+        
         self.dialog.show_all()
-		
+        
+        
+    def present(self):
+        self.dialog.present()
 
     def close(self, widget, response=None):
         # get the plugins that are going to be initialized and the ones
         # that are going do be desabled
         self.pengine.recheckPlugins(self.plugins, self.plugin_api)
-        self.dialog.destroy()
+        self.dialog.hide()
         return True
     
     #def delete(self, widget, response=None):
@@ -148,7 +151,7 @@ class PluginManager:
         if path:
             model = treeview.get_model()
             iter = treeview.get_model().get_iter(path)
-			
+            
             for plgin in plugins:
                 if (model.get_value(iter,1) == plgin['name']) and (model.get_value(iter,2) == plgin['version']):
                     self.lblPluginName.set_label("<b>" + plgin['name'] + "</b>")

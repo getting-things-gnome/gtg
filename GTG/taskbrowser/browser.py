@@ -130,6 +130,7 @@ class TaskBrowser:
         
         # Initialize the plugin-engine
         self._init_plugin_engine()
+        self.pm = None #the plugin manager window
         
         self.refresh_lock = threading.Lock()
 
@@ -1391,7 +1392,10 @@ class TaskBrowser:
 #            self.task_tv.get_selection().unselect_all()
     
     def on_pluginmanager_activate(self, widget):
-        PluginManager(self.window, self.plugins, self.pengine, self.plugin_api)
+        if self.pm:
+            self.pm.present()
+        else:
+            self.pm = PluginManager(self.window, self.plugins, self.pengine, self.plugin_api)
 
     def on_close(self, widget=None):
         """Closing the window."""
