@@ -172,6 +172,7 @@ class PluginEngine:
                 plugin['instance'] = plugin['class']()
                 for api in plugin_apis:
                     plugin['instance'].activate(api)
+                    plugin['instance'].onTaskOpened(api)
                 plugin['active'] = True
                 
     # deactivate the enabled plugins
