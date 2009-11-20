@@ -37,10 +37,10 @@ except:
 
 class PluginManager:
     
-    def __init__(self, parent, plugins, pengine, plugin_api):
+    def __init__(self, parent, plugins, pengine, plugin_apis):
         self.plugins = plugins
         self.pengine = pengine
-        self.plugin_api = plugin_api
+        self.plugin_apis = plugin_apis
         self.gladefile = GnomeConfig.GLADE_FILE
         self.wTree = gtk.glade.XML(self.gladefile, "PluginManagerDialog")
         
@@ -63,7 +63,7 @@ class PluginManager:
         #self.btnClose.connect('clicked', self.close, None)
         
         # recheck the plugins with errors
-        self.pengine.recheckPluginsErrors(self.plugins, self.plugin_api)
+        self.pengine.recheckPluginsErrors(self.plugins, self.plugin_apis)
         
         # liststore
         self.PluginList = gtk.ListStore('gboolean', str, str, 'gboolean', 'gboolean')
@@ -122,7 +122,7 @@ class PluginManager:
     def close(self, widget, response=None):
         # get the plugins that are going to be initialized and the ones
         # that are going do be desabled
-        self.pengine.recheckPlugins(self.plugins, self.plugin_api)
+        self.pengine.recheckPlugins(self.plugins, self.plugin_apis)
         self.dialog.hide()
         return True
     
@@ -140,9 +140,9 @@ class PluginManager:
                     #we instantly apply the plugin activation/deactivation
                     #to respect HIG
                     if plgin['state'] :
-                        self.pengine.activatePlugins([plgin], self.plugin_api)
+                        self.pengine.activatePlugins([plgin], self.plugin_apis)
                     else :
-                        self.pengine.deactivatePlugins([plgin], self.plugin_api)
+                        self.pengine.deactivatePlugins([plgin], self.plugin_apis)
                     
                     
 

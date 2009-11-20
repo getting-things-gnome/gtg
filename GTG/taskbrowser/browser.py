@@ -129,6 +129,7 @@ class TaskBrowser:
         self._init_accelerators()
         
         # Initialize the plugin-engine
+        self.p_apis = [] #the list of each plugin apis.
         self._init_plugin_engine()
         self.pm = None #the plugin manager window
         
@@ -454,6 +455,7 @@ class TaskBrowser:
                                     self.req, self.task_tv, self.priv['filter_cbs'],\
                                     self.tagpopup, self.tags_tv, None, None,\
                                     self.priv['quick_add_cbs'])
+        self.p_apis.append(self.plugin_api)
         
         if self.plugins:
             # checks the conf for user settings
@@ -471,7 +473,7 @@ class TaskBrowser:
                             p['state'] = False
             
             # initializes and activates each plugin (that is enabled)
-            self.pengine.activatePlugins(self.plugins, self.plugin_api)
+            self.pengine.activatePlugins(self.plugins, self.p_apis)
 
 #    def _init_note_support(self):
 #        self.notes  = EXPERIMENTAL_NOTES
@@ -959,7 +961,7 @@ class TaskBrowser:
             
         # plugins are deactivated
         if self.plugins:
-            self.pengine.deactivatePlugins(self.plugins, self.plugin_api)
+            self.pengine.deactivatePlugins(self.plugins, self.p_apis)
             
         #save opened tasks and their positions.
         open_task = []
@@ -1395,7 +1397,7 @@ class TaskBrowser:
         if self.pm:
             self.pm.present()
         else:
-            self.pm = PluginManager(self.window, self.plugins, self.pengine, self.plugin_api)
+            self.pm = PluginManager(self.window, self.plugins, self.pengine, self.p_apis)
 
     def on_close(self, widget=None):
         """Closing the window."""

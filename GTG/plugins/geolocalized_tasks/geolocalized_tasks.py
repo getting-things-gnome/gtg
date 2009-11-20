@@ -285,11 +285,12 @@ class geolocalizedTasks:
     #                            self.plugin_api.add_task_to_filter(task.get_id())
                                 
     #=== GEOLOCALIZED PREFERENCES===================================================    
-    def on_geolocalized_preferences(self, plugin_api):
+    def on_geolocalized_preferences(self, plugin_apis):
         wTree = gtk.glade.XML(self.glade_file, "Preferences")
         dialog = wTree.get_widget("Preferences")
         dialog.connect("response", self.preferences_close)
-        plugin_api.set_parent_window(dialog)
+        for api in plugin_apis:
+            api.set_parent_window(dialog)
         
         check_network = wTree.get_widget("check_network")
         check_cellphone = wTree.get_widget("check_cellphone")
