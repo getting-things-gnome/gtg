@@ -147,9 +147,12 @@ class Task:
                 if self.has_parents():
                     for p_tid in self.get_parents():
                         par = self.req.get_task(p_tid)
-                        if par.is_loaded() and par.get_status in\
+                        if par.is_loaded() and par.get_status() in\
                            [self.STA_DONE, self.STA_DISMISSED]:
-                            self.remove_parent(p_tid)
+                            #we can either break the parent/child relationship
+                            #self.remove_parent(p_tid)
+                            #or restore the parent too
+                            par.set_status(self.STA_ACTIVE)
                 #We dont mark the children as Active because
                 #They might be already completed after all
 
