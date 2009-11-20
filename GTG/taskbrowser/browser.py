@@ -744,7 +744,7 @@ class TaskBrowser:
                 self.req, t, self.plugins, \
                 self.on_delete_task, self.close_task, self.open_task, \
                 self.get_tasktitle,taskconfig=self.task_config, \
-                thisisnew=thisisnew)
+                plugin_apis=self.p_apis,thisisnew=thisisnew)
             #registering as opened
             self.opened_task[uid] = tv
         return tv

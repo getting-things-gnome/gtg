@@ -58,8 +58,9 @@ class TaskEditor :
     def __init__(self, requester, task, plugins,
                 delete_callback=None, close_callback=None,opentask_callback=None, \
                 tasktitle_callback=None, notes=False,taskconfig=None,\
-                thisisnew=False) :
+                plugin_apis=None,thisisnew=False) :
         self.req = requester
+        self.p_apis = plugin_apis
         self.time = None
         self.gladefile = GnomeConfig.GLADE_FILE
         self.wTree = gtk.glade.XML(self.gladefile, "TaskEditor")
@@ -178,7 +179,8 @@ class TaskEditor :
         self.pengine = PluginEngine(PLUGIN_DIR)
         self.te_plugin_api = PluginAPI(self.window, None, DATA_DIR, self.wTree, 
                                        self.req, None, None, None, None, task, 
-                                       self.textview)
+                                       self)
+        self.p_apis.append(self.te_plugin_api)
         self.pengine.onTaskLoad(self.plugins, self.te_plugin_api)
         
         #Putting the refresh callback at the end make the start a lot faster
@@ -556,6 +558,7 @@ class TaskEditor :
     def destruction(self,a=None) :#pylint: disable-msg=W0613
         #Save should be also called when buffer is modified
         self.pengine.onTaskClose(self.plugins, self.te_plugin_api)
+        self.p_apis.remove(self.te_plugin_api)
         tid = self.task.get_id()
         if self.task.is_new():
             self.req.delete_task(tid)
