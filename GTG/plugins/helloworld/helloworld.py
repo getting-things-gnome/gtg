@@ -52,6 +52,7 @@ class pluginTest:
         plugin_api.remove_menu_item(self.menu_item)
         plugin_api.remove_toolbar_item(self.tb_button)
         plugin_api.remove_toolbar_item(None, self.separator)
+        #everything should be removed, in case a task is currently opened
         plugin_api.remove_task_toolbar_item(self.task_separator)
         plugin_api.remove_task_toolbar_item(self.tb_Taskbutton)
         
