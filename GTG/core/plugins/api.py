@@ -29,7 +29,7 @@ class PluginAPI:
     with the task editor.
     """
         
-    def __init__(self, window, config, data_dir, wTree, requester,\
+    def __init__(self, window, config, data_dir, builder, requester,\
                  taskview, filter_cbs, tagpopup, tagview, task=None,\
                  texteditor=None, quick_add_cbs=[]):
         """Construct a L{PluginAPI} object.
@@ -50,7 +50,7 @@ class PluginAPI:
         self.__window = window
         self.config = config
         self.data_dir = data_dir
-        self.__wTree = wTree
+        self.__builder = builder
         self.__requester = requester
         
         self.taskview = taskview
@@ -75,7 +75,7 @@ class PluginAPI:
 
         @param item: The gtk.MenuItem that is going to be added.  
         """
-        widget = self.__wTree.get_widget('menu_plugin')
+        widget = self.__builder.get_object('menu_plugin')
         if widget:
             widget.get_submenu().append(item)
         item.show()
@@ -89,7 +89,7 @@ class PluginAPI:
         fails.  
         """
         try:
-            wi = self.__wTree.get_widget('menu_plugin')
+            wi = self.__builder.get_object('menu_plugin')
             if wi:
                 wi.get_submenu().remove(item)
             return True
@@ -109,7 +109,7 @@ class PluginAPI:
         # on the end
         try:
             i = 0
-            wi = self.__wTree.get_widget('task_tb')
+            wi = self.__builder.get_object('task_tb')
             if wi:
                 while wi.get_nth_item(i) is not None:
                     i = i + 1
@@ -131,7 +131,7 @@ class PluginAPI:
         ie, remove_toolbar_item(None, 14)
         """
         try:
-            wi = self.__wTree.get_widget('task_tb')
+            wi = self.__builder.get_object('task_tb')
             if wi:
                 if not n or n < 0:
                     if item:
@@ -153,7 +153,7 @@ class PluginAPI:
         """
         try:
             i = 0
-            wi = self.__wTree.get_widget('task_tb1')
+            wi = self.__builder.get_object('task_tb1')
             if wi:
                 while wi.get_nth_item(i) is not None:
                     i = i + 1
@@ -169,7 +169,7 @@ class PluginAPI:
         
         @param widget: The gtk.Widget that is going to be added. 
         """
-        vbox = self.__wTree.get_widget('vbox4')
+        vbox = self.__builder.get_object('vbox4')
         if vbox:
             vbox.pack_start(widget)
             vbox.reorder_child(widget, -2)
@@ -195,7 +195,7 @@ class PluginAPI:
         
         @param treestore: The new gtk.TreeStore model. 
         """
-        task_tview = self.__wTree.get_widget("task_tview")
+        task_tview = self.__builder.get_object("task_tview")
         if task_tview:
             task_tview.set_model(treestore)
     
@@ -239,7 +239,7 @@ class PluginAPI:
         
         @return: The about dialog.
         """
-        wi = self.__wTree.get_widget("aboutdialog1")
+        wi = self.__builder.get_object("aboutdialog1")
         if wi :
             return wi
         else:

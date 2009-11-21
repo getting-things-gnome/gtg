@@ -62,16 +62,15 @@ class TaskEditor :
         self.req = requester
         self.p_apis = plugin_apis
         self.time = None
-        self.gladefile = GnomeConfig.GLADE_FILE
-        self.wTree = gtk.glade.XML(self.gladefile, "TaskEditor")
-        self.cal_tree = gtk.glade.XML(self.gladefile, "calendar")
-        self.donebutton = self.wTree.get_widget("mark_as_done_editor")
-        self.dismissbutton = self.wTree.get_widget("dismiss_editor")
-        self.deletebutton = self.wTree.get_widget("delete_editor")
+        self.builder = gtk.Builder() 
+        self.builder.add_from_file(GnomeConfig.GLADE_FILE)
+        self.donebutton = self.builder.get_object("mark_as_done_editor")
+        self.dismissbutton = self.builder.get_object("dismiss_editor")
+        self.deletebutton = self.builder.get_object("delete_editor")
         self.deletebutton.set_tooltip_text(GnomeConfig.DELETE_TOOLTIP)
-        self.deletebutton = self.wTree.get_widget("insert_subtask")
+        self.deletebutton = self.builder.get_object("insert_subtask")
         self.deletebutton.set_tooltip_text(GnomeConfig.SUBTASK_TOOLTIP)
-        self.deletebutton = self.wTree.get_widget("inserttag")
+        self.deletebutton = self.builder.get_object("inserttag")
         self.deletebutton.set_tooltip_text(GnomeConfig.TAG_TOOLTIP)
         #Create our dictionay and connect it
         dic = {
@@ -87,20 +86,17 @@ class TaskEditor :
                 "on_insert_subtask_clicked" : self.insert_subtask,
                 "on_inserttag_clicked" : self.inserttag_clicked,
                 "on_move" : self.on_move,
-              }
-        self.wTree.signal_autoconnect(dic)
-        cal_dic = {
                 "on_nodate"             : self.nodate_pressed,
                 #"on_dayselected"        : self.day_selected,
                 #"on_month_changed"      : self.month_changed,
                 "on_dayselected_double" : self.day_selected_double,
         }
-        self.cal_tree.signal_autoconnect(cal_dic)
-        self.window         = self.wTree.get_widget("TaskEditor")
+        self.builder.connect_signals(dic)
+        self.window         = self.builder.get_object("TaskEditor")
         #Removing the Normal textview to replace it by our own
         #So don't try to change anything with glade, this is a home-made widget
-        textview = self.wTree.get_widget("textview")
-        scrolled = self.wTree.get_widget("scrolledtask")
+        textview = self.builder.get_object("textview")
+        scrolled = self.builder.get_object("scrolledtask")
         scrolled.remove(textview)
         self.open_task  = opentask_callback
         self.task_title = tasktitle_callback
@@ -113,23 +109,23 @@ class TaskEditor :
         self.textview.set_right_margin(5)
         scrolled.add(self.textview)
         #Voila! it's done
-        self.calendar       = self.cal_tree.get_widget("calendar")
-        self.cal_widget       = self.cal_tree.get_widget("calendar1")
+        self.calendar       = self.builder.get_object("calendar")
+        self.cal_widget       = self.builder.get_object("calendar1")
         #self.cal_widget.set_property("no-month-change",True)
         self.sigid = None
         self.sigid_month = None
         #Do we have to close the calendar when date is changed ?
         #This is a ugly hack to close the calendar on the first click
         self.close_when_changed = True
-        self.duedate_widget = self.wTree.get_widget("duedate_entry")
-        self.startdate_widget = self.wTree.get_widget("startdate_entry")
-        self.dayleft_label  = self.wTree.get_widget("dayleft")
-        self.inserttag_button = self.wTree.get_widget("inserttag")
-        self.tasksidebar = self.wTree.get_widget("tasksidebar")
-        self.keepnote_button = self.wTree.get_widget("keepnote")
+        self.duedate_widget = self.builder.get_object("duedate_entry")
+        self.startdate_widget = self.builder.get_object("startdate_entry")
+        self.dayleft_label  = self.builder.get_object("dayleft")
+        self.inserttag_button = self.builder.get_object("inserttag")
+        self.tasksidebar = self.builder.get_object("tasksidebar")
+        self.keepnote_button = self.builder.get_object("keepnote")
         if not notes :
             self.keepnote_button.hide()
-            separator = self.wTree.get_widget("separator_note")
+            separator = self.builder.get_object("separator_note")
             separator.hide()
         #We will keep the name of the opened calendar
         #Empty means that no calendar is opened
@@ -177,7 +173,7 @@ class TaskEditor :
         # plugins
         self.plugins = plugins
         self.pengine = PluginEngine(PLUGIN_DIR)
-        self.te_plugin_api = PluginAPI(self.window, None, DATA_DIR, self.wTree, 
+        self.te_plugin_api = PluginAPI(self.window, None, DATA_DIR, self.builder, 
                                        self.req, None, None, None, None, task, 
                                        self)
         self.p_apis.append(self.te_plugin_api)
@@ -224,17 +220,17 @@ class TaskEditor :
         agr.connect_group(key, modifier, gtk.ACCEL_VISIBLE, self.new_task)
         
         # Ctrl-Shift-N creates a new subtask
-        insert_subtask = self.wTree.get_widget("insert_subtask")
+        insert_subtask = self.builder.get_object("insert_subtask")
         key, mod       = gtk.accelerator_parse("<Control><Shift>n")
         insert_subtask.add_accelerator('clicked', agr, key, mod, gtk.ACCEL_VISIBLE)
         
         # Ctrl-D marks task as done
-        mark_as_done_editor = self.wTree.get_widget('mark_as_done_editor')
+        mark_as_done_editor = self.builder.get_object('mark_as_done_editor')
         key, mod = gtk.accelerator_parse('<Control>d')
         mark_as_done_editor.add_accelerator('clicked', agr, key, mod, gtk.ACCEL_VISIBLE)
         
         # Ctrl-I marks task as dismissed
-        dismiss_editor = self.wTree.get_widget('dismiss_editor')
+        dismiss_editor = self.builder.get_object('dismiss_editor')
         key, mod = gtk.accelerator_parse('<Control>i')
         dismiss_editor.add_accelerator('clicked', agr, key, mod, gtk.ACCEL_VISIBLE)
         

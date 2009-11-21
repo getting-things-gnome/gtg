@@ -1,124 +1,125 @@
 <?xml version="1.0"?>
-<glade-interface>
-  <!-- interface-requires gtk+ 2.16 -->
+<interface>
+  <requires lib="gtk+" version="2.16"/>
   <!-- interface-naming-policy toplevel-contextual -->
-  <widget class="GtkWindow" id="TaskEditor">
+  <object class="GtkWindow" id="TaskEditor">
     <property name="title" translatable="yes">Task</property>
     <property name="window_position">mouse</property>
     <property name="default_width">450</property>
     <property name="default_height">400</property>
     <signal name="configure_event" handler="on_move"/>
     <child>
-      <widget class="GtkVBox" id="vbox4">
+      <object class="GtkVBox" id="vbox4">
         <property name="visible">True</property>
         <property name="extension_events">cursor</property>
+        <property name="orientation">vertical</property>
         <child>
-          <widget class="GtkToolbar" id="task_tb1">
+          <object class="GtkToolbar" id="task_tb1">
             <property name="visible">True</property>
             <child>
-              <widget class="GtkToolButton" id="mark_as_done_editor">
+              <object class="GtkToolButton" id="mark_as_done_editor">
                 <property name="visible">True</property>
                 <property name="is_important">True</property>
                 <property name="label" translatable="yes">Mark Done</property>
                 <property name="icon_name">gtg-task-done</property>
                 <signal name="clicked" handler="mark_as_done_clicked"/>
-              </widget>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="homogeneous">True</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkToolButton" id="dismiss_editor">
+              <object class="GtkToolButton" id="dismiss_editor">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">Dismiss</property>
                 <property name="icon_name">gtg-task-dismiss</property>
                 <signal name="clicked" handler="on_dismiss"/>
-              </widget>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="homogeneous">True</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkToolButton" id="delete_editor">
+              <object class="GtkToolButton" id="delete_editor">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">Delete</property>
                 <property name="icon_name">edit-delete</property>
                 <signal name="clicked" handler="delete_clicked"/>
-              </widget>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="homogeneous">True</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkSeparatorToolItem" id="toolbutton1">
+              <object class="GtkSeparatorToolItem" id="toolbutton1">
                 <property name="visible">True</property>
-              </widget>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="homogeneous">True</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkToolButton" id="insert_subtask">
+              <object class="GtkToolButton" id="insert_subtask">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">Insert subtask</property>
                 <property name="stock_id">gtk-indent</property>
                 <signal name="clicked" handler="on_insert_subtask_clicked"/>
-              </widget>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="homogeneous">True</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkMenuToolButton" id="inserttag">
+              <object class="GtkMenuToolButton" id="inserttag">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">Insert tag</property>
                 <property name="icon_name">gtg-tag-new</property>
                 <signal name="clicked" handler="on_inserttag_clicked"/>
                 <signal name="show_menu" handler="on_inserttag_show_menu"/>
                 <signal name="show_menu" handler="on_inserttag_show_menu"/>
-              </widget>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="homogeneous">True</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkSeparatorToolItem" id="separator_note">
+              <object class="GtkSeparatorToolItem" id="separator_note">
                 <property name="visible">True</property>
-              </widget>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="homogeneous">True</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkToolButton" id="keepnote">
+              <object class="GtkToolButton" id="keepnote">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">Keep as Note</property>
                 <property name="stock_id">gtk-file</property>
                 <signal name="clicked" handler="on_keepnote_clicked"/>
-              </widget>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="homogeneous">True</property>
               </packing>
             </child>
-          </widget>
+          </object>
           <packing>
             <property name="expand">False</property>
             <property name="position">0</property>
           </packing>
         </child>
         <child>
-          <widget class="GtkHBox" id="hbox3">
+          <object class="GtkHBox" id="hbox3">
             <property name="visible">True</property>
             <child>
-              <widget class="GtkScrolledWindow" id="scrolledtask">
+              <object class="GtkScrolledWindow" id="scrolledtask">
                 <property name="width_request">400</property>
                 <property name="height_request">300</property>
                 <property name="visible">True</property>
@@ -126,29 +127,29 @@
                 <property name="hscrollbar_policy">automatic</property>
                 <property name="vscrollbar_policy">automatic</property>
                 <child>
-                  <widget class="GtkTextView" id="textview">
+                  <object class="GtkTextView" id="textview">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="resize_mode">immediate</property>
                     <property name="wrap_mode">word</property>
                     <property name="left_margin">5</property>
                     <property name="right_margin">5</property>
-                  </widget>
+                  </object>
                 </child>
-              </widget>
+              </object>
               <packing>
                 <property name="position">0</property>
               </packing>
             </child>
-          </widget>
+          </object>
           <packing>
             <property name="position">1</property>
           </packing>
         </child>
         <child>
-          <widget class="GtkHSeparator" id="hseparator1">
+          <object class="GtkHSeparator" id="hseparator1">
             <property name="visible">True</property>
-          </widget>
+          </object>
           <packing>
             <property name="expand">False</property>
             <property name="fill">False</property>
@@ -156,15 +157,15 @@
           </packing>
         </child>
         <child>
-          <widget class="GtkHBox" id="tasksidebar">
+          <object class="GtkHBox" id="tasksidebar">
             <property name="visible">True</property>
             <child>
-              <widget class="GtkLabel" id="label2">
+              <object class="GtkLabel" id="label2">
                 <property name="visible">True</property>
                 <property name="xalign">0</property>
                 <property name="label" translatable="yes">&lt;span weight="bold"&gt;Starting on&lt;/span&gt;</property>
                 <property name="use_markup">True</property>
-              </widget>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="padding">10</property>
@@ -172,16 +173,16 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkHBox" id="hbox1">
+              <object class="GtkHBox" id="hbox1">
                 <property name="visible">True</property>
                 <child>
-                  <widget class="GtkEntry" id="startdate_entry">
+                  <object class="GtkEntry" id="startdate_entry">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="invisible_char">&#x25CF;</property>
                     <property name="width_chars">10</property>
                     <signal name="changed" handler="startingdate_changed"/>
-                  </widget>
+                  </object>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">False</property>
@@ -189,36 +190,36 @@
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkButton" id="button3">
+                  <object class="GtkButton" id="button3">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <signal name="clicked" handler="on_startdate_pressed"/>
                     <child>
-                      <widget class="GtkArrow" id="arrow2">
+                      <object class="GtkArrow" id="arrow2">
                         <property name="visible">True</property>
                         <property name="arrow_type">down</property>
-                      </widget>
+                      </object>
                     </child>
-                  </widget>
+                  </object>
                   <packing>
                     <property name="expand">False</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
-              </widget>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="position">1</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkLabel" id="label3">
+              <object class="GtkLabel" id="label3">
                 <property name="visible">True</property>
                 <property name="xalign">0</property>
                 <property name="label" translatable="yes">&lt;span weight="bold"&gt;Due for&lt;/span&gt;</property>
                 <property name="use_markup">True</property>
-              </widget>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
@@ -227,16 +228,16 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkHBox" id="hbox2">
+              <object class="GtkHBox" id="hbox2">
                 <property name="visible">True</property>
                 <child>
-                  <widget class="GtkEntry" id="duedate_entry">
+                  <object class="GtkEntry" id="duedate_entry">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="invisible_char">&#x25CF;</property>
                     <property name="width_chars">10</property>
                     <signal name="changed" handler="duedate_changed"/>
-                  </widget>
+                  </object>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">False</property>
@@ -244,53 +245,53 @@
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkButton" id="button1">
+                  <object class="GtkButton" id="button1">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <signal name="clicked" handler="on_duedate_pressed"/>
                     <child>
-                      <widget class="GtkArrow" id="arrow1">
+                      <object class="GtkArrow" id="arrow1">
                         <property name="visible">True</property>
                         <property name="arrow_type">down</property>
-                      </widget>
+                      </object>
                     </child>
-                  </widget>
+                  </object>
                   <packing>
                     <property name="expand">False</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
-              </widget>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="position">3</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkLabel" id="dayleft">
+              <object class="GtkLabel" id="dayleft">
                 <property name="visible">True</property>
                 <property name="xalign">1</property>
                 <property name="use_markup">True</property>
                 <property name="justify">right</property>
                 <property name="width_chars">0</property>
-              </widget>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="padding">10</property>
                 <property name="position">4</property>
               </packing>
             </child>
-          </widget>
+          </object>
           <packing>
             <property name="expand">False</property>
             <property name="position">3</property>
           </packing>
         </child>
-      </widget>
+      </object>
     </child>
-  </widget>
-  <widget class="GtkWindow" id="calendar">
+  </object>
+  <object class="GtkWindow" id="calendar">
     <property name="events">GDK_STRUCTURE_MASK | GDK_PROXIMITY_OUT_MASK</property>
     <property name="type">popup</property>
     <property name="resizable">False</property>
@@ -302,36 +303,37 @@
     <property name="transient_for">TaskEditor</property>
     <signal name="leave_notify_event" handler="on_focus_out"/>
     <child>
-      <widget class="GtkVBox" id="vbox5">
+      <object class="GtkVBox" id="vbox5">
         <property name="visible">True</property>
+        <property name="orientation">vertical</property>
         <child>
-          <widget class="GtkCalendar" id="calendar1">
+          <object class="GtkCalendar" id="calendar1">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <signal name="day_selected_double_click" handler="on_dayselected_double"/>
             <signal name="day_selected" handler="on_dayselected"/>
             <signal name="month_changed" handler="on_month_changed"/>
-          </widget>
+          </object>
           <packing>
             <property name="position">0</property>
           </packing>
         </child>
         <child>
-          <widget class="GtkButton" id="button2">
+          <object class="GtkButton" id="button2">
             <property name="label">gtk-clear</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="use_stock">True</property>
             <signal name="released" handler="on_nodate"/>
-          </widget>
+          </object>
           <packing>
             <property name="expand">False</property>
             <property name="fill">False</property>
             <property name="position">1</property>
           </packing>
         </child>
-      </widget>
+      </object>
     </child>
-  </widget>
-</glade-interface>
+  </object>
+</interface>

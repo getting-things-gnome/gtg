@@ -41,25 +41,25 @@ class PluginManager:
         self.plugins = plugins
         self.pengine = pengine
         self.plugin_apis = plugin_apis
-        self.gladefile = GnomeConfig.GLADE_FILE
-        self.wTree = gtk.glade.XML(self.gladefile, "PluginManagerDialog")
+        self.builder = gtk.Builder() 
+        self.builder.add_from_file(GnomeConfig.GLADE_FILE)
         
-        self.dialog = self.wTree.get_widget("PluginManagerDialog")
+        self.dialog = self.builder.get_object("PluginManagerDialog")
         
         # stuff to populate
-        self.close_btn = self.wTree.get_widget("close_btn")
-        self.config_btn = self.wTree.get_widget("config_btn")
-        self.lblPluginName = self.wTree.get_widget("lblPluginName")
-        self.lblPluginVersion = self.wTree.get_widget("lblPluginVersion")
-        self.lblPluginAuthors = self.wTree.get_widget("lblPluginAuthors")
-        self.txtPluginDescription = self.wTree.get_widget("txtPluginDescription")
+        self.close_btn = self.builder.get_object("close_btn")
+        self.config_btn = self.builder.get_object("config_btn")
+        self.lblPluginName = self.builder.get_object("lblPluginName")
+        self.lblPluginVersion = self.builder.get_object("lblPluginVersion")
+        self.lblPluginAuthors = self.builder.get_object("lblPluginAuthors")
+        self.txtPluginDescription = self.builder.get_object("txtPluginDescription")
         
-        self.vbox_frame = self.wTree.get_widget("vbox_frame")
-        self.box_error = self.wTree.get_widget("box_error")
+        self.vbox_frame = self.builder.get_object("vbox_frame")
+        self.box_error = self.builder.get_object("box_error")
         self.box_error.hide()
-        self.lblErrorTitle = self.wTree.get_widget("lblErrorTitle")
-        self.lblPluginMM = self.wTree.get_widget("lblPluginMM")
-        #self.btnClose = self.wTree.get_widget("close_btn")
+        self.lblErrorTitle = self.builder.get_object("lblErrorTitle")
+        self.lblPluginMM = self.builder.get_object("lblPluginMM")
+        #self.btnClose = self.builder.get_object("close_btn")
         #self.btnClose.connect('clicked', self.close, None)
         
         # recheck the plugins with errors
@@ -76,7 +76,7 @@ class PluginManager:
         # end - liststore
         
         # treeview
-        self.pluginTree = self.wTree.get_widget("pluginTree")
+        self.pluginTree = self.builder.get_object("pluginTree")
         
         self.rendererToggle = gtk.CellRendererToggle()
         self.rendererToggle.set_property('activatable', True)

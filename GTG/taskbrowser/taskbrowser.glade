@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
-<glade-interface>
-  <!-- interface-requires gtk+ 2.16 -->
+<interface>
+  <requires lib="gtk+" version="2.16"/>
   <!-- interface-naming-policy toplevel-contextual -->
-  <widget class="GtkWindow" id="MainWindow">
+  <object class="GtkWindow" id="MainWindow">
     <property name="title" translatable="yes">Getting Things Gnome!</property>
     <property name="default_width">700</property>
     <property name="default_height">550</property>
@@ -10,512 +10,488 @@
     <signal name="size_allocate" handler="on_size_allocate"/>
     <signal name="delete_event" handler="on_delete"/>
     <child>
-      <widget class="GtkVBox" id="vbox1">
+      <object class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
         <property name="orientation">vertical</property>
         <child>
-          <widget class="GtkMenuBar" id="browser_menu">
+          <object class="GtkMenuBar" id="browser_menu">
             <property name="visible">True</property>
             <child>
-              <widget class="GtkMenuItem" id="bm_task">
+              <object class="GtkMenuItem" id="bm_task">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">_Tasks</property>
                 <property name="use_underline">True</property>
-                <child>
-                  <widget class="GtkMenu" id="menu4">
+                <child type="submenu">
+                  <object class="GtkMenu" id="menu4">
                     <property name="visible">True</property>
                     <child>
-                      <widget class="GtkImageMenuItem" id="new_task_mi">
+                      <object class="GtkImageMenuItem" id="new_task_mi">
                         <property name="label" translatable="yes">New _Task</property>
                         <property name="visible">True</property>
-                        <property name="tooltip" translatable="yes">Create a new task</property>
+                        <property name="tooltip_text" translatable="yes">Create a new task</property>
                         <property name="use_underline">True</property>
+                        <property name="image">bm_img_task</property>
                         <property name="use_stock">False</property>
                         <property name="always_show_image">True</property>
                         <signal name="activate" handler="on_add_task"/>
-                        <child internal-child="image">
-                          <widget class="GtkImage" id="image2">
-                            <property name="visible">True</property>
-                            <property name="pixel_size">16</property>
-                            <property name="icon_name">gtg-task-new</property>
-                          </widget>
-                        </child>
-                      </widget>
+                      </object>
                     </child>
                     <child>
-                      <widget class="GtkImageMenuItem" id="new_subtask_mi">
+                      <object class="GtkImageMenuItem" id="new_subtask_mi">
                         <property name="label" translatable="yes">New _Subtask</property>
                         <property name="visible">True</property>
                         <property name="use_underline">True</property>
+                        <property name="image">bm_img_subtask</property>
                         <property name="use_stock">False</property>
                         <property name="always_show_image">True</property>
                         <signal name="activate" handler="on_add_subtask"/>
-                        <child internal-child="image">
-                          <widget class="GtkImage" id="image3">
-                            <property name="visible">True</property>
-                            <property name="pixel_size">16</property>
-                            <property name="icon_name">gtg-task-new</property>
-                          </widget>
-                        </child>
-                      </widget>
+                      </object>
                     </child>
                     <child>
-                      <widget class="GtkImageMenuItem" id="edit_mi">
+                      <object class="GtkImageMenuItem" id="edit_mi">
                         <property name="label">gtk-edit</property>
                         <property name="visible">True</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
+                        <property name="accel_group">accelgroup1</property>
                         <signal name="activate" handler="on_edit_active_task"/>
-                      </widget>
+                      </object>
                     </child>
                     <child>
-                      <widget class="GtkSeparatorMenuItem" id="separatormenuitem2">
+                      <object class="GtkSeparatorMenuItem" id="separatormenuitem2">
                         <property name="visible">True</property>
-                      </widget>
+                      </object>
                     </child>
                     <child>
-                      <widget class="GtkImageMenuItem" id="mark_done_mi">
+                      <object class="GtkImageMenuItem" id="mark_done_mi">
                         <property name="label" translatable="yes">Mark as _Done</property>
                         <property name="visible">True</property>
                         <property name="use_underline">True</property>
+                        <property name="image">bm_img_done</property>
                         <property name="use_stock">False</property>
                         <property name="always_show_image">True</property>
                         <signal name="activate" handler="on_mark_as_done"/>
-                        <child internal-child="image">
-                          <widget class="GtkImage" id="image4">
-                            <property name="visible">True</property>
-                            <property name="pixel_size">16</property>
-                            <property name="icon_name">gtg-task-done</property>
-                          </widget>
-                        </child>
-                      </widget>
+                      </object>
                     </child>
                     <child>
-                      <widget class="GtkImageMenuItem" id="task_dismiss">
+                      <object class="GtkImageMenuItem" id="task_dismiss">
                         <property name="label" translatable="yes">D_ismiss</property>
                         <property name="visible">True</property>
                         <property name="use_underline">True</property>
+                        <property name="image">bm_img_dismiss</property>
                         <property name="use_stock">False</property>
                         <property name="always_show_image">True</property>
                         <signal name="activate" handler="on_dismiss_task"/>
-                        <child internal-child="image">
-                          <widget class="GtkImage" id="image5">
-                            <property name="visible">True</property>
-                            <property name="pixel_size">16</property>
-                            <property name="icon_name">gtg-task-dismiss</property>
-                          </widget>
-                        </child>
-                      </widget>
+                      </object>
                     </child>
                     <child>
-                      <widget class="GtkImageMenuItem" id="delete_mi">
+                      <object class="GtkImageMenuItem" id="delete_mi">
                         <property name="label">gtk-delete</property>
                         <property name="visible">True</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
+                        <property name="accel_group">accelgroup1</property>
                         <signal name="activate" handler="on_delete_task"/>
-                      </widget>
+                      </object>
                     </child>
                     <child>
-                      <widget class="GtkSeparatorMenuItem" id="menuitem2">
+                      <object class="GtkSeparatorMenuItem" id="menuitem2">
                         <property name="visible">True</property>
-                      </widget>
+                      </object>
                     </child>
                     <child>
-                      <widget class="GtkImageMenuItem" id="file_quit">
+                      <object class="GtkImageMenuItem" id="file_quit">
                         <property name="label">gtk-quit</property>
                         <property name="visible">True</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
+                        <property name="accel_group">accelgroup1</property>
                         <signal name="activate" handler="gtk_main_quit"/>
-                      </widget>
+                      </object>
                     </child>
-                  </widget>
+                  </object>
                 </child>
-              </widget>
+              </object>
             </child>
             <child>
-              <widget class="GtkMenuItem" id="menu_edit">
+              <object class="GtkMenuItem" id="menu_edit">
                 <property name="label" translatable="yes">_Edit</property>
                 <property name="use_underline">True</property>
-                <child>
-                  <widget class="GtkMenu" id="menu2">
+                <child type="submenu">
+                  <object class="GtkMenu" id="menu2">
                     <property name="visible">True</property>
                     <child>
-                      <widget class="GtkImageMenuItem" id="edit_undo">
+                      <object class="GtkImageMenuItem" id="edit_undo">
                         <property name="label">gtk-undo</property>
                         <property name="visible">True</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                      </widget>
+                        <property name="accel_group">accelgroup1</property>
+                      </object>
                     </child>
                     <child>
-                      <widget class="GtkImageMenuItem" id="edit_redo">
+                      <object class="GtkImageMenuItem" id="edit_redo">
                         <property name="label">gtk-redo</property>
                         <property name="visible">True</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
-                      </widget>
+                        <property name="accel_group">accelgroup1</property>
+                      </object>
                     </child>
-                  </widget>
+                  </object>
                 </child>
-              </widget>
+              </object>
             </child>
             <child>
-              <widget class="GtkMenuItem" id="menu_view">
+              <object class="GtkMenuItem" id="menu_view">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">_View</property>
                 <property name="use_underline">True</property>
-                <child>
-                  <widget class="GtkMenu" id="menu5">
+                <child type="submenu">
+                  <object class="GtkMenu" id="menu5">
                     <property name="visible">True</property>
                     <child>
-                      <widget class="GtkCheckMenuItem" id="view_workview">
+                      <object class="GtkCheckMenuItem" id="view_workview">
                         <property name="visible">True</property>
                         <property name="label" translatable="yes">_Work View</property>
                         <property name="use_underline">True</property>
                         <signal name="toggled" handler="on_view_workview_toggled"/>
-                      </widget>
+                      </object>
                     </child>
                     <child>
-                      <widget class="GtkSeparatorMenuItem" id="separator1">
+                      <object class="GtkSeparatorMenuItem" id="separator1">
                         <property name="visible">True</property>
-                      </widget>
+                      </object>
                     </child>
                     <child>
-                      <widget class="GtkCheckMenuItem" id="bgcol_enable">
+                      <object class="GtkCheckMenuItem" id="bgcol_enable">
                         <property name="visible">True</property>
                         <property name="label" translatable="yes">_Background Colors</property>
                         <property name="use_underline">True</property>
                         <property name="active">True</property>
                         <signal name="toggled" handler="on_bg_color_toggled"/>
-                      </widget>
+                      </object>
                     </child>
                     <child>
-                      <widget class="GtkSeparatorMenuItem" id="separatormenuitem1">
+                      <object class="GtkSeparatorMenuItem" id="separatormenuitem1">
                         <property name="visible">True</property>
-                      </widget>
+                      </object>
                     </child>
                     <child>
-                      <widget class="GtkCheckMenuItem" id="view_sidebar">
+                      <object class="GtkCheckMenuItem" id="view_sidebar">
                         <property name="visible">True</property>
                         <property name="label" translatable="yes">_Tags Sidebar</property>
                         <property name="use_underline">True</property>
                         <signal name="toggled" handler="on_view_sidebar_toggled"/>
-                      </widget>
+                      </object>
                     </child>
                     <child>
-                      <widget class="GtkCheckMenuItem" id="view_closed">
+                      <object class="GtkCheckMenuItem" id="view_closed">
                         <property name="visible">True</property>
                         <property name="label" translatable="yes">_Closed Tasks Pane</property>
                         <property name="use_underline">True</property>
                         <signal name="toggled" handler="on_view_closed_toggled"/>
-                      </widget>
+                      </object>
                     </child>
                     <child>
-                      <widget class="GtkCheckMenuItem" id="view_toolbar">
+                      <object class="GtkCheckMenuItem" id="view_toolbar">
                         <property name="visible">True</property>
                         <property name="label" translatable="yes">T_oolbar</property>
                         <property name="use_underline">True</property>
                         <signal name="toggled" handler="on_view_toolbar_toggled"/>
-                      </widget>
+                      </object>
                     </child>
                     <child>
-                      <widget class="GtkCheckMenuItem" id="view_quickadd">
+                      <object class="GtkCheckMenuItem" id="view_quickadd">
                         <property name="visible">True</property>
                         <property name="label" translatable="yes">_Quick Add Entry</property>
                         <property name="use_underline">True</property>
                         <signal name="toggled" handler="on_view_quickadd_toggled"/>
-                      </widget>
+                      </object>
                     </child>
-                  </widget>
+                  </object>
                 </child>
-              </widget>
+              </object>
             </child>
             <child>
-              <widget class="GtkMenuItem" id="menu_plugin">
+              <object class="GtkMenuItem" id="menu_plugin">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">_Plugins</property>
                 <property name="use_underline">True</property>
-                <child>
-                  <widget class="GtkMenu" id="menu6">
+                <child type="submenu">
+                  <object class="GtkMenu" id="menu6">
                     <property name="visible">True</property>
                     <child>
-                      <widget class="GtkImageMenuItem" id="pluginmanager_menu">
+                      <object class="GtkImageMenuItem" id="pluginmanager_menu">
                         <property name="label" translatable="yes">Plugin _Preferences</property>
                         <property name="visible">True</property>
                         <property name="use_underline">True</property>
+                        <property name="image">pm_img_icon</property>
                         <property name="use_stock">False</property>
                         <signal name="activate" handler="on_pluginmanager_activate"/>
-                        <child internal-child="image">
-                          <widget class="GtkImage" id="image1">
-                            <property name="visible">True</property>
-                            <property name="pixel_size">16</property>
-                            <property name="icon_name">preferences-other</property>
-                          </widget>
-                        </child>
-                      </widget>
+                      </object>
                     </child>
-                  </widget>
+                  </object>
                 </child>
-              </widget>
+              </object>
             </child>
             <child>
-              <widget class="GtkMenuItem" id="menuitem4">
+              <object class="GtkMenuItem" id="menuitem4">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">_Help</property>
                 <property name="use_underline">True</property>
-                <child>
-                  <widget class="GtkMenu" id="menu3">
+                <child type="submenu">
+                  <object class="GtkMenu" id="menu3">
                     <property name="visible">True</property>
                     <child>
-                      <widget class="GtkImageMenuItem" id="imagemenuitem10">
+                      <object class="GtkImageMenuItem" id="imagemenuitem10">
                         <property name="label">gtk-about</property>
                         <property name="visible">True</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
+                        <property name="accel_group">accelgroup1</property>
                         <signal name="activate" handler="on_about_clicked"/>
-                      </widget>
+                      </object>
                     </child>
-                  </widget>
+                  </object>
                 </child>
-              </widget>
+              </object>
             </child>
-          </widget>
+          </object>
           <packing>
             <property name="expand">False</property>
             <property name="position">0</property>
           </packing>
         </child>
         <child>
-          <widget class="GtkToolbar" id="task_tb">
+          <object class="GtkToolbar" id="task_tb">
             <property name="visible">True</property>
             <child>
-              <widget class="GtkToolButton" id="new_task_b">
+              <object class="GtkToolButton" id="new_task_b">
                 <property name="visible">True</property>
                 <property name="is_important">True</property>
                 <property name="label" translatable="yes">New Task</property>
                 <property name="icon_name">gtg-task-new</property>
                 <signal name="clicked" handler="on_add_task"/>
-              </widget>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="homogeneous">True</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkToolButton" id="new_subtask_b">
+              <object class="GtkToolButton" id="new_subtask_b">
                 <property name="label" translatable="yes">New Subtask</property>
                 <property name="icon_name">gtg-task-new</property>
                 <signal name="clicked" handler="on_add_subtask"/>
-              </widget>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="homogeneous">True</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkToolButton" id="new_note_button">
+              <object class="GtkToolButton" id="new_note_button">
                 <property name="visible">True</property>
                 <property name="visible_horizontal">False</property>
                 <property name="visible_vertical">False</property>
                 <property name="label" translatable="yes">New Note</property>
                 <property name="icon_name">gtg-note-new</property>
                 <signal name="clicked" handler="on_add_note"/>
-              </widget>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="homogeneous">True</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkToolButton" id="edit_b">
+              <object class="GtkToolButton" id="edit_b">
                 <property name="visible">True</property>
                 <property name="visible_horizontal">False</property>
                 <property name="visible_vertical">False</property>
                 <property name="label" translatable="yes">Edit</property>
                 <property name="stock_id">gtk-edit</property>
                 <signal name="clicked" handler="on_edit_active_task"/>
-              </widget>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="homogeneous">True</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkSeparatorToolItem" id="&lt;separateur&gt;"/>
+              <object class="GtkSeparatorToolItem" id="&lt;separateur&gt;"/>
               <packing>
                 <property name="expand">False</property>
                 <property name="homogeneous">True</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkToolButton" id="Undo">
+              <object class="GtkToolButton" id="Undo">
                 <property name="label" translatable="yes">Undo</property>
                 <property name="stock_id">gtk-undo</property>
-              </widget>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="homogeneous">True</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkToolButton" id="Redo">
+              <object class="GtkToolButton" id="Redo">
                 <property name="label" translatable="yes">Redo</property>
                 <property name="stock_id">gtk-redo</property>
-              </widget>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="homogeneous">True</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkSeparatorToolItem" id="toolbutton2">
+              <object class="GtkSeparatorToolItem" id="toolbutton2">
                 <property name="visible">True</property>
-              </widget>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="homogeneous">True</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkToolButton" id="mark_as_done_b">
+              <object class="GtkToolButton" id="mark_as_done_b">
                 <property name="visible">True</property>
                 <property name="is_important">True</property>
                 <property name="label" translatable="yes">Mark as Done</property>
                 <property name="icon_name">gtg-task-done</property>
                 <signal name="clicked" handler="on_mark_as_done"/>
-              </widget>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="homogeneous">True</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkToolButton" id="dismiss">
+              <object class="GtkToolButton" id="dismiss">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">Dismiss</property>
                 <property name="icon_name">gtg-task-dismiss</property>
                 <signal name="clicked" handler="on_dismiss_task"/>
-              </widget>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="homogeneous">True</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkToolButton" id="delete_b">
+              <object class="GtkToolButton" id="delete_b">
                 <property name="label" translatable="yes">Delete</property>
                 <property name="icon_name">edit-delete</property>
                 <signal name="clicked" handler="on_delete_task"/>
-              </widget>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="homogeneous">True</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkSeparatorToolItem" id="toolbutton1">
+              <object class="GtkSeparatorToolItem" id="toolbutton1">
                 <property name="visible">True</property>
-              </widget>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="homogeneous">True</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkToggleToolButton" id="note_toggle">
+              <object class="GtkToggleToolButton" id="note_toggle">
                 <property name="visible">True</property>
                 <property name="visible_horizontal">False</property>
                 <property name="visible_vertical">False</property>
                 <property name="label" translatable="yes">View Notes</property>
                 <property name="stock_id">gtk-file</property>
                 <signal name="toggled" handler="on_note_toggled"/>
-              </widget>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="homogeneous">True</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkToggleToolButton" id="workview_toggle">
+              <object class="GtkToggleToolButton" id="workview_toggle">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">Work View</property>
                 <property name="stock_id">gtk-index</property>
                 <signal name="toggled" handler="on_workview_toggled"/>
-              </widget>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="homogeneous">True</property>
               </packing>
             </child>
-          </widget>
+          </object>
           <packing>
             <property name="expand">False</property>
             <property name="position">1</property>
           </packing>
         </child>
         <child>
-          <widget class="GtkHPaned" id="hpaned1">
+          <object class="GtkHPaned" id="hpaned1">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="position">224</property>
             <property name="position_set">True</property>
             <child>
-              <widget class="GtkVBox" id="sidebar">
+              <object class="GtkVBox" id="sidebar">
                 <property name="orientation">vertical</property>
                 <child>
-                  <widget class="GtkHBox" id="hbox4">
+                  <object class="GtkHBox" id="hbox4">
                     <property name="visible">True</property>
                     <child>
-                      <widget class="GtkImage" id="image8">
+                      <object class="GtkImage" id="sidebar_img_icon">
                         <property name="visible">True</property>
                         <property name="xpad">5</property>
                         <property name="icon_name">gtg-tag</property>
-                      </widget>
+                      </object>
                       <packing>
                         <property name="expand">False</property>
                         <property name="position">0</property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkLabel" id="label4">
+                      <object class="GtkLabel" id="label4">
                         <property name="visible">True</property>
                         <property name="xalign">0</property>
                         <property name="label" translatable="yes">Tags</property>
-                      </widget>
+                      </object>
                       <packing>
                         <property name="position">1</property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkButton" id="button-sidebar-close">
+                      <object class="GtkButton" id="button-sidebar-close">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
                         <property name="relief">none</property>
                         <signal name="clicked" handler="on_view_sidebar_toggled"/>
                         <child>
-                          <widget class="GtkImage" id="image9">
+                          <object class="GtkImage" id="sidebar_img_close">
                             <property name="visible">True</property>
                             <property name="stock">gtk-close</property>
                             <property name="icon-size">1</property>
-                          </widget>
+                          </object>
                         </child>
-                      </widget>
+                      </object>
                       <packing>
                         <property name="expand">False</property>
                         <property name="position">2</property>
                       </packing>
                     </child>
-                  </widget>
+                  </object>
                   <packing>
                     <property name="expand">False</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkScrolledWindow" id="sidebar-scroll">
+                  <object class="GtkScrolledWindow" id="sidebar-scroll">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="hscrollbar_policy">never</property>
@@ -524,53 +500,53 @@
                     <child>
                       <placeholder/>
                     </child>
-                  </widget>
+                  </object>
                   <packing>
                     <property name="position">1</property>
                   </packing>
                 </child>
-              </widget>
+              </object>
               <packing>
                 <property name="resize">False</property>
                 <property name="shrink">True</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkVBox" id="vbox2">
+              <object class="GtkVBox" id="vbox2">
                 <property name="visible">True</property>
                 <property name="orientation">vertical</property>
                 <child>
-                  <widget class="GtkHBox" id="quickadd_pane">
+                  <object class="GtkHBox" id="quickadd_pane">
                     <property name="visible">True</property>
                     <child>
-                      <widget class="GtkEntry" id="quickadd_field">
+                      <object class="GtkEntry" id="quickadd_field">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="has_focus">True</property>
                         <property name="is_focus">True</property>
                         <property name="can_default">True</property>
                         <signal name="activate" handler="on_quickadd_field_activate"/>
-                      </widget>
+                      </object>
                       <packing>
                         <property name="position">0</property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkButton" id="button1">
+                      <object class="GtkButton" id="button1">
                         <property name="label">gtk-add</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
                         <property name="use_stock">True</property>
                         <signal name="clicked" handler="on_quickadd_button_activate"/>
-                      </widget>
+                      </object>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">False</property>
                         <property name="position">1</property>
                       </packing>
                     </child>
-                  </widget>
+                  </object>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">False</property>
@@ -579,13 +555,13 @@
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkVPaned" id="vpaned1">
+                  <object class="GtkVPaned" id="vpaned1">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="position">300</property>
                     <property name="position_set">True</property>
                     <child>
-                      <widget class="GtkScrolledWindow" id="main_pane">
+                      <object class="GtkScrolledWindow" id="main_pane">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="hscrollbar_policy">automatic</property>
@@ -593,14 +569,14 @@
                         <child>
                           <placeholder/>
                         </child>
-                      </widget>
+                      </object>
                       <packing>
                         <property name="resize">True</property>
                         <property name="shrink">True</property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkScrolledWindow" id="closed_pane">
+                      <object class="GtkScrolledWindow" id="closed_pane">
                         <property name="height_request">200</property>
                         <property name="can_focus">True</property>
                         <property name="hscrollbar_policy">automatic</property>
@@ -608,42 +584,42 @@
                         <child>
                           <placeholder/>
                         </child>
-                      </widget>
+                      </object>
                       <packing>
                         <property name="resize">True</property>
                         <property name="shrink">True</property>
                       </packing>
                     </child>
-                  </widget>
+                  </object>
                   <packing>
                     <property name="position">1</property>
                   </packing>
                 </child>
-              </widget>
+              </object>
               <packing>
                 <property name="resize">True</property>
                 <property name="shrink">True</property>
               </packing>
             </child>
-          </widget>
+          </object>
           <packing>
             <property name="position">2</property>
           </packing>
         </child>
         <child>
-          <widget class="GtkStatusbar" id="statusbar1">
+          <object class="GtkStatusbar" id="statusbar1">
             <property name="visible">True</property>
             <property name="spacing">2</property>
-          </widget>
+          </object>
           <packing>
             <property name="expand">False</property>
             <property name="position">3</property>
           </packing>
         </child>
-      </widget>
+      </object>
     </child>
-  </widget>
-  <widget class="GtkDialog" id="confirm_delete">
+  </object>
+  <object class="GtkDialog" id="confirm_delete">
     <property name="border_width">5</property>
     <property name="title" translatable="yes">Confirm task deletion</property>
     <property name="window_position">center-on-parent</property>
@@ -651,19 +627,19 @@
     <property name="has_separator">False</property>
     <signal name="close" handler="on_delete_cancel"/>
     <child internal-child="vbox">
-      <widget class="GtkVBox" id="dialog-vbox1">
+      <object class="GtkVBox" id="dialog-vbox1">
         <property name="visible">True</property>
         <property name="orientation">vertical</property>
         <property name="spacing">2</property>
         <child>
-          <widget class="GtkHBox" id="hbox3">
+          <object class="GtkHBox" id="hbox3">
             <property name="visible">True</property>
             <child>
-              <widget class="GtkImage" id="image5">
+              <object class="GtkImage" id="cd_img_ask">
                 <property name="visible">True</property>
                 <property name="stock">gtk-dialog-question</property>
                 <property name="icon-size">6</property>
-              </widget>
+              </object>
               <packing>
                 <property name="fill">False</property>
                 <property name="padding">16</property>
@@ -671,61 +647,61 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkLabel" id="label1">
+              <object class="GtkLabel" id="label1">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">&lt;span weight="bold" size="large"&gt;Are you sure you want delete this task?&lt;/span&gt;
 
 Deleting a task cannot be undone, and will delete the following tasks: </property>
                 <property name="use_markup">True</property>
                 <property name="wrap">True</property>
-              </widget>
+              </object>
               <packing>
                 <property name="padding">16</property>
                 <property name="position">1</property>
               </packing>
             </child>
-          </widget>
+          </object>
           <packing>
             <property name="padding">16</property>
             <property name="position">1</property>
           </packing>
         </child>
         <child internal-child="action_area">
-          <widget class="GtkHButtonBox" id="dialog-action_area1">
+          <object class="GtkHButtonBox" id="dialog-action_area1">
             <property name="visible">True</property>
             <property name="layout_style">end</property>
             <child>
-              <widget class="GtkButton" id="cancel">
+              <object class="GtkButton" id="cancel">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <signal name="released" handler="on_delete_cancel"/>
                 <child>
-                  <widget class="GtkHBox" id="hbox1">
+                  <object class="GtkHBox" id="hbox1">
                     <property name="visible">True</property>
                     <child>
-                      <widget class="GtkImage" id="image6">
+                      <object class="GtkImage" id="cd_img_keep">
                         <property name="visible">True</property>
                         <property name="stock">gtk-cancel</property>
-                      </widget>
+                      </object>
                       <packing>
                         <property name="position">0</property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkLabel" id="label2">
+                      <object class="GtkLabel" id="label2">
                         <property name="visible">True</property>
                         <property name="xalign">0</property>
                         <property name="label" translatable="yes">_Keep selected task</property>
                         <property name="use_underline">True</property>
-                      </widget>
+                      </object>
                       <packing>
                         <property name="position">1</property>
                       </packing>
                     </child>
-                  </widget>
+                  </object>
                 </child>
-              </widget>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
@@ -733,104 +709,88 @@ Deleting a task cannot be undone, and will delete the following tasks: </propert
               </packing>
             </child>
             <child>
-              <widget class="GtkButton" id="delete">
+              <object class="GtkButton" id="delete">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <signal name="released" handler="on_delete_confirm"/>
                 <signal name="activate" handler="on_delete_confirm"/>
                 <child>
-                  <widget class="GtkHBox" id="hbox2">
+                  <object class="GtkHBox" id="hbox2">
                     <property name="visible">True</property>
                     <child>
-                      <widget class="GtkImage" id="image7">
+                      <object class="GtkImage" id="cd_img_delete">
                         <property name="visible">True</property>
                         <property name="stock">gtk-delete</property>
-                      </widget>
+                      </object>
                       <packing>
                         <property name="position">0</property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkLabel" id="label3">
+                      <object class="GtkLabel" id="label3">
                         <property name="visible">True</property>
                         <property name="label" translatable="yes">Permanently _remove task</property>
                         <property name="use_underline">True</property>
-                      </widget>
+                      </object>
                       <packing>
                         <property name="position">1</property>
                       </packing>
                     </child>
-                  </widget>
+                  </object>
                 </child>
-              </widget>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
                 <property name="position">1</property>
               </packing>
             </child>
-          </widget>
+          </object>
           <packing>
             <property name="expand">False</property>
             <property name="pack_type">end</property>
             <property name="position">0</property>
           </packing>
         </child>
-      </widget>
+      </object>
     </child>
-  </widget>
-  <widget class="GtkMenu" id="ProjectContextMenu">
-    <property name="visible">True</property>
-    <child>
-      <widget class="GtkImageMenuItem" id="edit_item">
-        <property name="label">gtk-edit</property>
-        <property name="visible">True</property>
-        <property name="use_underline">True</property>
-        <property name="use_stock">True</property>
-        <signal name="activate" handler="on_edit_item_activate"/>
-      </widget>
-    </child>
-    <child>
-      <widget class="GtkImageMenuItem" id="delete_item">
-        <property name="label">gtk-delete</property>
-        <property name="visible">True</property>
-        <property name="use_underline">True</property>
-        <property name="use_stock">True</property>
-        <signal name="activate" handler="on_delete_item_activate"/>
-      </widget>
-    </child>
-  </widget>
-  <widget class="GtkMenu" id="TagContextMenu">
+    <action-widgets>
+      <action-widget response="0">cancel</action-widget>
+      <action-widget response="0">delete</action-widget>
+    </action-widgets>
+  </object>
+  <object class="GtkMenu" id="TagContextMenu">
     <property name="visible">True</property>
     <property name="no_show_all">True</property>
     <child>
-      <widget class="GtkImageMenuItem" id="colorchooser">
+      <object class="GtkImageMenuItem" id="colorchooser">
         <property name="label">gtk-select-color</property>
         <property name="visible">True</property>
         <property name="use_underline">True</property>
         <property name="use_stock">True</property>
+        <property name="accel_group">accelgroup1</property>
         <signal name="activate" handler="on_colorchooser_activate"/>
-      </widget>
+      </object>
     </child>
     <child>
-      <widget class="GtkCheckMenuItem" id="nonworkviewtag">
+      <object class="GtkCheckMenuItem" id="nonworkviewtag">
         <property name="visible">True</property>
         <property name="label" translatable="yes">Tag is displayed in the workview</property>
         <property name="use_underline">True</property>
         <property name="active">True</property>
         <signal name="toggled" handler="on_nonworkviewtag_toggled"/>
-      </widget>
+      </object>
     </child>
-  </widget>
-  <widget class="GtkColorSelectionDialog" id="ColorChooser">
+  </object>
+  <object class="GtkColorSelectionDialog" id="ColorChooser">
     <property name="border_width">5</property>
     <property name="title" translatable="yes">Choose a color</property>
     <property name="window_position">center-on-parent</property>
     <property name="type_hint">menu</property>
     <signal name="response" handler="on_color_response"/>
     <child internal-child="color_selection">
-      <widget class="GtkColorSelection" id="colorsel-color_selection1">
+      <object class="GtkColorSelection" id="colorsel-color_selection1">
         <property name="visible">True</property>
         <property name="border_width">5</property>
         <property name="current_color">#ffffffffffff</property>
@@ -840,30 +800,45 @@ Deleting a task cannot be undone, and will delete the following tasks: </propert
         <child>
           <placeholder/>
         </child>
-      </widget>
+      </object>
     </child>
+    <action-widgets>
+      <action-widget response="0">colorsel-help_button1</action-widget>
+      <action-widget response="0">colorsel-ok_button1</action-widget>
+      <action-widget response="0">colorsel-cancel_button1</action-widget>
+    </action-widgets>
     <child internal-child="help_button">
-      <widget class="GtkButton" id="colorsel-help_button1">
+      <object class="GtkButton" id="colorsel-help_button1">
         <property name="label">gtk-help</property>
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="can_default">True</property>
         <property name="receives_default">True</property>
         <property name="use_stock">True</property>
-      </widget>
+      </object>
     </child>
+    <action-widgets>
+      <action-widget response="0">colorsel-help_button1</action-widget>
+      <action-widget response="0">colorsel-ok_button1</action-widget>
+      <action-widget response="0">colorsel-cancel_button1</action-widget>
+    </action-widgets>
     <child internal-child="cancel_button">
-      <widget class="GtkButton" id="colorsel-cancel_button1">
+      <object class="GtkButton" id="colorsel-cancel_button1">
         <property name="label">gtk-cancel</property>
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="can_default">True</property>
         <property name="receives_default">True</property>
         <property name="use_stock">True</property>
-      </widget>
+      </object>
     </child>
+    <action-widgets>
+      <action-widget response="0">colorsel-help_button1</action-widget>
+      <action-widget response="0">colorsel-ok_button1</action-widget>
+      <action-widget response="0">colorsel-cancel_button1</action-widget>
+    </action-widgets>
     <child internal-child="ok_button">
-      <widget class="GtkButton" id="colorsel-ok_button1">
+      <object class="GtkButton" id="colorsel-ok_button1">
         <property name="label">gtk-ok</property>
         <property name="visible">True</property>
         <property name="can_focus">True</property>
@@ -871,10 +846,15 @@ Deleting a task cannot be undone, and will delete the following tasks: </propert
         <property name="has_default">True</property>
         <property name="receives_default">True</property>
         <property name="use_stock">True</property>
-      </widget>
+      </object>
     </child>
-  </widget>
-  <widget class="GtkAboutDialog" id="aboutdialog1">
+    <action-widgets>
+      <action-widget response="0">colorsel-help_button1</action-widget>
+      <action-widget response="0">colorsel-ok_button1</action-widget>
+      <action-widget response="0">colorsel-cancel_button1</action-widget>
+    </action-widgets>
+  </object>
+  <object class="GtkAboutDialog" id="aboutdialog1">
     <property name="border_width">5</property>
     <property name="title" translatable="yes">About GTG!</property>
     <property name="resizable">False</property>
@@ -897,159 +877,184 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
     <signal name="response" handler="on_about_close"/>
     <signal name="delete_event" handler="on_about_delete"/>
     <child internal-child="vbox">
-      <widget class="GtkVBox" id="dialog-vbox2">
+      <object class="GtkVBox" id="dialog-vbox2">
         <property name="visible">True</property>
         <property name="orientation">vertical</property>
         <property name="spacing">2</property>
         <child internal-child="action_area">
-          <widget class="GtkHButtonBox" id="dialog-action_area2">
+          <object class="GtkHButtonBox" id="dialog-action_area2">
             <property name="visible">True</property>
             <property name="layout_style">end</property>
-          </widget>
+          </object>
           <packing>
             <property name="expand">False</property>
             <property name="pack_type">end</property>
             <property name="position">0</property>
           </packing>
         </child>
-      </widget>
+      </object>
     </child>
-  </widget>
-  <widget class="GtkMenu" id="TaskContextMenu">
+  </object>
+  <object class="GtkMenu" id="TaskContextMenu">
     <property name="visible">True</property>
     <child>
-      <widget class="GtkImageMenuItem" id="tcm_add_subtask">
+      <object class="GtkImageMenuItem" id="tcm_add_subtask">
         <property name="label" translatable="yes">Add a subtask</property>
         <property name="visible">True</property>
         <property name="use_underline">True</property>
+        <property name="image">tcm_img_add_subtask</property>
         <property name="use_stock">False</property>
         <property name="always_show_image">True</property>
         <signal name="activate" handler="on_add_subtask"/>
-        <child internal-child="image">
-          <widget class="GtkImage" id="image1">
-            <property name="visible">True</property>
-            <property name="pixel_size">16</property>
-            <property name="icon_name">gtg-task-new</property>
-          </widget>
-        </child>
-      </widget>
+      </object>
     </child>
     <child>
-      <widget class="GtkImageMenuItem" id="tcm_edit">
+      <object class="GtkImageMenuItem" id="tcm_edit">
         <property name="label">gtk-edit</property>
         <property name="visible">True</property>
         <property name="use_underline">True</property>
         <property name="use_stock">True</property>
+        <property name="accel_group">accelgroup1</property>
         <signal name="activate" handler="on_edit_active_task"/>
-      </widget>
+      </object>
     </child>
     <child>
-      <widget class="GtkSeparatorMenuItem" id="separatormenuitem3">
+      <object class="GtkSeparatorMenuItem" id="separatormenuitem3">
         <property name="visible">True</property>
-      </widget>
+      </object>
     </child>
     <child>
-      <widget class="GtkImageMenuItem" id="tcm_mark_as_done">
+      <object class="GtkImageMenuItem" id="tcm_mark_as_done">
         <property name="label" translatable="yes">Mark as _Done</property>
         <property name="visible">True</property>
         <property name="use_underline">True</property>
+        <property name="image">tcm_img_mark_done</property>
         <property name="use_stock">False</property>
         <property name="always_show_image">True</property>
         <signal name="activate" handler="on_mark_as_done"/>
-        <child internal-child="image">
-          <widget class="GtkImage" id="image2">
-            <property name="visible">True</property>
-            <property name="pixel_size">16</property>
-            <property name="icon_name">gtg-task-done</property>
-          </widget>
-        </child>
-      </widget>
+      </object>
     </child>
     <child>
-      <widget class="GtkImageMenuItem" id="tcm_dismiss">
+      <object class="GtkImageMenuItem" id="tcm_dismiss">
         <property name="label" translatable="yes">D_ismiss</property>
         <property name="visible">True</property>
         <property name="use_underline">True</property>
+        <property name="image">tcm_img_dismiss</property>
         <property name="use_stock">False</property>
         <property name="always_show_image">True</property>
         <signal name="activate" handler="on_dismiss_task"/>
-        <child internal-child="image">
-          <widget class="GtkImage" id="image3">
-            <property name="visible">True</property>
-            <property name="pixel_size">16</property>
-            <property name="icon_name">gtg-task-dismiss</property>
-          </widget>
-        </child>
-      </widget>
+      </object>
     </child>
     <child>
-      <widget class="GtkImageMenuItem" id="tcm_delete">
+      <object class="GtkImageMenuItem" id="tcm_delete">
         <property name="label">gtk-delete</property>
         <property name="visible">True</property>
         <property name="use_underline">True</property>
         <property name="use_stock">True</property>
+        <property name="accel_group">accelgroup1</property>
         <signal name="activate" handler="on_delete_task"/>
-      </widget>
+      </object>
     </child>
-  </widget>
-  <widget class="GtkMenu" id="ClosedTaskContextMenu">
+  </object>
+  <object class="GtkMenu" id="ClosedTaskContextMenu">
     <property name="visible">True</property>
     <child>
-      <widget class="GtkImageMenuItem" id="ctcm_edit">
+      <object class="GtkImageMenuItem" id="ctcm_edit">
         <property name="label">gtk-edit</property>
         <property name="visible">True</property>
         <property name="use_underline">True</property>
         <property name="use_stock">True</property>
+        <property name="accel_group">accelgroup1</property>
         <signal name="activate" handler="on_edit_done_task"/>
-      </widget>
+      </object>
     </child>
     <child>
-      <widget class="GtkSeparatorMenuItem" id="separatormenuitem4">
+      <object class="GtkSeparatorMenuItem" id="separatormenuitem4">
         <property name="visible">True</property>
-      </widget>
+      </object>
     </child>
     <child>
-      <widget class="GtkImageMenuItem" id="ctcm_mark_as_not_done">
+      <object class="GtkImageMenuItem" id="ctcm_mark_as_not_done">
         <property name="label" translatable="yes">Mark as Not Done</property>
         <property name="visible">True</property>
         <property name="use_underline">True</property>
+        <property name="image">ctcm_img_mark_not_done</property>
         <property name="use_stock">False</property>
         <property name="always_show_image">True</property>
         <signal name="activate" handler="on_mark_as_done"/>
-        <child internal-child="image">
-          <widget class="GtkImage" id="image1">
-            <property name="visible">True</property>
-            <property name="pixel_size">16</property>
-            <property name="icon_name">gtg-task-undone</property>
-          </widget>
-        </child>
-      </widget>
+      </object>
     </child>
     <child>
-      <widget class="GtkImageMenuItem" id="ctcm_undismiss">
+      <object class="GtkImageMenuItem" id="ctcm_undismiss">
         <property name="label" translatable="yes">Und_ismiss</property>
         <property name="visible">True</property>
         <property name="use_underline">True</property>
+        <property name="image">tcm_img_undismiss</property>
         <property name="use_stock">False</property>
         <property name="always_show_image">True</property>
         <signal name="activate" handler="on_dismiss_task"/>
-        <child internal-child="image">
-          <widget class="GtkImage" id="image2">
-            <property name="visible">True</property>
-            <property name="pixel_size">16</property>
-            <property name="icon_name">gtg-task-undismiss</property>
-          </widget>
-        </child>
-      </widget>
+      </object>
     </child>
     <child>
-      <widget class="GtkImageMenuItem" id="ctcm_delete">
+      <object class="GtkImageMenuItem" id="ctcm_delete">
         <property name="label">gtk-delete</property>
         <property name="visible">True</property>
         <property name="use_underline">True</property>
         <property name="use_stock">True</property>
+        <property name="accel_group">accelgroup1</property>
         <signal name="activate" handler="on_delete_task"/>
-      </widget>
+      </object>
     </child>
-  </widget>
-</glade-interface>
+  </object>
+  <object class="GtkImage" id="bm_img_task">
+    <property name="visible">True</property>
+    <property name="pixel_size">16</property>
+    <property name="icon_name">gtg-task-new</property>
+  </object>
+  <object class="GtkImage" id="bm_img_subtask">
+    <property name="visible">True</property>
+    <property name="pixel_size">16</property>
+    <property name="icon_name">gtg-task-new</property>
+  </object>
+  <object class="GtkImage" id="bm_img_done">
+    <property name="visible">True</property>
+    <property name="pixel_size">16</property>
+    <property name="icon_name">gtg-task-done</property>
+  </object>
+  <object class="GtkImage" id="bm_img_dismiss">
+    <property name="visible">True</property>
+    <property name="pixel_size">16</property>
+    <property name="icon_name">gtg-task-dismiss</property>
+  </object>
+  <object class="GtkImage" id="pm_img_icon">
+    <property name="visible">True</property>
+    <property name="pixel_size">16</property>
+    <property name="icon_name">preferences-other</property>
+  </object>
+  <object class="GtkImage" id="tcm_img_add_subtask">
+    <property name="visible">True</property>
+    <property name="pixel_size">16</property>
+    <property name="icon_name">gtg-task-new</property>
+  </object>
+  <object class="GtkImage" id="tcm_img_mark_done">
+    <property name="visible">True</property>
+    <property name="pixel_size">16</property>
+    <property name="icon_name">gtg-task-done</property>
+  </object>
+  <object class="GtkImage" id="tcm_img_dismiss">
+    <property name="visible">True</property>
+    <property name="pixel_size">16</property>
+    <property name="icon_name">gtg-task-dismiss</property>
+  </object>
+  <object class="GtkImage" id="ctcm_img_mark_not_done">
+    <property name="visible">True</property>
+    <property name="pixel_size">16</property>
+    <property name="icon_name">gtg-task-undone</property>
+  </object>
+  <object class="GtkImage" id="tcm_img_undismiss">
+    <property name="visible">True</property>
+    <property name="pixel_size">16</property>
+    <property name="icon_name">gtg-task-undismiss</property>
+  </object>
+  <object class="GtkAccelGroup" id="accelgroup1"/>
+</interface>
