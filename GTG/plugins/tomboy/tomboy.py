@@ -35,6 +35,7 @@ class pluginTomboy:
         self.token_end = '|'
         self.path = os.path.dirname(os.path.abspath(__file__))
         self.findTomboyIconPath()
+        self.separator_item =  gtk.SeparatorToolItem()
 
     #Tomboy installation is checked through the presence of its icon
     def findTomboyIconPath(self):
@@ -113,7 +114,7 @@ Please install it or disable the Tomboy plugin in GTG"))
         self.tb_Taskbutton = gtk.ToolButton(tb_Taskbutton_image)
         self.tb_Taskbutton.set_label(_("Add Tomboy note"))
         self.tb_Taskbutton.connect('clicked', self.onTbTaskButton, plugin_api)
-        plugin_api.add_task_toolbar_item(gtk.SeparatorToolItem())
+        plugin_api.add_task_toolbar_item(self.separator_item)
         plugin_api.add_task_toolbar_item(self.tb_Taskbutton)
 
 
@@ -160,7 +161,8 @@ Please install it or disable the Tomboy plugin in GTG"))
 
     def deactivate(self, plugin_api):
         #nothing to do at all 
-        pass
+        plugin_api.remove_task_toolbar_item(self.separator_item)
+        plugin_api.remove_task_toolbar_item(self.tb_Taskbutton)
 
     def close_dialog(self, widget, data=None):
         self.dialog.destroy()

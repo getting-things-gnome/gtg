@@ -159,7 +159,8 @@ class PluginAPI:
     def add_task_toolbar_item(self, item):
         """Adds a button to the task editor's toolbar. 
 
-        @param item: The gtk.ToolButton that is going to be added to the toolbar.  
+        @param item: The gtk.ToolButton that is going to be added 
+                     to the toolbar.
         """
         try:
             i = 0
@@ -172,7 +173,20 @@ class PluginAPI:
                 if self.taskeditor:
                     self.taskeditor.refresh_editor()
         except Exception, e:
-            print "Error adding a toolbar item in to the TaskEditor: %s" % e
+            print "Error adding a toolbar item in to the TaskEditor: %s" %e
+            
+    def remove_task_toolbar_item(self,item):
+        """Remove a button from the task editor's toolbar. 
+
+        @param item: The gtk.ToolButton that is going to be removed
+                     from the toolbar.
+        """
+        try:
+            wi = self.__wTree.get_widget('task_tb1')
+            if wi:
+                wi.remove(item)
+        except Exception, e:
+            print "Error removing the toolbar item in the TaskEditor: %s" %e
             
     def add_widget_to_taskeditor(self, widget):
         """Adds a widget to the bottom of the task editor dialog
@@ -184,6 +198,18 @@ class PluginAPI:
             vbox.pack_start(widget)
             vbox.reorder_child(widget, -2)
             widget.show_all()
+            
+    def remove_widget_from_taskeditor(self,widget):
+        """Remove a widget from the bottom of the task editor dialog
+        
+        @param widget: The gtk.Widget that is going to be removed
+        """
+        try:
+            wi = self.__wTree.get_widget('vbox4')
+            if wi:
+                wi.remove(widget)
+        except Exception, e:
+            print "Error removing the toolbar item in the TaskEditor: %s" %e
             
     def get_requester(self):
         """Returns the requester.

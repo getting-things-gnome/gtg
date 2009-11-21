@@ -27,6 +27,8 @@ class pluginTest:
         self.tb_button.set_label("Hello World")
         self.tb_button.connect('clicked', self.onTbButton)
         
+        self.task_separator = gtk.SeparatorToolItem()
+        
 
     # plugin engine methods    
     def activate(self, plugin_api):
@@ -43,13 +45,15 @@ class pluginTest:
         self.tb_Taskbutton = gtk.ToolButton(gtk.STOCK_EXECUTE)
         self.tb_Taskbutton.set_label("Hello World")
         self.tb_Taskbutton.connect('clicked', self.onTbTaskButton, plugin_api)
-        plugin_api.add_task_toolbar_item(gtk.SeparatorToolItem())
+        plugin_api.add_task_toolbar_item(self.task_separator)
         plugin_api.add_task_toolbar_item(self.tb_Taskbutton)
         
     def deactivate(self, plugin_api):
         plugin_api.remove_menu_item(self.menu_item)
         plugin_api.remove_toolbar_item(self.tb_button)
         plugin_api.remove_toolbar_item(None, self.separator)
+        plugin_api.remove_task_toolbar_item(self.task_separator)
+        plugin_api.remove_task_toolbar_item(self.tb_Taskbutton)
         
     #load a dialog with a String
     def loadDialog(self, msg):
