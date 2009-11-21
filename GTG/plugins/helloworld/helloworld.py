@@ -22,35 +22,40 @@ class pluginTest:
     def __init__(self):
         self.menu_item = gtk.MenuItem("Hello World Plugin")
         self.menu_item.connect('activate', self.onTesteMenu)
-		
+        
         self.tb_button = gtk.ToolButton(gtk.STOCK_INFO)
         self.tb_button.set_label("Hello World")
         self.tb_button.connect('clicked', self.onTbButton)
-		
+        self.separator = gtk.SeparatorToolItem()
+        self.task_separator = gtk.SeparatorToolItem()
+        self.tb_Taskbutton = gtk.ToolButton(gtk.STOCK_EXECUTE)
+        
 
-	# plugin engine methods	
+    # plugin engine methods    
     def activate(self, plugin_api):
-		# add a menu item to the menu bar
+        # add a menu item to the menu bar
         plugin_api.add_menu_item(self.menu_item)
-        		
+                
         # saves the separator's index to later remove it
-        self.separator = plugin_api.add_toolbar_item(gtk.SeparatorToolItem())
+        plugin_api.add_toolbar_item(self.separator)
         # add a item (button) to the ToolBar
         plugin_api.add_toolbar_item(self.tb_button)
 
     def onTaskOpened(self, plugin_api):
-		# add a item (button) to the ToolBar
-        self.tb_Taskbutton = gtk.ToolButton(gtk.STOCK_EXECUTE)
+        # add a item (button) to the ToolBar
         self.tb_Taskbutton.set_label("Hello World")
         self.tb_Taskbutton.connect('clicked', self.onTbTaskButton, plugin_api)
-        plugin_api.add_task_toolbar_item(gtk.SeparatorToolItem())
+        plugin_api.add_task_toolbar_item(self.task_separator)
         plugin_api.add_task_toolbar_item(self.tb_Taskbutton)
-		
+        
     def deactivate(self, plugin_api):
         plugin_api.remove_menu_item(self.menu_item)
         plugin_api.remove_toolbar_item(self.tb_button)
-        plugin_api.remove_toolbar_item(None, self.separator)
-		
+        plugin_api.remove_toolbar_item(self.separator)
+        #everything should be removed, in case a task is currently opened
+        plugin_api.remove_task_toolbar_item(self.task_separator)
+        plugin_api.remove_task_toolbar_item(self.tb_Taskbutton)
+        
     #load a dialog with a String
     def loadDialog(self, msg):
         path = os.path.dirname(os.path.abspath(__file__))
@@ -66,17 +71,17 @@ class pluginTest:
         self.dialog.show_all()
     
     def close_dialog(self, widget, data=None):
-    	self.dialog.destroy()
+        self.dialog.destroy()
         return True    
-	
-	# plugin features
+    
+    # plugin features
     def onTesteMenu(self, widget):
         self.loadDialog("Hello World! From the MenuBar! :-)")
-		
+        
     def onTbButton(self, widget):
         self.loadDialog("Hello World! From the ToolBar! :-)")
-		
+        
     def onTbTaskButton(self, widget, plugin_api):
         self.loadDialog("Hello World! The tag @hello_world was just added to the end of the task!")
         plugin_api.add_tag("hello_world")
-	
+    
