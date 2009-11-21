@@ -63,10 +63,27 @@ class PluginAPI:
         
         if task:
             self.task = task
+        else:
+            self.task = None
                  
         if texteditor:
             self.taskeditor = texteditor
             self.textview = texteditor.textview
+        else:
+            self.taskeditor = None
+            self.textview= None
+            
+    def is_editor(self):
+        if self.taskeditor:
+            return True
+        else:
+            return False
+            
+    def is_browser(self):
+        if self.taskview:
+            return True
+        else:
+            return False
 
 #=== General Methods ==========================================================
     def add_menu_item(self, item):
@@ -130,26 +147,27 @@ class PluginAPI:
         Note: It's useful to remove gtk.SeparatorToolItem(). 
         ie, remove_toolbar_item(None, 14)
         """
-        try:
-            wi = self.__wTree.get_widget('task_tb')
-            if wi:
-                if not n or n < 0:
-                    if item:
+        if self.is_browser():
+            try:
+                wi = self.__wTree.get_widget('task_tb')
+                if wi and item:
+                    if not n or n < 0:
                         wi.remove(item)
-                else:
-                    i = 0
-                    while wi.get_nth_item(i) is not None:
-                        if i == n:
-                            wi.remove(wi.get_nth_item(i))
-                        i = i + 1
-        except Exception, e:
-            print "Error removing a toolbar item: %s" % e
+                    else:
+                        i = 0
+                        while wi.get_nth_item(i) is not None:
+                            if i == n:
+                                wi.remove(wi.get_nth_item(i))
+                            i = i + 1
+            except Exception, e:
+                print "Error removing a toolbar item: %s" % e
     
     # adds items to the Task Menu 
     def add_task_toolbar_item(self, item):
         """Adds a button to the task editor's toolbar. 
 
-        @param item: The gtk.ToolButton that is going to be added to the toolbar.  
+        @param item: The gtk.ToolButton that is going to be added 
+                     to the toolbar.
         """
         try:
             i = 0
@@ -162,7 +180,21 @@ class PluginAPI:
                 if self.taskeditor:
                     self.taskeditor.refresh_editor()
         except Exception, e:
-            print "Error adding a toolbar item in to the TaskEditor: %s" % e
+            print "Error adding a toolbar item in to the TaskEditor: %s" %e
+            
+    def remove_task_toolbar_item(self,item):
+        """Remove a button from the task editor's toolbar. 
+
+        @param item: The gtk.ToolButton that is going to be removed
+                     from the toolbar.
+        """
+        if self.is_editor():
+            try:
+                wi = self.__wTree.get_widget('task_tb1')
+                if wi and item:
+                    wi.remove(item)
+            except Exception, e:
+                print "Error removing the toolbar item in the TaskEditor: %s" %e
             
     def add_widget_to_taskeditor(self, widget):
         """Adds a widget to the bottom of the task editor dialog
@@ -174,6 +206,19 @@ class PluginAPI:
             vbox.pack_start(widget)
             vbox.reorder_child(widget, -2)
             widget.show_all()
+            
+    def remove_widget_from_taskeditor(self,widget):
+        """Remove a widget from the bottom of the task editor dialog
+        
+        @param widget: The gtk.Widget that is going to be removed
+        """
+        if self.is_editor():
+            try:
+                wi = self.__wTree.get_widget('vbox4')
+                if wi and widget:
+                    wi.remove(widget)
+            except Exception, e:
+                print "Error removing the toolbar item in the TaskEditor: %s" %e
             
     def get_requester(self):
         """Returns the requester.
@@ -220,10 +265,15 @@ class PluginAPI:
         
         @return: A task. 
         """
-        selected = self.taskview.get_selection()
-        model, iter = selected.get_selected()
-        if iter:
-            return self.__requester.get_task(model.get_value(iter, 0))
+        if self.is_editor():
+            return self.task
+        elif self.is_browser():
+            selected = self.taskview.get_selection()
+            model, iter = selected.get_selected()
+            if iter:
+                return self.__requester.get_task(model.get_value(iter, 0))
+            else:
+                return None
         else:
             return None
         
@@ -368,6 +418,7 @@ class PluginAPI:
         @return: The task editor's text view (gtk.TextView)
         """
         return self.textview
+
 #=== Task related methods =====================================================
 
     
