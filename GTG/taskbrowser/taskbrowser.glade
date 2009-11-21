@@ -12,6 +12,7 @@
     <child>
       <widget class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
+        <property name="orientation">vertical</property>
         <child>
           <widget class="GtkMenuBar" id="browser_menu">
             <property name="visible">True</property>
@@ -462,6 +463,7 @@
             <property name="position_set">True</property>
             <child>
               <widget class="GtkVBox" id="sidebar">
+                <property name="orientation">vertical</property>
                 <child>
                   <widget class="GtkHBox" id="hbox4">
                     <property name="visible">True</property>
@@ -536,6 +538,7 @@
             <child>
               <widget class="GtkVBox" id="vbox2">
                 <property name="visible">True</property>
+                <property name="orientation">vertical</property>
                 <child>
                   <widget class="GtkHBox" id="quickadd_pane">
                     <property name="visible">True</property>
@@ -650,6 +653,7 @@
     <child internal-child="vbox">
       <widget class="GtkVBox" id="dialog-vbox1">
         <property name="visible">True</property>
+        <property name="orientation">vertical</property>
         <property name="spacing">2</property>
         <child>
           <widget class="GtkHBox" id="hbox3">
@@ -895,6 +899,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
     <child internal-child="vbox">
       <widget class="GtkVBox" id="dialog-vbox2">
         <property name="visible">True</property>
+        <property name="orientation">vertical</property>
         <property name="spacing">2</property>
         <child internal-child="action_area">
           <widget class="GtkHButtonBox" id="dialog-action_area2">

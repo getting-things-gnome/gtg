@@ -77,7 +77,9 @@ class Timer:
 
 class TaskBrowser:
 
-    def __init__(self, requester, config):
+    def __init__(self, requester, config, logger=None):
+
+        self.logger=logger
 
         # Object prime variables
         self.priv   = {}
@@ -772,6 +774,7 @@ class TaskBrowser:
         """
 
         tag_list, notag_only = self.get_selected_tags()
+        self.logger.debug("Select tag list: %s", str(tag_list))
 
         if len(tag_list)==1: #include child tags
 		    tag_list = tag_list[0].all_children()
@@ -1406,17 +1409,25 @@ class TaskBrowser:
         gtk.main_quit()
 
     def on_task_added(self, sender, tid):
-        #print "Task added: %s" % tid
+        if self.logger:
+            self.logger.debug("Add task with ID: %s" % tid)
         self.task_tree_model.add_task(tid)
         #no need to do more as task_modified will be called anyway
         
     def on_task_deleted(self, sender, tid):
-        #print "Task deleted: %s" % tid
+        if self.logger:
+            self.logger.debug("Delete task with ID: %s" % tid)
         self.task_tree_model.remove_task(tid)
         self.tags_tv.refresh()
         self._update_window_title()
-        
+        #if the modified task is active, we have to refresh everything
+        #to avoid some odd stuffs when loading
+        if self.refresh_lock.acquire(False):
+            gobject.idle_add(self.general_refresh)
+                        
     def on_task_modified(self, sender, tid):
+        if self.logger:
+            self.logger.debug("Modify task with ID: %s" % tid)
         if self.task_tree_model.remove_task(tid):
             self.task_tree_model.add_task(tid)
         self.tag_model.update_tags_for_task(tid)
@@ -1438,8 +1449,10 @@ class TaskBrowser:
                 gobject.idle_add(self.general_refresh)
         
     def general_refresh(self):
+        if self.logger:
+            self.logger.debug("Trigger refresh on taskbrowser.")
+        self.tag_modelfilter.refilter()
         self.task_modelfilter.refilter()
-#        self.tag_modelfilter.refilter()
 #        self.tags_tv.refresh()
         self._update_window_title()
         self.refresh_lock.release()
