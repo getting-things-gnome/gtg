@@ -855,9 +855,15 @@ class TaskBrowser:
         @param user_data:
         """
         tag = model.get_value(iter, tagtree.COL_OBJ)
-        if tag.has_child():
-        	return True
-        elif not tag.get_attribute("special"):
+        
+        # show the tag if any children are shown
+        child = model.iter_children(iter)
+        while child:
+            if self.tag_visible_func(model, child):
+                return True
+            child=model.iter_next(child)
+        
+        if not tag.get_attribute("special"):
             count = model.get_value(iter, tagtree.COL_COUNT)
             return count != ''
         else:
