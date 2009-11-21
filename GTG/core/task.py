@@ -22,7 +22,7 @@ import xml.dom.minidom
 import uuid
 
 from GTG import _
-from GTG.tools.dates import strtodate, FakeDate, days_left
+from GTG.tools.dates import strtodate, FakeDate, days_left, date_cmp
 from datetime import datetime
 
 
@@ -194,7 +194,7 @@ class Task:
         #We compare it to the date we want to set
         if parent_date and strtodate(parent_date):
             if not fulldate or not strtodate(fulldate) or\
-               strtodate(parent_date) < strtodate(fulldate):
+               date_cmp(strtodate(parent_date), strtodate(fulldate))==-1:
                 fulldate = parent_date
         #Now we set the duedate
         if fulldate:
@@ -207,7 +207,7 @@ class Task:
                 if actual_date:
                     rfulldate = strtodate(fulldate)
                     ractual = strtodate(actual_date)
-                    if rfulldate and rfulldate < ractual:
+                    if rfulldate and date_cmp(rfulldate, ractual)==-1:
                         child.set_due_date(fulldate, fromparent=True)
                 else:
                     child.set_due_date(fulldate, fromparent=True)
@@ -226,7 +226,7 @@ class Task:
             pardate_str = self.req.get_task(par).get_due_date()
             if pardate_str:
                 pardate = strtodate(pardate_str)
-                if pardate and zedate > pardate:
+                if pardate and date_cmp(zedate, pardate)==1:
                     zedate = pardate
         if zedate == date.max:
             return ''
