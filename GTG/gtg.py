@@ -48,6 +48,7 @@ from __future__ import with_statement
 import sys
 import os
 import dbus
+import logging
 
 #our own imports
 from GTG import _
@@ -88,7 +89,19 @@ def check_instance(directory):
 
 #=== MAIN CLASS ===============================================================
 
-def main():
+def main(options, args):
+    
+    # init logging system
+    logger = logging.getLogger("gtg_logger")
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.DEBUG)
+    formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(module)s:%(funcName)s:%(lineno)d - %(message)s")
+    ch.setFormatter(formatter)
+    logger.addHandler(ch)
+    if options.debug:
+        logger.setLevel(logging.DEBUG)
+        logger.debug("Debug output enabled.")
+    
     config = CoreConfig()
     check_instance(config.DATA_DIR)
     backends_list = config.get_backends_list()
@@ -104,7 +117,7 @@ def main():
         
     # Launch task browser
     req = ds.get_requester()
-    tb = TaskBrowser(req, config)
+    tb = TaskBrowser(req, config, logger=logger)
     DBusTaskWrapper(req, tb)
     tb.main()
 

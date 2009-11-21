@@ -34,6 +34,9 @@ class pluginTomboy:
         self.token_start = 'TOMBOY__'
         self.token_end = '|'
         self.path = os.path.dirname(os.path.abspath(__file__))
+        self.findTomboyIconPath()
+        self.separator_item =  gtk.SeparatorToolItem()
+        self.tb_Taskbutton = None
 
     #Tomboy installation is checked through the presence of its icon
     def findTomboyIconPath(self):
@@ -80,6 +83,10 @@ Please install it or disable the Tomboy plugin in GTG"))
 
     # Converts all tomboy note widgets in the  equivalent text
     def onTaskClosed(self, plugin_api):
+        if not  hasattr (self, "activated") or not self.activated == True:
+            #plugin has not been properly activated, (bug 475877 )
+            # closing without executing onTaskClosed
+            return
         if not self.checkTomboyPresent():
             return False
         for anchor in self.anchors:
@@ -108,7 +115,7 @@ Please install it or disable the Tomboy plugin in GTG"))
         self.tb_Taskbutton = gtk.ToolButton(tb_Taskbutton_image)
         self.tb_Taskbutton.set_label(_("Add Tomboy note"))
         self.tb_Taskbutton.connect('clicked', self.onTbTaskButton, plugin_api)
-        plugin_api.add_task_toolbar_item(gtk.SeparatorToolItem())
+        plugin_api.add_task_toolbar_item(self.separator_item)
         plugin_api.add_task_toolbar_item(self.tb_Taskbutton)
 
 
@@ -144,6 +151,7 @@ Please install it or disable the Tomboy plugin in GTG"))
             token_ending = text.find(self.token_end)
 
     def onTaskOpened(self, plugin_api):
+        self.activated = True
         if not self.checkTomboyPresent():
             return False
         #NOTE: get_textview() only works in this function
@@ -154,7 +162,8 @@ Please install it or disable the Tomboy plugin in GTG"))
 
     def deactivate(self, plugin_api):
         #nothing to do at all 
-        pass
+        plugin_api.remove_task_toolbar_item(self.separator_item)
+        plugin_api.remove_task_toolbar_item(self.tb_Taskbutton)
 
     def close_dialog(self, widget, data=None):
         self.dialog.destroy()

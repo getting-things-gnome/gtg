@@ -98,6 +98,12 @@ class Task:
 
     def get_title(self):
         return self.title
+        
+    def get_titles(self, list):
+        list.append(self.title)
+        for task in self.get_subtasks():
+            list = task.get_titles(list)
+        return list
 
     #Return True if the title was changed.
     #False if the title was already the same.
@@ -141,9 +147,12 @@ class Task:
                 if self.has_parents():
                     for p_tid in self.get_parents():
                         par = self.req.get_task(p_tid)
-                        if par.is_loaded() and par.get_status in\
+                        if par.is_loaded() and par.get_status() in\
                            [self.STA_DONE, self.STA_DISMISSED]:
-                            self.remove_parent(p_tid)
+                            #we can either break the parent/child relationship
+                            #self.remove_parent(p_tid)
+                            #or restore the parent too
+                            par.set_status(self.STA_ACTIVE)
                 #We dont mark the children as Active because
                 #They might be already completed after all
 
@@ -477,11 +486,12 @@ class Task:
     #Use the requester
     def delete(self):
         self.set_sync_func(None, callsync=False)
+        for task in self.get_subtasks():
+            task.remove_parent(self.get_id())
+            self.req.delete_task(task.get_id())
         for i in self.get_parents():
             task = self.req.get_task(i)
             task.remove_subtask(self.get_id())
-        for task in self.get_subtasks():
-            task.remove_parent(self.get_id())
         for tag in self.tags:
             tag.remove_task(self.get_id())
         #then we remove effectively the task

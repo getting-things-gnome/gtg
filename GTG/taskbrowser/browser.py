@@ -24,8 +24,8 @@
 import pygtk
 pygtk.require('2.0')
 import gobject
-import gtk.glade
 import os
+import gtk
 import locale
 import re
 import datetime
@@ -78,7 +78,9 @@ class Timer:
 
 class TaskBrowser:
 
-    def __init__(self, requester, config):
+    def __init__(self, requester, config, logger=None):
+
+        self.logger=logger
 
         # Object prime variables
         self.priv   = {}
@@ -104,7 +106,8 @@ class TaskBrowser:
         self._init_models()
 
         # Load window tree
-        self.wTree = gtk.glade.XML(GnomeConfig.GLADE_FILE)
+        self.builder = gtk.Builder() 
+        self.builder.add_from_file(GnomeConfig.GLADE_FILE)
 
         # Define aliases for specific widgets
         self._init_widget_aliases()
@@ -130,7 +133,9 @@ class TaskBrowser:
         self._init_accelerators()
         
         # Initialize the plugin-engine
+        self.p_apis = [] #the list of each plugin apis.
         self._init_plugin_engine()
+        self.pm = None #the plugin manager window
         
         self.refresh_lock = threading.Lock()
 
@@ -210,32 +215,32 @@ class TaskBrowser:
         self.tag_model.add_tag(self.sep_tag.get_name(), self.sep_tag)
 
     def _init_widget_aliases(self):
-        self.window             = self.wTree.get_widget("MainWindow")
-        self.tagpopup           = self.wTree.get_widget("TagContextMenu")
-        self.taskpopup          = self.wTree.get_widget("TaskContextMenu")
+        self.window             = self.builder.get_object("MainWindow")
+        self.tagpopup           = self.builder.get_object("TagContextMenu")
+        self.taskpopup          = self.builder.get_object("TaskContextMenu")
         self.ctaskpopup = \
-            self.wTree.get_widget("ClosedTaskContextMenu")
-        self.editbutton         = self.wTree.get_widget("edit_b")
-        self.donebutton         = self.wTree.get_widget("mark_as_done_b")
-        self.newtask            = self.wTree.get_widget("new_task_b")
-        self.newsubtask         = self.wTree.get_widget("new_subtask_b")
-        self.dismissbutton      = self.wTree.get_widget("dismiss")
-        self.about              = self.wTree.get_widget("aboutdialog1")
-        self.edit_mi            = self.wTree.get_widget("edit_mi")
-        self.main_pane          = self.wTree.get_widget("main_pane")
-        self.menu_view_workview = self.wTree.get_widget("view_workview")
-        self.toggle_workview    = self.wTree.get_widget("workview_toggle")
-        self.quickadd_entry     = self.wTree.get_widget("quickadd_field")
-        self.closed_pane        = self.wTree.get_widget("closed_pane")
-        self.toolbar            = self.wTree.get_widget("task_tb")
-        self.quickadd_pane      = self.wTree.get_widget("quickadd_pane")
-        self.sidebar            = self.wTree.get_widget("sidebar")
-        self.sidebar_container  = self.wTree.get_widget("sidebar-scroll")
+            self.builder.get_object("ClosedTaskContextMenu")
+        self.editbutton         = self.builder.get_object("edit_b")
+        self.donebutton         = self.builder.get_object("mark_as_done_b")
+        self.newtask            = self.builder.get_object("new_task_b")
+        self.newsubtask         = self.builder.get_object("new_subtask_b")
+        self.dismissbutton      = self.builder.get_object("dismiss")
+        self.about              = self.builder.get_object("aboutdialog1")
+        self.edit_mi            = self.builder.get_object("edit_mi")
+        self.main_pane          = self.builder.get_object("main_pane")
+        self.menu_view_workview = self.builder.get_object("view_workview")
+        self.toggle_workview    = self.builder.get_object("workview_toggle")
+        self.quickadd_entry     = self.builder.get_object("quickadd_field")
+        self.closed_pane        = self.builder.get_object("closed_pane")
+        self.toolbar            = self.builder.get_object("task_tb")
+        self.quickadd_pane      = self.builder.get_object("quickadd_pane")
+        self.sidebar            = self.builder.get_object("sidebar")
+        self.sidebar_container  = self.builder.get_object("sidebar-scroll")
         # Tree views
-        #self.tags_tv             = self.wTree.get_widget("tag_tview")
+        #self.tags_tv             = self.builder.get_object("tag_tview")
         # NOTES
-        #self.new_note_button    = self.wTree.get_widget("new_note_button")
-        #self.note_toggle        = self.wTree.get_widget("note_toggle")
+        #self.new_note_button    = self.builder.get_object("new_note_button")
+        #self.note_toggle        = self.builder.get_object("note_toggle")
 
     def _init_ui_widget(self):
         # The Active tasks treeview
@@ -277,8 +282,8 @@ class TaskBrowser:
         SIGNAL_CONNECTIONS_DIC = {
             "on_add_task":
                 self.on_add_task,
-#            "on_add_note":
-#                (self.on_add_task, 'Note'),
+            "on_add_note":
+                (self.on_add_task, 'Note'),
             "on_edit_active_task":
                 self.on_edit_active_task,
             "on_edit_done_task":
@@ -309,8 +314,8 @@ class TaskBrowser:
                 self.on_colorchooser_activate,
             "on_workview_toggled":
                 self.on_workview_toggled,
-#            "on_note_toggled":
-#                self.on_note_toggled,
+            "on_note_toggled":
+                self.on_note_toggled,
             "on_view_workview_toggled":
                 self.on_workview_toggled,
             "on_view_closed_toggled":
@@ -325,17 +330,23 @@ class TaskBrowser:
                 self.on_quickadd_activate,
             "on_view_quickadd_toggled":
                 self.on_toggle_quickadd,
+            "on_view_toolbar_toggled":
+                self.on_toolbar_toggled,
             "on_about_clicked":
                 self.on_about_clicked,
+            "on_about_delete":
+                self.on_about_close,
             "on_about_close":
                 self.on_about_close,
             "on_nonworkviewtag_toggled":
                 self.on_nonworkviewtag_toggled,
             "on_pluginmanager_activate": 
-                self.on_pluginmanager_activate
+                self.on_pluginmanager_activate,
+            "on_color_response":
+                self.on_color_response
         }
 
-        self.wTree.signal_autoconnect(SIGNAL_CONNECTIONS_DIC)
+        self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
 
         if (self.window):
             self.window.connect("destroy", gtk.main_quit)
@@ -374,10 +385,10 @@ class TaskBrowser:
 
     def _init_view_defaults(self):
         self.menu_view_workview.set_active(WORKVIEW)
-        self.wTree.get_widget("view_sidebar").set_active(SIDEBAR)
-        self.wTree.get_widget("view_closed").set_active(CLOSED_PANE)
-        self.wTree.get_widget("view_quickadd").set_active(QUICKADD_PANE)
-        self.wTree.get_widget("view_toolbar").set_active(TOOLBAR)
+        self.builder.get_object("view_sidebar").set_active(SIDEBAR)
+        self.builder.get_object("view_closed").set_active(CLOSED_PANE)
+        self.builder.get_object("view_quickadd").set_active(QUICKADD_PANE)
+        self.builder.get_object("view_toolbar").set_active(TOOLBAR)
         self.priv["bg_color_enable"] = BG_COLOR
         # Set sorting order
         self.task_modelsort.set_sort_column_id(\
@@ -390,51 +401,51 @@ class TaskBrowser:
     def _init_accelerators(self):
 
         agr = gtk.AccelGroup()
-        self.wTree.get_widget("MainWindow").add_accel_group(agr)
+        self.builder.get_object("MainWindow").add_accel_group(agr)
 
-        view_sidebar = self.wTree.get_widget("view_sidebar")
+        view_sidebar = self.builder.get_object("view_sidebar")
         key, mod     = gtk.accelerator_parse("F9")
         view_sidebar.add_accelerator("activate", agr, key, mod,\
             gtk.ACCEL_VISIBLE)
 
-        file_quit = self.wTree.get_widget("file_quit")
+        file_quit = self.builder.get_object("file_quit")
         key, mod  = gtk.accelerator_parse("<Control>q")
         file_quit.add_accelerator("activate", agr, key, mod, gtk.ACCEL_VISIBLE)
 
-        edit_undo = self.wTree.get_widget("edit_undo")
+        edit_undo = self.builder.get_object("edit_undo")
         key, mod  = gtk.accelerator_parse("<Control>z")
         edit_undo.add_accelerator("activate", agr, key, mod, gtk.ACCEL_VISIBLE)
 
-        edit_redo = self.wTree.get_widget("edit_redo")
+        edit_redo = self.builder.get_object("edit_redo")
         key, mod  = gtk.accelerator_parse("<Control>y")
         edit_redo.add_accelerator("activate", agr, key, mod, gtk.ACCEL_VISIBLE)
 
-        new_task_mi = self.wTree.get_widget("new_task_mi")
+        new_task_mi = self.builder.get_object("new_task_mi")
         key, mod    = gtk.accelerator_parse("<Control>n")
         new_task_mi.add_accelerator("activate", agr, key, mod,\
             gtk.ACCEL_VISIBLE)
 
-        new_subtask_mi = self.wTree.get_widget("new_subtask_mi")
+        new_subtask_mi = self.builder.get_object("new_subtask_mi")
         key, mod       = gtk.accelerator_parse("<Control><Shift>n")
         new_subtask_mi.add_accelerator("activate", agr, key, mod,\
             gtk.ACCEL_VISIBLE)
 
-        edit_button = self.wTree.get_widget("edit_b")
+        edit_button = self.builder.get_object("edit_b")
         key, mod    = gtk.accelerator_parse("<Control>e")
         edit_button.add_accelerator("clicked", agr, key, mod,\
             gtk.ACCEL_VISIBLE)
 
-        quickadd_field = self.wTree.get_widget('quickadd_field')
+        quickadd_field = self.builder.get_object('quickadd_field')
         key, mod = gtk.accelerator_parse('<Control>l')
         quickadd_field.add_accelerator(
             'grab-focus', agr, key, mod, gtk.ACCEL_VISIBLE)
 
-        mark_done_mi = self.wTree.get_widget('mark_done_mi')
+        mark_done_mi = self.builder.get_object('mark_done_mi')
         key, mod = gtk.accelerator_parse('<Control>d')
         mark_done_mi.add_accelerator(
             'activate', agr, key, mod, gtk.ACCEL_VISIBLE)
 
-        task_dismiss = self.wTree.get_widget('task_dismiss')
+        task_dismiss = self.builder.get_object('task_dismiss')
         key, mod = gtk.accelerator_parse('<Control>i')
         task_dismiss.add_accelerator(
             'activate', agr, key, mod, gtk.ACCEL_VISIBLE)
@@ -446,10 +457,11 @@ class TaskBrowser:
         self.plugins = self.pengine.LoadPlugins()
         
         # initializes the plugin api class
-        self.plugin_api = PluginAPI(self.window, self.config, GTG.DATA_DIR, self.wTree,\
+        self.plugin_api = PluginAPI(self.window, self.config, GTG.DATA_DIR, self.builder,\
                                     self.req, self.task_tv, self.priv['filter_cbs'],\
                                     self.tagpopup, self.tags_tv, None, None,\
                                     self.priv['quick_add_cbs'])
+        self.p_apis.append(self.plugin_api)
         
         if self.plugins:
             # checks the conf for user settings
@@ -467,7 +479,7 @@ class TaskBrowser:
                             p['state'] = False
             
             # initializes and activates each plugin (that is enabled)
-            self.pengine.activatePlugins(self.plugins, self.plugin_api)
+            self.pengine.activatePlugins(self.plugins, self.p_apis)
 
 #    def _init_note_support(self):
 #        self.notes  = EXPERIMENTAL_NOTES
@@ -477,7 +489,7 @@ class TaskBrowser:
 #            self.new_note_button.hide()
 #        #Set the tooltip for the toolbar button
 #        self.new_note_button.set_tooltip_text("Create a new note")
-#        self.note_tview = self.wTree.get_widget("note_tview")
+#        self.note_tview = self.builder.get_object("note_tview")
 #        self.note_tview = gtk.TreeView()
 #        self.note_tview.connect("row-activated", self.on_edit_note)
 #        self.note_tview.show()
@@ -507,10 +519,10 @@ class TaskBrowser:
         if "tag_pane" in self.config["browser"]:
             tag_pane = eval(self.config["browser"]["tag_pane"])
             if not tag_pane:
-                self.wTree.get_widget("view_sidebar").set_active(False)
+                self.builder.get_object("view_sidebar").set_active(False)
                 self.sidebar.hide()
             else:
-                self.wTree.get_widget("view_sidebar").set_active(True)
+                self.builder.get_object("view_sidebar").set_active(True)
                 self.sidebar.show()
 
         if "closed_task_pane" in self.config["browser"]:
@@ -518,32 +530,32 @@ class TaskBrowser:
                 self.config["browser"]["closed_task_pane"])
             if not closed_task_pane:
                 self.closed_pane.hide()
-                self.wTree.get_widget("view_closed").set_active(False)
+                self.builder.get_object("view_closed").set_active(False)
             else:
                 self.closed_pane.show()
-                self.wTree.get_widget("view_closed").set_active(True)
+                self.builder.get_object("view_closed").set_active(True)
 
         if "ctask_pane_height" in self.config["browser"]:
             ctask_pane_height = eval(
                 self.config["browser"]["ctask_pane_height"])
-            self.wTree.get_widget("vpaned1").set_position(ctask_pane_height)
+            self.builder.get_object("vpaned1").set_position(ctask_pane_height)
 
         if "toolbar" in self.config["browser"]:
             toolbar = eval(self.config["browser"]["toolbar"])
             if not toolbar:
                 self.toolbar.hide()
-                self.wTree.get_widget("view_toolbar").set_active(False)
+                self.builder.get_object("view_toolbar").set_active(False)
 
         if "quick_add" in self.config["browser"]:
             quickadd_pane = eval(self.config["browser"]["quick_add"])
             if not quickadd_pane:
                 self.quickadd_pane.hide()
-                self.wTree.get_widget("view_quickadd").set_active(False)
+                self.builder.get_object("view_quickadd").set_active(False)
 
         if "bg_color_enable" in self.config["browser"]:
             bgcol_enable = eval(self.config["browser"]["bg_color_enable"])
             self.priv["bg_color_enable"] = bgcol_enable
-            self.wTree.get_widget("bgcol_enable").set_active(bgcol_enable)
+            self.builder.get_object("bgcol_enable").set_active(bgcol_enable)
 
         if "collapsed_tasks" in self.config["browser"]:
             self.priv["collapsed_tids"] = self.config[
@@ -738,7 +750,7 @@ class TaskBrowser:
                 self.req, t, self.plugins, \
                 self.on_delete_task, self.close_task, self.open_task, \
                 self.get_tasktitle,taskconfig=self.task_config, \
-                thisisnew=thisisnew)
+                plugin_apis=self.p_apis,thisisnew=thisisnew)
             #registering as opened
             self.opened_task[uid] = tv
         return tv
@@ -746,6 +758,14 @@ class TaskBrowser:
     def get_tasktitle(self, tid):
         task = self.req.get_task(tid)
         return task.get_title()
+
+    def get_task_and_subtask_titles(self, tid):
+        task = self.req.get_task(tid)
+        titles_list = task.get_titles([])
+        toreturn = ""
+        for st in titles_list :
+            toreturn = "%s\n- %s" %(toreturn,st) 
+        return toreturn
 
     def close_task(self, tid):
         # When an editor is closed, it should deregister itself.
@@ -938,7 +958,7 @@ class TaskBrowser:
         toolbar            = self.toolbar.get_property("visible")
         #task_tv_sort_id    = self.task_ts.get_sort_column_id()
         sort_column, sort_order = self.task_modelsort.get_sort_column_id()
-        closed_pane_height = self.wTree.get_widget("vpaned1").get_position()
+        closed_pane_height = self.builder.get_object("vpaned1").get_position()
 
         if self.priv['workview']:
             view = "workview"
@@ -947,7 +967,7 @@ class TaskBrowser:
             
         # plugins are deactivated
         if self.plugins:
-            self.pengine.deactivatePlugins(self.plugins, self.plugin_api)
+            self.pengine.deactivatePlugins(self.plugins, self.p_apis)
             
         #save opened tasks and their positions.
         open_task = []
@@ -1006,16 +1026,13 @@ class TaskBrowser:
 
     def on_about_close(self, widget, response):
         self.about.hide()
+        return True
 
     def on_colorchooser_activate(self, widget):
         #TODO: Color chooser should be refactorized in its own class. Well, in
         #fact we should have a TagPropertiesEditor (like for project) Also,
         #color change should be immediate. There's no reason for a Ok/Cancel
-        wTree = gtk.glade.XML(GnomeConfig.GLADE_FILE, "ColorChooser")
-        #Create our dictionay and connect it
-        dic = {"on_color_response": self.on_color_response}
-        wTree.signal_autoconnect(dic)
-        window = wTree.get_widget("ColorChooser")
+        window = self.builder.get_object("ColorChooser")
         # Get previous color
         tags, notag_only = self.get_selected_tags()
         if len(tags) == 1:
@@ -1043,7 +1060,7 @@ class TaskBrowser:
         self.do_toggle_workview()
 
     def on_sidebar_toggled(self, widget):
-        view_sidebar = self.wTree.get_widget("view_sidebar")
+        view_sidebar = self.builder.get_object("view_sidebar")
         if self.sidebar.get_property("visible"):
             view_sidebar.set_active(False)
             self.sidebar.hide()
@@ -1051,12 +1068,12 @@ class TaskBrowser:
             view_sidebar.set_active(True)
             self.sidebar.show()
 
-#    def on_note_toggled(self, widget):
-#        self.priv['noteview'] = not self.priv['noteview']
-#        workview_state = self.toggle_workview.get_active()
-#        if workview_state:
-#            self.toggle_workview.set_active(False)
-#        #self.do_refresh()
+    def on_note_toggled(self, widget):
+        self.priv['noteview'] = not self.priv['noteview']
+        workview_state = self.toggle_workview.get_active()
+        if workview_state:
+            self.toggle_workview.set_active(False)
+        #self.do_refresh()
 
     def on_closed_toggled(self, widget):
         if widget.get_active():
@@ -1273,7 +1290,13 @@ class TaskBrowser:
             self.tid_todelete = tid
         #We must at least have something to delete !
         if self.tid_todelete:
-            delete_dialog = self.wTree.get_widget("confirm_delete")
+            label = self.builder.get_object("label1") 
+            label_text = label.get_text()
+            label_text = label_text[0:label_text.find(":") + 1]
+            # I find the tasks that are going to be deleted
+            titles = self.get_task_and_subtask_titles(self.tid_todelete)
+            label.set_text("%s %s." % (label_text, titles))
+            delete_dialog = self.builder.get_object("confirm_delete")
             delete_dialog.run()
             delete_dialog.hide()
             #has the task been deleted ?
@@ -1328,9 +1351,9 @@ class TaskBrowser:
             self.task_tv.get_selection().unselect_all()
 #            self.note_tview.get_selection().unselect_all()
             if task.get_status() == "Dismiss":
-                self.wTree.get_widget(
+                self.builder.get_object(
                     "ctcm_mark_as_not_done").set_sensitive(False)
-                self.wTree.get_widget("ctcm_undismiss").set_sensitive(True)
+                self.builder.get_object("ctcm_undismiss").set_sensitive(True)
                 self.dismissbutton.set_label(GnomeConfig.MARK_UNDISMISS)
                 self.donebutton.set_label(GnomeConfig.MARK_DONE)
                 self.donebutton.set_tooltip_text(GnomeConfig.MARK_DONE_TOOLTIP)
@@ -1338,9 +1361,10 @@ class TaskBrowser:
                 self.dismissbutton.set_tooltip_text(
                     GnomeConfig.MARK_UNDISMISS_TOOLTIP)
             else:
-                self.wTree.get_widget(
+                self.builder.get_object(
                     "ctcm_mark_as_not_done").set_sensitive(True)
-                self.wTree.get_widget("ctcm_undismiss").set_sensitive(False)
+                self.builder.get_object(
+                    "ctcm_undismiss").set_sensitive(False)
                 self.donebutton.set_label(GnomeConfig.MARK_UNDONE)
                 self.donebutton.set_tooltip_text(
                     GnomeConfig.MARK_UNDONE_TOOLTIP)
@@ -1373,7 +1397,10 @@ class TaskBrowser:
 #            self.task_tv.get_selection().unselect_all()
     
     def on_pluginmanager_activate(self, widget):
-        PluginManager(self.window, self.plugins, self.pengine, self.plugin_api)
+        if self.pm:
+            self.pm.present()
+        else:
+            self.pm = PluginManager(self.window, self.plugins, self.pengine, self.p_apis)
 
     def on_close(self, widget=None):
         """Closing the window."""
@@ -1382,17 +1409,25 @@ class TaskBrowser:
         gtk.main_quit()
 
     def on_task_added(self, sender, tid):
-        #print "Task added: %s" % tid
+        if self.logger:
+            self.logger.debug("Add task with ID: %s" % tid)
         self.task_tree_model.add_task(tid)
         #no need to do more as task_modified will be called anyway
         
     def on_task_deleted(self, sender, tid):
-        #print "Task deleted: %s" % tid
+        if self.logger:
+            self.logger.debug("Delete task with ID: %s" % tid)
         self.task_tree_model.remove_task(tid)
         self.tags_tv.refresh()
         self._update_window_title()
-        
+        #if the modified task is active, we have to refresh everything
+        #to avoid some odd stuffs when loading
+        if self.refresh_lock.acquire(False):
+            gobject.idle_add(self.general_refresh)
+                        
     def on_task_modified(self, sender, tid):
+        if self.logger:
+            self.logger.debug("Modify task with ID: %s" % tid)
         if self.task_tree_model.remove_task(tid):
             self.task_tree_model.add_task(tid)
         self.tag_model.update_tags_for_task(tid)
@@ -1414,8 +1449,10 @@ class TaskBrowser:
                 gobject.idle_add(self.general_refresh)
         
     def general_refresh(self):
+        if self.logger:
+            self.logger.debug("Trigger refresh on taskbrowser.")
+        self.tag_modelfilter.refilter()
         self.task_modelfilter.refilter()
-#        self.tag_modelfilter.refilter()
 #        self.tags_tv.refresh()
         self._update_window_title()
         self.refresh_lock.release()

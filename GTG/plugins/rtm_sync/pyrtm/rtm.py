@@ -11,7 +11,7 @@ __all__ = (
 #import new
 import warnings
 import urllib
-import logging
+#import logging
 from hashlib import md5
 from GTG import _
 
@@ -31,9 +31,9 @@ if not _use_simplejson:
              "http://pypi.python.org/pypi/simplejson.", ImportWarning,
              stacklevel=2)
 
-logging.basicConfig()
-LOG = logging.getLogger(__name__)
-LOG.setLevel(logging.INFO)
+#logging.basicConfig()
+#LOG = logging.getLogger(__name__)
+#LOG.setLevel(logging.INFO)
 
 SERVICE_URL = 'http://api.rememberthemilk.com/services/rest/'
 AUTH_SERVICE_URL = 'http://www.rememberthemilk.com/services/auth/'
@@ -93,7 +93,7 @@ class RTM(object):
 
         json = openURL(SERVICE_URL, params).read()
 
-        LOG.debug("JSON response: \n%s" % json)
+        #LOG.debug("JSON response: \n%s" % json)
 
         if _use_simplejson:
             data = dottedDict('ROOT', simplejson.loads(json))
@@ -181,7 +181,7 @@ def sortedItems(dictionary):
 def openURL(url, queryArgs=None):
     if queryArgs:
         url = url + '?' + urllib.urlencode(queryArgs)
-    LOG.debug("URL> %s", url)
+    #LOG.debug("URL> %s", url)
     return urllib.urlopen(url)
 
 class dottedDict(object):
@@ -396,4 +396,4 @@ def set_log_level(level):
     >>> rtm.set_log_level(logging.INFO)
     '''
     
-    LOG.setLevel(level)
+    #LOG.setLevel(level)

@@ -108,7 +108,7 @@ setup(
   author       = author,
   author_email = info.EMAIL,
   description  = info.SHORT_DESCRIPTION,
-  packages     = ['GTG','GTG.backends','GTG.core','GTG.taskbrowser','GTG.taskeditor','GTG.tools'],
+  packages     = ['GTG','GTG.backends','GTG.core','GTG.core.plugins','GTG.taskbrowser','GTG.taskeditor','GTG.tools'],
   package_data = {'GTG.taskbrowser':['taskbrowser.glade'],'GTG.taskeditor':['taskeditor.glade']},
   data_files   = create_data_files(),
   scripts=['gtg',],

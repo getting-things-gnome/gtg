@@ -234,7 +234,7 @@ class TaskSource() :
             self.tasks[tid] = False
             self.to_get.append([tid,empty_task])
             if self.getting_lock.acquire(False):
-                if THREADING :
+                if False :
 #                    self.locks.create_lock(tid)
     #                gobject.idle_add(getting,empty_task,tid)
                     t = threading.Thread(target=getting)
