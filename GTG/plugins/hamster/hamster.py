@@ -31,6 +31,7 @@ class hamsterPlugin:
         self.button=gtk.ToolButton()
         self.menu_item = gtk.MenuItem("Start task in Hamster")
         self.taskbutton = gtk.ToolButton()
+        self.separator = gtk.SeparatorToolItem()
     
     #### Interaction with Hamster
     def sendTask(self, task):
@@ -105,7 +106,6 @@ class hamsterPlugin:
         self.button.set_tooltip_text("Start a new activity in Hamster Time Tracker based on the selected task")
         self.button.connect('clicked', self.browser_cb, plugin_api)
         # saves the separator's index to later remove it
-        self.separator = gtk.SeparatorToolItem()
         plugin_api.add_toolbar_item(self.separator) 
         plugin_api.add_toolbar_item(self.button)
         self.task_separator = gtk.SeparatorToolItem()

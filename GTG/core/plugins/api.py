@@ -147,19 +147,20 @@ class PluginAPI:
         Note: It's useful to remove gtk.SeparatorToolItem(). 
         ie, remove_toolbar_item(None, 14)
         """
-        try:
-            wi = self.__wTree.get_widget('task_tb')
-            if wi and item:
-                if not n or n < 0:
-                    wi.remove(item)
-                else:
-                    i = 0
-                    while wi.get_nth_item(i) is not None:
-                        if i == n:
-                            wi.remove(wi.get_nth_item(i))
-                        i = i + 1
-        except Exception, e:
-            print "Error removing a toolbar item: %s" % e
+        if self.is_browser():
+            try:
+                wi = self.__wTree.get_widget('task_tb')
+                if wi and item:
+                    if not n or n < 0:
+                        wi.remove(item)
+                    else:
+                        i = 0
+                        while wi.get_nth_item(i) is not None:
+                            if i == n:
+                                wi.remove(wi.get_nth_item(i))
+                            i = i + 1
+            except Exception, e:
+                print "Error removing a toolbar item: %s" % e
     
     # adds items to the Task Menu 
     def add_task_toolbar_item(self, item):
