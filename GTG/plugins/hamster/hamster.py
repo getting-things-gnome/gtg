@@ -25,6 +25,13 @@ from calendar import timegm
 class hamsterPlugin:
     PLUGIN_NAMESPACE = 'hamster-plugin'
     
+    def __init__(self):
+        #task editor widget
+        self.vbox = None
+        self.button=gtk.ToolButton()
+        self.menu_item = gtk.MenuItem("Start task in Hamster")
+        self.taskbutton = gtk.ToolButton()
+    
     #### Interaction with Hamster
     def sendTask(self, task):
         """Send a gtg task to hamster-applet"""
@@ -89,24 +96,22 @@ class hamsterPlugin:
             return False
         
         # add menu item
-        self.menu_item = gtk.MenuItem("Start task in Hamster")
         self.menu_item.connect('activate', self.browser_cb, plugin_api)
         plugin_api.add_menu_item(self.menu_item)
         
         # and button
-        self.button=gtk.ToolButton()
         self.button.set_label("Start")
         self.button.set_icon_name('hamster-applet')
         self.button.set_tooltip_text("Start a new activity in Hamster Time Tracker based on the selected task")
         self.button.connect('clicked', self.browser_cb, plugin_api)
         # saves the separator's index to later remove it
-        self.separator = plugin_api.add_toolbar_item(gtk.SeparatorToolItem()) 
+        self.separator = gtk.SeparatorToolItem()
+        plugin_api.add_toolbar_item(self.separator) 
         plugin_api.add_toolbar_item(self.button)
         self.task_separator = gtk.SeparatorToolItem()
 
     def onTaskOpened(self, plugin_api):
         # add button
-        self.taskbutton = gtk.ToolButton()
         self.taskbutton.set_label("Start")
         self.taskbutton.set_icon_name('hamster-applet')
         self.taskbutton.set_tooltip_text("Start a new activity in Hamster Time Tracker based on this task")
@@ -165,7 +170,7 @@ class hamsterPlugin:
     def deactivate(self, plugin_api):
         plugin_api.remove_menu_item(self.menu_item)
         plugin_api.remove_toolbar_item(self.button)
-        plugin_api.remove_toolbar_item(None, self.separator)
+        plugin_api.remove_toolbar_item(self.separator)
         plugin_api.remove_task_toolbar_item(self.task_separator)
         plugin_api.remove_task_toolbar_item(self.taskbutton)
         plugin_api.remove_widget_from_taskeditor(self.vbox)

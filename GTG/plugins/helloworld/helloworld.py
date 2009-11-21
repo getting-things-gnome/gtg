@@ -26,8 +26,9 @@ class pluginTest:
         self.tb_button = gtk.ToolButton(gtk.STOCK_INFO)
         self.tb_button.set_label("Hello World")
         self.tb_button.connect('clicked', self.onTbButton)
-        
+        self.separator = gtk.SeparatorToolItem()
         self.task_separator = gtk.SeparatorToolItem()
+        self.tb_Taskbutton = gtk.ToolButton(gtk.STOCK_EXECUTE)
         
 
     # plugin engine methods    
@@ -36,13 +37,12 @@ class pluginTest:
         plugin_api.add_menu_item(self.menu_item)
                 
         # saves the separator's index to later remove it
-        self.separator = plugin_api.add_toolbar_item(gtk.SeparatorToolItem())
+        plugin_api.add_toolbar_item(self.separator)
         # add a item (button) to the ToolBar
         plugin_api.add_toolbar_item(self.tb_button)
 
     def onTaskOpened(self, plugin_api):
         # add a item (button) to the ToolBar
-        self.tb_Taskbutton = gtk.ToolButton(gtk.STOCK_EXECUTE)
         self.tb_Taskbutton.set_label("Hello World")
         self.tb_Taskbutton.connect('clicked', self.onTbTaskButton, plugin_api)
         plugin_api.add_task_toolbar_item(self.task_separator)
@@ -51,7 +51,7 @@ class pluginTest:
     def deactivate(self, plugin_api):
         plugin_api.remove_menu_item(self.menu_item)
         plugin_api.remove_toolbar_item(self.tb_button)
-        plugin_api.remove_toolbar_item(None, self.separator)
+        plugin_api.remove_toolbar_item(self.separator)
         #everything should be removed, in case a task is currently opened
         plugin_api.remove_task_toolbar_item(self.task_separator)
         plugin_api.remove_task_toolbar_item(self.tb_Taskbutton)

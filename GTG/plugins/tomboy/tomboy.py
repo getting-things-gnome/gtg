@@ -36,6 +36,7 @@ class pluginTomboy:
         self.path = os.path.dirname(os.path.abspath(__file__))
         self.findTomboyIconPath()
         self.separator_item =  gtk.SeparatorToolItem()
+        self.tb_Taskbutton = None
 
     #Tomboy installation is checked through the presence of its icon
     def findTomboyIconPath(self):
