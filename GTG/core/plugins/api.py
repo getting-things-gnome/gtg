@@ -63,10 +63,20 @@ class PluginAPI:
         
         if task:
             self.task = task
+        self.task = None
                  
         if texteditor:
             self.taskeditor = texteditor
             self.textview = texteditor.textview
+        else:
+            self.taskeditor = None
+            self.textview= None
+            
+    def is_editor(self):
+        if self.taskeditor:
+            return True
+        else:
+            return False
 
 #=== General Methods ==========================================================
     def add_menu_item(self, item):
@@ -368,6 +378,7 @@ class PluginAPI:
         @return: The task editor's text view (gtk.TextView)
         """
         return self.textview
+
 #=== Task related methods =====================================================
 
     
