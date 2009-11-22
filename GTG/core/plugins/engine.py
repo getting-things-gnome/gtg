@@ -174,6 +174,10 @@ class PluginEngine:
                     plugin['instance'].activate(api)
                     if api.is_editor():
                         plugin['instance'].onTaskOpened(api)
+                        #we also refresh the content of the task
+                        tv = api.get_textview()
+                        if tv:
+                            tv.modified(refresheditor=False)
                 plugin['active'] = True
                 
     # deactivate the enabled plugins
@@ -182,6 +186,11 @@ class PluginEngine:
             if not plugin['state'] and not plugin['error'] and plugin['active']:
                 for api in plugin_apis:
                     plugin['instance'].deactivate(api)
+                    if api.is_editor():
+                        #we also refresh the content of the task
+                        tv = api.get_textview()
+                        if tv:
+                            tv.modified(refresheditor=False)
                 plugin['instance'] = None
                 plugin['active'] = False
                 
