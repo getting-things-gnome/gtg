@@ -87,8 +87,6 @@ class TaskEditor :
                 "on_inserttag_clicked" : self.inserttag_clicked,
                 "on_move" : self.on_move,
                 "on_nodate"             : self.nodate_pressed,
-                #"on_dayselected"        : self.day_selected,
-                #"on_month_changed"      : self.month_changed,
                 "on_dayselected_double" : self.day_selected_double,
         }
         self.builder.connect_signals(dic)
