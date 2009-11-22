@@ -298,7 +298,9 @@ class TaskEditor :
                     txt = _("Due yesterday")
                 elif result < 0:
                     txt = _("Was %s days ago") % -result
-                self.dayleft_label.set_markup("<span color='#666666'>"+txt+"</span>")    
+                window_style = self.window.get_style()
+                color = str(window_style.text[gtk.STATE_INSENSITIVE])
+                self.dayleft_label.set_markup("<span color='"+color+"'>"+txt+"</span>")
         elif self.duedate_widget.get_text() != '':
             self.dayleft_label.set_text('')
             self.duedate_widget.set_text('')
