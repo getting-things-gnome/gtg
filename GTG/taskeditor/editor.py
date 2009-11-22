@@ -72,7 +72,7 @@ class TaskEditor :
         self.deletebutton.set_tooltip_text(GnomeConfig.SUBTASK_TOOLTIP)
         self.deletebutton = self.builder.get_object("inserttag")
         self.deletebutton.set_tooltip_text(GnomeConfig.TAG_TOOLTIP)
-        #Create our dictionay and connect it
+        #Create our dictionary and connect it
         dic = {
                 "mark_as_done_clicked"  : self.change_status,
                 "on_dismiss"            : self.dismiss,
