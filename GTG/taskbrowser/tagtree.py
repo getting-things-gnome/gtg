@@ -228,11 +228,15 @@ class TagTreeModel(gtk.GenericTreeModel):
             new_par_tag = self.tree.root
         
         # prevent illegal moves
-        if child_tag is new_par_tag: return
-        if new_par_tag is not self.tree.root:
-        	if new_par_tag.get_name()[0]!='@': return
-        if child_tag.get_name()[0]!='@': return
+        c = new_par_tag
+        while c is not self.tree.root:
+            if c is child_tag: return
+            c = c.get_parent()
         
+        if new_par_tag is not self.tree.root:
+            if new_par_tag.get_name()[0]!='@': return
+        if child_tag.get_name()[0]!='@': return
+
         child_tag.reparent(new_par_tag)
 
         # Warn tree about deleted row
