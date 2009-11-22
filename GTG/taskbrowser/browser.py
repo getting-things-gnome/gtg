@@ -1284,7 +1284,8 @@ class TaskBrowser:
         if self.tid_todelete in self.opened_task:
             self.opened_task[self.tid_todelete].close()
         self.tid_todelete = None
-        #self.do_refresh()
+        if self.refresh_lock.acquire(False):
+            gobject.idle_add(self.general_refresh)
 
     def on_delete_task(self, widget=None, tid=None):
         #If we don't have a parameter, then take the selection in the treeview
@@ -1318,7 +1319,8 @@ class TaskBrowser:
                 zetask.set_status(Task.STA_ACTIVE)
             else:
                 zetask.set_status(Task.STA_DONE)
-            #self.do_refresh()
+            if self.refresh_lock.acquire(False):
+                gobject.idle_add(self.general_refresh)
 
     def on_dismiss_task(self, widget):
         uid = self.get_selected_task()
@@ -1329,8 +1331,9 @@ class TaskBrowser:
                 zetask.set_status("Active")
             else:
                 zetask.set_status("Dismiss")
-            #self.do_refresh()
-
+            if self.refresh_lock.acquire(False):
+                gobject.idle_add(self.general_refresh)
+    
     def on_select_tag(self, widget, row=None, col=None):
         #When you clic on a tag, you want to unselect the tasks
         self.task_tv.get_selection().unselect_all()
