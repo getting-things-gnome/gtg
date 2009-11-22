@@ -180,13 +180,13 @@ class TaskBrowser:
         # Closed Tasks: dismissed and done
         self.ctask_modelfilter = self.task_tree_model.filter_new()
         self.ctask_modelfilter.set_visible_func(self.closed_task_visible_func)
-        self.ctask_modelsort   = gtk.TreeModelSort(self.ctask_modelfilter)
+        self.ctask_modelsort = gtk.TreeModelSort(self.ctask_modelfilter)
         
         # Tags
         self.tag_model = TagTreeModel(requester=self.req)
         self.tag_modelfilter = self.tag_model.filter_new()
         self.tag_modelfilter.set_visible_func(self.tag_visible_func)
-        self.tag_modelsort   = gtk.TreeModelSort(self.tag_modelfilter)
+        self.tag_modelsort = gtk.TreeModelSort(self.tag_modelfilter)
         self.tag_modelsort.set_sort_func(\
             tagtree.COL_ID, self.tag_sort_func)
 
@@ -279,6 +279,8 @@ class TaskBrowser:
     def _init_signal_connections(self):
 
         SIGNAL_CONNECTIONS_DIC = {
+#            "on_force_refresh":
+#                self.on_force_refresh,
             "on_add_task":
                 self.on_add_task,
             "on_add_note":
@@ -1019,6 +1021,9 @@ class TaskBrowser:
             self.config["plugins"]["enabled"] =\
                 self.pengine.enabledPlugins(self.plugins)
 
+    def on_force_refresh(self, widget):
+        if self.refresh_lock.acquire(False):
+            gobject.idle_add(self.general_refresh)
 
     def on_about_clicked(self, widget):
         self.about.show()
@@ -1427,6 +1432,7 @@ class TaskBrowser:
     def on_task_modified(self, sender, tid):
         if self.logger:
             self.logger.debug("Modify task with ID: %s" % tid)
+        self.task_tree_model.update_task(tid)
         if self.task_tree_model.remove_task(tid):
             self.task_tree_model.add_task(tid)
         self.tag_model.update_tags_for_task(tid)
