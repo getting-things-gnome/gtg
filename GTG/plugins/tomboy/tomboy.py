@@ -98,8 +98,6 @@ Please install it or disable the Tomboy plugin in GTG"))
             #plugin has not been properly activated, (bug 475877 )
             # closing without executing onTaskClosed
             return
-        if not self.checkTomboyPresent():
-            return False
         for anchor in self.anchors:
             widgets = anchor.get_widgets()
             if anchor.get_deleted():
@@ -172,7 +170,7 @@ Please install it or disable the Tomboy plugin in GTG"))
         self.convertTokensToWidgets()
 
     def deactivate(self, plugin_api):
-        #nothing to do at all 
+        self.onTaskClosed(plugin_api)
         plugin_api.remove_task_toolbar_item(self.separator_item)
         plugin_api.remove_task_toolbar_item(self.tb_Taskbutton)
 
