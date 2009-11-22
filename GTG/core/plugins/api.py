@@ -38,7 +38,7 @@ class PluginAPI:
         created.
         @param config: The config object.
         @param data_dir: The data dir path.
-        @param wTree: The window's wTree object.
+        @param builder: The window's gtkBuilder object.
         @param requester: The requester.
         @param taskview: The task view object.
         @param filter_cbs: The filter callback list.
@@ -190,7 +190,7 @@ class PluginAPI:
         """
         if self.is_editor():
             try:
-                wi = self.__wTree.get_widget('task_tb1')
+                wi = self.__builder.get_object('task_tb1')
                 if wi and item:
                     wi.remove(item)
             except Exception, e:
@@ -214,7 +214,7 @@ class PluginAPI:
         """
         if self.is_editor():
             try:
-                wi = self.__wTree.get_widget('vbox4')
+                wi = self.__builder.get_object('vbox4')
                 if wi and widget:
                     wi.remove(widget)
             except Exception, e:
