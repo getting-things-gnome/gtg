@@ -89,7 +89,7 @@ def check_instance(directory):
 
 #=== MAIN CLASS ===============================================================
 
-def main(options, args):
+def main(options=None, args=None):
     
     # init logging system
     logger = logging.getLogger("gtg_logger")
