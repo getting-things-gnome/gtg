@@ -60,6 +60,7 @@ class TaskEditor :
                 tasktitle_callback=None, notes=False,taskconfig=None,\
                 plugin_apis=None,thisisnew=False) :
         self.req = requester
+        self.config = taskconfig
         self.p_apis = plugin_apis
         self.time = None
         self.builder = gtk.Builder() 
@@ -183,7 +184,6 @@ class TaskEditor :
         self.textview.grab_focus()
         
         #restoring size and position, spatial tasks
-        self.config = taskconfig
         if self.config :
             tid = self.task.get_id()
             if tid in self.config:
@@ -328,7 +328,7 @@ class TaskEditor :
         if refreshtext:
             self.textview.modified(refresheditor=False)            
         if to_save:
-            self.save()
+            self.light_save()
             
         
     def date_changed(self,widget,data):
@@ -510,11 +510,10 @@ class TaskEditor :
             actual = self.textview.get_text()
             isempty = (actual == empty or actual == "" or not actual)
             if not self.task.is_new() or not isempty:
-                #commented the following line because I don't know
-                #why we have it
-                #self.task.set_text(actual)
-                self.task.sync()
-                self.time = time.time()
+                self.save()
+#                self.task.set_text(actual)
+#                self.task.sync()
+#                self.time = time.time()
         
         
     #This will bring the Task Editor to front    
