@@ -343,8 +343,6 @@ class TaskBrowser:
                 self.on_nonworkviewtag_toggled,
             "on_pluginmanager_activate": 
                 self.on_pluginmanager_activate,
-            "on_color_response":
-                self.on_color_response
         }
 
         self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
@@ -1032,33 +1030,41 @@ class TaskBrowser:
         self.about.hide()
         return True
 
+    def on_color_changed(self, widget):
+        gtkcolor = widget.get_current_color()
+        strcolor = gtk.color_selection_palette_to_string([gtkcolor])
+        tags, notag_only = self.get_selected_tags()
+        for t in tags:
+            t.set_attribute("color", strcolor)
+        self.task_tv.refresh()
+        self.tags_tv.refresh()
+
     def on_colorchooser_activate(self, widget):
         #TODO: Color chooser should be refactorized in its own class. Well, in
         #fact we should have a TagPropertiesEditor (like for project) Also,
         #color change should be immediate. There's no reason for a Ok/Cancel
-        window = self.builder.get_object("ColorChooser")
+        dialog = gtk.ColorSelectionDialog('Choose color')
+        colorsel = dialog.colorsel
+        colorsel.connect("color_changed", self.on_color_changed)
         # Get previous color
         tags, notag_only = self.get_selected_tags()
+        init_color = None
         if len(tags) == 1:
             color = tags[0].get_attribute("color")
             if color != None:
                 colorspec = gtk.gdk.color_parse(color)
-                colorsel = window.colorsel
                 colorsel.set_previous_color(colorspec)
                 colorsel.set_current_color(colorspec)
-        window.show()
-
-    def on_color_response(self, widget, response):
-        #the OK button return -5. Don't ask me why.
-        if response == -5:
-            colorsel = widget.colorsel
-            gtkcolor = colorsel.get_current_color()
-            strcolor = gtk.color_selection_palette_to_string([gtkcolor])
+                init_color = colorsel.get_current_color()
+        response = dialog.run()
+        # Check response and set color if required
+        if response != gtk.RESPONSE_OK and init_color:
+            strcolor = gtk.color_selection_palette_to_string([init_color])
             tags, notag_only = self.get_selected_tags()
             for t in tags:
                 t.set_attribute("color", strcolor)
         self.task_tv.refresh()
-        widget.destroy()
+        dialog.destroy()
 
     def on_workview_toggled(self, widget):
         self.do_toggle_workview()
