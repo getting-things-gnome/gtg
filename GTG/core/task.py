@@ -174,39 +174,9 @@ class Task:
     def set_modified(self, string):
         self.modified = string
 
-    def set_due_date(self, fulldate, fromparent=False):
+    def set_due_date(self, fulldate):
     	assert(isinstance(fulldate, Date))
-        # if fromparent, we set only a date if duedate is not set
-        #Or if duedate is after the newly set date !
-        if fromparent:
-            parent_date = fulldate
-            fulldate = self.due_date
-        else:
-            parent_date = None
-        #We retrieve the most urgent due date from parent
-        for par in self.get_parents():
-            pardate = self.req.get_task(par).get_due_date()
-            if pardate:
-                if not parent_date or pardate < parent_date:
-                    parent_date = pardate
-        #We compare it to the date we want to set
-        if parent_date:
-            if not fulldate or parent_date < fulldate:
-                fulldate = parent_date
-        #Now we set the duedate
-        if fulldate:
-            self.due_date = fulldate
-            #We set the due date for children only
-            #if their due date is "larger" (or none)
-            for child in self.get_subtasks():
-                actual_date = child.get_due_date()
-                if actual_date:
-                    if fulldate and fulldate < actual_date:
-                        child.set_due_date(fulldate, fromparent=True)
-                else:
-                    child.set_due_date(fulldate, fromparent=True)
-        else:
-            self.due_date = no_date
+        self.due_date = fulldate
         self.sync()
 
     #Due date return the most urgent date of all parents
@@ -328,9 +298,6 @@ class Task:
             task = self.req.get_task(tid)
             task.add_parent(self.get_id())
             #now we set inherited attributes only if it's a new task
-            #Except for due date because a child always has to be due
-            #before its parent
-            task.set_due_date(self.get_due_date(), fromparent=True)
             if task.can_be_deleted:
                 task.set_start_date(self.get_start_date())
                 for t in self.get_tags():
