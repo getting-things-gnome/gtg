@@ -21,7 +21,7 @@ import xml.dom.minidom
 import uuid
 
 from GTG import _
-from GTG.tools.dates import strtodate, date_today, date_max
+from GTG.tools.dates import strtodate, date_today, no_date, Date
 from datetime import datetime
 
 
@@ -46,9 +46,9 @@ class Task:
         self.title = _("My new task")
         #available status are: Active - Done - Dismiss - Note
         self.status = self.STA_ACTIVE
-        self.closed_date = None
-        self.due_date = None
-        self.start_date = None
+        self.closed_date = no_date
+        self.due_date = no_date
+        self.start_date = no_date
         self.parents = []
         #The list of children tid
         self.children = []
@@ -175,74 +175,59 @@ class Task:
         self.modified = string
 
     def set_due_date(self, fulldate, fromparent=False):
+    	assert(isinstance(fulldate, Date))
         # if fromparent, we set only a date if duedate is not set
         #Or if duedate is after the newly set date !
         if fromparent:
             parent_date = fulldate
-            fulldate = self.due_date.__str__()
+            fulldate = self.due_date
         else:
             parent_date = None
         #We retrieve the most urgent due date from parent
         for par in self.get_parents():
-            pardate_str = self.req.get_task(par).get_due_date()
-            if pardate_str:
-                pardate = strtodate(pardate_str)
-                if not strtodate(parent_date) or\
-                   pardate < strtodate(parent_date):
-                    parent_date = pardate_str
+            pardate = self.req.get_task(par).get_due_date()
+            if pardate:
+                if not parent_date or pardate < parent_date:
+                    parent_date = pardate
         #We compare it to the date we want to set
-        if parent_date and strtodate(parent_date):
-            if not fulldate or not strtodate(fulldate) or\
-               strtodate(parent_date) < strtodate(fulldate):
+        if parent_date:
+            if not fulldate or parent_date < fulldate:
                 fulldate = parent_date
         #Now we set the duedate
         if fulldate:
-            #print "fulldate %s" %fulldate
-            self.due_date = strtodate(fulldate)
+            self.due_date = fulldate
             #We set the due date for children only
             #if their due date is "larger" (or none)
             for child in self.get_subtasks():
                 actual_date = child.get_due_date()
                 if actual_date:
-                    rfulldate = strtodate(fulldate)
-                    ractual = strtodate(actual_date)
-                    if rfulldate and rfulldate < ractual:
+                    if fulldate and fulldate < actual_date:
                         child.set_due_date(fulldate, fromparent=True)
                 else:
                     child.set_due_date(fulldate, fromparent=True)
         else:
-            self.due_date = None
+            self.due_date = no_date
         self.sync()
 
     #Due date return the most urgent date of all parents
     def get_due_date(self):
-        if self.due_date:
-            zedate = self.due_date
-        else:
-            zedate = date_max
+        zedate = self.due_date
+
         for par in self.get_parents():
             #Here we compare with the parent's due date
-            pardate_str = self.req.get_task(par).get_due_date()
-            if pardate_str:
-                pardate = strtodate(pardate_str)
-                if pardate and zedate > pardate:
-                    zedate = pardate
-        if zedate == date_max:
-            return ''
-        else:
-            return str(zedate)
+            pardate = self.req.get_task(par).get_due_date()
+            if pardate and zedate > pardate:
+            	zedate = pardate
+        
+        return zedate
 
     def set_start_date(self, fulldate):
-        if fulldate:
-            self.start_date = strtodate(fulldate)
-        else:
-            self.start_date = None
+    	assert(isinstance(fulldate, Date))
+        self.start_date = fulldate
+        # why don't we sync here if we do in set_due_date?
 
     def get_start_date(self):
-        if self.start_date:
-            return str(self.start_date)
-        else:
-            return ''
+        return self.start_date
 
     def is_started(self):
         if self.start_date:
@@ -252,17 +237,11 @@ class Task:
             return True
 
     def get_closed_date(self):
-        if self.closed_date:
-            return str(self.closed_date)
-        else:
-            return ''
+        return self.closed_date
 
     def get_days_left(self):
         due_date = self.get_due_date()
-        if due_date:
-            return strtodate(due_date).days_left()
-        else:
-            return None
+        return due_date.days_left()
 
     def get_text(self):
         #defensive programmtion to avoid returning None

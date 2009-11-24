@@ -62,7 +62,20 @@ class RealDate(Date):
 
     def days_left(self):
         return (self.proto - date.today()).days
-
+        
+class NoDate(Date):
+    def to_py_date(self):
+        return date.max
+    
+    def __str__(self):
+        return ''
+        
+    def days_left(self):
+        return None
+        
+    def __nonzero__(self):
+        return False 
+no_date = NoDate()
 
 #function to convert a string of the form YYYY-MM-DD
 #to a date
@@ -97,10 +110,9 @@ def strtodate(stri) :
                 except ValueError:
                     toreturn = None
     
-    if toreturn is not None: return RealDate(toreturn)
-    else: return None
+    if not toreturn: return no_date
+    else: return RealDate(toreturn)
+    
     
 def date_today():
     return RealDate(date.today())
-    
-date_max = RealDate(date.max)

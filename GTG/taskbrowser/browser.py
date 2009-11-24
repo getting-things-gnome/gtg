@@ -706,6 +706,7 @@ class TaskBrowser:
         Return True if the date exists. False else.
         "fulldate" is yyyy-mm-dd
         """
+        #TODO use tools.dates instead?
         splited_date = fulldate.split("-")
         if len(splited_date) != 3:
             return False
@@ -890,7 +891,7 @@ class TaskBrowser:
             else:
                 return 1
         else:
-            return cmp(strtodate(t2_dleft), strtodate(t1_dleft))
+            return cmp(t2_dleft, t1_dleft)
 
     def tag_sort_func(self, model, iter1, iter2, user_data=None):
         order = self.tags_tv.get_model().get_sort_column_id()[1]
