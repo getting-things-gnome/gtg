@@ -327,7 +327,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <signal name="released" handler="on_set_fuzzydate_now" object="&quot;now&quot;"/>
+                <signal name="released" handler="on_set_fuzzydate_now"/>
               </object>
               <packing>
                 <property name="position">0</property>
