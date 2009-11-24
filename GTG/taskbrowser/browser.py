@@ -181,13 +181,13 @@ class TaskBrowser:
         # Closed Tasks: dismissed and done
         self.ctask_modelfilter = self.task_tree_model.filter_new()
         self.ctask_modelfilter.set_visible_func(self.closed_task_visible_func)
-        self.ctask_modelsort   = gtk.TreeModelSort(self.ctask_modelfilter)
+        self.ctask_modelsort = gtk.TreeModelSort(self.ctask_modelfilter)
         
         # Tags
         self.tag_model = TagTreeModel(requester=self.req)
         self.tag_modelfilter = self.tag_model.filter_new()
         self.tag_modelfilter.set_visible_func(self.tag_visible_func)
-        self.tag_modelsort   = gtk.TreeModelSort(self.tag_modelfilter)
+        self.tag_modelsort = gtk.TreeModelSort(self.tag_modelfilter)
         self.tag_modelsort.set_sort_func(\
             tagtree.COL_ID, self.tag_sort_func)
 
@@ -280,6 +280,8 @@ class TaskBrowser:
     def _init_signal_connections(self):
 
         SIGNAL_CONNECTIONS_DIC = {
+#            "on_force_refresh":
+#                self.on_force_refresh,
             "on_add_task":
                 self.on_add_task,
             "on_add_note":
@@ -342,8 +344,6 @@ class TaskBrowser:
                 self.on_nonworkviewtag_toggled,
             "on_pluginmanager_activate": 
                 self.on_pluginmanager_activate,
-            "on_color_response":
-                self.on_color_response
         }
 
         self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
@@ -1021,6 +1021,9 @@ class TaskBrowser:
             self.config["plugins"]["enabled"] =\
                 self.pengine.enabledPlugins(self.plugins)
 
+    def on_force_refresh(self, widget):
+        if self.refresh_lock.acquire(False):
+            gobject.idle_add(self.general_refresh)
 
     def on_about_clicked(self, widget):
         self.about.show()
@@ -1029,33 +1032,41 @@ class TaskBrowser:
         self.about.hide()
         return True
 
+    def on_color_changed(self, widget):
+        gtkcolor = widget.get_current_color()
+        strcolor = gtk.color_selection_palette_to_string([gtkcolor])
+        tags, notag_only = self.get_selected_tags()
+        for t in tags:
+            t.set_attribute("color", strcolor)
+        self.task_tv.refresh()
+        self.tags_tv.refresh()
+
     def on_colorchooser_activate(self, widget):
         #TODO: Color chooser should be refactorized in its own class. Well, in
         #fact we should have a TagPropertiesEditor (like for project) Also,
         #color change should be immediate. There's no reason for a Ok/Cancel
-        window = self.builder.get_object("ColorChooser")
+        dialog = gtk.ColorSelectionDialog('Choose color')
+        colorsel = dialog.colorsel
+        colorsel.connect("color_changed", self.on_color_changed)
         # Get previous color
         tags, notag_only = self.get_selected_tags()
+        init_color = None
         if len(tags) == 1:
             color = tags[0].get_attribute("color")
             if color != None:
                 colorspec = gtk.gdk.color_parse(color)
-                colorsel = window.colorsel
                 colorsel.set_previous_color(colorspec)
                 colorsel.set_current_color(colorspec)
-        window.show()
-
-    def on_color_response(self, widget, response):
-        #the OK button return -5. Don't ask me why.
-        if response == -5:
-            colorsel = widget.colorsel
-            gtkcolor = colorsel.get_current_color()
-            strcolor = gtk.color_selection_palette_to_string([gtkcolor])
+                init_color = colorsel.get_current_color()
+        response = dialog.run()
+        # Check response and set color if required
+        if response != gtk.RESPONSE_OK and init_color:
+            strcolor = gtk.color_selection_palette_to_string([init_color])
             tags, notag_only = self.get_selected_tags()
             for t in tags:
                 t.set_attribute("color", strcolor)
         self.task_tv.refresh()
-        widget.destroy()
+        dialog.destroy()
 
     def on_workview_toggled(self, widget):
         self.do_toggle_workview()
@@ -1429,6 +1440,7 @@ class TaskBrowser:
     def on_task_modified(self, sender, tid):
         if self.logger:
             self.logger.debug("Modify task with ID: %s" % tid)
+        self.task_tree_model.update_task(tid)
         if self.task_tree_model.remove_task(tid):
             self.task_tree_model.add_task(tid)
         self.tag_model.update_tags_for_task(tid)

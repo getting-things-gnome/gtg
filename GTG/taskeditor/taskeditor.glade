@@ -79,8 +79,6 @@
                 <property name="label" translatable="yes">Insert tag</property>
                 <property name="icon_name">gtg-tag-new</property>
                 <signal name="clicked" handler="on_inserttag_clicked"/>
-                <signal name="show_menu" handler="on_inserttag_show_menu"/>
-                <signal name="show_menu" handler="on_inserttag_show_menu"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -300,7 +298,6 @@
     <property name="skip_taskbar_hint">True</property>
     <property name="skip_pager_hint">True</property>
     <property name="transient_for">TaskEditor</property>
-    <signal name="leave_notify_event" handler="on_focus_out"/>
     <child>
       <object class="GtkVBox" id="vbox5">
         <property name="visible">True</property>
@@ -310,8 +307,6 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <signal name="day_selected_double_click" handler="on_dayselected_double"/>
-            <signal name="day_selected" handler="on_dayselected"/>
-            <signal name="month_changed" handler="on_month_changed"/>
           </object>
           <packing>
             <property name="position">0</property>

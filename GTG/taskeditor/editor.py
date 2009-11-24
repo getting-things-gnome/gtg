@@ -59,6 +59,7 @@ class TaskEditor :
                 tasktitle_callback=None, notes=False,taskconfig=None,\
                 plugin_apis=None,thisisnew=False) :
         self.req = requester
+        self.config = taskconfig
         self.p_apis = plugin_apis
         self.time = None
         self.builder = gtk.Builder() 
@@ -71,7 +72,7 @@ class TaskEditor :
         self.deletebutton.set_tooltip_text(GnomeConfig.SUBTASK_TOOLTIP)
         self.deletebutton = self.builder.get_object("inserttag")
         self.deletebutton.set_tooltip_text(GnomeConfig.TAG_TOOLTIP)
-        #Create our dictionay and connect it
+        #Create our dictionary and connect it
         dic = {
                 "mark_as_done_clicked"  : self.change_status,
                 "on_dismiss"            : self.dismiss,
@@ -89,8 +90,6 @@ class TaskEditor :
                 "on_set_fuzzydate_now"  : self.set_fuzzydate_now,
                 "on_set_fuzzydate_soon" : self.set_fuzzydate_soon,
                 "on_set_fuzzydate_later": self.set_fuzzydate_later,
-                #"on_dayselected"        : self.day_selected,
-                #"on_month_changed"      : self.month_changed,
                 "on_dayselected_double" : self.day_selected_double,
         }
         self.builder.connect_signals(dic)
@@ -187,7 +186,6 @@ class TaskEditor :
         self.textview.grab_focus()
         
         #restoring size and position, spatial tasks
-        self.config = taskconfig
         if self.config :
             tid = self.task.get_id()
             if tid in self.config:
@@ -304,7 +302,9 @@ class TaskEditor :
                     txt = _("Due yesterday")
                 elif result < 0:
                     txt = _("Was %s days ago") % -result
-                self.dayleft_label.set_markup("<span color='#666666'>"+txt+"</span>")    
+                window_style = self.window.get_style()
+                color = str(window_style.text[gtk.STATE_INSENSITIVE])
+                self.dayleft_label.set_markup("<span color='"+color+"'>"+txt+"</span>")
         elif self.duedate_widget.get_text() != '':
             self.dayleft_label.set_text('')
             self.duedate_widget.set_text('')
@@ -334,7 +334,7 @@ class TaskEditor :
         if refreshtext:
             self.textview.modified(refresheditor=False)            
         if to_save:
-            self.save()
+            self.light_save()
             
         
     def date_changed(self,widget,data):
@@ -525,11 +525,10 @@ class TaskEditor :
             actual = self.textview.get_text()
             isempty = (actual == empty or actual == "" or not actual)
             if not self.task.is_new() or not isempty:
-                #commented the following line because I don't know
-                #why we have it
-                #self.task.set_text(actual)
-                self.task.sync()
-                self.time = time.time()
+                self.save()
+#                self.task.set_text(actual)
+#                self.task.sync()
+#                self.time = time.time()
         
         
     #This will bring the Task Editor to front    
