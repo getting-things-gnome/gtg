@@ -17,12 +17,11 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-from datetime import date
 import xml.dom.minidom
 import uuid
 
 from GTG import _
-from GTG.tools.dates import strtodate, FakeDate, days_left, date_cmp
+from GTG.tools.dates import strtodate, date_today, date_max
 from datetime import datetime
 
 
@@ -137,7 +136,7 @@ class Task:
                     self.closed_date = donedate
                 #or to today
                 else:
-                    self.closed_date = date.today()
+                    self.closed_date = date_today()
             #If we mark a task as Active and that some parent are not
             #Active, we break the parent/child relation
             #It has no sense to have an active subtask of a done parent.
@@ -194,7 +193,7 @@ class Task:
         #We compare it to the date we want to set
         if parent_date and strtodate(parent_date):
             if not fulldate or not strtodate(fulldate) or\
-               date_cmp(strtodate(parent_date), strtodate(fulldate))==-1:
+               strtodate(parent_date) < strtodate(fulldate):
                 fulldate = parent_date
         #Now we set the duedate
         if fulldate:
@@ -207,7 +206,7 @@ class Task:
                 if actual_date:
                     rfulldate = strtodate(fulldate)
                     ractual = strtodate(actual_date)
-                    if rfulldate and date_cmp(rfulldate, ractual)==-1:
+                    if rfulldate and rfulldate < ractual:
                         child.set_due_date(fulldate, fromparent=True)
                 else:
                     child.set_due_date(fulldate, fromparent=True)
@@ -220,15 +219,15 @@ class Task:
         if self.due_date:
             zedate = self.due_date
         else:
-            zedate = date.max
+            zedate = date_max
         for par in self.get_parents():
             #Here we compare with the parent's due date
             pardate_str = self.req.get_task(par).get_due_date()
             if pardate_str:
                 pardate = strtodate(pardate_str)
-                if pardate and date_cmp(zedate, pardate)==1:
+                if pardate and zedate > pardate:
                     zedate = pardate
-        if zedate == date.max:
+        if zedate == date_max:
             return ''
         else:
             return str(zedate)
@@ -247,7 +246,7 @@ class Task:
 
     def is_started(self):
         if self.start_date:
-            difference = date.today() - self.start_date
+            difference = date_today() - self.start_date
             return difference.days >= 0
         else:
             return True
@@ -261,7 +260,7 @@ class Task:
     def get_days_left(self):
         due_date = self.get_due_date()
         if due_date:
-            return days_left(strtodate(due_date))
+            return strtodate(due_date).days_left()
         else:
             return None
 

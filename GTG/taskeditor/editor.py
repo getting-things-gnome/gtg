@@ -24,7 +24,6 @@
 #The rest are the logic of the widget : date changing widgets, buttons, ...
 import sys
 import time
-from datetime import date
 
 from GTG import _
 from GTG import PLUGIN_DIR
@@ -388,17 +387,20 @@ class TaskEditor :
             toset = self.task.get_due_date()
         elif self.__opened_date == "start" :
             toset = self.task.get_start_date()
-        if toset and '-' in toset:
-            y,m,d = toset.split("-")
-        else :
-            dd = date.today()
-            y = dd.year
-            m = dd.month
-            d = dd.day
-        #Else, we set the widget to today's date
         
-        self.cal_widget.select_month(int(m)-1,int(y))
-        self.cal_widget.select_day(int(d))
+        if toset not in ('now', 'soon', 'later'): 
+            if toset and '-' in toset:
+                y,m,d = toset.split("-")
+            else:
+                dd = dates.date_today()
+                y = dd.year()
+                m = dd.month()
+                d = dd.day()
+                #Else, we set the widget to today's date
+            
+            self.cal_widget.select_month(int(m)-1,int(y))
+            self.cal_widget.select_day(int(d))
+            
         self.calendar.connect('button-press-event', self.__focus_out)
         self.sigid = self.cal_widget.connect("day-selected",self.day_selected)
         self.sigid_month = self.cal_widget.connect("month-changed",self.month_changed)

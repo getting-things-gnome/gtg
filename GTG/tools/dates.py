@@ -19,31 +19,50 @@
 
 from datetime import date, timedelta
 
-class FakeDate():
+class Date():
+    def __cmp__(self, other):
+        if other is None: return 1
+        return cmp(self.to_py_date(), other.to_py_date())
+    
+    def __sub__(self, other):
+        return self.to_py_date() - other.to_py_date()
+        
+    def day(self):      return self.to_py_date().day
+    def month(self):    return self.to_py_date().month
+    def year(self):     return self.to_py_date().year
+
+class FuzzyDate(Date):
     def __init__(self, offset, name):
         self.name=name
-        self.proto = date.today()+timedelta(offset)
+        self.offset=offset
+        
+    def to_py_date(self):
+        return date.today()+timedelta(self.offset)
         
     def __str__(self):
         return self.name
         
-
-NOW = FakeDate(1, 'now')
-SOON = FakeDate(7, 'soon')
-LATER = FakeDate(365, 'later')
-
-def date_cmp(a, b):
-    if isinstance(a, FakeDate):
-        a = a.proto
-    if isinstance(b, FakeDate):
-        b = b.proto
-    return cmp(a,b)
-    
-def days_left(d):
-    if isinstance(d, date): 
-        return (d - date.today()).days
-    else:
+    def days_left(self):
         return None
+
+NOW = FuzzyDate(1, 'now')
+SOON = FuzzyDate(7, 'soon')
+LATER = FuzzyDate(365, 'later')
+
+class RealDate(Date):
+    def __init__(self, dt):
+        assert(dt is not None)
+        self.proto = dt
+        
+    def to_py_date(self):
+        return self.proto
+        
+    def __str__(self):
+        return str(self.proto)
+
+    def days_left(self):
+        return (self.proto - date.today()).days
+
 
 #function to convert a string of the form YYYY-MM-DD
 #to a date
@@ -77,4 +96,11 @@ def strtodate(stri) :
                     toreturn = date(yy,mm,dd)
                 except ValueError:
                     toreturn = None
-    return toreturn
+    
+    if toreturn is not None: return RealDate(toreturn)
+    else: return None
+    
+def date_today():
+    return RealDate(date.today())
+    
+date_max = RealDate(date.max)
