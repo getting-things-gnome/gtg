@@ -48,7 +48,8 @@ from GTG.taskbrowser                  import tagtree
 from GTG.taskbrowser.tagtree          import TagTreeModel,\
                                              TagTreeView
 from GTG.tools                        import openurl
-from GTG.tools.dates                  import strtodate
+from GTG.tools.dates                  import strtodate,\
+                                             no_date
 from GTG.core.plugins.manager         import PluginManager
 from GTG.core.plugins.engine          import PluginEngine
 from GTG.core.plugins.api             import PluginAPI
@@ -694,29 +695,11 @@ class TaskBrowser:
             month = next_date.month
             day = next_date.day
             date = "%i-%i-%i" % (year, month, day)
+        elif arg in ('now', 'soon', 'later'):
+            date = arg
         else:
-            return None
-        if self.is_date_valid(date):
-            return date
-        else:
-            return None
-
-    def is_date_valid(self, fulldate):
-        """
-        Return True if the date exists. False else.
-        "fulldate" is yyyy-mm-dd
-        """
-        #TODO use tools.dates instead?
-        splited_date = fulldate.split("-")
-        if len(splited_date) != 3:
-            return False
-        year, month, day = splited_date
-        try:
-            date = datetime.date(int(year), int(month), int(day))
-        except ValueError:
-            return False
-        else:
-            return True
+            return no_date
+        return strtodate(date)
 
     def update_collapsed_row(self, model, path, iter, user_data):
         """Build a list of task that must showed as collapsed in Treeview"""
@@ -1123,8 +1106,8 @@ class TaskBrowser:
 
     def on_quickadd_activate(self, widget):
         text = self.quickadd_entry.get_text()
-        due_date = None
-        defer_date = None
+        due_date = no_date
+        defer_date = no_date
         if text:
             tags, notagonly = self.get_selected_tags()
             # Get tags in the title
@@ -1143,12 +1126,12 @@ class TaskBrowser:
                 elif attribute.lower() == "defer" or \
                      attribute.lower() == _("defer"):
                     defer_date = self.get_canonical_date(args)
-                    if defer_date is None:
+                    if not defer_date:
                         valid_attribute = False
                 elif attribute.lower() == "due" or \
                      attribute.lower() == _("due"):
                     due_date = self.get_canonical_date(args)
-                    if due_date is None:
+                    if not due_date:
                         valid_attribute = False
                 else:
                     # attribute is unknown
@@ -1163,10 +1146,8 @@ class TaskBrowser:
             if text != "":
                 task.set_title(text)
                 task.set_to_keep()
-            if not due_date is None:
-                task.set_due_date(due_date)
-            if not defer_date is None:
-                task.set_start_date(defer_date)
+            task.set_due_date(due_date)
+            task.set_start_date(defer_date)
             id_toselect = task.get_id()
             #############
             self.quickadd_entry.set_text('')
