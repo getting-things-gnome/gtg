@@ -37,35 +37,33 @@ except:
 
 class PluginManager:
     
-    def __init__(self, parent, plugins, pengine, plugin_api):
-        print "PM %s" %self
-        self.ploum = "ploum"
+    def __init__(self, parent, plugins, pengine, plugin_apis):
         self.plugins = plugins
         self.pengine = pengine
-        self.plugin_api = plugin_api
-        self.gladefile = GnomeConfig.GLADE_FILE
-        self.wTree = gtk.glade.XML(self.gladefile, "PluginManagerDialog")
+        self.plugin_apis = plugin_apis
+        self.builder = gtk.Builder() 
+        self.builder.add_from_file(GnomeConfig.GLADE_FILE)
         
-        self.dialog = self.wTree.get_widget("PluginManagerDialog")
+        self.dialog = self.builder.get_object("PluginManagerDialog")
         
         # stuff to populate
-        self.close_btn = self.wTree.get_widget("close_btn")
-        self.config_btn = self.wTree.get_widget("config_btn")
-        self.lblPluginName = self.wTree.get_widget("lblPluginName")
-        self.lblPluginVersion = self.wTree.get_widget("lblPluginVersion")
-        self.lblPluginAuthors = self.wTree.get_widget("lblPluginAuthors")
-        self.txtPluginDescription = self.wTree.get_widget("txtPluginDescription")
+        self.close_btn = self.builder.get_object("close_btn")
+        self.config_btn = self.builder.get_object("config_btn")
+        self.lblPluginName = self.builder.get_object("lblPluginName")
+        self.lblPluginVersion = self.builder.get_object("lblPluginVersion")
+        self.lblPluginAuthors = self.builder.get_object("lblPluginAuthors")
+        self.txtPluginDescription = self.builder.get_object("txtPluginDescription")
         
-        self.vbox_frame = self.wTree.get_widget("vbox_frame")
-        self.box_error = self.wTree.get_widget("box_error")
+        self.vbox_frame = self.builder.get_object("vbox_frame")
+        self.box_error = self.builder.get_object("box_error")
         self.box_error.hide()
-        self.lblErrorTitle = self.wTree.get_widget("lblErrorTitle")
-        self.lblPluginMM = self.wTree.get_widget("lblPluginMM")
-        #self.btnClose = self.wTree.get_widget("close_btn")
+        self.lblErrorTitle = self.builder.get_object("lblErrorTitle")
+        self.lblPluginMM = self.builder.get_object("lblPluginMM")
+        #self.btnClose = self.builder.get_object("close_btn")
         #self.btnClose.connect('clicked', self.close, None)
         
         # recheck the plugins with errors
-        self.pengine.recheckPluginsErrors(self.plugins, self.plugin_api)
+        self.pengine.recheckPluginsErrors(self.plugins, self.plugin_apis)
         
         # liststore
         self.PluginList = gtk.ListStore('gboolean', str, str, 'gboolean', 'gboolean')
@@ -78,7 +76,7 @@ class PluginManager:
         # end - liststore
         
         # treeview
-        self.pluginTree = self.wTree.get_widget("pluginTree")
+        self.pluginTree = self.builder.get_object("pluginTree")
         
         self.rendererToggle = gtk.CellRendererToggle()
         self.rendererToggle.set_property('activatable', True)
@@ -117,19 +115,24 @@ class PluginManager:
         
         self.dialog.show_all()
         
+        
+    def present(self):
+        self.dialog.present()
 
     def close(self, widget, response=None):
         # get the plugins that are going to be initialized and the ones
         # that are going do be desabled
-#        if self.pengine:
-#            self.pengine.recheckPlugins(self.plugins, self.plugin_api)
-        print "calling close on %s" %self
-        self.dialog.destroy()
+        self.pengine.recheckPlugins(self.plugins, self.plugin_apis)
+        self.dialog.hide()
         return True
+    
+    #def delete(self, widget, response=None):
+    #    self.dialog.destroy()
+    #    return True
 
     def colToggledClicked(self, cell, path, model):
-        if path and model[path]:
-            model[path][0] = not model[path][0]
+        model[path][0] = not model[path][0]
+        if path:
             iter = model.get_iter(path)
             for plgin in self.plugins:
                 if model[path][1] == plgin['name'] and model[path][2] == plgin['version']:
@@ -137,9 +140,9 @@ class PluginManager:
                     #we instantly apply the plugin activation/deactivation
                     #to respect HIG
                     if plgin['state'] :
-                        self.pengine.activatePlugins([plgin], self.plugin_api)
+                        self.pengine.activatePlugins([plgin], self.plugin_apis)
                     else :
-                        self.pengine.deactivatePlugins([plgin], self.plugin_api)
+                        self.pengine.deactivatePlugins([plgin], self.plugin_apis)
                     
                     
 
@@ -148,10 +151,9 @@ class PluginManager:
         if path:
             model = treeview.get_model()
             iter = treeview.get_model().get_iter(path)
+            
             for plgin in plugins:
-                if (model.get_value(iter,1) == plgin['name']) \
-                    and (model.get_value(iter,2) == plgin['version']):
-                    
+                if (model.get_value(iter,1) == plgin['name']) and (model.get_value(iter,2) == plgin['version']):
                     self.lblPluginName.set_label("<b>" + plgin['name'] + "</b>")
                     self.lblPluginVersion.set_label(plgin['version'])
                     self.lblPluginAuthors.set_label(plgin['authors'])
@@ -160,15 +162,12 @@ class PluginManager:
                     
                     if plgin['error']:
                         # set the title label
-                        if plgin['missing_modules'] and \
-                                            not plgin['missing_dbus']:
-                            self.lblErrorTitle.set_markup(\
-                               "<small><b>The plugin can not be loaded</b>. \n"
-                                "Some modules are missing:</small>")
+                        if plgin['missing_modules'] and not plgin['missing_dbus']:
+                            self.lblErrorTitle.set_markup("<small><b>The plugin can not be loaded</b>. \n"
+                                                          "Some modules are missing:</small>")
                         elif plgin['missing_dbus'] and not plgin['missing_modules']:
-                            self.lblErrorTitle.set_markup(\
-                                "<small><b>The plugin can not be loaded</b>. \n"
-                                "Some remote dbus objects are missing:</small>")
+                            self.lblErrorTitle.set_markup("<small><b>The plugin can not be loaded</b>. \n"
+                                                          "Some remote dbus objects are missing:</small>")
                         elif plgin['missing_modules'] and plgin['missing_dbus']:
                             self.lblErrorTitle.set_markup("<small><b>The plugin can not be loaded</b>. \n"
                                                           "Some modules and remote dbus objects are missing:</small>")
