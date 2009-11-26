@@ -1,7 +1,9 @@
 [GTG Plugin]
 Module=rtm_sync
 Name=Remember the milk
-Description=Plugin for synchronising Getting Things Gnome! with the web service Remember the milk ( http://www.rememberthemilk.com ).\n\nLegal note: This product uses the Remember The Milk API but is not endorsed or certified by Remember The Milk.
+Description=Plugin for synchronising Getting Things Gnome! with the web service Remember the milk ( http://www.rememberthemilk.com ).
+Warning: this plugin is still experimental. Do not rely on it for your tasks.
+\n\nLegal note: This product uses the Remember The Milk API but is not endorsed or certified by Remember The Milk.
 Authors=Luca Invernizzi <invernizzi.l@gmail.com>
 Version=0.1.1
 Dependencies=minidom,subprocess,BaseDirectory,threading,gobject,gtk,time,pickle,datetime,logging,md5,urllib,warnings,simplejson
