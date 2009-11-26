@@ -1,10 +1,5 @@
-include GTG/taskbrowser/taskbrowser.glade
-include GTG/taskeditor/taskeditor.glade
-include GTG/core/plugins/pluginmanager.glade
-include GTG/plugins/geolocalized_tasks/geolocalized.glade
-include GTG/plugins/rtm_sync/gtk.glade
-include GTG/plugins/helloworld/hello_world.glade
-include GTG/plugins/tomboy/tomboy.glade
+recursive-include GTG *.glade
+recursive-include GTG *.gtg-plugin
 include gtg.desktop
 include CHANGELOG
 include README

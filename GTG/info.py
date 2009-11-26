@@ -3,7 +3,7 @@
 
 URL             = "http://gtg.fritalk.com"
 EMAIL           = "gtg@lists.launchpad.net"
-VERSION         = '0.1.2-dev'
+VERSION         = '0.1.9-pre'
 
 SHORT_DESCRIPTION = 'GTG is a personal organizer for the GNOME desktop environment.'
 
