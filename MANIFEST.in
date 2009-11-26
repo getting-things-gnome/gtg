@@ -8,4 +8,5 @@ include AUTHORS
 recursive-include data/icons *.png
 recursive-include data/icons *.svg
 include doc/gtg.1
+recursive-include GTG/plugins
 recursive-include locales *.po

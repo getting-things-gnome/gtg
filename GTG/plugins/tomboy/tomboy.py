@@ -14,7 +14,17 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import gtk
+try:
+    import pygtk
+    pygtk.require("2.0")
+except: # pylint: disable-msg=W0702
+    sys.exit(1)
+try:
+    import gtk
+    from gtk import gdk
+except: # pylint: disable-msg=W0702
+    sys.exit(1)
+
 import gobject
 import os
 import sys
@@ -35,6 +45,8 @@ class pluginTomboy:
         self.token_end = '|'
         self.path = os.path.dirname(os.path.abspath(__file__))
         self.findTomboyIconPath()
+        self.separator_item =  gtk.SeparatorToolItem()
+        self.tb_Taskbutton = None
 
     #Tomboy installation is checked through the presence of its icon
     def findTomboyIconPath(self):
@@ -51,6 +63,7 @@ class pluginTomboy:
 
     #Function called upon plug-in activation
     def activate(self, plugin_api):
+        self.builder = gtk.Builder() 
         self.plugin_api = plugin_api
 
     #Returns true is Tomboy is present, otherwise shows a dialog (only once)
@@ -85,8 +98,6 @@ Please install it or disable the Tomboy plugin in GTG"))
             #plugin has not been properly activated, (bug 475877 )
             # closing without executing onTaskClosed
             return
-        if not self.checkTomboyPresent():
-            return False
         for anchor in self.anchors:
             widgets = anchor.get_widgets()
             if anchor.get_deleted():
@@ -113,7 +124,7 @@ Please install it or disable the Tomboy plugin in GTG"))
         self.tb_Taskbutton = gtk.ToolButton(tb_Taskbutton_image)
         self.tb_Taskbutton.set_label(_("Add Tomboy note"))
         self.tb_Taskbutton.connect('clicked', self.onTbTaskButton, plugin_api)
-        plugin_api.add_task_toolbar_item(gtk.SeparatorToolItem())
+        plugin_api.add_task_toolbar_item(self.separator_item)
         plugin_api.add_task_toolbar_item(self.tb_Taskbutton)
 
 
@@ -159,8 +170,9 @@ Please install it or disable the Tomboy plugin in GTG"))
         self.convertTokensToWidgets()
 
     def deactivate(self, plugin_api):
-        #nothing to do at all 
-        pass
+        self.onTaskClosed(plugin_api)
+        plugin_api.remove_task_toolbar_item(self.separator_item)
+        plugin_api.remove_task_toolbar_item(self.tb_Taskbutton)
 
     def close_dialog(self, widget, data=None):
         self.dialog.destroy()
@@ -182,20 +194,21 @@ Please install it or disable the Tomboy plugin in GTG"))
     def onTbTaskButton(self, widget, plugin_api):
         title_list = self.getTomboyNoteTitleList()
         #Create the dialog
-        glade_file = os.path.join(self.path, "tomboy.glade")
-        wTree = gtk.glade.XML(glade_file, "InsertNoteDialog")
-        #objects
-        self.dialog = wTree.get_widget("InsertNoteDialog")
-        btn_add = wTree.get_widget("btn_add")
-        btn_cancel = wTree.get_widget("btn_cancel")
-        self.combobox = wTree.get_widget("titles_combobox")
-        self.label_caption = wTree.get_widget("label_caption")
-        #connections
-        self.dialog.connect("delete_event", self.close_dialog)
-        btn_cancel.connect("clicked", self.close_dialog)
-        btn_add.connect("clicked", self.noteChosen)
+        user_interface_file = os.path.join(self.path, "tomboy.ui")
+        self.builder.add_from_file(user_interface_file)
+        self.dialog = self.builder.get_object("InsertNoteDialog")
+        btn_add = self.builder.get_object("btn_add")
+        btn_cancel = self.builder.get_object("btn_cancel")
+        self.combobox = self.builder.get_object("titles_combobox")
+        self.label_caption = self.builder.get_object("label_caption")
+        dic = { "on_btn_cancel_clicked"      : self.close_dialog,
+                "on_btn_add_clicked"         : self.noteChosen,
+                "on_InsertNoteDialog_close"  : self.close_dialog
+        }
+        self.builder.connect_signals(dic)
         self.combobox_entry = combobox_enhanced.\
-                smartifyComboboxEntry(self.combobox,title_list,self.noteChosen)
+                smartifyComboboxEntry(self.combobox, title_list,\
+                self.noteChosen)
         self.dialog.show_all()
 
     #A title has been chosen by the user. If the note exists, it will be 
@@ -256,6 +269,9 @@ Do you want to create it?")))
     #creates the tomboy widget
     def widgetCreate(self, tomboy_note_title):
         image = gtk.Image()
+        window = self.plugin_api.get_window()
+        window.realize()
+        window_style = window.get_style()
         image_path = "/usr/share/icons/hicolor/16x16/apps/tomboy.png"
         pixbuf=gtk.gdk.\
                 pixbuf_new_from_file_at_size(image_path, 16, 16)
@@ -263,22 +279,32 @@ Do you want to create it?")))
         image.set_from_pixbuf(pixbuf)
         image.set_alignment(0.5,1.0)
         label = gtk.Label()
+        color = str(window_style.text[gtk.STATE_PRELIGHT])
+        label.set_markup("<span underline='low' color='" + color +"'>" + tomboy_note_title + "</span>")
         label.show()
         label.set_alignment(0.5, 1.0)
         eventbox = gtk.EventBox()
         eventbox.set_events(gtk.gdk.BUTTON_PRESS_MASK)
         eventbox.connect('button_press_event', self.tomboyDisplayNote)
-        eventbox.show()
-        window = self.plugin_api.get_window()
         hbox = gtk.HBox()
         hbox.show()
         hbox.add(image)
         hbox.add(label)
         eventbox.add(hbox)
-        window.realize()
-        style=window.get_style()
-        color = str(style.text[gtk.STATE_PRELIGHT])
-        label.set_markup("<span underline='low' color='" + color +"'>" + tomboy_note_title + "</span>")
+        #the eventbox should follow the colours of the textview to blend in
+        #properly
+        textview_style = self.textview.get_style()
+        eventbox_style = eventbox.get_style().copy()
+        for state in (gtk.STATE_NORMAL,gtk.STATE_PRELIGHT,gtk.STATE_ACTIVE,\
+                      gtk.STATE_SELECTED,gtk.STATE_INSENSITIVE):
+            eventbox_style.base[state] = textview_style.base[state]
+            eventbox_style.bg[state] = textview_style.bg[state]
+            eventbox_style.fg[state] = textview_style.fg[state]
+            eventbox_style.text[state] = textview_style.text[state]
+        eventbox_style.bg[gtk.STATE_NORMAL] = \
+                textview_style.base[gtk.STATE_NORMAL]
+        eventbox.set_style(eventbox_style)
+        eventbox.show()
         eventbox.tomboy_note_title = tomboy_note_title
         #cursor changes to a hand
         def realize_callback(widget):

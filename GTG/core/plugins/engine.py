@@ -166,18 +166,31 @@ class PluginEngine:
         return pd
     
     # activates the plugins
-    def activatePlugins(self, plugins, plugin_api):
+    def activatePlugins(self, plugins, plugin_apis):
         for plugin in plugins:
             if plugin['state'] and not plugin['error'] and not plugin['active']:
                 plugin['instance'] = plugin['class']()
-                plugin['instance'].activate(plugin_api)
+                for api in plugin_apis:
+                    plugin['instance'].activate(api)
+                    if api.is_editor():
+                        plugin['instance'].onTaskOpened(api)
+                        #we also refresh the content of the task
+                        tv = api.get_textview()
+                        if tv:
+                            tv.modified(refresheditor=False)
                 plugin['active'] = True
                 
     # deactivate the enabled plugins
-    def deactivatePlugins(self, plugins, plugin_api):
+    def deactivatePlugins(self, plugins, plugin_apis):
         for plugin in plugins:
             if not plugin['state'] and not plugin['error'] and plugin['active']:
-                plugin['instance'].deactivate(plugin_api)
+                for api in plugin_apis:
+                    plugin['instance'].deactivate(api)
+                    if api.is_editor():
+                        #we also refresh the content of the task
+                        tv = api.get_textview()
+                        if tv:
+                            tv.modified(refresheditor=False)
                 plugin['instance'] = None
                 plugin['active'] = False
                 
@@ -195,18 +208,18 @@ class PluginEngine:
                     plugin['instance'].onTaskClosed(plugin_api)
 
     # rechecks the plug-ins to see if any changes where done to the state
-    def recheckPlugins(self, plugins, plugin_api):
+    def recheckPlugins(self, plugins, plugin_apis):
         for plugin in plugins:
             if plugin['instance'] != None and plugin['state'] == False and plugin['active']:
                 try:
-                    self.deactivatePlugins([plugin],plugin_api)
+                    self.deactivatePlugins([plugin],plugin_apis)
                 except Exception, e:
                     print "Error: %s" % e
             elif plugin['instance'] == None and plugin['state'] == True and not plugin['active']:     
                 try:    
                     #print "activating plugin: " + plgin['name']
                     if not plugin['error']:
-                         self.activatePlugins([plugin],plugin_api)
+                         self.activatePlugins([plugin],plugin_apis)
                     else:
                         plugin['state'] = False
                 except Exception, e:
@@ -216,7 +229,8 @@ class PluginEngine:
                     #print "activating plugin: " + plgin['name']
                     if not plugin['error']:
                         #plugin['instance'] = plugin['class']()
-                        plugin['instance'].activate(plugin_api)
+                        for api in plugin_apis:
+                            plugin['instance'].activate(api)
                         plugin['active'] = True
                     else:
                         plugin['state'] = False
@@ -224,7 +238,7 @@ class PluginEngine:
                     print "Error: %s" % e
 
     # rechecks the plugins with errors
-    def recheckPluginsErrors(self, plugins, plugin_api):
+    def recheckPluginsErrors(self, plugins, plugin_apis):
         for plugin in plugins:
             if plugin['error']:
                 error = False

@@ -219,6 +219,17 @@ class TaskTreeModel(gtk.GenericTreeModel):
         else:
             return None
 
+    def update_task(self, tid):
+        nodes = []
+        # get the task
+        task = self.req.get_task(tid)
+        # get the node and signal it's changed
+        nodes = self.tree.get_nodes(tid)
+        for my_node in nodes:
+            node_path = self.tree.get_path_for_node(my_node)
+            node_iter = self.get_iter(node_path)
+            self.row_changed(node_path, node_iter)
+        
     def add_task(self, tid):
         nodes = []
         # get the task

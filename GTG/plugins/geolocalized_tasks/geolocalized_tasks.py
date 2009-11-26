@@ -64,6 +64,8 @@ class geolocalizedTasks:
                     self.LOCATION_DETERMINATION_METHOD.append("cellphone")
                     
         self.location_filter = []
+        
+        self.task_separator = gtk.SeparatorToolItem()
                     
     
     def activate(self, plugin_api):
@@ -187,6 +189,10 @@ class geolocalizedTasks:
         
         # unregister the filter callback
         plugin_api.unregister_filter_cb(self.task_location_filter)
+        
+        #remove the toolbar buttons
+        plugin_api.add_task_toolbar_item(self.task_separator)
+        plugin_api.add_task_toolbar_item(self.btn_set_location)
     
     def onTaskOpened(self, plugin_api):
         image_geolocalization_path = os.path.join(self.plugin_path,\
@@ -205,13 +211,13 @@ class geolocalizedTasks:
         self.btn_location_view.set_icon_widget(self.icon_geolocalization)
         self.btn_location_view.set_label("Location View")
         
-        plugin_api.add_task_toolbar_item(gtk.SeparatorToolItem())
+        plugin_api.add_task_toolbar_item(self.task_separator)
         
-        btn_set_location = gtk.ToolButton()
-        btn_set_location.set_icon_widget(self.icon_geolocalization)
-        btn_set_location.set_label("Set/View location")
-        btn_set_location.connect('clicked', self.set_task_location, plugin_api)
-        plugin_api.add_task_toolbar_item(btn_set_location)
+        self.btn_set_location = gtk.ToolButton()
+        self.btn_set_location.set_icon_widget(self.icon_geolocalization)
+        self.btn_set_location.set_label("Set/View location")
+        self.btn_set_location.connect('clicked', self.set_task_location, plugin_api)
+        plugin_api.add_task_toolbar_item(self.btn_set_location)
     
     def is_configurable(self):
         return True
@@ -285,11 +291,12 @@ class geolocalizedTasks:
     #                            self.plugin_api.add_task_to_filter(task.get_id())
                                 
     #=== GEOLOCALIZED PREFERENCES===================================================    
-    def on_geolocalized_preferences(self, plugin_api):
+    def on_geolocalized_preferences(self, plugin_apis):
         wTree = gtk.glade.XML(self.glade_file, "Preferences")
         dialog = wTree.get_widget("Preferences")
         dialog.connect("response", self.preferences_close)
-        plugin_api.set_parent_window(dialog)
+        for api in plugin_apis:
+            api.set_parent_window(dialog)
         
         check_network = wTree.get_widget("check_network")
         check_cellphone = wTree.get_widget("check_cellphone")
