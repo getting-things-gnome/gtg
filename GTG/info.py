@@ -16,7 +16,7 @@ AUTHORS     = ["Main developers:", \
                "\tAntons Rebguns <arebgun@gmail.com>", \
                "\tCarl Chenet <chaica@ohmytux.com>", \
                "\tJérôme Guelfucci <jerome.guelfucci@gmail.com>",      \
-               "\tLuca Falavigna <dktrkranz@ubuntu.com>", \
+               "\tLuca Falavigna <dktrkranz@debian.org>", \
                "\tKalle Persson <kalle@kallepersson.se>", \
                "\tJonathan Barnoud <jonathan@barnoud.net>", \
                "\tMichael Vogt <michael.vogt@ubuntu.com>", \
