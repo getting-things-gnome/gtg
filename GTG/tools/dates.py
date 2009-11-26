@@ -18,6 +18,7 @@
 # -----------------------------------------------------------------------------
 
 from datetime import date, timedelta
+from GTG import _
 
 class Date():
     def __cmp__(self, other):
@@ -26,6 +27,8 @@ class Date():
     
     def __sub__(self, other):
         return self.to_py_date() - other.to_py_date()
+        
+    def xml_str(self): return str(self)
         
     def day(self):      return self.to_py_date().day
     def month(self):    return self.to_py_date().month
@@ -40,7 +43,10 @@ class FuzzyDate(Date):
         return date.today()+timedelta(self.offset)
         
     def __str__(self):
-        return self.name
+        return _(self.name)
+        
+    def xml_str(self):
+    	return self.name
         
     def days_left(self):
         return None
@@ -81,11 +87,11 @@ no_date = NoDate()
 #to a date
 #If the date is not correct, the function returns None
 def strtodate(stri) :
-    if stri == "now":
+    if stri == "now" or stri == _("now"):
         return NOW
-    elif stri == "soon":
+    elif stri == "soon" or stri == _("soon"):
         return SOON
-    elif stri == "later":
+    elif stri == "later" or  stri == _("later"):
         return LATER
         
     toreturn = None

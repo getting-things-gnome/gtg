@@ -342,7 +342,7 @@ class TaskEditor :
         validdate = False
         if not text :
             validdate = True
-            datetoset = dates.nodate
+            datetoset = dates.no_date
         else :
             datetoset = dates.strtodate(text)
             if datetoset :
