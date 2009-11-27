@@ -107,7 +107,6 @@ class TagTreeModel(gtk.GenericTreeModel):
             if not sp_id:
                 #This call is critical because called thousand of times
                 count = tag.get_tasks_nbr(workview=self.workview)
-                if count == 0: return ''
                 return  count
             else:
                 if sp_id == "all":
