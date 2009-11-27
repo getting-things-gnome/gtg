@@ -800,7 +800,7 @@ class TaskBrowser:
                     
             #we verify that there is no non-workview tag for this task
             for t in task.get_tags():
-                if t.get_attribute("nonworkview"):
+                if t.get_attribute("nonworkview") and t not in tag_list:
                     res = res and (not eval(t.get_attribute("nonworkview")))
             return res and task.is_workable()
         else:
@@ -859,7 +859,7 @@ class TaskBrowser:
         	return True
         elif not tag.get_attribute("special"):
             count = model.get_value(iter, tagtree.COL_COUNT)
-            return count != ''
+            return count != '0'
         else:
             return True
 
