@@ -62,17 +62,17 @@ class PluginManager:
         #self.btnClose = self.builder.get_object("close_btn")
         #self.btnClose.connect('clicked', self.close, None)
         
-        # recheck the plugins with errors
-        self.pengine.recheckPluginsErrors(self.plugins, self.plugin_apis)
+#        # recheck the plugins with errors
+#        self.pengine.recheckPluginsErrors(self.plugins, self.plugin_apis)
         
         # liststore
         self.PluginList = gtk.ListStore('gboolean', str, str, 'gboolean', 'gboolean')
         
-        for plgin in self.plugins:
-            if not plgin['error']:
-                self.PluginList.append([plgin['state'], plgin['name'], plgin['version'], True, False])
-            else:
-                self.PluginList.append([plgin['state'], plgin['name'], plgin['version'], False, True])
+#        for plgin in self.plugins:
+#            if not plgin['error']:
+#                self.PluginList.append([plgin['state'], plgin['name'], plgin['version'], True, False])
+#            else:
+#                self.PluginList.append([plgin['state'], plgin['name'], plgin['version'], False, True])
         # end - liststore
         
         # treeview
@@ -112,11 +112,21 @@ class PluginManager:
         self.close_btn.connect("clicked", self.close)
         self.pluginTree.connect("cursor-changed", self.pluginExtraInfo, self.plugins)
         self.config_btn.connect("clicked", self.plugin_configure_dialog)
-        
+        self.present()
         self.dialog.show_all()
         
         
     def present(self):
+        # recheck the plugins with errors
+        self.pengine.recheckPluginsErrors(self.plugins, self.plugin_apis,checkall=True)
+        self.PluginList.clear()
+        
+        for plgin in self.plugins:
+            if not plgin['error']:
+                self.PluginList.append([plgin['state'], plgin['name'], plgin['version'], True, False])
+            else:
+                self.PluginList.append([plgin['state'], plgin['name'], plgin['version'], False, True])
+        
         self.dialog.present()
 
     def close(self, widget, response=None):
