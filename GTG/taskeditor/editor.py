@@ -422,21 +422,25 @@ class TaskEditor :
     def day_selected_double(self,widget) : #pylint: disable-msg=W0613
         self.__close_calendar()
         
-    def nodate_pressed(self,widget) : #pylint: disable-msg=W0613
+    def set_opened_date(self, date):
         if self.__opened_date == "due" :
-            self.task.set_due_date(dates.no_date)
+            self.task.set_due_date(date)
         elif self.__opened_date == "start" :
-            self.task.set_start_date(dates.no_date)
+            self.task.set_start_date(date)
         self.refresh_editor()
         self.__close_calendar()
         
-    def set_fuzzydate(self, text):
-    	self.task.set_due_date(text)
-    	self.__close_calendar()
-    	
-    def set_fuzzydate_now(self, widget): self.set_fuzzydate(dates.strtodate('now'))
-    def set_fuzzydate_soon(self, widget): self.set_fuzzydate(dates.strtodate('soon'))
-    def set_fuzzydate_later(self, widget): self.set_fuzzydate(dates.strtodate('later'))
+    def nodate_pressed(self,widget) : #pylint: disable-msg=W0613
+        self.set_opened_date(dates.no_date)
+        
+    def set_fuzzydate_now(self, widget) : #pylint: disable-msg=W0613
+        self.set_opened_date(dates.NOW)
+        
+    def set_fuzzydate_soon(self, widget) : #pylint: disable-msg=W0613
+        self.set_opened_date(dates.SOON)
+        
+    def set_fuzzydate_later(self, widget) : #pylint: disable-msg=W0613
+        self.set_opened_date(dates.LATER)
         
     def dismiss(self,widget) : #pylint: disable-msg=W0613
         stat = self.task.get_status()
