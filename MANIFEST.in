@@ -1,4 +1,5 @@
 recursive-include GTG *.glade
+recursive-include GTG *.ui
 recursive-include GTG *.gtg-plugin
 include gtg.desktop
 include CHANGELOG
