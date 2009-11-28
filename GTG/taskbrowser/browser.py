@@ -779,7 +779,7 @@ class TaskBrowser:
         tag_list, notag_only = self.get_selected_tags()
 
         if len(tag_list)==1: #include child tags
-		    tag_list = tag_list[0].all_children()
+            tag_list = tag_list[0].all_children()
 
         if not task.has_tags(tag_list=tag_list, notag_only=notag_only):
             return False
@@ -855,9 +855,15 @@ class TaskBrowser:
         @param user_data:
         """
         tag = model.get_value(iter, tagtree.COL_OBJ)
-        if tag.has_child():
-        	return True
-        elif not tag.get_attribute("special"):
+        
+        # show the tag if any children are shown
+        child = model.iter_children(iter)
+        while child:
+            if self.tag_visible_func(model, child):
+                return True
+            child=model.iter_next(child)
+        
+        if not tag.get_attribute("special"):
             count = model.get_value(iter, tagtree.COL_COUNT)
             return count != '0'
         else:
@@ -1289,7 +1295,8 @@ class TaskBrowser:
         if self.tid_todelete in self.opened_task:
             self.opened_task[self.tid_todelete].close()
         self.tid_todelete = None
-        #self.do_refresh()
+        if self.refresh_lock.acquire(False):
+            gobject.idle_add(self.general_refresh)
 
     def on_delete_task(self, widget=None, tid=None):
         #If we don't have a parameter, then take the selection in the treeview
@@ -1323,7 +1330,8 @@ class TaskBrowser:
                 zetask.set_status(Task.STA_ACTIVE)
             else:
                 zetask.set_status(Task.STA_DONE)
-            #self.do_refresh()
+            if self.refresh_lock.acquire(False):
+                gobject.idle_add(self.general_refresh)
 
     def on_dismiss_task(self, widget):
         uid = self.get_selected_task()
@@ -1334,8 +1342,9 @@ class TaskBrowser:
                 zetask.set_status("Active")
             else:
                 zetask.set_status("Dismiss")
-            #self.do_refresh()
-
+            if self.refresh_lock.acquire(False):
+                gobject.idle_add(self.general_refresh)
+    
     def on_select_tag(self, widget, row=None, col=None):
         #When you clic on a tag, you want to unselect the tasks
         self.task_tv.get_selection().unselect_all()
