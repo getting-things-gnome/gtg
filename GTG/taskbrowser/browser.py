@@ -870,7 +870,7 @@ class TaskBrowser:
         if not t1_dleft and t2_dleft:
             sort = reverse_if_descending(1)
         elif t1_dleft and not t2_dleft:
-            reverse_if_descending(-1)
+            sort = reverse_if_descending(-1)
         else:
             sort = cmp(t2_dleft, t1_dleft)
         
