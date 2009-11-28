@@ -145,6 +145,7 @@ class TaskBrowser:
 #
     def _init_browser_config(self):
         self.priv["collapsed_tids"]           = []
+        self.priv["collapsed_tags"]           = []
         self.priv["tasklist"]                 = {}
         self.priv["tasklist"]["sort_column"]  = None
         self.priv["tasklist"]["sort_order"]   = gtk.SORT_ASCENDING
@@ -380,7 +381,8 @@ class TaskBrowser:
         self.req.connect("task-modified", self.on_task_modified)
         
         # Connect signals from models
-        self.task_modelsort.connect("row-has-child-toggled", self.on_child_toggled)
+        self.task_modelsort.connect("row-has-child-toggled", self.on_task_child_toggled)
+        self.tag_modelsort.connect("row-has-child-toggled", self.on_tag_child_toggled)
 
     def _init_view_defaults(self):
         self.menu_view_workview.set_active(WORKVIEW)
@@ -559,6 +561,10 @@ class TaskBrowser:
         if "collapsed_tasks" in self.config["browser"]:
             self.priv["collapsed_tids"] = self.config[
                 "browser"]["collapsed_tasks"]
+                
+        if "collapsed_tags" in self.config["browser"]:
+            self.priv["collapsed_tags"] = self.config[
+                "browser"]["collapsed_tags"]
 
         if "tasklist_sort" in self.config["browser"]:
             col_id, order = self.config["browser"]["tasklist_sort"]
@@ -732,6 +738,24 @@ class TaskBrowser:
             self.priv["collapsed_tids"].append(tid)
 
         return False # Return False or the TreeModel.foreach() function ends
+        
+    def update_collapsed_tag_row(self, model, path, iter, user_data):
+        """Build a list of tags that must show as collapsed in Treeview"""
+        model = self.tags_tv.get_model()
+        tag   = model.get_value(iter, tagtree.COL_ID)
+        # Remove expanded rows
+        if (model.iter_has_child(iter) and
+            self.tags_tv.row_expanded(path) and
+            tag in self.priv["collapsed_tags"]):
+            self.priv["collapsed_tags"].remove(tag)
+        # Append collapsed rows
+        elif (model.iter_has_child(iter) and
+              not self.tags_tv.row_expanded(path) and
+              tag not in self.priv["collapsed_tags"]):
+            self.priv["collapsed_tags"].append(tag)
+
+        return False # Return False or the TreeModel.foreach() function ends
+
 
     def open_task(self, uid,thisisnew=False):
         """Open the task identified by 'uid'.
@@ -950,6 +974,7 @@ class TaskBrowser:
 
         # Save expanded rows
         self.task_tv.get_model().foreach(self.update_collapsed_row, None)
+        self.tags_tv.get_model().foreach(self.update_collapsed_tag_row, None)
 
         # Cleanup collapsed row list
         for tid in self.priv["collapsed_tids"]:
@@ -994,6 +1019,8 @@ class TaskBrowser:
                 self.priv["bg_color_enable"],
             'collapsed_tasks':
                 self.priv["collapsed_tids"],
+            'collapsed_tags':
+            	self.priv["collapsed_tags"],
             'tag_pane':
                 tag_sidebar,
             'closed_task_pane':
@@ -1119,11 +1146,18 @@ class TaskBrowser:
         else:
             self.quickadd_pane.hide()
 
-    def on_child_toggled(self, model, path, iter):
+    def on_task_child_toggled(self, model, path, iter):
         #print "on_child_toggled: %s" % model.get_value(iter, tasktree.COL_TID)
         tid = model.get_value(iter, tasktree.COL_TID)
         if tid not in self.priv.get("collapsed_tids", []):
             self.task_tv.expand_row(path, True)
+            
+    def on_tag_child_toggled(self, model, path, iter):
+        tag = model.get_value(iter, tagtree.COL_ID)
+        if tag not in self.priv.get("collapsed_tags", []):
+            self.tags_tv.expand_row(path, False)
+        else:
+        	self.tags_tv.collapse_row(path)
 
     def on_quickadd_activate(self, widget):
         text = self.quickadd_entry.get_text()
@@ -1451,6 +1485,7 @@ class TaskBrowser:
         if self.task_tree_model.remove_task(tid):
             self.task_tree_model.add_task(tid)
         self.tag_model.update_tags_for_task(tid)
+        self.tags_tv.get_model().foreach(self.update_collapsed_tag_row, None)
         self.tags_tv.refresh()
         #We also refresh the opened windows for that tasks,
         #his children and his parents
