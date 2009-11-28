@@ -779,7 +779,7 @@ class TaskBrowser:
         tag_list, notag_only = self.get_selected_tags()
 
         if len(tag_list)==1: #include child tags
-		    tag_list = tag_list[0].all_children()
+            tag_list = tag_list[0].all_children()
 
         if not task.has_tags(tag_list=tag_list, notag_only=notag_only):
             return False
