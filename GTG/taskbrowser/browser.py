@@ -854,27 +854,34 @@ class TaskBrowser:
         task2 = model.get_value(iter2, tasktree.COL_OBJ)
         t1_dleft = task1.get_due_date()
         t2_dleft = task2.get_due_date()
-        if not t1_dleft and not t2_dleft:
+        
+        sort = 0
+        
+        # Always put no_date tasks on the bottom
+        if not t1_dleft and t2_dleft:
+            if order == gtk.SORT_ASCENDING:
+                sort = 1
+            else:
+                sort = -1
+        elif t1_dleft and not t2_dleft:
+            if order == gtk.SORT_ASCENDING:
+                sort = -1
+            else:
+                sort = 1
+        else:
+            sort = cmp(t2_dleft, t1_dleft)
+            
+        if sort == 0:  # Break ties by sorting by title
             t1_title = task1.get_title()
             t2_title = task2.get_title()
             t1_title = locale.strxfrm(t1_title)
             t2_title = locale.strxfrm(t2_title)
             if order == gtk.SORT_ASCENDING:
-                return cmp(t1_title, t2_title)
+                sort = cmp(t1_title, t2_title)
             else:
-                return cmp(t2_title, t1_title)
-        elif not t1_dleft and t2_dleft:
-            if order == gtk.SORT_ASCENDING:
-                return 1
-            else:
-                return -1
-        elif t1_dleft and not t2_dleft:
-            if order == gtk.SORT_ASCENDING:
-                return -1
-            else:
-                return 1
-        else:
-            return cmp(t2_dleft, t1_dleft)
+                sort = cmp(t2_title, t1_title)
+                
+        return sort
 
     def tag_sort_func(self, model, iter1, iter2, user_data=None):
         order = self.tags_tv.get_model().get_sort_column_id()[1]
