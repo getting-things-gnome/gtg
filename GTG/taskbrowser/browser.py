@@ -49,7 +49,8 @@ from GTG.taskbrowser.tagtree          import TagTreeModel,\
                                              TagTreeView
 from GTG.tools                        import openurl
 from GTG.tools.dates                  import strtodate,\
-                                             no_date
+                                             no_date,\
+                                             RealDate
 from GTG.core.plugins.manager         import PluginManager
 from GTG.core.plugins.engine          import PluginEngine
 from GTG.core.plugins.api             import PluginAPI
@@ -857,29 +858,35 @@ class TaskBrowser:
         
         sort = 0
         
+        def reverse_if_descending(s):
+            """Make a cmp() result relative to the top instead of following 
+               user-specified sort direction"""
+            if order == gtk.SORT_ASCENDING:
+                return s
+            else:
+                return -1 * s
+        
         # Always put no_date tasks on the bottom
         if not t1_dleft and t2_dleft:
-            if order == gtk.SORT_ASCENDING:
-                sort = 1
-            else:
-                sort = -1
+            sort = reverse_if_descending(1)
         elif t1_dleft and not t2_dleft:
-            if order == gtk.SORT_ASCENDING:
-                sort = -1
-            else:
-                sort = 1
+            reverse_if_descending(-1)
         else:
             sort = cmp(t2_dleft, t1_dleft)
-            
-        if sort == 0:  # Break ties by sorting by title
-            t1_title = task1.get_title()
-            t2_title = task2.get_title()
-            t1_title = locale.strxfrm(t1_title)
-            t2_title = locale.strxfrm(t2_title)
-            if order == gtk.SORT_ASCENDING:
-                sort = cmp(t1_title, t2_title)
-            else:
-                sort = cmp(t2_title, t1_title)
+        
+        if sort == 0:
+            # Put fuzzy dates below real dates
+            if isinstance(t1_dleft, RealDate) and not isinstance(t2_dleft, RealDate):
+                sort = reverse_if_descending(-1)
+            elif isinstance(t2_dleft, RealDate) and not isinstance(t1_dleft, RealDate):
+                sort = reverse_if_descending(1)
+                
+            else:  # Break ties by sorting by title
+                t1_title = task1.get_title()
+                t2_title = task2.get_title()
+                t1_title = locale.strxfrm(t1_title)
+                t2_title = locale.strxfrm(t2_title)
+                sort = reverse_if_descending( cmp(t1_title, t2_title) )
                 
         return sort
 
