@@ -51,8 +51,8 @@ class FuzzyDate(Date):
     def days_left(self):
         return None
 
-NOW = FuzzyDate(1, 'now')
-SOON = FuzzyDate(7, 'soon')
+NOW = FuzzyDate(0, 'now')
+SOON = FuzzyDate(15, 'soon')
 LATER = FuzzyDate(365, 'later')
 
 class RealDate(Date):
