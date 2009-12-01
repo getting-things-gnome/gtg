@@ -51,6 +51,7 @@ from GTG.tools                        import openurl
 from GTG.core.plugins.manager         import PluginManager
 from GTG.core.plugins.engine          import PluginEngine
 from GTG.core.plugins.api             import PluginAPI
+import GTG.taskbrowser.combobox_enhanced as cs
 
 #=== OBJECTS ==================================================================
 
@@ -235,6 +236,8 @@ class TaskBrowser:
         self.quickadd_pane      = self.builder.get_object("quickadd_pane")
         self.sidebar            = self.builder.get_object("sidebar")
         self.sidebar_container  = self.builder.get_object("sidebar-scroll")
+        self.export_dialog      = self.builder.get_object("exportDialog")
+        self.export_combo       = self.builder.get_object("combobox1")
         # Tree views
         #self.tags_tv             = self.builder.get_object("tag_tview")
         # NOTES
@@ -303,6 +306,8 @@ class TaskBrowser:
                 self.on_move,
             "on_size_allocate":
                 self.on_size_allocate,
+            "on_file_export_activate":
+                self.on_export,
             "gtk_main_quit":
                 self.on_close,
             "on_delete_confirm":
@@ -925,6 +930,11 @@ class TaskBrowser:
             else:
                 return cmp(t2_order, t1_order)            
 
+
+
+
+
+
 ### SIGNAL CALLBACKS ##########################################################
 # Typically, reaction to user input & interactions with the GUI
 #
@@ -1467,6 +1477,39 @@ class TaskBrowser:
         if task.get_status() == "Active" :
             if self.refresh_lock.acquire(False):
                 gobject.idle_add(self.general_refresh)
+
+
+
+
+
+
+
+
+
+    def on_export(self, widget):
+        self.export_dialog.realize()
+        self.export_combo.realize()
+        self.combobox_entry = cs.smartifyComboboxEntry(self.export_combo, [1,2],\
+                self.noteChosen)
+        self.export_dialog.show_all()
+
+
+    def noteChosen(self, widget=None, data=None):
+        print "A"
+        supposed_title = self.combobox_entry.get_text()
+        print supposed_title 
+
+
+
+
+
+
+
+
+
+
+
+
         
     def general_refresh(self):
         if self.logger:
