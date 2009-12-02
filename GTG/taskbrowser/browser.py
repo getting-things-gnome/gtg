@@ -1666,7 +1666,7 @@ class TaskBrowser:
                 action = gtk.FILE_CHOOSER_ACTION_SAVE,
                 buttons = (gtk.STOCK_CANCEL,
                            gtk.RESPONSE_CANCEL,
-                           gtk.STOCK_OPEN,
+                           gtk.STOCK_SAVE,
                            gtk.RESPONSE_OK))
         desktop_dir = self.get_user_dir("XDG_DESKTOP_DIR")
         #NOTE: using ./scripts/debug.sh, it doesn't detect the Desktop
@@ -1678,10 +1678,10 @@ class TaskBrowser:
             #        chooser.set_filename(self.export_template_filename)
         chooser.set_default_response(gtk.RESPONSE_OK)
         response = chooser.run()
-        chooser.destroy()
         if response == gtk.RESPONSE_OK:
             self.export_save_file(chooser.get_filename())
             self.on_export_cancel()
+        chooser.destroy()
         
 
     def general_refresh(self):
