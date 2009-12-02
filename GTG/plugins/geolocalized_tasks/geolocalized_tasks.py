@@ -191,8 +191,8 @@ class geolocalizedTasks:
         plugin_api.unregister_filter_cb(self.task_location_filter)
         
         #remove the toolbar buttons
-        plugin_api.add_task_toolbar_item(self.task_separator)
-        plugin_api.add_task_toolbar_item(self.btn_set_location)
+        plugin_api.remove_task_toolbar_item(self.task_separator)
+        plugin_api.remove_task_toolbar_item(self.btn_set_location)
     
     def onTaskOpened(self, plugin_api):
         image_geolocalization_path = os.path.join(self.plugin_path,\
@@ -202,22 +202,22 @@ class geolocalizedTasks:
                                                                       24)
         
         # create the image and associate the pixbuf
-        self.icon_geolocalization = gtk.Image()
-        self.icon_geolocalization.set_from_pixbuf(pixbuf_geolocalization)
-        self.icon_geolocalization.show()
+        icon_geolocalization = gtk.Image()
+        icon_geolocalization.set_from_pixbuf(pixbuf_geolocalization)
+        icon_geolocalization.show()
         
         # toolbar button for the location_view
-        self.btn_location_view = gtk.ToggleToolButton()
-        self.btn_location_view.set_icon_widget(self.icon_geolocalization)
-        self.btn_location_view.set_label("Location View")
+        btn_location_view = gtk.ToggleToolButton()
+        btn_location_view.set_icon_widget(icon_geolocalization)
+        btn_location_view.set_label("Location View")
         
-        plugin_api.add_task_toolbar_item(self.task_separator)
+        self.task_separator = plugin_api.add_task_toolbar_item(gtk.SeparatorToolItem())
         
-        self.btn_set_location = gtk.ToolButton()
-        self.btn_set_location.set_icon_widget(self.icon_geolocalization)
-        self.btn_set_location.set_label("Set/View location")
-        self.btn_set_location.connect('clicked', self.set_task_location, plugin_api)
-        plugin_api.add_task_toolbar_item(self.btn_set_location)
+        btn_set_location = gtk.ToolButton()
+        btn_set_location.set_icon_widget(icon_geolocalization)
+        btn_set_location.set_label("Set/View location")
+        btn_set_location.connect('clicked', self.set_task_location, plugin_api)
+        self.btn_set_location = plugin_api.add_task_toolbar_item(btn_set_location)
     
     def is_configurable(self):
         return True
