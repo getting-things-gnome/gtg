@@ -4,7 +4,6 @@
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="TaskEditor">
     <property name="title" translatable="yes">Task</property>
-    <property name="window_position">mouse</property>
     <property name="default_width">450</property>
     <property name="default_height">400</property>
     <child>
