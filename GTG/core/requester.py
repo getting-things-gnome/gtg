@@ -328,6 +328,9 @@ class Requester(gobject.GObject):
     def get_tag(self, tagname):
         return self.ds.get_tagstore().get_tag(tagname)
 
+    def has_tag(self, tagname):
+        return self.ds.get_tagstore().has_tag(tagname)
+
     def get_all_tags(self):
         """Return a list of every tag that was used.
         We don't return tag that were used only on permanently deleted tasks.

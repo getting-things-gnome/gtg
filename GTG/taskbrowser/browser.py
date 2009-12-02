@@ -31,6 +31,8 @@ import re
 import datetime
 import threading
 import time
+import string
+from xdg.BaseDirectory import xdg_config_home
 
 #our own imports
 import GTG
@@ -51,7 +53,6 @@ from GTG.tools                        import openurl
 from GTG.core.plugins.manager         import PluginManager
 from GTG.core.plugins.engine          import PluginEngine
 from GTG.core.plugins.api             import PluginAPI
-import GTG.taskbrowser.combobox_enhanced as cs
 
 #=== OBJECTS ==================================================================
 
@@ -236,8 +237,9 @@ class TaskBrowser:
         self.quickadd_pane      = self.builder.get_object("quickadd_pane")
         self.sidebar            = self.builder.get_object("sidebar")
         self.sidebar_container  = self.builder.get_object("sidebar-scroll")
-        self.export_dialog      = self.builder.get_object("exportDialog")
-        self.export_combo       = self.builder.get_object("combobox1")
+        self.export_dialog      = self.builder.get_object("export_dialog")
+        self.export_combo_tags  = self.builder.get_object("export_combo_tags")
+        self.export_combo_templ = self.builder.get_object("export_combo_templ")
         # Tree views
         #self.tags_tv             = self.builder.get_object("tag_tview")
         # NOTES
@@ -348,6 +350,12 @@ class TaskBrowser:
                 self.on_nonworkviewtag_toggled,
             "on_pluginmanager_activate": 
                 self.on_pluginmanager_activate,
+            "on_export_btn_ok_clicked": 
+                self.on_export_exec,
+            "on_export_btn_cancel_clicked": 
+                self.on_export_cancel,
+            "on_export_dialog_delete_event": 
+                self.on_export_cancel
         }
 
         self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
@@ -930,10 +938,51 @@ class TaskBrowser:
             else:
                 return cmp(t2_order, t1_order)            
 
+    def combo_list_store(self, list_obj):
+        list_store = gtk.ListStore(gobject.TYPE_STRING)
+        for elem in list_obj:
+            iter = list_store.append()
+            list_store.set(iter, 0, elem)
+        return list_store
 
+    def combo_completion(self, list_store):
+        completion = gtk.EntryCompletion()
+        completion.set_minimum_key_length(0)
+        completion.set_text_column(0)
+        completion.set_inline_completion(True)
+        completion.set_model(list_store)
+        return completion
 
+    def combo_set_text(self, combobox, entry):
+        model = combobox.get_model()
+        index = combobox.get_active()
+        if index > -1:
+            entry.set_text(model[index][0])
 
-
+    def combo_decorator(self, combobox, list_obj):
+        entry = gtk.Entry()
+        #check if Clipboard contains an element of the list
+        clipboard = gtk.Clipboard()
+        def clipboardCallback(clipboard, text, list_obj):
+            if len(filter(lambda x: x == text, list_obj)) != 0:
+                entry.set_text(text)
+        clipboard.request_text(clipboardCallback, list_obj)
+        #wrap the combo-box if it's too long
+        if len(list_obj) > 15:
+            combobox.set_wrap_width(5)
+        #populate the combo-box
+        if len(list_obj) > 0:
+            list_store = self.combo_list_store(list_obj)
+            entry.set_completion(self.combo_completion(list_store))
+            combobox.set_model(list_store)
+            #        combobox.set_active(0)
+        combobox.add(entry)
+        combobox.connect('changed', self.combo_set_text, entry )
+        #render the combo-box drop down menu
+        cell = gtk.CellRendererText()
+        combobox.pack_start(cell, True)
+        combobox.add_attribute(cell, 'text', 0) 
+        return entry
 
 ### SIGNAL CALLBACKS ##########################################################
 # Typically, reaction to user input & interactions with the GUI
@@ -1487,17 +1536,50 @@ class TaskBrowser:
 
 
     def on_export(self, widget):
-        self.export_dialog.realize()
-        self.export_combo.realize()
-        self.combobox_entry = cs.smartifyComboboxEntry(self.export_combo, [1,2],\
-                self.noteChosen)
+        #Generating lists
+        tag_list = ["All tasks"] + \
+                map(lambda x: x.get_name(),self.req.get_all_tags())
+        for dir in [xdg_config_home + "/gtg/export",
+                    os.path.dirname(os.path.abspath(__file__)) + "/export"]:
+            if os.path.exists(dir):
+                template_list = filter(lambda str: str.startswith("export_"),
+                                  os.listdir(dir))
+        #Creating combo-boxes
+        self.export_combo_tags_entry = self.combo_decorator(\
+                self.export_combo_tags, tag_list)
+        self.export_combo_template_entry = self.combo_decorator(\
+                self.export_combo_templ, template_list)
         self.export_dialog.show_all()
 
+    def on_export_cancel(self, widget, data = None):
+        self.export_dialog.destroy()
+        return True
 
-    def noteChosen(self, widget=None, data=None):
-        print "A"
-        supposed_title = self.combobox_entry.get_text()
-        print supposed_title 
+
+
+    def on_export_exec(self, widget = None, data = None):
+        supposed_tag = self.export_combo_tags_entry.get_text()
+        supposed_template = self.export_combo_tags_entry.get_text()
+        if supposed_tag == "All tasks":
+            tasks_list = self.req.get_tasks_list()
+        else:
+            if self.req.has_tag(supposed_tag):
+                tasks_list = self.req.get_tasks_list([self.req.get_tag(supposed_tag)])
+            else:
+                dialog = gtk.MessageDialog(parent = \
+                     self.plugin_api.get_window(),
+                     flags = gtk.DIALOG_DESTROY_WITH_PARENT,
+                     type = gtk.MESSAGE_ERROR,
+                     buttons=gtk.BUTTONS_OK,
+                     message_format=_("Tag does not exist"))
+                dialog.run() 
+                dialog.destroy()
+                return
+        task_list = map(lambda x: self.req.get_task(x), tasks_list)
+
+
+        print map(lambda x: x.get_title(),tasks_list)
+
 
 
 
