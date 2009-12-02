@@ -43,10 +43,11 @@ class pluginTest:
 
     def onTaskOpened(self, plugin_api):
         # add a item (button) to the ToolBar
-        self.tb_Taskbutton.set_label("Hello World")
-        self.tb_Taskbutton.connect('clicked', self.onTbTaskButton, plugin_api)
+        tb_Taskbutton = gtk.ToolButton(gtk.STOCK_EXECUTE)
+        tb_Taskbutton.set_label("Hello World")
+        tb_Taskbutton.connect('clicked', self.onTbTaskButton, plugin_api)
         self.task_separator = plugin_api.add_task_toolbar_item(gtk.SeparatorToolItem())
-        self.tb_Taskbutton = plugin_api.add_task_toolbar_item(gtk.ToolButton(gtk.STOCK_EXECUTE))
+        self.tb_Taskbutton = plugin_api.add_task_toolbar_item(tb_Taskbutton)
         
     def deactivate(self, plugin_api):
         plugin_api.remove_menu_item(self.menu_item)
