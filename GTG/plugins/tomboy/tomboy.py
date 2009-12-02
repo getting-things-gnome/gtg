@@ -45,7 +45,7 @@ class pluginTomboy:
         self.token_end = '|'
         self.path = os.path.dirname(os.path.abspath(__file__))
         self.findTomboyIconPath()
-        self.separator_item =  gtk.SeparatorToolItem()
+        self.separator_item =  None
         self.tb_Taskbutton = None
 
     #Tomboy installation is checked through the presence of its icon
@@ -121,11 +121,11 @@ Please install it or disable the Tomboy plugin in GTG"))
                 pixbuf_new_from_file_at_size(tb_Taskbutton_image_path, 16, 16)
         tb_Taskbutton_image.set_from_pixbuf(tb_Taskbutton_pixbuf)
         tb_Taskbutton_image.show()
-        self.tb_Taskbutton = gtk.ToolButton(tb_Taskbutton_image)
-        self.tb_Taskbutton.set_label(_("Add Tomboy note"))
-        self.tb_Taskbutton.connect('clicked', self.onTbTaskButton, plugin_api)
-        plugin_api.add_task_toolbar_item(self.separator_item)
-        plugin_api.add_task_toolbar_item(self.tb_Taskbutton)
+        tb_Taskbutton = gtk.ToolButton(tb_Taskbutton_image)
+        tb_Taskbutton.set_label(_("Add Tomboy note"))
+        tb_Taskbutton.connect('clicked', self.onTbTaskButton, plugin_api)
+        self.separator_item = plugin_api.add_task_toolbar_item(gtk.SeparatorToolItem())
+        self.tb_Taskbutton = plugin_api.add_task_toolbar_item(tb_Taskbutton)
 
 
     # Converts all the textual tokens in tomboy note widgets
