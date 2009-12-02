@@ -1,3 +1,4 @@
+2009-12-02 Getting Things GNOME! 0.1.9
     * Fixes a bug with gtk stock strings being marked as translatable, by Henning Eggers (#490231)
     * When a task is deleted, all subtask are deleted as well by Mikkel Kjær Jensen
     * Groups for tags and subtags by Kevin Mehall
