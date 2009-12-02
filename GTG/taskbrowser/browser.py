@@ -1668,6 +1668,7 @@ class TaskBrowser:
                            gtk.RESPONSE_CANCEL,
                            gtk.STOCK_SAVE,
                            gtk.RESPONSE_OK))
+        chooser.set_do_overwrite_confirmation(True)
         desktop_dir = self.get_user_dir("XDG_DESKTOP_DIR")
         #NOTE: using ./scripts/debug.sh, it doesn't detect the Desktop
         # dir, as the XDG directories are changed
