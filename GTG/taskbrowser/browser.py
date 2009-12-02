@@ -256,7 +256,6 @@ class TaskBrowser:
         # The tags treeview
         self.tags_tv = TagTreeView()
         self.tags_tv.set_model(self.tag_modelsort)
-        self.tags_tv.expand_row('0', True)
         self.sidebar_container.add(self.tags_tv)
 
     def _init_toolbar_tooltips(self):
@@ -367,13 +366,17 @@ class TaskBrowser:
         self.ctask_tv.connect('key-press-event',\
             self.on_closed_task_treeview_key_press_event)
 
-        # Closed tasks TreeView
+        # Tags TreeView
         self.tags_tv.connect('cursor-changed',\
             self.on_select_tag)
         self.tags_tv.connect('row-activated',\
             self.on_select_tag)
         self.tags_tv.connect('button-press-event',\
             self.on_tag_treeview_button_press_event)
+        self.tags_tv.connect('row-expanded',\
+            self.on_tag_treeview_row_expanded)
+        self.tags_tv.connect('row-collapsed',\
+            self.on_tag_treeview_row_collapsed)
 
         # Connect requester signals to TreeModels
         self.req.connect("task-added", self.on_task_added) 
@@ -738,24 +741,6 @@ class TaskBrowser:
             self.priv["collapsed_tids"].append(tid)
 
         return False # Return False or the TreeModel.foreach() function ends
-        
-    def update_collapsed_tag_row(self, model, path, iter, user_data):
-        """Build a list of tags that must show as collapsed in Treeview"""
-        model = self.tags_tv.get_model()
-        tag   = model.get_value(iter, tagtree.COL_ID)
-        # Remove expanded rows
-        if (model.iter_has_child(iter) and
-            self.tags_tv.row_expanded(path) and
-            tag in self.priv["collapsed_tags"]):
-            self.priv["collapsed_tags"].remove(tag)
-        # Append collapsed rows
-        elif (model.iter_has_child(iter) and
-              not self.tags_tv.row_expanded(path) and
-              tag not in self.priv["collapsed_tags"]):
-            self.priv["collapsed_tags"].append(tag)
-
-        return False # Return False or the TreeModel.foreach() function ends
-
 
     def open_task(self, uid,thisisnew=False):
         """Open the task identified by 'uid'.
@@ -974,7 +959,6 @@ class TaskBrowser:
 
         # Save expanded rows
         self.task_tv.get_model().foreach(self.update_collapsed_row, None)
-        self.tags_tv.get_model().foreach(self.update_collapsed_tag_row, None)
 
         # Cleanup collapsed row list
         for tid in self.priv["collapsed_tids"]:
@@ -1020,7 +1004,7 @@ class TaskBrowser:
             'collapsed_tasks':
                 self.priv["collapsed_tids"],
             'collapsed_tags':
-            	self.priv["collapsed_tags"],
+                self.priv["collapsed_tags"],
             'tag_pane':
                 tag_sidebar,
             'closed_task_pane':
@@ -1157,7 +1141,19 @@ class TaskBrowser:
         if tag not in self.priv.get("collapsed_tags", []):
             self.tags_tv.expand_row(path, False)
         else:
-        	self.tags_tv.collapse_row(path)
+            self.tags_tv.collapse_row(path)
+            
+    def on_tag_treeview_row_expanded(self, treeview, iter, path):
+        tag = treeview.get_model().get_value(iter, tagtree.COL_ID)
+        if tag in self.priv["collapsed_tags"]:
+            self.priv["collapsed_tags"].remove(tag)
+        
+    def on_tag_treeview_row_collapsed(self, treeview, iter, path):
+        tag = treeview.get_model().get_value(iter, tagtree.COL_ID)
+        if tag not in self.priv["collapsed_tags"]:
+            self.priv["collapsed_tags"].append(tag)
+        
+   
 
     def on_quickadd_activate(self, widget):
         text = self.quickadd_entry.get_text()
@@ -1485,7 +1481,6 @@ class TaskBrowser:
         if self.task_tree_model.remove_task(tid):
             self.task_tree_model.add_task(tid)
         self.tag_model.update_tags_for_task(tid)
-        self.tags_tv.get_model().foreach(self.update_collapsed_tag_row, None)
         self.tags_tv.refresh()
         #We also refresh the opened windows for that tasks,
         #his children and his parents
