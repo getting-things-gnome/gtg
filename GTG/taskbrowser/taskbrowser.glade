@@ -1070,26 +1070,27 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
             <property name="border_width">12</property>
             <property name="spacing">23</property>
             <child>
-              <object class="GtkButton" id="export_btn_cancel">
-                <property name="label">gtk-cancel</property>
+              <object class="GtkButton" id="export_btn_open">
+                <property name="label">gtk-open</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_stock">True</property>
-                <signal name="clicked" handler="on_export_btn_cancel_clicked"/>
+                <signal name="clicked" handler="on_export_btn_open_clicked"/>
               </object>
               <packing>
                 <property name="position">0</property>
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="export_btn_ok">
-                <property name="label">gtk-ok</property>
+              <object class="GtkButton" id="export_btn_save">
+                <property name="label">gtk-save</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_stock">True</property>
-                <signal name="clicked" handler="on_export_btn_ok_clicked"/>
+                <property name="image_position">top</property>
+                <signal name="clicked" handler="on_export_btn_save_clicked"/>
               </object>
               <packing>
                 <property name="position">1</property>

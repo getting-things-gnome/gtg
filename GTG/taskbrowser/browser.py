@@ -354,10 +354,10 @@ class TaskBrowser:
                 self.on_nonworkviewtag_toggled,
             "on_pluginmanager_activate": 
                 self.on_pluginmanager_activate,
-            "on_export_btn_ok_clicked": 
-                self.on_export_exec,
-            "on_export_btn_cancel_clicked": 
-                self.on_export_cancel,
+            "on_export_btn_open_clicked": 
+                self.on_export_open,
+            "on_export_btn_save_clicked": 
+                self.on_export_save,
             "on_export_dialog_delete_event": 
                 self.on_export_cancel
         }
@@ -984,6 +984,29 @@ class TaskBrowser:
         combobox.add_attribute(cell, 'text', 0) 
         return entry
 
+    def get_user_dir(self, key):
+        """
+        http://www.freedesktop.org/wiki/Software/xdg-user-dirs
+            XDG_DESKTOP_DIR
+            XDG_DOWNLOAD_DIR
+            XDG_TEMPLATES_DIR
+            XDG_PUBLICSHARE_DIR
+            XDG_DOCUMENTS_DIR
+            XDG_MUSIC_DIR
+            XDG_PICTURES_DIR
+            XDG_VIDEOS_DIR
+
+        Taken from FrontBringer
+        (distributed under the GNU GPL v3 license),
+        courtesy of Jean-François Fortin Tam.
+        """
+        user_dirs_dirs = os.path.expanduser(xdg_config_home + "/user-dirs.dirs")
+        if os.path.exists(user_dirs_dirs):
+            f = open(user_dirs_dirs, "r")
+            for line in f.readlines():
+                if line.startswith(key):
+                    return os.path.expandvars(line[len(key)+2:-2])
+
 ### SIGNAL CALLBACKS ##########################################################
 # Typically, reaction to user input & interactions with the GUI
 #
@@ -1525,14 +1548,6 @@ class TaskBrowser:
             if self.refresh_lock.acquire(False):
                 gobject.idle_add(self.general_refresh)
 
-
-
-
-
-
-
-
-
     def on_export(self, widget):
         #Generating lists
         self.export_template_paths = [xdg_config_home + "/gtg/export/",
@@ -1541,7 +1556,7 @@ class TaskBrowser:
                 map(lambda x: x.get_name(),self.req.get_all_tags())
         for dir in self.export_template_paths: 
             if os.path.exists(dir):
-                template_list = filter(lambda str: str.startswith("export_"),
+                template_list = filter(lambda str: str.startswith("template_"),
                                   os.listdir(dir))
         #Creating combo-boxes
         self.export_combo_tags_entry = self.combo_decorator(\
@@ -1554,10 +1569,7 @@ class TaskBrowser:
         self.export_dialog.destroy()
         return True
 
-
-
-    def on_export_exec(self, widget = None, data = None):
-        #Task list generation
+    def export_generate_task_list(self):
         supposed_tag = self.export_combo_tags_entry.get_text()
         if supposed_tag == _("All tasks"):
             tasks_list = self.req.get_tasks_list()
@@ -1566,17 +1578,11 @@ class TaskBrowser:
                 tasks_list = self.req.get_tasks_list(\
                                     [self.req.get_tag(supposed_tag)])
             else:
-                dialog = gtk.MessageDialog(parent = \
-                     self.plugin_api.get_window(),
-                     flags = gtk.DIALOG_DESTROY_WITH_PARENT,
-                     type = gtk.MESSAGE_ERROR,
-                     buttons=gtk.BUTTONS_OK,
-                     message_format=_("Tag does not exist"))
-                dialog.run() 
-                dialog.destroy()
-                return
-        tasks_list = map(lambda x: self.req.get_task(x), tasks_list)
-        
+                return False
+        self.export_task_list = map(lambda x: self.req.get_task(x), tasks_list)
+        return True
+
+    def export_check_template(self):
         #Check template file 
         #NOTE: if two templates have the same name, the user provided one takes
         #      precedence over ours
@@ -1588,33 +1594,24 @@ class TaskBrowser:
         if len(template_paths) >0:
             template_path = template_paths[0]
         else:
-            dialog = gtk.MessageDialog(parent = \
-                 self.plugin_api.get_window(),
-                 flags = gtk.DIALOG_DESTROY_WITH_PARENT,
-                 type = gtk.MESSAGE_ERROR,
-                 buttons=gtk.BUTTONS_OK,
-                 message_format=_("Template not found"))
-            dialog.run() 
-            dialog.destroy()
-            return
-        
+            return False
+        self.export_template_path = template_path
+        self.export_template_filename = supposed_template
+        return True
+
+    def export_generate(self):
         #Template loading and cutting
-        with open(template_path, 'r') as file:
-            template = file.read()
-
+        try:
+            with open(self.export_template_path, 'r') as file:
+                template = file.read()
+        except Exception as e:
+            print e
+            template = None
         if not type(template) == type(""):
-            dialog = gtk.MessageDialog(parent = \
-                 self.plugin_api.get_window(),
-                 flags = gtk.DIALOG_DESTROY_WITH_PARENT,
-                 type = gtk.MESSAGE_ERROR,
-                 buttons=gtk.BUTTONS_OK,
-                 message_format=_("Can't load the template file"))
-            dialog.run() 
-            dialog.destroy()
-
+            return False
         [t_header, t_task, t_footer] = template.split("--DELIMITER--")
         tasks_str = ""
-        for task in tasks_list:
+        for task in self.export_task_list:
             task_str =   t_task.replace("$TITLE"     , task.get_title())
             # task_str = task_str.replace("$STATUS"    , task.get_status())
             #            task_str = task_str.replace("$MODIFIED"  , task.get_modified())
@@ -1628,32 +1625,65 @@ class TaskBrowser:
             task_str = task_str.replace("$TAGS" , "".join(map(lambda t: \
                                             t.get_name(), task.get_tags())))
             tasks_str += task_str
-                                       
-        #Template saving and viewing
-        output_path = '/tmp/' + supposed_template
+        self.export_document = "".join([t_header, tasks_str, t_footer]) 
+        return True
+
+
+    def export_execute_with_ui(self):
+        call = [(self.export_generate_task_list, _("Tag does not exist")),\
+                (self.export_check_template    , _("Template not found")),\
+                (self.export_generate          , _("Can't load the template file") )]
+        for step in call:
+            if not step[0]():
+                dialog = gtk.MessageDialog(parent = \
+                     self.plugin_api.get_window(),
+                     flags = gtk.DIALOG_DESTROY_WITH_PARENT,
+                     type = gtk.MESSAGE_ERROR,
+                     buttons=gtk.BUTTONS_OK,
+                     message_format=step[1])
+                dialog.run() 
+                dialog.destroy()
+                return False
+        return True
+
+    def export_save_file(self, output_path):
         with open(output_path, 'w+b') as file:
-            file.write("".join([t_header, tasks_str, t_footer]))
-        subprocess.Popen(['xdg-open', output_path])
+            file.write(self.export_document)
 
-        self.on_export_cancel()
+    def on_export_open(self, widget = None):
+        if not self.export_execute_with_ui():
+            return
+        path = '/tmp/' + self.export_template_filename
+        self.export_save_file(path)
+        subprocess.Popen(['xdg-open', path])
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    def on_export_save(self, widget = None):
+        if not self.export_execute_with_ui():
+            return
+        chooser = gtk.FileChooserDialog(\
+                title = _("Choose where to save your list"),
+                parent = self.export_dialog,
+                action = gtk.FILE_CHOOSER_ACTION_SAVE,
+                buttons = (gtk.STOCK_CANCEL,
+                           gtk.RESPONSE_CANCEL,
+                           gtk.STOCK_OPEN,
+                           gtk.RESPONSE_OK))
+        desktop_dir = self.get_user_dir("XDG_DESKTOP_DIR")
+        #NOTE: using ./scripts/debug.sh, it doesn't detect the Desktop
+        # dir, as the XDG directories are changed
+        if desktop_dir != None and os.path.exists(desktop_dir):
+            chooser.set_current_folder(desktop_dir)
+        else:
+            chooser.set_current_folder(os.environ['HOME'])
+            #        chooser.set_filename(self.export_template_filename)
+        chooser.set_default_response(gtk.RESPONSE_OK)
+        response = chooser.run()
+        chooser.destroy()
+        if response == gtk.RESPONSE_OK:
+            self.export_save_file(chooser.get_filename())
+            self.on_export_cancel()
         
+
     def general_refresh(self):
         if self.logger:
             self.logger.debug("Trigger refresh on taskbrowser.")
