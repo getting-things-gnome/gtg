@@ -1,3 +1,4 @@
+    * Support non-exact ("fuzzy") due dates: 'now', 'soon', and 'later' by Kevin Mehall
     * Fixes a bug with gtk stock strings being marked as translatable, by Henning Eggers (#490231)
     * When a task is deleted, all subtask are deleted as well by Mikkel Kjær Jensen
     * Groups for tags and subtags by Kevin Mehall
@@ -20,6 +21,7 @@
       - Filters were also added to the requester 
     * Fixed #406851, incorrect behaviour marking a dismissed task as done by Patrick Coleman
     * Added accelerators to the task editor by Patrick Coleman
+    * Plugin for integration with the Hamster Time Tracker by Kevin Mehall
     * Add plugin engine by Paulo Cabido
     * When GTG is already running, use DBUS to raise existing instance rather than failing silently
     * Refactorization and PEP8ification work by Jonathan Lange
