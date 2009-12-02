@@ -357,6 +357,10 @@ class TaskBrowser:
             self.on_task_treeview_button_press_event)
         self.task_tv.connect('key-press-event',\
             self.on_task_treeview_key_press_event)
+        self.task_tv.connect('row-expanded',\
+            self.on_task_treeview_row_expanded)
+        self.task_tv.connect('row-collapsed',\
+            self.on_task_treeview_row_collapsed)
         
         # Closed tasks TreeView
         self.ctask_tv.connect('row-activated',\
@@ -632,7 +636,6 @@ class TaskBrowser:
 #        if not self.priv['workview'] and self.note_toggle.get_active():
 #            self.note_toggle.set_active(False)
         #We do something only if both widget are in different state
-        self.task_modelsort.foreach(self.update_collapsed_row, None)
         tobeset = not self.priv['workview']
         self.menu_view_workview.set_active(tobeset)
         self.toggle_workview.set_active(tobeset)
@@ -724,23 +727,6 @@ class TaskBrowser:
             return False
         else:
             return True
-
-    def update_collapsed_row(self, model, path, iter, user_data):
-        """Build a list of task that must showed as collapsed in Treeview"""
-        model = self.task_tv.get_model()
-        tid   = model.get_value(iter, tasktree.COL_TID)
-        # Remove expanded rows
-        if (model.iter_has_child(iter) and
-            self.task_tv.row_expanded(path) and
-            tid in self.priv["collapsed_tids"]):
-            self.priv["collapsed_tids"].remove(tid)
-        # Append collapsed rows
-        elif (model.iter_has_child(iter) and
-              not self.task_tv.row_expanded(path) and
-              tid not in self.priv["collapsed_tids"]):
-            self.priv["collapsed_tids"].append(tid)
-
-        return False # Return False or the TreeModel.foreach() function ends
 
     def open_task(self, uid,thisisnew=False):
         """Open the task identified by 'uid'.
@@ -956,10 +942,6 @@ class TaskBrowser:
         self.priv["window_height"] = height
 
     def on_delete(self, widget, user_data):
-
-        # Save expanded rows
-        self.task_tv.get_model().foreach(self.update_collapsed_row, None)
-
         # Cleanup collapsed row list
         for tid in self.priv["collapsed_tids"]:
             if not self.req.has_task(tid):
@@ -1131,11 +1113,23 @@ class TaskBrowser:
             self.quickadd_pane.hide()
 
     def on_task_child_toggled(self, model, path, iter):
-        #print "on_child_toggled: %s" % model.get_value(iter, tasktree.COL_TID)
         tid = model.get_value(iter, tasktree.COL_TID)
         if tid not in self.priv.get("collapsed_tids", []):
-            self.task_tv.expand_row(path, True)
+            self.task_tv.expand_row(path, False)
+        else:
+            self.task_tv.collapse_row(path)
             
+    def on_task_treeview_row_expanded(self, treeview, iter, path):
+        tid = treeview.get_model().get_value(iter, tasktree.COL_TID)
+        if tid in self.priv["collapsed_tids"]:
+            self.priv["collapsed_tids"].remove(tid)
+        
+    def on_task_treeview_row_collapsed(self, treeview, iter, path):
+        tid = treeview.get_model().get_value(iter, tasktree.COL_TID)
+        if tid not in self.priv["collapsed_tids"]:
+            self.priv["collapsed_tids"].append(tid)
+            
+    
     def on_tag_child_toggled(self, model, path, iter):
         tag = model.get_value(iter, tagtree.COL_ID)
         if tag not in self.priv.get("collapsed_tags", []):
@@ -1380,7 +1374,6 @@ class TaskBrowser:
         self.task_tv.get_selection().unselect_all()
         self.ctask_tv.get_selection().unselect_all()
         task_model = self.task_tv.get_model()
-        task_model.foreach(self.update_collapsed_row, None)
         self.task_modelfilter.refilter()
         self._update_window_title()
 
