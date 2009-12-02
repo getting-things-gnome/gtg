@@ -1550,7 +1550,7 @@ class TaskBrowser:
                 self.export_combo_templ, template_list)
         self.export_dialog.show_all()
 
-    def on_export_cancel(self, widget, data = None):
+    def on_export_cancel(self, widget = None, data = None):
         self.export_dialog.destroy()
         return True
 
@@ -1634,6 +1634,8 @@ class TaskBrowser:
         with open(output_path, 'w+b') as file:
             file.write("".join([t_header, tasks_str, t_footer]))
         subprocess.Popen(['xdg-open', output_path])
+
+        self.on_export_cancel()
 
 
 
