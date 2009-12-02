@@ -7,306 +7,403 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2009-04-15 15:13+0200\n"
-"PO-Revision-Date: 2009-04-02 03:27+0000\n"
-"Last-Translator: melayubuntu <zul.malc@gmail.com>\n"
+"POT-Creation-Date: 2009-12-02 23:45+0100\n"
+"PO-Revision-Date: 2009-09-15 08:36+0000\n"
+"Last-Translator: itiknila <Unknown>\n"
 "Language-Team: Malay <ms@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2009-07-04 13:00+0000\n"
+"X-Launchpad-Export-Date: 2009-12-02 23:40+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
-#: GTG/taskeditor/taskeditor.glade.h:1
-msgid "<span weight=\"bold\">Due for</span>"
-msgstr "<span weight=\"bold\">Hingga</span>"
+#: GTG/plugins/rtm_sync/rtm_sync.py:67 GTG/plugins/rtm_sync/rtm_sync.py:73
+msgid "Synchronize with RTM"
+msgstr ""
 
-#: GTG/taskeditor/taskeditor.glade.h:2
-msgid "<span weight=\"bold\">Starting on</span>"
-msgstr "<span weight=\"bold\">Bermula pada</span>"
+#: GTG/plugins/rtm_sync/rtm_sync.py:148
+msgid "Synchronization started"
+msgstr ""
 
-#: GTG/taskeditor/taskeditor.glade.h:3 GTG/taskbrowser/taskbrowser.glade.h:12
-msgid "Delete"
-msgstr "Padam"
+#: GTG/plugins/rtm_sync/rtm_sync.py:161
+msgid "Trying to access, please stand by..."
+msgstr ""
 
-#: GTG/taskeditor/taskeditor.glade.h:4 GTG/taskbrowser/taskbrowser.glade.h:13
-#: GTG/taskbrowser/__init__.py:33
-msgid "Dismiss"
-msgstr "Mengetepikan"
+#: GTG/plugins/rtm_sync/rtm_sync.py:179
+msgid "Couldn't connect to Remember The Milk"
+msgstr ""
 
-#: GTG/taskeditor/taskeditor.glade.h:5
-msgid "Insert subtask"
-msgstr "Masukkan subtask"
+#: GTG/plugins/rtm_sync/rtm_sync.py:193
+msgid "<b>Authentication failed</b>.Please retry."
+msgstr ""
 
-#: GTG/taskeditor/taskeditor.glade.h:6
-msgid "Insert tag"
-msgstr "Masukkan tanda"
+#: GTG/plugins/rtm_sync/rtm_sync.py:198
+msgid ""
+"Please authenticate to Remember The Milk in the browser that is being opened "
+"now. When done, press OK"
+msgstr ""
 
-#: GTG/taskeditor/taskeditor.glade.h:7
-msgid "Keep as Note"
-msgstr "Kekalkan sebagai nota"
+#: GTG/plugins/rtm_sync/gtk.glade.h:1
+msgid "Authentication"
+msgstr ""
 
-#: GTG/taskeditor/taskeditor.glade.h:8
-msgid "Mark Done"
-msgstr "Sudah Buat"
+#: GTG/plugins/rtm_sync/syncengine.py:67
+msgid "Adding tasks to gtg.."
+msgstr ""
 
-#: GTG/taskeditor/taskeditor.glade.h:9
-msgid "Task"
-msgstr "Task"
+#: GTG/plugins/rtm_sync/syncengine.py:70 GTG/plugins/rtm_sync/syncengine.py:82
+#: GTG/plugins/rtm_sync/syncengine.py:182
+#: GTG/plugins/rtm_sync/syncengine.py:193
+msgid "Adding "
+msgstr ""
 
-#: GTG/taskeditor/editor.py:214
-msgid "Due tomorrow !"
-msgstr "Hingga esok !"
+#: GTG/plugins/rtm_sync/syncengine.py:79
+#: GTG/plugins/rtm_sync/syncengine.py:178
+#: GTG/plugins/rtm_sync/syncengine.py:189
+msgid "Adding tasks to rtm.."
+msgstr ""
 
-#: GTG/taskeditor/editor.py:216
-#, python-format
-msgid "%s days left"
-msgstr "%s hari lagi"
+#: GTG/plugins/rtm_sync/syncengine.py:97
+msgid "Synchronization failed."
+msgstr ""
 
-#: GTG/taskeditor/editor.py:218
-msgid "Due today !"
-msgstr "Hingga hari ini !"
+#: GTG/plugins/rtm_sync/syncengine.py:100
+msgid "Downloading task list..."
+msgstr ""
 
-#: GTG/taskeditor/editor.py:220
-msgid "Due for yesterday"
-msgstr "Hingga semalam"
+#: GTG/plugins/rtm_sync/syncengine.py:106
+msgid "Analyzing tasks..."
+msgstr ""
 
-#: GTG/taskeditor/editor.py:222
-#, python-format
-msgid "Was %s days ago"
-msgstr "%s hari lalu"
+#: GTG/plugins/rtm_sync/syncengine.py:117
+msgid "Running first synchronization..."
+msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:6
-msgid "About GTG!"
-msgstr "Tentang GTG!"
+#: GTG/plugins/rtm_sync/syncengine.py:123
+msgid "Analyzing last sync..."
+msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:7
-msgid "Choose a color"
-msgstr "Pilih satu warna"
+#: GTG/plugins/rtm_sync/syncengine.py:155
+msgid "Deleting tasks from rtm.."
+msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:8
-msgid "Confirm task deletion"
-msgstr "Pastikan pemadaman task"
+#: GTG/plugins/rtm_sync/syncengine.py:160
+#: GTG/plugins/rtm_sync/syncengine.py:170
+msgid "Deleting "
+msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:9
-msgid "Copyrights© 2008, 2009 Lionel Dricot, Bertrand Rousseau"
-msgstr "Copyrights© 2008, 2009 Lionel Dricot, Bertrand Rousseau"
+#: GTG/plugins/rtm_sync/syncengine.py:165
+msgid "Deleting tasks from gtg.."
+msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:10 GTG/taskbrowser/browser.py:110
-msgid "Create a new task"
-msgstr "Binakan task baru"
+#: GTG/plugins/rtm_sync/syncengine.py:199
+msgid "Updating remaining tasks.."
+msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:11
-msgid "D_ismiss"
-msgstr "K_etepikan"
+#: GTG/plugins/rtm_sync/syncengine.py:206
+#: GTG/plugins/rtm_sync/syncengine.py:209
+msgid "Updating "
+msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:14
-msgid "Edit"
-msgstr "Sunting"
+#: GTG/plugins/rtm_sync/syncengine.py:214
+msgid "Saving current state.."
+msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:15
-msgid "GTG website"
-msgstr "Laman Web GTG"
+#: GTG/plugins/rtm_sync/syncengine.py:220
+msgid "Synchronization completed."
+msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:16
-msgid "Getting Things Gnome!"
-msgstr "Getting Things Gnome!"
+#: GTG/plugins/rtm_sync/syncengine.py:226
+msgid "Closing in one second"
+msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:25
-msgid "New Note"
-msgstr "Nota Baru"
+#: GTG/plugins/rtm_sync/utility.py:56
+msgid "saving critical object failed"
+msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:26
-msgid "New Subtask"
-msgstr "Subtask Baru"
+#: GTG/plugins/rtm_sync/pyrtm/rtm.py:56
+msgid "Invalid state"
+msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:27
-msgid "New Task"
-msgstr "Task Baru"
+#: GTG/plugins/rtm_sync/pyrtm/rtm.py:105
+msgid "API call failed"
+msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:33 GTG/taskbrowser/browser.py:1486
-#: GTG/taskbrowser/browser.py:1557
-msgid "Tags"
-msgstr "Tanda"
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:1
+msgid "<b>Location Determination Method</b>"
+msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:36
-msgid "View Notes"
-msgstr "Lihat Nota"
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:2
+msgid "<b>Proximity Factor</b>"
+msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:40
-msgid "_Edit"
-msgstr "_Sunting"
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:3
+msgid ""
+"<small>Distance in kilometers from \n"
+"the current location.</small>"
+msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:41
-msgid "_File"
-msgstr "_Fail"
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:5
+msgid "Associate with existing tag"
+msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:42
-msgid "_Help"
-msgstr "_Bantuan"
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:6
+msgid "Associate with new tag"
+msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:46
-msgid "_Tasks"
-msgstr "_Task"
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:7
+msgid "Geolocalized-tasks Preferences"
+msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:47
-msgid "_View"
-msgstr "_Lihat"
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:8
+msgid "Set the task's location"
+msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:51
-msgid "gtk-cancel"
-msgstr "batal-gtk"
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:9
+msgid "Use cellphone"
+msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:54
-msgid "gtk-help"
-msgstr "gtk-pertolongan"
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:10
+msgid "Use gps"
+msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:55
-msgid "gtk-ok"
-msgstr "gtk-ok"
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:11
+msgid "Use network"
+msgstr ""
 
-#: GTG/taskbrowser/browser.py:108
-msgid "Edit the selected task"
-msgstr "Sunting task yang dipilih"
+#: GTG/plugins/helloworld/hello_world.glade.h:1
+msgid "Hello World"
+msgstr ""
 
-#: GTG/taskbrowser/browser.py:111
-msgid "Create a new subtask"
-msgstr "Binakan subtask baru"
+#: GTG/plugins/helloworld/hello_world.glade.h:2
+msgid "Hello World Plugin"
+msgstr ""
 
-#: GTG/taskbrowser/browser.py:556
-msgid "monday"
-msgstr "isnin"
+#: GTG/plugins/tomboy/tomboy.glade.h:1
+msgid "Insert Note"
+msgstr ""
 
-#: GTG/taskbrowser/browser.py:556
-msgid "tuesday"
-msgstr "selasa"
+#: GTG/plugins/tomboy/tomboy.glade.h:2
+msgid "Insert the title of the tomboy note "
+msgstr ""
 
-#: GTG/taskbrowser/browser.py:557
-msgid "thursday"
-msgstr "khamis"
+#: GTG/plugins/tomboy/tomboy.py:82
+msgid ""
+"Tomboy not found. Please install it or disable the Tomboy plugin in GTG"
+msgstr ""
 
-#: GTG/taskbrowser/browser.py:557
-msgid "friday"
-msgstr "jumaat"
+#: GTG/plugins/tomboy/tomboy.py:125
+msgid "Add Tomboy note"
+msgstr ""
 
-#: GTG/taskbrowser/browser.py:557
-msgid "saturday"
-msgstr "sabtu"
+#: GTG/plugins/tomboy/tomboy.py:221
+msgid "That note does not exist!"
+msgstr ""
 
-#: GTG/taskbrowser/browser.py:558
-msgid "sunday"
-msgstr "ahad"
+#: GTG/plugins/tomboy/tomboy.py:226
+msgid "That note does not exist. Do you want to create a new one?"
+msgstr ""
 
-#: GTG/taskbrowser/browser.py:567
-msgid "today"
-msgstr "hari ini"
+#: GTG/plugins/tomboy/tomboy.py:252
+msgid "This Tomboy note does not exist anymore. Do you want to create it?"
+msgstr ""
 
-#: GTG/taskbrowser/browser.py:574
-msgid "tomorrow"
-msgstr "esok"
+#: GTG/core/plugins/pluginmanager.glade.h:1
+msgid "<b>No Plugin Selected</b>"
+msgstr ""
 
-#: GTG/taskbrowser/browser.py:635
-msgid "tags"
-msgstr "tanda"
+#: GTG/core/plugins/pluginmanager.glade.h:2
+msgid "Authors:  "
+msgstr ""
 
-#: GTG/taskbrowser/browser.py:638
-msgid "defer"
-msgstr "tangguh"
+#: GTG/core/plugins/pluginmanager.glade.h:3
+msgid "Description:"
+msgstr ""
 
-#: GTG/taskbrowser/browser.py:642
-msgid "due"
-msgstr "dijadualkan"
+#: GTG/core/plugins/pluginmanager.glade.h:4
+msgid "Plugin Manager"
+msgstr ""
 
-#: GTG/taskbrowser/browser.py:753
-msgid "<span weight=\"bold\">All tags</span>"
-msgstr "<span weight=\"bold\">Semua tanda</span>"
+#: GTG/core/plugins/pluginmanager.glade.h:5
+msgid "Version: "
+msgstr ""
 
-#: GTG/taskbrowser/browser.py:754
-msgid "<span weight=\"bold\">Tasks without tags</span>"
-msgstr "<span weight=\"bold\">Task tanpa tanda</span>"
-
-#: GTG/taskbrowser/browser.py:849
-msgid "(no active tasks)"
-msgstr "(tiada task aktif)"
-
-#: GTG/taskbrowser/browser.py:851
-msgid "(1 active task)"
-msgstr "(1 task aktif)"
-
-#: GTG/taskbrowser/browser.py:1501 GTG/taskbrowser/browser.py:1584
-msgid "Title"
-msgstr "Tajuk"
-
-#: GTG/taskbrowser/browser.py:1520
-msgid "Due date"
-msgstr "Tarikh dijadualkan"
-
-#: GTG/taskbrowser/browser.py:1534
-msgid "Days left"
-msgstr "Hari lagi"
-
-#: GTG/taskbrowser/browser.py:1572
-msgid "Closing date"
-msgstr "Tarikh tutup"
-
-#: GTG/taskbrowser/browser.py:1600
-msgid "Notes"
-msgstr "Nota"
-
-#: GTG/core/firstrun_tasks.py:6
-msgid "Getting started with GTG"
-msgstr "Bermula dengan GTG"
+#: GTG/core/task.py:46
+msgid "My new task"
+msgstr ""
 
 #: GTG/core/firstrun_tasks.py:7
-msgid "Welcome in Getting Things Gnome!, your new task manager."
+msgid "Getting started with GTG"
 msgstr ""
-"Selamat datang ke Getting Things Gnome!, pengurus task anda yang baru."
 
-#: GTG/core/firstrun_tasks.py:17
-msgid "Don't forget to mark this subtask as done !"
-msgstr "Jangan lupa untuk menandakan subtask ini sebagai telah dibuat!"
+#: GTG/core/firstrun_tasks.py:8
+msgid "Welcome to Getting Things Gnome!, your new task manager."
+msgstr ""
 
-#: GTG/core/firstrun_tasks.py:19
-msgid "Other stuff you should read :"
-msgstr "Perkara lain anda perlu baca :"
+#: GTG/core/firstrun_tasks.py:10
+msgid ""
+"In GTG, everything is a task. From building a bridge over the Pacific Ocean "
+"to changing a light bulb or organizing a party. When you edit a task, it is "
+"automatically saved."
+msgstr ""
+
+#: GTG/core/firstrun_tasks.py:12
+msgid ""
+"Once a task is done, you can push the &quot;Mark as done&quot; button. If "
+"the task is not relevant any-more, simply press &quot;Dismiss&quot;."
+msgstr ""
+
+#: GTG/core/firstrun_tasks.py:14
+msgid ""
+"A task might be composed of multiple subtasks that appear as links in the "
+"description. Simply click on the following link:"
+msgstr ""
+
+#: GTG/core/firstrun_tasks.py:18
+msgid ""
+"Once you've read the above subtask, mark it as Done. If you don't want to do "
+"the task, mark it as dismissed. Done and Dismissed tasks are keeped in the "
+"closed tasks pane, hidden by default but you can easily enable it in the "
+"View menu."
+msgstr ""
+
+#: GTG/core/firstrun_tasks.py:20
+msgid ""
+"If you choose to close this current task, subtasks will be automatically "
+"closed too. We indeed consider that, if you achieve a given task, you don't "
+"need to do the subtask anymore."
+msgstr ""
+
+#: GTG/core/firstrun_tasks.py:22
+msgid "Other stuff you should read:"
+msgstr "Lain-lain artikel yang patut dibaca."
 
 #: GTG/core/firstrun_tasks.py:28
-msgid "Thank you for trying out GTG :-)"
-msgstr "Terima kasih kerana mencuba GTG :-)"
+msgid ""
+"We hope that you will appreciate GTG. Please send us bug reports and ideas "
+"for improvement using: "
+msgstr ""
 
-#: GTG/core/firstrun_tasks.py:33
+#: GTG/core/firstrun_tasks.py:31
+msgid "Thank you for trying out GTG:-)"
+msgstr "Terima kasih kerana menggunakan GTG :-)"
+
+#: GTG/core/firstrun_tasks.py:36
 msgid "Learn to use subtasks"
 msgstr "Belajar cara menggunakan subtask"
 
-#: GTG/core/firstrun_tasks.py:36
+#: GTG/core/firstrun_tasks.py:37
+msgid ""
+"In the task description (this window), if you begin a line with &quot;-"
+"&quot;, it will be considered as a &quot;subtask&quot;, something that needs "
+"to be done in order to accomplish your task. Just try to write &quot;- test "
+"subtask&quot; on the next line and press enter."
+msgstr ""
+
+#: GTG/core/firstrun_tasks.py:39
 msgid "You can also use the &quot;insert subtask&quot; button."
 msgstr "Anda kjuga boleh menggunakan butang &gquot;masukkan subtask&quot;"
 
-#: GTG/core/firstrun_tasks.py:47
+#: GTG/core/firstrun_tasks.py:41
+msgid ""
+"Task and subtasks can be re-organized by drag-n-drop in the tasks list."
+msgstr ""
+
+#: GTG/core/firstrun_tasks.py:43
+msgid ""
+"Some concepts come with subtasks: for example, a subtask due date can never "
+"be after its parent due date."
+msgstr ""
+
+#: GTG/core/firstrun_tasks.py:45
+msgid "Also, marking a parent as done will mark all the subtasks as done."
+msgstr ""
+
+#: GTG/core/firstrun_tasks.py:50
 msgid "Learn to use tags"
 msgstr "Belajar menggunakan tanda"
 
-#: GTG/core/firstrun_tasks.py:48
+#: GTG/core/firstrun_tasks.py:51
 msgid "A tag is a simple word that begin with &quot;@&quot;."
 msgstr "Tanda ialah perkataan pendek yang bermula dengan &quot;@&quot;."
 
-#: GTG/core/firstrun_tasks.py:50
-msgid "Try to type a word beginning with @ here :"
-msgstr "Cuba taipkan perkataan dimulakan denagn @ disini :"
+#: GTG/core/firstrun_tasks.py:53
+msgid "Try to type a word beginning with @ here:"
+msgstr ""
 
-#: GTG/core/firstrun_tasks.py:52
+#: GTG/core/firstrun_tasks.py:55
 msgid "It becomes yellow, it's a tag."
 msgstr "Ianya menjadi kuning, ianya satu tanda."
 
-#: GTG/core/firstrun_tasks.py:63
+#: GTG/core/firstrun_tasks.py:57
+msgid ""
+"Tags are useful to sort your tasks. In the view menu, you can enable a "
+"sidebar which displays all the tags you are using so you can easily see "
+"tasks for a given tag. There's no limit to the number of tags a task can "
+"have."
+msgstr ""
+
+#: GTG/core/firstrun_tasks.py:59
+msgid ""
+"If you right click on a tag in the sidebar you can also set its color. It "
+"will permit you to have a more colorful list of tasks, if you want it that "
+"way."
+msgstr ""
+
+#: GTG/core/firstrun_tasks.py:61
+msgid ""
+"A new tag is only added to the current task. There's no recursivity and the "
+"tag is not applied to subtasks. But when you create a new subtask, this "
+"subtask will inherit the tags of its parent as a good primary default (it "
+"will also be the case if you add a tag to a parent just after creating a "
+"subtask). Of course, you can modify at any time the tags of this particular "
+"subtask. It will never be changed by the parent."
+msgstr ""
+
+#: GTG/core/firstrun_tasks.py:66
 msgid "Using the Workview"
 msgstr "Gunakan Workview"
 
-#: GTG/core/firstrun_tasks.py:80
+#: GTG/core/firstrun_tasks.py:67
+msgid ""
+"If you press the &quot;Workview&quot; button, only actionable tasks will be "
+"displayed."
+msgstr ""
+
+#: GTG/core/firstrun_tasks.py:69
+msgid ""
+"What is an actionable task? It's a task you can do directly, right now."
+msgstr ""
+
+#: GTG/core/firstrun_tasks.py:71
+msgid ""
+"It's a task that is already &quot;start-able&quot;, i.e. the start date is "
+"already over."
+msgstr ""
+
+#: GTG/core/firstrun_tasks.py:73
+msgid ""
+"It's a task that doesn't have open subtasks, i.e. you can do the task itself "
+"directly."
+msgstr ""
+
+#: GTG/core/firstrun_tasks.py:75
+msgid "Thus, the workview will only show you tasks you should do right now."
+msgstr ""
+
+#: GTG/core/firstrun_tasks.py:77
+msgid ""
+"If you use tags, you can right click on a tag in the sidebar and choose to "
+"not display tasks with this particular tag in the workview. It's very useful "
+"if you have a tag like &quot;someday&quot; that you use for tasks you would "
+"like to do but are not particularly urgent."
+msgstr ""
+
+#: GTG/core/firstrun_tasks.py:83
 msgid "Reporting bugs"
 msgstr "Laporkan pepijat"
 
-#: GTG/core/firstrun_tasks.py:81
+#: GTG/core/firstrun_tasks.py:84
 msgid ""
 "GTG is still very alpha software. We like it and use it everyday but you "
 "will encounter some bugs."
@@ -314,13 +411,164 @@ msgstr ""
 "GTG ialah perisian yang masih diperingkat Alfa. Kami sukakannya dan "
 "menggunakannya setiap hari namun anda pasti akan menghadapi beberapa pepijat."
 
-#: GTG/taskeditor/taskeditor.glade.h:10
-msgid "gtk-clear"
+#: GTG/core/firstrun_tasks.py:86
+msgid "Please, report them on our Launchpad page:"
 msgstr ""
 
-#: GTG/taskeditor/taskeditor.glade.h:11
-msgid "gtk-close"
+#: GTG/core/firstrun_tasks.py:89
+msgid ""
+"We need you to make this software better. Any contribution, any idea is "
+"welcome."
 msgstr ""
+
+#: GTG/core/firstrun_tasks.py:91
+msgid ""
+"If you have some trouble with GTG, we might be able to help you or to solve "
+"your problem really quickly."
+msgstr ""
+
+#: GTG/gtg.py:80
+msgid "gtg is already running!"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:200
+msgid "All tasks"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:207
+msgid "Tasks with no tags"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:644
+msgid "(no active tasks)"
+msgstr "(tiada task aktif)"
+
+#: GTG/taskbrowser/browser.py:646
+msgid "(1 active task)"
+msgstr "(1 task aktif)"
+
+#: GTG/taskbrowser/browser.py:648
+#, python-format
+msgid "(%s active tasks)"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:658
+msgid "monday"
+msgstr "isnin"
+
+#: GTG/taskbrowser/browser.py:658
+msgid "tuesday"
+msgstr "selasa"
+
+#: GTG/taskbrowser/browser.py:658
+msgid "wednesday"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:659
+msgid "thursday"
+msgstr "khamis"
+
+#: GTG/taskbrowser/browser.py:659
+msgid "friday"
+msgstr "jumaat"
+
+#: GTG/taskbrowser/browser.py:659
+msgid "saturday"
+msgstr "sabtu"
+
+#: GTG/taskbrowser/browser.py:660
+msgid "sunday"
+msgstr "ahad"
+
+#: GTG/taskbrowser/browser.py:669
+msgid "today"
+msgstr "hari ini"
+
+#: GTG/taskbrowser/browser.py:676
+msgid "tomorrow"
+msgstr "esok"
+
+#: GTG/taskbrowser/browser.py:1143
+msgid "tags"
+msgstr "tanda"
+
+#: GTG/taskbrowser/browser.py:1147
+msgid "defer"
+msgstr "tangguh"
+
+#: GTG/taskbrowser/browser.py:1152
+msgid "due"
+msgstr "dijadualkan"
+
+#: GTG/taskbrowser/__init__.py:32 GTG/taskeditor/__init__.py:28
+msgid "Mark as done"
+msgstr "Tanda sebagai lengkap"
+
+#: GTG/taskbrowser/__init__.py:33
+msgid "Mark the selected task as done"
+msgstr ""
+
+#: GTG/taskbrowser/__init__.py:34 GTG/taskeditor/__init__.py:29
+msgid "Mark as not done"
+msgstr "Tanda sebagai belum lengkap"
+
+#: GTG/taskbrowser/__init__.py:35 GTG/taskbrowser/__init__.py:39
+msgid "Mark the selected task as to be done"
+msgstr ""
+
+#: GTG/taskbrowser/__init__.py:36 GTG/taskbrowser/taskbrowser.glade.h:13
+#: GTG/taskeditor/__init__.py:30 GTG/taskeditor/taskeditor.glade.h:4
+msgid "Dismiss"
+msgstr "Ketepikan"
+
+#: GTG/taskbrowser/__init__.py:37
+msgid "Mark the task as not to be done anymore"
+msgstr ""
+
+#: GTG/taskbrowser/__init__.py:38 GTG/taskeditor/__init__.py:31
+msgid "Undismiss"
+msgstr "Ketengahkan"
+
+#: GTG/taskbrowser/__init__.py:40
+msgid "Permanently remove the selected task"
+msgstr ""
+
+#: GTG/taskbrowser/__init__.py:41
+msgid "Edit the selected task"
+msgstr "Sunting task yang dipilih"
+
+#: GTG/taskbrowser/__init__.py:42 GTG/taskbrowser/taskbrowser.glade.h:10
+msgid "Create a new task"
+msgstr "Binakan task baru"
+
+#: GTG/taskbrowser/__init__.py:43
+msgid "Create a new subtask"
+msgstr "Binakan subtask baru"
+
+#: GTG/taskbrowser/__init__.py:44
+msgid "Toggle the work view"
+msgstr ""
+
+#: GTG/taskbrowser/tasktree.py:378 GTG/taskbrowser/tasktree.py:505
+#: GTG/taskbrowser/taskbrowser.glade.h:35 GTG/taskbrowser/tagtree.py:300
+msgid "Tags"
+msgstr "Tanda"
+
+#: GTG/taskbrowser/tasktree.py:393 GTG/taskbrowser/tasktree.py:529
+msgid "Title"
+msgstr "Tajuk"
+
+#: GTG/taskbrowser/tasktree.py:406
+msgid "Due date"
+msgstr "Tarikh dijadualkan"
+
+#: GTG/taskbrowser/tasktree.py:418
+msgid "Days left"
+msgstr "Hari lagi"
+
+#: GTG/taskbrowser/tasktree.py:517
+msgid "Closing date"
+msgstr "Tarikh tutup"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:1
 msgid ""
@@ -333,8 +581,44 @@ msgid ""
 "<span weight=\"bold\" size=\"large\">Are you sure you want delete this "
 "task?</span>\n"
 "\n"
-"Deleting a task cannot be undone."
+"Deleting a task cannot be undone, and will delete the following tasks: "
 msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:6
+msgid "About GTG!"
+msgstr "Tentang GTG!"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:7
+msgid "Add a subtask"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:8
+msgid "Confirm task deletion"
+msgstr "Pastikan pemadaman task"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:9
+msgid "Copyrights&#xA9; 2008, 2009 Lionel Dricot, Bertrand Rousseau"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:11
+msgid "D_ismiss"
+msgstr "K_etepikan"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:12 GTG/taskeditor/taskeditor.glade.h:3
+msgid "Delete"
+msgstr "Padam"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:14
+msgid "Edit"
+msgstr "Sunting"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:15
+msgid "GTG website"
+msgstr "Laman Web GTG"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:16
+msgid "Getting Things Gnome!"
+msgstr "Getting Things Gnome!"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:17
 msgid ""
@@ -365,6 +649,18 @@ msgstr ""
 msgid "Mark as _Done"
 msgstr ""
 
+#: GTG/taskbrowser/taskbrowser.glade.h:25
+msgid "New Note"
+msgstr "Nota Baru"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:26
+msgid "New Subtask"
+msgstr "Subtask Baru"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:27
+msgid "New Task"
+msgstr "Task Baru"
+
 #: GTG/taskbrowser/taskbrowser.glade.h:28
 msgid "New _Subtask"
 msgstr ""
@@ -378,233 +674,179 @@ msgid "Permanently _remove task"
 msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:31
-msgid "Redo"
+msgid "Plugin _Preferences"
 msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:32
-msgid "Tag is displayed in the workview"
+msgid "Redo"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:33
+msgid "T_oolbar"
 msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:34
+msgid "Tag is displayed in the workview"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:36
 msgid "Und_ismiss"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:35
+#: GTG/taskbrowser/taskbrowser.glade.h:37
 msgid "Undo"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:37
+#: GTG/taskbrowser/taskbrowser.glade.h:38
+msgid "View Notes"
+msgstr "Lihat Nota"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:39
 msgid "Work View"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:38
+#: GTG/taskbrowser/taskbrowser.glade.h:40
 msgid "_Background Colors"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:39
+#: GTG/taskbrowser/taskbrowser.glade.h:41
 msgid "_Closed Tasks Pane"
 msgstr ""
 
+#: GTG/taskbrowser/taskbrowser.glade.h:42
+msgid "_Edit"
+msgstr "_Sunting"
+
 #: GTG/taskbrowser/taskbrowser.glade.h:43
+msgid "_Help"
+msgstr "_Bantuan"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:44
 msgid "_Keep selected task"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:44
+#: GTG/taskbrowser/taskbrowser.glade.h:45
+msgid "_Plugins"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:46
 msgid "_Quick Add Entry"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:45
+#: GTG/taskbrowser/taskbrowser.glade.h:47
 msgid "_Tags Sidebar"
 msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:48
+msgid "_Tasks"
+msgstr "_Task"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:49
+msgid "_View"
+msgstr "_Lihat"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:50
 msgid "_Work View"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:49
-msgid "gtk-about"
+#: GTG/taskeditor/__init__.py:32 GTG/taskeditor/taskeditor.glade.h:7
+msgid "Keep as Note"
+msgstr "Kekalkan sebagai nota"
+
+#: GTG/taskeditor/__init__.py:33
+msgid "Make a Task"
+msgstr "Jadikan Tugas"
+
+#: GTG/taskeditor/__init__.py:35
+msgid "Mark this task as done"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:50
-msgid "gtk-add"
+#: GTG/taskeditor/__init__.py:36 GTG/taskeditor/__init__.py:38
+msgid "Mark this task as to be done"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:52
-msgid "gtk-delete"
+#: GTG/taskeditor/__init__.py:37
+msgid "Mark this task as not to be done anymore"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:53
-msgid "gtk-edit"
+#: GTG/taskeditor/__init__.py:39
+msgid "Permanently remove this task"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:56
-msgid "gtk-quit"
+#: GTG/taskeditor/__init__.py:40
+msgid "Insert a subtask in this task"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:57
-msgid "gtk-redo"
+#: GTG/taskeditor/__init__.py:41
+msgid "Insert a tag in this task"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:58
-msgid "gtk-select-color"
+#: GTG/taskeditor/taskeditor.glade.h:1
+msgid "<span weight=\"bold\">Due for</span>"
+msgstr "<span weight=\"bold\">Hingga</span>"
+
+#: GTG/taskeditor/taskeditor.glade.h:2
+msgid "<span weight=\"bold\">Starting on</span>"
+msgstr "<span weight=\"bold\">Bermula pada</span>"
+
+#: GTG/taskeditor/taskeditor.glade.h:5
+msgid "Insert subtask"
+msgstr "Masukkan subtask"
+
+#: GTG/taskeditor/taskeditor.glade.h:6
+msgid "Insert tag"
+msgstr "Masukkan tanda"
+
+#: GTG/taskeditor/taskeditor.glade.h:8
+msgid "Later"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:59
-msgid "gtk-undo"
+#: GTG/taskeditor/taskeditor.glade.h:9
+msgid "Mark Done"
+msgstr "Tandakan Selesai"
+
+#: GTG/taskeditor/taskeditor.glade.h:10
+msgid "Now"
 msgstr ""
 
-#: GTG/taskbrowser/__init__.py:29
-msgid "Mark as done"
+#: GTG/taskeditor/taskeditor.glade.h:11
+msgid "Soon"
 msgstr ""
 
-#: GTG/taskbrowser/__init__.py:30
-msgid "Mark the selected task as done"
+#: GTG/taskeditor/taskeditor.glade.h:12
+msgid "Task"
+msgstr "Tugasan"
+
+#: GTG/taskeditor/editor.py:297
+msgid "Due tomorrow !"
+msgstr "Hingga esok !"
+
+#: GTG/taskeditor/editor.py:299
+#, python-format
+msgid "%s days left"
+msgstr "%s hari lagi"
+
+#: GTG/taskeditor/editor.py:301
+msgid "Due today !"
+msgstr "Hingga hari ini !"
+
+#: GTG/taskeditor/editor.py:303
+msgid "Due yesterday"
 msgstr ""
 
-#: GTG/taskbrowser/__init__.py:31
-msgid "Mark as not done"
+#: GTG/taskeditor/editor.py:305
+#, python-format
+msgid "Was %s days ago"
+msgstr "%s hari lalu"
+
+#: GTG/tools/dates.py:90
+msgid "now"
 msgstr ""
 
-#: GTG/taskbrowser/__init__.py:32 GTG/taskbrowser/__init__.py:36
-msgid "Mark the selected task as to be done"
+#: GTG/tools/dates.py:92
+msgid "soon"
 msgstr ""
 
-#: GTG/taskbrowser/__init__.py:34
-msgid "Mark the task as not to be done anymore"
-msgstr ""
-
-#: GTG/taskbrowser/__init__.py:35
-msgid "Undismiss"
-msgstr ""
-
-#: GTG/taskbrowser/__init__.py:37
-msgid "Permanently remove the selected task"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:556
-msgid "wednesday"
-msgstr ""
-
-#: GTG/core/task.py:36
-msgid "My new task"
-msgstr ""
-
-#: GTG/core/firstrun_tasks.py:9
-msgid ""
-"In GTG, everything is a task. From building a bridge over the Pacific Ocean "
-"to changing a light bulb or organizing a party. When you edit a task, it is "
-"automatically saved."
-msgstr ""
-
-#: GTG/core/firstrun_tasks.py:11
-msgid ""
-"Once a task is done, you can push the &quot;Mark as done&quot; button. If "
-"the task is not relevant any-more, simply press &quot;Dismiss&quot;."
-msgstr ""
-
-#: GTG/core/firstrun_tasks.py:13
-msgid ""
-"A task might be composed of multiple subtasks that appear as links in the "
-"description. Simply click on the following link :"
-msgstr ""
-
-#: GTG/core/firstrun_tasks.py:25
-msgid ""
-"We hope that you will appreciate GTG. Please send us bug reports and ideas "
-"for improvement using : "
-msgstr ""
-
-#: GTG/core/firstrun_tasks.py:34
-msgid ""
-"In the task description (this window), if you begin a line with &quot;-"
-"&quot;, it will be considered as a &quot;subtask&quot;, something that needs "
-"to be done in order to accomplish your task. Just try to write &quot;- test "
-"subtask&quot; on the next line and press enter."
-msgstr ""
-
-#: GTG/core/firstrun_tasks.py:38
-msgid ""
-"Task and subtasks can be re-organized by drag-n-drop in the tasks list."
-msgstr ""
-
-#: GTG/core/firstrun_tasks.py:40
-msgid ""
-"Some concept come with subtasks : for example, a subtask due date can never "
-"be after its parent due date."
-msgstr ""
-
-#: GTG/core/firstrun_tasks.py:42
-msgid "Also, marking a parent as done will mark all the subtasks as done."
-msgstr ""
-
-#: GTG/core/firstrun_tasks.py:54
-msgid ""
-"Tags are useful to sort your tasks. In the view menu, you can enable a "
-"sidebar which displays all the tags you are using so you can easily see "
-"tasks for a given tag. There's no limit to the number of tags a task can "
-"have."
-msgstr ""
-
-#: GTG/core/firstrun_tasks.py:56
-msgid ""
-"If you right click on a tag in the sidebar you can also set its color. It "
-"will permit you to have a more colorful list of tasks, if you want it that "
-"way."
-msgstr ""
-
-#: GTG/core/firstrun_tasks.py:58
-msgid ""
-"A new tag is only added to the current task. There's no recursivity and the "
-"tag is not applied to subtasks. But when you create a new subtask, this "
-"subtask will inherit the tags of its parent as a good primary default (it "
-"will also be the case if you add a tag to a parent just after creating a "
-"subtask). Of course, you can modify at any time the tags of this particular "
-"subtask. It will never be changed by the parent."
-msgstr ""
-
-#: GTG/core/firstrun_tasks.py:64
-msgid ""
-"If you press the &quot;Workview&quot; button, only actionable tasks will be "
-"displayed."
-msgstr ""
-
-#: GTG/core/firstrun_tasks.py:66
-msgid ""
-"What is an actionable task? It's a task you can do directly, right now."
-msgstr ""
-
-#: GTG/core/firstrun_tasks.py:68
-msgid ""
-"It's a task that is already &quot;start-able&quot;, i.e. the start date is "
-"already over."
-msgstr ""
-
-#: GTG/core/firstrun_tasks.py:70
-msgid ""
-"It's a task that doesn't have open subtasks, i.e. you can do the task itself "
-"directly."
-msgstr ""
-
-#: GTG/core/firstrun_tasks.py:72
-msgid "Thus, the workview will only show you tasks you should do right now."
-msgstr ""
-
-#: GTG/core/firstrun_tasks.py:74
-msgid ""
-"If you use tags, you can right click on a tag in the sidebar and choose to "
-"not display tasks with this particular tag in the workview. It's very useful "
-"if you have a tag like &quot;someday&quot; that you use for tasks you would "
-"like to do but are not particularly urgent."
-msgstr ""
-
-#: GTG/core/firstrun_tasks.py:83
-msgid ""
-"Please, report them ! We need you to make this software better. Any "
-"contribution, any idea is welcome."
-msgstr ""
-
-#: GTG/core/firstrun_tasks.py:85
-msgid ""
-"If you have some trouble with GTG, we might be able to help you or to solve "
-"your problem really quickly."
+#: GTG/tools/dates.py:94
+msgid "later"
 msgstr ""
