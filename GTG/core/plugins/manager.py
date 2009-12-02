@@ -119,7 +119,7 @@ class PluginManager:
     def present(self):
         # recheck the plugins with errors
         #doing this reset all plugin state to False
-        #self.pengine.recheckPluginsErrors(self.plugins, self.plugin_apis,checkall=True)
+        self.pengine.recheckPluginsErrors(self.plugins, self.plugin_apis,checkall=True)
         self.PluginList.clear()
         
         for plgin in self.plugins:

@@ -240,7 +240,7 @@ class PluginEngine:
     # rechecks the plugins with errors
     def recheckPluginsErrors(self, plugins, plugin_apis,checkall=False):
         for plugin in plugins:
-            if plugin['error'] or checkall:
+            if plugin['error'] or plugin['state'] == False:
                 error = False
                 missing = []
                 missing_dbus = []
@@ -304,6 +304,9 @@ class PluginEngine:
                     plugin['missing_modules'] = []
                     plugin['missing_dbus'] = []
                 else:
+                    plugin['state'] = False
+                    plugin['active'] = False
+                    plugin['error'] = True
                     if missing:
                         plugin['missing_modules'] = missing
                     if missing_dbus:
