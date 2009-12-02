@@ -24,7 +24,6 @@
 #The rest are the logic of the widget : date changing widgets, buttons, ...
 import sys
 import time
-from datetime import date
 
 from GTG import _
 from GTG import PLUGIN_DIR
@@ -88,6 +87,9 @@ class TaskEditor :
                 "on_inserttag_clicked" : self.inserttag_clicked,
                 "on_move" : self.on_move,
                 "on_nodate"             : self.nodate_pressed,
+                "on_set_fuzzydate_now"  : self.set_fuzzydate_now,
+                "on_set_fuzzydate_soon" : self.set_fuzzydate_soon,
+                "on_set_fuzzydate_later": self.set_fuzzydate_later,
                 "on_dayselected_double" : self.day_selected_double,
         }
         self.builder.connect_signals(dic)
@@ -283,12 +285,14 @@ class TaskEditor :
         #refreshing the due date field
         duedate = self.task.get_due_date()
         if duedate:
-            zedate = duedate.replace("-", date_separator)
+            zedate = str(duedate).replace("-", date_separator)
             if zedate != self.duedate_widget.get_text():
                 self.duedate_widget.set_text(zedate)
                 #refreshing the day left label
                 result = self.task.get_days_left()
-                if result == 1:
+                if result is None:
+                    txt = ""
+                elif result == 1:
                     txt = _("Due tomorrow !")
                 elif result > 0:
                     txt = _("%s days left") %result
@@ -306,7 +310,7 @@ class TaskEditor :
             self.duedate_widget.set_text('')
         startdate = self.task.get_start_date()
         if startdate:
-            zedate = startdate.replace("-",date_separator)
+            zedate = str(startdate).replace("-",date_separator)
             if zedate != self.startdate_widget.get_text():
                 self.startdate_widget.set_text(zedate)
         elif self.startdate_widget.get_text() != '':
@@ -335,15 +339,14 @@ class TaskEditor :
         
     def date_changed(self,widget,data):
         text = widget.get_text()
-        datetoset = None
         validdate = False
         if not text :
             validdate = True
+            datetoset = dates.no_date
         else :
-            dateobject = dates.strtodate(text)
-            if dateobject :
+            datetoset = dates.strtodate(text)
+            if datetoset :
                 validdate = True
-                datetoset = text
                 
         if validdate :
             #If the date is valid, we write with default color in the widget
@@ -383,17 +386,19 @@ class TaskEditor :
             toset = self.task.get_due_date()
         elif self.__opened_date == "start" :
             toset = self.task.get_start_date()
-        if toset :
-            y,m,d = toset.split("-")
-        else :
-            dd = date.today()
-            y = dd.year
-            m = dd.month
-            d = dd.day
-        #Else, we set the widget to today's date
         
-        self.cal_widget.select_month(int(m)-1,int(y))
-        self.cal_widget.select_day(int(d))
+        if not isinstance(toset, dates.FuzzyDate):
+            if not toset:
+                # we set the widget to today's date if there is not a date defined
+                toset = dates.date_today()
+
+            y = toset.year()
+            m = toset.month()
+            d = toset.day()
+            
+            self.cal_widget.select_month(int(m)-1,int(y))
+            self.cal_widget.select_day(int(d))
+            
         self.calendar.connect('button-press-event', self.__focus_out)
         self.sigid = self.cal_widget.connect("day-selected",self.day_selected)
         self.sigid_month = self.cal_widget.connect("month-changed",self.month_changed)
@@ -401,9 +406,9 @@ class TaskEditor :
     def day_selected(self,widget) :
         y,m,d = widget.get_date()
         if self.__opened_date == "due" :
-            self.task.set_due_date("%s-%s-%s"%(y,m+1,d))
+            self.task.set_due_date(dates.strtodate("%s-%s-%s"%(y,m+1,d)))
         elif self.__opened_date == "start" :
-            self.task.set_start_date("%s-%s-%s"%(y,m+1,d))
+            self.task.set_start_date(dates.strtodate("%s-%s-%s"%(y,m+1,d)))
         if self.close_when_changed :
             self.__close_calendar()
         else :
@@ -417,13 +422,25 @@ class TaskEditor :
     def day_selected_double(self,widget) : #pylint: disable-msg=W0613
         self.__close_calendar()
         
-    def nodate_pressed(self,widget) : #pylint: disable-msg=W0613
+    def set_opened_date(self, date):
         if self.__opened_date == "due" :
-            self.task.set_due_date(None)
+            self.task.set_due_date(date)
         elif self.__opened_date == "start" :
-            self.task.set_start_date(None)
+            self.task.set_start_date(date)
         self.refresh_editor()
         self.__close_calendar()
+        
+    def nodate_pressed(self,widget) : #pylint: disable-msg=W0613
+        self.set_opened_date(dates.no_date)
+        
+    def set_fuzzydate_now(self, widget) : #pylint: disable-msg=W0613
+        self.set_opened_date(dates.NOW)
+        
+    def set_fuzzydate_soon(self, widget) : #pylint: disable-msg=W0613
+        self.set_opened_date(dates.SOON)
+        
+    def set_fuzzydate_later(self, widget) : #pylint: disable-msg=W0613
+        self.set_opened_date(dates.LATER)
         
     def dismiss(self,widget) : #pylint: disable-msg=W0613
         stat = self.task.get_status()

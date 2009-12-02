@@ -51,6 +51,9 @@ from GTG.taskbrowser                  import tagtree
 from GTG.taskbrowser.tagtree          import TagTreeModel,\
                                              TagTreeView
 from GTG.tools                        import openurl
+from GTG.tools.dates                  import strtodate,\
+                                             no_date,\
+                                             RealDate
 from GTG.core.plugins.manager         import PluginManager
 from GTG.core.plugins.engine          import PluginEngine
 from GTG.core.plugins.api             import PluginAPI
@@ -707,28 +710,11 @@ class TaskBrowser:
             month = next_date.month
             day = next_date.day
             date = "%i-%i-%i" % (year, month, day)
+        elif arg in ('now', 'soon', 'later'):
+            date = arg
         else:
-            return None
-        if self.is_date_valid(date):
-            return date
-        else:
-            return None
-
-    def is_date_valid(self, fulldate):
-        """
-        Return True if the date exists. False else.
-        "fulldate" is yyyy-mm-dd
-        """
-        splited_date = fulldate.split("-")
-        if len(splited_date) != 3:
-            return False
-        year, month, day = splited_date
-        try:
-            date = datetime.date(int(year), int(month), int(day))
-        except ValueError:
-            return False
-        else:
-            return True
+            return no_date
+        return strtodate(date)
 
     def update_collapsed_row(self, model, path, iter, user_data):
         """Build a list of task that must showed as collapsed in Treeview"""
@@ -889,27 +875,40 @@ class TaskBrowser:
         task2 = model.get_value(iter2, tasktree.COL_OBJ)
         t1_dleft = task1.get_due_date()
         t2_dleft = task2.get_due_date()
-        if not t1_dleft and not t2_dleft:
-            t1_title = task1.get_title()
-            t2_title = task2.get_title()
-            t1_title = locale.strxfrm(t1_title)
-            t2_title = locale.strxfrm(t2_title)
+        
+        sort = 0
+        
+        def reverse_if_descending(s):
+            """Make a cmp() result relative to the top instead of following 
+               user-specified sort direction"""
             if order == gtk.SORT_ASCENDING:
-                return cmp(t1_title, t2_title)
+                return s
             else:
-                return cmp(t2_title, t1_title)
-        elif not t1_dleft and t2_dleft:
-            if order == gtk.SORT_ASCENDING:
-                return 1
-            else:
-                return -1
+                return -1 * s
+        
+        # Always put no_date tasks on the bottom
+        if not t1_dleft and t2_dleft:
+            sort = reverse_if_descending(1)
         elif t1_dleft and not t2_dleft:
-            if order == gtk.SORT_ASCENDING:
-                return -1
-            else:
-                return 1
+            sort = reverse_if_descending(-1)
         else:
-            return cmp(t2_dleft, t1_dleft)
+            sort = cmp(t2_dleft, t1_dleft)
+        
+        if sort == 0:
+            # Put fuzzy dates below real dates
+            if isinstance(t1_dleft, RealDate) and not isinstance(t2_dleft, RealDate):
+                sort = reverse_if_descending(-1)
+            elif isinstance(t2_dleft, RealDate) and not isinstance(t1_dleft, RealDate):
+                sort = reverse_if_descending(1)
+                
+            else:  # Break ties by sorting by title
+                t1_title = task1.get_title()
+                t2_title = task2.get_title()
+                t1_title = locale.strxfrm(t1_title)
+                t2_title = locale.strxfrm(t2_title)
+                sort = reverse_if_descending( cmp(t1_title, t2_title) )
+                
+        return sort
 
     def tag_sort_func(self, model, iter1, iter2, user_data=None):
         order = self.tags_tv.get_model().get_sort_column_id()[1]
@@ -1187,8 +1186,8 @@ class TaskBrowser:
 
     def on_quickadd_activate(self, widget):
         text = self.quickadd_entry.get_text()
-        due_date = None
-        defer_date = None
+        due_date = no_date
+        defer_date = no_date
         if text:
             tags, notagonly = self.get_selected_tags()
             # Get tags in the title
@@ -1207,12 +1206,12 @@ class TaskBrowser:
                 elif attribute.lower() == "defer" or \
                      attribute.lower() == _("defer"):
                     defer_date = self.get_canonical_date(args)
-                    if defer_date is None:
+                    if not defer_date:
                         valid_attribute = False
                 elif attribute.lower() == "due" or \
                      attribute.lower() == _("due"):
                     due_date = self.get_canonical_date(args)
-                    if due_date is None:
+                    if not due_date:
                         valid_attribute = False
                 else:
                     # attribute is unknown
@@ -1227,10 +1226,8 @@ class TaskBrowser:
             if text != "":
                 task.set_title(text)
                 task.set_to_keep()
-            if not due_date is None:
-                task.set_due_date(due_date)
-            if not defer_date is None:
-                task.set_start_date(defer_date)
+            task.set_due_date(due_date)
+            task.set_start_date(defer_date)
             id_toselect = task.get_id()
             #############
             self.quickadd_entry.set_text('')
