@@ -62,8 +62,6 @@ class PluginAPI:
         self.__quick_add_cbs = quick_add_cbs
         
         #those are added widgets dictionnaries
-        self.toolbar_id = 0
-        self.toolbar_widg = {}
         self.tasktoolbar_id = 0
         self.tasktoolbar_widg = {}
         self.taskwidget_id = 0
@@ -140,15 +138,13 @@ class PluginAPI:
                     i = i + 1
                 wi.insert(item, i)
                 item.show()
-                self.toolbar_id += 1
-                self.toolbar_widg[self.toolbar_id] = item
-                return self.toolbar_id
+                return i
             else:
                 return -1
         except Exception, e:
             print "Error adding a toolbar item: %s" % e
     
-    def remove_toolbar_item(self, widg_id, n=None):
+    def remove_toolbar_item(self, item, n=None):
         """Removes a toolbar button from the task browser's toolbar.  
 
         @param item: The gtk.ToolButton that is going to be removed.  
@@ -157,7 +153,7 @@ class PluginAPI:
         Note: It's useful to remove gtk.SeparatorToolItem(). 
         ie, remove_toolbar_item(None, 14)
         """
-        if self.is_browser() and widg_id:
+        if self.is_browser():
             try:
                 wi = self.__builder.get_object('task_tb')
                 if wi and item:
