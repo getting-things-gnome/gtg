@@ -61,6 +61,14 @@ class PluginAPI:
         self.__filter_cbs = filter_cbs
         self.__quick_add_cbs = quick_add_cbs
         
+        #those are added widgets dictionnaries
+        self.toolbar_id = 0
+        self.toolbar_widg = {}
+        self.tasktoolbar_id = 0
+        self.tasktoolbar_widg = {}
+        self.taskwidget_id = 0
+        self.taskwidget_widg = {}
+        
         if task:
             self.task = task
         else:
@@ -132,13 +140,15 @@ class PluginAPI:
                     i = i + 1
                 wi.insert(item, i)
                 item.show()
-                return i
+                self.toolbar_id += 1
+                self.toolbar_widg[self.toolbar_id] = item
+                return self.toolbar_id
             else:
                 return -1
         except Exception, e:
             print "Error adding a toolbar item: %s" % e
     
-    def remove_toolbar_item(self, item, n=None):
+    def remove_toolbar_item(self, widg_id, n=None):
         """Removes a toolbar button from the task browser's toolbar.  
 
         @param item: The gtk.ToolButton that is going to be removed.  
@@ -147,7 +157,7 @@ class PluginAPI:
         Note: It's useful to remove gtk.SeparatorToolItem(). 
         ie, remove_toolbar_item(None, 14)
         """
-        if self.is_browser():
+        if self.is_browser() and widg_id:
             try:
                 wi = self.__builder.get_object('task_tb')
                 if wi and item:
@@ -165,6 +175,7 @@ class PluginAPI:
     # adds items to the Task Menu 
     def add_task_toolbar_item(self, item):
         """Adds a button to the task editor's toolbar. 
+         return an ID number for this added widget.
 
         @param item: The gtk.ToolButton that is going to be added 
                      to the toolbar.
@@ -177,22 +188,29 @@ class PluginAPI:
                     i = i + 1
                 wi.insert(item, i)
                 item.show()
+                #this id will grow, this is not a problem
+                self.tasktoolbar_id += 1
+                self.tasktoolbar_widg[self.tasktoolbar_id] = item
                 if self.taskeditor:
                     self.taskeditor.refresh_editor()
+                return self.tasktoolbar_id
+            else:
+                return None
         except Exception, e:
             print "Error adding a toolbar item in to the TaskEditor: %s" %e
             
-    def remove_task_toolbar_item(self,item):
+    def remove_task_toolbar_item(self,widg_id):
         """Remove a button from the task editor's toolbar. 
 
-        @param item: The gtk.ToolButton that is going to be removed
-                     from the toolbar.
+        @param item: The ID of the widget to be removed. If None, nothing is removed.
         """
-        if self.is_editor():
+        if self.is_editor() and widg_id:
             try:
                 wi = self.__builder.get_object('task_tb1')
-                if wi and item:
-                    wi.remove(item)
+                if wi and self.tasktoolbar_widg.has_key(widg_id):
+                    #removing from the window and the dictionnary
+                    # in one line.
+                    wi.remove(self.tasktoolbar_widg.pop(widg_id))
             except Exception, e:
                 print "Error removing the toolbar item in the TaskEditor: %s" %e
             
@@ -206,17 +224,22 @@ class PluginAPI:
             vbox.pack_start(widget)
             vbox.reorder_child(widget, -2)
             widget.show_all()
+            self.taskwidget_id += 1
+            self.taskwidget_widg[self.taskwidget_id] = widget
+            return self.taskwidget_id
+        else:
+            return None
             
-    def remove_widget_from_taskeditor(self,widget):
+    def remove_widget_from_taskeditor(self,widg_id):
         """Remove a widget from the bottom of the task editor dialog
         
         @param widget: The gtk.Widget that is going to be removed
         """
-        if self.is_editor():
+        if self.is_editor() and widg_id:
             try:
                 wi = self.__builder.get_object('vbox4')
-                if wi and widget:
-                    wi.remove(widget)
+                if wi and self.taskwidget_widg.has_key(widg_id):
+                    wi.remove(self.taskwidget_widg.pop(widg_id))
             except Exception, e:
                 print "Error removing the toolbar item in the TaskEditor: %s" %e
             
