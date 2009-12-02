@@ -112,6 +112,7 @@ class TaskEditor :
         #Voila! it's done
         self.calendar       = self.builder.get_object("calendar")
         self.cal_widget       = self.builder.get_object("calendar1")
+        self.calendar_fuzzydate_btns       = self.builder.get_object("fuzzydate_btns")
         #self.cal_widget.set_property("no-month-change",True)
         self.sigid = None
         self.sigid_month = None
@@ -367,6 +368,15 @@ class TaskEditor :
         
     def on_date_pressed(self, widget,data): 
         """Called when the due button is clicked."""
+        
+        self.__opened_date = data
+        if self.__opened_date == "due" :
+            toset = self.task.get_due_date()
+            self.calendar_fuzzydate_btns.show()
+        elif self.__opened_date == "start" :
+            toset = self.task.get_start_date()
+            self.calendar_fuzzydate_btns.hide()
+        
         rect = widget.get_allocation()
         x, y = widget.window.get_origin()
         cal_width, cal_height = self.calendar.get_size() #pylint: disable-msg=W0612
@@ -381,11 +391,6 @@ class TaskEditor :
         #We grab the pointer in the calendar
         gdk.pointer_grab(self.calendar.window, True,gdk.BUTTON1_MASK|gdk.MOD2_MASK)
         #we will close the calendar if the user clic outside
-        self.__opened_date = data
-        if self.__opened_date == "due" :
-            toset = self.task.get_due_date()
-        elif self.__opened_date == "start" :
-            toset = self.task.get_start_date()
         
         if not isinstance(toset, dates.FuzzyDate):
             if not toset:
