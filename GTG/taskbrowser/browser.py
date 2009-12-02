@@ -1566,7 +1566,7 @@ class TaskBrowser:
         self.export_dialog.show_all()
 
     def on_export_cancel(self, widget = None, data = None):
-        self.export_dialog.destroy()
+        self.export_dialog.hide()
         return True
 
     def export_generate_task_list(self):
