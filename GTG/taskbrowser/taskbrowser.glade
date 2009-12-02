@@ -117,6 +117,7 @@
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <property name="accel_group">accelgroup1</property>
+                        <signal name="activate" handler="gtk_main_quit"/>
                       </object>
                     </child>
                   </object>
@@ -1003,6 +1004,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
   <object class="GtkWindow" id="export_dialog">
     <property name="title" translatable="yes">Export tasks</property>
     <property name="window_position">mouse</property>
+    <property name="destroy_with_parent">True</property>
     <signal name="delete_event" handler="on_export_dialog_delete_event"/>
     <child>
       <object class="GtkVBox" id="vbox3">
