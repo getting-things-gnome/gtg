@@ -32,6 +32,7 @@ import datetime
 import threading
 import time
 import string
+import subprocess
 from xdg.BaseDirectory import xdg_config_home
 
 #our own imports
@@ -1537,10 +1538,11 @@ class TaskBrowser:
 
     def on_export(self, widget):
         #Generating lists
-        tag_list = ["All tasks"] + \
+        self.export_template_paths = [xdg_config_home + "/gtg/export/",
+                    os.path.dirname(os.path.abspath(__file__)) + "/export/"]
+        tag_list = _(["All tasks"]) + \
                 map(lambda x: x.get_name(),self.req.get_all_tags())
-        for dir in [xdg_config_home + "/gtg/export",
-                    os.path.dirname(os.path.abspath(__file__)) + "/export"]:
+        for dir in self.export_template_paths: 
             if os.path.exists(dir):
                 template_list = filter(lambda str: str.startswith("export_"),
                                   os.listdir(dir))
@@ -1558,13 +1560,14 @@ class TaskBrowser:
 
 
     def on_export_exec(self, widget = None, data = None):
+        #Task list generation
         supposed_tag = self.export_combo_tags_entry.get_text()
-        supposed_template = self.export_combo_tags_entry.get_text()
-        if supposed_tag == "All tasks":
+        if supposed_tag == _("All tasks"):
             tasks_list = self.req.get_tasks_list()
         else:
             if self.req.has_tag(supposed_tag):
-                tasks_list = self.req.get_tasks_list([self.req.get_tag(supposed_tag)])
+                tasks_list = self.req.get_tasks_list(\
+                                    [self.req.get_tag(supposed_tag)])
             else:
                 dialog = gtk.MessageDialog(parent = \
                      self.plugin_api.get_window(),
@@ -1575,10 +1578,69 @@ class TaskBrowser:
                 dialog.run() 
                 dialog.destroy()
                 return
-        task_list = map(lambda x: self.req.get_task(x), tasks_list)
+        tasks_list = map(lambda x: self.req.get_task(x), tasks_list)
+        
+        #Check template file 
+        #NOTE: if two templates have the same name, the user provided one takes
+        #      precedence over ours
+        supposed_template = self.export_combo_template_entry.get_text()
+        supposed_template_paths = map (lambda x: x + supposed_template,
+                                       self.export_template_paths)
+        template_paths = filter (lambda x: os.path.exists(x),
+                                 supposed_template_paths)
+        if len(template_paths) >0:
+            template_path = template_paths[0]
+        else:
+            dialog = gtk.MessageDialog(parent = \
+                 self.plugin_api.get_window(),
+                 flags = gtk.DIALOG_DESTROY_WITH_PARENT,
+                 type = gtk.MESSAGE_ERROR,
+                 buttons=gtk.BUTTONS_OK,
+                 message_format=_("Template not found"))
+            dialog.run() 
+            dialog.destroy()
+            return
+        
+        #Template loading and cutting
+        with open(template_path, 'r') as file:
+            template = file.read()
+
+        if not type(template) == type(""):
+            dialog = gtk.MessageDialog(parent = \
+                 self.plugin_api.get_window(),
+                 flags = gtk.DIALOG_DESTROY_WITH_PARENT,
+                 type = gtk.MESSAGE_ERROR,
+                 buttons=gtk.BUTTONS_OK,
+                 message_format=_("Can't load the template file"))
+            dialog.run() 
+            dialog.destroy()
+
+        [t_header, t_task, t_footer] = template.split("--DELIMITER--")
+        tasks_str = ""
+        for task in tasks_list:
+            task_str =   t_task.replace("$TITLE"     , task.get_title())
+            # task_str = task_str.replace("$STATUS"    , task.get_status())
+            #            task_str = task_str.replace("$MODIFIED"  , task.get_modified())
+#            task_str = task_str.replace("$DUE"       , task.get_due_date())
+#            task_str = task_str.replace("$START"     , task.get_start_date())
+#            task_str = task_str.replace("$CLOSED"    , task.get_closed_date())
+#            task_str = task_str.replace("$DAYS_LEFT" , task.get_days_left())
+            task_str = task_str.replace("$TEXT"      , task.get_text())
+            #task_str = task_str.replace ("$SUBTASKS" , task.get_subtasks())
+            #            task_str = task_str.replace("$COLOR"     , task.get_color())
+            task_str = task_str.replace("$TAGS" , "".join(map(lambda t: \
+                                            t.get_name(), task.get_tags())))
+            tasks_str += task_str
+                                       
+        #Template saving and viewing
+        output_path = '/tmp/' + supposed_template
+        with open(output_path, 'w+b') as file:
+            file.write("".join([t_header, tasks_str, t_footer]))
+        subprocess.Popen(['xdg-open', output_path])
 
 
-        print map(lambda x: x.get_title(),tasks_list)
+
+
 
 
 
