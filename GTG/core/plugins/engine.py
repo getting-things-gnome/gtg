@@ -215,7 +215,7 @@ class PluginEngine:
                     self.deactivatePlugins([plugin],plugin_apis)
                 except Exception, e:
                     print "Error: %s" % e
-            elif plugin['instance'] == None and plugin['state'] == True and not plugin['active']:     
+            elif plugin['instance'] == None and plugin['state'] == True and not plugin['active']:
                 try:    
                     #print "activating plugin: " + plgin['name']
                     if not plugin['error']:
@@ -224,7 +224,7 @@ class PluginEngine:
                         plugin['state'] = False
                 except Exception, e:
                     print "Error: %s" % e
-            elif plugin['instance'] != None and plugin['state'] == True and not plugin['active']:     
+            elif plugin['instance'] != None and plugin['state'] == True and not plugin['active']:  
                 try:    
                     #print "activating plugin: " + plgin['name']
                     if not plugin['error']:
@@ -238,9 +238,9 @@ class PluginEngine:
                     print "Error: %s" % e
 
     # rechecks the plugins with errors
-    def recheckPluginsErrors(self, plugins, plugin_apis):
+    def recheckPluginsErrors(self, plugins, plugin_apis,checkall=False):
         for plugin in plugins:
-            if plugin['error']:
+            if plugin['error'] or plugin['state'] == False:
                 error = False
                 missing = []
                 missing_dbus = []
@@ -304,6 +304,9 @@ class PluginEngine:
                     plugin['missing_modules'] = []
                     plugin['missing_dbus'] = []
                 else:
+                    plugin['state'] = False
+                    plugin['active'] = False
+                    plugin['error'] = True
                     if missing:
                         plugin['missing_modules'] = missing
                     if missing_dbus:

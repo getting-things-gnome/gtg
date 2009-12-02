@@ -30,8 +30,9 @@ class hamsterPlugin:
         self.vbox = None
         self.button=gtk.ToolButton()
         self.menu_item = gtk.MenuItem("Start task in Hamster")
-        self.taskbutton = gtk.ToolButton()
+        self.taskbutton = None
         self.separator = gtk.SeparatorToolItem()
+        self.task_separator = None
     
     #### Interaction with Hamster
     def sendTask(self, task):
@@ -106,25 +107,25 @@ class hamsterPlugin:
         self.button.set_tooltip_text("Start a new activity in Hamster Time Tracker based on the selected task")
         self.button.connect('clicked', self.browser_cb, plugin_api)
         # saves the separator's index to later remove it
-        plugin_api.add_toolbar_item(self.separator) 
+        plugin_api.add_toolbar_item(self.separator)
         plugin_api.add_toolbar_item(self.button)
-        self.task_separator = gtk.SeparatorToolItem()
 
     def onTaskOpened(self, plugin_api):
         # add button
-        self.taskbutton.set_label("Start")
-        self.taskbutton.set_icon_name('hamster-applet')
-        self.taskbutton.set_tooltip_text("Start a new activity in Hamster Time Tracker based on this task")
-        self.taskbutton.connect('clicked', self.task_cb, plugin_api)
-        plugin_api.add_task_toolbar_item(self.task_separator)
-        plugin_api.add_task_toolbar_item(self.taskbutton)
+        button = gtk.ToolButton()
+        button.set_label("Start")
+        button.set_icon_name('hamster-applet')
+        button.set_tooltip_text("Start a new activity in Hamster Time Tracker based on this task")
+        button.connect('clicked', self.task_cb, plugin_api)
+        self.task_separator = plugin_api.add_task_toolbar_item(gtk.SeparatorToolItem())
+        self.taskbutton = plugin_api.add_task_toolbar_item(button)
         
         task = plugin_api.get_task()
         records = self.get_records(task)
         
         if len(records):
             # add section to bottom of window
-            self.vbox = gtk.VBox()
+            vbox = gtk.VBox()
             inner_table = gtk.Table(rows=len(records), columns=2)
             if len(records)>8:
                 s = gtk.ScrolledWindow()
@@ -138,9 +139,9 @@ class hamsterPlugin:
                 s=inner_table
             
             outer_table = gtk.Table(rows=1, columns=2)
-            self.vbox.pack_start(s)
-            self.vbox.pack_start(outer_table)
-            self.vbox.pack_end(gtk.HSeparator())
+            vbox.pack_start(s)
+            vbox.pack_start(outer_table)
+            vbox.pack_end(gtk.HSeparator())
             
             total = 0
             
@@ -165,7 +166,7 @@ class hamsterPlugin:
                 
             add(outer_table, "<big><b>Total</b></big>", "<big><b>%s</b></big>"%format_duration(total), 1)
             
-            plugin_api.add_widget_to_taskeditor(self.vbox)
+            self.vbox = plugin_api.add_widget_to_taskeditor(vbox)
         
     def deactivate(self, plugin_api):
         plugin_api.remove_menu_item(self.menu_item)
