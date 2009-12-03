@@ -144,7 +144,7 @@ setup(
     'GTG.plugins.tomboy':['tomboy.glade']
     },
   data_files = create_data_files(),
-  scripts=['gtg',],
+  scripts=['gtg','gtg_new_task',],
   cmdclass={'install_data': InstallData},
 )
 
