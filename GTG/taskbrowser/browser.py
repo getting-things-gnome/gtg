@@ -33,6 +33,7 @@ import threading
 import time
 import string
 import subprocess
+from Cheetah.Template import Template
 from xdg.BaseDirectory import xdg_config_home
 
 #our own imports
@@ -1604,35 +1605,35 @@ class TaskBrowser:
 
     def export_generate(self):
         #Template loading and cutting
-        try:
-            with open(self.export_template_path, 'r') as file:
-                template = file.read()
-        except Exception as e:
-            print e
-            template = None
-        if not type(template) == type(""):
-            return False
-        [t_header, t_task, t_footer] = template.split("--DELIMITER--")
-        tasks_str = ""
         model = self.task_modelsort
-        c = model.get_iter_first()
-        while c:
-            task = model.get_value(c,tasktree.COL_OBJ)
-            task_str =   t_task.replace("$TITLE"     , task.get_title())
+        task_iter = model.get_iter_first()
+        class TaskStr:
+            def __init__(self, title, text):
+                self.title = title
+                self.text  = text
+            has_title = property(lambda s: s.title != "")
+            has_text  = property(lambda s: s.text  != "")
+        tasks_str = []
+        while task_iter:
+            task = model.get_value(task_iter, tasktree.COL_OBJ)
+            task_str = TaskStr(task.get_title(), task.get_text())
             # task_str = task_str.replace("$STATUS"    , task.get_status())
             #            task_str = task_str.replace("$MODIFIED"  , task.get_modified())
 #            task_str = task_str.replace("$DUE"       , task.get_due_date())
 #            task_str = task_str.replace("$START"     , task.get_start_date())
 #            task_str = task_str.replace("$CLOSED"    , task.get_closed_date())
 #            task_str = task_str.replace("$DAYS_LEFT" , task.get_days_left())
-            task_str = task_str.replace("$TEXT"      , task.get_text())
+#task_str = task_str.replace("$TEXT"      , task.get_text())
             #task_str = task_str.replace ("$SUBTASKS" , task.get_subtasks())
             #            task_str = task_str.replace("$COLOR"     , task.get_color())
-            task_str = task_str.replace("$TAGS" , "".join(map(lambda t: \
-                                            t.get_name(), task.get_tags())))
-            tasks_str += task_str
-            c = model.iter_next(c)
-        self.export_document = "".join([t_header, tasks_str, t_footer]) 
+            #            task_str = task_str.replace("$TAGS" , "".join(map(lambda t: \
+                    #                                           t.get_name(), task.get_tags())))
+            tasks_str.append(task_str)
+            task_iter = model.iter_next(task_iter)
+        print tasks_str
+        self.export_document = str(Template (file = self.export_template_path,
+                      searchList = [{ 'tasks': tasks_str}]))
+        print self.export_document
         return True
 
 

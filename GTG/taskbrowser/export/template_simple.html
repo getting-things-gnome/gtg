@@ -4,15 +4,24 @@
     <body>
 
 
-        <ul>
---DELIMITER--
-
+        #def task_template($task)
             <li>
-                I have to do $TITLE. <br>
-                In particular: $TEXT 
-            </li>
+                #if $task.has_title
+                I have to do $task.title. <br>
+                #end if
 
---DELIMITER--
+                #if $task.has_text
+                In particular: $task.text
+                #end if
+            </li>
+        #end def
+
+
+        <ul>
+            #for $task in $tasks:
+                $task_template($task)
+            #end for
+
         <ul>
     </body>
 </html>
