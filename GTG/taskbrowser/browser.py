@@ -460,9 +460,9 @@ class TaskBrowser:
         
         # initializes the plugin api class
         self.plugin_api = PluginAPI(self.window, self.config, GTG.DATA_DIR, self.builder,\
-                                    self.req, self.task_tv, self.priv['filter_cbs'],\
-                                    self.tagpopup, self.tags_tv, None, None,\
-                                    self.priv['quick_add_cbs'])
+                                    self.req, self.task_tv, self.task_modelsort,
+                                    self.priv['filter_cbs'], self.tagpopup, self.tags_tv,\
+                                    None, None, self.priv['quick_add_cbs'])
         self.p_apis.append(self.plugin_api)
         
         if self.plugins:

@@ -29,8 +29,8 @@ class PluginAPI:
     """
         
     def __init__(self, window, config, data_dir, builder, requester,\
-                 taskview, filter_cbs, tagpopup, tagview, task=None,\
-                 texteditor=None, quick_add_cbs=[]):
+                 taskview, task_modelsort, filter_cbs, tagpopup, tagview, \
+                 task=None, texteditor=None, quick_add_cbs=[]):
         """Construct a L{PluginAPI} object.
         
         @param window: The window where the plugin API object is being 
@@ -45,6 +45,7 @@ class PluginAPI:
         @param tagview: The tag view object.
         @param task: The current task (Only works with the task editor).
         @param textview: The task editor's text view (Only works with the task editor).  
+        @param task_modelsort: The browser current view.  
         """
         self.__window = window
         self.config = config
@@ -53,6 +54,7 @@ class PluginAPI:
         self.__requester = requester
         
         self.taskview = taskview
+        self.task_modelsort = task_modelsort
         
         self.__tagpopup = tagpopup
         self.tagview = tagview
@@ -277,6 +279,13 @@ class PluginAPI:
         @return: The gtk.TreeView task view object.
         """
         return self.taskview
+
+    def get_task_modelsort(self):
+        """Returns the current browser view. 
+        
+        @return: The gtk.TreeView task view object.
+        """
+        return self.task_modelsort
     
     def get_selected_task(self):
         """Returns the selected task in the task view.
