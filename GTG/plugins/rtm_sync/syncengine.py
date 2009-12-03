@@ -89,12 +89,12 @@ class SyncEngine (object):
     def synchronize(self):
         try:
             self.synchronizeWorker()
-        except rtm.RTMAPIError, exception:
-            self.close_gui(exception.message)
-        except rtm.RTMError, exception:
-            self.close_gui(exception.message)
-        except:
-            self.close_gui(_("Synchronization failed."))
+        except rtm.RTMAPIError as exception:
+            self.close_gui(exception)
+        except rtm.RTMError as exception:
+            self.close_gui(exception)
+        except Exception as exception:
+            self.close_gui(_("Synchronization failed." + str(exception)))
 
     def synchronizeWorker(self):
         self.update_status(_("Downloading task list..."))
@@ -157,8 +157,9 @@ class SyncEngine (object):
             for gtg_id in gtg_removed:
                 rtm_id = gtg_to_rtm_id_dict[gtg_id]
                 rtm_task = filterAttr(self.rtm_list, 'id', rtm_id)
-                self.update_substatus(_("Deleting ") + rtm_task.title)
-                map(lambda task: task.delete(), rtm_task)
+                if len(rtm_task) > 0:
+                    self.update_substatus(_("Deleting ") + rtm_task[0].title)
+                    map(lambda task: task.delete(), rtm_task)
 
             #Delete from gtg the tasks that have been removed in rtm
             if len(rtm_removed) > 0:
@@ -167,9 +168,10 @@ class SyncEngine (object):
             for rtm_id in rtm_removed:
                 gtg_id = rtm_to_gtg_id_dict[rtm_id]
                 gtg_task = filterAttr(self.gtg_list, 'id', gtg_id)
-                self.update_substatus(_("Deleting ") + gtg_task.title)
-                map(lambda task: task.delete(), gtg_task)
-                gtg_common.discard(gtg_id)
+                if len (gtg_task) > 0:
+                    self.update_substatus(_("Deleting ") + gtg_task[0].title)
+                    map(lambda task: task.delete(), gtg_task)
+                    gtg_common.discard(gtg_id)
 
             #tasks that must be added to RTM
             #NOTE: should we check if the title is already present in the

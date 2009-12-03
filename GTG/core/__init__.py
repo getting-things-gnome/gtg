@@ -60,7 +60,6 @@ class CoreConfig:
     DATA_FILE = "projects.xml"
     CONF_DIR = os.path.join(xdg_config_home,'gtg/')
     CONF_FILE = "gtg.conf"
-    TASK_CONF_FILE = "tasks.conf"
     conf_dict = None
     #DBUS
     BUSNAME = "org.GTG"
@@ -74,15 +73,10 @@ class CoreConfig:
         if not os.path.exists(self.CONF_DIR + self.CONF_FILE):
             f = open(self.CONF_DIR + self.CONF_FILE, "w")
             f.close()
-        if not os.path.exists(self.CONF_DIR + self.TASK_CONF_FILE):
-            f = open(self.CONF_DIR + self.TASK_CONF_FILE, "w")
-            f.close()
         self.conf_dict = ConfigObj(self.CONF_DIR + self.CONF_FILE)
-        self.task_conf_dict = ConfigObj(self.CONF_DIR + self.TASK_CONF_FILE)
     
     def save_config(self):
         self.conf_dict.write()
-        self.task_conf_dict.write()
     
     def get_backends_list(self) :
         backend_fn = []

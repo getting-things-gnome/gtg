@@ -3,7 +3,7 @@
 
 URL             = "http://gtg.fritalk.com"
 EMAIL           = "gtg@lists.launchpad.net"
-VERSION         = '0.1.9'
+VERSION         = '0.1.2-dev'
 
 SHORT_DESCRIPTION = 'GTG is a personal organizer for the GNOME desktop environment.'
 
@@ -16,6 +16,7 @@ AUTHORS     = ["Main developers:", \
                "\tAntons Rebguns <arebgun@gmail.com>", \
                "\tCarl Chenet <chaica@ohmytux.com>", \
                "\tJérôme Guelfucci <jerome.guelfucci@gmail.com>",      \
+               "\tLuca Falavigna <dktrkranz@ubuntu.com>", \
                "\tKalle Persson <kalle@kallepersson.se>", \
                "\tJonathan Barnoud <jonathan@barnoud.net>", \
                "\tMichael Vogt <michael.vogt@ubuntu.com>", \
@@ -25,9 +26,6 @@ AUTHORS     = ["Main developers:", \
                "\tJean-François Fortin Tam <nekohayo@gmail.com>", \
                "\tJonathan Lange <jml@mumak.net>", \
                "\tPaulo Cabido <paulo.cabido@gmail.com>", \
-               "\tLuca Invernizzi <invernizzi.l@gmail.com>", \
-               "\tKevin Mehall <km@kevinmehall.net>", \
-               "\tLuca Falavigna <dktrkranz@debian.org>", \
 ]
 ARTISTS     = ["Kalle Persson <kalle@kallepersson.se>", \
                 "Bertrand Rousseau <bertrand.rousseau@gmail.com>"]
@@ -42,7 +40,7 @@ Dutch: puccha
 Finnish: Mika Tapojärvi
 French: Lionel Dricot, Rafik Ouerchefani, Bertrand Rousseau, Pititjo
 German: Philip Stewart, Thomas Pitlik
-Italian: Luca Falavigna, Luca Invernizzi
+Italian: Luca Falavigna
 Malay: melayubuntu
 Polish: Tomasz Maciejewski
 Portuguese: Paulo Cabido 

@@ -111,7 +111,7 @@ class Backend:
         t_xml = taskxml.task_to_xml(self.doc, task)
         modified = False
         #We then replace the existing node
-        if existing and t_xml:
+        if existing:
             #We will write only if the task has changed
             if t_xml.toxml() != existing.toxml():
                 self.xmlproj.replaceChild(t_xml, existing)
@@ -123,7 +123,7 @@ class Backend:
             modified = True
         #In this particular backend, we write all the tasks
         #This is inherent to the XML file backend
-        if modified and self.zefile and self.doc :
+        if modified:
             cleanxml.savexml(self.zefile, self.doc)
         return None
 

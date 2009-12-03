@@ -17,83 +17,12 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-from datetime import date, timedelta
-from GTG import _
-
-class Date():
-    def __cmp__(self, other):
-        if other is None: return 1
-        return cmp(self.to_py_date(), other.to_py_date())
-    
-    def __sub__(self, other):
-        return self.to_py_date() - other.to_py_date()
-        
-    def xml_str(self): return str(self)
-        
-    def day(self):      return self.to_py_date().day
-    def month(self):    return self.to_py_date().month
-    def year(self):     return self.to_py_date().year
-
-class FuzzyDate(Date):
-    def __init__(self, offset, name):
-        self.name=name
-        self.offset=offset
-        
-    def to_py_date(self):
-        return date.today()+timedelta(self.offset)
-        
-    def __str__(self):
-        return _(self.name)
-        
-    def xml_str(self):
-    	return self.name
-        
-    def days_left(self):
-        return None
-
-NOW = FuzzyDate(0, 'now')
-SOON = FuzzyDate(15, 'soon')
-LATER = FuzzyDate(365, 'later')
-
-class RealDate(Date):
-    def __init__(self, dt):
-        assert(dt is not None)
-        self.proto = dt
-        
-    def to_py_date(self):
-        return self.proto
-        
-    def __str__(self):
-        return str(self.proto)
-
-    def days_left(self):
-        return (self.proto - date.today()).days
-        
-class NoDate(Date):
-    def to_py_date(self):
-        return date.max
-    
-    def __str__(self):
-        return ''
-        
-    def days_left(self):
-        return None
-        
-    def __nonzero__(self):
-        return False 
-no_date = NoDate()
+from datetime import date
 
 #function to convert a string of the form YYYY-MM-DD
 #to a date
 #If the date is not correct, the function returns None
 def strtodate(stri) :
-    if stri == "now" or stri == _("now"):
-        return NOW
-    elif stri == "soon" or stri == _("soon"):
-        return SOON
-    elif stri == "later" or  stri == _("later"):
-        return LATER
-        
     toreturn = None
     zedate = []
     if stri :
@@ -115,10 +44,4 @@ def strtodate(stri) :
                     toreturn = date(yy,mm,dd)
                 except ValueError:
                     toreturn = None
-    
-    if not toreturn: return no_date
-    else: return RealDate(toreturn)
-    
-    
-def date_today():
-    return RealDate(date.today())
+    return toreturn

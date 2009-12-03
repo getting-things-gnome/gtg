@@ -41,4 +41,4 @@ class GnomeConfig:
     TAG_TOOLTIP = _("Insert a tag in this task")
 
     #Number of second between to save in the task editor
-    SAVETIME = 7
+    SAVETIME = 10

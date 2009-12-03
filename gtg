@@ -30,13 +30,7 @@ Getting Things Gnome! - A personal organizer for the GNOME desktop
 import sys
 import GTG.gtg
 
-from optparse import OptionParser
-
 try:
-    parser = OptionParser()
-    parser.add_option("-d", "--debug",
-                  action="store_true", dest="debug", help="enable debug output")
-    (options, args) = parser.parse_args()
-    sys.exit(GTG.gtg.main(options, args))
+    sys.exit(GTG.gtg.main())
 except KeyboardInterrupt:
     sys.exit(1)

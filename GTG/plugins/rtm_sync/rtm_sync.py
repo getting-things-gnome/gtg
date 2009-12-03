@@ -72,7 +72,6 @@ class RtmSync:
         self.tb_button = gtk.ToolButton(rtm_toolbar_image)
         self.tb_button.set_label(_("Synchronize with RTM"))
         self.tb_button.connect('clicked', self.onTbButton)
-        self.separator = gtk.SeparatorToolItem()
 
         # plugin engine methods
     def activate(self, plugin_api):
@@ -82,14 +81,14 @@ class RtmSync:
         plugin_api.add_menu_item(self.menu_item)
 
         # saves the separator's index to later remove it
-        plugin_api.add_toolbar_item(self.separator)
+        self.separator = plugin_api.add_toolbar_item(gtk.SeparatorToolItem())
         # add a item(button) to the ToolBar
         plugin_api.add_toolbar_item(self.tb_button)
 
     def deactivate(self, plugin_api):
         plugin_api.remove_menu_item(self.menu_item)
         plugin_api.remove_toolbar_item(self.tb_button)
-        plugin_api.remove_toolbar_item(self.separator)
+        plugin_api.remove_toolbar_item(None, self.separator)
 
     #load a dialog with a String
     def loadDialogToken(self, msg):
