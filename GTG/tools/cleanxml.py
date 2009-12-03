@@ -24,7 +24,7 @@ import sys
 #This is for the awful pretty xml things
 tab = "\t"
 enter = "\n"
-BACKUP_NBR = 3
+BACKUP_NBR = 7
 
 #Those two functions are there only to be able to read prettyXML
 #Source : http://yumenokaze.free.fr/?/Informatique/Snipplet/Python/cleandom       
@@ -92,20 +92,24 @@ def emptydoc(root) :
 #write a XML doc to a file
 def savexml(zefile,doc,backup=False) :
     f = open(zefile, mode='w+')
-    f.write(doc.toprettyxml(tab,enter).encode("utf-8"))
-    f.close()
-    if backup :
-        #We will now backup the file
-        backup_nbr = BACKUP_NBR
-        #We keep BACKUP_NBR versions of the file
-        #The 0 is the youngest one
-        while backup_nbr > 0 :
-            older = "%s.bak.%s" %(zefile,backup_nbr)
-            backup_nbr -= 1
-            newer = "%s.bak.%s" %(zefile,backup_nbr)
-            if os.path.exists(newer) :
-                shutil.move(newer,older)
-        #The bak.0 is always a fresh copy of the closed file
-        #So that it's not touched in case of bad opening next time
-        current = "%s.bak.0" %(zefile)
-        shutil.copy(zefile,current)
+    pretty = doc.toprettyxml(tab,enter)
+    if f and pretty:
+        f.write(pretty.encode("utf-8"))
+        f.close()
+        if backup :
+            #We will now backup the file
+            backup_nbr = BACKUP_NBR
+            #We keep BACKUP_NBR versions of the file
+            #The 0 is the youngest one
+            while backup_nbr > 0 :
+                older = "%s.bak.%s" %(zefile,backup_nbr)
+                backup_nbr -= 1
+                newer = "%s.bak.%s" %(zefile,backup_nbr)
+                if os.path.exists(newer) :
+                    shutil.move(newer,older)
+            #The bak.0 is always a fresh copy of the closed file
+            #So that it's not touched in case of bad opening next time
+            current = "%s.bak.0" %(zefile)
+            shutil.copy(zefile,current)
+    else:
+        print "no file %s or no pretty xml"%zefile

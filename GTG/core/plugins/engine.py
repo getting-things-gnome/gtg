@@ -26,27 +26,27 @@ from configobj import ConfigObj
 
 # this class manages the plug-ins
 class PluginEngine:
-	
+    
     # initializes the plug-in engine
     # NOTE: the path has to be a list of paths
     def __init__(self, plugin_path):
         self.Plugins = []
         self.plugin_path = plugin_path
         self.initialized_plugins = []
-		
+        
     # loads the plugins from the plugin dir
     def LoadPlugins(self):       
         # find all the plugin config files (only!)
         plugin_configs = []
         for path in self.plugin_path:
-	        for f in os.listdir(path):
-	            try:
-	                if not os.path.isdir(os.path.join(path, f)):
-	                    if len(os.path.splitext(f)) > 1:
-	                        if os.path.splitext(f)[1] == ".gtg-plugin":
-	                            plugin_configs.append(os.path.join(path, f))
-	            except Exception, e:
-	                continue
+            for f in os.listdir(path):
+                try:
+                    if not os.path.isdir(os.path.join(path, f)):
+                        if len(os.path.splitext(f)) > 1:
+                            if os.path.splitext(f)[1] == ".gtg-plugin":
+                                plugin_configs.append(os.path.join(path, f))
+                except Exception, e:
+                    continue
                    
         # for each plugin (config) we load the info
         for config in plugin_configs:
@@ -60,18 +60,18 @@ class PluginEngine:
                     file, pathname, desc = imp.find_module(name, self.plugin_path)
                     tmp_load = imp.load_module(name, file, pathname, desc)
                 except ImportError, e:      
-                	if configobj["GTG Plugin"].has_key("Dependencies"):
-                		for module in configobj["GTG Plugin"]["Dependencies"]:
-                			try:
-                				__import__(module)
-                			except:
-                				missing.append(module)
-                	else:
-                		missing.append(str(e).split(" ")[3])
-                	error = True
+                    if configobj["GTG Plugin"].has_key("Dependencies"):
+                        for module in configobj["GTG Plugin"]["Dependencies"]:
+                            try:
+                                __import__(module)
+                            except:
+                                missing.append(module)
+                    else:
+                        missing.append(str(e).split(" ")[3])
+                    error = True
                 except Exception, e:
-                	print e
-                	error = True
+                    print e
+                    error = True
                 
                 # check DBus dependencies
                 if configobj["GTG Plugin"].has_key("Dbus-dependencies"):
@@ -131,12 +131,12 @@ class PluginEngine:
                     plugin['missing_dbus'] = missing_dbus
                     
                 if configobj["GTG Plugin"].has_key("Dependencies"):
-                	plugin['dependencies'] = configobj["GTG Plugin"]["Dependencies"]
+                    plugin['dependencies'] = configobj["GTG Plugin"]["Dependencies"]
                 else: 
                     plugin['dependencies'] = None
                     
                 if configobj["GTG Plugin"].has_key("Dbus-dependencies"):
-                	plugin['dbus-dependencies'] = configobj["GTG Plugin"]["Dbus-dependencies"]
+                    plugin['dbus-dependencies'] = configobj["GTG Plugin"]["Dbus-dependencies"]
                 else: 
                     plugin['dbus-dependencies'] = None
                     
@@ -150,7 +150,7 @@ class PluginEngine:
                 self.Plugins.append(plugin)
                 
         return self.Plugins
-	
+    
     def enabledPlugins(self, plugins):
         pe = []
         for p in plugins:
@@ -166,50 +166,71 @@ class PluginEngine:
         return pd
     
     # activates the plugins
-    def activatePlugins(self, plugins, plugin_api):
+    def activatePlugins(self, plugins, plugin_apis):
         for plugin in plugins:
             if plugin['state'] and not plugin['error'] and not plugin['active']:
                 plugin['instance'] = plugin['class']()
-                plugin['instance'].activate(plugin_api)
+                for api in plugin_apis:
+                    plugin['instance'].activate(api)
+                    if api.is_editor():
+                        plugin['instance'].onTaskOpened(api)
+                        #we also refresh the content of the task
+                        tv = api.get_textview()
+                        if tv:
+                            tv.modified(refresheditor=False)
                 plugin['active'] = True
                 
     # deactivate the enabled plugins
-    def deactivatePlugins(self, plugins, plugin_api):
+    def deactivatePlugins(self, plugins, plugin_apis):
         for plugin in plugins:
             if not plugin['state'] and not plugin['error'] and plugin['active']:
-                plugin['instance'].deactivate(plugin_api)
+                for api in plugin_apis:
+                    plugin['instance'].deactivate(api)
+                    if api.is_editor():
+                        #we also refresh the content of the task
+                        tv = api.get_textview()
+                        if tv:
+                            tv.modified(refresheditor=False)
                 plugin['instance'] = None
                 plugin['active'] = False
-				
+                
     # loads the plug-in features for a task
     def onTaskLoad(self, plugins, plugin_api):
         for plugin in plugins:
             if plugin['state'] and plugin['active']:
                 plugin['instance'].onTaskOpened(plugin_api)
      
-	# rechecks the plug-ins to see if any changes where done to the state
-    def recheckPlugins(self, plugins, plugin_api):
+    # signals to the plug-ins that the task window is being closed
+    def onTaskClose(self, plugins, plugin_api):
+        for plugin in plugins:
+            if plugin['state'] and plugin['active']:
+                if hasattr(plugin['instance'],'onTaskClosed'):
+                    plugin['instance'].onTaskClosed(plugin_api)
+
+    # rechecks the plug-ins to see if any changes where done to the state
+    def recheckPlugins(self, plugins, plugin_apis):
         for plugin in plugins:
             if plugin['instance'] != None and plugin['state'] == False and plugin['active']:
                 try:
-                    self.deactivatePlugins([plugin],plugin_api)
+                    self.deactivatePlugins([plugin],plugin_apis)
                 except Exception, e:
                     print "Error: %s" % e
-            elif plugin['instance'] == None and plugin['state'] == True and not plugin['active']: 	
+            elif plugin['instance'] == None and plugin['state'] == True and not plugin['active']:
                 try:    
                     #print "activating plugin: " + plgin['name']
                     if not plugin['error']:
-                        self.activatePlugins([plugin],plugin_api)
+                         self.activatePlugins([plugin],plugin_apis)
                     else:
                         plugin['state'] = False
                 except Exception, e:
                     print "Error: %s" % e
-            elif plugin['instance'] != None and plugin['state'] == True and not plugin['active']: 	
+            elif plugin['instance'] != None and plugin['state'] == True and not plugin['active']:  
                 try:    
                     #print "activating plugin: " + plgin['name']
                     if not plugin['error']:
                         #plugin['instance'] = plugin['class']()
-                        plugin['instance'].activate(plugin_api)
+                        for api in plugin_apis:
+                            plugin['instance'].activate(api)
                         plugin['active'] = True
                     else:
                         plugin['state'] = False
@@ -217,75 +238,78 @@ class PluginEngine:
                     print "Error: %s" % e
 
     # rechecks the plugins with errors
-    def recheckPluginsErrors(self, plugins, plugin_api):
-    	for plugin in plugins:
-    		if plugin['error']:
-    			error = False
-    			missing = []
-    			missing_dbus = []
-    			
-    			try:
-    				file, pathname, desc = imp.find_module(plugin['plugin'], self.plugin_path)
-    				tmp_load = imp.load_module(plugin['plugin'], file, pathname, desc)
-    			except ImportError, e:
-    				if plugin["dependencies"]:
-    					for module in plugin["dependencies"]:
-    						try:
-    							__import__(module)
-    						except:
-    							missing.append(module)
-    				else:
-    					missing.append(str(e).split(" ")[3])
-    				error = True
-    			except Exception, e:
-    				error = True
-    			
-    			if plugin["dbus-dependencies"]:
-    				if "str" in str(type(plugin["dbus-dependencies"])):
-    					dbobj = plugin["dbus-dependencies"]
-    					if len(dbobj.split(":")) > 1 and len(dbobj.split(":")) < 3:
-    						try:
-    							tmp_dbus = dbobj.split(":")
-    							dbus.SessionBus().get_object(tmp_dbus[0], tmp_dbus[1])
-    						except Exception, e:
-    							error = True
-    							missing_dbus.append((dbobj.split(":")[0],dbobj.split(":")[1]))
-    					else:
-    						if dbobj:
-    							missing_dbus.append((dbobj))
-    							error = True    
-    				elif "list" in str(type(plugin["dbus-dependencies"])):
-    					for dbobj in plugin["dbus-dependencies"]:
-    						if len(dbobj.split(":")) > 1 and len(dbobj.split(":")) < 3:
-    							try:
-    								tmp_dbus = dbobj.split(":")
-    								dbus.SessionBus().get_object(tmp_dbus[0], tmp_dbus[1])
-    							except Exception, e:
-    								error = True
-    								missing_dbus.append((dbobj.split(":")[0],dbobj.split(":")[1]))
-    						else:
-    							if dbobj:
-    								missing_dbus.append((dbobj))
-    								error = True
-        		
-        		if not error:
-        			#load the plugin
-        			for key, item in tmp_load.__dict__.items():
-        				if "classobj" in str(type(item)):
-        					c = item
-        					break
+    def recheckPluginsErrors(self, plugins, plugin_apis,checkall=False):
+        for plugin in plugins:
+            if plugin['error'] or plugin['state'] == False:
+                error = False
+                missing = []
+                missing_dbus = []
+                
+                try:
+                    file, pathname, desc = imp.find_module(plugin['plugin'], self.plugin_path)
+                    tmp_load = imp.load_module(plugin['plugin'], file, pathname, desc)
+                except ImportError, e:
+                    if plugin["dependencies"]:
+                        for module in plugin["dependencies"]:
+                            try:
+                                __import__(module)
+                            except:
+                                missing.append(module)
+                    else:
+                        missing.append(str(e).split(" ")[3])
+                    error = True
+                except Exception, e:
+                    error = True
+                
+                if plugin["dbus-dependencies"]:
+                    if "str" in str(type(plugin["dbus-dependencies"])):
+                        dbobj = plugin["dbus-dependencies"]
+                        if len(dbobj.split(":")) > 1 and len(dbobj.split(":")) < 3:
+                            try:
+                                tmp_dbus = dbobj.split(":")
+                                dbus.SessionBus().get_object(tmp_dbus[0], tmp_dbus[1])
+                            except Exception, e:
+                                error = True
+                                missing_dbus.append((dbobj.split(":")[0],dbobj.split(":")[1]))
+                        else:
+                            if dbobj:
+                                missing_dbus.append((dbobj))
+                                error = True    
+                    elif "list" in str(type(plugin["dbus-dependencies"])):
+                        for dbobj in plugin["dbus-dependencies"]:
+                            if len(dbobj.split(":")) > 1 and len(dbobj.split(":")) < 3:
+                                try:
+                                    tmp_dbus = dbobj.split(":")
+                                    dbus.SessionBus().get_object(tmp_dbus[0], tmp_dbus[1])
+                                except Exception, e:
+                                    error = True
+                                    missing_dbus.append((dbobj.split(":")[0],dbobj.split(":")[1]))
+                            else:
+                                if dbobj:
+                                    missing_dbus.append((dbobj))
+                                    error = True
+                
+                if not error:
+                    #load the plugin
+                    for key, item in tmp_load.__dict__.items():
+                        if "classobj" in str(type(item)):
+                            c = item
+                            break
                            
-        			plugin['class_name'] = c.__dict__["__module__"].split(".")[1]
-        			plugin['class'] = c
-        			plugin['state'] = False
-        			plugin['active'] = False
-        			plugin['error'] = False
-        			plugin['missing_modules'] = []
-        			plugin['missing_dbus'] = []
-        		else:
-        			if missing:
-        				plugin['missing_modules'] = missing
-        			if missing_dbus:
-        				plugin['missing_dbus'] = missing_dbus
-        		
-        				
+                    plugin['class_name'] = c.__dict__["__module__"].split(".")[1]
+                    plugin['class'] = c
+                    plugin['state'] = False
+                    plugin['active'] = False
+                    plugin['error'] = False
+                    plugin['missing_modules'] = []
+                    plugin['missing_dbus'] = []
+                else:
+                    plugin['state'] = False
+                    plugin['active'] = False
+                    plugin['error'] = True
+                    if missing:
+                        plugin['missing_modules'] = missing
+                    if missing_dbus:
+                        plugin['missing_dbus'] = missing_dbus
+                
+                        

@@ -1,5 +1,6 @@
-include GTG/taskbrowser/taskbrowser.glade
-include GTG/taskeditor/taskeditor.glade
+recursive-include GTG *.glade
+recursive-include GTG *.ui
+recursive-include GTG *.gtg-plugin
 include gtg.desktop
 include CHANGELOG
 include README
@@ -8,4 +9,5 @@ include AUTHORS
 recursive-include data/icons *.png
 recursive-include data/icons *.svg
 include doc/gtg.1
+recursive-include GTG/plugins
 recursive-include locales *.po

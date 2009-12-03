@@ -17,7 +17,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-from GTG.core.plugins 		 import GnomeConfig
+from GTG.core.plugins          import GnomeConfig
 # not being used
 #from GTG.core.plugins.engine import PluginEngine
 #from GTG.core.plugins.engine import PluginAPI
@@ -36,48 +36,48 @@ except:
     sys.exit(1)
 
 class PluginManager:
-	
-    def __init__(self, parent, plugins, pengine, plugin_api):
+    
+    def __init__(self, parent, plugins, pengine, plugin_apis):
         self.plugins = plugins
         self.pengine = pengine
-        self.plugin_api = plugin_api
-        self.gladefile = GnomeConfig.GLADE_FILE
-        self.wTree = gtk.glade.XML(self.gladefile, "PluginManagerDialog")
-		
-        self.dialog = self.wTree.get_widget("PluginManagerDialog")
-		
-        # stuff to populate
-        self.close_btn = self.wTree.get_widget("close_btn")
-        self.config_btn = self.wTree.get_widget("config_btn")
-        self.lblPluginName = self.wTree.get_widget("lblPluginName")
-        self.lblPluginVersion = self.wTree.get_widget("lblPluginVersion")
-        self.lblPluginAuthors = self.wTree.get_widget("lblPluginAuthors")
-        self.txtPluginDescription = self.wTree.get_widget("txtPluginDescription")
+        self.plugin_apis = plugin_apis
+        self.builder = gtk.Builder() 
+        self.builder.add_from_file(GnomeConfig.GLADE_FILE)
         
-        self.vbox_frame = self.wTree.get_widget("vbox_frame")
-        self.box_error = self.wTree.get_widget("box_error")
+        self.dialog = self.builder.get_object("PluginManagerDialog")
+        
+        # stuff to populate
+        self.close_btn = self.builder.get_object("close_btn")
+        self.config_btn = self.builder.get_object("config_btn")
+        self.lblPluginName = self.builder.get_object("lblPluginName")
+        self.lblPluginVersion = self.builder.get_object("lblPluginVersion")
+        self.lblPluginAuthors = self.builder.get_object("lblPluginAuthors")
+        self.txtPluginDescription = self.builder.get_object("txtPluginDescription")
+        
+        self.vbox_frame = self.builder.get_object("vbox_frame")
+        self.box_error = self.builder.get_object("box_error")
         self.box_error.hide()
-        self.lblErrorTitle = self.wTree.get_widget("lblErrorTitle")
-        self.lblPluginMM = self.wTree.get_widget("lblPluginMM")
-        #self.btnClose = self.wTree.get_widget("close_btn")
+        self.lblErrorTitle = self.builder.get_object("lblErrorTitle")
+        self.lblPluginMM = self.builder.get_object("lblPluginMM")
+        #self.btnClose = self.builder.get_object("close_btn")
         #self.btnClose.connect('clicked', self.close, None)
-		
-        # recheck the plugins with errors
-        self.pengine.recheckPluginsErrors(self.plugins, self.plugin_api)
+        
+#        # recheck the plugins with errors
+#        self.pengine.recheckPluginsErrors(self.plugins, self.plugin_apis)
         
         # liststore
         self.PluginList = gtk.ListStore('gboolean', str, str, 'gboolean', 'gboolean')
         
-        for plgin in self.plugins:
-            if not plgin['error']:
-                self.PluginList.append([plgin['state'], plgin['name'], plgin['version'], True, False])
-            else:
-                self.PluginList.append([plgin['state'], plgin['name'], plgin['version'], False, True])
+#        for plgin in self.plugins:
+#            if not plgin['error']:
+#                self.PluginList.append([plgin['state'], plgin['name'], plgin['version'], True, False])
+#            else:
+#                self.PluginList.append([plgin['state'], plgin['name'], plgin['version'], False, True])
         # end - liststore
-		
+        
         # treeview
-        self.pluginTree = self.wTree.get_widget("pluginTree")
-		
+        self.pluginTree = self.builder.get_object("pluginTree")
+        
         self.rendererToggle = gtk.CellRendererToggle()
         self.rendererToggle.set_property('activatable', True)
         self.rendererToggle.connect('toggled', self.colToggledClicked, self.PluginList)
@@ -85,7 +85,7 @@ class PluginManager:
         self.colToggle = gtk.TreeViewColumn("Enabled", self.rendererToggle)
         self.colToggle.add_attribute(self.rendererToggle, "active", 0)
         self.colToggle.add_attribute(self.rendererToggle, "activatable", 3)
-		
+        
         self.rendererName = gtk.CellRendererText()
         self.rendererName.set_property('foreground', 'gray')
         self.colName = gtk.TreeViewColumn("Name", self.rendererName, text=1, foreground_set=4)
@@ -93,34 +93,48 @@ class PluginManager:
         self.rendererVersion = gtk.CellRendererText()
         self.rendererVersion.set_property('foreground', 'gray')
         self.colVersion = gtk.TreeViewColumn("Version", self.rendererVersion, text=2, foreground_set=4)
-		
+        
         self.pluginTree.append_column(self.colToggle)
         self.pluginTree.append_column(self.colName)
         self.pluginTree.append_column(self.colVersion)
-		
+        
         self.pluginTree.set_model(self.PluginList)
         self.pluginTree.set_search_column(2)
         # end - treeview
-		
+        
         # properties
         
         self.dialog.set_transient_for(parent)
         self.config_btn.set_sensitive(False)
-		
+        
         # connect signals 
         self.dialog.connect("delete_event", self.close)
         self.close_btn.connect("clicked", self.close)
         self.pluginTree.connect("cursor-changed", self.pluginExtraInfo, self.plugins)
         self.config_btn.connect("clicked", self.plugin_configure_dialog)
-		
+        self.present()
         self.dialog.show_all()
-		
+        
+        
+    def present(self):
+        # recheck the plugins with errors
+        #doing this reset all plugin state to False
+        self.pengine.recheckPluginsErrors(self.plugins, self.plugin_apis,checkall=True)
+        self.PluginList.clear()
+        
+        for plgin in self.plugins:
+            if not plgin['error']:
+                self.PluginList.append([plgin['state'], plgin['name'], plgin['version'], True, False])
+            else:
+                self.PluginList.append([plgin['state'], plgin['name'], plgin['version'], False, True])
+        
+        self.dialog.present()
 
     def close(self, widget, response=None):
         # get the plugins that are going to be initialized and the ones
         # that are going do be desabled
-        self.pengine.recheckPlugins(self.plugins, self.plugin_api)
-        self.dialog.destroy()
+        self.pengine.recheckPlugins(self.plugins, self.plugin_apis)
+        self.dialog.hide()
         return True
     
     #def delete(self, widget, response=None):
@@ -137,9 +151,9 @@ class PluginManager:
                     #we instantly apply the plugin activation/deactivation
                     #to respect HIG
                     if plgin['state'] :
-                        self.pengine.activatePlugins([plgin], self.plugin_api)
+                        self.pengine.activatePlugins([plgin], self.plugin_apis)
                     else :
-                        self.pengine.deactivatePlugins([plgin], self.plugin_api)
+                        self.pengine.deactivatePlugins([plgin], self.plugin_apis)
                     
 
     def pluginExtraInfo(self, treeview, plugins):
@@ -147,7 +161,7 @@ class PluginManager:
         if path:
             model = treeview.get_model()
             iter = treeview.get_model().get_iter(path)
-			
+            
             for plgin in plugins:
                 if (model.get_value(iter,1) == plgin['name']) and (model.get_value(iter,2) == plgin['version']):
                     self.lblPluginName.set_label("<b>" + plgin['name'] + "</b>")
@@ -216,3 +230,4 @@ class PluginManager:
                         
     def plugin_configure_dialog(self, widget, data=None):
         self.current_plugin['instance'].configure_dialog(self.plugin_api)
+
