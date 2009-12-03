@@ -34,7 +34,7 @@ def task_to_dict(task):
           "donedate": task.get_closed_date(),
           "tags": task.get_tags_name(),
           "text": task.get_text(),
-          "subtask": task.get_subtasks_tid(),
+          "subtask": task.get_subtask_tids(),
           }), signature="sv")
 
 
@@ -123,6 +123,12 @@ class DBusTaskWrapper(dbus.service.Object):
     @dbus.service.method(BUSNAME)
     def open_task_editor(self, tid):
         self.ui.open_task(tid)
+        
+    @dbus.service.method(BUSNAME)
+    def open_new_task(self):
+        nt = self.req.new_task(newtask=True)
+        uid = nt.get_id()
+        self.ui.open_task(uid,thisisnew=True)
 
     @dbus.service.method(BUSNAME)
     def hide_task_browser(self):
