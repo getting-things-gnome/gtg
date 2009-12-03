@@ -195,7 +195,7 @@
                     <child>
                       <object class="GtkArrow" id="arrow2">
                         <property name="visible">True</property>
-                        <property name="arrow_type">down</property>
+                        <property name="arrow_type">up</property>
                       </object>
                     </child>
                   </object>
@@ -250,7 +250,7 @@
                     <child>
                       <object class="GtkArrow" id="arrow1">
                         <property name="visible">True</property>
-                        <property name="arrow_type">down</property>
+                        <property name="arrow_type">up</property>
                       </object>
                     </child>
                   </object>

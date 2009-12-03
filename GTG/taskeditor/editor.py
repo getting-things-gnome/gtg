@@ -379,13 +379,13 @@ class TaskEditor :
         
         rect = widget.get_allocation()
         x, y = widget.window.get_origin()
-        cal_width, cal_height = self.calendar.get_size() #pylint: disable-msg=W0612
+        cal_width, cal_height = self.calendar.get_size()
         self.calendar.move((x + rect.x - cal_width + rect.width)
-                                            , (y + rect.y + rect.height))
+                                            , (y + rect.y - cal_height))
         self.calendar.show()
         """Because some window managers ignore move before you show a window."""
         self.calendar.move((x + rect.x - cal_width + rect.width)
-                                            , (y + rect.y + rect.height))
+                                            , (y + rect.y - cal_height))
         
         self.calendar.grab_add()
         #We grab the pointer in the calendar
