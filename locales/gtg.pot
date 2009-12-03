@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-12-03 00:13-1000\n"
+"POT-Creation-Date: 2009-12-03 02:14-1000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -359,64 +359,64 @@ msgstr ""
 msgid "Tasks with no tags"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:646
+#: GTG/taskbrowser/browser.py:644
 msgid "(no active tasks)"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:648
+#: GTG/taskbrowser/browser.py:646
 msgid "(1 active task)"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:650
+#: GTG/taskbrowser/browser.py:648
 #, python-format
 msgid "(%s active tasks)"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:660
+#: GTG/taskbrowser/browser.py:658
 msgid "monday"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:660
+#: GTG/taskbrowser/browser.py:658
 msgid "tuesday"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:660
+#: GTG/taskbrowser/browser.py:658
 msgid "wednesday"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:661
+#: GTG/taskbrowser/browser.py:659
 msgid "thursday"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:661
+#: GTG/taskbrowser/browser.py:659
 msgid "friday"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:661
+#: GTG/taskbrowser/browser.py:659
 msgid "saturday"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:662
+#: GTG/taskbrowser/browser.py:660
 msgid "sunday"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:671
+#: GTG/taskbrowser/browser.py:669
 msgid "today"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:678
+#: GTG/taskbrowser/browser.py:676
 msgid "tomorrow"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:1145
+#: GTG/taskbrowser/browser.py:1143
 msgid "tags"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:1149
+#: GTG/taskbrowser/browser.py:1147
 msgid "defer"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:1154
+#: GTG/taskbrowser/browser.py:1152
 msgid "due"
 msgstr ""
 
@@ -731,6 +731,18 @@ msgstr ""
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:11
 msgid "Use network"
+msgstr ""
+
+#: GTG/plugins/export/export.py:189
+msgid "Template not found"
+msgstr ""
+
+#: GTG/plugins/export/export.py:190
+msgid "Can't load the template file"
+msgstr ""
+
+#: GTG/plugins/export/export.py:219
+msgid "Choose where to save your list"
 msgstr ""
 
 #: GTG/plugins/rtm_sync/pyrtm/rtm.py:56

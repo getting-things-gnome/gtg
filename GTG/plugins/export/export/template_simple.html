@@ -1,0 +1,139 @@
+<!--
+ -*- coding: utf-8 -*-
+ pylint: disable-msg=W0201
+ -----------------------------------------------------------------------------
+ Getting Things Gnome! - a personal organizer for the GNOME desktop
+ Copyright (c) 2008-2009 - Lionel Dricot & Bertrand Rousseau
+
+ This program is free software: you can redistribute it and/or modify it under
+ the terms of the GNU General Public License as published by the Free Software
+ Foundation, either version 3 of the License, or (at your option) any later
+ version.
+
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ details.
+
+ You should have received a copy of the GNU General Public License along with
+ this program.  If not, see <http://www.gnu.org/licenses/>.
+ -----------------------------------------------------------------------------
+-->
+
+
+<!--
+So you want to write your own template for Getting things GNOME?
+Cool. Now, these templates are interpreted with a python library 
+called Cheetah. If you know a little about python or some other
+scripting languare, just dive in, it's really straightforward.
+A little note: #slurp is used to avoid the trailing newline addition, 
+like echo -n if you are into CLIs.
+Otherwise, a nice and easy tutorial about it can be found 
+here:
+http://www.devshed.com/c/a/Python/Templating-with-Cheetah/
+
+The last thing you may want to know are the variables you can use.
+Here's the list:
+tasks                -> The list of all exported tasks
+task.title           -> The task title
+task.has_title       -> True/False, wheter the task has a title (it should)
+task.text            -> The task description
+task.has_text
+task.status          -> The task status (Active,..)
+task.has_status
+task.subtasks        -> List of subtasks
+task.has_subtasks
+task.tags            -> List of tags
+task.has_tags
+task.modified
+task.has_modified
+task.due_date
+task.has_due_date
+task.closed_date
+task.has_closed_date
+task.start_date
+task.has_start_date
+task.days_left
+task.has_days_left
+
+## Remember to put a $ before any varible (e.g.: $tasks), I won't do
+## it here so that it shows up in the source of the generated html
+## (the ## are the comment escaping in Cheetah, so these line won't 
+## show up)
+
+If you write down a nice template, please send it back to the GTG project:
+go to https://edge.launchpad.net/gtg, and open a bug requesting to include your
+template (remember to attach the file). It's good karma!
+
+~~Luca Invernizzi: <invernizzi.l@gmail.com> ~~
+-->
+<html>
+    <head>
+        <title> Things to do </title>
+    <body>
+
+        <ul>
+            #for $task in $tasks:
+                $task_template($task)
+            #end for
+
+        <ul>
+
+        <!-- this is the function that generates a task -->
+        #def task_template($task)
+            <li>
+
+                #if $task.has_title
+                <b>$task.title</b> 
+                    #if $task.has_tags
+                    (#slurp 
+                        #for $tag in $task.tags:
+                            $tag #slurp
+                        #end for
+                        )#slurp
+                    #end if
+                <br>
+                #end if
+
+                #if $task.has_due_date
+                <i>Due: $task.due_date</i><br>
+                #end if
+
+                #if $task.has_text
+                $remove_html_tags($task.text)
+                #end if
+
+                
+                #if $task.has_subtasks
+                <ul>
+                    #for $subtask in $task.subtasks:
+                        $task_template($subtask)
+                    #end for
+                </ul>
+                #end if
+            </li>
+        #end def
+
+
+##This is just to avoid annoying characters around. If you don't believe me,
+## just take it out
+#import re
+#def remove_html_tags($data):
+    ##Removing subtask anchor points
+    #set $p = $re.compile(r'^.*<subtask>[0-9]*@[0-9]*</subtask>.*$',$re.MULTILINE)
+    #set $data = $p.sub('', $data)
+    ##Removing tags
+    #set $p = $re.compile(r'@[a-z,0-9]*',$re.IGNORECASE)
+    #set $data = $p.sub('', $data)
+    ##Removing <something> and </something>
+    #set $p = $re.compile(r'<.*?>')
+    #set $data = $p.sub('', $data)
+    ##Removing lines only with commas (tags lines)
+    #set $p = $re.compile(r'^[\s,\,]*$')
+    #return $p.sub('', $data)
+#end def
+
+
+    </body>
+</html>
+
