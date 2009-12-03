@@ -201,6 +201,7 @@ class TaskEditor :
                     self.window.resize(eval(str(size[0])),eval(str(size[1])))
 
         self.window.show()
+        self.textview.set_editable(True)
 
     # Define accelerator-keys for this dialog
     # TODO: undo/redo
@@ -524,20 +525,11 @@ class TaskEditor :
             diff = time.time() - self.time
             tosave = diff > GnomeConfig.SAVETIME
         else:
-            self.time = 1
-            tosave = False
+            #we don't want to save a task while opening it
+            tosave = self.textview.get_editable()
             diff = None
         if tosave:
-            #We don't want to save a new empty task
-            #so we check for the content
-            empty = "<content/>"
-            actual = self.textview.get_text()
-            isempty = (actual == empty or actual == "" or not actual)
-            if not self.task.is_new() or not isempty:
-                self.save()
-#                self.task.set_text(actual)
-#                self.task.sync()
-#                self.time = time.time()
+            self.save()
         
         
     #This will bring the Task Editor to front    
