@@ -78,6 +78,20 @@ class hamsterPlugin:
             self.set_hamster_ids(task, valid_ids)
         return records
     
+    def get_active_id(self):
+        f = self.hamster.GetCurrentFact()
+        if f: return f['id']
+        else: return None
+            
+    def is_task_active(self, task):
+    	records = self.get_records(task)
+    	ids = [record['id'] for record in records]
+    	return self.get_active_id() in ids
+    	
+    def stop_task(self, task):
+        if self.is_task_active(self, task):
+    	    self.hamster.StopTracking()
+    
     #### Datastore  
     def get_hamster_ids(self, task):
         a = task.get_attribute("id-list", namespace=self.PLUGIN_NAMESPACE)
@@ -145,7 +159,11 @@ class hamsterPlugin:
             
             total = 0
             
-            def add(w, a, b, offset):
+            def add(w, a, b, offset, active=False):
+                if active:
+                    a = "<span color='red'>%s</span>"%a
+                    b = "<span color='red'>%s</span>"%b
+                
                 dateLabel=gtk.Label(a)
                 dateLabel.set_use_markup(True)
                 dateLabel.set_alignment(xalign=0.0, yalign=0.5)
@@ -159,10 +177,11 @@ class hamsterPlugin:
                 w.attach(durLabel, left_attach=1, right_attach=2, top_attach=offset, 
                 bottom_attach=offset+1, xoptions=gtk.FILL, yoptions=0)
             
+            active_id = self.get_active_id()
             for offset,i in enumerate(records):
                 t = calc_duration(i)    
                 total += t
-                add(inner_table, format_date(i), format_duration(t), offset)
+                add(inner_table, format_date(i), format_duration(t), offset, i['id'] == active_id)
                 
             add(outer_table, "<big><b>Total</b></big>", "<big><b>%s</b></big>"%format_duration(total), 1)
             
