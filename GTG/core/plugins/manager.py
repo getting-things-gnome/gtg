@@ -23,7 +23,6 @@ from GTG.core.plugins          import GnomeConfig
 #from GTG.core.plugins.engine import PluginAPI
 
 import sys
-import gobject
 
 try:
     import pygtk

@@ -21,7 +21,6 @@
 #the tag object implementation
 
 import os
-import copy
 
 from GTG.core      import CoreConfig
 from GTG.core.tree import Tree, TreeNode

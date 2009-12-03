@@ -31,7 +31,6 @@ import re
 import datetime
 import threading
 import time
-import string
 import subprocess
 from Cheetah.Template import Template
 from xdg.BaseDirectory import xdg_config_home
