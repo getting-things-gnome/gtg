@@ -127,6 +127,9 @@ template (remember to attach the file). It's good karma!
     #set $data = $p.sub('', $data)
     ##Removing <something> and </something>
     #set $p = $re.compile(r'<.*?>')
+    #set $data = $p.sub('', $data)
+    ##Removing lines only with commas (tags lines)
+    #set $p = $re.compile(r'^[\s,\,]*$')
     #return $p.sub('', $data)
 #end def
 
