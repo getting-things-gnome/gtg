@@ -1,17 +1,75 @@
+<!--
+ -*- coding: utf-8 -*-
+ pylint: disable-msg=W0201
+ -----------------------------------------------------------------------------
+ Getting Things Gnome! - a personal organizer for the GNOME desktop
+ Copyright (c) 2008-2009 - Lionel Dricot & Bertrand Rousseau
+
+ This program is free software: you can redistribute it and/or modify it under
+ the terms of the GNU General Public License as published by the Free Software
+ Foundation, either version 3 of the License, or (at your option) any later
+ version.
+
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ details.
+
+ You should have received a copy of the GNU General Public License along with
+ this program.  If not, see <http://www.gnu.org/licenses/>.
+ -----------------------------------------------------------------------------
+-->
+
+
+<!--
+So you want to write your own template for Getting things GNOME?
+Cool. Now, these templates are interpreted with a python library 
+called Cheetah. If you know a little about python or some other
+scripting languare, just dive in, it's really straightforward.
+Otherwise, a nice and easy tutorial about it can be found 
+here:
+http://www.devshed.com/c/a/Python/Templating-with-Cheetah/
+
+The last thing you may want to know are the variables you can use.
+Here's the list (remember to add $ before the variable name):
+tasks          -> The list of all exported tasks
+task.title     -> The task title
+task.has_title -> True/False, wheter the task has a title (it should)
+task.text      -> The task description
+task.has_text
+task.status    -> The task status (Active,..)
+task.has_status
+task.subtasks  -> List of subtasks
+task.has_subtasks
+
+If you write down a nice template, please send it back to the GTG project:
+go to https://edge.launchpad.net/gtg, and open a bug requesting to include your
+template (remember to attach the file). It's good karma!
+
+~~Luca Invernizzi: <invernizzi.l@gmail.com> ~~
+-->
 <html>
     <head>
         <title> Things to do </title>
     <body>
 
+        <ul>
+            #for $task in $tasks:
+                $task_template($task)
+            #end for
 
+        <ul>
+
+        <!-- this is the function that generates a task -->
         #def task_template($task)
             <li>
+
                 #if $task.has_title
-                I have to do $task.title. <br>
+                <b>$task.title</b> <br>
                 #end if
 
                 #if $task.has_text
-                In particular: $task.text
+                $task.text
                 #end if
                 
                 #if $task.has_subtasks
@@ -25,12 +83,9 @@
         #end def
 
 
-        <ul>
-            #for $task in $tasks:
-                $task_template($task)
-            #end for
 
-        <ul>
+
+
     </body>
 </html>
 

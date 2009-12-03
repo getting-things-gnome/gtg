@@ -941,12 +941,23 @@ class TaskBrowser:
             else:
                 return cmp(t2_order, t1_order)            
 
-    def combo_list_store(self, list_obj):
-        list_store = gtk.ListStore(gobject.TYPE_STRING)
+    def empty_tree_model(self, model):
+        if model == None: 
+            return
+        iter = model.get_iter_first()
+        while iter:
+            this_iter =  iter
+            iter = model.iter_next(iter)
+            model.remove(this_iter)
+
+    def combo_list_store(self, list_store, list_obj):
+        if list_store == None:
+            list_store = gtk.ListStore(gobject.TYPE_STRING)
+        self.empty_tree_model(list_store)
         for elem in list_obj:
             iter = list_store.append()
             list_store.set(iter, 0, elem)
-        return list_store
+        return self.export_list_store
 
     def combo_completion(self, list_store):
         completion = gtk.EntryCompletion()
@@ -954,7 +965,6 @@ class TaskBrowser:
         completion.set_text_column(0)
         completion.set_inline_completion(True)
         completion.set_model(list_store)
-        return completion
 
     def combo_set_text(self, combobox, entry):
         model = combobox.get_model()
@@ -969,29 +979,34 @@ class TaskBrowser:
             return None
         return model[active][0]
 
-    def combo_decorator(self, combobox, list_obj):
-        entry = gtk.Entry()
+    def export_combo_decorator(self, combobox, list_obj):
+        first_run = not hasattr(self,"export_combo_templ_entry")
+        if first_run:
+            self.export_combo_templ_entry = gtk.Entry()
+            combobox.add(self.export_combo_templ_entry)
+            self.export_list_store = gtk.ListStore(gobject.TYPE_STRING)
+            self.export_combo_templ_entry.set_completion(
+                        self.combo_completion(self.export_list_store))
+            combobox.set_model(self.export_list_store)
+            combobox.connect('changed', self.combo_set_text,
+                         self.export_combo_templ_entry )
+            #render the combo-box drop down menu
+            cell = gtk.CellRendererText()
+            combobox.pack_start(cell, True)
+            combobox.add_attribute(cell, 'text', 0) 
         #check if Clipboard contains an element of the list
         clipboard = gtk.Clipboard()
         def clipboardCallback(clipboard, text, list_obj):
             if len(filter(lambda x: x == text, list_obj)) != 0:
                 entry.set_text(text)
         clipboard.request_text(clipboardCallback, list_obj)
-        #wrap the combo-box if it's too long
+       #wrap the combo-box if it's too long
         if len(list_obj) > 15:
             combobox.set_wrap_width(5)
         #populate the combo-box
-        if len(list_obj) > 0:
-            list_store = self.combo_list_store(list_obj)
-            entry.set_completion(self.combo_completion(list_store))
-            combobox.set_model(list_store)
-        combobox.add(entry)
-        combobox.connect('changed', self.combo_set_text, entry )
-        #render the combo-box drop down menu
-        cell = gtk.CellRendererText()
-        combobox.pack_start(cell, True)
-        combobox.add_attribute(cell, 'text', 0) 
-        return entry
+        self.combo_list_store(self.export_list_store, list_obj)
+        if first_run:
+            combobox.set_active(0)
 
     def get_user_dir(self, key):
         """
@@ -1566,11 +1581,11 @@ class TaskBrowser:
                 template_list = filter(lambda str: str.startswith("template_"),
                                   os.listdir(dir))
         #Creating combo-boxes
-        self.combo_decorator(self.export_combo_templ, template_list)
+        self.export_combo_decorator(self.export_combo_templ, template_list)
         self.export_dialog.show_all()
 
     def on_export_cancel(self, widget = None, data = None):
-        self.export_dialog.destroy()
+        self.export_dialog.hide()
         return True
 
     def on_export_combo_changed(self, widget = None):
@@ -1585,15 +1600,16 @@ class TaskBrowser:
             pixbuf = pixbuf.scale_simple(w, h, gtk.gdk.INTERP_BILINEAR)
             self.export_image.set_from_pixbuf(pixbuf)
 
-
     def export_check_template(self):
         #Check template file 
         #NOTE: if two templates have the same name, the user provided one takes
         #      precedence over ours
         supposed_template = self.combo_get_text(self.export_combo_templ)
+        if supposed_template == None:
+            return False
         supposed_template_paths = map (lambda x: x + supposed_template,
                                        self.export_template_paths)
-        template_paths = filter (lambda x: os.path.exists(x),
+        template_paths = filter (lambda x: os.path.isfile(x),
                                  supposed_template_paths)
         if len(template_paths) >0:
             template_path = template_paths[0]
@@ -1605,30 +1621,35 @@ class TaskBrowser:
 
     def export_tree_visit(self, model, task_iter):
         class TaskStr:
-            def __init__(self, title, text, subtasks):
+            def __init__(self,
+                         title,
+                         text,
+                         subtasks,
+                         status
+                        ):
                 self.title    = title
                 self.text     = text
                 self.subtasks = subtasks
+                self.status   = status
             has_title    = property(lambda s: s.title    != "")
             has_text     = property(lambda s: s.text     != "")
             has_subtasks = property(lambda s: s.subtasks != [])
+            has_status   = property(lambda s: s.status   != "")
         tasks_str = []
         while task_iter:
             task = model.get_value(task_iter, tasktree.COL_OBJ)
             task_str = TaskStr(task.get_title(),
                                task.get_text(),
-                              [])
+                               [],
+                               task.get_status())
             if model.iter_has_child(task_iter):
                 task_str.subtasks = \
                     self.export_tree_visit(model, model.iter_children(task_iter))
-            # task_str = task_str.replace("$STATUS"    , task.get_status())
             #            task_str = task_str.replace("$MODIFIED"  , task.get_modified())
 #            task_str = task_str.replace("$DUE"       , task.get_due_date())
 #            task_str = task_str.replace("$START"     , task.get_start_date())
 #            task_str = task_str.replace("$CLOSED"    , task.get_closed_date())
 #            task_str = task_str.replace("$DAYS_LEFT" , task.get_days_left())
-#task_str = task_str.replace("$TEXT"      , task.get_text())
-            #task_str = task_str.replace ("$SUBTASKS" , task.get_subtasks())
             #            task_str = task_str.replace("$COLOR"     , task.get_color())
             #            task_str = task_str.replace("$TAGS" , "".join(map(lambda t: \
                     #                                           t.get_name(), task.get_tags())))
@@ -1642,17 +1663,15 @@ class TaskBrowser:
         tasks_str = self.export_tree_visit(model, model.get_iter_first())
         self.export_document = str(Template (file = self.export_template_path,
                       searchList = [{ 'tasks': tasks_str}]))
-        print self.export_document
         return True
 
-
     def export_execute_with_ui(self):
-        call = [(self.export_check_template    , _("Template not found")),\
-                (self.export_generate          , _("Can't load the template file") )]
+        call = [(self.export_check_template, _("Template not found")),\
+                (self.export_generate      , _("Can't load the template file") )]
         for step in call:
             if not step[0]():
                 dialog = gtk.MessageDialog(parent = \
-                     self.plugin_api.get_window(),
+                     self.export_dialog,
                      flags = gtk.DIALOG_DESTROY_WITH_PARENT,
                      type = gtk.MESSAGE_ERROR,
                      buttons=gtk.BUTTONS_OK,
@@ -1686,12 +1705,12 @@ class TaskBrowser:
                            gtk.RESPONSE_OK))
         desktop_dir = self.get_user_dir("XDG_DESKTOP_DIR")
         #NOTE: using ./scripts/debug.sh, it doesn't detect the Desktop
-        # dir, as the XDG directories are changed
+        # dir, as the XDG directories are changed. That is why during 
+        # debug it defaults to the Home directory ~~Invernizzi~~
         if desktop_dir != None and os.path.exists(desktop_dir):
             chooser.set_current_folder(desktop_dir)
         else:
             chooser.set_current_folder(os.environ['HOME'])
-            #        chooser.set_filename(self.export_template_filename)
         chooser.set_default_response(gtk.RESPONSE_OK)
         response = chooser.run()
         filename = chooser.get_filename()
@@ -1699,7 +1718,6 @@ class TaskBrowser:
         if response == gtk.RESPONSE_OK and filename != None:
             self.export_save_file(filename)
             self.on_export_cancel()
-        
 
     def general_refresh(self):
         if self.logger:
