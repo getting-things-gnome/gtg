@@ -14,24 +14,21 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import gtk, pygtk
+import gtk
 import os, sys
-from time import sleep
+#from time import sleep
 
 from xdg.BaseDirectory import *
-from configobj import ConfigObj
+#from configobj import ConfigObj
 
 import Geoclue
 
 import clutter, cluttergtk
-import champlain, champlaingtk 
+import champlain
 
 # IMPORTANT This add's the plugin's path to python sys path
 sys.path.insert(0,os.path.dirname(os.path.abspath(__file__)))
 from marker import MarkerLayer
-
-
-from GTG.core.plugins.engine import PluginEngine
 
 class geolocalizedTasks:
     

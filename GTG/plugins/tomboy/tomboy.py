@@ -13,7 +13,7 @@
 #
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
-
+import sys
 try:
     import pygtk
     pygtk.require("2.0")
@@ -21,11 +21,9 @@ except: # pylint: disable-msg=W0702
     sys.exit(1)
 try:
     import gtk
-    from gtk import gdk
 except: # pylint: disable-msg=W0702
     sys.exit(1)
 
-import gobject
 import os
 import sys
 import dbus
