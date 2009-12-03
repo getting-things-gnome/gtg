@@ -1628,34 +1628,50 @@ class TaskBrowser:
                          title,
                          text,
                          subtasks,
-                         status
+                         status,
+                         modified,
+                         due_date,
+                         closed_date,
+                         start_date,
+                         days_left,
+                         tags
                         ):
-                self.title    = title
-                self.text     = text
-                self.subtasks = subtasks
-                self.status   = status
-            has_title    = property(lambda s: s.title    != "")
-            has_text     = property(lambda s: s.text     != "")
-            has_subtasks = property(lambda s: s.subtasks != [])
-            has_status   = property(lambda s: s.status   != "")
+                self.title         = title
+                self.text          = text
+                self.subtasks      = subtasks
+                self.status        = status
+                self.modified      = modified
+                self.due_date      = due_date
+                self.closed_date   = closed_date
+                self.start_date    = start_date
+                self.days_left     = days_left
+                self.tags          = tags
+            has_title         = property(lambda s: s.title       != "")
+            has_text          = property(lambda s: s.text        != "")
+            has_subtasks      = property(lambda s: s.subtasks    != [])
+            has_status        = property(lambda s: s.status      != "")
+            has_modified      = property(lambda s: s.modified    != "")
+            has_due_date      = property(lambda s: s.due_date    != "")
+            has_closed_date   = property(lambda s: s.closed_date != "")
+            has_start_date    = property(lambda s: s.start_date  != "")
+            has_days_left     = property(lambda s: s.days_left   != "")
+            has_tags          = property(lambda s: s.tags        != [])
         tasks_str = []
         while task_iter:
             task = model.get_value(task_iter, tasktree.COL_OBJ)
             task_str = TaskStr(task.get_title(),
-                               task.get_text(),
+                               str(task.get_text()),
                                [],
-                               task.get_status())
+                               task.get_status(),
+                               str(task.get_modified()),
+                               str(task.get_due_date()),
+                               str(task.get_start_date()),
+                               str(task.get_days_left()),
+                               str(task.get_closed_date()),
+                               map(lambda t: t.get_name(), task.get_tags()))
             if model.iter_has_child(task_iter):
                 task_str.subtasks = \
                     self.export_tree_visit(model, model.iter_children(task_iter))
-            #            task_str = task_str.replace("$MODIFIED"  , task.get_modified())
-#            task_str = task_str.replace("$DUE"       , task.get_due_date())
-#            task_str = task_str.replace("$START"     , task.get_start_date())
-#            task_str = task_str.replace("$CLOSED"    , task.get_closed_date())
-#            task_str = task_str.replace("$DAYS_LEFT" , task.get_days_left())
-            #            task_str = task_str.replace("$COLOR"     , task.get_color())
-            #            task_str = task_str.replace("$TAGS" , "".join(map(lambda t: \
-                    #                                           t.get_name(), task.get_tags())))
             tasks_str.append(task_str)
             task_iter = model.iter_next(task_iter)
         return tasks_str

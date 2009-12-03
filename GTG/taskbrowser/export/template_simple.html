@@ -31,16 +31,33 @@ here:
 http://www.devshed.com/c/a/Python/Templating-with-Cheetah/
 
 The last thing you may want to know are the variables you can use.
-Here's the list (remember to add $ before the variable name):
-tasks          -> The list of all exported tasks
-task.title     -> The task title
-task.has_title -> True/False, wheter the task has a title (it should)
-task.text      -> The task description
+Here's the list:
+tasks                -> The list of all exported tasks
+task.title           -> The task title
+task.has_title       -> True/False, wheter the task has a title (it should)
+task.text            -> The task description
 task.has_text
-task.status    -> The task status (Active,..)
+task.status          -> The task status (Active,..)
 task.has_status
-task.subtasks  -> List of subtasks
+task.subtasks        -> List of subtasks
 task.has_subtasks
+task.tags            -> List of tags
+task.has_tags
+task.modified
+task.has_modified
+task.due_date
+task.has_due_date
+task.closed_date
+task.has_closed_date
+task.start_date
+task.has_start_date
+task.days_left
+task.has_days_left
+
+## Remember to put a $ before any varible (e.g.: $tasks), I won't do
+## it here so that it shows up in the source of the generated html
+## (the ## are the comment escaping in Cheetah, so these line won't 
+## show up)
 
 If you write down a nice template, please send it back to the GTG project:
 go to https://edge.launchpad.net/gtg, and open a bug requesting to include your
@@ -65,12 +82,26 @@ template (remember to attach the file). It's good karma!
             <li>
 
                 #if $task.has_title
-                <b>$task.title</b> <br>
+                <b>$task.title</b> 
+                    #if $task.has_tags
+                    (#slurp <!-- NOTE: slurp is used to suppress adding the trailing new line
+                                        (like "echo -n", if you use the command line) -->
+                        #for $tag in $task.tags:
+                            $tag #slurp
+                        #end for
+                        )#slurp
+                    #end if
+                <br>
+                #end if
+
+                #if $task.has_due_date
+                <i>Due: $task.due_date</i><br>
                 #end if
 
                 #if $task.has_text
                 $task.text
                 #end if
+
                 
                 #if $task.has_subtasks
                 <ul>
