@@ -1011,55 +1011,68 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
         <property name="visible">True</property>
         <property name="orientation">vertical</property>
         <child>
-          <object class="GtkTable" id="table1">
+          <object class="GtkHBox" id="hbox11">
             <property name="visible">True</property>
             <property name="border_width">15</property>
-            <property name="n_rows">2</property>
-            <property name="n_columns">2</property>
-            <property name="column_spacing">10</property>
-            <property name="row_spacing">10</property>
+            <property name="spacing">15</property>
             <child>
-              <object class="GtkLabel" id="export_label1">
+              <object class="GtkVBox" id="vbox111">
+                <property name="width_request">200</property>
                 <property name="visible">True</property>
-                <property name="xalign">1</property>
-                <property name="ypad">7</property>
-                <property name="label" translatable="yes">Select a tag</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkLabel" id="export_label2">
-                <property name="visible">True</property>
-                <property name="xalign">1</property>
-                <property name="label" translatable="yes">Select an export template</property>
-                <property name="justify">right</property>
+                <property name="orientation">vertical</property>
+                <child>
+                  <object class="GtkLabel" id="export_label2">
+                    <property name="visible">True</property>
+                    <property name="yalign">0.46000000834465027</property>
+                    <property name="label" translatable="yes">Select an export template.
+All the tasks in the current 
+view will be exported.</property>
+                    <property name="justify">center</property>
+                  </object>
+                  <packing>
+                    <property name="padding">15</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkComboBox" id="export_combo_templ">
+                    <property name="width_request">150</property>
+                    <property name="height_request">30</property>
+                    <property name="visible">True</property>
+                    <signal name="changed" handler="on_export_combo_templ_changed"/>
+                  </object>
+                  <packing>
+                    <property name="padding">30</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label212">
+                    <property name="visible">True</property>
+                  </object>
+                  <packing>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
               </object>
               <packing>
-                <property name="top_attach">1</property>
-                <property name="bottom_attach">2</property>
+                <property name="position">0</property>
               </packing>
             </child>
             <child>
-              <object class="GtkComboBox" id="export_combo_tags">
+              <object class="GtkImage" id="export_image">
+                <property name="width_request">150</property>
+                <property name="height_request">150</property>
                 <property name="visible">True</property>
               </object>
               <packing>
-                <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkComboBox" id="export_combo_templ">
-                <property name="visible">True</property>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="right_attach">2</property>
-                <property name="top_attach">1</property>
-                <property name="bottom_attach">2</property>
+                <property name="position">1</property>
               </packing>
             </child>
           </object>
           <packing>
+            <property name="expand">False</property>
+            <property name="fill">False</property>
             <property name="position">0</property>
           </packing>
         </child>
