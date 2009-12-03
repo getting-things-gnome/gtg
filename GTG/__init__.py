@@ -32,9 +32,7 @@ except:
     glade = None
 from os.path import pardir, abspath, dirname, join
 
-import info
-
-from xdg.BaseDirectory import xdg_data_home, xdg_config_home
+from xdg.BaseDirectory import xdg_config_home
 
 LOCAL_ROOTDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 DIST_ROOTDIR_LOCAL = "/usr/local/share/gtg"
