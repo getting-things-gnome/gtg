@@ -26,6 +26,8 @@ So you want to write your own template for Getting things GNOME?
 Cool. Now, these templates are interpreted with a python library 
 called Cheetah. If you know a little about python or some other
 scripting languare, just dive in, it's really straightforward.
+A little note: #slurp is used to avoid the trailing newline addition, 
+like echo -n if you are into CLIs.
 Otherwise, a nice and easy tutorial about it can be found 
 here:
 http://www.devshed.com/c/a/Python/Templating-with-Cheetah/
@@ -84,8 +86,7 @@ template (remember to attach the file). It's good karma!
                 #if $task.has_title
                 <b>$task.title</b> 
                     #if $task.has_tags
-                    (#slurp <!-- NOTE: slurp is used to suppress adding the trailing new line
-                                        (like "echo -n", if you use the command line) -->
+                    (#slurp 
                         #for $tag in $task.tags:
                             $tag #slurp
                         #end for
@@ -99,7 +100,7 @@ template (remember to attach the file). It's good karma!
                 #end if
 
                 #if $task.has_text
-                $task.text
+                $remove_html_tags($task.text)
                 #end if
 
                 
@@ -114,7 +115,20 @@ template (remember to attach the file). It's good karma!
         #end def
 
 
-
+##This is just to avoid annoying characters around. If you don't believe me,
+## just take it out
+#import re
+#def remove_html_tags($data):
+    ##Removing subtask anchor points
+    #set $p = $re.compile(r'^.*<subtask>[0-9]*@[0-9]*</subtask>.*$',$re.MULTILINE)
+    #set $data = $p.sub('', $data)
+    ##Removing tags
+    #set $p = $re.compile(r'@[a-z,0-9]*',$re.IGNORECASE)
+    #set $data = $p.sub('', $data)
+    ##Removing <something> and </something>
+    #set $p = $re.compile(r'<.*?>')
+    #return $p.sub('', $data)
+#end def
 
 
     </body>
