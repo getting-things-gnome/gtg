@@ -1589,16 +1589,17 @@ class TaskBrowser:
         return True
 
     def on_export_combo_changed(self, widget = None):
-        if not self.export_check_template():
-            pass
-        else:
+        if self.export_check_template():
             image_path = os.path.dirname(self.export_template_path)
             image_path = image_path + '/' + os.path.basename(\
                  self.export_template_path).replace("template_","thumbnail_")
-            pixbuf = gtk.gdk.pixbuf_new_from_file(image_path)
-            [w,h] = self.export_image.get_size_request()
-            pixbuf = pixbuf.scale_simple(w, h, gtk.gdk.INTERP_BILINEAR)
-            self.export_image.set_from_pixbuf(pixbuf)
+            if  os.path.isfile(image_path):
+                pixbuf = gtk.gdk.pixbuf_new_from_file(image_path)
+                [w,h] = self.export_image.get_size_request()
+                pixbuf = pixbuf.scale_simple(w, h, gtk.gdk.INTERP_BILINEAR)
+                self.export_image.set_from_pixbuf(pixbuf)
+            else:
+                self.export_image.clear()
 
     def export_check_template(self):
         #Check template file 
