@@ -980,7 +980,7 @@ class TaskBrowser:
         return model[active][0]
 
     def export_combo_decorator(self, combobox, list_obj):
-        first_run = not hasattr(self,"export_combo_templ_entry")
+        first_run = not hasattr(self, "export_combo_templ_entry")
         if first_run:
             self.export_combo_templ_entry = gtk.Entry()
             combobox.add(self.export_combo_templ_entry)
@@ -1005,8 +1005,9 @@ class TaskBrowser:
             combobox.set_wrap_width(5)
         #populate the combo-box
         self.combo_list_store(self.export_list_store, list_obj)
-        if first_run:
-            combobox.set_active(0)
+        if not hasattr(self, "export_combo_active"):
+            self.export_combo_active = 0
+        combobox.set_active(self.export_combo_active)
 
     def get_user_dir(self, key):
         """
@@ -1608,6 +1609,7 @@ class TaskBrowser:
         supposed_template = self.combo_get_text(self.export_combo_templ)
         if supposed_template == None:
             return False
+        self.export_combo_active = self.export_combo_templ.get_active()
         supposed_template_paths = map (lambda x: x + supposed_template,
                                        self.export_template_paths)
         template_paths = filter (lambda x: os.path.isfile(x),
@@ -1704,6 +1706,7 @@ class TaskBrowser:
                            gtk.RESPONSE_CANCEL,
                            gtk.STOCK_SAVE,
                            gtk.RESPONSE_OK))
+        chooser.set_do_overwrite_confirmation(True)
         desktop_dir = self.get_user_dir("XDG_DESKTOP_DIR")
         #NOTE: using ./scripts/debug.sh, it doesn't detect the Desktop
         # dir, as the XDG directories are changed. That is why during 
@@ -1718,7 +1721,7 @@ class TaskBrowser:
         chooser.destroy()
         if response == gtk.RESPONSE_OK and filename != None:
             self.export_save_file(filename)
-            self.on_export_cancel()
+        self.on_export_cancel()
 
     def general_refresh(self):
         if self.logger:
