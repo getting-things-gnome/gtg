@@ -13,6 +13,14 @@
                 #if $task.has_text
                 In particular: $task.text
                 #end if
+                
+                #if $task.has_subtasks
+                <ul>
+                    #for $subtask in $task.subtasks:
+                        $task_template($subtask)
+                    #end for
+                </ul>
+                #end if
             </li>
         #end def
 

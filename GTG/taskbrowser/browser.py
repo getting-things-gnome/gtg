@@ -1603,20 +1603,24 @@ class TaskBrowser:
         self.export_template_filename = supposed_template
         return True
 
-    def export_generate(self):
-        #Template loading and cutting
-        model = self.task_modelsort
-        task_iter = model.get_iter_first()
+    def export_tree_visit(self, model, task_iter):
         class TaskStr:
-            def __init__(self, title, text):
-                self.title = title
-                self.text  = text
-            has_title = property(lambda s: s.title != "")
-            has_text  = property(lambda s: s.text  != "")
+            def __init__(self, title, text, subtasks):
+                self.title    = title
+                self.text     = text
+                self.subtasks = subtasks
+            has_title    = property(lambda s: s.title    != "")
+            has_text     = property(lambda s: s.text     != "")
+            has_subtasks = property(lambda s: s.subtasks != [])
         tasks_str = []
         while task_iter:
             task = model.get_value(task_iter, tasktree.COL_OBJ)
-            task_str = TaskStr(task.get_title(), task.get_text())
+            task_str = TaskStr(task.get_title(),
+                               task.get_text(),
+                              [])
+            if model.iter_has_child(task_iter):
+                task_str.subtasks = \
+                    self.export_tree_visit(model, model.iter_children(task_iter))
             # task_str = task_str.replace("$STATUS"    , task.get_status())
             #            task_str = task_str.replace("$MODIFIED"  , task.get_modified())
 #            task_str = task_str.replace("$DUE"       , task.get_due_date())
@@ -1630,7 +1634,12 @@ class TaskBrowser:
                     #                                           t.get_name(), task.get_tags())))
             tasks_str.append(task_str)
             task_iter = model.iter_next(task_iter)
-        print tasks_str
+        return tasks_str
+
+    def export_generate(self):
+        #Template loading and cutting
+        model = self.task_modelsort
+        tasks_str = self.export_tree_visit(model, model.get_iter_first())
         self.export_document = str(Template (file = self.export_template_path,
                       searchList = [{ 'tasks': tasks_str}]))
         print self.export_document
