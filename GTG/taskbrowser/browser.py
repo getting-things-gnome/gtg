@@ -994,12 +994,6 @@ class TaskBrowser:
             cell = gtk.CellRendererText()
             combobox.pack_start(cell, True)
             combobox.add_attribute(cell, 'text', 0) 
-        #check if Clipboard contains an element of the list
-        clipboard = gtk.Clipboard()
-        def clipboardCallback(clipboard, text, list_obj):
-            if len(filter(lambda x: x == text, list_obj)) != 0:
-                entry.set_text(text)
-        clipboard.request_text(clipboardCallback, list_obj)
        #wrap the combo-box if it's too long
         if len(list_obj) > 15:
             combobox.set_wrap_width(5)
