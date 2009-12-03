@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-12-02 22:14-1000\n"
+"POT-Creation-Date: 2009-12-03 00:13-1000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -182,18 +182,14 @@ msgid "Edit"
 msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:15
-msgid "Export tasks"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:16
 msgid "GTG website"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:17
+#: GTG/taskbrowser/taskbrowser.glade.h:16
 msgid "Getting Things Gnome!"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:18
+#: GTG/taskbrowser/taskbrowser.glade.h:17
 msgid ""
 "Getting Things Gnome! is free software; you can redistribute it and/or "
 "modify it under the terms of the GNU General Public License as published by "
@@ -210,127 +206,120 @@ msgid ""
 "51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA."
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:23
+#: GTG/taskbrowser/taskbrowser.glade.h:22
 msgid "Mark as Done"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:24
+#: GTG/taskbrowser/taskbrowser.glade.h:23
 msgid "Mark as Not Done"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:25
+#: GTG/taskbrowser/taskbrowser.glade.h:24
 msgid "Mark as _Done"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:26
+#: GTG/taskbrowser/taskbrowser.glade.h:25
 msgid "New Note"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:27
+#: GTG/taskbrowser/taskbrowser.glade.h:26
 msgid "New Subtask"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:28
+#: GTG/taskbrowser/taskbrowser.glade.h:27
 msgid "New Task"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:29
+#: GTG/taskbrowser/taskbrowser.glade.h:28
 msgid "New _Subtask"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:30
+#: GTG/taskbrowser/taskbrowser.glade.h:29
 msgid "New _Task"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:31
+#: GTG/taskbrowser/taskbrowser.glade.h:30
 msgid "Permanently _remove task"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:32
+#: GTG/taskbrowser/taskbrowser.glade.h:31
 msgid "Plugin _Preferences"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:33
+#: GTG/taskbrowser/taskbrowser.glade.h:32
 msgid "Redo"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:34
-msgid ""
-"Select an export template.\n"
-"All the tasks in the current \n"
-"view will be exported."
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:37
+#: GTG/taskbrowser/taskbrowser.glade.h:33
 msgid "T_oolbar"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:38
+#: GTG/taskbrowser/taskbrowser.glade.h:34
 msgid "Tag is displayed in the workview"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:39 GTG/taskbrowser/tagtree.py:300
+#: GTG/taskbrowser/taskbrowser.glade.h:35 GTG/taskbrowser/tagtree.py:300
 #: GTG/taskbrowser/tasktree.py:386 GTG/taskbrowser/tasktree.py:513
 msgid "Tags"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:40
+#: GTG/taskbrowser/taskbrowser.glade.h:36
 msgid "Und_ismiss"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:41
+#: GTG/taskbrowser/taskbrowser.glade.h:37
 msgid "Undo"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:42
+#: GTG/taskbrowser/taskbrowser.glade.h:38
 msgid "View Notes"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:43
+#: GTG/taskbrowser/taskbrowser.glade.h:39
 msgid "Work View"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:44
+#: GTG/taskbrowser/taskbrowser.glade.h:40
 msgid "_Background Colors"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:45
+#: GTG/taskbrowser/taskbrowser.glade.h:41
 msgid "_Closed Tasks Pane"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:46
+#: GTG/taskbrowser/taskbrowser.glade.h:42
 msgid "_Edit"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:47
+#: GTG/taskbrowser/taskbrowser.glade.h:43
 msgid "_Help"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:48
+#: GTG/taskbrowser/taskbrowser.glade.h:44
 msgid "_Keep selected task"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:49
+#: GTG/taskbrowser/taskbrowser.glade.h:45
 msgid "_Plugins"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:50
+#: GTG/taskbrowser/taskbrowser.glade.h:46
 msgid "_Quick Add Entry"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:51
+#: GTG/taskbrowser/taskbrowser.glade.h:47
 msgid "_Tags Sidebar"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:52
+#: GTG/taskbrowser/taskbrowser.glade.h:48
 msgid "_Tasks"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:53
+#: GTG/taskbrowser/taskbrowser.glade.h:49
 msgid "_View"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:54
+#: GTG/taskbrowser/taskbrowser.glade.h:50
 msgid "_Work View"
 msgstr ""
 
@@ -362,85 +351,73 @@ msgstr ""
 msgid "Toggle the work view"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:204
+#: GTG/taskbrowser/browser.py:200
 msgid "All tasks"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:211
+#: GTG/taskbrowser/browser.py:207
 msgid "Tasks with no tags"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:661
+#: GTG/taskbrowser/browser.py:646
 msgid "(no active tasks)"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:663
+#: GTG/taskbrowser/browser.py:648
 msgid "(1 active task)"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:665
+#: GTG/taskbrowser/browser.py:650
 #, python-format
 msgid "(%s active tasks)"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:675
+#: GTG/taskbrowser/browser.py:660
 msgid "monday"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:675
+#: GTG/taskbrowser/browser.py:660
 msgid "tuesday"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:675
+#: GTG/taskbrowser/browser.py:660
 msgid "wednesday"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:676
+#: GTG/taskbrowser/browser.py:661
 msgid "thursday"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:676
+#: GTG/taskbrowser/browser.py:661
 msgid "friday"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:676
+#: GTG/taskbrowser/browser.py:661
 msgid "saturday"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:677
+#: GTG/taskbrowser/browser.py:662
 msgid "sunday"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:686
+#: GTG/taskbrowser/browser.py:671
 msgid "today"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:693
+#: GTG/taskbrowser/browser.py:678
 msgid "tomorrow"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:1251
+#: GTG/taskbrowser/browser.py:1145
 msgid "tags"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:1255
+#: GTG/taskbrowser/browser.py:1149
 msgid "defer"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:1260
+#: GTG/taskbrowser/browser.py:1154
 msgid "due"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:1688
-msgid "Template not found"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:1689
-msgid "Can't load the template file"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:1718
-msgid "Choose where to save your list"
 msgstr ""
 
 #: GTG/taskbrowser/tasktree.py:401 GTG/taskbrowser/tasktree.py:537
@@ -678,23 +655,23 @@ msgstr ""
 msgid "Version: "
 msgstr ""
 
-#: GTG/plugins/tomboy/tomboy.py:82
+#: GTG/plugins/tomboy/tomboy.py:80
 msgid "Tomboy not found. Please install it or disable the Tomboy plugin in GTG"
 msgstr ""
 
-#: GTG/plugins/tomboy/tomboy.py:125
+#: GTG/plugins/tomboy/tomboy.py:123
 msgid "Add Tomboy note"
 msgstr ""
 
-#: GTG/plugins/tomboy/tomboy.py:221
+#: GTG/plugins/tomboy/tomboy.py:219
 msgid "That note does not exist!"
 msgstr ""
 
-#: GTG/plugins/tomboy/tomboy.py:226
+#: GTG/plugins/tomboy/tomboy.py:224
 msgid "That note does not exist. Do you want to create a new one?"
 msgstr ""
 
-#: GTG/plugins/tomboy/tomboy.py:252
+#: GTG/plugins/tomboy/tomboy.py:250
 msgid "This Tomboy note does not exist anymore. Do you want to create it?"
 msgstr ""
 

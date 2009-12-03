@@ -105,9 +105,6 @@ class TagStore :
     def get_tag(self, tagname):
         return self.tags.get(tagname, None)
 
-    def has_tag(self, tagname):
-        return self.tags.has_key(tagname)
-
 #    def get_alltag_tag(self):
 #        """Return the special tag 'All tags'"""
 #        return self.alltag_tag
