@@ -77,8 +77,9 @@ class pluginExport:
 
     def on_export(self, widget):
         #Generating lists
-        self.export_template_paths = [xdg_config_home + "/gtg/export/",
-                    os.path.dirname(os.path.abspath(__file__)) + "/export/"]
+        self.export_template_paths = [xdg_config_home + "/gtg/export_templates/",
+                    os.path.dirname(os.path.abspath(__file__)) + \
+                                      "/export_templates/"]
         for dir in self.export_template_paths: 
             if os.path.exists(dir):
                 template_list = filter(lambda str: str.startswith("template_"),
