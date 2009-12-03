@@ -62,7 +62,7 @@ class PluginAPI:
         self.__filter_cbs = filter_cbs
         self.__quick_add_cbs = quick_add_cbs
         
-        #those are added widgets dictionnaries
+        #those are added widgets dictionaries
         self.tasktoolbar_id = 0
         self.tasktoolbar_widg = {}
         self.taskwidget_id = 0

@@ -459,10 +459,19 @@ class TaskBrowser:
         self.plugins = self.pengine.LoadPlugins()
         
         # initializes the plugin api class
-        self.plugin_api = PluginAPI(self.window, self.config, GTG.DATA_DIR, self.builder,\
-                                    self.req, self.task_tv, self.task_modelsort,
-                                    self.priv['filter_cbs'], self.tagpopup, self.tags_tv,\
-                                    None, None, self.priv['quick_add_cbs'])
+        self.plugin_api = PluginAPI(window         = self.window,
+                                    config         = self.config,
+                                    data_dir       = GTG.DATA_DIR,
+                                    builder        = self.builder,
+                                    requester      = self.req,
+                                    taskview       = self.task_tv,
+                                    task_modelsort = self.task_modelsort,
+                                    filter_cbs     = self.priv['filter_cbs'],
+                                    tagpopup       = self.tagpopup,
+                                    tagview        = self.tags_tv,
+                                    task           = None,
+                                    texteditor     = None,
+                                    quick_add_cbs  = self.priv['quick_add_cbs'])
         self.p_apis.append(self.plugin_api)
         
         if self.plugins:

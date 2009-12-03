@@ -175,9 +175,18 @@ class TaskEditor :
         # plugins
         self.plugins = plugins
         self.pengine = PluginEngine(PLUGIN_DIR)
-        self.te_plugin_api = PluginAPI(self.window, None, DATA_DIR, self.builder, 
-                                       self.req, None, None, None, None, task, 
-                                       self)
+        self.te_plugin_api = PluginAPI(window = self.window,
+                                       config = None,
+                                       data_dir = DATA_DIR,
+                                       builder = self.builder, 
+                                       requester = self.req,
+                                       taskview = None, 
+                                       task_modelsort = None,
+                                       filter_cbs = None,
+                                       tagpopup = None,
+                                       tagview = None,
+                                       task = task, 
+                                       texteditor = self)
         self.p_apis.append(self.te_plugin_api)
         self.pengine.onTaskLoad(self.plugins, self.te_plugin_api)
         
