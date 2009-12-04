@@ -285,7 +285,7 @@ class TagTreeView(gtk.TreeView):
 
     def _refresh_func(self, model, path, iter, user_data=None):
         model.row_changed(path, iter)
-        model.row_has_child_toggled(path, iter)
+        #model.row_has_child_toggled(path, iter)
 
     def _tag_separator_filter(self, model, itera, user_data=None):
         return self.get_model().get_value(itera, COL_SEP)
