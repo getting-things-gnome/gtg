@@ -84,5 +84,5 @@ class pluginTest:
         
     def onTbTaskButton(self, widget, plugin_api):
         self.loadDialog("Hello World! The tag @hello_world was just added to the end of the task!")
-        plugin_api.add_tag("hello_world")
-    
+        plugin_api.insert_tag("hello_world")
+
