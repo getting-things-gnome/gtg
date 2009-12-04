@@ -545,6 +545,10 @@ class TaskBrowser:
                 self.builder.get_object("view_sidebar").set_active(True)
                 self.sidebar.show()
 
+        if "tag_pane_width" in self.config["browser"]:
+            tag_pane_width = int(self.config["browser"]["tag_pane_width"])
+            self.builder.get_object("hpaned1").set_position(tag_pane_width)
+
         if "closed_task_pane" in self.config["browser"]:
             closed_task_pane = eval(
                 self.config["browser"]["closed_task_pane"])
@@ -957,6 +961,7 @@ class TaskBrowser:
 
         # Get configuration values
         tag_sidebar        = self.sidebar.get_property("visible")
+        tag_sidebar_width  = self.builder.get_object("hpaned1").get_position()
         closed_pane        = self.closed_pane.get_property("visible")
         quickadd_pane      = self.quickadd_pane.get_property("visible")
         toolbar            = self.toolbar.get_property("visible")
@@ -997,6 +1002,8 @@ class TaskBrowser:
                 self.priv["collapsed_tags"],
             'tag_pane':
                 tag_sidebar,
+            'tag_pane_width':
+                tag_sidebar_width,
             'closed_task_pane':
                 closed_pane,
             'ctask_pane_height':
