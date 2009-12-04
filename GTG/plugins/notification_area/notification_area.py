@@ -17,6 +17,7 @@
 import gtk
 import sys
 
+from GTG.tools import openurl
 
 
 class NotificationArea:
