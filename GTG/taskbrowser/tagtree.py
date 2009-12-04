@@ -218,11 +218,13 @@ class TagTreeModel(gtk.GenericTreeModel):
         old_par = self.iter_parent(child)
         if old_par:
             old_par_tag  = self.get_value(old_par, COL_OBJ)
+            old_par_n_children = self.iter_n_children(old_par)
         else:
             old_par_tag = None
         # Get new parent
         if parent:
             new_par_tag  = self.get_value(parent, COL_OBJ)
+            new_par_n_children = self.iter_n_children(parent)
         else:
             new_par_tag = self.tree.root
         
@@ -253,7 +255,8 @@ class TagTreeView(gtk.TreeView):
     ]
 
     def __init__(self):
-        gtk.TreeView.__init__(self)
+        self.tv = gtk.TreeView.__init__(self)
+        self.show_expander = False
         self.show()
         self._init_tree_view()
 
@@ -280,6 +283,23 @@ class TagTreeView(gtk.TreeView):
         self.connect('drag_data_get', self.on_drag_data_get)
         self.connect('drag_data_received', self.on_drag_data_received)
 
+    def __has_child(self, model, path, iter):
+        if model.iter_has_child(iter):
+            self.show_expander = True
+            return True
+
+    def __show_expander_col(self, treemodel, path, iter):
+        self.show_expander = False
+        treemodel.foreach(self.__has_child)
+        if self.show_expander:
+            self.set_show_expanders(True)
+        else:
+            self.set_show_expanders(False)
+
+    def set_model(self, model):
+        model.connect("row-has-child-toggled", self.__show_expander_col)
+        gtk.TreeView.set_model(self, model)
+
     def refresh(self):
         model = self.get_model()
         if model :
@@ -287,7 +307,7 @@ class TagTreeView(gtk.TreeView):
 
     def _refresh_func(self, model, path, iter, user_data=None):
         model.row_changed(path, iter)
-        model.row_has_child_toggled(path, iter)
+        #model.row_has_child_toggled(path, iter)
 
     def _tag_separator_filter(self, model, itera, user_data=None):
         return self.get_model().get_value(itera, COL_SEP)
@@ -316,6 +336,7 @@ class TagTreeView(gtk.TreeView):
         tag_col.set_sort_column_id(-1)
         tag_col.set_expand(True)
         self.append_column(tag_col)
+        self.set_show_expanders(self.show_expander)
 
         # Global treeview properties
         self.set_row_separator_func(self._tag_separator_filter)

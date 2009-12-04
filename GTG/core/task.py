@@ -21,7 +21,7 @@ import xml.dom.minidom
 import uuid
 
 from GTG import _
-from GTG.tools.dates import strtodate, date_today, no_date, Date
+from GTG.tools.dates import date_today, no_date, Date
 from datetime import datetime
 
 

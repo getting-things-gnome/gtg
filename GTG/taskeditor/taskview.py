@@ -159,8 +159,17 @@ class TaskView(gtk.TextView):
             self.bullet1 = bullet1_rtl
         else:
             self.bullet1 = bullet1_ltr
+        self.editable = False
 
-    
+    #editable means that the user can edit the taskview
+    #this is initially set at False and then to True once the editor window
+    #is displayed.
+    #this is used to avoid saving the task when the window is still not displayed
+    def set_editable(self,boule):
+        self.editable = boule
+    def get_editable(self):
+        return self.editable
+        
     #This function is called to refresh the editor 
     #Specially when we change the title
     def refresh(self,title) :
@@ -443,7 +452,7 @@ class TaskView(gtk.TextView):
 
         
     #This function is called so frequently that we should optimize it more.    
-    def modified(self,buff=None,full=False,refresheditor=True) : 
+    def modified(self,buff=None,full=False,refresheditor=True):
         """Called when the buffer has been modified.
 
         It reflects the changes by:

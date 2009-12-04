@@ -112,6 +112,7 @@ class TaskEditor :
         #Voila! it's done
         self.calendar       = self.builder.get_object("calendar")
         self.cal_widget       = self.builder.get_object("calendar1")
+        self.calendar_fuzzydate_btns       = self.builder.get_object("fuzzydate_btns")
         #self.cal_widget.set_property("no-month-change",True)
         self.sigid = None
         self.sigid_month = None
@@ -174,9 +175,18 @@ class TaskEditor :
         # plugins
         self.plugins = plugins
         self.pengine = PluginEngine(PLUGIN_DIR)
-        self.te_plugin_api = PluginAPI(self.window, None, DATA_DIR, self.builder, 
-                                       self.req, None, None, None, None, task, 
-                                       self)
+        self.te_plugin_api = PluginAPI(window = self.window,
+                                       config = None,
+                                       data_dir = DATA_DIR,
+                                       builder = self.builder, 
+                                       requester = self.req,
+                                       taskview = None, 
+                                       task_modelsort = None,
+                                       filter_cbs = None,
+                                       tagpopup = None,
+                                       tagview = None,
+                                       task = task, 
+                                       texteditor = self)
         self.p_apis.append(self.te_plugin_api)
         self.pengine.onTaskLoad(self.plugins, self.te_plugin_api)
         
@@ -200,6 +210,7 @@ class TaskEditor :
                     self.window.resize(eval(str(size[0])),eval(str(size[1])))
 
         self.window.show()
+        self.textview.set_editable(True)
 
     # Define accelerator-keys for this dialog
     # TODO: undo/redo
@@ -367,25 +378,29 @@ class TaskEditor :
         
     def on_date_pressed(self, widget,data): 
         """Called when the due button is clicked."""
+        
+        self.__opened_date = data
+        if self.__opened_date == "due" :
+            toset = self.task.get_due_date()
+            self.calendar_fuzzydate_btns.show()
+        elif self.__opened_date == "start" :
+            toset = self.task.get_start_date()
+            self.calendar_fuzzydate_btns.hide()
+        
         rect = widget.get_allocation()
         x, y = widget.window.get_origin()
-        cal_width, cal_height = self.calendar.get_size() #pylint: disable-msg=W0612
+        cal_width, cal_height = self.calendar.get_size()
         self.calendar.move((x + rect.x - cal_width + rect.width)
-                                            , (y + rect.y + rect.height))
+                                            , (y + rect.y - cal_height))
         self.calendar.show()
         """Because some window managers ignore move before you show a window."""
         self.calendar.move((x + rect.x - cal_width + rect.width)
-                                            , (y + rect.y + rect.height))
+                                            , (y + rect.y - cal_height))
         
         self.calendar.grab_add()
         #We grab the pointer in the calendar
         gdk.pointer_grab(self.calendar.window, True,gdk.BUTTON1_MASK|gdk.MOD2_MASK)
         #we will close the calendar if the user clic outside
-        self.__opened_date = data
-        if self.__opened_date == "due" :
-            toset = self.task.get_due_date()
-        elif self.__opened_date == "start" :
-            toset = self.task.get_start_date()
         
         if not isinstance(toset, dates.FuzzyDate):
             if not toset:
@@ -519,20 +534,11 @@ class TaskEditor :
             diff = time.time() - self.time
             tosave = diff > GnomeConfig.SAVETIME
         else:
-            self.time = 1
-            tosave = False
+            #we don't want to save a task while opening it
+            tosave = self.textview.get_editable()
             diff = None
         if tosave:
-            #We don't want to save a new empty task
-            #so we check for the content
-            empty = "<content/>"
-            actual = self.textview.get_text()
-            isempty = (actual == empty or actual == "" or not actual)
-            if not self.task.is_new() or not isempty:
-                self.save()
-#                self.task.set_text(actual)
-#                self.task.sync()
-#                self.time = time.time()
+            self.save()
         
         
     #This will bring the Task Editor to front    

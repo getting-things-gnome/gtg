@@ -299,6 +299,14 @@ class TaskTreeModel(gtk.GenericTreeModel):
             new_par_task = self.req.get_task(new_par_tid)
         else:
             new_par_task = None
+            
+        # prevent illegal moves
+        c = parent
+        while c is not None:
+            t = self.get_value(c, COL_OBJ)
+            if t is child_task: return
+            c = self.iter_parent(c)
+        
         # Remove child from old parent
         if old_par_task:
             old_par_task.remove_subtask(child_tid)

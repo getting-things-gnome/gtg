@@ -58,7 +58,7 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkSeparatorMenuItem" id="separatormenuitem2">
+                      <object class="GtkSeparatorMenuItem" id="separatormenuitem10">
                         <property name="visible">True</property>
                       </object>
                     </child>
@@ -436,7 +436,7 @@
           <object class="GtkHPaned" id="hpaned1">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="position">224</property>
+            <property name="position">250</property>
             <property name="position_set">True</property>
             <child>
               <object class="GtkVBox" id="sidebar">
@@ -987,4 +987,8 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
     <property name="icon_name">gtg-task-undismiss</property>
   </object>
   <object class="GtkAccelGroup" id="accelgroup1"/>
+  <object class="GtkImage" id="image1">
+    <property name="visible">True</property>
+    <property name="stock">gtk-save-as</property>
+  </object>
 </interface>

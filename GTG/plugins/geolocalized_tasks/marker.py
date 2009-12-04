@@ -16,7 +16,6 @@
 
 import clutter
 import champlain
-import champlaingtk
 
 class MarkerLayer(champlain.Layer):
 
