@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-12-03 02:14-1000\n"
+"POT-Creation-Date: 2009-12-03 23:50-1000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -28,24 +28,24 @@ msgstr ""
 msgid "later"
 msgstr ""
 
-#: GTG/taskeditor/editor.py:297
+#: GTG/taskeditor/editor.py:307
 msgid "Due tomorrow !"
 msgstr ""
 
-#: GTG/taskeditor/editor.py:299
+#: GTG/taskeditor/editor.py:309
 #, python-format
 msgid "%s days left"
 msgstr ""
 
-#: GTG/taskeditor/editor.py:301
+#: GTG/taskeditor/editor.py:311
 msgid "Due today !"
 msgstr ""
 
-#: GTG/taskeditor/editor.py:303
+#: GTG/taskeditor/editor.py:313
 msgid "Due yesterday"
 msgstr ""
 
-#: GTG/taskeditor/editor.py:305
+#: GTG/taskeditor/editor.py:315
 #, python-format
 msgid "Was %s days ago"
 msgstr ""
@@ -351,72 +351,72 @@ msgstr ""
 msgid "Toggle the work view"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:200
+#: GTG/taskbrowser/browser.py:201
 msgid "All tasks"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:207
+#: GTG/taskbrowser/browser.py:208
 msgid "Tasks with no tags"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:644
+#: GTG/taskbrowser/browser.py:665
 msgid "(no active tasks)"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:646
+#: GTG/taskbrowser/browser.py:667
 msgid "(1 active task)"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:648
+#: GTG/taskbrowser/browser.py:669
 #, python-format
 msgid "(%s active tasks)"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:658
+#: GTG/taskbrowser/browser.py:679
 msgid "monday"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:658
+#: GTG/taskbrowser/browser.py:679
 msgid "tuesday"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:658
+#: GTG/taskbrowser/browser.py:679
 msgid "wednesday"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:659
+#: GTG/taskbrowser/browser.py:680
 msgid "thursday"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:659
+#: GTG/taskbrowser/browser.py:680
 msgid "friday"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:659
+#: GTG/taskbrowser/browser.py:680
 msgid "saturday"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:660
+#: GTG/taskbrowser/browser.py:681
 msgid "sunday"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:669
+#: GTG/taskbrowser/browser.py:690
 msgid "today"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:676
+#: GTG/taskbrowser/browser.py:697
 msgid "tomorrow"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:1143
+#: GTG/taskbrowser/browser.py:1176
 msgid "tags"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:1147
+#: GTG/taskbrowser/browser.py:1180
 msgid "defer"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:1152
+#: GTG/taskbrowser/browser.py:1185
 msgid "due"
 msgstr ""
 
@@ -474,7 +474,7 @@ msgstr ""
 #: GTG/core/firstrun_tasks.py:18
 msgid ""
 "Once you've read the above subtask, mark it as Done. If you don't want to do "
-"the task, mark it as dismissed. Done and Dismissed tasks are keeped in the "
+"the task, mark it as dismissed. Done and Dismissed tasks are kept in the "
 "closed tasks pane, hidden by default but you can easily enable it in the "
 "View menu."
 msgstr ""
@@ -497,11 +497,11 @@ msgid ""
 msgstr ""
 
 #: GTG/core/firstrun_tasks.py:31
-msgid "Thank you for trying out GTG:-)"
+msgid "Thank you for trying out GTG :-)"
 msgstr ""
 
 #: GTG/core/firstrun_tasks.py:36
-msgid "Learn to use subtasks"
+msgid "Learn how to use subtasks"
 msgstr ""
 
 #: GTG/core/firstrun_tasks.py:37
@@ -517,13 +517,14 @@ msgid "You can also use the &quot;insert subtask&quot; button."
 msgstr ""
 
 #: GTG/core/firstrun_tasks.py:41
-msgid "Task and subtasks can be re-organized by drag-n-drop in the tasks list."
+msgid ""
+"Tasks and subtasks can be re-organized by drag-n-drop in the tasks list."
 msgstr ""
 
 #: GTG/core/firstrun_tasks.py:43
 msgid ""
-"Some concepts come with subtasks: for example, a subtask due date can never "
-"be after its parent due date."
+"Some concepts come with subtasks: for example, a subtask's due date can "
+"never be after its parent's due date."
 msgstr ""
 
 #: GTG/core/firstrun_tasks.py:45
@@ -531,11 +532,11 @@ msgid "Also, marking a parent as done will mark all the subtasks as done."
 msgstr ""
 
 #: GTG/core/firstrun_tasks.py:50
-msgid "Learn to use tags"
+msgid "Learn how to use tags"
 msgstr ""
 
 #: GTG/core/firstrun_tasks.py:51
-msgid "A tag is a simple word that begin with &quot;@&quot;."
+msgid "A tag is a simple word that begins with &quot;@&quot;."
 msgstr ""
 
 #: GTG/core/firstrun_tasks.py:53
@@ -550,20 +551,20 @@ msgstr ""
 msgid ""
 "Tags are useful to sort your tasks. In the view menu, you can enable a "
 "sidebar which displays all the tags you are using so you can easily see "
-"tasks for a given tag. There's no limit to the number of tags a task can "
-"have."
+"tasks assigned to a given tag. There's no limit to the number of tags a task "
+"can have."
 msgstr ""
 
 #: GTG/core/firstrun_tasks.py:59
 msgid ""
 "If you right click on a tag in the sidebar you can also set its color. It "
-"will permit you to have a more colorful list of tasks, if you want it that "
+"will allow you to have a more colorful list of tasks, if you want it that "
 "way."
 msgstr ""
 
 #: GTG/core/firstrun_tasks.py:61
 msgid ""
-"A new tag is only added to the current task. There's no recursivity and the "
+"A new tag is only added to the current task. There's no recursion and the "
 "tag is not applied to subtasks. But when you create a new subtask, this "
 "subtask will inherit the tags of its parent as a good primary default (it "
 "will also be the case if you add a tag to a parent just after creating a "
@@ -572,7 +573,7 @@ msgid ""
 msgstr ""
 
 #: GTG/core/firstrun_tasks.py:66
-msgid "Using the Workview"
+msgid "Learn how to use the Workview"
 msgstr ""
 
 #: GTG/core/firstrun_tasks.py:67
@@ -604,7 +605,7 @@ msgstr ""
 #: GTG/core/firstrun_tasks.py:77
 msgid ""
 "If you use tags, you can right click on a tag in the sidebar and choose to "
-"not display tasks with this particular tag in the workview. It's very useful "
+"hide tasks assigned to this particular tag in the workview. It's very useful "
 "if you have a tag like &quot;someday&quot; that you use for tasks you would "
 "like to do but are not particularly urgent."
 msgstr ""
@@ -733,15 +734,15 @@ msgstr ""
 msgid "Use network"
 msgstr ""
 
-#: GTG/plugins/export/export.py:189
+#: GTG/plugins/export/export.py:191
 msgid "Template not found"
 msgstr ""
 
-#: GTG/plugins/export/export.py:190
+#: GTG/plugins/export/export.py:192
 msgid "Can't load the template file"
 msgstr ""
 
-#: GTG/plugins/export/export.py:219
+#: GTG/plugins/export/export.py:221
 msgid "Choose where to save your list"
 msgstr ""
 
