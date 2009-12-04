@@ -518,7 +518,6 @@ class TaskView(gtk.TextView):
                     self.apply_subtask_tag(buff,s,start_mark,end_mark)
                 else:
                     self.remove_subtask(s)
-                    print "line 506 modified"
     
                 
         #Now we apply the tag tag to the marks
@@ -973,6 +972,8 @@ class TaskView(gtk.TextView):
         selec = gtk.clipboard_get(gdk.SELECTION_PRIMARY)
         clip = gtk.clipboard_get(gdk.SELECTION_CLIPBOARD)
         text = selec.wait_for_text()
+        #on va devoir trouver les subtasks là dedans
+        print self.buff.get_selection_bounds()
         if text:
             #we replace the arrow by the original "-"
             newtext = text.replace(self.bullet1, "-")
