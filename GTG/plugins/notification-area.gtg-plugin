@@ -1,7 +1,7 @@
 [GTG Plugin]
 Module=notification_area
 Name=Notification area
-Description=Displays GTG in the notification area.\nThe notification area supports minimizing and a small context menu.
+Description="Displays GTG in the notification area.\nThe notification area supports minimizing and a small context menu."
 Authors=Paulo Cabido <paulo.cabido@gmail.com>
 Version=0.1
 Enabled=False
