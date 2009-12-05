@@ -1,6 +1,6 @@
 [GTG Plugin]
 Module=bugzilla
-Name=BugzillaA
+Name=Bugzilla
 Description="Allow to link a task with a bugzilla ticket\nJust paste the URL of the ticket in the quick add entry and a new task will be created for this bug."
 Authors=Guillaume Desmottes <gdesmott@gnome.org>
 Version=0.0.1
