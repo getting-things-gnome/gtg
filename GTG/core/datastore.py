@@ -50,10 +50,10 @@ class DataStore:
                 all_tasks.append(t)
             else:
                 if task.get_status() == "Active":
-#                    print "task %s is not loaded" %task.get_id()
-#                    print task.get_title()
+                    print "task %s is not loaded" %task.get_id()
+                    print task.get_title()
                     self.get_task(task.get_id())
-        #print "%s tasks but we return %s" %(len(tlist),len(all_tasks))
+        print "%s tasks but we return %s" %(len(tlist),len(all_tasks))
         return all_tasks
 
     def has_task(self,tid) :

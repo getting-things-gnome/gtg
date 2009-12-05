@@ -28,9 +28,21 @@ class PluginAPI:
     with the task editor.
     """
         
-    def __init__(self, window, config, data_dir, builder, requester,\
-                 taskview, task_modelsort, filter_cbs, tagpopup, tagview, \
-                 task=None, texteditor=None, quick_add_cbs=[]):
+    def __init__(self,
+                 window,
+                 config,
+                 data_dir,
+                 builder,
+                 requester,
+                 taskview,
+                 task_modelsort,
+                 filter_cbs,
+                 tagpopup,
+                 tagview,
+                 task=None,
+                 texteditor=None,
+                 quick_add_cbs=[],
+                 logger = None):
         """Construct a L{PluginAPI} object.
         
         @param window: The window where the plugin API object is being 
@@ -67,6 +79,7 @@ class PluginAPI:
         self.tasktoolbar_widg = {}
         self.taskwidget_id = 0
         self.taskwidget_widg = {}
+        self.logger = logger
         
         if task:
             self.task = task
@@ -340,6 +353,11 @@ class PluginAPI:
     def get_window(self):
         """Returns the window for which the plug-in has been created"""
         return self.__window
+
+    def get_logger(self):
+        """Returns the logger, used for debug output""" 
+        return self.logger
+
 #=== General Methods ==========================================================
 
 

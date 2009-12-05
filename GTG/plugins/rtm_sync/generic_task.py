@@ -16,12 +16,10 @@
 import sys
 import os
 import xml.dom.minidom
-#import xml.utils.iso8601
-#import datetime
-#import time
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))+'/pyrtm')
-#import rtm
 from utility import iso8601toTime, timeToIso8601, dateToIso8601, timezone
+from GTG.tools.dates import NoDate as GtgNoDate,\
+                            strtodate as gtgstrtodate
 
 
 class GenericTask(object):
@@ -62,16 +60,22 @@ class GenericTask(object):
 
 class RtmTask(GenericTask):
 
-    def __init__(self, task, list_id, taskseries_id, rtm, timeline):
+    def __init__(self, task, list_id, taskseries_id, rtm, timeline, logger):
         super(RtmTask, self).__init__()
         self.rtm = rtm
         self.timeline = timeline
         self.task = task
         self.list_id = list_id
         self.taskseries_id = taskseries_id
+        self.logger = logger
 
     def _get_title(self):
-        return self.task.name
+        if hasattr(self.task,"name"):
+            return self.task.name
+        else:
+            if self.logger:
+                self.logger.debug ("rtm task has no title")
+            return ""
 
     def _set_title(self, title):
         self.rtm.tasks.setName(timeline=self.timeline, \
@@ -191,10 +195,11 @@ class RtmTask(GenericTask):
 
 class GtgTask(GenericTask):
 
-    def __init__(self, task, plugin_api):
+    def __init__(self, task, plugin_api, logger):
         super(GtgTask, self).__init__()
         self.task = task
         self.plugin_api = plugin_api
+        self.logger = logger
 
     def _get_title(self):
         return self.task.get_title()
@@ -213,7 +218,11 @@ class GtgTask(GenericTask):
         #      need to add function in GTG/core/task.py
         old_tags = self.tags
         for tag in old_tags:
-            self.task.remove_tag(tag)
+            try:
+                self.task.remove_tag(tag)
+            except:
+                if self.logger:
+                    self.logger.debug("remove tag from GTG failed!!!")
         map(lambda tag: self.task.add_tag('@'+tag), tags)
 
     def _get_text(self):
@@ -223,16 +232,19 @@ class GtgTask(GenericTask):
         self.task.set_text(text)
 
     def _get_due_date(self):
-        due_string = self.task.get_due_date()
+        due_string = str(self.task.get_due_date())
+        if self.logger:
+            self.logger.debug("due_string |" + due_string + "|")
         if due_string == "":
             return None
         return iso8601toTime(due_string)
 
     def _set_due_date(self, due):
-        due_string = ""
         if type(due) != None:
             due_string = dateToIso8601(due)
-        self.task.set_due_date(due_string)
+            self.task.set_due_date(gtgstrtodate(due_string))
+        else:
+            return GtgNoDate
 
     def _get_modified(self):
         modified = self.task.get_modified()
