@@ -21,11 +21,9 @@ from time import sleep
 import gobject
 from xdg.BaseDirectory import xdg_cache_home
 #import pickle
-#import xml.utils.iso8601
-#from datetime import date
 from GTG import _
 
-# IMPORTANT This add's the plugin's path to python sys path
+# IMPORTANT This adds the plugin path to python sys path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))+'/pyrtm')
 from gtg_proxy import GtgProxy
@@ -39,8 +37,10 @@ class SyncEngine (object):
     def __init__(self, this_plugin):
         super(SyncEngine, self).__init__()
         self.this_plugin = this_plugin
-        self.rtm_proxy = RtmProxy()
-        self.gtg_proxy = GtgProxy(self.this_plugin.plugin_api)
+        self.logger = self.this_plugin.plugin_api.get_logger()
+        self.rtm_proxy = RtmProxy(self.logger)
+        self.gtg_proxy = GtgProxy(self.this_plugin.plugin_api,\
+                                 self.logger)
         self.rtm_has_logon = False
 
     def rtmLogin(self):
@@ -87,19 +87,24 @@ class SyncEngine (object):
         return gtg_to_rtm_id_mapping
 
     def synchronize(self):
-        try:
+        if self.logger:
+            #I want it to crash ungracefully if using the debug mode,
+            # so to see the "coredump" ~~~~Invernizzi
             self.synchronizeWorker()
-        except rtm.RTMAPIError, exception:
-            self.close_gui(exception.message)
-        except rtm.RTMError, exception:
-            self.close_gui(exception.message)
-        except:
-            self.close_gui(_("Synchronization failed."))
+        else:
+            try:
+                self.synchronizeWorker()
+            except rtm.RTMAPIError as exception:
+                self.close_gui(exception)
+            except rtm.RTMError as exception:
+                self.close_gui(exception)
+            except Exception as exception:
+                self.close_gui(_("Synchronization failed."))
 
     def synchronizeWorker(self):
         self.update_status(_("Downloading task list..."))
         self.update_progressbar(0.1)
-
+        self.__log("RTM sync started!")
         self.gtg_proxy.generateTaskList()
         self.rtm_proxy.generateTaskList()
 
@@ -157,8 +162,11 @@ class SyncEngine (object):
             for gtg_id in gtg_removed:
                 rtm_id = gtg_to_rtm_id_dict[gtg_id]
                 rtm_task = filterAttr(self.rtm_list, 'id', rtm_id)
-                self.update_substatus(_("Deleting ") + rtm_task.title)
-                map(lambda task: task.delete(), rtm_task)
+                self.__log("deleting from rtm task" + str(rtm_id))
+                rtm_task = self.__to_list(rtm_task)
+                if len(rtm_task) != 0:
+                    self.update_substatus(_("Deleting ") + rtm_task[0].title)
+                    map(lambda task: task.delete(), rtm_task)
 
             #Delete from gtg the tasks that have been removed in rtm
             if len(rtm_removed) > 0:
@@ -167,13 +175,16 @@ class SyncEngine (object):
             for rtm_id in rtm_removed:
                 gtg_id = rtm_to_gtg_id_dict[rtm_id]
                 gtg_task = filterAttr(self.gtg_list, 'id', gtg_id)
-                self.update_substatus(_("Deleting ") + gtg_task.title)
-                map(lambda task: task.delete(), gtg_task)
-                gtg_common.discard(gtg_id)
+                gtg_task = self.__to_list(gtg_task)
+                if len(gtg_task) != 0:
+                    self.update_substatus(_("Deleting ") + gtg_task[0].title)
+                    gtg_task = self.__to_list(gtg_task)
+                    map(lambda task: task.delete(), gtg_task)
+                    gtg_common.discard(gtg_id)
 
             #tasks that must be added to RTM
             #NOTE: should we check if the title is already present in the
-            #other backend, to be more robust?(Idem for vice-versa)
+            #other back-end, to be more robust?(Idem for vice-versa)
             if len(gtg_added) >0:
                 self.update_status(_("Adding tasks to rtm.."))
                 self.update_progressbar(0.6)
@@ -195,6 +206,7 @@ class SyncEngine (object):
                 gtg_task.copy(rtm_task)
                 gtg_to_rtm_id_mapping.append((gtg_task.id, rtm_id))
 
+            #tasks in common
             if len(gtg_common) >0:
                 self.update_status(_("Updating remaining tasks.."))
                 self.update_progressbar(0.8)
@@ -202,7 +214,14 @@ class SyncEngine (object):
                 rtm_id = gtg_to_rtm_id_dict[gtg_id]
                 gtg_task = filterAttr(self.gtg_list, 'id', gtg_id)[0]
                 rtm_task = filterAttr(self.rtm_list, 'id', rtm_id)[0]
-                if rtm_task.modified > gtg_task.modified:
+                self.__log("rtm_task.modified |" + str(rtm_task.modified))
+                self.__log("gtg_task.modified |" + str(gtg_task.modified))
+                #NOTE: rtm does not set the modified date on new tasks,
+                #      so a comparison between the modified times is not
+                #      always possible. However, here the task have been synced
+                #      before, so gtg takes precedence ~~~~Invernizzi
+                if rtm_task.modified == None or \
+                    rtm_task.modified > gtg_task.modified:
                     self.update_substatus(_("Updating ") + rtm_task.title)
                     gtg_task.copy(rtm_task)
                 else:
@@ -232,9 +251,25 @@ class SyncEngine (object):
         gobject.idle_add(self.this_plugin.set_progressbar)
 
     def update_status(self, status):
+        self.__log(status)
         self.this_plugin.status = status
         gobject.idle_add(self.this_plugin.set_status)
 
     def update_substatus(self, substatus):
+        self.__log(substatus)
         self.this_plugin.substatus = substatus
         gobject.idle_add(self.this_plugin.set_substatus)
+
+    def __log(self, string):
+        if self.logger:
+            self.logger.debug(string)
+
+    def __to_list(self, something):
+        """If something is not a list, it just embeds it into a
+           list."""
+        #I'm sure there is some clever way to do that in python
+        #  but, sadly, I don't know it. ~~~~Invernizzi
+        if   isinstance(something, list):
+            return something
+        else:
+            return [something]

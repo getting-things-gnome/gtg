@@ -480,7 +480,8 @@ class TaskBrowser:
                                     tagview        = self.tags_tv,
                                     task           = None,
                                     texteditor     = None,
-                                    quick_add_cbs  = self.priv['quick_add_cbs'])
+                                    quick_add_cbs  = self.priv['quick_add_cbs'],
+                                    logger         = self.logger)
         self.p_apis.append(self.plugin_api)
         
         if self.plugins:
