@@ -50,10 +50,14 @@ class FuzzyDate(Date):
         
     def days_left(self):
         return None
+        
+class FuzzyDateFixed(FuzzyDate):
+	def to_py_date(self):
+		return self.offset
 
 NOW = FuzzyDate(0, 'now')
 SOON = FuzzyDate(15, 'soon')
-LATER = FuzzyDate(365, 'later')
+LATER = FuzzyDateFixed(date.max, 'later')
 
 class RealDate(Date):
     def __init__(self, dt):
@@ -68,10 +72,11 @@ class RealDate(Date):
 
     def days_left(self):
         return (self.proto - date.today()).days
-        
+      
+DATE_MAX_MINUS_ONE = date.max-timedelta(1)  # sooner than 'later'
 class NoDate(Date):
     def to_py_date(self):
-        return date.max
+        return DATE_MAX_MINUS_ONE
     
     def __str__(self):
         return ''
