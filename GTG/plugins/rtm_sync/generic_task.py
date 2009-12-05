@@ -19,6 +19,7 @@ import xml.dom.minidom
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))+'/pyrtm')
 from utility import iso8601toTime, timeToIso8601, dateToIso8601, timezone
 from GTG.tools.dates import NoDate as GtgNoDate,\
+                            FuzzyDate as GtgFuzzyDate,\
                             strtodate as gtgstrtodate
 
 
@@ -47,10 +48,27 @@ class GenericTask(object):
         return "Task " + self.title + "(" + self.id + ")"
 
     def copy(self, task):
-        self.title = task.title
-        self.tags = task.tags
-        self.text = task.text
-        self.due_date = task.due_date
+        #NOTE: do not be fooled. Most of these variables are
+        #      properties.
+        carbon = self.title 
+        master = task.title
+        if carbon != master:
+            self.title = master
+
+        carbon = self.tags
+        master = task.tags
+        if carbon != master:
+            self.tags = master
+
+        carbon = self.text
+        master = task.text
+        if carbon != master:
+            self.text = master
+
+        carbon = self.due_date
+        master = task.due_date
+        if carbon != master:
+            self.due_date = master
 
     #Interface specification that will be overwritten
     # by the derived classes
@@ -91,12 +109,12 @@ class RtmTask(GenericTask):
             return self.task.id
 
     def _get_tags(self):
-        if hasattr(self.task.tags, 'tag'):
+        if hasattr(self.task,"tags") and hasattr(self.task.tags, 'tag'):
             if type(self.task.tags.tag) ==list:
                 return self.task.tags.tag
             else:
                 return [self.task.tags.tag]
-        elif hasattr(self.task.tags, 'list'):
+        elif hasattr(self.task,"tags") and hasattr(self.task.tags, 'list'):
             return map(lambda x: x.tag if hasattr(x, 'tag') else None, \
                        self.task.tags.list)
         return []
@@ -162,7 +180,8 @@ class RtmTask(GenericTask):
                                 note_text = content)
 
     def _get_due_date(self):
-        if hasattr(self.task.task, 'due') and self.task.task.due != "":
+        if hasattr(self.task,'task') and hasattr(self.task.task, 'due') and \
+                self.task.task.due != "":
             return iso8601toTime(self.task.task.due) - timezone()
         return None
 
@@ -232,10 +251,12 @@ class GtgTask(GenericTask):
         self.task.set_text(text)
 
     def _get_due_date(self):
-        due_string = str(self.task.get_due_date())
+        due = self.task.get_due_date()
+        due_string = str(due)
         if self.logger:
             self.logger.debug("due_string |" + due_string + "|")
-        if due_string == "":
+        #TODO: Handle fuzzy dates
+        if due_string == "" or isinstance( due, GtgFuzzyDate):
             return None
         return iso8601toTime(due_string)
 

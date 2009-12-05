@@ -206,6 +206,7 @@ class SyncEngine (object):
                 gtg_task.copy(rtm_task)
                 gtg_to_rtm_id_mapping.append((gtg_task.id, rtm_id))
 
+            #tasks in common
             if len(gtg_common) >0:
                 self.update_status(_("Updating remaining tasks.."))
                 self.update_progressbar(0.8)
