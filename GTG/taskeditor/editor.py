@@ -295,30 +295,31 @@ class TaskEditor :
             
         #refreshing the due date field
         duedate = self.task.get_due_date()
-        if duedate != dates.strtodate(self.duedate_widget.get_text()):
+        prevdate = dates.strtodate(self.duedate_widget.get_text())
+        if duedate != prevdate or type(duedate) is not type(prevdate):
             zedate = str(duedate).replace("-", date_separator)
             self.duedate_widget.set_text(zedate)
-            #refreshing the day left label
-            result = self.task.get_days_left()
-            if result is None:
-                txt = ""
-            elif result == 1:
-                txt = _("Due tomorrow !")
-            elif result > 0:
-                txt = _("%s days left") %result
-            elif result == 0:
-                txt = _("Due today !")
-            elif result == -1:
-                txt = _("Due yesterday")
-            elif result < 0:
-                txt = _("Was %s days ago") % -result
-            window_style = self.window.get_style()
-            color = str(window_style.text[gtk.STATE_INSENSITIVE])
-            self.dayleft_label.set_markup("<span color='"+color+"'>"+txt+"</span>")
-
+        #refreshing the day left label
+        result = self.task.get_days_left()
+        if result is None:
+            txt = ""
+        elif result == 1:
+            txt = _("Due tomorrow !")
+        elif result > 0:
+            txt = _("%s days left") %result
+        elif result == 0:
+            txt = _("Due today !")
+        elif result == -1:
+            txt = _("Due yesterday")
+        elif result < 0:
+            txt = _("Was %s days ago") % -result
+        window_style = self.window.get_style()
+        color = str(window_style.text[gtk.STATE_INSENSITIVE])
+        self.dayleft_label.set_markup("<span color='"+color+"'>"+txt+"</span>")
 
         startdate = self.task.get_start_date()
-        if startdate != dates.strtodate(self.startdate_widget.get_text()):
+        prevdate = dates.strtodate(self.startdate_widget.get_text())
+        if startdate != prevdate or type(startdate) is not type(prevdate):
             zedate = str(startdate).replace("-",date_separator)
             self.startdate_widget.set_text(zedate)
             

@@ -20,7 +20,7 @@
 from datetime import date, timedelta
 from GTG import _
 
-class Date():
+class Date(object):
     def __cmp__(self, other):
         if other is None: return 1
         return cmp(self.to_py_date(), other.to_py_date())
