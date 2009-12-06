@@ -979,6 +979,8 @@ class TaskView(gtk.TextView):
         start, stop =  self.buff.get_selection_bounds()
         self.clipboard.copy(start,stop,bullet=self.bullet1)
         
+        clip.set_text(self.clipboard.paste_text())
+        
         if param == "cut" :
             self.buff.delete_selection(False,True)
             self.stop_emission("cut_clipboard")
