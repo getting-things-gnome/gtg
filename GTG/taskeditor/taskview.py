@@ -970,7 +970,6 @@ class TaskView(gtk.TextView):
     #Method called on copy and cut actions
     #param is either "cut" or "copy"
     def copy_clipboard(self,widget,param=None):
-        selec = gtk.clipboard_get(gdk.SELECTION_PRIMARY)
         clip = gtk.clipboard_get(gdk.SELECTION_CLIPBOARD)
         
         #First, we analyse the selection to put in our own
@@ -980,6 +979,7 @@ class TaskView(gtk.TextView):
         self.clipboard.copy(start,stop,bullet=self.bullet1)
         
         clip.set_text(self.clipboard.paste_text())
+        clip.store()
         
         if param == "cut" :
             self.buff.delete_selection(False,True)
