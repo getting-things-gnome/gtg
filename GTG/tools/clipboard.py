@@ -41,12 +41,10 @@ class TaskClipboard():
         end_line = start.copy()
         #we take line after line in the selection
         while end_line.get_line() <= stop.get_line() and end_line.forward_line():
-            print "clip 1 offset : %s" %end_line.get_offset()
             end_line.backward_char()
             #we want to detect subtasks in the selection
             tags = end_line.get_tags()+end_line.get_toggled_tags(False)
             is_subtask = False
-            print "clip 2 offset : %s" %end_line.get_offset()
             for ta in tags :
                 if (ta.get_data('is_subtask')):
                     is_subtask = True
@@ -56,10 +54,8 @@ class TaskClipboard():
                     self.content.append(['text', "%s\n" %start.get_text(end_line)])
                 else:
                     self.content.append(['text', start.get_text(stop)])
-            print "clip 3 offset : %s" %end_line.get_offset()
             end_line.forward_char()
             start.forward_line()
-            print "clip 4 offset : %s" %end_line.get_offset()
         
         
     def paste_text(self):
