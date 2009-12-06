@@ -293,7 +293,8 @@ class Task:
         """
         self.can_be_deleted = False
         #The if prevent an infinite loop
-        if tid not in self.children and tid not in self.parents:
+        if tid not in self.children and tid not in self.parents and\
+                                                tid != self.get_id():
             self.children.append(tid)
             task = self.req.get_task(tid)
             task.add_parent(self.get_id())
