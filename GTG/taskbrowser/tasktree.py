@@ -542,4 +542,3 @@ class ClosedTaskTreeView(TaskTreeView):
         self.columns.insert(COL_TITLE, title_col)
         
         self.set_show_expanders(False)
-        
