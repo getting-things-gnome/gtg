@@ -973,7 +973,17 @@ class TaskView(gtk.TextView):
         clip = gtk.clipboard_get(gdk.SELECTION_CLIPBOARD)
         text = selec.wait_for_text()
         #on va devoir trouver les subtasks là dedans
-        print self.buff.get_selection_bounds()
+        start, stop =  self.buff.get_selection_bounds()
+        end_line = start.copy()
+        #we take line after line in the selection
+        while end_line.get_line() < stop.get_line():
+            end_line.forward_line()
+            end_line.backward_char()
+            print "##%s##" %start.get_text(end_line)
+            end_line.forward_char()
+            start.forward_line()
+        #now for the last line
+        print "##%s##" %start.get_text(stop)
         if text:
             #we replace the arrow by the original "-"
             newtext = text.replace(self.bullet1, "-")
