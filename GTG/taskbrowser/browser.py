@@ -51,6 +51,7 @@ from GTG.tools                        import openurl
 from GTG.tools.dates                  import strtodate,\
                                              no_date,\
                                              FuzzyDate
+from GTG.tools                        import clipboard
 from GTG.core.plugins.manager         import PluginManager
 from GTG.core.plugins.engine          import PluginEngine
 from GTG.core.plugins.api             import PluginAPI
@@ -143,6 +144,9 @@ class TaskBrowser:
 
         # NOTES
         #self._init_note_support()
+        
+        #Shared clipboard
+        self.clipboard = clipboard.TaskClipboard()
 
 ### INIT HELPER FUNCTIONS #####################################################
 #
@@ -744,7 +748,8 @@ class TaskBrowser:
                 self.req, t, self.plugins, \
                 self.on_delete_task, self.close_task, self.open_task, \
                 self.get_tasktitle,taskconfig=self.task_config, \
-                plugin_apis=self.p_apis,thisisnew=thisisnew)
+                plugin_apis=self.p_apis,thisisnew=thisisnew,\
+                clipboard = self.clipboard)
             #registering as opened
             self.opened_task[uid] = tv
         return tv
