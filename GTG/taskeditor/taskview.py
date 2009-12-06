@@ -971,41 +971,13 @@ class TaskView(gtk.TextView):
     def copy_clipboard(self,widget,param=None):
         selec = gtk.clipboard_get(gdk.SELECTION_PRIMARY)
         clip = gtk.clipboard_get(gdk.SELECTION_CLIPBOARD)
-        text = selec.wait_for_text()
         
-        #Now, we take care of the normal, cross application clipboard
-        if text:
-            #we replace the arrow by the original "-"
-            newtext = text.replace(self.bullet1, "-")
-            clip.set_text(newtext)
-        
+        from GTG.tools import clipboard
+        self.clipboard = clipboard.TaskClipboard()
         #First, we analyse the selection to put in our own
         #GTG clipboard a selection with description of subtasks
         start, stop =  self.buff.get_selection_bounds()
-        end_line = start.copy()
-        clipboard = []
-        clipboard.append(['clipboard',text])
-        #we take line after line in the selection
-        while end_line.get_line() <= stop.get_line():
-            end_line.forward_line()
-            end_line.backward_char()
-            #we want to detect subtasks in the selection
-            tags = end_line.get_tags()+end_line.get_toggled_tags(False)
-            is_subtask = False
-            for ta in tags :
-                if (ta.get_data('is_subtask')):
-                    is_subtask = True
-                    clipboard.append(['subtask', ta.get_data('child')])
-            if not is_subtask:
-                if end_line.get_line() < stop.get_line():
-                    clipboard.append(['text', start.get_text(end_line)])
-                else:
-                    clipboard.append(['text', start.get_text(stop)])
-            end_line.forward_char()
-            start.forward_line()
-        #we put that in our own clipboard
-        #gtk.clipboard_get(selection="GTG")
-        print clipboard
+        self.clipboard.copy(start,stop,bullet=self.bullet1)
         
         if param == "cut" :
             self.buff.delete_selection(False,True)

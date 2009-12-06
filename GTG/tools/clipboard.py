@@ -17,8 +17,52 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-class Clipboard():
+"""
+TaskClipboard allows to cut/copy the content of a TaskView accross multiples
+taskeditors, preserving subtasks
+"""
+class TaskClipboard():
     def __init__(self):
         self.description = None
         self.content = []
+        
+    """"take two gtk.TextIter as parameter and copy the
+    """
+    def copy(self,start,stop,bullet=None):
+        
+        end_line = start.copy()
+        #we take line after line in the selection
+        while end_line.get_line() <= stop.get_line():
+            end_line.forward_line()
+            end_line.backward_char()
+            #we want to detect subtasks in the selection
+            tags = end_line.get_tags()+end_line.get_toggled_tags(False)
+            is_subtask = False
+            for ta in tags :
+                if (ta.get_data('is_subtask')):
+                    is_subtask = True
+                    self.content.append(['subtask', ta.get_data('child')])
+            if not is_subtask:
+                if end_line.get_line() < stop.get_line():
+                    self.content.append(['text', start.get_text(end_line)])
+                else:
+                    self.content.append(['text', start.get_text(stop)])
+            end_line.forward_char()
+            start.forward_line()
+            
+        #Now, we take care of the normal, cross application clipboard
+        text = start.get_text(stop)
+        if text and bullet:
+            #we replace the arrow by the original "-"
+            newtext = text.replace(bullet, "-")
+            self.description = newtext
+            
+        print self.content
+        
+        
+    def paste_text(self):
+        return self.description
+        
+    def paste(self):
+        return self.content
     
