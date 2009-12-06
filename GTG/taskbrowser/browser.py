@@ -484,7 +484,8 @@ class TaskBrowser:
                                     tagview        = self.tags_tv,
                                     task           = None,
                                     texteditor     = None,
-                                    quick_add_cbs  = self.priv['quick_add_cbs'])
+                                    quick_add_cbs  = self.priv['quick_add_cbs'],
+                                    logger         = self.logger)
         self.p_apis.append(self.plugin_api)
         
         if self.plugins:
@@ -885,20 +886,14 @@ class TaskBrowser:
             else:
                 return -1 * s
         
-        # Always put no_date tasks on the bottom
-        if not t1_dleft and t2_dleft:
-            sort = reverse_if_descending(1)
-        elif t1_dleft and not t2_dleft:
-            sort = reverse_if_descending(-1)
-        else:
-            sort = cmp(t2_dleft, t1_dleft)
+        sort = cmp(t2_dleft, t1_dleft)
         
         if sort == 0:
             # Put fuzzy dates below real dates
-            if isinstance(t1_dleft, RealDate) and not isinstance(t2_dleft, RealDate):
-                sort = reverse_if_descending(-1)
-            elif isinstance(t2_dleft, RealDate) and not isinstance(t1_dleft, RealDate):
+            if isinstance(t1_dleft, FuzzyDate) and not isinstance(t2_dleft, FuzzyDate):
                 sort = reverse_if_descending(1)
+            elif isinstance(t2_dleft, FuzzyDate) and not isinstance(t1_dleft, FuzzyDate):
+                sort = reverse_if_descending(-1)
                 
             else:  # Break ties by sorting by title
                 t1_title = task1.get_title()

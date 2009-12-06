@@ -33,9 +33,10 @@ from generic_proxy import GenericProxy
 
 class RtmProxy(GenericProxy):
 
-    def __init__(self):
+    def __init__(self, logger):
         super(RtmProxy, self).__init__()
         self.token = None
+        self.logger = logger
 
     def getToken(self):
         """gets a token from file (if a previous sync has been
@@ -106,14 +107,20 @@ class RtmProxy(GenericProxy):
         return zip(task_objects_list, list_ids_list, taskseries_ids_list)
 
     def generateTaskList(self):
+        self.task_list = []
         data = self.downloadFromWeb()
         for task, list_id, taskseries_id in data:
             self.task_list.append(RtmTask(task, list_id, taskseries_id, \
-                                          self.rtm, self.timeline))
+                                          self.rtm, self.timeline, \
+                                          self.logger))
+        if self.logger:
+            map(lambda task: self.logger.debug("RTM task: |" + task.title),
+                                               self.task_list)
 
     def newTask(self, title):
         result = self.rtm.tasks.add(timeline=self.timeline, name=title)
         new_task= RtmTask(result.list.taskseries.task, result.list.id,\
-                          result.list.taskseries.id, self.rtm, self.timeline)
+                          result.list.taskseries.id, self.rtm, self.timeline,\
+                         self.logger)
         self.task_list.append(new_task)
         return new_task
