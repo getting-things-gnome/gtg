@@ -894,13 +894,20 @@ class TaskBrowser:
                 sort = reverse_if_descending(1)
             elif isinstance(t2_dleft, FuzzyDate) and not isinstance(t1_dleft, FuzzyDate):
                 sort = reverse_if_descending(-1)
-                
-            else:  # Break ties by sorting by title
-                t1_title = task1.get_title()
-                t2_title = task2.get_title()
-                t1_title = locale.strxfrm(t1_title)
-                t2_title = locale.strxfrm(t2_title)
-                sort = reverse_if_descending( cmp(t1_title, t2_title) )
+        
+        if sort == 0: # Group tasks with the same tag together for visual cleanness 
+            t1_tags = task1.get_tags_name()
+            t1_tags.sort()
+            t2_tags = task2.get_tags_name()
+            t2_tags.sort()
+            sort = reverse_if_descending( cmp(t1_tags, t2_tags) )
+            
+        if sort == 0:  # Break ties by sorting by title
+            t1_title = task1.get_title()
+            t2_title = task2.get_title()
+            t1_title = locale.strxfrm(t1_title)
+            t2_title = locale.strxfrm(t2_title)
+            sort = reverse_if_descending( cmp(t1_title, t2_title) )
                 
         return sort
 
