@@ -50,7 +50,7 @@ from GTG.taskbrowser.tagtree          import TagTreeModel,\
 from GTG.tools                        import openurl
 from GTG.tools.dates                  import strtodate,\
                                              no_date,\
-                                             RealDate
+                                             FuzzyDate
 from GTG.tools                        import clipboard
 from GTG.core.plugins.manager         import PluginManager
 from GTG.core.plugins.engine          import PluginEngine
