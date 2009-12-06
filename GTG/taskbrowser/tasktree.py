@@ -36,7 +36,6 @@ COL_CDATE     = 4
 COL_CDATE_STR = 5
 COL_DLEFT     = 6
 COL_TAGS      = 7
-COL_BGCOL     = 8
 COL_LABEL     = 9
 
 class TaskTreeModel(gtk.GenericTreeModel):
@@ -129,11 +128,6 @@ class TaskTreeModel(gtk.GenericTreeModel):
             return task.get_days_left()
         elif column == COL_TAGS:
             return task.get_tags()
-        elif column == COL_BGCOL:
-            if self.bg_color_enable:
-                return colors.background_color(task.get_tags())
-            else:
-                return None
         elif column == COL_LABEL:
             if task.get_status() == Task.STA_ACTIVE:
                 count = self._count_active_subtasks_rec(task)
@@ -328,6 +322,11 @@ class TaskTreeView(gtk.TreeView):
         self.columns = []
         self.show()
 
+    def _celldatafunction(self, column, cell, model, iter):
+        bgcolor = column.get_tree_view().get_style().base[gtk.STATE_NORMAL]
+        col = colors.background_color(model.get_value(iter, COL_TAGS), bgcolor)
+        cell.set_property("cell-background", col)
+
     def get_column(self, index):
         return self.columns[index]
 
@@ -388,7 +387,7 @@ class ActiveTaskTreeView(TaskTreeView):
         tag_col.add_attribute(render_tags, "tag_list", COL_TAGS)
         render_tags.set_property('xalign', 0.0)
         tag_col.set_resizable(False)
-        tag_col.add_attribute(render_tags, "cell-background", COL_BGCOL)
+        tag_col.set_cell_data_func(render_tags, self._celldatafunction)
         #tag_col.set_clickable         (True)
         #tag_col.connect               ('clicked', tv_sort_cb)
         self.append_column(tag_col)
@@ -403,8 +402,8 @@ class ActiveTaskTreeView(TaskTreeView):
         title_col.add_attribute(render_text, "markup", COL_LABEL)
         title_col.set_resizable(True)
         title_col.set_expand(True)
-        title_col.add_attribute(render_text, "cell_background", COL_BGCOL)
         title_col.set_sort_column_id(COL_TITLE)
+        title_col.set_cell_data_func(render_text, self._celldatafunction)
         self.append_column(title_col)
         self.columns.insert(COL_TITLE, title_col)
 
@@ -415,8 +414,8 @@ class ActiveTaskTreeView(TaskTreeView):
         ddate_col.pack_start(render_text, expand=False)
         ddate_col.add_attribute(render_text, "markup", COL_DDATE)
         ddate_col.set_resizable(False)
-        ddate_col.add_attribute(render_text, "cell_background", COL_BGCOL)
         ddate_col.set_sort_column_id(COL_DDATE)
+        ddate_col.set_cell_data_func(render_text, self._celldatafunction)
         self.append_column(ddate_col)
         self.columns.insert(COL_DDATE, ddate_col)
 
@@ -427,8 +426,8 @@ class ActiveTaskTreeView(TaskTreeView):
         dleft_col.pack_start(render_text, expand=False)
         dleft_col.add_attribute(render_text, "markup", COL_DLEFT)
         dleft_col.set_resizable(False)
-        dleft_col.add_attribute(render_text, "cell_background", COL_BGCOL)
         dleft_col.set_sort_column_id(COL_DLEFT)
+        dleft_col.set_cell_data_func(render_text, self._celldatafunction)
         self.append_column(dleft_col)
         self.columns.insert(COL_DLEFT, dleft_col)
 
@@ -513,9 +512,9 @@ class ClosedTaskTreeView(TaskTreeView):
         tag_col.set_title(_("Tags"))
         tag_col.pack_start(render_tags, expand=False)
         tag_col.add_attribute(render_tags, "tag_list", COL_TAGS)
+        tag_col.set_cell_data_func(render_tags, self._celldatafunction)
         render_tags.set_property('xalign', 0.0)
         tag_col.set_resizable(False)
-        tag_col.add_attribute(render_tags, "cell-background", COL_BGCOL)
         self.append_column(tag_col)
         self.columns.insert(COL_TAGS, tag_col)
 
@@ -525,8 +524,8 @@ class ClosedTaskTreeView(TaskTreeView):
         cdate_col.set_title(_("Closing date"))
         cdate_col.pack_start(render_text, expand=True)
         cdate_col.set_attributes(render_text, markup=COL_CDATE_STR)
-        cdate_col.add_attribute(render_text, "cell_background", COL_BGCOL)
         cdate_col.set_sort_column_id(COL_CDATE)
+        cdate_col.set_cell_data_func(render_text, self._celldatafunction)
         self.append_column(cdate_col)
         self.columns.insert(COL_CDATE_STR, cdate_col)
 
@@ -537,9 +536,10 @@ class ClosedTaskTreeView(TaskTreeView):
         title_col.set_title(_("Title"))
         title_col.pack_start(render_text, expand=True)
         title_col.set_attributes(render_text, markup=COL_LABEL)
-        title_col.add_attribute(render_text, "cell_background", COL_BGCOL)
+        title_col.set_cell_data_func(render_text, self._celldatafunction)
         title_col.set_sort_column_id(COL_TITLE)
         self.append_column(title_col)
         self.columns.insert(COL_TITLE, title_col)
         
         self.set_show_expanders(False)
+        
