@@ -256,7 +256,7 @@ class Tag(TreeNode):
         #return a copy of the list
         toreturn = self.tasks[:]
         return toreturn 
-    def get_tasks_nbr(self,workview=False):
+    def get_tasks_nbr(self,workview=False,children=True):
         if workview:
             temp_list = []
             for t in self.tasks:
@@ -272,6 +272,9 @@ class Tag(TreeNode):
                 if ta.get_status() == "Active" :
                     temp_list.append(t)
             toreturn = len(temp_list)
+        if children:
+            for i in self.get_children_objs():
+                toreturn += i.get_tasks_nbr(workview=workview, children=True)
         return toreturn
     def is_used(self):
         return len(self.tasks) > 0
