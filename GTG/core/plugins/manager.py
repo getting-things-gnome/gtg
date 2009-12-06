@@ -23,7 +23,6 @@ from GTG.core.plugins          import GnomeConfig
 #from GTG.core.plugins.engine import PluginAPI
 
 import sys
-import gobject
 
 try:
     import pygtk
@@ -118,6 +117,7 @@ class PluginManager:
         
     def present(self):
         # recheck the plugins with errors
+        #doing this reset all plugin state to False
         self.pengine.recheckPluginsErrors(self.plugins, self.plugin_apis,checkall=True)
         self.PluginList.clear()
         
@@ -153,7 +153,6 @@ class PluginManager:
                         self.pengine.activatePlugins([plgin], self.plugin_apis)
                     else :
                         self.pengine.deactivatePlugins([plgin], self.plugin_apis)
-                    
                     
 
     def pluginExtraInfo(self, treeview, plugins):

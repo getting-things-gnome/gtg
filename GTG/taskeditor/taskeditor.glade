@@ -4,7 +4,6 @@
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="TaskEditor">
     <property name="title" translatable="yes">Task</property>
-    <property name="window_position">mouse</property>
     <property name="default_width">450</property>
     <property name="default_height">400</property>
     <signal name="configure_event" handler="on_move"/>
@@ -196,7 +195,7 @@
                     <child>
                       <object class="GtkArrow" id="arrow2">
                         <property name="visible">True</property>
-                        <property name="arrow_type">down</property>
+                        <property name="arrow_type">up</property>
                       </object>
                     </child>
                   </object>
@@ -251,7 +250,7 @@
                     <child>
                       <object class="GtkArrow" id="arrow1">
                         <property name="visible">True</property>
-                        <property name="arrow_type">down</property>
+                        <property name="arrow_type">up</property>
                       </object>
                     </child>
                   </object>
@@ -314,6 +313,51 @@
           </packing>
         </child>
         <child>
+          <object class="GtkHBox" id="fuzzydate_btns">
+            <property name="visible">True</property>
+            <property name="homogeneous">True</property>
+            <child>
+              <object class="GtkButton" id="button_now">
+                <property name="label" translatable="yes">Now</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <signal name="released" handler="on_set_fuzzydate_now"/>
+              </object>
+              <packing>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="button_soon">
+                <property name="label" translatable="yes">Soon</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <signal name="released" handler="on_set_fuzzydate_soon"/>
+              </object>
+              <packing>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="button_later">
+                <property name="label" translatable="yes">Later</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <signal name="released" handler="on_set_fuzzydate_later"/>
+              </object>
+              <packing>
+                <property name="position">2</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
           <object class="GtkButton" id="button2">
             <property name="label">gtk-clear</property>
             <property name="visible">True</property>
@@ -325,7 +369,7 @@
           <packing>
             <property name="expand">False</property>
             <property name="fill">False</property>
-            <property name="position">1</property>
+            <property name="position">2</property>
           </packing>
         </child>
       </object>

@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import gtk, pygtk
+import gtk
 import os
 
 class pluginTest:
@@ -27,8 +27,8 @@ class pluginTest:
         self.tb_button.set_label("Hello World")
         self.tb_button.connect('clicked', self.onTbButton)
         self.separator = gtk.SeparatorToolItem()
-        self.task_separator = gtk.SeparatorToolItem()
-        self.tb_Taskbutton = gtk.ToolButton(gtk.STOCK_EXECUTE)
+        self.task_separator = None
+        self.tb_Taskbutton = None
         
 
     # plugin engine methods    
@@ -43,10 +43,11 @@ class pluginTest:
 
     def onTaskOpened(self, plugin_api):
         # add a item (button) to the ToolBar
-        self.tb_Taskbutton.set_label("Hello World")
-        self.tb_Taskbutton.connect('clicked', self.onTbTaskButton, plugin_api)
-        plugin_api.add_task_toolbar_item(self.task_separator)
-        plugin_api.add_task_toolbar_item(self.tb_Taskbutton)
+        tb_Taskbutton = gtk.ToolButton(gtk.STOCK_EXECUTE)
+        tb_Taskbutton.set_label("Hello World")
+        tb_Taskbutton.connect('clicked', self.onTbTaskButton, plugin_api)
+        self.task_separator = plugin_api.add_task_toolbar_item(gtk.SeparatorToolItem())
+        self.tb_Taskbutton = plugin_api.add_task_toolbar_item(tb_Taskbutton)
         
     def deactivate(self, plugin_api):
         plugin_api.remove_menu_item(self.menu_item)
@@ -83,5 +84,5 @@ class pluginTest:
         
     def onTbTaskButton(self, widget, plugin_api):
         self.loadDialog("Hello World! The tag @hello_world was just added to the end of the task!")
-        plugin_api.add_tag("hello_world")
-    
+        plugin_api.insert_tag("hello_world")
+

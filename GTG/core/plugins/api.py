@@ -16,7 +16,6 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-import gtk
 
 class PluginAPI:
     """The plugin engine's API.
@@ -29,9 +28,21 @@ class PluginAPI:
     with the task editor.
     """
         
-    def __init__(self, window, config, data_dir, builder, requester,\
-                 taskview, filter_cbs, tagpopup, tagview, task=None,\
-                 texteditor=None, quick_add_cbs=[]):
+    def __init__(self,
+                 window,
+                 config,
+                 data_dir,
+                 builder,
+                 requester,
+                 taskview,
+                 task_modelsort,
+                 filter_cbs,
+                 tagpopup,
+                 tagview,
+                 task=None,
+                 texteditor=None,
+                 quick_add_cbs=[],
+                 logger = None):
         """Construct a L{PluginAPI} object.
         
         @param window: The window where the plugin API object is being 
@@ -46,6 +57,7 @@ class PluginAPI:
         @param tagview: The tag view object.
         @param task: The current task (Only works with the task editor).
         @param textview: The task editor's text view (Only works with the task editor).  
+        @param task_modelsort: The browser current view.  
         """
         self.__window = window
         self.config = config
@@ -54,12 +66,20 @@ class PluginAPI:
         self.__requester = requester
         
         self.taskview = taskview
+        self.task_modelsort = task_modelsort
         
         self.__tagpopup = tagpopup
         self.tagview = tagview
         
         self.__filter_cbs = filter_cbs
         self.__quick_add_cbs = quick_add_cbs
+        
+        #those are added widgets dictionaries
+        self.tasktoolbar_id = 0
+        self.tasktoolbar_widg = {}
+        self.taskwidget_id = 0
+        self.taskwidget_widg = {}
+        self.logger = logger
         
         if task:
             self.task = task
@@ -165,6 +185,7 @@ class PluginAPI:
     # adds items to the Task Menu 
     def add_task_toolbar_item(self, item):
         """Adds a button to the task editor's toolbar. 
+         return an ID number for this added widget.
 
         @param item: The gtk.ToolButton that is going to be added 
                      to the toolbar.
@@ -177,22 +198,29 @@ class PluginAPI:
                     i = i + 1
                 wi.insert(item, i)
                 item.show()
+                #this id will grow, this is not a problem
+                self.tasktoolbar_id += 1
+                self.tasktoolbar_widg[self.tasktoolbar_id] = item
                 if self.taskeditor:
                     self.taskeditor.refresh_editor()
+                return self.tasktoolbar_id
+            else:
+                return None
         except Exception, e:
             print "Error adding a toolbar item in to the TaskEditor: %s" %e
             
-    def remove_task_toolbar_item(self,item):
+    def remove_task_toolbar_item(self,widg_id):
         """Remove a button from the task editor's toolbar. 
 
-        @param item: The gtk.ToolButton that is going to be removed
-                     from the toolbar.
+        @param item: The ID of the widget to be removed. If None, nothing is removed.
         """
-        if self.is_editor():
+        if self.is_editor() and widg_id:
             try:
                 wi = self.__builder.get_object('task_tb1')
-                if wi and item:
-                    wi.remove(item)
+                if wi and self.tasktoolbar_widg.has_key(widg_id):
+                    #removing from the window and the dictionnary
+                    # in one line.
+                    wi.remove(self.tasktoolbar_widg.pop(widg_id))
             except Exception, e:
                 print "Error removing the toolbar item in the TaskEditor: %s" %e
             
@@ -206,17 +234,22 @@ class PluginAPI:
             vbox.pack_start(widget)
             vbox.reorder_child(widget, -2)
             widget.show_all()
+            self.taskwidget_id += 1
+            self.taskwidget_widg[self.taskwidget_id] = widget
+            return self.taskwidget_id
+        else:
+            return None
             
-    def remove_widget_from_taskeditor(self,widget):
+    def remove_widget_from_taskeditor(self,widg_id):
         """Remove a widget from the bottom of the task editor dialog
         
         @param widget: The gtk.Widget that is going to be removed
         """
-        if self.is_editor():
+        if self.is_editor() and widg_id:
             try:
                 wi = self.__builder.get_object('vbox4')
-                if wi and widget:
-                    wi.remove(widget)
+                if wi and self.taskwidget_widg.has_key(widg_id):
+                    wi.remove(self.taskwidget_widg.pop(widg_id))
             except Exception, e:
                 print "Error removing the toolbar item in the TaskEditor: %s" %e
             
@@ -259,6 +292,13 @@ class PluginAPI:
         @return: The gtk.TreeView task view object.
         """
         return self.taskview
+
+    def get_task_modelsort(self):
+        """Returns the current browser view. 
+        
+        @return: The gtk.TreeView task view object.
+        """
+        return self.task_modelsort
     
     def get_selected_task(self):
         """Returns the selected task in the task view.
@@ -313,6 +353,11 @@ class PluginAPI:
     def get_window(self):
         """Returns the window for which the plug-in has been created"""
         return self.__window
+
+    def get_logger(self):
+        """Returns the logger, used for debug output""" 
+        return self.logger
+
 #=== General Methods ==========================================================
 
 

@@ -16,8 +16,6 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-
-import pkgutil
 import imp
 import os
 import dbus
@@ -240,9 +238,7 @@ class PluginEngine:
     # rechecks the plugins with errors
     def recheckPluginsErrors(self, plugins, plugin_apis,checkall=False):
         for plugin in plugins:
-            print "init: %s" %plugin['class_name']
-            if plugin['error'] or checkall:
-                print "check: %s" %plugin['class_name']
+            if plugin['error'] or plugin['state'] == False:
                 error = False
                 missing = []
                 missing_dbus = []
@@ -306,6 +302,9 @@ class PluginEngine:
                     plugin['missing_modules'] = []
                     plugin['missing_dbus'] = []
                 else:
+                    plugin['state'] = False
+                    plugin['active'] = False
+                    plugin['error'] = True
                     if missing:
                         plugin['missing_modules'] = missing
                     if missing_dbus:

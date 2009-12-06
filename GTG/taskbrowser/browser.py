@@ -48,6 +48,9 @@ from GTG.taskbrowser                  import tagtree
 from GTG.taskbrowser.tagtree          import TagTreeModel,\
                                              TagTreeView
 from GTG.tools                        import openurl
+from GTG.tools.dates                  import strtodate,\
+                                             no_date,\
+                                             FuzzyDate
 from GTG.core.plugins.manager         import PluginManager
 from GTG.core.plugins.engine          import PluginEngine
 from GTG.core.plugins.api             import PluginAPI
@@ -145,6 +148,7 @@ class TaskBrowser:
 #
     def _init_browser_config(self):
         self.priv["collapsed_tids"]           = []
+        self.priv["collapsed_tags"]           = []
         self.priv["tasklist"]                 = {}
         self.priv["tasklist"]["sort_column"]  = None
         self.priv["tasklist"]["sort_order"]   = gtk.SORT_ASCENDING
@@ -255,7 +259,6 @@ class TaskBrowser:
         # The tags treeview
         self.tags_tv = TagTreeView()
         self.tags_tv.set_model(self.tag_modelsort)
-        self.tags_tv.expand_row('0', True)
         self.sidebar_container.add(self.tags_tv)
 
     def _init_toolbar_tooltips(self):
@@ -342,7 +345,7 @@ class TaskBrowser:
             "on_nonworkviewtag_toggled":
                 self.on_nonworkviewtag_toggled,
             "on_pluginmanager_activate": 
-                self.on_pluginmanager_activate,
+                self.on_pluginmanager_activate
         }
 
         self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
@@ -357,6 +360,10 @@ class TaskBrowser:
             self.on_task_treeview_button_press_event)
         self.task_tv.connect('key-press-event',\
             self.on_task_treeview_key_press_event)
+        self.task_tv.connect('row-expanded',\
+            self.on_task_treeview_row_expanded)
+        self.task_tv.connect('row-collapsed',\
+            self.on_task_treeview_row_collapsed)
         
         # Closed tasks TreeView
         self.ctask_tv.connect('row-activated',\
@@ -366,13 +373,17 @@ class TaskBrowser:
         self.ctask_tv.connect('key-press-event',\
             self.on_closed_task_treeview_key_press_event)
 
-        # Closed tasks TreeView
+        # Tags TreeView
         self.tags_tv.connect('cursor-changed',\
             self.on_select_tag)
         self.tags_tv.connect('row-activated',\
             self.on_select_tag)
         self.tags_tv.connect('button-press-event',\
             self.on_tag_treeview_button_press_event)
+        self.tags_tv.connect('row-expanded',\
+            self.on_tag_treeview_row_expanded)
+        self.tags_tv.connect('row-collapsed',\
+            self.on_tag_treeview_row_collapsed)
 
         # Connect requester signals to TreeModels
         self.req.connect("task-added", self.on_task_added) 
@@ -380,7 +391,8 @@ class TaskBrowser:
         self.req.connect("task-modified", self.on_task_modified)
         
         # Connect signals from models
-        self.task_modelsort.connect("row-has-child-toggled", self.on_child_toggled)
+        self.task_modelsort.connect("row-has-child-toggled", self.on_task_child_toggled)
+        self.tag_modelsort.connect("row-has-child-toggled", self.on_tag_child_toggled)
 
     def _init_view_defaults(self):
         self.menu_view_workview.set_active(WORKVIEW)
@@ -456,10 +468,20 @@ class TaskBrowser:
         self.plugins = self.pengine.LoadPlugins()
         
         # initializes the plugin api class
-        self.plugin_api = PluginAPI(self.window, self.config, GTG.DATA_DIR, self.builder,\
-                                    self.req, self.task_tv, self.priv['filter_cbs'],\
-                                    self.tagpopup, self.tags_tv, None, None,\
-                                    self.priv['quick_add_cbs'])
+        self.plugin_api = PluginAPI(window         = self.window,
+                                    config         = self.config,
+                                    data_dir       = GTG.DATA_DIR,
+                                    builder        = self.builder,
+                                    requester      = self.req,
+                                    taskview       = self.task_tv,
+                                    task_modelsort = self.task_modelsort,
+                                    filter_cbs     = self.priv['filter_cbs'],
+                                    tagpopup       = self.tagpopup,
+                                    tagview        = self.tags_tv,
+                                    task           = None,
+                                    texteditor     = None,
+                                    quick_add_cbs  = self.priv['quick_add_cbs'],
+                                    logger         = self.logger)
         self.p_apis.append(self.plugin_api)
         
         if self.plugins:
@@ -524,6 +546,10 @@ class TaskBrowser:
                 self.builder.get_object("view_sidebar").set_active(True)
                 self.sidebar.show()
 
+        if "tag_pane_width" in self.config["browser"]:
+            tag_pane_width = int(self.config["browser"]["tag_pane_width"])
+            self.builder.get_object("hpaned1").set_position(tag_pane_width)
+
         if "closed_task_pane" in self.config["browser"]:
             closed_task_pane = eval(
                 self.config["browser"]["closed_task_pane"])
@@ -559,6 +585,10 @@ class TaskBrowser:
         if "collapsed_tasks" in self.config["browser"]:
             self.priv["collapsed_tids"] = self.config[
                 "browser"]["collapsed_tasks"]
+                
+        if "collapsed_tags" in self.config["browser"]:
+            self.priv["collapsed_tags"] = self.config[
+                "browser"]["collapsed_tags"]
 
         if "tasklist_sort" in self.config["browser"]:
             col_id, order = self.config["browser"]["tasklist_sort"]
@@ -623,7 +653,6 @@ class TaskBrowser:
 #        if not self.priv['workview'] and self.note_toggle.get_active():
 #            self.note_toggle.set_active(False)
         #We do something only if both widget are in different state
-        self.task_modelsort.foreach(self.update_collapsed_row, None)
         tobeset = not self.priv['workview']
         self.menu_view_workview.set_active(tobeset)
         self.toggle_workview.set_active(tobeset)
@@ -693,45 +722,11 @@ class TaskBrowser:
             month = next_date.month
             day = next_date.day
             date = "%i-%i-%i" % (year, month, day)
+        elif arg in ('now', 'soon', 'later'):
+            date = arg
         else:
-            return None
-        if self.is_date_valid(date):
-            return date
-        else:
-            return None
-
-    def is_date_valid(self, fulldate):
-        """
-        Return True if the date exists. False else.
-        "fulldate" is yyyy-mm-dd
-        """
-        splited_date = fulldate.split("-")
-        if len(splited_date) != 3:
-            return False
-        year, month, day = splited_date
-        try:
-            date = datetime.date(int(year), int(month), int(day))
-        except ValueError:
-            return False
-        else:
-            return True
-
-    def update_collapsed_row(self, model, path, iter, user_data):
-        """Build a list of task that must showed as collapsed in Treeview"""
-        model = self.task_tv.get_model()
-        tid   = model.get_value(iter, tasktree.COL_TID)
-        # Remove expanded rows
-        if (model.iter_has_child(iter) and
-            self.task_tv.row_expanded(path) and
-            tid in self.priv["collapsed_tids"]):
-            self.priv["collapsed_tids"].remove(tid)
-        # Append collapsed rows
-        elif (model.iter_has_child(iter) and
-              not self.task_tv.row_expanded(path) and
-              tid not in self.priv["collapsed_tids"]):
-            self.priv["collapsed_tids"].append(tid)
-
-        return False # Return False or the TreeModel.foreach() function ends
+            return no_date
+        return strtodate(date)
 
     def open_task(self, uid,thisisnew=False):
         """Open the task identified by 'uid'.
@@ -875,27 +870,34 @@ class TaskBrowser:
         task2 = model.get_value(iter2, tasktree.COL_OBJ)
         t1_dleft = task1.get_due_date()
         t2_dleft = task2.get_due_date()
-        if not t1_dleft and not t2_dleft:
-            t1_title = task1.get_title()
-            t2_title = task2.get_title()
-            t1_title = locale.strxfrm(t1_title)
-            t2_title = locale.strxfrm(t2_title)
+        
+        sort = 0
+        
+        def reverse_if_descending(s):
+            """Make a cmp() result relative to the top instead of following 
+               user-specified sort direction"""
             if order == gtk.SORT_ASCENDING:
-                return cmp(t1_title, t2_title)
+                return s
             else:
-                return cmp(t2_title, t1_title)
-        elif not t1_dleft and t2_dleft:
-            if order == gtk.SORT_ASCENDING:
-                return 1
-            else:
-                return -1
-        elif t1_dleft and not t2_dleft:
-            if order == gtk.SORT_ASCENDING:
-                return -1
-            else:
-                return 1
-        else:
-            return cmp(t2_dleft, t1_dleft)
+                return -1 * s
+        
+        sort = cmp(t2_dleft, t1_dleft)
+        
+        if sort == 0:
+            # Put fuzzy dates below real dates
+            if isinstance(t1_dleft, FuzzyDate) and not isinstance(t2_dleft, FuzzyDate):
+                sort = reverse_if_descending(1)
+            elif isinstance(t2_dleft, FuzzyDate) and not isinstance(t1_dleft, FuzzyDate):
+                sort = reverse_if_descending(-1)
+                
+            else:  # Break ties by sorting by title
+                t1_title = task1.get_title()
+                t2_title = task2.get_title()
+                t1_title = locale.strxfrm(t1_title)
+                t2_title = locale.strxfrm(t2_title)
+                sort = reverse_if_descending( cmp(t1_title, t2_title) )
+                
+        return sort
 
     def tag_sort_func(self, model, iter1, iter2, user_data=None):
         order = self.tags_tv.get_model().get_sort_column_id()[1]
@@ -947,10 +949,6 @@ class TaskBrowser:
         self.priv["window_height"] = height
 
     def on_delete(self, widget, user_data):
-
-        # Save expanded rows
-        self.task_tv.get_model().foreach(self.update_collapsed_row, None)
-
         # Cleanup collapsed row list
         for tid in self.priv["collapsed_tids"]:
             if not self.req.has_task(tid):
@@ -958,6 +956,7 @@ class TaskBrowser:
 
         # Get configuration values
         tag_sidebar        = self.sidebar.get_property("visible")
+        tag_sidebar_width  = self.builder.get_object("hpaned1").get_position()
         closed_pane        = self.closed_pane.get_property("visible")
         quickadd_pane      = self.quickadd_pane.get_property("visible")
         toolbar            = self.toolbar.get_property("visible")
@@ -994,8 +993,12 @@ class TaskBrowser:
                 self.priv["bg_color_enable"],
             'collapsed_tasks':
                 self.priv["collapsed_tids"],
+            'collapsed_tags':
+                self.priv["collapsed_tags"],
             'tag_pane':
                 tag_sidebar,
+            'tag_pane_width':
+                tag_sidebar_width,
             'closed_task_pane':
                 closed_pane,
             'ctask_pane_height':
@@ -1119,16 +1122,47 @@ class TaskBrowser:
         else:
             self.quickadd_pane.hide()
 
-    def on_child_toggled(self, model, path, iter):
-        #print "on_child_toggled: %s" % model.get_value(iter, tasktree.COL_TID)
+    def on_task_child_toggled(self, model, path, iter):
         tid = model.get_value(iter, tasktree.COL_TID)
         if tid not in self.priv.get("collapsed_tids", []):
-            self.task_tv.expand_row(path, True)
+            self.task_tv.expand_row(path, False)
+        else:
+            self.task_tv.collapse_row(path)
+            
+    def on_task_treeview_row_expanded(self, treeview, iter, path):
+        tid = treeview.get_model().get_value(iter, tasktree.COL_TID)
+        if tid in self.priv["collapsed_tids"]:
+            self.priv["collapsed_tids"].remove(tid)
+        
+    def on_task_treeview_row_collapsed(self, treeview, iter, path):
+        tid = treeview.get_model().get_value(iter, tasktree.COL_TID)
+        if tid not in self.priv["collapsed_tids"]:
+            self.priv["collapsed_tids"].append(tid)
+            
+    
+    def on_tag_child_toggled(self, model, path, iter):
+        tag = model.get_value(iter, tagtree.COL_ID)
+        if tag not in self.priv.get("collapsed_tags", []):
+            self.tags_tv.expand_row(path, False)
+        else:
+            self.tags_tv.collapse_row(path)
+            
+    def on_tag_treeview_row_expanded(self, treeview, iter, path):
+        tag = treeview.get_model().get_value(iter, tagtree.COL_ID)
+        if tag in self.priv["collapsed_tags"]:
+            self.priv["collapsed_tags"].remove(tag)
+        
+    def on_tag_treeview_row_collapsed(self, treeview, iter, path):
+        tag = treeview.get_model().get_value(iter, tagtree.COL_ID)
+        if tag not in self.priv["collapsed_tags"]:
+            self.priv["collapsed_tags"].append(tag)
+        
+   
 
     def on_quickadd_activate(self, widget):
         text = self.quickadd_entry.get_text()
-        due_date = None
-        defer_date = None
+        due_date = no_date
+        defer_date = no_date
         if text:
             tags, notagonly = self.get_selected_tags()
             # Get tags in the title
@@ -1147,12 +1181,12 @@ class TaskBrowser:
                 elif attribute.lower() == "defer" or \
                      attribute.lower() == _("defer"):
                     defer_date = self.get_canonical_date(args)
-                    if defer_date is None:
+                    if not defer_date:
                         valid_attribute = False
                 elif attribute.lower() == "due" or \
                      attribute.lower() == _("due"):
                     due_date = self.get_canonical_date(args)
-                    if due_date is None:
+                    if not due_date:
                         valid_attribute = False
                 else:
                     # attribute is unknown
@@ -1167,10 +1201,8 @@ class TaskBrowser:
             if text != "":
                 task.set_title(text)
                 task.set_to_keep()
-            if not due_date is None:
-                task.set_due_date(due_date)
-            if not defer_date is None:
-                task.set_start_date(defer_date)
+            task.set_due_date(due_date)
+            task.set_start_date(defer_date)
             id_toselect = task.get_id()
             #############
             self.quickadd_entry.set_text('')
@@ -1350,7 +1382,6 @@ class TaskBrowser:
         self.task_tv.get_selection().unselect_all()
         self.ctask_tv.get_selection().unselect_all()
         task_model = self.task_tv.get_model()
-        task_model.foreach(self.update_collapsed_row, None)
         self.task_modelfilter.refilter()
         self._update_window_title()
 
@@ -1467,7 +1498,7 @@ class TaskBrowser:
         if task.get_status() == "Active" :
             if self.refresh_lock.acquire(False):
                 gobject.idle_add(self.general_refresh)
-        
+
     def general_refresh(self):
         if self.logger:
             self.logger.debug("Trigger refresh on taskbrowser.")
@@ -1539,6 +1570,7 @@ class TaskBrowser:
             count = count + 1 + self._count_subtask(model, c)
             c     = model.iter_next(c)
         return count
+
 
 ### MAIN ######################################################################
 #

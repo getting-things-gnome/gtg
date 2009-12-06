@@ -23,19 +23,25 @@ from generic_proxy import GenericProxy
 
 class GtgProxy(GenericProxy):
 
-    def __init__(self, plugin_api):
+    def __init__(self, plugin_api, logger):
         super(GtgProxy, self).__init__()
         self.plugin_api = plugin_api
+        self.logger = logger
 
     def generateTaskList(self):
+        self.task_list=[]
         tasks = map(self.plugin_api.get_task, \
-                     self.plugin_api.get_requester().get_active_tasks_list())
+                     self.plugin_api.get_requester().get_tasks_list(status=["Active"]))
         map(lambda task: self.task_list.append(GtgTask(task, \
-                                        self.plugin_api)), tasks)
+                                        self.plugin_api, self.logger)), tasks)
+        if self.logger:
+            map(lambda task: self.logger.debug("GTG task: |" + task.title),
+                                               self.task_list)
 
     def newTask(self, title, never_seen_before):
         new_task = GtgTask(self.plugin_api.get_requester().new_task(
-                             newtask=never_seen_before), self.plugin_api)
+                             newtask=never_seen_before), self.plugin_api, \
+                             self.logger)
         new_task.title = title
         self.task_list.append(new_task)
         return new_task

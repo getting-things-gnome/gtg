@@ -2,7 +2,7 @@
 # Create execution-time data directory if needed
 mkdir -p tmp
 # Interpret arguments
-if test $# -gt 0
+if [$# -gt 0] && [! $1 : '-d']
 then
     if [ ! -d "./tmp/$1" ]
     then
@@ -19,4 +19,4 @@ else
     export XDG_CACHE_HOME="./tmp/default/xdg/cache"
     export XDG_CONFIG_HOME="./tmp/default/xdg/config"
 fi
-./gtg -d
+./gtg

@@ -29,12 +29,12 @@ def task_to_dict(task):
           "id": task.get_id(),
           "status": task.get_status(),
           "title": task.get_title(),
-          "duedate": task.get_due_date(),
-          "startdate": task.get_start_date(),
-          "donedate": task.get_closed_date(),
+          "duedate": str(task.get_due_date()),
+          "startdate": str(task.get_start_date()),
+          "donedate": str(task.get_closed_date()),
           "tags": task.get_tags_name(),
           "text": task.get_text(),
-          "subtask": task.get_subtasks_tid(),
+          "subtask": task.get_subtask_tids(),
           }), signature="sv")
 
 
@@ -58,7 +58,8 @@ class DBusTaskWrapper(dbus.service.Object):
     @dbus.service.method(BUSNAME)
     def get_task(self, tid):
         # Retrieve a specific task by ID and return the data
-        return task_to_dict(self.req.get_task(tid))
+        toret = task_to_dict(self.req.get_task(tid))
+        return toret
 
     @dbus.service.method(BUSNAME)
     def get_tasks(self):
@@ -123,6 +124,12 @@ class DBusTaskWrapper(dbus.service.Object):
     @dbus.service.method(BUSNAME)
     def open_task_editor(self, tid):
         self.ui.open_task(tid)
+        
+    @dbus.service.method(BUSNAME)
+    def open_new_task(self):
+        nt = self.req.new_task(newtask=True)
+        uid = nt.get_id()
+        self.ui.open_task(uid,thisisnew=True)
 
     @dbus.service.method(BUSNAME)
     def hide_task_browser(self):

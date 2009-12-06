@@ -21,7 +21,6 @@
 #the tag object implementation
 
 import os
-import copy
 
 from GTG.core      import CoreConfig
 from GTG.core.tree import Tree, TreeNode
@@ -116,7 +115,7 @@ class TagStore :
     
     def get_all_tags_name(self, attname=None, attvalue=None):
         """Return the name of all tags
-        Optionaly, if you pass the attname and attvalue argument, it will
+        Optionally, if you pass the attname and attvalue argument, it will
         only add tags that have the given value for the given attribute
         excluding tags that don't have this attribute
         (except if attvalue is None)"""

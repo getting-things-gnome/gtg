@@ -115,15 +115,15 @@ class TaskTreeModel(gtk.GenericTreeModel):
         elif column == COL_TITLE:
             return saxutils.escape(task.get_title())
         elif column == COL_DDATE:
-            return task.get_due_date()
+            return str(task.get_due_date())
         elif column == COL_CDATE:
-            return task.get_closed_date()
+            return str(task.get_closed_date())
         elif column == COL_CDATE_STR:
             if task.get_status() == Task.STA_DISMISSED:
                 date = "<span color='#AAAAAA'>" +\
-                    task.get_closed_date() + "</span>"
+                    str(task.get_closed_date()) + "</span>"
             else:
-                date = task.get_closed_date()
+                date = str(task.get_closed_date())
             return date
         elif column == COL_DLEFT:
             return task.get_days_left()
@@ -299,6 +299,14 @@ class TaskTreeModel(gtk.GenericTreeModel):
             new_par_task = self.req.get_task(new_par_tid)
         else:
             new_par_task = None
+            
+        # prevent illegal moves
+        c = parent
+        while c is not None:
+            t = self.get_value(c, COL_OBJ)
+            if t is child_task: return
+            c = self.iter_parent(c)
+        
         # Remove child from old parent
         if old_par_task:
             old_par_task.remove_subtask(child_tid)
