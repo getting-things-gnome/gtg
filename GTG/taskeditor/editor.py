@@ -57,11 +57,12 @@ class TaskEditor :
     def __init__(self, requester, task, plugins,
                 delete_callback=None, close_callback=None,opentask_callback=None, \
                 tasktitle_callback=None, notes=False,taskconfig=None,\
-                plugin_apis=None,thisisnew=False) :
+                plugin_apis=None,thisisnew=False,clipboard=None) :
         self.req = requester
         self.config = taskconfig
         self.p_apis = plugin_apis
         self.time = None
+        self.clipboard = clipboard
         self.builder = gtk.Builder() 
         self.builder.add_from_file(GnomeConfig.GLADE_FILE)
         self.donebutton = self.builder.get_object("mark_as_done_editor")
@@ -101,7 +102,7 @@ class TaskEditor :
         scrolled.remove(textview)
         self.open_task  = opentask_callback
         self.task_title = tasktitle_callback
-        self.textview   = TaskView(self.req)
+        self.textview   = TaskView(self.req,self.clipboard)
         self.textview.show()
         self.textview.set_subtask_callback(self.new_subtask)
         self.textview.open_task_callback(self.open_task)
@@ -491,11 +492,14 @@ class TaskEditor :
 
     
     #Take the title as argument and return the subtask ID
-    def new_subtask(self,title) :
-        subt = self.task.new_subtask()
-        subt.set_title(title)
-        tid = subt.get_id()
-        return tid
+    def new_subtask(self,title=None,tid=None) :
+        if tid:
+            self.task.add_subtask(tid)
+        elif title:
+            subt = self.task.new_subtask()
+            subt.set_title(title)
+            tid = subt.get_id()
+            return tid
 
     # Create a new task
     def new_task(self, *args):

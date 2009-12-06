@@ -76,7 +76,7 @@ class TaskView(gtk.TextView):
             raise AttributeError('unknown property %s' % prop.name)
 
     #Yes, we want to redefine the buffer. Disabling pylint on that error.
-    def __init__(self, requester, buffer=None): #pylint: disable-msg=W0622
+    def __init__(self, requester, clipboard, buffer=None): #pylint: disable-msg=W0622
         gtk.TextView.__init__(self, buffer)
         self.buff = self.get_buffer()
         self.req = requester
@@ -154,6 +154,7 @@ class TaskView(gtk.TextView):
         self.modified_sigid = self.buff.connect("changed", self.modified)
         self.backspace_sigid = self.connect("backspace",self.backspace)
         self.tobe_refreshed = False
+        self.clipboard = clipboard
 
         if self.get_direction() == gtk.TEXT_DIR_RTL:
             self.bullet1 = bullet1_rtl
@@ -715,7 +716,7 @@ class TaskView(gtk.TextView):
                     #removing deleted subtasks
                     if ta.get_data('is_subtask') and it.begins_tag(ta) :
                         target = ta.get_data('child')
-                        print "removing task %s" %target
+                        #print "removing task %s" %target
                         self.remove_subtask(target)
                     #removing deleted tags
                     if ta.get_data('is_tag') and it.begins_tag(ta):
@@ -737,8 +738,8 @@ class TaskView(gtk.TextView):
             it.forward_char()
         #now we really delete the selected stuffs
         selec = self.buff.get_selection_bounds()
-        if selec:
-            print "deleted text is ##%s##" %self.buff.get_text(selec[0],selec[1])#(start,end)
+#        if selec:
+#            print "deleted text is ##%s##" %self.buff.get_text(selec[0],selec[1])#(start,end)
 #        self.buff.disconnect(self.delete_sigid)
 #        self.disconnect(self.backspace_sigid)
 #        self.buff.stop_emission("delete-range")
@@ -972,11 +973,10 @@ class TaskView(gtk.TextView):
         selec = gtk.clipboard_get(gdk.SELECTION_PRIMARY)
         clip = gtk.clipboard_get(gdk.SELECTION_CLIPBOARD)
         
-        from GTG.tools import clipboard
-        self.clipboard = clipboard.TaskClipboard()
         #First, we analyse the selection to put in our own
         #GTG clipboard a selection with description of subtasks
         start, stop =  self.buff.get_selection_bounds()
+        
         self.clipboard.copy(start,stop,bullet=self.bullet1)
         
         clip.set_text(self.clipboard.paste_text())
@@ -1001,8 +1001,11 @@ class TaskView(gtk.TextView):
                 if line[0] == 'text':
                     self.buff.insert_at_cursor(line[1])
                 elif line[0] == 'subtask':
+                    self.new_subtask_callback(tid=line[1])
                     mark = self.buff.get_insert()
                     line_nbr = self.buff.get_iter_at_mark(mark).get_line()
+                    #we must paste the \n before inserting the subtask
+                    #else, we will start another subtask
                     self.buff.insert_at_cursor("\n")
                     self.write_subtask(self.buff,line_nbr,line[1])
 
