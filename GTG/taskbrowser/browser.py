@@ -1171,7 +1171,8 @@ class TaskBrowser:
         if text:
             tags, notagonly = self.get_selected_tags()
             # Get tags in the title
-            for match in re.findall(r'[\s]*(@[^@,\s]+)', text):
+            for match in re.findall(r'(?:^|[\s])(@\w+)', text):
+                print match
                 tags.append(GTG.core.tagstore.Tag(match))
                 # Remove the @
                 #text =text.replace(match,match[1:],1)
