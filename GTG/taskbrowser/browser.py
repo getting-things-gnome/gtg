@@ -1171,13 +1171,18 @@ class TaskBrowser:
         if text:
             tags, notagonly = self.get_selected_tags()
             # Get tags in the title
-            for match in re.findall(r'[\s]*(@[^@,\s]+)', text):
+            #NOTE: the ?: tells regexp that the first one is 
+            # a non-capturing group, so it must not be returned
+            # to findall. http://www.amk.ca/python/howto/regex/regex.html
+            # ~~~~Invernizzi
+            for match in re.findall(r'(?:^|[\s])(@\w+)', text):
                 tags.append(GTG.core.tagstore.Tag(match))
                 # Remove the @
                 #text =text.replace(match,match[1:],1)
             # Get attributes
-            regexp = r'([\s]*)([a-zA-Z0-9_-]+):([^\s]+)'
+            regexp = r'([\s]*)([\w-]+):([^\s]+)'
             for spaces, attribute, args in re.findall(regexp, text):
+                print attribute + "  "+ args
                 valid_attribute = True
                 if attribute.lower() == "tags" or \
                    attribute.lower() == _("tags"):
