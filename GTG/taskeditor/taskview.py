@@ -979,7 +979,15 @@ class TaskView(gtk.TextView):
         while end_line.get_line() < stop.get_line():
             end_line.forward_line()
             end_line.backward_char()
-            print "##%s##" %start.get_text(end_line)
+            #we want to detect subtasks in the selection
+            tags = end_line.get_tags()+end_line.get_toggled_tags(False)
+            is_subtask = False
+            for ta in tags :
+                if (ta.get_data('is_subtask')):
+                    is_subtask = True
+                    print ta.get_data('child')
+            if not is_subtask:
+                print "##%s##" %start.get_text(end_line)
             end_line.forward_char()
             start.forward_line()
         #now for the last line
