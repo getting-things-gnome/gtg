@@ -53,13 +53,11 @@ class TaskClipboard():
                     self.content.append(['subtask', ta.get_data('child')])
             if not is_subtask:
                 if end_line.get_line() < stop.get_line():
-                    self.content.append(['text', start.get_text(end_line)])
+                    self.content.append(['text', "%s\n" %start.get_text(end_line)])
                 else:
                     self.content.append(['text', start.get_text(stop)])
             end_line.forward_char()
             start.forward_line()
-            
-        print "##%s##" %self.description
         
         
     def paste_text(self):
