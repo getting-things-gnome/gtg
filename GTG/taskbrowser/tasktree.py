@@ -57,9 +57,6 @@ class TaskTreeModel(gtk.GenericTreeModel):
         gtk.GenericTreeModel.__init__(self)
         self.req  = requester
         self.tree = Tree()
-                
-        # Default config
-        self.bg_color_enable = True
 
 ### TREE MODEL HELPER FUNCTIONS ###############################################
 
@@ -311,20 +308,24 @@ class TaskTreeModel(gtk.GenericTreeModel):
         if new_par_task:
             new_par_task.add_subtask(child_tid)
 
-    def set_bg_color(self, val):
-        self.bg_color_enable = val
-
 class TaskTreeView(gtk.TreeView):
     """TreeView for display of a list of task. Handles DnD primitives too."""
 
     def __init__(self, model=None):
         gtk.TreeView.__init__(self)
         self.columns = []
+        self.bg_color_enable = True
         self.show()
+        
+    def set_bg_color(self, val):
+        self.bg_color_enable = val
 
     def _celldatafunction(self, column, cell, model, iter):
-        bgcolor = column.get_tree_view().get_style().base[gtk.STATE_NORMAL]
-        col = colors.background_color(model.get_value(iter, COL_TAGS), bgcolor)
+        if self.bg_color_enable:
+            bgcolor = column.get_tree_view().get_style().base[gtk.STATE_NORMAL]
+            col = colors.background_color(model.get_value(iter, COL_TAGS), bgcolor)
+        else:
+            col = None
         cell.set_property("cell-background", col)
 
     def get_column(self, index):
