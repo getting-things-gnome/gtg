@@ -990,6 +990,21 @@ class TaskView(gtk.TextView):
     #Called on paste.
     def paste_clipboard(self,widget,param=None):
         clip = gtk.clipboard_get(gdk.SELECTION_CLIPBOARD)
+        #if the clipboard text is the same are our own internal
+        #clipboard text, it means that we can paste from our own clipboard
+        #else, that we can empty it.
+        our_paste = self.clipboard.paste_text()
+        if our_paste != None and clip.wait_for_text() == our_paste :
+            #we handle ourselves the pasting
+            self.stop_emission("paste_clipboard")
+            for line in self.clipboard.paste():
+                if line[0] == 'text':
+                    print line[1]
+                elif line[0] == 'subtask':
+                    print line[1]
+        else:
+            #we keep the normal pasting by not interupting the signal
+            self.clipboard.clear()
         
     #Function called each time the user input a letter   
     def _insert_at_cursor(self, tv, itera, tex, leng) :

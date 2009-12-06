@@ -68,3 +68,6 @@ class TaskClipboard():
     def paste(self):
         return self.content
     
+    def clear(self):
+        self.descriptiion = None
+        self.content = []
