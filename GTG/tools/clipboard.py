@@ -29,6 +29,15 @@ class TaskClipboard():
     """"take two gtk.TextIter as parameter and copy the
     """
     def copy(self,start,stop,bullet=None):
+        #Now, we take care of the normal, cross application clipboard
+        text = start.get_text(stop)
+        if text and bullet:
+            #we replace the arrow by the original "-"
+            newtext = text.replace(bullet, "-")
+            self.description = newtext
+        elif text:
+            self.description = text
+        
         
         end_line = start.copy()
         #we take line after line in the selection
@@ -50,14 +59,7 @@ class TaskClipboard():
             end_line.forward_char()
             start.forward_line()
             
-        #Now, we take care of the normal, cross application clipboard
-        text = start.get_text(stop)
-        if text and bullet:
-            #we replace the arrow by the original "-"
-            newtext = text.replace(bullet, "-")
-            self.description = newtext
-            
-        print self.content
+        print "##%s##" %self.description
         
         
     def paste_text(self):
