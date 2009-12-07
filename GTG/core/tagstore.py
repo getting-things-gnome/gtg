@@ -259,7 +259,7 @@ class Tag(TreeNode):
     def get_tasks_nbr(self,workview=False,children=True):
         temp_list = []
         #workview in a non workviewable tag
-        if workview and self.get_attribute("nonworkview"):
+        if workview and self.get_attribute("nonworkview") == "True":
             for t in self.tasks:
                 ta = self.req.get_task(t)
                 if ta.get_status() == "Active" and ta.is_workable() and\
@@ -270,8 +270,6 @@ class Tag(TreeNode):
             for t in self.tasks:
                 ta = self.req.get_task(t)
                 if ta.is_in_workview():
-#                if ta.get_status() == "Active" and ta.is_workable() and\
-#                                                   ta.is_started():
                     temp_list.append(t)
         #non workview
         else:
@@ -290,7 +288,6 @@ class Tag(TreeNode):
         toreturn = False
         for task in self.tasks :
             if self.req.get_task(task).get_status() == "Active":
-                print "%s is actively used" %self.get_name()
                 toreturn = True
         return toreturn
 

@@ -175,7 +175,7 @@ class Task:
         if self.is_workable() and self.is_started()\
                               and self.get_status() == "Active" :
             for tag in self.get_tags():
-                if tag.get_attribute("nonworkview"):
+                if tag.get_attribute("nonworkview") == "True":
                     result = False
         else:
             result = False
