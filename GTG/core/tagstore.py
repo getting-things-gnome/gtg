@@ -255,31 +255,40 @@ class Tag(TreeNode):
     def get_tasks(self):
         #return a copy of the list
         toreturn = self.tasks[:]
+        tmplist = []
+        for c in self.get_children_objs():
+            tmplist.extend(c.get_tasks())
+        for ti in tmplist:
+            if ti not in toreturn:
+                toreturn.append(ti)
         return toreturn 
     def get_tasks_nbr(self,workview=False,children=True):
+        tasks = self.get_tasks()
         temp_list = []
         #workview in a non workviewable tag
         if workview and self.get_attribute("nonworkview") == "True":
-            for t in self.tasks:
+            for t in tasks:
                 ta = self.req.get_task(t)
-                if ta.is_in_workview(tag=self):
+                if ta.is_in_workview(tag=self) and t not in temp_list:
                     temp_list.append(t)
         #workview in a workviewable tag
         elif workview:
-            for t in self.tasks:
+            for t in tasks:
                 ta = self.req.get_task(t)
-                if ta.is_in_workview():
+                if ta.is_in_workview() and t not in temp_list:
                     temp_list.append(t)
         #non workview
         else:
-            for t in self.tasks:
+            for t in tasks:
                 ta = self.req.get_task(t)
-                if ta.get_status() == "Active" :
+                if ta.get_status() == "Active" and t not in temp_list:
                     temp_list.append(t)
         toreturn = len(temp_list)
-        if children:
-            for i in self.get_children_objs():
-                toreturn += i.get_tasks_nbr(workview=workview, children=True)
+#No need for that anymore, the recursive call is now in get_tasks()
+#Kevin, you can delete that after reading it, it's for your information
+#        if children:
+#            for i in self.get_children_objs():
+#                toreturn += i.get_tasks_nbr(workview=workview, children=True)
         return toreturn
     def is_used(self):
         return len(self.tasks) > 0
