@@ -257,21 +257,29 @@ class Tag(TreeNode):
         toreturn = self.tasks[:]
         return toreturn 
     def get_tasks_nbr(self,workview=False,children=True):
-        if workview:
-            temp_list = []
+        temp_list = []
+        #workview in a non workviewable tag
+        if workview and self.get_attribute("nonworkview"):
             for t in self.tasks:
                 ta = self.req.get_task(t)
                 if ta.get_status() == "Active" and ta.is_workable() and\
                                                    ta.is_started():
                     temp_list.append(t)
-            toreturn = len(temp_list)
+        #workview in a workviewable tag
+        elif workview:
+            for t in self.tasks:
+                ta = self.req.get_task(t)
+                if ta.is_in_workview():
+#                if ta.get_status() == "Active" and ta.is_workable() and\
+#                                                   ta.is_started():
+                    temp_list.append(t)
+        #non workview
         else:
-            temp_list = []
             for t in self.tasks:
                 ta = self.req.get_task(t)
                 if ta.get_status() == "Active" :
                     temp_list.append(t)
-            toreturn = len(temp_list)
+        toreturn = len(temp_list)
         if children:
             for i in self.get_children_objs():
                 toreturn += i.get_tasks_nbr(workview=workview, children=True)
@@ -282,6 +290,7 @@ class Tag(TreeNode):
         toreturn = False
         for task in self.tasks :
             if self.req.get_task(task).get_status() == "Active":
+                print "%s is actively used" %self.get_name()
                 toreturn = True
         return toreturn
 

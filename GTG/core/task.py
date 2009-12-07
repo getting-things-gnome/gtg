@@ -168,6 +168,19 @@ class Task:
                 workable = False
         return workable
 
+    #A task is in the workview if it is workable, started, active and
+    #if none of its tag are "non-workview"
+    def is_in_workview(self):
+        result = True
+        if self.is_workable() and self.is_started()\
+                              and self.get_status() == "Active" :
+            for tag in self.get_tags():
+                if tag.get_attribute("nonworkview"):
+                    result = False
+        else:
+            result = False
+        return result
+
     def get_modified(self):
         return self.modified
 

@@ -866,8 +866,9 @@ class TaskBrowser:
             child=model.iter_next(child)
         
         if not tag.get_attribute("special"):
-            count = model.get_value(iter, tagtree.COL_COUNT)
-            return count != '0'
+#            count = model.get_value(iter, tagtree.COL_COUNT)
+#            return count != '0'
+            return tag.is_actively_used()
         else:
             return True
 
