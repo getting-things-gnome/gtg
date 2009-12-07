@@ -544,15 +544,13 @@ class ClosedTaskTreeView(TaskTreeView):
         
         self.set_show_expanders(False)
 
-    def scroll_to_last(self):
+    def scroll_to_task(self, task_id):
         model = self.get_model()
         iter = model.get_iter_first()
         while iter:
-            old_iter = iter
+            if model.get_value(iter, 1).get_id() == task_id:
+                break
             iter = model.iter_next(iter)
-        path = model.get_path(old_iter)
-        self.scroll_to_cell(model.get_path(old_iter),
-                         self.tag_col,
-                         True,
-                         0.0,
-                         0.0)
+        self.scroll_to_cell(model.get_path(iter),
+                        self.tag_col,
+                        False)
