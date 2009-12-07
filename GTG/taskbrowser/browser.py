@@ -1381,7 +1381,7 @@ class TaskBrowser:
                 zetask.set_status(Task.STA_ACTIVE)
             else:
                 zetask.set_status(Task.STA_DONE)
-                self.ctask_tv.scroll_to_last()
+                gobject.idle_add(self.ctask_tv.scroll_to_last)
             if self.refresh_lock.acquire(False):
                 gobject.idle_add(self.general_refresh)
 
@@ -1394,7 +1394,7 @@ class TaskBrowser:
                 zetask.set_status("Active")
             else:
                 zetask.set_status("Dismiss")
-                self.ctask_tv.scroll_to_last()
+                gobject.idle_add(self.ctask_tv.scroll_to_last)
             if self.refresh_lock.acquire(False):
                 gobject.idle_add(self.general_refresh)
     

@@ -551,8 +551,7 @@ class ClosedTaskTreeView(TaskTreeView):
             old_iter = iter
             iter = model.iter_next(iter)
         path = model.get_path(old_iter)
-        gobject.idle_add(self.scroll_to_cell,
-                         model.get_path(old_iter),
+        self.scroll_to_cell(model.get_path(old_iter),
                          self.tag_col,
                          True,
                          0.0,
