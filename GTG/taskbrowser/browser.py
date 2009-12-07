@@ -395,8 +395,10 @@ class TaskBrowser:
         self.req.connect("task-modified", self.on_task_modified)
         
         # Connect signals from models
-        self.task_modelsort.connect("row-has-child-toggled", self.on_task_child_toggled)
-        self.tag_modelsort.connect("row-has-child-toggled", self.on_tag_child_toggled)
+        self.task_modelsort.connect("row-has-child-toggled",\
+                                    self.on_task_child_toggled)
+        self.tag_modelsort.connect("row-has-child-toggled",\
+                                    self.on_tag_child_toggled)
 
     def _init_view_defaults(self):
         self.menu_view_workview.set_active(WORKVIEW)
@@ -490,14 +492,14 @@ class TaskBrowser:
         
         if self.plugins:
             # checks the conf for user settings
-            if self.config.has_key("plugins"):
-                if self.config["plugins"].has_key("enabled"):
+            if "plugins" in self.config:
+                if "enabled" in self.config["plugins"]:
                     plugins_enabled = self.config["plugins"]["enabled"]
                     for p in self.plugins:
                         if p['name'] in plugins_enabled:
                             p['state'] = True
                         
-                if self.config["plugins"].has_key("disabled"):
+                if "disabled" in self.config["plugins"]:
                     plugins_disabled = self.config["plugins"]["disabled"]
                     for p in self.plugins:    
                         if p['name'] in plugins_disabled:
@@ -900,14 +902,14 @@ class TaskBrowser:
             t1_tags.sort()
             t2_tags = task2.get_tags_name()
             t2_tags.sort()
-            sort = reverse_if_descending( cmp(t1_tags, t2_tags) )
+            sort = reverse_if_descending(cmp(t1_tags, t2_tags))
             
         if sort == 0:  # Break ties by sorting by title
             t1_title = task1.get_title()
             t2_title = task2.get_title()
             t1_title = locale.strxfrm(t1_title)
             t2_title = locale.strxfrm(t2_title)
-            sort = reverse_if_descending( cmp(t1_title, t2_title) )
+            sort = reverse_if_descending(cmp(t1_title, t2_title))
                 
         return sort
 

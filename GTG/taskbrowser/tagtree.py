@@ -250,9 +250,7 @@ class TagTreeModel(gtk.GenericTreeModel):
 class TagTreeView(gtk.TreeView):
     """TreeView for display of a list of task. Handles DnD primitives too."""
 
-    DND_TARGETS = [
-        ('gtg/tag-iter-str', gtk.TARGET_SAME_WIDGET, 0)
-    ]
+    DND_TARGETS = [('gtg/tag-iter-str', gtk.TARGET_SAME_WIDGET, 0)]
 
     def __init__(self):
         self.tv = gtk.TreeView.__init__(self)
@@ -302,7 +300,7 @@ class TagTreeView(gtk.TreeView):
 
     def refresh(self):
         model = self.get_model()
-        if model :
+        if model:
             model.foreach(self._refresh_func)
 
     def _refresh_func(self, model, path, iter, user_data=None):
