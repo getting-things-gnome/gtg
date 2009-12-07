@@ -171,18 +171,24 @@ class PluginManager:
                     
                     if plgin['error']:
                         # set the title label
+                        cantload = "<small><b>%s</b>. \n" %GnomeConfig.CANNOTLOAD
                         if plgin['missing_modules'] and not plgin['missing_dbus']:
-                            self.lblErrorTitle.set_markup("<small><b>The plugin can not be loaded</b>. \n"
-                                                          "Some modules are missing:</small>")
+                            self.lblErrorTitle.set_markup(
+                                    cantload+
+                                    "%s</small>" %GnomeConfig.MODULEMISSING)
+                                    
                         elif plgin['missing_dbus'] and not plgin['missing_modules']:
-                            self.lblErrorTitle.set_markup("<small><b>The plugin can not be loaded</b>. \n"
-                                                          "Some remote dbus objects are missing:</small>")
+                            self.lblErrorTitle.set_markup(
+                                    cantload+
+                                    "%s</small>" %GnomeConfig.DBUSMISSING)
                         elif plgin['missing_modules'] and plgin['missing_dbus']:
-                            self.lblErrorTitle.set_markup("<small><b>The plugin can not be loaded</b>. \n"
-                                                          "Some modules and remote dbus objects are missing:</small>")
+                            self.lblErrorTitle.set_markup(
+                                    cantload+
+                                    "%s</small>" %GnomeConfig.MODULANDDBUS)
                         else:
-                            self.lblErrorTitle.set_markup("<small><b>The plugin can not be loaded</b>. \n"
-                                                          "Unknown error while loading the plugin.</small>")
+                            self.lblErrorTitle.set_markup(
+                                    cantload+
+                                    "%s</small>" %GnomeConfig.UNKNOWN)
                             self.box_error.show_all()
                             
                         #set the missing/info
