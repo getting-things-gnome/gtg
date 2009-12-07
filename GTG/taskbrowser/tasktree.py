@@ -508,16 +508,16 @@ class ClosedTaskTreeView(TaskTreeView):
 
     def _init_tree_view(self):
         # Tag column
-        tag_col     = gtk.TreeViewColumn()
+        self.tag_col = gtk.TreeViewColumn()
         render_tags = CellRendererTags()
-        tag_col.set_title(_("Tags"))
-        tag_col.pack_start(render_tags, expand=False)
-        tag_col.add_attribute(render_tags, "tag_list", COL_TAGS)
-        tag_col.set_cell_data_func(render_tags, self._celldatafunction)
+        self.tag_col.set_title(_("Tags"))
+        self.tag_col.pack_start(render_tags, expand=False)
+        self.tag_col.add_attribute(render_tags, "tag_list", COL_TAGS)
+        self.tag_col.set_cell_data_func(render_tags, self._celldatafunction)
         render_tags.set_property('xalign', 0.0)
-        tag_col.set_resizable(False)
-        self.append_column(tag_col)
-        self.columns.insert(COL_TAGS, tag_col)
+        self.tag_col.set_resizable(False)
+        self.append_column(self.tag_col)
+        self.columns.insert(COL_TAGS, self.tag_col)
 
         # CLosed date column
         cdate_col    = gtk.TreeViewColumn()
@@ -543,3 +543,16 @@ class ClosedTaskTreeView(TaskTreeView):
         self.columns.insert(COL_TITLE, title_col)
         
         self.set_show_expanders(False)
+
+    def scroll_to_last(self):
+        model = self.get_model()
+        iter = model.get_iter_first()
+        while iter:
+            old_iter = iter
+            iter = model.iter_next(iter)
+        path = model.get_path(old_iter)
+        self.scroll_to_cell(model.get_path(old_iter),
+                         self.tag_col,
+                         True,
+                         0.0,
+                         0.0)
