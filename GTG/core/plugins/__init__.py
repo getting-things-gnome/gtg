@@ -23,6 +23,22 @@
 
 import os
 
+from GTG import _
+
 class GnomeConfig :
     current_rep = os.path.dirname(os.path.abspath(__file__))
     GLADE_FILE    = os.path.join(current_rep,"pluginmanager.glade")
+    
+    CANNOTLOAD = _("The plugin can not be loaded")
+    miss1 = _("Some python modules are missing")
+    miss2 = _("Please install the following python modules:")
+    MODULEMISSING = "%s \n%s" %(miss1,miss2)
+    dmiss1 = _("Some remote dbus objects are missing.")
+    dmiss2 = _("Please start the following applications:")
+    DBUSMISSING = "%s \n%s" %(dmiss1,dmiss2)
+    bmiss1 = _("Some modules and remote dbus objects are missing.")
+    bmiss2 = _("Please install or start the following components:")
+    MODULANDDBUS = "%s \n%s" %(bmiss1,bmiss2)
+    umiss1 = _("Unknown error while loading the plugin.")
+    umiss2 = _("Very helpful message, isn't it? Please report a bug.")
+    UNKNOWN = "%s \n%s" %(umiss1,umiss2)
