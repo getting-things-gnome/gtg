@@ -556,4 +556,4 @@ class ClosedTaskTreeView(TaskTreeView):
                          self.tag_col,
                          True,
                          0.5,
-                         0)
+                         1.0)
