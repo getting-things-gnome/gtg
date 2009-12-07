@@ -48,7 +48,6 @@ class TagTreeModel(gtk.GenericTreeModel):
         self.workview = False
 
 ### MODEL METHODS ############################################################
-
     def update_tags_for_task(self, tid):
         task = self.req.get_task(tid)
         for t in task.get_tags():
@@ -188,27 +187,10 @@ class TagTreeModel(gtk.GenericTreeModel):
         root.add_child(tname, tag)
         tag.set_parent(root)
         tag_index = root.get_child_index(tname)
-        tag_path  = (tag_index,)
+        tag_path  = (tag_index, )
         tag_iter  = self.get_iter(tag_path)
         self.row_inserted(tag_path, tag_iter)
-#
-#    def remove_task(self, tid):
-#        # get the task
-#        task = self.req.get_task(tid)
-#        # Remove every row of this task
-#        if task.has_parents():
-#            # get every paths leading to this task
-#            path_list = self._get_paths_for_task(task)
-#            # remove every path
-#            for task_path in path_list:
-#                self.row_deleted(task_path)
-#        if tid in self.root_tasks:
-#            task_index = self._get_root_task_index(tid)
-#            task_path  = (task_index,)
-#            task_iter  = self.get_iter(task_path)
-#            self.row_deleted(task_path)
-#            self.root_tasks.remove(tid)
-#                    
+
     def move_tag(self, parent, child):
         #print "Moving %s below %s" % (child, parent)
         # Get child
@@ -227,16 +209,19 @@ class TagTreeModel(gtk.GenericTreeModel):
             new_par_n_children = self.iter_n_children(parent)
         else:
             new_par_tag = self.tree.root
-        
+
         # prevent illegal moves
         c = new_par_tag
         while c is not self.tree.root:
-            if c is child_tag: return
+            if c is child_tag:
+                return
             c = c.get_parent()
-        
+
         if new_par_tag is not self.tree.root:
-            if new_par_tag.get_name()[0]!='@': return
-        if child_tag.get_name()[0]!='@': return
+            if new_par_tag.get_name()[0]!='@':
+                return
+        if child_tag.get_name()[0]!='@':
+            return
 
         child_tag.reparent(new_par_tag)
 
@@ -250,9 +235,7 @@ class TagTreeModel(gtk.GenericTreeModel):
 class TagTreeView(gtk.TreeView):
     """TreeView for display of a list of task. Handles DnD primitives too."""
 
-    DND_TARGETS = [
-        ('gtg/tag-iter-str', gtk.TARGET_SAME_WIDGET, 0)
-    ]
+    DND_TARGETS = [('gtg/tag-iter-str', gtk.TARGET_SAME_WIDGET, 0)]
 
     def __init__(self):
         self.tv = gtk.TreeView.__init__(self)
@@ -268,7 +251,7 @@ class TagTreeView(gtk.TreeView):
         self.enable_model_drag_dest(\
             self.DND_TARGETS,
             gtk.gdk.ACTION_DEFAULT)
- 
+
         self.drag_source_set(\
             gtk.gdk.BUTTON1_MASK,
             self.DND_TARGETS,
@@ -302,18 +285,16 @@ class TagTreeView(gtk.TreeView):
 
     def refresh(self):
         model = self.get_model()
-        if model :
+        if model:
             model.foreach(self._refresh_func)
 
     def _refresh_func(self, model, path, iter, user_data=None):
         model.row_changed(path, iter)
-        #model.row_has_child_toggled(path, iter)
 
     def _tag_separator_filter(self, model, itera, user_data=None):
         return self.get_model().get_value(itera, COL_SEP)
 
     def _init_tree_view(self):
-        
          # Tag column
         tag_col      = gtk.TreeViewColumn()
         render_text  = gtk.CellRendererText()
@@ -343,7 +324,6 @@ class TagTreeView(gtk.TreeView):
         self.set_headers_visible(False)
 
     ### DRAG AND DROP ########################################################
-
     def on_drag_drop(self, treeview, context, selection, info, timestamp):
         self.emit_stop_by_name('drag_drop')
 
@@ -358,7 +338,6 @@ class TagTreeView(gtk.TreeView):
 
     def on_drag_data_received(self, treeview, context, x, y, selection, info,\
                               timestamp):
-                            
         model          = treeview.get_model()
         model_filter   = model.get_model()
         tagtree_model = model_filter.get_model()
