@@ -866,9 +866,11 @@ class TaskBrowser:
             child=model.iter_next(child)
         
         if not tag.get_attribute("special"):
-#            count = model.get_value(iter, tagtree.COL_COUNT)
-#            return count != '0'
-            return tag.is_actively_used()
+            #Those two lines hide tags without tasks in the workview
+            count = model.get_value(iter, tagtree.COL_COUNT)
+            return count != '0'
+            #the following display tags in the workview, even with 0 tasks
+           # return tag.is_actively_used()
         else:
             return True
 

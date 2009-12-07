@@ -170,12 +170,14 @@ class Task:
 
     #A task is in the workview if it is workable, started, active and
     #if none of its tag are "non-workview"
-    def is_in_workview(self):
+    #if tag is provided, we consider the workview of that particular tag
+    def is_in_workview(self,tag=None):
         result = True
         if self.is_workable() and self.is_started()\
                               and self.get_status() == "Active" :
-            for tag in self.get_tags():
-                if tag.get_attribute("nonworkview") == "True":
+            for t in self.get_tags():
+                if t.get_attribute("nonworkview") == "True" and \
+                                t != tag :
                     result = False
         else:
             result = False

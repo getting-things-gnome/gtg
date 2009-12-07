@@ -262,8 +262,7 @@ class Tag(TreeNode):
         if workview and self.get_attribute("nonworkview") == "True":
             for t in self.tasks:
                 ta = self.req.get_task(t)
-                if ta.get_status() == "Active" and ta.is_workable() and\
-                                                   ta.is_started():
+                if ta.is_in_workview(tag=self):
                     temp_list.append(t)
         #workview in a workviewable tag
         elif workview:
