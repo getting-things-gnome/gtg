@@ -1196,7 +1196,6 @@ class TaskBrowser:
             # Get attributes
             regexp = r'([\s]*)([\w-]+):([^\s]+)'
             for spaces, attribute, args in re.findall(regexp, text):
-                print attribute + "  "+ args
                 valid_attribute = True
                 if attribute.lower() == "tags" or \
                    attribute.lower() == _("tags"):
