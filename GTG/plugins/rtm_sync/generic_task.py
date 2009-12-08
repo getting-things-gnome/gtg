@@ -17,7 +17,8 @@ import sys
 import os
 import xml.dom.minidom
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))+'/pyrtm')
-from utility import iso8601toTime, timeToIso8601, dateToIso8601, timezone
+from utility import iso8601toTime, timeToIso8601, dateToIso8601,\
+                    timezone, text_strip_tags
 from GTG.tools.dates import NoDate as GtgNoDate,\
                             FuzzyDate as GtgFuzzyDate,\
                             strtodate as gtgstrtodate
@@ -54,16 +55,22 @@ class GenericTask(object):
         master = task.title
         if carbon != master:
             self.title = master
+        
+        #NOTE: please respect this order of text before tags.
+        #      tags have a side effect of cleaning up text,
+        #      it will be fixed in 0.3
 
-        carbon = self.tags
-        master = task.tags
-        if carbon != master:
-            self.tags = master
+        #note:text sync disabled in 0.2
+        #carbon = self.text
+        #master = task.text
+        #if carbon != master:
+        #    self.text = master
 
-        carbon = self.text
-        master = task.text
-        if carbon != master:
-            self.text = master
+        #carbon = self.tags
+        #master = task.tags
+        #if carbon != master:
+        #    self.tags = master
+
 
         carbon = self.due_date
         master = task.due_date
@@ -242,7 +249,11 @@ class GtgTask(GenericTask):
             except:
                 if self.logger:
                     self.logger.debug("remove tag from GTG failed!!!")
-        map(lambda tag: self.task.insert_tag('@'+tag), tags)
+        #moves the tags at the end of the text
+        self.text = "<content>" + text_strip_tags(self.text) + "\n" +\
+                reduce(lambda tags, tag: tags + ', @' + tag,[" "] + tags)[3:] +\
+                "</content>"
+        map(lambda tag: self.task.add_tag('@'+tag), tags)
 
     def _get_text(self):
         return self.task.get_text()
