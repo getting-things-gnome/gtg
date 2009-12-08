@@ -69,8 +69,13 @@ class DBusTaskWrapper(dbus.service.Object):
     @dbus.service.method(BUSNAME, in_signature="asasbb")
     def get_task_ids_filtered(self, tags, status, started_only, is_root):
         # Retrieve a list of task IDs filtered by specified parameters
+        tags_obj = []
+        for t in tags:
+            zetag = self.req.get_tag(t)
+            if zetag:
+                tags_obj.append(zetag)
         ids = self.req.get_tasks_list(
-            tags, status, False, started_only, is_root)
+            tags_obj, status, False, started_only, is_root)
         # If there are no matching tasks, return an empty D-Bus array
         return ids if ids else dbus.Array([], "s")
 
