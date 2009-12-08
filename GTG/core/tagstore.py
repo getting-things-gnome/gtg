@@ -262,7 +262,7 @@ class Tag(TreeNode):
             if ti not in toreturn:
                 toreturn.append(ti)
         return toreturn 
-    def get_tasks_nbr(self,workview=False,children=True):
+    def get_tasks_nbr(self,workview=False):
         tasks = self.get_tasks()
         temp_list = []
         #workview in a non workviewable tag
@@ -284,11 +284,6 @@ class Tag(TreeNode):
                 if ta.get_status() == "Active" and t not in temp_list:
                     temp_list.append(t)
         toreturn = len(temp_list)
-#No need for that anymore, the recursive call is now in get_tasks()
-#Kevin, you can delete that after reading it, it's for your information
-#        if children:
-#            for i in self.get_children_objs():
-#                toreturn += i.get_tasks_nbr(workview=workview, children=True)
         return toreturn
     def is_used(self):
         return len(self.tasks) > 0
