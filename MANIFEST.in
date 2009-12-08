@@ -11,4 +11,5 @@ recursive-include data/icons *.svg
 include doc/gtg.1
 recursive-include GTG/plugins
 recursive-include GTG/plugins/rtm_sync/pyrtm *.py
+recursive-include GTG/plugins/export/export_templates/
 recursive-include locales *.po
