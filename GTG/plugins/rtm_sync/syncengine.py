@@ -87,19 +87,17 @@ class SyncEngine (object):
         return gtg_to_rtm_id_mapping
 
     def synchronize(self):
-        if self.logger:
-            #I want it to crash ungracefully if using the debug mode,
-            # so to see the "coredump" ~~~~Invernizzi
+        try:
             self.synchronizeWorker()
-        else:
-            try:
-                self.synchronizeWorker()
-            except rtm.RTMAPIError as exception:
-                self.close_gui(exception)
-            except rtm.RTMError as exception:
-                self.close_gui(exception)
-            except Exception as exception:
-                self.close_gui(_("Synchronization failed."))
+        except rtm.RTMAPIError as exception:
+            self.__log(str(exception))
+            self.close_gui(str(exception))
+        except rtm.RTMError as exception:
+            self.__log(str(exception))
+            self.close_gui(str(exception))
+        except Exception as exception:
+            self.__log(str(exception))
+            self.close_gui(_("Synchronization failed."))
 
     def synchronizeWorker(self):
         self.update_status(_("Downloading task list..."))
