@@ -11,6 +11,7 @@ __all__ = (
 #import new
 import warnings
 import urllib
+import time
 #import logging
 from hashlib import md5
 from GTG import _
@@ -94,7 +95,7 @@ class RTM(object):
         json = openURL(SERVICE_URL, params).read()
 
         #LOG.debug("JSON response: \n%s" % json)
-
+        time.sleep(1)
         if _use_simplejson:
             data = dottedDict('ROOT', simplejson.loads(json))
         else:
