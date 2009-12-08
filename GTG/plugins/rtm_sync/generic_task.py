@@ -242,7 +242,7 @@ class GtgTask(GenericTask):
             except:
                 if self.logger:
                     self.logger.debug("remove tag from GTG failed!!!")
-        map(lambda tag: self.task.add_tag('@'+tag), tags)
+        map(lambda tag: self.task.insert_tag('@'+tag), tags)
 
     def _get_text(self):
         return self.task.get_text()
