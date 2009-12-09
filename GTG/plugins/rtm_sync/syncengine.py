@@ -92,10 +92,10 @@ class SyncEngine (object):
         except rtm.RTMAPIErron, exception:
             self.__log(str(exception))
             self.close_gui(str(exception))
-        except rtm.RTMError as exception:
+        except rtm.RTMError, exception:
             self.__log(str(exception))
             self.close_gui(str(exception))
-        except Exception as exception:
+        except Exception, exception:
             self.__log(str(exception))
             self.close_gui(_("Synchronization failed."))
 
