@@ -1197,10 +1197,12 @@ class TaskBrowser:
             regexp = r'([\s]*)([\w-]+):([^\s]+)'
             for spaces, attribute, args in re.findall(regexp, text):
                 valid_attribute = True
-                if attribute.lower() == "tags" or \
-                   attribute.lower() == _("tags"):
+                if attribute.lower() in ["tags", "tag"] or \
+                   attribute.lower() in [_("tags"), _("tag")]:
                     for tag in args.split(","):
-                        tags.append(GTG.core.tagstore.Tag("@"+tag))
+                        if not tag.startswith("@") :
+                            tag = "@"+tag
+                        tags.append(GTG.core.tagstore.Tag(tag))
                 elif attribute.lower() == "defer" or \
                      attribute.lower() == _("defer"):
                     defer_date = self.get_canonical_date(args)
