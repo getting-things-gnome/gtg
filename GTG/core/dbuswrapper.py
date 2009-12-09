@@ -3,6 +3,7 @@ import dbus.glib
 import dbus.service
 
 from GTG.core import CoreConfig
+from GTG.tools import dates
 
 BUSNAME = CoreConfig.BUSNAME
 BUSFACE = CoreConfig.BUSINTERFACE
@@ -105,10 +106,10 @@ class DBusTaskWrapper(dbus.service.Object):
         nt = self.req.new_task()
         for sub in subtasks: nt.add_subtask(sub)
         for tag in tags: nt.add_tag(tag)
-        nt.set_status(status, donedate=donedate)
+        nt.set_status(status, donedate=dates.strtodate(donedate))
         nt.set_title(title)
-        nt.set_due_date(duedate)
-        nt.set_start_date(startdate)
+        nt.set_due_date(dates.strtodate(duedate))
+        nt.set_start_date(dates.strtodate(startdate))
         nt.set_text(text)
         return task_to_dict(nt)
 
