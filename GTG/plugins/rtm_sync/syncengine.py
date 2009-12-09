@@ -89,7 +89,7 @@ class SyncEngine (object):
     def synchronize(self):
         try:
             self.synchronizeWorker()
-        except rtm.RTMAPIErron, exception:
+        except rtm.RTMAPIError, exception:
             self.__log(str(exception))
             self.close_gui(str(exception))
         except rtm.RTMError, exception:
