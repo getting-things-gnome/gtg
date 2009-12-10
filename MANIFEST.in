@@ -1,6 +1,8 @@
 recursive-include GTG *.glade
 recursive-include GTG *.ui
 recursive-include GTG *.gtg-plugin
+recursive-include GTG *.png
+recursive-include GTG *.svg
 include gtg.desktop
 include CHANGELOG
 include README
@@ -11,5 +13,5 @@ recursive-include data/icons *.svg
 include doc/*.1
 recursive-include GTG/plugins
 recursive-include GTG/plugins/rtm_sync/pyrtm *.py
-recursive-include GTG/plugins/export/export_templates/*.*
+recursive-include GTG/plugins/export *
 recursive-include locales *.po
