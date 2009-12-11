@@ -31,6 +31,11 @@ class ServersStore:
         server.tag = SERVER_TAG_COMPONENT
         self.add(server)
 
+        # Mozilla
+        server = Server('bugzilla.mozilla.org')
+        server.tag = SERVER_TAG_COMPONENT
+        self.add(server)
+
     def add(self, server):
         self.servers[server.name] = server
 

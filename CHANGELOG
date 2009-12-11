@@ -1,3 +1,6 @@
+2009-12-11 Getting THings GNOME! 0.2
+    * Bugs fixes from 0.1.9
+
 2009-12-02 Getting Things GNOME! 0.1.9
     * Support non-exact ("fuzzy") due dates: 'now', 'soon', and 'later' by Kevin Mehall
     * Fixes a bug with gtk stock strings being marked as translatable, by Henning Eggers (#490231)
