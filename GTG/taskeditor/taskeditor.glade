@@ -306,7 +306,6 @@
           <object class="GtkCalendar" id="calendar1">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <signal name="day_selected_double_click" handler="on_dayselected_double"/>
           </object>
           <packing>
             <property name="position">0</property>
