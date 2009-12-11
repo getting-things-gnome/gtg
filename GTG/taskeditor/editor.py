@@ -91,7 +91,7 @@ class TaskEditor :
                 "on_set_fuzzydate_now"  : self.set_fuzzydate_now,
                 "on_set_fuzzydate_soon" : self.set_fuzzydate_soon,
                 "on_set_fuzzydate_later": self.set_fuzzydate_later,
-                "on_dayselected_double" : self.day_selected_double,
+                #"on_dayselected_double" : self.day_selected_double,
         }
         self.builder.connect_signals(dic)
         self.window         = self.builder.get_object("TaskEditor")
@@ -415,6 +415,8 @@ class TaskEditor :
         self.sigid = self.cal_widget.connect("day-selected",self.day_selected)
         self.sigid_month = self.cal_widget.connect("month-changed",self.month_changed)
         
+
+        
     def day_selected(self,widget) :
         y,m,d = widget.get_date()
         if self.__opened_date == "due" :
@@ -422,10 +424,16 @@ class TaskEditor :
         elif self.__opened_date == "start" :
             self.task.set_start_date(dates.strtodate("%s-%s-%s"%(y,m+1,d)))
         if self.close_when_changed :
-            self.__close_calendar()
+            self.mouse_sigid = self.cal_widget.connect('event',self.__mouse_release)
+            #self.__close_calendar()
         else :
             self.close_when_changed = True
         self.refresh_editor()
+        
+    def __mouse_release(self,widget,event):
+        if event.type == gtk.gdk.BUTTON_RELEASE:
+            self.__close_calendar()
+            self.cal_widget.disconnect(self.mouse_sigid)
         
     def month_changed(self,widget) :
         #This is a ugly hack to close the calendar on the first click
@@ -606,7 +614,6 @@ class TaskEditor :
         if self.sigid_month :
             self.cal_widget.disconnect(self.sigid_month)
             self.sigid_month = None
-        
 
     
 
