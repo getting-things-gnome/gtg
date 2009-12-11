@@ -405,10 +405,12 @@ class TaskEditor :
 
             y = toset.year()
             m = toset.month()
-            d = toset.day()
+            d = int(toset.day())
             
+            #We have to select the day first. If not, we might ask for
+            #February while still being on 31 -> error !
+            self.cal_widget.select_day(d)
             self.cal_widget.select_month(int(m)-1,int(y))
-            self.cal_widget.select_day(int(d))
             
         self.calendar.connect('button-press-event', self.__focus_out)
         self.sigid = self.cal_widget.connect("day-selected",self.day_selected)
