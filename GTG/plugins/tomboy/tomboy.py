@@ -113,6 +113,8 @@ Please install it or disable the Tomboy plugin in GTG"))
 
     # adds a item(button) to the ToolBar, with a nice icon
     def addButtonToToolbar(self, plugin_api):
+        if not self.checkTomboyPresent():
+            return
         tb_Taskbutton_image = gtk.Image()
         tb_Taskbutton_image_path = self.tomboy_icon_path
         tb_Taskbutton_pixbuf=gtk.gdk.\
@@ -158,9 +160,8 @@ Please install it or disable the Tomboy plugin in GTG"))
             token_ending = text.find(self.token_end)
 
     def onTaskOpened(self, plugin_api):
-        self.activated = True
         if not self.checkTomboyPresent():
-            return False
+            return
         #NOTE: get_textview() only works in this function
         # (see GTG/core/plugins/api.py docs)
         self.textview = plugin_api.get_textview()
