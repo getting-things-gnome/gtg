@@ -45,7 +45,10 @@ DIST_ROOTDIR = "/usr/share/gtg"
 GETTEXT_DOMAIN = 'gtg'
 LOCALE_PATH = abspath(join(dirname(__file__), pardir, 'locales'))
 if not os.path.isdir(LOCALE_PATH):
-    LOCALE_PATH = '/usr/share/locale'
+    if os.path.isdir('/usr/local/share/locale') and os.uname()[0] != 'Linux':
+        LOCALE_PATH = '/usr/local/share/locale'
+    else:
+        LOCALE_PATH = '/usr/share/locale'
 languages_used = []
 lc, encoding = locale.getdefaultlocale()
 if lc:
