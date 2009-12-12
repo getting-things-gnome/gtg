@@ -1,23 +1,36 @@
-This package was debianized by Lionel Dricot <ploum@ploum.net> on
-Sun, 01 Mar 2009 17:15:58 +0100.
+This package was debianized by:
 
-It was downloaded from <url://example.com>
+    Luca Falavigna <dktrkranz@ubuntu.com> on Fri, 03 Apr 2009 21:48:06 +0200
 
-Upstream Author(s):
+It was downloaded from:
 
-    <put author's name and email here>
-    <likewise for another author>
+    https://launchpad.net/gtg/+download
+
+Upstream Authors:
+
+    Lionel Dricot <ploum@ploum.net>
+    Bertrand Rousseau <bertrand.rousseau@gmail.com>
+    Paulo Cabido <paulo.cabido@gmail.com>
+    Kevin Mehall <km@kevinmehall.net>
+    Luca Invernizzi <invernizzi.l@gmail.com>
+    Luca Falavigna <dktrkranz@debian.org>
 
 Copyright:
 
-    <Copyright (C) YYYY Name OfAuthor>
-    <likewise for another author>
+    Copyright © 2008-2009 Lionel Dricot, Bertrand Rousseau
+    Copyright © 2009 Paulo Cabido <paulo.cabido@gmail.com>
+    Copyright © 2009 Guillaume Desmottes <gdesmott@gnome.org>
+    Copyright © 2009 Luca Invernizzi <invernizzi.l@gmail.com>
+    Copyright © 2009 Kevin Mehall <km@kevinmehall.net>
+    Copyright © 2008 Sridhar Ratnakumar <http://nearfar.org/>
+    Copyright © 2009 Luca Falavigna <dktrkranz@debian.org>
+    Copyright © 2009 Rosetta Contributors and Canonical Ltd 2009
 
 License:
 
-    This package is free software; you can redistribute it and/or modify
+    This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
+    the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
     This package is distributed in the hope that it will be useful,
@@ -26,15 +39,13 @@ License:
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with this package; if not, write to the Free Software
-    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 On Debian systems, the complete text of the GNU General
-Public License can be found in `/usr/share/common-licenses/GPL'.
+Public License version 3 can be found in `/usr/share/common-licenses/GPL-3'.
 
-The Debian packaging is (C) 2009, Lionel Dricot <ploum@ploum.net> and
-is licensed under the GPL, see above.
+The Debian packaging is:
 
+    Copyright © 2009 Luca Falavigna <dktrkranz@debian.org>
 
-# Please also look if there are files or directories which have a
-# different copyright/license attached and list them here.
+and is licensed under the GPL version 3, see above.

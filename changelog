@@ -1,19 +1,34 @@
-gtg (0.1~jaunty2) jaunty; urgency=low
+gtg (0.2-1~karmic1) karmic; urgency=low
 
-  * Bad python dependancy in the package
+  * New upstream release.
+    - xdg module is no longer required at build time (Closes: #560566).
+  * Remove unneeded build-dependencies.
+  * Add python-dbus to Depends.
+  * Bump dependency on python-gtk2 to be at least 2.14 (Closes: #559498).
 
- -- Lionel Dricot <ploum@ploum.net>  Sat, 07 Mar 2009 01:09:43 +0100
+ -- Luca Falavigna <dktrkranz@debian.org>  Sat, 12 Dec 2009 16:04:44 +0100
 
-gtg (0.1~jaunty1) jaunty; urgency=low
+gtg (0.1.9-1) unstable; urgency=low
 
-  * 0.1 release
-  * Jaunty package now in /usr (not /usr/local)
+  * New upstream beta release.
+    - Update translation templates (Closes: #542939).
+    - Make some GTK icons translatable (LP: #398904).
+    - Fix grammar error (LP: #403168).
+  * Update my e-mail address.
+  * Bump Standards-Version to 3.8.3, no changes required.
 
- -- Lionel Dricot <ploum@ploum.net>  Mon, 02 Mar 2009 22:50:58 +0100
+ -- Luca Falavigna <dktrkranz@debian.org>  Wed, 02 Dec 2009 23:52:41 +0100
 
- gtg (0.0.9rc3-1~jaunty1) jaunty; urgency=low
+gtg (0.1.2-1) unstable; urgency=low
 
-  * Initial Jaunty release
+  * New upstream release.
+  * Install binary and module in a private directory.
+  * Bump Standards-Version to 3.8.2, no changes required.
 
- -- Lionel Dricot <ploum@ploum.net>  Mon, 02 Mar 2009 22:50:58 +0100
+ -- Luca Falavigna <dktrkranz@ubuntu.com>  Thu, 09 Jul 2009 00:20:03 +0200
 
+gtg (0.1.1-1) unstable; urgency=low
+
+  * Initial release (Closes: #520609).
+
+ -- Luca Falavigna <dktrkranz@ubuntu.com>  Fri, 03 Apr 2009 21:48:06 +0200

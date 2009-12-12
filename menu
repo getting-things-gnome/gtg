@@ -1,2 +1,3 @@
-?package(gtg):needs="X11" section="Applications/utilities"\
-  title="gtg" command="/usr/bin/gtg"
+?package(gtg):needs="X11" section="Applications/Project Management"\
+  title="Getting Things GNOME!" command="/usr/bin/gtg"\
+  icon="/usr/share/pixmaps/gtg.xpm"
