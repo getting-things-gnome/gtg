@@ -8,11 +8,9 @@ __all__ = (
         )
 
 
-#import new
 import warnings
 import urllib
 import time
-#import logging
 from hashlib import md5
 from GTG import _
 
@@ -103,8 +101,7 @@ class RTM(object):
         rsp = data.rsp
 
         if rsp.stat == 'fail':
-            error_string = _("API call failed")+ " - %s (%s)"
-            raise RTMAPIError, error_string % (
+            raise RTMAPIError, 'API call failed - %s (%s)' % (
                 rsp.err.msg, rsp.err.code)
         else:
             return rsp
@@ -199,6 +196,8 @@ class dottedDict(object):
                     value = [dottedDict('%s_%d' % (key, i), item)
                              for i, item in indexed(value)]
                 setattr(self, key, value)
+        else:
+            raise ValueError, 'not a dict: %s' % dictionary
 
     def __repr__(self):
         children = [c for c in dir(self) if not c.startswith('_')]
@@ -225,11 +224,11 @@ def indexed(seq):
 API = {
    'auth': {
        'checkToken':
-           [('auth_token'), ()],
+           [('auth_token',), ()],
        'getFrob':
            [(), ()],
        'getToken':
-           [('frob'), ()]
+           [('frob',), ()]
        },
     'contacts': {
         'add':
@@ -253,19 +252,19 @@ API = {
         },
     'lists': {
         'add':
-            [('timeline', 'name',), ('filter')],
+            [('timeline', 'name',), ('filter',)],
         'archive':
-            [('timeline', 'list_id'),()],
+            [('timeline', 'list_id'), ()],
         'delete':
-            [('timeline', 'list_id'),()],
+            [('timeline', 'list_id'), ()],
         'getList':
-            [(),()],
+            [(), ()],
         'setDefaultList':
             [('timeline'), ('list_id')],
         'setName':
-            [('timeline', 'list_id', 'name')],
+            [('timeline', 'list_id', 'name'), ()],
         'unarchive':
-            [('timeline'), ('list_id')]
+            [('timeline',), ('list_id',)]
         },
     'locations': {
         'getList':
