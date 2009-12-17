@@ -1379,8 +1379,11 @@ class TaskBrowser:
             return False
 
     def on_mark_as_done(self, widget):
-        uid = self.get_selected_task()
-        if uid:
+        needs_refreshing = False
+        for uid in self.get_selected_tasks():
+            if not uid:
+                continue
+            needs_refreshing = True
             zetask = self.req.get_task(uid)
             status = zetask.get_status()
             if status == Task.STA_DONE:
@@ -1388,21 +1391,24 @@ class TaskBrowser:
             else:
                 zetask.set_status(Task.STA_DONE)
                 gobject.idle_add(self.ctask_tv.scroll_to_task, zetask.get_id())
-            if self.refresh_lock.acquire(False):
-                gobject.idle_add(self.general_refresh)
+        if needs_refreshing == True and self.refresh_lock.acquire(False):
+            gobject.idle_add(self.general_refresh)
 
     def on_dismiss_task(self, widget):
-        uid = self.get_selected_task()
-        if uid:
+        needs_refreshing = False
+        for uid in self.get_selected_tasks():
+            if not uid:
+                continue
+            needs_refreshing = True
             zetask = self.req.get_task(uid)
             status = zetask.get_status()
-            if status == "Dismiss":
-                zetask.set_status("Active")
+            if status == Task.STA_DISMISSED:
+                zetask.set_status(Task.STA_ACTIVE)
             else:
-                zetask.set_status("Dismiss")
+                zetask.set_status(Task.STA_DISMISSED)
                 gobject.idle_add(self.ctask_tv.scroll_to_task, zetask.get_id())
-            if self.refresh_lock.acquire(False):
-                gobject.idle_add(self.general_refresh)
+        if needs_refreshing == True and self.refresh_lock.acquire(False):
+            gobject.idle_add(self.general_refresh)
     
     def on_select_tag(self, widget, row=None, col=None):
         #When you clic on a tag, you want to unselect the tasks
@@ -1536,14 +1542,42 @@ class TaskBrowser:
         self.refresh_lock.release()
 
 ### PUBLIC METHODS ############################################################
-#
+
     def get_selected_task(self, tv=None):
-        """Return the 'uid' of the selected task
+        """Returns the'uid' of the selected task, if any.
+           If multiple tasks are selected, returns only the first and 
+           takes care of selecting only that (unselecting the others)
 
         :param tv: The tree view to find the selected task in. Defaults to
             the task_tview.
         """
-        uid = None
+        if not tv:
+            tview = self.task_tv
+        else:
+            tview = tv
+        selection = tview.get_selection()
+        if selection and selection.count_selected_rows() >0:
+            model, paths = selection.get_selected_rows()
+            if len(paths) >0 :
+                selection.unselect_all()
+                selection.select_path(paths[0])
+        elif selection and selection.count_selected_rows() <= 0 and not tv:
+            tview = self.ctask_tv
+            selection = tview.get_selection()
+            model, paths = selection.get_selected_rows()
+            if len(paths) >0 :
+                selection.unselect_all()
+                selection.select_path(paths[0])
+        return self.get_selected_tasks(tv)[0]
+
+
+    def get_selected_tasks(self, tv=None):
+        """Returns a list of 'uids' of the selected tasks, and the corresponding
+           iters
+
+        :param tv: The tree view to find the selected task in. Defaults to
+            the task_tview.
+        """
         if not tv:
             tview = self.task_tv
         else:
@@ -1560,12 +1594,13 @@ class TaskBrowser:
 #            tview = self.note_tview
 #            selection = tview.get_selection()
         # Get the selection iter
-        if selection:
-            model, selection_iter = selection.get_selected()
-            if selection_iter:
-                ts  = tview.get_model()
-                uid = ts.get_value(selection_iter, tasktree.COL_TID)
-        return uid
+        if selection.count_selected_rows() <= 0:
+            return [None]
+        model, paths = selection.get_selected_rows()
+        iters = [model.get_iter(path) for path in paths]
+        ids = map (lambda i: i and model.get_value(i, tasktree.COL_TID)\
+                             or None, iters)
+        return ids
 
     def get_selected_tags(self):
         t_selected = self.tags_tv.get_selection()
