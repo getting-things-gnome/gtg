@@ -315,7 +315,6 @@ class TaskTreeView(gtk.TreeView):
         gtk.TreeView.__init__(self)
         self.columns = []
         self.bg_color_enable = True
-        self.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
         self.show()
         
     def set_bg_color(self, val):
@@ -356,6 +355,7 @@ class ActiveTaskTreeView(TaskTreeView):
     def __init__(self):
         TaskTreeView.__init__(self)
         self._init_tree_view()
+        self.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
 
         # Drag and drop
         self.enable_model_drag_source(\

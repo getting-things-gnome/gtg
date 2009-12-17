@@ -124,7 +124,7 @@ class TaskBrowser:
         # Initialize "About" dialog
         self._init_about_dialog()
 
-        #Create our dictionay and connect it
+        #Create our dictionary and connect it
         self._init_signal_connections()
 
         # Setting the default for the view
@@ -1548,6 +1548,12 @@ class TaskBrowser:
         self._update_window_title()
         self.refresh_lock.release()
 
+    def connect_changed_signals(self): 
+        selection = self.task_tv.get_selection()
+        closed_selection = self.ctask_tv.get_selection()
+        selection.connect("changed", self.on_task_cursor_changed)
+        closed_selection.connect("changed", self.on_taskdone_cursor_changed)
+
 ### PUBLIC METHODS ############################################################
 #
     def get_selected_task(self, tv=None):
@@ -1604,11 +1610,12 @@ class TaskBrowser:
 #            selection = tview.get_selection()
         # Get the selection iter
         if selection.count_selected_rows() <= 0:
-            return [None]
-        model, paths = selection.get_selected_rows()
-        iters = filter(lambda i: i != None,\
-                       [model.get_iter(path) for path in paths])
-        ids = map(lambda i: model.get_value(i, tasktree.COL_TID), iters)
+            ids = [None]
+        else:
+            model, paths = selection.get_selected_rows()
+            iters = [model.get_iter(path) for path in paths]
+            ts  = tview.get_model()
+            ids = [ts.get_value(iter, tasktree.COL_TID) for iter in iters]
         return ids
 
     def get_selected_tags(self):
@@ -1651,11 +1658,8 @@ class TaskBrowser:
         gobject.threads_init()
 
         # Watch for selections in the treeview
-        selection = self.task_tv.get_selection()
-        closed_selection = self.ctask_tv.get_selection()
+        self.connect_changed_signals()
         #note_selection = self.note_tview.get_selection()
-        selection.connect("changed", self.on_task_cursor_changed)
-        closed_selection.connect("changed", self.on_taskdone_cursor_changed)
         #note_selection.connect("changed", self.on_note_cursor_changed)
 
         # Restore state from config
