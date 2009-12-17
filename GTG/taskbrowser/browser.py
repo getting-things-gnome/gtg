@@ -93,7 +93,7 @@ class TaskBrowser:
 
         ### YOU CAN DEFINE YOUR INTERNAL MECHANICS VARIABLES BELOW
         # Task deletion
-        self.tid_todelete = None # The tid that will be deleted
+        self.tids_todelete = None # The tid that will be deleted
         # Editors
         self.opened_task  = {}   # This is the list of tasks that are already
                                  # opened in an editor of course it's empty
@@ -1348,10 +1348,11 @@ class TaskBrowser:
     def on_delete_confirm(self, widget):
         """if we pass a tid as a parameter, we delete directly
         otherwise, we will look which tid is selected"""
-        self.req.delete_task(self.tid_todelete)
-        if self.tid_todelete in self.opened_task:
-            self.opened_task[self.tid_todelete].close()
-        self.tid_todelete = None
+        for tid in self.tids_todelete:
+            self.req.delete_task(tid)
+            if tid in self.opened_task:
+                self.opened_task[tid].close()
+        self.tids_todelete = None
         if self.refresh_lock.acquire(False):
             gobject.idle_add(self.general_refresh)
 
@@ -1359,55 +1360,61 @@ class TaskBrowser:
         #If we don't have a parameter, then take the selection in the treeview
         if not tid:
             #tid_to_delete is a [project,task] tuple
-            self.tid_todelete = self.get_selected_task()
+            self.tids_todelete = self.get_selected_tasks()
         else:
-            self.tid_todelete = tid
+            self.tids_todelete = [tid]
         #We must at least have something to delete !
-        if self.tid_todelete:
+        if len(self.tids_todelete) > 0:
             label = self.builder.get_object("label1") 
             label_text = label.get_text()
             label_text = label_text[0:label_text.find(":") + 1]
             # I find the tasks that are going to be deleted
-            titles = self.get_task_and_subtask_titles(self.tid_todelete)
-            label.set_text("%s %s." % (label_text, titles))
+            titles_list = [self.req.get_task(tid).get_title() \
+                              for tid in self.tids_todelete]
+            titles = reduce (lambda x, y: x + "\n - " + y, titles_list)
+            label.set_text("%s %s" % (label_text, titles))
             delete_dialog = self.builder.get_object("confirm_delete")
             delete_dialog.run()
             delete_dialog.hide()
             #has the task been deleted ?
-            return not self.tid_todelete
+            return not self.tids_todelete
         else:
             return False
 
     def on_mark_as_done(self, widget):
-        needs_refreshing = False
-        for uid in self.get_selected_tasks():
-            if not uid:
-                continue
-            needs_refreshing = True
-            zetask = self.req.get_task(uid)
-            status = zetask.get_status()
+        task_to_scroll_to = None
+        tasks_uid = filter(lambda uid: uid != None, self.get_selected_tasks())
+        if len(tasks_uid) == 0:
+            return
+        tasks = [self.req.get_task(uid) for uid in tasks_uid]
+        tasks_status = [task.get_status() for task in tasks]
+        for uid, task, status in zip(tasks_uid, tasks, tasks_status):
             if status == Task.STA_DONE:
-                zetask.set_status(Task.STA_ACTIVE)
+                task.set_status(Task.STA_ACTIVE)
             else:
-                zetask.set_status(Task.STA_DONE)
-                gobject.idle_add(self.ctask_tv.scroll_to_task, zetask.get_id())
-        if needs_refreshing == True and self.refresh_lock.acquire(False):
+                task.set_status(Task.STA_DONE)
+                task_to_scroll_to = uid
+        if task_to_scroll_to != None:
+            gobject.idle_add(self.ctask_tv.scroll_to_task, task_to_scroll_to)
+        if self.refresh_lock.acquire(False):
             gobject.idle_add(self.general_refresh)
 
     def on_dismiss_task(self, widget):
-        needs_refreshing = False
-        for uid in self.get_selected_tasks():
-            if not uid:
-                continue
-            needs_refreshing = True
-            zetask = self.req.get_task(uid)
-            status = zetask.get_status()
+        task_to_scroll_to = None
+        tasks_uid = filter(lambda uid: uid != None, self.get_selected_tasks())
+        if len(tasks_uid) == 0:
+            return
+        tasks = [self.req.get_task(uid) for uid in tasks_uid]
+        tasks_status = [task.get_status() for task in tasks]
+        for uid, task, status in zip(tasks_uid, tasks, tasks_status):
             if status == Task.STA_DISMISSED:
-                zetask.set_status(Task.STA_ACTIVE)
+                task.set_status(Task.STA_ACTIVE)
             else:
-                zetask.set_status(Task.STA_DISMISSED)
-                gobject.idle_add(self.ctask_tv.scroll_to_task, zetask.get_id())
-        if needs_refreshing == True and self.refresh_lock.acquire(False):
+                task.set_status(Task.STA_DISMISSED)
+                task_to_scroll_to = uid
+        if task_to_scroll_to != None:
+            gobject.idle_add(self.ctask_tv.scroll_to_task, task_to_scroll_to)
+        if self.refresh_lock.acquire(False):
             gobject.idle_add(self.general_refresh)
     
     def on_select_tag(self, widget, row=None, col=None):
