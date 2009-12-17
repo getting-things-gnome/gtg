@@ -1560,23 +1560,25 @@ class TaskBrowser:
         """
         if not tv:
             tview = self.task_tv
-        else:
-            tview = tv
-        selection = tview.get_selection()
-        if selection and selection.count_selected_rows() >0:
-            model, paths = selection.get_selected_rows()
-            if len(paths) >0 :
-                selection.unselect_all()
-                selection.select_path(paths[0])
-        elif selection and selection.count_selected_rows() <= 0 and not tv:
-            tview = self.ctask_tv
             selection = tview.get_selection()
-            model, paths = selection.get_selected_rows()
-            if len(paths) >0 :
-                selection.unselect_all()
-                selection.select_path(paths[0])
-        return self.get_selected_tasks(tv)[0]
+            #If we don't have anything and no tview specified
+            #Let's have a look in the closed task view
+            if selection and selection.count_selected_rows() <= 0 and not tv:
+                tview = self.ctask_tv
+                selection = tview.get_selection()
+            if selection.count_selected_rows() <= 0:
+                return None
+            else:
+                model, paths = selection.get_selected_rows()
+                if len(paths) >0 :
+                    selection.unselect_all()
+                    selection.select_path(paths[0])
 
+        ids = self.get_selected_tasks(tv)
+        if ids != None:
+            return ids[0]
+        else:
+            return None
 
     def get_selected_tasks(self, tv=None):
         """Returns a list of 'uids' of the selected tasks, and the corresponding
@@ -1604,9 +1606,9 @@ class TaskBrowser:
         if selection.count_selected_rows() <= 0:
             return [None]
         model, paths = selection.get_selected_rows()
-        iters = [model.get_iter(path) for path in paths]
-        ids = map (lambda i: i and model.get_value(i, tasktree.COL_TID)\
-                             or None, iters)
+        iters = filter(lambda i: i != None,\
+                       [model.get_iter(path) for path in paths])
+        ids = map(lambda i: model.get_value(i, tasktree.COL_TID), iters)
         return ids
 
     def get_selected_tags(self):
