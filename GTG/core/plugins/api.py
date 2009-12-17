@@ -308,10 +308,11 @@ class PluginAPI:
         if self.is_editor():
             return self.task
         elif self.is_browser():
-            selected = self.taskview.get_selection()
-            model, iter = selected.get_selected()
-            if iter:
-                return self.__requester.get_task(model.get_value(iter, 0))
+            selection = self.taskview.get_selection()
+            model, paths = selection.get_selected_rows()
+            iters = [model.get_iter(path) for path in paths]
+            if iters[0]:
+                return self.__requester.get_task(model.get_value(iters[0], 0))
             else:
                 return None
         else:
