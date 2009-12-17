@@ -640,7 +640,7 @@
             <child>
               <object class="GtkLabel" id="label1">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">&lt;span weight="bold" size="large"&gt;Are you sure you want delete this task?&lt;/span&gt;
+                <property name="label" translatable="yes">&lt;span weight="bold" size="large"&gt;Are you sure you want delete these tasks?&lt;/span&gt;
 
 Deleting a task cannot be undone, and will delete the following tasks: </property>
                 <property name="use_markup">True</property>
@@ -683,7 +683,7 @@ Deleting a task cannot be undone, and will delete the following tasks: </propert
                       <object class="GtkLabel" id="label2">
                         <property name="visible">True</property>
                         <property name="xalign">0</property>
-                        <property name="label" translatable="yes">_Keep selected task</property>
+                        <property name="label" translatable="yes">_Keep selected tasks</property>
                         <property name="use_underline">True</property>
                       </object>
                       <packing>
@@ -721,7 +721,7 @@ Deleting a task cannot be undone, and will delete the following tasks: </propert
                     <child>
                       <object class="GtkLabel" id="label3">
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">Permanently _remove task</property>
+                        <property name="label" translatable="yes">Permanently _remove tasks</property>
                         <property name="use_underline">True</property>
                       </object>
                       <packing>
