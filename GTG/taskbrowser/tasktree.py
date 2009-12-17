@@ -124,7 +124,9 @@ class TaskTreeModel(gtk.GenericTreeModel):
         elif column == COL_DLEFT:
             return task.get_days_left()
         elif column == COL_TAGS:
-            return task.get_tags()
+            tags = task.get_tags()
+            tags.sort(key = lambda x: x.get_name())
+            return tags
         elif column == COL_LABEL:
             if task.get_status() == Task.STA_ACTIVE:
                 count = self._count_active_subtasks_rec(task)
