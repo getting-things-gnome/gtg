@@ -93,7 +93,7 @@ class TaskBrowser:
 
         ### YOU CAN DEFINE YOUR INTERNAL MECHANICS VARIABLES BELOW
         # Task deletion
-        self.tid_todelete = None # The tid that will be deleted
+        self.tids_todelete = None # The tid that will be deleted
         # Editors
         self.opened_task  = {}   # This is the list of tasks that are already
                                  # opened in an editor of course it's empty
@@ -124,7 +124,7 @@ class TaskBrowser:
         # Initialize "About" dialog
         self._init_about_dialog()
 
-        #Create our dictionay and connect it
+        #Create our dictionary and connect it
         self._init_signal_connections()
 
         # Setting the default for the view
@@ -1348,10 +1348,11 @@ class TaskBrowser:
     def on_delete_confirm(self, widget):
         """if we pass a tid as a parameter, we delete directly
         otherwise, we will look which tid is selected"""
-        self.req.delete_task(self.tid_todelete)
-        if self.tid_todelete in self.opened_task:
-            self.opened_task[self.tid_todelete].close()
-        self.tid_todelete = None
+        for tid in self.tids_todelete:
+            self.req.delete_task(tid)
+            if tid in self.opened_task:
+                self.opened_task[tid].close()
+        self.tids_todelete = None
         if self.refresh_lock.acquire(False):
             gobject.idle_add(self.general_refresh)
 
@@ -1359,50 +1360,62 @@ class TaskBrowser:
         #If we don't have a parameter, then take the selection in the treeview
         if not tid:
             #tid_to_delete is a [project,task] tuple
-            self.tid_todelete = self.get_selected_task()
+            self.tids_todelete = self.get_selected_tasks()
         else:
-            self.tid_todelete = tid
+            self.tids_todelete = [tid]
         #We must at least have something to delete !
-        if self.tid_todelete:
+        if len(self.tids_todelete) > 0:
             label = self.builder.get_object("label1") 
             label_text = label.get_text()
             label_text = label_text[0:label_text.find(":") + 1]
             # I find the tasks that are going to be deleted
-            titles = self.get_task_and_subtask_titles(self.tid_todelete)
-            label.set_text("%s %s." % (label_text, titles))
+            titles_list = [self.req.get_task(tid).get_title() \
+                              for tid in self.tids_todelete]
+            titles = reduce (lambda x, y: x + "\n - " + y, titles_list)
+            label.set_text("%s %s" % (label_text, titles))
             delete_dialog = self.builder.get_object("confirm_delete")
             delete_dialog.run()
             delete_dialog.hide()
             #has the task been deleted ?
-            return not self.tid_todelete
+            return not self.tids_todelete
         else:
             return False
 
     def on_mark_as_done(self, widget):
-        uid = self.get_selected_task()
-        if uid:
-            zetask = self.req.get_task(uid)
-            status = zetask.get_status()
+        task_to_scroll_to = None
+        tasks_uid = filter(lambda uid: uid != None, self.get_selected_tasks())
+        if len(tasks_uid) == 0:
+            return
+        tasks = [self.req.get_task(uid) for uid in tasks_uid]
+        tasks_status = [task.get_status() for task in tasks]
+        for uid, task, status in zip(tasks_uid, tasks, tasks_status):
             if status == Task.STA_DONE:
-                zetask.set_status(Task.STA_ACTIVE)
+                task.set_status(Task.STA_ACTIVE)
             else:
-                zetask.set_status(Task.STA_DONE)
-                gobject.idle_add(self.ctask_tv.scroll_to_task, zetask.get_id())
-            if self.refresh_lock.acquire(False):
-                gobject.idle_add(self.general_refresh)
+                task.set_status(Task.STA_DONE)
+                task_to_scroll_to = uid
+        if task_to_scroll_to != None:
+            gobject.idle_add(self.ctask_tv.scroll_to_task, task_to_scroll_to)
+        if self.refresh_lock.acquire(False):
+            gobject.idle_add(self.general_refresh)
 
     def on_dismiss_task(self, widget):
-        uid = self.get_selected_task()
-        if uid:
-            zetask = self.req.get_task(uid)
-            status = zetask.get_status()
-            if status == "Dismiss":
-                zetask.set_status("Active")
+        task_to_scroll_to = None
+        tasks_uid = filter(lambda uid: uid != None, self.get_selected_tasks())
+        if len(tasks_uid) == 0:
+            return
+        tasks = [self.req.get_task(uid) for uid in tasks_uid]
+        tasks_status = [task.get_status() for task in tasks]
+        for uid, task, status in zip(tasks_uid, tasks, tasks_status):
+            if status == Task.STA_DISMISSED:
+                task.set_status(Task.STA_ACTIVE)
             else:
-                zetask.set_status("Dismiss")
-                gobject.idle_add(self.ctask_tv.scroll_to_task, zetask.get_id())
-            if self.refresh_lock.acquire(False):
-                gobject.idle_add(self.general_refresh)
+                task.set_status(Task.STA_DISMISSED)
+                task_to_scroll_to = uid
+        if task_to_scroll_to != None:
+            gobject.idle_add(self.ctask_tv.scroll_to_task, task_to_scroll_to)
+        if self.refresh_lock.acquire(False):
+            gobject.idle_add(self.general_refresh)
     
     def on_select_tag(self, widget, row=None, col=None):
         #When you clic on a tag, you want to unselect the tasks
@@ -1535,15 +1548,51 @@ class TaskBrowser:
         self._update_window_title()
         self.refresh_lock.release()
 
+    def connect_changed_signals(self): 
+        selection = self.task_tv.get_selection()
+        closed_selection = self.ctask_tv.get_selection()
+        selection.connect("changed", self.on_task_cursor_changed)
+        closed_selection.connect("changed", self.on_taskdone_cursor_changed)
+
 ### PUBLIC METHODS ############################################################
 #
     def get_selected_task(self, tv=None):
-        """Return the 'uid' of the selected task
+        """Returns the'uid' of the selected task, if any.
+           If multiple tasks are selected, returns only the first and 
+           takes care of selecting only that (unselecting the others)
 
         :param tv: The tree view to find the selected task in. Defaults to
             the task_tview.
         """
-        uid = None
+        if not tv:
+            tview = self.task_tv
+            selection = tview.get_selection()
+            #If we don't have anything and no tview specified
+            #Let's have a look in the closed task view
+            if selection and selection.count_selected_rows() <= 0 and not tv:
+                tview = self.ctask_tv
+                selection = tview.get_selection()
+            if selection.count_selected_rows() <= 0:
+                return None
+            else:
+                model, paths = selection.get_selected_rows()
+                if len(paths) >0 :
+                    selection.unselect_all()
+                    selection.select_path(paths[0])
+
+        ids = self.get_selected_tasks(tv)
+        if ids != None:
+            return ids[0]
+        else:
+            return None
+
+    def get_selected_tasks(self, tv=None):
+        """Returns a list of 'uids' of the selected tasks, and the corresponding
+           iters
+
+        :param tv: The tree view to find the selected task in. Defaults to
+            the task_tview.
+        """
         if not tv:
             tview = self.task_tv
         else:
@@ -1560,12 +1609,14 @@ class TaskBrowser:
 #            tview = self.note_tview
 #            selection = tview.get_selection()
         # Get the selection iter
-        if selection:
-            model, selection_iter = selection.get_selected()
-            if selection_iter:
-                ts  = tview.get_model()
-                uid = ts.get_value(selection_iter, tasktree.COL_TID)
-        return uid
+        if selection.count_selected_rows() <= 0:
+            ids = [None]
+        else:
+            model, paths = selection.get_selected_rows()
+            iters = [model.get_iter(path) for path in paths]
+            ts  = tview.get_model()
+            ids = [ts.get_value(iter, tasktree.COL_TID) for iter in iters]
+        return ids
 
     def get_selected_tags(self):
         t_selected = self.tags_tv.get_selection()
@@ -1607,11 +1658,8 @@ class TaskBrowser:
         gobject.threads_init()
 
         # Watch for selections in the treeview
-        selection = self.task_tv.get_selection()
-        closed_selection = self.ctask_tv.get_selection()
+        self.connect_changed_signals()
         #note_selection = self.note_tview.get_selection()
-        selection.connect("changed", self.on_task_cursor_changed)
-        closed_selection.connect("changed", self.on_taskdone_cursor_changed)
         #note_selection.connect("changed", self.on_note_cursor_changed)
 
         # Restore state from config

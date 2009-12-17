@@ -355,6 +355,7 @@ class ActiveTaskTreeView(TaskTreeView):
     def __init__(self):
         TaskTreeView.__init__(self)
         self._init_tree_view()
+        self.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
 
         # Drag and drop
         self.enable_model_drag_source(\
@@ -447,7 +448,12 @@ class ActiveTaskTreeView(TaskTreeView):
         the parent task and the id of the selected task is passed to the
         destination"""
         treeselection = treeview.get_selection()
-        model, iter = treeselection.get_selected()
+        model, paths = treeselection.get_selected_rows()
+        #NOTE: paths will always contain one element, as it's not currently
+        #      possible to drag and drop multiple tasks  because clicking
+        #      to drag will select a single task, even if many were selected.
+        #      ~~~~Invernizzi
+        iter = [model.get_iter(path) for path in paths] [0]
         iter_str = model.get_string_from_iter(iter)
         selection.set('gtg/task-iter-str', 0, iter_str)
         return
