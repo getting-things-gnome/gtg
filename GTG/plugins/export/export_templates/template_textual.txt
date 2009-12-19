@@ -41,7 +41,8 @@
 #end def
 ##
 ##
-#def task_template($task, $spaces):
+#def task_template($task, $space_num):
+#set spaces = " " * $space_num
 #if $task.has_title
 $task.title#slurp 
 #if $task.has_tags
@@ -66,16 +67,16 @@ $tag #slurp
 #if $len($text)<=80:
 #set next_len = $len($text)
 #else:
-#set next_len = 80
+#set next_len = max([80 - $space_num,50])
 #end if
 #set $next_cr = $text.find('\n')
 #if $next_cr < $next_len and $next_cr >0:
 $spaces#slurp
-    $text[:$next_cr]
+ $text[:$next_cr]
 #set $text = $text[$next_cr:]
 #else:
 $spaces#slurp
-    $text[:$next_len]
+ $text[:$next_len]
 #set $text = $text[$next_len:]
 #end if
 #end while
@@ -84,11 +85,9 @@ $spaces#slurp
 ##
 #end if
 ##
-
 #if $task.has_subtasks
 #for $subtask in $task.subtasks:
-$spaces#slurp
-         - $task_template($subtask,$spaces+" "*8)
+$spaces - $task_template($subtask, $space_num + 2)
 #end for
 #end if
 #end def
@@ -97,7 +96,7 @@ $spaces#slurp
 ##
 TODO LIST:
 #for $task in $tasks:
-    *  $task_template($task," "*8)
+* $task_template($task, 3)
 #end for
 ##
 ##
