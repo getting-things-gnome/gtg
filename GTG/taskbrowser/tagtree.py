@@ -21,6 +21,7 @@ import gobject
 
 from GTG import _
 from GTG.taskbrowser.CellRendererTags import CellRendererTags
+from GTG.taskbrowser.tasktree import COL_OBJ as TASKTREE_COL_OBJ
 
 COL_ID    = 0
 COL_NAME  = 1
@@ -234,8 +235,12 @@ class TagTreeModel(gtk.GenericTreeModel):
 
 class TagTreeView(gtk.TreeView):
     """TreeView for display of a list of task. Handles DnD primitives too."""
-
-    DND_TARGETS = [('gtg/tag-iter-str', gtk.TARGET_SAME_WIDGET, 0)]
+    DND_ID_TAG = 0
+    DND_ID_TASK = 1
+    DND_TARGETS = [
+        ('gtg/tag-iter-str', gtk.TARGET_SAME_WIDGET, DND_ID_TAG),
+        ('gtg/task-iter-str', gtk.TARGET_SAME_APP, DND_ID_TASK)
+    ]
 
     def __init__(self):
         self.tv = gtk.TreeView.__init__(self)
@@ -260,7 +265,8 @@ class TagTreeView(gtk.TreeView):
         self.drag_dest_set(\
             gtk.DEST_DEFAULT_ALL,
             self.DND_TARGETS,
-            gtk.gdk.ACTION_DEFAULT | gtk.gdk.ACTION_MOVE)
+           gtk.gdk.ACTION_DEFAULT | gtk.gdk.ACTION_MOVE)
+            
 
         self.connect('drag_drop', self.on_drag_drop)
         self.connect('drag_data_get', self.on_drag_data_get)
@@ -337,7 +343,7 @@ class TagTreeView(gtk.TreeView):
         selection.set('gtg/tag-iter-str', 0, iter_str)
 
     def on_drag_data_received(self, treeview, context, x, y, selection, info,\
-                              timestamp):
+                              timestamp):                     
         model          = treeview.get_model()
         model_filter   = model.get_model()
         tagtree_model = model_filter.get_model()
@@ -370,13 +376,31 @@ class TagTreeView(gtk.TreeView):
                 model_filter.convert_iter_to_child_iter(par_iter_filter)
         else:
             par_iter_tagtree = None
-
-        # Get dragged iter as a TagTreeModel iter
-        drag_iter = model.get_iter_from_string(selection.data)
-        drag_iter_filter   =\
-            model.convert_iter_to_child_iter(None, drag_iter)
-        drag_iter_tagtree =\
-            model_filter.convert_iter_to_child_iter(drag_iter_filter)
-        tagtree_model.move_tag(par_iter_tagtree, drag_iter_tagtree)
-
+            
+            
+        if info == self.DND_ID_TAG:
+            # Get dragged iter as a TagTreeModel iter
+            drag_iter = model.get_iter_from_string(selection.data)
+            drag_iter_filter   =\
+                model.convert_iter_to_child_iter(None, drag_iter)
+            drag_iter_tagtree =\
+                model_filter.convert_iter_to_child_iter(drag_iter_filter)
+            tagtree_model.move_tag(par_iter_tagtree, drag_iter_tagtree)
+        elif info == self.DND_ID_TASK:
+            if not iter: return #can't drop task onto root
+            
+            tag = model.get_value(iter, COL_OBJ)
+            
+            if tag.get_name()[0]!='@': return #can't drop onto special pseudo-tags
+            
+            src_model = context.get_source_widget().get_model()
+            src_iter = src_model.get_iter_from_string(selection.data)
+            task = src_model.get_value(src_iter, TASKTREE_COL_OBJ)
+            
+            task.add_tag(tag.get_name())
+            task.sync()
+            
+            
+            
         self.emit_stop_by_name('drag_data_received')
+        
