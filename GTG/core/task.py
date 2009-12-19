@@ -502,6 +502,7 @@ class Task:
 
     #This function add tag by name
     def add_tag(self, tagname):
+        "Add a tag. Does not add '@tag' to the contents. See insert_tag"
         t = self.req.new_tag(tagname.encode("UTF-8"))
         t.add_task(self.get_id())
         #Do not add the same tag twice
@@ -510,6 +511,30 @@ class Task:
             for child in self.get_subtasks():
                 if child.can_be_deleted:
                     child.add_tag(tagname)
+            return True
+    
+    def insert_tag(self, tagname):
+        "Add a tag to the task and insert '@tag' into the task's content"
+        if self.add_tag(tagname):
+            c = self.content
+            
+            #strip <content>...</content> tags
+            if c.startswith('<content>'):
+                c = c[len('<content>'):]
+            if c.endswith('</content>'):
+                c = c[:-len('</content>')]
+            
+            if not c:
+                # don't need a separator if it's the only text
+                sep = ''
+            elif c.startswith('<tag>'):
+                # if content starts with a tag, make a comma-separated list
+                sep = ', '
+            else:
+                # other text at the beginning, so put the tag on its own line
+                sep = '\n\n'
+            
+            self.content = "<content><tag>%s</tag>%s%s</content>"%(tagname, sep, c)
 
     #remove by tagname
     def remove_tag(self, tagname):
