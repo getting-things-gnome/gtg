@@ -86,7 +86,7 @@ class Requester(gobject.GObject):
         task = self.ds.new_task(pid=pid, newtask=newtask)
         if tags:
             for t in tags:
-                task.add_tag(t.get_name())
+                task.tag_added(t.get_name())
         return task
 
     def delete_task(self, tid):

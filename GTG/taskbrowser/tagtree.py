@@ -397,7 +397,7 @@ class TagTreeView(gtk.TreeView):
                         src_iter = src_model.get_iter_from_string(i)
                         task = src_model.get_value(src_iter, TASKTREE_COL_OBJ)
                         
-                        task.insert_tag(tag.get_name())
+                        task.add_tag(tag.get_name())
                         task.sync()
 
             

@@ -58,7 +58,7 @@ def task_from_xml(task,xmlnode) :
     cur_task.set_start_date(dates.strtodate(cleanxml.readTextNode(xmlnode,"startdate")))
     cur_tags = xmlnode.getAttribute("tags").replace(' ','').split(",")
     if "" in cur_tags: cur_tags.remove("")
-    for tag in cur_tags: cur_task.add_tag(tag)
+    for tag in cur_tags: cur_task.tag_added(tag)
     #Why should we sync here ? It makes no sense
     #cur_task.sync()
     

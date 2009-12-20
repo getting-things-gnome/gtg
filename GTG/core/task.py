@@ -317,7 +317,7 @@ class Task:
             if task.can_be_deleted:
                 task.set_start_date(self.get_start_date())
                 for t in self.get_tags():
-                    task.add_tag(t.get_name())
+                    task.tag_added(t.get_name())
 
     def remove_subtask(self, tid):
         """Removed a subtask from the task.
@@ -500,8 +500,7 @@ class Task:
     def get_tags(self):
         return list(self.tags)
 
-    #This function add tag by name
-    def add_tag(self, tagname):
+    def tag_added(self, tagname):
         "Add a tag. Does not add '@tag' to the contents. See insert_tag"
         t = self.req.new_tag(tagname.encode("UTF-8"))
         t.add_task(self.get_id())
@@ -510,12 +509,12 @@ class Task:
             self.tags.append(t)
             for child in self.get_subtasks():
                 if child.can_be_deleted:
-                    child.add_tag(tagname)
+                    child.tag_added(tagname)
             return True
     
-    def insert_tag(self, tagname):
+    def add_tag(self, tagname):
         "Add a tag to the task and insert '@tag' into the task's content"
-        if self.add_tag(tagname):
+        if self.tag_added(tagname):
             c = self.content
             
             #strip <content>...</content> tags
