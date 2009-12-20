@@ -97,12 +97,6 @@ class Task:
 
     def get_title(self):
         return self.title
-        
-    def get_titles(self, list):
-        list.append(self.title)
-        for task in self.get_subtasks():
-            list = task.get_titles(list)
-        return list
 
     #Return True if the title was changed.
     #False if the title was already the same.
@@ -351,6 +345,13 @@ class Task:
         for i in self.children:
             zelist.append(self.req.get_task(i))
         return zelist
+        
+    def get_self_and_all_subtasks(self, active_only=False, tasks=[]):
+        tasks.append(self)
+        for i in self.get_subtasks():
+            if not active_only or i.status == self.STA_ACTIVE:
+                i.get_self_and_all_subtasks(active_only, tasks)
+        return tasks
 
     def get_subtask(self, tid):
         """Return the task corresponding to a given ID.
