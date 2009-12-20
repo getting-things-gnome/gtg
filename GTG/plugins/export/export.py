@@ -26,8 +26,7 @@ except: # pylint: disable-msg=W0702
     sys.exit(1)
 
 import os
-import sys
-import string
+import pickle
 import subprocess
 import gobject
 from Cheetah.Template import Template
@@ -38,16 +37,25 @@ from GTG import _
 
 class pluginExport:
 
+    DEFAULT_PREFERENCES = {"menu_entry": True,
+                            "toolbar_entry": True}
+
     def __init__(self):
         self.path = os.path.dirname(os.path.abspath(__file__))
+        self.config_dir = os.path.join(xdg_config_home, 'gtg/plugins/export')
         self.menu_item = gtk.MenuItem("E_xport current tasks")
         self.menu_item.connect('activate', self.on_export)
+        self.tb_button = gtk.ToolButton(gtk.STOCK_PRINT)
+        self.tb_button.connect('clicked', self.on_export)
         self.builder = gtk.Builder()
         self.builder.add_from_file(os.path.dirname(os.path.abspath(__file__)) +\
                                    "/export.ui")
         self.export_dialog      = self.builder.get_object("export_dialog")
         self.export_combo_templ = self.builder.get_object("export_combo_templ")
         self.export_image       = self.builder.get_object("export_image")
+        self.preferences_dialog = self.builder.get_object("preferences_dialog")
+        self.pref_chbox_menu    = self.builder.get_object("pref_chbox_menu")
+        self.pref_chbox_toolbar = self.builder.get_object("pref_chbox_toolbar")
         SIGNAL_CONNECTIONS_DIC = {
             "on_export_btn_open_clicked": 
                 self.on_export_open,
@@ -56,13 +64,23 @@ class pluginExport:
             "on_export_dialog_delete_event": 
                 self.on_export_cancel,
             "on_export_combo_templ_changed":
-                self.on_export_combo_changed
+                self.on_export_combo_changed,
+            "on_preferences_dialog_delete_event":
+                self.on_preferences_cancel,
+            "on_btn_preferences_cancel_clicked":
+                self.on_preferences_cancel,
+            "on_btn_preferences_ok_clicked":
+                self.on_preferences_ok
         }
         self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
 
     def activate(self, plugin_api):
+        self.menu_entry = False
+        self.toolbar_entry = False
         self.plugin_api = plugin_api
-        plugin_api.add_menu_item(self.menu_item)
+        self.preferences_load()
+        self.preferences_apply()
+        self.plugin_api.set_parent_window(self.export_dialog)
 
     def onTaskClosed(self, plugin_api):
         pass
@@ -71,7 +89,12 @@ class pluginExport:
         pass
 
     def deactivate(self, plugin_api):
-        plugin_api.remove_menu_item(self.menu_item)
+        if self.menu_entry:
+            plugin_api.remove_menu_item(self.menu_item)
+        if self.toolbar_entry:
+            plugin_api.remove_toolbar_item(self.tb_button)
+        self.menu_entry = False
+        self.toolbar_entry = False
 
 ## CALLBACK AND CORE FUNCTIONS #################################################
 
@@ -330,3 +353,73 @@ class pluginExport:
                 if line.startswith(key):
                     return os.path.expandvars(line[len(key)+2:-2])
 
+    def smartLoadFromFile(self, dirname, filename):
+        path = dirname + '/' + filename
+        if os.path.isdir(dirname):
+            if os.path.isfile(path):
+                try:
+                    with open(path, 'r') as file:
+                        item = pickle.load(file)
+                except:
+                    return None
+                return item
+        else:
+            os.makedirs(dirname)
+
+    def smartSaveToFile(self, dirname, filename, item, **kwargs):
+        path = dirname + '/' + filename
+        try:
+            with open(path, 'wb') as file:
+                pickle.dump(item, file)
+        except:
+            if kwargs.get('critical', False):
+                raise Exception(_("saving critical object failed"))
+
+## Preferences methods #########################################################
+
+    def is_configurable(self):
+        """A configurable plugin should have this method and return True"""
+        return True
+
+    def configure_dialog(self, plugin_apis, manager_dialog):
+        self.preferences_load()
+        self.preferences_dialog.set_transient_for(manager_dialog)
+        self.pref_chbox_menu.set_active(self.preferences["menu_entry"])
+        self.pref_chbox_toolbar.set_active(self.preferences["toolbar_entry"])
+        self.preferences_dialog.show_all()
+
+    def on_preferences_cancel(self, widget = None, data = None):
+        self.preferences_dialog.hide()
+        return True
+
+    def on_preferences_ok(self, widget = None, data = None):
+        self.preferences["menu_entry"] = self.pref_chbox_menu.get_active()
+        self.preferences["toolbar_entry"] = self.pref_chbox_toolbar.get_active()
+        self.preferences_apply()
+        self.preferences_store()
+        self.preferences_dialog.hide()
+
+    def preferences_load(self):
+        data = self.smartLoadFromFile(self.config_dir, "preferences")
+        if data == None or type(data) != type (dict()):
+            self.preferences = self.DEFAULT_PREFERENCES
+        else:
+            self.preferences = data
+
+    def preferences_store(self):
+        self.smartSaveToFile(self.config_dir, "preferences", self.preferences)
+
+    def preferences_apply(self):
+        if self.preferences["menu_entry"] and self.menu_entry == False:
+            self.plugin_api.add_menu_item(self.menu_item)
+            self.menu_entry = True
+        elif self.preferences["menu_entry"]==False and self.menu_entry == True:
+            self.plugin_api.remove_menu_item(self.menu_item)
+            self.menu_entry = False
+
+        if self.preferences["toolbar_entry"] and self.toolbar_entry == False:
+            self.plugin_api.add_toolbar_item(self.tb_button)
+            self.toolbar_entry = True
+        elif self.preferences["toolbar_entry"]==False and self.toolbar_entry == True:
+            self.plugin_api.remove_toolbar_item(self.tb_button)
+            self.toolbar_entry = False
