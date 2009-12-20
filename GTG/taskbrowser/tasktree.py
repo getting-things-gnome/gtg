@@ -381,6 +381,7 @@ class ActiveTaskTreeView(TaskTreeView):
         self.connect('drag_drop', self.on_drag_drop)
         self.connect('drag_data_get', self.on_drag_data_get)
         self.connect('drag_data_received', self.on_drag_data_received)
+        self.connect('button_press_event', self.on_button_press)
 
     def _init_tree_view(self):
         # Tag column
@@ -441,6 +442,10 @@ class ActiveTaskTreeView(TaskTreeView):
         self.set_rules_hint(False)
 
     ### DRAG AND DROP ########################################################
+    def on_button_press(self, widget, event):
+        target = self.get_path_at_pos(int(event.x), int(event.y))
+        if target and self.get_selection().path_is_selected(target[0]):
+            return True
 
     def on_drag_drop(self, treeview, context, selection, info, timestamp):
         self.emit_stop_by_name('drag_drop')
@@ -451,12 +456,8 @@ class ActiveTaskTreeView(TaskTreeView):
         destination"""
         treeselection = treeview.get_selection()
         model, paths = treeselection.get_selected_rows()
-        #NOTE: paths will always contain one element, as it's not currently
-        #      possible to drag and drop multiple tasks  because clicking
-        #      to drag will select a single task, even if many were selected.
-        #      ~~~~Invernizzi
-        iter = [model.get_iter(path) for path in paths] [0]
-        iter_str = model.get_string_from_iter(iter)
+        iters = [model.get_iter(path) for path in paths]
+        iter_str = ','.join([model.get_string_from_iter(iter) for iter in iters])
         selection.set('gtg/task-iter-str', 0, iter_str)
         return
 
@@ -497,12 +498,14 @@ class ActiveTaskTreeView(TaskTreeView):
             par_iter_tasktree = None
 
         # Get dragged iter as a TaskTreeModel iter
-        drag_iter = model.get_iter_from_string(selection.data)
-        drag_iter_filter   =\
-            model.convert_iter_to_child_iter(None, drag_iter)
-        drag_iter_tasktree =\
-            model_filter.convert_iter_to_child_iter(drag_iter_filter)
-        tasktree_model.move_task(par_iter_tasktree, drag_iter_tasktree)
+        iters = selection.data.split(',')
+        for iter in iters:
+            drag_iter = model.get_iter_from_string(iter)
+            drag_iter_filter   =\
+                model.convert_iter_to_child_iter(None, drag_iter)
+            drag_iter_tasktree =\
+                model_filter.convert_iter_to_child_iter(drag_iter_filter)
+            tasktree_model.move_task(par_iter_tasktree, drag_iter_tasktree)
 
         self.emit_stop_by_name('drag_data_received')
 

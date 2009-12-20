@@ -392,11 +392,13 @@ class TagTreeView(gtk.TreeView):
             
                 if tag.get_name()[0]=='@':  #can't drop onto special pseudo-tags
                     src_model = context.get_source_widget().get_model()
-                    src_iter = src_model.get_iter_from_string(selection.data)
-                    task = src_model.get_value(src_iter, TASKTREE_COL_OBJ)
-                    
-                    task.insert_tag(tag.get_name())
-                    task.sync()
+                    src_iters = selection.data.split(',')
+                    for i in src_iters:
+                        src_iter = src_model.get_iter_from_string(i)
+                        task = src_model.get_value(src_iter, TASKTREE_COL_OBJ)
+                        
+                        task.insert_tag(tag.get_name())
+                        task.sync()
 
             
         self.emit_stop_by_name('drag_data_received')
