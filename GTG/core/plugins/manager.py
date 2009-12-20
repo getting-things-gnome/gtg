@@ -234,5 +234,5 @@ class PluginManager:
                         self.config_btn.set_sensitive(False)
                         
     def plugin_configure_dialog(self, widget, data=None):
-        self.current_plugin['instance'].configure_dialog(self.plugin_api)
+        self.current_plugin['instance'].configure_dialog(self.plugin_apis, self.dialog)
 

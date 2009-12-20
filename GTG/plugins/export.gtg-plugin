@@ -1,7 +1,7 @@
 [GTG Plugin]
 Module=export
 Name=Export and print
-Description="This plugin lets you export the tasks in the current view into a variety of formats. You can also personalize the format of your tasks by writing your own template."
+Description="This plugin lets you export the tasks in the current view into a variety of formats. You can also personalize the format of your tasks by writing your own template.\nYou can choose if you prefer an icon in the toolbar or a menu entry clicking the 'preferences' button below"
 Authors=Luca Invernizzi <invernizzi.l@gmail.com>
 Version=0.1.1
 Enabled=False

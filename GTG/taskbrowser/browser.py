@@ -762,14 +762,6 @@ class TaskBrowser:
         task = self.req.get_task(tid)
         return task.get_title()
 
-    def get_task_and_subtask_titles(self, tid):
-        task = self.req.get_task(tid)
-        titles_list = task.get_titles([])
-        toreturn = ""
-        for st in titles_list :
-            toreturn = "%s\n- %s" %(toreturn,st) 
-        return toreturn
-
     def close_task(self, tid):
         # When an editor is closed, it should deregister itself.
         if tid in self.opened_task:
@@ -1293,9 +1285,10 @@ class TaskBrowser:
             time = event.time
             pthinfo = treeview.get_path_at_pos(x, y)
             if pthinfo is not None:
-                path, col, cellx, celly = pthinfo
+                if treeview.get_selection().count_selected_rows() <= 0:
+                    path, col, cellx, celly = pthinfo
+                    treeview.set_cursor(path, col, 0)
                 treeview.grab_focus()
-                treeview.set_cursor(path, col, 0)
                 self.taskpopup.popup(None, None, None, event.button, time)
             return 1
 
@@ -1378,8 +1371,12 @@ class TaskBrowser:
             label_text = label.get_text()
             label_text = label_text[0:label_text.find(":") + 1]
             # I find the tasks that are going to be deleted
-            titles_list = [self.req.get_task(tid).get_title() \
-                              for tid in self.tids_todelete]
+            tasks = []
+            for tid in self.tids_todelete:
+                task = self.req.get_task(tid)
+                for i in task.get_self_and_all_subtasks():
+                    if i not in tasks: tasks.append(i)
+            titles_list = [task.get_title() for task in tasks]
             titles = reduce (lambda x, y: x + "\n - " + y, titles_list)
             label.set_text("%s %s" % (label_text, titles))
             delete_dialog = self.builder.get_object("confirm_delete")
