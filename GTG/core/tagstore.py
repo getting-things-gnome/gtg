@@ -103,6 +103,8 @@ class TagStore :
                     self.tags[name].set_attribute(att_name,val)
 
     def get_tag(self, tagname):
+        if tagname[0] != "@" :
+            tagname = "@"+tagname
         return self.tags.get(tagname, None)
 
 #    def get_alltag_tag(self):
