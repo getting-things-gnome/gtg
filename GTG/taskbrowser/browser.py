@@ -1361,10 +1361,12 @@ class TaskBrowser:
             label_text = label.get_text()
             label_text = label_text[0:label_text.find(":") + 1]
             # I find the tasks that are going to be deleted
-            titles_list = []
+            tasks = []
             for tid in self.tids_todelete:
                 task = self.req.get_task(tid)
-                titles_list += task.get_titles([])
+                for i in task.get_self_and_all_subtasks():
+                    if i not in tasks: tasks.append(i)
+            titles_list = [task.get_title() for task in tasks]
             titles = reduce (lambda x, y: x + "\n - " + y, titles_list)
             label.set_text("%s %s" % (label_text, titles))
             delete_dialog = self.builder.get_object("confirm_delete")
