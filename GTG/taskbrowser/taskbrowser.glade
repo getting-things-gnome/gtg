@@ -765,6 +765,16 @@ Deleting a task cannot be undone, and will delete the following tasks: </propert
       </object>
     </child>
     <child>
+      <object class="GtkImageMenuItem" id="resetcolor">
+        <property name="label">Reset Color</property>
+        <property name="visible">True</property>
+        <property name="image">image2</property>
+        <property name="use_stock">False</property>
+        <property name="accel_group">accelgroup1</property>
+        <signal name="activate" handler="on_resetcolor_activate"/>
+      </object>
+    </child>
+    <child>
       <object class="GtkCheckMenuItem" id="nonworkviewtag">
         <property name="visible">True</property>
         <property name="label" translatable="yes">Tag is displayed in the workview</property>
@@ -980,5 +990,10 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
   <object class="GtkImage" id="image1">
     <property name="visible">True</property>
     <property name="stock">gtk-save-as</property>
+  </object>
+  <object class="GtkImage" id="image2">
+    <property name="visible">True</property>
+    <property name="xalign">0.44999998807907104</property>
+    <property name="stock">gtk-missing-image</property>
   </object>
 </interface>

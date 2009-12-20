@@ -320,6 +320,8 @@ class TaskBrowser:
                 self.on_add_subtask,
             "on_colorchooser_activate":
                 self.on_colorchooser_activate,
+            "on_resetcolor_activate":
+                self.on_resetcolor_activate,
             "on_workview_toggled":
                 self.on_workview_toggled,
             "on_note_toggled":
@@ -1091,6 +1093,13 @@ class TaskBrowser:
                 t.set_attribute("color", strcolor)
         self.task_tv.refresh()
         dialog.destroy()
+        
+    def on_resetcolor_activate(self, widget):
+        tags, notag_only = self.get_selected_tags()
+        for t in tags:
+            t.del_attribute("color")
+        self.task_tv.refresh()
+        self.tags_tv.refresh()
 
     def on_workview_toggled(self, widget):
         self.do_toggle_workview()
@@ -1251,7 +1260,7 @@ class TaskBrowser:
                     # Then we are looking at single, normal tag rather than
                     # the special 'All tags' or 'Tasks without tags'. We only
                     # want to popup the menu for normal tags.
-                    display_in_workview_item = self.tagpopup.get_children()[1]
+                    display_in_workview_item = self.tagpopup.get_children()[2]
                     selected_tag = selected_tags[0]
                     nonworkview = selected_tag.get_attribute("nonworkview")
                     # We must invert because the tagstore has "True" for tasks
