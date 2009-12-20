@@ -994,6 +994,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
   <object class="GtkImage" id="image2">
     <property name="visible">True</property>
     <property name="xalign">0.44999998807907104</property>
-    <property name="stock">gtk-missing-image</property>
+    <property name="yalign">0.47999998927116394</property>
+    <property name="stock">gtk-revert-to-saved</property>
   </object>
 </interface>
