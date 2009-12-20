@@ -435,7 +435,7 @@ class Task:
         val = unicode(str(att_value), "UTF-8")
         self.attributes[(namespace, att_name)] = val
         self.sync()
-
+    
     def get_attribute(self, att_name, namespace=""):
         """Get the attribute C{att_name}.
 

@@ -219,6 +219,15 @@ class Tag(TreeNode):
         Returns C{None} if there is no attribute matching C{att_name}.
         """
         return self._attributes.get(att_name, None)
+        
+    def del_attribute(self, att_name):
+        """Deletes the attribute C{att_name}.
+        """
+        if not att_name in self._attributes:
+            return
+        del self._attributes[att_name]
+        if self._save:
+            self._save()            
 
     def get_all_attributes(self, butname=False):
         """Return a list of all attribute names.
