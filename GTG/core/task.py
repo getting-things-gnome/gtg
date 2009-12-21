@@ -549,7 +549,6 @@ class Task:
                         .replace('<tag>%s</tag>, '%(tagname), '') #trailing comma
                         .replace('<tag>%s</tag>'%(tagname), '')
                        )
-        print "'%s'"%(self.content)
 
     #tag_list is a list of tags object
     #return true if at least one of the list is in the task
