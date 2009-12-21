@@ -1053,7 +1053,7 @@ class TaskBrowser:
     def on_color_changed(self, widget):
         gtkcolor = widget.get_current_color()
         strcolor = gtk.color_selection_palette_to_string([gtkcolor])
-        tags, notag_only = self.get_selected_tags()
+        tags, notag_only = self.intended_tags
         for t in tags:
             t.set_attribute("color", strcolor)
         self.task_tv.refresh()
@@ -1067,7 +1067,7 @@ class TaskBrowser:
         colorsel = dialog.colorsel
         colorsel.connect("color_changed", self.on_color_changed)
         # Get previous color
-        tags, notag_only = self.get_selected_tags()
+        tags, notag_only = self.intended_tags
         init_color = None
         if len(tags) == 1:
             color = tags[0].get_attribute("color")
@@ -1080,14 +1080,14 @@ class TaskBrowser:
         # Check response and set color if required
         if response != gtk.RESPONSE_OK and init_color:
             strcolor = gtk.color_selection_palette_to_string([init_color])
-            tags, notag_only = self.get_selected_tags()
+            tags, notag_only = self.intended_tags
             for t in tags:
                 t.set_attribute("color", strcolor)
         self.task_tv.refresh()
         dialog.destroy()
         
     def on_resetcolor_activate(self, widget):
-        tags, notag_only = self.get_selected_tags()
+        tags, notag_only = self.intended_tags
         for t in tags:
             t.del_attribute("color")
         self.task_tv.refresh()
@@ -1246,6 +1246,10 @@ class TaskBrowser:
             if pthinfo is not None:
                 path, col, cellx, celly = pthinfo #pylint: disable-msg=W0612
                 treeview.grab_focus()
+                # Stores the currently selected item so that we can return to
+                # it when we're done. Makes it so that the view isn't switched
+                # every time a tag is right clicked. 
+                old_path, old_col = treeview.get_cursor()
                 treeview.set_cursor(path, col, 0)
                 selected_tags = self.get_selected_tags()[0]
                 if len(selected_tags) > 0:
@@ -1264,6 +1268,11 @@ class TaskBrowser:
                         shown = True
                     display_in_workview_item.set_active(shown)
                     self.tagpopup.popup(None, None, None, event.button, time)
+                    # Stores the right-clicked tag here so that we can work 
+                    # with it even after the cursor returns to its previous
+                    # position.
+                    self.intended_tags = self.get_selected_tags()
+                treeview.set_cursor(old_path, old_col, 0)
             return 1
 
     def on_nonworkviewtag_toggled(self, widget):
