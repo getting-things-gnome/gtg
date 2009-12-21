@@ -387,19 +387,23 @@ class TagTreeView(gtk.TreeView):
                 model_filter.convert_iter_to_child_iter(drag_iter_filter)
             tagtree_model.move_tag(par_iter_tagtree, drag_iter_tagtree)
         elif info == self.DND_ID_TASK:
-            if iter: #can't drop task onto root
+            if drop_info: #can't drop task onto root
                 tag = model.get_value(iter, COL_OBJ)
             
+                src_model = context.get_source_widget().get_model()
+                src_str_iters = selection.data.split(',')
+                src_iters = [src_model.get_iter_from_string(i) for i in src_str_iters]
+                tasks = [src_model.get_value(i, TASKTREE_COL_OBJ) for i in src_iters]
+            
                 if tag.get_name()[0]=='@':  #can't drop onto special pseudo-tags
-                    src_model = context.get_source_widget().get_model()
-                    src_iters = selection.data.split(',')
-                    for i in src_iters:
-                        src_iter = src_model.get_iter_from_string(i)
-                        task = src_model.get_value(src_iter, TASKTREE_COL_OBJ)
-                        
+                    for task in tasks:
                         task.add_tag(tag.get_name())
                         task.sync()
+                elif tag.get_name() == 'gtg-tags-none':
+                    for task in tasks:
+                        for t in task.get_tags_name():
+                            task.remove_tag(t)
+                        task.sync()
 
-            
         self.emit_stop_by_name('drag_data_received')
         

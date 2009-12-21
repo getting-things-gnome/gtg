@@ -461,9 +461,12 @@ class ActiveTaskTreeView(TaskTreeView):
         self.get_selection().set_select_function(lambda *ignore: True)
         
         target = self.get_path_at_pos(int(event.x), int(event.y))    
-        if self.defer_select and target and self.defer_select == target[0]:
-            # if user didn't drag, simulate the click previously ignored
-            self.set_cursor(target[0], target[1], False)
+        if (self.defer_select and target 
+           and self.defer_select == target[0]
+           and not (event.x==0 and event.y==0)): # certain drag and drop 
+                                                 # operations still have path
+               # if user didn't drag, simulate the click previously ignored
+               self.set_cursor(target[0], target[1], False)
             
         self.defer_select=False
 
