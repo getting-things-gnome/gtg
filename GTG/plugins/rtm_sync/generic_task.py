@@ -253,7 +253,7 @@ class GtgTask(GenericTask):
         self.text = "<content>" + text_strip_tags(self.text) + "\n" +\
                 reduce(lambda tags, tag: tags + ', @' + tag,[" "] + tags)[3:] +\
                 "</content>"
-        map(lambda tag: self.task.add_tag('@'+tag), tags)
+        map(lambda tag: self.task.tag_added('@'+tag), tags)
 
     def _get_text(self):
         return self.task.get_text()

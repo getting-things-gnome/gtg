@@ -311,7 +311,7 @@ class Task:
             if task.can_be_deleted:
                 task.set_start_date(self.get_start_date())
                 for t in self.get_tags():
-                    task.add_tag(t.get_name())
+                    task.tag_added(t.get_name())
 
     def remove_subtask(self, tid):
         """Removed a subtask from the task.
@@ -501,8 +501,8 @@ class Task:
     def get_tags(self):
         return list(self.tags)
 
-    #This function add tag by name
-    def add_tag(self, tagname):
+    def tag_added(self, tagname):
+        "Add a tag. Does not add '@tag' to the contents. See insert_tag"
         t = self.req.new_tag(tagname.encode("UTF-8"))
         t.add_task(self.get_id())
         #Do not add the same tag twice
@@ -510,7 +510,31 @@ class Task:
             self.tags.append(t)
             for child in self.get_subtasks():
                 if child.can_be_deleted:
-                    child.add_tag(tagname)
+                    child.tag_added(tagname)
+            return True
+    
+    def add_tag(self, tagname):
+        "Add a tag to the task and insert '@tag' into the task's content"
+        if self.tag_added(tagname):
+            c = self.content
+            
+            #strip <content>...</content> tags
+            if c.startswith('<content>'):
+                c = c[len('<content>'):]
+            if c.endswith('</content>'):
+                c = c[:-len('</content>')]
+            
+            if not c:
+                # don't need a separator if it's the only text
+                sep = ''
+            elif c.startswith('<tag>'):
+                # if content starts with a tag, make a comma-separated list
+                sep = ', '
+            else:
+                # other text at the beginning, so put the tag on its own line
+                sep = '\n\n'
+            
+            self.content = "<content><tag>%s</tag>%s%s</content>"%(tagname, sep, c)
 
     #remove by tagname
     def remove_tag(self, tagname):
@@ -521,6 +545,11 @@ class Task:
             for child in self.get_subtasks():
                 if child.can_be_deleted:
                     child.remove_tag(tagname)
+        self.content = (self.content
+                        .replace('<tag>%s</tag>\n\n'%(tagname), '') #trailing \n
+                        .replace('<tag>%s</tag>, '%(tagname), '') #trailing comma
+                        .replace('<tag>%s</tag>'%(tagname), '')
+                       )
 
     #tag_list is a list of tags object
     #return true if at least one of the list is in the task
