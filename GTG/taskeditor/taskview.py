@@ -1084,13 +1084,25 @@ class TaskView(gtk.TextView):
                     #Then, if indent > 0, we increment it
                     #First step : we preserve it.
                     else :
-                        if not line.lstrip("%s "%self.bullet1) :
-                            self.deindent(itera,newlevel=0)
-                            tv.emit_stop_by_name('insert-text')
-                            
+                        if not line.lstrip("%s "%self.bullet1):
+                            #if we didn't write a task, we remove the indent
+                            #we check if the iterator is well at the end of 
+                            #the line
+                            if end_line.ends_line():
+                                self.deindent(itera,newlevel=0)
+                            #else, it means that we pressed enter before 
+                            #a subtask title
+                            else :
+                                #we first put the subtask one line below
+                                itera2 = self.buff.get_iter_at_line(line_nbr)
+                                self.buff.insert(itera2,"\n")
+                                #and increment the new white line
+                                itera2 = self.buff.get_iter_at_line(line_nbr)
+                                self.insert_indent(self.buff,itera2,current_indent)
                         elif current_indent == 1 :
                             self.insert_indent(self.buff,itera,current_indent)
-                            tv.emit_stop_by_name('insert-text')
+                        #we stop the signal in all cases
+                        tv.emit_stop_by_name('insert-text')
                     #Then we close the tag tag
                     if closed_tag :
                         insert_mark = self.buff.get_mark("insert_point")
