@@ -500,6 +500,11 @@ class Task:
     #return a copy of the list of tag objects
     def get_tags(self):
         return list(self.tags)
+        
+    def rename_tag(self,old,new):
+        self.content = self.content.replace(old,new)
+        self.remove_tag(old)
+        self.tag_added(new)
 
     def tag_added(self, tagname):
         "Add a tag. Does not add '@tag' to the contents. See insert_tag"

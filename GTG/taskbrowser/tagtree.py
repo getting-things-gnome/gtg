@@ -232,6 +232,10 @@ class TagTreeModel(gtk.GenericTreeModel):
         new_child_path=self.tree.get_path_for_node(child_tag)
         new_child_iter = self.get_iter(new_child_path)
         self.row_inserted(new_child_path, new_child_iter)
+        
+    def rename_tag(self,oldname,newname):
+        tag = self.req.get_tag(oldname)
+        self.req.rename_tag(oldname,newname)
 
 class TagTreeView(gtk.TreeView):
     """TreeView for display of a list of task. Handles DnD primitives too."""
@@ -318,6 +322,8 @@ class TagTreeView(gtk.TreeView):
         render_count.set_property('xalign', 1.0)
         render_tags.set_property('ypad', 3)
         render_text.set_property('ypad', 3)
+        render_text.set_property('editable', True)
+        render_text.connect("edited", self.rename_tag)
         render_count.set_property('xpad', 3)
         render_count.set_property('ypad', 3)
         tag_col.set_sort_column_id(-1)
@@ -328,6 +334,15 @@ class TagTreeView(gtk.TreeView):
         # Global treeview properties
         self.set_row_separator_func(self._tag_separator_filter)
         self.set_headers_visible(False)
+        
+    def rename_tag(self,renderer,path,newname):
+        #This is a bit ugly ! We have to get the TreeModel from
+        #the treemodelfilter that we get from the treemodelsort
+        model = self.get_model()
+        itera = model.get_iter(path)
+        oldname = model.get_value(itera,COL_ID)
+        basemodel = model.get_model().get_model()
+        basemodel.rename_tag(oldname,newname)
 
     ### DRAG AND DROP ########################################################
     def on_drag_drop(self, treeview, context, selection, info, timestamp):

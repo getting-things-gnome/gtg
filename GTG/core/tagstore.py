@@ -106,15 +106,17 @@ class TagStore :
         if tagname[0] != "@" :
             tagname = "@"+tagname
         return self.tags.get(tagname, None)
+        
+    def rename_tag(self,oldname,newname):
+        if len(newname) > 0 :
+            if newname[0] != "@" :
+                newname = "@"+newname
+            if newname != oldname and newname != None \
+                                  and newname not in self.tags:
+                self.tags[newname] = self.tags[oldname]
+                self.tags[newname].rename(newname)
+                del self.tags[oldname]
 
-#    def get_alltag_tag(self):
-#        """Return the special tag 'All tags'"""
-#        return self.alltag_tag
-#    
-#    def get_notag_tag(self):
-#        """Return the special tag 'No tags'"""
-#        return self.notag_tag
-    
     def get_all_tags_name(self, attname=None, attvalue=None):
         """Return the name of all tags
         Optionally, if you pass the attname and attvalue argument, it will
@@ -192,8 +194,15 @@ class Tag(TreeNode):
     def get_name(self):
         """Return the name of the tag."""
         return self.get_attribute("name")
+        
+    def rename(self,newname):
+        old = self.get_name()
+        self.set_attribute("name",newname,internalrename=True)
+        for t in self.get_tasks():
+            self.req.get_task(t).rename_tag(old,newname)
+    
 
-    def set_attribute(self, att_name, att_value):
+    def set_attribute(self, att_name, att_value, internalrename=False):
         """Set an arbitrary attribute.
 
         This will call the C{save_cllbk} callback passed to the constructor.
@@ -202,8 +211,9 @@ class Tag(TreeNode):
         @param att_value: The value of the attribute. Will be converted to a
             string.
         """
-        if att_name == "name":
+        if att_name == "name" and not internalrename:
             # Warning : only the constructor can set the "name".
+            #or the internalrename
             #
             # XXX: This should actually raise an exception, or warn, or
             # something. The Zen of Python says "Errors should never pass

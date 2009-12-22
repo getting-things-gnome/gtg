@@ -324,6 +324,9 @@ class Requester(gobject.GObject):
         @return: The newly-created tag.
         """
         return self.ds.get_tagstore().new_tag(tagname)
+        
+    def rename_tag(self,oldname,newname):
+        self.ds.get_tagstore().rename_tag(oldname,newname)
 
     def get_tag(self, tagname):
         return self.ds.get_tagstore().get_tag(tagname)
