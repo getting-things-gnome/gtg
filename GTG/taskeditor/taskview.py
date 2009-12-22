@@ -1098,7 +1098,7 @@ class TaskView(gtk.TextView):
                                 self.buff.insert(itera2,"\n")
                                 #and increment the new white line
                                 itera2 = self.buff.get_iter_at_line(line_nbr)
-                                self.insert_indent(self.buff,itera2,current_indent)
+                                self.insert_indent(self.buff,itera2,current_indent,enter=False)
                         elif current_indent == 1 :
                             self.insert_indent(self.buff,itera,current_indent)
                         #we stop the signal in all cases
