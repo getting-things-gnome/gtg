@@ -234,9 +234,8 @@ class TagTreeModel(gtk.GenericTreeModel):
         self.row_inserted(new_child_path, new_child_iter)
         
     def rename_tag(self,oldname,newname):
-        print "rename : +++++++++"
-        print oldname
-        print newname
+        tag = self.req.get_tag(oldname)
+        self.req.rename_tag(oldname,newname)
 
 class TagTreeView(gtk.TreeView):
     """TreeView for display of a list of task. Handles DnD primitives too."""
