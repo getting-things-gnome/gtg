@@ -44,7 +44,7 @@ class RtmSync:
 
     def showDialog(self, dialog = None):
         if hasattr(self, 'dialog') and self.dialog != None:
-            self.dialog.destroy()
+            self.dialog.hide()
         self.dialog = dialog
 
     def __init__(self):
@@ -62,6 +62,22 @@ class RtmSync:
         rtm_menu_image.set_from_pixbuf(pixbug_rtm_menu)
         rtm_toolbar_image.show()
         rtm_menu_image.show()
+        ui_file = os.path.join(self.plugin_path, "rtm.ui")
+        self.builder = gtk.Builder() 
+        self.builder.add_from_file(ui_file)
+        self.callback = self.close_dialog
+        dic = {
+            "on_dialogsync_delete_event":
+            self.close_dialog,
+            "on_btn_ok_s_clicked":
+            self.close_dialog,
+            "on_dialogtoken_delete_event":
+            self.close_dialog,
+            "on_btn_ok_t_clicked":
+            self.callback
+        }
+        self.builder.connect_signals(dic)
+
 
         #drop down menu
         self.menu_item = gtk.ImageMenuItem(_("Synchronize with RTM"))
@@ -93,37 +109,24 @@ class RtmSync:
 
     #load a dialog with a String
     def loadDialogToken(self, msg):
-        path = os.path.dirname(os.path.abspath(__file__))
-        glade_file = os.path.join(path, "gtk.glade")
-        wTree = gtk.glade.XML(glade_file, "dialogtoken")
-        self.showDialog(wTree.get_widget("dialogtoken"))
-        self.btn_ok = wTree.get_widget("btn_ok")
-        self.lbl_dialog = wTree.get_widget("lbl_dialog")
+        self.showDialog(self.builder.get_object("dialogtoken"))
+        self.btn_ok = self.builder.get_object("btn_ok_t")
+        self.lbl_dialog = self.builder.get_object("lbl_dialog_t")
         self.lbl_dialog.set_markup(msg)
-        self.dialog.connect("delete_event", self.close_dialog)
-        self.btn_ok.connect("clicked", self.callback)
         self.dialog.show_all()
 
     def loadDialogSync(self, msg):
-        path = os.path.dirname(os.path.abspath(__file__))
-        glade_file = os.path.join(path, "gtk.glade")
-        wTree = gtk.glade.XML(glade_file, "dialogsync")
-        self.showDialog(wTree.get_widget("dialogsync"))
-        self.btn_ok = wTree.get_widget("btn_ok")
+        self.showDialog(self.builder.get_object("dialogsync"))
+        self.btn_ok = self.builder.get_object("btn_ok_s")
         self.btn_ok.set_sensitive(False)
-        self.lbl_dialog = wTree.get_widget("lbl_dialog")
+        self.lbl_dialog = self.builder.get_object("lbl_dialog_s")
         self.lbl_dialog.set_text(msg)
-        self.progressbar = wTree.get_widget("progressbar")
-        self.dialog.connect("delete_event", self.close_dialog)
-        self.btn_ok.connect("clicked", self.close_dialog)
+        self.progressbar = self.builder.get_object("progressbar")
         self.dialog.show_all()
 
     def loadDialogNotification(self, msg):
-        path = os.path.dirname(os.path.abspath(__file__))
-        glade_file = os.path.join(path, "gtk.glade")
-        wTree = gtk.glade.XML(glade_file, "notification")
-        self.showDialog(wTree.get_widget("notification"))
-        self.lbl_dialog = wTree.get_widget("lbl_dialog")
+        self.showDialog(self.builder.get_object("notification"))
+        self.lbl_dialog = self.builder.get_object("lbl_dialog")
         self.lbl_dialog.set_text(msg)
         self.dialog.show_all()
 
