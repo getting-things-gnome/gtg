@@ -840,6 +840,10 @@ class TaskBrowser:
         """
         tag_list, notag_only = self.get_selected_tags()
         task = model.get_value(iter, tasktree.COL_OBJ)
+        if len(tag_list)==1: #include child tags
+            tag_list = tag_list[0].all_children()
+        if not task.has_tags(tag_list=tag_list, notag_only=notag_only):
+            return False
         return task.get_status() != Task.STA_ACTIVE and\
             not model.iter_parent(iter)
                   
@@ -1427,8 +1431,8 @@ class TaskBrowser:
         #When you clic on a tag, you want to unselect the tasks
         self.task_tv.get_selection().unselect_all()
         self.ctask_tv.get_selection().unselect_all()
-        task_model = self.task_tv.get_model()
         self.task_modelfilter.refilter()
+        self.ctask_modelfilter.refilter()
         self._update_window_title()
 
     def on_taskdone_cursor_changed(self, selection=None):
