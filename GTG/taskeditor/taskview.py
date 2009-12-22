@@ -1123,10 +1123,21 @@ class TaskView(gtk.TextView):
             elif tex :
                 #We are on an indented line without subtask ? Create it !
                 if current_indent > 0 and not subtask_nbr :
-                    #self.__newsubtask(self.buff,tex,line_nbr, level=current_indent)
-                    anchor = self.new_subtask_callback(tex)
-                    self.buff.create_mark(anchor,itera,True)
-                    self.buff.create_mark("/%s"%anchor,itera,False)
+                    if itera.starts_line():
+                        #we are at the start of an existing subtask
+                        #we simply move that subtask down
+                        self.buff.insert(itera,"\n")
+                        itera2 = self.buff.get_iter_at_line(line_nbr)
+                        self.buff.insert(itera2,tex)
+                        itera3 = self.buff.get_iter_at_line(line_nbr)
+                        itera3.forward_to_line_end()
+                        self.buff.place_cursor(itera3)
+                        tv.emit_stop_by_name('insert-text')
+                    else:
+                        #self.__newsubtask(self.buff,tex,line_nbr, level=current_indent)
+                        anchor = self.new_subtask_callback(tex)
+                        self.buff.create_mark(anchor,itera,True)
+                        self.buff.create_mark("/%s"%anchor,itera,False)
             self.insert_sigid = self.buff.connect('insert-text', self._insert_at_cursor)
             self.connect('key_press_event', self._keypress)
             self.modified_sigid = self.buff.connect("changed" , self.modified)
