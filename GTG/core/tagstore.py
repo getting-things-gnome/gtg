@@ -108,11 +108,13 @@ class TagStore :
         return self.tags.get(tagname, None)
         
     def rename_tag(self,oldname,newname):
-        if newname[0] != "@" :
-            newname = "@"+newname
-        self.tags[newname] = self.tags[oldname]
-        self.tags[newname].rename(newname)
-        del self.tags[oldname]
+        if len(newname) > 0:
+            if newname[0] != "@" :
+                newname = "@"+newname
+            if newname != oldname and newname != None:
+                self.tags[newname] = self.tags[oldname]
+                self.tags[newname].rename(newname)
+                del self.tags[oldname]
 
     def get_all_tags_name(self, attname=None, attvalue=None):
         """Return the name of all tags
@@ -193,9 +195,10 @@ class Tag(TreeNode):
         return self.get_attribute("name")
         
     def rename(self,newname):
+        old = self.get_name()
         self.set_attribute("name",newname,internalrename=True)
-        print "now tag  name is %s" %self.get_name()
-        print "we should change in tasks"
+        for t in self.get_tasks():
+            self.req.get_task(t).rename_tag(old,newname)
     
 
     def set_attribute(self, att_name, att_value, internalrename=False):
