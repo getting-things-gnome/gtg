@@ -108,7 +108,7 @@ class TagStore :
         return self.tags.get(tagname, None)
         
     def rename_tag(self,oldname,newname):
-        if len(newname) > 0:
+        if len(newname) > 0 and newname not in self.tags:
             if newname[0] != "@" :
                 newname = "@"+newname
             if newname != oldname and newname != None:
