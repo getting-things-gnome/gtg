@@ -88,6 +88,7 @@ class RtmSync:
         self.tb_button = gtk.ToolButton(rtm_toolbar_image)
         self.tb_button.set_label(_("Synchronize with RTM"))
         self.tb_button.connect('clicked', self.onTbButton)
+        self.tb_button.set_tooltip_text("Synchronize with Remember the Milk")
         self.separator = gtk.SeparatorToolItem()
 
         # plugin engine methods
