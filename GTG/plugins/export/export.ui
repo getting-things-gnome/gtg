@@ -105,7 +105,6 @@ view will be exported.</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="use_stock">True</property>
-                <property name="image_position">top</property>
                 <signal name="clicked" handler="on_export_btn_save_clicked"/>
               </object>
               <packing>
