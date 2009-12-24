@@ -16,24 +16,32 @@
 
 import gtk
 import sys
+import os
+import pickle
+from xdg.BaseDirectory import xdg_config_home
 
 from GTG.tools import openurl
 
 
 class NotificationArea:
+
+
+    DEFAULT_PREFERENCES = {"start_minimized": False}
     
     def __init__(self):
         self.minimized = False
     
     def activate(self, plugin_api):
         data_dir = plugin_api.get_data_dir()
+        self.config_dir = os.path.join(xdg_config_home,\
+                                       'gtg/plugins/notification_area')
+        self.plugin_api = plugin_api
         icon = gtk.gdk.pixbuf_new_from_file_at_size(data_dir + "/icons/hicolor/16x16/apps/gtg.png", 16, 16)
         if not hasattr(self,"statusicon"):
             self.statusicon = gtk.status_icon_new_from_pixbuf(icon)
             self.statusicon.set_tooltip("Getting Things Gnome!")
             self.statusicon.connect('activate', self.minimize, plugin_api)
         self.statusicon.set_visible(True)
-        
         menu = gtk.Menu()
         
         #path_image_new_task = data_dir + "/icons/hicolor/16x16/actions/gtg-task-new.png"
@@ -65,9 +73,27 @@ class NotificationArea:
         menu.append(menuItem)
         
         self.statusicon.connect('popup-menu', self.on_icon_popup, menu)
+
+        self.builder = gtk.Builder()
+        self.builder.add_from_file(os.path.dirname(os.path.abspath(__file__)) +\
+                                   "/notification_area.ui")
+        self.preferences_dialog = self.builder.get_object("preferences_dialog")
+        self.chbox_miminized    = self.builder.get_object("pref_chbox_minimized")
+        SIGNAL_CONNECTIONS_DIC = {
+            "on_preferences_dialog_delete_event":
+                self.on_preferences_cancel,
+            "on_btn_preferences_cancel_clicked":
+                self.on_preferences_cancel,
+            "on_btn_preferences_ok_clicked":
+                self.on_preferences_ok
+        }
+        self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
+        self.preferences_load()
+        self.preferences_apply()
         
     def deactivate(self, plugin_api):
         self.statusicon.set_visible(False)
+        self.plugin_api.get_browser().start_minimized = False
     
     def onTaskOpened(self, plugin_api):
         pass
@@ -104,3 +130,64 @@ class NotificationArea:
     
     def exit(self, widget, data=None):
         gtk.main_quit()
+
+    def smartLoadFromFile(self, dirname, filename):
+        path = dirname + '/' + filename
+        if os.path.isdir(dirname):
+            if os.path.isfile(path):
+                try:
+                    with open(path, 'r') as file:
+                        item = pickle.load(file)
+                except:
+                    return None
+                return item
+        else:
+            os.makedirs(dirname)
+
+    def smartSaveToFile(self, dirname, filename, item, **kwargs):
+        path = dirname + '/' + filename
+        try:
+            with open(path, 'wb') as file:
+                pickle.dump(item, file)
+        except:
+            if kwargs.get('critical', False):
+                raise Exception(_("saving critical object failed"))
+
+## Preferences methods #########################################################
+
+    def is_configurable(self):
+        """A configurable plugin should have this method and return True"""
+        return True
+
+    def configure_dialog(self, plugin_apis, manager_dialog):
+        self.preferences_load()
+        self.preferences_dialog.set_transient_for(manager_dialog)
+        self.chbox_miminized.set_active(self.preferences["start_minimized"])
+        self.preferences_dialog.show_all()
+
+    def on_preferences_cancel(self, widget = None, data = None):
+        self.preferences_dialog.hide()
+        return True
+
+    def on_preferences_ok(self, widget = None, data = None):
+        self.preferences["start_minimized"] = self.chbox_miminized.get_active()
+        self.preferences_apply()
+        self.preferences_store()
+        self.preferences_dialog.hide()
+
+    def preferences_load(self):
+        data = self.smartLoadFromFile(self.config_dir, "preferences")
+        if data == None or type(data) != type (dict()):
+            self.preferences = self.DEFAULT_PREFERENCES
+        else:
+            self.preferences = data
+
+    def preferences_store(self):
+        self.smartSaveToFile(self.config_dir, "preferences", self.preferences)
+
+    def preferences_apply(self):
+        if self.plugin_api.is_browser():
+            if self.preferences["start_minimized"]:
+                self.plugin_api.get_browser().start_minimized = True
+            else:
+                self.plugin_api.get_browser().start_minimized = False

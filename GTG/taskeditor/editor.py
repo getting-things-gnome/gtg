@@ -186,6 +186,7 @@ class TaskEditor :
                                        tagpopup = None,
                                        tagview = None,
                                        task = task, 
+                                       browser = None,
                                        texteditor = self)
         self.p_apis.append(self.te_plugin_api)
         self.pengine.onTaskLoad(self.plugins, self.te_plugin_api)

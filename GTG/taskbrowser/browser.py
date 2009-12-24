@@ -489,6 +489,7 @@ class TaskBrowser:
                                     task           = None,
                                     texteditor     = None,
                                     quick_add_cbs  = self.priv['quick_add_cbs'],
+                                    browser        = self,
                                     logger         = self.logger)
         self.p_apis.append(self.plugin_api)
         
@@ -619,7 +620,9 @@ class TaskBrowser:
             if view == "workview":
                 self.do_toggle_workview()
                 
-        if "opened_tasks" in self.config["browser"]:
+        if not (hasattr(self, "start_minimized") and \
+                        self.start_minimized == True) and \
+                        "opened_tasks" in self.config["browser"]:
             odic = self.config["browser"]["opened_tasks"]
             for t in odic:
                 ted = self.open_task(t)
@@ -1674,6 +1677,9 @@ class TaskBrowser:
 
         # Restore state from config
         self.restore_state_from_conf()
-        self.window.show()
+        # Start minimized if the notification area plugin says so
+        if not (hasattr(self, "start_minimized") and \
+                        self.start_minimized == True):
+            self.window.show()
         gtk.main()
         return 0

@@ -39,6 +39,7 @@ class PluginAPI:
                  filter_cbs,
                  tagpopup,
                  tagview,
+                 browser,
                  task=None,
                  texteditor=None,
                  quick_add_cbs=[],
@@ -80,6 +81,7 @@ class PluginAPI:
         self.taskwidget_id = 0
         self.taskwidget_widg = {}
         self.logger = logger
+        self.browser = browser
         
         if task:
             self.task = task
@@ -104,6 +106,9 @@ class PluginAPI:
             return True
         else:
             return False
+
+    def get_browser(self):
+        return self.browser
 
 #=== General Methods ==========================================================
     def add_menu_item(self, item):
