@@ -19,6 +19,7 @@
 
 import gobject
 
+
 class Requester(gobject.GObject):
     """A view on a GTG datastore.
 
@@ -29,34 +30,34 @@ class Requester(gobject.GObject):
     never have state of their own.
     """
     __gsignals__ = {'task-added': (gobject.SIGNAL_RUN_FIRST, \
-                                    gobject.TYPE_NONE, (str,)),
+                                    gobject.TYPE_NONE, (str, )),
                     'task-deleted': (gobject.SIGNAL_RUN_FIRST, \
-                                    gobject.TYPE_NONE, (str,)),
+                                    gobject.TYPE_NONE, (str, )),
                     'task-modified': (gobject.SIGNAL_RUN_FIRST, \
-                                    gobject.TYPE_NONE, (str,)) }
+                                    gobject.TYPE_NONE, (str, ))}
 
     def __init__(self, datastore):
         """Construct a L{Requester}."""
         self.ds = datastore
-        
+
         #filter
         self.filter = {}
         self.filter["tasks"] = []
         self.filter["tags"] = []
-        
+
         gobject.GObject.__init__(self)
 
-    ############# Signals #########################   
+    ############# Signals #########################
     #Used by the tasks to emit the task added/modified signal
     #Should NOT be used by anyone else
     def _task_loaded(self, tid):
         gobject.idle_add(self.emit, "task-added", tid)
+
     def _task_modified(self, tid):
         gobject.idle_add(self.emit, "task-modified", tid)
 
     ############## Tasks ##########################
     ###############################################
-
     def has_task(self, tid):
         """Does the task 'tid' exist?"""
         return self.ds.has_task(tid)
@@ -166,59 +167,59 @@ class Requester(gobject.GObject):
 
             # If we still have a task, we return it.
             if task:
-                l_tasks.append(tid)  
+                l_tasks.append(tid)
         return l_tasks
-    
+
     ############# Filters #########################
     def set_filter(self, filter):
         """Set a filter for the tasks.
-        
+
         @param filter: A dictionary with two keys, 'tags' and 'tasks'.
             The 'tags' key corresponds to a list of tag names and the 'tasks'
             corresponds to a list of tids.
         """
         self.filter = filter
-        
+
     def get_filter(self):
         """Return the current task filter.
 
         @return: The filter object.
         """
         return self.filter
-        
+
     def add_task_to_filter(self, tid):
         """Adds (appends) a task to the filter (task list).
-        
+
         @param tid: A task id.
         """
         if tid not in self.filter["tasks"]:
             self.filter["tasks"].append(tid)
-        
+
     def remove_task_from_filter(self, tid):
         """Removes a task from the filter (task list).
-        
+
         @param tid: A task id.
         """
         if tid in self.filter["tasks"]:
             self.filter["tasks"].remove(tid)
-            
+
     def add_tag_to_filter(self, tag):
         """Adds (appends) a tag to the filter (tag list).
-        
+
         @param tag: A tag name.
         """
         if tag not in self.filter["tags"]:
             self.filter["tags"].append(tag)
-        
+
     def remove_tag_from_filter(self, tag):
         """Removes a tag from the filter (tag list).
-        
+
         @param tag: A tag name.
         """
         if tag in self.filter["tags"]:
             self.filter["tags"].remove(tag)
-    ############# Filters #########################
 
+    ############# Filters #########################
     def get_active_tasks_list(self, tags=None, notag_only=False,
                               started_only=True, is_root=False,
                               workable=False):
@@ -245,18 +246,19 @@ class Requester(gobject.GObject):
             temp_tasks = self.get_active_tasks_list(
                 tags=tags, notag_only=notag_only, started_only=True,
                 is_root=False, workable=False)
-            
+
             #remove from temp_tasks the filtered out tasks
             #for tid in temp_tasks:
             #    if tid in self.filter["tasks"]:
             #        temp_tasks.remove(tid)
             #    else:
             #        for filter_tag in self.get_task(tid).get_tags():
-            #            if filter_tag.get_attribute("name") in self.filter["tags"]:
+            #            if filter_tag.get_attribute("name") in \
+            #                    self.filter["tags"]:
             #                print self.get_task(tid).get_title()
             #                temp_tasks.remove(tid)
             #                break
-            
+
             # Now we verify that the tasks are workable and don't have a
             # nonwork_tag.
             for tid in temp_tasks:
@@ -269,7 +271,7 @@ class Requester(gobject.GObject):
                             #print t.get_title()
                             temp_tasks.remove(tid)
                             filtered_tag = True
-                            
+
                     if not filtered_tag:
                         if len(nonwork_tag) == 0:
                             #print t.get_title()
@@ -312,7 +314,6 @@ class Requester(gobject.GObject):
 
     ############### Tags ##########################
     ###############################################
-
     def get_tag_tree(self):
         return self.ds.get_tagstore().get_tree()
 
@@ -325,9 +326,9 @@ class Requester(gobject.GObject):
         @return: The newly-created tag.
         """
         return self.ds.get_tagstore().new_tag(tagname)
-        
-    def rename_tag(self,oldname,newname):
-        self.ds.get_tagstore().rename_tag(oldname,newname)
+
+    def rename_tag(self, oldname, newname):
+        self.ds.get_tagstore().rename_tag(oldname, newname)
 
     def get_tag(self, tagname):
         return self.ds.get_tagstore().get_tag(tagname)
@@ -341,7 +342,7 @@ class Requester(gobject.GObject):
         l = []
         for t in self.ds.get_tagstore().get_all_tags():
             if t.is_used() and t not in l:
-                l.append(t)     
+                l.append(t)
         l.sort(cmp=lambda x, y: cmp(x.get_name().lower(),\
             y.get_name().lower()))
         return l
@@ -360,7 +361,7 @@ class Requester(gobject.GObject):
         l = []
         for t in self.ds.get_tagstore().get_all_tags():
             if t.is_actively_used() and t not in l:
-                l.append(t) 
+                l.append(t)
         l.sort(cmp=lambda x, y: cmp(x.get_name().lower(),\
             y.get_name().lower()))
         return l
