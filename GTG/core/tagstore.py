@@ -108,7 +108,8 @@ class TagStore :
         return self.tags.get(tagname, None)
         
     def rename_tag(self,oldname,newname):
-        if len(newname) > 0 :
+        if len(newname) > 0 and \
+                            oldname not in ['gtg-tags-none','gtg-tags-all']:
             if newname[0] != "@" :
                 newname = "@"+newname
             if newname != oldname and newname != None \
