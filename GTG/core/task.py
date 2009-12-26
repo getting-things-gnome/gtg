@@ -539,7 +539,8 @@ class Task:
                 # other text at the beginning, so put the tag on its own line
                 sep = '\n\n'
             
-            self.content = "<content><tag>%s</tag>%s%s</content>"%(tagname, sep, c)
+            self.content = "<content><tag>%s</tag>%s%s</content>" % (
+                tagname, sep, c)
 
     #remove by tagname
     def remove_tag(self, tagname):

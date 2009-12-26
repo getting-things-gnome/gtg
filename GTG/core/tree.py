@@ -180,7 +180,7 @@ class TreeNode():
 
     def get_children(self):
         return list(self.ids)
-        
+
     def get_children_objs(self):
         return list(self.children)
 
@@ -215,4 +215,3 @@ class TreeNode():
             self.get_parent().remove_child(self.id)
         self.set_parent(parent)
         parent.add_child(self.id, self)
-        
