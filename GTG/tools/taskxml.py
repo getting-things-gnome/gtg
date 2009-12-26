@@ -21,6 +21,7 @@
 import xml.dom.minidom
 
 from GTG.tools import cleanxml
+from GTG.tools import dates
 
 #Take an empty task, an XML node and return a Task.
 def task_from_xml(task,xmlnode) :
@@ -29,7 +30,7 @@ def task_from_xml(task,xmlnode) :
     uuid = "%s" %xmlnode.getAttribute("uuid")
     cur_task.set_uuid(uuid)
     donedate = cleanxml.readTextNode(xmlnode,"donedate")
-    cur_task.set_status(cur_stat,donedate=donedate)
+    cur_task.set_status(cur_stat,donedate=dates.strtodate(donedate))
     #we will fill the task with its content
     cur_task.set_title(cleanxml.readTextNode(xmlnode,"title"))
     #the subtasks
@@ -52,12 +53,12 @@ def task_from_xml(task,xmlnode) :
             tas = "<content>%s</content>" %tasktext[0].firstChild.nodeValue
             content = xml.dom.minidom.parseString(tas)
             cur_task.set_text(content.firstChild.toxml()) #pylint: disable-msg=E1103 
-    cur_task.set_due_date(cleanxml.readTextNode(xmlnode,"duedate"))
+    cur_task.set_due_date(dates.strtodate(cleanxml.readTextNode(xmlnode,"duedate")))
     cur_task.set_modified(cleanxml.readTextNode(xmlnode,"modified"))
-    cur_task.set_start_date(cleanxml.readTextNode(xmlnode,"startdate"))
+    cur_task.set_start_date(dates.strtodate(cleanxml.readTextNode(xmlnode,"startdate")))
     cur_tags = xmlnode.getAttribute("tags").replace(' ','').split(",")
     if "" in cur_tags: cur_tags.remove("")
-    for tag in cur_tags: cur_task.add_tag(tag)
+    for tag in cur_tags: cur_task.tag_added(tag)
     #Why should we sync here ? It makes no sense
     #cur_task.sync()
     
@@ -74,10 +75,10 @@ def task_to_xml(doc,task) :
         tags_str = tags_str + str(tag) + ","
     t_xml.setAttribute("tags", tags_str[:-1])
     cleanxml.addTextNode(doc,t_xml,"title",task.get_title())
-    cleanxml.addTextNode(doc,t_xml,"duedate",task.get_due_date())
+    cleanxml.addTextNode(doc,t_xml,"duedate", task.get_due_date().xml_str())
     cleanxml.addTextNode(doc,t_xml,"modified",task.get_modified())
-    cleanxml.addTextNode(doc,t_xml,"startdate",task.get_start_date())
-    cleanxml.addTextNode(doc,t_xml,"donedate",task.get_closed_date())
+    cleanxml.addTextNode(doc,t_xml,"startdate", task.get_start_date().xml_str())
+    cleanxml.addTextNode(doc,t_xml,"donedate", task.get_closed_date().xml_str())
     childs = task.get_subtask_tids()
     for c in childs :
         cleanxml.addTextNode(doc,t_xml,"subtask",c)

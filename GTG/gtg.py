@@ -43,9 +43,12 @@
 #==============================================================================
 
 #=== IMPORT ===================================================================
+from __future__ import with_statement
+
 import sys
 import os
 import dbus
+import logging
 
 #our own imports
 from GTG import _
@@ -63,19 +66,16 @@ from GTG.core import CoreConfig
 
 def check_instance(directory):
     """Check if gtg is already running."""
-    pidfile = directory + "gtg.pid"
+    pidfile = os.path.join(directory, "gtg.pid")
     if not os.path.exists(pidfile):
-        f = open(pidfile, "w")
-        f.close()
-    os.chmod(pidfile, 0600)
+        open(pidfile, "w").close()
+        os.chmod(pidfile, 0600)
 
     #see if gtg is already running
-    f = open(pidfile, "r")
-    pid = f.readline()
-    f.close()
+    pid = open(pidfile, "r").readline()
     if pid:
-        p = os.system("ps --no-heading --pid " + pid)
-        p_name = os.popen("ps -f --pid " + pid).read()
+        p = os.system("/bin/ps %s >/dev/null" % pid)
+        p_name = os.popen("/bin/ps -f %s" % pid).read()
         if p == 0 and "gtg" in p_name:
             print _("gtg is already running!")
             d=dbus.SessionBus().get_object(CoreConfig.BUSNAME,\
@@ -84,13 +84,24 @@ def check_instance(directory):
             sys.exit(0)
             
     #write the pid file
-    f = open(pidfile, "w")
-    f.write(str(os.getpid()))
-    f.close()
+    with open(pidfile, "w") as f:
+        f.write(`os.getpid()`)
 
 #=== MAIN CLASS ===============================================================
 
-def main():
+def main(options=None, args=None):
+    
+    # init logging system
+    logger = logging.getLogger("gtg_logger")
+    ch = logging.StreamHandler()
+    ch.setLevel(logging.DEBUG)
+    formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(module)s:%(funcName)s:%(lineno)d - %(message)s")
+    ch.setFormatter(formatter)
+    logger.addHandler(ch)
+    if options.debug:
+        logger.setLevel(logging.DEBUG)
+        logger.debug("Debug output enabled.")
+    
     config = CoreConfig()
     check_instance(config.DATA_DIR)
     backends_list = config.get_backends_list()
@@ -106,7 +117,7 @@ def main():
         
     # Launch task browser
     req = ds.get_requester()
-    tb = TaskBrowser(req, config.conf_dict)
+    tb = TaskBrowser(req, config, logger=logger)
     DBusTaskWrapper(req, tb)
     tb.main()
 

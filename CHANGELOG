@@ -1,3 +1,21 @@
+    * Restore closed tasks filtering by selected tag, fixes bug #498857
+    * Temporary fix allowing to reset tag color by Matthew Rasmus
+
+2009-12-11 Getting THings GNOME! 0.2
+    * Bugs fixes from 0.1.9
+
+2009-12-02 Getting Things GNOME! 0.1.9
+    * Support non-exact ("fuzzy") due dates: 'now', 'soon', and 'later' by Kevin Mehall
+    * Fixes a bug with gtk stock strings being marked as translatable, by Henning Eggers (#490231)
+    * When a task is deleted, all subtask are deleted as well by Mikkel Kjær Jensen
+    * Groups for tags and subtags by Kevin Mehall
+    * GNOME bugzilla plugin by Guillaume Desmottes
+    * Handle tasks spatially (remember position & size)
+    * Opened tasks on quit are reopened on start
+    * Remove the "File" menu. We have no files, we have tasks!    
+    * Patch from mrk to improve compatibility with non GNU systems
+    * Close date selector widget on single click
+    * The toolbar can now be hidden by Mikkel Kjær Jensen
     * Empty new tasks are deleted when editor is closed
     * lot of bug fixed in the editor while playing with subtasks
     * Works well with the "text besides icon" GNOME option
@@ -10,6 +28,7 @@
       - Filters were also added to the requester 
     * Fixed #406851, incorrect behaviour marking a dismissed task as done by Patrick Coleman
     * Added accelerators to the task editor by Patrick Coleman
+    * Plugin for integration with the Hamster Time Tracker by Kevin Mehall
     * Add plugin engine by Paulo Cabido
     * When GTG is already running, use DBUS to raise existing instance rather than failing silently
     * Refactorization and PEP8ification work by Jonathan Lange
@@ -19,6 +38,8 @@
     * Remove the 'Delete' button from the toolbar by Jonathan Lange
     * Fix a spelling mistake in the manpage by Jonathan Lange
     * Allow quickadd of capitalized date by remy@frerebeau.org 
+    * Added tomboy plugin by Luca Invernizzi
+    * Added export function with templates by Luca Invernizzi
 
 2009-07-04 Getting Things GNOME! 0.1.2
     * Available in 18 languages, with 12 languages being more than 99% translated

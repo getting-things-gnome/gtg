@@ -20,6 +20,7 @@
 import gtk
 import gobject
 import pango
+import xml.sax.saxutils as saxutils
 
 from GTG import _
 from GTG.core.tree import Tree, TreeNode
@@ -35,7 +36,6 @@ COL_CDATE     = 4
 COL_CDATE_STR = 5
 COL_DLEFT     = 6
 COL_TAGS      = 7
-COL_BGCOL     = 8
 COL_LABEL     = 9
 
 class TaskTreeModel(gtk.GenericTreeModel):
@@ -57,9 +57,6 @@ class TaskTreeModel(gtk.GenericTreeModel):
         gtk.GenericTreeModel.__init__(self)
         self.req  = requester
         self.tree = Tree()
-                
-        # Default config
-        self.bg_color_enable = True
 
 ### TREE MODEL HELPER FUNCTIONS ###############################################
 
@@ -73,8 +70,9 @@ class TaskTreeModel(gtk.GenericTreeModel):
                     c_node = TreeNode(c_tid, c_task)
                     self.tree.add_node(c_tid, c_node, node)
                     c_node_path = self.tree.get_path_for_node(c_node)
-                    c_node_iter = self.get_iter(c_node_path)
-                    #self.row_inserted(c_node_path, c_node_iter)
+                    #if c_node_path:
+                        #c_node_iter = self.get_iter(c_node_path)
+                        #self.row_inserted(c_node_path, c_node_iter)
                     self._add_all_subtasks(c_node, c_task)
                     #print " - %s: adding %s as subtask." % (task.get_id(), c_tid)
         else:
@@ -102,45 +100,45 @@ class TaskTreeModel(gtk.GenericTreeModel):
 
     def on_get_value(self, rowref, column):
         node = self.tree.get_node_for_rowref(rowref)
-        task = node.get_obj()
+        if not node:
+            return None
+        else:
+            task = node.get_obj()
         if   column == COL_TID:
             return task.get_id()
         elif column == COL_OBJ:
             return task
         elif column == COL_TITLE:
-            return task.get_title()
+            return saxutils.escape(task.get_title())
         elif column == COL_DDATE:
-            return task.get_due_date()
+            return str(task.get_due_date())
         elif column == COL_CDATE:
-            return task.get_closed_date()
+            return str(task.get_closed_date())
         elif column == COL_CDATE_STR:
             if task.get_status() == Task.STA_DISMISSED:
                 date = "<span color='#AAAAAA'>" +\
-                    task.get_closed_date() + "</span>"
+                    str(task.get_closed_date()) + "</span>"
             else:
-                date = task.get_closed_date()
+                date = str(task.get_closed_date())
             return date
         elif column == COL_DLEFT:
             return task.get_days_left()
         elif column == COL_TAGS:
-            return task.get_tags()
-        elif column == COL_BGCOL:
-            if self.bg_color_enable:
-                return colors.background_color(task.get_tags())
-            else:
-                return None
+            tags = task.get_tags()
+            tags.sort(key = lambda x: x.get_name())
+            return tags
         elif column == COL_LABEL:
             if task.get_status() == Task.STA_ACTIVE:
                 count = self._count_active_subtasks_rec(task)
                 if count != 0:
-                    title = task.get_title() + " (%s)" % count
+                    title = saxutils.escape(task.get_title()) + " (%s)" % count
                 else:
-                    title = task.get_title()
+                    title = saxutils.escape(task.get_title())
             elif task.get_status() == Task.STA_DISMISSED:
-                  title = "<span color='#AAAAAA'>"\
-                      + task.get_title() + "</span>"
+                    title = "<span color='#AAAAAA'>"\
+                        + saxutils.escape(task.get_title()) + "</span>"
             else:
-                title = task.get_title()
+                title = saxutils.escape(task.get_title())
             return title
 
     def on_get_iter(self, path):
@@ -169,7 +167,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
         #print "on_iter_children: %s" % (rowref)
         if rowref:
             node = self.tree.get_node_for_rowref(rowref)
-            if node.has_child():
+            if node and node.has_child():
                 return self.tree.get_rowref_for_node(node.get_nth_child(0))
             else:
                 return None
@@ -180,7 +178,10 @@ class TaskTreeModel(gtk.GenericTreeModel):
     def on_iter_has_child(self, rowref):
         #print "on_iter_has_child: %s" % (rowref)
         node = self.tree.get_node_for_rowref(rowref)
-        return node.has_child()
+        if node:
+            return node.has_child()
+        else:
+            return None
 
     def on_iter_n_children(self, rowref):
         #print "on_iter_n_children: %s" % (rowref)
@@ -211,8 +212,18 @@ class TaskTreeModel(gtk.GenericTreeModel):
         else:
             return None
 
+    def update_task(self, tid):
+        nodes = []
+        # get the task
+        task = self.req.get_task(tid)
+        # get the node and signal it's changed
+        nodes = self.tree.get_nodes(tid)
+        for my_node in nodes:
+            node_path = self.tree.get_path_for_node(my_node)
+            node_iter = self.get_iter(node_path)
+            self.row_changed(node_path, node_iter)
+        
     def add_task(self, tid):
-        #print "Adding %s... " % tid
         nodes = []
         # get the task
         task = self.req.get_task(tid)
@@ -245,23 +256,29 @@ class TaskTreeModel(gtk.GenericTreeModel):
         for node in nodes:
             self._add_all_subtasks(node, task)
             node_path = self.tree.get_path_for_node(node)
-            node_iter = self.get_iter(node_path)
-            self.row_has_child_toggled(node_path, node_iter)
+            if node_path:
+                node_iter = self.get_iter(node_path)
+                self.row_has_child_toggled(node_path, node_iter)
 
     def remove_task(self, tid):
         # get the nodes
         nodes = self.tree.get_nodes(tid)
+        removed = False
         # Remove every row of this task
         for node in nodes:
             node_path = self.tree.get_path_for_node(node)
             self.tree.remove_node(tid, node)
             self.row_deleted(node_path)
+            removed = True
+        return removed
                     
     def move_task(self, parent, child):
         #print "Moving %s below %s" % (child, parent)
         # Get child
         child_tid  = self.get_value(child, COL_TID)
         child_task = self.req.get_task(child_tid)
+        #if we move a task, this task should be saved, even if new
+        child_task.set_to_keep()
         # Get old parent
         old_par = self.iter_parent(child)
         if old_par:
@@ -275,6 +292,14 @@ class TaskTreeModel(gtk.GenericTreeModel):
             new_par_task = self.req.get_task(new_par_tid)
         else:
             new_par_task = None
+            
+        # prevent illegal moves
+        c = parent
+        while c is not None:
+            t = self.get_value(c, COL_OBJ)
+            if t is child_task: return
+            c = self.iter_parent(c)
+        
         # Remove child from old parent
         if old_par_task:
             old_par_task.remove_subtask(child_tid)
@@ -285,16 +310,25 @@ class TaskTreeModel(gtk.GenericTreeModel):
         if new_par_task:
             new_par_task.add_subtask(child_tid)
 
-    def set_bg_color(self, val):
-        self.bg_color_enable = val
-
 class TaskTreeView(gtk.TreeView):
     """TreeView for display of a list of task. Handles DnD primitives too."""
 
     def __init__(self, model=None):
         gtk.TreeView.__init__(self)
         self.columns = []
+        self.bg_color_enable = True
         self.show()
+        
+    def set_bg_color(self, val):
+        self.bg_color_enable = val
+
+    def _celldatafunction(self, column, cell, model, iter):
+        if self.bg_color_enable:
+            bgcolor = column.get_tree_view().get_style().base[gtk.STATE_NORMAL]
+            col = colors.background_color(model.get_value(iter, COL_TAGS), bgcolor)
+        else:
+            col = None
+        cell.set_property("cell-background", col)
 
     def get_column(self, index):
         return self.columns[index]
@@ -323,6 +357,7 @@ class ActiveTaskTreeView(TaskTreeView):
     def __init__(self):
         TaskTreeView.__init__(self)
         self._init_tree_view()
+        self.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
 
         # Drag and drop
         self.enable_model_drag_source(\
@@ -346,6 +381,9 @@ class ActiveTaskTreeView(TaskTreeView):
         self.connect('drag_drop', self.on_drag_drop)
         self.connect('drag_data_get', self.on_drag_data_get)
         self.connect('drag_data_received', self.on_drag_data_received)
+        self.connect('button_press_event', self.on_button_press)
+        self.connect('button_release_event', self.on_button_release)
+        self.defer_select = False
 
     def _init_tree_view(self):
         # Tag column
@@ -356,7 +394,7 @@ class ActiveTaskTreeView(TaskTreeView):
         tag_col.add_attribute(render_tags, "tag_list", COL_TAGS)
         render_tags.set_property('xalign', 0.0)
         tag_col.set_resizable(False)
-        tag_col.add_attribute(render_tags, "cell-background", COL_BGCOL)
+        tag_col.set_cell_data_func(render_tags, self._celldatafunction)
         #tag_col.set_clickable         (True)
         #tag_col.connect               ('clicked', tv_sort_cb)
         self.append_column(tag_col)
@@ -371,8 +409,8 @@ class ActiveTaskTreeView(TaskTreeView):
         title_col.add_attribute(render_text, "markup", COL_LABEL)
         title_col.set_resizable(True)
         title_col.set_expand(True)
-        title_col.add_attribute(render_text, "cell_background", COL_BGCOL)
         title_col.set_sort_column_id(COL_TITLE)
+        title_col.set_cell_data_func(render_text, self._celldatafunction)
         self.append_column(title_col)
         self.columns.insert(COL_TITLE, title_col)
 
@@ -383,8 +421,8 @@ class ActiveTaskTreeView(TaskTreeView):
         ddate_col.pack_start(render_text, expand=False)
         ddate_col.add_attribute(render_text, "markup", COL_DDATE)
         ddate_col.set_resizable(False)
-        ddate_col.add_attribute(render_text, "cell_background", COL_BGCOL)
         ddate_col.set_sort_column_id(COL_DDATE)
+        ddate_col.set_cell_data_func(render_text, self._celldatafunction)
         self.append_column(ddate_col)
         self.columns.insert(COL_DDATE, ddate_col)
 
@@ -395,8 +433,8 @@ class ActiveTaskTreeView(TaskTreeView):
         dleft_col.pack_start(render_text, expand=False)
         dleft_col.add_attribute(render_text, "markup", COL_DLEFT)
         dleft_col.set_resizable(False)
-        dleft_col.add_attribute(render_text, "cell_background", COL_BGCOL)
         dleft_col.set_sort_column_id(COL_DLEFT)
+        dleft_col.set_cell_data_func(render_text, self._celldatafunction)
         self.append_column(dleft_col)
         self.columns.insert(COL_DLEFT, dleft_col)
 
@@ -406,6 +444,31 @@ class ActiveTaskTreeView(TaskTreeView):
         self.set_rules_hint(False)
 
     ### DRAG AND DROP ########################################################
+    def on_button_press(self, widget, event):
+        # Here we intercept mouse clicks on selected items so that we can
+        # drag multiple items without the click selecting only one
+        target = self.get_path_at_pos(int(event.x), int(event.y))
+        if (target 
+           and event.type == gtk.gdk.BUTTON_PRESS
+           and not (event.state & (gtk.gdk.CONTROL_MASK|gtk.gdk.SHIFT_MASK))
+           and self.get_selection().path_is_selected(target[0])):
+               # disable selection
+               self.get_selection().set_select_function(lambda *ignore: False)
+               self.defer_select = target[0]
+            
+    def on_button_release(self, widget, event):
+        # re-enable selection
+        self.get_selection().set_select_function(lambda *ignore: True)
+        
+        target = self.get_path_at_pos(int(event.x), int(event.y))    
+        if (self.defer_select and target 
+           and self.defer_select == target[0]
+           and not (event.x==0 and event.y==0)): # certain drag and drop 
+                                                 # operations still have path
+               # if user didn't drag, simulate the click previously ignored
+               self.set_cursor(target[0], target[1], False)
+            
+        self.defer_select=False
 
     def on_drag_drop(self, treeview, context, selection, info, timestamp):
         self.emit_stop_by_name('drag_drop')
@@ -415,8 +478,9 @@ class ActiveTaskTreeView(TaskTreeView):
         the parent task and the id of the selected task is passed to the
         destination"""
         treeselection = treeview.get_selection()
-        model, iter = treeselection.get_selected()
-        iter_str = model.get_string_from_iter(iter)
+        model, paths = treeselection.get_selected_rows()
+        iters = [model.get_iter(path) for path in paths]
+        iter_str = ','.join([model.get_string_from_iter(iter) for iter in iters])
         selection.set('gtg/task-iter-str', 0, iter_str)
         return
 
@@ -457,12 +521,14 @@ class ActiveTaskTreeView(TaskTreeView):
             par_iter_tasktree = None
 
         # Get dragged iter as a TaskTreeModel iter
-        drag_iter = model.get_iter_from_string(selection.data)
-        drag_iter_filter   =\
-            model.convert_iter_to_child_iter(None, drag_iter)
-        drag_iter_tasktree =\
-            model_filter.convert_iter_to_child_iter(drag_iter_filter)
-        tasktree_model.move_task(par_iter_tasktree, drag_iter_tasktree)
+        iters = selection.data.split(',')
+        for iter in iters:
+            drag_iter = model.get_iter_from_string(iter)
+            drag_iter_filter   =\
+                model.convert_iter_to_child_iter(None, drag_iter)
+            drag_iter_tasktree =\
+                model_filter.convert_iter_to_child_iter(drag_iter_filter)
+            tasktree_model.move_task(par_iter_tasktree, drag_iter_tasktree)
 
         self.emit_stop_by_name('drag_data_received')
 
@@ -476,16 +542,16 @@ class ClosedTaskTreeView(TaskTreeView):
 
     def _init_tree_view(self):
         # Tag column
-        tag_col     = gtk.TreeViewColumn()
+        self.tag_col = gtk.TreeViewColumn()
         render_tags = CellRendererTags()
-        tag_col.set_title(_("Tags"))
-        tag_col.pack_start(render_tags, expand=False)
-        tag_col.add_attribute(render_tags, "tag_list", COL_TAGS)
+        self.tag_col.set_title(_("Tags"))
+        self.tag_col.pack_start(render_tags, expand=False)
+        self.tag_col.add_attribute(render_tags, "tag_list", COL_TAGS)
+        self.tag_col.set_cell_data_func(render_tags, self._celldatafunction)
         render_tags.set_property('xalign', 0.0)
-        tag_col.set_resizable(False)
-        tag_col.add_attribute(render_tags, "cell-background", COL_BGCOL)
-        self.append_column(tag_col)
-        self.columns.insert(COL_TAGS, tag_col)
+        self.tag_col.set_resizable(False)
+        self.append_column(self.tag_col)
+        self.columns.insert(COL_TAGS, self.tag_col)
 
         # CLosed date column
         cdate_col    = gtk.TreeViewColumn()
@@ -493,8 +559,8 @@ class ClosedTaskTreeView(TaskTreeView):
         cdate_col.set_title(_("Closing date"))
         cdate_col.pack_start(render_text, expand=True)
         cdate_col.set_attributes(render_text, markup=COL_CDATE_STR)
-        cdate_col.add_attribute(render_text, "cell_background", COL_BGCOL)
         cdate_col.set_sort_column_id(COL_CDATE)
+        cdate_col.set_cell_data_func(render_text, self._celldatafunction)
         self.append_column(cdate_col)
         self.columns.insert(COL_CDATE_STR, cdate_col)
 
@@ -505,9 +571,20 @@ class ClosedTaskTreeView(TaskTreeView):
         title_col.set_title(_("Title"))
         title_col.pack_start(render_text, expand=True)
         title_col.set_attributes(render_text, markup=COL_LABEL)
-        title_col.add_attribute(render_text, "cell_background", COL_BGCOL)
+        title_col.set_cell_data_func(render_text, self._celldatafunction)
         title_col.set_sort_column_id(COL_TITLE)
         self.append_column(title_col)
         self.columns.insert(COL_TITLE, title_col)
         
         self.set_show_expanders(False)
+
+    def scroll_to_task(self, task_id):
+        model = self.get_model()
+        iter = model.get_iter_first()
+        while iter:
+            if model.get_value(iter, 1).get_id() == task_id:
+                break
+            iter = model.iter_next(iter)
+        self.scroll_to_cell(model.get_path(iter),
+                        self.tag_col,
+                        False)

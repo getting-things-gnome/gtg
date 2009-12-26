@@ -32,9 +32,10 @@ except:
     glade = None
 from os.path import pardir, abspath, dirname, join
 
-import info
-
-from xdg.BaseDirectory import xdg_data_home, xdg_config_home
+try:
+    from xdg.BaseDirectory import xdg_config_home
+except ImportError:
+    xdg_config_home = os.path.dirname(__file__)
 
 LOCAL_ROOTDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 DIST_ROOTDIR_LOCAL = "/usr/local/share/gtg"
@@ -44,7 +45,10 @@ DIST_ROOTDIR = "/usr/share/gtg"
 GETTEXT_DOMAIN = 'gtg'
 LOCALE_PATH = abspath(join(dirname(__file__), pardir, 'locales'))
 if not os.path.isdir(LOCALE_PATH):
-    LOCALE_PATH = '/usr/share/locale'
+    if os.path.isdir('/usr/local/share/locale') and os.uname()[0] != 'Linux':
+        LOCALE_PATH = '/usr/local/share/locale'
+    else:
+        LOCALE_PATH = '/usr/share/locale'
 languages_used = []
 lc, encoding = locale.getdefaultlocale()
 if lc:

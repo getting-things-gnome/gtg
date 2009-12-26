@@ -21,6 +21,7 @@ import gobject
 
 from GTG import _
 from GTG.taskbrowser.CellRendererTags import CellRendererTags
+from GTG.taskbrowser.tasktree import COL_OBJ as TASKTREE_COL_OBJ
 
 COL_ID    = 0
 COL_NAME  = 1
@@ -29,6 +30,7 @@ COL_OBJ   = 3
 COL_COLOR = 4
 COL_COUNT = 5
 COL_SEP   = 6
+
 
 class TagTreeModel(gtk.GenericTreeModel):
 
@@ -47,7 +49,6 @@ class TagTreeModel(gtk.GenericTreeModel):
         self.workview = False
 
 ### MODEL METHODS ############################################################
-
     def update_tags_for_task(self, tid):
         task = self.req.get_task(tid)
         for t in task.get_tags():
@@ -61,7 +62,7 @@ class TagTreeModel(gtk.GenericTreeModel):
 ### TREEMODEL INTERFACE ######################################################
 #
     def on_get_flags(self):
-        return gtk.TREE_MODEL_ITERS_PERSIST|gtk.TREE_MODEL_LIST_ONLY
+        return gtk.TREE_MODEL_ITERS_PERSIST
 
     def on_get_n_columns(self):
         return len(self.column_types)
@@ -104,9 +105,8 @@ class TagTreeModel(gtk.GenericTreeModel):
         elif column == COL_COUNT:
             sp_id = tag.get_attribute("special")
             if not sp_id:
-                count = len(self.req.get_active_tasks_list(\
-                       tags=[tag], workable=self.workview, \
-                       started_only=self.workview))
+                #This call is critical because called thousand of times
+                count = tag.get_tasks_nbr(workview=self.workview)
                 return  count
             else:
                 if sp_id == "all":
@@ -176,7 +176,7 @@ class TagTreeModel(gtk.GenericTreeModel):
 
     def on_iter_parent(self, rowref):
         #print "on_iter_parent: %s" % (rowref)
-        node = self.tree.get_node_from_rowref(rowref)
+        node = self.tree.get_node_for_rowref(rowref)
         if node.has_parent():
             parent = node.get_parent()
             return self.tree.get_rowref_for_node(parent)
@@ -188,110 +188,115 @@ class TagTreeModel(gtk.GenericTreeModel):
         root.add_child(tname, tag)
         tag.set_parent(root)
         tag_index = root.get_child_index(tname)
-        tag_path  = (tag_index,)
+        tag_path  = (tag_index, )
         tag_iter  = self.get_iter(tag_path)
         self.row_inserted(tag_path, tag_iter)
-#
-#    def remove_task(self, tid):
-#        # get the task
-#        task = self.req.get_task(tid)
-#        # Remove every row of this task
-#        if task.has_parents():
-#            # get every paths leading to this task
-#            path_list = self._get_paths_for_task(task)
-#            # remove every path
-#            for task_path in path_list:
-#                self.row_deleted(task_path)
-#        if tid in self.root_tasks:
-#            task_index = self._get_root_task_index(tid)
-#            task_path  = (task_index,)
-#            task_iter  = self.get_iter(task_path)
-#            self.row_deleted(task_path)
-#            self.root_tasks.remove(tid)
-#                    
-#    def move_task(self, parent, child):
-#        #print "Moving %s below %s" % (child, parent)
-#        # Get child
-#        child_tid  = self.get_value(child, COL_TID)
-#        child_task = self.req.get_task(child_tid)
-#        child_path = self.get_path(child)
-#        # Get old parent
-#        old_par = self.iter_parent(child)
-#        if old_par:
-#            old_par_tid  = self.get_value(old_par, COL_TID)
-#            old_par_task = self.req.get_task(old_par_tid)
-#        else:
-#            old_par_task = None
-#        # Get new parent
-#        if parent:
-#            new_par_tid  = self.get_value(parent, COL_TID)
-#            new_par_task = self.req.get_task(new_par_tid)
-#        else:
-#            new_par_task = None
-#        # Remove child from old parent
-#        if old_par_task:
-#            old_par_task.remove_subtask(child_tid)
-#        else:
-#            self.root_tasks.remove(child_tid)
-#        # Remove old parent from child
-#        if old_par_task:
-#            child_task.remove_parent(old_par_tid)
-#        # Add child to new parent (add_subtask also add new parent to child)
-#        if new_par_task:
-#            new_par_task.add_subtask(child_tid)
-#        else:
-#            self.root_tasks.append(child_tid)
-#        # Warn tree about deleted row
-#        self.row_deleted(child_path)
-#        # Warn tree about inserted row
-#        if new_par_task:
-#            new_child_index = new_par_task.get_subtask_index(child_tid)
-#        else:
-#            new_child_index = self._get_root_task_index(child_tid)
-#        if parent:
-#            new_child_path = self.get_path(parent) + (new_child_index,)
-#        else:
-#            new_child_path = (new_child_index,)
-#        new_child_iter = self.get_iter(new_child_path)
-#        self.row_inserted(new_child_path, new_child_iter)
+
+    def move_tag(self, parent, child):
+        #print "Moving %s below %s" % (child, parent)
+        # Get child
+        child_tag  = self.get_value(child, COL_OBJ)
+        child_path = self.get_path(child)
+        # Get old parent
+        old_par = self.iter_parent(child)
+        if old_par:
+            old_par_tag  = self.get_value(old_par, COL_OBJ)
+            old_par_n_children = self.iter_n_children(old_par)
+        else:
+            old_par_tag = None
+        # Get new parent
+        if parent:
+            new_par_tag  = self.get_value(parent, COL_OBJ)
+            new_par_n_children = self.iter_n_children(parent)
+        else:
+            new_par_tag = self.tree.root
+
+        # prevent illegal moves
+        c = new_par_tag
+        while c is not self.tree.root:
+            if c is child_tag:
+                return
+            c = c.get_parent()
+
+        if new_par_tag is not self.tree.root:
+            if new_par_tag.get_name()[0]!='@':
+                return
+        if child_tag.get_name()[0]!='@':
+            return
+
+        child_tag.reparent(new_par_tag)
+
+        # Warn tree about deleted row
+        self.row_deleted(child_path)
+        # Warn tree about inserted row
+        new_child_path=self.tree.get_path_for_node(child_tag)
+        new_child_iter = self.get_iter(new_child_path)
+        self.row_inserted(new_child_path, new_child_iter)
+        
+    def rename_tag(self,oldname,newname):
+        tag = self.req.get_tag(oldname)
+        self.req.rename_tag(oldname,newname)
 
 class TagTreeView(gtk.TreeView):
     """TreeView for display of a list of task. Handles DnD primitives too."""
-
+    DND_ID_TAG = 0
+    DND_ID_TASK = 1
     DND_TARGETS = [
-        ('gtg/task-iter-str', gtk.TARGET_SAME_WIDGET, 0)
+        ('gtg/tag-iter-str', gtk.TARGET_SAME_WIDGET, DND_ID_TAG),
+        ('gtg/task-iter-str', gtk.TARGET_SAME_APP, DND_ID_TASK)
     ]
 
     def __init__(self):
-        gtk.TreeView.__init__(self)
+        self.tv = gtk.TreeView.__init__(self)
+        self.show_expander = False
         self.show()
         self._init_tree_view()
 
         # Drag and drop
-#        self.enable_model_drag_source(\
-#            gtk.gdk.BUTTON1_MASK,
-#            self.DND_TARGETS,
-#            gtk.gdk.ACTION_DEFAULT | gtk.gdk.ACTION_MOVE)
-#        self.enable_model_drag_dest(\
-#            self.DND_TARGETS,
-#            gtk.gdk.ACTION_DEFAULT)
-# 
-#        self.drag_source_set(\
-#            gtk.gdk.BUTTON1_MASK,
-#            self.DND_TARGETS,
-#            gtk.gdk.ACTION_DEFAULT | gtk.gdk.ACTION_MOVE)
-#
-#        self.drag_dest_set(\
-#            gtk.DEST_DEFAULT_ALL,
-#            self.DND_TARGETS,
-#            gtk.gdk.ACTION_DEFAULT | gtk.gdk.ACTION_MOVE)
-#
-#        self.connect('drag_drop', self.on_drag_drop)
-#        self.connect('drag_data_get', self.on_drag_data_get)
-#        self.connect('drag_data_received', self.on_drag_data_received)
+        self.enable_model_drag_source(\
+            gtk.gdk.BUTTON1_MASK,
+            self.DND_TARGETS,
+            gtk.gdk.ACTION_DEFAULT | gtk.gdk.ACTION_MOVE)
+        self.enable_model_drag_dest(\
+            self.DND_TARGETS,
+            gtk.gdk.ACTION_DEFAULT)
+
+        self.drag_source_set(\
+            gtk.gdk.BUTTON1_MASK,
+            self.DND_TARGETS,
+            gtk.gdk.ACTION_DEFAULT | gtk.gdk.ACTION_MOVE)
+
+        self.drag_dest_set(\
+            gtk.DEST_DEFAULT_ALL,
+            self.DND_TARGETS,
+           gtk.gdk.ACTION_DEFAULT | gtk.gdk.ACTION_MOVE)
+            
+
+        self.connect('drag_drop', self.on_drag_drop)
+        self.connect('drag_data_get', self.on_drag_data_get)
+        self.connect('drag_data_received', self.on_drag_data_received)
+
+    def __has_child(self, model, path, iter):
+        if model.iter_has_child(iter):
+            self.show_expander = True
+            return True
+
+    def __show_expander_col(self, treemodel, path, iter):
+        self.show_expander = False
+        treemodel.foreach(self.__has_child)
+        if self.show_expander:
+            self.set_show_expanders(True)
+        else:
+            self.set_show_expanders(False)
+
+    def set_model(self, model):
+        model.connect("row-has-child-toggled", self.__show_expander_col)
+        gtk.TreeView.set_model(self, model)
 
     def refresh(self):
-        self.get_model().foreach(self._refresh_func)
+        model = self.get_model()
+        if model:
+            model.foreach(self._refresh_func)
 
     def _refresh_func(self, model, path, iter, user_data=None):
         model.row_changed(path, iter)
@@ -300,7 +305,6 @@ class TagTreeView(gtk.TreeView):
         return self.get_model().get_value(itera, COL_SEP)
 
     def _init_tree_view(self):
-        
          # Tag column
         tag_col      = gtk.TreeViewColumn()
         render_text  = gtk.CellRendererText()
@@ -318,73 +322,103 @@ class TagTreeView(gtk.TreeView):
         render_count.set_property('xalign', 1.0)
         render_tags.set_property('ypad', 3)
         render_text.set_property('ypad', 3)
+        render_text.set_property('editable', True)
+        render_text.connect("edited", self.rename_tag)
         render_count.set_property('xpad', 3)
         render_count.set_property('ypad', 3)
         tag_col.set_sort_column_id(-1)
         tag_col.set_expand(True)
         self.append_column(tag_col)
+        self.set_show_expanders(self.show_expander)
 
         # Global treeview properties
         self.set_row_separator_func(self._tag_separator_filter)
         self.set_headers_visible(False)
+        
+    def rename_tag(self,renderer,path,newname):
+        #This is a bit ugly ! We have to get the TreeModel from
+        #the treemodelfilter that we get from the treemodelsort
+        model = self.get_model()
+        itera = model.get_iter(path)
+        oldname = model.get_value(itera,COL_ID)
+        basemodel = model.get_model().get_model()
+        basemodel.rename_tag(oldname,newname)
 
     ### DRAG AND DROP ########################################################
+    def on_drag_drop(self, treeview, context, selection, info, timestamp):
+        self.emit_stop_by_name('drag_drop')
 
-#    def on_drag_drop(self, treeview, context, selection, info, timestamp):
-#        self.emit_stop_by_name('drag_drop')
-#
-#    def on_drag_data_get(self, treeview, context, selection, info, timestamp):
-#        """Extract data from the source of the DnD operation. Here the id of
-#        the parent task and the id of the selected task is passed to the
-#        destination"""
-#        treeselection = treeview.get_selection()
-#        model, iter = treeselection.get_selected()
-#        iter_str = model.get_string_from_iter(iter)
-#        selection.set('gtg/task-iter-str', 0, iter_str)
-#        return
-#
-#    def on_drag_data_received(self, treeview, context, x, y, selection, info,\
-#                              timestamp):
-#
-#        model          = treeview.get_model()
-#        model_filter   = model.get_model()
-#        tasktree_model = model_filter.get_model()
-#
-#        drop_info = treeview.get_dest_row_at_pos(x, y)
-#
-#        if drop_info:
-#            path, position = drop_info
-#            iter = model.get_iter(path)
-#            if position == gtk.TREE_VIEW_DROP_BEFORE or\
-#               position == gtk.TREE_VIEW_DROP_AFTER:
-#                # Must add the task to the parent of the task situated\
-#                # before/after
-#                # Get sibling parent
-#                par_iter = model.iter_parent(iter)
-#            else:
-#                # Must add task as a child of the dropped-on iter
-#                # Get parent
-#                par_iter = iter
-#        else:
-#            # Must add the task to the root
-#            # Parent = root => iter=None
-#            par_iter = None
-#
-#        # Get parent iter as a TaskTreeModel iter
-#        if par_iter:
-#            par_iter_filter   =\
-#                model.convert_iter_to_child_iter(None, par_iter)
-#            par_iter_tasktree =\
-#                model_filter.convert_iter_to_child_iter(par_iter_filter)
-#        else:
-#            par_iter_tasktree = None
-#
-#        # Get dragged iter as a TaskTreeModel iter
-#        drag_iter = model.get_iter_from_string(selection.data)
-#        drag_iter_filter   =\
-#            model.convert_iter_to_child_iter(None, drag_iter)
-#        drag_iter_tasktree =\
-#            model_filter.convert_iter_to_child_iter(drag_iter_filter)
-#        tasktree_model.move_task(par_iter_tasktree, drag_iter_tasktree)
-#
-#        self.emit_stop_by_name('drag_data_received')
+    def on_drag_data_get(self, treeview, context, selection, info, timestamp):
+        """Extract data from the source of the DnD operation. Here the id of
+        the parent task and the id of the selected task is passed to the
+        destination"""
+        treeselection = treeview.get_selection()
+        model, iter = treeselection.get_selected()
+        iter_str = model.get_string_from_iter(iter)
+        selection.set('gtg/tag-iter-str', 0, iter_str)
+
+    def on_drag_data_received(self, treeview, context, x, y, selection, info,\
+                              timestamp):                     
+        model          = treeview.get_model()
+        model_filter   = model.get_model()
+        tagtree_model = model_filter.get_model()
+
+        drop_info = treeview.get_dest_row_at_pos(x, y)
+
+        if drop_info:
+            path, position = drop_info
+            iter = model.get_iter(path)
+            if position == gtk.TREE_VIEW_DROP_BEFORE or\
+               position == gtk.TREE_VIEW_DROP_AFTER:
+                # Must add the tag to the parent of the tag situated\
+                # before/after
+                # Get sibling parent
+                par_iter = model.iter_parent(iter)
+            else:
+                # Must add tag as a child of the dropped-on iter
+                # Get parent
+                par_iter = iter
+        else:
+            # Must add the tag to the root
+            # Parent = root => iter=None
+            par_iter = None
+
+        # Get parent iter as a TagTreeModel iter
+        if par_iter:
+            par_iter_filter   =\
+                model.convert_iter_to_child_iter(None, par_iter)
+            par_iter_tagtree =\
+                model_filter.convert_iter_to_child_iter(par_iter_filter)
+        else:
+            par_iter_tagtree = None
+            
+            
+        if info == self.DND_ID_TAG:
+            # Get dragged iter as a TagTreeModel iter
+            drag_iter = model.get_iter_from_string(selection.data)
+            drag_iter_filter   =\
+                model.convert_iter_to_child_iter(None, drag_iter)
+            drag_iter_tagtree =\
+                model_filter.convert_iter_to_child_iter(drag_iter_filter)
+            tagtree_model.move_tag(par_iter_tagtree, drag_iter_tagtree)
+        elif info == self.DND_ID_TASK:
+            if drop_info: #can't drop task onto root
+                tag = model.get_value(iter, COL_OBJ)
+            
+                src_model = context.get_source_widget().get_model()
+                src_str_iters = selection.data.split(',')
+                src_iters = [src_model.get_iter_from_string(i) for i in src_str_iters]
+                tasks = [src_model.get_value(i, TASKTREE_COL_OBJ) for i in src_iters]
+            
+                if tag.get_name()[0]=='@':  #can't drop onto special pseudo-tags
+                    for task in tasks:
+                        task.add_tag(tag.get_name())
+                        task.sync()
+                elif tag.get_name() == 'gtg-tags-none':
+                    for task in tasks:
+                        for t in task.get_tags_name():
+                            task.remove_tag(t)
+                        task.sync()
+
+        self.emit_stop_by_name('drag_data_received')
+        

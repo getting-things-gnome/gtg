@@ -17,12 +17,11 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-from datetime import date
 import xml.dom.minidom
 import uuid
 
 from GTG import _
-from GTG.tools.dates import strtodate
+from GTG.tools.dates import date_today, no_date, Date
 from datetime import datetime
 
 
@@ -47,9 +46,9 @@ class Task:
         self.title = _("My new task")
         #available status are: Active - Done - Dismiss - Note
         self.status = self.STA_ACTIVE
-        self.closed_date = None
-        self.due_date = None
-        self.start_date = None
+        self.closed_date = no_date
+        self.due_date = no_date
+        self.start_date = no_date
         self.parents = []
         #The list of children tid
         self.children = []
@@ -67,11 +66,13 @@ class Task:
     def is_loaded(self):
         return self.loaded
 
-    def set_loaded(self):
+    def set_loaded(self,signal=True):
         #avoid doing it multiple times
         if not self.loaded:
             self.loaded = True
-            self.req._task_loaded(self.tid)
+            if signal:
+                self.req._task_loaded(self.tid)
+                self.call_modified()
 
     def set_to_keep(self):
         self.can_be_deleted = False
@@ -129,7 +130,7 @@ class Task:
                     self.closed_date = donedate
                 #or to today
                 else:
-                    self.closed_date = date.today()
+                    self.closed_date = date_today()
             #If we mark a task as Active and that some parent are not
             #Active, we break the parent/child relation
             #It has no sense to have an active subtask of a done parent.
@@ -139,9 +140,12 @@ class Task:
                 if self.has_parents():
                     for p_tid in self.get_parents():
                         par = self.req.get_task(p_tid)
-                        if par.is_loaded() and par.get_status in\
+                        if par.is_loaded() and par.get_status() in\
                            [self.STA_DONE, self.STA_DISMISSED]:
-                            self.remove_parent(p_tid)
+                            #we can either break the parent/child relationship
+                            #self.remove_parent(p_tid)
+                            #or restore the parent too
+                            par.set_status(self.STA_ACTIVE)
                 #We dont mark the children as Active because
                 #They might be already completed after all
 
@@ -158,102 +162,65 @@ class Task:
                 workable = False
         return workable
 
+    #A task is in the workview if it is workable, started, active and
+    #if none of its tag are "non-workview"
+    #if tag is provided, we consider the workview of that particular tag
+    def is_in_workview(self,tag=None):
+        result = True
+        if self.is_workable() and self.is_started()\
+                              and self.get_status() == "Active" :
+            for t in self.get_tags():
+                if t.get_attribute("nonworkview") == "True" and \
+                                t != tag :
+                    result = False
+        else:
+            result = False
+        return result
+
     def get_modified(self):
         return self.modified
 
     def set_modified(self, string):
         self.modified = string
 
-    def set_due_date(self, fulldate, fromparent=False):
-        # if fromparent, we set only a date if duedate is not set
-        #Or if duedate is after the newly set date !
-        if fromparent:
-            parent_date = fulldate
-            fulldate = self.due_date.__str__()
-        else:
-            parent_date = None
-        #We retrieve the most urgent due date from parent
-        for par in self.get_parents():
-            pardate_str = self.req.get_task(par).get_due_date()
-            if pardate_str:
-                pardate = strtodate(pardate_str)
-                if not strtodate(parent_date) or\
-                   pardate < strtodate(parent_date):
-                    parent_date = pardate_str
-        #We compare it to the date we want to set
-        if parent_date and strtodate(parent_date):
-            if not fulldate or not strtodate(fulldate) or\
-               strtodate(parent_date) < strtodate(fulldate):
-                fulldate = parent_date
-        #Now we set the duedate
-        if fulldate:
-            #print "fulldate %s" %fulldate
-            self.due_date = strtodate(fulldate)
-            #We set the due date for children only
-            #if their due date is "larger" (or none)
-            for child in self.get_subtasks():
-                actual_date = child.get_due_date()
-                if actual_date:
-                    rfulldate = strtodate(fulldate)
-                    ractual = strtodate(actual_date)
-                    if rfulldate and rfulldate < ractual:
-                        child.set_due_date(fulldate, fromparent=True)
-                else:
-                    child.set_due_date(fulldate, fromparent=True)
-        else:
-            self.due_date = None
+    def set_due_date(self, fulldate):
+    	assert(isinstance(fulldate, Date))
+        self.due_date = fulldate
         self.sync()
 
     #Due date return the most urgent date of all parents
     def get_due_date(self):
-        if self.due_date:
-            zedate = self.due_date
-        else:
-            zedate = date.max
+        zedate = self.due_date
+
         for par in self.get_parents():
             #Here we compare with the parent's due date
-            pardate_str = self.req.get_task(par).get_due_date()
-            if pardate_str:
-                pardate = strtodate(pardate_str)
-                if pardate and zedate > pardate:
-                    zedate = pardate
-        if zedate == date.max:
-            return ''
-        else:
-            return str(zedate)
+            pardate = self.req.get_task(par).get_due_date()
+            if pardate and zedate > pardate:
+            	zedate = pardate
+        
+        return zedate
 
     def set_start_date(self, fulldate):
-        if fulldate:
-            self.start_date = strtodate(fulldate)
-        else:
-            self.start_date = None
+    	assert(isinstance(fulldate, Date))
+        self.start_date = fulldate
+        # why don't we sync here if we do in set_due_date?
 
     def get_start_date(self):
-        if self.start_date:
-            return str(self.start_date)
-        else:
-            return ''
+        return self.start_date
 
     def is_started(self):
         if self.start_date:
-            difference = date.today() - self.start_date
+            difference = date_today() - self.start_date
             return difference.days >= 0
         else:
             return True
 
     def get_closed_date(self):
-        if self.closed_date:
-            return str(self.closed_date)
-        else:
-            return ''
+        return self.closed_date
 
     def get_days_left(self):
         due_date = self.get_due_date()
-        if due_date:
-            difference = strtodate(due_date) - date.today()
-            return difference.days
-        else:
-            return None
+        return due_date.days_left()
 
     def get_text(self):
         #defensive programmtion to avoid returning None
@@ -335,18 +302,16 @@ class Task:
         """
         self.can_be_deleted = False
         #The if prevent an infinite loop
-        if tid not in self.children and tid not in self.parents:
+        if tid not in self.children and tid not in self.parents and\
+                                                tid != self.get_id():
             self.children.append(tid)
             task = self.req.get_task(tid)
             task.add_parent(self.get_id())
             #now we set inherited attributes only if it's a new task
-            #Except for due date because a child always has to be due
-            #before its parent
-            task.set_due_date(self.get_due_date(), fromparent=True)
             if task.can_be_deleted:
                 task.set_start_date(self.get_start_date())
                 for t in self.get_tags():
-                    task.add_tag(t.get_name())
+                    task.tag_added(t.get_name())
 
     def remove_subtask(self, tid):
         """Removed a subtask from the task.
@@ -380,6 +345,13 @@ class Task:
         for i in self.children:
             zelist.append(self.req.get_task(i))
         return zelist
+        
+    def get_self_and_all_subtasks(self, active_only=False, tasks=[]):
+        tasks.append(self)
+        for i in self.get_subtasks():
+            if not active_only or i.status == self.STA_ACTIVE:
+                i.get_self_and_all_subtasks(active_only, tasks)
+        return tasks
 
     def get_subtask(self, tid):
         """Return the task corresponding to a given ID.
@@ -463,7 +435,7 @@ class Task:
         val = unicode(str(att_value), "UTF-8")
         self.attributes[(namespace, att_name)] = val
         self.sync()
-
+    
     def get_attribute(self, att_name, namespace=""):
         """Get the attribute C{att_name}.
 
@@ -476,11 +448,14 @@ class Task:
     #Use the requester
     def delete(self):
         self.set_sync_func(None, callsync=False)
+        for task in self.get_subtasks():
+            task.remove_parent(self.get_id())
+            self.req.delete_task(task.get_id())
         for i in self.get_parents():
             task = self.req.get_task(i)
             task.remove_subtask(self.get_id())
-        for task in self.get_subtasks():
-            task.remove_parent(self.get_id())
+        for tag in self.tags:
+            tag.remove_task(self.get_id())
         #then we remove effectively the task
         #self.req.delete_task(self.get_id())
 
@@ -495,7 +470,17 @@ class Task:
         self._modified_update()
         if self.sync_func and self.is_loaded():
             self.sync_func(self)
-            self.req._task_modified(self.tid)
+            self.call_modified()
+    
+    #This function send the modified signals for the tasks, 
+    #parents and childrens       
+    def call_modified(self):
+        self.req._task_modified(self.tid)
+        #we also modify parents and children
+        for s in self.get_subtask_tids() :
+            self.req._task_modified(s)
+        for p in self.get_parents() :
+            self.req._task_modified(p)
 
     def _modified_update(self):
         self.modified = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
@@ -515,25 +500,61 @@ class Task:
     #return a copy of the list of tag objects
     def get_tags(self):
         return list(self.tags)
+        
+    def rename_tag(self,old,new):
+        self.content = self.content.replace(old,new)
+        self.remove_tag(old)
+        self.tag_added(new)
 
-    #This function add tag by name
-    def add_tag(self, tagname):
+    def tag_added(self, tagname):
+        "Add a tag. Does not add '@tag' to the contents. See insert_tag"
         t = self.req.new_tag(tagname.encode("UTF-8"))
+        t.add_task(self.get_id())
         #Do not add the same tag twice
         if not t in self.tags:
             self.tags.append(t)
             for child in self.get_subtasks():
                 if child.can_be_deleted:
-                    child.add_tag(tagname)
+                    child.tag_added(tagname)
+            return True
+    
+    def add_tag(self, tagname):
+        "Add a tag to the task and insert '@tag' into the task's content"
+        if self.tag_added(tagname):
+            c = self.content
+            
+            #strip <content>...</content> tags
+            if c.startswith('<content>'):
+                c = c[len('<content>'):]
+            if c.endswith('</content>'):
+                c = c[:-len('</content>')]
+            
+            if not c:
+                # don't need a separator if it's the only text
+                sep = ''
+            elif c.startswith('<tag>'):
+                # if content starts with a tag, make a comma-separated list
+                sep = ', '
+            else:
+                # other text at the beginning, so put the tag on its own line
+                sep = '\n\n'
+            
+            self.content = "<content><tag>%s</tag>%s%s</content>"%(tagname, sep, c)
 
     #remove by tagname
     def remove_tag(self, tagname):
         t = self.req.get_tag(tagname)
+        t.remove_task(self.get_id())
         if t in self.tags:
             self.tags.remove(t)
             for child in self.get_subtasks():
                 if child.can_be_deleted:
                     child.remove_tag(tagname)
+        self.content = (self.content
+                        .replace('<tag>%s</tag>\n\n'%(tagname), '') #trailing \n
+                        .replace('<tag>%s</tag>, '%(tagname), '') #trailing comma
+                        .replace('<tag>%s</tag>'%(tagname), '')
+                       )
 
     #tag_list is a list of tags object
     #return true if at least one of the list is in the task

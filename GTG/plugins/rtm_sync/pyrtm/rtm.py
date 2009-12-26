@@ -8,14 +8,11 @@ __all__ = (
         )
 
 
-#import new
 import warnings
 import urllib
-import logging
 import time
 from hashlib import md5
 from GTG import _
-import httplib
 
 warnings.simplefilter('default', ImportWarning)
 
@@ -33,9 +30,9 @@ if not _use_simplejson:
              "http://pypi.python.org/pypi/simplejson.", ImportWarning,
              stacklevel=2)
 
-logging.basicConfig()
-LOG = logging.getLogger(__name__)
-LOG.setLevel(logging.INFO)
+#logging.basicConfig()
+#LOG = logging.getLogger(__name__)
+#LOG.setLevel(logging.INFO)
 
 SERVICE_URL = 'http://api.rememberthemilk.com/services/rest/'
 AUTH_SERVICE_URL = 'http://www.rememberthemilk.com/services/auth/'
@@ -93,10 +90,10 @@ class RTM(object):
         params['format'] = 'json'
         params['api_sig'] = self._sign(params)
 
-        json = openURL(SERVICE_URL, params)
+        json = openURL(SERVICE_URL, params).read()
 
-        LOG.debug("JSON response: \n%s" % json)
-
+        #LOG.debug("JSON response: \n%s" % json)
+        time.sleep(1)
         if _use_simplejson:
             data = dottedDict('ROOT', simplejson.loads(json))
         else:
@@ -104,8 +101,7 @@ class RTM(object):
         rsp = data.rsp
 
         if rsp.stat == 'fail':
-            error_string = _("API call failed")+ " - %s (%s)"
-            raise RTMAPIError, error_string % (
+            raise RTMAPIError, 'API call failed - %s (%s)' % (
                 rsp.err.msg, rsp.err.code)
         else:
             return rsp
@@ -180,28 +176,11 @@ def sortedItems(dictionary):
     for key in keys:
         yield key, dictionary[key]
 
-def openURL(url, queryArgs = None):
+def openURL(url, queryArgs=None):
     if queryArgs:
         url = url + '?' + urllib.urlencode(queryArgs)
-        LOG.debug("URL> %s", url)
-    time_to_wait = 0
-    while True:
-        try:
-            if time_to_wait !=0:
-                time.sleep(time_to_wait)
-            http_connection = httplib.HTTPConnection("api.rememberthemilk.com",80)
-            http_connection.request("GET", url)
-            http_response = http_connection.getresponse()
-            http_response_data = http_response.read()
-            break
-        except httplib.IncompleteRead as exception:
-            #rtm server issues incomplete responses if we hammer it too much
-            # this way we can be fast *and* safe
-            if time_to_wait == 0:
-                time_to_wait = 2
-            else:
-                raise exception
-    return http_response_data
+    #LOG.debug("URL> %s", url)
+    return urllib.urlopen(url)
 
 class dottedDict(object):
     "Make dictionary items accessible via the object-dot notation."
@@ -217,6 +196,8 @@ class dottedDict(object):
                     value = [dottedDict('%s_%d' % (key, i), item)
                              for i, item in indexed(value)]
                 setattr(self, key, value)
+        else:
+            raise ValueError, 'not a dict: %s' % dictionary
 
     def __repr__(self):
         children = [c for c in dir(self) if not c.startswith('_')]
@@ -243,11 +224,11 @@ def indexed(seq):
 API = {
    'auth': {
        'checkToken':
-           [('auth_token'), ()],
+           [('auth_token',), ()],
        'getFrob':
            [(), ()],
        'getToken':
-           [('frob'), ()]
+           [('frob',), ()]
        },
     'contacts': {
         'add':
@@ -267,23 +248,23 @@ API = {
         'getList':
             [(), ()],
         'removeContact':
-            [('timeline', 'group_id', 'contact_id'), ()]
+            [('timeline', 'group_id', 'contact_id'), ()],
         },
     'lists': {
         'add':
-            [('timeline', 'name',), ('filter')],
+            [('timeline', 'name',), ('filter',)],
         'archive':
-            [('timeline', 'list_id'),()],
+            [('timeline', 'list_id'), ()],
         'delete':
-            [('timeline', 'list_id'),()],
+            [('timeline', 'list_id'), ()],
         'getList':
-            [(),()],
+            [(), ()],
         'setDefaultList':
             [('timeline'), ('list_id')],
         'setName':
-            [('timeline', 'list_id', 'name')],
+            [('timeline', 'list_id', 'name'), ()],
         'unarchive':
-            [('timeline'), ('list_id')]
+            [('timeline',), ('list_id',)]
         },
     'locations': {
         'getList':
@@ -415,4 +396,4 @@ def set_log_level(level):
     >>> rtm.set_log_level(logging.INFO)
     '''
     
-    LOG.setLevel(level)
+    #LOG.setLevel(level)

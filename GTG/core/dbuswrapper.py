@@ -3,6 +3,7 @@ import dbus.glib
 import dbus.service
 
 from GTG.core import CoreConfig
+from GTG.tools import dates
 
 BUSNAME = CoreConfig.BUSNAME
 BUSFACE = CoreConfig.BUSINTERFACE
@@ -30,12 +31,12 @@ def task_to_dict(task):
           "id": task.get_id(),
           "status": task.get_status(),
           "title": task.get_title(),
-          "duedate": task.get_due_date(),
-          "startdate": task.get_start_date(),
-          "donedate": task.get_closed_date(),
+          "duedate": str(task.get_due_date()),
+          "startdate": str(task.get_start_date()),
+          "donedate": str(task.get_closed_date()),
           "tags": task.get_tags_name(),
           "text": task.get_text(),
-          "subtask": task.get_subtasks_tid(),
+          "subtask": task.get_subtask_tids(),
           }), signature="sv")
 
 
@@ -59,7 +60,8 @@ class DBusTaskWrapper(dbus.service.Object):
     @dbus.service.method(BUSNAME)
     def get_task(self, tid):
         # Retrieve a specific task by ID and return the data
-        return task_to_dict(self.req.get_task(tid))
+        toret = task_to_dict(self.req.get_task(tid))
+        return toret
 
     @dbus.service.method(BUSNAME)
     def get_tasks(self):
@@ -69,8 +71,13 @@ class DBusTaskWrapper(dbus.service.Object):
     @dbus.service.method(BUSNAME, in_signature="asasbb")
     def get_task_ids_filtered(self, tags, status, started_only, is_root):
         # Retrieve a list of task IDs filtered by specified parameters
+        tags_obj = []
+        for t in tags:
+            zetag = self.req.get_tag(t)
+            if zetag:
+                tags_obj.append(zetag)
         ids = self.req.get_tasks_list(
-            tags, status, False, started_only, is_root)
+            tags_obj, status, False, started_only, is_root)
         # If there are no matching tasks, return an empty D-Bus array
         return ids if ids else dbus.Array([], "s")
 
@@ -97,13 +104,12 @@ class DBusTaskWrapper(dbus.service.Object):
     def new_task(self, status, title, duedate, startdate, donedate, tags,
                  text, subtasks):
         # Generate a new task object and return the task data as a dict
-        nt = self.req.new_task()
+        nt = self.req.new_task(tags=tags)
         for sub in subtasks: nt.add_subtask(sub)
-        for tag in tags: nt.add_tag(tag)
-        nt.set_status(status, donedate=donedate)
+        nt.set_status(status, donedate=dates.strtodate(donedate))
         nt.set_title(title)
-        nt.set_due_date(duedate)
-        nt.set_start_date(startdate)
+        nt.set_due_date(dates.strtodate(duedate))
+        nt.set_start_date(dates.strtodate(startdate))
         nt.set_text(text)
         return task_to_dict(nt)
 
@@ -124,6 +130,12 @@ class DBusTaskWrapper(dbus.service.Object):
     @dbus.service.method(BUSNAME)
     def open_task_editor(self, tid):
         self.ui.open_task(tid)
+        
+    @dbus.service.method(BUSNAME)
+    def open_new_task(self):
+        nt = self.req.new_task(newtask=True)
+        uid = nt.get_id()
+        self.ui.open_task(uid,thisisnew=True)
 
     @dbus.service.method(BUSNAME)
     def hide_task_browser(self):

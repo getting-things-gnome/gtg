@@ -178,7 +178,7 @@
             </child>
             <child>
               <widget class="GtkButton" id="btn_close">
-                <property name="label" translatable="yes">gtk-close</property>
+                <property name="label">gtk-close</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>

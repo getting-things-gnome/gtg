@@ -14,10 +14,13 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import with_statement
+
 import pickle
 import os
 import datetime
 import time
+import re
 from GTG import _
 
 __all__ = ["smartSaveToFile",
@@ -90,3 +93,19 @@ def timezone():
         return datetime.timedelta(seconds = time.altzone)
     else:
         return datetime.timedelta(seconds = time.timezone)
+
+def text_strip_tags(text):
+    r = re.compile(r'<content>(.*)</content>',re.DOTALL)
+    result = re.findall(r, text)
+    if len(result) == 0:
+        #something is wrong
+        return text
+    text = result[0]
+    r = re.compile(r'(?:^|\s)@[\w]+,*')
+    last_match_end = 0
+    purged_text = ""
+    for match in r.finditer(text):
+        purged_text += text[last_match_end : match.start()]
+        last_match_end = match.end()
+    return purged_text 
+

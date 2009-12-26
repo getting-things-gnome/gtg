@@ -61,7 +61,7 @@ def create_data_files():
     data_files.append(('share/icons/hicolor/scalable/apps', ['data/icons/hicolor/scalable/apps/gtg.svg']))
     # misc
     data_files.append(('share/applications', ['gtg.desktop']))
-    data_files.append(('share/man/man1', ['doc/gtg.1']))
+    data_files.append(('share/man/man1', ['doc/gtg.1','doc/gtg_new_task.1']))
     return data_files
     
     
@@ -108,10 +108,56 @@ setup(
   author       = author,
   author_email = info.EMAIL,
   description  = info.SHORT_DESCRIPTION,
-  packages     = ['GTG','GTG.backends','GTG.core','GTG.taskbrowser','GTG.taskeditor','GTG.tools'],
-  package_data = {'GTG.taskbrowser':['taskbrowser.glade'],'GTG.taskeditor':['taskeditor.glade']},
-  data_files   = create_data_files(),
-  scripts=['gtg',],
+  packages     = [
+    'GTG',
+    'GTG.backends',
+    'GTG.core',
+    'GTG.core.plugins',
+    'GTG.taskbrowser',
+    'GTG.taskeditor',
+    'GTG.tools',
+    'GTG.plugins',
+    'GTG.plugins.bugzilla',
+    'GTG.plugins.export',
+    'GTG.plugins.geolocalized_tasks',
+    'GTG.plugins.hamster',
+    'GTG.plugins.helloworld',
+    'GTG.plugins.rtm_sync',
+    'GTG.plugins.notification_area',
+    'GTG.plugins.tomboy',
+    ],
+  package_data = {
+    'GTG.taskbrowser':['taskbrowser.glade'],
+    'GTG.taskeditor':['taskeditor.glade'],
+    'GTG.core.plugins':['pluginmanager.glade'],
+    'GTG.plugins':[
+        'bugzilla.gtg-plugin',
+        'export.gtg-plugin',
+        'geolocalized-tasks.gtg-plugin',
+        'hamster.gtg-plugin',
+        'helloworld.gtg-plugin',
+        'notification-area.gtg-plugin',
+        'rtm-sync.gtg-plugin',
+        'tomboy.gtg-plugin'
+        ],
+    'GTG.plugins.rtm_sync':['gtk.glade', 'pyrtm/rtm.py',
+                            'icons/hicolor/16x16/rtm_image.png',
+                            'icons/hicolor/24x24/rtm_image.png',
+                            'icons/hicolor/svg/rtm_image.svg'],
+    'GTG.plugins.export':['export.ui', 'export_templates/thumbnail_textual.txt',
+                          'export_templates/template_simple.html',
+                          'export_templates/template_textual.txt',
+                          'export_templates/thumbnail_simple.html'],
+    'GTG.plugins.geolocalized_tasks':['geolocalized.glade',
+                                      'icons/hicolor/24x24/geolocalization.png',
+                                      'icons/hicolor/16x16/assign-location.png',
+                                      'icons/hicolor/svg/assign-location.svg',
+                                      'icons/hicolor/svg/geolocalization.svg'],
+    'GTG.plugins.helloworld':['hello_world.glade'],
+    'GTG.plugins.tomboy':['tomboy.glade', 'tomboy.ui']
+    },
+  data_files = create_data_files(),
+  scripts=['gtg','gtg_new_task',],
   cmdclass={'install_data': InstallData},
 )
 

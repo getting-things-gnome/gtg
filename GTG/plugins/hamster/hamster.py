@@ -25,6 +25,15 @@ from calendar import timegm
 class hamsterPlugin:
     PLUGIN_NAMESPACE = 'hamster-plugin'
     
+    def __init__(self):
+        #task editor widget
+        self.vbox = None
+        self.button=gtk.ToolButton()
+        self.menu_item = gtk.MenuItem("Start task in Hamster")
+        self.taskbutton = None
+        self.separator = gtk.SeparatorToolItem()
+        self.task_separator = None
+    
     #### Interaction with Hamster
     def sendTask(self, task):
         """Send a gtg task to hamster-applet"""
@@ -69,6 +78,20 @@ class hamsterPlugin:
             self.set_hamster_ids(task, valid_ids)
         return records
     
+    def get_active_id(self):
+        f = self.hamster.GetCurrentFact()
+        if f: return f['id']
+        else: return None
+            
+    def is_task_active(self, task):
+    	records = self.get_records(task)
+    	ids = [record['id'] for record in records]
+    	return self.get_active_id() in ids
+    	
+    def stop_task(self, task):
+        if self.is_task_active(self, task):
+    	    self.hamster.StopTracking()
+    
     #### Datastore  
     def get_hamster_ids(self, task):
         a = task.get_attribute("id-list", namespace=self.PLUGIN_NAMESPACE)
@@ -89,28 +112,27 @@ class hamsterPlugin:
             return False
         
         # add menu item
-        self.menu_item = gtk.MenuItem("Start task in Hamster")
         self.menu_item.connect('activate', self.browser_cb, plugin_api)
         plugin_api.add_menu_item(self.menu_item)
         
         # and button
-        self.button=gtk.ToolButton()
         self.button.set_label("Start")
         self.button.set_icon_name('hamster-applet')
         self.button.set_tooltip_text("Start a new activity in Hamster Time Tracker based on the selected task")
         self.button.connect('clicked', self.browser_cb, plugin_api)
-        self.separator = plugin_api.add_toolbar_item(gtk.SeparatorToolItem()) # saves the separator's index to later remove it
+        # saves the separator's index to later remove it
+        plugin_api.add_toolbar_item(self.separator)
         plugin_api.add_toolbar_item(self.button)
 
     def onTaskOpened(self, plugin_api):
         # add button
-        self.taskbutton = gtk.ToolButton()
-        self.taskbutton.set_label("Start")
-        self.taskbutton.set_icon_name('hamster-applet')
-        self.taskbutton.set_tooltip_text("Start a new activity in Hamster Time Tracker based on this task")
-        self.taskbutton.connect('clicked', self.task_cb, plugin_api)
-        plugin_api.add_task_toolbar_item(gtk.SeparatorToolItem())
-        plugin_api.add_task_toolbar_item(self.taskbutton)
+        button = gtk.ToolButton()
+        button.set_label("Start")
+        button.set_icon_name('hamster-applet')
+        button.set_tooltip_text("Start a new activity in Hamster Time Tracker based on this task")
+        button.connect('clicked', self.task_cb, plugin_api)
+        self.task_separator = plugin_api.add_task_toolbar_item(gtk.SeparatorToolItem())
+        self.taskbutton = plugin_api.add_task_toolbar_item(button)
         
         task = plugin_api.get_task()
         records = self.get_records(task)
@@ -137,7 +159,11 @@ class hamsterPlugin:
             
             total = 0
             
-            def add(w, a, b, offset):
+            def add(w, a, b, offset, active=False):
+                if active:
+                    a = "<span color='red'>%s</span>"%a
+                    b = "<span color='red'>%s</span>"%b
+                
                 dateLabel=gtk.Label(a)
                 dateLabel.set_use_markup(True)
                 dateLabel.set_alignment(xalign=0.0, yalign=0.5)
@@ -151,19 +177,23 @@ class hamsterPlugin:
                 w.attach(durLabel, left_attach=1, right_attach=2, top_attach=offset, 
                 bottom_attach=offset+1, xoptions=gtk.FILL, yoptions=0)
             
+            active_id = self.get_active_id()
             for offset,i in enumerate(records):
                 t = calc_duration(i)    
                 total += t
-                add(inner_table, format_date(i), format_duration(t), offset)
+                add(inner_table, format_date(i), format_duration(t), offset, i['id'] == active_id)
                 
             add(outer_table, "<big><b>Total</b></big>", "<big><b>%s</b></big>"%format_duration(total), 1)
             
-            plugin_api.add_widget_to_taskeditor(vbox)
+            self.vbox = plugin_api.add_widget_to_taskeditor(vbox)
         
     def deactivate(self, plugin_api):
         plugin_api.remove_menu_item(self.menu_item)
         plugin_api.remove_toolbar_item(self.button)
-        plugin_api.remove_toolbar_item(None, self.separator)
+        plugin_api.remove_toolbar_item(self.separator)
+        plugin_api.remove_task_toolbar_item(self.task_separator)
+        plugin_api.remove_task_toolbar_item(self.taskbutton)
+        plugin_api.remove_widget_from_taskeditor(self.vbox)
         
     def browser_cb(self, widget, plugin_api):
         self.sendTask(plugin_api.get_selected_task())

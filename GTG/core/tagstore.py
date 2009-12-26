@@ -21,7 +21,6 @@
 #the tag object implementation
 
 import os
-import copy
 
 from GTG.core      import CoreConfig
 from GTG.core.tree import Tree, TreeNode
@@ -33,11 +32,12 @@ XMLROOT = "tagstore"
 
 # There's only one Tag store by user. It will store all the tag used
 # and their attribute.
-
-class TagStore:
-
-    def __init__(self):
+class TagStore :
+    
+    def __init__(self,requester):
+        self.req = requester
         self.tree = Tree()
+        self.tags={}
         self.root = self.tree.get_root()
         self.filename = os.path.join(CoreConfig.DATA_DIR, XMLFILE)
         doc, self.xmlstore = cleanxml.openxmlfile(self.filename,
@@ -54,6 +54,11 @@ class TagStore:
                 at_val = t.getAttribute(at_name)
                 tag.set_attribute(at_name, at_val)
                 i += 1
+            parent = tag.get_attribute('parent')
+            if parent:
+                pnode=self.new_tag(parent)
+                tag.reparent(pnode, update_attr=False)
+
         #Now we build special tags. Special tags are not
         #in the traditional tag list
         #Their name doesn't begin with "@"
@@ -73,20 +78,20 @@ class TagStore:
         with corresponding name"""
         #we create a new tag from a name
         tname = tagname.encode("UTF-8")
-        if tname not in self.root.get_children():
-            tag = Tag(tname, save_cllbk=self.save)
-            self.root.add_child(tname, tag)
-            tag.set_parent(self.root)
+        if tname not in self.tags:
+            tag = Tag(tname, save_cllbk=self.save, req=self.req)
+            tag.reparent(self.root)
+            self.tags[tname] = tag
             return tag
         else:
-            return self.root.get_child(tname)
+            return self.tags[tname]
 
     def add_tag(self, tag):
         name = tag.get_name()
         #If tag does not exist in the store, we add it
-        if not self.root.has_child(name):
-            self.root.add_child(name, tag)
-            tag.set_parent(self.root)
+        if name not in self.tags:
+            tag.reparent(self.root)
+            self.tags[name] = tag
         #else, we just take the attributes of the new tag
         #This allow us to keep attributes of the old tag
         #that might be not set in the new one
@@ -95,39 +100,41 @@ class TagStore:
             for att_name in atts:
                 val = tag.get_attribute(att_name)
                 if att_name != 'name' and val:
-                    self.root.get_child(name).set_attribute(att_name, val)
+                    self.tags[name].set_attribute(att_name, val)
 
     def get_tag(self, tagname):
-        if tagname in self.root.get_children():
-            return self.root.get_child(tagname)
-        else:
-            return None
+        if tagname[0] != "@":
+            tagname = "@" + tagname
+        return self.tags.get(tagname, None)
+        
+    def rename_tag(self, oldname, newname):
+        if len(newname) > 0 and \
+                            oldname not in ['gtg-tags-none','gtg-tags-all']:
+            if newname[0] != "@" :
+                newname = "@" + newname
+            if newname != oldname and newname != None \
+                                  and newname not in self.tags:
+                self.tags[newname] = self.tags[oldname]
+                self.tags[newname].rename(newname)
+                del self.tags[oldname]
 
-#    def get_alltag_tag(self):
-#        """Return the special tag 'All tags'"""
-#        return self.alltag_tag
-#
-#    def get_notag_tag(self):
-#        """Return the special tag 'No tags'"""
-#        return self.notag_tag
     def get_all_tags_name(self, attname=None, attvalue=None):
         """Return the name of all tags
-        Optionaly, if you pass the attname and attvalue argument, it will
+        Optionally, if you pass the attname and attvalue argument, it will
         only add tags that have the given value for the given attribute
         excluding tags that don't have this attribute
         (except if attvalue is None)"""
         l = []
-        for t in self.root.get_children():
+        for t in self.tags.values():
             if not attname:
-                l.append(self.root.get_child[t].get_name())
-            elif self.root.get_child[t].get_attribute(attname) == attvalue:
-                l.append(self.root.get_child[t].get_name())
+                l.append(t.get_name())
+            elif t.get_attribute(attname) == attvalue:
+                l.append(t.get_name())
         return l
 
     def get_all_tags(self, attname=None, attvalue=None):
         l = []
-        for tname in self.root.get_children():
-            t = self.root.get_child(tname)
+        for t in self.tags.values():
             if not attname:
                 l.append(t)
             elif t.get_attribute(attname) == attvalue:
@@ -170,7 +177,7 @@ class Tag(TreeNode):
     for tags is C{name}, which always matches L{Tag.get_name()}.
     """
 
-    def __init__(self, name, save_cllbk=None):
+    def __init__(self, name, save_cllbk=None,req=None):
         """Construct a tag.
 
         @param name: The name of the tag. Should be a string, generally a
@@ -180,14 +187,24 @@ class Tag(TreeNode):
         """
         TreeNode.__init__(self, name)
         self._name = str(name)
+        self.req = req
         self._attributes = {'name': self._name}
         self._save = save_cllbk
+        #list of tasks associated with this tag
+        self.tasks = []
 
     def get_name(self):
         """Return the name of the tag."""
         return self.get_attribute("name")
+        
+    def rename(self,newname):
+        old = self.get_name()
+        self.set_attribute("name",newname,internalrename=True)
+        for t in self.get_tasks():
+            self.req.get_task(t).rename_tag(old,newname)
+    
 
-    def set_attribute(self, att_name, att_value):
+    def set_attribute(self, att_name, att_value, internalrename=False):
         """Set an arbitrary attribute.
 
         This will call the C{save_cllbk} callback passed to the constructor.
@@ -196,8 +213,9 @@ class Tag(TreeNode):
         @param att_value: The value of the attribute. Will be converted to a
             string.
         """
-        if att_name == "name":
+        if att_name == "name" and not internalrename:
             # Warning : only the constructor can set the "name".
+            #or the internalrename
             #
             # XXX: This should actually raise an exception, or warn, or
             # something. The Zen of Python says "Errors should never pass
@@ -215,6 +233,15 @@ class Tag(TreeNode):
         Returns C{None} if there is no attribute matching C{att_name}.
         """
         return self._attributes.get(att_name, None)
+        
+    def del_attribute(self, att_name):
+        """Deletes the attribute C{att_name}.
+        """
+        if not att_name in self._attributes:
+            return
+        del self._attributes[att_name]
+        if self._save:
+            self._save()            
 
     def get_all_attributes(self, butname=False):
         """Return a list of all attribute names.
@@ -226,6 +253,69 @@ class Tag(TreeNode):
         if butname:
             attributes.remove('name')
         return attributes
+
+    def reparent(self, parent, update_attr=True):
+        if update_attr:
+            if isinstance(parent, Tag):
+                self.set_attribute('parent', parent.get_name())
+            elif 'parent' in self._attributes:
+                del self._attributes['parent']
+        TreeNode.reparent(self, parent)
+        
+    def all_children(self):
+        l = [self]
+        for i in self.get_children_objs():
+            l += i.all_children()
+        return l
+
+    ### TASK relation ####      
+    def add_task(self, tid):
+        if tid not in self.tasks:
+            self.tasks.append(tid)      
+    def remove_task(self,tid):
+        if tid in self.tasks:
+            self.tasks.remove(tid)          
+    def get_tasks(self):
+        #return a copy of the list
+        toreturn = self.tasks[:]
+        tmplist = []
+        for c in self.get_children_objs():
+            tmplist.extend(c.get_tasks())
+        for ti in tmplist:
+            if ti not in toreturn:
+                toreturn.append(ti)
+        return toreturn 
+    def get_tasks_nbr(self,workview=False):
+        tasks = self.get_tasks()
+        temp_list = []
+        #workview in a non workviewable tag
+        if workview and self.get_attribute("nonworkview") == "True":
+            for t in tasks:
+                ta = self.req.get_task(t)
+                if ta.is_in_workview(tag=self) and t not in temp_list:
+                    temp_list.append(t)
+        #workview in a workviewable tag
+        elif workview:
+            for t in tasks:
+                ta = self.req.get_task(t)
+                if ta.is_in_workview() and t not in temp_list:
+                    temp_list.append(t)
+        #non workview
+        else:
+            for t in tasks:
+                ta = self.req.get_task(t)
+                if ta.get_status() == "Active" and t not in temp_list:
+                    temp_list.append(t)
+        toreturn = len(temp_list)
+        return toreturn
+    def is_used(self):
+        return len(self.tasks) > 0
+    def is_actively_used(self):
+        toreturn = False
+        for task in self.tasks :
+            if self.req.get_task(task).get_status() == "Active":
+                toreturn = True
+        return toreturn
 
     def __str__(self):
         return "Tag: %s" % self.get_name()

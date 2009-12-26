@@ -1,0 +1,779 @@
+<?xml version="1.0" ?>
+<project>
+	<task id="0@1" status="Active" tags="@gtg,@hacking" uuid="67987316-c413-4ce0-a485-a6a9a1541006">
+		<title>
+			Define GTG 0.3 roadmap
+		</title>
+		<duedate>
+			2009-12-15
+		</duedate>
+		<modified>
+			2009-11-29T23:54:44
+		</modified>
+		<subtask>
+			1@1
+		</subtask>
+		<subtask>
+			2@1
+		</subtask>
+		<subtask>
+			3@1
+		</subtask>
+		<content>
+			@gtg, @hacking
+
+Define what new GTG functionalities we will envision for 0.3 and decide what other work to during this development cycle.
+
+→ &lt;subtask&gt;1@1&lt;/subtask&gt;
+→ &lt;subtask&gt;2@1&lt;/subtask&gt;
+→ &lt;subtask&gt;3@1&lt;/subtask&gt;
+
+		</content>
+	</task>
+	<task id="1@1" status="Active" tags="@gtg,@hacking" uuid="6bce3da8-f292-4609-8e28-a2645c02fbb3">
+		<title>
+			write down a proposal
+		</title>
+		<modified>
+			2009-11-29T23:16:04
+		</modified>
+		<content>
+			@gtg, @hacking, 
+
+* tag edition dialog
+* printing
+* undo &amp;amp; redo
+		</content>
+	</task>
+	<task id="2@1" status="Active" tags="@gtg,@hacking" uuid="e73e7a87-3298-4558-8791-4301b587a755">
+		<title>
+			submit it to the dev mailing-list for discussion
+		</title>
+		<modified>
+			2009-11-29T23:11:17
+		</modified>
+	</task>
+	<task id="3@1" status="Active" tags="@gtg,@hacking" uuid="d62d08c1-6e3d-4dfa-b3f4-d1102db0c1b4">
+		<title>
+			create a summary and post it to the GNOME wiki
+		</title>
+		<modified>
+			2009-11-29T23:11:43
+		</modified>
+	</task>
+	<task id="4@1" status="Active" tags="@gtg,@hacking,@web" uuid="10782d7a-fd41-4cc5-bc12-2d5644eb38c2">
+		<title>
+			Create a new website for GTG
+		</title>
+		<modified>
+			2009-11-29T23:15:11
+		</modified>
+		<subtask>
+			5@1
+		</subtask>
+		<subtask>
+			6@1
+		</subtask>
+		<subtask>
+			7@1
+		</subtask>
+		<subtask>
+			8@1
+		</subtask>
+		<subtask>
+			9@1
+		</subtask>
+		<content>
+			&lt;tag&gt;@gtg&lt;/tag&gt;, &lt;tag&gt;@hacking&lt;/tag&gt;, &lt;tag&gt;@web&lt;/tag&gt;
+
+The actual GTG website is not nice, we should put together some better-looking website to promote GTG
+
+We should also update its content
+
+→ &lt;subtask&gt;5@1&lt;/subtask&gt;
+→ &lt;subtask&gt;6@1&lt;/subtask&gt;
+→ &lt;subtask&gt;7@1&lt;/subtask&gt;
+→ &lt;subtask&gt;8@1&lt;/subtask&gt;
+→ &lt;subtask&gt;9@1&lt;/subtask&gt;
+		</content>
+	</task>
+	<task id="5@1" status="Active" tags="" uuid="b73f1213-653c-49f1-a2ea-71a56ca31e9d">
+		<title>
+			define website tree
+		</title>
+		<modified>
+			2009-11-29T23:13:14
+		</modified>
+	</task>
+	<task id="6@1" status="Active" tags="" uuid="461d1f6b-1724-4036-8b29-8c6b9828340f">
+		<title>
+			decide what web infrastructure to use
+		</title>
+		<modified>
+			2009-11-29T23:13:30
+		</modified>
+	</task>
+	<task id="7@1" status="Active" tags="" uuid="641da20f-c9a8-4921-8fad-92cfb9431915">
+		<title>
+			create some simple and yet nice style for the website
+		</title>
+		<modified>
+			2009-11-29T23:14:08
+		</modified>
+	</task>
+	<task id="8@1" status="Active" tags="" uuid="e2b3ed0d-ed0c-42b3-b555-d658e5952817">
+		<title>
+			code and develop
+		</title>
+		<modified>
+			2009-11-29T23:14:21
+		</modified>
+	</task>
+	<task id="9@1" status="Active" tags="" uuid="f718bd02-d148-44ea-a2f2-022e3e4f8a7b">
+		<title>
+			upload &amp; replace old website
+		</title>
+		<modified>
+			2009-11-29T23:14:34
+		</modified>
+	</task>
+	<task id="10@1" status="Active" tags="@bills,@money" uuid="6d264326-bacd-4db1-b53d-188d9f27f918">
+		<title>
+			Renew my subscription to the sport club
+		</title>
+		<modified>
+			2009-11-29T23:17:52
+		</modified>
+		<content>
+			&lt;tag&gt;@bills&lt;/tag&gt;, &lt;tag&gt;@money&lt;/tag&gt;
+		</content>
+	</task>
+	<task id="11@1" status="Active" tags="@ifixit,@stuff2buy" uuid="d16535f4-fc9e-4bbf-9101-0320e2007b64">
+		<title>
+			Fix light bulbs in the condo
+		</title>
+		<modified>
+			2009-11-29T23:19:03
+		</modified>
+		<subtask>
+			12@1
+		</subtask>
+		<subtask>
+			13@1
+		</subtask>
+		<content>
+			@ifixit, @stuff2buy
+
+→ &lt;subtask&gt;12@1&lt;/subtask&gt;
+→ &lt;subtask&gt;13@1&lt;/subtask&gt;
+		</content>
+	</task>
+	<task id="12@1" status="Active" tags="@ifixit,@stuff2buy" uuid="4d6152f7-d4c0-4779-9eef-4ff10ccb366a">
+		<title>
+			buy new light bulbs for the living room
+		</title>
+		<modified>
+			2009-11-29T23:18:40
+		</modified>
+	</task>
+	<task id="13@1" status="Active" tags="@ifixit,@stuff2buy" uuid="61490b69-7d91-4845-8027-e62291d5c3a8">
+		<title>
+			buy new lights bulbs for the kitchen
+		</title>
+		<modified>
+			2009-11-29T23:18:59
+		</modified>
+	</task>
+	<task id="14@1" status="Active" tags="@party,@stuff2buy,@people" uuid="f8264c6f-8570-40b3-a1ac-df1f3eedf26a">
+		<title>
+			Prepare an nice party
+		</title>
+		<modified>
+			2009-11-29T23:21:20
+		</modified>
+		<subtask>
+			15@1
+		</subtask>
+		<subtask>
+			16@1
+		</subtask>
+		<subtask>
+			17@1
+		</subtask>
+		<subtask>
+			18@1
+		</subtask>
+		<subtask>
+			19@1
+		</subtask>
+		<content>
+			@party, @stuff2buy, @people
+
+→ &lt;subtask&gt;15@1&lt;/subtask&gt;
+→ &lt;subtask&gt;17@1&lt;/subtask&gt;
+→ &lt;subtask&gt;16@1&lt;/subtask&gt;
+→ &lt;subtask&gt;18@1&lt;/subtask&gt;
+→ &lt;subtask&gt;19@1&lt;/subtask&gt;
+		</content>
+	</task>
+	<task id="15@1" status="Active" tags="@party,@stuff2buy,@people" uuid="40dbd5a3-d6e3-41cb-ad0a-312c9150d46e">
+		<title>
+			Decide what to do
+		</title>
+		<modified>
+			2009-11-29T23:20:25
+		</modified>
+	</task>
+	<task id="16@1" status="Active" tags="@party,@stuff2buy,@people" uuid="73ad5d43-068f-46c5-8ffc-9917cf94f33b">
+		<title>
+			Mail everyone
+		</title>
+		<modified>
+			2009-11-29T23:20:28
+		</modified>
+	</task>
+	<task id="17@1" status="Active" tags="@party,@stuff2buy,@people" uuid="75ef67bb-2a66-4c92-addf-85588da081c1">
+		<title>
+			Find a good date for it
+		</title>
+		<modified>
+			2009-11-29T23:20:42
+		</modified>
+	</task>
+	<task id="18@1" status="Active" tags="@party,@stuff2buy,@people" uuid="8fbfe3b7-8ebb-4ee1-8ad9-8e4c44c46568">
+		<title>
+			Buy needed groceries
+		</title>
+		<modified>
+			2009-11-29T23:21:04
+		</modified>
+	</task>
+	<task id="19@1" status="Active" tags="@party,@stuff2buy,@people" uuid="187a6561-2b16-4cf2-aada-2f162430301d">
+		<title>
+			Party!
+		</title>
+		<modified>
+			2009-11-29T23:21:07
+		</modified>
+	</task>
+	<task id="20@1" status="Active" tags="@money,@stuff2sell,@videogame" uuid="8e8c203f-655c-42da-a0fd-48718c3f3a63">
+		<title>
+			Sell that game
+		</title>
+		<modified>
+			2009-11-29T23:22:08
+		</modified>
+		<content>
+			&lt;tag&gt;@money&lt;/tag&gt;, &lt;tag&gt;@stuff2sell&lt;/tag&gt;, &lt;tag&gt;@videogame&lt;/tag&gt;
+
+Not needed anymore, I can sell to get back some of the money.
+		</content>
+	</task>
+	<task id="21@1" status="Active" tags="@money,@condo,@stuff2pay" uuid="a85c6d6d-f57c-470f-81c9-c22b86b7a78c">
+		<title>
+			Pay the rent
+		</title>
+		<modified>
+			2009-11-29T23:23:07
+		</modified>
+		<content>
+			&lt;tag&gt;@money&lt;/tag&gt;, &lt;tag&gt;@condo&lt;/tag&gt;, &lt;tag&gt;@stuff2pay&lt;/tag&gt;
+		</content>
+	</task>
+	<task id="22@1" status="Active" tags="@someday,@friends,@fun,@travels" uuid="97930c78-a107-4c67-8ffb-5061a20d9642">
+		<title>
+			Organize a nice and loooong trip with some friends
+		</title>
+		<duedate>
+			2010-01-31
+		</duedate>
+		<modified>
+			2009-11-30T00:00:17
+		</modified>
+		<startdate>
+			2009-12-28
+		</startdate>
+		<subtask>
+			23@1
+		</subtask>
+		<subtask>
+			24@1
+		</subtask>
+		<subtask>
+			25@1
+		</subtask>
+		<subtask>
+			26@1
+		</subtask>
+		<subtask>
+			27@1
+		</subtask>
+		<subtask>
+			28@1
+		</subtask>
+		<content>
+			@travels, @someday, @friends, @fun
+
+→ &lt;subtask&gt;23@1&lt;/subtask&gt;
+→ &lt;subtask&gt;24@1&lt;/subtask&gt;
+→ &lt;subtask&gt;25@1&lt;/subtask&gt;
+→ &lt;subtask&gt;26@1&lt;/subtask&gt;
+→ &lt;subtask&gt;27@1&lt;/subtask&gt;
+→ &lt;subtask&gt;28@1&lt;/subtask&gt;
+
+		</content>
+	</task>
+	<task id="23@1" status="Active" tags="@someday,@friends,@fun,@travels" uuid="abf71ef7-b10e-4da9-88d2-028bddd36357">
+		<title>
+			planify the next year, watch for free time
+		</title>
+		<duedate>
+			2010-01-31
+		</duedate>
+		<modified>
+			2009-11-30T00:00:16
+		</modified>
+		<content>
+			@travels, @someday, @friends, @fun, 
+
+Have a look at 2010 calendar, to spot where I could have some time to go on holiday
+
+		</content>
+	</task>
+	<task id="24@1" status="Active" tags="@someday,@friends,@fun,@travels" uuid="75265501-b49c-48f1-b320-a5cfbd69b0bc">
+		<title>
+			organize a long trip (1month)
+		</title>
+		<modified>
+			2009-11-29T23:44:12
+		</modified>
+		<content>
+			&lt;tag&gt;@travels&lt;/tag&gt;, &lt;tag&gt;@someday&lt;/tag&gt;, &lt;tag&gt;@friends&lt;/tag&gt;, &lt;tag&gt;@fun&lt;/tag&gt;, 
+
+		</content>
+	</task>
+	<task id="25@1" status="Active" tags="@someday,@friends,@fun,@travels" uuid="bfbe4a36-47d6-4243-aee0-5e11326da007">
+		<title>
+			budgetize
+		</title>
+		<duedate>
+			2010-01-31
+		</duedate>
+		<modified>
+			2009-11-29T23:56:22
+		</modified>
+		<content>
+			@travels, @someday, @friends, @fun, 
+
+		</content>
+	</task>
+	<task id="26@1" status="Active" tags="@someday,@friends,@fun,@travels" uuid="7234cd81-c08d-4259-8442-eff07d79d51c">
+		<title>
+			book what's needed
+		</title>
+		<modified>
+			2009-11-29T23:43:58
+		</modified>
+		<content>
+			&lt;tag&gt;@travels&lt;/tag&gt;, &lt;tag&gt;@someday&lt;/tag&gt;, &lt;tag&gt;@friends&lt;/tag&gt;, &lt;tag&gt;@fun&lt;/tag&gt;, 
+
+		</content>
+	</task>
+	<task id="27@1" status="Active" tags="@someday,@friends,@fun,@travels" uuid="965d6cff-e7d2-4a7e-9641-91c0ebe0297a">
+		<title>
+			travel and have a lot of fun!
+		</title>
+		<modified>
+			2009-11-29T23:44:27
+		</modified>
+		<content>
+			&lt;tag&gt;@travels&lt;/tag&gt;, &lt;tag&gt;@someday&lt;/tag&gt;, &lt;tag&gt;@friends&lt;/tag&gt;, &lt;tag&gt;@fun&lt;/tag&gt;, 
+
+		</content>
+	</task>
+	<task id="28@1" status="Active" tags="@someday,@friends,@fun,@travels" uuid="74ccd6cc-1dd0-404b-8f54-085528f8792f">
+		<title>
+			put pictures on the web
+		</title>
+		<modified>
+			2009-11-29T23:44:22
+		</modified>
+		<content>
+			&lt;tag&gt;@travels&lt;/tag&gt;, &lt;tag&gt;@someday&lt;/tag&gt;, &lt;tag&gt;@friends&lt;/tag&gt;, &lt;tag&gt;@fun&lt;/tag&gt;, 
+
+		</content>
+	</task>
+	<task id="29@1" status="Active" tags="@householding" uuid="62502821-397b-478c-8f5a-b61724427060">
+		<title>
+			Clean up my apartment
+		</title>
+		<modified>
+			2009-11-29T23:30:39
+		</modified>
+		<content>
+			&lt;tag&gt;@householding&lt;/tag&gt;
+		</content>
+	</task>
+	<task id="30@1" status="Active" tags="@gtg,@bugtriaging" uuid="27bb363d-406d-4b2e-88a9-ca6e245d50d3">
+		<title>
+			Do some triage on GTG bugs
+		</title>
+		<modified>
+			2009-11-29T23:33:13
+		</modified>
+		<content>
+			&lt;tag&gt;@gtg&lt;/tag&gt;, &lt;tag&gt;@bugtriaging&lt;/tag&gt;
+		</content>
+	</task>
+	<task id="31@1" status="Active" tags="@friends,@outside,@hobby" uuid="a408d4e7-8350-45b5-bacb-2392aba5c3e7">
+		<title>
+			Organize a walk
+		</title>
+		<modified>
+			2009-11-29T23:35:42
+		</modified>
+		<subtask>
+			32@1
+		</subtask>
+		<subtask>
+			33@1
+		</subtask>
+		<subtask>
+			34@1
+		</subtask>
+		<subtask>
+			35@1
+		</subtask>
+		<subtask>
+			36@1
+		</subtask>
+		<content>
+			@friends, @outside, @hobby
+
+→ &lt;subtask&gt;32@1&lt;/subtask&gt;
+→ &lt;subtask&gt;33@1&lt;/subtask&gt;
+→ &lt;subtask&gt;34@1&lt;/subtask&gt;
+→ &lt;subtask&gt;35@1&lt;/subtask&gt;
+→ &lt;subtask&gt;36@1&lt;/subtask&gt;
+		</content>
+	</task>
+	<task id="32@1" status="Active" tags="@friends,@outside,@hobby" uuid="4358750a-27aa-40ea-bf7f-fa31bfb81e84">
+		<title>
+			gather information about nice walk around my homeplace
+		</title>
+		<modified>
+			2009-11-29T23:34:46
+		</modified>
+	</task>
+	<task id="33@1" status="Active" tags="@friends,@outside,@hobby" uuid="fe7ac37b-f840-4ce2-83b4-69afa7e59a8f">
+		<title>
+			tell Mike &amp; Dana I'm going to organize a walk
+		</title>
+		<modified>
+			2009-11-29T23:35:14
+		</modified>
+	</task>
+	<task id="34@1" status="Active" tags="@friends,@outside,@hobby" uuid="ed646e1e-a433-42f2-a7f9-e7ae56a87ef7">
+		<title>
+			send a mail to people
+		</title>
+		<modified>
+			2009-11-29T23:35:08
+		</modified>
+	</task>
+	<task id="35@1" status="Active" tags="@friends,@outside,@hobby" uuid="b8f26a23-776f-4054-943e-29abd03e9d0c">
+		<title>
+			prepare planning
+		</title>
+		<modified>
+			2009-11-29T23:35:31
+		</modified>
+	</task>
+	<task id="36@1" status="Active" tags="@friends,@outside,@hobby" uuid="415cd379-2189-4bc1-a8cf-25efc0eacc76">
+		<title>
+			Walk and have a lot of fun!
+		</title>
+		<modified>
+			2009-11-29T23:35:40
+		</modified>
+	</task>
+	<task id="37@1" status="Active" tags="@music,@CDs" uuid="1e1cce74-b085-4817-b538-8344a0eeb8cb">
+		<title>
+			Listen to my new CDs
+		</title>
+		<modified>
+			2009-11-29T23:37:59
+		</modified>
+		<subtask>
+			38@1
+		</subtask>
+		<subtask>
+			39@1
+		</subtask>
+		<subtask>
+			40@1
+		</subtask>
+		<content>
+			@music, @CDs
+
+→ &lt;subtask&gt;38@1&lt;/subtask&gt;
+→ &lt;subtask&gt;39@1&lt;/subtask&gt;
+→ &lt;subtask&gt;40@1&lt;/subtask&gt;
+		</content>
+	</task>
+	<task id="38@1" status="Active" tags="@music,@CDs" uuid="cdc7267a-8e23-4d59-a795-8c291c5ea599">
+		<title>
+			rip my freshly-bought cds
+		</title>
+		<modified>
+			2009-11-29T23:37:40
+		</modified>
+	</task>
+	<task id="39@1" status="Active" tags="@music,@CDs" uuid="f464575e-4d5c-454f-a9a0-a649be4bbedf">
+		<title>
+			add them to banshee
+		</title>
+		<modified>
+			2009-11-29T23:37:52
+		</modified>
+	</task>
+	<task id="40@1" status="Active" tags="@music,@CDs" uuid="923fa816-eeef-44e5-99c8-4583b468c68c">
+		<title>
+			listen and enjoy!
+		</title>
+		<modified>
+			2009-11-29T23:37:56
+		</modified>
+	</task>
+	<task id="41@1" status="Active" tags="@friends,@party,@movie" uuid="c42106b8-de74-4c4c-8108-a4095720c089">
+		<title>
+			Organize a movie evening
+		</title>
+		<modified>
+			2009-11-29T23:40:24
+		</modified>
+		<subtask>
+			42@1
+		</subtask>
+		<subtask>
+			43@1
+		</subtask>
+		<subtask>
+			44@1
+		</subtask>
+		<subtask>
+			45@1
+		</subtask>
+		<content>
+			@friends, @party, @movie
+
+→ &lt;subtask&gt;42@1&lt;/subtask&gt;
+→ &lt;subtask&gt;43@1&lt;/subtask&gt;
+→ &lt;subtask&gt;44@1&lt;/subtask&gt;
+→ &lt;subtask&gt;45@1&lt;/subtask&gt;
+		</content>
+	</task>
+	<task id="42@1" status="Active" tags="@friends,@party,@movie" uuid="462418cf-7ce4-4ff4-9c4c-5500ffdf03b2">
+		<title>
+			find a nice selection of movie
+		</title>
+		<modified>
+			2009-11-29T23:39:04
+		</modified>
+	</task>
+	<task id="43@1" status="Active" tags="@friends,@party,@movie" uuid="afca5022-32df-4d0b-900d-526a6145230b">
+		<title>
+			tell friends
+		</title>
+		<modified>
+			2009-11-29T23:39:07
+		</modified>
+	</task>
+	<task id="44@1" status="Active" tags="@friends,@party,@movie" uuid="3307104e-e3de-423a-974e-3b0f55532240">
+		<title>
+			prepare some popcorns and finger food
+		</title>
+		<modified>
+			2009-11-29T23:40:18
+		</modified>
+	</task>
+	<task id="45@1" status="Active" tags="@friends,@party,@movie" uuid="e3b9a8cd-f20d-438f-bdf6-bd30e3a64aad">
+		<title>
+			watch and enjoy!
+		</title>
+		<modified>
+			2009-11-29T23:39:18
+		</modified>
+	</task>
+	<task id="46@1" status="Active" tags="@travels,@friends,@stuff2buy,@stuff2book,@stuff2do" uuid="d7030218-696a-4c91-bee9-d561dbbad2f1">
+		<title>
+			Travel to Iceland
+		</title>
+		<modified>
+			2009-11-29T23:52:55
+		</modified>
+		<subtask>
+			47@1
+		</subtask>
+		<subtask>
+			48@1
+		</subtask>
+		<subtask>
+			49@1
+		</subtask>
+		<subtask>
+			50@1
+		</subtask>
+		<subtask>
+			51@1
+		</subtask>
+		<subtask>
+			52@1
+		</subtask>
+		<subtask>
+			53@1
+		</subtask>
+		<content>
+			&lt;tag&gt;@travels&lt;/tag&gt;, &lt;tag&gt;@friends&lt;/tag&gt;, &lt;tag&gt;@stuff2buy&lt;/tag&gt;, &lt;tag&gt;@stuff2book&lt;/tag&gt;, &lt;tag&gt;@stuff2do&lt;/tag&gt;
+
+→ &lt;subtask&gt;47@1&lt;/subtask&gt;
+→ &lt;subtask&gt;48@1&lt;/subtask&gt;
+→ &lt;subtask&gt;49@1&lt;/subtask&gt;
+→ &lt;subtask&gt;50@1&lt;/subtask&gt;
+→ &lt;subtask&gt;51@1&lt;/subtask&gt;
+→ &lt;subtask&gt;52@1&lt;/subtask&gt;
+→ &lt;subtask&gt;53@1&lt;/subtask&gt;
+
+		</content>
+	</task>
+	<task id="47@1" status="Active" tags="@travels,@friends" uuid="fe0dac3f-4607-441e-8fb9-6285401d8cbb">
+		<title>
+			Contact Bob to agree on a planning
+		</title>
+		<modified>
+			2009-11-29T23:41:20
+		</modified>
+	</task>
+	<task id="48@1" status="Active" tags="@travels,@friends" uuid="67a650e0-8e8e-4078-88bd-5b5ebed9f48c">
+		<title>
+			Book plane tickets
+		</title>
+		<modified>
+			2009-11-29T23:41:40
+		</modified>
+	</task>
+	<task id="49@1" status="Active" tags="@travels,@friends,@stuff2buy,@stuff2book" uuid="1f2be137-9eac-4079-ad9e-43ed9e082ff9">
+		<title>
+			Buy some books about Iceland
+		</title>
+		<modified>
+			2009-11-29T23:42:17
+		</modified>
+	</task>
+	<task id="50@1" status="Active" tags="@travels,@friends,@stuff2buy,@stuff2book" uuid="f6b0bb36-a947-4d33-9b9b-582ae401520c">
+		<title>
+			Buy warm gears
+		</title>
+		<modified>
+			2009-11-29T23:42:22
+		</modified>
+	</task>
+	<task id="51@1" status="Active" tags="@travels,@friends,@stuff2buy,@stuff2book" uuid="f2466b40-4c71-40e7-96eb-b824327e1604">
+		<title>
+			Go to Iceland
+		</title>
+		<modified>
+			2009-11-29T23:42:33
+		</modified>
+	</task>
+	<task id="52@1" status="Active" tags="@travels,@friends,@stuff2buy,@stuff2book" uuid="5b3fea66-2416-435c-a30d-8144e02ba700">
+		<title>
+			Come back!
+		</title>
+		<modified>
+			2009-11-29T23:42:37
+		</modified>
+	</task>
+	<task id="53@1" status="Active" tags="@travels,@friends,@stuff2buy,@stuff2book" uuid="84cbe48a-61d7-4f7e-a371-42003493542e">
+		<title>
+			Put pictures, write blog post
+		</title>
+		<modified>
+			2009-11-29T23:42:46
+		</modified>
+	</task>
+	<task id="54@1" status="Active" tags="@stuff2buy,@condo" uuid="d9f82717-bc8a-4476-bf61-78b315d800b5">
+		<title>
+			Buy some extra furniture
+		</title>
+		<modified>
+			2009-11-29T23:46:48
+		</modified>
+		<content>
+			@stuff2buy, @condo
+
+I need some new furniture for my apartment, I don't enough space to put my things!
+
+		</content>
+	</task>
+	<task id="55@1" status="Active" tags="@stuff2buy" uuid="fea2122f-06fd-485d-acec-b2b60c8cbbe1">
+		<title>
+			Buy some groceries
+		</title>
+		<modified>
+			2009-11-29T23:49:28
+		</modified>
+		<content>
+			@stuff2buy
+
+ * milk
+ * ham
+ * cheese
+ * frozen meat
+ * bolognese sauce
+ * some cans
+ * frozen prepared dishes
+ * frozen pizzas
+
+		</content>
+	</task>
+	<task id="56@1" status="Active" tags="@stuff2read,@freetime,@books" uuid="333342f5-29fe-48ca-bd51-49e53baa8b5e">
+		<title>
+			Read my books
+		</title>
+		<modified>
+			2009-11-29T23:51:45
+		</modified>
+		<subtask>
+			57@1
+		</subtask>
+		<subtask>
+			58@1
+		</subtask>
+		<content>
+			&lt;tag&gt;@stuff2read&lt;/tag&gt;, &lt;tag&gt;@freetime&lt;/tag&gt;, &lt;tag&gt;@books&lt;/tag&gt;
+
+→ &lt;subtask&gt;57@1&lt;/subtask&gt;
+→ &lt;subtask&gt;58@1&lt;/subtask&gt;
+
+
+
+		</content>
+	</task>
+	<task id="57@1" status="Active" tags="@stuff2read,@freetime,@books" uuid="ba9314f8-6bf4-47a8-9ebd-62875f407e1f">
+		<title>
+			La semaine de 4 heures
+		</title>
+		<modified>
+			2009-11-29T23:51:25
+		</modified>
+	</task>
+	<task id="58@1" status="Active" tags="@stuff2read,@freetime,@books" uuid="39aa133c-1f57-45dc-b8b3-57d5d990b2c8">
+		<title>
+			La cuisine pour les nuls
+		</title>
+		<modified>
+			2009-11-29T23:51:39
+		</modified>
+	</task>
+</project>
