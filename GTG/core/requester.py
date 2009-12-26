@@ -49,10 +49,10 @@ class Requester(gobject.GObject):
     ############# Signals #########################   
     #Used by the tasks to emit the task added/modified signal
     #Should NOT be used by anyone else
-    def _task_loaded(self,tid) :
-        gobject.idle_add(self.emit,"task-added",tid)
-    def _task_modified(self,tid) :
-        gobject.idle_add(self.emit,"task-modified",tid)
+    def _task_loaded(self, tid):
+        gobject.idle_add(self.emit, "task-added", tid)
+    def _task_modified(self, tid):
+        gobject.idle_add(self.emit, "task-modified", tid)
 
     ############## Tasks ##########################
     ###############################################
@@ -97,7 +97,7 @@ class Requester(gobject.GObject):
         @param tid: The id of the task to be deleted.
         """
         self.ds.delete_task(tid)
-        gobject.idle_add(self.emit,"task-deleted",tid)
+        gobject.idle_add(self.emit, "task-deleted", tid)
 
     def get_tasks_list(self, tags=None, status=["Active"], notag_only=False,
                        started_only=True, is_root=False):
@@ -122,7 +122,7 @@ class Requester(gobject.GObject):
         l_tasks = []
         temp_list = []
         if tags:
-            for t in tags :
+            for t in tags:
                 for tid in t.get_tasks():
                     if tid not in temp_list:
                         temp_list.append(tid)
@@ -264,7 +264,8 @@ class Requester(gobject.GObject):
                 t = self.get_task(tid)
                 if t and t.is_workable() and (tid not in self.filter["tasks"]):
                     for filter_tag in t.get_tags():
-                        if filter_tag.get_attribute("name") in self.filter["tags"]:
+                        if filter_tag.get_attribute("name") in \
+                                self.filter["tags"]:
                             #print t.get_title()
                             temp_tasks.remove(tid)
                             filtered_tag = True

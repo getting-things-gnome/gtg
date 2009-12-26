@@ -29,7 +29,7 @@ def populate():
     text1 += "https://bugs.launchpad.net/gtg"
     text1 += "\n\n"
     text1 += _("Thank you for trying out GTG :-)")
-    t1 = addtask(doc,"0@1",title1,text1,["1@1","2@1","3@1","4@1"])
+    t1 = addtask(doc, "0@1", title1, text1, ["1@1", "2@1", "3@1", "4@1"])
     root.appendChild(t1)
     
     #Task 1@1: Learn to use subtasks
@@ -43,7 +43,7 @@ def populate():
     text2 += _("Some concepts come with subtasks: for example, a subtask's due date can never be after its parent's due date.")
     text2 += "\n\n"
     text2 += _("Also, marking a parent as done will mark all the subtasks as done.")
-    t2 = addtask(doc,"1@1",title2,text2,[])
+    t2 = addtask(doc, "1@1", title2, text2, [])
     root.appendChild(t2)
     
     #Task 2@1: Learn to use tags
@@ -61,7 +61,7 @@ def populate():
     text3 += _("If you right click on a tag in the sidebar you can also set its color. It will allow you to have a more colorful list of tasks, if you want it that way.")
     text3 += "\n\n"
     text3 += _("A new tag is only added to the current task. There's no recursion and the tag is not applied to subtasks. But when you create a new subtask, this subtask will inherit the tags of its parent as a good primary default (it will also be the case if you add a tag to a parent just after creating a subtask). Of course, you can modify at any time the tags of this particular subtask. It will never be changed by the parent.")
-    t3 = addtask(doc,"2@1",title3,text3,[])
+    t3 = addtask(doc, "2@1", title3, text3, [])
     root.appendChild(t3)
     
     #Task 3@1: Using the Workview
@@ -78,7 +78,7 @@ def populate():
     text4 += "\n\n"
     text4 += _("If you use tags, you can right click on a tag in the sidebar and choose to hide tasks assigned to this particular tag in the workview. It's very useful if you have a tag like &quot;someday&quot; that you use for tasks you would like to do but are not particularly urgent.")
     
-    t4 = addtask(doc,"3@1",title4,text4,[])
+    t4 = addtask(doc, "3@1", title4, text4, [])
     root.appendChild(t4)
     
     #Task 4@1: Reporting bugs
@@ -92,20 +92,20 @@ def populate():
     text5 += "\n\n"
     text5 += _("If you have some trouble with GTG, we might be able to help you or to solve your problem really quickly.")
     
-    t5 = addtask(doc,"4@1",title5,text5,[])
+    t5 = addtask(doc, "4@1", title5, text5, [])
     root.appendChild(t5)
     
     
     return doc
     
 
-def addtask(doc,ze_id,title,text,childs):
+def addtask(doc, ze_id, title, text, childs):
     t_xml = doc.createElement("task")
-    t_xml.setAttribute("id",ze_id)
-    t_xml.setAttribute("status" , "Active")
+    t_xml.setAttribute("id", ze_id)
+    t_xml.setAttribute("status", "Active")
     t_xml.setAttribute("tags", "")
-    cleanxml.addTextNode(doc,t_xml,"title",title)
+    cleanxml.addTextNode(doc, t_xml, "title", title)
     for c in childs:
-        cleanxml.addTextNode(doc,t_xml,"subtask",c)
-    cleanxml.addTextNode(doc,t_xml,"content",text)
+        cleanxml.addTextNode(doc, t_xml, "subtask", c)
+    cleanxml.addTextNode(doc, t_xml, "content", text)
     return t_xml

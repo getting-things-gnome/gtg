@@ -149,9 +149,9 @@ class PluginManager:
                     plgin['state'] = not plgin['state']
                     #we instantly apply the plugin activation/deactivation
                     #to respect HIG
-                    if plgin['state'] :
+                    if plgin['state']:
                         self.pengine.activatePlugins([plgin], self.plugin_apis)
-                    else :
+                    else:
                         self.pengine.deactivatePlugins([plgin], self.plugin_apis)
                     
 
@@ -162,11 +162,12 @@ class PluginManager:
             iter = treeview.get_model().get_iter(path)
             
             for plgin in plugins:
-                if (model.get_value(iter,1) == plgin['name']) and (model.get_value(iter,2) == plgin['version']):
+                if (model.get_value(iter,1) == plgin['name']) and \
+                        (model.get_value(iter,2) == plgin['version']):
                     self.lblPluginName.set_label("<b>" + plgin['name'] + "</b>")
                     self.lblPluginVersion.set_label(plgin['version'])
                     self.lblPluginAuthors.set_label(plgin['authors'])
-                    self.txtPluginDescription.get_buffer().set_text(\
+                    self.txtPluginDescription.get_buffer().set_text(
                                 plgin['description'].replace("\n", " ").replace(r'\n', "\n"))
                     
                     if plgin['error']:

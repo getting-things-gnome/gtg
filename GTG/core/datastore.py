@@ -57,12 +57,12 @@ class DataStore:
         return all_tasks
 
     def has_task(self, tid):
-        return self.tasks.has_key(tid)
+        return tid in self.tasks
 
-    def get_task(self,tid) :
-#        if tid == "46@1" :
+    def get_task(self,tid):
+#        if tid == "46@1":
 #            print "getting 46@1"
-        if self.tasks.has_key(tid) :
+        if tid in self.tasks:
             empty_task = self.tasks[tid]
         else:
             empty_task = self.new_task(tid, newtask=False)
@@ -75,20 +75,20 @@ class DataStore:
         #If the task doesn't exist, we create it with a forced pid
 #        if not self.tasks[tid].is_loaded():
 #            print "tid %s - %s" %(tid,self.tasks[tid].get_title())
-#            for t in self.tasks :
+#            for t in self.tasks:
 #                print self.tasks[t]
 #                print "----------------"
 #            print "###########################"
         return task
 
     def delete_task(self, tid):
-        if tid and self.tasks.has_key(tid):
+        if tid and tid in self.tasks:
             self.tasks[tid].delete()
             uid, pid = tid.split('@') #pylint: disable-msg=W0612
             back = self.backends[pid]
             #Check that the task still exist. It might have been deleted
             #by its parent a few line earlier :
-            if self.tasks.has_key(tid):
+            if tid in self.tasks:
                 self.tasks.pop(tid)
             back.remove_task(tid)
 
@@ -97,15 +97,16 @@ class DataStore:
     #it should be False if you are importing an existing Task
     def new_task(self, tid=None, pid=None, newtask=False):
         #If we don't have anything, we use the default PID
-        if not pid: pid = DEFAULT_BACKEND
+        if not pid:
+            pid = DEFAULT_BACKEND
         #If tid, we force that tid and create a real new task
-        if tid and not self.tasks.has_key(tid):
+        if tid and tid not in self.tasks:
             task = Task(tid, self.requester, newtask=newtask)
             uid, pid = tid.split('@') #pylint: disable-msg=W0612
             self.tasks[tid] = task
             toreturn = task
         #Else we create a new task in the given pid
-        elif not tid and pid and self.backends.has_key(pid):
+        elif not tid and pid and pid in self.backends:
             newtid = self.backends[pid].new_task_id()
             task = Task(newtid, self.requester, newtask=newtask)
             self.tasks[newtid] = task
@@ -126,7 +127,7 @@ class DataStore:
         return self.requester
 
     def register_backend(self, dic):
-        if dic.has_key("backend"):
+        if "backend" in dic:
             pid = dic["pid"]
             backend = dic["backend"]
             source = TaskSource(backend, dic)
@@ -201,9 +202,9 @@ class TaskSource():
 
     def get_task(self, empty_task, tid):
         #Our thread
-        def getting() :
+        def getting():
             #self.locks.acquire(tid)
-            try :
+            try:
                 while len(self.to_get) > 0:
                     tid,empty_task = self.to_get.pop()
                     #if self.locks.ifnotblocked(tid):
@@ -218,12 +219,12 @@ class TaskSource():
                     #it's not a problem to not know when it is executed
                     #since it's the last instruction of the tread
                     gobject.idle_add(empty_task.set_loaded)
-            finally :
+            finally:
                 #self.locks.release(tid)
                 self.getting_lock.release()
         ##########
         task = None
-        if self.tasks.has_key(tid):
+        if tid in self.tasks:
             task = self.tasks[tid]
             if task:
 #                print "already existing"
@@ -238,12 +239,12 @@ class TaskSource():
             self.to_get.append([tid,empty_task])
             if self.getting_lock.acquire(False):
 # Disabling this to circumvent Bug #411420
-#                if THREADING :
+#                if THREADING:
 #                    self.locks.create_lock(tid)
 #                    gobject.idle_add(getting,empty_task,tid)
 #                    t = threading.Thread(target=getting)
 #                    t.start()
-#                else :
+#                else:
 #                    self.locks.create_lock(tid)
 #                    #getting(empty_task,tid)
 #                    getting()
@@ -253,7 +254,7 @@ class TaskSource():
 
     #only one thread is used to write the task
     #if this thread is not started, we start it.
-    def set_task(self,task) :
+    def set_task(self,task):
         self.to_write.append(task)
         if self.writing_lock.acquire(False):
             if THREADING:
@@ -267,17 +268,17 @@ class TaskSource():
     #This function, called in a thread, write to the backend.
     #It acquires a lock to avoid multiple thread writing at the same time
     #the lock is writing_lock
-    def __write(self) : 
+    def __write(self): 
         try:
             while len(self.to_write) > 0:
                 task = self.to_write.pop()
                 tid = task.get_id()
                 if tid not in self.removed:
 #                    self.locks.acquire(tid)
-#                    try :
+#                    try:
 #                    print self.locks.acquire(tid)
                     self.backend.set_task(task)
-#                    finally :
+#                    finally:
 #                    self.locks.release(tid)
         finally:
             self.writing_lock.release()
@@ -305,7 +306,7 @@ class TaskSource():
             k = 0
             pid = self.dic["pid"]
             newid = "%s@%s" %(k, pid)
-            while self.tasks.has_key(str(newid)):
+            while str(newid) in self.tasks:
                 k += 1
                 newid = "%s@%s" %(k, pid)
         if newid in self.removed:
@@ -337,7 +338,7 @@ class lockslibrary:
     def create_lock(self, tid):
         self.glob.acquire()
         try:
-            if not self.locks.has_key(tid):
+            if tid not in self.locks:
                 self.locks[tid] = threading.Lock()
         finally:
             self.glob.release()
@@ -346,7 +347,7 @@ class lockslibrary:
     #So acquire the lock before calling this function !
     def remove_lock(self, tid):
         if self.glob.acquire(False):
-            if self.locks.has_key(tid):
+            if tid in self.locks:
                 zelock = self.locks[tid]
                 self.locks.pop(tid)
                 zelock.release()
@@ -357,7 +358,7 @@ class lockslibrary:
     def ifnotblocked(self, tid):
         self.glob.acquire()
         try:
-            if self.locks.has_key(tid):
+            if tid in self.locks:
                 return self.locks[tid].acquire(False)
             else:
                 print "ifnotblock on non-existing lock %s = BUG" %tid
@@ -367,7 +368,7 @@ class lockslibrary:
     def acquire(self, tid):
         self.glob.acquire()
         try:
-            if self.locks.has_key(tid):
+            if tid in self.locks:
                 self.locks[tid].acquire()
                 toreturn = True
             else:
@@ -377,7 +378,7 @@ class lockslibrary:
         return toreturn
 
     def release(self, tid):
-        if self.locks.has_key(tid):
+        if tid in self.locks:
             self.locks[tid].release()
 #        else:
 #            print "removing non-existing lock = BUG"

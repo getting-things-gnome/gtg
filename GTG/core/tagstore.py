@@ -32,7 +32,7 @@ XMLROOT = "tagstore"
 
 # There's only one Tag store by user. It will store all the tag used
 # and their attribute.
-class TagStore :
+class TagStore:
     
     def __init__(self,requester):
         self.req = requester
@@ -110,7 +110,7 @@ class TagStore :
     def rename_tag(self, oldname, newname):
         if len(newname) > 0 and \
                             oldname not in ['gtg-tags-none','gtg-tags-all']:
-            if newname[0] != "@" :
+            if newname[0] != "@":
                 newname = "@" + newname
             if newname != oldname and newname != None \
                                   and newname not in self.tags:
@@ -177,7 +177,7 @@ class Tag(TreeNode):
     for tags is C{name}, which always matches L{Tag.get_name()}.
     """
 
-    def __init__(self, name, save_cllbk=None,req=None):
+    def __init__(self, name, save_cllbk=None, req=None):
         """Construct a tag.
 
         @param name: The name of the tag. Should be a string, generally a
@@ -312,7 +312,7 @@ class Tag(TreeNode):
         return len(self.tasks) > 0
     def is_actively_used(self):
         toreturn = False
-        for task in self.tasks :
+        for task in self.tasks:
             if self.req.get_task(task).get_status() == "Active":
                 toreturn = True
         return toreturn
