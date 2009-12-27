@@ -52,13 +52,13 @@ class PluginEngine:
             missing = []
             missing_dbus = []
             configobj = ConfigObj(config)
-            if configobj.has_key("GTG Plugin"):
+            if "GTG Plugin" in configobj:
                 name = configobj["GTG Plugin"]["Module"]
                 try:
                     file, pathname, desc = imp.find_module(name, self.plugin_path)
                     tmp_load = imp.load_module(name, file, pathname, desc)
                 except ImportError, e:      
-                    if configobj["GTG Plugin"].has_key("Dependencies"):
+                    if "Dependencies" in configobj["GTG Plugin"]:
                         for module in configobj["GTG Plugin"]["Dependencies"]:
                             try:
                                 __import__(module)
@@ -72,7 +72,7 @@ class PluginEngine:
                     error = True
                 
                 # check DBus dependencies
-                if configobj["GTG Plugin"].has_key("Dbus-dependencies"):
+                if "Dbus-dependencies" in configobj["GTG Plugin"]:
                     if "str" in str(type(configobj["GTG Plugin"]["Dbus-dependencies"])):
                         dbobj = configobj["GTG Plugin"]["Dbus-dependencies"]
                         if len(dbobj.split(":")) > 1 and len(dbobj.split(":")) < 3:
@@ -128,12 +128,12 @@ class PluginEngine:
                     plugin['missing_modules'] = missing
                     plugin['missing_dbus'] = missing_dbus
                     
-                if configobj["GTG Plugin"].has_key("Dependencies"):
+                if "Dependencies" in configobj["GTG Plugin"]:
                     plugin['dependencies'] = configobj["GTG Plugin"]["Dependencies"]
                 else: 
                     plugin['dependencies'] = None
                     
-                if configobj["GTG Plugin"].has_key("Dbus-dependencies"):
+                if "Dbus-dependencies" in configobj["GTG Plugin"]:
                     plugin['dbus-dependencies'] = configobj["GTG Plugin"]["Dbus-dependencies"]
                 else: 
                     plugin['dbus-dependencies'] = None
@@ -217,7 +217,7 @@ class PluginEngine:
                 try:    
                     #print "activating plugin: " + plgin['name']
                     if not plugin['error']:
-                         self.activatePlugins([plugin],plugin_apis)
+                        self.activatePlugins([plugin],plugin_apis)
                     else:
                         plugin['state'] = False
                 except Exception, e:
@@ -236,7 +236,7 @@ class PluginEngine:
                     print "Error: %s" % e
 
     # rechecks the plugins with errors
-    def recheckPluginsErrors(self, plugins, plugin_apis,checkall=False):
+    def recheckPluginsErrors(self, plugins, plugin_apis, checkall=False):
         for plugin in plugins:
             if plugin['error'] or plugin['state'] == False:
                 error = False
@@ -268,7 +268,7 @@ class PluginEngine:
                                 dbus.SessionBus().get_object(tmp_dbus[0], tmp_dbus[1])
                             except Exception, e:
                                 error = True
-                                missing_dbus.append((dbobj.split(":")[0],dbobj.split(":")[1]))
+                                missing_dbus.append((dbobj.split(":")[0], dbobj.split(":")[1]))
                         else:
                             if dbobj:
                                 missing_dbus.append((dbobj))
@@ -281,7 +281,7 @@ class PluginEngine:
                                     dbus.SessionBus().get_object(tmp_dbus[0], tmp_dbus[1])
                                 except Exception, e:
                                     error = True
-                                    missing_dbus.append((dbobj.split(":")[0],dbobj.split(":")[1]))
+                                    missing_dbus.append((dbobj.split(":")[0], dbobj.split(":")[1]))
                             else:
                                 if dbobj:
                                     missing_dbus.append((dbobj))

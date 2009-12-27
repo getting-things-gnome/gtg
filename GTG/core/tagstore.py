@@ -29,17 +29,19 @@ from GTG.tools     import cleanxml
 XMLFILE = "tags.xml"
 XMLROOT = "tagstore"
 
+
 # There's only one Tag store by user. It will store all the tag used
 # and their attribute.
-class TagStore :
+class TagStore:
     
     def __init__(self,requester):
         self.req = requester
         self.tree = Tree()
         self.tags={}
         self.root = self.tree.get_root()
-        self.filename = os.path.join(CoreConfig.DATA_DIR,XMLFILE)
-        doc,self.xmlstore = cleanxml.openxmlfile(self.filename,XMLROOT) #pylint: disable-msg=W0612
+        self.filename = os.path.join(CoreConfig.DATA_DIR, XMLFILE)
+        doc, self.xmlstore = cleanxml.openxmlfile(self.filename,
+            XMLROOT) #pylint: disable-msg=W0612
         for t in self.xmlstore.childNodes:
             #We should only care about tag with a name beginning with "@"
             #Other are special tags
@@ -47,20 +49,19 @@ class TagStore :
             tag = self.new_tag(tagname)
             attr = t.attributes
             i = 0
-            while i < attr.length :
+            while i < attr.length:
                 at_name = attr.item(i).name
                 at_val = t.getAttribute(at_name)
-                tag.set_attribute(at_name,at_val)
+                tag.set_attribute(at_name, at_val)
                 i += 1
             parent = tag.get_attribute('parent')
             if parent:
                 pnode=self.new_tag(parent)
                 tag.reparent(pnode, update_attr=False)
-        
+
         #Now we build special tags. Special tags are not
         #in the traditional tag list
         #Their name doesn't begin with "@"
-        
 #        #Build the "all tags tag"
 #        self.alltag_tag = Tag("alltags_tag",save_cllbk=self.save)
 #        self.alltag_tag.set_attribute("special","all")
@@ -69,7 +70,6 @@ class TagStore :
 #        self.notag_tag = Tag("notag_tag",save_cllbk=self.save)
 #        self.notag_tag.set_attribute("special","notag")
 #        self.notag_tag.set_attribute("icon","gtg-tags-none")
-
     def get_tree(self):
         return self.tree
 
@@ -81,37 +81,37 @@ class TagStore :
         if tname not in self.tags:
             tag = Tag(tname, save_cllbk=self.save, req=self.req)
             tag.reparent(self.root)
-            self.tags[tname]=tag
+            self.tags[tname] = tag
             return tag
         else:
             return self.tags[tname]
-        
+
     def add_tag(self, tag):
         name = tag.get_name()
         #If tag does not exist in the store, we add it
         if name not in self.tags:
             tag.reparent(self.root)
-            self.tags[name]=tag
+            self.tags[name] = tag
         #else, we just take the attributes of the new tag
         #This allow us to keep attributes of the old tag
         #that might be not set in the new one
-        else :
+        else:
             atts = tag.get_all_attributes()
             for att_name in atts:
                 val = tag.get_attribute(att_name)
                 if att_name != 'name' and val:
-                    self.tags[name].set_attribute(att_name,val)
+                    self.tags[name].set_attribute(att_name, val)
 
     def get_tag(self, tagname):
-        if tagname[0] != "@" :
-            tagname = "@"+tagname
+        if tagname[0] != "@":
+            tagname = "@" + tagname
         return self.tags.get(tagname, None)
         
-    def rename_tag(self,oldname,newname):
+    def rename_tag(self, oldname, newname):
         if len(newname) > 0 and \
                             oldname not in ['gtg-tags-none','gtg-tags-all']:
-            if newname[0] != "@" :
-                newname = "@"+newname
+            if newname[0] != "@":
+                newname = "@" + newname
             if newname != oldname and newname != None \
                                   and newname not in self.tags:
                 self.tags[newname] = self.tags[oldname]
@@ -126,12 +126,12 @@ class TagStore :
         (except if attvalue is None)"""
         l = []
         for t in self.tags.values():
-            if not attname :
+            if not attname:
                 l.append(t.get_name())
             elif t.get_attribute(attname) == attvalue:
                 l.append(t.get_name())
         return l
-        
+
     def get_all_tags(self, attname=None, attvalue=None):
         l = []
         for t in self.tags.values():
@@ -142,7 +142,7 @@ class TagStore :
         return l
 
     def save(self):
-        doc,xmlroot = cleanxml.emptydoc(XMLROOT)
+        doc, xmlroot = cleanxml.emptydoc(XMLROOT)
         tags = self.get_all_tags()
         already_saved = [] #We avoid saving the same tag twice
         #we don't save tags with no attributes
@@ -151,20 +151,21 @@ class TagStore :
             attr = t.get_all_attributes(butname=True)
             if "special" in attr:
                 continue
-            if len(attr) > 0 :
+            if len(attr) > 0:
                 tagname = t.get_name()
-                if not tagname in already_saved :
+                if not tagname in already_saved:
                     t_xml = doc.createElement("tag")
-                    t_xml.setAttribute("name",tagname)
+                    t_xml.setAttribute("name", tagname)
                     already_saved.append(tagname)
-                    for a in attr :
+                    for a in attr:
                         value = t.get_attribute(a)
-                        t_xml.setAttribute(a,value)
-                    xmlroot.appendChild(t_xml)          
-                    cleanxml.savexml(self.filename,doc)
-                
+                        t_xml.setAttribute(a, value)
+                    xmlroot.appendChild(t_xml)
+                    cleanxml.savexml(self.filename, doc)
+
 ### Tag Objects ##############################################################
 #
+
 class Tag(TreeNode):
     """A short name that can be applied to L{Task}s.
 
@@ -176,7 +177,7 @@ class Tag(TreeNode):
     for tags is C{name}, which always matches L{Tag.get_name()}.
     """
 
-    def __init__(self, name, save_cllbk=None,req=None):
+    def __init__(self, name, save_cllbk=None, req=None):
         """Construct a tag.
 
         @param name: The name of the tag. Should be a string, generally a
@@ -311,7 +312,7 @@ class Tag(TreeNode):
         return len(self.tasks) > 0
     def is_actively_used(self):
         toreturn = False
-        for task in self.tasks :
+        for task in self.tasks:
             if self.req.get_task(task).get_status() == "Active":
                 toreturn = True
         return toreturn

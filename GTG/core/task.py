@@ -168,10 +168,10 @@ class Task:
     def is_in_workview(self,tag=None):
         result = True
         if self.is_workable() and self.is_started()\
-                              and self.get_status() == "Active" :
+                              and self.get_status() == "Active":
             for t in self.get_tags():
                 if t.get_attribute("nonworkview") == "True" and \
-                                t != tag :
+                                t != tag:
                     result = False
         else:
             result = False
@@ -184,7 +184,7 @@ class Task:
         self.modified = string
 
     def set_due_date(self, fulldate):
-    	assert(isinstance(fulldate, Date))
+        assert(isinstance(fulldate, Date))
         self.due_date = fulldate
         self.sync()
 
@@ -196,12 +196,12 @@ class Task:
             #Here we compare with the parent's due date
             pardate = self.req.get_task(par).get_due_date()
             if pardate and zedate > pardate:
-            	zedate = pardate
+                zedate = pardate
         
         return zedate
 
     def set_start_date(self, fulldate):
-    	assert(isinstance(fulldate, Date))
+        assert(isinstance(fulldate, Date))
         self.start_date = fulldate
         # why don't we sync here if we do in set_due_date?
 
@@ -210,8 +210,12 @@ class Task:
 
     def is_started(self):
         if self.start_date:
+            #Seems like pylint falsely assumes that subtraction always results
+            #in an object of the same type. The subtraction of dates 
+            #results in a datetime.timedelta object 
+            #that does have a 'days' member.
             difference = date_today() - self.start_date
-            return difference.days >= 0
+            return difference.days >= 0 #pylint: disable-msg=E1101
         else:
             return True
 
@@ -477,9 +481,9 @@ class Task:
     def call_modified(self):
         self.req._task_modified(self.tid)
         #we also modify parents and children
-        for s in self.get_subtask_tids() :
+        for s in self.get_subtask_tids():
             self.req._task_modified(s)
-        for p in self.get_parents() :
+        for p in self.get_parents():
             self.req._task_modified(p)
 
     def _modified_update(self):
@@ -501,8 +505,8 @@ class Task:
     def get_tags(self):
         return list(self.tags)
         
-    def rename_tag(self,old,new):
-        self.content = self.content.replace(old,new)
+    def rename_tag(self, old, new):
+        self.content = self.content.replace(old, new)
         self.remove_tag(old)
         self.tag_added(new)
 
@@ -539,7 +543,8 @@ class Task:
                 # other text at the beginning, so put the tag on its own line
                 sep = '\n\n'
             
-            self.content = "<content><tag>%s</tag>%s%s</content>"%(tagname, sep, c)
+            self.content = "<content><tag>%s</tag>%s%s</content>" % (
+                tagname, sep, c)
 
     #remove by tagname
     def remove_tag(self, tagname):
@@ -551,8 +556,8 @@ class Task:
                 if child.can_be_deleted:
                     child.remove_tag(tagname)
         self.content = (self.content
-                        .replace('<tag>%s</tag>\n\n'%(tagname), '') #trailing \n
-                        .replace('<tag>%s</tag>, '%(tagname), '') #trailing comma
+                        .replace('<tag>%s</tag>\n\n'%(tagname), '') #trail \n
+                        .replace('<tag>%s</tag>, '%(tagname), '') #trail comma
                         .replace('<tag>%s</tag>'%(tagname), '')
                        )
 

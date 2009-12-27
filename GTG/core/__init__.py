@@ -67,9 +67,9 @@ class CoreConfig:
     BUSINTERFACE = "/org/GTG"
 
     def __init__(self):
-        if not os.path.exists(self.CONF_DIR) :
+        if not os.path.exists(self.CONF_DIR):
             os.makedirs(self.CONF_DIR)
-        if not os.path.exists(self.DATA_DIR) :
+        if not os.path.exists(self.DATA_DIR):
             os.makedirs(self.DATA_DIR)
         if not os.path.exists(self.CONF_DIR + self.CONF_FILE):
             f = open(self.CONF_DIR + self.CONF_FILE, "w")
@@ -84,7 +84,7 @@ class CoreConfig:
         self.conf_dict.write()
         self.task_conf_dict.write()
     
-    def get_backends_list(self) :
+    def get_backends_list(self):
         backend_fn = []
 
         # Check if config dir exists, if not create it
@@ -102,11 +102,11 @@ class CoreConfig:
             #We have some retrocompatibility code
             #A backend without the module attribute is pre-rev.105
             #and is considered as "filename"
-            if xp.hasAttribute("module") :
+            if xp.hasAttribute("module"):
                 dic["module"] = str(xp.getAttribute("module"))
                 dic["pid"] = str(xp.getAttribute("pid"))
             #The following "else" could be removed later
-            else :
+            else:
                 dic["module"] = "localfile"
                 dic["pid"] = str(pid)
             
@@ -116,7 +116,7 @@ class CoreConfig:
                 
         firstrun = False
         #If no backend available, we create a new using localfile
-        if len(backend_fn) == 0 :
+        if len(backend_fn) == 0:
             dic = {}
             dic["module"] = "localfile"
             dic["pid"] = "1"
@@ -125,7 +125,7 @@ class CoreConfig:
             
         #Now that the backend list is build, we will construct them
         #Remember that b is a dictionnary
-        for b in backend_fn :
+        for b in backend_fn:
             #We dynamically import modules needed
             module_name = "GTG.backends.%s"%b["module"]
             #FIXME : we should throw an error if the backend is not importable
@@ -134,16 +134,16 @@ class CoreConfig:
             classobj = getattr(module, b["module"])
             b["parameters"] = classobj.get_parameters()
             #If creating the default backend, we don't have the xmlobject yet
-            if b.has_key("xmlobject") :
+            if "xmlobject" in b:
                 xp = b.pop("xmlobject")
                 #We will try to get the parameters
-                for key in b["parameters"] :
-                    if xp.hasAttribute(key) :
+                for key in b["parameters"]:
+                    if xp.hasAttribute(key):
                         b[key] = str(xp.getAttribute(key))
-            if firstrun :
+            if firstrun:
                 frx = firstrun_tasks.populate()
                 back = classobj.Backend(b,firstrunxml=frx)
-            else :
+            else:
                 back = classobj.Backend(b)
             #We put the backend itself in the dic
             b["backend"] = back
@@ -151,14 +151,14 @@ class CoreConfig:
         return backend_fn
         
     
-    def save_datastore(self,ds) :
+    def save_datastore(self,ds):
         doc,xmlconfig = cleanxml.emptydoc("config")
         for b in ds.get_all_backends():
             param = b.get_parameters()
             t_xml = doc.createElement("backend")
-            for key in param :
+            for key in param:
                 #We dont want parameters,backend,xmlobject
-                if key not in ["backend","parameters","xmlobject"] :
+                if key not in ["backend","parameters","xmlobject"]:
                     t_xml.setAttribute(str(key),str(param[key]))
             #Saving all the projects at close
             xmlconfig.appendChild(t_xml)

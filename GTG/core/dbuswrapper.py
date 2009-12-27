@@ -8,6 +8,7 @@ from GTG.tools import dates
 BUSNAME = CoreConfig.BUSNAME
 BUSFACE = CoreConfig.BUSINTERFACE
 
+
 def dsanitize(data):
     # Clean up a dict so that it can be transmitted through D-Bus
     for k, v in data.items():
@@ -104,7 +105,8 @@ class DBusTaskWrapper(dbus.service.Object):
                  text, subtasks):
         # Generate a new task object and return the task data as a dict
         nt = self.req.new_task(tags=tags)
-        for sub in subtasks: nt.add_subtask(sub)
+        for sub in subtasks:
+            nt.add_subtask(sub)
         nt.set_status(status, donedate=dates.strtodate(donedate))
         nt.set_title(title)
         nt.set_due_date(dates.strtodate(duedate))
@@ -122,8 +124,10 @@ class DBusTaskWrapper(dbus.service.Object):
         task.set_start_date(task_data["startdate"])
         task.set_text(task_data["text"])
 
-        for tag in task_data["tags"]: task.add_tag(tag)
-        for sub in task_data["subtask"]: task.add_subtask(sub)
+        for tag in task_data["tags"]:
+            task.add_tag(tag)
+        for sub in task_data["subtask"]:
+            task.add_subtask(sub)
         return task_to_dict(task)
 
     @dbus.service.method(BUSNAME)

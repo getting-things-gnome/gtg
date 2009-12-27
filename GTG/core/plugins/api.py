@@ -222,7 +222,7 @@ class PluginAPI:
         if self.is_editor() and widg_id:
             try:
                 wi = self.__builder.get_object('task_tb1')
-                if wi and self.tasktoolbar_widg.has_key(widg_id):
+                if wi and widg_id in self.tasktoolbar_widg:
                     #removing from the window and the dictionnary
                     # in one line.
                     wi.remove(self.tasktoolbar_widg.pop(widg_id))
@@ -253,7 +253,7 @@ class PluginAPI:
         if self.is_editor() and widg_id:
             try:
                 wi = self.__builder.get_object('vbox4')
-                if wi and self.taskwidget_widg.has_key(widg_id):
+                if wi and widg_id in self.taskwidget_widg:
                     wi.remove(self.taskwidget_widg.pop(widg_id))
             except Exception, e:
                 print "Error removing the toolbar item in the TaskEditor: %s" %e
@@ -336,7 +336,7 @@ class PluginAPI:
         @return: The about dialog.
         """
         wi = self.__builder.get_object("aboutdialog1")
-        if wi :
+        if wi:
             return wi
         else:
             return None
@@ -411,9 +411,9 @@ class PluginAPI:
         @param tag: The tag's name (without the '@').  
         """
         itera = self.textview.get_insert()
-        if itera.starts_line() :
+        if itera.starts_line():
             self.textview.insert_text("@" + tag,itera)
-        else :
+        else:
             self.textview.insert_text(" @" + tag,itera)
         self.textview.grab_focus()
     
@@ -427,7 +427,7 @@ class PluginAPI:
         @param tid: The task's id.
         """
         if tid:
-             self.__requester.get_task(tid).add_tag("@" + tag)
+            self.__requester.get_task(tid).add_tag("@" + tag)
         else:    
             self.task.add_tag("@" + tag)
         
