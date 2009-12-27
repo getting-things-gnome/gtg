@@ -210,8 +210,12 @@ class Task:
 
     def is_started(self):
         if self.start_date:
+            #Seems like pylint falsely assumes that subtraction always results
+            #in an object of the same type. The subtraction of dates 
+            #results in a datetime.timedelta object 
+            #that does have a 'days' member.
             difference = date_today() - self.start_date
-            return difference.days >= 0
+            return difference.days >= 0 #pylint: disable-msg=E1101
         else:
             return True
 
@@ -552,8 +556,8 @@ class Task:
                 if child.can_be_deleted:
                     child.remove_tag(tagname)
         self.content = (self.content
-                        .replace('<tag>%s</tag>\n\n'%(tagname), '') #trailing \n
-                        .replace('<tag>%s</tag>, '%(tagname), '') #trailing comma
+                        .replace('<tag>%s</tag>\n\n'%(tagname), '') #trail \n
+                        .replace('<tag>%s</tag>, '%(tagname), '') #trail comma
                         .replace('<tag>%s</tag>'%(tagname), '')
                        )
 
