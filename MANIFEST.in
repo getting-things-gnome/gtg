@@ -11,7 +11,6 @@ include AUTHORS
 recursive-include data/icons *.png
 recursive-include data/icons *.svg
 include doc/*.1
-recursive-include GTG/plugins
 recursive-include GTG/plugins/rtm_sync/pyrtm *.py
 recursive-include GTG/plugins/export *
 recursive-include locales *.po
