@@ -26,7 +26,6 @@ except: # pylint: disable-msg=W0702
     sys.exit(1)
 
 import os
-import pickle
 import subprocess
 import gobject
 from Cheetah.Template import Template
@@ -39,10 +38,10 @@ class pluginExport:
 
     DEFAULT_PREFERENCES = {"menu_entry": True,
                             "toolbar_entry": True}
+    PLUGIN_NAME = "export"
 
     def __init__(self):
         self.path = os.path.dirname(os.path.abspath(__file__))
-        self.config_dir = os.path.join(xdg_config_home, 'gtg/plugins/export')
         self.menu_item = gtk.MenuItem("E_xport current tasks")
         self.menu_item.connect('activate', self.on_export)
         self.tb_button = gtk.ToolButton(gtk.STOCK_PRINT)
@@ -353,28 +352,6 @@ class pluginExport:
                 if line.startswith(key):
                     return os.path.expandvars(line[len(key)+2:-2])
 
-    def smartLoadFromFile(self, dirname, filename):
-        path = dirname + '/' + filename
-        if os.path.isdir(dirname):
-            if os.path.isfile(path):
-                try:
-                    with open(path, 'r') as file:
-                        item = pickle.load(file)
-                except:
-                    return None
-                return item
-        else:
-            os.makedirs(dirname)
-
-    def smartSaveToFile(self, dirname, filename, item, **kwargs):
-        path = dirname + '/' + filename
-        try:
-            with open(path, 'wb') as file:
-                pickle.dump(item, file)
-        except:
-            if kwargs.get('critical', False):
-                raise Exception(_("saving critical object failed"))
-
 ## Preferences methods #########################################################
 
     def is_configurable(self):
@@ -400,14 +377,17 @@ class pluginExport:
         self.preferences_dialog.hide()
 
     def preferences_load(self):
-        data = self.smartLoadFromFile(self.config_dir, "preferences")
+        data = self.plugin_api.load_configuration_object(self.PLUGIN_NAME,\
+                                                         "preferences")
         if data == None or type(data) != type (dict()):
             self.preferences = self.DEFAULT_PREFERENCES
         else:
             self.preferences = data
 
     def preferences_store(self):
-        self.smartSaveToFile(self.config_dir, "preferences", self.preferences)
+        self.plugin_api.save_configuration_object(self.PLUGIN_NAME,\
+                                                  "preferences", \
+                                                  self.preferences)
 
     def preferences_apply(self):
         if self.preferences["menu_entry"] and self.menu_entry == False:

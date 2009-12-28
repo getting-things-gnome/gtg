@@ -17,8 +17,6 @@
 import gtk
 import sys
 import os
-import pickle
-from xdg.BaseDirectory import xdg_config_home
 
 from GTG.tools import openurl
 
@@ -27,14 +25,13 @@ class NotificationArea:
 
 
     DEFAULT_PREFERENCES = {"start_minimized": False}
+    PLUGIN_NAME = "notification_area"
     
     def __init__(self):
         self.minimized = False
     
     def activate(self, plugin_api):
         data_dir = plugin_api.get_data_dir()
-        self.config_dir = os.path.join(xdg_config_home,\
-                                       'gtg/plugins/notification_area')
         self.plugin_api = plugin_api
         icon = gtk.gdk.pixbuf_new_from_file_at_size(data_dir + "/icons/hicolor/16x16/apps/gtg.png", 16, 16)
         if not hasattr(self,"statusicon"):
@@ -131,28 +128,6 @@ class NotificationArea:
     def exit(self, widget, data=None):
         gtk.main_quit()
 
-    def smartLoadFromFile(self, dirname, filename):
-        path = dirname + '/' + filename
-        if os.path.isdir(dirname):
-            if os.path.isfile(path):
-                try:
-                    with open(path, 'r') as file:
-                        item = pickle.load(file)
-                except:
-                    return None
-                return item
-        else:
-            os.makedirs(dirname)
-
-    def smartSaveToFile(self, dirname, filename, item, **kwargs):
-        path = dirname + '/' + filename
-        try:
-            with open(path, 'wb') as file:
-                pickle.dump(item, file)
-        except:
-            if kwargs.get('critical', False):
-                raise Exception(_("saving critical object failed"))
-
 ## Preferences methods #########################################################
 
     def is_configurable(self):
@@ -176,14 +151,17 @@ class NotificationArea:
         self.preferences_dialog.hide()
 
     def preferences_load(self):
-        data = self.smartLoadFromFile(self.config_dir, "preferences")
+        data = self.plugin_api.load_configuration_object(self.PLUGIN_NAME,\
+                                                         "preferences")
         if data == None or type(data) != type (dict()):
             self.preferences = self.DEFAULT_PREFERENCES
         else:
             self.preferences = data
 
     def preferences_store(self):
-        self.smartSaveToFile(self.config_dir, "preferences", self.preferences)
+        self.plugin_api.save_configuration_object(self.PLUGIN_NAME,\
+                                                  "preferences", \
+                                                  self.preferences)
 
     def preferences_apply(self):
         if self.plugin_api.is_browser():

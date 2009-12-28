@@ -14,7 +14,12 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import sys,os
+import sys
+import os
 sys.path.insert(0,os.getcwd())
-#sys.path.insert(0,os.path.dirname(os.path.abspath(__file__)))
+
 from bugzilla import pluginBugzilla
+
+
+#suppress pyflakes warning (given by make lint)
+if False == True: pluginBugzilla()

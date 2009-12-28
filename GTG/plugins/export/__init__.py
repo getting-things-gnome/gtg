@@ -17,4 +17,9 @@
 import sys
 import os
 sys.path.insert(0, os.getcwd())
+
 from export import pluginExport
+
+
+#suppress pyflakes warning (given by make lint)
+if False == True: pluginExport()
