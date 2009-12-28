@@ -17,6 +17,10 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
+import os
+import pickle
+from xdg.BaseDirectory import xdg_config_home
+
 class PluginAPI:
     """The plugin engine's API.
 
@@ -574,3 +578,30 @@ class PluginAPI:
         """
         if func in self.__quick_add_cbs:
             self.__quick_add_cbs.remove(func)
+
+#=== file saving/loading ======================================================
+
+    def load_configuration_object(self, plugin_name, filename):
+        dirname = os.path.join(xdg_config_home, 'gtg/plugins', plugin_name)
+        path = os.path.join(dirname, filename)
+        if os.path.isdir(dirname):
+            if os.path.isfile(path):
+                try:
+                    with open(path, 'r') as file:
+                        item = pickle.load(file)
+                except:
+                    return None
+                return item
+        else:
+            os.makedirs(dirname)
+
+    def save_configuration_object(self, plugin_name, filename, item, **kwargs):
+        dirname = os.path.join(xdg_config_home, 'gtg/plugins', plugin_name)
+        path = os.path.join(dirname, filename)
+        try:
+            with open(path, 'wb') as file:
+                pickle.dump(item, file)
+        except:
+            if kwargs.get('critical', False):
+                raise Exception("saving critical object failed")
+
