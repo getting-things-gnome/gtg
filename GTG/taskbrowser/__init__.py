@@ -41,4 +41,4 @@ class GnomeConfig:
     EDIT_TOOLTIP            = _("Edit the selected task")
     NEW_TASK_TOOLTIP        = _("Create a new task")
     NEW_SUBTASK_TOOLTIP     = _("Create a new subtask")
-    WORKVIEW_TOGGLE_TOOLTIP = _("Display only the currently actionnable tasks")
+    WORKVIEW_TOGGLE_TOOLTIP = _("Display only the currently actionable tasks")
