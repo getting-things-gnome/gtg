@@ -18,7 +18,6 @@ import gtk
 import os, sys
 #from time import sleep
 
-from xdg.BaseDirectory import *
 #from configobj import ConfigObj
 
 import Geoclue

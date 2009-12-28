@@ -18,6 +18,9 @@ import sys
 import os
 sys.path.insert(0, os.getcwd())
 
-#pyflakes gives a warning on the following line,
-# but it's needed for the plugin to work
 from rtm_sync import RtmSync
+
+
+#suppress pyflakes warning (given by make lint)
+if False == True: RtmSync()
+

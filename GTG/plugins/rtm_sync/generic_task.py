@@ -71,7 +71,6 @@ class GenericTask(object):
         #if carbon != master:
         #    self.tags = master
 
-
         carbon = self.due_date
         master = task.due_date
         if carbon != master:

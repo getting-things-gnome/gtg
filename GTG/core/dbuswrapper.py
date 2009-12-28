@@ -1,6 +1,5 @@
-import dbus
-import dbus.glib
-import dbus.service
+import dbus.service 
+from dbus import SessionBus, Array, Dictionary
 
 from GTG.core import CoreConfig
 from GTG.tools import dates
@@ -15,7 +14,7 @@ def dsanitize(data):
         # Manually specify an arbitrary content type for empty Python arrays
         # because D-Bus can't handle the type conversion for empty arrays
         if not v and isinstance(v, list):
-            data[k] = dbus.Array([], "s")
+            data[k] = Array([], "s")
         # D-Bus has no concept of a null or empty value so we have to convert
         # None types to something else. I use an empty string because it has
         # the same behavior as None in a Python conditional expression
@@ -27,7 +26,7 @@ def dsanitize(data):
 
 def task_to_dict(task):
     # Translate a task object into a D-Bus dictionary
-    return dbus.Dictionary(dsanitize({
+    return Dictionary(dsanitize({
           "id": task.get_id(),
           "status": task.get_status(),
           "title": task.get_title(),
@@ -45,7 +44,7 @@ class DBusTaskWrapper(dbus.service.Object):
     # D-Bus service object that exposes GTG's task store to third-party apps
     def __init__(self, req, ui):
         # Attach the object to D-Bus
-        self.bus = dbus.SessionBus()
+        self.bus = SessionBus()
         bus_name = dbus.service.BusName(BUSNAME, bus=self.bus)
         dbus.service.Object.__init__(self, bus_name, BUSFACE)
         self.req = req
@@ -90,7 +89,7 @@ class DBusTaskWrapper(dbus.service.Object):
         if tasks:
             return [self.get_task(id) for id in tasks]
         else:
-            return dbus.Array([], "s")
+            return Array([], "s")
 
     @dbus.service.method(BUSNAME)
     def has_task(self, tid):

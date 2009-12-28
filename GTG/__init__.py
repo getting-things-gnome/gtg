@@ -27,15 +27,17 @@ except:
 import gettext
 try:
     from gtk import glade
+    loaded_glade = glade
 except:
-    #that's not pretty but it looks functionnal.
-    glade = None
+    #that's not pretty but it looks functional.
+    loaded_glade = None
 from os.path import pardir, abspath, dirname, join
 
 try:
     from xdg.BaseDirectory import xdg_config_home
+    config_home = xdg_config_home
 except ImportError:
-    xdg_config_home = os.path.dirname(__file__)
+    config_home = os.path.dirname(__file__)
 
 LOCAL_ROOTDIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 DIST_ROOTDIR_LOCAL = "/usr/local/share/gtg"
@@ -57,7 +59,7 @@ lang_in_env = os.environ.get('LANGUAGE', None)
 if lang_in_env:
     languages_used.extend(lang_in_env.split(':'))
 
-for module in gettext, glade:
+for module in gettext, loaded_glade:
     #check if glade is well loaded to avoid error in Fedora build farm
     if module:
         module.bindtextdomain(GETTEXT_DOMAIN, LOCALE_PATH)
@@ -83,5 +85,5 @@ if not os.path.isdir(os.path.join(LOCAL_ROOTDIR, 'GTG/plugins/')):
 else:
     PLUGIN_DIR = [os.path.join(LOCAL_ROOTDIR, 'GTG/plugins/')]
 
-if os.path.isdir(os.path.join(xdg_config_home, 'gtg/plugins')):
-    PLUGIN_DIR.append(os.path.join(xdg_config_home, 'gtg/plugins'))
+if os.path.isdir(os.path.join(config_home, 'gtg/plugins')):
+    PLUGIN_DIR.append(os.path.join(config_home, 'gtg/plugins'))
