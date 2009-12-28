@@ -19,7 +19,7 @@
 # -----------------------------------------------------------------------------
 
 from distutils.core     import setup
-from distutils.command.install_data import install_data 
+from distutils.command.install_data import install_data
 from subprocess import call
 
 import glob
@@ -28,12 +28,12 @@ import sys
 
 from GTG import info
 
-### CONSTANTS ##################################################################
+### CONSTANTS ################################################################
 
 DATA_DIR        = "share/gtg"
 GLOBAL_ICON_DIR = "share/icons/hicolor"
 
-### TOOLS ######################################################################
+### TOOLS ####################################################################
 
 def create_icon_list():
     fileList = []
@@ -42,11 +42,12 @@ def create_icon_list():
         dirList = []
         for file in files:
             if file.endswith(".png") or file.endswith(".svg"):
-                dirList.append(os.path.join(root,file))
+                dirList.append(os.path.join(root, file))
         if len(dirList)!=0:
-            newroot = root.replace("data/","")
-            fileList.append( (os.path.join(DATA_DIR,newroot),dirList) )
+            newroot = root.replace("data/", "")
+            fileList.append((os.path.join(DATA_DIR, newroot), dirList))
     return fileList
+
 
 def create_data_files():
     data_files = []
@@ -54,18 +55,23 @@ def create_data_files():
     icons = create_icon_list()
     data_files.extend(icons)
     # gtg .desktop icon
-    data_files.append(('share/icons/hicolor/16x16/apps', ['data/icons/hicolor/16x16/apps/gtg.png']))
-    data_files.append(('share/icons/hicolor/22x22/apps', ['data/icons/hicolor/22x22/apps/gtg.png']))
-    data_files.append(('share/icons/hicolor/24x24/apps', ['data/icons/hicolor/24x24/apps/gtg.png']))
-    data_files.append(('share/icons/hicolor/32x32/apps', ['data/icons/hicolor/32x32/apps/gtg.png']))
-    data_files.append(('share/icons/hicolor/scalable/apps', ['data/icons/hicolor/scalable/apps/gtg.svg']))
+    data_files.append(('share/icons/hicolor/16x16/apps', \
+                       ['data/icons/hicolor/16x16/apps/gtg.png']))
+    data_files.append(('share/icons/hicolor/22x22/apps', \
+                       ['data/icons/hicolor/22x22/apps/gtg.png']))
+    data_files.append(('share/icons/hicolor/24x24/apps', \
+                       ['data/icons/hicolor/24x24/apps/gtg.png']))
+    data_files.append(('share/icons/hicolor/32x32/apps', \
+                       ['data/icons/hicolor/32x32/apps/gtg.png']))
+    data_files.append(('share/icons/hicolor/scalable/apps', \
+                       ['data/icons/hicolor/scalable/apps/gtg.svg']))
     # misc
     data_files.append(('share/applications', ['gtg.desktop']))
-    data_files.append(('share/man/man1', ['doc/gtg.1','doc/gtg_new_task.1']))
+    data_files.append(('share/man/man1', ['doc/gtg.1', 'doc/gtg_new_task.1']))
     return data_files
-    
-    
-#### TRANSLATIONS (from pyroom setup.py) #######################################
+
+
+#### TRANSLATIONS (from pyroom setup.py) ######################################
 
 PO_DIR = 'locales'
 MO_DIR = os.path.join('build', 'locales')
@@ -83,12 +89,14 @@ for po in glob.glob(os.path.join(PO_DIR, '*.po')):
         break
     if return_code:
         raise Warning('Error when building locales')
-        
+
+
 class InstallData(install_data):
+
     def run(self):
         self.data_files.extend(self.find_mo_files())
         install_data.run(self)
-    
+
     def find_mo_files(self):
         data_files = []
         for mo in glob.glob(os.path.join(MO_DIR, '*', 'gtg.mo')):
@@ -96,8 +104,8 @@ class InstallData(install_data):
             dest = os.path.join('share', 'locale', lang, 'LC_MESSAGES')
             data_files.append((dest, [mo]))
         return data_files
-    
-### SETUPT SCRIPT ##############################################################
+
+### SETUP SCRIPT ##############################################################
 
 author = 'The GTG Team'
 
@@ -127,10 +135,10 @@ setup(
     'GTG.plugins.tomboy',
     ],
   package_data = {
-    'GTG.taskbrowser':['taskbrowser.glade'],
-    'GTG.taskeditor':['taskeditor.glade'],
-    'GTG.core.plugins':['pluginmanager.glade'],
-    'GTG.plugins':[
+    'GTG.taskbrowser': ['taskbrowser.glade'],
+    'GTG.taskeditor': ['taskeditor.glade'],
+    'GTG.core.plugins': ['pluginmanager.glade'],
+    'GTG.plugins': [
         'bugzilla.gtg-plugin',
         'export.gtg-plugin',
         'geolocalized-tasks.gtg-plugin',
@@ -140,25 +148,24 @@ setup(
         'rtm-sync.gtg-plugin',
         'tomboy.gtg-plugin'
         ],
-    'GTG.plugins.rtm_sync':['rtm.ui', 'pyrtm/rtm.py',
+    'GTG.plugins.rtm_sync': ['rtm.ui', 'pyrtm/rtm.py',
                             'icons/hicolor/16x16/rtm_image.png',
                             'icons/hicolor/24x24/rtm_image.png',
                             'icons/hicolor/svg/rtm_image.svg'],
-    'GTG.plugins.export':['export.ui', 'export_templates/thumbnail_textual.txt',
+    'GTG.plugins.export': ['export.ui',
+                          'export_templates/thumbnail_textual.txt',
                           'export_templates/template_simple.html',
                           'export_templates/template_textual.txt',
                           'export_templates/thumbnail_simple.html'],
-    'GTG.plugins.geolocalized_tasks':['geolocalized.glade',
-                                      'icons/hicolor/24x24/geolocalization.png',
-                                      'icons/hicolor/16x16/assign-location.png',
-                                      'icons/hicolor/svg/assign-location.svg',
-                                      'icons/hicolor/svg/geolocalization.svg'],
-    'GTG.plugins.helloworld':['hello_world.glade'],
-    'GTG.plugins.tomboy':['tomboy.ui'],
-    'GTG.plugins.notification_area':['notification_area.ui']
-    },
+    'GTG.plugins.geolocalized_tasks': ['geolocalized.glade',
+                          'icons/hicolor/24x24/geolocalization.png',
+                          'icons/hicolor/16x16/assign-location.png',
+                          'icons/hicolor/svg/assign-location.svg',
+                          'icons/hicolor/svg/geolocalization.svg'],
+    'GTG.plugins.helloworld': ['hello_world.glade'],
+    'GTG.plugins.tomboy': ['tomboy.ui'],
+    'GTG.plugins.notification_area': ['notification_area.ui']},
   data_files = create_data_files(),
-  scripts=['gtg','gtg_new_task',],
+  scripts=['gtg', 'gtg_new_task'],
   cmdclass={'install_data': InstallData},
 )
-

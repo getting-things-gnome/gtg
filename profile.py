@@ -6,10 +6,10 @@ from optparse import OptionParser
 
 parser = OptionParser()
 parser.add_option("-d", "--debug",
-                  action="store_true", dest="debug", help="enable debug output")
+               action="store_true", dest="debug", help="enable debug output")
 (options, args) = parser.parse_args()
 
-cProfile.run( "GTG.gtg.main(options, args)", filename="gtg.profile" ) 
+cProfile.run("GTG.gtg.main(options, args)", filename="gtg.profile")
 
 p = pstats.Stats('gtg.profile')
 p.sort_stats('cumulative').print_stats(15)
