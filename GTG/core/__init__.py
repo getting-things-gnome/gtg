@@ -77,6 +77,12 @@ class CoreConfig:
         if not os.path.exists(self.CONF_DIR + self.TASK_CONF_FILE):
             f = open(self.CONF_DIR + self.TASK_CONF_FILE, "w")
             f.close()
+        for file in [self.CONF_DIR + self.CONF_FILE,
+                     self.CONF_DIR + self.TASK_CONF_FILE]:
+            if not ((file, os.R_OK) and os.access(file, os.W_OK)):
+                raise Exception("File " + file + \
+                            " is a configuration file for gtg, but it " + \
+                            "cannot be read or written. Please check it")
         self.conf_dict = ConfigObj(self.CONF_DIR + self.CONF_FILE)
         self.task_conf_dict = ConfigObj(self.CONF_DIR + self.TASK_CONF_FILE)
     
