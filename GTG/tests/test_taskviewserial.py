@@ -25,8 +25,6 @@ xdg.BaseDirectory.xdg_data_home/gtg directory.
 
 # Standard imports
 import unittest
-import os
-import xdg
 
 from GTG.taskeditor import taskviewserial
     

@@ -28,7 +28,7 @@ import gettext
 try:
     from gtk import glade
 except:
-    #that's not pretty but it looks functionnal.
+    #that's not pretty but it looks functional.
     glade = None
 from os.path import pardir, abspath, dirname, join
 
