@@ -148,7 +148,6 @@ class TaskBrowser:
         #Shared clipboard
         self.clipboard = clipboard.TaskClipboard()
         
-        self.color_active = False
         self.tag_active = False
 
 ### INIT HELPER FUNCTIONS #####################################################
@@ -1083,10 +1082,11 @@ class TaskBrowser:
         #TODO: Color chooser should be refactorized in its own class. Well, in
         #fact we should have a TagPropertiesEditor (like for project) Also,
         #color change should be immediate. There's no reason for a Ok/Cancel
+        self.set_target_cursor()
         dialog = gtk.ColorSelectionDialog('Choose color')
         colorsel = dialog.colorsel
         colorsel.connect("color_changed", self.on_color_changed)
-        self.set_target_cursor()
+
         # Get previous color
         tags, notag_only = self.get_selected_tags()
         init_color = None
@@ -1278,7 +1278,7 @@ class TaskBrowser:
                 self.previous_cursor = treeview.get_cursor()
                 # For use in is_task_visible
                 self.previous_tag = self.get_selected_tags()
-                # Let's us know if we're working on a tag.
+                # Let's us know that we're working on a tag.
                 self.tag_active = True
                 # This location is stored in case we need to work with it
                 # later on.
@@ -1304,6 +1304,7 @@ class TaskBrowser:
             return 1
 
     def on_nonworkviewtag_toggled(self, widget):
+        self.set_target_cursor()
         tags = self.get_selected_tags()[0]
         nonworkview_item = self.nonworkviewtag_checkbox
         #We must inverse because the tagstore has True
@@ -1314,6 +1315,7 @@ class TaskBrowser:
         if self.priv['workview']:
             self.task_modelfilter.refilter()
             self.tag_modelfilter.refilter()
+        self.reset_cursor()
 
     def on_task_treeview_button_press_event(self, treeview, event):
         if event.button == 3:
@@ -1698,9 +1700,9 @@ class TaskBrowser:
             working with any tag through a right click menu action.
             """
         if self.tag_active:
+            self.tag_active = False
             path, col = self.previous_cursor
             self.tags_tv.set_cursor(path, col, 0)
-            self.tag_active = False
                 
     def set_target_cursor(self):
         """ Selects the last tag to be right clicked. 
@@ -1711,9 +1713,9 @@ class TaskBrowser:
             editing function to remind the user which tag they're working with.
             """
         if not self.tag_active:
+            self.tag_active = True
             path, col = self.target_cursor
             self.tags_tv.set_cursor(path, col, 0)
-            self.tag_active = True
 
 ### MAIN ######################################################################
 #
