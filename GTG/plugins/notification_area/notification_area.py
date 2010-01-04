@@ -27,6 +27,7 @@ class NotificationArea:
 
     DEFAULT_PREFERENCES = {"start_minimized": False}
     PLUGIN_NAME = "notification_area"
+    MAX_TITLE_LEN = 30
     
     def __init__(self):
         self.minimized = False
@@ -73,10 +74,13 @@ class NotificationArea:
             browser.open_task(tid)
 
     def add_menu_task(self, tid, task = None):
-        """Adds a task in the menu"""
+        """Adds a task in the menu, trimming the title if necessary"""
         if task == None:
             task = self.plugin_api.get_task(tid)
-        menu_item = gtk.ImageMenuItem(task.get_title())
+        title = task.get_title()[0:self.MAX_TITLE_LEN]
+        if len(title)== self.MAX_TITLE_LEN:
+            title = title + "..."
+        menu_item = gtk.ImageMenuItem(title)
         menu_item.connect('activate', self.open_task, tid)
         self.menu.append(menu_item)
         self.tasks_in_menu[tid] = menu_item
@@ -102,7 +106,6 @@ class NotificationArea:
     def deactivate(self, plugin_api):
         self.statusicon.set_visible(False)
         self.plugin_api.get_browser().start_minimized = False
-        plugin_api.unregister_filter_cb(self.doable_tasks_filter)
     
     def onTaskOpened(self, plugin_api):
         pass
