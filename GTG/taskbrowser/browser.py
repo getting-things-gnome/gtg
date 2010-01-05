@@ -1299,7 +1299,15 @@ class TaskBrowser:
                         shown = False
                     else:
                         shown = True
+                    # HACK: CheckMenuItem.set_active() emits a toggled() when 
+                    # switching between True and False, which will reset 
+                    # the cursor. Using self.dont_reset to work around that.
+                    # Calling set_target_cursor after set_active() is another
+                    # option, but there's noticeable amount of lag when right
+                    # clicking tags that way.
+                    self.dont_reset = True
                     display_in_workview_item.set_active(shown)
+                    self.dont_reset = False
                     self.tagpopup.popup(None, None, None, event.button, time)
             return 1
 
@@ -1315,7 +1323,8 @@ class TaskBrowser:
         if self.priv['workview']:
             self.task_modelfilter.refilter()
             self.tag_modelfilter.refilter()
-        self.reset_cursor()
+        if not self.dont_reset:
+            self.reset_cursor()
 
     def on_task_treeview_button_press_event(self, treeview, event):
         if event.button == 3:
