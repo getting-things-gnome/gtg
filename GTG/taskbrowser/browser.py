@@ -1679,8 +1679,9 @@ class TaskBrowser:
         # Restore state from config
         self.restore_state_from_conf()
         # Start minimized if the notification area plugin says so
-        if not (hasattr(self, "start_minimized") and \
-                        self.start_minimized == True):
+        if hasattr(self, "start_minimized") and self.start_minimized == True:
+            self.window.realize()
+        else:
             self.window.show()
         gtk.main()
         return 0
