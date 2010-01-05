@@ -1467,11 +1467,13 @@ class TaskBrowser:
                     "ctcm_mark_as_not_done").set_sensitive(False)
                 self.builder.get_object("ctcm_undismiss").set_sensitive(True)
                 self.dismissbutton.set_label(GnomeConfig.MARK_UNDISMISS)
-                self.donebutton.set_label(GnomeConfig.MARK_DONE)
-                self.donebutton.set_tooltip_text(GnomeConfig.MARK_DONE_TOOLTIP)
                 self.dismissbutton.set_icon_name("gtg-task-undismiss")
                 self.dismissbutton.set_tooltip_text(
                     GnomeConfig.MARK_UNDISMISS_TOOLTIP)
+                self.dismiss_mi.set_label(GnomeConfig.MARK_UNDISMISS)
+                self.donebutton.set_label(GnomeConfig.MARK_DONE)
+                self.donebutton.set_tooltip_text(GnomeConfig.MARK_DONE_TOOLTIP)
+                self.mark_done_mi.set_label(GnomeConfig.MARK_DONE)
             else:
                 self.builder.get_object(
                     "ctcm_mark_as_not_done").set_sensitive(True)
@@ -1480,10 +1482,11 @@ class TaskBrowser:
                 self.donebutton.set_label(GnomeConfig.MARK_UNDONE)
                 self.donebutton.set_tooltip_text(
                     GnomeConfig.MARK_UNDONE_TOOLTIP)
+                self.mark_done_mi.set_label(GnomeConfig.MARK_UNDONE)
                 self.dismissbutton.set_label(GnomeConfig.MARK_DISMISS)
                 self.dismissbutton.set_tooltip_text(
                     GnomeConfig.MARK_DISMISS_TOOLTIP)
-                self.donebutton.set_icon_name("gtg-task-undone")
+                self.dismiss_mi.set_label(GnomeConfig.MARK_DISMISS)
         self.update_buttons_sensitivity()
 
     def on_task_cursor_changed(self, selection=None):
