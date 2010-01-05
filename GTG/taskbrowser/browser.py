@@ -230,6 +230,7 @@ class TaskBrowser:
             self.builder.get_object("ClosedTaskContextMenu")
         self.editbutton         = self.builder.get_object("edit_b")
         self.donebutton         = self.builder.get_object("mark_as_done_b")
+        self.deletebutton       = self.builder.get_object("delete_b")
         self.newtask            = self.builder.get_object("new_task_b")
         self.newsubtask         = self.builder.get_object("new_subtask_b")
         self.dismissbutton      = self.builder.get_object("dismiss")
@@ -407,7 +408,7 @@ class TaskBrowser:
         self.closed_selection = self.ctask_tv.get_selection()
         self.selection.connect("changed", self.on_task_cursor_changed)
         self.closed_selection.connect("changed", self.on_taskdone_cursor_changed)
-        self.req.connect("task-deleted",self.update_task_menu_mi_sensitivity)
+        self.req.connect("task-deleted", self.update_buttons_sensitivity)
 
     def _init_view_defaults(self):
         self.menu_view_workview.set_active(WORKVIEW)
@@ -1483,7 +1484,7 @@ class TaskBrowser:
                 self.dismissbutton.set_tooltip_text(
                     GnomeConfig.MARK_DISMISS_TOOLTIP)
                 self.donebutton.set_icon_name("gtg-task-undone")
-        self.update_task_menu_mi_sensitivity()
+        self.update_buttons_sensitivity()
 
     def on_task_cursor_changed(self, selection=None):
         """Called when selection changes in the active task view.
@@ -1500,7 +1501,7 @@ class TaskBrowser:
             self.donebutton.set_label(GnomeConfig.MARK_DONE)
             self.donebutton.set_tooltip_text(GnomeConfig.MARK_DONE_TOOLTIP)
             self.dismissbutton.set_label(GnomeConfig.MARK_DISMISS)
-        self.update_task_menu_mi_sensitivity()
+        self.update_buttons_sensitivity()
 
 #    def on_note_cursor_changed(self, selection=None):
 #        #We unselect all in the closed task view
@@ -1562,7 +1563,7 @@ class TaskBrowser:
             if self.refresh_lock.acquire(False):
                 gobject.idle_add(self.general_refresh)
 
-    def update_task_menu_mi_sensitivity(self):
+    def update_buttons_sensitivity(self):
         enable = self.selection.count_selected_rows() + \
            self.closed_selection.count_selected_rows() > 0
         self.edit_mi.set_sensitive(enable)
@@ -1570,6 +1571,9 @@ class TaskBrowser:
         self.mark_done_mi.set_sensitive(enable)
         self.dismiss_mi.set_sensitive(enable)
         self.delete_mi.set_sensitive(enable)
+        self.donebutton.set_sensitive(enable)
+        self.dismissbutton.set_sensitive(enable)
+        self.deletebutton.set_sensitive(enable)
 
     def general_refresh(self):
         if self.logger:

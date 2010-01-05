@@ -362,6 +362,7 @@
             <child>
               <object class="GtkToolButton" id="mark_as_done_b">
                 <property name="visible">True</property>
+                <property name="sensitive">False</property>
                 <property name="is_important">True</property>
                 <property name="label" translatable="yes">Mark as Done</property>
                 <property name="icon_name">gtg-task-done</property>
@@ -375,6 +376,7 @@
             <child>
               <object class="GtkToolButton" id="dismiss">
                 <property name="visible">True</property>
+                <property name="sensitive">False</property>
                 <property name="label" translatable="yes">Dismiss</property>
                 <property name="icon_name">gtg-task-dismiss</property>
                 <signal name="clicked" handler="on_dismiss_task"/>
@@ -386,6 +388,7 @@
             </child>
             <child>
               <object class="GtkToolButton" id="delete_b">
+                <property name="sensitive">False</property>
                 <property name="label" translatable="yes">Delete</property>
                 <property name="icon_name">edit-delete</property>
                 <signal name="clicked" handler="on_delete_task"/>
