@@ -995,12 +995,10 @@ class TaskView(gtk.TextView):
         #else, that we can empty it.
         our_paste = self.clipboard.paste_text()
         if our_paste != None and clip.wait_for_text() == our_paste :
-            #we handle ourselves the pasting
-            self.stop_emission("paste_clipboard")
             for line in self.clipboard.paste():
                 if line[0] == 'text':
                     self.buff.insert_at_cursor(line[1])
-                elif line[0] == 'subtask':
+                if line[0] == 'subtask':
                     self.new_subtask_callback(tid=line[1])
                     mark = self.buff.get_insert()
                     line_nbr = self.buff.get_iter_at_mark(mark).get_line()
@@ -1008,6 +1006,10 @@ class TaskView(gtk.TextView):
                     #else, we will start another subtask
                     self.buff.insert_at_cursor("\n")
                     self.write_subtask(self.buff,line_nbr,line[1])
+#                else:
+#                    self.buff.insert_at_cursor(line[1])
+            #we handle ourselves the pasting
+            self.stop_emission("paste_clipboard")
 
         else:
             #we keep the normal pasting by not interupting the signal
