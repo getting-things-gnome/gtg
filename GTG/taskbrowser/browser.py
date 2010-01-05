@@ -402,6 +402,12 @@ class TaskBrowser:
                                     self.on_task_child_toggled)
         self.tag_modelsort.connect("row-has-child-toggled",\
                                     self.on_tag_child_toggled)
+        # Selection changes
+        self.selection = self.task_tv.get_selection()
+        self.closed_selection = self.ctask_tv.get_selection()
+        self.selection.connect("changed", self.on_task_cursor_changed)
+        self.closed_selection.connect("changed", self.on_taskdone_cursor_changed)
+        self.req.connect("task-deleted",self.update_task_menu_mi_sensitivity)
 
     def _init_view_defaults(self):
         self.menu_view_workview.set_active(WORKVIEW)
@@ -419,7 +425,6 @@ class TaskBrowser:
             tagtree.COL_ID, gtk.SORT_ASCENDING)
 
     def _init_accelerators(self):
-
         agr = gtk.AccelGroup()
         self.builder.get_object("MainWindow").add_accel_group(agr)
 
@@ -445,9 +450,9 @@ class TaskBrowser:
         new_task_mi.add_accelerator("activate", agr, key, mod,\
             gtk.ACCEL_VISIBLE)
 
-        new_subtask_mi = self.builder.get_object("new_subtask_mi")
+        self.new_subtask_mi = self.builder.get_object("new_subtask_mi")
         key, mod       = gtk.accelerator_parse("<Control><Shift>n")
-        new_subtask_mi.add_accelerator("activate", agr, key, mod,\
+        self.new_subtask_mi.add_accelerator("activate", agr, key, mod,\
             gtk.ACCEL_VISIBLE)
 
         edit_button = self.builder.get_object("edit_b")
@@ -460,15 +465,17 @@ class TaskBrowser:
         quickadd_field.add_accelerator(
             'grab-focus', agr, key, mod, gtk.ACCEL_VISIBLE)
 
-        mark_done_mi = self.builder.get_object('mark_done_mi')
+        self.mark_done_mi = self.builder.get_object('mark_done_mi')
         key, mod = gtk.accelerator_parse('<Control>d')
-        mark_done_mi.add_accelerator(
+        self.mark_done_mi.add_accelerator(
             'activate', agr, key, mod, gtk.ACCEL_VISIBLE)
 
-        task_dismiss = self.builder.get_object('task_dismiss')
+        self.dismiss_mi = self.builder.get_object('task_dismiss')
         key, mod = gtk.accelerator_parse('<Control>i')
-        task_dismiss.add_accelerator(
+        self.dismiss_mi.add_accelerator(
             'activate', agr, key, mod, gtk.ACCEL_VISIBLE)
+
+        self.delete_mi = self.builder.get_object('delete_mi')
         
     def _init_plugin_engine(self):
         # plugins - Init
@@ -1476,6 +1483,7 @@ class TaskBrowser:
                 self.dismissbutton.set_tooltip_text(
                     GnomeConfig.MARK_DISMISS_TOOLTIP)
                 self.donebutton.set_icon_name("gtg-task-undone")
+        self.update_task_menu_mi_sensitivity()
 
     def on_task_cursor_changed(self, selection=None):
         """Called when selection changes in the active task view.
@@ -1492,6 +1500,7 @@ class TaskBrowser:
             self.donebutton.set_label(GnomeConfig.MARK_DONE)
             self.donebutton.set_tooltip_text(GnomeConfig.MARK_DONE_TOOLTIP)
             self.dismissbutton.set_label(GnomeConfig.MARK_DISMISS)
+        self.update_task_menu_mi_sensitivity()
 
 #    def on_note_cursor_changed(self, selection=None):
 #        #We unselect all in the closed task view
@@ -1553,6 +1562,15 @@ class TaskBrowser:
             if self.refresh_lock.acquire(False):
                 gobject.idle_add(self.general_refresh)
 
+    def update_task_menu_mi_sensitivity(self):
+        enable = self.selection.count_selected_rows() + \
+           self.closed_selection.count_selected_rows() > 0
+        self.edit_mi.set_sensitive(enable)
+        self.new_subtask_mi.set_sensitive(enable)
+        self.mark_done_mi.set_sensitive(enable)
+        self.dismiss_mi.set_sensitive(enable)
+        self.delete_mi.set_sensitive(enable)
+
     def general_refresh(self):
         if self.logger:
             self.logger.debug("Trigger refresh on taskbrowser.")
@@ -1561,12 +1579,6 @@ class TaskBrowser:
 #        self.tags_tv.refresh()
         self._update_window_title()
         self.refresh_lock.release()
-
-    def connect_changed_signals(self): 
-        selection = self.task_tv.get_selection()
-        closed_selection = self.ctask_tv.get_selection()
-        selection.connect("changed", self.on_task_cursor_changed)
-        closed_selection.connect("changed", self.on_taskdone_cursor_changed)
 
 ### PUBLIC METHODS ############################################################
 #
@@ -1671,8 +1683,6 @@ class TaskBrowser:
         # Here we will define the main TaskList interface
         gobject.threads_init()
 
-        # Watch for selections in the treeview
-        self.connect_changed_signals()
         #note_selection = self.note_tview.get_selection()
         #note_selection.connect("changed", self.on_note_cursor_changed)
 

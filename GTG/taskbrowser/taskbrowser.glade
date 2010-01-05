@@ -40,6 +40,7 @@
                       <object class="GtkImageMenuItem" id="new_subtask_mi">
                         <property name="label" translatable="yes">New _Subtask</property>
                         <property name="visible">True</property>
+                        <property name="sensitive">False</property>
                         <property name="use_underline">True</property>
                         <property name="image">bm_img_subtask</property>
                         <property name="use_stock">False</property>
@@ -51,6 +52,7 @@
                       <object class="GtkImageMenuItem" id="edit_mi">
                         <property name="label">gtk-edit</property>
                         <property name="visible">True</property>
+                        <property name="sensitive">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <property name="accel_group">accelgroup1</property>
@@ -66,6 +68,7 @@
                       <object class="GtkImageMenuItem" id="mark_done_mi">
                         <property name="label" translatable="yes">Mark as _Done</property>
                         <property name="visible">True</property>
+                        <property name="sensitive">False</property>
                         <property name="use_underline">True</property>
                         <property name="image">bm_img_done</property>
                         <property name="use_stock">False</property>
@@ -77,6 +80,7 @@
                       <object class="GtkImageMenuItem" id="task_dismiss">
                         <property name="label" translatable="yes">D_ismiss</property>
                         <property name="visible">True</property>
+                        <property name="sensitive">False</property>
                         <property name="use_underline">True</property>
                         <property name="image">bm_img_dismiss</property>
                         <property name="use_stock">False</property>
@@ -88,6 +92,7 @@
                       <object class="GtkImageMenuItem" id="delete_mi">
                         <property name="label">gtk-delete</property>
                         <property name="visible">True</property>
+                        <property name="sensitive">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <property name="accel_group">accelgroup1</property>
