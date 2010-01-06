@@ -218,7 +218,7 @@ class geolocalizedTasks:
     def is_configurable(self):
         return True
     
-    def configure_dialog(self, plugin_api):
+    def configure_dialog(self, plugin_api, manager_dialog):
         self.on_geolocalized_preferences(plugin_api)
     
     def location_changed(self):
