@@ -1068,6 +1068,11 @@ class TaskView(gtk.TextView):
                 #Because it's the title
                 if line_nbr > 0 :
                     line = start_line.get_slice(end_line)
+                    #the part after the enter
+                    realend = end_line.copy()
+                    realend.forward_to_line_end()
+                    restofline = end_line.get_slice(realend)
+                    restofline.strip()
                     
                     #If indent is 0, We check if we created a new task
                     #the "-" might be after a space
@@ -1077,7 +1082,11 @@ class TaskView(gtk.TextView):
                             line = line.lstrip(' -')
                             end_i = self.__newsubtask(self.buff,line,line_nbr)
                             #Here, we should increment indent level
-                            self.insert_indent(self.buff,end_i,1,enter=True)
+                            if restofline and restofline.strip() != "" :
+                                self.__newsubtask(self.buff,restofline,\
+                                                            line_nbr+1)
+                            else:
+                                self.insert_indent(self.buff,end_i,1,enter=True)
                             tv.emit_stop_by_name('insert-text')
                         else :
                             self.buff.insert(itera,"\n")
