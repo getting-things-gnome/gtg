@@ -1566,7 +1566,8 @@ class TaskBrowser:
             if self.refresh_lock.acquire(False):
                 gobject.idle_add(self.general_refresh)
 
-    def update_buttons_sensitivity(self):
+    #using dummy parameters that are given by the signal
+    def update_buttons_sensitivity(self,a=None,b=None,c=None):
         enable = self.selection.count_selected_rows() + \
            self.closed_selection.count_selected_rows() > 0
         self.edit_mi.set_sensitive(enable)
