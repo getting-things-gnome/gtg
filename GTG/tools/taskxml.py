@@ -19,6 +19,7 @@
 
 #Functions to convert a Task object to an XML string and back
 import xml.dom.minidom
+import xml.sax.saxutils as saxutils
 
 from GTG.tools import cleanxml
 from GTG.tools import dates
@@ -58,7 +59,7 @@ def task_from_xml(task,xmlnode) :
     cur_task.set_start_date(dates.strtodate(cleanxml.readTextNode(xmlnode,"startdate")))
     cur_tags = xmlnode.getAttribute("tags").replace(' ','').split(",")
     if "" in cur_tags: cur_tags.remove("")
-    for tag in cur_tags: cur_task.tag_added(tag)
+    for tag in cur_tags: cur_task.tag_added(saxutils.unescape(tag))
     #Why should we sync here ? It makes no sense
     #cur_task.sync()
     
@@ -72,7 +73,7 @@ def task_to_xml(doc,task) :
     t_xml.setAttribute("uuid" , task.get_uuid())
     tags_str = ""
     for tag in task.get_tags_name(): 
-        tags_str = tags_str + str(tag) + ","
+        tags_str = tags_str + saxutils.escape(str(tag)) + ","
     t_xml.setAttribute("tags", tags_str[:-1])
     cleanxml.addTextNode(doc,t_xml,"title",task.get_title())
     cleanxml.addTextNode(doc,t_xml,"duedate", task.get_due_date().xml_str())
