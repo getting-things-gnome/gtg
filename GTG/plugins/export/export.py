@@ -30,6 +30,7 @@ import subprocess
 import gobject
 from Cheetah.Template import Template
 from xdg.BaseDirectory import xdg_config_home
+from datetime import date, timedelta
 
 from GTG import _
 
@@ -42,7 +43,7 @@ class pluginExport:
 
     def __init__(self):
         self.path = os.path.dirname(os.path.abspath(__file__))
-        self.menu_item = gtk.MenuItem("E_xport current tasks")
+        self.menu_item = gtk.MenuItem("E_xport tasks")
         self.menu_item.connect('activate', self.on_export)
         self.tb_button = gtk.ToolButton(gtk.STOCK_PRINT)
         self.tb_button.connect('clicked', self.on_export)
@@ -55,6 +56,11 @@ class pluginExport:
         self.preferences_dialog = self.builder.get_object("preferences_dialog")
         self.pref_chbox_menu    = self.builder.get_object("pref_chbox_menu")
         self.pref_chbox_toolbar = self.builder.get_object("pref_chbox_toolbar")
+
+        self.export_all_active         = self.builder.get_object("export_all_active_rb")
+        self.export_finished_last_week = self.builder.get_object("export_finished_last_week_rb")
+        self.export_all_finished       = self.builder.get_object("export_all_finished_rb")
+
         SIGNAL_CONNECTIONS_DIC = {
             "on_export_btn_open_clicked": 
                 self.on_export_open,
@@ -147,7 +153,7 @@ class pluginExport:
         self.export_template_filename = supposed_template
         return True
 
-    def export_tree_visit(self, model, task_iter):
+    def export_tree_visit(self, model, task_iter, days=None):
         class TaskStr:
             def __init__(self,
                          title,
@@ -184,6 +190,7 @@ class pluginExport:
         tasks_str = []
         while task_iter:
             task = model.get_value(task_iter, 1) # tagtree.COL_OBJ)
+
             task_str = TaskStr(task.get_title(),
                                str(task.get_text()),
                                [],
@@ -197,14 +204,33 @@ class pluginExport:
             if model.iter_has_child(task_iter):
                 task_str.subtasks = \
                     self.export_tree_visit(model, model.iter_children(task_iter))
-            tasks_str.append(task_str)
+
+            if not days:
+                tasks_str.append(task_str)
+            elif days < 0 and task.get_closed_date():
+                age = task.get_closed_date().days_left() * (-1)
+                if age <= days*(-1):
+                    tasks_str.append(task_str)
+            elif days > 0 and task.get_days_left() <= days:
+                tasks_str.append(task_str)
+
             task_iter = model.iter_next(task_iter)
         return tasks_str
 
     def export_generate(self):
         #Template loading and cutting
-        model = self.plugin_api.get_task_modelsort()
-        tasks_str = self.export_tree_visit(model, model.get_iter_first())
+        if self.export_all_active.get_active():
+            #Export the active tasks
+            model = self.plugin_api.get_task_modelsort()
+        elif self.export_finished_last_week.get_active() or self.export_all_finished.get_active():
+            #Export the done tasks
+            model = self.plugin_api.get_ctask_modelsort()
+
+        if self.export_finished_last_week.get_active():
+            tasks_str = self.export_tree_visit(model, model.get_iter_first(), -1)
+        else:
+            tasks_str = self.export_tree_visit(model, model.get_iter_first())
+
         self.export_document = str(Template (file = self.export_template_path,
                       searchList = [{ 'tasks': tasks_str}]))
         return True
@@ -403,3 +429,4 @@ class pluginExport:
         elif self.preferences["toolbar_entry"]==False and self.toolbar_entry == True:
             self.plugin_api.remove_toolbar_item(self.tb_button)
             self.toolbar_entry = False
+
