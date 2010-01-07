@@ -18,6 +18,7 @@
 # -----------------------------------------------------------------------------
 import gtk
 import gobject
+import xml.sax.saxutils as saxutils
 
 from GTG import _
 from GTG.taskbrowser.CellRendererTags import CellRendererTags
@@ -82,9 +83,9 @@ class TagTreeModel(gtk.GenericTreeModel):
         #print "on_get_value: %s" % rowref
         tag = self.tree.get_node_for_rowref(rowref)
         if   column == COL_ID:
-            return tag.get_name()
+            return saxutils.escape(tag.get_name())
         if   column == COL_NAME:
-            return tag.get_name()[1:]
+            return saxutils.escape(tag.get_name())[1:]
         if   column == COL_LABEL:
             if tag.get_attribute("label"):
                 return tag.get_attribute("label")
@@ -95,9 +96,9 @@ class TagTreeModel(gtk.GenericTreeModel):
                     nwv = False
                 if nwv:
                     return "<span color='#AAAAAA'>%s</span>"\
-                         % tag.get_name()[1:]
+                         % saxutils.escape(tag.get_name())[1:]
                 else:
-                    return tag.get_name()[1:]
+                    return saxutils.escape(tag.get_name())[1:]
         if   column == COL_OBJ:
             return tag
         elif column == COL_COLOR:
