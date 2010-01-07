@@ -227,7 +227,7 @@ class pluginExport:
             model = self.plugin_api.get_ctask_modelsort()
 
         if self.export_finished_last_week.get_active():
-            tasks_str = self.export_tree_visit(model, model.get_iter_first(), -1)
+            tasks_str = self.export_tree_visit(model, model.get_iter_first(), -7)
         else:
             tasks_str = self.export_tree_visit(model, model.get_iter_first())
 
