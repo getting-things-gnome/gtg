@@ -29,10 +29,11 @@
 #def task_template($task, $space_num):
 #set spaces = " " * $space_num
 #if $task.has_title
-$task.title#slurp 
+$task.title#slurp
 #end if
 ##
 #if $task.has_subtasks
+
 #for $subtask in $task.subtasks:
 $spaces * $task_template($subtask, $space_num + 2)
 #end for
