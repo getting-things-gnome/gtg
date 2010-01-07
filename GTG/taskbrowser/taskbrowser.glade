@@ -901,7 +901,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
     <child>
       <object class="GtkMenuItem" id="tcm_addtag">
         <property name="visible">True</property>
-        <property name="label" translatable="yes">Add Tag</property>
+        <property name="label" translatable="yes">Add Tag...</property>
         <property name="use_underline">True</property>
         <signal name="activate" handler="on_add_new_tag"/>
       </object>
@@ -1030,6 +1030,15 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
         <property name="orientation">vertical</property>
         <property name="spacing">2</property>
         <child>
+          <object class="GtkLabel" id="label5">
+            <property name="visible">True</property>
+            <property name="label" translatable="yes">Enter the name of the tag you wish to add:</property>
+          </object>
+          <packing>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
           <object class="GtkEntry" id="tag_entry">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
@@ -1040,19 +1049,19 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
             <property name="shadow_type">none</property>
           </object>
           <packing>
-            <property name="position">1</property>
+            <property name="position">2</property>
           </packing>
         </child>
         <child>
           <object class="GtkCheckButton" id="apply_to_subtasks">
-            <property name="label" translatable="yes">Apply to subtasks?</property>
+            <property name="label" translatable="yes">Apply to subtasks</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">False</property>
             <property name="draw_indicator">True</property>
           </object>
           <packing>
-            <property name="position">2</property>
+            <property name="position">3</property>
           </packing>
         </child>
         <child internal-child="action_area">
@@ -1061,7 +1070,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
             <property name="layout_style">end</property>
             <child>
               <object class="GtkButton" id="addtag_ok">
-                <property name="label" translatable="yes">OK</property>
+                <property name="label" translatable="yes">Add Tag</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>

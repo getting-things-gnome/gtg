@@ -1429,7 +1429,7 @@ class TaskBrowser:
             #      -- It works in a sorta limited and odd way, best solution I think is
             #         still to separate the tags.
             #TODO: Menu icon?
-            #TODO: ????????????????????????
+
             tag_entry = self.builder.get_object("tag_entry")
             apply_to_subtasks = self.builder.get_object("apply_to_subtasks")
             tag_entry.set_text("NewTag")
@@ -1465,7 +1465,7 @@ class TaskBrowser:
         # ("tag1, tag2") then this will probably get in the way (unless we isolate
         # each tag before doing that, which is probably how it would be done anyway).
         
-#TODO:     Traceback (most recent call last): <--- ***NEXT***
+#TODO:     Traceback (most recent call last): 
 #  File "/browser.py", line 1466, in on_addtag_confirm
 #    task = self.req.get_task(tid)
 #TypeError: 'NoneType' object is not iterable
