@@ -155,6 +155,7 @@ class Unserializer:
     def unserialize(self, register_buf, content_buf, ite, data,\
                     cr_tags, udata):
         if data:
+            print data
             element = xml.dom.minidom.parseString(data)
             success = self.parsexml(content_buf, ite, element.firstChild)
         else:

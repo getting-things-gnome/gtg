@@ -203,7 +203,9 @@ class Tag(TreeNode):
         newname = saxutils.unescape(newname)
         self.set_attribute("name",newname,internalrename=True)
         for t in self.get_tasks():
-            self.req.get_task(t).rename_tag(old,newname)
+            ta = self.req.get_task(t)
+            ta.rename_tag(old,newname)
+            ta.sync()
     
 
     def set_attribute(self, att_name, att_value, internalrename=False):
