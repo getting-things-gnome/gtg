@@ -341,7 +341,7 @@ class TagTreeView(gtk.TreeView):
         #the treemodelfilter that we get from the treemodelsort
         model = self.get_model()
         itera = model.get_iter(path)
-        oldname = model.get_value(itera,COL_ID)
+        oldname = saxutils.unescape(model.get_value(itera,COL_ID))
         basemodel = model.get_model().get_model()
         basemodel.rename_tag(oldname,newname)
 
