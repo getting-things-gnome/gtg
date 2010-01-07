@@ -1389,12 +1389,18 @@ class TaskBrowser:
             # I find the tasks that are going to be deleted
             tasks = []
             for tid in self.tids_todelete:
+                def recursive_list_tasks(task_list, root):
+                    """Populate a list of all the subtasks and 
+                       their children, recursively"""
+                    if root not in task_list:
+                        task_list.append(root)
+                        for i in root.get_subtasks():
+                            recursive_list_tasks(task_list, i)
                 task = self.req.get_task(tid)
-                for i in task.get_self_and_all_subtasks():
-                    if i not in tasks: tasks.append(i)
+                recursive_list_tasks(tasks, task)
             titles_list = [task.get_title() for task in tasks]
             titles = reduce (lambda x, y: x + "\n - " + y, titles_list)
-            label.set_text("%s %s" % (label_text, titles))
+            label.set_text("%s %s" % (label_text, "\n - " + titles))
             delete_dialog = self.builder.get_object("confirm_delete")
             delete_dialog.run()
             delete_dialog.hide()
