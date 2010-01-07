@@ -21,6 +21,7 @@ import gtk
 import gobject
 import pango
 import xml.sax.saxutils as saxutils
+import re
 
 from GTG import _
 from GTG.core.tree import Tree, TreeNode
@@ -130,10 +131,17 @@ class TaskTreeModel(gtk.GenericTreeModel):
         elif column == COL_LABEL:
             if task.get_status() == Task.STA_ACTIVE:
                 count = self._count_active_subtasks_rec(task)
+                text = task.get_text()
+                text_first_new_line_position = min(filter(lambda x: x > 0, \
+                                       [len(text),text.find('\n')]))
+                text_first_line = text[0:text_first_new_line_position]
                 if count != 0:
-                    title = saxutils.escape(task.get_title()) + " (%s)" % count
+                    title = saxutils.escape(task.get_title()) +\
+                            "<span color='#BBBBBB'>" + \
+                            saxutils.escape(text_first_line) + "</span>" + " (%s)" % count
                 else:
-                    title = saxutils.escape(task.get_title())
+                    title = saxutils.escape(task.get_title()) + "<span color='#BBBBBB'>" + \
+                            saxutils.escape(text_first_line) + "</span>" 
             elif task.get_status() == Task.STA_DISMISSED:
                     title = "<span color='#AAAAAA'>"\
                         + saxutils.escape(task.get_title()) + "</span>"
@@ -405,7 +413,7 @@ class ActiveTaskTreeView(TaskTreeView):
         render_text = gtk.CellRendererText()
         render_text.set_property("ellipsize", pango.ELLIPSIZE_END)
         title_col.set_title(_("Title"))
-        title_col.pack_start(render_text, expand=True)
+        title_col.pack_start(render_text, expand = True)
         title_col.add_attribute(render_text, "markup", COL_LABEL)
         title_col.set_resizable(True)
         title_col.set_expand(True)
