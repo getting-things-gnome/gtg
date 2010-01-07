@@ -1278,7 +1278,8 @@ class TaskBrowser:
                 self.previous_cursor = treeview.get_cursor()
                 # For use in is_task_visible
                 self.previous_tag = self.get_selected_tags()
-
+                # Let's us know that we're working on a tag.
+                self.tag_active = True
 
                 # This location is stored in case we need to work with it
                 # later on.
@@ -1289,8 +1290,7 @@ class TaskBrowser:
                     # Then we are looking at single, normal tag rather than
                     # the special 'All tags' or 'Tasks without tags'. We only
                     # want to popup the menu for normal tags.
-                    # Let's us know that we're working on a tag.
-                    self.tag_active = True
+
                     display_in_workview_item = self.tagpopup.get_children()[2]
                     selected_tag = selected_tags[0]
                     nonworkview = selected_tag.get_attribute("nonworkview")
@@ -1311,6 +1311,8 @@ class TaskBrowser:
                     display_in_workview_item.set_active(shown)
                     self.dont_reset = False
                     self.tagpopup.popup(None, None, None, event.button, time)
+                else:
+                    self.reset_cursor()
             return 1
 
     def on_nonworkviewtag_toggled(self, widget):
