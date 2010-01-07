@@ -32,6 +32,10 @@ import datetime
 import threading
 import time
 
+#######DEBUG############
+# TODO: Clear up all debug stuff when I finish :)
+import pdb
+
 #our own imports
 import GTG
 from GTG import info
@@ -302,6 +306,8 @@ class TaskBrowser:
 #                self.on_edit_note,
             "on_delete_task":
                 self.on_delete_task,
+            "on_add_new_tag":
+                self.on_add_new_tag,
             "on_mark_as_done":
                 self.on_mark_as_done,
             "on_dismiss_task":
@@ -318,6 +324,12 @@ class TaskBrowser:
                 self.on_delete_confirm,
             "on_delete_cancel":
                 lambda x: x.hide,
+            "on_addtag_confirm":
+                self.on_addtag_confirm,
+            "on_addtag_cancel":
+                lambda x: x.hide,
+            "on_tag_entry_key_press_event":
+                self.on_tag_entry_key_press_event,
             "on_add_subtask":
                 self.on_add_subtask,
             "on_colorchooser_activate":
@@ -1402,7 +1414,74 @@ class TaskBrowser:
             return not self.tids_todelete
         else:
             return False
-
+    
+    def on_add_new_tag(self, widget=None, tid=None):
+        if not tid:
+            self.tids_to_addtag = self.get_selected_tasks()
+        else:
+            self.tids_to_addtag = [tid]
+            
+        if len(self.tids_to_addtag) > 0:
+            #TODO: Apply to subtasks?
+            #TODO: Access via hotkey
+            #TODO: Autocomplete
+            #TODO: Multiple tags~
+            #TODO: Menu icon?
+            #TODO: ????????????????????????
+            tag_entry = self.builder.get_object("tag_entry")
+            tag_entry.set_text("NewTag")
+            tag_entry.grab_focus()
+            # Finding the tasks to add a tag to~
+            tasks = []
+           
+            for tid in self.tids_to_addtag:
+                task = self.req.get_task(tid)
+                for i in task.get_self_and_all_subtasks():
+                    if i not in tasks: tasks.append(i)
+                    
+            addtag_dialog = self.builder.get_object("TaskAddTag")
+            addtag_dialog.run()
+            addtag_dialog.hide()
+            self.tags_tv.refresh()
+            
+        else:
+            return False
+    
+    def on_addtag_confirm(self, widget=None):
+        tag_entry = self.builder.get_object("tag_entry")
+        addtag_dialog = self.builder.get_object("TaskAddTag")
+     
+        if not tag_entry.get_text()[0] == "@":
+            new_tagname = "@" + tag_entry.get_text()
+        else:
+            new_tagname = tag_entry.get_text()
+            
+        #TODO: What if I _want_ the new tag to be @@something?
+        #TODO: Also--make sure to complain if tag_entry = ""
+        #TODO: Make sure it's a valid name (eg. nothing like "this is a new tag")
+        # On the other hand, if we're adding multiple tags separated by comma space
+        # ("tag1, tag2") then this will probably get in the way (unless we isolate
+        # each tag before doing that, which is probably how it would be done anyway).
+        # Remove any trailing spaces
+        new_tagname.rstrip()            
+#TODO:     Traceback (most recent call last):
+#  File "/browser.py", line 1466, in on_addtag_confirm
+#    task = self.req.get_task(tid)
+#TypeError: 'NoneType' object is not iterable
+        for tid in self.tids_to_addtag:
+            task = self.req.get_task(tid)
+            task.add_tag(new_tagname)
+            task.sync
+            
+        self.tids_to_addtag = None
+        #TODO: Refresh the tagslist, right now a new tag won't show up, even with tags_tv.refresh() ******
+        addtag_dialog.hide()
+        self.tags_tv.refresh()        
+       
+    def on_tag_entry_key_press_event(self, widget, event):
+        if gtk.gdk.keyval_name(event.keyval) == "Return":
+            self.on_addtag_confirm()
+    
     def on_mark_as_done(self, widget):
         task_to_scroll_to = None
         tasks_uid = filter(lambda uid: uid != None, self.get_selected_tasks())
