@@ -21,6 +21,7 @@
 #the tag object implementation
 
 import os
+import xml.sax.saxutils as saxutils
 
 from GTG.core      import CoreConfig
 from GTG.core.tree import Tree, TreeNode
@@ -186,7 +187,7 @@ class Tag(TreeNode):
             is set.
         """
         TreeNode.__init__(self, name)
-        self._name = str(name)
+        self._name = saxutils.unescape(str(name))
         self.req = req
         self._attributes = {'name': self._name}
         self._save = save_cllbk
@@ -199,6 +200,7 @@ class Tag(TreeNode):
         
     def rename(self,newname):
         old = self.get_name()
+        newname = saxutils.unescape(newname)
         self.set_attribute("name",newname,internalrename=True)
         for t in self.get_tasks():
             self.req.get_task(t).rename_tag(old,newname)
