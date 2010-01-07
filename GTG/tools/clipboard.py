@@ -22,9 +22,10 @@ TaskClipboard allows to cut/copy the content of a TaskView accross multiples
 taskeditors, preserving subtasks
 """
 class TaskClipboard():
-    def __init__(self):
+    def __init__(self,req):
         self.description = None
         self.content = []
+        self.req = req
         
     """"take two gtk.TextIter as parameter and copy the
     """
@@ -51,7 +52,11 @@ class TaskClipboard():
             for ta in tags :
                 if (ta.get_data('is_subtask')):
                     is_subtask = True
-                    self.content.append(['subtask', ta.get_data('child')])
+                    tid = ta.get_data('child')
+                    tas = self.req.get_task(tid)
+                    tas.set_to_keep()
+                    tas.sync()
+                    self.content.append(['subtask', tid])
             if not is_subtask:
                 if end_line.get_line() < stop.get_line():
                     self.content.append(['text', "%s\n" %start.get_text(end_line)])

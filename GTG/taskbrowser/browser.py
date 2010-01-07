@@ -146,7 +146,7 @@ class TaskBrowser:
         #self._init_note_support()
         
         #Shared clipboard
-        self.clipboard = clipboard.TaskClipboard()
+        self.clipboard = clipboard.TaskClipboard(self.req)
 
 ### INIT HELPER FUNCTIONS #####################################################
 #
