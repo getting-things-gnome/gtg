@@ -1422,23 +1422,19 @@ class TaskBrowser:
             self.tids_to_addtag = [tid]
             
         if len(self.tids_to_addtag) > 0:
-            #TODO: Apply to subtasks?
             #TODO: Access via hotkey
             #TODO: Autocomplete
             #TODO: Multiple tags~
+            # ^----- What happens if I run a list like "@tag1, @tag2" in add_tag()?
+            #      -- It works in a sorta limited and odd way, best solution I think is
+            #         still to separate the tags.
             #TODO: Menu icon?
             #TODO: ????????????????????????
             tag_entry = self.builder.get_object("tag_entry")
+            apply_to_subtasks = self.builder.get_object("apply_to_subtasks")
             tag_entry.set_text("NewTag")
             tag_entry.grab_focus()
-            # Finding the tasks to add a tag to~
-            tasks = []
-           
-            for tid in self.tids_to_addtag:
-                task = self.req.get_task(tid)
-                for i in task.get_self_and_all_subtasks():
-                    if i not in tasks: tasks.append(i)
-                    
+            apply_to_subtasks.set_active(False)
             addtag_dialog = self.builder.get_object("TaskAddTag")
             addtag_dialog.run()
             addtag_dialog.hide()
@@ -1449,25 +1445,31 @@ class TaskBrowser:
     def on_addtag_confirm(self, widget=None):
         tag_entry = self.builder.get_object("tag_entry")
         addtag_dialog = self.builder.get_object("TaskAddTag")
-     
-        if not tag_entry.get_text()[0] == "@":
-            new_tagname = "@" + tag_entry.get_text()
-        else:
-            new_tagname = tag_entry.get_text()
-            
-        #TODO: What if I _want_ the new tag to be @@something?
+        apply_to_subtasks = self.builder.get_object("apply_to_subtasks")
+        entry_text = tag_entry.get_text()
+        # Remove extraneous whitespace
+        entry_text.strip()
+        new_tagname = "@" + entry_text
+        
+        if apply_to_subtasks.get_active():
+            for tid in self.tids_to_addtag:
+                task = self.req.get_task(tid)
+                for i in task.get_self_and_all_subtasks():
+                    taskid = i.get_id()
+                    if taskid not in self.tids_to_addtag: 
+                        self.tids_to_addtag.append(taskid)        
+                
         #TODO: Also--make sure to complain if tag_entry = ""
         #TODO: Make sure it's a valid name (eg. nothing like "this is a new tag")
         # On the other hand, if we're adding multiple tags separated by comma space
         # ("tag1, tag2") then this will probably get in the way (unless we isolate
         # each tag before doing that, which is probably how it would be done anyway).
-        # Remove any trailing spaces
-        #TODO: What happens if I do have spaces at the end? Test~
-        new_tagname.rstrip()            
-#TODO:     Traceback (most recent call last):
+        
+#TODO:     Traceback (most recent call last): <--- ***NEXT***
 #  File "/browser.py", line 1466, in on_addtag_confirm
 #    task = self.req.get_task(tid)
 #TypeError: 'NoneType' object is not iterable
+
         for tid in self.tids_to_addtag:
             task = self.req.get_task(tid)
             task.add_tag(new_tagname)
