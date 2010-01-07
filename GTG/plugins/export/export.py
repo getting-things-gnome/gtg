@@ -203,7 +203,7 @@ class pluginExport:
                                map(lambda t: t.get_name(), task.get_tags()))
             if model.iter_has_child(task_iter):
                 task_str.subtasks = \
-                    self.export_tree_visit(model, model.iter_children(task_iter))
+                    self.export_tree_visit(model, model.iter_children(task_iter), days)
 
             if not days:
                 tasks_str.append(task_str)
