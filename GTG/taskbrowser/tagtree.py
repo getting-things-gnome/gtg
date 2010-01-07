@@ -235,6 +235,7 @@ class TagTreeModel(gtk.GenericTreeModel):
         self.row_inserted(new_child_path, new_child_iter)
         
     def rename_tag(self,oldname,newname):
+        newname = newname.replace(" ", "_")
         tag = self.req.get_tag(oldname)
         self.req.rename_tag(oldname,newname)
 
