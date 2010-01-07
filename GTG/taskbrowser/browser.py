@@ -1442,7 +1442,6 @@ class TaskBrowser:
             addtag_dialog = self.builder.get_object("TaskAddTag")
             addtag_dialog.run()
             addtag_dialog.hide()
-            self.tags_tv.refresh()
             
         else:
             return False
@@ -1463,6 +1462,7 @@ class TaskBrowser:
         # ("tag1, tag2") then this will probably get in the way (unless we isolate
         # each tag before doing that, which is probably how it would be done anyway).
         # Remove any trailing spaces
+        #TODO: What happens if I do have spaces at the end? Test~
         new_tagname.rstrip()            
 #TODO:     Traceback (most recent call last):
 #  File "/browser.py", line 1466, in on_addtag_confirm
@@ -1471,13 +1471,11 @@ class TaskBrowser:
         for tid in self.tids_to_addtag:
             task = self.req.get_task(tid)
             task.add_tag(new_tagname)
-            task.sync
+            task.sync()
             
         self.tids_to_addtag = None
-        #TODO: Refresh the tagslist, right now a new tag won't show up, even with tags_tv.refresh() ******
         addtag_dialog.hide()
-        self.tags_tv.refresh()        
-       
+      
     def on_tag_entry_key_press_event(self, widget, event):
         if gtk.gdk.keyval_name(event.keyval) == "Return":
             self.on_addtag_confirm()
