@@ -1076,7 +1076,6 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
                 <property name="can_default">True</property>
                 <property name="has_default">True</property>
                 <property name="receives_default">False</property>
-                <signal name="clicked" handler="on_addtag_confirm"/>
                 <signal name="activate" handler="on_addtag_confirm"/>
               </object>
               <packing>

@@ -1415,7 +1415,7 @@ class TaskBrowser:
         else:
             return False
     
-    def on_add_new_tag(self, widget=None, tid=None):
+    def on_add_new_tag(self, widget=None, tid=None, tryagain = False):
         if not tid:
             self.tids_to_addtag = self.get_selected_tasks()
         else:
@@ -1432,9 +1432,13 @@ class TaskBrowser:
 
             tag_entry = self.builder.get_object("tag_entry")
             apply_to_subtasks = self.builder.get_object("apply_to_subtasks")
-            tag_entry.set_text("NewTag")
+            # If we're not here because the user tried entering something
+            # invalid in the text entry, then...
+            if not tryagain:
+                tag_entry.set_text("NewTag")
+                apply_to_subtasks.set_active(False)
+                
             tag_entry.grab_focus()
-            apply_to_subtasks.set_active(False)
             addtag_dialog = self.builder.get_object("TaskAddTag")
             addtag_dialog.run()
             addtag_dialog.hide()
@@ -1442,15 +1446,30 @@ class TaskBrowser:
         else:
             return False
     
-    def on_addtag_confirm(self, widget=None):
+    def on_addtag_confirm(self, widget):
         tag_entry = self.builder.get_object("tag_entry")
         addtag_dialog = self.builder.get_object("TaskAddTag")
         apply_to_subtasks = self.builder.get_object("apply_to_subtasks")
+        addtag_error = False
         entry_text = tag_entry.get_text()
         # Remove extraneous whitespace
         entry_text.strip()
+        # Let's make sure this is a valid tag name
+        if not entry_text:
+            error_message = "Please enter a tag name."
+            addtag_error = True
+        elif " " in entry_text:
+            error_message = "Tag name must not contain spaces."
+            addtag_error = True
+            
+        if addtag_error:
+            error_dialog = gtk.MessageDialog(None, 0, gtk.MESSAGE_WARNING, gtk.BUTTONS_OK, error_message)
+            if error_dialog.run():
+                error_dialog.destroy()
+                self.on_add_new_tag(tryagain = True)
+                return
+            
         new_tagname = "@" + entry_text
-        
         if apply_to_subtasks.get_active():
             for tid in self.tids_to_addtag:
                 task = self.req.get_task(tid)
@@ -1458,13 +1477,6 @@ class TaskBrowser:
                     taskid = i.get_id()
                     if taskid not in self.tids_to_addtag: 
                         self.tids_to_addtag.append(taskid)        
-                
-        #TODO: Also--make sure to complain if tag_entry = ""
-        #TODO: Make sure it's a valid name (eg. nothing like "this is a new tag")
-        # On the other hand, if we're adding multiple tags separated by comma space
-        # ("tag1, tag2") then this will probably get in the way (unless we isolate
-        # each tag before doing that, which is probably how it would be done anyway).
-        
 #TODO:     Traceback (most recent call last): 
 #  File "/browser.py", line 1466, in on_addtag_confirm
 #    task = self.req.get_task(tid)
