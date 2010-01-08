@@ -133,12 +133,12 @@ class TaskTreeModel(gtk.GenericTreeModel):
                 count = self._count_active_subtasks_rec(task)
                 text_first_line = task.get_excerpt(lines=1)
                 if count != 0:
-                    title = saxutils.escape(task.get_title()) +\
-                            "  <span color='#BBBBBB'>" + \
-                            saxutils.escape(text_first_line) + "</span>" + " (%s)" % count
+                    title = saxutils.escape(task.get_title()) + " (%s)" % count
+                    title += "<small>  <span color='#BBBBBB'>" + \
+                            saxutils.escape(text_first_line) + "</span></small>"
                 else:
-                    title = saxutils.escape(task.get_title()) + "  <span color='#BBBBBB'>" + \
-                            saxutils.escape(text_first_line) + "</span>" 
+                    title = saxutils.escape(task.get_title()) + "<small>  <span color='#BBBBBB'>" + \
+                            saxutils.escape(text_first_line) + "</span></small>" 
             elif task.get_status() == Task.STA_DISMISSED:
                     title = "<span color='#AAAAAA'>"\
                         + saxutils.escape(task.get_title()) + "</span>"
