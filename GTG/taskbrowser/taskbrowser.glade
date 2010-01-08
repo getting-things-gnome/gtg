@@ -866,10 +866,26 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
         <property name="label" translatable="yes">_Start today</property>
         <property name="visible">True</property>
         <property name="use_underline">True</property>
-        <property name="image">tcm_img_mark_start</property>
         <property name="use_stock">False</property>
-        <property name="always_show_image">True</property>
         <signal name="activate" handler="on_mark_as_started"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="tcm_defer_to_tomorrow">
+        <property name="label" translatable="yes">Defer to _tomorrow</property>
+        <property name="visible">True</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">False</property>
+        <signal name="activate" handler="on_defer_to_tomorrow"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="tcm_defer_to_next_week">
+        <property name="label" translatable="yes">Defer to next _week</property>
+        <property name="visible">True</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">False</property>
+        <signal name="activate" handler="on_defer_to_next_week"/>
       </object>
     </child>
     <child>

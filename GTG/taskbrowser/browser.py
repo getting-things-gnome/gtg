@@ -306,6 +306,10 @@ class TaskBrowser:
                 self.on_mark_as_done,
             "on_mark_as_started":
                 self.on_mark_as_started,
+            "on_defer_to_tomorrow":
+                self.on_defer_to_tomorrow,
+            "on_defer_to_next_week":
+                self.on_defer_to_next_week,
             "on_dismiss_task":
                 self.on_dismiss_task,
             "on_delete":
@@ -699,7 +703,8 @@ class TaskBrowser:
     def get_canonical_date(self, arg):
         """
         Transform "arg" in a valid yyyy-mm-dd date or return None.
-        "arg" can be a yyyy-mm-dd, yyyymmdd, mmdd, today or a weekday name.
+        "arg" can be a yyyy-mm-dd, yyyymmdd, mmdd, today, next week
+        or a weekday name.
         """
         day_names_en = ["monday", "tuesday", "wednesday", "thursday",
                         "friday", "saturday", "sunday"]
@@ -727,6 +732,14 @@ class TaskBrowser:
             year = tomorrow.year
             month = tomorrow.month
             day = tomorrow.day
+            date = "%i-%i-%i" % (year, month, day)
+        elif arg.lower() == "next week" or\
+          arg.lower() == _("next week"):
+            today = datetime.date.today()
+            next_week = today + datetime.timedelta(days=7)
+            year = next_week.year
+            month = next_week.month
+            day = next_week.day
             date = "%i-%i-%i" % (year, month, day)
         elif arg.lower() in day_names_en or arg.lower() in day_names:
             today = datetime.date.today()
@@ -1411,7 +1424,7 @@ class TaskBrowser:
         else:
             return False
 
-    def on_mark_as_started(self, widget):
+    def update_start_date(self, widget, new_start_date):
         task_to_scroll_to = None
         tasks_uid = filter(lambda uid: uid != None, self.get_selected_tasks())
         if len(tasks_uid) == 0:
@@ -1419,12 +1432,22 @@ class TaskBrowser:
         tasks = [self.req.get_task(uid) for uid in tasks_uid]
         tasks_status = [task.get_status() for task in tasks]
         for uid, task, status in zip(tasks_uid, tasks, tasks_status):
-            task.set_start_date(self.get_canonical_date("today"))
+            task.set_start_date(self.get_canonical_date(new_start_date))
             task_to_scroll_to = uid
         if task_to_scroll_to != None:
             gobject.idle_add(self.ctask_tv.scroll_to_task, task_to_scroll_to)
         if self.refresh_lock.acquire(False):
             gobject.idle_add(self.general_refresh)
+        #FIXME: If the task dialog is displayed, refresh its start_date widget
+
+    def on_mark_as_started(self, widget):
+        self.update_start_date(widget, "today")
+
+    def on_defer_to_tomorrow(self, widget):
+        self.update_start_date(widget, "tomorrow")
+
+    def on_defer_to_next_week(self, widget):
+        self.update_start_date(widget, "next week")
 
     def on_mark_as_done(self, widget):
         task_to_scroll_to = None
@@ -1461,7 +1484,7 @@ class TaskBrowser:
             gobject.idle_add(self.ctask_tv.scroll_to_task, task_to_scroll_to)
         if self.refresh_lock.acquire(False):
             gobject.idle_add(self.general_refresh)
-    
+
     def on_select_tag(self, widget, row=None, col=None):
         #When you clic on a tag, you want to unselect the tasks
         self.task_tv.get_selection().unselect_all()
