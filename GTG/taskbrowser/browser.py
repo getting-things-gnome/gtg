@@ -304,6 +304,8 @@ class TaskBrowser:
                 self.on_delete_task,
             "on_mark_as_done":
                 self.on_mark_as_done,
+            "on_mark_as_started":
+                self.on_mark_as_started,
             "on_dismiss_task":
                 self.on_dismiss_task,
             "on_delete":
@@ -1408,6 +1410,21 @@ class TaskBrowser:
             return not self.tids_todelete
         else:
             return False
+
+    def on_mark_as_started(self, widget):
+        task_to_scroll_to = None
+        tasks_uid = filter(lambda uid: uid != None, self.get_selected_tasks())
+        if len(tasks_uid) == 0:
+            return
+        tasks = [self.req.get_task(uid) for uid in tasks_uid]
+        tasks_status = [task.get_status() for task in tasks]
+        for uid, task, status in zip(tasks_uid, tasks, tasks_status):
+            task.set_start_date(self.get_canonical_date("today"))
+            task_to_scroll_to = uid
+        if task_to_scroll_to != None:
+            gobject.idle_add(self.ctask_tv.scroll_to_task, task_to_scroll_to)
+        if self.refresh_lock.acquire(False):
+            gobject.idle_add(self.general_refresh)
 
     def on_mark_as_done(self, widget):
         task_to_scroll_to = None
