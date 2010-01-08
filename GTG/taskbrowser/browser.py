@@ -490,6 +490,11 @@ class TaskBrowser:
 
         self.delete_mi = self.builder.get_object('delete_mi')
         
+        addtag_button = self.builder.get_object('tcm_addtag')
+        key, mod = gtk.accelerator_parse('<Control>t')
+        addtag_button.add_accelerator('activate', agr, key, mod, \
+            gtk.ACCEL_VISIBLE)
+        
     def _init_plugin_engine(self):
         # plugins - Init
         self.pengine = PluginEngine(GTG.PLUGIN_DIR)
@@ -1422,13 +1427,21 @@ class TaskBrowser:
             self.tids_to_addtag = [tid]
             
         if len(self.tids_to_addtag) > 0:
-            #TODO: Access via hotkey
+            #TODO: Make hotkey only work if we're in the taskview with a task selected...
+            #    --- Actually, if Ctrl+T is used in the tagview it creates a new tag
+            #        with a new "My New Task" Since there really isn't a _direct_
+            #        way to create a new tag without adding it to an existing tag first
+            #        could this be a desirable feature?
+            #    --- On the other hand, inputting an existing tag will also create a new
+            #        "My New Task" for that tag--which could be useful, but it doesn't quite
+            #        make sense.
             #TODO: Autocomplete
             #TODO: Multiple tags~
             # ^----- What happens if I run a list like "@tag1, @tag2" in add_tag()?
             #      -- It works in a sorta limited and odd way, best solution I think is
             #         still to separate the tags.
             #TODO: Menu icon?
+            #TODO: Cleanup the code~
 
             tag_entry = self.builder.get_object("tag_entry")
             apply_to_subtasks = self.builder.get_object("apply_to_subtasks")
@@ -1463,7 +1476,8 @@ class TaskBrowser:
             addtag_error = True
             
         if addtag_error:
-            error_dialog = gtk.MessageDialog(None, 0, gtk.MESSAGE_WARNING, gtk.BUTTONS_OK, error_message)
+            error_dialog = gtk.MessageDialog(None, 0, gtk.MESSAGE_WARNING, \
+                                            gtk.BUTTONS_OK, error_message)
             if error_dialog.run():
                 error_dialog.destroy()
                 self.on_add_new_tag(tryagain = True)
