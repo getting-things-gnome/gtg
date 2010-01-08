@@ -588,6 +588,8 @@ class TaskEditor :
             self.req.delete_task(tid)
         else:
             self.save()
+            for i in self.task.get_subtasks():
+                i.set_to_keep()
         self.closing(tid)
         
 ############# Private functions #################

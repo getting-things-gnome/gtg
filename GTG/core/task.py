@@ -521,7 +521,8 @@ class Task:
         if not t in self.tags:
             self.tags.append(t)
             for child in self.get_subtasks():
-                child.add_tag(tagname) # use tag_added because it will need @tag text inserted
+                if child.can_be_deleted:
+                    child.add_tag(tagname)
             return True
     
     def add_tag(self, tagname):
