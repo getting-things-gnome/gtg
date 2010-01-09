@@ -151,6 +151,9 @@ class TaskBrowser:
         
         #Shared clipboard
         self.clipboard = clipboard.TaskClipboard()
+        
+        #Autocompletion for Tags
+        self._init_tag_completion()
 
 ### INIT HELPER FUNCTIONS #####################################################
 #
@@ -536,6 +539,13 @@ class TaskBrowser:
             
             # initializes and activates each plugin (that is enabled)
             self.pengine.activatePlugins(self.plugins, self.p_apis)
+    
+    def _init_tag_completion(self):
+        self.tag_completion = gtk.EntryCompletion()
+        self.tag_completion.set_model(self.tag_model)
+        self.tag_completion.set_text_column(1)
+        self.tag_completion.set_inline_completion(True)
+        self.tag_completion.set_inline_selection(True)
 
 #    def _init_note_support(self):
 #        self.notes  = EXPERIMENTAL_NOTES
@@ -1427,13 +1437,13 @@ class TaskBrowser:
             self.tids_to_addtag = [tid]
 
         if not self.tids_to_addtag == [None]:
-            #TODO: Autocomplete
             #TODO: Multiple tags~
             # ^----- What happens if I run a list like "@tag1, @tag2" in add_tag()?
             #      -- It works in a sorta limited and odd way, best solution I think is
             #         still to separate the tags.
             #TODO: Menu icon?
             #TODO: Cleanup the code~
+            #TODO: Comment
 
             tag_entry = self.builder.get_object("tag_entry")
             apply_to_subtasks = self.builder.get_object("apply_to_subtasks")
@@ -1442,6 +1452,7 @@ class TaskBrowser:
             if not tryagain:
                 tag_entry.set_text("NewTag")
                 apply_to_subtasks.set_active(False)
+                tag_entry.set_completion(self.tag_completion)
                 
             tag_entry.grab_focus()
             addtag_dialog = self.builder.get_object("TaskAddTag")

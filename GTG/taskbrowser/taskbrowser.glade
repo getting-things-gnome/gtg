@@ -1045,7 +1045,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
             <property name="is_focus">True</property>
             <property name="invisible_char">&#x25CF;</property>
             <property name="activates_default">True</property>
-            <property name="text" translatable="yes">NewTag</property>
+            <property name="text" translatable="yes">TagName</property>
             <property name="shadow_type">none</property>
           </object>
           <packing>
