@@ -899,10 +899,11 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
       </object>
     </child>
     <child>
-      <object class="GtkMenuItem" id="tcm_addtag">
-        <property name="visible">True</property>
+      <object class="GtkImageMenuItem" id="tcm_addtag">
         <property name="label" translatable="yes">Add Tag...</property>
-        <property name="use_underline">True</property>
+        <property name="visible">True</property>
+        <property name="image">image3</property>
+        <property name="use_stock">False</property>
         <signal name="activate" handler="on_add_new_tag"/>
       </object>
     </child>
@@ -1077,6 +1078,7 @@ you wish to add:</property>
                 <property name="can_default">True</property>
                 <property name="has_default">True</property>
                 <property name="receives_default">False</property>
+                <signal name="clicked" handler="on_addtag_confirm"/>
                 <signal name="activate" handler="on_addtag_confirm"/>
               </object>
               <packing>
@@ -1111,5 +1113,9 @@ you wish to add:</property>
       <action-widget response="0">addtag_ok</action-widget>
       <action-widget response="0">addtag_cancel</action-widget>
     </action-widgets>
+  </object>
+  <object class="GtkImage" id="image3">
+    <property name="visible">True</property>
+    <property name="icon_name">gtg-tag</property>
   </object>
 </interface>

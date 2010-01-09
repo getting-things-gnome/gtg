@@ -543,7 +543,7 @@ class TaskBrowser:
     def _init_tag_completion(self):
         self.tag_completion = gtk.EntryCompletion()
         self.tag_completion.set_model(self.tag_model)
-        self.tag_completion.set_text_column(1)
+        self.tag_completion.set_text_column(2)
         self.tag_completion.set_inline_completion(True)
         self.tag_completion.set_inline_selection(True)
 
@@ -1437,16 +1437,12 @@ class TaskBrowser:
             self.tids_to_addtag = [tid]
 
         if not self.tids_to_addtag == [None]:
-            #TODO: Autocomplete is suggesting "tg-tags-all" "tg-tags-none" etc. Fix.
-            #TODO: Also try starting with other letters in case there are more
-            #TODO: Menu icon?            
-            #TODO: Cleanup the code~
-            #TODO: Comment
-
+            #FIXME: Autocomplete is suggesting "tg-tags-all" "tg-tags-none" 
+            # etc.
             tag_entry = self.builder.get_object("tag_entry")
             apply_to_subtasks = self.builder.get_object("apply_to_subtasks")
-            # If we're not here because the user tried entering something
-            # invalid in the text entry, then...
+            # We don't want to reset the text entry and checkbox if we got
+            # sent back here after a warning.
             if not tryagain:
                 tag_entry.set_text("NewTag")
                 apply_to_subtasks.set_active(False)
@@ -1467,28 +1463,29 @@ class TaskBrowser:
         apply_to_subtasks = self.builder.get_object("apply_to_subtasks")
         addtag_error = False
         entry_text = tag_entry.get_text()
-        entry_text = entry_text.strip()
-        # Complain if the text entry is left empty.
-        if not entry_text:
+        entry_text = [entry_text.strip()]
+        # Set up a warning message if the user leaves the text entry empty.
+        if not entry_text[0]:
             error_message = "Please enter a tag name."
             addtag_error = True
         
-        if "," in entry_text:
-            entry_text = entry_text.split(",")
-        
         new_tags = []
+        if "," in entry_text[0]:
+            entry_text = entry_text[0].split(",")
+
         # Remove extraneous whitespace, make sure none of the tags contain
         # spaces, and, finally, place a "@" symbol in front of the tagname.
         for tagname in entry_text:
-            pdb.set_trace()
             tagname = tagname.strip()
             if not addtag_error:
                 if " " in tagname:
                     error_message = "Tag name must not contain spaces."
                     addtag_error = True
                     break
-            new_tags.append("@" + tagname)        
-            
+            new_tags.append("@" + tagname)
+
+        # If we ran into a problem earlier, let us know, and then
+        # let us try again.
         if addtag_error:
             error_dialog = gtk.MessageDialog(None, 0, gtk.MESSAGE_WARNING, \
                                             gtk.BUTTONS_OK, error_message)
@@ -1496,7 +1493,9 @@ class TaskBrowser:
                 error_dialog.destroy()
                 self.on_add_new_tag(tryagain = True)
                 return
-            
+        
+        # If the checkbox is checked, add all the subtasks to the list of
+        # tasks to add.
         if apply_to_subtasks.get_active():
             for tid in self.tids_to_addtag:
                 task = self.req.get_task(tid)
@@ -1504,10 +1503,6 @@ class TaskBrowser:
                     taskid = i.get_id()
                     if taskid not in self.tids_to_addtag: 
                         self.tids_to_addtag.append(taskid)        
-#TODO:     Traceback (most recent call last): 
-#  File "/browser.py", line 1466, in on_addtag_confirm
-#    task = self.req.get_task(tid)
-#TypeError: 'NoneType' object is not iterable
 
         for tid in self.tids_to_addtag:
             task = self.req.get_task(tid)
