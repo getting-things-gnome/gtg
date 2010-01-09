@@ -1437,11 +1437,9 @@ class TaskBrowser:
             self.tids_to_addtag = [tid]
 
         if not self.tids_to_addtag == [None]:
-            #TODO: Multiple tags~
-            # ^----- What happens if I run a list like "@tag1, @tag2" in add_tag()?
-            #      -- It works in a sorta limited and odd way, best solution I think is
-            #         still to separate the tags.
-            #TODO: Menu icon?
+            #TODO: Autocomplete is suggesting "tg-tags-all" "tg-tags-none" etc. Fix.
+            #TODO: Also try starting with other letters in case there are more
+            #TODO: Menu icon?            
             #TODO: Cleanup the code~
             #TODO: Comment
 
@@ -1469,15 +1467,27 @@ class TaskBrowser:
         apply_to_subtasks = self.builder.get_object("apply_to_subtasks")
         addtag_error = False
         entry_text = tag_entry.get_text()
-        # Remove extraneous whitespace
-        entry_text.strip()
-        # Let's make sure this is a valid tag name
+        entry_text = entry_text.strip()
+        # Complain if the text entry is left empty.
         if not entry_text:
             error_message = "Please enter a tag name."
             addtag_error = True
-        elif " " in entry_text:
-            error_message = "Tag name must not contain spaces."
-            addtag_error = True
+        
+        if "," in entry_text:
+            entry_text = entry_text.split(",")
+        
+        new_tags = []
+        # Remove extraneous whitespace, make sure none of the tags contain
+        # spaces, and, finally, place a "@" symbol in front of the tagname.
+        for tagname in entry_text:
+            pdb.set_trace()
+            tagname = tagname.strip()
+            if not addtag_error:
+                if " " in tagname:
+                    error_message = "Tag name must not contain spaces."
+                    addtag_error = True
+                    break
+            new_tags.append("@" + tagname)        
             
         if addtag_error:
             error_dialog = gtk.MessageDialog(None, 0, gtk.MESSAGE_WARNING, \
@@ -1487,7 +1497,6 @@ class TaskBrowser:
                 self.on_add_new_tag(tryagain = True)
                 return
             
-        new_tagname = "@" + entry_text
         if apply_to_subtasks.get_active():
             for tid in self.tids_to_addtag:
                 task = self.req.get_task(tid)
@@ -1502,7 +1511,8 @@ class TaskBrowser:
 
         for tid in self.tids_to_addtag:
             task = self.req.get_task(tid)
-            task.add_tag(new_tagname)
+            for new_tag in new_tags:
+                task.add_tag(new_tag)
             task.sync()
       
     def on_tag_entry_key_press_event(self, widget, event):

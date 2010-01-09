@@ -1032,7 +1032,8 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
         <child>
           <object class="GtkLabel" id="label5">
             <property name="visible">True</property>
-            <property name="label" translatable="yes">Enter the name of the tag you wish to add:</property>
+            <property name="label" translatable="yes">Enter the name of the tag (or tags, if separated by a comma) 
+you wish to add:</property>
           </object>
           <packing>
             <property name="position">1</property>
