@@ -249,7 +249,10 @@ class Task:
         """
         #defensive programmtion to avoid returning None
         if self.content:
-            element = xml.dom.minidom.parseString(self.content)
+            txt = self.content
+            for tag in self.get_tags_name():
+        	    txt = self._strip_tag(txt, tag)
+            element = xml.dom.minidom.parseString(txt)
             txt = self.__strip_content(element)
             txt = txt.strip()
             #We keep the desired number of lines
@@ -558,11 +561,19 @@ class Task:
             for child in self.get_subtasks():
                 if child.can_be_deleted:
                     child.remove_tag(tagname)
-        self.content = (self.content
-                        .replace('<tag>%s</tag>\n\n'%(tagname), '') #trail \n
-                        .replace('<tag>%s</tag>, '%(tagname), '') #trail comma
-                        .replace('<tag>%s</tag>'%(tagname), '')
-                       )
+        self.content = self._strip_tag(self.content, tagname)
+                       
+    def _strip_tag(self, text, tagname):
+        return (text
+                    .replace('<tag>%s</tag>\n\n'%(tagname), '') #trail \n
+                    .replace('<tag>%s</tag>, '%(tagname), '') #trail comma
+                    .replace('<tag>%s</tag>'%(tagname), '')
+                    #in case XML is missing (bug #504899)
+                    .replace('%s\n\n'%(tagname), '') 
+                    .replace('%s, '%(tagname), '') 
+                    .replace(tagname, '')
+               )
+     
 
     #tag_list is a list of tags object
     #return true if at least one of the list is in the task
