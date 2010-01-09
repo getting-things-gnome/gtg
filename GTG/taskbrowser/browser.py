@@ -1425,16 +1425,8 @@ class TaskBrowser:
             self.tids_to_addtag = self.get_selected_tasks()
         else:
             self.tids_to_addtag = [tid]
-            
-        if len(self.tids_to_addtag) > 0:
-            #TODO: Make hotkey only work if we're in the taskview with a task selected...
-            #    --- Actually, if Ctrl+T is used in the tagview it creates a new tag
-            #        with a new "My New Task" Since there really isn't a _direct_
-            #        way to create a new tag without adding it to an existing tag first
-            #        could this be a desirable feature?
-            #    --- On the other hand, inputting an existing tag will also create a new
-            #        "My New Task" for that tag--which could be useful, but it doesn't quite
-            #        make sense.
+
+        if not self.tids_to_addtag == [None]:
             #TODO: Autocomplete
             #TODO: Multiple tags~
             # ^----- What happens if I run a list like "@tag1, @tag2" in add_tag()?
@@ -1455,6 +1447,7 @@ class TaskBrowser:
             addtag_dialog = self.builder.get_object("TaskAddTag")
             addtag_dialog.run()
             addtag_dialog.hide()
+            self.tids_to_addtag = None            
             
         else:
             return False
@@ -1500,9 +1493,6 @@ class TaskBrowser:
             task = self.req.get_task(tid)
             task.add_tag(new_tagname)
             task.sync()
-            
-        self.tids_to_addtag = None
-        addtag_dialog.hide()
       
     def on_tag_entry_key_press_event(self, widget, event):
         if gtk.gdk.keyval_name(event.keyval) == "Return":
