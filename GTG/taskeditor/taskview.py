@@ -1086,7 +1086,13 @@ class TaskView(gtk.TextView):
                             line = line.lstrip(' -')
                             end_i = self.__newsubtask(self.buff,line,line_nbr)
                             #Here, we should increment indent level
+                            #If we inserted enter in the middle of a line
                             if restofline and restofline.strip() != "" :
+                                #it means we have two subtask to create
+                                if self.buff.get_line_count() > line_nbr+1:
+                                    #but don't merge with the next line
+                                    itera = self.buff.get_iter_at_line(line_nbr+1)
+                                    self.buff.insert(itera,"\n\n")
                                 self.__newsubtask(self.buff,restofline,\
                                                             line_nbr+1)
                             else:
