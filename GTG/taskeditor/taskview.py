@@ -1072,9 +1072,11 @@ class TaskView(gtk.TextView):
                     line = start_line.get_slice(end_line)
                     #the part after the enter
                     realend = end_line.copy()
-                    realend.forward_to_line_end()
-                    restofline = end_line.get_slice(realend)
-                    restofline.strip()
+                    restofline = None
+                    if not realend.ends_line():
+                        realend.forward_to_line_end()
+                        restofline = end_line.get_slice(realend)
+                        restofline.strip()
                     
                     #If indent is 0, We check if we created a new task
                     #the "-" might be after a space
