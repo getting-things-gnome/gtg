@@ -724,43 +724,24 @@ class TaskBrowser:
                 year = datetime.date.today().year
                 date = "%i-%s-%s" % (year, arg[:2], arg[2:])
         elif arg.lower() == "today" or arg.lower() == _("today"):
-            today = datetime.date.today()
-            year = today.year
-            month = today.month
-            day = today.day
-            date = "%i-%i-%i" % (year, month, day)
+            t = datetime.date.today()
+            date = "%i-%i-%i" % (t.year, t.month, t.day)
         elif arg.lower() == "tomorrow" or\
           arg.lower() == _("tomorrow"):
-            today = datetime.date.today()
-            tomorrow = today + datetime.timedelta(days=1)
-            year = tomorrow.year
-            month = tomorrow.month
-            day = tomorrow.day
-            date = "%i-%i-%i" % (year, month, day)
+            t = datetime.date.today() + datetime.timedelta(days=1)
+            date = "%i-%i-%i" % (t.year, t.month, t.day)
         elif arg.lower() == "next week" or\
           arg.lower() == _("next week"):
-            today = datetime.date.today()
-            next_week = today + datetime.timedelta(days=7)
-            year = next_week.year
-            month = next_week.month
-            day = next_week.day
-            date = "%i-%i-%i" % (year, month, day)
+            t = datetime.date.today() + datetime.timedelta(days=7)
+            date = "%i-%i-%i" % (t.year, t.month, t.day)
         elif arg.lower() == "next month" or\
           arg.lower() == _("next month"):
-            today = datetime.date.today()
-            next_month = today + datetime.timedelta(days=30)
-            year = next_month.year
-            month = next_month.month
-            day = next_month.day
-            date = "%i-%i-%i" % (year, month, day)
+            t = datetime.date.today() + datetime.timedelta(days=30)
+            date = "%i-%i-%i" % (t.year, t.month, t.day)
         elif arg.lower() == "next year" or\
           arg.lower() == _("next year"):
-            today = datetime.date.today()
-            next_year = today + datetime.timedelta(days=365)
-            year = next_year.year
-            month = next_year.month
-            day = next_year.day
-            date = "%i-%i-%i" % (year, month, day)
+            t = datetime.date.today() + datetime.timedelta(days=365)
+            date = "%i-%i-%i" % (t.year, t.month, t.day)
         elif arg.lower() in day_names_en or arg.lower() in day_names:
             today = datetime.date.today()
             today_day = today.weekday()
