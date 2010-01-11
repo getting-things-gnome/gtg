@@ -226,6 +226,7 @@ class TaskBrowser:
         self.tagpopup           = self.builder.get_object("TagContextMenu")
         self.nonworkviewtag_checkbox     = self.builder.get_object("nonworkviewtag")
         self.taskpopup          = self.builder.get_object("TaskContextMenu")
+        self.defertopopup       = self.builder.get_object("DeferToContextMenu")
         self.ctaskpopup = \
             self.builder.get_object("ClosedTaskContextMenu")
         self.editbutton         = self.builder.get_object("edit_b")
