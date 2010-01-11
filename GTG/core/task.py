@@ -204,7 +204,7 @@ class Task:
     def set_start_date(self, fulldate):
         assert(isinstance(fulldate, Date))
         self.start_date = fulldate
-        # why don't we sync here if we do in set_due_date?
+        self.sync()
 
     def get_start_date(self):
         return self.start_date
