@@ -310,6 +310,10 @@ class TaskBrowser:
                 self.on_defer_to_tomorrow,
             "on_defer_to_next_week":
                 self.on_defer_to_next_week,
+            "on_defer_to_next_month":
+                self.on_defer_to_next_month,
+            "on_defer_to_next_year":
+                self.on_defer_to_next_year,
             "on_dismiss_task":
                 self.on_dismiss_task,
             "on_delete":
@@ -703,8 +707,8 @@ class TaskBrowser:
     def get_canonical_date(self, arg):
         """
         Transform "arg" in a valid yyyy-mm-dd date or return None.
-        "arg" can be a yyyy-mm-dd, yyyymmdd, mmdd, today, next week
-        or a weekday name.
+        "arg" can be a yyyy-mm-dd, yyyymmdd, mmdd, today, next week,
+        next month, next year, or a weekday name.
         """
         day_names_en = ["monday", "tuesday", "wednesday", "thursday",
                         "friday", "saturday", "sunday"]
@@ -740,6 +744,22 @@ class TaskBrowser:
             year = next_week.year
             month = next_week.month
             day = next_week.day
+            date = "%i-%i-%i" % (year, month, day)
+        elif arg.lower() == "next month" or\
+          arg.lower() == _("next month"):
+            today = datetime.date.today()
+            next_month = today + datetime.timedelta(days=30)
+            year = next_month.year
+            month = next_month.month
+            day = next_month.day
+            date = "%i-%i-%i" % (year, month, day)
+        elif arg.lower() == "next year" or\
+          arg.lower() == _("next year"):
+            today = datetime.date.today()
+            next_year = today + datetime.timedelta(days=365)
+            year = next_year.year
+            month = next_year.month
+            day = next_year.day
             date = "%i-%i-%i" % (year, month, day)
         elif arg.lower() in day_names_en or arg.lower() in day_names:
             today = datetime.date.today()
@@ -1448,6 +1468,12 @@ class TaskBrowser:
 
     def on_defer_to_next_week(self, widget):
         self.update_start_date(widget, "next week")
+
+    def on_defer_to_next_month(self, widget):
+        self.update_start_date(widget, "next month")
+
+    def on_defer_to_next_year(self, widget):
+        self.update_start_date(widget, "next year")
 
     def on_mark_as_done(self, widget):
         task_to_scroll_to = None

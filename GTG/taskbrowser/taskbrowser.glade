@@ -889,6 +889,24 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
       </object>
     </child>
     <child>
+      <object class="GtkImageMenuItem" id="tcm_defer_to_next_month">
+        <property name="label" translatable="yes">Defer to next _month</property>
+        <property name="visible">True</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">False</property>
+        <signal name="activate" handler="on_defer_to_next_month"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="tcm_defer_to_next_year">
+        <property name="label" translatable="yes">Defer to next _year</property>
+        <property name="visible">True</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">False</property>
+        <signal name="activate" handler="on_defer_to_next_year"/>
+      </object>
+    </child>
+    <child>
       <object class="GtkImageMenuItem" id="tcm_mark_as_done">
         <property name="label" translatable="yes">Mark as _Done</property>
         <property name="visible">True</property>
