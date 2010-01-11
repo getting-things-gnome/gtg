@@ -863,7 +863,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
     </child>
     <child>
       <object class="GtkImageMenuItem" id="tcm_mark_as_started">
-        <property name="label" translatable="yes">_Start today</property>
+        <property name="label" translatable="yes">Defer to t_oday</property>
         <property name="visible">True</property>
         <property name="use_underline">True</property>
         <property name="use_stock">False</property>

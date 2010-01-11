@@ -1426,7 +1426,6 @@ class TaskBrowser:
             return False
 
     def update_start_date(self, widget, new_start_date):
-        task_to_scroll_to = None
         tasks_uid = filter(lambda uid: uid != None, self.get_selected_tasks())
         if len(tasks_uid) == 0:
             return
@@ -1434,9 +1433,6 @@ class TaskBrowser:
         tasks_status = [task.get_status() for task in tasks]
         for uid, task, status in zip(tasks_uid, tasks, tasks_status):
             task.set_start_date(self.get_canonical_date(new_start_date))
-            task_to_scroll_to = uid
-        if task_to_scroll_to != None:
-            gobject.idle_add(self.ctask_tv.scroll_to_task, task_to_scroll_to)
         if self.refresh_lock.acquire(False):
             gobject.idle_add(self.general_refresh)
         #FIXME: If the task dialog is displayed, refresh its start_date widget
