@@ -28,38 +28,33 @@
 
 import gtk
 import os
+import urllib2
+import simplejson as json
 
-class pluginExportJson:
+class pluginImportJson:
     
     def __init__(self):
-        self.menu_item = gtk.MenuItem("Import from JSON")
-        self.menu_item.connect('activate', self.onTesteMenu)
+        self.menu_item = gtk.MenuItem("Import from _JSON")
+        self.menu_item.connect('activate', self.on_import_json_activate)
         
         self.tb_button = gtk.ToolButton(gtk.STOCK_INFO)
         self.tb_button.set_label("Import from JSON")
-        self.tb_button.connect('clicked', self.onTbButton)
+        self.tb_button.connect('clicked', self.on_import_json_activate)
         self.separator = gtk.SeparatorToolItem()
         self.task_separator = None
         self.tb_Taskbutton = None
-        
+        self.txtImport = None
 
-    # plugin engine methods    
     def activate(self, plugin_api):
-        # add a menu item to the menu bar
         plugin_api.add_menu_item(self.menu_item)
-                
-        # saves the separator's index to later remove it
         plugin_api.add_toolbar_item(self.separator)
-        # add a item (button) to the ToolBar
         plugin_api.add_toolbar_item(self.tb_button)
 
+    def onTaskClosed(self, plugin_api):
+        pass
+        
     def onTaskOpened(self, plugin_api):
-        # add a item (button) to the ToolBar
-        tb_Taskbutton = gtk.ToolButton(gtk.STOCK_EXECUTE)
-        tb_Taskbutton.set_label("Import from JSON")
-        tb_Taskbutton.connect('clicked', self.onTbTaskButton, plugin_api)
-        self.task_separator = plugin_api.add_task_toolbar_item(gtk.SeparatorToolItem())
-        self.tb_Taskbutton = plugin_api.add_task_toolbar_item(tb_Taskbutton)
+        pass
         
     def deactivate(self, plugin_api):
         plugin_api.remove_menu_item(self.menu_item)
@@ -68,8 +63,8 @@ class pluginExportJson:
         #everything should be removed, in case a task is currently opened
         plugin_api.remove_task_toolbar_item(self.task_separator)
         plugin_api.remove_task_toolbar_item(self.tb_Taskbutton)
-        
-    #load a dialog with a String
+        self.txtImport = None
+
     def loadDialog(self):
         path = os.path.dirname(os.path.abspath(__file__))
         glade_file = os.path.join(path, "import_json.glade")
@@ -78,12 +73,10 @@ class pluginExportJson:
         if not self.dialog:
             return
 
-#        lblImportJson = wTree.get_widget("lbl_import_json")
-#        if lblImportJson:
-#            lblImportJson.set_text("URL:")
+        self.txtImport = wTree.get_widget("txt_import")
 
         self.dialog.connect("delete_event", self.close_dialog)
-        self.dialog.connect("response", self.close_dialog)
+        self.dialog.connect("response", self.on_response)
         
         self.dialog.show_all()
     
@@ -92,13 +85,51 @@ class pluginExportJson:
         return True    
     
     # plugin features
-    def onTesteMenu(self, widget):
+    def on_import_json_activate(self, widget):
         self.loadDialog()
-        
-    def onTbButton(self, widget):
-        self.loadDialog()
-        
-    def onTbTaskButton(self, widget, plugin_api):
-        self.loadDialog("URL:")
-        plugin_api.insert_tag("import_json")
+
+    def import_json(self, widget):
+        url = self.txtImport.get_text()
+        json_text = loadurl(url)
+        if not json_text:
+            # TODO:  Pop up error dialog
+            print "Error: Could not load url %s" % url
+            return
+
+        # Convert to json
+        json_tasks = json.loads(json_text)
+
+        # TODO:  Pop up dialog allowing user to select username
+        #        username = self.txtUserName.get_text()
+        for u in json_tasks:
+            print u
+        username = 'bryceharrington'
+            
+        for t in json_tasks[username]['todo']:
+            print "  %s" % (t)
+            # TODO:  Omit html codes
+            # TODO:  Foreach task, plugin_api.insert_task("hello world")
+
+        # TODO:  Should completed tasks be imported too?
+
+        self.close_dialog(widget)
+
+    def on_response(self, widget, response_id):
+        if response_id == -7:
+            self.close_dialog(widget)
+        elif response_id == 0 and self.txtImport:
+            self.import_json(widget)
+        else:
+            print "Error:  Unknown response id %d" %(response_id)
+
+
+### UTILITIES ###
+def loadurl(url):
+    try:
+        in_file = urllib2.urlopen(url, "r")
+        text = in_file.read()
+        in_file.close()
+        return text
+    except:
+        return ''
 

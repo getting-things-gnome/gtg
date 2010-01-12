@@ -18,8 +18,8 @@ import sys
 import os
 sys.path.insert(0,os.getcwd())
 
-from import_json import pluginExportJson
+from import_json import pluginImportJson
 
 
 #suppress pyflakes warning (given by make lint)
-if False == True: pluginExportJson()
+if False == True: pluginImportJson()
