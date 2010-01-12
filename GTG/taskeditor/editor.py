@@ -332,7 +332,7 @@ class TaskEditor :
             tt = t.get_name()
             if not self.task.has_tags(tag_list=[t]) :
                 tag_count += 1
-                mi = gtk.MenuItem(label=tt)
+                mi = gtk.MenuItem(label=tt, use_underline=False)
                 mi.connect("activate",self.inserttag,tt)
                 mi.show()
                 menu.append(mi)
