@@ -543,9 +543,11 @@ class TaskBrowser:
     def _init_tag_completion(self):
         self.tag_completion = gtk.EntryCompletion()
         self.tag_completion.set_model(self.tag_model)
-        self.tag_completion.set_text_column(2)
+        self.tag_completion.set_text_column(1)
+        self.tag_completion.set_match_func(self.tag_match_func, 1)
         self.tag_completion.set_inline_completion(True)
         self.tag_completion.set_inline_selection(True)
+        self.tag_completion.set_popup_single_match(False)
 
 #    def _init_note_support(self):
 #        self.notes  = EXPERIMENTAL_NOTES
@@ -979,7 +981,24 @@ class TaskBrowser:
             if order == gtk.SORT_ASCENDING:
                 return cmp(t1_order, t2_order)
             else:
-                return cmp(t2_order, t1_order)            
+                return cmp(t2_order, t1_order)
+                
+    def tag_match_func(self, completion, key, iter, column):
+        model = completion.get_model()
+        text = model.get_value(iter, column)
+        # key is lowercase regardless of input, so text should be
+        # lowercase as well, otherwise we leave out all tags beginning
+        # with an uppercase letter.
+        text = text.lower()
+        # Exclude the special tags.
+        if text == "tg-tags-all" or text == "tg-tags-sep" or \
+           text =="tg-tags-none":
+            return False
+        # Are we typing the first letters of a tag?
+        elif text.startswith(key):
+            return True
+        else:
+            return False             
 
 ### SIGNAL CALLBACKS ##########################################################
 # Typically, reaction to user input & interactions with the GUI
@@ -1437,8 +1456,11 @@ class TaskBrowser:
             self.tids_to_addtag = [tid]
 
         if not self.tids_to_addtag == [None]:
-            #FIXME: Autocomplete is suggesting "tg-tags-all" "tg-tags-none" 
-            # etc.
+            #TODO: Autocomplete isn't finding child tags
+            #   --- Actually it IS finding them, it's just bundlng them up
+            #       with the parent tag.
+            #TODO: Fix label6 in glade
+            #TODO: Icon size is fine, as far as I can tell
             tag_entry = self.builder.get_object("tag_entry")
             apply_to_subtasks = self.builder.get_object("apply_to_subtasks")
             # We don't want to reset the text entry and checkbox if we got

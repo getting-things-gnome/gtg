@@ -990,6 +990,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
   </object>
   <object class="GtkImage" id="tcm_img_mark_done">
     <property name="visible">True</property>
+    <property name="yalign">0.49000000953674316</property>
     <property name="pixel_size">16</property>
     <property name="icon_name">gtg-task-done</property>
   </object>
@@ -1033,8 +1034,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
         <child>
           <object class="GtkLabel" id="label5">
             <property name="visible">True</property>
-            <property name="label" translatable="yes">Enter the name of the tag (or tags, if separated by a comma) 
-you wish to add:</property>
+            <property name="label" translatable="yes">Enter the name of the tag(s) you wish to add:</property>
           </object>
           <packing>
             <property name="position">1</property>
@@ -1055,6 +1055,19 @@ you wish to add:</property>
           </packing>
         </child>
         <child>
+          <object class="GtkLabel" id="label6">
+            <property name="visible">True</property>
+            <property name="label" translatable="yes">Hint: you can add several tags by separating them with
+commas.</property>
+            <attributes>
+              <attribute name="foreground" value="#77bd77bd77bd"/>
+            </attributes>
+          </object>
+          <packing>
+            <property name="position">3</property>
+          </packing>
+        </child>
+        <child>
           <object class="GtkCheckButton" id="apply_to_subtasks">
             <property name="label" translatable="yes">Apply to subtasks</property>
             <property name="visible">True</property>
@@ -1063,7 +1076,7 @@ you wish to add:</property>
             <property name="draw_indicator">True</property>
           </object>
           <packing>
-            <property name="position">3</property>
+            <property name="position">4</property>
           </packing>
         </child>
         <child internal-child="action_area">
@@ -1116,6 +1129,7 @@ you wish to add:</property>
   </object>
   <object class="GtkImage" id="image3">
     <property name="visible">True</property>
+    <property name="pixel_size">16</property>
     <property name="icon_name">gtg-tag</property>
   </object>
 </interface>
