@@ -41,8 +41,6 @@ class pluginImportJson:
         self.tb_button.set_label("Import from JSON")
         self.tb_button.connect('clicked', self.on_import_json_activate)
         self.separator = gtk.SeparatorToolItem()
-        self.task_separator = None
-        self.tb_Taskbutton = None
         self.txtImport = None
         self.plugin_api = None
 
@@ -62,9 +60,6 @@ class pluginImportJson:
         plugin_api.remove_menu_item(self.menu_item)
         plugin_api.remove_toolbar_item(self.tb_button)
         plugin_api.remove_toolbar_item(self.separator)
-        #everything should be removed, in case a task is currently opened
-        plugin_api.remove_task_toolbar_item(self.task_separator)
-        plugin_api.remove_task_toolbar_item(self.tb_Taskbutton)
         self.txtImport = None
 
     def loadDialog(self):
@@ -112,6 +107,7 @@ class pluginImportJson:
         # TODO:  Pop up dialog allowing user to select username
         #        username = self.txtUserName.get_text()
         for u in json_tasks:
+            # Insert name into dropdown widget
             print u
         username = 'bryceharrington'
             
