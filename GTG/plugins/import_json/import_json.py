@@ -44,11 +44,13 @@ class pluginImportJson:
         self.task_separator = None
         self.tb_Taskbutton = None
         self.txtImport = None
+        self.plugin_api = None
 
     def activate(self, plugin_api):
-        plugin_api.add_menu_item(self.menu_item)
-        plugin_api.add_toolbar_item(self.separator)
-        plugin_api.add_toolbar_item(self.tb_button)
+        self.plugin_api = plugin_api
+        self.plugin_api.add_menu_item(self.menu_item)
+        self.plugin_api.add_toolbar_item(self.separator)
+        self.plugin_api.add_toolbar_item(self.tb_button)
 
     def onTaskClosed(self, plugin_api):
         pass
@@ -88,6 +90,14 @@ class pluginImportJson:
     def on_import_json_activate(self, widget):
         self.loadDialog()
 
+    def on_response(self, widget, response_id):
+        if response_id == -7:
+            self.close_dialog(widget)
+        elif response_id == 0 and self.txtImport:
+            self.import_json(widget)
+        else:
+            print "Error:  Unknown response id %d" %(response_id)
+
     def import_json(self, widget):
         url = self.txtImport.get_text()
         json_text = loadurl(url)
@@ -106,22 +116,18 @@ class pluginImportJson:
         username = 'bryceharrington'
             
         for t in json_tasks[username]['todo']:
-            print "  %s" % (t)
-            # TODO:  Omit html codes
-            # TODO:  Foreach task, plugin_api.insert_task("hello world")
-
+            (category, title, priority, reference) = (t)
+            # TODO:  Omit html
+            # TODO:  Turn 'category' into a tag
+            # TODO:  Define pid from category?  Decide whether to do category as a tag or a project
+            task = self.plugin_api.get_requester().new_task(pid=None, tags=None, newtask=False)
+            task.title = title
+            task.content = reference
+            # TODO:  Set task.start_date, task.due_date, task.closed_date
+            # TODO:  Do something with the priority
         # TODO:  Should completed tasks be imported too?
 
         self.close_dialog(widget)
-
-    def on_response(self, widget, response_id):
-        if response_id == -7:
-            self.close_dialog(widget)
-        elif response_id == 0 and self.txtImport:
-            self.import_json(widget)
-        else:
-            print "Error:  Unknown response id %d" %(response_id)
-
 
 ### UTILITIES ###
 def loadurl(url):
