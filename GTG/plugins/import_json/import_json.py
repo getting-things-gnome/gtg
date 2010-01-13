@@ -159,7 +159,8 @@ class pluginImportJson:
         # Pop up dialog allowing user to select username
         self.usernames = [ ]
         for u in sorted(self.json_tasks):
-            self.usernames.append(u)
+            if len(self.json_tasks[u]['todo']) > 0:
+                self.usernames.append(u)
         self.loadDialogSelectUsername()
         self.dialog.hide_all()
         self.dialog_select_username.run()

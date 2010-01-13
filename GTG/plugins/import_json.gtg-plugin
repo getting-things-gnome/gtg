@@ -1,0 +1,8 @@
+[GTG Plugin]
+Module=import_json
+Name=Import from JSON
+Description='''Imports tasks from JSON formatted files.
+'''
+Authors=Bryce Harrington <bryce@canonical.com>
+Version=0.1
+Enabled=False
