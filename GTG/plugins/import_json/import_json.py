@@ -179,7 +179,7 @@ class pluginImportJson:
             # TODO:  Define pid from category?  Decide whether to do category as a tag or a project
             task = self.plugin_api.get_requester().new_task(pid=None, tags=None, newtask=False)
             task.title = title
-            task.content = reference
+            task.content = "<content>%s</content>" % (reference)
             # TODO:  Set task.start_date, task.due_date, task.closed_date
             # TODO:  Do something with the priority
         # TODO:  Should completed tasks be imported too?
