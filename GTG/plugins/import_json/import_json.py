@@ -27,6 +27,7 @@
 # }
 
 import gtk
+import gobject
 import os
 import urllib2
 import simplejson as json
@@ -34,6 +35,8 @@ import simplejson as json
 class pluginImportJson:
     
     def __init__(self):
+        self.plugin_api = None
+
         self.menu_item = gtk.MenuItem("Import from _JSON")
         self.menu_item.connect('activate', self.on_import_json_activate)
         
@@ -41,8 +44,14 @@ class pluginImportJson:
         self.tb_button.set_label("Import from JSON")
         self.tb_button.connect('clicked', self.on_import_json_activate)
         self.separator = gtk.SeparatorToolItem()
+
+        self.dialog = None
         self.txtImport = None
-        self.plugin_api = None
+        self.json_tasks = None
+
+        self.dialog_select_username = None
+        self.select_username = None
+        self.usernames = []
 
     def activate(self, plugin_api):
         self.plugin_api = plugin_api
@@ -65,20 +74,49 @@ class pluginImportJson:
     def loadDialog(self):
         path = os.path.dirname(os.path.abspath(__file__))
         glade_file = os.path.join(path, "import_json.glade")
-        wTree = gtk.glade.XML(glade_file, "import_json")
-        self.dialog = wTree.get_widget("import_json")
+        wTree = gtk.glade.XML(glade_file, "dlg_import_json")
+
+        self.dialog = wTree.get_widget("dlg_import_json")
         if not self.dialog:
             return
-
         self.txtImport = wTree.get_widget("txt_import")
 
         self.dialog.connect("delete_event", self.close_dialog)
         self.dialog.connect("response", self.on_response)
         
         self.dialog.show_all()
-    
+
+    def loadDialogSelectUsername(self):
+        path = os.path.dirname(os.path.abspath(__file__))
+        glade_file = os.path.join(path, "import_json.glade")
+        wTree = gtk.glade.XML(glade_file, "dlg_select_username")
+
+        self.dialog_select_username = wTree.get_widget("dlg_select_username")
+        if not self.dialog_select_username or len(self.usernames) < 1:
+            return
+        self.dialog_select_username.set_title("Select username")
+        self.dialog_select_username.set_transient_for(self.dialog)
+        self.dialog_select_username.set_position(gtk.WIN_POS_CENTER_ON_PARENT)
+        # TODO:  Handle ok and cancel buttons
+        self.dialog_select_username.connect("response", self.on_response_select_username)
+        self.dialog_select_username.connect("delete_event", self.close_dialog_select_username)
+
+        self.select_username = wTree.get_widget("select_username")
+        for u in self.usernames:
+            self.select_username.append_text(u)
+        self.select_username.set_active(0)
+
+        self.dialog_select_username.show_all()
+
+    def print_selected(self, widget, data=None):
+        print self.select_username.get_active()
+
     def close_dialog(self, widget, data=None):
         self.dialog.destroy()
+        return True    
+    
+    def close_dialog_select_username(self, widget, data=None):
+        self.dialog_select_username.destroy()
         return True    
     
     # plugin features
@@ -86,12 +124,25 @@ class pluginImportJson:
         self.loadDialog()
 
     def on_response(self, widget, response_id):
-        if response_id == -7:
+        if response_id == -7 or response_id == -4:
             self.close_dialog(widget)
         elif response_id == 0 and self.txtImport:
             self.import_json(widget)
         else:
             print "Error:  Unknown response id %d" %(response_id)
+
+    def on_response_select_username(self, widget, response_id):
+        if response_id == -7:
+            self.dialog.show_all()
+            self.close_dialog_select_username(widget)
+        elif response_id == -4:
+            self.close_dialog_select_username(widget)
+        elif response_id == 0:
+            self.import_tasks(widget)
+            self.close_dialog_select_username(widget)
+        else:
+            print "Error:  Unknown response id %d" %(response_id)
+        return response_id
 
     def import_json(self, widget):
         url = self.txtImport.get_text()
@@ -102,16 +153,20 @@ class pluginImportJson:
             return
 
         # Convert to json
-        json_tasks = json.loads(json_text)
+        self.json_tasks = json.loads(json_text)
 
-        # TODO:  Pop up dialog allowing user to select username
-        #        username = self.txtUserName.get_text()
-        for u in json_tasks:
-            # Insert name into dropdown widget
-            print u
-        username = 'bryceharrington'
-            
-        for t in json_tasks[username]['todo']:
+        # Pop up dialog allowing user to select username
+        self.usernames = [ ]
+        for u in sorted(self.json_tasks):
+            self.usernames.append(u)
+        self.loadDialogSelectUsername()
+        self.dialog.hide_all()
+        self.dialog_select_username.run()
+
+    def import_tasks(self, widget):
+        username = self.usernames[self.select_username.get_active()]
+
+        for t in self.json_tasks[username]['todo']:
             (category, title, priority, reference) = (t)
             # TODO:  Omit html
             # TODO:  Turn 'category' into a tag
@@ -123,6 +178,7 @@ class pluginImportJson:
             # TODO:  Do something with the priority
         # TODO:  Should completed tasks be imported too?
 
+        self.close_dialog_select_username(widget)
         self.close_dialog(widget)
 
 ### UTILITIES ###
