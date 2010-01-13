@@ -29,6 +29,7 @@
 import gtk
 import gobject
 import os
+import re
 import urllib2
 import simplejson as json
 
@@ -165,10 +166,15 @@ class pluginImportJson:
 
     def import_tasks(self, widget):
         username = self.usernames[self.select_username.get_active()]
+        re_dehtml = re.compile(r'<.*?>')
 
         for t in self.json_tasks[username]['todo']:
             (category, title, priority, reference) = (t)
-            # TODO:  Omit html
+
+            # Remove html <something> and </something>
+            title = re_dehtml.sub('', title)
+            reference = re_dehtml.sub('', reference)
+
             # TODO:  Turn 'category' into a tag
             # TODO:  Define pid from category?  Decide whether to do category as a tag or a project
             task = self.plugin_api.get_requester().new_task(pid=None, tags=None, newtask=False)
