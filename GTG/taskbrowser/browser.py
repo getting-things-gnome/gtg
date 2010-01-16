@@ -1468,7 +1468,7 @@ class TaskBrowser:
             addtag_dialog.run()
             addtag_dialog.hide()
             self.tids_to_addtag = None            
-         else:
+        else:
             return False
     
     def on_addtag_confirm(self, widget):
