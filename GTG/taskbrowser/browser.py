@@ -544,10 +544,6 @@ class TaskBrowser:
             self.tag_list_model.append([i.get_name()[1:]])
                
     def _init_tag_completion(self):
-        #TODO: tag_list syncing. 
-        #TODO: comments.
-
-            
         #Initialize tag completion.
         self.tag_completion = gtk.EntryCompletion()
         self.tag_completion.set_model(self.tag_list_model)
