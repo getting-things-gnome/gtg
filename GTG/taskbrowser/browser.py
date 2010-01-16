@@ -32,10 +32,6 @@ import datetime
 import threading
 import time
 
-#######DEBUG############
-# TODO: Clear up all debug stuff when I finish :)
-import pdb
-
 #our own imports
 import GTG
 from GTG import info
@@ -1477,13 +1473,6 @@ class TaskBrowser:
             self.tids_to_addtag = [tid]
 
         if not self.tids_to_addtag == [None]:
-            #TODO: Autocomplete isn't finding child tags
-            #   --- Actually it IS finding them, it's just bundlng them up
-            #       with the parent tag.
-            #   Solution(?): Copy tag model, rearrange to move all children up
-            #                and then keep sync with main tag model.
-            #TODO: Fix label6 in glade
-            #TODO: Icon size is fine, as far as I can tell
             tag_entry = self.builder.get_object("tag_entry")
             apply_to_subtasks = self.builder.get_object("apply_to_subtasks")
             # We don't want to reset the text entry and checkbox if we got
@@ -1492,13 +1481,11 @@ class TaskBrowser:
                 tag_entry.set_text("NewTag")
                 apply_to_subtasks.set_active(False)
                 tag_entry.set_completion(self.tag_completion)
-                
             tag_entry.grab_focus()
             addtag_dialog = self.builder.get_object("TaskAddTag")
             addtag_dialog.run()
             addtag_dialog.hide()
             self.tids_to_addtag = None            
-            
         else:
             return False
     
@@ -1513,11 +1500,10 @@ class TaskBrowser:
         if not entry_text[0]:
             error_message = "Please enter a tag name."
             addtag_error = True
-        
+ 
         new_tags = []
         if "," in entry_text[0]:
             entry_text = entry_text[0].split(",")
-
         # Remove extraneous whitespace, make sure none of the tags contain
         # spaces, and, finally, place a "@" symbol in front of the tagname.
         for tagname in entry_text:
@@ -1528,7 +1514,6 @@ class TaskBrowser:
                     addtag_error = True
                     break
             new_tags.append("@" + tagname)
-
         # If we ran into a problem earlier, let us know, and then
         # let us try again.
         if addtag_error:
@@ -1538,7 +1523,6 @@ class TaskBrowser:
                 error_dialog.destroy()
                 self.on_add_new_tag(tryagain = True)
                 return
-        
         # If the checkbox is checked, add all the subtasks to the list of
         # tasks to add.
         if apply_to_subtasks.get_active():
@@ -1548,7 +1532,7 @@ class TaskBrowser:
                     taskid = i.get_id()
                     if taskid not in self.tids_to_addtag: 
                         self.tids_to_addtag.append(taskid)        
-
+        
         for tid in self.tids_to_addtag:
             task = self.req.get_task(tid)
             for new_tag in new_tags:
