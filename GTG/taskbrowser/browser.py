@@ -153,6 +153,7 @@ class TaskBrowser:
         self.clipboard = clipboard.TaskClipboard()
         
         #Autocompletion for Tags
+        self._init_tag_list()
         self._init_tag_completion()
 
 ### INIT HELPER FUNCTIONS #####################################################
@@ -539,12 +540,23 @@ class TaskBrowser:
             
             # initializes and activates each plugin (that is enabled)
             self.pengine.activatePlugins(self.plugins, self.p_apis)
-    
+            
+    def _init_tag_list(self):
+        self.tag_list_model = gtk.ListStore(gobject.TYPE_STRING)
+        self.tag_list = self.req.get_all_tags()
+        for i in self.tag_list:
+            self.tag_list_model.append([i.get_name()[1:]])
+               
     def _init_tag_completion(self):
+        #TODO: tag_list syncing. 
+        #TODO: comments.
+
+            
+        #Initialize tag completion.
         self.tag_completion = gtk.EntryCompletion()
-        self.tag_completion.set_model(self.tag_model)
-        self.tag_completion.set_text_column(1)
-        self.tag_completion.set_match_func(self.tag_match_func, 1)
+        self.tag_completion.set_model(self.tag_list_model)
+        self.tag_completion.set_text_column(0)
+        self.tag_completion.set_match_func(self.tag_match_func, 0)
         self.tag_completion.set_inline_completion(True)
         self.tag_completion.set_inline_selection(True)
         self.tag_completion.set_popup_single_match(False)
@@ -986,19 +998,28 @@ class TaskBrowser:
     def tag_match_func(self, completion, key, iter, column):
         model = completion.get_model()
         text = model.get_value(iter, column)
-        # key is lowercase regardless of input, so text should be
-        # lowercase as well, otherwise we leave out all tags beginning
-        # with an uppercase letter.
-        text = text.lower()
-        # Exclude the special tags.
-        if text == "tg-tags-all" or text == "tg-tags-sep" or \
-           text =="tg-tags-none":
-            return False
-        # Are we typing the first letters of a tag?
-        elif text.startswith(key):
-            return True
-        else:
-            return False             
+        if text:
+            # key is lowercase regardless of input, so text should be
+            # lowercase as well, otherwise we leave out all tags beginning
+            # with an uppercase letter.
+            text = text.lower()
+            # Exclude the special tags.
+            if text == "tg-tags-all" or text == "tg-tags-sep" or \
+               text =="tg-tags-none":
+                return False
+            # Are we typing the first letters of a tag?
+            elif text.startswith(key):
+                return True
+            else:
+                return False          
+            
+    def tag_list_refresh(self):
+        taglist = self.req.get_all_tags()
+        if not taglist == self.tag_list:
+            for i in taglist:
+                if i not in self.tag_list:
+                    self.tag_list_model.append([i.get_name()[1:]])
+            self.tag_list = taglist
 
 ### SIGNAL CALLBACKS ##########################################################
 # Typically, reaction to user input & interactions with the GUI
@@ -1459,6 +1480,8 @@ class TaskBrowser:
             #TODO: Autocomplete isn't finding child tags
             #   --- Actually it IS finding them, it's just bundlng them up
             #       with the parent tag.
+            #   Solution(?): Copy tag model, rearrange to move all children up
+            #                and then keep sync with main tag model.
             #TODO: Fix label6 in glade
             #TODO: Icon size is fine, as far as I can tell
             tag_entry = self.builder.get_object("tag_entry")
@@ -1719,6 +1742,7 @@ class TaskBrowser:
 #        self.tags_tv.refresh()
         self._update_window_title()
         self.refresh_lock.release()
+        self.tag_list_refresh()
 
 ### PUBLIC METHODS ############################################################
 #
