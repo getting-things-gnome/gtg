@@ -146,7 +146,6 @@ class TaskBrowser:
         #self._init_note_support()
         
         #Shared clipboard
-
         self.clipboard = clipboard.TaskClipboard(self.req)
         
         self.tag_active = False
