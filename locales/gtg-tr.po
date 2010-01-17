@@ -7,343 +7,45 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2009-12-09 16:32+0100\n"
+"POT-Creation-Date: 2010-01-18 00:09+0100\n"
 "PO-Revision-Date: 2009-12-08 15:31+0000\n"
 "Last-Translator: Aean <Unknown>\n"
 "Language-Team: Turkish <tr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2009-12-12 14:20+0000\n"
+"X-Launchpad-Export-Date: 2010-01-17 23:32+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
-#: GTG/taskbrowser/__init__.py:32 GTG/taskeditor/__init__.py:28
-msgid "Mark as done"
-msgstr "Yapılmış olarak işaretle"
-
-#: GTG/taskbrowser/__init__.py:33
-msgid "Mark the selected task as done"
-msgstr "Seçili görevi yapıldı olarak işaretle"
-
-#: GTG/taskbrowser/__init__.py:34 GTG/taskeditor/__init__.py:29
-msgid "Mark as not done"
-msgstr "Yapılmamış olarak işaretle"
-
-#: GTG/taskbrowser/__init__.py:35 GTG/taskbrowser/__init__.py:39
-msgid "Mark the selected task as to be done"
-msgstr "Seçili görevi yapılacak olarak işaretle"
-
-#: GTG/taskbrowser/__init__.py:36 GTG/taskbrowser/taskbrowser.glade.h:13
-#: GTG/taskeditor/__init__.py:30 GTG/taskeditor/taskeditor.glade.h:4
-msgid "Dismiss"
-msgstr "İptal Et"
-
-#: GTG/taskbrowser/__init__.py:37
-msgid "Mark the task as not to be done anymore"
-msgstr "Görevi artık yapılmayacak olarak işaretle"
-
-#: GTG/taskbrowser/__init__.py:38 GTG/taskeditor/__init__.py:31
-msgid "Undismiss"
-msgstr "İptal edilen görevi geri al"
-
-#: GTG/taskbrowser/__init__.py:40
-msgid "Permanently remove the selected task"
-msgstr "Seçili görevi kalıcı olarak kaldır"
-
-#: GTG/taskbrowser/__init__.py:41
-msgid "Edit the selected task"
-msgstr "Seçili görevi düzenle"
-
-#: GTG/taskbrowser/__init__.py:42 GTG/taskbrowser/taskbrowser.glade.h:10
-msgid "Create a new task"
-msgstr "Yeni bir görev oluştur"
-
-#: GTG/taskbrowser/__init__.py:43
-msgid "Create a new subtask"
-msgstr "Yeni bir alt görev oluştur"
-
-#: GTG/taskbrowser/__init__.py:44
-msgid "Toggle the work view"
+#: GTG/plugins/rtm_sync/rtm_sync.py:83 GTG/plugins/rtm_sync/rtm_sync.py:89
+msgid "Synchronize with RTM"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:1
+#: GTG/plugins/rtm_sync/rtm_sync.py:152
+msgid "Synchronization started"
+msgstr ""
+
+#: GTG/plugins/rtm_sync/rtm_sync.py:165
+msgid "Trying to access, please stand by..."
+msgstr ""
+
+#: GTG/plugins/rtm_sync/rtm_sync.py:183
+msgid "Couldn't connect to Remember The Milk"
+msgstr "Remember The Milk'e bağlanılamadı"
+
+#: GTG/plugins/rtm_sync/rtm_sync.py:197
+msgid "<b>Authentication failed</b>.Please retry."
+msgstr "<b>Kimlik doğrulama başarısız oldu</b>.Lütfen tekrar deneyin."
+
+#: GTG/plugins/rtm_sync/rtm_sync.py:202
 msgid ""
-"\n"
-"Getting Things Gnome! is an organizer for the GNOME desktop environment."
-msgstr ""
-"\n"
-"Getting Things Gnome! GNOME masaüstü ortamı için bir ajandadır."
-
-#: GTG/taskbrowser/taskbrowser.glade.h:3
-msgid ""
-"<span weight=\"bold\" size=\"large\">Are you sure you want delete this "
-"task?</span>\n"
-"\n"
-"Deleting a task cannot be undone, and will delete the following tasks: "
-msgstr ""
-"<span weight=\"bold\" size=\"large\">Bu görevi silmek istediğinizden emin "
-"misiniz?</span>\n"
-"\n"
-"Silinen bir görev geri alınamaz ve şu görevler silinecek: "
-
-#: GTG/taskbrowser/taskbrowser.glade.h:6
-msgid "About GTG!"
-msgstr "GTG Hakkında!"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:7
-msgid "Add a subtask"
-msgstr "İkincil görev ekle"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:8
-msgid "Confirm task deletion"
-msgstr "Görev silmeyi onayla"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:9
-msgid "Copyrights&#xA9; 2008, 2009 Lionel Dricot, Bertrand Rousseau"
+"Please authenticate to Remember The Milk in the browser that is being opened "
+"now. When done, press OK"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:11
-msgid "D_ismiss"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:12 GTG/taskeditor/taskeditor.glade.h:3
-msgid "Delete"
-msgstr "Sil"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:14
-msgid "Edit"
-msgstr "Düzenle"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:15
-msgid "GTG website"
-msgstr "GTG web sayfası"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:16
-msgid "Getting Things Gnome!"
-msgstr "Getting Things Gnome!"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:17
-msgid ""
-"Getting Things Gnome! is free software; you can redistribute it and/or "
-"modify it under the terms of the GNU General Public License as published by "
-"the Free Software Foundation; either version 3 of the License, or (at your "
-"option) any later version.\n"
-"\n"
-"Getting Things Gnome! is distributed in the hope that it will be useful, but "
-"WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY "
-"or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
-"more details.\n"
-"\n"
-"You should have received a copy of the GNU General Public License along with "
-"Getting Things Gnome!; if not, write to the Free Software Foundation, Inc., "
-"51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA."
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:22
-msgid "Mark as Done"
-msgstr "Yapıldı olarak işaretle"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:23
-msgid "Mark as Not Done"
-msgstr "Yapılmadı olarak işaretle"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:24
-msgid "Mark as _Done"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:25
-msgid "New Note"
-msgstr "Yeni Not"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:26
-msgid "New Subtask"
-msgstr "Yeni Alt Görev"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:27
-msgid "New Task"
-msgstr "Yeni Görev"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:28
-msgid "New _Subtask"
-msgstr "Yeni _Altgörev"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:29
-msgid "New _Task"
-msgstr "Yeni _Görev"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:30
-msgid "Permanently _remove task"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:31
-msgid "Plugin _Preferences"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:32
-msgid "Redo"
-msgstr "Yinele"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:33
-msgid "T_oolbar"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:34
-msgid "Tag is displayed in the workview"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:35 GTG/taskbrowser/tagtree.py:303
-#: GTG/taskbrowser/tasktree.py:386 GTG/taskbrowser/tasktree.py:513
-msgid "Tags"
-msgstr "Etiketler"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:36
-msgid "Und_ismiss"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:37
-msgid "Undo"
-msgstr "Geri Al"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:38
-msgid "View Notes"
-msgstr "Notları görüntüle"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:39
-msgid "Work View"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:40
-msgid "_Background Colors"
-msgstr "_Arkaplan renkleri"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:41
-msgid "_Closed Tasks Pane"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:42
-msgid "_Edit"
-msgstr "_Düzenle"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:43
-msgid "_Help"
-msgstr "_Yardım"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:44
-msgid "_Keep selected task"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:45
-msgid "_Plugins"
-msgstr "_Eklentiler"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:46
-msgid "_Quick Add Entry"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:47
-msgid "_Tags Sidebar"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:48
-msgid "_Tasks"
-msgstr "_Görevler"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:49
-msgid "_View"
-msgstr "_Görünüm"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:50
-msgid "_Work View"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:205
-msgid "All tasks"
-msgstr "Tüm görevler"
-
-#: GTG/taskbrowser/browser.py:212
-msgid "Tasks with no tags"
-msgstr "Etiketsiz görevler"
-
-#: GTG/taskbrowser/browser.py:676
-msgid "(no active tasks)"
-msgstr "(etkin görev yok)"
-
-#: GTG/taskbrowser/browser.py:678
-msgid "(1 active task)"
-msgstr "(1etkin görev)"
-
-#: GTG/taskbrowser/browser.py:680
-#, python-format
-msgid "(%s active tasks)"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:690
-msgid "monday"
-msgstr "pazaresi"
-
-#: GTG/taskbrowser/browser.py:690
-msgid "tuesday"
-msgstr "salı"
-
-#: GTG/taskbrowser/browser.py:690
-msgid "wednesday"
-msgstr "çarşamba"
-
-#: GTG/taskbrowser/browser.py:691
-msgid "thursday"
-msgstr "perşembe"
-
-#: GTG/taskbrowser/browser.py:691
-msgid "friday"
-msgstr "cuma"
-
-#: GTG/taskbrowser/browser.py:691
-msgid "saturday"
-msgstr "cumartesi"
-
-#: GTG/taskbrowser/browser.py:692
-msgid "sunday"
-msgstr "pazar"
-
-#: GTG/taskbrowser/browser.py:701
-msgid "today"
-msgstr "bugün"
-
-#: GTG/taskbrowser/browser.py:708
-msgid "tomorrow"
-msgstr "yarın"
-
-#: GTG/taskbrowser/browser.py:1201
-msgid "tags"
-msgstr "etiketler"
-
-#: GTG/taskbrowser/browser.py:1201
-msgid "tag"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:1207
-msgid "defer"
-msgstr "ertele"
-
-#: GTG/taskbrowser/browser.py:1212
-msgid "due"
-msgstr "bitiş"
-
-#: GTG/taskbrowser/tasktree.py:401 GTG/taskbrowser/tasktree.py:537
-msgid "Title"
-msgstr "Başlık"
-
-#: GTG/taskbrowser/tasktree.py:414
-msgid "Due date"
-msgstr "Bitiş tarihi"
-
-#: GTG/taskbrowser/tasktree.py:426
-msgid "Days left"
-msgstr "Kalan gün"
-
-#: GTG/taskbrowser/tasktree.py:525
-msgid "Closing date"
-msgstr ""
+#: GTG/plugins/rtm_sync/gtk.glade.h:1
+msgid "Authentication"
+msgstr "Kimlik Denetimi"
 
 #: GTG/plugins/rtm_sync/syncengine.py:67
 msgid "Adding tasks to gtg.."
@@ -419,51 +121,9 @@ msgstr ""
 msgid "saving critical object failed"
 msgstr ""
 
-#: GTG/plugins/rtm_sync/rtm_sync.py:67 GTG/plugins/rtm_sync/rtm_sync.py:73
-msgid "Synchronize with RTM"
-msgstr ""
-
-#: GTG/plugins/rtm_sync/rtm_sync.py:148
-msgid "Synchronization started"
-msgstr ""
-
-#: GTG/plugins/rtm_sync/rtm_sync.py:161
-msgid "Trying to access, please stand by..."
-msgstr ""
-
-#: GTG/plugins/rtm_sync/rtm_sync.py:179
-msgid "Couldn't connect to Remember The Milk"
-msgstr "Remember The Milk'e bağlanılamadı"
-
-#: GTG/plugins/rtm_sync/rtm_sync.py:193
-msgid "<b>Authentication failed</b>.Please retry."
-msgstr "<b>Kimlik doğrulama başarısız oldu</b>.Lütfen tekrar deneyin."
-
-#: GTG/plugins/rtm_sync/rtm_sync.py:198
-msgid ""
-"Please authenticate to Remember The Milk in the browser that is being opened "
-"now. When done, press OK"
-msgstr ""
-
-#: GTG/plugins/rtm_sync/pyrtm/rtm.py:57
+#: GTG/plugins/rtm_sync/pyrtm/rtm.py:55
 msgid "Invalid state"
 msgstr "Geçersiz durum"
-
-#: GTG/plugins/rtm_sync/pyrtm/rtm.py:106
-msgid "API call failed"
-msgstr ""
-
-#: GTG/plugins/rtm_sync/gtk.glade.h:1
-msgid "Authentication"
-msgstr "Kimlik Denetimi"
-
-#: GTG/plugins/helloworld/hello_world.glade.h:1
-msgid "Hello World"
-msgstr "Merhaba Dünya"
-
-#: GTG/plugins/helloworld/hello_world.glade.h:2
-msgid "Hello World Plugin"
-msgstr "Merhaba Dünya Eklentisi"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:1
 msgid "<b>Location Determination Method</b>"
@@ -507,17 +167,21 @@ msgstr "Gps kullan"
 msgid "Use network"
 msgstr "Ağ kullan"
 
-#: GTG/plugins/export/export.py:191
-msgid "Template not found"
-msgstr "Şablon bulunamadı"
-
-#: GTG/plugins/export/export.py:192
-msgid "Can't load the template file"
-msgstr "Şablon dosyası yüklenemedi"
-
-#: GTG/plugins/export/export.py:221
-msgid "Choose where to save your list"
+#: GTG/plugins/notification_area/notification_area.py:56
+msgid "_View Main Window"
 msgstr ""
+
+#: GTG/plugins/notification_area/notification_area.py:69
+msgid "Add _New Task"
+msgstr ""
+
+#: GTG/plugins/helloworld/hello_world.glade.h:1
+msgid "Hello World"
+msgstr "Merhaba Dünya"
+
+#: GTG/plugins/helloworld/hello_world.glade.h:2
+msgid "Hello World Plugin"
+msgstr "Merhaba Dünya Eklentisi"
 
 #: GTG/plugins/tomboy/tomboy.glade.h:1
 msgid "Insert Note"
@@ -534,20 +198,32 @@ msgstr ""
 "Tomboy bulunamadı. Lütfen Tomboy'u kurun ya da GTG'deki Tomboy eklentisini "
 "devre dışı bırakın"
 
-#: GTG/plugins/tomboy/tomboy.py:123
+#: GTG/plugins/tomboy/tomboy.py:125
 msgid "Add Tomboy note"
 msgstr "Tomboy notu ekle"
 
-#: GTG/plugins/tomboy/tomboy.py:219
+#: GTG/plugins/tomboy/tomboy.py:220
 msgid "That note does not exist!"
 msgstr ""
 
-#: GTG/plugins/tomboy/tomboy.py:224
+#: GTG/plugins/tomboy/tomboy.py:225
 msgid "That note does not exist. Do you want to create a new one?"
 msgstr ""
 
-#: GTG/plugins/tomboy/tomboy.py:250
+#: GTG/plugins/tomboy/tomboy.py:251
 msgid "This Tomboy note does not exist anymore. Do you want to create it?"
+msgstr ""
+
+#: GTG/plugins/export/export.py:213
+msgid "Template not found"
+msgstr "Şablon bulunamadı"
+
+#: GTG/plugins/export/export.py:214
+msgid "Can't load the template file"
+msgstr "Şablon dosyası yüklenemedi"
+
+#: GTG/plugins/export/export.py:243
+msgid "Choose where to save your list"
 msgstr ""
 
 #: GTG/core/plugins/__init__.py:32
@@ -606,7 +282,7 @@ msgstr "Eklenti Yöneticisi"
 msgid "Version: "
 msgstr "Sürüm: "
 
-#: GTG/core/task.py:46
+#: GTG/core/task.py:47
 msgid "My new task"
 msgstr "Yeni Görevim"
 
@@ -816,17 +492,367 @@ msgid ""
 "your problem really quickly."
 msgstr ""
 
-#: GTG/tools/dates.py:95
-msgid "now"
-msgstr "şimdi"
+#: GTG/gtg.py:80
+msgid "gtg is already running!"
+msgstr "gtg zaten çalışıyor!"
 
-#: GTG/tools/dates.py:97
-msgid "soon"
-msgstr "yakında"
+#: GTG/taskbrowser/browser.py:212
+msgid "All tasks"
+msgstr "Tüm görevler"
 
-#: GTG/tools/dates.py:99
-msgid "later"
-msgstr "daha sonra"
+#: GTG/taskbrowser/browser.py:219
+msgid "Tasks with no tags"
+msgstr "Etiketsiz görevler"
+
+#: GTG/taskbrowser/browser.py:728
+msgid "no active tasks"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:730
+msgid "1 active task"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:732
+#, python-format
+msgid "%s active tasks"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:742
+msgid "monday"
+msgstr "pazaresi"
+
+#: GTG/taskbrowser/browser.py:742
+msgid "tuesday"
+msgstr "salı"
+
+#: GTG/taskbrowser/browser.py:742
+msgid "wednesday"
+msgstr "çarşamba"
+
+#: GTG/taskbrowser/browser.py:743
+msgid "thursday"
+msgstr "perşembe"
+
+#: GTG/taskbrowser/browser.py:743
+msgid "friday"
+msgstr "cuma"
+
+#: GTG/taskbrowser/browser.py:743
+msgid "saturday"
+msgstr "cumartesi"
+
+#: GTG/taskbrowser/browser.py:744
+msgid "sunday"
+msgstr "pazar"
+
+#: GTG/taskbrowser/browser.py:753
+msgid "today"
+msgstr "bugün"
+
+#: GTG/taskbrowser/browser.py:760
+msgid "tomorrow"
+msgstr "yarın"
+
+#: GTG/taskbrowser/browser.py:1297
+msgid "tags"
+msgstr "etiketler"
+
+#: GTG/taskbrowser/browser.py:1297
+msgid "tag"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:1303
+msgid "defer"
+msgstr "ertele"
+
+#: GTG/taskbrowser/browser.py:1308
+msgid "due"
+msgstr "bitiş"
+
+#: GTG/taskbrowser/__init__.py:32 GTG/taskeditor/__init__.py:28
+msgid "Mark as done"
+msgstr "Yapılmış olarak işaretle"
+
+#: GTG/taskbrowser/__init__.py:33
+msgid "Mark the selected task as done"
+msgstr "Seçili görevi yapıldı olarak işaretle"
+
+#: GTG/taskbrowser/__init__.py:34 GTG/taskeditor/__init__.py:29
+msgid "Mark as not done"
+msgstr "Yapılmamış olarak işaretle"
+
+#: GTG/taskbrowser/__init__.py:35 GTG/taskbrowser/__init__.py:39
+msgid "Mark the selected task as to be done"
+msgstr "Seçili görevi yapılacak olarak işaretle"
+
+#: GTG/taskbrowser/__init__.py:36 GTG/taskbrowser/taskbrowser.glade.h:18
+#: GTG/taskeditor/__init__.py:30 GTG/taskeditor/taskeditor.glade.h:4
+msgid "Dismiss"
+msgstr "İptal Et"
+
+#: GTG/taskbrowser/__init__.py:37
+msgid "Mark the task as not to be done anymore"
+msgstr "Görevi artık yapılmayacak olarak işaretle"
+
+#: GTG/taskbrowser/__init__.py:38 GTG/taskeditor/__init__.py:31
+msgid "Undismiss"
+msgstr "İptal edilen görevi geri al"
+
+#: GTG/taskbrowser/__init__.py:40
+msgid "Permanently remove the selected task"
+msgstr "Seçili görevi kalıcı olarak kaldır"
+
+#: GTG/taskbrowser/__init__.py:41
+msgid "Edit the selected task"
+msgstr "Seçili görevi düzenle"
+
+#: GTG/taskbrowser/__init__.py:42 GTG/taskbrowser/taskbrowser.glade.h:15
+msgid "Create a new task"
+msgstr "Yeni bir görev oluştur"
+
+#: GTG/taskbrowser/__init__.py:43
+msgid "Create a new subtask"
+msgstr "Yeni bir alt görev oluştur"
+
+#: GTG/taskbrowser/__init__.py:44
+msgid "Display only the currently actionable tasks"
+msgstr ""
+
+#: GTG/taskbrowser/tasktree.py:392 GTG/taskbrowser/tasktree.py:547
+#: GTG/taskbrowser/taskbrowser.glade.h:44 GTG/taskbrowser/tagtree.py:315
+msgid "Tags"
+msgstr "Etiketler"
+
+#: GTG/taskbrowser/tasktree.py:407 GTG/taskbrowser/tasktree.py:571
+msgid "Title"
+msgstr "Başlık"
+
+#: GTG/taskbrowser/tasktree.py:420
+msgid "Due date"
+msgstr "Bitiş tarihi"
+
+#: GTG/taskbrowser/tasktree.py:432
+msgid "Days left"
+msgstr "Kalan gün"
+
+#: GTG/taskbrowser/tasktree.py:559
+msgid "Closing date"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:1
+msgid ""
+"\n"
+"Getting Things Gnome! is an organizer for the GNOME desktop environment."
+msgstr ""
+"\n"
+"Getting Things Gnome! GNOME masaüstü ortamı için bir ajandadır."
+
+#: GTG/taskbrowser/taskbrowser.glade.h:3
+msgid ""
+"<span weight=\"bold\" size=\"large\">Are you sure you want delete these "
+"tasks?</span>\n"
+"\n"
+"Deleting a task cannot be undone, and will delete the following tasks: "
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:6
+msgid "About GTG!"
+msgstr "GTG Hakkında!"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:7
+msgid "Add Tag"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:8
+msgid "Add Tag..."
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:9
+msgid "Add a Tag..."
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:10
+msgid "Add a subtask"
+msgstr "İkincil görev ekle"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:11
+msgid "Apply to subtasks"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:12
+msgid "Cancel"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:13
+msgid "Confirm task deletion"
+msgstr "Görev silmeyi onayla"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:14
+msgid "Copyrights&#xA9; 2008, 2009 Lionel Dricot, Bertrand Rousseau"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:16
+msgid "D_ismiss"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:17 GTG/taskeditor/taskeditor.glade.h:3
+msgid "Delete"
+msgstr "Sil"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:19
+msgid "Edit"
+msgstr "Düzenle"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:20
+msgid "Enter the name of the tag(s) you wish to add:"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:21
+msgid "GTG website"
+msgstr "GTG web sayfası"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:22
+msgid "Getting Things Gnome!"
+msgstr "Getting Things Gnome!"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:23
+msgid ""
+"Getting Things Gnome! is free software; you can redistribute it and/or "
+"modify it under the terms of the GNU General Public License as published by "
+"the Free Software Foundation; either version 3 of the License, or (at your "
+"option) any later version.\n"
+"\n"
+"Getting Things Gnome! is distributed in the hope that it will be useful, but "
+"WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY "
+"or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
+"more details.\n"
+"\n"
+"You should have received a copy of the GNU General Public License along with "
+"Getting Things Gnome!; if not, write to the Free Software Foundation, Inc., "
+"51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA."
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:28
+msgid ""
+"Hint: you can add several tags by separating them with\n"
+"commas."
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:30
+msgid "Mark as Done"
+msgstr "Yapıldı olarak işaretle"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:31
+msgid "Mark as Not Done"
+msgstr "Yapılmadı olarak işaretle"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:32
+msgid "Mark as _Done"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:33
+msgid "New Note"
+msgstr "Yeni Not"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:34
+msgid "New Subtask"
+msgstr "Yeni Alt Görev"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:35
+msgid "New Task"
+msgstr "Yeni Görev"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:36
+msgid "New _Subtask"
+msgstr "Yeni _Altgörev"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:37
+msgid "New _Task"
+msgstr "Yeni _Görev"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:38
+msgid "Permanently _remove tasks"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:39
+msgid "Plugin _Preferences"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:40
+msgid "Redo"
+msgstr "Yinele"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:41
+msgid "T_oolbar"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:42
+msgid "Tag is displayed in the workview"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:43
+msgid "TagName"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:45
+msgid "Und_ismiss"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:46
+msgid "Undo"
+msgstr "Geri Al"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:47
+msgid "View Notes"
+msgstr "Notları görüntüle"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:48
+msgid "Work View"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:49
+msgid "_Background Colors"
+msgstr "_Arkaplan renkleri"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:50
+msgid "_Closed Tasks Pane"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:51
+msgid "_Edit"
+msgstr "_Düzenle"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:52
+msgid "_Help"
+msgstr "_Yardım"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:53
+msgid "_Keep selected tasks"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:54
+msgid "_Plugins"
+msgstr "_Eklentiler"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:55
+msgid "_Quick Add Entry"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:56
+msgid "_Tags Sidebar"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:57
+msgid "_Tasks"
+msgstr "_Görevler"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:58
+msgid "_View"
+msgstr "_Görünüm"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:59
+msgid "_Work View"
+msgstr ""
 
 #: GTG/taskeditor/__init__.py:32 GTG/taskeditor/taskeditor.glade.h:7
 msgid "Keep as Note"
@@ -918,6 +944,14 @@ msgstr ""
 msgid "Was %s days ago"
 msgstr "%s gün önceydi"
 
-#: GTG/gtg.py:80
-msgid "gtg is already running!"
-msgstr "gtg zaten çalışıyor!"
+#: GTG/tools/dates.py:95
+msgid "now"
+msgstr "şimdi"
+
+#: GTG/tools/dates.py:97
+msgid "soon"
+msgstr "yakında"
+
+#: GTG/tools/dates.py:99
+msgid "later"
+msgstr "daha sonra"
