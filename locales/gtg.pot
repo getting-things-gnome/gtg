@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-10 12:49+0100\n"
+"POT-Creation-Date: 2010-01-17 13:46+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -40,6 +40,10 @@ msgstr ""
 msgid ""
 "Please authenticate to Remember The Milk in the browser that is being opened "
 "now. When done, press OK"
+msgstr ""
+
+#: GTG/plugins/rtm_sync/gtk.glade.h:1
+msgid "Authentication"
 msgstr ""
 
 #: GTG/plugins/rtm_sync/syncengine.py:67
@@ -176,6 +180,14 @@ msgstr ""
 
 #: GTG/plugins/helloworld/hello_world.glade.h:2
 msgid "Hello World Plugin"
+msgstr ""
+
+#: GTG/plugins/tomboy/tomboy.glade.h:1
+msgid "Insert Note"
+msgstr ""
+
+#: GTG/plugins/tomboy/tomboy.glade.h:2
+msgid "Insert the title of the tomboy note "
 msgstr ""
 
 #: GTG/plugins/tomboy/tomboy.py:80
