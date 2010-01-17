@@ -148,6 +148,9 @@ class TaskBrowser:
         #Shared clipboard
         self.clipboard = clipboard.TaskClipboard(self.req)
         
+
+        self.tag_active = False
+
         #Autocompletion for Tags
         self._init_tag_list()
         self._init_tag_completion()
@@ -336,6 +339,8 @@ class TaskBrowser:
                 self.on_colorchooser_activate,
             "on_resetcolor_activate":
                 self.on_resetcolor_activate,
+            "on_tagcontext_deactivate":
+                self.on_tagcontext_deactivate,
             "on_workview_toggled":
                 self.on_workview_toggled,
             "on_note_toggled":
@@ -816,8 +821,15 @@ class TaskBrowser:
         """Returns True if the task meets the criterion to be displayed
         @param  task: the task to assess
         """
-
-        tag_list, notag_only = self.get_selected_tags()
+        
+        # Checks to see if we're working with a tag through a right click
+        # menu item. If we are, we'll treat the tag that was selected
+        # previous to the right click as the currently selected tag,
+        # even if the cursor is somewhere else.
+        if self.tag_active:
+            tag_list, notag_only = self.previous_tag
+        else:
+            tag_list, notag_only = self.get_selected_tags()
 
         if len(tag_list)==1: #include child tags
             tag_list = tag_list[0].all_children()
@@ -1138,9 +1150,11 @@ class TaskBrowser:
         #TODO: Color chooser should be refactorized in its own class. Well, in
         #fact we should have a TagPropertiesEditor (like for project) Also,
         #color change should be immediate. There's no reason for a Ok/Cancel
+        self.set_target_cursor()
         dialog = gtk.ColorSelectionDialog('Choose color')
         colorsel = dialog.colorsel
         colorsel.connect("color_changed", self.on_color_changed)
+
         # Get previous color
         tags, notag_only = self.get_selected_tags()
         init_color = None
@@ -1158,15 +1172,21 @@ class TaskBrowser:
             tags, notag_only = self.get_selected_tags()
             for t in tags:
                 t.set_attribute("color", strcolor)
+        self.reset_cursor()
         self.task_tv.refresh()
         dialog.destroy()
         
     def on_resetcolor_activate(self, widget):
+        self.set_target_cursor()
         tags, notag_only = self.get_selected_tags()
         for t in tags:
             t.del_attribute("color")
+        self.reset_cursor()
         self.task_tv.refresh()
         self.tags_tv.refresh()
+        
+    def on_tagcontext_deactivate(self, menushell):
+        self.reset_cursor()
 
     def on_workview_toggled(self, widget):
         self.do_toggle_workview()
@@ -1321,12 +1341,24 @@ class TaskBrowser:
             if pthinfo is not None:
                 path, col, cellx, celly = pthinfo #pylint: disable-msg=W0612
                 treeview.grab_focus()
+                # The location we want the cursor to return to 
+                # after we're done.
+                self.previous_cursor = treeview.get_cursor()
+                # For use in is_task_visible
+                self.previous_tag = self.get_selected_tags()
+                # Let's us know that we're working on a tag.
+                self.tag_active = True
+
+                # This location is stored in case we need to work with it
+                # later on.
+                self.target_cursor = path, col
                 treeview.set_cursor(path, col, 0)
                 selected_tags = self.get_selected_tags()[0]
                 if len(selected_tags) > 0:
                     # Then we are looking at single, normal tag rather than
                     # the special 'All tags' or 'Tasks without tags'. We only
                     # want to popup the menu for normal tags.
+
                     display_in_workview_item = self.tagpopup.get_children()[2]
                     selected_tag = selected_tags[0]
                     nonworkview = selected_tag.get_attribute("nonworkview")
@@ -1337,11 +1369,22 @@ class TaskBrowser:
                         shown = False
                     else:
                         shown = True
+                    # HACK: CheckMenuItem.set_active() emits a toggled() when 
+                    # switching between True and False, which will reset 
+                    # the cursor. Using self.dont_reset to work around that.
+                    # Calling set_target_cursor after set_active() is another
+                    # option, but there's noticeable amount of lag when right
+                    # clicking tags that way.
+                    self.dont_reset = True
                     display_in_workview_item.set_active(shown)
+                    self.dont_reset = False
                     self.tagpopup.popup(None, None, None, event.button, time)
+                else:
+                    self.reset_cursor()
             return 1
 
     def on_nonworkviewtag_toggled(self, widget):
+        self.set_target_cursor()
         tags = self.get_selected_tags()[0]
         nonworkview_item = self.nonworkviewtag_checkbox
         #We must inverse because the tagstore has True
@@ -1352,6 +1395,8 @@ class TaskBrowser:
         if self.priv['workview']:
             self.task_modelfilter.refilter()
             self.tag_modelfilter.refilter()
+        if not self.dont_reset:
+            self.reset_cursor()
 
     def on_task_treeview_button_press_event(self, treeview, event):
         if event.button == 3:
@@ -1839,7 +1884,29 @@ class TaskBrowser:
             count = count + 1 + self._count_subtask(model, c)
             c     = model.iter_next(c)
         return count
-
+    
+    def reset_cursor(self):
+        """ Returns the cursor to the tag that was selected prior
+            to any right click action. Should be used whenever we're done
+            working with any tag through a right click menu action.
+            """
+        if self.tag_active:
+            self.tag_active = False
+            path, col = self.previous_cursor
+            self.tags_tv.set_cursor(path, col, 0)
+                
+    def set_target_cursor(self):
+        """ Selects the last tag to be right clicked. 
+        
+            We need this because the context menu will deactivate
+            (and in turn, call reset_cursor()) before, for example, the color
+            picker dialog begins. Should be used at the beginning of any tag
+            editing function to remind the user which tag they're working with.
+            """
+        if not self.tag_active:
+            self.tag_active = True
+            path, col = self.target_cursor
+            self.tags_tv.set_cursor(path, col, 0)
 
 ### MAIN ######################################################################
 #

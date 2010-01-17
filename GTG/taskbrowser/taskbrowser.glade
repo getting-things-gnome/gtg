@@ -762,6 +762,7 @@ Deleting a task cannot be undone, and will delete the following tasks: </propert
   <object class="GtkMenu" id="TagContextMenu">
     <property name="visible">True</property>
     <property name="no_show_all">True</property>
+    <signal name="deactivate" handler="on_tagcontext_deactivate"/>
     <child>
       <object class="GtkImageMenuItem" id="colorchooser">
         <property name="label">gtk-select-color</property>
