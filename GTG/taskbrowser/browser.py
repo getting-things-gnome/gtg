@@ -1448,12 +1448,18 @@ class TaskBrowser:
             # I find the tasks that are going to be deleted
             tasks = []
             for tid in self.tids_todelete:
+                def recursive_list_tasks(task_list, root):
+                    """Populate a list of all the subtasks and 
+                       their children, recursively"""
+                    if root not in task_list:
+                        task_list.append(root)
+                        for i in root.get_subtasks():
+                            recursive_list_tasks(task_list, i)
                 task = self.req.get_task(tid)
-                for i in task.get_self_and_all_subtasks():
-                    if i not in tasks: tasks.append(i)
+                recursive_list_tasks(tasks, task)
             titles_list = [task.get_title() for task in tasks]
             titles = reduce (lambda x, y: x + "\n - " + y, titles_list)
-            label.set_text("%s %s" % (label_text, titles))
+            label.set_text("%s %s" % (label_text, "\n - " + titles))
             delete_dialog = self.builder.get_object("confirm_delete")
             delete_dialog.run()
             delete_dialog.hide()
@@ -1588,11 +1594,37 @@ class TaskBrowser:
 
         Changes the way the selected task is displayed.
         """
+        settings_done = {"label":     GnomeConfig.MARK_DONE,
+                         "tooltip":   GnomeConfig.MARK_DONE_TOOLTIP,
+                         "icon-name": "gtg-task-done"}
+        settings_undone = {"label":     GnomeConfig.MARK_UNDONE,
+                           "tooltip":   GnomeConfig.MARK_UNDONE_TOOLTIP,
+                           "icon-name": "gtg-task-undone"}
+        settings_dismiss = {"label":     GnomeConfig.MARK_DISMISS,
+                           "tooltip":   GnomeConfig.MARK_DISMISS_TOOLTIP,
+                           "icon-name": "gtg-task-dismiss"}
+        settings_undismiss = {"label":     GnomeConfig.MARK_UNDISMISS,
+                              "tooltip":   GnomeConfig.MARK_UNDISMISS_TOOLTIP,
+                              "icon-name": "gtg-task-undismiss"}
+
+        def update_button(button, settings): 
+            button.set_icon_name(settings["icon-name"])
+            button.set_label(settings["label"])
+            
+        def update_menu_item(menu_item, settings): 
+            image = gtk.image_new_from_icon_name(settings["icon-name"], 16)
+            image.set_pixel_size(16)
+            image.show()
+            menu_item.set_image(image)
+            menu_item.set_label(settings["label"])
+
         #We unselect all in the active task view
         #Only if something is selected in the closed task list
         #And we change the status of the Done/dismiss button
-        self.donebutton.set_icon_name("gtg-task-done")
-        self.dismissbutton.set_icon_name("gtg-task-dismiss")
+        update_button(self.donebutton, settings_done)
+        update_menu_item(self.mark_done_mi, settings_done)
+        update_button(self.dismissbutton, settings_dismiss)
+        update_menu_item(self.dismiss_mi, settings_dismiss)
         if selection.count_selected_rows() > 0:
             tid = self.get_selected_task(self.ctask_tv)
             task = self.req.get_task(tid)
@@ -1602,27 +1634,15 @@ class TaskBrowser:
                 self.builder.get_object(
                     "ctcm_mark_as_not_done").set_sensitive(False)
                 self.builder.get_object("ctcm_undismiss").set_sensitive(True)
-                self.dismissbutton.set_label(GnomeConfig.MARK_UNDISMISS)
-                self.dismissbutton.set_icon_name("gtg-task-undismiss")
-                self.dismissbutton.set_tooltip_text(
-                    GnomeConfig.MARK_UNDISMISS_TOOLTIP)
-                self.dismiss_mi.set_label(GnomeConfig.MARK_UNDISMISS)
-                self.donebutton.set_label(GnomeConfig.MARK_DONE)
-                self.donebutton.set_tooltip_text(GnomeConfig.MARK_DONE_TOOLTIP)
-                self.mark_done_mi.set_label(GnomeConfig.MARK_DONE)
+                update_button(self.dismissbutton, settings_undismiss)
+                update_menu_item(self.dismiss_mi, settings_undismiss)
             else:
                 self.builder.get_object(
                     "ctcm_mark_as_not_done").set_sensitive(True)
                 self.builder.get_object(
                     "ctcm_undismiss").set_sensitive(False)
-                self.donebutton.set_label(GnomeConfig.MARK_UNDONE)
-                self.donebutton.set_tooltip_text(
-                    GnomeConfig.MARK_UNDONE_TOOLTIP)
-                self.mark_done_mi.set_label(GnomeConfig.MARK_UNDONE)
-                self.dismissbutton.set_label(GnomeConfig.MARK_DISMISS)
-                self.dismissbutton.set_tooltip_text(
-                    GnomeConfig.MARK_DISMISS_TOOLTIP)
-                self.dismiss_mi.set_label(GnomeConfig.MARK_DISMISS)
+                update_button(self.donebutton, settings_undone)
+                update_menu_item(self.mark_done_mi, settings_undone)
         self.update_buttons_sensitivity()
 
     def on_task_cursor_changed(self, selection=None):
@@ -1702,7 +1722,8 @@ class TaskBrowser:
             if self.refresh_lock.acquire(False):
                 gobject.idle_add(self.general_refresh)
 
-    def update_buttons_sensitivity(self):
+    #using dummy parameters that are given by the signal
+    def update_buttons_sensitivity(self,a=None,b=None,c=None):
         enable = self.selection.count_selected_rows() + \
            self.closed_selection.count_selected_rows() > 0
         self.edit_mi.set_sensitive(enable)

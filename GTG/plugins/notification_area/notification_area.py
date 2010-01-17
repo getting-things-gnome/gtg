@@ -57,7 +57,6 @@ class NotificationArea:
         self.view_main_window.set_active(True)
         self.view_main_window.connect('activate', self.minimize, self.plugin_api)
         self.menu.append(self.view_main_window)
-        self.menu.append(gtk.SeparatorMenuItem())
         # menuItem = gtk.ImageMenuItem(gtk.STOCK_ABOUT)
         # menuItem.connect('activate', self.about, self.plugin_api)
         # self.menu.append(menuItem)
@@ -65,11 +64,19 @@ class NotificationArea:
         menuItem = gtk.ImageMenuItem(gtk.STOCK_QUIT)
         menuItem.connect('activate', self.exit, self.statusicon)
         self.menu.append(menuItem)
+        self.menu.append(gtk.SeparatorMenuItem())
+        menuItem = gtk.ImageMenuItem(gtk.STOCK_ADD)
+        menuItem.get_children()[0].set_label(_('Add _New Task'))
+        menuItem.connect('activate', self.open_task)
+        self.menu.append(menuItem)
+
         self.statusicon.connect('popup-menu', self.on_icon_popup, self.menu)
 
-    def open_task(self, widget, tid):
+    def open_task(self, widget, tid = None):
         """Opens a task in the TaskEditor, if it's not currently opened"""
         browser = self.plugin_api.get_browser()
+        if tid == None:
+            tid = self.plugin_api.get_requester().new_task().get_id()
         if browser:
             browser.open_task(tid)
 

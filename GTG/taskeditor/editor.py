@@ -332,7 +332,7 @@ class TaskEditor :
             tt = t.get_name()
             if not self.task.has_tags(tag_list=[t]) :
                 tag_count += 1
-                mi = gtk.MenuItem(label=tt)
+                mi = gtk.MenuItem(label=tt, use_underline=False)
                 mi.connect("activate",self.inserttag,tt)
                 mi.show()
                 menu.append(mi)
@@ -588,6 +588,8 @@ class TaskEditor :
             self.req.delete_task(tid)
         else:
             self.save()
+            for i in self.task.get_subtasks():
+                i.set_to_keep()
         self.closing(tid)
         
 ############# Private functions #################
