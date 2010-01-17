@@ -1,5 +1,6 @@
     * Restore closed tasks filtering by selected tag, fixes bug #498857
     * Temporary fix allowing to reset tag color by Matthew Rasmus
+    * Added the ability to add a tag from the right click menu in the task browser, by Matthew Rasmus.
 
 2009-12-11 Getting THings GNOME! 0.2
     * Bugs fixes from 0.1.9

@@ -148,7 +148,12 @@ class TaskBrowser:
         #Shared clipboard
         self.clipboard = clipboard.TaskClipboard(self.req)
         
+
         self.tag_active = False
+
+        #Autocompletion for Tags
+        self._init_tag_list()
+        self._init_tag_completion()
 
 ### INIT HELPER FUNCTIONS #####################################################
 #
@@ -304,6 +309,8 @@ class TaskBrowser:
 #                self.on_edit_note,
             "on_delete_task":
                 self.on_delete_task,
+            "on_add_new_tag":
+                self.on_add_new_tag,
             "on_mark_as_done":
                 self.on_mark_as_done,
             "on_dismiss_task":
@@ -320,6 +327,12 @@ class TaskBrowser:
                 self.on_delete_confirm,
             "on_delete_cancel":
                 lambda x: x.hide,
+            "on_addtag_confirm":
+                self.on_addtag_confirm,
+            "on_addtag_cancel":
+                lambda x: x.hide,
+            "on_tag_entry_key_press_event":
+                self.on_tag_entry_key_press_event,
             "on_add_subtask":
                 self.on_add_subtask,
             "on_colorchooser_activate":
@@ -482,6 +495,11 @@ class TaskBrowser:
 
         self.delete_mi = self.builder.get_object('delete_mi')
         
+        addtag_button = self.builder.get_object('tcm_addtag')
+        key, mod = gtk.accelerator_parse('<Control>t')
+        addtag_button.add_accelerator('activate', agr, key, mod, \
+            gtk.ACCEL_VISIBLE)
+        
     def _init_plugin_engine(self):
         # plugins - Init
         self.pengine = PluginEngine(GTG.PLUGIN_DIR)
@@ -523,6 +541,22 @@ class TaskBrowser:
             
             # initializes and activates each plugin (that is enabled)
             self.pengine.activatePlugins(self.plugins, self.p_apis)
+            
+    def _init_tag_list(self):
+        self.tag_list_model = gtk.ListStore(gobject.TYPE_STRING)
+        self.tag_list = self.req.get_all_tags()
+        for i in self.tag_list:
+            self.tag_list_model.append([i.get_name()[1:]])
+               
+    def _init_tag_completion(self):
+        #Initialize tag completion.
+        self.tag_completion = gtk.EntryCompletion()
+        self.tag_completion.set_model(self.tag_list_model)
+        self.tag_completion.set_text_column(0)
+        self.tag_completion.set_match_func(self.tag_match_func, 0)
+        self.tag_completion.set_inline_completion(True)
+        self.tag_completion.set_inline_selection(True)
+        self.tag_completion.set_popup_single_match(False)
 
 #    def _init_note_support(self):
 #        self.notes  = EXPERIMENTAL_NOTES
@@ -963,7 +997,33 @@ class TaskBrowser:
             if order == gtk.SORT_ASCENDING:
                 return cmp(t1_order, t2_order)
             else:
-                return cmp(t2_order, t1_order)            
+                return cmp(t2_order, t1_order)
+                
+    def tag_match_func(self, completion, key, iter, column):
+        model = completion.get_model()
+        text = model.get_value(iter, column)
+        if text:
+            # key is lowercase regardless of input, so text should be
+            # lowercase as well, otherwise we leave out all tags beginning
+            # with an uppercase letter.
+            text = text.lower()
+            # Exclude the special tags.
+            if text == "tg-tags-all" or text == "tg-tags-sep" or \
+               text =="tg-tags-none":
+                return False
+            # Are we typing the first letters of a tag?
+            elif text.startswith(key):
+                return True
+            else:
+                return False          
+            
+    def tag_list_refresh(self):
+        taglist = self.req.get_all_tags()
+        if not taglist == self.tag_list:
+            for i in taglist:
+                if i not in self.tag_list:
+                    self.tag_list_model.append([i.get_name()[1:]])
+            self.tag_list = taglist
 
 ### SIGNAL CALLBACKS ##########################################################
 # Typically, reaction to user input & interactions with the GUI
@@ -1452,7 +1512,84 @@ class TaskBrowser:
             return not self.tids_todelete
         else:
             return False
+    
+    def on_add_new_tag(self, widget=None, tid=None, tryagain = False):
+        if not tid:
+            self.tids_to_addtag = self.get_selected_tasks()
+        else:
+            self.tids_to_addtag = [tid]
 
+        if not self.tids_to_addtag == [None]:
+            tag_entry = self.builder.get_object("tag_entry")
+            apply_to_subtasks = self.builder.get_object("apply_to_subtasks")
+            # We don't want to reset the text entry and checkbox if we got
+            # sent back here after a warning.
+            if not tryagain:
+                tag_entry.set_text("NewTag")
+                apply_to_subtasks.set_active(False)
+                tag_entry.set_completion(self.tag_completion)
+            tag_entry.grab_focus()
+            addtag_dialog = self.builder.get_object("TaskAddTag")
+            addtag_dialog.run()
+            addtag_dialog.hide()
+            self.tids_to_addtag = None            
+        else:
+            return False
+    
+    def on_addtag_confirm(self, widget):
+        tag_entry = self.builder.get_object("tag_entry")
+        addtag_dialog = self.builder.get_object("TaskAddTag")
+        apply_to_subtasks = self.builder.get_object("apply_to_subtasks")
+        addtag_error = False
+        entry_text = tag_entry.get_text()
+        entry_text = [entry_text.strip()]
+        # Set up a warning message if the user leaves the text entry empty.
+        if not entry_text[0]:
+            error_message = "Please enter a tag name."
+            addtag_error = True
+ 
+        new_tags = []
+        if "," in entry_text[0]:
+            entry_text = entry_text[0].split(",")
+        # Remove extraneous whitespace, make sure none of the tags contain
+        # spaces, and, finally, place a "@" symbol in front of the tagname.
+        for tagname in entry_text:
+            tagname = tagname.strip()
+            if not addtag_error:
+                if " " in tagname:
+                    error_message = "Tag name must not contain spaces."
+                    addtag_error = True
+                    break
+            new_tags.append("@" + tagname)
+        # If we ran into a problem earlier, let us know, and then
+        # let us try again.
+        if addtag_error:
+            error_dialog = gtk.MessageDialog(None, 0, gtk.MESSAGE_WARNING, \
+                                            gtk.BUTTONS_OK, error_message)
+            if error_dialog.run():
+                error_dialog.destroy()
+                self.on_add_new_tag(tryagain = True)
+                return
+        # If the checkbox is checked, add all the subtasks to the list of
+        # tasks to add.
+        if apply_to_subtasks.get_active():
+            for tid in self.tids_to_addtag:
+                task = self.req.get_task(tid)
+                for i in task.get_self_and_all_subtasks():
+                    taskid = i.get_id()
+                    if taskid not in self.tids_to_addtag: 
+                        self.tids_to_addtag.append(taskid)        
+        
+        for tid in self.tids_to_addtag:
+            task = self.req.get_task(tid)
+            for new_tag in new_tags:
+                task.add_tag(new_tag)
+            task.sync()
+      
+    def on_tag_entry_key_press_event(self, widget, event):
+        if gtk.gdk.keyval_name(event.keyval) == "Return":
+            self.on_addtag_confirm()
+    
     def on_mark_as_done(self, widget):
         task_to_scroll_to = None
         tasks_uid = filter(lambda uid: uid != None, self.get_selected_tasks())
@@ -1651,6 +1788,7 @@ class TaskBrowser:
 #        self.tags_tv.refresh()
         self._update_window_title()
         self.refresh_lock.release()
+        self.tag_list_refresh()
 
 ### PUBLIC METHODS ############################################################
 #
