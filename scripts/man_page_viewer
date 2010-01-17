@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if [ ! $# -eq 1 ]; then 
+    echo "usage: $0 <man_file_path>"
+    exit 1
+fi
+if [ ! -x "`which groff`" ]; then
+    echo "please install groff"
+    exit 2
+fi
+
+groff -Tascii -man $1 | more

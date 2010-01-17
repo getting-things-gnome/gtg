@@ -1,7 +1,7 @@
 [GTG Plugin]
 Module=notification_area
 Name=Notification area
-Description="Displays GTG in the notification area.\nThe notification area supports minimizing and a small context menu.\n If you want to start GTG minimized,  click on the 'Preferences' button at the bottom of this window."
-Authors=Paulo Cabido <paulo.cabido@gmail.com>
-Version=0.1
+Description="Adds a GTG icon to the notification area, that keeps the list of the currently workable tasks.\n\nIf you want to start GTG minimized,  click on the 'Preferences' button at the bottom of this window."
+Authors="Paulo Cabido <paulo.cabido@gmail.com>, Luca Invernizzi <invernizzi.l@gmail.com>"
+Version=0.2
 Enabled=False

@@ -19,6 +19,7 @@ import sys
 import os
 
 from GTG.tools import openurl
+from GTG import _
 
 
 class NotificationArea:
@@ -26,68 +27,89 @@ class NotificationArea:
 
     DEFAULT_PREFERENCES = {"start_minimized": False}
     PLUGIN_NAME = "notification_area"
+    MAX_TITLE_LEN = 30
     
     def __init__(self):
         self.minimized = False
     
     def activate(self, plugin_api):
-        data_dir = plugin_api.get_data_dir()
         self.plugin_api = plugin_api
+        data_dir = plugin_api.get_data_dir()
+        #Create notification icon
         icon = gtk.gdk.pixbuf_new_from_file_at_size(data_dir + "/icons/hicolor/16x16/apps/gtg.png", 16, 16)
         if not hasattr(self,"statusicon"):
             self.statusicon = gtk.status_icon_new_from_pixbuf(icon)
             self.statusicon.set_tooltip("Getting Things Gnome!")
             self.statusicon.connect('activate', self.minimize, plugin_api)
         self.statusicon.set_visible(True)
-        menu = gtk.Menu()
-        
-        #path_image_new_task = data_dir + "/icons/hicolor/16x16/actions/gtg-task-new.png"
-        #pixbug_new_task = gtk.gdk.pixbuf_new_from_file_at_size(path_image_new_task,\
-        #                                                       16, 16)
-        #image_new_task = gtk.Image()
-        #image_new_task.set_from_pixbuf(pixbug_new_task)
-        #image_new_task.show()
-        #menuItem = gtk.ImageMenuItem("_New Task")
-        #menuItem.set_image(image_new_task)
-        ##menuItem.connect('activate', self.new_task)
-        #menu.append(menuItem)
-        self.view_main_window = gtk.CheckMenuItem("_View Main Window")
-        self.view_main_window.set_active(True)
-        self.view_main_window.connect('activate', self.minimize, plugin_api)
-        menu.append(self.view_main_window)
-        
-        menu.append(gtk.SeparatorMenuItem())
-        
-        
-        menuItem = gtk.ImageMenuItem(gtk.STOCK_ABOUT)
-        menuItem.connect('activate', self.about, plugin_api)
-        menu.append(menuItem)
-        
-        menu.append(gtk.SeparatorMenuItem())
-        
-        menuItem = gtk.ImageMenuItem(gtk.STOCK_QUIT)
-        menuItem.connect('activate', self.exit, self.statusicon)
-        menu.append(menuItem)
-        
-        self.statusicon.connect('popup-menu', self.on_icon_popup, menu)
-
-        self.builder = gtk.Builder()
-        self.builder.add_from_file(os.path.dirname(os.path.abspath(__file__)) +\
-                                   "/notification_area.ui")
-        self.preferences_dialog = self.builder.get_object("preferences_dialog")
-        self.chbox_miminized    = self.builder.get_object("pref_chbox_minimized")
-        SIGNAL_CONNECTIONS_DIC = {
-            "on_preferences_dialog_delete_event":
-                self.on_preferences_cancel,
-            "on_btn_preferences_cancel_clicked":
-                self.on_preferences_cancel,
-            "on_btn_preferences_ok_clicked":
-                self.on_preferences_ok
-        }
-        self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
+        #Create the  menu
+        self.create_static_menu()
+        self.tasks_in_menu = dict()
+        self.task_separator = None
+        #Load the preferences
+        self.preference_dialog_init()
         self.preferences_load()
         self.preferences_apply()
-        
+
+    def create_static_menu(self):
+        self.menu = gtk.Menu()
+        self.view_main_window = gtk.CheckMenuItem(_("_View Main Window"))
+        self.view_main_window.set_active(True)
+        self.view_main_window.connect('activate', self.minimize, self.plugin_api)
+        self.menu.append(self.view_main_window)
+        # menuItem = gtk.ImageMenuItem(gtk.STOCK_ABOUT)
+        # menuItem.connect('activate', self.about, self.plugin_api)
+        # self.menu.append(menuItem)
+        # self.menu.append(gtk.SeparatorMenuItem())
+        menuItem = gtk.ImageMenuItem(gtk.STOCK_QUIT)
+        menuItem.connect('activate', self.exit, self.statusicon)
+        self.menu.append(menuItem)
+        self.menu.append(gtk.SeparatorMenuItem())
+        menuItem = gtk.ImageMenuItem(gtk.STOCK_ADD)
+        menuItem.get_children()[0].set_label(_('Add _New Task'))
+        menuItem.connect('activate', self.open_task)
+        self.menu.append(menuItem)
+
+        self.statusicon.connect('popup-menu', self.on_icon_popup, self.menu)
+
+    def open_task(self, widget, tid = None):
+        """Opens a task in the TaskEditor, if it's not currently opened"""
+        browser = self.plugin_api.get_browser()
+        if tid == None:
+            tid = self.plugin_api.get_requester().new_task().get_id()
+        if browser:
+            browser.open_task(tid)
+
+    def add_menu_task(self, tid, task = None):
+        """Adds a task in the menu, trimming the title if necessary"""
+        if task == None:
+            task = self.plugin_api.get_task(tid)
+        title = task.get_title()[0:self.MAX_TITLE_LEN]
+        if len(title)== self.MAX_TITLE_LEN:
+            title = title + "..."
+        menu_item = gtk.ImageMenuItem(title)
+        menu_item.connect('activate', self.open_task, tid)
+        self.menu.append(menu_item)
+        self.tasks_in_menu[tid] = menu_item
+
+    def clear_menu(self):
+        if self.task_separator != None:
+            self.menu.remove(self.task_separator)
+            self.task_separator = None
+        for elem in self.tasks_in_menu.itervalues():
+            self.menu.remove(elem)
+        self.tasks_in_menu.clear()
+
+    def populate_menu(self):
+        """Populates the menu with the currently workable tasks"""
+        task_list = self.plugin_api.get_requester().get_active_tasks_list(\
+                                                    workable = True )
+        if len(task_list) > 0 and self.task_separator == None:
+            self.task_separator = gtk.SeparatorMenuItem()
+            self.menu.append(self.task_separator)
+        for tid in task_list:
+            self.add_menu_task(tid)
+
     def deactivate(self, plugin_api):
         self.statusicon.set_visible(False)
         self.plugin_api.get_browser().start_minimized = False
@@ -107,6 +129,11 @@ class NotificationArea:
         
     def on_icon_popup(self, icon, button, timestamp, menu=None):
         if menu:
+            #NOTE: the task list is regenerated each time the menu it's shown.
+            #      it could be kept updated with some kind of signaling
+            #      framework that GTG is currently lacking
+            self.clear_menu()
+            self.populate_menu()
             menu.show_all()
             menu.popup(None, None, gtk.status_icon_position_menu, button, timestamp, icon)
     
@@ -169,3 +196,19 @@ class NotificationArea:
                 self.plugin_api.get_browser().start_minimized = True
             else:
                 self.plugin_api.get_browser().start_minimized = False
+
+    def preference_dialog_init(self): 
+        self.builder = gtk.Builder()
+        self.builder.add_from_file(os.path.dirname(os.path.abspath(__file__)) +\
+                                   "/notification_area.ui")
+        self.preferences_dialog = self.builder.get_object("preferences_dialog")
+        self.chbox_miminized    = self.builder.get_object("pref_chbox_minimized")
+        SIGNAL_CONNECTIONS_DIC = {
+            "on_preferences_dialog_delete_event":
+                self.on_preferences_cancel,
+            "on_btn_preferences_cancel_clicked":
+                self.on_preferences_cancel,
+            "on_btn_preferences_ok_clicked":
+                self.on_preferences_ok
+        }
+        self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)

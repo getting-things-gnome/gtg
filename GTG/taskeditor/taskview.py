@@ -995,19 +995,23 @@ class TaskView(gtk.TextView):
         #else, that we can empty it.
         our_paste = self.clipboard.paste_text()
         if our_paste != None and clip.wait_for_text() == our_paste :
-            #we handle ourselves the pasting
-            self.stop_emission("paste_clipboard")
+            #first, we delete the current selection
+            self.buff.delete_selection(False,True)
             for line in self.clipboard.paste():
                 if line[0] == 'text':
                     self.buff.insert_at_cursor(line[1])
-                elif line[0] == 'subtask':
-                    self.new_subtask_callback(tid=line[1])
+                if line[0] == 'subtask':
+                    tid=line[1]
+                    self.new_subtask_callback(tid=tid)
                     mark = self.buff.get_insert()
                     line_nbr = self.buff.get_iter_at_mark(mark).get_line()
                     #we must paste the \n before inserting the subtask
                     #else, we will start another subtask
                     self.buff.insert_at_cursor("\n")
-                    self.write_subtask(self.buff,line_nbr,line[1])
+                    self.write_subtask(self.buff,line_nbr,tid)
+
+            #we handle ourselves the pasting
+            self.stop_emission("paste_clipboard")
 
         else:
             #we keep the normal pasting by not interupting the signal
@@ -1066,6 +1070,13 @@ class TaskView(gtk.TextView):
                 #Because it's the title
                 if line_nbr > 0 :
                     line = start_line.get_slice(end_line)
+                    #the part after the enter
+                    realend = end_line.copy()
+                    restofline = None
+                    if not realend.ends_line():
+                        realend.forward_to_line_end()
+                        restofline = end_line.get_slice(realend)
+                        restofline.strip()
                     
                     #If indent is 0, We check if we created a new task
                     #the "-" might be after a space
@@ -1075,7 +1086,17 @@ class TaskView(gtk.TextView):
                             line = line.lstrip(' -')
                             end_i = self.__newsubtask(self.buff,line,line_nbr)
                             #Here, we should increment indent level
-                            self.insert_indent(self.buff,end_i,1,enter=True)
+                            #If we inserted enter in the middle of a line
+                            if restofline and restofline.strip() != "" :
+                                #it means we have two subtask to create
+                                if self.buff.get_line_count() > line_nbr+1:
+                                    #but don't merge with the next line
+                                    itera = self.buff.get_iter_at_line(line_nbr+1)
+                                    self.buff.insert(itera,"\n\n")
+                                self.__newsubtask(self.buff,restofline,\
+                                                            line_nbr+1)
+                            else:
+                                self.insert_indent(self.buff,end_i,1,enter=True)
                             tv.emit_stop_by_name('insert-text')
                         else :
                             self.buff.insert(itera,"\n")
