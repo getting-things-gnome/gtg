@@ -862,13 +862,13 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
       </object>
     </child>
     <child>
-      <object class="GtkImageMenuItem" id="tcm_defer_to_menu">
-        <property name="label" translatable="yes">De_fer to...</property>
+      <object class="GtkImageMenuItem" id="tcm_schedule_menu">
+        <property name="label" translatable="yes">_Schedule for...</property>
         <property name="visible">True</property>
-        <property name="submenu">DeferToContextMenu</property>
+        <property name="submenu">ScheduleForContextMenu</property>
         <property name="use_underline">True</property>
         <property name="use_stock">False</property>
-        <signal name="activate" handler="on_defer_to_menu"/>
+        <signal name="activate" handler="on_schedule_for_menu"/>
       </object>
     </child>
     <child>
@@ -904,7 +904,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
       </object>
     </child>
   </object>
-  <object class="GtkMenu" id="DeferToContextMenu">
+  <object class="GtkMenu" id="ScheduleForContextMenu">
     <property name="visible">True</property>
     <child>
       <object class="GtkImageMenuItem" id="tcm_mark_as_started">
@@ -916,39 +916,39 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
       </object>
     </child>
     <child>
-      <object class="GtkImageMenuItem" id="tcm_defer_to_tomorrow">
+      <object class="GtkImageMenuItem" id="tcm_schedule_for_tomorrow">
         <property name="label" translatable="yes">_tomorrow</property>
         <property name="visible">True</property>
         <property name="use_underline">True</property>
         <property name="use_stock">False</property>
-        <signal name="activate" handler="on_defer_to_tomorrow"/>
+        <signal name="activate" handler="on_schedule_for_tomorrow"/>
       </object>
     </child>
     <child>
-      <object class="GtkImageMenuItem" id="tcm_defer_to_next_week">
+      <object class="GtkImageMenuItem" id="tcm_schedule_for_next_week">
         <property name="label" translatable="yes">next _week</property>
         <property name="visible">True</property>
         <property name="use_underline">True</property>
         <property name="use_stock">False</property>
-        <signal name="activate" handler="on_defer_to_next_week"/>
+        <signal name="activate" handler="on_schedule_for_next_week"/>
       </object>
     </child>
     <child>
-      <object class="GtkImageMenuItem" id="tcm_defer_to_next_month">
+      <object class="GtkImageMenuItem" id="tcm_schedule_for_next_month">
         <property name="label" translatable="yes">next _month</property>
         <property name="visible">True</property>
         <property name="use_underline">True</property>
         <property name="use_stock">False</property>
-        <signal name="activate" handler="on_defer_to_next_month"/>
+        <signal name="activate" handler="on_schedule_for_next_month"/>
       </object>
     </child>
     <child>
-      <object class="GtkImageMenuItem" id="tcm_defer_to_next_year">
+      <object class="GtkImageMenuItem" id="tcm_schedule_for_next_year">
         <property name="label" translatable="yes">next _year</property>
         <property name="visible">True</property>
         <property name="use_underline">True</property>
         <property name="use_stock">False</property>
-        <signal name="activate" handler="on_defer_to_next_year"/>
+        <signal name="activate" handler="on_schedule_for_next_year"/>
       </object>
     </child>
   </object>

@@ -307,14 +307,14 @@ class TaskBrowser:
                 self.on_mark_as_done,
             "on_mark_as_started":
                 self.on_mark_as_started,
-            "on_defer_to_tomorrow":
-                self.on_defer_to_tomorrow,
-            "on_defer_to_next_week":
-                self.on_defer_to_next_week,
-            "on_defer_to_next_month":
-                self.on_defer_to_next_month,
-            "on_defer_to_next_year":
-                self.on_defer_to_next_year,
+            "on_schedule_for_tomorrow":
+                self.on_schedule_for_tomorrow,
+            "on_schedule_for_next_week":
+                self.on_schedule_for_next_week,
+            "on_schedule_for_next_month":
+                self.on_schedule_for_next_month,
+            "on_schedule_for_next_year":
+                self.on_schedule_for_next_year,
             "on_dismiss_task":
                 self.on_dismiss_task,
             "on_delete":
@@ -1441,16 +1441,16 @@ class TaskBrowser:
     def on_mark_as_started(self, widget):
         self.update_start_date(widget, "today")
 
-    def on_defer_to_tomorrow(self, widget):
+    def on_schedule_for_tomorrow(self, widget):
         self.update_start_date(widget, "tomorrow")
 
-    def on_defer_to_next_week(self, widget):
+    def on_schedule_for_next_week(self, widget):
         self.update_start_date(widget, "next week")
 
-    def on_defer_to_next_month(self, widget):
+    def on_schedule_for_next_month(self, widget):
         self.update_start_date(widget, "next month")
 
-    def on_defer_to_next_year(self, widget):
+    def on_schedule_for_next_year(self, widget):
         self.update_start_date(widget, "next year")
 
     def on_mark_as_done(self, widget):
