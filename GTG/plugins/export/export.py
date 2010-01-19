@@ -259,6 +259,9 @@ class pluginExport:
             tids_list = requester.get_tasks_list(status = ["Done", "Dismissed"])
             tids_set = set(tids_list)
             tasks_list = []
+            #Creating the task list with all the root {"Done", "Dismissed"}
+            #tasks, that is all the tasks whose parents' status is not one of
+            #those, or which simply have no parent
             for tid in tids_list:
                 task = requester.get_task(tid)
                 if tids_set.isdisjoint(set(task.get_parents())):
