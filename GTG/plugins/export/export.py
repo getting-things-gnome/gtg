@@ -187,33 +187,39 @@ class pluginExport:
         self.export_template_filename = supposed_template
         return True
 
+    def task_to_TaskStr(self, task):
+        return self.TaskStr(task.get_title(),
+                           str(task.get_text()),
+                           [],
+                           task.get_status(),
+                           str(task.get_modified()),
+                           str(task.get_due_date()),
+                           str(task.get_start_date()),
+                           str(task.get_days_left()),
+                           str(task.get_closed_date()),
+                           map(lambda t: t.get_name(), task.get_tags()))
+
+    def is_task_in_timespan (self, task, days):
+        if not days:
+            return True
+        elif days < 0 and task.get_closed_date():
+            age = task.get_closed_date().days_left() * (-1)
+            if age <= days*(-1):
+                return True
+        elif days > 0 and task.get_days_left() <= days:
+            return True
+        return False
+
     def treemodel_to_TaskStr(self, model, task_iter, days=None):
         tasks_str = []
         while task_iter:
             task = model.get_value(task_iter, 1) # tagtree.COL_OBJ)
-
-            task_str = self.TaskStr(task.get_title(),
-                               str(task.get_text()),
-                               [],
-                               task.get_status(),
-                               str(task.get_modified()),
-                               str(task.get_due_date()),
-                               str(task.get_start_date()),
-                               str(task.get_days_left()),
-                               str(task.get_closed_date()),
-                               map(lambda t: t.get_name(), task.get_tags()))
+            task_str = self.task_to_TaskStr(task)
             if model.iter_has_child(task_iter):
                 task_str.subtasks = \
                     self.treemodel_to_TaskStr(model, model.iter_children(task_iter), days)
-
-            if not days:
-                tasks_str.append(task_str)
-            elif days < 0 and task.get_closed_date():
-                age = task.get_closed_date().days_left() * (-1)
-                if age <= days*(-1):
+            if self.is_task_in_timespan(task, days):
                     tasks_str.append(task_str)
-            elif days > 0 and task.get_days_left() <= days:
-                tasks_str.append(task_str)
 
             task_iter = model.iter_next(task_iter)
         return tasks_str
@@ -221,28 +227,13 @@ class pluginExport:
     def taskslist_to_TaskStr(self, tasks_list, days=None):
         tasks_str = []
         for task in tasks_list:
-            task_str = self.TaskStr(task.get_title(),
-                               str(task.get_text()),
-                               [],
-                               task.get_status(),
-                               str(task.get_modified()),
-                               str(task.get_due_date()),
-                               str(task.get_start_date()),
-                               str(task.get_days_left()),
-                               str(task.get_closed_date()),
-                               map(lambda t: t.get_name(), task.get_tags()))
+            task_str = self.task_to_TaskStr(task)
             if task.has_subtasks():
                 requester = self.plugin_api.get_requester()
                 task_str.subtasks = self.taskslist_to_TaskStr(task.get_subtasks(), days)
-
-            if not days:
-                tasks_str.append(task_str)
-            elif days < 0 and task.get_closed_date():
-                age = task.get_closed_date().days_left() * (-1)
-                if age <= days*(-1):
+            if self.is_task_in_timespan(task, days):
                     tasks_str.append(task_str)
-            elif days > 0 and task.get_days_left() <= days:
-                tasks_str.append(task_str)
+
         return tasks_str
 
     def export_generate(self):
