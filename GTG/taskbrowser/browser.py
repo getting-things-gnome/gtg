@@ -494,6 +494,9 @@ class TaskBrowser:
             'activate', agr, key, mod, gtk.ACCEL_VISIBLE)
 
         self.delete_mi = self.builder.get_object('delete_mi')
+        key, mod = gtk.accelerator_parse('Cancel')
+        self.delete_mi.add_accelerator(
+            'activate', agr, key, mod, gtk.ACCEL_VISIBLE)
         
         addtag_button = self.builder.get_object('tcm_addtag')
         key, mod = gtk.accelerator_parse('<Control>t')
