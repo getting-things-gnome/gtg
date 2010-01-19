@@ -211,6 +211,11 @@ class pluginExport:
         return False
 
     def treemodel_to_TaskStr(self, model, task_iter, days=None):
+        """This function performs a depth-first tree visits on a treemodel 
+            using task_iter as root. For each node of the tree it encounters,
+            it generates a TaskStr object and returns that.
+            The resulting TaskStr will be linked to its subtasks in the same
+            way as the treemodel, forming a tree"""
         tasks_str = []
         while task_iter:
             task = model.get_value(task_iter, 1) # tagtree.COL_OBJ)
@@ -218,6 +223,8 @@ class pluginExport:
             if model.iter_has_child(task_iter):
                 task_str.subtasks = \
                     self.treemodel_to_TaskStr(model, model.iter_children(task_iter), days)
+            #The task_str is added to the result only if it satisfies the time
+            # limit imposed with the @days parameter of this function
             if self.is_task_in_timespan(task, days):
                     tasks_str.append(task_str)
 
@@ -225,12 +232,20 @@ class pluginExport:
         return tasks_str
 
     def taskslist_to_TaskStr(self, tasks_list, days=None):
+        """This function performs several depth-first tree visits on a task_list 
+            using each task of the list as  root.
+            For each node of the tree it encounters, it generates a TaskStr 
+            object and returns that.
+            The resulting TaskStr will be linked to its subtasks in the same
+            way as the treemodel, forming a tree"""
         tasks_str = []
         for task in tasks_list:
             task_str = self.task_to_TaskStr(task)
             if task.has_subtasks():
                 requester = self.plugin_api.get_requester()
                 task_str.subtasks = self.taskslist_to_TaskStr(task.get_subtasks(), days)
+            #The task_str is added to the result only if it satisfies the time
+            # limit imposed with the @days parameter of this function
             if self.is_task_in_timespan(task, days):
                     tasks_str.append(task_str)
 
@@ -262,8 +277,6 @@ class pluginExport:
             else:
                 timespan = None
             tasks_str = self.taskslist_to_TaskStr(tasks_list, timespan)
-                
-
 
         self.export_document = str(Template (file = self.export_template_path,
                       searchList = [{ 'tasks': tasks_str}]))
