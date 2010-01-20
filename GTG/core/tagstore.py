@@ -211,18 +211,8 @@ class Tag(TreeNode):
     def get_name(self):
         """Return the name of the tag."""
         return self.get_attribute("name")
-        
-    def rename(self,newname):
-        old = self.get_name()
-        newname = saxutils.unescape(newname)
-        self.set_attribute("name",newname,internalrename=True)
-        for t in self.get_tasks():
-            ta = self.req.get_task(t)
-            ta.rename_tag(old,newname)
-            ta.sync()
-    
 
-    def set_attribute(self, att_name, att_value, internalrename=False):
+    def set_attribute(self, att_name, att_value):
         """Set an arbitrary attribute.
 
         This will call the C{save_cllbk} callback passed to the constructor.
@@ -231,7 +221,7 @@ class Tag(TreeNode):
         @param att_value: The value of the attribute. Will be converted to a
             string.
         """
-        if att_name == "name" and not internalrename:
+        if att_name == "name":
             # Warning : only the constructor can set the "name".
             #or the internalrename
             #

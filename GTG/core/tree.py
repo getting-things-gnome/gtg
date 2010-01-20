@@ -56,12 +56,6 @@ class Tree():
         node_list = self.nodes.get(id)
         node_list.remove(node)
         
-    def rename_node(self,oldid,newid):
-        node = self.get_node(oldid)
-        del self.nodes[oldid]
-        node.change_id(newid)
-        self.nodes[newid] = [node]
-
     #Why is this a list ? Only one node should be associated with an id
     #Having a list of nodes as a node is, at best, completely weird.
     #Lionel
