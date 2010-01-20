@@ -31,7 +31,9 @@ class Tree():
     def set_root(self, root):
         self.root = root
 
-    def add_node(self, id, node, parent):
+    #We add a node. By default, it's a child of the root
+    def add_node(self, id, node, parent=None):
+        #print "*************adding node %s %s %s" %(id, node, parent)
         if parent:
             node.set_parent(parent)
             parent.add_child(id, node)
@@ -53,12 +55,36 @@ class Tree():
             par.remove_child(node.get_id())
         node_list = self.nodes.get(id)
         node_list.remove(node)
+        
+    def rename_node(self,oldid,newid):
+        node = self.get_node(oldid)
+        del self.nodes[oldid]
+        node.change_id(newid)
+        self.nodes[newid] = [node]
 
+    #Why is this a list ? Only one node should be associated with an id
+    #Having a list of nodes as a node is, at best, completely weird.
+    #Lionel
     def get_nodes(self, id):
         if id in self.nodes:
             return list(self.nodes[id])
         else:
             return []
+            
+    #Trying to make a function that bypass the weirdiness of lists
+    def get_node(self,id):
+        if id in self.nodes and len(self.nodes[id]) > 0:
+            return self.nodes[id][0]
+        else:
+            return None
+            
+    def get_all_nodes(self):
+        li = []
+        for k in self.nodes.keys():
+            no = self.get_node(k)
+            if no:
+                li.append(no)
+        return li
 
     def has_node(self, id):
         return id in self.nodes.keys()
@@ -209,6 +235,15 @@ class TreeNode():
         child = self.children[idx]
         self.ids.remove(id)
         self.children.remove(child)
+        
+    def change_id(self,newid):
+        oldid = self.id
+        self.id = newid
+        if self.parent:
+            self.parent.remove_child(oldid)
+            self.parent.add_child(newid,self)
+        for c in self.get_children():
+            c.set_parent(newid)
         
     def reparent(self, parent):
         if self.has_parent():

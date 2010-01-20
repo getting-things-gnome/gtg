@@ -39,7 +39,6 @@ class TagStore:
         self.req = requester
         self.tree = Tree()
         self.tags={}
-        self.root = self.tree.get_root()
         self.filename = os.path.join(CoreConfig.DATA_DIR, XMLFILE)
         doc, self.xmlstore = cleanxml.openxmlfile(self.filename,
             XMLROOT) #pylint: disable-msg=W0612
@@ -79,34 +78,35 @@ class TagStore:
         with corresponding name"""
         #we create a new tag from a name
         tname = tagname.encode("UTF-8")
-        if tname not in self.tags:
+        #if tname not in self.tags:
+        if not self.tree.has_node(tname):
             tag = Tag(tname, save_cllbk=self.save, req=self.req)
-            tag.reparent(self.root)
-            self.tags[tname] = tag
-            return tag
-        else:
-            return self.tags[tname]
+            self.tree.add_node(tname,tag)
+            #self.tags[tname] = tag
+        return self.tree.get_node(tname)
 
     def add_tag(self, tag):
         name = tag.get_name()
         #If tag does not exist in the store, we add it
-        if name not in self.tags:
-            tag.reparent(self.root)
-            self.tags[name] = tag
+        if not self.tree.has_node(name):
+            self.tree.add_node(name,tag)
+            #self.tags[name] = tag
         #else, we just take the attributes of the new tag
         #This allow us to keep attributes of the old tag
         #that might be not set in the new one
         else:
             atts = tag.get_all_attributes()
+            oldtag = self.tree.get_node(name)
             for att_name in atts:
                 val = tag.get_attribute(att_name)
                 if att_name != 'name' and val:
-                    self.tags[name].set_attribute(att_name, val)
+                    #self.tags[name].set_attribute(att_name, val)
+                    oldtag.set_attribute(att_name, val)
 
     def get_tag(self, tagname):
         if tagname[0] != "@":
             tagname = "@" + tagname
-        return self.tags.get(tagname, None)
+        return self.tree.get_node(tagname)
         
     def rename_tag(self, oldname, newname):
         if len(newname) > 0 and \
@@ -114,11 +114,25 @@ class TagStore:
             if newname[0] != "@":
                 newname = "@" + newname
             if newname != oldname and newname != None \
-                                  and newname not in self.tags:
-                self.tags[newname] = self.tags[oldname]
-                self.tags[newname].rename(newname)
-                del self.tags[oldname]
-
+                                  and not self.tree.has_node(newname):
+                                  
+                ntag = self.new_tag(newname)
+                otag = self.tree.get_node(oldname)
+                #copy attributes
+                for att in otag.get_all_attributes(butname=True):
+                    ntag.set_attribute(att,otag.get_attribute(att))
+                #restore position in tree
+                ntag.set_parent(otag.get_parent())
+                for ch in otag.get_children():
+                    tagchild = self.get_tag(ch)
+                    tagchild.reparent(ntag)
+                #copy tasks
+                for tid in otag.get_tasks():
+                    tas = self.req.get_task(tid)
+                    tas.rename_tag(oldname,newname)
+                #remove the old one
+                #self.tree.remove_node(oldname,otag)
+                
     def get_all_tags_name(self, attname=None, attvalue=None):
         """Return the name of all tags
         Optionally, if you pass the attname and attvalue argument, it will
@@ -126,7 +140,7 @@ class TagStore:
         excluding tags that don't have this attribute
         (except if attvalue is None)"""
         l = []
-        for t in self.tags.values():
+        for t in self.tree.get_all_nodes():
             if not attname:
                 l.append(t.get_name())
             elif t.get_attribute(attname) == attvalue:
@@ -135,7 +149,7 @@ class TagStore:
 
     def get_all_tags(self, attname=None, attvalue=None):
         l = []
-        for t in self.tags.values():
+        for t in self.tree.get_all_nodes():
             if not attname:
                 l.append(t)
             elif t.get_attribute(attname) == attvalue:
