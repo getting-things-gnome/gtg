@@ -261,15 +261,27 @@ class pluginExport:
         elif self.export_finished_last_week.get_active() or \
                         self.export_all_finished.get_active():
             #Export done tasks
-            requester = self.plugin_api.get_requester()
-            tids_list = requester.get_tasks_list(status = ["Done", "Dismissed"])
-            tids_set = set(tids_list)
-            tasks_list = []
-            #Creating the task list with all the root {"Done", "Dismissed"}
+            model = self.plugin_api.get_ctask_modelsort()
+            #Step 1:
+            # Generate the list of task_ids in the current browser view (if a
+            # tag is selected, only the closed task with that tag will be
+            #visible
+            task_iter = model.get_iter_first()
+            tids_list = []
+            while task_iter:
+                task = model.get_value(task_iter, 1) # tagtree.COL_OBJ)
+                task_iter = model.iter_next(task_iter)
+                tids_list.append(task.get_id())
+            #Step 2:
+            #Create the task list with all the root {"Done", "Dismissed"}
             #tasks, that is all the tasks whose parents' status is not one of
             #those, or which simply have no parent
-            for tid in tids_list:
-                task = requester.get_task(tid)
+            task_iter = model.get_iter_first()
+            tids_set = set(tids_list)
+            tasks_list = []
+            while task_iter:
+                task = model.get_value(task_iter, 1) # tagtree.COL_OBJ)
+                task_iter = model.iter_next(task_iter)
                 if tids_set.isdisjoint(set(task.get_parents())):
                     tasks_list.append(task)
             if self.export_finished_last_week.get_active():
