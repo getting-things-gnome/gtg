@@ -48,8 +48,9 @@ class pluginExport:
         self.tb_button = gtk.ToolButton(gtk.STOCK_PRINT)
         self.tb_button.connect('clicked', self.on_export)
         self.builder = gtk.Builder()
-        self.builder.add_from_file(os.path.dirname(os.path.abspath(__file__)) +\
-                                   "/export.ui")
+        self.builder.add_from_file(os.path.join(
+                                  os.path.dirname(os.path.abspath(__file__)) + \
+                                   "/export.ui"))
         self.export_dialog      = self.builder.get_object("export_dialog")
         self.export_combo_templ = self.builder.get_object("export_combo_templ")
         self.export_image       = self.builder.get_object("export_image")

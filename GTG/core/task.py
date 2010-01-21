@@ -19,6 +19,7 @@
 
 import xml.dom.minidom
 import uuid
+import xml.sax.saxutils as saxutils
 
 from GTG import _
 from GTG.tools.dates import date_today, no_date, Date
@@ -506,7 +507,9 @@ class Task:
         return list(self.tags)
         
     def rename_tag(self, old, new):
-        self.content = self.content.replace(old, new)
+        eold = saxutils.escape(saxutils.unescape(old))
+        enew = saxutils.escape(saxutils.unescape(new))
+        self.content = self.content.replace(eold, enew)
         self.remove_tag(old)
         self.tag_added(new)
 
@@ -519,7 +522,7 @@ class Task:
             self.tags.append(t)
             for child in self.get_subtasks():
                 if child.can_be_deleted:
-                    child.tag_added(tagname)
+                    child.add_tag(tagname)
             return True
     
     def add_tag(self, tagname):
