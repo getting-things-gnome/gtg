@@ -7,342 +7,44 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2009-12-09 16:32+0100\n"
+"POT-Creation-Date: 2010-01-18 00:09+0100\n"
 "PO-Revision-Date: 2009-12-05 07:28+0000\n"
 "Last-Translator: grofaty <Unknown>\n"
 "Language-Team: Slovenian <sl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2009-12-12 14:20+0000\n"
+"X-Launchpad-Export-Date: 2010-01-17 23:32+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
-#: GTG/taskbrowser/__init__.py:32 GTG/taskeditor/__init__.py:28
-msgid "Mark as done"
-msgstr "Opravilo kot opravljeno"
-
-#: GTG/taskbrowser/__init__.py:33
-msgid "Mark the selected task as done"
-msgstr "Označi izbrano opravilo kot opravljeno"
-
-#: GTG/taskbrowser/__init__.py:34 GTG/taskeditor/__init__.py:29
-msgid "Mark as not done"
-msgstr "Označi kot neopravljeno"
-
-#: GTG/taskbrowser/__init__.py:35 GTG/taskbrowser/__init__.py:39
-msgid "Mark the selected task as to be done"
+#: GTG/plugins/rtm_sync/rtm_sync.py:83 GTG/plugins/rtm_sync/rtm_sync.py:89
+msgid "Synchronize with RTM"
 msgstr ""
 
-#: GTG/taskbrowser/__init__.py:36 GTG/taskbrowser/taskbrowser.glade.h:13
-#: GTG/taskeditor/__init__.py:30 GTG/taskeditor/taskeditor.glade.h:4
-msgid "Dismiss"
-msgstr "Opusti"
-
-#: GTG/taskbrowser/__init__.py:37
-msgid "Mark the task as not to be done anymore"
+#: GTG/plugins/rtm_sync/rtm_sync.py:152
+msgid "Synchronization started"
 msgstr ""
 
-#: GTG/taskbrowser/__init__.py:38 GTG/taskeditor/__init__.py:31
-msgid "Undismiss"
-msgstr "Neopravljen"
-
-#: GTG/taskbrowser/__init__.py:40
-msgid "Permanently remove the selected task"
+#: GTG/plugins/rtm_sync/rtm_sync.py:165
+msgid "Trying to access, please stand by..."
 msgstr ""
 
-#: GTG/taskbrowser/__init__.py:41
-msgid "Edit the selected task"
+#: GTG/plugins/rtm_sync/rtm_sync.py:183
+msgid "Couldn't connect to Remember The Milk"
 msgstr ""
 
-#: GTG/taskbrowser/__init__.py:42 GTG/taskbrowser/taskbrowser.glade.h:10
-msgid "Create a new task"
-msgstr "Ustvari novo opravilo"
-
-#: GTG/taskbrowser/__init__.py:43
-msgid "Create a new subtask"
+#: GTG/plugins/rtm_sync/rtm_sync.py:197
+msgid "<b>Authentication failed</b>.Please retry."
 msgstr ""
 
-#: GTG/taskbrowser/__init__.py:44
-msgid "Toggle the work view"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:1
+#: GTG/plugins/rtm_sync/rtm_sync.py:202
 msgid ""
-"\n"
-"Getting Things Gnome! is an organizer for the GNOME desktop environment."
-msgstr ""
-"\n"
-"Getting Things Gnome! je organizator za GNOME namizno okolje."
-
-#: GTG/taskbrowser/taskbrowser.glade.h:3
-msgid ""
-"<span weight=\"bold\" size=\"large\">Are you sure you want delete this "
-"task?</span>\n"
-"\n"
-"Deleting a task cannot be undone, and will delete the following tasks: "
-msgstr ""
-"<span weight=\"bold\" size=\"large\">Ali si prepričan, da želiš brisati to "
-"opravilo?</span>\n"
-"\n"
-"Brisanje opravila ni mogoče preklicati, brisana bodo sledeča opravila: "
-
-#: GTG/taskbrowser/taskbrowser.glade.h:6
-msgid "About GTG!"
-msgstr "O GTG"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:7
-msgid "Add a subtask"
-msgstr "Dodaj podopravilo"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:8
-msgid "Confirm task deletion"
-msgstr "Potrdi brisanje opravila"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:9
-msgid "Copyrights&#xA9; 2008, 2009 Lionel Dricot, Bertrand Rousseau"
-msgstr "Copyrights&#xA9; 2008, 2009 Lionel Dricot, Bertrand Rousseau"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:11
-msgid "D_ismiss"
-msgstr "O_pustiti"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:12 GTG/taskeditor/taskeditor.glade.h:3
-msgid "Delete"
-msgstr "Zbriši"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:14
-msgid "Edit"
-msgstr "Uredi"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:15
-msgid "GTG website"
-msgstr "GTG spletna stran"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:16
-msgid "Getting Things Gnome!"
-msgstr "Getting Things Gnome!"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:17
-msgid ""
-"Getting Things Gnome! is free software; you can redistribute it and/or "
-"modify it under the terms of the GNU General Public License as published by "
-"the Free Software Foundation; either version 3 of the License, or (at your "
-"option) any later version.\n"
-"\n"
-"Getting Things Gnome! is distributed in the hope that it will be useful, but "
-"WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY "
-"or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
-"more details.\n"
-"\n"
-"You should have received a copy of the GNU General Public License along with "
-"Getting Things Gnome!; if not, write to the Free Software Foundation, Inc., "
-"51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA."
+"Please authenticate to Remember The Milk in the browser that is being opened "
+"now. When done, press OK"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:22
-msgid "Mark as Done"
-msgstr "Označi kot opravljeno"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:23
-msgid "Mark as Not Done"
-msgstr "Označi kot neopravljeno"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:24
-msgid "Mark as _Done"
-msgstr "Označi kot _Opravljeno"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:25
-msgid "New Note"
-msgstr "Nova opomba"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:26
-msgid "New Subtask"
-msgstr "Novo podopravilo"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:27
-msgid "New Task"
-msgstr "Novo opravilo"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:28
-msgid "New _Subtask"
-msgstr "Novo _podopravilo"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:29
-msgid "New _Task"
-msgstr "Novo _opravilo"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:30
-msgid "Permanently _remove task"
-msgstr "Trajno _odstrani opravilo"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:31
-msgid "Plugin _Preferences"
-msgstr "_Nastavitve dodatkov"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:32
-msgid "Redo"
-msgstr "Uveljavi"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:33
-msgid "T_oolbar"
-msgstr "_Orodna vrstica"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:34
-msgid "Tag is displayed in the workview"
-msgstr "Značka je prikazana v delovnem pogledu"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:35 GTG/taskbrowser/tagtree.py:303
-#: GTG/taskbrowser/tasktree.py:386 GTG/taskbrowser/tasktree.py:513
-msgid "Tags"
-msgstr "Značke"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:36
-msgid "Und_ismiss"
-msgstr "Odpokliči"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:37
-msgid "Undo"
-msgstr "Razveljavi"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:38
-msgid "View Notes"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:39
-msgid "Work View"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:40
-msgid "_Background Colors"
-msgstr "_Barve ozadnja"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:41
-msgid "_Closed Tasks Pane"
-msgstr ""
-
-#: GTG/taskbrowser/taskbrowser.glade.h:42
-msgid "_Edit"
-msgstr "_Uredi"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:43
-msgid "_Help"
-msgstr "_Pomoč"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:44
-msgid "_Keep selected task"
-msgstr "_Obdrži izbrano opravilo"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:45
-msgid "_Plugins"
-msgstr "_Vstavki"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:46
-msgid "_Quick Add Entry"
-msgstr "_Hitro dodajanje vpisa"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:47
-msgid "_Tags Sidebar"
-msgstr "Stranski palen _Značk"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:48
-msgid "_Tasks"
-msgstr "Opravila"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:49
-msgid "_View"
-msgstr "_Pogled"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:50
-msgid "_Work View"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:205
-msgid "All tasks"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:212
-msgid "Tasks with no tags"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:676
-msgid "(no active tasks)"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:678
-msgid "(1 active task)"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:680
-#, python-format
-msgid "(%s active tasks)"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:690
-msgid "monday"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:690
-msgid "tuesday"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:690
-msgid "wednesday"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:691
-msgid "thursday"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:691
-msgid "friday"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:691
-msgid "saturday"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:692
-msgid "sunday"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:701
-msgid "today"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:708
-msgid "tomorrow"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:1201
-msgid "tags"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:1201
-msgid "tag"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:1207
-msgid "defer"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:1212
-msgid "due"
-msgstr ""
-
-#: GTG/taskbrowser/tasktree.py:401 GTG/taskbrowser/tasktree.py:537
-msgid "Title"
-msgstr ""
-
-#: GTG/taskbrowser/tasktree.py:414
-msgid "Due date"
-msgstr ""
-
-#: GTG/taskbrowser/tasktree.py:426
-msgid "Days left"
-msgstr ""
-
-#: GTG/taskbrowser/tasktree.py:525
-msgid "Closing date"
+#: GTG/plugins/rtm_sync/gtk.glade.h:1
+msgid "Authentication"
 msgstr ""
 
 #: GTG/plugins/rtm_sync/syncengine.py:67
@@ -419,50 +121,8 @@ msgstr ""
 msgid "saving critical object failed"
 msgstr ""
 
-#: GTG/plugins/rtm_sync/rtm_sync.py:67 GTG/plugins/rtm_sync/rtm_sync.py:73
-msgid "Synchronize with RTM"
-msgstr ""
-
-#: GTG/plugins/rtm_sync/rtm_sync.py:148
-msgid "Synchronization started"
-msgstr ""
-
-#: GTG/plugins/rtm_sync/rtm_sync.py:161
-msgid "Trying to access, please stand by..."
-msgstr ""
-
-#: GTG/plugins/rtm_sync/rtm_sync.py:179
-msgid "Couldn't connect to Remember The Milk"
-msgstr ""
-
-#: GTG/plugins/rtm_sync/rtm_sync.py:193
-msgid "<b>Authentication failed</b>.Please retry."
-msgstr ""
-
-#: GTG/plugins/rtm_sync/rtm_sync.py:198
-msgid ""
-"Please authenticate to Remember The Milk in the browser that is being opened "
-"now. When done, press OK"
-msgstr ""
-
-#: GTG/plugins/rtm_sync/pyrtm/rtm.py:57
+#: GTG/plugins/rtm_sync/pyrtm/rtm.py:55
 msgid "Invalid state"
-msgstr ""
-
-#: GTG/plugins/rtm_sync/pyrtm/rtm.py:106
-msgid "API call failed"
-msgstr ""
-
-#: GTG/plugins/rtm_sync/gtk.glade.h:1
-msgid "Authentication"
-msgstr ""
-
-#: GTG/plugins/helloworld/hello_world.glade.h:1
-msgid "Hello World"
-msgstr ""
-
-#: GTG/plugins/helloworld/hello_world.glade.h:2
-msgid "Hello World Plugin"
 msgstr ""
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:1
@@ -507,16 +167,20 @@ msgstr ""
 msgid "Use network"
 msgstr ""
 
-#: GTG/plugins/export/export.py:191
-msgid "Template not found"
+#: GTG/plugins/notification_area/notification_area.py:56
+msgid "_View Main Window"
 msgstr ""
 
-#: GTG/plugins/export/export.py:192
-msgid "Can't load the template file"
+#: GTG/plugins/notification_area/notification_area.py:69
+msgid "Add _New Task"
 msgstr ""
 
-#: GTG/plugins/export/export.py:221
-msgid "Choose where to save your list"
+#: GTG/plugins/helloworld/hello_world.glade.h:1
+msgid "Hello World"
+msgstr ""
+
+#: GTG/plugins/helloworld/hello_world.glade.h:2
+msgid "Hello World Plugin"
 msgstr ""
 
 #: GTG/plugins/tomboy/tomboy.glade.h:1
@@ -532,20 +196,32 @@ msgid ""
 "Tomboy not found. Please install it or disable the Tomboy plugin in GTG"
 msgstr ""
 
-#: GTG/plugins/tomboy/tomboy.py:123
+#: GTG/plugins/tomboy/tomboy.py:125
 msgid "Add Tomboy note"
 msgstr ""
 
-#: GTG/plugins/tomboy/tomboy.py:219
+#: GTG/plugins/tomboy/tomboy.py:220
 msgid "That note does not exist!"
 msgstr ""
 
-#: GTG/plugins/tomboy/tomboy.py:224
+#: GTG/plugins/tomboy/tomboy.py:225
 msgid "That note does not exist. Do you want to create a new one?"
 msgstr ""
 
-#: GTG/plugins/tomboy/tomboy.py:250
+#: GTG/plugins/tomboy/tomboy.py:251
 msgid "This Tomboy note does not exist anymore. Do you want to create it?"
+msgstr ""
+
+#: GTG/plugins/export/export.py:213
+msgid "Template not found"
+msgstr ""
+
+#: GTG/plugins/export/export.py:214
+msgid "Can't load the template file"
+msgstr ""
+
+#: GTG/plugins/export/export.py:243
+msgid "Choose where to save your list"
 msgstr ""
 
 #: GTG/core/plugins/__init__.py:32
@@ -604,7 +280,7 @@ msgstr ""
 msgid "Version: "
 msgstr ""
 
-#: GTG/core/task.py:46
+#: GTG/core/task.py:47
 msgid "My new task"
 msgstr ""
 
@@ -809,17 +485,367 @@ msgid ""
 "your problem really quickly."
 msgstr ""
 
-#: GTG/tools/dates.py:95
-msgid "now"
-msgstr "sedaj"
+#: GTG/gtg.py:80
+msgid "gtg is already running!"
+msgstr ""
 
-#: GTG/tools/dates.py:97
-msgid "soon"
-msgstr "kmalu"
+#: GTG/taskbrowser/browser.py:212
+msgid "All tasks"
+msgstr ""
 
-#: GTG/tools/dates.py:99
-msgid "later"
-msgstr "kasneje"
+#: GTG/taskbrowser/browser.py:219
+msgid "Tasks with no tags"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:728
+msgid "no active tasks"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:730
+msgid "1 active task"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:732
+#, python-format
+msgid "%s active tasks"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:742
+msgid "monday"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:742
+msgid "tuesday"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:742
+msgid "wednesday"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:743
+msgid "thursday"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:743
+msgid "friday"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:743
+msgid "saturday"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:744
+msgid "sunday"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:753
+msgid "today"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:760
+msgid "tomorrow"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:1297
+msgid "tags"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:1297
+msgid "tag"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:1303
+msgid "defer"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:1308
+msgid "due"
+msgstr ""
+
+#: GTG/taskbrowser/__init__.py:32 GTG/taskeditor/__init__.py:28
+msgid "Mark as done"
+msgstr "Opravilo kot opravljeno"
+
+#: GTG/taskbrowser/__init__.py:33
+msgid "Mark the selected task as done"
+msgstr "Označi izbrano opravilo kot opravljeno"
+
+#: GTG/taskbrowser/__init__.py:34 GTG/taskeditor/__init__.py:29
+msgid "Mark as not done"
+msgstr "Označi kot neopravljeno"
+
+#: GTG/taskbrowser/__init__.py:35 GTG/taskbrowser/__init__.py:39
+msgid "Mark the selected task as to be done"
+msgstr ""
+
+#: GTG/taskbrowser/__init__.py:36 GTG/taskbrowser/taskbrowser.glade.h:18
+#: GTG/taskeditor/__init__.py:30 GTG/taskeditor/taskeditor.glade.h:4
+msgid "Dismiss"
+msgstr "Opusti"
+
+#: GTG/taskbrowser/__init__.py:37
+msgid "Mark the task as not to be done anymore"
+msgstr ""
+
+#: GTG/taskbrowser/__init__.py:38 GTG/taskeditor/__init__.py:31
+msgid "Undismiss"
+msgstr "Neopravljen"
+
+#: GTG/taskbrowser/__init__.py:40
+msgid "Permanently remove the selected task"
+msgstr ""
+
+#: GTG/taskbrowser/__init__.py:41
+msgid "Edit the selected task"
+msgstr ""
+
+#: GTG/taskbrowser/__init__.py:42 GTG/taskbrowser/taskbrowser.glade.h:15
+msgid "Create a new task"
+msgstr "Ustvari novo opravilo"
+
+#: GTG/taskbrowser/__init__.py:43
+msgid "Create a new subtask"
+msgstr ""
+
+#: GTG/taskbrowser/__init__.py:44
+msgid "Display only the currently actionable tasks"
+msgstr ""
+
+#: GTG/taskbrowser/tasktree.py:392 GTG/taskbrowser/tasktree.py:547
+#: GTG/taskbrowser/taskbrowser.glade.h:44 GTG/taskbrowser/tagtree.py:315
+msgid "Tags"
+msgstr "Značke"
+
+#: GTG/taskbrowser/tasktree.py:407 GTG/taskbrowser/tasktree.py:571
+msgid "Title"
+msgstr ""
+
+#: GTG/taskbrowser/tasktree.py:420
+msgid "Due date"
+msgstr ""
+
+#: GTG/taskbrowser/tasktree.py:432
+msgid "Days left"
+msgstr ""
+
+#: GTG/taskbrowser/tasktree.py:559
+msgid "Closing date"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:1
+msgid ""
+"\n"
+"Getting Things Gnome! is an organizer for the GNOME desktop environment."
+msgstr ""
+"\n"
+"Getting Things Gnome! je organizator za GNOME namizno okolje."
+
+#: GTG/taskbrowser/taskbrowser.glade.h:3
+msgid ""
+"<span weight=\"bold\" size=\"large\">Are you sure you want delete these "
+"tasks?</span>\n"
+"\n"
+"Deleting a task cannot be undone, and will delete the following tasks: "
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:6
+msgid "About GTG!"
+msgstr "O GTG"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:7
+msgid "Add Tag"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:8
+msgid "Add Tag..."
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:9
+msgid "Add a Tag..."
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:10
+msgid "Add a subtask"
+msgstr "Dodaj podopravilo"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:11
+msgid "Apply to subtasks"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:12
+msgid "Cancel"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:13
+msgid "Confirm task deletion"
+msgstr "Potrdi brisanje opravila"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:14
+msgid "Copyrights&#xA9; 2008, 2009 Lionel Dricot, Bertrand Rousseau"
+msgstr "Copyrights&#xA9; 2008, 2009 Lionel Dricot, Bertrand Rousseau"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:16
+msgid "D_ismiss"
+msgstr "O_pustiti"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:17 GTG/taskeditor/taskeditor.glade.h:3
+msgid "Delete"
+msgstr "Zbriši"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:19
+msgid "Edit"
+msgstr "Uredi"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:20
+msgid "Enter the name of the tag(s) you wish to add:"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:21
+msgid "GTG website"
+msgstr "GTG spletna stran"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:22
+msgid "Getting Things Gnome!"
+msgstr "Getting Things Gnome!"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:23
+msgid ""
+"Getting Things Gnome! is free software; you can redistribute it and/or "
+"modify it under the terms of the GNU General Public License as published by "
+"the Free Software Foundation; either version 3 of the License, or (at your "
+"option) any later version.\n"
+"\n"
+"Getting Things Gnome! is distributed in the hope that it will be useful, but "
+"WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY "
+"or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
+"more details.\n"
+"\n"
+"You should have received a copy of the GNU General Public License along with "
+"Getting Things Gnome!; if not, write to the Free Software Foundation, Inc., "
+"51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA."
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:28
+msgid ""
+"Hint: you can add several tags by separating them with\n"
+"commas."
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:30
+msgid "Mark as Done"
+msgstr "Označi kot opravljeno"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:31
+msgid "Mark as Not Done"
+msgstr "Označi kot neopravljeno"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:32
+msgid "Mark as _Done"
+msgstr "Označi kot _Opravljeno"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:33
+msgid "New Note"
+msgstr "Nova opomba"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:34
+msgid "New Subtask"
+msgstr "Novo podopravilo"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:35
+msgid "New Task"
+msgstr "Novo opravilo"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:36
+msgid "New _Subtask"
+msgstr "Novo _podopravilo"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:37
+msgid "New _Task"
+msgstr "Novo _opravilo"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:38
+msgid "Permanently _remove tasks"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:39
+msgid "Plugin _Preferences"
+msgstr "_Nastavitve dodatkov"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:40
+msgid "Redo"
+msgstr "Uveljavi"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:41
+msgid "T_oolbar"
+msgstr "_Orodna vrstica"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:42
+msgid "Tag is displayed in the workview"
+msgstr "Značka je prikazana v delovnem pogledu"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:43
+msgid "TagName"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:45
+msgid "Und_ismiss"
+msgstr "Odpokliči"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:46
+msgid "Undo"
+msgstr "Razveljavi"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:47
+msgid "View Notes"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:48
+msgid "Work View"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:49
+msgid "_Background Colors"
+msgstr "_Barve ozadnja"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:50
+msgid "_Closed Tasks Pane"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:51
+msgid "_Edit"
+msgstr "_Uredi"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:52
+msgid "_Help"
+msgstr "_Pomoč"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:53
+msgid "_Keep selected tasks"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:54
+msgid "_Plugins"
+msgstr "_Vstavki"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:55
+msgid "_Quick Add Entry"
+msgstr "_Hitro dodajanje vpisa"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:56
+msgid "_Tags Sidebar"
+msgstr "Stranski palen _Značk"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:57
+msgid "_Tasks"
+msgstr "Opravila"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:58
+msgid "_View"
+msgstr "_Pogled"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:59
+msgid "_Work View"
+msgstr ""
 
 #: GTG/taskeditor/__init__.py:32 GTG/taskeditor/taskeditor.glade.h:7
 msgid "Keep as Note"
@@ -911,6 +937,14 @@ msgstr "Do danes"
 msgid "Was %s days ago"
 msgstr "Pred %s dnevi"
 
-#: GTG/gtg.py:80
-msgid "gtg is already running!"
-msgstr ""
+#: GTG/tools/dates.py:95
+msgid "now"
+msgstr "sedaj"
+
+#: GTG/tools/dates.py:97
+msgid "soon"
+msgstr "kmalu"
+
+#: GTG/tools/dates.py:99
+msgid "later"
+msgstr "kasneje"

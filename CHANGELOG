@@ -1,7 +1,18 @@
+2009-12-11 Getting Things GNOME! 0.2.1
     * Restore closed tasks filtering by selected tag, fixes bug #498857
     * Temporary fix allowing to reset tag color by Matthew Rasmus
+    * Added the ability to add a tag from the right click menu in the task browser, by Matthew Rasmus.
+    * Better explanation of the "Work view" concept in documentation
+    * Multiple selection
+    * Tag renaming
+    * API clarifications
+    * Cut & Paste improvements
+    * Notification area plugin improvements
+    * Icons reflect action availability
+    * Misc. editor bug fixes
+    * Misc. tag list bug fixes
 
-2009-12-11 Getting THings GNOME! 0.2
+2009-12-11 Getting Things GNOME! 0.2
     * Bugs fixes from 0.1.9
 
 2009-12-02 Getting Things GNOME! 0.1.9
