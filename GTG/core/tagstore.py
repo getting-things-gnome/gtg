@@ -131,7 +131,7 @@ class TagStore:
                     tas = self.req.get_task(tid)
                     tas.rename_tag(oldname,newname)
                 #remove the old one
-                #self.tree.remove_node(oldname,otag)
+                self.tree.remove_node(oldname,otag)
                 
     def get_all_tags_name(self, attname=None, attvalue=None):
         """Return the name of all tags
