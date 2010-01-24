@@ -122,7 +122,9 @@ class TagStore:
                 for att in otag.get_all_attributes(butname=True):
                     ntag.set_attribute(att,otag.get_attribute(att))
                 #restore position in tree
-                ntag.set_parent(otag.get_parent())
+                if otag.has_parent():
+                    opar = otag.get_parent()
+                    ntag.reparent(opar)
                 for ch in otag.get_children():
                     tagchild = self.get_tag(ch)
                     tagchild.reparent(ntag)
