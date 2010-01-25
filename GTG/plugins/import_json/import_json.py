@@ -16,14 +16,25 @@
 
 # Imports JSON files with the following syntax:
 # {
-#  "my_name": {
-#   "done": [
-#   [ "task-id-name", "My Task", "Essential", "http://my.url/description1.html" ],
-#   [ "task2-id-name", "Task #2", "Medium", "http://my.url/description2.html" ]
-#   "postponed": [],
-#   "todo": []
+#  "specs": {
+#   "my-spec": {
+#    ...
+#    "work_items": [
+#     {
+#      "assignee": "john-doe",
+#      "date": "2010-01-23",
+#      "description": "Do something",
+#      "spec": "my-spec",
+#      "status": "todo"
+#     },
+#     ...
+#    ]
+#   },
+#   "another-spec": {
+#   ...
+#   },
+#   ...
 #  },
-#  "someone_else": { }
 # }
 
 import gtk
@@ -156,11 +167,18 @@ class pluginImportJson:
         # Convert to json
         self.json_tasks = json.loads(json_text)
 
-        # Pop up dialog allowing user to select username
+        # TODO:  Create listing of usernames available
         self.usernames = [ ]
-        for u in sorted(self.json_tasks):
-            if len(self.json_tasks[u]['todo']) > 0:
-                self.usernames.append(u)
+        for specname,spec in self.json_tasks['specs'].items():
+            for wi in spec['work_items']:
+                if wi['status'] != "todo":
+                    continue
+                if wi['assignee'] in self.usernames:
+                    continue
+                self.usernames.append(wi['assignee'])
+        self.usernames.sort()
+
+        # Pop up dialog allowing user to select username
         self.loadDialogSelectUsername()
         self.dialog.hide_all()
         self.dialog_select_username.run()
@@ -169,23 +187,23 @@ class pluginImportJson:
         username = self.usernames[self.select_username.get_active()]
         re_dehtml = re.compile(r'<.*?>')
 
-        for t in self.json_tasks[username]['todo']:
-            (category, title, priority, reference) = (t)
+        for specname,spec in self.json_tasks['specs'].items():
+            for wi in spec['work_items']:
+                if wi['assignee'] != username:
+                    continue
+                if wi['status'] != 'todo':
+                    continue
 
-            # Remove html <something> and </something>
-            title = re_dehtml.sub('', title)
-            reference = re_dehtml.sub('', reference)
-
-            # TODO:  Turn 'category' into a tag
-            # TODO:  Define pid from category?  Decide whether to do category as a tag or a project
-            task = self.plugin_api.get_requester().new_task(pid=None, tags=None, newtask=True)
-            task.set_title(title)
-            task.set_text(reference)
-            task.sync()
-
-            # TODO:  Set task.start_date, task.due_date, task.closed_date
-            # TODO:  Do something with the priority
-        # TODO:  Should completed tasks be imported too?
+                text = ""
+                if spec['details_url']:
+                    text = spec['details_url']
+                elif spec['url']:
+                    text = spec['url']
+                task = self.plugin_api.get_requester().new_task(pid=None, tags=None, newtask=True)
+                task.set_title(re_dehtml.sub('', wi['description']))
+                task.set_text(re_dehtml.sub('', text))
+                task.sync()
+                # TODO:  Do something with spec['priority']
 
         self.close_dialog_select_username(widget)
         self.close_dialog(widget)
