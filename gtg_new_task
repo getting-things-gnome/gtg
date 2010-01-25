@@ -24,10 +24,10 @@ This script create a new task and launch the editor to display it. GTG should be
 """
 
 
-
+import sys
 import dbus
 
-def get_task() :
+def get_task(title, body) :
     #We will connect on the session bus
     bus = dbus.SessionBus()
     liste = bus.list_names()
@@ -40,11 +40,13 @@ def get_task() :
     if busname :
         remote_object = bus.get_object(busname,"/org/GTG")
         timi = dbus.Interface(remote_object,dbus_interface="org.GTG")
-        #Calling the method
-        timi.open_new_task()
+        task = timi.new_task("Active", title, "", "", "", "", body, "")
+        timi.open_task_editor(task['id'])
+
     else:
         print "GTG not found on DBus. Are you sure GTG is started?"
         
-        
 if __name__ == '__main__':
-    get_task()
+    title = " ".join(sys.argv[1:])
+    body = sys.stdin.read()
+    get_task(title, body)
