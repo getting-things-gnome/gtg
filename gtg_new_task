@@ -23,9 +23,10 @@
 This script create a new task and launch the editor to display it. GTG should be running
 """
 
-
+import re
 import sys
 import dbus
+import cgi
 
 def get_task(title, body) :
     #We will connect on the session bus
@@ -40,13 +41,17 @@ def get_task(title, body) :
     if busname :
         remote_object = bus.get_object(busname,"/org/GTG")
         timi = dbus.Interface(remote_object,dbus_interface="org.GTG")
-        task = timi.new_task("Active", title, "", "", "", "", body, "")
-        timi.open_task_editor(task['id'])
+        task = timi.new_task("Active", title, "", "", "", "", "%s" %(body), "")
+#        timi.open_task_editor(task['id'])
 
     else:
         print "GTG not found on DBus. Are you sure GTG is started?"
         
 if __name__ == '__main__':
     title = " ".join(sys.argv[1:])
-    body = sys.stdin.read()
+    body = cgi.escape(sys.stdin.read())
+    subject_regex = re.compile("^Subject: (.*)$", re.M | re.I)
+    if subject_regex.search(body):
+        subject = subject_regex.findall(body)[0]
+        title = title + ": " + subject
     get_task(title, body)
