@@ -284,7 +284,8 @@ class pluginExport:
                 task = model.get_value(task_iter, 1) # tagtree.COL_OBJ)
                 task_iter = model.iter_next(task_iter)
                 if tids_set.isdisjoint(set(task.get_parents())):
-                    tasks_list.append(task)
+                    if task.get_status() == task.STA_DONE:
+                        tasks_list.append(task)
             if self.export_finished_last_week.get_active():
                 timespan = -7
             else:
