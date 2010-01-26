@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-26 21:08+0100\n"
+"POT-Creation-Date: 2010-01-26 22:36+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -494,68 +494,80 @@ msgstr ""
 msgid "Tasks with no tags"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:733
+#: GTG/taskbrowser/browser.py:744
 msgid "no active tasks"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:735
+#: GTG/taskbrowser/browser.py:746
 msgid "1 active task"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:737
+#: GTG/taskbrowser/browser.py:748
 #, python-format
 msgid "%s active tasks"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:747
+#: GTG/taskbrowser/browser.py:759
 msgid "monday"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:747
+#: GTG/taskbrowser/browser.py:759
 msgid "tuesday"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:747
+#: GTG/taskbrowser/browser.py:759
 msgid "wednesday"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:748
+#: GTG/taskbrowser/browser.py:760
 msgid "thursday"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:748
+#: GTG/taskbrowser/browser.py:760
 msgid "friday"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:748
+#: GTG/taskbrowser/browser.py:760
 msgid "saturday"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:749
+#: GTG/taskbrowser/browser.py:761
 msgid "sunday"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:758
+#: GTG/taskbrowser/browser.py:770
 msgid "today"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:765
+#: GTG/taskbrowser/browser.py:774
 msgid "tomorrow"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:1302
+#: GTG/taskbrowser/browser.py:778
+msgid "next week"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:782
+msgid "next month"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:786
+msgid "next year"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:1319
 msgid "tags"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:1302
+#: GTG/taskbrowser/browser.py:1319
 msgid "tag"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:1308
+#: GTG/taskbrowser/browser.py:1325
 msgid "defer"
 msgstr ""
 
-#: GTG/taskbrowser/browser.py:1313
+#: GTG/taskbrowser/browser.py:1330
 msgid "due"
 msgstr ""
 
@@ -608,24 +620,24 @@ msgstr ""
 msgid "Display only the currently actionable tasks"
 msgstr ""
 
-#: GTG/taskbrowser/tasktree.py:392 GTG/taskbrowser/tasktree.py:547
+#: GTG/taskbrowser/tasktree.py:396 GTG/taskbrowser/tasktree.py:563
 #: GTG/taskbrowser/taskbrowser.glade.h:44 GTG/taskbrowser/tagtree.py:315
 msgid "Tags"
 msgstr ""
 
-#: GTG/taskbrowser/tasktree.py:407 GTG/taskbrowser/tasktree.py:571
+#: GTG/taskbrowser/tasktree.py:411 GTG/taskbrowser/tasktree.py:587
 msgid "Title"
 msgstr ""
 
-#: GTG/taskbrowser/tasktree.py:420
+#: GTG/taskbrowser/tasktree.py:424
+msgid "Start date"
+msgstr ""
+
+#: GTG/taskbrowser/tasktree.py:436
 msgid "Due date"
 msgstr ""
 
-#: GTG/taskbrowser/tasktree.py:432
-msgid "Days left"
-msgstr ""
-
-#: GTG/taskbrowser/tasktree.py:559
+#: GTG/taskbrowser/tasktree.py:575
 msgid "Closing date"
 msgstr ""
 
@@ -827,19 +839,43 @@ msgid "_Quick Add Entry"
 msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:56
-msgid "_Tags Sidebar"
+msgid "_Schedule for..."
 msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:57
-msgid "_Tasks"
+msgid "_Tags Sidebar"
 msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:58
-msgid "_View"
+msgid "_Tasks"
 msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:59
+msgid "_View"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:60
 msgid "_Work View"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:61
+msgid "_tomorrow"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:62
+msgid "next _month"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:63
+msgid "next _week"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:64
+msgid "next _year"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:65
+msgid "t_oday"
 msgstr ""
 
 #: GTG/taskeditor/__init__.py:32 GTG/taskeditor/taskeditor.glade.h:7
