@@ -39,6 +39,8 @@ class PluginAPI:
                  builder,
                  requester,
                  taskview,
+                 ctask_modelsort,
+                 ctaskview,
                  task_modelsort,
                  filter_cbs,
                  tagpopup,
@@ -62,7 +64,9 @@ class PluginAPI:
         @param tagview: The tag view object.
         @param task: The current task (Only works with the task editor).
         @param textview: The task editor's text view (Only works with the task editor).  
-        @param task_modelsort: The browser current view.  
+        @param ctextview: The task editor's closed tasks text view (Only works with the task editor).  
+        @param task_modelsort: The browser's active task model.  
+        @param ctask_modelsort: The browser's closed task model.  
         """
         self.__window = window
         self.config = config
@@ -72,6 +76,9 @@ class PluginAPI:
         
         self.taskview = taskview
         self.task_modelsort = task_modelsort
+
+        self.ctaskview = taskview
+        self.ctask_modelsort = ctask_modelsort
         
         self.__tagpopup = tagpopup
         self.tagview = tagview
@@ -303,11 +310,25 @@ class PluginAPI:
         return self.taskview
 
     def get_task_modelsort(self):
-        """Returns the current browser view. 
+        """Returns the current Active task browser view. 
+        
+        @return: The gtk.TreeModelSort task object for visible active tasks.
+        """
+        return self.task_modelsort
+    
+    def get_taskview(self):
+        """Returns the closed task view object. 
         
         @return: The gtk.TreeView task view object.
         """
-        return self.task_modelsort
+        return self.ctaskview
+
+    def get_ctask_modelsort(self):
+        """Returns the current Done task browser view. 
+        
+        @return: The gtk.TreeModelSort task object for visible closed tasks.
+        """
+        return self.ctask_modelsort
     
     def get_selected_task(self):
         """Returns the selected task in the task view.

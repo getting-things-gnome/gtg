@@ -82,6 +82,11 @@ def openxmlfile(zefile,root ):
         print msg
         sys.exit(1)
 
+    except xml.parsers.expat.ExpatError, msg:
+        print "Error parsing XML file %s: %s" %(zefile, msg)
+        sys.exit(1)
+
+
 #Return a doc element with only one root element of the name "root"
 def emptydoc(root) :
     doc = xml.dom.minidom.Document()

@@ -517,6 +517,8 @@ class TaskBrowser:
                                     requester      = self.req,
                                     taskview       = self.task_tv,
                                     task_modelsort = self.task_modelsort,
+                                    ctaskview      = self.ctask_tv,
+                                    ctask_modelsort= self.ctask_modelsort,
                                     filter_cbs     = self.priv['filter_cbs'],
                                     tagpopup       = self.tagpopup,
                                     tagview        = self.tags_tv,
