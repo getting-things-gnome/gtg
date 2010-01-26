@@ -1,4 +1,5 @@
 2009-12-11 Getting Things GNOME! 0.2.1
+    * Schedule for context menu by Bryce Harrington
     * Improved export feature by Bryce Harrington and Luca Invernizzi
     * Restore closed tasks filtering by selected tag, fixes bug #498857
     * Temporary fix allowing to reset tag color by Matthew Rasmus
