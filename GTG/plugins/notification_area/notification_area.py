@@ -49,6 +49,7 @@ class NotificationArea:
         #Load the preferences
         self.preference_dialog_init()
         self.preferences_load()
+        self.minimized = self.preferences["start_minimized"]
         self.preferences_apply()
 
     def create_static_menu(self):
