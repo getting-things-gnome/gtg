@@ -38,6 +38,7 @@ COL_DLEFT     = 6
 COL_TAGS      = 7
 COL_LABEL     = 9
 COL_SDATE     = 10
+COL_DUE       = 11
 
 class TaskTreeModel(gtk.GenericTreeModel):
 
@@ -50,6 +51,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
         str,\
         str,\
         gobject.TYPE_PYOBJECT,\
+        str,\
         str,\
         str,\
         str)
@@ -116,6 +118,23 @@ class TaskTreeModel(gtk.GenericTreeModel):
             return str(task.get_start_date())
         elif column == COL_DDATE:
             return str(task.get_due_date())
+        elif column == COL_DUE:
+            dleft = task.get_days_left()
+            if not dleft:
+                return str(task.get_due_date())
+            if dleft == 1:
+                return _("Tomorrow")
+            if dleft == 0:
+                return _("Today")
+            if dleft == -1:
+                return _("Yesterday")
+            if dleft < -1:
+                return _("%s days ago") % str(abs(dleft))
+            if dleft > 1 and dleft <= 15:
+                return _("In %s days") % str(dleft)
+            else:
+                return str(task.get_due_date())
+
         elif column == COL_CDATE:
             return str(task.get_closed_date())
         elif column == COL_CDATE_STR:
@@ -430,17 +449,17 @@ class ActiveTaskTreeView(TaskTreeView):
         self.append_column(sdate_col)
         self.columns.insert(COL_SDATE, sdate_col)
 
-        # Due date column
+        # Due column
         ddate_col   = gtk.TreeViewColumn()
         render_text = gtk.CellRendererText()
-        ddate_col.set_title(_("Due date"))
+        ddate_col.set_title(_("Due"))
         ddate_col.pack_start(render_text, expand=False)
-        ddate_col.add_attribute(render_text, "markup", COL_DDATE)
+        ddate_col.add_attribute(render_text, "markup", COL_DUE)
         ddate_col.set_resizable(False)
         ddate_col.set_sort_column_id(COL_DDATE)
         ddate_col.set_cell_data_func(render_text, self._celldatafunction)
         self.append_column(ddate_col)
-        self.columns.insert(COL_DDATE, ddate_col)
+        self.columns.insert(COL_DUE, ddate_col)
 
         # days left
 #        dleft_col   = gtk.TreeViewColumn()
