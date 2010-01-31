@@ -141,6 +141,7 @@ setup(
     'GTG.plugins': [
         'bugzilla.gtg-plugin',
         'export.gtg-plugin',
+        'evolution-sync.gtg-plugin',
         'geolocalized-tasks.gtg-plugin',
         'hamster.gtg-plugin',
         'helloworld.gtg-plugin',

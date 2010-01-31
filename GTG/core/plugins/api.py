@@ -602,8 +602,9 @@ class PluginAPI:
 
 #=== file saving/loading ======================================================
 
-    def load_configuration_object(self, plugin_name, filename):
-        dirname = os.path.join(xdg_config_home, 'gtg/plugins', plugin_name)
+    def load_configuration_object(self, plugin_name, filename, \
+                                  basedir = xdg_config_home):
+        dirname = os.path.join(basedir, 'gtg/plugins', plugin_name)
         path = os.path.join(dirname, filename)
         if os.path.isdir(dirname):
             if os.path.isfile(path):
@@ -616,13 +617,10 @@ class PluginAPI:
         else:
             os.makedirs(dirname)
 
-    def save_configuration_object(self, plugin_name, filename, item, **kwargs):
-        dirname = os.path.join(xdg_config_home, 'gtg/plugins', plugin_name)
+    def save_configuration_object(self, plugin_name, filename, item, \
+                                 basedir = xdg_config_home):
+        dirname = os.path.join(basedir, 'gtg/plugins', plugin_name)
         path = os.path.join(dirname, filename)
-        try:
-            with open(path, 'wb') as file:
-                pickle.dump(item, file)
-        except:
-            if kwargs.get('critical', False):
-                raise Exception("saving critical object failed")
+        with open(path, 'wb') as file:
+             pickle.dump(item, file)
 
