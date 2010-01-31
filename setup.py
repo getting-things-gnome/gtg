@@ -129,6 +129,7 @@ setup(
     'GTG.plugins.export',
     'GTG.plugins.geolocalized_tasks',
     'GTG.plugins.hamster',
+    'GTG.plugins.evolution_sync',
     'GTG.plugins.helloworld',
     'GTG.plugins.rtm_sync',
     'GTG.plugins.notification_area',
