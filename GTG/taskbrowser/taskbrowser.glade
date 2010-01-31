@@ -775,7 +775,7 @@ Deleting a task cannot be undone, and will delete the following tasks: </propert
     </child>
     <child>
       <object class="GtkImageMenuItem" id="resetcolor">
-        <property name="label">Reset Color</property>
+        <property name="label" translatable="yes">Reset Color</property>
         <property name="visible">True</property>
         <property name="image">image2</property>
         <property name="use_stock">False</property>
