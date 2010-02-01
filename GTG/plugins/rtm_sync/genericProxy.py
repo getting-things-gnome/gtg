@@ -18,7 +18,17 @@ class GenericProxy(object):
 
     def __init__(self):
         super(GenericProxy, self).__init__()
-        self.task_list = []
+        self._tasks_list = []
+
+    def get_tasks_list(self):
+        return self._tasks_list
 
     def generateTaskList(self):
-        raise Exception()
+        raise NotImplementedError()
+
+    def create_new_task(self, title):
+        raise NotImplementedError()
+
+    def delete_task(self, task):
+        raise NotImplementedError()
+

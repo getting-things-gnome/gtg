@@ -27,7 +27,7 @@ from GTG import _
 # IMPORTANT This add's the plugin's path to python sys path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))+'/pyrtm')
-import syncengine
+import syncEngine
 
 
 class RtmSync:
@@ -94,7 +94,7 @@ class RtmSync:
         # plugin engine methods
     def activate(self, plugin_api):
         self.plugin_api = plugin_api
-        self.sync_engine = syncengine.SyncEngine(self)
+        self.sync_engine = syncEngine.SyncEngine(self)
         # add a menu item to the menu bar
         plugin_api.add_menu_item(self.menu_item)
 

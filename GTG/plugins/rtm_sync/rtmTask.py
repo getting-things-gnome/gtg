@@ -16,76 +16,19 @@
 import sys
 import os
 import xml.dom.minidom
+import datetime
+import time
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))+'/pyrtm')
-from utility import iso8601toTime, timeToIso8601, dateToIso8601,\
-                    timezone, text_strip_tags
-from GTG.tools.dates import NoDate as GtgNoDate,\
-                            FuzzyDate as GtgFuzzyDate,\
-                            strtodate as gtgstrtodate
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from genericTask import GenericTask
 
-
-class GenericTask(object):
-    """GenericTask is the abstract interface that represents a generic task.
-    GtgTask and RtmTask are the implementation of this"""
-
-    title = property(lambda self: self._get_title(),
-                     lambda self, arg: self._set_title(arg))
-
-    id = property(lambda self: self._get_id())
-    #NOTE: text is the task extended description (or notes
-    #      in rtm)
-    text = property(lambda self: self._get_text(),
-                     lambda self, arg: self._set_text(arg))
-
-    modified = property(lambda self: self._get_modified())
-
-    due_date = property(lambda self: self._get_due_date(),
-                     lambda self, arg: self._set_due_date(arg))
-
-    tags = property(lambda self: self._get_tags(),
-                     lambda self, arg: self._set_tags(arg))
-
-    def __str__(self):
-        return "Task " + self.title + "(" + self.id + ")"
-
-    def copy(self, task):
-        #NOTE: do not be fooled. Most of these variables are
-        #      properties.
-        carbon = self.title 
-        master = task.title
-        if carbon != master:
-            self.title = master
-        
-        #NOTE: please respect this order of text before tags.
-        #      tags have a side effect of cleaning up text,
-        #      it will be fixed in 0.3
-
-        #note:text sync disabled in 0.2
-        #carbon = self.text
-        #master = task.text
-        #if carbon != master:
-        #    self.text = master
-
-        #carbon = self.tags
-        #master = task.tags
-        #if carbon != master:
-        #    self.tags = master
-
-        carbon = self.due_date
-        master = task.due_date
-        if carbon != master:
-            self.due_date = master
-
-    #Interface specification that will be overwritten
-    # by the derived classes
-    def delete(self):
-        raise Exception()
 
 
 class RtmTask(GenericTask):
-
-    def __init__(self, task, list_id, taskseries_id, rtm, timeline, logger):
-        super(RtmTask, self).__init__()
+    
+    def __init__(self, task, list_id, taskseries_id, rtm, timeline, logger,
+                 proxy):
+        super(RtmTask, self).__init__(proxy)
         self.rtm = rtm
         self.timeline = timeline
         self.task = task
@@ -113,6 +56,27 @@ class RtmTask(GenericTask):
             return self.task.task.id
         else:
             return self.task.id
+
+    def _get_status(self):
+        if hasattr(self.task, 'task'):
+            return self.get_proxy()._rtm_to_gtg_status[self.task.task.completed\
+                                                      == ""]
+        else:
+            return self.get_proxy()._rtm_to_gtg_status[self.task.completed == ""]
+
+    def _set_status(self, gtg_status):
+        status = self.get_proxy()._gtg_to_rtm_status[gtg_status]
+        print "setting status"
+        if status == True:
+            self.rtm.tasks.uncomplete(timeline=self.timeline, \
+                                      list_id = self.list_id,\
+                                      taskseries_id = self.taskseries_id, \
+                                      task_id = self.id)
+        else:
+            self.rtm.tasks.complete(timeline=self.timeline, \
+                                      list_id = self.list_id,\
+                                      taskseries_id = self.taskseries_id, \
+                                      task_id = self.id)
 
     def _get_tags(self):
         if hasattr(self.task,"tags") and hasattr(self.task.tags, 'tag'):
@@ -188,16 +152,20 @@ class RtmTask(GenericTask):
     def _get_due_date(self):
         if hasattr(self.task,'task') and hasattr(self.task.task, 'due') and \
                 self.task.task.due != "":
-            return iso8601toTime(self.task.task.due) - timezone()
+            to_return = self.__time_rtm_to_datetime(self.task.task.due) 
+                    #   - datetime.timedelta(seconds = time.timezone)
+            return to_return.date()
         return None
 
     def _set_due_date(self, due):
-        if type(due) != type(None):
-            due_string = timeToIso8601(due + timezone())
+        if due != None:
+            due_string = self.__time_date_to_rtm(due + \
+                    datetime.timedelta(seconds = time.timezone))
             self.rtm.tasks.setDueDate(timeline=self.timeline, \
                                       list_id = self.list_id,\
                                       taskseries_id = self.taskseries_id, \
                                       task_id = self.id, \
+                                      parse = 1, \
                                       due=due_string)
         else:
             self.rtm.tasks.setDueDate(timeline=self.timeline, \
@@ -208,8 +176,8 @@ class RtmTask(GenericTask):
     def _get_modified(self):
         if not hasattr(self.task, 'modified') or self.task.modified == "":
             return None
-
-        return iso8601toTime(self.task.modified) - timezone()
+        return self.__time_rtm_to_datetime(self.task.modified) #\
+                #                + datetime.timedelta(time.timezone)
 
     def delete(self):
         self.rtm.tasks.delete(timeline = self.timeline, \
@@ -218,70 +186,23 @@ class RtmTask(GenericTask):
                               task_id = self.id)
 
 
-class GtgTask(GenericTask):
+    def __time_rtm_to_datetime(self, string):
+        #FIXME: need to handle time with TIMEZONES!
+        string = string.split('.')[0].split('Z')[0]
+        return datetime.datetime.strptime(string.split(".")[0], \
+                                          "%Y-%m-%dT%H:%M:%S")
 
-    def __init__(self, task, plugin_api, logger):
-        super(GtgTask, self).__init__()
-        self.task = task
-        self.plugin_api = plugin_api
-        self.logger = logger
+    def __time_rtm_to_date(self, string):
+        #FIXME: need to handle time with TIMEZONES!
+        string = string.split('.')[0].split('Z')[0]
+        return datetime.datetime.strptime(string.split(".")[0], "%Y-%m-%d")
 
-    def _get_title(self):
-        return self.task.get_title()
+    def __time_datetime_to_rtm(self, timeobject):
+        if timeobject == None:
+            return ""
+        return timeobject.strftime("%Y-%m-%dT%H:%M:%S")
 
-    def _set_title(self, title):
-        self.task.set_title(title)
-
-    def _get_id(self):
-        return self.task.get_uuid()
-
-    def _get_tags(self):
-        return self.task.get_tags()
-
-    def _set_tags(self, tags):
-        #NOTE: isn't there a better mode than removing all tags?
-        #      need to add function in GTG/core/task.py
-        old_tags = self.tags
-        for tag in old_tags:
-            try:
-                self.task.remove_tag(tag)
-            except:
-                if self.logger:
-                    self.logger.debug("remove tag from GTG failed!!!")
-        #moves the tags at the end of the text
-        self.text = "<content>" + text_strip_tags(self.text) + "\n" +\
-                reduce(lambda tags, tag: tags + ', @' + tag,[" "] + tags)[3:] +\
-                "</content>"
-        map(lambda tag: self.task.tag_added('@'+tag), tags)
-
-    def _get_text(self):
-        return self.task.get_text()
-
-    def _set_text(self, text):
-        self.task.set_text(text)
-
-    def _get_due_date(self):
-        due = self.task.get_due_date()
-        due_string = str(due)
-        if self.logger:
-            self.logger.debug("due_string |" + due_string + "|")
-        #TODO: Handle fuzzy dates
-        if due_string == "" or isinstance( due, GtgFuzzyDate):
-            return None
-        return iso8601toTime(due_string)
-
-    def _set_due_date(self, due):
-        if type(due) != None:
-            due_string = dateToIso8601(due)
-            self.task.set_due_date(gtgstrtodate(due_string))
-        else:
-            return GtgNoDate
-
-    def _get_modified(self):
-        modified = self.task.get_modified()
-        if modified == None or modified == "":
-            return None
-        return iso8601toTime(modified)
-
-    def delete(self):
-        self.plugin_api.get_requester().delete_task(self.task.get_id())
+    def __time_date_to_rtm(self, timeobject):
+        if timeobject == None:
+            return ""
+        return timeobject.strftime("%Y-%m-%d")
