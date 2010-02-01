@@ -31,20 +31,11 @@ def get_task() :
     #We will connect on the session bus
     bus = dbus.SessionBus()
     liste = bus.list_names()
-    busname = None
-    busgps = None
-    #We take the list of all buses actually available
-    for i in liste :
-        if i.startswith("org.GTG") :
-            busname = i
-    if busname :
-        remote_object = bus.get_object(busname,"/org/GTG")
-        timi = dbus.Interface(remote_object,dbus_interface="org.GTG")
-        #Calling the method
-        timi.open_new_task()
-    else:
-        print "GTG not found on DBus. Are you sure GTG is started?"
-        
+    busname = "org.GTG"
+    remote_object = bus.get_object(busname,"/org/GTG")
+    timi = dbus.Interface(remote_object,dbus_interface="org.GTG")
+    #Calling the method
+    timi.open_new_task()
         
 if __name__ == '__main__':
     get_task()
