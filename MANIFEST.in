@@ -8,6 +8,7 @@ include CHANGELOG
 include README
 include LICENSE
 include AUTHORS
+include org.GTG.service
 recursive-include data/icons *.png
 recursive-include data/icons *.svg
 include doc/*.1
