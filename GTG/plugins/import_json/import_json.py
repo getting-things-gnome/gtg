@@ -175,6 +175,8 @@ class pluginImportJson:
                     continue
                 if wi['assignee'] in self.usernames:
                     continue
+                if not wi['assignee']:
+                    continue
                 self.usernames.append(wi['assignee'])
         self.usernames.sort()
 
