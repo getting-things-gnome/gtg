@@ -39,8 +39,7 @@ class EvolutionProxy(GenericProxy):
         super(EvolutionProxy, self).__init__()
 
     def generateTaskList(self):
-        task_personal = filter (lambda source: source[0] == 'Personal',
-                                   evolution.ecal.list_task_sources())[0][1]
+        task_personal = evolution.ecal.list_task_sources()[0][1]
         self._evolution_tasks = evolution.ecal.open_calendar_source(task_personal,
                                    evolution.ecal.CAL_SOURCE_TYPE_TODO)
         self._gtg_to_evo_status = dict(zip(self.__GTG_STATUSES,
