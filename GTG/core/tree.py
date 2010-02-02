@@ -20,11 +20,13 @@
 class Tree():
 
     def __init__(self, root=None):
+        self.root_id = 'root'
         self.nodes = {}
         if root:
             self.root = root
         else:
-            self.root = TreeNode(id="root")
+            self.root = TreeNode(id=self.root_id)
+        self.root.set_tree(self)
 
     def __str__(self):
         return "<Tree: root = '%s'>" % (str(self.root))
@@ -49,6 +51,7 @@ class Tree():
 
     def set_root(self, root):
         self.root = root
+        self.root.set_tree(self)
 
     #We add a node. By default, it's a child of the root
     def add_node(self, node, parent=None):
@@ -79,6 +82,42 @@ class Tree():
         else:
             self.root.remove_child(id)
         self.nodes.pop(id)
+        
+    #create a new relationship between nodes if it doesn't already exist
+    #return False if nothing was done
+    def new_relationship(self,parent_id,child_id):
+        toreturn = False
+        p = self.get_node(parent_id)
+        c = self.get_node(child_id)
+        if p and c:
+            if not p.has_child(child_id):
+                p.add_child(c)
+                toreturn = True
+            if not c.has_parent(parent_id):
+                c.add_parent(p)
+                toreturn = True
+                #removing the root from the list of parent
+                if c.has_parent(self.root.get_id()):
+                    c.remove_parent(self.root.get_id())
+        return toreturn
+    
+    #break an existing relationship. The child is added to the root
+    #return False if the relationship didn't exist    
+    def break_relationship(self,parent_id,child_id):
+        toreturn = False
+        p = self.get_node(parent_id)
+        c = self.get_node(child_id)
+        if p and c :
+            if p.has_child(child_id):
+                p.remove_child(child_id)
+                toreturn = True
+            if c.has_parent(parent_id):
+                c.remove_parent(parent_id)
+                toreturn = True
+                #if no more parent left, adding to the root
+                if not c.has_parent():
+                    self.root.add_child(c)
+        return toreturn
             
     #Trying to make a function that bypass the weirdiness of lists
     def get_node(self,id):
@@ -200,17 +239,24 @@ class TreeNode():
 
     def get_id(self):
         return self.id
+        
+        
+##### Parents
 
-    def has_parent(self):
-        return len(self.parents) > 0
+    def has_parent(self,id=None):
+        if id:
+            return id in self.parents
+        else:
+            return len(self.parents) > 0
+            
 
     def get_parents(self):
         return self.parents
 
     def add_parent(self, par):
-        #TODO : multi parent intelligence
         id = par.get_id()
         self.parents.append(id)
+        self.tree.new_relationship(id,self.get_id())
     
     #set_parent means that we remove all other parents
     def set_parent(self,par):
@@ -220,12 +266,17 @@ class TreeNode():
             self.add_parent(par)
             
     def remove_parent(id):
-        #TODO : multi parent intelligence
         if id in self.parents():
             self.parents.pop(id)
+            self.tree.break_relationship(id,self.get_id())
+            
+###### Children
 
-    def has_child(self):
-        return len(self.children) != 0
+    def has_child(self,id=None):
+        if id :
+            return id in self.children
+        else:
+            return len(self.children) != 0
 
     def get_children(self):
         return list(self.children)
@@ -246,16 +297,15 @@ class TreeNode():
     def get_child_index(self, id):
         return self.children.index(id)
 
-    #passer 
     def add_child(self, child):
-    #TODO : multi parent intelligence
         id = child.get_id()
         self.children.append(id)
+        self.tree.new_relationship(self.get_id(),id)
 
     def remove_child(self, id):
-    #TODO : multi parent intelligence
         if id in self.children:
             self.children.remove(id)
+            self.tree.new_relationship(self.get_id(),id)
 
         
     def change_id(self,newid):
