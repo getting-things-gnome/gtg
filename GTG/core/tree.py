@@ -63,7 +63,6 @@ class Tree():
                 node.set_parent(parent)
                 parent.add_child(node)
             else:
-                #node.set_parent(self.root)
                 self.root.add_child(node)
             self.nodes[id] = node
 
@@ -186,7 +185,7 @@ class TreeNode():
     def __init__(self, id, tree=None, parent=None):
         self.parents   = []
         self.id       = id
-        self.ids      = []
+        self.children      = []
         self.tree = tree
         if parent:
             self.add_parent(parent)
@@ -209,55 +208,66 @@ class TreeNode():
         return self.parents
 
     def add_parent(self, par):
-        self.parents.append(par)
+        #TODO : multi parent intelligence
+        id = par.get_id()
+        self.parents.append(id)
     
     #set_parent means that we remove all other parents
     def set_parent(self,par):
         if par:
-            self.parents = [par]
+            for i in self.parents:
+                self.remove_parent(i)
+            self.add_parent(par)
+            
+    def remove_parent(id):
+        #TODO : multi parent intelligence
+        if id in self.parents():
+            self.parents.pop(id)
 
     def has_child(self):
-        return len(self.ids) != 0
+        return len(self.children) != 0
 
     def get_children(self):
-        return list(self.ids)
+        return list(self.children)
 
     def get_n_children(self):
-        return len(self.ids)
+        return len(self.children)
 
     def get_nth_child(self, index):
-        id = self.ids[index]
+        id = self.children[index]
         return self.tree.get_node(id)
-        
-        
-        ###########################
 
     def get_child(self, id):
-        if id in self.ids:
+        if id in self.children:
             return self.tree.get_node(id)
         else:
             return None
 
     def get_child_index(self, id):
-        return self.ids.index(id)
+        return self.children.index(id)
 
     #passer 
     def add_child(self, child):
+    #TODO : multi parent intelligence
         id = child.get_id()
-        self.ids.append(id)
+        self.children.append(id)
 
     def remove_child(self, id):
-        idx   = self.ids.index(id)
-        self.ids.remove(id)
+    #TODO : multi parent intelligence
+        if id in self.children:
+            self.children.remove(id)
+
         
     def change_id(self,newid):
         oldid = self.id
         self.id = newid
-        if self.parent:
-            self.parent.remove_child(oldid)
-            self.parent.add_child(newid,self)
+        for p in self.parents:
+            par = self.tree.get(p)
+            par.remove_child(oldid)
+            par.add_child(self)
         for c in self.get_children():
-            c.set_parent(newid)
+            c.add_parent(newid)
+            c.remove_parent(oldid)
         
 #    def reparent(self, parent):
 #        if self.has_parent():
