@@ -71,8 +71,9 @@ class TaskTreeModel(gtk.GenericTreeModel):
             for c_tid in task.get_subtask_tids():
                 if self.tree.has_node(c_tid):
                     c_task = self.req.get_task(c_tid)
-                    c_node = TreeNode(c_tid, c_task)
-                    self.tree.add_node(c_tid, c_node, node)
+                    #c_node = TreeNode(c_tid, c_task)
+                    c_node = c_task
+                    self.tree.add_node(c_task, parent=node)
                     c_node_path = self.tree.get_path_for_node(c_node)
                     #if c_node_path:
                         #c_node_iter = self.get_iter(c_node_path)
@@ -107,7 +108,9 @@ class TaskTreeModel(gtk.GenericTreeModel):
         if not node:
             return None
         else:
-            task = node.get_obj()
+            #FIXME. The Task is a TreeNode object but
+            #TreeNode is not recognized as a Task!
+            task = self.req.get_task(node.get_id())
         if   column == COL_TID:
             return task.get_id()
         elif column == COL_OBJ:
@@ -175,7 +178,8 @@ class TaskTreeModel(gtk.GenericTreeModel):
     def on_iter_next(self, rowref):
         #print "on_iter_next: %s" % (rowref)
         node        = self.tree.get_node_for_rowref(rowref)
-        parent_node = node.get_parent()
+        parent_id = node.get_parent()
+        parent_node = self.tree.get_node(parent_id)
         if parent_node:
             next_idx = parent_node.get_child_index(node.get_id()) + 1
             if parent_node.get_n_children()-1 < next_idx:
@@ -227,7 +231,8 @@ class TaskTreeModel(gtk.GenericTreeModel):
         #print "on_iter_parent: %s" % (rowref)
         node = self.tree.get_node_for_rowref(rowref)
         if node.has_parent():
-            parent = node.get_parent()
+            parent_id = node.get_parent()
+            parent = self.tree.get_node(parent_id)
             if parent == self.tree.get_root():
                 return None
             else:
@@ -236,23 +241,20 @@ class TaskTreeModel(gtk.GenericTreeModel):
             return None
 
     def update_task(self, tid):
-        nodes = []
-        # get the task
-        task = self.req.get_task(tid)
         # get the node and signal it's changed
-        nodes = self.tree.get_nodes(tid)
-        for my_node in nodes:
-            node_path = self.tree.get_path_for_node(my_node)
-            node_iter = self.get_iter(node_path)
-            self.row_changed(node_path, node_iter)
+        my_node = self.tree.get_node(tid)
+        node_path = self.tree.get_path_for_node(my_node)
+        node_iter = self.get_iter(node_path)
+        self.row_changed(node_path, node_iter)
         
     def add_task(self, tid):
         nodes = []
         # get the task
         task = self.req.get_task(tid)
         # insert the task in the tree (root)
-        my_node = TreeNode(tid, task)
-        self.tree.add_node(tid, my_node, None)
+        #TreeNode
+        my_node = task
+        self.tree.add_node(task)
         node_path = self.tree.get_path_for_node(my_node)
         node_iter = self.get_iter(node_path)
         self.row_inserted(node_path, node_iter)
@@ -267,14 +269,12 @@ class TaskTreeModel(gtk.GenericTreeModel):
                     #print " - %s: %s is not loaded." % (tid, par_tid)
                     continue
                 else:
-                    par_nodes = self.tree.get_nodes(par_tid)
-                    for par_node in par_nodes:
-                        my_node = TreeNode(tid, task)
-                        self.tree.add_node(tid, my_node, par_node)
-                        node_path = self.tree.get_path_for_node(my_node)
-                        node_iter = self.get_iter(node_path)
-                        self.row_inserted(node_path, node_iter)
-                        nodes.append(my_node)
+                    par_node = self.tree.get_node(par_tid)
+                    self.tree.add_node(task, parent=par_node)
+                    node_path = self.tree.get_path_for_node(task)
+                    node_iter = self.get_iter(node_path)
+                    self.row_inserted(node_path, node_iter)
+                    nodes.append(task)
         # has the task children?
         for node in nodes:
             self._add_all_subtasks(node, task)
@@ -285,14 +285,13 @@ class TaskTreeModel(gtk.GenericTreeModel):
 
     def remove_task(self, tid):
         # get the nodes
-        nodes = self.tree.get_nodes(tid)
+        node = self.tree.get_node(tid)
         removed = False
         # Remove every row of this task
-        for node in nodes:
-            node_path = self.tree.get_path_for_node(node)
-            self.tree.remove_node(tid, node)
-            self.row_deleted(node_path)
-            removed = True
+        node_path = self.tree.get_path_for_node(node)
+        self.tree.remove_node(tid)
+        self.row_deleted(node_path)
+        removed = True
         return removed
                     
     def move_task(self, parent, child):

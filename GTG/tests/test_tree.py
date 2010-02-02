@@ -33,12 +33,17 @@ class TestTree(unittest.TestCase):
         previous_node = None
         tree = Tree()
         while i <= nbr_of_nodes:
-            node_name = '%s@%s' %(i,i)
-            node = TreeNode(node_name)
-            if flat or not previous_node:
-                tree.add_node(node)
+            node_name1 = '%s@1' %(i)
+            node_name2 = '%s@%s' %(i,i)
+            node1 = TreeNode(node_name1)
+            tree.add_node(node1)
+            if previous_node and not flat:
+                node2 = TreeNode(node_name2)
+                tree.add_node(node2,parent=previous_node)
+                #previous_node.add_child(node)
+                previous_node = node2
             else:
-                previous_node.add_child(node)
+                previous_node = node1
             i+=1
         return tree
             
@@ -69,8 +74,23 @@ class TestTree(unittest.TestCase):
         flat = len(tree1.get_all_nodes())
         stair = len(tree2.get_all_nodes())
         self.assertEqual(4,flat)
-        self.assertEqual(4,stair)
+        #not flat have n + n - 1 nodes
+        self.assertEqual(7,stair)
         
+    def test_parent(self):
+        tree = self._build_tree(4,flat=False)
+        tree.print_tree()
+        mynode = tree.get_node('3@3')
+        self.assertEqual(True,mynode.has_parent())
+        p = mynode.get_parents()[0]
+        par = tree.get_node(p)
+        self.assertEqual('2@2',par.get_id())
+        
+    def test_get_path(self):
+        tree = self._build_tree(4,flat=False)
+        mynode = tree.get_node('2@2')
+        node_path = tree.get_path_for_node(mynode)
+        self.assertEqual("",node_path)
 
 #    def test_name_is_attribute(self):
 #        # The name of the tag is also stored as an attribute.

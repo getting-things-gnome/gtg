@@ -189,16 +189,22 @@ class Tree():
         if not node.has_parent():
             return ""
         else:
-            parent = node.get_parent()
+            #Fixme : no multi parent support here
+            parent_id = node.get_parent()
+            parent = self.get_node(parent_id)
             return self._rowref_for_node(parent) + "/" + str(node.get_id())
 
     def _path_for_node(self, node):
-        if not node.has_parent():
-            return ()
-        else:
-            parent = node.get_parent()
-            index  = parent.get_child_index(node.get_id())
-            return self._path_for_node(parent) + (index, )
+        if node: 
+            if not node.has_parent():
+                return ()
+            else:
+                #FIXME : no multiparent support here
+                parent_id = node.get_parent()
+                parent = self.get_node(parent_id)
+                index  = parent.get_child_index(node.get_id())
+                return self._path_for_node(parent) + (index, )
+        return None
 
     def _print_from_node(self, node, prefix=""):
         print prefix + node.id
@@ -248,10 +254,16 @@ class TreeNode():
             return id in self.parents
         else:
             return len(self.parents) > 0
-            
-
+    
+    #this one return only one parent.
+    #useful for tree where we know that there is only one
+    def get_parent(self):
+        if self.has_parent():
+            return self.parents[0]
+        else:
+            return None
     def get_parents(self):
-        return self.parents
+        return list(self.parents)
 
     def add_parent(self, par):
         id = par.get_id()

@@ -130,8 +130,8 @@ class TagTreeModel(gtk.GenericTreeModel):
     def on_iter_next(self, rowref):
         #print "on_iter_next: %s" % (rowref)
         node        = self.tree.get_node_for_rowref(rowref)
-        parent_node = node.get_parent()
-        if parent_node:
+        if node.has_parent():
+            parent_node = get_parents()[0]
             next_idx = parent_node.get_child_index(node.get_id()) + 1
             if parent_node.get_n_children()-1 < next_idx:
                 return None
@@ -185,9 +185,8 @@ class TagTreeModel(gtk.GenericTreeModel):
             return None
 
     def add_tag(self, tname, tag):
+        self.tree.add_node(tag)
         root      = self.tree.get_root()
-        root.add_child(tname, tag)
-        tag.set_parent(root)
         tag_index = root.get_child_index(tname)
         tag_path  = (tag_index, )
         tag_iter  = self.get_iter(tag_path)

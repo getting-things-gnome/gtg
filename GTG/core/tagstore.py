@@ -54,10 +54,10 @@ class TagStore(Tree):
                 at_val = t.getAttribute(at_name)
                 tag.set_attribute(at_name, at_val)
                 i += 1
-            parent = tag.get_attribute('parent')
-            if parent:
-                pnode=self.new_tag(parent)
-                tag.reparent(pnode, update_attr=False)
+#            parent = tag.get_attribute('parent')
+#            if parent:
+#                pnode=self.new_tag(parent)
+#                tag.reparent(pnode, update_attr=False)
 
         #Now we build special tags. Special tags are not
         #in the traditional tag list
@@ -124,10 +124,10 @@ class TagStore(Tree):
                 #restore position in tree
                 if otag.has_parent():
                     opar = otag.get_parent()
-                    ntag.reparent(opar)
+                    ntag.set_parent(opar)
                 for ch in otag.get_children():
                     tagchild = self.get_tag(ch)
-                    tagchild.reparent(ntag)
+                    tagchild.set_parent(ntag)
                 #copy tasks
                 for tid in otag.get_tasks():
                     tas = self.req.get_task(tid)
@@ -226,30 +226,47 @@ class Tag(TreeNode):
         if att_name == "name":
             # Warning : only the constructor can set the "name".
             #or the internalrename
-            #
-            # XXX: This should actually raise an exception, or warn, or
-            # something. The Zen of Python says "Errors should never pass
-            # silently." -- jml, 2009-07-17
-            return
-        # Attributes should all be strings.
-        val = unicode(str(att_value), "UTF-8")
-        self._attributes[att_name] = val
-        if self._save:
-            self._save()
+            #This should raise an exception : FIXME
+            #print "Error : The name of a tag cannot be manually set"
+            pass
+        elif att_name == "parent":
+            tree = self.get_tree()
+            par = tree.get_node(att_value)
+            if par:
+                self.add_parent(par)
+                self.attributes['parent'] = "We don't care about that value"
+        else:
+            # Attributes should all be strings.
+            val = unicode(str(att_value), "UTF-8")
+            self._attributes[att_name] = val
+            if self._save:
+                self._save()
 
     def get_attribute(self, att_name):
         """Get the attribute C{att_name}.
 
         Returns C{None} if there is no attribute matching C{att_name}.
         """
-        return self._attributes.get(att_name, None)
+        to_return = None
+        if att_name == 'parent':
+            if self.has_parent():
+                parlist = self.get_parents()
+                to_return = parlist.pop()
+                while len(parlist) > 0:
+                    to_return += ",%s" %parlist.pop()
+        else:
+            to_return = self._attributes.get(att_name, None)
+        return to_return
         
     def del_attribute(self, att_name):
         """Deletes the attribute C{att_name}.
         """
         if not att_name in self._attributes:
             return
-        del self._attributes[att_name]
+        elif att_name in ['name','parent']:
+            return
+        else:
+            del self._attributes[att_name]
         if self._save:
             self._save()            
 
@@ -263,20 +280,6 @@ class Tag(TreeNode):
         if butname:
             attributes.remove('name')
         return attributes
-
-    def reparent(self, parent, update_attr=True):
-        if update_attr:
-            if isinstance(parent, Tag):
-                self.set_attribute('parent', parent.get_name())
-            elif 'parent' in self._attributes:
-                del self._attributes['parent']
-        TreeNode.set_parent(self, parent)
-        
-    def all_children(self):
-        l = [self]
-        for i in self.get_children_objs():
-            l += i.all_children()
-        return l
 
     ### TASK relation ####      
     def add_task(self, tid):
