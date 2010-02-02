@@ -31,34 +31,56 @@ class Tree():
     def set_root(self, root):
         self.root = root
 
-    def add_node(self, id, node, parent):
-        if parent:
-            node.set_parent(parent)
-            parent.add_child(id, node)
+    #We add a node. By default, it's a child of the root
+    def add_node(self, node, parent=None):
+        #print "*************adding node %s %s" %(node, parent)
+        id = node.get_id()
+        if self.nodes.get(id):
+            print "Error : A node with this idea already exists"
         else:
-            node.set_parent(self.root)
-            self.root.add_child(id, node)
-        node_list = self.nodes.get(id)
-        if node_list:
-            node_list.append(node)
-        else:
-            self.nodes[id] = [node]
+            #We add the node
+            if parent:
+                node.set_parent(parent)
+                parent.add_child(node)
+            else:
+                node.set_parent(self.root)
+                self.root.add_child(node)
+            self.nodes[id] = node
 
-    def remove_node(self, id, node):
+    #this will remove a node and all his children
+    def remove_node(self, id):
         if node.has_child():
             for c_id in node.get_children():
-                self.remove_node(c_id, node.get_child(c_id))
+                self.remove_node(c_id)
         if node.has_parent():
             par = node.get_parent()
             par.remove_child(node.get_id())
         node_list = self.nodes.get(id)
         node_list.remove(node)
-
+        
+    #Why is this a list ? Only one node should be associated with an id
+    #Having a list of nodes as a node is, at best, completely weird.
+    #Lionel
     def get_nodes(self, id):
         if id in self.nodes:
             return list(self.nodes[id])
         else:
             return []
+            
+    #Trying to make a function that bypass the weirdiness of lists
+    def get_node(self,id):
+        if id in self.nodes and len(self.nodes[id]) > 0:
+            return self.nodes[id][0]
+        else:
+            return None
+            
+    def get_all_nodes(self):
+        li = []
+        for k in self.nodes.keys():
+            no = self.get_node(k)
+            if no:
+                li.append(no)
+        return li
 
     def has_node(self, id):
         return id in self.nodes.keys()
@@ -209,6 +231,15 @@ class TreeNode():
         child = self.children[idx]
         self.ids.remove(id)
         self.children.remove(child)
+        
+    def change_id(self,newid):
+        oldid = self.id
+        self.id = newid
+        if self.parent:
+            self.parent.remove_child(oldid)
+            self.parent.add_child(newid,self)
+        for c in self.get_children():
+            c.set_parent(newid)
         
     def reparent(self, parent):
         if self.has_parent():

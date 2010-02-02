@@ -24,9 +24,10 @@ import xml.sax.saxutils as saxutils
 from GTG import _
 from GTG.tools.dates import date_today, no_date, Date
 from datetime import datetime
+from GTG.core.tree import TreeNode
 
 
-class Task:
+class Task(TreeNode):
     """ This class represent a task in GTG.
     You should never create a Task directly. Use the datastore.new_task()
     function."""
@@ -36,6 +37,7 @@ class Task:
     STA_DONE      = "Done"
 
     def __init__(self, ze_id, requester, newtask=False):
+        TreeNode.__init__(self, ze_id)
         #the id of this task in the project should be set
         #tid is a string ! (we have to choose a type and stick to it)
         self.tid = str(ze_id)
@@ -50,9 +52,9 @@ class Task:
         self.closed_date = no_date
         self.due_date = no_date
         self.start_date = no_date
-        self.parents = []
+#        self.parents = []
         #The list of children tid
-        self.children = []
+#        self.children = []
         self.can_be_deleted = newtask
         # tags
         self.tags = []

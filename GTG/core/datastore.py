@@ -23,6 +23,7 @@ import time
 
 from GTG.core      import tagstore, requester
 from GTG.core.task import Task
+from GTG.core.tree import Tree
 
 
 #Only the datastore should access to the backend
@@ -37,6 +38,8 @@ class DataStore:
     def __init__(self):
         self.backends = {}
         self.tasks = {}
+        self.open_tasks = Tree()
+        self.closed_tasks = Tree()
         self.requester = requester.Requester(self)
         self.tagstore = tagstore.TagStore(self.requester)
 
