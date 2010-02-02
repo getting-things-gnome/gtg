@@ -52,9 +52,9 @@ class Task(TreeNode):
         self.closed_date = no_date
         self.due_date = no_date
         self.start_date = no_date
-#        self.parents = []
+        self.parents = []
         #The list of children tid
-#        self.children = []
+        self.children = []
         self.can_be_deleted = newtask
         # tags
         self.tags = []

@@ -63,7 +63,7 @@ class Tree():
                 node.set_parent(parent)
                 parent.add_child(node)
             else:
-                node.set_parent(self.root)
+                #node.set_parent(self.root)
                 self.root.add_child(node)
             self.nodes[id] = node
 
@@ -77,6 +77,8 @@ class Tree():
             for p_id in node.get_parents():
                 par = self.get_node(p_id)
                 par.remove_child(id)
+        else:
+            self.root.remove_child(id)
         self.nodes.pop(id)
             
     #Trying to make a function that bypass the weirdiness of lists
@@ -88,24 +90,7 @@ class Tree():
             
     def get_all_nodes(self):
         li = []
-        for k in self.nodes.# -*- coding: utf-8 -*-
-# -----------------------------------------------------------------------------
-# Gettings Things Gnome! - a personal organizer for the GNOME desktop
-# Copyright (c) 2008-2009 - Lionel Dricot & Bertrand Rousseau
-#
-# This program is free software: you can redistribute it and/or modify it under
-# the terms of the GNU General Public License as published by the Free Software
-# Foundation, either version 3 of the License, or (at your option) any later
-# version.
-#
-# This program is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
-# details.
-#
-# You should have received a copy of the GNU General Public License along with
-# this program.  If not, see <http://www.gnu.org/licenses/>.
-# -----------------------------------------------------------------------------keys():
+        for k in self.nodes.keys():
             no = self.get_node(k)
             if no:
                 li.append(no)
@@ -202,9 +187,8 @@ class TreeNode():
         self.parents   = []
         self.id       = id
         self.ids      = []
-        self.children = []
         self.tree = tree
-        if parent :
+        if parent:
             self.add_parent(parent)
 
     def __str__(self):
@@ -226,6 +210,11 @@ class TreeNode():
 
     def add_parent(self, par):
         self.parents.append(par)
+    
+    #set_parent means that we remove all other parents
+    def set_parent(self,par):
+        if par:
+            self.parents = [par]
 
     def has_child(self):
         return len(self.ids) != 0
@@ -237,30 +226,29 @@ class TreeNode():
         return len(self.ids)
 
     def get_nth_child(self, index):
-        return self.children[index]
+        id = self.ids[index]
+        return self.tree.get_node(id)
         
         
         ###########################
 
     def get_child(self, id):
         if id in self.ids:
-            idx = self.ids.index(id)
-            return self.children[idx]
+            return self.tree.get_node(id)
         else:
             return None
 
     def get_child_index(self, id):
         return self.ids.index(id)
 
-    def add_child(self, id, child):
+    #passer 
+    def add_child(self, child):
+        id = child.get_id()
         self.ids.append(id)
-        self.children.append(child)
 
     def remove_child(self, id):
         idx   = self.ids.index(id)
-        child = self.children[idx]
         self.ids.remove(id)
-        self.children.remove(child)
         
     def change_id(self,newid):
         oldid = self.id
@@ -271,8 +259,8 @@ class TreeNode():
         for c in self.get_children():
             c.set_parent(newid)
         
-    def reparent(self, parent):
-        if self.has_parent():
-            self.get_parent().remove_child(self.id)
-        self.set_parent(parent)
-        parent.add_child(self.id, self)
+#    def reparent(self, parent):
+#        if self.has_parent():
+#            self.get_parent().remove_child(self.id)
+#        self.set_parent(parent)
+#        parent.add_child(self.id, self)

@@ -81,7 +81,7 @@ class TagStore(Tree):
         #if tname not in self.tags:
         if not self.has_node(tname):
             tag = Tag(tname, save_cllbk=self.save, req=self.req)
-            self.add_node(tname,tag)
+            self.add_node(tag)
             #self.tags[tname] = tag
         return self.get_node(tname)
 
@@ -270,7 +270,7 @@ class Tag(TreeNode):
                 self.set_attribute('parent', parent.get_name())
             elif 'parent' in self._attributes:
                 del self._attributes['parent']
-        TreeNode.reparent(self, parent)
+        TreeNode.set_parent(self, parent)
         
     def all_children(self):
         l = [self]
