@@ -1,3 +1,22 @@
+# -*- coding: utf-8 -*-
+# -----------------------------------------------------------------------------
+# Gettings Things Gnome! - a personal organizer for the GNOME desktop
+# Copyright (c) 2008-2009 - Lionel Dricot & Bertrand Rousseau
+#
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program.  If not, see <http://www.gnu.org/licenses/>.
+# -----------------------------------------------------------------------------
+
 class Tree():
 
     def __init__(self, root=None):
@@ -39,6 +58,7 @@ class Tree():
             print "Error : A node with this idea already exists"
         else:
             #We add the node
+            node.set_tree(self)
             if parent:
                 node.set_parent(parent)
                 parent.add_child(node)
@@ -49,34 +69,43 @@ class Tree():
 
     #this will remove a node and all his children
     def remove_node(self, id):
+        node = self.get_node(id)
         if node.has_child():
             for c_id in node.get_children():
                 self.remove_node(c_id)
         if node.has_parent():
-            par = node.get_parent()
-            par.remove_child(node.get_id())
-        node_list = self.nodes.get(id)
-        node_list.remove(node)
-        
-    #Why is this a list ? Only one node should be associated with an id
-    #Having a list of nodes as a node is, at best, completely weird.
-    #Lionel
-    def get_nodes(self, id):
-        if id in self.nodes:
-            return list(self.nodes[id])
-        else:
-            return []
+            for p_id in node.get_parents():
+                par = self.get_node(p_id)
+                par.remove_child(id)
+        self.nodes.pop(id)
             
     #Trying to make a function that bypass the weirdiness of lists
     def get_node(self,id):
-        if id in self.nodes and len(self.nodes[id]) > 0:
-            return self.nodes[id][0]
+        if id in self.nodes :
+            return self.nodes[id]
         else:
             return None
             
     def get_all_nodes(self):
         li = []
-        for k in self.nodes.keys():
+        for k in self.nodes.# -*- coding: utf-8 -*-
+# -----------------------------------------------------------------------------
+# Gettings Things Gnome! - a personal organizer for the GNOME desktop
+# Copyright (c) 2008-2009 - Lionel Dricot & Bertrand Rousseau
+#
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program.  If not, see <http://www.gnu.org/licenses/>.
+# -----------------------------------------------------------------------------keys():
             no = self.get_node(k)
             if no:
                 li.append(no)
@@ -169,33 +198,34 @@ class Tree():
 
 class TreeNode():
 
-    def __init__(self, id, obj=None, parent=None):
-        self.parent   = parent
+    def __init__(self, id, tree=None, parent=None):
+        self.parents   = []
         self.id       = id
         self.ids      = []
         self.children = []
-        self.obj      = obj
+        self.tree = tree
+        if parent :
+            self.add_parent(parent)
 
     def __str__(self):
         return "<TreeNode: '%s'>" % (self.id)
-
-    def get_obj(self):
-        return self.obj
-
-    def set_obj(self, obj):
-        self.obj = obj
+        
+    def set_tree(self,tree):
+        self.tree = tree
+    def get_tree(self):
+        return self.tree
 
     def get_id(self):
         return self.id
 
     def has_parent(self):
-        return self.parent is not None
+        return len(self.parents) > 0
 
-    def get_parent(self):
-        return self.parent
+    def get_parents(self):
+        return self.parents
 
-    def set_parent(self, par):
-        self.parent = par
+    def add_parent(self, par):
+        self.parents.append(par)
 
     def has_child(self):
         return len(self.ids) != 0
@@ -203,14 +233,14 @@ class TreeNode():
     def get_children(self):
         return list(self.ids)
 
-    def get_children_objs(self):
-        return list(self.children)
-
     def get_n_children(self):
         return len(self.ids)
 
     def get_nth_child(self, index):
         return self.children[index]
+        
+        
+        ###########################
 
     def get_child(self, id):
         if id in self.ids:
