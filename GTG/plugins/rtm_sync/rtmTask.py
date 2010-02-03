@@ -15,7 +15,6 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 import sys
 import os
-import xml.dom.minidom
 import datetime
 import time
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))+'/pyrtm')
@@ -66,7 +65,6 @@ class RtmTask(GenericTask):
 
     def _set_status(self, gtg_status):
         status = self.get_proxy()._gtg_to_rtm_status[gtg_status]
-        print "setting status"
         if status == True:
             self.rtm.tasks.uncomplete(timeline=self.timeline, \
                                       list_id = self.list_id,\
@@ -90,14 +88,15 @@ class RtmTask(GenericTask):
         return []
 
     def _set_tags(self, tags):
-        tagstxt=""
+        tags_purified = []
         for tag in tags:
-            name = tag.get_name()
-            name_fixed = name[name.find('@')+1:]
-            if tagstxt == "":
-                tagstxt = name_fixed
-            else:
-                tagstxt = tagstxt+ ",  " + name_fixed
+            if tag[0] == '@':
+                tag = tag[1:]
+            tags_purified.append(tag)
+        if len(tags_purified) > 0:
+            tagstxt = reduce(lambda x,y: x + ", " + y, tags_purified)
+        else:
+            tagstxt = ""
         self.rtm.tasks.setTags(timeline=self.timeline, \
                         list_id =self.list_id, \
                         taskseries_id=self.taskseries_id, \
@@ -135,19 +134,15 @@ class RtmTask(GenericTask):
         #      nodes in "content"?
         if text == "":
             return
-        document = xml.dom.minidom.parseString(text)
-        content =document.getElementsByTagName("content")
-        if len(content)>0 and hasattr(content[0], 'firstChild') \
-           and hasattr(content[0].firstChild, 'data'):
-            content = content[0].firstChild.data
-        else:
-            return
         self.rtm.tasksNotes.add(timeline=self.timeline, \
                                 list_id = self.list_id,\
                                 taskseries_id = self.taskseries_id, \
                                 task_id = self.id, \
-                                note_title="",\
-                                note_text = content)
+                                note_title = "",\
+                                note_text = text)
+
+
+
 
     def _get_due_date(self):
         if hasattr(self.task,'task') and hasattr(self.task.task, 'due') and \

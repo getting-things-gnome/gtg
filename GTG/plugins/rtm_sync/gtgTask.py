@@ -41,22 +41,32 @@ class GtgTask(GenericTask):
         return self._gtg_task.get_uuid()
 
     def _get_tags(self):
-        raise NotImplemented()
-        return self._gtg_task.get_tags()
+        return [t.get_name() for t in self._gtg_task.get_tags()]
 
     def _set_tags(self, tags):
-        raise NotImplemented()
-        #NOTE: isn't there a better mode than removing all tags?
-        #      need to add function in GTG/core/task.py
-        old_tags = self.tags
-        for tag in old_tags:
+        other_tags = []
+        for tag in tags:
+            if tag[0] != '@':
+                tag = '@' + tag
+            other_tags.append(tag)
+        gtg_tags = self._gtg_task.get_tags()
+        gtg_tags_lower = [t.get_name().lower() for t in gtg_tags]
+        gtg_tags_set = set(gtg_tags_lower)
+        other_tags_set = set([t.lower() for t in other_tags])
+        #tags to remove
+        for tag in gtg_tags_set.difference(other_tags_set):
             self._gtg_task.remove_tag(tag)
-        map(lambda tag: self._gtg_task.add_tag('@'+tag), tags)
+        #tags to add
+        for tag in other_tags_set.difference(gtg_tags_set):
+            self._gtg_task.add_tag(tag)
 
     def _get_text(self):
         return self._gtg_task.get_excerpt()
 
     def _set_text(self, text):
+        #fill in subtasks
+
+
         self._gtg_task.set_text(text)
 
     def _set_status(self, status):
