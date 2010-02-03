@@ -88,11 +88,21 @@ class RtmTask(GenericTask):
         return []
 
     def _set_tags(self, tags):
+        #remove the @ at the beginning
         tags_purified = []
         for tag in tags:
             if tag[0] == '@':
                 tag = tag[1:]
-            tags_purified.append(tag)
+            tags_purified.append(tag.lower())
+
+        #check if it's necessary to sync
+        rtm_tags_set = set(self.tags)
+        tags_purified_set = set(tags_purified)
+        if rtm_tags_set.intersection(tags_purified_set) == set() and \
+           rtm_tags_set.union(tags_purified_set) == rtm_tags_set:
+            return
+
+        #sync
         if len(tags_purified) > 0:
             tagstxt = reduce(lambda x,y: x + ", " + y, tags_purified)
         else:

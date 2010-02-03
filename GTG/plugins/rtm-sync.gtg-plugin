@@ -1,8 +1,8 @@
 [GTG Plugin]
 Module=rtm_sync
 Name=Remember the milk
-Description="Plugin for synchronising Getting Things Gnome! with the web\nservice Remember the milk  (http://www.rememberthemilk.com)\nPlease note that:\n - RTM uses tags in lowercase. Because of this, after a couple\n   of synchronizations your GTG tags will be converted\n   to lowercase\n - Task descriptions and tags are not synchronized in this version.\n\nLegal note: This product uses the Remember The Milk API but\nis not endorsed or certified by Remember, The Milk."
+Description="Plugin for synchronising Getting Things Gnome! with the web\nservice Remember the milk  (http://www.rememberthemilk.com)\nPlease note that task descriptions are not synchronized in this version.\n\nLegal note: This product uses the Remember The Milk API but\nis not endorsed or certified by Remember, The Milk."
 Authors=Luca Invernizzi <invernizzi.l@gmail.com>
-Version=0.2
+Version=0.3
 Dependencies=xml,subprocess,threading,gobject,gtk,time,pickle,datetime,logging,hashlib,urllib,warnings,simplejson
 Enabled=False

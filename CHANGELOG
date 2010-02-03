@@ -1,4 +1,8 @@
-    * RTM plugin now sycs tags
+    * RTM plugin tags synchronization by Luca Invernizzi
+    * Evolution plugin by Luca Invernizzi
+    * Tomboy support by Luca Invernizzi
+    * Dbus autostart by Gordon Ball and Luca Invernizzi
+    * Notification area bug fixes by Luca Invernizzi
 
 2009-12-11 Getting Things GNOME! 0.2.1
     * Schedule for context menu by Bryce Harrington
