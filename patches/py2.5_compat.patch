@@ -1,0 +1,16 @@
+Description: Python 2.5 compatibility fix
+Origin: http://bazaar.launchpad.net/~gtg/gtg/trunk/revision/560
+
+Index: gtg-0.2.1/GTG/core/plugins/api.py
+===================================================================
+--- gtg-0.2.1.orig/GTG/core/plugins/api.py	2010-02-01 20:06:38.819870167 +0100
++++ gtg-0.2.1/GTG/core/plugins/api.py	2010-02-01 20:06:36.871872118 +0100
+@@ -17,6 +17,8 @@
+ # this program.  If not, see <http://www.gnu.org/licenses/>.
+ # -----------------------------------------------------------------------------
+ 
++from __future__ import with_statement
++
+ import os
+ import pickle
+ from xdg.BaseDirectory import xdg_config_home

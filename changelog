@@ -1,4 +1,26 @@
-gtg (0.2-1~karmic1) karmic; urgency=low
+gtg (0.2.1-1~karmic1) karmic; urgency=low
+
+  * New upstream release.
+  * debian/patches/distutils_missing_files.patch:
+    - Removed, fixed upstream.
+  * debian/patches/py2.5_compat.patch:
+    - with is a reserved word in Python 2.6, import with_statement to
+      handle it correctly and avoid issues during byte-compilation.
+  * debian/control:
+    - Bump Standard-Version to 3.8.4, no changes needed.
+  * Use format 1.0, karmic doesn't allow 3.0 yet.
+
+ -- Luca Falavigna <dktrkranz@debian.org>  Mon, 01 Feb 2010 20:21:38 +0100
+
+gtg (0.2-2) unstable; urgency=low
+
+  * debian/patches/distutils_missing_files.patch:
+    - Add missing files to setup.py.
+  * Switch to format 3.0 (quilt).
+
+ -- Luca Falavigna <dktrkranz@debian.org>  Wed, 06 Jan 2010 15:20:15 +0100
+
+gtg (0.2-1) unstable; urgency=low
 
   * New upstream release.
     - xdg module is no longer required at build time (Closes: #560566).

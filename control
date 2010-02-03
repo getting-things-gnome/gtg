@@ -3,9 +3,9 @@ Section: gnome
 Priority: optional
 Maintainer: Luca Falavigna <dktrkranz@debian.org>
 Uploaders: Python Applications Packaging Team <python-apps-team@lists.alioth.debian.org>
-Build-Depends: debhelper (>= 7.0.50)
+Build-Depends: debhelper (>= 7.0.50), quilt (>= 0.46-7)
 Build-Depends-Indep: python-support, python (>= 2.5)
-Standards-Version: 3.8.3
+Standards-Version: 3.8.4
 Homepage: http://gtg.fritalk.com/
 Vcs-Svn: svn://svn.debian.org/python-apps/packages/gtg/trunk/
 Vcs-Browser: http://svn.debian.org/viewsvn/python-apps/packages/gtg/trunk/
