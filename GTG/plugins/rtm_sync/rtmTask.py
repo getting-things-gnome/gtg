@@ -52,7 +52,10 @@ class RtmTask(GenericTask):
 
     def _get_id(self):
         if hasattr(self.task, 'task'):
-            return self.task.task.id
+            if type(self.task.task) != list:
+                return self.task.task.id
+            else:
+                return self.task.task[0].id
         else:
             return self.task.id
 
