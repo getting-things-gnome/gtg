@@ -51,20 +51,20 @@ class RtmTask(GenericTask):
                         name = title)
 
     def _get_id(self):
+        return self.__get_rtm_task_attribute("id")
+
+    def __get_rtm_task_attribute(self, attr):
         if hasattr(self.task, 'task'):
-            if type(self.task.task) != list:
-                return self.task.task.id
+            if type(self.task.task) == type(list):
+                return getattr(self.task.task[0], attr)
             else:
-                return self.task.task[0].id
+                return getattr(self.task.task, attr)
         else:
-            return self.task.id
+            return getattr(self.task, attr)
 
     def _get_status(self):
-        if hasattr(self.task, 'task'):
-            return self.get_proxy()._rtm_to_gtg_status[self.task.task.completed\
-                                                      == ""]
-        else:
-            return self.get_proxy()._rtm_to_gtg_status[self.task.completed == ""]
+        completed = self.__get_rtm_task_attribute("completed")
+        return self.get_proxy()._rtm_to_gtg_status[completed == ""]
 
     def _set_status(self, gtg_status):
         status = self.get_proxy()._gtg_to_rtm_status[gtg_status]
