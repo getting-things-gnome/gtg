@@ -83,7 +83,7 @@ def populate():
     root.appendChild(t4)
     
     #Task 5@1: Plugins
-    title5 = _("Plugins")
+    title5 = _("Learn how to use Plugins")
     text5 = _("GTG has the ability to add plugins to extend it's core functionality.")
     text5 += "\n\n"
     text5 += _("Some examples of the current plugins are Syncing with Remember the Milk and Evolution, Tomboy/Gnote integration and Geolocalized Tasks.")
