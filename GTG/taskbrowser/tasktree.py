@@ -436,6 +436,7 @@ class ActiveTaskTreeView(TaskTreeView):
         title_col.set_cell_data_func(render_text, self._celldatafunction)
         self.append_column(title_col)
         self.columns.insert(COL_TITLE, title_col)
+        self.set_search_column(COL_TITLE)
 
         # Start date column
         sdate_col   = gtk.TreeViewColumn()
@@ -610,6 +611,7 @@ class ClosedTaskTreeView(TaskTreeView):
         title_col.set_sort_column_id(COL_TITLE)
         self.append_column(title_col)
         self.columns.insert(COL_TITLE, title_col)
+        self.set_search_column(COL_TITLE)
         
         self.set_show_expanders(False)
 
