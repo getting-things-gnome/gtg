@@ -41,6 +41,7 @@ from GTG.core.tagstore                import Tag
 from GTG.taskeditor.editor            import TaskEditor
 from GTG.taskbrowser                  import GnomeConfig
 from GTG.taskbrowser                  import tasktree
+from GTG.taskbrowser.preferences      import PreferencesDialog
 from GTG.taskbrowser.tasktree         import TaskTreeModel,\
                                              ActiveTaskTreeView,\
                                              ClosedTaskTreeView
@@ -124,6 +125,9 @@ class TaskBrowser:
         # Initialize "About" dialog
         self._init_about_dialog()
 
+        # Initialize "Preferences" dialog
+        self.preferences = PreferencesDialog(self)
+
         #Create our dictionary and connect it
         self._init_signal_connections()
 
@@ -138,8 +142,7 @@ class TaskBrowser:
         # Initialize the plugin-engine
         self.p_apis = [] #the list of each plugin apis.
         self._init_plugin_engine()
-        self.pm = None #the plugin manager window
-        
+
         self.refresh_lock = threading.Lock()
 
         # NOTES
@@ -380,9 +383,9 @@ class TaskBrowser:
                 self.on_about_close,
             "on_nonworkviewtag_toggled":
                 self.on_nonworkviewtag_toggled,
-            "on_pluginmanager_activate": 
-                self.on_pluginmanager_activate
         }
+
+        SIGNAL_CONNECTIONS_DIC.update(self.preferences.get_signals_dict())
 
         self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
 
