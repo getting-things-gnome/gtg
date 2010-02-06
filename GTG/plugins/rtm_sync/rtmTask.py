@@ -39,8 +39,7 @@ class RtmTask(GenericTask):
         if hasattr(self.task,"name"):
             return self.task.name
         else:
-            if self.logger:
-                self.logger.debug ("rtm task has no title")
+            self.__log("rtm task has no title: " + str(self.task))
             return ""
 
     def _set_title(self, title):
@@ -51,19 +50,26 @@ class RtmTask(GenericTask):
                         name = title)
 
     def _get_id(self):
+        self.__log("getting the task id")
         return self.__get_rtm_task_attribute("id")
 
     def __get_rtm_task_attribute(self, attr):
         if hasattr(self.task, 'task'):
-            if type(self.task.task) == type(list):
-                return getattr(self.task.task[0], attr)
+            if hasattr(self.task.task, 'list'):
+                self.__log("getting a rtm task attribute(1): " + \
+                           str(self.task.task))
+                return getattr(self.task.task.list, attr)
             else:
+                self.__log("getting a rtm task attribute(2): " + \
+                           str(self.task.task))
                 return getattr(self.task.task, attr)
         else:
+            self.__log("getting a rtm task attribute(3): " + str(self.task))
             return getattr(self.task, attr)
 
     def _get_status(self):
         completed = self.__get_rtm_task_attribute("completed")
+        self.__log("getting status:" + str(completed))
         return self.get_proxy()._rtm_to_gtg_status[completed == ""]
 
     def _set_status(self, gtg_status):
@@ -80,12 +86,15 @@ class RtmTask(GenericTask):
                                       task_id = self.id)
 
     def _get_tags(self):
+        self.__log("getting tag list(1): " + str(self.task))
         if hasattr(self.task,"tags") and hasattr(self.task.tags, 'tag'):
+            self.__log("getting tag list(2): " + str(self.task.tags.tag))
             if type(self.task.tags.tag) ==list:
                 return self.task.tags.tag
             else:
                 return [self.task.tags.tag]
         elif hasattr(self.task,"tags") and hasattr(self.task.tags, 'list'):
+            self.__log("getting tag list(2): " + str(self.task.tags.list))
             return map(lambda x: x.tag if hasattr(x, 'tag') else None, \
                        self.task.tags.list)
         return []
@@ -214,3 +223,7 @@ class RtmTask(GenericTask):
         if timeobject == None:
             return ""
         return timeobject.strftime("%Y-%m-%d")
+
+    def __log(self, message):
+        if self.logger:
+            self.logger.debug (message)
