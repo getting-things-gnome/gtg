@@ -53,7 +53,6 @@ from GTG.tools.dates                  import strtodate,\
                                              no_date,\
                                              FuzzyDate
 from GTG.tools                        import clipboard
-from GTG.core.plugins.manager         import PluginManager
 from GTG.core.plugins.engine          import PluginEngine
 from GTG.core.plugins.api             import PluginAPI
 
@@ -1765,12 +1764,6 @@ class TaskBrowser:
 #        if selection.count_selected_rows() > 0:
 #            self.ctask_tv.get_selection().unselect_all()
 #            self.task_tv.get_selection().unselect_all()
-    
-    def on_pluginmanager_activate(self, widget):
-        if self.pm:
-            self.pm.present()
-        else:
-            self.pm = PluginManager(self.window, self.plugins, self.pengine, self.p_apis)
 
     def on_close(self, widget=None):
         """Closing the window."""

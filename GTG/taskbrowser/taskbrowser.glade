@@ -231,6 +231,17 @@
               </object>
             </child>
             <child>
+              <object class="GtkMenuItem" id="menu_plugin">
+                <property name="label" translatable="yes">_Plugins</property>
+                <property name="use_underline">True</property>
+                <child type="submenu">
+                  <object class="GtkMenu" id="menu6">
+                    <property name="visible">True</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
               <object class="GtkMenuItem" id="menuitem4">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">_Help</property>
@@ -1207,6 +1218,47 @@ commas.</property>
                         <property name="visible">True</property>
                         <property name="orientation">vertical</property>
                         <child>
+                          <object class="GtkFrame" id="prefs-frame3">
+                            <property name="visible">True</property>
+                            <property name="label_xalign">0</property>
+                            <property name="shadow_type">none</property>
+                            <child>
+                              <object class="GtkAlignment" id="prefs-alignment7">
+                                <property name="visible">True</property>
+                                <property name="left_padding">12</property>
+                                <child>
+                                  <object class="GtkVBox" id="prefs-vbox7">
+                                    <property name="visible">True</property>
+                                    <property name="orientation">vertical</property>
+                                    <child>
+                                      <object class="GtkCheckButton" id="pref_autostart">
+                                        <property name="label" translatable="yes">Start Getting Things GNOME! on every login</property>
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="receives_default">False</property>
+                                        <property name="draw_indicator">True</property>
+                                      </object>
+                                      <packing>
+                                        <property name="position">0</property>
+                                      </packing>
+                                    </child>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                            <child type="label">
+                              <object class="GtkLabel" id="prefs-label8">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">&lt;b&gt;General&lt;/b&gt;</property>
+                                <property name="use_markup">True</property>
+                              </object>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
                           <object class="GtkFrame" id="prefs-frame1">
                             <property name="visible">True</property>
                             <property name="label_xalign">0</property>
@@ -1240,13 +1292,13 @@ commas.</property>
                             <child type="label">
                               <object class="GtkLabel" id="prefs-label4">
                                 <property name="visible">True</property>
-                                <property name="label" translatable="yes">&lt;b&gt;Browser&lt;/b&gt;</property>
+                                <property name="label" translatable="yes">&lt;b&gt;Task Browser&lt;/b&gt;</property>
                                 <property name="use_markup">True</property>
                               </object>
                             </child>
                           </object>
                           <packing>
-                            <property name="position">0</property>
+                            <property name="position">1</property>
                           </packing>
                         </child>
                         <child>
@@ -1283,17 +1335,14 @@ commas.</property>
                             <child type="label">
                               <object class="GtkLabel" id="prefs-label5">
                                 <property name="visible">True</property>
-                                <property name="label" translatable="yes">&lt;b&gt;Editor&lt;/b&gt;</property>
+                                <property name="label" translatable="yes">&lt;b&gt;Task Editor&lt;/b&gt;</property>
                                 <property name="use_markup">True</property>
                               </object>
                             </child>
                           </object>
                           <packing>
-                            <property name="position">1</property>
+                            <property name="position">2</property>
                           </packing>
-                        </child>
-                        <child>
-                          <placeholder/>
                         </child>
                       </object>
                     </child>
@@ -1302,7 +1351,7 @@ commas.</property>
                 <child type="tab">
                   <object class="GtkLabel" id="prefs-label1">
                     <property name="visible">True</property>
-                    <property name="label" translatable="yes">Tasks</property>
+                    <property name="label" translatable="yes">GTG</property>
                   </object>
                   <packing>
                     <property name="tab_fill">False</property>
@@ -1591,5 +1640,49 @@ commas.</property>
   <object class="GtkImage" id="pref_img_plugin">
     <property name="visible">True</property>
     <property name="stock">gtk-connect</property>
+  </object>
+  <object class="GtkDialog" id="PluginConfigDialog">
+    <property name="border_width">5</property>
+    <property name="type_hint">normal</property>
+    <property name="has_separator">False</property>
+    <child internal-child="vbox">
+      <object class="GtkVBox" id="pc-vbox1">
+        <property name="visible">True</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child>
+          <placeholder/>
+        </child>
+        <child internal-child="action_area">
+          <object class="GtkHButtonBox" id="pc-action_area1">
+            <property name="visible">True</property>
+            <property name="layout_style">end</property>
+            <child>
+              <object class="GtkButton" id="PluginConfigClose">
+                <property name="label">gtk-close</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="use_stock">True</property>
+                <signal name="released" handler="on_PluginConfigClose_released"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="pack_type">end</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+    <action-widgets>
+      <action-widget response="0">PluginConfigClose</action-widget>
+    </action-widgets>
   </object>
 </interface>
