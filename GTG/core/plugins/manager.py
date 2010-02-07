@@ -18,6 +18,7 @@
 # -----------------------------------------------------------------------------
 
 from GTG.core.plugins          import GnomeConfig
+from GTG                       import _
 # not being used
 #from GTG.core.plugins.engine import PluginEngine
 #from GTG.core.plugins.engine import PluginAPI
@@ -81,17 +82,17 @@ class PluginManager:
         self.rendererToggle.set_property('activatable', True)
         self.rendererToggle.connect('toggled', self.colToggledClicked, self.PluginList)
         
-        self.colToggle = gtk.TreeViewColumn("Enabled", self.rendererToggle)
+        self.colToggle = gtk.TreeViewColumn(_("Enabled"), self.rendererToggle)
         self.colToggle.add_attribute(self.rendererToggle, "active", 0)
         self.colToggle.add_attribute(self.rendererToggle, "activatable", 3)
         
         self.rendererName = gtk.CellRendererText()
         self.rendererName.set_property('foreground', 'gray')
-        self.colName = gtk.TreeViewColumn("Name", self.rendererName, text=1, foreground_set=4)
+        self.colName = gtk.TreeViewColumn(_("Name"), self.rendererName, text=1, foreground_set=4)
         
         self.rendererVersion = gtk.CellRendererText()
         self.rendererVersion.set_property('foreground', 'gray')
-        self.colVersion = gtk.TreeViewColumn("Version", self.rendererVersion, text=2, foreground_set=4)
+        self.colVersion = gtk.TreeViewColumn(_("Version"), self.rendererVersion, text=2, foreground_set=4)
         
         self.pluginTree.append_column(self.colToggle)
         self.pluginTree.append_column(self.colName)
