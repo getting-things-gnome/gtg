@@ -1239,6 +1239,7 @@ commas.</property>
                                         <property name="draw_indicator">True</property>
                                       </object>
                                       <packing>
+                                        <property name="expand">False</property>
                                         <property name="position">0</property>
                                       </packing>
                                     </child>
@@ -1589,6 +1590,7 @@ commas.</property>
     <property name="border_width">5</property>
     <property name="type_hint">normal</property>
     <signal name="close" handler="on_PluginAboutDialog_close"/>
+    <signal name="response" handler="on_PluginAboutDialog_close"/>
     <child internal-child="vbox">
       <object class="GtkVBox" id="pa-vbox1">
         <property name="visible">True</property>

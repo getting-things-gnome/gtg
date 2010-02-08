@@ -70,7 +70,7 @@ class PreferencesDialog:
           'plugin_tree': 'PluginTree',
           'plugin_about_dialog': 'PluginAboutDialog',
           'plugin_configure': 'plugin_configure',
-          'plugin_depends': 'PluginDepends'
+          'plugin_depends': 'PluginDepends',
           'plugin_config_dialog': 'PluginConfigDialog',
           }
         for attr, widget in widgets.iteritems():
@@ -94,7 +94,7 @@ class PreferencesDialog:
         if not hasattr(self, 'backend_store'):
             # TODO: create the liststore. It should have one column for each
             # backend.
-            backends [str]
+#            backends = [str] * ...
             self.backend_store = gtk.ListStore(str)
         self.backend_store.clear()
         # TODO
@@ -182,8 +182,10 @@ class PreferencesDialog:
           # the PluginAboutDialog
           'on_PluginAboutDialog_close':
             self.on_plugin_about_close,
+          'on_PluginAboutDialog_response':
+            self.on_plugin_about_close,
           # the PluginConfigDialog
-          'on_PluginConfigDialog_close':
+          'on_PluginConfigClose_released':
             self.on_plugin_config_close,
           }
         return SIGNAL_CONNECTIONS_DIC
@@ -228,7 +230,7 @@ class PreferencesDialog:
         self.plugin_depends.set_label("Here is some <b>bold</b> text\nand a line break.")
         pad.show_all()
 
-    def on_plugin_about_close(self, widget):
+    def on_plugin_about_close(self, widget, *args):
         """Close the PluginAboutDialog."""
         self.plugin_about_dialog.hide()
 
