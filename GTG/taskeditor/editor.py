@@ -69,10 +69,10 @@ class TaskEditor :
         self.dismissbutton = self.builder.get_object("dismiss_editor")
         self.deletebutton = self.builder.get_object("delete_editor")
         self.deletebutton.set_tooltip_text(GnomeConfig.DELETE_TOOLTIP)
-        self.deletebutton = self.builder.get_object("insert_subtask")
-        self.deletebutton.set_tooltip_text(GnomeConfig.SUBTASK_TOOLTIP)
-        self.deletebutton = self.builder.get_object("inserttag")
-        self.deletebutton.set_tooltip_text(GnomeConfig.TAG_TOOLTIP)
+        self.subtask_button = self.builder.get_object("insert_subtask")
+        self.subtask_button.set_tooltip_text(GnomeConfig.SUBTASK_TOOLTIP)
+        self.inserttag_button = self.builder.get_object("inserttag")
+        self.inserttag_button.set_tooltip_text(GnomeConfig.TAG_TOOLTIP)
         #Create our dictionary and connect it
         dic = {
                 "mark_as_done_clicked"  : self.change_status,
@@ -122,7 +122,6 @@ class TaskEditor :
         self.duedate_widget = self.builder.get_object("duedate_entry")
         self.startdate_widget = self.builder.get_object("startdate_entry")
         self.dayleft_label  = self.builder.get_object("dayleft")
-        self.inserttag_button = self.builder.get_object("inserttag")
         self.tasksidebar = self.builder.get_object("tasksidebar")
         self.keepnote_button = self.builder.get_object("keepnote")
         if not notes :
