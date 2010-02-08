@@ -23,11 +23,12 @@
 This script create a new task and launch the editor to display it. GTG should be running
 """
 
-
-
+import re
+import sys
 import dbus
+import cgi
 
-def get_task() :
+def get_task(title, body) :
     #We will connect on the session bus
     bus = dbus.SessionBus()
     liste = bus.list_names()
@@ -38,4 +39,10 @@ def get_task() :
     timi.open_new_task()
         
 if __name__ == '__main__':
-    get_task()
+    title = " ".join(sys.argv[1:])
+    body = sys.stdin.read()
+    subject_regex = re.compile("^Subject: (.*)$", re.M | re.I)
+    if subject_regex.search(body):
+        subject = subject_regex.findall(body)[0]
+        title = title + ": " + subject
+    get_task(title, cgi.escape(body))
