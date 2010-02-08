@@ -72,7 +72,7 @@ class Serializer:
         while not buffer_end:
             if tag is None:
                 # We are not in a tag context
-                # Get list of know tags witch begin here
+                # Get list of know tags which begin here
                 # and are not already process
                 tags = []
                 for ta in it.get_tags():
@@ -135,7 +135,7 @@ class Serializer:
             if last_val and last_val.nodeType == 3 and \
                                 last_val.nodeValue[-1] != '\n':
                 parent.appendChild(doc.createTextNode('\n'))
-        #This function concatenate all the adjacent text node of the XML
+        #This function concatenates all the adjacent text node of the XML
         parent.normalize()
         return parent
 
@@ -163,7 +163,7 @@ class Unserializer:
 
     #Insert a list of subtasks at the end of the buffer
     def insert_subtasks(self, buff, st_list):
-        #It the lastline of the buffer is not empty, we add an extra \n
+        #If the lastline of the buffer is not empty, we add an extra \n
         end_end = buff.get_end_iter()
         end_line = end_end.get_line()
         start_end = buff.get_iter_at_line(end_line)
