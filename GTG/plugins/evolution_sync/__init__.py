@@ -14,11 +14,10 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
-class GenericProxy(object):
+import sys
+import os
+sys.path.insert(0, os.getcwd())
 
-    def __init__(self):
-        super(GenericProxy, self).__init__()
-        self.task_list = []
-
-    def generateTaskList(self):
-        raise Exception()
+#pyflakes gives a warning on the following line,
+# but it's needed for the plugin to work
+from evolutionSync import EvolutionSync

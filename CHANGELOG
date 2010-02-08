@@ -1,10 +1,18 @@
+    * Added a guide to plugins by Chris Johnston
+    * RTM plugin tags synchronization by Luca Invernizzi
+    * Evolution plugin by Luca Invernizzi
+    * Tomboy support by Luca Invernizzi
+    * Dbus autostart by Gordon Ball and Luca Invernizzi
+    * Notification area bug fixes by Luca Invernizzi
+
 2009-12-11 Getting Things GNOME! 0.2.1
+    * Schedule for context menu by Bryce Harrington
+    * Improved export feature by Bryce Harrington and Luca Invernizzi
     * Restore closed tasks filtering by selected tag, fixes bug #498857
     * Temporary fix allowing to reset tag color by Matthew Rasmus
     * Added the ability to add a tag from the right click menu in the task browser, by Matthew Rasmus.
     * Better explanation of the "Work view" concept in documentation
     * Multiple selection
-    * Tag renaming
     * API clarifications
     * Cut & Paste improvements
     * Notification area plugin improvements

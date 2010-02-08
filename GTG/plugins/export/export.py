@@ -30,6 +30,7 @@ import subprocess
 import gobject
 from Cheetah.Template import Template
 from xdg.BaseDirectory import xdg_config_home
+from datetime import date, timedelta
 
 from GTG import _
 
@@ -42,7 +43,7 @@ class pluginExport:
 
     def __init__(self):
         self.path = os.path.dirname(os.path.abspath(__file__))
-        self.menu_item = gtk.MenuItem("E_xport current tasks")
+        self.menu_item = gtk.MenuItem("E_xport tasks")
         self.menu_item.connect('activate', self.on_export)
         self.tb_button = gtk.ToolButton(gtk.STOCK_PRINT)
         self.tb_button.connect('clicked', self.on_export)
@@ -56,6 +57,11 @@ class pluginExport:
         self.preferences_dialog = self.builder.get_object("preferences_dialog")
         self.pref_chbox_menu    = self.builder.get_object("pref_chbox_menu")
         self.pref_chbox_toolbar = self.builder.get_object("pref_chbox_toolbar")
+
+        self.export_all_active         = self.builder.get_object("export_all_active_rb")
+        self.export_finished_last_week = self.builder.get_object("export_finished_last_week_rb")
+        self.export_all_finished       = self.builder.get_object("export_all_finished_rb")
+
         SIGNAL_CONNECTIONS_DIC = {
             "on_export_btn_open_clicked": 
                 self.on_export_open,
@@ -97,6 +103,40 @@ class pluginExport:
         self.toolbar_entry = False
 
 ## CALLBACK AND CORE FUNCTIONS #################################################
+
+    class TaskStr:
+        def __init__(self,
+                     title,
+                     text,
+                     subtasks,
+                     status,
+                     modified,
+                     due_date,
+                     closed_date,
+                     start_date,
+                     days_left,
+                     tags
+                    ):
+            self.title         = title
+            self.text          = text
+            self.subtasks      = subtasks
+            self.status        = status
+            self.modified      = modified
+            self.due_date      = due_date
+            self.closed_date   = closed_date
+            self.start_date    = start_date
+            self.days_left     = days_left
+            self.tags          = tags
+        has_title         = property(lambda s: s.title       != "")
+        has_text          = property(lambda s: s.text        != "")
+        has_subtasks      = property(lambda s: s.subtasks    != [])
+        has_status        = property(lambda s: s.status      != "")
+        has_modified      = property(lambda s: s.modified    != "")
+        has_due_date      = property(lambda s: s.due_date    != "")
+        has_closed_date   = property(lambda s: s.closed_date != "")
+        has_start_date    = property(lambda s: s.start_date  != "")
+        has_days_left     = property(lambda s: s.days_left   != "")
+        has_tags          = property(lambda s: s.tags        != [])
 
     def on_export(self, widget):
         #Generating lists
@@ -148,64 +188,110 @@ class pluginExport:
         self.export_template_filename = supposed_template
         return True
 
-    def export_tree_visit(self, model, task_iter):
-        class TaskStr:
-            def __init__(self,
-                         title,
-                         text,
-                         subtasks,
-                         status,
-                         modified,
-                         due_date,
-                         closed_date,
-                         start_date,
-                         days_left,
-                         tags
-                        ):
-                self.title         = title
-                self.text          = text
-                self.subtasks      = subtasks
-                self.status        = status
-                self.modified      = modified
-                self.due_date      = due_date
-                self.closed_date   = closed_date
-                self.start_date    = start_date
-                self.days_left     = days_left
-                self.tags          = tags
-            has_title         = property(lambda s: s.title       != "")
-            has_text          = property(lambda s: s.text        != "")
-            has_subtasks      = property(lambda s: s.subtasks    != [])
-            has_status        = property(lambda s: s.status      != "")
-            has_modified      = property(lambda s: s.modified    != "")
-            has_due_date      = property(lambda s: s.due_date    != "")
-            has_closed_date   = property(lambda s: s.closed_date != "")
-            has_start_date    = property(lambda s: s.start_date  != "")
-            has_days_left     = property(lambda s: s.days_left   != "")
-            has_tags          = property(lambda s: s.tags        != [])
+    def task_to_TaskStr(self, task):
+        return self.TaskStr(task.get_title(),
+                           str(task.get_text()),
+                           [],
+                           task.get_status(),
+                           str(task.get_modified()),
+                           str(task.get_due_date()),
+                           str(task.get_start_date()),
+                           str(task.get_days_left()),
+                           str(task.get_closed_date()),
+                           map(lambda t: t.get_name(), task.get_tags()))
+
+    def is_task_in_timespan (self, task, days):
+        if not days:
+            return True
+        elif days < 0 and task.get_closed_date():
+            age = task.get_closed_date().days_left() * (-1)
+            if age <= days*(-1):
+                return True
+        elif days > 0 and task.get_days_left() <= days:
+            return True
+        return False
+
+    def treemodel_to_TaskStr(self, model, task_iter, days=None):
+        """This function performs a depth-first tree visits on a treemodel 
+            using task_iter as root. For each node of the tree it encounters,
+            it generates a TaskStr object and returns that.
+            The resulting TaskStr will be linked to its subtasks in the same
+            way as the treemodel, forming a tree"""
         tasks_str = []
         while task_iter:
             task = model.get_value(task_iter, 1) # tagtree.COL_OBJ)
-            task_str = TaskStr(task.get_title(),
-                               str(task.get_text()),
-                               [],
-                               task.get_status(),
-                               str(task.get_modified()),
-                               str(task.get_due_date()),
-                               str(task.get_start_date()),
-                               str(task.get_days_left()),
-                               str(task.get_closed_date()),
-                               map(lambda t: t.get_name(), task.get_tags()))
+            task_str = self.task_to_TaskStr(task)
             if model.iter_has_child(task_iter):
                 task_str.subtasks = \
-                    self.export_tree_visit(model, model.iter_children(task_iter))
-            tasks_str.append(task_str)
+                    self.treemodel_to_TaskStr(model, model.iter_children(task_iter), days)
+            #The task_str is added to the result only if it satisfies the time
+            # limit imposed with the @days parameter of this function
+            if self.is_task_in_timespan(task, days):
+                    tasks_str.append(task_str)
+
             task_iter = model.iter_next(task_iter)
+        return tasks_str
+
+    def taskslist_to_TaskStr(self, tasks_list, days=None):
+        """This function performs several depth-first tree visits on a task_list 
+            using each task of the list as  root.
+            For each node of the tree it encounters, it generates a TaskStr 
+            object and returns that.
+            The resulting TaskStr will be linked to its subtasks in the same
+            way as the treemodel, forming a tree"""
+        tasks_str = []
+        for task in tasks_list:
+            task_str = self.task_to_TaskStr(task)
+            if task.has_subtasks():
+                requester = self.plugin_api.get_requester()
+                task_str.subtasks = self.taskslist_to_TaskStr(task.get_subtasks(), days)
+            #The task_str is added to the result only if it satisfies the time
+            # limit imposed with the @days parameter of this function
+            if self.is_task_in_timespan(task, days):
+                    tasks_str.append(task_str)
+
         return tasks_str
 
     def export_generate(self):
         #Template loading and cutting
-        model = self.plugin_api.get_task_modelsort()
-        tasks_str = self.export_tree_visit(model, model.get_iter_first())
+        if self.export_all_active.get_active():
+            #Export the active tasks in the current view (the ones visible in
+            # the Task Browser
+            model = self.plugin_api.get_task_modelsort()
+            tasks_str = self.treemodel_to_TaskStr(model, model.get_iter_first())
+        elif self.export_finished_last_week.get_active() or \
+                        self.export_all_finished.get_active():
+            #Export done tasks
+            model = self.plugin_api.get_ctask_modelsort()
+            #Step 1:
+            # Generate the list of task_ids in the current browser view (if a
+            # tag is selected, only the closed task with that tag will be
+            #visible
+            task_iter = model.get_iter_first()
+            tids_list = []
+            while task_iter:
+                task = model.get_value(task_iter, 1) # tagtree.COL_OBJ)
+                task_iter = model.iter_next(task_iter)
+                tids_list.append(task.get_id())
+            #Step 2:
+            #Create the task list with all the root {"Done", "Dismissed"}
+            #tasks, that is all the tasks whose parents' status is not one of
+            #those, or which simply have no parent
+            task_iter = model.get_iter_first()
+            tids_set = set(tids_list)
+            tasks_list = []
+            while task_iter:
+                task = model.get_value(task_iter, 1) # tagtree.COL_OBJ)
+                task_iter = model.iter_next(task_iter)
+                if tids_set.isdisjoint(set(task.get_parents())):
+                    if task.get_status() == task.STA_DONE:
+                        tasks_list.append(task)
+            if self.export_finished_last_week.get_active():
+                timespan = -7
+            else:
+                timespan = None
+            tasks_str = self.taskslist_to_TaskStr(tasks_list, timespan)
+
         self.export_document = str(Template (file = self.export_template_path,
                       searchList = [{ 'tasks': tasks_str}]))
         return True
@@ -404,3 +490,4 @@ class pluginExport:
         elif self.preferences["toolbar_entry"]==False and self.toolbar_entry == True:
             self.plugin_api.remove_toolbar_item(self.tb_button)
             self.toolbar_entry = False
+

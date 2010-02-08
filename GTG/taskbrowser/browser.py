@@ -233,6 +233,7 @@ class TaskBrowser:
         self.tagpopup           = self.builder.get_object("TagContextMenu")
         self.nonworkviewtag_checkbox     = self.builder.get_object("nonworkviewtag")
         self.taskpopup          = self.builder.get_object("TaskContextMenu")
+        self.defertopopup       = self.builder.get_object("DeferToContextMenu")
         self.ctaskpopup = \
             self.builder.get_object("ClosedTaskContextMenu")
         self.editbutton         = self.builder.get_object("edit_b")
@@ -313,6 +314,16 @@ class TaskBrowser:
                 self.on_add_new_tag,
             "on_mark_as_done":
                 self.on_mark_as_done,
+            "on_mark_as_started":
+                self.on_mark_as_started,
+            "on_schedule_for_tomorrow":
+                self.on_schedule_for_tomorrow,
+            "on_schedule_for_next_week":
+                self.on_schedule_for_next_week,
+            "on_schedule_for_next_month":
+                self.on_schedule_for_next_month,
+            "on_schedule_for_next_year":
+                self.on_schedule_for_next_year,
             "on_dismiss_task":
                 self.on_dismiss_task,
             "on_delete":
@@ -517,6 +528,8 @@ class TaskBrowser:
                                     requester      = self.req,
                                     taskview       = self.task_tv,
                                     task_modelsort = self.task_modelsort,
+                                    ctaskview      = self.ctask_tv,
+                                    ctask_modelsort= self.ctask_modelsort,
                                     filter_cbs     = self.priv['filter_cbs'],
                                     tagpopup       = self.tagpopup,
                                     tagview        = self.tags_tv,
@@ -738,7 +751,8 @@ class TaskBrowser:
     def get_canonical_date(self, arg):
         """
         Transform "arg" in a valid yyyy-mm-dd date or return None.
-        "arg" can be a yyyy-mm-dd, yyyymmdd, mmdd, today or a weekday name.
+        "arg" can be a yyyy-mm-dd, yyyymmdd, mmdd, today, next week,
+        next month, next year, or a weekday name.
         """
         day_names_en = ["monday", "tuesday", "wednesday", "thursday",
                         "friday", "saturday", "sunday"]
@@ -754,19 +768,24 @@ class TaskBrowser:
                 year = datetime.date.today().year
                 date = "%i-%s-%s" % (year, arg[:2], arg[2:])
         elif arg.lower() == "today" or arg.lower() == _("today"):
-            today = datetime.date.today()
-            year = today.year
-            month = today.month
-            day = today.day
-            date = "%i-%i-%i" % (year, month, day)
+            t = datetime.date.today()
+            date = "%i-%i-%i" % (t.year, t.month, t.day)
         elif arg.lower() == "tomorrow" or\
           arg.lower() == _("tomorrow"):
-            today = datetime.date.today()
-            tomorrow = today + datetime.timedelta(days=1)
-            year = tomorrow.year
-            month = tomorrow.month
-            day = tomorrow.day
-            date = "%i-%i-%i" % (year, month, day)
+            t = datetime.date.today() + datetime.timedelta(days=1)
+            date = "%i-%i-%i" % (t.year, t.month, t.day)
+        elif arg.lower() == "next week" or\
+          arg.lower() == _("next week"):
+            t = datetime.date.today() + datetime.timedelta(days=7)
+            date = "%i-%i-%i" % (t.year, t.month, t.day)
+        elif arg.lower() == "next month" or\
+          arg.lower() == _("next month"):
+            t = datetime.date.today() + datetime.timedelta(days=30)
+            date = "%i-%i-%i" % (t.year, t.month, t.day)
+        elif arg.lower() == "next year" or\
+          arg.lower() == _("next year"):
+            t = datetime.date.today() + datetime.timedelta(days=365)
+            date = "%i-%i-%i" % (t.year, t.month, t.day)
         elif arg.lower() in day_names_en or arg.lower() in day_names:
             today = datetime.date.today()
             today_day = today.weekday()
@@ -1516,6 +1535,33 @@ class TaskBrowser:
         else:
             return False
     
+    def update_start_date(self, widget, new_start_date):
+        tasks_uid = filter(lambda uid: uid != None, self.get_selected_tasks())
+        if len(tasks_uid) == 0:
+            return
+        tasks = [self.req.get_task(uid) for uid in tasks_uid]
+        tasks_status = [task.get_status() for task in tasks]
+        for uid, task, status in zip(tasks_uid, tasks, tasks_status):
+            task.set_start_date(self.get_canonical_date(new_start_date))
+        if self.refresh_lock.acquire(False):
+            gobject.idle_add(self.general_refresh)
+        #FIXME: If the task dialog is displayed, refresh its start_date widget
+
+    def on_mark_as_started(self, widget):
+        self.update_start_date(widget, "today")
+
+    def on_schedule_for_tomorrow(self, widget):
+        self.update_start_date(widget, "tomorrow")
+
+    def on_schedule_for_next_week(self, widget):
+        self.update_start_date(widget, "next week")
+
+    def on_schedule_for_next_month(self, widget):
+        self.update_start_date(widget, "next month")
+
+    def on_schedule_for_next_year(self, widget):
+        self.update_start_date(widget, "next year")
+
     def on_add_new_tag(self, widget=None, tid=None, tryagain = False):
         if not tid:
             self.tids_to_addtag = self.get_selected_tasks()
@@ -1628,7 +1674,7 @@ class TaskBrowser:
             gobject.idle_add(self.ctask_tv.scroll_to_task, task_to_scroll_to)
         if self.refresh_lock.acquire(False):
             gobject.idle_add(self.general_refresh)
-    
+
     def on_select_tag(self, widget, row=None, col=None):
         #When you clic on a tag, you want to unselect the tasks
         self.task_tv.get_selection().unselect_all()

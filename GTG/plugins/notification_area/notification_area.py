@@ -49,13 +49,17 @@ class NotificationArea:
         #Load the preferences
         self.preference_dialog_init()
         self.preferences_load()
+        self.minimized = self.preferences["start_minimized"]
         self.preferences_apply()
 
     def create_static_menu(self):
         self.menu = gtk.Menu()
         self.view_main_window = gtk.CheckMenuItem(_("_View Main Window"))
         self.view_main_window.set_active(True)
-        self.view_main_window.connect('activate', self.minimize, self.plugin_api)
+        self.view_main_window_signal = self.view_main_window.connect(\
+                                            'activate', \
+                                            self.minimize, \
+                                            self.plugin_api)
         self.menu.append(self.view_main_window)
         # menuItem = gtk.ImageMenuItem(gtk.STOCK_ABOUT)
         # menuItem.connect('activate', self.about, self.plugin_api)
@@ -118,6 +122,7 @@ class NotificationArea:
         pass
     
     def minimize(self, widget, plugin_api):
+        self.view_main_window.disconnect(self.view_main_window_signal)
         if self.minimized:
             self.view_main_window.set_active(True)
             plugin_api.show_window()
@@ -126,6 +131,10 @@ class NotificationArea:
             self.view_main_window.set_active(False)
             plugin_api.hide_window()
             self.minimized = not self.minimized
+        self.view_main_window_signal = self.view_main_window.connect(\
+                                            'activate', \
+                                            self.minimize, \
+                                            self.plugin_api)
         
     def on_icon_popup(self, icon, button, timestamp, menu=None):
         if menu:

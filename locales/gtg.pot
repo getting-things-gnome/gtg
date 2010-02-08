@@ -1,46 +1,35 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-01-18 00:09+0100\n"
+"POT-Creation-Date: 2010-01-28 13:44+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2010-01-17 23:32+0000\n"
-"X-Generator: Launchpad (build Unknown)\n"
 
-#: GTG/plugins/rtm_sync/rtm_sync.py:83 GTG/plugins/rtm_sync/rtm_sync.py:89
-msgid "Synchronize with RTM"
+#: GTG/plugins/export/export.py:300
+msgid "Template not found"
 msgstr ""
 
-#: GTG/plugins/rtm_sync/rtm_sync.py:152
-msgid "Synchronization started"
+#: GTG/plugins/export/export.py:301
+msgid "Can't load the template file"
 msgstr ""
 
-#: GTG/plugins/rtm_sync/rtm_sync.py:165
-msgid "Trying to access, please stand by..."
+#: GTG/plugins/export/export.py:330
+msgid "Choose where to save your list"
 msgstr ""
 
-#: GTG/plugins/rtm_sync/rtm_sync.py:183
-msgid "Couldn't connect to Remember The Milk"
-msgstr ""
-
-#: GTG/plugins/rtm_sync/rtm_sync.py:197
-msgid "<b>Authentication failed</b>.Please retry."
-msgstr ""
-
-#: GTG/plugins/rtm_sync/rtm_sync.py:202
-msgid ""
-"Please authenticate to Remember The Milk in the browser that is being opened "
-"now. When done, press OK"
-msgstr ""
-
-#: GTG/plugins/rtm_sync/gtk.glade.h:1
-msgid "Authentication"
+#: GTG/plugins/rtm_sync/utility.py:57
+msgid "saving critical object failed"
 msgstr ""
 
 #: GTG/plugins/rtm_sync/syncengine.py:67
@@ -113,12 +102,34 @@ msgstr ""
 msgid "Closing in one second"
 msgstr ""
 
-#: GTG/plugins/rtm_sync/utility.py:57
-msgid "saving critical object failed"
-msgstr ""
-
 #: GTG/plugins/rtm_sync/pyrtm/rtm.py:55
 msgid "Invalid state"
+msgstr ""
+
+#: GTG/plugins/rtm_sync/rtm_sync.py:83 GTG/plugins/rtm_sync/rtm_sync.py:89
+msgid "Synchronize with RTM"
+msgstr ""
+
+#: GTG/plugins/rtm_sync/rtm_sync.py:152
+msgid "Synchronization started"
+msgstr ""
+
+#: GTG/plugins/rtm_sync/rtm_sync.py:165
+msgid "Trying to access, please stand by..."
+msgstr ""
+
+#: GTG/plugins/rtm_sync/rtm_sync.py:183
+msgid "Couldn't connect to Remember The Milk"
+msgstr ""
+
+#: GTG/plugins/rtm_sync/rtm_sync.py:197
+msgid "<b>Authentication failed</b>.Please retry."
+msgstr ""
+
+#: GTG/plugins/rtm_sync/rtm_sync.py:202
+msgid ""
+"Please authenticate to Remember The Milk in the browser that is being opened "
+"now. When done, press OK"
 msgstr ""
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:1
@@ -171,25 +182,8 @@ msgstr ""
 msgid "Add _New Task"
 msgstr ""
 
-#: GTG/plugins/helloworld/hello_world.glade.h:1
-msgid "Hello World"
-msgstr ""
-
-#: GTG/plugins/helloworld/hello_world.glade.h:2
-msgid "Hello World Plugin"
-msgstr ""
-
-#: GTG/plugins/tomboy/tomboy.glade.h:1
-msgid "Insert Note"
-msgstr ""
-
-#: GTG/plugins/tomboy/tomboy.glade.h:2
-msgid "Insert the title of the tomboy note "
-msgstr ""
-
 #: GTG/plugins/tomboy/tomboy.py:80
-msgid ""
-"Tomboy not found. Please install it or disable the Tomboy plugin in GTG"
+msgid "Tomboy not found. Please install it or disable the Tomboy plugin in GTG"
 msgstr ""
 
 #: GTG/plugins/tomboy/tomboy.py:125
@@ -208,16 +202,131 @@ msgstr ""
 msgid "This Tomboy note does not exist anymore. Do you want to create it?"
 msgstr ""
 
-#: GTG/plugins/export/export.py:213
-msgid "Template not found"
+#: GTG/gtg.py:80
+msgid "gtg is already running!"
 msgstr ""
 
-#: GTG/plugins/export/export.py:214
-msgid "Can't load the template file"
+#: GTG/tools/dates.py:95
+msgid "now"
 msgstr ""
 
-#: GTG/plugins/export/export.py:243
-msgid "Choose where to save your list"
+#: GTG/tools/dates.py:97
+msgid "soon"
+msgstr ""
+
+#: GTG/tools/dates.py:99
+msgid "later"
+msgstr ""
+
+#: GTG/taskeditor/editor.py:310
+msgid "Due tomorrow !"
+msgstr ""
+
+#: GTG/taskeditor/editor.py:312
+#, python-format
+msgid "%s days left"
+msgstr ""
+
+#: GTG/taskeditor/editor.py:314
+msgid "Due today !"
+msgstr ""
+
+#: GTG/taskeditor/editor.py:316
+msgid "Due yesterday"
+msgstr ""
+
+#: GTG/taskeditor/editor.py:318
+#, python-format
+msgid "Was %s days ago"
+msgstr ""
+
+#: GTG/taskeditor/__init__.py:28 GTG/taskbrowser/__init__.py:32
+msgid "Mark as done"
+msgstr ""
+
+#: GTG/taskeditor/__init__.py:29 GTG/taskbrowser/__init__.py:34
+msgid "Mark as not done"
+msgstr ""
+
+#: GTG/taskeditor/__init__.py:30 GTG/taskeditor/taskeditor.glade.h:4
+#: GTG/taskbrowser/taskbrowser.glade.h:18 GTG/taskbrowser/__init__.py:36
+msgid "Dismiss"
+msgstr ""
+
+#: GTG/taskeditor/__init__.py:31 GTG/taskbrowser/__init__.py:38
+msgid "Undismiss"
+msgstr ""
+
+#: GTG/taskeditor/__init__.py:32 GTG/taskeditor/taskeditor.glade.h:7
+msgid "Keep as Note"
+msgstr ""
+
+#: GTG/taskeditor/__init__.py:33
+msgid "Make a Task"
+msgstr ""
+
+#: GTG/taskeditor/__init__.py:35
+msgid "Mark this task as done"
+msgstr ""
+
+#: GTG/taskeditor/__init__.py:36 GTG/taskeditor/__init__.py:38
+msgid "Mark this task as to be done"
+msgstr ""
+
+#: GTG/taskeditor/__init__.py:37
+msgid "Mark this task as not to be done anymore"
+msgstr ""
+
+#: GTG/taskeditor/__init__.py:39
+msgid "Permanently remove this task"
+msgstr ""
+
+#: GTG/taskeditor/__init__.py:40
+msgid "Insert a subtask in this task"
+msgstr ""
+
+#: GTG/taskeditor/__init__.py:41
+msgid "Insert a tag in this task"
+msgstr ""
+
+#: GTG/taskeditor/taskeditor.glade.h:1
+msgid "<span weight=\"bold\">Due for</span>"
+msgstr ""
+
+#: GTG/taskeditor/taskeditor.glade.h:2
+msgid "<span weight=\"bold\">Starting on</span>"
+msgstr ""
+
+#: GTG/taskeditor/taskeditor.glade.h:3 GTG/taskbrowser/taskbrowser.glade.h:17
+msgid "Delete"
+msgstr ""
+
+#: GTG/taskeditor/taskeditor.glade.h:5
+msgid "Insert subtask"
+msgstr ""
+
+#: GTG/taskeditor/taskeditor.glade.h:6
+msgid "Insert tag"
+msgstr ""
+
+#: GTG/taskeditor/taskeditor.glade.h:8
+msgid "Later"
+msgstr ""
+
+#: GTG/taskeditor/taskeditor.glade.h:9
+msgid "Mark Done"
+msgstr ""
+
+#: GTG/taskeditor/taskeditor.glade.h:10
+msgid "Now"
+msgstr ""
+
+#: GTG/taskeditor/taskeditor.glade.h:11
+msgid "Soon"
+msgstr ""
+
+#: GTG/taskeditor/taskeditor.glade.h:12
+msgid "Task"
 msgstr ""
 
 #: GTG/core/plugins/__init__.py:32
@@ -427,8 +536,7 @@ msgid ""
 msgstr ""
 
 #: GTG/core/firstrun_tasks.py:71
-msgid ""
-"What is an actionable task? It's a task you can do directly, right now."
+msgid "What is an actionable task? It's a task you can do directly, right now."
 msgstr ""
 
 #: GTG/core/firstrun_tasks.py:73
@@ -481,150 +589,46 @@ msgid ""
 "your problem really quickly."
 msgstr ""
 
-#: GTG/gtg.py:80
-msgid "gtg is already running!"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:212
-msgid "All tasks"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:219
-msgid "Tasks with no tags"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:728
-msgid "no active tasks"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:730
-msgid "1 active task"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:732
-#, python-format
-msgid "%s active tasks"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:742
-msgid "monday"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:742
-msgid "tuesday"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:742
-msgid "wednesday"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:743
-msgid "thursday"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:743
-msgid "friday"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:743
-msgid "saturday"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:744
-msgid "sunday"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:753
-msgid "today"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:760
-msgid "tomorrow"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:1297
-msgid "tags"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:1297
-msgid "tag"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:1303
-msgid "defer"
-msgstr ""
-
-#: GTG/taskbrowser/browser.py:1308
-msgid "due"
-msgstr ""
-
-#: GTG/taskbrowser/__init__.py:32 GTG/taskeditor/__init__.py:28
-msgid "Mark as done"
-msgstr ""
-
-#: GTG/taskbrowser/__init__.py:33
-msgid "Mark the selected task as done"
-msgstr ""
-
-#: GTG/taskbrowser/__init__.py:34 GTG/taskeditor/__init__.py:29
-msgid "Mark as not done"
-msgstr ""
-
-#: GTG/taskbrowser/__init__.py:35 GTG/taskbrowser/__init__.py:39
-msgid "Mark the selected task as to be done"
-msgstr ""
-
-#: GTG/taskbrowser/__init__.py:36 GTG/taskbrowser/taskbrowser.glade.h:18
-#: GTG/taskeditor/__init__.py:30 GTG/taskeditor/taskeditor.glade.h:4
-msgid "Dismiss"
-msgstr ""
-
-#: GTG/taskbrowser/__init__.py:37
-msgid "Mark the task as not to be done anymore"
-msgstr ""
-
-#: GTG/taskbrowser/__init__.py:38 GTG/taskeditor/__init__.py:31
-msgid "Undismiss"
-msgstr ""
-
-#: GTG/taskbrowser/__init__.py:40
-msgid "Permanently remove the selected task"
-msgstr ""
-
-#: GTG/taskbrowser/__init__.py:41
-msgid "Edit the selected task"
-msgstr ""
-
-#: GTG/taskbrowser/__init__.py:42 GTG/taskbrowser/taskbrowser.glade.h:15
-msgid "Create a new task"
-msgstr ""
-
-#: GTG/taskbrowser/__init__.py:43
-msgid "Create a new subtask"
-msgstr ""
-
-#: GTG/taskbrowser/__init__.py:44
-msgid "Display only the currently actionable tasks"
-msgstr ""
-
-#: GTG/taskbrowser/tasktree.py:392 GTG/taskbrowser/tasktree.py:547
-#: GTG/taskbrowser/taskbrowser.glade.h:44 GTG/taskbrowser/tagtree.py:315
+#: GTG/taskbrowser/tagtree.py:315 GTG/taskbrowser/tasktree.py:415
+#: GTG/taskbrowser/tasktree.py:582 GTG/taskbrowser/taskbrowser.glade.h:44
 msgid "Tags"
 msgstr ""
 
-#: GTG/taskbrowser/tasktree.py:407 GTG/taskbrowser/tasktree.py:571
+#: GTG/taskbrowser/tasktree.py:126
+msgid "Tomorrow"
+msgstr ""
+
+#: GTG/taskbrowser/tasktree.py:128
+msgid "Today"
+msgstr ""
+
+#: GTG/taskbrowser/tasktree.py:130
+msgid "Yesterday"
+msgstr ""
+
+#: GTG/taskbrowser/tasktree.py:132
+#, python-format
+msgid "%s days ago"
+msgstr ""
+
+#: GTG/taskbrowser/tasktree.py:134
+#, python-format
+msgid "In %s days"
+msgstr ""
+
+#: GTG/taskbrowser/tasktree.py:430 GTG/taskbrowser/tasktree.py:606
 msgid "Title"
 msgstr ""
 
-#: GTG/taskbrowser/tasktree.py:420
-msgid "Due date"
+#: GTG/taskbrowser/tasktree.py:443
+msgid "Start date"
 msgstr ""
 
-#: GTG/taskbrowser/tasktree.py:432
-msgid "Days left"
+#: GTG/taskbrowser/tasktree.py:455
+msgid "Due"
 msgstr ""
 
-#: GTG/taskbrowser/tasktree.py:559
+#: GTG/taskbrowser/tasktree.py:594
 msgid "Closing date"
 msgstr ""
 
@@ -678,12 +682,12 @@ msgstr ""
 msgid "Copyrights&#xA9; 2008, 2009 Lionel Dricot, Bertrand Rousseau"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:16
-msgid "D_ismiss"
+#: GTG/taskbrowser/taskbrowser.glade.h:15 GTG/taskbrowser/__init__.py:42
+msgid "Create a new task"
 msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:17 GTG/taskeditor/taskeditor.glade.h:3
-msgid "Delete"
+#: GTG/taskbrowser/taskbrowser.glade.h:16
+msgid "D_ismiss"
 msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:19
@@ -826,119 +830,154 @@ msgid "_Quick Add Entry"
 msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:56
-msgid "_Tags Sidebar"
+msgid "_Schedule for..."
 msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:57
-msgid "_Tasks"
+msgid "_Tags Sidebar"
 msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:58
-msgid "_View"
+msgid "_Tasks"
 msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:59
+msgid "_View"
+msgstr ""
+
+#: GTG/taskbrowser/taskbrowser.glade.h:60
 msgid "_Work View"
 msgstr ""
 
-#: GTG/taskeditor/__init__.py:32 GTG/taskeditor/taskeditor.glade.h:7
-msgid "Keep as Note"
+#: GTG/taskbrowser/taskbrowser.glade.h:61
+msgid "_tomorrow"
 msgstr ""
 
-#: GTG/taskeditor/__init__.py:33
-msgid "Make a Task"
+#: GTG/taskbrowser/taskbrowser.glade.h:62
+msgid "next _month"
 msgstr ""
 
-#: GTG/taskeditor/__init__.py:35
-msgid "Mark this task as done"
+#: GTG/taskbrowser/taskbrowser.glade.h:63
+msgid "next _week"
 msgstr ""
 
-#: GTG/taskeditor/__init__.py:36 GTG/taskeditor/__init__.py:38
-msgid "Mark this task as to be done"
+#: GTG/taskbrowser/taskbrowser.glade.h:64
+msgid "next _year"
 msgstr ""
 
-#: GTG/taskeditor/__init__.py:37
-msgid "Mark this task as not to be done anymore"
+#: GTG/taskbrowser/taskbrowser.glade.h:65
+msgid "t_oday"
 msgstr ""
 
-#: GTG/taskeditor/__init__.py:39
-msgid "Permanently remove this task"
+#: GTG/taskbrowser/browser.py:212
+msgid "All tasks"
 msgstr ""
 
-#: GTG/taskeditor/__init__.py:40
-msgid "Insert a subtask in this task"
+#: GTG/taskbrowser/browser.py:219
+msgid "Tasks with no tags"
 msgstr ""
 
-#: GTG/taskeditor/__init__.py:41
-msgid "Insert a tag in this task"
+#: GTG/taskbrowser/browser.py:744
+msgid "no active tasks"
 msgstr ""
 
-#: GTG/taskeditor/taskeditor.glade.h:1
-msgid "<span weight=\"bold\">Due for</span>"
+#: GTG/taskbrowser/browser.py:746
+msgid "1 active task"
 msgstr ""
 
-#: GTG/taskeditor/taskeditor.glade.h:2
-msgid "<span weight=\"bold\">Starting on</span>"
-msgstr ""
-
-#: GTG/taskeditor/taskeditor.glade.h:5
-msgid "Insert subtask"
-msgstr ""
-
-#: GTG/taskeditor/taskeditor.glade.h:6
-msgid "Insert tag"
-msgstr ""
-
-#: GTG/taskeditor/taskeditor.glade.h:8
-msgid "Later"
-msgstr ""
-
-#: GTG/taskeditor/taskeditor.glade.h:9
-msgid "Mark Done"
-msgstr ""
-
-#: GTG/taskeditor/taskeditor.glade.h:10
-msgid "Now"
-msgstr ""
-
-#: GTG/taskeditor/taskeditor.glade.h:11
-msgid "Soon"
-msgstr ""
-
-#: GTG/taskeditor/taskeditor.glade.h:12
-msgid "Task"
-msgstr ""
-
-#: GTG/taskeditor/editor.py:308
-msgid "Due tomorrow !"
-msgstr ""
-
-#: GTG/taskeditor/editor.py:310
+#: GTG/taskbrowser/browser.py:748
 #, python-format
-msgid "%s days left"
+msgid "%s active tasks"
 msgstr ""
 
-#: GTG/taskeditor/editor.py:312
-msgid "Due today !"
+#: GTG/taskbrowser/browser.py:759
+msgid "monday"
 msgstr ""
 
-#: GTG/taskeditor/editor.py:314
-msgid "Due yesterday"
+#: GTG/taskbrowser/browser.py:759
+msgid "tuesday"
 msgstr ""
 
-#: GTG/taskeditor/editor.py:316
-#, python-format
-msgid "Was %s days ago"
+#: GTG/taskbrowser/browser.py:759
+msgid "wednesday"
 msgstr ""
 
-#: GTG/tools/dates.py:95
-msgid "now"
+#: GTG/taskbrowser/browser.py:760
+msgid "thursday"
 msgstr ""
 
-#: GTG/tools/dates.py:97
-msgid "soon"
+#: GTG/taskbrowser/browser.py:760
+msgid "friday"
 msgstr ""
 
-#: GTG/tools/dates.py:99
-msgid "later"
+#: GTG/taskbrowser/browser.py:760
+msgid "saturday"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:761
+msgid "sunday"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:770
+msgid "today"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:774
+msgid "tomorrow"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:778
+msgid "next week"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:782
+msgid "next month"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:786
+msgid "next year"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:1319
+msgid "tags"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:1319
+msgid "tag"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:1325
+msgid "defer"
+msgstr ""
+
+#: GTG/taskbrowser/browser.py:1330
+msgid "due"
+msgstr ""
+
+#: GTG/taskbrowser/__init__.py:33
+msgid "Mark the selected task as done"
+msgstr ""
+
+#: GTG/taskbrowser/__init__.py:35 GTG/taskbrowser/__init__.py:39
+msgid "Mark the selected task as to be done"
+msgstr ""
+
+#: GTG/taskbrowser/__init__.py:37
+msgid "Mark the task as not to be done anymore"
+msgstr ""
+
+#: GTG/taskbrowser/__init__.py:40
+msgid "Permanently remove the selected task"
+msgstr ""
+
+#: GTG/taskbrowser/__init__.py:41
+msgid "Edit the selected task"
+msgstr ""
+
+#: GTG/taskbrowser/__init__.py:43
+msgid "Create a new subtask"
+msgstr ""
+
+#: GTG/taskbrowser/__init__.py:44
+msgid "Display only the currently actionable tasks"
 msgstr ""

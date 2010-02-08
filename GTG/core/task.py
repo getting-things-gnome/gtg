@@ -204,7 +204,7 @@ class Task:
     def set_start_date(self, fulldate):
         assert(isinstance(fulldate, Date))
         self.start_date = fulldate
-        # why don't we sync here if we do in set_due_date?
+        self.sync()
 
     def get_start_date(self):
         return self.start_date
@@ -216,7 +216,11 @@ class Task:
             #results in a datetime.timedelta object 
             #that does have a 'days' member.
             difference = date_today() - self.start_date
-            return difference.days >= 0 #pylint: disable-msg=E1101
+            if difference.days == 0:
+                # Don't count today's tasks started until morning
+                return datetime.now().hour > 4
+            else:
+                return difference.days > 0 #pylint: disable-msg=E1101
         else:
             return True
 

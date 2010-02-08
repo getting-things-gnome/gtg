@@ -775,7 +775,7 @@ Deleting a task cannot be undone, and will delete the following tasks: </propert
     </child>
     <child>
       <object class="GtkImageMenuItem" id="resetcolor">
-        <property name="label">Reset Color</property>
+        <property name="label" translatable="yes">Reset Color</property>
         <property name="visible">True</property>
         <property name="image">image2</property>
         <property name="use_stock">False</property>
@@ -863,6 +863,15 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
       </object>
     </child>
     <child>
+      <object class="GtkImageMenuItem" id="tcm_schedule_menu">
+        <property name="label" translatable="yes">_Schedule for...</property>
+        <property name="visible">True</property>
+        <property name="submenu">ScheduleForContextMenu</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">False</property>
+      </object>
+    </child>
+    <child>
       <object class="GtkImageMenuItem" id="tcm_mark_as_done">
         <property name="label" translatable="yes">Mark as _Done</property>
         <property name="visible">True</property>
@@ -906,6 +915,54 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
         <property name="image">image3</property>
         <property name="use_stock">False</property>
         <signal name="activate" handler="on_add_new_tag"/>
+      </object>
+    </child>
+  </object>
+  <object class="GtkMenu" id="ScheduleForContextMenu">
+    <property name="visible">True</property>
+    <child>
+      <object class="GtkImageMenuItem" id="tcm_mark_as_started">
+        <property name="label" translatable="yes">t_oday</property>
+        <property name="visible">True</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">False</property>
+        <signal name="activate" handler="on_mark_as_started"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="tcm_schedule_for_tomorrow">
+        <property name="label" translatable="yes">_tomorrow</property>
+        <property name="visible">True</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">False</property>
+        <signal name="activate" handler="on_schedule_for_tomorrow"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="tcm_schedule_for_next_week">
+        <property name="label" translatable="yes">next _week</property>
+        <property name="visible">True</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">False</property>
+        <signal name="activate" handler="on_schedule_for_next_week"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="tcm_schedule_for_next_month">
+        <property name="label" translatable="yes">next _month</property>
+        <property name="visible">True</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">False</property>
+        <signal name="activate" handler="on_schedule_for_next_month"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="tcm_schedule_for_next_year">
+        <property name="label" translatable="yes">next _year</property>
+        <property name="visible">True</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">False</property>
+        <signal name="activate" handler="on_schedule_for_next_year"/>
       </object>
     </child>
   </object>
