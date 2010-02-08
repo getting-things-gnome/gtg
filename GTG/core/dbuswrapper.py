@@ -134,9 +134,12 @@ class DBusTaskWrapper(dbus.service.Object):
     def open_task_editor(self, tid):
         self.ui.open_task(tid)
         
-    @dbus.service.method(BUSNAME)
-    def open_new_task(self):
+    @dbus.service.method(BUSNAME, in_signature="ss")
+    def open_new_task(self, title, description):
         nt = self.req.new_task(newtask=True)
+        nt.set_title(title)
+        if description != "":
+            nt.set_text(description)
         uid = nt.get_id()
         self.ui.open_task(uid,thisisnew=True)
 
