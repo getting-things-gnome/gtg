@@ -135,6 +135,7 @@ setup(
     'GTG.plugins.rtm_sync',
     'GTG.plugins.notification_area',
     'GTG.plugins.tomboy',
+    'GTG.plugins.import_json',
     ],
   package_data = {
     'GTG.taskbrowser': ['taskbrowser.glade'],
@@ -149,7 +150,8 @@ setup(
         'helloworld.gtg-plugin',
         'notification-area.gtg-plugin',
         'rtm-sync.gtg-plugin',
-        'tomboy.gtg-plugin'
+        'tomboy.gtg-plugin',
+        'import-json.gtg-plugin',
         ],
     'GTG.plugins.rtm_sync': ['rtm.ui', 'pyrtm/rtm.py',
                             'icons/hicolor/16x16/rtm_image.png',
