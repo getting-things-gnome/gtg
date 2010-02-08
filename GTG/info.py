@@ -30,6 +30,7 @@ AUTHORS     = ["Main developers:", \
                "\tJonathan Lange <jml@mumak.net>", \
                "\tMatthew Rasmus <tareth.ml@gmail.com>", \
                "\tBryce Harrington <bryce@bryceharrington.org>", \
+               "\tChris Johnston <chrisjohnston@ubuntu.com>", \
 ]
 ARTISTS     = ["Kalle Persson <kalle@kallepersson.se>", \
                 "Bertrand Rousseau <bertrand.rousseau@gmail.com>"]
