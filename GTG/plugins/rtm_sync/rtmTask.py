@@ -63,7 +63,7 @@ class RtmTask(GenericTask):
                 return getattr(self.task.task, attr)
         else:
             if type(self.task) == list:
-                return getattr(self.task[len(self.task.task) - 1], attr)
+                return getattr(self.task[len(self.task) - 1], attr)
             else:
                 return getattr(self.task, attr)
 
