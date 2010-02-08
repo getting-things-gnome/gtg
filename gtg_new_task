@@ -49,9 +49,9 @@ def get_task(title, body) :
         
 if __name__ == '__main__':
     title = " ".join(sys.argv[1:])
-    body = cgi.escape(sys.stdin.read())
+    body = sys.stdin.read()
     subject_regex = re.compile("^Subject: (.*)$", re.M | re.I)
     if subject_regex.search(body):
         subject = subject_regex.findall(body)[0]
         title = title + ": " + subject
-    get_task(title, body)
+    get_task(title, cgi.escape(body))
