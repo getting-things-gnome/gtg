@@ -1,3 +1,4 @@
+    * Fix bug #511651, white space around title, by mrk
     * Expanded CLI to gtg to support task descriptions by Bryce Harrington
     * Added a guide to plugins by Chris Johnston
     * RTM plugin tags synchronization by Luca Invernizzi
