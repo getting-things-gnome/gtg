@@ -1342,7 +1342,7 @@ class TaskBrowser:
             # Create the new task
             task = self.req.new_task(tags=tags, newtask=True)
             if text != "":
-                task.set_title(text)
+                task.set_title(text.strip())
                 task.set_to_keep()
             task.set_due_date(due_date)
             task.set_start_date(defer_date)
