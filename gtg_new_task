@@ -38,7 +38,7 @@ def get_task(title, body) :
     remote_object = bus.get_object(busname,"/org/GTG")
     timi = dbus.Interface(remote_object,dbus_interface="org.GTG")
     #Calling the method
-    timi.open_new_task()
+    timi.open_new_task(title, body)
 
 def usage():
     print _("Usage: %s [-i | --interactive] [-h | --help]") % sys.argv[0]
@@ -62,7 +62,7 @@ if __name__ == '__main__':
         else:
             assert False, "unhandled option"
 
-    title = " ".join(sys.argv[1:])
+    title = " ".join(args)
     if interactive:
         optlist, args = getopt.getopt(args, 'i::')
         body = sys.stdin.read()
