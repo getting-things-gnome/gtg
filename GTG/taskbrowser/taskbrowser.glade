@@ -1188,9 +1188,10 @@ commas.</property>
   <object class="GtkDialog" id="PreferencesDialog">
     <property name="border_width">5</property>
     <property name="title" translatable="yes">Getting Things GNOME! Preferences</property>
+    <property name="window_position">center-on-parent</property>
     <property name="default_width">500</property>
     <property name="default_height">500</property>
-    <property name="type_hint">normal</property>
+    <property name="type_hint">dialog</property>
     <child internal-child="vbox">
       <object class="GtkVBox" id="prefs-vbox1">
         <property name="visible">True</property>
@@ -1286,6 +1287,36 @@ commas.</property>
                                         <property name="position">0</property>
                                       </packing>
                                     </child>
+                                    <child>
+                                      <object class="GtkHBox" id="prefs-hbox1">
+                                        <property name="visible">True</property>
+                                        <child>
+                                          <object class="GtkCheckButton" id="pref_hide_closed">
+                                            <property name="label" translatable="yes">Hide closed tasks older than</property>
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">True</property>
+                                            <property name="receives_default">False</property>
+                                            <property name="draw_indicator">True</property>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="position">0</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkComboBox" id="pref_hide_closed_age">
+                                            <property name="visible">True</property>
+                                          </object>
+                                          <packing>
+                                            <property name="position">1</property>
+                                          </packing>
+                                        </child>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="position">1</property>
+                                      </packing>
+                                    </child>
                                   </object>
                                 </child>
                               </object>
@@ -1352,7 +1383,7 @@ commas.</property>
                 <child type="tab">
                   <object class="GtkLabel" id="prefs-label1">
                     <property name="visible">True</property>
-                    <property name="label" translatable="yes">GTG</property>
+                    <property name="label" translatable="yes">Behaviour</property>
                   </object>
                   <packing>
                     <property name="tab_fill">False</property>
@@ -1588,7 +1619,8 @@ commas.</property>
   </object>
   <object class="GtkAboutDialog" id="PluginAboutDialog">
     <property name="border_width">5</property>
-    <property name="type_hint">normal</property>
+    <property name="window_position">mouse</property>
+    <property name="type_hint">dialog</property>
     <signal name="close" handler="on_PluginAboutDialog_close"/>
     <signal name="response" handler="on_PluginAboutDialog_close"/>
     <child internal-child="vbox">
@@ -1641,11 +1673,12 @@ commas.</property>
   </object>
   <object class="GtkImage" id="pref_img_plugin">
     <property name="visible">True</property>
-    <property name="stock">gtk-connect</property>
+    <property name="icon_name">gtg-plugin</property>
   </object>
   <object class="GtkDialog" id="PluginConfigDialog">
     <property name="border_width">5</property>
-    <property name="type_hint">normal</property>
+    <property name="window_position">mouse</property>
+    <property name="type_hint">dialog</property>
     <property name="has_separator">False</property>
     <child internal-child="vbox">
       <object class="GtkVBox" id="pc-vbox1">

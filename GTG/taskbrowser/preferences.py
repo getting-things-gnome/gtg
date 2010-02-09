@@ -42,7 +42,7 @@ def plugin_icon(column, cell, store, iter):
     See PreferencesDialog._init_plugin_tree().
     
     """
-    cell.set_property('stock-id', gtk.STOCK_CONNECT)
+    cell.set_property('icon-name', 'gtg-plugin')
     cell.set_property('sensitive', store.get_value(iter,
       PLUGINS_COL_ACTIVATABLE))
 
