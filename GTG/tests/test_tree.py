@@ -91,6 +91,18 @@ class TestTree(unittest.TestCase):
         mynode = tree.get_node('2@2')
         node_path = tree.get_path_for_node(mynode)
         self.assertEqual("",node_path)
+        
+    def test_visit(self):
+        self.counter = 0
+        self.counter2 = 0
+        def pre(node):
+            self.counter += 1
+        def post(node):
+            self.counter2 += 1
+        tree = self._build_tree(4,flat=False)
+        tree.visit_tree(pre_func=pre,post_func=post)
+        self.assertEqual(7,self.counter)
+        self.assertEqual(7,self.counter2)
 
 #    def test_name_is_attribute(self):
 #        # The name of the tag is also stored as an attribute.

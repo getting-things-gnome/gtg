@@ -330,9 +330,3 @@ class TreeNode():
         for c in self.get_children():
             c.add_parent(newid)
             c.remove_parent(oldid)
-        
-#    def reparent(self, parent):
-#        if self.has_parent():
-#            self.get_parent().remove_child(self.id)
-#        self.set_parent(parent)
-#        parent.add_child(self.id, self)
