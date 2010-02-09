@@ -70,18 +70,22 @@ class Tree():
             self.nodes[id] = node
 
     #this will remove a node and all his children
+    #does nothing if the node doesn't exist
     def remove_node(self, id):
         node = self.get_node(id)
-        if node.has_child():
-            for c_id in node.get_children():
-                self.remove_node(c_id)
-        if node.has_parent():
-            for p_id in node.get_parents():
-                par = self.get_node(p_id)
-                par.remove_child(id)
+        if not node :
+            return
         else:
-            self.root.remove_child(id)
-        self.nodes.pop(id)
+            if node.has_child():
+                for c_id in node.get_children():
+                    self.remove_node(c_id)
+            if node.has_parent():
+                for p_id in node.get_parents():
+                    par = self.get_node(p_id)
+                    par.remove_child(id)
+            else:
+                self.root.remove_child(id)
+            self.nodes.pop(id)
         
     #create a new relationship between nodes if it doesn't already exist
     #return False if nothing was done
@@ -125,6 +129,9 @@ class Tree():
             return self.nodes[id]
         else:
             return None
+            
+    def get_all_keys(self):
+        return list(self.nodes.keys())
             
     def get_all_nodes(self):
         li = []

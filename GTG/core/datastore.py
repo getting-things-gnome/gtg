@@ -37,7 +37,6 @@ class DataStore:
 
     def __init__(self):
         self.backends = {}
-        self.tasks = {}
         self.open_tasks = Tree()
         self.closed_tasks = Tree()
         self.requester = requester.Requester(self)
@@ -46,11 +45,11 @@ class DataStore:
     def all_tasks(self):
         all_tasks = []
         #We also add tasks that are still not in a backend (because of threads)
-        tlist = self.tasks.keys()
-        for t in tlist:
-            task = self.tasks[t]
+        tlist = self.open_tasks.get_all_nodes()
+        tlist += self.closed_tasks.get_all_nodes()
+        for task in tlist:
             if task.is_loaded():
-                all_tasks.append(t)
+                all_tasks.append(task.get_id())
             else:
                 if task.get_status() == "Active":
 #                    print "task %s is not loaded" %task.get_id()
@@ -60,13 +59,13 @@ class DataStore:
         return all_tasks
 
     def has_task(self, tid):
-        return tid in self.tasks
+        return self.open_tasks.has_node(tid) or self.closed_tasks.has_node(tid)
 
     def get_task(self, tid):
 #        if tid == "46@1":
 #            print "getting 46@1"
-        if tid in self.tasks:
-            empty_task = self.tasks[tid]
+        if self.has_task(tid):
+            empty_task = self.__internal_get_task(tid)
         else:
             empty_task = self.new_task(tid, newtask=False)
         if tid and not empty_task.is_loaded():
@@ -75,24 +74,27 @@ class DataStore:
             task = back.get_task(empty_task, tid)
         else:
             task = empty_task
-        #If the task doesn't exist, we create it with a forced pid
-#        if not self.tasks[tid].is_loaded():
-#            print "tid %s - %s" %(tid,self.tasks[tid].get_title())
-#            for t in self.tasks:
-#                print self.tasks[t]
-#                print "----------------"
-#            print "###########################"
         return task
+        
+    def __internal_get_task(self, tid):
+        toreturn = self.open_tasks.get_node(tid)
+        if toreturn == None:
+            self.closed_tasks.get_node(tid)
+        else:
+            #print "error : this task doesn't exist in either tree"
+            pass
+        return toreturn
 
     def delete_task(self, tid):
-        if tid and tid in self.tasks:
-            self.tasks[tid].delete()
+        if tid and self.has_task(tid):
+            self.__internal_get_task(tid).delete()
             uid, pid = tid.split('@') #pylint: disable-msg=W0612
             back = self.backends[pid]
             #Check that the task still exist. It might have been deleted
             #by its parent a few line earlier :
-            if tid in self.tasks:
-                self.tasks.pop(tid)
+            if self.has_task(tid):
+                self.open_tasks.remove_node(tid)
+                self.closed_tasks.remove_node(tid)
             back.remove_task(tid)
 
     #Create a new task and return it.
@@ -103,21 +105,22 @@ class DataStore:
         if not pid:
             pid = DEFAULT_BACKEND
         #If tid, we force that tid and create a real new task
-        if tid and tid not in self.tasks:
+        if tid and not self.has_task(tid):
             task = Task(tid, self.requester, newtask=newtask)
             uid, pid = tid.split('@') #pylint: disable-msg=W0612
-            self.tasks[tid] = task
+            #By default, a new task is active. We then put it in the Active tree
+            self.open_tasks.add_node(task)
             toreturn = task
         #Else we create a new task in the given pid
         elif not tid and pid and pid in self.backends:
             newtid = self.backends[pid].new_task_id()
             task = Task(newtid, self.requester, newtask=newtask)
-            self.tasks[newtid] = task
+            self.open_tasks.add_node(task)
             task = self.backends[pid].get_task(task, newtid)
             toreturn = task
             tid = newtid
         elif tid:
-            toreturn = self.tasks[tid]
+            toreturn = self.__internal_get_task(tid)
         else:
             print "not possible to build the task = bug"
             toreturn = None
