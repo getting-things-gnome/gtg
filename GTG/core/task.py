@@ -238,7 +238,7 @@ class Task:
         else:
             return ""
 
-    def get_excerpt(self, lines=0, char=0):
+    def get_excerpt(self, lines=0, char=0, strip_tags=False, strip_subtasks=True):
         """
         get_excerpt return the beginning of the content of the task.
         If "lines" is provided and different than 0, it return the number X
@@ -253,8 +253,12 @@ class Task:
         """
         #defensive programmtion to avoid returning None
         if self.content:
-            element = xml.dom.minidom.parseString(self.content)
-            txt = self.__strip_content(element)
+            txt = self.content
+            if strip_tags:
+                for tag in self.get_tags_name():
+                    txt = self._strip_tag(txt, tag)
+            element = xml.dom.minidom.parseString(txt)
+            txt = self.__strip_content(element, strip_subtasks=strip_subtasks)
             txt = txt.strip()
             #We keep the desired number of lines
             if lines > 0:
@@ -271,12 +275,16 @@ class Task:
         else:
             return ""
 
-    def __strip_content(self, element):
+    def __strip_content(self, element, strip_subtasks=False):
         txt = ""
         if element:
             for n in element.childNodes:
                 if n.nodeType == n.ELEMENT_NODE:
-                    txt += self.__strip_content(n)
+                    if strip_subtasks and n.tagName=='subtask':
+                        if txt[-2:]=='→ ':
+                            txt = txt[:-2]
+                    else:
+                        txt += self.__strip_content(n, strip_subtasks)
                 elif n.nodeType == n.TEXT_NODE:
                     txt += n.nodeValue
         return txt
@@ -562,11 +570,19 @@ class Task:
             for child in self.get_subtasks():
                 if child.can_be_deleted:
                     child.remove_tag(tagname)
-        self.content = (self.content
-                        .replace('<tag>%s</tag>\n\n'%(tagname), '') #trail \n
-                        .replace('<tag>%s</tag>, '%(tagname), '') #trail comma
-                        .replace('<tag>%s</tag>'%(tagname), '')
-                       )
+        self.content = self._strip_tag(self.content, tagname)
+                       
+    def _strip_tag(self, text, tagname):
+        return (text
+                    .replace('<tag>%s</tag>\n\n'%(tagname), '') #trail \n
+                    .replace('<tag>%s</tag>, '%(tagname), '') #trail comma
+                    .replace('<tag>%s</tag>'%(tagname), '')
+                    #in case XML is missing (bug #504899)
+                    .replace('%s\n\n'%(tagname), '') 
+                    .replace('%s, '%(tagname), '') 
+                    .replace(tagname, '')
+               )
+     
 
     #tag_list is a list of tags object
     #return true if at least one of the list is in the task
