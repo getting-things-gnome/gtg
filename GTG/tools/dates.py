@@ -18,7 +18,12 @@
 # -----------------------------------------------------------------------------
 
 from datetime import date, timedelta
+import locale
+from calendar import isleap
 from GTG import _
+
+#setting the locale of gtg to the system locale 
+locale.setlocale(locale.LC_TIME, '')
 
 class Date(object):
     def __cmp__(self, other):
@@ -27,6 +32,9 @@ class Date(object):
     
     def __sub__(self, other):
         return self.to_py_date() - other.to_py_date()
+
+    def __get_locale_string(self):
+        return locale.nl_langinfo(locale.D_FMT)
         
     def xml_str(self): return str(self)
         
@@ -34,8 +42,35 @@ class Date(object):
     def month(self):    return self.to_py_date().month
     def year(self):     return self.to_py_date().year
 
+    def to_readeable_string(self):
+        if self.to_py_date() == NoDate().to_py_date():
+            return None
+        dleft = (self.to_py_date() - date.today()).days
+        if dleft == 1:
+            return _("Tomorrow")
+        elif dleft == 0:
+            return _("Today")
+        elif dleft == -1:
+            return _("Yesterday")
+        elif dleft < -1:
+            return _("%s days ago") % str(abs(dleft))
+        elif dleft > 1 and dleft <= 15:
+            return _("In %s days") % str(dleft)
+        else:
+            locale_format = self.__get_locale_string()
+            if isleap(date.today().year):
+                year_len = 366
+            else:
+                year_len = 365
+            if float(dleft) / year_len < 1.0:
+                #if it's in less than a year, don't show the year field
+                locale_format = locale_format.replace('/%Y','')
+            return  self.to_py_date().strftime(locale_format)
+
+
 class FuzzyDate(Date):
     def __init__(self, offset, name):
+        super(FuzzyDate, self).__init__()
         self.name=name
         self.offset=offset
         
@@ -61,6 +96,7 @@ LATER = FuzzyDateFixed(date.max, 'later')
 
 class RealDate(Date):
     def __init__(self, dt):
+        super(RealDate, self).__init__()
         assert(dt is not None)
         self.proto = dt
         
@@ -75,6 +111,10 @@ class RealDate(Date):
       
 DATE_MAX_MINUS_ONE = date.max-timedelta(1)  # sooner than 'later'
 class NoDate(Date):
+
+    def __init__(self):
+        super(NoDate, self).__init__()
+
     def to_py_date(self):
         return DATE_MAX_MINUS_ONE
     
