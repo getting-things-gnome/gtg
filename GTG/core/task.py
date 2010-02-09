@@ -277,6 +277,8 @@ class Task:
                 if n.nodeType == n.ELEMENT_NODE:
                     if n.tagName!='subtask':
                         txt += self.__strip_content(n)
+                    elif txt[-2:]=='→ ':
+                    	txt = txt[:-2]
                 elif n.nodeType == n.TEXT_NODE:
                     txt += n.nodeValue
         return txt
