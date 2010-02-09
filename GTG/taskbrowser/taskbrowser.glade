@@ -444,10 +444,9 @@
           <object class="GtkHPaned" id="hpaned1">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="position">250</property>
-            <property name="position_set">True</property>
             <child>
               <object class="GtkVBox" id="sidebar">
+                <property name="width_request">250</property>
                 <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkHBox" id="hbox4">
@@ -517,7 +516,7 @@
               </object>
               <packing>
                 <property name="resize">False</property>
-                <property name="shrink">True</property>
+                <property name="shrink">False</property>
               </packing>
             </child>
             <child>
@@ -567,6 +566,7 @@
                   <object class="GtkVPaned" id="vpaned1">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="orientation">vertical</property>
                     <property name="position">300</property>
                     <property name="position_set">True</property>
                     <child>
@@ -586,7 +586,7 @@
                     </child>
                     <child>
                       <object class="GtkScrolledWindow" id="closed_pane">
-                        <property name="height_request">200</property>
+                        <property name="height_request">100</property>
                         <property name="can_focus">True</property>
                         <property name="hscrollbar_policy">automatic</property>
                         <property name="vscrollbar_policy">automatic</property>
@@ -596,7 +596,7 @@
                       </object>
                       <packing>
                         <property name="resize">True</property>
-                        <property name="shrink">True</property>
+                        <property name="shrink">False</property>
                       </packing>
                     </child>
                   </object>
@@ -866,7 +866,6 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
       <object class="GtkImageMenuItem" id="tcm_schedule_menu">
         <property name="label" translatable="yes">_Schedule for...</property>
         <property name="visible">True</property>
-        <property name="submenu">ScheduleForContextMenu</property>
         <property name="use_underline">True</property>
         <property name="use_stock">False</property>
       </object>
