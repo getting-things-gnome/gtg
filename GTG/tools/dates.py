@@ -80,6 +80,9 @@ class FuzzyDate(Date):
     def __str__(self):
         return _(self.name)
         
+    def to_readeable_string(self):
+    	return _(self.name)
+        
     def xml_str(self):
     	return self.name
         
