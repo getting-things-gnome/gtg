@@ -42,7 +42,7 @@ class Date(object):
     def month(self):    return self.to_py_date().month
     def year(self):     return self.to_py_date().year
 
-    def to_readeable_string(self):
+    def to_readable_string(self):
         if self.to_py_date() == NoDate().to_py_date():
             return None
         dleft = (self.to_py_date() - date.today()).days
@@ -80,7 +80,7 @@ class FuzzyDate(Date):
     def __str__(self):
         return _(self.name)
         
-    def to_readeable_string(self):
+    def to_readable_string(self):
     	return _(self.name)
         
     def xml_str(self):
