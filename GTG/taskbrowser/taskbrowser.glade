@@ -567,8 +567,6 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="orientation">vertical</property>
-                    <property name="position">300</property>
-                    <property name="position_set">True</property>
                     <child>
                       <object class="GtkScrolledWindow" id="main_pane">
                         <property name="visible">True</property>
@@ -866,6 +864,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
       <object class="GtkImageMenuItem" id="tcm_schedule_menu">
         <property name="label" translatable="yes">_Schedule for...</property>
         <property name="visible">True</property>
+        <property name="submenu">ScheduleForContextMenu</property>
         <property name="use_underline">True</property>
         <property name="use_stock">False</property>
       </object>
