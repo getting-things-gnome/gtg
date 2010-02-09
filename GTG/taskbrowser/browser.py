@@ -324,6 +324,22 @@ class TaskBrowser:
                 self.on_schedule_for_next_month,
             "on_schedule_for_next_year":
                 self.on_schedule_for_next_year,
+            "on_set_due_today":
+                self.on_set_due_today,
+            "on_set_due_tomorrow":
+                self.on_set_due_tomorrow,
+            "on_set_due_next_week":
+                self.on_set_due_next_week,
+            "on_set_due_next_month":
+                self.on_set_due_next_month,
+            "on_set_due_next_year":
+                self.on_set_due_next_year,
+            "on_set_due_now":
+                self.on_set_due_now,
+            "on_set_due_soon":
+                self.on_set_due_soon,
+            "on_set_due_later":
+                self.on_set_due_later,
             "on_dismiss_task":
                 self.on_dismiss_task,
             "on_delete":
@@ -1564,6 +1580,42 @@ class TaskBrowser:
 
     def on_schedule_for_next_year(self, widget):
         self.update_start_date(widget, "next year")
+        
+    def update_due_date(self, widget, new_start_date):
+        tasks_uid = filter(lambda uid: uid != None, self.get_selected_tasks())
+        if len(tasks_uid) == 0:
+            return
+        tasks = [self.req.get_task(uid) for uid in tasks_uid]
+        tasks_status = [task.get_status() for task in tasks]
+        for uid, task, status in zip(tasks_uid, tasks, tasks_status):
+            task.set_due_date(self.get_canonical_date(new_start_date))
+        if self.refresh_lock.acquire(False):
+            gobject.idle_add(self.general_refresh)
+        #FIXME: If the task dialog is displayed, refresh its start_date widget
+        
+    def on_set_due_today(self, widget):
+        self.update_due_date(widget, "today")
+
+    def on_set_due_tomorrow(self, widget):
+        self.update_due_date(widget, "tomorrow")
+
+    def on_set_due_next_week(self, widget):
+        self.update_due_date(widget, "next week")
+
+    def on_set_due_next_month(self, widget):
+        self.update_due_date(widget, "next month")
+
+    def on_set_due_next_year(self, widget):
+        self.update_due_date(widget, "next year")
+        
+    def on_set_due_now(self, widget):
+        self.update_due_date(widget, "now")
+        
+    def on_set_due_soon(self, widget):
+        self.update_due_date(widget, "soon")
+        
+    def on_set_due_later(self, widget):
+        self.update_due_date(widget, "later")
 
     def on_add_new_tag(self, widget=None, tid=None, tryagain = False):
         if not tid:

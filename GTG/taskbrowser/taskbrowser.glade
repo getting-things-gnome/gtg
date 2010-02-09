@@ -862,9 +862,18 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
     </child>
     <child>
       <object class="GtkImageMenuItem" id="tcm_schedule_menu">
-        <property name="label" translatable="yes">_Schedule for...</property>
-        <property name="visible">True</property>
+        <property name="label" translatable="yes">_Set start date</property>
         <property name="submenu">ScheduleForContextMenu</property>
+        <property name="visible">True</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">False</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="tcm_due_menu">
+        <property name="label" translatable="yes">Set due date</property>
+        <property name="submenu">DueContextMenu</property>
+        <property name="visible">True</property>
         <property name="use_underline">True</property>
         <property name="use_stock">False</property>
       </object>
@@ -1187,5 +1196,85 @@ commas.</property>
     <property name="visible">True</property>
     <property name="pixel_size">16</property>
     <property name="icon_name">gtg-tag</property>
+  </object>
+  <object class="GtkMenu" id="DueContextMenu">
+    <property name="visible">True</property>
+    <child>
+      <object class="GtkImageMenuItem" id="tcm_due_today">
+        <property name="label" translatable="yes">t_oday</property>
+        <property name="visible">True</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">False</property>
+        <signal name="activate" handler="on_set_due_today"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="tcm_due_tomorrow">
+        <property name="label" translatable="yes">_tomorrow</property>
+        <property name="visible">True</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">False</property>
+        <signal name="activate" handler="on_set_due_tomorrow"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="tcm_due_next_week">
+        <property name="label" translatable="yes">next _week</property>
+        <property name="visible">True</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">False</property>
+        <signal name="activate" handler="on_set_due_next_week"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="tcm_due_next_month">
+        <property name="label" translatable="yes">next _month</property>
+        <property name="visible">True</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">False</property>
+        <signal name="activate" handler="on_set_due_next_month"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="tcm_due_next_year">
+        <property name="label" translatable="yes">next _year</property>
+        <property name="visible">True</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">False</property>
+        <signal name="activate" handler="on_set_due_next_year"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkSeparatorMenuItem" id="menuitem1">
+        <property name="visible">True</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="tcm_due_now">
+        <property name="label" translatable="yes">_now</property>
+        <property name="visible">True</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">False</property>
+        <signal name="activate" handler="on_set_due_now"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="tcm_due_soon">
+        <property name="label" translatable="yes">_soon</property>
+        <property name="visible">True</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">False</property>
+        <signal name="activate" handler="on_set_due_soon"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="tcm_due_later">
+        <property name="label" translatable="yes">_later</property>
+        <property name="visible">True</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">False</property>
+        <signal name="activate" handler="on_set_due_later"/>
+      </object>
+    </child>
   </object>
 </interface>
