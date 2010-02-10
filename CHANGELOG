@@ -1,3 +1,4 @@
+    * notification area plugin updated to support appindicate by Luca Invernizzi and Jono Bacon
     * gtg_new task now supports command switches by Luca Invernizzi
     * Fix bug #511651, white space around title, by mrk
     * Expanded CLI to gtg to support task descriptions by Bryce Harrington
