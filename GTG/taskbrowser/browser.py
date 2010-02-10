@@ -181,7 +181,7 @@ class TaskBrowser:
     def _init_models(self):
 
         # Base models
-        self.task_tree_model = TaskTreeModel(requester=self.req)
+        self.task_tree_model = TaskTreeModel(requester=self.req, browser=self)
         
         # Active Tasks
         self.task_modelfilter = self.task_tree_model.filter_new()
