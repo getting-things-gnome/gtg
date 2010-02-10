@@ -85,6 +85,7 @@ class SyncEngine(object):
     def synchronizeWorker(self):
         #Generate the two list of tasks from the local and remote task source 
         self.update_status(_("Downloading task list..."))
+        self.update_substatus(_("Downloading..."))
         self.update_progressbar(0.1)
         self.remote_proxy.generateTaskList()
         self.local_proxy.generateTaskList()

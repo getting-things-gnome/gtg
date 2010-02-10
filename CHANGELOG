@@ -1,3 +1,14 @@
+    * notification area plugin updated to support appindicate by Luca Invernizzi and Jono Bacon
+    * gtg_new task now supports command switches by Luca Invernizzi
+    * Fix bug #511651, white space around title, by mrk
+    * Expanded CLI to gtg to support task descriptions by Bryce Harrington
+    * Added a guide to plugins by Chris Johnston
+    * RTM plugin tags synchronization by Luca Invernizzi
+    * Evolution plugin by Luca Invernizzi
+    * Tomboy support by Luca Invernizzi
+    * Dbus autostart by Gordon Ball and Luca Invernizzi
+    * Notification area bug fixes by Luca Invernizzi
+
 2009-12-11 Getting Things GNOME! 0.2.1
     * Schedule for context menu by Bryce Harrington
     * Improved export feature by Bryce Harrington and Luca Invernizzi

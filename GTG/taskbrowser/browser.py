@@ -588,6 +588,9 @@ class TaskBrowser:
 
         # Extract state from configuration dictionary
         if not "browser" in self.config:
+            #necessary to have the minimum width of the tag pane
+            # inferior to the "first run" width
+            self.builder.get_object("hpaned1").set_position(250)
             return
 
         if ("width" in self.config["browser"] and
@@ -1285,7 +1288,7 @@ class TaskBrowser:
             # Create the new task
             task = self.req.new_task(tags=tags, newtask=True)
             if text != "":
-                task.set_title(text)
+                task.set_title(text.strip())
                 task.set_to_keep()
             task.set_due_date(due_date)
             task.set_start_date(defer_date)

@@ -42,6 +42,8 @@ class GenericTask(object):
             self.status = task.status
         if self.due_date != task.due_date:
             self.due_date = task.due_date
+        #we'll let the tasks object decide what to do with tags
+        self.tags = task.tags
 
     def get_proxy(self):
         return self.__proxy

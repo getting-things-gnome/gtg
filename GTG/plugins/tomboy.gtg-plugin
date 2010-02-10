@@ -6,5 +6,5 @@ Authors=Luca Invernizzi <invernizzi.l@gmail.com>
 Version=0.1.9
 Enabled=False
 #Dbus-dependencies=org.gnome.Tomboy:/org/gnome/Tomboy
-Dependencies=dbus
+Dependencies=dbus,
 

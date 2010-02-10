@@ -118,28 +118,13 @@ class TaskTreeModel(gtk.GenericTreeModel):
         elif column == COL_TITLE:
             return saxutils.escape(task.get_title())
         elif column == COL_SDATE:
-            return str(task.get_start_date())
+            return task.get_start_date().to_readable_string()
         elif column == COL_DDATE:
-            return str(task.get_due_date())
+            return task.get_due_date().to_readable_string()
         elif column == COL_DUE:
-            dleft = task.get_days_left()
-            if not dleft:
-                return str(task.get_due_date())
-            if dleft == 1:
-                return _("Tomorrow")
-            if dleft == 0:
-                return _("Today")
-            if dleft == -1:
-                return _("Yesterday")
-            if dleft < -1:
-                return _("%s days ago") % str(abs(dleft))
-            if dleft > 1 and dleft <= 15:
-                return _("In %s days") % str(dleft)
-            else:
-                return str(task.get_due_date())
-
+            return task.get_due_date().to_readable_string()
         elif column == COL_CDATE:
-            return str(task.get_closed_date())
+            return task.get_closed_date().to_readable_string()
         elif column == COL_CDATE_STR:
             if task.get_status() == Task.STA_DISMISSED:
                 date = "<span color='#AAAAAA'>" +\
@@ -440,6 +425,7 @@ class ActiveTaskTreeView(TaskTreeView):
         title_col.set_cell_data_func(render_text, self._celldatafunction)
         self.append_column(title_col)
         self.columns.insert(COL_TITLE, title_col)
+        self.set_search_column(COL_TITLE)
 
         # Start date column
         sdate_col   = gtk.TreeViewColumn()
@@ -614,6 +600,7 @@ class ClosedTaskTreeView(TaskTreeView):
         title_col.set_sort_column_id(COL_TITLE)
         self.append_column(title_col)
         self.columns.insert(COL_TITLE, title_col)
+        self.set_search_column(COL_TITLE)
         
         self.set_show_expanders(False)
 

@@ -15,7 +15,6 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 import sys
 import os
-import xml.dom.minidom
 import datetime
 import time
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))+'/pyrtm')
@@ -40,8 +39,7 @@ class RtmTask(GenericTask):
         if hasattr(self.task,"name"):
             return self.task.name
         else:
-            if self.logger:
-                self.logger.debug ("rtm task has no title")
+            self.__log("rtm task has no title: " + str(self.task))
             return ""
 
     def _set_title(self, title):
@@ -52,21 +50,30 @@ class RtmTask(GenericTask):
                         name = title)
 
     def _get_id(self):
+        self.__log("getting the task id")
+        return self.__get_rtm_task_attribute("id")
+
+    def __get_rtm_task_attribute(self, attr):
         if hasattr(self.task, 'task'):
-            return self.task.task.id
+            if hasattr(self.task.task, 'list'):
+                return getattr(self.task.task.list, attr)
+            elif type(self.task.task) == list:
+                return getattr(self.task.task[len(self.task.task) - 1], attr)
+            else:
+                return getattr(self.task.task, attr)
         else:
-            return self.task.id
+            if type(self.task) == list:
+                return getattr(self.task[len(self.task) - 1], attr)
+            else:
+                return getattr(self.task, attr)
 
     def _get_status(self):
-        if hasattr(self.task, 'task'):
-            return self.get_proxy()._rtm_to_gtg_status[self.task.task.completed\
-                                                      == ""]
-        else:
-            return self.get_proxy()._rtm_to_gtg_status[self.task.completed == ""]
+        completed = self.__get_rtm_task_attribute("completed")
+        self.__log("getting status:" + str(completed))
+        return self.get_proxy()._rtm_to_gtg_status[completed == ""]
 
     def _set_status(self, gtg_status):
         status = self.get_proxy()._gtg_to_rtm_status[gtg_status]
-        print "setting status"
         if status == True:
             self.rtm.tasks.uncomplete(timeline=self.timeline, \
                                       list_id = self.list_id,\
@@ -79,25 +86,39 @@ class RtmTask(GenericTask):
                                       task_id = self.id)
 
     def _get_tags(self):
+        self.__log("getting tag list(1): " + str(self.task))
         if hasattr(self.task,"tags") and hasattr(self.task.tags, 'tag'):
+            self.__log("getting tag list(2): " + str(self.task.tags.tag))
             if type(self.task.tags.tag) ==list:
                 return self.task.tags.tag
             else:
                 return [self.task.tags.tag]
         elif hasattr(self.task,"tags") and hasattr(self.task.tags, 'list'):
+            self.__log("getting tag list(2): " + str(self.task.tags.list))
             return map(lambda x: x.tag if hasattr(x, 'tag') else None, \
                        self.task.tags.list)
         return []
 
     def _set_tags(self, tags):
-        tagstxt=""
+        #remove the @ at the beginning
+        tags_purified = []
         for tag in tags:
-            name = tag.get_name()
-            name_fixed = name[name.find('@')+1:]
-            if tagstxt == "":
-                tagstxt = name_fixed
-            else:
-                tagstxt = tagstxt+ ",  " + name_fixed
+            if tag[0] == '@':
+                tag = tag[1:]
+            tags_purified.append(tag.lower())
+
+        #check if it's necessary to sync
+        rtm_tags_set = set(self.tags)
+        tags_purified_set = set(tags_purified)
+        if rtm_tags_set.intersection(tags_purified_set) == set() and \
+           rtm_tags_set.union(tags_purified_set) == rtm_tags_set:
+            return
+
+        #sync
+        if len(tags_purified) > 0:
+            tagstxt = reduce(lambda x,y: x + ", " + y, tags_purified)
+        else:
+            tagstxt = ""
         self.rtm.tasks.setTags(timeline=self.timeline, \
                         list_id =self.list_id, \
                         taskseries_id=self.taskseries_id, \
@@ -135,26 +156,26 @@ class RtmTask(GenericTask):
         #      nodes in "content"?
         if text == "":
             return
-        document = xml.dom.minidom.parseString(text)
-        content =document.getElementsByTagName("content")
-        if len(content)>0 and hasattr(content[0], 'firstChild') \
-           and hasattr(content[0].firstChild, 'data'):
-            content = content[0].firstChild.data
-        else:
-            return
         self.rtm.tasksNotes.add(timeline=self.timeline, \
                                 list_id = self.list_id,\
                                 taskseries_id = self.taskseries_id, \
                                 task_id = self.id, \
-                                note_title="",\
-                                note_text = content)
+                                note_title = "",\
+                                note_text = text)
+
+
+
 
     def _get_due_date(self):
-        if hasattr(self.task,'task') and hasattr(self.task.task, 'due') and \
-                self.task.task.due != "":
-            to_return = self.__time_rtm_to_datetime(self.task.task.due) 
-                    #   - datetime.timedelta(seconds = time.timezone)
-            return to_return.date()
+        if hasattr(self.task,'task'):
+            if type(self.task.task) != list:
+                task = self.task.task
+            else:
+                task = self.task.task[len(self.task.task) - 1]
+            if hasattr(task, 'due') and task.due != "":
+                to_return = self.__time_rtm_to_datetime(task.due) 
+                        #   - datetime.timedelta(seconds = time.timezone)
+                return to_return.date()
         return None
 
     def _set_due_date(self, due):
@@ -206,3 +227,7 @@ class RtmTask(GenericTask):
         if timeobject == None:
             return ""
         return timeobject.strftime("%Y-%m-%d")
+
+    def __log(self, message):
+        if self.logger:
+            self.logger.debug (message)
