@@ -42,6 +42,9 @@ class Manager():
                                  
         #Shared clipboard
         self.clipboard = clipboard.TaskClipboard(self.req)
+        
+        #FIXME : we should restore opened tasks here, not in the browser
+        #also, browser should just be a window like another, to be restored or not
 
     def show_browser(self):
         self.browser = TaskBrowser(self.req, self.config, opentask=self.open_task,\

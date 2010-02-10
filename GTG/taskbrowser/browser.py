@@ -807,7 +807,7 @@ class TaskBrowser:
             tag_list, notag_only = self.get_selected_tags()
 
         if len(tag_list)==1: #include child tags
-            tag_list = tag_list[0].all_children()
+            tag_list = tag_list[0].get_children()
 
         if not task.has_tags(tag_list=tag_list, notag_only=notag_only):
             return False
@@ -873,7 +873,7 @@ class TaskBrowser:
         tag_list, notag_only = self.get_selected_tags()
         task = model.get_value(iter, tasktree.COL_OBJ)
         if len(tag_list)==1: #include child tags
-            tag_list = tag_list[0].all_children()
+            tag_list = tag_list[0].get_children()
         if not task.has_tags(tag_list=tag_list, notag_only=notag_only):
             return False
         return task.get_status() != Task.STA_ACTIVE and\
