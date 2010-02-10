@@ -51,11 +51,12 @@ class DBusTaskWrapper(dbus.service.Object):
         self.req = req
         self.ui = ui
 
-    @dbus.service.method(BUSNAME)
-    def get_task_ids(self):
+
+    @dbus.service.method(BUSNAME,in_signature="s")
+    def get_task_ids(self, status_string = "Active, Done"):
         # Retrieve a list of task ID values
-        return self.req.get_tasks_list(
-          status=["Active", "Done"], started_only=False)
+        status = [ s.strip() for s in status_string.split(',')]
+        return self.req.get_tasks_list(status, started_only=False)
 
     @dbus.service.method(BUSNAME)
     def get_task(self, tid):
