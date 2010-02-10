@@ -1,0 +1,8 @@
+[GTG Plugin]
+Module=evolution_sync
+Name=Evolution
+Description='Plugin for synchronising Getting Things Gnome! with  Gnome Evolution Tasks'
+Authors='Luca Invernizzi <invernizzi.l@gmail.com>'
+Version=0.1.1
+Dependencies=evolution,
+Enabled=False

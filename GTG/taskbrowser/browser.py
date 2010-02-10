@@ -147,6 +147,13 @@ class TaskBrowser:
         
         #Shared clipboard
         self.clipboard = clipboard.TaskClipboard(self.req)
+        
+
+        self.tag_active = False
+
+        #Autocompletion for Tags
+        self._init_tag_list()
+        self._init_tag_completion()
 
 ### INIT HELPER FUNCTIONS #####################################################
 #
@@ -226,6 +233,7 @@ class TaskBrowser:
         self.tagpopup           = self.builder.get_object("TagContextMenu")
         self.nonworkviewtag_checkbox     = self.builder.get_object("nonworkviewtag")
         self.taskpopup          = self.builder.get_object("TaskContextMenu")
+        self.defertopopup       = self.builder.get_object("DeferToContextMenu")
         self.ctaskpopup = \
             self.builder.get_object("ClosedTaskContextMenu")
         self.editbutton         = self.builder.get_object("edit_b")
@@ -302,8 +310,20 @@ class TaskBrowser:
 #                self.on_edit_note,
             "on_delete_task":
                 self.on_delete_task,
+            "on_add_new_tag":
+                self.on_add_new_tag,
             "on_mark_as_done":
                 self.on_mark_as_done,
+            "on_mark_as_started":
+                self.on_mark_as_started,
+            "on_schedule_for_tomorrow":
+                self.on_schedule_for_tomorrow,
+            "on_schedule_for_next_week":
+                self.on_schedule_for_next_week,
+            "on_schedule_for_next_month":
+                self.on_schedule_for_next_month,
+            "on_schedule_for_next_year":
+                self.on_schedule_for_next_year,
             "on_dismiss_task":
                 self.on_dismiss_task,
             "on_delete":
@@ -318,12 +338,20 @@ class TaskBrowser:
                 self.on_delete_confirm,
             "on_delete_cancel":
                 lambda x: x.hide,
+            "on_addtag_confirm":
+                self.on_addtag_confirm,
+            "on_addtag_cancel":
+                lambda x: x.hide,
+            "on_tag_entry_key_press_event":
+                self.on_tag_entry_key_press_event,
             "on_add_subtask":
                 self.on_add_subtask,
             "on_colorchooser_activate":
                 self.on_colorchooser_activate,
             "on_resetcolor_activate":
                 self.on_resetcolor_activate,
+            "on_tagcontext_deactivate":
+                self.on_tagcontext_deactivate,
             "on_workview_toggled":
                 self.on_workview_toggled,
             "on_note_toggled":
@@ -477,6 +505,14 @@ class TaskBrowser:
             'activate', agr, key, mod, gtk.ACCEL_VISIBLE)
 
         self.delete_mi = self.builder.get_object('delete_mi')
+        key, mod = gtk.accelerator_parse('Cancel')
+        self.delete_mi.add_accelerator(
+            'activate', agr, key, mod, gtk.ACCEL_VISIBLE)
+        
+        addtag_button = self.builder.get_object('tcm_addtag')
+        key, mod = gtk.accelerator_parse('<Control>t')
+        addtag_button.add_accelerator('activate', agr, key, mod, \
+            gtk.ACCEL_VISIBLE)
         
     def _init_plugin_engine(self):
         # plugins - Init
@@ -492,6 +528,8 @@ class TaskBrowser:
                                     requester      = self.req,
                                     taskview       = self.task_tv,
                                     task_modelsort = self.task_modelsort,
+                                    ctaskview      = self.ctask_tv,
+                                    ctask_modelsort= self.ctask_modelsort,
                                     filter_cbs     = self.priv['filter_cbs'],
                                     tagpopup       = self.tagpopup,
                                     tagview        = self.tags_tv,
@@ -519,6 +557,22 @@ class TaskBrowser:
             
             # initializes and activates each plugin (that is enabled)
             self.pengine.activatePlugins(self.plugins, self.p_apis)
+            
+    def _init_tag_list(self):
+        self.tag_list_model = gtk.ListStore(gobject.TYPE_STRING)
+        self.tag_list = self.req.get_all_tags()
+        for i in self.tag_list:
+            self.tag_list_model.append([i.get_name()[1:]])
+               
+    def _init_tag_completion(self):
+        #Initialize tag completion.
+        self.tag_completion = gtk.EntryCompletion()
+        self.tag_completion.set_model(self.tag_list_model)
+        self.tag_completion.set_text_column(0)
+        self.tag_completion.set_match_func(self.tag_match_func, 0)
+        self.tag_completion.set_inline_completion(True)
+        self.tag_completion.set_inline_selection(True)
+        self.tag_completion.set_popup_single_match(False)
 
 #    def _init_note_support(self):
 #        self.notes  = EXPERIMENTAL_NOTES
@@ -540,6 +594,9 @@ class TaskBrowser:
 
         # Extract state from configuration dictionary
         if not "browser" in self.config:
+            #necessary to have the minimum width of the tag pane
+            # inferior to the "first run" width
+            self.builder.get_object("hpaned1").set_position(250)
             return
 
         if ("width" in self.config["browser"] and
@@ -697,7 +754,8 @@ class TaskBrowser:
     def get_canonical_date(self, arg):
         """
         Transform "arg" in a valid yyyy-mm-dd date or return None.
-        "arg" can be a yyyy-mm-dd, yyyymmdd, mmdd, today or a weekday name.
+        "arg" can be a yyyy-mm-dd, yyyymmdd, mmdd, today, next week,
+        next month, next year, or a weekday name.
         """
         day_names_en = ["monday", "tuesday", "wednesday", "thursday",
                         "friday", "saturday", "sunday"]
@@ -713,19 +771,24 @@ class TaskBrowser:
                 year = datetime.date.today().year
                 date = "%i-%s-%s" % (year, arg[:2], arg[2:])
         elif arg.lower() == "today" or arg.lower() == _("today"):
-            today = datetime.date.today()
-            year = today.year
-            month = today.month
-            day = today.day
-            date = "%i-%i-%i" % (year, month, day)
+            t = datetime.date.today()
+            date = "%i-%i-%i" % (t.year, t.month, t.day)
         elif arg.lower() == "tomorrow" or\
           arg.lower() == _("tomorrow"):
-            today = datetime.date.today()
-            tomorrow = today + datetime.timedelta(days=1)
-            year = tomorrow.year
-            month = tomorrow.month
-            day = tomorrow.day
-            date = "%i-%i-%i" % (year, month, day)
+            t = datetime.date.today() + datetime.timedelta(days=1)
+            date = "%i-%i-%i" % (t.year, t.month, t.day)
+        elif arg.lower() == "next week" or\
+          arg.lower() == _("next week"):
+            t = datetime.date.today() + datetime.timedelta(days=7)
+            date = "%i-%i-%i" % (t.year, t.month, t.day)
+        elif arg.lower() == "next month" or\
+          arg.lower() == _("next month"):
+            t = datetime.date.today() + datetime.timedelta(days=30)
+            date = "%i-%i-%i" % (t.year, t.month, t.day)
+        elif arg.lower() == "next year" or\
+          arg.lower() == _("next year"):
+            t = datetime.date.today() + datetime.timedelta(days=365)
+            date = "%i-%i-%i" % (t.year, t.month, t.day)
         elif arg.lower() in day_names_en or arg.lower() in day_names:
             today = datetime.date.today()
             today_day = today.weekday()
@@ -783,8 +846,15 @@ class TaskBrowser:
         """Returns True if the task meets the criterion to be displayed
         @param  task: the task to assess
         """
-
-        tag_list, notag_only = self.get_selected_tags()
+        
+        # Checks to see if we're working with a tag through a right click
+        # menu item. If we are, we'll treat the tag that was selected
+        # previous to the right click as the currently selected tag,
+        # even if the cursor is somewhere else.
+        if self.tag_active:
+            tag_list, notag_only = self.previous_tag
+        else:
+            tag_list, notag_only = self.get_selected_tags()
 
         if len(tag_list)==1: #include child tags
             tag_list = tag_list[0].all_children()
@@ -952,7 +1022,33 @@ class TaskBrowser:
             if order == gtk.SORT_ASCENDING:
                 return cmp(t1_order, t2_order)
             else:
-                return cmp(t2_order, t1_order)            
+                return cmp(t2_order, t1_order)
+                
+    def tag_match_func(self, completion, key, iter, column):
+        model = completion.get_model()
+        text = model.get_value(iter, column)
+        if text:
+            # key is lowercase regardless of input, so text should be
+            # lowercase as well, otherwise we leave out all tags beginning
+            # with an uppercase letter.
+            text = text.lower()
+            # Exclude the special tags.
+            if text == "tg-tags-all" or text == "tg-tags-sep" or \
+               text =="tg-tags-none":
+                return False
+            # Are we typing the first letters of a tag?
+            elif text.startswith(key):
+                return True
+            else:
+                return False          
+            
+    def tag_list_refresh(self):
+        taglist = self.req.get_all_tags()
+        if not taglist == self.tag_list:
+            for i in taglist:
+                if i not in self.tag_list:
+                    self.tag_list_model.append([i.get_name()[1:]])
+            self.tag_list = taglist
 
 ### SIGNAL CALLBACKS ##########################################################
 # Typically, reaction to user input & interactions with the GUI
@@ -1079,9 +1175,11 @@ class TaskBrowser:
         #TODO: Color chooser should be refactorized in its own class. Well, in
         #fact we should have a TagPropertiesEditor (like for project) Also,
         #color change should be immediate. There's no reason for a Ok/Cancel
+        self.set_target_cursor()
         dialog = gtk.ColorSelectionDialog('Choose color')
         colorsel = dialog.colorsel
         colorsel.connect("color_changed", self.on_color_changed)
+
         # Get previous color
         tags, notag_only = self.get_selected_tags()
         init_color = None
@@ -1099,15 +1197,21 @@ class TaskBrowser:
             tags, notag_only = self.get_selected_tags()
             for t in tags:
                 t.set_attribute("color", strcolor)
+        self.reset_cursor()
         self.task_tv.refresh()
         dialog.destroy()
         
     def on_resetcolor_activate(self, widget):
+        self.set_target_cursor()
         tags, notag_only = self.get_selected_tags()
         for t in tags:
             t.del_attribute("color")
+        self.reset_cursor()
         self.task_tv.refresh()
         self.tags_tv.refresh()
+        
+    def on_tagcontext_deactivate(self, menushell):
+        self.reset_cursor()
 
     def on_workview_toggled(self, widget):
         self.do_toggle_workview()
@@ -1241,7 +1345,7 @@ class TaskBrowser:
             # Create the new task
             task = self.req.new_task(tags=tags, newtask=True)
             if text != "":
-                task.set_title(text)
+                task.set_title(text.strip())
                 task.set_to_keep()
             task.set_due_date(due_date)
             task.set_start_date(defer_date)
@@ -1262,12 +1366,24 @@ class TaskBrowser:
             if pthinfo is not None:
                 path, col, cellx, celly = pthinfo #pylint: disable-msg=W0612
                 treeview.grab_focus()
+                # The location we want the cursor to return to 
+                # after we're done.
+                self.previous_cursor = treeview.get_cursor()
+                # For use in is_task_visible
+                self.previous_tag = self.get_selected_tags()
+                # Let's us know that we're working on a tag.
+                self.tag_active = True
+
+                # This location is stored in case we need to work with it
+                # later on.
+                self.target_cursor = path, col
                 treeview.set_cursor(path, col, 0)
                 selected_tags = self.get_selected_tags()[0]
                 if len(selected_tags) > 0:
                     # Then we are looking at single, normal tag rather than
                     # the special 'All tags' or 'Tasks without tags'. We only
                     # want to popup the menu for normal tags.
+
                     display_in_workview_item = self.tagpopup.get_children()[2]
                     selected_tag = selected_tags[0]
                     nonworkview = selected_tag.get_attribute("nonworkview")
@@ -1278,11 +1394,22 @@ class TaskBrowser:
                         shown = False
                     else:
                         shown = True
+                    # HACK: CheckMenuItem.set_active() emits a toggled() when 
+                    # switching between True and False, which will reset 
+                    # the cursor. Using self.dont_reset to work around that.
+                    # Calling set_target_cursor after set_active() is another
+                    # option, but there's noticeable amount of lag when right
+                    # clicking tags that way.
+                    self.dont_reset = True
                     display_in_workview_item.set_active(shown)
+                    self.dont_reset = False
                     self.tagpopup.popup(None, None, None, event.button, time)
+                else:
+                    self.reset_cursor()
             return 1
 
     def on_nonworkviewtag_toggled(self, widget):
+        self.set_target_cursor()
         tags = self.get_selected_tags()[0]
         nonworkview_item = self.nonworkviewtag_checkbox
         #We must inverse because the tagstore has True
@@ -1293,6 +1420,8 @@ class TaskBrowser:
         if self.priv['workview']:
             self.task_modelfilter.refilter()
             self.tag_modelfilter.refilter()
+        if not self.dont_reset:
+            self.reset_cursor()
 
     def on_task_treeview_button_press_event(self, treeview, event):
         if event.button == 3:
@@ -1408,7 +1537,111 @@ class TaskBrowser:
             return not self.tids_todelete
         else:
             return False
+    
+    def update_start_date(self, widget, new_start_date):
+        tasks_uid = filter(lambda uid: uid != None, self.get_selected_tasks())
+        if len(tasks_uid) == 0:
+            return
+        tasks = [self.req.get_task(uid) for uid in tasks_uid]
+        tasks_status = [task.get_status() for task in tasks]
+        for uid, task, status in zip(tasks_uid, tasks, tasks_status):
+            task.set_start_date(self.get_canonical_date(new_start_date))
+        if self.refresh_lock.acquire(False):
+            gobject.idle_add(self.general_refresh)
+        #FIXME: If the task dialog is displayed, refresh its start_date widget
 
+    def on_mark_as_started(self, widget):
+        self.update_start_date(widget, "today")
+
+    def on_schedule_for_tomorrow(self, widget):
+        self.update_start_date(widget, "tomorrow")
+
+    def on_schedule_for_next_week(self, widget):
+        self.update_start_date(widget, "next week")
+
+    def on_schedule_for_next_month(self, widget):
+        self.update_start_date(widget, "next month")
+
+    def on_schedule_for_next_year(self, widget):
+        self.update_start_date(widget, "next year")
+
+    def on_add_new_tag(self, widget=None, tid=None, tryagain = False):
+        if not tid:
+            self.tids_to_addtag = self.get_selected_tasks()
+        else:
+            self.tids_to_addtag = [tid]
+
+        if not self.tids_to_addtag == [None]:
+            tag_entry = self.builder.get_object("tag_entry")
+            apply_to_subtasks = self.builder.get_object("apply_to_subtasks")
+            # We don't want to reset the text entry and checkbox if we got
+            # sent back here after a warning.
+            if not tryagain:
+                tag_entry.set_text("NewTag")
+                apply_to_subtasks.set_active(False)
+                tag_entry.set_completion(self.tag_completion)
+            tag_entry.grab_focus()
+            addtag_dialog = self.builder.get_object("TaskAddTag")
+            addtag_dialog.run()
+            addtag_dialog.hide()
+            self.tids_to_addtag = None            
+        else:
+            return False
+    
+    def on_addtag_confirm(self, widget):
+        tag_entry = self.builder.get_object("tag_entry")
+        addtag_dialog = self.builder.get_object("TaskAddTag")
+        apply_to_subtasks = self.builder.get_object("apply_to_subtasks")
+        addtag_error = False
+        entry_text = tag_entry.get_text()
+        entry_text = [entry_text.strip()]
+        # Set up a warning message if the user leaves the text entry empty.
+        if not entry_text[0]:
+            error_message = "Please enter a tag name."
+            addtag_error = True
+ 
+        new_tags = []
+        if "," in entry_text[0]:
+            entry_text = entry_text[0].split(",")
+        # Remove extraneous whitespace, make sure none of the tags contain
+        # spaces, and, finally, place a "@" symbol in front of the tagname.
+        for tagname in entry_text:
+            tagname = tagname.strip()
+            if not addtag_error:
+                if " " in tagname:
+                    error_message = "Tag name must not contain spaces."
+                    addtag_error = True
+                    break
+            new_tags.append("@" + tagname)
+        # If we ran into a problem earlier, let us know, and then
+        # let us try again.
+        if addtag_error:
+            error_dialog = gtk.MessageDialog(None, 0, gtk.MESSAGE_WARNING, \
+                                            gtk.BUTTONS_OK, error_message)
+            if error_dialog.run():
+                error_dialog.destroy()
+                self.on_add_new_tag(tryagain = True)
+                return
+        # If the checkbox is checked, add all the subtasks to the list of
+        # tasks to add.
+        if apply_to_subtasks.get_active():
+            for tid in self.tids_to_addtag:
+                task = self.req.get_task(tid)
+                for i in task.get_self_and_all_subtasks():
+                    taskid = i.get_id()
+                    if taskid not in self.tids_to_addtag: 
+                        self.tids_to_addtag.append(taskid)        
+        
+        for tid in self.tids_to_addtag:
+            task = self.req.get_task(tid)
+            for new_tag in new_tags:
+                task.add_tag(new_tag)
+            task.sync()
+      
+    def on_tag_entry_key_press_event(self, widget, event):
+        if gtk.gdk.keyval_name(event.keyval) == "Return":
+            self.on_addtag_confirm()
+    
     def on_mark_as_done(self, widget):
         task_to_scroll_to = None
         tasks_uid = filter(lambda uid: uid != None, self.get_selected_tasks())
@@ -1444,7 +1677,7 @@ class TaskBrowser:
             gobject.idle_add(self.ctask_tv.scroll_to_task, task_to_scroll_to)
         if self.refresh_lock.acquire(False):
             gobject.idle_add(self.general_refresh)
-    
+
     def on_select_tag(self, widget, row=None, col=None):
         #When you clic on a tag, you want to unselect the tasks
         self.task_tv.get_selection().unselect_all()
@@ -1607,6 +1840,7 @@ class TaskBrowser:
 #        self.tags_tv.refresh()
         self._update_window_title()
         self.refresh_lock.release()
+        self.tag_list_refresh()
 
 ### PUBLIC METHODS ############################################################
 #
@@ -1702,7 +1936,29 @@ class TaskBrowser:
             count = count + 1 + self._count_subtask(model, c)
             c     = model.iter_next(c)
         return count
-
+    
+    def reset_cursor(self):
+        """ Returns the cursor to the tag that was selected prior
+            to any right click action. Should be used whenever we're done
+            working with any tag through a right click menu action.
+            """
+        if self.tag_active:
+            self.tag_active = False
+            path, col = self.previous_cursor
+            self.tags_tv.set_cursor(path, col, 0)
+                
+    def set_target_cursor(self):
+        """ Selects the last tag to be right clicked. 
+        
+            We need this because the context menu will deactivate
+            (and in turn, call reset_cursor()) before, for example, the color
+            picker dialog begins. Should be used at the beginning of any tag
+            editing function to remind the user which tag they're working with.
+            """
+        if not self.tag_active:
+            self.tag_active = True
+            path, col = self.target_cursor
+            self.tags_tv.set_cursor(path, col, 0)
 
 ### MAIN ######################################################################
 #

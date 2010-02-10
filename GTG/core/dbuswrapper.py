@@ -83,7 +83,7 @@ class DBusTaskWrapper(dbus.service.Object):
 
     @dbus.service.method(BUSNAME, in_signature="asasbb")
     def get_tasks_filtered(self, tags, status, started_only, is_root):
-        # Retrieve a list of task data discts filtered by specificed parameters
+        # Retrieve a list of task data dicts filtered by specificed parameters
         tasks = self.get_task_ids_filtered(
             tags, status, started_only, is_root)
         # If no tasks match the filter, return an empty D-Bus array
@@ -134,9 +134,12 @@ class DBusTaskWrapper(dbus.service.Object):
     def open_task_editor(self, tid):
         self.ui.open_task(tid)
         
-    @dbus.service.method(BUSNAME)
-    def open_new_task(self):
+    @dbus.service.method(BUSNAME, in_signature="ss")
+    def open_new_task(self, title, description):
         nt = self.req.new_task(newtask=True)
+        nt.set_title(title)
+        if description != "":
+            nt.set_text(description)
         uid = nt.get_id()
         self.ui.open_task(uid,thisisnew=True)
 

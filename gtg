@@ -28,15 +28,28 @@ Getting Things Gnome! - A personal organizer for the GNOME desktop
 """
 
 import sys
-import GTG.gtg
 
 from optparse import OptionParser
+
+def X_is_running():
+    from subprocess import Popen, PIPE
+    p = Popen(["xset", "-q"], stdout=PIPE, stderr=PIPE)
+    p.communicate()
+    return p.returncode == 0
 
 try:
     parser = OptionParser()
     parser.add_option("-d", "--debug",
                   action="store_true", dest="debug", help="enable debug output")
     (options, args) = parser.parse_args()
-    sys.exit(GTG.gtg.main(options, args))
+
+    if not X_is_running():
+        print "Could not open X display"
+        sys.exit(1)
+
+    else:
+        import GTG.gtg
+        sys.exit(GTG.gtg.main(options, args))
+
 except KeyboardInterrupt:
     sys.exit(1)

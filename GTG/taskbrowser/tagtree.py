@@ -235,6 +235,7 @@ class TagTreeModel(gtk.GenericTreeModel):
         self.row_inserted(new_child_path, new_child_iter)
         
     def rename_tag(self,oldname,newname):
+        newname = newname.replace(" ", "_")
         tag = self.req.get_tag(oldname)
         self.req.rename_tag(oldname,newname)
 
@@ -323,7 +324,8 @@ class TagTreeView(gtk.TreeView):
         render_count.set_property('xalign', 1.0)
         render_tags.set_property('ypad', 3)
         render_text.set_property('ypad', 3)
-        render_text.set_property('editable', True)
+        # Disable edit feature for 0.2.1
+        #render_text.set_property('editable', True) 
         render_text.connect("edited", self.rename_tag)
         render_count.set_property('xpad', 3)
         render_count.set_property('ypad', 3)

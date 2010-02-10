@@ -1,0 +1,3 @@
+[D-BUS Service]
+Name=org.GTG
+Exec=/usr/bin/gtg

@@ -19,6 +19,9 @@ import sys
 import subprocess
 #import gobject
 from xdg.BaseDirectory import xdg_config_home
+from GTG.core.task import Task
+from GTG import _
+import pickle
 #import xml.utils.iso8601
 #from datetime import date
 
@@ -26,17 +29,27 @@ from xdg.BaseDirectory import xdg_config_home
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))+'/pyrtm')
 import rtm
-import utility
-from generic_task import RtmTask
-from generic_proxy import GenericProxy
+from rtmTask import RtmTask
+from genericProxy import GenericProxy
 
 
 class RtmProxy(GenericProxy):
+
+    __GTG_STATUSES = [Task.STA_ACTIVE,
+                   Task.STA_DONE]
+
+    __RTM_STATUSES = [True,
+                      False]
 
     def __init__(self, logger):
         super(RtmProxy, self).__init__()
         self.token = None
         self.logger = logger
+        self._gtg_to_rtm_status = dict(zip(self.__GTG_STATUSES,
+                                            self.__RTM_STATUSES))
+        self._gtg_to_rtm_status[Task.STA_DISMISSED] = "1"
+        self._rtm_to_gtg_status = dict(zip(self.__RTM_STATUSES,
+                                            self.__GTG_STATUSES))
 
     def getToken(self):
         """gets a token from file (if a previous sync has been
@@ -46,7 +59,7 @@ class RtmProxy(GenericProxy):
         if self.token == None:
             self.config_dir = \
                 os.path.join(xdg_config_home, 'gtg/plugins/rtm-sync')
-            self.token = utility.smartLoadFromFile(self.config_dir, 'token')
+            self.token = self._smartLoadFromFile(self.config_dir, 'token')
         if self.token == None:
             self.rtm=rtm.createRTM("2a440fdfe9d890c343c25a91afd84c7e", \
                                    "ca078fee48d0bbfa")
@@ -67,7 +80,7 @@ class RtmProxy(GenericProxy):
                                "ca078fee48d0bbfa", self.token)
         except:
             self.token = None
-        utility.smartSaveToFile(self.config_dir, 'token', self.token)
+        self._smartSaveToFile(self.config_dir, 'token', self.token)
         #NOTE: a timeline is an undo list for RTM. It can be used for
         # journaling(timeline rollback is atomical)
         self.timeline = self.rtm.timelines.create().timeline
@@ -80,8 +93,7 @@ class RtmProxy(GenericProxy):
                              self.rtm.lists.getList().lists.list)
 
         def get_list_of_taskseries(x):
-            currentlist = self.rtm.tasks.getList(filter='status:incomplete', \
-                                                 list_id=x).tasks
+            currentlist = self.rtm.tasks.getList(list_id = x).tasks
             if hasattr(currentlist, 'list'):
                 return currentlist.list
             else:
@@ -102,25 +114,60 @@ class RtmProxy(GenericProxy):
             tasks_list_unwrapped = reduce(lambda x, y: x+y, \
                                           tasks_list_normalized)
             task_objects_list, list_ids_list, taskseries_ids_list = \
-                    utility.unziplist(tasks_list_unwrapped)
+                    self._unziplist(tasks_list_unwrapped)
 
         return zip(task_objects_list, list_ids_list, taskseries_ids_list)
 
     def generateTaskList(self):
-        self.task_list = []
+        self._task_list = []
         data = self.downloadFromWeb()
         for task, list_id, taskseries_id in data:
-            self.task_list.append(RtmTask(task, list_id, taskseries_id, \
+            self._task_list.append(RtmTask(task, list_id, taskseries_id, \
                                           self.rtm, self.timeline, \
-                                          self.logger))
+                                          self.logger, self))
         if self.logger:
             map(lambda task: self.logger.debug("RTM task: |" + task.title),
-                                               self.task_list)
+                                               self._task_list)
 
-    def newTask(self, title):
+    def create_new_task(self, title):
         result = self.rtm.tasks.add(timeline=self.timeline, name=title)
         new_task= RtmTask(result.list.taskseries.task, result.list.id,\
                           result.list.taskseries.id, self.rtm, self.timeline,\
-                         self.logger)
-        self.task_list.append(new_task)
+                         self.logger, self)
+        self._task_list.append(new_task)
         return new_task
+
+    def get_tasks_list(self):
+        return self._task_list
+
+    def delete_task(self, task):
+        self._task_list.remove(task)
+        task.delete()
+
+    def _smartLoadFromFile(self, dirname, filename):
+        path=dirname+'/'+filename
+        if os.path.isdir(dirname):
+            if os.path.isfile(path):
+                try:
+                    with open(path, 'r') as file:
+                        item = pickle.load(file)
+                except:
+                    return None
+                return item
+        else:
+            os.makedirs(dirname)
+
+
+    def _smartSaveToFile(self, dirname, filename, item, **kwargs):
+        path=dirname+'/'+filename
+        try:
+            with open(path, 'wb') as file:
+                pickle.dump(item, file)
+        except:
+            if kwargs.get('critical', False):
+                raise Exception(_("saving critical object failed"))
+
+    def _unziplist(self, a):
+        if len(a) == 0:
+            return [], []
+        return tuple(map(list, zip(*a)))

@@ -59,16 +59,20 @@ class pluginTest:
         
     #load a dialog with a String
     def loadDialog(self, msg):
-        path = os.path.dirname(os.path.abspath(__file__))
-        glade_file = os.path.join(path, "hello_world.glade")
-        wTree = gtk.glade.XML(glade_file, "helloworld")
-        self.dialog = wTree.get_widget("helloworld")
-        lblHelloWorld = wTree.get_widget("lbl_helloworld")
+        self.builder = gtk.Builder()
+        self.builder.add_from_file(os.path.join(
+                                  os.path.dirname(os.path.abspath(__file__)) + \
+                                   "/hello_world.ui"))
+        self.dialog = self.builder.get_object("helloworld")
+        lblHelloWorld = self.builder.get_object("lbl_helloworld")
         lblHelloWorld.set_text(msg)
-        
-        self.dialog.connect("delete_event", self.close_dialog)
-        self.dialog.connect("response", self.close_dialog)
-        
+        SIGNAL_CONNECTIONS_DIC = {
+            "on_helloworld_close": 
+                self.close_dialog,
+            "on_btn_close_clicked": 
+                self.close_dialog,
+        }
+        self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
         self.dialog.show_all()
     
     def close_dialog(self, widget, data=None):

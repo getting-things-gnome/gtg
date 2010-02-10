@@ -204,7 +204,7 @@ class Task:
     def set_start_date(self, fulldate):
         assert(isinstance(fulldate, Date))
         self.start_date = fulldate
-        # why don't we sync here if we do in set_due_date?
+        self.sync()
 
     def get_start_date(self):
         return self.start_date
@@ -216,7 +216,11 @@ class Task:
             #results in a datetime.timedelta object 
             #that does have a 'days' member.
             difference = date_today() - self.start_date
-            return difference.days >= 0 #pylint: disable-msg=E1101
+            if difference.days == 0:
+                # Don't count today's tasks started until morning
+                return datetime.now().hour > 4
+            else:
+                return difference.days > 0 #pylint: disable-msg=E1101
         else:
             return True
 
@@ -234,7 +238,7 @@ class Task:
         else:
             return ""
 
-    def get_excerpt(self, lines=0, char=0):
+    def get_excerpt(self, lines=0, char=0, strip_tags=False, strip_subtasks=True):
         """
         get_excerpt return the beginning of the content of the task.
         If "lines" is provided and different than 0, it return the number X
@@ -250,10 +254,11 @@ class Task:
         #defensive programmtion to avoid returning None
         if self.content:
             txt = self.content
-            for tag in self.get_tags_name():
-        	    txt = self._strip_tag(txt, tag)
+            if strip_tags:
+                for tag in self.get_tags_name():
+                    txt = self._strip_tag(txt, tag)
             element = xml.dom.minidom.parseString(txt)
-            txt = self.__strip_content(element)
+            txt = self.__strip_content(element, strip_subtasks=strip_subtasks)
             txt = txt.strip()
             #We keep the desired number of lines
             if lines > 0:
@@ -270,15 +275,16 @@ class Task:
         else:
             return ""
 
-    def __strip_content(self, element):
+    def __strip_content(self, element, strip_subtasks=False):
         txt = ""
         if element:
             for n in element.childNodes:
                 if n.nodeType == n.ELEMENT_NODE:
-                    if n.tagName!='subtask':
-                        txt += self.__strip_content(n)
-                    elif txt[-2:]=='→ ':
-                    	txt = txt[:-2]
+                    if strip_subtasks and n.tagName=='subtask':
+                        if txt[-2:]=='→ ':
+                            txt = txt[:-2]
+                    else:
+                        txt += self.__strip_content(n, strip_subtasks)
                 elif n.nodeType == n.TEXT_NODE:
                     txt += n.nodeValue
         return txt
@@ -528,7 +534,7 @@ class Task:
             self.tags.append(t)
             for child in self.get_subtasks():
                 if child.can_be_deleted:
-                    child.tag_added(tagname)
+                    child.add_tag(tagname)
             return True
     
     def add_tag(self, tagname):

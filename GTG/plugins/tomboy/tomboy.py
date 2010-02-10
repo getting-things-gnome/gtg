@@ -34,7 +34,6 @@ import combobox_enhanced
 
 class pluginTomboy:
 
-    TOMBOY_ICON_PATH_ENDING = "icons/hicolor/16x16/apps/tomboy.png"
 
     def __init__(self):
         #These tokens are used to identify the beginning and the end of the 
@@ -48,15 +47,18 @@ class pluginTomboy:
 
     #Tomboy installation is checked through the presence of its icon
     def findTomboyIconPath(self):
-        if os.path.isfile("/usr/share/" + self.TOMBOY_ICON_PATH_ENDING):
-            self.tomboy_icon_path = "/usr/share/" + self.\
-                                                TOMBOY_ICON_PATH_ENDING
-            return True
-        elif os.path.isfile("/usr/local/share/" + self.\
-                            TOMBOY_ICON_PATH_ENDING):
-            self.tomboy_icon_path = "/usr/local/share/" + self.\
-                                                    TOMBOY_ICON_PATH_ENDING
-            return True
+        TOMBOY_ICON_PATH_ENDING = "icons/hicolor/scalable/apps/tomboy.svg"
+        GNOTE_ICON_PATH_ENDING = "icons/hicolor/scalable/apps/gnote.svg"
+        possible_paths = [\
+                ("/usr/share/" + TOMBOY_ICON_PATH_ENDING, "tomboy"),\
+                ("/usr/share/" + GNOTE_ICON_PATH_ENDING, "gnote"),\
+                ("/usr/local/share/" + TOMBOY_ICON_PATH_ENDING, "tomboy"),\
+                ("/usr/local/share/" + GNOTE_ICON_PATH_ENDING, "gnote")]
+        for path, software in possible_paths:
+            if os.path.isfile(path):
+                self.tomboy_icon_path = path
+                self.software = software
+                return True
         return False
 
     #Function called upon plug-in activation
@@ -64,8 +66,8 @@ class pluginTomboy:
         self.builder = gtk.Builder() 
         self.plugin_api = plugin_api
 
-    #Returns true is Tomboy is present, otherwise shows a dialog (only once)
-    # and returns False 
+    #Returns true is Tomboy/Gnote is present, otherwise shows a dialog
+    #(only once)  and returns False 
     def checkTomboyPresent(self):
         if not hasattr(self, 'activated'):
             self.activated = self.findTomboyIconPath()
@@ -77,8 +79,8 @@ class pluginTomboy:
                      flags = gtk.DIALOG_DESTROY_WITH_PARENT,
                      type = gtk.MESSAGE_ERROR,
                      buttons=gtk.BUTTONS_OK,
-                     message_format=_("Tomboy not found. \
-Please install it or disable the Tomboy plugin in GTG"))
+                     message_format=_("Tomboy/Gnote not found. \
+Please install it or disable the Tomboy/Gnote plugin in GTG"))
                 dialog.run() 
                 dialog.destroy()
         return self.activated
@@ -180,18 +182,37 @@ Please install it or disable the Tomboy plugin in GTG"))
     #opens a dbus connection to tomboy
     def getTomboyObject(self):
         bus = dbus.SessionBus()
-        obj = bus.get_object("org.gnome.Tomboy",
+        try:
+            obj = bus.get_object("org.gnome.Tomboy",
                                "/org/gnome/Tomboy/RemoteControl")
+        except dbus.DBusException as exception:
+            if not hasattr(self, "disable_flag"):
+                dialog = gtk.MessageDialog(parent = \
+                     self.plugin_api.get_window(),
+                     flags = gtk.DIALOG_DESTROY_WITH_PARENT,
+                     type = gtk.MESSAGE_ERROR,
+                     buttons=gtk.BUTTONS_OK,
+                     message_format= self.software.title() + _(" was found on\
+ the system, but it doesn't provide a dbus interface. the Tomboy/Gnote plugin\
+ will not work with it."))
+                dialog.run() 
+                dialog.destroy()
+                self.disable_flag = True
+            return None
         return dbus.Interface(obj, "org.gnome.Tomboy.RemoteControl")
 
     #gets the list of the titles of the notes
     def getTomboyNoteTitleList(self):
         tomboy = self.getTomboyObject()
+        if tomboy == None:
+            return None
         return map(lambda note: str(tomboy.GetNoteTitle(note)),
                    tomboy.ListAllNotes())
 
     def onTbTaskButton(self, widget, plugin_api):
         title_list = self.getTomboyNoteTitleList()
+        if title_list == None:
+            return
         #Create the dialog
         user_interface_file = os.path.join(self.path, "tomboy.ui")
         self.builder.add_from_file(user_interface_file)
@@ -214,6 +235,8 @@ Please install it or disable the Tomboy plugin in GTG"))
     # linked, otherwise the user will have the option to create the note.
     def noteChosen(self, widget=None, data=None):
         tomboy = self.getTomboyObject()
+        if tomboy == None:
+            return
         supposed_title = self.combobox_entry.get_text()
         if filter(lambda x: tomboy.GetNoteTitle(x)==supposed_title,
                   tomboy.ListAllNotes()) == []:
@@ -241,6 +264,8 @@ exist. Do you want to create a new one?"))
     #Opens a note in tomboy application via dbus
     def tomboyDisplayNote(self, widget, data = None):
         tomboy = self.getTomboyObject()
+        if tomboy == None:
+            return
         note = tomboy.FindNote(widget.tomboy_note_title)
         if str(note) == "":
             dialog = gtk.MessageDialog(parent = \
@@ -271,9 +296,8 @@ Do you want to create it?")))
         window = self.plugin_api.get_window()
         window.realize()
         window_style = window.get_style()
-        image_path = "/usr/share/icons/hicolor/16x16/apps/tomboy.png"
         pixbuf=gtk.gdk.\
-                pixbuf_new_from_file_at_size(image_path, 16, 16)
+                pixbuf_new_from_file_at_size(self.tomboy_icon_path, 16, 16)
         image.show()
         image.set_from_pixbuf(pixbuf)
         image.set_alignment(0.5,1.0)
