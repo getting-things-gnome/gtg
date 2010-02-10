@@ -79,7 +79,8 @@ class NotificationArea:
 
     def deactivate(self, plugin_api):
         if indicator_capable:
-            pass #####
+            pass
+            ##### Needs fixing
         else:
             self.status_icon.set_visible(False)
         self.plugin_api.get_browser().start_minimized = False
