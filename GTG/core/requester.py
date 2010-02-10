@@ -99,6 +99,9 @@ class Requester(gobject.GObject):
         """
         self.ds.delete_task(tid)
         gobject.idle_add(self.emit, "task-deleted", tid)
+        
+    def get_tasks_tree(self):
+        return self.ds.get_tasks_tree()
 
     def get_tasks_list(self, tags=None, status=["Active"], notag_only=False,
                        started_only=True, is_root=False):

@@ -60,28 +60,28 @@ class TaskTreeModel(gtk.GenericTreeModel):
         
         gtk.GenericTreeModel.__init__(self)
         self.req  = requester
-        self.tree = Tree()
+        self.tree = self.req.get_tasks_tree()
 
 ### TREE MODEL HELPER FUNCTIONS ###############################################
 
-    def _add_all_subtasks(self, node, task):
-        if task.has_subtasks():
-            node_path = self.tree.get_path_for_node(node)
-            node_iter = self.get_iter(node_path)
-            for c_tid in task.get_subtask_tids():
-                if self.tree.has_node(c_tid):
-                    c_task = self.req.get_task(c_tid)
-                    #c_node = TreeNode(c_tid, c_task)
-                    c_node = c_task
-                    self.tree.add_node(c_task, parent=node)
-                    c_node_path = self.tree.get_path_for_node(c_node)
-                    #if c_node_path:
-                        #c_node_iter = self.get_iter(c_node_path)
-                        #self.row_inserted(c_node_path, c_node_iter)
-                    self._add_all_subtasks(c_node, c_task)
-                    #print " - %s: adding %s as subtask." % (task.get_id(), c_tid)
-        else:
-            return
+#    def _add_all_subtasks(self, node, task):
+#        if task.has_subtasks():
+#            node_path = self.tree.get_path_for_node(node)
+#            node_iter = self.get_iter(node_path)
+#            for c_tid in task.get_subtask_tids():
+#                if self.tree.has_node(c_tid):
+#                    c_task = self.req.get_task(c_tid)
+#                    #c_node = TreeNode(c_tid, c_task)
+#                    c_node = c_task
+#                    self.tree.add_node(c_task, parent=node)
+#                    c_node_path = self.tree.get_path_for_node(c_node)
+#                    #if c_node_path:
+#                        #c_node_iter = self.get_iter(c_node_path)
+#                        #self.row_inserted(c_node_path, c_node_iter)
+#                    self._add_all_subtasks(c_node, c_task)
+#                    #print " - %s: adding %s as subtask." % (task.get_id(), c_tid)
+#        else:
+#            return
 
     def _count_active_subtasks_rec(self, task):
         count = 0
@@ -241,96 +241,100 @@ class TaskTreeModel(gtk.GenericTreeModel):
             return None
 
     def update_task(self, tid):
-        # get the node and signal it's changed
-        my_node = self.tree.get_node(tid)
-        node_path = self.tree.get_path_for_node(my_node)
-        node_iter = self.get_iter(node_path)
-        self.row_changed(node_path, node_iter)
+        print "dummy update_task tasktree"
+#        # get the node and signal it's changed
+#        my_node = self.tree.get_node(tid)
+#        node_path = self.tree.get_path_for_node(my_node)
+#        node_iter = self.get_iter(node_path)
+#        self.row_changed(node_path, node_iter)
         
-    def add_task(self, tid):
-        nodes = []
-        # get the task
-        task = self.req.get_task(tid)
-        # insert the task in the tree (root)
-        #TreeNode
-        my_node = task
-        self.tree.add_node(task)
-        node_path = self.tree.get_path_for_node(my_node)
-        node_iter = self.get_iter(node_path)
-        self.row_inserted(node_path, node_iter)
-        nodes.append(my_node)
-        # has the task parents?
-        if task.has_parents():
-            # get every path from parents
-            par_list = task.get_parents()
-            # get every paths going to each parent
-            for par_tid in par_list:
-                if not self.tree.has_node(par_tid):
-                    #print " - %s: %s is not loaded." % (tid, par_tid)
-                    continue
-                else:
-                    par_node = self.tree.get_node(par_tid)
-                    self.tree.add_node(task, parent=par_node)
-                    node_path = self.tree.get_path_for_node(task)
-                    node_iter = self.get_iter(node_path)
-                    self.row_inserted(node_path, node_iter)
-                    nodes.append(task)
-        # has the task children?
-        for node in nodes:
-            self._add_all_subtasks(node, task)
-            node_path = self.tree.get_path_for_node(node)
-            if node_path:
-                node_iter = self.get_iter(node_path)
-                self.row_has_child_toggled(node_path, node_iter)
+    def add_task(self,tid):
+        print "add_task dummy call in tasktree"
+#    def add_task(self, tid):
+#        nodes = []
+#        # get the task
+#        task = self.req.get_task(tid)
+#        # insert the task in the tree (root)
+#        #TreeNode
+#        my_node = task
+#        self.tree.add_node(task)
+#        node_path = self.tree.get_path_for_node(my_node)
+#        node_iter = self.get_iter(node_path)
+#        self.row_inserted(node_path, node_iter)
+#        nodes.append(my_node)
+#        # has the task parents?
+#        if task.has_parents():
+#            # get every path from parents
+#            par_list = task.get_parents()
+#            # get every paths going to each parent
+#            for par_tid in par_list:
+#                if not self.tree.has_node(par_tid):
+#                    #print " - %s: %s is not loaded." % (tid, par_tid)
+#                    continue
+#                else:
+#                    par_node = self.tree.get_node(par_tid)
+#                    self.tree.add_node(task, parent=par_node)
+#                    node_path = self.tree.get_path_for_node(task)
+#                    node_iter = self.get_iter(node_path)
+#                    self.row_inserted(node_path, node_iter)
+#                    nodes.append(task)
+#        # has the task children?
+#        for node in nodes:
+#            self._add_all_subtasks(node, task)
+#            node_path = self.tree.get_path_for_node(node)
+#            if node_path:
+#                node_iter = self.get_iter(node_path)
+#                self.row_has_child_toggled(node_path, node_iter)
 
     def remove_task(self, tid):
-        # get the nodes
-        node = self.tree.get_node(tid)
-        removed = False
-        # Remove every row of this task
-        node_path = self.tree.get_path_for_node(node)
-        self.tree.remove_node(tid)
-        self.row_deleted(node_path)
-        removed = True
-        return removed
+        print "dummy remove_task in tasktree"
+#        # get the nodes
+#        node = self.tree.get_node(tid)
+#        removed = False
+#        # Remove every row of this task
+#        node_path = self.tree.get_path_for_node(node)
+#        self.tree.remove_node(tid)
+#        self.row_deleted(node_path)
+#        removed = True
+#        return removed
                     
     def move_task(self, parent, child):
-        #print "Moving %s below %s" % (child, parent)
-        # Get child
-        child_tid  = self.get_value(child, COL_TID)
-        child_task = self.req.get_task(child_tid)
-        #if we move a task, this task should be saved, even if new
-        child_task.set_to_keep()
-        # Get old parent
-        old_par = self.iter_parent(child)
-        if old_par:
-            old_par_tid  = self.get_value(old_par, COL_TID)
-            old_par_task = self.req.get_task(old_par_tid)
-        else:
-            old_par_task = None
-        # Get new parent
-        if parent:
-            new_par_tid  = self.get_value(parent, COL_TID)
-            new_par_task = self.req.get_task(new_par_tid)
-        else:
-            new_par_task = None
-            
-        # prevent illegal moves
-        c = parent
-        while c is not None:
-            t = self.get_value(c, COL_OBJ)
-            if t is child_task: return
-            c = self.iter_parent(c)
-        
-        # Remove child from old parent
-        if old_par_task:
-            old_par_task.remove_subtask(child_tid)
-        # Remove old parent from child
-        if old_par_task:
-            child_task.remove_parent(old_par_tid)
-        # Add child to new parent (add_subtask also add new parent to child)
-        if new_par_task:
-            new_par_task.add_subtask(child_tid)
+        print "dummy Moving %s below %s (tasktree)" % (child, parent)
+#        # Get child
+#        child_tid  = self.get_value(child, COL_TID)
+#        child_task = self.req.get_task(child_tid)
+#        #if we move a task, this task should be saved, even if new
+#        child_task.set_to_keep()
+#        # Get old parent
+#        old_par = self.iter_parent(child)
+#        if old_par:
+#            old_par_tid  = self.get_value(old_par, COL_TID)
+#            old_par_task = self.req.get_task(old_par_tid)
+#        else:
+#            old_par_task = None
+#        # Get new parent
+#        if parent:
+#            new_par_tid  = self.get_value(parent, COL_TID)
+#            new_par_task = self.req.get_task(new_par_tid)
+#        else:
+#            new_par_task = None
+#            
+#        # prevent illegal moves
+#        c = parent
+#        while c is not None:
+#            t = self.get_value(c, COL_OBJ)
+#            if t is child_task: return
+#            c = self.iter_parent(c)
+#        
+#        # Remove child from old parent
+#        if old_par_task:
+#            old_par_task.remove_subtask(child_tid)
+#        # Remove old parent from child
+#        if old_par_task:
+#            child_task.remove_parent(old_par_tid)
+#        # Add child to new parent (add_subtask also add new parent to child)
+#        if new_par_task:
+#            new_par_task.add_subtask(child_tid)
 
 class TaskTreeView(gtk.TreeView):
     """TreeView for display of a list of task. Handles DnD primitives too."""

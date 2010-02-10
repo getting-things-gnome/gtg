@@ -131,6 +131,9 @@ class DataStore:
 
     def get_requester(self):
         return self.requester
+        
+    def get_tasks_tree(self):
+        return self.open_tasks
 
     def register_backend(self, dic):
         if "backend" in dic:
