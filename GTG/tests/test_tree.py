@@ -90,7 +90,7 @@ class TestTree(unittest.TestCase):
         tree = self._build_tree(4,flat=False)
         mynode = tree.get_node('2@2')
         node_path = tree.get_path_for_node(mynode)
-        self.assertEqual("",node_path)
+        self.assertEqual((0,0),node_path)
         
     def test_visit(self):
         self.counter = 0

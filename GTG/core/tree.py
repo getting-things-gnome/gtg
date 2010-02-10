@@ -203,8 +203,11 @@ class Tree():
 
     def _path_for_node(self, node):
         if node: 
-            if not node.has_parent():
+            if node == self.root:
                 return ()
+            elif not node.has_parent():
+                index  = self.root.get_child_index(node.get_id())
+                return self._path_for_node(self.root) + (index, )
             else:
                 #FIXME : no multiparent support here
                 parent_id = node.get_parent()
