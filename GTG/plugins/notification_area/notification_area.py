@@ -45,13 +45,14 @@ class NotificationArea:
         #initialize the right notification thing
         if indicator_capable:
             #Create an indicator icon
-            self.ind = appindicator.Indicator ("gtg", \
+            if not hasattr(self, "ind"):
+                self.ind = appindicator.Indicator ("gtg", \
                                   "indicator-messages", \
                                    appindicator.CATEGORY_APPLICATION_STATUS)
-            self.ind.set_status (appindicator.STATUS_ACTIVE)
-            self.ind.set_attention_icon ("indicator-messages-new")
-            self.ind.set_icon("gtg")
-            self.ind.set_menu(self.menu)
+                self.ind.set_icon("gtg")
+                self.ind.set_menu(self.menu)
+            self.ind.set_status(appindicator.STATUS_ACTIVE)
+            self.ind.set_attention_icon("indicator-messages-new")
         else:
             data_dir = plugin_api.get_data_dir()
             icon = gtk.gdk.pixbuf_new_from_file_at_size(data_dir + \
@@ -79,8 +80,7 @@ class NotificationArea:
 
     def deactivate(self, plugin_api):
         if indicator_capable:
-            pass
-            ##### Needs fixing
+            self.ind.set_status(appindicator.STATUS_PASSIVE)
         else:
             self.status_icon.set_visible(False)
         self.plugin_api.get_browser().start_minimized = False
