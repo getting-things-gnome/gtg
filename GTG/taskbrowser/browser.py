@@ -80,17 +80,24 @@ class Timer:
 class TaskBrowser:
 
     def __init__(self, requester, config, opentask=None,closetask=None,\
-                 refreshtask=None, logger=None):
+                 refreshtask=None, quit=None, logger=None):
 
         self.logger=logger
 
         # Object prime variables
         self.priv   = {}
         self.req    = requester
-        self.config = config.conf_dict
+        self.config = config
         self.open_task = opentask
         self.close_task = closetask
         self.refresh_task = refreshtask
+        self.quit = quit
+        self.tag_active = False
+        
+        #treeviews handlers
+        self.tags_tv = None
+        self.tasks_tv = None
+        self.ctasks_tv = None
 
         ### YOU CAN DEFINE YOUR INTERNAL MECHANICS VARIABLES BELOW
         # Task deletion
@@ -143,9 +150,6 @@ class TaskBrowser:
         #self._init_note_support()
         
         
-
-        self.tag_active = False
-
         #Autocompletion for Tags
         self._init_tag_list()
         self._init_tag_completion()
@@ -248,11 +252,6 @@ class TaskBrowser:
         self.quickadd_pane      = self.builder.get_object("quickadd_pane")
         self.sidebar            = self.builder.get_object("sidebar")
         self.sidebar_container  = self.builder.get_object("sidebar-scroll")
-        # Tree views
-        #self.tags_tv             = self.builder.get_object("tag_tview")
-        # NOTES
-        #self.new_note_button    = self.builder.get_object("new_note_button")
-        #self.note_toggle        = self.builder.get_object("note_toggle")
 
     def _init_ui_widget(self):
         # The Active tasks treeview
@@ -264,7 +263,7 @@ class TaskBrowser:
         self.ctask_tv = ClosedTaskTreeView()
         self.ctask_tv.set_model(self.ctask_modelsort)
         self.closed_pane.add(self.ctask_tv)
-
+        
         # The tags treeview
         self.tags_tv = TagTreeView()
         self.tags_tv.set_model(self.tag_modelsort)
@@ -382,7 +381,7 @@ class TaskBrowser:
         self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
 
         if (self.window):
-            self.window.connect("destroy", gtk.main_quit)
+            self.window.connect("destroy", self.on_close)
 
         # Active tasks TreeView
         self.task_tv.connect('row-activated',\
@@ -1695,13 +1694,6 @@ class TaskBrowser:
             self.donebutton.set_tooltip_text(GnomeConfig.MARK_DONE_TOOLTIP)
             self.dismissbutton.set_label(GnomeConfig.MARK_DISMISS)
         self.update_buttons_sensitivity()
-
-#    def on_note_cursor_changed(self, selection=None):
-#        #We unselect all in the closed task view
-#        #Only if something is selected in the active task list
-#        if selection.count_selected_rows() > 0:
-#            self.ctask_tv.get_selection().unselect_all()
-#            self.task_tv.get_selection().unselect_all()
     
     def on_pluginmanager_activate(self, widget):
         if self.pm:
@@ -1714,6 +1706,7 @@ class TaskBrowser:
         #Saving is now done in main.py
         self.on_delete(None, None)
         gtk.main_quit()
+        self.quit()
 
     def on_task_added(self, sender, tid):
         if self.logger:
@@ -1843,25 +1836,26 @@ class TaskBrowser:
         return ids
 
     def get_selected_tags(self):
-        t_selected = self.tags_tv.get_selection()
-        model      = self.tags_tv.get_model()
-        t_iter = None
-        if t_selected:
-            tmodel, t_iter = t_selected.get_selected()
         notag_only = False
         tag = []
-        if t_iter:
-            selected = model.get_value(t_iter, tagtree.COL_OBJ)
-            special  = selected.get_attribute("special")
-            if special == "all":
-                tag = []
-                selected = None
-            #notag means we want to display only tasks without any tag
-            if special == "notag":
-                notag_only = True
-            if not notag_only and selected:
-                tag.append(selected)
-        #If no selection, we display all
+        if self.tags_tv:
+            t_selected = self.tags_tv.get_selection()
+            model      = self.tags_tv.get_model()
+            t_iter = None
+            if t_selected:
+                tmodel, t_iter = t_selected.get_selected()
+            if t_iter:
+                selected = model.get_value(t_iter, tagtree.COL_OBJ)
+                special  = selected.get_attribute("special")
+                if special == "all":
+                    tag = []
+                    selected = None
+                #notag means we want to display only tasks without any tag
+                if special == "notag":
+                    notag_only = True
+                if not notag_only and selected:
+                    tag.append(selected)
+            #If no selection, we display all
         return tag, notag_only
 
     def get_n_active_tasks(self):

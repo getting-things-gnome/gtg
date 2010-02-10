@@ -292,8 +292,9 @@ class Tag(TreeNode):
         #return a copy of the list
         toreturn = self.tasks[:]
         tmplist = []
-        for c in self.get_children_objs():
-            tmplist.extend(c.get_tasks())
+        for c in self.get_children():
+            node = self.tree.get_node(c)
+            tmplist.extend(node.get_tasks())
         for ti in tmplist:
             if ti not in toreturn:
                 toreturn.append(ti)

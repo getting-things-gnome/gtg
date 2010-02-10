@@ -29,7 +29,7 @@ from GTG.tools                        import clipboard
 class Manager():
 
     def __init__(self,req,config,logger=None):
-        self.config = config
+        self.config = config.conf_dict
         self.task_config = config.task_conf_dict
         self.req = req
         self.logger = logger
@@ -46,7 +46,7 @@ class Manager():
     def show_browser(self):
         self.browser = TaskBrowser(self.req, self.config, opentask=self.open_task,\
                         closetask=self.close_task, refreshtask=self.refresh_task,\
-                        logger=self.logger)
+                        quit=self.quit, logger=self.logger)
         DBusTaskWrapper(self.req, self.browser)
         self.browser.main()
         

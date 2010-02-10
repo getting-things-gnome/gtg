@@ -190,6 +190,7 @@ class TagTreeModel(gtk.GenericTreeModel):
         tag_index = root.get_child_index(tname)
         tag_path  = (tag_index, )
         tag_iter  = self.get_iter(tag_path)
+        print "path is %s " %tag_path
         self.row_inserted(tag_path, tag_iter)
 
     def move_tag(self, parent, child):
