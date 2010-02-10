@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2010 - Luca Invernizzi <invernizzi.l@gmail.com> 
+# Copyright (c) 2009 - Paulo Cabido <paulo.cabido@gmail.com>
+#                    - Luca Invernizzi <invernizzi.l@gmail.com> 
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
