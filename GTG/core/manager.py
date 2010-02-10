@@ -80,8 +80,8 @@ class Manager():
             del self.opened_task[tid]
             
     def refresh_task(self,tid):
-        if self.opened_task.has_key(uid):
-            self.opened_task[uid].refresh_editor(refreshtext=True)
+        if self.opened_task.has_key(tid):
+            self.opened_task[tid].refresh_editor(refreshtext=True)
             
     def get_tasktitle(self, tid):
         task = self.req.get_task(tid)

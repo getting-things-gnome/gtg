@@ -1748,7 +1748,7 @@ class TaskBrowser:
         tlist += task.get_parents()
         tlist += task.get_subtask_tids()
         for uid in tlist:
-            self.refreshtask(uid)
+            self.refresh_task(uid)
         #if the modified task is active, we have to refresh everything
         #to avoid some odd stuffs when loading
         if task.get_status() == "Active" :
