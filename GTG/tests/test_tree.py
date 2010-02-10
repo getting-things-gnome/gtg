@@ -79,7 +79,7 @@ class TestTree(unittest.TestCase):
         
     def test_parent(self):
         tree = self._build_tree(4,flat=False)
-        tree.print_tree()
+        #tree.print_tree()
         mynode = tree.get_node('3@3')
         self.assertEqual(True,mynode.has_parent())
         p = mynode.get_parents()[0]
