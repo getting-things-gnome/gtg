@@ -38,7 +38,6 @@ from GTG import info
 from GTG import _
 from GTG.core.task                    import Task
 from GTG.core.tagstore                import Tag
-from GTG.taskeditor.editor            import TaskEditor
 from GTG.taskbrowser                  import GnomeConfig
 from GTG.taskbrowser                  import tasktree
 from GTG.taskbrowser.tasktree         import TaskTreeModel,\
@@ -51,7 +50,6 @@ from GTG.tools                        import openurl
 from GTG.tools.dates                  import strtodate,\
                                              no_date,\
                                              FuzzyDate
-from GTG.tools                        import clipboard
 from GTG.core.plugins.manager         import PluginManager
 from GTG.core.plugins.engine          import PluginEngine
 from GTG.core.plugins.api             import PluginAPI
@@ -81,7 +79,8 @@ class Timer:
 
 class TaskBrowser:
 
-    def __init__(self, requester, config, logger=None):
+    def __init__(self, requester, config, opentask=None,closetask=None,\
+                 refreshtask=None, logger=None):
 
         self.logger=logger
 
@@ -89,15 +88,13 @@ class TaskBrowser:
         self.priv   = {}
         self.req    = requester
         self.config = config.conf_dict
-        self.task_config = config.task_conf_dict
+        self.open_task = opentask
+        self.close_task = closetask
+        self.refresh_task = refreshtask
 
         ### YOU CAN DEFINE YOUR INTERNAL MECHANICS VARIABLES BELOW
         # Task deletion
         self.tids_todelete = None # The tid that will be deleted
-        # Editors
-        self.opened_task  = {}   # This is the list of tasks that are already
-                                 # opened in an editor of course it's empty
-                                 # right now
 
         # Setup default values for view
         self._init_browser_config()
@@ -145,8 +142,6 @@ class TaskBrowser:
         # NOTES
         #self._init_note_support()
         
-        #Shared clipboard
-        self.clipboard = clipboard.TaskClipboard(self.req)
         
 
         self.tag_active = False
@@ -689,17 +684,6 @@ class TaskBrowser:
             odic = self.config["browser"]["opened_tasks"]
             for t in odic:
                 ted = self.open_task(t)
-                #restoring position doesn't work, I don't know why
-                #ted.move(odic[t][0],odic[t][1])
-
-#        if "experimental_notes" in self.config["browser"]:
-#            self.notes = eval(self.config["browser"]["experimental_notes"])
-#            if self.notes:
-#                self.note_toggle.show()
-#                self.new_note_button.show()
-#            else:
-#                self.note_toggle.hide()
-#                self.new_note_button.hide()
 
     def count_tasks_rec(self, my_task, active_tasks):
         count = 0
@@ -808,36 +792,6 @@ class TaskBrowser:
             return no_date
         return strtodate(date)
 
-    def open_task(self, uid,thisisnew=False):
-        """Open the task identified by 'uid'.
-
-        If a Task editor is already opened for a given task, we present it.
-        Else, we create a new one.
-        """
-        t = self.req.get_task(uid)
-        tv = None
-        if uid in self.opened_task:
-            tv = self.opened_task[uid]
-            tv.present()
-        elif t:
-            tv = TaskEditor(
-                self.req, t, self.plugins, \
-                self.on_delete_task, self.close_task, self.open_task, \
-                self.get_tasktitle,taskconfig=self.task_config, \
-                plugin_apis=self.p_apis,thisisnew=thisisnew,\
-                clipboard = self.clipboard)
-            #registering as opened
-            self.opened_task[uid] = tv
-        return tv
-
-    def get_tasktitle(self, tid):
-        task = self.req.get_task(tid)
-        return task.get_title()
-
-    def close_task(self, tid):
-        # When an editor is closed, it should deregister itself.
-        if tid in self.opened_task:
-            del self.opened_task[tid]
 
     def is_task_visible(self, task):
         """Returns True if the task meets the criterion to be displayed
@@ -1092,12 +1046,6 @@ class TaskBrowser:
         # plugins are deactivated
         if self.plugins:
             self.pengine.deactivatePlugins(self.plugins, self.p_apis)
-            
-        #save opened tasks and their positions.
-        open_task = []
-        for otid in self.opened_task.keys():     
-            open_task.append(otid)
-            self.opened_task[otid].close()
 
         # Populate configuration dictionary
         self.config["browser"] = {
@@ -1129,16 +1077,12 @@ class TaskBrowser:
                 quickadd_pane,
             'view':
                 view,
-            'opened_tasks':
-                open_task,
             }
         if   sort_column is not None and sort_order == gtk.SORT_ASCENDING:
             self.config["browser"]["tasklist_sort"]  = [sort_column, 0]
         elif sort_column is not None and sort_order == gtk.SORT_DESCENDING:
             self.config["browser"]["tasklist_sort"]  = [sort_column, 1]
         self.config["browser"]["view"] = view
-#        if self.notes:
-#            self.config["browser"]["experimental_notes"] = True
         
         # adds the plugin settings to the conf
         if self.plugins:
@@ -1484,22 +1428,18 @@ class TaskBrowser:
         if tid:
             self.open_task(tid)
 
-#    def on_edit_note(self, widget, row=None, col=None):
-#        tid = self.get_selected_task(self.note_tview)
-#        if tid:
-#            self.open_task(tid)
-
     def on_delete_confirm(self, widget):
         """if we pass a tid as a parameter, we delete directly
         otherwise, we will look which tid is selected"""
         for tid in self.tids_todelete:
             self.req.delete_task(tid)
-            if tid in self.opened_task:
-                self.opened_task[tid].close()
+            self.close_task(tid)
         self.tids_todelete = None
         if self.refresh_lock.acquire(False):
             gobject.idle_add(self.general_refresh)
-
+            
+            
+    #FIXME : this function should be in core/manager, not in the browser
     def on_delete_task(self, widget=None, tid=None):
         #If we don't have a parameter, then take the selection in the treeview
         if not tid:
@@ -1808,8 +1748,7 @@ class TaskBrowser:
         tlist += task.get_parents()
         tlist += task.get_subtask_tids()
         for uid in tlist:
-            if self.opened_task.has_key(uid):
-                self.opened_task[uid].refresh_editor(refreshtext=True)
+            self.refreshtask(uid)
         #if the modified task is active, we have to refresh everything
         #to avoid some odd stuffs when loading
         if task.get_status() == "Active" :
