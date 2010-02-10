@@ -288,6 +288,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
 
     def remove_task(self, tid):
         print "dummy remove_task in tasktree"
+        return True
 #        # get the nodes
 #        node = self.tree.get_node(tid)
 #        removed = False
