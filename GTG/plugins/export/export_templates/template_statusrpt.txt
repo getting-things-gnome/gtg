@@ -1,0 +1,50 @@
+#### -*- coding: utf-8 -*-
+## pylint: disable-msg=W0201
+## -----------------------------------------------------------------------------
+## Getting Things Gnome! - a personal organizer for the GNOME desktop
+## Copyright (c) 2008-2009 - Lionel Dricot & Bertrand Rousseau
+##
+## This program is free software: you can redistribute it and/or modify it under
+## the terms of the GNU General Public License as published by the Free Software
+## Foundation, either version 3 of the License, or (at your option) any later
+## version.
+##
+## This program is distributed in the hope that it will be useful, but WITHOUT
+## ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+## FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+## details.
+##
+## You should have received a copy of the GNU General Public License along with
+## this program.  If not, see <http://www.gnu.org/licenses/>.
+## -----------------------------------------------------------------------------
+##
+##So you want to write your own template for Getting things GNOME?
+## Read template_simple.html for a quick tutorial, this one is a bit 
+## harder to understand, as it cannot be indented
+##
+##
+##
+#import re
+##
+#def task_template($task, $space_num):
+#set spaces = " " * $space_num
+#if $task.has_title
+$task.title#slurp
+#end if
+##
+#if $task.has_subtasks
+
+#for $subtask in $task.subtasks:
+$spaces * $task_template($subtask, $space_num + 2)
+#end for
+#end if
+#end def
+##
+##
+##
+Status Report:
+#for $task in $tasks:
+ * $task_template($task, 3)
+#end for
+##
+##

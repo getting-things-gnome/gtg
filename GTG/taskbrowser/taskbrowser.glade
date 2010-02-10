@@ -444,10 +444,9 @@
           <object class="GtkHPaned" id="hpaned1">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="position">250</property>
-            <property name="position_set">True</property>
             <child>
               <object class="GtkVBox" id="sidebar">
+                <property name="width_request">75</property>
                 <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkHBox" id="hbox4">
@@ -517,7 +516,7 @@
               </object>
               <packing>
                 <property name="resize">False</property>
-                <property name="shrink">True</property>
+                <property name="shrink">False</property>
               </packing>
             </child>
             <child>
@@ -567,8 +566,7 @@
                   <object class="GtkVPaned" id="vpaned1">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="position">300</property>
-                    <property name="position_set">True</property>
+                    <property name="orientation">vertical</property>
                     <child>
                       <object class="GtkScrolledWindow" id="main_pane">
                         <property name="visible">True</property>
@@ -586,7 +584,7 @@
                     </child>
                     <child>
                       <object class="GtkScrolledWindow" id="closed_pane">
-                        <property name="height_request">200</property>
+                        <property name="height_request">100</property>
                         <property name="can_focus">True</property>
                         <property name="hscrollbar_policy">automatic</property>
                         <property name="vscrollbar_policy">automatic</property>
@@ -596,7 +594,7 @@
                       </object>
                       <packing>
                         <property name="resize">True</property>
-                        <property name="shrink">True</property>
+                        <property name="shrink">False</property>
                       </packing>
                     </child>
                   </object>
@@ -762,6 +760,7 @@ Deleting a task cannot be undone, and will delete the following tasks: </propert
   <object class="GtkMenu" id="TagContextMenu">
     <property name="visible">True</property>
     <property name="no_show_all">True</property>
+    <signal name="deactivate" handler="on_tagcontext_deactivate"/>
     <child>
       <object class="GtkImageMenuItem" id="colorchooser">
         <property name="label">gtk-select-color</property>
@@ -774,7 +773,7 @@ Deleting a task cannot be undone, and will delete the following tasks: </propert
     </child>
     <child>
       <object class="GtkImageMenuItem" id="resetcolor">
-        <property name="label">Reset Color</property>
+        <property name="label" translatable="yes">Reset Color</property>
         <property name="visible">True</property>
         <property name="image">image2</property>
         <property name="use_stock">False</property>
@@ -862,6 +861,15 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
       </object>
     </child>
     <child>
+      <object class="GtkImageMenuItem" id="tcm_schedule_menu">
+        <property name="label" translatable="yes">_Schedule for...</property>
+        <property name="visible">True</property>
+        <property name="submenu">ScheduleForContextMenu</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">False</property>
+      </object>
+    </child>
+    <child>
       <object class="GtkImageMenuItem" id="tcm_mark_as_done">
         <property name="label" translatable="yes">Mark as _Done</property>
         <property name="visible">True</property>
@@ -891,6 +899,68 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
         <property name="use_stock">True</property>
         <property name="accel_group">accelgroup1</property>
         <signal name="activate" handler="on_delete_task"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkSeparatorMenuItem" id="separatormenuitem5">
+        <property name="visible">True</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="tcm_addtag">
+        <property name="label" translatable="yes">Add Tag...</property>
+        <property name="visible">True</property>
+        <property name="image">image3</property>
+        <property name="use_stock">False</property>
+        <signal name="activate" handler="on_add_new_tag"/>
+      </object>
+    </child>
+  </object>
+  <object class="GtkMenu" id="ScheduleForContextMenu">
+    <property name="visible">True</property>
+    <child>
+      <object class="GtkImageMenuItem" id="tcm_mark_as_started">
+        <property name="label" translatable="yes">t_oday</property>
+        <property name="visible">True</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">False</property>
+        <signal name="activate" handler="on_mark_as_started"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="tcm_schedule_for_tomorrow">
+        <property name="label" translatable="yes">_tomorrow</property>
+        <property name="visible">True</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">False</property>
+        <signal name="activate" handler="on_schedule_for_tomorrow"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="tcm_schedule_for_next_week">
+        <property name="label" translatable="yes">next _week</property>
+        <property name="visible">True</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">False</property>
+        <signal name="activate" handler="on_schedule_for_next_week"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="tcm_schedule_for_next_month">
+        <property name="label" translatable="yes">next _month</property>
+        <property name="visible">True</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">False</property>
+        <signal name="activate" handler="on_schedule_for_next_month"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="tcm_schedule_for_next_year">
+        <property name="label" translatable="yes">next _year</property>
+        <property name="visible">True</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">False</property>
+        <signal name="activate" handler="on_schedule_for_next_year"/>
       </object>
     </child>
   </object>
@@ -976,6 +1046,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
   </object>
   <object class="GtkImage" id="tcm_img_mark_done">
     <property name="visible">True</property>
+    <property name="yalign">0.49000000953674316</property>
     <property name="pixel_size">16</property>
     <property name="icon_name">gtg-task-done</property>
   </object>
@@ -1004,5 +1075,117 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
     <property name="xalign">0.44999998807907104</property>
     <property name="yalign">0.47999998927116394</property>
     <property name="stock">gtk-revert-to-saved</property>
+  </object>
+  <object class="GtkDialog" id="TaskAddTag">
+    <property name="border_width">5</property>
+    <property name="title" translatable="yes">Add a Tag...</property>
+    <property name="window_position">center-on-parent</property>
+    <property name="type_hint">dialog</property>
+    <property name="has_separator">False</property>
+    <child internal-child="vbox">
+      <object class="GtkVBox" id="dialog-vbox3">
+        <property name="visible">True</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">2</property>
+        <child>
+          <object class="GtkLabel" id="label5">
+            <property name="visible">True</property>
+            <property name="label" translatable="yes">Enter the name of the tag(s) you wish to add:</property>
+          </object>
+          <packing>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry" id="tag_entry">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="is_focus">True</property>
+            <property name="invisible_char">&#x25CF;</property>
+            <property name="activates_default">True</property>
+            <property name="text" translatable="yes">TagName</property>
+            <property name="shadow_type">none</property>
+          </object>
+          <packing>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="label6">
+            <property name="visible">True</property>
+            <property name="label" translatable="yes">Hint: you can add several tags by separating them with
+commas.</property>
+            <attributes>
+              <attribute name="foreground" value="#77bd77bd77bd"/>
+            </attributes>
+          </object>
+          <packing>
+            <property name="position">3</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkCheckButton" id="apply_to_subtasks">
+            <property name="label" translatable="yes">Apply to subtasks</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">False</property>
+            <property name="draw_indicator">True</property>
+          </object>
+          <packing>
+            <property name="position">4</property>
+          </packing>
+        </child>
+        <child internal-child="action_area">
+          <object class="GtkHButtonBox" id="dialog-action_area3">
+            <property name="visible">True</property>
+            <property name="layout_style">end</property>
+            <child>
+              <object class="GtkButton" id="addtag_ok">
+                <property name="label" translatable="yes">Add Tag</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="can_default">True</property>
+                <property name="has_default">True</property>
+                <property name="receives_default">False</property>
+                <signal name="clicked" handler="on_addtag_confirm"/>
+                <signal name="activate" handler="on_addtag_confirm"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="addtag_cancel">
+                <property name="label" translatable="yes">Cancel</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="pack_type">end</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+    <action-widgets>
+      <action-widget response="0">addtag_ok</action-widget>
+      <action-widget response="0">addtag_cancel</action-widget>
+    </action-widgets>
+  </object>
+  <object class="GtkImage" id="image3">
+    <property name="visible">True</property>
+    <property name="pixel_size">16</property>
+    <property name="icon_name">gtg-tag</property>
   </object>
 </interface>

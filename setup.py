@@ -67,6 +67,7 @@ def create_data_files():
                        ['data/icons/hicolor/scalable/apps/gtg.svg']))
     # misc
     data_files.append(('share/applications', ['gtg.desktop']))
+    data_files.append(('share/dbus-1/services', ['org.GTG.service']))
     data_files.append(('share/man/man1', ['doc/gtg.1', 'doc/gtg_new_task.1']))
     return data_files
 
@@ -129,6 +130,7 @@ setup(
     'GTG.plugins.export',
     'GTG.plugins.geolocalized_tasks',
     'GTG.plugins.hamster',
+    'GTG.plugins.evolution_sync',
     'GTG.plugins.helloworld',
     'GTG.plugins.rtm_sync',
     'GTG.plugins.notification_area',
@@ -141,6 +143,7 @@ setup(
     'GTG.plugins': [
         'bugzilla.gtg-plugin',
         'export.gtg-plugin',
+        'evolution-sync.gtg-plugin',
         'geolocalized-tasks.gtg-plugin',
         'hamster.gtg-plugin',
         'helloworld.gtg-plugin',
@@ -156,7 +159,9 @@ setup(
                           'export_templates/thumbnail_textual.txt',
                           'export_templates/template_simple.html',
                           'export_templates/template_textual.txt',
-                          'export_templates/thumbnail_simple.html'],
+                          'export_templates/thumbnail_simple.html',
+                          'export_templates/thumbnail_statusrpt.txt',
+                          'export_templates/thumbnail_textual.html'],
     'GTG.plugins.geolocalized_tasks': ['geolocalized.glade',
                           'icons/hicolor/24x24/geolocalization.png',
                           'icons/hicolor/16x16/assign-location.png',

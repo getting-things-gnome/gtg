@@ -182,6 +182,8 @@ class TaskEditor :
                                        requester = self.req,
                                        taskview = None, 
                                        task_modelsort = None,
+                                       ctaskview = None, 
+                                       ctask_modelsort = None,
                                        filter_cbs = None,
                                        tagpopup = None,
                                        tagview = None,

@@ -37,6 +37,8 @@ COL_CDATE_STR = 5
 COL_DLEFT     = 6
 COL_TAGS      = 7
 COL_LABEL     = 9
+COL_SDATE     = 10
+COL_DUE       = 11
 
 class TaskTreeModel(gtk.GenericTreeModel):
 
@@ -49,6 +51,8 @@ class TaskTreeModel(gtk.GenericTreeModel):
         str,\
         str,\
         gobject.TYPE_PYOBJECT,\
+        str,\
+        str,\
         str,\
         str)
 
@@ -110,10 +114,14 @@ class TaskTreeModel(gtk.GenericTreeModel):
             return task
         elif column == COL_TITLE:
             return saxutils.escape(task.get_title())
+        elif column == COL_SDATE:
+            return task.get_start_date().to_readable_string()
         elif column == COL_DDATE:
-            return str(task.get_due_date())
+            return task.get_due_date().to_readable_string()
+        elif column == COL_DUE:
+            return task.get_due_date().to_readable_string()
         elif column == COL_CDATE:
-            return str(task.get_closed_date())
+            return task.get_closed_date().to_readable_string()
         elif column == COL_CDATE_STR:
             if task.get_status() == Task.STA_DISMISSED:
                 date = "<span color='#AAAAAA'>" +\
@@ -413,30 +421,43 @@ class ActiveTaskTreeView(TaskTreeView):
         title_col.set_cell_data_func(render_text, self._celldatafunction)
         self.append_column(title_col)
         self.columns.insert(COL_TITLE, title_col)
+        self.set_search_column(COL_TITLE)
 
-        # Due date column
+        # Start date column
+        sdate_col   = gtk.TreeViewColumn()
+        render_text = gtk.CellRendererText()
+        sdate_col.set_title(_("Start date"))
+        sdate_col.pack_start(render_text, expand=False)
+        sdate_col.add_attribute(render_text, "markup", COL_SDATE)
+        sdate_col.set_resizable(False)
+        sdate_col.set_sort_column_id(COL_SDATE)
+        sdate_col.set_cell_data_func(render_text, self._celldatafunction)
+        self.append_column(sdate_col)
+        self.columns.insert(COL_SDATE, sdate_col)
+
+        # Due column
         ddate_col   = gtk.TreeViewColumn()
         render_text = gtk.CellRendererText()
-        ddate_col.set_title(_("Due date"))
+        ddate_col.set_title(_("Due"))
         ddate_col.pack_start(render_text, expand=False)
-        ddate_col.add_attribute(render_text, "markup", COL_DDATE)
+        ddate_col.add_attribute(render_text, "markup", COL_DUE)
         ddate_col.set_resizable(False)
         ddate_col.set_sort_column_id(COL_DDATE)
         ddate_col.set_cell_data_func(render_text, self._celldatafunction)
         self.append_column(ddate_col)
-        self.columns.insert(COL_DDATE, ddate_col)
+        self.columns.insert(COL_DUE, ddate_col)
 
         # days left
-        dleft_col   = gtk.TreeViewColumn()
-        render_text = gtk.CellRendererText()
-        dleft_col.set_title(_("Days left"))
-        dleft_col.pack_start(render_text, expand=False)
-        dleft_col.add_attribute(render_text, "markup", COL_DLEFT)
-        dleft_col.set_resizable(False)
-        dleft_col.set_sort_column_id(COL_DLEFT)
-        dleft_col.set_cell_data_func(render_text, self._celldatafunction)
-        self.append_column(dleft_col)
-        self.columns.insert(COL_DLEFT, dleft_col)
+#        dleft_col   = gtk.TreeViewColumn()
+#        render_text = gtk.CellRendererText()
+#        dleft_col.set_title(_("Days left"))
+#        dleft_col.pack_start(render_text, expand=False)
+#        dleft_col.add_attribute(render_text, "markup", COL_DLEFT)
+#        dleft_col.set_resizable(False)
+#        dleft_col.set_sort_column_id(COL_DLEFT)
+#        dleft_col.set_cell_data_func(render_text, self._celldatafunction)
+#        self.append_column(dleft_col)
+#        self.columns.insert(COL_DLEFT, dleft_col)
 
         # Global treeview properties
         self.set_property("expander-column", title_col)
@@ -575,6 +596,7 @@ class ClosedTaskTreeView(TaskTreeView):
         title_col.set_sort_column_id(COL_TITLE)
         self.append_column(title_col)
         self.columns.insert(COL_TITLE, title_col)
+        self.set_search_column(COL_TITLE)
         
         self.set_show_expanders(False)
 
