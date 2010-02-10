@@ -45,19 +45,24 @@ class NotificationArea:
         #initialize the right notification thing
         if indicator_capable:
             #Create an indicator icon
-            self.ind = appindicator.Indicator ("gtg", "indicator-messages", appindicator.CATEGORY_APPLICATION_STATUS)
+            self.ind = appindicator.Indicator ("gtg", \
+                                  "indicator-messages", \
+                                   appindicator.CATEGORY_APPLICATION_STATUS)
             self.ind.set_status (appindicator.STATUS_ACTIVE)
             self.ind.set_attention_icon ("indicator-messages-new")
             self.ind.set_icon("gtg")
             self.ind.set_menu(self.menu)
         else:
             data_dir = plugin_api.get_data_dir()
-            icon = gtk.gdk.pixbuf_new_from_file_at_size(data_dir + "/icons/hicolor/16x16/apps/gtg.png", 16, 16)
+            icon = gtk.gdk.pixbuf_new_from_file_at_size(data_dir + \
+                                "/icons/hicolor/16x16/apps/gtg.png", 16, 16)
             self.status_icon = gtk.status_icon_new_from_pixbuf(icon)
             self.status_icon.set_tooltip("Getting Things Gnome!")
             self.status_icon.connect('activate', self.minimize, plugin_api)
             self.status_icon.set_visible(True)
-            self.status_icon.connect('popup-menu', self.on_icon_popup, self.menu)
+            self.status_icon.connect('popup-menu', \
+                                     self.on_icon_popup, \
+                                     self.menu)
         #Load the preferences
         self.preference_dialog_init()
         self.preferences_load()
@@ -90,14 +95,21 @@ class NotificationArea:
             browser.open_task(tid)
     
     def minimize(self, widget, plugin_api):
+        if self.view_main_window_signal != None:
+            self.view_main_window.disconnect(self.view_main_window_signal)
+            self.view_main_window_signal = None
         if self.minimized:
             self.view_main_window.set_active(True)
+            self.view_main_window.show()
             plugin_api.show_window()
-            self.minimized = not self.minimized
+            self.minimized = False
         else:
             self.view_main_window.set_active(False)
+            self.view_main_window.show()
             plugin_api.hide_window()
-            self.minimized = not self.minimized
+            self.minimized = True
+        self.view_main_window_signal = self.view_main_window.connect(\
+                                'activate', self.minimize, self.plugin_api)
 
 ## Menu methods #################################################################
 
@@ -143,7 +155,10 @@ class NotificationArea:
         #view in main window checkbox
         self.view_main_window = gtk.CheckMenuItem(_("_View Main Window"))
         self.view_main_window.set_active(not self.minimized)
-        self.view_main_window.connect('activate', self.minimize, self.plugin_api)
+        self.view_main_window_signal = self.view_main_window.connect(\
+                                      'activate', \
+                                      self.minimize,\
+                                      self.plugin_api)
         self.menu.append(self.view_main_window)
         #add new task
         menuItem = gtk.ImageMenuItem(gtk.STOCK_ADD)
@@ -159,7 +174,8 @@ class NotificationArea:
     def on_icon_popup(self, icon, button, timestamp, menu=None):
         #appindicator handles menus transparently
         if not indicator_capable:
-            menu.popup(None, None, gtk.status_icon_position_menu, button, timestamp, icon)
+            menu.popup(None, None, gtk.status_icon_position_menu, \
+                       button, timestamp, icon)
 
     def onTaskOpened(self, plugin_api):
         pass
