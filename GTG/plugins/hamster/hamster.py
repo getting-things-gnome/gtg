@@ -90,9 +90,8 @@ class hamsterPlugin:
             # old hamster version, doesn't support tags
             pass
         tag_str = "".join([" #" + x for x in tag_candidates])
-        print tag_str
             
-        print '%s%s,%s%s'%(activity, category, description, tag_str)
+        #print '%s%s,%s%s'%(activity, category, description, tag_str)
         hamster_id=self.hamster.AddFact('%s%s,%s%s'%(activity, category, description, tag_str), 0, 0)
         
         ids=self.get_hamster_ids(task)
@@ -125,13 +124,13 @@ class hamsterPlugin:
         else: return None
             
     def is_task_active(self, task):
-    	records = self.get_records(task)
-    	ids = [record['id'] for record in records]
-    	return self.get_active_id() in ids
-    	
+        records = self.get_records(task)
+        ids = [record['id'] for record in records]
+        return self.get_active_id() in ids
+    
     def stop_task(self, task):
         if self.is_task_active(self, task):
-    	    self.hamster.StopTracking()
+            self.hamster.StopTracking()
     
     #### Datastore  
     def get_hamster_ids(self, task):
@@ -275,7 +274,6 @@ class hamsterPlugin:
         dialog_to_pref("description", ["title", "contents", "none"])
         dialog_to_pref("tags", ["all", "existing", "none"])
 
-        print self.preferences
         self.preferences_store()
         self.preferences_dialog.hide()
         return True
