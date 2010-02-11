@@ -90,12 +90,15 @@ class hamsterPlugin:
             # old hamster version, doesn't support tags
             pass
         tag_str = "".join([" #" + x for x in tag_candidates])
-            
         #print '%s%s,%s%s'%(activity, category, description, tag_str)
-        hamster_id=self.hamster.AddFact('%s%s,%s%s'%(activity, category, description, tag_str), 0, 0)
-        
         ids=self.get_hamster_ids(task)
-        ids.append(str(hamster_id))
+        try:
+            hamster_id=self.hamster.AddFact('%s%s,%s%s'%(activity, category, description, tag_str), 0, 0)
+            ids.append(str(hamster_id))
+        except dbus.exceptions.DBusException:
+            #old hamster version
+            pass
+        
         self.set_hamster_ids(task, ids)
         
     def get_records(self, task):
