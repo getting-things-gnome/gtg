@@ -19,10 +19,17 @@
 import gtk
 import dbus
 import time
+import os
 from calendar import timegm
 
 class hamsterPlugin:
     PLUGIN_NAMESPACE = 'hamster-plugin'
+    DEFAULT_PREFERENCES = {
+        "activity": "tag",
+        "category": "auto",
+        "description": "title",
+        "tags": True,
+    }
     
     def __init__(self):
         #task editor widget
@@ -37,11 +44,11 @@ class hamsterPlugin:
     def sendTask(self, task):
         """Send a gtg task to hamster-applet"""
         if task is None: return
-        title=task.get_title()
-        tags=task.get_tags_name()
+        gtg_title = task.get_title()
+        gtg_tags = tags=[t.lstrip('@').lower() for t in task.get_tags_name()]
         
         hamster_activities=set([unicode(x[0]) for x in self.hamster.GetActivities()])
-        tags=[t.lstrip('@').lower() for t in tags]
+        
         activity_candidates=hamster_activities.intersection(set(tags))
         
         if len(activity_candidates)>=1:
@@ -54,15 +61,15 @@ class hamsterPlugin:
             activity = "Other"
         
         try:
-        	hamster_tags = set([unicode(x) for x in self.hamster.GetTags()])
-        	tag_candidates = hamster_tags.intersection(set(tags))
-        	print hamster_tags, tags, tag_candidates
-        	tag_str = "".join([" #" + x for x in list(tag_candidates)])
-        	print tag_str
-    	
+            hamster_tags = set([unicode(x) for x in self.hamster.GetTags()])
+            tag_candidates = hamster_tags.intersection(set(tags))
+            print hamster_tags, tags, tag_candidates
+            tag_str = "".join([" #" + x for x in list(tag_candidates)])
+            print tag_str
+        
         except dbus.UnknownMethodException:
-        	# old hamster, doesn't support tags
-        	tag_str = ""  
+            # old hamster, doesn't support tags
+            tag_str = ""  
             
         
         hamster_id=self.hamster.AddFact('%s,%s%s'%(activity, title,tag_str), 0, 0)
@@ -114,6 +121,7 @@ class hamsterPlugin:
 
     #### Plugin api methods   
     def activate(self, plugin_api):
+        self.plugin_api = plugin_api
         self.hamster=dbus.SessionBus().get_object('org.gnome.Hamster', '/org/gnome/Hamster')
         
         # add menu item
@@ -128,6 +136,10 @@ class hamsterPlugin:
         # saves the separator's index to later remove it
         plugin_api.add_toolbar_item(self.separator)
         plugin_api.add_toolbar_item(self.button)
+        
+        # set up preferences
+        self.preference_dialog_init()
+        self.preferences_load()
 
     def onTaskOpened(self, plugin_api):
         # add button
@@ -205,6 +217,72 @@ class hamsterPlugin:
         
     def task_cb(self, widget, plugin_api):
         self.sendTask(plugin_api.get_task())
+        
+        
+    #### Preference Handling
+        
+    def is_configurable(self):
+        """A configurable plugin should have this method and return True"""
+        return True
+
+    def configure_dialog(self, plugin_apis, manager_dialog):
+        self.preferences_load()
+        self.preferences_dialog.set_transient_for(manager_dialog)
+        
+        self.builder.get_object("activity_"+self.preferences["activity"]) \
+            .set_active(True)
+        self.builder.get_object("category_"+self.preferences["category"]) \
+            .set_active(True)
+        self.builder.get_object("description_"+self.preferences["description"])\
+            .set_active(True)
+        self.builder.get_object("tags_enable") \
+            .set_active(self.preferences["tags"])
+        
+        self.preferences_dialog.show_all()
+
+    def on_preferences_close(self, widget = None, data = None):
+        def dialog_to_pref(pref, vals):
+            for val in vals:
+                if self.builder.get_object(pref+"_"+val).get_active():
+                    self.preferences[pref] = val
+                    break
+                
+        dialog_to_pref("activity", ["tag", "title"])
+        dialog_to_pref("category", ["auto", "tag", "auto_tag"])
+        dialog_to_pref("description", ["title", "contents", "none"])
+        
+        self.preferences["tags"] = \
+            self.builder.get_object("tags_enable").get_active()
+
+        print self.preferences
+        self.preferences_store()
+        self.preferences_dialog.hide()
+        return True
+
+    def preferences_load(self):
+        data = self.plugin_api.load_configuration_object(self.PLUGIN_NAMESPACE,\
+                                                         "preferences")
+        self.preferences = {}
+        self.preferences.update(self.DEFAULT_PREFERENCES)
+        
+        if type(data) == type (dict()):
+            self.preferences.update(data)
+
+    def preferences_store(self):
+        self.plugin_api.save_configuration_object(self.PLUGIN_NAMESPACE,\
+                                                  "preferences", \
+                                                  self.preferences)
+
+    def preference_dialog_init(self): 
+        self.builder = gtk.Builder()
+        self.builder.add_from_file(os.path.dirname(os.path.abspath(__file__)) +\
+                                   "/prefs.ui")
+        self.preferences_dialog = self.builder.get_object("dialog1")
+        SIGNAL_CONNECTIONS_DIC = {
+            "prefs_close":
+                self.on_preferences_close,
+        }
+        self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
         
 #### Helper Functions  
 def format_date(task):
