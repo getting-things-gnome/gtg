@@ -19,9 +19,9 @@
 
 #This is the TaskEditor
 #
-#It's the window you see when you double-clic on a Task
+#It's the window you see when you double-click on a Task
 #The main text widget is a home-made TextView called TaskView (see taskview.py)
-#The rest are the logic of the widget : date changing widgets, buttons, ...
+#The rest is the logic of the widget : date changing widgets, buttons, ...
 import sys
 import time
 
@@ -50,7 +50,7 @@ class TaskEditor :
     #delete_callback is the function called on deletion
     #close_callback is the function called on close
     #opentask_callback is the function to open a new editor
-    #tasktitle_callbakc is called when title change
+    #tasktitle_callback is called when title changes
     #notes is experimental (bool)
     #taskconfig is a ConfigObj dic to save infos about tasks
     #thisisnew is True when a new task is created and opened
@@ -69,10 +69,10 @@ class TaskEditor :
         self.dismissbutton = self.builder.get_object("dismiss_editor")
         self.deletebutton = self.builder.get_object("delete_editor")
         self.deletebutton.set_tooltip_text(GnomeConfig.DELETE_TOOLTIP)
-        self.deletebutton = self.builder.get_object("insert_subtask")
-        self.deletebutton.set_tooltip_text(GnomeConfig.SUBTASK_TOOLTIP)
-        self.deletebutton = self.builder.get_object("inserttag")
-        self.deletebutton.set_tooltip_text(GnomeConfig.TAG_TOOLTIP)
+        self.subtask_button = self.builder.get_object("insert_subtask")
+        self.subtask_button.set_tooltip_text(GnomeConfig.SUBTASK_TOOLTIP)
+        self.inserttag_button = self.builder.get_object("inserttag")
+        self.inserttag_button.set_tooltip_text(GnomeConfig.TAG_TOOLTIP)
         #Create our dictionary and connect it
         dic = {
                 "mark_as_done_clicked"  : self.change_status,
@@ -122,7 +122,6 @@ class TaskEditor :
         self.duedate_widget = self.builder.get_object("duedate_entry")
         self.startdate_widget = self.builder.get_object("startdate_entry")
         self.dayleft_label  = self.builder.get_object("dayleft")
-        self.inserttag_button = self.builder.get_object("inserttag")
         self.tasksidebar = self.builder.get_object("tasksidebar")
         self.keepnote_button = self.builder.get_object("keepnote")
         if not notes :
@@ -249,11 +248,11 @@ class TaskEditor :
         dismiss_editor.add_accelerator('clicked', agr, key, mod, gtk.ACCEL_VISIBLE)
         
     
-    #Can be called at any time to reflect the status of the Task
-    #Refresh should never interfer with the TaskView
+    #Can be called at any time to reflect the status of the Task.
+    #Refresh should never interfere with the TaskView.
     #If a title is passed as a parameter, it will become
-    #The new window title. If not, we will look for the task title
-    #Refreshtext is wheter or not we should refresh the TaskView
+    #the new window title. If not, we will look for the task title.
+    #Refreshtext is whether or not we should refresh the TaskView
     #(doing it all the time is dangerous if the task is empty)
     def refresh_editor(self, title=None, refreshtext=False):
         to_save = False
@@ -399,7 +398,7 @@ class TaskEditor :
         self.calendar.grab_add()
         #We grab the pointer in the calendar
         gdk.pointer_grab(self.calendar.window, True,gdk.BUTTON1_MASK|gdk.MOD2_MASK)
-        #we will close the calendar if the user clic outside
+        #we will close the calendar if the user clicks outside
         
         if not isinstance(toset, dates.FuzzyDate):
             if not toset:
@@ -598,7 +597,7 @@ class TaskEditor :
         
     
     def __focus_out(self,w=None,e=None) : #pylint: disable-msg=W0613
-        #We should only close if the pointer clic is out of the calendar !
+        #We should only close if the pointer click is out of the calendar !
         p = self.calendar.window.get_pointer()
         s = self.calendar.get_size()
         if  not(0 <= p[0] <= s[0] and 0 <= p[1] <= s[1]) :

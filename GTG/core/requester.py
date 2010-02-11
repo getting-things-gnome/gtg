@@ -83,6 +83,7 @@ class Requester(gobject.GObject):
             task will have no tags.
         @param newtask: C{True} if this is creating a new task that never
             existed, C{False} if importing an existing task from a backend.
+        @return: A task.
         """
         task = self.ds.new_task(pid=pid, newtask=newtask)
         if tags:
