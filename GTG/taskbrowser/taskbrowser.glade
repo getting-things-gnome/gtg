@@ -861,24 +861,6 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
       </object>
     </child>
     <child>
-      <object class="GtkImageMenuItem" id="tcm_schedule_menu">
-        <property name="label" translatable="yes">_Set start date</property>
-        <property name="submenu">ScheduleForContextMenu</property>
-        <property name="visible">True</property>
-        <property name="use_underline">True</property>
-        <property name="use_stock">False</property>
-      </object>
-    </child>
-    <child>
-      <object class="GtkImageMenuItem" id="tcm_due_menu">
-        <property name="label" translatable="yes">Set due date</property>
-        <property name="submenu">DueContextMenu</property>
-        <property name="visible">True</property>
-        <property name="use_underline">True</property>
-        <property name="use_stock">False</property>
-      </object>
-    </child>
-    <child>
       <object class="GtkImageMenuItem" id="tcm_mark_as_done">
         <property name="label" translatable="yes">Mark as _Done</property>
         <property name="visible">True</property>
@@ -912,6 +894,29 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
     </child>
     <child>
       <object class="GtkSeparatorMenuItem" id="separatormenuitem5">
+        <property name="visible">True</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="tcm_schedule_menu">
+        <property name="label" translatable="yes">_Set start date</property>
+        <property name="submenu">ScheduleForContextMenu</property>
+        <property name="visible">True</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">False</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="tcm_due_menu">
+        <property name="label" translatable="yes">Set due date</property>
+        <property name="submenu">DueContextMenu</property>
+        <property name="visible">True</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">False</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkSeparatorMenuItem" id="separatormenuitem6">
         <property name="visible">True</property>
       </object>
     </child>
