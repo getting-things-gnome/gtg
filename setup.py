@@ -169,6 +169,7 @@ setup(
                           'icons/hicolor/svg/geolocalization.svg'],
     'GTG.plugins.helloworld': ['hello_world.glade'],
     'GTG.plugins.tomboy': ['tomboy.ui'],
+    'GTG.plugins.hamster': ['prefs.ui'],
     'GTG.plugins.notification_area': ['notification_area.ui']},
   data_files = create_data_files(),
   scripts=['gtg', 'gtg_new_task'],
