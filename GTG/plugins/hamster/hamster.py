@@ -55,8 +55,8 @@ class hamsterPlugin:
                 activity=list(activity_candidates)[0] 
         elif self.preferences['activity'] == 'title':
             activity = gtg_title
-        # hamster can't handle commas in activity name
-        activity = activity.replace(',', '')
+        # hamster can't handle ',' or '@' in activity name
+        activity = activity.replace(',', '').replace('@', '')
         
         category = ""
         if self.preferences['category'] == 'auto_tag':
