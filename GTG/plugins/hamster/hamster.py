@@ -86,7 +86,7 @@ class hamsterPlugin:
                 tag_candidates = list(hamster_tags.intersection(set(gtg_tags)))
             elif self.preferences['tags'] == 'all':
                 tag_candidates = gtg_tags 
-        except dbus.UnknownMethodException:
+        except dbus.exceptions.DBusException:
             # old hamster version, doesn't support tags
             pass
         tag_str = "".join([" #" + x for x in tag_candidates])
