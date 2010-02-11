@@ -153,3 +153,5 @@ class DBusTaskWrapper(dbus.service.Object):
         self.ui.window.present()
         self.ui.window.move(
           self.ui.priv["window_xpos"], self.ui.priv["window_ypos"])
+        gdk_window = self.ui.window
+        gdk_window.show()
