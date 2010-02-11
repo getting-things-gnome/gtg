@@ -261,6 +261,9 @@ class SyncEngine(object):
                                 local_task = local_title_to_task[title],
                                 remote_task = remote_title_to_task[title]))
 
+    def __log(self, message):
+        if self.logger:
+            self.logger.debug (message)
 
 ## GUI 
     def close_gui(self, msg):
