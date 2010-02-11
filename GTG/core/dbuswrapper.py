@@ -1,6 +1,7 @@
 import dbus
 import dbus.glib
 import dbus.service
+import unicodedata
 
 from GTG.core import CoreConfig
 from GTG.tools import dates
@@ -53,10 +54,13 @@ class DBusTaskWrapper(dbus.service.Object):
 
 
     @dbus.service.method(BUSNAME,in_signature="s")
-    def get_task_ids(self, status_string = "Active, Done"):
+    def get_task_ids(self, status_string):
         # Retrieve a list of task ID values
-        status = [ s.strip() for s in status_string.split(',')]
-        return self.req.get_tasks_list(status, started_only=False)
+        status = [s.strip() for s in status_string.split(',')]
+        #need to convert the statuses to ascii (these are given in unicode)
+        status = [unicodedata.normalize('NFKD', s).encode('ascii','ignore') \
+                  for s in status]
+        return self.req.get_tasks_list(status = status)
 
     @dbus.service.method(BUSNAME)
     def get_task(self, tid):
