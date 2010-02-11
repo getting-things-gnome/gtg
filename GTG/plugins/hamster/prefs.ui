@@ -193,16 +193,47 @@
               </packing>
             </child>
             <child>
-              <object class="GtkCheckButton" id="tags_enable">
-                <property name="label" translatable="yes">Use GTG tags on Hamster fact</property>
+              <object class="GtkRadioButton" id="tags_all">
+                <property name="label" translatable="yes">All GTG tags</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
+                <property name="active">True</property>
                 <property name="draw_indicator">True</property>
               </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="position">12</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkRadioButton" id="tags_existing">
+                <property name="label" translatable="yes">GTG tags already used in Hamster</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
+                <property name="active">True</property>
+                <property name="draw_indicator">True</property>
+                <property name="group">tags_all</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="position">13</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkRadioButton" id="tags_none">
+                <property name="label" translatable="yes">None</property>
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">False</property>
+                <property name="active">True</property>
+                <property name="draw_indicator">True</property>
+                <property name="group">tags_all</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="position">14</property>
               </packing>
             </child>
           </object>

@@ -28,7 +28,7 @@ class hamsterPlugin:
         "activity": "tag",
         "category": "auto",
         "description": "title",
-        "tags": True,
+        "tags": "existing",
     }
     
     def __init__(self):
@@ -79,18 +79,20 @@ class hamsterPlugin:
         elif self.preferences['description'] == 'contents':
            description = task.get_excerpt(strip_tags=True, strip_subtasks=True)
         
-        
-        tag_str = ""
+        tag_candidates = []
         try:
-            if self.preferences['tags']:
+            if self.preferences['tags'] == 'existing':
                 hamster_tags = set([unicode(x) for x in self.hamster.GetTags()])
-                tag_candidates = hamster_tags.intersection(set(tags))
-                tag_str = "".join([" #" + x for x in list(tag_candidates)])  
+                tag_candidates = list(hamster_tags.intersection(set(gtg_tags)))
+            elif self.preferences['tags'] == 'all':
+                tag_candidates = gtg_tags 
         except dbus.UnknownMethodException:
             # old hamster version, doesn't support tags
-            pass 
+            pass
+        tag_str = "".join([" #" + x for x in tag_candidates])
+        print tag_str
             
-        
+        print '%s%s,%s%s'%(activity, category, description, tag_str)
         hamster_id=self.hamster.AddFact('%s%s,%s%s'%(activity, category, description, tag_str), 0, 0)
         
         ids=self.get_hamster_ids(task)
@@ -250,14 +252,14 @@ class hamsterPlugin:
         self.preferences_load()
         self.preferences_dialog.set_transient_for(manager_dialog)
         
-        self.builder.get_object("activity_"+self.preferences["activity"]) \
-            .set_active(True)
-        self.builder.get_object("category_"+self.preferences["category"]) \
-            .set_active(True)
-        self.builder.get_object("description_"+self.preferences["description"])\
-            .set_active(True)
-        self.builder.get_object("tags_enable") \
-            .set_active(self.preferences["tags"])
+        def pref_to_dialog(pref):
+            self.builder.get_object(pref+"_"+self.preferences[pref]) \
+                .set_active(True)
+                
+        pref_to_dialog("activity")
+        pref_to_dialog("category")
+        pref_to_dialog("description")
+        pref_to_dialog("tags")
         
         self.preferences_dialog.show_all()
 
@@ -271,9 +273,7 @@ class hamsterPlugin:
         dialog_to_pref("activity", ["tag", "title"])
         dialog_to_pref("category", ["auto", "tag", "auto_tag"])
         dialog_to_pref("description", ["title", "contents", "none"])
-        
-        self.preferences["tags"] = \
-            self.builder.get_object("tags_enable").get_active()
+        dialog_to_pref("tags", ["all", "existing", "none"])
 
         print self.preferences
         self.preferences_store()
