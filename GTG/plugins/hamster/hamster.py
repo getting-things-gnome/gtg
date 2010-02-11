@@ -52,8 +52,20 @@ class hamsterPlugin:
             activity=tags[0]
         else:
             activity = "Other"
+        
+        try:
+        	hamster_tags = set([unicode(x) for x in self.hamster.GetTags()])
+        	tag_candidates = hamster_tags.intersection(set(tags))
+        	print hamster_tags, tags, tag_candidates
+        	tag_str = "".join([" #" + x for x in list(tag_candidates)])
+        	print tag_str
+    	
+        except dbus.UnknownMethodException:
+        	# old hamster, doesn't support tags
+        	tag_str = ""  
             
-        hamster_id=self.hamster.AddFact('%s,%s'%(activity, title), 0, 0)
+        
+        hamster_id=self.hamster.AddFact('%s,%s%s'%(activity, title,tag_str), 0, 0)
         
         ids=self.get_hamster_ids(task)
         ids.append(str(hamster_id))
@@ -102,13 +114,7 @@ class hamsterPlugin:
 
     #### Plugin api methods   
     def activate(self, plugin_api):
-        # connect to hamster-applet
-        try:
-            self.hamster=dbus.SessionBus().get_object('org.gnome.Hamster', '/org/gnome/Hamster')
-            self.hamster.GetActivities()
-        except:
-            self.hamsterError()
-            return False
+        self.hamster=dbus.SessionBus().get_object('org.gnome.Hamster', '/org/gnome/Hamster')
         
         # add menu item
         self.menu_item.connect('activate', self.browser_cb, plugin_api)
@@ -199,15 +205,6 @@ class hamsterPlugin:
         
     def task_cb(self, widget, plugin_api):
         self.sendTask(plugin_api.get_task())
-        
-    def hamsterError(self):
-        """Display error dialog"""
-        d=gtk.MessageDialog(buttons=gtk.BUTTONS_CANCEL)
-        d.set_markup("<big>Error loading plugin</big>")
-        d.format_secondary_markup("This plugin requires hamster-applet 2.27.3 or greater\n\
-Please install hamster-applet and make sure the applet is added to the panel")
-        d.run()
-        d.destroy()
         
 #### Helper Functions  
 def format_date(task):
