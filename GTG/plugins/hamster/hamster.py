@@ -47,32 +47,51 @@ class hamsterPlugin:
         gtg_title = task.get_title()
         gtg_tags = tags=[t.lstrip('@').lower() for t in task.get_tags_name()]
         
-        hamster_activities=set([unicode(x[0]) for x in self.hamster.GetActivities()])
+        activity = "Other"
+        if self.preferences['activity'] == 'tag':
+            hamster_activities=set([unicode(x[0]).lower() for x in self.hamster.GetActivities()])
+            activity_candidates=hamster_activities.intersection(set(gtg_tags))
+            if len(activity_candidates)>=1:
+                activity=list(activity_candidates)[0] 
+        elif self.preferences['activity'] == 'title':
+            activity = gtg_title
+        # hamster can't handle commas in activity name
+        activity = activity.replace(',', '')
         
-        activity_candidates=hamster_activities.intersection(set(tags))
+        category = ""
+        if self.preferences['category'] == 'auto_tag':
+            hamster_activities=dict([(unicode(x[0]), unicode(x[1])) for x in self.hamster.GetActivities()])
+            if (gtg_title in hamster_activities
+                or gtg_title.replace(",", "") in hamster_activities):
+                    category = "@%s" % hamster_activities[gtg_title]
         
-        if len(activity_candidates)>=1:
-            activity=list(activity_candidates)[0]
-            #TODO: if >1, how to choose best one?
-        elif len(tags):
-            #TODO: is there anything more reasonable that can be done?
-            activity=tags[0]
-        else:
-            activity = "Other"
+        if (self.preferences['category'] == 'tag' or 
+          (self.preferences['category'] == 'auto_tag' and not category)):
+            # See if any of the tags match existing categories
+            categories = dict([(unicode(x).lower(), unicode(x)) for x in self.hamster.GetCategories()])
+            intersection = set(categories.keys()).intersection(set([x.lower() for x in gtg_tags]))
+            if len(intersection) > 0:
+                category = "@%s" % categories[intersection.pop()]
         
+        description = ""
+        if self.preferences['description'] == 'title':
+           description = gtg_title
+        elif self.preferences['description'] == 'contents':
+           description = task.get_excerpt(strip_tags=True, strip_subtasks=True)
+        
+        
+        tag_str = ""
         try:
-            hamster_tags = set([unicode(x) for x in self.hamster.GetTags()])
-            tag_candidates = hamster_tags.intersection(set(tags))
-            print hamster_tags, tags, tag_candidates
-            tag_str = "".join([" #" + x for x in list(tag_candidates)])
-            print tag_str
-        
+            if self.preferences['tags']:
+                hamster_tags = set([unicode(x) for x in self.hamster.GetTags()])
+                tag_candidates = hamster_tags.intersection(set(tags))
+                tag_str = "".join([" #" + x for x in list(tag_candidates)])  
         except dbus.UnknownMethodException:
-            # old hamster, doesn't support tags
-            tag_str = ""  
+            # old hamster version, doesn't support tags
+            pass 
             
         
-        hamster_id=self.hamster.AddFact('%s,%s%s'%(activity, title,tag_str), 0, 0)
+        hamster_id=self.hamster.AddFact('%s%s,%s%s'%(activity, category, description, tag_str), 0, 0)
         
         ids=self.get_hamster_ids(task)
         ids.append(str(hamster_id))
@@ -85,13 +104,15 @@ class hamsterPlugin:
         modified=False
         valid_ids=[]
         for i in ids:
-            d=self.hamster.GetFactById(i)
-            if d.get("id", None): # check if fact still exists
-                records.append(d)
-                valid_ids.append(i)
-            else:
-                modified=True
-                print "Removing invalid fact", i
+            try:
+                d=self.hamster.GetFactById(i)
+                if d.get("id", None) and i not in valid_ids: 
+                    records.append(d)
+                    valid_ids.append(i)
+                    continue
+            except dbus.DBusException: pass
+            modified=True
+            print "Removing invalid fact", i
         if modified:
             self.set_hamster_ids(task, valid_ids)
         return records
