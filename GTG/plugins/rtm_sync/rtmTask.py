@@ -34,6 +34,10 @@ class RtmTask(GenericTask):
         self.list_id = list_id
         self.taskseries_id = taskseries_id
         self.logger = logger
+        #Checking if a task is recurring is done inside __get_rtm_task_attribute
+        # so we call that to set self.recurring correctly
+        self.recurring = False
+        self.__get_rtm_task_attribute("id")
 
     def _get_title(self):
         if hasattr(self.task,"name"):
@@ -56,16 +60,17 @@ class RtmTask(GenericTask):
     def __get_rtm_task_attribute(self, attr):
         if hasattr(self.task, 'task'):
             if hasattr(self.task.task, 'list'):
-                self.__log("getting a rtm task attribute(1): " + \
-                           str(self.task.task))
                 return getattr(self.task.task.list, attr)
+            elif type(self.task.task) == list:
+                self.recurring = True
+                return getattr(self.task.task[len(self.task.task) - 1], attr)
             else:
-                self.__log("getting a rtm task attribute(2): " + \
-                           str(self.task.task))
                 return getattr(self.task.task, attr)
         else:
-            self.__log("getting a rtm task attribute(3): " + str(self.task))
-            return getattr(self.task, attr)
+            if type(self.task) == list:
+                return getattr(self.task[len(self.task) - 1], attr)
+            else:
+                return getattr(self.task, attr)
 
     def _get_status(self):
         completed = self.__get_rtm_task_attribute("completed")
@@ -167,11 +172,15 @@ class RtmTask(GenericTask):
 
 
     def _get_due_date(self):
-        if hasattr(self.task,'task') and hasattr(self.task.task, 'due') and \
-                self.task.task.due != "":
-            to_return = self.__time_rtm_to_datetime(self.task.task.due) 
-                    #   - datetime.timedelta(seconds = time.timezone)
-            return to_return.date()
+        if hasattr(self.task,'task'):
+            if type(self.task.task) != list:
+                task = self.task.task
+            else:
+                task = self.task.task[len(self.task.task) - 1]
+            if hasattr(task, 'due') and task.due != "":
+                to_return = self.__time_rtm_to_datetime(task.due) 
+                        #   - datetime.timedelta(seconds = time.timezone)
+                return to_return.date()
         return None
 
     def _set_due_date(self, due):
@@ -193,8 +202,18 @@ class RtmTask(GenericTask):
     def _get_modified(self):
         if not hasattr(self.task, 'modified') or self.task.modified == "":
             return None
-        return self.__time_rtm_to_datetime(self.task.modified) #\
-                #                + datetime.timedelta(time.timezone)
+        modified = self.__time_rtm_to_datetime(self.task.modified)
+        if self.recurring == False:
+            return modified
+        else:
+            now = datetime.datetime.now()
+            this_morning =datetime.datetime(year = now.year,\
+                                        month = now.month,\
+                                        day = now.day)
+            if modified > this_morning:
+                return modified
+            else:
+                return this_morning
 
     def delete(self):
         self.rtm.tasks.delete(timeline = self.timeline, \

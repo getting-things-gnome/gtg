@@ -41,10 +41,19 @@
 #end def
 ##
 ##
+#import htmllib
+#def html_unescape($text):
+#set $p = $htmllib.HTMLParser(None)
+$p.save_bgn()
+$p.feed($text)
+#return $p.save_end()
+#end def
+##
+##
 #def task_template($task, $space_num):
 #set spaces = " " * $space_num
 #if $task.has_title
-$task.title#slurp 
+$html_unescape($task.title)#slurp 
 #if $task.has_tags
 (#slurp 
 #for $tag in $task.tags:
@@ -59,6 +68,7 @@ $tag #slurp
 
 #if $task.has_text
 #set $text =$remove_html_tags($task.text)
+#set $text = $html_unescape($text)
 ##
 ## Formatting the text to be shorter than 80 chars
 ##

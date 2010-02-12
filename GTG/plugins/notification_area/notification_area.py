@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright (c) 2009 - Paulo Cabido <paulo.cabido@gmail.com>
+#                    - Luca Invernizzi <invernizzi.l@gmail.com> 
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -15,11 +16,16 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import gtk
-import sys
 import os
+try:
+    import appindicator
+    indicator_capable = True
+except:
+    indicator_capable = False
 
-from GTG.tools import openurl
+from GTG.core.task import Task
 from GTG import _
+
 
 
 class NotificationArea:
@@ -34,47 +40,62 @@ class NotificationArea:
     
     def activate(self, plugin_api):
         self.plugin_api = plugin_api
-        data_dir = plugin_api.get_data_dir()
-        #Create notification icon
-        icon = gtk.gdk.pixbuf_new_from_file_at_size(data_dir + "/icons/hicolor/16x16/apps/gtg.png", 16, 16)
-        if not hasattr(self,"statusicon"):
-            self.statusicon = gtk.status_icon_new_from_pixbuf(icon)
-            self.statusicon.set_tooltip("Getting Things Gnome!")
-            self.statusicon.connect('activate', self.minimize, plugin_api)
-        self.statusicon.set_visible(True)
         #Create the  menu
         self.create_static_menu()
-        self.tasks_in_menu = dict()
-        self.task_separator = None
+        #initialize the right notification thing
+        if indicator_capable:
+            #Create an indicator icon
+            if not hasattr(self, "ind"):
+                self.ind = appindicator.Indicator ("gtg", \
+                                  "indicator-messages", \
+                                   appindicator.CATEGORY_APPLICATION_STATUS)
+                self.ind.set_icon("gtg")
+                self.ind.set_menu(self.menu)
+            self.ind.set_status(appindicator.STATUS_ACTIVE)
+            self.ind.set_attention_icon("indicator-messages-new")
+        else:
+            data_dir = plugin_api.get_data_dir()
+            icon = gtk.gdk.pixbuf_new_from_file_at_size(data_dir + \
+                                "/icons/hicolor/16x16/apps/gtg.png", 16, 16)
+            self.status_icon = gtk.status_icon_new_from_pixbuf(icon)
+            self.status_icon.set_tooltip("Getting Things Gnome!")
+            self.status_icon.connect('activate', self.minimize, plugin_api)
+            self.status_icon.set_visible(True)
+            self.status_icon.connect('popup-menu', \
+                                     self.on_icon_popup, \
+                                     self.menu)
         #Load the preferences
         self.preference_dialog_init()
         self.preferences_load()
-        self.minimized = self.preferences["start_minimized"]
         self.preferences_apply()
+        #Connecting the signals about task changes
+        requester = self.plugin_api.get_requester()
+        requester.connect("task-added", self.on_task_added)
+        requester.connect("task-deleted", self.on_task_deleted)
+        requester.connect("task-modified", self.on_task_modified)
+        #initial menu populate, just in case the plugin is not activated at GTG
+        # startup time
+        task_list = requester.get_active_tasks_list(workable = True )
+        map(lambda t: self.add_menu_task(t), task_list)
 
-    def create_static_menu(self):
-        self.menu = gtk.Menu()
-        self.view_main_window = gtk.CheckMenuItem(_("_View Main Window"))
-        self.view_main_window.set_active(True)
-        self.view_main_window_signal = self.view_main_window.connect(\
-                                            'activate', \
-                                            self.minimize, \
-                                            self.plugin_api)
-        self.menu.append(self.view_main_window)
-        # menuItem = gtk.ImageMenuItem(gtk.STOCK_ABOUT)
-        # menuItem.connect('activate', self.about, self.plugin_api)
-        # self.menu.append(menuItem)
-        # self.menu.append(gtk.SeparatorMenuItem())
-        menuItem = gtk.ImageMenuItem(gtk.STOCK_QUIT)
-        menuItem.connect('activate', self.exit, self.statusicon)
-        self.menu.append(menuItem)
-        self.menu.append(gtk.SeparatorMenuItem())
-        menuItem = gtk.ImageMenuItem(gtk.STOCK_ADD)
-        menuItem.get_children()[0].set_label(_('Add _New Task'))
-        menuItem.connect('activate', self.open_task)
-        self.menu.append(menuItem)
+    def deactivate(self, plugin_api):
+        if indicator_capable:
+            self.ind.set_status(appindicator.STATUS_PASSIVE)
+        else:
+            self.status_icon.set_visible(False)
+        self.plugin_api.get_browser().start_minimized = False
 
-        self.statusicon.connect('popup-menu', self.on_icon_popup, self.menu)
+## Helper methods ##############################################################
+
+    def _is_task_wanted_in_menu(self, tid):
+        """Returns true if and only if the task has to be displayed
+        in the notification menu - currently only if it's in the
+        workview"""
+        task = self.plugin_api.get_requester().get_task(tid)
+        return task.is_workable() and task.is_started()\
+                        and task.get_status() == "Active"
+            
+
 
     def open_task(self, widget, tid = None):
         """Opens a task in the TaskEditor, if it's not currently opened"""
@@ -83,86 +104,105 @@ class NotificationArea:
             tid = self.plugin_api.get_requester().new_task().get_id()
         if browser:
             browser.open_task(tid)
+    
+    def minimize(self, widget, plugin_api):
+        if self.view_main_window_signal != None:
+            self.view_main_window.disconnect(self.view_main_window_signal)
+            self.view_main_window_signal = None
+        if self.minimized:
+            self.view_main_window.set_active(True)
+            self.view_main_window.show()
+            plugin_api.show_window()
+            self.minimized = False
+        else:
+            self.view_main_window.set_active(False)
+            self.view_main_window.show()
+            plugin_api.hide_window()
+            self.minimized = True
+        self.view_main_window_signal = self.view_main_window.connect(\
+                                'activate', self.minimize, self.plugin_api)
 
-    def add_menu_task(self, tid, task = None):
+## Menu methods #################################################################
+
+    def add_menu_task(self, tid):
         """Adds a task in the menu, trimming the title if necessary"""
-        if task == None:
-            task = self.plugin_api.get_task(tid)
+        task = self.plugin_api.get_task(tid)
+        if self.tasks_in_menu.has_key(tid):
+            #task is already in the menu, updating the title
+            menu_item = self.tasks_in_menu[tid]
+            menu_item.get_children()[0].set_label(task.get_title())
+            return
+        #trimming of the title
         title = task.get_title()[0:self.MAX_TITLE_LEN]
         if len(title)== self.MAX_TITLE_LEN:
             title = title + "..."
+        #putting a separator between the tasks and the static menu
+        if self.task_separator == None:
+            self.task_separator = gtk.SeparatorMenuItem()
+            self.task_separator.show()
+            self.menu.append(self.task_separator)
+        #creating the menu item
         menu_item = gtk.ImageMenuItem(title)
         menu_item.connect('activate', self.open_task, tid)
+        menu_item.show()
         self.menu.append(menu_item)
         self.tasks_in_menu[tid] = menu_item
-
-    def clear_menu(self):
-        if self.task_separator != None:
+    
+    def remove_menu_task(self, tid):
+        if not self.tasks_in_menu.has_key(tid):
+            return
+        menu_item = self.tasks_in_menu.pop(tid)
+        self.menu.remove(menu_item)
+        #if the dynamic menu is empty, remove the separator
+        if len(self.tasks_in_menu.keys()) == 0:
             self.menu.remove(self.task_separator)
             self.task_separator = None
-        for elem in self.tasks_in_menu.itervalues():
-            self.menu.remove(elem)
-        self.tasks_in_menu.clear()
 
-    def populate_menu(self):
-        """Populates the menu with the currently workable tasks"""
-        task_list = self.plugin_api.get_requester().get_active_tasks_list(\
-                                                    workable = True )
-        if len(task_list) > 0 and self.task_separator == None:
-            self.task_separator = gtk.SeparatorMenuItem()
-            self.menu.append(self.task_separator)
-        for tid in task_list:
-            self.add_menu_task(tid)
+    def create_static_menu(self):
+        #Tasks_in_menu will hold the menu_items in the menu
+        self.tasks_in_menu = dict()
+        self.task_separator = None  
+        self.menu = gtk.Menu()
+        #view in main window checkbox
+        self.view_main_window = gtk.CheckMenuItem(_("_View Main Window"))
+        self.view_main_window.set_active(not self.minimized)
+        self.view_main_window_signal = self.view_main_window.connect(\
+                                      'activate', \
+                                      self.minimize,\
+                                      self.plugin_api)
+        self.menu.append(self.view_main_window)
+        #add new task
+        menuItem = gtk.ImageMenuItem(gtk.STOCK_ADD)
+        menuItem.get_children()[0].set_label(_('Add _New Task'))
+        menuItem.connect('activate', self.open_task)
+        self.menu.append(menuItem)
+        #realizing the menu
+        self.menu.show_all()
 
-    def deactivate(self, plugin_api):
-        self.statusicon.set_visible(False)
-        self.plugin_api.get_browser().start_minimized = False
-    
+
+## Callback methods ############################################################
+
+    def on_icon_popup(self, icon, button, timestamp, menu=None):
+        #appindicator handles menus transparently
+        if not indicator_capable:
+            menu.popup(None, None, gtk.status_icon_position_menu, \
+                       button, timestamp, icon)
+
     def onTaskOpened(self, plugin_api):
         pass
-    
-    def minimize(self, widget, plugin_api):
-        self.view_main_window.disconnect(self.view_main_window_signal)
-        if self.minimized:
-            self.view_main_window.set_active(True)
-            plugin_api.show_window()
-            self.minimized = not self.minimized
-        else:
-            self.view_main_window.set_active(False)
-            plugin_api.hide_window()
-            self.minimized = not self.minimized
-        self.view_main_window_signal = self.view_main_window.connect(\
-                                            'activate', \
-                                            self.minimize, \
-                                            self.plugin_api)
-        
-    def on_icon_popup(self, icon, button, timestamp, menu=None):
-        if menu:
-            #NOTE: the task list is regenerated each time the menu it's shown.
-            #      it could be kept updated with some kind of signaling
-            #      framework that GTG is currently lacking
-            self.clear_menu()
-            self.populate_menu()
-            menu.show_all()
-            menu.popup(None, None, gtk.status_icon_position_menu, button, timestamp, icon)
-    
-    def about(self, widget, plugin_api, data=None):
-        sys.path.insert(0,plugin_api.get_data_dir())
-        from GTG import info
-        
-        about = plugin_api.get_about_dialog()
 
-        gtk.about_dialog_set_url_hook(lambda dialog, url: openurl.openurl(url))
-        about.set_website(info.URL)
-        about.set_website_label(info.URL)
-        about.set_version(info.VERSION)
-        about.set_authors(info.AUTHORS)
-        about.set_artists(info.ARTISTS)
-        about.set_translator_credits(info.TRANSLATORS)
-        about.show_all()
-    
-    def exit(self, widget, data=None):
-        gtk.main_quit()
+    def on_task_added(self, requester, tid):
+        if self._is_task_wanted_in_menu(tid):
+            self.add_menu_task(tid)
+
+    def on_task_deleted(self, requester, tid):
+        self.remove_menu_task(tid)
+
+    def on_task_modified(self, requester, tid):
+        if self._is_task_wanted_in_menu(tid): 
+            self.add_menu_task(tid)
+        else:
+            self.remove_menu_task(tid)
 
 ## Preferences methods #########################################################
 

@@ -2,7 +2,7 @@
 #various information about GTG. Should be updated for every release.
 
 URL             = "http://gtg.fritalk.com"
-EMAIL           = "gtg@lists.launchpad.net"
+EMAIL           = "gtg-contributors@lists.launchpad.net  "
 VERSION         = '0.2.1-rc1+'
 
 SHORT_DESCRIPTION = 'GTG is a personal organizer for the GNOME desktop environment.'
@@ -30,6 +30,7 @@ AUTHORS     = ["Main developers:", \
                "\tJonathan Lange <jml@mumak.net>", \
                "\tMatthew Rasmus <tareth.ml@gmail.com>", \
                "\tBryce Harrington <bryce@bryceharrington.org>", \
+               "\tChris Johnston <chrisjohnston@ubuntu.com>", \
 ]
 ARTISTS     = ["Kalle Persson <kalle@kallepersson.se>", \
                 "Bertrand Rousseau <bertrand.rousseau@gmail.com>"]

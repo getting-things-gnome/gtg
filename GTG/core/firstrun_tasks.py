@@ -24,12 +24,14 @@ def populate():
     text1 += "<subtask>2@1</subtask>\n"
     text1 += "<subtask>3@1</subtask>\n"
     text1 += "<subtask>4@1</subtask>\n"
+    text1 += "<subtask>5@1</subtask>\n"
+    text1 += "<subtask>6@1</subtask>\n"
     text1 += "\n\n"
     text1 += _("We hope that you will appreciate GTG. Please send us bug reports and ideas for improvement using: ")
     text1 += "https://bugs.launchpad.net/gtg"
     text1 += "\n\n"
     text1 += _("Thank you for trying out GTG :-)")
-    t1 = addtask(doc, "0@1", title1, text1, ["1@1", "2@1", "3@1", "4@1"])
+    t1 = addtask(doc, "0@1", title1, text1, ["1@1", "2@1", "3@1", "4@1", "5@1", "6@1"])
     root.appendChild(t1)
     
     #Task 1@1: Learn to use subtasks
@@ -81,21 +83,51 @@ def populate():
     t4 = addtask(doc, "3@1", title4, text4, [])
     root.appendChild(t4)
     
-    #Task 4@1: Reporting bugs
-    title5 = _("Reporting bugs")
-    text5 = _("GTG is still very alpha software. We like it and use it everyday but you will encounter some bugs.")
+    #Task 5@1: Plugins
+    title5 = _("Learn how to use Plugins")
+    text5 = _("GTG has the ability to add plugins to extend it's core functionality.")
     text5 += "\n\n"
-    text5 += _("Please, report them on our Launchpad page:")
-    text5 += "https://bugs.launchpad.net/gtg"
+    text5 += _("Some examples of the current plugins are Syncing with Remember the Milk and Evolution, Tomboy/Gnote integration and Geolocalized Tasks.")
     text5 += "\n"
-    text5 += _("We need you to make this software better. Any contribution, any idea is welcome.")
-    text5 += "\n\n"
-    text5 += _("If you have some trouble with GTG, we might be able to help you or to solve your problem really quickly.")
+    text5 += _("You can find the Plugin Manager by selecting Plugins > Plugin Preferences on the menu.")
     
     t5 = addtask(doc, "4@1", title5, text5, [])
     root.appendChild(t5)
+
+    #Task 5@1: Reporting bugs
+    title6 = _("Reporting bugs")
+    text6 = _("GTG is still very alpha software. We like it and use it everyday but you will encounter some bugs.")
+    text6 += "\n\n"
+    text6 += _("Please, report them on our Launchpad page:")
+    text6 += "https://bugs.launchpad.net/gtg"
+    text6 += "\n"
+    text6 += _("We need you to make this software better. Any contribution, any idea is welcome.")
+    text6 += "\n\n"
+    text6 += _("If you have some trouble with GTG, we might be able to help you or to solve your problem really quickly.")
     
+    t6 = addtask(doc, "5@1", title6, text6, [])
+    root.appendChild(t6)
     
+    #Task 6@1: Learn how to use the QuickAdd Entry
+    title7 = _("Learn how to use the QuickAdd Entry")
+    text7 = _("The quickadd entry is the quickest way to create a new task. You can show or hide it in the View menu.")
+    text7 += "\n\n"
+    text7 += _("For adding a task you just have to type its title in the entry and press return. The task will be created and selected in the task browser. If a tag is selected in the tag panel, this tag is applied to the task you create.")
+    text7 += _("You can also create a task with attributes like tags, due date or defer date in the quickadd entry.")
+    text7 += "\n"
+    text7 += _("For that the syntax is :")
+    text7 += "\n\n"
+    text7 += _("tags:tag1,tag2,tag3 : This way you can apply as many tags as you wish using comma as separator")
+    text7 += "\n\n"
+    text7 += _("due:date or defer:date : This way you can apply a due date or a defer date. date can be yyyy-mm-dd (for exemple 2009-04-01) or yyyymmdd (20090401) or mmdd (0401, in this case the year is implicitly the current one) or today or tomorrow or a weekday name (due:monday means due next Monday)") 
+    text7 += "\n\n"
+    text7 += _("Attributes which are added in this way apply but do not appear in the title.")
+    text7 += "\n"
+    text7 += _("If a word begins with @, it is interpreted as a tag.")
+
+    t7 = addtask(doc, "6@1", title7, text7, [])
+    root.appendChild(t7)
+
     return doc
     
 

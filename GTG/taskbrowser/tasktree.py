@@ -115,28 +115,13 @@ class TaskTreeModel(gtk.GenericTreeModel):
         elif column == COL_TITLE:
             return saxutils.escape(task.get_title())
         elif column == COL_SDATE:
-            return str(task.get_start_date())
+            return task.get_start_date().to_readable_string()
         elif column == COL_DDATE:
-            return str(task.get_due_date())
+            return task.get_due_date().to_readable_string()
         elif column == COL_DUE:
-            dleft = task.get_days_left()
-            if dleft == None:
-                return str(task.get_due_date())
-            elif dleft == 1:
-                return _("Tomorrow")
-            elif dleft == 0:
-                return _("Today")
-            elif dleft == -1:
-                return _("Yesterday")
-            elif dleft < -1:
-                return _("%s days ago") % str(abs(dleft))
-            elif dleft > 1 and dleft <= 15:
-                return _("In %s days") % str(dleft)
-            else:
-                return str(task.get_due_date())
-
+            return task.get_due_date().to_readable_string()
         elif column == COL_CDATE:
-            return str(task.get_closed_date())
+            return task.get_closed_date().to_readable_string()
         elif column == COL_CDATE_STR:
             if task.get_status() == Task.STA_DISMISSED:
                 date = "<span color='#AAAAAA'>" +\
