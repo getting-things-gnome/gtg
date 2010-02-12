@@ -169,7 +169,7 @@ class SyncEngine(object):
                                                   "id", \
                                                   "self")
         for local_id in updatable_local_ids:
-            try:	
+            try:
                 taskpair = local_to_taskpair[local_id]
                 local_task = local_id_to_task[local_id]
                 remote_task = remote_id_to_task[taskpair.remote_id]
@@ -180,12 +180,14 @@ class SyncEngine(object):
 
                 if local_was_updated and remote_was_updated:
                     if local_task.modified > remote_task.modified:
-                        self.update_substatus(_("Updating ") + local_task.title)
+                        self.update_substatus(_("Updating ") + \
+                                                           local_task.title)
                         remote_task.copy(local_task)
-                    else: 
+                    else:
                     #If the update time is the same one, we have to
                     # arbitrary decide which gets copied
-                        self.update_substatus(_("Updating ") + remote_task.title)
+                        self.update_substatus(_("Updating ") + \
+                                                          remote_task.title)
                         local_task.copy(remote_task)
                 elif local_was_updated:
                     self.update_substatus(_("Updating ") + local_task.title)
@@ -209,8 +211,7 @@ class SyncEngine(object):
                             "taskpairs", \
                             self.taskpairs,
                             xdg_data_home)
-	self.close_gui(_("Synchronization completed."))
-
+        self.close_gui(_("Synchronization completed."))
 
     def _append_to_taskpairs(self, local_tasks, remote_tasks):
         for local, remote in zip(local_tasks, remote_tasks):
@@ -223,13 +224,11 @@ class SyncEngine(object):
         id_to_task = self._list_to_dict(task_list, "id", "self")
         result=[]
         for id in id_list:
-            if id_to_task.has_key(id):
+            if id in id_to_task:
                 result.append(id_to_task[id])
             else:
                 self.__log("Exception: requested an inexistent task!")
         return result
-        
-
 
     def _process_new_tasks(self, new_ids, all_tasks, proxy):
         new_tasks = self._task_ids_to_tasks(new_ids, all_tasks)
@@ -268,9 +267,9 @@ class SyncEngine(object):
 
     def __log(self, message):
         if self.logger:
-            self.logger.debug (message)
+            self.logger.debug(message)
 
-## GUI 
+## GUI
     def close_gui(self, msg):
         self.update_status(msg)
         self.update_progressbar(1.0)

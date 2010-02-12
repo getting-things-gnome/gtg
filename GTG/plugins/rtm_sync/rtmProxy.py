@@ -159,7 +159,6 @@ class RtmProxy(GenericProxy):
         else:
             os.makedirs(dirname)
 
-
     def _smartSaveToFile(self, dirname, filename, item, **kwargs):
         path=dirname+'/'+filename
         try:
