@@ -87,6 +87,16 @@ class NotificationArea:
 
 ## Helper methods ##############################################################
 
+    def _is_task_wanted_in_menu(self, tid):
+        """Returns true if and only if the task has to be displayed
+        in the notification menu - currently only if it's in the
+        workview"""
+        task = self.plugin_api.get_requester().get_task(tid)
+        return task.is_workable() and task.is_started()\
+                        and task.get_status() == "Active"
+            
+
+
     def open_task(self, widget, tid = None):
         """Opens a task in the TaskEditor, if it's not currently opened"""
         browser = self.plugin_api.get_browser()
@@ -182,15 +192,14 @@ class NotificationArea:
         pass
 
     def on_task_added(self, requester, tid):
-        self.add_menu_task(tid)
+        if self._is_task_wanted_in_menu(tid):
+            self.add_menu_task(tid)
 
     def on_task_deleted(self, requester, tid):
         self.remove_menu_task(tid)
 
     def on_task_modified(self, requester, tid):
-        task = requester.get_task(tid)
-        status = task.get_status()
-        if status == Task.STA_ACTIVE and task.is_workable():
+        if self._is_task_wanted_in_menu(tid): 
             self.add_menu_task(tid)
         else:
             self.remove_menu_task(tid)

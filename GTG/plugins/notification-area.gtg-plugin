@@ -1,7 +1,7 @@
 [GTG Plugin]
 Module=notification_area
 Name=Notification area
-Description="Adds a GTG icon to the notification area, that keeps the list of the currently workable tasks.\n\nIf you want to start GTG minimized,  click on the 'Preferences' button at the bottom of this window."
+Description="Adds a GTG icon to the notification area, that keeps the list of the currently workable tasks (the same tasks that show up in the Workview).\n\nIf you want to start GTG minimized,  click on the 'Preferences' button at the bottom of this window."
 Authors="Paulo Cabido <paulo.cabido@gmail.com>, Luca Invernizzi <invernizzi.l@gmail.com>, Jono Bacon <jono@ubuntu.com>"
 Version=0.9
 Enabled=False
