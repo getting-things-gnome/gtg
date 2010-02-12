@@ -34,6 +34,10 @@ class RtmTask(GenericTask):
         self.list_id = list_id
         self.taskseries_id = taskseries_id
         self.logger = logger
+        #Checking if a task is recurring is done inside __get_rtm_task_attribute
+        # so we call that to set self.recurring correctly
+        self.recurring = False
+        self.__get_rtm_task_attribute("id")
 
     def _get_title(self):
         if hasattr(self.task,"name"):
@@ -58,6 +62,7 @@ class RtmTask(GenericTask):
             if hasattr(self.task.task, 'list'):
                 return getattr(self.task.task.list, attr)
             elif type(self.task.task) == list:
+                self.recurring = True
                 return getattr(self.task.task[len(self.task.task) - 1], attr)
             else:
                 return getattr(self.task.task, attr)
@@ -197,8 +202,18 @@ class RtmTask(GenericTask):
     def _get_modified(self):
         if not hasattr(self.task, 'modified') or self.task.modified == "":
             return None
-        return self.__time_rtm_to_datetime(self.task.modified) #\
-                #                + datetime.timedelta(time.timezone)
+        modified = self.__time_rtm_to_datetime(self.task.modified)
+        if self.recurring == False:
+            return modified
+        else:
+            now = datetime.datetime.now()
+            this_morning =datetime.datetime(year = now.year,\
+                                        month = now.month,\
+                                        day = now.day)
+            if modified > this_morning:
+                return modified
+            else:
+                return this_morning
 
     def delete(self):
         self.rtm.tasks.delete(timeline = self.timeline, \
