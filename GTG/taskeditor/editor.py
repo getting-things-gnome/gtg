@@ -81,9 +81,11 @@ class TaskEditor :
                 "delete_clicked"        : self.delete_task,
                 "on_duedate_pressed"    : (self.on_date_pressed,"due"),
                 "on_startdate_pressed"    : (self.on_date_pressed,"start"),
+                "on_closeddate_pressed"   : (self.on_date_pressed, "closed"),
                 "close_clicked"         : self.close,
                 "startingdate_changed" : (self.date_changed,"start"),
                 "duedate_changed" : (self.date_changed,"due"),
+                "closeddate_changed"    : (self.date_changed, "closed"),
                 "on_insert_subtask_clicked" : self.insert_subtask,
                 "on_inserttag_clicked" : self.inserttag_clicked,
                 "on_move" : self.on_move,
@@ -121,6 +123,7 @@ class TaskEditor :
         self.close_when_changed = True
         self.duedate_widget = self.builder.get_object("duedate_entry")
         self.startdate_widget = self.builder.get_object("startdate_entry")
+        self.closeddate_widget = self.builder.get_object("closeddate_entry")
         self.dayleft_label  = self.builder.get_object("dayleft")
         self.tasksidebar = self.builder.get_object("tasksidebar")
         self.keepnote_button = self.builder.get_object("keepnote")
@@ -248,7 +251,7 @@ class TaskEditor :
         dismiss_editor.add_accelerator('clicked', agr, key, mod, gtk.ACCEL_VISIBLE)
         
     
-    #Can be called at any time to reflect the status of the Task.
+    #Can be called at any time to reflect the status of the Task
     #Refresh should never interfere with the TaskView.
     #If a title is passed as a parameter, it will become
     #the new window title. If not, we will look for the task title.
@@ -294,27 +297,63 @@ class TaskEditor :
             self.donebutton.show()
             self.tasksidebar.show()
             self.keepnote_button.set_label(GnomeConfig.KEEP_NOTE)
-            
+        
+        #Refreshing the status bar labels and date boxes
+        if status == "Done":
+            self.builder.get_object("label2").hide()
+            self.builder.get_object("hbox1").hide()
+            self.builder.get_object("label4").show()
+            self.builder.get_object("hbox4").show()
+        else:
+            self.builder.get_object("label4").hide()
+            self.builder.get_object("hbox4").hide()
+            self.builder.get_object("label2").show() 
+            self.builder.get_object("hbox1").show()
+             
         #refreshing the due date field
         duedate = self.task.get_due_date()
         prevdate = dates.strtodate(self.duedate_widget.get_text())
         if duedate != prevdate or type(duedate) is not type(prevdate):
             zedate = str(duedate).replace("-", date_separator)
             self.duedate_widget.set_text(zedate)
+        # refreshing the closed date field
+        closeddate = self.task.get_closed_date()
+        prevcldate = dates.strtodate(self.closeddate_widget.get_text())
+        if closeddate != prevcldate or type(closeddate) is not type(prevcldate):
+            zecldate = str(closeddate).replace("-", date_separator)
+            self.closeddate_widget.set_text(zecldate)
         #refreshing the day left label
-        result = self.task.get_days_left()
-        if result is None:
-            txt = ""
-        elif result == 1:
-            txt = _("Due tomorrow !")
-        elif result > 0:
-            txt = _("%s days left") %result
-        elif result == 0:
-            txt = _("Due today !")
-        elif result == -1:
-            txt = _("Due yesterday")
-        elif result < 0:
-            txt = _("Was %s days ago") % -result
+        #If the task is marked as done, we display the delay between the 
+        #due date and the actual closing date. If the task isn't marked 
+        #as done, we display the number of days left.
+        if status == "Done":
+            delay = self.task.get_days_late()
+            if delay is None:
+                txt = ""
+            elif delay == 0:
+                txt = "Completed on time"
+            elif delay == 1:
+                txt = "Completed 1 day late"
+            elif delay > 1:
+                txt = _("Completed %s days late") %delay
+            elif delay == -1:
+                txt = "Completed 1 day early"
+            elif delay < -1:
+                txt = _("Completed %s days early") % -delay
+        else:
+            result = self.task.get_days_left()
+            if result is None:
+                txt = ""
+            elif result == 1:
+                txt = _("Due tomorrow !")
+            elif result > 0:
+                txt = _("%s days left") %result
+            elif result == 0:
+                txt = _("Due today !")
+            elif result == -1:
+                txt = _("Due yesterday")
+            elif result < 0:
+                txt = _("Was %s days ago") % -result
         window_style = self.window.get_style()
         color = str(window_style.text[gtk.STATE_INSENSITIVE])
         self.dayleft_label.set_markup("<span color='"+color+"'>"+txt+"</span>")
@@ -323,8 +362,7 @@ class TaskEditor :
         prevdate = dates.strtodate(self.startdate_widget.get_text())
         if startdate != prevdate or type(startdate) is not type(prevdate):
             zedate = str(startdate).replace("-",date_separator)
-            self.startdate_widget.set_text(zedate)
-            
+            self.startdate_widget.set_text(zedate) 
         #Refreshing the tag list in the insert tag button
         taglist = self.req.get_used_tags()
         menu = gtk.Menu()
@@ -366,6 +404,8 @@ class TaskEditor :
                 self.task.set_start_date(datetoset)
             elif data == "due" :
                 self.task.set_due_date(datetoset)
+            elif data == "closed" :
+                self.task.set_closed_date(datetoset)
         else :
             #We should write in red in the entry if the date is not valid
             widget.modify_text(gtk.STATE_NORMAL, gtk.gdk.color_parse("#F00"))
@@ -383,6 +423,9 @@ class TaskEditor :
             self.calendar_fuzzydate_btns.show()
         elif self.__opened_date == "start" :
             toset = self.task.get_start_date()
+            self.calendar_fuzzydate_btns.hide()
+        elif self.__opened_date == "closed" :
+            toset = self.task.get_closed_date()
             self.calendar_fuzzydate_btns.hide()
         
         rect = widget.get_allocation()
@@ -424,6 +467,8 @@ class TaskEditor :
             self.task.set_due_date(dates.strtodate("%s-%s-%s"%(y,m+1,d)))
         elif self.__opened_date == "start" :
             self.task.set_start_date(dates.strtodate("%s-%s-%s"%(y,m+1,d)))
+        elif self.__opened_date == "closed" :
+            self.task.set_closed_date(dates.strtodate("%s-%s-%s"%(y,m+1,d)))
         if self.close_when_changed :
             #When we select a day, we connect the mouse release to the
             #closing of the calendar.
@@ -446,6 +491,8 @@ class TaskEditor :
             self.task.set_due_date(date)
         elif self.__opened_date == "start" :
             self.task.set_start_date(date)
+        elif self.__opened_date == "closed" :
+            self.task.set_closed_date(date)
         self.refresh_editor()
         self.__close_calendar()
         
