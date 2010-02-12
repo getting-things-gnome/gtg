@@ -863,16 +863,26 @@ class TaskView(gtk.TextView):
                 if t.get_data('is_indent') :
                     line += 1
                     startl = self.buff.get_iter_at_line(line)
-                    found = False
+                    if line < self.buff.get_line_count() :
+                        found = False
             if found :
                 itera = startl 
+                
+        #if the last line is indented, then insert a new line
+        #at the end
+        if line == self.buff.get_line_count() :
+            itera.forward_to_line_end()
+            mark = self.buff.create_mark(None,itera,True)
+            self.buff.insert(itera,"\n")
+            itera = self.buff.get_iter_at_mark(mark)
+            self.buff.delete_mark(mark)
                     
         #If we are not on the end of line, go there
         #but if we are at the start of line, then create the subtask
         #before the current line
         enter = True
         if itera.starts_line() :
-            mark = self.buff.create_mark("temp",itera,True)
+            mark = self.buff.create_mark(None,itera,True)
             self.buff.insert(itera,"\n")
             itera = self.buff.get_iter_at_mark(mark)
             self.buff.delete_mark(mark)
