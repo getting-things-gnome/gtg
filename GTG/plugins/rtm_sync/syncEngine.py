@@ -169,32 +169,37 @@ class SyncEngine(object):
                                                   "id", \
                                                   "self")
         for local_id in updatable_local_ids:
-            taskpair = local_to_taskpair[local_id]
-            local_task = local_id_to_task[local_id]
-            remote_task = remote_id_to_task[taskpair.remote_id]
-            local_was_updated = local_task.modified > \
+            try:	
+                taskpair = local_to_taskpair[local_id]
+                local_task = local_id_to_task[local_id]
+                remote_task = remote_id_to_task[taskpair.remote_id]
+                local_was_updated = local_task.modified > \
                                     taskpair.local_synced_until
-            remote_was_updated = remote_task.modified > \
+                remote_was_updated = remote_task.modified > \
                                     taskpair.remote_synced_until
 
-            if local_was_updated and remote_was_updated:
-                if local_task.modified > remote_task.modified:
+                if local_was_updated and remote_was_updated:
+                    if local_task.modified > remote_task.modified:
+                        self.update_substatus(_("Updating ") + local_task.title)
+                        remote_task.copy(local_task)
+                    else: 
+                    #If the update time is the same one, we have to
+                    # arbitrary decide which gets copied
+                        self.update_substatus(_("Updating ") + remote_task.title)
+                        local_task.copy(remote_task)
+                elif local_was_updated:
                     self.update_substatus(_("Updating ") + local_task.title)
                     remote_task.copy(local_task)
-                else: 
-                #If the update time is the same one, we have to
-                # arbitrary decide which gets copied
+                elif remote_was_updated:
                     self.update_substatus(_("Updating ") + remote_task.title)
                     local_task.copy(remote_task)
-            elif local_was_updated:
-                self.update_substatus(_("Updating ") + local_task.title)
-                remote_task.copy(local_task)
-            elif remote_was_updated:
-                self.update_substatus(_("Updating ") + remote_task.title)
-                local_task.copy(remote_task)
 
-            taskpair.remote_synced_until = remote_task.modified
-            taskpair.local_synced_until = local_task.modified
+                taskpair.remote_synced_until = remote_task.modified
+                taskpair.local_synced_until = local_task.modified
+            except KeyError:
+                self.__log("Warning: failed to update task, possibly because \
+                             a previous version had sync'ed archived tasks.")
+
 
         #Lastly, save the list of known links
         self.update_status(_("Saving current state.."))
