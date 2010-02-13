@@ -216,7 +216,13 @@ class SyncEngine(object):
     def _task_ids_to_tasks(self, id_list, task_list):
         #TODO: this is not the quickest way to do this
         id_to_task = self._list_to_dict(task_list, "id", "self")
-        return map(lambda id: id_to_task[id], id_list)
+        result=[]
+        for id in id_list:
+            if id_to_task.has_key(id):
+                result.append(id_to_task[id])
+            else:
+                self.__log("Exception: requested an inexistent task!")
+        return result
         
 
 

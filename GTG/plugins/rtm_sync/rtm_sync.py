@@ -16,15 +16,11 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import gtk
-#import pygtk
 import os
 import sys
 from threading import Thread
 import gobject
-#import gobject
-#import logging
 from GTG import _
-# IMPORTANT This add's the plugin's path to python sys path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))+'/pyrtm')
 import syncEngine
@@ -77,13 +73,10 @@ class RtmSync:
             self.callback
         }
         self.builder.connect_signals(dic)
-
-
         #drop down menu
         self.menu_item = gtk.ImageMenuItem(_("Synchronize with RTM"))
         self.menu_item.connect('activate', self.onTesteMenu)
         self.menu_item.set_image(rtm_menu_image)
-
         #toolbar button
         self.tb_button = gtk.ToolButton(rtm_toolbar_image)
         self.tb_button.set_label(_("Synchronize with RTM"))
@@ -91,13 +84,11 @@ class RtmSync:
         self.tb_button.set_tooltip_text("Synchronize with Remember the Milk")
         self.separator = gtk.SeparatorToolItem()
 
-        # plugin engine methods
     def activate(self, plugin_api):
         self.plugin_api = plugin_api
         self.sync_engine = syncEngine.SyncEngine(self)
         # add a menu item to the menu bar
         plugin_api.add_menu_item(self.menu_item)
-
         # saves the separator's index to later remove it
         plugin_api.add_toolbar_item(self.separator)
         # add a item(button) to the ToolBar

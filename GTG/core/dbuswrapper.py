@@ -1,6 +1,7 @@
 import dbus
 import dbus.glib
 import dbus.service
+import unicodedata
 
 from GTG.core import CoreConfig
 from GTG.tools import dates
@@ -51,11 +52,15 @@ class DBusTaskWrapper(dbus.service.Object):
         self.req = req
         self.ui = ui
 
-    @dbus.service.method(BUSNAME)
-    def get_task_ids(self):
+
+    @dbus.service.method(BUSNAME,in_signature="s")
+    def get_task_ids(self, status_string):
         # Retrieve a list of task ID values
-        return self.req.get_tasks_list(
-          status=["Active", "Done"], started_only=False)
+        status = [s.strip() for s in status_string.split(',')]
+        #need to convert the statuses to ascii (these are given in unicode)
+        status = [unicodedata.normalize('NFKD', s).encode('ascii','ignore') \
+                  for s in status]
+        return self.req.get_tasks_list(status = status)
 
     @dbus.service.method(BUSNAME)
     def get_task(self, tid):
@@ -134,9 +139,12 @@ class DBusTaskWrapper(dbus.service.Object):
     def open_task_editor(self, tid):
         self.ui.open_task(tid)
         
-    @dbus.service.method(BUSNAME)
-    def open_new_task(self):
+    @dbus.service.method(BUSNAME, in_signature="ss")
+    def open_new_task(self, title, description):
         nt = self.req.new_task(newtask=True)
+        nt.set_title(title)
+        if description != "":
+            nt.set_text(description)
         uid = nt.get_id()
         self.ui.open_task(uid,thisisnew=True)
 
@@ -149,3 +157,5 @@ class DBusTaskWrapper(dbus.service.Object):
         self.ui.window.present()
         self.ui.window.move(
           self.ui.priv["window_xpos"], self.ui.priv["window_ypos"])
+        gdk_window = self.ui.window
+        gdk_window.show()

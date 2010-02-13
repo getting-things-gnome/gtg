@@ -2,11 +2,18 @@
 .SH NAME
 gtg_new_task \- Adds a task to the \fBGetting Things GNOME!\fP organizer
 .SH SYNOPSIS
-\fBgtg_new_task\fP
+\fBgtg_new_task\fP [-h | --help] [-i | --interactive]
 .SH DESCRIPTION
 \fBgtg_new_task\fP creates a new task in the Getting Things GNOME! organizer
 for the GNOME desktop via the DBUS message bus.  Getting Things GNOME! must be
 running for the command to work.
+.SS Options
+.TP
+\fB[-h | --help]\fP
+Shows a brief usage help.
+.TP
+\fB[-i | --interactive]\fP
+Accepts a task description via stdin.
 .SH FILES
 None
 .SH "SEE ALSO"

@@ -27,6 +27,8 @@ import re
 import sys
 import dbus
 import cgi
+import getopt
+from GTG import _
 
 def get_task(title, body) :
     #We will connect on the session bus
@@ -36,13 +38,40 @@ def get_task(title, body) :
     remote_object = bus.get_object(busname,"/org/GTG")
     timi = dbus.Interface(remote_object,dbus_interface="org.GTG")
     #Calling the method
-    timi.open_new_task()
+    timi.open_new_task(title, body)
+
+def usage():
+    print _("Usage: %s [-i | --interactive] [-h | --help]") % sys.argv[0]
         
 if __name__ == '__main__':
-    title = " ".join(sys.argv[1:])
-    body = sys.stdin.read()
-    subject_regex = re.compile("^Subject: (.*)$", re.M | re.I)
-    if subject_regex.search(body):
-        subject = subject_regex.findall(body)[0]
-        title = title + ": " + subject
+    interactive = False
+    #Command line options handling
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "hi", ["help", "interactive"])
+    except getopt.GetoptError, err:
+        # print help information and exit:
+        print str(err) # will print something like "option -a not recognized"
+        usage()
+        sys.exit(2)
+    for o, a in opts:
+        if o in ("-i", "--interactive"):
+            interactive = True
+        elif o in ("-h", "--help"):
+            usage()
+            sys.exit()
+        else:
+            assert False, "unhandled option"
+
+    title = " ".join(args)
+    if interactive:
+        optlist, args = getopt.getopt(args, 'i::')
+        body = sys.stdin.read()
+        subject_regex = re.compile("^Subject: (.*)$", re.M | re.I)
+        if subject_regex.search(body):
+            subject = subject_regex.findall(body)[0]
+            title = title + ": " + subject
+    else:
+        body = ""
     get_task(title, cgi.escape(body))
+
+
