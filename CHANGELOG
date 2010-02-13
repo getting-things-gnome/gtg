@@ -1,3 +1,6 @@
+    * Automatic cleanup of closed task, plugin by Luca Invernizzi
+    * Allow to change dismissed date of tasks by Luca Invernizzi
+    * Docky applet support, by Luca Invernizzi
     * Allow to change closed date of tasks, by Lionel Montrieux, bug #502111 
     * notification area plugin updated to support appindicate by Luca Invernizzi and Jono Bacon
     * gtg_new task now supports command switches by Luca Invernizzi
