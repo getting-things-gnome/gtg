@@ -24,7 +24,6 @@ from subprocess import call
 
 import glob
 import os
-import sys
 
 from GTG import info
 
@@ -134,6 +133,7 @@ setup(
     'GTG.plugins.helloworld',
     'GTG.plugins.rtm_sync',
     'GTG.plugins.notification_area',
+    'GTG.plugins.task_reaper',
     'GTG.plugins.tomboy',
     ],
   package_data = {
@@ -149,6 +149,7 @@ setup(
         'helloworld.gtg-plugin',
         'notification-area.gtg-plugin',
         'rtm-sync.gtg-plugin',
+        'task-reaper.gtg-plugin',
         'tomboy.gtg-plugin'
         ],
     'GTG.plugins.rtm_sync': ['rtm.ui', 'pyrtm/rtm.py',
@@ -170,6 +171,7 @@ setup(
     'GTG.plugins.helloworld': ['hello_world.glade'],
     'GTG.plugins.tomboy': ['tomboy.ui'],
     'GTG.plugins.hamster': ['prefs.ui'],
+    'GTG.plugins.task_reaper': ['reaper.ui'],
     'GTG.plugins.notification_area': ['notification_area.ui']},
   data_files = create_data_files(),
   scripts=['gtg', 'gtg_new_task'],

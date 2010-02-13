@@ -30,7 +30,6 @@ import subprocess
 import gobject
 from Cheetah.Template import Template
 from xdg.BaseDirectory import xdg_config_home
-from datetime import date, timedelta
 
 from GTG import _
 

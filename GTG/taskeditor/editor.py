@@ -33,6 +33,7 @@ from GTG.tools               import dates
 from GTG.taskeditor.taskview import TaskView
 from GTG.core.plugins.engine import PluginEngine
 from GTG.core.plugins.api    import PluginAPI
+from GTG.core.task           import Task
 try:
     import pygtk
     pygtk.require("2.0")
@@ -267,14 +268,14 @@ class TaskEditor :
             self.window.set_title(self.task.get_title())
            
         status = self.task.get_status() 
-        if status == "Dismiss":
+        if status == Task.STA_DISMISSED:
             self.donebutton.set_label(GnomeConfig.MARK_DONE)
             self.donebutton.set_tooltip_text(GnomeConfig.MARK_DONE_TOOLTIP)
             self.donebutton.set_icon_name("gtg-task-done")
             self.dismissbutton.set_label(GnomeConfig.MARK_UNDISMISS)
             self.dismissbutton.set_tooltip_text(GnomeConfig.MARK_UNDISMISS_TOOLTIP)
             self.dismissbutton.set_icon_name("gtg-task-undismiss")
-        elif status == "Done":
+        elif status == Task.STA_DONE:
             self.donebutton.set_label(GnomeConfig.MARK_UNDONE)
             self.donebutton.set_tooltip_text(GnomeConfig.MARK_UNDONE_TOOLTIP)
             self.donebutton.set_icon_name("gtg-task-undone")
@@ -299,7 +300,7 @@ class TaskEditor :
             self.keepnote_button.set_label(GnomeConfig.KEEP_NOTE)
         
         #Refreshing the status bar labels and date boxes
-        if status == "Done":
+        if status in [Task.STA_DISMISSED, Task.STA_DONE]:
             self.builder.get_object("label2").hide()
             self.builder.get_object("hbox1").hide()
             self.builder.get_object("label4").show()
@@ -326,7 +327,7 @@ class TaskEditor :
         #If the task is marked as done, we display the delay between the 
         #due date and the actual closing date. If the task isn't marked 
         #as done, we display the number of days left.
-        if status == "Done":
+        if status in [Task.STA_DISMISSED, Task.STA_DONE]:
             delay = self.task.get_days_late()
             if delay is None:
                 txt = ""
