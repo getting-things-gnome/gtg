@@ -92,8 +92,10 @@ class RtmProxy(GenericProxy):
         lists_id_list = map(lambda x: x.id, \
                              self.rtm.lists.getList().lists.list)
 
+        # Download all non-archived tasks in the list with id x
         def get_list_of_taskseries(x):
-            currentlist = self.rtm.tasks.getList(list_id = x).tasks
+            currentlist = self.rtm.tasks.getList(list_id = x, \
+                                filter = 'includeArchived:false').tasks
             if hasattr(currentlist, 'list'):
                 return currentlist.list
             else:

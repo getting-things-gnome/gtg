@@ -169,6 +169,9 @@ class SyncEngine(object):
                                                   "id", \
                                                   "self")
         for local_id in updatable_local_ids:
+            if not local_to_taskpair.has_key(local_id):
+                #task has been removed, skipping
+                continue
             taskpair = local_to_taskpair[local_id]
             local_task = local_id_to_task[local_id]
             remote_task = remote_id_to_task[taskpair.remote_id]
