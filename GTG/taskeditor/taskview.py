@@ -983,6 +983,9 @@ class TaskView(gtk.TextView):
         
         #First, we analyse the selection to put in our own
         #GTG clipboard a selection with description of subtasks
+        bounds =  self.buff.get_selection_bounds()
+        if not bounds:
+            return
         start, stop =  self.buff.get_selection_bounds()
         
         self.clipboard.copy(start,stop,bullet=self.bullet1)
