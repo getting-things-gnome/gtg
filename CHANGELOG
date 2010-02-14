@@ -1,3 +1,4 @@
+    * Import_json plugin by Bryce Harrington
     * Improve RTM plugin (bug #520427): don't sync tasks from archived lists
     * Automatic cleanup of closed task, plugin by Luca Invernizzi
     * Allow to change dismissed date of tasks by Luca Invernizzi

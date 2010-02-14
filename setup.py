@@ -135,6 +135,7 @@ setup(
     'GTG.plugins.notification_area',
     'GTG.plugins.task_reaper',
     'GTG.plugins.tomboy',
+    'GTG.plugins.import_json',
     ],
   package_data = {
     'GTG.taskbrowser': ['taskbrowser.glade'],
@@ -150,7 +151,8 @@ setup(
         'notification-area.gtg-plugin',
         'rtm-sync.gtg-plugin',
         'task-reaper.gtg-plugin',
-        'tomboy.gtg-plugin'
+        'tomboy.gtg-plugin',
+        'import-json.gtg-plugin',
         ],
     'GTG.plugins.rtm_sync': ['rtm.ui', 'pyrtm/rtm.py',
                             'icons/hicolor/16x16/rtm_image.png',
@@ -172,6 +174,7 @@ setup(
     'GTG.plugins.tomboy': ['tomboy.ui'],
     'GTG.plugins.hamster': ['prefs.ui'],
     'GTG.plugins.task_reaper': ['reaper.ui'],
+    'GTG.plugins.import_json': ['import_json.ui'],
     'GTG.plugins.notification_area': ['notification_area.ui']},
   data_files = create_data_files(),
   scripts=['gtg', 'gtg_new_task'],
