@@ -84,14 +84,15 @@ class pluginImportJson:
         self.txtImport = None
 
     def loadDialog(self):
-        path = os.path.dirname(os.path.abspath(__file__))
-        glade_file = os.path.join(path, "import_json.glade")
-        wTree = gtk.glade.XML(glade_file, "dlg_import_json")
+        self.builder = gtk.Builder()
+        self.builder.add_from_file(os.path.join(
+                os.path.dirname(os.path.abspath(__file__)) + \
+                    "/import_json.ui"))
 
-        self.dialog = wTree.get_widget("dlg_import_json")
+        self.dialog = self.builder.get_object("dlg_import_json")
         if not self.dialog:
             return
-        self.txtImport = wTree.get_widget("txt_import")
+        self.txtImport = self.builder.get_object("txt_import")
 
         self.dialog.connect("delete_event", self.close_dialog)
         self.dialog.connect("response", self.on_response)
@@ -100,10 +101,8 @@ class pluginImportJson:
 
     def loadDialogSelectUsername(self):
         path = os.path.dirname(os.path.abspath(__file__))
-        glade_file = os.path.join(path, "import_json.glade")
-        wTree = gtk.glade.XML(glade_file, "dlg_select_username")
 
-        self.dialog_select_username = wTree.get_widget("dlg_select_username")
+        self.dialog_select_username = self.builder.get_object("dlg_select_username")
         if not self.dialog_select_username or len(self.usernames) < 1:
             return
         self.dialog_select_username.set_title("Select username")
@@ -113,7 +112,9 @@ class pluginImportJson:
         self.dialog_select_username.connect("response", self.on_response_select_username)
         self.dialog_select_username.connect("delete_event", self.close_dialog_select_username)
 
-        self.select_username = wTree.get_widget("select_username")
+        username_model = gtk.ListStore(str)
+        self.select_username = self.builder.get_object("select_username")
+        self.select_username.set_model(username_model)
         for u in self.usernames:
             self.select_username.append_text(u)
         self.select_username.set_active(0)
