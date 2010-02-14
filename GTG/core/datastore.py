@@ -45,6 +45,12 @@ class DataStore:
         #We also add tasks that are still not in a backend (because of threads)
         tlist = self.tasks.keys()
         for t in tlist:
+            #NOTE: Sometimes tids are not found in the datastore, therefore
+            # the command "task = self.tasks[t]" fails. This is a temporary
+            # fix until the problem is understood  (Luca Invernizzi)
+            if not self.tasks.has_key(t):
+                sys.stderr.write('Tid does not exist in backend, skipping')
+                continue
             task = self.tasks[t]
             if task.is_loaded():
                 all_tasks.append(t)
