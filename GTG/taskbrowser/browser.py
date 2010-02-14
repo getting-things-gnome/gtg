@@ -695,6 +695,9 @@ class TaskBrowser:
                         self.start_minimized == True) and \
                         "opened_tasks" in self.config["browser"]:
             odic = self.config["browser"]["opened_tasks"]
+            #odic can contain also "None" or "None,", so we skip them
+            if odic == "None" or odic[0] == "None":
+                return
             for t in odic:
                 ted = self.open_task(t)
                 #restoring position doesn't work, I don't know why

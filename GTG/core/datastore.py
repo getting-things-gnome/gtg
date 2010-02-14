@@ -108,7 +108,11 @@ class DataStore:
         #If tid, we force that tid and create a real new task
         if tid and tid not in self.tasks:
             task = Task(tid, self.requester, newtask=newtask)
-            uid, pid = tid.split('@') #pylint: disable-msg=W0612
+            bundle = tid.split('@') 
+            if not bundle:
+                sys.stderr.write('Tid does not exist in backend')
+                return None
+            uid, pid = bundle 
             self.tasks[tid] = task
             toreturn = task
         #Else we create a new task in the given pid
