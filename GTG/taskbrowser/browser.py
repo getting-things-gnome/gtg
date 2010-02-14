@@ -513,6 +513,11 @@ class TaskBrowser:
         key, mod = gtk.accelerator_parse('<Control>t')
         addtag_button.add_accelerator('activate', agr, key, mod, \
             gtk.ACCEL_VISIBLE)
+
+        addtag_button = self.builder.get_object('view_closed')
+        key, mod = gtk.accelerator_parse('<Control>F9')
+        addtag_button.add_accelerator('activate', agr, key, mod, \
+            gtk.ACCEL_VISIBLE)
         
     def _init_plugin_engine(self):
         # plugins - Init
