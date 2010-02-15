@@ -326,8 +326,6 @@ class TaskBrowser:
                 self.on_schedule_for_next_year,
             "on_dismiss_task":
                 self.on_dismiss_task,
-            "on_delete":
-                self.on_delete,
             "on_move":
                 self.on_move,
             "on_size_allocate":
@@ -388,6 +386,10 @@ class TaskBrowser:
 
         if (self.window):
             self.window.connect("destroy", gtk.main_quit)
+            #The following is needed to let the Notification Area plugin to
+            # minimize the window instead of closing the program
+            self.delete_event_handle = \
+                    self.window.connect("delete-event", self.on_delete)
 
         # Active tasks TreeView
         self.task_tv.connect('row-activated',\
