@@ -19,8 +19,9 @@
 import gtk
 import pango
 
-from GTG                     import _
-from GTG.taskbrowser         import GnomeConfig
+from GTG import _
+import GTG.core.plugins
+import GTG.taskbrowser
 
 
 __all__ = [
@@ -28,9 +29,14 @@ __all__ = [
   ]
 
 
+class GnomeConfig(GTG.taskbrowser.GnomeConfig, GTG.core.plugins.GnomeConfig):
+    """Unify two sets of translations."""
+    pass
+
+
 # columns in PreferencesDialog.plugin_store
 PLUGINS_COL_ID = 0
-PLUGINS_COL_STATE = 1
+PLUGINS_COL_ENABLED = 1
 PLUGINS_COL_NAME = 2
 PLUGINS_COL_DESC = 3
 PLUGINS_COL_ACTIVATABLE = 4
@@ -58,6 +64,34 @@ def plugin_markup(column, cell, store, iter):
     cell.set_property('markup', "<b>%s</b>\n%s" % (name, desc))
     cell.set_property('sensitive', store.get_value(iter,
       PLUGINS_COL_ACTIVATABLE))
+
+
+def plugin_error_text(plugin):
+    """Generate some helpful text about missing module dependencies."""
+    if not plugin.error:
+        return GnomeConfig.CANLOAD
+    # describe missing dependencies
+    text = "<b>%s</b>. \n" % GnomeConfig.CANNOTLOAD
+    # get lists
+    modules = plugin.missing_modules
+    dbus = plugin.missing_dbus
+    # convert to strings
+    if len(modules) > 0:
+      modules = "<small><b>%s</b></small>" % ', '.join(modules)
+    if len(dbus) > 0:
+      ifaces = ["%s:%s" % (a,b) for (a,b) in dbus]
+      dbus = "<small><b>%s</b></small>" % ', '.join(ifaces)
+      print dbus, len(dbus)
+    # combine
+    if len(modules) > 0 and len(dbus) == 0:
+        text += '\n'.join([GnomeConfig.MODULEMISSING, '', modules])
+    elif len(modules) == 0 and len(dbus) > 0:
+        text += '\n'.join([GnomeConfig.DBUSMISSING, '', dbus])
+    elif len(modules) > 0 and len(dbus) > 0:
+        text += '\n'.join([GnomeConfig.MODULANDDBUS, '', modules, dbus])
+    else:
+        text += GnomeConfig.UNKNOWN
+    return text
 
 
 class PreferencesDialog:
@@ -94,7 +128,6 @@ class PreferencesDialog:
         if not hasattr(self, 'backend_store'):
             # TODO: create the liststore. It should have one column for each
             # backend.
-#            backends = [str] * ...
             self.backend_store = gtk.ListStore(str)
         self.backend_store.clear()
         # TODO
@@ -108,13 +141,11 @@ class PreferencesDialog:
               'gboolean',)
         self.plugin_store.clear()
         # refresh the status of all plugins
-        self.tb.pengine.recheckPluginsErrors(self.tb.plugins, self.tb.p_apis,
-          checkall=True)
+        self.tb.pengine.recheck_plugin_errors(True)
         # repopulate the store
-        for p in self.tb.plugins:
-            self.plugin_store.append([p['plugin'], p['state'], p['name'],
-              p['description'],
-              not p['error'],]) # activateable if there is no error
+        for name, p in self.tb.pengine.plugins.iteritems():
+            self.plugin_store.append([name, p.enabled, p.full_name,
+              p.description, not p.error,]) # activateable if there is no error
 
     def _init_plugin_tree(self):
         """Initialize the PluginTree gtk.TreeView.
@@ -131,7 +162,7 @@ class PreferencesDialog:
         renderer.set_property('xpad', 6)
         renderer.connect('toggled', self.on_plugin_toggle)
         # toggle column
-        column = gtk.TreeViewColumn(None, renderer, active=PLUGINS_COL_STATE,
+        column = gtk.TreeViewColumn(None, renderer, active=PLUGINS_COL_ENABLED,
           activatable=PLUGINS_COL_ACTIVATABLE,
           sensitive=PLUGINS_COL_ACTIVATABLE)
         self.plugin_tree.append_column(column)
@@ -214,20 +245,13 @@ class PreferencesDialog:
         """Display information about a plugin."""
         (junk, iter) = self.plugin_tree.get_selection().get_selected()
         plugin_id = self.plugin_store.get_value(iter, PLUGINS_COL_ID)
-        # TODO: turn the plugins list into a dict. Would rather do:
-        #  p = self.tb.pm.get_plugin_by_name(plugin_id)
-        for i in range(len(self.tb.plugins)):
-            if self.tb.plugins[i]['plugin'] == plugin_id:
-                p = self.tb.plugins[i]
-                break
-        # p contains data on the currently selected plugin.
+        p = self.tb.pengine.plugins[plugin_id]
         pad = self.plugin_about_dialog
-        pad.set_name(p['name'])
-        pad.set_version(p['version'])
-        pad.set_authors(p['authors'])
-        pad.set_comments(p['description'])
-        # TODO: display dependencies here per PluginManager.pluginExtraInfo()
-        self.plugin_depends.set_label("Here is some <b>bold</b> text\nand a line break.")
+        pad.set_name(p.full_name)
+        pad.set_version(p.version)
+        pad.set_authors(p.authors)
+        pad.set_comments(p.description.replace(r'\n', "\n"))
+        self.plugin_depends.set_label(plugin_error_text(p))
         pad.show_all()
 
     def on_plugin_about_close(self, widget, *args):
@@ -236,10 +260,15 @@ class PreferencesDialog:
 
     def on_plugin_configure(self, widget):
         """Configure a plugin."""
-        pcd = self.plugin_config_dialog
+        (junk, iter) = self.plugin_tree.get_selection().get_selected()
+        plugin_id = self.plugin_store.get_value(iter, PLUGINS_COL_ID)
         # TODO: load plugin's configuration UI and insert into pc-vbox1 in
-        #  position 0.
-        pcd.show_all()
+        #  position 0. Something like...
+        #pcd = self.plugin_config_dialog
+        #pcd.show_all()
+        # ...for now, use existing code.
+        self.tb.pengine.plugins[plugin_id].instance.configure_dialog(
+          self.tb.p_apis, self.dialog)
 
     def on_plugin_config_close(self, widget):
         """Close the PluginConfigDialog."""
@@ -248,112 +277,32 @@ class PreferencesDialog:
     def on_plugin_select(self, plugin_tree):
         (model, iter) = plugin_tree.get_selection().get_selected()
         if iter is not None:
-            enabled = model.get_value(iter, PLUGINS_COL_STATE)
-            self.plugin_configure.set_property('sensitive', enabled)
+            plugin_id = model.get_value(iter, PLUGINS_COL_ID)
+            self._update_plugin_configure(self.tb.pengine.plugins[plugin_id])
 
     def on_plugin_toggle(self, widget, path):
         """Toggle a plugin enabled/disabled."""
         iter = self.plugin_store.get_iter(path)
         plugin_id = self.plugin_store.get_value(iter, PLUGINS_COL_ID)
-        enabled = self.plugin_store.get_value(iter, PLUGINS_COL_STATE)
-        # see complaint above in on_plugin_about()...
-        for i in range(len(self.tb.plugins)):
-            if self.tb.plugins[i]['plugin'] == plugin_id:
-                p = self.tb.plugins[i]
-                break
-        # ...end complaint
-        if enabled:
-            self.tb.pengine.activatePlugins([p], self.tb.plugin_apis)
+        p = self.tb.pengine.plugins[plugin_id]
+        p.enabled = not self.plugin_store.get_value(iter, PLUGINS_COL_ENABLED)
+        if p.enabled:
+            self.tb.pengine.activate_plugins(self.tb.p_apis, [p])
         else:
-            self.tb.pengine.deactivatePlugins([p], self.tb.plugin_apis)
-
+            self.tb.pengine.deactivate_plugins(self.tb.p_apis, [p])
+        self.plugin_store.set_value(iter, PLUGINS_COL_ENABLED, p.enabled)
+        self._update_plugin_configure(p)
+    
     def toggle_preview(self, widget):
         """Toggle previews in the task view on or off."""
         print __name__
-
+    
     def toggle_spellcheck(self, widget):
         """Toggle spell checking on or off."""
         print __name__
+    
+    def _update_plugin_configure(self, plugin):
+        """Enable the "Configure Plugin" button if appropriate."""
+        configurable = plugin.active and plugin.is_configurable()
+        self.plugin_configure.set_property('sensitive', configurable)
 
-# Code from the old PluginManager class.
-#    def pluginExtraInfo(self, treeview, plugins):
-#        path = treeview.get_cursor()[0]
-#        if path:
-#            model = treeview.get_model()
-#            iter = treeview.get_model().get_iter(path)
-#            
-#            for plgin in plugins:
-#                if (model.get_value(iter,1) == plgin['name']) and \
-#                        (model.get_value(iter,2) == plgin['version']):
-#                    self.lblPluginName.set_label("<b>" + plgin['name'] + "</b>")
-#                    self.lblPluginVersion.set_label(plgin['version'])
-#                    self.lblPluginAuthors.set_label(plgin['authors'])
-#                    self.txtPluginDescription.get_buffer().set_text(
-#                                plgin['description'].replace("\n", " ").replace(r'\n', "\n"))
-#                    
-#                    if plgin['error']:
-#                        # set the title label
-#                        cantload = "<small><b>%s</b>. \n" %GnomeConfig.CANNOTLOAD
-#                        if plgin['missing_modules'] and not plgin['missing_dbus']:
-#                            self.lblErrorTitle.set_markup(
-#                                    cantload+
-#                                    "%s</small>" %GnomeConfig.MODULEMISSING)
-#                                    
-#                        elif plgin['missing_dbus'] and not plgin['missing_modules']:
-#                            self.lblErrorTitle.set_markup(
-#                                    cantload+
-#                                    "%s</small>" %GnomeConfig.DBUSMISSING)
-#                        elif plgin['missing_modules'] and plgin['missing_dbus']:
-#                            self.lblErrorTitle.set_markup(
-#                                    cantload+
-#                                    "%s</small>" %GnomeConfig.MODULANDDBUS)
-#                        else:
-#                            self.lblErrorTitle.set_markup(
-#                                    cantload+
-#                                    "%s</small>" %GnomeConfig.UNKNOWN)
-#                            self.box_error.show_all()
-#                            
-#                        #set the missing/info
-#                        if plgin['missing_modules'] and not plgin['missing_dbus']:
-#                            missing = ""
-#                            for element in plgin['missing_modules']:
-#                                missing = missing + ", " + element
-#                            
-#                            self.lblPluginMM.set_markup("<small><b>" + missing[2:] + "</b></small>")
-#                            self.lblPluginMM.set_line_wrap(True)
-#                            self.box_error.show_all()
-#                        elif plgin['missing_dbus'] and not plgin['missing_modules']:
-#                            missing_dbus = ""
-#                            for element in plgin['missing_dbus']:
-#                                missing_dbus = missing_dbus + "; " + str(element)
-#                            
-#                            self.lblPluginMM.set_markup("<small><b>" + missing_dbus[2:] + "</b></small>")
-#                            self.box_error.show_all()
-#                        elif plgin['missing_modules'] and plgin['missing_dbus']:
-#                            missing = ""
-#                            for element in plgin['missing_modules']:
-#                                missing = missing + ", " + element
-#                            
-#                            missing_dbus = ""
-#                            for element in plgin['missing_dbus']:
-#                                missing_dbus = missing_dbus + "; " + str(element)
-#                                
-#                            self.lblPluginMM.set_markup("<small><b>" + missing[2:] + "</b>\n\n" + "<b>" + missing_dbus[2:] + "</b></small>")
-#                    else:
-#                        self.box_error.hide()
-#                        
-#                    try:
-#                        if plgin['state']:
-#                            if not plgin['instance']:
-#                                plgin['instance'] = plgin['class']()
-#                                
-#                            if plgin['instance'].is_configurable():
-#                                self.config_btn.set_sensitive(True)
-#                                self.current_plugin = plgin
-#                        else:
-#                            self.config_btn.set_sensitive(False)
-#                    except Exception, e:
-#                        self.config_btn.set_sensitive(False)
-#                        
-#    def plugin_configure_dialog(self, widget, data=None):
-#        self.current_plugin['instance'].configure_dialog(self.plugin_apis, self.dialog)

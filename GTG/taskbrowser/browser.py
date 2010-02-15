@@ -520,8 +520,7 @@ class TaskBrowser:
         # plugins - Init
         self.pengine = PluginEngine(GTG.PLUGIN_DIR)
         # loads the plugins in the plugin dir
-        self.plugins = self.pengine.LoadPlugins()
-        
+        self.pengine.load_plugins()
         # initializes the plugin api class
         self.plugin_api = PluginAPI(window         = self.window,
                                     config         = self.config,
@@ -541,25 +540,23 @@ class TaskBrowser:
                                     browser        = self,
                                     logger         = self.logger)
         self.p_apis.append(self.plugin_api)
-        
-        if self.plugins:
+        # enable some plugins
+        if len(self.pengine.plugins) > 0:
             # checks the conf for user settings
             if "plugins" in self.config:
                 if "enabled" in self.config["plugins"]:
                     plugins_enabled = self.config["plugins"]["enabled"]
-                    for p in self.plugins:
-                        if p['name'] in plugins_enabled:
-                            p['state'] = True
-                        
                 if "disabled" in self.config["plugins"]:
                     plugins_disabled = self.config["plugins"]["disabled"]
-                    for p in self.plugins:    
-                        if p['name'] in plugins_disabled:
-                            p['state'] = False
-            
-            # initializes and activates each plugin (that is enabled)
-            self.pengine.activatePlugins(self.plugins, self.p_apis)
-            
+                for name, plugin in self.pengine.plugins.iteritems():
+                    if name in plugins_enabled and name not in plugins_disabled:
+                        plugin.enabled = True
+                    else:
+                        # plugins not explicitly enabled are disabled
+                        plugin.enabled = False
+        # initializes and activates each plugin (that is enabled)
+        self.pengine.activate_plugins(self.p_apis)
+    
     def _init_tag_list(self):
         self.tag_list_model = gtk.ListStore(gobject.TYPE_STRING)
         self.tag_list = self.req.get_all_tags()
@@ -823,7 +820,7 @@ class TaskBrowser:
             tv.present()
         elif t:
             tv = TaskEditor(
-                self.req, t, self.plugins, \
+                self.req, t, self.pengine.plugins.values(), \
                 self.on_delete_task, self.close_task, self.open_task, \
                 self.get_tasktitle,taskconfig=self.task_config, \
                 plugin_apis=self.p_apis,thisisnew=thisisnew,\
@@ -1090,11 +1087,10 @@ class TaskBrowser:
             view = "workview"
         else:
             view = "default"
-            
+        
         # plugins are deactivated
-        if self.plugins:
-            self.pengine.deactivatePlugins(self.plugins, self.p_apis)
-            
+        self.pengine.deactivate_plugins(self.p_apis)
+        
         #save opened tasks and their positions.
         open_task = []
         for otid in self.opened_task.keys():     
@@ -1143,12 +1139,12 @@ class TaskBrowser:
 #            self.config["browser"]["experimental_notes"] = True
         
         # adds the plugin settings to the conf
-        if self.plugins:
+        if len(self.pengine.plugins) > 0:
             self.config["plugins"] = {}
-            self.config["plugins"]["disabled"] =\
-                self.pengine.disabledPlugins(self.plugins)
-            self.config["plugins"]["enabled"] =\
-                self.pengine.enabledPlugins(self.plugins)
+            self.config["plugins"]["disabled"] = \
+              self.pengine.disabled_plugins().keys()
+            self.config["plugins"]["enabled"] = \
+              self.pengine.enabled_plugins().keys()
 
     def on_force_refresh(self, widget):
         if self.refresh_lock.acquire(False):

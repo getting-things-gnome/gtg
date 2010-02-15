@@ -1235,6 +1235,7 @@ commas.</property>
                                       <object class="GtkCheckButton" id="pref_autostart">
                                         <property name="label" translatable="yes">Start Getting Things GNOME! on every login</property>
                                         <property name="visible">True</property>
+                                        <property name="sensitive">False</property>
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">False</property>
                                         <property name="draw_indicator">True</property>
@@ -1277,6 +1278,7 @@ commas.</property>
                                       <object class="GtkCheckButton" id="pref_show_preview">
                                         <property name="label" translatable="yes">Show task text preview</property>
                                         <property name="visible">True</property>
+                                        <property name="sensitive">False</property>
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">False</property>
                                         <property name="draw_indicator">True</property>
@@ -1294,6 +1296,7 @@ commas.</property>
                                           <object class="GtkCheckButton" id="pref_hide_closed">
                                             <property name="label" translatable="yes">Hide closed tasks older than</property>
                                             <property name="visible">True</property>
+                                            <property name="sensitive">False</property>
                                             <property name="can_focus">True</property>
                                             <property name="receives_default">False</property>
                                             <property name="draw_indicator">True</property>
@@ -1306,6 +1309,8 @@ commas.</property>
                                         <child>
                                           <object class="GtkComboBox" id="pref_hide_closed_age">
                                             <property name="visible">True</property>
+                                            <property name="sensitive">False</property>
+                                            <property name="can_focus">True</property>
                                           </object>
                                           <packing>
                                             <property name="position">1</property>
@@ -1350,6 +1355,7 @@ commas.</property>
                                       <object class="GtkCheckButton" id="pref_check_spelling">
                                         <property name="label" translatable="yes">Check spelling</property>
                                         <property name="visible">True</property>
+                                        <property name="sensitive">False</property>
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">False</property>
                                         <property name="draw_indicator">True</property>
@@ -1416,12 +1422,14 @@ commas.</property>
                         <child>
                           <object class="GtkScrolledWindow" id="prefs-scrolledwindow1">
                             <property name="visible">True</property>
+                            <property name="sensitive">False</property>
                             <property name="can_focus">True</property>
                             <property name="hscrollbar_policy">never</property>
                             <property name="vscrollbar_policy">automatic</property>
                             <child>
                               <object class="GtkTreeView" id="BackendTree">
                                 <property name="visible">True</property>
+                                <property name="sensitive">False</property>
                                 <property name="can_focus">True</property>
                               </object>
                             </child>
