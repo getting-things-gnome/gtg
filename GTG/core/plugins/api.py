@@ -318,7 +318,7 @@ class PluginAPI:
         """
         return self.task_modelsort
     
-    def get_taskview(self):
+    def get_closed_taskview(self):
         """Returns the closed task view object. 
         
         @return: The gtk.TreeView task view object.

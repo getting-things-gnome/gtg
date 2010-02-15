@@ -38,7 +38,6 @@
 # }
 
 import gtk
-import gobject
 import os
 import re
 import urllib2

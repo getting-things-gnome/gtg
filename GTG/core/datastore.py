@@ -20,6 +20,7 @@
 import threading
 import gobject
 import time
+import sys
 
 from GTG.core      import tagstore, requester
 from GTG.core.task import Task
