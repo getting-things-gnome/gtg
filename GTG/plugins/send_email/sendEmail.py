@@ -42,7 +42,10 @@ class pluginSendEmail:
 
     def onTaskOpened(self, plugin_api):
         # add a item (button) to the ToolBar
-        tb_Taskbutton = gtk.ToolButton(gtk.STOCK_EXECUTE)
+        tb_Taskicon = gtk.Image()
+        tb_Taskicon.set_from_icon_name('mail-send', 32)
+        tb_Taskicon.show()
+        tb_Taskbutton = gtk.ToolButton(tb_Taskicon)
         tb_Taskbutton.set_label("Send via email")
         tb_Taskbutton.connect('clicked', self.onTbTaskButton, plugin_api)
         self.task_separator = plugin_api.add_task_toolbar_item(gtk.SeparatorToolItem())
