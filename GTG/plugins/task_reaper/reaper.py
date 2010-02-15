@@ -87,7 +87,6 @@ class pluginReaper:
     def deactivate(self, plugin_api):
         if self.menu_item_is_shown == True:
             plugin_api.remove_menu_item(self.menu_item)
-        pass
 
 ## HELPER FUNCTIONS ############################################################
 

@@ -1,0 +1,8 @@
+[GTG Plugin]
+Module=send_email
+Name=Send task via email
+Description="Adds a button on the toolbar to send easily a task via email"
+Authors=Luca Invernizzi <invernizzi.l@gmail.com>
+Version=0.1.1
+Enabled=False
+Dependencies=gio, urllib
