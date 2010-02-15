@@ -22,6 +22,8 @@ import time
 import os
 from calendar import timegm
 
+from GTG import _
+
 class hamsterPlugin:
     PLUGIN_NAMESPACE = 'hamster-plugin'
     DEFAULT_PREFERENCES = {
@@ -35,7 +37,7 @@ class hamsterPlugin:
         #task editor widget
         self.vbox = None
         self.button=gtk.ToolButton()
-        self.menu_item = gtk.MenuItem("Start task in Hamster")
+        self.menu_item = gtk.MenuItem(_("Start task in Hamster"))
         self.taskbutton = None
         self.separator = gtk.SeparatorToolItem()
         self.task_separator = None
@@ -151,9 +153,10 @@ class hamsterPlugin:
         plugin_api.add_menu_item(self.menu_item)
         
         # and button
-        self.button.set_label("Start")
+        self.button.set_label(_("Start in Hamster"))
         self.button.set_icon_name('hamster-applet')
-        self.button.set_tooltip_text("Start a new activity in Hamster Time Tracker based on the selected task")
+        self.button.set_tooltip_text(_("Start a new activity in Hamster Time" +\
+                                       "Tracker based on the selected task"))
         self.button.connect('clicked', self.browser_cb, plugin_api)
         # saves the separator's index to later remove it
         plugin_api.add_toolbar_item(self.separator)
@@ -168,7 +171,8 @@ class hamsterPlugin:
         button = gtk.ToolButton()
         button.set_label("Start")
         button.set_icon_name('hamster-applet')
-        button.set_tooltip_text("Start a new activity in Hamster Time Tracker based on this task")
+        button.set_tooltip_text(_("Start a new activity in Hamster Time " + \
+                             " Tracker based on this task"))
         button.connect('clicked', self.task_cb, plugin_api)
         self.task_separator = plugin_api.add_task_toolbar_item(gtk.SeparatorToolItem())
         self.taskbutton = plugin_api.add_task_toolbar_item(button)

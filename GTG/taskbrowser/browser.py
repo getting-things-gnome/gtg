@@ -696,7 +696,7 @@ class TaskBrowser:
                         "opened_tasks" in self.config["browser"]:
             odic = self.config["browser"]["opened_tasks"]
             #odic can contain also "None" or "None,", so we skip them
-            if odic == "None" or odic[0] == "None":
+            if odic == "None" or (len(odic)> 0 and odic[0] == "None"):
                 return
             for t in odic:
                 ted = self.open_task(t)
