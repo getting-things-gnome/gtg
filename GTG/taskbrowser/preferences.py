@@ -244,6 +244,8 @@ class PreferencesDialog:
     def on_plugin_about(self, widget):
         """Display information about a plugin."""
         (junk, iter) = self.plugin_tree.get_selection().get_selected()
+        if iter == None:
+            return
         plugin_id = self.plugin_store.get_value(iter, PLUGINS_COL_ID)
         p = self.tb.pengine.plugins[plugin_id]
         pad = self.plugin_about_dialog
