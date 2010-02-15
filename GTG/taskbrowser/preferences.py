@@ -251,7 +251,10 @@ class PreferencesDialog:
         pad = self.plugin_about_dialog
         pad.set_name(p.full_name)
         pad.set_version(p.version)
-        pad.set_authors(p.authors)
+        authors = p.authors
+        if isinstance(authors, str):
+            authors = [authors, ]
+        pad.set_authors(authors)
         pad.set_comments(p.description.replace(r'\n', "\n"))
         self.plugin_depends.set_label(plugin_error_text(p))
         pad.show_all()
