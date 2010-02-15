@@ -23,7 +23,6 @@ try:
 except:
     indicator_capable = False
 
-from GTG.core.task import Task
 from GTG import _
 
 
@@ -59,7 +58,8 @@ class NotificationArea:
                                 "/icons/hicolor/16x16/apps/gtg.png", 16, 16)
             self.status_icon = gtk.status_icon_new_from_pixbuf(icon)
             self.status_icon.set_tooltip("Getting Things Gnome!")
-            self.status_icon.connect('activate', self.minimize, plugin_api)
+            self.minimize_signal_handler = \
+                    self.status_icon.connect('activate', self.minimize, plugin_api)
             self.status_icon.set_visible(True)
             self.status_icon.connect('popup-menu', \
                                      self.on_icon_popup, \
@@ -77,13 +77,18 @@ class NotificationArea:
         # startup time
         task_list = requester.get_active_tasks_list(workable = True )
         map(lambda t: self.add_menu_task(t), task_list)
+        self.set_browser_minimize(self.browser_minimize)
 
     def deactivate(self, plugin_api):
         if indicator_capable:
             self.ind.set_status(appindicator.STATUS_PASSIVE)
         else:
             self.status_icon.set_visible(False)
+        #Restoring pristine state:
+        #browser should not start minimized and the delete-event should
+        #shut it down
         self.plugin_api.get_browser().start_minimized = False
+        self.set_browser_minimize(self.plugin_api.get_browser().on_delete)
 
 ## Helper methods ##############################################################
 
@@ -121,6 +126,20 @@ class NotificationArea:
             self.minimized = True
         self.view_main_window_signal = self.view_main_window.connect(\
                                 'activate', self.minimize, self.plugin_api)
+
+
+## Change behaviour of taskBrowser #############################################
+
+    def browser_minimize(self, widget, user_data):
+        self.minimize(None, self.plugin_api)
+        #We return true to prevent the call to gtk.main_quit()
+        return True
+
+    def set_browser_minimize(self, method):
+        browser = self.plugin_api.get_browser()
+        browser.window.disconnect(browser.delete_event_handle)
+        browser.delete_event_handle = \
+                browser.window.connect("delete-event", method)
 
 ## Menu methods #################################################################
 

@@ -326,8 +326,6 @@ class TaskBrowser:
                 self.on_schedule_for_next_year,
             "on_dismiss_task":
                 self.on_dismiss_task,
-            "on_delete":
-                self.on_delete,
             "on_move":
                 self.on_move,
             "on_size_allocate":
@@ -388,6 +386,10 @@ class TaskBrowser:
 
         if (self.window):
             self.window.connect("destroy", gtk.main_quit)
+            #The following is needed to let the Notification Area plugin to
+            # minimize the window instead of closing the program
+            self.delete_event_handle = \
+                    self.window.connect("delete-event", self.on_delete)
 
         # Active tasks TreeView
         self.task_tv.connect('row-activated',\
@@ -695,6 +697,9 @@ class TaskBrowser:
                         self.start_minimized == True) and \
                         "opened_tasks" in self.config["browser"]:
             odic = self.config["browser"]["opened_tasks"]
+            #odic can contain also "None" or "None,", so we skip them
+            if odic == "None" or (len(odic)> 0 and odic[0] == "None"):
+                return
             for t in odic:
                 ted = self.open_task(t)
                 #restoring position doesn't work, I don't know why
