@@ -1,3 +1,4 @@
+    * Preferences dialog, by Paul Kishimoto
     * Send task by mail plugin by Luca Invernizzi
     * Import_json plugin by Bryce Harrington
     * Improve RTM plugin (bug #520427): don't sync tasks from archived lists
