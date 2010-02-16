@@ -194,7 +194,7 @@ class TaskEditor :
                                        browser = None,
                                        texteditor = self)
         self.p_apis.append(self.te_plugin_api)
-        self.pengine.onTaskLoad(self.plugins, self.te_plugin_api)
+        self.pengine.onTaskLoad(self.plugins)
         
         #Putting the refresh callback at the end make the start a lot faster
         self.textview.refresh_callback(self.refresh_editor)
