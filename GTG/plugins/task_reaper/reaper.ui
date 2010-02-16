@@ -12,20 +12,10 @@
         <property name="visible">True</property>
         <property name="orientation">vertical</property>
         <child>
-          <object class="GtkLabel" id="label1">
-            <property name="visible">True</property>
-            <property name="ypad">7</property>
-            <property name="label" translatable="yes">Task Reaper plugin configuration</property>
-          </object>
-          <packing>
-            <property name="position">1</property>
-          </packing>
-        </child>
-        <child>
           <object class="GtkVBox" id="vbox2">
             <property name="visible">True</property>
             <property name="orientation">vertical</property>
-            <property name="spacing">2</property>
+            <property name="spacing">12</property>
             <child>
               <object class="GtkHBox" id="hbox2">
                 <property name="visible">True</property>
@@ -82,7 +72,7 @@
             </child>
             <child>
               <object class="GtkCheckButton" id="pref_chbox_show_menu_item">
-                <property name="label" translatable="yes">Add the menu Plugins&gt;Delete old tasks to manually delete them</property>
+                <property name="label" translatable="yes">Add the "Plugins &gt; Delete old tasks" menu item</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
@@ -95,8 +85,8 @@
             </child>
           </object>
           <packing>
-            <property name="padding">12</property>
-            <property name="position">1</property>
+            <property name="padding">21</property>
+            <property name="position">0</property>
           </packing>
         </child>
         <child>
@@ -132,7 +122,7 @@
             </child>
           </object>
           <packing>
-            <property name="position">2</property>
+            <property name="position">1</property>
           </packing>
         </child>
       </object>
