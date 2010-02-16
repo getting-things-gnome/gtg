@@ -127,7 +127,6 @@ class NotificationArea:
         self.view_main_window_signal = self.view_main_window.connect(\
                                 'activate', self.minimize, self.plugin_api)
 
-
 ## Change behaviour of taskBrowser #############################################
 
     def browser_minimize(self, widget, user_data):
@@ -194,6 +193,10 @@ class NotificationArea:
         menuItem = gtk.ImageMenuItem(gtk.STOCK_ADD)
         menuItem.get_children()[0].set_label(_('Add _New Task'))
         menuItem.connect('activate', self.open_task)
+        self.menu.append(menuItem)
+        #quit item
+        menuItem = gtk.ImageMenuItem(gtk.STOCK_QUIT)
+        menuItem.connect('activate', self.plugin_api.get_browser().on_close)
         self.menu.append(menuItem)
         #realizing the menu
         self.menu.show_all()
