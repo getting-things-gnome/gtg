@@ -1190,6 +1190,7 @@ commas.</property>
     <property name="default_width">500</property>
     <property name="default_height">500</property>
     <property name="type_hint">dialog</property>
+    <signal name="delete_event" handler="on_PreferencesDialog_delete_event"/>
     <child internal-child="vbox">
       <object class="GtkVBox" id="prefs-vbox1">
         <property name="visible">True</property>

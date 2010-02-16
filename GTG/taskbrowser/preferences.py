@@ -218,6 +218,8 @@ class PreferencesDialog:
           # the PluginConfigDialog
           'on_PluginConfigClose_released':
             self.on_plugin_config_close,
+          'on_PreferencesDialog_delete_event':
+            self.on_close,
           }
         return SIGNAL_CONNECTIONS_DIC
 
@@ -232,7 +234,7 @@ class PreferencesDialog:
         self.dialog.present()
         self.dialog.show_all()
 
-    def on_close(self, widget):
+    def on_close(self, widget, data = None):
         """Close the preferences dialog."""
         self.dialog.hide()
         return True
