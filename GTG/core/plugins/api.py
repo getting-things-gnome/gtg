@@ -132,6 +132,7 @@ class PluginAPI:
         """
         widget = self.__builder.get_object('menu_plugin')
         if widget:
+            widget.show_all()
             widget.get_submenu().append(item)
         item.show()
          
@@ -146,7 +147,10 @@ class PluginAPI:
         try:
             wi = self.__builder.get_object('menu_plugin')
             if wi:
-                wi.get_submenu().remove(item)
+                menu = wi.get_submenu()
+                menu.remove(item)
+                if len(menu.get_children()) == 0:
+                    wi.hide()
             return True
         except Exception, e:
             print "Error removing menu item: %s" % e
