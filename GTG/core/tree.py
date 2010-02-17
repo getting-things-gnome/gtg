@@ -202,7 +202,6 @@ class Tree():
             parent_id = node.get_parent()
             parent = self.get_node(parent_id)
             toreturn = self._rowref_for_node(parent) + "/" + str(node.get_id())
-            print "returning rowref for node %s" %toreturn
             return toreturn
 
     def _path_for_node(self, node):

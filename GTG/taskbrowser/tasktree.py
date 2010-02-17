@@ -134,15 +134,15 @@ class TaskTreeModel(gtk.GenericTreeModel):
             return title
 
     def on_get_iter(self, path):
-        #print "on_get_iter: " + str(path)
-        return self.tree.get_rowref_for_path(path)
+        toreturn = self.tree.get_rowref_for_path(path)
+        #print "on_get_iter: " + str(path) + "path  = "+str(toreturn)
+        return toreturn
 
     def on_get_path(self, rowref):
-        #print "on_get_path: %s" % (rowref)
+        print "on_get_path: %s" % (rowref)
         return self.tree.get_path_for_rowref(rowref)
 
     def on_iter_next(self, rowref):
-        print "on_iter_next: %s" % (rowref)
         node        = self.tree.get_node_for_rowref(rowref)
         if node:
             parent_id = node.get_parent()
@@ -157,7 +157,6 @@ class TaskTreeModel(gtk.GenericTreeModel):
             else:
                 return None
         else:
-            print "no node for %s" %rowref
             return None
 
     def on_iter_children(self, rowref):
@@ -186,7 +185,9 @@ class TaskTreeModel(gtk.GenericTreeModel):
             node = self.tree.get_node_for_rowref(rowref)
         else:
             node = self.tree.get_root()
-        return node.get_n_children()
+        toreturn = node.get_n_children()
+        #print "on_iter_n_children: %s = %s" % (rowref,toreturn)
+        return toreturn
 
     def on_iter_nth_child(self, rowref, n):
         #print "on_iter_nth_child: %s %d" % (rowref, n)
@@ -218,13 +219,13 @@ class TaskTreeModel(gtk.GenericTreeModel):
         node_iter = self.get_iter(node_path)
         self.row_changed(node_path, node_iter)
         
-        print "################"
-        print self.tree.print_tree()
-        print "tree nodes : %s" %self.tree.get_all_keys()
-        print "root children = %s" %self.tree.get_root().get_children()
+#        print "################"
+#        print self.tree.print_tree()
+#        print "tree nodes : %s" %self.tree.get_all_keys()
+#        print "root children = %s" %self.tree.get_root().get_children()
         
     def add_task(self, tid):
-#        print "add_task dummy call in tasktree"
+#        print "add task %s" %tid
 #        nodes = []
 #        # get the task
         task = self.req.get_task(tid)
