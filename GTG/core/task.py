@@ -53,8 +53,6 @@ class Task(TreeNode):
         self.due_date = no_date
         self.start_date = no_date
         self.parents = []
-        #The list of children tid
-        self.children = []
         self.can_be_deleted = newtask
         # tags
         self.tags = []
@@ -420,30 +418,26 @@ class Task(TreeNode):
 
     #Take a tid as parameter
     def remove_parent(self, tid):
-        if tid and tid in self.parents:
-            self.parents.remove(tid)
-            self.sync()
-            parent = self.req.get_task(tid)
-            if parent:
-                parent.remove_subtask(self.get_id())
-                parent.sync()
-
-    def get_parents(self):
-        return list(self.parents)
+        TreeNode.remove_parent(self,tid)
+        self.sync()
+        parent = self.req.get_task(tid)
+        if parent:
+            parent.sync()
 
     #Return true is the task has parent
     #If tag is provided, return True only
     #if the parent has this particular tag
     def has_parents(self, tag=None):
+        has_par = TreeNode.has_parent(self)
         #The "all tag" argument
-        if tag and len(self.parents)!=0:
+        if tag and has_par:
             a = 0
-            for tid in self.parents:
+            for tid in self.get_parents():
                 p = self.req.get_task(tid)
                 a += p.has_tags(tag)
             to_return = a
         else:
-            to_return = len(self.parents)!=0
+            to_return = has_par
         return to_return
 
     def set_attribute(self, att_name, att_value, namespace=""):
