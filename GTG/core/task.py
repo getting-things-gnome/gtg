@@ -309,7 +309,7 @@ class Task(TreeNode):
         uid, pid = self.get_id().split('@') #pylint: disable-msg=W0612
         subt     = self.req.new_task(pid=pid, newtask=True)
         #we use the inherited childrens
-        self.add_subtask(subt.get_id())
+        self.add_child(subt)
         return subt
     
     #FIXME : remove this method
@@ -387,10 +387,10 @@ class Task(TreeNode):
         """
         return self.req.get_task(tid)
 
-    #FIXME : remove this method
-    def get_subtask_tids(self):
-        print "Deprecation Warning : use get_children instead of get_subtasks_tids"
-        return self.get_children()
+#    #FIXME : remove this method
+#    def get_subtask_tids(self):
+#        print "Deprecation Warning : use get_children instead of get_subtask_tids"
+#        return self.get_children()
 
     #FIXME : remove this method
     def get_nth_subtask(self, index):
@@ -489,7 +489,7 @@ class Task(TreeNode):
     def call_modified(self):
         self.req._task_modified(self.tid)
         #we also modify parents and children
-        for s in self.get_subtask_tids():
+        for s in self.get_children():
             self.req._task_modified(s)
         for p in self.get_parents():
             self.req._task_modified(p)

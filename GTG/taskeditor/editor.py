@@ -138,7 +138,7 @@ class TaskEditor :
         
         self.task = task
         tags = task.get_tags()
-        self.textview.subtasks_callback(task.get_subtask_tids)
+        self.textview.subtasks_callback(task.get_children)
         self.textview.removesubtask_callback(task.remove_subtask)
         self.textview.set_get_tagslist_callback(task.get_tags_name)
         self.textview.set_add_tag_callback(task.add_tag)
@@ -161,7 +161,7 @@ class TaskEditor :
                     self.textview.insert_text("%s, "%t.get_name())
                 self.textview.insert_text("\n")
             #If we don't have text, we still need to insert subtasks if any
-            subtasks = task.get_subtask_tids()
+            subtasks = task.get_children()
             if subtasks :
                 self.textview.insert_subtasks(subtasks)
         #We select the title if it's a new task
@@ -498,7 +498,8 @@ class TaskEditor :
     #Take the title as argument and return the subtask ID
     def new_subtask(self,title=None,tid=None) :
         if tid:
-            self.task.add_subtask(tid)
+            subt = self.req.get_task(tid)
+            self.task.add_child(subt)
         elif title:
             subt = self.task.new_subtask()
             subt.set_title(title)

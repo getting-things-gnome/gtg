@@ -1416,7 +1416,7 @@ class TaskBrowser:
             tags   = zetask.get_tags()
             task   = self.req.new_task(tags=tags, newtask=True)
             task.add_parent(uid)
-            zetask.add_subtask(task.get_id())
+            zetask.add_child(task)
             self.open_task(task.get_id(),thisisnew=True)
             #self.do_refresh()
 
@@ -1742,7 +1742,7 @@ class TaskBrowser:
         tlist = [tid]
         task = self.req.get_task(tid)
         tlist += task.get_parents()
-        tlist += task.get_subtask_tids()
+        tlist += task.get_children()
         for uid in tlist:
             self.refresh_task(uid)
         #if the modified task is active, we have to refresh everything

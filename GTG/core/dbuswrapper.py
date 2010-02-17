@@ -36,7 +36,7 @@ def task_to_dict(task):
           "donedate": str(task.get_closed_date()),
           "tags": task.get_tags_name(),
           "text": task.get_text(),
-          "subtask": task.get_subtask_tids(),
+          "subtask": task.get_children(),
           }), signature="sv")
 
 
@@ -107,7 +107,8 @@ class DBusTaskWrapper(dbus.service.Object):
         # Generate a new task object and return the task data as a dict
         nt = self.req.new_task(tags=tags)
         for sub in subtasks:
-            nt.add_subtask(sub)
+            subt = self.req.get_task(sub)
+            nt.add_child(subt)
         nt.set_status(status, donedate=dates.strtodate(donedate))
         nt.set_title(title)
         nt.set_due_date(dates.strtodate(duedate))
@@ -128,7 +129,8 @@ class DBusTaskWrapper(dbus.service.Object):
         for tag in task_data["tags"]:
             task.add_tag(tag)
         for sub in task_data["subtask"]:
-            task.add_subtask(sub)
+            subt = self.req.get_task(sub)
+            task.add_child(subt)
         return task_to_dict(task)
 
     @dbus.service.method(BUSNAME)

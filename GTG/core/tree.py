@@ -90,7 +90,7 @@ class Tree():
     #create a new relationship between nodes if it doesn't already exist
     #return False if nothing was done
     def new_relationship(self,parent_id,child_id):
-        print "new relationship between %s and %s" %(parent_id,child_id)
+        #print "new relationship between %s and %s" %(parent_id,child_id)
         toreturn = False
         p = self.get_node(parent_id)
         c = self.get_node(child_id)
@@ -102,8 +102,9 @@ class Tree():
                 c.add_parent(p)
                 toreturn = True
                 #removing the root from the list of parent
-                if c.has_parent(self.root.get_id()):
-                    c.remove_parent(self.root.get_id())
+                if self.root.has_child(child_id):
+#                    c.remove_parent(self.root.get_id())
+                    self.root.remove_child(child_id)
         return toreturn
     
     #break an existing relationship. The child is added to the root
@@ -281,6 +282,9 @@ class TreeNode():
         return list(self.parents)
 
     def add_parent(self, par):
+#        root = self.tree.get_root()
+#        print "removing root node has parent"
+#        self.tree.break_relationship(root.get_id(),self.get_id())
         id = par.get_id()
         self.parents.append(id)
         self.tree.new_relationship(id,self.get_id())
@@ -292,8 +296,8 @@ class TreeNode():
                 self.remove_parent(i)
             self.add_parent(par)
             
-    def remove_parent(id):
-        if id in self.parents():
+    def remove_parent(self,id):
+        if id in self.parents:
             self.parents.pop(id)
             self.tree.break_relationship(id,self.get_id())
             
@@ -339,6 +343,10 @@ class TreeNode():
             return True
         else:
             return False
+            
+    def add_child_tid(self,tid):
+        child = self.tree.get_node(tid)
+        self.add_child(child)
         
 
     def remove_child(self, id):
