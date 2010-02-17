@@ -19,7 +19,7 @@
 import gtk
 import pango
 
-import GTG.core.plugins import GnomeConfig
+from GTG.core.plugins import GnomeConfig
 
 
 __all__ = [
