@@ -107,6 +107,7 @@ class DataStore:
         #If tid, we force that tid and create a real new task
         if tid and not self.has_task(tid):
             task = Task(tid, self.requester, newtask=newtask)
+            print "tid : %s" %tid
             uid, pid = tid.split('@') #pylint: disable-msg=W0612
             #By default, a new task is active. We then put it in the Active tree
             self.open_tasks.add_node(task)

@@ -52,7 +52,6 @@ class Task(TreeNode):
         self.closed_date = no_date
         self.due_date = no_date
         self.start_date = no_date
-        self.parents = []
         self.can_be_deleted = newtask
         # tags
         self.tags = []
@@ -327,10 +326,10 @@ class Task(TreeNode):
         #the core of the method is in the TreeNode object
         if TreeNode.add_child(self,child):
             #now we set inherited attributes only if it's a new task
-            if task.can_be_deleted:
-                task.set_start_date(self.get_start_date())
+            if child.can_be_deleted:
+                child.set_start_date(self.get_start_date())
                 for t in self.get_tags():
-                    task.tag_added(t.get_name())
+                    child.tag_added(t.get_name())
             return True
         else:
             return False
@@ -396,7 +395,7 @@ class Task(TreeNode):
     #FIXME : remove this method
     def get_nth_subtask(self, index):
         print "Deprecation Warning : use get_nth_child instead of get_nth_subtask"
-        return self.get_nth_child(index)
+        return self.get_nth_child(index).get_id()
 
     #FIXME : remove this method
     def get_subtask_index(self, tid):
@@ -409,9 +408,7 @@ class Task(TreeNode):
     ### PARENTS ##############################################################
 
     #Take a tid object as parameter
-    def add_parent(self, tid):
-        print "Deprecation Warning : add_parent should take an object, not a tid"
-        parent = self.req get_task(tid)
+    def add_parent(self, parent):
         TreeNode.add_parent(self,parent)
         self.sync()
         parent.sync()

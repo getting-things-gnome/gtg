@@ -90,6 +90,7 @@ class Tree():
     #create a new relationship between nodes if it doesn't already exist
     #return False if nothing was done
     def new_relationship(self,parent_id,child_id):
+        print "new relationship between %s and %s" %(parent_id,child_id)
         toreturn = False
         p = self.get_node(parent_id)
         c = self.get_node(child_id)
