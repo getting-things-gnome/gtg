@@ -327,7 +327,7 @@ class Task(TreeNode):
         """
         self.can_be_deleted = False
         #the core of the method is in the TreeNode object
-        if TreeNode.add_child(child):
+        if TreeNode.add_child(self,child):
             #now we set inherited attributes only if it's a new task
             if task.can_be_deleted:
                 task.set_start_date(self.get_start_date())
@@ -336,7 +336,8 @@ class Task(TreeNode):
             return True
         else:
             return False
-
+            
+    #FIXME : remove this method
     def remove_subtask(self, tid):
         print "Deprecation Warning : use remove_child instead of remove_subtask"
         self.remove_child(tid)
@@ -347,7 +348,7 @@ class Task(TreeNode):
 
         @param tid: the ID of the task to remove
         """
-        if TreeNode.remove_child(tid):
+        if TreeNode.remove_child(self,tid):
             task = self.req.get_task(tid)
             if task.can_be_deleted:
                 self.req.delete_task(tid)
@@ -355,23 +356,23 @@ class Task(TreeNode):
             return True
         else:
             return False
-
+            
+    #FIXME : remove this method
     def has_subtasks(self):
-        """Returns True if task has subtasks.
-        """
-        return len(self.children) != 0
+        print "Deprecation Warning : use has_child instead of has_subtask"
+        return self.has_child()
 
+    #FIXME : remove this method
     def get_n_subtasks(self):
-        """Return the number of subtasks of a task.
-        """
-        return len(self.children)
+        print "Deprecation Warning : use get_n_children instead of get_n_subtasks"
+        return self.get_n_children()
 
+    #FIXME : remove this method
     def get_subtasks(self):
-        """Return the list of subtasks.
-        """
+        print "Deprecation Warning : use get_children instead of get_subtasks"
         #XXX: is this useful?
         zelist = []
-        for i in self.children:
+        for i in self.get_children():
             zelist.append(self.req.get_task(i))
         return zelist
         
@@ -389,27 +390,20 @@ class Task(TreeNode):
         """
         return self.req.get_task(tid)
 
+    #FIXME : remove this method
     def get_subtask_tids(self):
-        """Return the list of subtasks. Return a list of IDs.
-        """
-        return list(self.children)
+        print "Deprecation Warning : use get_children instead of get_subtasks_tids"
+        return self.get_children()
 
+    #FIXME : remove this method
     def get_nth_subtask(self, index):
-        """Return the task ID stored at a given index.
+        print "Deprecation Warning : use get_nth_child instead of get_nth_subtask"
+        return self.get_nth_child(index)
 
-        @param index: the index of the task to return.
-        """
-        try:
-            return self.children[index]
-        except(IndexError):
-            raise ValueError("Index is not in task list")
-
+    #FIXME : remove this method
     def get_subtask_index(self, tid):
-        """Return the index of a given subtask.
-
-        @param tid: the tid of the task whose index must be returned.
-        """
-        return self.children.index(tid)
+        print "Deprecation Warning : use get_child_index instead of get_subtask_index"
+        return self.get_child_index(tid)
 
     #add and remove parents are private
     #Only the task itself can play with it's parent
@@ -418,13 +412,11 @@ class Task(TreeNode):
 
     #Take a tid object as parameter
     def add_parent(self, tid):
-        #The if prevent a loop
-        if tid and tid not in self.children and tid not in self.parents:
-            self.parents.append(tid)
-            self.sync()
-            task = self.req.get_task(tid)
-            task.add_subtask(self.get_id())
-            task.sync()
+        print "Deprecation Warning : add_parent should take an object, not a tid"
+        parent = self.req get_task(tid)
+        TreeNode.add_parent(self,parent)
+        self.sync()
+        parent.sync()
 
     #Take a tid as parameter
     def remove_parent(self, tid):

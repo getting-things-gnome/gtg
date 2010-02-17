@@ -311,8 +311,11 @@ class TreeNode():
         return len(self.children)
 
     def get_nth_child(self, index):
-        id = self.children[index]
-        return self.tree.get_node(id)
+        try:
+            id = self.children[index]
+            return self.tree.get_node(id)
+        except(IndexError):
+            raise ValueError("Index is not in the children list")
 
     def get_child(self, id):
         if id in self.children:
@@ -327,6 +330,7 @@ class TreeNode():
     def add_child(self, child):
         id = child.get_id()
         #The if prevent an infinite loop
+        #this "if" should be mooved in Tree.new_relationship
         if id not in self.children and id not in self.parents and\
                                                 id != self.get_id():
             self.children.append(id)
