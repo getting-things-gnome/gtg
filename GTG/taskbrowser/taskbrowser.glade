@@ -624,36 +624,58 @@
     <property name="has_separator">False</property>
     <signal name="close" handler="on_delete_cancel"/>
     <child internal-child="vbox">
-      <object class="GtkVBox" id="dialog-vbox1">
+      <object class="GtkVBox" id="cd-vbox1">
         <property name="visible">True</property>
         <property name="orientation">vertical</property>
         <property name="spacing">2</property>
         <child>
-          <object class="GtkHBox" id="hbox3">
+          <object class="GtkHBox" id="cd-hbox1">
             <property name="visible">True</property>
             <child>
               <object class="GtkImage" id="cd_img_ask">
                 <property name="visible">True</property>
+                <property name="yalign">0</property>
+                <property name="xpad">16</property>
                 <property name="stock">gtk-dialog-question</property>
                 <property name="icon-size">6</property>
               </object>
               <packing>
-                <property name="fill">False</property>
-                <property name="padding">16</property>
                 <property name="position">0</property>
               </packing>
             </child>
             <child>
-              <object class="GtkLabel" id="label1">
+              <object class="GtkVBox" id="cd-vbox2">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">&lt;span weight="bold" size="large"&gt;Are you sure you want delete these tasks?&lt;/span&gt;
-
-Deleting a task cannot be undone, and will delete the following tasks: </property>
-                <property name="use_markup">True</property>
-                <property name="wrap">True</property>
+                <property name="orientation">vertical</property>
+                <property name="spacing">16</property>
+                <child>
+                  <object class="GtkLabel" id="cd-label2">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">Are you sure you want to delete these tasks?</property>
+                    <attributes>
+                      <attribute name="weight" value="bold"/>
+                      <attribute name="scale" value="1.200000"/>
+                    </attributes>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label1">
+                    <property name="visible">True</property>
+                    <property name="yalign">0</property>
+                    <property name="label" translatable="yes">Deleting a task cannot be undone, and will delete the following tasks: </property>
+                    <property name="wrap">True</property>
+                    <property name="wrap_mode">word-char</property>
+                  </object>
+                  <packing>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
               </object>
               <packing>
-                <property name="padding">16</property>
                 <property name="position">1</property>
               </packing>
             </child>
@@ -664,7 +686,7 @@ Deleting a task cannot be undone, and will delete the following tasks: </propert
           </packing>
         </child>
         <child internal-child="action_area">
-          <object class="GtkHButtonBox" id="dialog-action_area1">
+          <object class="GtkHButtonBox" id="cd-action_area1">
             <property name="visible">True</property>
             <property name="layout_style">end</property>
             <child>
@@ -674,7 +696,7 @@ Deleting a task cannot be undone, and will delete the following tasks: </propert
                 <property name="receives_default">True</property>
                 <signal name="released" handler="on_delete_cancel"/>
                 <child>
-                  <object class="GtkHBox" id="hbox1">
+                  <object class="GtkHBox" id="cd-hbox2">
                     <property name="visible">True</property>
                     <child>
                       <object class="GtkImage" id="cd_img_keep">
@@ -686,7 +708,7 @@ Deleting a task cannot be undone, and will delete the following tasks: </propert
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkLabel" id="label2">
+                      <object class="GtkLabel" id="cd-label3">
                         <property name="visible">True</property>
                         <property name="xalign">0</property>
                         <property name="label" translatable="yes">_Keep selected tasks</property>
@@ -713,7 +735,7 @@ Deleting a task cannot be undone, and will delete the following tasks: </propert
                 <signal name="released" handler="on_delete_confirm"/>
                 <signal name="activate" handler="on_delete_confirm"/>
                 <child>
-                  <object class="GtkHBox" id="hbox2">
+                  <object class="GtkHBox" id="cd-hbox3">
                     <property name="visible">True</property>
                     <child>
                       <object class="GtkImage" id="cd_img_delete">
@@ -725,7 +747,7 @@ Deleting a task cannot be undone, and will delete the following tasks: </propert
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkLabel" id="label3">
+                      <object class="GtkLabel" id="cd-label4">
                         <property name="visible">True</property>
                         <property name="label" translatable="yes">Permanently _remove tasks</property>
                         <property name="use_underline">True</property>
@@ -865,7 +887,6 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
         <property name="label" translatable="yes">_Schedule for...</property>
         <property name="visible">True</property>
         <property name="use_underline">True</property>
-        <property name="submenu">ScheduleForContextMenu</property>
         <property name="use_stock">False</property>
       </object>
     </child>

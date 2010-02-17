@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <interface>
-  <!-- interface-requires gtk+ 2.12 -->
+  <requires lib="gtk+" version="2.16"/>
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkDialog" id="dialogtoken">
     <property name="width_request">500</property>
@@ -25,9 +25,11 @@
               <object class="GtkLabel" id="lbl_title_t">
                 <property name="visible">True</property>
                 <property name="ypad">6</property>
-                <property name="label">&lt;b&gt;Remember the milk&lt;/b&gt;</property>
-                <property name="use_markup">True</property>
+                <property name="label">Remember the milk</property>
                 <property name="justify">center</property>
+                <attributes>
+                  <attribute name="weight" value="bold"/>
+                </attributes>
               </object>
               <packing>
                 <property name="expand">False</property>
