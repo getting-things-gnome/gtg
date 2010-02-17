@@ -19,17 +19,12 @@
 import gtk
 import pango
 
-import GTG.core.plugins
+from GTG.core.plugins import GnomeConfig
 
 
 __all__ = [
   'PreferencesDialog',
   ]
-
-
-class GnomeConfig(GTG.taskbrowser.GnomeConfig, GTG.core.plugins.GnomeConfig):
-    """Unify two sets of translations."""
-    pass
 
 
 # columns in PreferencesDialog.plugin_store
