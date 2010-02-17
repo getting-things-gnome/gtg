@@ -311,40 +311,50 @@ class Task(TreeNode):
         """
         uid, pid = self.get_id().split('@') #pylint: disable-msg=W0612
         subt     = self.req.new_task(pid=pid, newtask=True)
+        #we use the inherited childrens
         self.add_subtask(subt.get_id())
         return subt
+    
+    #FIXME : remove this method
+    def add_subtask(self,tid):
+        print "Deprecation Warning : use add_child instead of add_subtask"
+        self.add_child(self.req.get_task(tid))
 
-    def add_subtask(self, tid):
+    def add_child(self, child):
         """Add a subtask to this task
 
-        @param tid: the ID of the added task
+        @param child: the added task
         """
         self.can_be_deleted = False
-        #The if prevent an infinite loop
-        if tid not in self.children and tid not in self.parents and\
-                                                tid != self.get_id():
-            self.children.append(tid)
-            task = self.req.get_task(tid)
-            task.add_parent(self.get_id())
+        #the core of the method is in the TreeNode object
+        if TreeNode.add_child(child):
             #now we set inherited attributes only if it's a new task
             if task.can_be_deleted:
                 task.set_start_date(self.get_start_date())
                 for t in self.get_tags():
                     task.tag_added(t.get_name())
+            return True
+        else:
+            return False
 
     def remove_subtask(self, tid):
+        print "Deprecation Warning : use remove_child instead of remove_subtask"
+        self.remove_child(tid)
+        
+            
+    def remove_child(self,tid):
         """Removed a subtask from the task.
 
         @param tid: the ID of the task to remove
         """
-        if tid in self.children:
-            self.children.remove(tid)
+        if TreeNode.remove_child(tid):
             task = self.req.get_task(tid)
             if task.can_be_deleted:
                 self.req.delete_task(tid)
-            else:
-                task.remove_parent(self.get_id())
             self.sync()
+            return True
+        else:
+            return False
 
     def has_subtasks(self):
         """Returns True if task has subtasks.

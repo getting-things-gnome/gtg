@@ -268,6 +268,10 @@ class TreeNode():
     #this one return only one parent.
     #useful for tree where we know that there is only one
     def get_parent(self):
+        #we should throw an error if there are multiples parents
+        if len(self.parents) > 1:
+            print "Warning : get_parent will return one random parent because \
+                    there are multiple parents."
         if self.has_parent():
             return self.parents[0]
         else:
@@ -319,15 +323,26 @@ class TreeNode():
     def get_child_index(self, id):
         return self.children.index(id)
 
+    #return True if the child was added correctly. False otherwise
     def add_child(self, child):
         id = child.get_id()
-        self.children.append(id)
-        self.tree.new_relationship(self.get_id(),id)
+        #The if prevent an infinite loop
+        if id not in self.children and id not in self.parents and\
+                                                id != self.get_id():
+            self.children.append(id)
+            self.tree.new_relationship(self.get_id(),id)
+            return True
+        else:
+            return False
+        
 
     def remove_child(self, id):
         if id in self.children:
             self.children.remove(id)
             self.tree.new_relationship(self.get_id(),id)
+            return True
+        else:
+            return False
 
         
     def change_id(self,newid):
