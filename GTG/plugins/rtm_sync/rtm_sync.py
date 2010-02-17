@@ -185,8 +185,8 @@ class RtmSync:
         if login == False:
             if not self.firstime:
                 self.callback = self.close_dialog
-                self.loadDialogToken(_("<b>Authentication failed</b>.\
-Please retry."))
+                self.loadDialogToken("<b>%s</b> %s" % (
+                  _("Authentication failed."), _("Please retry.")))
             else:
                 self.callback = self.close_dialog
                 self.callback = self.checkLoginBtn
