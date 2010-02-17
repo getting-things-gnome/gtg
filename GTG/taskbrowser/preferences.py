@@ -19,9 +19,7 @@
 import gtk
 import pango
 
-from GTG import _
 import GTG.core.plugins
-import GTG.taskbrowser
 
 
 __all__ = [

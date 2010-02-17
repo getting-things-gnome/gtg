@@ -22,9 +22,9 @@ try:
     indicator_capable = True
 except:
     indicator_capable = False
+from functools import partial
 
-from GTG import _
-
+from GTG                     import _
 
 
 class NotificationArea:
@@ -67,7 +67,7 @@ class NotificationArea:
         #Load the preferences
         self.preference_dialog_init()
         self.preferences_load()
-        self.preferences_apply()
+        self.preferences_apply(True)
         #Connecting the signals about task changes
         requester = self.plugin_api.get_requester()
         requester.connect("task-added", self.on_task_added)
@@ -84,10 +84,7 @@ class NotificationArea:
             self.ind.set_status(appindicator.STATUS_PASSIVE)
         else:
             self.status_icon.set_visible(False)
-        #Restoring pristine state:
-        #browser should not start minimized and the delete-event should
-        #shut it down
-        self.plugin_api.get_browser().start_minimized = False
+        #Restoring pristine state
         self.set_browser_minimize(self.plugin_api.get_browser().on_delete)
 
 ## Helper methods ##############################################################
@@ -110,20 +107,26 @@ class NotificationArea:
         if browser:
             browser.open_task(tid)
     
-    def minimize(self, widget, plugin_api):
-        if self.view_main_window_signal != None:
-            self.view_main_window.disconnect(self.view_main_window_signal)
-            self.view_main_window_signal = None
+    def minimize(self, widget = None, plugin_api = None):
+        self._disconnect_check_signal()
         if self.minimized:
             self.view_main_window.set_active(True)
             self.view_main_window.show()
-            plugin_api.show_window()
+            self.plugin_api.show_window()
             self.minimized = False
         else:
             self.view_main_window.set_active(False)
             self.view_main_window.show()
-            plugin_api.hide_window()
+            self.plugin_api.hide_window()
             self.minimized = True
+        self._connect_check_signal()
+
+    def _disconnect_check_signal(self):
+        if self.view_main_window_signal != None:
+            self.view_main_window.disconnect(self.view_main_window_signal)
+            self.view_main_window_signal = None
+
+    def _connect_check_signal(self):
         self.view_main_window_signal = self.view_main_window.connect(\
                                 'activate', self.minimize, self.plugin_api)
 
@@ -183,7 +186,6 @@ class NotificationArea:
         self.menu = gtk.Menu()
         #view in main window checkbox
         self.view_main_window = gtk.CheckMenuItem(_("_View Main Window"))
-        self.view_main_window.set_active(not self.minimized)
         self.view_main_window_signal = self.view_main_window.connect(\
                                       'activate', \
                                       self.minimize,\
@@ -200,7 +202,6 @@ class NotificationArea:
         self.menu.append(menuItem)
         #realizing the menu
         self.menu.show_all()
-
 
 ## Callback methods ############################################################
 
@@ -235,7 +236,7 @@ class NotificationArea:
     def configure_dialog(self, plugin_apis, manager_dialog):
         self.preferences_load()
         self.preferences_dialog.set_transient_for(manager_dialog)
-        self.chbox_miminized.set_active(self.preferences["start_minimized"])
+        self.chbox_minimized.set_active(self.preferences["start_minimized"])
         self.preferences_dialog.show_all()
 
     def on_preferences_cancel(self, widget = None, data = None):
@@ -243,8 +244,8 @@ class NotificationArea:
         return True
 
     def on_preferences_ok(self, widget = None, data = None):
-        self.preferences["start_minimized"] = self.chbox_miminized.get_active()
-        self.preferences_apply()
+        self.preferences["start_minimized"] = self.chbox_minimized.get_active()
+        self.preferences_apply(False)
         self.preferences_store()
         self.preferences_dialog.hide()
 
@@ -261,19 +262,38 @@ class NotificationArea:
                                                   "preferences", \
                                                   self.preferences)
 
-    def preferences_apply(self):
+    def preferences_apply(self, first_start):
         if self.plugin_api.is_browser():
-            if self.preferences["start_minimized"]:
-                self.plugin_api.get_browser().start_minimized = True
-            else:
-                self.plugin_api.get_browser().start_minimized = False
+            if not first_start:
+                #We should really just save it, no changes are necessary
+                return
+            self.minimized = self.preferences["start_minimized"]
+            self._disconnect_check_signal()
+            self.view_main_window.set_active(not self.minimized)
+            self._connect_check_signal()
+            if self.minimized:
+                #set the method in TaskBrowser to realize the main 
+                # window instead of showing it
+                def _method_start_minimized(this, self):
+                    this.plugin_api.get_browser().window.realize()
+                    return False
+                browser = self.plugin_api.get_browser()
+                if browser:
+                    browser._start_gtg_maximized = partial( \
+                            _method_start_minimized, self, browser)
+                    #this lines are needed to store the height and width (and x
+                    # and y coordinates) of the
+                    # main window (if gtg window is never show, it would give
+                    # a KeyError on quitting while looking for those values)
+                    browser.on_size_allocate()
+                    browser.on_move()
 
     def preference_dialog_init(self): 
         self.builder = gtk.Builder()
         self.builder.add_from_file(os.path.dirname(os.path.abspath(__file__)) +\
                                    "/notification_area.ui")
         self.preferences_dialog = self.builder.get_object("preferences_dialog")
-        self.chbox_miminized    = self.builder.get_object("pref_chbox_minimized")
+        self.chbox_minimized = self.builder.get_object("pref_chbox_minimized")
         SIGNAL_CONNECTIONS_DIC = {
             "on_preferences_dialog_delete_event":
                 self.on_preferences_cancel,

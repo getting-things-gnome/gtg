@@ -692,9 +692,8 @@ class TaskBrowser:
             if view == "workview":
                 self.do_toggle_workview()
                 
-        if not (hasattr(self, "start_minimized") and \
-                        self.start_minimized == True) and \
-                        "opened_tasks" in self.config["browser"]:
+        if self._start_gtg_maximized() and \
+           "opened_tasks" in self.config["browser"]:
             odic = self.config["browser"]["opened_tasks"]
             #odic can contain also "None" or "None,", so we skip them
             if odic == "None" or (len(odic)> 0 and odic[0] == "None"):
@@ -730,6 +729,12 @@ class TaskBrowser:
             count = count + 1 + self._count_subtask(model, c)
             c = model.iter_next(c)
         return count
+
+    
+    def _start_gtg_maximized(self):
+        #This is needed as a hook point to let the Notification are plugin
+        #start gtg minimized
+        return True
 
     def do_toggle_workview(self):
         #We have to be careful here to avoid a loop of signals
@@ -1070,12 +1075,12 @@ class TaskBrowser:
         if cb in self.priv['filter_cbs']:
             self.priv['filter_cbs'].remove(cb)
         
-    def on_move(self, widget, data):
+    def on_move(self, widget = None, data = None):
         xpos, ypos = self.window.get_position()
         self.priv["window_xpos"] = xpos
         self.priv["window_ypos"] = ypos
 
-    def on_size_allocate(self, widget, data):
+    def on_size_allocate(self, widget = None, data = None):
         width, height = self.window.get_size()
         self.priv["window_width"]  = width
         self.priv["window_height"] = height
@@ -1974,10 +1979,7 @@ class TaskBrowser:
 
         # Restore state from config
         self.restore_state_from_conf()
-        # Start minimized if the notification area plugin says so
-        if hasattr(self, "start_minimized") and self.start_minimized == True:
-            self.window.realize()
-        else:
+        if self._start_gtg_maximized():
             self.window.show()
         gtk.main()
         return 0
