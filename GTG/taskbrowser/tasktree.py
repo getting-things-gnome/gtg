@@ -134,17 +134,17 @@ class TaskTreeModel(gtk.GenericTreeModel):
             return title
 
     def on_get_iter(self, path):
-        print "on_get_iter %s" %str(path)
+        #print "on_get_iter %s" %str(path)
         toreturn = self.tree.get_rowref_for_path(path)
         #print "on_get_iter: " + str(path) + "path  = "+str(toreturn)
         return toreturn
 
     def on_get_path(self, rowref):
-        print "on_get_path: %s" % (rowref)
+        #print "on_get_path: %s" % (rowref)
         return self.tree.get_path_for_rowref(rowref)
 
     def on_iter_next(self, rowref):
-        print "on_iter_next %s" %rowref
+        #print "on_iter_next %s" %rowref
         node        = self.tree.get_node_for_rowref(rowref)
         if node:
             parent_id = node.get_parent()

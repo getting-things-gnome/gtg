@@ -100,6 +100,7 @@ class Backend:
             task = task_factory_func(tid)
             task = taskxml.task_from_xml(task,node)
             push_task_func(task)
+            print "pushed %s" %tid
 
     #Fill the task "task_to_fill" with the information of the task TID
 #    #Return True if successful, False otherwhise
@@ -113,6 +114,7 @@ class Backend:
 
     #Save the task in the backend
     def set_task(self, task):
+        print "set_task %s" %task.get_id()
         #time.sleep(4)
         tid = task.get_id()
         if tid not in self.tids:

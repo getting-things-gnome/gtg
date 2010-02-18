@@ -120,10 +120,11 @@ class DataStore:
         if not pid:
             pid = DEFAULT_BACKEND
         newtid = self.backends[pid].new_task_id()
-        while self.has_task(tid):
+        while self.has_task(newtid):
             print "error : tid already exists"
             newtid = self.backends[pid].new_task_id()
-        task = Task(tid, self.requester,newtask=True)
+        task = Task(newtid, self.requester,newtask=True)
+        task.set_sync_func(self.backends[pid].set_task,callsync=False)
         self.open_tasks.add_node(task)
         return task
 
@@ -176,6 +177,7 @@ class DataStore:
             print "pushing an existing task. We should care about modifications"
         else:
             self.open_tasks.add_node(task)
+            #task.set_loaded()
     
     def task_factory(self,tid):
         task = None
@@ -183,6 +185,9 @@ class DataStore:
             print "error : tid already exists"
         else:
             task = Task(tid, self.requester, newtask=False)
+            uid, pid = tid.split('@')
+            task.set_sync_func(self.backends[pid].set_task,callsync=False)
+            
         return task
             
 
@@ -228,13 +233,14 @@ class TaskSource():
         self.backend.start_get_tasks(push_task,task_factory)
     
     def set_task(self, task):
+        print "set task for task %s" %task.get_id()
         return self.backend.set_task(task)
     
     def remove_task(self, tid):
         return self.backend.remove_task(tid)
     
     def new_task_id(self):
-        return self.backendk.new_task_id()
+        return self.backend.new_task_id()
     
     def quit(self):
         self.backend.quit()
