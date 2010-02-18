@@ -58,8 +58,8 @@ class Task(TreeNode):
         self.req = requester
         #If we don't have a newtask, we will have to load it.
         self.loaded = newtask
-        if self.loaded:
-            self.req._task_loaded(self.tid)
+#        if self.loaded:
+#            self.req._task_loaded(self.tid)
         self.attributes={}
         self._modified_update()
 

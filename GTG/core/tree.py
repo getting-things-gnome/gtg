@@ -245,7 +245,7 @@ class Tree():
         return None
 
     def _print_from_node(self, node, prefix=""):
-        print prefix + node.id
+#        print prefix + node.id
         prefix = prefix + " "
         if node.has_child():
             for c in node.get_children():

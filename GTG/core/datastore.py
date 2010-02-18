@@ -180,6 +180,7 @@ class DataStore:
             task.set_sync_func(self.backends[pid].set_task,callsync=False)
             self.open_tasks.add_node(task)
             task.set_loaded()
+            task.call_modified()
     
     def task_factory(self,tid):
         task = None
