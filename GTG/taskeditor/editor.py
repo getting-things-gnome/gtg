@@ -412,13 +412,23 @@ class TaskEditor :
             widget.modify_text(gtk.STATE_NORMAL, gtk.gdk.color_parse("#F00"))
             widget.modify_base(gtk.STATE_NORMAL, gtk.gdk.color_parse("#F88"))
 
-
+    def _mark_today_in_bold(self):
+        today = dates.date_today()
+        #selected is a tuple containing (year, month, day)
+        selected = self.cal_widget.get_date()
+        #the following "-1" is because in pygtk calendar the month is 0-based,
+        # in gtg (and datetime.date) is 1-based.
+        if selected[1] == today.month() - 1 and selected[0] == today.year():
+            self.cal_widget.mark_day(today.day())
+        else:
+            self.cal_widget.unmark_day(today.day())
         
         
     def on_date_pressed(self, widget,data): 
         """Called when the due button is clicked."""
         
         self.__opened_date = data
+        self._mark_today_in_bold()
         if self.__opened_date == "due" :
             toset = self.task.get_due_date()
             self.calendar_fuzzydate_btns.show()
@@ -486,6 +496,7 @@ class TaskEditor :
     def month_changed(self,widget) :
         #This is a ugly hack to close the calendar on the first click
         self.close_when_changed = False
+        self._mark_today_in_bold()
 
     def set_opened_date(self, date):
         if self.__opened_date == "due" :
