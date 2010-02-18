@@ -217,7 +217,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
 #        # get the node and signal it's changed
         my_node = self.tree.get_node(tid)
         if my_node.is_loaded():
-            print "dummy update_task %s tasktree" %tid
+#            print "dummy update_task %s tasktree" %tid
             node_path = self.tree.get_path_for_node(my_node)
             node_iter = self.get_iter(node_path)
             self.row_changed(node_path, node_iter)

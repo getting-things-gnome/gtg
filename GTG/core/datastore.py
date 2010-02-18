@@ -212,12 +212,6 @@ class DataStore:
             l.append(self.backends[key])
         return l
 
-#    def refresh_tasklist(self, task_list):
-#        for tid in task_list:
-#            #Just calling new_task then get_task is enough
-##            self.new_task(tid=tid)
-#            self.get_task(tid)
-
 #Task source is an transparent interface between the real backend and datastore
 #Task source has also more functionnalities
 
