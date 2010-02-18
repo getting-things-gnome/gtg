@@ -84,7 +84,7 @@ class Requester(gobject.GObject):
         @param newtask: C{True} if this is creating a new task that never
             existed, C{False} if importing an existing task from a backend.
         """
-        task = self.ds.new_task(pid=pid, newtask=newtask)
+        task = self.ds.new_task(pid=pid)
         if tags:
             for t in tags:
                 task.tag_added(t.get_name())
