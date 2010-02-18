@@ -107,8 +107,7 @@ class DBusTaskWrapper(dbus.service.Object):
         # Generate a new task object and return the task data as a dict
         nt = self.req.new_task(tags=tags)
         for sub in subtasks:
-            subt = self.req.get_task(sub)
-            nt.add_child(subt)
+            nt.add_child(sub)
         nt.set_status(status, donedate=dates.strtodate(donedate))
         nt.set_title(title)
         nt.set_due_date(dates.strtodate(duedate))
@@ -129,8 +128,7 @@ class DBusTaskWrapper(dbus.service.Object):
         for tag in task_data["tags"]:
             task.add_tag(tag)
         for sub in task_data["subtask"]:
-            subt = self.req.get_task(sub)
-            task.add_child(subt)
+            task.add_child(sub)
         return task_to_dict(task)
 
     @dbus.service.method(BUSNAME)

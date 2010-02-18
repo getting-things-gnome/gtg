@@ -62,8 +62,6 @@ class DataStore:
         return self.open_tasks.has_node(tid) or self.closed_tasks.has_node(tid)
 
     def get_task(self, tid):
-#        if tid == "46@1":
-#            print "getting 46@1"
         if self.has_task(tid):
             empty_task = self.__internal_get_task(tid)
         else:

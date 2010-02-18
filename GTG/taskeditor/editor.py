@@ -498,13 +498,12 @@ class TaskEditor :
     #Take the title as argument and return the subtask ID
     def new_subtask(self,title=None,tid=None) :
         if tid:
-            subt = self.req.get_task(tid)
-            self.task.add_child(subt)
+            self.task.add_child(tid)
         elif title:
             subt = self.task.new_subtask()
             subt.set_title(title)
             tid = subt.get_id()
-            return tid
+        return tid
 
     # Create a new task
     def new_task(self, *args):

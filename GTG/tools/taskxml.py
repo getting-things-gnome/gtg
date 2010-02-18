@@ -38,7 +38,7 @@ def task_from_xml(task,xmlnode) :
     sub_list = xmlnode.getElementsByTagName("subtask")
     for s in sub_list :
         sub_tid = s.childNodes[0].nodeValue
-        cur_task.add_subtask(sub_tid)
+        cur_task.add_child(sub_tid)
     attr_list = xmlnode.getElementsByTagName("attribute")
     for a in attr_list:
         if len(a.childNodes):
@@ -60,8 +60,6 @@ def task_from_xml(task,xmlnode) :
     cur_tags = xmlnode.getAttribute("tags").replace(' ','').split(",")
     if "" in cur_tags: cur_tags.remove("")
     for tag in cur_tags: cur_task.tag_added(saxutils.unescape(tag))
-    #Why should we sync here ? It makes no sense
-    #cur_task.sync()
     
     return cur_task
 

@@ -1416,7 +1416,7 @@ class TaskBrowser:
             tags   = zetask.get_tags()
             task   = self.req.new_task(tags=tags, newtask=True)
             task.add_parent(uid)
-            zetask.add_child(task)
+            zetask.add_child(task.get_id())
             self.open_task(task.get_id(),thisisnew=True)
             #self.do_refresh()
 

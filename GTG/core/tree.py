@@ -22,6 +22,7 @@ class Tree():
     def __init__(self, root=None):
         self.root_id = 'root'
         self.nodes = {}
+        self.pending_relationships = []
         if root:
             self.root = root
         else:
@@ -58,16 +59,20 @@ class Tree():
         #print "*************adding node %s %s" %(node, parent)
         id = node.get_id()
         if self.nodes.get(id):
-            print "Error : A node with this idea already exists"
+            print "Error : A node with this id already exists"
         else:
             #We add the node
             node.set_tree(self)
-            if parent:
+            if parent:#    
                 node.set_parent(parent)
-                parent.add_child(node)
+                parent.add_child(id)
             else:
-                self.root.add_child(node)
+                self.root.add_child(id)
             self.nodes[id] = node
+            #build the relationships that were waiting for that node
+            for rel in list(self.pending_relationships):
+                if id in rel:
+                    self.new_relationship(rel[0],rel[1])
 
     #this will remove a node and all his children
     #does nothing if the node doesn't exist
@@ -91,12 +96,14 @@ class Tree():
     #return False if nothing was done
     def new_relationship(self,parent_id,child_id):
         #print "new relationship between %s and %s" %(parent_id,child_id)
+        if [parent_id,child_id] in self.pending_relationships:
+            self.pending_relationships.remove([parent_id,child_id])
         toreturn = False
         p = self.get_node(parent_id)
         c = self.get_node(child_id)
         if p and c:
             if not p.has_child(child_id):
-                p.add_child(c)
+                p.add_child(child_id)
                 toreturn = True
             if not c.has_parent(parent_id):
                 c.add_parent(p)
@@ -105,6 +112,13 @@ class Tree():
                 if self.root.has_child(child_id):
 #                    c.remove_parent(self.root.get_id())
                     self.root.remove_child(child_id)
+        else:
+            #at least one of the node is not loaded. Save the relation for later
+            #undo everything
+            self.break_relationship(parent_id,child_id)
+            #save it for later
+            if [parent_id,child_id] not in self.pending_relationships:
+                self.pending_relationships.append([parent_id,child_id])
         return toreturn
     
     #break an existing relationship. The child is added to the root
@@ -122,7 +136,7 @@ class Tree():
                 toreturn = True
                 #if no more parent left, adding to the root
                 if not c.has_parent():
-                    self.root.add_child(c)
+                    self.root.add_child(child_id)
         return toreturn
             
     #Trying to make a function that bypass the weirdiness of lists
@@ -333,8 +347,9 @@ class TreeNode():
         return self.children.index(id)
 
     #return True if the child was added correctly. False otherwise
-    def add_child(self, child):
-        id = child.get_id()
+    #takes the id of the child as parameter.
+    #if the child is not already in the tree, the relation is anyway "saved"
+    def add_child(self, id):
         #The if prevent an infinite loop
         #this "if" should be mooved in Tree.new_relationship
         if id not in self.children and id not in self.parents and\
@@ -344,11 +359,6 @@ class TreeNode():
             return True
         else:
             return False
-            
-    def add_child_tid(self,tid):
-        child = self.tree.get_node(tid)
-        self.add_child(child)
-        
 
     def remove_child(self, id):
         if id in self.children:
@@ -365,7 +375,7 @@ class TreeNode():
         for p in self.parents:
             par = self.tree.get(p)
             par.remove_child(oldid)
-            par.add_child(self)
+            par.add_child(self.id)
         for c in self.get_children():
             c.add_parent(newid)
             c.remove_parent(oldid)

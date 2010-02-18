@@ -309,23 +309,24 @@ class Task(TreeNode):
         uid, pid = self.get_id().split('@') #pylint: disable-msg=W0612
         subt     = self.req.new_task(pid=pid, newtask=True)
         #we use the inherited childrens
-        self.add_child(subt)
+        self.add_child(subt.get_id())
         return subt
     
-    #FIXME : remove this method
-    def add_subtask(self,tid):
-        print "Deprecation Warning : use add_child instead of add_subtask"
-        self.add_child(self.req.get_task(tid))
+#    #FIXME : remove this method
+#    def add_subtask(self,tid):
+#        print "Deprecation Warning : use add_child instead of add_subtask"
+#        self.add_child(tid)
 
-    def add_child(self, child):
+    def add_child(self, tid):
         """Add a subtask to this task
 
         @param child: the added task
         """
         self.can_be_deleted = False
         #the core of the method is in the TreeNode object
-        if TreeNode.add_child(self,child):
+        if TreeNode.add_child(self,tid):
             #now we set inherited attributes only if it's a new task
+            child = self.req.get_task(tid)
             if child.can_be_deleted:
                 child.set_start_date(self.get_start_date())
                 for t in self.get_tags():
