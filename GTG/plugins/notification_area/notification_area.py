@@ -148,15 +148,15 @@ class NotificationArea:
     def add_menu_task(self, tid):
         """Adds a task in the menu, trimming the title if necessary"""
         task = self.plugin_api.get_task(tid)
+        title = task.get_title()[0 : self.MAX_TITLE_LEN]
+        if len(task.get_title()) > self.MAX_TITLE_LEN:
+            title = title.strip() + "..."
         if self.tasks_in_menu.has_key(tid):
             #task is already in the menu, updating the title
             menu_item = self.tasks_in_menu[tid]
-            menu_item.get_children()[0].set_label(task.get_title())
+            menu_item.get_children()[0].set_label(title)
             return
         #trimming of the title
-        title = task.get_title()[0:self.MAX_TITLE_LEN]
-        if len(title)== self.MAX_TITLE_LEN:
-            title = title + "..."
         #putting a separator between the tasks and the static menu
         if self.task_separator == None:
             self.task_separator = gtk.SeparatorMenuItem()
