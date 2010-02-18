@@ -23,6 +23,7 @@
 
 import os
 import uuid
+import time
 
 from GTG.core  import CoreConfig
 from GTG.tools import cleanxml, taskxml
@@ -94,6 +95,7 @@ class Backend:
         #time.sleep(2)
         tid_list = []
         for node in self.xmlproj.childNodes:
+            time.sleep(2)
             tid = node.getAttribute("id")
             if tid not in self.tids:
                 self.tids.append(tid)

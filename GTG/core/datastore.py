@@ -200,7 +200,7 @@ class DataStore:
             #Filling the backend
             #Doing this at start is more efficient than
             #after the GUI is launched
-            backend.start_get_tasks(self.push_task,self.task_factory)
+            source.start_get_tasks(self.push_task,self.task_factory)
         else:
             print "Register a dic without backend key:  BUG"
 
@@ -226,7 +226,12 @@ class TaskSource():
         
     ### TaskSource/bakcend mapping
     def start_get_tasks(self,push_task,task_factory):
-        self.backend.start_get_tasks(push_task,task_factory)
+        func = self.backend.start_get_tasks
+        push = gobject.idle_add(push_task)
+        t = threading.Thread(target=func,args=(push_task,task_factory))
+        print "avant de lancer le thread"
+        t.start()
+        print "thread lancé"
     
     def set_task(self, task):
         if task not in self.to_set:
