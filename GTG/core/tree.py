@@ -99,26 +99,35 @@ class Tree():
         if [parent_id,child_id] in self.pending_relationships:
             self.pending_relationships.remove([parent_id,child_id])
         toreturn = False
-        p = self.get_node(parent_id)
-        c = self.get_node(child_id)
-        if p and c:
-            if not p.has_child(child_id):
-                p.add_child(child_id)
+        #no relationship allowed with yourself
+        if parent_id != child_id:
+            p = self.get_node(parent_id)
+            c = self.get_node(child_id)
+            if p and c :
+                #no circular relationship allowed
+                if not p.has_parent(child_id) and not c.has_child(parent_id):
+                    if not p.has_child(child_id):
+                        p.add_child(child_id)
+                        toreturn = True
+                    if not c.has_parent(parent_id):
+                        c.add_parent(p)
+                        toreturn = True
+                        #removing the root from the list of parent
+                        if self.root.has_child(child_id):
+                            self.root.remove_child(child_id)
+                else:
+                    #a circular relationship was found
+                    #undo everything
+                    self.break_relationship(parent_id,child_id)
+                    toreturn = False
+            else:
+                #at least one of the node is not loaded. Save the relation for later
+                #undo everything
+                self.break_relationship(parent_id,child_id)
+                #save it for later
+                if [parent_id,child_id] not in self.pending_relationships:
+                    self.pending_relationships.append([parent_id,child_id])
                 toreturn = True
-            if not c.has_parent(parent_id):
-                c.add_parent(p)
-                toreturn = True
-                #removing the root from the list of parent
-                if self.root.has_child(child_id):
-#                    c.remove_parent(self.root.get_id())
-                    self.root.remove_child(child_id)
-        else:
-            #at least one of the node is not loaded. Save the relation for later
-            #undo everything
-            self.break_relationship(parent_id,child_id)
-            #save it for later
-            if [parent_id,child_id] not in self.pending_relationships:
-                self.pending_relationships.append([parent_id,child_id])
         return toreturn
     
     #break an existing relationship. The child is added to the root
@@ -350,15 +359,8 @@ class TreeNode():
     #takes the id of the child as parameter.
     #if the child is not already in the tree, the relation is anyway "saved"
     def add_child(self, id):
-        #The if prevent an infinite loop
-        #this "if" should be mooved in Tree.new_relationship
-        if id not in self.children and id not in self.parents and\
-                                                id != self.get_id():
-            self.children.append(id)
-            self.tree.new_relationship(self.get_id(),id)
-            return True
-        else:
-            return False
+        self.children.append(id)
+        return self.tree.new_relationship(self.get_id(),id)
 
     def remove_child(self, id):
         if id in self.children:
