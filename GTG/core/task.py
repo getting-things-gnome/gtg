@@ -73,7 +73,7 @@ class Task(TreeNode):
             if signal:
                 self.req._task_loaded(self.tid)
                 #not sure the following is necessary
-                #self.req._task_modified(self.tid)
+                self.req._task_modified(self.tid)
 
     def set_to_keep(self):
         self.can_be_deleted = False

@@ -176,8 +176,10 @@ class DataStore:
         if self.has_task(tid):
             print "pushing an existing task. We should care about modifications"
         else:
+            uid, pid = tid.split('@')
+            task.set_sync_func(self.backends[pid].set_task,callsync=False)
             self.open_tasks.add_node(task)
-            #task.set_loaded()
+            task.set_loaded()
     
     def task_factory(self,tid):
         task = None
@@ -185,9 +187,6 @@ class DataStore:
             print "error : tid already exists"
         else:
             task = Task(tid, self.requester, newtask=False)
-            uid, pid = tid.split('@')
-            task.set_sync_func(self.backends[pid].set_task,callsync=False)
-            
         return task
             
 
@@ -227,14 +226,27 @@ class TaskSource():
     def __init__(self, backend, parameters):
         self.backend = backend
         self.dic = parameters
+        self.to_set = []
+        self.lock = threading.Lock()
         
     ### TaskSource/bakcend mapping
     def start_get_tasks(self,push_task,task_factory):
         self.backend.start_get_tasks(push_task,task_factory)
     
     def set_task(self, task):
-        print "set task for task %s" %task.get_id()
-        return self.backend.set_task(task)
+        if task not in self.to_set:
+            self.to_set.append(task)
+        if self.lock.acquire(False):
+            try:
+                print "set task for task %s" %task.get_id()
+                self.backend.set_task(task)
+            finally:
+                self.to_set.remove(task)
+                self.lock.release()
+                if len(self.to_set) > 0:
+                    self.set_task(self.to_set[0])
+        else:
+            print "cannot acquire lock"
     
     def remove_task(self, tid):
         return self.backend.remove_task(tid)
