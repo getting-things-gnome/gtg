@@ -1533,15 +1533,15 @@ class TaskBrowser:
             cdlabel3 = self.builder.get_object("cd-label3")
             cdlabel4 = self.builder.get_object("cd-label4")
             if len(self.tids_todelete) == 1:
-                label_text = "Deleting a task cannot be undone, and will delete the following task: "
-                cdlabel2.set_label("Are you sure you want to delete this task?")
-                cdlabel3.set_label("Keep selected task")
-                cdlabel4.set_label("Permanently remove task")
+                label_text = _("Deleting a task cannot be undone, and will delete the following task: ")
+                cdlabel2.set_label(_("Are you sure you want to delete this task?"))
+                cdlabel3.set_label(_("Keep selected task"))
+                cdlabel4.set_label(_("Permanently remove task"))
             else:
-                label_text = "Deleting a task cannot be undone, and will delete the following tasks: "
-                cdlabel2.set_label("Are you sure you want to delete these tasks?")
-                cdlabel3.set_label("Keep selected tasks")
-                cdlabel4.set_label("Permanently remove tasks")
+                label_text = _("Deleting a task cannot be undone, and will delete the following tasks: ")
+                cdlabel2.set_label(_("Are you sure you want to delete these tasks?"))
+                cdlabel3.set_label(_("Keep selected tasks"))
+                cdlabel4.set_label(_("Permanently remove tasks"))
             label_text = label_text[0:label_text.find(":") + 1]
             
             # I find the tasks that are going to be deleted
