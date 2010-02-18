@@ -72,7 +72,8 @@ class Task(TreeNode):
             self.loaded = True
             if signal:
                 self.req._task_loaded(self.tid)
-                self.call_modified()
+                #not sure the following is necessary
+                #self.req._task_modified(self.tid)
 
     def set_to_keep(self):
         self.can_be_deleted = False
@@ -312,10 +313,10 @@ class Task(TreeNode):
         self.add_child(subt.get_id())
         return subt
     
-#    #FIXME : remove this method
-#    def add_subtask(self,tid):
-#        print "Deprecation Warning : use add_child instead of add_subtask"
-#        self.add_child(tid)
+    #FIXME : remove this method
+    def add_subtask(self,tid):
+        print "Deprecation Warning : use add_child instead of add_subtask"
+        self.add_child(tid)
 
     def add_child(self, tid):
         """Add a subtask to this task
@@ -355,15 +356,15 @@ class Task(TreeNode):
         else:
             return False
             
-    #FIXME : remove this method
-    def has_subtasks(self):
-        print "Deprecation Warning : use has_child instead of has_subtask"
-        return self.has_child()
+#    #FIXME : remove this method
+#    def has_subtasks(self):
+#        print "Deprecation Warning : use has_child instead of has_subtask"
+#        return self.has_child()
 
-    #FIXME : remove this method
-    def get_n_subtasks(self):
-        print "Deprecation Warning : use get_n_children instead of get_n_subtasks"
-        return self.get_n_children()
+#    #FIXME : remove this method
+#    def get_n_subtasks(self):
+#        print "Deprecation Warning : use get_n_children instead of get_n_subtasks"
+#        return self.get_n_children()
 
     #FIXME : remove this method
     def get_subtasks(self):
@@ -393,15 +394,15 @@ class Task(TreeNode):
 #        print "Deprecation Warning : use get_children instead of get_subtask_tids"
 #        return self.get_children()
 
-    #FIXME : remove this method
-    def get_nth_subtask(self, index):
-        print "Deprecation Warning : use get_nth_child instead of get_nth_subtask"
-        return self.get_nth_child(index).get_id()
+#    #FIXME : remove this method
+#    def get_nth_subtask(self, index):
+#        print "Deprecation Warning : use get_nth_child instead of get_nth_subtask"
+#        return self.get_nth_child(index).get_id()
 
-    #FIXME : remove this method
-    def get_subtask_index(self, tid):
-        print "Deprecation Warning : use get_child_index instead of get_subtask_index"
-        return self.get_child_index(tid)
+#    #FIXME : remove this method
+#    def get_subtask_index(self, tid):
+#        print "Deprecation Warning : use get_child_index instead of get_subtask_index"
+#        return self.get_child_index(tid)
 
     #add and remove parents are private
     #Only the task itself can play with it's parent

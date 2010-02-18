@@ -134,6 +134,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
             return title
 
     def on_get_iter(self, path):
+        print "on_get_iter %s" %str(path)
         toreturn = self.tree.get_rowref_for_path(path)
         #print "on_get_iter: " + str(path) + "path  = "+str(toreturn)
         return toreturn
@@ -143,6 +144,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
         return self.tree.get_path_for_rowref(rowref)
 
     def on_iter_next(self, rowref):
+        print "on_iter_next %s" %rowref
         node        = self.tree.get_node_for_rowref(rowref)
         if node:
             parent_id = node.get_parent()
@@ -212,12 +214,13 @@ class TaskTreeModel(gtk.GenericTreeModel):
             return None
 
     def update_task(self, tid):
-#        print "dummy update_task tasktree"
 #        # get the node and signal it's changed
         my_node = self.tree.get_node(tid)
-        node_path = self.tree.get_path_for_node(my_node)
-        node_iter = self.get_iter(node_path)
-        self.row_changed(node_path, node_iter)
+        if my_node.is_loaded():
+            print "dummy update_task %s tasktree" %tid
+            node_path = self.tree.get_path_for_node(my_node)
+            node_iter = self.get_iter(node_path)
+            self.row_changed(node_path, node_iter)
         
 #        print "################"
 #        print self.tree.print_tree()
@@ -225,7 +228,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
 #        print "root children = %s" %self.tree.get_root().get_children()
         
     def add_task(self, tid):
-#        print "add task %s" %tid
+        print "add task %s" %tid
 #        nodes = []
 #        # get the task
         task = self.req.get_task(tid)
@@ -339,8 +342,9 @@ class TaskTreeView(gtk.TreeView):
         return self.columns.index(col_id)
 
     def refresh(self, collapsed_rows=None):
-        self.expand_all()
-        self.get_model().foreach(self._refresh_func, collapsed_rows)
+        print "dummy refresh"
+#        self.expand_all()
+#        self.get_model().foreach(self._refresh_func, collapsed_rows)
 
     def _refresh_func(self, model, path, iter, collapsed_rows=None):
         if collapsed_rows:

@@ -59,7 +59,8 @@ class Tree():
         #print "*************adding node %s %s" %(node, parent)
         id = node.get_id()
         if self.nodes.get(id):
-            print "Error : A node with this id already exists"
+            print "Error : A node with this id %s already exists" %id
+            return False
         else:
             #We add the node
             node.set_tree(self)
@@ -73,6 +74,7 @@ class Tree():
             for rel in list(self.pending_relationships):
                 if id in rel:
                     self.new_relationship(rel[0],rel[1])
+            return True
 
     #this will remove a node and all his children
     #does nothing if the node doesn't exist
@@ -268,6 +270,7 @@ class TreeNode():
         self.id       = id
         self.children      = []
         self.tree = tree
+        self.pending_relationship = []
         if parent:
             self.add_parent(parent)
 
@@ -276,11 +279,22 @@ class TreeNode():
         
     def set_tree(self,tree):
         self.tree = tree
+        for rel in list(self.pending_relationship):
+            self.tree.new_relationship(rel[0],rel[1])
+            self.pending_relationship.remove(rel)
+            
     def get_tree(self):
         return self.tree
 
     def get_id(self):
         return self.id
+        
+    
+    def new_relationship(self,par,chi):
+        if self.tree:
+            self.tree.new_relationship(par,chi)
+        else:
+            self.pending_relationship.append([par,chi])
         
         
 ##### Parents
@@ -311,7 +325,7 @@ class TreeNode():
 #        self.tree.break_relationship(root.get_id(),self.get_id())
         id = par.get_id()
         self.parents.append(id)
-        self.tree.new_relationship(id,self.get_id())
+        self.new_relationship(id,self.get_id())
     
     #set_parent means that we remove all other parents
     def set_parent(self,par):
@@ -360,12 +374,12 @@ class TreeNode():
     #if the child is not already in the tree, the relation is anyway "saved"
     def add_child(self, id):
         self.children.append(id)
-        return self.tree.new_relationship(self.get_id(),id)
+        return self.new_relationship(self.get_id(),id)
 
     def remove_child(self, id):
         if id in self.children:
             self.children.remove(id)
-            self.tree.new_relationship(self.get_id(),id)
+            self.new_relationship(self.get_id(),id)
             return True
         else:
             return False
