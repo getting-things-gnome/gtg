@@ -69,7 +69,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
         if task.has_child():
             for tid in task.get_children():
                 task = self.req.get_task(tid)
-                if task.get_status() == Task.STA_ACTIVE:
+                if task and task.get_status() == Task.STA_ACTIVE:
                     count = count + 1 + self._count_active_subtasks_rec(task)
         return count
 
@@ -92,6 +92,8 @@ class TaskTreeModel(gtk.GenericTreeModel):
             #FIXME. The Task is a TreeNode object but
             #TreeNode is not recognized as a Task!
             task = self.req.get_task(node.get_id())
+            if not task:
+                return None
         if   column == COL_TID:
             return task.get_id()
         elif column == COL_OBJ:
@@ -216,7 +218,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
     def update_task(self, tid):
 #        # get the node and signal it's changed
         my_node = self.tree.get_node(tid)
-        if my_node.is_loaded():
+        if my_node and my_node.is_loaded():
 #            print "dummy update_task %s tasktree" %tid
             node_path = self.tree.get_path_for_node(my_node)
             node_iter = self.get_iter(node_path)
@@ -232,13 +234,15 @@ class TaskTreeModel(gtk.GenericTreeModel):
 #        nodes = []
 #        # get the task
         task = self.req.get_task(tid)
+        if task:
+            node_path = self.tree.get_path_for_node(task)
+            node_iter = self.get_iter(node_path)
+            self.row_inserted(node_path, node_iter)
 #        # insert the task in the tree (root)
 #        #TreeNode
-        my_node = task
+#        my_node = task
 #        self.tree.add_node(task)
-        node_path = self.tree.get_path_for_node(my_node)
-        node_iter = self.get_iter(node_path)
-        self.row_inserted(node_path, node_iter)
+
 #        nodes.append(my_node)
 #        # has the task parents?
 #        if task.has_parents():

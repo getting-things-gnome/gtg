@@ -227,18 +227,14 @@ class TaskSource():
     ### TaskSource/bakcend mapping
     def start_get_tasks(self,push_task,task_factory):
         func = self.backend.start_get_tasks
-        push = gobject.idle_add(push_task)
         t = threading.Thread(target=func,args=(push_task,task_factory))
-        print "avant de lancer le thread"
         t.start()
-        print "thread lancé"
     
     def set_task(self, task):
         if task not in self.to_set:
             self.to_set.append(task)
         if self.lock.acquire(False):
             try:
-                print "set task for task %s" %task.get_id()
                 self.backend.set_task(task)
             finally:
                 self.to_set.remove(task)

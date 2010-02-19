@@ -220,6 +220,8 @@ class Tree():
             return self._node_for_rowref(cur_node, rowref)
 
     def _rowref_for_node(self, node):
+        if not node:
+            return None
         if not node.has_parent():
             return "/%s"%str(node.get_id())
         else:

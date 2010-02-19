@@ -52,10 +52,11 @@ class TagTreeModel(gtk.GenericTreeModel):
 ### MODEL METHODS ############################################################
     def update_tags_for_task(self, tid):
         task = self.req.get_task(tid)
-        for t in task.get_tags():
-            path = self.tree.get_path_for_node(t)
-            iter = self.get_iter(path)
-            self.row_changed(path, iter)
+        if task:
+            for t in task.get_tags():
+                path = self.tree.get_path_for_node(t)
+                iter = self.get_iter(path)
+                self.row_changed(path, iter)
 
     def set_workview(self, val):
         self.workview = val

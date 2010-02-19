@@ -92,17 +92,15 @@ class Backend:
     #
     # starst_get_tasks() might not return or finish
     def start_get_tasks(self,push_task_func,task_factory_func):
-        #time.sleep(2)
         tid_list = []
         for node in self.xmlproj.childNodes:
-            time.sleep(2)
+            #time.sleep(2)
             tid = node.getAttribute("id")
             if tid not in self.tids:
                 self.tids.append(tid)
             task = task_factory_func(tid)
             task = taskxml.task_from_xml(task,node)
             push_task_func(task)
-            print "pushed %s" %tid
 
     #Fill the task "task_to_fill" with the information of the task TID
 #    #Return True if successful, False otherwhise
@@ -116,7 +114,6 @@ class Backend:
 
     #Save the task in the backend
     def set_task(self, task):
-        print "set_task %s" %task.get_id()
         #time.sleep(4)
         tid = task.get_id()
         if tid not in self.tids:

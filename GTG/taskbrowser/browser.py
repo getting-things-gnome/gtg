@@ -1741,15 +1741,16 @@ class TaskBrowser:
         #It might be faster to refresh every opened editor
         tlist = [tid]
         task = self.req.get_task(tid)
-        tlist += task.get_parents()
-        tlist += task.get_children()
-        for uid in tlist:
-            self.refresh_task(uid)
-        #if the modified task is active, we have to refresh everything
-        #to avoid some odd stuffs when loading
-        if task.get_status() == "Active" :
-            if self.refresh_lock.acquire(False):
-                gobject.idle_add(self.general_refresh)
+        if task:
+            tlist += task.get_parents()
+            tlist += task.get_children()
+            for uid in tlist:
+                self.refresh_task(uid)
+            #if the modified task is active, we have to refresh everything
+            #to avoid some odd stuffs when loading
+            if task.get_status() == "Active" :
+                if self.refresh_lock.acquire(False):
+                    gobject.idle_add(self.general_refresh)
 
     #using dummy parameters that are given by the signal
     def update_buttons_sensitivity(self,a=None,b=None,c=None):
