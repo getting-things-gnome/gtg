@@ -804,6 +804,7 @@ class TaskBrowser:
         # menu item. If we are, we'll treat the tag that was selected
         # previous to the right click as the currently selected tag,
         # even if the cursor is somewhere else.
+        toreturn = True
         if self.tag_active:
             tag_list, notag_only = self.previous_tag
         else:
@@ -813,29 +814,31 @@ class TaskBrowser:
             tag_list = tag_list[0].get_children()
 
         if not task.has_tags(tag_list=tag_list, notag_only=notag_only):
-            return False
+            toreturn =  False
         
         #if workview is enabled
-        if self.priv['workview']:
+        elif self.priv['workview']:
             res = True
             
             # filter tasks view callbacks
             for cb in self.priv['filter_cbs']:
                 res = cb(task.get_id())
                 if res == False:
-                    return False
+                    toreturn = False
             
             #we verify that the task is started
             if not task.is_started() :
-                return False
+                toreturn = False
                     
-            #we verify that there is no non-workview tag for this task
-            for t in task.get_tags():
-                if t.get_attribute("nonworkview") and t not in tag_list:
-                    res = res and (not eval(t.get_attribute("nonworkview")))
-            return res and task.is_workable()
-        else:
-            return True
+            if toreturn:
+                #we verify that there is no non-workview tag for this task
+                for t in task.get_tags():
+                    if t.get_attribute("nonworkview") and t not in tag_list:
+                        res = res and (not eval(t.get_attribute("nonworkview")))
+                toreturn = (res and task.is_workable())
+                
+        #print "is task %s visible ? %s" %(task.get_id(),toreturn)
+        return toreturn
 
     def is_lineage_visible(self, task):
         """Returns True if at least one set of tasks that compose a lineage of
@@ -862,10 +865,14 @@ class TaskBrowser:
         """
         task = model.get_value(iter, tasktree.COL_OBJ)
         if not task or task.get_status() != Task.STA_ACTIVE:
-            return False
-        if not model.iter_parent(iter):
-            return self.is_task_visible(task) and not self.is_lineage_visible(task)
-        return self.is_task_visible(task)
+            toreturn = False
+        elif not model.iter_parent(iter):
+            toreturn = (self.is_task_visible(task) and not self.is_lineage_visible(task))
+        else:
+            toreturn = self.is_task_visible(task)
+        if toreturn:
+            print "**** %s displayed" %task.get_id()
+        return toreturn
                
     def closed_task_visible_func(self, model, iter, user_data=None):
         """Return True if the row must be displayed in the treeview.

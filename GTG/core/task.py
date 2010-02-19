@@ -161,6 +161,7 @@ class Task(TreeNode):
         for c in self.get_subtasks():
             if c and c.get_status() == self.STA_ACTIVE:
                 workable = False
+#        print "task %s workable : %s" %(self.get_id(),workable)
         return workable
 
     #A task is in the workview if it is workable, started, active and
@@ -373,7 +374,8 @@ class Task(TreeNode):
         zelist = []
         for i in self.get_children():
             t = self.req.get_task(i)
-            zelist.append(t)
+            if t:
+                zelist.append(t)
         return zelist
         
     def get_self_and_all_subtasks(self, active_only=False, tasks=[]):
