@@ -88,7 +88,10 @@ class Manager():
             
     def get_tasktitle(self, tid):
         task = self.req.get_task(tid)
-        return task.get_title()
+        if task:
+            return task.get_title()
+        else:
+            return None
         
         
     def quit(self):

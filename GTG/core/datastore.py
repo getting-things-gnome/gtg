@@ -43,7 +43,7 @@ class DataStore:
         self.tagstore = tagstore.TagStore(self.requester)
 
     def all_tasks(self):
-        return self.open_tasks.get_all_nodes()
+        return self.open_tasks.get_all_keys()
 #        all_tasks = []
 #        #We also add tasks that are still not in a backend (because of threads)
 #        tlist = self.open_tasks.get_all_nodes()
@@ -63,9 +63,11 @@ class DataStore:
         return self.open_tasks.has_node(tid) or self.closed_tasks.has_node(tid)
 
     def get_task(self, tid):
+        uid, pid = tid.split('@')
         if self.has_task(tid):
             task = self.__internal_get_task(tid)
         else:
+            print "no task %s" %tid
             task = None
         return task
 #            if not task.is_loaded():

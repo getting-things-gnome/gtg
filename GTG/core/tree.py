@@ -338,7 +338,7 @@ class TreeNode():
             
     def remove_parent(self,id):
         if id in self.parents:
-            self.parents.pop(id)
+            self.parents.remove(id)
             self.tree.break_relationship(id,self.get_id())
             
 ###### Children
@@ -381,7 +381,7 @@ class TreeNode():
     def remove_child(self, id):
         if id in self.children:
             self.children.remove(id)
-            self.new_relationship(self.get_id(),id)
+            self.tree.break_relationship(self.get_id(),id)
             return True
         else:
             return False

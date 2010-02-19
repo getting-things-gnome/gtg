@@ -159,7 +159,7 @@ class Task(TreeNode):
     def is_workable(self):
         workable = True
         for c in self.get_subtasks():
-            if c.get_status() == self.STA_ACTIVE:
+            if c and c.get_status() == self.STA_ACTIVE:
                 workable = False
         return workable
 
@@ -368,18 +368,21 @@ class Task(TreeNode):
 
     #FIXME : remove this method
     def get_subtasks(self):
-        print "Deprecation Warning : use get_children instead of get_subtasks"
+#        print "Deprecation Warning : use get_children instead of get_subtasks"
         #XXX: is this useful?
         zelist = []
         for i in self.get_children():
-            zelist.append(self.req.get_task(i))
+            t = self.req.get_task(i)
+            zelist.append(t)
         return zelist
         
     def get_self_and_all_subtasks(self, active_only=False, tasks=[]):
         tasks.append(self)
-        for i in self.get_subtasks():
-            if not active_only or i.status == self.STA_ACTIVE:
-                i.get_self_and_all_subtasks(active_only, tasks)
+        for tid in self.get_children():
+            i = self.req.get_task(tid)
+            if i:
+                if not active_only or i.status == self.STA_ACTIVE:
+                    i.get_self_and_all_subtasks(active_only, tasks)
         return tasks
 
     def get_subtask(self, tid):

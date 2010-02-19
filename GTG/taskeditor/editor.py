@@ -591,7 +591,8 @@ class TaskEditor :
         else:
             self.save()
             for i in self.task.get_subtasks():
-                i.set_to_keep()
+                if i:
+                    i.set_to_keep()
         self.closing(tid)
         
 ############# Private functions #################

@@ -230,48 +230,45 @@ class TaskTreeModel(gtk.GenericTreeModel):
 #        print "root children = %s" %self.tree.get_root().get_children()
         
     def add_task(self, tid):
-        print "add task %s" %tid
-#        nodes = []
-#        # get the task
-        task = self.req.get_task(tid)
-        if task:
-            node_path = self.tree.get_path_for_node(task)
-            node_iter = self.get_iter(node_path)
-            self.row_inserted(node_path, node_iter)
-#        # insert the task in the tree (root)
-#        #TreeNode
-#        my_node = task
-#        self.tree.add_node(task)
+        print "dummy add_task %s" %tid
+##        nodes = []
+##        # get the task
+#        task = self.req.get_task(tid)
+#        if task:
+#            node_path = self.tree.get_path_for_node(task)
+#            node_iter = self.get_iter(node_path)
+#            self.row_inserted(node_path, node_iter)
+##        # insert the task in the tree (root)
+##        #TreeNode
+##        my_node = task
+##        self.tree.add_node(task)
 
-#        nodes.append(my_node)
-#        # has the task parents?
-#        if task.has_parents():
-#            # get every path from parents
-#            par_list = task.get_parents()
-#            # get every paths going to each parent
-#            for par_tid in par_list:
-#                if not self.tree.has_node(par_tid):
-#                    #print " - %s: %s is not loaded." % (tid, par_tid)
-#                    continue
-#                else:
-#                    par_node = self.tree.get_node(par_tid)
-#                    self.tree.add_node(task, parent=par_node)
-#                    node_path = self.tree.get_path_for_node(task)
-#                    node_iter = self.get_iter(node_path)
-#                    self.row_inserted(node_path, node_iter)
-#                    nodes.append(task)
-#        # has the task children?
-#        for node in nodes:
-#            self._add_all_subtasks(node, task)
-#            node_path = self.tree.get_path_for_node(node)
-#            if node_path:
-#                node_iter = self.get_iter(node_path)
-#                self.row_has_child_toggled(node_path, node_iter)
+##        nodes.append(my_node)
+##        # has the task parents?
+##        if task.has_parents():
+##            # get every path from parents
+##            par_list = task.get_parents()
+##            # get every paths going to each parent
+##            for par_tid in par_list:
+##                if not self.tree.has_node(par_tid):
+##                    #print " - %s: %s is not loaded." % (tid, par_tid)
+##                    continue
+##                else:
+##                    par_node = self.tree.get_node(par_tid)
+##                    self.tree.add_node(task, parent=par_node)
+##                    node_path = self.tree.get_path_for_node(task)
+##                    node_iter = self.get_iter(node_path)
+##                    self.row_inserted(node_path, node_iter)
+##                    nodes.append(task)
+##        # has the task children?
+##        for node in nodes:
+##            self._add_all_subtasks(node, task)
+##            node_path = self.tree.get_path_for_node(node)
+##            if node_path:
+##                node_iter = self.get_iter(node_path)
+##                self.row_has_child_toggled(node_path, node_iter)
 
     def remove_task(self, tid):
-#        print "dummy remove_task in tasktree"
-#        return True
-#        # get the nodes
         node = self.tree.get_node(tid)
         removed = False
 #        # Remove every row of this task
