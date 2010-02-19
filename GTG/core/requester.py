@@ -97,8 +97,9 @@ class Requester(gobject.GObject):
 
         @param tid: The id of the task to be deleted.
         """
+        #send the signal before actually deleting the task !
+        self.emit('task-deleted', tid)
         self.ds.delete_task(tid)
-        gobject.idle_add(self.emit, "task-deleted", tid)
         
     def get_tasks_tree(self):
         return self.ds.get_tasks_tree()

@@ -277,8 +277,9 @@ class TaskTreeModel(gtk.GenericTreeModel):
 #        # Remove every row of this task
         node_path = self.tree.get_path_for_node(node)
 #        self.tree.remove_node(tid)
-        self.row_deleted(node_path)
-        removed = True
+        if node_path:
+            self.row_deleted(node_path)
+            removed = True
         return removed
                     
     def move_task(self, parent, child):
@@ -334,7 +335,11 @@ class TaskTreeView(gtk.TreeView):
     def _celldatafunction(self, column, cell, model, iter):
         if self.bg_color_enable:
             bgcolor = column.get_tree_view().get_style().base[gtk.STATE_NORMAL]
-            col = colors.background_color(model.get_value(iter, COL_TAGS), bgcolor)
+            value = model.get_value(iter, COL_TAGS)
+            if value:
+                col = colors.background_color(value, bgcolor)
+            else:
+                col = None
         else:
             col = None
         cell.set_property("cell-background", col)

@@ -911,10 +911,14 @@ class TaskBrowser:
         order = self.task_tv.get_model().get_sort_column_id()[1]
         task1 = model.get_value(iter1, tasktree.COL_OBJ)
         task2 = model.get_value(iter2, tasktree.COL_OBJ)
-        t1_dleft = task1.get_due_date()
-        t2_dleft = task2.get_due_date()
+        if task1 and task2:
+            t1_dleft = task1.get_due_date()
+            t2_dleft = task2.get_due_date()
+            sort = cmp(t2_dleft, t1_dleft)
+        else:
+            sort = -1
         
-        sort = 0
+        #sort = 0
         
         def reverse_if_descending(s):
             """Make a cmp() result relative to the top instead of following 
@@ -924,7 +928,7 @@ class TaskBrowser:
             else:
                 return -1 * s
         
-        sort = cmp(t2_dleft, t1_dleft)
+        
         
         if sort == 0:
             # Put fuzzy dates below real dates
