@@ -870,8 +870,8 @@ class TaskBrowser:
             toreturn = (self.is_task_visible(task) and not self.is_lineage_visible(task))
         else:
             toreturn = self.is_task_visible(task)
-        if toreturn:
-            print "**** %s displayed" %task.get_id()
+        if not toreturn:
+            print "**** %s hidden" %task.get_id()
         return toreturn
                
     def closed_task_visible_func(self, model, iter, user_data=None):
