@@ -23,7 +23,6 @@
 
 import os
 import uuid
-import time
 
 from GTG.core  import CoreConfig
 from GTG.tools import cleanxml, taskxml
@@ -36,7 +35,7 @@ def get_name():
 def get_description():
     return "Your tasks are saved in an XML file located in your HOME folder"
 
-#Return a dictionnary of parameters. Keys should be strings and
+#Return a dictionary of parameters. Keys should be strings and
 #are the name of the parameter.
 #Value are string with value : string, password, int, bool
 #and are an information about the type of the parameter
@@ -49,13 +48,13 @@ def get_parameters():
 def get_features():
     return {}
 
-#Types is one of : readwrite, readonly,import,export
+#Types is one of : readwrite, readonly, import, export
 def get_type():
     return "readwrite"
 
-#The parameters dictionnary should match the dictionnary returned in
+#The parameters dictionary should match the dictionary returned in
 #get_parameters. Anyway, the backend should care if one expected value is
-#None or do not exist in the dictionnary.
+#None or do not exist in the dictionary.
 #firstrun is only needed for the default backend. You can ignore it.
 class Backend:
 
@@ -76,7 +75,7 @@ class Backend:
         else:
             self.zefile = zefile
             self.filename = zefile
-        #Create the defaut tasks for the first run.
+        #Create the default tasks for the first run.
         #We write the XML object in a file
         if firstrunxml and not os.path.exists(zefile):
             #shutil.copy(firstrunfile,self.zefile)
@@ -87,7 +86,7 @@ class Backend:
     #parameters : 
     #1) push_task_func, a function that takes a Task as parameter and push it
     #   into GTG.
-    #2) task_factory_func, a function that takes a tid as paremeter and returns
+    #2) task_factory_func, a function that takes a tid as parameter and returns
     #   a Task object with the given pid. 
     #
     # starst_get_tasks() might not return or finish
@@ -103,7 +102,7 @@ class Backend:
             push_task_func(task)
 
     #Fill the task "task_to_fill" with the information of the task TID
-#    #Return True if successful, False otherwhise
+#    #Return True if successful, False otherwise
 #    def get_task(self, task_to_fill, tid):
 ##        import time
 ##        time.sleep(1)
