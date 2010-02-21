@@ -43,6 +43,7 @@ from GTG.taskbrowser                  import tasktree
 from GTG.taskbrowser.tasktree         import TaskTreeModel,\
                                              ActiveTaskTreeView,\
                                              ClosedTaskTreeView
+from GTG.taskbrowser.filtertree       import FilterTreeModel
 from GTG.taskbrowser                  import tagtree
 from GTG.taskbrowser.tagtree          import TagTreeModel,\
                                              TagTreeView
@@ -183,8 +184,8 @@ class TaskBrowser:
         self.task_tree_model = TaskTreeModel(requester=self.req)
         
         # Active Tasks
-        self.task_modelfilter = self.task_tree_model.filter_new()
-        self.task_modelfilter.set_visible_func(self.active_task_visible_func)
+        self.task_modelfilter = FilterTreeModel(self.task_tree_model)
+#        self.task_modelfilter.set_visible_func(self.active_task_visible_func)
         self.task_modelsort = gtk.TreeModelSort(self.task_modelfilter)
         self.task_modelsort.set_sort_func(\
             tasktree.COL_DDATE, self.dleft_sort_func)

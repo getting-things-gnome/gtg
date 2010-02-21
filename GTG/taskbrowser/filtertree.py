@@ -19,12 +19,30 @@
 
 import gtk
 
-class TaskTreeModel(gtk.GenericTreeModel):
+class FilterTreeModel(gtk.GenericTreeModel):
 
     def __init__(self,tasktree):
         gtk.GenericTreeModel.__init__(self)
         self.tree = tasktree
+        self.tree.connect('row-changed',self.row_changed)
+        self.tree.connect('row-deleted',self.row_deleted)
+        self.tree.connect('row-has-child-toggled',self.row_has_child_toggled)
+        self.tree.connect('row-inserted',self.row_inserted)
+        self.tree.connect('rows-reordered',self.rows_reordered)
         
+    def get_model(self):
+        return self.tree
+    
+    #### Signals #############
+    def row_changed(self,model,node_path, node_iter):
+        print "row %s changed" %str(node_path)
+        gtk.GenericTreeModel.row_changed(self,node_path, node_iter)
+        
+    def row_deleted(self,model,node_iter):
+        print "row %s deleted" %str(node_iter)
+        gtk.GenericTreeModel.row_deleted(self, node_iter)
+        
+    ##############################
     def on_get_flags(self):
         return self.tree.on_get_flags()
         
@@ -47,7 +65,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
         return self.tree.on_iter_next(rowref)
         
     def on_iter_children(self, parent):
-        return on_iter_children(parent)
+        return self.tree.on_iter_children(parent)
         
     def on_iter_has_child(self, rowref):
         return self.tree.on_iter_has_child(rowref)
@@ -58,5 +76,8 @@ class TaskTreeModel(gtk.GenericTreeModel):
     def on_iter_nth_child(self, parent, n):
         return self.tree.on_iter_nth_child(parent,n)
         
-    def on_iter_parent(self, child)
+    def on_iter_parent(self, child):
         return self.tree.on_iter_parent(child)
+        
+    def refilter(self):
+        print "refiltering"

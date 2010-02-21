@@ -244,7 +244,7 @@ class TaskSource():
                 if len(self.to_set) > 0:
                     self.set_task(self.to_set[0])
         else:
-            print "cannot acquire lock"
+            print "cannot acquire lock : not a problem, just for debug purpose"
     
     def remove_task(self, tid):
         return self.backend.remove_task(tid)
