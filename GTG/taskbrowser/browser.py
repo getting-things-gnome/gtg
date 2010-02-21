@@ -181,12 +181,13 @@ class TaskBrowser:
     def _init_models(self):
 
         # Base models
-        self.task_tree_model = TaskTreeModel(requester=self.req)
+#        self.task_tree_model = TaskTreeModel(requester=self.req)
         
         # Active Tasks
-        self.task_modelfilter = FilterTreeModel(self.task_tree_model)
+#        self.task_modelfilter = FilterTreeModel(self.task_tree_model)
 #        self.task_modelfilter.set_visible_func(self.active_task_visible_func)
-        self.task_modelsort = gtk.TreeModelSort(self.task_modelfilter)
+        self.task_tree_model = FilterTreeModel(self.req)
+        self.task_modelsort = gtk.TreeModelSort(self.task_tree_model)
         self.task_modelsort.set_sort_func(\
             tasktree.COL_DDATE, self.dleft_sort_func)
         self.task_modelsort.set_sort_func(\
@@ -719,7 +720,7 @@ class TaskBrowser:
         self.toggle_workview.set_active(tobeset)
         self.priv['workview'] = tobeset
         self.tag_model.set_workview(self.priv['workview'])
-        self.task_modelfilter.refilter()
+#        self.task_modelfilter.refilter()
         self.tag_modelfilter.refilter()
         self._update_window_title()
 
@@ -1373,7 +1374,7 @@ class TaskBrowser:
         if len(tags) > 0:
             tags[0].set_attribute("nonworkview", toset)
         if self.priv['workview']:
-            self.task_modelfilter.refilter()
+#            self.task_modelfilter.refilter()
             self.tag_modelfilter.refilter()
         if not self.dont_reset:
             self.reset_cursor()
@@ -1633,7 +1634,7 @@ class TaskBrowser:
         #When you clic on a tag, you want to unselect the tasks
         self.task_tv.get_selection().unselect_all()
         self.ctask_tv.get_selection().unselect_all()
-        self.task_modelfilter.refilter()
+#        self.task_modelfilter.refilter()
         self.ctask_modelfilter.refilter()
         self._update_window_title()
 
@@ -1781,7 +1782,7 @@ class TaskBrowser:
         if self.logger:
             self.logger.debug("Trigger refresh on taskbrowser.")
         self.tag_modelfilter.refilter()
-        self.task_modelfilter.refilter()
+#        self.task_modelfilter.refilter()
 #        self.tags_tv.refresh()
         self._update_window_title()
         self.refresh_lock.release()
