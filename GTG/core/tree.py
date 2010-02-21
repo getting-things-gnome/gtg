@@ -35,15 +35,6 @@ class Tree():
     def get_node_for_path(self, path):
         return self._node_for_path(self.root,path)
 
-#    def get_path_for_rowref(self, rowref):
-#        return self._path_for_rowref(self.root, rowref)
-
-#    def get_node_for_rowref(self, rowref):
-#        return self._node_for_rowref(self.root, rowref)
-
-#    def get_rowref_for_node(self, node):
-#        return self._rowref_for_node(node)
-
     def get_path_for_node(self, node):
         return self._path_for_node(node)
 
@@ -182,55 +173,6 @@ class Tree():
 
 ### HELPER FUNCTION FOR TREE #################################################
 #
-#    def _rowref_for_path(self, node, path):
-#        if path[0] < node.get_n_children():
-#            if len(path) == 1:
-#                return "/" + str(node.get_nth_child(path[0]).get_id())
-#            else:
-#                node = node.get_nth_child(path[0])
-#                path = path[1:]
-#                c_path = self._rowref_for_path(node, path)
-#                if c_path:
-#                    return "/" + str(node.get_id()) + str(c_path)
-#                else:
-#                    return None
-#        else:
-#            return None
-
-#    def _path_for_rowref(self, node, rowref):
-#        if rowref.rfind('/') == 0:
-#            return (node.get_child_index(rowref[1:]), )
-#        else:
-#            cur_id   = rowref[1:rowref.find('/', 1)]
-#            cur_node = node.get_child(cur_id)
-#            cur_path = (node.get_child_index(cur_id), )
-#            rowref   = rowref[rowref.find(cur_id)+len(cur_id):]
-#            return cur_path + self._path_for_rowref(cur_node, rowref)
-
-#    def _node_for_rowref(self, node, rowref):
-#        #print "_node_for_rowref: %s" % rowref
-#        if rowref == '':
-#            return self.root
-#        elif rowref.rfind('/') == 0:
-#            return node.get_child(rowref[1:])
-#        else:
-#            cur_id   = rowref[1:rowref.find('/', 1)]
-#            cur_node = node.get_child(cur_id)
-#            rowref   = rowref[rowref.find(cur_id)+len(cur_id):]
-#            return self._node_for_rowref(cur_node, rowref)
-
-#    def _rowref_for_node(self, node):
-#        if not node:
-#            return None
-#        if not node.has_parent():
-#            return "/%s"%str(node.get_id())
-#        else:
-#            #Fixme : no multi parent support here
-#            parent_id = node.get_parent()
-#            parent = self.get_node(parent_id)
-#            toreturn = self._rowref_for_node(parent) + "/" + str(node.get_id())
-#            return toreturn
-
     def _node_for_path(self,node,path):
         if path[0] < node.get_n_children():
             if len(path) == 1:

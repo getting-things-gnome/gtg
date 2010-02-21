@@ -77,11 +77,9 @@ class TagTreeModel(gtk.GenericTreeModel):
         return self.tree.get_node_for_path(path)
 
     def on_get_path(self, node):
-        #print "on_get_path: %s" % rowref
         return self.tree.get_path_for_node(node)
 
     def on_get_value(self, node, column):
-        #print "on_get_value: %s" % rowref
         tag = node
         if   column == COL_ID:
             return saxutils.escape(tag.get_name())
@@ -128,9 +126,7 @@ class TagTreeModel(gtk.GenericTreeModel):
                 if sp_id == "sep":
                     return True
 
-    def on_iter_next(self, rowref):
-        #print "on_iter_next: %s" % (rowref)
-        node        = rowref
+    def on_iter_next(self, node):
         if node.has_parent():
             parent_node = get_parents()[0]
             next_idx = parent_node.get_child_index(node.get_id()) + 1
@@ -141,10 +137,8 @@ class TagTreeModel(gtk.GenericTreeModel):
         else:
             return None
 
-    def on_iter_children(self, rowref):
-        #print "on_iter_children: %s" % (rowref)
-        if rowref:
-            node = rowref
+    def on_iter_children(self, node):
+        if node:
             if node.has_child():
                 return node.get_nth_child(0)
             else:
@@ -156,25 +150,18 @@ class TagTreeModel(gtk.GenericTreeModel):
     def on_iter_has_child(self, node):
         return node.has_child()
 
-    def on_iter_n_children(self, rowref):
-        if rowref:
-            node = rowref
-        else:
+    def on_iter_n_children(self, node):
+        if not node:
             node = self.tree.get_root()
         return node.get_n_children()
 
-    def on_iter_nth_child(self, rowref, n):
-        #print "on_iter_nth_child: %s %d" % (rowref, n)
-        if rowref:
-            node = rowref
-        else:
+    def on_iter_nth_child(self, node, n):
+        if not node:
             node = self.tree.get_root()
         nth_child = node.get_nth_child(n)
         return nth_child
 
-    def on_iter_parent(self, rowref):
-        #print "on_iter_parent: %s" % (rowref)
-        node = rowref
+    def on_iter_parent(self, node):
         if node.has_parent():
             parent = node.get_parent()
             return parent

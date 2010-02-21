@@ -107,14 +107,14 @@ class TestTree(unittest.TestCase):
         self.assertEqual(7,self.counter)
         self.assertEqual(7,self.counter2)
         
-    def test_rowref(self):
+    def test_get_node(self):
         tree = self._build_tree(4,flat=False)
         node1 = tree.get_node('3@1')
         node2 = tree.get_node('3@3')
-        rowref1 = tree.get_rowref_for_node(node1)
-        rowref2 = tree.get_rowref_for_node(node2)
-        self.assertEqual('/3@1',rowref1)
-        self.assertEqual('/1@1/2@2/3@3',rowref2)
+        znode1 = tree.get_node_for_path((2,))
+        znode2 = tree.get_node_for_path((0,0,0))
+        self.assertEqual(node1,znode1)
+        self.assertEqual(node2,znode2)
 
 
 
