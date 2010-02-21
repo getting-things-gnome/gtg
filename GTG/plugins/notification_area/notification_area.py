@@ -163,7 +163,7 @@ class NotificationArea:
             self.task_separator.show()
             self.menu.append(self.task_separator)
         #creating the menu item
-        menu_item = gtk.ImageMenuItem(title)
+        menu_item = gtk.MenuItem(title)
         menu_item.connect('activate', self.open_task, tid)
         menu_item.show()
         self.menu.append(menu_item)
