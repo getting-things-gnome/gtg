@@ -291,8 +291,10 @@ class pluginExport:
                 timespan = None
             tasks_str = self.taskslist_to_TaskStr(tasks_list, timespan)
 
+        parameters_dict = {'tasks': tasks_str,
+                           'plugin_api': self.plugin_api}
         self.export_document = str(Template (file = self.export_template_path,
-                      searchList = [{ 'tasks': tasks_str}]))
+                         searchList = [parameters_dict]))
         return True
 
     def export_execute_with_ui(self):

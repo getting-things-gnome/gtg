@@ -67,6 +67,8 @@ If you write down a nice template, please send it back to the GTG project:
 go to https://edge.launchpad.net/gtg, and open a bug requesting to include your
 template (remember to attach the file). It's good karma!
 
+For a more advanced usage of templates, scroll down to the end of this document
+
 ~~Luca Invernizzi: <invernizzi.l@gmail.com> ~~
 -->
 <html>
@@ -137,6 +139,25 @@ template (remember to attach the file). It's good karma!
     #set $p = $re.compile(r'^[\s,\,]*$')
     #return $p.sub('', $data)
 #end def
+
+
+<!-- If you need to write something fancy, GTG's templates let you do so.
+You're given full access to GTG's API through the $plugin_api variable.
+Have a look in GTG/core/plugins/api.py to discover how to use it,
+or look at http://live.gnome.org/gtg/pluginHowTo  (you are only interested
+in the "Plugin API" part of that page, so scroll down).
+
+An example of usage of that is given in the following lines, that list 
+all GTG's tags.
+To see this code working, delete the "##" at the beginning of each line 
+and take it out of the html comment
+
+
+##  #for $tag in $plugin_api.get_requester().get_all_tags()
+##      $tag.get_name()
+##  #end for
+
+-->
 
 
     </body>
