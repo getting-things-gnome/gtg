@@ -85,7 +85,8 @@ class TaskTreeModel(gtk.GenericTreeModel):
         return self.column_types[n]
 
     def on_get_value(self, rowref, column):
-        node = self.tree.get_node_for_rowref(rowref)
+#        node = self.tree.get_node_for_rowref(rowref)
+        node = rowref
         if not node:
             return None
         else:
@@ -137,17 +138,18 @@ class TaskTreeModel(gtk.GenericTreeModel):
 
     def on_get_iter(self, path):
         #print "on_get_iter %s" %str(path)
-        toreturn = self.tree.get_rowref_for_path(path)
+        toreturn = self.tree.get_node_for_path(path)
         #print "on_get_iter: " + str(path) + "path  = "+str(toreturn)
         return toreturn
 
-    def on_get_path(self, rowref):
-        #print "on_get_path: %s" % (rowref)
-        return self.tree.get_path_for_rowref(rowref)
+    def on_get_path(self, node):
+        #print "on_get_path: %s" %node
+        return self.tree.get_path_for_node(node)
 
     def on_iter_next(self, rowref):
         #print "on_iter_next %s" %rowref
-        node        = self.tree.get_node_for_rowref(rowref)
+#        node        = self.tree.get_node_for_rowref(rowref)
+        node = rowref
         if node:
             parent_id = node.get_parent()
             parent_node = self.tree.get_node(parent_id)
@@ -156,8 +158,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
                 if parent_node.get_n_children()-1 < next_idx:
                     return None
                 else:
-                    return self.tree.get_rowref_for_node(\
-                        parent_node.get_nth_child(next_idx))
+                    return parent_node.get_nth_child(next_idx)
             else:
                 return None
         else:
@@ -166,18 +167,20 @@ class TaskTreeModel(gtk.GenericTreeModel):
     def on_iter_children(self, rowref):
         #print "on_iter_children: %s" % (rowref)
         if rowref:
-            node = self.tree.get_node_for_rowref(rowref)
+#            node = self.tree.get_node_for_rowref(rowref)
+            node = rowref
             if node and node.has_child():
-                return self.tree.get_rowref_for_node(node.get_nth_child(0))
+                return node.get_nth_child(0)
             else:
                 return None
         else:
             node = self.root.get_nth_child(0)
-            return self.tree.get_rowref_for_node(node)
+            return node
 
     def on_iter_has_child(self, rowref):
         #print "on_iter_has_child: %s" % (rowref)
-        node = self.tree.get_node_for_rowref(rowref)
+#        node = self.tree.get_node_for_rowref(rowref)
+        node = rowref
         if node:
             return node.has_child()
         else:
@@ -186,7 +189,8 @@ class TaskTreeModel(gtk.GenericTreeModel):
     def on_iter_n_children(self, rowref):
         #print "on_iter_n_children: %s" % (rowref)
         if rowref:
-            node = self.tree.get_node_for_rowref(rowref)
+#            node = self.tree.get_node_for_rowref(rowref)
+            node = rowref
         else:
             node = self.tree.get_root()
         toreturn = node.get_n_children()
@@ -196,7 +200,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
     def on_iter_nth_child(self, rowref, n):
         #print "on_iter_nth_child: %s %d" % (rowref, n)
         if rowref:
-            node = self.tree.get_node_for_rowref(rowref)
+            node = rowref
         else:
             node = self.tree.get_root()
         nth_child = node.get_nth_child(n)
@@ -204,14 +208,14 @@ class TaskTreeModel(gtk.GenericTreeModel):
 
     def on_iter_parent(self, rowref):
         #print "on_iter_parent: %s" % (rowref)
-        node = self.tree.get_node_for_rowref(rowref)
+        node = rowref
         if node.has_parent():
             parent_id = node.get_parent()
             parent = self.tree.get_node(parent_id)
             if parent == self.tree.get_root():
                 return None
             else:
-                return self.tree.get_rowref_for_node(parent)
+                return parent
         else:
             return None
 

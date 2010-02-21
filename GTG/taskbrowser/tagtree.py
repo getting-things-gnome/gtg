@@ -74,15 +74,15 @@ class TagTreeModel(gtk.GenericTreeModel):
 
     def on_get_iter(self, path):
         #print "on_get_iter: %s" % str(path)
-        return self.tree.get_rowref_for_path(path)
+        return self.tree.get_node_for_path(path)
 
-    def on_get_path(self, rowref):
+    def on_get_path(self, node):
         #print "on_get_path: %s" % rowref
-        return self.tree.get_path_for_rowref(rowref)
+        return self.tree.get_path_for_node(node)
 
-    def on_get_value(self, rowref, column):
+    def on_get_value(self, node, column):
         #print "on_get_value: %s" % rowref
-        tag = self.tree.get_node_for_rowref(rowref)
+        tag = node
         if   column == COL_ID:
             return saxutils.escape(tag.get_name())
         if   column == COL_NAME:
@@ -130,39 +130,35 @@ class TagTreeModel(gtk.GenericTreeModel):
 
     def on_iter_next(self, rowref):
         #print "on_iter_next: %s" % (rowref)
-        node        = self.tree.get_node_for_rowref(rowref)
+        node        = rowref
         if node.has_parent():
             parent_node = get_parents()[0]
             next_idx = parent_node.get_child_index(node.get_id()) + 1
             if parent_node.get_n_children()-1 < next_idx:
                 return None
             else:
-                return self.tree.get_rowref_for_node(\
-                    parent_node.get_nth_child(next_idx))
+                return parent_node.get_nth_child(next_idx)
         else:
             return None
 
     def on_iter_children(self, rowref):
         #print "on_iter_children: %s" % (rowref)
         if rowref:
-            node = self.tree.get_node_for_rowref(rowref)
+            node = rowref
             if node.has_child():
-                return self.tree.get_rowref_for_node(node.get_nth_child(0))
+                return node.get_nth_child(0)
             else:
                 return None
         else:
             node = self.root.get_nth_child(0)
-            return self.tree.get_rowref_for_node(node)
+            return node
 
-    def on_iter_has_child(self, rowref):
-        #print "on_iter_has_child: %s" % (rowref)
-        node = self.tree.get_node_for_rowref(rowref)
+    def on_iter_has_child(self, node):
         return node.has_child()
 
     def on_iter_n_children(self, rowref):
-        #print "on_iter_n_children: %s" % (rowref)
         if rowref:
-            node = self.tree.get_node_for_rowref(rowref)
+            node = rowref
         else:
             node = self.tree.get_root()
         return node.get_n_children()
@@ -170,18 +166,18 @@ class TagTreeModel(gtk.GenericTreeModel):
     def on_iter_nth_child(self, rowref, n):
         #print "on_iter_nth_child: %s %d" % (rowref, n)
         if rowref:
-            node = self.tree.get_node_from_rowref(rowref)
+            node = rowref
         else:
             node = self.tree.get_root()
         nth_child = node.get_nth_child(n)
-        return self.tree.get_rowref_for_node(nth_child)
+        return nth_child
 
     def on_iter_parent(self, rowref):
         #print "on_iter_parent: %s" % (rowref)
-        node = self.tree.get_node_for_rowref(rowref)
+        node = rowref
         if node.has_parent():
             parent = node.get_parent()
-            return self.tree.get_rowref_for_node(parent)
+            return parent
         else:
             return None
 
