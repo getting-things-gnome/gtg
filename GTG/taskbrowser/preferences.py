@@ -16,8 +16,11 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
+import os
 import gtk
 import pango
+import shutil
+from xdg.BaseDirectory import xdg_config_home
 
 from GTG.core.plugins import GnomeConfig
 
@@ -88,6 +91,10 @@ def plugin_error_text(plugin):
 
 
 class PreferencesDialog:
+
+    __AUTOSTART_DIRECTORY = os.path.join(xdg_config_home, "autostart")
+    __AUTOSTART_FILE = "gtg.desktop"
+
     def __init__(self, taskbrowser):
         """Constructor."""
         # store references to some objects
@@ -99,6 +106,7 @@ class PreferencesDialog:
           'plugin_configure': 'plugin_configure',
           'plugin_depends': 'PluginDepends',
           'plugin_config_dialog': 'PluginConfigDialog',
+           'pref_autostart': 'pref_autostart'
           }
         for attr, widget in widgets.iteritems():
             setattr(self, attr, taskbrowser.builder.get_object(widget))
@@ -139,6 +147,12 @@ class PreferencesDialog:
         for name, p in self.tb.pengine.plugins.iteritems():
             self.plugin_store.append([name, p.enabled, p.full_name,
               p.description, not p.error,]) # activateable if there is no error
+
+    def  _refresh_preferences_store(self):
+        """Sets the correct value in the preferences checkboxes"""
+        autostart_path = os.path.join(self.__AUTOSTART_DIRECTORY, \
+                                      self.__AUTOSTART_FILE)
+        self.pref_autostart.set_active(os.path.isfile(autostart_path))
 
     def _init_plugin_tree(self):
         """Initialize the PluginTree gtk.TreeView.
@@ -213,6 +227,8 @@ class PreferencesDialog:
             self.on_plugin_config_close,
           'on_PreferencesDialog_delete_event':
             self.on_close,
+            'on_pref_autostart_toggled':
+            self.on_autostart_toggled,
           }
         return SIGNAL_CONNECTIONS_DIC
 
@@ -224,6 +240,7 @@ class PreferencesDialog:
         else:
             self._refresh_plugin_store()
         self._refresh_backend_store()
+        self._refresh_preferences_store()
         self.dialog.present()
         self.dialog.show_all()
 
@@ -305,4 +322,43 @@ class PreferencesDialog:
         """Enable the "Configure Plugin" button if appropriate."""
         configurable = plugin.active and plugin.is_configurable()
         self.plugin_configure.set_property('sensitive', configurable)
+
+    def on_autostart_toggled(self, widget):
+        """Toggle GTG autostarting with the GNOME desktop"""
+        autostart_path = os.path.join(self.__AUTOSTART_DIRECTORY, \
+                                      self.__AUTOSTART_FILE)
+        if widget.get_active() == False: 
+            #Disable autostart, removing the file in autostart_path
+            if os.path.isfile(autostart_path):
+                os.remove(autostart_path)
+        else:
+            #Enable autostart
+            #We look for the desktop file
+            desktop_file_path = None
+            desktop_file_directories = ["../..", \
+                                  "../../../applications"]
+            this_directory = os.path.dirname(os.path.abspath(__file__))
+            for path in desktop_file_directories:
+                fullpath = os.path.normpath(os.path.join(this_directory, path, \
+                                                        self.__AUTOSTART_FILE))
+                if os.path.isfile(fullpath):
+                    desktop_file_path = fullpath
+                    break
+            #If we have found the desktop file, we make a link to in in
+            # autostart_path. If symbolic linking is not possible
+            # (that is, if we are running on Windows), then copy the file
+            if desktop_file_path:
+                if not os.path.exists(self.__AUTOSTART_DIRECTORY):
+                    os.mkdir(self.__AUTOSTART_DIRECTORY)
+                if os.path.isdir(self.__AUTOSTART_DIRECTORY) and \
+                   not os.path.exists(autostart_path):
+                    if hasattr(os, "symlink"):
+                        os.symlink(desktop_file_path, \
+                                   autostart_path)
+                    else:
+                        shutil.copyfile(desktop_file_path, \
+                                         autostart_path)
+                    
+
+
 

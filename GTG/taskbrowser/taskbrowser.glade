@@ -1251,10 +1251,11 @@ commas.</property>
                                       <object class="GtkCheckButton" id="pref_autostart">
                                         <property name="label" translatable="yes">Start Getting Things GNOME! on every login</property>
                                         <property name="visible">True</property>
-                                        <property name="sensitive">False</property>
+                                        <property name="sensitive">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">False</property>
                                         <property name="draw_indicator">True</property>
+                                        <signal name="toggled" handler="on_pref_autostart_toggled"/>
                                       </object>
                                       <packing>
                                         <property name="expand">False</property>
