@@ -184,10 +184,15 @@ class TaskBrowser:
 #        self.task_tree_model = TaskTreeModel(requester=self.req)
         
         # Active Tasks
-#        self.task_modelfilter = FilterTreeModel(self.task_tree_model)
 #        self.task_modelfilter.set_visible_func(self.active_task_visible_func)
-        self.task_tree_model = FilterTreeModel(self.req)
-        self.task_modelsort = gtk.TreeModelSort(self.task_tree_model)
+        self.task_tree_model = TaskTreeModel(self.req)
+        self.task_treefilter = FilterTreeModel(self.task_tree_model)
+        #FIXME : for an unknown reason, our TaskTreeModel needs
+        #to have a TreeModelFilter at all cost, else it doesn't work.
+        #That probably means a bug in our TaskTreeModel
+        #We will not use the TreeModelFilter as we have our own filter
+        task_modelfilter = self.task_tree_model.filter_new()
+        self.task_modelsort = gtk.TreeModelSort(task_modelfilter)
         self.task_modelsort.set_sort_func(\
             tasktree.COL_DDATE, self.dleft_sort_func)
         self.task_modelsort.set_sort_func(\

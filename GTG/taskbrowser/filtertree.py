@@ -17,67 +17,67 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-from GTG.taskbrowser.tasktree         import TaskTreeModel
+from gtk import GenericTreeModel
 
-class FilterTreeModel(TaskTreeModel):
+class FilterTreeModel(GenericTreeModel):
 
-    def __init__(self,requester):
-        TaskTreeModel.__init__(self,requester)
-#        self.tree = tasktree
-#        self.tree.connect('row-changed',self.row_changed)
-#        self.tree.connect('row-deleted',self.row_deleted)
-#        self.tree.connect('row-has-child-toggled',self.row_has_child_toggled)
-#        self.tree.connect('row-inserted',self.row_inserted)
-#        self.tree.connect('rows-reordered',self.rows_reordered)
-#        
-#    def get_model(self):
-#        return self.tree
-#    
-#    #### Signals #############
-#    def row_changed(self,model,node_path, node_iter):
-#        print "row %s changed" %str(node_path)
-#        gtk.GenericTreeModel.row_changed(self,node_path, node_iter)
-#        
-#    def row_deleted(self,model,node_iter):
-#        print "row %s deleted" %str(node_iter)
-#        gtk.GenericTreeModel.row_deleted(self, node_iter)
-#        
-#    ##############################
-#    def on_get_flags(self):
-#        return self.tree.on_get_flags()
-#        
-#    def on_get_n_columns(self):
-#        return self.tree.on_get_n_columns()
-#        
-#    def on_get_column_type(self, index):
-#        return self.tree.on_get_column_type(index)
-#        
-#    def on_get_iter(self, path):
-#        return self.tree.on_get_iter(path)
-#        
-#    def on_get_path(self, rowref):
-#        return self.tree.on_get_path(rowref)
-#        
-#    def on_get_value(self, rowref, column):
-#        return self.tree.on_get_value(rowref,column)
-#        
-#    def on_iter_next(self, rowref):
-#        return self.tree.on_iter_next(rowref)
-#        
-#    def on_iter_children(self, parent):
-#        return self.tree.on_iter_children(parent)
-#        
-#    def on_iter_has_child(self, rowref):
-#        return self.tree.on_iter_has_child(rowref)
-#        
-#    def on_iter_n_children(self, rowref):
-#        return self.tree.on_iter_n_children(rowref)
-#        
-#    def on_iter_nth_child(self, parent, n):
-#        return self.tree.on_iter_nth_child(parent,n)
-#        
-#    def on_iter_parent(self, child):
-#        return self.tree.on_iter_parent(child)
-#        
-#    def refilter(self):
-#        print "refiltering"
+    def __init__(self,tasktree):
+        GenericTreeModel.__init__(self)
+        self.tree = tasktree
+        self.tree.connect('row-changed',self.row_changed)
+        self.tree.connect('row-deleted',self.row_deleted)
+        self.tree.connect('row-has-child-toggled',self.row_has_child_toggled)
+        self.tree.connect('row-inserted',self.row_inserted)
+        self.tree.connect('rows-reordered',self.rows_reordered)
+        
+    def get_model(self):
+        return self.tree
+    
+    #### Signals #############
+    def row_changed(self,model,node_path, node_iter):
+        print "row %s changed" %str(node_path)
+        GenericTreeModel.row_changed(self,node_path, node_iter)
+        
+    def row_deleted(self,model,node_iter):
+        print "row %s deleted" %str(node_iter)
+        GenericTreeModel.row_deleted(self, node_iter)
+        
+    ##############################
+    def on_get_flags(self):
+        return self.tree.on_get_flags()
+        
+    def on_get_n_columns(self):
+        return self.tree.on_get_n_columns()
+        
+    def on_get_column_type(self, index):
+        return self.tree.on_get_column_type(index)
+        
+    def on_get_iter(self, path):
+        return self.tree.on_get_iter(path)
+        
+    def on_get_path(self, rowref):
+        return self.tree.on_get_path(rowref)
+        
+    def on_get_value(self, rowref, column):
+        return self.tree.on_get_value(rowref,column)
+        
+    def on_iter_next(self, rowref):
+        return self.tree.on_iter_next(rowref)
+        
+    def on_iter_children(self, parent):
+        return self.tree.on_iter_children(parent)
+        
+    def on_iter_has_child(self, rowref):
+        return self.tree.on_iter_has_child(rowref)
+        
+    def on_iter_n_children(self, rowref):
+        return self.tree.on_iter_n_children(rowref)
+        
+    def on_iter_nth_child(self, parent, n):
+        return self.tree.on_iter_nth_child(parent,n)
+        
+    def on_iter_parent(self, child):
+        return self.tree.on_iter_parent(child)
+        
+    def refilter(self):
+        print "refiltering"
