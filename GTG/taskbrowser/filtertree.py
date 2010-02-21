@@ -24,37 +24,8 @@ class FilterTreeModel(TaskTreeModel):
 
     def __init__(self,req):
         TaskTreeModel.__init__(self,req)
-#        self.tree = tasktree
-#        self.tree.connect('row-changed',self.fil_row_changed)
-#        self.tree.connect('row-deleted',self.fil_row_deleted)
-#        self.tree.connect('row-has-child-toggled',self.row_has_child_toggled)
-#        self.tree.connect('row-inserted',self.row_inserted)
-#        self.tree.connect('rows-reordered',self.rows_reordered)
-        
-#    def get_model(self):
-#        return self.tree.get_model()
-#    
-#    #### Signals #############
-#    def fil_row_changed(self,model,node_path, node_iter):
-#        #print "row %s changed" %str(node_path)
-#        self.row_changed(node_path, node_iter)
-#        
-#    def fil_row_deleted(self,model,node_iter):
-#        #print "row %s deleted" %str(node_iter)
-#        self.row_deleted(node_iter)
-#        
-#    def update_task(self,tid):
-#        self.tree.update_task(tid)
-#        
-#    def add_task(self, tid):
-#        print "dummy add_task %s" %tid
-#        
-#    def remove_task(self, tid):
-#        return self.tree.remove_task(tid)
-#        
-#    def move_task(self, parent, child):
-#        print "dummy Moving %s below %s (tasktree)" % (child, parent)
-#        
+
+
 #    ##############################
 #    # GenericTreeModel methods
 #    def on_get_flags(self):
@@ -66,44 +37,56 @@ class FilterTreeModel(TaskTreeModel):
 #    def on_get_column_type(self, index):
 #        return self.tree.on_get_column_type(index)
 #        
-#    def on_get_iter(self, path):
-#        print "get_iter for path %s" %str(path)
-#        return self.tree.on_get_iter(path)
-#        
-    def on_get_path(self, rowref):
-        print "get_path for rowref %s" %rowref
-        return TaskTreeModel.on_get_path(self,rowref)
-#        
-    def on_get_value(self, rowref, column):
-#        print "on_get_value for rowref %s - column %s" %(rowref,column)
-        return TaskTreeModel.on_get_value(self,rowref,column)
-#        
-#    def on_iter_next(self, rowref):
-#        print "on_iter_next for rowref %s" %rowref
-#        return self.tree.on_iter_next(rowref)
-#        
-#    def on_iter_children(self, parent):
-#        print "on_iter_children for parent %s" %parent
-#        return self.tree.on_iter_children(parent)
-#        
-#    def on_iter_has_child(self, rowref):
-#        print "on_iter_has_child for rowref %s" %rowref
-#        return self.tree.on_iter_has_child(rowref)
-#        
-#    def on_iter_n_children(self, rowref):
-#        print "on_iter_n_children for rowref %s" %rowref
-#        return self.tree.on_iter_n_children(rowref)
-#        
-#    def on_iter_nth_child(self, parent, n):
-#        print "on_iter_nth_child for parent %s - n %s" %(parent,n)
-#        return self.tree.on_iter_nth_child(parent,n)
-#        
-#    def on_iter_parent(self, child):
-#        print "on_iter_parent %s" %child
-#        return self.tree.on_iter_parent(child)
-#        
-#        
-#    #### Filtering methods ##########
-#        
-#    def refilter(self):
-#        print "refiltering"
+    def on_get_iter(self, path):
+        #print "get_iter for path %s" %str(path)
+        #We should convert the path to the base.path
+        base_path = path
+        return TaskTreeModel.on_get_iter(self,base_path)
+
+    def on_get_path(self, node):
+        #print "get_path for node %s" %node
+        #For that node, we should convert the base_path to path
+        base_path = TaskTreeModel.on_get_path(self,node)
+        path = base_path
+        return path
+
+#    def on_get_value(self, node, column):
+#        print "on_get_value for node %s - column %s" %(node,column)
+#        return TaskTreeModel.on_get_value(self,node,column)
+
+    def on_iter_next(self, node):
+        #print "on_iter_next for node %s" %node
+        #We should take the next good node, not the next base node
+        next_node = TaskTreeModel.on_iter_next(self,node)
+        return next_node
+
+    def on_iter_children(self, parent):
+        #print "on_iter_children for parent %s" %parent
+        #here, we should return only good childrens
+        return TaskTreeModel.on_iter_children(self,parent)
+
+    def on_iter_has_child(self, node):
+        #print "on_iter_has_child for node %s" %node
+        #we should say "has_good_child"
+        return TaskTreeModel.on_iter_has_child(self,node)
+
+    def on_iter_n_children(self, node):
+        #print "on_iter_n_children for node %s" %node
+        #we should return the number of "good" children
+        return TaskTreeModel.on_iter_n_children(self,node)
+
+    def on_iter_nth_child(self, parent, n):
+        #print "on_iter_nth_child for parent %s - n %s" %(parent,n)
+        #we return the nth good children !
+        return TaskTreeModel.on_iter_nth_child(self,parent,n)
+
+    def on_iter_parent(self, child):
+        #print "on_iter_parent %s" %child
+        #return None if we are at a Virtual root
+        return TaskTreeModel.on_iter_parent(self,child)
+
+
+    #### Filtering methods ##########
+        
+    def refilter(self):
+        print "refiltering"
