@@ -19,6 +19,8 @@
 
 import gobject
 
+from GTG.core.filteredtree import FilteredTree
+
 
 class Requester(gobject.GObject):
     """A view on a GTG datastore.
@@ -39,6 +41,8 @@ class Requester(gobject.GObject):
     def __init__(self, datastore):
         """Construct a L{Requester}."""
         self.ds = datastore
+        tree = self.ds.get_tasks_tree()
+        self.main_tree = FilteredTree(tree)
 
         #filter
         self.filter = {}
@@ -101,8 +105,8 @@ class Requester(gobject.GObject):
         self.emit('task-deleted', tid)
         self.ds.delete_task(tid)
         
-    def get_tasks_tree(self):
-        return self.ds.get_tasks_tree()
+    def get_main_tasks_tree(self):
+        return self.main_tree
 
     def get_tasks_list(self, tags=None, status=["Active"], notag_only=False,
                        started_only=True, is_root=False):

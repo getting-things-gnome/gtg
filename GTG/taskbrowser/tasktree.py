@@ -60,7 +60,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
         
         gtk.GenericTreeModel.__init__(self)
         self.req  = requester
-        self.tree = self.req.get_tasks_tree()
+        self.tree = self.req.get_main_tasks_tree()
 
 ### TREE MODEL HELPER FUNCTIONS ###############################################
 
@@ -85,6 +85,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
         return self.column_types[n]
 
     def on_get_value(self, node, column):
+#        print "##### on get_value node %s" %node
         if not node:
             return None
         else:
@@ -136,67 +137,29 @@ class TaskTreeModel(gtk.GenericTreeModel):
 
     def on_get_iter(self, path):
         #print "on_get_iter %s" %str(path)
-        toreturn = self.tree.get_node_for_path(path)
-        #print "on_get_iter: " + str(path) + "path  = "+str(toreturn)
-        return toreturn
+        return self.tree.get_node_for_path(path)
 
     def on_get_path(self, node):
         #print "on_get_path: %s" %node
         return self.tree.get_path_for_node(node)
 
     def on_iter_next(self, node):
-        if node:
-            parent_id = node.get_parent()
-            parent_node = self.tree.get_node(parent_id)
-            if parent_node:
-                next_idx = parent_node.get_child_index(node.get_id()) + 1
-                if parent_node.get_n_children()-1 < next_idx:
-                    return None
-                else:
-                    return parent_node.get_nth_child(next_idx)
-            else:
-                return None
-        else:
-            return None
+        return self.tree.next_node(node)
 
     def on_iter_children(self, node):
-        if node:
-            if node.has_child():
-                return node.get_nth_child(0)
-            else:
-                return None
-        else:
-            node = self.root.get_nth_child(0)
-            return node
+        return self.tree.node_children(node)
 
     def on_iter_has_child(self, node):
-        if node:
-            return node.has_child()
-        else:
-            return None
+        return self.tree.node_has_child(node)
 
     def on_iter_n_children(self, node):
-        if not node:
-            node = self.tree.get_root()
-        toreturn = node.get_n_children()
-        return toreturn
+        return self.tree.node_n_children(node)
 
     def on_iter_nth_child(self, node, n):
-        if not node:
-            node = self.tree.get_root()
-        nth_child = node.get_nth_child(n)
-        return nth_child
+        return self.tree.node_nth_child(node,n)
 
     def on_iter_parent(self, node):
-        if node.has_parent():
-            parent_id = node.get_parent()
-            parent = self.tree.get_node(parent_id)
-            if parent == self.tree.get_root():
-                return None
-            else:
-                return parent
-        else:
-            return None
+        return self.tree.node_parent(node)
 
     def update_task(self, tid):
 #        # get the node and signal it's changed

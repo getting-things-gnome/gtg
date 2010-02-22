@@ -43,7 +43,6 @@ from GTG.taskbrowser                  import tasktree
 from GTG.taskbrowser.tasktree         import TaskTreeModel,\
                                              ActiveTaskTreeView,\
                                              ClosedTaskTreeView
-from GTG.taskbrowser.filtertree       import FilterTreeModel
 from GTG.taskbrowser                  import tagtree
 from GTG.taskbrowser.tagtree          import TagTreeModel,\
                                              TagTreeView
@@ -185,8 +184,7 @@ class TaskBrowser:
         
         # Active Tasks
 #        self.task_modelfilter.set_visible_func(self.active_task_visible_func)
-        self.base_tasktree = TaskTreeModel(self.req)
-        self.task_tree_model = FilterTreeModel(self.req)
+        self.task_tree_model = TaskTreeModel(self.req)
         #FIXME : for an unknown reason, our TaskTreeModel needs
         #to have a TreeModelFilter at all cost, else it doesn't work.
         #That probably means a bug in our TaskTreeModel
@@ -199,7 +197,7 @@ class TaskBrowser:
             tasktree.COL_DLEFT, self.dleft_sort_func)
         
         # Closed Tasks: dismissed and done
-        self.ctask_modelfilter = self.base_tasktree.filter_new()
+        self.ctask_modelfilter = self.task_tree_model.filter_new()
         self.ctask_modelfilter.set_visible_func(self.closed_task_visible_func)
         self.ctask_modelsort = gtk.TreeModelSort(self.ctask_modelfilter)
         
