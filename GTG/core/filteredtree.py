@@ -108,6 +108,8 @@ class FilteredTree():
 
     def get_path_for_node(self, node):
         #For that node, we should convert the base_path to path
+        if node:
+            print "get_path_for_node %s" %node.get_id()
         if not node or not self.is_displayed(node):
             return None
         elif node == self.get_root():
