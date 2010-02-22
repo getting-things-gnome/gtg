@@ -51,77 +51,160 @@ class FilteredTree():
         
     ####TreeModel functions ##############################
 
+    #done
     def get_node_for_path(self, path):
-        #print "get_iter for path %s" %str(path)
+        #print "get_node for path %s" %str(path)
         #We should convert the path to the base.path
-        toreturn = self.tree.get_node_for_path(path)
+        p0 = path[0]
+        if len(self.virtual_root) > p0:
+            n1 = self.virtual_root[p0]
+            path = path[1:]
+            toreturn = self.__node_for_path(n1,path)
+        else:
+            toreturn = None
         return toreturn
+    #done
+    def __node_for_path(self,basenode,path):
+        if len(path) == 0:
+            return basenode
+        elif path[0] < self.node_n_children(basenode):
+            if len(path) == 1:
+                return self.node_nth_child(basenode,path[0])
+            else:
+                node = self.node_nth_child(basenode,path[0])
+                path = path[1:]
+                return self.__node_for_path(node, path)
+        else:
+            return None
+        
 
     def get_path_for_node(self, node):
         #print "get_path for node %s" %node
         #For that node, we should convert the base_path to path
-        base_path = self.tree.get_path_for_node(node)
-        path = base_path
-        return path
+        if not self.is_displayed(node):
+            return None
+        elif node == self.get_root():
+            toreturn = ()
+        elif node in self.virtual_root:
+            ind = self.virtual_root.index(node)
+            toreturn = (ind,)
+        else:
+            pos = 0
+            par = self.node_parent(node)
+            max = self.node_n_children(par)
+            child = self.node_children(par)
+            while pos < max and node != child:
+                pos += 1
+                child = self.node_nth_child(par,pos)
+            toreturn = self.get_path_for_node(par) + (pos,)
+        print "path for node %s is %s" %(node.get_id(),toreturn)
+        return toreturn
 
+    #Done
     def next_node(self, node):
         #print "on_iter_next for node %s" %node
         #We should take the next good node, not the next base node
         if node:
-            parent_id = node.get_parent()
-            parent_node = self.tree.get_node(parent_id)
-            if parent_node:
-                next_idx = parent_node.get_child_index(node.get_id()) + 1
-                if parent_node.get_n_children()-1 < next_idx:
-                    nextnode = None
+            if node in self.virtual_root:
+                i = self.virtual_root.index(node) + 1
+                if len(self.virtual_root) > i:
+                    nextnode = self.virtual_root[i]
                 else:
-                    nextnode = parent_node.get_nth_child(next_idx)
+                    nextnode = None
             else:
-                nextnode = None
+                parent_node = self.node_parent(node)
+                if parent_node:
+                    next_idx = parent_node.get_child_index(node.get_id()) + 1
+                    total = parent_node.get_n_children()-1
+                    if total < next_idx:
+                        nextnode = None
+                    else:
+                        nextnode = parent_node.get_nth_child(next_idx)
+                        while next_idx < total and not self.is_displayed(nextnode):
+                            next_idx += 1
+                            nextnode = parent_node.get_nth_child(next_idx)
+                else:
+                    nextnode = None
         else:
             nextnode = None
         return nextnode
 
+    #Done
     def node_children(self, parent):
-        #print "on_iter_children for parent %s" %parent
+        print "on_iter_children for parent %s" %parent.get_id()
         #here, we should return only good childrens
         if parent:
-            if parent.has_child():
-                 child = parent.get_nth_child(0)
+            if self.node_has_child(parent):
+                 child = self.node_nth_child(parent,0)
             else:
                 child = None
         else:
-            child = self.get_root().get_nth_child(0)
+            child = self.virtual_root[0]
+        if child:
+            print "child is %s" %child.get_id()
         return child
 
+    #Done
     def node_has_child(self, node):
         #print "on_iter_has_child for node %s" %node
         #we should say "has_good_child"
-        if node:
-            return node.has_child()
+        if node and self.node_n_children(node)>0:
+            return True
         else:
-            return None
+            return False
 
+    #Done
     def node_n_children(self, node):
         #print "on_iter_n_children for node %s" %node
         #we should return the number of "good" children
         if not node:
-            node = self.get_root()
-        toreturn = node.get_n_children()
+            toreturn = len(self.virtual_root)
+        else:
+            n = 0
+            for cid in node.get_children():
+                c = self.get_node(cid)
+                if self.is_displayed(c):
+                    n+= 1
+            toreturn = n
         return toreturn
 
+    #Done
     def node_nth_child(self, node, n):
-        #print "on_iter_nth_child for parent %s - n %s" %(parent,n)
+        print "##on_iter_nth_child for parent %s - n %s" %(node.get_id(),n)
         #we return the nth good children !
         if not node:
-            node = self.get_root()
-        nth_child = node.get_nth_child(n)
-        return nth_child
+            if len(self.virtual_root) > n:
+                toreturn = self.virtual_root[n]
+            else:
+                toreturn = None
+        else:
+            total = node.get_n_children()
+            cur = 0
+            good = 0
+            toreturn = None
+            print "##node %s has %s real children" %(node.get_id(),total)
+            while good <= n and cur < total:
+                curn = node.get_nth_child(cur)
+                print "### testing child %s" %curn.get_id()
+                if self.is_displayed(curn):
+                    print "### child %s is displayed" %curn.get_id()
+                    if good == n:
+                        print "### this is the one to return"
+                        toreturn = curn
+                    good += 1
+                cur += 1
+        if toreturn:
+            print "##### %s child of %s is %s" %(n,node.get_id(),toreturn.get_id())
+        else:
+            print "##### no child nbr %s for %s" %(n,node.get_id())
+        return toreturn
 
+    #Done
     def node_parent(self, node):
-        #print "on_iter_parent %s" %child
         #return None if we are at a Virtual root
-        if node.has_parent():
+        if node in self.virtual_root:
+            return None
+        elif node.has_parent():
             parent_id = node.get_parent()
             parent = self.tree.get_node(parent_id)
             if parent == self.tree.get_root():
@@ -135,10 +218,11 @@ class FilteredTree():
     #### Filtering methods ##########
     
     def is_displayed(self,node):
-        if self.node_has_child(node):
-            return False
-        else:
-            return True
+#        if self.node_has_child(node):
+#            return False
+#        else:
+#            return True
+        return True
         
     def refilter(self):
         self.virtual_root = []
