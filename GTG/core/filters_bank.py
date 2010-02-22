@@ -44,10 +44,13 @@ class FiltersBank:
         self.available_filters['workview'] = filt_obj
         
     def is_displayed(self,task):
+#        print "### task %s has child %s" %(task.get_id(),task.has_child())
         result = True
         for f in self.applied_filters:
             filt = self.get_filter(f)
             result = result and filt.is_displayed(task)
+#            print "### filter : %s: %s" %(f,filt.is_displayed(task))
+#        print "### task is_displayed : %s" %result
         return result
         
         
@@ -82,6 +85,9 @@ class FiltersBank:
     def unapply_filter(self,filter_name):
         if filter_name in self.applied_filters:
             self.applied_filters.remove(filter_name)
+            return True
+        else:
+            return False
     
     
     def reset_filters(self):

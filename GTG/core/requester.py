@@ -89,12 +89,16 @@ class Requester(gobject.GObject):
             
     
     # Unapply a filter from the main FilteredTree.
-    # Does nothing if the filter was not applied.
+    # Does nothing if the filter was not previously applied.
     def unapply_filter(self,filter_name):
-        self.filters.unapply_filter(filter_name)
+        r = self.filters.unapply_filter(filter_name)
+        if r:
+            self.main_tree.refilter()
+        return r
     
     def reset_filters(self):
         self.filters.reset_filters()
+        self.main_tree.refilter()
         
     def is_displayed(self,task):
         return self.filters.is_displayed(task)

@@ -108,8 +108,6 @@ class FilteredTree():
 
     def get_path_for_node(self, node):
         #For that node, we should convert the base_path to path
-        if node:
-            print "get_path_for_node %s" %node.get_id()
         if not node or not self.is_displayed(node):
             return None
         elif node == self.get_root():
@@ -125,12 +123,16 @@ class FilteredTree():
             while pos < max and node != child:
                 pos += 1
                 child = self.node_nth_child(par,pos)
+#            print "we want path for parent %s" %par.get_id()
             par_path = self.get_path_for_node(par)
             if par_path:
-                toreturn = self.get_path_for_node(par) + (pos,)
+                toreturn = par_path + (pos,)
             else:
-                print "Node %s not in vr %s" %(node.get_id(),self.virtual_root)
-                toreturn = (pos,)
+                print "*** Node %s not in vr" %(node.get_id())
+                print "*** node is visilbe %s" %self.is_displayed(node)
+                print "*** node has parent %s" %self.node_parent(node)
+                print "**** node in VR: %s" %(node in self.virtual_root)
+                toreturn = None
         #print "path for node %s is %s" %(node.get_id(),toreturn)
         return toreturn
 
