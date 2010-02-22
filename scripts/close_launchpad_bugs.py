@@ -53,9 +53,14 @@ if not 'gtg' in [e.name for e in launchpad.people[launchpad.me].super_teams]:
     print 'You are not a GTG developer, exiting.'
     sys.exit(0)
 for bugno in bugs:
-    bug = launchpad.bugs[bugno]
-    for task in bug.bug_tasks:
-        if task.bug_target_name == 'gtg' and task.status == 'Fix Committed':
-            task.status = 'Fix Released'
-            task.lp_save()
-            print 'Bug %s marked as Fix Released' % bugno
+    try:
+        bug = launchpad.bugs[bugno]
+        for task in bug.bug_tasks:
+            if task.bug_target_name == 'gtg' and task.status == 'Fix Committed':
+                print task.status
+                task.status = 'Fix Released'
+                task.lp_save()
+                print 'Bug %s marked as Fix Released' % bugno
+    except:
+        print 'UNABLE TO PROCESS BUG #%s' % bugno
+        pass
