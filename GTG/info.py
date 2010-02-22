@@ -2,8 +2,8 @@
 #various information about GTG. Should be updated for every release.
 
 URL             = "http://gtg.fritalk.com"
-EMAIL           = "gtg-contributors@lists.launchpad.net  "
-VERSION         = '0.2.1-rc1+'
+EMAIL           = "gtg-contributors@lists.launchpad.net"
+VERSION         = '0.2.2'
 
 SHORT_DESCRIPTION = 'GTG is a personal organizer for the GNOME desktop environment.'
 
