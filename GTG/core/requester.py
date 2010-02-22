@@ -82,7 +82,11 @@ class Requester(gobject.GObject):
         
     # Apply a given filter to the main FilteredTree
     def apply_filter(self,filter_name,parameters=None):
-        self.filters.apply_filter(filter_name,parameters=parameters)
+        r = self.filters.apply_filter(filter_name,parameters=parameters)
+        if r:
+            self.main_tree.refilter()
+        return r
+            
     
     # Unapply a filter from the main FilteredTree.
     # Does nothing if the filter was not applied.

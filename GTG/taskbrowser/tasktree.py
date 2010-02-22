@@ -163,9 +163,9 @@ class TaskTreeModel(gtk.GenericTreeModel):
 #        # get the node and signal it's changed
         my_node = self.tree.get_node(tid)
         if my_node and my_node.is_loaded():
-#            print "dummy update_task %s tasktree" %tid
             node_path = self.tree.get_path_for_node(my_node)
             if node_path:
+                print "dummy update_task %s tasktree" %tid
                 node_iter = self.get_iter(node_path)
                 self.row_changed(node_path, node_iter)
         
@@ -263,7 +263,8 @@ class TaskTreeModel(gtk.GenericTreeModel):
 #            new_par_task.add_subtask(child_tid)
 
     def refilter(self):
-        self.tree.refilter()
+        for tid in self.req.get_all_tasks_list():
+            self.update_task(tid)
 
 class TaskTreeView(gtk.TreeView):
     """TreeView for display of a list of task. Handles DnD primitives too."""

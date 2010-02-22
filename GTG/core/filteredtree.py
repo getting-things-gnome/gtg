@@ -108,7 +108,7 @@ class FilteredTree():
 
     def get_path_for_node(self, node):
         #For that node, we should convert the base_path to path
-        if not self.is_displayed(node):
+        if not node or not self.is_displayed(node):
             return None
         elif node == self.get_root():
             toreturn = ()
@@ -123,7 +123,12 @@ class FilteredTree():
             while pos < max and node != child:
                 pos += 1
                 child = self.node_nth_child(par,pos)
-            toreturn = self.get_path_for_node(par) + (pos,)
+            par_path = self.get_path_for_node(par)
+            if par_path:
+                toreturn = self.get_path_for_node(par) + (pos,)
+            else:
+                print "Node %s not in vr %s" %(node.get_id(),self.virtual_root)
+                toreturn = (pos,)
         #print "path for node %s is %s" %(node.get_id(),toreturn)
         return toreturn
 
@@ -218,9 +223,10 @@ class FilteredTree():
     #Done
     def node_parent(self, node):
         #return None if we are at a Virtual root
-        if node in self.virtual_root:
+#        print "node %s in virtual_root %s" %(node.get_id(),self.virtual_root)
+        if node and node in self.virtual_root:
             return None
-        elif node.has_parent():
+        elif node and node.has_parent():
             parent_id = node.get_parent()
             parent = self.tree.get_node(parent_id)
             if parent == self.tree.get_root():
@@ -234,7 +240,10 @@ class FilteredTree():
     #### Filtering methods ##########
     
     def is_displayed(self,node):
-        return self.req.is_displayed(node)
+        if node:
+            return self.req.is_displayed(node)
+        else:
+            return False
         
     def refilter(self):
         self.virtual_root = []
