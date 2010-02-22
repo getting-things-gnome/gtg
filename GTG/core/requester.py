@@ -46,7 +46,7 @@ class Requester(gobject.GObject):
         self.basetree = self.ds.get_tasks_tree()
         self.main_tree = FilteredTree(self,self.basetree)
         
-        self.filters = FiltersBank(self)
+        self.filters = FiltersBank(self,tree=self.main_tree)
 
 #        #filter
 #        self.filter = {}
@@ -83,8 +83,6 @@ class Requester(gobject.GObject):
     # Apply a given filter to the main FilteredTree
     def apply_filter(self,filter_name,parameters=None):
         r = self.filters.apply_filter(filter_name,parameters=parameters)
-        if r:
-            self.main_tree.refilter()
         return r
             
     
@@ -92,13 +90,10 @@ class Requester(gobject.GObject):
     # Does nothing if the filter was not previously applied.
     def unapply_filter(self,filter_name):
         r = self.filters.unapply_filter(filter_name)
-        if r:
-            self.main_tree.refilter()
         return r
     
     def reset_filters(self):
         self.filters.reset_filters()
-        self.main_tree.refilter()
         
     def is_displayed(self,task):
         return self.filters.is_displayed(task)

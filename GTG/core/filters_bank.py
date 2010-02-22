@@ -34,7 +34,8 @@ class Filter:
 
 class FiltersBank:
 
-    def __init__(self,req):
+    def __init__(self,req,tree=None):
+        self.tree = tree
         self.req = req
         self.applied_filters = []
         self.available_filters = {}
@@ -78,6 +79,7 @@ class FiltersBank:
                 filt.set_parameters(parameters)
             if filter_name not in self.applied_filters:
                 self.applied_filters.append(filter_name)
+            self.tree.refilter()
             return True
         else:
             return False
@@ -85,6 +87,7 @@ class FiltersBank:
     def unapply_filter(self,filter_name):
         if filter_name in self.applied_filters:
             self.applied_filters.remove(filter_name)
+            self.tree.refilter()
             return True
         else:
             return False
@@ -92,6 +95,7 @@ class FiltersBank:
     
     def reset_filters(self):
         self.applied_filters = []
+        self.tree.refilter()
         
         
     # Get the filter object for a given name
