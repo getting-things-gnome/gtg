@@ -40,16 +40,17 @@ class Requester(gobject.GObject):
 
     def __init__(self, datastore):
         """Construct a L{Requester}."""
+        gobject.GObject.__init__(self)
         self.ds = datastore
         tree = self.ds.get_tasks_tree()
-        self.main_tree = FilteredTree(tree)
+        self.main_tree = FilteredTree(self,tree)
 
         #filter
         self.filter = {}
         self.filter["tasks"] = []
         self.filter["tags"] = []
 
-        gobject.GObject.__init__(self)
+        
 
     ############# Signals #########################
     #Used by the tasks to emit the task added/modified signal

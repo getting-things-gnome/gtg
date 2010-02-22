@@ -21,8 +21,16 @@
 
 class FilteredTree():
 
-    def __init__(self,tree):
+    def __init__(self,req,tree):
+        self.req = req
         self.tree = tree
+        self.req.connect("task-added", self.__task_added)
+        self.req.connect("task-modified", self.__task_modified)
+        self.req.connect("task-deleted", self.__task_deleted)
+        #virtual root is the list of root nodes
+        #initially, they are the root nodes of the original tree
+        self.virtual_root = self.get_root().get_children()
+        self.refilter()
         
     #### Standard tree functions
     def get_node(self,id):
@@ -30,8 +38,17 @@ class FilteredTree():
     
     def get_root(self):
         return self.tree.get_root()
-
-
+        
+    ### update functions
+    def __task_added(self,sender,tid):
+        self.refilter()
+        
+    def __task_modified(self,sender,tid):
+        self.refilter()
+        
+    def __task_deleted(self,sender,tid):
+        self.refilter()
+        
     ####TreeModel functions ##############################
 
     def get_node_for_path(self, path):
@@ -116,6 +133,26 @@ class FilteredTree():
 
 
     #### Filtering methods ##########
+    
+    def is_displayed(self,node):
+        if self.node_has_child(node):
+            return False
+        else:
+            return True
         
     def refilter(self):
+        self.virtual_root = []
+        for n in self.tree.get_all_nodes():
+            is_root = False
+            if self.is_displayed(n):
+                is_root = True
+                if n.has_parent():
+                    for par in n.get_parents():
+                        p = self.get_node(par)
+                        if self.is_displayed(p):
+                            is_root = False
+            if is_root and n not in self.virtual_root:
+                self.virtual_root.append(n)
         print "refiltering"
+        for n in self.virtual_root:
+            print "root - %s" %n.get_id()
