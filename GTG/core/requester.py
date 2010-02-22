@@ -20,6 +20,7 @@
 import gobject
 
 from GTG.core.filteredtree import FilteredTree
+from GTG.core.filters_bank import FiltersBank
 
 
 class Requester(gobject.GObject):
@@ -42,15 +43,15 @@ class Requester(gobject.GObject):
         """Construct a L{Requester}."""
         gobject.GObject.__init__(self)
         self.ds = datastore
-        tree = self.ds.get_tasks_tree()
-        self.main_tree = FilteredTree(self,tree)
-
-        #filter
-        self.filter = {}
-        self.filter["tasks"] = []
-        self.filter["tags"] = []
-
+        self.basetree = self.ds.get_tasks_tree()
+        self.main_tree = FilteredTree(self,self.basetree)
         
+        self.filters = FiltersBank(self)
+
+#        #filter
+#        self.filter = {}
+#        self.filter["tasks"] = []
+#        self.filter["tags"] = []
 
     ############# Signals #########################
     #Used by the tasks to emit the task added/modified signal
@@ -60,6 +61,61 @@ class Requester(gobject.GObject):
 
     def _task_modified(self, tid):
         gobject.idle_add(self.emit, "task-modified", tid)
+        
+    ############ Tasks Tree ######################
+    # This is the main FilteredTree. You cannot apply filters
+    # directly to it, you have to pass them through the requester.
+    # This is the tree as it is displayed in the main window
+    def get_main_tasks_tree(self):
+        return self.main_tree
+        
+    # This is a FilteredTree that you have to handle yourself.
+    # You can apply/unapply filters on it as you wich.
+    def get_custom_tasks_tree(self):
+        return FilteredTree(self,tree)
+        
+    def get_main_tasks_list(self):
+        return self.main_tree.get_all_keys()
+    
+    def get_all_tasks_list(self):
+        return self.basetree.get_all_keys()
+        
+    # Apply a given filter to the main FilteredTree
+    def apply_filter(self,filter_name,parameters=None):
+        self.filters.apply_filter(filter_name,parameters=parameters)
+    
+    # Unapply a filter from the main FilteredTree.
+    # Does nothing if the filter was not applied.
+    def unapply_filter(self,filter_name):
+        self.filters.unapply_filter(filter_name)
+    
+    def reset_filters(self):
+        self.filters.reset_filters()
+        
+    def is_displayed(self,task):
+        return self.filters.is_displayed(task)
+    
+    
+    ######### Filters bank #######################
+    # Get the filter function for a given name
+    def get_filter(self,filter_name):
+        return self.filters.get_filter(filter_name)
+    
+    # List, by name, all available filters
+    def list_filters(self):
+        return self.filters.list_filters()
+    
+    # Add a filter to the filter bank
+    # Return True if the filter was added
+    # Return False if the filter_name was already in the bank
+    def add_filter(self,filter_name,filter_func):
+        return self.filters.add_filter(filter_name,filter_func)
+        
+    # Remove a filter from the bank.
+    # Only custom filters that were added here can be removed
+    # Return False if the filter was not removed
+    def remove_filter(self,filter_name):
+        return self.filters.remove_filter(filter_name)
 
     ############## Tasks ##########################
     ###############################################
@@ -105,221 +161,219 @@ class Requester(gobject.GObject):
         #send the signal before actually deleting the task !
         self.emit('task-deleted', tid)
         self.ds.delete_task(tid)
-        
-    def get_main_tasks_tree(self):
-        return self.main_tree
 
-    def get_tasks_list(self, tags=None, status=["Active"], notag_only=False,
-                       started_only=True, is_root=False):
-        """Return a list of tids of tasks.
 
-        By default, returns a list of all the tids of all active tasks.
+#    def get_tasks_list(self, tags=None, status=["Active"], notag_only=False,
+#                       started_only=True, is_root=False):
+#        """Return a list of tids of tasks.
 
-        @param tags: A list of tags. If provided, restricts the list of
-            returned tasks to those that have one or more of these tags.
-        @param status: A list of statuses. If provided, restricts the list of
-            returned tasks to those that are in one of these states.
-        @param notag_only: If True, only include tasks without tags. Defaults
-            to C{False}.
-        @param started_only: If True, only include tasks that have been
-            started. That is, tasks that have an already-passed start date or
-            tasks with no startdate. Defaults to C{True}.
-        @param is_root: If True, only include tasks that have no parent in the
-            current selection. Defaults to False.
+#        By default, returns a list of all the tids of all active tasks.
 
-        @return: A list of task ids (tids).
-        """
-        l_tasks = []
-        temp_list = []
-        if tags:
-            for t in tags:
-                for tid in t.get_tasks():
-                    if tid not in temp_list:
-                        temp_list.append(tid)
-        else:
-            temp_list = self.ds.all_tasks()
-        for tid in temp_list:
-            task = self.get_task(tid)
-            if task and not task.is_loaded():
-                task = None
-            # This is status filtering.
-            if task and not task.get_status() in status:
-                task = None
-            # This is tag filtering.
-            # If we still have a task and we need to filter tags
-            # (if tags is None, this test is skipped)
-#            if task and tags:
-#                if not task.has_tags(tags):
+#        @param tags: A list of tags. If provided, restricts the list of
+#            returned tasks to those that have one or more of these tags.
+#        @param status: A list of statuses. If provided, restricts the list of
+#            returned tasks to those that are in one of these states.
+#        @param notag_only: If True, only include tasks without tags. Defaults
+#            to C{False}.
+#        @param started_only: If True, only include tasks that have been
+#            started. That is, tasks that have an already-passed start date or
+#            tasks with no startdate. Defaults to C{True}.
+#        @param is_root: If True, only include tasks that have no parent in the
+#            current selection. Defaults to False.
+
+#        @return: A list of task ids (tids).
+#        """
+#        l_tasks = []
+#        temp_list = []
+#        if tags:
+#            for t in tags:
+#                for tid in t.get_tasks():
+#                    if tid not in temp_list:
+#                        temp_list.append(tid)
+#        else:
+#            temp_list = self.ds.all_tasks()
+#        for tid in temp_list:
+#            task = self.get_task(tid)
+#            if task and not task.is_loaded():
+#                task = None
+#            # This is status filtering.
+#            if task and not task.get_status() in status:
+#                task = None
+#            # This is tag filtering.
+#            # If we still have a task and we need to filter tags
+#            # (if tags is None, this test is skipped)
+##            if task and tags:
+##                if not task.has_tags(tags):
+##                    task = None
+##                # Checking here the is_root because it has sense only with
+##                # tags.
+##                elif is_root and task.has_parents(tag=tags):
+##                    task = None
+#            if task and tags and is_root and task.has_parents(tag=tags):
+#                task = None
+#            #If tags = [], we still check the is_root.
+#            elif task and is_root:
+#                if task.has_parents():
+#                    # We accept children of a note.
+#                    for p in task.get_parents():
+#                        pp = self.get_task(p)
+#                        if pp.get_status() != "Note":
+#                            task = None
+#            # Now checking if it has no tag.
+#            if task and notag_only:
+#                if not task.has_tags(notag_only=notag_only):
 #                    task = None
-#                # Checking here the is_root because it has sense only with
-#                # tags.
-#                elif is_root and task.has_parents(tag=tags):
+#            # This is started filtering.
+#            if task and started_only:
+#                if not task.is_started():
 #                    task = None
-            if task and tags and is_root and task.has_parents(tag=tags):
-                task = None
-            #If tags = [], we still check the is_root.
-            elif task and is_root:
-                if task.has_parents():
-                    # We accept children of a note.
-                    for p in task.get_parents():
-                        pp = self.get_task(p)
-                        if pp.get_status() != "Note":
-                            task = None
-            # Now checking if it has no tag.
-            if task and notag_only:
-                if not task.has_tags(notag_only=notag_only):
-                    task = None
-            # This is started filtering.
-            if task and started_only:
-                if not task.is_started():
-                    task = None
 
-            # If we still have a task, we return it.
-            if task:
-                l_tasks.append(tid)
-        return l_tasks
+#            # If we still have a task, we return it.
+#            if task:
+#                l_tasks.append(tid)
+#        return l_tasks
 
     ############# Filters #########################
-    def set_filter(self, filter):
-        """Set a filter for the tasks.
+#    def set_filter(self, filter):
+#        """Set a filter for the tasks.
 
-        @param filter: A dictionary with two keys, 'tags' and 'tasks'.
-            The 'tags' key corresponds to a list of tag names and the 'tasks'
-            corresponds to a list of tids.
-        """
-        self.filter = filter
+#        @param filter: A dictionary with two keys, 'tags' and 'tasks'.
+#            The 'tags' key corresponds to a list of tag names and the 'tasks'
+#            corresponds to a list of tids.
+#        """
+#        self.filter = filter
 
-    def get_filter(self):
-        """Return the current task filter.
+#    def get_filter(self):
+#        """Return the current task filter.
 
-        @return: The filter object.
-        """
-        return self.filter
+#        @return: The filter object.
+#        """
+#        return self.filter
 
-    def add_task_to_filter(self, tid):
-        """Adds (appends) a task to the filter (task list).
+#    def add_task_to_filter(self, tid):
+#        """Adds (appends) a task to the filter (task list).
 
-        @param tid: A task id.
-        """
-        if tid not in self.filter["tasks"]:
-            self.filter["tasks"].append(tid)
+#        @param tid: A task id.
+#        """
+#        if tid not in self.filter["tasks"]:
+#            self.filter["tasks"].append(tid)
 
-    def remove_task_from_filter(self, tid):
-        """Removes a task from the filter (task list).
+#    def remove_task_from_filter(self, tid):
+#        """Removes a task from the filter (task list).
 
-        @param tid: A task id.
-        """
-        if tid in self.filter["tasks"]:
-            self.filter["tasks"].remove(tid)
+#        @param tid: A task id.
+#        """
+#        if tid in self.filter["tasks"]:
+#            self.filter["tasks"].remove(tid)
 
-    def add_tag_to_filter(self, tag):
-        """Adds (appends) a tag to the filter (tag list).
+#    def add_tag_to_filter(self, tag):
+#        """Adds (appends) a tag to the filter (tag list).
 
-        @param tag: A tag name.
-        """
-        if tag not in self.filter["tags"]:
-            self.filter["tags"].append(tag)
+#        @param tag: A tag name.
+#        """
+#        if tag not in self.filter["tags"]:
+#            self.filter["tags"].append(tag)
 
-    def remove_tag_from_filter(self, tag):
-        """Removes a tag from the filter (tag list).
+#    def remove_tag_from_filter(self, tag):
+#        """Removes a tag from the filter (tag list).
 
-        @param tag: A tag name.
-        """
-        if tag in self.filter["tags"]:
-            self.filter["tags"].remove(tag)
+#        @param tag: A tag name.
+#        """
+#        if tag in self.filter["tags"]:
+#            self.filter["tags"].remove(tag)
 
     ############# Filters #########################
-    def get_active_tasks_list(self, tags=None, notag_only=False,
-                              started_only=True, is_root=False,
-                              workable=False):
-        """Return a list of task ids for all active tasks.
+#    def get_active_tasks_list(self, tags=None, notag_only=False,
+#                              started_only=True, is_root=False,
+#                              workable=False):
+#        """Return a list of task ids for all active tasks.
 
-        See L{get_tasks_list} for more information about the parameters.
+#        See L{get_tasks_list} for more information about the parameters.
 
-        @param workable: If C{True}, then only include tasks with no pending
-            subtasks and that can be done directly and exclude any tasks that
-            have a C{nonworkview} tag which is not explicitly provided in the
-            C{tags} parameter. Defaults to C{False}.
-        """
-        l_tasks = []
-        if workable:
-            nonwork_tag = self.ds.get_tagstore().get_all_tags(
-                attname="nonworkview", attvalue="True")
-            # We build the list of tags we will skip.
-            #for nwtag in nonwork_tag:
-                # If the tag is explicitly selected, it doesn't go in the
-                # nonwork_tag.
-                #if tags and nwtag in tags:
-                #    nonwork_tag.remove(nwtag)
-            # We build the task list.
-            temp_tasks = self.get_active_tasks_list(
-                tags=tags, notag_only=notag_only, started_only=True,
-                is_root=False, workable=False)
+#        @param workable: If C{True}, then only include tasks with no pending
+#            subtasks and that can be done directly and exclude any tasks that
+#            have a C{nonworkview} tag which is not explicitly provided in the
+#            C{tags} parameter. Defaults to C{False}.
+#        """
+#        l_tasks = []
+#        if workable:
+#            nonwork_tag = self.ds.get_tagstore().get_all_tags(
+#                attname="nonworkview", attvalue="True")
+#            # We build the list of tags we will skip.
+#            #for nwtag in nonwork_tag:
+#                # If the tag is explicitly selected, it doesn't go in the
+#                # nonwork_tag.
+#                #if tags and nwtag in tags:
+#                #    nonwork_tag.remove(nwtag)
+#            # We build the task list.
+#            temp_tasks = self.get_active_tasks_list(
+#                tags=tags, notag_only=notag_only, started_only=True,
+#                is_root=False, workable=False)
 
-            #remove from temp_tasks the filtered out tasks
-            #for tid in temp_tasks:
-            #    if tid in self.filter["tasks"]:
-            #        temp_tasks.remove(tid)
-            #    else:
-            #        for filter_tag in self.get_task(tid).get_tags():
-            #            if filter_tag.get_attribute("name") in \
-            #                    self.filter["tags"]:
-            #                print self.get_task(tid).get_title()
-            #                temp_tasks.remove(tid)
-            #                break
+#            #remove from temp_tasks the filtered out tasks
+#            #for tid in temp_tasks:
+#            #    if tid in self.filter["tasks"]:
+#            #        temp_tasks.remove(tid)
+#            #    else:
+#            #        for filter_tag in self.get_task(tid).get_tags():
+#            #            if filter_tag.get_attribute("name") in \
+#            #                    self.filter["tags"]:
+#            #                print self.get_task(tid).get_title()
+#            #                temp_tasks.remove(tid)
+#            #                break
 
-            # Now we verify that the tasks are workable and don't have a
-            # nonwork_tag.
-            for tid in temp_tasks:
-                filtered_tag = False
-                t = self.get_task(tid)
-                if t and t.is_workable() and (tid not in self.filter["tasks"]):
-                    for filter_tag in t.get_tags():
-                        if filter_tag.get_attribute("name") in \
-                                self.filter["tags"]:
-                            #print t.get_title()
-                            temp_tasks.remove(tid)
-                            filtered_tag = True
+#            # Now we verify that the tasks are workable and don't have a
+#            # nonwork_tag.
+#            for tid in temp_tasks:
+#                filtered_tag = False
+#                t = self.get_task(tid)
+#                if t and t.is_workable() and (tid not in self.filter["tasks"]):
+#                    for filter_tag in t.get_tags():
+#                        if filter_tag.get_attribute("name") in \
+#                                self.filter["tags"]:
+#                            #print t.get_title()
+#                            temp_tasks.remove(tid)
+#                            filtered_tag = True
 
-                    if not filtered_tag:
-                        if len(nonwork_tag) == 0:
-                            #print t.get_title()
-                            l_tasks.append(tid)
-                        elif not t.has_tags(nonwork_tag):
-                            #print t.get_title()
-                            l_tasks.append(tid)
-            return l_tasks
-        else:
-            active = ["Active"]
-            temp_tasks = self.get_tasks_list(
-                tags=tags, status=active, notag_only=notag_only,
-                started_only=started_only, is_root=is_root)
-            for t in temp_tasks:
-                l_tasks.append(t)
-            return l_tasks
+#                    if not filtered_tag:
+#                        if len(nonwork_tag) == 0:
+#                            #print t.get_title()
+#                            l_tasks.append(tid)
+#                        elif not t.has_tags(nonwork_tag):
+#                            #print t.get_title()
+#                            l_tasks.append(tid)
+#            return l_tasks
+#        else:
+#            active = ["Active"]
+#            temp_tasks = self.get_tasks_list(
+#                tags=tags, status=active, notag_only=notag_only,
+#                started_only=started_only, is_root=is_root)
+#            for t in temp_tasks:
+#                l_tasks.append(t)
+#            return l_tasks
 
-    def get_closed_tasks_list(self, tags=None, notag_only=False,
-                              started_only=False, is_root=False):
-        """Return a list of task ids for closed tasks.
+#    def get_closed_tasks_list(self, tags=None, notag_only=False,
+#                              started_only=False, is_root=False):
+#        """Return a list of task ids for closed tasks.
 
-        "Closed" means either "done", "dismissed" or "deleted".
+#        "Closed" means either "done", "dismissed" or "deleted".
 
-        See L{get_tasks_list} for more information about the parameters.
-        """
-        closed = ["Done", "Dismiss", "Deleted"]
-        return self.get_tasks_list(
-            tags=tags, status=closed, notag_only=notag_only,
-            started_only=started_only, is_root=is_root)
+#        See L{get_tasks_list} for more information about the parameters.
+#        """
+#        closed = ["Done", "Dismiss", "Deleted"]
+#        return self.get_tasks_list(
+#            tags=tags, status=closed, notag_only=notag_only,
+#            started_only=started_only, is_root=is_root)
 
-    def get_notes_list(self, tags=None, notag_only=False):
-        """Return a list of task ids for notes.
+#    def get_notes_list(self, tags=None, notag_only=False):
+#        """Return a list of task ids for notes.
 
-        See `get_tasks_list` for more information about the parameters.
-        """
-        note = ["Note"]
-        return self.get_tasks_list(
-            tags=tags, status=note, notag_only=notag_only, started_only=False,
-            is_root=False)
+#        See `get_tasks_list` for more information about the parameters.
+#        """
+#        note = ["Note"]
+#        return self.get_tasks_list(
+#            tags=tags, status=note, notag_only=notag_only, started_only=False,
+#            is_root=False)
 
     ############### Tags ##########################
     ###############################################

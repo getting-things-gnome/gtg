@@ -724,6 +724,11 @@ class TaskBrowser:
         self.priv['workview'] = tobeset
         self.tag_model.set_workview(self.priv['workview'])
 #        self.task_modelfilter.refilter()
+        if tobeset:
+            self.req.apply_filter('workview')
+        else:
+            self.req.unapply_filter('workview')
+        self.task_tree_model.refilter()
         self.tag_modelfilter.refilter()
         self._update_window_title()
 
@@ -862,22 +867,22 @@ class TaskBrowser:
                 res = res or self.is_task_visible(par_task)
         return res
 
-    def active_task_visible_func(self, model, iter, user_data=None):
-        """Return True if the row must be displayed in the treeview.
-        @param model: the model of the filtered treeview
-        @param iter: the iter whose visiblity must be evaluated
-        @param user_data:
-        """
-        task = model.get_value(iter, tasktree.COL_OBJ)
-        if not task or task.get_status() != Task.STA_ACTIVE:
-            toreturn = False
-        elif not model.iter_parent(iter):
-            toreturn = (self.is_task_visible(task) and not self.is_lineage_visible(task))
-        else:
-            toreturn = self.is_task_visible(task)
-        if not toreturn:
-            print "**** %s hidden" %task.get_id()
-        return toreturn
+#    def active_task_visible_func(self, model, iter, user_data=None):
+#        """Return True if the row must be displayed in the treeview.
+#        @param model: the model of the filtered treeview
+#        @param iter: the iter whose visiblity must be evaluated
+#        @param user_data:
+#        """
+#        task = model.get_value(iter, tasktree.COL_OBJ)
+#        if not task or task.get_status() != Task.STA_ACTIVE:
+#            toreturn = False
+#        elif not model.iter_parent(iter):
+#            toreturn = (self.is_task_visible(task) and not self.is_lineage_visible(task))
+#        else:
+#            toreturn = self.is_task_visible(task)
+#        if not toreturn:
+#            print "**** %s hidden" %task.get_id()
+#        return toreturn
                
     def closed_task_visible_func(self, model, iter, user_data=None):
         """Return True if the row must be displayed in the treeview.

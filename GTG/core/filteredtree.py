@@ -17,7 +17,21 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-#from gtk import GenericTreeModel
+
+# The problem we have is that, sometimes, we don't want to display all tasks.
+# We want tasks to be filtered (workview, tags, …)
+#
+# The expected approach would be to put a gtk.TreeModelFilter above our
+# TaskTree. Unfortunatly, this doesn't work because TreeModelFilter hides
+# all children of hidden nodes. (unlike what we want)
+#
+# The solution we have found is to have a fake Tree between Tree and TaskTree
+# This fake tree is called FilteredTree and will map path and nodes methods 
+# to a result corresponding to the filtered tree.
+#
+# To be more efficient, a quick way to optimize the FilteredTree is to cache
+# all answers in a dictionnary so we don't have to compute the answer 
+# all the time. This is not done yet.
 
 class FilteredTree():
 
@@ -29,7 +43,7 @@ class FilteredTree():
         self.req.connect("task-deleted", self.__task_deleted)
         #virtual root is the list of root nodes
         #initially, they are the root nodes of the original tree
-        self.virtual_root = self.get_root().get_children()
+        self.virtual_root = []
         self.refilter()
         
     #### Standard tree functions
@@ -38,6 +52,19 @@ class FilteredTree():
     
     def get_root(self):
         return self.tree.get_root()
+        
+    def get_all_nodes(self):
+        l = self.tree.get_all_nodes()
+        for n in l:
+            if not self.is_displayed(n):
+                l.remove(n)
+        return l
+        
+    def get_all_keys(self):
+        k = []
+        for n in self.get_all_nodes():
+            k.append(n.get_id())
+        return k
         
     ### update functions
     def __task_added(self,sender,tid):
@@ -51,7 +78,8 @@ class FilteredTree():
         
     ####TreeModel functions ##############################
 
-    #done
+    #The path received is only for tasks that are displayed
+    #We have to find the good node.
     def get_node_for_path(self, path):
         #print "get_node for path %s" %str(path)
         #We should convert the path to the base.path
@@ -206,11 +234,7 @@ class FilteredTree():
     #### Filtering methods ##########
     
     def is_displayed(self,node):
-        if self.node_has_child(node):
-            return False
-        else:
-            return True
-#        return True
+        return self.req.is_displayed(node)
         
     def refilter(self):
         self.virtual_root = []

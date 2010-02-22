@@ -262,6 +262,9 @@ class TaskTreeModel(gtk.GenericTreeModel):
 #        if new_par_task:
 #            new_par_task.add_subtask(child_tid)
 
+    def refilter(self):
+        self.tree.refilter()
+
 class TaskTreeView(gtk.TreeView):
     """TreeView for display of a list of task. Handles DnD primitives too."""
 
