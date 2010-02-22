@@ -79,7 +79,6 @@ class FilteredTree():
         
 
     def get_path_for_node(self, node):
-        #print "get_path for node %s" %node
         #For that node, we should convert the base_path to path
         if not self.is_displayed(node):
             return None
@@ -97,7 +96,7 @@ class FilteredTree():
                 pos += 1
                 child = self.node_nth_child(par,pos)
             toreturn = self.get_path_for_node(par) + (pos,)
-        print "path for node %s is %s" %(node.get_id(),toreturn)
+        #print "path for node %s is %s" %(node.get_id(),toreturn)
         return toreturn
 
     #Done
@@ -131,7 +130,7 @@ class FilteredTree():
 
     #Done
     def node_children(self, parent):
-        print "on_iter_children for parent %s" %parent.get_id()
+        #print "on_iter_children for parent %s" %parent.get_id()
         #here, we should return only good childrens
         if parent:
             if self.node_has_child(parent):
@@ -140,8 +139,6 @@ class FilteredTree():
                 child = None
         else:
             child = self.virtual_root[0]
-        if child:
-            print "child is %s" %child.get_id()
         return child
 
     #Done
@@ -170,7 +167,6 @@ class FilteredTree():
 
     #Done
     def node_nth_child(self, node, n):
-        print "##on_iter_nth_child for parent %s - n %s" %(node.get_id(),n)
         #we return the nth good children !
         if not node:
             if len(self.virtual_root) > n:
@@ -182,21 +178,13 @@ class FilteredTree():
             cur = 0
             good = 0
             toreturn = None
-            print "##node %s has %s real children" %(node.get_id(),total)
             while good <= n and cur < total:
                 curn = node.get_nth_child(cur)
-                print "### testing child %s" %curn.get_id()
                 if self.is_displayed(curn):
-                    print "### child %s is displayed" %curn.get_id()
                     if good == n:
-                        print "### this is the one to return"
                         toreturn = curn
                     good += 1
                 cur += 1
-        if toreturn:
-            print "##### %s child of %s is %s" %(n,node.get_id(),toreturn.get_id())
-        else:
-            print "##### no child nbr %s for %s" %(n,node.get_id())
         return toreturn
 
     #Done
@@ -218,11 +206,11 @@ class FilteredTree():
     #### Filtering methods ##########
     
     def is_displayed(self,node):
-#        if self.node_has_child(node):
-#            return False
-#        else:
-#            return True
-        return True
+        if self.node_has_child(node):
+            return False
+        else:
+            return True
+#        return True
         
     def refilter(self):
         self.virtual_root = []
@@ -237,6 +225,7 @@ class FilteredTree():
                             is_root = False
             if is_root and n not in self.virtual_root:
                 self.virtual_root.append(n)
-        print "refiltering"
-        for n in self.virtual_root:
-            print "root - %s" %n.get_id()
+                
+        print "refiltering : virtual_root is:"
+        for r in self.virtual_root :
+            print "root %s" %r.get_id()

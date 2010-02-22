@@ -135,7 +135,6 @@ class TaskTreeModel(gtk.GenericTreeModel):
             return title
 
     def on_get_iter(self, path):
-        print "on_get_iter %s" %str(path)
         return self.tree.get_node_for_path(path)
 
     def on_get_path(self, node):
@@ -166,7 +165,6 @@ class TaskTreeModel(gtk.GenericTreeModel):
         if my_node and my_node.is_loaded():
 #            print "dummy update_task %s tasktree" %tid
             node_path = self.tree.get_path_for_node(my_node)
-            print "****** the path is %s" %str(node_path)
             if node_path:
                 node_iter = self.get_iter(node_path)
                 self.row_changed(node_path, node_iter)
