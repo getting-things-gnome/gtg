@@ -85,7 +85,6 @@ class TaskTreeModel(gtk.GenericTreeModel):
         return self.column_types[n]
 
     def on_get_value(self, node, column):
-#        print "##### on get_value node %s" %node
         if not node:
             return None
         else:
