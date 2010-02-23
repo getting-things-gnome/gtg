@@ -61,6 +61,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
         gtk.GenericTreeModel.__init__(self)
         self.req  = requester
         self.tree = self.req.get_main_tasks_tree()
+        self.tree.register_view(self)
 
 ### TREE MODEL HELPER FUNCTIONS ###############################################
 
@@ -161,6 +162,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
 
     def update_task(self, tid):
 #        # get the node and signal it's changed
+        print "tasktree update_task"
         my_node = self.tree.get_node(tid)
         if my_node and my_node.is_loaded():
             node_path = self.tree.get_path_for_node(my_node)
@@ -175,14 +177,14 @@ class TaskTreeModel(gtk.GenericTreeModel):
 #        print "root children = %s" %self.tree.get_root().get_children()
         
     def add_task(self, tid):
-        print "dummy add_task %s" %tid
+        print "tasktree add_task %s" %tid
 ##        nodes = []
 ##        # get the task
-#        task = self.req.get_task(tid)
-#        if task:
-#            node_path = self.tree.get_path_for_node(task)
-#            node_iter = self.get_iter(node_path)
-#            self.row_inserted(node_path, node_iter)
+        task = self.req.get_task(tid)
+        if task:
+            node_path = self.tree.get_path_for_node(task)
+            node_iter = self.get_iter(node_path)
+            self.row_inserted(node_path, node_iter)
 ##        # insert the task in the tree (root)
 ##        #TreeNode
 ##        my_node = task
@@ -213,11 +215,15 @@ class TaskTreeModel(gtk.GenericTreeModel):
 ##                node_iter = self.get_iter(node_path)
 ##                self.row_has_child_toggled(node_path, node_iter)
 
-    def remove_task(self, tid):
+    def remove_task(self, tid,path=None):
+        print "tasktree remove_task"
         node = self.tree.get_node(tid)
         removed = False
 #        # Remove every row of this task
-        node_path = self.tree.get_path_for_node(node)
+        if not path:
+            node_path = self.tree.get_path_for_node(node)
+        else:
+            node_path = path
 #        self.tree.remove_node(tid)
         if node_path:
             self.row_deleted(node_path)
@@ -262,9 +268,9 @@ class TaskTreeModel(gtk.GenericTreeModel):
 #        if new_par_task:
 #            new_par_task.add_subtask(child_tid)
 
-    def refilter(self):
-        for tid in self.req.get_all_tasks_list():
-            self.update_task(tid)
+#    def refilter(self):
+#        for tid in self.req.get_all_tasks_list():
+#            self.update_task(tid)
 
 class TaskTreeView(gtk.TreeView):
     """TreeView for display of a list of task. Handles DnD primitives too."""

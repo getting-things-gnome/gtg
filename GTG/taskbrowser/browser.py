@@ -728,7 +728,7 @@ class TaskBrowser:
             self.req.apply_filter('workview')
         else:
             self.req.unapply_filter('workview')
-        self.task_tree_model.refilter()
+#        self.task_tree_model.refilter()
         self.tag_modelfilter.refilter()
         self._update_window_title()
 

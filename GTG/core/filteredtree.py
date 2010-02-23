@@ -44,7 +44,14 @@ class FilteredTree():
         #virtual root is the list of root nodes
         #initially, they are the root nodes of the original tree
         self.virtual_root = []
+        self.registered_views = []
+        self.displayed_nodes = []
+        self.displayed_nodes_tmp = []
         self.refilter()
+        
+    def register_view(self,treemodel):
+        if treemodel not in self.registered_views:
+            self.registered_views.append(treemodel)
         
     #### Standard tree functions
     def get_node(self,id):
@@ -68,12 +75,15 @@ class FilteredTree():
         
     ### update functions
     def __task_added(self,sender,tid):
+        print "task added signal"
         self.refilter()
         
     def __task_modified(self,sender,tid):
+        print "task modified signal"
         self.refilter()
         
     def __task_deleted(self,sender,tid):
+        print "task deleted signal"
         self.refilter()
         
     ####TreeModel functions ##############################
@@ -133,7 +143,7 @@ class FilteredTree():
                 print "*** node has parent %s" %self.node_parent(node)
                 print "**** node in VR: %s" %(node in self.virtual_root)
                 toreturn = None
-        #print "path for node %s is %s" %(node.get_id(),toreturn)
+#        print "path for node %s is %s" %(node.get_id(),toreturn)
         return toreturn
 
     #Done
@@ -241,28 +251,82 @@ class FilteredTree():
             return None
 
 
-    #### Filtering methods ##########
+    #### Filtering methods #########
     
     def is_displayed(self,node):
+        print "public is_displayed"
+        if node:
+            tid = node.get_id()
+            return tid in self.displayed_nodes
+        else:
+            toreturn = False
+        return toreturn
+    
+    def __is_displayed(self,node):
+        print "___private is_displayed"
         if node:
             return self.req.is_displayed(node)
         else:
             return False
         
     def refilter(self):
-        self.virtual_root = []
+        print "######### Starting refilter"
+        virtual_root2 = []
+        to_add = []
+        to_update = []
+        to_remove = []
         for n in self.tree.get_all_nodes():
             is_root = False
-            if self.is_displayed(n):
+            if self.__is_displayed(n):
+                if n.get_id() in self.displayed_nodes:
+                    to_update.append(n)
+                else:
+                    to_add.append(n)
                 is_root = True
                 if n.has_parent():
                     for par in n.get_parents():
                         p = self.get_node(par)
-                        if self.is_displayed(p):
+                        if self.__is_displayed(p):
                             is_root = False
-            if is_root and n not in self.virtual_root:
-                self.virtual_root.append(n)
+            else:
+                if n.get_id() in self.displayed_nodes:
+                    p = self.get_path_for_node(n)
+                    to_remove.append((n,p))
                 
+            if is_root and n not in virtual_root2:
+                virtual_root2.append(n)
+        
+        for n in to_remove:
+            self.remove_node(n[0],n[1])
+        self.virtual_root = virtual_root2
+#        self.displayed_nodes = list(self.displayed_nodes_tmp)
+        for n in to_add:
+            self.add_node(n)
+        for n in to_update:
+            self.update_node(n)
         print "refiltering : virtual_root is:"
         for r in self.virtual_root :
             print "root %s" %r.get_id()
+        print "########## end refilter"
+            
+            
+    def update_node(self,node):
+        print "### update_node"
+        tid = node.get_id()
+        for r in self.registered_views:
+            r.update_task(tid)
+    
+    def add_node(self,node):
+        print "### add_node"
+        tid = node.get_id()
+        path = self.get_path_for_node(node)
+        self.displayed_nodes.append(tid)
+        for r in self.registered_views:
+            r.add_task(tid)
+    
+    def remove_node(self,node,path):
+        print "### remove_node"
+        tid = node.get_id()
+        for r in self.registered_views:
+                r.remove_task(tid,path=path)
+        self.displayed_nodes.remove(tid)
