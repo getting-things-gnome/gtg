@@ -85,11 +85,11 @@ class FilteredTree():
         print "task modified signal"
         node = self.get_node(tid)
         todis = self.__is_displayed(node)
-        curdis = tid in self.displayed_nodes
+        curdis = self.is_displayed(node)
         if todis:
             isroot = self.is_root(node)
             if not curdis:
-                self.displayed_nodes.append(tid)
+                self.add_node(node,is_root)
             self.update_node(node,isroot)
         else:
             self.root_update(node,False)
