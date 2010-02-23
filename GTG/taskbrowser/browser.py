@@ -1752,7 +1752,7 @@ class TaskBrowser:
     def on_task_modified(self, sender, tid):
         if self.logger:
             self.logger.debug("Modify task with ID: %s" % tid)
-        self.task_tree_model.update_task(tid)
+#        self.task_tree_model.update_task(tid)
 #        if self.task_tree_model.remove_task(tid):
 #            self.task_tree_model.add_task(tid)
         self.tag_model.update_tags_for_task(tid)

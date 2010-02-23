@@ -67,7 +67,8 @@ class FiltersBank:
         
     ##########################################
         
-        
+    #FIXME : it seems that this function is called twice
+    # when setting the workview. Shouldn't be the case
     def apply_filter(self,filter_name,parameters=None):
         filt = None
         if filter_name in self.available_filters:
@@ -79,7 +80,7 @@ class FiltersBank:
                 filt.set_parameters(parameters)
             if filter_name not in self.applied_filters:
                 self.applied_filters.append(filter_name)
-            self.tree.refilter()
+                self.tree.refilter()
             return True
         else:
             return False

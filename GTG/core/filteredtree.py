@@ -46,7 +46,7 @@ class FilteredTree():
         self.virtual_root = []
         self.registered_views = []
         self.displayed_nodes = []
-        self.refilter()
+#        self.refilter()
         
     def register_view(self,treemodel):
         if treemodel not in self.registered_views:
@@ -82,7 +82,7 @@ class FilteredTree():
             self.add_node(node,isroot)
         
     def __task_modified(self,sender,tid):
-        print "task modified signal"
+#        print   "task modified signal for %s" %tid
         node = self.get_node(tid)
         todis = self.__is_displayed(node)
         curdis = self.is_displayed(node)
@@ -90,10 +90,14 @@ class FilteredTree():
             isroot = self.is_root(node)
             if not curdis:
                 self.add_node(node,isroot)
-            self.update_node(node,isroot)
+            else:
+                print "calling update node for %s (root:%s)" %(tid,isroot)
+                self.update_node(node,isroot)
+#                self.remove_node(node)
+#                self.add_node(node,isroot)
         else:
-            self.root_update(node,False)
             if curdis:
+                self.root_update(node,False)
                 self.remove_node(node)
         
     def __task_deleted(self,sender,tid):
@@ -158,7 +162,7 @@ class FilteredTree():
                 print "*** node has parent %s" %self.node_parent(node)
                 print "**** node in VR: %s" %(node in self.virtual_root)
                 toreturn = None
-#        print "path for node %s is %s" %(node.get_id(),toreturn)
+#        print "path for nod e %s is %s" %(node.get_id(),toreturn)
         return toreturn
 
     #Done
@@ -315,27 +319,33 @@ class FilteredTree():
             if is_root and n not in virtual_root2:
                 virtual_root2.append(n)
         
-        for n in list(self.displayed_nodes):
-            self.remove_node(self.get_node(n))
+#        for n in list(self.displayed_nodes):
+#            self.remove_node(self.get_node(n))
+        for r in list(self.virtual_root):
+            self._clean_from_node(r)
+        print "After cleaning : displayed are %s" %self.displayed_nodes
+        print "to_add length is %s" %len(to_add)
 #        self.virtual_root = virtual_root2
 #        self.displayed_nodes = list(self.displayed_nodes_tmp)
         for n in to_add:
             isroot = n in virtual_root2
             self.add_node(n,isroot)
-#        for n in to_add:
-#            inroot = n in virtual_root2
-#            self.add_node(n,inroot)
-#        for n in to_update:
-#            inroot = n in virtual_root2
-#            self.update_node(n,inroot)
+        for r in list(self.virtual_root):
+            self._build_from_node(r)
+        for n in list(to_add):
+            if n.get_id() in self.displayed_nodes:
+                to_add.remove(n)
+        for n in to_add:
+            print "node %s was not added !!!" %n.get_id()
+            print "but visibility is : %s" %self.__is_displayed(n)
         print "refiltering : virtual_root is:"
         for r in self.virtual_root :
             print "root %s" %r.get_id()
         print "########## end refilter with %s visible tasks" %len(self.displayed_nodes)
         print "visible tasks are : %s" %self.displayed_nodes
-        for v in self.displayed_nodes:
-            node = self.get_node(v)
-            pa = self.get_path_for_node(node)
+#        for v in self.displayed_nodes:
+#            node = self.get_node(v)
+#            pa = self.get_path_for_node(node)
 #            print "      %s with path %s" %(v,pa)
                 
 #        for n in to_remove:
@@ -347,8 +357,10 @@ class FilteredTree():
 #        for n in to_update:
 #            for r in self.registered_views:
 #                r.update_task(n.get_id()
+        print "## The tree:"
         for r in self.virtual_root:
             self._print_from_node(r)
+        print "### end of tree"
         
             
     def is_root(self,n):
@@ -376,21 +388,21 @@ class FilteredTree():
             r.update_task(tid)
     
     def add_node(self,node,inroot):
-        print "### add_node %s" %node.get_id()
-        self.root_update(node,inroot)
+#        print "### add_node %s" %node.get_id()
         tid = node.get_id()
-#        path = self.get_path_for_node(node)
-        self.displayed_nodes.append(tid)
-        for r in self.registered_views:
-            r.add_task(tid)
+        if tid not in self.displayed_nodes:
+            self.root_update(node,inroot)
+            self.displayed_nodes.append(tid)
+#        for r in self.registered_views:
+#            r.add_task(tid)
     
     def remove_node(self,node):
         tid = node.get_id()
         p = self.get_path_for_node(node)
-        print "### remove_node %s for path %s" %(tid,str(p))
+#        print "### remove_node %s for path %s" %(tid,str(p))
         for r in self.registered_views:
                 removed = r.remove_task(tid,path=p)
-                print "### node %s removed : %s" %(tid,removed)
+#                print "### node %s removed : %s" %(tid,removed)
         self.root_update(node,False)
         self.displayed_nodes.remove(tid)
         
@@ -401,4 +413,24 @@ class FilteredTree():
             child = self.node_children(node)
             while child:
                 self._print_from_node(child,prefix)
+                child = self.next_node(child)
+                
+    def _clean_from_node(self, node):
+        if self.node_has_child(node):
+            child = self.node_children(node)
+            while child:
+                self._clean_from_node(child)
+                child = self.next_node(child)
+        self.remove_node(node)
+        
+    def _build_from_node(self,node):
+        print "### adding %s" %node.get_id()
+        for r in self.registered_views:
+            r.add_task(node.get_id())
+#        print "### %s has child : %s" %(node.get_id(), self.node_has_child(node))
+        if self.node_has_child(node):
+            child = self.node_children(node)
+#            print "### child is %s " %child.get_id()
+            while child:
+                self._build_from_node(child)
                 child = self.next_node(child)

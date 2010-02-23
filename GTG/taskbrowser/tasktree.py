@@ -185,9 +185,10 @@ class TaskTreeModel(gtk.GenericTreeModel):
         task = self.req.get_task(tid)
         if task:
             node_path = self.tree.get_path_for_node(task)
-            if node_path:
-                node_iter = self.get_iter(node_path)
-                self.row_inserted(node_path, node_iter)
+            #if node_path:
+            node_iter = self.get_iter(node_path)
+            print "tasktree add_task %s at %s" %(tid,node_path)
+            self.row_inserted(node_path, node_iter)
 ##        # insert the task in the tree (root)
 ##        #TreeNode
 ##        my_node = task
