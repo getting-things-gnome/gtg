@@ -187,7 +187,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
             node_path = self.tree.get_path_for_node(task)
             #if node_path:
             node_iter = self.get_iter(node_path)
-            print "tasktree add_task %s at %s" %(tid,node_path)
+#            print "tasktree add_task %s at %s" %(tid,node_path)
             self.row_inserted(node_path, node_iter)
 ##        # insert the task in the tree (root)
 ##        #TreeNode
@@ -230,6 +230,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
             node_path = path
 #        self.tree.remove_node(tid)
         if node_path:
+#            print "* tasktree REMOVE %s - %s " %(tid,node_path)
             self.row_deleted(node_path)
             removed = True
         return removed
@@ -472,8 +473,8 @@ class ActiveTaskTreeView(TaskTreeView):
                               timestamp):
 
         model          = treeview.get_model()
-        model_filter   = model.get_model()
-        tasktree_model = model_filter.get_model()
+#        model_filter   = model.get_model()
+        tasktree_model = model.get_model()
 
         drop_info = treeview.get_dest_row_at_pos(x, y)
 
@@ -497,10 +498,10 @@ class ActiveTaskTreeView(TaskTreeView):
 
         # Get parent iter as a TaskTreeModel iter
         if par_iter:
-            par_iter_filter   =\
+            par_iter_tasktree   =\
                 model.convert_iter_to_child_iter(None, par_iter)
-            par_iter_tasktree =\
-                model_filter.convert_iter_to_child_iter(par_iter_filter)
+#            par_iter_tasktree =\
+#                model_filter.convert_iter_to_child_iter(par_iter_filter)
         else:
             par_iter_tasktree = None
 

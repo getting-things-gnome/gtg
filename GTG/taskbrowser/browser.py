@@ -183,14 +183,8 @@ class TaskBrowser:
 #        self.task_tree_model = TaskTreeModel(requester=self.req)
         
         # Active Tasks
-#        self.task_modelfilter.set_visible_func(self.active_task_visible_func)
         self.task_tree_model = TaskTreeModel(self.req)
-        #FIXME : for an unknown reason, our TaskTreeModel needs
-        #to have a TreeModelFilter at all cost, else it doesn't work.
-        #That probably means a bug in our TaskTreeModel
-        #We will not use the TreeModelFilter as we have our own filter
-        task_modelfilter = self.task_tree_model.filter_new()
-        self.task_modelsort = gtk.TreeModelSort(task_modelfilter)
+        self.task_modelsort = gtk.TreeModelSort(self.task_tree_model)
         self.task_modelsort.set_sort_func(\
             tasktree.COL_DDATE, self.dleft_sort_func)
         self.task_modelsort.set_sort_func(\
@@ -723,7 +717,6 @@ class TaskBrowser:
         self.toggle_workview.set_active(tobeset)
         self.priv['workview'] = tobeset
         self.tag_model.set_workview(self.priv['workview'])
-#        self.task_modelfilter.refilter()
         if tobeset:
             self.req.apply_filter('workview')
         else:
@@ -1382,7 +1375,6 @@ class TaskBrowser:
         if len(tags) > 0:
             tags[0].set_attribute("nonworkview", toset)
         if self.priv['workview']:
-#            self.task_modelfilter.refilter()
             self.tag_modelfilter.refilter()
         if not self.dont_reset:
             self.reset_cursor()
@@ -1642,7 +1634,6 @@ class TaskBrowser:
         #When you clic on a tag, you want to unselect the tasks
         self.task_tv.get_selection().unselect_all()
         self.ctask_tv.get_selection().unselect_all()
-#        self.task_modelfilter.refilter()
         self.ctask_modelfilter.refilter()
         self._update_window_title()
 
@@ -1790,7 +1781,6 @@ class TaskBrowser:
         if self.logger:
             self.logger.debug("Trigger refresh on taskbrowser.")
         self.tag_modelfilter.refilter()
-#        self.task_modelfilter.refilter()
 #        self.tags_tv.refresh()
         self._update_window_title()
         self.refresh_lock.release()
@@ -1884,9 +1874,18 @@ class TaskBrowser:
         return tag, notag_only
 
     def get_n_active_tasks(self):
+        def func(model,path,iter):
+            task = model.get_value(iter,tasktree.COL_OBJ)
+            tid = task.get_id()
+            tm_iter = model.convert_iter_to_child_iter(None, iter)
+            tm_p = model.get_model().get_path(tm_iter)
+            print "%%%%%% %s is at %s (%s in tm)(browser.py 1879)" %(tid,str(path),str(tm_p))
+            
         count = 0
+#        model = self.task_tree_model
         model = self.task_modelsort
         c = model.get_iter_first()
+        model.foreach(func)
         while c:
             count = count + 1 + self._count_subtask(model, c)
             c     = model.iter_next(c)
