@@ -167,9 +167,11 @@ class TaskTreeModel(gtk.GenericTreeModel):
         if my_node and my_node.is_loaded():
             node_path = self.tree.get_path_for_node(my_node)
             if node_path:
-                print "**** tasktree update_task %s to path %s" %(tid,str(node_path))
+#                print "**** tasktree update_task %s to path %s" %(tid,str(node_path))
                 node_iter = self.get_iter(node_path)
                 self.row_changed(node_path, node_iter)
+            else: 
+                print "!!!!!!!!! no path for node %s" %tid
         
 #        print "################"
 #        print self.tree.print_tree()
@@ -183,8 +185,9 @@ class TaskTreeModel(gtk.GenericTreeModel):
         task = self.req.get_task(tid)
         if task:
             node_path = self.tree.get_path_for_node(task)
-            node_iter = self.get_iter(node_path)
-            self.row_inserted(node_path, node_iter)
+            if node_path:
+                node_iter = self.get_iter(node_path)
+                self.row_inserted(node_path, node_iter)
 ##        # insert the task in the tree (root)
 ##        #TreeNode
 ##        my_node = task

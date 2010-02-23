@@ -158,7 +158,7 @@ class FilteredTree():
                 print "*** node has parent %s" %self.node_parent(node)
                 print "**** node in VR: %s" %(node in self.virtual_root)
                 toreturn = None
-        print "path for node %s is %s" %(node.get_id(),toreturn)
+#        print "path for node %s is %s" %(node.get_id(),toreturn)
         return toreturn
 
     #Done
@@ -186,6 +186,11 @@ class FilteredTree():
                             nextnode = parent_node.get_nth_child(next_idx)
                 else:
                     nextnode = None
+            if nextnode:
+                id = nextnode.get_id()
+            else:
+                id = None
+#            print "### Nextnode of %s is %s"%(node.get_id(),id)
         else:
             nextnode = None
         return nextnode
@@ -214,10 +219,10 @@ class FilteredTree():
 
     #Done
     def node_n_children(self, node):
-        #print "on_iter_n_children for node %s" %node
         #we should return the number of "good" children
         if not node:
             toreturn = len(self.virtual_root)
+            id = 'root'
         else:
             n = 0
             for cid in node.get_children():
@@ -225,6 +230,8 @@ class FilteredTree():
                 if self.is_displayed(c):
                     n+= 1
             toreturn = n
+            id = node.get_id()
+#        print "on_iter_n_children for node %s : %s" %(id,toreturn)
         return toreturn
 
     #Done
@@ -247,6 +254,7 @@ class FilteredTree():
                         toreturn = curn
                     good += 1
                 cur += 1
+#            print "** %s is the %s th child of %s" %(toreturn.get_id(),n,node.get_id())
         return toreturn
 
     #Done
@@ -328,7 +336,7 @@ class FilteredTree():
         for v in self.displayed_nodes:
             node = self.get_node(v)
             pa = self.get_path_for_node(node)
-            print "      %s with path %s" %(v,pa)
+#            print "      %s with path %s" %(v,pa)
                 
 #        for n in to_remove:
 #            for r in self.registered_views:
@@ -338,7 +346,10 @@ class FilteredTree():
 #                r.add_task(n.get_id())
 #        for n in to_update:
 #            for r in self.registered_views:
-#                r.update_task(n.get_id())
+#                r.update_task(n.get_id()
+        for r in self.virtual_root:
+            self._print_from_node(r)
+        
             
     def is_root(self,n):
         is_root = True
@@ -360,12 +371,12 @@ class FilteredTree():
     def update_node(self,node,inroot):
         self.root_update(node,inroot)
         tid = node.get_id()
-        print "### update_node %s (inroot=%s)" %(tid,inroot)
+#        print "### update_node %s (inroot=%s)" %(tid,inroot)
         for r in self.registered_views:
             r.update_task(tid)
     
     def add_node(self,node,inroot):
-        print "### add_node"
+        print "### add_node %s" %node.get_id()
         self.root_update(node,inroot)
         tid = node.get_id()
 #        path = self.get_path_for_node(node)
@@ -382,3 +393,12 @@ class FilteredTree():
                 print "### node %s removed : %s" %(tid,removed)
         self.root_update(node,False)
         self.displayed_nodes.remove(tid)
+        
+    def _print_from_node(self, node, prefix=""):
+        print prefix + node.get_id()
+        prefix = prefix + "->"
+        if self.node_has_child(node):
+            child = self.node_children(node)
+            while child:
+                self._print_from_node(child,prefix)
+                child = self.next_node(child)
