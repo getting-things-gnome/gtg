@@ -80,6 +80,8 @@ class FilteredTree():
         if todis:
             isroot = self.is_root(node)
             self.add_node(node,isroot)
+        for r in self.registered_views:
+            r.add_task(tid)
         
     def __task_modified(self,sender,tid):
 #        print   "task modified signal for %s" %tid
@@ -93,8 +95,6 @@ class FilteredTree():
             else:
 #                print "calling update node for %s (root:%s)" %(tid,isroot)
                 self.update_node(node,isroot)
-#                self.remove_node(node)
-#                self.add_node(node,isroot)
         else:
             if curdis:
                 self.root_update(node,False)
@@ -119,6 +119,7 @@ class FilteredTree():
             pa = path[1:]
             toreturn = self.__node_for_path(n1,pa)
         else:
+            print "The node is NONE"
             toreturn = None
 #        if toreturn:
 #            id = toreturn.get_id()
@@ -213,6 +214,7 @@ class FilteredTree():
             if self.node_has_child(parent):
                  child = self.node_nth_child(parent,0)
             else:
+                #The spec says that the child can be None
                 child = None
         else:
             child = self.virtual_root[0]
@@ -267,6 +269,8 @@ class FilteredTree():
                     good += 1
                 cur += 1
 #            print "** %s is the %s th child of %s" %(toreturn.get_id(),n,node.get_id())
+        if not toreturn:
+            print "The nth node is NONE"
         return toreturn
 
     #Done
@@ -274,15 +278,18 @@ class FilteredTree():
         #return None if we are at a Virtual root
 #        print "node %s in virtual_root %s" %(node.get_id(),self.virtual_root)
         if node and node in self.virtual_root:
+            print "The parent is NONE"
             return None
         elif node and node.has_parent():
             parent_id = node.get_parent()
             parent = self.tree.get_node(parent_id)
             if parent == self.tree.get_root():
+                print "The parent is NONE"
                 return None
             else:
                 return parent
         else:
+            print "The parent is NONE"
             return None
 
 
@@ -335,14 +342,16 @@ class FilteredTree():
 #        print "to_add length is %s" %len(to_add)
 #        self.virtual_root = virtual_root2
 #        self.displayed_nodes = list(self.displayed_nodes_tmp)
+
         for n in to_add:
             isroot = n in virtual_root2
             self.add_node(n,isroot)
         for r in list(self.virtual_root):
             self._build_from_node(r)
-        for n in list(to_add):
-            if n.get_id() in self.displayed_nodes:
-                to_add.remove(n)
+
+#        for n in list(to_add):
+#            if n.get_id() in self.displayed_nodes:
+#                to_add.remove(n)
 #        for n in to_add:
 #            print "node %s was not added !!!" %n.get_id()
 #            print "but visibility is : %s" %self.__is_displayed(n)

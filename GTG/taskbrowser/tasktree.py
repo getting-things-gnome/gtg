@@ -77,6 +77,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
 ### TREEMODEL INTERFACE ######################################################
 #
     def on_get_flags(self):
+#        return 0
         return gtk.TREE_MODEL_ITERS_PERSIST
 
     def on_get_n_columns(self):
@@ -179,7 +180,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
 #        print "root children = %s" %self.tree.get_root().get_children()
         
     def add_task(self, tid):
-#        print "tasktree add_task %s" %tid
+        print "tasktree add_task %s" %tid
 ##        nodes = []
 ##        # get the task
         task = self.req.get_task(tid)
@@ -220,7 +221,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
 ##                self.row_has_child_toggled(node_path, node_iter)
 
     def remove_task(self, tid,path=None):
-#        print "tasktree remove_task"
+        print "tasktree remove_task %s" %tid
         node = self.tree.get_node(tid)
         removed = False
 #        # Remove every row of this task

@@ -1726,13 +1726,13 @@ class TaskBrowser:
     def on_task_added(self, sender, tid):
         if self.logger:
             self.logger.debug("Add task with ID: %s" % tid)
-        self.task_tree_model.add_task(tid)
+#        self.task_tree_model.add_task(tid)
         #no need to do more as task_modified will be called anyway
         
     def on_task_deleted(self, sender, tid):
         if self.logger:
             self.logger.debug("Delete task with ID: %s" % tid)
-        self.task_tree_model.remove_task(tid)
+#        self.task_tree_model.remove_task(tid)
         self.tags_tv.refresh()
         self._update_window_title()
         #if the modified task is active, we have to refresh everything
