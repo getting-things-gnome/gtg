@@ -1879,6 +1879,7 @@ class TaskBrowser:
             tid = task.get_id()
             tm_iter = model.convert_iter_to_child_iter(None, iter)
             tm_p = model.get_model().get_path(tm_iter)
+#            model.rows_reordered(path,iter,[])
             print "%%%%%% %s is at %s (%s in tm)(browser.py 1879)" %(tid,str(path),str(tm_p))
             
         count = 0

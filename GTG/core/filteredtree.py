@@ -110,15 +110,21 @@ class FilteredTree():
     #The path received is only for tasks that are displayed
     #We have to find the good node.
     def get_node_for_path(self, path):
-        #print "get_node for path %s" %str(path)
         #We should convert the path to the base.path
+        if str(path) == '()':
+            print "WE SHOULD RETURN ROOT NODE"
         p0 = path[0]
         if len(self.virtual_root) > p0:
             n1 = self.virtual_root[p0]
-            path = path[1:]
-            toreturn = self.__node_for_path(n1,path)
+            pa = path[1:]
+            toreturn = self.__node_for_path(n1,pa)
         else:
             toreturn = None
+#        if toreturn:
+#            id = toreturn.get_id()
+#        else:
+#            id = "!!!PAS DE NODE!!!"
+#        print "get_node %s for path %s" %(id,str(path))
         return toreturn
     #done
     def __node_for_path(self,basenode,path):
@@ -219,6 +225,8 @@ class FilteredTree():
         if node and self.node_n_children(node)>0:
             return True
         else:
+            if not node:
+                print "NODE IS NULL, we should maybe return True"
             return False
 
     #Done
