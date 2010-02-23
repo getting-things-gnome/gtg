@@ -89,7 +89,7 @@ class FilteredTree():
         if todis:
             isroot = self.is_root(node)
             if not curdis:
-                self.add_node(node,is_root)
+                self.add_node(node,isroot)
             self.update_node(node,isroot)
         else:
             self.root_update(node,False)
@@ -158,7 +158,7 @@ class FilteredTree():
                 print "*** node has parent %s" %self.node_parent(node)
                 print "**** node in VR: %s" %(node in self.virtual_root)
                 toreturn = None
-#        print "path for node %s is %s" %(node.get_id(),toreturn)
+        print "path for node %s is %s" %(node.get_id(),toreturn)
         return toreturn
 
     #Done
@@ -269,7 +269,7 @@ class FilteredTree():
     #### Filtering methods #########
     
     def is_displayed(self,node):
-        print "public is_displayed"
+#        print "public is_displayed"
         if node:
             tid = node.get_id()
             return tid in self.displayed_nodes
@@ -278,7 +278,7 @@ class FilteredTree():
         return toreturn
     
     def __is_displayed(self,node):
-        print "___private is_displayed"
+#        print "___private is_displayed"
         if node:
             return self.req.is_displayed(node)
         else:
@@ -320,6 +320,21 @@ class FilteredTree():
         for r in self.virtual_root :
             print "root %s" %r.get_id()
         print "########## end refilter with %s visible tasks" %len(self.displayed_nodes)
+        print "visible tasks are : %s" %self.displayed_nodes
+        for v in self.displayed_nodes:
+            node = self.get_node(v)
+            pa = self.get_path_for_node(node)
+            print "      %s with path %s" %(v,pa)
+                
+#        for n in to_remove:
+#            for r in self.registered_views:
+#                r.remove_task(n.get_id())
+#        for n in to_add:
+#            for r in self.registered_views:
+#                r.add_task(n.get_id())
+#        for n in to_update:
+#            for r in self.registered_views:
+#                r.update_task(n.get_id())
             
     def is_root(self,n):
         is_root = True
@@ -339,9 +354,9 @@ class FilteredTree():
                 self.virtual_root.remove(node)
     
     def update_node(self,node,inroot):
-        print "### update_node"
         self.root_update(node,inroot)
         tid = node.get_id()
+        print "### update_node %s (inroot=%s)" %(tid,inroot)
         for r in self.registered_views:
             r.update_task(tid)
     
@@ -355,10 +370,11 @@ class FilteredTree():
             r.add_task(tid)
     
     def remove_node(self,node,path=None):
-        print "### remove_node %s" %path
         tid = node.get_id()
         p = self.get_path_for_node(node)
+        print "### remove_node %s for path %s" %(tid,str(p))
         for r in self.registered_views:
-                r.remove_task(tid,path=p)
+                removed = r.remove_task(tid,path=p)
+                print "### node %s removed : %s" %(tid,removed)
         self.root_update(node,False)
         self.displayed_nodes.remove(tid)

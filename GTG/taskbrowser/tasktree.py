@@ -162,12 +162,12 @@ class TaskTreeModel(gtk.GenericTreeModel):
 
     def update_task(self, tid):
 #        # get the node and signal it's changed
-        print "tasktree update_task"
+#        print "tasktree update_task"
         my_node = self.tree.get_node(tid)
         if my_node and my_node.is_loaded():
             node_path = self.tree.get_path_for_node(my_node)
             if node_path:
-#                print "dummy update_task %s tasktree" %tid
+                print "**** tasktree update_task %s to path %s" %(tid,str(node_path))
                 node_iter = self.get_iter(node_path)
                 self.row_changed(node_path, node_iter)
         
@@ -177,7 +177,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
 #        print "root children = %s" %self.tree.get_root().get_children()
         
     def add_task(self, tid):
-        print "tasktree add_task %s" %tid
+#        print "tasktree add_task %s" %tid
 ##        nodes = []
 ##        # get the task
         task = self.req.get_task(tid)
@@ -216,7 +216,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
 ##                self.row_has_child_toggled(node_path, node_iter)
 
     def remove_task(self, tid,path=None):
-        print "tasktree remove_task"
+#        print "tasktree remove_task"
         node = self.tree.get_node(tid)
         removed = False
 #        # Remove every row of this task
