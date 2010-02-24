@@ -77,7 +77,8 @@ class FilteredTree():
         print "task added signal"
         node = self.get_node(tid)
         todis = self.__is_displayed(node)
-        if todis:
+        curdis = self.is_displayed(node)
+        if todis and not curdis:
             isroot = self.is_root(node)
             self.add_node(node,isroot)
 #        for r in self.registered_views:
@@ -382,13 +383,13 @@ class FilteredTree():
             r.update_task(tid)
     
     def add_node(self,node,inroot):
-#        print "### add_node %s" %node.get_id()
+        print "### add_node %s" %node.get_id()
         tid = node.get_id()
-        if tid not in self.displayed_nodes:
+        if not self.is_displayed(node):
             self.root_update(node,inroot)
             self.displayed_nodes.append(tid)
-        for r in self.registered_views:
-            r.add_task(tid)
+            for r in self.registered_views:
+                r.add_task(tid)
     
     def remove_node(self,node):
         tid = node.get_id()
@@ -419,7 +420,7 @@ class FilteredTree():
         
     def _build_from_node(self,node):
 #        print "### adding %s" %node.get_id()
-        for r in self.registered_views:
+#        for r in self.registered_views:
 #            r.add_task(node.get_id())
 #        print "### %s has child : %s" %(node.get_id(), self.node_has_child(node))
         if self.node_has_child(node):
