@@ -253,21 +253,13 @@ class TaskTreeModel(gtk.GenericTreeModel):
 ##                self.row_has_child_toggled(node_path, node_iter)
 
     def remove_task(self, tid):
-        print "tasktree remove_task %s" %tid
+        #print "tasktree remove_task %s" %tid
         node = self.tree.get_node(tid)
         removed = False
-#        # Remove every row of this task
         node_path = self.tree.get_path_for_node(node)
-#        self.tree.remove_node(tid)
         if node_path:
 #            print "* tasktree REMOVE %s - %s " %(tid,node_path)
             self.row_deleted(node_path)
-#            parent = self.tree.node_parent(node)
-#            if parent:
-#                par_path = self.tree.get_path_for_node(parent)
-#                par_iter = self.get_iter(par_path)
-#                    print "tasktree child toogled %s" %tid
-#                self.row_has_child_toggled(par_path, par_iter)
             removed = True
         return removed
                     
@@ -601,12 +593,13 @@ class ClosedTaskTreeView(TaskTreeView):
         self.set_show_expanders(False)
 
     def scroll_to_task(self, task_id):
-        model = self.get_model()
-        iter = model.get_iter_first()
-        while iter:
-            if model.get_value(iter, 1).get_id() == task_id:
-                break
-            iter = model.iter_next(iter)
-        self.scroll_to_cell(model.get_path(iter),
-                        self.tag_col,
-                        False)
+        print "scroll to task does nothing : remove it"
+#        model = self.get_model()
+#        iter = model.get_iter_first()
+#        while iter:
+#            if model.get_value(iter, 1).get_id() == task_id:
+#                break
+#            iter = model.iter_next(iter)
+#        self.scroll_to_cell(model.get_path(iter),
+#                        self.tag_col,
+#                        False)

@@ -32,6 +32,18 @@
 # To be more efficient, a quick way to optimize the FilteredTree is to cache
 # all answers in a dictionnary so we don't have to compute the answer 
 # all the time. This is not done yet.
+#
+# Warning : this is very fragile. Calls to any GTK registered view should be
+# perfecly in sync with changes in the underlying model.
+# We definitely should develop some unit tests for this class.
+
+# Structure of the source :
+#
+# 1) Standard tree functions mapping (get_node, get_all_nodes, get_all_keys)
+# 2) Receiving signal functions ( task-added,task-modified,task-deleted)
+# 3) Treemodel helper functions. To make it easy to build a treemodel on top.
+# 4) Filtering : is_displayed() and refilter()
+# 5) Private helpers.
 
 class FilteredTree():
 
@@ -46,6 +58,7 @@ class FilteredTree():
         self.virtual_root = []
         self.registered_views = []
         self.displayed_nodes = []
+        #it looks like an initial refilter is not needed.
 #        self.refilter()
         
     #add here your view if you want to keep informed about changes in the tree
@@ -84,8 +97,8 @@ class FilteredTree():
         todis = self.__is_displayed(node)
         curdis = self.is_displayed(node)
         if todis and not curdis:
-            isroot = self.is_root(node)
-            self.add_node(node,isroot)
+            isroot = self.__is_root(node)
+            self.__add_node(node,isroot)
         
     def __task_modified(self,sender,tid):
 #        print   "task modified signal for %s" %tid
@@ -93,25 +106,25 @@ class FilteredTree():
         todis = self.__is_displayed(node)
         curdis = self.is_displayed(node)
         if todis:
-            isroot = self.is_root(node)
+            isroot = self.__is_root(node)
             #if the task was not displayed previously but now should
             #we add it.
             if not curdis:
-                self.add_node(node,isroot)
+                self.__add_node(node,isroot)
             #There doesn't seem to be a need for calling the update_node
             #else:
             #    print "calling update node for %s (root:%s)" %(tid,isroot)
-            #    self.update_node(node,isroot)
+            #    self.__update_node(node,isroot)
         else:
             #if the task was displayed previously but shouldn't be anymore
             #we remove it
             if curdis:
-                self.remove_node(node)
+                self.__remove_node(node)
         
     def __task_deleted(self,sender,tid):
 #        print "task deleted signal"
         node = self.get_node(tid)
-        self.remove_node(node)
+        self.__remove_node(node)
         
     ####TreeModel functions ##############################
 
@@ -289,8 +302,9 @@ class FilteredTree():
 
     #### Filtering methods #########
     
+    # This is a public method that return True if the task is
+    # currently displayed in the tree
     def is_displayed(self,node):
-#        print "public is_displayed"
         if node:
             tid = node.get_id()
             return tid in self.displayed_nodes
@@ -298,13 +312,16 @@ class FilteredTree():
             toreturn = False
         return toreturn
     
+    # This is a private method that return True if the task *should*
+    # be displayed in the tree, regardless of its current status
     def __is_displayed(self,node):
-#        print "___private is_displayed"
         if node:
             return self.req.is_displayed(node)
         else:
             return False
         
+    # This rebuild the tree from scratch. It should be called only when 
+    # The filter is changed. (only filters_bank should call it.
     def refilter(self):
         print "######### Starting refilter"
         virtual_root2 = []
@@ -315,7 +332,7 @@ class FilteredTree():
             is_root = False
             if self.__is_displayed(n):
                 to_add.append(n)
-                is_root = self.is_root(n)
+                is_root = self.__is_root(n)
             #and we care about those who will be virtual roots
             #(their parents are not displayed)
             if is_root and n not in virtual_root2:
@@ -324,7 +341,7 @@ class FilteredTree():
         #Second step, we empty the current tree as we will rebuild it
         #from scratch
         for r in list(self.virtual_root):
-            self._clean_from_node(r)
+            self.__clean_from_node(r)
 
         #Here, we reconstruct our filtered trees. It  cannot be random
         # Parents should be added before their children
@@ -332,7 +349,7 @@ class FilteredTree():
         for n in list(to_add):
             isroot = n in virtual_root2
             if isroot:
-                self.add_node(n,isroot)
+                self.__add_node(n,isroot)
                 to_add.remove(n)
         #Now, we add other nodes. We add a node only if its parent
         #is already added.
@@ -343,15 +360,18 @@ class FilteredTree():
                 pos = 0
             n = to_add[pos]
             if self.node_parent(n):
-                self.add_node(n,False)
+                self.__add_node(n,False)
                 to_add.remove(n)
                 pos = 0
             else:
                 pos += 1
         #end of refiltering
         
-            
-    def is_root(self,n):
+    ####### Private methods #################
+    
+    # Return True if the node should be a virtual root node
+    # regardless of the current state
+    def __is_root(self,n):
         is_root = True
         if n.has_parent():
             for par in n.get_parents():
@@ -360,7 +380,8 @@ class FilteredTree():
                     is_root = False
         return is_root
     
-    def root_update(self,node,inroot):
+    # Put or remove a node from the virtual root
+    def __root_update(self,node,inroot):
         if inroot:
             if node not in self.virtual_root:
                 self.virtual_root.append(node)
@@ -368,35 +389,36 @@ class FilteredTree():
             if node in self.virtual_root:
                 self.virtual_root.remove(node)
     
-    def update_node(self,node,inroot):
-        self.root_update(node,inroot)
+    def __update_node(self,node,inroot):
+        self.__root_update(node,inroot)
         tid = node.get_id()
 #        print "### update_node %s (inroot=%s)" %(tid,inroot)
         for r in self.registered_views:
             r.update_task(tid)
     
-    def add_node(self,node,inroot):
-        print "### add_node %s" %node.get_id()
+    def __add_node(self,node,inroot):
+        #print "### add_node %s" %node.get_id()
         tid = node.get_id()
         if not self.is_displayed(node):
-            self.root_update(node,inroot)
+            self.__root_update(node,inroot)
             self.displayed_nodes.append(tid)
             for r in self.registered_views:
                 r.add_task(tid)
     
-    def remove_node(self,node):
+    def __remove_node(self,node):
         tid = node.get_id()
         for r in self.registered_views:
                 removed = r.remove_task(tid)
-        self.root_update(node,False)
+        self.__root_update(node,False)
         if tid in self.displayed_nodes:
             self.displayed_nodes.remove(tid)
         parent = self.node_parent(node)
         if parent:
-            inroot = self.is_root(parent)
-            self.update_node(parent,inroot)
+            inroot = self.__is_root(parent)
+            self.__update_node(parent,inroot)
         
-    def _print_from_node(self, node, prefix=""):
+    #This function print the actual tree. Useful for debugging
+    def __print_from_node(self, node, prefix=""):
         print prefix + node.get_id()
         prefix = prefix + "->"
         if self.node_has_child(node):
@@ -404,23 +426,13 @@ class FilteredTree():
             while child:
                 self._print_from_node(child,prefix)
                 child = self.next_node(child)
-                
-    def _clean_from_node(self, node):
+    
+    #This function removes all the nodes, leaves first.
+    def __clean_from_node(self, node):
         if self.node_has_child(node):
             child = self.node_children(node)
             while child:
-                self._clean_from_node(child)
+                self.__clean_from_node(child)
                 child = self.next_node(child)
-        self.remove_node(node)
-        
-    def _build_from_node(self,node):
-#        print "### adding %s" %node.get_id()
-#        for r in self.registered_views:
-#            r.add_task(node.get_id())
-#        print "### %s has child : %s" %(node.get_id(), self.node_has_child(node))
-        if self.node_has_child(node):
-            child = self.node_children(node)
-#            print "### child is %s " %child.get_id()
-            while child:
-                self._build_from_node(child)
-                child = self.next_node(child)
+        self.__remove_node(node)
+
