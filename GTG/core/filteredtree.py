@@ -109,21 +109,17 @@ class FilteredTree():
         todis = self.__is_displayed(tid)
         curdis = self.is_displayed(tid)
         if todis and not curdis:
-            node = self.get_node(tid)
-            isroot = self.__is_root(node)
-            self.__add_node(tid,isroot)
+            self.__add_node(tid)
         
     def __task_modified(self,sender,tid):
 #        print   "task modified signal for %s" %tid
         todis = self.__is_displayed(tid)
         curdis = self.is_displayed(tid)
         if todis:
-            node = self.get_node(tid)
-            isroot = self.__is_root(node)
             #if the task was not displayed previously but now should
             #we add it.
             if not curdis:
-                self.__add_node(tid,isroot)
+                self.__add_node(tid)
             #There doesn't seem to be a need for calling the update_node
             #else:
             #    print "calling update node for %s (root:%s)" %(tid,isroot)
@@ -380,23 +376,7 @@ class FilteredTree():
         for nid in list(to_add):
             isroot = nid in virtual_root2
             self.__add_node(nid,isroot)
-#            if isroot:
-#                self.__add_node(n,isroot)
-#                to_add.remove(n)
-#        #Now, we add other nodes. We add a node only if its parent
-#        #is already added.
-#        pos = 0
-#        while len(to_add) > 0:
-#            if pos >= len(to_add):
-#                print "This should not happen: to_add is not emptied !"
-#                pos = 0
-#            n = to_add[pos]
-#            if self.node_parent(n):
-#                self.__add_node(n,False)
-#                to_add.remove(n)
-#                pos = 0
-#            else:
-#                pos += 1
+
         #end of refiltering
         
     ####### Change filters #################
@@ -444,12 +424,14 @@ class FilteredTree():
         for r in self.registered_views:
             r.update_task(tid)
     
-    def __add_node(self,tid,inroot):
+    def __add_node(self,tid,inroot=None):
         self.add_count += 1
         
         #print "### add_node %s" %node.get_id()
         if not self.is_displayed(tid):
             node = self.get_node(tid)
+            if inroot == None:
+                inroot = self.__is_root(node)
             #If the parent's node is not already displayed, we wait
             if not inroot and not self.node_parent(node):
                 self.node_to_add.append(tid)
