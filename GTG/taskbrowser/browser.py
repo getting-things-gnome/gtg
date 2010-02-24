@@ -1888,7 +1888,7 @@ class TaskBrowser:
 #        model = self.task_tree_model
         model = self.task_modelsort
         c = model.get_iter_first()
-        model.foreach(func)
+#        model.foreach(func)
         while c:
             count = count + 1 + self._count_subtask(model, c)
             c     = model.iter_next(c)
