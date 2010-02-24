@@ -53,9 +53,6 @@ class FilteredTree():
         self.applied_filters = []
         self.req = req
         self.tree = tree
-        self.req.connect("task-added", self.__task_added)
-        self.req.connect("task-modified", self.__task_modified)
-        self.req.connect("task-deleted", self.__task_deleted)
         #virtual root is the list of root nodes
         #initially, they are the root nodes of the original tree
         self.virtual_root = []
@@ -64,7 +61,16 @@ class FilteredTree():
         #useful for temp storage :
         self.node_to_add = []
         #it looks like an initial refilter is not needed.
-#        self.refilter()
+        #self.refilter()
+        self.__reset_cache()
+        #connecting
+        self.req.connect("task-added", self.__task_added)
+        self.req.connect("task-modified", self.__task_modified)
+        self.req.connect("task-deleted", self.__task_deleted)
+
+
+    def __reset_cache(self):
+        self.path_for_node_cache = {}
         
     #add here your view if you want to keep informed about changes in the tree
     #the view have to implement the following functions:
@@ -168,6 +174,9 @@ class FilteredTree():
         #For that node, we should convert the base_path to path
         if not node or not self.is_displayed(node):
             return None
+        #This is the cache so we don't compute it all the time
+        elif self.path_for_node_cache.has_key(node):
+            return self.path_for_node_cache[node]
         elif node == self.get_root():
             toreturn = ()
         elif node in self.virtual_root:
@@ -188,6 +197,8 @@ class FilteredTree():
                 print "*** Node %s not in vr and no path for parent" %(node.get_id())
                 print "*** please report a bug against FilteredTree"
                 toreturn = None
+        #print "get_path_for_node %s is %s" %(node.get_id(),str(toreturn))
+        self.path_for_node_cache[node] = toreturn
         return toreturn
 
     #Done
@@ -359,6 +370,7 @@ class FilteredTree():
         #from scratch
         for r in list(self.virtual_root):
             self.__clean_from_node(r)
+        self.__reset_cache()
 
         #Here, we reconstruct our filtered trees. It  cannot be random
         # Parents should be added before their children
