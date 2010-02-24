@@ -255,8 +255,8 @@ class TaskBrowser:
     def _init_ui_widget(self):
         # The Active tasks treeview
         self.task_tv = ActiveTaskTreeView()
-        self.task_tv.set_model(self.task_tree_model)
-#        self.task_tv.set_model(self.task_modelsort)
+#        self.task_tv.set_model(self.task_tree_model)
+        self.task_tv.set_model(self.task_modelsort)
         self.main_pane.add(self.task_tv)
 
         # The done/dismissed taks treeview
