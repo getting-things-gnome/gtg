@@ -189,12 +189,13 @@ class TaskTreeModel(gtk.GenericTreeModel):
 #                print "**** tasktree update_task %s to path %s" %(tid,str(node_path))
                 node_iter = self.get_iter(node_path)
                 self.row_changed(node_path, node_iter)
-                parent = self.tree.node_parent(task)
-                if parent:
-                    par_path = self.tree.get_path_for_node(parent)
-                    par_iter = self.get_iter(par_path)
-#                    print "tasktree child toogled %s" %tid
-                    self.row_has_child_toggled(par_path, par_iter)
+                self.row_has_child_toggled(node_path, node_iter)
+#                parent = self.tree.node_parent(my_node)
+#                if parent:
+#                    par_path = self.tree.get_path_for_node(parent)
+#                    par_iter = self.get_iter(par_path)
+##                    print "tasktree child toogled %s" %tid
+#                    self.row_has_child_toggled(par_path, par_iter)
             else: 
                 print "!!!!!!!!! no path for node %s" %tid
         

@@ -72,7 +72,7 @@ class FilteredTree():
             k.append(n.get_id())
         return k
         
-    ### update functions
+    ### signals functions
     def __task_added(self,sender,tid):
 #        print "task added signal"
         node = self.get_node(tid)
@@ -85,21 +85,25 @@ class FilteredTree():
 #            r.add_task(tid)
         
     def __task_modified(self,sender,tid):
-#        print   "task modified signal for %s" %tid
+        print   "task modified signal for %s" %tid
         node = self.get_node(tid)
-#        todis = self.__is_displayed(node)
-#        curdis = self.is_displayed(node)
-#        if todis:
-#            isroot = self.is_root(node)
-#            if not curdis:
-#                self.add_node(node,isroot)
-#            else:
-##                print "calling update node for %s (root:%s)" %(tid,isroot)
-#            self.update_node(node,isroot)
-#        else:
-#            if curdis:
-#                self.root_update(node,False)
-#                self.remove_node(node)
+        todis = self.__is_displayed(node)
+        curdis = self.is_displayed(node)
+        if todis:
+            isroot = self.is_root(node)
+            #if the task was not displayed previously but now should
+            #we add it.
+            if not curdis:
+                self.add_node(node,isroot)
+            #There doesn't seem to be a need for calling the update_node
+            #else:
+            #    print "calling update node for %s (root:%s)" %(tid,isroot)
+            #    self.update_node(node,isroot)
+        else:
+            #if the task was displayed previously but shouldn't be anymore
+            #we remove it
+            if curdis:
+                self.remove_node(node)
         
     def __task_deleted(self,sender,tid):
 #        print "task deleted signal"
@@ -284,8 +288,10 @@ class FilteredTree():
             parent = self.tree.get_node(parent_id)
             if parent == self.tree.get_root():
                 return None
-            else:
+            elif self.is_displayed(parent):
                 return parent
+            else:
+                return None
         else:
             return None
 
@@ -312,35 +318,46 @@ class FilteredTree():
         print "######### Starting refilter"
         virtual_root2 = []
         to_add = []
-        to_update = []
-        to_remove = []
+        #First things, we list the nodes that will be
+        #ultimately displayed
         for n in self.tree.get_all_nodes():
             is_root = False
             if self.__is_displayed(n):
-                if self.is_displayed(n):
-                    to_update.append(n)
-                    to_add.append(n)
-                else:
-                    to_add.append(n)
+                to_add.append(n)
                 is_root = self.is_root(n)
-            else:
-                if self.is_displayed(n):
-                    p = self.get_path_for_node(n)
-                    to_remove.append((n,p))
-                
+            #and we care about those who will be virtual roots
+            #(their parents are not displayed)
             if is_root and n not in virtual_root2:
                 virtual_root2.append(n)
         
+        #Second step, we empty the current tree as we will rebuild it
+        #from scratch
         for r in list(self.virtual_root):
             self._clean_from_node(r)
 
-#        print "After cleaning : displayed are %s" %self.displayed_nodes
-#        print "to_add length is %s" %len(to_add)
-
-        #The bug is here
+        #Here, we reconstruct our filtered trees. It  cannot be random
+        # Parents should be added before their children
+        #First, we start we the nodes in the virtual root
         for n in list(to_add):
             isroot = n in virtual_root2
-            self.add_node(n,isroot)
+            if isroot:
+                self.add_node(n,isroot)
+                to_add.remove(n)
+        #Now, we add other nodes. We add a node only if its parent
+        #is already added.
+        pos = 0
+        while len(to_add) > 0:
+            if pos >= len(to_add):
+                print "This should not happen: to_add is not emptied !"
+                pos = 0
+            n = to_add[pos]
+            if self.node_parent(n):
+                self.add_node(n,False)
+                to_add.remove(n)
+                pos = 0
+            else:
+                pos += 1
+        #end of refiltering
         
             
     def is_root(self,n):
@@ -368,7 +385,7 @@ class FilteredTree():
             r.update_task(tid)
     
     def add_node(self,node,inroot):
-#        print "### add_node %s" %node.get_id()
+        print "### add_node %s" %node.get_id()
         tid = node.get_id()
         if not self.is_displayed(node):
             self.root_update(node,inroot)
@@ -379,13 +396,17 @@ class FilteredTree():
     def remove_node(self,node):
         tid = node.get_id()
         p = self.get_path_for_node(node)
-#        print "### remove_node %s for path %s" %(tid,str(p))
+        print "### remove_node %s for path %s" %(tid,str(p))
         for r in self.registered_views:
                 removed = r.remove_task(tid,path=p)
 #                print "### node %s removed : %s" %(tid,removed)
         self.root_update(node,False)
         if tid in self.displayed_nodes:
             self.displayed_nodes.remove(tid)
+        parent = self.node_parent(node)
+        if parent:
+            inroot = self.is_root(parent)
+            self.update_node(parent,inroot)
         
     def _print_from_node(self, node, prefix=""):
         print prefix + node.get_id()
