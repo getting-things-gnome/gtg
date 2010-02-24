@@ -82,26 +82,28 @@ class TagStore(Tree):
         if not self.has_node(tname):
             tag = Tag(tname, save_cllbk=self.save, req=self.req)
             self.add_node(tag)
+            self.req.add_filter()
             #self.tags[tname] = tag
         return self.get_node(tname)
 
-    def add_tag(self, tag):
-        name = tag.get_name()
-        #If tag does not exist in the store, we add it
-        if not self.has_node(name):
-            self.add_node(name,tag)
-            #self.tags[name] = tag
-        #else, we just take the attributes of the new tag
-        #This allow us to keep attributes of the old tag
-        #that might be not set in the new one
-        else:
-            atts = tag.get_all_attributes()
-            oldtag = self.get_node(name)
-            for att_name in atts:
-                val = tag.get_attribute(att_name)
-                if att_name != 'name' and val:
-                    #self.tags[name].set_attribute(att_name, val)
-                    oldtag.set_attribute(att_name, val)
+#   Is this thing used ? What does it do ?
+#    def add_tag(self, tag):
+#        name = tag.get_name()
+#        #If tag does not exist in the store, we add it
+#        if not self.has_node(name):
+#            self.add_node(name,tag)
+#            #self.tags[name] = tag
+#        #else, we just take the attributes of the new tag
+#        #This allow us to keep attributes of the old tag
+#        #that might be not set in the new one
+#        else:
+#            atts = tag.get_all_attributes()
+#            oldtag = self.get_node(name)
+#            for att_name in atts:
+#                val = tag.get_attribute(att_name)
+#                if att_name != 'name' and val:
+#                    #self.tags[name].set_attribute(att_name, val)
+#                    oldtag.set_attribute(att_name, val)
 
     def get_tag(self, tagname):
         if tagname[0] != "@":
