@@ -65,15 +65,19 @@ class FiltersBank:
         
     ######### hardcoded filters #############
     def is_leaf(self,task):
-        if task.has_child():
-            return False
-        else:
-            return True
+        return not task.has_child()
+    
+    def is_workable(self,task):
+        return task.is_workable()
             
     def workview(self,task):
-        return self.is_leaf(task)
+        wv = self.is_workable(task) 
+        wv = wv and self.active(task)
+        wv = wv and task.is_started()
+        return wv
         
     def active(self,task):
+        #FIXME: we should also handle unactive tags
         return task.get_status() == self.STA_ACTIVE
         
     def closed(self,task):
