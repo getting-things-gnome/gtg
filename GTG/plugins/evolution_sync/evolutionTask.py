@@ -18,7 +18,6 @@ import sys
 import os
 import time
 import datetime
-import evolution
 
 #Add this file's directory to the path used to search for libraries
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))

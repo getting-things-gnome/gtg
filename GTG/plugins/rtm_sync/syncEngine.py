@@ -169,6 +169,9 @@ class SyncEngine(object):
                                                   "id", \
                                                   "self")
         for local_id in updatable_local_ids:
+            if not local_to_taskpair.has_key(local_id):
+                #task has been removed, skipping
+                continue
             taskpair = local_to_taskpair[local_id]
             local_task = local_id_to_task[local_id]
             remote_task = remote_id_to_task[taskpair.remote_id]
@@ -204,8 +207,7 @@ class SyncEngine(object):
                             "taskpairs", \
                             self.taskpairs,
                             xdg_data_home)
-	self.close_gui(_("Synchronization completed."))
-
+        self.close_gui(_("Synchronization completed."))
 
     def _append_to_taskpairs(self, local_tasks, remote_tasks):
         for local, remote in zip(local_tasks, remote_tasks):
@@ -216,9 +218,13 @@ class SyncEngine(object):
     def _task_ids_to_tasks(self, id_list, task_list):
         #TODO: this is not the quickest way to do this
         id_to_task = self._list_to_dict(task_list, "id", "self")
-        return map(lambda id: id_to_task[id], id_list)
-        
-
+        result=[]
+        for id in id_list:
+            if id in id_to_task:
+                result.append(id_to_task[id])
+            else:
+                self.__log("Exception: requested an inexistent task!")
+        return result
 
     def _process_new_tasks(self, new_ids, all_tasks, proxy):
         new_tasks = self._task_ids_to_tasks(new_ids, all_tasks)
@@ -255,8 +261,11 @@ class SyncEngine(object):
                                 local_task = local_title_to_task[title],
                                 remote_task = remote_title_to_task[title]))
 
+    def __log(self, message):
+        if self.logger:
+            self.logger.debug(message)
 
-## GUI 
+## GUI
     def close_gui(self, msg):
         self.update_status(msg)
         self.update_progressbar(1.0)

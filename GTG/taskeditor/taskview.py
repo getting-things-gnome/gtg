@@ -20,9 +20,9 @@
 
 #This is a class taken originally from
 #http://trac.atzm.org/index.cgi/wiki/PyGTK
-#It was in Japanese and I didn't understood anything but the code.
+#It was in Japanese and I didn't understand anything but the code.
 
-#This class implement a gtk.TextView but with many other features
+#This class implements a gtk.TextView but with many other features
 #like hyperlink and others stuffs special for GTG
 #
 #For your information, a gtkTextView always contains a gtk.TextBuffer which
@@ -538,7 +538,6 @@ class TaskView(gtk.TextView):
     #Detect URL in the tasks
     #It's ugly...
     def _detect_url(self,buff,start,end) :
-        #firtst, we remove the old tags :
         #subt_list = self.get_subtasks()
         #First, we remove the olds tags
         tag_list = []
@@ -587,7 +586,7 @@ class TaskView(gtk.TextView):
                 
         
 
-    #Detect tags in buff in the regio between start iter and end iter
+    #Detect tags in buff in the region between start iter and end iter
     def _detect_tag(self,buff,start,end) :
         # Removing already existing tag in the current selection
         # out of the tag table
@@ -596,7 +595,7 @@ class TaskView(gtk.TextView):
         old_tags = []
         new_tags = []
         #We must be strictly < than the end_offset. If not, we might
-        #found the beginning of a tag on the nextline
+        #find the beginning of a tag on the nextline
         while (it.get_offset() < end.get_offset()) and (it.get_char() != '\0'):
             if it.begins_tag() :
                 tags = it.get_toggled_tags(True)
@@ -687,7 +686,7 @@ class TaskView(gtk.TextView):
             to_return = True
         return to_return
         
-    #When the user remove a selection, we remove subtasks and @tags
+    #When the user removes a selection, we remove subtasks and @tags
     #from this selection
     def _delete_range(self,buff,start,end) :
 #        #If we are at the beginning of a mark, put this mark at the end
@@ -867,16 +866,26 @@ class TaskView(gtk.TextView):
                 if t.get_data('is_indent') :
                     line += 1
                     startl = self.buff.get_iter_at_line(line)
-                    found = False
+                    if line < self.buff.get_line_count() :
+                        found = False
             if found :
                 itera = startl 
+                
+        #if the last line is indented, then insert a new line
+        #at the end
+        if line == self.buff.get_line_count() :
+            itera.forward_to_line_end()
+            mark = self.buff.create_mark(None,itera,True)
+            self.buff.insert(itera,"\n")
+            itera = self.buff.get_iter_at_mark(mark)
+            self.buff.delete_mark(mark)
                     
         #If we are not on the end of line, go there
         #but if we are at the start of line, then create the subtask
         #before the current line
         enter = True
         if itera.starts_line() :
-            mark = self.buff.create_mark("temp",itera,True)
+            mark = self.buff.create_mark(None,itera,True)
             self.buff.insert(itera,"\n")
             itera = self.buff.get_iter_at_mark(mark)
             self.buff.delete_mark(mark)
@@ -917,7 +926,7 @@ class TaskView(gtk.TextView):
             itera = buff.get_iter_at_mark(temp_mark)
             buff.move_mark_by_name("/%s"%subtid,itera)
         buff.delete_mark(temp_mark)
-        #The mark has right gravity but because we putted it on the left
+        #The mark has right gravity but because we put it on the left
         #of the newly inserted \n, it will not move anymore.
         
         itera = buff.get_iter_at_mark(end)
@@ -977,6 +986,9 @@ class TaskView(gtk.TextView):
         
         #First, we analyse the selection to put in our own
         #GTG clipboard a selection with description of subtasks
+        bounds =  self.buff.get_selection_bounds()
+        if not bounds:
+            return
         start, stop =  self.buff.get_selection_bounds()
         
         self.clipboard.copy(start,stop,bullet=self.bullet1)
@@ -1020,7 +1032,7 @@ class TaskView(gtk.TextView):
             #we keep the normal pasting by not interupting the signal
             self.clipboard.clear()
         
-    #Function called each time the user input a letter   
+    #Function called each time the user inputs a letter   
     def _insert_at_cursor(self, tv, itera, tex, leng) :
         #We don't paste the bullet
         if tex.strip() != self.bullet1 :
@@ -1217,7 +1229,7 @@ class TaskView(gtk.TextView):
         self.buff.disconnect(self.insert_sigid)
         insert_mark = self.buff.get_insert()
         insert_iter = self.buff.get_iter_at_mark(insert_mark)
-        #All that craps to find if we are at the end of an indent tag
+        #All this crap to find if we are at the end of an indent tag
         if insert_iter.ends_tag() :
             for t in insert_iter.get_toggled_tags(False) :
                 if t.get_data('is_indent') :
@@ -1229,7 +1241,7 @@ class TaskView(gtk.TextView):
         self.insert_sigid = self.buff.connect('insert-text', \
                                                self._insert_at_cursor)
 
-    #The mouse is moving. We must change it to a hand when hovering a link
+    #The mouse is moving. We must change it to a hand when hovering over a link
     def _motion(self, view, ev):
         window = ev.window
         x, y, _ = window.get_pointer()

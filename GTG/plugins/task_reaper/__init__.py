@@ -18,7 +18,8 @@ import sys
 import os
 sys.path.insert(0, os.getcwd())
 
-from evolutionSync import EvolutionSync
+from reaper import pluginReaper
 
-#needed to keep pyflakes quiet
-if False == True: EvolutionSync()
+
+#suppress pyflakes warning (given by make lint)
+if False == True: pluginReaper()

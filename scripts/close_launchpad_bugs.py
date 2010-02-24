@@ -15,6 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+
+#documentation: https://edge.launchpad.net/+apidoc/#bug_task
+
 import sys, os, re
 from launchpadlib.launchpad import Launchpad, EDGE_SERVICE_ROOT
 from launchpadlib.credentials import Credentials
@@ -53,9 +56,16 @@ if not 'gtg' in [e.name for e in launchpad.people[launchpad.me].super_teams]:
     print 'You are not a GTG developer, exiting.'
     sys.exit(0)
 for bugno in bugs:
-    bug = launchpad.bugs[bugno]
-    for task in bug.bug_tasks:
-        if task.bug_target_name == 'gtg' and task.status == 'Fix Committed':
-            task.status = 'Fix Released'
-            task.lp_save()
-            print 'Bug %s marked as Fix Released' % bugno
+    try:
+        bug = launchpad.bugs[bugno]
+        for task in bug.bug_tasks:
+            if task.bug_target_name == 'gtg' and task.status == 'Fix Committed':
+                task.status = 'Fix Released'
+                #task.milestone_link = 'https://api.edge.launchpad.net/beta/gtg/+milestone/0.2.2'
+                task.lp_save()
+                print """Bug %s marked as Fix Released,
+                    (https://bugs.edge.launchpad.net/gtg/+bug/%s""" % (bugno, bugno)
+
+    except:
+        print 'UNABLE TO PROCESS BUG #%s' % bugno
+        pass

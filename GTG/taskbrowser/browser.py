@@ -40,6 +40,7 @@ from GTG.core.task                    import Task
 from GTG.core.tagstore                import Tag
 from GTG.taskbrowser                  import GnomeConfig
 from GTG.taskbrowser                  import tasktree
+from GTG.taskbrowser.preferences      import PreferencesDialog
 from GTG.taskbrowser.tasktree         import TaskTreeModel,\
                                              ActiveTaskTreeView,\
                                              ClosedTaskTreeView
@@ -50,7 +51,7 @@ from GTG.tools                        import openurl
 from GTG.tools.dates                  import strtodate,\
                                              no_date,\
                                              FuzzyDate
-from GTG.core.plugins.manager         import PluginManager
+from GTG.tools                        import clipboard
 from GTG.core.plugins.engine          import PluginEngine
 from GTG.core.plugins.api             import PluginAPI
 
@@ -128,6 +129,9 @@ class TaskBrowser:
         # Initialize "About" dialog
         self._init_about_dialog()
 
+        # Initialize "Preferences" dialog
+        self.preferences = PreferencesDialog(self)
+
         #Create our dictionary and connect it
         self._init_signal_connections()
 
@@ -142,8 +146,7 @@ class TaskBrowser:
         # Initialize the plugin-engine
         self.p_apis = [] #the list of each plugin apis.
         self._init_plugin_engine()
-        self.pm = None #the plugin manager window
-        
+
         self.refresh_lock = threading.Lock()
 
         # NOTES
@@ -324,8 +327,6 @@ class TaskBrowser:
                 self.on_schedule_for_next_year,
             "on_dismiss_task":
                 self.on_dismiss_task,
-            "on_delete":
-                self.on_delete,
             "on_move":
                 self.on_move,
             "on_size_allocate":
@@ -378,14 +379,18 @@ class TaskBrowser:
                 self.on_about_close,
             "on_nonworkviewtag_toggled":
                 self.on_nonworkviewtag_toggled,
-            "on_pluginmanager_activate": 
-                self.on_pluginmanager_activate
         }
+
+        SIGNAL_CONNECTIONS_DIC.update(self.preferences.get_signals_dict())
 
         self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
 
         if (self.window):
-            self.window.connect("destroy", self.on_close)
+            self.window.connect("destroy", gtk.main_quit)
+            #The following is needed to let the Notification Area plugin to
+            # minimize the window instead of closing the program
+            self.delete_event_handle = \
+                    self.window.connect("delete-event", self.on_delete)
 
         # Active tasks TreeView
         self.task_tv.connect('row-activated',\
@@ -511,13 +516,17 @@ class TaskBrowser:
         key, mod = gtk.accelerator_parse('<Control>t')
         addtag_button.add_accelerator('activate', agr, key, mod, \
             gtk.ACCEL_VISIBLE)
+
+        addtag_button = self.builder.get_object('view_closed')
+        key, mod = gtk.accelerator_parse('<Control>F9')
+        addtag_button.add_accelerator('activate', agr, key, mod, \
+            gtk.ACCEL_VISIBLE)
         
     def _init_plugin_engine(self):
         # plugins - Init
         self.pengine = PluginEngine(GTG.PLUGIN_DIR)
         # loads the plugins in the plugin dir
-        self.plugins = self.pengine.LoadPlugins()
-        
+        self.plugins = self.pengine.load_plugins()
         # initializes the plugin api class
         self.plugin_api = PluginAPI(window         = self.window,
                                     config         = self.config,
@@ -537,25 +546,23 @@ class TaskBrowser:
                                     browser        = self,
                                     logger         = self.logger)
         self.p_apis.append(self.plugin_api)
-        
-        if self.plugins:
+        # enable some plugins
+        if len(self.pengine.plugins) > 0:
             # checks the conf for user settings
             if "plugins" in self.config:
                 if "enabled" in self.config["plugins"]:
                     plugins_enabled = self.config["plugins"]["enabled"]
-                    for p in self.plugins:
-                        if p['name'] in plugins_enabled:
-                            p['state'] = True
-                        
                 if "disabled" in self.config["plugins"]:
                     plugins_disabled = self.config["plugins"]["disabled"]
-                    for p in self.plugins:    
-                        if p['name'] in plugins_disabled:
-                            p['state'] = False
-            
-            # initializes and activates each plugin (that is enabled)
-            self.pengine.activatePlugins(self.plugins, self.p_apis)
-            
+                for name, plugin in self.pengine.plugins.iteritems():
+                    if name in plugins_enabled and name not in plugins_disabled:
+                        plugin.enabled = True
+                    else:
+                        # plugins not explicitly enabled are disabled
+                        plugin.enabled = False
+        # initializes and activates each plugin (that is enabled)
+        self.pengine.activate_plugins(self.p_apis)
+    
     def _init_tag_list(self):
         self.tag_list_model = gtk.ListStore(gobject.TYPE_STRING)
         self.tag_list = self.req.get_all_tags()
@@ -670,12 +677,20 @@ class TaskBrowser:
             if view == "workview":
                 self.do_toggle_workview()
                 
-        if not (hasattr(self, "start_minimized") and \
-                        self.start_minimized == True) and \
-                        "opened_tasks" in self.config["browser"]:
+        if self._start_gtg_maximized() and \
+           "opened_tasks" in self.config["browser"]:
             odic = self.config["browser"]["opened_tasks"]
+            #odic can contain also "None" or "None,", so we skip them
+            if odic == "None" or (len(odic)> 0 and odic[0] == "None"):
+                return
             for t in odic:
                 ted = self.open_task(t)
+
+    
+    def _start_gtg_maximized(self):
+        #This is needed as a hook point to let the Notification are plugin
+        #start gtg minimized
+        return True
 
     def do_toggle_workview(self):
         #We have to be careful here to avoid a loop of signals
@@ -766,101 +781,9 @@ class TaskBrowser:
             return no_date
         return strtodate(date)
 
-
-#    def is_task_visible(self, task):
-#        """Returns True if the task meets the criterion to be displayed
-#        @param  task: the task to assess
-#        """
-#        
-#        # Checks to see if we're working with a tag through a right click
-#        # menu item. If we are, we'll treat the tag that was selected
-#        # previous to the right click as the currently selected tag,
-#        # even if the cursor is somewhere else.
-#        toreturn = True
-#        if self.tag_active:
-#            tag_list, notag_only = self.previous_tag
-#        else:
-#            tag_list, notag_only = self.get_selected_tags()
-
-#        if len(tag_list)==1: #include child tags
-#            tag_list = tag_list[0].get_children()
-
-#        if not task.has_tags(tag_list=tag_list, notag_only=notag_only):
-#            toreturn =  False
-#        
-#        #if workview is enabled
-#        elif self.priv['workview']:
-#            res = True
-#            
-#            # filter tasks view callbacks
-#            for cb in self.priv['filter_cbs']:
-#                res = cb(task.get_id())
-#                if res == False:
-#                    toreturn = False
-#            
-#            #we verify that the task is started
-#            if not task.is_started() :
-#                toreturn = False
-#                    
-#            if toreturn:
-#                #we verify that there is no non-workview tag for this task
-#                for t in task.get_tags():
-#                    if t.get_attribute("nonworkview") and t not in tag_list:
-#                        res = res and (not eval(t.get_attribute("nonworkview")))
-#                toreturn = (res and task.is_workable())
-#                
-#        #print "is task %s visible ? %s" %(task.get_id(),toreturn)
-#        return toreturn
-
-#    def is_lineage_visible(self, task):
-#        """Returns True if at least one set of tasks that compose a lineage of
-#        the given task can be found where all the tasks meets the criterion
-#        to be displayed. (i.e.: there exists a chain of tasks from root to task
-#        that can all be displayed)
-#        @param task: the task whose lineage will be assessed
-#        """
-#        res = False
-#        parents = task.get_parents()
-#        for par_tid in parents:
-#            par_task = self.req.get_task(par_tid)
-#            if par_task.has_parents():
-#                res = res or (self.is_task_visible(par_task) and self.is_lineage_visible(par_task))
-#            else:
-#                res = res or self.is_task_visible(par_task)
-#        return res
-
-#    def active_task_visible_func(self, model, iter, user_data=None):
-#        """Return True if the row must be displayed in the treeview.
-#        @param model: the model of the filtered treeview
-#        @param iter: the iter whose visiblity must be evaluated
-#        @param user_data:
-#        """
-#        task = model.get_value(iter, tasktree.COL_OBJ)
-#        if not task or task.get_status() != Task.STA_ACTIVE:
-#            toreturn = False
-#        elif not model.iter_parent(iter):
-#            toreturn = (self.is_task_visible(task) and not self.is_lineage_visible(task))
-#        else:
-#            toreturn = self.is_task_visible(task)
-#        if not toreturn:
-#            print "**** %s hidden" %task.get_id()
-#        return toreturn
-               
-#    def closed_task_visible_func(self, model, iter, user_data=None):
-#        """Return True if the row must be displayed in the treeview.
-#        @param model: the model of the filtered treeview
-#        @param iter: the iter whose visiblity must be evaluated
-#        @param user_data:
-#        """
-#        tag_list, notag_only = self.get_selected_tags()
-#        task = model.get_value(iter, tasktree.COL_OBJ)
-#        if len(tag_list)==1: #include child tags
-#            tag_list = tag_list[0].get_children()
-#        if not task.has_tags(tag_list=tag_list, notag_only=notag_only):
-#            return False
-#        return task.get_status() != Task.STA_ACTIVE and\
-#            not model.iter_parent(iter)
-                  
+    def get_tasktitle(self, tid):
+        task = self.req.get_task(tid)
+        return task.get_title()
 
     def tag_visible_func(self, model, iter, user_data=None):
         """Return True if the row must be displayed in the treeview.
@@ -997,12 +920,12 @@ class TaskBrowser:
         if cb in self.priv['filter_cbs']:
             self.priv['filter_cbs'].remove(cb)
         
-    def on_move(self, widget, data):
+    def on_move(self, widget = None, data = None):
         xpos, ypos = self.window.get_position()
         self.priv["window_xpos"] = xpos
         self.priv["window_ypos"] = ypos
 
-    def on_size_allocate(self, widget, data):
+    def on_size_allocate(self, widget = None, data = None):
         width, height = self.window.get_size()
         self.priv["window_width"]  = width
         self.priv["window_height"] = height
@@ -1027,10 +950,9 @@ class TaskBrowser:
             view = "workview"
         else:
             view = "default"
-            
+        
         # plugins are deactivated
-        if self.plugins:
-            self.pengine.deactivatePlugins(self.plugins, self.p_apis)
+        self.pengine.deactivate_plugins(self.p_apis)
 
         # Populate configuration dictionary
         self.config["browser"] = {
@@ -1070,12 +992,12 @@ class TaskBrowser:
         self.config["browser"]["view"] = view
         
         # adds the plugin settings to the conf
-        if self.plugins:
+        if len(self.pengine.plugins) > 0:
             self.config["plugins"] = {}
-            self.config["plugins"]["disabled"] =\
-                self.pengine.disabledPlugins(self.plugins)
-            self.config["plugins"]["enabled"] =\
-                self.pengine.enabledPlugins(self.plugins)
+            self.config["plugins"]["disabled"] = \
+              self.pengine.disabled_plugins().keys()
+            self.config["plugins"]["enabled"] = \
+              self.pengine.enabled_plugins().keys()
 
     def on_force_refresh(self, widget):
         if self.refresh_lock.acquire(False):
@@ -1433,9 +1355,25 @@ class TaskBrowser:
             self.tids_todelete = [tid]
         #We must at least have something to delete !
         if len(self.tids_todelete) > 0:
-            label = self.builder.get_object("label1") 
+            # We fill the text and the buttons' labels according to the number 
+            # of tasks to delete
+            label = self.builder.get_object("label1")
             label_text = label.get_text()
+            cdlabel2 = self.builder.get_object("cd-label2")
+            cdlabel3 = self.builder.get_object("cd-label3")
+            cdlabel4 = self.builder.get_object("cd-label4")
+            if len(self.tids_todelete) == 1:
+                label_text = _("Deleting a task cannot be undone, and will delete the following task: ")
+                cdlabel2.set_label(_("Are you sure you want to delete this task?"))
+                cdlabel3.set_label(_("Keep selected task"))
+                cdlabel4.set_label(_("Permanently remove task"))
+            else:
+                label_text = _("Deleting a task cannot be undone, and will delete the following tasks: ")
+                cdlabel2.set_label(_("Are you sure you want to delete these tasks?"))
+                cdlabel3.set_label(_("Keep selected tasks"))
+                cdlabel4.set_label(_("Permanently remove tasks"))
             label_text = label_text[0:label_text.find(":") + 1]
+            
             # I find the tasks that are going to be deleted
             tasks = []
             for tid in self.tids_todelete:
@@ -1675,12 +1613,6 @@ class TaskBrowser:
             self.donebutton.set_tooltip_text(GnomeConfig.MARK_DONE_TOOLTIP)
             self.dismissbutton.set_label(GnomeConfig.MARK_DISMISS)
         self.update_buttons_sensitivity()
-    
-    def on_pluginmanager_activate(self, widget):
-        if self.pm:
-            self.pm.present()
-        else:
-            self.pm = PluginManager(self.window, self.plugins, self.pengine, self.p_apis)
 
     def on_close(self, widget=None):
         """Closing the window."""
@@ -1867,10 +1799,7 @@ class TaskBrowser:
         
         # Restore state from config
         self.restore_state_from_conf()
-        # Start minimized if the notification area plugin says so
-        if hasattr(self, "start_minimized") and self.start_minimized == True:
-            self.window.realize()
-        else:
+        if self._start_gtg_maximized():
             self.window.show()
         gtk.main()
         return 0

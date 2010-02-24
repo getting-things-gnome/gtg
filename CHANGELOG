@@ -1,3 +1,13 @@
+2010-03-01 Getting Things GNOME! 0.2.2
+    * Autostart on login, by Luca Invernizzi
+    * Preferences dialog, by Paul Kishimoto
+    * Send task by mail plugin by Luca Invernizzi
+    * Import_json plugin by Bryce Harrington
+    * Improve RTM plugin (bug #520427): don't sync tasks from archived lists
+    * Automatic cleanup of closed task, plugin by Luca Invernizzi
+    * Allow to change dismissed date of tasks by Luca Invernizzi
+    * Docky applet support, by Luca Invernizzi
+    * Allow to change closed date of tasks, by Lionel Montrieux, bug #502111 
     * notification area plugin updated to support appindicate by Luca Invernizzi and Jono Bacon
     * gtg_new task now supports command switches by Luca Invernizzi
     * Fix bug #511651, white space around title, by mrk

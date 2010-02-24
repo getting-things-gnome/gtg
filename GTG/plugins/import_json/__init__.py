@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (c) 2009 - Luca Invernizzi <invernizzi.l@gmail.com>
+# Copyright (c) 2009 - Paulo Cabido <paulo.cabido@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -16,9 +16,10 @@
 
 import sys
 import os
-sys.path.insert(0, os.getcwd())
+sys.path.insert(0,os.getcwd())
 
-from evolutionSync import EvolutionSync
+from import_json import pluginImportJson
 
-#needed to keep pyflakes quiet
-if False == True: EvolutionSync()
+
+#suppress pyflakes warning (given by make lint)
+if False == True: pluginImportJson()

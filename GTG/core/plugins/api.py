@@ -132,6 +132,7 @@ class PluginAPI:
         """
         widget = self.__builder.get_object('menu_plugin')
         if widget:
+            widget.show_all()
             widget.get_submenu().append(item)
         item.show()
          
@@ -146,7 +147,10 @@ class PluginAPI:
         try:
             wi = self.__builder.get_object('menu_plugin')
             if wi:
-                wi.get_submenu().remove(item)
+                menu = wi.get_submenu()
+                menu.remove(item)
+                if len(menu.get_children()) == 0:
+                    wi.hide()
             return True
         except Exception, e:
             print "Error removing menu item: %s" % e
@@ -318,7 +322,7 @@ class PluginAPI:
         """
         return self.task_modelsort
     
-    def get_taskview(self):
+    def get_closed_taskview(self):
         """Returns the closed task view object. 
         
         @return: The gtk.TreeView task view object.
@@ -343,7 +347,7 @@ class PluginAPI:
             selection = self.taskview.get_selection()
             model, paths = selection.get_selected_rows()
             iters = [model.get_iter(path) for path in paths]
-            if iters[0]:
+            if len(iters) > 0 and iters[0]:
                 return self.__requester.get_task(model.get_value(iters[0], 0))
             else:
                 return None

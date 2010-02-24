@@ -37,7 +37,8 @@ class GtgProxy(GenericProxy):
         requester = self.plugin_api.get_requester()
         statuses = [Task.STA_ACTIVE, Task.STA_DISMISSED, Task.STA_DONE]
         tasks = map(self.plugin_api.get_task, \
-                     requester.get_tasks_list(status = statuses))
+                     requester.get_tasks_list(status = statuses, \
+                                              started_only = False))
         map(lambda task: self._tasks_list.append(GtgTask(task, \
                                         self.plugin_api, self)), tasks)
 

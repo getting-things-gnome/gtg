@@ -225,12 +225,24 @@ class Task(TreeNode):
         else:
             return True
 
+    def set_closed_date(self, fulldate):
+        assert(isinstance(fulldate, Date))
+        self.closed_date = fulldate
+        self.sync()
+        
     def get_closed_date(self):
         return self.closed_date
 
     def get_days_left(self):
         due_date = self.get_due_date()
         return due_date.days_left()
+    
+    def get_days_late(self):
+        due_date = self.get_due_date()
+        if due_date == no_date:
+            return None
+        closed_date = self.get_closed_date()
+        return (closed_date - due_date).days
 
     def get_text(self):
         #defensive programmtion to avoid returning None
