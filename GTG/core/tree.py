@@ -143,10 +143,7 @@ class Tree():
             
     #Trying to make a function that bypass the weirdiness of lists
     def get_node(self,id):
-        if id in self.nodes :
-            return self.nodes[id]
-        else:
-            return None
+        return self.nodes.get(id)
             
     def get_all_keys(self):
         return list(self.nodes.keys())
@@ -160,7 +157,7 @@ class Tree():
         return li
 
     def has_node(self, id):
-        return id in self.nodes.keys()
+        return (self.nodes.get(id) != None)
 
     def print_tree(self):
         self._print_from_node(self.root)
