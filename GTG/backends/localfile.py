@@ -100,6 +100,7 @@ class Backend:
             task = task_factory_func(tid)
             task = taskxml.task_from_xml(task,node)
             push_task_func(task)
+        print "#### finishing pushing tasks"
 
     #Fill the task "task_to_fill" with the information of the task TID
 #    #Return True if successful, False otherwise

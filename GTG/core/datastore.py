@@ -67,7 +67,7 @@ class DataStore:
         if self.has_task(tid):
             task = self.__internal_get_task(tid)
         else:
-            print "no task %s" %tid
+            #print "no task %s" %tid
             task = None
         return task
 #            if not task.is_loaded():

@@ -572,20 +572,6 @@ class TaskBrowser:
         self.tag_completion.set_inline_selection(True)
         self.tag_completion.set_popup_single_match(False)
 
-#    def _init_note_support(self):
-#        self.notes  = EXPERIMENTAL_NOTES
-#        # Hide notes if disabled
-#        if not self.notes:
-#            self.note_toggle.hide()
-#            self.new_note_button.hide()
-#        #Set the tooltip for the toolbar button
-#        self.new_note_button.set_tooltip_text("Create a new note")
-#        self.note_tview = self.builder.get_object("note_tview")
-#        self.note_tview = gtk.TreeView()
-#        self.note_tview.connect("row-activated", self.on_edit_note)
-#        self.note_tview.show()
-#        self.note_ts    = gtk.TreeStore(gobject.TYPE_PYOBJECT, str, str)
-
 ### HELPER FUNCTIONS ##########################################################
 #
     def restore_state_from_conf(self):
@@ -695,9 +681,6 @@ class TaskBrowser:
         #We have to be careful here to avoid a loop of signals
         #menu_state   = self.menu_view_workview.get_active()
         #button_state = self.toggle_workview.get_active()
-        #We cannot have note and workview at the same time
-#        if not self.priv['workview'] and self.note_toggle.get_active():
-#            self.note_toggle.set_active(False)
         #We do something only if both widget are in different state
         tobeset = not self.priv['workview']
         self.menu_view_workview.set_active(tobeset)
@@ -1662,7 +1645,6 @@ class TaskBrowser:
             tid = self.get_selected_task(self.ctask_tv)
             task = self.req.get_task(tid)
             self.task_tv.get_selection().unselect_all()
-#            self.note_tview.get_selection().unselect_all()
             if task.get_status() == "Dismiss":
                 self.builder.get_object(
                     "ctcm_mark_as_not_done").set_sensitive(False)
@@ -1689,7 +1671,6 @@ class TaskBrowser:
         self.dismissbutton.set_icon_name("gtg-task-dismiss")
         if selection.count_selected_rows() > 0:
             self.ctask_tv.get_selection().unselect_all()
-#            self.note_tview.get_selection().unselect_all()
             self.donebutton.set_label(GnomeConfig.MARK_DONE)
             self.donebutton.set_tooltip_text(GnomeConfig.MARK_DONE_TOOLTIP)
             self.dismissbutton.set_label(GnomeConfig.MARK_DISMISS)
@@ -1821,10 +1802,6 @@ class TaskBrowser:
         if selection and selection.count_selected_rows() <= 0 and not tv:
             tview = self.ctask_tv
             selection = tview.get_selection()
-        #Then in the notes pane
-#        if selection and selection.count_selected_rows() <= 0 and not tv:
-#            tview = self.note_tview
-#            selection = tview.get_selection()
         # Get the selection iter
         if selection.count_selected_rows() <= 0:
             ids = [None]
@@ -1887,10 +1864,7 @@ class TaskBrowser:
 
         # Here we will define the main TaskList interface
         gobject.threads_init()
-
-        #note_selection = self.note_tview.get_selection()
-        #note_selection.connect("changed", self.on_note_cursor_changed)
-
+        
         # Restore state from config
         self.restore_state_from_conf()
         # Start minimized if the notification area plugin says so

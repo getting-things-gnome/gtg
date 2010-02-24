@@ -318,7 +318,7 @@ class Tag(TreeNode):
         else:
             for t in tasks:
                 ta = self.req.get_task(t)
-                if ta.get_status() == "Active" and t not in temp_list:
+                if ta and ta.get_status() == "Active" and t not in temp_list:
                     temp_list.append(t)
         toreturn = len(temp_list)
         return toreturn
