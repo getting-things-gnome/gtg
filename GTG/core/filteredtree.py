@@ -467,6 +467,7 @@ class FilteredTree():
         self.__root_update(node,False)
         if tid in self.displayed_nodes:
             self.displayed_nodes.remove(tid)
+        self.__reset_cache()
         parent = self.node_parent(node)
         if parent:
             inroot = self.__is_root(parent)
