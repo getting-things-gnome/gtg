@@ -44,20 +44,6 @@ class DataStore:
 
     def all_tasks(self):
         return self.open_tasks.get_all_keys()
-#        all_tasks = []
-#        #We also add tasks that are still not in a backend (because of threads)
-#        tlist = self.open_tasks.get_all_nodes()
-#        tlist += self.closed_tasks.get_all_nodes()
-#        for task in tlist:
-#            if task.is_loaded():
-#                all_tasks.append(task.get_id())
-#            else:
-#                if task.get_status() == "Active":
-##                    print "task %s is not loaded" %task.get_id()
-##                    print task.get_title()
-#                    self.get_task(task.get_id())
-#        #print "%s tasks but we return %s" %(len(tlist),len(all_tasks))
-#        return all_tasks
 
     def has_task(self, tid):
         return self.open_tasks.has_node(tid) or self.closed_tasks.has_node(tid)
@@ -70,30 +56,6 @@ class DataStore:
             #print "no task %s" %tid
             task = None
         return task
-#            if not task.is_loaded():
-#                uid, pid = tid.split('@') #pylint: disable-msg=W0612
-#                back = self.backends[pid]
-#                task = back.get_task(task, tid)
-#        else:
-##            empty_task = self.new_task(tid, newtask=False)
-#            empty_task = Task(tid, self.requester, newtask=False)
-#            uid, pid = tid.split('@') #pylint: disable-msg=W0612
-#            back = self.backends[pid]
-#            if self.open_tasks.add_node(empty_task):
-#                task = back.get_task(empty_task, tid)
-#            else:
-#                task = self.__internal_get_task(tid)
-#        return task
-#        
-#        else:
-#            empty_task = self.new_task(tid, newtask=False)
-#        if tid and not empty_task.is_loaded():
-#            uid, pid = tid.split('@') #pylint: disable-msg=W0612
-#            back = self.backends[pid]
-#            task = back.get_task(empty_task, tid)
-#        else:
-#            task = empty_task
-#        return task
         
     def __internal_get_task(self, tid):
         toreturn = self.open_tasks.get_node(tid)
@@ -129,40 +91,6 @@ class DataStore:
         task.set_sync_func(self.backends[pid].set_task,callsync=False)
         self.open_tasks.add_node(task)
         return task
-
-#    #Create a new task and return it.
-#    #newtask should be True if you create a task
-#    #it should be False if you are importing an existing Task
-#    def new_task(self, tid=None, pid=None, newtask=False):
-#        #If we don't have anything, we use the default PID
-#        if not pid:
-#            pid = DEFAULT_BACKEND
-#        #If tid, we force that tid and create a real new task
-#        if tid and not self.has_task(tid):
-#            print "new task for tid %s " %tid
-#            task = Task(tid, self.requester, newtask=newtask)
-#            uid, pid = tid.split('@') #pylint: disable-msg=W0612
-#            #By default, a new task is active. We then put it in the Active tree
-#            if self.open_tasks.add_node(task):
-#                toreturn = task
-#            else:
-#                toreturn = self.get_task(tid)
-#        #Else we create a new task in the given pid
-#        elif not tid and pid and pid in self.backends:
-#            newtid = self.backends[pid].new_task_id()
-#            print "new task for newtid %s " %newtid
-#            task = Task(newtid, self.requester, newtask=newtask)
-#            self.open_tasks.add_node(task)
-#            task = self.backends[pid].get_task(task, newtid)
-#            toreturn = task
-#            tid = newtid
-#        elif tid:
-#            print "error : task %s already exists !" %tid
-#            toreturn = self.__internal_get_task(tid)
-#        else:
-#            print "not possible to build the task = bug"
-#            toreturn = None
-#        return toreturn
 
     def get_tagstore(self):
         return self.tagstore
@@ -224,6 +152,7 @@ class TaskSource():
         self.backend = backend
         self.dic = parameters
         self.to_set = []
+        self.to_remove = []
         self.lock = threading.Lock()
         
     ### TaskSource/bakcend mapping
@@ -233,21 +162,37 @@ class TaskSource():
         t.start()
     
     def set_task(self, task):
-        if task not in self.to_set:
+        tid = task.get_id()
+        if task not in self.to_set and tid not in self.to_remove:
             self.to_set.append(task)
         if self.lock.acquire(False):
-            try:
-                self.backend.set_task(task)
-            finally:
-                self.to_set.remove(task)
-                self.lock.release()
-                if len(self.to_set) > 0:
-                    self.set_task(self.to_set[0])
-        else:
-            print "cannot acquire lock : not a problem, just for debug purpose"
+            func = self.setting_thread
+            t = threading.Thread(target=func)
+            t.start()
+#        else:
+#            print "cannot acquire lock : not a problem, just for debug purpose"
+            
+    def setting_thread(self):
+        try:
+            while len(self.to_set) > 0:
+                t = self.to_set.pop(0)
+                tid = t.get_id()
+                if tid not in self.to_remove:
+                    print "setting task %s" %t.get_id()
+                    self.backend.set_task(t)
+            while len(self.to_remove) > 0:
+                tid = self.to_remove.pop(0)
+                self.backend.remove_task(tid)
+        finally:
+            self.lock.release()
     
     def remove_task(self, tid):
-        return self.backend.remove_task(tid)
+        if tid not in self.to_remove:
+            self.to_remove.append(tid)
+        if self.lock.acquire(False):
+            func = self.setting_thread
+            t = threading.Thread(target=func)
+            t.start()
     
     def new_task_id(self):
         return self.backend.new_task_id()

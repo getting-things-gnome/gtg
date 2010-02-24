@@ -53,6 +53,9 @@ class FilteredTree():
         self.applied_filters = []
         self.req = req
         self.tree = tree
+        self.update_count = 0
+        self.add_count = 0
+        self.remove_count = 0
         #virtual root is the list of root nodes
         #initially, they are the root nodes of the original tree
         self.virtual_root = []
@@ -344,7 +347,11 @@ class FilteredTree():
     # This rebuild the tree from scratch. It should be called only when 
     # The filter is changed. (only filters_bank should call it.
     def refilter(self):
-#        print "######### Starting refilter"
+        print "######### Starting refilter"
+        print "%s updates, %s add, %s remove" %(self.update_count,self.add_count,self.remove_count)
+        self.update_count = 0
+        self.add_count = 0
+        self.remove_count = 0
         virtual_root2 = []
         to_add = []
         #First things, we list the nodes that will be
@@ -431,15 +438,18 @@ class FilteredTree():
                 self.virtual_root.remove(tid)
     
     def __update_node(self,tid,inroot):
+        self.update_count += 1
         self.__root_update(tid,inroot)
 #        print "### update_node %s (inroot=%s)" %(tid,inroot)
         for r in self.registered_views:
             r.update_task(tid)
     
     def __add_node(self,tid,inroot):
+        self.add_count += 1
+        
         #print "### add_node %s" %node.get_id()
-        node = self.get_node(tid)
         if not self.is_displayed(tid):
+            node = self.get_node(tid)
             #If the parent's node is not already displayed, we wait
             if not inroot and not self.node_parent(node):
                 self.node_to_add.append(tid)
@@ -455,6 +465,7 @@ class FilteredTree():
                     self.__add_node(n,False)
     
     def __remove_node(self,tid):
+        self.remove_count += 1
         for r in self.registered_views:
                 removed = r.remove_task(tid)
         self.__root_update(tid,False)
