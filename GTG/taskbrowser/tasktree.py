@@ -252,7 +252,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
 ##                self.row_has_child_toggled(node_path, node_iter)
 
     def remove_task(self, tid,path=None):
-#        print "tasktree remove_task %s" %tid
+        print "tasktree remove_task %s" %tid
         node = self.tree.get_node(tid)
         removed = False
 #        # Remove every row of this task
@@ -264,6 +264,12 @@ class TaskTreeModel(gtk.GenericTreeModel):
         if node_path:
 #            print "* tasktree REMOVE %s - %s " %(tid,node_path)
             self.row_deleted(node_path)
+#            parent = self.tree.node_parent(node)
+#            if parent:
+#                par_path = self.tree.get_path_for_node(parent)
+#                par_iter = self.get_iter(par_path)
+#                    print "tasktree child toogled %s" %tid
+#                self.row_has_child_toggled(par_path, par_iter)
             removed = True
         return removed
                     
