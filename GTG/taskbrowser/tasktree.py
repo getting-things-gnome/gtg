@@ -77,16 +77,19 @@ class TaskTreeModel(gtk.GenericTreeModel):
 ### TREEMODEL INTERFACE ######################################################
 #
     def on_get_flags(self):
-#        return 0
+#        print "on_get_flags"
         return gtk.TREE_MODEL_ITERS_PERSIST
 
     def on_get_n_columns(self):
+#        print "on_get_n_columns"
         return len(self.column_types)
 
     def on_get_column_type(self, n):
+#        print "on_get_column_type %s" %n
         return self.column_types[n]
 
     def on_get_value(self, node, column):
+#        print "on_get_value for %s, col %s" %(node.get_id(),column)
         if not node:
             return None
         else:
@@ -137,28 +140,43 @@ class TaskTreeModel(gtk.GenericTreeModel):
             return title
 
     def on_get_iter(self, path):
+#        print "on_get_iter for %s" %(str(path))
         return self.tree.get_node_for_path(path)
 
     def on_get_path(self, node):
-        #print "on_get_path: %s" %node
+#        print "on_get_path: %s" %node.get_id()
         return self.tree.get_path_for_node(node)
 
     def on_iter_next(self, node):
+#        print "on_iter_next %s" %node.get_id()
         return self.tree.next_node(node)
 
     def on_iter_children(self, node):
+#        print "on_iter_children %s" %node.get_id()
         return self.tree.node_children(node)
 
     def on_iter_has_child(self, node):
+#        print "on_iter_has_child %s" %node.get_id()
         return self.tree.node_has_child(node)
 
     def on_iter_n_children(self, node):
+#        if node:
+#            id = node.get_id()
+#        else:
+#            id = "Null node"
+#        print "on_iter_n_children %s" %id
         return self.tree.node_n_children(node)
 
     def on_iter_nth_child(self, node, n):
+#        if node:
+#            id = node.get_id()
+#        else:
+#            id = "Null node"
+#        print "on_iter_nth_child %s - %s" %(id,n)
         return self.tree.node_nth_child(node,n)
 
     def on_iter_parent(self, node):
+#        print "on_iter_parent %s" %node.get_id()
         return self.tree.node_parent(node)
 
     def update_task(self, tid):
@@ -168,7 +186,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
         if my_node and my_node.is_loaded():
             node_path = self.tree.get_path_for_node(my_node)
             if node_path:
-#                print "**** tasktree update_task %s to path %s" %(tid,str(node_path))
+                print "**** tasktree update_task %s to path %s" %(tid,str(node_path))
                 node_iter = self.get_iter(node_path)
                 self.row_changed(node_path, node_iter)
             else: 
@@ -186,10 +204,11 @@ class TaskTreeModel(gtk.GenericTreeModel):
         task = self.req.get_task(tid)
         if task:
             node_path = self.tree.get_path_for_node(task)
-            #if node_path:
-            node_iter = self.get_iter(node_path)
-#            print "tasktree add_task %s at %s" %(tid,node_path)
-            self.row_inserted(node_path, node_iter)
+            #if node_path is null, the task is not currently displayed
+            if node_path:
+                node_iter = self.get_iter(node_path)
+                print "tasktree add_task %s at %s" %(tid,node_path)
+                self.row_inserted(node_path, node_iter)
 ##        # insert the task in the tree (root)
 ##        #TreeNode
 ##        my_node = task
@@ -221,7 +240,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
 ##                self.row_has_child_toggled(node_path, node_iter)
 
     def remove_task(self, tid,path=None):
-        print "tasktree remove_task %s" %tid
+#        print "tasktree remove_task %s" %tid
         node = self.tree.get_node(tid)
         removed = False
 #        # Remove every row of this task
@@ -231,7 +250,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
             node_path = path
 #        self.tree.remove_node(tid)
         if node_path:
-#            print "* tasktree REMOVE %s - %s " %(tid,node_path)
+            print "* tasktree REMOVE %s - %s " %(tid,node_path)
             self.row_deleted(node_path)
             removed = True
         return removed

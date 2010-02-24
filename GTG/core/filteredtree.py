@@ -80,8 +80,8 @@ class FilteredTree():
         if todis:
             isroot = self.is_root(node)
             self.add_node(node,isroot)
-        for r in self.registered_views:
-            r.add_task(tid)
+#        for r in self.registered_views:
+#            r.add_task(tid)
         
     def __task_modified(self,sender,tid):
 #        print   "task modified signal for %s" %tid
@@ -119,7 +119,7 @@ class FilteredTree():
             pa = path[1:]
             toreturn = self.__node_for_path(n1,pa)
         else:
-            print "The node is NONE"
+#            print "The node is NONE"
             toreturn = None
 #        if toreturn:
 #            id = toreturn.get_id()
@@ -313,41 +313,42 @@ class FilteredTree():
         
     def refilter(self):
         print "######### Starting refilter"
-        virtual_root2 = []
-        to_add = []
-        to_update = []
-        to_remove = []
-        for n in self.tree.get_all_nodes():
-            is_root = False
-            if self.__is_displayed(n):
-                if n.get_id() in self.displayed_nodes:
-                    to_update.append(n)
-                    to_add.append(n)
-                else:
-                    to_add.append(n)
-                is_root = self.is_root(n)
-            else:
-                if n.get_id() in self.displayed_nodes:
-                    p = self.get_path_for_node(n)
-                    to_remove.append((n,p))
-                
-            if is_root and n not in virtual_root2:
-                virtual_root2.append(n)
+#        virtual_root2 = []
+#        to_add = []
+#        to_update = []
+#        to_remove = []
+#        for n in self.tree.get_all_nodes():
+#            is_root = False
+#            if self.__is_displayed(n):
+#                if self.is_displayed(n):
+#                    to_update.append(n)
+#                    to_add.append(n)
+#                else:
+#                    to_add.append(n)
+#                is_root = self.is_root(n)
+#            else:
+#                if self.is_displayed(n):
+#                    p = self.get_path_for_node(n)
+#                    to_remove.append((n,p))
+#                
+#            if is_root and n not in virtual_root2:
+#                virtual_root2.append(n)
         
 #        for n in list(self.displayed_nodes):
 #            self.remove_node(self.get_node(n))
-        for r in list(self.virtual_root):
-            self._clean_from_node(r)
+#        for r in list(self.virtual_root):
+#            self._clean_from_node(r)
+
 #        print "After cleaning : displayed are %s" %self.displayed_nodes
 #        print "to_add length is %s" %len(to_add)
 #        self.virtual_root = virtual_root2
 #        self.displayed_nodes = list(self.displayed_nodes_tmp)
 
-        for n in to_add:
-            isroot = n in virtual_root2
-            self.add_node(n,isroot)
-        for r in list(self.virtual_root):
-            self._build_from_node(r)
+#        for n in to_add:
+#            isroot = n in virtual_root2
+#            self.add_node(n,isroot)
+#        for r in list(self.virtual_root):
+#            self._build_from_node(r)
 
 #        for n in list(to_add):
 #            if n.get_id() in self.displayed_nodes:
@@ -374,6 +375,7 @@ class FilteredTree():
 #        for n in to_update:
 #            for r in self.registered_views:
 #                r.update_task(n.get_id()
+
         print "## The tree:"
         for r in self.virtual_root:
             self._print_from_node(r)

@@ -255,7 +255,8 @@ class TaskBrowser:
     def _init_ui_widget(self):
         # The Active tasks treeview
         self.task_tv = ActiveTaskTreeView()
-        self.task_tv.set_model(self.task_modelsort)
+        self.task_tv.set_model(self.task_tree_model)
+#        self.task_tv.set_model(self.task_modelsort)
         self.main_pane.add(self.task_tv)
 
         # The done/dismissed taks treeview
@@ -918,7 +919,7 @@ class TaskBrowser:
             return True
 
     def dleft_sort_func(self, model, iter1, iter2, user_data=None):
-        order = self.task_tv.get_model().get_sort_column_id()[1]
+        order = self.task_modelsort.get_sort_column_id()[1]
         task1 = model.get_value(iter1, tasktree.COL_OBJ)
         task2 = model.get_value(iter2, tasktree.COL_OBJ)
         if task1 and task2:
@@ -1726,7 +1727,7 @@ class TaskBrowser:
     def on_task_added(self, sender, tid):
         if self.logger:
             self.logger.debug("Add task with ID: %s" % tid)
-#        self.task_tree_model.add_task(tid)
+        self.task_tree_model.add_task(tid)
         #no need to do more as task_modified will be called anyway
         
     def on_task_deleted(self, sender, tid):
