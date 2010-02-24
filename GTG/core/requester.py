@@ -47,6 +47,7 @@ class Requester(gobject.GObject):
         self.main_tree = FilteredTree(self,self.basetree,maintree=True)
         
         self.filters = FiltersBank(self,tree=self.main_tree)
+        self.counter_call = 0
 
 #        #filter
 #        self.filter = {}
@@ -60,6 +61,8 @@ class Requester(gobject.GObject):
         gobject.idle_add(self.emit, "task-added", tid)
 
     def _task_modified(self, tid):
+        self.counter_call += 1
+        print "signal task_modified %s (%s modifications)" %(tid,self.counter_call)
         gobject.idle_add(self.emit, "task-modified", tid)
         
     ############ Tasks Tree ######################
