@@ -18,25 +18,34 @@
 # 
 
 class Filter:
-    def __init__(self,func):
+    def __init__(self,func,req):
         self.func = func
         self.dic = None
+        self.req = req
         
     def set_parameters(self,dic):
         self.dic = dic
     
-    def is_displayed(self,task):
-        if self.dic:
+    def is_displayed(self,tid):
+        task = self.req.get_task(tid)
+        if not task:
+            return False
+        elif self.dic:
             return self.func(task,parameters=self.dic)
         else:
             return self.func(task)
             
 class SimpleTagFilter:
-    def __init__(self,tagname):
+    def __init__(self,tagname,req):
         self.tname = tagname
+        self.req = req
         
-    def is_displayed(self,task):
-        return task.has_tags([self.tname])
+    def is_displayed(self,tid):
+        task = self.req.get_task(tid)
+        if not task:
+            return False
+        else:
+            return task.has_tags([self.tname])
     
 
 class FiltersBank:
@@ -53,13 +62,13 @@ class FiltersBank:
         self.available_filters = {}
         self.custom_filters = {}
         #Workview
-        filt_obj = Filter(self.workview)
+        filt_obj = Filter(self.workview,self.req)
         self.available_filters['workview'] = filt_obj
         #Active
-        filt_obj = Filter(self.active)
+        filt_obj = Filter(self.active,self.req)
         self.available_filters['active'] = filt_obj
         #closed
-        filt_obj = Filter(self.closed)
+        filt_obj = Filter(self.closed,self.req)
         self.available_filters['closed'] = filt_obj
         
     def is_displayed(self,task):
@@ -145,9 +154,9 @@ class FiltersBank:
     def add_filter(self,filter_name,filter_func):
         if filter_name not in self.list_filters():
             if filter_name.startswith('@'):
-                filter_obj = SimpleTagFilter(filter_name)
+                filter_obj = SimpleTagFilter(filter_name,self.req)
             else:
-                filter_obj = Filter(filter_func)
+                filter_obj = Filter(filter_func,self.req)
             self.custom_filters[filter_name] = filter_obj
             return True
         else:
