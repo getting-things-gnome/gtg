@@ -30,6 +30,13 @@ class Filter:
             return self.func(task,parameters=self.dic)
         else:
             return self.func(task)
+            
+class SimpleTagFilter:
+    def __init__(self,tagname):
+        self.tname = tagname
+        
+    def is_displayed(self,task):
+        return task.has_tags([self.tname])
     
 
 class FiltersBank:
@@ -136,8 +143,11 @@ class FiltersBank:
     # Return True if the filter was added
     # Return False if the filter_name was already in the bank
     def add_filter(self,filter_name,filter_func):
-        if filter_name not in self.list_filters:
-            filter_obj = Filter(filter_func)
+        if filter_name not in self.list_filters():
+            if filter_name.startswith('@'):
+                filter_obj = SimpleTagFilter(filter_name)
+            else:
+                filter_obj = Filter(filter_func)
             self.custom_filters[filter_name] = filter_obj
             return True
         else:

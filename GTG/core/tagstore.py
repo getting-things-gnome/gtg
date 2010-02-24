@@ -82,7 +82,7 @@ class TagStore(Tree):
         if not self.has_node(tname):
             tag = Tag(tname, save_cllbk=self.save, req=self.req)
             self.add_node(tag)
-            self.req.add_filter()
+            self.req.add_filter(tname,None)
             #self.tags[tname] = tag
         return self.get_node(tname)
 
@@ -110,6 +110,7 @@ class TagStore(Tree):
             tagname = "@" + tagname
         return self.get_node(tagname)
         
+    #FIXME : also add a new filter
     def rename_tag(self, oldname, newname):
         if len(newname) > 0 and \
                             oldname not in ['gtg-tags-none','gtg-tags-all']:
