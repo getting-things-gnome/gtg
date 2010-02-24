@@ -1727,7 +1727,8 @@ class TaskBrowser:
     def on_task_added(self, sender, tid):
         if self.logger:
             self.logger.debug("Add task with ID: %s" % tid)
-        self.task_tree_model.add_task(tid)
+#        print "on task_ %s added (browser.py 1730)" %tid
+#        self.task_tree_model.add_task(tid)
         #no need to do more as task_modified will be called anyway
         
     def on_task_deleted(self, sender, tid):

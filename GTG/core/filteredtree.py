@@ -341,40 +341,15 @@ class FilteredTree():
 
 #        print "After cleaning : displayed are %s" %self.displayed_nodes
 #        print "to_add length is %s" %len(to_add)
-#        self.virtual_root = virtual_root2
-#        self.displayed_nodes = list(self.displayed_nodes_tmp)
 
-#        for n in to_add:
-#            isroot = n in virtual_root2
-#            self.add_node(n,isroot)
+
+        #The bug is here
+        for n in to_add:
+            isroot = n in virtual_root2
+#            if isroot :
+            self.add_node(n,isroot)
 #        for r in list(self.virtual_root):
 #            self._build_from_node(r)
-
-#        for n in list(to_add):
-#            if n.get_id() in self.displayed_nodes:
-#                to_add.remove(n)
-#        for n in to_add:
-#            print "node %s was not added !!!" %n.get_id()
-#            print "but visibility is : %s" %self.__is_displayed(n)
-#        print "refiltering : virtual_root is:"
-#        for r in self.virtual_root :
-#            print "root %s" %r.get_id()
-#        print "########## end refilter with %s visible tasks" %len(self.displayed_nodes)
-#        print "visible tasks are : %s" %self.displayed_nodes
-#        for v in self.displayed_nodes:
-#            node = self.get_node(v)
-#            pa = self.get_path_for_node(node)
-#            print "      %s with path %s" %(v,pa)
-                
-#        for n in to_remove:
-#            for r in self.registered_views:
-#                r.remove_task(n.get_id())
-#        for n in to_add:
-#            for r in self.registered_views:
-#                r.add_task(n.get_id())
-#        for n in to_update:
-#            for r in self.registered_views:
-#                r.update_task(n.get_id()
 
         print "## The tree:"
         for r in self.virtual_root:
@@ -412,8 +387,8 @@ class FilteredTree():
         if tid not in self.displayed_nodes:
             self.root_update(node,inroot)
             self.displayed_nodes.append(tid)
-#        for r in self.registered_views:
-#            r.add_task(tid)
+        for r in self.registered_views:
+            r.add_task(tid)
     
     def remove_node(self,node):
         tid = node.get_id()
@@ -445,7 +420,7 @@ class FilteredTree():
     def _build_from_node(self,node):
 #        print "### adding %s" %node.get_id()
         for r in self.registered_views:
-            r.add_task(node.get_id())
+#            r.add_task(node.get_id())
 #        print "### %s has child : %s" %(node.get_id(), self.node_has_child(node))
         if self.node_has_child(node):
             child = self.node_children(node)
