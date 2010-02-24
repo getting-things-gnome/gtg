@@ -44,7 +44,7 @@ class Requester(gobject.GObject):
         gobject.GObject.__init__(self)
         self.ds = datastore
         self.basetree = self.ds.get_tasks_tree()
-        self.main_tree = FilteredTree(self,self.basetree)
+        self.main_tree = FilteredTree(self,self.basetree,maintree=True)
         
         self.filters = FiltersBank(self,tree=self.main_tree)
 
@@ -72,10 +72,13 @@ class Requester(gobject.GObject):
     # This is a FilteredTree that you have to handle yourself.
     # You can apply/unapply filters on it as you wich.
     def get_custom_tasks_tree(self):
-        return FilteredTree(self,tree)
+        return FilteredTree(self,self.basetree,maintree=False)
         
     def get_main_tasks_list(self):
         return self.main_tree.get_all_keys()
+        
+    def get_main_n_tasks(self):
+        return self.main_tree.get_n_nodes()
     
     def get_all_tasks_list(self):
         return self.basetree.get_all_keys()
@@ -100,7 +103,7 @@ class Requester(gobject.GObject):
     
     
     ######### Filters bank #######################
-    # Get the filter function for a given name
+    # Get the filter object for a given name
     def get_filter(self,filter_name):
         return self.filters.get_filter(filter_name)
     

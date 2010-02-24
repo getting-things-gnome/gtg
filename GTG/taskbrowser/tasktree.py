@@ -56,11 +56,14 @@ class TaskTreeModel(gtk.GenericTreeModel):
         str,\
         str)
 
-    def __init__(self, requester):
+    def __init__(self, requester,tree=None):
         
         gtk.GenericTreeModel.__init__(self)
         self.req  = requester
-        self.tree = self.req.get_main_tasks_tree()
+        if tree:
+            self.tree = tree
+        else:
+            self.tree = self.req.get_main_tasks_tree()
         self.tree.register_view(self)
 
 ### TREE MODEL HELPER FUNCTIONS ###############################################

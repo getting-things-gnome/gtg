@@ -183,6 +183,7 @@ class TaskBrowser:
 #        self.task_tree_model = TaskTreeModel(requester=self.req)
         
         # Active Tasks
+        self.req.apply_filter('active')
         self.task_tree_model = TaskTreeModel(self.req)
         self.task_modelsort = gtk.TreeModelSort(self.task_tree_model)
         self.task_modelsort.set_sort_func(\
@@ -191,9 +192,12 @@ class TaskBrowser:
             tasktree.COL_DLEFT, self.dleft_sort_func)
         
         # Closed Tasks: dismissed and done
-        self.ctask_modelfilter = self.task_tree_model.filter_new()
-        self.ctask_modelfilter.set_visible_func(self.closed_task_visible_func)
-        self.ctask_modelsort = gtk.TreeModelSort(self.ctask_modelfilter)
+        self.ctask_tree = self.req.get_custom_tasks_tree()
+        self.ctask_tree.apply_filter('closed')
+        self.ctask_tree_model = TaskTreeModel(self.req,self.ctask_tree)
+#        self.ctask_modelfilter = self.task_tree_model.filter_new()
+#        self.ctask_modelfilter.set_visible_func(self.closed_task_visible_func)
+        self.ctask_modelsort = gtk.TreeModelSort(self.ctask_tree_model)
         
         # Tags
         self.tag_model = TagTreeModel(requester=self.req)
@@ -687,24 +691,6 @@ class TaskBrowser:
             for t in odic:
                 ted = self.open_task(t)
 
-    def count_tasks_rec(self, my_task, active_tasks):
-        count = 0
-        for t in my_task.get_subtasks():
-            if t.get_id() in active_tasks:
-                if len(t.get_subtasks()) != 0:
-                    count = count + 1 + self.count_tasks_rec(t, active_tasks)
-                else:
-                    count = count + 1
-        return count
-
-    def _count_subtask(self, model, iter):
-        count = 0
-        c = model.iter_children(iter)
-        while c:
-            count = count + 1 + self._count_subtask(model, c)
-            c = model.iter_next(c)
-        return count
-
     def do_toggle_workview(self):
         #We have to be careful here to avoid a loop of signals
         #menu_state   = self.menu_view_workview.get_active()
@@ -722,12 +708,11 @@ class TaskBrowser:
             self.req.apply_filter('workview')
         else:
             self.req.unapply_filter('workview')
-#        self.task_tree_model.refilter()
         self.tag_modelfilter.refilter()
         self._update_window_title()
 
     def _update_window_title(self):
-        count = self.get_n_active_tasks()
+        count = self.req.get_main_n_tasks()
         #Set the title of the window:
         parenthesis = ""
         if count == 0:
@@ -799,67 +784,67 @@ class TaskBrowser:
         return strtodate(date)
 
 
-    def is_task_visible(self, task):
-        """Returns True if the task meets the criterion to be displayed
-        @param  task: the task to assess
-        """
-        
-        # Checks to see if we're working with a tag through a right click
-        # menu item. If we are, we'll treat the tag that was selected
-        # previous to the right click as the currently selected tag,
-        # even if the cursor is somewhere else.
-        toreturn = True
-        if self.tag_active:
-            tag_list, notag_only = self.previous_tag
-        else:
-            tag_list, notag_only = self.get_selected_tags()
+#    def is_task_visible(self, task):
+#        """Returns True if the task meets the criterion to be displayed
+#        @param  task: the task to assess
+#        """
+#        
+#        # Checks to see if we're working with a tag through a right click
+#        # menu item. If we are, we'll treat the tag that was selected
+#        # previous to the right click as the currently selected tag,
+#        # even if the cursor is somewhere else.
+#        toreturn = True
+#        if self.tag_active:
+#            tag_list, notag_only = self.previous_tag
+#        else:
+#            tag_list, notag_only = self.get_selected_tags()
 
-        if len(tag_list)==1: #include child tags
-            tag_list = tag_list[0].get_children()
+#        if len(tag_list)==1: #include child tags
+#            tag_list = tag_list[0].get_children()
 
-        if not task.has_tags(tag_list=tag_list, notag_only=notag_only):
-            toreturn =  False
-        
-        #if workview is enabled
-        elif self.priv['workview']:
-            res = True
-            
-            # filter tasks view callbacks
-            for cb in self.priv['filter_cbs']:
-                res = cb(task.get_id())
-                if res == False:
-                    toreturn = False
-            
-            #we verify that the task is started
-            if not task.is_started() :
-                toreturn = False
-                    
-            if toreturn:
-                #we verify that there is no non-workview tag for this task
-                for t in task.get_tags():
-                    if t.get_attribute("nonworkview") and t not in tag_list:
-                        res = res and (not eval(t.get_attribute("nonworkview")))
-                toreturn = (res and task.is_workable())
-                
-        #print "is task %s visible ? %s" %(task.get_id(),toreturn)
-        return toreturn
+#        if not task.has_tags(tag_list=tag_list, notag_only=notag_only):
+#            toreturn =  False
+#        
+#        #if workview is enabled
+#        elif self.priv['workview']:
+#            res = True
+#            
+#            # filter tasks view callbacks
+#            for cb in self.priv['filter_cbs']:
+#                res = cb(task.get_id())
+#                if res == False:
+#                    toreturn = False
+#            
+#            #we verify that the task is started
+#            if not task.is_started() :
+#                toreturn = False
+#                    
+#            if toreturn:
+#                #we verify that there is no non-workview tag for this task
+#                for t in task.get_tags():
+#                    if t.get_attribute("nonworkview") and t not in tag_list:
+#                        res = res and (not eval(t.get_attribute("nonworkview")))
+#                toreturn = (res and task.is_workable())
+#                
+#        #print "is task %s visible ? %s" %(task.get_id(),toreturn)
+#        return toreturn
 
-    def is_lineage_visible(self, task):
-        """Returns True if at least one set of tasks that compose a lineage of
-        the given task can be found where all the tasks meets the criterion
-        to be displayed. (i.e.: there exists a chain of tasks from root to task
-        that can all be displayed)
-        @param task: the task whose lineage will be assessed
-        """
-        res = False
-        parents = task.get_parents()
-        for par_tid in parents:
-            par_task = self.req.get_task(par_tid)
-            if par_task.has_parents():
-                res = res or (self.is_task_visible(par_task) and self.is_lineage_visible(par_task))
-            else:
-                res = res or self.is_task_visible(par_task)
-        return res
+#    def is_lineage_visible(self, task):
+#        """Returns True if at least one set of tasks that compose a lineage of
+#        the given task can be found where all the tasks meets the criterion
+#        to be displayed. (i.e.: there exists a chain of tasks from root to task
+#        that can all be displayed)
+#        @param task: the task whose lineage will be assessed
+#        """
+#        res = False
+#        parents = task.get_parents()
+#        for par_tid in parents:
+#            par_task = self.req.get_task(par_tid)
+#            if par_task.has_parents():
+#                res = res or (self.is_task_visible(par_task) and self.is_lineage_visible(par_task))
+#            else:
+#                res = res or self.is_task_visible(par_task)
+#        return res
 
 #    def active_task_visible_func(self, model, iter, user_data=None):
 #        """Return True if the row must be displayed in the treeview.
@@ -878,20 +863,20 @@ class TaskBrowser:
 #            print "**** %s hidden" %task.get_id()
 #        return toreturn
                
-    def closed_task_visible_func(self, model, iter, user_data=None):
-        """Return True if the row must be displayed in the treeview.
-        @param model: the model of the filtered treeview
-        @param iter: the iter whose visiblity must be evaluated
-        @param user_data:
-        """
-        tag_list, notag_only = self.get_selected_tags()
-        task = model.get_value(iter, tasktree.COL_OBJ)
-        if len(tag_list)==1: #include child tags
-            tag_list = tag_list[0].get_children()
-        if not task.has_tags(tag_list=tag_list, notag_only=notag_only):
-            return False
-        return task.get_status() != Task.STA_ACTIVE and\
-            not model.iter_parent(iter)
+#    def closed_task_visible_func(self, model, iter, user_data=None):
+#        """Return True if the row must be displayed in the treeview.
+#        @param model: the model of the filtered treeview
+#        @param iter: the iter whose visiblity must be evaluated
+#        @param user_data:
+#        """
+#        tag_list, notag_only = self.get_selected_tags()
+#        task = model.get_value(iter, tasktree.COL_OBJ)
+#        if len(tag_list)==1: #include child tags
+#            tag_list = tag_list[0].get_children()
+#        if not task.has_tags(tag_list=tag_list, notag_only=notag_only):
+#            return False
+#        return task.get_status() != Task.STA_ACTIVE and\
+#            not model.iter_parent(iter)
                   
 
     def tag_visible_func(self, model, iter, user_data=None):
@@ -1635,7 +1620,6 @@ class TaskBrowser:
         #When you clic on a tag, you want to unselect the tasks
         self.task_tv.get_selection().unselect_all()
         self.ctask_tv.get_selection().unselect_all()
-        self.ctask_modelfilter.refilter()
         self._update_window_title()
 
     def on_taskdone_cursor_changed(self, selection=None):
@@ -1783,7 +1767,6 @@ class TaskBrowser:
         if self.logger:
             self.logger.debug("Trigger refresh on taskbrowser.")
         self.tag_modelfilter.refilter()
-#        self.tags_tv.refresh()
         self._update_window_title()
         self.refresh_lock.release()
         self.tag_list_refresh()
@@ -1874,25 +1857,6 @@ class TaskBrowser:
                     tag.append(selected)
             #If no selection, we display all
         return tag, notag_only
-
-    def get_n_active_tasks(self):
-        def func(model,path,iter):
-            task = model.get_value(iter,tasktree.COL_OBJ)
-            tid = task.get_id()
-            tm_iter = model.convert_iter_to_child_iter(None, iter)
-            tm_p = model.get_model().get_path(tm_iter)
-#            model.rows_reordered(path,iter,[])
-            print "%%%%%% %s is at %s (%s in tm)(browser.py 1879)" %(tid,str(path),str(tm_p))
-            
-        count = 0
-#        model = self.task_tree_model
-        model = self.task_modelsort
-        c = model.get_iter_first()
-#        model.foreach(func)
-        while c:
-            count = count + 1 + self._count_subtask(model, c)
-            c     = model.iter_next(c)
-        return count
     
     def reset_cursor(self):
         """ Returns the cursor to the tag that was selected prior

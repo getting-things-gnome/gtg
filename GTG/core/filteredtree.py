@@ -43,11 +43,14 @@
 # 2) Receiving signal functions ( task-added,task-modified,task-deleted)
 # 3) Treemodel helper functions. To make it easy to build a treemodel on top.
 # 4) Filtering : is_displayed() and refilter()
-# 5) Private helpers.
+# 5) Changing the filters (not for the main FilteredTree)
+# 6) Private helpers.
 
 class FilteredTree():
 
-    def __init__(self,req,tree):
+    def __init__(self,req,tree,maintree=False):
+        self.is_main = maintree
+        self.applied_filters = []
         self.req = req
         self.tree = tree
         self.req.connect("task-added", self.__task_added)
@@ -89,6 +92,9 @@ class FilteredTree():
         for n in self.get_all_nodes():
             k.append(n.get_id())
         return k
+        
+    def get_n_nodes(self):
+        return len(self.displayed_nodes)
         
     ### signals functions
     def __task_added(self,sender,tid):
@@ -316,7 +322,16 @@ class FilteredTree():
     # be displayed in the tree, regardless of its current status
     def __is_displayed(self,node):
         if node:
-            return self.req.is_displayed(node)
+            #If we are the main tree, we take the main filters from the bank
+            if self.is_main:
+                return self.req.is_displayed(node)
+            else:
+                result = True
+                for f in self.applied_filters:
+                    filt = self.req.get_filter(f)
+                    if filt:
+                        result = result and filt.is_displayed(node)
+                return result
         else:
             return False
         
@@ -366,6 +381,23 @@ class FilteredTree():
             else:
                 pos += 1
         #end of refiltering
+        
+    ####### Change filters #################
+    
+    # FIXME : parameters handling,avoid code duplication, check if the filter exists
+    def apply_filter(self,filter_name,parameters=None):
+        if self.is_main:
+            print "Error : use the requester to apply a filter to the main tree"
+            print "We don't do that automatically on purpose"
+        elif filter_name not in self.applied_filters:
+            self.applied_filters.append(filter_name)
+    
+    def unapply_filter(self,filter_name):
+        if self.is_main:
+            print "Error : use the requester to remove a filter to the main tree"
+            print "We don't do that automatically on purpose"
+        elif filter_name in self.applied_filters:
+            self.applied_filters.remove(filter_name)
         
     ####### Private methods #################
     

@@ -34,24 +34,32 @@ class Filter:
 
 class FiltersBank:
 
+    #FIXME : put those 3 constants and those in Task.py in one place
+    STA_ACTIVE    = "Active"
+    STA_DISMISSED = "Dismiss"
+    STA_DONE      = "Done"
+
     def __init__(self,req,tree=None):
         self.tree = tree
         self.req = req
         self.applied_filters = []
         self.available_filters = {}
         self.custom_filters = {}
-        
+        #Workview
         filt_obj = Filter(self.workview)
         self.available_filters['workview'] = filt_obj
+        #Active
+        filt_obj = Filter(self.active)
+        self.available_filters['active'] = filt_obj
+        #closed
+        filt_obj = Filter(self.closed)
+        self.available_filters['closed'] = filt_obj
         
     def is_displayed(self,task):
-#        print "### task %s has child %s" %(task.get_id(),task.has_child())
         result = True
         for f in self.applied_filters:
             filt = self.get_filter(f)
             result = result and filt.is_displayed(task)
-#            print "### filter : %s: %s" %(f,filt.is_displayed(task))
-#        print "### task is_displayed : %s" %result
         return result
         
         
@@ -64,6 +72,12 @@ class FiltersBank:
             
     def workview(self,task):
         return self.is_leaf(task)
+        
+    def active(self,task):
+        return task.get_status() == self.STA_ACTIVE
+        
+    def closed(self,task):
+        return task.get_status() in [self.STA_DISMISSED,self.STA_DONE]
         
     ##########################################
         
