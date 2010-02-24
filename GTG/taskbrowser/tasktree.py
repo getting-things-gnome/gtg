@@ -189,6 +189,12 @@ class TaskTreeModel(gtk.GenericTreeModel):
                 print "**** tasktree update_task %s to path %s" %(tid,str(node_path))
                 node_iter = self.get_iter(node_path)
                 self.row_changed(node_path, node_iter)
+                parent = self.tree.node_parent(task)
+                if parent:
+                    par_path = self.tree.get_path_for_node(parent)
+                    par_iter = self.get_iter(par_path)
+                    print "tasktree child toogled %s" %tid
+                    self.row_has_child_toggled(par_path, par_iter)
             else: 
                 print "!!!!!!!!! no path for node %s" %tid
         
@@ -201,7 +207,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
         print "tasktree add_task %s" %tid
 ##        nodes = []
 ##        # get the task
-        task = self.req.get_task(tid)
+        task = self.tree.get_node(tid)
         if task:
             node_path = self.tree.get_path_for_node(task)
             #if node_path is null, the task is not currently displayed
@@ -209,6 +215,12 @@ class TaskTreeModel(gtk.GenericTreeModel):
                 node_iter = self.get_iter(node_path)
                 print "tasktree add_task %s at %s" %(tid,node_path)
                 self.row_inserted(node_path, node_iter)
+                parent = self.tree.node_parent(task)
+                if parent:
+                    par_path = self.tree.get_path_for_node(parent)
+                    par_iter = self.get_iter(par_path)
+                    print "tasktree child toogled %s" %tid
+                    self.row_has_child_toggled(par_path, par_iter)
 ##        # insert the task in the tree (root)
 ##        #TreeNode
 ##        my_node = task

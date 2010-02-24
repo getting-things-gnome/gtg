@@ -345,10 +345,14 @@ class FilteredTree():
 
 
         #The bug is here
-        for n in to_add:
+        for n in list(to_add):
             isroot = n in virtual_root2
 #            if isroot :
             self.add_node(n,isroot)
+#                to_add.remove(n)
+#        for n in to_add:
+#            self.add_node(n,False)
+            
 #        for r in list(self.virtual_root):
 #            self._build_from_node(r)
 
