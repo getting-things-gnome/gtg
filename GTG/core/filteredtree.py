@@ -48,6 +48,11 @@ class FilteredTree():
         self.displayed_nodes = []
 #        self.refilter()
         
+    #add here your view if you want to keep informed about changes in the tree
+    #the view have to implement the following functions:
+    #update_task(tid)
+    #add_task(tid)
+    #remove_task(tid)
     def register_view(self,treemodel):
         if treemodel not in self.registered_views:
             self.registered_views.append(treemodel)
@@ -81,11 +86,9 @@ class FilteredTree():
         if todis and not curdis:
             isroot = self.is_root(node)
             self.add_node(node,isroot)
-#        for r in self.registered_views:
-#            r.add_task(tid)
         
     def __task_modified(self,sender,tid):
-        print   "task modified signal for %s" %tid
+#        print   "task modified signal for %s" %tid
         node = self.get_node(tid)
         todis = self.__is_displayed(node)
         curdis = self.is_displayed(node)
@@ -124,15 +127,9 @@ class FilteredTree():
             pa = path[1:]
             toreturn = self.__node_for_path(n1,pa)
         else:
-#            print "The node is NONE"
             toreturn = None
-#        if toreturn:
-#            id = toreturn.get_id()
-#        else:
-#            id = "!!!PAS DE NODE!!!"
-#        print "get_node %s for path %s" %(id,str(path))
         return toreturn
-    #done
+
     def __node_for_path(self,basenode,path):
         if len(path) == 0:
             return basenode
@@ -145,7 +142,6 @@ class FilteredTree():
                 return self.__node_for_path(node, path)
         else:
             return None
-        
 
     def get_path_for_node(self, node):
         #For that node, we should convert the base_path to path
@@ -164,18 +160,13 @@ class FilteredTree():
             while pos < max and node != child:
                 pos += 1
                 child = self.node_nth_child(par,pos)
-#            print "we want path for parent %s" %par.get_id()
             par_path = self.get_path_for_node(par)
             if par_path:
                 toreturn = par_path + (pos,)
             else:
-                print "get_path for a node not in VR and no path for parent"
-#                print "*** Node %s not in vr" %(node.get_id())
-#                print "*** node is visilbe %s" %self.is_displayed(node)
-#                print "*** node has parent %s" %self.node_parent(node)
-#                print "**** node in VR: %s" %(node in self.virtual_root)
+                print "*** Node %s not in vr and no path for parent" %(node.get_id())
+                print "*** please report a bug against FilteredTree"
                 toreturn = None
-#        print "path for nod e %s is %s" %(node.get_id(),toreturn)
         return toreturn
 
     #Done
@@ -395,11 +386,8 @@ class FilteredTree():
     
     def remove_node(self,node):
         tid = node.get_id()
-        p = self.get_path_for_node(node)
-        print "### remove_node %s for path %s" %(tid,str(p))
         for r in self.registered_views:
-                removed = r.remove_task(tid,path=p)
-#                print "### node %s removed : %s" %(tid,removed)
+                removed = r.remove_task(tid)
         self.root_update(node,False)
         if tid in self.displayed_nodes:
             self.displayed_nodes.remove(tid)
