@@ -237,7 +237,7 @@ class Tag(TreeNode):
             par = tree.get_node(att_value)
             if par:
                 self.add_parent(par)
-                self.attributes['parent'] = "We don't care about that value"
+                self._attributes['parent'] = "We don't care about that value"
         else:
             # Attributes should all be strings.
             val = unicode(str(att_value), "UTF-8")

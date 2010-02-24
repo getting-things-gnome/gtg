@@ -216,8 +216,8 @@ class TaskTreeModel(gtk.GenericTreeModel):
             node_path = self.tree.get_path_for_node(task)
             #if node_path is null, the task is not currently displayed
             if node_path:
+                print "tasktree add_task %s at %s" %(tid,node_path)
                 node_iter = self.get_iter(node_path)
-#                print "tasktree add_task %s at %s" %(tid,node_path)
                 self.row_inserted(node_path, node_iter)
                 parent = self.tree.node_parent(task)
                 if parent:

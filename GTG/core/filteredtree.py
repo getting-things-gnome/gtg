@@ -198,7 +198,7 @@ class FilteredTree():
                 print "*** please report a bug against FilteredTree"
                 toreturn = None
         #print "get_path_for_node %s is %s" %(node.get_id(),str(toreturn))
-        self.path_for_node_cache[node] = toreturn
+#        self.path_for_node_cache[node] = toreturn
         return toreturn
 
     #Done
@@ -377,23 +377,24 @@ class FilteredTree():
         #First, we start we the nodes in the virtual root
         for n in list(to_add):
             isroot = n in virtual_root2
-            if isroot:
-                self.__add_node(n,isroot)
-                to_add.remove(n)
-        #Now, we add other nodes. We add a node only if its parent
-        #is already added.
-        pos = 0
-        while len(to_add) > 0:
-            if pos >= len(to_add):
-                print "This should not happen: to_add is not emptied !"
-                pos = 0
-            n = to_add[pos]
-            if self.node_parent(n):
-                self.__add_node(n,False)
-                to_add.remove(n)
-                pos = 0
-            else:
-                pos += 1
+            self.__add_node(n,isroot)
+#            if isroot:
+#                self.__add_node(n,isroot)
+#                to_add.remove(n)
+#        #Now, we add other nodes. We add a node only if its parent
+#        #is already added.
+#        pos = 0
+#        while len(to_add) > 0:
+#            if pos >= len(to_add):
+#                print "This should not happen: to_add is not emptied !"
+#                pos = 0
+#            n = to_add[pos]
+#            if self.node_parent(n):
+#                self.__add_node(n,False)
+#                to_add.remove(n)
+#                pos = 0
+#            else:
+#                pos += 1
         #end of refiltering
         
     ####### Change filters #################
