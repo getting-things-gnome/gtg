@@ -1550,7 +1550,7 @@ class TaskBrowser:
         #FIXME:handle multiple tags case
         if len(newtag) > 0:
             print "applying filter %s" %newtag[0]
-            self.req.reset_tag_filters()
+            self.req.reset_tag_filters(refilter=False)
             self.req.apply_filter(newtag[0])
             #FIXME : also do that for the closed task tree
         else:

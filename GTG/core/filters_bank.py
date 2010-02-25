@@ -139,14 +139,15 @@ class FiltersBank:
         self.applied_filters = []
         self.tree.refilter()
         
-    def reset_tag_filters(self):
+    def reset_tag_filters(self,refilter=True):
         #FIXME:only reset the tags filters
         if "notag" in self.applied_filters:
             self.applied_filters.remove('notag')
         for f in self.applied_filters:
             if f.startswith('@'):
                 self.applied_filters.remove(f)
-        self.tree.refilter()
+        if refilter:
+            self.tree.refilter()
         
         
     # Get the filter object for a given name
