@@ -103,6 +103,7 @@ class Tree():
                         p.add_child(child_id)
                         toreturn = True
                     if not c.has_parent(parent_id):
+                        #print "creating the %s - %s relation" %(parent_id,child_id)
                         c.add_parent(p)
                         toreturn = True
                         #removing the root from the list of parent
@@ -276,14 +277,18 @@ class TreeNode():
 #        print "removing root node has parent"
 #        self.tree.break_relationship(root.get_id(),self.get_id())
         id = par.get_id()
-        self.parents.append(id)
-        self.new_relationship(id,self.get_id())
+        if id not in self.parents:
+            self.parents.append(id)
+            return self.new_relationship(id,self.get_id())
+        else:
+            return False
     
     #set_parent means that we remove all other parents
     def set_parent(self,par):
         if par:
             for i in self.parents:
-                self.remove_parent(i)
+                if i != par:
+                    self.remove_parent(i)
             self.add_parent(par)
             
     def remove_parent(self,id):

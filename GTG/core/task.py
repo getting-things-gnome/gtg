@@ -428,9 +428,14 @@ class Task(TreeNode):
 
     #Take a tid object as parameter
     def add_parent(self, parent):
-        TreeNode.add_parent(self,parent)
-        self.sync()
-        parent.sync()
+        added = TreeNode.add_parent(self,parent)
+        if added:
+            print "add_parent %s to %s" %(parent.get_id(),self.get_id())
+            self.sync()
+            parent.sync()
+            return True
+        else:
+            return False
 
     #Take a tid as parameter
     def remove_parent(self, tid):

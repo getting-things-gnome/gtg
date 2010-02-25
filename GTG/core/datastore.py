@@ -163,6 +163,8 @@ class TaskSource():
     
     def set_task(self, task):
         tid = task.get_id()
+        self.count_set += 1
+        print "setting task %s (%s sets)" %(tid,self.count_set)
         if task not in self.to_set and tid not in self.to_remove:
             self.to_set.append(task)
         if self.lock.acquire(False):
@@ -178,8 +180,8 @@ class TaskSource():
                 t = self.to_set.pop(0)
                 tid = t.get_id()
                 if tid not in self.to_remove:
-                    self.count_set += 1
-                    print "setting task %s (%s sets)" %(tid,self.count_set)
+#                    self.count_set += 1
+#                    print "setting task %s (%s sets)" %(tid,self.count_set)
                     self.backend.set_task(t)
             while len(self.to_remove) > 0:
                 tid = self.to_remove.pop(0)

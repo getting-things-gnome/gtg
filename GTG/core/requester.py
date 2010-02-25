@@ -62,7 +62,7 @@ class Requester(gobject.GObject):
 
     def _task_modified(self, tid):
         self.counter_call += 1
-        print "signal task_modified %s (%s modifications)" %(tid,self.counter_call)
+        #print "signal task_modified %s (%s modifications)" %(tid,self.counter_call)
         gobject.idle_add(self.emit, "task-modified", tid)
         
     ############ Tasks Tree ######################
