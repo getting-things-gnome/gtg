@@ -70,6 +70,9 @@ class FiltersBank:
         #closed
         filt_obj = Filter(self.closed,self.req)
         self.available_filters['closed'] = filt_obj
+        #notag
+        filt_obj = Filter(self.notag,self.req)
+        self.available_filters['notag'] = filt_obj
         
     def is_displayed(self,task):
         result = True
@@ -80,6 +83,9 @@ class FiltersBank:
         
         
     ######### hardcoded filters #############
+    def notag(self,task):
+        return task.has_tags(notag_only=True)
+        
     def is_leaf(self,task):
         return not task.has_child()
     
