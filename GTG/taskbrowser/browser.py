@@ -1539,6 +1539,15 @@ class TaskBrowser:
 
     def on_select_tag(self, widget, row=None, col=None):
         #When you clic on a tag, you want to unselect the tasks
+        tag, notag = self.get_selected_tags()
+        if notag:
+            print "notag tag selected"
+        else:
+            if len(tag) == 0:
+                print "all tags selected"
+            else:
+                for t in tag:
+                    print "tag %s is selected" %str(t.get_name())
         self.task_tv.get_selection().unselect_all()
         self.ctask_tv.get_selection().unselect_all()
         self._update_window_title()
