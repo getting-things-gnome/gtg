@@ -1552,6 +1552,7 @@ class TaskBrowser:
             print "applying filter %s" %newtag[0]
             self.req.reset_tag_filters()
             self.req.apply_filter(newtag[0])
+            #FIXME : also do that for the closed task tree
         else:
             self.req.reset_filters()
                         
