@@ -59,10 +59,6 @@ class TagStore(Tree):
         self.sep_tag = self.new_tag("gtg-tags-sep")
         self.sep_tag.set_attribute("special","sep")
         self.sep_tag.set_attribute("order",2)
-        # Add them to the model
-#        self.add_tag(self.alltag_tag.get_name(), self.alltag_tag)
-#        self.add_tag(self.notag_tag.get_name(), self.notag_tag)
-#        self.add_tag(self.sep_tag.get_name(), self.sep_tag)
 
         self.filename = os.path.join(CoreConfig.DATA_DIR, XMLFILE)
         doc, self.xmlstore = cleanxml.openxmlfile(self.filename,
@@ -83,20 +79,6 @@ class TagStore(Tree):
 #            if parent:
 #                pnode=self.new_tag(parent)
 #                tag.reparent(pnode, update_attr=False)
-
-        #Now we build special tags. Special tags are not
-        #in the traditional tag list
-        #Their name doesn't begin with "@"
-#        #Build the "all tags tag"
-#        self.alltag_tag = Tag("alltags_tag",save_cllbk=self.save)
-#        self.alltag_tag.set_attribute("special","all")
-#        self.alltag_tag.set_attribute("icon","gtg-tags-all")
-#        #Build the "without tag tag"
-#        self.notag_tag = Tag("notag_tag",save_cllbk=self.save)
-#        self.notag_tag.set_attribute("special","notag")
-#        self.notag_tag.set_attribute("icon","gtg-tags-none")
-#    def get_tree(self):
-#        return self.tree
 
     def new_tag(self, tagname):
         """Create a new tag and return it or return the existing one

@@ -1636,7 +1636,9 @@ class TaskBrowser:
     def on_task_modified(self, sender, tid):
         if self.logger:
             self.logger.debug("Modify task with ID: %s" % tid)
-        self.tag_model.update_tags_for_task(tid)
+        #FIXME: if tags are not updated, it has to be done on the requester level
+        #not here
+        #self.tag_model.update_tags_for_task(tid)
         self.tags_tv.refresh()
         #We also refresh the opened windows for that tasks,
         #his children and his parents

@@ -197,7 +197,6 @@ class Tree():
                 toreturn = self._path_for_node(parent) + (index, )
         else:
             toreturn = None
-        print "path for node is %s" %str(toreturn)
         return toreturn
 
     def _print_from_node(self, node, prefix=""):
