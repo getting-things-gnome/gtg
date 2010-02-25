@@ -84,6 +84,8 @@ class TagStore(Tree):
             self.add_node(tag)
             self.req.add_filter(tname,None)
             #self.tags[tname] = tag
+#        print "********* tag added *******"
+#        self.print_tree()
         return self.get_node(tname)
 
 #   Is this thing used ? What does it do ?

@@ -545,6 +545,7 @@ class Task(TreeNode):
         self.tag_added(new)
 
     def tag_added(self, tagname):
+        print "tag %s added to task %s" %(tagname,self.get_id())
         "Add a tag. Does not add '@tag' to the contents. See insert_tag"
         t = self.req.new_tag(tagname.encode("UTF-8"))
         t.add_task(self.get_id())

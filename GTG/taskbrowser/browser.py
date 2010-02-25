@@ -1544,7 +1544,7 @@ class TaskBrowser:
             newtag = ["notag"]
         else:
             if len(taglist) == 0:
-                newtag = [None]
+                newtag = []
             else:
                 newtag = [taglist[0].get_name()]
         #FIXME:handle multiple tags case
@@ -1554,7 +1554,7 @@ class TaskBrowser:
             self.req.apply_filter(newtag[0])
             #FIXME : also do that for the closed task tree
         else:
-            self.req.reset_filters()
+            self.req.reset_tag_filters()
                         
 #        self.task_tv.get_selection().unselect_all()
         self.ctask_tv.get_selection().unselect_all()

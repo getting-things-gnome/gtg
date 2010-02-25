@@ -185,20 +185,23 @@ class Tree():
     def _path_for_node(self, node):
         if node: 
             if node == self.root:
-                return ()
+                toreturn = ()
             elif not node.has_parent():
                 index  = self.root.get_child_index(node.get_id())
-                return self._path_for_node(self.root) + (index, )
+                toreturn = self._path_for_node(self.root) + (index, )
             else:
                 #FIXME : no multiparent support here
                 parent_id = node.get_parent()
                 parent = self.get_node(parent_id)
                 index  = parent.get_child_index(node.get_id())
-                return self._path_for_node(parent) + (index, )
-        return None
+                toreturn = self._path_for_node(parent) + (index, )
+        else:
+            toreturn = None
+        print "path for node is %s" %str(toreturn)
+        return toreturn
 
     def _print_from_node(self, node, prefix=""):
-#        print prefix + node.id
+        print prefix + node.id
         prefix = prefix + " "
         if node.has_child():
             for c in node.get_children():
