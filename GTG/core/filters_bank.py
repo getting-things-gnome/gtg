@@ -37,15 +37,15 @@ class Filter:
             
 class SimpleTagFilter:
     def __init__(self,tagname,req):
-        self.tname = tagname
         self.req = req
+        self.tname = tagname
         
     def is_displayed(self,tid):
         task = self.req.get_task(tid)
         if not task:
             return False
         else:
-            return task.has_tags([self.tname])
+            return task.has_tags(tagname=self.tname)
     
 
 class FiltersBank:
@@ -110,6 +110,7 @@ class FiltersBank:
     #FIXME : it seems that this function is called twice
     # when setting the workview. Shouldn't be the case
     def apply_filter(self,filter_name,parameters=None):
+        ans = filter_name in self.custom_filters
         filt = None
         if filter_name in self.available_filters:
             filt = self.available_filters[filter_name]
@@ -135,6 +136,11 @@ class FiltersBank:
     
     
     def reset_filters(self):
+        self.applied_filters = []
+        self.tree.refilter()
+        
+    def reset_tag_filters(self):
+        #FIXME:only reset the tags filters
         self.applied_filters = []
         self.tree.refilter()
         

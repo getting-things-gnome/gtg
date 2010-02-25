@@ -101,6 +101,9 @@ class Requester(gobject.GObject):
     def reset_filters(self):
         self.filters.reset_filters()
         
+    def reset_tag_filters(self):
+        self.filters.reset_tag_filters()
+        
     def is_displayed(self,task):
         return self.filters.is_displayed(task)
     

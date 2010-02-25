@@ -1546,10 +1546,11 @@ class TaskBrowser:
             if len(taglist) == 0:
                 newtag = [None]
             else:
-                newtag = taglist
+                newtag = [taglist[0].get_name()]
         #FIXME:handle multiple tags case
         if len(newtag) > 0:
             print "applying filter %s" %newtag[0]
+            self.req.reset_tag_filters()
             self.req.apply_filter(newtag[0])
         else:
             self.req.reset_filters()

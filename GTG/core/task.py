@@ -605,7 +605,10 @@ class Task(TreeNode):
 
     #tag_list is a list of tags object
     #return true if at least one of the list is in the task
-    def has_tags(self, tag_list=None, notag_only=False):
+    def has_tags(self, tag_list=None, notag_only=False,tagname = None):
+        #FIXME : tag_list should tag names, not object !!
+        if tagname:
+            tag_list=[self.req.get_tag(tagname)]
         #We want to see if the task has no tags
         if notag_only:
             return self.tags == []

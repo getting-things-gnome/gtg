@@ -87,7 +87,8 @@ class TagStore(Tree):
         return self.get_node(tname)
 
 #   Is this thing used ? What does it do ?
-#    def add_tag(self, tag):
+    def add_tag(self, tag):
+        print "add_tag %s ***************** it is used !!!" %tag
 #        name = tag.get_name()
 #        #If tag does not exist in the store, we add it
 #        if not self.has_node(name):
