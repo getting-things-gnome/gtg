@@ -87,9 +87,9 @@ class FiltersBank:
         return task.is_workable()
             
     def workview(self,task):
-        wv = self.is_workable(task) 
-        wv = wv and self.active(task)
-        wv = wv and task.is_started()
+        wv = self.active(task) and\
+             task.is_started() and\
+             self.is_workable(task)
         return wv
         
     def active(self,task):

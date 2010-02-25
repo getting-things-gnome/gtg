@@ -177,6 +177,7 @@ class FilteredTree():
         elif node.get_id() in self.virtual_root:
             ind = self.virtual_root.index(node.get_id())
             toreturn = (ind,)
+        #The node is not a virtual root
         else:
             pos = 0
             par = self.node_parent(node)
@@ -283,7 +284,7 @@ class FilteredTree():
             toreturn = None
             while good <= n and cur < total:
                 curn = node.get_nth_child(cur)
-                if self.is_displayed(curn.get_id()):
+                if curn and self.is_displayed(curn.get_id()):
                     if good == n:
                         toreturn = curn
                     good += 1
