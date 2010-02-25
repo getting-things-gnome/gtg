@@ -52,7 +52,7 @@ import logging
 
 #our own imports
 from GTG import _
-from GTG.core.manager import Manager
+from GTG.viewmanager.manager import Manager
 from GTG.core.datastore import DataStore
 from GTG.core import CoreConfig
 
