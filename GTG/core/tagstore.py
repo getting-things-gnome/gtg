@@ -23,6 +23,7 @@
 import os
 import xml.sax.saxutils as saxutils
 
+from GTG import _
 from GTG.core      import CoreConfig
 from GTG.core.tree import Tree, TreeNode
 from GTG.tools     import cleanxml
@@ -38,7 +39,31 @@ class TagStore(Tree):
     def __init__(self,requester):
         Tree.__init__(self)
         self.req = requester
-#        self.tree = Tree()
+        
+        ### building the initial tags
+        # Build the "all tags tag"
+        self.alltag_tag = self.new_tag("gtg-tags-all")
+        self.alltag_tag.set_attribute("special","all")
+        self.alltag_tag.set_attribute("label","<span weight='bold'>%s</span>"\
+                                             % _("All tasks"))
+        self.alltag_tag.set_attribute("icon","gtg-tags-all")
+        self.alltag_tag.set_attribute("order",0)
+        # Build the "without tag tag"
+        self.notag_tag = self.new_tag("gtg-tags-none")
+        self.notag_tag.set_attribute("special","notag")
+        self.notag_tag.set_attribute("label","<span weight='bold'>%s</span>"\
+                                             % _("Tasks with no tags"))
+        self.notag_tag.set_attribute("icon","gtg-tags-none")
+        self.notag_tag.set_attribute("order",1)
+        # Build the separator
+        self.sep_tag = self.new_tag("gtg-tags-sep")
+        self.sep_tag.set_attribute("special","sep")
+        self.sep_tag.set_attribute("order",2)
+        # Add them to the model
+#        self.add_tag(self.alltag_tag.get_name(), self.alltag_tag)
+#        self.add_tag(self.notag_tag.get_name(), self.notag_tag)
+#        self.add_tag(self.sep_tag.get_name(), self.sep_tag)
+
         self.filename = os.path.join(CoreConfig.DATA_DIR, XMLFILE)
         doc, self.xmlstore = cleanxml.openxmlfile(self.filename,
             XMLROOT) #pylint: disable-msg=W0612
@@ -82,6 +107,7 @@ class TagStore(Tree):
         if not self.has_node(tname):
             tag = Tag(tname, save_cllbk=self.save, req=self.req)
             self.add_node(tag)
+            self.req._tag_added(tname)
             self.req.add_filter(tname,None)
             #self.tags[tname] = tag
 #        print "********* tag added *******"

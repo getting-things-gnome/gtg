@@ -210,29 +210,6 @@ class TaskBrowser:
         self.tag_modelsort.set_sort_func(\
             tagtree.COL_ID, self.tag_sort_func)
 
-        # Build the "all tags tag"
-        self.alltag_tag = Tag("gtg-tags-all")
-        self.alltag_tag.set_attribute("special","all")
-        self.alltag_tag.set_attribute("label","<span weight='bold'>%s</span>"\
-                                             % _("All tasks"))
-        self.alltag_tag.set_attribute("icon","gtg-tags-all")
-        self.alltag_tag.set_attribute("order",0)
-        # Build the "without tag tag"
-        self.notag_tag = Tag("gtg-tags-none")
-        self.notag_tag.set_attribute("special","notag")
-        self.notag_tag.set_attribute("label","<span weight='bold'>%s</span>"\
-                                             % _("Tasks with no tags"))
-        self.notag_tag.set_attribute("icon","gtg-tags-none")
-        self.notag_tag.set_attribute("order",1)
-        # Build the separator
-        self.sep_tag = Tag("gtg-tags-sep")
-        self.sep_tag.set_attribute("special","sep")
-        self.sep_tag.set_attribute("order",2)
-        # Add them to the model
-        self.tag_model.add_tag(self.alltag_tag.get_name(), self.alltag_tag)
-        self.tag_model.add_tag(self.notag_tag.get_name(), self.notag_tag)
-        self.tag_model.add_tag(self.sep_tag.get_name(), self.sep_tag)
-
     def _init_widget_aliases(self):
         self.window             = self.builder.get_object("MainWindow")
         self.tagpopup           = self.builder.get_object("TagContextMenu")
@@ -1659,9 +1636,6 @@ class TaskBrowser:
     def on_task_modified(self, sender, tid):
         if self.logger:
             self.logger.debug("Modify task with ID: %s" % tid)
-#        self.task_tree_model.update_task(tid)
-#        if self.task_tree_model.remove_task(tid):
-#            self.task_tree_model.add_task(tid)
         self.tag_model.update_tags_for_task(tid)
         self.tags_tv.refresh()
         #We also refresh the opened windows for that tasks,

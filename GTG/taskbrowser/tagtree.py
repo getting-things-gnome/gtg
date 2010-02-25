@@ -48,6 +48,8 @@ class TagTreeModel(gtk.GenericTreeModel):
         self.req  = requester
         self.tree = self.req.get_tag_tree()
         self.workview = False
+        
+        self.req.connect('tag-added',self.add_tag)
 
 ### MODEL METHODS ############################################################
     def update_tags_for_task(self, tid):
@@ -170,8 +172,9 @@ class TagTreeModel(gtk.GenericTreeModel):
         else:
             return None
 
-    def add_tag(self, tname, tag):
-        self.tree.add_node(tag)
+    def add_tag(self, sender, tname):
+#        self.tree.add_node(tag)
+        tag = self.tree.get_node(tname)
         tag_path  = self.tree.get_path_for_node(tag)
         tag_iter  = self.get_iter(tag_path)
         #print "path is %s " %tag_path

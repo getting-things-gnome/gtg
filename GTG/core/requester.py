@@ -37,6 +37,12 @@ class Requester(gobject.GObject):
                     'task-deleted': (gobject.SIGNAL_RUN_FIRST, \
                                     gobject.TYPE_NONE, (str, )),
                     'task-modified': (gobject.SIGNAL_RUN_FIRST, \
+                                    gobject.TYPE_NONE, (str, )),
+                    'tag-added': (gobject.SIGNAL_RUN_FIRST, \
+                                    gobject.TYPE_NONE, (str, )),
+                    'tag-deleted': (gobject.SIGNAL_RUN_FIRST, \
+                                    gobject.TYPE_NONE, (str, )),
+                    'tag-modified': (gobject.SIGNAL_RUN_FIRST, \
                                     gobject.TYPE_NONE, (str, ))}
 
     def __init__(self, datastore):
@@ -64,6 +70,9 @@ class Requester(gobject.GObject):
         self.counter_call += 1
         #print "signal task_modified %s (%s modifications)" %(tid,self.counter_call)
         gobject.idle_add(self.emit, "task-modified", tid)
+        
+    def _tag_added(self,tagname):
+        gobject.idle_add(self.emit, "tag-added", tagname)
         
     ############ Tasks Tree ######################
     # This is the main FilteredTree. You cannot apply filters
