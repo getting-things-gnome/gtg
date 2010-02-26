@@ -29,6 +29,11 @@
 # This fake tree is called FilteredTree and will map path and nodes methods 
 # to a result corresponding to the filtered tree.
 #
+# Don't forget that the node are not aware that they are in a filtered tree
+# Use the FilteredTree methods, not directly the nodes one.
+# If you believe a function would be useful in a filtered tree, don't 
+# hesitate to make a proposition.
+#
 # To be more efficient, a quick way to optimize the FilteredTree is to cache
 # all answers in a dictionnary so we don't have to compute the answer 
 # all the time. This is not done yet.
