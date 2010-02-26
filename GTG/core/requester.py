@@ -228,12 +228,11 @@ class Requester(gobject.GObject):
     def get_used_tags(self):
         """Return tags currently used by a task.
 
-        @return: A list of tags used by a task.
+        @return: A list of tag names used by a task.
         """
         l = []
         for t in self.ds.get_tagstore().get_all_tags():
             if t.is_actively_used() and t not in l:
-                l.append(t)
-        l.sort(cmp=lambda x, y: cmp(x.get_name().lower(),\
-            y.get_name().lower()))
+                l.append(t.get_name())
+        l.sort(cmp=lambda x, y: cmp(x.lower(),y.lower()))
         return l

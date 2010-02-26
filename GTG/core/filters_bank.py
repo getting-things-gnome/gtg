@@ -45,7 +45,7 @@ class SimpleTagFilter:
         if not task:
             return False
         else:
-            return task.has_tags(tagname=self.tname)
+            return task.has_tags([self.tname])
     
 
 class FiltersBank:

@@ -368,16 +368,6 @@ class Task(TreeNode):
             return True
         else:
             return False
-            
-#    #FIXME : remove this method
-#    def has_subtasks(self):
-#        print "Deprecation Warning : use has_child instead of has_subtask"
-#        return self.has_child()
-
-#    #FIXME : remove this method
-#    def get_n_subtasks(self):
-#        print "Deprecation Warning : use get_n_children instead of get_n_subtasks"
-#        return self.get_n_children()
 
     #FIXME : remove this method
     def get_subtasks(self):
@@ -405,24 +395,6 @@ class Task(TreeNode):
         @param tid: the ID of the task to return.
         """
         return self.req.get_task(tid)
-
-#    #FIXME : remove this method
-#    def get_subtask_tids(self):
-#        print "Deprecation Warning : use get_children instead of get_subtask_tids"
-#        return self.get_children()
-
-#    #FIXME : remove this method
-#    def get_nth_subtask(self, index):
-#        print "Deprecation Warning : use get_nth_child instead of get_nth_subtask"
-#        return self.get_nth_child(index).get_id()
-
-#    #FIXME : remove this method
-#    def get_subtask_index(self, tid):
-#        print "Deprecation Warning : use get_child_index instead of get_subtask_index"
-#        return self.get_child_index(tid)
-
-    #add and remove parents are private
-    #Only the task itself can play with it's parent
 
     ### PARENTS ##############################################################
 
@@ -490,7 +462,8 @@ class Task(TreeNode):
         for i in self.get_parents():
             task = self.req.get_task(i)
             task.remove_subtask(self.get_id())
-        for tag in self.tags:
+        for tagname in self.tags:
+            self.req.get_tag(tagname)
             tag.remove_task(self.get_id())
         #then we remove effectively the task
         #self.req.delete_task(self.get_id())
@@ -527,15 +500,14 @@ class Task(TreeNode):
 #
     def get_tags_name(self):
         #Return a copy of the list of tags. Not the original object.
-        l = []
-        for t in self.tags:
-            name = t.get_name().encode("UTF-8")
-            l.append(name)
-        return l
+        return list(self.tags)
 
     #return a copy of the list of tag objects
     def get_tags(self):
-        return list(self.tags)
+        l = []
+        for tname in self.tags:
+            l.append(self.req.get_tag(tname))
+        return l
         
     def rename_tag(self, old, new):
         eold = saxutils.escape(saxutils.unescape(old))
@@ -547,14 +519,17 @@ class Task(TreeNode):
     def tag_added(self, tagname):
         print "tag %s added to task %s" %(tagname,self.get_id())
         "Add a tag. Does not add '@tag' to the contents. See insert_tag"
-        t = self.req.new_tag(tagname.encode("UTF-8"))
-        t.add_task(self.get_id())
+        t = tagname.encode("UTF-8")
+        tag = self.req.get_tag(t)
+        if not tag:
+            tag = self.req.new_tag(t)
+        tag.add_task(self.get_id())
         #Do not add the same tag twice
         if not t in self.tags:
             self.tags.append(t)
             for child in self.get_subtasks():
                 if child.can_be_deleted:
-                    child.add_tag(tagname)
+                    child.add_tag(t)
             return True
     
     def add_tag(self, tagname):
@@ -585,8 +560,8 @@ class Task(TreeNode):
     def remove_tag(self, tagname):
         t = self.req.get_tag(tagname)
         t.remove_task(self.get_id())
-        if t in self.tags:
-            self.tags.remove(t)
+        if tagname in self.tags:
+            self.tags.remove(tagname)
             for child in self.get_subtasks():
                 if child.can_be_deleted:
                     child.remove_tag(tagname)
@@ -604,12 +579,9 @@ class Task(TreeNode):
                )
      
 
-    #tag_list is a list of tags object
+    #tag_list is a list of tags names
     #return true if at least one of the list is in the task
-    def has_tags(self, tag_list=None, notag_only=False,tagname = None):
-        #FIXME : tag_list should tag names, not object !!
-        if tagname:
-            tag_list=[self.req.get_tag(tagname)]
+    def has_tags(self, tag_list=None, notag_only=False):
         #We want to see if the task has no tags
         if notag_only:
             return self.tags == []
