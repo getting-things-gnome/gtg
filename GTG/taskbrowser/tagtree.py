@@ -75,10 +75,11 @@ class TagTreeModel(gtk.GenericTreeModel):
         return self.column_types[n]
 
     def on_get_iter(self, path):
-        #print "on_get_iter: %s" % str(path)
+#        print "on_get_iter: %s" % str(path)
         return self.tree.get_node_for_path(path)
 
     def on_get_path(self, node):
+#        print "on_get_path: %s" % str(node)
         return self.tree.get_path_for_node(node)
 
     def on_get_value(self, node, column):
@@ -131,17 +132,23 @@ class TagTreeModel(gtk.GenericTreeModel):
                     return True
 
     def on_iter_next(self, node):
-        if node.has_parent():
-            parent_node = get_parents()[0]
-            next_idx = parent_node.get_child_index(node.get_id()) + 1
-            if parent_node.get_n_children()-1 < next_idx:
-                return None
-            else:
-                return parent_node.get_nth_child(next_idx)
+#        print "on_iter_next: %s" % str(node)
+        if node:
+            tid = node.get_id()
+            parent_node = node.get_parent()
+            if not parent_node:
+                parent_node = self.tree.get_root()
+            try:
+                idx = parent_node.get_child_index(tid) + 1
+                nextnode = parent_node.get_nth_child(idx)
+            except ValueError:
+                nextnode = None
         else:
-            return None
+            nextnode = root
+        return nextnode
 
     def on_iter_children(self, node):
+#        print "on_iter_children: %s" % str(node)
         if node:
             if node.has_child():
                 return node.get_nth_child(0)
@@ -152,20 +159,24 @@ class TagTreeModel(gtk.GenericTreeModel):
             return node
 
     def on_iter_has_child(self, node):
+#        print "on_iter_has_child: %s" % str(node)
         return node.has_child()
 
     def on_iter_n_children(self, node):
+#        print "on_iter_n_children: %s" % str(node)
         if not node:
             node = self.tree.get_root()
         return node.get_n_children()
 
     def on_iter_nth_child(self, node, n):
+#        print "on_iter_nth_child: %s" % str(node)
         if not node:
             node = self.tree.get_root()
         nth_child = node.get_nth_child(n)
         return nth_child
 
     def on_iter_parent(self, node):
+#        print "on_iter_parent: %s" % str(node)
         if node.has_parent():
             parent = node.get_parent()
             return parent
@@ -180,8 +191,8 @@ class TagTreeModel(gtk.GenericTreeModel):
         #print "path is %s " %tag_path
         if tag_path != None:
             print "### tag %s added to path %s" %(tname,tag_path)
-            self.row_inserted(tag_path, tag_iter)
-        #self.tree.print_tree()
+            #self.row_inserted(tag_path, tag_iter)
+        self.tree.print_tree()
 
     def move_tag(self, parent, child):
         #print "Moving %s below %s" % (child, parent)
