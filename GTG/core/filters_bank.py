@@ -58,7 +58,6 @@ class FiltersBank:
     def __init__(self,req,tree=None):
         self.tree = tree
         self.req = req
-        self.applied_filters = []
         self.available_filters = {}
         self.custom_filters = {}
         #Workview
@@ -73,15 +72,7 @@ class FiltersBank:
         #notag
         filt_obj = Filter(self.notag,self.req)
         self.available_filters['notag'] = filt_obj
-        
-    def is_displayed(self,task):
-        result = True
-        for f in self.applied_filters:
-            filt = self.get_filter(f)
-            result = result and filt.is_displayed(task)
-        return result
-        
-        
+
     ######### hardcoded filters #############
     def notag(self,task):
         return task.has_tags(notag_only=True)
@@ -106,49 +97,6 @@ class FiltersBank:
         return task.get_status() in [self.STA_DISMISSED,self.STA_DONE]
         
     ##########################################
-        
-    #FIXME : it seems that this function is called twice
-    # when setting the workview. Shouldn't be the case
-    def apply_filter(self,filter_name,parameters=None):
-        ans = filter_name in self.custom_filters
-        filt = None
-        if filter_name in self.available_filters:
-            filt = self.available_filters[filter_name]
-        elif filter_name in self.custom_filters:
-            filt = self.custom_filters[filter_name]
-        if filt:
-            if parameters:
-                filt.set_parameters(parameters)
-            if filter_name not in self.applied_filters:
-                self.applied_filters.append(filter_name)
-                self.tree.refilter()
-            return True
-        else:
-            return False
-    
-    def unapply_filter(self,filter_name):
-        if filter_name in self.applied_filters:
-            self.applied_filters.remove(filter_name)
-            self.tree.refilter()
-            return True
-        else:
-            return False
-    
-    
-    def reset_filters(self):
-        self.applied_filters = []
-        self.tree.refilter()
-        
-    def reset_tag_filters(self,refilter=True):
-        #FIXME:only reset the tags filters
-        if "notag" in self.applied_filters:
-            self.applied_filters.remove('notag')
-        for f in self.applied_filters:
-            if f.startswith('@'):
-                self.applied_filters.remove(f)
-        if refilter:
-            self.tree.refilter()
-        
         
     # Get the filter object for a given name
     def get_filter(self,filter_name):

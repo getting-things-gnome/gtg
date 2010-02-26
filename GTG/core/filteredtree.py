@@ -332,17 +332,12 @@ class FilteredTree():
     # be displayed in the tree, regardless of its current status
     def __is_displayed(self,tid):
         if tid:
-            #If we are the main tree, we take the main filters from the bank
-            if self.is_main:
-                #TODO
-                return self.req.is_displayed(tid)
-            else:
-                result = True
-                for f in self.applied_filters:
-                    filt = self.req.get_filter(f)
-                    if filt:
-                        result = result and filt.is_displayed(tid)
-                return result
+            result = True
+            for f in self.applied_filters:
+                filt = self.req.get_filter(f)
+                if filt:
+                    result = result and filt.is_displayed(tid)
+            return result
         else:
             return False
         
@@ -388,19 +383,52 @@ class FilteredTree():
     ####### Change filters #################
     
     # FIXME : parameters handling,avoid code duplication, check if the filter exists
-    def apply_filter(self,filter_name,parameters=None):
-        if self.is_main:
+    def apply_filter(self,filter_name,parameters=None,imtherequester=False):
+        if self.is_main and not imtherequester:
             print "Error : use the requester to apply a filter to the main tree"
             print "We don't do that automatically on purpose"
-        elif filter_name not in self.applied_filters:
-            self.applied_filters.append(filter_name)
+        else:
+            if parameters:
+                filt = self.req.get_filter(filter_name)
+                if filt:
+                    filt.set_parameters(parameters)
+            if filter_name not in self.applied_filters:
+                self.applied_filters.append(filter_name)
+                self.refilter()
+                return True
+        return False
     
-    def unapply_filter(self,filter_name):
-        if self.is_main:
+    def unapply_filter(self,filter_name,imtherequester=False):
+        if self.is_main and not imtherequester:
             print "Error : use the requester to remove a filter to the main tree"
             print "We don't do that automatically on purpose"
         elif filter_name in self.applied_filters:
             self.applied_filters.remove(filter_name)
+            self.refilter()
+            return True
+        return False
+            
+    
+    def reset_filters(self,imtherequester=False):
+        if self.is_main and not imtherequester:
+            print "Error : use the requester to remove a filter to the main tree"
+            print "We don't do that automatically on purpose"
+        else:
+            self.applied_filters = []
+            self.refilter()
+        
+    def reset_tag_filters(self,refilter=True,imtherequester=False):
+        if self.is_main and not imtherequester:
+            print "Error : use the requester to remove a filter to the main tree"
+            print "We don't do that automatically on purpose"
+        else:
+            if "notag" in self.applied_filters:
+                self.applied_filters.remove('notag')
+            for f in self.applied_filters:
+                if f.startswith('@'):
+                    self.applied_filters.remove(f)
+            if refilter:
+                self.refilter()
         
     ####### Private methods #################
     

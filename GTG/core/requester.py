@@ -55,11 +55,6 @@ class Requester(gobject.GObject):
         self.filters = FiltersBank(self,tree=self.main_tree)
         self.counter_call = 0
 
-#        #filter
-#        self.filter = {}
-#        self.filter["tasks"] = []
-#        self.filter["tags"] = []
-
     ############# Signals #########################
     #Used by the tasks to emit the task added/modified signal
     #Should NOT be used by anyone else
@@ -97,24 +92,24 @@ class Requester(gobject.GObject):
         
     # Apply a given filter to the main FilteredTree
     def apply_filter(self,filter_name,parameters=None):
-        r = self.filters.apply_filter(filter_name,parameters=parameters)
+        r = self.main_tree.apply_filter(filter_name,parameters=parameters,imtherequester=True)
         return r
             
     
     # Unapply a filter from the main FilteredTree.
     # Does nothing if the filter was not previously applied.
     def unapply_filter(self,filter_name):
-        r = self.filters.unapply_filter(filter_name)
+        r = self.main_tree.unapply_filter(filter_name,imtherequester=True)
         return r
     
     def reset_filters(self):
-        self.filters.reset_filters()
+        self.main_tree.reset_filters(imtherequester=True)
         
     def reset_tag_filters(self,refilter=True):
-        self.filters.reset_tag_filters(refilter=refilter)
+        self.main_tree.reset_tag_filters(refilter=refilter,imtherequester=True)
         
     def is_displayed(self,task):
-        return self.filters.is_displayed(task)
+        return self.main_tree.is_displayed(task)
     
     
     ######### Filters bank #######################
