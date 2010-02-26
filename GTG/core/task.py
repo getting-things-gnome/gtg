@@ -325,12 +325,7 @@ class Task(TreeNode):
         #we use the inherited childrens
         self.add_child(subt.get_id())
         return subt
-    
-    #FIXME : remove this method
-    def add_subtask(self,tid):
-        print "Deprecation Warning : use add_child instead of add_subtask"
-        self.add_child(tid)
-
+        
     def add_child(self, tid):
         """Add a subtask to this task
 
@@ -348,12 +343,6 @@ class Task(TreeNode):
             return True
         else:
             return False
-            
-    #FIXME : remove this method
-    def remove_subtask(self, tid):
-        print "Deprecation Warning : use remove_child instead of remove_subtask"
-        self.remove_child(tid)
-        
             
     def remove_child(self,tid):
         """Removed a subtask from the task.
@@ -461,7 +450,7 @@ class Task(TreeNode):
             self.req.delete_task(task.get_id())
         for i in self.get_parents():
             task = self.req.get_task(i)
-            task.remove_subtask(self.get_id())
+            task.remove_child(self.get_id())
         for tagname in self.tags:
             self.req.get_tag(tagname)
             tag.remove_task(self.get_id())

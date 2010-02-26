@@ -296,7 +296,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
 #        
 #        # Remove child from old parent
 #        if old_par_task:
-#            old_par_task.remove_subtask(child_tid)
+#            old_par_task.remove_child(child_tid)
 #        # Remove old parent from child
 #        if old_par_task:
 #            child_task.remove_parent(old_par_tid)
