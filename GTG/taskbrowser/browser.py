@@ -194,12 +194,12 @@ class TaskBrowser:
         self.task_modelsort.set_sort_func(\
             tasktree.COL_DLEFT, self.dleft_sort_func)
         
+        #TODO: the closed tasks should only be created if displayed
+        #it has no sense to have it if not displayed
         # Closed Tasks: dismissed and done
         self.ctask_tree = self.req.get_custom_tasks_tree()
         self.ctask_tree.apply_filter('closed')
         self.ctask_tree_model = TaskTreeModel(self.req,self.ctask_tree)
-#        self.ctask_modelfilter = self.task_tree_model.filter_new()
-#        self.ctask_modelfilter.set_visible_func(self.closed_task_visible_func)
         self.ctask_modelsort = gtk.TreeModelSort(self.ctask_tree_model)
         
         # Tags
@@ -274,8 +274,6 @@ class TaskBrowser:
     def _init_signal_connections(self):
 
         SIGNAL_CONNECTIONS_DIC = {
-#            "on_force_refresh":
-#                self.on_force_refresh,
             "on_add_task":
                 self.on_add_task,
             "on_add_note":
@@ -284,8 +282,6 @@ class TaskBrowser:
                 self.on_edit_active_task,
             "on_edit_done_task":
                 self.on_edit_done_task,
-#            "on_edit_note":
-#                self.on_edit_note,
             "on_delete_task":
                 self.on_delete_task,
             "on_add_new_tag":
@@ -381,6 +377,7 @@ class TaskBrowser:
         self.task_tv.connect('row-collapsed',\
             self.on_task_treeview_row_collapsed)
         
+        #TODO: this should go to the closed tasks constructor.
         # Closed tasks TreeView
         self.ctask_tv.connect('row-activated',\
             self.on_edit_done_task)
@@ -976,10 +973,6 @@ class TaskBrowser:
             self.config["plugins"]["enabled"] = \
               self.pengine.enabled_plugins().keys()
 
-    def on_force_refresh(self, widget):
-        if self.refresh_lock.acquire(False):
-            gobject.idle_add(self.general_refresh)
-
     def on_about_clicked(self, widget):
         self.about.show()
 
@@ -1318,8 +1311,6 @@ class TaskBrowser:
             self.req.delete_task(tid)
             self.close_task(tid)
         self.tids_todelete = None
-        if self.refresh_lock.acquire(False):
-            gobject.idle_add(self.general_refresh)
             
             
     #FIXME : this function should be in core/manager, not in the browser
@@ -1382,8 +1373,6 @@ class TaskBrowser:
         tasks_status = [task.get_status() for task in tasks]
         for uid, task, status in zip(tasks_uid, tasks, tasks_status):
             task.set_start_date(self.get_canonical_date(new_start_date))
-        if self.refresh_lock.acquire(False):
-            gobject.idle_add(self.general_refresh)
         #FIXME: If the task dialog is displayed, refresh its start_date widget
 
     def on_mark_as_started(self, widget):
@@ -1479,7 +1468,6 @@ class TaskBrowser:
             self.on_addtag_confirm()
     
     def on_mark_as_done(self, widget):
-        task_to_scroll_to = None
         tasks_uid = filter(lambda uid: uid != None, self.get_selected_tasks())
         if len(tasks_uid) == 0:
             return
@@ -1490,14 +1478,8 @@ class TaskBrowser:
                 task.set_status(Task.STA_ACTIVE)
             else:
                 task.set_status(Task.STA_DONE)
-                task_to_scroll_to = uid
-        if task_to_scroll_to != None:
-            gobject.idle_add(self.ctask_tv.scroll_to_task, task_to_scroll_to)
-        if self.refresh_lock.acquire(False):
-            gobject.idle_add(self.general_refresh)
 
     def on_dismiss_task(self, widget):
-        task_to_scroll_to = None
         tasks_uid = filter(lambda uid: uid != None, self.get_selected_tasks())
         if len(tasks_uid) == 0:
             return
@@ -1508,11 +1490,6 @@ class TaskBrowser:
                 task.set_status(Task.STA_ACTIVE)
             else:
                 task.set_status(Task.STA_DISMISSED)
-                task_to_scroll_to = uid
-        if task_to_scroll_to != None:
-            gobject.idle_add(self.ctask_tv.scroll_to_task, task_to_scroll_to)
-        if self.refresh_lock.acquire(False):
-            gobject.idle_add(self.general_refresh)
 
     def on_select_tag(self, widget, row=None, col=None):
         #When you clic on a tag, you want to unselect the tasks
@@ -1618,20 +1595,12 @@ class TaskBrowser:
     def on_task_added(self, sender, tid):
         if self.logger:
             self.logger.debug("Add task with ID: %s" % tid)
-#        print "on task_ %s added (browser.py 1730)" %tid
-#        self.task_tree_model.add_task(tid)
-        #no need to do more as task_modified will be called anyway
+        self._update_window_title()
         
     def on_task_deleted(self, sender, tid):
         if self.logger:
             self.logger.debug("Delete task with ID: %s" % tid)
-#        self.task_tree_model.remove_task(tid)
-        self.tags_tv.refresh()
         self._update_window_title()
-        #if the modified task is active, we have to refresh everything
-        #to avoid some odd stuffs when loading
-        if self.refresh_lock.acquire(False):
-            gobject.idle_add(self.general_refresh)
                         
     def on_task_modified(self, sender, tid):
         if self.logger:
@@ -1643,6 +1612,7 @@ class TaskBrowser:
         #We also refresh the opened windows for that tasks,
         #his children and his parents
         #It might be faster to refresh every opened editor
+        #FIXME : the refresh task should not happen here but in the viewmanager
         tlist = [tid]
         task = self.req.get_task(tid)
         if task:
@@ -1652,9 +1622,6 @@ class TaskBrowser:
                 self.refresh_task(uid)
             #if the modified task is active, we have to refresh everything
             #to avoid some odd stuffs when loading
-            if task.get_status() == "Active" :
-                if self.refresh_lock.acquire(False):
-                    gobject.idle_add(self.general_refresh)
 
     #using dummy parameters that are given by the signal
     def update_buttons_sensitivity(self,a=None,b=None,c=None):
@@ -1670,12 +1637,13 @@ class TaskBrowser:
         self.deletebutton.set_sensitive(enable)
 
     def general_refresh(self):
-        if self.logger:
-            self.logger.debug("Trigger refresh on taskbrowser.")
-        self.tag_modelfilter.refilter()
-        self._update_window_title()
-        self.refresh_lock.release()
-        self.tag_list_refresh()
+        print "we should not have a general refresh"
+#        if self.logger:
+#            self.logger.debug("Trigger refresh on taskbrowser.")
+#        self.tag_modelfilter.refilter()
+#        self._update_window_title()
+#        self.refresh_lock.release()
+#        self.tag_list_refresh()
 
 ### PUBLIC METHODS ############################################################
 #
