@@ -129,6 +129,9 @@ class TaskBrowser:
         # Initialize "About" dialog
         self._init_about_dialog()
 
+        #FIXME : this should be done in the view_manager
+        #(because we might want to call the preferences somewhere else,
+        # like from an applet)
         # Initialize "Preferences" dialog
         self.preferences = PreferencesDialog(self)
 
@@ -143,15 +146,10 @@ class TaskBrowser:
         # Define accelerator keys
         self._init_accelerators()
         
+        #FIXME: this should be done in the view_manager
         # Initialize the plugin-engine
         self.p_apis = [] #the list of each plugin apis.
         self._init_plugin_engine()
-
-        self.refresh_lock = threading.Lock()
-
-        # NOTES
-        #self._init_note_support()
-        
         
         #Autocompletion for Tags
         self._init_tag_list()
@@ -1636,15 +1634,6 @@ class TaskBrowser:
         self.dismissbutton.set_sensitive(enable)
         self.deletebutton.set_sensitive(enable)
 
-    def general_refresh(self):
-        print "we should not have a general refresh"
-#        if self.logger:
-#            self.logger.debug("Trigger refresh on taskbrowser.")
-#        self.tag_modelfilter.refilter()
-#        self._update_window_title()
-#        self.refresh_lock.release()
-#        self.tag_list_refresh()
-
 ### PUBLIC METHODS ############################################################
 #
     def get_selected_task(self, tv=None):
@@ -1753,13 +1742,17 @@ class TaskBrowser:
 
 ### MAIN ######################################################################
 #
+    #FIXME : the main loop should go in the view_manager
     def main(self):
 
         # Here we will define the main TaskList interface
         gobject.threads_init()
         
+        #FIXME : the browser should be built only the first
+        #time it is shown.
         # Restore state from config
         self.restore_state_from_conf()
+        
         if self._start_gtg_maximized():
             self.window.show()
         gtk.main()
