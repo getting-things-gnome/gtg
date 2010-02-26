@@ -163,11 +163,6 @@ class TaskTreeModel(gtk.GenericTreeModel):
         return self.tree.node_has_child(node)
 
     def on_iter_n_children(self, node):
-#        if node:
-#            id = node.get_id()
-#        else:
-#            id = "Null node"
-#        print "on_iter_n_children %s" %id
         return self.tree.node_n_children(node)
 
     def on_iter_nth_child(self, node, n):
@@ -193,24 +188,10 @@ class TaskTreeModel(gtk.GenericTreeModel):
                 node_iter = self.get_iter(node_path)
                 self.row_changed(node_path, node_iter)
                 self.row_has_child_toggled(node_path, node_iter)
-#                parent = self.tree.node_parent(my_node)
-#                if parent:
-#                    par_path = self.tree.get_path_for_node(parent)
-#                    par_iter = self.get_iter(par_path)
-##                    print "tasktree child toogled %s" %tid
-#                    self.row_has_child_toggled(par_path, par_iter)
             else: 
-                print "!!!!!!!!! no path for node %s" %my_node.get_id()
-        
-#        print "################"
-#        print self.tree.print_tree()
-#        print "tree nodes : %s" %self.tree.get_all_keys()
-#        print "root children = %s" %self.tree.get_root().get_children()
-        
+                print "Error :! no path for node %s !" %my_node.get_id()
+
     def add_task(self, tid):
-#        print "tasktree add_task %s" %tid
-##        nodes = []
-##        # get the task
         task = self.tree.get_node(tid)
         if task:
             node_path = self.tree.get_path_for_node(task)
@@ -225,35 +206,6 @@ class TaskTreeModel(gtk.GenericTreeModel):
                     par_iter = self.get_iter(par_path)
 #                    print "tasktree child toogled %s" %tid
                     self.row_has_child_toggled(par_path, par_iter)
-##        # insert the task in the tree (root)
-##        #TreeNode
-##        my_node = task
-##        self.tree.add_node(task)
-
-##        nodes.append(my_node)
-##        # has the task parents?
-##        if task.has_parents():
-##            # get every path from parents
-##            par_list = task.get_parents()
-##            # get every paths going to each parent
-##            for par_tid in par_list:
-##                if not self.tree.has_node(par_tid):
-##                    #print " - %s: %s is not loaded." % (tid, par_tid)
-##                    continue
-##                else:
-##                    par_node = self.tree.get_node(par_tid)
-##                    self.tree.add_node(task, parent=par_node)
-##                    node_path = self.tree.get_path_for_node(task)
-##                    node_iter = self.get_iter(node_path)
-##                    self.row_inserted(node_path, node_iter)
-##                    nodes.append(task)
-##        # has the task children?
-##        for node in nodes:
-##            self._add_all_subtasks(node, task)
-##            node_path = self.tree.get_path_for_node(node)
-##            if node_path:
-##                node_iter = self.get_iter(node_path)
-##                self.row_has_child_toggled(node_path, node_iter)
 
     def remove_task(self, tid):
         #print "tasktree remove_task %s" %tid
