@@ -5,7 +5,7 @@
   <object class="GtkDialog" id="dialog1">
     <property name="border_width">5</property>
     <property name="title" translatable="yes">Hamster Preferences</property>
-    <property name="type_hint">normal</property>
+    <property name="type_hint">dialog</property>
     <property name="has_separator">False</property>
     <signal name="delete_event" handler="prefs_close"/>
     <child internal-child="vbox">
