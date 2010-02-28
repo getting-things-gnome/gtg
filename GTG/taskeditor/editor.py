@@ -142,7 +142,7 @@ class TaskEditor :
         self.task = task
         tags = task.get_tags()
         self.textview.subtasks_callback(task.get_children)
-        self.textview.removesubtask_callback(task.remove_subtask)
+        self.textview.removesubtask_callback(task.remove_child)
         self.textview.set_get_tagslist_callback(task.get_tags_name)
         self.textview.set_add_tag_callback(task.add_tag)
         self.textview.set_remove_tag_callback(task.remove_tag)
@@ -183,11 +183,6 @@ class TaskEditor :
                                        data_dir = DATA_DIR,
                                        builder = self.builder, 
                                        requester = self.req,
-                                       taskview = None, 
-                                       task_modelsort = None,
-                                       ctaskview = None, 
-                                       ctask_modelsort = None,
-                                       filter_cbs = None,
                                        tagpopup = None,
                                        tagview = None,
                                        task = task, 
@@ -547,7 +542,7 @@ class TaskEditor :
     
     def delete_task(self,widget) :
         if self.delete :
-            result = self.delete(widget,self.task.get_id())
+            result = self.delete(widget,[self.task.get_id()])
         #if the task was deleted, we close the window
         if result : self.window.destroy()
 

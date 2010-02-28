@@ -78,6 +78,7 @@ class DataStore:
                 self.open_tasks.remove_node(tid)
                 self.closed_tasks.remove_node(tid)
             back.remove_task(tid)
+            return True
             
             
     def new_task(self,pid=None):

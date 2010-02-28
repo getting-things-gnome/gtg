@@ -52,8 +52,6 @@ from GTG.tools.dates                  import strtodate,\
                                              no_date,\
                                              FuzzyDate
 from GTG.tools                        import clipboard
-from GTG.core.plugins.engine          import PluginEngine
-from GTG.core.plugins.api             import PluginAPI
 
 #=== OBJECTS ==================================================================
 
@@ -81,7 +79,7 @@ class Timer:
 class TaskBrowser:
 
     def __init__(self, requester, config, opentask=None,closetask=None,\
-                 refreshtask=None, quit=None, logger=None):
+                 refreshtask=None, deletetasks=None, quit=None, logger=None):
 
         self.logger=logger
 
@@ -92,6 +90,7 @@ class TaskBrowser:
         self.open_task = opentask
         self.close_task = closetask
         self.refresh_task = refreshtask
+        self.deletion_cllbck = deletetasks
         self.quit = quit
         self.tag_active = False
         
@@ -101,9 +100,7 @@ class TaskBrowser:
         self.ctasks_tv = None
 
         ### YOU CAN DEFINE YOUR INTERNAL MECHANICS VARIABLES BELOW
-        # Task deletion
-        self.tids_todelete = None # The tid that will be deleted
-
+        
         # Setup default values for view
         self._init_browser_config()
 
@@ -146,14 +143,12 @@ class TaskBrowser:
         # Define accelerator keys
         self._init_accelerators()
         
-        #FIXME: this should be done in the view_manager
-        # Initialize the plugin-engine
-        self.p_apis = [] #the list of each plugin apis.
-        self._init_plugin_engine()
-        
         #Autocompletion for Tags
         self._init_tag_list()
         self._init_tag_completion()
+        
+        self.restore_state_from_conf()
+        self.window.show()
 
 ### INIT HELPER FUNCTIONS #####################################################
 #
@@ -281,7 +276,7 @@ class TaskBrowser:
             "on_edit_done_task":
                 self.on_edit_done_task,
             "on_delete_task":
-                self.on_delete_task,
+                self.on_delete_tasks,
             "on_add_new_tag":
                 self.on_add_new_tag,
             "on_mark_as_done":
@@ -304,10 +299,6 @@ class TaskBrowser:
                 self.on_size_allocate,
             "gtk_main_quit":
                 self.on_close,
-            "on_delete_confirm":
-                self.on_delete_confirm,
-            "on_delete_cancel":
-                lambda x: x.hide,
             "on_addtag_confirm":
                 self.on_addtag_confirm,
             "on_addtag_cancel":
@@ -357,7 +348,7 @@ class TaskBrowser:
         self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
 
         if (self.window):
-            self.window.connect("destroy", gtk.main_quit)
+            self.window.connect("destroy", self.quit)
             #The following is needed to let the Notification Area plugin to
             # minimize the window instead of closing the program
             self.delete_event_handle = \
@@ -493,48 +484,7 @@ class TaskBrowser:
         key, mod = gtk.accelerator_parse('<Control>F9')
         addtag_button.add_accelerator('activate', agr, key, mod, \
             gtk.ACCEL_VISIBLE)
-        
-    def _init_plugin_engine(self):
-        # plugins - Init
-        self.pengine = PluginEngine(GTG.PLUGIN_DIR)
-        # loads the plugins in the plugin dir
-        self.plugins = self.pengine.load_plugins()
-        # initializes the plugin api class
-        self.plugin_api = PluginAPI(window         = self.window,
-                                    config         = self.config,
-                                    data_dir       = GTG.DATA_DIR,
-                                    builder        = self.builder,
-                                    requester      = self.req,
-                                    taskview       = self.task_tv,
-                                    task_modelsort = self.task_modelsort,
-                                    ctaskview      = self.ctask_tv,
-                                    ctask_modelsort= self.ctask_modelsort,
-                                    filter_cbs     = self.priv['filter_cbs'],
-                                    tagpopup       = self.tagpopup,
-                                    tagview        = self.tags_tv,
-                                    task           = None,
-                                    texteditor     = None,
-                                    quick_add_cbs  = self.priv['quick_add_cbs'],
-                                    browser        = self,
-                                    logger         = self.logger)
-        self.p_apis.append(self.plugin_api)
-        # enable some plugins
-        if len(self.pengine.plugins) > 0:
-            # checks the conf for user settings
-            if "plugins" in self.config:
-                if "enabled" in self.config["plugins"]:
-                    plugins_enabled = self.config["plugins"]["enabled"]
-                if "disabled" in self.config["plugins"]:
-                    plugins_disabled = self.config["plugins"]["disabled"]
-                for name, plugin in self.pengine.plugins.iteritems():
-                    if name in plugins_enabled and name not in plugins_disabled:
-                        plugin.enabled = True
-                    else:
-                        # plugins not explicitly enabled are disabled
-                        plugin.enabled = False
-        # initializes and activates each plugin (that is enabled)
-        self.pengine.activate_plugins(self.p_apis)
-    
+
     def _init_tag_list(self):
         self.tag_list_model = gtk.ListStore(gobject.TYPE_STRING)
         self.tag_list = self.req.get_all_tags()
@@ -922,9 +872,6 @@ class TaskBrowser:
             view = "workview"
         else:
             view = "default"
-        
-        # plugins are deactivated
-        self.pengine.deactivate_plugins(self.p_apis)
 
         # Populate configuration dictionary
         self.config["browser"] = {
@@ -962,14 +909,6 @@ class TaskBrowser:
         elif sort_column is not None and sort_order == gtk.SORT_DESCENDING:
             self.config["browser"]["tasklist_sort"]  = [sort_column, 1]
         self.config["browser"]["view"] = view
-        
-        # adds the plugin settings to the conf
-        if len(self.pengine.plugins) > 0:
-            self.config["plugins"] = {}
-            self.config["plugins"]["disabled"] = \
-              self.pengine.disabled_plugins().keys()
-            self.config["plugins"]["enabled"] = \
-              self.pengine.enabled_plugins().keys()
 
     def on_about_clicked(self, widget):
         self.about.show()
@@ -1254,7 +1193,7 @@ class TaskBrowser:
 
     def on_task_treeview_key_press_event(self, treeview, event):
         if gtk.gdk.keyval_name(event.keyval) == "Delete":
-            self.on_delete_task()
+            self.on_delete_tasks()
 
     def on_closed_task_treeview_button_press_event(self, treeview, event):
         if event.button == 3:
@@ -1271,7 +1210,7 @@ class TaskBrowser:
 
     def on_closed_task_treeview_key_press_event(self, treeview, event):
         if gtk.gdk.keyval_name(event.keyval) == "Delete":
-            self.on_delete_task()
+            self.on_delete_tasks()
 
     def on_add_task(self, widget, status=None):
         tags, notagonly = self.get_selected_tags()
@@ -1302,67 +1241,15 @@ class TaskBrowser:
         if tid:
             self.open_task(tid)
 
-    def on_delete_confirm(self, widget):
-        """if we pass a tid as a parameter, we delete directly
-        otherwise, we will look which tid is selected"""
-        for tid in self.tids_todelete:
-            self.req.delete_task(tid)
-            self.close_task(tid)
-        self.tids_todelete = None
-            
-            
-    #FIXME : this function should be in core/manager, not in the browser
-    def on_delete_task(self, widget=None, tid=None):
+    def on_delete_tasks(self, widget=None, tid=None):
         #If we don't have a parameter, then take the selection in the treeview
         if not tid:
             #tid_to_delete is a [project,task] tuple
-            self.tids_todelete = self.get_selected_tasks()
+            tids_todelete = self.get_selected_tasks()
         else:
-            self.tids_todelete = [tid]
-        #We must at least have something to delete !
-        if len(self.tids_todelete) > 0:
-            # We fill the text and the buttons' labels according to the number 
-            # of tasks to delete
-            label = self.builder.get_object("label1")
-            label_text = label.get_text()
-            cdlabel2 = self.builder.get_object("cd-label2")
-            cdlabel3 = self.builder.get_object("cd-label3")
-            cdlabel4 = self.builder.get_object("cd-label4")
-            if len(self.tids_todelete) == 1:
-                label_text = _("Deleting a task cannot be undone, and will delete the following task: ")
-                cdlabel2.set_label(_("Are you sure you want to delete this task?"))
-                cdlabel3.set_label(_("Keep selected task"))
-                cdlabel4.set_label(_("Permanently remove task"))
-            else:
-                label_text = _("Deleting a task cannot be undone, and will delete the following tasks: ")
-                cdlabel2.set_label(_("Are you sure you want to delete these tasks?"))
-                cdlabel3.set_label(_("Keep selected tasks"))
-                cdlabel4.set_label(_("Permanently remove tasks"))
-            label_text = label_text[0:label_text.find(":") + 1]
-            
-            # I find the tasks that are going to be deleted
-            tasks = []
-            for tid in self.tids_todelete:
-                def recursive_list_tasks(task_list, root):
-                    """Populate a list of all the subtasks and 
-                       their children, recursively"""
-                    if root not in task_list:
-                        task_list.append(root)
-                        for i in root.get_subtasks():
-                            recursive_list_tasks(task_list, i)
-                task = self.req.get_task(tid)
-                recursive_list_tasks(tasks, task)
-            titles_list = [task.get_title() for task in tasks]
-            titles = reduce (lambda x, y: x + "\n - " + y, titles_list)
-            label.set_text("%s %s" % (label_text, "\n - " + titles))
-            delete_dialog = self.builder.get_object("confirm_delete")
-            delete_dialog.run()
-            delete_dialog.hide()
-            #has the task been deleted ?
-            return not self.tids_todelete
-        else:
-            return False
-    
+            tids_todelete = [tid]
+        self.deletion_cllbck(tids_todelete)
+
     def update_start_date(self, widget, new_start_date):
         tasks_uid = filter(lambda uid: uid != None, self.get_selected_tasks())
         if len(tasks_uid) == 0:
@@ -1587,7 +1474,6 @@ class TaskBrowser:
         """Closing the window."""
         #Saving is now done in main.py
         self.on_delete(None, None)
-        gtk.main_quit()
         self.quit()
 
     def on_task_added(self, sender, tid):
@@ -1739,21 +1625,3 @@ class TaskBrowser:
             self.tag_active = True
             path, col = self.target_cursor
             self.tags_tv.set_cursor(path, col, 0)
-
-### MAIN ######################################################################
-#
-    #FIXME : the main loop should go in the view_manager
-    def main(self):
-
-        # Here we will define the main TaskList interface
-        gobject.threads_init()
-        
-        #FIXME : the browser should be built only the first
-        #time it is shown.
-        # Restore state from config
-        self.restore_state_from_conf()
-        
-        if self._start_gtg_maximized():
-            self.window.show()
-        gtk.main()
-        return 0

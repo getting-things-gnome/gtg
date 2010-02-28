@@ -192,7 +192,7 @@ class TagTreeModel(gtk.GenericTreeModel):
         if tag_path != None:
             print "### tag %s added to path %s" %(tname,tag_path)
             #self.row_inserted(tag_path, tag_iter)
-        self.tree.print_tree()
+        #self.tree.print_tree()
 
     def move_tag(self, parent, child):
         #print "Moving %s below %s" % (child, parent)
