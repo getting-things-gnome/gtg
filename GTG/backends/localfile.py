@@ -100,17 +100,7 @@ class Backend:
             task = task_factory_func(tid)
             task = taskxml.task_from_xml(task,node)
             push_task_func(task)
-        print "#### finishing pushing tasks"
-
-    #Fill the task "task_to_fill" with the information of the task TID
-#    #Return True if successful, False otherwise
-#    def get_task(self, task_to_fill, tid):
-##        import time
-##        time.sleep(1)
-#        for node in self.xmlproj.childNodes:
-#            if node.getAttribute("id") == tid:
-#                return taskxml.task_from_xml(task_to_fill, node)
-#        return task_to_fill
+        #print "#### finishing pushing tasks"
 
     #Save the task in the backend
     def set_task(self, task):

@@ -117,7 +117,8 @@ def main(options=None, args=None):
     # Launch task browser
     req = ds.get_requester()
     manager = Manager(req,config,logger=logger)
-    manager.show_browser()
+    #main loop
+    manager.main()
 
     # Ideally we should load window geometry configuration from a config.
     # backend like gconf at some point, and restore the appearance of the

@@ -296,20 +296,6 @@
               </packing>
             </child>
             <child>
-              <object class="GtkToolButton" id="new_note_b">
-                <property name="visible">True</property>
-                <property name="visible_horizontal">False</property>
-                <property name="visible_vertical">False</property>
-                <property name="label" translatable="yes">New Note</property>
-                <property name="icon_name">gtg-note-new</property>
-                <signal name="clicked" handler="on_add_note"/>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="homogeneous">True</property>
-              </packing>
-            </child>
-            <child>
               <object class="GtkToolButton" id="edit_b">
                 <property name="visible">True</property>
                 <property name="visible_horizontal">False</property>
@@ -401,20 +387,6 @@
             <child>
               <object class="GtkSeparatorToolItem" id="separator_7">
                 <property name="visible">True</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="homogeneous">True</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkToggleToolButton" id="note_toggle">
-                <property name="visible">True</property>
-                <property name="visible_horizontal">False</property>
-                <property name="visible_vertical">False</property>
-                <property name="label" translatable="yes">View Notes</property>
-                <property name="stock_id">gtk-file</property>
-                <signal name="toggled" handler="on_note_toggled"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -616,6 +588,7 @@
       </object>
     </child>
   </object>
+<<<<<<< TREE
   <object class="GtkDialog" id="confirm_delete_dialog">
     <property name="border_width">5</property>
     <property name="title" translatable="yes">Confirm task deletion</property>
@@ -775,6 +748,8 @@
       <action-widget response="0">delete</action-widget>
     </action-widgets>
   </object>
+=======
+>>>>>>> MERGE-SOURCE
   <object class="GtkMenu" id="TagContextMenu">
     <property name="visible">True</property>
     <property name="no_show_all">True</property>
@@ -884,7 +859,6 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
         <property name="visible">True</property>
         <property name="use_underline">True</property>
         <property name="use_stock">False</property>
-        <property name="submenu">ScheduleForContextMenu</property>
       </object>
     </child>
     <child>
@@ -1252,7 +1226,6 @@ commas.</property>
                                       <object class="GtkCheckButton" id="pref_autostart">
                                         <property name="label" translatable="yes">Start Getting Things GNOME! on every login</property>
                                         <property name="visible">True</property>
-                                        <property name="sensitive">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">False</property>
                                         <property name="draw_indicator">True</property>

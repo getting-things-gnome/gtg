@@ -45,16 +45,22 @@ class pluginSendEmail:
         tb_Taskicon = gtk.Image()
         tb_Taskicon.set_from_icon_name('mail-send', 32)
         tb_Taskicon.show()
-        tb_Taskbutton = gtk.ToolButton(tb_Taskicon)
-        tb_Taskbutton.set_label("Send via email")
-        tb_Taskbutton.connect('clicked', self.onTbTaskButton, plugin_api)
-        self.task_separator = plugin_api.add_task_toolbar_item(gtk.SeparatorToolItem())
-        self.tb_Taskbutton = plugin_api.add_task_toolbar_item(tb_Taskbutton)
+        self.tb_Taskbutton = gtk.ToolButton(tb_Taskicon)
+        self.tb_Taskbutton.set_label("Send via email")
+        self.tb_Taskbutton.connect('clicked', self.onTbTaskButton, plugin_api)
+        self.task_separator = gtk.SeparatorToolItem()
+        plugin_api.add_task_toolbar_item(self.task_separator)
+        plugin_api.add_task_toolbar_item(self.tb_Taskbutton)
 
     def deactivate(self, plugin_api):
         #everything should be removed, in case a task is currently opened
-        plugin_api.remove_task_toolbar_item(self.task_separator)
-        plugin_api.remove_task_toolbar_item(self.tb_Taskbutton)
+        #we may not be loaded in the taskeditor, so we have to check
+        if hasattr(self, "task_separator"):
+            plugin_api.remove_task_toolbar_item(self.task_separator)
+        if hasattr(self, "tb_Taskbutton"):
+            print self.tb_Taskbutton
+            plugin_api.remove_task_toolbar_item(self.tb_Taskbutton)
+            print "ciao"
 
 ## HELPER FUNCTIONS ############################################################
 

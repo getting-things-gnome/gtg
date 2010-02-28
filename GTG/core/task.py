@@ -391,7 +391,7 @@ class Task(TreeNode):
     def add_parent(self, parent):
         added = TreeNode.add_parent(self,parent)
         if added:
-            print "add_parent %s to %s" %(parent.get_id(),self.get_id())
+            #print "add_parent %s to %s" %(parent.get_id(),self.get_id())
             self.sync()
             parent.sync()
             return True
@@ -506,7 +506,7 @@ class Task(TreeNode):
         self.tag_added(new)
 
     def tag_added(self, tagname):
-        print "tag %s added to task %s" %(tagname,self.get_id())
+        #print "tag %s added to task %s" %(tagname,self.get_id())
         "Add a tag. Does not add '@tag' to the contents. See insert_tag"
         t = tagname.encode("UTF-8")
         tag = self.req.get_tag(t)

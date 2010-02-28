@@ -37,3 +37,6 @@ edit-apidocs:
 lint: pyflakes pep8
 
 .PHONY: check lint pyflakes pep8 apidocs
+
+#Ignore the exit code in pyflakes, so that pep8 is always run when "make lint"
+.IGNORE: pyflakes

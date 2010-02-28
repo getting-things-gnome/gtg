@@ -58,7 +58,7 @@ class GtgTask(GenericTask):
             self._gtg_task.remove_tag(tag)
         #tags to add
         for tag in other_tags_set.difference(gtg_tags_set):
-            gtg_all_tags = [ t.get_name() for t in \
+            gtg_all_tags = [t.get_name() for t in \
                             self.plugin_api.get_requester().get_all_tags()]
             matching_tags = filter(lambda t: t.lower() == tag, gtg_all_tags)
             if len(matching_tags) !=  0:
@@ -66,12 +66,10 @@ class GtgTask(GenericTask):
             self._gtg_task.add_tag(tag)
 
     def _get_text(self):
-        return self._gtg_task.get_excerpt()
-
+        return self._gtg_task.get_excerpt(strip_tags = True, \
+                                          strip_subtasks = True)
     def _set_text(self, text):
         #fill in subtasks
-
-
         self._gtg_task.set_text(text)
 
     def _set_status(self, status):

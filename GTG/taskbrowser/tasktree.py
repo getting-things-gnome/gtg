@@ -56,6 +56,8 @@ class TaskTreeModel(gtk.GenericTreeModel):
         str,\
         str)
 
+    col_len = len(column_types)
+
     def __init__(self, requester,tree=None):
         
         gtk.GenericTreeModel.__init__(self)
@@ -64,7 +66,9 @@ class TaskTreeModel(gtk.GenericTreeModel):
             self.tree = tree
         else:
             self.tree = self.req.get_main_tasks_tree()
-        self.tree.register_view(self)
+        self.tree.connect('task-added-inview',self.add_task)
+        self.tree.connect('task-deleted-inview',self.remove_task)
+        self.tree.connect('task-modified-inview',self.update_task)
 
 ### TREE MODEL HELPER FUNCTIONS ###############################################
 
@@ -85,7 +89,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
 
     def on_get_n_columns(self):
 #        print "on_get_n_columns"
-        return len(self.column_types)
+        return self.col_len
 
     def on_get_column_type(self, n):
 #        print "on_get_column_type %s" %n
@@ -95,26 +99,28 @@ class TaskTreeModel(gtk.GenericTreeModel):
 #        print "on_get_value for %s, col %s" %(node.get_id(),column)
         if not node:
             return None
-        else:
-            #FIXME. The Task is a TreeNode object but
-            #TreeNode is not recognized as a Task!
-            task = self.req.get_task(node.get_id())
-            if not task:
-                return None
-        if   column == COL_TID:
-            return task.get_id()
-        elif column == COL_OBJ:
+        #NOTE: This works for me, is there a reason not to use it?
+        task = node
+#        else:
+#            #FIXME. The Task is a TreeNode object but
+#            #TreeNode is not recognized as a Task!
+#            task = self.req.get_task(node.get_id())
+#            if not task:
+#                return None
+        if column == COL_OBJ:
             return task
+        elif column == COL_DDATE:
+            return task.get_due_date().to_readable_string()
+        elif column == COL_DLEFT:
+            return task.get_days_left()
         elif column == COL_TITLE:
             return saxutils.escape(task.get_title())
         elif column == COL_SDATE:
             return task.get_start_date().to_readable_string()
-        elif column == COL_DDATE:
-            return task.get_due_date().to_readable_string()
-        elif column == COL_DUE:
-            return task.get_due_date().to_readable_string()
         elif column == COL_CDATE:
             return task.get_closed_date().to_readable_string()
+        elif column == COL_TID:
+            return task.get_id()
         elif column == COL_CDATE_STR:
             if task.get_status() == Task.STA_DISMISSED:
                 date = "<span color='#AAAAAA'>" +\
@@ -122,8 +128,8 @@ class TaskTreeModel(gtk.GenericTreeModel):
             else:
                 date = str(task.get_closed_date())
             return date
-        elif column == COL_DLEFT:
-            return task.get_days_left()
+        elif column == COL_DUE:
+            return task.get_due_date().to_readable_string()
         elif column == COL_TAGS:
             tags = task.get_tags()
             tags.sort(key = lambda x: x.get_name())
@@ -177,7 +183,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
 #        print "on_iter_parent %s" %node.get_id()
         return self.tree.node_parent(node)
 
-    def update_task(self, tid):
+    def update_task(self, sender, tid):
 #        # get the node and signal it's changed
 #        print "tasktree update_task"
         my_node = self.tree.get_node(tid)
@@ -191,7 +197,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
             else: 
                 print "Error :! no path for node %s !" %my_node.get_id()
 
-    def add_task(self, tid):
+    def add_task(self, sender, tid):
         task = self.tree.get_node(tid)
         if task:
             node_path = self.tree.get_path_for_node(task)
@@ -207,7 +213,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
 #                    print "tasktree child toogled %s" %tid
                     self.row_has_child_toggled(par_path, par_iter)
 
-    def remove_task(self, tid):
+    def remove_task(self, sender, tid):
         #print "tasktree remove_task %s" %tid
         node = self.tree.get_node(tid)
         removed = False
@@ -295,12 +301,12 @@ class TaskTreeView(gtk.TreeView):
 #        self.expand_all()
 #        self.get_model().foreach(self._refresh_func, collapsed_rows)
 
-    def _refresh_func(self, model, path, iter, collapsed_rows=None):
-        if collapsed_rows:
-            tid = model.get_value(iter, COL_TID)
-            if tid in collapsed_rows:
-                self.collapse_row(path)
-        model.row_changed(path, iter)
+#    def _refresh_func(self, model, path, iter, collapsed_rows=None):
+#        if collapsed_rows:
+#            tid = model.get_value(iter, COL_TID)
+#            if tid in collapsed_rows:
+#                self.collapse_row(path)
+#        model.row_changed(path, iter)
 
 class ActiveTaskTreeView(TaskTreeView):
     """TreeView for display of a list of task. Handles DnD primitives too."""
