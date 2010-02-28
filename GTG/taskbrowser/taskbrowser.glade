@@ -59,7 +59,7 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkSeparatorMenuItem" id="separatormenuitem10">
+                      <object class="GtkSeparatorMenuItem" id="separator_1">
                         <property name="visible">True</property>
                       </object>
                     </child>
@@ -99,7 +99,7 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkSeparatorMenuItem" id="menuitem2">
+                      <object class="GtkSeparatorMenuItem" id="separator_2">
                         <property name="visible">True</property>
                       </object>
                     </child>
@@ -142,7 +142,7 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkSeparatorMenuItem" id="menuitem1"/>
+                      <object class="GtkSeparatorMenuItem" id="separator_3"/>
                     </child>
                     <child>
                       <object class="GtkImageMenuItem" id="mi_edit_preferences">
@@ -175,7 +175,7 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkSeparatorMenuItem" id="separator1">
+                      <object class="GtkSeparatorMenuItem" id="separator_4">
                         <property name="visible">True</property>
                       </object>
                     </child>
@@ -189,7 +189,7 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkSeparatorMenuItem" id="separatormenuitem1">
+                      <object class="GtkSeparatorMenuItem" id="separator_5">
                         <property name="visible">True</property>
                       </object>
                     </child>
@@ -351,7 +351,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkSeparatorToolItem" id="toolbutton2">
+              <object class="GtkSeparatorToolItem" id="separator_6">
                 <property name="visible">True</property>
               </object>
               <packing>
@@ -399,7 +399,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkSeparatorToolItem" id="toolbutton1">
+              <object class="GtkSeparatorToolItem" id="separator_7">
                 <property name="visible">True</property>
               </object>
               <packing>
@@ -874,7 +874,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
       </object>
     </child>
     <child>
-      <object class="GtkSeparatorMenuItem" id="separatormenuitem3">
+      <object class="GtkSeparatorMenuItem" id="separator_8">
         <property name="visible">True</property>
       </object>
     </child>
@@ -920,7 +920,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
       </object>
     </child>
     <child>
-      <object class="GtkSeparatorMenuItem" id="separatormenuitem5">
+      <object class="GtkSeparatorMenuItem" id="separator_9">
         <property name="visible">True</property>
       </object>
     </child>
@@ -995,7 +995,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
       </object>
     </child>
     <child>
-      <object class="GtkSeparatorMenuItem" id="separatormenuitem4">
+      <object class="GtkSeparatorMenuItem" id="separator_10">
         <property name="visible">True</property>
       </object>
     </child>
