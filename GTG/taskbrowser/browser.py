@@ -66,7 +66,6 @@ CLOSED_PANE        = False
 QUICKADD_PANE      = True
 TOOLBAR            = True
 BG_COLOR           = True
-#EXPERIMENTAL_NOTES = False
 TIME = 0
 
 class Timer:
@@ -97,7 +96,7 @@ class TaskBrowser:
         #treeviews handlers
         self.tags_tv = None
         self.tasks_tv = None
-        self.ctasks_tv = None
+        self.ctask_tv = ClosedTaskTreeView()
 
         ### YOU CAN DEFINE YOUR INTERNAL MECHANICS VARIABLES BELOW
         
@@ -163,7 +162,6 @@ class TaskBrowser:
         self.priv["ctasklist"]["sort_order"]  = gtk.SORT_ASCENDING
         self.priv['selected_rows']            = None
         self.priv['workview']                 = False
-        #self.priv['noteview']                = False
         self.priv['filter_cbs']               = []
         self.priv['quick_add_cbs']            = []
 
@@ -186,15 +184,7 @@ class TaskBrowser:
             tasktree.COL_DDATE, self.dleft_sort_func)
         self.task_modelsort.set_sort_func(\
             tasktree.COL_DLEFT, self.dleft_sort_func)
-        
-        #TODO: the closed tasks should only be created if displayed
-        #it has no sense to have it if not displayed
-        # Closed Tasks: dismissed and done
-        self.ctask_tree = self.req.get_custom_tasks_tree()
-        self.ctask_tree.apply_filter('closed')
-        self.ctask_tree_model = TaskTreeModel(self.req,self.ctask_tree)
-        self.ctask_modelsort = gtk.TreeModelSort(self.ctask_tree_model)
-        
+
         # Tags
         self.tag_model = TagTreeModel(requester=self.req)
         self.tag_modelfilter = self.tag_model.filter_new()
@@ -236,11 +226,6 @@ class TaskBrowser:
         self.task_tv.set_model(self.task_modelsort)
         self.main_pane.add(self.task_tv)
 
-        # The done/dismissed taks treeview
-        self.ctask_tv = ClosedTaskTreeView()
-        self.ctask_tv.set_model(self.ctask_modelsort)
-        self.closed_pane.add(self.ctask_tv)
-        
         # The tags treeview
         self.tags_tv = TagTreeView()
         self.tags_tv.set_model(self.tag_modelsort)
@@ -269,8 +254,6 @@ class TaskBrowser:
         SIGNAL_CONNECTIONS_DIC = {
             "on_add_task":
                 self.on_add_task,
-            "on_add_note":
-                (self.on_add_task, 'Note'),
             "on_edit_active_task":
                 self.on_edit_active_task,
             "on_edit_done_task":
@@ -315,8 +298,6 @@ class TaskBrowser:
                 self.on_tagcontext_deactivate,
             "on_workview_toggled":
                 self.on_workview_toggled,
-            "on_note_toggled":
-                self.on_note_toggled,
             "on_view_workview_toggled":
                 self.on_workview_toggled,
             "on_view_closed_toggled":
@@ -414,8 +395,6 @@ class TaskBrowser:
         # Set sorting order
         self.task_modelsort.set_sort_column_id(\
             tasktree.COL_DLEFT, gtk.SORT_ASCENDING)
-        self.ctask_modelsort.set_sort_column_id(\
-            tasktree.COL_CDATE, gtk.SORT_DESCENDING)
         self.tag_modelsort.set_sort_column_id(\
             tagtree.COL_ID, gtk.SORT_ASCENDING)
 
@@ -542,11 +521,9 @@ class TaskBrowser:
             closed_task_pane = eval(
                 self.config["browser"]["closed_task_pane"])
             if not closed_task_pane:
-                self.closed_pane.hide()
-                self.builder.get_object("view_closed").set_active(False)
+                self.hide_closed_pane()
             else:
-                self.closed_pane.show()
-                self.builder.get_object("view_closed").set_active(True)
+                self.show_closed_pane()
 
         if "ctask_pane_height" in self.config["browser"]:
             ctask_pane_height = eval(
@@ -980,18 +957,31 @@ class TaskBrowser:
             view_sidebar.set_active(True)
             self.sidebar.show()
 
-    def on_note_toggled(self, widget):
-        self.priv['noteview'] = not self.priv['noteview']
-        workview_state = self.toggle_workview.get_active()
-        if workview_state:
-            self.toggle_workview.set_active(False)
-        #self.do_refresh()
-
     def on_closed_toggled(self, widget):
         if widget.get_active():
-            self.closed_pane.show()
+            self.show_closed_pane()
         else:
-            self.closed_pane.hide()
+            self.hide_closed_pane()
+            
+    def show_closed_pane(self):
+        # The done/dismissed taks treeview
+        self.ctask_tree = self.req.get_custom_tasks_tree()
+        self.ctask_tree.apply_filter('closed')
+        ctask_tree_model = TaskTreeModel(self.req,self.ctask_tree)
+        ctask_modelsort = gtk.TreeModelSort(ctask_tree_model)
+        self.ctask_tv.set_model(ctask_modelsort)
+        ctask_modelsort.set_sort_column_id(\
+            tasktree.COL_CDATE, gtk.SORT_DESCENDING)
+        
+        self.closed_pane.add(self.ctask_tv)
+        self.closed_pane.show()
+        self.builder.get_object("view_closed").set_active(True)
+    
+    def hide_closed_pane(self):
+        self.closed_pane.hide()
+        self.ctask_tv.set_model(None)
+        self.ctask_tree = None
+        self.builder.get_object("view_closed").set_active(False)
 
     def on_bg_color_toggled(self, widget):
         if widget.get_active():
@@ -1002,8 +992,6 @@ class TaskBrowser:
             self.priv["bg_color_enable"] = False
             self.task_tv.set_bg_color(False)
             self.ctask_tv.set_bg_color(False)
-        self.task_tv.refresh()
-        self.ctask_tv.refresh()
 
     def on_toolbar_toggled(self, widget):
         if widget.get_active():
@@ -1391,9 +1379,13 @@ class TaskBrowser:
             print "applying filter %s" %newtag[0]
             self.req.reset_tag_filters(refilter=False)
             self.req.apply_filter(newtag[0])
+            if self.ctask_tree:
+                self.ctask_tree.apply_filter(newtag[0])
             #FIXME : also do that for the closed task tree
         else:
             self.req.reset_tag_filters()
+            if self.ctask_tree:
+                self.ctask_tree.reset_tag_filters()
                         
 #        self.task_tv.get_selection().unselect_all()
         self.ctask_tv.get_selection().unselect_all()
@@ -1491,7 +1483,6 @@ class TaskBrowser:
             self.logger.debug("Modify task with ID: %s" % tid)
         #FIXME: if tags are not updated, it has to be done on the requester level
         #not here
-        #self.tag_model.update_tags_for_task(tid)
         self.tags_tv.refresh()
         #We also refresh the opened windows for that tasks,
         #his children and his parents

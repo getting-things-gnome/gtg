@@ -299,12 +299,12 @@ class TaskTreeView(gtk.TreeView):
 #        self.expand_all()
 #        self.get_model().foreach(self._refresh_func, collapsed_rows)
 
-    def _refresh_func(self, model, path, iter, collapsed_rows=None):
-        if collapsed_rows:
-            tid = model.get_value(iter, COL_TID)
-            if tid in collapsed_rows:
-                self.collapse_row(path)
-        model.row_changed(path, iter)
+#    def _refresh_func(self, model, path, iter, collapsed_rows=None):
+#        if collapsed_rows:
+#            tid = model.get_value(iter, COL_TID)
+#            if tid in collapsed_rows:
+#                self.collapse_row(path)
+#        model.row_changed(path, iter)
 
 class ActiveTaskTreeView(TaskTreeView):
     """TreeView for display of a list of task. Handles DnD primitives too."""
