@@ -956,8 +956,8 @@ class TaskBrowser:
         #fact we should have a TagPropertiesEditor (like for project) Also,
         #color change should be immediate. There's no reason for a Ok/Cancel
         self.set_target_cursor()
-        dialog = gtk.ColorSelectionDialog('Choose color')
-        colorsel = dialog.colorsel
+        color_dialog = gtk.ColorSelectionDialog('Choose color')
+        colorsel = color_dialog.colorsel
         colorsel.connect("color_changed", self.on_color_changed)
 
         # Get previous color
@@ -970,7 +970,7 @@ class TaskBrowser:
                 colorsel.set_previous_color(colorspec)
                 colorsel.set_current_color(colorspec)
                 init_color = colorsel.get_current_color()
-        response = dialog.run()
+        response = color_dialog.run()
         # Check response and set color if required
         if response != gtk.RESPONSE_OK and init_color:
             strcolor = gtk.color_selection_palette_to_string([init_color])
@@ -979,7 +979,7 @@ class TaskBrowser:
                 t.set_attribute("color", strcolor)
         self.reset_cursor()
         self.task_tv.refresh()
-        dialog.destroy()
+        color_dialog.destroy()
         
     def on_resetcolor_activate(self, widget):
         self.set_target_cursor()
