@@ -95,12 +95,13 @@ class TaskTreeModel(gtk.GenericTreeModel):
 #        print "on_get_value for %s, col %s" %(node.get_id(),column)
         if not node:
             return None
-        else:
-            #FIXME. The Task is a TreeNode object but
-            #TreeNode is not recognized as a Task!
-            task = self.req.get_task(node.get_id())
-            if not task:
-                return None
+        task = node
+#        else:
+#            #FIXME. The Task is a TreeNode object but
+#            #TreeNode is not recognized as a Task!
+#            task = self.req.get_task(node.get_id())
+#            if not task:
+#                return None
         if   column == COL_TID:
             return task.get_id()
         elif column == COL_OBJ:
