@@ -153,19 +153,20 @@ class RtmTask(GenericTask):
             tagstxt = ""
         return tagstxt + text.strip()
 
-    def _set_text(self, content):
-        element = xml.dom.minidom.parseString(content)
-        text = ""
-        if element:
-            for n in element.getElementsByTagName("content")[0].childNodes:
-                if n.nodeType == n.TEXT_NODE:
-                    text += n.nodeValue
+    def _set_text(self, text):
+        #this code is used if we use get_text in gtgTask
+        ###element = xml.dom.minidom.parseString(content)
+        ###text = ""
+        ###if element:
+            ###for n in element.getElementsByTagName("content")[0].childNodes:
+                ###if n.nodeType == n.TEXT_NODE:
+                    ###text += n.nodeValue
 
-        p = re.compile(r'^\s* [' + bullet1_ltr + ',' + bullet1_rtl + ',' + \
-                       bullet2 + ']\s*$',re.MULTILINE)
-        text = p.sub('', text)
-        text = text.strip()
-        print text
+        ###p = re.compile(r'^\s* [' + bullet1_ltr + ',' + bullet1_rtl + ',' + \
+                       ###bullet2 + ']\s*$',re.MULTILINE)
+        ###text = p.sub('', text)
+        ###text = text.strip()
+        ###print text
         #delete old notes
         #FIXME: the first check *should* not be necessary (but it is?).
         if hasattr(self.task, 'notes') and \
