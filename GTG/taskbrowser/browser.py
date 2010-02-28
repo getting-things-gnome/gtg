@@ -218,10 +218,14 @@ class TaskBrowser:
             self.builder.get_object("ClosedTaskContextMenu")
         self.editbutton         = self.builder.get_object("edit_b")
         self.donebutton         = self.builder.get_object("mark_as_done_b")
+        self.mark_done_mi       = self.builder.get_object("mark_done_mi")
         self.deletebutton       = self.builder.get_object("delete_b")
+        self.delete_mi          = self.builder.get_object("delete_mi")
         self.newtask            = self.builder.get_object("new_task_b")
         self.newsubtask         = self.builder.get_object("new_subtask_b")
+        self.new_subtask_mi     = self.builder.get_object("new_subtask_mi")
         self.dismissbutton      = self.builder.get_object("dismiss")
+        self.dismiss_mi         = self.builder.get_object("dismiss_mi")
         self.about              = self.builder.get_object("aboutdialog1")
         self.edit_mi            = self.builder.get_object("edit_mi")
         self.main_pane          = self.builder.get_object("main_pane")
@@ -428,72 +432,32 @@ class TaskBrowser:
         self.tag_modelsort.set_sort_column_id(\
             tagtree.COL_ID, gtk.SORT_ASCENDING)
 
+    def _add_accelerator_for_widget(self, agr, name, accel):
+        widget    = self.builder.get_object(name)
+        key, mod  = gtk.accelerator_parse(accel)
+        widget.add_accelerator("activate", agr, key, mod, gtk.ACCEL_VISIBLE)
+
     def _init_accelerators(self):
         agr = gtk.AccelGroup()
         self.builder.get_object("MainWindow").add_accel_group(agr)
 
-        view_sidebar = self.builder.get_object("view_sidebar")
-        key, mod     = gtk.accelerator_parse("F9")
-        view_sidebar.add_accelerator("activate", agr, key, mod,\
-            gtk.ACCEL_VISIBLE)
-
-        file_quit = self.builder.get_object("file_quit")
-        key, mod  = gtk.accelerator_parse("<Control>q")
-        file_quit.add_accelerator("activate", agr, key, mod, gtk.ACCEL_VISIBLE)
-
-        edit_undo = self.builder.get_object("edit_undo")
-        key, mod  = gtk.accelerator_parse("<Control>z")
-        edit_undo.add_accelerator("activate", agr, key, mod, gtk.ACCEL_VISIBLE)
-
-        edit_redo = self.builder.get_object("edit_redo")
-        key, mod  = gtk.accelerator_parse("<Control>y")
-        edit_redo.add_accelerator("activate", agr, key, mod, gtk.ACCEL_VISIBLE)
-
-        new_task_mi = self.builder.get_object("new_task_mi")
-        key, mod    = gtk.accelerator_parse("<Control>n")
-        new_task_mi.add_accelerator("activate", agr, key, mod,\
-            gtk.ACCEL_VISIBLE)
-
-        self.new_subtask_mi = self.builder.get_object("new_subtask_mi")
-        key, mod       = gtk.accelerator_parse("<Control><Shift>n")
-        self.new_subtask_mi.add_accelerator("activate", agr, key, mod,\
-            gtk.ACCEL_VISIBLE)
-
-        edit_button = self.builder.get_object("edit_b")
-        key, mod    = gtk.accelerator_parse("<Control>e")
-        edit_button.add_accelerator("clicked", agr, key, mod,\
-            gtk.ACCEL_VISIBLE)
+        self._add_accelerator_for_widget(agr, "view_sidebar",   "F9")
+        self._add_accelerator_for_widget(agr, "file_quit",      "<Control>q")
+        self._add_accelerator_for_widget(agr, "edit_undo",      "<Control>y")
+        self._add_accelerator_for_widget(agr, "new_task_mi",    "<Control>n")
+        self._add_accelerator_for_widget(agr, "new_subtask_mi", "<Control><Shift>n")
+        self._add_accelerator_for_widget(agr, "edit_b",         "<Control>e")
+        self._add_accelerator_for_widget(agr, "mark_done_mi",   "<Control>d")
+        self._add_accelerator_for_widget(agr, "task_dismiss",   "<Control>i")
+        self._add_accelerator_for_widget(agr, "delete_mi",      "Cancel")
+        self._add_accelerator_for_widget(agr, "tcm_addtag",     "<Control>t")
+        self._add_accelerator_for_widget(agr, "view_closed",    "<Control>F9")
 
         quickadd_field = self.builder.get_object('quickadd_field')
         key, mod = gtk.accelerator_parse('<Control>l')
         quickadd_field.add_accelerator(
             'grab-focus', agr, key, mod, gtk.ACCEL_VISIBLE)
 
-        self.mark_done_mi = self.builder.get_object('mark_done_mi')
-        key, mod = gtk.accelerator_parse('<Control>d')
-        self.mark_done_mi.add_accelerator(
-            'activate', agr, key, mod, gtk.ACCEL_VISIBLE)
-
-        self.dismiss_mi = self.builder.get_object('task_dismiss')
-        key, mod = gtk.accelerator_parse('<Control>i')
-        self.dismiss_mi.add_accelerator(
-            'activate', agr, key, mod, gtk.ACCEL_VISIBLE)
-
-        self.delete_mi = self.builder.get_object('delete_mi')
-        key, mod = gtk.accelerator_parse('Cancel')
-        self.delete_mi.add_accelerator(
-            'activate', agr, key, mod, gtk.ACCEL_VISIBLE)
-        
-        addtag_button = self.builder.get_object('tcm_addtag')
-        key, mod = gtk.accelerator_parse('<Control>t')
-        addtag_button.add_accelerator('activate', agr, key, mod, \
-            gtk.ACCEL_VISIBLE)
-
-        addtag_button = self.builder.get_object('view_closed')
-        key, mod = gtk.accelerator_parse('<Control>F9')
-        addtag_button.add_accelerator('activate', agr, key, mod, \
-            gtk.ACCEL_VISIBLE)
-        
     def _init_plugin_engine(self):
         # plugins - Init
         self.pengine = PluginEngine(GTG.PLUGIN_DIR)
