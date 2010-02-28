@@ -366,7 +366,7 @@ class PluginAPI:
         
         @return: The about dialog.
         """
-        wi = self.__builder.get_object("aboutdialog1")
+        wi = self.__builder.get_object("about_dialog")
         if wi:
             return wi
         else:
