@@ -53,8 +53,6 @@ from GTG.tools.dates                  import strtodate,\
                                              FuzzyDate
 from GTG.tools                        import clipboard
 
-#=== OBJECTS ==================================================================
-
 #=== MAIN CLASS ===============================================================
 
 WINDOW_TITLE = "Getting Things GNOME!"
@@ -170,7 +168,6 @@ class TaskBrowser:
             gtk.icon_theme_get_default().prepend_search_path(i)
             gtk.window_set_default_icon_name("gtg")
 
-
     #FIXME: we should group the initialization by widgets, not by type of methods
     # it should be "init_active_tasks_pane", "init_sidebar", etc.
     def _init_models(self):
@@ -222,7 +219,6 @@ class TaskBrowser:
     def _init_ui_widget(self):
         # The Active tasks treeview
         self.task_tv = ActiveTaskTreeView()
-#        self.task_tv.set_model(self.task_tree_model)
         self.task_tv.set_model(self.task_modelsort)
         self.main_pane.add(self.task_tv)
 
@@ -250,7 +246,6 @@ class TaskBrowser:
         self.about.set_translator_credits(info.TRANSLATORS)
 
     def _init_signal_connections(self):
-
         SIGNAL_CONNECTIONS_DIC = {
             "on_add_task":
                 self.on_add_task,
@@ -325,7 +320,6 @@ class TaskBrowser:
         }
 
         SIGNAL_CONNECTIONS_DIC.update(self.preferences.get_signals_dict())
-
         self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
 
         if (self.window):
@@ -346,8 +340,7 @@ class TaskBrowser:
             self.on_task_treeview_row_expanded)
         self.task_tv.connect('row-collapsed',\
             self.on_task_treeview_row_collapsed)
-        
-        #TODO: this should go to the closed tasks constructor.
+
         # Closed tasks TreeView
         self.ctask_tv.connect('row-activated',\
             self.on_edit_done_task)
@@ -973,7 +966,7 @@ class TaskBrowser:
             tasktree.COL_CDATE, gtk.SORT_DESCENDING)
         self.closed_pane.show()
         self.builder.get_object("view_closed").set_active(True)
-    
+
     def hide_closed_pane(self):
         self.closed_pane.hide()
         self.ctask_tv.set_model(None)
@@ -1008,7 +1001,7 @@ class TaskBrowser:
             self.task_tv.expand_row(path, False)
         else:
             self.task_tv.collapse_row(path)
-            
+
     def on_task_treeview_row_expanded(self, treeview, iter, path):
         tid = treeview.get_model().get_value(iter, tasktree.COL_TID)
         if tid in self.priv["collapsed_tids"]:
@@ -1018,8 +1011,7 @@ class TaskBrowser:
         tid = treeview.get_model().get_value(iter, tasktree.COL_TID)
         if tid not in self.priv["collapsed_tids"]:
             self.priv["collapsed_tids"].append(tid)
-            
-    
+
     def on_tag_child_toggled(self, model, path, iter):
         tag = model.get_value(iter, tagtree.COL_ID)
         if tag not in self.priv.get("collapsed_tags", []):
@@ -1036,8 +1028,6 @@ class TaskBrowser:
         tag = treeview.get_model().get_value(iter, tagtree.COL_ID)
         if tag not in self.priv["collapsed_tags"]:
             self.priv["collapsed_tags"].append(tag)
-        
-   
 
     def on_quickadd_activate(self, widget):
         text = self.quickadd_entry.get_text()
@@ -1090,7 +1080,6 @@ class TaskBrowser:
             task.set_due_date(due_date)
             task.set_start_date(defer_date)
             id_toselect = task.get_id()
-            #############
             self.quickadd_entry.set_text('')
             # Refresh the treeview
             #self.do_refresh(toselect=id_toselect)
@@ -1488,8 +1477,7 @@ class TaskBrowser:
         self.dismissbutton.set_sensitive(enable)
         self.deletebutton.set_sensitive(enable)
 
-### PUBLIC METHODS ############################################################
-#
+### PUBLIC METHODS #########################################################
     def get_selected_task(self, tv=None):
         """Returns the'uid' of the selected task, if any.
            If multiple tasks are selected, returns only the first and 

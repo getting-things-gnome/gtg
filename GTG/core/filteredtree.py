@@ -16,8 +16,9 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-
-
+#
+#   FilteredTree
+#   ############
 # The problem we have is that, sometimes, we don't want to display all tasks.
 # We want tasks to be filtered (workview, tags, …)
 #
@@ -87,7 +88,6 @@ class FilteredTree(gobject.GObject):
         self.req.connect("task-modified", self.__task_modified)
         self.req.connect("task-deleted", self.__task_deleted)
 
-
     def __reset_cache(self):
         self.path_for_node_cache = {}
 
@@ -112,14 +112,12 @@ class FilteredTree(gobject.GObject):
         
     ### signals functions
     def __task_added(self,sender,tid):
-#        print "task added signal"
         todis = self.__is_displayed(tid)
         curdis = self.is_displayed(tid)
         if todis and not curdis:
             self.__add_node(tid)
         
     def __task_modified(self,sender,tid):
-#        print   "task modified signal for %s" %tid
         todis = self.__is_displayed(tid)
         curdis = self.is_displayed(tid)
         if todis:
@@ -128,9 +126,6 @@ class FilteredTree(gobject.GObject):
             if not curdis:
                 self.__add_node(tid)
             #There doesn't seem to be a need for calling the update_node
-            #else:
-            #    print "calling update node for %s (root:%s)" %(tid,isroot)
-            #    self.__update_node(node,isroot)
         else:
             #if the task was displayed previously but shouldn't be anymore
             #we remove it
@@ -138,7 +133,6 @@ class FilteredTree(gobject.GObject):
                 self.__remove_node(tid)
         
     def __task_deleted(self,sender,tid):
-#        print "task deleted signal"
         self.__remove_node(tid)
         
     ####TreeModel functions ##############################
@@ -272,7 +266,6 @@ class FilteredTree(gobject.GObject):
                 if self.is_displayed(cid):
                     n+= 1
             toreturn = n
-#        print "on_iter_n_children for node %s : %s" %(id,toreturn)
         return toreturn
 
     #Done
@@ -296,13 +289,11 @@ class FilteredTree(gobject.GObject):
                         toreturn = curn
                     good += 1
                 cur += 1
-#            print "** %s is the %s th child of %s" %(toreturn.get_id(),n,node.get_id())
         return toreturn
 
     #Done
     def node_parent(self, node):
         #return None if we are at a Virtual root
-#        print "node %s in virtual_root %s" %(node.get_id(),self.virtual_root
         tid = node.get_id()
         if node and tid in self.virtual_root:
             return None
@@ -346,8 +337,6 @@ class FilteredTree(gobject.GObject):
     # This rebuild the tree from scratch. It should be called only when 
     # The filter is changed. (only filters_bank should call it.
     def refilter(self):
-        print "######### Starting refilter"
-        print "%s updates, %s add, %s remove" %(self.update_count,self.add_count,self.remove_count)
         self.update_count = 0
         self.add_count = 0
         self.remove_count = 0
@@ -379,12 +368,9 @@ class FilteredTree(gobject.GObject):
         for nid in list(to_add):
             isroot = nid in virtual_root2
             self.__add_node(nid,isroot)
-
         #end of refiltering
-        
+
     ####### Change filters #################
-    
-    # FIXME : parameters handling,avoid code duplication, check if the filter exists
     def apply_filter(self,filter_name,parameters=None,imtherequester=False):
         if self.is_main and not imtherequester:
             print "Error : use the requester to apply a filter to the main tree"
@@ -409,8 +395,7 @@ class FilteredTree(gobject.GObject):
             self.refilter()
             return True
         return False
-            
-    
+
     def reset_filters(self,imtherequester=False):
         if self.is_main and not imtherequester:
             print "Error : use the requester to remove a filter to the main tree"
@@ -418,7 +403,7 @@ class FilteredTree(gobject.GObject):
         else:
             self.applied_filters = []
             self.refilter()
-        
+
     def reset_tag_filters(self,refilter=True,imtherequester=False):
         if self.is_main and not imtherequester:
             print "Error : use the requester to remove a filter to the main tree"
@@ -431,9 +416,9 @@ class FilteredTree(gobject.GObject):
                     self.applied_filters.remove(f)
             if refilter:
                 self.refilter()
-        
+
     ####### Private methods #################
-    
+
     # Return True if the node should be a virtual root node
     # regardless of the current state
     def __is_root(self,n):
@@ -460,8 +445,6 @@ class FilteredTree(gobject.GObject):
     
     def __add_node(self,tid,inroot=None):
         self.add_count += 1
-        
-        #print "### add_node %s" %node.get_id()
         if not self.is_displayed(tid):
             node = self.get_node(tid)
             if inroot == None:
@@ -510,4 +493,3 @@ class FilteredTree(gobject.GObject):
                 self.__clean_from_node(child)
                 child = self.next_node(child)
         self.__remove_node(node.get_id())
-

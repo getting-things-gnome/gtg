@@ -95,13 +95,12 @@ class Requester(gobject.GObject):
         r = self.main_tree.apply_filter(filter_name,parameters=parameters,imtherequester=True)
         return r
             
-    
     # Unapply a filter from the main FilteredTree.
     # Does nothing if the filter was not previously applied.
     def unapply_filter(self,filter_name):
         r = self.main_tree.unapply_filter(filter_name,imtherequester=True)
         return r
-    
+
     def reset_filters(self):
         self.main_tree.reset_filters(imtherequester=True)
         
@@ -110,8 +109,7 @@ class Requester(gobject.GObject):
         
     def is_displayed(self,task):
         return self.main_tree.is_displayed(task)
-    
-    
+
     ######### Filters bank #######################
     # Get the filter object for a given name
     def get_filter(self,filter_name):

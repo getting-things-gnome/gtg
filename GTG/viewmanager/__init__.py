@@ -17,13 +17,11 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-
 #This is the gnome_frontend package. It's a GTK interface that want to be
 #simple, HIG compliant and well integrated with Gnome.
 import os
 
 from GTG import _
-
 
 class ViewConfig:
     current_rep = os.path.dirname(os.path.abspath(__file__))
