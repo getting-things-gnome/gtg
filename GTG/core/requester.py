@@ -177,7 +177,7 @@ class Requester(gobject.GObject):
         """
         #send the signal before actually deleting the task !
         self.emit('task-deleted', tid)
-        self.ds.delete_task(tid)
+        return self.ds.delete_task(tid)
 
     ############### Tags ##########################
     ###############################################
