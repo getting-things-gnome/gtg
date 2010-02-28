@@ -64,7 +64,7 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem" id="mark_done_mi">
+                      <object class="GtkImageMenuItem" id="done_mi">
                         <property name="label" translatable="yes">Mark as _Done</property>
                         <property name="visible">True</property>
                         <property name="sensitive">False</property>

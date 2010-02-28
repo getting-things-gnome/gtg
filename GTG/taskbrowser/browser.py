@@ -216,8 +216,9 @@ class TaskBrowser:
         self.defertopopup       = self.builder.get_object("DeferToContextMenu")
         self.ctaskpopup         = self.builder.get_object("ClosedTaskContextMenu")
         self.editbutton         = self.builder.get_object("edit_b")
+        self.edit_mi            = self.builder.get_object("edit_mi")
         self.donebutton         = self.builder.get_object("done_b")
-        self.mark_done_mi       = self.builder.get_object("mark_done_mi")
+        self.done_mi            = self.builder.get_object("done_mi")
         self.deletebutton       = self.builder.get_object("delete_b")
         self.delete_mi          = self.builder.get_object("delete_mi")
         self.newtask            = self.builder.get_object("new_task_b")
@@ -226,7 +227,6 @@ class TaskBrowser:
         self.dismissbutton      = self.builder.get_object("dismiss_b")
         self.dismiss_mi         = self.builder.get_object("dismiss_mi")
         self.about              = self.builder.get_object("about_dialog")
-        self.edit_mi            = self.builder.get_object("edit_mi")
         self.main_pane          = self.builder.get_object("main_pane")
         self.menu_view_workview = self.builder.get_object("view_workview")
         self.toggle_workview    = self.builder.get_object("workview_toggle")
@@ -446,7 +446,7 @@ class TaskBrowser:
         self._add_accelerator_for_widget(agr, "new_task_mi",    "<Control>n")
         self._add_accelerator_for_widget(agr, "new_subtask_mi", "<Control><Shift>n")
         self._add_accelerator_for_widget(agr, "edit_b",         "<Control>e")
-        self._add_accelerator_for_widget(agr, "mark_done_mi",   "<Control>d")
+        self._add_accelerator_for_widget(agr, "done_mi",        "<Control>d")
         self._add_accelerator_for_widget(agr, "dismiss_mi",     "<Control>i")
         self._add_accelerator_for_widget(agr, "delete_mi",      "Cancel")
         self._add_accelerator_for_widget(agr, "tcm_addtag",     "<Control>t")
@@ -1507,7 +1507,7 @@ class TaskBrowser:
         #Only if something is selected in the closed task list
         #And we change the status of the Done/dismiss button
         update_button(self.donebutton, settings_done)
-        update_menu_item(self.mark_done_mi, settings_done)
+        update_menu_item(self.done_mi, settings_done)
         update_button(self.dismissbutton, settings_dismiss)
         update_menu_item(self.dismiss_mi, settings_dismiss)
         if selection.count_selected_rows() > 0:
@@ -1526,7 +1526,7 @@ class TaskBrowser:
                 self.builder.get_object(
                     "ctcm_undismiss").set_sensitive(False)
                 update_button(self.donebutton, settings_undone)
-                update_menu_item(self.mark_done_mi, settings_undone)
+                update_menu_item(self.done_mi, settings_undone)
         self.update_buttons_sensitivity()
 
     def on_task_cursor_changed(self, selection=None):
@@ -1589,7 +1589,7 @@ class TaskBrowser:
            self.closed_selection.count_selected_rows() > 0
         self.edit_mi.set_sensitive(enable)
         self.new_subtask_mi.set_sensitive(enable)
-        self.mark_done_mi.set_sensitive(enable)
+        self.done_mi.set_sensitive(enable)
         self.dismiss_mi.set_sensitive(enable)
         self.delete_mi.set_sensitive(enable)
         self.donebutton.set_sensitive(enable)
