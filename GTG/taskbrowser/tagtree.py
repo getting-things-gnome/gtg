@@ -189,8 +189,8 @@ class TagTreeModel(gtk.GenericTreeModel):
         tag_path  = self.tree.get_path_for_node(tag)
         tag_iter  = self.get_iter(tag_path)
         #print "path is %s " %tag_path
-        if tag_path != None:
-            print "### tag %s added to path %s" %(tname,tag_path)
+#        if tag_path != None:
+#            print "### tag %s added to path %s" %(tname,tag_path)
             #self.row_inserted(tag_path, tag_iter)
         #self.tree.print_tree()
 

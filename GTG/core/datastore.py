@@ -180,7 +180,7 @@ class TaskSource():
                 tid = t.get_id()
                 if tid not in self.to_remove:
                     self.count_set += 1
-                    print "saving task %s (%s saves)" %(tid,self.count_set)
+                    #print "saving task %s (%s saves)" %(tid,self.count_set)
                     self.backend.set_task(t)
             while len(self.to_remove) > 0:
                 tid = self.to_remove.pop(0)
