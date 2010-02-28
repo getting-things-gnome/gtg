@@ -17,9 +17,13 @@ import sys
 import os
 import datetime
 import time
+import xml.dom.minidom
+import re
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))+'/pyrtm')
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from genericTask import GenericTask
+from GTG.taskeditor.taskview import bullet1_ltr, bullet1_rtl, bullet2
+
 
 
 
@@ -135,14 +139,33 @@ class RtmTask(GenericTask):
            hasattr(self.task.notes, 'note'):
             #Rtm saves the notes text inside the member "$t". Don't ask me why.
             if type(self.task.notes.note) == list:
-                return "".join(map(lambda note: getattr(note, '$t') + "\n", \
+                text = "".join(map(lambda note: getattr(note, '$t') + "\n", \
                                 self.task.notes.note))
             else:
-                return getattr(self.task.notes.note, '$t')
+                text = getattr(self.task.notes.note, '$t')
         else:
-            return ""
+            text = ""
+        #adding back the tags (subtasks are added automatically)
+        tags = self.tags
+        if len(tags) > 0:
+            tagstxt = "@" + reduce(lambda x,y: x + ", " + "@" + y, self.tags) + "\n"
+        else:
+            tagstxt = ""
+        return tagstxt + text.strip()
 
-    def _set_text(self, text):
+    def _set_text(self, content):
+        element = xml.dom.minidom.parseString(content)
+        text = ""
+        if element:
+            for n in element.getElementsByTagName("content")[0].childNodes:
+                if n.nodeType == n.TEXT_NODE:
+                    text += n.nodeValue
+
+        p = re.compile(r'^\s* [' + bullet1_ltr + ',' + bullet1_rtl + ',' + \
+                       bullet2 + ']\s*$',re.MULTILINE)
+        text = p.sub('', text)
+        text = text.strip()
+        print text
         #delete old notes
         #FIXME: the first check *should* not be necessary (but it is?).
         if hasattr(self.task, 'notes') and \
@@ -168,6 +191,15 @@ class RtmTask(GenericTask):
                                 note_title = "",\
                                 note_text = text)
 
+    def __strip_content(self, element):
+        txt = ""
+        if element:
+            for n in element.childNodes:
+                if n.nodeType == n.ELEMENT_NODE:
+                    txt += self.__strip_content(n)
+                elif n.nodeType == n.TEXT_NODE:
+                    txt += n.nodeValue
+        return tx
 
 
 

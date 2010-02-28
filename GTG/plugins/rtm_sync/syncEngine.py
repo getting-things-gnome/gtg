@@ -127,6 +127,7 @@ class SyncEngine(object):
                                                         local_tasks, \
                                                         self.remote_proxy)
         self._append_to_taskpairs(new_local_tasks, new_remote_tasks)
+        self.update_substatus("")
 
         #Add tasks to the local proxy
 	self.update_status(_("Adding tasks to gtg.."))
@@ -136,6 +137,7 @@ class SyncEngine(object):
                                                         remote_tasks,\
                                                         self.local_proxy)
         self._append_to_taskpairs(new_local_tasks, new_remote_tasks)
+        self.update_substatus("")
         
         #Delete tasks from the remote proxy
 	self.update_status(_("Deleting tasks from rtm.."))
@@ -146,6 +148,7 @@ class SyncEngine(object):
         self._process_deleted_tasks(remote_ids_to_delete, remote_tasks,\
                                     self.remote_proxy)
         map(lambda tp: self.taskpairs.remove(tp), taskpairs_deleted)
+        self.update_substatus("")
 
         #Delete tasks from the local proxy
 	self.update_status(_("Deleting tasks from gtg.."))
@@ -155,6 +158,7 @@ class SyncEngine(object):
         local_ids_to_delete = map( lambda tp: tp.local_id, taskpairs_deleted)
         self._process_deleted_tasks(local_ids_to_delete, local_tasks, self.local_proxy)
         map(lambda tp: self.taskpairs.remove(tp), taskpairs_deleted)
+        self.update_substatus("")
 
         #Update tasks
 	self.update_status(_("Updating changed tasks.."))
@@ -198,6 +202,7 @@ class SyncEngine(object):
 
             taskpair.remote_synced_until = remote_task.modified
             taskpair.local_synced_until = local_task.modified
+        self.update_substatus("")
 
         #Lastly, save the list of known links
         self.update_status(_("Saving current state.."))

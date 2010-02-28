@@ -66,7 +66,7 @@ class GtgTask(GenericTask):
             self._gtg_task.add_tag(tag)
 
     def _get_text(self):
-        return self._gtg_task.get_excerpt()
+        return self._gtg_task.get_text()
 
     def _set_text(self, text):
         #fill in subtasks
