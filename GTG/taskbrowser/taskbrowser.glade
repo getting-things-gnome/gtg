@@ -230,7 +230,7 @@
               </object>
             </child>
             <child>
-              <object class="GtkMenuItem" id="menu_plugin">
+              <object class="GtkMenuItem" id="plugin_mi">
                 <property name="label" translatable="yes">_Plugins</property>
                 <property name="use_underline">True</property>
                 <child type="submenu">
