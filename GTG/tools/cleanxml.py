@@ -67,7 +67,7 @@ def openxmlfile(zefile,root ):
         if os.path.exists(zefile) :
             #We should be more defensive here
             doc = xml.dom.minidom.parse(zefile)
-            #cleanDoc(doc,tab,enter)
+            cleanDoc(doc,tab,enter)
             #We should be more defensive here
             xmlproject = doc.getElementsByTagName(root)[0]
         #the file didn't exist, create it now
@@ -97,7 +97,7 @@ def emptydoc(root) :
 #write a XML doc to a file
 def savexml(zefile,doc,backup=False) :
     f = open(zefile, mode='w+')
-    pretty = doc.toxml() #doc.toprettyxml(tab,enter)
+    pretty = doc.toprettyxml(tab,enter)
     if f and pretty:
         f.write(pretty.encode("utf-8"))
         f.close()
