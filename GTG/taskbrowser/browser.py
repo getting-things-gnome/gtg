@@ -217,7 +217,7 @@ class TaskBrowser:
         self.ctaskpopup = \
             self.builder.get_object("ClosedTaskContextMenu")
         self.editbutton         = self.builder.get_object("edit_b")
-        self.donebutton         = self.builder.get_object("mark_as_done_b")
+        self.donebutton         = self.builder.get_object("done_b")
         self.mark_done_mi       = self.builder.get_object("mark_done_mi")
         self.deletebutton       = self.builder.get_object("delete_b")
         self.delete_mi          = self.builder.get_object("delete_mi")

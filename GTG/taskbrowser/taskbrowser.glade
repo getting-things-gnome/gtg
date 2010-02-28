@@ -360,7 +360,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkToolButton" id="mark_as_done_b">
+              <object class="GtkToolButton" id="done_b">
                 <property name="visible">True</property>
                 <property name="sensitive">False</property>
                 <property name="is_important">True</property>
