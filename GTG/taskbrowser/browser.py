@@ -78,7 +78,7 @@ class Timer:
 class TaskBrowser:
 
     def __init__(self, requester, config, opentask=None,closetask=None,\
-                 refreshtask=None, deletetasks=None, quit=None, logger=None):
+                  deletetasks=None, quit=None, logger=None):
 
         self.logger=logger
 
@@ -88,7 +88,6 @@ class TaskBrowser:
         self.config = config
         self.open_task = opentask
         self.close_task = closetask
-        self.refresh_task = refreshtask
         self.deletion_cllbck = deletetasks
         self.quit = quit
         self.tag_active = False
@@ -171,11 +170,10 @@ class TaskBrowser:
             gtk.icon_theme_get_default().prepend_search_path(i)
             gtk.window_set_default_icon_name("gtg")
 
-    def _init_models(self):
 
-        # Base models
-#        self.task_tree_model = TaskTreeModel(requester=self.req)
-        
+    #FIXME: we should group the initialization by widgets, not by type of methods
+    # it should be "init_active_tasks_pane", "init_sidebar", etc.
+    def _init_models(self):
         # Active Tasks
         self.req.apply_filter('active')
         self.task_tree_model = TaskTreeModel(self.req)
@@ -373,7 +371,6 @@ class TaskBrowser:
         # Connect requester signals to TreeModels
         self.req.connect("task-added", self.on_task_added) 
         self.req.connect("task-deleted", self.on_task_deleted)
-        self.req.connect("task-modified", self.on_task_modified)
         
         # Connect signals from models
         self.task_modelsort.connect("row-has-child-toggled",\
@@ -1477,26 +1474,6 @@ class TaskBrowser:
         if self.logger:
             self.logger.debug("Delete task with ID: %s" % tid)
         self._update_window_title()
-                        
-    def on_task_modified(self, sender, tid):
-        if self.logger:
-            self.logger.debug("Modify task with ID: %s" % tid)
-        #FIXME: if tags are not updated, it has to be done on the requester level
-        #not here
-        self.tags_tv.refresh()
-        #We also refresh the opened windows for that tasks,
-        #his children and his parents
-        #It might be faster to refresh every opened editor
-        #FIXME : the refresh task should not happen here but in the viewmanager
-        tlist = [tid]
-        task = self.req.get_task(tid)
-        if task:
-            tlist += task.get_parents()
-            tlist += task.get_children()
-            for uid in tlist:
-                self.refresh_task(uid)
-            #if the modified task is active, we have to refresh everything
-            #to avoid some odd stuffs when loading
 
     #using dummy parameters that are given by the signal
     def update_buttons_sensitivity(self,a=None,b=None,c=None):

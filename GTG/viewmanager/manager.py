@@ -53,14 +53,19 @@ class Manager():
         #Shared clipboard
         self.clipboard = clipboard.TaskClipboard(self.req)
         
+        #Signals
+        self.req.connect("task-modified", self.on_task_modified)
+        
         #Browser
         #FIXME : the browser should not be built by default and should be a 
         # window like another and not necessary (like the editor)
         self.open_browser()
         
         #Deletion UI
-        #FIXME: the builder should not be the same as the browser's one
         self.delete_dialog = DeletionUI(self.req)
+        
+        #Preferences windows
+        #FIXME : put the preferences out of the browser and put them here
         
         #DBus
         #FIXME: DBus should not require the browser !
@@ -71,9 +76,11 @@ class Manager():
 
     def open_browser(self):
         if not self.browser:
-            self.browser = TaskBrowser(self.req, self.config, opentask=self.open_task,\
-                            closetask=self.close_task, refreshtask=self.refresh_task,\
-                            deletetasks=self.delete_tasks,quit=self.close_browser, logger=self.logger)
+            self.browser = TaskBrowser(self.req, self.config, \
+                            opentask=self.open_task,\
+                            closetask=self.close_task,\
+                            deletetasks=self.delete_tasks,\
+                            quit=self.close_browser, logger=self.logger)
 
     #FIXME : the browser should not be the center of the universe.
     # In fact, we should build a system where view can register themselves
@@ -169,6 +176,22 @@ class Manager():
             return task.get_title()
         else:
             return None
+            
+    def on_task_modified(self, sender, tid):
+        if self.logger:
+            self.logger.debug("Modify task with ID: %s" % tid)
+        #We refresh the opened windows for that tasks,
+        #his children and his parents
+        #It might be faster to refresh every opened editor
+        tlist = [tid]
+        task = self.req.get_task(tid)
+        if task:
+            tlist += task.get_parents()
+            tlist += task.get_children()
+            for uid in tlist:
+                self.refresh_task(uid)
+            #if the modified task is active, we have to refresh everything
+            #to avoid some odd stuffs when loading
             
 ### MAIN ###################################################################
     def main(self):
