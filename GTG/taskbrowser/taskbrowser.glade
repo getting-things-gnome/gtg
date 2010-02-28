@@ -296,20 +296,6 @@
               </packing>
             </child>
             <child>
-              <object class="GtkToolButton" id="new_note_button">
-                <property name="visible">True</property>
-                <property name="visible_horizontal">False</property>
-                <property name="visible_vertical">False</property>
-                <property name="label" translatable="yes">New Note</property>
-                <property name="icon_name">gtg-note-new</property>
-                <signal name="clicked" handler="on_add_note"/>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="homogeneous">True</property>
-              </packing>
-            </child>
-            <child>
               <object class="GtkToolButton" id="edit_b">
                 <property name="visible">True</property>
                 <property name="visible_horizontal">False</property>
@@ -401,20 +387,6 @@
             <child>
               <object class="GtkSeparatorToolItem" id="toolbutton1">
                 <property name="visible">True</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="homogeneous">True</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkToggleToolButton" id="note_toggle">
-                <property name="visible">True</property>
-                <property name="visible_horizontal">False</property>
-                <property name="visible_vertical">False</property>
-                <property name="label" translatable="yes">View Notes</property>
-                <property name="stock_id">gtk-file</property>
-                <signal name="toggled" handler="on_note_toggled"/>
               </object>
               <packing>
                 <property name="expand">False</property>

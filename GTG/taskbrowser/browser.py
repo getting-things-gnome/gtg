@@ -218,6 +218,8 @@ class TaskBrowser:
         self.quickadd_pane      = self.builder.get_object("quickadd_pane")
         self.sidebar            = self.builder.get_object("sidebar")
         self.sidebar_container  = self.builder.get_object("sidebar-scroll")
+        
+        self.closed_pane.add(self.ctask_tv)
 
     def _init_ui_widget(self):
         # The Active tasks treeview
@@ -972,8 +974,6 @@ class TaskBrowser:
         self.ctask_tv.set_model(ctask_modelsort)
         ctask_modelsort.set_sort_column_id(\
             tasktree.COL_CDATE, gtk.SORT_DESCENDING)
-        
-        self.closed_pane.add(self.ctask_tv)
         self.closed_pane.show()
         self.builder.get_object("view_closed").set_active(True)
     
