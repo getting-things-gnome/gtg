@@ -1368,7 +1368,7 @@ class TaskBrowser:
                 apply_to_subtasks.set_active(False)
                 tag_entry.set_completion(self.tag_completion)
             tag_entry.grab_focus()
-            addtag_dialog = self.builder.get_object("TaskAddTag")
+            addtag_dialog = self.builder.get_object("addtag_dialog")
             addtag_dialog.run()
             addtag_dialog.hide()
             self.tids_to_addtag = None            
@@ -1377,7 +1377,7 @@ class TaskBrowser:
     
     def on_addtag_confirm(self, widget):
         tag_entry = self.builder.get_object("tag_entry")
-        addtag_dialog = self.builder.get_object("TaskAddTag")
+        addtag_dialog = self.builder.get_object("addtag_dialog")
         apply_to_subtasks = self.builder.get_object("apply_to_subtasks")
         addtag_error = False
         entry_text = tag_entry.get_text()

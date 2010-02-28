@@ -1089,7 +1089,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
     <property name="yalign">0.47999998927116394</property>
     <property name="stock">gtk-revert-to-saved</property>
   </object>
-  <object class="GtkDialog" id="TaskAddTag">
+  <object class="GtkDialog" id="addtag_dialog">
     <property name="border_width">5</property>
     <property name="title" translatable="yes">Add a Tag...</property>
     <property name="window_position">center-on-parent</property>
