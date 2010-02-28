@@ -224,7 +224,7 @@ class TaskBrowser:
         self.newtask            = self.builder.get_object("new_task_b")
         self.newsubtask         = self.builder.get_object("new_subtask_b")
         self.new_subtask_mi     = self.builder.get_object("new_subtask_mi")
-        self.dismissbutton      = self.builder.get_object("dismiss")
+        self.dismissbutton      = self.builder.get_object("dismiss_b")
         self.dismiss_mi         = self.builder.get_object("dismiss_mi")
         self.about              = self.builder.get_object("about_dialog")
         self.edit_mi            = self.builder.get_object("edit_mi")

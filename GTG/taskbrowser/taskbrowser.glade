@@ -374,7 +374,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkToolButton" id="dismiss">
+              <object class="GtkToolButton" id="dismiss_b">
                 <property name="visible">True</property>
                 <property name="sensitive">False</property>
                 <property name="label" translatable="yes">Dismiss</property>
