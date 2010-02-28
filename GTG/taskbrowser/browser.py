@@ -1319,7 +1319,7 @@ class TaskBrowser:
             titles_list = [task.get_title() for task in tasks]
             titles = reduce (lambda x, y: x + "\n - " + y, titles_list)
             label.set_text("%s %s" % (label_text, "\n - " + titles))
-            delete_dialog = self.builder.get_object("confirm_delete")
+            delete_dialog = self.builder.get_object("confirm_delete_dialog")
             delete_dialog.run()
             delete_dialog.hide()
             #has the task been deleted ?

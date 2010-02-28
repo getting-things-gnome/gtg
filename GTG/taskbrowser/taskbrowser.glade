@@ -616,7 +616,7 @@
       </object>
     </child>
   </object>
-  <object class="GtkDialog" id="confirm_delete">
+  <object class="GtkDialog" id="confirm_delete_dialog">
     <property name="border_width">5</property>
     <property name="title" translatable="yes">Confirm task deletion</property>
     <property name="window_position">center-on-parent</property>
