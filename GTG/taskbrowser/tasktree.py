@@ -56,6 +56,8 @@ class TaskTreeModel(gtk.GenericTreeModel):
         str,\
         str)
 
+    col_len = len(column_types)
+
     def __init__(self, requester,tree=None):
         
         gtk.GenericTreeModel.__init__(self)
@@ -85,7 +87,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
 
     def on_get_n_columns(self):
 #        print "on_get_n_columns"
-        return len(self.column_types)
+        return self.col_len
 
     def on_get_column_type(self, n):
 #        print "on_get_column_type %s" %n
@@ -95,6 +97,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
 #        print "on_get_value for %s, col %s" %(node.get_id(),column)
         if not node:
             return None
+        #NOTE: This works for me, is there a reason not to use it?
         task = node
 #        else:
 #            #FIXME. The Task is a TreeNode object but
@@ -102,20 +105,20 @@ class TaskTreeModel(gtk.GenericTreeModel):
 #            task = self.req.get_task(node.get_id())
 #            if not task:
 #                return None
-        if   column == COL_TID:
-            return task.get_id()
-        elif column == COL_OBJ:
+        if column == COL_OBJ:
             return task
+        elif column == COL_DDATE:
+            return task.get_due_date().to_readable_string()
+        elif column == COL_DLEFT:
+            return task.get_days_left()
         elif column == COL_TITLE:
             return saxutils.escape(task.get_title())
         elif column == COL_SDATE:
             return task.get_start_date().to_readable_string()
-        elif column == COL_DDATE:
-            return task.get_due_date().to_readable_string()
-        elif column == COL_DUE:
-            return task.get_due_date().to_readable_string()
         elif column == COL_CDATE:
             return task.get_closed_date().to_readable_string()
+        elif column == COL_TID:
+            return task.get_id()
         elif column == COL_CDATE_STR:
             if task.get_status() == Task.STA_DISMISSED:
                 date = "<span color='#AAAAAA'>" +\
@@ -123,8 +126,8 @@ class TaskTreeModel(gtk.GenericTreeModel):
             else:
                 date = str(task.get_closed_date())
             return date
-        elif column == COL_DLEFT:
-            return task.get_days_left()
+        elif column == COL_DUE:
+            return task.get_due_date().to_readable_string()
         elif column == COL_TAGS:
             tags = task.get_tags()
             tags.sort(key = lambda x: x.get_name())
