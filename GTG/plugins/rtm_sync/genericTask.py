@@ -36,8 +36,8 @@ class GenericTask(object):
         # (where GET is fast, but SET is slow)
         if self.title != task.title:
             self.title = task.title
-            #    if self.text != task.text:
-                #self.text = task.text
+        if self.text != task.text:
+            self.text = task.text
         if self.status != task.status:
             self.status = task.status
         if self.due_date != task.due_date:

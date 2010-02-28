@@ -127,18 +127,20 @@ class SyncEngine(object):
                                                         local_tasks, \
                                                         self.remote_proxy)
         self._append_to_taskpairs(new_local_tasks, new_remote_tasks)
+        self.update_substatus("")
 
         #Add tasks to the local proxy
-	self.update_status(_("Adding tasks to gtg.."))
+        self.update_status(_("Adding tasks to gtg.."))
         self.update_progressbar(0.4)
         [new_remote_tasks, new_local_tasks] = self._process_new_tasks(\
                                                         new_remote_ids,\
                                                         remote_tasks,\
                                                         self.local_proxy)
         self._append_to_taskpairs(new_local_tasks, new_remote_tasks)
+        self.update_substatus("")
         
         #Delete tasks from the remote proxy
-	self.update_status(_("Deleting tasks from rtm.."))
+        self.update_status(_("Deleting tasks from rtm.."))
         self.update_progressbar(0.5)
         taskpairs_deleted = filter(lambda tp: tp.local_id in deleted_local_ids,\
                                     self.taskpairs)
@@ -146,18 +148,20 @@ class SyncEngine(object):
         self._process_deleted_tasks(remote_ids_to_delete, remote_tasks,\
                                     self.remote_proxy)
         map(lambda tp: self.taskpairs.remove(tp), taskpairs_deleted)
+        self.update_substatus("")
 
         #Delete tasks from the local proxy
-	self.update_status(_("Deleting tasks from gtg.."))
+        self.update_status(_("Deleting tasks from gtg.."))
         self.update_progressbar(0.6)
         taskpairs_deleted = filter(lambda tp: tp.remote_id in deleted_remote_ids,\
                                     self.taskpairs)
         local_ids_to_delete = map( lambda tp: tp.local_id, taskpairs_deleted)
         self._process_deleted_tasks(local_ids_to_delete, local_tasks, self.local_proxy)
         map(lambda tp: self.taskpairs.remove(tp), taskpairs_deleted)
+        self.update_substatus("")
 
         #Update tasks
-	self.update_status(_("Updating changed tasks.."))
+        self.update_status(_("Updating changed tasks.."))
         self.update_progressbar(0.8)
         local_to_taskpair = self._list_to_dict(self.taskpairs, \
                                                   "local_id", \
@@ -169,7 +173,7 @@ class SyncEngine(object):
                                                   "id", \
                                                   "self")
         for local_id in updatable_local_ids:
-            if not local_to_taskpair.has_key(local_id):
+            if not local_id in local_to_taskpair:
                 #task has been removed, skipping
                 continue
             taskpair = local_to_taskpair[local_id]
@@ -198,6 +202,7 @@ class SyncEngine(object):
 
             taskpair.remote_synced_until = remote_task.modified
             taskpair.local_synced_until = local_task.modified
+        self.update_substatus("")
 
         #Lastly, save the list of known links
         self.update_status(_("Saving current state.."))
