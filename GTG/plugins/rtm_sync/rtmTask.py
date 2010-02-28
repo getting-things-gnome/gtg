@@ -22,7 +22,6 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from genericTask import GenericTask
 
 
-
 class RtmTask(GenericTask):
     
     def __init__(self, task, list_id, taskseries_id, rtm, timeline, logger,
@@ -135,16 +134,22 @@ class RtmTask(GenericTask):
            hasattr(self.task.notes, 'note'):
             #Rtm saves the notes text inside the member "$t". Don't ask me why.
             if type(self.task.notes.note) == list:
-                return "".join(map(lambda note: getattr(note, '$t') + "\n", \
+                text = "".join(map(lambda note: getattr(note, '$t') + "\n", \
                                 self.task.notes.note))
             else:
-                return getattr(self.task.notes.note, '$t')
+                text = getattr(self.task.notes.note, '$t')
         else:
-            return ""
+            text = ""
+        #adding back the tags (subtasks are added automatically)
+        tags = self.tags
+        if len(tags) > 0:
+            tagstxt = "@" + reduce(lambda x,y: x + ", " + "@" + y, self.tags) + "\n"
+        else:
+            tagstxt = ""
+        return tagstxt + text.strip()
 
     def _set_text(self, text):
         #delete old notes
-        #FIXME: the first check *should* not be necessary (but it is?).
         if hasattr(self.task, 'notes') and \
             hasattr(self.task.notes, 'note'):
             if type(self.task.notes.note) == list:
@@ -155,8 +160,7 @@ class RtmTask(GenericTask):
                     note_id=id), note_ids)
         #add a new one
         #TODO: investigate what is "Note title",  since there doesn't seem to
-        #be a note
-        # title in the web access.
+        #be a note title in the web access.
         #FIXME: minidom this way is ok, or do we suppose to get multiple
         #      nodes in "content"?
         if text == "":
@@ -168,9 +172,6 @@ class RtmTask(GenericTask):
                                 note_title = "",\
                                 note_text = text)
 
-
-
-
     def _get_due_date(self):
         if hasattr(self.task,'task'):
             if type(self.task.task) != list:
@@ -179,7 +180,6 @@ class RtmTask(GenericTask):
                 task = self.task.task[len(self.task.task) - 1]
             if hasattr(task, 'due') and task.due != "":
                 to_return = self.__time_rtm_to_datetime(task.due) 
-                        #   - datetime.timedelta(seconds = time.timezone)
                 return to_return.date()
         return None
 
@@ -223,13 +223,11 @@ class RtmTask(GenericTask):
 
 
     def __time_rtm_to_datetime(self, string):
-        #FIXME: need to handle time with TIMEZONES!
         string = string.split('.')[0].split('Z')[0]
         return datetime.datetime.strptime(string.split(".")[0], \
                                           "%Y-%m-%dT%H:%M:%S")
 
     def __time_rtm_to_date(self, string):
-        #FIXME: need to handle time with TIMEZONES!
         string = string.split('.')[0].split('Z')[0]
         return datetime.datetime.strptime(string.split(".")[0], "%Y-%m-%d")
 

@@ -53,4 +53,3 @@ class GtgProxy(GenericProxy):
         #NOTE: delete_task wants the internal gtg id, not the uuid
         id = task.get_gtg_task().get_id()
         self.requester.delete_task(id)
-

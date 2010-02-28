@@ -23,4 +23,3 @@ from rtm_sync import RtmSync
 
 #suppress pyflakes warning (given by make lint)
 if False == True: RtmSync()
-
