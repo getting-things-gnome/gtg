@@ -76,7 +76,7 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem" id="task_dismiss">
+                      <object class="GtkImageMenuItem" id="dismiss_mi">
                         <property name="label" translatable="yes">D_ismiss</property>
                         <property name="visible">True</property>
                         <property name="sensitive">False</property>

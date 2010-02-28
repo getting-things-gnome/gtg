@@ -448,7 +448,7 @@ class TaskBrowser:
         self._add_accelerator_for_widget(agr, "new_subtask_mi", "<Control><Shift>n")
         self._add_accelerator_for_widget(agr, "edit_b",         "<Control>e")
         self._add_accelerator_for_widget(agr, "mark_done_mi",   "<Control>d")
-        self._add_accelerator_for_widget(agr, "task_dismiss",   "<Control>i")
+        self._add_accelerator_for_widget(agr, "dismiss_mi",     "<Control>i")
         self._add_accelerator_for_widget(agr, "delete_mi",      "Cancel")
         self._add_accelerator_for_widget(agr, "tcm_addtag",     "<Control>t")
         self._add_accelerator_for_widget(agr, "view_closed",    "<Control>F9")
