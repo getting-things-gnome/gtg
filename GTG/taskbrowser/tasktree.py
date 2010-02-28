@@ -66,7 +66,9 @@ class TaskTreeModel(gtk.GenericTreeModel):
             self.tree = tree
         else:
             self.tree = self.req.get_main_tasks_tree()
-        self.tree.register_view(self)
+        self.tree.connect('task-added-inview',self.add_task)
+        self.tree.connect('task-deleted-inview',self.remove_task)
+        self.tree.connect('task-modified-inview',self.update_task)
 
 ### TREE MODEL HELPER FUNCTIONS ###############################################
 
@@ -181,7 +183,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
 #        print "on_iter_parent %s" %node.get_id()
         return self.tree.node_parent(node)
 
-    def update_task(self, tid):
+    def update_task(self, sender, tid):
 #        # get the node and signal it's changed
 #        print "tasktree update_task"
         my_node = self.tree.get_node(tid)
@@ -195,7 +197,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
             else: 
                 print "Error :! no path for node %s !" %my_node.get_id()
 
-    def add_task(self, tid):
+    def add_task(self, sender, tid):
         task = self.tree.get_node(tid)
         if task:
             node_path = self.tree.get_path_for_node(task)
@@ -211,7 +213,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
 #                    print "tasktree child toogled %s" %tid
                     self.row_has_child_toggled(par_path, par_iter)
 
-    def remove_task(self, tid):
+    def remove_task(self, sender, tid):
         #print "tasktree remove_task %s" %tid
         node = self.tree.get_node(tid)
         removed = False

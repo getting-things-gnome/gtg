@@ -1469,7 +1469,7 @@ class TaskBrowser:
         if self.logger:
             self.logger.debug("Add task with ID: %s" % tid)
         self._update_window_title()
-        
+
     def on_task_deleted(self, sender, tid):
         if self.logger:
             self.logger.debug("Delete task with ID: %s" % tid)

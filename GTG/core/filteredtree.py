@@ -51,9 +51,21 @@
 # 5) Changing the filters (not for the main FilteredTree)
 # 6) Private helpers.
 
-class FilteredTree():
+import gobject
+
+class FilteredTree(gobject.GObject):
+
+    #Those are the three signals you want to catch if displaying
+    #a filteredtree. The argument of all signals is the tid of the task
+    __gsignals__ = {'task-added-inview': (gobject.SIGNAL_RUN_FIRST, \
+                                          gobject.TYPE_NONE, (str, )),
+                    'task-deleted-inview': (gobject.SIGNAL_RUN_FIRST, \
+                                            gobject.TYPE_NONE, (str, )),
+                    'task-modified-inview': (gobject.SIGNAL_RUN_FIRST, \
+                                            gobject.TYPE_NONE, (str, )),}
 
     def __init__(self,req,tree,maintree=False):
+        gobject.GObject.__init__(self)
         self.is_main = maintree
         self.applied_filters = []
         self.req = req
@@ -64,7 +76,6 @@ class FilteredTree():
         #virtual root is the list of root nodes
         #initially, they are the root nodes of the original tree
         self.virtual_root = []
-        self.registered_views = []
         self.displayed_nodes = []
         #useful for temp storage :
         self.node_to_add = []
@@ -79,16 +90,7 @@ class FilteredTree():
 
     def __reset_cache(self):
         self.path_for_node_cache = {}
-        
-    #add here your view if you want to keep informed about changes in the tree
-    #the view have to implement the following functions:
-    #update_task(tid)
-    #add_task(tid)
-    #remove_task(tid)
-    def register_view(self,treemodel):
-        if treemodel not in self.registered_views:
-            self.registered_views.append(treemodel)
-        
+
     #### Standard tree functions
     def get_node(self,id):
         return self.tree.get_node(id)
@@ -454,9 +456,7 @@ class FilteredTree():
     def __update_node(self,tid,inroot):
         self.update_count += 1
         self.__root_update(tid,inroot)
-#        print "### update_node %s (inroot=%s)" %(tid,inroot)
-        for r in self.registered_views:
-            r.update_task(tid)
+        self.emit("task-modified-inview", tid)
     
     def __add_node(self,tid,inroot=None):
         self.add_count += 1
@@ -472,8 +472,7 @@ class FilteredTree():
             else:
                 self.__root_update(tid,inroot)
                 self.displayed_nodes.append(tid)
-                for r in self.registered_views:
-                    r.add_task(tid)
+                self.emit("task-added-inview", tid)
                 #We added a new node so we can check with those waiting
                 if len(self.node_to_add) > 0:
                     n = self.node_to_add.pop(0)
@@ -482,8 +481,7 @@ class FilteredTree():
     
     def __remove_node(self,tid):
         self.remove_count += 1
-        for r in self.registered_views:
-                removed = r.remove_task(tid)
+        self.emit('task-deleted-inview',tid)
         self.__root_update(tid,False)
         if tid in self.displayed_nodes:
             self.displayed_nodes.remove(tid)
