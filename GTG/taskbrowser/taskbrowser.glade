@@ -296,7 +296,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkToolButton" id="new_note_button">
+              <object class="GtkToolButton" id="new_note_b">
                 <property name="visible">True</property>
                 <property name="visible_horizontal">False</property>
                 <property name="visible_vertical">False</property>
