@@ -145,7 +145,7 @@
                       <object class="GtkSeparatorMenuItem" id="separator_3"/>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem" id="mi_edit_preferences">
+                      <object class="GtkImageMenuItem" id="edit_preferences_mi">
                         <property name="label">gtk-preferences</property>
                         <property name="visible">True</property>
                         <property name="use_underline">True</property>
