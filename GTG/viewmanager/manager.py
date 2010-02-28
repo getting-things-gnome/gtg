@@ -27,7 +27,7 @@ import GTG
 from GTG.viewmanager.delete_dialog import DeletionUI
 from GTG.taskbrowser.browser import TaskBrowser
 from GTG.taskeditor.editor            import TaskEditor
-from GTG.core.dbuswrapper import DBusTaskWrapper
+from GTG.viewmanager.dbuswrapper import DBusTaskWrapper
 from GTG.tools                        import clipboard
 from GTG.core.plugins.engine          import PluginEngine
 from GTG.core.plugins.api             import PluginAPI
