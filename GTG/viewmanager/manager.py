@@ -24,6 +24,7 @@ import gtk
 import gobject
 
 import GTG
+from GTG.viewmanager.delete_dialog import DeletionUI
 from GTG.taskbrowser.browser import TaskBrowser
 from GTG.taskeditor.editor            import TaskEditor
 from GTG.core.dbuswrapper import DBusTaskWrapper
@@ -52,37 +53,56 @@ class Manager():
         #Shared clipboard
         self.clipboard = clipboard.TaskClipboard(self.req)
         
+        #Browser
+        #FIXME : the browser should not be built by default and should be a 
+        # window like another and not necessary (like the editor)
+        self.open_browser()
+        
+        #Deletion UI
+        #FIXME: the builder should not be the same as the browser's one
+        self.delete_dialog = DeletionUI(self.req)
+        
+        #DBus
+        #FIXME: DBus should not require the browser !
+        DBusTaskWrapper(self.req, self.browser)
+        
+        #Plugins
         self._init_plugin_engine()
 
-    def show_browser(self):
+    def open_browser(self):
         if not self.browser:
             self.browser = TaskBrowser(self.req, self.config, opentask=self.open_task,\
                             closetask=self.close_task, refreshtask=self.refresh_task,\
-                            quit=self.quit, logger=self.logger)
-        DBusTaskWrapper(self.req, self.browser)
+                            deletetasks=self.delete_tasks,quit=self.close_browser, logger=self.logger)
+
+    #FIXME : the browser should not be the center of the universe.
+    # In fact, we should build a system where view can register themselves
+    # as "stay_alive" views. As long as at least one "stay_alive" view
+    # is registered, gtg keeps running. It quit only when the last 
+    # "stay_alive view" is closed (and then unregistered).
+    # Currently, the browser is our only "stay_alive" view.
+    def close_browser(self,sender=None):
+        self.quit()
     
     def _init_plugin_engine(self):
+        #FIXME : the plugin engine should not require the browser.
+        # It should be the browser that need the plugin engine
         # plugins - Init
         self.pengine = PluginEngine(GTG.PLUGIN_DIR)
         # loads the plugins in the plugin dir
         self.plugins = self.pengine.load_plugins()
         # initializes the plugin api class
-        self.plugin_api = PluginAPI(window         = self.window,
+        self.plugin_api = PluginAPI(window         = self.browser.window,
                                     config         = self.config,
                                     data_dir       = GTG.DATA_DIR,
-                                    builder        = self.builder,
+                                    builder        = self.browser.builder,
                                     requester      = self.req,
-                                    taskview       = self.task_tv,
-                                    task_modelsort = self.task_modelsort,
-                                    ctaskview      = self.ctask_tv,
-                                    ctask_modelsort= self.ctask_modelsort,
-                                    filter_cbs     = self.priv['filter_cbs'],
-                                    tagpopup       = self.tagpopup,
-                                    tagview        = self.tags_tv,
+                                    tagpopup       = self.browser.tagpopup,
+                                    tagview        = self.browser.tags_tv,
                                     task           = None,
                                     texteditor     = None,
-                                    quick_add_cbs  = self.priv['quick_add_cbs'],
-                                    browser        = self,
+                                    quick_add_cbs  = self.browser.priv['quick_add_cbs'],
+                                    browser        = self.browser,
                                     logger         = self.logger)
         self.p_apis.append(self.plugin_api)
         # enable some plugins
@@ -117,10 +137,10 @@ class Manager():
         elif t:
             #FIXME : on_delete_task should not be in the browser but here
             tv = TaskEditor(
-                self.req, t, self.browser.plugins, \
-                self.browser.on_delete_task, self.close_task, self.open_task, \
+                self.req, t, self.plugins, \
+                self.delete_tasks, self.close_task, self.open_task, \
                 self.get_tasktitle,taskconfig=self.task_config, \
-                plugin_apis=self.browser.p_apis,thisisnew=thisisnew,\
+                plugin_apis=self.p_apis,thisisnew=thisisnew,\
                 clipboard = self.clipboard)
             #registering as opened
             self.opened_task[uid] = tv
@@ -130,10 +150,18 @@ class Manager():
         # When an editor is closed, it should deregister itself.
         if tid in self.opened_task:
             del self.opened_task[tid]
+        else:
+            print "the %s editor was already unregistered" %tid
             
     def refresh_task(self,tid):
         if self.opened_task.has_key(tid):
             self.opened_task[tid].refresh_editor(refreshtext=True)
+            
+    def delete_tasks(self,tids):
+        if self.delete_dialog.delete_tasks(tids):
+            #FIXME: the editor should catch the close signal to close himself
+            for t in tids:
+                self.close_task(t)
             
     def get_tasktitle(self, tid):
         task = self.req.get_task(tid)
@@ -145,8 +173,6 @@ class Manager():
 ### MAIN ###################################################################
     def main(self):
         gobject.threads_init()
-        # Restore state from config
-        self.show_browser()
         gtk.main()
         return 0
         
@@ -159,6 +185,14 @@ class Manager():
             open_task.append(otid)
             self.opened_task[otid].close()
         self.config["browser"]["opened_tasks"] = open_task
+        
+        # adds the plugin settings to the conf
+        if len(self.pengine.plugins) > 0:
+            self.config["plugins"] = {}
+            self.config["plugins"]["disabled"] = \
+              self.pengine.disabled_plugins().keys()
+            self.config["plugins"]["enabled"] = \
+              self.pengine.enabled_plugins().keys()
         # plugins are deactivated
         self.pengine.deactivate_plugins(self.p_apis)
 
