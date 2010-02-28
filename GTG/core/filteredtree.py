@@ -126,6 +126,10 @@ class FilteredTree(gobject.GObject):
             if not curdis:
                 self.__add_node(tid)
             #There doesn't seem to be a need for calling the update_node
+#            else:
+#                task = self.get_node(tid)
+#                inroot = self.__is_root(task)
+#                self.__update_node(tid,inroot)
         else:
             #if the task was displayed previously but shouldn't be anymore
             #we remove it
