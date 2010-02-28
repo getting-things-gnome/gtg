@@ -1181,61 +1181,11 @@ class TaskBrowser:
         #If we don't have a parameter, then take the selection in the treeview
         if not tid:
             #tid_to_delete is a [project,task] tuple
-<<<<<<< TREE
-            self.tids_todelete = self.get_selected_tasks()
-        else:
-            self.tids_todelete = [tid]
-        #We must at least have something to delete !
-        if len(self.tids_todelete) > 0:
-            # We fill the text and the buttons' labels according to the number 
-            # of tasks to delete
-            label = self.builder.get_object("label1")
-            label_text = label.get_text()
-            cdlabel2 = self.builder.get_object("cd-label2")
-            cdlabel3 = self.builder.get_object("cd-label3")
-            cdlabel4 = self.builder.get_object("cd-label4")
-            if len(self.tids_todelete) == 1:
-                label_text = _("Deleting a task cannot be undone, and will delete the following task: ")
-                cdlabel2.set_label(_("Are you sure you want to delete this task?"))
-                cdlabel3.set_label(_("Keep selected task"))
-                cdlabel4.set_label(_("Permanently remove task"))
-            else:
-                label_text = _("Deleting a task cannot be undone, and will delete the following tasks: ")
-                cdlabel2.set_label(_("Are you sure you want to delete these tasks?"))
-                cdlabel3.set_label(_("Keep selected tasks"))
-                cdlabel4.set_label(_("Permanently remove tasks"))
-            label_text = label_text[0:label_text.find(":") + 1]
-            
-            # I find the tasks that are going to be deleted
-            tasks = []
-            for tid in self.tids_todelete:
-                def recursive_list_tasks(task_list, root):
-                    """Populate a list of all the subtasks and 
-                       their children, recursively"""
-                    if root not in task_list:
-                        task_list.append(root)
-                        for i in root.get_subtasks():
-                            recursive_list_tasks(task_list, i)
-                task = self.req.get_task(tid)
-                recursive_list_tasks(tasks, task)
-            titles_list = [task.get_title() for task in tasks]
-            titles = reduce (lambda x, y: x + "\n - " + y, titles_list)
-            label.set_text("%s %s" % (label_text, "\n - " + titles))
-            delete_dialog = self.builder.get_object("confirm_delete_dialog")
-            delete_dialog.run()
-            delete_dialog.hide()
-            #has the task been deleted ?
-            return not self.tids_todelete
-        else:
-            return False
-    
-=======
             tids_todelete = self.get_selected_tasks()
         else:
             tids_todelete = [tid]
         self.deletion_cllbck(tids_todelete)
 
->>>>>>> MERGE-SOURCE
     def update_start_date(self, widget, new_start_date):
         tasks_uid = filter(lambda uid: uid != None, self.get_selected_tasks())
         if len(tasks_uid) == 0:
