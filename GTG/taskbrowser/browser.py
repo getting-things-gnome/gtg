@@ -52,8 +52,6 @@ from GTG.tools.dates                  import strtodate,\
                                              no_date,\
                                              FuzzyDate
 from GTG.tools                        import clipboard
-from GTG.core.plugins.engine          import PluginEngine
-from GTG.core.plugins.api             import PluginAPI
 
 #=== OBJECTS ==================================================================
 
@@ -146,14 +144,12 @@ class TaskBrowser:
         # Define accelerator keys
         self._init_accelerators()
         
-        #FIXME: this should be done in the view_manager
-        # Initialize the plugin-engine
-        self.p_apis = [] #the list of each plugin apis.
-        self._init_plugin_engine()
-        
         #Autocompletion for Tags
         self._init_tag_list()
         self._init_tag_completion()
+        
+        self.restore_state_from_conf()
+        self.window.show()
 
 ### INIT HELPER FUNCTIONS #####################################################
 #
@@ -357,7 +353,7 @@ class TaskBrowser:
         self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
 
         if (self.window):
-            self.window.connect("destroy", gtk.main_quit)
+            self.window.connect("destroy", self.quit)
             #The following is needed to let the Notification Area plugin to
             # minimize the window instead of closing the program
             self.delete_event_handle = \
@@ -493,48 +489,7 @@ class TaskBrowser:
         key, mod = gtk.accelerator_parse('<Control>F9')
         addtag_button.add_accelerator('activate', agr, key, mod, \
             gtk.ACCEL_VISIBLE)
-        
-    def _init_plugin_engine(self):
-        # plugins - Init
-        self.pengine = PluginEngine(GTG.PLUGIN_DIR)
-        # loads the plugins in the plugin dir
-        self.plugins = self.pengine.load_plugins()
-        # initializes the plugin api class
-        self.plugin_api = PluginAPI(window         = self.window,
-                                    config         = self.config,
-                                    data_dir       = GTG.DATA_DIR,
-                                    builder        = self.builder,
-                                    requester      = self.req,
-                                    taskview       = self.task_tv,
-                                    task_modelsort = self.task_modelsort,
-                                    ctaskview      = self.ctask_tv,
-                                    ctask_modelsort= self.ctask_modelsort,
-                                    filter_cbs     = self.priv['filter_cbs'],
-                                    tagpopup       = self.tagpopup,
-                                    tagview        = self.tags_tv,
-                                    task           = None,
-                                    texteditor     = None,
-                                    quick_add_cbs  = self.priv['quick_add_cbs'],
-                                    browser        = self,
-                                    logger         = self.logger)
-        self.p_apis.append(self.plugin_api)
-        # enable some plugins
-        if len(self.pengine.plugins) > 0:
-            # checks the conf for user settings
-            if "plugins" in self.config:
-                if "enabled" in self.config["plugins"]:
-                    plugins_enabled = self.config["plugins"]["enabled"]
-                if "disabled" in self.config["plugins"]:
-                    plugins_disabled = self.config["plugins"]["disabled"]
-                for name, plugin in self.pengine.plugins.iteritems():
-                    if name in plugins_enabled and name not in plugins_disabled:
-                        plugin.enabled = True
-                    else:
-                        # plugins not explicitly enabled are disabled
-                        plugin.enabled = False
-        # initializes and activates each plugin (that is enabled)
-        self.pengine.activate_plugins(self.p_apis)
-    
+
     def _init_tag_list(self):
         self.tag_list_model = gtk.ListStore(gobject.TYPE_STRING)
         self.tag_list = self.req.get_all_tags()
@@ -922,9 +877,6 @@ class TaskBrowser:
             view = "workview"
         else:
             view = "default"
-        
-        # plugins are deactivated
-        self.pengine.deactivate_plugins(self.p_apis)
 
         # Populate configuration dictionary
         self.config["browser"] = {
@@ -1587,7 +1539,6 @@ class TaskBrowser:
         """Closing the window."""
         #Saving is now done in main.py
         self.on_delete(None, None)
-        gtk.main_quit()
         self.quit()
 
     def on_task_added(self, sender, tid):
@@ -1739,21 +1690,3 @@ class TaskBrowser:
             self.tag_active = True
             path, col = self.target_cursor
             self.tags_tv.set_cursor(path, col, 0)
-
-### MAIN ######################################################################
-#
-    #FIXME : the main loop should go in the view_manager
-    def main(self):
-
-        # Here we will define the main TaskList interface
-        gobject.threads_init()
-        
-        #FIXME : the browser should be built only the first
-        #time it is shown.
-        # Restore state from config
-        self.restore_state_from_conf()
-        
-        if self._start_gtg_maximized():
-            self.window.show()
-        gtk.main()
-        return 0

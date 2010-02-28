@@ -20,11 +20,16 @@
 
 
 # This is the UI manager. It will manage every GTG window and UI.
+import gtk
+import gobject
 
+import GTG
 from GTG.taskbrowser.browser import TaskBrowser
 from GTG.taskeditor.editor            import TaskEditor
 from GTG.core.dbuswrapper import DBusTaskWrapper
 from GTG.tools                        import clipboard
+from GTG.core.plugins.engine          import PluginEngine
+from GTG.core.plugins.api             import PluginAPI
 
 class Manager():
 
@@ -39,21 +44,65 @@ class Manager():
                                  # right now
                                  
         self.browser = None
+        self.pengine = None
+        self.plugins = None
+        self.plugin_api = None
+        self.p_apis = []
                                  
         #Shared clipboard
         self.clipboard = clipboard.TaskClipboard(self.req)
         
-        #FIXME : we should restore opened tasks here, not in the browser
-        #also, browser should just be a window like another, to be restored or not
+        self._init_plugin_engine()
 
     def show_browser(self):
-        self.browser = TaskBrowser(self.req, self.config, opentask=self.open_task,\
-                        closetask=self.close_task, refreshtask=self.refresh_task,\
-                        quit=self.quit, logger=self.logger)
+        if not self.browser:
+            self.browser = TaskBrowser(self.req, self.config, opentask=self.open_task,\
+                            closetask=self.close_task, refreshtask=self.refresh_task,\
+                            quit=self.quit, logger=self.logger)
         DBusTaskWrapper(self.req, self.browser)
-        self.browser.main()
-        
-        
+    
+    def _init_plugin_engine(self):
+        # plugins - Init
+        self.pengine = PluginEngine(GTG.PLUGIN_DIR)
+        # loads the plugins in the plugin dir
+        self.plugins = self.pengine.load_plugins()
+        # initializes the plugin api class
+        self.plugin_api = PluginAPI(window         = self.window,
+                                    config         = self.config,
+                                    data_dir       = GTG.DATA_DIR,
+                                    builder        = self.builder,
+                                    requester      = self.req,
+                                    taskview       = self.task_tv,
+                                    task_modelsort = self.task_modelsort,
+                                    ctaskview      = self.ctask_tv,
+                                    ctask_modelsort= self.ctask_modelsort,
+                                    filter_cbs     = self.priv['filter_cbs'],
+                                    tagpopup       = self.tagpopup,
+                                    tagview        = self.tags_tv,
+                                    task           = None,
+                                    texteditor     = None,
+                                    quick_add_cbs  = self.priv['quick_add_cbs'],
+                                    browser        = self,
+                                    logger         = self.logger)
+        self.p_apis.append(self.plugin_api)
+        # enable some plugins
+        if len(self.pengine.plugins) > 0:
+            # checks the conf for user settings
+            if "plugins" in self.config:
+                if "enabled" in self.config["plugins"]:
+                    plugins_enabled = self.config["plugins"]["enabled"]
+                if "disabled" in self.config["plugins"]:
+                    plugins_disabled = self.config["plugins"]["disabled"]
+                for name, plugin in self.pengine.plugins.iteritems():
+                    if name in plugins_enabled and name not in plugins_disabled:
+                        plugin.enabled = True
+                    else:
+                        # plugins not explicitly enabled are disabled
+                        plugin.enabled = False
+        # initializes and activates each plugin (that is enabled)
+        self.pengine.activate_plugins(self.p_apis)
+
+
     def open_task(self, uid,thisisnew=False):
         """Open the task identified by 'uid'.
 
@@ -92,14 +141,25 @@ class Manager():
             return task.get_title()
         else:
             return None
+            
+### MAIN ###################################################################
+    def main(self):
+        gobject.threads_init()
+        # Restore state from config
+        self.show_browser()
+        gtk.main()
+        return 0
         
         
-    def quit(self):
+    def quit(self,sender=None):
+        gtk.main_quit()
         #save opened tasks and their positions.
         open_task = []
         for otid in self.opened_task.keys():     
             open_task.append(otid)
             self.opened_task[otid].close()
         self.config["browser"]["opened_tasks"] = open_task
+        # plugins are deactivated
+        self.pengine.deactivate_plugins(self.p_apis)
 
 
