@@ -211,11 +211,10 @@ class TaskBrowser:
     def _init_widget_aliases(self):
         self.window             = self.builder.get_object("MainWindow")
         self.tagpopup           = self.builder.get_object("TagContextMenu")
-        self.nonworkviewtag_checkbox     = self.builder.get_object("nonworkviewtag")
+        self.nonworkviewtag_cb  = self.builder.get_object("nonworkviewtag")
         self.taskpopup          = self.builder.get_object("TaskContextMenu")
         self.defertopopup       = self.builder.get_object("DeferToContextMenu")
-        self.ctaskpopup = \
-            self.builder.get_object("ClosedTaskContextMenu")
+        self.ctaskpopup         = self.builder.get_object("ClosedTaskContextMenu")
         self.editbutton         = self.builder.get_object("edit_b")
         self.donebutton         = self.builder.get_object("done_b")
         self.mark_done_mi       = self.builder.get_object("mark_done_mi")
@@ -1191,10 +1190,9 @@ class TaskBrowser:
     def on_nonworkviewtag_toggled(self, widget):
         self.set_target_cursor()
         tags = self.get_selected_tags()[0]
-        nonworkview_item = self.nonworkviewtag_checkbox
         #We must inverse because the tagstore has True
         #for tasks that are not in workview (and also convert to string)
-        toset = str(not nonworkview_item.get_active())
+        toset = str(not self.nonworkview_cb.get_active())
         if len(tags) > 0:
             tags[0].set_attribute("nonworkview", toset)
         if self.priv['workview']:
