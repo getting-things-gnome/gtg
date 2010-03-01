@@ -16,6 +16,10 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
+"""
+Getting Things Gnome!  A personal organizer for the GNOME desktop
+"""
+
 import os
 import locale
 #Fallback to LANG C if unsupported locale

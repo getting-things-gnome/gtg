@@ -16,13 +16,13 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-import os
-
-from GTG import _
-
 """
 The task editing GUI
 """
+
+import os
+
+from GTG import _
 
 class GnomeConfig:
     current_rep = os.path.dirname(os.path.abspath(__file__))
