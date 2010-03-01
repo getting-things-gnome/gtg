@@ -18,8 +18,8 @@
 # -----------------------------------------------------------------------------
 #
 """
-FilteredTree
-############
+FilteredTree provides a filtered view (subset) of tasks
+
 The problem we have is that, sometimes, we don't want to display all tasks.
 We want tasks to be filtered (workview, tags, …)
 
@@ -37,7 +37,7 @@ If you believe a function would be useful in a filtered tree, don't
 hesitate to make a proposition.
 
 To be more efficient, a quick way to optimize the FilteredTree is to cache
-all answers in a dictionnary so we don't have to compute the answer 
+all answers in a dictionary so we don't have to compute the answer 
 all the time. This is not done yet.
 
 Warning : this is very fragile. Calls to any GTK registered view should be
