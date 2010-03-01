@@ -104,7 +104,7 @@ class Tree():
                         toreturn = True
                     if not c.has_parent(parent_id):
                         #print "creating the %s - %s relation" %(parent_id,child_id)
-                        c.add_parent(p)
+                        c.add_parent(parent_id)
                         toreturn = True
                         #removing the root from the list of parent
                         if self.root.has_child(child_id):

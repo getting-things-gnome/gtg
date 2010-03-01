@@ -392,8 +392,9 @@ class Task(TreeNode):
     ### PARENTS ##############################################################
 
     #Take a tid object as parameter
-    def add_parent(self, parent):
-        added = TreeNode.add_parent(self,parent)
+    def add_parent(self, parent_tid):
+        parent = self.req.get_task(parent_tid)
+        added = TreeNode.add_parent(self, parent)
         if added:
             #print "add_parent %s to %s" %(parent.get_id(),self.get_id())
             self.sync()
