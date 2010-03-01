@@ -251,7 +251,7 @@ class Tag(TreeNode):
             tree = self.get_tree()
             par = tree.get_node(att_value)
             if par:
-                self.add_parent(par)
+                self.add_parent(par.get_id())
                 self._attributes['parent'] = "We don't care about that value"
         else:
             # Attributes should all be strings.
@@ -271,7 +271,7 @@ class Tag(TreeNode):
                 parlist = self.get_parents()
                 to_return = parlist.pop()
                 while len(parlist) > 0:
-                    to_return += ",%s" %parlist.pop()
+                    to_return += ",%s" % parlist.pop()
         else:
             to_return = self._attributes.get(att_name, None)
         return to_return
