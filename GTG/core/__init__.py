@@ -25,6 +25,16 @@ In order to not interact directly with the datastore, we provide
 "requesters".  The requester is only an interface and there can be as
 many requester as you want as long as they are all from the same
 datastore.  Requester also provides an interface for the tagstore
+
+If you want to display only a subset of tasks, you can either:
+
+ - have access to the main FilteredTree (the one displayed in the main
+   window) and apply filters on it.  (You can create your own)
+
+ - get your own personal FilteredTree and apply on it the filters you
+   want without interfering with the main view. (This is how the closed
+   tasks pane is built currently)
+
 """
 
 
