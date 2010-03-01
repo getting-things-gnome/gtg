@@ -20,6 +20,9 @@ import os
 
 from GTG import _
 
+"""
+The task editing GUI
+"""
 
 class GnomeConfig:
     current_rep = os.path.dirname(os.path.abspath(__file__))

@@ -18,7 +18,7 @@
 # -----------------------------------------------------------------------------
 
 
-#This is the core package. It contains the core of GTG.
+"""The core functionality GTG."""
 
 #Current files are :
 
