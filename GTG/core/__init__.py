@@ -18,7 +18,15 @@
 # -----------------------------------------------------------------------------
 
 
-"""The core functionality GTG."""
+"""
+The core functionality GTG.
+
+In order to not interact directly with the datastore, we provide
+"requesters".  The requester is only an interface and there can be as
+many requester as you want as long as they are all from the same
+datastore.  Requester also provides an interface for the tagstore
+"""
+
 
 #=== IMPORT ====================================================================
 import os

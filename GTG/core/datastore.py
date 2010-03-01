@@ -18,8 +18,7 @@
 # -----------------------------------------------------------------------------
 
 """
-datastore is the heart of GTG. It contains a list of "TagSource".
-Each TagSource is a proxy between a backend and the datastore itself
+datastore contains a list of "TagSource", which are proxies between a backend and the datastore itself
 """
 
 import threading

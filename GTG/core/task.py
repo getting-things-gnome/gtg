@@ -18,7 +18,7 @@
 # -----------------------------------------------------------------------------
 
 """
-task.py contains the Task class which represents, guess what, a task.
+task.py contains the Task class which represents (guess what) a task
 """
 
 import xml.dom.minidom

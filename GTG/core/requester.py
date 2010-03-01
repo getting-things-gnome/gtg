@@ -18,17 +18,13 @@
 # -----------------------------------------------------------------------------
 
 """
-In order to not interact directly with the datastore, we provide "requesters"
-The requester is only an interface and there can be as many requester as
-you want as long as they are all from the same datastore.
-Requester also provides an interface for the tagstore
+A nice general purpose interface for the datastore and tagstore
 """
 
 import gobject
 
 from GTG.core.filteredtree import FilteredTree
 from GTG.core.filters_bank import FiltersBank
-
 
 class Requester(gobject.GObject):
     """A view on a GTG datastore.
