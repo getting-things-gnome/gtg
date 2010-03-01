@@ -540,9 +540,9 @@ class TaskEditor :
             self.task.set_status("Done")
             self.close(None)
     
-    def delete_task(self,widget) :
+    def delete_task(self, widget) :
         if self.delete :
-            result = self.delete(widget,[self.task.get_id()])
+            result = self.delete([self.task.get_id()])
         #if the task was deleted, we close the window
         if result : self.window.destroy()
 

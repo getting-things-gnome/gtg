@@ -456,7 +456,7 @@ class Task(TreeNode):
             task = self.req.get_task(i)
             task.remove_child(self.get_id())
         for tagname in self.tags:
-            self.req.get_tag(tagname)
+            tag = self.req.get_tag(tagname)
             tag.remove_task(self.get_id())
         #then we remove effectively the task
         #self.req.delete_task(self.get_id())

@@ -79,10 +79,11 @@ class Manager():
     def open_browser(self):
         if not self.browser:
             self.browser = TaskBrowser(self.req, self.config, \
-                            opentask=self.open_task,\
-                            closetask=self.close_task,\
-                            deletetasks=self.delete_tasks,\
-                            quit=self.close_browser, logger=self.logger)
+                            opentask    = self.open_task,\
+                            closetask   = self.close_task,\
+                            deletetasks = self.delete_tasks,\
+                            quit        = self.close_browser, \
+                            logger      = self.logger)
 
     #FIXME : the browser should not be the center of the universe.
     # In fact, we should build a system where view can register themselves
@@ -166,7 +167,7 @@ class Manager():
         if self.opened_task.has_key(tid):
             self.opened_task[tid].refresh_editor(refreshtext=True)
             
-    def delete_tasks(self,tids):
+    def delete_tasks(self, tids):
         if self.delete_dialog.delete_tasks(tids):
             #FIXME: the editor should catch the close signal to close himself
             for t in tids:
