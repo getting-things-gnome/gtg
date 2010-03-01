@@ -18,6 +18,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
+""" The main window for GTG, listing tags, and open and closed tasks """
 
 #=== IMPORT ===================================================================
 #system imports
@@ -74,6 +75,7 @@ class Timer:
         print "%s : %s" %(self.st,time.time() - self.start)
 
 class TaskBrowser:
+    """ The UI for browsing open and closed tasks, and listing tags in a tree """
 
     def __init__(self, requester, config, opentask=None,closetask=None,\
                   deletetasks=None, quit=None, logger=None):
