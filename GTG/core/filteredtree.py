@@ -20,31 +20,33 @@
 """
 FilteredTree provides a filtered view (subset) of tasks
 
+FilteredTree
+============
 The problem we have is that, sometimes, we don't want to display all tasks.
 We want tasks to be filtered (workview, tags, …)
 
 The expected approach would be to put a gtk.TreeModelFilter above our
 TaskTree. Unfortunatly, this doesn't work because TreeModelFilter hides
-all children of hidden nodes. (unlike what we want)
+all children of hidden nodes (not what we want!)
 
-The solution we have found is to have a fake Tree between Tree and TaskTree
-This fake tree is called FilteredTree and will map path and nodes methods 
-to a result corresponding to the filtered tree.
+The solution we have found is to insert a fake tree between Tree and
+TaskTree.  This fake tree is called FilteredTree and will map path and
+node methods to a result corresponding to the filtered tree.
 
-Don't forget that the node are not aware that they are in a filtered tree
-Use the FilteredTree methods, not directly the nodes one.
+Note that the nodes are not aware that they are in a filtered tree.
+Use the FilteredTree methods, not the node methods directly.
 If you believe a function would be useful in a filtered tree, don't 
-hesitate to make a proposition.
+hesitate to make a proposal.
 
 To be more efficient, a quick way to optimize the FilteredTree is to cache
 all answers in a dictionary so we don't have to compute the answer 
 all the time. This is not done yet.
 
-Warning : this is very fragile. Calls to any GTK registered view should be
+B{Warning}: this is very fragile. Calls to any GTK registered view should be
 perfecly in sync with changes in the underlying model.
 We definitely should develop some unit tests for this class.
 
-Structure of the source :
+Structure of the source:
 
  1. Standard tree functions mapping (get_node, get_all_nodes, get_all_keys)
  2. Receiving signal functions ( task-added,task-modified,task-deleted)
@@ -52,6 +54,14 @@ Structure of the source :
  4. Filtering : is_displayed() and refilter()
  5. Changing the filters (not for the main FilteredTree)
  6. Private helpers.
+
+There's one main FilteredTree that you can get through the requester. This
+main FilteredTree does use the filters applied throught the requester. This
+allow plugin writers to easily get the current displayed tree (main View).
+
+For custom views, the plugin writers are able to get their own
+FilteredTree and apply on it the filters they want. (this is not finished
+yet but in good shape).
 
 """
 
