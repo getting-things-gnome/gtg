@@ -19,8 +19,7 @@
 
 
 """
-This is the tool package. It contains some useful function and tool
-that could be useful for any part of GTG.
+Contains useful functions for use in any part of GTG.
 """
 
 #Current files are :
