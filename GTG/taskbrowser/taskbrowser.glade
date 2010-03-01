@@ -59,12 +59,12 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkSeparatorMenuItem" id="separatormenuitem10">
+                      <object class="GtkSeparatorMenuItem" id="separator_1">
                         <property name="visible">True</property>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem" id="mark_done_mi">
+                      <object class="GtkImageMenuItem" id="done_mi">
                         <property name="label" translatable="yes">Mark as _Done</property>
                         <property name="visible">True</property>
                         <property name="sensitive">False</property>
@@ -76,7 +76,7 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem" id="task_dismiss">
+                      <object class="GtkImageMenuItem" id="dismiss_mi">
                         <property name="label" translatable="yes">D_ismiss</property>
                         <property name="visible">True</property>
                         <property name="sensitive">False</property>
@@ -99,7 +99,7 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkSeparatorMenuItem" id="menuitem2">
+                      <object class="GtkSeparatorMenuItem" id="separator_2">
                         <property name="visible">True</property>
                       </object>
                     </child>
@@ -142,10 +142,10 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkSeparatorMenuItem" id="menuitem1"/>
+                      <object class="GtkSeparatorMenuItem" id="separator_3"/>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem" id="mi_edit_preferences">
+                      <object class="GtkImageMenuItem" id="edit_preferences_mi">
                         <property name="label">gtk-preferences</property>
                         <property name="visible">True</property>
                         <property name="use_underline">True</property>
@@ -175,7 +175,7 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkSeparatorMenuItem" id="separator1">
+                      <object class="GtkSeparatorMenuItem" id="separator_4">
                         <property name="visible">True</property>
                       </object>
                     </child>
@@ -189,7 +189,7 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkSeparatorMenuItem" id="separatormenuitem1">
+                      <object class="GtkSeparatorMenuItem" id="separator_5">
                         <property name="visible">True</property>
                       </object>
                     </child>
@@ -230,7 +230,7 @@
               </object>
             </child>
             <child>
-              <object class="GtkMenuItem" id="menu_plugin">
+              <object class="GtkMenuItem" id="plugin_mi">
                 <property name="label" translatable="yes">_Plugins</property>
                 <property name="use_underline">True</property>
                 <child type="submenu">
@@ -241,7 +241,7 @@
               </object>
             </child>
             <child>
-              <object class="GtkMenuItem" id="menuitem4">
+              <object class="GtkMenuItem" id="help_mi">
                 <property name="visible">True</property>
                 <property name="label" translatable="yes">_Help</property>
                 <property name="use_underline">True</property>
@@ -337,7 +337,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkSeparatorToolItem" id="toolbutton2">
+              <object class="GtkSeparatorToolItem" id="separator_6">
                 <property name="visible">True</property>
               </object>
               <packing>
@@ -346,7 +346,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkToolButton" id="mark_as_done_b">
+              <object class="GtkToolButton" id="done_b">
                 <property name="visible">True</property>
                 <property name="sensitive">False</property>
                 <property name="is_important">True</property>
@@ -360,7 +360,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkToolButton" id="dismiss">
+              <object class="GtkToolButton" id="dismiss_b">
                 <property name="visible">True</property>
                 <property name="sensitive">False</property>
                 <property name="label" translatable="yes">Dismiss</property>
@@ -385,7 +385,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkSeparatorToolItem" id="toolbutton1">
+              <object class="GtkSeparatorToolItem" id="separator_7">
                 <property name="visible">True</property>
               </object>
               <packing>
@@ -512,7 +512,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkButton" id="button1">
+                      <object class="GtkButton" id="quickadd_b">
                         <property name="label">gtk-add</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
@@ -622,7 +622,7 @@
       </object>
     </child>
   </object>
-  <object class="GtkAboutDialog" id="aboutdialog1">
+  <object class="GtkAboutDialog" id="about_dialog">
     <property name="border_width">5</property>
     <property name="title" translatable="yes">About GTG!</property>
     <property name="resizable">False</property>
@@ -687,7 +687,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
       </object>
     </child>
     <child>
-      <object class="GtkSeparatorMenuItem" id="separatormenuitem3">
+      <object class="GtkSeparatorMenuItem" id="separator_8">
         <property name="visible">True</property>
       </object>
     </child>
@@ -732,7 +732,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
       </object>
     </child>
     <child>
-      <object class="GtkSeparatorMenuItem" id="separatormenuitem5">
+      <object class="GtkSeparatorMenuItem" id="separator_9">
         <property name="visible">True</property>
       </object>
     </child>
@@ -807,7 +807,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
       </object>
     </child>
     <child>
-      <object class="GtkSeparatorMenuItem" id="separatormenuitem4">
+      <object class="GtkSeparatorMenuItem" id="separator_10">
         <property name="visible">True</property>
       </object>
     </child>
@@ -901,7 +901,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
     <property name="yalign">0.47999998927116394</property>
     <property name="stock">gtk-revert-to-saved</property>
   </object>
-  <object class="GtkDialog" id="TaskAddTag">
+  <object class="GtkDialog" id="addtag_dialog">
     <property name="border_width">5</property>
     <property name="title" translatable="yes">Add a Tag...</property>
     <property name="window_position">center-on-parent</property>

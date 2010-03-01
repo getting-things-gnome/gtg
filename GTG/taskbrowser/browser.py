@@ -191,19 +191,22 @@ class TaskBrowser:
     def _init_widget_aliases(self):
         self.window             = self.builder.get_object("MainWindow")
         self.tagpopup           = self.builder.get_object("TagContextMenu")
-        self.nonworkviewtag_checkbox     = self.builder.get_object("nonworkviewtag")
+        self.nonworkviewtag_cb  = self.builder.get_object("nonworkviewtag")
         self.taskpopup          = self.builder.get_object("TaskContextMenu")
         self.defertopopup       = self.builder.get_object("DeferToContextMenu")
-        self.ctaskpopup = \
-            self.builder.get_object("ClosedTaskContextMenu")
+        self.ctaskpopup         = self.builder.get_object("ClosedTaskContextMenu")
         self.editbutton         = self.builder.get_object("edit_b")
-        self.donebutton         = self.builder.get_object("mark_as_done_b")
+        self.edit_mi            = self.builder.get_object("edit_mi")
+        self.donebutton         = self.builder.get_object("done_b")
+        self.done_mi            = self.builder.get_object("done_mi")
         self.deletebutton       = self.builder.get_object("delete_b")
+        self.delete_mi          = self.builder.get_object("delete_mi")
         self.newtask            = self.builder.get_object("new_task_b")
         self.newsubtask         = self.builder.get_object("new_subtask_b")
-        self.dismissbutton      = self.builder.get_object("dismiss")
-        self.about              = self.builder.get_object("aboutdialog1")
-        self.edit_mi            = self.builder.get_object("edit_mi")
+        self.new_subtask_mi     = self.builder.get_object("new_subtask_mi")
+        self.dismissbutton      = self.builder.get_object("dismiss_b")
+        self.dismiss_mi         = self.builder.get_object("dismiss_mi")
+        self.about              = self.builder.get_object("about_dialog")
         self.main_pane          = self.builder.get_object("main_pane")
         self.menu_view_workview = self.builder.get_object("view_workview")
         self.toggle_workview    = self.builder.get_object("workview_toggle")
@@ -390,71 +393,34 @@ class TaskBrowser:
         self.tag_modelsort.set_sort_column_id(\
             tagtree.COL_ID, gtk.SORT_ASCENDING)
 
+    def _add_accelerator_for_widget(self, agr, name, accel):
+        widget    = self.builder.get_object(name)
+        key, mod  = gtk.accelerator_parse(accel)
+        widget.add_accelerator("activate", agr, key, mod, gtk.ACCEL_VISIBLE)
+
     def _init_accelerators(self):
         agr = gtk.AccelGroup()
         self.builder.get_object("MainWindow").add_accel_group(agr)
 
-        view_sidebar = self.builder.get_object("view_sidebar")
-        key, mod     = gtk.accelerator_parse("F9")
-        view_sidebar.add_accelerator("activate", agr, key, mod,\
-            gtk.ACCEL_VISIBLE)
-
-        file_quit = self.builder.get_object("file_quit")
-        key, mod  = gtk.accelerator_parse("<Control>q")
-        file_quit.add_accelerator("activate", agr, key, mod, gtk.ACCEL_VISIBLE)
-
-        edit_undo = self.builder.get_object("edit_undo")
-        key, mod  = gtk.accelerator_parse("<Control>z")
-        edit_undo.add_accelerator("activate", agr, key, mod, gtk.ACCEL_VISIBLE)
-
-        edit_redo = self.builder.get_object("edit_redo")
-        key, mod  = gtk.accelerator_parse("<Control>y")
-        edit_redo.add_accelerator("activate", agr, key, mod, gtk.ACCEL_VISIBLE)
-
-        new_task_mi = self.builder.get_object("new_task_mi")
-        key, mod    = gtk.accelerator_parse("<Control>n")
-        new_task_mi.add_accelerator("activate", agr, key, mod,\
-            gtk.ACCEL_VISIBLE)
-
-        self.new_subtask_mi = self.builder.get_object("new_subtask_mi")
-        key, mod       = gtk.accelerator_parse("<Control><Shift>n")
-        self.new_subtask_mi.add_accelerator("activate", agr, key, mod,\
-            gtk.ACCEL_VISIBLE)
+        self._add_accelerator_for_widget(agr, "view_sidebar",   "F9")
+        self._add_accelerator_for_widget(agr, "file_quit",      "<Control>q")
+        self._add_accelerator_for_widget(agr, "edit_undo",      "<Control>z")
+        self._add_accelerator_for_widget(agr, "edit_redo",      "<Control>y")
+        self._add_accelerator_for_widget(agr, "new_task_mi",    "<Control>n")
+        self._add_accelerator_for_widget(agr, "new_subtask_mi", "<Control><Shift>n")
+        self._add_accelerator_for_widget(agr, "done_mi",        "<Control>d")
+        self._add_accelerator_for_widget(agr, "dismiss_mi",     "<Control>i")
+        self._add_accelerator_for_widget(agr, "delete_mi",      "Cancel")
+        self._add_accelerator_for_widget(agr, "tcm_addtag",     "<Control>t")
+        self._add_accelerator_for_widget(agr, "view_closed",    "<Control>F9")
 
         edit_button = self.builder.get_object("edit_b")
         key, mod    = gtk.accelerator_parse("<Control>e")
-        edit_button.add_accelerator("clicked", agr, key, mod,\
-            gtk.ACCEL_VISIBLE)
+        edit_button.add_accelerator("clicked", agr, key, mod, gtk.ACCEL_VISIBLE)
 
-        quickadd_field = self.builder.get_object('quickadd_field')
-        key, mod = gtk.accelerator_parse('<Control>l')
-        quickadd_field.add_accelerator(
-            'grab-focus', agr, key, mod, gtk.ACCEL_VISIBLE)
-
-        self.mark_done_mi = self.builder.get_object('mark_done_mi')
-        key, mod = gtk.accelerator_parse('<Control>d')
-        self.mark_done_mi.add_accelerator(
-            'activate', agr, key, mod, gtk.ACCEL_VISIBLE)
-
-        self.dismiss_mi = self.builder.get_object('task_dismiss')
-        key, mod = gtk.accelerator_parse('<Control>i')
-        self.dismiss_mi.add_accelerator(
-            'activate', agr, key, mod, gtk.ACCEL_VISIBLE)
-
-        self.delete_mi = self.builder.get_object('delete_mi')
-        key, mod = gtk.accelerator_parse('Cancel')
-        self.delete_mi.add_accelerator(
-            'activate', agr, key, mod, gtk.ACCEL_VISIBLE)
-        
-        addtag_button = self.builder.get_object('tcm_addtag')
-        key, mod = gtk.accelerator_parse('<Control>t')
-        addtag_button.add_accelerator('activate', agr, key, mod, \
-            gtk.ACCEL_VISIBLE)
-
-        addtag_button = self.builder.get_object('view_closed')
-        key, mod = gtk.accelerator_parse('<Control>F9')
-        addtag_button.add_accelerator('activate', agr, key, mod, \
-            gtk.ACCEL_VISIBLE)
+        quickadd_field = self.builder.get_object("quickadd_field")
+        key, mod = gtk.accelerator_parse("<Control>l")
+        quickadd_field.add_accelerator("grab-focus", agr, key, mod, gtk.ACCEL_VISIBLE)
 
     def _init_tag_list(self):
         self.tag_list_model = gtk.ListStore(gobject.TYPE_STRING)
@@ -900,8 +866,8 @@ class TaskBrowser:
         #fact we should have a TagPropertiesEditor (like for project) Also,
         #color change should be immediate. There's no reason for a Ok/Cancel
         self.set_target_cursor()
-        dialog = gtk.ColorSelectionDialog('Choose color')
-        colorsel = dialog.colorsel
+        color_dialog = gtk.ColorSelectionDialog('Choose color')
+        colorsel = color_dialog.colorsel
         colorsel.connect("color_changed", self.on_color_changed)
 
         # Get previous color
@@ -914,7 +880,7 @@ class TaskBrowser:
                 colorsel.set_previous_color(colorspec)
                 colorsel.set_current_color(colorspec)
                 init_color = colorsel.get_current_color()
-        response = dialog.run()
+        response = color_dialog.run()
         # Check response and set color if required
         if response != gtk.RESPONSE_OK and init_color:
             strcolor = gtk.color_selection_palette_to_string([init_color])
@@ -923,7 +889,7 @@ class TaskBrowser:
                 t.set_attribute("color", strcolor)
         self.reset_cursor()
         self.task_tv.refresh()
-        dialog.destroy()
+        color_dialog.destroy()
         
     def on_resetcolor_activate(self, widget):
         self.set_target_cursor()
@@ -1140,10 +1106,9 @@ class TaskBrowser:
     def on_nonworkviewtag_toggled(self, widget):
         self.set_target_cursor()
         tags = self.get_selected_tags()[0]
-        nonworkview_item = self.nonworkviewtag_checkbox
         #We must inverse because the tagstore has True
         #for tasks that are not in workview (and also convert to string)
-        toset = str(not nonworkview_item.get_active())
+        toset = str(not self.nonworkview_cb.get_active())
         if len(tags) > 0:
             tags[0].set_attribute("nonworkview", toset)
         if self.priv['workview']:
@@ -1265,7 +1230,7 @@ class TaskBrowser:
                 apply_to_subtasks.set_active(False)
                 tag_entry.set_completion(self.tag_completion)
             tag_entry.grab_focus()
-            addtag_dialog = self.builder.get_object("TaskAddTag")
+            addtag_dialog = self.builder.get_object("addtag_dialog")
             addtag_dialog.run()
             addtag_dialog.hide()
             self.tids_to_addtag = None            
@@ -1274,7 +1239,7 @@ class TaskBrowser:
     
     def on_addtag_confirm(self, widget):
         tag_entry = self.builder.get_object("tag_entry")
-        addtag_dialog = self.builder.get_object("TaskAddTag")
+        addtag_dialog = self.builder.get_object("addtag_dialog")
         apply_to_subtasks = self.builder.get_object("apply_to_subtasks")
         addtag_error = False
         entry_text = tag_entry.get_text()
@@ -1410,7 +1375,7 @@ class TaskBrowser:
         #Only if something is selected in the closed task list
         #And we change the status of the Done/dismiss button
         update_button(self.donebutton, settings_done)
-        update_menu_item(self.mark_done_mi, settings_done)
+        update_menu_item(self.done_mi, settings_done)
         update_button(self.dismissbutton, settings_dismiss)
         update_menu_item(self.dismiss_mi, settings_dismiss)
         if selection.count_selected_rows() > 0:
@@ -1429,7 +1394,7 @@ class TaskBrowser:
                 self.builder.get_object(
                     "ctcm_undismiss").set_sensitive(False)
                 update_button(self.donebutton, settings_undone)
-                update_menu_item(self.mark_done_mi, settings_undone)
+                update_menu_item(self.done_mi, settings_undone)
         self.update_buttons_sensitivity()
 
     def on_task_cursor_changed(self, selection=None):
@@ -1470,7 +1435,7 @@ class TaskBrowser:
            self.closed_selection.count_selected_rows() > 0
         self.edit_mi.set_sensitive(enable)
         self.new_subtask_mi.set_sensitive(enable)
-        self.mark_done_mi.set_sensitive(enable)
+        self.done_mi.set_sensitive(enable)
         self.dismiss_mi.set_sensitive(enable)
         self.delete_mi.set_sensitive(enable)
         self.donebutton.set_sensitive(enable)

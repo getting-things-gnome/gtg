@@ -110,7 +110,7 @@ class PluginAPI:
 
         @param item: The gtk.MenuItem that is going to be added.  
         """
-        widget = self.__builder.get_object('menu_plugin')
+        widget = self.__builder.get_object('plugin_mi')
         if widget:
             widget.show_all()
             widget.get_submenu().append(item)
@@ -125,7 +125,7 @@ class PluginAPI:
         fails.  
         """
         try:
-            wi = self.__builder.get_object('menu_plugin')
+            wi = self.__builder.get_object('plugin_mi')
             if wi:
                 menu = wi.get_submenu()
                 menu.remove(item)
@@ -352,7 +352,7 @@ class PluginAPI:
         
         @return: The about dialog.
         """
-        wi = self.__builder.get_object("aboutdialog1")
+        wi = self.__builder.get_object("about_dialog")
         if wi:
             return wi
         else:
