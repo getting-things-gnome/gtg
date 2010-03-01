@@ -17,6 +17,10 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # 
 
+"""
+filters_bank stores all of GTG's filters in centralized place
+"""
+
 class Filter:
     def __init__(self,func,req):
         self.func = func
@@ -49,6 +53,9 @@ class SimpleTagFilter:
     
 
 class FiltersBank:
+    """
+    Stores filter objects in a centralized place.
+    """
 
     #FIXME : put those 3 constants and those in Task.py in one place
     STA_ACTIVE    = "Active"
@@ -75,12 +82,15 @@ class FiltersBank:
 
     ######### hardcoded filters #############
     def notag(self,task):
+        """ Filter of tasks without tags """
         return task.has_tags(notag_only=True)
         
     def is_leaf(self,task):
+        """ Filter of tasks which have no children """
         return not task.has_child()
     
     def is_workable(self,task):
+        """ Filter of tasks that can be worked """
         return task.is_workable()
             
     def workview(self,task):
@@ -90,16 +100,18 @@ class FiltersBank:
         return wv
         
     def active(self,task):
+        """ Filter of tasks which are active """
         #FIXME: we should also handle unactive tags
         return task.get_status() == self.STA_ACTIVE
         
     def closed(self,task):
+        """ Filter of tasks which are closed """
         return task.get_status() in [self.STA_DISMISSED,self.STA_DONE]
         
     ##########################################
         
-    # Get the filter object for a given name
     def get_filter(self,filter_name):
+        """ Get the filter object for a given name """
         if self.available_filters.has_key(filter_name):
             return self.available_filters[filter_name]
         elif self.custom_filters.has_key(filter_name):
@@ -107,16 +119,18 @@ class FiltersBank:
         else:
             return None
     
-    # List, by name, all available filters
     def list_filters(self):
+        """ List, by name, all available filters """
         liste = self.available_filters.keys()
         liste += self.custom_filters.keys()
         return liste
     
-    # Add a filter to the filter bank
-    # Return True if the filter was added
-    # Return False if the filter_name was already in the bank
     def add_filter(self,filter_name,filter_func):
+        """
+        Adds a filter to the filter bank 
+        Return True if the filter was added
+        Return False if the filter_name was already in the bank
+        """
         if filter_name not in self.list_filters():
             if filter_name.startswith('@'):
                 filter_obj = SimpleTagFilter(filter_name,self.req)
@@ -127,10 +141,12 @@ class FiltersBank:
         else:
             return False
         
-    # Remove a filter from the bank.
-    # Only custom filters that were added here can be removed
-    # Return False if the filter was not removed
     def remove_filter(self,filter_name):
+        """
+        Remove a filter from the bank.
+        Only custom filters that were added here can be removed
+        Return False if the filter was not removed
+        """
         if not self.available_filters.has_key(filter_name):
             if self.custom_filters.has_key(filter_name):
                 self.unapply_filter(filter_name)
