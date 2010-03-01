@@ -73,6 +73,31 @@ pep8``. If you wish to find all PEP 8 violations in a particular file, use::
   ./scripts/pep8.py --repeat FILENAME
 
 
+API Style
+---------
+Whereever possible, prefer using tid/tagname instead of passing task/tag
+objects directly.  In experimentation it's been found that passing and
+using the objects directly is very expensive.  Looking in a list of
+objects is *much* slower than looking in a list of Strings.
+
+If you create a method, try that that method take a tid/tagname as
+argument and return a tid/tagname. (of course, don't apply this
+blindly).
+
+As a rule of thumb, if you put objects in a list for whatever purpose,
+it should light a big warning sign ! It probably means than you have to
+use the tid/tagname instead.
+
+The req.get_task/get_tag methods are pretty cheap (access to a
+dictionary with Strings as keys) and, anyway, I discovered that a lot of
+functions can already be done without the object at all if you are
+consistent.
+
+In existing tag/task object, don't hesitate to port existing functions
+that does not respect that philosophy but should. (this work should take
+place in gtg-refactor branch).
+
+
 Copyright
 ---------
 
