@@ -18,10 +18,10 @@
 # -----------------------------------------------------------------------------
 
 """
-The tagstore is where the tag objects are handled.  Tagstore is to tag
-as datastore is to task. Of course, the tagstore is easier The Tag
-object is also provided in this file.  See the end of the file for the
-tag object implementation
+tagstore is where the tag objects are handled.  Also defines the Tag object.
+
+Tagstore is to tag as datastore is to task. Of course, the tagstore is
+easier.  See the end of this file for the Tag object implementation.
 """
 
 import os
