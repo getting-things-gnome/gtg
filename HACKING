@@ -17,7 +17,7 @@ You can also manually test your changes with debugging data with::
   ./scripts/debug.sh
 
 Using ``debug.sh`` will prevent GTG from messing with your real data. Instead,
-the debug GTG will store data in ``debug_data/``.
+the debug GTG will store data in ``./tmp/default/``.
 
 Unit tests live in ``GTG/tests/``, and are all named ``test_foo``. When you
 add a new test module, make sure it has a ``test_suite()`` method that returns
