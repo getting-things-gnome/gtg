@@ -17,6 +17,10 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
+"""
+task.py contains the Task class which represents (guess what) a task
+"""
+
 import xml.dom.minidom
 import uuid
 import xml.sax.saxutils as saxutils
@@ -24,9 +28,10 @@ import xml.sax.saxutils as saxutils
 from GTG import _
 from GTG.tools.dates import date_today, no_date, Date
 from datetime import datetime
+from GTG.core.tree import TreeNode
 
 
-class Task:
+class Task(TreeNode):
     """ This class represent a task in GTG.
     You should never create a Task directly. Use the datastore.new_task()
     function."""
@@ -36,6 +41,7 @@ class Task:
     STA_DONE      = "Done"
 
     def __init__(self, ze_id, requester, newtask=False):
+        TreeNode.__init__(self, ze_id)
         #the id of this task in the project should be set
         #tid is a string ! (we have to choose a type and stick to it)
         self.tid = str(ze_id)
@@ -50,9 +56,6 @@ class Task:
         self.closed_date = no_date
         self.due_date = no_date
         self.start_date = no_date
-        self.parents = []
-        #The list of children tid
-        self.children = []
         self.can_be_deleted = newtask
         # tags
         self.tags = []
@@ -73,7 +76,8 @@ class Task:
             self.loaded = True
             if signal:
                 self.req._task_loaded(self.tid)
-                self.call_modified()
+                #not sure the following is necessary
+                #self.req._task_modified(self.tid)
 
     def set_to_keep(self):
         self.can_be_deleted = False
@@ -159,8 +163,9 @@ class Task:
     def is_workable(self):
         workable = True
         for c in self.get_subtasks():
-            if c.get_status() == self.STA_ACTIVE:
+            if c and c.get_status() == self.STA_ACTIVE:
                 workable = False
+#        print "task %s workable : %s" %(self.get_id(),workable)
         return workable
 
     #A task is in the workview if it is workable, started, active and
@@ -321,65 +326,60 @@ class Task:
         """
         uid, pid = self.get_id().split('@') #pylint: disable-msg=W0612
         subt     = self.req.new_task(pid=pid, newtask=True)
-        self.add_subtask(subt.get_id())
+        #we use the inherited childrens
+        self.add_child(subt.get_id())
         return subt
-
-    def add_subtask(self, tid):
+        
+    def add_child(self, tid):
         """Add a subtask to this task
 
-        @param tid: the ID of the added task
+        @param child: the added task
         """
         self.can_be_deleted = False
-        #The if prevent an infinite loop
-        if tid not in self.children and tid not in self.parents and\
-                                                tid != self.get_id():
-            self.children.append(tid)
-            task = self.req.get_task(tid)
-            task.add_parent(self.get_id())
+        #the core of the method is in the TreeNode object
+        if TreeNode.add_child(self,tid):
             #now we set inherited attributes only if it's a new task
-            if task.can_be_deleted:
-                task.set_start_date(self.get_start_date())
+            child = self.req.get_task(tid)
+            if child.can_be_deleted:
+                child.set_start_date(self.get_start_date())
                 for t in self.get_tags():
-                    task.tag_added(t.get_name())
-
-    def remove_subtask(self, tid):
+                    child.tag_added(t.get_name())
+            return True
+        else:
+            return False
+            
+    def remove_child(self,tid):
         """Removed a subtask from the task.
 
         @param tid: the ID of the task to remove
         """
-        if tid in self.children:
-            self.children.remove(tid)
+        if TreeNode.remove_child(self,tid):
             task = self.req.get_task(tid)
             if task.can_be_deleted:
                 self.req.delete_task(tid)
-            else:
-                task.remove_parent(self.get_id())
             self.sync()
+            return True
+        else:
+            return False
 
-    def has_subtasks(self):
-        """Returns True if task has subtasks.
-        """
-        return len(self.children) != 0
-
-    def get_n_subtasks(self):
-        """Return the number of subtasks of a task.
-        """
-        return len(self.children)
-
+    #FIXME : remove this method
     def get_subtasks(self):
-        """Return the list of subtasks.
-        """
+#        print "Deprecation Warning : use get_children instead of get_subtasks"
         #XXX: is this useful?
         zelist = []
-        for i in self.children:
-            zelist.append(self.req.get_task(i))
+        for i in self.get_children():
+            t = self.req.get_task(i)
+            if t:
+                zelist.append(t)
         return zelist
         
     def get_self_and_all_subtasks(self, active_only=False, tasks=[]):
         tasks.append(self)
-        for i in self.get_subtasks():
-            if not active_only or i.status == self.STA_ACTIVE:
-                i.get_self_and_all_subtasks(active_only, tasks)
+        for tid in self.get_children():
+            i = self.req.get_task(tid)
+            if i:
+                if not active_only or i.status == self.STA_ACTIVE:
+                    i.get_self_and_all_subtasks(active_only, tasks)
         return tasks
 
     def get_subtask(self, tid):
@@ -389,69 +389,41 @@ class Task:
         """
         return self.req.get_task(tid)
 
-    def get_subtask_tids(self):
-        """Return the list of subtasks. Return a list of IDs.
-        """
-        return list(self.children)
-
-    def get_nth_subtask(self, index):
-        """Return the task ID stored at a given index.
-
-        @param index: the index of the task to return.
-        """
-        try:
-            return self.children[index]
-        except(IndexError):
-            raise ValueError("Index is not in task list")
-
-    def get_subtask_index(self, tid):
-        """Return the index of a given subtask.
-
-        @param tid: the tid of the task whose index must be returned.
-        """
-        return self.children.index(tid)
-
-    #add and remove parents are private
-    #Only the task itself can play with it's parent
-
     ### PARENTS ##############################################################
 
     #Take a tid object as parameter
-    def add_parent(self, tid):
-        #The if prevent a loop
-        if tid and tid not in self.children and tid not in self.parents:
-            self.parents.append(tid)
+    def add_parent(self, parent):
+        added = TreeNode.add_parent(self,parent)
+        if added:
+            #print "add_parent %s to %s" %(parent.get_id(),self.get_id())
             self.sync()
-            task = self.req.get_task(tid)
-            task.add_subtask(self.get_id())
-            task.sync()
+            parent.sync()
+            return True
+        else:
+            return False
 
     #Take a tid as parameter
     def remove_parent(self, tid):
-        if tid and tid in self.parents:
-            self.parents.remove(tid)
-            self.sync()
-            parent = self.req.get_task(tid)
-            if parent:
-                parent.remove_subtask(self.get_id())
-                parent.sync()
-
-    def get_parents(self):
-        return list(self.parents)
+        TreeNode.remove_parent(self,tid)
+        self.sync()
+        parent = self.req.get_task(tid)
+        if parent:
+            parent.sync()
 
     #Return true is the task has parent
     #If tag is provided, return True only
     #if the parent has this particular tag
     def has_parents(self, tag=None):
+        has_par = TreeNode.has_parent(self)
         #The "all tag" argument
-        if tag and len(self.parents)!=0:
+        if tag and has_par:
             a = 0
-            for tid in self.parents:
+            for tid in self.get_parents():
                 p = self.req.get_task(tid)
                 a += p.has_tags(tag)
             to_return = a
         else:
-            to_return = len(self.parents)!=0
+            to_return = has_par
         return to_return
 
     def set_attribute(self, att_name, att_value, namespace=""):
@@ -482,8 +454,9 @@ class Task:
             self.req.delete_task(task.get_id())
         for i in self.get_parents():
             task = self.req.get_task(i)
-            task.remove_subtask(self.get_id())
-        for tag in self.tags:
+            task.remove_child(self.get_id())
+        for tagname in self.tags:
+            self.req.get_tag(tagname)
             tag.remove_task(self.get_id())
         #then we remove effectively the task
         #self.req.delete_task(self.get_id())
@@ -506,7 +479,7 @@ class Task:
     def call_modified(self):
         self.req._task_modified(self.tid)
         #we also modify parents and children
-        for s in self.get_subtask_tids():
+        for s in self.get_children():
             self.req._task_modified(s)
         for p in self.get_parents():
             self.req._task_modified(p)
@@ -520,15 +493,14 @@ class Task:
 #
     def get_tags_name(self):
         #Return a copy of the list of tags. Not the original object.
-        l = []
-        for t in self.tags:
-            name = t.get_name().encode("UTF-8")
-            l.append(name)
-        return l
+        return list(self.tags)
 
     #return a copy of the list of tag objects
     def get_tags(self):
-        return list(self.tags)
+        l = []
+        for tname in self.tags:
+            l.append(self.req.get_tag(tname))
+        return l
         
     def rename_tag(self, old, new):
         eold = saxutils.escape(saxutils.unescape(old))
@@ -538,15 +510,19 @@ class Task:
         self.tag_added(new)
 
     def tag_added(self, tagname):
+        #print "tag %s added to task %s" %(tagname,self.get_id())
         "Add a tag. Does not add '@tag' to the contents. See insert_tag"
-        t = self.req.new_tag(tagname.encode("UTF-8"))
-        t.add_task(self.get_id())
+        t = tagname.encode("UTF-8")
+        tag = self.req.get_tag(t)
+        if not tag:
+            tag = self.req.new_tag(t)
+        tag.add_task(self.get_id())
         #Do not add the same tag twice
         if not t in self.tags:
             self.tags.append(t)
             for child in self.get_subtasks():
                 if child.can_be_deleted:
-                    child.add_tag(tagname)
+                    child.add_tag(t)
             return True
     
     def add_tag(self, tagname):
@@ -577,8 +553,8 @@ class Task:
     def remove_tag(self, tagname):
         t = self.req.get_tag(tagname)
         t.remove_task(self.get_id())
-        if t in self.tags:
-            self.tags.remove(t)
+        if tagname in self.tags:
+            self.tags.remove(tagname)
             for child in self.get_subtasks():
                 if child.can_be_deleted:
                     child.remove_tag(tagname)
@@ -596,7 +572,7 @@ class Task:
                )
      
 
-    #tag_list is a list of tags object
+    #tag_list is a list of tags names
     #return true if at least one of the list is in the task
     def has_tags(self, tag_list=None, notag_only=False):
         #We want to see if the task has no tags

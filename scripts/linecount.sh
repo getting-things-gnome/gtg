@@ -19,6 +19,7 @@ function py_countline {
 			c=$(($c+$cc))
 			p=$(($p+$l))
 			f=$(($f+1))
+			nc=$(($p-$c))
 		fi
 	done
 }
@@ -28,5 +29,5 @@ f=0
 p=0
 c=0
 recurse
-echo "$p lines of python if $f .py files ($d directories)"
+echo "$p lines of python ($nc without comments) in $f .py files ($d folders)"
 echo "$c lines have a comment (which is $(($c*100/$p))% of all lines)" 

@@ -35,7 +35,7 @@ def get_name():
 def get_description():
     return "Your tasks are saved in an XML file located in your HOME folder"
 
-#Return a dictionnary of parameters. Keys should be strings and
+#Return a dictionary of parameters. Keys should be strings and
 #are the name of the parameter.
 #Value are string with value : string, password, int, bool
 #and are an information about the type of the parameter
@@ -48,17 +48,19 @@ def get_parameters():
 def get_features():
     return {}
 
-#Types is one of : readwrite, readonly,import,export
+#Types is one of : readwrite, readonly, import, export
 def get_type():
     return "readwrite"
 
-#The parameters dictionnary should match the dictionnary returned in
+#The parameters dictionary should match the dictionary returned in
 #get_parameters. Anyway, the backend should care if one expected value is
-#None or do not exist in the dictionnary.
+#None or do not exist in the dictionary.
 #firstrun is only needed for the default backend. You can ignore it.
 class Backend:
 
     def __init__(self, parameters, firstrunxml=None):
+        self.tids = []
+        self.pid = 1
         if "filename" in parameters:
             zefile = parameters["filename"]
         #If zefile is None, we create a new file
@@ -73,36 +75,39 @@ class Backend:
         else:
             self.zefile = zefile
             self.filename = zefile
-        #Create the defaut tasks for the first run.
+        #Create the default tasks for the first run.
         #We write the XML object in a file
         if firstrunxml and not os.path.exists(zefile):
             #shutil.copy(firstrunfile,self.zefile)
             cleanxml.savexml(self.zefile, firstrunxml)
         self.doc, self.xmlproj = cleanxml.openxmlfile(self.zefile, "project")
 
-    #Return the list of the task ID available in this backend
-    def get_tasks_list(self):
-        #time.sleep(2)
+    #Once this function is launched, the backend can start pushing tasks to gtg
+    #parameters : 
+    #1) push_task_func, a function that takes a Task as parameter and push it
+    #   into GTG.
+    #2) task_factory_func, a function that takes a tid as parameter and returns
+    #   a Task object with the given pid. 
+    #
+    # starst_get_tasks() might not return or finish
+    def start_get_tasks(self,push_task_func,task_factory_func):
         tid_list = []
         for node in self.xmlproj.childNodes:
-            tid_list.append(node.getAttribute("id"))
-        return tid_list
-
-
-    #Fill the task "task_to_fill" with the information of the task TID
-    #Return True if successful, False otherwhise
-    def get_task(self, task_to_fill, tid):
-#        import time
-#        time.sleep(1)
-        for node in self.xmlproj.childNodes:
-            if node.getAttribute("id") == tid:
-                return taskxml.task_from_xml(task_to_fill, node)
-        return task_to_fill
+            #time.sleep(2)
+            tid = node.getAttribute("id")
+            if tid not in self.tids:
+                self.tids.append(tid)
+            task = task_factory_func(tid)
+            task = taskxml.task_from_xml(task,node)
+            push_task_func(task)
+        #print "#### finishing pushing tasks"
 
     #Save the task in the backend
     def set_task(self, task):
         #time.sleep(4)
         tid = task.get_id()
+        if tid not in self.tids:
+            self.tids.append(tid)
         existing = None
         #First, we find the existing task from the treenode
         for node in self.xmlproj.childNodes:
@@ -132,6 +137,8 @@ class Backend:
         for node in self.xmlproj.childNodes:
             if node.getAttribute("id") == tid:
                 self.xmlproj.removeChild(node)
+                if tid in self.tids:
+                    self.tids.remove(tid)
         cleanxml.savexml(self.zefile, self.doc)
 
     #Return an available ID for a new task so that a task with this ID
@@ -139,7 +146,14 @@ class Backend:
     #If None, then GTG will create a new ID by itself
     #The ID cannot contain the character "@"
     def new_task_id(self):
-        return None
+        k = 0
+        pid = self.pid
+        newid = "%s@%s" %(k, pid)
+        while str(newid) in self.tids:
+            k += 1
+            newid = "%s@%s" %(k, pid)
+        self.tids.append(newid)
+        return newid
 
     #Called when GTG quit or disconnect the backend
     #You might pass here.

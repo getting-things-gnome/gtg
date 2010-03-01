@@ -42,6 +42,8 @@
 #
 #==============================================================================
 
+"""This is the top-level exec script for running GTG"""
+
 #=== IMPORT ===================================================================
 from __future__ import with_statement
 
@@ -52,9 +54,8 @@ import logging
 
 #our own imports
 from GTG import _
-from GTG.taskbrowser.browser import TaskBrowser
+from GTG.viewmanager.manager import Manager
 from GTG.core.datastore import DataStore
-from GTG.core.dbuswrapper import DBusTaskWrapper
 from GTG.core import CoreConfig
 
 #=== OBJECTS ==================================================================
@@ -117,9 +118,9 @@ def main(options=None, args=None):
         
     # Launch task browser
     req = ds.get_requester()
-    tb = TaskBrowser(req, config, logger=logger)
-    DBusTaskWrapper(req, tb)
-    tb.main()
+    manager = Manager(req,config,logger=logger)
+    #main loop
+    manager.main()
 
     # Ideally we should load window geometry configuration from a config.
     # backend like gconf at some point, and restore the appearance of the

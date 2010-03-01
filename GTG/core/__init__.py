@@ -18,30 +18,25 @@
 # -----------------------------------------------------------------------------
 
 
-#This is the core package. It contains the core of GTG.
+"""
+The core functionality GTG.
 
-#Current files are :
+In order to not interact directly with the datastore, we provide
+"requesters".  The requester is only an interface and there can be as
+many requester as you want as long as they are all from the same
+datastore.  Requester also provides an interface for the tagstore
 
-#datastore.py
-#------------
-#datastore is the heart of GTG. It contains a list of "TagSource".
-#Each TagSource is a proxy between a backend and the datastore itself
-#
-#tagstore.py
-#-----------
-#Tagstore is to tag as datastore is to task. Of course, the tagstore is easier
-#The Tag object is also provided in this file.
-#
-#task.py
-#-------
-#task.py contains the Task. A task represent, guess what,a task. 
-#
-#requester.py
-#---------
-#In order to not interact directly with the datastore, we provide "requesters"
-#The requester is only an interface and there can be as many requester as 
-#you want as long as they are all from the same datastore.
-#Requester also provides an interface for the tagstore
+If you want to display only a subset of tasks, you can either:
+
+ - have access to the main FilteredTree (the one displayed in the main
+   window) and apply filters on it.  (You can create your own)
+
+ - get your own personal FilteredTree and apply on it the filters you
+   want without interfering with the main view. (This is how the closed
+   tasks pane is built currently)
+
+"""
+
 
 #=== IMPORT ====================================================================
 import os

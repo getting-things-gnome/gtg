@@ -37,7 +37,7 @@ def task_to_dict(task):
           "donedate": str(task.get_closed_date()),
           "tags": task.get_tags_name(),
           "text": task.get_text(),
-          "subtask": task.get_subtask_tids(),
+          "subtask": task.get_children(),
           }), signature="sv")
 
 
@@ -71,7 +71,7 @@ class DBusTaskWrapper(dbus.service.Object):
     @dbus.service.method(BUSNAME)
     def get_tasks(self):
         # Retrieve a list of task data dicts
-        return [self.get_task(id) for id in self.get_task_ids(u"Active")]
+        return [self.get_task(id) for id in self.get_task_ids()]
 
     @dbus.service.method(BUSNAME, in_signature="asasbb")
     def get_task_ids_filtered(self, tags, status, started_only, is_root):
@@ -109,16 +109,9 @@ class DBusTaskWrapper(dbus.service.Object):
     def new_task(self, status, title, duedate, startdate, donedate, tags,
                  text, subtasks):
         # Generate a new task object and return the task data as a dict
-        tags_objects = []
-        for t in tags:
-            #we have to create the tag objects if we don't have them
-            tag_object = self.req.get_tag(t)
-            if tag_object == None:
-                tag_object = self.req.new_tag(t)
-            tags_objects.append(tag_object)
-        nt = self.req.new_task(tags=tags_objects)
+        nt = self.req.new_task(tags=tags)
         for sub in subtasks:
-            nt.add_subtask(sub)
+            nt.add_child(sub)
         nt.set_status(status, donedate=dates.strtodate(donedate))
         nt.set_title(title)
         nt.set_due_date(dates.strtodate(duedate))
@@ -132,14 +125,14 @@ class DBusTaskWrapper(dbus.service.Object):
         task = self.req.get_task(tid)
         task.set_status(task_data["status"], donedate=task_data["donedate"])
         task.set_title(task_data["title"])
-        task.set_due_date(dates.strtodate(task_data["duedate"]))
-        task.set_start_date(dates.strtodate(task_data["startdate"]))
+        task.set_due_date(task_data["duedate"])
+        task.set_start_date(task_data["startdate"])
         task.set_text(task_data["text"])
 
         for tag in task_data["tags"]:
             task.add_tag(tag)
         for sub in task_data["subtask"]:
-            task.add_subtask(sub)
+            task.add_child(sub)
         return task_to_dict(task)
 
     @dbus.service.method(BUSNAME)

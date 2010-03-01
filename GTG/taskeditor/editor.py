@@ -141,8 +141,8 @@ class TaskEditor :
         
         self.task = task
         tags = task.get_tags()
-        self.textview.subtasks_callback(task.get_subtask_tids)
-        self.textview.removesubtask_callback(task.remove_subtask)
+        self.textview.subtasks_callback(task.get_children)
+        self.textview.removesubtask_callback(task.remove_child)
         self.textview.set_get_tagslist_callback(task.get_tags_name)
         self.textview.set_add_tag_callback(task.add_tag)
         self.textview.set_remove_tag_callback(task.remove_tag)
@@ -164,7 +164,7 @@ class TaskEditor :
                     self.textview.insert_text("%s, "%t.get_name())
                 self.textview.insert_text("\n")
             #If we don't have text, we still need to insert subtasks if any
-            subtasks = task.get_subtask_tids()
+            subtasks = task.get_children()
             if subtasks :
                 self.textview.insert_subtasks(subtasks)
         #We select the title if it's a new task
@@ -183,11 +183,6 @@ class TaskEditor :
                                        data_dir = DATA_DIR,
                                        builder = self.builder, 
                                        requester = self.req,
-                                       taskview = None, 
-                                       task_modelsort = None,
-                                       ctaskview = None, 
-                                       ctask_modelsort = None,
-                                       filter_cbs = None,
                                        tagpopup = None,
                                        tagview = None,
                                        task = task, 
@@ -369,11 +364,10 @@ class TaskEditor :
         menu = gtk.Menu()
         tag_count = 0
         for t in taglist :
-            tt = t.get_name()
             if not self.task.has_tags(tag_list=[t]) :
                 tag_count += 1
-                mi = gtk.MenuItem(label=tt, use_underline=False)
-                mi.connect("activate",self.inserttag,tt)
+                mi = gtk.MenuItem(label=t, use_underline=False)
+                mi.connect("activate",self.inserttag,t)
                 mi.show()
                 menu.append(mi)
         if tag_count > 0 :
@@ -548,7 +542,7 @@ class TaskEditor :
     
     def delete_task(self,widget) :
         if self.delete :
-            result = self.delete(widget,self.task.get_id())
+            result = self.delete(widget,[self.task.get_id()])
         #if the task was deleted, we close the window
         if result : self.window.destroy()
 
@@ -556,12 +550,12 @@ class TaskEditor :
     #Take the title as argument and return the subtask ID
     def new_subtask(self,title=None,tid=None) :
         if tid:
-            self.task.add_subtask(tid)
+            self.task.add_child(tid)
         elif title:
             subt = self.task.new_subtask()
             subt.set_title(title)
             tid = subt.get_id()
-            return tid
+        return tid
 
     # Create a new task
     def new_task(self, *args):
@@ -649,7 +643,8 @@ class TaskEditor :
         else:
             self.save()
             for i in self.task.get_subtasks():
-                i.set_to_keep()
+                if i:
+                    i.set_to_keep()
         self.closing(tid)
         
 ############# Private functions #################

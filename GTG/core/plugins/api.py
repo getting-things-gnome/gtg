@@ -40,11 +40,6 @@ class PluginAPI:
                  data_dir,
                  builder,
                  requester,
-                 taskview,
-                 ctask_modelsort,
-                 ctaskview,
-                 task_modelsort,
-                 filter_cbs,
                  tagpopup,
                  tagview,
                  browser,
@@ -60,15 +55,11 @@ class PluginAPI:
         @param data_dir: The data dir path.
         @param builder: The window's gtkBuilder object.
         @param requester: The requester.
-        @param taskview: The task view object.
-        @param filter_cbs: The filter callback list.
         @param tagpopup: The tag popoup menu of the tag view.
         @param tagview: The tag view object.
         @param task: The current task (Only works with the task editor).
         @param textview: The task editor's text view (Only works with the task editor).  
-        @param ctextview: The task editor's closed tasks text view (Only works with the task editor).  
-        @param task_modelsort: The browser's active task model.  
-        @param ctask_modelsort: The browser's closed task model.  
+        @param ctextview: The task editor's closed tasks text view (Only works with the task editor)
         """
         self.__window = window
         self.config = config
@@ -76,16 +67,8 @@ class PluginAPI:
         self.__builder = builder
         self.__requester = requester
         
-        self.taskview = taskview
-        self.task_modelsort = task_modelsort
-
-        self.ctaskview = taskview
-        self.ctask_modelsort = ctask_modelsort
-        
         self.__tagpopup = tagpopup
         self.tagview = tagview
-        
-        self.__filter_cbs = filter_cbs
         self.__quick_add_cbs = quick_add_cbs
         
         #those are added widgets dictionaries
@@ -115,10 +98,7 @@ class PluginAPI:
             return False
             
     def is_browser(self):
-        if self.taskview:
-            return True
-        else:
-            return False
+        print "is_browser method in plugin/api should be updated"
 
     def get_browser(self):
         return self.browser
@@ -130,7 +110,7 @@ class PluginAPI:
 
         @param item: The gtk.MenuItem that is going to be added.  
         """
-        widget = self.__builder.get_object('menu_plugin')
+        widget = self.__builder.get_object('plugin_mi')
         if widget:
             widget.show_all()
             widget.get_submenu().append(item)
@@ -145,7 +125,7 @@ class PluginAPI:
         fails.  
         """
         try:
-            wi = self.__builder.get_object('menu_plugin')
+            wi = self.__builder.get_object('plugin_mi')
             if wi:
                 menu = wi.get_submenu()
                 menu.remove(item)
@@ -290,14 +270,15 @@ class PluginAPI:
         """
         self.__requester.connect(action, func)
             
-    def change_task_tree_store(self, treestore):
-        """Changes the TreeStore in the task browser's task view. 
-        
-        @param treestore: The new gtk.TreeStore model. 
-        """
-        task_tview = self.__builder.get_object("task_tview")
-        if task_tview:
-            task_tview.set_model(treestore)
+#    #This is definitely not allowed anymore !!
+#    def change_task_tree_store(self, treestore):
+#        """Changes the TreeStore in the task browser's task view. 
+#        
+#        @param treestore: The new gtk.TreeStore model. 
+#        """
+#        task_tview = self.__builder.get_object("task_tview")
+#        if task_tview:
+#            task_tview.set_model(treestore)
     
     def set_parent_window(self, child):
         """Sets the plugin dialog as a child of it's parent window, 
@@ -308,49 +289,54 @@ class PluginAPI:
         """
         child.set_transient_for(self.__window) 
     
-    def get_taskview(self):
-        """Returns the task view object. 
-        
-        @return: The gtk.TreeView task view object.
-        """
-        return self.taskview
+#    # Not allowed anymore
+#    def get_taskview(self):
+#        """Returns the task view object. 
+#        
+#        @return: The gtk.TreeView task view object.
+#        """
+#        return self.taskview
 
-    def get_task_modelsort(self):
-        """Returns the current Active task browser view. 
-        
-        @return: The gtk.TreeModelSort task object for visible active tasks.
-        """
-        return self.task_modelsort
-    
-    def get_closed_taskview(self):
-        """Returns the closed task view object. 
-        
-        @return: The gtk.TreeView task view object.
-        """
-        return self.ctaskview
+##    # Not allowed anymore
+#    def get_task_modelsort(self):
+#        """Returns the current Active task browser view. 
+#        
+#        @return: The gtk.TreeModelSort task object for visible active tasks.
+#        """
+#        return self.task_modelsort
 
-    def get_ctask_modelsort(self):
-        """Returns the current Done task browser view. 
-        
-        @return: The gtk.TreeModelSort task object for visible closed tasks.
-        """
-        return self.ctask_modelsort
-    
+##    # Not allowed anymore
+#    def get_closed_taskview(self):
+#        """Returns the closed task view object. 
+#        
+#        @return: The gtk.TreeView task view object.
+#        """
+#        return self.ctaskview
+
+##    # Not allowed anymore
+#    def get_ctask_modelsort(self):
+#        """Returns the current Done task browser view. 
+#        
+#        @return: The gtk.TreeModelSort task object for visible closed tasks.
+#        """
+#        return self.ctask_modelsort
+
     def get_selected_task(self):
         """Returns the selected task in the task view.
         
         @return: A task. 
         """
+        print "get_selected_task in plugins/api should be updated"
         if self.is_editor():
             return self.task
-        elif self.is_browser():
-            selection = self.taskview.get_selection()
-            model, paths = selection.get_selected_rows()
-            iters = [model.get_iter(path) for path in paths]
-            if len(iters) > 0 and iters[0]:
-                return self.__requester.get_task(model.get_value(iters[0], 0))
-            else:
-                return None
+#        elif self.is_browser():
+#            selection = self.taskview.get_selection()
+#            model, paths = selection.get_selected_rows()
+#            iters = [model.get_iter(path) for path in paths]
+#            if len(iters) > 0 and iters[0]:
+#                return self.__requester.get_task(model.get_value(iters[0], 0))
+#            else:
+#                return None
         else:
             return None
         
@@ -366,7 +352,7 @@ class PluginAPI:
         
         @return: The about dialog.
         """
-        wi = self.__builder.get_object("aboutdialog1")
+        wi = self.__builder.get_object("about_dialog")
         if wi:
             return wi
         else:
@@ -570,22 +556,23 @@ class PluginAPI:
         """
         self.__requester.remove_tag_from_filter(tag)
       
-    def register_filter_cb(self, func):
-        """Registers a callback filter function with the callback filter. 
-        
-        @param func: The function that is going to be registered. 
-        
-        """
-        if func not in self.__filter_cbs:
-            self.__filter_cbs.append(func)
-    
-    def unregister_filter_cb(self, func):
-        """Unregisters a previously registered callback filter function. 
-        
-        @param func: The function that is going to be unregistered. 
-        """
-        if func in self.__filter_cbs:
-            self.__filter_cbs.remove(func)    
+#    #Those functions are not relevant anymore with the new requester
+#    def register_filter_cb(self, func):
+#        """Registers a callback filter function with the callback filter. 
+#        
+#        @param func: The function that is going to be registered. 
+#        
+#        """
+#        if func not in self.__filter_cbs:
+#            self.__filter_cbs.append(func)
+#    
+#    def unregister_filter_cb(self, func):
+#        """Unregisters a previously registered callback filter function. 
+#        
+#        @param func: The function that is going to be unregistered. 
+#        """
+#        if func in self.__filter_cbs:
+#            self.__filter_cbs.remove(func)    
 #=== Filtering methods ========================================================
 
     def register_quick_add_cb(self, func):

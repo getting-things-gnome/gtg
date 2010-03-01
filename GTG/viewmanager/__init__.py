@@ -17,15 +17,16 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-
 """
-Contains useful functions for use in any part of GTG.
+This is the UI manager. It loads the prefs and manages every window and UI in GTG.
+
+There should be no horizontal communication at all between views.
 """
 
-#Current files are :
+import os
 
-#cleanxml.py :
-# Contain function that are useful to handle XML stuff.
+from GTG import _
 
-
-
+class ViewConfig:
+    current_rep = os.path.dirname(os.path.abspath(__file__))
+    DELETE_GLADE_FILE  = os.path.join(current_rep, "deletion.glade")

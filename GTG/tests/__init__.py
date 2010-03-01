@@ -25,6 +25,7 @@ from GTG.tests import (
     test_backends,
     test_tagstore,
     test_taskviewserial,
+    test_tree,
     )
 
 
@@ -33,4 +34,5 @@ def test_suite():
         test_backends.test_suite(),
         test_tagstore.test_suite(),
         test_taskviewserial.test_suite(),
+	test_tree.test_suite(),
         ])

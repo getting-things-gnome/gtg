@@ -796,6 +796,9 @@ class TaskView(gtk.TextView):
     #Write the subtask then return the iterator at the end of the line
     def write_subtask(self,buff,line_nbr,anchor,level=1) :
         #disable the insert signal to avoid recursion
+        #firstly, we check that the subtask exists !
+        if not self.req.has_task(anchor):
+            return False
         reconnect_insert = False
         reconnect_modified = False
         if self.insert_sigid :
