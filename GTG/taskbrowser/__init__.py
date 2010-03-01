@@ -19,6 +19,8 @@
 
 
 """
+The GTK frontend for browsing collections of tasks.
+
 This is the gnome_frontend package. It's a GTK interface that wants to be
 simple, HIG compliant and well integrated with Gnome.
 """
