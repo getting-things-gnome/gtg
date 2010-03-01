@@ -17,6 +17,10 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
+"""
+task.py contains the Task class which represents (guess what) a task
+"""
+
 import xml.dom.minidom
 import uuid
 import xml.sax.saxutils as saxutils

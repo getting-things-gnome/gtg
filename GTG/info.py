@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-#various information about GTG. Should be updated for every release.
+"""Various information about GTG. Should be updated for every release."""
 
 URL             = "http://gtg.fritalk.com"
 EMAIL           = "gtg-contributors@lists.launchpad.net"

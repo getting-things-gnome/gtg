@@ -17,40 +17,53 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 #
-#   FilteredTree
-#   ############
-# The problem we have is that, sometimes, we don't want to display all tasks.
-# We want tasks to be filtered (workview, tags, …)
-#
-# The expected approach would be to put a gtk.TreeModelFilter above our
-# TaskTree. Unfortunatly, this doesn't work because TreeModelFilter hides
-# all children of hidden nodes. (unlike what we want)
-#
-# The solution we have found is to have a fake Tree between Tree and TaskTree
-# This fake tree is called FilteredTree and will map path and nodes methods 
-# to a result corresponding to the filtered tree.
-#
-# Don't forget that the node are not aware that they are in a filtered tree
-# Use the FilteredTree methods, not directly the nodes one.
-# If you believe a function would be useful in a filtered tree, don't 
-# hesitate to make a proposition.
-#
-# To be more efficient, a quick way to optimize the FilteredTree is to cache
-# all answers in a dictionnary so we don't have to compute the answer 
-# all the time. This is not done yet.
-#
-# Warning : this is very fragile. Calls to any GTK registered view should be
-# perfecly in sync with changes in the underlying model.
-# We definitely should develop some unit tests for this class.
+"""
+FilteredTree provides a filtered view (subset) of tasks
 
-# Structure of the source :
-#
-# 1) Standard tree functions mapping (get_node, get_all_nodes, get_all_keys)
-# 2) Receiving signal functions ( task-added,task-modified,task-deleted)
-# 3) Treemodel helper functions. To make it easy to build a treemodel on top.
-# 4) Filtering : is_displayed() and refilter()
-# 5) Changing the filters (not for the main FilteredTree)
-# 6) Private helpers.
+FilteredTree
+============
+The problem we have is that, sometimes, we don't want to display all tasks.
+We want tasks to be filtered (workview, tags, …)
+
+The expected approach would be to put a gtk.TreeModelFilter above our
+TaskTree. Unfortunatly, this doesn't work because TreeModelFilter hides
+all children of hidden nodes (not what we want!)
+
+The solution we have found is to insert a fake tree between Tree and
+TaskTree.  This fake tree is called FilteredTree and will map path and
+node methods to a result corresponding to the filtered tree.
+
+Note that the nodes are not aware that they are in a filtered tree.
+Use the FilteredTree methods, not the node methods directly.
+If you believe a function would be useful in a filtered tree, don't 
+hesitate to make a proposal.
+
+To be more efficient, a quick way to optimize the FilteredTree is to cache
+all answers in a dictionary so we don't have to compute the answer 
+all the time. This is not done yet.
+
+B{Warning}: this is very fragile. Calls to any GTK registered view should be
+perfecly in sync with changes in the underlying model.
+We definitely should develop some unit tests for this class.
+
+Structure of the source:
+
+ 1. Standard tree functions mapping (get_node, get_all_nodes, get_all_keys)
+ 2. Receiving signal functions ( task-added,task-modified,task-deleted)
+ 3. Treemodel helper functions. To make it easy to build a treemodel on top.
+ 4. Filtering : is_displayed() and refilter()
+ 5. Changing the filters (not for the main FilteredTree)
+ 6. Private helpers.
+
+There's one main FilteredTree that you can get through the requester. This
+main FilteredTree does use the filters applied throught the requester. This
+allow plugin writers to easily get the current displayed tree (main View).
+
+For custom views, the plugin writers are able to get their own
+FilteredTree and apply on it the filters they want. (this is not finished
+yet but in good shape).
+
+"""
 
 import gobject
 
@@ -66,6 +79,13 @@ class FilteredTree(gobject.GObject):
                                             gobject.TYPE_NONE, (str, )),}
 
     def __init__(self,req,tree,maintree=False):
+        """
+        Construct a FilteredTree object on top of an existing task tree.
+        @param req: The requestor object
+        @param tree: The tree to filter from
+        @param maintree: Whether this tree is the main tree.  The requester
+        must be used to change filters against the main tree.
+        """
         gobject.GObject.__init__(self)
         self.is_main = maintree
         self.applied_filters = []
@@ -93,21 +113,38 @@ class FilteredTree(gobject.GObject):
 
     #### Standard tree functions
     def get_node(self,id):
+        """
+        Retrieves the given node
+        @param id: The tid of the task node
+        @return: Node from the underlying tree
+        """
         return self.tree.get_node(id)
     
     def get_root(self):
+        """
+        returns the root node
+        """
         return self.tree.get_root()
         
     def get_all_keys(self):
+        """
+        returns list of all displayed node keys
+        """
         return list(self.displayed_nodes)
         
     def get_all_nodes(self):
+        """
+        returns list of all nodes
+        """
         k = []
         for n in self.get_all_nodes():
             k.append(self.get_node(n))
         return k
         
     def get_n_nodes(self):
+        """
+        returns quantity of displayed nodes in this tree
+        """
         return len(self.displayed_nodes)
         
     ### signals functions
@@ -144,6 +181,9 @@ class FilteredTree(gobject.GObject):
     #The path received is only for tasks that are displayed
     #We have to find the good node.
     def get_node_for_path(self, path):
+        """
+        Returns node for the given path.
+        """
         #We should convert the path to the base.path
         if str(path) == '()':
             print "WE SHOULD RETURN ROOT NODE"
@@ -171,6 +211,9 @@ class FilteredTree(gobject.GObject):
             return None
 
     def get_path_for_node(self, node):
+        """
+        Return a path for a given node
+        """
         #For that node, we should convert the base_path to path
         if not node or not self.is_displayed(node.get_id()):
             return None
@@ -204,6 +247,9 @@ class FilteredTree(gobject.GObject):
 
     #Done
     def next_node(self, node):
+        """
+        Returns the next sibling node, or None if there are no other siblings
+        """
         #print "on_iter_next for node %s" %node
         #We should take the next good node, not the next base node
         if node:
@@ -235,6 +281,12 @@ class FilteredTree(gobject.GObject):
 
     #Done
     def node_children(self, parent):
+        """
+        Returns the first child node of the given parent, or None
+        if the parent has no children.
+        @param parent: The parent node or None to retrieve the children
+        of the virtual root.
+        """
         #print "on_iter_children for parent %s" %parent.get_id()
         #here, we should return only good childrens
         if parent:
@@ -249,6 +301,9 @@ class FilteredTree(gobject.GObject):
 
     #Done
     def node_has_child(self, node):
+        """
+        Returns true if the given node has any children
+        """
         #print "on_iter_has_child for node %s" %node
         #we should say "has_good_child"
         if node and self.node_n_children(node)>0:
@@ -260,6 +315,9 @@ class FilteredTree(gobject.GObject):
 
     #Done
     def node_n_children(self, node):
+        """
+        Returns number of children for the given node
+        """
         #we should return the number of "good" children
         if not node:
             toreturn = len(self.virtual_root)
@@ -274,6 +332,11 @@ class FilteredTree(gobject.GObject):
 
     #Done
     def node_nth_child(self, node, n):
+        """
+        Retrieves the nth child of the node.
+        @param node: The parent node, or None to look at children of the
+        virtual_root.
+        """
         #we return the nth good children !
         if not node:
             if len(self.virtual_root) > n:
@@ -297,6 +360,11 @@ class FilteredTree(gobject.GObject):
 
     #Done
     def node_parent(self, node):
+        """
+        Returns parent of the given node, or None if there is no 
+        parent (such as if the node is a child of the virtual root),
+        or if the parent is not displayable.
+        """
         #return None if we are at a Virtual root
         tid = node.get_id()
         if node and tid in self.virtual_root:
@@ -316,18 +384,22 @@ class FilteredTree(gobject.GObject):
 
     #### Filtering methods #########
     
-    # This is a public method that return True if the task is
-    # currently displayed in the tree
     def is_displayed(self,tid):
+        """
+        This is a public method that return True if the task is
+        currently displayed in the tree
+        """
         if tid:
             return tid in self.displayed_nodes
         else:
             toreturn = False
         return toreturn
     
-    # This is a private method that return True if the task *should*
-    # be displayed in the tree, regardless of its current status
     def __is_displayed(self,tid):
+        """
+        This is a private method that return True if the task *should*
+        be displayed in the tree, regardless of its current status
+        """
         if tid:
             result = True
             for f in self.applied_filters:
@@ -338,9 +410,11 @@ class FilteredTree(gobject.GObject):
         else:
             return False
         
-    # This rebuild the tree from scratch. It should be called only when 
-    # The filter is changed. (only filters_bank should call it.
     def refilter(self):
+        """
+        rebuilds the tree from scratch. It should be called only when 
+        the filter is changed (i.e. only filters_bank should call it).
+        """
         self.update_count = 0
         self.add_count = 0
         self.remove_count = 0
@@ -376,6 +450,12 @@ class FilteredTree(gobject.GObject):
 
     ####### Change filters #################
     def apply_filter(self,filter_name,parameters=None,imtherequester=False):
+        """
+        Applies a new filter to the tree.  Can't be called on the main tree.
+        @param filter_name: The name of an already registered filter to apply
+        @param parameters: Optional parameters to pass to the filter
+        @param imtherequester: If true enables adding filters to the main tree
+        """
         if self.is_main and not imtherequester:
             print "Error : use the requester to apply a filter to the main tree"
             print "We don't do that automatically on purpose"
@@ -391,6 +471,11 @@ class FilteredTree(gobject.GObject):
         return False
     
     def unapply_filter(self,filter_name,imtherequester=False):
+        """
+        Removes a filter from the tree.  Can't be called on the main tree.
+        @param filter_name: The name of an already added filter to remove
+        @param imtherequester: If true enables removing filters from the main tree
+        """
         if self.is_main and not imtherequester:
             print "Error : use the requester to remove a filter to the main tree"
             print "We don't do that automatically on purpose"
@@ -401,6 +486,11 @@ class FilteredTree(gobject.GObject):
         return False
 
     def reset_filters(self,imtherequester=False):
+        """
+        Clears all filters currently set on the tree.  Can't be called on 
+        the main tree.
+        @param imtherequester: If true enables clearing filters from the main tree
+        """
         if self.is_main and not imtherequester:
             print "Error : use the requester to remove a filter to the main tree"
             print "We don't do that automatically on purpose"
@@ -409,6 +499,11 @@ class FilteredTree(gobject.GObject):
             self.refilter()
 
     def reset_tag_filters(self,refilter=True,imtherequester=False):
+        """
+        Clears all filters currently set on the tree.  Can't be called on 
+        the main tree.
+        @param imtherequester: If true enables clearing filters from the main tree
+        """
         if self.is_main and not imtherequester:
             print "Error : use the requester to remove a filter to the main tree"
             print "We don't do that automatically on purpose"

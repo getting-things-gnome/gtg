@@ -17,11 +17,14 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
+"""
+A nice general purpose interface for the datastore and tagstore
+"""
+
 import gobject
 
 from GTG.core.filteredtree import FilteredTree
 from GTG.core.filters_bank import FiltersBank
-
 
 class Requester(gobject.GObject):
     """A view on a GTG datastore.

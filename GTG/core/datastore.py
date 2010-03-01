@@ -17,6 +17,10 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
+"""
+datastore contains a list of "TagSource", which are proxies between a backend and the datastore itself
+"""
+
 import threading
 import gobject
 import time

@@ -17,8 +17,12 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-#The tagstore is where the tag objects are handled. See the end of the file for
-#the tag object implementation
+"""
+tagstore is where the tag objects are handled.  Also defines the Tag object.
+
+Tagstore is to tag as datastore is to task. Of course, the tagstore is
+easier.  See the end of this file for the Tag object implementation.
+"""
 
 import os
 import xml.sax.saxutils as saxutils

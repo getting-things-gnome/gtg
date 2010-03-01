@@ -17,8 +17,12 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-#This is the gnome_frontend package. It's a GTK interface that want to be
-#simple, HIG compliant and well integrated with Gnome.
+"""
+This is the UI manager. It loads the prefs and manages every window and UI in GTG.
+
+There should be no horizontal communication at all between views.
+"""
+
 import os
 
 from GTG import _

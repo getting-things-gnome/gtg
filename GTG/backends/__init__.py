@@ -18,10 +18,11 @@
 # -----------------------------------------------------------------------------
 
 
-#This is the backends package.
-#Backends are a way to store permanently a project on a medium
-# (like on the hard disk or on the internet)
-#and to read projects from this medium
+"""
+Backends are a way to store permanently a project on a medium
+(like on the hard disk or on the internet)
+and to read projects from this medium
+"""
 #
 #Current backends are :
 #

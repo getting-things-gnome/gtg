@@ -23,13 +23,12 @@ pep8:
 # Build API documentation.
 apidocs:
 	pydoctor --add-package GTG --make-html --html-output=doc/api \
-		--project-name=GTG --project-url=http://gtg.fritalk.com/ \
-		-q -q --verbose-about=epydoc2stan2 --verbose-about=epydoc2stan2
+		--project-name=GTG --project-url=http://gtg.fritalk.com/
 
 edit-apidocs:
 	pydoctor --add-package GTG --make-html --html-output=doc/api \
 		--project-name=GTG --project-url=http://gtg.fritalk.com/ \
-		-q -q --verbose-about=epydoc2stan2 --verbose-about=epydoc2stan2 \
+	        --verbose-about=epydoc2stan2 --verbose-about=epydoc2stan2 \
 		--verbose-about=server --verbose-about=server --local-only \
 		--server --edit
 
