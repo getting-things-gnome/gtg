@@ -274,14 +274,13 @@ class TreeNode():
     def get_parents(self):
         return list(self.parents)
 
-    def add_parent(self, par):
+    def add_parent(self, parent_id):
 #        root = self.tree.get_root()
 #        print "removing root node has parent"
 #        self.tree.break_relationship(root.get_id(),self.get_id())
-        id = par.get_id()
-        if id not in self.parents:
-            self.parents.append(id)
-            return self.new_relationship(id,self.get_id())
+        if parent_id not in self.parents:
+            self.parents.append(parent_id)
+            return self.new_relationship(parent_id, self.get_id())
         else:
             return False
     
