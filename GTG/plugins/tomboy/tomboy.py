@@ -185,7 +185,7 @@ Please install it or disable the Tomboy/Gnote plugin in GTG"))
         try:
             obj = bus.get_object("org.gnome.Tomboy",
                                "/org/gnome/Tomboy/RemoteControl")
-        except dbus.DBusException as exception:
+        except dbus.DBusException, exception:
             if not hasattr(self, "disable_flag"):
                 dialog = gtk.MessageDialog(parent = \
                      self.plugin_api.get_window(),
