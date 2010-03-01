@@ -46,12 +46,13 @@ We definitely should develop some unit tests for this class.
 
 Structure of the source :
 
-1) Standard tree functions mapping (get_node, get_all_nodes, get_all_keys)
-2) Receiving signal functions ( task-added,task-modified,task-deleted)
-3) Treemodel helper functions. To make it easy to build a treemodel on top.
-4) Filtering : is_displayed() and refilter()
-5) Changing the filters (not for the main FilteredTree)
-6) Private helpers.
+ 1. Standard tree functions mapping (get_node, get_all_nodes, get_all_keys)
+ 2. Receiving signal functions ( task-added,task-modified,task-deleted)
+ 3. Treemodel helper functions. To make it easy to build a treemodel on top.
+ 4. Filtering : is_displayed() and refilter()
+ 5. Changing the filters (not for the main FilteredTree)
+ 6. Private helpers.
+
 """
 
 import gobject
