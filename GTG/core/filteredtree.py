@@ -471,6 +471,11 @@ class FilteredTree(gobject.GObject):
         return False
     
     def unapply_filter(self,filter_name,imtherequester=False):
+        """
+        Removes a filter from the tree.  Can't be called on the main tree.
+        @param filter_name: The name of an already added filter to remove
+        @param imtherequester: If true enables removing filters from the main tree
+        """
         if self.is_main and not imtherequester:
             print "Error : use the requester to remove a filter to the main tree"
             print "We don't do that automatically on purpose"
@@ -481,6 +486,11 @@ class FilteredTree(gobject.GObject):
         return False
 
     def reset_filters(self,imtherequester=False):
+        """
+        Clears all filters currently set on the tree.  Can't be called on 
+        the main tree.
+        @param imtherequester: If true enables clearing filters from the main tree
+        """
         if self.is_main and not imtherequester:
             print "Error : use the requester to remove a filter to the main tree"
             print "We don't do that automatically on purpose"
@@ -489,6 +499,11 @@ class FilteredTree(gobject.GObject):
             self.refilter()
 
     def reset_tag_filters(self,refilter=True,imtherequester=False):
+        """
+        Clears all filters currently set on the tree.  Can't be called on 
+        the main tree.
+        @param imtherequester: If true enables clearing filters from the main tree
+        """
         if self.is_main and not imtherequester:
             print "Error : use the requester to remove a filter to the main tree"
             print "We don't do that automatically on purpose"
