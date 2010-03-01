@@ -18,7 +18,9 @@
 # -----------------------------------------------------------------------------
 
 """
-This is the UI manager. It will manage every window and UI in GTG.
+This is the UI manager. It loads the prefs and manages every window and UI in GTG.
+
+There should be no horizontal communication at all between views.
 """
 
 import os
