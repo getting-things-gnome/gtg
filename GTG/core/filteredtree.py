@@ -524,7 +524,7 @@ class FilteredTree(gobject.GObject):
         is_root = True
         if n.has_parent():
             for par in n.get_parents():
-                if self.__is_displayed(par.get_id()):
+                if self.__is_displayed(par):
                     is_root = False
         return is_root
     
