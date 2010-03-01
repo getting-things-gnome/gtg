@@ -135,7 +135,8 @@ We use the docstring conventions outlined in PEP 8
 markup. Information on epytext markup can be found at
 <http://epydoc.sourceforge.net/epytext.html>.
 
-You can generate the API docs by running::
+You can generate the API docs by installing pydoctor
+(``python-pydoctor`` in debian/ubuntu) and then running::
 
   make apidocs
 
