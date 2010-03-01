@@ -19,7 +19,9 @@
 # -----------------------------------------------------------------------------
 
 
-# This is the UI manager. It will manage every GTG window and UI.
+"""
+Manager loads the prefs and launches the gtk main loop
+"""
 import gtk
 import gobject
 
