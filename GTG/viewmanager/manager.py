@@ -157,19 +157,20 @@ class Manager():
         return tv
 
     def close_task(self, tid):
-        # When an editor is closed, it should deregister itself.
+        # When an editor is closed, it should de-register itself.
         if tid in self.opened_task:
-            del self.opened_task[tid]
+            #the following line has the side effect of removing the 
+            # tid key in the opened_task dictionary.
+            self.opened_task[tid].window.destroy()
         else:
             print "the %s editor was already unregistered" %tid
             
     def refresh_task(self,tid):
-        if self.opened_task.has_key(tid):
+        if tid in self.opened_task:
             self.opened_task[tid].refresh_editor(refreshtext=True)
             
     def delete_tasks(self, tids):
         if self.delete_dialog.delete_tasks(tids):
-            #FIXME: the editor should catch the close signal to close himself
             for t in tids:
                 self.close_task(t)
             

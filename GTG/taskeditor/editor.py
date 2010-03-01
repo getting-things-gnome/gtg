@@ -542,10 +542,8 @@ class TaskEditor :
     
     def delete_task(self, widget) :
         if self.delete :
-            result = self.delete([self.task.get_id()])
-        #if the task was deleted, we close the window
-        if result : self.window.destroy()
-
+            #this triggers the closing of the window in the view manager
+            self.delete([self.task.get_id()])
     
     #Take the title as argument and return the subtask ID
     def new_subtask(self,title=None,tid=None) :
