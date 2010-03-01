@@ -17,6 +17,11 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
+"""
+datastore is the heart of GTG. It contains a list of "TagSource".
+Each TagSource is a proxy between a backend and the datastore itself
+"""
+
 import threading
 import gobject
 import time
