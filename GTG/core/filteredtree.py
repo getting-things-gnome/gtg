@@ -395,7 +395,7 @@ class FilteredTree(gobject.GObject):
             toreturn = False
         return toreturn
     
-    def __is_displayed(self,tid):
+    def __is_displayed(self, tid):
         """
         This is a private method that return True if the task *should*
         be displayed in the tree, regardless of its current status
@@ -524,7 +524,7 @@ class FilteredTree(gobject.GObject):
         is_root = True
         if n.has_parent():
             for par in n.get_parents():
-                if self.__is_displayed(par):
+                if self.__is_displayed(par.get_id()):
                     is_root = False
         return is_root
     
