@@ -48,16 +48,14 @@ except: # pylint: disable-msg=W0702
 date_separator = "-"
 
 class TaskEditor :
-    #delete_callback is the function called on deletion
-    #close_callback is the function called on close
-    #opentask_callback is the function to open a new editor
-    #_callback is called when title changes
+    #req is the requester
+    #vmanager is the view manager
     #taskconfig is a ConfigObj dic to save infos about tasks
     #thisisnew is True when a new task is created and opened
-    def __init__(self, requester, task, plugins,
-                delete_callback=None, close_callback=None,opentask_callback=None, \
+    def __init__(self, requester, vmanager, task, plugins,
                 taskconfig=None,plugin_apis=None,thisisnew=False,clipboard=None) :
         self.req = requester
+        self.vmanager = vmanager
         self.config = taskconfig
         self.p_apis = plugin_apis
         self.time = None
@@ -99,11 +97,10 @@ class TaskEditor :
         textview = self.builder.get_object("textview")
         scrolled = self.builder.get_object("scrolledtask")
         scrolled.remove(textview)
-        self.open_task  = opentask_callback
         self.textview   = TaskView(self.req,self.clipboard)
         self.textview.show()
         self.textview.set_subtask_callback(self.new_subtask)
-        self.textview.open_task_callback(self.open_task)
+        self.textview.open_task_callback(self.vmanager.open_task)
         self.textview.set_left_margin(7)
         self.textview.set_right_margin(5)
         scrolled.add(self.textview)
@@ -137,8 +134,6 @@ class TaskEditor :
         self.textview.set_add_tag_callback(task.add_tag)
         self.textview.set_remove_tag_callback(task.remove_tag)
         self.textview.save_task_callback(self.light_save)
-        self.delete  = delete_callback
-        self.closing = close_callback
 
         texte = self.task.get_text()
         title = self.task.get_title()
@@ -524,9 +519,8 @@ class TaskEditor :
             self.close(None)
     
     def delete_task(self, widget) :
-        if self.delete :
-            #this triggers the closing of the window in the view manager
-            self.delete([self.task.get_id()])
+        #this triggers the closing of the window in the view manager
+        self.vmanager.ask_delete_tasks([self.task.get_id()])
     
     #Take the title as argument and return the subtask ID
     def new_subtask(self,title=None,tid=None) :
@@ -542,7 +536,7 @@ class TaskEditor :
     def new_task(self, *args):
         task = self.req.new_task(tags=None, newtask=True)
         task_id = task.get_id()
-        self.open_task(task_id)
+        self.vmanager.open_task(task_id)
         
     def insert_subtask(self,widget) : #pylint: disable-msg=W0613
         self.textview.insert_newtask()
@@ -626,7 +620,7 @@ class TaskEditor :
             for i in self.task.get_subtasks():
                 if i:
                     i.set_to_keep()
-        self.closing(tid)
+        self.vmanager.close_task(tid)
         
 ############# Private functions #################
         

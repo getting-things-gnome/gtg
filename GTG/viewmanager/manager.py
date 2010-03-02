@@ -150,8 +150,7 @@ class Manager():
             tv.present()
         elif t:
             tv = TaskEditor(
-                self.req, t, self.plugins, \
-                self.ask_delete_tasks, self.close_task, self.open_task, \
+                self.req, self, t, self.plugins, \
                 taskconfig=self.task_config, \
                 plugin_apis=self.p_apis,thisisnew=thisisnew,\
                 clipboard = self.clipboard)
