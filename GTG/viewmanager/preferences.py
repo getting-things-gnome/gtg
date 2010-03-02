@@ -25,6 +25,7 @@ import shutil
 from xdg.BaseDirectory import xdg_config_home
 
 from GTG.core.plugins import GnomeConfig
+from GTG.viewmanager import ViewConfig
 
 
 __all__ = [
@@ -97,8 +98,10 @@ class PreferencesDialog:
     __AUTOSTART_DIRECTORY = os.path.join(xdg_config_home, "autostart")
     __AUTOSTART_FILE = "gtg.desktop"
 
-    def __init__(self, taskbrowser):
+    def __init__(self, pengine, p_apis):
         """Constructor."""
+        self.builder = gtk.Builder() 
+        self.builder.add_from_file(ViewConfig.PREFERENCES_GLADE_FILE)
         # store references to some objects
         widgets = {
           'dialog': 'PreferencesDialog',
@@ -111,14 +114,19 @@ class PreferencesDialog:
            'pref_autostart': 'pref_autostart'
           }
         for attr, widget in widgets.iteritems():
-            setattr(self, attr, taskbrowser.builder.get_object(widget))
+            setattr(self, attr, self.builder.get_object(widget))
         # keep a reference to the parent task browser
-        self.tb = taskbrowser
+        #FIXME: this is not needed and should be removed
+#        self.tb = taskbrowser
+        self.pengine = pengine
+        self.p_apis = p_apis
         # initialize tree models
         self._init_backend_tree()
         # this can't happen yet, due to the order of things in
         #  TaskBrowser.__init__(). Happens in activate() instead.
         # self._init_plugin_tree()
+        pref_signals_dic = self.get_signals_dict()
+        self.builder.connect_signals(pref_signals_dic)
 
     def _init_backend_tree(self):
         """Initialize the BackendTree gtk.TreeView."""
@@ -144,9 +152,9 @@ class PreferencesDialog:
               'gboolean',)
         self.plugin_store.clear()
         # refresh the status of all plugins
-        self.tb.pengine.recheck_plugin_errors(True)
+        self.pengine.recheck_plugin_errors(True)
         # repopulate the store
-        for name, p in self.tb.pengine.plugins.iteritems():
+        for name, p in self.pengine.plugins.iteritems():
             self.plugin_store.append([name, p.enabled, p.full_name,
               p.description, not p.error,]) # activateable if there is no error
 
@@ -200,8 +208,8 @@ class PreferencesDialog:
     def get_signals_dict(self):
         """A dictionary of signals and functions to be connected."""
         SIGNAL_CONNECTIONS_DIC = {
-          'on_preferences_activate':
-            self.activate,
+#          'on_preferences_activate':
+#            self.activate,
           # buttons in the dialog itself
           'on_prefs_close':
             self.on_close,
@@ -234,7 +242,7 @@ class PreferencesDialog:
           }
         return SIGNAL_CONNECTIONS_DIC
 
-    def activate(self, widget):
+    def activate(self, widget=None):
         """Activate the preferences dialog."""
         if len(self.plugin_tree.get_columns()) == 0:
             # late setup of PluginTree
@@ -261,7 +269,7 @@ class PreferencesDialog:
         if iter == None:
             return
         plugin_id = self.plugin_store.get_value(iter, PLUGINS_COL_ID)
-        p = self.tb.pengine.plugins[plugin_id]
+        p = self.pengine.plugins[plugin_id]
         pad = self.plugin_about_dialog
         pad.set_name(p.full_name)
         pad.set_version(p.version)
@@ -286,8 +294,8 @@ class PreferencesDialog:
         #pcd = self.plugin_config_dialog
         #pcd.show_all()
         # ...for now, use existing code.
-        self.tb.pengine.plugins[plugin_id].instance.configure_dialog(
-          self.tb.p_apis, self.dialog)
+        self.pengine.plugins[plugin_id].instance.configure_dialog(
+          self.p_apis, self.dialog)
 
     def on_plugin_config_close(self, widget):
         """Close the PluginConfigDialog."""
@@ -297,18 +305,18 @@ class PreferencesDialog:
         (model, iter) = plugin_tree.get_selection().get_selected()
         if iter is not None:
             plugin_id = model.get_value(iter, PLUGINS_COL_ID)
-            self._update_plugin_configure(self.tb.pengine.plugins[plugin_id])
+            self._update_plugin_configure(self.pengine.plugins[plugin_id])
 
     def on_plugin_toggle(self, widget, path):
         """Toggle a plugin enabled/disabled."""
         iter = self.plugin_store.get_iter(path)
         plugin_id = self.plugin_store.get_value(iter, PLUGINS_COL_ID)
-        p = self.tb.pengine.plugins[plugin_id]
+        p = self.pengine.plugins[plugin_id]
         p.enabled = not self.plugin_store.get_value(iter, PLUGINS_COL_ENABLED)
         if p.enabled:
-            self.tb.pengine.activate_plugins(self.tb.p_apis, [p])
+            self.pengine.activate_plugins(self.p_apis, [p])
         else:
-            self.tb.pengine.deactivate_plugins(self.tb.p_apis, [p])
+            self.pengine.deactivate_plugins(self.p_apis, [p])
         self.plugin_store.set_value(iter, PLUGINS_COL_ENABLED, p.enabled)
         self._update_plugin_configure(p)
     

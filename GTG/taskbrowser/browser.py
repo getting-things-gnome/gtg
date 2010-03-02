@@ -42,7 +42,7 @@ from GTG.core.task                    import Task
 from GTG.core.tagstore                import Tag
 from GTG.taskbrowser                  import GnomeConfig
 from GTG.taskbrowser                  import tasktree
-from GTG.taskbrowser.preferences      import PreferencesDialog
+#from GTG.taskbrowser.preferences      import PreferencesDialog
 from GTG.taskbrowser.tasktree         import TaskTreeModel,\
                                              ActiveTaskTreeView,\
                                              ClosedTaskTreeView
@@ -79,7 +79,7 @@ class TaskBrowser:
     """ The UI for browsing open and closed tasks, and listing tags in a tree """
 
     def __init__(self, requester, config, opentask=None,closetask=None,\
-                  deletetasks=None, quit=None):
+                  deletetasks=None, preferences=None, quit=None):
         # Object prime variables
         self.priv   = {}
         self.req    = requester
@@ -89,6 +89,7 @@ class TaskBrowser:
         self.deletion_cllbck = deletetasks
         self.quit = quit
         self.tag_active = False
+        self.open_preferences = preferences
         
         #treeviews handlers
         self.tags_tv = None
@@ -126,7 +127,7 @@ class TaskBrowser:
         #(because we might want to call the preferences somewhere else,
         # like from an applet)
         # Initialize "Preferences" dialog
-        self.preferences = PreferencesDialog(self)
+#        self.preferences = PreferencesDialog(self)
 
         #Create our dictionary and connect it
         self._init_signal_connections()
@@ -320,9 +321,11 @@ class TaskBrowser:
                 self.on_about_close,
             "on_nonworkviewtag_toggled":
                 self.on_nonworkviewtag_toggled,
+            "on_preferences_activate":
+                self.open_preferences,
         }
 
-        SIGNAL_CONNECTIONS_DIC.update(self.preferences.get_signals_dict())
+#        SIGNAL_CONNECTIONS_DIC.update(self.preferences.get_signals_dict())
         self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
 
         if (self.window):

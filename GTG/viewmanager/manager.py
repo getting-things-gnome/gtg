@@ -29,6 +29,7 @@ import GTG
 from GTG.viewmanager.delete_dialog import DeletionUI
 from GTG.taskbrowser.browser import TaskBrowser
 from GTG.taskeditor.editor            import TaskEditor
+from GTG.viewmanager.preferences      import PreferencesDialog
 from GTG.viewmanager.dbuswrapper import DBusTaskWrapper
 from GTG.tools                        import clipboard
 from GTG.core.plugins.engine          import PluginEngine
@@ -63,18 +64,19 @@ class Manager():
         # window like another and not necessary (like the editor)
         self.open_browser()
         
+        #Plugins (that needs to be after the browser, this is ugly)
+        self._init_plugin_engine()
+        
         #Deletion UI
         self.delete_dialog = DeletionUI(self.req)
         
         #Preferences windows
-        #FIXME : put the preferences out of the browser and put them here
+        # Initialize "Preferences" dialog
+        self.preferences = PreferencesDialog(self.pengine, self.p_apis)
         
         #DBus
         #FIXME: DBus should not require the browser !
         DBusTaskWrapper(self.req, self.browser)
-        
-        #Plugins
-        self._init_plugin_engine()
 
     def open_browser(self):
         if not self.browser:
@@ -82,6 +84,7 @@ class Manager():
                             opentask    = self.open_task,\
                             closetask   = self.close_task,\
                             deletetasks = self.delete_tasks,\
+                            preferences = self.show_preferences,\
                             quit        = self.close_browser)
 
     #FIXME : the browser should not be the center of the universe.
@@ -92,6 +95,9 @@ class Manager():
     # Currently, the browser is our only "stay_alive" view.
     def close_browser(self,sender=None):
         self.quit()
+        
+    def show_preferences(self,sender=None):
+        self.preferences.activate()
     
     def _init_plugin_engine(self):
         #FIXME : the plugin engine should not require the browser.
