@@ -74,7 +74,7 @@ class Manager():
         
         #Preferences windows
         # Initialize "Preferences" dialog
-        self.preferences = PreferencesDialog(self.pengine, self.p_apis)
+        self.preferences = None
         
         #DBus
         #FIXME: DBus should not require the browser !
@@ -195,6 +195,8 @@ class Manager():
 ################ Others dialog ############################################
 
     def show_preferences(self,sender=None):
+        if not self.preferences:
+            PreferencesDialog(self.pengine, self.p_apis)
         self.preferences.activate()
         
     def delete_tasks(self, tids):
