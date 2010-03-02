@@ -202,6 +202,13 @@ class TaskEditor :
 
         self.window.show()
         self.textview.set_editable(True)
+        
+        #Connection for the update
+        self.req.connect('task-modified',self.task_modified)
+        
+    #FIXME: avoid to update to many time when we modify from the editor itself
+    def task_modified(self,sender,tid):
+        self.refresh_editor(refreshtext=True)
 
     # Define accelerator-keys for this dialog
     # TODO: undo/redo

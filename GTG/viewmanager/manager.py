@@ -58,9 +58,6 @@ class Manager():
         #Shared clipboard
         self.clipboard = clipboard.TaskClipboard(self.req)
         
-        #Signals
-        self.req.connect("task-modified", self.on_task_modified)
-        
         #Browser
         #FIXME : the browser should not be built by default and should be a 
         # window like another and not necessary (like the editor)
@@ -70,7 +67,7 @@ class Manager():
         self.__init_plugin_engine()
         
         #Deletion UI
-        self.delete_dialog = DeletionUI(self.req)
+        self.delete_dialog = None
         
         #Preferences windows
         # Initialize "Preferences" dialog
@@ -124,7 +121,7 @@ class Manager():
             self.browser = TaskBrowser(self.req, self.config, \
                             opentask    = self.open_task,\
                             closetask   = self.close_task,\
-                            deletetasks = self.delete_tasks,\
+                            deletetasks = self.ask_delete_tasks,\
                             preferences = self.show_preferences,\
                             quit        = self.close_browser)
 
@@ -154,7 +151,7 @@ class Manager():
         elif t:
             tv = TaskEditor(
                 self.req, t, self.plugins, \
-                self.delete_tasks, self.close_task, self.open_task, \
+                self.ask_delete_tasks, self.close_task, self.open_task, \
                 taskconfig=self.task_config, \
                 plugin_apis=self.p_apis,thisisnew=thisisnew,\
                 clipboard = self.clipboard)
@@ -171,35 +168,16 @@ class Manager():
         else:
             print "the %s editor was already unregistered" %tid
             
-    #FIXME: this should be removed (the editors should catch the updated signal)
-    def refresh_task(self,tid):
-        if tid in self.opened_task:
-            self.opened_task[tid].refresh_editor(refreshtext=True)
-            
-            
-    def on_task_modified(self, sender, tid):
-        Log.debug("Modify task with ID: %s" % tid)
-        #We refresh the opened windows for that tasks,
-        #his children and his parents
-        #It might be faster to refresh every opened editor
-        tlist = [tid]
-        task = self.req.get_task(tid)
-        if task:
-            tlist += task.get_parents()
-            tlist += task.get_children()
-            for uid in tlist:
-                self.refresh_task(uid)
-            #if the modified task is active, we have to refresh everything
-            #to avoid some odd stuffs when loading
-            
 ################ Others dialog ############################################
 
     def show_preferences(self,sender=None):
         if not self.preferences:
-            PreferencesDialog(self.pengine, self.p_apis)
+            self.preferences = PreferencesDialog(self.pengine, self.p_apis)
         self.preferences.activate()
         
-    def delete_tasks(self, tids):
+    def ask_delete_tasks(self, tids):
+        if not self.delete_dialog:
+            self.delete_dialog = DeletionUI(self.req)
         if self.delete_dialog.delete_tasks(tids):
             for t in tids:
                 self.close_task(t)
