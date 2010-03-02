@@ -16,12 +16,12 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-
 from __future__ import with_statement
 
 import os
 import pickle
 from xdg.BaseDirectory import xdg_config_home
+
 
 class PluginAPI:
     """The plugin engine's API.
@@ -45,8 +45,7 @@ class PluginAPI:
                  browser,
                  task=None,
                  texteditor=None,
-                 quick_add_cbs=[],
-                 logger = None):
+                 quick_add_cbs=[]):
         """Construct a L{PluginAPI} object.
         
         @param window: The window where the plugin API object is being 
@@ -76,7 +75,6 @@ class PluginAPI:
         self.tasktoolbar_widg = {}
         self.taskwidget_id = 0
         self.taskwidget_widg = {}
-        self.logger = logger
         self.browser = browser
         
         if task:
@@ -376,10 +374,6 @@ class PluginAPI:
     def get_window(self):
         """Returns the window for which the plug-in has been created"""
         return self.__window
-
-    def get_logger(self):
-        """Returns the logger, used for debug output""" 
-        return self.logger
 
 #=== General Methods ==========================================================
 

@@ -33,14 +33,14 @@ from GTG.viewmanager.dbuswrapper import DBusTaskWrapper
 from GTG.tools                        import clipboard
 from GTG.core.plugins.engine          import PluginEngine
 from GTG.core.plugins.api             import PluginAPI
+from GTG.tools.logger                 import Log
 
 class Manager():
 
-    def __init__(self,req,config,logger=None):
+    def __init__(self, req, config):
         self.config = config.conf_dict
         self.task_config = config.task_conf_dict
         self.req = req
-        self.logger = logger
         # Editors
         self.opened_task  = {}   # This is the list of tasks that are already
                                  # opened in an editor of course it's empty
@@ -82,8 +82,7 @@ class Manager():
                             opentask    = self.open_task,\
                             closetask   = self.close_task,\
                             deletetasks = self.delete_tasks,\
-                            quit        = self.close_browser, \
-                            logger      = self.logger)
+                            quit        = self.close_browser)
 
     #FIXME : the browser should not be the center of the universe.
     # In fact, we should build a system where view can register themselves
@@ -112,8 +111,7 @@ class Manager():
                                     task           = None,
                                     texteditor     = None,
                                     quick_add_cbs  = self.browser.priv['quick_add_cbs'],
-                                    browser        = self.browser,
-                                    logger         = self.logger)
+                                    browser        = self.browser)
         self.p_apis.append(self.plugin_api)
         # enable some plugins
         if len(self.pengine.plugins) > 0:
@@ -182,8 +180,7 @@ class Manager():
             return None
             
     def on_task_modified(self, sender, tid):
-        if self.logger:
-            self.logger.debug("Modify task with ID: %s" % tid)
+        Log.debug("Modify task with ID: %s" % tid)
         #We refresh the opened windows for that tasks,
         #his children and his parents
         #It might be faster to refresh every opened editor

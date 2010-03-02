@@ -37,6 +37,7 @@ import time
 import GTG
 from GTG import info
 from GTG import _
+from GTG.tools.logger                 import Log
 from GTG.core.task                    import Task
 from GTG.core.tagstore                import Tag
 from GTG.taskbrowser                  import GnomeConfig
@@ -78,10 +79,7 @@ class TaskBrowser:
     """ The UI for browsing open and closed tasks, and listing tags in a tree """
 
     def __init__(self, requester, config, opentask=None,closetask=None,\
-                  deletetasks=None, quit=None, logger=None):
-
-        self.logger=logger
-
+                  deletetasks=None, quit=None):
         # Object prime variables
         self.priv   = {}
         self.req    = requester
@@ -1422,13 +1420,11 @@ class TaskBrowser:
         self.quit()
 
     def on_task_added(self, sender, tid):
-        if self.logger:
-            self.logger.debug("Add task with ID: %s" % tid)
+        Log.debug("Add task with ID: %s" % tid)
         self._update_window_title()
 
     def on_task_deleted(self, sender, tid):
-        if self.logger:
-            self.logger.debug("Delete task with ID: %s" % tid)
+        Log.debug("Delete task with ID: %s" % tid)
         self._update_window_title()
 
     #using dummy parameters that are given by the signal

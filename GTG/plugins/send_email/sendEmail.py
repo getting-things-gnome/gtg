@@ -35,7 +35,6 @@ class pluginSendEmail:
 
     def activate(self, plugin_api):
         self.plugin_api = plugin_api
-        self.logger = self.plugin_api.get_logger()
 
     def onTaskClosed(self, plugin_api):
         pass
@@ -61,12 +60,6 @@ class pluginSendEmail:
             print self.tb_Taskbutton
             plugin_api.remove_task_toolbar_item(self.tb_Taskbutton)
             print "ciao"
-
-## HELPER FUNCTIONS ############################################################
-
-    def __log(self, message):
-        if self.logger:
-            self.logger.debug(message)
 
 ## CORE FUNCTIONS ##############################################################
 

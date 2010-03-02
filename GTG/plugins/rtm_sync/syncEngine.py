@@ -29,6 +29,7 @@ from rtmProxy import RtmProxy
 from time import sleep
 import gobject
 from GTG import _
+from GTG.tools.logger import Log
 
 
 
@@ -67,9 +68,8 @@ class SyncEngine(object):
         super(SyncEngine, self).__init__()
         self.this_plugin = this_plugin
         self.plugin_api = this_plugin.plugin_api
-        self.logger = self.this_plugin.plugin_api.get_logger()
         self.local_proxy = GtgProxy(self.this_plugin.plugin_api)
-        self.remote_proxy = RtmProxy(self.logger)
+        self.remote_proxy = RtmProxy()
         self.rtm_has_logon = False
 
     def rtmLogin(self):
@@ -267,8 +267,7 @@ class SyncEngine(object):
                                 remote_task = remote_title_to_task[title]))
 
     def __log(self, message):
-        if self.logger:
-            self.logger.debug(message)
+        Log.debug(message)
 
 ## GUI
     def close_gui(self, msg):

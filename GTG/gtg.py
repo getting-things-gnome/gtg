@@ -53,10 +53,11 @@ import dbus
 import logging
 
 #our own imports
-from GTG import _
+from GTG                     import _
 from GTG.viewmanager.manager import Manager
-from GTG.core.datastore import DataStore
-from GTG.core import CoreConfig
+from GTG.core.datastore      import DataStore
+from GTG.core                import CoreConfig
+from GTG.tools.logger        import Log
 
 #=== OBJECTS ==================================================================
 
@@ -91,17 +92,10 @@ def check_instance(directory):
 #=== MAIN CLASS ===============================================================
 
 def main(options=None, args=None):
-    
-    # init logging system
-    logger = logging.getLogger("gtg_logger")
-    ch = logging.StreamHandler()
-    ch.setLevel(logging.DEBUG)
-    formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(module)s:%(funcName)s:%(lineno)d - %(message)s")
-    ch.setFormatter(formatter)
-    logger.addHandler(ch)
+    # Debugging subsystem initialization
     if options.debug:
-        logger.setLevel(logging.DEBUG)
-        logger.debug("Debug output enabled.")
+        Log.setLevel(logging.DEBUG)
+        Log.debug("Debug output enabled.")
     
     config = CoreConfig()
     check_instance(config.DATA_DIR)
@@ -118,7 +112,7 @@ def main(options=None, args=None):
         
     # Launch task browser
     req = ds.get_requester()
-    manager = Manager(req,config,logger=logger)
+    manager = Manager(req, config)
     #main loop
     manager.main()
 

@@ -21,18 +21,18 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))+'/pyrtm')
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from genericTask import GenericTask
 
+from GTG.tools.logger import Log
+
 
 class RtmTask(GenericTask):
     
-    def __init__(self, task, list_id, taskseries_id, rtm, timeline, logger,
-                 proxy):
+    def __init__(self, task, list_id, taskseries_id, rtm, timeline, proxy):
         super(RtmTask, self).__init__(proxy)
         self.rtm = rtm
         self.timeline = timeline
         self.task = task
         self.list_id = list_id
         self.taskseries_id = taskseries_id
-        self.logger = logger
         #Checking if a task is recurring is done inside __get_rtm_task_attribute
         # so we call that to set self.recurring correctly
         self.recurring = False
@@ -242,5 +242,5 @@ class RtmTask(GenericTask):
         return timeobject.strftime("%Y-%m-%d")
 
     def __log(self, message):
-        if self.logger:
-            self.logger.debug (message)
+        Log.debug(message)
+
