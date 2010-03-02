@@ -94,18 +94,6 @@
                 <property name="homogeneous">True</property>
               </packing>
             </child>
-            <child>
-              <object class="GtkToolButton" id="keepnote">
-                <property name="visible">True</property>
-                <property name="label" translatable="yes">Keep as Note</property>
-                <property name="stock_id">gtk-file</property>
-                <signal name="clicked" handler="on_keepnote_clicked"/>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="homogeneous">True</property>
-              </packing>
-            </child>
           </object>
           <packing>
             <property name="expand">False</property>

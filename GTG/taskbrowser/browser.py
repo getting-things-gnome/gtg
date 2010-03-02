@@ -78,18 +78,13 @@ class Timer:
 class TaskBrowser:
     """ The UI for browsing open and closed tasks, and listing tags in a tree """
 
-    def __init__(self, requester, config, opentask=None,closetask=None,\
-                  deletetasks=None, preferences=None, quit=None):
+    def __init__(self, requester, vmanager, config):
         # Object prime variables
         self.priv   = {}
         self.req    = requester
+        self.vmanager = vmanager
         self.config = config
-        self.open_task = opentask
-        self.close_task = closetask
-        self.deletion_cllbck = deletetasks
-        self.quit = quit
         self.tag_active = False
-        self.open_preferences = preferences
         
         #treeviews handlers
         self.tags_tv = None
@@ -122,12 +117,6 @@ class TaskBrowser:
 
         # Initialize "About" dialog
         self._init_about_dialog()
-
-        #FIXME : this should be done in the view_manager
-        #(because we might want to call the preferences somewhere else,
-        # like from an applet)
-        # Initialize "Preferences" dialog
-#        self.preferences = PreferencesDialog(self)
 
         #Create our dictionary and connect it
         self._init_signal_connections()
@@ -324,8 +313,6 @@ class TaskBrowser:
             "on_preferences_activate":
                 self.open_preferences,
         }
-
-#        SIGNAL_CONNECTIONS_DIC.update(self.preferences.get_signals_dict())
         self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
 
         if (self.window):
@@ -441,8 +428,14 @@ class TaskBrowser:
         self.tag_completion.set_inline_selection(True)
         self.tag_completion.set_popup_single_match(False)
 
-### HELPER FUNCTIONS ##########################################################
-#
+### HELPER FUNCTIONS ########################################################
+
+    def open_preferences(self,widget):
+        self.vmanager.show_preferences()
+        
+    def quit(self,widget):
+        self.vmanager.close_browser()
+        
     def restore_state_from_conf(self):
 
         # Extract state from configuration dictionary
@@ -544,7 +537,7 @@ class TaskBrowser:
             if odic == "None" or (len(odic)> 0 and odic[0] == "None"):
                 return
             for t in odic:
-                ted = self.open_task(t)
+                ted = self.vmanager.open_task(t)
 
     
     def _start_gtg_maximized(self):
@@ -1160,7 +1153,7 @@ class TaskBrowser:
         uid = task.get_id()
         if status:
             task.set_status(status)
-        self.open_task(uid,thisisnew=True)
+        self.vmanager.open_task(uid,thisisnew=True)
 
     def on_add_subtask(self, widget):
         uid = self.get_selected_task()
@@ -1170,18 +1163,18 @@ class TaskBrowser:
             task   = self.req.new_task(tags=tags, newtask=True)
             task.add_parent(uid)
             zetask.add_child(task.get_id())
-            self.open_task(task.get_id(),thisisnew=True)
+            self.vmanager.open_task(task.get_id(),thisisnew=True)
             #self.do_refresh()
 
     def on_edit_active_task(self, widget, row=None, col=None):
         tid = self.get_selected_task()
         if tid:
-            self.open_task(tid)
+            self.vmanager.open_task(tid)
 
     def on_edit_done_task(self, widget, row=None, col=None):
         tid = self.get_selected_task(self.ctask_tv)
         if tid:
-            self.open_task(tid)
+            self.vmanager.open_task(tid)
 
     def on_delete_tasks(self, widget=None, tid=None):
         #If we don't have a parameter, then take the selection in the treeview
@@ -1190,7 +1183,7 @@ class TaskBrowser:
             tids_todelete = self.get_selected_tasks()
         else:
             tids_todelete = [tid]
-        self.deletion_cllbck(tids_todelete)
+        self.vmanager.ask_delete_tasks(tids_todelete)
 
     def update_start_date(self, widget, new_start_date):
         tasks_uid = filter(lambda uid: uid != None, self.get_selected_tasks())
@@ -1335,7 +1328,6 @@ class TaskBrowser:
             self.req.apply_filter(newtag[0])
             if self.ctask_tree:
                 self.ctask_tree.apply_filter(newtag[0])
-            #FIXME : also do that for the closed task tree
         else:
             self.req.reset_tag_filters()
             if self.ctask_tree:

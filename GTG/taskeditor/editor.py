@@ -48,18 +48,14 @@ except: # pylint: disable-msg=W0702
 date_separator = "-"
 
 class TaskEditor :
-    #delete_callback is the function called on deletion
-    #close_callback is the function called on close
-    #opentask_callback is the function to open a new editor
-    #tasktitle_callback is called when title changes
-    #notes is experimental (bool)
+    #req is the requester
+    #vmanager is the view manager
     #taskconfig is a ConfigObj dic to save infos about tasks
     #thisisnew is True when a new task is created and opened
-    def __init__(self, requester, task, plugins,
-                delete_callback=None, close_callback=None,opentask_callback=None, \
-                tasktitle_callback=None, notes=False,taskconfig=None,\
-                plugin_apis=None,thisisnew=False,clipboard=None) :
+    def __init__(self, requester, vmanager, task, plugins,
+                taskconfig=None,plugin_apis=None,thisisnew=False,clipboard=None) :
         self.req = requester
+        self.vmanager = vmanager
         self.config = taskconfig
         self.p_apis = plugin_apis
         self.time = None
@@ -78,7 +74,6 @@ class TaskEditor :
         dic = {
                 "mark_as_done_clicked"  : self.change_status,
                 "on_dismiss"            : self.dismiss,
-                "on_keepnote_clicked"   : self.keepnote,
                 "delete_clicked"        : self.delete_task,
                 "on_duedate_pressed"    : (self.on_date_pressed,"due"),
                 "on_startdate_pressed"    : (self.on_date_pressed,"start"),
@@ -102,13 +97,10 @@ class TaskEditor :
         textview = self.builder.get_object("textview")
         scrolled = self.builder.get_object("scrolledtask")
         scrolled.remove(textview)
-        self.open_task  = opentask_callback
-        self.task_title = tasktitle_callback
         self.textview   = TaskView(self.req,self.clipboard)
         self.textview.show()
         self.textview.set_subtask_callback(self.new_subtask)
-        self.textview.open_task_callback(self.open_task)
-        self.textview.tasktitle_callback(self.task_title)
+        self.textview.open_task_callback(self.vmanager.open_task)
         self.textview.set_left_margin(7)
         self.textview.set_right_margin(5)
         scrolled.add(self.textview)
@@ -127,11 +119,6 @@ class TaskEditor :
         self.closeddate_widget = self.builder.get_object("closeddate_entry")
         self.dayleft_label  = self.builder.get_object("dayleft")
         self.tasksidebar = self.builder.get_object("tasksidebar")
-        self.keepnote_button = self.builder.get_object("keepnote")
-        if not notes :
-            self.keepnote_button.hide()
-            separator = self.builder.get_object("separator_note")
-            separator.hide()
         #We will keep the name of the opened calendar
         #Empty means that no calendar is opened
         self.__opened_date = ''
@@ -147,8 +134,6 @@ class TaskEditor :
         self.textview.set_add_tag_callback(task.add_tag)
         self.textview.set_remove_tag_callback(task.remove_tag)
         self.textview.save_task_callback(self.light_save)
-        self.delete  = delete_callback
-        self.closing = close_callback
 
         texte = self.task.get_text()
         title = self.task.get_title()
@@ -212,6 +197,13 @@ class TaskEditor :
 
         self.window.show()
         self.textview.set_editable(True)
+        
+        #Connection for the update
+        self.req.connect('task-modified',self.task_modified)
+        
+    #FIXME: avoid to update to many time when we modify from the editor itself
+    def task_modified(self,sender,tid):
+        self.refresh_editor(refreshtext=True)
 
     # Define accelerator-keys for this dialog
     # TODO: undo/redo
@@ -285,14 +277,8 @@ class TaskEditor :
             self.dismissbutton.set_tooltip_text(GnomeConfig.MARK_DISMISS_TOOLTIP)
             self.dismissbutton.set_icon_name("gtg-task-dismiss")
             
-        if status == "Note":
-            self.donebutton.hide()
-            self.tasksidebar.hide()
-            self.keepnote_button.set_label(GnomeConfig.MAKE_TASK)
-        else :
-            self.donebutton.show()
-            self.tasksidebar.show()
-            self.keepnote_button.set_label(GnomeConfig.KEEP_NOTE)
+        self.donebutton.show()
+        self.tasksidebar.show()
         
         #Refreshing the status bar labels and date boxes
         if status in [Task.STA_DISMISSED, Task.STA_DONE]:
@@ -523,14 +509,6 @@ class TaskEditor :
             self.task.set_status("Dismiss")
             self.close(None)
     
-    def keepnote(self,widget) : #pylint: disable-msg=W0613
-        stat = self.task.get_status()
-        toset = "Note"
-        if stat == "Note" :
-            toset = "Active"
-        self.task.set_status(toset)
-        self.refresh_editor()
-    
     def change_status(self,widget) : #pylint: disable-msg=W0613
         stat = self.task.get_status()
         if stat == "Done":
@@ -541,9 +519,8 @@ class TaskEditor :
             self.close(None)
     
     def delete_task(self, widget) :
-        if self.delete :
-            #this triggers the closing of the window in the view manager
-            self.delete([self.task.get_id()])
+        #this triggers the closing of the window in the view manager
+        self.vmanager.ask_delete_tasks([self.task.get_id()])
     
     #Take the title as argument and return the subtask ID
     def new_subtask(self,title=None,tid=None) :
@@ -559,7 +536,7 @@ class TaskEditor :
     def new_task(self, *args):
         task = self.req.new_task(tags=None, newtask=True)
         task_id = task.get_id()
-        self.open_task(task_id)
+        self.vmanager.open_task(task_id)
         
     def insert_subtask(self,widget) : #pylint: disable-msg=W0613
         self.textview.insert_newtask()
@@ -643,7 +620,7 @@ class TaskEditor :
             for i in self.task.get_subtasks():
                 if i:
                     i.set_to_keep()
-        self.closing(tid)
+        self.vmanager.close_task(tid)
         
 ############# Private functions #################
         

@@ -146,7 +146,6 @@ class TaskView(gtk.TextView):
         self.__refresh_cb = None  # refresh the editor window
         self.open_task            = None # open another task
         self.new_subtask_callback = None # create a subtask
-        self.get_subtasktitle     = None
         self.save_task = None #This will save the task without refreshing all
         
         #The signal emitted each time the buffer is modified
@@ -199,10 +198,13 @@ class TaskView(gtk.TextView):
     def open_task_callback(self,funct) :
         self.open_task = funct
         
-    #This callback is called to know the title of a task
-    #Knowing its tid
-    def tasktitle_callback(self,funct) :
-        self.get_subtasktitle = funct
+    #This was historically a callback but it returns the title
+    def get_subtasktitle(self,tid):
+        task = self.req.get_task(tid)
+        if task:
+            return task.get_title()
+        else:
+            return None
     
     #This callback is called to get the list of tid of subtasks
     def subtasks_callback(self,funct) :
