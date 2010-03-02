@@ -23,6 +23,7 @@ import subprocess
 #import gobject
 from xdg.BaseDirectory import xdg_config_home
 from GTG.core.task import Task
+from GTG.core.logging import Log
 from GTG import _
 import pickle
 #import xml.utils.iso8601
@@ -44,10 +45,9 @@ class RtmProxy(GenericProxy):
     __RTM_STATUSES = [True,
                       False]
 
-    def __init__(self, logger):
+    def __init__(self):
         super(RtmProxy, self).__init__()
         self.token = None
-        self.logger = logger
         self._gtg_to_rtm_status = dict(zip(self.__GTG_STATUSES,
                                             self.__RTM_STATUSES))
         self._gtg_to_rtm_status[Task.STA_DISMISSED] = "1"
@@ -129,16 +129,15 @@ class RtmProxy(GenericProxy):
         for task, list_id, taskseries_id in data:
             self._task_list.append(RtmTask(task, list_id, taskseries_id, \
                                           self.rtm, self.timeline, \
-                                          self.logger, self))
-        if self.logger:
-            map(lambda task: self.logger.debug("RTM task: |" + task.title),
-                                               self._task_list)
+                                          self))
+        map(lambda task: Log.debug("RTM task: |" + task.title),
+          self._task_list)
 
     def create_new_task(self, title):
         result = self.rtm.tasks.add(timeline=self.timeline, name=title)
         new_task= RtmTask(result.list.taskseries.task, result.list.id,\
                           result.list.taskseries.id, self.rtm, self.timeline,\
-                         self.logger, self)
+                          self)
         self._task_list.append(new_task)
         return new_task
 

@@ -39,8 +39,8 @@ def X_is_running():
 
 try:
     parser = OptionParser()
-    parser.add_option("-d", "--debug",
-                  action="store_true", dest="debug", help="enable debug output")
+    parser.add_option('-d', '--debug', action='store_true', dest='debug',
+      help="enable debug output", default=False)
     (options, args) = parser.parse_args()
 
     if not X_is_running():

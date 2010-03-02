@@ -28,6 +28,7 @@ except: # pylint: disable-msg=W0702
 from threading           import Timer
 
 from GTG.core.task       import Task
+from GTG.core.logging    import Log
 
 
 class pluginReaper:
@@ -74,7 +75,6 @@ class pluginReaper:
         self.menu_item_is_shown = False
         self.is_automatic = False
         self.timer = None
-        self.logger = self.plugin_api.get_logger()
         self.preferences_load()
         self.preferences_apply()
 
@@ -91,8 +91,7 @@ class pluginReaper:
 ## HELPER FUNCTIONS ############################################################
 
     def __log(self, message):
-        if self.logger:
-            self.logger.debug(message)
+        Log.debug(message)
 
 ## CORE FUNCTIONS ##############################################################
 

@@ -50,13 +50,13 @@ from __future__ import with_statement
 import sys
 import os
 import dbus
-import logging
 
 #our own imports
 from GTG import _
 from GTG.viewmanager.manager import Manager
 from GTG.core.datastore import DataStore
 from GTG.core import CoreConfig
+from GTG.core.logging import *
 
 #=== OBJECTS ==================================================================
 
@@ -92,16 +92,7 @@ def check_instance(directory):
 
 def main(options=None, args=None):
     
-    # init logging system
-    logger = logging.getLogger("gtg_logger")
-    ch = logging.StreamHandler()
-    ch.setLevel(logging.DEBUG)
-    formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(module)s:%(funcName)s:%(lineno)d - %(message)s")
-    ch.setFormatter(formatter)
-    logger.addHandler(ch)
-    if options.debug:
-        logger.setLevel(logging.DEBUG)
-        logger.debug("Debug output enabled.")
+    setup_logger(options.debug)
     
     config = CoreConfig()
     check_instance(config.DATA_DIR)
@@ -118,7 +109,7 @@ def main(options=None, args=None):
         
     # Launch task browser
     req = ds.get_requester()
-    manager = Manager(req,config,logger=logger)
+    manager = Manager(req, config)
     #main loop
     manager.main()
 
