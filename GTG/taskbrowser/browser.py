@@ -118,12 +118,6 @@ class TaskBrowser:
         # Initialize "About" dialog
         self._init_about_dialog()
 
-        #FIXME : this should be done in the view_manager
-        #(because we might want to call the preferences somewhere else,
-        # like from an applet)
-        # Initialize "Preferences" dialog
-#        self.preferences = PreferencesDialog(self)
-
         #Create our dictionary and connect it
         self._init_signal_connections()
 
@@ -319,8 +313,6 @@ class TaskBrowser:
             "on_preferences_activate":
                 self.open_preferences,
         }
-
-#        SIGNAL_CONNECTIONS_DIC.update(self.preferences.get_signals_dict())
         self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
 
         if (self.window):
@@ -1336,7 +1328,6 @@ class TaskBrowser:
             self.req.apply_filter(newtag[0])
             if self.ctask_tree:
                 self.ctask_tree.apply_filter(newtag[0])
-            #FIXME : also do that for the closed task tree
         else:
             self.req.reset_tag_filters()
             if self.ctask_tree:
