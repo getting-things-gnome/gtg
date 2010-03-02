@@ -51,14 +51,12 @@ class TaskEditor :
     #delete_callback is the function called on deletion
     #close_callback is the function called on close
     #opentask_callback is the function to open a new editor
-    #tasktitle_callback is called when title changes
-    #notes is experimental (bool)
+    #_callback is called when title changes
     #taskconfig is a ConfigObj dic to save infos about tasks
     #thisisnew is True when a new task is created and opened
     def __init__(self, requester, task, plugins,
                 delete_callback=None, close_callback=None,opentask_callback=None, \
-                tasktitle_callback=None, notes=False,taskconfig=None,\
-                plugin_apis=None,thisisnew=False,clipboard=None) :
+                taskconfig=None,plugin_apis=None,thisisnew=False,clipboard=None) :
         self.req = requester
         self.config = taskconfig
         self.p_apis = plugin_apis
@@ -78,7 +76,6 @@ class TaskEditor :
         dic = {
                 "mark_as_done_clicked"  : self.change_status,
                 "on_dismiss"            : self.dismiss,
-                "on_keepnote_clicked"   : self.keepnote,
                 "delete_clicked"        : self.delete_task,
                 "on_duedate_pressed"    : (self.on_date_pressed,"due"),
                 "on_startdate_pressed"    : (self.on_date_pressed,"start"),
@@ -103,12 +100,10 @@ class TaskEditor :
         scrolled = self.builder.get_object("scrolledtask")
         scrolled.remove(textview)
         self.open_task  = opentask_callback
-        self.task_title = tasktitle_callback
         self.textview   = TaskView(self.req,self.clipboard)
         self.textview.show()
         self.textview.set_subtask_callback(self.new_subtask)
         self.textview.open_task_callback(self.open_task)
-        self.textview.tasktitle_callback(self.task_title)
         self.textview.set_left_margin(7)
         self.textview.set_right_margin(5)
         scrolled.add(self.textview)
@@ -127,11 +122,6 @@ class TaskEditor :
         self.closeddate_widget = self.builder.get_object("closeddate_entry")
         self.dayleft_label  = self.builder.get_object("dayleft")
         self.tasksidebar = self.builder.get_object("tasksidebar")
-        self.keepnote_button = self.builder.get_object("keepnote")
-        if not notes :
-            self.keepnote_button.hide()
-            separator = self.builder.get_object("separator_note")
-            separator.hide()
         #We will keep the name of the opened calendar
         #Empty means that no calendar is opened
         self.__opened_date = ''
@@ -285,14 +275,8 @@ class TaskEditor :
             self.dismissbutton.set_tooltip_text(GnomeConfig.MARK_DISMISS_TOOLTIP)
             self.dismissbutton.set_icon_name("gtg-task-dismiss")
             
-        if status == "Note":
-            self.donebutton.hide()
-            self.tasksidebar.hide()
-            self.keepnote_button.set_label(GnomeConfig.MAKE_TASK)
-        else :
-            self.donebutton.show()
-            self.tasksidebar.show()
-            self.keepnote_button.set_label(GnomeConfig.KEEP_NOTE)
+        self.donebutton.show()
+        self.tasksidebar.show()
         
         #Refreshing the status bar labels and date boxes
         if status in [Task.STA_DISMISSED, Task.STA_DONE]:
@@ -522,14 +506,6 @@ class TaskEditor :
         else:
             self.task.set_status("Dismiss")
             self.close(None)
-    
-    def keepnote(self,widget) : #pylint: disable-msg=W0613
-        stat = self.task.get_status()
-        toset = "Note"
-        if stat == "Note" :
-            toset = "Active"
-        self.task.set_status(toset)
-        self.refresh_editor()
     
     def change_status(self,widget) : #pylint: disable-msg=W0613
         stat = self.task.get_status()

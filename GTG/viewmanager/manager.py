@@ -38,6 +38,8 @@ from GTG.tools.logger                 import Log
 
 class Manager():
 
+    ############## init #####################################################
+
     def __init__(self, req, config):
         self.config = config.conf_dict
         self.task_config = config.task_conf_dict
@@ -65,7 +67,7 @@ class Manager():
         self.open_browser()
         
         #Plugins (that needs to be after the browser, this is ugly)
-        self._init_plugin_engine()
+        self.__init_plugin_engine()
         
         #Deletion UI
         self.delete_dialog = DeletionUI(self.req)
@@ -77,29 +79,8 @@ class Manager():
         #DBus
         #FIXME: DBus should not require the browser !
         DBusTaskWrapper(self.req, self.browser)
-
-    def open_browser(self):
-        if not self.browser:
-            self.browser = TaskBrowser(self.req, self.config, \
-                            opentask    = self.open_task,\
-                            closetask   = self.close_task,\
-                            deletetasks = self.delete_tasks,\
-                            preferences = self.show_preferences,\
-                            quit        = self.close_browser)
-
-    #FIXME : the browser should not be the center of the universe.
-    # In fact, we should build a system where view can register themselves
-    # as "stay_alive" views. As long as at least one "stay_alive" view
-    # is registered, gtg keeps running. It quit only when the last 
-    # "stay_alive view" is closed (and then unregistered).
-    # Currently, the browser is our only "stay_alive" view.
-    def close_browser(self,sender=None):
-        self.quit()
         
-    def show_preferences(self,sender=None):
-        self.preferences.activate()
-    
-    def _init_plugin_engine(self):
+    def __init_plugin_engine(self):
         #FIXME : the plugin engine should not require the browser.
         # It should be the browser that need the plugin engine
         # plugins - Init
@@ -135,6 +116,28 @@ class Manager():
                         plugin.enabled = False
         # initializes and activates each plugin (that is enabled)
         self.pengine.activate_plugins(self.p_apis)
+        
+    ############## Browser #################################################
+
+    def open_browser(self):
+        if not self.browser:
+            self.browser = TaskBrowser(self.req, self.config, \
+                            opentask    = self.open_task,\
+                            closetask   = self.close_task,\
+                            deletetasks = self.delete_tasks,\
+                            preferences = self.show_preferences,\
+                            quit        = self.close_browser)
+
+    #FIXME : the browser should not be the center of the universe.
+    # In fact, we should build a system where view can register themselves
+    # as "stay_alive" views. As long as at least one "stay_alive" view
+    # is registered, gtg keeps running. It quit only when the last 
+    # "stay_alive view" is closed (and then unregistered).
+    # Currently, the browser is our only "stay_alive" view.
+    def close_browser(self,sender=None):
+        self.quit()
+        
+################# Task Editor ############################################
 
 
     def open_task(self, uid,thisisnew=False):
@@ -149,11 +152,10 @@ class Manager():
             tv = self.opened_task[uid]
             tv.present()
         elif t:
-            #FIXME : on_delete_task should not be in the browser but here
             tv = TaskEditor(
                 self.req, t, self.plugins, \
                 self.delete_tasks, self.close_task, self.open_task, \
-                self.get_tasktitle,taskconfig=self.task_config, \
+                taskconfig=self.task_config, \
                 plugin_apis=self.p_apis,thisisnew=thisisnew,\
                 clipboard = self.clipboard)
             #registering as opened
@@ -169,21 +171,11 @@ class Manager():
         else:
             print "the %s editor was already unregistered" %tid
             
+    #FIXME: this should be removed (the editors should catch the updated signal)
     def refresh_task(self,tid):
         if tid in self.opened_task:
             self.opened_task[tid].refresh_editor(refreshtext=True)
             
-    def delete_tasks(self, tids):
-        if self.delete_dialog.delete_tasks(tids):
-            for t in tids:
-                self.close_task(t)
-            
-    def get_tasktitle(self, tid):
-        task = self.req.get_task(tid)
-        if task:
-            return task.get_title()
-        else:
-            return None
             
     def on_task_modified(self, sender, tid):
         Log.debug("Modify task with ID: %s" % tid)
@@ -199,6 +191,16 @@ class Manager():
                 self.refresh_task(uid)
             #if the modified task is active, we have to refresh everything
             #to avoid some odd stuffs when loading
+            
+################ Others dialog ############################################
+
+    def show_preferences(self,sender=None):
+        self.preferences.activate()
+        
+    def delete_tasks(self, tids):
+        if self.delete_dialog.delete_tasks(tids):
+            for t in tids:
+                self.close_task(t)
             
 ### MAIN ###################################################################
     def main(self):
