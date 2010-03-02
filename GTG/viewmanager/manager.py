@@ -118,12 +118,7 @@ class Manager():
 
     def open_browser(self):
         if not self.browser:
-            self.browser = TaskBrowser(self.req, self.config, \
-                            opentask    = self.open_task,\
-                            closetask   = self.close_task,\
-                            deletetasks = self.ask_delete_tasks,\
-                            preferences = self.show_preferences,\
-                            quit        = self.close_browser)
+            self.browser = TaskBrowser(self.req, self, self.config)
 
     #FIXME : the browser should not be the center of the universe.
     # In fact, we should build a system where view can register themselves
