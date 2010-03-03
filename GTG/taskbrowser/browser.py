@@ -433,7 +433,7 @@ class TaskBrowser:
     def open_preferences(self,widget):
         self.vmanager.show_preferences()
         
-    def quit(self,widget):
+    def quit(self,widget=None):
         self.vmanager.close_browser()
         
     def restore_state_from_conf(self):
