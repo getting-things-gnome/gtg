@@ -89,7 +89,7 @@ def populate():
     text5 += "\n\n"
     text5 += _("Some examples of the current plugins are Syncing with Remember the Milk and Evolution, Tomboy/Gnote integration and Geolocalized Tasks.")
     text5 += "\n"
-    text5 += _("You can find the Plugin Manager by selecting Plugins > Plugin Preferences on the menu.")
+    text5 += _("You can find the Plugin Manager by selecting Edit in the Menu Bar, then clicking Preferences. You will then see a tab labeled Plugins.")
     
     t5 = addtask(doc, "4@1", title5, text5, [])
     root.appendChild(t5)
