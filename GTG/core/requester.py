@@ -71,6 +71,9 @@ class Requester(gobject.GObject):
         
     def _tag_added(self,tagname):
         gobject.idle_add(self.emit, "tag-added", tagname)
+
+    def _tag_modified(self,tagname):
+        gobject.idle_add(self.emit, "tag-modified", tagname)
         
     ############ Tasks Tree ######################
     # This is the main FilteredTree. You cannot apply filters

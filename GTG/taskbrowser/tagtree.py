@@ -23,7 +23,7 @@ import xml.sax.saxutils as saxutils
 from GTG import _
 from GTG.taskbrowser.CellRendererTags import CellRendererTags
 from GTG.taskbrowser.tasktree import COL_OBJ as TASKTREE_COL_OBJ
-
+    
 COL_ID    = 0
 COL_NAME  = 1
 COL_LABEL = 2
@@ -50,6 +50,12 @@ class TagTreeModel(gtk.GenericTreeModel):
         self.workview = False
         
         self.req.connect('tag-added',self.add_tag)
+        self.req.connect('tag-modified',self.update_tag)
+
+        self.displayed = {}
+        for n in self.tree.get_all_nodes():
+            path = self.tree.get_path_for_node(n)
+            self.displayed[n.get_id()] = path
 
 ### MODEL METHODS ############################################################
     def update_tags_for_task(self, tid):
@@ -135,7 +141,8 @@ class TagTreeModel(gtk.GenericTreeModel):
 #        print "on_iter_next: %s" % str(node)
         if node:
             tid = node.get_id()
-            parent_node = node.get_parent()
+            parent_id = node.get_parent()
+            parent_node = self.tree.get_node(parent_id)
             if not parent_node:
                 parent_node = self.tree.get_root()
             try:
@@ -159,7 +166,7 @@ class TagTreeModel(gtk.GenericTreeModel):
             return node
 
     def on_iter_has_child(self, node):
-#        print "on_iter_has_child: %s" % str(node)
+#        print "on_iter_has_child: %s : %s" % (str(node), node.has_child() )
         return node.has_child()
 
     def on_iter_n_children(self, node):
@@ -178,21 +185,39 @@ class TagTreeModel(gtk.GenericTreeModel):
     def on_iter_parent(self, node):
 #        print "on_iter_parent: %s" % str(node)
         if node.has_parent():
-            parent = node.get_parent()
-            return parent
+            parent_id = node.get_parent()
+            parent_node = self.tree.get_node(parent_id)
+            return parent_node
         else:
             return None
 
     def add_tag(self, sender, tname):
+#        print "add tag %s" % (tname)
 #        self.tree.add_node(tag)
         tag = self.tree.get_node(tname)
         tag_path  = self.tree.get_path_for_node(tag)
         tag_iter  = self.get_iter(tag_path)
         #print "path is %s " %tag_path
-#        if tag_path != None:
+        if tag_path != None:
 #            print "### tag %s added to path %s" %(tname,tag_path)
-            #self.row_inserted(tag_path, tag_iter)
-        #self.tree.print_tree()
+            if not self.displayed.get(tname):
+                self.row_inserted(tag_path, tag_iter)
+                self.displayed[tname] = tag_path
+            if tag.has_child():
+                self.row_has_child_toggled(tag_path, tag_iter)
+
+    def update_tag(self, sender, tname):
+#        print "update tag %s" % (tname)
+        if self.displayed.get(tname):
+            self.row_deleted(self.displayed[tname])
+            self.displayed.pop(tname)
+            tag = self.tree.get_node(tname)
+            tag_path  = self.tree.get_path_for_node(tag)
+            tag_iter  = self.get_iter(tag_path)
+            self.row_inserted(tag_path, tag_iter)
+            self.displayed[tname] = tag_path
+            if tag.has_child():
+                self.row_has_child_toggled(tag_path, tag_iter)
 
     def move_tag(self, parent, child):
         #print "Moving %s below %s" % (child, parent)
@@ -240,14 +265,14 @@ class TagTreeModel(gtk.GenericTreeModel):
         tag = self.req.get_tag(oldname)
         # delete old row
         old_path=self.tree.get_path_for_node(tag)
-        self.row_deleted(old_path)
+        #self.row_deleted(old_path)
         # perform rename
         self.req.rename_tag(oldname,newname)
         # insert new row
         tag = self.req.get_tag(newname)
         new_path=self.tree.get_path_for_node(tag)
         new_iter = self.get_iter(new_path)
-        self.row_inserted(new_path, new_iter)
+        #self.row_inserted(new_path, new_iter)
 
 class TagTreeView(gtk.TreeView):
     """TreeView for display of a list of task. Handles DnD primitives too."""

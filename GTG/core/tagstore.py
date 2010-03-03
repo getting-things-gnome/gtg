@@ -95,6 +95,8 @@ class TagStore(Tree):
             self.add_node(tag)
             self.req._tag_added(tname)
             self.req.add_filter(tname,None)
+            for c in tag.get_children():
+                self.req._tag_modified(c)
             #self.tags[tname] = tag
 #        print "********* tag added *******"
 #        self.print_tree()
@@ -194,7 +196,8 @@ class TagStore(Tree):
                     already_saved.append(tagname)
                     for a in attr:
                         value = t.get_attribute(a)
-                        t_xml.setAttribute(a, value)
+                        if value:
+                            t_xml.setAttribute(a, value)
                     xmlroot.appendChild(t_xml)
                     cleanxml.savexml(self.filename, doc)
 
@@ -248,11 +251,9 @@ class Tag(TreeNode):
             #print "Error : The name of a tag cannot be manually set"
             pass
         elif att_name == "parent":
-            tree = self.get_tree()
-            par = tree.get_node(att_value)
-            if par:
-                self.add_parent(par.get_id())
-                self._attributes['parent'] = "We don't care about that value"
+            #self.add_parent(att_value)
+            self.new_relationship(att_value, self._name)
+            self._attributes['parent'] = "We don't care about that value"
         else:
             # Attributes should all be strings.
             val = unicode(str(att_value), "UTF-8")
