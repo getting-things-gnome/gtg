@@ -49,7 +49,9 @@ class SimpleTagFilter:
         if not task:
             return False
         else:
-            return task.has_tags([self.tname])
+            tags = [self.tname]
+            tags += self.req.get_tag(self.tname).get_children()
+            return task.has_tags(tags)
     
 
 class FiltersBank:
