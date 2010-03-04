@@ -158,7 +158,9 @@ class Manager():
         if tid in self.opened_task:
             #the following line has the side effect of removing the 
             # tid key in the opened_task dictionary.
-            self.opened_task[tid].window.destroy()
+            editor = self.opened_task[tid]
+            if editor:
+                editor.close()
         else:
             print "the %s editor was already unregistered" %tid
             

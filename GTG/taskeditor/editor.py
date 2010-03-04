@@ -246,6 +246,8 @@ class TaskEditor :
     #Refreshtext is whether or not we should refresh the TaskView
     #(doing it all the time is dangerous if the task is empty)
     def refresh_editor(self, title=None, refreshtext=False):
+        if self.window == None:
+            return
         to_save = False
         #title of the window 
         if title :
@@ -600,9 +602,11 @@ class TaskEditor :
             self.config[tid]["size"] = self.window.get_size()
         
     #We define dummy variable for when close is called from a callback
-    def close(self,window=None,a=None,b=None,c=None) : #pylint: disable-msg=W0613
+    def close(self,window=None,a=None,b=None,c=None): #pylint: disable-msg=W0613
         #We should also destroy the whole taskeditor object.
-        self.window.destroy()
+        if self.window:
+            self.window.destroy()
+            self.window = None
     
     #The destroy signal is linked to the "close" button. So if we call
     #destroy in the close function, this will cause the close to be called twice
