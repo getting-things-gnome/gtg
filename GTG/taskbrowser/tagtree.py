@@ -119,14 +119,12 @@ class TagTreeModel(gtk.GenericTreeModel):
                 return  count
             else:
                 if sp_id == "all":
-                    return 0
-#                    return len(self.req.get_active_tasks_list(\
-#                        workable=self.workview, started_only=self.workview))
+                    return len(self.req.get_active_tasks_list(\
+                        workable=self.workview, started_only=self.workview))
                 elif sp_id == "notag":
-                    return 0
-#                    return len(self.req.get_active_tasks_list(\
-#                        workable=self.workview, started_only=self.workview,\
-#                        notag_only=True))
+                    return len(self.req.get_active_tasks_list(\
+                        workable=self.workview, started_only=self.workview,\
+                        notag_only=True))
                 else:
                     return 0
         elif column == COL_SEP:
@@ -459,4 +457,3 @@ class TagTreeView(gtk.TreeView):
                         task.sync()
 
         self.emit_stop_by_name('drag_data_received')
-        

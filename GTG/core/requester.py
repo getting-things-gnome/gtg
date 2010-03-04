@@ -25,6 +25,8 @@ import gobject
 
 from GTG.core.filteredtree import FilteredTree
 from GTG.core.filters_bank import FiltersBank
+from GTG.core.task         import Task
+from GTG.tools.dates       import date_today
 
 class Requester(gobject.GObject):
     """A view on a GTG datastore.
@@ -95,6 +97,21 @@ class Requester(gobject.GObject):
     
     def get_all_tasks_list(self):
         return self.basetree.get_all_keys()
+
+    def get_active_tasks_list(self, \
+                              status       = [Task.STA_ACTIVE], \
+                              workable     = False, \
+                              started_only = False, \
+                              notag_only   = False):
+        return_list = []
+        for tid in self.basetree.get_all_keys():
+            task = self.get_task(tid)
+            if task.get_status() in status and \
+               (not workable     or task.is_workable())  and \
+               (not started_only or task.get_start_date() >= date_today()) and \
+               (not notag_only   or len(task.get_tags()) == 0):
+                return_list.append(tid)
+        return return_list
         
     # Apply a given filter to the main FilteredTree
     def apply_filter(self,filter_name,parameters=None):
