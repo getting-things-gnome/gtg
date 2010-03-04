@@ -648,7 +648,9 @@ class TaskView(gtk.TextView):
                     my_word = buff.get_text(word_start, word_end)
                     # We do something about it
                     #We want a tag bigger than the simple "@"
-                    if len(my_word) > 1 and my_word[0] == '@':
+                    #and it shouldn't start with @@ (bug 531553)
+                    if len(my_word) > 1 and my_word[0] == '@' \
+                       and not my_word[1] == '@':
                         #self.apply_tag_tag(buff,my_word,word_start,word_end)
                         #We will add mark where tag should be applied
                         buff.create_mark(my_word,word_start,True)
