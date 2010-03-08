@@ -122,6 +122,7 @@ setup(
     'GTG.core',
     'GTG.core.plugins',
     'GTG.taskbrowser',
+    'GTG.viewmanager',
     'GTG.taskeditor',
     'GTG.tools',
     'GTG.plugins',
@@ -141,6 +142,7 @@ setup(
   package_data = {
     'GTG.taskbrowser': ['taskbrowser.glade'],
     'GTG.taskeditor': ['taskeditor.glade'],
+    'GTG.viewmanager': ['preferences.glade'],
     'GTG.core.plugins': ['pluginmanager.glade'],
     'GTG.plugins': [
         'bugzilla.gtg-plugin',
