@@ -345,8 +345,9 @@ class PreferencesDialog:
             #Enable autostart
             #We look for the desktop file
             desktop_file_path = None
-            desktop_file_directories = ["../..", \
-                                  "../../../applications"]
+            desktop_file_directories = ["../..",
+                                  "../../../applications",
+                                  "../../../../../share/applications"]
             this_directory = os.path.dirname(os.path.abspath(__file__))
             for path in desktop_file_directories:
                 fullpath = os.path.normpath(os.path.join(this_directory, path, \
@@ -368,7 +369,3 @@ class PreferencesDialog:
                     else:
                         shutil.copyfile(desktop_file_path, \
                                          autostart_path)
-                    
-
-
-
