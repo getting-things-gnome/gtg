@@ -23,7 +23,7 @@ from calendar import isleap
 from GTG import _
 
 #setting the locale of gtg to the system locale 
-locale.setlocale(locale.LC_TIME, '')
+#locale.setlocale(locale.LC_TIME, '')
 
 class Date(object):
     def __cmp__(self, other):
@@ -135,11 +135,11 @@ no_date = NoDate()
 #to a date
 #If the date is not correct, the function returns None
 def strtodate(stri) :
-    if stri == "now" or stri == _("now"):
+    if stri == _("now"):
         return NOW
-    elif stri == "soon" or stri == _("soon"):
+    elif stri == _("soon"):
         return SOON
-    elif stri == "later" or  stri == _("later"):
+    elif stri == _("later"):
         return LATER
         
     toreturn = None
