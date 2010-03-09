@@ -51,6 +51,8 @@ import sys
 import os
 import dbus
 import logging
+import signal
+from contextlib import contextmanager
 
 #our own imports
 from GTG                     import _
@@ -113,9 +115,20 @@ def main(options=None, args=None):
     # Launch task browser
     req = ds.get_requester()
     manager = Manager(req, config)
-    #main loop
-    manager.main()
+ 
+    #we listen for signals from the system in order to save our configuration
+    # if GTG is forcefully terminated (e.g.: on shutdown).
+    @contextmanager
+    def signal_catcher():
+        #if TERM or ABORTare caught, we close the browser
+        for s in [signal.SIGABRT, signal.SIGTERM]:
+            signal.signal(s, lambda a,b: manager.close_browser())
+        yield
 
+    #main loop
+    with signal_catcher():
+        manager.main()
+      
     # Ideally we should load window geometry configuration from a config.
     # backend like gconf at some point, and restore the appearance of the
     # application as the user last exited it.
