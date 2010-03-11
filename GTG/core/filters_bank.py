@@ -21,6 +21,9 @@
 filters_bank stores all of GTG's filters in centralized place
 """
 
+from GTG.core.task import Task
+
+
 class Filter:
     def __init__(self,func,req):
         self.func = func
@@ -58,11 +61,6 @@ class FiltersBank:
     """
     Stores filter objects in a centralized place.
     """
-
-    #FIXME : put those 3 constants and those in Task.py in one place
-    STA_ACTIVE    = "Active"
-    STA_DISMISSED = "Dismiss"
-    STA_DONE      = "Done"
 
     def __init__(self,req,tree=None):
         self.tree = tree
@@ -104,11 +102,11 @@ class FiltersBank:
     def active(self,task):
         """ Filter of tasks which are active """
         #FIXME: we should also handle unactive tags
-        return task.get_status() == self.STA_ACTIVE
+        return task.get_status() == Task.STA_ACTIVE
         
     def closed(self,task):
         """ Filter of tasks which are closed """
-        return task.get_status() in [self.STA_DISMISSED,self.STA_DONE]
+        return task.get_status() in [Task.STA_DISMISSED, Task.STA_DONE]
         
     ##########################################
         
