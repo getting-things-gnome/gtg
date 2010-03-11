@@ -119,9 +119,9 @@ class TagTreeModel(gtk.GenericTreeModel):
                 return  count
             else:
                 if sp_id == "all":
-                    return len(self.req.get_active_tasks_list(\
-                        workable=self.workview, started_only=self.workview))
+                    return len(self.req.get_main_tasks_tree().get_all_keys())
                 elif sp_id == "notag":
+                    #FIXME: use filters, then remove get_active_tasks_list
                     return len(self.req.get_active_tasks_list(\
                         workable=self.workview, started_only=self.workview,\
                         notag_only=True))

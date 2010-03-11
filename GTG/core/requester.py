@@ -98,6 +98,8 @@ class Requester(gobject.GObject):
     def get_all_tasks_list(self):
         return self.basetree.get_all_keys()
 
+    #NOTE: do *not* use this method. It's deprecated, and it will soon go
+    # away. Use filters instead
     def get_active_tasks_list(self, \
                               status       = [Task.STA_ACTIVE], \
                               workable     = False, \
