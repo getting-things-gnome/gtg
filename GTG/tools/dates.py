@@ -93,9 +93,9 @@ class FuzzyDateFixed(FuzzyDate):
 	def to_py_date(self):
 		return self.offset
 
-NOW = FuzzyDate(0, 'now')
-SOON = FuzzyDate(15, 'soon')
-LATER = FuzzyDateFixed(date.max, 'later')
+NOW = FuzzyDate(0, _('now'))
+SOON = FuzzyDate(15, _('soon'))
+LATER = FuzzyDateFixed(date.max, _('later'))
 
 class RealDate(Date):
     def __init__(self, dt):
