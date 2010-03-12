@@ -28,7 +28,9 @@ try:
 except:
     locale.setlocale(locale.LC_ALL, 'C')
 
+#localization libraries
 import gettext
+
 try:
     from gtk import glade
     loaded_glade = glade
@@ -74,6 +76,9 @@ translation = gettext.translation(GETTEXT_DOMAIN, LOCALE_PATH,
                                   fallback=True)
 
 _ = translation.gettext
+#double underscore when a phrase can be singular or plural. Usage:
+# __("I have %d dog", "I have %d dogs", dog_number)
+__ = translation.ngettext
 
 #GTG directories setup
 if os.path.isdir(os.path.join(LOCAL_ROOTDIR, 'data')):

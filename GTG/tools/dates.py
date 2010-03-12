@@ -20,7 +20,7 @@
 from datetime import date, timedelta
 import locale
 from calendar import isleap
-from GTG import _
+from GTG import _, __
 
 #setting the locale of gtg to the system locale 
 #locale.setlocale(locale.LC_TIME, '')
@@ -46,16 +46,15 @@ class Date(object):
         if self.to_py_date() == NoDate().to_py_date():
             return None
         dleft = (self.to_py_date() - date.today()).days
-        if dleft == 1:
-            return _("Tomorrow")
-        elif dleft == 0:
+        if dleft == 0:
             return _("Today")
-        elif dleft == -1:
-            return _("Yesterday")
-        elif dleft < -1:
-            return _("%s days ago") % str(abs(dleft))
-        elif dleft > 1 and dleft <= 15:
-            return _("In %s days") % str(dleft)
+        elif dleft < 0:
+            abs_days = abs(dleft)
+            return __("Yesterday", "%(days)d days ago", abs_days) % \
+                                                           {"days": abs_days}
+        elif dleft > 0 and dleft <= 15:
+            return __("Tomorrow", "In %(days)d days", dleft) % \
+                                                           {"days": dleft}
         else:
             locale_format = self.__get_locale_string()
             if isleap(date.today().year):
