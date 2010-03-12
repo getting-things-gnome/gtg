@@ -94,6 +94,7 @@ class FilteredTree(gobject.GObject):
         self.update_count = 0
         self.add_count = 0
         self.remove_count = 0
+        self.__nodes_count = 0
         #virtual root is the list of root nodes
         #initially, they are the root nodes of the original tree
         self.virtual_root = []
@@ -544,6 +545,7 @@ class FilteredTree(gobject.GObject):
     
     def __add_node(self,tid,inroot=None):
         self.add_count += 1
+        self.__nodes_count += 1
         if not self.is_displayed(tid):
             node = self.get_node(tid)
             if inroot == None:
@@ -563,6 +565,7 @@ class FilteredTree(gobject.GObject):
     
     def __remove_node(self,tid):
         self.remove_count += 1
+        self.__nodes_count -= 1
         self.emit('task-deleted-inview',tid)
         self.__root_update(tid,False)
         if tid in self.displayed_nodes:
@@ -592,3 +595,7 @@ class FilteredTree(gobject.GObject):
                 self.__clean_from_node(child)
                 child = self.next_node(child)
         self.__remove_node(node.get_id())
+
+    def get_nodes_count(self):
+        """returns the number of nodes in this tree"""
+        return self.__nodes_count
