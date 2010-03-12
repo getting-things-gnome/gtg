@@ -1161,7 +1161,7 @@ class TaskBrowser:
             zetask = self.req.get_task(uid)
             tags   = zetask.get_tags()
             task   = self.req.new_task(tags=tags, newtask=True)
-            task.add_parent(uid)
+            #task.add_parent(uid)
             zetask.add_child(task.get_id())
             self.vmanager.open_task(task.get_id(),thisisnew=True)
             #self.do_refresh()
