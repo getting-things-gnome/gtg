@@ -12,19 +12,18 @@ In GTG, everything is a task. From building a bridge over the Pacific Ocean to c
 
 Once a task is done, you can push the &quot;Mark as done&quot; button. If the task is not relevant any-more, simply press &quot;Dismiss&quot;.
 
-A task might be composed of multiple subtasks that appear as links in the description. Simply click on the following link:
-<subtask>1@1</subtask>
-Once you've read the above subtask, mark it as Done. If you don't want to do the task, mark it as dismissed. Done and Dismissed tasks are kept in the closed tasks pane, hidden by default but you can easily enable it in the View menu.
+A task might be composed of multiple subtasks that appear as links in the description. Simply click on the following link:""")
+    text1 += "\n<subtask>1@1</subtask>\n"
+    text1 += _("""Once you've read the above subtask, mark it as Done. If you don't want to do the task, mark it as dismissed. Done and Dismissed tasks are kept in the closed tasks pane, hidden by default but you can easily enable it in the View menu.
 
 If you choose to close this current task, subtasks will be automatically closed too. We indeed consider that, if you achieve a given task, you don't need to do the subtask anymore.
-Other stuff you should read:
-    <subtask>2@1</subtask>
+Other stuff you should read:""")
+    text1 += """\n<subtask>2@1</subtask>
     <subtask>3@1</subtask>
     <subtask>4@1</subtask>
     <subtask>5@1</subtask>
-    <subtask>6@1</subtask>
-
-We hope that you will appreciate GTG. Please send us bug reports and ideas for improvement using:
+    <subtask>6@1</subtask>\n"""
+    text1 += _("""We hope that you will appreciate GTG. Please send us bug reports and ideas for improvement using:
     https://bugs.launchpad.net/gtg
 
 Thank you for trying out GTG :-)""")
