@@ -161,6 +161,7 @@ class Manager():
             editor = self.opened_task[tid]
             if editor:
                 editor.close()
+                del self.opened_task[tid]
         else:
             print "the %s editor was already unregistered" %tid
             
