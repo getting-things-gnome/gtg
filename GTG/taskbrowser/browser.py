@@ -37,6 +37,7 @@ import time
 import GTG
 from GTG import info
 from GTG import _
+from GTG import ngettext
 from GTG.tools.logger                 import Log
 from GTG.core.task                    import Task
 from GTG.core.tagstore                import Tag
@@ -568,10 +569,10 @@ class TaskBrowser:
         parenthesis = ""
         if count == 0:
             parenthesis = _("no active tasks")
-        elif count == 1:
-            parenthesis = _("1 active task")
         else:
-            parenthesis = _("%s active tasks") % count
+            parenthesis = ngettext("%(tasks)d active task", \
+                                   "%(tasks)d active tasks", \
+                                   count) % {'tasks': count}
         self.window.set_title("%s - "%parenthesis + WINDOW_TITLE)
 
     def get_canonical_date(self, arg):

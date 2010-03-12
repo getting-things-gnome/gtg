@@ -26,6 +26,7 @@ import sys
 import time
 
 from GTG import _
+from GTG import ngettext
 from GTG import PLUGIN_DIR
 from GTG import DATA_DIR
 from GTG.taskeditor          import GnomeConfig
@@ -316,28 +317,22 @@ class TaskEditor :
                 txt = ""
             elif delay == 0:
                 txt = "Completed on time"
-            elif delay == 1:
-                txt = "Completed 1 day late"
-            elif delay > 1:
-                txt = _("Completed %s days late") %delay
-            elif delay == -1:
-                txt = "Completed 1 day early"
-            elif delay < -1:
-                txt = _("Completed %s days early") % -delay
+            elif delay >= 1:
+                txt = ngettext("Completed %(days)d day late", "Completed %(days)d days late", delay) % {'days': delay}
+            elif delay <= -1:
+                abs_delay = abs(delay)
+                txt = ngettext("Completed %(days)d day early", "Completed %(days)d days early", abs_delay) % {'days': abs_delay}
         else:
             result = self.task.get_days_left()
             if result is None:
                 txt = ""
-            elif result == 1:
-                txt = _("Due tomorrow !")
             elif result > 0:
-                txt = _("%s days left") %result
+                txt = ngettext("Due tomorrow!", "%(days)d days left", result) % {'days': result}
             elif result == 0:
-                txt = _("Due today !")
-            elif result == -1:
-                txt = _("Due yesterday")
+                txt = _("Due today!")
             elif result < 0:
-                txt = _("Was %s days ago") % -result
+                abs_result = abs(result)
+                txt = ngettext("Due yesterday!", "Was %(days)d days ago", abs_result) % {'days': abs_result}
         window_style = self.window.get_style()
         color = str(window_style.text[gtk.STATE_INSENSITIVE])
         self.dayleft_label.set_markup("<span color='"+color+"'>"+txt+"</span>")

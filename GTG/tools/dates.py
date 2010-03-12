@@ -20,7 +20,7 @@
 from datetime import date, timedelta
 import locale
 from calendar import isleap
-from GTG import _, __
+from GTG import _, ngettext
 
 #setting the locale of gtg to the system locale 
 #locale.setlocale(locale.LC_TIME, '')
@@ -50,10 +50,10 @@ class Date(object):
             return _("Today")
         elif dleft < 0:
             abs_days = abs(dleft)
-            return __("Yesterday", "%(days)d days ago", abs_days) % \
+            return ngettext("Yesterday", "%(days)d days ago", abs_days) % \
                                                            {"days": abs_days}
         elif dleft > 0 and dleft <= 15:
-            return __("Tomorrow", "In %(days)d days", dleft) % \
+            return ngettext("Tomorrow", "In %(days)d days", dleft) % \
                                                            {"days": dleft}
         else:
             locale_format = self.__get_locale_string()
