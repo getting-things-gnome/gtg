@@ -48,6 +48,13 @@ class TagTreeModel(gtk.GenericTreeModel):
         self.req  = requester
         self.tree = self.req.get_tag_tree()
         self.workview = False
+
+        #filtered trees used for counting "All tasks" and 
+        # "Tasks without tags"
+        self.active_filtered_tree = self.req.get_custom_tasks_tree()
+        self.notag_filtered_tree = self.req.get_custom_tasks_tree()
+        self.active_filtered_tree.apply_filter("active")
+        self.notag_filtered_tree.apply_filter("notag")
         
         self.req.connect('tag-added',self.add_tag)
         self.req.connect('tag-modified',self.update_tag)
@@ -118,14 +125,12 @@ class TagTreeModel(gtk.GenericTreeModel):
                 count = tag.get_tasks_nbr(workview=self.workview)
                 return  count
             else:
-                ft = self.req.get_custom_tasks_tree()
                 if sp_id == "all":
-                    ft.apply_filter("active")
+                    return self.active_filtered_tree.get_nodes_count()
                 elif sp_id == "notag":
-                    ft.apply_filter("notag")
+                    return self.notag_filtered_tree.get_nodes_count()
                 else:
                     return 0
-                return ft.get_nodes_count()
         elif column == COL_SEP:
             sp_id = tag.get_attribute("special")
             if not sp_id:
