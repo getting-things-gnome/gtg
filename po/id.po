@@ -1,16 +1,16 @@
-# Lojban translation for gtg
-# Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
+# Indonesian translation for gtg
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
 # This file is distributed under the same license as the gtg package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-03-12 11:40+0100\n"
-"PO-Revision-Date: 2009-12-05 13:56+0000\n"
-"Last-Translator: David Futcher <bobbocanfly@gmail.com>\n"
-"Language-Team: Lojban <jbo@li.org>\n"
+"PO-Revision-Date: 2010-01-23 08:16+0000\n"
+"Last-Translator: Andika Triwidada <andika@gmail.com>\n"
+"Language-Team: Indonesian <id@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -255,11 +255,11 @@ msgstr ""
 
 #: GTG/plugins/rtm_sync/rtmProxy.py:171
 msgid "saving critical object failed"
-msgstr ""
+msgstr "gagal menyimpan objek kritis"
 
 #: GTG/plugins/rtm_sync/syncEngine.py:87
 msgid "Downloading task list..."
-msgstr ""
+msgstr "Mengunduh senarai tugas..."
 
 #: GTG/plugins/rtm_sync/syncEngine.py:88
 msgid "Downloading..."
@@ -267,19 +267,19 @@ msgstr ""
 
 #: GTG/plugins/rtm_sync/syncEngine.py:123
 msgid "Adding tasks to rtm.."
-msgstr ""
+msgstr "Menambahkan task ke rtm.."
 
 #: GTG/plugins/rtm_sync/syncEngine.py:133
 msgid "Adding tasks to gtg.."
-msgstr ""
+msgstr "Menambahkan tugas ke gtg.."
 
 #: GTG/plugins/rtm_sync/syncEngine.py:143
 msgid "Deleting tasks from rtm.."
-msgstr ""
+msgstr "Menghapus tugas dari rtm..."
 
 #: GTG/plugins/rtm_sync/syncEngine.py:154
 msgid "Deleting tasks from gtg.."
-msgstr ""
+msgstr "Menghapus tugas dari gtg.."
 
 #: GTG/plugins/rtm_sync/syncEngine.py:164
 msgid "Updating changed tasks.."
@@ -290,47 +290,47 @@ msgstr ""
 #: GTG/plugins/rtm_sync/syncEngine.py:197
 #: GTG/plugins/rtm_sync/syncEngine.py:200
 msgid "Updating "
-msgstr ""
+msgstr "Memperbarui "
 
 #: GTG/plugins/rtm_sync/syncEngine.py:208
 msgid "Saving current state.."
-msgstr ""
+msgstr "Menyimpan keadaan kini.."
 
 #: GTG/plugins/rtm_sync/syncEngine.py:215
 msgid "Synchronization completed."
-msgstr ""
+msgstr "Penyelarasan selesai."
 
 #: GTG/plugins/rtm_sync/syncEngine.py:238
 msgid "Adding "
-msgstr ""
+msgstr "Menambahkan.. "
 
 #: GTG/plugins/rtm_sync/syncEngine.py:247
 msgid "Deleting "
-msgstr ""
+msgstr "Menghapus "
 
 #: GTG/plugins/rtm_sync/syncEngine.py:277
 msgid "Closing in one second"
-msgstr ""
+msgstr "Menutup dalam sedetik"
 
 #: GTG/plugins/rtm_sync/pyrtm/rtm.py:55
 msgid "Invalid state"
-msgstr ""
+msgstr "Keadaan tak valid"
 
 #: GTG/plugins/rtm_sync/rtm_sync.py:77 GTG/plugins/rtm_sync/rtm_sync.py:82
 msgid "Synchronize with RTM"
-msgstr ""
+msgstr "Selaraskan dengan RTM"
 
 #: GTG/plugins/rtm_sync/rtm_sync.py:143
 msgid "Synchronization started"
-msgstr ""
+msgstr "Penyelarasan dimulai"
 
 #: GTG/plugins/rtm_sync/rtm_sync.py:156
 msgid "Trying to access, please stand by..."
-msgstr ""
+msgstr "Mencoba mengakses, silakan tunggu..."
 
 #: GTG/plugins/rtm_sync/rtm_sync.py:174
 msgid "Couldn't connect to Remember The Milk"
-msgstr ""
+msgstr "Tak bisa menyambung ke Remember The Milk"
 
 #: GTG/plugins/rtm_sync/rtm_sync.py:189
 msgid "Authentication failed."
@@ -345,6 +345,8 @@ msgid ""
 "Please authenticate to Remember The Milk in the browser that is being opened "
 "now. When done, press OK"
 msgstr ""
+"Silakan otentikasi ke Remember The Milk dalam peramban yang kini sedang "
+"dibuka. Setelah selesai, tekan OK"
 
 #: GTG/plugins/hamster/hamster.py:40
 msgid "Start task in Hamster"
@@ -364,11 +366,11 @@ msgstr ""
 
 #: GTG/plugins/notification_area/notification_area.py:188
 msgid "_View Main Window"
-msgstr ""
+msgstr "_Tilik Jendela Utama"
 
 #: GTG/plugins/notification_area/notification_area.py:196
 msgid "Add _New Task"
-msgstr ""
+msgstr "Ta_mbah Tugas Baru"
 
 #: GTG/plugins/tomboy/tomboy.py:82
 msgid ""
@@ -378,7 +380,7 @@ msgstr ""
 
 #: GTG/plugins/tomboy/tomboy.py:127
 msgid "Add Tomboy note"
-msgstr ""
+msgstr "Tambah catatan Tomboy"
 
 #: GTG/plugins/tomboy/tomboy.py:195
 msgid ""
@@ -388,37 +390,39 @@ msgstr ""
 
 #: GTG/plugins/tomboy/tomboy.py:243
 msgid "That note does not exist!"
-msgstr ""
+msgstr "Catatan itu tak ada!"
 
 #: GTG/plugins/tomboy/tomboy.py:248
 msgid "That note does not exist. Do you want to create a new one?"
-msgstr ""
+msgstr "Catatan itu tak ada. Apakah Anda ingin membuat yang baru?"
 
 #: GTG/plugins/tomboy/tomboy.py:276
 msgid "This Tomboy note does not exist anymore. Do you want to create it?"
-msgstr ""
+msgstr "Catatan Tomboy ini tak ada lagi. Apakah Anda ingin membuatnya?"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:1
 msgid "<b>Location Determination Method</b>"
-msgstr ""
+msgstr "<b>Metoda Penentuan Lokasi</b>"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:2
 msgid "<b>Proximity Factor</b>"
-msgstr ""
+msgstr "<b>Faktor Kedekatan</b>"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:3
 msgid ""
 "<small>Distance in kilometers from \n"
 "the current location.</small>"
 msgstr ""
+"<small>Jarak dalam kilometer dari \n"
+"lokasi kini.</small>"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:5
 msgid "Associate with existing tag"
-msgstr ""
+msgstr "Asosiasikan dengan tag yang telah ada"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:6
 msgid "Associate with new tag"
-msgstr ""
+msgstr "Asosiasikan dengan tag baru"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:7
 msgid "Geolocalized-tasks Preferences"
@@ -426,31 +430,31 @@ msgstr ""
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:8
 msgid "Set the task's location"
-msgstr ""
+msgstr "Tata lokasi tugas"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:9
 msgid "Use cellphone"
-msgstr ""
+msgstr "Pakai telepon genggam"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:10
 msgid "Use gps"
-msgstr ""
+msgstr "Pakai GPS"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:11
 msgid "Use network"
-msgstr ""
+msgstr "Pakai jaringan"
 
 #: GTG/plugins/export/export.py:301
 msgid "Template not found"
-msgstr ""
+msgstr "Templat tak ditemukan"
 
 #: GTG/plugins/export/export.py:302
 msgid "Can't load the template file"
-msgstr ""
+msgstr "Tak bisa memuat berkas templat"
 
 #: GTG/plugins/export/export.py:331
 msgid "Choose where to save your list"
-msgstr ""
+msgstr "Pilih akan menyimpan daftar Anda kemana"
 
 #: GTG/plugins/evolution_sync/evolutionSync.py:33
 msgid "Synchronize with Evolution"
@@ -484,7 +488,7 @@ msgstr[1] ""
 
 #: GTG/tools/dates.py:98 GTG/tools/dates.py:140
 msgid "now"
-msgstr "cabna"
+msgstr ""
 
 #: GTG/tools/dates.py:99 GTG/tools/dates.py:142
 msgid "soon"
@@ -492,7 +496,7 @@ msgstr ""
 
 #: GTG/tools/dates.py:100 GTG/tools/dates.py:144
 msgid "later"
-msgstr "na lirmau"
+msgstr ""
 
 #: GTG/taskbrowser/__init__.py:37
 msgid "Mark the selected task as done"
@@ -829,7 +833,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:8
 msgid "Getting started with GTG"
-msgstr ""
+msgstr "Mulai memakai GTG"
 
 #: GTG/core/firstrun_tasks.py:9
 msgid ""
@@ -869,7 +873,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:35
 msgid "Learn how to use subtasks"
-msgstr ""
+msgstr "Belajar memakai sub tugas"
 
 #: GTG/core/firstrun_tasks.py:36
 msgid ""
@@ -890,7 +894,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:49
 msgid "Learn how to use tags"
-msgstr ""
+msgstr "Belajar memakai tag"
 
 #: GTG/core/firstrun_tasks.py:50
 msgid ""
@@ -1014,43 +1018,43 @@ msgstr ""
 
 #: GTG/core/plugins/__init__.py:33
 msgid "The plugin can not be loaded"
-msgstr ""
+msgstr "Plugin tak dapat dimuat"
 
 #: GTG/core/plugins/__init__.py:34
 msgid "Some python modules are missing"
-msgstr ""
+msgstr "Beberapa modul python hilang"
 
 #: GTG/core/plugins/__init__.py:35
 msgid "Please install the following python modules:"
-msgstr ""
+msgstr "Silakan pasang modul python berikut:"
 
 #: GTG/core/plugins/__init__.py:37
 msgid "Some remote dbus objects are missing."
-msgstr ""
+msgstr "Beberapa objek dbus hilang."
 
 #: GTG/core/plugins/__init__.py:38
 msgid "Please start the following applications:"
-msgstr ""
+msgstr "Silakan mulai jalankan aplikasi berikut:"
 
 #: GTG/core/plugins/__init__.py:40
 msgid "Some modules and remote dbus objects are missing."
-msgstr ""
+msgstr "Beberapa modul dan objek dbus hilang."
 
 #: GTG/core/plugins/__init__.py:41
 msgid "Please install or start the following components:"
-msgstr ""
+msgstr "Silakan pasang atau mulai jalankan komponen berikut:"
 
 #: GTG/core/plugins/__init__.py:43
 msgid "Unknown error while loading the plugin."
-msgstr ""
+msgstr "Galat tak dikenal saat memuat plugin."
 
 #: GTG/core/plugins/__init__.py:44
 msgid "Very helpful message, isn't it? Please report a bug."
-msgstr ""
+msgstr "Pesan yang sangat membantu bukan? Silakan melaporkan kutu."
 
 #: GTG/core/task.py:53
 msgid "My new task"
-msgstr ""
+msgstr "Tugas baruku"
 
 #: GTG/core/tagstore.py:52
 msgid "All tasks"
@@ -1059,3 +1063,30 @@ msgstr ""
 #: GTG/core/tagstore.py:59
 msgid "Tasks with no tags"
 msgstr ""
+
+#~ msgid ""
+#~ "In GTG, everything is a task. From building a bridge over the Pacific Ocean "
+#~ "to changing a light bulb or organizing a party. When you edit a task, it is "
+#~ "automatically saved."
+#~ msgstr ""
+#~ "Di GTG, semua adalah tugas. Mulai dari membangun jembatan di atas Laut "
+#~ "Pasifik sampai ke mengganti bola lampu atau mengelola sebuah pesta. Ketika "
+#~ "Anda menyunting sebuah tugas, dia otomatis disimpan."
+
+#~ msgid "Welcome to Getting Things Gnome!, your new task manager."
+#~ msgstr "Selamat datang ke Getting Things Gnome!, manajer tugas baru Anda."
+
+#~ msgid "Thank you for trying out GTG :-)"
+#~ msgstr "Terima kasih telah mencoba GTG :-)"
+
+#~ msgid "Other stuff you should read:"
+#~ msgstr "Hal lain yang mesti Anda baca:"
+
+#~ msgid "A tag is a simple word that begins with &quot;@&quot;."
+#~ msgstr "Tag adalah kata sederhana yang dimulai dengan &quot;@&quot;."
+
+#~ msgid "It becomes yellow, it's a tag."
+#~ msgstr "Dia menjadi kuning, itu adalah tag."
+
+#~ msgid "Try to type a word beginning with @ here:"
+#~ msgstr "Cobalah mengetikkan suatu kata yang diawali dengan @ disini:"

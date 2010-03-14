@@ -1,20 +1,20 @@
-# Lojban translation for gtg
-# Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
+# Basque translation for gtg
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
 # This file is distributed under the same license as the gtg package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-03-12 11:40+0100\n"
-"PO-Revision-Date: 2009-12-05 13:56+0000\n"
-"Last-Translator: David Futcher <bobbocanfly@gmail.com>\n"
-"Language-Team: Lojban <jbo@li.org>\n"
+"PO-Revision-Date: 2010-03-12 09:54+0000\n"
+"Last-Translator: Oier Mees <Unknown>\n"
+"Language-Team: Basque <eu@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Launchpad-Export-Date: 2010-03-14 05:03+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
@@ -73,7 +73,7 @@ msgstr ""
 
 #: GTG/taskeditor/taskeditor.glade.h:2 GTG/taskbrowser/taskbrowser.glade.h:13
 msgid "Delete"
-msgstr ""
+msgstr "Ezabatu"
 
 #: GTG/taskeditor/taskeditor.glade.h:4
 msgid "Due for"
@@ -89,7 +89,7 @@ msgstr ""
 
 #: GTG/taskeditor/taskeditor.glade.h:7
 msgid "Later"
-msgstr ""
+msgstr "Beranduago"
 
 #: GTG/taskeditor/taskeditor.glade.h:8
 msgid "Mark Done"
@@ -97,11 +97,11 @@ msgstr ""
 
 #: GTG/taskeditor/taskeditor.glade.h:9
 msgid "Now"
-msgstr ""
+msgstr "Orain"
 
 #: GTG/taskeditor/taskeditor.glade.h:10
 msgid "Soon"
-msgstr ""
+msgstr "Laister"
 
 #: GTG/taskeditor/taskeditor.glade.h:11
 msgid "Starting on"
@@ -109,7 +109,7 @@ msgstr ""
 
 #: GTG/taskeditor/taskeditor.glade.h:12
 msgid "Task"
-msgstr ""
+msgstr "Ataza"
 
 #: GTG/taskeditor/editor.py:321
 #, python-format
@@ -458,15 +458,15 @@ msgstr ""
 
 #: GTG/tools/dates.py:51
 msgid "Tomorrow"
-msgstr ""
+msgstr "Bihar"
 
 #: GTG/tools/dates.py:53
 msgid "Today"
-msgstr ""
+msgstr "Gaur"
 
 #: GTG/tools/dates.py:55
 msgid "Yesterday"
-msgstr ""
+msgstr "Atzo"
 
 #: GTG/tools/dates.py:58
 #, python-format
@@ -484,15 +484,15 @@ msgstr[1] ""
 
 #: GTG/tools/dates.py:98 GTG/tools/dates.py:140
 msgid "now"
-msgstr "cabna"
+msgstr "Orain"
 
 #: GTG/tools/dates.py:99 GTG/tools/dates.py:142
 msgid "soon"
-msgstr ""
+msgstr "Laister"
 
 #: GTG/tools/dates.py:100 GTG/tools/dates.py:144
 msgid "later"
-msgstr "na lirmau"
+msgstr "Beranduago"
 
 #: GTG/taskbrowser/__init__.py:37
 msgid "Mark the selected task as done"
@@ -1059,3 +1059,7 @@ msgstr ""
 #: GTG/core/tagstore.py:59
 msgid "Tasks with no tags"
 msgstr ""
+
+#, python-format
+#~ msgid "%s days left"
+#~ msgstr "%s egun geratzen dira"
