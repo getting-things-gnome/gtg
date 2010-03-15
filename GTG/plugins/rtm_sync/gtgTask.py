@@ -46,8 +46,7 @@ class GtgTask(GenericTask):
     def _set_tags(self, tags):
         other_tags = []
         for tag in tags:
-            if tag[0] != '@':
-                tag = '@' + tag
+            tag = '@' + tag
             other_tags.append(tag)
         gtg_tags = self._gtg_task.get_tags()
         gtg_tags_lower = [t.get_name().lower() for t in gtg_tags]
