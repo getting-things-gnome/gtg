@@ -33,9 +33,31 @@ class NotificationArea:
     DEFAULT_PREFERENCES = {"start_minimized": False}
     PLUGIN_NAME = "notification_area"
     MAX_TITLE_LEN = 30
-    
+
+    class Borg:
+        """Application indicator can be instantiated only
+           once. The plugin api, when toggling the activation
+           state of a plugin, instantiates different instances
+           of the plugin class. Therefore, we need to keep
+           a reference to the indicator object. This class does that."""
+        __shared_state = {}
+        def __init__(self):
+            self.__dict__ = self.__shared_state
+            if not hasattr(self, "indicator"):
+                self.indicator = appindicator.Indicator ("gtg", \
+                                  "indicator-messages", \
+                                   appindicator.CATEGORY_APPLICATION_STATUS)
+                self.indicator.set_icon("gtg")
+
+        def get_indicator(self):
+            return self.indicator
+
+
+
     def __init__(self):
         self.minimized = False
+        if indicator_capable:
+            self.ind = self.Borg().get_indicator()
     
     def activate(self, plugin_api):
         self.plugin_api = plugin_api
@@ -43,13 +65,7 @@ class NotificationArea:
         self.create_static_menu()
         #initialize the right notification thing
         if indicator_capable:
-            #Create an indicator icon
-            if not hasattr(self, "ind"):
-                self.ind = appindicator.Indicator ("gtg", \
-                                  "indicator-messages", \
-                                   appindicator.CATEGORY_APPLICATION_STATUS)
-                self.ind.set_icon("gtg")
-                self.ind.set_menu(self.menu)
+            self.ind.set_menu(self.menu)
             self.ind.set_status(appindicator.STATUS_ACTIVE)
             self.ind.set_attention_icon("indicator-messages-new")
         else:
