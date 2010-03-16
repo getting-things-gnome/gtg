@@ -14,15 +14,11 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import os
-import sys
 import datetime
 from xdg.BaseDirectory import xdg_data_home
 
-#Add this file's directory to the path used to search for libraries
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from gtgProxy import GtgProxy
-from evolutionProxy import EvolutionProxy
+from GTG.plugins.evolution_sync.gtgProxy       import GtgProxy
+from GTG.plugins.evolution_sync.evolutionProxy import EvolutionProxy
 
 class TaskPair(object):
         def __init__(self, \

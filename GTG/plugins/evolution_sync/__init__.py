@@ -14,11 +14,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import sys
-import os
-sys.path.insert(0, os.getcwd())
-
-from evolutionSync import EvolutionSync
+from GTG.plugins.evolution_sync.evolutionSync import EvolutionSync
 
 #needed to keep pyflakes quiet
 if False == True: EvolutionSync()

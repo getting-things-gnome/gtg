@@ -14,11 +14,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import sys
-import os
-sys.path.insert(0, os.getcwd())
-
-from sendEmail import pluginSendEmail
+from GTG.plugins.send_email.sendEmail import pluginSendEmail
 
 
 #suppress pyflakes warning (given by make lint)

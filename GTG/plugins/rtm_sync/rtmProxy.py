@@ -17,24 +17,16 @@
 from __future__ import with_statement
 
 import os
-import sys
-#import time
 import subprocess
-#import gobject
+import pickle
 from xdg.BaseDirectory import xdg_config_home
+
+from GTG import _
 from GTG.core.task import Task
 from GTG.tools.logger                 import Log
-from GTG import _
-import pickle
-#import xml.utils.iso8601
-#from datetime import date
-
-#This add's the plugin's path to python sys path
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))+'/pyrtm')
-import rtm
-from rtmTask import RtmTask
-from genericProxy import GenericProxy
+from GTG.plugins.rtm_sync.rtmTask import RtmTask
+from GTG.plugins.rtm_sync.genericProxy import GenericProxy
+from GTG.plugins.rtm_sync.pyrtm.rtm import createRTM
 
 
 class RtmProxy(GenericProxy):
@@ -44,6 +36,9 @@ class RtmProxy(GenericProxy):
 
     __RTM_STATUSES = [True,
                       False]
+
+    PUBLIC_KEY = "2a440fdfe9d890c343c25a91afd84c7e"
+    PRIVATE_KEY = "ca078fee48d0bbfa"
 
     def __init__(self):
         super(RtmProxy, self).__init__()
@@ -64,8 +59,7 @@ class RtmProxy(GenericProxy):
                 os.path.join(xdg_config_home, 'gtg/plugins/rtm-sync')
             self.token = self._smartLoadFromFile(self.config_dir, 'token')
         if self.token == None:
-            self.rtm=rtm.createRTM("2a440fdfe9d890c343c25a91afd84c7e", \
-                                   "ca078fee48d0bbfa")
+            self.rtm= createRTM(self.PUBLIC_KEY, self.PRIVATE_KEY)
             subprocess.Popen(['xdg-open', self.rtm.getAuthURL()])
             return False
         return True
@@ -79,8 +73,8 @@ class RtmProxy(GenericProxy):
         if(self.getToken() == False):
             return False
         try:
-            self.rtm = rtm.createRTM("2a440fdfe9d890c343c25a91afd84c7e",\
-                               "ca078fee48d0bbfa", self.token)
+            self.rtm = createRTM(self.PUBLIC_KEY, self.PRIVATE_KEY, \
+                                                            self.token)
         except:
             self.token = None
         self._smartSaveToFile(self.config_dir, 'token', self.token)

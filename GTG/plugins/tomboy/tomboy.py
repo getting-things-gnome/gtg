@@ -25,11 +25,10 @@ except: # pylint: disable-msg=W0702
     sys.exit(1)
 
 import os
-import sys
 import dbus
+
 from GTG import _
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-import combobox_enhanced
+from GTG.plugins.tomboy.combobox_enhanced import smartifyComboboxEntry
 
 
 class pluginTomboy:
@@ -226,8 +225,7 @@ Please install it or disable the Tomboy/Gnote plugin in GTG"))
                 "on_InsertNoteDialog_close"  : self.close_dialog
         }
         self.builder.connect_signals(dic)
-        self.combobox_entry = combobox_enhanced.\
-                smartifyComboboxEntry(self.combobox, title_list,\
+        self.combobox_entry = smartifyComboboxEntry(self.combobox, title_list,\
                 self.noteChosen)
         self.dialog.show_all()
 

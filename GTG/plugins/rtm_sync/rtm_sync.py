@@ -17,13 +17,11 @@
 
 import gtk
 import os
-import sys
 from threading import Thread
 import gobject
+
 from GTG import _
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))+'/pyrtm')
-import syncEngine
+from GTG.plugins.rtm_sync.syncEngine import SyncEngine
 
 
 class RtmSync:
@@ -86,7 +84,7 @@ class RtmSync:
 
     def activate(self, plugin_api):
         self.plugin_api = plugin_api
-        self.sync_engine = syncEngine.SyncEngine(self)
+        self.sync_engine = SyncEngine(self)
         # add a menu item to the menu bar
         plugin_api.add_menu_item(self.menu_item)
         # saves the separator's index to later remove it

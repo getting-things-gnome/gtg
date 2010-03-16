@@ -14,11 +14,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import sys
-import os
-sys.path.insert(0,os.getcwd())
-
-from import_json import pluginImportJson
+from GTG.plugins.import_json.import_json import pluginImportJson
 
 
 #suppress pyflakes warning (given by make lint)

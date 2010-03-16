@@ -13,15 +13,11 @@
 #
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
-import sys
-import os
 import datetime
 import time
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__))+'/pyrtm')
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from genericTask import GenericTask
 
 from GTG.tools.logger import Log
+from GTG.plugins.rtm_sync.genericTask import GenericTask
 
 
 class RtmTask(GenericTask):

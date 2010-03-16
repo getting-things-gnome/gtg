@@ -14,14 +14,10 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import sys
-import os
 import time
 import datetime
 
-#Add this file's directory to the path used to search for libraries
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from genericTask import GenericTask
+from GTG.plugins.evolution_sync.genericTask import GenericTask
 
 
 class EvolutionTask(GenericTask):

@@ -25,9 +25,7 @@ import Geoclue
 import clutter, cluttergtk
 import champlain
 
-# IMPORTANT This add's the plugin's path to python sys path
-sys.path.insert(0,os.path.dirname(os.path.abspath(__file__)))
-from marker import MarkerLayer
+from GTG.plugins.geolocalized_tasks.marker import MarkerLayer
 
 class geolocalizedTasks:
     

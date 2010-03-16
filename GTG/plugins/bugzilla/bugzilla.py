@@ -15,8 +15,9 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from urlparse import urlparse
-from server import ServersStore
-from bug import Bug
+
+from GTG.plugins.bugzilla.server import ServersStore
+from GTG.plugins.bugzilla.bug import Bug
 
 class pluginBugzilla:
 

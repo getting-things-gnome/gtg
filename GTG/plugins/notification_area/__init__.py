@@ -14,11 +14,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import sys
-import os
-sys.path.insert(0,os.getcwd())
-
-from notification_area import NotificationArea
+from GTG.plugins.notification_area.notification_area import NotificationArea
 
 
 #suppress pyflakes warning (given by make lint)

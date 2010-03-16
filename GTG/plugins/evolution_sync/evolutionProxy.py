@@ -13,16 +13,12 @@
 #
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
-import os
-import sys
+
 import evolution
 
 from GTG.core.task import Task
-
-#Add this file's directory to the path used to search for libraries
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from evolutionTask import EvolutionTask
-from genericProxy import GenericProxy
+from GTG.plugins.evolution_sync.evolutionTask import EvolutionTask
+from GTG.plugins.evolution_sync.genericProxy import GenericProxy
 
 
 class EvolutionProxy(GenericProxy):
