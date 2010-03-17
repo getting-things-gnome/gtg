@@ -4,7 +4,7 @@ __author__ = 'Sridhar Ratnakumar <http://nearfar.org/>'
 __all__ = (
     'API',
     'createRTM',
-    'set_log_level'
+    'set_log_level',
         )
 
 
@@ -21,8 +21,12 @@ try:
     import simplejson
     _use_simplejson = True
 except ImportError:
-    pass
-
+    try:
+        from django.utils import simplejson
+        _use_simplejson = True
+    except ImportError:
+        pass
+    
 if not _use_simplejson:
     warnings.warn("simplejson module is not available, "
              "falling back to the internal JSON parser. "
@@ -93,7 +97,6 @@ class RTM(object):
         json = openURL(SERVICE_URL, params).read()
 
         #LOG.debug("JSON response: \n%s" % json)
-        time.sleep(1)
         if _use_simplejson:
             data = dottedDict('ROOT', simplejson.loads(json))
         else:
@@ -183,7 +186,7 @@ def openURL(url, queryArgs=None):
     return urllib.urlopen(url)
 
 class dottedDict(object):
-    "Make dictionary items accessible via the object-dot notation."
+    """Make dictionary items accessible via the object-dot notation."""
 
     def __init__(self, name, dictionary):
         self._name = name
