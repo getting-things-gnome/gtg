@@ -395,9 +395,8 @@ class Task(TreeNode):
     def add_parent(self, parent_tid):
         added = TreeNode.add_parent(self, parent_tid)
         if added:
-            #print "add_parent %s to %s" %(parent.get_id(),self.get_id())
             self.sync()
-            parent.sync()
+            self.req.get_task(parent_tid).sync()
             return True
         else:
             return False

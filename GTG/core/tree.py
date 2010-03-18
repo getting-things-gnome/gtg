@@ -247,9 +247,9 @@ class TreeNode():
     
     def new_relationship(self,par,chi):
         if self.tree:
-            self.tree.new_relationship(par,chi)
+            return self.tree.new_relationship(par,chi)
         else:
-            self.pending_relationship.append([par,chi])
+            return self.pending_relationship.append([par,chi])
         
         
 ##### Parents

@@ -30,7 +30,6 @@ import gtk
 import locale
 import re
 import datetime
-import threading
 import time
 
 #our own imports
@@ -40,7 +39,7 @@ from GTG import _
 from GTG import ngettext
 from GTG.tools.logger                 import Log
 from GTG.core.task                    import Task
-from GTG.core.tagstore                import Tag
+#from GTG.core.tagstore                import Tag
 from GTG.taskbrowser                  import GnomeConfig
 from GTG.taskbrowser                  import tasktree
 #from GTG.taskbrowser.preferences      import PreferencesDialog
@@ -54,7 +53,7 @@ from GTG.tools                        import openurl
 from GTG.tools.dates                  import strtodate,\
                                              no_date,\
                                              FuzzyDate
-from GTG.tools                        import clipboard
+#from GTG.tools                        import clipboard
 
 #=== MAIN CLASS ===============================================================
 
@@ -90,7 +89,7 @@ class TaskBrowser:
         #treeviews handlers
         self.tags_tv = None
         self.tasks_tv = None
-        self.ctask_tv = ClosedTaskTreeView()
+        self.ctask_tv = ClosedTaskTreeView(self.req)
 
         ### YOU CAN DEFINE YOUR INTERNAL MECHANICS VARIABLES BELOW
         
@@ -212,7 +211,7 @@ class TaskBrowser:
 
     def _init_ui_widget(self):
         # The Active tasks treeview
-        self.task_tv = ActiveTaskTreeView()
+        self.task_tv = ActiveTaskTreeView(self.req)
         self.task_tv.set_model(self.task_modelsort)
         self.main_pane.add(self.task_tv)
 

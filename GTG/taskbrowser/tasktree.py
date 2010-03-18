@@ -224,55 +224,32 @@ class TaskTreeModel(gtk.GenericTreeModel):
             removed = True
         return removed
                     
-    def move_task(self, parent, child):
-        print "dummy Moving %s below %s (tasktree)" % (child, parent)
-#        # Get child
-#        child_tid  = self.get_value(child, COL_TID)
-#        child_task = self.req.get_task(child_tid)
-#        #if we move a task, this task should be saved, even if new
-#        child_task.set_to_keep()
-#        # Get old parent
-#        old_par = self.iter_parent(child)
-#        if old_par:
-#            old_par_tid  = self.get_value(old_par, COL_TID)
-#            old_par_task = self.req.get_task(old_par_tid)
-#        else:
-#            old_par_task = None
-#        # Get new parent
-#        if parent:
-#            new_par_tid  = self.get_value(parent, COL_TID)
-#            new_par_task = self.req.get_task(new_par_tid)
-#        else:
-#            new_par_task = None
-#            
-#        # prevent illegal moves
-#        c = parent
-#        while c is not None:
-#            t = self.get_value(c, COL_OBJ)
-#            if t is child_task: return
-#            c = self.iter_parent(c)
-#        
-#        # Remove child from old parent
-#        if old_par_task:
-#            old_par_task.remove_child(child_tid)
-#        # Remove old parent from child
-#        if old_par_task:
-#            child_task.remove_parent(old_par_tid)
-#        # Add child to new parent (add_subtask also add new parent to child)
-#        if new_par_task:
-#            new_par_task.add_subtask(child_tid)
-
-#    def refilter(self):
-#        for tid in self.req.get_all_tasks_list():
-#            self.update_task(tid)
+    def move_task(self, parent_tid, child_tid):
+        """Moves the task identified by child_tid under
+           parent_tid, removing all the precedent parents.
+           Child becomes a root task if parent_tid is None"""
+        child_task = self.req.get_task(child_tid)
+        current_parents = child_task.get_parents()
+        #Avoid the typical time-traveller problem being-the-father-of-yourself
+        if parent_tid in current_parents or parent_tid == child_tid:
+            return
+        #if we move a task, this task should be saved, even if new
+        child_task.set_to_keep()
+        # Remove old parents 
+        #FIXME: what about multiple parents?
+        map(lambda p: child_task.remove_parent(p), current_parents)
+        #Set new parent
+        if parent_tid:
+            child_task.add_parent(parent_tid)
 
 class TaskTreeView(gtk.TreeView):
     """TreeView for display of a list of task. Handles DnD primitives too."""
 
-    def __init__(self, model=None):
+    def __init__(self, requester):
         gtk.TreeView.__init__(self)
         self.columns = []
         self.bg_color_enable = True
+        self.req = requester
         self.show()
         
     def set_bg_color(self, val):
@@ -315,8 +292,8 @@ class ActiveTaskTreeView(TaskTreeView):
         ('gtg/task-iter-str', gtk.TARGET_SAME_WIDGET, 0)
     ]
 
-    def __init__(self):
-        TaskTreeView.__init__(self)
+    def __init__(self, requester):
+        TaskTreeView.__init__(self, requester)
         self._init_tree_view()
         self.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
 
@@ -460,58 +437,42 @@ class ActiveTaskTreeView(TaskTreeView):
 
     def on_drag_data_received(self, treeview, context, x, y, selection, info,\
                               timestamp):
-
         model          = treeview.get_model()
-#        model_filter   = model.get_model()
         tasktree_model = model.get_model()
-
         drop_info = treeview.get_dest_row_at_pos(x, y)
-
         if drop_info:
             path, position = drop_info
             iter = model.get_iter(path)
+            # Must add the task to the parent of the task situated\
+            # before/after 
             if position == gtk.TREE_VIEW_DROP_BEFORE or\
                position == gtk.TREE_VIEW_DROP_AFTER:
-                # Must add the task to the parent of the task situated\
-                # before/after
                 # Get sibling parent
-                par_iter = model.iter_parent(iter)
+                destination_iter = model.iter_parent(iter)
             else:
                 # Must add task as a child of the dropped-on iter
                 # Get parent
-                par_iter = iter
+                destination_iter = iter
+            destination_tid = model.get_value(destination_iter, COL_TID)
         else:
             # Must add the task to the root
             # Parent = root => iter=None
-            par_iter = None
-
-        # Get parent iter as a TaskTreeModel iter
-        if par_iter:
-            par_iter_tasktree   =\
-                model.convert_iter_to_child_iter(None, par_iter)
-#            par_iter_tasktree =\
-#                model_filter.convert_iter_to_child_iter(par_iter_filter)
-        else:
-            par_iter_tasktree = None
+            destination_tid = None
 
         # Get dragged iter as a TaskTreeModel iter
         iters = selection.data.split(',')
         for iter in iters:
-            drag_iter = model.get_iter_from_string(iter)
-            drag_iter_filter   =\
-                model.convert_iter_to_child_iter(None, drag_iter)
-            drag_iter_tasktree =\
-                model_filter.convert_iter_to_child_iter(drag_iter_filter)
-            tasktree_model.move_task(par_iter_tasktree, drag_iter_tasktree)
-
+            dragged_iter = model.get_iter_from_string(iter)
+            dragged_tid = model.get_value(dragged_iter, COL_TID)
+            tasktree_model.move_task(destination_tid, dragged_tid)
         self.emit_stop_by_name('drag_data_received')
 
 
 class ClosedTaskTreeView(TaskTreeView):
     """TreeView for display of a list of task. Handles DnD primitives too."""
 
-    def __init__(self):
-        TaskTreeView.__init__(self)
+    def __init__(self, requester):
+        TaskTreeView.__init__(self, requester)
         self._init_tree_view()
 
     def _init_tree_view(self):

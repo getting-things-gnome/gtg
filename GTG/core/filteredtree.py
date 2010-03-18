@@ -163,6 +163,9 @@ class FilteredTree(gobject.GObject):
             #we add it.
             if not curdis:
                 self.__add_node(tid)
+            #FIXME: Lionel please see this one
+            else:
+                self.emit("task-modified-inview", tid)
             #There doesn't seem to be a need for calling the update_node
 #            else:
 #                task = self.get_node(tid)
@@ -173,6 +176,9 @@ class FilteredTree(gobject.GObject):
             #we remove it
             if curdis:
                 self.__remove_node(tid)
+            #FIXME: Lionel please see this one
+            else:
+                self.emit("task-modified-inview", tid)
         
     def __task_deleted(self,sender,tid):
         self.__remove_node(tid)
