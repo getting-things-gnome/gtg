@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-03-12 11:40+0100\n"
-"PO-Revision-Date: 2010-03-19 05:05+0000\n"
+"PO-Revision-Date: 2010-03-20 03:54+0000\n"
 "Last-Translator: Eleanor Chen <chenyueg@gmail.com>\n"
 "Language-Team: Simplified Chinese <zh_CN@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Launchpad-Export-Date: 2010-03-19 07:51+0000\n"
+"X-Launchpad-Export-Date: 2010-03-20 04:48+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: GTG/taskeditor/__init__.py:28 GTG/taskbrowser/__init__.py:32
@@ -348,11 +348,11 @@ msgstr "请允许在现在已经打开的浏览器里使用“提醒牛奶(Remem
 
 #: GTG/plugins/hamster/hamster.py:40
 msgid "Start task in Hamster"
-msgstr ""
+msgstr "开始 Hamster 中的任务"
 
 #: GTG/plugins/hamster/hamster.py:156
 msgid "Start in Hamster"
-msgstr ""
+msgstr "在 Hamster 中开始"
 
 #: GTG/plugins/hamster/hamster.py:158
 msgid "Start a new activity in Hamster Time"
@@ -979,6 +979,10 @@ msgid ""
 "You can find the Plugin Manager by selecting Edit in the Menu Bar, then "
 "clicking Preferences. You will then see a tab labeled Plugins."
 msgstr ""
+"GTG 可通过添加插件，扩展其核心功能。\n"
+"\n"
+"现有插件的例子包括与 Remember the Milk 和 Evolution 同步。Tomboy/Gnote "
+"集成，以及具备地理定位特点的任务。您可以通过点击菜单栏的编辑菜单，然后选择偏好选项，找到插件管理器。您会看到名为插件的标签页。"
 
 #: GTG/core/firstrun_tasks.py:98
 msgid "Reporting bugs"
