@@ -61,8 +61,8 @@ class NotificationArea:
     
     def activate(self, plugin_api):
         self.plugin_api = plugin_api
-        #Create the  menu
-        self.create_static_menu()
+        #Populate and start the automatic update of the menu
+        self._initialize_automatic_menu()
         #initialize the right notification thing
         if indicator_capable:
             self.ind.set_menu(self.menu)
@@ -84,15 +84,6 @@ class NotificationArea:
         self.preference_dialog_init()
         self.preferences_load()
         self.preferences_apply(True)
-        #Connecting the signals about task changes
-        requester = self.plugin_api.get_requester()
-        requester.connect("task-added", self.on_task_added)
-        requester.connect("task-deleted", self.on_task_deleted)
-        requester.connect("task-modified", self.on_task_modified)
-        #initial menu populate, just in case the plugin is not activated at GTG
-        # startup time
-        task_list = requester.get_active_tasks_list(workable = True )
-        map(lambda t: self.add_menu_task(t), task_list)
         self.set_browser_minimize(self.browser_minimize)
 
     def deactivate(self, plugin_api):
@@ -104,6 +95,21 @@ class NotificationArea:
         self.set_browser_minimize(self.plugin_api.get_browser().on_delete)
 
 ## Helper methods ##############################################################
+
+    def _initialize_automatic_menu(self):
+        #Create the  menu
+        self.create_static_menu()
+        #Connecting the signals about task changes
+        self.requester = self.plugin_api.get_requester()
+        self.requester.connect("task-added", self.on_task_added)
+        self.requester.connect("task-deleted", self.on_task_deleted)
+        self.requester.connect("task-modified", self.on_task_modified)
+        #initial menu populate, just in case the plugin is not activated at GTG
+        # startup time
+        task_list = self.requester.get_active_tasks_list(workable = True)
+        map(lambda tid: self.on_task_added(self.requester, tid), task_list)
+        #realizing the menu
+        self.menu.show_all()
 
     def _is_task_wanted_in_menu(self, tid):
         """Returns true if and only if the task has to be displayed
@@ -216,8 +222,6 @@ class NotificationArea:
         menuItem = gtk.ImageMenuItem(gtk.STOCK_QUIT)
         menuItem.connect('activate', self.plugin_api.get_browser().on_close)
         self.menu.append(menuItem)
-        #realizing the menu
-        self.menu.show_all()
 
 ## Callback methods ############################################################
 
