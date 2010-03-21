@@ -1,3 +1,6 @@
+2010-03-01 Getting Things GNOME! 0.3-development
+    * Fixed bug #532392, a start date is later than a due date, by Volodymyr Floreskul
+
 2010-03-01 Getting Things GNOME! 0.2.2
     * Autostart on login, by Luca Invernizzi
     * Preferences dialog, by Paul Kishimoto
