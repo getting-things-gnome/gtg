@@ -74,8 +74,7 @@ class Manager():
         self.preferences = None
         
         #DBus
-        #FIXME: DBus should not require the browser !
-        DBusTaskWrapper(self.req, self.browser)
+        DBusTaskWrapper(self.req, self)
         
     def __init_plugin_engine(self):
         #FIXME : the plugin engine should not require the browser.
@@ -128,6 +127,12 @@ class Manager():
     # Currently, the browser is our only "stay_alive" view.
     def close_browser(self,sender=None):
         self.quit()
+
+    def hide_browser(self,sender=None):
+        self.browser.hide()
+
+    def show_browser(self,sender=None):
+        self.browser.show()
         
 ################# Task Editor ############################################
 

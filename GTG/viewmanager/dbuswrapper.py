@@ -44,13 +44,13 @@ def task_to_dict(task):
 class DBusTaskWrapper(dbus.service.Object):
 
     # D-Bus service object that exposes GTG's task store to third-party apps
-    def __init__(self, req, ui):
+    def __init__(self, req, view_manager):
         # Attach the object to D-Bus
         self.bus = dbus.SessionBus()
         bus_name = dbus.service.BusName(BUSNAME, bus=self.bus)
         dbus.service.Object.__init__(self, bus_name, BUSFACE)
         self.req = req
-        self.ui = ui
+        self.view_manager = view_manager
 
 
     @dbus.service.method(BUSNAME,in_signature="s")
@@ -137,7 +137,7 @@ class DBusTaskWrapper(dbus.service.Object):
 
     @dbus.service.method(BUSNAME)
     def open_task_editor(self, tid):
-        self.ui.open_task(tid)
+        self.view_manager.open_task(tid)
         
     @dbus.service.method(BUSNAME, in_signature="ss")
     def open_new_task(self, title, description):
@@ -146,16 +146,12 @@ class DBusTaskWrapper(dbus.service.Object):
         if description != "":
             nt.set_text(description)
         uid = nt.get_id()
-        self.ui.open_task(uid,thisisnew=True)
+        self.view_manager.open_task(uid,thisisnew=True)
 
     @dbus.service.method(BUSNAME)
     def hide_task_browser(self):
-        self.ui.window.hide()
+        self.view_manager.hide_browser()
 
     @dbus.service.method(BUSNAME)
     def show_task_browser(self):
-        self.ui.window.present()
-        self.ui.window.move(
-          self.ui.priv["window_xpos"], self.ui.priv["window_ypos"])
-        gdk_window = self.ui.window
-        gdk_window.show()
+        self.view_manager.show_browser()

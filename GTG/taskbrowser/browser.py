@@ -1539,3 +1539,13 @@ class TaskBrowser:
             self.tag_active = True
             path, col = self.target_cursor
             self.tags_tv.set_cursor(path, col, 0)
+
+    def hide(self):
+        """Hides the task browser"""
+        self.window.hide()
+
+    def show(self):
+        """Unhides the TaskBrowser"""
+        self.window.present()
+        #redraws the GDK window, bringing it to front
+        self.window.show()
