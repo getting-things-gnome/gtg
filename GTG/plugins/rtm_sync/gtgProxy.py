@@ -39,7 +39,7 @@ class GtgProxy(GenericProxy):
                                         self.plugin_api, self)), tasks)
 
     def create_new_task(self, title, never_seen_before = True):
-        new_gtg_local_task = self.requester.new_task(newtask=never_seen_before)
+        new_gtg_local_task = self.requester.new_task(newtask = never_seen_before)
         new_task = GtgTask(new_gtg_local_task, self.plugin_api, self)
         new_task.title = title
         self._tasks_list.append(new_task)

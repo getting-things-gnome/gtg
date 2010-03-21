@@ -26,6 +26,7 @@ import gobject
 from GTG.core.filteredtree import FilteredTree
 from GTG.core.filters_bank import FiltersBank
 from GTG.core.task         import Task
+from GTG.core.tagstore     import Tag
 from GTG.tools.dates       import date_today
 
 class Requester(gobject.GObject):
@@ -180,7 +181,8 @@ class Requester(gobject.GObject):
 
         @param pid: The project where the new task will be created.
         @param tags: The tags for the new task. If not provided, then the
-            task will have no tags.
+            task will have no tags. Tags must be an iterator type containing
+            the tags tids
         @param newtask: C{True} if this is creating a new task that never
             existed, C{False} if importing an existing task from a backend.
         @return: A task.
@@ -188,7 +190,8 @@ class Requester(gobject.GObject):
         task = self.ds.new_task(pid=pid)
         if tags:
             for t in tags:
-                task.tag_added(t.get_name())
+                assert(isinstance(t, Tag) == False)
+                task.tag_added(t)
         return task
 
     def delete_task(self, tid):

@@ -531,7 +531,7 @@ class TaskEditor :
 
     # Create a new task
     def new_task(self, *args):
-        task = self.req.new_task(tags=None, newtask=True)
+        task = self.req.new_task(newtask=True)
         task_id = task.get_id()
         self.vmanager.open_task(task_id)
         

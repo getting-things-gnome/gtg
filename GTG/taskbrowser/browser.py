@@ -1035,7 +1035,7 @@ class TaskBrowser:
                     text = \
                         text.replace("%s%s:%s" % (spaces, attribute, args), "")
             # Create the new task
-            task = self.req.new_task(tags=tags, newtask=True)
+            task = self.req.new_task(tags=[t.get_name() for t in tags], newtask=True)
             if text != "":
                 task.set_title(text.strip())
                 task.set_to_keep()
@@ -1149,7 +1149,7 @@ class TaskBrowser:
 
     def on_add_task(self, widget, status=None):
         tags, notagonly = self.get_selected_tags()
-        task = self.req.new_task(tags=tags, newtask=True)
+        task = self.req.new_task(tags=[t.get_name() for t in tags], newtask=True)
         uid = task.get_id()
         if status:
             task.set_status(status)
@@ -1160,7 +1160,7 @@ class TaskBrowser:
         if uid:
             zetask = self.req.get_task(uid)
             tags   = zetask.get_tags()
-            task   = self.req.new_task(tags=tags, newtask=True)
+            task   = self.req.new_task(tags=[t.get_name() for t in tags], newtask=True)
             #task.add_parent(uid)
             zetask.add_child(task.get_id())
             self.vmanager.open_task(task.get_id(),thisisnew=True)
