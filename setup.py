@@ -174,7 +174,7 @@ setup(
                           'icons/hicolor/16x16/assign-location.png',
                           'icons/hicolor/svg/assign-location.svg',
                           'icons/hicolor/svg/geolocalization.svg'],
-    'GTG.plugins.helloworld': ['hello_world.glade'],
+    'GTG.plugins.helloworld': ['hello_world.ui'],
     'GTG.plugins.tomboy': ['tomboy.ui'],
     'GTG.plugins.hamster': ['prefs.ui'],
     'GTG.plugins.task_reaper': ['reaper.ui'],
