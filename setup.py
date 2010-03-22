@@ -77,7 +77,7 @@ PO_DIR = 'po'
 MO_DIR = os.path.join('build', 'po')
 
 for po in glob.glob(os.path.join(PO_DIR, '*.po')):
-    lang = os.path.basename(po[:-3])[4:]
+    lang = os.path.basename(po[:-3])
     mo = os.path.join(MO_DIR, lang, 'gtg.mo')
     target_dir = os.path.dirname(mo)
     if not os.path.isdir(target_dir):
