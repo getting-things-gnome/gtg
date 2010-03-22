@@ -585,6 +585,7 @@ class TaskBrowser:
         day_names = [_("monday"), _("tuesday"), _("wednesday"),
                      _("thursday"), _("friday"), _("saturday"),
                      _("sunday")]
+        date = no_date
         if re.match(r'\d{4}-\d{2}-\d{2}', arg):
             date = arg
         elif arg.isdigit():
@@ -630,9 +631,10 @@ class TaskBrowser:
             date = "%i-%i-%i" % (year, month, day)
         elif arg in ('now', 'soon', 'later'):
             date = arg
-        else:
+        if date == no_date:
             return no_date
-        return strtodate(date)
+        else:
+            return strtodate(date)
 
     def get_tasktitle(self, tid):
         task = self.req.get_task(tid)
