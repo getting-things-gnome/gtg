@@ -61,6 +61,8 @@ class NotificationArea:
     
     def activate(self, plugin_api):
         self.plugin_api = plugin_api
+        #FIXME: this is ugly
+        self.browser = self.plugin_api.get_view_manager().browser
         #Populate and start the automatic update of the menu
         self._initialize_automatic_menu()
         #initialize the right notification thing
@@ -92,7 +94,7 @@ class NotificationArea:
         else:
             self.status_icon.set_visible(False)
         #Restoring pristine state
-        self.set_browser_minimize(self.plugin_api.get_browser().on_delete)
+        self.set_browser_minimize(self.browser.on_delete)
 
 ## Helper methods ##############################################################
 
@@ -123,11 +125,9 @@ class NotificationArea:
 
     def open_task(self, widget, tid = None):
         """Opens a task in the TaskEditor, if it's not currently opened"""
-        browser = self.plugin_api.get_browser()
         if tid == None:
             tid = self.plugin_api.get_requester().new_task().get_id()
-        if browser:
-            browser.open_task(tid)
+        self.view_manager.open_task(tid)
     
     def minimize(self, widget = None, plugin_api = None):
         self._disconnect_check_signal()
@@ -160,10 +160,9 @@ class NotificationArea:
         return True
 
     def set_browser_minimize(self, method):
-        browser = self.plugin_api.get_browser()
-        browser.window.disconnect(browser.delete_event_handle)
-        browser.delete_event_handle = \
-                browser.window.connect("delete-event", method)
+        self.browser.window.disconnect(self.browser.delete_event_handle)
+        self.browser.delete_event_handle = \
+                self.browser.window.connect("delete-event", method)
 
 ## Menu methods #################################################################
 
@@ -220,7 +219,7 @@ class NotificationArea:
         self.menu.append(menuItem)
         #quit item
         menuItem = gtk.ImageMenuItem(gtk.STOCK_QUIT)
-        menuItem.connect('activate', self.plugin_api.get_browser().on_close)
+        menuItem.connect('activate', self.browser.on_close)
         self.menu.append(menuItem)
 
 ## Callback methods ############################################################
@@ -294,19 +293,18 @@ class NotificationArea:
             if self.minimized:
                 #set the method in TaskBrowser to realize the main 
                 # window instead of showing it
-                def _method_start_minimized(this, self):
-                    this.plugin_api.get_browser().window.realize()
+                def _method_start_minimized(self):
+                    self.browser.window.realize()
                     return False
-                browser = self.plugin_api.get_browser()
-                if browser:
-                    browser._start_gtg_maximized = partial( \
-                            _method_start_minimized, self, browser)
+                if self.browser:
+                    self.browser._start_gtg_maximized = partial( \
+                            _method_start_minimized, self)
                     #this lines are needed to store the height and width (and x
                     # and y coordinates) of the
                     # main window (if gtg window is never show, it would give
                     # a KeyError on quitting while looking for those values)
-                    browser.on_size_allocate()
-                    browser.on_move()
+                    self.rowser.on_size_allocate()
+                    self.browser.on_move()
 
     def preference_dialog_init(self): 
         self.builder = gtk.Builder()

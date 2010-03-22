@@ -94,7 +94,7 @@ class Manager():
                                     task           = None,
                                     texteditor     = None,
                                     quick_add_cbs  = self.browser.priv['quick_add_cbs'],
-                                    browser        = self.browser)
+                                    view_manager   = self)
         self.p_apis.append(self.plugin_api)
         # enable some plugins
         if len(self.pengine.plugins) > 0:

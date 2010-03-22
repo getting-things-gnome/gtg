@@ -42,7 +42,7 @@ class PluginAPI:
                  requester,
                  tagpopup,
                  tagview,
-                 browser,
+                 view_manager,
                  task=None,
                  texteditor=None,
                  quick_add_cbs=[]):
@@ -57,8 +57,7 @@ class PluginAPI:
         @param tagpopup: The tag popoup menu of the tag view.
         @param tagview: The tag view object.
         @param task: The current task (Only works with the task editor).
-        @param textview: The task editor's text view (Only works with the task editor).  
-        @param ctextview: The task editor's closed tasks text view (Only works with the task editor)
+        @param view_manager: The view manager
         """
         self.__window = window
         self.config = config
@@ -75,7 +74,7 @@ class PluginAPI:
         self.tasktoolbar_widg = {}
         self.taskwidget_id = 0
         self.taskwidget_widg = {}
-        self.browser = browser
+        self.view_manager = view_manager
         
         if task:
             self.task = task
@@ -98,8 +97,8 @@ class PluginAPI:
     def is_browser(self):
         print "is_browser method in plugin/api should be updated"
 
-    def get_browser(self):
-        return self.browser
+    def get_view_manager(self):
+        return self.view_manager
 
 #=== General Methods ==========================================================
     def add_menu_item(self, item):
