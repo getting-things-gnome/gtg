@@ -1,35 +1,35 @@
-# Lojban translation for gtg
-# Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
+# Bengali translation for gtg
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
 # This file is distributed under the same license as the gtg package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-03-12 11:40+0100\n"
-"PO-Revision-Date: 2009-12-05 13:56+0000\n"
-"Last-Translator: David Futcher <bobbocanfly@gmail.com>\n"
-"Language-Team: Lojban <jbo@li.org>\n"
+"PO-Revision-Date: 2010-03-12 12:02+0000\n"
+"Last-Translator: nasir khan saikat <nasir8891@gmail.com>\n"
+"Language-Team: Bengali <bn@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Launchpad-Export-Date: 2010-03-14 05:03+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: GTG/taskeditor/__init__.py:31 GTG/taskbrowser/__init__.py:36
 msgid "Mark as done"
-msgstr ""
+msgstr "সম্পন্ন হিসাবে চিহ্নিত"
 
 #: GTG/taskeditor/__init__.py:32 GTG/taskbrowser/__init__.py:38
 msgid "Mark as not done"
-msgstr ""
+msgstr "সম্পন্ন হয়নি হিসাবে চিহ্নিত করুন"
 
 #: GTG/taskeditor/__init__.py:33 GTG/taskeditor/taskeditor.glade.h:3
 #: GTG/taskbrowser/__init__.py:40 GTG/taskbrowser/taskbrowser.glade.h:14
 msgid "Dismiss"
-msgstr ""
+msgstr "বাতিল"
 
 #: GTG/taskeditor/__init__.py:34 GTG/taskbrowser/__init__.py:42
 msgid "Undismiss"
@@ -37,7 +37,7 @@ msgstr ""
 
 #: GTG/taskeditor/__init__.py:35
 msgid "Keep as Note"
-msgstr ""
+msgstr "নোট হিসাবে সংরক্ষন"
 
 #: GTG/taskeditor/__init__.py:36
 msgid "Make a Task"
@@ -45,7 +45,7 @@ msgstr ""
 
 #: GTG/taskeditor/__init__.py:38
 msgid "Mark this task as done"
-msgstr ""
+msgstr "কাজটি সম্পন্ন হিসাবে চিহ্নিত করন"
 
 #: GTG/taskeditor/__init__.py:39 GTG/taskeditor/__init__.py:41
 msgid "Mark this task as to be done"
@@ -69,11 +69,11 @@ msgstr ""
 
 #: GTG/taskeditor/taskeditor.glade.h:1
 msgid "Closed on"
-msgstr ""
+msgstr "বন্ধ হবে"
 
 #: GTG/taskeditor/taskeditor.glade.h:2 GTG/taskbrowser/taskbrowser.glade.h:13
 msgid "Delete"
-msgstr ""
+msgstr "অপসারণ"
 
 #: GTG/taskeditor/taskeditor.glade.h:4
 msgid "Due for"
@@ -85,31 +85,31 @@ msgstr ""
 
 #: GTG/taskeditor/taskeditor.glade.h:6
 msgid "Insert tag"
-msgstr ""
+msgstr "ট্যাগ যুক্ত করুন"
 
 #: GTG/taskeditor/taskeditor.glade.h:7
 msgid "Later"
-msgstr ""
+msgstr "পরবর্তীতে"
 
 #: GTG/taskeditor/taskeditor.glade.h:8
 msgid "Mark Done"
-msgstr ""
+msgstr "সম্পন্ন হিসাবে চিহ্নিত করুন"
 
 #: GTG/taskeditor/taskeditor.glade.h:9
 msgid "Now"
-msgstr ""
+msgstr "এখন"
 
 #: GTG/taskeditor/taskeditor.glade.h:10
 msgid "Soon"
-msgstr ""
+msgstr "শিঘ্রই"
 
 #: GTG/taskeditor/taskeditor.glade.h:11
 msgid "Starting on"
-msgstr ""
+msgstr "শুরু হবে"
 
 #: GTG/taskeditor/taskeditor.glade.h:12
 msgid "Task"
-msgstr ""
+msgstr "কাজ"
 
 #: GTG/taskeditor/editor.py:321
 #, python-format
@@ -161,27 +161,27 @@ msgstr ""
 
 #: GTG/viewmanager/preferences.glade.h:2
 msgid "<b>General</b>"
-msgstr ""
+msgstr "<b>সাধারণ</b>"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:5
 msgid "<b>Task Browser</b>"
-msgstr ""
+msgstr "<b>টাস্ক ব্রাউজার</b>"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:6
 msgid "<b>Task Editor</b>"
-msgstr ""
+msgstr "<b>টাস্ক সম্পাদক</b>"
 
 #: GTG/viewmanager/preferences.glade.h:5
 msgid "Active _Plugins:"
-msgstr ""
+msgstr "সক্রিয় প্লাগইন: (_P)"
 
 #: GTG/viewmanager/preferences.glade.h:6
 msgid "Behaviour"
-msgstr ""
+msgstr "আচরণ"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:16
 msgid "Check spelling"
-msgstr ""
+msgstr "বানান পরীক্ষা করুন"
 
 #: GTG/viewmanager/preferences.glade.h:8
 msgid "Getting Things GNOME! Preferences"
@@ -193,7 +193,7 @@ msgstr ""
 
 #: GTG/viewmanager/preferences.glade.h:10
 msgid "Plugins"
-msgstr ""
+msgstr "প্লাগইন"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:47
 msgid "Show task text preview"
@@ -205,7 +205,7 @@ msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:49
 msgid "Storage"
-msgstr ""
+msgstr "সংগ্রহস্থল"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:54
 msgid "Task _Backends:"
@@ -213,7 +213,7 @@ msgstr ""
 
 #: GTG/viewmanager/preferences.glade.h:15
 msgid "_About Plugin"
-msgstr ""
+msgstr "প্লাগইন সম্পর্কিত (_A)"
 
 #: GTG/viewmanager/delete_dialog.py:58
 msgid ""
@@ -222,7 +222,7 @@ msgstr ""
 
 #: GTG/viewmanager/delete_dialog.py:59
 msgid "Are you sure you want to delete this task?"
-msgstr ""
+msgstr "আপনি কি নিশ্চিতরূপে এই কর্মটি মুছে ফেলতে ইচ্ছুক?"
 
 #: GTG/viewmanager/delete_dialog.py:60
 msgid "Keep selected task"
@@ -458,15 +458,15 @@ msgstr ""
 
 #: GTG/tools/dates.py:51
 msgid "Tomorrow"
-msgstr ""
+msgstr "আগামীকাল"
 
 #: GTG/tools/dates.py:53
 msgid "Today"
-msgstr ""
+msgstr "আজ"
 
 #: GTG/tools/dates.py:55
 msgid "Yesterday"
-msgstr ""
+msgstr "গতকাল"
 
 #: GTG/tools/dates.py:58
 #, python-format
@@ -484,15 +484,15 @@ msgstr[1] ""
 
 #: GTG/tools/dates.py:98 GTG/tools/dates.py:140
 msgid "now"
-msgstr "cabna"
+msgstr "এখন"
 
 #: GTG/tools/dates.py:99 GTG/tools/dates.py:142
 msgid "soon"
-msgstr ""
+msgstr "শিঘ্রই"
 
 #: GTG/tools/dates.py:100 GTG/tools/dates.py:144
 msgid "later"
-msgstr "na lirmau"
+msgstr "পরবর্তীতে"
 
 #: GTG/taskbrowser/__init__.py:37
 msgid "Mark the selected task as done"
@@ -516,7 +516,7 @@ msgstr ""
 
 #: GTG/taskbrowser/__init__.py:46 GTG/taskbrowser/taskbrowser.glade.h:11
 msgid "Create a new task"
-msgstr ""
+msgstr "একটি নতুন কাজ তৈরি করুন"
 
 #: GTG/taskbrowser/__init__.py:47
 msgid "Create a new subtask"
@@ -529,15 +529,15 @@ msgstr ""
 #: GTG/taskbrowser/tagtree.py:348 GTG/taskbrowser/tasktree.py:353
 #: GTG/taskbrowser/tasktree.py:521 GTG/taskbrowser/taskbrowser.glade.h:38
 msgid "Tags"
-msgstr ""
+msgstr "ট্যাগসমূহ"
 
 #: GTG/taskbrowser/tasktree.py:368 GTG/taskbrowser/tasktree.py:545
 msgid "Title"
-msgstr ""
+msgstr "শিরোনাম"
 
 #: GTG/taskbrowser/tasktree.py:382
 msgid "Start date"
-msgstr ""
+msgstr "আরম্ভের তারিখ"
 
 #: GTG/taskbrowser/tasktree.py:394
 msgid "Due"
@@ -555,19 +555,19 @@ msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:3
 msgid "About GTG!"
-msgstr ""
+msgstr "জিটিজি সম্পর্কে"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:4
 msgid "Add Tag"
-msgstr ""
+msgstr "ট্যাগ যুক্ত করুন"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:5
 msgid "Add Tag..."
-msgstr ""
+msgstr "ট্যাগ যুক্ত করুন..."
 
 #: GTG/taskbrowser/taskbrowser.glade.h:6
 msgid "Add a Tag..."
-msgstr ""
+msgstr "একটি ট্যাগ যুক্ত করুন..."
 
 #: GTG/taskbrowser/taskbrowser.glade.h:7
 msgid "Add a subtask"
@@ -579,27 +579,27 @@ msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:9
 msgid "Cancel"
-msgstr ""
+msgstr "বাতিল"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:10
 msgid "Copyrights&#xA9; 2008, 2009 Lionel Dricot, Bertrand Rousseau"
-msgstr ""
+msgstr "কপিরাইট&#xA9; ২০০৮, ২০০৯ Lionel Dricot, Bertrand Rousseau"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:12
 msgid "D_ismiss"
-msgstr ""
+msgstr "বাতিল (_i)"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:15
 msgid "Edit"
-msgstr ""
+msgstr "সম্পাদনা"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:16
 msgid "Enter the name of the tag(s) you wish to add:"
-msgstr ""
+msgstr "যে ট্যাগসমূহ যুক্ত করতে চান সেগুলি লিখুন:"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:17
 msgid "GTG website"
-msgstr ""
+msgstr "জিটিজি ওয়েবসাইট"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:18
 msgid "Getting Things Gnome!"
@@ -630,15 +630,15 @@ msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:26
 msgid "Mark as Done"
-msgstr ""
+msgstr "সম্পন্ন হিসাবে চিহ্নিত করুন"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:27
 msgid "Mark as Not Done"
-msgstr ""
+msgstr "সম্পন্ন হয়নি হিসাবে চিহ্নিত করুন"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:28
 msgid "Mark as _Done"
-msgstr ""
+msgstr "সম্পন্ন হিসাবে চিহ্নিত করুন (_D)"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:29
 msgid "New Subtask"
@@ -654,11 +654,11 @@ msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:32
 msgid "New _Task"
-msgstr ""
+msgstr "নতুন কাজ (_T)"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:33
 msgid "Redo"
-msgstr ""
+msgstr "আবার করো"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:34
 msgid "Reset Color"
@@ -666,7 +666,7 @@ msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:35
 msgid "T_oolbar"
-msgstr ""
+msgstr "টুলবার (_o)"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:36
 msgid "Tag is displayed in the workview"
@@ -674,7 +674,7 @@ msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:37
 msgid "TagName"
-msgstr ""
+msgstr "TagName"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:39
 msgid "Und_ismiss"
@@ -682,7 +682,7 @@ msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:40
 msgid "Undo"
-msgstr ""
+msgstr "পূর্বাবস্থা"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:41
 msgid "Work View"
@@ -698,15 +698,15 @@ msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:44
 msgid "_Edit"
-msgstr ""
+msgstr "সম্পাদনা (_E)"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:45
 msgid "_Help"
-msgstr ""
+msgstr "সাহায্য (_H)"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:46
 msgid "_Plugins"
-msgstr ""
+msgstr "প্লাগ-ইন (_P)"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:47
 msgid "_Quick Add Entry"
@@ -722,11 +722,11 @@ msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:50
 msgid "_Tasks"
-msgstr ""
+msgstr "কাজ (_T)"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:51
 msgid "_View"
-msgstr ""
+msgstr "প্রদর্শন (_V)"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:52
 msgid "_Work View"
@@ -742,15 +742,15 @@ msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:55
 msgid "next _week"
-msgstr ""
+msgstr "পরবর্তী সপ্তাহ (_w)"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:56
 msgid "next _year"
-msgstr ""
+msgstr "পরবর্তী বছর (_y)"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:57
 msgid "t_oday"
-msgstr ""
+msgstr "আজ (_o)"
 
 #: GTG/taskbrowser/browser.py:571
 msgid "no active tasks"
@@ -765,63 +765,63 @@ msgstr[1] ""
 
 #: GTG/taskbrowser/browser.py:584
 msgid "monday"
-msgstr ""
+msgstr "সোমবার"
 
 #: GTG/taskbrowser/browser.py:584
 msgid "tuesday"
-msgstr ""
+msgstr "মঙ্গলবার"
 
 #: GTG/taskbrowser/browser.py:584
 msgid "wednesday"
-msgstr ""
+msgstr "বুধবার"
 
 #: GTG/taskbrowser/browser.py:585
 msgid "thursday"
-msgstr ""
+msgstr "বৃহস্পতিবার"
 
 #: GTG/taskbrowser/browser.py:585
 msgid "friday"
-msgstr ""
+msgstr "শুক্রবার"
 
 #: GTG/taskbrowser/browser.py:585
 msgid "saturday"
-msgstr ""
+msgstr "শনিবার"
 
 #: GTG/taskbrowser/browser.py:586
 msgid "sunday"
-msgstr ""
+msgstr "রবিবার"
 
 #: GTG/taskbrowser/browser.py:595
 msgid "today"
-msgstr ""
+msgstr "আজ"
 
 #: GTG/taskbrowser/browser.py:599
 msgid "tomorrow"
-msgstr ""
+msgstr "আগামিকাল"
 
 #: GTG/taskbrowser/browser.py:603
 msgid "next week"
-msgstr ""
+msgstr "পরবর্তী সপ্তাহ"
 
 #: GTG/taskbrowser/browser.py:607
 msgid "next month"
-msgstr ""
+msgstr "পরবর্তী মাস"
 
 #: GTG/taskbrowser/browser.py:611
 msgid "next year"
-msgstr ""
+msgstr "পরবর্তী বছর"
 
 #: GTG/taskbrowser/browser.py:1013
 msgid "tags"
-msgstr ""
+msgstr "ট্যাগসমূহ"
 
 #: GTG/taskbrowser/browser.py:1013
 msgid "tag"
-msgstr ""
+msgstr "ট্যাগ"
 
 #: GTG/taskbrowser/browser.py:1019
 msgid "defer"
-msgstr ""
+msgstr "পার্থক্য"
 
 #: GTG/taskbrowser/browser.py:1024
 msgid "due"
@@ -890,7 +890,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:49
 msgid "Learn how to use tags"
-msgstr ""
+msgstr "ট্যাগ ব্যবহার সম্পর্কে জানুন"
 
 #: GTG/core/firstrun_tasks.py:50
 msgid ""
@@ -1054,8 +1054,41 @@ msgstr ""
 
 #: GTG/core/tagstore.py:52
 msgid "All tasks"
-msgstr ""
+msgstr "সকল কাজসমূহ"
 
 #: GTG/core/tagstore.py:59
 msgid "Tasks with no tags"
 msgstr ""
+
+#, python-format
+#~ msgid "Completed %s days early"
+#~ msgstr "%s দিন আগে সম্পন্ন হয়েছে"
+
+#, python-format
+#~ msgid "In %s days"
+#~ msgstr "%s দিনে"
+
+#, python-format
+#~ msgid "%s days ago"
+#~ msgstr "%s দিন আগে"
+
+#, python-format
+#~ msgid "Completed %s days late"
+#~ msgstr "%s দিন দেরিতে সম্পন্ন হয়েছে"
+
+#, python-format
+#~ msgid "Was %s days ago"
+#~ msgstr "%s দিন আগে ছিল"
+
+#, python-format
+#~ msgid "%s days left"
+#~ msgstr "%s দিন বাকি"
+
+#~ msgid "New Note"
+#~ msgstr "নতুন নোট"
+
+#~ msgid "A tag is a simple word that begins with &quot;@&quot;."
+#~ msgstr "ট্যাগসমূহ হল &quot;@&quot; দিয়ে শুরু হওয়া কিছু শব্দ"
+
+#~ msgid "Try to type a word beginning with @ here:"
+#~ msgstr "@ দিয়ে শুরু হওয়া একটি শব্দ লিখুন:"

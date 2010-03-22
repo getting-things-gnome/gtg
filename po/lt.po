@@ -1,115 +1,116 @@
-# Lojban translation for gtg
-# Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
+# Lithuanian translation for gtg
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
 # This file is distributed under the same license as the gtg package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-03-12 11:40+0100\n"
-"PO-Revision-Date: 2009-12-05 13:56+0000\n"
-"Last-Translator: David Futcher <bobbocanfly@gmail.com>\n"
-"Language-Team: Lojban <jbo@li.org>\n"
+"PO-Revision-Date: 2010-03-02 20:39+0000\n"
+"Last-Translator: aurisc4 <aurisc4@gmail.com>\n"
+"Language-Team: Lithuanian <lt@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
-"X-Launchpad-Export-Date: 2010-03-14 05:03+0000\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"(n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Launchpad-Export-Date: 2010-03-14 05:04+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: GTG/taskeditor/__init__.py:31 GTG/taskbrowser/__init__.py:36
 msgid "Mark as done"
-msgstr ""
+msgstr "Ženklinti atlikta"
 
 #: GTG/taskeditor/__init__.py:32 GTG/taskbrowser/__init__.py:38
 msgid "Mark as not done"
-msgstr ""
+msgstr "Ženklinti neatlikta"
 
 #: GTG/taskeditor/__init__.py:33 GTG/taskeditor/taskeditor.glade.h:3
 #: GTG/taskbrowser/__init__.py:40 GTG/taskbrowser/taskbrowser.glade.h:14
 msgid "Dismiss"
-msgstr ""
+msgstr "Pašalinti"
 
 #: GTG/taskeditor/__init__.py:34 GTG/taskbrowser/__init__.py:42
 msgid "Undismiss"
-msgstr ""
+msgstr "Atšaukti pašalinimą"
 
 #: GTG/taskeditor/__init__.py:35
 msgid "Keep as Note"
-msgstr ""
+msgstr "Palikti kaip raštelį"
 
 #: GTG/taskeditor/__init__.py:36
 msgid "Make a Task"
-msgstr ""
+msgstr "Paversti užduotimis"
 
 #: GTG/taskeditor/__init__.py:38
 msgid "Mark this task as done"
-msgstr ""
+msgstr "Ženklinti šią užduotį atlikta"
 
 #: GTG/taskeditor/__init__.py:39 GTG/taskeditor/__init__.py:41
 msgid "Mark this task as to be done"
-msgstr ""
+msgstr "Ženklinti šią užduotį kaip atliktiną"
 
 #: GTG/taskeditor/__init__.py:40
 msgid "Mark this task as not to be done anymore"
-msgstr ""
+msgstr "Ženklinti šią užduotį kaip nebeatliktiną"
 
 #: GTG/taskeditor/__init__.py:42
 msgid "Permanently remove this task"
-msgstr ""
+msgstr "Negrįžtamai ištrinti šią užduotį"
 
 #: GTG/taskeditor/__init__.py:43
 msgid "Insert a subtask in this task"
-msgstr ""
+msgstr "Įterpti použduotį į šią užduotį"
 
 #: GTG/taskeditor/__init__.py:44
 msgid "Insert a tag in this task"
-msgstr ""
+msgstr "Įterpti žymę į šią užduotį"
 
 #: GTG/taskeditor/taskeditor.glade.h:1
 msgid "Closed on"
-msgstr ""
+msgstr "Užbaigta"
 
 #: GTG/taskeditor/taskeditor.glade.h:2 GTG/taskbrowser/taskbrowser.glade.h:13
 msgid "Delete"
-msgstr ""
+msgstr "Ištrinti"
 
 #: GTG/taskeditor/taskeditor.glade.h:4
 msgid "Due for"
-msgstr ""
+msgstr "Atliktina"
 
 #: GTG/taskeditor/taskeditor.glade.h:5
 msgid "Insert subtask"
-msgstr ""
+msgstr "Įterpti použduotį"
 
 #: GTG/taskeditor/taskeditor.glade.h:6
 msgid "Insert tag"
-msgstr ""
+msgstr "Įterpti žymę"
 
 #: GTG/taskeditor/taskeditor.glade.h:7
 msgid "Later"
-msgstr ""
+msgstr "Vėliau"
 
 #: GTG/taskeditor/taskeditor.glade.h:8
 msgid "Mark Done"
-msgstr ""
+msgstr "Ženklinti atlikta"
 
 #: GTG/taskeditor/taskeditor.glade.h:9
 msgid "Now"
-msgstr ""
+msgstr "Dabar"
 
 #: GTG/taskeditor/taskeditor.glade.h:10
 msgid "Soon"
-msgstr ""
+msgstr "Greitai"
 
 #: GTG/taskeditor/taskeditor.glade.h:11
 msgid "Starting on"
-msgstr ""
+msgstr "Pradedant"
 
 #: GTG/taskeditor/taskeditor.glade.h:12
 msgid "Task"
-msgstr ""
+msgstr "Užduotis"
 
 #: GTG/taskeditor/editor.py:321
 #, python-format
@@ -127,7 +128,7 @@ msgstr[1] ""
 
 #: GTG/taskeditor/editor.py:330
 msgid "Due tomorrow !"
-msgstr ""
+msgstr "Atlikti rytoj !"
 
 #: GTG/taskeditor/editor.py:332
 #, python-format
@@ -138,11 +139,11 @@ msgstr[1] ""
 
 #: GTG/taskeditor/editor.py:334
 msgid "Due today !"
-msgstr ""
+msgstr "Atlikti šiandien !"
 
 #: GTG/taskeditor/editor.py:336
 msgid "Due yesterday"
-msgstr ""
+msgstr "Vakarykštė"
 
 #: GTG/taskeditor/editor.py:339
 #, python-format
@@ -153,320 +154,326 @@ msgstr[1] ""
 
 #: GTG/viewmanager/deletion.glade.h:1
 msgid "Confirm task deletion"
-msgstr ""
+msgstr "Patvirtinti užduoties trynimą"
 
 #: GTG/viewmanager/preferences.glade.h:1
 msgid "<b>Dependencies</b>"
-msgstr ""
+msgstr "<b>Priklausomybės</b>"
 
 #: GTG/viewmanager/preferences.glade.h:2
 msgid "<b>General</b>"
-msgstr ""
+msgstr "<b>Bendrieji</b>"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:5
 msgid "<b>Task Browser</b>"
-msgstr ""
+msgstr "<b>Užduočių naršyklė</b>"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:6
 msgid "<b>Task Editor</b>"
-msgstr ""
+msgstr "<b>Užduočių redaktorius</b>"
 
 #: GTG/viewmanager/preferences.glade.h:5
 msgid "Active _Plugins:"
-msgstr ""
+msgstr "Aktyvūs _įskiepiai:"
 
 #: GTG/viewmanager/preferences.glade.h:6
 msgid "Behaviour"
-msgstr ""
+msgstr "Elgsena"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:16
 msgid "Check spelling"
-msgstr ""
+msgstr "Patikrinti rašybą"
 
 #: GTG/viewmanager/preferences.glade.h:8
 msgid "Getting Things GNOME! Preferences"
-msgstr ""
+msgstr "Getting Things GNOME! nustatymai"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:33
 msgid "Hide closed tasks older than"
-msgstr ""
+msgstr "Slėpti užbagtas užduotis, senesne negu"
 
 #: GTG/viewmanager/preferences.glade.h:10
 msgid "Plugins"
-msgstr ""
+msgstr "Įskiepiai"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:47
 msgid "Show task text preview"
-msgstr ""
+msgstr "Rodyti užduoties teksto peržiūrą"
 
 #: GTG/viewmanager/preferences.glade.h:12
 msgid "Start Getting Things GNOME! on every login"
-msgstr ""
+msgstr "Paleisti Getting Things GNOME! prisijungiant"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:49
 msgid "Storage"
-msgstr ""
+msgstr "Laikmenos"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:54
 msgid "Task _Backends:"
-msgstr ""
+msgstr "Užduoties _kontekstai:"
 
 #: GTG/viewmanager/preferences.glade.h:15
 msgid "_About Plugin"
-msgstr ""
+msgstr "_Apie įskiepį"
 
 #: GTG/viewmanager/delete_dialog.py:58
 msgid ""
 "Deleting a task cannot be undone, and will delete the following task: "
-msgstr ""
+msgstr "Užduoties ištrynimas negali būti atšauktas ir ištrins šią užduotį: "
 
 #: GTG/viewmanager/delete_dialog.py:59
 msgid "Are you sure you want to delete this task?"
-msgstr ""
+msgstr "Ar tikrai norite pašalinti šią užduotį?"
 
 #: GTG/viewmanager/delete_dialog.py:60
 msgid "Keep selected task"
-msgstr ""
+msgstr "Palikti pažymėtą tekstą"
 
 #: GTG/viewmanager/delete_dialog.py:61
 msgid "Permanently remove task"
-msgstr ""
+msgstr "Negrįžtamai pašalinti užduotį"
 
 #: GTG/viewmanager/delete_dialog.py:63
 msgid ""
 "Deleting a task cannot be undone, and will delete the following tasks: "
 msgstr ""
+"Užduoties ištrynimas negali būti atšauktas ir ištrins šias užduotis: "
 
 #: GTG/viewmanager/delete_dialog.py:64
 msgid "Are you sure you want to delete these tasks?"
-msgstr ""
+msgstr "Ar tikrai norite ištrinti šias užduotis?"
 
 #: GTG/viewmanager/delete_dialog.py:65
 msgid "Keep selected tasks"
-msgstr ""
+msgstr "Palikti pažymėtas užduotis"
 
 #: GTG/viewmanager/delete_dialog.py:66
 msgid "Permanently remove tasks"
-msgstr ""
+msgstr "Negrįžtamai pašalinti užduotis"
 
 #: GTG/gtg.py:84
 msgid "gtg is already running!"
-msgstr ""
+msgstr "gtg jau paleista!"
 
 #: GTG/plugins/rtm_sync/rtmProxy.py:171
 msgid "saving critical object failed"
-msgstr ""
+msgstr "kritinio objekto išsaugojimas nepavyko"
 
 #: GTG/plugins/rtm_sync/syncEngine.py:87
 msgid "Downloading task list..."
-msgstr ""
+msgstr "Atsiunčiamas užduočių sąrašas..."
 
 #: GTG/plugins/rtm_sync/syncEngine.py:88
 msgid "Downloading..."
-msgstr ""
+msgstr "Atsiunčiama..."
 
 #: GTG/plugins/rtm_sync/syncEngine.py:123
 msgid "Adding tasks to rtm.."
-msgstr ""
+msgstr "Pridedamos užduotys į rtm.."
 
 #: GTG/plugins/rtm_sync/syncEngine.py:133
 msgid "Adding tasks to gtg.."
-msgstr ""
+msgstr "Pridedamos užduotys į gtg.."
 
 #: GTG/plugins/rtm_sync/syncEngine.py:143
 msgid "Deleting tasks from rtm.."
-msgstr ""
+msgstr "Trinamos užduotys iš rtm.."
 
 #: GTG/plugins/rtm_sync/syncEngine.py:154
 msgid "Deleting tasks from gtg.."
-msgstr ""
+msgstr "Trinamos užduotys iš gtg.."
 
 #: GTG/plugins/rtm_sync/syncEngine.py:164
 msgid "Updating changed tasks.."
-msgstr ""
+msgstr "Įkeliamos pakeistos užduotys.."
 
 #: GTG/plugins/rtm_sync/syncEngine.py:189
 #: GTG/plugins/rtm_sync/syncEngine.py:194
 #: GTG/plugins/rtm_sync/syncEngine.py:197
 #: GTG/plugins/rtm_sync/syncEngine.py:200
 msgid "Updating "
-msgstr ""
+msgstr "Atnaujinama "
 
 #: GTG/plugins/rtm_sync/syncEngine.py:208
 msgid "Saving current state.."
-msgstr ""
+msgstr "Išsaugoma esama būsena.."
 
 #: GTG/plugins/rtm_sync/syncEngine.py:215
 msgid "Synchronization completed."
-msgstr ""
+msgstr "Sinchronizavimas baigtas."
 
 #: GTG/plugins/rtm_sync/syncEngine.py:238
 msgid "Adding "
-msgstr ""
+msgstr "Pridedama "
 
 #: GTG/plugins/rtm_sync/syncEngine.py:247
 msgid "Deleting "
-msgstr ""
+msgstr "Trinama "
 
 #: GTG/plugins/rtm_sync/syncEngine.py:277
 msgid "Closing in one second"
-msgstr ""
+msgstr "Uždaroma po sekundės"
 
 #: GTG/plugins/rtm_sync/pyrtm/rtm.py:55
 msgid "Invalid state"
-msgstr ""
+msgstr "Neleistina būsena"
 
 #: GTG/plugins/rtm_sync/rtm_sync.py:77 GTG/plugins/rtm_sync/rtm_sync.py:82
 msgid "Synchronize with RTM"
-msgstr ""
+msgstr "Sinchronizuoti su RTM"
 
 #: GTG/plugins/rtm_sync/rtm_sync.py:143
 msgid "Synchronization started"
-msgstr ""
+msgstr "Sinchronizavimas pradėtas"
 
 #: GTG/plugins/rtm_sync/rtm_sync.py:156
 msgid "Trying to access, please stand by..."
-msgstr ""
+msgstr "Bandome susisiekti, palaukite..."
 
 #: GTG/plugins/rtm_sync/rtm_sync.py:174
 msgid "Couldn't connect to Remember The Milk"
-msgstr ""
+msgstr "Nepavyko prisijungti prie Remember The Milk"
 
 #: GTG/plugins/rtm_sync/rtm_sync.py:189
 msgid "Authentication failed."
-msgstr ""
+msgstr "Autentikavimas nepavyko."
 
 #: GTG/plugins/rtm_sync/rtm_sync.py:189
 msgid "Please retry."
-msgstr ""
+msgstr "Mėginkite dar kartą."
 
 #: GTG/plugins/rtm_sync/rtm_sync.py:193
 msgid ""
 "Please authenticate to Remember The Milk in the browser that is being opened "
 "now. When done, press OK"
 msgstr ""
+"Prisijunkite prie Remember The Milk atvertame naršyklės lange. Kai tą "
+"padarysite, spauskite Gerai."
 
 #: GTG/plugins/hamster/hamster.py:40
 msgid "Start task in Hamster"
-msgstr ""
+msgstr "Paleisti su Hamster"
 
 #: GTG/plugins/hamster/hamster.py:156
 msgid "Start in Hamster"
-msgstr ""
+msgstr "Paleisti su Hamster"
 
 #: GTG/plugins/hamster/hamster.py:158
 msgid "Start a new activity in Hamster Time"
-msgstr ""
+msgstr "Pradėti naują veiklą Hamster laiku"
 
 #: GTG/plugins/hamster/hamster.py:174
 msgid "Start a new activity in Hamster Time "
-msgstr ""
+msgstr "Pradėti naują veiklą Hamster laiku "
 
 #: GTG/plugins/notification_area/notification_area.py:188
 msgid "_View Main Window"
-msgstr ""
+msgstr "_Rodyti pagrindinį langą"
 
 #: GTG/plugins/notification_area/notification_area.py:196
 msgid "Add _New Task"
-msgstr ""
+msgstr "Pridėti _naują užduotį"
 
 #: GTG/plugins/tomboy/tomboy.py:82
 msgid ""
 "Tomboy/Gnote not found. Please install it or disable the Tomboy/Gnote plugin "
 "in GTG"
 msgstr ""
+"Tomboy/Gnote nerastas. Įdiekite jį arba išjunkite GTG Tomboy/Gnote įskiepį."
 
 #: GTG/plugins/tomboy/tomboy.py:127
 msgid "Add Tomboy note"
-msgstr ""
+msgstr "Pridėti Tomboy raštelį"
 
 #: GTG/plugins/tomboy/tomboy.py:195
 msgid ""
 " was found on the system, but it doesn't provide a dbus interface. the "
 "Tomboy/Gnote plugin will not work with it."
-msgstr ""
+msgstr " rastas, bet nepateikia dbus sąsajos. Tomboy/Gnote įskiepis neveiks."
 
 #: GTG/plugins/tomboy/tomboy.py:243
 msgid "That note does not exist!"
-msgstr ""
+msgstr "Nėra tokio raštelio!"
 
 #: GTG/plugins/tomboy/tomboy.py:248
 msgid "That note does not exist. Do you want to create a new one?"
-msgstr ""
+msgstr "Nėra tokio raštelio. Ar norite sukurti naują?"
 
 #: GTG/plugins/tomboy/tomboy.py:276
 msgid "This Tomboy note does not exist anymore. Do you want to create it?"
-msgstr ""
+msgstr "Šio Tomboy raštelio nebėra. Ar norite jį sukurti?"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:1
 msgid "<b>Location Determination Method</b>"
-msgstr ""
+msgstr "<b>Vietovės nustatymo metodas</b>"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:2
 msgid "<b>Proximity Factor</b>"
-msgstr ""
+msgstr "<b>Artumo faktorius</b>"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:3
 msgid ""
 "<small>Distance in kilometers from \n"
 "the current location.</small>"
 msgstr ""
+"<small>Atstumas kilometrais nuo \n"
+"dabartinės padėties.</small>"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:5
 msgid "Associate with existing tag"
-msgstr ""
+msgstr "Susieti su esama žyme"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:6
 msgid "Associate with new tag"
-msgstr ""
+msgstr "Susieti su nauja žyme"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:7
 msgid "Geolocalized-tasks Preferences"
-msgstr ""
+msgstr "Geografinių užduočių nustatymai"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:8
 msgid "Set the task's location"
-msgstr ""
+msgstr "Nustatyti užduoties vietovę"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:9
 msgid "Use cellphone"
-msgstr ""
+msgstr "Naudoti telefoną"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:10
 msgid "Use gps"
-msgstr ""
+msgstr "Naudoti gps"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:11
 msgid "Use network"
-msgstr ""
+msgstr "Naudoti tinklą"
 
 #: GTG/plugins/export/export.py:301
 msgid "Template not found"
-msgstr ""
+msgstr "Šablonas nerastas"
 
 #: GTG/plugins/export/export.py:302
 msgid "Can't load the template file"
-msgstr ""
+msgstr "Nepavyko pakrauti šablono failo"
 
 #: GTG/plugins/export/export.py:331
 msgid "Choose where to save your list"
-msgstr ""
+msgstr "Pasirinkite, kur išsaugoti jūsų sąrašą"
 
 #: GTG/plugins/evolution_sync/evolutionSync.py:33
 msgid "Synchronize with Evolution"
-msgstr ""
+msgstr "Sinchronizuoti su Evolution"
 
 #: GTG/tools/dates.py:51
 msgid "Tomorrow"
-msgstr ""
+msgstr "Rytoj"
 
 #: GTG/tools/dates.py:53
 msgid "Today"
-msgstr ""
+msgstr "Šiandien"
 
 #: GTG/tools/dates.py:55
 msgid "Yesterday"
-msgstr ""
+msgstr "Vakar"
 
 #: GTG/tools/dates.py:58
 #, python-format
@@ -484,126 +491,128 @@ msgstr[1] ""
 
 #: GTG/tools/dates.py:98 GTG/tools/dates.py:140
 msgid "now"
-msgstr "cabna"
+msgstr "dabar"
 
 #: GTG/tools/dates.py:99 GTG/tools/dates.py:142
 msgid "soon"
-msgstr ""
+msgstr "netrukus"
 
 #: GTG/tools/dates.py:100 GTG/tools/dates.py:144
 msgid "later"
-msgstr "na lirmau"
+msgstr "vėliau"
 
 #: GTG/taskbrowser/__init__.py:37
 msgid "Mark the selected task as done"
-msgstr ""
+msgstr "Ženklinti pažymėtą užduotį atlikta"
 
 #: GTG/taskbrowser/__init__.py:39 GTG/taskbrowser/__init__.py:43
 msgid "Mark the selected task as to be done"
-msgstr ""
+msgstr "Ženklinti pažymėtą užduotį kaip atliktiną"
 
 #: GTG/taskbrowser/__init__.py:41
 msgid "Mark the task as not to be done anymore"
-msgstr ""
+msgstr "Ženklinti užduotį kaip nebeatliktiną"
 
 #: GTG/taskbrowser/__init__.py:44
 msgid "Permanently remove the selected task"
-msgstr ""
+msgstr "Negrįžtamai ištrinti pažymėtą užduotį"
 
 #: GTG/taskbrowser/__init__.py:45
 msgid "Edit the selected task"
-msgstr ""
+msgstr "Taisyti pažymėtą užduotį"
 
 #: GTG/taskbrowser/__init__.py:46 GTG/taskbrowser/taskbrowser.glade.h:11
 msgid "Create a new task"
-msgstr ""
+msgstr "Sukurti naują užduotį"
 
 #: GTG/taskbrowser/__init__.py:47
 msgid "Create a new subtask"
-msgstr ""
+msgstr "Sukurti naują použduotį"
 
 #: GTG/taskbrowser/__init__.py:48
 msgid "Display only the currently actionable tasks"
-msgstr ""
+msgstr "Rodyti tik šiuo metu įvykdomas užduotis"
 
 #: GTG/taskbrowser/tagtree.py:348 GTG/taskbrowser/tasktree.py:353
 #: GTG/taskbrowser/tasktree.py:521 GTG/taskbrowser/taskbrowser.glade.h:38
 msgid "Tags"
-msgstr ""
+msgstr "Žymės"
 
 #: GTG/taskbrowser/tasktree.py:368 GTG/taskbrowser/tasktree.py:545
 msgid "Title"
-msgstr ""
+msgstr "Pavadinimas"
 
 #: GTG/taskbrowser/tasktree.py:382
 msgid "Start date"
-msgstr ""
+msgstr "Pradžios data"
 
 #: GTG/taskbrowser/tasktree.py:394
 msgid "Due"
-msgstr ""
+msgstr "Atlikti iki"
 
 #: GTG/taskbrowser/tasktree.py:533
 msgid "Closing date"
-msgstr ""
+msgstr "Užbaigimo data"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:1
 msgid ""
 "\n"
 "Getting Things Gnome! is an organizer for the GNOME desktop environment."
 msgstr ""
+"\n"
+"Getting Things Gnome! yra planavimo programa GNOME darbastalio aplinkai."
 
 #: GTG/taskbrowser/taskbrowser.glade.h:3
 msgid "About GTG!"
-msgstr ""
+msgstr "Apie GTG!"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:4
 msgid "Add Tag"
-msgstr ""
+msgstr "Pridėti žymę"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:5
 msgid "Add Tag..."
-msgstr ""
+msgstr "Pridėti žymę..."
 
 #: GTG/taskbrowser/taskbrowser.glade.h:6
 msgid "Add a Tag..."
-msgstr ""
+msgstr "Pridėti žymę..."
 
 #: GTG/taskbrowser/taskbrowser.glade.h:7
 msgid "Add a subtask"
-msgstr ""
+msgstr "Pridėti použduotį"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:8
 msgid "Apply to subtasks"
-msgstr ""
+msgstr "Pritaikyti použduotims"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:9
 msgid "Cancel"
-msgstr ""
+msgstr "Atšaukti"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:10
 msgid "Copyrights&#xA9; 2008, 2009 Lionel Dricot, Bertrand Rousseau"
-msgstr ""
+msgstr "Autorinės teisės&#xA9; 2008, 2009 Lionel Dricot, Bertrand Rousseau"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:12
 msgid "D_ismiss"
-msgstr ""
+msgstr "_Pašalinti"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:15
 msgid "Edit"
-msgstr ""
+msgstr "Taisa"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:16
 msgid "Enter the name of the tag(s) you wish to add:"
-msgstr ""
+msgstr "Įveskite pridedamos žymės (-ių) vardą (-us)"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:17
 msgid "GTG website"
-msgstr ""
+msgstr "GTG tinklapis"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:18
 msgid "Getting Things Gnome!"
-msgstr ""
+msgstr "Getting Things Gnome!"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:19
 msgid ""
@@ -621,140 +630,155 @@ msgid ""
 "Getting Things Gnome!; if not, write to the Free Software Foundation, Inc., "
 "51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA."
 msgstr ""
+"Getting Things Gnome! yra laisva programinė įranga; jūs galite ją platinti "
+"ir/arba modifikuoti pagal GNU Bendros Viešosios Licencijos sąlygas, kaip jas "
+"pateikia Free Software Foundation; licencijos versija 3 arba (jūsų "
+"pasirinkta) bet kokia vėlesnė versija.\n"
+"\n"
+"Getting Things Gnome! yra platinama tikintis, kad ji bus naudinga, bet BE "
+"JOKIŲ GARANTIJŲ; netgi be jokių numanomų KOMERCINIŲ ar TINKAMUMO KONKREČIAM "
+"TIKSLUI garantijų. Daugiau informacijos rasite GNU Bendroje Viešojoje "
+"Licencijoje.\n"
+"\n"
+"Jūs turėjote gauti GNU Bendros Viešosios Licencijos kopiją kartu su Getting "
+"Things Gnome!; jei ne, parašykite Free Software Foundation, Inc., 51 "
+"Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA."
 
 #: GTG/taskbrowser/taskbrowser.glade.h:24
 msgid ""
 "Hint: you can add several tags by separating them with\n"
 "commas."
 msgstr ""
+"Patarimas: jūs galite pridėti kelias žymes skirdami jas\n"
+"kableliais."
 
 #: GTG/taskbrowser/taskbrowser.glade.h:26
 msgid "Mark as Done"
-msgstr ""
+msgstr "Ženklinti atlikta"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:27
 msgid "Mark as Not Done"
-msgstr ""
+msgstr "Ženklinti neatlikta"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:28
 msgid "Mark as _Done"
-msgstr ""
+msgstr "Ženklinti _atlikta"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:29
 msgid "New Subtask"
-msgstr ""
+msgstr "Nauja použduotis"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:30
 msgid "New Task"
-msgstr ""
+msgstr "Nauja užduotis"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:31
 msgid "New _Subtask"
-msgstr ""
+msgstr "Nauja _použduotis"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:32
 msgid "New _Task"
-msgstr ""
+msgstr "Nauja _užduotis"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:33
 msgid "Redo"
-msgstr ""
+msgstr "Pakartoti"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:34
 msgid "Reset Color"
-msgstr ""
+msgstr "Atstatyti spalvą"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:35
 msgid "T_oolbar"
-msgstr ""
+msgstr "Į_rankinė"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:36
 msgid "Tag is displayed in the workview"
-msgstr ""
+msgstr "Žymė rodoma darbiniame rodinyje"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:37
 msgid "TagName"
-msgstr ""
+msgstr "ŽymėsVardas"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:39
 msgid "Und_ismiss"
-msgstr ""
+msgstr "Atšaukti pašalinimą"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:40
 msgid "Undo"
-msgstr ""
+msgstr "Atšaukti"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:41
 msgid "Work View"
-msgstr ""
+msgstr "Darbinis rodinys"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:42
 msgid "_Background Colors"
-msgstr ""
+msgstr "_Fono spalvos"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:43
 msgid "_Closed Tasks Pane"
-msgstr ""
+msgstr "_Užverta užduočių juosta"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:44
 msgid "_Edit"
-msgstr ""
+msgstr "_Taisa"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:45
 msgid "_Help"
-msgstr ""
+msgstr "_Žinynas"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:46
 msgid "_Plugins"
-msgstr ""
+msgstr "Priedai"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:47
 msgid "_Quick Add Entry"
-msgstr ""
+msgstr "_Greitas įrašo įvedimas"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:48
 msgid "_Schedule for..."
-msgstr ""
+msgstr "_Planuoti laikui..."
 
 #: GTG/taskbrowser/taskbrowser.glade.h:49
 msgid "_Tags Sidebar"
-msgstr ""
+msgstr "_Žymių šoninis polangis"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:50
 msgid "_Tasks"
-msgstr ""
+msgstr "_Užduotys"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:51
 msgid "_View"
-msgstr ""
+msgstr "_Rodymas"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:52
 msgid "_Work View"
-msgstr ""
+msgstr "_Darbinis rodinys"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:53
 msgid "_tomorrow"
-msgstr ""
+msgstr "_rytoj"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:54
 msgid "next _month"
-msgstr ""
+msgstr "kitą _mėnesį"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:55
 msgid "next _week"
-msgstr ""
+msgstr "kitą _savaitę"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:56
 msgid "next _year"
-msgstr ""
+msgstr "kitais m_etais"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:57
 msgid "t_oday"
-msgstr ""
+msgstr "_šiandien"
 
 #: GTG/taskbrowser/browser.py:571
 msgid "no active tasks"
-msgstr ""
+msgstr "nėra aktyvių užduočių"
 
 #: GTG/taskbrowser/browser.py:573
 #, python-format
@@ -765,71 +789,71 @@ msgstr[1] ""
 
 #: GTG/taskbrowser/browser.py:584
 msgid "monday"
-msgstr ""
+msgstr "pirmadienis"
 
 #: GTG/taskbrowser/browser.py:584
 msgid "tuesday"
-msgstr ""
+msgstr "antradienis"
 
 #: GTG/taskbrowser/browser.py:584
 msgid "wednesday"
-msgstr ""
+msgstr "trečiadienis"
 
 #: GTG/taskbrowser/browser.py:585
 msgid "thursday"
-msgstr ""
+msgstr "ketvirtadienis"
 
 #: GTG/taskbrowser/browser.py:585
 msgid "friday"
-msgstr ""
+msgstr "penktadienis"
 
 #: GTG/taskbrowser/browser.py:585
 msgid "saturday"
-msgstr ""
+msgstr "šeštadienis"
 
 #: GTG/taskbrowser/browser.py:586
 msgid "sunday"
-msgstr ""
+msgstr "sekmadienis"
 
 #: GTG/taskbrowser/browser.py:595
 msgid "today"
-msgstr ""
+msgstr "šiandien"
 
 #: GTG/taskbrowser/browser.py:599
 msgid "tomorrow"
-msgstr ""
+msgstr "rytoj"
 
 #: GTG/taskbrowser/browser.py:603
 msgid "next week"
-msgstr ""
+msgstr "kitą savaitę"
 
 #: GTG/taskbrowser/browser.py:607
 msgid "next month"
-msgstr ""
+msgstr "kitą mėnesį"
 
 #: GTG/taskbrowser/browser.py:611
 msgid "next year"
-msgstr ""
+msgstr "kitais metais"
 
 #: GTG/taskbrowser/browser.py:1013
 msgid "tags"
-msgstr ""
+msgstr "žymės"
 
 #: GTG/taskbrowser/browser.py:1013
 msgid "tag"
-msgstr ""
+msgstr "žymė"
 
 #: GTG/taskbrowser/browser.py:1019
 msgid "defer"
-msgstr ""
+msgstr "atidėti"
 
 #: GTG/taskbrowser/browser.py:1024
 msgid "due"
-msgstr ""
+msgstr "atliktina"
 
 #: GTG/core/firstrun_tasks.py:8
 msgid "Getting started with GTG"
-msgstr ""
+msgstr "Pradėti dirbti su GTG"
 
 #: GTG/core/firstrun_tasks.py:9
 msgid ""
@@ -869,7 +893,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:35
 msgid "Learn how to use subtasks"
-msgstr ""
+msgstr "Išmokite naudoti použduotis"
 
 #: GTG/core/firstrun_tasks.py:36
 msgid ""
@@ -890,7 +914,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:49
 msgid "Learn how to use tags"
-msgstr ""
+msgstr "Išmokite naudoti žymes"
 
 #: GTG/core/firstrun_tasks.py:50
 msgid ""
@@ -924,7 +948,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:67
 msgid "Learn how to use the Workview"
-msgstr ""
+msgstr "Išmokite naudoti Darbinį rodinį"
 
 #: GTG/core/firstrun_tasks.py:68
 msgid ""
@@ -949,7 +973,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:83
 msgid "Learn how to use Plugins"
-msgstr ""
+msgstr "Išmokite naudoti įskiepius"
 
 #: GTG/core/firstrun_tasks.py:84
 msgid ""
@@ -963,7 +987,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:93
 msgid "Reporting bugs"
-msgstr ""
+msgstr "Pranešti apie klaidas"
 
 #: GTG/core/firstrun_tasks.py:94
 msgid ""
@@ -982,7 +1006,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:107
 msgid "Learn how to use the QuickAdd Entry"
-msgstr ""
+msgstr "Išmokite naudoti greito pridėjimo lauką"
 
 #: GTG/core/firstrun_tasks.py:108
 msgid ""
@@ -1010,52 +1034,369 @@ msgstr ""
 
 #: GTG/core/plugins/__init__.py:32
 msgid "Everything necessary to run this plugin is available."
-msgstr ""
+msgstr "Rasta viskas, ko reikia šiam įskiepiui paleisti."
 
 #: GTG/core/plugins/__init__.py:33
 msgid "The plugin can not be loaded"
-msgstr ""
+msgstr "Priedas negali būti pakrautas"
 
 #: GTG/core/plugins/__init__.py:34
 msgid "Some python modules are missing"
-msgstr ""
+msgstr "Trūksta kai kurių python modulių"
 
 #: GTG/core/plugins/__init__.py:35
 msgid "Please install the following python modules:"
-msgstr ""
+msgstr "Įdiekite šiuos python modulius:"
 
 #: GTG/core/plugins/__init__.py:37
 msgid "Some remote dbus objects are missing."
-msgstr ""
+msgstr "Trūksta kai kurių nutolusių dbus  objektų."
 
 #: GTG/core/plugins/__init__.py:38
 msgid "Please start the following applications:"
-msgstr ""
+msgstr "Paleiskite šias programas:"
 
 #: GTG/core/plugins/__init__.py:40
 msgid "Some modules and remote dbus objects are missing."
-msgstr ""
+msgstr "Trūksta kai kurių modulių ir nutolusių dbus objektų."
 
 #: GTG/core/plugins/__init__.py:41
 msgid "Please install or start the following components:"
-msgstr ""
+msgstr "Įdiekite arba paleiskite šiuos komponentus:"
 
 #: GTG/core/plugins/__init__.py:43
 msgid "Unknown error while loading the plugin."
-msgstr ""
+msgstr "Nežinoma klaida pakraunant priedą"
 
 #: GTG/core/plugins/__init__.py:44
 msgid "Very helpful message, isn't it? Please report a bug."
-msgstr ""
+msgstr "Labai naudingas pranešimas? Praneškite apie klaidą."
 
 #: GTG/core/task.py:53
 msgid "My new task"
-msgstr ""
+msgstr "Mano nauja užduotis"
 
 #: GTG/core/tagstore.py:52
 msgid "All tasks"
-msgstr ""
+msgstr "Visos užduotys"
 
 #: GTG/core/tagstore.py:59
 msgid "Tasks with no tags"
-msgstr ""
+msgstr "Užduotys be žymių"
+
+#~ msgid ""
+#~ "In GTG, everything is a task. From building a bridge over the Pacific Ocean "
+#~ "to changing a light bulb or organizing a party. When you edit a task, it is "
+#~ "automatically saved."
+#~ msgstr ""
+#~ "Programoje GTG viskas ura užduotys. Nuo tilto pastatymo per ramųjį vandenyną "
+#~ "iki lemputės pakeitimo ar vakarėlio surengimo. Jums redaguojant užduotį, ji "
+#~ "yra automatiškai išsaugoma."
+
+#~ msgid ""
+#~ "Tasks and subtasks can be re-organized by drag-n-drop in the tasks list."
+#~ msgstr ""
+#~ "Užduotys ir použduotys gali būti pertvarkomos tempti-numesti veiksmais "
+#~ "užduočių sąraše."
+
+#~ msgid "Thank you for trying out GTG :-)"
+#~ msgstr "Ačiū, kad bandote GTG :-)"
+
+#~ msgid ""
+#~ "In the task description (this window), if you begin a line with &quot;-"
+#~ "&quot;, it will be considered as a &quot;subtask&quot;, something that needs "
+#~ "to be done in order to accomplish your task. Just try to write &quot;- test "
+#~ "subtask&quot; on the next line and press enter."
+#~ msgstr ""
+#~ "Užduoties aprašyme (šiame lange), jei jūs pradėsite eilutę &quot;-&quot;, ji "
+#~ "bus laikoma &quot;použduotimi&quot;, kažkuo, ką reikia padaryti siekiant "
+#~ "pasiekti jūsų tikslą. Tiesiog pabandykite parašyti &quot;- bandoma "
+#~ "použduotis&quot; kitoje eilutėje ir paspauskite enter."
+
+#~ msgid "You can also use the &quot;insert subtask&quot; button."
+#~ msgstr "Jūs taip pat galite naudoti mygtuką &quot;įterpti použduotį&quot;."
+
+#~ msgid "Other stuff you should read:"
+#~ msgstr "Jums dar reikėtų perskaityti:"
+
+#~ msgid ""
+#~ "We hope that you will appreciate GTG. Please send us bug reports and ideas "
+#~ "for improvement using: "
+#~ msgstr ""
+#~ "Tikimės, kad jums patiks GTG. Siūskite pranešimus apie klaidas ar naujas "
+#~ "idėjas tobulinimui naudodami: "
+
+#~ msgid ""
+#~ "If you choose to close this current task, subtasks will be automatically "
+#~ "closed too. We indeed consider that, if you achieve a given task, you don't "
+#~ "need to do the subtask anymore."
+#~ msgstr ""
+#~ "Jei jūs užbaigsite užduotį, použduotys bus automatiškai užbaigtos. Laikoma, "
+#~ "kad pasiekus užsibrėžtą tikstą nebereikia atlikti použduočių."
+
+#~ msgid ""
+#~ "You can drag-n-drop a tag onto another to create \"subtags\". As an example, "
+#~ "if you drag the tag @to_pay onto the tag @money, every task tagged with "
+#~ "@to_pay will also appear in the view of @money (but the @money tag is not "
+#~ "added to the task)."
+#~ msgstr ""
+#~ "Jūs galite tempti ir numesti vieną žymę ant kitos ir sukurti \"požymės\". "
+#~ "Pavyzdžiui, jei nutempsite žymę @žaisti ant žymės @pinigai, "
+#~ "kiekvienaužduotis su @žaisti bus taip pat rodoma ir prie @pinigai (bet žymė "
+#~ "@pinigai nebus pridėta į užduotį)."
+
+#~ msgid ""
+#~ "Tags are useful to sort your tasks. In the view menu, you can enable a "
+#~ "sidebar which displays all the tags you are using so you can easily see "
+#~ "tasks assigned to a given tag. There's no limit to the number of tags a task "
+#~ "can have."
+#~ msgstr ""
+#~ "Žymės yra naudingos užduočių rūšiavimui. Rodymo meniu jūs galite įjungti "
+#~ "šoninį polangį, rodantį visas jūsų naudojamas žymės, kad galėtumėt matyti "
+#~ "užduotis, priskirtas kiekvienai žymei. Nėra jokių apribojimų žymių kiekiui, "
+#~ "kurį gali turėti užduotis."
+
+#~ msgid ""
+#~ "A new tag is only added to the current task. There's no recursion and the "
+#~ "tag is not applied to subtasks. But when you create a new subtask, this "
+#~ "subtask will inherit the tags of its parent as a good primary default (it "
+#~ "will also be the case if you add a tag to a parent just after creating a "
+#~ "subtask). Of course, you can modify at any time the tags of this particular "
+#~ "subtask. It will never be changed by the parent."
+#~ msgstr ""
+#~ "Nauja žymė pridedama tik į esamą užduotį. Nėra rekursijos ir žymė "
+#~ "nepridedama prie použduočių. Bet sukūrus naują použduotį, ji perims "
+#~ "pagrindinės užduoties žymes kaip pirmines (taip pat bus ir tuomet, kai jūs "
+#~ "pridėsite žymę į pagrindinę užduotį iš karto po použduoties sukūrimo). "
+#~ "Žinoma, jūs galite bet kada pakeisti šios použduoties žymes. Jos niekada "
+#~ "nebebus pakeistos pagal pagrindinę užduotį."
+
+#~ msgid ""
+#~ "If you right click on a tag in the sidebar you can also set its color. It "
+#~ "will allow you to have a more colorful list of tasks, if you want it that "
+#~ "way."
+#~ msgstr ""
+#~ "Spausdami dešinį klavišą ant žymės šoniniame polangyje jūs taip pat galite "
+#~ "nustatyti jos spalvą. Tai jums leis turėti spalvingesnį užduočių sąrašą, jei "
+#~ "tokio pageidaujate."
+
+#~ msgid "A tag is a simple word that begins with &quot;@&quot;."
+#~ msgstr "Žymė yra žodis, prasidedantis &quot;@&quot;."
+
+#~ msgid "It becomes yellow, it's a tag."
+#~ msgstr "jis tampa geltonas, tai žymė."
+
+#~ msgid "Try to type a word beginning with @ here:"
+#~ msgstr "Pamėginkite parašyti žodį, prasidedantį @ čia:"
+
+#~ msgid ""
+#~ "What is an actionable task? It's a task you can do directly, right now."
+#~ msgstr ""
+#~ "Kas yra įvykdoma užduotis? Tai užduotis, kurią galite atlikti tiesiog dabar."
+
+#~ msgid ""
+#~ "It's a task that is already &quot;start-able&quot;, i.e. the start date is "
+#~ "already over."
+#~ msgstr ""
+#~ "Tai užduotis, kurią jau &quot;galima pradėti&quot;, pavyzdžiui pradžios data "
+#~ "jau praėjo."
+
+#~ msgid ""
+#~ "It's a task that doesn't have open subtasks, i.e. you can do the task itself "
+#~ "directly."
+#~ msgstr ""
+#~ "Tai užduotis, kuri neturi nebaigtų použduočių, t. y. jūs galite atlikti "
+#~ "pačią užduotį."
+
+#~ msgid ""
+#~ "GTG is still very alpha software. We like it and use it everyday but you "
+#~ "will encounter some bugs."
+#~ msgstr ""
+#~ "GTG vis dar yra alfa programinė įranga. Mums ji patinka ir mes ją naudojame "
+#~ "kasdien, bet jūs susidursite su klaidomis."
+
+#~ msgid ""
+#~ "If you have some trouble with GTG, we might be able to help you or to solve "
+#~ "your problem really quickly."
+#~ msgstr ""
+#~ "Jei turite problemų su GTG, mes galbūt galime jums padėti jas greitai "
+#~ "išspręsti."
+
+#~ msgid "Please, report them on our Launchpad page:"
+#~ msgstr "Praneškite apie jas mūsų Launchpad tinklapyje:"
+
+#~ msgid "1 active task"
+#~ msgstr "1 aktyvi užduotis"
+
+#, python-format
+#~ msgid "%s active tasks"
+#~ msgstr "%s aktyvių užduočių"
+
+#~ msgid "New Note"
+#~ msgstr "Naujas raštelis"
+
+#~ msgid "View Notes"
+#~ msgstr "Rodyti raštelius"
+
+#~ msgid "Welcome to Getting Things Gnome!, your new task manager."
+#~ msgstr "Sveiki paleidę Getting Things Gnome!, jūsų naują užduočių tvarkyklę."
+
+#~ msgid ""
+#~ "A task might be composed of multiple subtasks that appear as links in the "
+#~ "description. Simply click on the following link:"
+#~ msgstr ""
+#~ "Užduotis gali susidėti iš kelių použduočių, kurios bus rodomos kaip saitai "
+#~ "apraše. Paprasčiausiai spauskite šį saitą:"
+
+#~ msgid ""
+#~ "Some concepts come with subtasks: for example, a subtask's due date can "
+#~ "never be after its parent's due date."
+#~ msgstr ""
+#~ "Yra apribojimų, susijusių suu použduotimis: pavyzdžiui, použduoties atlikimo "
+#~ "data negali būti vėlesnė už pagrindinės užduoties atlikimo datą."
+
+#~ msgid ""
+#~ "If you press the &quot;Workview&quot; button, only actionable tasks will be "
+#~ "displayed."
+#~ msgstr ""
+#~ "Jei paspausite mygtuką &quot;Darbinis rodinys&quot;, tik įvykdomos užduotys "
+#~ "bus rodomos."
+
+#~ msgid "Also, marking a parent as done will mark all the subtasks as done."
+#~ msgstr ""
+#~ "Taip pat, paženklinus užduotį atlikta, visos použduotys taip pat bus "
+#~ "paženklintos atliktomis."
+
+#~ msgid ""
+#~ "Once you've read the above subtask, mark it as Done. If you don't want to do "
+#~ "the task, mark it as dismissed. Done and Dismissed tasks are kept in the "
+#~ "closed tasks pane, hidden by default but you can easily enable it in the "
+#~ "View menu."
+#~ msgstr ""
+#~ "Perskaitę aukščiau išdestytą použduotį, paženklinkite ją atlikta. Jei "
+#~ "nenorite atlikti užduoties, ženklinkite ją pašalinta. Atliktos ir pašalintos "
+#~ "užduotys rodomos baigtų užduočių polangyje, numatytai nerodomame, bet jūs "
+#~ "galite jį lengvai įjungti rodymo meniu."
+
+#~ msgid ""
+#~ "Once a task is done, you can push the &quot;Mark as done&quot; button. If "
+#~ "the task is not relevant any-more, simply press &quot;Dismiss&quot;."
+#~ msgstr ""
+#~ "Atlikę užduotį, spauskite mygtuką &quot;Ženklinti atlikta&quot;. Jei "
+#~ "užduotis nebeaktuali, paprasčiausiai spauskite &quot;Pašalinti&quot;."
+
+#~ msgid "Thus, the workview will only show you tasks you should do right now."
+#~ msgstr ""
+#~ "Taigi, darbinis rodinys rodys tik tas užduotis, kurias jūs turėtumėt atlikti "
+#~ "dabar."
+
+#~ msgid ""
+#~ "If you use tags, you can right click on a tag in the sidebar and choose to "
+#~ "hide tasks assigned to this particular tag in the workview. It's very useful "
+#~ "if you have a tag like &quot;someday&quot; that you use for tasks you would "
+#~ "like to do but are not particularly urgent."
+#~ msgstr ""
+#~ "Jei naudojate žymes, jūs galite dešiniuoju paspaudimu šoniniame polangyje "
+#~ "paslėpti darbiniame rodinyje užduotis, priskirtas tam tikrai žymei. Tai "
+#~ "labai naudinga, jei turite tokią žymę, kaip &quot;kažkada&quot;, kurią "
+#~ "naudojate užduotims, kurias norite atlikti, bet kurios nėra labai skubios."
+
+#~ msgid ""
+#~ "We need you to make this software better. Any contribution, any idea is "
+#~ "welcome."
+#~ msgstr ""
+#~ "Mums reikia jūsų pagalbos siekiant padaryti šią programą geresnę. Bet koks "
+#~ "indėlis ar idėja yra visuomet laukiami."
+
+#, python-format
+#~ msgid "Was %s days ago"
+#~ msgstr "Buvo prieš %s dienų"
+
+#, python-format
+#~ msgid "%s days left"
+#~ msgstr "Liko %s dienų"
+
+#, python-format
+#~ msgid "Completed %s days late"
+#~ msgstr "Užbaigta %s dienomis (-ų) per vėlai"
+
+#, python-format
+#~ msgid "Completed %s days early"
+#~ msgstr "Užbaigta %s dienomis (-ų) anksčiau"
+
+#, python-format
+#~ msgid "In %s days"
+#~ msgstr "Per %s dienas (-ų)"
+
+#, python-format
+#~ msgid "%s days ago"
+#~ msgstr "Prieš %s dianas (-ų)"
+
+#~ msgid "GTG has the ability to add plugins to extend it's core functionality."
+#~ msgstr "GTG turi galimybę pridėti įskiepių ir praplėsti funkcionalumą"
+
+#~ msgid ""
+#~ "tags:tag1,tag2,tag3 : This way you can apply as many tags as you wish using "
+#~ "comma as separator"
+#~ msgstr ""
+#~ "tags:žymė1,žymė2,žymė3 : tokiu būdu jūs galite pritaikyti kiek tik norite "
+#~ "žymių naudodami kablelį kaip skirtuką"
+
+#~ msgid ""
+#~ "For adding a task you just have to type its title in the entry and press "
+#~ "return. The task will be created and selected in the task browser. If a tag "
+#~ "is selected in the tag panel, this tag is applied to the task you create."
+#~ msgstr ""
+#~ "Norint pridėti užduotį, jums tereikia įvesti į lauką pavadinimą ir paspausti "
+#~ "enter. Užduotis bus sukurta ir pažymėta užduočių naršyklėje. Jei žymių "
+#~ "skydelyje yra pažymėta žumė, ji bus pritaikyta naujai sukurtai užduočiai."
+
+#~ msgid ""
+#~ "The quickadd entry is the quickest way to create a new task. You can show or "
+#~ "hide it in the View menu."
+#~ msgstr ""
+#~ "Greito pridėjimo laukas yra greičiausias būdas sukurti naują užduotį. Jūs "
+#~ "galite jį rodyti arba slėpti naudodami rodymo meniu."
+
+#~ msgid "For that the syntax is :"
+#~ msgstr "Tam sintaksė yra:"
+
+#~ msgid ""
+#~ "You can also create a task with attributes like tags, due date or defer date "
+#~ "in the quickadd entry."
+#~ msgstr ""
+#~ "Greito pridėjimo lauku jūs taip pat galite sukurti užduotį su tokiais "
+#~ "atributais kaip žymės, atlikimo arba vilkinimo data."
+
+#~ msgid ""
+#~ "You can find the Plugin Manager by selecting Plugins > Plugin Preferences on "
+#~ "the menu."
+#~ msgstr ""
+#~ "Įskiepių valdyklę rasite programos meniu pasirinkę Įskiepiai > Įskiepių "
+#~ "nustatymai."
+
+#~ msgid ""
+#~ "Some examples of the current plugins are Syncing with Remember the Milk and "
+#~ "Evolution, Tomboy/Gnote integration and Geolocalized Tasks."
+#~ msgstr ""
+#~ "Esamų įskiepių pavyzdžiai yra sinchronizavimas su Remember the Milk ir "
+#~ "Evolution, Tomboy/Gnote integravimas ir Geolokalizuotos Užduotys."
+
+#~ msgid ""
+#~ "due:date or defer:date : This way you can apply a due date or a defer date. "
+#~ "date can be yyyy-mm-dd (for exemple 2009-04-01) or yyyymmdd (20090401) or "
+#~ "mmdd (0401, in this case the year is implicitly the current one) or today or "
+#~ "tomorrow or a weekday name (due:monday means due next Monday)"
+#~ msgstr ""
+#~ "iki:data arba delsiama:data : tokiubūdu jūs galite pritaikyti atlikimo arba "
+#~ "delsimo datas. Data gali būti yyyy-mm-dd (pavyzdžiui 2009-04-01), yyyymmdd "
+#~ "(20090401), mmdd (0401, šiuo atveju metai yra einamieji), šiandien, rytoj "
+#~ "arba savaitės diena (iki:pirmadienis reiškia kitą pirmadienį)"
+
+#~ msgid "If a word begins with @, it is interpreted as a tag."
+#~ msgstr "Jei žodis pradedamas @, jis interpretuojamas kaip žymė."
+
+#~ msgid ""
+#~ "Attributes which are added in this way apply but do not appear in the title."
+#~ msgstr ""
+#~ "Tokiu būdu pridėti atributai bus pritaikyti, bet neįtraukti į pavadinimą."
