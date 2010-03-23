@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-03-12 11:40+0100\n"
-"PO-Revision-Date: 2010-03-17 09:12+0000\n"
+"PO-Revision-Date: 2010-03-22 08:50+0000\n"
 "Last-Translator: Aputsiaq Janussen <aj@isit.gl>\n"
 "Language-Team: Danish <da@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2010-03-18 04:35+0000\n"
+"X-Launchpad-Export-Date: 2010-03-23 04:47+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: GTG/taskeditor/__init__.py:28 GTG/taskbrowser/__init__.py:32
@@ -236,15 +236,14 @@ msgstr "Fjern opgave permanent"
 msgid ""
 "Deleting a task cannot be undone, and will delete the following tasks: "
 msgstr ""
-"Sletning af en opgave kan ikke gøres om, og vil slette følgende opgaver: "
 
 #: GTG/taskbrowser/browser.py:1545
 msgid "Are you sure you want to delete these tasks?"
-msgstr "Er du sikker på at du vil slette disse opgaver?"
+msgstr ""
 
 #: GTG/taskbrowser/browser.py:1546
 msgid "Keep selected tasks"
-msgstr "Behold valgte opgaver"
+msgstr ""
 
 #: GTG/taskbrowser/browser.py:1547
 msgid "Permanently remove tasks"
@@ -335,11 +334,11 @@ msgstr "Kunne ikke tilslutte til Remember The Milk"
 
 #: GTG/plugins/rtm_sync/rtm_sync.py:189
 msgid "Authentication failed."
-msgstr "Godkendelse mislykkedes."
+msgstr ""
 
 #: GTG/plugins/rtm_sync/rtm_sync.py:189
 msgid "Please retry."
-msgstr "Forsøg venligst igen."
+msgstr ""
 
 #: GTG/plugins/rtm_sync/rtm_sync.py:193
 msgid ""
@@ -351,27 +350,27 @@ msgstr ""
 
 #: GTG/plugins/hamster/hamster.py:40
 msgid "Start task in Hamster"
-msgstr "Start opgave i Hamster"
+msgstr ""
 
 #: GTG/plugins/hamster/hamster.py:156
 msgid "Start in Hamster"
-msgstr "Start i Hamster"
+msgstr ""
 
 #: GTG/plugins/hamster/hamster.py:158
 msgid "Start a new activity in Hamster Time"
-msgstr "Start en ny aktivitet i Hamster Time"
+msgstr ""
 
 #: GTG/plugins/hamster/hamster.py:174
 msgid "Start a new activity in Hamster Time "
-msgstr "Start en ny aktivitet i Hamster Time "
+msgstr ""
 
 #: GTG/plugins/notification_area/notification_area.py:188
 msgid "_View Main Window"
-msgstr "_Vis Hovedvindue"
+msgstr ""
 
 #: GTG/plugins/notification_area/notification_area.py:196
 msgid "Add _New Task"
-msgstr "Tilføj _Ny opgave"
+msgstr ""
 
 #: GTG/plugins/tomboy/tomboy.py:82
 msgid ""
