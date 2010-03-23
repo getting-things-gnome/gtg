@@ -60,6 +60,8 @@ from GTG.viewmanager.manager import Manager
 from GTG.core.datastore      import DataStore
 from GTG.core                import CoreConfig
 from GTG.tools.logger        import Log
+from GTG.tools               import gtkcrashhandler
+from GTG                     import info
 
 #=== OBJECTS ==================================================================
 
@@ -102,6 +104,13 @@ def main(options=None, args=None):
     config = CoreConfig()
     check_instance(config.DATA_DIR)
     backends_list = config.get_backends_list()
+
+    #initialize Apport hook for crash handling
+    gtkcrashhandler.initialize(app_name = "Getting Things GNOME!", message  =  \
+          "GTG" + info.VERSION + _(" has crashed. Please report the bug on <a "\
+          "href=\"http://bugs.edge.launchpad.net/gtg\">our Launchpad page</a>."\
+          " If you have Apport installed, it will be started for you."),       \
+          use_apport = True)
     
     # Load data store
     ds = DataStore()
