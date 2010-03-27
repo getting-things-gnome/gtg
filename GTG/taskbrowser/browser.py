@@ -580,6 +580,7 @@ class TaskBrowser:
         "arg" can be a yyyy-mm-dd, yyyymmdd, mmdd, today, next week,
         next month, next year, or a weekday name.
         """
+        #FIXME: this stuff should go in GTG/tools/dates.py
         day_names_en = ["monday", "tuesday", "wednesday", "thursday",
                         "friday", "saturday", "sunday"]
         day_names = [_("monday"), _("tuesday"), _("wednesday"),
@@ -596,23 +597,23 @@ class TaskBrowser:
                 date = "%i-%s-%s" % (year, arg[:2], arg[2:])
         elif arg.lower() == "today" or arg.lower() == _("today"):
             t = datetime.date.today()
-            date = "%i-%i-%i" % (t.year, t.month, t.day)
+            date = t.isoformat()
         elif arg.lower() == "tomorrow" or\
           arg.lower() == _("tomorrow"):
             t = datetime.date.today() + datetime.timedelta(days=1)
-            date = "%i-%i-%i" % (t.year, t.month, t.day)
+            date = t.isoformat()
         elif arg.lower() == "next week" or\
           arg.lower() == _("next week"):
             t = datetime.date.today() + datetime.timedelta(days=7)
-            date = "%i-%i-%i" % (t.year, t.month, t.day)
+            date = t.isoformat()
         elif arg.lower() == "next month" or\
           arg.lower() == _("next month"):
             t = datetime.date.today() + datetime.timedelta(days=30)
-            date = "%i-%i-%i" % (t.year, t.month, t.day)
+            date = t.isoformat()
         elif arg.lower() == "next year" or\
           arg.lower() == _("next year"):
             t = datetime.date.today() + datetime.timedelta(days=365)
-            date = "%i-%i-%i" % (t.year, t.month, t.day)
+            date = t.isoformat()
         elif arg.lower() in day_names_en or arg.lower() in day_names:
             today = datetime.date.today()
             today_day = today.weekday()
@@ -631,7 +632,7 @@ class TaskBrowser:
             date = "%i-%i-%i" % (year, month, day)
         elif arg in ('now', 'soon', 'later'):
             date = arg
-        if date == no_date:
+        if date == str(no_date):
             return no_date
         else:
             return strtodate(date)
