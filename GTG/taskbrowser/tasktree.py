@@ -118,7 +118,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
         elif column == COL_SDATE:
             return task.get_start_date().to_readable_string()
         elif column == COL_CDATE:
-            return task.get_closed_date().to_readable_string()
+            return task.get_closed_date()
         elif column == COL_TID:
             return task.get_id()
         elif column == COL_CDATE_STR:
