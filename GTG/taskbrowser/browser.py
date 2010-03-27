@@ -29,7 +29,6 @@ import os
 import gtk
 import locale
 import re
-import datetime
 import time
 
 #our own imports
@@ -52,7 +51,8 @@ from GTG.taskbrowser.tagtree          import TagTreeModel,\
 from GTG.tools                        import openurl
 from GTG.tools.dates                  import strtodate,\
                                              no_date,\
-                                             FuzzyDate
+                                             FuzzyDate, \
+                                             get_canonical_date
 #from GTG.tools                        import clipboard
 
 #=== MAIN CLASS ===============================================================
@@ -574,68 +574,6 @@ class TaskBrowser:
                                    count) % {'tasks': count}
         self.window.set_title("%s - "%parenthesis + WINDOW_TITLE)
 
-    def get_canonical_date(self, arg):
-        """
-        Transform "arg" in a valid yyyy-mm-dd date or return None.
-        "arg" can be a yyyy-mm-dd, yyyymmdd, mmdd, today, next week,
-        next month, next year, or a weekday name.
-        """
-        #FIXME: this stuff should go in GTG/tools/dates.py
-        day_names_en = ["monday", "tuesday", "wednesday", "thursday",
-                        "friday", "saturday", "sunday"]
-        day_names = [_("monday"), _("tuesday"), _("wednesday"),
-                     _("thursday"), _("friday"), _("saturday"),
-                     _("sunday")]
-        date = no_date
-        if re.match(r'\d{4}-\d{2}-\d{2}', arg):
-            date = arg
-        elif arg.isdigit():
-            if len(arg) == 8:
-                date = "%s-%s-%s" % (arg[:4], arg[4:6], arg[6:])
-            elif len(arg) == 4:
-                year = datetime.date.today().year
-                date = "%i-%s-%s" % (year, arg[:2], arg[2:])
-        elif arg.lower() == "today" or arg.lower() == _("today"):
-            t = datetime.date.today()
-            date = t.isoformat()
-        elif arg.lower() == "tomorrow" or\
-          arg.lower() == _("tomorrow"):
-            t = datetime.date.today() + datetime.timedelta(days=1)
-            date = t.isoformat()
-        elif arg.lower() == "next week" or\
-          arg.lower() == _("next week"):
-            t = datetime.date.today() + datetime.timedelta(days=7)
-            date = t.isoformat()
-        elif arg.lower() == "next month" or\
-          arg.lower() == _("next month"):
-            t = datetime.date.today() + datetime.timedelta(days=30)
-            date = t.isoformat()
-        elif arg.lower() == "next year" or\
-          arg.lower() == _("next year"):
-            t = datetime.date.today() + datetime.timedelta(days=365)
-            date = t.isoformat()
-        elif arg.lower() in day_names_en or arg.lower() in day_names:
-            today = datetime.date.today()
-            today_day = today.weekday()
-            if arg.lower() in day_names_en:
-                arg_day = day_names_en.index(arg.lower())
-            else:
-                arg_day = day_names.index(arg.lower())
-            if arg_day > today_day:
-                delta = datetime.timedelta(days = arg_day-today_day)
-            else:
-                delta = datetime.timedelta(days = arg_day-today_day+7)
-            next_date = today + delta
-            year = next_date.year
-            month = next_date.month
-            day = next_date.day
-            date = "%i-%i-%i" % (year, month, day)
-        elif arg in ('now', 'soon', 'later'):
-            date = arg
-        if date == str(no_date):
-            return no_date
-        else:
-            return strtodate(date)
 
     def get_tasktitle(self, tid):
         task = self.req.get_task(tid)
@@ -1021,12 +959,12 @@ class TaskBrowser:
                         tags.append(GTG.core.tagstore.Tag(tag))
                 elif attribute.lower() == "defer" or \
                      attribute.lower() == _("defer"):
-                    defer_date = self.get_canonical_date(args)
+                    defer_date = get_canonical_date(args)
                     if not defer_date:
                         valid_attribute = False
                 elif attribute.lower() == "due" or \
                      attribute.lower() == _("due"):
-                    due_date = self.get_canonical_date(args)
+                    due_date = get_canonical_date(args)
                     if not due_date:
                         valid_attribute = False
                 else:
@@ -1195,7 +1133,7 @@ class TaskBrowser:
         tasks = [self.req.get_task(uid) for uid in tasks_uid]
         tasks_status = [task.get_status() for task in tasks]
         for uid, task, status in zip(tasks_uid, tasks, tasks_status):
-            task.set_start_date(self.get_canonical_date(new_start_date))
+            task.set_start_date(get_canonical_date(new_start_date))
         #FIXME: If the task dialog is displayed, refresh its start_date widget
 
     def on_mark_as_started(self, widget):

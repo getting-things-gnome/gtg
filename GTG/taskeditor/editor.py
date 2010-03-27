@@ -53,8 +53,15 @@ class TaskEditor :
     #vmanager is the view manager
     #taskconfig is a ConfigObj dic to save infos about tasks
     #thisisnew is True when a new task is created and opened
-    def __init__(self, requester, vmanager, task, plugins,
-                taskconfig=None,plugin_apis=None,thisisnew=False,clipboard=None) :
+    def __init__(self, 
+                 requester, 
+                 vmanager, 
+                 task, 
+                 plugins,
+                 taskconfig = None,
+                 plugin_apis = None,
+                 thisisnew = False,
+                 clipboard = None) :
         self.req = requester
         self.vmanager = vmanager
         self.config = taskconfig

@@ -19,7 +19,7 @@
 
 from datetime import date, timedelta
 import locale
-from calendar import isleap
+import calendar
 from GTG import _, ngettext
 
 #setting the locale of gtg to the system locale 
@@ -57,7 +57,7 @@ class Date(object):
                                                            {"days": dleft}
         else:
             locale_format = self.__get_locale_string()
-            if isleap(date.today().year):
+            if calendar.isleap(date.today().year):
                 year_len = 366
             else:
                 year_len = 365
@@ -169,3 +169,43 @@ def strtodate(stri) :
     
 def date_today():
     return RealDate(date.today())
+
+def get_canonical_date(arg):
+    """
+    Transform "arg" in a valid yyyy-mm-dd date or return None.
+    "arg" can be a yyyy-mm-dd, yyyymmdd, mmdd, today, next week,
+    next month, next year, or a weekday name.
+    """
+    today = date.today()
+    day_names = [_("monday"), _("tuesday"), _("wednesday"),
+                 _("thursday"), _("friday"), _("saturday"),
+                 _("sunday")]
+    #FIXME: next month should get correct delta (not every
+    #       month is 30 days long)
+    delta_day_names = {_("today"):      0, \
+                       _("tomorrow"):   1, \
+                       _("next week"):  7, \
+                       _("next month"): calendar.mdays[today.month], \
+                       _("next year"):  365 + int(calendar.isleap(today.year))}
+    ### String sanitization
+    arg = arg.lower()
+    ### Conversion
+    #yyyymmdd and mmdd
+    if arg.isdigit():
+        if len(arg) == 4:
+            arg = str(date.today().year) + arg
+        assert(len(arg), 8)
+        arg = "%s-%s-%s" % (arg[:4], arg[4:6], arg[6:])
+    #today, tomorrow, next {week, months, year}
+    elif arg in delta_day_names.keys():
+        arg = (today + timedelta(days = delta_day_names[arg])).isoformat()
+    elif arg in day_names:
+        today_day = today.weekday()
+        arg_day = day_names.index(arg)
+        next_date = timedelta(days = arg_day - today_day + \
+                          7 * int(arg_day <= today_day)) + today
+        arg = "%i-%i-%i" % (next_date.year,  \
+                            next_date.month, \
+                            next_date.day)
+    return strtodate(arg)
+

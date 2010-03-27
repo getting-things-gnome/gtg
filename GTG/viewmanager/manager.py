@@ -137,7 +137,7 @@ class Manager():
 ################# Task Editor ############################################
 
 
-    def open_task(self, uid,thisisnew=False):
+    def open_task(self, uid,thisisnew = False):
         """Open the task identified by 'uid'.
 
         If a Task editor is already opened for a given task, we present it.
@@ -150,9 +150,13 @@ class Manager():
             tv.present()
         elif t:
             tv = TaskEditor(
-                self.req, self, t, self.plugins, \
-                taskconfig=self.task_config, \
-                plugin_apis=self.p_apis,thisisnew=thisisnew,\
+                requester = self.req, \
+                vmanager = self, \
+                task = t, \
+                plugins = self.plugins, \
+                taskconfig = self.task_config, \
+                plugin_apis = self.p_apis, \
+                thisisnew = thisisnew,\
                 clipboard = self.clipboard)
             #registering as opened
             self.opened_task[uid] = tv
