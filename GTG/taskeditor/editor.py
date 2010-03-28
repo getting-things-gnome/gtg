@@ -179,7 +179,7 @@ class TaskEditor :
                                        tagpopup = None,
                                        tagview = None,
                                        task = task, 
-                                       browser = None,
+                                       view_manager = None,
                                        texteditor = self)
         self.p_apis.append(self.te_plugin_api)
         self.pengine.onTaskLoad(self.plugins)
