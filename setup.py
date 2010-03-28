@@ -158,7 +158,7 @@ setup(
         'tomboy.gtg-plugin',
         'import-json.gtg-plugin',
         ],
-    'GTG.plugins.rtm_sync': ['rtm.ui', 'pyrtm/rtm.py',
+    'GTG.plugins.rtm_sync': ['rtm.ui', 'pyrtm/rtm.py','pyrtm/__init__.py',
                             'icons/hicolor/16x16/rtm_image.png',
                             'icons/hicolor/24x24/rtm_image.png',
                             'icons/hicolor/svg/rtm_image.svg'],
