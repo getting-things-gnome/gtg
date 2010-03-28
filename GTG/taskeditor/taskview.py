@@ -1273,8 +1273,9 @@ class TaskView(gtk.TextView):
             if _type == gtk.gdk.BUTTON_RELEASE:
                 if typ == "subtask" :
                     self.open_task(anchor)
-                elif typ == "http" :
-                    openurl.openurl(anchor)
+                elif typ == "http":
+                    if button == 1:
+                        openurl.openurl(anchor)
                 else :
                     print "Unknown link type for %s" %anchor
                 self.emit('anchor-clicked', text, anchor, button)
