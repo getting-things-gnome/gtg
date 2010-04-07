@@ -707,6 +707,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
         <property name="visible">True</property>
         <property name="use_underline">True</property>
         <property name="use_stock">False</property>
+        <property name="submenu">ScheduleForContextMenu</property>
       </object>
     </child>
     <child>
