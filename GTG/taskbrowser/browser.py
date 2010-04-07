@@ -30,6 +30,7 @@ import gtk
 import locale
 import re
 import time
+import webbrowser
 
 #our own imports
 import GTG
@@ -58,6 +59,7 @@ from GTG.tools.dates                  import strtodate,\
 #=== MAIN CLASS ===============================================================
 
 WINDOW_TITLE = "Getting Things GNOME!"
+DOCUMENTATION_URL = "http://live.gnome.org/gtg/documentation"
 
 #Some default preferences that we should save in a file
 WORKVIEW           = False
@@ -308,6 +310,8 @@ class TaskBrowser:
                 self.on_about_close,
             "on_about_close":
                 self.on_about_close,
+            "on_documentation_clicked":
+                self.on_documentation_clicked,
             "on_nonworkviewtag_toggled":
                 self.on_nonworkviewtag_toggled,
             "on_preferences_activate":
@@ -788,6 +792,9 @@ class TaskBrowser:
     def on_about_close(self, widget, response):
         self.about.hide()
         return True
+
+    def on_documentation_clicked(self, widget):
+        webbrowser.open(DOCUMENTATION_URL)
 
     def on_color_changed(self, widget):
         gtkcolor = widget.get_current_color()

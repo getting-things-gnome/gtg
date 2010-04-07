@@ -249,6 +249,16 @@
                   <object class="GtkMenu" id="menu3">
                     <property name="visible">True</property>
                     <child>
+                      <object class="GtkImageMenuItem" id="gtk-documentation">
+                        <property name="label">gtk-help</property>
+                        <property name="visible">True</property>
+                        <property name="tooltip_text" translatable="yes">Open GTG documentation in your web browser</property>
+                        <property name="use_stock">True</property>
+                        <property name="accel_group">accelgroup1</property>
+                        <signal name="activate" handler="on_documentation_clicked"/>
+                      </object>
+                    </child>
+                    <child>
                       <object class="GtkImageMenuItem" id="imagemenuitem10">
                         <property name="label">gtk-about</property>
                         <property name="visible">True</property>
