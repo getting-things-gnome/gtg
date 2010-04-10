@@ -1,10 +1,10 @@
 #!/usr/bin/make -f
 
 %:
-	dh --with quilt $@
+	dh $@
 
 clean:
-	dh --with quilt $@
+	dh $@
 	rm -fr build
 
 override_dh_auto_install:

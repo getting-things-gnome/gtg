@@ -1,4 +1,36 @@
-gtg (0.2.1-1~karmic1) karmic; urgency=low
+gtg (0.2.4-1~karmic1) karmic; urgency=low
+
+  * New upstream bugfix release.
+    - Restore export_templates directory (Closes: #574454).
+    - Provide Serbian localization support (LP: #459610).
+    - Restore hello_world plugin glade file (LP: #530256).
+    - Export plugin doesn't hang if no templates are found (LP: #531909).
+    - Fix variable reference in taskbrowser (LP: #544233).
+    - Fix "Schedule for" feature (LP: #522470, #549539).
+
+ -- Luca Falavigna <dktrkranz@debian.org>  Sat, 10 Apr 2010 13:48:37 +0200
+
+gtg (0.2.3-1) unstable; urgency=low
+
+  * New upstream bugfix release.
+  * debian/patches/py2.5_compat.patch:
+    - Removed, fixed upstream.
+  * debian/control:
+    - Add Bryce Harrington and Luca Invernizzi to Uploaders.
+
+ -- Luca Falavigna <dktrkranz@debian.org>  Tue, 02 Mar 2010 21:18:46 +0100
+
+gtg (0.2.2-1) unstable; urgency=low
+
+  * New upstream release.
+  * debian/patches/py2.5_compat.patch:
+    - Refresh with new compatibility fixes.
+  * debian/copyright:
+    - Add new copyright holders and adjust copyright years.
+
+ -- Luca Falavigna <dktrkranz@debian.org>  Mon, 01 Mar 2010 21:02:06 +0100
+
+gtg (0.2.1-1) unstable; urgency=low
 
   * New upstream release.
   * debian/patches/distutils_missing_files.patch:
@@ -8,7 +40,6 @@ gtg (0.2.1-1~karmic1) karmic; urgency=low
       handle it correctly and avoid issues during byte-compilation.
   * debian/control:
     - Bump Standard-Version to 3.8.4, no changes needed.
-  * Use format 1.0, karmic doesn't allow 3.0 yet.
 
  -- Luca Falavigna <dktrkranz@debian.org>  Mon, 01 Feb 2010 20:21:38 +0100
 

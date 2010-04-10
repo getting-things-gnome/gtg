@@ -2,8 +2,8 @@ Source: gtg
 Section: gnome
 Priority: optional
 Maintainer: Luca Falavigna <dktrkranz@debian.org>
-Uploaders: Python Applications Packaging Team <python-apps-team@lists.alioth.debian.org>
-Build-Depends: debhelper (>= 7.0.50), quilt (>= 0.46-7)
+Uploaders: Python Applications Packaging Team <python-apps-team@lists.alioth.debian.org>, Bryce Harrington <bryce@canonical.com>, Luca Invernizzi <invernizzi.l@gmail.com>
+Build-Depends: debhelper (>= 7.0.50)
 Build-Depends-Indep: python-support, python (>= 2.5)
 Standards-Version: 3.8.4
 Homepage: http://gtg.fritalk.com/

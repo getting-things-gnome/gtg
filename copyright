@@ -1,6 +1,6 @@
 This package was debianized by:
 
-    Luca Falavigna <dktrkranz@ubuntu.com> on Fri, 03 Apr 2009 21:48:06 +0200
+    Luca Falavigna <dktrkranz@debian.org> on Fri, 03 Apr 2009 21:48:06 +0200
 
 It was downloaded from:
 
@@ -24,6 +24,7 @@ Copyright:
     Copyright © 2009 Kevin Mehall <km@kevinmehall.net>
     Copyright © 2008 Sridhar Ratnakumar <http://nearfar.org/>
     Copyright © 2009 Luca Falavigna <dktrkranz@debian.org>
+    Copyright © 2010 Bryce Harrington <bryce@canonical.com>
     Copyright © 2009 Rosetta Contributors and Canonical Ltd 2009
 
 License:
@@ -46,6 +47,6 @@ Public License version 3 can be found in `/usr/share/common-licenses/GPL-3'.
 
 The Debian packaging is:
 
-    Copyright © 2009 Luca Falavigna <dktrkranz@debian.org>
+    Copyright © 2009-2010 Luca Falavigna <dktrkranz@debian.org>
 
 and is licensed under the GPL version 3, see above.
