@@ -195,9 +195,9 @@ class pluginExport:
                            task.get_status(),
                            str(task.get_modified()),
                            str(task.get_due_date()),
+                           str(task.get_closed_date()),
                            str(task.get_start_date()),
                            str(task.get_days_left()),
-                           str(task.get_closed_date()),
                            map(lambda t: t.get_name(), task.get_tags()))
 
     def is_task_in_timespan (self, task, days):
