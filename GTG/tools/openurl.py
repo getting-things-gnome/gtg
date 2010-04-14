@@ -50,14 +50,18 @@ def _spawn_executable(close_stdout = False, close_stderr = False, *args):
         status = _os.waitpid(pid, 0)[1]
         return _os.WIFEXITED(status) and (_os.WEXITSTATUS(status) == 0)
 
-def _test_executable(*args):
-    return _spawn_executable(True, True, *args)
+def _test_executable(name):
+    for path in _os.getenv('PATH').split(':'):
+        if _os.path.isfile(_os.path.join(path, name)):
+            if _os.access(_os.path.join(path, name), _os.X_OK):
+                return True
+    return False
 
 def _spawn_quiet(*args):
     return _spawn_executable(True, False, *args)
 
-_has_xdg = _test_executable('xdg-open', '--help')
-_has_exo = _test_executable('exo-open', '--help')
+_has_xdg = _test_executable('xdg-open')
+_has_exo = _test_executable('exo-open')
 
 def openurl(url):
     if _has_xdg: # freedesktop is the best choice :p
