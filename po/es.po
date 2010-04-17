@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-03-27 15:20+0100\n"
-"PO-Revision-Date: 2010-04-14 16:47+0000\n"
+"PO-Revision-Date: 2010-04-16 16:22+0000\n"
 "Last-Translator: DiegoJ <diegojromerolopez@gmail.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2010-04-15 03:59+0000\n"
+"X-Launchpad-Export-Date: 2010-04-17 04:22+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: GTG/tools/dates.py:51
@@ -101,62 +101,63 @@ msgid ""
 "We're terribly sorry. Could you help us fix the problem by reporting the "
 "crash?"
 msgstr ""
+"Lo sentimos. ¿Podría ayudarnos a arreglar el problema informando del cuelgue?"
 
 #: GTG/tools/gtkcrashhandler.py:169
 msgid "An error has occurred"
-msgstr ""
+msgstr "Ha ocurrido un error"
 
 #: GTG/tools/gtkcrashhandler.py:177
 msgid "It looks like an error has occurred."
-msgstr ""
+msgstr "Parece que ha ocurrido un error."
 
 #: GTG/tools/gtkcrashhandler.py:212
 msgid "_Details"
-msgstr ""
+msgstr "_Detalles"
 
 #: GTG/tools/gtkcrashhandler.py:218
 msgid "_Report this problem..."
-msgstr ""
+msgstr "Info_rmar de este problema..."
 
 #: GTG/tools/gtkcrashhandler.py:222
 msgid "_Ignore the error"
-msgstr ""
+msgstr "_Ignorar el error"
 
 #: GTG/taskeditor/editor.py:321
 #, python-format
 msgid "Completed %(days)d day late"
 msgid_plural "Completed %(days)d days late"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Completada con %(days)d día de retraso"
+msgstr[1] "Completada con %(days)d días de retraso"
 
 #: GTG/taskeditor/editor.py:324
 #, python-format
 msgid "Completed %(days)d day early"
 msgid_plural "Completed %(days)d days early"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Completada con %(days)d día de antelación"
+msgstr[1] "Completada con %(days)d días de antelación"
 
 #: GTG/taskeditor/editor.py:330
 #, python-format
 msgid "Due tomorrow!"
 msgid_plural "%(days)d days left"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Vence mañana"
+msgstr[1] "Quedan %(days)d días"
 
 #: GTG/taskeditor/editor.py:332
 msgid "Due today!"
-msgstr ""
+msgstr "Vence hoy"
 
 #: GTG/taskeditor/editor.py:335
 #, python-format
 msgid "Due yesterday!"
 msgid_plural "Was %(days)d days ago"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Venció ayer"
+msgstr[1] "Venció hace %(days)d días"
 
 #: GTG/taskeditor/taskeditor.glade.h:1
 msgid "Closed on"
-msgstr "A punto de ocurrir"
+msgstr "Cerrada el"
 
 #: GTG/taskeditor/taskeditor.glade.h:2 GTG/taskbrowser/taskbrowser.glade.h:13
 msgid "Delete"
@@ -205,11 +206,11 @@ msgstr "Tarea"
 
 #: GTG/taskeditor/__init__.py:31 GTG/taskbrowser/__init__.py:36
 msgid "Mark as done"
-msgstr "Marcar como realizada"
+msgstr "Marcar como terminada"
 
 #: GTG/taskeditor/__init__.py:32 GTG/taskbrowser/__init__.py:38
 msgid "Mark as not done"
-msgstr "Marcar como no realizada"
+msgstr "Marcar como no terminada"
 
 #: GTG/taskeditor/__init__.py:34 GTG/taskbrowser/__init__.py:42
 msgid "Undismiss"
@@ -278,7 +279,7 @@ msgstr "Añadir una subtarea"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:8
 msgid "Apply to subtasks"
-msgstr "Aplicar a las subtareas"
+msgstr "Aplicar a subtareas"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:9
 msgid "Cancel"
@@ -328,20 +329,20 @@ msgid ""
 "Getting Things Gnome!; if not, write to the Free Software Foundation, Inc., "
 "51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA."
 msgstr ""
-"¡Getting Things Gnome! es software libre; puede redistributirlo y/o "
-"modificarlo bajo los términos de la Licencia General Pública GNU de la Free "
-"Software Foundation; en su versión 3 o (a su elección) cualquier versión "
-"posterior.\n"
+"Getting Things Gnome! es software libre; puede redistribuirlo y/o "
+"modificarlo bajo los términos de la Licencia Pública General de GNU "
+"publicada por la Free Software Foundation; ya sea en su versión 3 o (a su "
+"criterio) en una versión posterior.\n"
 "\n"
-"¡Getting Things Gnome! se distribuye con la esperanza de que sea útil pero "
-"SIN NINGUNA GARANTÍA; sin ni siquiera la garantía implícita de "
-"MERCANTIBILIDAD o IDONEIDAD PARA UN OBJETIVO DETERMINADO. Vea la Licencia "
-"General Pública GNU para más detalles.\n"
+"Getting Things Gnome! se distribuye con la esperanza de resultar útil, pero "
+"SIN GARANTÍA; sin ninguna garantía implícita de COMERCIALIDAD o IDONEIDAD "
+"PARA UN FIN DETERMINADO. Consulte la Licencia General GNU para más "
+"detalles.\n"
 "\n"
-"Debería haber recibido una copia de la Licencia General Pública GNU junto "
-"con ¡Getting Things Gnome!; si no es así, escriba a la Free Software "
+"Debería haber recibido una copia de la Licencia Pública General de GNU junto "
+"con Getting Things Gnome!; si no es el caso, escriba a Free Software "
 "Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, "
-"USA."
+"EE.UU."
 
 #: GTG/taskbrowser/taskbrowser.glade.h:24
 msgid ""
@@ -352,31 +353,31 @@ msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:26
 msgid "Mark as Done"
-msgstr "Marcar como Terminada"
+msgstr "Marcar como terminada"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:27
 msgid "Mark as Not Done"
-msgstr "Marcar como No Terminada"
+msgstr "Marcar como no terminada"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:28
 msgid "Mark as _Done"
-msgstr "Marcar como Termina_da"
+msgstr "Marcar como termina_da"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:29
 msgid "New Subtask"
-msgstr "Nueva Subtarea"
+msgstr "Nueva subtarea"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:30
 msgid "New Task"
-msgstr "Nueva Tarea"
+msgstr "Nueva tarea"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:31
 msgid "New _Subtask"
-msgstr "Nueva _Subtarea"
+msgstr "Nueva _subtarea"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:32
 msgid "New _Task"
-msgstr "Nueva _Tarea"
+msgstr "Nueva _tarea"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:33
 msgid "Redo"
@@ -388,7 +389,7 @@ msgstr "Reiniciar color"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:35
 msgid "T_oolbar"
-msgstr "Barra de trabaj_o"
+msgstr "Barra de _herramientas"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:36
 msgid "Tag is displayed in the workview"
@@ -396,7 +397,7 @@ msgstr "La etiqueta se muestra en la vista de trabajo"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:37
 msgid "TagName"
-msgstr "Nombre de la etiqueta"
+msgstr "Nombre de etiqueta"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:38 GTG/taskbrowser/tagtree.py:352
 #: GTG/taskbrowser/tasktree.py:330 GTG/taskbrowser/tasktree.py:482
@@ -481,7 +482,7 @@ msgstr "H_oy"
 
 #: GTG/taskbrowser/__init__.py:37
 msgid "Mark the selected task as done"
-msgstr "Marcar la tarea seleccionada como realizada"
+msgstr "Marcar la tarea seleccionada como terminada"
 
 #: GTG/taskbrowser/__init__.py:39 GTG/taskbrowser/__init__.py:43
 msgid "Mark the selected task as to be done"
@@ -515,8 +516,8 @@ msgstr "no hay tareas activas"
 #, python-format
 msgid "%(tasks)d active task"
 msgid_plural "%(tasks)d active tasks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(tasks)d tarea activa"
+msgstr[1] "%(tasks)d tareas activas"
 
 #: GTG/taskbrowser/browser.py:955
 msgid "tags"
@@ -762,7 +763,7 @@ msgstr ""
 
 #: GTG/core/plugins/__init__.py:33
 msgid "The plugin can not be loaded"
-msgstr "El complemento no pudo ser cargado"
+msgstr "El complemento no se ha podido cargar"
 
 #: GTG/core/plugins/__init__.py:34
 msgid "Some python modules are missing"
@@ -914,7 +915,7 @@ msgstr ""
 
 #: GTG/plugins/tomboy/tomboy.py:126
 msgid "Add Tomboy note"
-msgstr "Añadir un nota a Tomboy"
+msgstr "Añadir una nota a Tomboy"
 
 #: GTG/plugins/tomboy/tomboy.py:194
 msgid ""
@@ -982,7 +983,7 @@ msgstr "Utilizar teléfono móvil"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:10
 msgid "Use gps"
-msgstr "Utilizar gps"
+msgstr "Usar GPS"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:11
 msgid "Use network"
