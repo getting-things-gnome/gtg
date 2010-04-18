@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-03-27 15:20+0100\n"
-"PO-Revision-Date: 2010-04-16 16:22+0000\n"
+"PO-Revision-Date: 2010-04-17 12:54+0000\n"
 "Last-Translator: DiegoJ <diegojromerolopez@gmail.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2010-04-17 04:22+0000\n"
+"X-Launchpad-Export-Date: 2010-04-18 03:50+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: GTG/tools/dates.py:51
@@ -466,15 +466,15 @@ msgstr "_mañana"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:54
 msgid "next _month"
-msgstr "proximo_mes"
+msgstr "próximo _mes"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:55
 msgid "next _week"
-msgstr "proxima_semana"
+msgstr "próxima _semana"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:56
 msgid "next _year"
-msgstr "proximo_año"
+msgstr "próximo _año"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:57
 msgid "t_oday"
@@ -614,6 +614,11 @@ msgid ""
 "\n"
 "Thank you for trying out GTG :-)"
 msgstr ""
+"Esperamos que aprecie GTG. Envíenos informes de errores e sugerencias de "
+"mejoras usando:\n"
+"    https://bugs.launchpad.net/gtg\n"
+"\n"
+"Gracias por probar GTG :-)"
 
 #: GTG/core/firstrun_tasks.py:34
 msgid "Learn how to use subtasks"
@@ -999,7 +1004,7 @@ msgstr "No se puede cargar el archivo de plantilla"
 
 #: GTG/plugins/export/export.py:332
 msgid "Choose where to save your list"
-msgstr "Seleccione donde quiere guardar su lista"
+msgstr "Escoja donde quiere guardar su lista"
 
 #: GTG/plugins/hamster/hamster.py:40
 msgid "Start task in Hamster"
@@ -1031,7 +1036,7 @@ msgstr "Se ha iniciado la sincronización"
 
 #: GTG/plugins/rtm_sync/rtm_sync.py:154
 msgid "Trying to access, please stand by..."
-msgstr "Intentando acceder. Por favor, espera..."
+msgstr "Intentando acceder. Espere…"
 
 #: GTG/plugins/rtm_sync/rtm_sync.py:172
 msgid "Couldn't connect to Remember The Milk"
