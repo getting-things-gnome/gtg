@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-03-27 15:20+0100\n"
-"PO-Revision-Date: 2010-04-17 19:12+0000\n"
+"PO-Revision-Date: 2010-04-18 22:25+0000\n"
 "Last-Translator: yvadim <Unknown>\n"
 "Language-Team: Ukrainian <uk@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2010-04-18 03:50+0000\n"
+"X-Launchpad-Export-Date: 2010-04-19 03:46+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: GTG/tools/dates.py:51
@@ -194,7 +194,7 @@ msgstr "Пізніше"
 
 #: GTG/taskeditor/taskeditor.glade.h:8
 msgid "Mark Done"
-msgstr "Помітити завершеним"
+msgstr "Відмітити завершені"
 
 #: GTG/taskeditor/taskeditor.glade.h:9
 msgid "Now"
@@ -250,11 +250,11 @@ msgstr "Видалити це завдання безповоротно"
 
 #: GTG/taskeditor/__init__.py:43
 msgid "Insert a subtask in this task"
-msgstr "Додати підзадачу до цієї"
+msgstr "Додати підзавдання до цього"
 
 #: GTG/taskeditor/__init__.py:44
 msgid "Insert a tag in this task"
-msgstr "Додати мітку до цієї задачі"
+msgstr "Додати мітку до цього завдання"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:1
 msgid ""
@@ -282,11 +282,11 @@ msgstr "Додати мітку..."
 
 #: GTG/taskbrowser/taskbrowser.glade.h:7
 msgid "Add a subtask"
-msgstr "Додати підзадачу"
+msgstr "Додати підзавдання"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:8
 msgid "Apply to subtasks"
-msgstr "Застосувати до підзадач"
+msgstr "Застосувати до підзавдань"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:9
 msgid "Cancel"
@@ -426,7 +426,7 @@ msgstr "_Фонові кольори"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:43
 msgid "_Closed Tasks Pane"
-msgstr "_Виконанні завдання"
+msgstr "_Виконані завдання"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:44
 msgid "_Edit"
@@ -506,7 +506,7 @@ msgstr "Редагувати виділене завдання"
 
 #: GTG/taskbrowser/__init__.py:47
 msgid "Create a new subtask"
-msgstr "Створити нову підзадачу"
+msgstr "Створити нове підзавдання"
 
 #: GTG/taskbrowser/__init__.py:48
 msgid "Display only the currently actionable tasks"
@@ -522,7 +522,7 @@ msgid "%(tasks)d active task"
 msgid_plural "%(tasks)d active tasks"
 msgstr[0] "%(tasks)d активне завдання"
 msgstr[1] "%(tasks)d активних завдання"
-msgstr[2] "%(tasks)d активних завданнь"
+msgstr[2] "%(tasks)d активних завдань"
 
 #: GTG/taskbrowser/browser.py:955
 msgid "tags"
@@ -550,7 +550,7 @@ msgstr "Дата початку"
 
 #: GTG/taskbrowser/tasktree.py:371
 msgid "Due"
-msgstr "Очікується"
+msgstr "Термін"
 
 #: GTG/taskbrowser/tasktree.py:494
 msgid "Closing date"
@@ -650,7 +650,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:34
 msgid "Learn how to use subtasks"
-msgstr "Навчитись користуватись підзадачами"
+msgstr "Навчитись користуватись підзавданнями"
 
 #: GTG/core/firstrun_tasks.py:35
 msgid ""
@@ -668,6 +668,22 @@ msgid ""
 "\n"
 "Also, marking a parent as done will mark all the subtasks as done."
 msgstr ""
+"Якщо ви почнете новий рядок використовуючи символ &quot;-&quot; в описі "
+"завдання (у цьому вікні) то він вважатиметься за &quot;підзавдання&quot;, "
+"яке необхідно виконати для досягнення мети цілого завдання. Просто спробуйте "
+"написати &quot;-тестове підзавдання&quot; у наступному рядку і натисніть "
+"ввід.\n"
+"\n"
+"Також для цього можна використати кнопку &quot;додати підзавдання&quot;.\n"
+"\n"
+"Ви можете змінювати порядок завдань та підзавдань перетягуючи їх мишею у "
+"списку.\n"
+"\n"
+"На підзавдання накладені деякі обмеження, наприклад термін виконання "
+"підзавдання не може перевищувати терміну основного завдання.\n"
+"\n"
+"При поміченні основного завдання як виконаного всі підзавдання теж будуть "
+"помічені як виконані."
 
 #: GTG/core/firstrun_tasks.py:48
 msgid "Learn how to use tags"
@@ -702,6 +718,32 @@ msgid ""
 "subtask). Of course, you can modify at any time the tags of this particular "
 "subtask. It will never be changed by the parent."
 msgstr ""
+"Мітка - це просте слово почате з символу &quot;@&quot;.\n"
+"\n"
+"Спробуйте написати слово що починається з @ тут:\n"
+"\n"
+"Воно стане жовтим, це і є мітка.\n"
+"\n"
+"Мітки корисні при сортуванні завдань. Ви можете увімкнути панель з усіма "
+"використаними мітками у меню вигляд, де легко побачити всі завдання з певною "
+"міткою. Завдання може мати необмежену кількість міток.\n"
+"\n"
+"Можна створювати підмітки перетягуючи їх одна на одну. Наприклад, якщо ви "
+"перетягнете мітку @до_сплати на мітку @гроші, то всі завдання помічені "
+"@до_сплати будуть відображатись і при виборі мітки @гроші (але завдання не "
+"буде помічене @гроші).\n"
+"\n"
+"Якщо клацнути правою кнопкою на мітці в панелі то ви зможете задати її "
+"колір. Таким чином ви можете розфарбувати свій список завдань, якщо "
+"забажаєте.\n"
+"\n"
+"При створенні нової мітки вона додається лише до поточного завдання. "
+"Рекурсії нема, тому підзавдання при цьому не помічаються. Проте при "
+"створенні нового підзавдання воно унаслідує всі мітки основного завдання як "
+"гарний початок для редагування (це також трапиться у випадку помічення "
+"основного завдання одразу після створення підзавдання). Звичайно, ви можете "
+"змінити мітки певного підзавдання у будь який момент і зміни основного "
+"завдання більше не впливатимуть на нього."
 
 #: GTG/core/firstrun_tasks.py:66
 msgid "Learn how to use the Workview"
@@ -727,6 +769,25 @@ msgid ""
 "if you have a tag like &quot;someday&quot; that you use for tasks you would "
 "like to do but are not particularly urgent."
 msgstr ""
+"Якщо ви натиснете кнопку &quot;Робочий план&quot; то відобразяться дієздатні "
+"завдання.\n"
+"\n"
+"Що таке дієздатне завдання? Це завдання яке ви можете виконувати одразу, "
+"прямо зараз.\n"
+"\n"
+"Це вже &quot;готове-до-початку&quot; завдання, тобто дата початку вже "
+"пройшла.\n"
+"\n"
+"Це завдання без відкритих підзавдань, тобто ви одразу можете виконувати "
+"основне завдання.\n"
+"\n"
+"Таким чином робочий план відобразить завдання, які варто зробити прямо "
+"зараз.\n"
+"\n"
+"Якщо ви використовуєте мітки, то можна клацнути правою кнопкою на мітці в "
+"панелі і приховати завдання в робочому плані з певною міткою. Це дуже зручно "
+"коли у вас є мітка на зразок &quot;колись&quot; для завдань, які б ви хотіли "
+"зробити, але зовсім не термінових."
 
 #: GTG/core/firstrun_tasks.py:82
 msgid "Learn how to use Plugins"
@@ -858,7 +919,7 @@ msgstr "Будь ласка, встановіть або запустіть на
 
 #: GTG/core/plugins/__init__.py:43
 msgid "Unknown error while loading the plugin."
-msgstr "Невідома помилка при завантаження модуля."
+msgstr "Невідома помилка при завантаженні модуля."
 
 #: GTG/core/plugins/__init__.py:44
 msgid "Very helpful message, isn't it? Please report a bug."
@@ -965,7 +1026,7 @@ msgstr "_Про модуль"
 
 #: GTG/viewmanager/deletion.glade.h:1
 msgid "Confirm task deletion"
-msgstr "Підтвердити видалення задачі"
+msgstr "Підтвердити видалення завдання"
 
 #: GTG/plugins/evolution_sync/evolutionSync.py:28
 msgid "Synchronize with Evolution"
