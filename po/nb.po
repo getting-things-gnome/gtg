@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-03-27 15:20+0100\n"
-"PO-Revision-Date: 2010-04-12 11:51+0000\n"
-"Last-Translator: Øystein <Unknown>\n"
+"PO-Revision-Date: 2010-04-19 08:14+0000\n"
+"Last-Translator: Terje Andre Arnøy <Unknown>\n"
 "Language-Team: Norwegian Bokmal <nb@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2010-04-13 03:35+0000\n"
+"X-Launchpad-Export-Date: 2010-04-20 03:34+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: GTG/tools/dates.py:51
@@ -33,8 +33,8 @@ msgstr[1] ""
 #, python-format
 msgid "Tomorrow"
 msgid_plural "In %(days)d days"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "I morgen"
+msgstr[1] "Om %(days)d dager"
 
 #: GTG/tools/dates.py:96 GTG/tools/dates.py:138
 msgid "now"
@@ -90,7 +90,7 @@ msgstr "neste uke"
 
 #: GTG/tools/dates.py:186
 msgid "next month"
-msgstr "neste måne"
+msgstr "neste måned"
 
 #: GTG/tools/dates.py:187
 msgid "next year"
@@ -128,15 +128,15 @@ msgstr "_ignorer problemet"
 #, python-format
 msgid "Completed %(days)d day late"
 msgid_plural "Completed %(days)d days late"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "avsluttet %(days)d dag på overtid"
+msgstr[1] "avsluttet %(days)d dager på overtid"
 
 #: GTG/taskeditor/editor.py:324
 #, python-format
 msgid "Completed %(days)d day early"
 msgid_plural "Completed %(days)d days early"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "avsluttet %(days)d dag før fristen"
+msgstr[1] "avsluttet %(days)d dager før fristen"
 
 #: GTG/taskeditor/editor.py:330
 #, python-format
@@ -254,6 +254,8 @@ msgid ""
 "\n"
 "Getting Things Gnome! is an organizer for the GNOME desktop environment."
 msgstr ""
+"\n"
+"Gjøremål Til Gnome! er et organiseringsverkøy for skrivebordsmiljøet GNOME."
 
 #: GTG/taskbrowser/taskbrowser.glade.h:3
 msgid "About GTG!"
@@ -261,15 +263,15 @@ msgstr "Om GTG!"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:4
 msgid "Add Tag"
-msgstr ""
+msgstr "Legg til etikett"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:5
 msgid "Add Tag..."
-msgstr ""
+msgstr "Legg til etikett..."
 
 #: GTG/taskbrowser/taskbrowser.glade.h:6
 msgid "Add a Tag..."
-msgstr ""
+msgstr "Legg till en etikett..."
 
 #: GTG/taskbrowser/taskbrowser.glade.h:7
 msgid "Add a subtask"
@@ -281,7 +283,7 @@ msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:9
 msgid "Cancel"
-msgstr ""
+msgstr "Avbryt"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:10
 msgid "Copyrights&#xA9; 2008, 2009 Lionel Dricot, Bertrand Rousseau"
@@ -293,7 +295,7 @@ msgstr "Opprett nytt gjøremål"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:12
 msgid "D_ismiss"
-msgstr ""
+msgstr "Avv_is"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:15
 msgid "Edit"
@@ -305,11 +307,11 @@ msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:17
 msgid "GTG website"
-msgstr ""
+msgstr "GTG nettsted"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:18
 msgid "Getting Things Gnome!"
-msgstr ""
+msgstr "Gjøremål Til GNOME"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:19
 msgid ""
@@ -333,6 +335,8 @@ msgid ""
 "Hint: you can add several tags by separating them with\n"
 "commas."
 msgstr ""
+"Hint: du kan legge til flere etiketter ved å separere disse ved bruk av\n"
+"komma"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:26
 msgid "Mark as Done"
@@ -344,7 +348,7 @@ msgstr "Merk som ikke utført"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:28
 msgid "Mark as _Done"
-msgstr ""
+msgstr "_Merk som utført"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:29
 msgid "New Subtask"
@@ -368,19 +372,19 @@ msgstr "Gjenopprett"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:34
 msgid "Reset Color"
-msgstr ""
+msgstr "Gjenopprett farger"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:35
 msgid "T_oolbar"
-msgstr ""
+msgstr "V_erktøylinje"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:36
 msgid "Tag is displayed in the workview"
-msgstr ""
+msgstr "Etiketten vises i arbeidsoversikten"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:37
 msgid "TagName"
-msgstr ""
+msgstr "Etikett Navn"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:38 GTG/taskbrowser/tagtree.py:352
 #: GTG/taskbrowser/tasktree.py:330 GTG/taskbrowser/tasktree.py:482
@@ -389,7 +393,7 @@ msgstr "Etiketter"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:39
 msgid "Und_ismiss"
-msgstr ""
+msgstr "Gjen_opprett"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:40
 msgid "Undo"
@@ -397,19 +401,19 @@ msgstr "Angre"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:41
 msgid "Work View"
-msgstr ""
+msgstr "Arbeidsoversikt"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:42
 msgid "_Background Colors"
-msgstr ""
+msgstr "_Bakgrunnsfarge"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:43
 msgid "_Closed Tasks Pane"
-msgstr ""
+msgstr "Avsluttede _Gjøremål"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:44
 msgid "_Edit"
-msgstr ""
+msgstr "R_ediger"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:45
 msgid "_Help"
@@ -429,7 +433,7 @@ msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:49
 msgid "_Tags Sidebar"
-msgstr ""
+msgstr "_Etikett vindu"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:50
 msgid "_Tasks"
@@ -441,39 +445,39 @@ msgstr "_Visning"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:52
 msgid "_Work View"
-msgstr ""
+msgstr "_Arbeidsoversikt"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:53
 msgid "_tomorrow"
-msgstr ""
+msgstr "i _morgen"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:54
 msgid "next _month"
-msgstr ""
+msgstr "neste måne_d"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:55
 msgid "next _week"
-msgstr ""
+msgstr "neste _uke"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:56
 msgid "next _year"
-msgstr ""
+msgstr "neste _år"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:57
 msgid "t_oday"
-msgstr ""
+msgstr "i _dag"
 
 #: GTG/taskbrowser/__init__.py:37
 msgid "Mark the selected task as done"
-msgstr ""
+msgstr "Merk valgte gjøremål som utført"
 
 #: GTG/taskbrowser/__init__.py:39 GTG/taskbrowser/__init__.py:43
 msgid "Mark the selected task as to be done"
-msgstr ""
+msgstr "Valgte gjøremål skal utføres"
 
 #: GTG/taskbrowser/__init__.py:41
 msgid "Mark the task as not to be done anymore"
-msgstr ""
+msgstr "Valgte gjøremål skal ikke utføres lengre"
 
 #: GTG/taskbrowser/__init__.py:44
 msgid "Permanently remove the selected task"
@@ -481,7 +485,7 @@ msgstr "Fjern valgte gjøremål permanent"
 
 #: GTG/taskbrowser/__init__.py:45
 msgid "Edit the selected task"
-msgstr ""
+msgstr "Rediger valgte gjøremål"
 
 #: GTG/taskbrowser/__init__.py:47
 msgid "Create a new subtask"
@@ -489,7 +493,7 @@ msgstr "Opprett nytt delmål"
 
 #: GTG/taskbrowser/__init__.py:48
 msgid "Display only the currently actionable tasks"
-msgstr ""
+msgstr "Vis kun påbegynte gjøremål"
 
 #: GTG/taskbrowser/browser.py:570
 msgid "no active tasks"
@@ -499,8 +503,8 @@ msgstr "ingen aktive gjøremål"
 #, python-format
 msgid "%(tasks)d active task"
 msgid_plural "%(tasks)d active tasks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(tasks)d aktive gjøremål"
+msgstr[1] "%(tasks)d aktive gjøremål"
 
 #: GTG/taskbrowser/browser.py:955
 msgid "tags"
@@ -512,7 +516,7 @@ msgstr "etikett"
 
 #: GTG/taskbrowser/browser.py:961
 msgid "defer"
-msgstr ""
+msgstr "Utsett"
 
 #: GTG/taskbrowser/browser.py:966
 msgid "due"
@@ -524,7 +528,7 @@ msgstr "Tittel"
 
 #: GTG/taskbrowser/tasktree.py:359
 msgid "Start date"
-msgstr ""
+msgstr "Start dato"
 
 #: GTG/taskbrowser/tasktree.py:371
 msgid "Due"
@@ -786,11 +790,11 @@ msgstr ""
 
 #: GTG/viewmanager/delete_dialog.py:59
 msgid "Are you sure you want to delete this task?"
-msgstr ""
+msgstr "Er du sikker på at du vil slette dette gjøremålet?"
 
 #: GTG/viewmanager/delete_dialog.py:60
 msgid "Keep selected task"
-msgstr ""
+msgstr "Behold valgte gjøremål"
 
 #: GTG/viewmanager/delete_dialog.py:61
 msgid "Permanently remove task"
@@ -803,11 +807,11 @@ msgstr ""
 
 #: GTG/viewmanager/delete_dialog.py:64
 msgid "Are you sure you want to delete these tasks?"
-msgstr ""
+msgstr "Er du sikker på at du vil slette disse gjøremålene?"
 
 #: GTG/viewmanager/delete_dialog.py:65
 msgid "Keep selected tasks"
-msgstr ""
+msgstr "Behold valgte gjøremål"
 
 #: GTG/viewmanager/delete_dialog.py:66
 msgid "Permanently remove tasks"
@@ -819,7 +823,7 @@ msgstr ""
 
 #: GTG/viewmanager/preferences.glade.h:2
 msgid "<b>General</b>"
-msgstr ""
+msgstr "<b>Generelt</b>"
 
 #: GTG/viewmanager/preferences.glade.h:3
 msgid "<b>Task Browser</b>"
@@ -831,15 +835,15 @@ msgstr ""
 
 #: GTG/viewmanager/preferences.glade.h:5
 msgid "Active _Plugins:"
-msgstr ""
+msgstr "Aktive _tillegg:"
 
 #: GTG/viewmanager/preferences.glade.h:6
 msgid "Behaviour"
-msgstr ""
+msgstr "Oppførsel"
 
 #: GTG/viewmanager/preferences.glade.h:7
 msgid "Check spelling"
-msgstr ""
+msgstr "Sjekk staving"
 
 #: GTG/viewmanager/preferences.glade.h:8
 msgid "Getting Things GNOME! Preferences"
@@ -847,11 +851,11 @@ msgstr ""
 
 #: GTG/viewmanager/preferences.glade.h:9
 msgid "Hide closed tasks older than"
-msgstr ""
+msgstr "Gjøm avsluttede gjøremål eldre enn"
 
 #: GTG/viewmanager/preferences.glade.h:10
 msgid "Plugins"
-msgstr ""
+msgstr "Tillegg"
 
 #: GTG/viewmanager/preferences.glade.h:11
 msgid "Show task text preview"
@@ -859,11 +863,11 @@ msgstr ""
 
 #: GTG/viewmanager/preferences.glade.h:12
 msgid "Start Getting Things GNOME! on every login"
-msgstr ""
+msgstr "Start Gjøremål Til GNOME! ved hver innlogging"
 
 #: GTG/viewmanager/preferences.glade.h:13
 msgid "Storage"
-msgstr ""
+msgstr "Lagring"
 
 #: GTG/viewmanager/preferences.glade.h:14
 msgid "Task _Backends:"
@@ -871,7 +875,7 @@ msgstr ""
 
 #: GTG/viewmanager/preferences.glade.h:15
 msgid "_About Plugin"
-msgstr ""
+msgstr "_Om tillegg"
 
 #: GTG/viewmanager/deletion.glade.h:1
 msgid "Confirm task deletion"
@@ -879,7 +883,7 @@ msgstr "Bekreft sletting av gjøremål"
 
 #: GTG/plugins/evolution_sync/evolutionSync.py:28
 msgid "Synchronize with Evolution"
-msgstr ""
+msgstr "Synkroniser med Evolution"
 
 #: GTG/plugins/tomboy/tomboy.py:81
 msgid ""
@@ -911,11 +915,11 @@ msgstr "Dette Tomboy notatet eksisterer ikke. Ønsker du å opprette det?"
 
 #: GTG/plugins/notification_area/notification_area.py:209
 msgid "_View Main Window"
-msgstr ""
+msgstr "_Vis Hovedvindu"
 
 #: GTG/plugins/notification_area/notification_area.py:217
 msgid "Add _New Task"
-msgstr ""
+msgstr "Legg til _Nytt Gjøremål"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:1
 msgid "<b>Location Determination Method</b>"
@@ -1015,7 +1019,7 @@ msgstr ""
 
 #: GTG/plugins/rtm_sync/rtm_sync.py:187
 msgid "Please retry."
-msgstr ""
+msgstr "Vennligst prøv igjen"
 
 #: GTG/plugins/rtm_sync/rtm_sync.py:191
 msgid ""
@@ -1053,7 +1057,7 @@ msgstr "Sletter gjøremål fra GTG"
 
 #: GTG/plugins/rtm_sync/syncEngine.py:160
 msgid "Updating changed tasks.."
-msgstr ""
+msgstr "Oppdaterer endrede gjøremål.."
 
 #: GTG/plugins/rtm_sync/syncEngine.py:185
 #: GTG/plugins/rtm_sync/syncEngine.py:190
