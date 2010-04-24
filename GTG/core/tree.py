@@ -228,6 +228,7 @@ class TreeNode():
         self.pending_relationship = []
         if parent:
             self.add_parent(parent)
+        self.warned_multi_parents = False
 
     def __str__(self):
         return "<TreeNode: '%s'>" % (self.id)
@@ -264,13 +265,14 @@ class TreeNode():
     #useful for tree where we know that there is only one
     def get_parent(self):
         #we should throw an error if there are multiples parents
-        if len(self.parents) > 1:
-            print "Warning : get_parent will return one random parent because \
-                    there are multiple parents."
+        if len(self.parents) > 1 and not self.warned_multi_parents:
+            print "Warning: get_parent will return one random parent because there are multiple parents."
+            self.warned_multi_parents = True
         if self.has_parent():
             return self.parents[0]
         else:
             return None
+
     def get_parents(self):
         return list(self.parents)
 
