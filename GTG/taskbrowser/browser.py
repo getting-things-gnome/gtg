@@ -655,8 +655,12 @@ class TaskBrowser:
 
     def tag_sort_func(self, model, iter1, iter2, user_data=None):
         order = self.tags_tv.get_model().get_sort_column_id()[1]
-        t1 = model.get_value(iter1, tagtree.COL_OBJ)
-        t2 = model.get_value(iter2, tagtree.COL_OBJ)
+        try:
+            t1 = model.get_value(iter1, tagtree.COL_OBJ)
+            t2 = model.get_value(iter2, tagtree.COL_OBJ)
+        except TypeError:
+            sys.stderr.write("Error: Undefined iter1 in tag_sort_func, assuming ascending sort")
+            return 1
         t1_sp = t1.get_attribute("special")
         t2_sp = t2.get_attribute("special")
         t1_name = locale.strxfrm(t1.get_name())
