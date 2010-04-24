@@ -344,7 +344,7 @@ class TagTreeView(gtk.TreeView):
         try:
             return self.get_model().get_value(itera, COL_SEP)
         except TypeError:
-            sys.stderr.write("Error: invalid itera to _tag_separator_filter()\n")
+            print "Error: invalid itera to _tag_separator_filter()"
             return None
 
     def _init_tree_view(self):
