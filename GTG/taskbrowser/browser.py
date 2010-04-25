@@ -92,6 +92,7 @@ class TaskBrowser:
         self.tags_tv = None
         self.tasks_tv = None
         self.ctask_tv = ClosedTaskTreeView(self.req)
+        self.ctask_tree = None
 
         ### YOU CAN DEFINE YOUR INTERNAL MECHANICS VARIABLES BELOW
         
