@@ -266,7 +266,7 @@ class TreeNode():
     def get_parent(self):
         #we should throw an error if there are multiples parents
         if len(self.parents) > 1 and not self.warned_multi_parents:
-            print "Warning: get_parent will return one random parent because there are multiple parents."
+            print "Warning: get_parent will return one random parent for task %s because there are multiple parents." %(self.get_id())
             self.warned_multi_parents = True
         if self.has_parent():
             return self.parents[0]
