@@ -72,18 +72,25 @@ class DataStore:
         return toreturn
 
     def delete_task(self, tid):
-        if tid and self.has_task(tid):
-            self.__internal_get_task(tid).delete()
-            uid, pid = tid.split('@') #pylint: disable-msg=W0612
-            back = self.backends[pid]
-            #Check that the task still exist. It might have been deleted
-            #by its parent a few line earlier :
-            if self.has_task(tid):
-                self.open_tasks.remove_node(tid)
-                self.closed_tasks.remove_node(tid)
-            back.remove_task(tid)
-            return True
-            
+        """
+        Deletes the given task entirely from this DataStore, and unlinks
+        it from the task's parent.
+        @return: True if task was deleted, or False if the tid was not
+        present in this DataStore.
+        """
+        if not tid or not self.has_task(tid):
+            return False
+
+        self.__internal_get_task(tid).delete()
+        uid, pid = tid.split('@') #pylint: disable-msg=W0612
+        back = self.backends[pid]
+        #Check that the task still exist. It might have been deleted
+        #by its parent a few line earlier :
+        if self.has_task(tid):
+            self.open_tasks.remove_node(tid)
+            self.closed_tasks.remove_node(tid)
+        back.remove_task(tid)
+        return True
             
     def new_task(self,pid=None):
         if not pid:
