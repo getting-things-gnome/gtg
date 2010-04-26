@@ -412,7 +412,6 @@ class TaskEditor :
         """Called when the due button is clicked."""
         
         self.__opened_date = data
-        self._mark_today_in_bold()
         if self.__opened_date == "due" :
             toset = self.task.get_due_date()
             self.calendar_fuzzydate_btns.show()
@@ -451,6 +450,8 @@ class TaskEditor :
             #February while still being on 31 -> error !
             self.cal_widget.select_day(d)
             self.cal_widget.select_month(int(m)-1,int(y))
+
+        self._mark_today_in_bold()
             
         self.calendar.connect('button-press-event', self.__focus_out)
         self.sigid = self.cal_widget.connect("day-selected",self.day_selected)
