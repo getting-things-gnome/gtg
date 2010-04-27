@@ -249,7 +249,7 @@
                   <object class="GtkMenu" id="help_menu">
                     <property name="visible">True</property>
                     <child>
-                      <object class="GtkImageMenuItem" id="gtk-documentation">
+                      <object class="GtkImageMenuItem" id="gtk_help_mi">
                         <property name="label">gtk-help</property>
                         <property name="visible">True</property>
                         <property name="tooltip_text" translatable="yes">Open GTG documentation in your web browser</property>
@@ -259,7 +259,7 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem" id="imagemenuitem10">
+                      <object class="GtkImageMenuItem" id="gtk_about_mi">
                         <property name="label">gtk-about</property>
                         <property name="visible">True</property>
                         <property name="use_underline">True</property>
@@ -603,7 +603,7 @@
     <property name="no_show_all">True</property>
     <signal name="deactivate" handler="on_tagcontext_deactivate"/>
     <child>
-      <object class="GtkImageMenuItem" id="colorchooser">
+      <object class="GtkImageMenuItem" id="colorchooser_mi">
         <property name="label">gtk-select-color</property>
         <property name="visible">True</property>
         <property name="use_underline">True</property>
@@ -613,7 +613,7 @@
       </object>
     </child>
     <child>
-      <object class="GtkImageMenuItem" id="resetcolor">
+      <object class="GtkImageMenuItem" id="resetcolor_mi">
         <property name="label" translatable="yes">Reset Color</property>
         <property name="visible">True</property>
         <property name="image">image2</property>
@@ -623,7 +623,7 @@
       </object>
     </child>
     <child>
-      <object class="GtkCheckMenuItem" id="nonworkviewtag">
+      <object class="GtkCheckMenuItem" id="nonworkviewtag_mi">
         <property name="visible">True</property>
         <property name="label" translatable="yes">Tag is displayed in the workview</property>
         <property name="use_underline">True</property>
