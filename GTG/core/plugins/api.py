@@ -54,7 +54,7 @@ class PluginAPI:
         @param data_dir: The data dir path.
         @param builder: The window's gtkBuilder object.
         @param requester: The requester.
-        @param tagpopup: The tag popoup menu of the tag view.
+        @param tagpopup: The tag popup menu of the tag view.
         @param tagview: The tag view object.
         @param task: The current task (Only works with the task editor).
         @param view_manager: The view manager
