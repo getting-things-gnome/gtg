@@ -9,7 +9,7 @@
     <signal name="configure_event" handler="on_move"/>
     <signal name="size_allocate" handler="on_size_allocate"/>
     <child>
-      <object class="GtkVBox" id="vbox1">
+      <object class="GtkVBox" id="master_vbox">
         <property name="visible">True</property>
         <property name="orientation">vertical</property>
         <child>
@@ -427,7 +427,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <child>
-              <object class="GtkVBox" id="sidebar">
+              <object class="GtkVBox" id="sidebar_vbox">
                 <property name="width_request">75</property>
                 <property name="orientation">vertical</property>
                 <child>
@@ -502,7 +502,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkVBox" id="vbox2">
+              <object class="GtkVBox" id="main_vbox">
                 <property name="visible">True</property>
                 <property name="orientation">vertical</property>
                 <child>
@@ -655,7 +655,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
     <signal name="response" handler="on_about_close"/>
     <signal name="delete_event" handler="on_about_delete"/>
     <child internal-child="vbox">
-      <object class="GtkVBox" id="dialog-vbox2">
+      <object class="GtkVBox" id="about_dialog_vbox">
         <property name="visible">True</property>
         <property name="orientation">vertical</property>
         <property name="spacing">2</property>
@@ -919,7 +919,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
     <property name="type_hint">dialog</property>
     <property name="has_separator">False</property>
     <child internal-child="vbox">
-      <object class="GtkVBox" id="dialog-vbox3">
+      <object class="GtkVBox" id="addtag_dialog_vbox">
         <property name="visible">True</property>
         <property name="orientation">vertical</property>
         <property name="spacing">2</property>

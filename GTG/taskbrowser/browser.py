@@ -206,7 +206,7 @@ class TaskBrowser:
         self.closed_pane        = self.builder.get_object("closed_pane")
         self.toolbar            = self.builder.get_object("task_toolbar")
         self.quickadd_pane      = self.builder.get_object("quickadd_pane")
-        self.sidebar            = self.builder.get_object("sidebar")
+        self.sidebar            = self.builder.get_object("sidebar_vbox")
         self.sidebar_container  = self.builder.get_object("sidebar-scroll")
         
         self.closed_pane.add(self.ctask_tv)
