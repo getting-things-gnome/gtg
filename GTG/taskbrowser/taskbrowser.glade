@@ -279,7 +279,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkToolbar" id="task_tb">
+          <object class="GtkToolbar" id="task_toolbar">
             <property name="visible">True</property>
             <child>
               <object class="GtkToolButton" id="new_task_b">

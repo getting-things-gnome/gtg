@@ -204,7 +204,7 @@ class TaskBrowser:
         self.toggle_workview    = self.builder.get_object("workview_toggle")
         self.quickadd_entry     = self.builder.get_object("quickadd_field")
         self.closed_pane        = self.builder.get_object("closed_pane")
-        self.toolbar            = self.builder.get_object("task_tb")
+        self.toolbar            = self.builder.get_object("task_toolbar")
         self.quickadd_pane      = self.builder.get_object("quickadd_pane")
         self.sidebar            = self.builder.get_object("sidebar")
         self.sidebar_container  = self.builder.get_object("sidebar-scroll")
