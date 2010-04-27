@@ -42,6 +42,7 @@ import os
 import re
 import urllib2
 import simplejson as json
+from GTG.tools.readurl import readurl
 
 class pluginImportJson:
     
@@ -158,7 +159,7 @@ class pluginImportJson:
 
     def import_json(self, widget):
         url = self.txtImport.get_text()
-        json_text = loadurl(url)
+        json_text = readurl(url)
         if not json_text:
             # TODO:  Pop up error dialog
             print "Error: Could not load url %s" % url
@@ -209,14 +210,3 @@ class pluginImportJson:
 
         self.close_dialog_select_username(widget)
         self.close_dialog(widget)
-
-### UTILITIES ###
-def loadurl(url):
-    try:
-        in_file = urllib2.urlopen(url, "r")
-        text = in_file.read()
-        in_file.close()
-        return text
-    except:
-        return ''
-
