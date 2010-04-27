@@ -55,6 +55,13 @@ class TagTreeModel(gtk.GenericTreeModel):
         self.notag_filtered_tree = self.req.get_custom_tasks_tree()
         self.active_filtered_tree.apply_filter("active")
         self.notag_filtered_tree.apply_filter("notag")
+
+        self.active_workview_filtered_tree = self.req.get_custom_tasks_tree()
+        self.notag_workview_filtered_tree = self.req.get_custom_tasks_tree()
+        self.active_workview_filtered_tree.apply_filter("active")
+        self.active_workview_filtered_tree.apply_filter("workview")
+        self.notag_workview_filtered_tree.apply_filter("notag")
+        self.notag_workview_filtered_tree.apply_filter("workview")
         
         self.req.connect('tag-added',self.add_tag)
         self.req.connect('tag-modified',self.update_tag)
@@ -124,6 +131,13 @@ class TagTreeModel(gtk.GenericTreeModel):
                 #This call is critical because called thousand of times
                 count = tag.get_tasks_nbr(workview=self.workview)
                 return  count
+            elif self.workview:
+                if sp_id == "all":
+                    return self.active_workview_filtered_tree.get_nodes_count()
+                elif sp_id == "notag":
+                    return self.notag_workview_filtered_tree.get_nodes_count()
+                else:
+                    return 0
             else:
                 if sp_id == "all":
                     return self.active_filtered_tree.get_nodes_count()
@@ -341,7 +355,11 @@ class TagTreeView(gtk.TreeView):
         model.row_changed(path, iter)
 
     def _tag_separator_filter(self, model, itera, user_data=None):
-        return self.get_model().get_value(itera, COL_SEP)
+        try:
+            return model.get_value(itera, COL_SEP)
+        except TypeError:
+            print "Error: invalid itera to _tag_separator_filter()"
+            return False
 
     def _init_tree_view(self):
          # Tag column

@@ -17,9 +17,10 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-
-#Localfile is a read/write backend that will store your tasks in an XML file
-#This file will be in your $XDG_DATA_DIR/gtg folder.
+'''
+Localfile is a read/write backend that will store your tasks in an XML file
+This file will be in your $XDG_DATA_DIR/gtg folder.
+'''
 
 import os
 import uuid
@@ -27,38 +28,45 @@ import uuid
 from GTG.core  import CoreConfig
 from GTG.tools import cleanxml, taskxml
 
-#Return the name of the backend as it should be displayed in the UI
 def get_name():
+    """Returns the name of the backend as it should be displayed in the UI"""
     return "Local File"
 
-#Return a description of the backend
 def get_description():
+    """Returns a description of the backend"""
     return "Your tasks are saved in an XML file located in your HOME folder"
 
-#Return a dictionary of parameters. Keys should be strings and
-#are the name of the parameter.
-#Value are string with value : string, password, int, bool
-#and are an information about the type of the parameter
-#Currently, only string is supported
 def get_parameters():
+    """
+    Returns a dictionary of parameters. Keys should be strings and
+    are the name of the parameter.
+    Values are string with value : string, password, int, bool
+    and are an information about the type of the parameter
+    Currently, only string is supported.
+    """
     dic = {}
     dic["filename"] = "string"
     return dic
 
 def get_features():
+    """Returns a dict of features supported by this backend"""
     return {}
 
-#Types is one of : readwrite, readonly, import, export
 def get_type():
+    """Type is one of : readwrite, readonly, import, export"""
     return "readwrite"
 
-#The parameters dictionary should match the dictionary returned in
-#get_parameters. Anyway, the backend should care if one expected value is
-#None or do not exist in the dictionary.
-#firstrun is only needed for the default backend. You can ignore it.
 class Backend:
-
     def __init__(self, parameters, firstrunxml=None):
+        """
+        Instantiates a new backend.
+
+        @param parameters: should match the dictionary returned in
+         get_parameters. Anyway, the backend should care if one expected value is
+         None or does not exist in the dictionary.
+        @firstrun: only needed for the default backend. It should be omitted for
+         all other backends.
+        """
         self.tids = []
         self.pid = 1
         if "filename" in parameters:
@@ -82,15 +90,18 @@ class Backend:
             cleanxml.savexml(self.zefile, firstrunxml)
         self.doc, self.xmlproj = cleanxml.openxmlfile(self.zefile, "project")
 
-    #Once this function is launched, the backend can start pushing tasks to gtg
-    #parameters : 
-    #1) push_task_func, a function that takes a Task as parameter and push it
-    #   into GTG.
-    #2) task_factory_func, a function that takes a tid as parameter and returns
-    #   a Task object with the given pid. 
-    #
-    # starst_get_tasks() might not return or finish
     def start_get_tasks(self,push_task_func,task_factory_func):
+        '''
+        Once this function is launched, the backend can start pushing
+        tasks to gtg parameters.
+
+        @push_task_func: a function that takes a Task as parameter
+         and pushes it into GTG.
+        @task_factory_func: a function that takes a tid as parameter
+         and returns a Task object with the given pid. 
+
+        @return: start_get_tasks() might not return or finish
+        '''
         tid_list = []
         for node in self.xmlproj.childNodes:
             #time.sleep(2)
@@ -102,8 +113,8 @@ class Backend:
             push_task_func(task)
         #print "#### finishing pushing tasks"
 
-    #Save the task in the backend
     def set_task(self, task):
+        ''' Save the task in the backend '''
         #time.sleep(4)
         tid = task.get_id()
         if tid not in self.tids:
@@ -132,8 +143,8 @@ class Backend:
             cleanxml.savexml(self.zefile, self.doc)
         return None
 
-    #Completely remove the task with ID = tid
     def remove_task(self, tid):
+        ''' Completely remove the task with ID = tid '''
         for node in self.xmlproj.childNodes:
             if node.getAttribute("id") == tid:
                 self.xmlproj.removeChild(node)
@@ -141,11 +152,13 @@ class Backend:
                     self.tids.remove(tid)
         cleanxml.savexml(self.zefile, self.doc)
 
-    #Return an available ID for a new task so that a task with this ID
-    #can be saved with set_task later.
-    #If None, then GTG will create a new ID by itself
-    #The ID cannot contain the character "@"
     def new_task_id(self):
+        '''
+        Returns an available ID for a new task so that a task with this ID
+        can be saved with set_task later.
+        If None, then GTG will create a new ID by itself.
+        The ID cannot contain the character "@".
+        '''
         k = 0
         pid = self.pid
         newid = "%s@%s" %(k, pid)
@@ -155,7 +168,9 @@ class Backend:
         self.tids.append(newid)
         return newid
 
-    #Called when GTG quit or disconnect the backend
-    #You might pass here.
     def quit(self):
+        '''
+        Called when GTG quits or disconnects the backend.
+        (Subclasses might pass here)
+        '''
         cleanxml.savexml(self.zefile, self.doc, backup=True)

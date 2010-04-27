@@ -27,7 +27,7 @@ Other stuff you should read:""")
     https://bugs.launchpad.net/gtg
 
 Thank you for trying out GTG :-)""")
-    t1 = addtask(doc, "0@1", title1, text1, ["1@1", "2@1", "3@1", "4@1", "5@1", "6@1"])
+    t1 = addtask(doc, "0@1", title1, text1, [], ["1@1", "2@1", "3@1", "4@1", "5@1", "6@1"])
     root.appendChild(t1)
     
     #Task 1@1: Learn to use subtasks
@@ -41,7 +41,7 @@ Tasks and subtasks can be re-organized by drag-n-drop in the tasks list.
 Some concepts come with subtasks: for example, a subtask's due date can never be after its parent's due date.
 
 Also, marking a parent as done will mark all the subtasks as done.""")
-    t2 = addtask(doc, "1@1", title2, text2, [])
+    t2 = addtask(doc, "1@1", title2, text2, [], [])
     root.appendChild(t2)
     
     #Task 2@1: Learn to use tags
@@ -59,7 +59,7 @@ You can drag-n-drop a tag onto another to create \"subtags\". As an example, if 
 If you right click on a tag in the sidebar you can also set its color. It will allow you to have a more colorful list of tasks, if you want it that way.
 
 A new tag is only added to the current task. There's no recursion and the tag is not applied to subtasks. But when you create a new subtask, this subtask will inherit the tags of its parent as a good primary default (it will also be the case if you add a tag to a parent just after creating a subtask). Of course, you can modify at any time the tags of this particular subtask. It will never be changed by the parent.""")
-    t3 = addtask(doc, "2@1", title3, text3, [])
+    t3 = addtask(doc, "2@1", title3, text3, ["to_pay", "money"], [])
     root.appendChild(t3)
     
     #Task 3@1: Using the Workview
@@ -75,7 +75,7 @@ It's a task that doesn't have open subtasks, i.e. you can do the task itself dir
 Thus, the workview will only show you tasks you should do right now.
 
 If you use tags, you can right click on a tag in the sidebar and choose to hide tasks assigned to this particular tag in the workview. It's very useful if you have a tag like &quot;someday&quot; that you use for tasks you would like to do but are not particularly urgent.""")
-    t4 = addtask(doc, "3@1", title4, text4, [])
+    t4 = addtask(doc, "3@1", title4, text4, [], [])
     root.appendChild(t4)
     
     #Task 5@1: Plugins
@@ -85,7 +85,7 @@ If you use tags, you can right click on a tag in the sidebar and choose to hide 
 Some examples of the current plugins are Syncing with Remember the Milk and Evolution, Tomboy/Gnote integration and Geolocalized Tasks.
 You can find the Plugin Manager by selecting Edit in the Menu Bar, then clicking Preferences. You will then see a tab labeled Plugins.""")
     
-    t5 = addtask(doc, "4@1", title5, text5, [])
+    t5 = addtask(doc, "4@1", title5, text5, [], [])
     root.appendChild(t5)
 
     #Task 5@1: Reporting bugs
@@ -99,7 +99,7 @@ We need you to make this software better. Any contribution, any idea is welcome.
 
 If you have some trouble with GTG, we might be able to help you or to solve your problem really quickly.""")
     
-    t6 = addtask(doc, "5@1", title6, text6, [])
+    t6 = addtask(doc, "5@1", title6, text6, [], [])
     root.appendChild(t6)
     
     #Task 6@1: Learn how to use the QuickAdd Entry
@@ -116,17 +116,20 @@ due:date or defer:date : This way you can apply a due date or a defer date. date
 Attributes which are added in this way apply but do not appear in the title.
 If a word begins with @, it is interpreted as a tag.""")
 
-    t7 = addtask(doc, "6@1", title7, text7, [])
+    t7 = addtask(doc, "6@1", title7, text7, [], [])
     root.appendChild(t7)
 
     return doc
     
 
-def addtask(doc, ze_id, title, text, childs):
+def addtask(doc, ze_id, title, text, tags, childs):
     t_xml = doc.createElement("task")
     t_xml.setAttribute("id", ze_id)
     t_xml.setAttribute("status", "Active")
-    t_xml.setAttribute("tags", "")
+
+    tagsWithPrefix = map(lambda x: "@"+x, tags)
+    t_xml.setAttribute("tags", ",".join(tagsWithPrefix))
+
     cleanxml.addTextNode(doc, t_xml, "title", title)
     for c in childs:
         cleanxml.addTextNode(doc, t_xml, "subtask", c)

@@ -30,8 +30,8 @@ TaskTree. Unfortunatly, this doesn't work because TreeModelFilter hides
 all children of hidden nodes (not what we want!)
 
 The solution we have found is to insert a fake tree between Tree and
-TaskTree.  This fake tree is called FilteredTree and will map path and
-node methods to a result corresponding to the filtered tree.
+TaskTree.  This fake tree is called FilteredTree and maps path and node
+methods to a result corresponding to the filtered tree.
 
 Note that the nodes are not aware that they are in a filtered tree.
 Use the FilteredTree methods, not the node methods directly.
@@ -56,12 +56,20 @@ Structure of the source:
  6. Private helpers.
 
 There's one main FilteredTree that you can get through the requester. This
-main FilteredTree does use the filters applied throught the requester. This
-allow plugin writers to easily get the current displayed tree (main View).
+main FilteredTree uses the filters applied throughout the requester. This
+allows plugin writers to easily get the current displayed tree (main view).
+
+You can create your own filters on top of this main FilteredTree, or you
+can create your own personal FilteredTree custom view and apply your own
+filters on top of it without interfering with the main view.  (This is
+how the closed tasks pane is currently built.)
 
 For custom views, the plugin writers are able to get their own
 FilteredTree and apply on it the filters they want. (this is not finished
 yet but in good shape).
+
+An important point to stress is that information needs to be passed from
+bottom to top, with no horizontal communication at all between views.
 
 """
 
@@ -277,7 +285,7 @@ class FilteredTree(gobject.GObject):
                         nextnode = None
                     else:
                         nextnode = parent_node.get_nth_child(next_idx)
-                        while next_idx < total and not self.is_displayed(nextnode.get_id()):
+                        while nextnode and next_idx < total and not self.is_displayed(nextnode.get_id()):
                             next_idx += 1
                             nextnode = parent_node.get_nth_child(next_idx)
                 else:
