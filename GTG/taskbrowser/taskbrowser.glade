@@ -9,7 +9,7 @@
     <signal name="configure_event" handler="on_move"/>
     <signal name="size_allocate" handler="on_size_allocate"/>
     <child>
-      <object class="GtkVBox" id="vbox1">
+      <object class="GtkVBox" id="master_vbox">
         <property name="visible">True</property>
         <property name="orientation">vertical</property>
         <child>
@@ -21,7 +21,7 @@
                 <property name="label" translatable="yes">_Tasks</property>
                 <property name="use_underline">True</property>
                 <child type="submenu">
-                  <object class="GtkMenu" id="menu4">
+                  <object class="GtkMenu" id="tasks_menu">
                     <property name="visible">True</property>
                     <child>
                       <object class="GtkImageMenuItem" id="new_task_mi">
@@ -123,7 +123,7 @@
                 <property name="label" translatable="yes">_Edit</property>
                 <property name="use_underline">True</property>
                 <child type="submenu">
-                  <object class="GtkMenu" id="menu2">
+                  <object class="GtkMenu" id="edit_menu">
                     <property name="visible">True</property>
                     <child>
                       <object class="GtkImageMenuItem" id="edit_undo">
@@ -164,7 +164,7 @@
                 <property name="label" translatable="yes">_View</property>
                 <property name="use_underline">True</property>
                 <child type="submenu">
-                  <object class="GtkMenu" id="menu5">
+                  <object class="GtkMenu" id="view_menu">
                     <property name="visible">True</property>
                     <child>
                       <object class="GtkCheckMenuItem" id="view_workview">
@@ -234,7 +234,7 @@
                 <property name="label" translatable="yes">_Plugins</property>
                 <property name="use_underline">True</property>
                 <child type="submenu">
-                  <object class="GtkMenu" id="menu6">
+                  <object class="GtkMenu" id="plugins_menu">
                     <property name="visible">True</property>
                   </object>
                 </child>
@@ -246,10 +246,10 @@
                 <property name="label" translatable="yes">_Help</property>
                 <property name="use_underline">True</property>
                 <child type="submenu">
-                  <object class="GtkMenu" id="menu3">
+                  <object class="GtkMenu" id="help_menu">
                     <property name="visible">True</property>
                     <child>
-                      <object class="GtkImageMenuItem" id="gtk-documentation">
+                      <object class="GtkImageMenuItem" id="gtk_help_mi">
                         <property name="label">gtk-help</property>
                         <property name="visible">True</property>
                         <property name="tooltip_text" translatable="yes">Open GTG documentation in your web browser</property>
@@ -259,7 +259,7 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem" id="imagemenuitem10">
+                      <object class="GtkImageMenuItem" id="gtk_about_mi">
                         <property name="label">gtk-about</property>
                         <property name="visible">True</property>
                         <property name="use_underline">True</property>
@@ -279,7 +279,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkToolbar" id="task_tb">
+          <object class="GtkToolbar" id="task_toolbar">
             <property name="visible">True</property>
             <child>
               <object class="GtkToolButton" id="new_task_b">
@@ -427,7 +427,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <child>
-              <object class="GtkVBox" id="sidebar">
+              <object class="GtkVBox" id="sidebar_vbox">
                 <property name="width_request">75</property>
                 <property name="orientation">vertical</property>
                 <child>
@@ -445,7 +445,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkLabel" id="label4">
+                      <object class="GtkLabel" id="tags_label">
                         <property name="visible">True</property>
                         <property name="xalign">0</property>
                         <property name="label" translatable="yes">Tags</property>
@@ -502,7 +502,7 @@
               </packing>
             </child>
             <child>
-              <object class="GtkVBox" id="vbox2">
+              <object class="GtkVBox" id="main_vbox">
                 <property name="visible">True</property>
                 <property name="orientation">vertical</property>
                 <child>
@@ -598,12 +598,12 @@
       </object>
     </child>
   </object>
-  <object class="GtkMenu" id="TagContextMenu">
+  <object class="GtkMenu" id="tag_context_menu">
     <property name="visible">True</property>
     <property name="no_show_all">True</property>
     <signal name="deactivate" handler="on_tagcontext_deactivate"/>
     <child>
-      <object class="GtkImageMenuItem" id="colorchooser">
+      <object class="GtkImageMenuItem" id="colorchooser_mi">
         <property name="label">gtk-select-color</property>
         <property name="visible">True</property>
         <property name="use_underline">True</property>
@@ -613,7 +613,7 @@
       </object>
     </child>
     <child>
-      <object class="GtkImageMenuItem" id="resetcolor">
+      <object class="GtkImageMenuItem" id="resetcolor_mi">
         <property name="label" translatable="yes">Reset Color</property>
         <property name="visible">True</property>
         <property name="image">image2</property>
@@ -623,7 +623,7 @@
       </object>
     </child>
     <child>
-      <object class="GtkCheckMenuItem" id="nonworkviewtag">
+      <object class="GtkCheckMenuItem" id="nonworkviewtag_mi">
         <property name="visible">True</property>
         <property name="label" translatable="yes">Tag is displayed in the workview</property>
         <property name="use_underline">True</property>
@@ -655,7 +655,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
     <signal name="response" handler="on_about_close"/>
     <signal name="delete_event" handler="on_about_delete"/>
     <child internal-child="vbox">
-      <object class="GtkVBox" id="dialog-vbox2">
+      <object class="GtkVBox" id="about_dialog_vbox">
         <property name="visible">True</property>
         <property name="orientation">vertical</property>
         <property name="spacing">2</property>
@@ -673,7 +673,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
       </object>
     </child>
   </object>
-  <object class="GtkMenu" id="TaskContextMenu">
+  <object class="GtkMenu" id="task_context_menu">
     <property name="visible">True</property>
     <child>
       <object class="GtkImageMenuItem" id="tcm_add_subtask">
@@ -707,7 +707,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
         <property name="visible">True</property>
         <property name="use_underline">True</property>
         <property name="use_stock">False</property>
-        <property name="submenu">ScheduleForContextMenu</property>
+        <property name="submenu">schedule_for_context_menu</property>
       </object>
     </child>
     <child>
@@ -757,7 +757,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
       </object>
     </child>
   </object>
-  <object class="GtkMenu" id="ScheduleForContextMenu">
+  <object class="GtkMenu" id="schedule_for_context_menu">
     <property name="visible">True</property>
     <child>
       <object class="GtkImageMenuItem" id="tcm_mark_as_started">
@@ -805,7 +805,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
       </object>
     </child>
   </object>
-  <object class="GtkMenu" id="ClosedTaskContextMenu">
+  <object class="GtkMenu" id="closed_task_context_menu">
     <property name="visible">True</property>
     <child>
       <object class="GtkImageMenuItem" id="ctcm_edit">
@@ -919,12 +919,12 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
     <property name="type_hint">dialog</property>
     <property name="has_separator">False</property>
     <child internal-child="vbox">
-      <object class="GtkVBox" id="dialog-vbox3">
+      <object class="GtkVBox" id="addtag_dialog_vbox">
         <property name="visible">True</property>
         <property name="orientation">vertical</property>
         <property name="spacing">2</property>
         <child>
-          <object class="GtkLabel" id="label5">
+          <object class="GtkLabel" id="addtag_label">
             <property name="visible">True</property>
             <property name="label" translatable="yes">Enter the name of the tag(s) you wish to add:</property>
           </object>
@@ -947,7 +947,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="label6">
+          <object class="GtkLabel" id="hint_label">
             <property name="visible">True</property>
             <property name="label" translatable="yes">Hint: you can add several tags by separating them with
 commas.</property>
