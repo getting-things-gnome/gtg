@@ -18,16 +18,17 @@
 # -----------------------------------------------------------------------------
 
 
-#This is a class taken originally from
-#http://trac.atzm.org/index.cgi/wiki/PyGTK
-#It was in Japanese and I didn't understand anything but the code.
+"""
+This class implements a gtk.TextView but with many other features
+like hyperlink and other stuff special for GTG
 
-#This class implements a gtk.TextView but with many other features
-#like hyperlink and others stuffs special for GTG
-#
-#For your information, a gtkTextView always contains a gtk.TextBuffer which
-#Contains the text. Ours is called self.buff (how original !)
-#
+For your information, a gtkTextView always contains a gtk.TextBuffer which
+Contains the text. Ours is called self.buff (how original !)
+
+This is a class taken originally from
+http://trac.atzm.org/index.cgi/wiki/PyGTK
+It was in Japanese and I didn't understand anything but the code.
+"""
 
 import gtk
 from gtk import gdk
