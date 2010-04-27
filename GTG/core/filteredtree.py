@@ -285,7 +285,7 @@ class FilteredTree(gobject.GObject):
                         nextnode = None
                     else:
                         nextnode = parent_node.get_nth_child(next_idx)
-                        while next_idx < total and not self.is_displayed(nextnode.get_id()):
+                        while nextnode and next_idx < total and not self.is_displayed(nextnode.get_id()):
                             next_idx += 1
                             nextnode = parent_node.get_nth_child(next_idx)
                 else:
