@@ -182,11 +182,11 @@ class TaskBrowser:
 
     def _init_widget_aliases(self):
         self.window             = self.builder.get_object("MainWindow")
-        self.tagpopup           = self.builder.get_object("TagContextMenu")
+        self.tagpopup           = self.builder.get_object("tag_context_menu")
         self.nonworkviewtag_cb  = self.builder.get_object("nonworkviewtag")
-        self.taskpopup          = self.builder.get_object("TaskContextMenu")
-        self.defertopopup       = self.builder.get_object("DeferToContextMenu")
-        self.ctaskpopup         = self.builder.get_object("ClosedTaskContextMenu")
+        self.taskpopup          = self.builder.get_object("task_context_menu")
+        self.defertopopup       = self.builder.get_object("defer_to_context_menu")
+        self.ctaskpopup         = self.builder.get_object("closed_task_context_menu")
         self.editbutton         = self.builder.get_object("edit_b")
         self.edit_mi            = self.builder.get_object("edit_mi")
         self.donebutton         = self.builder.get_object("done_b")

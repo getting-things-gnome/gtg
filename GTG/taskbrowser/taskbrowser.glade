@@ -21,7 +21,7 @@
                 <property name="label" translatable="yes">_Tasks</property>
                 <property name="use_underline">True</property>
                 <child type="submenu">
-                  <object class="GtkMenu" id="menu4">
+                  <object class="GtkMenu" id="tasks_menu">
                     <property name="visible">True</property>
                     <child>
                       <object class="GtkImageMenuItem" id="new_task_mi">
@@ -123,7 +123,7 @@
                 <property name="label" translatable="yes">_Edit</property>
                 <property name="use_underline">True</property>
                 <child type="submenu">
-                  <object class="GtkMenu" id="menu2">
+                  <object class="GtkMenu" id="edit_menu">
                     <property name="visible">True</property>
                     <child>
                       <object class="GtkImageMenuItem" id="edit_undo">
@@ -164,7 +164,7 @@
                 <property name="label" translatable="yes">_View</property>
                 <property name="use_underline">True</property>
                 <child type="submenu">
-                  <object class="GtkMenu" id="menu5">
+                  <object class="GtkMenu" id="view_menu">
                     <property name="visible">True</property>
                     <child>
                       <object class="GtkCheckMenuItem" id="view_workview">
@@ -234,7 +234,7 @@
                 <property name="label" translatable="yes">_Plugins</property>
                 <property name="use_underline">True</property>
                 <child type="submenu">
-                  <object class="GtkMenu" id="menu6">
+                  <object class="GtkMenu" id="plugins_menu">
                     <property name="visible">True</property>
                   </object>
                 </child>
@@ -246,7 +246,7 @@
                 <property name="label" translatable="yes">_Help</property>
                 <property name="use_underline">True</property>
                 <child type="submenu">
-                  <object class="GtkMenu" id="menu3">
+                  <object class="GtkMenu" id="help_menu">
                     <property name="visible">True</property>
                     <child>
                       <object class="GtkImageMenuItem" id="gtk-documentation">
@@ -598,7 +598,7 @@
       </object>
     </child>
   </object>
-  <object class="GtkMenu" id="TagContextMenu">
+  <object class="GtkMenu" id="tag_context_menu">
     <property name="visible">True</property>
     <property name="no_show_all">True</property>
     <signal name="deactivate" handler="on_tagcontext_deactivate"/>
@@ -673,7 +673,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
       </object>
     </child>
   </object>
-  <object class="GtkMenu" id="TaskContextMenu">
+  <object class="GtkMenu" id="task_context_menu">
     <property name="visible">True</property>
     <child>
       <object class="GtkImageMenuItem" id="tcm_add_subtask">
@@ -707,7 +707,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
         <property name="visible">True</property>
         <property name="use_underline">True</property>
         <property name="use_stock">False</property>
-        <property name="submenu">ScheduleForContextMenu</property>
+        <property name="submenu">schedule_for_context_menu</property>
       </object>
     </child>
     <child>
@@ -757,7 +757,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
       </object>
     </child>
   </object>
-  <object class="GtkMenu" id="ScheduleForContextMenu">
+  <object class="GtkMenu" id="schedule_for_context_menu">
     <property name="visible">True</property>
     <child>
       <object class="GtkImageMenuItem" id="tcm_mark_as_started">
@@ -805,7 +805,7 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
       </object>
     </child>
   </object>
-  <object class="GtkMenu" id="ClosedTaskContextMenu">
+  <object class="GtkMenu" id="closed_task_context_menu">
     <property name="visible">True</property>
     <child>
       <object class="GtkImageMenuItem" id="ctcm_edit">
