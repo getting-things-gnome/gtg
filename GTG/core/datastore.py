@@ -18,7 +18,7 @@
 # -----------------------------------------------------------------------------
 
 """
-datastore contains a list of "TagSource" objects, which are proxies between a backend and the datastore itself
+datastore contains a list of TagSource objects, which are proxies between a backend and the datastore itself
 """
 
 import threading
@@ -38,7 +38,7 @@ THREADING = True
 
 
 class DataStore:
-
+    """ A wrapper around a backend that provides an API for adding/removing tasks """
     def __init__(self):
         """ Initializes a DataStore object """
         self.backends = {}
@@ -49,23 +49,23 @@ class DataStore:
 
     def all_tasks(self):
         """
-        @return: List of all keys of open tasks
+        Returns list of all keys of open tasks
         """
         return self.open_tasks.get_all_keys()
 
     def has_task(self, tid):
         """
-        @param tid: Task ID to search for
-        @return: True if the tid is among the open or closed tasks for
+        Returns true if the tid is among the open or closed tasks for
         this DataStore, False otherwise.
+        param tid: Task ID to search for
         """
         return self.open_tasks.has_node(tid) or self.closed_tasks.has_node(tid)
 
     def get_task(self, tid):
         """
+        Returns the internal task object for the given tid, or None if the
+        tid is not present in this DataStore.
         @param tid: Task ID to retrieve
-        @return: The internal task object for the given tid, or None if the
-         tid is not present in this DataStore.
         """
         uid, pid = tid.split('@')
         if self.has_task(tid):
@@ -90,7 +90,7 @@ class DataStore:
         Deletes the given task entirely from this DataStore, and unlinks
         it from the task's parent.
         @return: True if task was deleted, or False if the tid was not
-        present in this DataStore.
+         present in this DataStore.
         """
         if tid and self.has_task(tid):
             self.__internal_get_task(tid).delete()
@@ -130,7 +130,7 @@ class DataStore:
         return self.requester
         
     def get_tasks_tree(self):
-        """ @return: Open tasks tree """
+        """ return: Open tasks tree """
         return self.open_tasks
         
     def push_task(self,task):
@@ -185,18 +185,14 @@ class DataStore:
         print "unregister backend %s not implemented" %backend
 
     def get_all_backends(self):
-        """ @return: list of all registered backends for this DataStore """
+        """ returns list of all registered backends for this DataStore """
         l = []
         for key in self.backends:
             l.append(self.backends[key])
         return l
 
 class TaskSource():
-    """
-    A transparent interface between the real backend and the datastore,
-    with additional functionality.
-    """
-
+    """ transparent interface between the real backend and the datastore """
     def __init__(self, backend, parameters):
         """
         Instantiates a TaskSource object.
@@ -268,7 +264,7 @@ class TaskSource():
     
     def new_task_id(self):
         """
-        @return: A new ID created by the backend.
+        returns a new ID created by the backend.
         """
         return self.backend.new_task_id()
     
@@ -279,6 +275,6 @@ class TaskSource():
     #Those functions are only for TaskSource
     def get_parameters(self):
         """
-        @return: The parameters specified during creation of the DataStore
+        Returns the parameters specified during creation of the DataStore
         """
         return self.dic
