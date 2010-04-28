@@ -36,13 +36,15 @@ def usage():
 
     text += _("Basic commands:\n")
     text += f%( "gtcli new", _("Create a new task") )
-    text += f%( "gtcli list [all|today]", _("List tasks") )
-    text += f%( "gtcli count [all|today]", _("Number of tasks") )
     text += f%( "gtcli show <tid>", _("Display detailed information on given task id") )
-    text += f%( "gtcli postpone <tid> <date>", _("Updates the start date of task") )
     text += f%( "gtcli edit <tid>", _("Opens the GUI editor for the given task id") )
     text += f%( "gtcli delete <tid>", _("Removes task identified by tid") )
-    text += f%( "gtcli close <tid>", _("Sets state of task identified by tid to closed") )
+
+#FIXME:  These commands do not work with the 0.3 dbus
+#    text += f%( "gtcli list [all|today]", _("List tasks") )
+#    text += f%( "gtcli count [all|today]", _("Number of tasks") )
+#    text += f%( "gtcli postpone <tid> <date>", _("Updates the start date of task") )
+#    text += f%( "gtcli close <tid>", _("Sets state of task identified by tid to closed") )
 
     text += "\n"
     text += "http://gtg.fritalk.com/\n"
