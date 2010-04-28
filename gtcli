@@ -1,0 +1,252 @@
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+
+'''Command line user interface for manipulating tasks in gtg.
+
+Copyright (C) 2010 Bryce W. Harrington
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2 of the License, or (at your
+option) any later version.  See http://www.gnu.org/copyleft/gpl.html for
+the full text of the license.
+'''
+
+import re
+import sys
+import os
+import dbus
+import cgi
+import getopt
+import textwrap
+
+def _(text):
+    return text
+
+def usage():
+    f = "  %-30s %s\n"
+    progname = sys.argv[0]
+
+    text = _("gtcli -- a command line interface to gtg\n")
+    text += "\n"
+
+    text += _("Options:\n")
+    text += f%( "-h, --help", _("This help") )
+    text += "\n"
+
+    text += _("Basic commands:\n")
+    text += f%( "gtcli new", _("Create a new task") )
+    text += f%( "gtcli list [all|today]", _("List tasks") )
+    text += f%( "gtcli count [all|today]", _("Number of tasks") )
+    text += f%( "gtcli show <tid>", _("Display detailed information on given task id") )
+    text += f%( "gtcli postpone <tid> <date>", _("Updates the start date of task") )
+    text += f%( "gtcli edit <tid>", _("Opens the GUI editor for the given task id") )
+    text += f%( "gtcli delete <tid>", _("Removes task identified by tid") )
+    text += f%( "gtcli close <tid>", _("Sets state of task identified by tid to closed") )
+
+    text += "\n"
+    text += "http://gtg.fritalk.com/\n"
+    sys.stderr.write( text )
+
+def die(code=1, err=None):
+    if err:
+        sys.stderr.write(str(err))
+    sys.exit(code)
+
+def connect_to_gtg():
+    try:
+        bus = dbus.SessionBus()
+    except dbus.exceptions.DBusException, e:
+        if "X11 initialization failed" in e.get_dbus_message():
+            os.environ['DISPLAY'] = ":0"
+            bus = dbus.SessionBus()
+        else:
+            print "dbus exception: '%s'" %(err)
+            raise
+
+    liste = bus.list_names()
+    busname = "org.GTG"
+    remote_object = bus.get_object(busname,"/org/GTG")
+    return dbus.Interface(remote_object,dbus_interface="org.GTG")
+
+def new_task(title, body):
+    """ Retrieve task via dbus """
+    timi = connect_to_gtg()
+    timi.new_task("Active", title, '', '', '', [], body, [])
+
+def delete_task(tid):
+    """ Remove a task via dbus """
+    timi = connect_to_gtg()
+    timi.delete_task(tid)
+
+def close_task(tid):
+    """ Marks a task closed """
+    timi = connect_to_gtg()
+    task_data = timi.get_task(tid)
+    task_data['status'] = "Done"
+    timi.modify_task(tid, task_data)
+
+def show_task(tid):
+    """ Displays a given task """
+    timi = connect_to_gtg()
+    task_data = timi.get_task(tid)
+    content_regex = re.compile(r"<content>(.+)</content>", re.DOTALL)
+
+    content = task_data['text'] + "\n(unknown)"
+    m = content_regex.match(task_data['text'])
+    if m:
+        content = m.group(1)
+
+    print task_data['title']
+    if len(task_data['tags'])>0:
+        print " %-12s %s" %('tags:', task_data['tags'][0])
+    for k in ['id', 'startdate', 'duedate', 'status']:
+        print " %-12s %s" %(k+":", task_data[k])
+    print
+    print content
+
+def postpone_task(tid, startdate):
+    """ Change the start date of a task """
+    timi = connect_to_gtg()
+    task_data = timi.get_task(tid)
+    task_data['startdate'] = startdate
+    timi.modify_task(tid, task_data)
+
+def open_task_editor(tid):
+    """ Load task in the task editor gui """
+    timi = connect_to_gtg()
+    task_data = timi.open_task_editor(tid)
+
+def list_tasks(criteria, count_only=False):
+    timi = connect_to_gtg()
+
+    tags = []
+    if criteria == "today":
+        tasks = timi.get_active_tasks(tags)
+    elif criteria == "all":
+        status = ['Active', 'Closed', 'Dismissed']
+        started_only = False
+        is_root = False
+        tasks = timi.get_tasks_filtered(tags, status, started_only, is_root)
+    else:
+        status = ['Active']
+        started_only = False
+        is_root = False
+        tasks = timi.get_tasks_filtered(tags, status, started_only, is_root)
+
+    tasks_tree = { }
+    total = 0
+    notag = '@__notag'
+    for task in tasks:
+        if 'title' not in task:
+            exit
+        if not task['tags'] or len(task['tags']) == 0:
+            if notag not in tasks_tree:
+                tasks_tree[notag] = []
+            tasks_tree[notag].append(task)
+        else:
+            total += 1
+            tags = []
+            for tag in list(task['tags']):
+                tags.append(str(tag))
+                if tag not in tasks_tree:
+                    tasks_tree[tag] = []
+                tasks_tree[tag].append(task)
+
+    if count_only:
+        print total
+        return total
+
+    keys = tasks_tree.keys()
+    keys.sort()
+    for key in keys:
+        if key != notag:
+            print "%s:" %(key[1:])
+        for task in tasks_tree[key]:
+            text = textwrap.fill(task['title'], 
+                          initial_indent='',
+                          subsequent_indent='            ')
+            print "  %-8s  %s" %(task['id'], text)
+
+
+if __name__ == '__main__':
+    try:
+        opts, args = getopt.gnu_getopt(sys.argv[1:], "h", ["help"])
+    except getopt.GetoptError, err:
+        sys.stderr.write("Error: " + str(err) + "\n\n")
+        usage()
+        sys.exit(2)
+    for o, a in opts:
+        if o in ("-h", "--help"):
+            usage()
+            sys.exit(0)
+        else:
+            assert False, "unhandled option"
+
+    if len(args) < 1:
+        usage()
+        sys.exit(2)
+
+    command = args[0]
+
+    if command == "new" or command == "add":
+        subject_regex = re.compile("^Subject: (.*)$", re.M | re.I)
+
+        title = " ".join(args[1:])
+        body = sys.stdin.read()
+        if subject_regex.search(body):
+            subject = subject_regex.findall(body)[0]
+            title = title + ": " + subject
+
+        new_task(title, cgi.escape(body))
+
+    elif command == "list":
+        criteria = None
+        if len(args)>1:
+            criteria = args[1]
+        list_tasks(criteria, False)
+
+    elif command == "count":
+        criteria = None
+        if len(args)>1:
+            criteria = args[1]
+        list_tasks(criteria, True)
+
+    elif command == "rm" or command == "delete":
+        if len(args)<2:
+            usage()
+            sys.exit(1)
+        for tid in args[1:]:
+            delete_task(tid)
+
+    elif command == "close":
+        if len(args)<2:
+            usage()
+            sys.exit(1)
+        for tid in args[1:]:
+            close_task(tid)
+
+    elif command == "postpone":
+        if len(args)<3:
+            usage()
+            sys.exit(1)
+        postpone_task(args[1], args[2])
+
+    elif command == "show":
+        if len(args)<2:
+            usage()
+            sys.exit(1)
+        for tid in args[1:]:
+            show_task(tid)
+
+    elif command == "edit":
+        if len(args)<2:
+            usage()
+            sys.exit(1)
+        for tid in args[1:]:
+            open_task_editor(tid)
+
+    else:
+        die("Unknown command '%s'\n" %(command))
+
+
