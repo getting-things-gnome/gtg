@@ -73,6 +73,11 @@ class DBusTaskWrapper(dbus.service.Object):
         # Retrieve a list of task data dicts
         return [self.get_task(id) for id in self.get_task_ids()]
 
+    @dbus.service.method(BUSNAME, in_signature="as")
+    def get_active_tasks(self, tags):
+        # Retrieve a list of task data dicts
+        return [self.get_task(id) for id in self.req.get_active_tasks_list(tags=tags, workable=True)]
+
     @dbus.service.method(BUSNAME, in_signature="asasbb")
     def get_task_ids_filtered(self, tags, status, started_only, is_root):
         # Retrieve a list of task IDs filtered by specified parameters
