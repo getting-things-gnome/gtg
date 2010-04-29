@@ -122,19 +122,12 @@ def open_task_editor(tid):
 def list_tasks(criteria, count_only=False):
     timi = connect_to_gtg()
 
-    tags = []
     if criteria == "today":
-        tasks = timi.get_active_tasks(tags)
+        tasks = timi.get_tasks_filtered_new(['active', 'workview'])
     elif criteria == "all":
-        status = ['Active', 'Closed', 'Dismissed']
-        started_only = False
-        is_root = False
-        tasks = timi.get_tasks_filtered(tags, status, started_only, is_root)
+        tasks = timi.get_tasks_filtered_new(['all'])
     else:
-        status = ['Active']
-        started_only = False
-        is_root = False
-        tasks = timi.get_tasks_filtered(tags, status, started_only, is_root)
+        tasks = timi.get_tasks_filtered_new(['active'])
 
     tasks_tree = { }
     total = 0
@@ -142,12 +135,12 @@ def list_tasks(criteria, count_only=False):
     for task in tasks:
         if 'title' not in task:
             exit
+        total += 1
         if not task['tags'] or len(task['tags']) == 0:
             if notag not in tasks_tree:
                 tasks_tree[notag] = []
             tasks_tree[notag].append(task)
         else:
-            total += 1
             tags = []
             for tag in list(task['tags']):
                 tags.append(str(tag))

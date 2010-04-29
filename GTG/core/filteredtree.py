@@ -26,7 +26,7 @@ The problem we have is that, sometimes, we don't want to display all tasks.
 We want tasks to be filtered (workview, tags, …)
 
 The expected approach would be to put a gtk.TreeModelFilter above our
-TaskTree. Unfortunatly, this doesn't work because TreeModelFilter hides
+TaskTree. Unfortunately, this doesn't work because TreeModelFilter hides
 all children of hidden nodes (not what we want!)
 
 The solution we have found is to insert a fake tree between Tree and
