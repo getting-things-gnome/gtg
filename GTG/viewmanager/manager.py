@@ -176,10 +176,10 @@ class Manager():
             
 ################ Others dialog ############################################
 
-    def show_preferences(self,sender=None):
+    def show_preferences(self, config_priv, sender=None):
         if not self.preferences:
             self.preferences = PreferencesDialog(self.pengine, self.p_apis)
-        self.preferences.activate()
+        self.preferences.activate(config_priv)
         
     def ask_delete_tasks(self, tids):
         if not self.delete_dialog:

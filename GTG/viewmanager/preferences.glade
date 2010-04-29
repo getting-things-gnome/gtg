@@ -18,7 +18,6 @@
     <child internal-child="vbox">
       <object class="GtkVBox" id="prefs-vbox1">
         <property name="visible">True</property>
-        <property name="orientation">vertical</property>
         <child>
           <object class="GtkAlignment" id="prefs-alignment1">
             <property name="visible">True</property>
@@ -40,7 +39,6 @@
                     <child>
                       <object class="GtkVBox" id="prefs-vbox2">
                         <property name="visible">True</property>
-                        <property name="orientation">vertical</property>
                         <child>
                           <object class="GtkFrame" id="prefs-frame3">
                             <property name="visible">True</property>
@@ -53,7 +51,6 @@
                                 <child>
                                   <object class="GtkVBox" id="prefs-vbox7">
                                     <property name="visible">True</property>
-                                    <property name="orientation">vertical</property>
                                     <child>
                                       <object class="GtkCheckButton" id="pref_autostart">
                                         <property name="label" translatable="yes">Start Getting Things GNOME! on every login</property>
@@ -96,12 +93,10 @@
                                 <child>
                                   <object class="GtkVBox" id="prefs-vbox3">
                                     <property name="visible">True</property>
-                                    <property name="orientation">vertical</property>
                                     <child>
                                       <object class="GtkCheckButton" id="pref_show_preview">
                                         <property name="label" translatable="yes">Show task text preview</property>
                                         <property name="visible">True</property>
-                                        <property name="sensitive">False</property>
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">False</property>
                                         <property name="draw_indicator">True</property>
@@ -173,7 +168,6 @@
                                 <child>
                                   <object class="GtkVBox" id="prefs-vbox4">
                                     <property name="visible">True</property>
-                                    <property name="orientation">vertical</property>
                                     <child>
                                       <object class="GtkCheckButton" id="pref_check_spelling">
                                         <property name="label" translatable="yes">Check spelling</property>
@@ -228,7 +222,6 @@
                     <child>
                       <object class="GtkVBox" id="prefs-vbox5">
                         <property name="visible">True</property>
-                        <property name="orientation">vertical</property>
                         <property name="spacing">6</property>
                         <child>
                           <object class="GtkLabel" id="prefs-label6">
@@ -288,7 +281,6 @@
                     <child>
                       <object class="GtkVBox" id="prefs-vbox6">
                         <property name="visible">True</property>
-                        <property name="orientation">vertical</property>
                         <property name="spacing">6</property>
                         <child>
                           <object class="GtkLabel" id="prefs-label7">
@@ -457,7 +449,6 @@
     <child internal-child="vbox">
       <object class="GtkVBox" id="pa-vbox1">
         <property name="visible">True</property>
-        <property name="orientation">vertical</property>
         <property name="spacing">2</property>
         <child>
           <object class="GtkFrame" id="pa-frame1">
@@ -514,7 +505,6 @@
     <child internal-child="vbox">
       <object class="GtkVBox" id="pc-vbox1">
         <property name="visible">True</property>
-        <property name="orientation">vertical</property>
         <property name="spacing">2</property>
         <child>
           <placeholder/>
