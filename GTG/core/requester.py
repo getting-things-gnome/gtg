@@ -86,7 +86,7 @@ class Requester(gobject.GObject):
         return self.main_tree
         
     # This is a FilteredTree that you have to handle yourself.
-    # You can apply/unapply filters on it as you wich.
+    # You can apply/unapply filters on it as you wish.
     def get_custom_tasks_tree(self):
         return FilteredTree(self,self.basetree,maintree=False)
         
