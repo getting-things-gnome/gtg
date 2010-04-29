@@ -28,6 +28,7 @@ from GTG.core.filters_bank import FiltersBank
 from GTG.core.task         import Task
 from GTG.core.tagstore     import Tag
 from GTG.tools.dates       import date_today
+from GTG.tools.logger      import Log
 
 class Requester(gobject.GObject):
     """A view on a GTG datastore.
@@ -202,6 +203,7 @@ class Requester(gobject.GObject):
         @param tid: The id of the task to be deleted.
         """
         #send the signal before actually deleting the task !
+        Log.debug("deleting task %s" % tid)
         self.emit('task-deleted', tid)
         return self.ds.delete_task(tid)
 

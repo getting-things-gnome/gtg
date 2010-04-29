@@ -186,7 +186,8 @@ class Manager():
             self.delete_dialog = DeletionUI(self.req)
         if self.delete_dialog.delete_tasks(tids):
             for t in tids:
-                self.close_task(t)
+                if t in self.opened_task:
+                    self.close_task(t)
             
 ### MAIN ###################################################################
     def main(self):

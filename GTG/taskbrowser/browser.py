@@ -1145,6 +1145,7 @@ class TaskBrowser:
             tids_todelete = self.get_selected_tasks()
         else:
             tids_todelete = [tid]
+        Log.debug("going to delete %s" % tids_todelete)
         self.vmanager.ask_delete_tasks(tids_todelete)
 
     def update_start_date(self, widget, new_start_date):
@@ -1381,7 +1382,6 @@ class TaskBrowser:
         self._update_window_title()
 
     def on_task_deleted(self, sender, tid):
-        Log.debug("Delete task with ID: %s" % tid)
         self._update_window_title()
 
     #using dummy parameters that are given by the signal
