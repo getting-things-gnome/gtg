@@ -75,6 +75,8 @@ bottom to top, with no horizontal communication at all between views.
 
 import gobject
 
+from GTG.tools.logger import Log
+
 class FilteredTree(gobject.GObject):
 
     #Those are the three signals you want to catch if displaying
@@ -311,7 +313,10 @@ class FilteredTree(gobject.GObject):
                 #The spec says that the child can be None
                 child = None
         else:
-            child = self.virtual_root[0]
+            if len(self.virtual_root) > 0:
+                child = self.virtual_root[0]
+            else:
+                child = None
         return child
 
     #Done
@@ -381,6 +386,9 @@ class FilteredTree(gobject.GObject):
         or if the parent is not displayable.
         """
         #return None if we are at a Virtual root
+        if node == None:
+            Log.Debug("requested a parent of a non-existing node")
+            return None
         tid = node.get_id()
         if node and tid in self.virtual_root:
             return None

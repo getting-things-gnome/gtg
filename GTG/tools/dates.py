@@ -194,7 +194,7 @@ def get_canonical_date(arg):
     if arg.isdigit():
         if len(arg) == 4:
             arg = str(date.today().year) + arg
-        assert(len(arg), 8)
+        assert(len(arg) == 8)
         arg = "%s-%s-%s" % (arg[:4], arg[4:6], arg[6:])
     #today, tomorrow, next {week, months, year}
     elif arg in delta_day_names.keys():
