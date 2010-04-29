@@ -119,10 +119,10 @@ class DBusTaskWrapper(dbus.service.Object):
     def modify_task(self, tid, task_data):
         # Apply supplied task data to the task object with the specified ID
         task = self.req.get_task(tid)
-        task.set_status(task_data["status"], donedate=task_data["donedate"])
+        task.set_status(task_data["status"], donedate=dates.strtodate(task_data["donedate"]))
         task.set_title(task_data["title"])
-        task.set_due_date(task_data["duedate"])
-        task.set_start_date(task_data["startdate"])
+        task.set_due_date(dates.strtodate(task_data["duedate"]))
+        task.set_start_date(dates.strtodate(task_data["startdate"]))
         task.set_text(task_data["text"])
 
         for tag in task_data["tags"]:

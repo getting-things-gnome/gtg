@@ -41,7 +41,7 @@ def usage():
     text += f%( "gtcli delete <tid>", _("Removes task identified by tid") )
     text += f%( "gtcli list [all|today]", _("List tasks") )
     text += f%( "gtcli count [all|today]", _("Number of tasks") )
-#    text += f%( "gtcli postpone <tid> <date>", _("Updates the start date of task") )
+    text += f%( "gtcli postpone <tid> <date>", _("Updates the start date of task") )
 #    text += f%( "gtcli close <tid>", _("Sets state of task identified by tid to closed") )
 
     text += "\n"
