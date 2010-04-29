@@ -76,42 +76,18 @@ class DBusTaskWrapper(dbus.service.Object):
     @dbus.service.method(BUSNAME, in_signature="as")
     def get_active_tasks(self, tags):
         # Retrieve a list of task data dicts
-        return [self.get_task(id) for id in self.req.get_active_tasks_list(tags=tags, workable=True)]
-
-    @dbus.service.method(BUSNAME, in_signature="asasbb")
-    def get_task_ids_filtered(self, tags, status, started_only, is_root):
-        # Retrieve a list of task IDs filtered by specified parameters
-        tags_obj = []
-        for t in tags:
-            zetag = self.req.get_tag(t)
-            if zetag:
-                tags_obj.append(zetag)
-        ids = self.req.get_tasks_list(
-            tags_obj, status, False, started_only, is_root)
-        # If there are no matching tasks, return an empty D-Bus array
-        return ids if ids else dbus.Array([], "s")
+        return self.get_tasks_filtered(['active', 'workable'])
 
     @dbus.service.method(BUSNAME, in_signature="as")
-    def get_task_ids_filtered_new(self, filters):
+    def get_task_ids_filtered(self, filters):
         tree = self.req.get_custom_tasks_tree()
         for filter in filters:
             tree.apply_filter(filter)
         return tree.get_all_keys()
 
     @dbus.service.method(BUSNAME, in_signature="as")
-    def get_tasks_filtered_new(self, filters):
-        tasks = self.get_task_ids_filtered_new(filters)
-        if tasks:
-            return [self.get_task(id) for id in tasks]
-        else:
-            return dbus.Array([], "s")
-
-    @dbus.service.method(BUSNAME, in_signature="asasbb")
-    def get_tasks_filtered(self, tags, status, started_only, is_root):
-        # Retrieve a list of task data dicts filtered by specificed parameters
-        tasks = self.get_task_ids_filtered(
-            tags, status, started_only, is_root)
-        # If no tasks match the filter, return an empty D-Bus array
+    def get_tasks_filtered(self, filters):
+        tasks = self.get_task_ids_filtered(filters)
         if tasks:
             return [self.get_task(id) for id in tasks]
         else:

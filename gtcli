@@ -39,10 +39,8 @@ def usage():
     text += f%( "gtcli show <tid>", _("Display detailed information on given task id") )
     text += f%( "gtcli edit <tid>", _("Opens the GUI editor for the given task id") )
     text += f%( "gtcli delete <tid>", _("Removes task identified by tid") )
-
-#FIXME:  These commands do not work with the 0.3 dbus
-#    text += f%( "gtcli list [all|today]", _("List tasks") )
-#    text += f%( "gtcli count [all|today]", _("Number of tasks") )
+    text += f%( "gtcli list [all|today]", _("List tasks") )
+    text += f%( "gtcli count [all|today]", _("Number of tasks") )
 #    text += f%( "gtcli postpone <tid> <date>", _("Updates the start date of task") )
 #    text += f%( "gtcli close <tid>", _("Sets state of task identified by tid to closed") )
 
@@ -123,18 +121,18 @@ def list_tasks(criteria, count_only=False):
     timi = connect_to_gtg()
 
     if criteria == "today":
-        tasks = timi.get_tasks_filtered_new(['active', 'workview'])
+        tasks = timi.get_tasks_filtered(['active', 'workview'])
     elif criteria == "all":
-        tasks = timi.get_tasks_filtered_new(['all'])
+        tasks = timi.get_tasks_filtered(['all'])
     else:
-        tasks = timi.get_tasks_filtered_new(['active'])
+        tasks = timi.get_tasks_filtered(['active'])
 
     tasks_tree = { }
     total = 0
     notag = '@__notag'
     for task in tasks:
         if 'title' not in task:
-            exit
+            continue
         total += 1
         if not task['tags'] or len(task['tags']) == 0:
             if notag not in tasks_tree:
