@@ -111,7 +111,8 @@ class PreferencesDialog:
           'plugin_configure': 'plugin_configure',
           'plugin_depends': 'PluginDepends',
           'plugin_config_dialog': 'PluginConfigDialog',
-           'pref_autostart': 'pref_autostart'
+          'pref_autostart': 'pref_autostart',
+          'pref_show_preview': 'pref_show_preview'
           }
         for attr, widget in widgets.iteritems():
             setattr(self, attr, self.builder.get_object(widget))
@@ -163,6 +164,8 @@ class PreferencesDialog:
         autostart_path = os.path.join(self.__AUTOSTART_DIRECTORY, \
                                       self.__AUTOSTART_FILE)
         self.pref_autostart.set_active(os.path.isfile(autostart_path))
+        self.pref_show_preview.set_active(self.config_priv["contents_preview_enable"])
+
 
     def _init_plugin_tree(self):
         """Initialize the PluginTree gtk.TreeView.
@@ -242,8 +245,9 @@ class PreferencesDialog:
           }
         return SIGNAL_CONNECTIONS_DIC
 
-    def activate(self, widget=None):
+    def activate(self, config_priv, widget=None):
         """Activate the preferences dialog."""
+        self.config_priv = config_priv
         if len(self.plugin_tree.get_columns()) == 0:
             # late setup of PluginTree
             self._init_plugin_tree()
@@ -322,7 +326,7 @@ class PreferencesDialog:
     
     def toggle_preview(self, widget):
         """Toggle previews in the task view on or off."""
-        print __name__
+        self.config_priv["contents_preview_enable"] = widget.get_active()
     
     def toggle_spellcheck(self, widget):
         """Toggle spell checking on or off."""
