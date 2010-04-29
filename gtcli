@@ -127,6 +127,8 @@ def list_tasks(criteria, count_only=False):
     else:
         tasks = timi.get_tasks_filtered(['active'])
 
+    tasks = timi.get_tasks()
+
     tasks_tree = { }
     total = 0
     notag = '@__notag'

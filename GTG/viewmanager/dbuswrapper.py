@@ -52,16 +52,6 @@ class DBusTaskWrapper(dbus.service.Object):
         self.req = req
         self.view_manager = view_manager
 
-
-    @dbus.service.method(BUSNAME,in_signature="s")
-    def get_task_ids(self, status_string):
-        # Retrieve a list of task ID values
-        status = [s.strip() for s in status_string.split(',')]
-        #need to convert the statuses to ascii (these are given in unicode)
-        status = [unicodedata.normalize('NFKD', s).encode('ascii','ignore') \
-                  for s in status]
-        return self.req.get_tasks_list(status = status)
-
     @dbus.service.method(BUSNAME)
     def get_task(self, tid):
         # Retrieve a specific task by ID and return the data
@@ -71,7 +61,7 @@ class DBusTaskWrapper(dbus.service.Object):
     @dbus.service.method(BUSNAME)
     def get_tasks(self):
         # Retrieve a list of task data dicts
-        return [self.get_task(id) for id in self.get_task_ids()]
+        return self.get_tasks_filtered(['all'])
 
     @dbus.service.method(BUSNAME, in_signature="as")
     def get_active_tasks(self, tags):
