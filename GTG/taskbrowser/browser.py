@@ -62,13 +62,14 @@ WINDOW_TITLE = "Getting Things GNOME!"
 DOCUMENTATION_URL = "http://live.gnome.org/gtg/documentation"
 
 #Some default preferences that we should save in a file
-WORKVIEW           = False
-SIDEBAR            = False
-CLOSED_PANE        = False
-QUICKADD_PANE      = True
-TOOLBAR            = True
-BG_COLOR           = True
-TIME = 0
+WORKVIEW         = False
+SIDEBAR          = False
+CLOSED_PANE      = False
+QUICKADD_PANE    = True
+TOOLBAR          = True
+BG_COLOR         = True
+CONTENTS_PREVIEW = True
+TIME             = 0
 
 class Timer:
     def __init__(self,st):
@@ -166,7 +167,7 @@ class TaskBrowser:
     def _init_models(self):
         # Active Tasks
         self.req.apply_filter('active')
-        self.task_tree_model = TaskTreeModel(self.req)
+        self.task_tree_model = TaskTreeModel(self.req, self.priv)
         self.task_modelsort = gtk.TreeModelSort(self.task_tree_model)
         self.task_modelsort.set_sort_func(\
             tasktree.COL_DDATE, self.dleft_sort_func)
@@ -382,6 +383,7 @@ class TaskBrowser:
         self.builder.get_object("view_quickadd").set_active(QUICKADD_PANE)
         self.builder.get_object("view_toolbar").set_active(TOOLBAR)
         self.priv["bg_color_enable"] = BG_COLOR
+        self.priv["contents_preview_enable"] = CONTENTS_PREVIEW
         # Set sorting order
         self.task_modelsort.set_sort_column_id(\
             tasktree.COL_DLEFT, gtk.SORT_ASCENDING)
@@ -436,7 +438,7 @@ class TaskBrowser:
 ### HELPER FUNCTIONS ########################################################
 
     def open_preferences(self,widget):
-        self.vmanager.show_preferences()
+        self.vmanager.show_preferences(self.priv)
         
     def quit(self,widget=None):
         self.vmanager.close_browser()
@@ -506,6 +508,10 @@ class TaskBrowser:
             self.priv["bg_color_enable"] = bgcol_enable
             self.builder.get_object("bgcol_enable").set_active(bgcol_enable)
 
+        if "contents_preview_enable" in self.config["browser"]:
+            self.priv["contents_preview_enable"] = \
+                    eval(self.config["browser"]["contents_preview_enable"])
+        
         if "collapsed_tasks" in self.config["browser"]:
             self.priv["collapsed_tids"] = self.config[
                 "browser"]["collapsed_tasks"]
@@ -766,6 +772,8 @@ class TaskBrowser:
                 self.priv["window_ypos"],
             'bg_color_enable':
                 self.priv["bg_color_enable"],
+            'contents_preview_enable':
+                self.priv["contents_preview_enable"],
             'collapsed_tasks':
                 self.priv["collapsed_tids"],
             'collapsed_tags':
@@ -874,7 +882,8 @@ class TaskBrowser:
         # The done/dismissed taks treeview
         self.ctask_tree = self.req.get_custom_tasks_tree()
         self.ctask_tree.apply_filter('closed')
-        ctask_tree_model = TaskTreeModel(self.req,self.ctask_tree)
+        ctask_tree_model = TaskTreeModel(self.req, self.priv, \
+                                         self.ctask_tree)
         ctask_modelsort = gtk.TreeModelSort(ctask_tree_model)
         self.ctask_tv.set_model(ctask_modelsort)
         ctask_modelsort.set_sort_column_id(\

@@ -58,10 +58,11 @@ class TaskTreeModel(gtk.GenericTreeModel):
 
     col_len = len(column_types)
 
-    def __init__(self, requester,tree=None):
+    def __init__(self, requester, config, tree=None):
         
         gtk.GenericTreeModel.__init__(self)
         self.req  = requester
+        self.config = config
         if tree:
             self.tree = tree
         else:
@@ -69,6 +70,11 @@ class TaskTreeModel(gtk.GenericTreeModel):
         self.tree.connect('task-added-inview',self.add_task)
         self.tree.connect('task-deleted-inview',self.remove_task)
         self.tree.connect('task-modified-inview',self.update_task)
+        #need to get the GTK style for the inline preview of task content
+        tempwin = gtk.Window()
+        tempwin.realize()
+        self.style = tempwin.get_style()
+        tempwin.destroy()
 
 ### TREE MODEL HELPER FUNCTIONS ###############################################
 
@@ -135,17 +141,20 @@ class TaskTreeModel(gtk.GenericTreeModel):
             tags.sort(key = lambda x: x.get_name())
             return tags
         elif column == COL_LABEL:
+            title = saxutils.escape(task.get_title())
+            color = self.style.text[gtk.STATE_INSENSITIVE].to_string()
             if task.get_status() == Task.STA_ACTIVE:
                 count = self._count_active_subtasks_rec(task)
                 if count != 0:
-                    title = saxutils.escape(task.get_title()) + " (%s)" % count
-                else:
-                    title = saxutils.escape(task.get_title())
+                    title += " (%s)" % count
+                
+                if self.config["contents_preview_enable"]:
+                	excerpt = saxutils.escape(task.get_excerpt(lines=1, \
+                		strip_tags=True, strip_subtasks=True))
+                	title += " <span size='small' color='%s'>%s</span>" \
+                		%(color, excerpt) 
             elif task.get_status() == Task.STA_DISMISSED:
-                    title = "<span color='#AAAAAA'>"\
-                        + saxutils.escape(task.get_title()) + "</span>"
-            else:
-                title = saxutils.escape(task.get_title())
+                title = "<span color='%s'>%s</span>"%(color, title)
             return title
 
     def on_get_iter(self, path):
