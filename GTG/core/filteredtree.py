@@ -166,6 +166,7 @@ class FilteredTree(gobject.GObject):
             self.__add_node(tid)
         
     def __task_modified(self,sender,tid):
+        #self.refilter()
         todis = self.__is_displayed(tid)
         curdis = self.is_displayed(tid)
         if todis:
@@ -387,7 +388,7 @@ class FilteredTree(gobject.GObject):
         """
         #return None if we are at a Virtual root
         if node == None:
-            Log.Debug("requested a parent of a non-existing node")
+            Log.debug("requested a parent of a non-existing node")
             return None
         tid = node.get_id()
         if node and tid in self.virtual_root:

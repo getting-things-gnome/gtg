@@ -27,10 +27,11 @@ easier.  See the end of this file for the Tag object implementation.
 import os
 import xml.sax.saxutils as saxutils
 
-from GTG import _
-from GTG.core      import CoreConfig
-from GTG.core.tree import Tree, TreeNode
-from GTG.tools     import cleanxml
+from GTG              import _
+from GTG.core         import CoreConfig
+from GTG.core.tree    import Tree, TreeNode
+from GTG.tools        import cleanxml
+from GTG.tools.logger import Log
 
 XMLFILE = "tags.xml"
 XMLROOT = "tagstore"
@@ -98,7 +99,7 @@ class TagStore(Tree):
             for c in tag.get_children():
                 self.req._tag_modified(c)
             #self.tags[tname] = tag
-#        print "********* tag added *******"
+        Log.debug("********* tag added %s *******" % tagname)
 #        self.print_tree()
         return self.get_node(tname)
 
