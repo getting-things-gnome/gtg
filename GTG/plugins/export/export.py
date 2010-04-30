@@ -189,17 +189,17 @@ class pluginExport:
         return True
 
     def task_to_TaskStr(self, task):
-        return self.TaskStr(task.get_title(),
-                           str(task.get_text()),
-                           [],
-                           task.get_status(),
-                           str(task.get_modified()),
-                           str(task.get_due_date()),
-                           str(task.get_start_date()),
-                           str(task.get_days_left()),
-                           str(task.get_closed_date()),
-                           map(lambda t: t.get_name(), task.get_tags()))
-
+        return self.TaskStr(title = task.get_title(),
+                            text        = str(task.get_text()),
+                            subtasks    = [],
+                            status      = task.get_status(),
+                            modified    = str(task.get_modified()),
+                            due_date    = str(task.get_due_date()),
+                            closed_date = str(task.get_closed_date()),
+                            start_date  = str(task.get_start_date()),
+                            days_left   = str(task.get_days_left()),
+                            tags        = map(lambda t: t.get_name(), task.get_tags()))
+ 
     def is_task_in_timespan (self, task, days):
         if not days:
             return True
