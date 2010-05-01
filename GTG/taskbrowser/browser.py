@@ -138,6 +138,9 @@ class TaskBrowser:
         self._init_tag_completion()
         
         self.restore_state_from_conf()
+
+        #Expand all the tasks in the taskview
+        self.task_tv.expand_all()
         self.window.show()
 
 ### INIT HELPER FUNCTIONS #####################################################
