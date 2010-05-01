@@ -38,6 +38,7 @@ def task_to_dict(task):
           "tags": task.get_tags_name(),
           "text": task.get_text(),
           "subtask": task.get_children(),
+          "parents": task.get_parents(),
           }), signature="sv")
 
 

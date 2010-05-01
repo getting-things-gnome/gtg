@@ -102,6 +102,8 @@ def show_task(tid):
         print " %-12s %s" %('tags:', task_data['tags'][0])
     for k in ['id', 'startdate', 'duedate', 'status']:
         print " %-12s %s" %(k+":", task_data[k])
+    if len(task_data['parents'])>0:
+        print " %-12s %s" %('parents:', task_data['parents'][0])
     print
     print content
 
