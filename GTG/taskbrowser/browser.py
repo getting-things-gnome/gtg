@@ -1205,34 +1205,13 @@ class TaskBrowser:
         apply_to_subtasks = self.builder.get_object("apply_to_subtasks")
         addtag_error = False
         entry_text = tag_entry.get_text()
-        entry_text = [entry_text.strip()]
-        # Set up a warning message if the user leaves the text entry empty.
-        if not entry_text[0]:
-            error_message = "Please enter a tag name."
-            addtag_error = True
- 
+        #use spaces and commas as separators
         new_tags = []
-        if "," in entry_text[0]:
-            entry_text = entry_text[0].split(",")
-        # Remove extraneous whitespace, make sure none of the tags contain
-        # spaces, and, finally, place a "@" symbol in front of the tagname.
-        for tagname in entry_text:
-            tagname = tagname.strip()
-            if not addtag_error:
-                if " " in tagname:
-                    error_message = "Tag name must not contain spaces."
-                    addtag_error = True
-                    break
-            new_tags.append("@" + tagname)
-        # If we ran into a problem earlier, let us know, and then
-        # let us try again.
-        if addtag_error:
-            error_dialog = gtk.MessageDialog(None, 0, gtk.MESSAGE_WARNING, \
-                                            gtk.BUTTONS_OK, error_message)
-            if error_dialog.run():
-                error_dialog.destroy()
-                self.on_add_new_tag(tryagain = True)
-                return
+        for text in entry_text.split(","):
+            tags = [t.strip() for t in text.split(" ")]
+            for tag in tags:
+                if tag:
+                    new_tags.append("@" + tag)
         # If the checkbox is checked, add all the subtasks to the list of
         # tasks to add.
         if apply_to_subtasks.get_active():
@@ -1242,7 +1221,6 @@ class TaskBrowser:
                     taskid = i.get_id()
                     if taskid not in self.tids_to_addtag: 
                         self.tids_to_addtag.append(taskid)        
-        
         for tid in self.tids_to_addtag:
             task = self.req.get_task(tid)
             for new_tag in new_tags:
