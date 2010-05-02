@@ -1506,11 +1506,24 @@ class TaskBrowser:
             self.tags_tv.set_cursor(path, col, 0)
 
     def hide(self):
-        """Hides the task browser"""
+        """ Hides the task browser """
         self.window.hide()
 
     def show(self):
-        """Unhides the TaskBrowser"""
+        """ Unhides the TaskBrowser """
         self.window.present()
         #redraws the GDK window, bringing it to front
         self.window.show()
+
+    def iconify(self):
+        """ Minimizes the TaskBrowser """
+        self.window.iconify()
+
+    def is_visible(self):
+        """ Returns true if window is shown or false if hidden. """
+        return self.window.get_property("visible")
+
+    def is_active(self):
+        """ Returns true if window is the currently active window """
+        return self.window.get_property("is-active")
+

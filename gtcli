@@ -123,15 +123,14 @@ def open_task_editor(tid):
 def toggle_browser_visibility(state):
     """ """
     timi = connect_to_gtg()
-    print "State: " + state
     if state == "hide":
-        print "Hiding browser"
         timi.hide_task_browser()
-    elif state == "show":
-        print "Showing browser"
-        timi.show_task_browser()
+    elif state == "minimize" or state == "iconify":
+        if not timi.is_task_browser_visible():
+            timi.show_task_browser()
+        timi.iconify_task_browser()
     else:
-        pass
+        timi.show_task_browser()
 
 def list_tasks(criteria, count_only=False):
     timi = connect_to_gtg()
@@ -256,7 +255,10 @@ if __name__ == '__main__':
             open_task_editor(tid)
 
     elif command == "browse":
-        toggle_browser_visibility(args[1])
+        state = None
+        if len(args)>1:
+            state = args[1]
+        toggle_browser_visibility(state)
 
     else:
         die("Unknown command '%s'\n" %(command))

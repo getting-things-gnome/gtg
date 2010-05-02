@@ -202,15 +202,31 @@ class DBusTaskWrapper(dbus.service.Object):
 
     @dbus.service.method(BUSNAME)
     def hide_task_browser(self):
-        """ Causes the main task browser to be minimized """
+        """
+        Causes the main task browser to become invisible.  It is still
+        running but there will be no visible indication of this.
+        """
         self.view_manager.hide_browser()
 
     @dbus.service.method(BUSNAME)
+    def iconify_task_browser(self):
+        """
+        Minimizes the task browser
+        """
+        self.view_manager.iconify_browser()
+
+    @dbus.service.method(BUSNAME)
     def show_task_browser(self):
-        """ Unminimizes the task browser and brings it to the front """
+        """
+        Shows and unminimizes the task browser and brings it to the
+        top of the z-order.
+        """
         self.view_manager.show_browser()
 
     @dbus.service.method(BUSNAME)
-    def is_task_browser_shown(self):
-        """ Unminimizes the task browser and brings it to the front """
-        self.view_manager.is_shown()
+    def is_task_browser_visible(self):
+        """
+        Returns true if task browser is visible, either minimized or
+        unminimized, with or without active focus.
+        """
+        return self.view_manager.is_browser_visible()

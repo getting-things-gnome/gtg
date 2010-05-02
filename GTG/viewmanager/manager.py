@@ -131,9 +131,15 @@ class Manager():
     def hide_browser(self,sender=None):
         self.browser.hide()
 
+    def iconify_browser(self,sender=None):
+        self.browser.iconify()
+
     def show_browser(self,sender=None):
         self.browser.show()
         
+    def is_browser_visible(self,sender=None):
+        return self.browser.is_visible()
+
 ################# Task Editor ############################################
 
 
