@@ -209,3 +209,8 @@ class DBusTaskWrapper(dbus.service.Object):
     def show_task_browser(self):
         """ Unminimizes the task browser and brings it to the front """
         self.view_manager.show_browser()
+
+    @dbus.service.method(BUSNAME)
+    def is_task_browser_shown(self):
+        """ Unminimizes the task browser and brings it to the front """
+        self.view_manager.is_shown()
