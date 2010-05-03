@@ -208,13 +208,15 @@ class TaskBrowser:
         self.menu_view_workview = self.builder.get_object("view_workview")
         self.toggle_workview    = self.builder.get_object("workview_toggle")
         self.quickadd_entry     = self.builder.get_object("quickadd_field")
-        self.closed_pane        = self.builder.get_object("closed_pane")
         self.toolbar            = self.builder.get_object("task_toolbar")
         self.quickadd_pane      = self.builder.get_object("quickadd_pane")
         self.sidebar            = self.builder.get_object("sidebar_vbox")
         self.sidebar_container  = self.builder.get_object("sidebar-scroll")
+        self.sidebar_notebook   = self.builder.get_object("sidebar_notebook")
+        self.main_notebook      = self.builder.get_object("main_notebook")
+        self.accessory_notebook = self.builder.get_object("accessory_notebook")
         
-        self.closed_pane.add(self.ctask_tv)
+        self.closed_pane        = None
 
     def _init_ui_widget(self):
         # The Active tasks treeview
@@ -721,6 +723,26 @@ class TaskBrowser:
                     self.tag_list_model.append([i.get_name()[1:]])
             self.tag_list = taglist
 
+    def _add_page(self, notebook, label, page):
+        notebook.append_page(page, label)
+        if notebook.get_n_pages() > 1:
+            notebook.set_show_tabs(True)
+        page_num = notebook.page_num(page)
+        notebook.set_tab_detachable(page, True)
+        notebook.set_tab_reorderable(page, True)
+        notebook.set_current_page(page_num)
+        notebook.show_all()
+        return page_num
+
+    def _remove_page(self, notebook, page):
+        if page:
+            page.hide()
+            notebook.remove(page)
+        if notebook.get_n_pages() == 1:
+            notebook.set_show_tabs(False)
+        elif notebook.get_n_pages() == 0:
+            notebook.hide()
+
 ### SIGNAL CALLBACKS ##########################################################
 # Typically, reaction to user input & interactions with the GUI
 #
@@ -751,7 +773,10 @@ class TaskBrowser:
         # Get configuration values
         tag_sidebar        = self.sidebar.get_property("visible")
         tag_sidebar_width  = self.builder.get_object("hpaned1").get_position()
-        closed_pane        = self.closed_pane.get_property("visible")
+        if self.closed_pane:
+            closed_pane    = self.closed_pane.get_property("visible")
+        else:
+            closed_pane    = False
         quickadd_pane      = self.quickadd_pane.get_property("visible")
         toolbar            = self.toolbar.get_property("visible")
         #task_tv_sort_id    = self.task_ts.get_sort_column_id()
@@ -883,6 +908,17 @@ class TaskBrowser:
             
     def show_closed_pane(self):
         # The done/dismissed taks treeview
+
+        if not self.closed_pane:
+            self.closed_pane = gtk.ScrolledWindow()
+            self.closed_pane.set_size_request(-1, 100)
+            self.closed_pane.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+            self.closed_pane.add(self.ctask_tv)
+
+        elif self.accessory_notebook.page_num(self.closed_pane) != -1:
+            # Already contains the closed pane
+            return
+
         self.ctask_tree = self.req.get_custom_tasks_tree()
         self.ctask_tree.apply_filter('closed')
         ctask_tree_model = TaskTreeModel(self.req, self.priv, \
@@ -891,13 +927,13 @@ class TaskBrowser:
         self.ctask_tv.set_model(ctask_modelsort)
         ctask_modelsort.set_sort_column_id(\
             tasktree.COL_CDATE, gtk.SORT_DESCENDING)
-        self.closed_pane.show()
+        self.add_page_to_accessory_notebook("Closed", self.closed_pane)
         self.builder.get_object("view_closed").set_active(True)
 
     def hide_closed_pane(self):
-        self.closed_pane.hide()
         self.ctask_tv.set_model(None)
         self.ctask_tree = None
+        self.remove_page_from_accessory_notebook(self.closed_pane)
         self.builder.get_object("view_closed").set_active(False)
 
     def on_bg_color_toggled(self, widget):
@@ -1482,6 +1518,56 @@ class TaskBrowser:
             self.tag_active = True
             path, col = self.target_cursor
             self.tags_tv.set_cursor(path, col, 0)
+
+    def add_page_to_sidebar_notebook(self, icon, page):
+        """Adds a new page tab to the left panel.  The tab will 
+        be added as the last tab.  Also causes the tabs to be
+        shown if they're not.
+        @param icon: a gtk.Image picture to display on the tab
+        @param page: gtk.Frame-based panel to be added
+        """
+        return self._add_page(self.sidebar_notebook, icon, page)
+
+    def add_page_to_main_notebook(self, title, page):
+        """Adds a new page tab to the top right main panel.  The tab
+        will be added as the last tab.  Also causes the tabs to be
+        shown.
+        @param title: Short text to use for the tab label
+        @param page: gtk.Frame-based panel to be added
+        """
+        return self._add_page(self.main_notebook, gtk.Label(title), page)
+
+    def add_page_to_accessory_notebook(self, title, page):
+        """Adds a new page tab to the lower right accessory panel.  The
+        tab will be added as the last tab.  Also causes the tabs to be
+        shown.
+        @param title: Short text to use for the tab label
+        @param page: gtk.Frame-based panel to be added
+        """
+        return self._add_page(self.accessory_notebook, gtk.Label(title), page)
+
+    def remove_page_from_sidebar_notebook(self, page):
+        """Removes a new page tab from the left panel.  If this leaves
+        only one tab in the notebook, the tab selector will be hidden.
+        @param page: gtk.Frame-based panel to be removed
+        """
+        return self._remove_page(self.sidebar_notebook, page)
+
+    def remove_page_from_main_notebook(self, page):
+        """Removes a new page tab from the top right main panel.  If
+        this leaves only one tab in the notebook, the tab selector will
+        be hidden.
+        @param page: gtk.Frame-based panel to be removed
+        """
+        return self._remove_page(self.main_notebook, page)
+
+    def remove_page_from_accessory_notebook(self, page):
+        """Removes a new page tab from the lower right accessory panel.
+        If this leaves only one tab in the notebook, the tab selector
+        will be hidden.
+        @param page: gtk.Frame-based panel to be removed
+        """
+        return self._remove_page(self.accessory_notebook, page)
 
     def hide(self):
         """ Hides the task browser """
