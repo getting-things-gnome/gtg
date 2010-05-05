@@ -13,8 +13,9 @@
 #
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
+
 import datetime
-import time
+from dateutil.tz import tzutc, tzlocal
 
 from GTG.tools.logger import Log
 from GTG.plugins.rtm_sync.genericTask import GenericTask
@@ -181,8 +182,7 @@ class RtmTask(GenericTask):
 
     def _set_due_date(self, due):
         if due != None:
-            due_string = self.__time_date_to_rtm(due + \
-                    datetime.timedelta(seconds = time.timezone))
+            due_string = self.__time_date_to_rtm(due)
             self.rtm.tasks.setDueDate(timeline=self.timeline, \
                                       list_id = self.list_id,\
                                       taskseries_id = self.taskseries_id, \
@@ -217,24 +217,40 @@ class RtmTask(GenericTask):
                               taskseries_id = self.taskseries_id, \
                               task_id = self.id)
 
+    #RTM speaks utc, and accepts utc if the "parse" option is set.
+    def __tz_utc_to_local(self, dt):
+        dt = dt.replace(tzinfo = tzutc())
+        dt = dt.astimezone(tzlocal())
+        return dt.replace(tzinfo = None)
+
+    def __tz_local_to_utc(self, dt):
+        dt = dt.replace(tzinfo = tzlocal())
+        dt = dt.astimezone(tzutc())
+        return dt.replace(tzinfo = None)
 
     def __time_rtm_to_datetime(self, string):
         string = string.split('.')[0].split('Z')[0]
-        return datetime.datetime.strptime(string.split(".")[0], \
+        dt = datetime.datetime.strptime(string.split(".")[0], \
                                           "%Y-%m-%dT%H:%M:%S")
+        return self.__tz_utc_to_local(dt)
+        
 
     def __time_rtm_to_date(self, string):
         string = string.split('.')[0].split('Z')[0]
-        return datetime.datetime.strptime(string.split(".")[0], "%Y-%m-%d")
+        dt = datetime.datetime.strptime(string.split(".")[0], "%Y-%m-%d")
+        return self.__tz_utc_to_local(dt)
+
 
     def __time_datetime_to_rtm(self, timeobject):
         if timeobject == None:
             return ""
+        timeobject = self.__tz_local_to_utc(timeobject)
         return timeobject.strftime("%Y-%m-%dT%H:%M:%S")
 
     def __time_date_to_rtm(self, timeobject):
         if timeobject == None:
             return ""
+        #WARNING: no timezone? seems to break the symmetry.
         return timeobject.strftime("%Y-%m-%d")
 
     def __log(self, message):
