@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-03-27 15:20+0100\n"
-"PO-Revision-Date: 2010-04-26 06:29+0000\n"
-"Last-Translator: Emilien Klein <emilien+ubuntu@klein.st>\n"
+"PO-Revision-Date: 2010-05-05 12:50+0000\n"
+"Last-Translator: Nicolas Delvaux <Unknown>\n"
 "Language-Team: French <fr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Launchpad-Export-Date: 2010-04-27 03:43+0000\n"
+"X-Launchpad-Export-Date: 2010-05-06 04:05+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: GTG/tools/dates.py:51
@@ -516,8 +516,8 @@ msgstr "aucune tâche active"
 #, python-format
 msgid "%(tasks)d active task"
 msgid_plural "%(tasks)d active tasks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(tasks)d tâche active"
+msgstr[1] "%(tasks)d tâches actives"
 
 #: GTG/taskbrowser/browser.py:955
 msgid "tags"
@@ -553,7 +553,7 @@ msgstr "Date de cloture"
 
 #: GTG/gtg.py:86
 msgid "gtg is already running!"
-msgstr "Gtg est déjà en cours d'exécution"
+msgstr "GTG est déjà en cours d'exécution !"
 
 #: GTG/gtg.py:110
 msgid ""
@@ -848,15 +848,15 @@ msgstr "<b>Général</b>"
 
 #: GTG/viewmanager/preferences.glade.h:3
 msgid "<b>Task Browser</b>"
-msgstr ""
+msgstr "<b>Gestionnaire de tâches</b>"
 
 #: GTG/viewmanager/preferences.glade.h:4
 msgid "<b>Task Editor</b>"
-msgstr ""
+msgstr "<b>Éditeur de tâche</b>"
 
 #: GTG/viewmanager/preferences.glade.h:5
 msgid "Active _Plugins:"
-msgstr ""
+msgstr "_Greffons actifs :"
 
 #: GTG/viewmanager/preferences.glade.h:6
 msgid "Behaviour"
@@ -896,7 +896,7 @@ msgstr ""
 
 #: GTG/viewmanager/preferences.glade.h:15
 msgid "_About Plugin"
-msgstr ""
+msgstr "À _propos du greffon"
 
 #: GTG/viewmanager/deletion.glade.h:1
 msgid "Confirm task deletion"
@@ -944,7 +944,7 @@ msgstr "_Voir Fenêtre Principale"
 
 #: GTG/plugins/notification_area/notification_area.py:217
 msgid "Add _New Task"
-msgstr "Ajouter _Nouvelle Tâche"
+msgstr "Ajouter une _nouvelle tâche"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:1
 msgid "<b>Location Determination Method</b>"
@@ -1012,11 +1012,11 @@ msgstr "Commencer dans Hamster"
 
 #: GTG/plugins/hamster/hamster.py:158
 msgid "Start a new activity in Hamster Time"
-msgstr ""
+msgstr "Commencer une nouvelle activité dans Hamster"
 
 #: GTG/plugins/hamster/hamster.py:174
 msgid "Start a new activity in Hamster Time "
-msgstr ""
+msgstr "Commencer une nouvelle activité dans Hamster "
 
 #: GTG/plugins/rtm_sync/pyrtm/rtm.py:59
 msgid "Invalid state"
@@ -1040,7 +1040,7 @@ msgstr "Impossible de se connecter à Remember The Milk"
 
 #: GTG/plugins/rtm_sync/rtm_sync.py:187
 msgid "Authentication failed."
-msgstr ""
+msgstr "L'authentification a échoué."
 
 #: GTG/plugins/rtm_sync/rtm_sync.py:187
 msgid "Please retry."
@@ -1080,7 +1080,7 @@ msgstr "Suppresion des tâches de RTM..."
 
 #: GTG/plugins/rtm_sync/syncEngine.py:150
 msgid "Deleting tasks from gtg.."
-msgstr "Effacement des tâches de gtg..."
+msgstr "Effacement des tâches de GTG..."
 
 #: GTG/plugins/rtm_sync/syncEngine.py:160
 msgid "Updating changed tasks.."
