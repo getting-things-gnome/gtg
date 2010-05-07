@@ -7,5 +7,5 @@ Legal note: This product is not endorsed or certified by
 Remember The Milk."""
 Authors=Luca Invernizzi <invernizzi.l@gmail.com>
 Version=0.3
-Dependencies=xml,subprocess,threading,gobject,gtk,time,pickle,datetime,logging,hashlib,urllib,warnings,simplejson
+Dependencies=xml,subprocess,threading,gobject,gtk,time,pickle,datetime,logging,hashlib,urllib,warnings,simplejson,dateutil
 Enabled=False
