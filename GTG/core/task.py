@@ -239,6 +239,8 @@ class Task(TreeNode):
 
     def get_days_left(self):
         due_date = self.get_due_date()
+        if due_date == no_date:
+            return None
         return due_date.days_left()
     
     def get_days_late(self):
