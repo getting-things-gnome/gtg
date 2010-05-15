@@ -130,6 +130,14 @@ def list_tasks(criteria, count_only=False):
         started_only = False
         is_root = False
         tasks = timi.get_tasks_filtered(tags, status, started_only, is_root)
+    elif criteria[0] == '@':
+        print "Showing criteria ", criteria
+        # TODO: Split criteria by spaces
+        tags.append(criteria)
+        status = ['Active']
+        started_only = False
+        is_root = False
+        tasks = timi.get_tasks_filtered(tags, status, started_only, is_root)
     else:
         status = ['Active']
         started_only = False
