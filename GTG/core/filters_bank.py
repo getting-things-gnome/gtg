@@ -25,37 +25,46 @@ from GTG.core.task import Task
 
 
 class Filter:
-    def __init__(self,func,req):
+    def __init__(self,func,req,negate=False):
         self.func = func
         self.dic = None
         self.req = req
-        
+        self.negate = negate
+
     def set_parameters(self,dic):
         self.dic = dic
     
     def is_displayed(self,tid):
         task = self.req.get_task(tid)
+        value = True
         if not task:
-            return False
+            value = False
         elif self.dic:
-            return self.func(task,parameters=self.dic)
+            value = self.func(task,parameters=self.dic)
         else:
-            return self.func(task)
-            
+            value = self.func(task)
+        if self.negate:
+            value = not value
+        return value
+
 class SimpleTagFilter:
-    def __init__(self,tagname,req):
+    def __init__(self,tagname,req,negate=False):
         self.req = req
         self.tname = tagname
+        self.negate = negate
         
     def is_displayed(self,tid):
         task = self.req.get_task(tid)
+        value = True
         if not task:
-            return False
+            value = False
         else:
             tags = [self.tname]
             tags += self.req.get_tag(self.tname).get_children()
-            return task.has_tags(tags)
-    
+            value = task.has_tags(tags)
+        if self.negate:
+            value = not value
+        return value
 
 class FiltersBank:
     """
@@ -132,10 +141,14 @@ class FiltersBank:
         Return False if the filter_name was already in the bank
         """
         if filter_name not in self.list_filters():
+            negate = False
+            if filter_name.startswith('!'):
+                negate = True
+                filter_name = filter_name[1:]
             if filter_name.startswith('@'):
-                filter_obj = SimpleTagFilter(filter_name,self.req)
+                filter_obj = SimpleTagFilter(filter_name,self.req,negate=negate)
             else:
-                filter_obj = Filter(filter_func,self.req)
+                filter_obj = Filter(filter_func,self.req,negate=negate)
             self.custom_filters[filter_name] = filter_obj
             return True
         else:
