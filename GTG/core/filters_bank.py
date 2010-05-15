@@ -88,6 +88,18 @@ class FiltersBank:
         #notag
         filt_obj = Filter(self.notag,self.req)
         self.available_filters['notag'] = filt_obj
+        #workdue
+        filt_obj = Filter(self.workdue,self.req)
+        self.available_filters['workdue'] = filt_obj
+        #workstarted
+        filt_obj = Filter(self.workstarted,self.req)
+        self.available_filters['workstarted'] = filt_obj
+        #worktostart
+        filt_obj = Filter(self.worktostart,self.req)
+        self.available_filters['worktostart'] = filt_obj
+        #worklate
+        filt_obj = Filter(self.worklate,self.req)
+        self.available_filters['worklate'] = filt_obj
 
     ######### hardcoded filters #############
     def notag(self,task):
@@ -106,6 +118,32 @@ class FiltersBank:
         wv = self.active(task) and\
              task.is_started() and\
              self.is_workable(task)
+        return wv
+        
+    def workdue(self,task):
+        ''' Filter for tasks due within the next day '''
+        wv = self.workview(task) and \
+             task.get_due_date() != no_date and \
+             task.get_days_left() < 2
+        return wv
+
+    def worklate(self,task):
+        ''' Filter for tasks due within the next day '''
+        wv = self.workview(task) and \
+             task.get_due_date() != no_date and \
+             task.get_days_late() > 0
+        return wv
+
+    def workstarted(self,task):
+        ''' Filter for workable tasks with a start date specified '''
+        wv = self.workview(task) and \
+             task.start_date
+        return wv
+        
+    def worktostart(self,task):
+        ''' Filter for workable tasks without a start date specified '''
+        wv = self.workview(task) and \
+             not task.start_date
         return wv
         
     def active(self,task):
