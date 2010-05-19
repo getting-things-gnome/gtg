@@ -125,7 +125,7 @@ class Task(TreeNode):
         old_status = self.status
         self.can_be_deleted = False
         if status:
-            self.status = status
+            #we first modify the status of the children
             #If Done, we set the done date
             if status in [self.STA_DONE, self.STA_DISMISSED]:
                 for c in self.get_subtasks():
@@ -154,7 +154,8 @@ class Task(TreeNode):
                             par.set_status(self.STA_ACTIVE)
                 #We dont mark the children as Active because
                 #They might be already completed after all
-
+            #then the task itself
+            self.status = status
         self.sync()
 
     def get_status(self):
@@ -489,10 +490,12 @@ class Task(TreeNode):
     #This function send the modified signals for the tasks, 
     #parents and childrens       
     def call_modified(self):
-        self.req._task_modified(self.tid)
-        #we also modify parents and children
+        #we first modify children
         for s in self.get_children():
             self.req._task_modified(s)
+        #then the task
+        self.req._task_modified(self.tid)
+        #then parents
         for p in self.get_parents():
             self.req._task_modified(p)
 

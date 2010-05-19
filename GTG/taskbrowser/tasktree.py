@@ -224,9 +224,8 @@ class TaskTreeModel(gtk.GenericTreeModel):
                     self.row_has_child_toggled(par_path, par_iter)
 
     def remove_task(self, sender, tid):
-        #a task has been removed by the requester. Therefore,
-        # the widgets that represent it in the various views should
-        # be removed
+        #a task has been removed from the view. Therefore,
+        # the widgets that represent it should be removed
         Log.debug("tasktree remove_task %s" %tid)
         node = self.tree.get_node(tid)
         removed = False

@@ -257,9 +257,14 @@ class FilteredTree(gobject.GObject):
             if par_path:
                 toreturn = par_path + (pos,)
             else:
-                print "*** Node %s not in vr and no path for parent" %(node.get_id())
-                print "*** please report a bug against FilteredTree"
+                #if we are here, it means that we have a ghost task that 
+                #is not really displayed but still here, in the tree
+                #it happens sometimes when we remove a parent with children
                 toreturn = None
+#            else:
+#                print "*** Node %s not in vr and no path for parent" %(node.get_id())
+#                print "*** please report a bug against FilteredTree"
+#                toreturn = None
         #print "get_path_for_node %s is %s" %(node.get_id(),str(toreturn))
 #        self.path_for_node_cache[node] = toreturn
         return toreturn
@@ -590,9 +595,9 @@ class FilteredTree(gobject.GObject):
     def __remove_node(self,tid):
         self.remove_count += 1
         self.__nodes_count -= 1
-        self.emit('task-deleted-inview',tid)
-        self.__root_update(tid,False)
         if tid in self.displayed_nodes:
+            self.emit('task-deleted-inview',tid)
+            self.__root_update(tid,False)
             self.displayed_nodes.remove(tid)
         self.__reset_cache()
         #Test if this is necessary
