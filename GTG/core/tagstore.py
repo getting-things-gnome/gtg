@@ -80,10 +80,10 @@ class TagStore(Tree):
                 at_val = t.getAttribute(at_name)
                 tag.set_attribute(at_name, at_val)
                 i += 1
-#            parent = tag.get_attribute('parent')
-#            if parent:
-#                pnode=self.new_tag(parent)
-#                tag.reparent(pnode, update_attr=False)
+            parent = tag.get_attribute('parent')
+            if parent:
+                pnode=self.new_tag(parent)
+                tag.set_parent(pnode)
 
     def new_tag(self, tagname):
         """Create a new tag and return it or return the existing one
@@ -180,13 +180,14 @@ class TagStore(Tree):
         return l
 
     def save(self):
+        print "saving"
         doc, xmlroot = cleanxml.emptydoc(XMLROOT)
         tags = self.get_all_tags()
         already_saved = [] #We avoid saving the same tag twice
         #we don't save tags with no attributes
         #It saves space and allow the saved list growth to be controlled
         for t in tags:
-            attr = t.get_all_attributes(butname=True)
+            attr = t.get_all_attributes(butname = True, withparent = True)
             if "special" in attr:
                 continue
             if len(attr) > 0:
@@ -201,6 +202,7 @@ class TagStore(Tree):
                             t_xml.setAttribute(a, value)
                     xmlroot.appendChild(t_xml)
                     cleanxml.savexml(self.filename, doc)
+                    print "SAVED"
 
     def get_alltag_tag(self):
         ''' Returns the "All Tasks" tag'''
@@ -298,15 +300,20 @@ class Tag(TreeNode):
         if self._save:
             self._save()            
 
-    def get_all_attributes(self, butname=False):
+    def get_all_attributes(self, butname=False, withparent = False):
         """Return a list of all attribute names.
 
         @param butname: If True, exclude C{name} from the list of attribute
             names.
+        #param withparent: If True, the "parent" attribute is attached
         """
         attributes = self._attributes.keys()
         if butname:
             attributes.remove('name')
+        if withparent:
+            parent_id = self.get_attribute("parent")
+            if parent_id:
+                attributes.append("parent")
         return attributes
 
     ### TASK relation ####      
