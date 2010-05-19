@@ -519,7 +519,9 @@ class Task(TreeNode):
         enew = saxutils.escape(saxutils.unescape(new))
         self.content = self.content.replace(eold, enew)
         self.remove_tag(old)
+        self.req._tag_modified(old)
         self.tag_added(new)
+        self.req._tag_modified(new)
 
     def tag_added(self, tagname):
         """
@@ -537,6 +539,7 @@ class Task(TreeNode):
             for child in self.get_subtasks():
                 if child.can_be_deleted:
                     child.add_tag(t)
+            self.req._tag_modified(t)
             return True
     
     def add_tag(self, tagname):
@@ -567,6 +570,7 @@ class Task(TreeNode):
     def remove_tag(self, tagname):
         t = self.req.get_tag(tagname)
         t.remove_task(self.get_id())
+        self.req._tag_modified(tagname)
         if tagname in self.tags:
             self.tags.remove(tagname)
             for child in self.get_subtasks():
