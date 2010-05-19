@@ -63,27 +63,40 @@ def readTextNode(node,title) :
 #This function open an XML file if it exists and return the XML object
 #If the file doesn't exist, it is created with an empty XML tree    
 def openxmlfile(zefile,root ):
-    try :
-        if os.path.exists(zefile) :
-            #We should be more defensive here
-            doc = xml.dom.minidom.parse(zefile)
-            cleanDoc(doc,tab,enter)
-            #We should be more defensive here
-            xmlproject = doc.getElementsByTagName(root)[0]
-        #the file didn't exist, create it now
-        else :
+    tmpfile = zefile+'__'
+    
+    try:
+        if os.path.exists(zefile):
+            f = open(zefile, "r")
+        elif os.path.exists(tmpfile):
+            print "Something happened last time we tried to write file. Temp file found, using it as normal."
+            os.rename(tmpfile, zefile)
+            f = open(zefile, "r")
+        else:
+            # Creating empty file
             doc,xmlproject = emptydoc(root)
-            #then we create the file
-            f = open(zefile, mode='a+')
-            f.write(doc.toxml().encode("utf-8"))
-            f.close()
+            newfile = savexml(zefile, doc) # use our function to save file
+            if not newfile:
+                sys.exit(1)
+            return openxmlfile(zefile, root) # recursive call
+
+        doc = xml.dom.minidom.parse(f)
+        cleanDoc(doc,tab,enter)
+        xmlproject = doc.getElementsByTagName(root)[0]
+        f.close()
         return doc,xmlproject
     except IOError, msg:
         print msg
         sys.exit(1)
-
+        
     except xml.parsers.expat.ExpatError, msg:
+        f.close()
         print "Error parsing XML file %s: %s" %(zefile, msg)
+        if os.path.exists(tmpfile):
+            print "Something happened last time we tried to write file. Temp file found, using it as normal."
+            os.rename(tmpfile, zefile)
+            # Ok, try one more time now
+            return openxmlfile(zefile, root)
         sys.exit(1)
 
 
@@ -95,26 +108,44 @@ def emptydoc(root) :
     return doc, rootproject
     
 #write a XML doc to a file
-def savexml(zefile,doc,backup=False) :
-    f = open(zefile, mode='w+')
-    pretty = doc.toprettyxml(tab,enter)
-    if f and pretty:
-        f.write(pretty.encode("utf-8"))
-        f.close()
-        if backup :
-            #We will now backup the file
-            backup_nbr = BACKUP_NBR
-            #We keep BACKUP_NBR versions of the file
-            #The 0 is the youngest one
-            while backup_nbr > 0 :
-                older = "%s.bak.%s" %(zefile,backup_nbr)
-                backup_nbr -= 1
-                newer = "%s.bak.%s" %(zefile,backup_nbr)
-                if os.path.exists(newer) :
-                    shutil.move(newer,older)
-            #The bak.0 is always a fresh copy of the closed file
-            #So that it's not touched in case of bad opening next time
-            current = "%s.bak.0" %(zefile)
-            shutil.copy(zefile,current)
-    else:
-        print "no file %s or no pretty xml"%zefile
+def savexml(zefile,doc,backup=False):
+    tmpfile = zefile+'__'
+    try:
+        if os.path.exists(zefile):
+            os.rename(zefile, tmpfile)
+        f = open(zefile, mode='w+')
+        pretty = doc.toprettyxml(tab, enter).encode("utf-8")
+        if f and pretty:
+            bwritten = os.write(f.fileno(), pretty)
+            if bwritten != len(pretty):
+                print "error writing file %s" % zefile
+                f.close()
+                return False
+            f.close()
+            
+            if os.path.exists(tmpfile):
+                os.unlink(tmpfile)
+                
+            if backup :
+                #We will now backup the file
+                backup_nbr = BACKUP_NBR
+                #We keep BACKUP_NBR versions of the file
+                #The 0 is the youngest one
+                while backup_nbr > 0 :
+                    older = "%s.bak.%s" %(zefile,backup_nbr)
+                    backup_nbr -= 1
+                    newer = "%s.bak.%s" %(zefile,backup_nbr)
+                    if os.path.exists(newer) :
+                        shutil.move(newer,older)
+                #The bak.0 is always a fresh copy of the closed file
+                #So that it's not touched in case of bad opening next time
+                current = "%s.bak.0" %(zefile)
+                shutil.copy(zefile,current)
+            
+            return True
+        else:
+            print "no file %s or no pretty xml"%zefile
+            return False
+    except IOError, msg:
+        print msg
+        return False
