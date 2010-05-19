@@ -66,8 +66,8 @@ class TagTreeModel(gtk.GenericTreeModel):
         
         self.req.connect('tag-added',self.add_tag)
         self.req.connect('tag-modified',self.update_tag)
-        self.req.connect('task-added',self.update_tag_task_added_or_removed)
-        self.req.connect('task-deleted',self.update_tag_task_added_or_removed)
+        self.req.connect('task-added',self.update_tag_task_added)
+        self.req.connect('task-deleted',self.update_tag_task_deleted)
 
         self.displayed = {}
         for n in self.tree.get_all_nodes():
@@ -228,15 +228,32 @@ class TagTreeModel(gtk.GenericTreeModel):
                 self.row_has_child_toggled(tag_path, tag_iter)
 
 
-    def update_tag_task_added_or_removed(self, sender, task_id):
+    def update_tag_task_added(self, sender, task_id):
         '''
-        This method handles the adding/removing of tasks, updating
+        This method handles the adding of tasks, updating
         the "All task" entry in the tag pane and the "No tags"
         '''
         self._update_tag_from_name(self.req.get_alltag_tag().get_name())
-        #the added burden of finding out whether the task has tags or not
-        # is probably not worth it
         self._update_tag_from_name(self.req.get_notag_tag().get_name())
+        task = self.req.get_task(task_id)
+        for tag in task.get_tags():
+            self.update_tag(sender, tag.get_name())
+
+    def update_tag_task_deleted(self, sender, task_id):
+        '''
+        This method handles the deleting of tasks, updating
+        the "All task" entry in the tag pane and the "No tags"
+        '''
+        task = self.req.get_task(task_id)
+        for tag in task.get_tags():
+            tasks_count = tag.get_tasks_nbr(workview=self.workview)
+            if tasks_count <= 1: 
+                tag_name = tag.get_name()
+                self.row_deleted(self.displayed[tag_name])
+                self.displayed.pop(tag_name)
+        self._update_tag_from_name(self.req.get_alltag_tag().get_name())
+        self._update_tag_from_name(self.req.get_notag_tag().get_name())
+
 
     def _update_tag_from_name(self, name):
         ''' Helper method to update a row of the tags pane given the name
@@ -250,10 +267,12 @@ class TagTreeModel(gtk.GenericTreeModel):
         #      tag, is faster  (Invernizzi)
         Log.debug("update tag %s" % (tname))
         if self.displayed.get(tname):
+            #update the "Tasks with no tag" tag
             self._update_tag_from_name(self.req.get_notag_tag().get_name())
+            tag = self.tree.get_node(tname)
+            #remove the tag
             self.row_deleted(self.displayed[tname])
             self.displayed.pop(tname)
-            tag = self.tree.get_node(tname)
             tag_path  = self.tree.get_path_for_node(tag)
             tag_iter  = self.get_iter(tag_path)
             self.row_inserted(tag_path, tag_iter)
