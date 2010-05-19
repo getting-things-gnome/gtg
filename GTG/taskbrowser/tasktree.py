@@ -241,10 +241,23 @@ class TaskTreeModel(gtk.GenericTreeModel):
         """Moves the task identified by child_tid under
            parent_tid, removing all the precedent parents.
            Child becomes a root task if parent_tid is None"""
+        def genealogic_search(tid):
+            if tid not in genealogy:
+                genealogy.append(tid)
+                task = self.req.get_task(tid)
+                for par in task.get_parents():
+                    genealogic_search(par)
         child_task = self.req.get_task(child_tid)
+        parent_task = self.req.get_task(parent_tid)
         current_parents = child_task.get_parents()
+        parents_parents = parent_task.get_parents()
+        genealogy = []
+        for p in parents_parents:
+            genealogic_search(p)
+
         #Avoid the typical time-traveller problem being-the-father-of-yourself
-        if parent_tid in current_parents or parent_tid == child_tid:
+        #or the grand-father. We need some genealogic research !
+        if child_tid in genealogy or parent_tid == child_tid:
             return
         #if we move a task, this task should be saved, even if new
         child_task.set_to_keep()
