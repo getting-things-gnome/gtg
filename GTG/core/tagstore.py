@@ -46,7 +46,7 @@ class TagStore(Tree):
         self.req = requester
         
         ### building the initial tags
-        # Build the "all tags tag"
+        # Build the "all tasks tag"
         self.alltag_tag = self.new_tag("gtg-tags-all")
         self.alltag_tag.set_attribute("special","all")
         self.alltag_tag.set_attribute("label","<span weight='bold'>%s</span>"\
@@ -201,6 +201,14 @@ class TagStore(Tree):
                             t_xml.setAttribute(a, value)
                     xmlroot.appendChild(t_xml)
                     cleanxml.savexml(self.filename, doc)
+
+    def get_alltag_tag(self):
+        ''' Returns the "All Tasks" tag'''
+        return self.alltag_tag
+
+    def get_notag_tag(self):
+        ''' Returns the "No tags" tag'''
+        return self.notag_tag
 
 ### Tag Objects ##############################################################
 #

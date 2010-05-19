@@ -66,6 +66,8 @@ class TagTreeModel(gtk.GenericTreeModel):
         
         self.req.connect('tag-added',self.add_tag)
         self.req.connect('tag-modified',self.update_tag)
+        self.req.connect('task-added',self.update_tag_task_added_or_removed)
+        self.req.connect('task-deleted',self.update_tag_task_added_or_removed)
 
         self.displayed = {}
         for n in self.tree.get_all_nodes():
@@ -215,6 +217,8 @@ class TagTreeModel(gtk.GenericTreeModel):
         tag_path  = self.tree.get_path_for_node(tag)
         tag_iter  = self.get_iter(tag_path)
         #print "path is %s " %tag_path
+        #update the number of tasks without tags
+        self._update_tag_from_name(self.req.get_notag_tag().get_name())
         if tag_path != None:
 #            print "### tag %s added to path %s" %(tname,tag_path)
             if not self.displayed.get(tname):
@@ -223,9 +227,30 @@ class TagTreeModel(gtk.GenericTreeModel):
             if tag.has_child():
                 self.row_has_child_toggled(tag_path, tag_iter)
 
+
+    def update_tag_task_added_or_removed(self, sender, task_id):
+        '''
+        This method handles the adding/removing of tasks, updating
+        the "All task" entry in the tag pane and the "No tags"
+        '''
+        self._update_tag_from_name(self.req.get_alltag_tag().get_name())
+        #the added burden of finding out whether the task has tags or not
+        # is probably not worth it
+        self._update_tag_from_name(self.req.get_notag_tag().get_name())
+
+    def _update_tag_from_name(self, name):
+        ''' Helper method to update a row of the tags pane given the name
+        of the  tag '''
+        tag_path = self.displayed[name]
+        tag_iter = self.get_iter(tag_path)
+        self.row_changed(tag_path, tag_iter)
+
     def update_tag(self, sender, tname):
+        #NOTE: maybe issuing row_changed, instead of removing and adding the
+        #      tag, is faster  (Invernizzi)
         Log.debug("update tag %s" % (tname))
         if self.displayed.get(tname):
+            self._update_tag_from_name(self.req.get_notag_tag().get_name())
             self.row_deleted(self.displayed[tname])
             self.displayed.pop(tname)
             tag = self.tree.get_node(tname)
