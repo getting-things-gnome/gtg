@@ -21,6 +21,8 @@ import os, xml.dom.minidom
 import shutil
 import sys
 
+from GTG.tools.logger import Log
+
 #This is for the awful pretty xml things
 tab = "\t"
 enter = "\n"
@@ -69,7 +71,7 @@ def openxmlfile(zefile,root ):
         if os.path.exists(zefile):
             f = open(zefile, "r")
         elif os.path.exists(tmpfile):
-            print "Something happened last time we tried to write file. Temp file found, using it as normal."
+            Log.debug("Something happened to the tags file. Using backup")
             os.rename(tmpfile, zefile)
             f = open(zefile, "r")
         else:
@@ -91,9 +93,9 @@ def openxmlfile(zefile,root ):
         
     except xml.parsers.expat.ExpatError, msg:
         f.close()
-        print "Error parsing XML file %s: %s" %(zefile, msg)
+        Log.debug("Error parsing XML file %s: %s" %(zefile, msg))
         if os.path.exists(tmpfile):
-            print "Something happened last time we tried to write file. Temp file found, using it as normal."
+            Log.debug("Something happened to the tags file. Using backup")
             os.rename(tmpfile, zefile)
             # Ok, try one more time now
             return openxmlfile(zefile, root)
