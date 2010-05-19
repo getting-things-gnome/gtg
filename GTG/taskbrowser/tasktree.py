@@ -477,6 +477,7 @@ class ActiveTaskTreeView(TaskTreeView):
         for iter in iters:
             dragged_iter = model.get_iter_from_string(iter)
             dragged_tid = model.get_value(dragged_iter, COL_TID)
+            #print "we will move %s to %s" %(dragged_tid,destination_tid)
             tasktree_model.move_task(destination_tid, dragged_tid)
         self.emit_stop_by_name('drag_data_received')
 
