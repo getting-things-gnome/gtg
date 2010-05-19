@@ -30,3 +30,4 @@ po/**/
 MANIFEST
 dist
 build
+**.patch

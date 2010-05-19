@@ -257,11 +257,15 @@ class TagTreeModel(gtk.GenericTreeModel):
 
 
     def _update_tag_from_name(self, name):
-        ''' Helper method to update a row of the tags pane given the name
+        ''' Helper method to update a row, given the name of the tag '''
+        self.row_changed(*self._path_iter_from_tag_name(name))
+
+    def _path_iter_from_tag_name(self, name):
+        ''' Helper method to get path and iter  given the name
         of the  tag '''
         tag_path = self.displayed[name]
         tag_iter = self.get_iter(tag_path)
-        self.row_changed(tag_path, tag_iter)
+        return tag_path, tag_iter
 
     def update_tag(self, sender, tname):
         #NOTE: maybe issuing row_changed, instead of removing and adding the
@@ -303,17 +307,29 @@ class TagTreeModel(gtk.GenericTreeModel):
         # prevent illegal moves
         c = new_par_tag
         while c is not self.tree.root:
+            if not c:
+                break
             if c is child_tag:
                 return
-            c = c.get_parent()
+            c_id = c.get_parent()
+            c = self.tree.get_node(c_id)
 
         if new_par_tag is not self.tree.root:
             if new_par_tag.get_name()[0]!='@':
                 return
         if child_tag.get_name()[0]!='@':
             return
+        child_tag.set_parent(new_par_tag.get_id())
 
-        child_tag.reparent(new_par_tag)
+        #refresh the {old, new} parents
+        if new_par_tag:
+            self._update_tag_from_name(new_par_tag.get_name())
+        if old_par_tag:
+            tasks_count = old_par_tag.get_tasks_nbr(workview=self.workview)
+            if tasks_count > 0:
+                self._update_tag_from_name(old_par_tag.get_name())
+            else:
+                self.row_deleted(self.tree.get_path_for_node(old_par_tag))
 
         # Warn tree about deleted row
         self.row_deleted(child_path)

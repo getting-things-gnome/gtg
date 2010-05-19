@@ -17,7 +17,12 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
+from GTG.tools.logger import Log
+
+
+
 class Tree():
+
 
     def __init__(self, root=None):
         self.root_id = 'root'
@@ -288,11 +293,15 @@ class TreeNode():
     
     #set_parent means that we remove all other parents
     def set_parent(self,par):
+        is_already_parent_flag = False
         if par:
             for i in self.parents:
                 if i != par:
-                    self.remove_parent(i)
-            self.add_parent(par)
+                    assert(self.remove_parent(i) == True)
+                else:
+                    is_already_parent_flag = True
+            if not is_already_parent_flag:
+                self.add_parent(par)
             
     def remove_parent(self,id):
         if id in self.parents:
