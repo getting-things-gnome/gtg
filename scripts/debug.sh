@@ -2,16 +2,18 @@
 
 args=""
 set="default"
+norun=0
 
 # Create execution-time data directory if needed
 mkdir -p tmp
 
 # Interpret arguments
-while getopts ds: o
+while getopts dns: o
 do  case "$o" in
     d)   args="-d";;
+    n)   norun=1;;
     s)   set="$OPTARG";;
-    [?]) echo >&2 "Usage: $0 [-s dataset] [-d]"
+    [?]) echo >&2 "Usage: $0 [-s dataset] [-d] [-n]"
          exit 1;;
     esac
 done
@@ -35,4 +37,7 @@ else
     export XDG_CONFIG_HOME="./tmp/default/xdg/config"
 fi
 
-./gtg $args
+if [ $norun -eq 0 ]; then
+    ./gtg $args
+fi
+
