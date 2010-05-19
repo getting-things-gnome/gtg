@@ -180,7 +180,6 @@ class TagStore(Tree):
         return l
 
     def save(self):
-        print "saving"
         doc, xmlroot = cleanxml.emptydoc(XMLROOT)
         tags = self.get_all_tags()
         already_saved = [] #We avoid saving the same tag twice
@@ -202,7 +201,6 @@ class TagStore(Tree):
                             t_xml.setAttribute(a, value)
                     xmlroot.appendChild(t_xml)
                     cleanxml.savexml(self.filename, doc)
-                    print "SAVED"
 
     def get_alltag_tag(self):
         ''' Returns the "All Tasks" tag'''
