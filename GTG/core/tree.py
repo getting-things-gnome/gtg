@@ -132,7 +132,7 @@ class Tree():
         c = self.get_node(child_id)
         if p and c :
             if p.has_child(child_id):
-                p.remove_child(child_id)
+                ret = p.remove_child(child_id)
                 toreturn = True
             if c.has_parent(parent_id):
                 c.remove_parent(parent_id)
@@ -297,7 +297,10 @@ class TreeNode():
     def remove_parent(self,id):
         if id in self.parents:
             self.parents.remove(id)
-            self.tree.break_relationship(id,self.get_id())
+            ret = self.tree.break_relationship(id,self.get_id())
+            return ret
+        else:
+            return False
             
 ###### Children
 
@@ -339,10 +342,9 @@ class TreeNode():
     def remove_child(self, id):
         if id in self.children:
             self.children.remove(id)
-            self.tree.break_relationship(self.get_id(),id)
-            return True
+            ret = self.tree.break_relationship(self.get_id(),id)
+            return ret
         else:
-            print "tried to remove non-existing child"
             return False
 
         

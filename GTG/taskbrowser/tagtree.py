@@ -249,8 +249,9 @@ class TagTreeModel(gtk.GenericTreeModel):
             tasks_count = tag.get_tasks_nbr(workview=self.workview)
             if tasks_count <= 1: 
                 tag_name = tag.get_name()
-                self.row_deleted(self.displayed[tag_name])
-                self.displayed.pop(tag_name)
+                if tag_name in self.displayed:
+                    self.row_deleted(self.displayed[tag_name])
+                    self.displayed.pop(tag_name)
         self._update_tag_from_name(self.req.get_alltag_tag().get_name())
         self._update_tag_from_name(self.req.get_notag_tag().get_name())
 
