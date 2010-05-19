@@ -232,6 +232,7 @@ class FilteredTree(gobject.GObject):
         """
         Return a path for a given node
         """
+        #print "We want the path for node %s" %node.get_id()
         #For that node, we should convert the base_path to path
         if not node or not self.is_displayed(node.get_id()):
             return None
