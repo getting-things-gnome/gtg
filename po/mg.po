@@ -1,101 +1,102 @@
-# Romanian translation for gtg
-# Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009
+# Malagasy translation for gtg
+# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
 # This file is distributed under the same license as the gtg package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2009.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-03-27 15:20+0100\n"
-"PO-Revision-Date: 2010-05-06 21:29+0000\n"
-"Last-Translator: Lucian Adrian Grijincu <lucian.grijincu@gmail.com>\n"
-"Language-Team: Romanian <ro@li.org>\n"
+"PO-Revision-Date: 2010-05-17 10:24+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Malagasy <mg@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n == 1 ? 0: (((n % 100 > 19) || ((n % 100 "
-"== 0) && (n != 0))) ? 2: 1));\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 "X-Launchpad-Export-Date: 2010-05-20 05:28+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: GTG/tools/dates.py:51
 msgid "Today"
-msgstr "Astăzi"
+msgstr "Androany"
 
 #: GTG/tools/dates.py:54
 #, python-format
 msgid "Yesterday"
 msgid_plural "%(days)d days ago"
 msgstr[0] ""
-msgstr[1] ""
+"Omaly\r\n"
+"%(days)d andro taloha"
 
 #: GTG/tools/dates.py:57
 #, python-format
 msgid "Tomorrow"
 msgid_plural "In %(days)d days"
 msgstr[0] ""
-msgstr[1] ""
+"Rahampitso\r\n"
+"Afaka %(days)d andro"
 
 #: GTG/tools/dates.py:96 GTG/tools/dates.py:138
 msgid "now"
-msgstr "acum"
+msgstr "izao"
 
 #: GTG/tools/dates.py:97 GTG/tools/dates.py:140
 msgid "soon"
-msgstr "curând"
+msgstr "aoriana kely"
 
 #: GTG/tools/dates.py:98 GTG/tools/dates.py:142
 msgid "later"
-msgstr "mai târziu"
+msgstr "any aoriana"
 
 #: GTG/tools/dates.py:180
 msgid "monday"
-msgstr "luni"
+msgstr ""
 
 #: GTG/tools/dates.py:180
 msgid "tuesday"
-msgstr "marți"
+msgstr ""
 
 #: GTG/tools/dates.py:180
 msgid "wednesday"
-msgstr "miercuri"
+msgstr ""
 
 #: GTG/tools/dates.py:181
 msgid "thursday"
-msgstr "joi"
+msgstr ""
 
 #: GTG/tools/dates.py:181
 msgid "friday"
-msgstr "vineri"
+msgstr ""
 
 #: GTG/tools/dates.py:181
 msgid "saturday"
-msgstr "sâmbătă"
+msgstr ""
 
 #: GTG/tools/dates.py:182
 msgid "sunday"
-msgstr "duminică"
+msgstr ""
 
 #: GTG/tools/dates.py:183
 msgid "today"
-msgstr "azi"
+msgstr ""
 
 #: GTG/tools/dates.py:184
 msgid "tomorrow"
-msgstr "mâine"
+msgstr ""
 
 #: GTG/tools/dates.py:185
 msgid "next week"
-msgstr "săptămâna următoare"
+msgstr ""
 
 #: GTG/tools/dates.py:186
 msgid "next month"
-msgstr "luna următoare"
+msgstr ""
 
 #: GTG/tools/dates.py:187
 msgid "next year"
-msgstr "anul următor"
+msgstr ""
 
 #: GTG/tools/gtkcrashhandler.py:58
 msgid ""
@@ -127,8 +128,7 @@ msgstr ""
 #, python-format
 msgid "Completed %(days)d day late"
 msgid_plural "Completed %(days)d days late"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Vita tara %(days)d andro"
 
 #: GTG/taskeditor/editor.py:324
 #, python-format
@@ -157,11 +157,11 @@ msgstr[1] ""
 
 #: GTG/taskeditor/taskeditor.glade.h:1
 msgid "Closed on"
-msgstr "Închis la"
+msgstr ""
 
 #: GTG/taskeditor/taskeditor.glade.h:2 GTG/taskbrowser/taskbrowser.glade.h:13
 msgid "Delete"
-msgstr "Șterge"
+msgstr ""
 
 #: GTG/taskeditor/taskeditor.glade.h:3 GTG/taskeditor/__init__.py:33
 #: GTG/taskbrowser/taskbrowser.glade.h:14 GTG/taskbrowser/__init__.py:40
@@ -170,11 +170,11 @@ msgstr ""
 
 #: GTG/taskeditor/taskeditor.glade.h:4
 msgid "Due for"
-msgstr "De făcut la"
+msgstr ""
 
 #: GTG/taskeditor/taskeditor.glade.h:5
 msgid "Insert subtask"
-msgstr "Introdu subsarcină"
+msgstr ""
 
 #: GTG/taskeditor/taskeditor.glade.h:6
 msgid "Insert tag"
@@ -182,7 +182,7 @@ msgstr ""
 
 #: GTG/taskeditor/taskeditor.glade.h:7
 msgid "Later"
-msgstr "Mai târziu"
+msgstr ""
 
 #: GTG/taskeditor/taskeditor.glade.h:8
 msgid "Mark Done"
@@ -190,19 +190,19 @@ msgstr ""
 
 #: GTG/taskeditor/taskeditor.glade.h:9
 msgid "Now"
-msgstr "Acum"
+msgstr ""
 
 #: GTG/taskeditor/taskeditor.glade.h:10
 msgid "Soon"
-msgstr "Curând"
+msgstr ""
 
 #: GTG/taskeditor/taskeditor.glade.h:11
 msgid "Starting on"
-msgstr "Începând cu"
+msgstr ""
 
 #: GTG/taskeditor/taskeditor.glade.h:12
 msgid "Task"
-msgstr "Sarcină"
+msgstr ""
 
 #: GTG/taskeditor/__init__.py:31 GTG/taskbrowser/__init__.py:36
 msgid "Mark as done"
@@ -218,7 +218,7 @@ msgstr ""
 
 #: GTG/taskeditor/__init__.py:35
 msgid "Keep as Note"
-msgstr "Păstrează ca notă"
+msgstr ""
 
 #: GTG/taskeditor/__init__.py:36
 msgid "Make a Task"
@@ -238,7 +238,7 @@ msgstr ""
 
 #: GTG/taskeditor/__init__.py:42
 msgid "Permanently remove this task"
-msgstr "Elimină permanent această sarcină"
+msgstr ""
 
 #: GTG/taskeditor/__init__.py:43
 msgid "Insert a subtask in this task"
@@ -256,7 +256,7 @@ msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:3
 msgid "About GTG!"
-msgstr "Despre GTG!"
+msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:4
 msgid "Add Tag"
@@ -272,7 +272,7 @@ msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:7
 msgid "Add a subtask"
-msgstr "Adaugă o subsarcină"
+msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:8
 msgid "Apply to subtasks"
@@ -280,15 +280,15 @@ msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:9
 msgid "Cancel"
-msgstr "Anulează"
+msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:10
 msgid "Copyrights&#xA9; 2008, 2009 Lionel Dricot, Bertrand Rousseau"
-msgstr "Drepturi de autor &#xA9; 2008, 2009 Lionel Dricot, Bertrand Rousseau"
+msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:11 GTG/taskbrowser/__init__.py:46
 msgid "Create a new task"
-msgstr "Creează o sarcină nouă"
+msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:12
 msgid "D_ismiss"
@@ -296,7 +296,7 @@ msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:15
 msgid "Edit"
-msgstr "Editare"
+msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:16
 msgid "Enter the name of the tag(s) you wish to add:"
@@ -304,11 +304,11 @@ msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:17
 msgid "GTG website"
-msgstr "Pagina web GTG"
+msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:18
 msgid "Getting Things Gnome!"
-msgstr "Getting Things GNOME!"
+msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:19
 msgid ""
@@ -347,31 +347,31 @@ msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:29
 msgid "New Subtask"
-msgstr "Subsarcină nouă"
+msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:30
 msgid "New Task"
-msgstr "Sarcină nouă"
+msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:31
 msgid "New _Subtask"
-msgstr "_Subsarcină nouă"
+msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:32
 msgid "New _Task"
-msgstr "_Sarcină nouă"
+msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:33
 msgid "Redo"
-msgstr "Refă"
+msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:34
 msgid "Reset Color"
-msgstr "Resetare culoare"
+msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:35
 msgid "T_oolbar"
-msgstr "Bară de _unelte"
+msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:36
 msgid "Tag is displayed in the workview"
@@ -392,7 +392,7 @@ msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:40
 msgid "Undo"
-msgstr "Anulează"
+msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:41
 msgid "Work View"
@@ -400,23 +400,23 @@ msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:42
 msgid "_Background Colors"
-msgstr "Culori _fundal"
+msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:43
 msgid "_Closed Tasks Pane"
-msgstr "Panou sarcini în_chise"
+msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:44
 msgid "_Edit"
-msgstr "_Editare"
+msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:45
 msgid "_Help"
-msgstr "_Ajutor"
+msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:46
 msgid "_Plugins"
-msgstr "_Module de extensie"
+msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:47
 msgid "_Quick Add Entry"
@@ -432,11 +432,11 @@ msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:50
 msgid "_Tasks"
-msgstr "_Sarcini"
+msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:51
 msgid "_View"
-msgstr "_Vizualizare"
+msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:52
 msgid "_Work View"
@@ -444,23 +444,23 @@ msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:53
 msgid "_tomorrow"
-msgstr "_măine"
+msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:54
 msgid "next _month"
-msgstr "luna ur_mătoare"
+msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:55
 msgid "next _week"
-msgstr "săptămâna _următoare"
+msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:56
 msgid "next _year"
-msgstr "anul u_rmător"
+msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:57
 msgid "t_oday"
-msgstr "_azi"
+msgstr ""
 
 #: GTG/taskbrowser/__init__.py:37
 msgid "Mark the selected task as done"
@@ -476,11 +476,11 @@ msgstr ""
 
 #: GTG/taskbrowser/__init__.py:44
 msgid "Permanently remove the selected task"
-msgstr "Elimină permanent sarcina selectată"
+msgstr ""
 
 #: GTG/taskbrowser/__init__.py:45
 msgid "Edit the selected task"
-msgstr "Modifică sarcina selectată"
+msgstr ""
 
 #: GTG/taskbrowser/__init__.py:47
 msgid "Create a new subtask"
@@ -519,15 +519,15 @@ msgstr ""
 
 #: GTG/taskbrowser/tasktree.py:345 GTG/taskbrowser/tasktree.py:506
 msgid "Title"
-msgstr "Titlu"
+msgstr ""
 
 #: GTG/taskbrowser/tasktree.py:359
 msgid "Start date"
-msgstr "Data de început"
+msgstr ""
 
 #: GTG/taskbrowser/tasktree.py:371
 msgid "Due"
-msgstr "Scadență"
+msgstr ""
 
 #: GTG/taskbrowser/tasktree.py:494
 msgid "Closing date"
@@ -550,7 +550,7 @@ msgstr ""
 
 #: GTG/core/tagstore.py:52
 msgid "All tasks"
-msgstr "Toate sarcinile"
+msgstr ""
 
 #: GTG/core/tagstore.py:59
 msgid "Tasks with no tags"
@@ -785,7 +785,7 @@ msgstr ""
 
 #: GTG/viewmanager/delete_dialog.py:59
 msgid "Are you sure you want to delete this task?"
-msgstr "Sigur doriți să ștergeți această sarcină?"
+msgstr ""
 
 #: GTG/viewmanager/delete_dialog.py:60
 msgid "Keep selected task"
@@ -814,11 +814,11 @@ msgstr ""
 
 #: GTG/viewmanager/preferences.glade.h:1
 msgid "<b>Dependencies</b>"
-msgstr "<b>Dependențe</b>"
+msgstr ""
 
 #: GTG/viewmanager/preferences.glade.h:2
 msgid "<b>General</b>"
-msgstr "<b>Generale</b>"
+msgstr ""
 
 #: GTG/viewmanager/preferences.glade.h:3
 msgid "<b>Task Browser</b>"
@@ -830,27 +830,27 @@ msgstr ""
 
 #: GTG/viewmanager/preferences.glade.h:5
 msgid "Active _Plugins:"
-msgstr "Module acti_ve:"
+msgstr ""
 
 #: GTG/viewmanager/preferences.glade.h:6
 msgid "Behaviour"
-msgstr "Comportament"
+msgstr ""
 
 #: GTG/viewmanager/preferences.glade.h:7
 msgid "Check spelling"
-msgstr "Verificare ortografică"
+msgstr ""
 
 #: GTG/viewmanager/preferences.glade.h:8
 msgid "Getting Things GNOME! Preferences"
-msgstr "Preferințe Getting Things GNOME!"
+msgstr ""
 
 #: GTG/viewmanager/preferences.glade.h:9
 msgid "Hide closed tasks older than"
-msgstr "Ascunde sarcinile închise mai vechi decât"
+msgstr ""
 
 #: GTG/viewmanager/preferences.glade.h:10
 msgid "Plugins"
-msgstr "Module"
+msgstr ""
 
 #: GTG/viewmanager/preferences.glade.h:11
 msgid "Show task text preview"
@@ -858,11 +858,11 @@ msgstr ""
 
 #: GTG/viewmanager/preferences.glade.h:12
 msgid "Start Getting Things GNOME! on every login"
-msgstr "Pornește Getting Things GNOME! la fiecare autentificare"
+msgstr ""
 
 #: GTG/viewmanager/preferences.glade.h:13
 msgid "Storage"
-msgstr "Stocare"
+msgstr ""
 
 #: GTG/viewmanager/preferences.glade.h:14
 msgid "Task _Backends:"
@@ -870,11 +870,11 @@ msgstr ""
 
 #: GTG/viewmanager/preferences.glade.h:15
 msgid "_About Plugin"
-msgstr "_Despre modul"
+msgstr ""
 
 #: GTG/viewmanager/deletion.glade.h:1
 msgid "Confirm task deletion"
-msgstr "Confirmați ștergerea sarcinii"
+msgstr ""
 
 #: GTG/plugins/evolution_sync/evolutionSync.py:28
 msgid "Synchronize with Evolution"
@@ -1078,19 +1078,3 @@ msgstr ""
 #: GTG/plugins/rtm_sync/syncEngine.py:273
 msgid "Closing in one second"
 msgstr ""
-
-#, python-format
-#~ msgid "Completed %s days late"
-#~ msgstr "Finalizat cu %s zile întârziere"
-
-#, python-format
-#~ msgid "Completed %s days early"
-#~ msgstr "Finalizat cu %s zile mai devreme"
-
-#, python-format
-#~ msgid "In %s days"
-#~ msgstr "În %s zile"
-
-#, python-format
-#~ msgid "%s days ago"
-#~ msgstr "acum %s zile"

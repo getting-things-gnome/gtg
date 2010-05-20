@@ -5,14 +5,14 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-03-27 15:20+0100\n"
-"PO-Revision-Date: 2010-03-29 17:18+0000\n"
+"PO-Revision-Date: 2010-05-10 07:55+0000\n"
 "Last-Translator: Miguel Anxo Bouzada <mbouzada@gmail.com>\n"
 "Language-Team: Galego <g11n@mancomun.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2010-03-30 04:17+0000\n"
+"X-Launchpad-Export-Date: 2010-05-20 05:28+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 "Language: gl\n"
 
@@ -25,7 +25,7 @@ msgstr "Hoxe"
 msgid "Yesterday"
 msgid_plural "%(days)d days ago"
 msgstr[0] "Onte"
-msgstr[1] "fai %(days)d días"
+msgstr[1] "hai %(days)d días"
 
 #: GTG/tools/dates.py:57
 #, python-format
@@ -99,6 +99,7 @@ msgid ""
 "We're terribly sorry. Could you help us fix the problem by reporting the "
 "crash?"
 msgstr ""
+"Sentimolo. Podería axudarnos a arranxar o problema informando do fallo?"
 
 #: GTG/tools/gtkcrashhandler.py:169
 msgid "An error has occurred"
@@ -106,7 +107,7 @@ msgstr "Ocorreu un erro"
 
 #: GTG/tools/gtkcrashhandler.py:177
 msgid "It looks like an error has occurred."
-msgstr ""
+msgstr "Parece que ocorreu un erro"
 
 #: GTG/tools/gtkcrashhandler.py:212
 msgid "_Details"
@@ -114,11 +115,11 @@ msgstr "_Detalles"
 
 #: GTG/tools/gtkcrashhandler.py:218
 msgid "_Report this problem..."
-msgstr ""
+msgstr "Info_rmar deste erro..."
 
 #: GTG/tools/gtkcrashhandler.py:222
 msgid "_Ignore the error"
-msgstr ""
+msgstr "_Ignorar o erro"
 
 #: GTG/taskeditor/editor.py:321
 #, python-format
@@ -138,19 +139,19 @@ msgstr[1] "Completada %(days)d días antes"
 #, python-format
 msgid "Due tomorrow!"
 msgid_plural "%(days)d days left"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Caduca mañá!"
+msgstr[1] "Quedan %(days)d días"
 
 #: GTG/taskeditor/editor.py:332
 msgid "Due today!"
-msgstr ""
+msgstr "Caduca hoxe!"
 
 #: GTG/taskeditor/editor.py:335
 #, python-format
 msgid "Due yesterday!"
 msgid_plural "Was %(days)d days ago"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Caducou onte!"
+msgstr[1] "Caducou fai %(days)d días"
 
 #: GTG/taskeditor/taskeditor.glade.h:1
 msgid "Closed on"
@@ -158,7 +159,7 @@ msgstr "Pechado o"
 
 #: GTG/taskeditor/taskeditor.glade.h:2 GTG/taskbrowser/taskbrowser.glade.h:13
 msgid "Delete"
-msgstr "Borrar"
+msgstr "Eliminar"
 
 #: GTG/taskeditor/taskeditor.glade.h:3 GTG/taskeditor/__init__.py:33
 #: GTG/taskbrowser/taskbrowser.glade.h:14 GTG/taskbrowser/__init__.py:40
@@ -171,11 +172,11 @@ msgstr "Caducado por"
 
 #: GTG/taskeditor/taskeditor.glade.h:5
 msgid "Insert subtask"
-msgstr "Inserir subtarefa"
+msgstr "Inserir unha subtarefa"
 
 #: GTG/taskeditor/taskeditor.glade.h:6
 msgid "Insert tag"
-msgstr "Inserir etiqueta"
+msgstr "Inserir unha etiqueta"
 
 #: GTG/taskeditor/taskeditor.glade.h:7
 msgid "Later"
@@ -223,7 +224,7 @@ msgstr "Crear unha tarefa"
 
 #: GTG/taskeditor/__init__.py:38
 msgid "Mark this task as done"
-msgstr "Marcar esta tarefa como rematada"
+msgstr "Marcar esta tarefa como feita"
 
 #: GTG/taskeditor/__init__.py:39 GTG/taskeditor/__init__.py:41
 msgid "Mark this task as to be done"
@@ -255,7 +256,7 @@ msgstr ""
 
 #: GTG/taskbrowser/taskbrowser.glade.h:3
 msgid "About GTG!"
-msgstr "Acerca de GTG!"
+msgstr "Sobre GTG!"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:4
 msgid "Add Tag"
@@ -556,6 +557,9 @@ msgid ""
 "href=\"http://bugs.edge.launchpad.net/gtg\">our Launchpad page</a>. If you "
 "have Apport installed, it will be started for you."
 msgstr ""
+" rachou. Informo do erro na <a "
+"href=\"http://bugs.edge.launchpad.net/gtg\">nosa páxina de Launchpad</a>. Se "
+"ten Apport instalado iniciarase automaticamente."
 
 #: GTG/core/task.py:53
 msgid "My new task"
@@ -609,6 +613,11 @@ msgid ""
 "\n"
 "Thank you for trying out GTG :-)"
 msgstr ""
+"Agardamos que lle guste GTG. Envíenos informes de erros e suxestións de "
+"melloras usando:\n"
+"    https://bugs.launchpad.net/gtg\n"
+"\n"
+"Grazas por probar GTG :-)"
 
 #: GTG/core/firstrun_tasks.py:34
 msgid "Learn how to use subtasks"
@@ -1777,3 +1786,89 @@ msgstr "Pechando nun segundo"
 #~ "Se pechou unha tarefa, todas as súas subtarefas péchanse tamén. De feito nós "
 #~ "consideramos que, se completou unha tarefa dada, non necesita facer as "
 #~ "subtarefas nunca máis."
+
+#~ msgid "Due tomorrow !"
+#~ msgstr "Caduca mañá !"
+
+#~ msgid "Due yesterday"
+#~ msgstr "Caducou onte"
+
+#~ msgid ""
+#~ "Once you've read the above subtask, mark it as Done. If you don't want to do "
+#~ "the task, mark it as dismissed. Done and Dismissed tasks are kept in the "
+#~ "closed tasks pane, hidden by default but you can easily enable it in the "
+#~ "View menu."
+#~ msgstr ""
+#~ "Una vez que teña lida a subtarefa anterior, márquea como Feita. Se non quere "
+#~ "completar a tarefa, márquea como desbotada. As tarefas Feitas e Desbotadas "
+#~ "mantéñense no panel de tarefas cerradas, ocultas de forma predefinida, pero "
+#~ "pode habilitalas no menú Ver."
+
+#~ msgid ""
+#~ "Once a task is done, you can push the &quot;Mark as done&quot; button. If "
+#~ "the task is not relevant any-more, simply press &quot;Dismiss&quot;."
+#~ msgstr ""
+#~ "Unha vez a tarefa estea feita, vostede pode premer no botón &quot;Marcar "
+#~ "como feita&quot;. Se a tarefa xa non é relevante, simplemente prema "
+#~ "&quot;Desbotar&quot;."
+
+#~ msgid ""
+#~ "Some concepts come with subtasks: for example, a subtask's due date can "
+#~ "never be after its parent's due date."
+#~ msgstr ""
+#~ "Algúns conceptos veñen con subtarefas: por exemplo, a data de caducidade "
+#~ "dunha subtarefa non pode ser posterior a caducidadeo da súa tarefa pai."
+
+#~ msgid ""
+#~ "Tags are useful to sort your tasks. In the view menu, you can enable a "
+#~ "sidebar which displays all the tags you are using so you can easily see "
+#~ "tasks assigned to a given tag. There's no limit to the number of tags a task "
+#~ "can have."
+#~ msgstr ""
+#~ "As etiquetas son útiles para ordenar as súas tarefas. No menú Ver, pode "
+#~ "activar unha barra lateral que mostre todas as etiquetas que está usando, "
+#~ "para que poida ver facilmente as tarefas asignadas a unha certa etiqueta. "
+#~ "Non hai límite á cantidade de etiquetas que pode ter unha tarefa."
+
+#~ msgid ""
+#~ "You can drag-n-drop a tag onto another to create \"subtags\". As an example, "
+#~ "if you drag the tag @to_pay onto the tag @money, every task tagged with "
+#~ "@to_pay will also appear in the view of @money (but the @money tag is not "
+#~ "added to the task)."
+#~ msgstr ""
+#~ "Pode arrastra e soltar unha etiqueta sobre outra para crear «subetiquetas». "
+#~ "Por exemplo, se arrastra a etiqueta @para_pagar sobre a etiqueta @contas, "
+#~ "cada tarefa marcada coa etiqueta @para_pagar aparecerá tamén na vista "
+#~ "@contas (pero a etiqueta @contas non se engadirá á tarefa en cuestión)."
+
+#~ msgid ""
+#~ "If you use tags, you can right click on a tag in the sidebar and choose to "
+#~ "hide tasks assigned to this particular tag in the workview. It's very useful "
+#~ "if you have a tag like &quot;someday&quot; that you use for tasks you would "
+#~ "like to do but are not particularly urgent."
+#~ msgstr ""
+#~ "Se usa etiquetas, pode premerco botón dereito nunha etiqueta na barra "
+#~ "lateral e escoller agochar as tarefas asignadas a esta etiqueta en "
+#~ "particular na Vista de traballo. É moi útil se ten unha etiqueta como "
+#~ "&quot;algún-día&quot; que pode usar para as tarefas que queira facer que non "
+#~ "son particularmente urxentes."
+
+#~ msgid ""
+#~ "We need you to make this software better. Any contribution, any idea is "
+#~ "welcome."
+#~ msgstr ""
+#~ "Necesitamolo para mellorar o software. Calquera contribución ou idea é "
+#~ "benvida."
+
+#~ msgid "If a word begins with @, it is interpreted as a tag."
+#~ msgstr "Se unha palabra comeza con @, interprétase como unha etiqueta."
+
+#~ msgid "For that the syntax is :"
+#~ msgstr "Para iso a sintaxe é:"
+
+#~ msgid ""
+#~ "You can also create a task with attributes like tags, due date or defer date "
+#~ "in the quickadd entry."
+#~ msgstr ""
+#~ "Vostede tamén pode crear unha tarefa con atributos como etiquetas, data de "
+#~ "caducidade ou data de posposición na entrada de inserción rápida."
