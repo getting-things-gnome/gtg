@@ -486,7 +486,12 @@ class ActiveTaskTreeView(TaskTreeView):
                 # Must add task as a child of the dropped-on iter
                 # Get parent
                 destination_iter = iter
-            destination_tid = model.get_value(destination_iter, COL_TID)
+            if destination_iter:
+                destination_tid = model.get_value(destination_iter, COL_TID)
+            else:
+                #it means we have drag-n-dropped above the first task
+                # we should consider the destination as a root then.
+                destination_tid = None
         else:
             # Must add the task to the root
             # Parent = root => iter=None
