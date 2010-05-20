@@ -263,6 +263,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
         # Remove old parents 
         #FIXME: what about multiple parents?
         map(lambda p: child_task.remove_parent(p), current_parents)
+        #print "### parents %s have been removed" %current_parents
         #Set new parent
         if parent_tid:
             child_task.add_parent(parent_tid)

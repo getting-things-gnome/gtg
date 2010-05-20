@@ -173,9 +173,11 @@ class FilteredTree(gobject.GObject):
             #if the task was not displayed previously but now should
             #we add it.
             if not curdis:
+#                print "%s is a new node" %tid
                 self.__add_node(tid)
             #FIXME: Lionel please see this one
             else:
+#                print "%s is only modified (todis,curdis)" %tid
                 self.emit("task-modified-inview", tid)
             #There doesn't seem to be a need for calling the update_node
 #            else:
@@ -186,9 +188,11 @@ class FilteredTree(gobject.GObject):
             #if the task was displayed previously but shouldn't be anymore
             #we remove it
             if curdis:
+#                print "%s is removed" %tid
                 self.__remove_node(tid)
             #FIXME: Lionel please see this one
             else:
+#                print "%s is modified, not to dis" %tid
                 self.emit("task-modified-inview", tid)
         
     def __task_deleted(self,sender,tid):
