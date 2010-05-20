@@ -160,8 +160,10 @@ class TagTreeModel(gtk.GenericTreeModel):
                     return 0
             else:
                 if sp_id == "all":
+                    #This is "All tasks"
                     return self.active_filtered_tree.get_nodes_count()
                 elif sp_id == "notag":
+                    #This is "Tasks with no tags"
                     return self.notag_filtered_tree.get_nodes_count()
                 else:
                     return 0
@@ -249,9 +251,8 @@ class TagTreeModel(gtk.GenericTreeModel):
         This method handles the adding of tasks, updating
         the "All task" entry in the tag pane and the "No tags"
         '''
-        task = self.req.get_task(task_id)
-        for tag in task.get_tags():
-            self._update_tag_from_name(tag.get_name())
+        self._update_all_tasks_and_no_tags()
+        self.update_tags_for_task(task_id)
 
     def on_task_deleted(self, sender, task_id):
         '''
