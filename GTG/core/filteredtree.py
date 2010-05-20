@@ -166,7 +166,7 @@ class FilteredTree(gobject.GObject):
             self.__add_node(tid)
         
     def __task_modified(self,sender,tid):
-        #print "%s is modified in the filteredtree" %tid
+#        print "%s is modified in the filteredtree" %tid
 #        if self.path_for_node_cache.has_key(tid):
 #            oldp = str(self.path_for_node_cache[tid])
 #        else:
@@ -250,9 +250,10 @@ class FilteredTree(gobject.GObject):
         """
         if node:
             tid = node.get_id()
-        #print "We want the path for node %s" %node.get_id()
+            print "We want the path for node %s" %node.get_id()
         #For that node, we should convert the base_path to path
         if not node or not self.is_displayed(node.get_id()):
+            print "not displayed %s" %node
             return None
         #This is the cache so we don't compute it all the time
         #TODO: this is commented out as it still doesn't work with filter
@@ -267,24 +268,32 @@ class FilteredTree(gobject.GObject):
         else:
             pos = 0
             par = self.node_parent(node)
-            max = self.node_n_children(par)
-            child = self.node_children(par)
-            while pos < max and node != child:
-                pos += 1
-                child = self.node_nth_child(par,pos)
-            par_path = self.get_path_for_node(par)
-            if par_path:
-                toreturn = par_path + (pos,)
+            if not par:
+                self.__root_update(tid,True)
+                ind = self.virtual_root.index(tid)
+                toreturn = (ind,)
             else:
-                #if we are here, it means that we have a ghost task that 
-                #is not really displayed but still here, in the tree
-                #it happens sometimes when we remove a parent with children
-                #if we still have a recorded path for the ghost task,
-                #we return it. This provides ghost task from staying displayed
-                if self.path_for_node_cache.has_key(tid):
-                    toreturn = self.path_for_node_cache[tid]
+                max = self.node_n_children(par)
+                child = self.node_children(par)
+                while pos < max and node != child:
+                    pos += 1
+                    child = self.node_nth_child(par,pos)
+                par_path = self.get_path_for_node(par)
+                if par_path:
+                    toreturn = par_path + (pos,)
                 else:
-                    toreturn = None
+                    #if we are here, it means that we have a ghost task that 
+                    #is not really displayed but still here, in the tree
+                    #it happens sometimes when we remove a parent with children
+                    #if we still have a recorded path for the ghost task,
+                    #we return it. This provides ghost task from staying displayed
+                    if self.path_for_node_cache.has_key(tid):
+                        toreturn = self.path_for_node_cache[tid]
+                    else:
+                        print "ghost position for %s" %tid
+                        print "VR : %s " %self.virtual_root
+                        print self.path_for_node_cache
+                        toreturn = None
                     
         #print "get_path_for_node %s is %s" %(node.get_id(),str(toreturn))
         self.path_for_node_cache[node.get_id()] = toreturn

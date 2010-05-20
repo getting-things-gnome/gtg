@@ -247,12 +247,13 @@ class TaskTreeModel(gtk.GenericTreeModel):
                 for par in task.get_parents():
                     genealogic_search(par)
         child_task = self.req.get_task(child_tid)
-        parent_task = self.req.get_task(parent_tid)
         current_parents = child_task.get_parents()
-        parents_parents = parent_task.get_parents()
         genealogy = []
-        for p in parents_parents:
-            genealogic_search(p)
+        if parent_tid:
+            parent_task = self.req.get_task(parent_tid)
+            parents_parents = parent_task.get_parents()
+            for p in parents_parents:
+                genealogic_search(p)
 
         #Avoid the typical time-traveller problem being-the-father-of-yourself
         #or the grand-father. We need some genealogic research !
@@ -271,8 +272,8 @@ class TaskTreeModel(gtk.GenericTreeModel):
         print "restore the add_parent"
         self.tree.print_tree()
         #Set new parent
-#        if parent_tid:
-#            child_task.add_parent(parent_tid)
+        if parent_tid:
+            child_task.add_parent(parent_tid)
 
 class TaskTreeView(gtk.TreeView):
     """TreeView for display of a list of task. Handles DnD primitives too."""
