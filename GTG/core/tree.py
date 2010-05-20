@@ -292,16 +292,16 @@ class TreeNode():
             return False
     
     #set_parent means that we remove all other parents
-    def set_parent(self,par):
+    def set_parent(self,par_id):
         is_already_parent_flag = False
-        if par:
+        if par_id:
             for i in self.parents:
-                if i != par:
+                if i != par_id:
                     assert(self.remove_parent(i) == True)
                 else:
                     is_already_parent_flag = True
             if not is_already_parent_flag:
-                self.add_parent(par)
+                self.add_parent(par_id)
             
     def remove_parent(self,id):
         if id in self.parents:
