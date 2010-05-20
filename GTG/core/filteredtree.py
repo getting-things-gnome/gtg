@@ -207,6 +207,11 @@ class FilteredTree(gobject.GObject):
         
     ####TreeModel functions ##############################
 
+    def print_tree(self):
+        for rid in self.virtual_root:
+            r = self.req.get_task(rid)
+            self.__print_from_node(r)
+
     #The path received is only for tasks that are displayed
     #We have to find the good node.
     def get_node_for_path(self, path):
@@ -250,6 +255,7 @@ class FilteredTree(gobject.GObject):
         if not node or not self.is_displayed(node.get_id()):
             return None
         #This is the cache so we don't compute it all the time
+        #TODO: this is commented out as it still doesn't work with filter
 #        elif self.path_for_node_cache.has_key(tid):
 #            return self.path_for_node_cache[tid]
         elif node == self.get_root():
@@ -628,7 +634,7 @@ class FilteredTree(gobject.GObject):
         if self.node_has_child(node):
             child = self.node_children(node)
             while child:
-                self._print_from_node(child,prefix)
+                self.__print_from_node(child,prefix)
                 child = self.next_node(child)
     
     #This function removes all the nodes, leaves first.

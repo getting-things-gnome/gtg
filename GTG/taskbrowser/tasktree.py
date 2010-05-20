@@ -262,11 +262,17 @@ class TaskTreeModel(gtk.GenericTreeModel):
         child_task.set_to_keep()
         # Remove old parents 
         #FIXME: what about multiple parents?
-        map(lambda p: child_task.remove_parent(p), current_parents)
-        #print "### parents %s have been removed" %current_parents
+        #map(lambda p: child_task.remove_parent(p), current_parents)
+        for pid in current_parents:
+#            p = self.req.get_task(pid)
+#            p.remove_child(child_tid)
+            child_task.remove_parent(pid)
+        print "### parents %s have been removed" %current_parents
+        print "restore the add_parent"
+        self.tree.print_tree()
         #Set new parent
-        if parent_tid:
-            child_task.add_parent(parent_tid)
+#        if parent_tid:
+#            child_task.add_parent(parent_tid)
 
 class TaskTreeView(gtk.TreeView):
     """TreeView for display of a list of task. Handles DnD primitives too."""
