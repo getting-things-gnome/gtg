@@ -97,7 +97,8 @@ class TagTreeModel(gtk.GenericTreeModel):
 
     def _update_tag_from_name(self, name):
         ''' Helper method to update a row, given the name of the tag '''
-        self.row_changed(*self._path_iter_from_tag_name(name))
+        if name in self.displayed:
+            self.row_changed(*self._path_iter_from_tag_name(name))
 
 
     def set_workview(self, val):
@@ -270,7 +271,8 @@ class TagTreeModel(gtk.GenericTreeModel):
 
     def _path_iter_from_tag_name(self, name):
         ''' Helper method to get path and iter  given the name
-        of the  tag '''
+        of the  tag. It assumes you've verified that "self.displayed" has 
+        the key "name" in it'''
         tag_path = self.displayed[name]
         tag_iter = self.get_iter(tag_path)
         return tag_path, tag_iter

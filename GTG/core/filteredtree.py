@@ -588,8 +588,6 @@ class FilteredTree(gobject.GObject):
         self.emit("task-modified-inview", tid)
     
     def __add_node(self,tid,inroot=None):
-        self.add_count += 1
-        self.__nodes_count += 1
         if not self.is_displayed(tid):
             node = self.get_node(tid)
             if inroot == None:
@@ -598,6 +596,8 @@ class FilteredTree(gobject.GObject):
             if not inroot and not self.node_parent(node):
                 self.node_to_add.append(tid)
             else:
+                self.add_count += 1
+                self.__nodes_count += 1
                 self.__root_update(tid,inroot)
                 self.displayed_nodes.append(tid)
                 self.emit("task-added-inview", tid)
@@ -608,9 +608,9 @@ class FilteredTree(gobject.GObject):
                     self.__add_node(n,False)
     
     def __remove_node(self,tid):
-        self.remove_count += 1
-        self.__nodes_count -= 1
         if tid in self.displayed_nodes:
+            self.remove_count += 1
+            self.__nodes_count -= 1
             self.emit('task-deleted-inview',tid)
             self.__root_update(tid,False)
             self.displayed_nodes.remove(tid)
@@ -642,4 +642,5 @@ class FilteredTree(gobject.GObject):
 
     def get_nodes_count(self):
         """returns the number of nodes in this tree"""
+        #assert(len(self.displayed_nodes) == self.__nodes_count)
         return self.__nodes_count
