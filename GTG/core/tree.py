@@ -339,7 +339,10 @@ class TreeNode():
             return None
 
     def get_child_index(self, id):
-        return self.children.index(id)
+        if id in self.children:
+            return self.children.index(id)
+        else:
+            return None
 
     #return True if the child was added correctly. False otherwise
     #takes the id of the child as parameter.
@@ -352,6 +355,8 @@ class TreeNode():
         if id in self.children:
             self.children.remove(id)
             ret = self.tree.break_relationship(self.get_id(),id)
+            if ret:
+                self.req._task_modified(id)
             return ret
         else:
             return False
