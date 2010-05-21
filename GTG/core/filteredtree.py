@@ -114,6 +114,7 @@ class FilteredTree(gobject.GObject):
         #it looks like an initial refilter is not needed.
         #self.refilter()
         self.__reset_cache()
+        self.path_for_node_cache_old = {}
         #connecting
         self.req.connect("task-added", self.__task_added)
         self.req.connect("task-modified", self.__task_modified)
@@ -244,16 +245,21 @@ class FilteredTree(gobject.GObject):
         else:
             return None
 
+#    def get_previous_path_for_node(self,tid):
+#        if self.path_for_node_cache_old.has_key(tid):
+#            return self.path_for_node_cache_old[tid]
+#        else:
+#            return None
+
     def get_path_for_node(self, node):
         """
         Return a path for a given node
         """
         if node:
             tid = node.get_id()
-            print "We want the path for node %s" %node.get_id()
         #For that node, we should convert the base_path to path
         if not node or not self.is_displayed(node.get_id()):
-            print "not displayed %s" %node
+            #print "not displayed %s" %node
             return None
         #This is the cache so we don't compute it all the time
         #TODO: this is commented out as it still doesn't work with filter
@@ -269,6 +275,8 @@ class FilteredTree(gobject.GObject):
             pos = 0
             par = self.node_parent(node)
             if not par:
+                #if we don't have parent, we add the task
+                #to the virtual root.
                 self.__root_update(tid,True)
                 ind = self.virtual_root.index(tid)
                 toreturn = (ind,)
@@ -295,8 +303,14 @@ class FilteredTree(gobject.GObject):
                         print self.path_for_node_cache
                         toreturn = None
                     
-        #print "get_path_for_node %s is %s" %(node.get_id(),str(toreturn))
-        self.path_for_node_cache[node.get_id()] = toreturn
+        #debug statement to show when the path change
+#        if self.path_for_node_cache.has_key(tid):
+#            oldp = self.path_for_node_cache[tid]
+#            if oldp != toreturn:
+#                print "changing %s from %s to %s" %(tid,oldp,toreturn)
+        if self.path_for_node_cache.has_key(tid):
+            self.path_for_node_cache_old[tid] = self.path_for_node_cache[tid]
+        self.path_for_node_cache[tid] = toreturn
         return toreturn
 
     #Done

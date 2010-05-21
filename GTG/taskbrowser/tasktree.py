@@ -230,10 +230,15 @@ class TaskTreeModel(gtk.GenericTreeModel):
         node = self.tree.get_node(tid)
         removed = False
         node_path = self.tree.get_path_for_node(node)
+#        previous_path = self.tree.get_previous_path_for_node(tid)
         if node_path:
             Log.debug("* tasktree REMOVE %s - %s " %(tid,node_path))
             self.row_deleted(node_path)
             removed = True
+#        elif previous_path:
+#            print "removing previous_path %s" %str(previous_path)
+#            self.row_deleted(previous_path)
+#            removed = True
         return removed
                     
     def move_task(self, parent_tid, child_tid):
@@ -267,10 +272,11 @@ class TaskTreeModel(gtk.GenericTreeModel):
         for pid in current_parents:
 #            p = self.req.get_task(pid)
 #            p.remove_child(child_tid)
+            node_path = self.tree.get_path_for_node(child_task)
+#            previous_path = self.tree.get_previous_path_for_node(child_tid)
+            if node_path:
+                self.row_deleted(node_path)
             child_task.remove_parent(pid)
-        print "### parents %s have been removed" %current_parents
-        print "restore the add_parent"
-        self.tree.print_tree()
         #Set new parent
         if parent_tid:
             child_task.add_parent(parent_tid)
