@@ -307,6 +307,8 @@ class TreeNode():
         if id in self.parents:
             self.parents.remove(id)
             ret = self.tree.break_relationship(id,self.get_id())
+            if ret:
+                self.req._task_modified(id)
             return ret
         else:
             return False

@@ -114,6 +114,7 @@ class FilteredTree(gobject.GObject):
         #it looks like an initial refilter is not needed.
         #self.refilter()
         self.__reset_cache()
+        self.path_for_node_cache_old = {}
         #connecting
         self.req.connect("task-added", self.__task_added)
         self.req.connect("task-modified", self.__task_modified)
@@ -166,7 +167,7 @@ class FilteredTree(gobject.GObject):
             self.__add_node(tid)
         
     def __task_modified(self,sender,tid):
-        #print "%s is modified in the filteredtree" %tid
+#        print "%s is modified in the filteredtree" %tid
 #        if self.path_for_node_cache.has_key(tid):
 #            oldp = str(self.path_for_node_cache[tid])
 #        else:
@@ -207,6 +208,11 @@ class FilteredTree(gobject.GObject):
         
     ####TreeModel functions ##############################
 
+    def print_tree(self):
+        for rid in self.virtual_root:
+            r = self.req.get_task(rid)
+            self.__print_from_node(r)
+
     #The path received is only for tasks that are displayed
     #We have to find the good node.
     def get_node_for_path(self, path):
@@ -239,17 +245,24 @@ class FilteredTree(gobject.GObject):
         else:
             return None
 
+#    def get_previous_path_for_node(self,tid):
+#        if self.path_for_node_cache_old.has_key(tid):
+#            return self.path_for_node_cache_old[tid]
+#        else:
+#            return None
+
     def get_path_for_node(self, node):
         """
         Return a path for a given node
         """
         if node:
             tid = node.get_id()
-        #print "We want the path for node %s" %node.get_id()
         #For that node, we should convert the base_path to path
         if not node or not self.is_displayed(node.get_id()):
+            #print "not displayed %s" %node
             return None
         #This is the cache so we don't compute it all the time
+        #TODO: this is commented out as it still doesn't work with filter
 #        elif self.path_for_node_cache.has_key(tid):
 #            return self.path_for_node_cache[tid]
         elif node == self.get_root():
@@ -261,27 +274,43 @@ class FilteredTree(gobject.GObject):
         else:
             pos = 0
             par = self.node_parent(node)
-            max = self.node_n_children(par)
-            child = self.node_children(par)
-            while pos < max and node != child:
-                pos += 1
-                child = self.node_nth_child(par,pos)
-            par_path = self.get_path_for_node(par)
-            if par_path:
-                toreturn = par_path + (pos,)
+            if not par:
+                #if we don't have parent, we add the task
+                #to the virtual root.
+                self.__root_update(tid,True)
+                ind = self.virtual_root.index(tid)
+                toreturn = (ind,)
             else:
-                #if we are here, it means that we have a ghost task that 
-                #is not really displayed but still here, in the tree
-                #it happens sometimes when we remove a parent with children
-                #if we still have a recorded path for the ghost task,
-                #we return it. This provides ghost task from staying displayed
-                if self.path_for_node_cache.has_key(tid):
-                    toreturn = self.path_for_node_cache[tid]
+                max = self.node_n_children(par)
+                child = self.node_children(par)
+                while pos < max and node != child:
+                    pos += 1
+                    child = self.node_nth_child(par,pos)
+                par_path = self.get_path_for_node(par)
+                if par_path:
+                    toreturn = par_path + (pos,)
                 else:
-                    toreturn = None
+                    #if we are here, it means that we have a ghost task that 
+                    #is not really displayed but still here, in the tree
+                    #it happens sometimes when we remove a parent with children
+                    #if we still have a recorded path for the ghost task,
+                    #we return it. This provides ghost task from staying displayed
+                    if self.path_for_node_cache.has_key(tid):
+                        toreturn = self.path_for_node_cache[tid]
+                    else:
+                        print "ghost position for %s" %tid
+                        print "VR : %s " %self.virtual_root
+                        print self.path_for_node_cache
+                        toreturn = None
                     
-        #print "get_path_for_node %s is %s" %(node.get_id(),str(toreturn))
-        self.path_for_node_cache[node.get_id()] = toreturn
+        #debug statement to show when the path change
+#        if self.path_for_node_cache.has_key(tid):
+#            oldp = self.path_for_node_cache[tid]
+#            if oldp != toreturn:
+#                print "changing %s from %s to %s" %(tid,oldp,toreturn)
+        if self.path_for_node_cache.has_key(tid):
+            self.path_for_node_cache_old[tid] = self.path_for_node_cache[tid]
+        self.path_for_node_cache[tid] = toreturn
         return toreturn
 
     #Done
@@ -628,7 +657,7 @@ class FilteredTree(gobject.GObject):
         if self.node_has_child(node):
             child = self.node_children(node)
             while child:
-                self._print_from_node(child,prefix)
+                self.__print_from_node(child,prefix)
                 child = self.next_node(child)
     
     #This function removes all the nodes, leaves first.
