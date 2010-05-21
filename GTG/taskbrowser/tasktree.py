@@ -279,6 +279,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
             if node_path:
                 node_iter = self.get_iter(node_path)
                 self.row_inserted(node_path, node_iter)
+        self.tree.refilter()
             
 
 class TaskTreeView(gtk.TreeView):
