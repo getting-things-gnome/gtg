@@ -105,6 +105,7 @@ class FilteredTree(gobject.GObject):
         self.add_count = 0
         self.remove_count = 0
         self.__nodes_count = 0
+        self.flat = False
         #virtual root is the list of root nodes
         #initially, they are the root nodes of the original tree
         self.virtual_root = []
@@ -495,10 +496,10 @@ class FilteredTree(gobject.GObject):
         virtual_root2 = []
         to_add = []
         #If we have only one flat filter, the result is flat
-        flat = False
+        self.flat = False
         for f in self.applied_filters:
             filt = self.req.get_filter(f)
-            flat = flat or filt.is_flat()
+            self.flat = self.flat or filt.is_flat()
         #First things, we list the nodes that will be
         #ultimately displayed
         for n in self.tree.get_all_nodes():
@@ -506,10 +507,7 @@ class FilteredTree(gobject.GObject):
             is_root = False
             if self.__is_displayed(tid):
                 to_add.append(tid)
-                if flat:
-                    is_root = True
-                else:
-                    is_root = self.__is_root(n)
+                is_root = self.__is_root(n)
             #and we care about those who will be virtual roots
             #(their parents are not displayed)
             if is_root and tid not in virtual_root2:
@@ -529,7 +527,6 @@ class FilteredTree(gobject.GObject):
             isroot = nid in virtual_root2
             self.__add_node(nid,isroot)
         #end of refiltering
-        self.print_tree()
 
     ####### Change filters #################
     def apply_filter(self,filter_name,parameters=None,imtherequester=False):
@@ -605,7 +602,7 @@ class FilteredTree(gobject.GObject):
     # regardless of the current state
     def __is_root(self,n):
         is_root = True
-        if n.has_parent():
+        if not self.flat and n.has_parent():
             for par in n.get_parents():
                 if self.__is_displayed(par):
                     is_root = False
