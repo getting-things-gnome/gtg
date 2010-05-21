@@ -273,6 +273,13 @@ class TaskTreeModel(gtk.GenericTreeModel):
         #Set new parent
         if parent_tid:
             child_task.add_parent(parent_tid)
+        #If we don't have a new parent, add that task to the root
+        else:
+            node_path = self.tree.get_path_for_node(child_task)
+            if node_path:
+                node_iter = self.get_iter(node_path)
+                self.row_inserted(node_path, node_iter)
+            
 
 class TaskTreeView(gtk.TreeView):
     """TreeView for display of a list of task. Handles DnD primitives too."""
