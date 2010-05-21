@@ -279,6 +279,8 @@ class TaskTreeModel(gtk.GenericTreeModel):
             if node_path:
                 node_iter = self.get_iter(node_path)
                 self.row_inserted(node_path, node_iter)
+        #if we had a filter, we have to refilter after the drag-n-drop
+        #This is not optimal and could be improved
         self.tree.refilter()
             
 
