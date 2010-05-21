@@ -27,7 +27,7 @@ from GTG.core.task import Task
 class Filter:
     def __init__(self,func,req):
         self.func = func
-        self.dic = None
+        self.dic = {}
         self.req = req
         
     def set_parameters(self,dic):
@@ -41,6 +41,13 @@ class Filter:
             return self.func(task,parameters=self.dic)
         else:
             return self.func(task)
+
+    #return True is the filter is a flat list only
+    def is_flat(self):
+        if self.dic.has_key('flat'):
+            return self.dic['flat']
+        else:
+            return False
             
 class SimpleTagFilter:
     def __init__(self,tagname,req):
@@ -83,38 +90,42 @@ class FiltersBank:
         self.available_filters['active'] = filt_obj
         #closed
         filt_obj = Filter(self.closed,self.req)
+        param = {}
+        param['flat'] = True
+        filt_obj.set_parameters(param)
         self.available_filters['closed'] = filt_obj
         #notag
         filt_obj = Filter(self.notag,self.req)
         self.available_filters['notag'] = filt_obj
 
     ######### hardcoded filters #############
-    def notag(self,task):
+    def notag(self,task,parameters=None):
         """ Filter of tasks without tags """
         return task.has_tags(notag_only=True)
         
-    def is_leaf(self,task):
+    def is_leaf(self,task,parameters=None):
         """ Filter of tasks which have no children """
         return not task.has_child()
     
-    def is_workable(self,task):
+    def is_workable(self,task,parameters=None):
         """ Filter of tasks that can be worked """
         return task.is_workable()
             
-    def workview(self,task):
+    def workview(self,task,parameters=None):
         wv = self.active(task) and\
              task.is_started() and\
              self.is_workable(task)
         return wv
         
-    def active(self,task):
+    def active(self,task,parameters=None):
         """ Filter of tasks which are active """
         #FIXME: we should also handle unactive tags
         return task.get_status() == Task.STA_ACTIVE
         
-    def closed(self,task):
+    def closed(self,task,parameters=None):
         """ Filter of tasks which are closed """
-        return task.get_status() in [Task.STA_DISMISSED, Task.STA_DONE]
+        ret = task.get_status() in [Task.STA_DISMISSED, Task.STA_DONE]
+        return ret
         
     ##########################################
         

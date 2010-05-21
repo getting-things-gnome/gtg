@@ -105,6 +105,7 @@ class FilteredTree(gobject.GObject):
         self.add_count = 0
         self.remove_count = 0
         self.__nodes_count = 0
+        self.flat = False
         #virtual root is the list of root nodes
         #initially, they are the root nodes of the original tree
         self.virtual_root = []
@@ -494,6 +495,11 @@ class FilteredTree(gobject.GObject):
         self.remove_count = 0
         virtual_root2 = []
         to_add = []
+        #If we have only one flat filter, the result is flat
+        self.flat = False
+        for f in self.applied_filters:
+            filt = self.req.get_filter(f)
+            self.flat = self.flat or filt.is_flat()
         #First things, we list the nodes that will be
         #ultimately displayed
         for n in self.tree.get_all_nodes():
@@ -596,7 +602,7 @@ class FilteredTree(gobject.GObject):
     # regardless of the current state
     def __is_root(self,n):
         is_root = True
-        if n.has_parent():
+        if not self.flat and n.has_parent():
             for par in n.get_parents():
                 if self.__is_displayed(par):
                     is_root = False
