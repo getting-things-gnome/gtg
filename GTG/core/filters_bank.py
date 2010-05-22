@@ -62,6 +62,9 @@ class SimpleTagFilter:
             tags = [self.tname]
             tags += self.req.get_tag(self.tname).get_children()
             return task.has_tags(tags)
+            
+    def is_flat(self):
+        return False
     
 
 class FiltersBank:
