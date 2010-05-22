@@ -267,6 +267,7 @@ class TagTreeModel(gtk.GenericTreeModel):
         '''
         This method handles the modification of tasks
         '''
+        self._update_all_tasks_and_no_tags()
         self.update_tags_for_task(task_id)
 
     def _path_iter_from_tag_name(self, name):
