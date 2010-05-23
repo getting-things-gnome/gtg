@@ -136,18 +136,15 @@ def toggle_browser_visibility(state):
 def list_tasks(criteria, count_only=False):
     timi = connect_to_gtg()
 
-    tags_requested = None
-    filters = None
-    if criteria == "today":
-        filters = ['active', 'workview']
-    elif criteria and criteria[0] == '@':
-        tags_requested = split(criteria, ' ')
-        filters = tags_requested
-    elif criteria == "all":
-        filters = criteria
-
-    if not filters:
+    if not criteria:
         filters = ['active']
+    else:
+        filters = split(criteria, ' ')
+
+    # Special case 'today' filter
+    if 'today' in filters:
+        filters.extend(['active', 'workview'])
+        filters.remove('today')
 
     tasks = timi.get_tasks_filtered(filters)
 
@@ -174,11 +171,11 @@ def list_tasks(criteria, count_only=False):
         print total
         return total
 
-    if tags_requested:
-        keys = tags_requested
-    else:
+    keys = [t for t in filters if t[0]=='@']
+    if not keys:
         keys = tasks_tree.keys()
         keys.sort()
+
     for key in keys:
         if key != notag:
             print "%s:" %(key[1:])
@@ -223,13 +220,13 @@ if __name__ == '__main__':
     elif command == "list":
         criteria = None
         if len(args)>1:
-            criteria = args[1]
+            criteria = ' '.join(args[1:])
         list_tasks(criteria, False)
 
     elif command == "count":
         criteria = None
         if len(args)>1:
-            criteria = args[1]
+            criteria = ' '.join(args[1:])
         list_tasks(criteria, True)
 
     elif command == "rm" or command == "delete":
