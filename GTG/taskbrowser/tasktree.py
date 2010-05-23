@@ -247,12 +247,13 @@ class TaskTreeModel(gtk.GenericTreeModel):
                 for par in task.get_parents():
                     genealogic_search(par)
         child_task = self.req.get_task(child_tid)
-        parent_task = self.req.get_task(parent_tid)
         current_parents = child_task.get_parents()
-        parents_parents = parent_task.get_parents()
         genealogy = []
-        for p in parents_parents:
-            genealogic_search(p)
+        if parent_tid:
+            parent_task = self.req.get_task(parent_tid)
+            parents_parents = parent_task.get_parents()
+            for p in parents_parents:
+                genealogic_search(p)
 
         #Avoid the typical time-traveller problem being-the-father-of-yourself
         #or the grand-father. We need some genealogic research !
@@ -262,10 +263,26 @@ class TaskTreeModel(gtk.GenericTreeModel):
         child_task.set_to_keep()
         # Remove old parents 
         #FIXME: what about multiple parents?
-        map(lambda p: child_task.remove_parent(p), current_parents)
+        for pid in current_parents:
+            #We first remove the node from the view (to have the path)
+            node_path = self.tree.get_path_for_node(child_task)
+            if node_path:
+                self.row_deleted(node_path)
+            #then, we remove the parent
+            child_task.remove_parent(pid)
         #Set new parent
         if parent_tid:
             child_task.add_parent(parent_tid)
+        #If we don't have a new parent, add that task to the root
+        else:
+            node_path = self.tree.get_path_for_node(child_task)
+            if node_path:
+                node_iter = self.get_iter(node_path)
+                self.row_inserted(node_path, node_iter)
+        #if we had a filter, we have to refilter after the drag-n-drop
+        #This is not optimal and could be improved
+        self.tree.refilter()
+            
 
 class TaskTreeView(gtk.TreeView):
     """TreeView for display of a list of task. Handles DnD primitives too."""
@@ -478,7 +495,12 @@ class ActiveTaskTreeView(TaskTreeView):
                 # Must add task as a child of the dropped-on iter
                 # Get parent
                 destination_iter = iter
-            destination_tid = model.get_value(destination_iter, COL_TID)
+            if destination_iter:
+                destination_tid = model.get_value(destination_iter, COL_TID)
+            else:
+                #it means we have drag-n-dropped above the first task
+                # we should consider the destination as a root then.
+                destination_tid = None
         else:
             # Must add the task to the root
             # Parent = root => iter=None

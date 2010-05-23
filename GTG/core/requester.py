@@ -208,6 +208,7 @@ class Requester(gobject.GObject):
         for tag in task.get_tags():
             self.emit('tag-modified', tag.get_name())
         self.emit('task-deleted', tid)
+        #return True
         return self.ds.delete_task(tid)
 
     ############### Tags ##########################

@@ -61,7 +61,7 @@ class Tree():
             #We add the node
             node.set_tree(self)
             if parent:#    
-                node.set_parent(parent)
+                node.set_parent(parent.get_id())
                 parent.add_child(id)
             else:
                 self.root.add_child(id)
@@ -279,6 +279,9 @@ class TreeNode():
             return None
 
     def get_parents(self):
+        '''
+        Return a list of parent ids
+        '''
         return list(self.parents)
 
     def add_parent(self, parent_id):
@@ -292,21 +295,23 @@ class TreeNode():
             return False
     
     #set_parent means that we remove all other parents
-    def set_parent(self,par):
+    def set_parent(self,par_id):
         is_already_parent_flag = False
-        if par:
+        if par_id:
             for i in self.parents:
-                if i != par:
+                if i != par_id:
                     assert(self.remove_parent(i) == True)
                 else:
                     is_already_parent_flag = True
             if not is_already_parent_flag:
-                self.add_parent(par)
+                self.add_parent(par_id)
             
     def remove_parent(self,id):
         if id in self.parents:
             self.parents.remove(id)
             ret = self.tree.break_relationship(id,self.get_id())
+            if ret:
+                self.req._task_modified(id)
             return ret
         else:
             return False
@@ -339,7 +344,10 @@ class TreeNode():
             return None
 
     def get_child_index(self, id):
-        return self.children.index(id)
+        if id in self.children:
+            return self.children.index(id)
+        else:
+            return None
 
     #return True if the child was added correctly. False otherwise
     #takes the id of the child as parameter.
@@ -352,6 +360,8 @@ class TreeNode():
         if id in self.children:
             self.children.remove(id)
             ret = self.tree.break_relationship(self.get_id(),id)
+            if ret:
+                self.req._task_modified(id)
             return ret
         else:
             return False

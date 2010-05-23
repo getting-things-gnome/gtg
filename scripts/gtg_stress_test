@@ -1,7 +1,9 @@
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
+
 # -----------------------------------------------------------------------------
-# Gettings Things Gnome! - a personal organizer for the GNOME desktop
-# Copyright (c) 2008-2009 - Lionel Dricot & Bertrand Rousseau
+# Getting Things Gnome! - A personal organizer for the GNOME desktop
+# Copyright (c) 2008,2009 Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -17,20 +19,26 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-"""Unit tests for GTG."""
+"""
+GTG stress test
+"""
+import sys
+import dbus
+import uuid
 
-import unittest
+def connect():
+    #We will connect on the session bus
+    bus = dbus.SessionBus()
+    liste = bus.list_names()
+    busname = "org.GTG"
+    remote_object = bus.get_object(busname,"/org/GTG")
+    return dbus.Interface(remote_object,dbus_interface="org.GTG")
 
-from GTG.tests import (
-    test_tagstore,
-    test_taskviewserial,
-    test_tree,
-    )
-
-
-def test_suite():
-    return unittest.TestSuite([
-        test_tagstore.test_suite(),
-        test_taskviewserial.test_suite(),
-	test_tree.test_suite(),
-        ])
+if __name__ == '__main__':
+    if len(sys.argv) == 1:
+         print "Usage: " + sys.argv[0] + " <number-of-tasks>"
+         sys.exit(1)
+    total_tasks = int(sys.argv[1])
+    gtg = connect()
+    for i in xrange(total_tasks):
+        gtg.new_task("Active", str(uuid.uuid4()), "","","","","","")

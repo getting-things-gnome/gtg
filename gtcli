@@ -19,6 +19,7 @@ import dbus
 import cgi
 import getopt
 import textwrap
+from string import split
 
 def _(text):
     return text
@@ -135,10 +136,14 @@ def toggle_browser_visibility(state):
 def list_tasks(criteria, count_only=False):
     timi = connect_to_gtg()
 
+    tags_requested = None
     if criteria == "today":
         tasks = timi.get_tasks_filtered(['active', 'workview'])
     elif criteria == "all":
         tasks = timi.get_tasks_filtered(['all'])
+    elif criteria and criteria[0] == '@':
+        tags_requested = split(criteria, ' ')
+        tasks = timi.get_tasks_filtered(tags_requested)
     else:
         tasks = timi.get_tasks_filtered(['active'])
 
@@ -165,8 +170,11 @@ def list_tasks(criteria, count_only=False):
         print total
         return total
 
-    keys = tasks_tree.keys()
-    keys.sort()
+    if tags_requested:
+        keys = tags_requested
+    else:
+        keys = tasks_tree.keys()
+        keys.sort()
     for key in keys:
         if key != notag:
             print "%s:" %(key[1:])

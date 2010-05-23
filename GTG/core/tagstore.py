@@ -83,7 +83,7 @@ class TagStore(Tree):
             parent = tag.get_attribute('parent')
             if parent:
                 pnode=self.new_tag(parent)
-                tag.set_parent(pnode)
+                tag.set_parent(pnode.get_id())
 
     def new_tag(self, tagname):
         """Create a new tag and return it or return the existing one
@@ -278,10 +278,8 @@ class Tag(TreeNode):
         to_return = None
         if att_name == 'parent':
             if self.has_parent():
-                parlist = self.get_parents()
-                to_return = parlist.pop()
-                while len(parlist) > 0:
-                    to_return += ",%s" % parlist.pop()
+                parents_id = self.get_parents()
+                to_return = reduce(lambda a,b: "%s,%s" % (a, b), parents_id)
         else:
             to_return = self._attributes.get(att_name, None)
         return to_return

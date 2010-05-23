@@ -25,38 +25,57 @@ from GTG.core.task import Task
 
 
 class Filter:
-    def __init__(self,func,req):
+    def __init__(self,func,req,negate=False):
         self.func = func
-        self.dic = None
+        self.dic = {}
         self.req = req
-        
+        self.negate = negate
+
     def set_parameters(self,dic):
         self.dic = dic
     
     def is_displayed(self,tid):
         task = self.req.get_task(tid)
+        value = True
         if not task:
-            return False
+            value = False
         elif self.dic:
-            return self.func(task,parameters=self.dic)
+            value = self.func(task,parameters=self.dic)
         else:
-            return self.func(task)
+            value = self.func(task)
+        if self.negate:
+            value = not value
+        return value
+
+    #return True is the filter is a flat list only
+    def is_flat(self):
+        if self.dic.has_key('flat'):
+            return self.dic['flat']
+        else:
+            return False
             
 class SimpleTagFilter:
-    def __init__(self,tagname,req):
+    def __init__(self,tagname,req,negate=False):
         self.req = req
         self.tname = tagname
+        self.negate = negate
         
     def is_displayed(self,tid):
         task = self.req.get_task(tid)
+        value = True
         if not task:
-            return False
+            value = False
         else:
             tags = [self.tname]
             tags += self.req.get_tag(self.tname).get_children()
-            return task.has_tags(tags)
+            value = task.has_tags(tags)
+        if self.negate:
+            value = not value
+        return value
+            
+    def is_flat(self):
+        return False
     
-
 class FiltersBank:
     """
     Stores filter objects in a centralized place.
@@ -83,38 +102,80 @@ class FiltersBank:
         self.available_filters['active'] = filt_obj
         #closed
         filt_obj = Filter(self.closed,self.req)
+        param = {}
+        param['flat'] = True
+        filt_obj.set_parameters(param)
         self.available_filters['closed'] = filt_obj
         #notag
         filt_obj = Filter(self.notag,self.req)
         self.available_filters['notag'] = filt_obj
+        #workdue
+        filt_obj = Filter(self.workdue,self.req)
+        self.available_filters['workdue'] = filt_obj
+        #workstarted
+        filt_obj = Filter(self.workstarted,self.req)
+        self.available_filters['workstarted'] = filt_obj
+        #worktostart
+        filt_obj = Filter(self.worktostart,self.req)
+        self.available_filters['worktostart'] = filt_obj
+        #worklate
+        filt_obj = Filter(self.worklate,self.req)
+        self.available_filters['worklate'] = filt_obj
 
     ######### hardcoded filters #############
-    def notag(self,task):
+    def notag(self,task,parameters=None):
         """ Filter of tasks without tags """
         return task.has_tags(notag_only=True)
         
-    def is_leaf(self,task):
+    def is_leaf(self,task,parameters=None):
         """ Filter of tasks which have no children """
         return not task.has_child()
     
-    def is_workable(self,task):
+    def is_workable(self,task,parameters=None):
         """ Filter of tasks that can be worked """
         return task.is_workable()
             
-    def workview(self,task):
+    def workview(self,task,parameters=None):
         wv = self.active(task) and\
              task.is_started() and\
              self.is_workable(task)
         return wv
         
-    def active(self,task):
+    def workdue(self,task):
+        ''' Filter for tasks due within the next day '''
+        wv = self.workview(task) and \
+             task.get_due_date() != no_date and \
+             task.get_days_left() < 2
+        return wv
+
+    def worklate(self,task):
+        ''' Filter for tasks due within the next day '''
+        wv = self.workview(task) and \
+             task.get_due_date() != no_date and \
+             task.get_days_late() > 0
+        return wv
+
+    def workstarted(self,task):
+        ''' Filter for workable tasks with a start date specified '''
+        wv = self.workview(task) and \
+             task.start_date
+        return wv
+        
+    def worktostart(self,task):
+        ''' Filter for workable tasks without a start date specified '''
+        wv = self.workview(task) and \
+             not task.start_date
+        return wv
+        
+    def active(self,task,parameters=None):
         """ Filter of tasks which are active """
         #FIXME: we should also handle unactive tags
         return task.get_status() == Task.STA_ACTIVE
         
-    def closed(self,task):
+    def closed(self,task,parameters=None):
         """ Filter of tasks which are closed """
-        return task.get_status() in [Task.STA_DISMISSED, Task.STA_DONE]
+        ret = task.get_status() in [Task.STA_DISMISSED, Task.STA_DONE]
+        return ret
         
     ##########################################
         
@@ -140,10 +201,14 @@ class FiltersBank:
         Return False if the filter_name was already in the bank
         """
         if filter_name not in self.list_filters():
+            negate = False
+            if filter_name.startswith('!'):
+                negate = True
+                filter_name = filter_name[1:]
             if filter_name.startswith('@'):
-                filter_obj = SimpleTagFilter(filter_name,self.req)
+                filter_obj = SimpleTagFilter(filter_name,self.req,negate=negate)
             else:
-                filter_obj = Filter(filter_func,self.req)
+                filter_obj = Filter(filter_func,self.req,negate=negate)
             self.custom_filters[filter_name] = filter_obj
             return True
         else:

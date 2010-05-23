@@ -67,13 +67,17 @@ class DataStore:
         tid is not present in this DataStore.
         @param tid: Task ID to retrieve
         """
-        uid, pid = tid.split('@')
-        if self.has_task(tid):
-            task = self.__internal_get_task(tid)
+        if tid:
+            uid, pid = tid.split('@')
+            if self.has_task(tid):
+                task = self.__internal_get_task(tid)
+            else:
+                #print "no task %s" %tid
+                task = None
+            return task
         else:
-            #print "no task %s" %tid
-            task = None
-        return task
+            print "get_task should take a tid"
+            return None
         
     def __internal_get_task(self, tid):
         toreturn = self.open_tasks.get_node(tid)
