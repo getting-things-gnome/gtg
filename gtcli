@@ -40,8 +40,8 @@ def usage():
     text += f%( "gtcli show <tid>", _("Display detailed information on given task id") )
     text += f%( "gtcli edit <tid>", _("Opens the GUI editor for the given task id") )
     text += f%( "gtcli delete <tid>", _("Removes task identified by tid") )
-    text += f%( "gtcli list [all|today]", _("List tasks") )
-    text += f%( "gtcli count [all|today]", _("Number of tasks") )
+    text += f%( "gtcli list [all|today|<filter>|<tag>]...", _("List tasks") )
+    text += f%( "gtcli count [all|today|<filter>|<tag>]...", _("Number of tasks") )
     text += f%( "gtcli postpone <tid> <date>", _("Updates the start date of task") )
     text += f%( "gtcli close <tid>", _("Sets state of task identified by tid to closed") )
     text += f%( "gtcli browse [hide|show]", _("Hides or shows the task browser window"))
@@ -122,7 +122,7 @@ def open_task_editor(tid):
     task_data = timi.open_task_editor(tid)
 
 def toggle_browser_visibility(state):
-    """ """
+    """ Cause the task browser to be displayed """
     timi = connect_to_gtg()
     if state == "hide":
         timi.hide_task_browser()
@@ -134,18 +134,26 @@ def toggle_browser_visibility(state):
         timi.show_task_browser()
 
 def list_tasks(criteria, count_only=False):
+    """ Display a listing of tasks 
+    
+    Accepts any filter or combination of filters or tags to limit the
+    set of tasks shown.  If multiple tags specified, it lists only tasks
+    that have all the tags.  If no filters or tags are specified,
+    defaults to showing all active tasks.
+    """
     timi = connect_to_gtg()
 
-    tags_requested = None
-    if criteria == "today":
-        tasks = timi.get_tasks_filtered(['active', 'workview'])
-    elif criteria == "all":
-        tasks = timi.get_tasks_filtered(['all'])
-    elif criteria and criteria[0] == '@':
-        tags_requested = split(criteria, ' ')
-        tasks = timi.get_tasks_filtered(tags_requested)
+    if not criteria:
+        filters = ['active']
     else:
-        tasks = timi.get_tasks_filtered(['active'])
+        filters = split(criteria, ' ')
+
+    # Special case 'today' filter
+    if 'today' in filters:
+        filters.extend(['active', 'workview'])
+        filters.remove('today')
+
+    tasks = timi.get_tasks_filtered(filters)
 
     tasks_tree = { }
     total = 0
@@ -170,12 +178,15 @@ def list_tasks(criteria, count_only=False):
         print total
         return total
 
-    if tags_requested:
-        keys = tags_requested
-    else:
+    # If any tags were specified, use only those as the categories
+    keys = [t for t in filters if t[0]=='@']
+    if not keys:
         keys = tasks_tree.keys()
         keys.sort()
+
     for key in keys:
+        if key not in tasks_tree:
+            continue
         if key != notag:
             print "%s:" %(key[1:])
         for task in tasks_tree[key]:
@@ -219,13 +230,13 @@ if __name__ == '__main__':
     elif command == "list":
         criteria = None
         if len(args)>1:
-            criteria = args[1]
+            criteria = ' '.join(args[1:])
         list_tasks(criteria, False)
 
     elif command == "count":
         criteria = None
         if len(args)>1:
-            criteria = args[1]
+            criteria = ' '.join(args[1:])
         list_tasks(criteria, True)
 
     elif command == "rm" or command == "delete":
