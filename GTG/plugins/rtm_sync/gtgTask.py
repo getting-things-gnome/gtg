@@ -20,6 +20,8 @@ from GTG.tools.dates import NoDate, RealDate
 from GTG.plugins.rtm_sync.genericTask import GenericTask
 
 class GtgTask(GenericTask):
+    #GtgTask passes only datetime objects with the timezone loaded 
+    # to talk about dates and times
 
     def __init__(self, gtg_task, plugin_api, gtg_proxy):
         super(GtgTask, self).__init__(gtg_proxy)

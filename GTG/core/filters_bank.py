@@ -72,6 +72,14 @@ class FiltersBank:
     """
 
     def __init__(self,req,tree=None):
+        """
+        Create several stock filters:
+
+        workview - Tasks that are active, workable, and started
+        active - Tasks of status Active
+        closed - Tasks of status closed or dismissed
+        notag - Tasks with no tags
+        """
         self.tree = tree
         self.req = req
         self.available_filters = {}

@@ -11,7 +11,12 @@ BUSFACE = CoreConfig.BUSINTERFACE
 
 
 def dsanitize(data):
-    # Clean up a dict so that it can be transmitted through D-Bus
+    """
+    Clean up a dict so that it can be transmitted through D-Bus.
+    D-Bus does not have concepts for empty or null arrays or values 
+    so these need to be converted into blank values D-Bus accepts.
+    @return: Cleaned up dictionary
+    """
     for k, v in data.items():
         # Manually specify an arbitrary content type for empty Python arrays
         # because D-Bus can't handle the type conversion for empty arrays
@@ -27,7 +32,9 @@ def dsanitize(data):
 
 
 def task_to_dict(task):
-    # Translate a task object into a D-Bus dictionary
+    """
+    Translate a task object into a D-Bus dictionary
+    """
     return dbus.Dictionary(dsanitize({
           "id": task.get_id(),
           "status": task.get_status(),
@@ -38,12 +45,15 @@ def task_to_dict(task):
           "tags": task.get_tags_name(),
           "text": task.get_text(),
           "subtask": task.get_children(),
+          "parents": task.get_parents(),
           }), signature="sv")
 
 
 class DBusTaskWrapper(dbus.service.Object):
+    """
+    D-Bus service object that exposes GTG's task store to third-party apps
+    """
 
-    # D-Bus service object that exposes GTG's task store to third-party apps
     def __init__(self, req, view_manager):
         # Attach the object to D-Bus
         self.bus = dbus.SessionBus()
@@ -52,51 +62,50 @@ class DBusTaskWrapper(dbus.service.Object):
         self.req = req
         self.view_manager = view_manager
 
-
-    @dbus.service.method(BUSNAME,in_signature="s")
-    def get_task_ids(self, status_string):
-        # Retrieve a list of task ID values
-        status = [s.strip() for s in status_string.split(',')]
-        #need to convert the statuses to ascii (these are given in unicode)
-        status = [unicodedata.normalize('NFKD', s).encode('ascii','ignore') \
-                  for s in status]
-        return self.req.get_tasks_list(status = status)
-
     @dbus.service.method(BUSNAME)
     def get_task(self, tid):
-        # Retrieve a specific task by ID and return the data
+        """
+        Retrieve a specific task by ID and return the data
+        """
         toret = task_to_dict(self.req.get_task(tid))
         return toret
 
     @dbus.service.method(BUSNAME)
     def get_tasks(self):
-        # Retrieve a list of task data dicts
-        return [self.get_task(id) for id in self.get_task_ids()]
+        """
+        Retrieve a list of task data dicts
+        """
+        return self.get_tasks_filtered(['all'])
 
     @dbus.service.method(BUSNAME, in_signature="as")
     def get_active_tasks(self, tags):
-        # Retrieve a list of task data dicts
-        return [self.get_task(id) for id in self.req.get_active_tasks_list(tags=tags, workable=True)]
+        """
+        Retrieve a list of task data dicts
+        """
+        return self.get_tasks_filtered(['active', 'workable'])
 
-    @dbus.service.method(BUSNAME, in_signature="asasbb")
-    def get_task_ids_filtered(self, tags, status, started_only, is_root):
-        # Retrieve a list of task IDs filtered by specified parameters
-        tags_obj = []
-        for t in tags:
-            zetag = self.req.get_tag(t)
-            if zetag:
-                tags_obj.append(zetag)
-        ids = self.req.get_tasks_list(
-            tags_obj, status, False, started_only, is_root)
-        # If there are no matching tasks, return an empty D-Bus array
-        return ids if ids else dbus.Array([], "s")
+    @dbus.service.method(BUSNAME, in_signature="as")
+    def get_task_ids_filtered(self, filters):
+        """
+        Filters the task list and provides list of remaining ids
+        @param:  List of strings for filters to apply.  See the
+         filters_bank documentation for a list of stock filters.
+        @return: List of ids
+        """
+        tree = self.req.get_custom_tasks_tree()
+        for filter in filters:
+            tree.apply_filter(filter)
+        return tree.get_all_keys()
 
-    @dbus.service.method(BUSNAME, in_signature="asasbb")
-    def get_tasks_filtered(self, tags, status, started_only, is_root):
-        # Retrieve a list of task data dicts filtered by specificed parameters
-        tasks = self.get_task_ids_filtered(
-            tags, status, started_only, is_root)
-        # If no tasks match the filter, return an empty D-Bus array
+    @dbus.service.method(BUSNAME, in_signature="as")
+    def get_tasks_filtered(self, filters):
+        """
+        Gets a list of tasks for the given filters
+        @param:  List of strings for filters to apply.  See the
+         filters_bank documentation for a list of stock filters.
+        @return: List of task dicts
+        """
+        tasks = self.get_task_ids_filtered(filters)
         if tasks:
             return [self.get_task(id) for id in tasks]
         else:
@@ -104,16 +113,35 @@ class DBusTaskWrapper(dbus.service.Object):
 
     @dbus.service.method(BUSNAME)
     def has_task(self, tid):
+        """
+        Returns true if the task id is present in the task backend.
+        Task could be either open or closed, but not deleted.
+        """
         return self.req.has_task(tid)
 
     @dbus.service.method(BUSNAME)
     def delete_task(self, tid):
+        """
+        Delete the given task id from the repository.
+        """
         self.req.delete_task(tid)
 
     @dbus.service.method(BUSNAME, in_signature="sssssassas")
     def new_task(self, status, title, duedate, startdate, donedate, tags,
                  text, subtasks):
-        # Generate a new task object and return the task data as a dict
+        """
+        Generate a new task object and return the task data as a dict
+        @param status:     One of 'Active', 'Dismiss', or 'Done'
+        @param title:      String name of the task
+        @param duedate:    Date the task is due, such as "2010-05-01".
+         also supports 'now', 'soon', 'later'
+        @param startdate:  Date the task will be started
+        @param donedate:   Date the task was finished
+        @param tags:       List of strings for tags to apply for this task
+        @param text:       String description
+        @param subtasks:   A list of task ids of tasks to add as children
+        @return: A dictionary with the data of the newly created task
+        """
         nt = self.req.new_task(tags=tags)
         for sub in subtasks:
             nt.add_child(sub)
@@ -126,12 +154,19 @@ class DBusTaskWrapper(dbus.service.Object):
 
     @dbus.service.method(BUSNAME)
     def modify_task(self, tid, task_data):
-        # Apply supplied task data to the task object with the specified ID
+        """
+        Updates the task with ID tid using the provided information
+        in the task_data structure.  Note that any fields left blank
+        or undefined in task_data will clear the value in the task,
+        so the best way to update a task is to first retrieve it via
+        get_task(tid), modify entries as desired, and send it back
+        via this function.        
+        """
         task = self.req.get_task(tid)
-        task.set_status(task_data["status"], donedate=task_data["donedate"])
+        task.set_status(task_data["status"], donedate=dates.strtodate(task_data["donedate"]))
         task.set_title(task_data["title"])
-        task.set_due_date(task_data["duedate"])
-        task.set_start_date(task_data["startdate"])
+        task.set_due_date(dates.strtodate(task_data["duedate"]))
+        task.set_start_date(dates.strtodate(task_data["startdate"]))
         task.set_text(task_data["text"])
 
         for tag in task_data["tags"]:
@@ -142,10 +177,22 @@ class DBusTaskWrapper(dbus.service.Object):
 
     @dbus.service.method(BUSNAME)
     def open_task_editor(self, tid):
+        """
+        Launches the GUI task editor showing the task with ID tid.
+
+        This routine returns as soon as the GUI has launched.
+        """
         self.view_manager.open_task(tid)
         
     @dbus.service.method(BUSNAME, in_signature="ss")
     def open_new_task(self, title, description):
+        """
+        Launches the GUI task editor with a new task.  The task is not
+        guaranteed to exist after the editor is closed, since the user
+        could cancel the editing session.
+
+        This routine returns as soon as the GUI has launched.
+        """
         nt = self.req.new_task(newtask=True)
         nt.set_title(title)
         if description != "":
@@ -155,8 +202,31 @@ class DBusTaskWrapper(dbus.service.Object):
 
     @dbus.service.method(BUSNAME)
     def hide_task_browser(self):
+        """
+        Causes the main task browser to become invisible.  It is still
+        running but there will be no visible indication of this.
+        """
         self.view_manager.hide_browser()
 
     @dbus.service.method(BUSNAME)
+    def iconify_task_browser(self):
+        """
+        Minimizes the task browser
+        """
+        self.view_manager.iconify_browser()
+
+    @dbus.service.method(BUSNAME)
     def show_task_browser(self):
+        """
+        Shows and unminimizes the task browser and brings it to the
+        top of the z-order.
+        """
         self.view_manager.show_browser()
+
+    @dbus.service.method(BUSNAME)
+    def is_task_browser_visible(self):
+        """
+        Returns true if task browser is visible, either minimized or
+        unminimized, with or without active focus.
+        """
+        return self.view_manager.is_browser_visible()

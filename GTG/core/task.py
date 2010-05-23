@@ -25,10 +25,11 @@ import xml.dom.minidom
 import uuid
 import xml.sax.saxutils as saxutils
 
-from GTG import _
-from GTG.tools.dates import date_today, no_date, Date
-from datetime import datetime
-from GTG.core.tree import TreeNode
+from GTG              import _
+from GTG.tools.dates  import date_today, no_date, Date
+from datetime         import datetime
+from GTG.core.tree    import TreeNode
+from GTG.tools.logger import Log
 
 
 class Task(TreeNode):
@@ -337,6 +338,7 @@ class Task(TreeNode):
 
         @param child: the added task
         """
+        Log.debug("adding child %s to task %s" %(tid, self.get_id()))
         self.can_be_deleted = False
         #the core of the method is in the TreeNode object
         if TreeNode.add_child(self,tid):
@@ -346,8 +348,11 @@ class Task(TreeNode):
                 child.set_start_date(self.get_start_date())
                 for t in self.get_tags():
                     child.tag_added(t.get_name())
+            self.sync()
+            child.sync()
             return True
         else:
+            Log.debug("child addition failed")
             return False
             
     def remove_child(self,tid):
@@ -357,12 +362,18 @@ class Task(TreeNode):
         """
         if TreeNode.remove_child(self,tid):
             task = self.req.get_task(tid)
-            if task.can_be_deleted:
+            if task.can_be_deleted or task.get_parents() == []:
+                #child is a new, unmodified task or it has
+                # no more parents. It should be deleted
+                #FIXME: what about I want to move the child to a 
+                #       root node? We have to make sure that remove_parent
+                #       is called instead
                 self.req.delete_task(tid)
             self.sync()
             return True
         else:
             return False
+
 
     #FIXME : remove this method
     def get_subtasks(self):
@@ -395,12 +406,14 @@ class Task(TreeNode):
 
     #Take a tid object as parameter
     def add_parent(self, parent_tid):
+        Log.debug("adding parent %s to task %s" %(parent_tid, self.get_id()))
         added = TreeNode.add_parent(self, parent_tid)
         if added:
             self.sync()
             self.req.get_task(parent_tid).sync()
             return True
         else:
+            Log.debug("*****************parent addition failed**************")
             return False
 
     #Take a tid as parameter
@@ -511,8 +524,10 @@ class Task(TreeNode):
         self.tag_added(new)
 
     def tag_added(self, tagname):
+        """
+        Adds a tag. Does not add '@tag' to the contents. See insert_tag
+        """
         #print "tag %s added to task %s" %(tagname,self.get_id())
-        "Add a tag. Does not add '@tag' to the contents. See insert_tag"
         t = tagname.encode("UTF-8")
         tag = self.req.get_tag(t)
         if not tag:

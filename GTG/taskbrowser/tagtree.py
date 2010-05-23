@@ -20,9 +20,10 @@ import gtk
 import gobject
 import xml.sax.saxutils as saxutils
 
-from GTG import _
+from GTG                              import _
 from GTG.taskbrowser.CellRendererTags import CellRendererTags
-from GTG.taskbrowser.tasktree import COL_OBJ as TASKTREE_COL_OBJ
+from GTG.taskbrowser.tasktree         import COL_OBJ as TASKTREE_COL_OBJ
+from GTG.tools.logger                 import Log
     
 COL_ID    = 0
 COL_NAME  = 1
@@ -208,7 +209,7 @@ class TagTreeModel(gtk.GenericTreeModel):
             return None
 
     def add_tag(self, sender, tname):
-#        print "add tag %s" % (tname)
+        Log.debug("add tag %s" % (tname))
 #        self.tree.add_node(tag)
         tag = self.tree.get_node(tname)
         tag_path  = self.tree.get_path_for_node(tag)
@@ -223,7 +224,7 @@ class TagTreeModel(gtk.GenericTreeModel):
                 self.row_has_child_toggled(tag_path, tag_iter)
 
     def update_tag(self, sender, tname):
-#        print "update tag %s" % (tname)
+        Log.debug("update tag %s" % (tname))
         if self.displayed.get(tname):
             self.row_deleted(self.displayed[tname])
             self.displayed.pop(tname)
@@ -236,7 +237,7 @@ class TagTreeModel(gtk.GenericTreeModel):
                 self.row_has_child_toggled(tag_path, tag_iter)
 
     def move_tag(self, parent, child):
-        #print "Moving %s below %s" % (child, parent)
+        Log.debug("Moving %s below %s" % (child, parent))
         # Get child
         child_tag  = self.get_value(child, COL_OBJ)
         child_path = self.get_path(child)
@@ -277,6 +278,7 @@ class TagTreeModel(gtk.GenericTreeModel):
         self.row_inserted(new_child_path, new_child_iter)
         
     def rename_tag(self,oldname,newname):
+        Log.debug("renaming tag %s" % (tname))
         newname = newname.replace(" ", "_")
         tag = self.req.get_tag(oldname)
         # delete old row

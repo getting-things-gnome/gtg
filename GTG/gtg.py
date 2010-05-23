@@ -129,7 +129,7 @@ def main(options=None, args=None):
     # if GTG is forcefully terminated (e.g.: on shutdown).
     @contextmanager
     def signal_catcher():
-        #if TERM or ABORTare caught, we close the browser
+        #if TERM or ABORT are caught, we close the browser
         for s in [signal.SIGABRT, signal.SIGTERM]:
             signal.signal(s, lambda a,b: manager.close_browser())
         yield

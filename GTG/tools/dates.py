@@ -134,11 +134,11 @@ no_date = NoDate()
 #to a date
 #If the date is not correct, the function returns None
 def strtodate(stri) :
-    if stri == _("now"):
+    if stri == _("now") or stri == "now":
         return NOW
-    elif stri == _("soon"):
+    elif stri == _("soon") or stri == "soon":
         return SOON
-    elif stri == _("later"):
+    elif stri == _("later") or stri == "later":
         return LATER
         
     toreturn = None
@@ -175,14 +175,25 @@ def get_canonical_date(arg):
     Transform "arg" in a valid yyyy-mm-dd date or return None.
     "arg" can be a yyyy-mm-dd, yyyymmdd, mmdd, today, next week,
     next month, next year, or a weekday name.
+    Literals are accepted both in english and in the locale language.
+    When clashes occur the locale takes precedence.
     """
     today = date.today()
-    day_names = [_("monday"), _("tuesday"), _("wednesday"),
-                 _("thursday"), _("friday"), _("saturday"),
+    #FIXME: there surely exist a way to get day names from the  datetime
+    #       or time module.
+    day_names = ["monday", "tuesday", "wednesday", \
+                 "thursday", "friday", "saturday", \
+                 "sunday"]
+    day_names_localized = [_("monday"), _("tuesday"), _("wednesday"), \
+                 _("thursday"), _("friday"), _("saturday"), \
                  _("sunday")]
-    #FIXME: next month should get correct delta (not every
-    #       month is 30 days long)
-    delta_day_names = {_("today"):      0, \
+    delta_day_names = {"today":      0, \
+                       "tomorrow":   1, \
+                       "next week":  7, \
+                       "next month": calendar.mdays[today.month], \
+                       "next year":  365 + int(calendar.isleap(today.year))}
+    delta_day_names_localized = \
+                      {_("today"):      0, \
                        _("tomorrow"):   1, \
                        _("next week"):  7, \
                        _("next month"): calendar.mdays[today.month], \
@@ -194,14 +205,22 @@ def get_canonical_date(arg):
     if arg.isdigit():
         if len(arg) == 4:
             arg = str(date.today().year) + arg
-        assert(len(arg), 8)
+        assert(len(arg) == 8)
         arg = "%s-%s-%s" % (arg[:4], arg[4:6], arg[6:])
     #today, tomorrow, next {week, months, year}
-    elif arg in delta_day_names.keys():
-        arg = (today + timedelta(days = delta_day_names[arg])).isoformat()
-    elif arg in day_names:
+    elif arg in delta_day_names.keys() or \
+         arg in delta_day_names_localized.keys():
+        if arg in delta_day_names:
+            delta = delta_day_names[arg]
+        else:
+            delta = delta_day_names_localized[arg]
+        arg = (today + timedelta(days = delta)).isoformat()
+    elif arg in day_names or arg in day_names_localized:
+        if arg in day_names:
+            arg_day = day_names.index(arg)
+        else:
+            arg_day = day_names_localized.index(arg)
         today_day = today.weekday()
-        arg_day = day_names.index(arg)
         next_date = timedelta(days = arg_day - today_day + \
                           7 * int(arg_day <= today_day)) + today
         arg = "%i-%i-%i" % (next_date.year,  \

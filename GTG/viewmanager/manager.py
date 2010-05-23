@@ -131,9 +131,15 @@ class Manager():
     def hide_browser(self,sender=None):
         self.browser.hide()
 
+    def iconify_browser(self,sender=None):
+        self.browser.iconify()
+
     def show_browser(self,sender=None):
         self.browser.show()
         
+    def is_browser_visible(self,sender=None):
+        return self.browser.is_visible()
+
 ################# Task Editor ############################################
 
 
@@ -186,7 +192,8 @@ class Manager():
             self.delete_dialog = DeletionUI(self.req)
         if self.delete_dialog.delete_tasks(tids):
             for t in tids:
-                self.close_task(t)
+                if t in self.opened_task:
+                    self.close_task(t)
             
 ### MAIN ###################################################################
     def main(self):

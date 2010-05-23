@@ -22,11 +22,12 @@ import gobject
 import pango
 import xml.sax.saxutils as saxutils
 
-from GTG import _
-from GTG.core.tree import Tree, TreeNode
-from GTG.tools     import colors
-from GTG.core.task import Task
+from GTG                              import _
+from GTG.core.tree                    import Tree, TreeNode
+from GTG.tools                        import colors
+from GTG.core.task                    import Task
 from GTG.taskbrowser.CellRendererTags import CellRendererTags
+from GTG.tools.logger                 import Log
 
 COL_TID       = 0
 COL_OBJ       = 1
@@ -223,12 +224,15 @@ class TaskTreeModel(gtk.GenericTreeModel):
                     self.row_has_child_toggled(par_path, par_iter)
 
     def remove_task(self, sender, tid):
-        #print "tasktree remove_task %s" %tid
+        #a task has been removed by the requester. Therefore,
+        # the widgets that represent it in the various views should
+        # be removed
+        Log.debug("tasktree remove_task %s" %tid)
         node = self.tree.get_node(tid)
         removed = False
         node_path = self.tree.get_path_for_node(node)
         if node_path:
-#            print "* tasktree REMOVE %s - %s " %(tid,node_path)
+            Log.debug("* tasktree REMOVE %s - %s " %(tid,node_path))
             self.row_deleted(node_path)
             removed = True
         return removed

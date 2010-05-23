@@ -342,6 +342,7 @@ class TreeNode():
             self.tree.break_relationship(self.get_id(),id)
             return True
         else:
+            print "tried to remove non-existing child"
             return False
 
         

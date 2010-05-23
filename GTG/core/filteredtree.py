@@ -26,7 +26,7 @@ The problem we have is that, sometimes, we don't want to display all tasks.
 We want tasks to be filtered (workview, tags, …)
 
 The expected approach would be to put a gtk.TreeModelFilter above our
-TaskTree. Unfortunatly, this doesn't work because TreeModelFilter hides
+TaskTree. Unfortunately, this doesn't work because TreeModelFilter hides
 all children of hidden nodes (not what we want!)
 
 The solution we have found is to insert a fake tree between Tree and
@@ -74,6 +74,8 @@ bottom to top, with no horizontal communication at all between views.
 """
 
 import gobject
+
+from GTG.tools.logger import Log
 
 class FilteredTree(gobject.GObject):
 
@@ -164,6 +166,7 @@ class FilteredTree(gobject.GObject):
             self.__add_node(tid)
         
     def __task_modified(self,sender,tid):
+        #self.refilter()
         todis = self.__is_displayed(tid)
         curdis = self.is_displayed(tid)
         if todis:
@@ -311,7 +314,10 @@ class FilteredTree(gobject.GObject):
                 #The spec says that the child can be None
                 child = None
         else:
-            child = self.virtual_root[0]
+            if len(self.virtual_root) > 0:
+                child = self.virtual_root[0]
+            else:
+                child = None
         return child
 
     #Done
@@ -381,6 +387,9 @@ class FilteredTree(gobject.GObject):
         or if the parent is not displayable.
         """
         #return None if we are at a Virtual root
+        if node == None:
+            Log.debug("requested a parent of a non-existing node")
+            return None
         tid = node.get_id()
         if node and tid in self.virtual_root:
             return None
