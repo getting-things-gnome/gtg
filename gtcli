@@ -145,6 +145,7 @@ def list_tasks(criteria, count_only=False):
     elif criteria[0] == '@':
         print "Showing criteria ", criteria
         # TODO: Split criteria by spaces
+        tags = []
         tags.append(criteria)
         status = ['Active']
         started_only = False
