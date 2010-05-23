@@ -40,8 +40,8 @@ def usage():
     text += f%( "gtcli show <tid>", _("Display detailed information on given task id") )
     text += f%( "gtcli edit <tid>", _("Opens the GUI editor for the given task id") )
     text += f%( "gtcli delete <tid>", _("Removes task identified by tid") )
-    text += f%( "gtcli list [all|today]", _("List tasks") )
-    text += f%( "gtcli count [all|today]", _("Number of tasks") )
+    text += f%( "gtcli list [all|today|<filter>|<tag>]...", _("List tasks") )
+    text += f%( "gtcli count [all|today|<filter>|<tag>]...", _("Number of tasks") )
     text += f%( "gtcli postpone <tid> <date>", _("Updates the start date of task") )
     text += f%( "gtcli close <tid>", _("Sets state of task identified by tid to closed") )
     text += f%( "gtcli browse [hide|show]", _("Hides or shows the task browser window"))
@@ -122,7 +122,7 @@ def open_task_editor(tid):
     task_data = timi.open_task_editor(tid)
 
 def toggle_browser_visibility(state):
-    """ """
+    """ Cause the task browser to be displayed """
     timi = connect_to_gtg()
     if state == "hide":
         timi.hide_task_browser()
@@ -134,6 +134,13 @@ def toggle_browser_visibility(state):
         timi.show_task_browser()
 
 def list_tasks(criteria, count_only=False):
+    """ Display a listing of tasks 
+    
+    Accepts any filter or combination of filters or tags to limit the
+    set of tasks shown.  If multiple tags specified, it lists only tasks
+    that have all the tags.  If no filters or tags are specified,
+    defaults to showing all active tasks.
+    """
     timi = connect_to_gtg()
 
     if not criteria:
@@ -171,6 +178,7 @@ def list_tasks(criteria, count_only=False):
         print total
         return total
 
+    # If any tags were specified, use only those as the categories
     keys = [t for t in filters if t[0]=='@']
     if not keys:
         keys = tasks_tree.keys()
