@@ -61,7 +61,7 @@ class Tree():
             #We add the node
             node.set_tree(self)
             if parent:#    
-                node.set_parent(parent)
+                node.set_parent(parent.get_id())
                 parent.add_child(id)
             else:
                 self.root.add_child(id)
@@ -279,6 +279,9 @@ class TreeNode():
             return None
 
     def get_parents(self):
+        '''
+        Return a list of parent ids
+        '''
         return list(self.parents)
 
     def add_parent(self, parent_id):
