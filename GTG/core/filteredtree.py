@@ -499,7 +499,8 @@ class FilteredTree(gobject.GObject):
         self.flat = False
         for f in self.applied_filters:
             filt = self.req.get_filter(f)
-            self.flat = self.flat or filt.is_flat()
+            if filt and not self.flat:
+                self.flat = filt.is_flat()
         #First things, we list the nodes that will be
         #ultimately displayed
         for n in self.tree.get_all_nodes():
