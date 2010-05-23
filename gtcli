@@ -137,15 +137,19 @@ def list_tasks(criteria, count_only=False):
     timi = connect_to_gtg()
 
     tags_requested = None
+    filters = None
     if criteria == "today":
-        tasks = timi.get_tasks_filtered(['active', 'workview'])
-    elif criteria == "all":
-        tasks = timi.get_tasks_filtered(['all'])
+        filters = ['active', 'workview']
     elif criteria and criteria[0] == '@':
         tags_requested = split(criteria, ' ')
-        tasks = timi.get_tasks_filtered(tags_requested)
-    else:
-        tasks = timi.get_tasks_filtered(['active'])
+        filters = tags_requested
+    elif criteria == "all":
+        filters = criteria
+
+    if not filters:
+        filters = ['active']
+
+    tasks = timi.get_tasks_filtered(filters)
 
     tasks_tree = { }
     total = 0
