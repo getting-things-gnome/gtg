@@ -175,10 +175,14 @@ class Manager():
             # tid key in the opened_task dictionary.
             editor = self.opened_task[tid]
             if editor:
-                editor.close()
                 del self.opened_task[tid]
-        else:
-            print "the %s editor was already unregistered" %tid
+                #we have to remove the tid from opened_task first
+                #else, it close_task would be called once again 
+                #by editor.close
+                editor.close()
+#        else:
+            #FIXME: this one should be a debug statement
+#            print "the %s editor was already unregistered" %tid
             
 ################ Others dialog ############################################
 

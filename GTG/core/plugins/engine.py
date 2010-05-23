@@ -220,6 +220,11 @@ class PluginEngine:
                         if tv:
                             tv.modified(refresheditor=False)
                 plugin.active = False
+            # if plugin is enabled and has onQuit member, execute it
+            else:
+                for api in plugin_apis:
+                    if hasattr(plugin.instance, 'onQuit'):
+                        plugin.instance.onQuit(api)
     
     def onTaskLoad(self, plugin_api):
         """Pass the onTaskLoad signal to all active plugins."""

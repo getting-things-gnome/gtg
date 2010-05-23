@@ -196,16 +196,16 @@ class TaskTreeModel(gtk.GenericTreeModel):
     def update_task(self, sender, tid):
 #        # get the node and signal it's changed
 #        print "tasktree update_task"
-        my_node = self.tree.get_node(tid)
-        if my_node and my_node.is_loaded():
-            node_path = self.tree.get_path_for_node(my_node)
-            if node_path:
-#                print "**** tasktree update_task %s to path %s" %(tid,str(node_path))
-                node_iter = self.get_iter(node_path)
-                self.row_changed(node_path, node_iter)
-                self.row_has_child_toggled(node_path, node_iter)
-            else: 
-                print "Error :! no path for node %s !" %my_node.get_id()
+        if self.tree.is_displayed(tid):
+            my_node = self.tree.get_node(tid)
+            if my_node and my_node.is_loaded():
+                node_path = self.tree.get_path_for_node(my_node)
+                if node_path:
+                    node_iter = self.get_iter(node_path)
+                    self.row_changed(node_path, node_iter)
+                    self.row_has_child_toggled(node_path, node_iter)
+                else: 
+                    print "Error :! no path for node %s !" %my_node.get_id()
 
     def add_task(self, sender, tid):
         task = self.tree.get_node(tid)
@@ -224,9 +224,8 @@ class TaskTreeModel(gtk.GenericTreeModel):
                     self.row_has_child_toggled(par_path, par_iter)
 
     def remove_task(self, sender, tid):
-        #a task has been removed by the requester. Therefore,
-        # the widgets that represent it in the various views should
-        # be removed
+        #a task has been removed from the view. Therefore,
+        # the widgets that represent it should be removed
         Log.debug("tasktree remove_task %s" %tid)
         node = self.tree.get_node(tid)
         removed = False
@@ -241,19 +240,49 @@ class TaskTreeModel(gtk.GenericTreeModel):
         """Moves the task identified by child_tid under
            parent_tid, removing all the precedent parents.
            Child becomes a root task if parent_tid is None"""
+        def genealogic_search(tid):
+            if tid not in genealogy:
+                genealogy.append(tid)
+                task = self.req.get_task(tid)
+                for par in task.get_parents():
+                    genealogic_search(par)
         child_task = self.req.get_task(child_tid)
         current_parents = child_task.get_parents()
+        genealogy = []
+        if parent_tid:
+            parent_task = self.req.get_task(parent_tid)
+            parents_parents = parent_task.get_parents()
+            for p in parents_parents:
+                genealogic_search(p)
+
         #Avoid the typical time-traveller problem being-the-father-of-yourself
-        if parent_tid in current_parents or parent_tid == child_tid:
+        #or the grand-father. We need some genealogic research !
+        if child_tid in genealogy or parent_tid == child_tid:
             return
         #if we move a task, this task should be saved, even if new
         child_task.set_to_keep()
         # Remove old parents 
         #FIXME: what about multiple parents?
-        map(lambda p: child_task.remove_parent(p), current_parents)
+        for pid in current_parents:
+            #We first remove the node from the view (to have the path)
+            node_path = self.tree.get_path_for_node(child_task)
+            if node_path:
+                self.row_deleted(node_path)
+            #then, we remove the parent
+            child_task.remove_parent(pid)
         #Set new parent
         if parent_tid:
             child_task.add_parent(parent_tid)
+        #If we don't have a new parent, add that task to the root
+        else:
+            node_path = self.tree.get_path_for_node(child_task)
+            if node_path:
+                node_iter = self.get_iter(node_path)
+                self.row_inserted(node_path, node_iter)
+        #if we had a filter, we have to refilter after the drag-n-drop
+        #This is not optimal and could be improved
+        self.tree.refilter()
+            
 
 class TaskTreeView(gtk.TreeView):
     """TreeView for display of a list of task. Handles DnD primitives too."""
@@ -466,7 +495,12 @@ class ActiveTaskTreeView(TaskTreeView):
                 # Must add task as a child of the dropped-on iter
                 # Get parent
                 destination_iter = iter
-            destination_tid = model.get_value(destination_iter, COL_TID)
+            if destination_iter:
+                destination_tid = model.get_value(destination_iter, COL_TID)
+            else:
+                #it means we have drag-n-dropped above the first task
+                # we should consider the destination as a root then.
+                destination_tid = None
         else:
             # Must add the task to the root
             # Parent = root => iter=None
@@ -477,6 +511,7 @@ class ActiveTaskTreeView(TaskTreeView):
         for iter in iters:
             dragged_iter = model.get_iter_from_string(iter)
             dragged_tid = model.get_value(dragged_iter, COL_TID)
+            #print "we will move %s to %s" %(dragged_tid,destination_tid)
             tasktree_model.move_task(destination_tid, dragged_tid)
         self.emit_stop_by_name('drag_data_received')
 

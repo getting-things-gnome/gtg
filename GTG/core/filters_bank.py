@@ -27,7 +27,7 @@ from GTG.core.task import Task
 class Filter:
     def __init__(self,func,req,negate=False):
         self.func = func
-        self.dic = None
+        self.dic = {}
         self.req = req
         self.negate = negate
 
@@ -47,6 +47,13 @@ class Filter:
             value = not value
         return value
 
+    #return True is the filter is a flat list only
+    def is_flat(self):
+        if self.dic.has_key('flat'):
+            return self.dic['flat']
+        else:
+            return False
+            
 class SimpleTagFilter:
     def __init__(self,tagname,req,negate=False):
         self.req = req
@@ -65,7 +72,10 @@ class SimpleTagFilter:
         if self.negate:
             value = not value
         return value
-
+            
+    def is_flat(self):
+        return False
+    
 class FiltersBank:
     """
     Stores filter objects in a centralized place.
@@ -92,6 +102,9 @@ class FiltersBank:
         self.available_filters['active'] = filt_obj
         #closed
         filt_obj = Filter(self.closed,self.req)
+        param = {}
+        param['flat'] = True
+        filt_obj.set_parameters(param)
         self.available_filters['closed'] = filt_obj
         #notag
         filt_obj = Filter(self.notag,self.req)
@@ -110,19 +123,19 @@ class FiltersBank:
         self.available_filters['worklate'] = filt_obj
 
     ######### hardcoded filters #############
-    def notag(self,task):
+    def notag(self,task,parameters=None):
         """ Filter of tasks without tags """
         return task.has_tags(notag_only=True)
         
-    def is_leaf(self,task):
+    def is_leaf(self,task,parameters=None):
         """ Filter of tasks which have no children """
         return not task.has_child()
     
-    def is_workable(self,task):
+    def is_workable(self,task,parameters=None):
         """ Filter of tasks that can be worked """
         return task.is_workable()
             
-    def workview(self,task):
+    def workview(self,task,parameters=None):
         wv = self.active(task) and\
              task.is_started() and\
              self.is_workable(task)
@@ -154,14 +167,15 @@ class FiltersBank:
              not task.start_date
         return wv
         
-    def active(self,task):
+    def active(self,task,parameters=None):
         """ Filter of tasks which are active """
         #FIXME: we should also handle unactive tags
         return task.get_status() == Task.STA_ACTIVE
         
-    def closed(self,task):
+    def closed(self,task,parameters=None):
         """ Filter of tasks which are closed """
-        return task.get_status() in [Task.STA_DISMISSED, Task.STA_DONE]
+        ret = task.get_status() in [Task.STA_DISMISSED, Task.STA_DONE]
+        return ret
         
     ##########################################
         

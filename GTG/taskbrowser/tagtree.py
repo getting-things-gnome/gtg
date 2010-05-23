@@ -66,6 +66,9 @@ class TagTreeModel(gtk.GenericTreeModel):
         
         self.req.connect('tag-added',self.add_tag)
         self.req.connect('tag-modified',self.update_tag)
+        self.req.connect('task-added',self.on_task_added)
+        self.req.connect('task-deleted',self.on_task_deleted)
+        self.req.connect('task-modified',self.on_task_modified)
 
         self.displayed = {}
         for n in self.tree.get_all_nodes():
@@ -73,13 +76,30 @@ class TagTreeModel(gtk.GenericTreeModel):
             self.displayed[n.get_id()] = path
 
 ### MODEL METHODS ############################################################
-    def update_tags_for_task(self, tid):
-        task = self.req.get_task(tid)
+    def update_tags_for_task(self, task_id):
+        task = self.req.get_task(task_id)
         if task:
-            for t in task.get_tags():
-                path = self.tree.get_path_for_node(t)
-                iter = self.get_iter(path)
-                self.row_changed(path, iter)
+            for tag in task.get_tags():
+                tasks_count = tag.get_tasks_nbr(workview=self.workview)
+                tag_name = tag.get_name()
+                if tasks_count < 1: 
+                    if tag_name in self.displayed:
+                        self.row_deleted(self.displayed[tag_name])
+                        self.displayed.pop(tag_name)
+                else:
+                    self._update_tag_from_name(tag_name)
+
+    def _update_all_tasks_and_no_tags(self):
+        '''Helper method to update the "All tasks" and "Tasks with no
+        tags" entries'''
+        self._update_tag_from_name(self.req.get_alltag_tag().get_name())
+        self._update_tag_from_name(self.req.get_notag_tag().get_name())
+
+    def _update_tag_from_name(self, name):
+        ''' Helper method to update a row, given the name of the tag '''
+        if name in self.displayed:
+            self.row_changed(*self._path_iter_from_tag_name(name))
+
 
     def set_workview(self, val):
         self.workview = val
@@ -141,8 +161,10 @@ class TagTreeModel(gtk.GenericTreeModel):
                     return 0
             else:
                 if sp_id == "all":
+                    #This is "All tasks"
                     return self.active_filtered_tree.get_nodes_count()
                 elif sp_id == "notag":
+                    #This is "Tasks with no tags"
                     return self.notag_filtered_tree.get_nodes_count()
                 else:
                     return 0
@@ -215,6 +237,8 @@ class TagTreeModel(gtk.GenericTreeModel):
         tag_path  = self.tree.get_path_for_node(tag)
         tag_iter  = self.get_iter(tag_path)
         #print "path is %s " %tag_path
+        #update the number of tasks without tags
+        self._update_tag_from_name(self.req.get_notag_tag().get_name())
         if tag_path != None:
 #            print "### tag %s added to path %s" %(tname,tag_path)
             if not self.displayed.get(tname):
@@ -223,12 +247,48 @@ class TagTreeModel(gtk.GenericTreeModel):
             if tag.has_child():
                 self.row_has_child_toggled(tag_path, tag_iter)
 
+    def on_task_added(self, sender, task_id):
+        '''
+        This method handles the adding of tasks, updating
+        the "All task" entry in the tag pane and the "No tags"
+        '''
+        self._update_all_tasks_and_no_tags()
+        self.update_tags_for_task(task_id)
+
+    def on_task_deleted(self, sender, task_id):
+        '''
+        This method handles the deleting of tasks, updating
+        the "All task" entry in the tag pane and the "No tags"
+        '''
+        self._update_all_tasks_and_no_tags()
+        self.update_tags_for_task(task_id)
+
+    def on_task_modified(self, sender, task_id):
+        '''
+        This method handles the modification of tasks
+        '''
+        self._update_all_tasks_and_no_tags()
+        self.update_tags_for_task(task_id)
+
+    def _path_iter_from_tag_name(self, name):
+        ''' Helper method to get path and iter  given the name
+        of the  tag. It assumes you've verified that "self.displayed" has 
+        the key "name" in it'''
+        tag_path = self.displayed[name]
+        tag_iter = self.get_iter(tag_path)
+        return tag_path, tag_iter
+
     def update_tag(self, sender, tname):
+        #NOTE: maybe issuing row_changed, instead of removing and adding the
+        #      tag, is faster  (Invernizzi)
         Log.debug("update tag %s" % (tname))
         if self.displayed.get(tname):
+            #update the "Tasks with no tag" tag
+            self._update_tag_from_name(self.req.get_notag_tag().get_name())
+            tag = self.tree.get_node(tname)
+            #remove the tag
             self.row_deleted(self.displayed[tname])
             self.displayed.pop(tname)
-            tag = self.tree.get_node(tname)
             tag_path  = self.tree.get_path_for_node(tag)
             tag_iter  = self.get_iter(tag_path)
             self.row_inserted(tag_path, tag_iter)
@@ -258,17 +318,29 @@ class TagTreeModel(gtk.GenericTreeModel):
         # prevent illegal moves
         c = new_par_tag
         while c is not self.tree.root:
+            if not c:
+                break
             if c is child_tag:
                 return
-            c = c.get_parent()
+            c_id = c.get_parent()
+            c = self.tree.get_node(c_id)
 
         if new_par_tag is not self.tree.root:
             if new_par_tag.get_name()[0]!='@':
                 return
         if child_tag.get_name()[0]!='@':
             return
+        child_tag.set_parent(new_par_tag.get_id())
 
-        child_tag.reparent(new_par_tag)
+        #refresh the {old, new} parents
+        if new_par_tag:
+            self._update_tag_from_name(new_par_tag.get_name())
+        if old_par_tag:
+            tasks_count = old_par_tag.get_tasks_nbr(workview=self.workview)
+            if tasks_count > 0:
+                self._update_tag_from_name(old_par_tag.get_name())
+            else:
+                self.row_deleted(self.tree.get_path_for_node(old_par_tag))
 
         # Warn tree about deleted row
         self.row_deleted(child_path)

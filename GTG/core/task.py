@@ -125,7 +125,7 @@ class Task(TreeNode):
         old_status = self.status
         self.can_be_deleted = False
         if status:
-            self.status = status
+            #we first modify the status of the children
             #If Done, we set the done date
             if status in [self.STA_DONE, self.STA_DISMISSED]:
                 for c in self.get_subtasks():
@@ -154,7 +154,8 @@ class Task(TreeNode):
                             par.set_status(self.STA_ACTIVE)
                 #We dont mark the children as Active because
                 #They might be already completed after all
-
+            #then the task itself
+            self.status = status
         self.sync()
 
     def get_status(self):
@@ -491,10 +492,12 @@ class Task(TreeNode):
     #This function send the modified signals for the tasks, 
     #parents and childrens       
     def call_modified(self):
-        self.req._task_modified(self.tid)
-        #we also modify parents and children
+        #we first modify children
         for s in self.get_children():
             self.req._task_modified(s)
+        #then the task
+        self.req._task_modified(self.tid)
+        #then parents
         for p in self.get_parents():
             self.req._task_modified(p)
 
@@ -521,7 +524,9 @@ class Task(TreeNode):
         enew = saxutils.escape(saxutils.unescape(new))
         self.content = self.content.replace(eold, enew)
         self.remove_tag(old)
+        self.req._tag_modified(old)
         self.tag_added(new)
+        self.req._tag_modified(new)
 
     def tag_added(self, tagname):
         """
@@ -539,6 +544,7 @@ class Task(TreeNode):
             for child in self.get_subtasks():
                 if child.can_be_deleted:
                     child.add_tag(t)
+            self.req._tag_modified(t)
             return True
     
     def add_tag(self, tagname):
@@ -569,6 +575,7 @@ class Task(TreeNode):
     def remove_tag(self, tagname):
         t = self.req.get_tag(tagname)
         t.remove_task(self.get_id())
+        self.req._tag_modified(tagname)
         if tagname in self.tags:
             self.tags.remove(tagname)
             for child in self.get_subtasks():

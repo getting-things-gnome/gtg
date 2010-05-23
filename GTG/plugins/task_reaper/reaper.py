@@ -84,7 +84,13 @@ class pluginReaper:
     def onTaskOpened(self, plugin_api):
         pass
 
+    def onQuit(self, plugin_api):
+        if self.is_automatic == True:
+            self.cancel_autopurge()
+
     def deactivate(self, plugin_api):
+        if self.is_automatic == True:
+            self.cancel_autopurge()
         if self.menu_item_is_shown == True:
             plugin_api.remove_menu_item(self.menu_item)
 
