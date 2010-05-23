@@ -22,7 +22,6 @@
 import unittest
 
 from GTG.tests import (
-    test_backends,
     test_tagstore,
     test_taskviewserial,
     test_tree,
@@ -31,7 +30,6 @@ from GTG.tests import (
 
 def test_suite():
     return unittest.TestSuite([
-        test_backends.test_suite(),
         test_tagstore.test_suite(),
         test_taskviewserial.test_suite(),
 	test_tree.test_suite(),
