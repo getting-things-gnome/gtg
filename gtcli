@@ -19,6 +19,7 @@ import dbus
 import cgi
 import getopt
 import textwrap
+from datetime import date, timedelta
 from string import split
 
 def _(text):
@@ -42,6 +43,7 @@ def usage():
     text += f%( "gtcli delete <tid>", _("Removes task identified by tid") )
     text += f%( "gtcli list [all|today|<filter>|<tag>]...", _("List tasks") )
     text += f%( "gtcli count [all|today|<filter>|<tag>]...", _("Number of tasks") )
+    text += f%( "gtcli summary [all|today|<filter>|<tag>]...", _("Report how many tasks starting/due each day") )
     text += f%( "gtcli postpone <tid> <date>", _("Updates the start date of task") )
     text += f%( "gtcli close <tid>", _("Sets state of task identified by tid to closed") )
     text += f%( "gtcli browse [hide|show]", _("Hides or shows the task browser window"))
@@ -161,6 +163,41 @@ def count_tasks(criteria):
     print total
     return total
 
+def summary_of_tasks(criteria):
+    """ Print report showing number of tasks starting and due each day """
+
+    filters = _criteria_to_filters(criteria)
+    timi = connect_to_gtg()
+    tasks = timi.get_tasks_filtered(filters)
+
+    report = { }
+    for t in tasks:
+        startdate = t['startdate'] or 'someday'
+        if startdate not in report:
+            report[startdate] = { 'starting':0, 'due':0 }
+        report[startdate]['starting'] += 1
+
+        duedate = t['duedate'] or 'never'
+        if duedate not in report:
+            report[duedate] = { 'starting':0, 'due':0 }
+        report[duedate]['due'] += 1
+
+    day = date.today()
+    print "%-20s %5s %5s" %("", "Start", "Due")
+    print "%-20s %5d %5d" %('someday', 
+                            report['someday']['starting'],
+                            report['someday']['due'])
+    for i in range(0, 14):
+        d = day + timedelta(i)
+        dstr = str(d)
+        if dstr in report:
+            fmt = "%a  %-m-%-d"
+            print "%-20s %5d %5d" %(d.strftime(fmt),
+                                    report[dstr]['starting'],
+                                    report[dstr]['due'])
+        else:
+            print "%-20s %5d %5d" %(dstr, 0, 0)
+
 def list_tasks(criteria, count_only=False):
     """ Display a listing of tasks 
     
@@ -251,6 +288,12 @@ if __name__ == '__main__':
         if len(args)>1:
             criteria = ' '.join(args[1:])
         count_tasks(criteria)
+
+    elif command == "summary":
+        criteria = None
+        if len(args)>1:
+            criteria = ' '.join(args[1:])
+        summary_of_tasks(criteria)
 
     elif command == "rm" or command == "delete":
         if len(args)<2:
