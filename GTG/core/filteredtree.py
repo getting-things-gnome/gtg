@@ -679,4 +679,6 @@ class FilteredTree(gobject.GObject):
     def get_nodes_count(self):
         """returns the number of nodes in this tree"""
         #assert(len(self.displayed_nodes) == self.__nodes_count)
-        return self.__nodes_count
+        #NOTE: potential performance issue. If this is fine, we can remove
+        #      all references to self.__nodes_count
+        return len(self.displayed_nodes)
