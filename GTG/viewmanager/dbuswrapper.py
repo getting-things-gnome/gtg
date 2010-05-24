@@ -94,7 +94,10 @@ class DBusTaskWrapper(dbus.service.Object):
         """
         tree = self.req.get_custom_tasks_tree()
         for filter in filters:
-            tree.apply_filter(filter)
+            if filter[0] == '!':
+                tree.apply_filter(filter[1:], parameters={'negate': 1} )
+            else:
+                tree.apply_filter(filter)
         return tree.get_all_keys()
 
     @dbus.service.method(BUSNAME, in_signature="as")

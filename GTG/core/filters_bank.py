@@ -25,11 +25,10 @@ from GTG.core.task import Task
 
 
 class Filter:
-    def __init__(self,func,req,negate=False):
+    def __init__(self,func,req):
         self.func = func
         self.dic = {}
         self.req = req
-        self.negate = negate
 
     def set_parameters(self,dic):
         self.dic = dic
@@ -43,7 +42,7 @@ class Filter:
             value = self.func(task,parameters=self.dic)
         else:
             value = self.func(task)
-        if self.negate:
+        if 'negate' in self.dic and self.dic['negate']:
             value = not value
         return value
 
@@ -55,11 +54,14 @@ class Filter:
             return False
             
 class SimpleTagFilter:
-    def __init__(self,tagname,req,negate=False):
+    def __init__(self,tagname,req):
         self.req = req
         self.tname = tagname
-        self.negate = negate
+        self.dic = {}
         
+    def set_parameters(self,dic):
+        self.dic = dic
+    
     def is_displayed(self,tid):
         task = self.req.get_task(tid)
         value = True
@@ -69,7 +71,7 @@ class SimpleTagFilter:
             tags = [self.tname]
             tags += self.req.get_tag(self.tname).get_children()
             value = task.has_tags(tags)
-        if self.negate:
+        if 'negate' in self.dic and self.dic['negate']:
             value = not value
         return value
             
@@ -206,9 +208,11 @@ class FiltersBank:
                 negate = True
                 filter_name = filter_name[1:]
             if filter_name.startswith('@'):
-                filter_obj = SimpleTagFilter(filter_name,self.req,negate=negate)
+                filter_obj = SimpleTagFilter(filter_name,self.req)
+#                filter_obj = SimpleTagFilter(filter_name,self.req,negate=negate)
             else:
-                filter_obj = Filter(filter_func,self.req,negate=negate)
+                filter_obj = Filter(filter_func,self.req)
+#                filter_obj = Filter(filter_func,self.req,negate=negate)
             self.custom_filters[filter_name] = filter_obj
             return True
         else:
