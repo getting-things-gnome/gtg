@@ -133,6 +133,34 @@ def toggle_browser_visibility(state):
     else:
         timi.show_task_browser()
 
+def _criteria_to_filters(criteria):
+    if not criteria:
+        filters = ['active']
+    else:
+        filters = split(criteria, ' ')
+    
+    # Special case 'today' filter
+    if 'today' in filters:
+        filters.extend(['active', 'workview'])
+        filters.remove('today')
+    return filters
+
+def count_tasks(criteria):
+    """ Print a simple count of tasks matching criteria """
+
+    filters = _criteria_to_filters(criteria)
+    timi = connect_to_gtg()
+    tasks = timi.get_tasks_filtered(filters)
+
+    total = 0
+    for task in tasks:
+        if 'title' not in task:
+            continue
+        total += 1
+
+    print total
+    return total
+
 def list_tasks(criteria, count_only=False):
     """ Display a listing of tasks 
     
@@ -141,27 +169,16 @@ def list_tasks(criteria, count_only=False):
     that have all the tags.  If no filters or tags are specified,
     defaults to showing all active tasks.
     """
+
+    filters = _criteria_to_filters(criteria)
     timi = connect_to_gtg()
-
-    if not criteria:
-        filters = ['active']
-    else:
-        filters = split(criteria, ' ')
-
-    # Special case 'today' filter
-    if 'today' in filters:
-        filters.extend(['active', 'workview'])
-        filters.remove('today')
-
     tasks = timi.get_tasks_filtered(filters)
 
     tasks_tree = { }
-    total = 0
     notag = '@__notag'
     for task in tasks:
         if 'title' not in task:
             continue
-        total += 1
         if not task['tags'] or len(task['tags']) == 0:
             if notag not in tasks_tree:
                 tasks_tree[notag] = []
@@ -173,10 +190,6 @@ def list_tasks(criteria, count_only=False):
                 if tag not in tasks_tree:
                     tasks_tree[tag] = []
                 tasks_tree[tag].append(task)
-
-    if count_only:
-        print total
-        return total
 
     # If any tags were specified, use only those as the categories
     keys = [t for t in filters if t[0]=='@']
@@ -237,7 +250,7 @@ if __name__ == '__main__':
         criteria = None
         if len(args)>1:
             criteria = ' '.join(args[1:])
-        list_tasks(criteria, True)
+        count_tasks(criteria)
 
     elif command == "rm" or command == "delete":
         if len(args)<2:
