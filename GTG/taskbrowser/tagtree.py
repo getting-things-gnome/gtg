@@ -281,19 +281,15 @@ class TagTreeModel(gtk.GenericTreeModel):
         return tag_path, tag_iter
 
     def update_tag(self, sender, tname):
-        #NOTE: maybe issuing row_changed, instead of removing and adding the
-        #      tag, is faster  (Invernizzi)
         Log.debug("update tag %s" % (tname))
         if self.displayed.get(tname):
             #update the "Tasks with no tag" tag
             self._update_tag_from_name(self.req.get_notag_tag().get_name())
             tag = self.tree.get_node(tname)
-            #remove the tag
-            self.row_deleted(self.displayed[tname])
             self.displayed.pop(tname)
             tag_path  = self.tree.get_path_for_node(tag)
             tag_iter  = self.get_iter(tag_path)
-            self.row_inserted(tag_path, tag_iter)
+            self.row_changed(tag_path, tag_iter)
             self.displayed[tname] = tag_path
             if tag.has_child():
                 self.row_has_child_toggled(tag_path, tag_iter)

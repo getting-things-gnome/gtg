@@ -1042,7 +1042,6 @@ class TaskBrowser:
                 task.set_to_keep()
             task.set_due_date(due_date)
             task.set_start_date(defer_date)
-            id_toselect = task.get_id()
             self.quickadd_entry.set_text('')
             # Refresh the treeview
             #self.do_refresh(toselect=id_toselect)
