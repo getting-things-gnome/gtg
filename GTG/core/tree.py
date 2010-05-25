@@ -197,6 +197,9 @@ class Tree():
             else:
                 #FIXME : no multiparent support here
                 parent_id = node.get_parent()
+                if len(node.get_parents()) >= 2:
+                    print "multiple parents for task %s" %node.get_id()
+                    print "choosing randomly in tree/_path_for_node"
                 parent = self.get_node(parent_id)
                 index  = parent.get_child_index(node.get_id())
                 toreturn = self._path_for_node(parent) + (index, )
@@ -233,7 +236,6 @@ class TreeNode():
         self.pending_relationship = []
         if parent:
             self.add_parent(parent)
-        self.warned_multi_parents = False
 
     def __str__(self):
         return "<TreeNode: '%s'>" % (self.id)
@@ -270,9 +272,9 @@ class TreeNode():
     #useful for tree where we know that there is only one
     def get_parent(self):
         #we should throw an error if there are multiples parents
-        if len(self.parents) > 1 and not self.warned_multi_parents:
+        if len(self.parents) > 1 :
             print "Warning: get_parent will return one random parent for task %s because there are multiple parents." %(self.get_id())
-            self.warned_multi_parents = True
+            print "Please report any bug/strange behaviour that could be related"
         if self.has_parent():
             return self.parents[0]
         else:

@@ -169,14 +169,6 @@ class FilteredTree(gobject.GObject):
         
     def __task_modified(self,sender,tid):
 #        print "%s is modified in the filteredtree" %tid
-#        if self.path_for_node_cache.has_key(tid):
-#            oldp = str(self.path_for_node_cache[tid])
-#        else:
-#            oldp = "None"
-#        newp = str(self.get_path_for_node(self.req.get_task(tid)))
-#        if oldp != newp:
-#            print "%s old path is %s and new one is %s" %(tid,oldp,newp)
-        #self.refilter()
         todis = self.__is_displayed(tid)
         curdis = self.is_displayed(tid)
         if todis:
@@ -188,18 +180,12 @@ class FilteredTree(gobject.GObject):
             else:
 #                print "%s is only modified (todis,curdis)" %tid
                 self.emit("task-modified-inview", tid)
-            #There doesn't seem to be a need for calling the update_node
-#            else:
-#                task = self.get_node(tid)
-#                inroot = self.__is_root(task)
-#                self.__update_node(tid,inroot)
         else:
             #if the task was displayed previously but shouldn't be anymore
             #we remove it
             if curdis:
 #                print "%s is removed" %tid
                 self.__remove_node(tid)
-            #FIXME: Lionel please see this one
             else:
 #                print "%s is modified, not to dis" %tid
                 self.emit("task-deleted-inview", tid)
@@ -246,51 +232,52 @@ class FilteredTree(gobject.GObject):
         else:
             return None
 
-#    def get_previous_path_for_node(self,tid):
-#        if self.path_for_node_cache_old.has_key(tid):
-#            return self.path_for_node_cache_old[tid]
-#        else:
-#            return None
-
-    def get_path_for_node(self, node):
+    def get_paths_for_node(self, node):
         """
-        Return a path for a given node
+        Return a list of paths for a given node
+        Return an empty list if no path for that Node.
         """
+        toreturn = []
         if node:
             tid = node.get_id()
         #For that node, we should convert the base_path to path
         if not node or not self.is_displayed(node.get_id()):
             #print "not displayed %s" %node
-            return None
+            return toreturn
         #This is the cache so we don't compute it all the time
         #TODO: this is commented out as it still doesn't work with filter
 #        elif self.path_for_node_cache.has_key(tid):
 #            return self.path_for_node_cache[tid]
         elif node == self.get_root():
-            toreturn = ()
+            path = ()
+            toreturn.append(path)
         elif tid in self.virtual_root:
             ind = self.virtual_root.index(tid)
-            toreturn = (ind,)
+            path = (ind,)
+            toreturn.append(path)
         #The node is not a virtual root
         else:
             pos = 0
-            par = self.node_parent(node)
-            if not par:
+            pars = self.node_parents(node)
+            if len(pars) <= 0:
                 #if we don't have parent, we add the task
                 #to the virtual root.
                 self.__root_update(tid,True)
                 ind = self.virtual_root.index(tid)
-                toreturn = (ind,)
+                path = (ind,)
+                toreturn.append(path)
             else:
-                max = self.node_n_children(par)
-                child = self.node_children(par)
-                while pos < max and node != child:
-                    pos += 1
-                    child = self.node_nth_child(par,pos)
-                par_path = self.get_path_for_node(par)
-                if par_path:
-                    toreturn = par_path + (pos,)
-                else:
+                for par in pars:
+                    max = self.node_n_children(par)
+                    child = self.node_children(par)
+                    while pos < max and node != child:
+                        pos += 1
+                        child = self.node_nth_child(par,pos)
+                    par_paths = self.get_paths_for_node(par)
+                    for par_path in par_paths:
+                        path = par_path + (pos,)
+                        toreturn.append(path)
+                if len(toreturn) == 0:
                     #if we are here, it means that we have a ghost task that 
                     #is not really displayed but still here, in the tree
                     #it happens sometimes when we remove a parent with children
@@ -302,7 +289,6 @@ class FilteredTree(gobject.GObject):
                         print "ghost position for %s" %tid
                         print "VR : %s " %self.virtual_root
                         print self.path_for_node_cache
-                        toreturn = None
                     
         #debug statement to show when the path change
 #        if self.path_for_node_cache.has_key(tid):
@@ -315,7 +301,7 @@ class FilteredTree(gobject.GObject):
         return toreturn
 
     #Done
-    def next_node(self, node):
+    def next_node(self, node,parent=None):
         """
         Returns the next sibling node, or None if there are no other siblings
         """
@@ -331,8 +317,16 @@ class FilteredTree(gobject.GObject):
                 else:
                     nextnode = None
             else:
-                parent_node = self.node_parent(node)
-                if parent_node:
+                parents_nodes = self.node_parents(node)
+                if len(parents_nodes) >= 1:
+                    if parent in parents_nodes:
+                        parent_node = parent
+                    else:
+                        parent_node = parents_nodes[0]
+                    if not parent and len(parents_nodes) >= 2:
+                        print "** filteredtree next_node will use one random parent"
+                        print "   because %s has multiple parents" %(tid)
+                        print "   Please report any bug/strange behaviour that could be related"
                     next_idx = parent_node.get_child_index(node.get_id()) + 1
                     total = parent_node.get_n_children()-1
                     if total < next_idx:
@@ -431,30 +425,27 @@ class FilteredTree(gobject.GObject):
         return toreturn
 
     #Done
-    def node_parent(self, node):
+    def node_parents(self, node):
         """
         Returns parent of the given node, or None if there is no 
         parent (such as if the node is a child of the virtual root),
         or if the parent is not displayable.
         """
         #return None if we are at a Virtual root
+        parents_nodes = []
         if node == None:
             Log.debug("requested a parent of a non-existing node")
-            return None
+            return parents_nodes
         tid = node.get_id()
         if node and tid in self.virtual_root:
-            return None
+            return parents_nodes
+        #we return only parents that are not root and displayed
         elif node and node.has_parent():
-            parent_id = node.get_parent()
-            parent = self.tree.get_node(parent_id)
-            if parent == self.tree.get_root():
-                return None
-            elif self.is_displayed(parent_id):
-                return parent
-            else:
-                return None
-        else:
-            return None
+            for pid in node.get_parents():
+                parent = self.tree.get_node(pid)
+                if self.is_displayed(pid) and parent != self.tree.get_root():
+                    parents_nodes.append(parent)
+        return parents_nodes
 
 
     #### Filtering methods #########
@@ -529,6 +520,8 @@ class FilteredTree(gobject.GObject):
             isroot = nid in virtual_root2
             self.__add_node(nid,isroot)
         #end of refiltering
+#        print "*** end of refiltering ****"
+#        self.print_tree()
 
     ####### Change filters #################
     def apply_filter(self,filter_name,parameters=None,imtherequester=False):
@@ -630,7 +623,8 @@ class FilteredTree(gobject.GObject):
             if inroot == None:
                 inroot = self.__is_root(node)
             #If the parent's node is not already displayed, we wait
-            if not inroot and not self.node_parent(node):
+            #(the len of parents is 0 means no parent dislayed)
+            if not inroot and len(self.node_parents(node)) <= 0:
                 self.node_to_add.append(tid)
             else:
                 self.add_count += 1
@@ -653,10 +647,10 @@ class FilteredTree(gobject.GObject):
             self.displayed_nodes.remove(tid)
         self.__reset_cache()
         #Test if this is necessary
-        parent = self.node_parent(self.get_node(tid))
-        if parent:
-            inroot = self.__is_root(parent)
-            self.__update_node(parent.get_id(),inroot)
+        parent = self.node_parents(self.get_node(tid))
+        for p in parent:
+            inroot = self.__is_root(p)
+            self.__update_node(p.get_id(),inroot)
         
     #This function print the actual tree. Useful for debugging
     def __print_from_node(self, node, prefix=""):
@@ -666,7 +660,7 @@ class FilteredTree(gobject.GObject):
             child = self.node_children(node)
             while child:
                 self.__print_from_node(child,prefix)
-                child = self.next_node(child)
+                child = self.next_node(child,parent=node)
     
     #This function removes all the nodes, leaves first.
     def __clean_from_node(self, node):
@@ -674,5 +668,5 @@ class FilteredTree(gobject.GObject):
             child = self.node_children(node)
             while child:
                 self.__clean_from_node(child)
-                child = self.next_node(child)
+                child = self.next_node(child,parent=node)
         self.__remove_node(node.get_id())
