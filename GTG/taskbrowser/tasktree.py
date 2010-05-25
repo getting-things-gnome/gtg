@@ -163,7 +163,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
         return self.tree.get_node_for_path(path)
 
     def on_get_path(self, node):
-#        print "on_get_path: %s" %node.get_id()
+        print "on_get_path: %s" %node.get_id()
         return self.tree.get_path_for_node(node)
 
     def on_iter_next(self, node):
@@ -190,8 +190,14 @@ class TaskTreeModel(gtk.GenericTreeModel):
         return self.tree.node_nth_child(node,n)
 
     def on_iter_parent(self, node):
-#        print "on_iter_parent %s" %node.get_id()
-        return self.tree.node_parent(node)
+        pars = self.tree.node_parents(node)
+        if len(pars) >= 1:
+            if len(pars) >= 2:
+                print "## tasktree: on_iter_parent %s" %node.get_id()
+                print "## we will use a random parent"
+            return pars[0]
+        else:
+            return None
 
     def update_task(self, sender, tid):
 #        # get the node and signal it's changed
@@ -216,9 +222,9 @@ class TaskTreeModel(gtk.GenericTreeModel):
 #                print "tasktree add_task %s at %s" %(tid,node_path)
                 node_iter = self.get_iter(node_path)
                 self.row_inserted(node_path, node_iter)
-                parent = self.tree.node_parent(task)
-                if parent:
-                    par_path = self.tree.get_path_for_node(parent)
+                parents = self.tree.node_parents(task)
+                for p in parents:
+                    par_path = self.tree.get_path_for_node(p)
                     par_iter = self.get_iter(par_path)
 #                    print "tasktree child toogled %s" %tid
                     self.row_has_child_toggled(par_path, par_iter)
