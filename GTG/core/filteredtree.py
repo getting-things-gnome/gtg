@@ -267,9 +267,6 @@ class FilteredTree(gobject.GObject):
                 path = (ind,)
                 toreturn.append(path)
             else:
-#                if len(pars) >= 2:
-#                    print "** filteredtree get_paths_for_node use a random parent"
-#                    print "** because task %s has multiple" %tid
                 for par in pars:
                     max = self.node_n_children(par)
                     child = self.node_children(par)
@@ -328,7 +325,8 @@ class FilteredTree(gobject.GObject):
                         parent_node = parents_nodes[0]
                     if not parent and len(parents_nodes) >= 2:
                         print "** filteredtree next_node will use one random parent"
-                        print "** because %s has multiple parents" %(tid)
+                        print "   because %s has multiple parents" %(tid)
+                        print "   Please report any bug/strange behaviour that could be related"
                     next_idx = parent_node.get_child_index(node.get_id()) + 1
                     total = parent_node.get_n_children()-1
                     if total < next_idx:
