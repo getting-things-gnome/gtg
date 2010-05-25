@@ -208,7 +208,7 @@ class FilteredTree(gobject.GObject):
         """
         #We should convert the path to the base.path
         if str(path) == '()':
-            print "WE SHOULD RETURN ROOT NODE"
+            return self.tree.get_root()
         p0 = path[0]
         if len(self.virtual_root) > p0:
             n1id = self.virtual_root[p0]
@@ -301,7 +301,7 @@ class FilteredTree(gobject.GObject):
         return toreturn
 
     #Done
-    def next_node(self, node,parent=None):
+    def next_node(self, node,parent):
         """
         Returns the next sibling node, or None if there are no other siblings
         """
@@ -323,10 +323,6 @@ class FilteredTree(gobject.GObject):
                         parent_node = parent
                     else:
                         parent_node = parents_nodes[0]
-                    if not parent and len(parents_nodes) >= 2:
-                        print "** filteredtree next_node will use one random parent"
-                        print "   because %s has multiple parents" %(tid)
-                        print "   Please report any bug/strange behaviour that could be related"
                     next_idx = parent_node.get_child_index(node.get_id()) + 1
                     total = parent_node.get_n_children()-1
                     if total < next_idx:

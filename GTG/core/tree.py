@@ -199,7 +199,7 @@ class Tree():
                 parent_id = node.get_parent()
                 if len(node.get_parents()) >= 2:
                     print "multiple parents for task %s" %node.get_id()
-                    print "choosing randomly in tree/_path_for_node"
+                    print "you should use a filteredtree above this tree"
                 parent = self.get_node(parent_id)
                 index  = parent.get_child_index(node.get_id())
                 toreturn = self._path_for_node(parent) + (index, )
@@ -274,7 +274,7 @@ class TreeNode():
         #we should throw an error if there are multiples parents
         if len(self.parents) > 1 :
             print "Warning: get_parent will return one random parent for task %s because there are multiple parents." %(self.get_id())
-            print "Please report any bug/strange behaviour that could be related"
+            print "Get_parent is deprecated. Please use get_parents instead"
         if self.has_parent():
             return self.parents[0]
         else:

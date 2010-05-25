@@ -41,6 +41,20 @@ COL_LABEL     = 9
 COL_SDATE     = 10
 COL_DUE       = 11
 
+#A task can have multiple parent (thus multiple paths)
+#We thus define an iter which is a tuple [node,path], defining one
+#and only one position in the tree
+class TaskIter():
+    def __init__(self,node,path):
+        self.node = node
+        self.path = path
+        
+    def get_node(self):
+        return self.node
+    
+    def get_path(self):
+        return self.path
+
 class TaskTreeModel(gtk.GenericTreeModel):
 
     column_types = (\
@@ -102,18 +116,10 @@ class TaskTreeModel(gtk.GenericTreeModel):
 #        print "on_get_column_type %s" %n
         return self.column_types[n]
 
-    def on_get_value(self, node, column):
-#        print "on_get_value for %s, col %s" %(node.get_id(),column)
-        if not node:
+    def on_get_value(self, iter, column):
+        if not iter:
             return None
-        #NOTE: This works for me, is there a reason not to use it?
-        task = node
-#        else:
-#            #FIXME. The Task is a TreeNode object but
-#            #TreeNode is not recognized as a Task!
-#            task = self.req.get_task(node.get_id())
-#            if not task:
-#                return None
+        task = iter.get_node()
         if column == COL_OBJ:
             return task
         elif column == COL_DDATE:
@@ -160,45 +166,75 @@ class TaskTreeModel(gtk.GenericTreeModel):
 
     def on_get_iter(self, path):
 #        print "on_get_iter for %s" %(str(path))
-        return self.tree.get_node_for_path(path)
+        node = self.tree.get_node_for_path(path)
+#        parent = self.tree.get_node_for_path(path[:-1])
+        iter = TaskIter(node,path)
+        return iter
 
-    def on_get_path(self, node):
-        paths = self.tree.get_paths_for_node(node)
-        if len(paths) > 1:
-            print "on_get_path %s : random parent path" %node.get_id()
-        return paths[0]
-
-    def on_iter_next(self, node):
-        return self.tree.next_node(node)
-
-    def on_iter_children(self, node):
-#        print "on_iter_children %s" %node.get_id()
-        return self.tree.node_children(node)
-
-    def on_iter_has_child(self, node):
-#        print "on_iter_has_child %s" %node.get_id()
-        return self.tree.node_has_child(node)
-
-    def on_iter_n_children(self, node):
-        return self.tree.node_n_children(node)
-
-    def on_iter_nth_child(self, node, n):
-#        if node:
-#            id = node.get_id()
-#        else:
-#            id = "Null node"
-#        print "on_iter_nth_child %s - %s" %(id,n)
-        return self.tree.node_nth_child(node,n)
-
-    def on_iter_parent(self, node):
-        pars = self.tree.node_parents(node)
-        if len(pars) >= 1:
-            if len(pars) >= 2:
-                print "## tasktree: on_iter_parent %s" %node.get_id()
-                print "## we will use a random parent"
-            return pars[0]
+    def on_get_path(self, iter):
+        if iter:
+            return iter.get_path()
         else:
             return None
+#        node = iter.get_node()
+#        paths = self.tree.get_paths_for_node(node)
+#        #we now have all the paths for the node
+#        parent = iter.get_parent()
+#        par_path = self.tree
+#        if len(paths) > 1:
+#            print "on_get_path %s : random parent path" %node.get_id()
+#        return paths[0]
+
+    def on_iter_next(self, iter):
+        toreturn = None
+        if iter:
+            path = iter.get_path()
+            parent = self.tree.get_node_for_path(path[:-1])
+            node = iter.get_node()
+            next = self.tree.next_node(node,parent=parent)
+            #We have the next node. To know the path to use
+            # we will find, in its paths, the one with 
+            #the same root as the current node
+            npaths = self.tree.get_paths_for_node(next)
+            for n in npaths:
+                if path[:-1] == n[:-1]:
+                    toreturn = TaskIter(next,n)
+        return toreturn
+
+    def on_iter_children(self, iter):
+        return self.on_iter_nth_child(iter,0)
+            
+
+    def on_iter_has_child(self, iter):
+        if iter:
+            node = iter.get_node()
+            return self.tree.node_has_child(node)
+        else:
+            return None
+
+    def on_iter_n_children(self, iter):
+        if iter:
+            node = iter.get_node()
+            return self.tree.node_n_children(node)
+        else:
+            return self.tree.node_n_children(None)
+
+    def on_iter_nth_child(self, iter, n):
+        toreturn = None
+        if iter:
+            node = iter.get_node()
+            path = iter.get_path()
+            child = self.tree.node_nth_child(node,0)
+            cpaths = self.tree.get_paths_for_node(child)
+            for c in cpaths:
+                if c[:-1] == path:
+                    toreturn = TaskIter(child,c)
+        return toreturn
+
+    def on_iter_parent(self, iter):
+        path = iter.get_path()
+        par_node = self.tree.get_node_for_path(path[:-1])
+        return TaskIter(par_node,path[:-1])
 
     def update_task(self, sender, tid):
 #        # get the node and signal it's changed
@@ -273,7 +309,6 @@ class TaskTreeModel(gtk.GenericTreeModel):
         #if we move a task, this task should be saved, even if new
         child_task.set_to_keep()
         # Remove old parents 
-        #FIXME: what about multiple parents?
         for pid in current_parents:
             #We first remove the node from the view (to have the path)
             node_paths = self.tree.get_paths_for_node(child_task)
@@ -325,18 +360,6 @@ class TaskTreeView(gtk.TreeView):
 
     def get_column_index(self, col_id):
         return self.columns.index(col_id)
-
-    def refresh(self, collapsed_rows=None):
-        print "dummy refresh"
-#        self.expand_all()
-#        self.get_model().foreach(self._refresh_func, collapsed_rows)
-
-#    def _refresh_func(self, model, path, iter, collapsed_rows=None):
-#        if collapsed_rows:
-#            tid = model.get_value(iter, COL_TID)
-#            if tid in collapsed_rows:
-#                self.collapse_row(path)
-#        model.row_changed(path, iter)
 
 class ActiveTaskTreeView(TaskTreeView):
     """TreeView for display of a list of task. Handles DnD primitives too."""
