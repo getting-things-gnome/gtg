@@ -176,14 +176,6 @@ class TaskTreeModel(gtk.GenericTreeModel):
             return iter.get_path()
         else:
             return None
-#        node = iter.get_node()
-#        paths = self.tree.get_paths_for_node(node)
-#        #we now have all the paths for the node
-#        parent = iter.get_parent()
-#        par_path = self.tree
-#        if len(paths) > 1:
-#            print "on_get_path %s : random parent path" %node.get_id()
-#        return paths[0]
 
     def on_iter_next(self, iter):
         toreturn = None
@@ -210,7 +202,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
             node = iter.get_node()
             return self.tree.node_has_child(node)
         else:
-            return None
+            return False
 
     def on_iter_n_children(self, iter):
         if iter:

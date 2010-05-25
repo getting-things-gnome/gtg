@@ -621,7 +621,8 @@ class FilteredTree(gobject.GObject):
             #If the parent's node is not already displayed, we wait
             #(the len of parents is 0 means no parent dislayed)
             if not inroot and len(self.node_parents(node)) <= 0:
-                self.node_to_add.append(tid)
+                if tid not in self.node_to_add:
+                    self.node_to_add.append(tid)
             else:
                 self.add_count += 1
                 self.__nodes_count += 1
@@ -629,10 +630,18 @@ class FilteredTree(gobject.GObject):
                 self.displayed_nodes.append(tid)
                 self.emit("task-added-inview", tid)
                 #We added a new node so we can check with those waiting
-                if len(self.node_to_add) > 0:
-                    n = self.node_to_add.pop(0)
-                    #node still to add cannot be root
-                    self.__add_node(n,False)
+                for n in list(self.node_to_add) :
+                    toad = self.get_node(n)
+                    if len(self.node_parents(toad)) > 0 and n in self.node_to_add:
+                        self.node_to_add.remove(n)
+                        self.__add_node(n,False)
+                
+#                toadd = list(self.node_to_add)
+#                self.node_to_add = []
+#                for n in toadd :
+#                    #node still to add cannot be root
+#                    print "adding node %s" %n
+#                    self.__add_node(n,False)
     
     def __remove_node(self,tid):
         if tid in self.displayed_nodes:
