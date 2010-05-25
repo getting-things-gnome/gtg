@@ -309,7 +309,6 @@ class TaskTreeModel(gtk.GenericTreeModel):
         #if we move a task, this task should be saved, even if new
         child_task.set_to_keep()
         # Remove old parents 
-        #FIXME: what about multiple parents?
         for pid in current_parents:
             #We first remove the node from the view (to have the path)
             node_paths = self.tree.get_paths_for_node(child_task)
