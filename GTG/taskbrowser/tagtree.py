@@ -56,11 +56,13 @@ class TagTreeModel(gtk.GenericTreeModel):
         self.notag_filtered_tree = self.req.get_custom_tasks_tree()
         self.active_filtered_tree.apply_filter("active")
         self.notag_filtered_tree.apply_filter("notag")
+        self.notag_filtered_tree.apply_filter("active")
 
         self.active_workview_filtered_tree = self.req.get_custom_tasks_tree()
         self.notag_workview_filtered_tree = self.req.get_custom_tasks_tree()
         self.active_workview_filtered_tree.apply_filter("active")
         self.active_workview_filtered_tree.apply_filter("workview")
+        self.notag_workview_filtered_tree.apply_filter("active")
         self.notag_workview_filtered_tree.apply_filter("notag")
         self.notag_workview_filtered_tree.apply_filter("workview")
         
@@ -154,18 +156,18 @@ class TagTreeModel(gtk.GenericTreeModel):
                 return  count
             elif self.workview:
                 if sp_id == "all":
-                    return self.active_workview_filtered_tree.get_nodes_count()
+                    return self.active_workview_filtered_tree.get_n_nodes()
                 elif sp_id == "notag":
-                    return self.notag_workview_filtered_tree.get_nodes_count()
+                    return self.notag_workview_filtered_tree.get_n_nodes()
                 else:
                     return 0
             else:
                 if sp_id == "all":
                     #This is "All tasks"
-                    return self.active_filtered_tree.get_nodes_count()
+                    return self.active_filtered_tree.get_n_nodes()
                 elif sp_id == "notag":
                     #This is "Tasks with no tags"
-                    return self.notag_filtered_tree.get_nodes_count()
+                    return self.notag_filtered_tree.get_n_nodes()
                 else:
                     return 0
         elif column == COL_SEP:
