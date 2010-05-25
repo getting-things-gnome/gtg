@@ -495,6 +495,7 @@ class FilteredTree(gobject.GObject):
         self.remove_count = 0
         virtual_root2 = []
         to_add = []
+        #self.displayed_nodes = []
         #If we have only one flat filter, the result is flat
         self.flat = False
         for f in self.applied_filters:
@@ -675,10 +676,3 @@ class FilteredTree(gobject.GObject):
                 self.__clean_from_node(child)
                 child = self.next_node(child)
         self.__remove_node(node.get_id())
-
-    def get_nodes_count(self):
-        """returns the number of nodes in this tree"""
-        #assert(len(self.displayed_nodes) == self.__nodes_count)
-        #NOTE: potential performance issue. If this is fine, we can remove
-        #      all references to self.__nodes_count
-        return len(self.displayed_nodes)
