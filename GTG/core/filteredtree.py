@@ -208,7 +208,7 @@ class FilteredTree(gobject.GObject):
         """
         #We should convert the path to the base.path
         if str(path) == '()':
-            print "WE SHOULD RETURN ROOT NODE"
+            return self.tree.get_root()
         p0 = path[0]
         if len(self.virtual_root) > p0:
             n1id = self.virtual_root[p0]

@@ -51,6 +51,9 @@ class TaskIter():
         
     def get_node(self):
         return self.node
+    
+    def get_path(self):
+        return self.path
 
 class TaskTreeModel(gtk.GenericTreeModel):
 
@@ -116,7 +119,6 @@ class TaskTreeModel(gtk.GenericTreeModel):
     def on_get_value(self, iter, column):
         if not iter:
             return None
-        #NOTE: This works for me, is there a reason not to use it?
         task = iter.get_node()
         if column == COL_OBJ:
             return task
@@ -188,6 +190,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
         if iter:
             path = iter.get_path()
             parent = self.tree.get_node_for_path(path[:-1])
+            node = iter.get_node()
             next = self.tree.next_node(node,parent=parent)
             #We have the next node. To know the path to use
             # we will find, in its paths, the one with 
@@ -199,12 +202,10 @@ class TaskTreeModel(gtk.GenericTreeModel):
         return toreturn
 
     def on_iter_children(self, iter):
-#        print "on_iter_children %s" %node.get_id()
         return self.on_iter_nth_child(iter,0)
             
 
     def on_iter_has_child(self, iter):
-#        print "on_iter_has_child %s" %node.get_id()
         if iter:
             node = iter.get_node()
             return self.tree.node_has_child(node)
@@ -216,7 +217,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
             node = iter.get_node()
             return self.tree.node_n_children(node)
         else:
-            return None
+            return self.tree.node_n_children(None)
 
     def on_iter_nth_child(self, iter, n):
         toreturn = None
@@ -234,14 +235,6 @@ class TaskTreeModel(gtk.GenericTreeModel):
         path = iter.get_path()
         par_node = self.tree.get_node_for_path(path[:-1])
         return TaskIter(par_node,path[:-1])
-#        pars = self.tree.node_parents(node)
-#        if len(pars) >= 1:
-#            if len(pars) >= 2:
-#                print "## tasktree: on_iter_parent %s" %node.get_id()
-#                print "## we will use a random parent"
-#            return pars[0]
-#        else:
-#            return None
 
     def update_task(self, sender, tid):
 #        # get the node and signal it's changed
@@ -368,18 +361,6 @@ class TaskTreeView(gtk.TreeView):
 
     def get_column_index(self, col_id):
         return self.columns.index(col_id)
-
-    def refresh(self, collapsed_rows=None):
-        print "dummy refresh"
-#        self.expand_all()
-#        self.get_model().foreach(self._refresh_func, collapsed_rows)
-
-#    def _refresh_func(self, model, path, iter, collapsed_rows=None):
-#        if collapsed_rows:
-#            tid = model.get_value(iter, COL_TID)
-#            if tid in collapsed_rows:
-#                self.collapse_row(path)
-#        model.row_changed(path, iter)
 
 class ActiveTaskTreeView(TaskTreeView):
     """TreeView for display of a list of task. Handles DnD primitives too."""
