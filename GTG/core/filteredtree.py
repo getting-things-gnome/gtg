@@ -169,14 +169,6 @@ class FilteredTree(gobject.GObject):
         
     def __task_modified(self,sender,tid):
 #        print "%s is modified in the filteredtree" %tid
-#        if self.path_for_node_cache.has_key(tid):
-#            oldp = str(self.path_for_node_cache[tid])
-#        else:
-#            oldp = "None"
-#        newp = str(self.get_path_for_node(self.req.get_task(tid)))
-#        if oldp != newp:
-#            print "%s old path is %s and new one is %s" %(tid,oldp,newp)
-        #self.refilter()
         todis = self.__is_displayed(tid)
         curdis = self.is_displayed(tid)
         if todis:
@@ -188,18 +180,12 @@ class FilteredTree(gobject.GObject):
             else:
 #                print "%s is only modified (todis,curdis)" %tid
                 self.emit("task-modified-inview", tid)
-            #There doesn't seem to be a need for calling the update_node
-#            else:
-#                task = self.get_node(tid)
-#                inroot = self.__is_root(task)
-#                self.__update_node(tid,inroot)
         else:
             #if the task was displayed previously but shouldn't be anymore
             #we remove it
             if curdis:
 #                print "%s is removed" %tid
                 self.__remove_node(tid)
-            #FIXME: Lionel please see this one
             else:
 #                print "%s is modified, not to dis" %tid
                 self.emit("task-deleted-inview", tid)
@@ -246,10 +232,12 @@ class FilteredTree(gobject.GObject):
         else:
             return None
 
-    def get_path_for_node(self, node):
+    def get_paths_for_node(self, node):
         """
-        Return a path for a given node
+        Return a list of paths for a given node
+        Return None if no path for that Node.
         """
+        toreturn = []
         if node:
             tid = node.get_id()
         #For that node, we should convert the base_path to path
@@ -261,10 +249,12 @@ class FilteredTree(gobject.GObject):
 #        elif self.path_for_node_cache.has_key(tid):
 #            return self.path_for_node_cache[tid]
         elif node == self.get_root():
-            toreturn = ()
+            path = ()
+            toreturn.append(path)
         elif tid in self.virtual_root:
             ind = self.virtual_root.index(tid)
-            toreturn = (ind,)
+            path = (ind,)
+            toreturn.append(path)
         #The node is not a virtual root
         else:
             pos = 0
@@ -274,21 +264,23 @@ class FilteredTree(gobject.GObject):
                 #to the virtual root.
                 self.__root_update(tid,True)
                 ind = self.virtual_root.index(tid)
-                toreturn = (ind,)
+                path = (ind,)
+                toreturn.append(path)
             else:
-                if len(pars) >= 2:
-                    print "** filteredtree get_path_for_node will use a random parent"
-                    print "** because task %s has multiple" %tid
-                par = pars[0]
-                max = self.node_n_children(par)
-                child = self.node_children(par)
-                while pos < max and node != child:
-                    pos += 1
-                    child = self.node_nth_child(par,pos)
-                par_path = self.get_path_for_node(par)
-                if par_path:
-                    toreturn = par_path + (pos,)
-                else:
+#                if len(pars) >= 2:
+#                    print "** filteredtree get_paths_for_node use a random parent"
+#                    print "** because task %s has multiple" %tid
+                for par in pars:
+                    max = self.node_n_children(par)
+                    child = self.node_children(par)
+                    while pos < max and node != child:
+                        pos += 1
+                        child = self.node_nth_child(par,pos)
+                    par_paths = self.get_paths_for_node(par)
+                    for par_path in par_paths:
+                        path = par_path + (pos,)
+                        toreturn.append(path)
+                if len(toreturn) == 0:
                     #if we are here, it means that we have a ghost task that 
                     #is not really displayed but still here, in the tree
                     #it happens sometimes when we remove a parent with children
@@ -310,7 +302,11 @@ class FilteredTree(gobject.GObject):
         if self.path_for_node_cache.has_key(tid):
             self.path_for_node_cache_old[tid] = self.path_for_node_cache[tid]
         self.path_for_node_cache[tid] = toreturn
-        return toreturn
+        #we cannot return an empty list 
+        if len(toreturn) == 0:
+            return None
+        else:
+            return toreturn
 
     #Done
     def next_node(self, node,parent=None):
@@ -337,7 +333,7 @@ class FilteredTree(gobject.GObject):
                         parent_node = parents_nodes[0]
                     if not parent and len(parents_nodes) >= 2:
                         print "** filteredtree next_node will use one random parent"
-                        print "** because %s has multiple parents" %tid
+                        print "** because %s has multiple parents" %(tid)
                     next_idx = parent_node.get_child_index(node.get_id()) + 1
                     total = parent_node.get_n_children()-1
                     if total < next_idx:
