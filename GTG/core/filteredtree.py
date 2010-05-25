@@ -313,7 +313,7 @@ class FilteredTree(gobject.GObject):
         return toreturn
 
     #Done
-    def next_node(self, node):
+    def next_node(self, node,parent=None):
         """
         Returns the next sibling node, or None if there are no other siblings
         """
@@ -331,8 +331,11 @@ class FilteredTree(gobject.GObject):
             else:
                 parents_nodes = self.node_parents(node)
                 if len(parents_nodes) >= 1:
-                    parent_node = parents_nodes[0]
-                    if len(parents_nodes) >= 2:
+                    if parent in parents_nodes:
+                        parent_node = parent
+                    else:
+                        parent_node = parents_nodes[0]
+                    if not parent and len(parents_nodes) >= 2:
                         print "** filteredtree next_node will use one random parent"
                         print "** because %s has multiple parents" %tid
                     next_idx = parent_node.get_child_index(node.get_id()) + 1
@@ -666,7 +669,7 @@ class FilteredTree(gobject.GObject):
             child = self.node_children(node)
             while child:
                 self.__print_from_node(child,prefix)
-                child = self.next_node(child)
+                child = self.next_node(child,parent=node)
     
     #This function removes all the nodes, leaves first.
     def __clean_from_node(self, node):
@@ -674,5 +677,5 @@ class FilteredTree(gobject.GObject):
             child = self.node_children(node)
             while child:
                 self.__clean_from_node(child)
-                child = self.next_node(child)
+                child = self.next_node(child,parent=node)
         self.__remove_node(node.get_id())

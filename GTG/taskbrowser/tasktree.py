@@ -167,7 +167,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
         return self.tree.get_path_for_node(node)
 
     def on_iter_next(self, node):
-#        print "on_iter_next %s" %node.get_id()
+        print "on_iter_next %s" %node.get_id()
         return self.tree.next_node(node)
 
     def on_iter_children(self, node):
