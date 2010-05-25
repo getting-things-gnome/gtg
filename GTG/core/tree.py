@@ -197,6 +197,9 @@ class Tree():
             else:
                 #FIXME : no multiparent support here
                 parent_id = node.get_parent()
+                if len(node.get_parents()) >= 2:
+                    print "multiple parents for task %s" %node.get_id()
+                    print "choosing randomly in tree/_path_for_node"
                 parent = self.get_node(parent_id)
                 index  = parent.get_child_index(node.get_id())
                 toreturn = self._path_for_node(parent) + (index, )

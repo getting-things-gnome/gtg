@@ -522,6 +522,8 @@ class FilteredTree(gobject.GObject):
             isroot = nid in virtual_root2
             self.__add_node(nid,isroot)
         #end of refiltering
+#        print "*** end of refiltering ****"
+#        self.print_tree()
 
     ####### Change filters #################
     def apply_filter(self,filter_name,parameters=None,imtherequester=False):

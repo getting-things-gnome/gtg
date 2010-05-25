@@ -169,7 +169,6 @@ class TaskTreeModel(gtk.GenericTreeModel):
         return paths[0]
 
     def on_iter_next(self, node):
-        #print "on_iter_next %s" %node.get_id()
         return self.tree.next_node(node)
 
     def on_iter_children(self, node):
@@ -221,7 +220,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
             node_paths = self.tree.get_paths_for_node(task)
             #if node_path is null, the task is not currently displayed
             for node_path in node_paths:
-#                print "tasktree add_task %s at %s" %(tid,node_path)
+                #print "   tasktree add_task %s at %s" %(tid,node_path)
                 node_iter = self.get_iter(node_path)
                 self.row_inserted(node_path, node_iter)
                 parents = self.tree.node_parents(task)
@@ -230,6 +229,10 @@ class TaskTreeModel(gtk.GenericTreeModel):
                         par_iter = self.get_iter(par_path)
 #                       print "tasktree child toogled %s" %tid
                         self.row_has_child_toggled(par_path, par_iter)
+                #following is mandatory if 
+                #we added a child task before his parent.
+                if self.tree.node_has_child(task):
+                    self.row_has_child_toggled(node_path,node_iter)
 
     def remove_task(self, sender, tid):
         #a task has been removed from the view. Therefore,
