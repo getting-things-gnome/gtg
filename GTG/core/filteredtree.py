@@ -240,6 +240,8 @@ class FilteredTree(gobject.GObject):
         toreturn = []
         if node:
             tid = node.get_id()
+#            if tid in ("256@1","255@1"):
+#                self.__print_from_node(node)
         #For that node, we should convert the base_path to path
         if not node or not self.is_displayed(node.get_id()):
             #print "not displayed %s" %node
@@ -257,7 +259,6 @@ class FilteredTree(gobject.GObject):
             toreturn.append(path)
         #The node is not a virtual root
         else:
-            pos = 0
             pars = self.node_parents(node)
             if len(pars) <= 0:
                 #if we don't have parent, we add the task
@@ -268,6 +269,7 @@ class FilteredTree(gobject.GObject):
                 toreturn.append(path)
             else:
                 for par in pars:
+                    pos = 0
                     max = self.node_n_children(par)
                     child = self.node_children(par)
                     while pos < max and node != child:
@@ -298,6 +300,8 @@ class FilteredTree(gobject.GObject):
         if self.path_for_node_cache.has_key(tid):
             self.path_for_node_cache_old[tid] = self.path_for_node_cache[tid]
         self.path_for_node_cache[tid] = toreturn
+#        if tid in ("256@1","255@1"):
+#                print "**** %s path are %s" %(tid,toreturn)
         return toreturn
 
     #Done
@@ -348,17 +352,7 @@ class FilteredTree(gobject.GObject):
         """
         #print "on_iter_children for parent %s" %parent.get_id()
         #here, we should return only good childrens
-        if parent:
-            if self.node_has_child(parent):
-                 child = self.node_nth_child(parent,0)
-            else:
-                #The spec says that the child can be None
-                child = None
-        else:
-            if len(self.virtual_root) > 0:
-                child = self.virtual_root[0]
-            else:
-                child = None
+        child = self.node_nth_child(parent,0)
         return child
 
     #Done
@@ -404,6 +398,7 @@ class FilteredTree(gobject.GObject):
             if len(self.virtual_root) > n:
                 to_id = self.virtual_root[n]
                 toreturn = self.get_node(to_id)
+                print "## node_nth_child : %s" %to_id
             else:
                 toreturn = None
         else:

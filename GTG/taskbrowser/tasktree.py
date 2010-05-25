@@ -172,12 +172,18 @@ class TaskTreeModel(gtk.GenericTreeModel):
         return iter
 
     def on_get_path(self, iter):
+#        print "on_get_path"
         if iter:
+            node = iter.get_node()
+            paths = self.tree.get_paths_for_node(node)
+            path = iter.get_path()
+#            print "path of iter is correct : %s" %(path in paths)
             return iter.get_path()
         else:
             return None
 
     def on_iter_next(self, iter):
+#        print "on_iter_next"
         toreturn = None
         if iter:
             path = iter.get_path()
@@ -194,10 +200,12 @@ class TaskTreeModel(gtk.GenericTreeModel):
         return toreturn
 
     def on_iter_children(self, iter):
+#        print "on_iter_children"
         return self.on_iter_nth_child(iter,0)
             
 
     def on_iter_has_child(self, iter):
+#        print "on_iter_has_child"
         if iter:
             node = iter.get_node()
             return self.tree.node_has_child(node)
@@ -205,6 +213,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
             return False
 
     def on_iter_n_children(self, iter):
+#        print "on_iter_n_children"
         if iter:
             node = iter.get_node()
             return self.tree.node_n_children(node)
@@ -212,18 +221,29 @@ class TaskTreeModel(gtk.GenericTreeModel):
             return self.tree.node_n_children(None)
 
     def on_iter_nth_child(self, iter, n):
+        if iter:
+            id = iter.get_node().get_id()
+        else:
+            id = None
+#        print "on_iter_nth_child n=%s (iter %s)" %(n,id)
         toreturn = None
         if iter:
             node = iter.get_node()
             path = iter.get_path()
-            child = self.tree.node_nth_child(node,0)
-            cpaths = self.tree.get_paths_for_node(child)
-            for c in cpaths:
-                if c[:-1] == path:
-                    toreturn = TaskIter(child,c)
+            child = self.tree.node_nth_child(node,n)
+            if child:
+                cpaths = self.tree.get_paths_for_node(child)
+#                print "   path is %s and cpaths (%s) are %s" %(path,child.get_id(),cpaths)
+                for c in cpaths:
+                    if c[:-1] == path:
+                        toreturn = TaskIter(child,c)
+                if not toreturn:
+                    print "PROBLEM: child %s have the path %s but parent has %s"\
+                            %(child.get_id(),cpaths,path)
         return toreturn
 
     def on_iter_parent(self, iter):
+#        print "on_iter_parent"
         path = iter.get_path()
         par_node = self.tree.get_node_for_path(path[:-1])
         return TaskIter(par_node,path[:-1])
@@ -336,15 +356,13 @@ class TaskTreeView(gtk.TreeView):
         self.bg_color_enable = val
 
     def _celldatafunction(self, column, cell, model, iter):
+        col = None
         if self.bg_color_enable:
             bgcolor = column.get_tree_view().get_style().base[gtk.STATE_NORMAL]
-            value = model.get_value(iter, COL_TAGS)
-            if value:
-                col = colors.background_color(value, bgcolor)
-            else:
-                col = None
-        else:
-            col = None
+            if iter:
+                value = model.get_value(iter, COL_TAGS)
+                if value:
+                    col = colors.background_color(value, bgcolor)
         cell.set_property("cell-background", col)
 
     def get_column(self, index):
