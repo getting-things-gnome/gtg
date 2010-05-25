@@ -235,7 +235,7 @@ class FilteredTree(gobject.GObject):
     def get_paths_for_node(self, node):
         """
         Return a list of paths for a given node
-        Return None if no path for that Node.
+        Return an empty list if no path for that Node.
         """
         toreturn = []
         if node:
@@ -243,7 +243,7 @@ class FilteredTree(gobject.GObject):
         #For that node, we should convert the base_path to path
         if not node or not self.is_displayed(node.get_id()):
             #print "not displayed %s" %node
-            return None
+            return toreturn
         #This is the cache so we don't compute it all the time
         #TODO: this is commented out as it still doesn't work with filter
 #        elif self.path_for_node_cache.has_key(tid):
@@ -292,7 +292,6 @@ class FilteredTree(gobject.GObject):
                         print "ghost position for %s" %tid
                         print "VR : %s " %self.virtual_root
                         print self.path_for_node_cache
-                        toreturn = None
                     
         #debug statement to show when the path change
 #        if self.path_for_node_cache.has_key(tid):
@@ -302,11 +301,7 @@ class FilteredTree(gobject.GObject):
         if self.path_for_node_cache.has_key(tid):
             self.path_for_node_cache_old[tid] = self.path_for_node_cache[tid]
         self.path_for_node_cache[tid] = toreturn
-        #we cannot return an empty list 
-        if len(toreturn) == 0:
-            return None
-        else:
-            return toreturn
+        return toreturn
 
     #Done
     def next_node(self, node,parent=None):
