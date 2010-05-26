@@ -45,15 +45,19 @@ COL_DUE       = 11
 #We thus define an iter which is a tuple [node,path], defining one
 #and only one position in the tree
 class TaskIter():
-    def __init__(self,node,path):
+    def __init__(self,tree,node,path):
         self.node = node
         self.path = path
+        self.tree = tree
         
     def get_node(self):
         return self.node
     
     def get_path(self):
         return self.path
+
+    def is_valid(self):
+        return self.path in self.tree.get_paths_for_node(self.node)
 
 class TaskTreeModel(gtk.GenericTreeModel):
 
@@ -168,12 +172,12 @@ class TaskTreeModel(gtk.GenericTreeModel):
 #        print "on_get_iter for %s" %(str(path))
         node = self.tree.get_node_for_path(path)
 #        parent = self.tree.get_node_for_path(path[:-1])
-        iter = TaskIter(node,path)
+        iter = TaskIter(self.tree,node,path)
         return iter
 
     def on_get_path(self, iter):
 #        print "on_get_path"
-        if iter:
+        if iter and iter.is_valid():
             node = iter.get_node()
             paths = self.tree.get_paths_for_node(node)
             path = iter.get_path()
@@ -185,7 +189,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
     def on_iter_next(self, iter):
 #        print "on_iter_next"
         toreturn = None
-        if iter:
+        if iter and iter.is_valid():
             path = iter.get_path()
             parent = self.tree.get_node_for_path(path[:-1])
             node = iter.get_node()
@@ -196,7 +200,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
             npaths = self.tree.get_paths_for_node(next)
             for n in npaths:
                 if path[:-1] == n[:-1]:
-                    toreturn = TaskIter(next,n)
+                    toreturn = TaskIter(self.tree,next,n)
         return toreturn
 
     def on_iter_children(self, iter):
@@ -227,7 +231,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
             id = None
 #        print "on_iter_nth_child n=%s (iter %s)" %(n,id)
         toreturn = None
-        if iter:
+        if iter and iter.is_valid():
             node = iter.get_node()
             path = iter.get_path()
             child = self.tree.node_nth_child(node,n)
@@ -236,7 +240,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
 #                print "   path is %s and cpaths (%s) are %s" %(path,child.get_id(),cpaths)
                 for c in cpaths:
                     if c[:-1] == path:
-                        toreturn = TaskIter(child,c)
+                        toreturn = TaskIter(self.tree,child,c)
                 if not toreturn:
                     print "PROBLEM: child %s have the path %s but parent has %s"\
                             %(child.get_id(),cpaths,path)
@@ -244,9 +248,12 @@ class TaskTreeModel(gtk.GenericTreeModel):
 
     def on_iter_parent(self, iter):
 #        print "on_iter_parent"
-        path = iter.get_path()
-        par_node = self.tree.get_node_for_path(path[:-1])
-        return TaskIter(par_node,path[:-1])
+        if iter and iter.is_valid():
+            path = iter.get_path()
+            par_node = self.tree.get_node_for_path(path[:-1])
+            return TaskIter(self.tree,par_node,path[:-1])
+        else:
+            return None
 
     def update_task(self, sender, tid):
 #        # get the node and signal it's changed
