@@ -119,7 +119,7 @@ def main(options=None, args=None):
         ds.register_backend(backend_dic)
     
     #save directly the backends to be sure to write projects.xml
-    config.save_datastore(ds)
+    config.save_datastore(ds,initial_save=True)
         
     # Launch task browser
     req = ds.get_requester()

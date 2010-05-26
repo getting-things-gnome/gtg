@@ -151,8 +151,9 @@ class CoreConfig:
             
         return backend_fn
         
-    
-    def save_datastore(self,ds):
+
+    #If initial save, we don't close stuffs.
+    def save_datastore(self,ds,initial_save=False):
         doc,xmlconfig = cleanxml.emptydoc("config")
         for b in ds.get_all_backends():
             param = b.get_parameters()
@@ -163,11 +164,13 @@ class CoreConfig:
                     t_xml.setAttribute(str(key),str(param[key]))
             #Saving all the projects at close
             xmlconfig.appendChild(t_xml)
-            b.quit()
+            if not initial_save:
+                b.quit()
             
         datafile = self.DATA_DIR + self.DATA_FILE
         cleanxml.savexml(datafile,doc,backup=True)
 
         #Saving the tagstore
-        ts = ds.get_tagstore()
-        ts.save()
+        if not initial_save:
+            ts = ds.get_tagstore()
+            ts.save()
