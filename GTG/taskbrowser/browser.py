@@ -671,7 +671,7 @@ class TaskBrowser:
             t1 = model.get_value(iter1, tagtree.COL_OBJ)
             t2 = model.get_value(iter2, tagtree.COL_OBJ)
         except TypeError:
-            print "Error: Undefined iter1 in tag_sort_func, assuming ascending sort"
+#            print "Error: Undefined iter1 in tag_sort_func, assuming ascending sort"
             return 1
         t1_sp = t1.get_attribute("special")
         t2_sp = t2.get_attribute("special")
@@ -1302,11 +1302,10 @@ class TaskBrowser:
                 newtag = [taglist[0].get_name()]
         #FIXME:handle multiple tags case
         if len(newtag) > 0:
-            print "applying filter %s" %newtag[0]
             self.req.reset_tag_filters(refilter=False)
             self.req.apply_filter(newtag[0])
             if self.ctask_tree:
-                self.ctask_tree.apply_filter(newtag[0])
+                self.ctask_tree.apply_filter(newtag[0],reset=True)
         else:
             self.req.reset_tag_filters()
             if self.ctask_tree:

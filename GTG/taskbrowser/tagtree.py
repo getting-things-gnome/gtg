@@ -234,7 +234,6 @@ class TagTreeModel(gtk.GenericTreeModel):
 
     def add_tag(self, sender, tname):
         Log.debug("add tag %s" % (tname))
-#        self.tree.add_node(tag)
         tag = self.tree.get_node(tname)
         tag_path  = self.tree.get_path_for_node(tag)
         tag_iter  = self.get_iter(tag_path)
@@ -254,16 +253,22 @@ class TagTreeModel(gtk.GenericTreeModel):
         This method handles the adding of tasks, updating
         the "All task" entry in the tag pane and the "No tags"
         '''
-        self._update_all_tasks_and_no_tags()
-        self.update_tags_for_task(task_id)
+        #we only care about active task
+        task = self.req.get_task(task_id)
+        if task.get_status == "Active":
+            self._update_all_tasks_and_no_tags()
+            self.update_tags_for_task(task_id)
 
     def on_task_deleted(self, sender, task_id):
         '''
         This method handles the deleting of tasks, updating
         the "All task" entry in the tag pane and the "No tags"
         '''
-        self._update_all_tasks_and_no_tags()
-        self.update_tags_for_task(task_id)
+        #we only care about active task
+        task = self.req.get_task(task_id)
+        if task.get_status == "Active":
+            self._update_all_tasks_and_no_tags()
+            self.update_tags_for_task(task_id)
 
     def on_task_modified(self, sender, task_id):
         '''
@@ -286,13 +291,13 @@ class TagTreeModel(gtk.GenericTreeModel):
             #update the "Tasks with no tag" tag
             self._update_tag_from_name(self.req.get_notag_tag().get_name())
             tag = self.tree.get_node(tname)
-            self.displayed.pop(tname)
             tag_path  = self.tree.get_path_for_node(tag)
             tag_iter  = self.get_iter(tag_path)
             self.row_changed(tag_path, tag_iter)
-            self.displayed[tname] = tag_path
-            if tag.has_child():
-                self.row_has_child_toggled(tag_path, tag_iter)
+            #The following line seems to not be necessary anymore
+            #and produces a bug : every tag is multiplied
+#            if tag.has_child():
+#                self.row_has_child_toggled(tag_path, tag_iter)
 
     def move_tag(self, parent, child):
         Log.debug("Moving %s below %s" % (child, parent))
@@ -345,6 +350,7 @@ class TagTreeModel(gtk.GenericTreeModel):
         # Warn tree about inserted row
         new_child_path=self.tree.get_path_for_node(child_tag)
         new_child_iter = self.get_iter(new_child_path)
+        print "row %s inserted" %child_tag.get_name()
         self.row_inserted(new_child_path, new_child_iter)
         
     def rename_tag(self,oldname,newname):
@@ -428,9 +434,10 @@ class TagTreeView(gtk.TreeView):
 
     def _tag_separator_filter(self, model, itera, user_data=None):
         try:
+#            print "model is %s, itera is %s" %(model,itera)
             return model.get_value(itera, COL_SEP)
         except TypeError:
-            print "Error: invalid itera to _tag_separator_filter()"
+#            print "Error: invalid itera to _tag_separator_filter()"
             return False
 
     def _init_tree_view(self):
