@@ -253,16 +253,22 @@ class TagTreeModel(gtk.GenericTreeModel):
         This method handles the adding of tasks, updating
         the "All task" entry in the tag pane and the "No tags"
         '''
-        self._update_all_tasks_and_no_tags()
-        self.update_tags_for_task(task_id)
+        #we only care about active task
+        task = self.req.get_task(task_id)
+        if task.get_status == "Active":
+            self._update_all_tasks_and_no_tags()
+            self.update_tags_for_task(task_id)
 
     def on_task_deleted(self, sender, task_id):
         '''
         This method handles the deleting of tasks, updating
         the "All task" entry in the tag pane and the "No tags"
         '''
-        self._update_all_tasks_and_no_tags()
-        self.update_tags_for_task(task_id)
+        #we only care about active task
+        task = self.req.get_task(task_id)
+        if task.get_status == "Active":
+            self._update_all_tasks_and_no_tags()
+            self.update_tags_for_task(task_id)
 
     def on_task_modified(self, sender, task_id):
         '''
