@@ -330,6 +330,7 @@ class Tag(TreeNode):
             if ti not in toreturn:
                 toreturn.append(ti)
         return toreturn 
+    #TODO: we want to optimize this task. Really.
     def get_tasks_nbr(self,workview=False):
         tasks = self.get_tasks()
         temp_list = []
