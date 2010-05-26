@@ -68,7 +68,6 @@ class DataStore:
         @param tid: Task ID to retrieve
         """
         if tid:
-            uid, pid = tid.split('@')
             if self.has_task(tid):
                 task = self.__internal_get_task(tid)
             else:
