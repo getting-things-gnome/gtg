@@ -1306,10 +1306,7 @@ class TaskBrowser:
             self.req.reset_tag_filters(refilter=False)
             self.req.apply_filter(newtag[0])
             if self.ctask_tree:
-                #first we reset the closed tasks
-                self.ctask_tree.reset_tag_filters()
-                #then we apply the new filter
-                self.ctask_tree.apply_filter(newtag[0])
+                self.ctask_tree.apply_filter(newtag[0],reset=True)
         else:
             self.req.reset_tag_filters()
             if self.ctask_tree:

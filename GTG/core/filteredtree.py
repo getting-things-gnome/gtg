@@ -515,17 +515,21 @@ class FilteredTree(gobject.GObject):
 #        self.print_tree()
 
     ####### Change filters #################
-    def apply_filter(self,filter_name,parameters=None,imtherequester=False):
+    def apply_filter(self,filter_name,parameters=None,\
+                     reset=False,imtherequester=False):
         """
         Applies a new filter to the tree.  Can't be called on the main tree.
         @param filter_name: The name of an already registered filter to apply
         @param parameters: Optional parameters to pass to the filter
+        @param reset : optional boolean. Should we remove other filters?
         @param imtherequester: If true enables adding filters to the main tree
         """
         if self.is_main and not imtherequester:
             print "Error : use the requester to apply a filter to the main tree"
             print "We don't do that automatically on purpose"
         else:
+            if reset:
+                self.applied_filters = []
             if parameters:
                 filt = self.req.get_filter(filter_name)
                 if filt:
