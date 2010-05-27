@@ -119,7 +119,6 @@ class TagStore(Tree):
                 newname = "@" + newname
             if newname != oldname and newname != None \
                                   and not self.has_node(newname):
-                                  
                 ntag = self.new_tag(newname)
                 otag = self.get_node(oldname)
                 #copy attributes
@@ -137,7 +136,8 @@ class TagStore(Tree):
                     tas = self.req.get_task(tid)
                     tas.rename_tag(oldname,newname)
                 #remove the old one
-                self.remove_node(oldname,otag)
+                self.remove_node(oldname)
+        print "tag %s has %s tasks" %(newname,self.get_node(newname).get_tasks_nbr())
                 
     def get_all_tags_name(self, attname=None, attvalue=None):
         """Return the name of all tags

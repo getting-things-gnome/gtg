@@ -67,7 +67,9 @@ class SimpleTagFilter:
             value = False
         else:
             tags = [self.tname]
-            tags += self.req.get_tag(self.tname).get_children()
+            tt = self.req.get_tag(self.tname)
+            if tt:
+                tags += tt.get_children()
             value = task.has_tags(tags)
         if self.negate:
             value = not value

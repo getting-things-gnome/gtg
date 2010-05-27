@@ -527,6 +527,8 @@ class Task(TreeNode):
         self.req._tag_modified(old)
         self.tag_added(new)
         self.req._tag_modified(new)
+        self.sync()
+        print "tags are %s" %self.get_tags_name()
 
     def tag_added(self, tagname):
         """

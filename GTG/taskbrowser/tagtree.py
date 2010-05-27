@@ -292,8 +292,9 @@ class TagTreeModel(gtk.GenericTreeModel):
             self._update_tag_from_name(self.req.get_notag_tag().get_name())
             tag = self.tree.get_node(tname)
             tag_path  = self.tree.get_path_for_node(tag)
-            tag_iter  = self.get_iter(tag_path)
-            self.row_changed(tag_path, tag_iter)
+            if tag_path:
+                tag_iter  = self.get_iter(tag_path)
+                self.row_changed(tag_path, tag_iter)
             #The following line seems to not be necessary anymore
             #and produces a bug : every tag is multiplied
 #            if tag.has_child():
@@ -354,7 +355,7 @@ class TagTreeModel(gtk.GenericTreeModel):
         self.row_inserted(new_child_path, new_child_iter)
         
     def rename_tag(self,oldname,newname):
-        Log.debug("renaming tag %s" % (tname))
+        Log.debug("renaming tag %s" % (oldname))
         newname = newname.replace(" ", "_")
         tag = self.req.get_tag(oldname)
         # delete old row
@@ -459,7 +460,7 @@ class TagTreeView(gtk.TreeView):
         render_tags.set_property('ypad', 3)
         render_text.set_property('ypad', 3)
         # Disable edit feature for 0.2.1
-        #render_text.set_property('editable', True) 
+        render_text.set_property('editable', True) 
         render_text.connect("edited", self.rename_tag)
         render_count.set_property('xpad', 3)
         render_count.set_property('ypad', 3)
