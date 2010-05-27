@@ -525,7 +525,7 @@ class Task(TreeNode):
         self.content = self.content.replace(eold, enew)
         self.remove_tag(old)
         self.req._tag_modified(old)
-        self.add_tag(new)
+        self.tag_added(new)
         self.req._tag_modified(new)
         self.sync()
         print "tags are %s" %self.get_tags_name()
