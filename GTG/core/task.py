@@ -576,8 +576,9 @@ class Task(TreeNode):
     #remove by tagname
     def remove_tag(self, tagname):
         t = self.req.get_tag(tagname)
-        t.remove_task(self.get_id())
-        self.req._tag_modified(tagname)
+        if t:
+            t.remove_task(self.get_id())
+            self.req._tag_modified(tagname)
         if tagname in self.tags:
             self.tags.remove(tagname)
             for child in self.get_subtasks():

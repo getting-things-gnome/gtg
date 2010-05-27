@@ -117,13 +117,16 @@ class TagStore(Tree):
                             oldname not in ['gtg-tags-none','gtg-tags-all']:
             if newname[0] != "@":
                 newname = "@" + newname
-            if newname != oldname and newname != None \
-                                  and not self.has_node(newname):
-                ntag = self.new_tag(newname)
+            if newname != oldname and newname != None :
                 otag = self.get_node(oldname)
-                #copy attributes
+                if not self.has_node(newname):
+                    ntag = self.new_tag(newname)
+                else:
+                    ntag = self.get_tag(newname)
+                    #copy attributes
                 for att in otag.get_all_attributes(butname=True):
-                    ntag.set_attribute(att,otag.get_attribute(att))
+                    if not ntag.get_attribute(att):
+                        ntag.set_attribute(att,otag.get_attribute(att))
                 #restore position in tree
                 if otag.has_parent():
                     opar = otag.get_parent()
