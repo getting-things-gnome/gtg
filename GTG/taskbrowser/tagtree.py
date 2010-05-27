@@ -99,6 +99,7 @@ class TagTreeModel(gtk.GenericTreeModel):
 
     def _update_tag_from_name(self, name):
         ''' Helper method to update a row, given the name of the tag '''
+#        print "updage_tag %s" %name
         if name in self.displayed:
             self.row_changed(*self._path_iter_from_tag_name(name))
 
@@ -233,6 +234,7 @@ class TagTreeModel(gtk.GenericTreeModel):
             return None
 
     def add_tag(self, sender, tname):
+        print "add_tag %s" %tname
         Log.debug("add tag %s" % (tname))
         tag = self.tree.get_node(tname)
         tag_path  = self.tree.get_path_for_node(tag)

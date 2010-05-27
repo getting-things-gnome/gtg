@@ -594,7 +594,8 @@ class Task(TreeNode):
                     #in case XML is missing (bug #504899)
                     .replace('%s\n\n'%(tagname), newtag) 
                     .replace('%s, '%(tagname), newtag) 
-                    .replace(tagname, newtag)
+                    #don't forget a space a the end
+                    .replace('%s '%(tagname), newtag)
                )
      
 
