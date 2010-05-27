@@ -1306,6 +1306,7 @@ class TaskBrowser:
             self.req.apply_filter(newtag[0])
             if self.ctask_tree:
                 self.ctask_tree.apply_filter(newtag[0],reset=True)
+                self.ctask_tree.apply_filter('closed')
         else:
             self.req.reset_tag_filters()
             if self.ctask_tree:
