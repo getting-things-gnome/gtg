@@ -95,12 +95,14 @@ class TagTreeModel(gtk.GenericTreeModel):
 
     def _update_tag_from_name(self, tname):
         ''' Helper method to update a row, given the name of the tag '''
-#        print "updage_tag %s" %name
         Log.debug("update tag %s" % (tname))
         always_displayed = False
         if tname == self.req.get_alltag_tag().get_name() or\
             tname == self.req.get_notag_tag().get_name():
             always_displayed = True
+        if not always_displayed:
+            print "updage_tag %s" %tname
+            print self.tree.print_tree()
 #        if always_displayed and not self.displayed.get(tname):
         if tname and tname in self.displayed:
             tag = self.tree.get_node(tname)
@@ -108,12 +110,19 @@ class TagTreeModel(gtk.GenericTreeModel):
 #            print "update_tag %s - %s tasks" %(tname,tasks_count)
 #            if tasks_count < 1 and not always_displayed:
 #                print "pooping %s" %tname
+#                print self.tree.print_tree()
 #                ppath = self.tree.get_path_for_node(tag)
 #                self.row_deleted(ppath)
+#            else:
             tag_path  = self.tree.get_path_for_node(tag)
             if tag_path:
                 tag_iter  = self.get_iter(tag_path)
-                self.row_changed(tag_path, tag_iter)
+                if tasks_count >= 1 or always_displayed:
+                    print "  tag %s has %s tasks" %(tname,tasks_count)
+                    self.row_changed(tag_path, tag_iter)
+                else:
+                    print "  deliting tag %s" %tname
+                    self.row_deleted(tag_path)
             else:
                 print "Error : no path for tag %s" %tname
 
