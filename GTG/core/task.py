@@ -525,14 +525,14 @@ class Task(TreeNode):
         self.content = self.content.replace(eold, enew)
         self.remove_tag(old)
         self.req._tag_modified(old)
-        self.tag_added(new)
+        self.add_tag(new)
         self.req._tag_modified(new)
         self.sync()
         print "tags are %s" %self.get_tags_name()
 
     def tag_added(self, tagname):
         """
-        Adds a tag. Does not add '@tag' to the contents. See insert_tag
+        Adds a tag. Does not add '@tag' to the contents. See add_tag
         """
         #print "tag %s added to task %s" %(tagname,self.get_id())
         t = tagname.encode("UTF-8")
@@ -586,15 +586,15 @@ class Task(TreeNode):
                     child.remove_tag(tagname)
         self.content = self._strip_tag(self.content, tagname)
                        
-    def _strip_tag(self, text, tagname):
+    def _strip_tag(self, text, tagname,newtag=''):
         return (text
-                    .replace('<tag>%s</tag>\n\n'%(tagname), '') #trail \n
-                    .replace('<tag>%s</tag>, '%(tagname), '') #trail comma
-                    .replace('<tag>%s</tag>'%(tagname), '')
+                    .replace('<tag>%s</tag>\n\n'%(tagname), newtag) #trail \n
+                    .replace('<tag>%s</tag>, '%(tagname), newtag) #trail comma
+                    .replace('<tag>%s</tag>'%(tagname), newtag)
                     #in case XML is missing (bug #504899)
-                    .replace('%s\n\n'%(tagname), '') 
-                    .replace('%s, '%(tagname), '') 
-                    .replace(tagname, '')
+                    .replace('%s\n\n'%(tagname), newtag) 
+                    .replace('%s, '%(tagname), newtag) 
+                    .replace(tagname, newtag)
                )
      
 
