@@ -78,6 +78,10 @@ class TagTreeModel(gtk.GenericTreeModel):
             self.displayed.append(n.get_id())
 
 ### MODEL METHODS ############################################################
+    def update_tag(self, sender, tname):
+        self._update_all_tasks_and_no_tags()
+        self._update_tag_from_name(tname)
+
     def update_tags_for_task(self, task_id):
         task = self.req.get_task(task_id)
         if task:
@@ -100,9 +104,9 @@ class TagTreeModel(gtk.GenericTreeModel):
         if tname == self.req.get_alltag_tag().get_name() or\
             tname == self.req.get_notag_tag().get_name():
             always_displayed = True
-        if not always_displayed:
-            print "updage_tag %s" %tname
-            print self.tree.print_tree()
+#        if not always_displayed:
+#            print "updage_tag %s" %tname
+#            print self.tree.print_tree()
 #        if always_displayed and not self.displayed.get(tname):
         if tname and tname in self.displayed:
             tag = self.tree.get_node(tname)
@@ -118,13 +122,18 @@ class TagTreeModel(gtk.GenericTreeModel):
             if tag_path:
                 tag_iter  = self.get_iter(tag_path)
                 if tasks_count >= 1 or always_displayed:
-                    print "  tag %s has %s tasks" %(tname,tasks_count)
+                    if not always_displayed:
+                        print "  tag %s has %s tasks" %(tname,tasks_count)
                     self.row_changed(tag_path, tag_iter)
                 else:
-                    print "  deliting tag %s" %tname
+                    print "  deliting tag %s (%s tasks)" %(tname,tasks_count)
+                    self.displayed.remove(tname)
                     self.row_deleted(tag_path)
             else:
                 print "Error : no path for tag %s" %tname
+        else:
+            print "## %s in not in self.displayed" %tname
+            print self.tree.print_tree()
 
 
     def set_workview(self, val):
@@ -313,11 +322,6 @@ class TagTreeModel(gtk.GenericTreeModel):
             tag_iter = None
         return tag_path, tag_iter
 
-    def update_tag(self, sender, tname):
-        self._update_all_tasks_and_no_tags()
-        self._update_tag_from_name(tname)
-                        
-                        
 
     def move_tag(self, parent, child):
         Log.debug("Moving %s below %s" % (child, parent))

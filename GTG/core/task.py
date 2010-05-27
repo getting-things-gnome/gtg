@@ -575,15 +575,19 @@ class Task(TreeNode):
     #remove by tagname
     def remove_tag(self, tagname):
         t = self.req.get_tag(tagname)
+        modified = False
         if t:
             t.remove_task(self.get_id())
-            self.req._tag_modified(tagname)
+            modified = True
         if tagname in self.tags:
             self.tags.remove(tagname)
+            modified = True
             for child in self.get_subtasks():
                 if child.can_be_deleted:
                     child.remove_tag(tagname)
         self.content = self._strip_tag(self.content, tagname)
+        if modified:
+            self.req._tag_modified(tagname)
                        
     def _strip_tag(self, text, tagname,newtag=''):
         return (text
