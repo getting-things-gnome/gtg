@@ -362,6 +362,11 @@ class TagTreeModel(gtk.GenericTreeModel):
     def rename_tag(self,oldname,newname):
         Log.debug("renaming tag %s" % (oldname))
         newname = newname.replace(" ", "_")
+        if len(newname) <= 0:
+            newname = oldname
+        if newname[0] != "@":
+            newname = "@" + newname
+        print "renaming tag %s to %s" %(oldname,newname)
         if newname != oldname:
             tag = self.req.get_tag(oldname)
             # delete old row
