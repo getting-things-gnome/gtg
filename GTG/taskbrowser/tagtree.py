@@ -72,10 +72,10 @@ class TagTreeModel(gtk.GenericTreeModel):
         self.req.connect('task-deleted',self.on_task_deleted)
         self.req.connect('task-modified',self.on_task_modified)
 
-        self.displayed = {}
+        self.displayed = []
         for n in self.tree.get_all_nodes():
             path = self.tree.get_path_for_node(n)
-            self.displayed[n.get_id()] = path
+            self.displayed.append(n.get_id())
 
 ### MODEL METHODS ############################################################
     def update_tags_for_task(self, task_id):
@@ -102,20 +102,20 @@ class TagTreeModel(gtk.GenericTreeModel):
             tname == self.req.get_notag_tag().get_name():
             always_displayed = True
 #        if always_displayed and not self.displayed.get(tname):
-        if tname and self.displayed.get(tname):
+        if tname and tname in self.displayed:
             tag = self.tree.get_node(tname)
             tasks_count = tag.get_tasks_nbr(workview=self.workview)
-            if tasks_count < 1 and not always_displayed:
-                ppath = self.displayed.pop(tname)
-                self.row_deleted(ppath)
+#            print "update_tag %s - %s tasks" %(tname,tasks_count)
+#            if tasks_count < 1 and not always_displayed:
+#                print "pooping %s" %tname
+#                ppath = self.tree.get_path_for_node(tag)
+#                self.row_deleted(ppath)
+            tag_path  = self.tree.get_path_for_node(tag)
+            if tag_path:
+                tag_iter  = self.get_iter(tag_path)
+                self.row_changed(tag_path, tag_iter)
             else:
-                tag_path  = self.tree.get_path_for_node(tag)
-                if tag_path:
-                    self.displayed[tname] = tag_path
-                    tag_iter  = self.get_iter(tag_path)
-                    self.row_changed(tag_path, tag_iter)
-                else:
-                    print "Error : no path for tag %s" %tname
+                print "Error : no path for tag %s" %tname
 
 
     def set_workview(self, val):
@@ -256,10 +256,8 @@ class TagTreeModel(gtk.GenericTreeModel):
         #update the number of tasks without tags
         self._update_all_tasks_and_no_tags()
         if tag_path != None:
-#            print "### tag %s added to path %s" %(tname,tag_path)
-            if not self.displayed.get(tname):
+            if not tname in self.displayed:
                 self.row_inserted(tag_path, tag_iter)
-                self.displayed[tname] = tag_path
             if tag.has_child():
                 self.row_has_child_toggled(tag_path, tag_iter)
 
@@ -297,7 +295,8 @@ class TagTreeModel(gtk.GenericTreeModel):
         ''' Helper method to get path and iter  given the name
         of the  tag. It assumes you've verified that "self.displayed" has 
         the key "name" in it'''
-        tag_path = self.displayed[name]
+#        tag_path = self.displayed[name]
+        tag_path = self.tree.get_path_for_node(tag)
         if tag_path:
             tag_iter = self.get_iter(tag_path)
         else:
@@ -378,8 +377,8 @@ class TagTreeModel(gtk.GenericTreeModel):
             # delete old row
             old_path=self.tree.get_path_for_node(tag)
             if oldname in self.displayed:
-                ppath = self.displayed.pop(oldname)
-                self.row_deleted(ppath)
+                self.displayed.remove(oldname)
+#                self.row_deleted(ppath)
             self.row_deleted(old_path)
             # perform rename
             self.req.rename_tag(oldname,newname)
