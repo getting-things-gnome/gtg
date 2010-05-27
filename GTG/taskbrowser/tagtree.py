@@ -360,7 +360,7 @@ class TagTreeModel(gtk.GenericTreeModel):
         tag = self.req.get_tag(oldname)
         # delete old row
         old_path=self.tree.get_path_for_node(tag)
-        #self.row_deleted(old_path)
+        self.row_deleted(old_path)
         # perform rename
         self.req.rename_tag(oldname,newname)
         # insert new row
