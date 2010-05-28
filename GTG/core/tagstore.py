@@ -208,7 +208,7 @@ class Tag(TreeNode):
     for tags is C{name}, which always matches L{Tag.get_name()}.
     """
 
-    def __init__(self, name, req=None):
+    def __init__(self, name, req):
         """Construct a tag.
 
         @param name: The name of the tag. Should be a string, generally a
