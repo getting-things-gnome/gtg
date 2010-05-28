@@ -43,10 +43,10 @@ class TagTree():
         self.tag_modelfilter = self.tag_model.filter_new()
         self.tag_modelfilter.set_visible_func(self.tag_visible_func)
         self.tag_modelsort = gtk.TreeModelSort(self.tag_modelfilter)
-        self.tag_modelsort.set_sort_func(COL_ID, self.tag_sort_func)
         self.tags_tv = TagTreeView()
         self.tags_tv.set_model(self.tag_modelsort)
-        self.tag_modelsort.set_sort_column_id(COL_ID, gtk.SORT_ASCENDING)
+#        self.tag_modelsort.set_sort_column_id(COL_ID, gtk.SORT_ASCENDING)
+        self.tag_modelsort.set_sort_func(COL_ID, self.tag_sort_func)
 
         # Tags TreeView
         self.tags_tv.connect('row-expanded',\
@@ -120,17 +120,19 @@ class TagTree():
                # return tag.is_actively_used()
             else:
                 toreturn = True
-        if not tag.get_attribute("special"):
-            print "tag %s is visible %s" %(tag.get_name(),toreturn)
+#        if not tag.get_attribute("special"):
+#            print "tag %s is visible %s" %(tag.get_name(),toreturn)
         return toreturn
 
     def tag_sort_func(self, model, iter1, iter2, user_data=None):
         order = self.tags_tv.get_model().get_sort_column_id()[1]
         try:
+#            iter11 = model.convert_child_iter_to_iter(iter1)
+#            iter22 = model.convert_child_iter_to_iter(iter1)
             t1 = model.get_value(iter1, COL_OBJ)
             t2 = model.get_value(iter2, COL_OBJ)
         except TypeError:
-#            print "Error: Undefined iter1 in tag_sort_func, assuming ascending sort"
+            print "Error: Undefined iter1 in tag_sort_func, assuming ascending sort"
             return 1
         t1_sp = t1.get_attribute("special")
         t2_sp = t2.get_attribute("special")
