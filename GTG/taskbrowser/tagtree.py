@@ -19,6 +19,7 @@
 import gtk
 import gobject
 import xml.sax.saxutils as saxutils
+import locale
 
 from GTG                              import _
 from GTG.taskbrowser.CellRendererTags import CellRendererTags
@@ -32,6 +33,122 @@ COL_OBJ   = 3
 COL_COLOR = 4
 COL_COUNT = 5
 COL_SEP   = 6
+
+
+class TagTree():
+    def __init__(self,req):
+        self.req = req
+        self.collapsed_tags = []
+        self.tag_model = TagTreeModel(requester=self.req)
+        self.tag_modelfilter = self.tag_model.filter_new()
+        self.tag_modelfilter.set_visible_func(self.tag_visible_func)
+        self.tag_modelsort = gtk.TreeModelSort(self.tag_modelfilter)
+        self.tag_modelsort.set_sort_func(COL_ID, self.tag_sort_func)
+        self.tags_tv = TagTreeView()
+        self.tags_tv.set_model(self.tag_modelsort)
+        self.tag_modelsort.set_sort_column_id(COL_ID, gtk.SORT_ASCENDING)
+
+        # Tags TreeView
+        self.tags_tv.connect('row-expanded',\
+            self.on_tag_treeview_row_expanded)
+        self.tags_tv.connect('row-collapsed',\
+            self.on_tag_treeview_row_collapsed)
+
+        self.tag_modelsort.connect("row-has-child-toggled",\
+                                    self.on_tag_child_toggled)
+
+    def get_tagtreeview(self):
+        return self.tags_tv
+
+    def set_workview(self,param):
+        self.tag_model.set_workview(param)
+
+    def refilter(self):
+        self.tag_modelfilter.refilter()
+
+    def get_collapsed_tags(self):
+        return self.collapsed_tags
+
+    def set_collapsed_tags(self,tab):
+        self.collapsed_tags = tab
+
+    def on_tag_child_toggled(self, model, path, iter):
+        tag = model.get_value(iter, COL_ID)
+        if tag not in self.collapsed_tags:
+            self.tags_tv.expand_row(path, False)
+        else:
+            self.tags_tv.collapse_row(path)
+            
+    def on_tag_treeview_row_expanded(self, treeview, iter, path):
+        tag = treeview.get_model().get_value(iter, COL_ID)
+        if tag in self.collapsed_tags:
+            self.collapsed_tags.remove(tag)
+        
+    def on_tag_treeview_row_collapsed(self, treeview, iter, path):
+        tag = treeview.get_model().get_value(iter, COL_ID)
+        if tag not in self.collapsed_tags:
+            self.collapsed_tags.append(tag)
+
+    def tag_visible_func(self, model, iter, user_data=None):
+        """Return True if the row must be displayed in the treeview.
+        @param model: the model of the filtered treeview
+        @param iter: the iter whose visiblity must be evaluated
+        @param user_data:
+        """
+        toreturn = False
+        tag = model.get_value(iter, COL_OBJ)
+
+        if tag and not tag.is_removable():
+            # show the tag if any children are shown
+            child = model.iter_children(iter)
+            while child:
+                if self.tag_visible_func(model, child):
+                    toreturn = True
+                child=model.iter_next(child)
+            
+            if not tag.get_attribute("special"):
+                #Those two lines hide tags without tasks in the workview
+                count = model.get_value(iter, COL_COUNT)
+                toreturn = count != '0'
+                #the following display tags in the workview, even with 0 tasks
+               # return tag.is_actively_used()
+            else:
+                toreturn = True
+        if not tag.get_attribute("special"):
+            print "tag %s is visible %s" %(tag.get_name(),toreturn)
+        return toreturn
+
+    def tag_sort_func(self, model, iter1, iter2, user_data=None):
+        order = self.tags_tv.get_model().get_sort_column_id()[1]
+        try:
+            t1 = model.get_value(iter1, COL_OBJ)
+            t2 = model.get_value(iter2, COL_OBJ)
+        except TypeError:
+#            print "Error: Undefined iter1 in tag_sort_func, assuming ascending sort"
+            return 1
+        t1_sp = t1.get_attribute("special")
+        t2_sp = t2.get_attribute("special")
+        t1_name = locale.strxfrm(t1.get_name())
+        t2_name = locale.strxfrm(t2.get_name())
+        if not t1_sp and not t2_sp:
+            return cmp(t1_name, t2_name)
+        elif not t1_sp and t2_sp:
+            if order == gtk.SORT_ASCENDING:
+                return 1
+            else:
+                return -1
+        elif t1_sp and not t2_sp:
+            if order == gtk.SORT_ASCENDING:
+                return -1
+            else:
+                return 1
+        else:
+            t1_order = t1.get_attribute("order")
+            t2_order = t2.get_attribute("order")
+            if order == gtk.SORT_ASCENDING:
+                return cmp(t1_order, t2_order)
+            else:
+                return cmp(t2_order, t1_order)
 
 
 class TagTreeModel(gtk.GenericTreeModel):
