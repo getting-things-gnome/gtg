@@ -57,6 +57,12 @@ class TagTree():
         self.tag_modelsort.connect("row-has-child-toggled",\
                                     self.on_tag_child_toggled)
 
+        self.req.connect('tag-modified',self.refresh)
+
+    def refresh(self,sender=None,tagname=None):
+        print "tag refresh %s" %(tagname)
+#        self.tags_tv.refresh()
+
     def get_tagtreeview(self):
         return self.tags_tv
 
@@ -257,7 +263,7 @@ class TagTreeModel(gtk.GenericTreeModel):
 #                if tag_path:
 ##                    self.row_deleted(tag_path)
 #                    print "  and is removable %s" %removable
-            print self.tree.print_tree()
+#            print self.tree.print_tree()
 
 
     def set_workview(self, val):
@@ -334,6 +340,8 @@ class TagTreeModel(gtk.GenericTreeModel):
             else:
                 if sp_id == "sep":
                     return True
+                else:
+                    return False
 
     def on_iter_next(self, node):
 #        print "on_iter_next: %s" % str(node)
@@ -586,10 +594,12 @@ class TagTreeView(gtk.TreeView):
 
     def _tag_separator_filter(self, model, itera, user_data=None):
         try:
-#            print "model is %s, itera is %s" %(model,itera)
-            return model.get_value(itera, COL_SEP)
+            if itera and model.iter_is_valid(itera):
+                return model.get_value(itera, COL_SEP)
+            else:
+                return False
         except TypeError:
-#            print "Error: invalid itera to _tag_separator_filter()"
+            print "Error: invalid itera to _tag_separator_filter()"
             return False
 
     def _init_tree_view(self):

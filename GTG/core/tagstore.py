@@ -91,7 +91,7 @@ class TagStore(Tree):
 
     def update_tag(self,sender,tagname):
         tag = self.get_tag(tagname)
-        if tag.is_removable():
+        if tag and tag.is_removable():
             self.remove_node(tagname)
 
     def new_tag(self, tagname):
