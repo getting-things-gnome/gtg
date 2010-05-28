@@ -44,6 +44,8 @@ class TagStore(Tree):
     def __init__(self,requester):
         Tree.__init__(self)
         self.req = requester
+        self.req.connect('tag-modified',self.update_tag)
+        
         self.loaded = False
         
         ### building the initial tags
@@ -86,6 +88,11 @@ class TagStore(Tree):
                 pnode=self.new_tag(parent)
                 tag.set_parent(pnode.get_id())
         self.loaded = True
+
+    def update_tag(self,sender,tagname):
+        tag = self.get_tag(tagname)
+        if tag.is_removable():
+            self.remove_node(tagname)
 
     def new_tag(self, tagname):
         """Create a new tag and return it or return the existing one
@@ -344,6 +351,11 @@ class Tag(TreeNode):
                     temp_list.append(t)
         toreturn = len(temp_list)
         return toreturn
+    #is it useful to keep the tag in the tagstore.
+    #if no attributes and no tasks, it is not useful.
+    def is_removable(self):
+        attr = self.get_all_attributes(butname = True, withparent = True)
+        return (len(attr) <= 0 and not self.is_used())
     def is_used(self):
         return len(self.tasks) > 0
     def is_actively_used(self):

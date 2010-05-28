@@ -601,23 +601,28 @@ class TaskBrowser:
         @param iter: the iter whose visiblity must be evaluated
         @param user_data:
         """
+        toreturn = False
         tag = model.get_value(iter, tagtree.COL_OBJ)
-        
-        # show the tag if any children are shown
-        child = model.iter_children(iter)
-        while child:
-            if self.tag_visible_func(model, child):
-                return True
-            child=model.iter_next(child)
-        
+
+        if tag and not tag.is_removable():
+            # show the tag if any children are shown
+            child = model.iter_children(iter)
+            while child:
+                if self.tag_visible_func(model, child):
+                    toreturn = True
+                child=model.iter_next(child)
+            
+            if not tag.get_attribute("special"):
+                #Those two lines hide tags without tasks in the workview
+                count = model.get_value(iter, tagtree.COL_COUNT)
+                toreturn = count != '0'
+                #the following display tags in the workview, even with 0 tasks
+               # return tag.is_actively_used()
+            else:
+                toreturn = True
         if not tag.get_attribute("special"):
-            #Those two lines hide tags without tasks in the workview
-            count = model.get_value(iter, tagtree.COL_COUNT)
-            return count != '0'
-            #the following display tags in the workview, even with 0 tasks
-           # return tag.is_actively_used()
-        else:
-            return True
+            print "tag %s is visible %s" %(tag.get_name(),toreturn)
+        return toreturn
 
     def dleft_sort_func(self, model, iter1, iter2, user_data=None):
         order = self.task_modelsort.get_sort_column_id()[1]

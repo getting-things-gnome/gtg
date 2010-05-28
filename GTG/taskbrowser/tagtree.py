@@ -108,8 +108,8 @@ class TagTreeModel(gtk.GenericTreeModel):
 #            print "updage_tag %s" %tname
 #            print self.tree.print_tree()
 #        if always_displayed and not self.displayed.get(tname):
-        if tname and tname in self.displayed:
-            tag = self.tree.get_node(tname)
+        tag = self.tree.get_node(tname)
+        if tag and tname in self.displayed:
             tasks_count = tag.get_tasks_nbr(workview=self.workview)
 #            print "update_tag %s - %s tasks" %(tname,tasks_count)
 #            if tasks_count < 1 and not always_displayed:
@@ -133,6 +133,13 @@ class TagTreeModel(gtk.GenericTreeModel):
                 print "Error : no path for tag %s" %tname
         else:
             print "## %s in not in self.displayed" %tname
+#            tag = self.tree.get_node(tname)
+#            removable = tag.is_removable()
+#            if tag and removable:
+#                tag_path  = self.tree.get_path_for_node(tag)
+#                if tag_path:
+##                    self.row_deleted(tag_path)
+#                    print "  and is removable %s" %removable
             print self.tree.print_tree()
 
 
