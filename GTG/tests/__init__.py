@@ -25,6 +25,7 @@ from GTG.tests import (
     test_tagstore,
     test_taskviewserial,
     test_tree,
+    test_apidocs,
     )
 
 
@@ -32,5 +33,6 @@ def test_suite():
     return unittest.TestSuite([
         test_tagstore.test_suite(),
         test_taskviewserial.test_suite(),
-	test_tree.test_suite(),
+    	test_tree.test_suite(),
+        test_apidocs.test_suite(),
         ])
