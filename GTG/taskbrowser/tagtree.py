@@ -108,17 +108,11 @@ class TagTree():
                 if self.tag_visible_func(model, child):
                     toreturn = True
                 child=model.iter_next(child)
-            
             if not tag.get_attribute("special"):
-                #Those two lines hide tags without tasks in the workview
                 count = model.get_value(iter, COL_COUNT)
                 toreturn = count != '0'
-                #the following display tags in the workview, even with 0 tasks
-               # return tag.is_actively_used()
             else:
                 toreturn = True
-#        if not tag.get_attribute("special"):
-#            print "tag %s is visible %s" %(tag.get_name(),toreturn)
         return toreturn
 
     def tag_sort_func(self, model, iter1, iter2, user_data=None):
