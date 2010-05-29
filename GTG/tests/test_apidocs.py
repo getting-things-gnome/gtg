@@ -17,22 +17,37 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-"""Unit tests for GTG."""
+"""Tests for the documentation."""
 
 import unittest
 
-from GTG.tests import (
-    test_tagstore,
-    test_taskviewserial,
-    test_tree,
-    test_apidocs,
-    )
+import subprocess
+import GTG
+import os.path
+import shutil
+import uuid
 
+
+
+class TestApiDocs(unittest.TestCase):
+    """Test if the documentation still builds."""
+
+    
+    def test_pydoctor(self):
+        if int(subprocess.call(['which', 'pydoctor'])):
+            #if no pydoctor is present, abort the test w/out giving error
+            return
+        GTG_basedir = os.path.dirname(GTG.__file__)
+        api_dir = os.path.join(GTG_basedir, 
+                               'test_build_api-' + str(uuid.uuid4()))
+        args = ['pydoctor', 
+                '--add-package', GTG_basedir,
+                '--make-html',
+                '--html-output=' + api_dir , 
+                '--project-name=GTG',
+                '--project-url=http://gtg.fritalk.com/']
+        assert(int(subprocess.call(args)) == 0)
+        shutil.rmtree(api_dir)
 
 def test_suite():
-    return unittest.TestSuite([
-        test_tagstore.test_suite(),
-        test_taskviewserial.test_suite(),
-    	test_tree.test_suite(),
-        test_apidocs.test_suite(),
-        ])
+    return unittest.TestLoader().loadTestsFromTestCase(TestApiDocs)

@@ -915,7 +915,7 @@ class TaskBrowser:
             # to findall. http://www.amk.ca/python/howto/regex/regex.html
             # ~~~~Invernizzi
             for match in re.findall(r'(?:^|[\s])(@\w+)', text):
-                tags.append(GTG.core.tagstore.Tag(match))
+                tags.append(GTG.core.tagstore.Tag(match, self.req))
                 # Remove the @
                 #text =text.replace(match,match[1:],1)
             # Get attributes
@@ -927,7 +927,7 @@ class TaskBrowser:
                     for tag in args.split(","):
                         if not tag.startswith("@") :
                             tag = "@"+tag
-                        tags.append(GTG.core.tagstore.Tag(tag))
+                        tags.append(GTG.core.tagstore.Tag(tag, self.req))
                 elif attribute.lower() == "defer" or \
                      attribute.lower() == _("defer"):
                     defer_date = get_canonical_date(args)

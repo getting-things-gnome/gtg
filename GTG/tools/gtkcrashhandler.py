@@ -1,11 +1,4 @@
 #!/usr/bin/env python
-#
-# [SNIPPET_NAME: Crash Handler]
-# [SNIPPET_CATEGORIES: PyGTK, Apport]
-# [SNIPPET_DESCRIPTION: a custom except hook for your applications that catches Python exceptions and displays a GTK dialog]
-# [SNIPPET_AUTHOR: David D. Lowe <daviddlowe.flimm@gmail.com>]
-# [SNIPPET_LICENSE: MIT]
-#
 # Copyright 2010 David D. Lowe
 # All rights reserved.
 #
@@ -61,6 +54,8 @@ USE_APPORT = False
 
 _old_sys_excepthook = None # None means that initialize() has not been called
 						   # yet.
+
+dialog = None
 
 def initialize(app_name=None, message=None, use_apport=False):
     """Initialize the except hook built on GTK.
@@ -170,7 +165,9 @@ def show_error_window(error_string, add_apport_button=False):
     global APP_NAME
     if APP_NAME:
         title = APP_NAME
+    global dialog
     dialog = gtk.Dialog(title)
+
 
     # title Label
     label = gtk.Label()
@@ -211,7 +208,8 @@ def show_error_window(error_string, add_apport_button=False):
     # hide the textview in an Expander widget
     expander = gtk.expander_new_with_mnemonic(_("_Details"))
     expander.add(scrolled)
-    dialog.get_content_area().pack_start(expander, False)
+    expander.connect('activate', on_expanded)
+    dialog.get_content_area().pack_start(expander, True)
 
     # add buttons
     if add_apport_button:
@@ -235,6 +233,10 @@ def show_error_window(error_string, add_apport_button=False):
     if res < 0:
         res = 2
     return res
+
+def on_expanded(widget):
+    global dialog
+    dialog.set_size_request(600,600)
 
 
 def gtkcrashhandler_thread(run):
