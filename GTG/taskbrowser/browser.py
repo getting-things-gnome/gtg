@@ -555,7 +555,6 @@ class TaskBrowser:
         self.menu_view_workview.set_active(tobeset)
         self.toggle_workview.set_active(tobeset)
         self.priv['workview'] = tobeset
-        self.tagtree.set_workview(self.priv['workview'])
         if tobeset:
             self.req.apply_filter('workview')
         else:

@@ -66,9 +66,6 @@ class TagTree():
     def get_tagtreeview(self):
         return self.tags_tv
 
-    def set_workview(self,param):
-        self.tag_model.set_workview(param)
-
     def refilter(self):
         self.tag_modelfilter.refilter()
 
@@ -173,23 +170,7 @@ class TagTreeModel(gtk.GenericTreeModel):
         gtk.GenericTreeModel.__init__(self)
         self.req  = requester
         self.tree = self.req.get_tag_tree()
-        self.workview = False
-
-        #filtered trees used for counting "All tasks" and 
-        # "Tasks without tags"
-        self.active_filtered_tree = self.req.get_custom_tasks_tree()
-        self.notag_filtered_tree = self.req.get_custom_tasks_tree()
-        self.active_filtered_tree.apply_filter("active")
-        self.notag_filtered_tree.apply_filter("notag")
-        self.notag_filtered_tree.apply_filter("active")
-
-        self.active_workview_filtered_tree = self.req.get_custom_tasks_tree()
-        self.notag_workview_filtered_tree = self.req.get_custom_tasks_tree()
-        self.active_workview_filtered_tree.apply_filter("active")
-        self.active_workview_filtered_tree.apply_filter("workview")
-        self.notag_workview_filtered_tree.apply_filter("active")
-        self.notag_workview_filtered_tree.apply_filter("notag")
-        self.notag_workview_filtered_tree.apply_filter("workview")
+        self.tasktree = self.req.get_main_tasks_tree()
         
         self.req.connect('tag-added',self.add_tag)
         self.req.connect('tag-modified',self.update_tag)
@@ -235,7 +216,7 @@ class TagTreeModel(gtk.GenericTreeModel):
 #        if always_displayed and not self.displayed.get(tname):
         tag = self.tree.get_node(tname)
         if tag and tname in self.displayed:
-            tasks_count = tag.get_tasks_nbr(workview=self.workview)
+            tasks_count = tag.get_tasks_nbr()
 #            print "update_tag %s - %s tasks" %(tname,tasks_count)
 #            if tasks_count < 1 and not always_displayed:
 #                print "pooping %s" %tname
@@ -267,9 +248,6 @@ class TagTreeModel(gtk.GenericTreeModel):
 #                    print "  and is removable %s" %removable
 #            print self.tree.print_tree()
 
-
-    def set_workview(self, val):
-        self.workview = val
 
 ### TREEMODEL INTERFACE ######################################################
 #
@@ -315,26 +293,14 @@ class TagTreeModel(gtk.GenericTreeModel):
             return tag.get_attribute("color")
         elif column == COL_COUNT:
             sp_id = tag.get_attribute("special")
-            if not sp_id:
-                #This call is critical because called thousand of times
-                count = tag.get_tasks_nbr(workview=self.workview)
-                return  count
-            elif self.workview:
-                if sp_id == "all":
-                    return self.active_workview_filtered_tree.get_n_nodes()
-                elif sp_id == "notag":
-                    return self.notag_workview_filtered_tree.get_n_nodes()
-                else:
-                    return 0
+            if sp_id == "all":
+                return self.tasktree.get_n_nodes()
+            elif sp_id == "notag":
+                return self.tasktree.get_n_nodes(withfilters=['notag'])
+            elif sp_id == "sep" :
+                return 0
             else:
-                if sp_id == "all":
-                    #This is "All tasks"
-                    return self.active_filtered_tree.get_n_nodes()
-                elif sp_id == "notag":
-                    #This is "Tasks with no tags"
-                    return self.notag_filtered_tree.get_n_nodes()
-                else:
-                    return 0
+                return self.tasktree.get_n_nodes(withfilters=[tag.get_name()])
         elif column == COL_SEP:
             sp_id = tag.get_attribute("special")
             if not sp_id:
@@ -497,7 +463,7 @@ class TagTreeModel(gtk.GenericTreeModel):
         if new_par_tag:
             self._update_tag_from_name(new_par_tag.get_name())
         if old_par_tag:
-            tasks_count = old_par_tag.get_tasks_nbr(workview=self.workview)
+            tasks_count = old_par_tag.get_tasks_nbr()
             if tasks_count > 0:
                 self._update_tag_from_name(old_par_tag.get_name())
             else:

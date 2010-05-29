@@ -154,11 +154,27 @@ class FilteredTree(gobject.GObject):
             k.append(self.get_node(n))
         return k
         
-    def get_n_nodes(self):
+    def get_n_nodes(self,withfilters=[]):
         """
         returns quantity of displayed nodes in this tree
+        if the withfilters is set, returns the quantity of nodes
+        that will be displayed if we apply those filters to the current
+        tree. It means that the currently applied filters are also taken into
+        account.
         """
-        return len(self.displayed_nodes)
+        toreturn = 0
+        if len(withfilters) > 0:
+            for tid in self.displayed_nodes:
+                result = True
+                for f in withfilters:
+                    filt = self.req.get_filter(f)
+                    if filt:
+                        result = result and filt.is_displayed(tid)
+                if result:
+                    toreturn += 1
+        else:
+            toreturn = len(self.displayed_nodes)
+        return toreturn
         
     ### signals functions
     def __task_added(self,sender,tid):
