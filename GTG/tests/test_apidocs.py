@@ -22,7 +22,8 @@
 import unittest
 
 import subprocess
-#import GTG
+import GTG
+import os.path
 
 
 
@@ -34,9 +35,13 @@ class TestApiDocs(unittest.TestCase):
         if int(subprocess.call(['which', 'pydoctor'])):
             #if no pydoctor is present, abort the test w/out giving error
             return
-        args = ['pydoctor', '--add-package', 'GTG' ,'--make-html',
-             '--html-output=doc/api',  '--project-name=GTG',
-             '--project-url=http://gtg.fritalk.com/']
+        args = ['pydoctor', 
+                '--add-package',
+                os.path.dirname(GTG.__file__),
+                '--make-html',
+                '--html-output=doc/api',
+                '--project-name=GTG',
+                '--project-url=http://gtg.fritalk.com/']
         assert(int(subprocess.call(args)) == 0)
 
 def test_suite():
