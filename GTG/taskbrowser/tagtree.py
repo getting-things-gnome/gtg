@@ -48,23 +48,8 @@ class TagTreeModel(gtk.GenericTreeModel):
         gtk.GenericTreeModel.__init__(self)
         self.req  = requester
         self.tree = self.req.get_tag_tree()
+        self.tasktree = self.req.get_main_tasks_tree()
         self.workview = False
-
-        #filtered trees used for counting "All tasks" and 
-        # "Tasks without tags"
-        self.active_filtered_tree = self.req.get_custom_tasks_tree()
-        self.notag_filtered_tree = self.req.get_custom_tasks_tree()
-        self.active_filtered_tree.apply_filter("active")
-        self.notag_filtered_tree.apply_filter("notag")
-        self.notag_filtered_tree.apply_filter("active")
-
-        self.active_workview_filtered_tree = self.req.get_custom_tasks_tree()
-        self.notag_workview_filtered_tree = self.req.get_custom_tasks_tree()
-        self.active_workview_filtered_tree.apply_filter("active")
-        self.active_workview_filtered_tree.apply_filter("workview")
-        self.notag_workview_filtered_tree.apply_filter("active")
-        self.notag_workview_filtered_tree.apply_filter("notag")
-        self.notag_workview_filtered_tree.apply_filter("workview")
         
         self.req.connect('tag-added',self.add_tag)
         self.req.connect('tag-modified',self.update_tag)
@@ -150,26 +135,14 @@ class TagTreeModel(gtk.GenericTreeModel):
             return tag.get_attribute("color")
         elif column == COL_COUNT:
             sp_id = tag.get_attribute("special")
-            if not sp_id:
-                #This call is critical because called thousand of times
-                count = tag.get_tasks_nbr(workview=self.workview)
-                return  count
-            elif self.workview:
-                if sp_id == "all":
-                    return self.active_workview_filtered_tree.get_n_nodes()
-                elif sp_id == "notag":
-                    return self.notag_workview_filtered_tree.get_n_nodes()
-                else:
-                    return 0
+            if sp_id == "all":
+                return self.tasktree.get_n_nodes()
+            elif sp_id == "notag":
+                return self.tasktree.get_n_nodes(withfilters=['notag'])
+            elif sp_id == "sep" :
+                return 0
             else:
-                if sp_id == "all":
-                    #This is "All tasks"
-                    return self.active_filtered_tree.get_n_nodes()
-                elif sp_id == "notag":
-                    #This is "Tasks with no tags"
-                    return self.notag_filtered_tree.get_n_nodes()
-                else:
-                    return 0
+                return self.tasktree.get_n_nodes(withfilters=[tag.get_name()])
         elif column == COL_SEP:
             sp_id = tag.get_attribute("special")
             if not sp_id:
