@@ -643,20 +643,15 @@ class FilteredTree(gobject.GObject):
                 self.__nodes_count += 1
                 self.__root_update(tid,inroot)
                 self.displayed_nodes.append(tid)
+                if tid in self.node_to_add:
+                    self.node_to_add.remove(tid)
                 self.emit("task-added-inview", tid)
                 #We added a new node so we can check with those waiting
-                for n in list(self.node_to_add) :
+                while len(self.node_to_add) > 0:
+                    n = self.node_to_add.pop(0)
                     toad = self.get_node(n)
-                    if len(self.node_parents(toad)) > 0 and n in self.node_to_add:
-                        self.node_to_add.remove(n)
+                    if len(self.node_parents(toad)) > 0:
                         self.__add_node(n,False)
-                
-#                toadd = list(self.node_to_add)
-#                self.node_to_add = []
-#                for n in toadd :
-#                    #node still to add cannot be root
-#                    print "adding node %s" %n
-#                    self.__add_node(n,False)
     
     def __remove_node(self,tid):
         if tid in self.displayed_nodes:
