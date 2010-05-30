@@ -456,15 +456,15 @@ class TagTreeModel(gtk.GenericTreeModel):
             return
         child_tag.set_parent(new_par_tag.get_id())
 
-        #refresh the {old, new} parents
-        if new_par_tag:
-            self._update_tag_from_name(new_par_tag.get_name())
-        if old_par_tag:
-            tasks_count = old_par_tag.get_tasks_nbr()
-            if tasks_count > 0:
-                self._update_tag_from_name(old_par_tag.get_name())
-            else:
-                self.row_deleted(self.tree.get_path_for_node(old_par_tag))
+#        #refresh the {old, new} parents
+#        if new_par_tag:
+#            self._update_tag_from_name(new_par_tag.get_name())
+#        if old_par_tag:
+#            tasks_count = old_par_tag.get_tasks_nbr()
+#            if tasks_count > 0:
+#                self._update_tag_from_name(old_par_tag.get_name())
+#            else:
+#                self.row_deleted(self.tree.get_path_for_node(old_par_tag))
 
         # Warn tree about deleted row
         self.row_deleted(child_path)
