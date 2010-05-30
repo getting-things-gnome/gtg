@@ -64,7 +64,7 @@ class TagTree():
         self.req.connect('task-modified',self.refresh)
 
     def refresh(self,sender=None,tagname=None):
-        print "tag refresh %s" %(tagname)
+#        print "tag refresh %s" %(tagname)
         self.refilter()
 #        self.tags_tv.refresh()
 
@@ -181,12 +181,24 @@ class TagTreeModel(gtk.GenericTreeModel):
         for n in self.tree.get_all_nodes():
             path = self.tree.get_path_for_node(n)
             self.displayed.append(n.get_id())
+            
+    def get_tag_count(self,tag):
+        sp_id = tag.get_attribute("special")
+        if sp_id == "all":
+            return self.tasktree.get_n_nodes(countednodes=True)
+        elif sp_id == "notag":
+            return self.tasktree.get_n_nodes(withfilters=['notag'],countednodes=True)
+        elif sp_id == "sep" :
+            return 0
+        else:
+            return self.tasktree.get_n_nodes(withfilters=[tag.get_name()],countednodes=True)
 
 ### MODEL METHODS ############################################################
 #    def update_tag(self, sender, tname):
+#        print "update_tag %s" %tname
 #        self.tree.print_tree()
 ##        self._update_all_tasks_and_no_tags()
-##        self._update_tag_from_name(tname)
+#        self._update_tag_from_name(tname)
 
 #    def update_tags_for_task(self, task_id):
 #        task = self.req.get_task(task_id)
@@ -224,13 +236,17 @@ class TagTreeModel(gtk.GenericTreeModel):
 ##                ppath = self.tree.get_path_for_node(tag)
 ##                self.row_deleted(ppath)
 ##            else:
-#            tag_path  = self.tree.get_path_for_node(tag)
-#            if tag_path:
-#                tag_iter  = self.get_iter(tag_path)
+#        tag_path  = self.tree.get_path_for_node(tag)
+#        if tag_path:
+#            tag_iter  = self.get_iter(tag_path)
 #                if tasks_count >= 1 or always_displayed:
 #                    if not always_displayed:
 #                        print "  tag %s has %s tasks" %(tname,tasks_count)
-#                    self.row_changed(tag_path, tag_iter)
+#            if self.get_tag_count(tag) > 0:
+#                self.row_changed(tag_path, tag_iter)
+#            else:
+#                print "removing tag %s" %tagname
+#                self.row_deleted(tag_path)
 #                else:
 #                    print "  deliting tag %s (%s tasks)" %(tname,tasks_count)
 #                    self.displayed.remove(tname)
@@ -292,15 +308,7 @@ class TagTreeModel(gtk.GenericTreeModel):
         elif column == COL_COLOR:
             return tag.get_attribute("color")
         elif column == COL_COUNT:
-            sp_id = tag.get_attribute("special")
-            if sp_id == "all":
-                return self.tasktree.get_n_nodes(countednodes=True)
-            elif sp_id == "notag":
-                return self.tasktree.get_n_nodes(withfilters=['notag'],countednodes=True)
-            elif sp_id == "sep" :
-                return 0
-            else:
-                return self.tasktree.get_n_nodes(withfilters=[tag.get_name()],countednodes=True)
+            return self.get_tag_count(tag)
         elif column == COL_SEP:
             sp_id = tag.get_attribute("special")
             if not sp_id:
@@ -365,7 +373,8 @@ class TagTreeModel(gtk.GenericTreeModel):
         else:
             return None
 
-#    def add_tag(self, sender, tname):
+    def add_tag(self, sender, tname):
+        print "add_tag %s" %tname
 #        Log.debug("add tag %s" % (tname))
 #        tag = self.tree.get_node(tname)
 #        tag_path  = self.tree.get_path_for_node(tag)
