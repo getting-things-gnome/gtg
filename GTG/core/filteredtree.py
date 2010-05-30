@@ -168,7 +168,7 @@ class FilteredTree(gobject.GObject):
                 result = True
                 for f in withfilters:
                     filt = self.req.get_filter(f)
-                    if filt:
+                    if filt and not filt.get_parameters('ignore_when_counting'):
                         result = result and filt.is_displayed(tid)
                 if result:
                     toreturn += 1

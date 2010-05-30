@@ -46,6 +46,12 @@ class Filter:
         if self.negate:
             value = not value
         return value
+        
+    def get_parameters(self,param):
+        if self.dic.has_key(param):
+            return self.dic[param]
+        else:
+            return None
 
     #return True is the filter is a flat list only
     def is_flat(self):
@@ -59,6 +65,16 @@ class SimpleTagFilter:
         self.req = req
         self.tname = tagname
         self.negate = negate
+        self.dic = {}
+        
+    def set_parameters(self,dic):
+        self.dic = dic
+        
+    def get_parameters(self,param):
+        if self.dic.has_key(param):
+            return self.dic[param]
+        else:
+            return None
         
     def is_displayed(self,tid):
         task = self.req.get_task(tid)
@@ -109,6 +125,9 @@ class FiltersBank:
         filt_obj.set_parameters(param)
         self.available_filters['closed'] = filt_obj
         #notag
+        param = {}
+        param['ignore_when_counting'] = True
+        filt_obj.set_parameters(param)
         filt_obj = Filter(self.notag,self.req)
         self.available_filters['notag'] = filt_obj
         #workdue
@@ -209,6 +228,9 @@ class FiltersBank:
                 filter_name = filter_name[1:]
             if filter_name.startswith('@'):
                 filter_obj = SimpleTagFilter(filter_name,self.req,negate=negate)
+                param = {}
+                param['ignore_when_counting'] = True
+                filter_obj.set_parameters(param)
             else:
                 filter_obj = Filter(filter_func,self.req,negate=negate)
             self.custom_filters[filter_name] = filter_obj

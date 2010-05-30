@@ -58,9 +58,11 @@ class TagTree():
                                     self.on_tag_child_toggled)
 
         self.req.connect('tag-modified',self.refresh)
+        self.req.connect('tag-added',self.refresh)
 
     def refresh(self,sender=None,tagname=None):
         print "tag refresh %s" %(tagname)
+#        self.refilter()
 #        self.tags_tv.refresh()
 
     def get_tagtreeview(self):
@@ -178,69 +180,70 @@ class TagTreeModel(gtk.GenericTreeModel):
             self.displayed.append(n.get_id())
 
 ### MODEL METHODS ############################################################
-    def update_tag(self, sender, tname):
-        self._update_all_tasks_and_no_tags()
-        self._update_tag_from_name(tname)
+#    def update_tag(self, sender, tname):
+#        self.tree.print_tree()
+##        self._update_all_tasks_and_no_tags()
+##        self._update_tag_from_name(tname)
 
-    def update_tags_for_task(self, task_id):
-        task = self.req.get_task(task_id)
-        if task:
-            #update the "Tasks with no tag" tag
-            self._update_all_tasks_and_no_tags()
-            for tag in task.get_tags():
-                tagname = tag.get_name()
-                self._update_tag_from_name(tagname)
+#    def update_tags_for_task(self, task_id):
+#        task = self.req.get_task(task_id)
+#        if task:
+#            #update the "Tasks with no tag" tag
+#            self._update_all_tasks_and_no_tags()
+#            for tag in task.get_tags():
+#                tagname = tag.get_name()
+#                self._update_tag_from_name(tagname)
 
-    def _update_all_tasks_and_no_tags(self):
-        '''Helper method to update the "All tasks" and "Tasks with no
-        tags" entries'''
-        self._update_tag_from_name(self.req.get_alltag_tag().get_name())
-        self._update_tag_from_name(self.req.get_notag_tag().get_name())
+#    def _update_all_tasks_and_no_tags(self):
+#        '''Helper method to update the "All tasks" and "Tasks with no
+#        tags" entries'''
+#        self._update_tag_from_name(self.req.get_alltag_tag().get_name())
+#        self._update_tag_from_name(self.req.get_notag_tag().get_name())
 
-    def _update_tag_from_name(self, tname):
-        ''' Helper method to update a row, given the name of the tag '''
-        Log.debug("update tag %s" % (tname))
-        always_displayed = False
-        if tname == self.req.get_alltag_tag().get_name() or\
-            tname == self.req.get_notag_tag().get_name():
-            always_displayed = True
-#        if not always_displayed:
-#            print "updage_tag %s" %tname
-#            print self.tree.print_tree()
-#        if always_displayed and not self.displayed.get(tname):
-        tag = self.tree.get_node(tname)
-        if tag and tname in self.displayed:
-            tasks_count = tag.get_tasks_nbr()
-#            print "update_tag %s - %s tasks" %(tname,tasks_count)
-#            if tasks_count < 1 and not always_displayed:
-#                print "pooping %s" %tname
-#                print self.tree.print_tree()
-#                ppath = self.tree.get_path_for_node(tag)
-#                self.row_deleted(ppath)
+#    def _update_tag_from_name(self, tname):
+#        ''' Helper method to update a row, given the name of the tag '''
+#        Log.debug("update tag %s" % (tname))
+#        always_displayed = False
+#        if tname == self.req.get_alltag_tag().get_name() or\
+#            tname == self.req.get_notag_tag().get_name():
+#            always_displayed = True
+##        if not always_displayed:
+##            print "updage_tag %s" %tname
+##            print self.tree.print_tree()
+##        if always_displayed and not self.displayed.get(tname):
+#        tag = self.tree.get_node(tname)
+#        if tag and tname in self.displayed:
+#            tasks_count = tag.get_tasks_nbr()
+##            print "update_tag %s - %s tasks" %(tname,tasks_count)
+##            if tasks_count < 1 and not always_displayed:
+##                print "pooping %s" %tname
+##                print self.tree.print_tree()
+##                ppath = self.tree.get_path_for_node(tag)
+##                self.row_deleted(ppath)
+##            else:
+#            tag_path  = self.tree.get_path_for_node(tag)
+#            if tag_path:
+#                tag_iter  = self.get_iter(tag_path)
+#                if tasks_count >= 1 or always_displayed:
+#                    if not always_displayed:
+#                        print "  tag %s has %s tasks" %(tname,tasks_count)
+#                    self.row_changed(tag_path, tag_iter)
+#                else:
+#                    print "  deliting tag %s (%s tasks)" %(tname,tasks_count)
+#                    self.displayed.remove(tname)
+#                    self.row_deleted(tag_path)
 #            else:
-            tag_path  = self.tree.get_path_for_node(tag)
-            if tag_path:
-                tag_iter  = self.get_iter(tag_path)
-                if tasks_count >= 1 or always_displayed:
-                    if not always_displayed:
-                        print "  tag %s has %s tasks" %(tname,tasks_count)
-                    self.row_changed(tag_path, tag_iter)
-                else:
-                    print "  deliting tag %s (%s tasks)" %(tname,tasks_count)
-                    self.displayed.remove(tname)
-                    self.row_deleted(tag_path)
-            else:
-                print "Error : no path for tag %s" %tname
-        else:
-            print "## %s in not in self.displayed" %tname
-#            tag = self.tree.get_node(tname)
-#            removable = tag.is_removable()
-#            if tag and removable:
-#                tag_path  = self.tree.get_path_for_node(tag)
-#                if tag_path:
-##                    self.row_deleted(tag_path)
-#                    print "  and is removable %s" %removable
-#            print self.tree.print_tree()
+#                print "Error : no path for tag %s" %tname
+#        else:
+#            print "## %s in not in self.displayed" %tname
+##            tag = self.tree.get_node(tname)
+##            removable = tag.is_removable()
+##            if tag and removable:
+##                tag_path  = self.tree.get_path_for_node(tag)
+##                if tag_path:
+###                    self.row_deleted(tag_path)
+##                    print "  and is removable %s" %removable
+##            print self.tree.print_tree()
 
 
 ### TREEMODEL INTERFACE ######################################################
@@ -359,49 +362,49 @@ class TagTreeModel(gtk.GenericTreeModel):
         else:
             return None
 
-    def add_tag(self, sender, tname):
-        Log.debug("add tag %s" % (tname))
-        tag = self.tree.get_node(tname)
-        tag_path  = self.tree.get_path_for_node(tag)
-        tag_iter  = self.get_iter(tag_path)
-        #print "path is %s " %tag_path
-        #update the number of tasks without tags
-        self._update_all_tasks_and_no_tags()
-        if tag_path != None:
-            if not tname in self.displayed:
-                self.row_inserted(tag_path, tag_iter)
-            if tag.has_child():
-                self.row_has_child_toggled(tag_path, tag_iter)
+#    def add_tag(self, sender, tname):
+#        Log.debug("add tag %s" % (tname))
+#        tag = self.tree.get_node(tname)
+#        tag_path  = self.tree.get_path_for_node(tag)
+#        tag_iter  = self.get_iter(tag_path)
+#        #print "path is %s " %tag_path
+#        #update the number of tasks without tags
+#        self._update_all_tasks_and_no_tags()
+#        if tag_path != None:
+#            if not tname in self.displayed:
+#                self.row_inserted(tag_path, tag_iter)
+#            if tag.has_child():
+#                self.row_has_child_toggled(tag_path, tag_iter)
 
-    def on_task_added(self, sender, task_id):
-        '''
-        This method handles the adding of tasks, updating
-        the "All task" entry in the tag pane and the "No tags"
-        '''
-        #we only care about active task
-        task = self.req.get_task(task_id)
-        if task.get_status == "Active":
-            self._update_all_tasks_and_no_tags()
-            self.update_tags_for_task(task_id)
+#    def on_task_added(self, sender, task_id):
+#        '''
+#        This method handles the adding of tasks, updating
+#        the "All task" entry in the tag pane and the "No tags"
+#        '''
+#        #we only care about active task
+#        task = self.req.get_task(task_id)
+#        if task.get_status == "Active":
+#            self._update_all_tasks_and_no_tags()
+#            self.update_tags_for_task(task_id)
 
-    def on_task_deleted(self, sender, task_id):
-        '''
-        This method handles the deleting of tasks, updating
-        the "All task" entry in the tag pane and the "No tags"
-        '''
-        #we only care about active task
-        task = self.req.get_task(task_id)
-        if task.get_status == "Active":
-            self._update_all_tasks_and_no_tags()
-            self.update_tags_for_task(task_id)
+#    def on_task_deleted(self, sender, task_id):
+#        '''
+#        This method handles the deleting of tasks, updating
+#        the "All task" entry in the tag pane and the "No tags"
+#        '''
+#        #we only care about active task
+#        task = self.req.get_task(task_id)
+#        if task.get_status == "Active":
+#            self._update_all_tasks_and_no_tags()
+#            self.update_tags_for_task(task_id)
 
-    def on_task_modified(self, sender, task_id):
-        '''
-        This method handles the modification of tasks
-        '''
-        self._update_all_tasks_and_no_tags()
-        #FIXME
-        self.update_tags_for_task(task_id)
+#    def on_task_modified(self, sender, task_id):
+#        '''
+#        This method handles the modification of tasks
+#        '''
+#        self._update_all_tasks_and_no_tags()
+#        #FIXME
+#        self.update_tags_for_task(task_id)
 
     def _path_iter_from_tag_name(self, name):
         ''' Helper method to get path and iter  given the name
