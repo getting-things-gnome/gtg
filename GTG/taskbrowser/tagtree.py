@@ -291,13 +291,13 @@ class TagTreeModel(gtk.GenericTreeModel):
         elif column == COL_COUNT:
             sp_id = tag.get_attribute("special")
             if sp_id == "all":
-                return self.tasktree.get_n_nodes()
+                return self.tasktree.get_n_nodes(countednodes=True)
             elif sp_id == "notag":
-                return self.tasktree.get_n_nodes(withfilters=['notag'])
+                return self.tasktree.get_n_nodes(withfilters=['notag'],countednodes=True)
             elif sp_id == "sep" :
                 return 0
             else:
-                return self.tasktree.get_n_nodes(withfilters=[tag.get_name()])
+                return self.tasktree.get_n_nodes(withfilters=[tag.get_name()],countednodes=True)
         elif column == COL_SEP:
             sp_id = tag.get_attribute("special")
             if not sp_id:

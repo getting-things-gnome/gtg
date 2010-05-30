@@ -110,6 +110,7 @@ class FilteredTree(gobject.GObject):
         #initially, they are the root nodes of the original tree
         self.virtual_root = []
         self.displayed_nodes = []
+        self.counted_nodes = []
         #useful for temp storage :
         self.node_to_add = []
         #it looks like an initial refilter is not needed.
@@ -154,26 +155,32 @@ class FilteredTree(gobject.GObject):
             k.append(self.get_node(n))
         return k
         
-    def get_n_nodes(self,withfilters=[]):
+    def get_n_nodes(self,withfilters=[],countednodes=False):
         """
         returns quantity of displayed nodes in this tree
         if the withfilters is set, returns the quantity of nodes
         that will be displayed if we apply those filters to the current
         tree. It means that the currently applied filters are also taken into
         account.
+        If countednodes = True, we only take into account the applied filters
+        that doesn't have the counting parameters.
         """
         toreturn = 0
+        if countednodes:
+            zelist = self.counted_nodes
+        else:
+            zelist = self.displayed_nodes
         if len(withfilters) > 0:
-            for tid in self.displayed_nodes:
+            for tid in zelist:
                 result = True
                 for f in withfilters:
                     filt = self.req.get_filter(f)
-                    if filt and not filt.get_parameters('ignore_when_counting'):
+                    if filt:
                         result = result and filt.is_displayed(tid)
                 if result:
                     toreturn += 1
         else:
-            toreturn = len(self.displayed_nodes)
+            toreturn = len(zelist)
         return toreturn
         
     ### signals functions
@@ -475,10 +482,18 @@ class FilteredTree(gobject.GObject):
         """
         if tid:
             result = True
+            counting_result = True
             for f in self.applied_filters:
                 filt = self.req.get_filter(f)
                 if filt:
-                    result = result and filt.is_displayed(tid)
+                    temp = filt.is_displayed(tid)
+                    result = result and temp
+                    if not filt.get_parameters('ignore_when_counting'):
+                        counting_result = counting_result and temp
+            if counting_result and tid not in self.counted_nodes:
+                self.counted_nodes.append(tid)
+            elif tid in self.counted_nodes:
+                self.counted_nodes.remove(tid)
         else:
             result = False
         return result
@@ -494,6 +509,7 @@ class FilteredTree(gobject.GObject):
         virtual_root2 = []
         to_add = []
         #self.displayed_nodes = []
+        self.counted_nodes = []
         #If we have only one flat filter, the result is flat
         self.flat = False
         for f in self.applied_filters:

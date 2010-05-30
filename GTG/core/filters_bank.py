@@ -125,10 +125,10 @@ class FiltersBank:
         filt_obj.set_parameters(param)
         self.available_filters['closed'] = filt_obj
         #notag
+        filt_obj = Filter(self.notag,self.req)
         param = {}
         param['ignore_when_counting'] = True
         filt_obj.set_parameters(param)
-        filt_obj = Filter(self.notag,self.req)
         self.available_filters['notag'] = filt_obj
         #workdue
         filt_obj = Filter(self.workdue,self.req)
