@@ -485,8 +485,8 @@ class TagTreeModel(gtk.GenericTreeModel):
             old_path=self.tree.get_path_for_node(tag)
             if oldname in self.displayed:
                 self.displayed.remove(oldname)
-#                self.row_deleted(ppath)
-            self.row_deleted(old_path)
+            if old_path:
+                self.row_deleted(old_path)
             # perform rename
             self.req.rename_tag(oldname,newname)
 

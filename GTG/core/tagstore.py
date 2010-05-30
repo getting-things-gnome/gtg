@@ -148,7 +148,7 @@ class TagStore(Tree):
                 #remove the old one
                 self.remove_node(oldname)
                 self.req._tag_modified(oldname)
-        print "tag %s has %s tasks" %(newname,self.get_node(newname).get_tasks_nbr())
+#        print "tag %s has %s tasks" %(newname,self.get_node(newname).get_tasks_nbr())
                 
     def get_all_tags_name(self, attname=None, attvalue=None):
         """Return the name of all tags
