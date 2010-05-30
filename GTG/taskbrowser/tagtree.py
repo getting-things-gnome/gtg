@@ -59,10 +59,13 @@ class TagTree():
 
         self.req.connect('tag-modified',self.refresh)
         self.req.connect('tag-added',self.refresh)
+        self.req.connect('task-added',self.refresh)
+        self.req.connect('task-deleted',self.refresh)
+        self.req.connect('task-modified',self.refresh)
 
     def refresh(self,sender=None,tagname=None):
         print "tag refresh %s" %(tagname)
-#        self.refilter()
+        self.refilter()
 #        self.tags_tv.refresh()
 
     def get_tagtreeview(self):

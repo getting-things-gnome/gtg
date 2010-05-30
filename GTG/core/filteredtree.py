@@ -492,7 +492,7 @@ class FilteredTree(gobject.GObject):
                         counting_result = counting_result and temp
             if counting_result and tid not in self.counted_nodes:
                 self.counted_nodes.append(tid)
-            elif tid in self.counted_nodes:
+            elif not counting_result and tid in self.counted_nodes:
                 self.counted_nodes.remove(tid)
         else:
             result = False

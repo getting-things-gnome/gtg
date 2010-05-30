@@ -201,8 +201,12 @@ class Tree():
                     print "multiple parents for task %s" %node.get_id()
                     print "you should use a filteredtree above this tree"
                 parent = self.get_node(parent_id)
-                index  = parent.get_child_index(node.get_id())
-                toreturn = self._path_for_node(parent) + (index, )
+                if parent:
+                    index  = parent.get_child_index(node.get_id())
+                    toreturn = self._path_for_node(parent) + (index, )
+                else:
+                    toreturn = ()
+#                    print "returning %s" %str(toreturn)
         else:
             toreturn = None
         return toreturn
