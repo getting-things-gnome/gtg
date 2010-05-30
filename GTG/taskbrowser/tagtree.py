@@ -166,11 +166,11 @@ class TagTreeModel(gtk.GenericTreeModel):
         self.tree = self.req.get_tag_tree()
         self.tasktree = self.req.get_main_tasks_tree()
         
-        self.req.connect('tag-added',self.add_tag)
-        self.req.connect('tag-modified',self.update_tag)
-        self.req.connect('task-added',self.on_task_added)
-        self.req.connect('task-deleted',self.on_task_deleted)
-        self.req.connect('task-modified',self.on_task_modified)
+#        self.req.connect('tag-added',self.add_tag)
+#        self.req.connect('tag-modified',self.update_tag)
+#        self.req.connect('task-added',self.on_task_added)
+#        self.req.connect('task-deleted',self.on_task_deleted)
+#        self.req.connect('task-modified',self.on_task_modified)
 
         self.displayed = []
         for n in self.tree.get_all_nodes():
