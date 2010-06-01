@@ -196,8 +196,9 @@ class TagTreeModel(gtk.GenericTreeModel):
         return self.column_types[n]
 
     def on_get_iter(self, path):
-#        print "on_get_iter: %s" % str(path)
-        return self.tree.get_node_for_path(path)
+        toreturn = self.tree.get_node_for_path(path)
+        print "on_get_iter: %s  -> %s" %(str(path),str(toreturn))
+        return toreturn
 
     def on_get_path(self, node):
 #        print "on_get_path: %s" % str(node)
@@ -239,20 +240,22 @@ class TagTreeModel(gtk.GenericTreeModel):
                     return False
 
     def on_iter_next(self, node):
-#        print "on_iter_next: %s" % str(node)
+        
         if node:
             tid = node.get_id()
             parent_id = node.get_parent()
             parent_node = self.tree.get_node(parent_id)
             if not parent_node:
                 parent_node = self.tree.get_root()
-            try:
-                idx = parent_node.get_child_index(tid) + 1
+            idx = parent_node.get_child_index(tid) + 1
+            if parent_node.get_n_children() > idx:
                 nextnode = parent_node.get_nth_child(idx)
-            except ValueError:
+            else:
                 nextnode = None
         else:
-            nextnode = root
+            nextnode = self.tree.get_root()
+        path = self.on_get_path(nextnode)
+        print "on_iter_next: %s  -> %s (%s)" % (str(node),nextnode,path)
         return nextnode
 
     def on_iter_children(self, node):
@@ -274,12 +277,14 @@ class TagTreeModel(gtk.GenericTreeModel):
 #        print "on_iter_n_children: %s" % str(node)
         if not node:
             node = self.tree.get_root()
+            print "root has %s children" %node.get_n_children()
         return node.get_n_children()
 
     def on_iter_nth_child(self, node, n):
 #        print "on_iter_nth_child: %s" % str(node)
         if not node:
             node = self.tree.get_root()
+            print "getting chijdren %s from root" %n
         nth_child = node.get_nth_child(n)
         return nth_child
 
@@ -291,22 +296,6 @@ class TagTreeModel(gtk.GenericTreeModel):
             return parent_node
         else:
             return None
-
-
-
-    def _path_iter_from_tag_name(self, name):
-        ''' Helper method to get path and iter  given the name
-        of the  tag. It assumes you've verified that "self.displayed" has 
-        the key "name" in it'''
-#        tag_path = self.displayed[name]
-        tag_path = self.tree.get_path_for_node(tag)
-        if tag_path:
-            tag_iter = self.get_iter(tag_path)
-        else:
-            print "*** error : no tag for %s" %name
-            tag_iter = None
-        return tag_path, tag_iter
-
 
     def move_tag(self, parent, child):
         Log.debug("Moving %s below %s" % (child, parent))
