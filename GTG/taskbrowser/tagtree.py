@@ -57,7 +57,7 @@ class TagTree():
         self.tag_modelsort.connect("row-has-child-toggled",\
                                     self.on_tag_child_toggled)
 
-        self.req.connect('tag-modified',self.refresh)
+        self.req.connect('tag-modified',self.tagrefresh)
         self.req.connect('tag-added',self.refresh)
         self.req.connect('task-added',self.refresh)
         self.req.connect('task-deleted',self.refresh)
@@ -67,6 +67,18 @@ class TagTree():
         print "tag refresh %s" %(tagname)
         self.refilter()
 #        self.tags_tv.refresh()
+
+    def tagrefresh(self,sender=None,tagname=None):
+        def func(model, path, iter,data):
+            #if data == tagname:
+            if True:
+                print "******************* %s ***********************" %tagname
+                model.row_changed(path,iter)
+        self.tag_model.foreach(func,tagname)
+#        if tagname:
+#            tag = self.req.get_tag(tagname)
+#            path = self.tag_model.get_path(tag)
+#            self.tag_model.row_changed(path,tag)
 
     def get_tagtreeview(self):
         return self.tags_tv
@@ -240,13 +252,14 @@ class TagTreeModel(gtk.GenericTreeModel):
                     return False
 
     def on_iter_next(self, node):
-        
+        remove_after = False
         if node:
             tid = node.get_id()
             parent_id = node.get_parent()
             parent_node = self.tree.get_node(parent_id)
             if not parent_node:
                 parent_node = self.tree.get_root()
+                remove_after = True
             idx = parent_node.get_child_index(tid) + 1
             if parent_node.get_n_children() > idx:
                 nextnode = parent_node.get_nth_child(idx)
@@ -255,6 +268,13 @@ class TagTreeModel(gtk.GenericTreeModel):
         else:
             nextnode = self.tree.get_root()
         path = self.on_get_path(nextnode)
+        #This is a really ugly hack to avoid ghosts.
+        #If we are at the root level and we don't have anymore children
+        #we remove the next line, just to remove ghosts.
+        #This is not solving the cause but, instead,it only hidding the
+        #symptoms.
+        if remove_after and not nextnode:
+            self.row_deleted((idx,))
         print "on_iter_next: %s  -> %s (%s)" % (str(node),nextnode,path)
         return nextnode
 
