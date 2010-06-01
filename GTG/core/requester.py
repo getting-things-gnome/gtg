@@ -79,6 +79,9 @@ class Requester(gobject.GObject):
     def _tag_modified(self,tagname):
         gobject.idle_add(self.emit, "tag-modified", tagname)
         
+    def _tag_deleted(self,tagname):
+        gobject.idle_add(self.emit, "tag-deleted", tagname)
+        
     ############ Tasks Tree ######################
     # This is the main FilteredTree. You cannot apply filters
     # directly to it, you have to pass them through the requester.

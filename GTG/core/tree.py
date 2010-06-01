@@ -27,6 +27,7 @@ class Tree():
     def __init__(self, root=None):
         self.root_id = 'root'
         self.nodes = {}
+        self.old_paths = {}
         self.pending_relationships = []
         if root:
             self.root = root
@@ -41,7 +42,17 @@ class Tree():
         return self._node_for_path(self.root,path)
 
     def get_path_for_node(self, node):
-        return self._path_for_node(node)
+        toreturn = self._path_for_node(node)
+        return toreturn
+        
+    #a deleted path can be requested only once
+    def get_deleted_path(self,id):
+        toreturn = None
+        print "old paths are : %s" %self.old_paths
+        if self.old_paths.has_key(id):
+            toreturn = self.old_paths.pop(id)
+        return toreturn
+            
 
     def get_root(self):
         return self.root
@@ -76,6 +87,7 @@ class Tree():
     #does nothing if the node doesn't exist
     def remove_node(self, id):
         node = self.get_node(id)
+        path = self.get_path_for_node(node)
         if not node :
             return
         else:
@@ -88,6 +100,7 @@ class Tree():
                     par.remove_child(id)
             else:
                 self.root.remove_child(id)
+            self.old_paths[id] = path
             self.nodes.pop(id)
         
     #create a new relationship between nodes if it doesn't already exist
@@ -195,7 +208,7 @@ class Tree():
                 index  = self.root.get_child_index(node.get_id())
                 toreturn = self._path_for_node(self.root) + (index, )
             else:
-                #FIXME : no multiparent support here
+                # no multiparent support here
                 parent_id = node.get_parent()
                 if len(node.get_parents()) >= 2:
                     print "multiple parents for task %s" %node.get_id()

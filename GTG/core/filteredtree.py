@@ -263,8 +263,6 @@ class FilteredTree(gobject.GObject):
         toreturn = []
         if node:
             tid = node.get_id()
-#            if tid in ("256@1","255@1"):
-#                self.__print_from_node(node)
         #For that node, we should convert the base_path to path
         if not node or not self.is_displayed(node.get_id()):
             #print "not displayed %s" %node

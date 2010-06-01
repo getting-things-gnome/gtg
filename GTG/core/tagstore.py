@@ -92,7 +92,11 @@ class TagStore(Tree):
     def update_tag(self,sender,tagname):
         tag = self.get_tag(tagname)
         if tag and tag.is_removable():
-            self.remove_node(tagname)
+            self.remove_tag(tagname)
+            
+    def remove_tag(self,tagname):
+        self.req._tag_deleted(tagname)
+        self.remove_node(tagname)
 
     def new_tag(self, tagname):
         """Create a new tag and return it or return the existing one
@@ -146,7 +150,7 @@ class TagStore(Tree):
                     tas = self.req.get_task(tid)
                     tas.rename_tag(oldname,newname)
                 #remove the old one
-                self.remove_node(oldname)
+                self.remove_tag(oldname)
                 self.req._tag_modified(oldname)
 #        print "tag %s has %s tasks" %(newname,self.get_node(newname).get_tasks_nbr())
                 
