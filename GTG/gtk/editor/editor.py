@@ -16,25 +16,16 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
+"""
+This is the TaskEditor
 
-#This is the TaskEditor
-#
-#It's the window you see when you double-click on a Task
-#The main text widget is a home-made TextView called TaskView (see taskview.py)
-#The rest is the logic of the widget : date changing widgets, buttons, ...
+It's the window you see when you double-click on a Task
+The main text widget is a home-made TextView called TaskView (see taskview.py)
+The rest is the logic of the widget : date changing widgets, buttons, ...
+"""
 import sys
 import time
 
-from GTG import _
-from GTG import ngettext
-from GTG import PLUGIN_DIR
-from GTG import DATA_DIR
-from GTG.taskeditor          import GnomeConfig
-from GTG.tools               import dates
-from GTG.taskeditor.taskview import TaskView
-from GTG.core.plugins.engine import PluginEngine
-from GTG.core.plugins.api    import PluginAPI
-from GTG.core.task           import Task
 try:
     import pygtk
     pygtk.require("2.0")
@@ -45,10 +36,23 @@ try:
     from gtk import gdk
 except: # pylint: disable-msg=W0702
     sys.exit(1)
-    
+
+from GTG                     import _
+from GTG                     import ngettext
+from GTG                     import PLUGIN_DIR
+from GTG                     import DATA_DIR
+from GTG.gtk.editor          import GnomeConfig
+from GTG.gtk.editor.taskview import TaskView
+from GTG.core.plugins.engine import PluginEngine
+from GTG.core.plugins.api    import PluginAPI
+from GTG.core.task           import Task
+from GTG.tools               import dates
+
+
 date_separator = "-"
 
-class TaskEditor :
+
+class TaskEditor:
     #req is the requester
     #vmanager is the view manager
     #taskconfig is a ConfigObj dic to save infos about tasks
@@ -651,6 +655,4 @@ class TaskEditor :
         if self.sigid_month :
             self.cal_widget.disconnect(self.sigid_month)
             self.sigid_month = None
-
-    
 

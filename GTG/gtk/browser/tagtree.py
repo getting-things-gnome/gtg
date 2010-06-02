@@ -16,15 +16,17 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-import gtk
-import gobject
 import xml.sax.saxutils as saxutils
 
+import gtk
+import gobject
+
 from GTG                              import _
-from GTG.taskbrowser.CellRendererTags import CellRendererTags
-from GTG.taskbrowser.tasktree         import COL_OBJ as TASKTREE_COL_OBJ
+from GTG.gtk.browser.CellRendererTags import CellRendererTags
+from GTG.gtk.browser.tasktree         import COL_OBJ as TASKTREE_COL_OBJ
 from GTG.tools.logger                 import Log
-    
+
+
 COL_ID    = 0
 COL_NAME  = 1
 COL_LABEL = 2
@@ -35,7 +37,6 @@ COL_SEP   = 6
 
 
 class TagTreeModel(gtk.GenericTreeModel):
-
     column_types = (str,\
                     str,\
                     str,\
@@ -531,3 +532,4 @@ class TagTreeView(gtk.TreeView):
                         task.sync()
 
         self.emit_stop_by_name('drag_data_received')
+

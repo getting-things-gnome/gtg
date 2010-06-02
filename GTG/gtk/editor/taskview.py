@@ -35,15 +35,18 @@ from gtk import gdk
 import gobject
 import pango
 
-from GTG.taskeditor import taskviewserial
-from GTG.tools import openurl
+from GTG.gtk.editor import taskviewserial
+from GTG.tools      import openurl
+
 
 separators = [' ', '.', ',', '/', '\n', '\t', '!', '?', ';', '\0']
 url_separators = [' ', ',', '\n', '\t', '\0']
 
+
 bullet1_ltr = '→'
 bullet1_rtl = '←'
 bullet2 = '↳'
+
 
 class TaskView(gtk.TextView):
     __gtype_name__ = 'HyperTextView'
@@ -1298,6 +1301,7 @@ class TaskView(gtk.TextView):
         window.set_cursor(cursor)
         for key, val in prop.iteritems():
             tag.set_property(key, val)
+
 
 gobject.type_register(TaskView)
 

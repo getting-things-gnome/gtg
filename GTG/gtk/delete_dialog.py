@@ -17,11 +17,11 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-
 import gtk
 
-from GTG import _
-from GTG.viewmanager import ViewConfig
+from GTG     import _
+from GTG.gtk import ViewConfig
+
 
 class DeletionUI():
     def __init__(self,req):
@@ -33,7 +33,6 @@ class DeletionUI():
         signals = { "on_delete_confirm": self.on_delete_confirm,
                     "on_delete_cancel": lambda x: x.hide,}
         self.builder.connect_signals(signals)
-
 
     def on_delete_confirm(self, widget):
         """if we pass a tid as a parameter, we delete directly

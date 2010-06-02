@@ -55,13 +55,13 @@ import signal
 from contextlib import contextmanager
 
 #our own imports
-from GTG                     import _
-from GTG.viewmanager.manager import Manager
-from GTG.core.datastore      import DataStore
-from GTG.core                import CoreConfig
-from GTG.tools.logger        import Log
-from GTG.tools               import gtkcrashhandler
-from GTG                     import info
+from GTG                import _
+from GTG.gtk.manager    import Manager
+from GTG.core.datastore import DataStore
+from GTG.core           import CoreConfig
+from GTG.tools.logger   import Log
+from GTG.tools          import gtkcrashhandler
+from GTG                import info
 
 #=== OBJECTS ==================================================================
 

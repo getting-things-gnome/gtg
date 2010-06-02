@@ -16,8 +16,6 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-
-
 """
 The GTK frontend for browsing collections of tasks.
 
@@ -26,7 +24,7 @@ simple, HIG compliant and well integrated with Gnome.
 """
 import os
 
-from GTG import _
+from GTG     import _
 
 
 class GnomeConfig:
@@ -46,3 +44,4 @@ class GnomeConfig:
     NEW_TASK_TOOLTIP        = _("Create a new task")
     NEW_SUBTASK_TOOLTIP     = _("Create a new subtask")
     WORKVIEW_TOGGLE_TOOLTIP = _("Display only the currently actionable tasks")
+
