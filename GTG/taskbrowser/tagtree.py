@@ -95,8 +95,16 @@ class TagTree():
         print "*** Want to add %s" %tagname
         if tag:
             path = self.tag_model.tree.get_path_for_node(tag)
+#            parent_id = tag.get_parent()
             if path:
                 iter = self.tag_model.get_iter(path)
+#                if parent_id:
+#                    parent = self.req.get_tag(parent_id)
+#                    ppath = self.tag_model.tree.get_path_for_node(parent)
+#                    piter = self.tag_model.get_iter(ppath)
+#                    if ppath and piter:
+#                        print "child_toggled for %s" %str(ppath)
+#                        self.tag_model.row_has_child_toggled(ppath,piter)
 #                self.tag_model.row_inserted(path,iter)
                 print "  -> adding it"
 
@@ -147,7 +155,7 @@ class TagTree():
                 child=model.iter_next(child)
             if not tag.get_attribute("special"):
                 count = model.get_value(iter, COL_COUNT)
-                toreturn = count != '0'
+                toreturn = toreturn or count != '0'
             else:
                 toreturn = True
         return toreturn
@@ -280,11 +288,12 @@ class TagTreeModel(gtk.GenericTreeModel):
             if not parent_node:
                 parent_node = self.tree.get_root()
                 remove_after = True
-            idx = parent_node.get_child_index(tid) + 1
-            if parent_node.get_n_children() > idx:
-                nextnode = parent_node.get_nth_child(idx)
-            else:
-                nextnode = None
+            ch_id = parent_node.get_child_index(tid)
+            nextnode = None
+            if ch_id:
+                idx = ch_id +1
+                if parent_node.get_n_children() > idx:
+                    nextnode = parent_node.get_nth_child(idx)
         else:
             nextnode = self.tree.get_root()
         path = self.on_get_path(nextnode)
@@ -371,15 +380,23 @@ class TagTreeModel(gtk.GenericTreeModel):
                 return
         if child_tag.get_name()[0]!='@':
             return
+        print "setting parent : %s" %new_par_tag.get_id()
         child_tag.set_parent(new_par_tag.get_id())
+        self.tree.print_tree()
 
         # Warn tree about deleted row
         self.row_deleted(child_path)
         # Warn tree about inserted row
         new_child_path=self.tree.get_path_for_node(child_tag)
-        new_child_iter = self.get_iter(new_child_path)
+        print "we move with %s child_path : %s" %(child_tag,str(new_child_path))
+        if str(new_child_path) == "()":
+            new_child_iter = self.get_iter_root()
+            new_child_path = self.get_path(new_child_iter)
+            print "root path = %s" %str(new_child_path)
+        else:
+            new_child_iter = self.get_iter(new_child_path)
         print "row %s inserted" %child_tag.get_name()
-        self.row_inserted(new_child_path, new_child_iter)
+#        self.row_inserted(new_child_path, new_child_iter)
         
     def rename_tag(self,oldname,newname):
         Log.debug("renaming tag %s" % (oldname))
