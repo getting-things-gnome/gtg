@@ -383,6 +383,7 @@ class FilteredTree(gobject.GObject):
         """
         #print "on_iter_has_child for node %s" %node
         #we should say "has_good_child"
+        print "node has %s children" %self.node_n_children(node)
         if node and self.node_n_children(node)>0:
             return True
         else:
