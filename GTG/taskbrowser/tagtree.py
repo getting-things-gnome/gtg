@@ -47,6 +47,7 @@ class TagTree():
         self.tags_tv.set_model(self.tag_modelsort)
 #        self.tag_modelsort.set_sort_column_id(COL_ID, gtk.SORT_ASCENDING)
         self.tag_modelsort.set_sort_func(COL_ID, self.tag_sort_func)
+        self.tags_displayed = []
 
         # Tags TreeView
         self.tags_tv.connect('row-expanded',\
@@ -60,9 +61,9 @@ class TagTree():
         self.req.connect('tag-modified',self.tagrefresh)
         self.req.connect('tag-added',self.tagadded)
         self.req.connect('tag-deleted',self.tagdeleted)
-        self.req.connect('task-added',self.refresh)
-        self.req.connect('task-deleted',self.refresh)
-        self.req.connect('task-modified',self.refresh)
+#        self.req.connect('task-added',self.refresh)
+#        self.req.connect('task-deleted',self.refresh)
+#        self.req.connect('task-modified',self.refresh)
 
     def refresh(self,sender=None,tagname=None):
         print "tag refresh %s" %(tagname)
@@ -70,12 +71,13 @@ class TagTree():
 #        self.tags_tv.refresh()
 
     def tagrefresh(self,sender=None,tagname=None):
-        if tagname:
+        if tagname and tagname in self.tags_displayed:
             tag = self.req.get_tag(tagname)
             if tag:
                 path = self.tag_model.tree.get_path_for_node(tag)
                 if path:
                     iter = self.tag_model.get_iter(path)
+                    print "row changed : %s - %s" %(tagname,str(path))
                     self.tag_model.row_changed(path,iter)
 
     def tagdeleted(self,sender=None,tagname=None):
@@ -86,14 +88,19 @@ class TagTree():
             path = self.tag_model.tree.get_path_for_node(tag)
         if not path:
             path = self.tag_model.tree.get_deleted_path(tagname)
+            newnode = self.tag_model.tree.get_node_for_path(path)
+            print " ** old path was %s, occupied by %s" %(str(path),newnode)
+            if newnode and newnode.get_name() != tagname:
+                path = None
         if path:
             print "  -> deleting it (path = %s)" %str(path)
             self.tag_model.row_deleted(path)
+            self.tags_displayed.remove(tagname)
                 
     def tagadded(self,sender=None,tagname=None):
         tag = self.req.get_tag(tagname)
         print "*** Want to add %s" %tagname
-        if tag:
+        if tag and tagname not in self.tags_displayed:
             path = self.tag_model.tree.get_path_for_node(tag)
 #            parent_id = tag.get_parent()
             if path:
@@ -105,8 +112,11 @@ class TagTree():
 #                    if ppath and piter:
 #                        print "child_toggled for %s" %str(ppath)
 #                        self.tag_model.row_has_child_toggled(ppath,piter)
-#                self.tag_model.row_inserted(path,iter)
+                self.tags_displayed.append(tagname)
+                self.tag_model.row_inserted(path,iter)
                 print "  -> adding it"
+        else:
+            print "  -> already there"
 
     def get_tagtreeview(self):
         return self.tags_tv
@@ -302,7 +312,7 @@ class TagTreeModel(gtk.GenericTreeModel):
         #we remove the next line, just to remove ghosts.
         #This is not solving the cause but, instead,it only hidding the
         #symptoms.
-#        if remove_after and not nextnode:
+#        if remove_after and not nextnode and idx:
 #            self.row_deleted((idx,))
 #        print "on_iter_next: %s  -> %s (%s)" % (str(node),nextnode,path)
         return nextnode

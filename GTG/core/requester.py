@@ -74,12 +74,15 @@ class Requester(gobject.GObject):
         gobject.idle_add(self.emit, "task-modified", tid)
         
     def _tag_added(self,tagname):
+        print "REQ : tag %s added" %tagname
         gobject.idle_add(self.emit, "tag-added", tagname)
 
     def _tag_modified(self,tagname):
+        print "REQ : tag %s modified" %tagname
         gobject.idle_add(self.emit, "tag-modified", tagname)
         
     def _tag_deleted(self,tagname):
+        print "REQ : tag %s deleted" %tagname
         gobject.idle_add(self.emit, "tag-deleted", tagname)
         
     ############ Tasks Tree ######################
