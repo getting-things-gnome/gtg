@@ -46,6 +46,12 @@ class Filter:
         if self.negate:
             value = not value
         return value
+        
+    def get_parameters(self,param):
+        if self.dic.has_key(param):
+            return self.dic[param]
+        else:
+            return None
 
     #return True is the filter is a flat list only
     def is_flat(self):
@@ -59,6 +65,16 @@ class SimpleTagFilter:
         self.req = req
         self.tname = tagname
         self.negate = negate
+        self.dic = {}
+        
+    def set_parameters(self,dic):
+        self.dic = dic
+        
+    def get_parameters(self,param):
+        if self.dic.has_key(param):
+            return self.dic[param]
+        else:
+            return None
         
     def is_displayed(self,tid):
         task = self.req.get_task(tid)
@@ -67,7 +83,9 @@ class SimpleTagFilter:
             value = False
         else:
             tags = [self.tname]
-            tags += self.req.get_tag(self.tname).get_children()
+            tt = self.req.get_tag(self.tname)
+            if tt:
+                tags += tt.get_children()
             value = task.has_tags(tags)
         if self.negate:
             value = not value
@@ -108,6 +126,9 @@ class FiltersBank:
         self.available_filters['closed'] = filt_obj
         #notag
         filt_obj = Filter(self.notag,self.req)
+        param = {}
+        param['ignore_when_counting'] = True
+        filt_obj.set_parameters(param)
         self.available_filters['notag'] = filt_obj
         #workdue
         filt_obj = Filter(self.workdue,self.req)
@@ -207,6 +228,9 @@ class FiltersBank:
                 filter_name = filter_name[1:]
             if filter_name.startswith('@'):
                 filter_obj = SimpleTagFilter(filter_name,self.req,negate=negate)
+                param = {}
+                param['ignore_when_counting'] = True
+                filter_obj.set_parameters(param)
             else:
                 filter_obj = Filter(filter_func,self.req,negate=negate)
             self.custom_filters[filter_name] = filter_obj
