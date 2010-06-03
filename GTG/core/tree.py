@@ -112,10 +112,7 @@ class Tree():
         toreturn = False
         #no relationship allowed with yourself
         if parent_id != child_id:
-            if parent_id == 'root':
-                p = self.get_root()
-            else:
-                p = self.get_node(parent_id)
+            p = self.get_node(parent_id)
             c = self.get_node(child_id)
             if p and c :
                 #no circular relationship allowed
@@ -123,12 +120,12 @@ class Tree():
                     if not p.has_child(child_id):
                         p.add_child(child_id)
                         toreturn = True
-                    if parent_id != 'root' and not c.has_parent(parent_id):
+                    if not c.has_parent(parent_id):
                         #print "creating the %s - %s relation" %(parent_id,child_id)
                         c.add_parent(parent_id)
                         toreturn = True
                         #removing the root from the list of parent
-                        if parent_id != 'root' and self.root.has_child(child_id):
+                        if self.root.has_child(child_id):
                             self.root.remove_child(child_id)
                 else:
                     #a circular relationship was found
@@ -332,8 +329,8 @@ class TreeNode():
         if id in self.parents:
             self.parents.remove(id)
             ret = self.tree.break_relationship(id,self.get_id())
-#            if ret:
-#                self.req._task_modified(id)
+            if ret:
+                self.req._task_modified(id)
             return ret
         else:
             return False
@@ -382,8 +379,8 @@ class TreeNode():
         if id in self.children:
             self.children.remove(id)
             ret = self.tree.break_relationship(self.get_id(),id)
-#            if ret:
-#                self.req._task_modified(id)
+            if ret:
+                self.req._task_modified(id)
             return ret
         else:
             return False

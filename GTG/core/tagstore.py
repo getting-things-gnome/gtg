@@ -36,10 +36,6 @@ from GTG.tools.logger import Log
 XMLFILE = "tags.xml"
 XMLROOT = "tagstore"
 
-tagsall_name = "gtg-tags-all"
-notag_name = "gtg-tags-none"
-tagsep_name = "gtg-tags-sep"
-
 
 # There's only one Tag store by user. It will store all the tag used
 # and their attribute.
@@ -54,21 +50,21 @@ class TagStore(Tree):
         
         ### building the initial tags
         # Build the "all tasks tag"
-        self.alltag_tag = self.new_tag(tagsall_name)
+        self.alltag_tag = self.new_tag("gtg-tags-all")
         self.alltag_tag.set_attribute("special","all")
         self.alltag_tag.set_attribute("label","<span weight='bold'>%s</span>"\
                                              % _("All tasks"))
         self.alltag_tag.set_attribute("icon","gtg-tags-all")
         self.alltag_tag.set_attribute("order",0)
         # Build the "without tag tag"
-        self.notag_tag = self.new_tag(notag_name)
+        self.notag_tag = self.new_tag("gtg-tags-none")
         self.notag_tag.set_attribute("special","notag")
         self.notag_tag.set_attribute("label","<span weight='bold'>%s</span>"\
                                              % _("Tasks with no tags"))
         self.notag_tag.set_attribute("icon","gtg-tags-none")
         self.notag_tag.set_attribute("order",1)
         # Build the separator
-        self.sep_tag = self.new_tag(tagsep_name)
+        self.sep_tag = self.new_tag("gtg-tags-sep")
         self.sep_tag.set_attribute("special","sep")
         self.sep_tag.set_attribute("order",2)
 
@@ -122,7 +118,7 @@ class TagStore(Tree):
         return self.get_node(tname)
 
     def get_tag(self, tagname):
-        if not tagname.startswith("gtg-") and tagname[0] != "@":
+        if tagname[0] != "@":
             tagname = "@" + tagname
         return self.get_node(tagname)
         
@@ -154,8 +150,8 @@ class TagStore(Tree):
                     tas = self.req.get_task(tid)
                     tas.rename_tag(oldname,newname)
                 #remove the old one
-                self.req._tag_deleted(oldname)
                 self.remove_tag(oldname)
+                self.req._tag_modified(oldname)
 #        print "tag %s has %s tasks" %(newname,self.get_node(newname).get_tasks_nbr())
                 
     def get_all_tags_name(self, attname=None, attvalue=None):
