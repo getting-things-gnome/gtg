@@ -527,10 +527,11 @@ class Task(TreeNode):
         self.req._tag_modified(old)
         self.tag_added(new)
         self.req._tag_modified(new)
+        self.sync()
 
     def tag_added(self, tagname):
         """
-        Adds a tag. Does not add '@tag' to the contents. See insert_tag
+        Adds a tag. Does not add '@tag' to the contents. See add_tag
         """
         #print "tag %s added to task %s" %(tagname,self.get_id())
         t = tagname.encode("UTF-8")
@@ -574,24 +575,30 @@ class Task(TreeNode):
     #remove by tagname
     def remove_tag(self, tagname):
         t = self.req.get_tag(tagname)
-        t.remove_task(self.get_id())
-        self.req._tag_modified(tagname)
+        modified = False
+        if t:
+            t.remove_task(self.get_id())
+            modified = True
         if tagname in self.tags:
             self.tags.remove(tagname)
+            modified = True
             for child in self.get_subtasks():
                 if child.can_be_deleted:
                     child.remove_tag(tagname)
         self.content = self._strip_tag(self.content, tagname)
+        if modified:
+            self.req._tag_modified(tagname)
                        
-    def _strip_tag(self, text, tagname):
+    def _strip_tag(self, text, tagname,newtag=''):
         return (text
-                    .replace('<tag>%s</tag>\n\n'%(tagname), '') #trail \n
-                    .replace('<tag>%s</tag>, '%(tagname), '') #trail comma
-                    .replace('<tag>%s</tag>'%(tagname), '')
+                    .replace('<tag>%s</tag>\n\n'%(tagname), newtag) #trail \n
+                    .replace('<tag>%s</tag>, '%(tagname), newtag) #trail comma
+                    .replace('<tag>%s</tag>'%(tagname), newtag)
                     #in case XML is missing (bug #504899)
-                    .replace('%s\n\n'%(tagname), '') 
-                    .replace('%s, '%(tagname), '') 
-                    .replace(tagname, '')
+                    .replace('%s\n\n'%(tagname), newtag) 
+                    .replace('%s, '%(tagname), newtag) 
+                    #don't forget a space a the end
+                    .replace('%s '%(tagname), newtag)
                )
      
 

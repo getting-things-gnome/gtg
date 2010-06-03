@@ -27,6 +27,7 @@ class Tree():
     def __init__(self, root=None):
         self.root_id = 'root'
         self.nodes = {}
+        self.old_paths = {}
         self.pending_relationships = []
         if root:
             self.root = root
@@ -41,7 +42,17 @@ class Tree():
         return self._node_for_path(self.root,path)
 
     def get_path_for_node(self, node):
-        return self._path_for_node(node)
+        toreturn = self._path_for_node(node)
+        return toreturn
+        
+    #a deleted path can be requested only once
+    def get_deleted_path(self,id):
+        toreturn = None
+        print "old paths are : %s" %self.old_paths
+        if self.old_paths.has_key(id):
+            toreturn = self.old_paths.pop(id)
+        return toreturn
+            
 
     def get_root(self):
         return self.root
@@ -76,6 +87,7 @@ class Tree():
     #does nothing if the node doesn't exist
     def remove_node(self, id):
         node = self.get_node(id)
+        path = self.get_path_for_node(node)
         if not node :
             return
         else:
@@ -88,6 +100,7 @@ class Tree():
                     par.remove_child(id)
             else:
                 self.root.remove_child(id)
+            self.old_paths[id] = path
             self.nodes.pop(id)
         
     #create a new relationship between nodes if it doesn't already exist
@@ -99,7 +112,10 @@ class Tree():
         toreturn = False
         #no relationship allowed with yourself
         if parent_id != child_id:
-            p = self.get_node(parent_id)
+            if parent_id == 'root':
+                p = self.get_root()
+            else:
+                p = self.get_node(parent_id)
             c = self.get_node(child_id)
             if p and c :
                 #no circular relationship allowed
@@ -107,7 +123,7 @@ class Tree():
                     if not p.has_child(child_id):
                         p.add_child(child_id)
                         toreturn = True
-                    if not c.has_parent(parent_id):
+                    if parent_id != 'root' and not c.has_parent(parent_id):
                         #print "creating the %s - %s relation" %(parent_id,child_id)
                         c.add_parent(parent_id)
                         toreturn = True
@@ -195,14 +211,18 @@ class Tree():
                 index  = self.root.get_child_index(node.get_id())
                 toreturn = self._path_for_node(self.root) + (index, )
             else:
-                #FIXME : no multiparent support here
+                # no multiparent support here
                 parent_id = node.get_parent()
                 if len(node.get_parents()) >= 2:
                     print "multiple parents for task %s" %node.get_id()
                     print "you should use a filteredtree above this tree"
                 parent = self.get_node(parent_id)
-                index  = parent.get_child_index(node.get_id())
-                toreturn = self._path_for_node(parent) + (index, )
+                if parent:
+                    index  = parent.get_child_index(node.get_id())
+                    toreturn = self._path_for_node(parent) + (index, )
+                else:
+                    toreturn = ()
+#                    print "returning %s" %str(toreturn)
         else:
             toreturn = None
         return toreturn
@@ -312,8 +332,6 @@ class TreeNode():
         if id in self.parents:
             self.parents.remove(id)
             ret = self.tree.break_relationship(id,self.get_id())
-            if ret:
-                self.req._task_modified(id)
             return ret
         else:
             return False
@@ -362,8 +380,6 @@ class TreeNode():
         if id in self.children:
             self.children.remove(id)
             ret = self.tree.break_relationship(self.get_id(),id)
-            if ret:
-                self.req._task_modified(id)
             return ret
         else:
             return False

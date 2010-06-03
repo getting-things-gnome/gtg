@@ -179,10 +179,10 @@ class TaskTreeModel(gtk.GenericTreeModel):
 #        print "on_get_path"
         if iter and iter.is_valid():
             node = iter.get_node()
-            paths = self.tree.get_paths_for_node(node)
+#            paths = self.tree.get_paths_for_node(node)
             path = iter.get_path()
 #            print "path of iter is correct : %s" %(path in paths)
-            return iter.get_path()
+            return path
         else:
             return None
 
