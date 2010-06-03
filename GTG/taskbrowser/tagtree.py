@@ -147,7 +147,7 @@ class TagTree():
                 child=model.iter_next(child)
             if not tag.get_attribute("special"):
                 count = model.get_value(iter, COL_COUNT)
-                toreturn = count != '0'
+                toreturn = toreturn or count != '0'
             else:
                 toreturn = True
         return toreturn
