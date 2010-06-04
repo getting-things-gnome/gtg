@@ -192,28 +192,9 @@ class FilteredTree(gobject.GObject):
         
     def __task_modified(self,sender,tid):
         print "%s is modified in the filteredtree" %tid
-        todis = self.__is_displayed(tid)
-        curdis = self.is_displayed(tid)
-        if todis:
-            #if the task was not displayed previously but now should
-            #we add it.
-            if not curdis:
-                print "%s is a new node" %tid
-                self.__add_node(tid)
-            else:
-                print "%s is only modified (todis,curdis)" %tid
-                inroot = self.__is_root(self.get_node(tid))
-                self.__update_node(tid,inroot)
-                #self.emit("task-modified-inview", tid)
-        else:
-            #if the task was displayed previously but shouldn't be anymore
-            #we remove it
-            if curdis:
-                print "%s is removed" %tid
-                self.__remove_node(tid)
-            else:
-                print "%s is modified, not to dis" %tid
-                self.emit("task-deleted-inview", tid)
+        inroot = self.__is_root(self.get_node(tid))
+        self.__update_node(tid,inroot)
+        
         
     def __task_deleted(self,sender,tid):
         self.__remove_node(tid)
@@ -544,7 +525,9 @@ class FilteredTree(gobject.GObject):
             isroot = nid in virtual_root2
             self.__add_node(nid,isroot)
         #end of refiltering
-#        print "*** end of refiltering ****"
+        print "*** end of refiltering ****"
+        for n in self.virtual_root:
+            self.__update_node(n,True)
 #        self.print_tree()
 
     ####### Change filters #################
@@ -641,9 +624,36 @@ class FilteredTree(gobject.GObject):
                 self.virtual_root.remove(tid)
     
     def __update_node(self,tid,inroot):
-        self.update_count += 1
-        self.__root_update(tid,inroot)
-        self.emit("task-modified-inview", tid)
+        todis = self.__is_displayed(tid)
+        curdis = self.is_displayed(tid)
+        if todis:
+            #if the task was not displayed previously but now should
+            #we add it.
+            if not curdis:
+                print "%s is a new node" %tid
+                self.__add_node(tid)
+            else:
+                print "%s is only modified (todis,curdis)" %tid
+                node = self.get_node(tid)
+                print "updating node %s" %tid
+                self.update_count += 1
+                node = self.get_node(tid)
+                self.__root_update(tid,inroot)
+                self.emit("task-modified-inview", tid)
+                for c in node.get_children():
+                    self.__update_node(c,False)
+        else:
+            #if the task was displayed previously but shouldn't be anymore
+            #we remove it
+            if curdis:
+                print "%s is removed" %tid
+                self.__remove_node(tid)
+            else:
+                print "%s is modified, not to dis" %tid
+                self.emit("task-deleted-inview", tid)
+
+
+    
     
     def __add_node(self,tid,inroot=None):
         if not self.is_displayed(tid):
