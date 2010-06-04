@@ -293,7 +293,8 @@ class TreeNode():
         if id:
             return id in self.parents
         else:
-            return len(self.parents) > 0
+            toreturn = len(self.parents) > 0
+        return toreturn
     
     #this one return only one parent.
     #useful for tree where we know that there is only one

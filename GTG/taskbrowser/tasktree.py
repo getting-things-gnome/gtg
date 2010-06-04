@@ -46,18 +46,18 @@ COL_DUE       = 11
 #and only one position in the tree
 class TaskIter():
     def __init__(self,tree,node,path):
-        self.node = node
-        self.path = path
-        self.tree = tree
+        self.__node = node
+        self.__path = path
+        self.__tree = tree
         
     def get_node(self):
-        return self.node
+        return self.__node
     
     def get_path(self):
-        return self.path
+        return self.__path
 
     def is_valid(self):
-        return self.path in self.tree.get_paths_for_node(self.node)
+        return self.__path in self.__tree.get_paths_for_node(self.__node)
 
 class TaskTreeModel(gtk.GenericTreeModel):
 
@@ -274,10 +274,10 @@ class TaskTreeModel(gtk.GenericTreeModel):
     def add_task(self, sender, tid):
         task = self.tree.get_node(tid)
         if task:
-            print "adding %s" %task.get_title()
+#            print "adding %s" %task.get_title()
             node_paths = self.tree.get_paths_for_node(task)
-            print "    paths = %s" %node_paths
-            print "    has_child %s" %self.tree.node_has_child(task)
+#            print "    paths = %s" %node_paths
+#            print "    has_child %s" %self.tree.node_has_child(task)
             #if node_path is null, the task is not currently displayed
             for node_path in node_paths:
                 #print "   tasktree add_task %s at %s" %(tid,node_path)

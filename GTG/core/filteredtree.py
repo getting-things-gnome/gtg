@@ -191,26 +191,28 @@ class FilteredTree(gobject.GObject):
             self.__add_node(tid)
         
     def __task_modified(self,sender,tid):
-#        print "%s is modified in the filteredtree" %tid
+        print "%s is modified in the filteredtree" %tid
         todis = self.__is_displayed(tid)
         curdis = self.is_displayed(tid)
         if todis:
             #if the task was not displayed previously but now should
             #we add it.
             if not curdis:
-#                print "%s is a new node" %tid
+                print "%s is a new node" %tid
                 self.__add_node(tid)
             else:
-#                print "%s is only modified (todis,curdis)" %tid
-                self.emit("task-modified-inview", tid)
+                print "%s is only modified (todis,curdis)" %tid
+                inroot = self.__is_root(self.get_node(tid))
+                self.__update_node(tid,inroot)
+                #self.emit("task-modified-inview", tid)
         else:
             #if the task was displayed previously but shouldn't be anymore
             #we remove it
             if curdis:
-#                print "%s is removed" %tid
+                print "%s is removed" %tid
                 self.__remove_node(tid)
             else:
-#                print "%s is modified, not to dis" %tid
+                print "%s is modified, not to dis" %tid
                 self.emit("task-deleted-inview", tid)
         
     def __task_deleted(self,sender,tid):
@@ -321,8 +323,8 @@ class FilteredTree(gobject.GObject):
         if self.path_for_node_cache.has_key(tid):
             self.path_for_node_cache_old[tid] = self.path_for_node_cache[tid]
         self.path_for_node_cache[tid] = toreturn
-#        if tid in ("256@1","255@1"):
-#                print "**** %s path are %s" %(tid,toreturn)
+#        if tid in ("1@1"):
+#                print "**** %s path are %s and VR is %s (parent = %s)" %(tid,toreturn,self.virtual_root,self.node_parents(node))
         return toreturn
 
     #Done
@@ -383,7 +385,7 @@ class FilteredTree(gobject.GObject):
         """
         #print "on_iter_has_child for node %s" %node
         #we should say "has_good_child"
-        print "node has %s children" %self.node_n_children(node)
+#        print "node has %s children" %self.node_n_children(node)
         if node and self.node_n_children(node)>0:
             return True
         else:
