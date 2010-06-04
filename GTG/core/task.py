@@ -353,7 +353,7 @@ class Task(TreeNode):
             child.sync()
             return True
         else:
-            Log.debug("child addition failed")
+            Log.debug("child addition failed (or still pending)")
             return False
             
     def remove_child(self,tid):
@@ -414,7 +414,6 @@ class Task(TreeNode):
             self.req.get_task(parent_tid).sync()
             return True
         else:
-            Log.debug("*****************parent addition failed**************")
             return False
 
     #Take a tid as parameter

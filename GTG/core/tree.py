@@ -106,13 +106,14 @@ class Tree():
     #create a new relationship between nodes if it doesn't already exist
     #return False if nothing was done
     def new_relationship(self,parent_id,child_id):
-        #print "new relationship between %s and %s" %(parent_id,child_id)
+        Log.debug("new relationship between %s and %s" %(parent_id,child_id))
         if [parent_id,child_id] in self.pending_relationships:
             self.pending_relationships.remove([parent_id,child_id])
         toreturn = False
         #no relationship allowed with yourself
         if parent_id != child_id:
             if parent_id == 'root':
+#                Log.debug("    -> adding %s to the root" %child_id)
                 p = self.get_root()
             else:
                 p = self.get_node(parent_id)
@@ -130,9 +131,12 @@ class Tree():
                         #removing the root from the list of parent
                         if self.root.has_child(child_id):
                             self.root.remove_child(child_id)
+                    if not toreturn:
+                        Log.debug("  * * * * * Relationship already existing")
                 else:
                     #a circular relationship was found
                     #undo everything
+                    Log.debug("  * * * * * Circular relationship found : undo")
                     self.break_relationship(parent_id,child_id)
                     toreturn = False
             else:
@@ -277,7 +281,10 @@ class TreeNode():
         if self.tree:
             return self.tree.new_relationship(par,chi)
         else:
-            return self.pending_relationship.append([par,chi])
+            self.pending_relationship.append([par,chi])
+            #it's pending, we return False
+            Log.debug("** There's still no tree, relationship is pending")
+            return False
         
         
 ##### Parents
@@ -286,7 +293,8 @@ class TreeNode():
         if id:
             return id in self.parents
         else:
-            return len(self.parents) > 0
+            toreturn = len(self.parents) > 0
+        return toreturn
     
     #this one return only one parent.
     #useful for tree where we know that there is only one
@@ -312,9 +320,12 @@ class TreeNode():
 #        self.tree.break_relationship(root.get_id(),self.get_id())
         if parent_id not in self.parents:
             self.parents.append(parent_id)
-            return self.new_relationship(parent_id, self.get_id())
+            toreturn = self.new_relationship(parent_id, self.get_id())
+#            if not toreturn:
+#                Log.debug("** parent addition failed (probably already done)*")
         else:
-            return False
+            toreturn = False
+        return toreturn
     
     #set_parent means that we remove all other parents
     def set_parent(self,par_id):
@@ -373,8 +384,14 @@ class TreeNode():
     #takes the id of the child as parameter.
     #if the child is not already in the tree, the relation is anyway "saved"
     def add_child(self, id):
-        self.children.append(id)
-        return self.new_relationship(self.get_id(),id)
+        if id not in self.children:
+            self.children.append(id)
+            toreturn = self.new_relationship(self.get_id(),id)
+#            Log.debug("new relationship : %s" %toreturn)
+        else:
+            Log.debug("%s was already in children of %s" %(id,self.get_id()))
+            toreturn = False
+        return toreturn
 
     def remove_child(self, id):
         if id in self.children:

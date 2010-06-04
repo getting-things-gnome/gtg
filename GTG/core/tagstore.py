@@ -280,7 +280,8 @@ class Tag(TreeNode):
         if att_name == 'parent':
             if self.has_parent():
                 parents_id = self.get_parents()
-                to_return = reduce(lambda a,b: "%s,%s" % (a, b), parents_id)
+                if len(parents_id) > 0:
+                    to_return = reduce(lambda a,b: "%s,%s" % (a, b), parents_id)
         else:
             to_return = self._attributes.get(att_name, None)
         return to_return
