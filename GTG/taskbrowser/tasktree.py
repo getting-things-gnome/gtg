@@ -260,13 +260,13 @@ class TaskTreeModel(gtk.GenericTreeModel):
 #        print "tasktree update_task"
         if self.tree.is_displayed(tid):
             my_node = self.tree.get_node(tid)
-            print "update %s" %my_node.get_title()
+#            print "update %s" %my_node.get_title()
             if my_node and my_node.is_loaded():
                 node_paths = self.tree.get_paths_for_node(my_node)
                 for node_path in node_paths:
                     node_iter = self.get_iter(node_path)
                     self.row_changed(node_path, node_iter)
-                    print "child_toggled 1 : %s" %my_node.get_title()
+#                    print "child_toggled 1 : %s" %my_node.get_title()
                     self.row_has_child_toggled(node_path, node_iter)
                 if len(node_paths) == 0: 
                     print "Error :! no path for node %s !" %my_node.get_id()
@@ -286,14 +286,14 @@ class TaskTreeModel(gtk.GenericTreeModel):
                 #following is mandatory if 
                 #we added a child task before his parent.
                 if self.tree.node_has_child(task):
-                    print "child_toggled 2 : %s" %task.get_title()
+#                    print "child_toggled 2 : %s" %task.get_title()
                     self.row_has_child_toggled(node_path,node_iter)
             parents = self.tree.node_parents(task)
             for p in parents:
                     for par_path in self.tree.get_paths_for_node(p):
                         par_iter = self.get_iter(par_path)
 #                       print "tasktree child toogled %s" %tid
-                        print "child_toggled 3 : %s" %p.get_title()
+#                        print "child_toggled 3 : %s" %p.get_title()
                         self.row_has_child_toggled(par_path, par_iter)
 
     def remove_task(self, sender, tid):

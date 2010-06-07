@@ -191,7 +191,7 @@ class FilteredTree(gobject.GObject):
             self.__add_node(tid)
         
     def __task_modified(self,sender,tid):
-        print "%s is modified in the filteredtree" %tid
+#        print "%s is modified in the filteredtree" %tid
         inroot = self.__is_root(self.get_node(tid))
         self.__update_node(tid,inroot)
         
@@ -510,8 +510,8 @@ class FilteredTree(gobject.GObject):
             #(their parents are not displayed)
             if is_root and tid not in virtual_root2:
                 virtual_root2.append(tid)
-            print "%s is displayed %s" %(tid,self.__is_displayed(tid))
-            print "  virtual_root : %s" %virtual_root2
+#            print "%s is displayed %s" %(tid,self.__is_displayed(tid))
+#            print "  virtual_root : %s" %virtual_root2
         
         #Second step, we empty the current tree as we will rebuild it
         #from scratch
@@ -523,17 +523,17 @@ class FilteredTree(gobject.GObject):
         #Here, we reconstruct our filtered trees. It  cannot be random
         # Parents should be added before their children
         #First, we start we the nodes in the virtual root
-        print "to_add : %s" %to_add
+        #We reinitialize the tree before adding nodes that should be added
         self.displayed_nodes = []
         for nid in list(to_add):
             isroot = nid in virtual_root2
-            print " -> add node %s to root : %s" %(nid,isroot)
             self.__add_node(nid,isroot)
         #end of refiltering
-        print "*** end of refiltering ****"
-#        for n in self.virtual_root:
-#            self.__update_node(n,True)
-        self.print_tree()
+#        print "*** end of refiltering ****"
+#        self.print_tree()
+        #Finalizing : adding nodes that still need to be added
+        for n in self.node_to_add:
+            self.__add_node(n)
 
     ####### Change filters #################
     def apply_filter(self,filter_name,parameters=None,\
@@ -635,12 +635,12 @@ class FilteredTree(gobject.GObject):
             #if the task was not displayed previously but now should
             #we add it.
             if not curdis:
-                print "%s is a new node" %tid
+#                print "%s is a new node" %tid
                 self.__add_node(tid)
             else:
-                print "%s is only modified (todis,curdis)" %tid
+#                print "%s is only modified (todis,curdis)" %tid
                 node = self.get_node(tid)
-                print "updating node %s" %tid
+#                print "updating node %s" %tid
                 self.update_count += 1
                 node = self.get_node(tid)
                 self.__root_update(tid,inroot)
@@ -651,17 +651,16 @@ class FilteredTree(gobject.GObject):
             #if the task was displayed previously but shouldn't be anymore
             #we remove it
             if curdis:
-                print "%s is removed" %tid
+#                print "%s is removed" %tid
                 self.__remove_node(tid)
             else:
-                print "%s is modified, not to dis" %tid
+#                print "%s is modified, not to dis" %tid
                 self.emit("task-deleted-inview", tid)
 
 
     
     
     def __add_node(self,tid,inroot=None):
-        print "%s is dispalyed : %s" %(tid,self.is_displayed(tid))
         if not self.is_displayed(tid):
             node = self.get_node(tid)
             if inroot == None:
@@ -680,11 +679,15 @@ class FilteredTree(gobject.GObject):
                     self.node_to_add.remove(tid)
                 self.emit("task-added-inview", tid)
                 #We added a new node so we can check with those waiting
+                lost_nodes = []
                 while len(self.node_to_add) > 0:
                     n = self.node_to_add.pop(0)
                     toad = self.get_node(n)
                     if len(self.node_parents(toad)) > 0:
                         self.__add_node(n,False)
+                    else:
+                        lost_nodes.append(n)
+                self.node_to_add += lost_nodes
     
     def __remove_node(self,tid):
         if tid in self.displayed_nodes:
