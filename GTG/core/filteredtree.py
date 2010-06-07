@@ -77,6 +77,8 @@ import gobject
 
 from GTG.tools.logger import Log
 
+COUNT_CACHING_ENABLED = True
+
 class FilteredTree(gobject.GObject):
 
     #Those are the three signals you want to catch if displaying
@@ -111,6 +113,9 @@ class FilteredTree(gobject.GObject):
         self.virtual_root = []
         self.displayed_nodes = []
         self.counted_nodes = []
+        self.count_cache = {}
+        #This is for profiling
+#        self.using_cache = 0
         #useful for temp storage :
         self.node_to_add = []
         #it looks like an initial refilter is not needed.
@@ -166,19 +171,31 @@ class FilteredTree(gobject.GObject):
         that doesn't have the counting parameters.
         """
         toreturn = 0
+        usecache = False
         if countednodes:
+            #Currently, the cache only work for one filter
+            if len(withfilters) == 1:
+                usecache = True
             zelist = self.counted_nodes
         else:
             zelist = self.displayed_nodes
         if len(withfilters) > 0:
-            for tid in zelist:
-                result = True
-                for f in withfilters:
-                    filt = self.req.get_filter(f)
-                    if filt:
-                        result = result and filt.is_displayed(tid)
-                if result:
-                    toreturn += 1
+            key = "".join(withfilters)
+            if usecache and self.count_cache.has_key(key):
+                toreturn = self.count_cache[key]
+#                self.using_cache += 1
+#                print "we used cache %s" %(self.using_cache)
+            else:
+                for tid in zelist:
+                    result = True
+                    for f in withfilters:
+                        filt = self.req.get_filter(f)
+                        if filt:
+                            result = result and filt.is_displayed(tid)
+                    if result:
+                        toreturn += 1
+                if COUNT_CACHING_ENABLED and usecache:
+                    self.count_cache[key] = toreturn
         else:
             toreturn = len(zelist)
         return toreturn
@@ -467,16 +484,28 @@ class FilteredTree(gobject.GObject):
         if tid:
             result = True
             counting_result = True
+            cache_key = ""
             for f in self.applied_filters:
                 filt = self.req.get_filter(f)
+                cache_key += f
                 if filt:
                     temp = filt.is_displayed(tid)
                     result = result and temp
                     if not filt.get_parameters('ignore_when_counting'):
                         counting_result = counting_result and temp
             if counting_result and tid not in self.counted_nodes:
+                #This is an hard custom optimisation for task counting
+                #Normally, we would here reset the cache of counted tasks
+                #But this slow down a lot the startup.
+                #So, we update manually the cache.
+                for k in self.count_cache.keys():
+                    f = self.req.get_filter(k)
+                    if f.is_displayed(tid):
+                        self.count_cache[k] += 1
                 self.counted_nodes.append(tid)
             elif not counting_result and tid in self.counted_nodes:
+                #Removing node is less critical so we just reset the cache.
+                self.count_cache = {}
                 self.counted_nodes.remove(tid)
         else:
             result = False
@@ -494,6 +523,7 @@ class FilteredTree(gobject.GObject):
         to_add = []
         #self.displayed_nodes = []
         self.counted_nodes = []
+        self.count_cache = {}
         #If we have only one flat filter, the result is flat
         self.flat = False
         for f in self.applied_filters:
