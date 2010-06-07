@@ -20,6 +20,12 @@
 """
 Manager loads the prefs and launches the gtk main loop
 """
+try:
+    import pygtk
+    pygtk.require('2.0')
+except: # pylint: disable-msg=W0702
+    raise SystemExit(1)
+
 import gtk
 import gobject
 
@@ -33,7 +39,6 @@ from GTG.tools               import clipboard
 from GTG.core.plugins.engine import PluginEngine
 from GTG.core.plugins.api    import PluginAPI
 from GTG.tools.logger        import Log
-
 
 class Manager:
     ############## init #####################################################
@@ -221,5 +226,4 @@ class Manager:
               self.pengine.enabled_plugins().keys()
         # plugins are deactivated
         self.pengine.deactivate_plugins(self.p_apis)
-
 

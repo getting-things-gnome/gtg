@@ -46,22 +46,20 @@
 
 #=== IMPORT ===================================================================
 from __future__ import with_statement
-
-import sys
+from contextlib import contextmanager
 import os
-import dbus
 import logging
 import signal
-from contextlib import contextmanager
+
+import dbus
 
 #our own imports
-from GTG                import _
-from GTG.gtk.manager    import Manager
-from GTG.core.datastore import DataStore
+from GTG                import _, info
 from GTG.core           import CoreConfig
+from GTG.core.datastore import DataStore
+from GTG.gtk            import crashhandler
+from GTG.gtk.manager    import Manager
 from GTG.tools.logger   import Log
-from GTG.tools          import gtkcrashhandler
-from GTG                import info
 
 #=== OBJECTS ==================================================================
 
@@ -87,7 +85,7 @@ def check_instance(directory):
             d=dbus.SessionBus().get_object(CoreConfig.BUSNAME,\
                                            CoreConfig.BUSINTERFACE)
             d.show_task_browser()
-            sys.exit(0)
+            raise SystemExit
             
     #write the pid file
     with open(pidfile, "w") as f:
@@ -106,11 +104,10 @@ def main(options=None, args=None):
     backends_list = config.get_backends_list()
 
     #initialize Apport hook for crash handling
-    gtkcrashhandler.initialize(app_name = "Getting Things GNOME!", message  =  \
-          "GTG" + info.VERSION + _(" has crashed. Please report the bug on <a "\
-          "href=\"http://bugs.edge.launchpad.net/gtg\">our Launchpad page</a>."\
-          " If you have Apport installed, it will be started for you."),       \
-          use_apport = True)
+    crashhandler.initialize(app_name = "Getting Things GNOME!", message="GTG"
+      + info.VERSION + _(" has crashed. Please report the bug on <a href=\""
+      "http://bugs.edge.launchpad.net/gtg\">our Launchpad page</a>. If you "
+      "have Apport installed, it will be started for you."), use_apport = True)
     
     # Load data store
     ds = DataStore()

@@ -25,8 +25,8 @@ import pango
 from GTG                              import _
 from GTG.core.tree                    import Tree, TreeNode
 from GTG.core.task                    import Task
+from GTG.gtk                          import colors
 from GTG.gtk.browser.CellRendererTags import CellRendererTags
-from GTG.tools                        import colors
 from GTG.tools.logger                 import Log
 
 

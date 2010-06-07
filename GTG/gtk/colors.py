@@ -51,3 +51,4 @@ def background_color(tags, bgcolor=None):
         
         my_color = gtk.gdk.Color(red, green, blue).to_string()
     return my_color
+

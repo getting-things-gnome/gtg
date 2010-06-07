@@ -23,19 +23,18 @@ It's the window you see when you double-click on a Task
 The main text widget is a home-made TextView called TaskView (see taskview.py)
 The rest is the logic of the widget : date changing widgets, buttons, ...
 """
-import sys
 import time
 
 try:
     import pygtk
     pygtk.require("2.0")
 except: # pylint: disable-msg=W0702
-    sys.exit(1)
+    raise SystemExit(1)
 try:
     import gtk
     from gtk import gdk
 except: # pylint: disable-msg=W0702
-    sys.exit(1)
+    raise SystemExit(1)
 
 from GTG                     import _
 from GTG                     import ngettext
