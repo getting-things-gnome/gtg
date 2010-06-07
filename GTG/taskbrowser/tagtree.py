@@ -20,6 +20,7 @@ import gtk
 import gobject
 import xml.sax.saxutils as saxutils
 import locale
+import time
 
 from GTG                              import _
 from GTG.taskbrowser.CellRendererTags import CellRendererTags
@@ -208,17 +209,25 @@ class TagTreeModel(gtk.GenericTreeModel):
         self.req  = requester
         self.tree = self.req.get_tag_tree()
         self.tasktree = self.req.get_main_tasks_tree()
+#        self.tag_count = 0
+#        self.time_tag_count = 0
 
     def get_tag_count(self,tag):
+#        self.tag_count += 1
+#        time1 = time.time()
         sp_id = tag.get_attribute("special")
         if sp_id == "all":
-            return self.tasktree.get_n_nodes(countednodes=True)
+            toreturn = self.tasktree.get_n_nodes(countednodes=True)
         elif sp_id == "notag":
-            return self.tasktree.get_n_nodes(withfilters=['notag'],countednodes=True)
+            toreturn = self.tasktree.get_n_nodes(withfilters=['notag'],countednodes=True)
         elif sp_id == "sep" :
-            return 0
+            toreturn = 0
         else:
-            return self.tasktree.get_n_nodes(withfilters=[tag.get_name()],countednodes=True)
+            toreturn = self.tasktree.get_n_nodes(withfilters=[tag.get_name()],countednodes=True)
+#        time2 = time.time()
+#        self.time_tag_count += (time2 - time1)
+#        print "total time spent in %s tag_count : %s" %(self.tag_count,self.time_tag_count)
+        return toreturn
 
 ### MODEL METHODS ############################################################
 
