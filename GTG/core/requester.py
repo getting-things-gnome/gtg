@@ -208,8 +208,9 @@ class Requester(gobject.GObject):
         #send the signal before actually deleting the task !
         Log.debug("deleting task %s" % tid)
         task = self.get_task(tid)
-        for tag in task.get_tags():
-            self.emit('tag-modified', tag.get_name())
+        if task:
+            for tag in task.get_tags():
+                self.emit('tag-modified', tag.get_name())
         self.emit('task-deleted', tid)
         #return True
         return self.ds.delete_task(tid)

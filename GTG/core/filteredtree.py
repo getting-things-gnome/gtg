@@ -192,8 +192,10 @@ class FilteredTree(gobject.GObject):
         
     def __task_modified(self,sender,tid):
 #        print "%s is modified in the filteredtree" %tid
-        inroot = self.__is_root(self.get_node(tid))
-        self.__update_node(tid,inroot)
+        node = self.get_node(tid)
+        if node:
+            inroot = self.__is_root(node)
+            self.__update_node(tid,inroot)
         
         
     def __task_deleted(self,sender,tid):
