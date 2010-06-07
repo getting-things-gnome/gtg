@@ -510,6 +510,8 @@ class FilteredTree(gobject.GObject):
             #(their parents are not displayed)
             if is_root and tid not in virtual_root2:
                 virtual_root2.append(tid)
+            print "%s is displayed %s" %(tid,self.__is_displayed(tid))
+            print "  virtual_root : %s" %virtual_root2
         
         #Second step, we empty the current tree as we will rebuild it
         #from scratch
@@ -521,14 +523,17 @@ class FilteredTree(gobject.GObject):
         #Here, we reconstruct our filtered trees. It  cannot be random
         # Parents should be added before their children
         #First, we start we the nodes in the virtual root
+        print "to_add : %s" %to_add
+        self.displayed_nodes = []
         for nid in list(to_add):
             isroot = nid in virtual_root2
+            print " -> add node %s to root : %s" %(nid,isroot)
             self.__add_node(nid,isroot)
         #end of refiltering
-#        print "*** end of refiltering ****"
+        print "*** end of refiltering ****"
 #        for n in self.virtual_root:
 #            self.__update_node(n,True)
-#        self.print_tree()
+        self.print_tree()
 
     ####### Change filters #################
     def apply_filter(self,filter_name,parameters=None,\
@@ -656,6 +661,7 @@ class FilteredTree(gobject.GObject):
     
     
     def __add_node(self,tid,inroot=None):
+        print "%s is dispalyed : %s" %(tid,self.is_displayed(tid))
         if not self.is_displayed(tid):
             node = self.get_node(tid)
             if inroot == None:
