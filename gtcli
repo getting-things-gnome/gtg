@@ -175,7 +175,7 @@ def summary_of_tasks(criteria):
     report = { }
     for t in tasks:
         if not t['startdate']:
-            startdate = 'someday'
+            startdate = 'unscheduled'
         elif datetime.strptime(t['startdate'], "%Y-%m-%d") < datetime.today():
             startdate = date.today().strftime("%Y-%m-%d")
         else:
@@ -192,9 +192,9 @@ def summary_of_tasks(criteria):
 
     day = date.today()
     print "%-20s %5s %5s" %("", "Start", "Due")
-    print "%-20s %5d %5d" %('someday', 
-                            report['someday']['starting'],
-                            report['someday']['due'])
+    print "%-20s %5d %5d" %('unscheduled', 
+                            report['unscheduled']['starting'],
+                            report['unscheduled']['due'])
     num_days = 21
     if criteria and 'today' in criteria:
         num_days = 1
