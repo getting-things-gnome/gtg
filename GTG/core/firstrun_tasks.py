@@ -111,7 +111,7 @@ For that the syntax is :
 
 tags:tag1,tag2,tag3 : This way you can apply as many tags as you wish using comma as separator
 
-due:date or defer:date : This way you can apply a due date or a defer date. date can be yyyy-mm-dd (for exemple 2009-04-01) or yyyymmdd (20090401) or mmdd (0401, in this case the year is implicitly the current one) or today or tomorrow or a weekday name (due:monday means due next Monday)
+due:date or defer:date : This way you can apply a due date or a defer date. date can be yyyy-mm-dd (for example 2009-04-01) or yyyymmdd (20090401) or mmdd (0401, in this case the year is implicitly the current one) or today or tomorrow or a weekday name (due:monday means due next Monday)
 
 Attributes which are added in this way apply but do not appear in the title.
 If a word begins with @, it is interpreted as a tag.""")
