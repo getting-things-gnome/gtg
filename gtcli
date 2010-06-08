@@ -195,7 +195,10 @@ def summary_of_tasks(criteria):
     print "%-20s %5d %5d" %('someday', 
                             report['someday']['starting'],
                             report['someday']['due'])
-    for i in range(0, 21):
+    num_days = 21
+    if criteria and 'today' in criteria:
+        num_days = 1
+    for i in range(0, num_days):
         d = day + timedelta(i)
         dstr = str(d)
         if dstr in report:
@@ -205,6 +208,7 @@ def summary_of_tasks(criteria):
                                     report[dstr]['due'])
         else:
             print "%-20s %5d %5d" %(dstr, 0, 0)
+            
 
 def list_tasks(criteria, count_only=False):
     """ Display a listing of tasks 
