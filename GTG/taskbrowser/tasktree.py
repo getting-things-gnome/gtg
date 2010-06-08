@@ -77,40 +77,51 @@ class TaskIterStore():
             stored_node = stored_iter.get_node()
             if stored_node == node:
                 toreturn = stored_iter
-            else:
+            elif stored_node:
                 print "path %s is now %s (and it was %s)" %(str(path),node.get_id(),stored_node.get_id())
                 print "is valid %s" %stored_iter.is_valid()
+                print "%s should go to %s" %(stored_node.get_id(),self.__tree.get_paths_for_node(stored_node))
 #                print crash
-                self.remove(stored_node,path)
+                self.remove(stored_node,path,all=False)
                 self.__model.row_deleted(path)
-                deleted = True
+#                self.__model.update_task(None,stored_node.get_id())
+                deleted = stored_node
 #                toreturn = stored_iter
         if not toreturn:
             toreturn = TaskIter(self.__tree,node,path)
-            self.__store[key] = toreturn
+#        print "store %s at key %s" %(toreturn.get_node().get_id(),key)
+        self.__store[key] = toreturn
         if deleted:
-            node_iter = self.__model.get_iter(path)
-            print "inserting %s into path %s" %(node_iter,path)
-            self.__model.row_inserted(path, node_iter)
+            paths = self.__tree.get_paths_for_node(deleted)
+            for p in paths:
+                node_iter = self.__model.get_iter(p)
+                self.__model.row_inserted(p,node_iter)
+#                value = self.__model.get_value(node_iter,0)
+#            print "inserting %s into path %s" %(value,path)
+#            self.__model.row_inserted(path, node_iter)
+            print "adding %s that was removed" %deleted.get_id()
+#            self.__model.add_task(None,deleted.get_id())
         return toreturn
 
-    def remove(self,node,path):
-        key = self.__key(node,path)
-        if self.__store.has_key(key):
-            stored_node = self.__store[key]
-            if stored_node.get_node() == node:
-                self.__store.pop(key)
-                return True
-            else:
-                print "Trying to remove iter %s from path %s (thinking it was %s)"\
-                        %(stored_node.get_node().get_id(),str(path),node.get_id())
-                return False
+    def remove(self,node,path,all=True):
+        if all:
+            self.__store = {}
         else:
-            print "Removing inexistant path %s for node %s" %(str(path),node.get_id())
-            return False
+            key = self.__key(node,path)
+            if self.__store.has_key(key):
+                stored_node = self.__store[key]
+                if stored_node.get_node() == node:
+                    self.__store.pop(key)
+                    return True
+                else:
+                    print "Trying to remove iter %s from path %s (thinking it was %s)"\
+                            %(stored_node.get_node().get_id(),str(path),node.get_id())
+                    return False
+            else:
+                print "Removing inexistant path %s for node %s" %(str(path),node.get_id())
+                return False
 
-    def invalid_all(self):
-        self.__store = {}
+
 
 class TaskTreeModel(gtk.GenericTreeModel):
 
@@ -222,7 +233,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
                 title = "<span color='%s'>%s</span>"%(color, title)
             return title
 
-    def on_get_iter(self, path):
+    def on_get_iter(self, path,node=None):
 #        print "on_get_iter for %s" %(str(path))
         node = self.tree.get_node_for_path(path)
 #        parent = self.tree.get_node_for_path(path[:-1])
@@ -328,7 +339,9 @@ class TaskTreeModel(gtk.GenericTreeModel):
     def add_task(self, sender, tid):
         task = self.tree.get_node(tid)
         if task:
+            raw_input()
             print "adding %s %s" %(tid,task.get_title())
+            self.tree.print_tree()
             node_paths = self.tree.get_paths_for_node(task)
 #            print "    paths = %s" %node_paths
 #            print "    has_child %s" %self.tree.node_has_child(task)
