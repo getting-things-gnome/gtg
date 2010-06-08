@@ -76,6 +76,7 @@ class TaskIterStore():
                 toreturn = stored_node
             else:
                 print "path %s is now %s (and it was %s)" %(str(path),node.get_id(),stored_node.get_node().get_id())
+                print crash
                 self.remove(None,path)
         if not toreturn:
             toreturn = TaskIter(self.__tree,node,path)
