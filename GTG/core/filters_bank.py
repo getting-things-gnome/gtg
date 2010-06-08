@@ -111,6 +111,9 @@ class FiltersBank:
         #notag
         filt_obj = Filter(self.notag,self.req)
         self.available_filters['notag'] = filt_obj
+        #workable
+        filt_obj = Filter(self.is_workable,self.req)
+        self.available_filters['workable'] = filt_obj
         #workdue
         filt_obj = Filter(self.workdue,self.req)
         self.available_filters['workdue'] = filt_obj

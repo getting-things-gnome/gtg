@@ -19,7 +19,7 @@ import dbus
 import cgi
 import getopt
 import textwrap
-from datetime import date, timedelta
+from datetime import datetime, date, timedelta
 from string import split
 
 def _(text):
@@ -166,13 +166,21 @@ def count_tasks(criteria):
 def summary_of_tasks(criteria):
     """ Print report showing number of tasks starting and due each day """
 
+    # TODO:  If no criteria specified, use "active workable"
+
     filters = _criteria_to_filters(criteria)
     timi = connect_to_gtg()
     tasks = timi.get_tasks_filtered(filters)
 
     report = { }
     for t in tasks:
-        startdate = t['startdate'] or 'someday'
+        if not t['startdate']:
+            startdate = 'someday'
+        elif datetime.strptime(t['startdate'], "%Y-%m-%d") < datetime.today():
+            startdate = date.today().strftime("%Y-%m-%d")
+        else:
+            startdate = t['startdate']
+
         if startdate not in report:
             report[startdate] = { 'starting':0, 'due':0 }
         report[startdate]['starting'] += 1
@@ -187,7 +195,7 @@ def summary_of_tasks(criteria):
     print "%-20s %5d %5d" %('someday', 
                             report['someday']['starting'],
                             report['someday']['due'])
-    for i in range(0, 14):
+    for i in range(0, 21):
         d = day + timedelta(i)
         dstr = str(d)
         if dstr in report:
