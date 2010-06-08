@@ -232,13 +232,11 @@ class FiltersBank:
                 filter_name = filter_name[1:]
             if filter_name.startswith('@'):
                 filter_obj = SimpleTagFilter(filter_name,self.req)
-#                filter_obj = SimpleTagFilter(filter_name,self.req,negate=negate)
                 param = {}
                 param['ignore_when_counting'] = True
                 filter_obj.set_parameters(param)
             else:
                 filter_obj = Filter(filter_func,self.req)
-#                filter_obj = Filter(filter_func,self.req,negate=negate)
             self.custom_filters[filter_name] = filter_obj
             return True
         else:
