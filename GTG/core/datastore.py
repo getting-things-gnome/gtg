@@ -43,7 +43,7 @@ class DataStore:
         """ Initializes a DataStore object """
         self.backends = {}
         self.open_tasks = Tree()
-        self.closed_tasks = Tree()
+#        self.closed_tasks = Tree()
         self.requester = requester.Requester(self)
         self.tagstore = tagstore.TagStore(self.requester)
 
@@ -59,7 +59,7 @@ class DataStore:
         this DataStore, False otherwise.
         param tid: Task ID to search for
         """
-        return self.open_tasks.has_node(tid) or self.closed_tasks.has_node(tid)
+        return self.open_tasks.has_node(tid) #or self.closed_tasks.has_node(tid)
 
     def get_task(self, tid):
         """
@@ -68,7 +68,6 @@ class DataStore:
         @param tid: Task ID to retrieve
         """
         if tid:
-            uid, pid = tid.split('@')
             if self.has_task(tid):
                 task = self.__internal_get_task(tid)
             else:
@@ -80,14 +79,14 @@ class DataStore:
             return None
         
     def __internal_get_task(self, tid):
-        toreturn = self.open_tasks.get_node(tid)
-        if toreturn == None:
-            self.closed_tasks.get_node(tid)
+        return self.open_tasks.get_node(tid)
+#        if toreturn == None:
+#            self.closed_tasks.get_node(tid)
         #else:
             #print "error : this task doesn't exist in either tree"
             #pass
         #we return None if the task doesn't exist
-        return toreturn
+#        return toreturn
 
     def delete_task(self, tid):
         """
@@ -106,7 +105,7 @@ class DataStore:
         #by its parent a few line earlier :
         if self.has_task(tid):
             self.open_tasks.remove_node(tid)
-            self.closed_tasks.remove_node(tid)
+#            self.closed_tasks.remove_node(tid)
         back.remove_task(tid)
         return True
             

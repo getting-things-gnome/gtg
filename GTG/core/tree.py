@@ -27,6 +27,7 @@ class Tree():
     def __init__(self, root=None):
         self.root_id = 'root'
         self.nodes = {}
+        self.old_paths = {}
         self.pending_relationships = []
         if root:
             self.root = root
@@ -41,7 +42,17 @@ class Tree():
         return self._node_for_path(self.root,path)
 
     def get_path_for_node(self, node):
-        return self._path_for_node(node)
+        toreturn = self._path_for_node(node)
+        return toreturn
+        
+    #a deleted path can be requested only once
+    def get_deleted_path(self,id):
+        toreturn = None
+        print "old paths are : %s" %self.old_paths
+        if self.old_paths.has_key(id):
+            toreturn = self.old_paths.pop(id)
+        return toreturn
+            
 
     def get_root(self):
         return self.root
@@ -76,6 +87,7 @@ class Tree():
     #does nothing if the node doesn't exist
     def remove_node(self, id):
         node = self.get_node(id)
+        path = self.get_path_for_node(node)
         if not node :
             return
         else:
@@ -88,18 +100,23 @@ class Tree():
                     par.remove_child(id)
             else:
                 self.root.remove_child(id)
+            self.old_paths[id] = path
             self.nodes.pop(id)
         
     #create a new relationship between nodes if it doesn't already exist
     #return False if nothing was done
     def new_relationship(self,parent_id,child_id):
-        #print "new relationship between %s and %s" %(parent_id,child_id)
+        Log.debug("new relationship between %s and %s" %(parent_id,child_id))
         if [parent_id,child_id] in self.pending_relationships:
             self.pending_relationships.remove([parent_id,child_id])
         toreturn = False
         #no relationship allowed with yourself
         if parent_id != child_id:
-            p = self.get_node(parent_id)
+            if parent_id == 'root':
+#                Log.debug("    -> adding %s to the root" %child_id)
+                p = self.get_root()
+            else:
+                p = self.get_node(parent_id)
             c = self.get_node(child_id)
             if p and c :
                 #no circular relationship allowed
@@ -107,16 +124,19 @@ class Tree():
                     if not p.has_child(child_id):
                         p.add_child(child_id)
                         toreturn = True
-                    if not c.has_parent(parent_id):
+                    if parent_id != 'root' and not c.has_parent(parent_id):
                         #print "creating the %s - %s relation" %(parent_id,child_id)
                         c.add_parent(parent_id)
                         toreturn = True
                         #removing the root from the list of parent
                         if self.root.has_child(child_id):
                             self.root.remove_child(child_id)
+                    if not toreturn:
+                        Log.debug("  * * * * * Relationship already existing")
                 else:
                     #a circular relationship was found
                     #undo everything
+                    Log.debug("  * * * * * Circular relationship found : undo")
                     self.break_relationship(parent_id,child_id)
                     toreturn = False
             else:
@@ -195,11 +215,18 @@ class Tree():
                 index  = self.root.get_child_index(node.get_id())
                 toreturn = self._path_for_node(self.root) + (index, )
             else:
-                #FIXME : no multiparent support here
+                # no multiparent support here
                 parent_id = node.get_parent()
+                if len(node.get_parents()) >= 2:
+                    print "multiple parents for task %s" %node.get_id()
+                    print "you should use a filteredtree above this tree"
                 parent = self.get_node(parent_id)
-                index  = parent.get_child_index(node.get_id())
-                toreturn = self._path_for_node(parent) + (index, )
+                if parent:
+                    index  = parent.get_child_index(node.get_id())
+                    toreturn = self._path_for_node(parent) + (index, )
+                else:
+                    toreturn = ()
+#                    print "returning %s" %str(toreturn)
         else:
             toreturn = None
         return toreturn
@@ -233,7 +260,6 @@ class TreeNode():
         self.pending_relationship = []
         if parent:
             self.add_parent(parent)
-        self.warned_multi_parents = False
 
     def __str__(self):
         return "<TreeNode: '%s'>" % (self.id)
@@ -255,7 +281,10 @@ class TreeNode():
         if self.tree:
             return self.tree.new_relationship(par,chi)
         else:
-            return self.pending_relationship.append([par,chi])
+            self.pending_relationship.append([par,chi])
+            #it's pending, we return False
+            Log.debug("** There's still no tree, relationship is pending")
+            return False
         
         
 ##### Parents
@@ -264,15 +293,16 @@ class TreeNode():
         if id:
             return id in self.parents
         else:
-            return len(self.parents) > 0
+            toreturn = len(self.parents) > 0
+        return toreturn
     
     #this one return only one parent.
     #useful for tree where we know that there is only one
     def get_parent(self):
         #we should throw an error if there are multiples parents
-        if len(self.parents) > 1 and not self.warned_multi_parents:
+        if len(self.parents) > 1 :
             print "Warning: get_parent will return one random parent for task %s because there are multiple parents." %(self.get_id())
-            self.warned_multi_parents = True
+            print "Get_parent is deprecated. Please use get_parents instead"
         if self.has_parent():
             return self.parents[0]
         else:
@@ -290,9 +320,12 @@ class TreeNode():
 #        self.tree.break_relationship(root.get_id(),self.get_id())
         if parent_id not in self.parents:
             self.parents.append(parent_id)
-            return self.new_relationship(parent_id, self.get_id())
+            toreturn = self.new_relationship(parent_id, self.get_id())
+#            if not toreturn:
+#                Log.debug("** parent addition failed (probably already done)*")
         else:
-            return False
+            toreturn = False
+        return toreturn
     
     #set_parent means that we remove all other parents
     def set_parent(self,par_id):
@@ -310,8 +343,6 @@ class TreeNode():
         if id in self.parents:
             self.parents.remove(id)
             ret = self.tree.break_relationship(id,self.get_id())
-            if ret:
-                self.req._task_modified(id)
             return ret
         else:
             return False
@@ -353,15 +384,19 @@ class TreeNode():
     #takes the id of the child as parameter.
     #if the child is not already in the tree, the relation is anyway "saved"
     def add_child(self, id):
-        self.children.append(id)
-        return self.new_relationship(self.get_id(),id)
+        if id not in self.children:
+            self.children.append(id)
+            toreturn = self.new_relationship(self.get_id(),id)
+#            Log.debug("new relationship : %s" %toreturn)
+        else:
+            Log.debug("%s was already in children of %s" %(id,self.get_id()))
+            toreturn = False
+        return toreturn
 
     def remove_child(self, id):
         if id in self.children:
             self.children.remove(id)
             ret = self.tree.break_relationship(self.get_id(),id)
-            if ret:
-                self.req._task_modified(id)
             return ret
         else:
             return False

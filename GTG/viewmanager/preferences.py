@@ -98,8 +98,10 @@ class PreferencesDialog:
     __AUTOSTART_DIRECTORY = os.path.join(xdg_config_home, "autostart")
     __AUTOSTART_FILE = "gtg.desktop"
 
-    def __init__(self, pengine, p_apis):
+    def __init__(self, pengine, p_apis, config_obj):
         """Constructor."""
+        self.config_obj = config_obj
+        self.config = self.config_obj.conf_dict
         self.builder = gtk.Builder() 
         self.builder.add_from_file(ViewConfig.PREFERENCES_GLADE_FILE)
         # store references to some objects
@@ -260,6 +262,16 @@ class PreferencesDialog:
 
     def on_close(self, widget, data = None):
         """Close the preferences dialog."""
+
+        if len(self.pengine.plugins) > 0:
+            self.config["plugins"] = {}
+            self.config["plugins"]["disabled"] = \
+              self.pengine.disabled_plugins().keys()
+            self.config["plugins"]["enabled"] = \
+              self.pengine.enabled_plugins().keys()
+
+        self.config_obj.save_config()
+
         self.dialog.hide()
         return True
 

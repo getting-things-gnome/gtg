@@ -66,7 +66,7 @@ def readTextNode(node,title) :
 #If the file doesn't exist, it is created with an empty XML tree    
 def openxmlfile(zefile,root ):
     tmpfile = zefile+'__'
-    
+#    print "opening %s file" %zefile
     try:
         if os.path.exists(zefile):
             f = open(zefile, "r")
@@ -111,6 +111,7 @@ def emptydoc(root) :
     
 #write a XML doc to a file
 def savexml(zefile,doc,backup=False):
+#    print "writing %s file (%s)" %(zefile,opt)
     tmpfile = zefile+'__'
     try:
         if os.path.exists(zefile):

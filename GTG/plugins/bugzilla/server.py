@@ -36,6 +36,11 @@ class ServersStore:
         server.tag = SERVER_TAG_COMPONENT
         self.add(server)
 
+        # Samba
+        server = Server('bugzilla.samba.org')
+        server.tag = SERVER_TAG_COMPONENT
+        self.add(server)
+
     def add(self, server):
         self.servers[server.name] = server
 
