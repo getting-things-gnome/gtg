@@ -313,7 +313,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
 
     def update_task(self, sender, tid):
 #        # get the node and signal it's changed
-        print "tasktree update_task %s" %tid
+#        print "tasktree update_task %s" %tid
         if self.tree.is_displayed(tid):
             my_node = self.tree.get_node(tid)
 #            print "update %s" %my_node.get_title()
