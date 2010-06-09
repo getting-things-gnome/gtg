@@ -118,6 +118,7 @@ class FilteredTree(gobject.GObject):
 #        self.using_cache = 0
         #useful for temp storage :
         self.node_to_add = []
+        self.__clean_list = []
         #it looks like an initial refilter is not needed.
         #self.refilter()
         self.__reset_cache()
@@ -548,15 +549,11 @@ class FilteredTree(gobject.GObject):
                 virtual_root2.append(tid)
 #            print "%s is displayed %s" %(tid,self.__is_displayed(tid))
 #            print "  virtual_root : %s" %virtual_root2
-        print "*** before refiltering ****"
-        self.print_tree()
         #Second step, we empty the current tree as we will rebuild it
         #from scratch
         for rid in list(self.virtual_root):
             n = self.get_node(rid)
-            print "    -> cleaning %s" %rid
             self.__clean_from_node(n)
-        print "     −> reset_cache"
         self.__reset_cache()
 
         #Here, we reconstruct our filtered trees. It  cannot be random
@@ -566,11 +563,10 @@ class FilteredTree(gobject.GObject):
         self.displayed_nodes = []
         for nid in list(to_add):
             isroot = nid in virtual_root2
-            print "      -> add node %s" %nid
             self.__add_node(nid,isroot)
         #end of refiltering
-        print "*** end of refiltering ****"
-        self.print_tree()
+#        print "*** end of refiltering ****"
+#        self.print_tree()
         #Finalizing : adding nodes that still need to be added
         for n in self.node_to_add:
             self.__add_node(n)
@@ -740,8 +736,11 @@ class FilteredTree(gobject.GObject):
         #Test if this is necessary
         parent = self.node_parents(self.get_node(tid))
         for p in parent:
-            inroot = self.__is_root(p)
-            self.__update_node(p.get_id(),inroot)
+            pid = p.get_id()
+            if pid not in self.__clean_list:
+                inroot = self.__is_root(p)
+                print " # # # updating parent %s (cleanlist = %s)" %(pid,self.__clean_list)
+                self.__update_node(pid,inroot)
         
     #This function print the actual tree. Useful for debugging
     def __print_from_node(self, node, prefix=""):
@@ -755,12 +754,17 @@ class FilteredTree(gobject.GObject):
     
     #This function removes all the nodes, leaves first.
     def __clean_from_node(self, node):
-        if self.node_has_child(node):
-            n = self.node_n_children(node)
-            child = self.node_nth_child(node,n-1)
-            while child and n > 0:
-                self.__clean_from_node(child)
-                n = n-1
+        nid = node.get_id()
+        if nid not in self.__clean_list:
+            self.__clean_list.append(nid)
+            print "cleaning from %s (list: %s)" %(nid,self.__clean_list)
+            if self.node_has_child(node):
+                n = self.node_n_children(node)
                 child = self.node_nth_child(node,n-1)
-        print "removing node %s" %node.get_id()
-        self.__remove_node(node.get_id())
+                while child and n > 0:
+                    self.__clean_from_node(child)
+                    n = n-1
+                    child = self.node_nth_child(node,n-1)
+            print "    removing node %s" %nid
+            self.__remove_node(nid)
+            self.__clean_list.remove(nid)

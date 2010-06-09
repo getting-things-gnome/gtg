@@ -361,8 +361,9 @@ class TaskTreeModel(gtk.GenericTreeModel):
         node_paths = self.tree.get_paths_for_node(node)
         for node_path in node_paths:
             Log.debug("* tasktree REMOVE %s - %s " %(tid,node_path))
+#            print "      remove iter %s" %tid
             self.iter_store.remove(node,node_path)
-            print "***** : tasktree remove path %s" %str(node_path)
+#            print "     remove row %s" %str(node_path)
             self.row_deleted(node_path)
             removed = True
         return removed
@@ -371,7 +372,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
         """Moves the task identified by child_tid under
            parent_tid, removing all the precedent parents.
            Child becomes a root task if parent_tid is None"""
-        print "move task %s to parent %s" %(child_tid,parent_tid)
+#        print "move task %s to parent %s" %(child_tid,parent_tid)
         def genealogic_search(tid):
             if tid not in genealogy:
                 genealogy.append(tid)
@@ -398,27 +399,21 @@ class TaskTreeModel(gtk.GenericTreeModel):
             #We first remove the node from the view (to have the path)
             node_paths = self.tree.get_paths_for_node(child_task)
             for node_path in node_paths:
-                print "we will deleted row %s" %str(node_path)
                 self.row_deleted(node_path)
             #then, we remove the parent
             child_task.remove_parent(pid)
-        print "we have removed parents"
         #Set new parent
         if parent_tid:
-            print "we add parent"
             child_task.add_parent(parent_tid)
         #If we don't have a new parent, add that task to the root
         else:
             node_paths = self.tree.get_paths_for_node(child_task)
             for node_path in node_paths:
                 node_iter = self.get_iter(node_path)
-                print "we insert row %s" %str(node_path)
                 self.row_inserted(node_path, node_iter)
         #if we had a filter, we have to refilter after the drag-n-drop
         #This is not optimal and could be improved
-        print "refilter"
         self.tree.refilter()
-        print "end of refilter"
             
 
 class TaskTreeView(gtk.TreeView):
