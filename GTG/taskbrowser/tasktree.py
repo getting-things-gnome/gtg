@@ -81,32 +81,16 @@ class TaskIterStore():
             if stored_node == node:
                 toreturn = stored_iter
             elif stored_node:
-                print "path %s is now %s (and it was %s)" %(str(path),node.get_id(),stored_node.get_id())
-                print "is valid %s" %stored_iter.is_valid()
-                print "%s should go to %s" %(stored_node.get_id(),self.__tree.get_paths_for_node(stored_node))
-#                print crash
                 self.remove(stored_node,path,all=False)
                 self.__model.row_deleted(path)
-#                self.__model.update_task(None,stored_node.get_id())
                 deleted = stored_node
-#                toreturn = stored_iter
         if not toreturn:
             toreturn = TaskIter(self.__tree,node,path)
-#        print "store %s at key %s" %(toreturn.get_node().get_id(),key)
         self.__store[key] = toreturn
         if deleted:
-#            paths = self.__tree.get_paths_for_node(deleted)
-#            for p in paths:
-#                node_iter = self.__model.get_iter(p)
-#                self.__model.row_inserted(p,node_iter)
-#                value = self.__model.get_value(node_iter,0)
-#            print "inserting %s into path %s" %(value,path)
-#            self.__model.row_inserted(path, node_iter)
-            print "adding %s that was removed" %deleted.get_id()
             self.__model.to_add_task(deleted.get_id())
-            for i in self.__store:
-                print "%s : %s" %(i,self.__store[i])
-#            self.__model.add_task(None,deleted.get_id())
+#            for i in self.__store:
+#                print "%s : %s" %(i,self.__store[i])
         return toreturn
 
     def remove(self,node,path,all=True):
@@ -387,7 +371,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
         """Moves the task identified by child_tid under
            parent_tid, removing all the precedent parents.
            Child becomes a root task if parent_tid is None"""
-        print "move task %s to parent %s" %(child_tid,parent_tid)
+#        print "move task %s to parent %s" %(child_tid,parent_tid)
         def genealogic_search(tid):
             if tid not in genealogy:
                 genealogy.append(tid)

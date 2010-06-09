@@ -268,11 +268,6 @@ class FilteredTree(gobject.GObject):
             tid = node.get_id()
         #For that node, we should convert the base_path to path
         if not node or not self.is_displayed(node.get_id()):
-            if not node:
-                messag = None
-            else:
-                messag = node.get_id()
-            print "not displayed %s" %messag
             return toreturn
         #This is the cache so we don't compute it all the time
         #TODO: this is commented out as it still doesn't work with filter
