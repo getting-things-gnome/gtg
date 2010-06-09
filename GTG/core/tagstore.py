@@ -186,9 +186,7 @@ class TagStore(Tree):
             #It saves space and allow the saved list growth to be controlled
             for t in tags:
                 attr = t.get_all_attributes(butname = True, withparent = True)
-                if "special" in attr:
-                    continue
-                if len(attr) > 0:
+                if "special" not in attr and len(attr) > 0:
                     tagname = t.get_name()
                     if not tagname in already_saved:
                         t_xml = doc.createElement("tag")
@@ -199,7 +197,7 @@ class TagStore(Tree):
                             if value:
                                 t_xml.setAttribute(a, value)
                         xmlroot.appendChild(t_xml)
-                        cleanxml.savexml(self.filename, doc)
+            cleanxml.savexml(self.filename, doc)
 
     def get_alltag_tag(self):
         ''' Returns the "All Tasks" tag'''
@@ -296,7 +294,7 @@ class Tag(TreeNode):
         else:
             del self._attributes[att_name]
         if self._save:
-            self._save()            
+            self._save()
 
     def get_all_attributes(self, butname=False, withparent = False):
         """Return a list of all attribute names.

@@ -810,7 +810,6 @@ class TaskBrowser:
         for t in tags:
             t.del_attribute("color")
         self.reset_cursor()
-#        self.task_tv.refresh()
         self.tags_tv.refresh()
         
     def on_tagcontext_deactivate(self, menushell):

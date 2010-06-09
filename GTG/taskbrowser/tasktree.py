@@ -487,7 +487,7 @@ class ActiveTaskTreeView(TaskTreeView):
         # Tag column
         tag_col     = gtk.TreeViewColumn()
         render_tags = CellRendererTags()
-        tag_col.set_title(_("Tags"))
+#        tag_col.set_title(_("Tags"))
         tag_col.pack_start(render_tags, expand=False)
         tag_col.add_attribute(render_tags, "tag_list", COL_TAGS)
         render_tags.set_property('xalign', 0.0)
