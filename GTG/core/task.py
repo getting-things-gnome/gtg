@@ -23,6 +23,7 @@ task.py contains the Task class which represents (guess what) a task
 
 import xml.dom.minidom
 import uuid
+import cgi
 import xml.sax.saxutils as saxutils
 
 from GTG              import _
@@ -315,6 +316,7 @@ class Task(TreeNode):
         if texte != "<content/>":
             #defensive programmation to filter bad formatted tasks
             if not texte.startswith("<content>"):
+                texte = cgi.escape(texte, quote = True)
                 texte = "<content>%s" %texte
             if not texte.endswith("</content>"):
                 texte = "%s</content>" %texte
