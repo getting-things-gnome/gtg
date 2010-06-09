@@ -19,6 +19,7 @@ import dbus
 import cgi
 import getopt
 import textwrap
+from datetime import datetime, date, timedelta
 from string import split
 
 def _(text):
@@ -40,8 +41,9 @@ def usage():
     text += f%( "gtcli show <tid>", _("Display detailed information on given task id") )
     text += f%( "gtcli edit <tid>", _("Opens the GUI editor for the given task id") )
     text += f%( "gtcli delete <tid>", _("Removes task identified by tid") )
-    text += f%( "gtcli list [all|today]", _("List tasks") )
-    text += f%( "gtcli count [all|today]", _("Number of tasks") )
+    text += f%( "gtcli list [all|today|<filter>|<tag>]...", _("List tasks") )
+    text += f%( "gtcli count [all|today|<filter>|<tag>]...", _("Number of tasks") )
+    text += f%( "gtcli summary [all|today|<filter>|<tag>]...", _("Report how many tasks starting/due each day") )
     text += f%( "gtcli postpone <tid> <date>", _("Updates the start date of task") )
     text += f%( "gtcli close <tid>", _("Sets state of task identified by tid to closed") )
     text += f%( "gtcli browse [hide|show]", _("Hides or shows the task browser window"))
@@ -122,7 +124,7 @@ def open_task_editor(tid):
     task_data = timi.open_task_editor(tid)
 
 def toggle_browser_visibility(state):
-    """ """
+    """ Cause the task browser to be displayed """
     timi = connect_to_gtg()
     if state == "hide":
         timi.hide_task_browser()
@@ -133,27 +135,100 @@ def toggle_browser_visibility(state):
     else:
         timi.show_task_browser()
 
-def list_tasks(criteria, count_only=False):
-    timi = connect_to_gtg()
-
-    tags_requested = None
-    if criteria == "today":
-        tasks = timi.get_tasks_filtered(['active', 'workview'])
-    elif criteria == "all":
-        tasks = timi.get_tasks_filtered(['all'])
-    elif criteria and criteria[0] == '@':
-        tags_requested = split(criteria, ' ')
-        tasks = timi.get_tasks_filtered(tags_requested)
+def _criteria_to_filters(criteria):
+    if not criteria:
+        filters = ['active']
     else:
-        tasks = timi.get_tasks_filtered(['active'])
+        filters = split(criteria, ' ')
+    
+    # Special case 'today' filter
+    if 'today' in filters:
+        filters.extend(['active', 'workview'])
+        filters.remove('today')
+    return filters
 
-    tasks_tree = { }
+def count_tasks(criteria):
+    """ Print a simple count of tasks matching criteria """
+
+    filters = _criteria_to_filters(criteria)
+    timi = connect_to_gtg()
+    tasks = timi.get_tasks_filtered(filters)
+
     total = 0
-    notag = '@__notag'
     for task in tasks:
         if 'title' not in task:
             continue
         total += 1
+
+    print total
+    return total
+
+def summary_of_tasks(criteria):
+    """ Print report showing number of tasks starting and due each day """
+
+    if not criteria:
+        criteria = 'active workable'
+
+    filters = _criteria_to_filters(criteria)
+    timi = connect_to_gtg()
+    tasks = timi.get_tasks_filtered(filters)
+
+    report = { }
+    for t in tasks:
+        if not t['startdate']:
+            startdate = 'unscheduled'
+        elif datetime.strptime(t['startdate'], "%Y-%m-%d") < datetime.today():
+            startdate = date.today().strftime("%Y-%m-%d")
+        else:
+            startdate = t['startdate']
+
+        if startdate not in report:
+            report[startdate] = { 'starting':0, 'due':0 }
+        report[startdate]['starting'] += 1
+
+        duedate = t['duedate'] or 'never'
+        if duedate not in report:
+            report[duedate] = { 'starting':0, 'due':0 }
+        report[duedate]['due'] += 1
+
+    day = date.today()
+    print "%-20s %5s %5s" %("", "Start", "Due")
+    print "%-20s %5d %5d" %('unscheduled', 
+                            report['unscheduled']['starting'],
+                            report['unscheduled']['due'])
+    num_days = 21
+    if criteria and 'today' in criteria:
+        num_days = 1
+    for i in range(0, num_days):
+        d = day + timedelta(i)
+        dstr = str(d)
+        if dstr in report:
+            fmt = "%a  %-m-%-d"
+            print "%-20s %5d %5d" %(d.strftime(fmt),
+                                    report[dstr]['starting'],
+                                    report[dstr]['due'])
+        else:
+            print "%-20s %5d %5d" %(dstr, 0, 0)
+            
+
+def list_tasks(criteria, count_only=False):
+    """ Display a listing of tasks 
+    
+    Accepts any filter or combination of filters or tags to limit the
+    set of tasks shown.  If multiple tags specified, it lists only tasks
+    that have all the tags.  If no filters or tags are specified,
+    defaults to showing all active tasks.
+    """
+
+    filters = _criteria_to_filters(criteria)
+    timi = connect_to_gtg()
+    tasks = timi.get_tasks_filtered(filters)
+
+    tasks_tree = { }
+    notag = '@__notag'
+    for task in tasks:
+        if 'title' not in task:
+            continue
         if not task['tags'] or len(task['tags']) == 0:
             if notag not in tasks_tree:
                 tasks_tree[notag] = []
@@ -166,16 +241,15 @@ def list_tasks(criteria, count_only=False):
                     tasks_tree[tag] = []
                 tasks_tree[tag].append(task)
 
-    if count_only:
-        print total
-        return total
-
-    if tags_requested:
-        keys = tags_requested
-    else:
+    # If any tags were specified, use only those as the categories
+    keys = [t for t in filters if t[0]=='@']
+    if not keys:
         keys = tasks_tree.keys()
         keys.sort()
+
     for key in keys:
+        if key not in tasks_tree:
+            continue
         if key != notag:
             print "%s:" %(key[1:])
         for task in tasks_tree[key]:
@@ -219,14 +293,20 @@ if __name__ == '__main__':
     elif command == "list":
         criteria = None
         if len(args)>1:
-            criteria = args[1]
+            criteria = ' '.join(args[1:])
         list_tasks(criteria, False)
 
     elif command == "count":
         criteria = None
         if len(args)>1:
-            criteria = args[1]
-        list_tasks(criteria, True)
+            criteria = ' '.join(args[1:])
+        count_tasks(criteria)
+
+    elif command == "summary":
+        criteria = None
+        if len(args)>1:
+            criteria = ' '.join(args[1:])
+        summary_of_tasks(criteria)
 
     elif command == "rm" or command == "delete":
         if len(args)<2:
