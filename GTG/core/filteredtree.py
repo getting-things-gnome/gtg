@@ -548,12 +548,15 @@ class FilteredTree(gobject.GObject):
                 virtual_root2.append(tid)
 #            print "%s is displayed %s" %(tid,self.__is_displayed(tid))
 #            print "  virtual_root : %s" %virtual_root2
-        
+        print "*** before refiltering ****"
+        self.print_tree()
         #Second step, we empty the current tree as we will rebuild it
         #from scratch
         for rid in list(self.virtual_root):
             n = self.get_node(rid)
+            print "    -> cleaning %s" %rid
             self.__clean_from_node(n)
+        print "     −> reset_cache"
         self.__reset_cache()
 
         #Here, we reconstruct our filtered trees. It  cannot be random
@@ -563,10 +566,11 @@ class FilteredTree(gobject.GObject):
         self.displayed_nodes = []
         for nid in list(to_add):
             isroot = nid in virtual_root2
+            print "      -> add node %s" %nid
             self.__add_node(nid,isroot)
         #end of refiltering
-#        print "*** end of refiltering ****"
-#        self.print_tree()
+        print "*** end of refiltering ****"
+        self.print_tree()
         #Finalizing : adding nodes that still need to be added
         for n in self.node_to_add:
             self.__add_node(n)
@@ -752,8 +756,11 @@ class FilteredTree(gobject.GObject):
     #This function removes all the nodes, leaves first.
     def __clean_from_node(self, node):
         if self.node_has_child(node):
-            child = self.node_children(node)
-            while child:
+            n = self.node_n_children(node)
+            child = self.node_nth_child(node,n-1)
+            while child and n > 0:
                 self.__clean_from_node(child)
-                child = self.next_node(child,parent=node)
+                n = n-1
+                child = self.node_nth_child(node,n-1)
+        print "removing node %s" %node.get_id()
         self.__remove_node(node.get_id())
