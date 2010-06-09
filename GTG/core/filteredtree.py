@@ -739,7 +739,6 @@ class FilteredTree(gobject.GObject):
             pid = p.get_id()
             if pid not in self.__clean_list:
                 inroot = self.__is_root(p)
-                print " # # # updating parent %s (cleanlist = %s)" %(pid,self.__clean_list)
                 self.__update_node(pid,inroot)
         
     #This function print the actual tree. Useful for debugging
@@ -757,7 +756,6 @@ class FilteredTree(gobject.GObject):
         nid = node.get_id()
         if nid not in self.__clean_list:
             self.__clean_list.append(nid)
-            print "cleaning from %s (list: %s)" %(nid,self.__clean_list)
             if self.node_has_child(node):
                 n = self.node_n_children(node)
                 child = self.node_nth_child(node,n-1)
@@ -765,6 +763,5 @@ class FilteredTree(gobject.GObject):
                     self.__clean_from_node(child)
                     n = n-1
                     child = self.node_nth_child(node,n-1)
-            print "    removing node %s" %nid
             self.__remove_node(nid)
             self.__clean_list.remove(nid)
