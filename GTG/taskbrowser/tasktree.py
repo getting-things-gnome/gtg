@@ -100,7 +100,7 @@ class TaskIterStore():
 #            print "inserting %s into path %s" %(value,path)
 #            self.__model.row_inserted(path, node_iter)
             print "adding %s that was removed" %deleted.get_id()
-            self.__model.add_task(None,deleted.get_id())
+#            self.__model.add_task(None,deleted.get_id())
         return toreturn
 
     def remove(self,node,path,all=True):
