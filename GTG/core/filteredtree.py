@@ -221,6 +221,7 @@ class FilteredTree(gobject.GObject):
     ####TreeModel functions ##############################
 
     def print_tree(self):
+        print "displayed : %s" %self.displayed_nodes
         for rid in self.virtual_root:
             r = self.req.get_task(rid)
             self.__print_from_node(r)
@@ -267,7 +268,11 @@ class FilteredTree(gobject.GObject):
             tid = node.get_id()
         #For that node, we should convert the base_path to path
         if not node or not self.is_displayed(node.get_id()):
-            #print "not displayed %s" %node
+            if not node:
+                messag = None
+            else:
+                messag = node.get_id()
+            print "not displayed %s" %messag
             return toreturn
         #This is the cache so we don't compute it all the time
         #TODO: this is commented out as it still doesn't work with filter
@@ -334,15 +339,15 @@ class FilteredTree(gobject.GObject):
         """
         #print "on_iter_next for node %s" %node
         #We should take the next good node, not the next base node
+        nextnode = None
         if node:
             tid = node.get_id()
             if tid in self.virtual_root:
                 i = self.virtual_root.index(tid) + 1
                 if len(self.virtual_root) > i:
                     nextnode_id = self.virtual_root[i]
-                    nextnode = self.get_node(nextnode_id)
-                else:
-                    nextnode = None
+                    if self.is_displayed(nextnode_id):
+                        nextnode = self.get_node(nextnode_id)
             else:
                 parents_nodes = self.node_parents(node)
                 if len(parents_nodes) >= 1:
@@ -356,12 +361,12 @@ class FilteredTree(gobject.GObject):
                         nextnode = None
                     else:
                         nextnode = parent_node.get_nth_child(next_idx)
-                        while nextnode and next_idx < total and not self.is_displayed(nextnode.get_id()):
+                        while nextnode and next_idx < total and \
+                                    not self.is_displayed(nextnode.get_id()):
                             next_idx += 1
                             nextnode = parent_node.get_nth_child(next_idx)
-                else:
-                    nextnode = None
-        else:
+        #check to see if our result is correct
+        if nextnode and not self.is_displayed(nextnode.get_id()):
             nextnode = None
         return nextnode
 
@@ -471,7 +476,11 @@ class FilteredTree(gobject.GObject):
         currently displayed in the tree
         """
         if tid:
-            return tid in self.displayed_nodes
+            toreturn = tid in self.displayed_nodes
+#            if toreturn:
+#                paths = self.get_paths_for_node(self.tree.get_node(tid))
+#                if len(paths) <= 0:
+#                    toreturn = False
         else:
             toreturn = False
         return toreturn

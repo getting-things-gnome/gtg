@@ -92,15 +92,15 @@ class TaskIterStore():
 #        print "store %s at key %s" %(toreturn.get_node().get_id(),key)
         self.__store[key] = toreturn
         if deleted:
-            paths = self.__tree.get_paths_for_node(deleted)
-            for p in paths:
-                node_iter = self.__model.get_iter(p)
-                self.__model.row_inserted(p,node_iter)
+#            paths = self.__tree.get_paths_for_node(deleted)
+#            for p in paths:
+#                node_iter = self.__model.get_iter(p)
+#                self.__model.row_inserted(p,node_iter)
 #                value = self.__model.get_value(node_iter,0)
 #            print "inserting %s into path %s" %(value,path)
 #            self.__model.row_inserted(path, node_iter)
             print "adding %s that was removed" %deleted.get_id()
-#            self.__model.add_task(None,deleted.get_id())
+            self.__model.add_task(None,deleted.get_id())
         return toreturn
 
     def remove(self,node,path,all=True):
