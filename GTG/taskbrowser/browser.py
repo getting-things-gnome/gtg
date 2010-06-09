@@ -560,6 +560,7 @@ class TaskBrowser:
         else:
             self.req.unapply_filter('workview')
         self.tagtree.refilter()
+        self.task_tv.display_start_column(not tobeset)
         self._update_window_title()
 
     def _update_window_title(self):
