@@ -22,7 +22,7 @@ import os, sys
 
 import Geoclue
 
-import clutter, cluttergtk
+import cluttergtk, clutter
 import champlain
 
 from GTG.plugins.geolocalized_tasks.marker import MarkerLayer
