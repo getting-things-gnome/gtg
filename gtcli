@@ -167,9 +167,10 @@ def summary_of_tasks(criteria):
     """ Print report showing number of tasks starting and due each day """
 
     if not criteria:
-        criteria = 'active workable'
+        criteria = 'workable'
 
     filters = _criteria_to_filters(criteria)
+    filters.append('active')
     timi = connect_to_gtg()
     tasks = timi.get_tasks_filtered(filters)
 
