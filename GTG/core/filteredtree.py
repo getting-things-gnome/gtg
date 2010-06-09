@@ -118,6 +118,7 @@ class FilteredTree(gobject.GObject):
 #        self.using_cache = 0
         #useful for temp storage :
         self.node_to_add = []
+        self.__clean_list = []
         #it looks like an initial refilter is not needed.
         #self.refilter()
         self.__reset_cache()
@@ -221,6 +222,7 @@ class FilteredTree(gobject.GObject):
     ####TreeModel functions ##############################
 
     def print_tree(self):
+        print "displayed : %s" %self.displayed_nodes
         for rid in self.virtual_root:
             r = self.req.get_task(rid)
             self.__print_from_node(r)
@@ -267,7 +269,6 @@ class FilteredTree(gobject.GObject):
             tid = node.get_id()
         #For that node, we should convert the base_path to path
         if not node or not self.is_displayed(node.get_id()):
-            #print "not displayed %s" %node
             return toreturn
         #This is the cache so we don't compute it all the time
         #TODO: this is commented out as it still doesn't work with filter
@@ -334,15 +335,15 @@ class FilteredTree(gobject.GObject):
         """
         #print "on_iter_next for node %s" %node
         #We should take the next good node, not the next base node
+        nextnode = None
         if node:
             tid = node.get_id()
             if tid in self.virtual_root:
                 i = self.virtual_root.index(tid) + 1
                 if len(self.virtual_root) > i:
                     nextnode_id = self.virtual_root[i]
-                    nextnode = self.get_node(nextnode_id)
-                else:
-                    nextnode = None
+                    if self.is_displayed(nextnode_id):
+                        nextnode = self.get_node(nextnode_id)
             else:
                 parents_nodes = self.node_parents(node)
                 if len(parents_nodes) >= 1:
@@ -356,12 +357,12 @@ class FilteredTree(gobject.GObject):
                         nextnode = None
                     else:
                         nextnode = parent_node.get_nth_child(next_idx)
-                        while nextnode and next_idx < total and not self.is_displayed(nextnode.get_id()):
+                        while nextnode and next_idx < total and \
+                                    not self.is_displayed(nextnode.get_id()):
                             next_idx += 1
                             nextnode = parent_node.get_nth_child(next_idx)
-                else:
-                    nextnode = None
-        else:
+        #check to see if our result is correct
+        if nextnode and not self.is_displayed(nextnode.get_id()):
             nextnode = None
         return nextnode
 
@@ -471,7 +472,11 @@ class FilteredTree(gobject.GObject):
         currently displayed in the tree
         """
         if tid:
-            return tid in self.displayed_nodes
+            toreturn = tid in self.displayed_nodes
+#            if toreturn:
+#                paths = self.get_paths_for_node(self.tree.get_node(tid))
+#                if len(paths) <= 0:
+#                    toreturn = False
         else:
             toreturn = False
         return toreturn
@@ -544,7 +549,6 @@ class FilteredTree(gobject.GObject):
                 virtual_root2.append(tid)
 #            print "%s is displayed %s" %(tid,self.__is_displayed(tid))
 #            print "  virtual_root : %s" %virtual_root2
-        
         #Second step, we empty the current tree as we will rebuild it
         #from scratch
         for rid in list(self.virtual_root):
@@ -732,12 +736,14 @@ class FilteredTree(gobject.GObject):
         #Test if this is necessary
         parent = self.node_parents(self.get_node(tid))
         for p in parent:
-            inroot = self.__is_root(p)
-            self.__update_node(p.get_id(),inroot)
+            pid = p.get_id()
+            if pid not in self.__clean_list:
+                inroot = self.__is_root(p)
+                self.__update_node(pid,inroot)
         
     #This function print the actual tree. Useful for debugging
     def __print_from_node(self, node, prefix=""):
-        print prefix + node.get_id()
+        print "%s%s    (%s)" %(prefix,node.get_id(),str(self.get_paths_for_node(node)))
         prefix = prefix + "->"
         if self.node_has_child(node):
             child = self.node_children(node)
@@ -747,9 +753,15 @@ class FilteredTree(gobject.GObject):
     
     #This function removes all the nodes, leaves first.
     def __clean_from_node(self, node):
-        if self.node_has_child(node):
-            child = self.node_children(node)
-            while child:
-                self.__clean_from_node(child)
-                child = self.next_node(child,parent=node)
-        self.__remove_node(node.get_id())
+        nid = node.get_id()
+        if nid not in self.__clean_list:
+            self.__clean_list.append(nid)
+            if self.node_has_child(node):
+                n = self.node_n_children(node)
+                child = self.node_nth_child(node,n-1)
+                while child and n > 0:
+                    self.__clean_from_node(child)
+                    n = n-1
+                    child = self.node_nth_child(node,n-1)
+            self.__remove_node(nid)
+            self.__clean_list.remove(nid)

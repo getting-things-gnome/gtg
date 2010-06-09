@@ -59,6 +59,60 @@ class TaskIter():
     def is_valid(self):
         return self.__path in self.__tree.get_paths_for_node(self.__node)
 
+    def __str__(self):
+        return "iter %s  for path %s" %(self.__node.get_id(),str(self.__path))
+
+class TaskIterStore():
+    def __init__(self,tree,model):
+        self.__tree = tree
+        self.__model = model
+        self.__store = {}
+
+    def __key(self,node,path):
+        return str(path)
+
+    def get(self,node,path):
+        key = self.__key(node,path)
+        toreturn = None
+        deleted = False
+        if node and self.__store.has_key(key):
+            stored_iter = self.__store[key]
+            stored_node = stored_iter.get_node()
+            if stored_node == node:
+                toreturn = stored_iter
+            elif stored_node:
+                self.remove(stored_node,path,all=False)
+                self.__model.row_deleted(path)
+                deleted = stored_node
+        if not toreturn:
+            toreturn = TaskIter(self.__tree,node,path)
+        self.__store[key] = toreturn
+        if deleted:
+            self.__model.to_add_task(deleted.get_id())
+#            for i in self.__store:
+#                print "%s : %s" %(i,self.__store[i])
+        return toreturn
+
+    def remove(self,node,path,all=True):
+        if all:
+            self.__store = {}
+        else:
+            key = self.__key(node,path)
+            if self.__store.has_key(key):
+                stored_node = self.__store[key]
+                if stored_node.get_node() == node:
+                    self.__store.pop(key)
+                    return True
+                else:
+                    print "Trying to remove iter %s from path %s (thinking it was %s)"\
+                            %(stored_node.get_node().get_id(),str(path),node.get_id())
+                    return False
+            else:
+                print "Removing inexistant path %s for node %s" %(str(path),node.get_id())
+                return False
+
+
+
 class TaskTreeModel(gtk.GenericTreeModel):
 
     column_types = (\
@@ -86,6 +140,8 @@ class TaskTreeModel(gtk.GenericTreeModel):
             self.tree = tree
         else:
             self.tree = self.req.get_main_tasks_tree()
+        self.iter_store = TaskIterStore(self.tree,self)
+        self.tasks_to_add = []
         self.tree.connect('task-added-inview',self.add_task)
         self.tree.connect('task-deleted-inview',self.remove_task)
         self.tree.connect('task-modified-inview',self.update_task)
@@ -168,11 +224,11 @@ class TaskTreeModel(gtk.GenericTreeModel):
                 title = "<span color='%s'>%s</span>"%(color, title)
             return title
 
-    def on_get_iter(self, path):
+    def on_get_iter(self, path,node=None):
 #        print "on_get_iter for %s" %(str(path))
         node = self.tree.get_node_for_path(path)
 #        parent = self.tree.get_node_for_path(path[:-1])
-        iter = TaskIter(self.tree,node,path)
+        iter = self.iter_store.get(node,path)
         return iter
 
     def on_get_path(self, iter):
@@ -200,7 +256,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
             npaths = self.tree.get_paths_for_node(next)
             for n in npaths:
                 if path[:-1] == n[:-1]:
-                    toreturn = TaskIter(self.tree,next,n)
+                    toreturn = self.iter_store.get(next,n)
         return toreturn
 
     def on_iter_children(self, iter):
@@ -240,7 +296,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
 #                print "   path is %s and cpaths (%s) are %s" %(path,child.get_id(),cpaths)
                 for c in cpaths:
                     if c[:-1] == path:
-                        toreturn = TaskIter(self.tree,child,c)
+                        toreturn = self.iter_store.get(child,c)
                 if not toreturn:
                     print "PROBLEM: child %s have the path %s but parent has %s"\
                             %(child.get_id(),cpaths,path)
@@ -251,13 +307,13 @@ class TaskTreeModel(gtk.GenericTreeModel):
         if iter and iter.is_valid():
             path = iter.get_path()
             par_node = self.tree.get_node_for_path(path[:-1])
-            return TaskIter(self.tree,par_node,path[:-1])
+            return self.iter_store.get(par_node,path[:-1])
         else:
             return None
 
     def update_task(self, sender, tid):
 #        # get the node and signal it's changed
-#        print "tasktree update_task"
+#        print "tasktree update_task %s" %tid
         if self.tree.is_displayed(tid):
             my_node = self.tree.get_node(tid)
 #            print "update %s" %my_node.get_title()
@@ -271,16 +327,14 @@ class TaskTreeModel(gtk.GenericTreeModel):
                 if len(node_paths) == 0: 
                     print "Error :! no path for node %s !" %my_node.get_id()
 
+    def to_add_task(self,tid):
+        self.tasks_to_add.append(tid)
+
     def add_task(self, sender, tid):
         task = self.tree.get_node(tid)
         if task:
-#            print "adding %s" %task.get_title()
             node_paths = self.tree.get_paths_for_node(task)
-#            print "    paths = %s" %node_paths
-#            print "    has_child %s" %self.tree.node_has_child(task)
-            #if node_path is null, the task is not currently displayed
             for node_path in node_paths:
-                #print "   tasktree add_task %s at %s" %(tid,node_path)
                 node_iter = self.get_iter(node_path)
                 self.row_inserted(node_path, node_iter)
                 #following is mandatory if 
@@ -292,9 +346,11 @@ class TaskTreeModel(gtk.GenericTreeModel):
             for p in parents:
                     for par_path in self.tree.get_paths_for_node(p):
                         par_iter = self.get_iter(par_path)
-#                       print "tasktree child toogled %s" %tid
 #                        print "child_toggled 3 : %s" %p.get_title()
                         self.row_has_child_toggled(par_path, par_iter)
+        if len(self.tasks_to_add) > 0:
+            t = self.tasks_to_add.pop()
+            self.add_task(None,t)
 
     def remove_task(self, sender, tid):
         #a task has been removed from the view. Therefore,
@@ -305,6 +361,9 @@ class TaskTreeModel(gtk.GenericTreeModel):
         node_paths = self.tree.get_paths_for_node(node)
         for node_path in node_paths:
             Log.debug("* tasktree REMOVE %s - %s " %(tid,node_path))
+#            print "      remove iter %s" %tid
+            self.iter_store.remove(node,node_path)
+#            print "     remove row %s" %str(node_path)
             self.row_deleted(node_path)
             removed = True
         return removed
@@ -313,6 +372,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
         """Moves the task identified by child_tid under
            parent_tid, removing all the precedent parents.
            Child becomes a root task if parent_tid is None"""
+#        print "move task %s to parent %s" %(child_tid,parent_tid)
         def genealogic_search(tid):
             if tid not in genealogy:
                 genealogy.append(tid)
