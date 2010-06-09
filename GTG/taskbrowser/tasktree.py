@@ -421,7 +421,7 @@ class TaskTreeView(gtk.TreeView):
 
     def __init__(self, requester):
         gtk.TreeView.__init__(self)
-        self.columns = []
+        self.__columns = {}
         self.bg_color_enable = True
         self.req = requester
         self.show()
@@ -440,10 +440,11 @@ class TaskTreeView(gtk.TreeView):
         cell.set_property("cell-background", col)
 
     def get_column(self, index):
-        return self.columns[index]
+        return self.__columns[index]
 
-    def get_column_index(self, col_id):
-        return self.columns.index(col_id)
+    def set_column(self,index,col):
+        self.__columns[index] = col
+        
 
 class ActiveTaskTreeView(TaskTreeView):
     """TreeView for display of a list of task. Handles DnD primitives too."""
@@ -483,11 +484,15 @@ class ActiveTaskTreeView(TaskTreeView):
         self.connect('button_release_event', self.on_button_release)
         self.defer_select = False
 
+    def display_start_column(self,is_displayed=True):
+        col = self.get_column(COL_SDATE)
+        col.set_visible(is_displayed)
+
     def _init_tree_view(self):
         # Tag column
         tag_col     = gtk.TreeViewColumn()
         render_tags = CellRendererTags()
-        tag_col.set_title(_("Tags"))
+#        tag_col.set_title(_("Tags"))
         tag_col.pack_start(render_tags, expand=False)
         tag_col.add_attribute(render_tags, "tag_list", COL_TAGS)
         render_tags.set_property('xalign', 0.0)
@@ -496,7 +501,7 @@ class ActiveTaskTreeView(TaskTreeView):
         #tag_col.set_clickable         (True)
         #tag_col.connect               ('clicked', tv_sort_cb)
         self.append_column(tag_col)
-        self.columns.insert(COL_TAGS, tag_col)
+        self.set_column(COL_TAGS, tag_col)
 
         # Title column
         title_col   = gtk.TreeViewColumn()
@@ -510,7 +515,7 @@ class ActiveTaskTreeView(TaskTreeView):
         title_col.set_sort_column_id(COL_TITLE)
         title_col.set_cell_data_func(render_text, self._celldatafunction)
         self.append_column(title_col)
-        self.columns.insert(COL_TITLE, title_col)
+        self.set_column(COL_TITLE, title_col)
         self.set_search_column(COL_TITLE)
 
         # Start date column
@@ -523,7 +528,7 @@ class ActiveTaskTreeView(TaskTreeView):
         sdate_col.set_sort_column_id(COL_SDATE)
         sdate_col.set_cell_data_func(render_text, self._celldatafunction)
         self.append_column(sdate_col)
-        self.columns.insert(COL_SDATE, sdate_col)
+        self.set_column(COL_SDATE, sdate_col)
 
         # Due column
         ddate_col   = gtk.TreeViewColumn()
@@ -535,7 +540,7 @@ class ActiveTaskTreeView(TaskTreeView):
         ddate_col.set_sort_column_id(COL_DDATE)
         ddate_col.set_cell_data_func(render_text, self._celldatafunction)
         self.append_column(ddate_col)
-        self.columns.insert(COL_DUE, ddate_col)
+        self.set_column(COL_DUE, ddate_col)
 
         # days left
 #        dleft_col   = gtk.TreeViewColumn()
@@ -547,7 +552,7 @@ class ActiveTaskTreeView(TaskTreeView):
 #        dleft_col.set_sort_column_id(COL_DLEFT)
 #        dleft_col.set_cell_data_func(render_text, self._celldatafunction)
 #        self.append_column(dleft_col)
-#        self.columns.insert(COL_DLEFT, dleft_col)
+#        self.set_column(COL_DLEFT, dleft_col)
 
         # Global treeview properties
         self.set_property("expander-column", title_col)
@@ -652,7 +657,7 @@ class ClosedTaskTreeView(TaskTreeView):
         render_tags.set_property('xalign', 0.0)
         self.tag_col.set_resizable(False)
         self.append_column(self.tag_col)
-        self.columns.insert(COL_TAGS, self.tag_col)
+        self.set_column(COL_TAGS, self.tag_col)
 
         # CLosed date column
         cdate_col    = gtk.TreeViewColumn()
@@ -663,7 +668,7 @@ class ClosedTaskTreeView(TaskTreeView):
         cdate_col.set_sort_column_id(COL_CDATE)
         cdate_col.set_cell_data_func(render_text, self._celldatafunction)
         self.append_column(cdate_col)
-        self.columns.insert(COL_CDATE_STR, cdate_col)
+        self.set_column(COL_CDATE_STR, cdate_col)
 
         # Title column
         title_col    = gtk.TreeViewColumn()
@@ -675,7 +680,7 @@ class ClosedTaskTreeView(TaskTreeView):
         title_col.set_cell_data_func(render_text, self._celldatafunction)
         title_col.set_sort_column_id(COL_TITLE)
         self.append_column(title_col)
-        self.columns.insert(COL_TITLE, title_col)
+        self.set_column(COL_TITLE, title_col)
         self.set_search_column(COL_TITLE)
         
         self.set_show_expanders(False)

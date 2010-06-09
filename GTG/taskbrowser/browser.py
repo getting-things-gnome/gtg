@@ -560,6 +560,7 @@ class TaskBrowser:
         else:
             self.req.unapply_filter('workview')
         self.tagtree.refilter()
+        self.task_tv.display_start_column(not tobeset)
         self._update_window_title()
 
     def _update_window_title(self):
@@ -810,7 +811,6 @@ class TaskBrowser:
         for t in tags:
             t.del_attribute("color")
         self.reset_cursor()
-#        self.task_tv.refresh()
         self.tags_tv.refresh()
         
     def on_tagcontext_deactivate(self, menushell):
