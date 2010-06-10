@@ -1,6 +1,7 @@
 ????-??-?? Getting Things GNOME! ?.?.?
     * Added link to web documentation in Help menu, by Ronan Jouchet
     * Fixed bug with data consistency #579189, by Marko Kevac
+    * Added samba bugzilla to the bugzilla plugin, by Jelmer Vernoij
 
 2010-03-01 Getting Things GNOME! 0.2.2
     * Autostart on login, by Luca Invernizzi

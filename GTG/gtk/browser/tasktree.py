@@ -48,18 +48,83 @@ COL_DUE       = 11
 #and only one position in the tree
 class TaskIter():
     def __init__(self,tree,node,path):
-        self.node = node
-        self.path = path
-        self.tree = tree
+        self.__node = node
+        self.__path = path
+        self.__tree = tree
         
     def get_node(self):
-        return self.node
+        return self.__node
     
     def get_path(self):
-        return self.path
+        return self.__path
 
     def is_valid(self):
-        return self.path in self.tree.get_paths_for_node(self.node)
+        return self.__path in self.__tree.get_paths_for_node(self.__node)
+
+    def __str__(self):
+        return "iter %s  for path %s" %(self.__node.get_id(),str(self.__path))
+
+class TaskIterStore():
+    def __init__(self,tree,model):
+        self.__tree = tree
+        self.__model = model
+        self.__store = {}
+
+    def __key(self,node,path):
+        return str(path)
+
+    def get(self,node,path):
+        key = self.__key(node,path)
+        toreturn = None
+        deleted = False
+#        print "get iter for node %s (toadd: %s)" %(node.get_id(),self.__model.tasks_to_add)
+        if node and node.get_id() in self.__model.tasks_to_add:
+            #This is a crude hack. If the task is in tasks_to_add, it means
+            #that it was removed and should be added.
+            #the fact that someone is asking for its iter means that it will
+            #be added automatically anyway.
+            #in order to avoid duplicate, we will only remove it from the list
+            #of tasks to add
+            self.__model.tasks_to_add.remove(node.get_id())
+        if node and self.__store.has_key(key):
+            stored_iter = self.__store[key]
+            stored_node = stored_iter.get_node()
+            if stored_node == node:
+                toreturn = stored_iter
+            elif stored_node:
+                #We place a node on the position of a previous node.
+                #we should then remove that previous node
+                self.remove(stored_node,path,all=False)
+                self.__model.row_deleted(path)
+                deleted = stored_node
+        if not toreturn:
+            toreturn = TaskIter(self.__tree,node,path)
+        self.__store[key] = toreturn
+        if deleted:
+            #if we removed a node, we should readd it.
+            #sometimes, it is not necessary (see the hack above)
+            self.__model.to_add_task(None,deleted.get_id())
+        return toreturn
+
+    def remove(self,node,path,all=True):
+        if all:
+            self.__store = {}
+        else:
+            key = self.__key(node,path)
+            if self.__store.has_key(key):
+                stored_node = self.__store[key]
+                if stored_node.get_node() == node:
+                    self.__store.pop(key)
+                    return True
+                else:
+                    print "Trying to remove iter %s from path %s (thinking it was %s)"\
+                            %(stored_node.get_node().get_id(),str(path),node.get_id())
+                    return False
+            else:
+                print "Removing inexistant path %s for node %s" %(str(path),node.get_id())
+                return False
+
+
 
 
 class TaskTreeModel(gtk.GenericTreeModel):
@@ -82,13 +147,16 @@ class TaskTreeModel(gtk.GenericTreeModel):
     def __init__(self, requester, config, tree=None):
         
         gtk.GenericTreeModel.__init__(self)
+        self.lock = False
         self.req  = requester
         self.config = config
         if tree:
             self.tree = tree
         else:
             self.tree = self.req.get_main_tasks_tree()
-        self.tree.connect('task-added-inview',self.add_task)
+        self.iter_store = TaskIterStore(self.tree,self)
+        self.tasks_to_add = []
+        self.tree.connect('task-added-inview',self.to_add_task)
         self.tree.connect('task-deleted-inview',self.remove_task)
         self.tree.connect('task-modified-inview',self.update_task)
         #need to get the GTK style for the inline preview of task content
@@ -173,18 +241,21 @@ class TaskTreeModel(gtk.GenericTreeModel):
     def on_get_iter(self, path):
 #        print "on_get_iter for %s" %(str(path))
         node = self.tree.get_node_for_path(path)
+        iter = self.iter_store.get(node,path)
+        if node and (node.get_id() in self.tasks_to_add):
+            print "WE WILL NOT ADD %s" %node.get_id()
+            self.tasks_to_add.pop(node.get_id())
 #        parent = self.tree.get_node_for_path(path[:-1])
-        iter = TaskIter(self.tree,node,path)
         return iter
 
     def on_get_path(self, iter):
 #        print "on_get_path"
         if iter and iter.is_valid():
             node = iter.get_node()
-            paths = self.tree.get_paths_for_node(node)
+#            paths = self.tree.get_paths_for_node(node)
             path = iter.get_path()
 #            print "path of iter is correct : %s" %(path in paths)
-            return iter.get_path()
+            return path
         else:
             return None
 
@@ -202,7 +273,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
             npaths = self.tree.get_paths_for_node(next)
             for n in npaths:
                 if path[:-1] == n[:-1]:
-                    toreturn = TaskIter(self.tree,next,n)
+                    toreturn = self.iter_store.get(next,n)
         return toreturn
 
     def on_iter_children(self, iter):
@@ -242,7 +313,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
 #                print "   path is %s and cpaths (%s) are %s" %(path,child.get_id(),cpaths)
                 for c in cpaths:
                     if c[:-1] == path:
-                        toreturn = TaskIter(self.tree,child,c)
+                        toreturn = self.iter_store.get(child,c)
                 if not toreturn:
                     print "PROBLEM: child %s have the path %s but parent has %s"\
                             %(child.get_id(),cpaths,path)
@@ -253,43 +324,57 @@ class TaskTreeModel(gtk.GenericTreeModel):
         if iter and iter.is_valid():
             path = iter.get_path()
             par_node = self.tree.get_node_for_path(path[:-1])
-            return TaskIter(self.tree,par_node,path[:-1])
+            return self.iter_store.get(par_node,path[:-1])
         else:
             return None
 
     def update_task(self, sender, tid):
 #        # get the node and signal it's changed
-#        print "tasktree update_task"
+#        print "tasktree update_task %s" %tid
         if self.tree.is_displayed(tid):
             my_node = self.tree.get_node(tid)
+#            print "update %s" %my_node.get_title()
             if my_node and my_node.is_loaded():
                 node_paths = self.tree.get_paths_for_node(my_node)
                 for node_path in node_paths:
                     node_iter = self.get_iter(node_path)
                     self.row_changed(node_path, node_iter)
+#                    print "child_toggled 1 : %s" %my_node.get_title()
                     self.row_has_child_toggled(node_path, node_iter)
                 if len(node_paths) == 0: 
                     print "Error :! no path for node %s !" %my_node.get_id()
 
-    def add_task(self, sender, tid):
-        task = self.tree.get_node(tid)
-        if task:
-            node_paths = self.tree.get_paths_for_node(task)
-            #if node_path is null, the task is not currently displayed
-            for node_path in node_paths:
-                #print "   tasktree add_task %s at %s" %(tid,node_path)
-                node_iter = self.get_iter(node_path)
-                self.row_inserted(node_path, node_iter)
-                #following is mandatory if 
-                #we added a child task before his parent.
-                if self.tree.node_has_child(task):
-                    self.row_has_child_toggled(node_path,node_iter)
-            parents = self.tree.node_parents(task)
-            for p in parents:
-                    for par_path in self.tree.get_paths_for_node(p):
-                        par_iter = self.get_iter(par_path)
-#                       print "tasktree child toogled %s" %tid
-                        self.row_has_child_toggled(par_path, par_iter)
+    def to_add_task(self,sender,tid):
+#        task = self.tree.get_node(tid)
+#        node_paths = self.tree.get_paths_for_node(task)
+#        print "%s is to_add with paths %s" %(tid,node_paths)
+        self.tasks_to_add.append(tid)
+        if not self.lock and len(self.tasks_to_add) > 0:
+            self.lock = True
+            self.add_tasks()
+
+    def add_tasks(self):
+        #self.lock = True
+        while len(self.tasks_to_add) > 0:
+            tid = self.tasks_to_add.pop()
+            task = self.tree.get_node(tid)
+            if task:
+                node_paths = self.tree.get_paths_for_node(task)
+                for node_path in node_paths:
+                    node_iter = self.get_iter(node_path)
+                    self.row_inserted(node_path, node_iter)
+                    #following is mandatory if 
+                    #we added a child task before his parent.
+                    if self.tree.node_has_child(task):
+    #                    print "child_toggled 2 : %s" %task.get_title()
+                        self.row_has_child_toggled(node_path,node_iter)
+                parents = self.tree.node_parents(task)
+                for p in parents:
+                        for par_path in self.tree.get_paths_for_node(p):
+                            par_iter = self.get_iter(par_path)
+#                            print "child_toggled 3 : %s" %p.get_title()
+                            self.row_has_child_toggled(par_path, par_iter)
+        self.lock = False
 
     def remove_task(self, sender, tid):
         #a task has been removed from the view. Therefore,
@@ -300,6 +385,9 @@ class TaskTreeModel(gtk.GenericTreeModel):
         node_paths = self.tree.get_paths_for_node(node)
         for node_path in node_paths:
             Log.debug("* tasktree REMOVE %s - %s " %(tid,node_path))
+#            print "      remove iter %s" %tid
+            self.iter_store.remove(node,node_path)
+#            print "     remove row %s" %str(node_path)
             self.row_deleted(node_path)
             removed = True
         return removed
@@ -308,6 +396,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
         """Moves the task identified by child_tid under
            parent_tid, removing all the precedent parents.
            Child becomes a root task if parent_tid is None"""
+#        print "move task %s to parent %s" %(child_tid,parent_tid)
         def genealogic_search(tid):
             if tid not in genealogy:
                 genealogy.append(tid)
@@ -356,7 +445,7 @@ class TaskTreeView(gtk.TreeView):
 
     def __init__(self, requester):
         gtk.TreeView.__init__(self)
-        self.columns = []
+        self.__columns = {}
         self.bg_color_enable = True
         self.req = requester
         self.show()
@@ -375,10 +464,11 @@ class TaskTreeView(gtk.TreeView):
         cell.set_property("cell-background", col)
 
     def get_column(self, index):
-        return self.columns[index]
+        return self.__columns[index]
 
-    def get_column_index(self, col_id):
-        return self.columns.index(col_id)
+    def set_column(self,index,col):
+        self.__columns[index] = col
+        
 
 class ActiveTaskTreeView(TaskTreeView):
     """TreeView for display of a list of task. Handles DnD primitives too."""
@@ -418,11 +508,15 @@ class ActiveTaskTreeView(TaskTreeView):
         self.connect('button_release_event', self.on_button_release)
         self.defer_select = False
 
+    def display_start_column(self,is_displayed=True):
+        col = self.get_column(COL_SDATE)
+        col.set_visible(is_displayed)
+
     def _init_tree_view(self):
         # Tag column
         tag_col     = gtk.TreeViewColumn()
         render_tags = CellRendererTags()
-        tag_col.set_title(_("Tags"))
+#        tag_col.set_title(_("Tags"))
         tag_col.pack_start(render_tags, expand=False)
         tag_col.add_attribute(render_tags, "tag_list", COL_TAGS)
         render_tags.set_property('xalign', 0.0)
@@ -431,7 +525,7 @@ class ActiveTaskTreeView(TaskTreeView):
         #tag_col.set_clickable         (True)
         #tag_col.connect               ('clicked', tv_sort_cb)
         self.append_column(tag_col)
-        self.columns.insert(COL_TAGS, tag_col)
+        self.set_column(COL_TAGS, tag_col)
 
         # Title column
         title_col   = gtk.TreeViewColumn()
@@ -445,7 +539,7 @@ class ActiveTaskTreeView(TaskTreeView):
         title_col.set_sort_column_id(COL_TITLE)
         title_col.set_cell_data_func(render_text, self._celldatafunction)
         self.append_column(title_col)
-        self.columns.insert(COL_TITLE, title_col)
+        self.set_column(COL_TITLE, title_col)
         self.set_search_column(COL_TITLE)
 
         # Start date column
@@ -458,7 +552,7 @@ class ActiveTaskTreeView(TaskTreeView):
         sdate_col.set_sort_column_id(COL_SDATE)
         sdate_col.set_cell_data_func(render_text, self._celldatafunction)
         self.append_column(sdate_col)
-        self.columns.insert(COL_SDATE, sdate_col)
+        self.set_column(COL_SDATE, sdate_col)
 
         # Due column
         ddate_col   = gtk.TreeViewColumn()
@@ -470,7 +564,7 @@ class ActiveTaskTreeView(TaskTreeView):
         ddate_col.set_sort_column_id(COL_DDATE)
         ddate_col.set_cell_data_func(render_text, self._celldatafunction)
         self.append_column(ddate_col)
-        self.columns.insert(COL_DUE, ddate_col)
+        self.set_column(COL_DUE, ddate_col)
 
         # days left
 #        dleft_col   = gtk.TreeViewColumn()
@@ -482,7 +576,7 @@ class ActiveTaskTreeView(TaskTreeView):
 #        dleft_col.set_sort_column_id(COL_DLEFT)
 #        dleft_col.set_cell_data_func(render_text, self._celldatafunction)
 #        self.append_column(dleft_col)
-#        self.columns.insert(COL_DLEFT, dleft_col)
+#        self.set_column(COL_DLEFT, dleft_col)
 
         # Global treeview properties
         self.set_property("expander-column", title_col)
@@ -587,7 +681,7 @@ class ClosedTaskTreeView(TaskTreeView):
         render_tags.set_property('xalign', 0.0)
         self.tag_col.set_resizable(False)
         self.append_column(self.tag_col)
-        self.columns.insert(COL_TAGS, self.tag_col)
+        self.set_column(COL_TAGS, self.tag_col)
 
         # CLosed date column
         cdate_col    = gtk.TreeViewColumn()
@@ -598,7 +692,7 @@ class ClosedTaskTreeView(TaskTreeView):
         cdate_col.set_sort_column_id(COL_CDATE)
         cdate_col.set_cell_data_func(render_text, self._celldatafunction)
         self.append_column(cdate_col)
-        self.columns.insert(COL_CDATE_STR, cdate_col)
+        self.set_column(COL_CDATE_STR, cdate_col)
 
         # Title column
         title_col    = gtk.TreeViewColumn()
@@ -610,7 +704,7 @@ class ClosedTaskTreeView(TaskTreeView):
         title_col.set_cell_data_func(render_text, self._celldatafunction)
         title_col.set_sort_column_id(COL_TITLE)
         self.append_column(title_col)
-        self.columns.insert(COL_TITLE, title_col)
+        self.set_column(COL_TITLE, title_col)
         self.set_search_column(COL_TITLE)
         
         self.set_show_expanders(False)

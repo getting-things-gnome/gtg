@@ -23,6 +23,7 @@ task.py contains the Task class which represents (guess what) a task
 
 import xml.dom.minidom
 import uuid
+import cgi
 import xml.sax.saxutils as saxutils
 
 from GTG              import _
@@ -315,6 +316,7 @@ class Task(TreeNode):
         if texte != "<content/>":
             #defensive programmation to filter bad formatted tasks
             if not texte.startswith("<content>"):
+                texte = cgi.escape(texte, quote = True)
                 texte = "<content>%s" %texte
             if not texte.endswith("</content>"):
                 texte = "%s</content>" %texte
@@ -353,7 +355,7 @@ class Task(TreeNode):
             child.sync()
             return True
         else:
-            Log.debug("child addition failed")
+            Log.debug("child addition failed (or still pending)")
             return False
             
     def remove_child(self,tid):
@@ -414,7 +416,6 @@ class Task(TreeNode):
             self.req.get_task(parent_tid).sync()
             return True
         else:
-            Log.debug("*****************parent addition failed**************")
             return False
 
     #Take a tid as parameter
@@ -527,10 +528,11 @@ class Task(TreeNode):
         self.req._tag_modified(old)
         self.tag_added(new)
         self.req._tag_modified(new)
+        self.sync()
 
     def tag_added(self, tagname):
         """
-        Adds a tag. Does not add '@tag' to the contents. See insert_tag
+        Adds a tag. Does not add '@tag' to the contents. See add_tag
         """
         #print "tag %s added to task %s" %(tagname,self.get_id())
         t = tagname.encode("UTF-8")
@@ -574,24 +576,30 @@ class Task(TreeNode):
     #remove by tagname
     def remove_tag(self, tagname):
         t = self.req.get_tag(tagname)
-        t.remove_task(self.get_id())
-        self.req._tag_modified(tagname)
+        modified = False
+        if t:
+            t.remove_task(self.get_id())
+            modified = True
         if tagname in self.tags:
             self.tags.remove(tagname)
+            modified = True
             for child in self.get_subtasks():
                 if child.can_be_deleted:
                     child.remove_tag(tagname)
         self.content = self._strip_tag(self.content, tagname)
+        if modified:
+            self.req._tag_modified(tagname)
                        
-    def _strip_tag(self, text, tagname):
+    def _strip_tag(self, text, tagname,newtag=''):
         return (text
-                    .replace('<tag>%s</tag>\n\n'%(tagname), '') #trail \n
-                    .replace('<tag>%s</tag>, '%(tagname), '') #trail comma
-                    .replace('<tag>%s</tag>'%(tagname), '')
+                    .replace('<tag>%s</tag>\n\n'%(tagname), newtag) #trail \n
+                    .replace('<tag>%s</tag>, '%(tagname), newtag) #trail comma
+                    .replace('<tag>%s</tag>'%(tagname), newtag)
                     #in case XML is missing (bug #504899)
-                    .replace('%s\n\n'%(tagname), '') 
-                    .replace('%s, '%(tagname), '') 
-                    .replace(tagname, '')
+                    .replace('%s\n\n'%(tagname), newtag) 
+                    .replace('%s, '%(tagname), newtag) 
+                    #don't forget a space a the end
+                    .replace('%s '%(tagname), newtag)
                )
      
 

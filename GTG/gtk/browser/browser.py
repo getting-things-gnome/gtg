@@ -43,8 +43,7 @@ from GTG.gtk.browser             import GnomeConfig, tasktree, tagtree
 from GTG.gtk.browser.tasktree    import TaskTreeModel,\
                                         ActiveTaskTreeView,\
                                         ClosedTaskTreeView
-from GTG.gtk.browser.tagtree     import TagTreeModel,\
-                                        TagTreeView
+from GTG.gtk.browser.tagtree     import TagTree
 from GTG.tools                   import openurl
 from GTG.tools.dates             import strtodate,\
                                         no_date,\
@@ -52,6 +51,7 @@ from GTG.tools.dates             import strtodate,\
                                         get_canonical_date
 from GTG.tools.logger            import Log
 #from GTG.tools                   import clipboard
+
 
 #=== MAIN CLASS ===============================================================
 
@@ -146,7 +146,6 @@ class TaskBrowser:
 #
     def _init_browser_config(self):
         self.priv["collapsed_tids"]           = []
-        self.priv["collapsed_tags"]           = []
         self.priv["tasklist"]                 = {}
         self.priv["tasklist"]["sort_column"]  = None
         self.priv["tasklist"]["sort_order"]   = gtk.SORT_ASCENDING
@@ -177,12 +176,7 @@ class TaskBrowser:
             tasktree.COL_DLEFT, self.dleft_sort_func)
 
         # Tags
-        self.tag_model = TagTreeModel(requester=self.req)
-        self.tag_modelfilter = self.tag_model.filter_new()
-        self.tag_modelfilter.set_visible_func(self.tag_visible_func)
-        self.tag_modelsort = gtk.TreeModelSort(self.tag_modelfilter)
-        self.tag_modelsort.set_sort_func(\
-            tagtree.COL_ID, self.tag_sort_func)
+        self.tagtree = TagTree(self.req)
 
     def _init_widget_aliases(self):
         self.window             = self.builder.get_object("MainWindow")
@@ -224,8 +218,7 @@ class TaskBrowser:
         self.main_pane.add(self.task_tv)
 
         # The tags treeview
-        self.tags_tv = TagTreeView()
-        self.tags_tv.set_model(self.tag_modelsort)
+        self.tags_tv = self.tagtree.get_tagtreeview()
         self.sidebar_container.add(self.tags_tv)
 
     def _init_toolbar_tooltips(self):
@@ -352,18 +345,6 @@ class TaskBrowser:
         self.ctask_tv.connect('key-press-event',\
             self.on_closed_task_treeview_key_press_event)
 
-        # Tags TreeView
-        self.tags_tv.connect('cursor-changed',\
-            self.on_select_tag)
-        self.tags_tv.connect('row-activated',\
-            self.on_select_tag)
-        self.tags_tv.connect('button-press-event',\
-            self.on_tag_treeview_button_press_event)
-        self.tags_tv.connect('row-expanded',\
-            self.on_tag_treeview_row_expanded)
-        self.tags_tv.connect('row-collapsed',\
-            self.on_tag_treeview_row_collapsed)
-
         # Connect requester signals to TreeModels
         self.req.connect("task-added", self.on_task_added) 
         self.req.connect("task-deleted", self.on_task_deleted)
@@ -371,8 +352,15 @@ class TaskBrowser:
         # Connect signals from models
         self.task_modelsort.connect("row-has-child-toggled",\
                                     self.on_task_child_toggled)
-        self.tag_modelsort.connect("row-has-child-toggled",\
-                                    self.on_tag_child_toggled)
+
+        #Tags treeview
+        self.tags_tv.connect('cursor-changed',\
+            self.on_select_tag)
+        self.tags_tv.connect('row-activated',\
+            self.on_select_tag)
+        self.tags_tv.connect('button-press-event',\
+            self.on_tag_treeview_button_press_event)
+        
         # Selection changes
         self.selection = self.task_tv.get_selection()
         self.closed_selection = self.ctask_tv.get_selection()
@@ -391,8 +379,6 @@ class TaskBrowser:
         # Set sorting order
         self.task_modelsort.set_sort_column_id(\
             tasktree.COL_DLEFT, gtk.SORT_ASCENDING)
-        self.tag_modelsort.set_sort_column_id(\
-            tagtree.COL_ID, gtk.SORT_ASCENDING)
 
     def _add_accelerator_for_widget(self, agr, name, accel):
         widget    = self.builder.get_object(name)
@@ -521,8 +507,8 @@ class TaskBrowser:
                 "browser"]["collapsed_tasks"]
                 
         if "collapsed_tags" in self.config["browser"]:
-            self.priv["collapsed_tags"] = self.config[
-                "browser"]["collapsed_tags"]
+            toset = self.config["browser"]["collapsed_tags"]
+            self.tagtree.set_collapsed_tags(toset)
 
         if "tasklist_sort" in self.config["browser"]:
             col_id, order = self.config["browser"]["tasklist_sort"]
@@ -569,12 +555,12 @@ class TaskBrowser:
         self.menu_view_workview.set_active(tobeset)
         self.toggle_workview.set_active(tobeset)
         self.priv['workview'] = tobeset
-        self.tag_model.set_workview(self.priv['workview'])
         if tobeset:
             self.req.apply_filter('workview')
         else:
             self.req.unapply_filter('workview')
-        self.tag_modelfilter.refilter()
+        self.tagtree.refilter()
+        self.task_tv.display_start_column(not tobeset)
         self._update_window_title()
 
     def _update_window_title(self):
@@ -593,30 +579,6 @@ class TaskBrowser:
     def get_tasktitle(self, tid):
         task = self.req.get_task(tid)
         return task.get_title()
-
-    def tag_visible_func(self, model, iter, user_data=None):
-        """Return True if the row must be displayed in the treeview.
-        @param model: the model of the filtered treeview
-        @param iter: the iter whose visiblity must be evaluated
-        @param user_data:
-        """
-        tag = model.get_value(iter, tagtree.COL_OBJ)
-        
-        # show the tag if any children are shown
-        child = model.iter_children(iter)
-        while child:
-            if self.tag_visible_func(model, child):
-                return True
-            child=model.iter_next(child)
-        
-        if not tag.get_attribute("special"):
-            #Those two lines hide tags without tasks in the workview
-            count = model.get_value(iter, tagtree.COL_COUNT)
-            return count != '0'
-            #the following display tags in the workview, even with 0 tasks
-           # return tag.is_actively_used()
-        else:
-            return True
 
     def dleft_sort_func(self, model, iter1, iter2, user_data=None):
         order = self.task_modelsort.get_sort_column_id()[1]
@@ -663,38 +625,6 @@ class TaskBrowser:
             sort = reverse_if_descending(cmp(t1_title, t2_title))
                 
         return sort
-
-    def tag_sort_func(self, model, iter1, iter2, user_data=None):
-        order = self.tags_tv.get_model().get_sort_column_id()[1]
-        try:
-            t1 = model.get_value(iter1, tagtree.COL_OBJ)
-            t2 = model.get_value(iter2, tagtree.COL_OBJ)
-        except TypeError:
-#            print "Error: Undefined iter1 in tag_sort_func, assuming ascending sort"
-            return 1
-        t1_sp = t1.get_attribute("special")
-        t2_sp = t2.get_attribute("special")
-        t1_name = locale.strxfrm(t1.get_name())
-        t2_name = locale.strxfrm(t2.get_name())
-        if not t1_sp and not t2_sp:
-            return cmp(t1_name, t2_name)
-        elif not t1_sp and t2_sp:
-            if order == gtk.SORT_ASCENDING:
-                return 1
-            else:
-                return -1
-        elif t1_sp and not t2_sp:
-            if order == gtk.SORT_ASCENDING:
-                return -1
-            else:
-                return 1
-        else:
-            t1_order = t1.get_attribute("order")
-            t2_order = t2.get_attribute("order")
-            if order == gtk.SORT_ASCENDING:
-                return cmp(t1_order, t2_order)
-            else:
-                return cmp(t2_order, t1_order)
                 
     def tag_match_func(self, completion, key, iter, column):
         model = completion.get_model()
@@ -804,7 +734,7 @@ class TaskBrowser:
             'collapsed_tasks':
                 self.priv["collapsed_tids"],
             'collapsed_tags':
-                self.priv["collapsed_tags"],
+                self.tagtree.get_collapsed_tags(),
             'tag_pane':
                 tag_sidebar,
             'tag_pane_width':
@@ -881,7 +811,6 @@ class TaskBrowser:
         for t in tags:
             t.del_attribute("color")
         self.reset_cursor()
-#        self.task_tv.refresh()
         self.tags_tv.refresh()
         
     def on_tagcontext_deactivate(self, menushell):
@@ -973,23 +902,6 @@ class TaskBrowser:
         tid = treeview.get_model().get_value(iter, tasktree.COL_TID)
         if tid not in self.priv["collapsed_tids"]:
             self.priv["collapsed_tids"].append(tid)
-
-    def on_tag_child_toggled(self, model, path, iter):
-        tag = model.get_value(iter, tagtree.COL_ID)
-        if tag not in self.priv.get("collapsed_tags", []):
-            self.tags_tv.expand_row(path, False)
-        else:
-            self.tags_tv.collapse_row(path)
-            
-    def on_tag_treeview_row_expanded(self, treeview, iter, path):
-        tag = treeview.get_model().get_value(iter, tagtree.COL_ID)
-        if tag in self.priv["collapsed_tags"]:
-            self.priv["collapsed_tags"].remove(tag)
-        
-    def on_tag_treeview_row_collapsed(self, treeview, iter, path):
-        tag = treeview.get_model().get_value(iter, tagtree.COL_ID)
-        if tag not in self.priv["collapsed_tags"]:
-            self.priv["collapsed_tags"].append(tag)
 
     def on_quickadd_activate(self, widget):
         text = self.quickadd_entry.get_text()
@@ -1107,7 +1019,7 @@ class TaskBrowser:
         if len(tags) > 0:
             tags[0].set_attribute("nonworkview", toset)
         if self.priv['workview']:
-            self.tag_modelfilter.refilter()
+            self.tagtree.refilter()
         if not self.dont_reset:
             self.reset_cursor()
 
@@ -1304,7 +1216,8 @@ class TaskBrowser:
             self.req.reset_tag_filters(refilter=False)
             self.req.apply_filter(newtag[0])
             if self.ctask_tree:
-                self.ctask_tree.apply_filter(newtag[0],reset=True)
+                self.ctask_tree.apply_filter('closed',reset=True,refresh=False)
+                self.ctask_tree.apply_filter(newtag[0])
         else:
             self.req.reset_tag_filters()
             if self.ctask_tree:

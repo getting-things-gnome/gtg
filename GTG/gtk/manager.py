@@ -43,6 +43,7 @@ from GTG.tools.logger        import Log
 class Manager:
     ############## init #####################################################
     def __init__(self, req, config):
+        self.config_obj = config
         self.config = config.conf_dict
         self.task_config = config.task_conf_dict
         self.req = req
@@ -190,7 +191,8 @@ class Manager:
 
     def show_preferences(self, config_priv, sender=None):
         if not self.preferences:
-            self.preferences = PreferencesDialog(self.pengine, self.p_apis)
+            self.preferences = PreferencesDialog(self.pengine, self.p_apis, \
+                    self.config_obj)
         self.preferences.activate(config_priv)
         
     def ask_delete_tasks(self, tids):

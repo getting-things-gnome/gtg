@@ -25,11 +25,10 @@ from GTG.core.task import Task
 
 
 class Filter:
-    def __init__(self,func,req,negate=False):
+    def __init__(self,func,req):
         self.func = func
         self.dic = {}
         self.req = req
-        self.negate = negate
 
     def set_parameters(self,dic):
         self.dic = dic
@@ -43,9 +42,15 @@ class Filter:
             value = self.func(task,parameters=self.dic)
         else:
             value = self.func(task)
-        if self.negate:
+        if 'negate' in self.dic and self.dic['negate']:
             value = not value
         return value
+        
+    def get_parameters(self,param):
+        if self.dic.has_key(param):
+            return self.dic[param]
+        else:
+            return None
 
     #return True is the filter is a flat list only
     def is_flat(self):
@@ -55,11 +60,23 @@ class Filter:
             return False
             
 class SimpleTagFilter:
-    def __init__(self,tagname,req,negate=False):
+    def __init__(self,tagname,req):
         self.req = req
         self.tname = tagname
-        self.negate = negate
+        self.dic = {}
         
+    def set_parameters(self,dic):
+        self.dic = dic
+        
+    def get_parameters(self,param):
+        if self.dic.has_key(param):
+            return self.dic[param]
+        else:
+            return None
+        
+    def set_parameters(self,dic):
+        self.dic = dic
+    
     def is_displayed(self,tid):
         task = self.req.get_task(tid)
         value = True
@@ -67,9 +84,11 @@ class SimpleTagFilter:
             value = False
         else:
             tags = [self.tname]
-            tags += self.req.get_tag(self.tname).get_children()
+            tt = self.req.get_tag(self.tname)
+            if tt:
+                tags += tt.get_children()
             value = task.has_tags(tags)
-        if self.negate:
+        if 'negate' in self.dic and self.dic['negate']:
             value = not value
         return value
             
@@ -108,7 +127,13 @@ class FiltersBank:
         self.available_filters['closed'] = filt_obj
         #notag
         filt_obj = Filter(self.notag,self.req)
+        param = {}
+        param['ignore_when_counting'] = True
+        filt_obj.set_parameters(param)
         self.available_filters['notag'] = filt_obj
+        #workable
+        filt_obj = Filter(self.is_workable,self.req)
+        self.available_filters['workable'] = filt_obj
         #workdue
         filt_obj = Filter(self.workdue,self.req)
         self.available_filters['workdue'] = filt_obj
@@ -206,9 +231,12 @@ class FiltersBank:
                 negate = True
                 filter_name = filter_name[1:]
             if filter_name.startswith('@'):
-                filter_obj = SimpleTagFilter(filter_name,self.req,negate=negate)
+                filter_obj = SimpleTagFilter(filter_name,self.req)
+                param = {}
+                param['ignore_when_counting'] = True
+                filter_obj.set_parameters(param)
             else:
-                filter_obj = Filter(filter_func,self.req,negate=negate)
+                filter_obj = Filter(filter_func,self.req)
             self.custom_filters[filter_name] = filter_obj
             return True
         else:

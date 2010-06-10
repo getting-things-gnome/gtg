@@ -44,6 +44,8 @@ class TagStore(Tree):
     def __init__(self,requester):
         Tree.__init__(self)
         self.req = requester
+        self.req.connect('tag-modified',self.update_tag)
+        
         self.loaded = False
         
         ### building the initial tags
@@ -87,6 +89,15 @@ class TagStore(Tree):
                 tag.set_parent(pnode.get_id())
         self.loaded = True
 
+    def update_tag(self,sender,tagname):
+        tag = self.get_tag(tagname)
+        if tag and tag.is_removable():
+            self.remove_tag(tagname)
+            
+    def remove_tag(self,tagname):
+        self.req._tag_deleted(tagname)
+        self.remove_node(tagname)
+
     def new_tag(self, tagname):
         """Create a new tag and return it or return the existing one
         with corresponding name"""
@@ -117,14 +128,16 @@ class TagStore(Tree):
                             oldname not in ['gtg-tags-none','gtg-tags-all']:
             if newname[0] != "@":
                 newname = "@" + newname
-            if newname != oldname and newname != None \
-                                  and not self.has_node(newname):
-                                  
-                ntag = self.new_tag(newname)
+            if newname != oldname and newname != None :
                 otag = self.get_node(oldname)
-                #copy attributes
+                if not self.has_node(newname):
+                    ntag = self.new_tag(newname)
+                else:
+                    ntag = self.get_tag(newname)
+                    #copy attributes
                 for att in otag.get_all_attributes(butname=True):
-                    ntag.set_attribute(att,otag.get_attribute(att))
+                    if not ntag.get_attribute(att):
+                        ntag.set_attribute(att,otag.get_attribute(att))
                 #restore position in tree
                 if otag.has_parent():
                     opar = otag.get_parent()
@@ -137,7 +150,9 @@ class TagStore(Tree):
                     tas = self.req.get_task(tid)
                     tas.rename_tag(oldname,newname)
                 #remove the old one
-                self.remove_node(oldname,otag)
+                self.remove_tag(oldname)
+                self.req._tag_modified(oldname)
+#        print "tag %s has %s tasks" %(newname,self.get_node(newname).get_tasks_nbr())
                 
     def get_all_tags_name(self, attname=None, attvalue=None):
         """Return the name of all tags
@@ -171,9 +186,7 @@ class TagStore(Tree):
             #It saves space and allow the saved list growth to be controlled
             for t in tags:
                 attr = t.get_all_attributes(butname = True, withparent = True)
-                if "special" in attr:
-                    continue
-                if len(attr) > 0:
+                if "special" not in attr and len(attr) > 0:
                     tagname = t.get_name()
                     if not tagname in already_saved:
                         t_xml = doc.createElement("tag")
@@ -184,7 +197,7 @@ class TagStore(Tree):
                             if value:
                                 t_xml.setAttribute(a, value)
                         xmlroot.appendChild(t_xml)
-                        cleanxml.savexml(self.filename, doc)
+            cleanxml.savexml(self.filename, doc)
 
     def get_alltag_tag(self):
         ''' Returns the "All Tasks" tag'''
@@ -265,7 +278,8 @@ class Tag(TreeNode):
         if att_name == 'parent':
             if self.has_parent():
                 parents_id = self.get_parents()
-                to_return = reduce(lambda a,b: "%s,%s" % (a, b), parents_id)
+                if len(parents_id) > 0:
+                    to_return = reduce(lambda a,b: "%s,%s" % (a, b), parents_id)
         else:
             to_return = self._attributes.get(att_name, None)
         return to_return
@@ -280,7 +294,7 @@ class Tag(TreeNode):
         else:
             del self._attributes[att_name]
         if self._save:
-            self._save()            
+            self._save()
 
     def get_all_attributes(self, butname=False, withparent = False):
         """Return a list of all attribute names.
@@ -340,6 +354,11 @@ class Tag(TreeNode):
                     temp_list.append(t)
         toreturn = len(temp_list)
         return toreturn
+    #is it useful to keep the tag in the tagstore.
+    #if no attributes and no tasks, it is not useful.
+    def is_removable(self):
+        attr = self.get_all_attributes(butname = True, withparent = True)
+        return (len(attr) <= 0 and not self.is_used())
     def is_used(self):
         return len(self.tasks) > 0
     def is_actively_used(self):
