@@ -75,12 +75,23 @@ class TaskIterStore():
         key = self.__key(node,path)
         toreturn = None
         deleted = False
+#        print "get iter for node %s (toadd: %s)" %(node.get_id(),self.__model.tasks_to_add)
+        if node and node.get_id() in self.__model.tasks_to_add:
+            #This is a crude hack. If the task is in tasks_to_add, it means
+            #that it was removed and should be added.
+            #the fact that someone is asking for its iter means that it will
+            #be added automatically anyway.
+            #in order to avoid duplicate, we will only remove it from the list
+            #of tasks to add
+            self.__model.tasks_to_add.remove(node.get_id())
         if node and self.__store.has_key(key):
             stored_iter = self.__store[key]
             stored_node = stored_iter.get_node()
             if stored_node == node:
                 toreturn = stored_iter
             elif stored_node:
+                #We place a node on the position of a previous node.
+                #we should then remove that previous node
                 self.remove(stored_node,path,all=False)
                 self.__model.row_deleted(path)
                 deleted = stored_node
@@ -88,9 +99,9 @@ class TaskIterStore():
             toreturn = TaskIter(self.__tree,node,path)
         self.__store[key] = toreturn
         if deleted:
-            self.__model.to_add_task(deleted.get_id())
-#            for i in self.__store:
-#                print "%s : %s" %(i,self.__store[i])
+            #if we removed a node, we should readd it.
+            #sometimes, it is not necessary (see the hack above)
+            self.__model.to_add_task(None,deleted.get_id())
         return toreturn
 
     def remove(self,node,path,all=True):
@@ -134,6 +145,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
     def __init__(self, requester, config, tree=None):
         
         gtk.GenericTreeModel.__init__(self)
+        self.lock = False
         self.req  = requester
         self.config = config
         if tree:
@@ -142,7 +154,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
             self.tree = self.req.get_main_tasks_tree()
         self.iter_store = TaskIterStore(self.tree,self)
         self.tasks_to_add = []
-        self.tree.connect('task-added-inview',self.add_task)
+        self.tree.connect('task-added-inview',self.to_add_task)
         self.tree.connect('task-deleted-inview',self.remove_task)
         self.tree.connect('task-modified-inview',self.update_task)
         #need to get the GTK style for the inline preview of task content
@@ -224,11 +236,14 @@ class TaskTreeModel(gtk.GenericTreeModel):
                 title = "<span color='%s'>%s</span>"%(color, title)
             return title
 
-    def on_get_iter(self, path,node=None):
+    def on_get_iter(self, path):
 #        print "on_get_iter for %s" %(str(path))
         node = self.tree.get_node_for_path(path)
-#        parent = self.tree.get_node_for_path(path[:-1])
         iter = self.iter_store.get(node,path)
+        if iter and (node.get_id() in self.tasks_to_add):
+            print "WE WILL NOT ADD %s" %node.get_id()
+            self.tasks_to_add.pop(node.get_id())
+#        parent = self.tree.get_node_for_path(path[:-1])
         return iter
 
     def on_get_path(self, iter):
@@ -327,30 +342,37 @@ class TaskTreeModel(gtk.GenericTreeModel):
                 if len(node_paths) == 0: 
                     print "Error :! no path for node %s !" %my_node.get_id()
 
-    def to_add_task(self,tid):
+    def to_add_task(self,sender,tid):
+#        task = self.tree.get_node(tid)
+#        node_paths = self.tree.get_paths_for_node(task)
+#        print "%s is to_add with paths %s" %(tid,node_paths)
         self.tasks_to_add.append(tid)
+        if not self.lock and len(self.tasks_to_add) > 0:
+            self.lock = True
+            self.add_tasks()
 
-    def add_task(self, sender, tid):
-        task = self.tree.get_node(tid)
-        if task:
-            node_paths = self.tree.get_paths_for_node(task)
-            for node_path in node_paths:
-                node_iter = self.get_iter(node_path)
-                self.row_inserted(node_path, node_iter)
-                #following is mandatory if 
-                #we added a child task before his parent.
-                if self.tree.node_has_child(task):
-#                    print "child_toggled 2 : %s" %task.get_title()
-                    self.row_has_child_toggled(node_path,node_iter)
-            parents = self.tree.node_parents(task)
-            for p in parents:
-                    for par_path in self.tree.get_paths_for_node(p):
-                        par_iter = self.get_iter(par_path)
-#                        print "child_toggled 3 : %s" %p.get_title()
-                        self.row_has_child_toggled(par_path, par_iter)
-        if len(self.tasks_to_add) > 0:
-            t = self.tasks_to_add.pop()
-            self.add_task(None,t)
+    def add_tasks(self):
+        #self.lock = True
+        while len(self.tasks_to_add) > 0:
+            tid = self.tasks_to_add.pop()
+            task = self.tree.get_node(tid)
+            if task:
+                node_paths = self.tree.get_paths_for_node(task)
+                for node_path in node_paths:
+                    node_iter = self.get_iter(node_path)
+                    self.row_inserted(node_path, node_iter)
+                    #following is mandatory if 
+                    #we added a child task before his parent.
+                    if self.tree.node_has_child(task):
+    #                    print "child_toggled 2 : %s" %task.get_title()
+                        self.row_has_child_toggled(node_path,node_iter)
+                parents = self.tree.node_parents(task)
+                for p in parents:
+                        for par_path in self.tree.get_paths_for_node(p):
+                            par_iter = self.get_iter(par_path)
+#                            print "child_toggled 3 : %s" %p.get_title()
+                            self.row_has_child_toggled(par_path, par_iter)
+        self.lock = False
 
     def remove_task(self, sender, tid):
         #a task has been removed from the view. Therefore,
