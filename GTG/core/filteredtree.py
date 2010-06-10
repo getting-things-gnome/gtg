@@ -743,7 +743,8 @@ class FilteredTree(gobject.GObject):
         
     #This function print the actual tree. Useful for debugging
     def __print_from_node(self, node, prefix=""):
-        print "%s%s    (%s)" %(prefix,node.get_id(),str(self.get_paths_for_node(node)))
+        print "%s%s    (%s)  - %s" %(prefix,node.get_id(),\
+                    str(self.get_paths_for_node(node)),node.get_title())
         prefix = prefix + "->"
         if self.node_has_child(node):
             child = self.node_children(node)
