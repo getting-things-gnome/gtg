@@ -74,6 +74,7 @@ bottom to top, with no horizontal communication at all between views.
 """
 
 import gobject
+import time
 
 from GTG.tools.logger import Log
 
@@ -108,6 +109,8 @@ class FilteredTree(gobject.GObject):
         self.remove_count = 0
         self.__nodes_count = 0
         self.flat = False
+        self.refilter_count = 0
+        self.refilter_time = 0
         #virtual root is the list of root nodes
         #initially, they are the root nodes of the original tree
         self.virtual_root = []
@@ -324,8 +327,6 @@ class FilteredTree(gobject.GObject):
         if self.path_for_node_cache.has_key(tid):
             self.path_for_node_cache_old[tid] = self.path_for_node_cache[tid]
         self.path_for_node_cache[tid] = toreturn
-#        if tid in ("1@1"):
-#                print "**** %s path are %s and VR is %s (parent = %s)" %(tid,toreturn,self.virtual_root,self.node_parents(node))
         return toreturn
 
     #Done
@@ -521,6 +522,7 @@ class FilteredTree(gobject.GObject):
         rebuilds the tree from scratch. It should be called only when 
         the filter is changed (i.e. only filters_bank should call it).
         """
+        time1 = time.time()
         self.update_count = 0
         self.add_count = 0
         self.remove_count = 0
@@ -537,6 +539,7 @@ class FilteredTree(gobject.GObject):
                 self.flat = filt.is_flat()
         #First things, we list the nodes that will be
         #ultimately displayed
+        time2 = time.time()
         for n in self.tree.get_all_nodes():
             tid = n.get_id()
             is_root = False
@@ -551,11 +554,12 @@ class FilteredTree(gobject.GObject):
 #            print "  virtual_root : %s" %virtual_root2
         #Second step, we empty the current tree as we will rebuild it
         #from scratch
+        time3 = time.time()
         for rid in list(self.virtual_root):
             n = self.get_node(rid)
             self.__clean_from_node(n)
         self.__reset_cache()
-
+        time4 = time.time()
         #Here, we reconstruct our filtered trees. It  cannot be random
         # Parents should be added before their children
         #First, we start we the nodes in the virtual root
@@ -564,12 +568,24 @@ class FilteredTree(gobject.GObject):
         for nid in list(to_add):
             isroot = nid in virtual_root2
             self.__add_node(nid,isroot)
+        time5 = time.time()
         #end of refiltering
 #        print "*** end of refiltering ****"
 #        self.print_tree()
         #Finalizing : adding nodes that still need to be added
         for n in self.node_to_add:
             self.__add_node(n)
+
+        self.refilter_count +=1
+        time6 = time.time()
+        self.refilter_time += (time6 - time1)
+        print "*** end of refiltering ****"
+        print "we refiltered %s %s times (total : %s s)" %(self.applied_filters,self.refilter_count,self.refilter_time)
+        print "  time2: %s" %(time2-time1)
+        print "  time3: %s" %(time3-time2)
+        print "  time4: %s" %(time4-time3)
+        print "  time5: %s" %(time5-time4)
+        print "  time6: %s" %(time6-time5)
 
     ####### Change filters #################
     def apply_filter(self,filter_name,parameters=None,\

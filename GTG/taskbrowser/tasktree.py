@@ -240,7 +240,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
 #        print "on_get_iter for %s" %(str(path))
         node = self.tree.get_node_for_path(path)
         iter = self.iter_store.get(node,path)
-        if iter and (node.get_id() in self.tasks_to_add):
+        if node and (node.get_id() in self.tasks_to_add):
             print "WE WILL NOT ADD %s" %node.get_id()
             self.tasks_to_add.pop(node.get_id())
 #        parent = self.tree.get_node_for_path(path[:-1])
