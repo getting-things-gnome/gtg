@@ -588,6 +588,10 @@ class ActiveTaskTreeView(TaskTreeView):
         # Here we intercept mouse clicks on selected items so that we can
         # drag multiple items without the click selecting only one
         target = self.get_path_at_pos(int(event.x), int(event.y))
+        print "we clikced on %s" %str(target)
+        print "event.type = button_press : %s" %(event.type == gtk.gdk.BUTTON_PRESS)
+        print "not mask : %s" %(not(event.state & (gtk.gdk.CONTROL_MASK|gtk.gdk.SHIFT_MASK)))
+        print "is_selected : %s" %(self.get_selection().path_is_selected(target[0]))
         if (target 
            and event.type == gtk.gdk.BUTTON_PRESS
            and not (event.state & (gtk.gdk.CONTROL_MASK|gtk.gdk.SHIFT_MASK))
@@ -595,6 +599,9 @@ class ActiveTaskTreeView(TaskTreeView):
                # disable selection
                self.get_selection().set_select_function(lambda *ignore: False)
                self.defer_select = target[0]
+               print "### defer_select is : %s" %str(self.defer_select)
+        else:
+            print "*** we should select %s" %str(target)
             
     def on_button_release(self, widget, event):
         # re-enable selection
@@ -656,10 +663,18 @@ class ActiveTaskTreeView(TaskTreeView):
         # Get dragged iter as a TaskTreeModel iter
         iters = selection.data.split(',')
         for iter in iters:
-            dragged_iter = model.get_iter_from_string(iter)
-            dragged_tid = model.get_value(dragged_iter, COL_TID)
-            #print "we will move %s to %s" %(dragged_tid,destination_tid)
-            tasktree_model.move_task(destination_tid, dragged_tid)
+            print "*** iter %s" %iter
+            try:
+                dragged_iter = model.get_iter_from_string(iter)
+            except ValueError:
+                #I hate to silently fail but we have no choice.
+                #It means that the iter is not good.
+                #Thanks shitty gtk API for not allowing us to test the string
+                dragged_iter = None
+            if dragged_iter and model.iter_is_valid(dragged_iter):
+                dragged_tid = model.get_value(dragged_iter, COL_TID)
+                #print "we will move %s to %s" %(dragged_tid,destination_tid)
+                tasktree_model.move_task(destination_tid, dragged_tid)
         self.emit_stop_by_name('drag_data_received')
 
 
