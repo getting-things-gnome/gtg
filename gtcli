@@ -197,7 +197,7 @@ def summary_of_tasks(criteria):
     print "%-20s %5d %5d" %('unscheduled', 
                             report['unscheduled']['starting'],
                             report['unscheduled']['due'])
-    num_days = 21
+    num_days = 22
     if criteria and 'today' in criteria:
         num_days = 1
     for i in range(0, num_days):
