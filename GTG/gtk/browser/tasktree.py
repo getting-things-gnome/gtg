@@ -16,18 +16,19 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
+import xml.sax.saxutils as saxutils
 
 import gtk
 import gobject
 import pango
-import xml.sax.saxutils as saxutils
 
 from GTG                              import _
 from GTG.core.tree                    import Tree, TreeNode
-from GTG.tools                        import colors
 from GTG.core.task                    import Task
-from GTG.taskbrowser.CellRendererTags import CellRendererTags
+from GTG.gtk                          import colors
+from GTG.gtk.browser.CellRendererTags import CellRendererTags
 from GTG.tools.logger                 import Log
+
 
 COL_TID       = 0
 COL_OBJ       = 1
@@ -40,6 +41,7 @@ COL_TAGS      = 7
 COL_LABEL     = 9
 COL_SDATE     = 10
 COL_DUE       = 11
+
 
 #A task can have multiple parent (thus multiple paths)
 #We thus define an iter which is a tuple [node,path], defining one
@@ -124,8 +126,8 @@ class TaskIterStore():
 
 
 
-class TaskTreeModel(gtk.GenericTreeModel):
 
+class TaskTreeModel(gtk.GenericTreeModel):
     column_types = (\
         str,\
         gobject.TYPE_PYOBJECT,\

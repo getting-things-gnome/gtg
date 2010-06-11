@@ -17,15 +17,15 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 """ The Preferences Dialog for loading plugins and configuring GTG """
-
 import os
+import shutil
+
 import gtk
 import pango
-import shutil
 from xdg.BaseDirectory import xdg_config_home
 
 from GTG.core.plugins import GnomeConfig
-from GTG.viewmanager import ViewConfig
+from GTG.gtk          import ViewConfig
 
 
 __all__ = [

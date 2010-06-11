@@ -183,3 +183,4 @@ class CellRendererTags(gtk.GenericCellRenderer):
             return (self.xpad, self.ypad, self.xpad*2, self.ypad*2)
 
 gobject.type_register(CellRendererTags)
+

@@ -22,38 +22,36 @@
 
 #=== IMPORT ===================================================================
 #system imports
-import pygtk
-pygtk.require('2.0')
-import gobject
-import os
-import gtk
 import locale
+import os
 import re
 import time
 import webbrowser
 
+import pygtk
+pygtk.require('2.0')
+import gobject
+import gtk
+
 #our own imports
 import GTG
-from GTG import info
-from GTG import _
-from GTG import ngettext
-from GTG.tools.logger                 import Log
-from GTG.core.task                    import Task
-#from GTG.core.tagstore                import Tag
-from GTG.taskbrowser                  import GnomeConfig
-from GTG.taskbrowser                  import tasktree
-#from GTG.taskbrowser.preferences      import PreferencesDialog
-from GTG.taskbrowser.tasktree         import TaskTreeModel,\
-                                             ActiveTaskTreeView,\
-                                             ClosedTaskTreeView
-from GTG.taskbrowser                  import tagtree
-from GTG.taskbrowser.tagtree          import TagTree
-from GTG.tools                        import openurl
-from GTG.tools.dates                  import strtodate,\
-                                             no_date,\
-                                             FuzzyDate, \
-                                             get_canonical_date
-#from GTG.tools                        import clipboard
+from GTG                         import _, info, ngettext
+from GTG.core.task               import Task
+#from GTG.core.tagstore           import Tag
+from GTG.gtk.browser             import GnomeConfig, tasktree, tagtree
+#from GTG.taskbrowser.preferences import PreferencesDialog
+from GTG.gtk.browser.tasktree    import TaskTreeModel,\
+                                        ActiveTaskTreeView,\
+                                        ClosedTaskTreeView
+from GTG.gtk.browser.tagtree     import TagTree
+from GTG.tools                   import openurl
+from GTG.tools.dates             import strtodate,\
+                                        no_date,\
+                                        FuzzyDate, \
+                                        get_canonical_date
+from GTG.tools.logger            import Log
+#from GTG.tools                   import clipboard
+
 
 #=== MAIN CLASS ===============================================================
 
@@ -70,12 +68,14 @@ BG_COLOR         = True
 CONTENTS_PREVIEW = True
 TIME             = 0
 
+
 class Timer:
     def __init__(self,st):
         self.st = st
     def __enter__(self): self.start = time.time()
     def __exit__(self, *args): 
         print "%s : %s" %(self.st,time.time() - self.start)
+
 
 class TaskBrowser:
     """ The UI for browsing open and closed tasks, and listing tags in a tree """

@@ -16,32 +16,19 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""
-The task editing GUI
-"""
 
+"""
+This is the UI manager. It loads the prefs and manages every window and UI in GTG.
+
+There should be no horizontal communication at all between views.
+"""
 import os
 
-from GTG import _
+from GTG     import _
 
-class GnomeConfig:
+
+class ViewConfig:
     current_rep = os.path.dirname(os.path.abspath(__file__))
-    GLADE_FILE  = os.path.join(current_rep, "taskeditor.glade")
+    DELETE_GLADE_FILE  = os.path.join(current_rep, "deletion.glade")
+    PREFERENCES_GLADE_FILE = os.path.join(current_rep, "preferences.glade")
 
-    MARK_DONE = _("Mark as done")
-    MARK_UNDONE = _("Mark as not done")
-    MARK_DISMISS = _("Dismiss")
-    MARK_UNDISMISS = _("Undismiss")
-    KEEP_NOTE = _("Keep as Note")
-    MAKE_TASK = _("Make a Task")
-
-    MARK_DONE_TOOLTIP = _("Mark this task as done")
-    MARK_UNDONE_TOOLTIP = _("Mark this task as to be done")
-    MARK_DISMISS_TOOLTIP = _("Mark this task as not to be done anymore")
-    MARK_UNDISMISS_TOOLTIP = _("Mark this task as to be done")
-    DELETE_TOOLTIP = _("Permanently remove this task")
-    SUBTASK_TOOLTIP = _("Insert a subtask in this task")
-    TAG_TOOLTIP = _("Insert a tag in this task")
-
-    #Number of second between to save in the task editor
-    SAVETIME = 7

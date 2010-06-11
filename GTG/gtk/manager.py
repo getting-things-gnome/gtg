@@ -17,29 +17,31 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-
-
 """
 Manager loads the prefs and launches the gtk main loop
 """
+try:
+    import pygtk
+    pygtk.require('2.0')
+except: # pylint: disable-msg=W0702
+    raise SystemExit(1)
+
 import gtk
 import gobject
 
 import GTG
-from GTG.viewmanager.delete_dialog import DeletionUI
-from GTG.taskbrowser.browser import TaskBrowser
-from GTG.taskeditor.editor            import TaskEditor
-from GTG.viewmanager.preferences      import PreferencesDialog
-from GTG.viewmanager.dbuswrapper import DBusTaskWrapper
-from GTG.tools                        import clipboard
-from GTG.core.plugins.engine          import PluginEngine
-from GTG.core.plugins.api             import PluginAPI
-from GTG.tools.logger                 import Log
+from GTG.gtk.delete_dialog   import DeletionUI
+from GTG.gtk.browser.browser import TaskBrowser
+from GTG.gtk.editor.editor   import TaskEditor
+from GTG.gtk.preferences     import PreferencesDialog
+from GTG.gtk.dbuswrapper     import DBusTaskWrapper
+from GTG.tools               import clipboard
+from GTG.core.plugins.engine import PluginEngine
+from GTG.core.plugins.api    import PluginAPI
+from GTG.tools.logger        import Log
 
-class Manager():
-
+class Manager:
     ############## init #####################################################
-
     def __init__(self, req, config):
         self.config_obj = config
         self.config = config.conf_dict
@@ -226,5 +228,4 @@ class Manager():
               self.pengine.enabled_plugins().keys()
         # plugins are deactivated
         self.pengine.deactivate_plugins(self.p_apis)
-
 
