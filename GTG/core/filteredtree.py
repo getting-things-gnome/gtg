@@ -121,6 +121,7 @@ class FilteredTree(gobject.GObject):
 #        self.using_cache = 0
         #useful for temp storage :
         self.node_to_add = []
+        self.node_to_remove = []
         self.__clean_list = []
         #it looks like an initial refilter is not needed.
         #self.refilter()
@@ -684,33 +685,34 @@ class FilteredTree(gobject.GObject):
                 self.virtual_root.remove(tid)
     
     def __update_node(self,tid,inroot):
-        todis = self.__is_displayed(tid)
-        curdis = self.is_displayed(tid)
-        if todis:
-            #if the task was not displayed previously but now should
-            #we add it.
-            if not curdis:
-#                print "%s is a new node" %tid
-                self.__add_node(tid)
+        if tid not in self.node_to_remove:
+            todis = self.__is_displayed(tid) 
+            curdis = self.is_displayed(tid)
+            if todis:
+                #if the task was not displayed previously but now should
+                #we add it.
+                if not curdis:
+    #                print "%s is a new node" %tid
+                    self.__add_node(tid)
+                else:
+    #                print "%s is only modified (todis,curdis)" %tid
+                    node = self.get_node(tid)
+    #                print "updating node %s" %tid
+                    self.update_count += 1
+                    node = self.get_node(tid)
+                    self.__root_update(tid,inroot)
+                    self.emit("task-modified-inview", tid)
+                    for c in node.get_children():
+                        self.__update_node(c,False)
             else:
-#                print "%s is only modified (todis,curdis)" %tid
-                node = self.get_node(tid)
-#                print "updating node %s" %tid
-                self.update_count += 1
-                node = self.get_node(tid)
-                self.__root_update(tid,inroot)
-                self.emit("task-modified-inview", tid)
-                for c in node.get_children():
-                    self.__update_node(c,False)
-        else:
-            #if the task was displayed previously but shouldn't be anymore
-            #we remove it
-            if curdis:
-#                print "%s is removed" %tid
-                self.__remove_node(tid)
-            else:
-#                print "%s is modified, not to dis" %tid
-                self.emit("task-deleted-inview", tid)
+                #if the task was displayed previously but shouldn't be anymore
+                #we remove it
+                if curdis:
+    #                print "%s is removed" %tid
+                    self.__remove_node(tid)
+                else:
+    #                print "%s is modified, not to dis" %tid
+                    self.emit("task-deleted-inview", tid)
 
 
     
@@ -745,25 +747,28 @@ class FilteredTree(gobject.GObject):
                 self.node_to_add += lost_nodes
     
     def __remove_node(self,tid):
-        isroot = False
-        if tid in self.displayed_nodes:
-            isroot = self.__is_root(self.get_node(tid))
-            self.remove_count += 1
-            self.__nodes_count -= 1
-            self.emit('task-deleted-inview',tid)
-            self.__root_update(tid,False)
-            self.displayed_nodes.remove(tid)
-        self.__reset_cache()
-        #Test if this is necessary
-        parent = self.node_parents(self.get_node(tid))
-        #we don't need to update parents if the node is root
-        #this might happen with flat filter
-        if not isroot:
-            for p in parent:
-                pid = p.get_id()
-                if pid not in self.__clean_list:
-                    inroot = self.__is_root(p)
-                    self.__update_node(pid,inroot)
+        if tid not in self.node_to_remove:
+            self.node_to_remove.append(tid)
+            isroot = False
+            if tid in self.displayed_nodes:
+                isroot = self.__is_root(self.get_node(tid))
+                self.remove_count += 1
+                self.__nodes_count -= 1
+                self.emit('task-deleted-inview',tid)
+                self.__root_update(tid,False)
+                self.displayed_nodes.remove(tid)
+            self.__reset_cache()
+            #Test if this is necessary
+            parent = self.node_parents(self.get_node(tid))
+            #we don't need to update parents if the node is root
+            #this might happen with flat filter
+            if not isroot:
+                for p in parent:
+                    pid = p.get_id()
+                    if pid not in self.__clean_list:
+                        inroot = self.__is_root(p)
+                        self.__update_node(pid,inroot)
+            self.node_to_remove.remove(tid)
         
     #This function print the actual tree. Useful for debugging
     def __print_from_node(self, node, prefix=""):
