@@ -588,20 +588,14 @@ class ActiveTaskTreeView(TaskTreeView):
         # Here we intercept mouse clicks on selected items so that we can
         # drag multiple items without the click selecting only one
         target = self.get_path_at_pos(int(event.x), int(event.y))
-        print "we clikced on %s" %str(target)
-        print "event.type = button_press : %s" %(event.type == gtk.gdk.BUTTON_PRESS)
-        print "not mask : %s" %(not(event.state & (gtk.gdk.CONTROL_MASK|gtk.gdk.SHIFT_MASK)))
-        print "is_selected : %s" %(self.get_selection().path_is_selected(target[0]))
-        if (target 
-           and event.type == gtk.gdk.BUTTON_PRESS
-           and not (event.state & (gtk.gdk.CONTROL_MASK|gtk.gdk.SHIFT_MASK))
+        if (target \
+           and event.type == gtk.gdk.BUTTON_PRESS\
+           and event.button == 1\
+           and not (event.state & (gtk.gdk.CONTROL_MASK|gtk.gdk.SHIFT_MASK))\
            and self.get_selection().path_is_selected(target[0])):
                # disable selection
                self.get_selection().set_select_function(lambda *ignore: False)
                self.defer_select = target[0]
-               print "### defer_select is : %s" %str(self.defer_select)
-        else:
-            print "*** we should select %s" %str(target)
             
     def on_button_release(self, widget, event):
         # re-enable selection
