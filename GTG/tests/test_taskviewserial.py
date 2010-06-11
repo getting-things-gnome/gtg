@@ -26,7 +26,7 @@ xdg.BaseDirectory.xdg_data_home/gtg directory.
 # Standard imports
 import unittest
 
-from GTG.taskeditor import taskviewserial
+from GTG.gtk.editor import taskviewserial
     
 class GtgBackendsUniTests(unittest.TestCase):
     """Tests for GTG backends."""
