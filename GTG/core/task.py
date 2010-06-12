@@ -164,27 +164,12 @@ class Task(TreeNode):
 
     #A task is workable if all children are done/deleted/dismiss
     def is_workable(self):
+        print "Function is_workable is deprecated in Task. Use filters instead"
         workable = True
         for c in self.get_subtasks():
             if c and c.get_status() == self.STA_ACTIVE:
                 workable = False
-#        print "task %s workable : %s" %(self.get_id(),workable)
         return workable
-
-    #A task is in the workview if it is workable, started, active and
-    #if none of its tag are "non-workview"
-    #if tag is provided, we consider the workview of that particular tag
-    def is_in_workview(self,tag=None):
-        result = True
-        if self.is_workable() and self.is_started()\
-                              and self.get_status() == "Active":
-            for t in self.get_tags():
-                if t.get_attribute("nonworkview") == "True" and \
-                                t != tag:
-                    result = False
-        else:
-            result = False
-        return result
 
     def get_modified(self):
         return self.modified

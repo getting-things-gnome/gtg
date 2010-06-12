@@ -164,7 +164,11 @@ class FiltersBank:
     
     def is_workable(self,task,parameters=None):
         """ Filter of tasks that can be worked """
-        return task.is_workable()
+        workable = True
+        for c in task.get_subtasks():
+            if c and c.get_status() == Task.STA_ACTIVE:
+                workable = False
+        return workable
             
     def workview(self,task,parameters=None):
         wv = self.active(task) and\
