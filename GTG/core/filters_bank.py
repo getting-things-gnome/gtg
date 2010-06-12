@@ -22,6 +22,7 @@ filters_bank stores all of GTG's filters in centralized place
 """
 
 from GTG.core.task import Task
+from GTG.tools.dates  import date_today, no_date, Date
 
 
 class Filter:
@@ -134,6 +135,9 @@ class FiltersBank:
         #workable
         filt_obj = Filter(self.is_workable,self.req)
         self.available_filters['workable'] = filt_obj
+        #workable
+        filt_obj = Filter(self.is_started,self.req)
+        self.available_filters['started'] = filt_obj
         #workdue
         filt_obj = Filter(self.workdue,self.req)
         self.available_filters['workdue'] = filt_obj
@@ -146,6 +150,12 @@ class FiltersBank:
         #worklate
         filt_obj = Filter(self.worklate,self.req)
         self.available_filters['worklate'] = filt_obj
+        #no_disabled_tag
+        filt_obj = Filter(self.no_disabled_tag,self.req)
+        param = {}
+        param['ignore_when_counting'] = True
+        filt_obj.set_parameters(param)
+        self.available_filters['no_disabled_tag'] = filt_obj
 
     ######### hardcoded filters #############
     def notag(self,task,parameters=None):
@@ -158,11 +168,32 @@ class FiltersBank:
     
     def is_workable(self,task,parameters=None):
         """ Filter of tasks that can be worked """
-        return task.is_workable()
+        workable = True
+        for c in task.get_subtasks():
+            if c and c.get_status() == Task.STA_ACTIVE:
+                workable = False
+        return workable
+        
+    def is_started(self,task,parameters=None):
+        '''Filter for tasks that are already started'''
+        start_date = task.get_start_date()
+        if start_date :
+            #Seems like pylint falsely assumes that subtraction always results
+            #in an object of the same type. The subtraction of dates 
+            #results in a datetime.timedelta object 
+            #that does have a 'days' member.
+            difference = date_today() - start_date
+            if difference.days == 0:
+                # Don't count today's tasks started until morning
+                return datetime.now().hour > 4
+            else:
+                return difference.days > 0 #pylint: disable-msg=E1101
+        else:
+            return True
             
     def workview(self,task,parameters=None):
         wv = self.active(task) and\
-             task.is_started() and\
+             self.is_started(task) and\
              self.is_workable(task)
         return wv
         
@@ -201,6 +232,14 @@ class FiltersBank:
         """ Filter of tasks which are closed """
         ret = task.get_status() in [Task.STA_DISMISSED, Task.STA_DONE]
         return ret
+        
+    def no_disabled_tag(self,task,parameters=None):
+        """Filter of task that don't have any disabled/nonworkview tag"""
+        toreturn = True
+        for t in task.get_tags():
+            if t.get_attribute("nonworkview") == "True":
+                toreturn = False
+        return toreturn
         
     ##########################################
         

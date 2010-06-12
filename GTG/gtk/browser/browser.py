@@ -140,6 +140,7 @@ class TaskBrowser:
 
         #Expand all the tasks in the taskview
         self.task_tv.expand_all()
+        self.on_select_tag()
         self.window.show()
 
 ### INIT HELPER FUNCTIONS #####################################################
@@ -1015,7 +1016,7 @@ class TaskBrowser:
         tags = self.get_selected_tags()[0]
         #We must inverse because the tagstore has True
         #for tasks that are not in workview (and also convert to string)
-        toset = str(not self.nonworkview_cb.get_active())
+        toset = str(not self.nonworkviewtag_cb.get_active())
         if len(tags) > 0:
             tags[0].set_attribute("nonworkview", toset)
         if self.priv['workview']:
@@ -1201,16 +1202,16 @@ class TaskBrowser:
             else:
                 task.set_status(Task.STA_DISMISSED)
 
-    def on_select_tag(self, widget, row=None, col=None):
+    def on_select_tag(self, widget=None, row=None, col=None):
         #When you clic on a tag, you want to unselect the tasks
         taglist, notag = self.get_selected_tags()
         if notag:
             newtag = ["notag"]
         else:
-            if len(taglist) == 0:
-                newtag = []
-            else:
+            if taglist and len(taglist) > 0:
                 newtag = [taglist[0].get_name()]
+            else:
+                newtag = ['no_disabled_tag']
         #FIXME:handle multiple tags case
         if len(newtag) > 0:
             self.req.reset_tag_filters(refilter=False)
@@ -1219,7 +1220,7 @@ class TaskBrowser:
                 self.ctask_tree.apply_filter('closed',reset=True,refresh=False)
                 self.ctask_tree.apply_filter(newtag[0])
         else:
-            self.req.reset_tag_filters()
+            self.req.reset_tag_filters(refilter=False)
             if self.ctask_tree:
                 self.ctask_tree.reset_tag_filters()
                         

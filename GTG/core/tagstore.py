@@ -330,30 +330,32 @@ class Tag(TreeNode):
             if ti not in toreturn:
                 toreturn.append(ti)
         return toreturn 
-    #TODO: we want to optimize this task. Really.
-    def get_tasks_nbr(self,workview=False):
-        tasks = self.get_tasks()
-        temp_list = []
-        #workview in a non workviewable tag
-        if workview and self.get_attribute("nonworkview") == "True":
-            for t in tasks:
-                ta = self.req.get_task(t)
-                if ta.is_in_workview(tag=self) and t not in temp_list:
-                    temp_list.append(t)
-        #workview in a workviewable tag
-        elif workview:
-            for t in tasks:
-                ta = self.req.get_task(t)
-                if ta and ta.is_in_workview() and t not in temp_list:
-                    temp_list.append(t)
-        #non workview
-        else:
-            for t in tasks:
-                ta = self.req.get_task(t)
-                if ta and ta.get_status() == "Active" and t not in temp_list:
-                    temp_list.append(t)
-        toreturn = len(temp_list)
-        return toreturn
+        
+#    We do not need this anymore.
+#    #TODO: we want to optimize this task. Really.
+#    def get_tasks_nbr(self,workview=False):
+#        tasks = self.get_tasks()
+#        temp_list = []
+#        #workview in a non workviewable tag
+#        if workview and self.get_attribute("nonworkview") == "True":
+#            for t in tasks:
+#                ta = self.req.get_task(t)
+#                if ta.is_in_workview(tag=self) and t not in temp_list:
+#                    temp_list.append(t)
+#        #workview in a workviewable tag
+#        elif workview:
+#            for t in tasks:
+#                ta = self.req.get_task(t)
+#                if ta and ta.is_in_workview() and t not in temp_list:
+#                    temp_list.append(t)
+#        #non workview
+#        else:
+#            for t in tasks:
+#                ta = self.req.get_task(t)
+#                if ta and ta.get_status() == "Active" and t not in temp_list:
+#                    temp_list.append(t)
+#        toreturn = len(temp_list)
+#        return toreturn
     #is it useful to keep the tag in the tagstore.
     #if no attributes and no tasks, it is not useful.
     def is_removable(self):

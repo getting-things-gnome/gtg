@@ -162,30 +162,6 @@ class Task(TreeNode):
     def get_status(self):
         return self.status
 
-    #A task is workable if all children are done/deleted/dismiss
-    def is_workable(self):
-        workable = True
-        for c in self.get_subtasks():
-            if c and c.get_status() == self.STA_ACTIVE:
-                workable = False
-#        print "task %s workable : %s" %(self.get_id(),workable)
-        return workable
-
-    #A task is in the workview if it is workable, started, active and
-    #if none of its tag are "non-workview"
-    #if tag is provided, we consider the workview of that particular tag
-    def is_in_workview(self,tag=None):
-        result = True
-        if self.is_workable() and self.is_started()\
-                              and self.get_status() == "Active":
-            for t in self.get_tags():
-                if t.get_attribute("nonworkview") == "True" and \
-                                t != tag:
-                    result = False
-        else:
-            result = False
-        return result
-
     def get_modified(self):
         return self.modified
 
@@ -216,21 +192,6 @@ class Task(TreeNode):
 
     def get_start_date(self):
         return self.start_date
-
-    def is_started(self):
-        if self.start_date:
-            #Seems like pylint falsely assumes that subtraction always results
-            #in an object of the same type. The subtraction of dates 
-            #results in a datetime.timedelta object 
-            #that does have a 'days' member.
-            difference = date_today() - self.start_date
-            if difference.days == 0:
-                # Don't count today's tasks started until morning
-                return datetime.now().hour > 4
-            else:
-                return difference.days > 0 #pylint: disable-msg=E1101
-        else:
-            return True
 
     def set_closed_date(self, fulldate):
         assert(isinstance(fulldate, Date))
