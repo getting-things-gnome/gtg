@@ -218,7 +218,7 @@ class TagTreeModel(gtk.GenericTreeModel):
 #        time1 = time.time()
         sp_id = tag.get_attribute("special")
         if sp_id == "all":
-            toreturn = self.tasktree.get_n_nodes(countednodes=True)
+            toreturn = self.tasktree.get_n_nodes(withfilters=['no_disabled_tag'],countednodes=True)
         elif sp_id == "notag":
             toreturn = self.tasktree.get_n_nodes(withfilters=['notag'],countednodes=True)
         elif sp_id == "sep" :
