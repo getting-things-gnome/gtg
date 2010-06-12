@@ -1015,7 +1015,7 @@ class TaskBrowser:
         tags = self.get_selected_tags()[0]
         #We must inverse because the tagstore has True
         #for tasks that are not in workview (and also convert to string)
-        toset = str(not self.nonworkview_cb.get_active())
+        toset = str(not self.nonworkviewtag_cb.get_active())
         if len(tags) > 0:
             tags[0].set_attribute("nonworkview", toset)
         if self.priv['workview']:
