@@ -146,6 +146,9 @@ class FiltersBank:
         #worklate
         filt_obj = Filter(self.worklate,self.req)
         self.available_filters['worklate'] = filt_obj
+        #no_disabled_tag
+        filt_obj = Filter(self.no_disabled_tag,self.req)
+        self.available_filters['no_disabled_tag'] = filt_obj
 
     ######### hardcoded filters #############
     def notag(self,task,parameters=None):
@@ -163,7 +166,8 @@ class FiltersBank:
     def workview(self,task,parameters=None):
         wv = self.active(task) and\
              task.is_started() and\
-             self.is_workable(task)
+             self.is_workable(task) and\
+             self.no_disabled_tag(task)
         return wv
         
     def workdue(self,task):
@@ -201,6 +205,14 @@ class FiltersBank:
         """ Filter of tasks which are closed """
         ret = task.get_status() in [Task.STA_DISMISSED, Task.STA_DONE]
         return ret
+        
+    def no_disabled_tag(self,task,parameters=None):
+        """Filter of task that don't have any disabled/nonworkview tag"""
+        toreturn = True
+        for t in task.get_tags():
+            if t.get_attribute("nonworkview") == "True":
+                toreturn = False
+        return toreturn
         
     ##########################################
         
