@@ -148,6 +148,9 @@ class FiltersBank:
         self.available_filters['worklate'] = filt_obj
         #no_disabled_tag
         filt_obj = Filter(self.no_disabled_tag,self.req)
+        param = {}
+        param['ignore_when_counting'] = True
+        filt_obj.set_parameters(param)
         self.available_filters['no_disabled_tag'] = filt_obj
 
     ######### hardcoded filters #############
@@ -166,8 +169,7 @@ class FiltersBank:
     def workview(self,task,parameters=None):
         wv = self.active(task) and\
              task.is_started() and\
-             self.is_workable(task) and\
-             self.no_disabled_tag(task)
+             self.is_workable(task)
         return wv
         
     def workdue(self,task):

@@ -657,6 +657,8 @@ class FilteredTree(gobject.GObject):
         else:
             if "notag" in self.applied_filters:
                 self.applied_filters.remove('notag')
+            if "no_disabled_tag" in self.applied_filters:
+                self.applied_filters.remove('no_disabled_tag')
             for f in self.applied_filters:
                 if f.startswith('@'):
                     self.applied_filters.remove(f)
