@@ -191,6 +191,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
         return self.column_types[n]
 
     def on_get_value(self, iter, column):
+#        print "on get_value %s (%s) col %s" %(iter,type(iter),column)
         if not iter:
             return None
         task = iter.get_node()
@@ -239,13 +240,17 @@ class TaskTreeModel(gtk.GenericTreeModel):
             return title
 
     def on_get_iter(self, path):
+        #We have to return None if there's no node on that path
+        iter = None
 #        print "on_get_iter for %s" %(str(path))
         node = self.tree.get_node_for_path(path)
-        iter = self.iter_store.get(node,path)
+        if node:
+            iter = self.iter_store.get(node,path)
         if node and (node.get_id() in self.tasks_to_add):
             #print "WE WILL NOT ADD %s" %node.get_id()
             self.tasks_to_add.remove(node.get_id())
 #        parent = self.tree.get_node_for_path(path[:-1])
+#        print "returning iter %s" %(node)
         return iter
 
     def on_get_path(self, iter):
@@ -293,16 +298,17 @@ class TaskTreeModel(gtk.GenericTreeModel):
 #        print "on_iter_n_children"
         if iter:
             node = iter.get_node()
-            return self.tree.node_n_children(node)
+            toreturn = self.tree.node_n_children(node)
         else:
-            return self.tree.node_n_children(None)
+            toreturn = self.tree.node_n_children(None)
+        return toreturn
 
     def on_iter_nth_child(self, iter, n):
+#        print "on_iter_nth_child %s" %n
         if iter:
             id = iter.get_node().get_id()
         else:
             id = None
-#        print "on_iter_nth_child n=%s (iter %s)" %(n,id)
         toreturn = None
         if iter and iter.is_valid():
             node = iter.get_node()
@@ -310,7 +316,6 @@ class TaskTreeModel(gtk.GenericTreeModel):
             child = self.tree.node_nth_child(node,n)
             if child:
                 cpaths = self.tree.get_paths_for_node(child)
-#                print "   path is %s and cpaths (%s) are %s" %(path,child.get_id(),cpaths)
                 for c in cpaths:
                     if c[:-1] == path:
                         toreturn = self.iter_store.get(child,c)
