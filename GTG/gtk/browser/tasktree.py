@@ -73,11 +73,13 @@ class TaskIterStore():
     def __key(self,node,path):
         return str(path)
 
+    def size(self):
+        return len(self.__store)
+
     def get(self,node,path):
         key = self.__key(node,path)
         toreturn = None
         deleted = False
-        created = False
 #        print "get iter for node %s (toadd: %s)" %(node.get_id(),self.__model.tasks_to_add)
         if node and node.get_id() in self.__model.tasks_to_add:
             #This is a crude hack. If the task is in tasks_to_add, it means
@@ -96,10 +98,10 @@ class TaskIterStore():
                 #We place a node on the position of a previous node.
                 #we should then remove that previous node
                 self.remove(stored_node,path,all=False)
+                self.__model.row_deleted(path)
                 deleted = stored_node
         if not toreturn:
             toreturn = TaskIter(self.__tree,node,path)
-            created = True
         self.__store[key] = toreturn
         if deleted:
             #if we removed a node, we should readd it.
@@ -108,32 +110,22 @@ class TaskIterStore():
         return toreturn
 
     def remove(self,node,path,all=True):
-#        if all:
-#            if node.get_id() == "294@1":
-#                print "*** removing path %s" %str(path)
-##            for i in self.__store:
-##                self.__model.row_deleted(self.__store[i].get_path())
-#            self.__store = {}
-#            self.__model.row_deleted(path)
-#        else:
-        key = self.__key(node,path)
-        toreturn = False
-        if self.__store.has_key(key):
-            stored_node = self.__store[key]
-            if stored_node.get_node() == node:
-                self.__store.pop(key)
-                self.__model.row_deleted(path)
-                toreturn = True
-            else:
-                print "Trying to remove iter %s from path %s (thinking it was %s)"\
-                        %(stored_node.get_node().get_id(),str(path),node.get_id())
-                toreturn = False
-        elif not all:
-            print "Removing inexistant path %s for node %s" %(str(path),node.get_id())
-        if all :
+        if all:
             self.__store = {}
-            self.__model.row_deleted(path)
-        return toreturn
+        else:
+            key = self.__key(node,path)
+            if self.__store.has_key(key):
+                stored_node = self.__store[key]
+                if stored_node.get_node() == node:
+                    self.__store.pop(key)
+                    return True
+                else:
+                    print "Trying to remove iter %s from path %s (thinking it was %s)"\
+                            %(stored_node.get_node().get_id(),str(path),node.get_id())
+                    return False
+            else:
+                print "Removing inexistant path %s for node %s" %(str(path),node.get_id())
+                return False
 
 
 
@@ -260,6 +252,8 @@ class TaskTreeModel(gtk.GenericTreeModel):
         if node and (node.get_id() in self.tasks_to_add):
             #print "WE WILL NOT ADD %s" %node.get_id()
             self.tasks_to_add.remove(node.get_id())
+#        parent = self.tree.get_node_for_path(path[:-1])
+#        print "returning iter %s" %(node)
         return iter
 
     def on_get_path(self, iter):
@@ -361,8 +355,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
     def to_add_task(self,sender,tid):
 #        task = self.tree.get_node(tid)
 #        node_paths = self.tree.get_paths_for_node(task)
-        if tid == "294@1":
-            print "%s is to_add " %(tid)
+#        print "%s is to_add" %(tid)
         self.tasks_to_add.append(tid)
         if not self.lock and len(self.tasks_to_add) > 0:
             self.lock = True
@@ -378,6 +371,9 @@ class TaskTreeModel(gtk.GenericTreeModel):
                 for node_path in node_paths:
                     node_iter = self.get_iter(node_path)
                     if self.iter_is_valid(node_iter):
+                        print "tree %s" %self.tree.applied_filters
+                        print "node %s inserted in path %s" %(tid,str(node_path))
+                        print ""
                         self.row_inserted(node_path, node_iter)
                         #following is mandatory if 
                         #we added a child task before his parent.
@@ -399,11 +395,14 @@ class TaskTreeModel(gtk.GenericTreeModel):
         node = self.tree.get_node(tid)
         removed = False
         node_paths = self.tree.get_paths_for_node(node)
-        if tid == "294@1":
-            print "task %s will be removed paths %s" %(tid,node_paths)
         for node_path in node_paths:
             Log.debug("* tasktree REMOVE %s - %s " %(tid,node_path))
+            print "tree %s" %self.tree.applied_filters
+            print "      remove iter %s from path %s" %(tid,node_path)
+            print ""
             self.iter_store.remove(node,node_path)
+#            print "     remove row %s" %str(node_path)
+            self.row_deleted(node_path)
             removed = True
         return removed
                     
