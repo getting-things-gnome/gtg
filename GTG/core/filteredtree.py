@@ -427,7 +427,7 @@ class FilteredTree(gobject.GObject):
             if len(self.virtual_root) > n:
                 to_id = self.virtual_root[n]
                 toreturn = self.get_node(to_id)
-                print "## node_nth_child : %s" %to_id
+#                print "## node_nth_child : %s" %to_id
             else:
                 toreturn = None
         elif self.flat:
@@ -585,8 +585,7 @@ class FilteredTree(gobject.GObject):
 #        self.refilter_count +=1
 #        time6 = time.time()
 #        self.refilter_time += (time6 - time1)
-        print "*** end of refiltering ****"
-        self.print_tree()
+#        print "*** end of refiltering ****"
 #        print "we refiltered %s %s times (total : %s s)" %(self.applied_filters,self.refilter_count,self.refilter_time)
 #        print "  time2: %s" %(time2-time1)
 #        print "  time3: %s" %(time3-time2)
@@ -710,8 +709,9 @@ class FilteredTree(gobject.GObject):
                     node = self.get_node(tid)
                     self.__root_update(tid,inroot)
                     self.emit("task-modified-inview", tid)
-                    for c in node.get_children():
-                        self.__update_node(c,False)
+                    if not self.flat:
+                        for c in node.get_children():
+                            self.__update_node(c,False)
             else:
                 #if the task was displayed previously but shouldn't be anymore
                 #we remove it

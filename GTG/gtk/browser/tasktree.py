@@ -371,9 +371,6 @@ class TaskTreeModel(gtk.GenericTreeModel):
                 for node_path in node_paths:
                     node_iter = self.get_iter(node_path)
                     if self.iter_is_valid(node_iter):
-                        print "tree %s" %self.tree.applied_filters
-                        print "node %s inserted in path %s" %(tid,str(node_path))
-                        print ""
                         self.row_inserted(node_path, node_iter)
                         #following is mandatory if 
                         #we added a child task before his parent.
@@ -397,9 +394,6 @@ class TaskTreeModel(gtk.GenericTreeModel):
         node_paths = self.tree.get_paths_for_node(node)
         for node_path in node_paths:
             Log.debug("* tasktree REMOVE %s - %s " %(tid,node_path))
-            print "tree %s" %self.tree.applied_filters
-            print "      remove iter %s from path %s" %(tid,node_path)
-            print ""
             self.iter_store.remove(node,node_path)
 #            print "     remove row %s" %str(node_path)
             self.row_deleted(node_path)
