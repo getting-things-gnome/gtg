@@ -73,6 +73,9 @@ class TaskIterStore():
     def __key(self,node,path):
         return str(path)
 
+    def size(self):
+        return len(self.__store)
+
     def get(self,node,path):
         key = self.__key(node,path)
         toreturn = None
@@ -352,7 +355,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
     def to_add_task(self,sender,tid):
 #        task = self.tree.get_node(tid)
 #        node_paths = self.tree.get_paths_for_node(task)
-#        print "%s is to_add with paths %s" %(tid,node_paths)
+#        print "%s is to_add" %(tid)
         self.tasks_to_add.append(tid)
         if not self.lock and len(self.tasks_to_add) > 0:
             self.lock = True
@@ -391,7 +394,6 @@ class TaskTreeModel(gtk.GenericTreeModel):
         node_paths = self.tree.get_paths_for_node(node)
         for node_path in node_paths:
             Log.debug("* tasktree REMOVE %s - %s " %(tid,node_path))
-#            print "      remove iter %s" %tid
             self.iter_store.remove(node,node_path)
 #            print "     remove row %s" %str(node_path)
             self.row_deleted(node_path)

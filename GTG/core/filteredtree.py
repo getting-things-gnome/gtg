@@ -251,7 +251,7 @@ class FilteredTree(gobject.GObject):
         return toreturn
 
     def __node_for_path(self,basenode,path):
-        if len(path) == 0:
+        if len(path) == 0 or self.flat:
             return basenode
         elif path[0] < self.node_n_children(basenode):
             if len(path) == 1:
@@ -389,7 +389,7 @@ class FilteredTree(gobject.GObject):
         #print "on_iter_has_child for node %s" %node
         #we should say "has_good_child"
 #        print "node has %s children" %self.node_n_children(node)
-        if node and self.node_n_children(node)>0:
+        if not self.flat and node and self.node_n_children(node)>0:
             return True
         else:
             if not node:
@@ -405,6 +405,8 @@ class FilteredTree(gobject.GObject):
         if not node:
             toreturn = len(self.virtual_root)
             id = 'root'
+        elif self.flat:
+            toreturn = 0
         else:
             n = 0
             for cid in node.get_children():
@@ -425,9 +427,12 @@ class FilteredTree(gobject.GObject):
             if len(self.virtual_root) > n:
                 to_id = self.virtual_root[n]
                 toreturn = self.get_node(to_id)
-                print "## node_nth_child : %s" %to_id
+#                print "## node_nth_child : %s" %to_id
             else:
                 toreturn = None
+        elif self.flat:
+            #If we are flat, nobody has children
+            toreturn = None
         else:
             total = node.get_n_children()
             cur = 0
@@ -704,8 +709,9 @@ class FilteredTree(gobject.GObject):
                     node = self.get_node(tid)
                     self.__root_update(tid,inroot)
                     self.emit("task-modified-inview", tid)
-                    for c in node.get_children():
-                        self.__update_node(c,False)
+                    if not self.flat:
+                        for c in node.get_children():
+                            self.__update_node(c,False)
             else:
                 #if the task was displayed previously but shouldn't be anymore
                 #we remove it
@@ -779,9 +785,12 @@ class FilteredTree(gobject.GObject):
         prefix = prefix + "->"
         if self.node_has_child(node):
             child = self.node_children(node)
-            while child:
+            nn = self.node_n_children
+            n = 0
+            while child and n < nn:
+                n += 1
                 self.__print_from_node(child,prefix)
-                child = self.next_node(child,parent=node)
+                child = self.node_nth_child(node,n)
     
     #This function removes all the nodes, leaves first.
     def __clean_from_node(self, node):
