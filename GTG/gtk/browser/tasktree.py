@@ -367,12 +367,13 @@ class TaskTreeModel(gtk.GenericTreeModel):
                 node_paths = self.tree.get_paths_for_node(task)
                 for node_path in node_paths:
                     node_iter = self.get_iter(node_path)
-                    self.row_inserted(node_path, node_iter)
-                    #following is mandatory if 
-                    #we added a child task before his parent.
-                    if self.tree.node_has_child(task):
-    #                    print "child_toggled 2 : %s" %task.get_title()
-                        self.row_has_child_toggled(node_path,node_iter)
+                    if self.iter_is_valid(node_iter):
+                        self.row_inserted(node_path, node_iter)
+                        #following is mandatory if 
+                        #we added a child task before his parent.
+                        if self.tree.node_has_child(task):
+        #                    print "child_toggled 2 : %s" %task.get_title()
+                            self.row_has_child_toggled(node_path,node_iter)
                 parents = self.tree.node_parents(task)
                 for p in parents:
                         for par_path in self.tree.get_paths_for_node(p):
@@ -450,6 +451,10 @@ class TaskTreeView(gtk.TreeView):
 
     def __init__(self, requester):
         gtk.TreeView.__init__(self)
+        self.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
+        self.connect('button_press_event', self.on_button_press)
+        self.connect('button_release_event', self.on_button_release)
+        self.defer_select = False
         self.__columns = {}
         self.bg_color_enable = True
         self.req = requester
@@ -473,6 +478,33 @@ class TaskTreeView(gtk.TreeView):
 
     def set_column(self,index,col):
         self.__columns[index] = col
+
+    def on_button_press(self, widget, event):
+        # Here we intercept mouse clicks on selected items so that we can
+        # drag multiple items without the click selecting only one
+        target = self.get_path_at_pos(int(event.x), int(event.y))
+        if (target \
+           and event.type == gtk.gdk.BUTTON_PRESS\
+           and event.button == 1\
+           and not (event.state & (gtk.gdk.CONTROL_MASK|gtk.gdk.SHIFT_MASK))\
+           and self.get_selection().path_is_selected(target[0])):
+               # disable selection
+               self.get_selection().set_select_function(lambda *ignore: False)
+               self.defer_select = target[0]
+            
+    def on_button_release(self, widget, event):
+        # re-enable selection
+        self.get_selection().set_select_function(lambda *ignore: True)
+        
+        target = self.get_path_at_pos(int(event.x), int(event.y))    
+        if (self.defer_select and target 
+           and self.defer_select == target[0]
+           and not (event.x==0 and event.y==0)): # certain drag and drop 
+                                                 # operations still have path
+               # if user didn't drag, simulate the click previously ignored
+               self.set_cursor(target[0], target[1], False)
+            
+        self.defer_select=False
         
 
 class ActiveTaskTreeView(TaskTreeView):
@@ -485,7 +517,6 @@ class ActiveTaskTreeView(TaskTreeView):
     def __init__(self, requester):
         TaskTreeView.__init__(self, requester)
         self._init_tree_view()
-        self.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
 
         # Drag and drop
         self.enable_model_drag_source(\
@@ -509,9 +540,6 @@ class ActiveTaskTreeView(TaskTreeView):
         self.connect('drag_drop', self.on_drag_drop)
         self.connect('drag_data_get', self.on_drag_data_get)
         self.connect('drag_data_received', self.on_drag_data_received)
-        self.connect('button_press_event', self.on_button_press)
-        self.connect('button_release_event', self.on_button_release)
-        self.defer_select = False
 
     def display_start_column(self,is_displayed=True):
         col = self.get_column(COL_SDATE)
@@ -589,32 +617,7 @@ class ActiveTaskTreeView(TaskTreeView):
         self.set_rules_hint(False)
 
     ### DRAG AND DROP ########################################################
-    def on_button_press(self, widget, event):
-        # Here we intercept mouse clicks on selected items so that we can
-        # drag multiple items without the click selecting only one
-        target = self.get_path_at_pos(int(event.x), int(event.y))
-        if (target \
-           and event.type == gtk.gdk.BUTTON_PRESS\
-           and event.button == 1\
-           and not (event.state & (gtk.gdk.CONTROL_MASK|gtk.gdk.SHIFT_MASK))\
-           and self.get_selection().path_is_selected(target[0])):
-               # disable selection
-               self.get_selection().set_select_function(lambda *ignore: False)
-               self.defer_select = target[0]
-            
-    def on_button_release(self, widget, event):
-        # re-enable selection
-        self.get_selection().set_select_function(lambda *ignore: True)
-        
-        target = self.get_path_at_pos(int(event.x), int(event.y))    
-        if (self.defer_select and target 
-           and self.defer_select == target[0]
-           and not (event.x==0 and event.y==0)): # certain drag and drop 
-                                                 # operations still have path
-               # if user didn't drag, simulate the click previously ignored
-               self.set_cursor(target[0], target[1], False)
-            
-        self.defer_select=False
+    
 
     def on_drag_drop(self, treeview, context, selection, info, timestamp):
         self.emit_stop_by_name('drag_drop')
@@ -662,7 +665,6 @@ class ActiveTaskTreeView(TaskTreeView):
         # Get dragged iter as a TaskTreeModel iter
         iters = selection.data.split(',')
         for iter in iters:
-            print "*** iter %s" %iter
             try:
                 dragged_iter = model.get_iter_from_string(iter)
             except ValueError:
@@ -722,15 +724,3 @@ class ClosedTaskTreeView(TaskTreeView):
         self.set_search_column(COL_TITLE)
         
         self.set_show_expanders(False)
-
-    def scroll_to_task(self, task_id):
-        print "scroll to task does nothing : remove it"
-#        model = self.get_model()
-#        iter = model.get_iter_first()
-#        while iter:
-#            if model.get_value(iter, 1).get_id() == task_id:
-#                break
-#            iter = model.iter_next(iter)
-#        self.scroll_to_cell(model.get_path(iter),
-#                        self.tag_col,
-#                        False)

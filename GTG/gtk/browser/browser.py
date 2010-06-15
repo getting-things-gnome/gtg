@@ -172,9 +172,9 @@ class TaskBrowser:
         self.task_tree_model = TaskTreeModel(self.req, self.priv)
         self.task_modelsort = gtk.TreeModelSort(self.task_tree_model)
         self.task_modelsort.set_sort_func(\
-            tasktree.COL_DDATE, self.dleft_sort_func)
+            tasktree.COL_DDATE, self.date_sort_func)
         self.task_modelsort.set_sort_func(\
-            tasktree.COL_DLEFT, self.dleft_sort_func)
+            tasktree.COL_DLEFT, self.date_sort_func)
 
         # Tags
         self.tagtree = TagTree(self.req)
@@ -581,14 +581,20 @@ class TaskBrowser:
         task = self.req.get_task(tid)
         return task.get_title()
 
-    def dleft_sort_func(self, model, iter1, iter2, user_data=None):
+    def date_sort_func(self, model, iter1, iter2, user_data=None):
+        closed = (user_data == "closed")
+#        order = model.get_sort_column_id()[1]
         order = self.task_modelsort.get_sort_column_id()[1]
         task1 = model.get_value(iter1, tasktree.COL_OBJ)
         task2 = model.get_value(iter2, tasktree.COL_OBJ)
         if task1 and task2:
-            t1_dleft = task1.get_due_date()
-            t2_dleft = task2.get_due_date()
-            sort = cmp(t2_dleft, t1_dleft)
+            if closed:
+                t1 = task1.get_closed_date()
+                t2 = task2.get_closed_date()
+            else:
+                t1 = task1.get_due_date()
+                t2 = task2.get_due_date()
+            sort = cmp(t2, t1)
         else:
             sort = -1
         
@@ -603,12 +609,11 @@ class TaskBrowser:
                 return -1 * s
         
         
-        
         if sort == 0:
             # Put fuzzy dates below real dates
-            if isinstance(t1_dleft, FuzzyDate) and not isinstance(t2_dleft, FuzzyDate):
+            if isinstance(t1, FuzzyDate) and not isinstance(t2, FuzzyDate):
                 sort = reverse_if_descending(1)
-            elif isinstance(t2_dleft, FuzzyDate) and not isinstance(t1_dleft, FuzzyDate):
+            elif isinstance(t2, FuzzyDate) and not isinstance(t1, FuzzyDate):
                 sort = reverse_if_descending(-1)
         
         if sort == 0: # Group tasks with the same tag together for visual cleanness 
@@ -856,6 +861,8 @@ class TaskBrowser:
         self.ctask_tv.set_model(ctask_modelsort)
         ctask_modelsort.set_sort_column_id(\
             tasktree.COL_CDATE, gtk.SORT_DESCENDING)
+        ctask_modelsort.set_sort_func(\
+            tasktree.COL_CDATE, self.date_sort_func,'closed')
         self.add_page_to_accessory_notebook("Closed", self.closed_pane)
         self.builder.get_object("view_closed").set_active(True)
 
