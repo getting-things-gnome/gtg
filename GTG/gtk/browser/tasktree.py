@@ -367,12 +367,13 @@ class TaskTreeModel(gtk.GenericTreeModel):
                 node_paths = self.tree.get_paths_for_node(task)
                 for node_path in node_paths:
                     node_iter = self.get_iter(node_path)
-                    self.row_inserted(node_path, node_iter)
-                    #following is mandatory if 
-                    #we added a child task before his parent.
-                    if self.tree.node_has_child(task):
-    #                    print "child_toggled 2 : %s" %task.get_title()
-                        self.row_has_child_toggled(node_path,node_iter)
+                    if self.iter_is_valid(node_iter):
+                        self.row_inserted(node_path, node_iter)
+                        #following is mandatory if 
+                        #we added a child task before his parent.
+                        if self.tree.node_has_child(task):
+        #                    print "child_toggled 2 : %s" %task.get_title()
+                            self.row_has_child_toggled(node_path,node_iter)
                 parents = self.tree.node_parents(task)
                 for p in parents:
                         for par_path in self.tree.get_paths_for_node(p):
