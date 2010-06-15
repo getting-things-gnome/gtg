@@ -213,7 +213,7 @@ class FilteredTree(gobject.GObject):
             self.__add_node(tid)
         
     def __task_modified(self,sender,tid):
-        print "%s is modified in the filteredtree" %tid
+#        print "%s is modified in the filteredtree" %tid
         node = self.get_node(tid)
         if node:
             inroot = self.__is_root(node)
@@ -576,8 +576,8 @@ class FilteredTree(gobject.GObject):
             self.__add_node(nid,isroot)
 #        time5 = time.time()
         #end of refiltering
-        print "*** end of refiltering ****"
-        self.print_tree()
+#        print "*** end of refiltering ****"
+#        self.print_tree()
         #Finalizing : adding nodes that still need to be added
         for n in self.node_to_add:
             self.__add_node(n)

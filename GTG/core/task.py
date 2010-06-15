@@ -333,8 +333,8 @@ class Task(TreeNode):
                 #       root node? We have to make sure that remove_parent
                 #       is called instead
                 self.req.delete_task(tid)
-#            elif task.get_parents() == []:
-#                task.
+            elif task.get_parents() == []:
+                task.remove.parent()
             self.sync()
             return True
         else:
