@@ -489,6 +489,8 @@ class FilteredTree(gobject.GObject):
         be displayed in the tree, regardless of its current status
         """
         if tid:
+            task = self.req.get_task(tid)
+            title = task.get_title()
             result = True
             counting_result = True
             cache_key = ""
@@ -498,6 +500,8 @@ class FilteredTree(gobject.GObject):
                 if filt:
                     temp = filt.is_displayed(tid)
                     result = result and temp
+                    if "sources.list" in title:
+                        print "return%s %s for filter %s" %(tid,temp,f)
                     if not filt.get_parameters('ignore_when_counting'):
                         counting_result = counting_result and temp
             if counting_result and tid not in self.counted_nodes:
@@ -516,6 +520,8 @@ class FilteredTree(gobject.GObject):
                 self.counted_nodes.remove(tid)
         else:
             result = False
+        if "sources.list" in title:
+            print "Finally displayed in %s: %s" %(self.applied_filters,result)
         return result
         
     def refilter(self):
@@ -580,7 +586,8 @@ class FilteredTree(gobject.GObject):
 #        self.refilter_count +=1
 #        time6 = time.time()
 #        self.refilter_time += (time6 - time1)
-#        print "*** end of refiltering ****"
+        print "*** end of refiltering ****"
+        print "294 is displayed : %s" %self.is_displayed("294@1")
 #        print "we refiltered %s %s times (total : %s s)" %(self.applied_filters,self.refilter_count,self.refilter_time)
 #        print "  time2: %s" %(time2-time1)
 #        print "  time3: %s" %(time3-time2)
