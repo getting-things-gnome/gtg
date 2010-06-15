@@ -326,12 +326,9 @@ class Task(TreeNode):
         """
         if TreeNode.remove_child(self,tid):
             task = self.req.get_task(tid)
-            if task.can_be_deleted or task.get_parents() == []:
-                #child is a new, unmodified task or it has
-                # no more parents. It should be deleted
-                #FIXME: what about I want to move the child to a 
-                #       root node? We have to make sure that remove_parent
-                #       is called instead
+            if task.can_be_deleted:
+                #child is a new, unmodified task
+                # It should be deleted
                 self.req.delete_task(tid)
             self.sync()
             return True
