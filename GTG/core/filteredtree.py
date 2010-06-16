@@ -220,8 +220,6 @@ class FilteredTree(gobject.GObject):
             node = self.get_node(tid)
             if node:
                 inroot = self.__is_root(node)
-                if tid == "71@1":
-                    print "BBBBB : task 71@1 modified inroot : %s" %inroot
                 self.__update_node(tid,inroot)
             self.tasks_to_modify.remove(tid)
         else:
@@ -457,7 +455,9 @@ class FilteredTree(gobject.GObject):
                         toreturn = curn
                         if cid in self.virtual_root:
 #                            isroot = self.__is_root(curn)
-                            print "AIEAIEAIE: children %s is also in VR (isroot )" %(cid)
+                            print "*** children %s of task %s is also in VR" \
+                                                    %(cid,node.get_id())
+                            print "   we will correct that error now"
                             self.__root_update(curn,False)
                     good += 1
                 cur += 1
@@ -717,7 +717,8 @@ class FilteredTree(gobject.GObject):
                         ch = self.node_nth_child(node,i)
                         chid = ch.get_id()
                         if chid in self.virtual_root:
-                            print " * * * * : %s should not be in VR" %chid
+                            #the child was in the VR. It should not be
+                            #because its parent is in now
                             self.__root_update(chid,False)
                         i += 1
         else:

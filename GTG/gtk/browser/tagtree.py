@@ -63,20 +63,15 @@ class TagTree():
         self.req.connect('tag-modified',self.tagrefresh)
         self.req.connect('tag-added',self.tagadded)
         self.req.connect('tag-deleted',self.tagdeleted)
-        self.req.connect('task-added',self.refresh_add)
+        self.req.connect('task-added',self.refresh)
         self.req.connect('task-deleted',self.refresh)
         self.req.connect('task-modified',self.refresh)
 
     def refresh(self,sender=None,tid=None):
-        #FIXME: not really good for performances
-        self.refilter()
-#        self.tags_tv.refresh()
-
-    def refresh_add(self,sender=None,tid=None):
         if tid:
             task = self.req.get_task(tid)
-            if task and task.get_status() == "Active":
-                self.refresh(sender=sender,tid=tid)
+            for tag in task.get_tags():
+                self.tagrefresh(sender=sender,tagname=tag.get_name())
 
     def tagrefresh(self,sender=None,tagname=None):
         if tagname:

@@ -375,11 +375,12 @@ class TaskTreeModel(gtk.GenericTreeModel):
                 node_paths = self.tree.get_paths_for_node(task)
                 parents = self.tree.node_parents(task)
                 for p in parents:
+                    #if we realize that a parent is still to add, we
+                    #don't insert the current task but we put it at the end
+                    #of the queue
                     if p.get_id() in self.tasks_to_add:
                         self.tasks_to_add.append(tid)
                         run = False
-#                    print "parents of %s are %s" %(tid,p.get_id())
-#                    print "still to add : %s" %self.tasks_to_add
             if run:
                 for node_path in node_paths:
                     node_iter = self.get_iter(node_path)
