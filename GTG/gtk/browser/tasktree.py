@@ -268,16 +268,12 @@ class TaskTreeModel(gtk.GenericTreeModel):
             return None
 
     def on_iter_next(self, iter):
-        print "on_iter_next : %s - %s"%(iter,iter.is_valid())
         toreturn = None
         if iter and iter.is_valid():
             path = iter.get_path()
             ppath = path[:-1]
             if ppath == ():
                 ppath = None
-                pp_iter = None
-            else:
-                pp_iter = self.get_iter(ppath)
             parent = self.tree.get_node_for_path(ppath)
             node = iter.get_node()
             next = self.tree.next_node(node,parent=parent)
@@ -285,12 +281,9 @@ class TaskTreeModel(gtk.GenericTreeModel):
             # we will find, in its paths, the one with 
             #the same root as the current node
             npaths = self.tree.get_paths_for_node(next)
-            print "        parent has %s children" %self.iter_n_children(pp_iter)
             for n in npaths:
-                print "      paths: %s" %str(n)
                 if path[:-1] == n[:-1]:
                     toreturn = self.iter_store.get(next,n)
-        print "     returning %s" %toreturn
         return toreturn
 
     def on_iter_children(self, iter):

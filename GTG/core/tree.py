@@ -169,8 +169,6 @@ class Tree():
             
     #Trying to make a function that bypass the weirdiness of lists
     def get_node(self,id):
-        if not self.nodes.has_key(id):
-            print " #######  getting %s which is NOT in the tree" %(id)
         return self.nodes.get(id)
             
     def get_all_keys(self):
@@ -364,10 +362,8 @@ class TreeNode():
         return len(self.children)
 
     def get_nth_child(self, index):
-        print "******* getting %s of %s" %(index,self.children)
         try:
             id = self.children[index]
-            print "        (which is node %s)" %id
             return self.tree.get_node(id)
         except(IndexError):
             raise ValueError("Index is not in the children list")
