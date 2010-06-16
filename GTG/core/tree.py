@@ -65,7 +65,7 @@ class Tree():
     def add_node(self, node, parent=None):
         #print "*************adding node %s %s" %(node, parent)
         id = node.get_id()
-        if self.nodes.get(id):
+        if self.nodes.has_key(id):
             print "Error : A node with this id %s already exists" %id
             return False
         else:
@@ -169,6 +169,8 @@ class Tree():
             
     #Trying to make a function that bypass the weirdiness of lists
     def get_node(self,id):
+        if not self.nodes.has_key(id):
+            print " #######  getting %s which is NOT in the tree" %(id)
         return self.nodes.get(id)
             
     def get_all_keys(self):
@@ -362,8 +364,10 @@ class TreeNode():
         return len(self.children)
 
     def get_nth_child(self, index):
+        print "******* getting %s of %s" %(index,self.children)
         try:
             id = self.children[index]
+            print "        (which is node %s)" %id
             return self.tree.get_node(id)
         except(IndexError):
             raise ValueError("Index is not in the children list")

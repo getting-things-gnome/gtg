@@ -238,7 +238,7 @@ class FilteredTree(gobject.GObject):
         Returns node for the given path.
         """
         #We should convert the path to the base.path
-        if str(path) == '()':
+        if not path or str(path) == '()':
             return self.tree.get_root()
         p0 = path[0]
         if len(self.virtual_root) > p0:
@@ -335,7 +335,11 @@ class FilteredTree(gobject.GObject):
         """
         Returns the next sibling node, or None if there are no other siblings
         """
-        #print "on_iter_next for node %s" %node
+        if node:
+            id = node.get_id()
+        else:
+            id = None
+        print "filteredtree next_node for node %s" %id
         #We should take the next good node, not the next base node
         nextnode = None
         if node:
@@ -348,24 +352,47 @@ class FilteredTree(gobject.GObject):
                         nextnode = self.get_node(nextnode_id)
             else:
                 parents_nodes = self.node_parents(node)
+                print "   ft -> parents_nodes = %s" %len(parents_nodes)
                 if len(parents_nodes) >= 1:
+                    print "              parent is %s" %parent.get_id()
                     if parent in parents_nodes:
                         parent_node = parent
                     else:
                         parent_node = parents_nodes[0]
-                    next_idx = parent_node.get_child_index(node.get_id()) + 1
-                    total = parent_node.get_n_children()-1
-                    if total < next_idx:
-                        nextnode = None
-                    else:
-                        nextnode = parent_node.get_nth_child(next_idx)
-                        while nextnode and next_idx < total and \
-                                    not self.is_displayed(nextnode.get_id()):
-                            next_idx += 1
-                            nextnode = parent_node.get_nth_child(next_idx)
+                    print "              parent_node is %s" %parent_node.get_id()
+
+                    total = self.node_n_children(parent)
+                    c = 0
+                    next_id = None
+                    while c < total and not next_id:
+                        child = self.node_nth_child(parent,c)
+                        c += 1
+                        if child == node:
+                            next_id = c
+                    if next_id < total:
+                        nextnode = self.node_nth_child(parent,next_id)
+#                    next_idx = parent_node.get_child_index(node.get_id()) + 1
+#                    total = parent_node.get_n_children() - 1
+#                    print "             total %s and next_idx %s" %(total,next_idx)
+#                    if total < next_idx:
+#                        nextnode = None
+#                    else:
+#                        nextnode = parent_node.get_nth_child(next_idx)
+#                        print "       nextnode : %s" %nextnode
+#                        while nextnode and next_idx < total and \
+#                                    not self.is_displayed(nextnode.get_id()):
+#                            next_idx += 1
+#                            nextnode = parent_node.get_nth_child(next_idx)
+#                        print "      next_idx final %s" %next_idx
         #check to see if our result is correct
         if nextnode and not self.is_displayed(nextnode.get_id()):
             nextnode = None
+            print "       !!! nextnode is not displayed"
+        if nextnode:
+            id = nextnode.get_id()
+        else:
+            id = None
+        print "        returning %s" %id
         return nextnode
 
     #Done
@@ -404,14 +431,19 @@ class FilteredTree(gobject.GObject):
         #we should return the number of "good" children
         if not node:
             toreturn = len(self.virtual_root)
+            print "        children (vr) : %s" %self.virtual_root
             id = 'root'
         elif self.flat:
+            print "         no children for node %s" %node.get_id()
             toreturn = 0
         else:
             n = 0
+            childs = []
             for cid in node.get_children():
                 if self.is_displayed(cid):
                     n+= 1
+                    childs.append(cid)
+            print "          children : %s" %childs
             toreturn = n
         return toreturn
 
