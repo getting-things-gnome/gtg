@@ -238,7 +238,7 @@ class FilteredTree(gobject.GObject):
         Returns node for the given path.
         """
         #We should convert the path to the base.path
-        if str(path) == '()':
+        if not path or str(path) == '()':
             return self.tree.get_root()
         p0 = path[0]
         if len(self.virtual_root) > p0:
@@ -335,7 +335,6 @@ class FilteredTree(gobject.GObject):
         """
         Returns the next sibling node, or None if there are no other siblings
         """
-        #print "on_iter_next for node %s" %node
         #We should take the next good node, not the next base node
         nextnode = None
         if node:
@@ -353,16 +352,16 @@ class FilteredTree(gobject.GObject):
                         parent_node = parent
                     else:
                         parent_node = parents_nodes[0]
-                    next_idx = parent_node.get_child_index(node.get_id()) + 1
-                    total = parent_node.get_n_children()-1
-                    if total < next_idx:
-                        nextnode = None
-                    else:
-                        nextnode = parent_node.get_nth_child(next_idx)
-                        while nextnode and next_idx < total and \
-                                    not self.is_displayed(nextnode.get_id()):
-                            next_idx += 1
-                            nextnode = parent_node.get_nth_child(next_idx)
+                    total = self.node_n_children(parent)
+                    c = 0
+                    next_id = None
+                    while c < total and not next_id:
+                        child = self.node_nth_child(parent,c)
+                        c += 1
+                        if child == node:
+                            next_id = c
+                    if next_id < total:
+                        nextnode = self.node_nth_child(parent,next_id)
         #check to see if our result is correct
         if nextnode and not self.is_displayed(nextnode.get_id()):
             nextnode = None

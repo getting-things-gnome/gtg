@@ -268,11 +268,13 @@ class TaskTreeModel(gtk.GenericTreeModel):
             return None
 
     def on_iter_next(self, iter):
-#        print "on_iter_next"
         toreturn = None
         if iter and iter.is_valid():
             path = iter.get_path()
-            parent = self.tree.get_node_for_path(path[:-1])
+            ppath = path[:-1]
+            if ppath == ():
+                ppath = None
+            parent = self.tree.get_node_for_path(ppath)
             node = iter.get_node()
             next = self.tree.next_node(node,parent=parent)
             #We have the next node. To know the path to use

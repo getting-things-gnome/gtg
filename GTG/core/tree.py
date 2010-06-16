@@ -65,7 +65,7 @@ class Tree():
     def add_node(self, node, parent=None):
         #print "*************adding node %s %s" %(node, parent)
         id = node.get_id()
-        if self.nodes.get(id):
+        if self.nodes.has_key(id):
             print "Error : A node with this id %s already exists" %id
             return False
         else:
