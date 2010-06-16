@@ -471,7 +471,7 @@ class TaskTreeView(gtk.TreeView):
         col = None
         if self.bg_color_enable:
             bgcolor = column.get_tree_view().get_style().base[gtk.STATE_NORMAL]
-            if iter:
+            if iter and model.iter_is_valid(iter):
                 value = model.get_value(iter, COL_TAGS)
                 if value:
                     col = colors.background_color(value, bgcolor)
