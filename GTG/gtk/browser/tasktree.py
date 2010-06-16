@@ -284,6 +284,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
             for n in npaths:
                 if path[:-1] == n[:-1]:
                     toreturn = self.iter_store.get(next,n)
+#        print "iter_next for iter %s is %s" %(iter,toreturn)
         return toreturn
 
     def on_iter_children(self, iter):
@@ -310,10 +311,10 @@ class TaskTreeModel(gtk.GenericTreeModel):
 
     def on_iter_nth_child(self, iter, n):
 #        print "on_iter_nth_child %s" %n
-        if iter:
-            id = iter.get_node().get_id()
-        else:
-            id = None
+#        if iter:
+#            id = iter.get_node().get_id()
+#        else:
+#            id = None
         toreturn = None
         if iter and iter.is_valid():
             node = iter.get_node()
@@ -325,8 +326,8 @@ class TaskTreeModel(gtk.GenericTreeModel):
                     if c[:-1] == path:
                         toreturn = self.iter_store.get(child,c)
                 if not toreturn:
-                    print "PROBLEM: child %s have the path %s but parent has %s"\
-                            %(child.get_id(),cpaths,path)
+                    print "PROBLEM: child %s have the path %s but parent %s has %s"\
+                            %(child.get_id(),cpaths,node.get_id(),path)
         return toreturn
 
     def on_iter_parent(self, iter):
@@ -366,10 +367,21 @@ class TaskTreeModel(gtk.GenericTreeModel):
     def add_tasks(self):
         #self.lock = True
         while len(self.tasks_to_add) > 0:
-            tid = self.tasks_to_add.pop()
+            tid = self.tasks_to_add.pop(0)
             task = self.tree.get_node(tid)
+            run = False
             if task:
+                run = True
                 node_paths = self.tree.get_paths_for_node(task)
+                parents = self.tree.node_parents(task)
+                for p in parents:
+                    #if we realize that a parent is still to add, we
+                    #don't insert the current task but we put it at the end
+                    #of the queue
+                    if p.get_id() in self.tasks_to_add:
+                        self.tasks_to_add.append(tid)
+                        run = False
+            if run:
                 for node_path in node_paths:
                     node_iter = self.get_iter(node_path)
                     if self.iter_is_valid(node_iter):
@@ -379,11 +391,10 @@ class TaskTreeModel(gtk.GenericTreeModel):
                         if self.tree.node_has_child(task):
         #                    print "child_toggled 2 : %s" %task.get_title()
                             self.row_has_child_toggled(node_path,node_iter)
-                parents = self.tree.node_parents(task)
                 for p in parents:
                         for par_path in self.tree.get_paths_for_node(p):
                             par_iter = self.get_iter(par_path)
-#                            print "child_toggled 3 : %s" %p.get_title()
+    #                            print "child_toggled 3 : %s" %p.get_title()
                             self.row_has_child_toggled(par_path, par_iter)
         self.lock = False
 
@@ -471,7 +482,7 @@ class TaskTreeView(gtk.TreeView):
         col = None
         if self.bg_color_enable:
             bgcolor = column.get_tree_view().get_style().base[gtk.STATE_NORMAL]
-            if iter:
+            if iter and model.iter_is_valid(iter):
                 value = model.get_value(iter, COL_TAGS)
                 if value:
                     col = colors.background_color(value, bgcolor)
