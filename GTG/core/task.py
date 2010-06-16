@@ -313,7 +313,8 @@ class Task(TreeNode):
                 for t in self.get_tags():
                     child.tag_added(t.get_name())
             self.sync()
-            child.sync()
+            #This one should be handled by the self.call_modified()
+#            child.sync()
             return True
         else:
             Log.debug("child addition failed (or still pending)")
@@ -371,7 +372,8 @@ class Task(TreeNode):
         added = TreeNode.add_parent(self, parent_tid)
         if added:
             self.sync()
-            self.req.get_task(parent_tid).sync()
+            #the parent is handled by the sync
+#            self.req.get_task(parent_tid).sync()
             return True
         else:
             return False
@@ -447,6 +449,9 @@ class Task(TreeNode):
         if self.sync_func and self.is_loaded():
             self.sync_func(self)
             self.call_modified()
+            return True
+        else:
+            return False
     
     #This function send the modified signals for the tasks, 
     #parents and childrens       

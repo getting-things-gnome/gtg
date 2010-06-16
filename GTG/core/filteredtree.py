@@ -121,6 +121,7 @@ class FilteredTree(gobject.GObject):
 #        self.using_cache = 0
         #useful for temp storage :
         self.node_to_add = []
+        self.tasks_to_modify = []
         self.node_to_remove = []
         self.__clean_list = []
         #it looks like an initial refilter is not needed.
@@ -213,11 +214,18 @@ class FilteredTree(gobject.GObject):
             self.__add_node(tid)
         
     def __task_modified(self,sender,tid):
-#        print "%s is modified in the filteredtree" %tid
-        node = self.get_node(tid)
-        if node:
-            inroot = self.__is_root(node)
-            self.__update_node(tid,inroot)
+        if tid not in self.tasks_to_modify:
+            self.tasks_to_modify.append(tid)
+#            print "%s is modified in the filteredtree" %tid
+            node = self.get_node(tid)
+            if node:
+                inroot = self.__is_root(node)
+                if tid == "71@1":
+                    print "BBBBB : task 71@1 modified inroot : %s" %inroot
+                self.__update_node(tid,inroot)
+            self.tasks_to_modify.remove(tid)
+        else:
+            print "task_modified saved"
         
         
     def __task_deleted(self,sender,tid):
@@ -282,9 +290,13 @@ class FilteredTree(gobject.GObject):
             path = ()
             toreturn.append(path)
         elif tid in self.virtual_root:
+#        elif not self.node_parents(node):
             ind = self.virtual_root.index(tid)
             path = (ind,)
             toreturn.append(path)
+            parents = self.node_parents(node)
+            if len(parents) > 0:
+                print "WARNING :  %s was in VR with %s parents" %(tid,len(parents))
         #The node is not a virtual root
         else:
             pars = self.node_parents(node)
@@ -440,10 +452,16 @@ class FilteredTree(gobject.GObject):
             while good <= n and cur < total:
                 curn = node.get_nth_child(cur)
                 if curn and self.is_displayed(curn.get_id()):
+                    cid = curn.get_id()
                     if good == n:
                         toreturn = curn
+                        if cid in self.virtual_root:
+#                            isroot = self.__is_root(curn)
+                            print "AIEAIEAIE: children %s is also in VR (isroot )" %(cid)
+                            self.__root_update(curn,False)
                     good += 1
                 cur += 1
+            #if we have a child, it cannot be in the root
         return toreturn
 
     #Done
@@ -462,11 +480,15 @@ class FilteredTree(gobject.GObject):
         if node and tid in self.virtual_root:
             return parents_nodes
         #we return only parents that are not root and displayed
-        elif node and node.has_parent():
+        if node and node.has_parent():
             for pid in node.get_parents():
                 parent = self.tree.get_node(pid)
                 if self.is_displayed(pid) and parent != self.tree.get_root():
                     parents_nodes.append(parent)
+#            if len(parents_nodes) == 0:
+#                print "ERROR : %s has no parent and is not in VR" %tid
+#        if not self.flat and tid in self.virtual_root and len(parents_nodes) > 0:
+#            self.__root_update(tid,False)
         return parents_nodes
 
 
@@ -686,9 +708,23 @@ class FilteredTree(gobject.GObject):
         if inroot:
             if tid not in self.virtual_root:
                 self.virtual_root.append(tid)
+                #We will also update the children of that node
+                if not self.flat:
+                    node = self.get_node(tid)
+                    nc = self.node_n_children(node)
+                    i = 0
+                    while i < nc:
+                        ch = self.node_nth_child(node,i)
+                        chid = ch.get_id()
+                        if chid in self.virtual_root:
+                            print " * * * * : %s should not be in VR" %chid
+                            self.__root_update(chid,False)
+                        i += 1
         else:
             if tid in self.virtual_root:
                 self.virtual_root.remove(tid)
+#                for t in self.virtual_root:
+#                    self.__update_node(t,True)
     
     def __update_node(self,tid,inroot):
         if tid not in self.node_to_remove:
