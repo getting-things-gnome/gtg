@@ -1,0 +1,4 @@
+<?xml version="1.0" ?>
+<config>
+	<backend filename="test.xml" module="localfile" pid="1"/>
+</config>
