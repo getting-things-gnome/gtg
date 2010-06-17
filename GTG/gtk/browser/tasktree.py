@@ -268,6 +268,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
             return None
 
     def on_iter_next(self, iter):
+#        print "on_iter_next"
         toreturn = None
         if iter and iter.is_valid():
             path = iter.get_path()
@@ -296,7 +297,10 @@ class TaskTreeModel(gtk.GenericTreeModel):
 #        print "on_iter_has_child"
         if iter:
             node = iter.get_node()
-            return self.tree.node_has_child(node)
+            toreturn = self.tree.node_has_child(node)
+#            if toreturn:
+#                print "iter %s has child: %s" %(iter,toreturn)
+            return toreturn
         else:
             return False
 
@@ -307,10 +311,11 @@ class TaskTreeModel(gtk.GenericTreeModel):
             toreturn = self.tree.node_n_children(node)
         else:
             toreturn = self.tree.node_n_children(None)
+#        print "on_iter %s n_children %s" %(iter,toreturn)
         return toreturn
 
     def on_iter_nth_child(self, iter, n):
-#        print "on_iter_nth_child %s" %n
+#        print "on_iter %s _nth_child %s" %(iter,n)
 #        if iter:
 #            id = iter.get_node().get_id()
 #        else:
@@ -328,6 +333,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
                 if not toreturn:
                     print "PROBLEM: child %s have the path %s but parent %s has %s"\
                             %(child.get_id(),cpaths,node.get_id(),path)
+#        print "returning %s" %toreturn
         return toreturn
 
     def on_iter_parent(self, iter):
@@ -349,9 +355,10 @@ class TaskTreeModel(gtk.GenericTreeModel):
                 node_paths = self.tree.get_paths_for_node(my_node)
                 for node_path in node_paths:
                     node_iter = self.get_iter(node_path)
-                    self.row_changed(node_path, node_iter)
+                    if self.iter_is_valid(node_iter):
+                        self.row_changed(node_path, node_iter)
 #                    print "child_toggled 1 : %s" %my_node.get_title()
-                    self.row_has_child_toggled(node_path, node_iter)
+                        self.row_has_child_toggled(node_path, node_iter)
                 if len(node_paths) == 0: 
                     print "Error :! no path for node %s !" %my_node.get_id()
 
@@ -395,7 +402,8 @@ class TaskTreeModel(gtk.GenericTreeModel):
                         for par_path in self.tree.get_paths_for_node(p):
                             par_iter = self.get_iter(par_path)
     #                            print "child_toggled 3 : %s" %p.get_title()
-                            self.row_has_child_toggled(par_path, par_iter)
+                            if self.iter_is_valid(par_iter):
+                                self.row_has_child_toggled(par_path, par_iter)
         self.lock = False
 
     def remove_task(self, sender, tid):
@@ -455,7 +463,8 @@ class TaskTreeModel(gtk.GenericTreeModel):
             node_paths = self.tree.get_paths_for_node(child_task)
             for node_path in node_paths:
                 node_iter = self.get_iter(node_path)
-                self.row_inserted(node_path, node_iter)
+                if self.iter_is_valid(node_iter):
+                    self.row_inserted(node_path, node_iter)
         #if we had a filter, we have to refilter after the drag-n-drop
         #This is not optimal and could be improved
         self.tree.refilter()

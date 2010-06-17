@@ -453,6 +453,7 @@ class FilteredTree(gobject.GObject):
                     cid = curn.get_id()
                     if good == n:
                         toreturn = curn
+                        #if we have a child, it cannot be in the root
                         if cid in self.virtual_root:
 #                            isroot = self.__is_root(curn)
                             print "*** children %s of task %s is also in VR" \
@@ -461,7 +462,6 @@ class FilteredTree(gobject.GObject):
                             self.__root_update(curn,False)
                     good += 1
                 cur += 1
-            #if we have a child, it cannot be in the root
         return toreturn
 
     #Done

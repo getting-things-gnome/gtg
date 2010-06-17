@@ -39,7 +39,7 @@ def cleanNode(currentNode,indent,newl):
     if currentNode.hasChildNodes:
         for node in currentNode.childNodes:
             if node.nodeType == 3 :
-                node.nodeValue = node.nodeValue.lstrip(myfilter).strip(myfilter)
+                node.nodeValue = node.nodeValue.strip(myfilter)
                 if node.nodeValue == "":
                     currentNode.removeChild(node)
         for node in currentNode.childNodes:
@@ -81,7 +81,6 @@ def openxmlfile(zefile,root ):
             if not newfile:
                 sys.exit(1)
             return openxmlfile(zefile, root) # recursive call
-
         doc = xml.dom.minidom.parse(f)
         cleanDoc(doc,tab,enter)
         xmlproject = doc.getElementsByTagName(root)[0]
@@ -100,6 +99,7 @@ def openxmlfile(zefile,root ):
             # Ok, try one more time now
             return openxmlfile(zefile, root)
         sys.exit(1)
+#    print "closing %s file" %zefile
 
 
 #Return a doc element with only one root element of the name "root"
@@ -111,7 +111,7 @@ def emptydoc(root) :
     
 #write a XML doc to a file
 def savexml(zefile,doc,backup=False):
-#    print "writing %s file (%s)" %(zefile,opt)
+#    print "writing %s file" %(zefile)
     tmpfile = zefile+'__'
     try:
         if os.path.exists(zefile):
@@ -144,7 +144,6 @@ def savexml(zefile,doc,backup=False):
                 #So that it's not touched in case of bad opening next time
                 current = "%s.bak.0" %(zefile)
                 shutil.copy(zefile,current)
-            
             return True
         else:
             print "no file %s or no pretty xml"%zefile
