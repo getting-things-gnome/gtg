@@ -897,7 +897,9 @@ class TaskBrowser:
     def on_task_child_toggled(self, model, path, iter):
         tid = model.get_value(iter, tasktree.COL_TID)
         if tid not in self.priv.get("collapsed_tids", []):
-            self.task_tv.expand_row(path, False)
+            curiter = model.get_iter(path)
+            if model.iter_is_valid(curiter):
+                self.task_tv.expand_row(path, False)
         else:
             self.task_tv.collapse_row(path)
 
