@@ -20,6 +20,8 @@
 import os, xml.dom.minidom
 import shutil
 import sys
+import time
+import re
 
 from GTG.tools.logger import Log
 
@@ -37,13 +39,29 @@ def cleanDoc(document,indent="",newl=""):
 def cleanNode(currentNode,indent,newl):
     myfilter = indent+newl
     if currentNode.hasChildNodes:
+        toremove = []
         for node in currentNode.childNodes:
             if node.nodeType == 3 :
-                node.nodeValue = node.nodeValue.strip(myfilter)
-                if node.nodeValue == "":
-                    currentNode.removeChild(node)
+                val = node.nodeValue.lstrip(myfilter).strip(myfilter)
+                if val == "":
+                    toremove.append(node)
+                else:
+                    node.nodeValue = val
+        #now we remove the nodes that were empty
+        for n in toremove:
+            currentNode.removeChild(n)
         for node in currentNode.childNodes:
             cleanNode(node,indent,newl)
+
+def cleanString(string,indent="",newl=""):
+    #we will remove the pretty XML stuffs.
+    #Firt, we remove the \n and tab in elements
+    e = re.compile('>\n\t*')
+    toreturn = e.sub('>',string)
+    #then we remove the \n tab before closing elements
+    f = re.compile('\n\t*</')
+    toreturn = f.sub('</',toreturn)
+    return toreturn
 
 #This add a text node to the node parent. We don't return anything
 #Because the doc object itself is modified.
@@ -81,7 +99,11 @@ def openxmlfile(zefile,root ):
             if not newfile:
                 sys.exit(1)
             return openxmlfile(zefile, root) # recursive call
-        doc = xml.dom.minidom.parse(f)
+        stringed = f.read()
+        stringed = cleanString(stringed,tab,enter)
+        doc = xml.dom.minidom.parseString(stringed)
+#        doc = xml.dom.minidom.parse(f)
+#        print "cleaning %s" %zefile
         cleanDoc(doc,tab,enter)
         xmlproject = doc.getElementsByTagName(root)[0]
         f.close()
