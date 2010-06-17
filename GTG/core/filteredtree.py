@@ -501,10 +501,6 @@ class FilteredTree(gobject.GObject):
         """
         if tid:
             toreturn = tid in self.displayed_nodes
-#            if toreturn:
-#                paths = self.get_paths_for_node(self.tree.get_node(tid))
-#                if len(paths) <= 0:
-#                    toreturn = False
         else:
             toreturn = False
         return toreturn
