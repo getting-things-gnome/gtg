@@ -76,6 +76,7 @@ class TagTree():
     def tagrefresh(self,sender=None,tagname=None):
         if tagname:
             tag = self.req.get_tag(tagname)
+            self.tag_model.clear_cache(tagname)
             if tag:
                 path = self.tag_model.tree.get_path_for_node(tag)
                 if path:
@@ -145,13 +146,13 @@ class TagTree():
         if tag and not tag.is_removable():
             # show the tag if any children are shown
             child = model.iter_children(iter)
-            while child:
+            while child and not toreturn:
                 if self.tag_visible_func(model, child):
                     toreturn = True
                 child=model.iter_next(child)
             if not tag.get_attribute("special"):
-                count = model.get_value(iter, COL_COUNT)
-                toreturn = toreturn or count != '0'
+                count = model.get_tag_count(tag,use_cache=True)
+                toreturn = toreturn or count != 0
             else:
                 toreturn = True
         return toreturn
@@ -205,24 +206,44 @@ class TagTreeModel(gtk.GenericTreeModel):
         self.req  = requester
         self.tree = self.req.get_tag_tree()
         self.tasktree = self.req.get_main_tasks_tree()
+        self.count_cache = {}
 #        self.tag_count = 0
 #        self.time_tag_count = 0
 
-    def get_tag_count(self,tag):
+    def clear_cache(self,tag=None):
+        if tag:
+            if self.count_cache.has_key(tag):
+                self.count_cache.pop(tag)
+                return True
+            else:
+                return False
+        else:
+            self.count_cache = {}
+            return True
+
+    def get_tag_count(self,tag,use_cache=False):
 #        self.tag_count += 1
 #        time1 = time.time()
-        sp_id = tag.get_attribute("special")
-        if sp_id == "all":
-            toreturn = self.tasktree.get_n_nodes(withfilters=['no_disabled_tag'],countednodes=True)
-        elif sp_id == "notag":
-            toreturn = self.tasktree.get_n_nodes(withfilters=['notag'],countednodes=True)
-        elif sp_id == "sep" :
-            toreturn = 0
+        tname = tag.get_name()
+        if use_cache and self.count_cache.has_key(tname):
+            toreturn = self.count_cache[tname]
         else:
-            toreturn = self.tasktree.get_n_nodes(withfilters=[tag.get_name()],countednodes=True)
-#        time2 = time.time()
-#        self.time_tag_count += (time2 - time1)
-#        print "total time spent in %s tag_count : %s" %(self.tag_count,self.time_tag_count)
+            sp_id = tag.get_attribute("special")
+            if sp_id == "all":
+                toreturn = self.tasktree.get_n_nodes(\
+                        withfilters=['no_disabled_tag'],countednodes=True)
+            elif sp_id == "notag":
+                toreturn = self.tasktree.get_n_nodes(\
+                                withfilters=['notag'],countednodes=True)
+            elif sp_id == "sep" :
+                toreturn = 0
+            else:
+                toreturn = self.tasktree.get_n_nodes(\
+                                    withfilters=[tname],countednodes=True)
+            self.count_cache[tname] = toreturn
+    #        time2 = time.time()
+    #        self.time_tag_count += (time2 - time1)
+    #        print "total time spent in %s tag_count : %s" %(self.tag_count,self.time_tag_count)
         return toreturn
 
 ### MODEL METHODS ############################################################
