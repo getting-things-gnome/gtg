@@ -283,7 +283,9 @@ class TaskTreeModel(gtk.GenericTreeModel):
             for n in npaths:
                 if path[:-1] == n[:-1]:
                     toreturn = self.iter_store.get(next,n)
-#        print "iter_next for iter %s is %s" %(iter,toreturn)
+            if len(npaths) > 0 and not toreturn:
+                print "!!!!!!!! We didn't find iter_next for %s" %rowref
+#        print "iter_next for iter %s is %s" %(rowref,toreturn)
         return toreturn
 
     def on_iter_children(self, rowref):
@@ -307,7 +309,7 @@ class TaskTreeModel(gtk.GenericTreeModel):
             toreturn = self.tree.node_n_children(node)
         else:
             toreturn = self.tree.node_n_children(None)
-#        print "on_iter %s n_children %s" %(iter,toreturn)
+#        print "on_iter %s n_children %s" %(rowref,toreturn)
         return toreturn
 
     def on_iter_nth_child(self, rowref, n):
