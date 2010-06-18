@@ -193,7 +193,7 @@ class pluginExport:
                             text        = str(task.get_text()),
                             subtasks    = [],
                             status      = task.get_status(),
-                            modified    = str(task.get_modified()),
+                            modified    = str(task.get_modified_string()),
                             due_date    = str(task.get_due_date()),
                             closed_date = str(task.get_closed_date()),
                             start_date  = str(task.get_start_date()),

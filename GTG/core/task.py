@@ -165,8 +165,11 @@ class Task(TreeNode):
     def get_modified(self):
         return self.modified
 
-    def set_modified(self, string):
-        self.modified = string
+    def get_modified_string(self):
+        return self.modified.strftime("%Y-%m-%dT%H:%M:%S")
+
+    def set_modified(self, modified):
+        self.modified = modified
 
     def set_due_date(self, fulldate):
         assert(isinstance(fulldate, Date))
@@ -466,7 +469,7 @@ class Task(TreeNode):
             self.req._task_modified(p)
 
     def _modified_update(self):
-        self.modified = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+        self.modified = datetime.now()
 
 
 
