@@ -70,8 +70,9 @@ class TagTree():
     def refresh(self,sender=None,tid=None):
         if tid:
             task = self.req.get_task(tid)
-            for tag in task.get_tags():
-                self.tagrefresh(sender=sender,tagname=tag.get_name())
+            if task:
+                for tag in task.get_tags():
+                    self.tagrefresh(sender=sender,tagname=tag.get_name())
 
     def tagrefresh(self,sender=None,tagname=None):
         if tagname:
