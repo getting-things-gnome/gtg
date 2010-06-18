@@ -74,7 +74,6 @@ bottom to top, with no horizontal communication at all between views.
 """
 
 import gobject
-import time
 
 from GTG.tools.logger import Log
 
@@ -551,7 +550,6 @@ class FilteredTree(gobject.GObject):
         self.remove_count = 0
         virtual_root2 = []
         to_add = []
-        #self.displayed_nodes = []
         self.counted_nodes = []
         self.count_cache = {}
         #If we have only one flat filter, the result is flat
@@ -565,16 +563,8 @@ class FilteredTree(gobject.GObject):
 #        time2 = time.time()
         for n in self.tree.get_all_nodes():
             tid = n.get_id()
-            is_root = False
             if self.__is_displayed(tid):
                 to_add.append(tid)
-                is_root = self.__is_root(n)
-            #and we care about those who will be virtual roots
-            #(their parents are not displayed)
-            if is_root and tid not in virtual_root2:
-                virtual_root2.append(tid)
-#            print "%s is displayed %s" %(tid,self.__is_displayed(tid))
-#            print "  virtual_root : %s" %virtual_root2
         #Second step, we empty the current tree as we will rebuild it
         #from scratch
 #        time3 = time.time()
@@ -583,21 +573,17 @@ class FilteredTree(gobject.GObject):
             self.__clean_from_node(n)
         self.__reset_cache()
 #        time4 = time.time()
-        #Here, we reconstruct our filtered trees. It  cannot be random
-        # Parents should be added before their children
-        #First, we start we the nodes in the virtual root
         #We reinitialize the tree before adding nodes that should be added
         self.displayed_nodes = []
         for nid in list(to_add):
-            isroot = nid in virtual_root2
-            self.__add_node(nid,isroot)
+            self.__add_node(nid)
 #        time5 = time.time()
         #end of refiltering
 #        print "*** end of refiltering ****"
 #        self.print_tree()
         #Finalizing : adding nodes that still need to be added
-        for n in self.node_to_add:
-            self.__add_node(n)
+#        for n in self.node_to_add:
+#            self.__add_node(n)
 
 #        self.refilter_count +=1
 #        time6 = time.time()
@@ -764,7 +750,12 @@ class FilteredTree(gobject.GObject):
                 inroot = self.__is_root(node)
             #If the parent's node is not already displayed, we wait
             #(the len of parents is 0 means no parent dislayed)
-            if not inroot and len(self.node_parents(node)) <= 0:
+            parents = self.node_parents(node)
+            if not inroot and len(parents) <= 0:
+                if tid not in self.node_to_add:
+                    self.node_to_add.append(tid)
+            elif inroot and len(parents) > 0:
+                #"we add to the root a task with parents !!!!!"
                 if tid not in self.node_to_add:
                     self.node_to_add.append(tid)
             else:

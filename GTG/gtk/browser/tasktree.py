@@ -193,11 +193,11 @@ class TaskTreeModel(gtk.GenericTreeModel):
 #        print "on_get_column_type %s" %n
         return self.column_types[n]
 
-    def on_get_value(self, iter, column):
+    def on_get_value(self, rowref, column):
 #        print "on get_value %s (%s) col %s" %(iter,type(iter),column)
-        if not iter:
+        if not rowref:
             return None
-        task = iter.get_node()
+        task = rowref.get_node()
         if column == COL_OBJ:
             return task
         elif column == COL_DDATE:
@@ -248,35 +248,33 @@ class TaskTreeModel(gtk.GenericTreeModel):
 #        print "on_get_iter for %s" %(str(path))
         node = self.tree.get_node_for_path(path)
         if node:
-            iter = self.iter_store.get(node,path)
+            rowref = self.iter_store.get(node,path)
         if node and (node.get_id() in self.tasks_to_add):
             #print "WE WILL NOT ADD %s" %node.get_id()
             self.tasks_to_add.remove(node.get_id())
-#        parent = self.tree.get_node_for_path(path[:-1])
-#        print "returning iter %s" %(node)
-        return iter
+        #This will become the payload of a Gtk.TreeIter 
+        #if called with .get_iter()
+        return rowref
 
-    def on_get_path(self, iter):
+    def on_get_path(self, rowref):
 #        print "on_get_path"
-        if iter and iter.is_valid():
-            node = iter.get_node()
-#            paths = self.tree.get_paths_for_node(node)
-            path = iter.get_path()
+        if rowref and rowref.is_valid():
+            path = rowref.get_path()
 #            print "path of iter is correct : %s" %(path in paths)
             return path
         else:
             return None
 
-    def on_iter_next(self, iter):
+    def on_iter_next(self, rowref):
 #        print "on_iter_next"
         toreturn = None
-        if iter and iter.is_valid():
-            path = iter.get_path()
+        if rowref and rowref.is_valid():
+            path = rowref.get_path()
             ppath = path[:-1]
             if ppath == ():
                 ppath = None
             parent = self.tree.get_node_for_path(ppath)
-            node = iter.get_node()
+            node = rowref.get_node()
             next = self.tree.next_node(node,parent=parent)
             #We have the next node. To know the path to use
             # we will find, in its paths, the one with 
@@ -285,45 +283,41 @@ class TaskTreeModel(gtk.GenericTreeModel):
             for n in npaths:
                 if path[:-1] == n[:-1]:
                     toreturn = self.iter_store.get(next,n)
-#        print "iter_next for iter %s is %s" %(iter,toreturn)
+            if len(npaths) > 0 and not toreturn:
+                print "!!!!!!!! We didn't find iter_next for %s" %rowref
+#        print "iter_next for iter %s is %s" %(rowref,toreturn)
         return toreturn
 
-    def on_iter_children(self, iter):
+    def on_iter_children(self, rowref):
 #        print "on_iter_children"
-        return self.on_iter_nth_child(iter,0)
+        return self.on_iter_nth_child(rowref,0)
             
 
-    def on_iter_has_child(self, iter):
+    def on_iter_has_child(self, rowref):
 #        print "on_iter_has_child"
-        if iter:
-            node = iter.get_node()
+        if rowref and rowref.is_valid():
+            node = rowref.get_node()
             toreturn = self.tree.node_has_child(node)
-#            if toreturn:
-#                print "iter %s has child: %s" %(iter,toreturn)
             return toreturn
         else:
             return False
 
-    def on_iter_n_children(self, iter):
+    def on_iter_n_children(self, rowref):
 #        print "on_iter_n_children"
-        if iter:
-            node = iter.get_node()
+        if rowref:
+            node = rowref.get_node()
             toreturn = self.tree.node_n_children(node)
         else:
             toreturn = self.tree.node_n_children(None)
-#        print "on_iter %s n_children %s" %(iter,toreturn)
+#        print "on_iter %s n_children %s" %(rowref,toreturn)
         return toreturn
 
-    def on_iter_nth_child(self, iter, n):
+    def on_iter_nth_child(self, rowref, n):
 #        print "on_iter %s _nth_child %s" %(iter,n)
-#        if iter:
-#            id = iter.get_node().get_id()
-#        else:
-#            id = None
         toreturn = None
-        if iter and iter.is_valid():
-            node = iter.get_node()
-            path = iter.get_path()
+        if rowref and rowref.is_valid():
+            node = rowref.get_node()
+            path = rowref.get_path()
             child = self.tree.node_nth_child(node,n)
             if child:
                 cpaths = self.tree.get_paths_for_node(child)
@@ -336,10 +330,10 @@ class TaskTreeModel(gtk.GenericTreeModel):
 #        print "returning %s" %toreturn
         return toreturn
 
-    def on_iter_parent(self, iter):
+    def on_iter_parent(self, rowref):
 #        print "on_iter_parent"
-        if iter and iter.is_valid():
-            path = iter.get_path()
+        if rowref and rowref.is_valid():
+            path = rowref.get_path()
             par_node = self.tree.get_node_for_path(path[:-1])
             return self.iter_store.get(par_node,path[:-1])
         else:
@@ -363,8 +357,6 @@ class TaskTreeModel(gtk.GenericTreeModel):
                     print "Error :! no path for node %s !" %my_node.get_id()
 
     def to_add_task(self,sender,tid):
-#        task = self.tree.get_node(tid)
-#        node_paths = self.tree.get_paths_for_node(task)
 #        print "%s is to_add" %(tid)
         self.tasks_to_add.append(tid)
         if not self.lock and len(self.tasks_to_add) > 0:
