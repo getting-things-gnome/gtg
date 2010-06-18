@@ -249,12 +249,14 @@ class TaskTreeModel(gtk.GenericTreeModel):
         node = self.tree.get_node_for_path(path)
         if node:
             rowref = self.iter_store.get(node,path)
-        if node and (node.get_id() in self.tasks_to_add):
-            #print "WE WILL NOT ADD %s" %node.get_id()
-            self.tasks_to_add.remove(node.get_id())
-        #This will become the payload of a Gtk.TreeIter 
-        #if called with .get_iter()
-        return rowref
+            if  node.get_id() in self.tasks_to_add:
+                #print "WE WILL NOT ADD %s" %node.get_id()
+                self.tasks_to_add.remove(node.get_id())
+            #This will become the payload of a Gtk.TreeIter 
+            #if called with .get_iter()
+            return rowref
+        else:
+            return None
 
     def on_get_path(self, rowref):
 #        print "on_get_path"
