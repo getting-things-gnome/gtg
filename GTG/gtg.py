@@ -45,7 +45,6 @@
 """This is the top-level exec script for running GTG"""
 
 #=== IMPORT ===================================================================
-from __future__ import with_statement
 from contextlib import contextmanager
 import os
 import logging

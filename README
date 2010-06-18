@@ -11,7 +11,7 @@ from small tasks to large projects.
 ===== Dependencies =====
 
 GTG depends on the following packages:
- * Python, version 2.5 or above
+ * Python, version 2.6 or above
  * PyGTK
  * python ConfigObj
  * python gobject
