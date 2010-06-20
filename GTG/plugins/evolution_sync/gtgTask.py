@@ -16,8 +16,9 @@
 
 import datetime
 
-from GTG.tools.dates import NoDate, RealDate
+from GTG.tools.dates                        import *
 from GTG.plugins.evolution_sync.genericTask import GenericTask
+
 
 class GtgTask(GenericTask):
 
@@ -62,15 +63,15 @@ class GtgTask(GenericTask):
 
     def _get_due_date(self):
         due_date = self._gtg_task.get_due_date()
-        if due_date == NoDate():
+        if due_date == Date.no_date():
                 return None
-        return due_date.to_py_date()
+        return due_date._date
 
     def _set_due_date(self, due):
         if due == None:
-            gtg_due = NoDate()
+            gtg_due = Date.no_date()
         else:
-            gtg_due = RealDate(due)
+            gtg_due = Date(due)
         self._gtg_task.set_due_date(gtg_due)
 
     def _get_modified(self):

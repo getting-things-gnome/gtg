@@ -45,7 +45,7 @@ from GTG.gtk.editor.taskview import TaskView
 from GTG.core.plugins.engine import PluginEngine
 from GTG.core.plugins.api    import PluginAPI
 from GTG.core.task           import Task
-from GTG.tools               import dates
+from GTG.tools.dates         import *
 
 
 date_separator = "-"
@@ -307,13 +307,13 @@ class TaskEditor:
              
         #refreshing the due date field
         duedate = self.task.get_due_date()
-        prevdate = dates.strtodate(self.duedate_widget.get_text())
+        prevdate = Date.parse(self.duedate_widget.get_text())
         if duedate != prevdate or type(duedate) is not type(prevdate):
             zedate = str(duedate).replace("-", date_separator)
             self.duedate_widget.set_text(zedate)
         # refreshing the closed date field
         closeddate = self.task.get_closed_date()
-        prevcldate = dates.strtodate(self.closeddate_widget.get_text())
+        prevcldate = Date.parse(self.closeddate_widget.get_text())
         if closeddate != prevcldate or type(closeddate) is not type(prevcldate):
             zecldate = str(closeddate).replace("-", date_separator)
             self.closeddate_widget.set_text(zecldate)
@@ -348,7 +348,7 @@ class TaskEditor:
         self.dayleft_label.set_markup("<span color='"+color+"'>"+txt+"</span>")
 
         startdate = self.task.get_start_date()
-        prevdate = dates.strtodate(self.startdate_widget.get_text())
+        prevdate = Date.parse(self.startdate_widget.get_text())
         if startdate != prevdate or type(startdate) is not type(prevdate):
             zedate = str(startdate).replace("-",date_separator)
             self.startdate_widget.set_text(zedate) 
@@ -377,9 +377,9 @@ class TaskEditor:
         validdate = False
         if not text :
             validdate = True
-            datetoset = dates.no_date
+            datetoset = Date.no_date()
         else :
-            datetoset = dates.strtodate(text)
+            datetoset = Date.parse(text)
             if datetoset :
                 validdate = True
                 
@@ -400,15 +400,15 @@ class TaskEditor:
             widget.modify_base(gtk.STATE_NORMAL, gtk.gdk.color_parse("#F88"))
 
     def _mark_today_in_bold(self):
-        today = dates.date_today()
+        today = Date.today()
         #selected is a tuple containing (year, month, day)
         selected = self.cal_widget.get_date()
         #the following "-1" is because in pygtk calendar the month is 0-based,
         # in gtg (and datetime.date) is 1-based.
-        if selected[1] == today.month() - 1 and selected[0] == today.year():
-            self.cal_widget.mark_day(today.day())
+        if selected[1] == today.month - 1 and selected[0] == today.year:
+            self.cal_widget.mark_day(today.day)
         else:
-            self.cal_widget.unmark_day(today.day())
+            self.cal_widget.unmark_day(today.day)
         
         
     def on_date_pressed(self, widget,data): 
@@ -440,15 +440,13 @@ class TaskEditor:
         gdk.pointer_grab(self.calendar.window, True,gdk.BUTTON1_MASK|gdk.MOD2_MASK)
         #we will close the calendar if the user clicks outside
         
-        if not isinstance(toset, dates.FuzzyDate):
-            if not toset:
-                # we set the widget to today's date if there is not a date defined
-                toset = dates.date_today()
-
-            y = toset.year()
-            m = toset.month()
-            d = int(toset.day())
-            
+        if not toset:
+            # we set the widget to today's date if there is not a date defined
+            toset = Date.today()
+        elif not toset.is_special:
+            y = toset.year
+            m = toset.month
+            d = int(toset.day)
             #We have to select the day first. If not, we might ask for
             #February while still being on 31 -> error !
             self.cal_widget.select_day(d)
@@ -463,11 +461,11 @@ class TaskEditor:
     def day_selected(self,widget) :
         y,m,d = widget.get_date()
         if self.__opened_date == "due" :
-            self.task.set_due_date(dates.strtodate("%s-%s-%s"%(y,m+1,d)))
+            self.task.set_due_date(Date.parse("%s-%s-%s"%(y,m+1,d)))
         elif self.__opened_date == "start" :
-            self.task.set_start_date(dates.strtodate("%s-%s-%s"%(y,m+1,d)))
+            self.task.set_start_date(Date.parse("%s-%s-%s"%(y,m+1,d)))
         elif self.__opened_date == "closed" :
-            self.task.set_closed_date(dates.strtodate("%s-%s-%s"%(y,m+1,d)))
+            self.task.set_closed_date(Date.parse("%s-%s-%s"%(y,m+1,d)))
         if self.close_when_changed :
             #When we select a day, we connect the mouse release to the
             #closing of the calendar.
@@ -497,16 +495,16 @@ class TaskEditor:
         self.__close_calendar()
         
     def nodate_pressed(self,widget) : #pylint: disable-msg=W0613
-        self.set_opened_date(dates.no_date)
+        self.set_opened_date(Date.no_date())
         
     def set_fuzzydate_now(self, widget) : #pylint: disable-msg=W0613
-        self.set_opened_date(dates.NOW)
+        self.set_opened_date(Date.today())
         
     def set_fuzzydate_soon(self, widget) : #pylint: disable-msg=W0613
-        self.set_opened_date(dates.SOON)
+        self.set_opened_date(Date.soon())
         
     def set_fuzzydate_later(self, widget) : #pylint: disable-msg=W0613
-        self.set_opened_date(dates.LATER)
+        self.set_opened_date(Date.later())
         
     def dismiss(self,widget) : #pylint: disable-msg=W0613
         stat = self.task.get_status()

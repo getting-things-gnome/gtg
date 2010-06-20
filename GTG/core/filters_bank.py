@@ -23,8 +23,8 @@ filters_bank stores all of GTG's filters in centralized place
 
 from datetime import datetime
 
-from GTG.core.task import Task
-from GTG.tools.dates  import date_today, no_date, Date
+from GTG.core.task    import Task
+from GTG.tools.dates  import *
 
 
 class Filter:
@@ -179,12 +179,12 @@ class FiltersBank:
     def is_started(self,task,parameters=None):
         '''Filter for tasks that are already started'''
         start_date = task.get_start_date()
-        if start_date :
+        if start_date:
             #Seems like pylint falsely assumes that subtraction always results
             #in an object of the same type. The subtraction of dates 
             #results in a datetime.timedelta object 
             #that does have a 'days' member.
-            difference = date_today() - start_date
+            difference = Date.today() - start_date
             if difference.days == 0:
                 # Don't count today's tasks started until morning
                 return datetime.now().hour > 4
@@ -202,14 +202,14 @@ class FiltersBank:
     def workdue(self,task):
         ''' Filter for tasks due within the next day '''
         wv = self.workview(task) and \
-             task.get_due_date() != no_date and \
+             task.get_due_date() != Date.no_date() and \
              task.get_days_left() < 2
         return wv
 
     def worklate(self,task):
         ''' Filter for tasks due within the next day '''
         wv = self.workview(task) and \
-             task.get_due_date() != no_date and \
+             task.get_due_date() != Date.no_date() and \
              task.get_days_late() > 0
         return wv
 

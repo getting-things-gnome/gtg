@@ -45,10 +45,7 @@ from GTG.gtk.browser.tasktree    import TaskTreeModel,\
                                         ClosedTaskTreeView
 from GTG.gtk.browser.tagtree     import TagTree
 from GTG.tools                   import openurl
-from GTG.tools.dates             import strtodate,\
-                                        no_date,\
-                                        FuzzyDate, \
-                                        get_canonical_date
+from GTG.tools.dates             import *
 from GTG.tools.logger            import Log
 #from GTG.tools                   import clipboard
 
@@ -607,13 +604,12 @@ class TaskBrowser:
                 return s
             else:
                 return -1 * s
-        
-        
+
         if sort == 0:
             # Put fuzzy dates below real dates
-            if isinstance(t1, FuzzyDate) and not isinstance(t2, FuzzyDate):
+            if t1.is_special and not t2.is_special:
                 sort = reverse_if_descending(1)
-            elif isinstance(t2, FuzzyDate) and not isinstance(t1, FuzzyDate):
+            elif t2.is_special and not t1.is_special:
                 sort = reverse_if_descending(-1)
         
         if sort == 0: # Group tasks with the same tag together for visual cleanness 
@@ -915,8 +911,8 @@ class TaskBrowser:
 
     def on_quickadd_activate(self, widget):
         text = self.quickadd_entry.get_text()
-        due_date = no_date
-        defer_date = no_date
+        due_date = Date.no_date()
+        defer_date = Date.no_date()
         if text:
             tags, notagonly = self.get_selected_tags()
             # Get tags in the title
@@ -940,12 +936,12 @@ class TaskBrowser:
                         tags.append(GTG.core.tagstore.Tag(tag, self.req))
                 elif attribute.lower() == "defer" or \
                      attribute.lower() == _("defer"):
-                    defer_date = get_canonical_date(args)
+                    defer_date = Date.parse(args)
                     if not defer_date:
                         valid_attribute = False
                 elif attribute.lower() == "due" or \
                      attribute.lower() == _("due"):
-                    due_date = get_canonical_date(args)
+                    due_date = Date.parse(args)
                     if not due_date:
                         valid_attribute = False
                 else:
@@ -1114,7 +1110,7 @@ class TaskBrowser:
         tasks = [self.req.get_task(uid) for uid in tasks_uid]
         tasks_status = [task.get_status() for task in tasks]
         for uid, task, status in zip(tasks_uid, tasks, tasks_status):
-            task.set_start_date(get_canonical_date(new_start_date))
+            task.set_start_date(Date.parse(new_start_date))
         #FIXME: If the task dialog is displayed, refresh its start_date widget
 
     def on_mark_as_started(self, widget):

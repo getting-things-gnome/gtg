@@ -20,15 +20,15 @@
 """
 task.py contains the Task class which represents (guess what) a task
 """
-
-import xml.dom.minidom
-import uuid
 import cgi
+from datetime         import datetime
+import uuid
+import xml.dom.minidom
 import xml.sax.saxutils as saxutils
 
 from GTG              import _
-from GTG.tools.dates  import date_today, no_date, Date
-from datetime         import datetime
+from GTG.tools.dates  import *
+
 from GTG.core.tree    import TreeNode
 from GTG.tools.logger import Log
 
@@ -55,9 +55,9 @@ class Task(TreeNode):
         self.title = _("My new task")
         #available status are: Active - Done - Dismiss - Note
         self.status = self.STA_ACTIVE
-        self.closed_date = no_date
-        self.due_date = no_date
-        self.start_date = no_date
+        self.closed_date = Date.no_date()
+        self.due_date = Date.no_date()
+        self.start_date = Date.no_date()
         self.can_be_deleted = newtask
         # tags
         self.tags = []
@@ -134,10 +134,10 @@ class Task(TreeNode):
                         c.set_status(status, donedate=donedate)
                 #to the specified date (if any)
                 if donedate:
-                    self.closed_date = donedate
+                    self.closed_date = Date(donedate)
                 #or to today
                 else:
-                    self.closed_date = date_today()
+                    self.closed_date = Date.today()
             #If we mark a task as Active and that some parent are not
             #Active, we break the parent/child relation
             #It has no sense to have an active subtask of a done parent.
@@ -166,14 +166,13 @@ class Task(TreeNode):
         return self.modified
 
     def get_modified_string(self):
-        return self.modified.strftime("%Y-%m-%dT%H:%M:%S")
+        return self.modified.isoformat()
 
     def set_modified(self, modified):
         self.modified = modified
 
     def set_due_date(self, fulldate):
-        assert(isinstance(fulldate, Date))
-        self.due_date = fulldate
+        self.due_date = Date(fulldate)
         self.sync()
 
     #Due date return the most urgent date of all parents
@@ -189,16 +188,14 @@ class Task(TreeNode):
         return zedate
 
     def set_start_date(self, fulldate):
-        assert(isinstance(fulldate, Date))
-        self.start_date = fulldate
+        self.start_date = Date(fulldate)
         self.sync()
 
     def get_start_date(self):
         return self.start_date
 
     def set_closed_date(self, fulldate):
-        assert(isinstance(fulldate, Date))
-        self.closed_date = fulldate
+        self.closed_date = Date(fulldate)
         self.sync()
         
     def get_closed_date(self):
@@ -206,13 +203,13 @@ class Task(TreeNode):
 
     def get_days_left(self):
         due_date = self.get_due_date()
-        if due_date == no_date:
+        if due_date == Date.no_date():
             return None
-        return due_date.days_left()
+        return (due_date - Date.today()).days
     
     def get_days_late(self):
         due_date = self.get_due_date()
-        if due_date == no_date:
+        if due_date == Date.no_date():
             return None
         closed_date = self.get_closed_date()
         return (closed_date - due_date).days

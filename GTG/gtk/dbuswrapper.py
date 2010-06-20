@@ -23,8 +23,8 @@ import dbus
 import dbus.glib
 import dbus.service
 
-from GTG.core  import CoreConfig
-from GTG.tools import dates
+from GTG.core        import CoreConfig
+from GTG.tools.dates import *
 
 
 BUSNAME = CoreConfig.BUSNAME
@@ -169,10 +169,10 @@ class DBusTaskWrapper(dbus.service.Object):
         nt = self.req.new_task(tags=tags)
         for sub in subtasks:
             nt.add_child(sub)
-        nt.set_status(status, donedate=dates.strtodate(donedate))
+        nt.set_status(status, donedate=Date.parse(donedate))
         nt.set_title(title)
-        nt.set_due_date(dates.strtodate(duedate))
-        nt.set_start_date(dates.strtodate(startdate))
+        nt.set_due_date(Date.parse(duedate))
+        nt.set_start_date(Date.parse(startdate))
         nt.set_text(text)
         return task_to_dict(nt)
 
@@ -187,10 +187,10 @@ class DBusTaskWrapper(dbus.service.Object):
         via this function.        
         """
         task = self.req.get_task(tid)
-        task.set_status(task_data["status"], donedate=dates.strtodate(task_data["donedate"]))
+        task.set_status(task_data["status"], donedate=Date.parse(task_data["donedate"]))
         task.set_title(task_data["title"])
-        task.set_due_date(dates.strtodate(task_data["duedate"]))
-        task.set_start_date(dates.strtodate(task_data["startdate"]))
+        task.set_due_date(Date.parse(task_data["duedate"]))
+        task.set_start_date(Date.parse(task_data["startdate"]))
         task.set_text(task_data["text"])
 
         for tag in task_data["tags"]:

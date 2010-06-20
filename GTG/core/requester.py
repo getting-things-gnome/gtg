@@ -27,7 +27,6 @@ from GTG.core.filteredtree import FilteredTree
 from GTG.core.filters_bank import FiltersBank
 from GTG.core.task         import Task
 from GTG.core.tagstore     import Tag
-from GTG.tools.dates       import date_today
 from GTG.tools.logger      import Log
 
 class Requester(gobject.GObject):
