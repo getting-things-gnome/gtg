@@ -458,7 +458,7 @@ class FilteredTree(gobject.GObject):
                             print "*** children %s of task %s is also in VR" \
                                                     %(cid,node.get_id())
                             print "   we will correct that error now"
-                            self.__root_update(curn,False)
+                            self.__root_update(cid,False)
                     good += 1
                 cur += 1
         return toreturn
