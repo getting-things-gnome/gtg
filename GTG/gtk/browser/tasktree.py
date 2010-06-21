@@ -381,9 +381,12 @@ class TaskTreeModel(gtk.GenericTreeModel):
                     #if we realize that a parent is still to add, we
                     #don't insert the current task but we put it at the end
                     #of the queue
-                    if p.get_id() in self.tasks_to_add:
+                    pid = p.get_id()
+                    if pid in self.tasks_to_add:
                         self.tasks_to_add.append(tid)
                         run = False
+#                    else:
+#                        print "parent %s is displayed %s" %(pid,self.tree.is_displayed(pid))
             if run:
                 for node_path in node_paths:
                     node_iter = self.get_iter(node_path)

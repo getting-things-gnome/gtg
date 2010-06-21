@@ -291,7 +291,6 @@ class FilteredTree(gobject.GObject):
             else:
                 print "*** *** %s has parents but is not in VR" %tid
                 print "*** is in nodes to add %s ? " %(tid in self.node_to_add)
-                print aaa
                 
 #            parents = self.node_parents(node)
 #            if len(parents) > 0:
@@ -759,10 +758,10 @@ class FilteredTree(gobject.GObject):
                 self.add_count += 1
                 self.__nodes_count += 1
                 self.displayed_nodes.append(tid)
-                #Should be in displayed_nodes before updating the root
-                self.__root_update(tid,inroot)
                 if tid in self.node_to_add:
                     self.node_to_add.remove(tid)
+                #Should be in displayed_nodes before updating the root
+                self.__root_update(tid,inroot)
                 self.emit("task-added-inview", tid)
                 #We added a new node so we can check with those waiting
                 lost_nodes = []
