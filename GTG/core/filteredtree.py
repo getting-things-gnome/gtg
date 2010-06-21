@@ -78,6 +78,8 @@ import gobject
 from GTG.tools.logger import Log
 
 COUNT_CACHING_ENABLED = True
+#DEBUG_TID = ['11@1','861@1','23@1','1159@1','422@1']
+DEBUG_TID = ['11@1','861@1']
 
 class FilteredTree(gobject.GObject):
 
@@ -210,6 +212,8 @@ class FilteredTree(gobject.GObject):
         todis = self.__is_displayed(tid)
         curdis = self.is_displayed(tid)
         if todis and not curdis:
+            if tid in DEBUG_TID:
+                print "*task_added add_node %s" %tid
             self.__add_node(tid)
         
     def __task_modified(self,sender,tid):
@@ -453,12 +457,12 @@ class FilteredTree(gobject.GObject):
                     if good == n:
                         toreturn = curn
                         #if we have a child, it cannot be in the root
-                        if cid in self.virtual_root:
-#                            isroot = self.__is_root(curn)
-                            print "*** children %s of task %s is also in VR" \
-                                                    %(cid,node.get_id())
-                            print "   we will correct that error now"
-                            self.__root_update(cid,False)
+#                        if cid in self.virtual_root:
+##                            isroot = self.__is_root(curn)
+#                            print "*** children %s of task %s is also in VR" \
+#                                                    %(cid,node.get_id())
+#                            print "   we will correct that error now"
+#                            self.__root_update(cid,False)
                     good += 1
                 cur += 1
         return toreturn
@@ -544,6 +548,7 @@ class FilteredTree(gobject.GObject):
         rebuilds the tree from scratch. It should be called only when 
         the filter is changed (i.e. only filters_bank should call it).
         """
+        print "###### REFILTERING : %s" %self.applied_filters
 #        time1 = time.time()
         self.update_count = 0
         self.add_count = 0
@@ -576,6 +581,8 @@ class FilteredTree(gobject.GObject):
         #We reinitialize the tree before adding nodes that should be added
         self.displayed_nodes = []
         for nid in list(to_add):
+            if nid in DEBUG_TID:
+                print "*refilter: adding %s" %nid
             self.__add_node(nid)
 #        time5 = time.time()
         #end of refiltering
@@ -687,30 +694,47 @@ class FilteredTree(gobject.GObject):
     
     # Put or remove a node from the virtual root
     def __root_update(self,tid,inroot):
+        if tid in DEBUG_TID:
+            print "calling root update %s for %s" %(inroot,tid)
+        children_update = False
         if inroot:
             if tid not in self.virtual_root:
+                if tid in DEBUG_TID:
+                    print "appending %s to VR" %tid
                 self.virtual_root.append(tid)
                 #We will also update the children of that node
-                if not self.flat:
-                    node = self.get_node(tid)
-                    nc = self.node_n_children(node)
-                    i = 0
-                    while i < nc:
-                        ch = self.node_nth_child(node,i)
-                        chid = ch.get_id()
-                        if chid in self.virtual_root:
-                            #the child was in the VR. It should not be
-                            #because its parent is in now
-                            self.__root_update(chid,False)
-                        i += 1
+                children_update = True
         else:
             if tid in self.virtual_root:
+                if tid in DEBUG_TID:
+                    print "removin %s from VR" %tid
                 self.virtual_root.remove(tid)
-#                for t in self.virtual_root:
-#                    self.__update_node(t,True)
+            #even if you are not a root, 
+            #your children should not be in VR either
+            else:
+                children_update = True
+        #now we handle childrens
+        if not self.flat and children_update:
+            node = self.get_node(tid)
+            nc = self.node_n_children(node)
+            if tid in DEBUG_TID:
+                print "updating %s childrens of node %s" %(nc,tid)
+            i = 0
+            while i < nc:
+                ch = self.node_nth_child(node,i)
+                chid = ch.get_id()
+                if chid in self.virtual_root:
+                    #the child was in the VR. It should not be
+                    #because its parent is in now
+                    if tid in DEBUG_TID:
+                        print "updating children %s of node %s" %(chid,tid)
+                    self.__update_node(chid,False)
+                i += 1
     
     def __update_node(self,tid,inroot):
         if tid not in self.node_to_remove:
+            if tid in DEBUG_TID:
+                print "updating inroot %s the node %s" %(inroot,tid)
             todis = self.__is_displayed(tid) 
             curdis = self.is_displayed(tid)
             if todis:
@@ -718,6 +742,8 @@ class FilteredTree(gobject.GObject):
                 #we add it.
                 if not curdis:
     #                print "%s is a new node" %tid
+                    if tid in DEBUG_TID:
+                        print "*update_node : adding node %s" %tid
                     self.__add_node(tid)
                 else:
     #                print "%s is only modified (todis,curdis)" %tid
@@ -745,6 +771,8 @@ class FilteredTree(gobject.GObject):
     
     def __add_node(self,tid,inroot=None):
         if not self.is_displayed(tid):
+            if tid in DEBUG_TID:
+                print "adding inroot %s the node %s" %(inroot,tid)
             node = self.get_node(tid)
             if inroot == None:
                 inroot = self.__is_root(node)
