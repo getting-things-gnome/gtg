@@ -290,14 +290,20 @@ class FilteredTree(gobject.GObject):
         elif node == self.get_root():
             path = ()
             toreturn.append(path)
-        elif tid in self.virtual_root:
-#        elif not self.node_parents(node):
-            ind = self.virtual_root.index(tid)
-            path = (ind,)
-            toreturn.append(path)
-            parents = self.node_parents(node)
-            if len(parents) > 0:
-                print "WARNING :  %s was in VR with %s parents" %(tid,len(parents))
+#        elif tid in self.virtual_root:
+        elif len(self.node_parents(node)) <= 0:
+            if tid in self.virtual_root:
+                ind = self.virtual_root.index(tid)
+                path = (ind,)
+                toreturn.append(path)
+            else:
+                print "*** *** %s has parents but is not in VR" %tid
+                print "*** is in nodes to add %s ? " %(tid in self.node_to_add)
+                print aaa
+                
+#            parents = self.node_parents(node)
+#            if len(parents) > 0:
+#                print "WARNING :  %s was in VR with %s parents" %(tid,len(parents))
         #The node is not a virtual root
         else:
             pars = self.node_parents(node)
@@ -482,18 +488,22 @@ class FilteredTree(gobject.GObject):
             Log.debug("requested a parent of a non-existing node")
             return parents_nodes
         tid = node.get_id()
-        if node and tid in self.virtual_root:
-            return parents_nodes
+#        if node and tid in self.virtual_root:
+#            return parents_nodes
         #we return only parents that are not root and displayed
         if node and node.has_parent():
             for pid in node.get_parents():
                 parent = self.tree.get_node(pid)
+#                if pid in DEBUG_TID:
+#                    print "%%%%parent %s is displayed : %s" %(pid,self.is_displayed(pid))
                 if self.is_displayed(pid) and parent != self.tree.get_root():
                     parents_nodes.append(parent)
 #            if len(parents_nodes) == 0:
 #                print "ERROR : %s has no parent and is not in VR" %tid
 #        if not self.flat and tid in self.virtual_root and len(parents_nodes) > 0:
 #            self.__root_update(tid,False)
+#        if tid in DEBUG_TID:
+#            print "%s has parents %s but return %s" %(tid,node.get_parents(),parents_nodes)
         return parents_nodes
 
 
@@ -791,8 +801,9 @@ class FilteredTree(gobject.GObject):
             else:
                 self.add_count += 1
                 self.__nodes_count += 1
-                self.__root_update(tid,inroot)
                 self.displayed_nodes.append(tid)
+                #Should be in displayed_nodes before updating the root
+                self.__root_update(tid,inroot)
                 if tid in self.node_to_add:
                     self.node_to_add.remove(tid)
                 self.emit("task-added-inview", tid)

@@ -19,8 +19,6 @@
 
 from GTG.tools.logger import Log
 
-
-
 class Tree():
 
 
@@ -125,7 +123,6 @@ class Tree():
                         p.add_child(child_id)
                         toreturn = True
                     if parent_id != 'root' and not c.has_parent(parent_id):
-                        #print "creating the %s - %s relation" %(parent_id,child_id)
                         c.add_parent(parent_id)
                         toreturn = True
                         #removing the root from the list of parent
