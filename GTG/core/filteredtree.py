@@ -304,6 +304,8 @@ class FilteredTree(gobject.GObject):
             if len(pars) <= 0:
                 #if we don't have parent, we add the task
                 #to the virtual root.
+                if tid in DEBUG_TID:
+                    print "we should not update %s from the get_path method" %tid
                 self.__root_update(tid,True)
                 ind = self.virtual_root.index(tid)
                 path = (ind,)
