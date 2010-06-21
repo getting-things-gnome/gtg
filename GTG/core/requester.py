@@ -104,8 +104,9 @@ class Requester(gobject.GObject):
         return self.basetree.get_all_keys()
         
     # Apply a given filter to the main FilteredTree
-    def apply_filter(self,filter_name,parameters=None):
-        r = self.main_tree.apply_filter(filter_name,parameters=parameters,imtherequester=True)
+    def apply_filter(self,filter_name,parameters=None,refresh=True):
+        r = self.main_tree.apply_filter(filter_name,parameters=parameters,\
+                                        imtherequester=True,refresh=refresh)
         return r
             
     # Unapply a filter from the main FilteredTree.
