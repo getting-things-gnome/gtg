@@ -110,8 +110,6 @@ class FilteredTree(gobject.GObject):
         self.remove_count = 0
         self.__nodes_count = 0
         self.flat = False
-        self.refilter_count = 0
-        self.refilter_time = 0
         #virtual root is the list of root nodes
         #initially, they are the root nodes of the original tree
         self.virtual_root = []
@@ -128,7 +126,6 @@ class FilteredTree(gobject.GObject):
         #it looks like an initial refilter is not needed.
         #self.refilter()
         self.__reset_cache()
-        self.path_for_node_cache_old = {}
         #connecting
         self.req.connect("task-added", self.__task_added)
         self.req.connect("task-modified", self.__task_modified)
@@ -212,23 +209,17 @@ class FilteredTree(gobject.GObject):
         todis = self.__is_displayed(tid)
         curdis = self.is_displayed(tid)
         if todis and not curdis:
-            if tid in DEBUG_TID:
-                print "*task_added add_node %s" %tid
             self.__add_node(tid)
         
     def __task_modified(self,sender,tid):
         if tid not in self.tasks_to_modify:
             self.tasks_to_modify.append(tid)
-#            print "%s is modified in the filteredtree" %tid
             node = self.get_node(tid)
             if node:
                 inroot = self.__is_root(node)
                 self.__update_node(tid,inroot)
             self.tasks_to_modify.remove(tid)
-        else:
-            print "task_modified saved"
-        
-        
+
     def __task_deleted(self,sender,tid):
         self.__remove_node(tid)
         
@@ -280,6 +271,7 @@ class FilteredTree(gobject.GObject):
         toreturn = []
         if node:
             tid = node.get_id()
+            pars = self.node_parents(node)
         #For that node, we should convert the base_path to path
         if not node or not self.is_displayed(node.get_id()):
             return toreturn
@@ -291,7 +283,7 @@ class FilteredTree(gobject.GObject):
             path = ()
             toreturn.append(path)
 #        elif tid in self.virtual_root:
-        elif len(self.node_parents(node)) <= 0:
+        elif len(pars) <= 0:
             if tid in self.virtual_root:
                 ind = self.virtual_root.index(tid)
                 path = (ind,)
@@ -306,48 +298,40 @@ class FilteredTree(gobject.GObject):
 #                print "WARNING :  %s was in VR with %s parents" %(tid,len(parents))
         #The node is not a virtual root
         else:
-            pars = self.node_parents(node)
-            if len(pars) <= 0:
-                #if we don't have parent, we add the task
-                #to the virtual root.
-                if tid in DEBUG_TID:
-                    print "we should not update %s from the get_path method" %tid
-                self.__root_update(tid,True)
-                ind = self.virtual_root.index(tid)
-                path = (ind,)
-                toreturn.append(path)
-            else:
-                for par in pars:
-                    pos = 0
-                    max = self.node_n_children(par)
-                    child = self.node_children(par)
-                    while pos < max and node != child:
-                        pos += 1
-                        child = self.node_nth_child(par,pos)
-                    par_paths = self.get_paths_for_node(par)
-                    for par_path in par_paths:
-                        path = par_path + (pos,)
-                        toreturn.append(path)
-                if len(toreturn) == 0:
-                    #if we are here, it means that we have a ghost task that 
-                    #is not really displayed but still here, in the tree
-                    #it happens sometimes when we remove a parent with children
-                    #if we still have a recorded path for the ghost task,
-                    #we return it. This provides ghost task from staying displayed
-                    if self.path_for_node_cache.has_key(tid):
-                        toreturn = self.path_for_node_cache[tid]
-                    else:
-                        print "ghost position for %s" %tid
-                        print "VR : %s " %self.virtual_root
-                        print self.path_for_node_cache
+#            if len(pars) <= 0:
+#                #if we don't have parent, we add the task
+#                #to the virtual root.
+#                if tid in DEBUG_TID:
+#                    print "we should not update %s from the get_path method" %tid
+#                self.__root_update(tid,True)
+#                ind = self.virtual_root.index(tid)
+#                path = (ind,)
+#                toreturn.append(path)
+#            else:
+            for par in pars:
+                pos = 0
+                max = self.node_n_children(par)
+                child = self.node_children(par)
+                while pos < max and node != child:
+                    pos += 1
+                    child = self.node_nth_child(par,pos)
+                par_paths = self.get_paths_for_node(par)
+                for par_path in par_paths:
+                    path = par_path + (pos,)
+                    toreturn.append(path)
+            if len(toreturn) == 0:
+                #if we are here, it means that we have a ghost task that 
+                #is not really displayed but still here, in the tree
+                #it happens sometimes when we remove a parent with children
+                #if we still have a recorded path for the ghost task,
+                #we return it. This provides ghost task from staying displayed
+                if self.path_for_node_cache.has_key(tid):
+                    toreturn = self.path_for_node_cache[tid]
+                else:
+                    print "ghost position for %s" %tid
+                    print "VR : %s " %self.virtual_root
+                    print self.path_for_node_cache
                     
-        #debug statement to show when the path change
-#        if self.path_for_node_cache.has_key(tid):
-#            oldp = self.path_for_node_cache[tid]
-#            if oldp != toreturn:
-#                print "changing %s from %s to %s" %(tid,oldp,toreturn)
-        if self.path_for_node_cache.has_key(tid):
-            self.path_for_node_cache_old[tid] = self.path_for_node_cache[tid]
         self.path_for_node_cache[tid] = toreturn
         return toreturn
 
@@ -560,8 +544,6 @@ class FilteredTree(gobject.GObject):
         rebuilds the tree from scratch. It should be called only when 
         the filter is changed (i.e. only filters_bank should call it).
         """
-        print "###### REFILTERING : %s" %self.applied_filters
-#        time1 = time.time()
         self.update_count = 0
         self.add_count = 0
         self.remove_count = 0
@@ -577,43 +559,23 @@ class FilteredTree(gobject.GObject):
                 self.flat = filt.is_flat()
         #First things, we list the nodes that will be
         #ultimately displayed
-#        time2 = time.time()
         for n in self.tree.get_all_nodes():
             tid = n.get_id()
             if self.__is_displayed(tid):
                 to_add.append(tid)
         #Second step, we empty the current tree as we will rebuild it
         #from scratch
-#        time3 = time.time()
         for rid in list(self.virtual_root):
             n = self.get_node(rid)
             self.__clean_from_node(n)
         self.__reset_cache()
-#        time4 = time.time()
         #We reinitialize the tree before adding nodes that should be added
         self.displayed_nodes = []
         for nid in list(to_add):
-            if nid in DEBUG_TID:
-                print "*refilter: adding %s" %nid
             self.__add_node(nid)
-#        time5 = time.time()
         #end of refiltering
 #        print "*** end of refiltering ****"
 #        self.print_tree()
-        #Finalizing : adding nodes that still need to be added
-#        for n in self.node_to_add:
-#            self.__add_node(n)
-
-#        self.refilter_count +=1
-#        time6 = time.time()
-#        self.refilter_time += (time6 - time1)
-#        print "*** end of refiltering ****"
-#        print "we refiltered %s %s times (total : %s s)" %(self.applied_filters,self.refilter_count,self.refilter_time)
-#        print "  time2: %s" %(time2-time1)
-#        print "  time3: %s" %(time3-time2)
-#        print "  time4: %s  (%s in %s 4c)" %((time4-time3),time4c,number4)
-#        print "  time5: %s" %(time5-time4)
-#        print "  time6: %s" %(time6-time5)
 
     ####### Change filters #################
     def apply_filter(self,filter_name,parameters=None,\
@@ -706,20 +668,20 @@ class FilteredTree(gobject.GObject):
     
     # Put or remove a node from the virtual root
     def __root_update(self,tid,inroot):
-        if tid in DEBUG_TID:
-            print "calling root update %s for %s" %(inroot,tid)
+#        if tid in DEBUG_TID:
+#            print "calling root update %s for %s" %(inroot,tid)
         children_update = False
         if inroot:
             if tid not in self.virtual_root:
-                if tid in DEBUG_TID:
-                    print "appending %s to VR" %tid
+#                if tid in DEBUG_TID:
+#                    print "appending %s to VR" %tid
                 self.virtual_root.append(tid)
                 #We will also update the children of that node
                 children_update = True
         else:
             if tid in self.virtual_root:
-                if tid in DEBUG_TID:
-                    print "removin %s from VR" %tid
+#                if tid in DEBUG_TID:
+#                    print "removin %s from VR" %tid
                 self.virtual_root.remove(tid)
             #even if you are not a root, 
             #your children should not be in VR either
@@ -729,8 +691,8 @@ class FilteredTree(gobject.GObject):
         if not self.flat and children_update:
             node = self.get_node(tid)
             nc = self.node_n_children(node)
-            if tid in DEBUG_TID:
-                print "updating %s childrens of node %s" %(nc,tid)
+#            if tid in DEBUG_TID:
+#                print "updating %s childrens of node %s" %(nc,tid)
             i = 0
             while i < nc:
                 ch = self.node_nth_child(node,i)
@@ -738,29 +700,26 @@ class FilteredTree(gobject.GObject):
                 if chid in self.virtual_root:
                     #the child was in the VR. It should not be
                     #because its parent is in now
-                    if tid in DEBUG_TID:
-                        print "updating children %s of node %s" %(chid,tid)
+#                    if tid in DEBUG_TID:
+#                        print "updating children %s of node %s" %(chid,tid)
                     self.__update_node(chid,False)
                 i += 1
     
     def __update_node(self,tid,inroot):
         if tid not in self.node_to_remove:
-            if tid in DEBUG_TID:
-                print "updating inroot %s the node %s" %(inroot,tid)
+#            if tid in DEBUG_TID:
+#                print "updating inroot %s the node %s" %(inroot,tid)
             todis = self.__is_displayed(tid) 
             curdis = self.is_displayed(tid)
             if todis:
                 #if the task was not displayed previously but now should
                 #we add it.
                 if not curdis:
-    #                print "%s is a new node" %tid
-                    if tid in DEBUG_TID:
-                        print "*update_node : adding node %s" %tid
+#                    if tid in DEBUG_TID:
+#                        print "*update_node : adding node %s" %tid
                     self.__add_node(tid)
                 else:
-    #                print "%s is only modified (todis,curdis)" %tid
                     self.__root_update(tid,inroot)
-    #                print "updating node %s" %tid
                     self.update_count += 1
                     self.emit("task-modified-inview", tid)
                     #I don't remember why we have to update the children.
@@ -772,10 +731,8 @@ class FilteredTree(gobject.GObject):
                 #if the task was displayed previously but shouldn't be anymore
                 #we remove it
                 if curdis:
-    #                print "%s is removed" %tid
                     self.__remove_node(tid)
                 else:
-    #                print "%s is modified, not to dis" %tid
                     self.emit("task-deleted-inview", tid)
 
 
@@ -783,8 +740,8 @@ class FilteredTree(gobject.GObject):
     
     def __add_node(self,tid,inroot=None):
         if not self.is_displayed(tid):
-            if tid in DEBUG_TID:
-                print "adding inroot %s the node %s" %(inroot,tid)
+#            if tid in DEBUG_TID:
+#                print "adding inroot %s the node %s" %(inroot,tid)
             node = self.get_node(tid)
             if inroot == None:
                 inroot = self.__is_root(node)

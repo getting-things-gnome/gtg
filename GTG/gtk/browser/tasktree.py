@@ -349,8 +349,8 @@ class TaskTreeModel(gtk.GenericTreeModel):
 #            print "update %s" %my_node.get_title()
             if my_node and my_node.is_loaded():
                 node_paths = self.tree.get_paths_for_node(my_node)
-                print "getting iter for path %s (%s is displayed %s)" \
-                        %(str(node_paths),tid,self.tree.is_displayed(tid))
+#                print "getting iter for path %s (%s is displayed %s)" \
+#                        %(str(node_paths),tid,self.tree.is_displayed(tid))
                 for node_path in node_paths:
                     node_iter = self.get_iter(node_path)
                     if self.iter_is_valid(node_iter):
