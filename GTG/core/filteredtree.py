@@ -721,14 +721,14 @@ class FilteredTree(gobject.GObject):
                     self.__add_node(tid)
                 else:
     #                print "%s is only modified (todis,curdis)" %tid
-                    node = self.get_node(tid)
+                    self.__root_update(tid,inroot)
     #                print "updating node %s" %tid
                     self.update_count += 1
-                    node = self.get_node(tid)
-                    self.__root_update(tid,inroot)
                     self.emit("task-modified-inview", tid)
+                    #I don't remember why we have to update the children.
                     if not self.flat:
-                        for c in node.get_children():
+                        child_list = self.get_node(tid).get_children()
+                        for c in child_list:
                             self.__update_node(c,False)
             else:
                 #if the task was displayed previously but shouldn't be anymore
