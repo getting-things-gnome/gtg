@@ -168,7 +168,7 @@ class TaskBrowser:
     # it should be "init_active_tasks_pane", "init_sidebar", etc.
     def _init_models(self):
         # Active Tasks
-        self.req.apply_filter('active')
+        self.req.apply_filter('active',refresh=False)
         self.task_tree_model = TaskTreeModel(self.req, self.priv)
         self.task_modelsort = gtk.TreeModelSort(self.task_tree_model)
         self.task_modelsort.set_sort_func(\

@@ -349,6 +349,8 @@ class TaskTreeModel(gtk.GenericTreeModel):
 #            print "update %s" %my_node.get_title()
             if my_node and my_node.is_loaded():
                 node_paths = self.tree.get_paths_for_node(my_node)
+#                print "getting iter for path %s (%s is displayed %s)" \
+#                        %(str(node_paths),tid,self.tree.is_displayed(tid))
                 for node_path in node_paths:
                     node_iter = self.get_iter(node_path)
                     if self.iter_is_valid(node_iter):
@@ -379,9 +381,12 @@ class TaskTreeModel(gtk.GenericTreeModel):
                     #if we realize that a parent is still to add, we
                     #don't insert the current task but we put it at the end
                     #of the queue
-                    if p.get_id() in self.tasks_to_add:
+                    pid = p.get_id()
+                    if pid in self.tasks_to_add:
                         self.tasks_to_add.append(tid)
                         run = False
+#                    else:
+#                        print "parent %s is displayed %s" %(pid,self.tree.is_displayed(pid))
             if run:
                 for node_path in node_paths:
                     node_iter = self.get_iter(node_path)

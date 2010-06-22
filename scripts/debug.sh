@@ -3,17 +3,19 @@
 args=""
 set="default"
 norun=0
+profile=0
 
 # Create execution-time data directory if needed
 mkdir -p tmp
 
 # Interpret arguments
-while getopts dns: o
+while getopts dnps: o
 do  case "$o" in
     d)   args="-d";;
     n)   norun=1;;
+    p)   profile=1;;
     s)   set="$OPTARG";;
-    [?]) echo >&2 "Usage: $0 [-s dataset] [-d] [-n]"
+    [?]) echo >&2 "Usage: $0 [-s dataset] [-d] [-n] [-p]"
          exit 1;;
     esac
 done
@@ -38,6 +40,10 @@ else
 fi
 
 if [ $norun -eq 0 ]; then
-    ./gtg $args
+    if [ $profile -eq 1 ]; then
+	python -m cProfile -o gtg.prof ./gtg
+    else
+	./gtg $args
+    fi
 fi
 

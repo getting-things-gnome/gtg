@@ -17,12 +17,20 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
+import gobject
+
 from GTG.tools.logger import Log
 
-class Tree():
-
+class MainTree(gobject.GObject):
+    __gsignals__ = {'node-added': (gobject.SIGNAL_RUN_FIRST, \
+                                    gobject.TYPE_NONE, (str, )),
+                    'node-deleted': (gobject.SIGNAL_RUN_FIRST, \
+                                    gobject.TYPE_NONE, (str, )),
+                    'node-modified': (gobject.SIGNAL_RUN_FIRST, \
+                                    gobject.TYPE_NONE, (str, ))}
 
     def __init__(self, root=None):
+        gobject.GObject.__init__(self)
         self.root_id = 'root'
         self.nodes = {}
         self.old_paths = {}
@@ -60,8 +68,7 @@ class Tree():
         self.root.set_tree(self)
 
     #We add a node. By default, it's a child of the root
-    def add_node(self, node, parent=None):
-        #print "*************adding node %s %s" %(node, parent)
+    def add_node(self, node, parent_id=None):
         id = node.get_id()
         if self.nodes.has_key(id):
             print "Error : A node with this id %s already exists" %id
@@ -69,9 +76,11 @@ class Tree():
         else:
             #We add the node
             node.set_tree(self)
-            if parent:#    
-                node.set_parent(parent.get_id())
-                parent.add_child(id)
+            if parent_id:
+                parent = self.get_node(parent_id)
+                if parent: 
+                    node.set_parent(parent.get_id())
+                    parent.add_child(id)
             else:
                 self.root.add_child(id)
             self.nodes[id] = node
@@ -79,6 +88,7 @@ class Tree():
             for rel in list(self.pending_relationships):
                 if id in rel:
                     self.new_relationship(rel[0],rel[1])
+            self.emit("node-added", id)
             return True
 
     #this will remove a node and all his children
@@ -99,6 +109,7 @@ class Tree():
             else:
                 self.root.remove_child(id)
             self.old_paths[id] = path
+            self.emit("node-deleted", id)
             self.nodes.pop(id)
         
     #create a new relationship between nodes if it doesn't already exist
@@ -249,11 +260,11 @@ class Tree():
 
 class TreeNode():
 
-    def __init__(self, id, tree=None, parent=None):
+    def __init__(self, id, parent=None):
         self.parents   = []
         self.id       = id
         self.children      = []
-        self.tree = tree
+        self.tree = None
         self.pending_relationship = []
         if parent:
             self.add_parent(parent)

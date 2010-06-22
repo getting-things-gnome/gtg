@@ -78,8 +78,6 @@ import gobject
 from GTG.tools.logger import Log
 
 COUNT_CACHING_ENABLED = True
-#DEBUG_TID = ['11@1','861@1','23@1','1159@1','422@1']
-DEBUG_TID = ['11@1','861@1']
 
 class FilteredTree(gobject.GObject):
 
@@ -92,7 +90,7 @@ class FilteredTree(gobject.GObject):
                     'task-modified-inview': (gobject.SIGNAL_RUN_FIRST, \
                                             gobject.TYPE_NONE, (str, )),}
 
-    def __init__(self,req,tree,maintree=False):
+    def __init__(self,tree,filtersbank,refresh=True):
         """
         Construct a FilteredTree object on top of an existing task tree.
         @param req: The requestor object
@@ -101,10 +99,9 @@ class FilteredTree(gobject.GObject):
         must be used to change filters against the main tree.
         """
         gobject.GObject.__init__(self)
-        self.is_main = maintree
         self.applied_filters = []
-        self.req = req
         self.tree = tree
+        self.fbank = filtersbank
         self.update_count = 0
         self.add_count = 0
         self.remove_count = 0
@@ -114,8 +111,6 @@ class FilteredTree(gobject.GObject):
         #initially, they are the root nodes of the original tree
         self.virtual_root = []
         self.displayed_nodes = []
-        self.counted_nodes = []
-        self.count_cache = {}
         #This is for profiling
 #        self.using_cache = 0
         #useful for temp storage :
@@ -125,16 +120,20 @@ class FilteredTree(gobject.GObject):
         self.tasks_to_modify = []
         self.node_to_remove = []
         self.__clean_list = []
-        #it looks like an initial refilter is not needed.
-        #self.refilter()
+        #an initial refilter is always needed if we don't apply a filter
+        #for performance reason, we do it only if refresh = True
         self.__reset_cache()
+        if refresh:
+            self.refilter()
         #connecting
-        self.req.connect("task-added", self.__task_added)
-        self.req.connect("task-modified", self.__task_modified)
-        self.req.connect("task-deleted", self.__task_deleted)
+        self.tree.connect("node-added", self.__task_added)
+        self.tree.connect("node-modified", self.__task_modified)
+        self.tree.connect("node-deleted", self.__task_deleted)
 
     def __reset_cache(self):
         self.path_for_node_cache = {}
+        self.counted_nodes = []
+        self.count_cache = {}
 
     #### Standard tree functions
     def get_node(self,id):
@@ -166,19 +165,19 @@ class FilteredTree(gobject.GObject):
             k.append(self.get_node(n))
         return k
         
-    def get_n_nodes(self,withfilters=[],countednodes=False):
+    def get_n_nodes(self,withfilters=[],transparent_filters=True):
         """
         returns quantity of displayed nodes in this tree
         if the withfilters is set, returns the quantity of nodes
         that will be displayed if we apply those filters to the current
         tree. It means that the currently applied filters are also taken into
         account.
-        If countednodes = True, we only take into account the applied filters
-        that doesn't have the counting parameters.
+        If transparent_filters=False, we only take into account the applied filters
+        that doesn't have the transparent parameters.
         """
         toreturn = 0
         usecache = False
-        if countednodes:
+        if transparent_filters:
             #Currently, the cache only work for one filter
             if len(withfilters) == 1:
                 usecache = True
@@ -195,7 +194,7 @@ class FilteredTree(gobject.GObject):
                 for tid in zelist:
                     result = True
                     for f in withfilters:
-                        filt = self.req.get_filter(f)
+                        filt = self.fbank.get_filter(f)
                         if filt:
                             result = result and filt.is_displayed(tid)
                     if result:
@@ -230,7 +229,7 @@ class FilteredTree(gobject.GObject):
     def print_tree(self):
         print "displayed : %s" %self.displayed_nodes
         for rid in self.virtual_root:
-            r = self.req.get_task(rid)
+            r = self.tree.get_node(rid)
             self.__print_from_node(r)
 
     #The path received is only for tasks that are displayed
@@ -515,7 +514,7 @@ class FilteredTree(gobject.GObject):
             counting_result = True
             cache_key = ""
             for f in self.applied_filters:
-                filt = self.req.get_filter(f)
+                filt = self.fbank.get_filter(f)
                 cache_key += f
                 if filt:
                     temp = filt.is_displayed(tid)
@@ -528,7 +527,7 @@ class FilteredTree(gobject.GObject):
                 #But this slow down a lot the startup.
                 #So, we update manually the cache.
                 for k in self.count_cache.keys():
-                    f = self.req.get_filter(k)
+                    f = self.fbank.get_filter(k)
                     if f.is_displayed(tid):
                         self.count_cache[k] += 1
                 self.counted_nodes.append(tid)
@@ -550,12 +549,13 @@ class FilteredTree(gobject.GObject):
         self.remove_count = 0
         virtual_root2 = []
         to_add = []
-        self.counted_nodes = []
-        self.count_cache = {}
+#        self.counted_nodes = []
+#        self.count_cache = {}
+        self.__reset_cache()
         #If we have only one flat filter, the result is flat
         self.flat = False
         for f in self.applied_filters:
-            filt = self.req.get_filter(f)
+            filt = self.fbank.get_filter(f)
             if filt and not self.flat:
                 self.flat = filt.is_flat()
         #First things, we list the nodes that will be
@@ -569,7 +569,6 @@ class FilteredTree(gobject.GObject):
         for rid in list(self.virtual_root):
             n = self.get_node(rid)
             self.__clean_from_node(n)
-        self.__reset_cache()
         #We reinitialize the tree before adding nodes that should be added
         self.displayed_nodes = []
         for nid in list(to_add):
@@ -588,22 +587,19 @@ class FilteredTree(gobject.GObject):
         @param reset : optional boolean. Should we remove other filters?
         @param imtherequester: If true enables adding filters to the main tree
         """
-        if self.is_main and not imtherequester:
-            print "Error : use the requester to apply a filter to the main tree"
-            print "We don't do that automatically on purpose"
+        if reset:
+            self.applied_filters = []
+        if parameters:
+            filt = self.fbank.get_filter(filter_name)
+            if filt:
+                filt.set_parameters(parameters)
+        if filter_name not in self.applied_filters:
+            self.applied_filters.append(filter_name)
+            if refresh:
+                self.refilter()
+            return True
         else:
-            if reset:
-                self.applied_filters = []
-            if parameters:
-                filt = self.req.get_filter(filter_name)
-                if filt:
-                    filt.set_parameters(parameters)
-            if filter_name not in self.applied_filters:
-                self.applied_filters.append(filter_name)
-                if refresh:
-                    self.refilter()
-                return True
-        return False
+            return False
     
     def unapply_filter(self,filter_name,imtherequester=False,refresh=True):
         """
@@ -611,15 +607,13 @@ class FilteredTree(gobject.GObject):
         @param filter_name: The name of an already added filter to remove
         @param imtherequester: If true enables removing filters from the main tree
         """
-        if self.is_main and not imtherequester:
-            print "Error : use the requester to remove a filter to the main tree"
-            print "We don't do that automatically on purpose"
-        elif filter_name in self.applied_filters:
+        if filter_name in self.applied_filters:
             self.applied_filters.remove(filter_name)
             if refresh:
                 self.refilter()
             return True
-        return False
+        else:
+            return False
 
     def reset_filters(self,imtherequester=False,refresh=True):
         """
@@ -627,13 +621,9 @@ class FilteredTree(gobject.GObject):
         the main tree.
         @param imtherequester: If true enables clearing filters from the main tree
         """
-        if self.is_main and not imtherequester:
-            print "Error : use the requester to remove a filter to the main tree"
-            print "We don't do that automatically on purpose"
-        else:
-            self.applied_filters = []
-            if refresh:
-                self.refilter()
+        self.applied_filters = []
+        if refresh:
+            self.refilter()
 
     def reset_tag_filters(self,refilter=True,imtherequester=False):
         """
@@ -641,19 +631,15 @@ class FilteredTree(gobject.GObject):
         the main tree.
         @param imtherequester: If true enables clearing filters from the main tree
         """
-        if self.is_main and not imtherequester:
-            print "Error : use the requester to remove a filter to the main tree"
-            print "We don't do that automatically on purpose"
-        else:
-            if "notag" in self.applied_filters:
-                self.applied_filters.remove('notag')
-            if "no_disabled_tag" in self.applied_filters:
-                self.applied_filters.remove('no_disabled_tag')
-            for f in self.applied_filters:
-                if f.startswith('@'):
-                    self.applied_filters.remove(f)
-            if refilter:
-                self.refilter()
+        if "notag" in self.applied_filters:
+            self.applied_filters.remove('notag')
+        if "no_disabled_tag" in self.applied_filters:
+            self.applied_filters.remove('no_disabled_tag')
+        for f in self.applied_filters:
+            if f.startswith('@'):
+                self.applied_filters.remove(f)
+        if refilter:
+            self.refilter()
 
     ####### Private methods #################
 
@@ -796,7 +782,9 @@ class FilteredTree(gobject.GObject):
                 self.emit('task-deleted-inview',tid)
                 self.__root_update(tid,False)
                 self.displayed_nodes.remove(tid)
-            self.__reset_cache()
+            if tid in self.counted_nodes:
+                self.counted_nodes.remove(tid)
+                self.count_cache = {}
             #Test if this is necessary
             parent = self.node_parents(self.get_node(tid))
             #we don't need to update parents if the node is root
@@ -811,8 +799,8 @@ class FilteredTree(gobject.GObject):
         
     #This function print the actual tree. Useful for debugging
     def __print_from_node(self, node, prefix=""):
-        print "%s%s    (%s)  - %s" %(prefix,node.get_id(),\
-                    str(self.get_paths_for_node(node)),node.get_title())
+        print "%s%s    (%s) " %(prefix,node.get_id(),\
+                    str(self.get_paths_for_node(node)))
         prefix = prefix + "->"
         if self.node_has_child(node):
             child = self.node_children(node)
