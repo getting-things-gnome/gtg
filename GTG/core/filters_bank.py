@@ -252,7 +252,7 @@ class FiltersBank:
         all_tasks_tag = self.req.get_alltag_tag().get_name()
         if all_tasks_tag in tags_to_match_set:
             return True
-        task_tags = set([t.get_name() for t in task.get_tags()])
+        task_tags = set(task.get_tags_name())
         return task_tags.intersection(tags_to_match_set)
         
     def no_disabled_tag(self,task,parameters=None):
