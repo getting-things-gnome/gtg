@@ -120,6 +120,8 @@ class FilteredTree(gobject.GObject):
 #        self.using_cache = 0
         #useful for temp storage :
         self.node_to_add = []
+        self.__adding_queue = []
+        self.__adding_lock = False
         self.tasks_to_modify = []
         self.node_to_remove = []
         self.__clean_list = []
@@ -738,41 +740,50 @@ class FilteredTree(gobject.GObject):
     
     
     def __add_node(self,tid,inroot=None):
-        if not self.is_displayed(tid):
-#            if tid in DEBUG_TID:
-#                print "adding inroot %s the node %s" %(inroot,tid)
-            node = self.get_node(tid)
-            if inroot == None:
-                inroot = self.__is_root(node)
-            #If the parent's node is not already displayed, we wait
-            #(the len of parents is 0 means no parent dislayed)
-            parents = self.node_parents(node)
-            if not inroot and len(parents) <= 0:
-                if tid not in self.node_to_add:
-                    self.node_to_add.append(tid)
-            elif inroot and len(parents) > 0:
-                #"we add to the root a task with parents !!!!!"
-                if tid not in self.node_to_add:
-                    self.node_to_add.append(tid)
-            else:
-                self.add_count += 1
-                self.__nodes_count += 1
-                self.displayed_nodes.append(tid)
-                if tid in self.node_to_add:
-                    self.node_to_add.remove(tid)
-                #Should be in displayed_nodes before updating the root
-                self.__root_update(tid,inroot)
-                self.emit("task-added-inview", tid)
-                #We added a new node so we can check with those waiting
-                lost_nodes = []
-                while len(self.node_to_add) > 0:
-                    n = self.node_to_add.pop(0)
-                    toad = self.get_node(n)
-                    if len(self.node_parents(toad)) > 0:
-                        self.__add_node(n,False)
-                    else:
-                        lost_nodes.append(n)
-                self.node_to_add += lost_nodes
+        self.__adding_queue.append([tid,inroot])
+        if not self.__adding_lock and len(self.__adding_queue) > 0:
+            self.__adding_lock = True
+            self.__adding_loop()
+
+    def __adding_loop(self):
+        while len(self.__adding_queue) > 0:
+            tid,inroot = self.__adding_queue.pop(0)
+            if not self.is_displayed(tid):
+    #            if tid in DEBUG_TID:
+    #                print "adding inroot %s the node %s" %(inroot,tid)
+                node = self.get_node(tid)
+                if inroot == None:
+                    inroot = self.__is_root(node)
+                #If the parent's node is not already displayed, we wait
+                #(the len of parents is 0 means no parent dislayed)
+                parents = self.node_parents(node)
+                if not inroot and len(parents) <= 0:
+                    if tid not in self.node_to_add:
+                        self.node_to_add.append(tid)
+                elif inroot and len(parents) > 0:
+                    #"we add to the root a task with parents !!!!!"
+                    if tid not in self.node_to_add:
+                        self.node_to_add.append(tid)
+                else:
+                    self.add_count += 1
+                    self.__nodes_count += 1
+                    self.displayed_nodes.append(tid)
+                    if tid in self.node_to_add:
+                        self.node_to_add.remove(tid)
+                    #Should be in displayed_nodes before updating the root
+                    self.__root_update(tid,inroot)
+                    self.emit("task-added-inview", tid)
+                    #We added a new node so we can check with those waiting
+                    lost_nodes = []
+                    while len(self.node_to_add) > 0:
+                        n = self.node_to_add.pop(0)
+                        toad = self.get_node(n)
+                        if len(self.node_parents(toad)) > 0:
+                            self.__add_node(n,False)
+                        else:
+                            lost_nodes.append(n)
+                    self.node_to_add += lost_nodes
+        self.__adding_lock = False
     
     def __remove_node(self,tid):
         if tid not in self.node_to_remove:
