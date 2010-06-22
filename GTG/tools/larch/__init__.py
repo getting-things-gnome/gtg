@@ -21,6 +21,7 @@ import gobject
 
 from GTG.tools.larch.tree import MainTree
 from GTG.tools.larch.filteredtree import FilteredTree
+from GTG.tools.larch.filters_bank import FiltersBank
 
 class Tree():
     def __init__(self):
@@ -30,7 +31,7 @@ class Tree():
     ###### nodes handling ######
     def get_node(self,nid):
         return self.__tree.get_node(nid)
-    
+
     def add_node(self,node,parent_id=None):
         node.set_tree(self.__tree)
         self.__tree.add_node(node,parent_id=parent_id)
@@ -55,14 +56,14 @@ class Tree():
         return
 
     ############ Views ############
-    def get_viewtree(self):
-        vt = ViewTree(self.__tree,self.__fbank)
+    def get_viewtree(self,refresh=True):
+        vt = ViewTree(self.__tree,self.__fbank,refresh=refresh)
         return vt
 
     ########### Filters bank ######
     def list_filters(self):
-    """ List, by name, all available filters """
-    self.__fbank.list_filters()
+        """ List, by name, all available filters """
+        return self.__fbank.list_filters()
 
     def add_filter(self,filter_name,filter_func,parameters=None):
         """
@@ -73,7 +74,7 @@ class Tree():
         Return True if the filter was added
         Return False if the filter_name was already in the bank
         """
-        self.__fbank.add_filter(filter_name,filter_func,parameters=parameters)
+        return self.__fbank.add_filter(filter_name,filter_func,parameters=parameters)
 
     def remove_filter(self,filter_name):
         """
@@ -81,7 +82,7 @@ class Tree():
         Only custom filters that were added here can be removed
         Return False if the filter was not removed
         """
-        self.__fbank.remove_filter(filter_name)
+        return self.__fbank.remove_filter(filter_name)
 
 ################### ViewTree #####################
 
@@ -96,9 +97,10 @@ class ViewTree(gobject.GObject):
                     'task-modified-inview': (gobject.SIGNAL_RUN_FIRST, \
                                             gobject.TYPE_NONE, (str, )),}
                                             
-    def __init(self,maintree,filters_bank):
+    def __init__(self,maintree,filters_bank,refresh=True):
+        gobject.GObject.__init__(self)
         self.__maintree = maintree
-        self.__ft = FilteredTree(maintree,filters_bank)
+        self.__ft = FilteredTree(maintree,filters_bank,refresh=refresh)
 
 #    #only by commodities
 #    def get_node(self,nid):
@@ -128,18 +130,32 @@ class ViewTree(gobject.GObject):
         return self.__ft.get_node_for_path(path)
 
     def get_paths_for_node(self, nid):
+        print "not implemented"
+        return
 
     def next_node(self, nid,pid):
+        print "not implemented"
+        return
 
     def node_has_child(self, nid):
+        print "not implemented"
+        return
 
     def node_n_children(self, nid):
+        print "not implemented"
+        return
 
     def node_nth_child(self, nid, n):
+        print "not implemented"
+        return
 
     def node_parents(self, nid):
+        print "not implemented"
+        return
 
     def is_displayed(self,nid):
+        print "not implemented"
+        return
 
     ####### Change filters #################
     def apply_filter(self,filter_name,parameters=None,\
@@ -151,14 +167,20 @@ class ViewTree(gobject.GObject):
         @param reset : optional boolean. Should we remove other filters?
         @param refresh : should we refresh after applying this filter ?
         """
+        print "not implemented"
+        return
 
     def unapply_filter(self,filter_name,refresh=True):
         """
         Removes a filter from the tree.
         @param filter_name: The name of an already added filter to remove
         """
+        print "not implemented"
+        return
 
     def reset_filters(self,refresh=True):
         """
         Clears all filters currently set on the tree.
         """
+        print "not implemented"
+        return

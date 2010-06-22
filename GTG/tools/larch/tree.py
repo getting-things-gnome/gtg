@@ -17,12 +17,20 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
+import gobject
+
 from GTG.tools.logger import Log
 
-class MainTree():
-
+class MainTree(gobject.GObject):
+    __gsignals__ = {'node-added': (gobject.SIGNAL_RUN_FIRST, \
+                                    gobject.TYPE_NONE, (str, )),
+                    'node-deleted': (gobject.SIGNAL_RUN_FIRST, \
+                                    gobject.TYPE_NONE, (str, )),
+                    'node-modified': (gobject.SIGNAL_RUN_FIRST, \
+                                    gobject.TYPE_NONE, (str, ))}
 
     def __init__(self, root=None):
+        gobject.GObject.__init__(self)
         self.root_id = 'root'
         self.nodes = {}
         self.old_paths = {}
@@ -61,7 +69,6 @@ class MainTree():
 
     #We add a node. By default, it's a child of the root
     def add_node(self, node, parent_id=None):
-        #print "*************adding node %s %s" %(node, parent)
         id = node.get_id()
         if self.nodes.has_key(id):
             print "Error : A node with this id %s already exists" %id
@@ -81,6 +88,7 @@ class MainTree():
             for rel in list(self.pending_relationships):
                 if id in rel:
                     self.new_relationship(rel[0],rel[1])
+            self.emit("node-added", id)
             return True
 
     #this will remove a node and all his children
@@ -101,6 +109,7 @@ class MainTree():
             else:
                 self.root.remove_child(id)
             self.old_paths[id] = path
+            self.emit("node-deleted", id)
             self.nodes.pop(id)
         
     #create a new relationship between nodes if it doesn't already exist

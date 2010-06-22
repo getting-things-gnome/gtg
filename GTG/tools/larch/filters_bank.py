@@ -34,7 +34,8 @@ class Filter:
         self.tree = req
 
     def set_parameters(self,dic):
-        self.dic = dic
+        if dic:
+            self.dic = dic
     
     def is_displayed(self,tid):
         task = self.tree.get_node(tid)
@@ -259,7 +260,7 @@ class FiltersBank:
         liste += self.custom_filters.keys()
         return liste
     
-    def add_filter(self,filter_name,filter_func):
+    def add_filter(self,filter_name,filter_func,parameters=None):
         """
         Adds a filter to the filter bank 
         Return True if the filter was added
@@ -277,6 +278,7 @@ class FiltersBank:
                 filter_obj.set_parameters(param)
             else:
                 filter_obj = Filter(filter_func,self.tree)
+                filter_obj.set_parameters(parameters)
             self.custom_filters[filter_name] = filter_obj
             return True
         else:
