@@ -34,8 +34,6 @@ import gtk
 
 #our own imports
 import GTG
-from GTG.backends.backendsignals import BackendSignals
-from GTG.gtk.browser.custominfobar import CustomInfoBar
 from GTG.core                       import CoreConfig
 from GTG                         import _, info, ngettext
 from GTG.core.task               import Task
@@ -159,7 +157,6 @@ class TaskBrowser:
 
     def _init_icon_theme(self):
         icon_dirs = CoreConfig().get_icons_directories()
-        print icon_dirs
         for i in icon_dirs:
             gtk.icon_theme_get_default().prepend_search_path(i)
             gtk.window_set_default_icon_name("gtg")

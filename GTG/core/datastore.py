@@ -157,7 +157,6 @@ class DataStore(object):
         '''
 
         if self.has_task(task.get_id()):
-            print "TRIED TO PUSH EXISTING TASK"
             return False
         else:
             self.open_tasks.add_node(task)
@@ -315,7 +314,6 @@ class DataStore(object):
         the Tree will be saved in the proper backends
         @param backend_id: a backend id
         '''
-        print "flushing all"
         def _internal_flush_all_tasks():
             backend = self.backends[backend_id]
             for task_id in self.requester.get_all_tasks_list():
@@ -340,7 +338,6 @@ class DataStore(object):
                 b.quit()
         #we save the parameters
         for b in self.get_all_backends(disabled = True):
-            print "SAVING", b
             t_xml = doc.createElement("backend")
             for key, value in b.get_parameters().iteritems():
                 if key in ["backend", "xmlobject"]:

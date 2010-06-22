@@ -489,7 +489,6 @@ class GenericBackend(object):
                 with open(path, 'r') as file:
                     return pickle.load(file)
             except pickle.PickleError:
-                print "PICKLE ERROR"
                 return default_value
 
 ###############################################################################
@@ -535,7 +534,6 @@ class GenericBackend(object):
     def queue_set_task(self, task):
         ''' Save the task in the backend. '''
         tid = task.get_id()
-        print "SETTING", task.get_title()
         if task not in self.to_set and tid not in self.to_remove:
             self.to_set.appendleft(task)
             self.__try_launch_setting_thread()

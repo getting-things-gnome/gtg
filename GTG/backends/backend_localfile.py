@@ -24,14 +24,11 @@ This file will be in your $XDG_DATA_DIR/gtg folder.
 
 import os
 import uuid
-from collections import deque
-import threading
 
 from GTG.backends.genericbackend import GenericBackend
 from GTG.core                    import CoreConfig
 from GTG.tools                   import cleanxml, taskxml
 from GTG                         import _
-from GTG.tools.logger            import Log
 
 
 
@@ -128,14 +125,9 @@ class Backend(GenericBackend):
             if tid not in self.tids:
                 self.tids.append(tid)
             task = self.datastore.task_factory(tid)
-            print "****LOADING tid", tid 
             if task:
                 task = taskxml.task_from_xml(task, node)
-                print "**GOT TASK", task.get_title()
                 self.datastore.push_task(task)
-            else:
-                print "tried to load task with the same tid"
-        #print "#### finishing pushing tasks"
 
     def set_task(self, task):
             tid = task.get_id()
@@ -164,12 +156,9 @@ class Backend(GenericBackend):
 
     def remove_task(self, tid):
         ''' Completely remove the task with ID = tid '''
-        print "REMOVING "+self._parameters["path"]
         for node in self.xmlproj.childNodes:
-            print node.getAttribute("id")
             if node.getAttribute("id") == tid:
                 self.xmlproj.removeChild(node)
-                #                print "still in datastore" , self.datastore.has_task(tid)
                 if tid in self.tids:
                     self.tids.remove(tid)
         cleanxml.savexml(self._parameters["path"], self.doc)
@@ -180,7 +169,6 @@ class Backend(GenericBackend):
         Called when GTG quits or disconnects the backend.
         '''
         super(Backend, self).quit(disable)
-        print "quitting " + self._parameters["path"]
 
     def save_state(self):
         cleanxml.savexml(self._parameters["path"], self.doc, backup=True)

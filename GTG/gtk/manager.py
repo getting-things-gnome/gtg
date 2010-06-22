@@ -39,7 +39,6 @@ from GTG.tools               import clipboard
 from GTG.core.plugins.engine import PluginEngine
 from GTG.core.plugins.api    import PluginAPI
 from GTG.tools.logger        import Log
-from GTG.gtk.backends_dialog import BackendsDialog
 
 
 

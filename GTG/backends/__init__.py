@@ -129,8 +129,6 @@ class BackendFactory(Borg):
 
         Returns the backend instance, or None is something goes wrong
         '''
-        print "restoring"
-        print dic
         if not "module" in dic or not "xmlobject" in dic:
             Log.debug ("Malformed backend configuration found! %s" % \
                        dic)
@@ -155,12 +153,10 @@ class BackendFactory(Borg):
                 dic[param_name] = param_value
         #We put the backend itself in the dict
         dic["backend"] = module.Backend(dic)
-        print "final dic", dic
         return dic["backend"]
 
     def get_saved_backends_list(self):
         backends_dic = self._read_backend_configuration_file()
-        print backends_dic
 
         #Retrocompatibility: default backend has changed name
         for dic in backends_dic:
