@@ -82,6 +82,15 @@ class TestFilteredTree(unittest.TestCase):
         self.assertEqual(total,view.get_n_nodes())
         self.assertEqual(self.green_nodes,view.get_n_nodes(withfilters=['green'])
 
+    def test_add_remove_node(self):
+        node = DummyNode('temp')
+        node.add_color('blue')
+        self.tree.add_node(node,parent=0)
+        shouldbe = self.blue_nodes + 1
+        self.assertEqual(shouldbe,view.get_n_nodes(withfilters=['blue'])
+        self.tree.del_node('temp')
+        self.assertEqual(self.blue_nodes,view.get_n_nodes(withfilters=['blue'])
+
 #    def test_root(self):
 #        #A tree created without an argument has a root
 #        root = tree.get_root()

@@ -24,38 +24,45 @@ from GTG.tools.larch.filteredtree import FilteredTree
 
 class Tree():
     def __init__(self):
-        self.tree = MainTree()
+        self.__tree = MainTree()
+        self.__fbank = FiltersBank(self.__tree)
 
     ###### nodes handling ######
     def get_node(self,nid):
-        return self.tree.get_node(nid)
+        return self.__tree.get_node(nid)
     
     def add_node(self,node,parent_id=None):
-        node.set_tree(self.tree)
-        self.tree.add_node(node,parent_id=parent_id)
+        node.set_tree(self.__tree)
+        self.__tree.add_node(node,parent_id=parent_id)
 
     def del_node(self,nid):
-        return
+        return self.__tree.remove_node(nid)
 
     def modify_node(self,nid):
+        print "not implemented"
         return
         
     #move the node to a new parent (dismissing all other parents)
     #use pid None to move it to the root
     def move_node(self,nid,new_parent_id=None):
+        print "not implemented"
         return
 
     #if pid is None, the rood is added but, then, 
     #all other parents are dismissed
     def add_parent(self,nid,new_parent_id=None):
+        print "not implemented"
         return
 
     ############ Views ############
     def get_viewtree(self):
+        vt = ViewTree(self.__tree,self.__fbank)
+        return vt
 
     ########### Filters bank ######
     def list_filters(self):
     """ List, by name, all available filters """
+    self.__fbank.list_filters()
 
     def add_filter(self,filter_name,filter_func,parameters=None):
         """
@@ -66,6 +73,7 @@ class Tree():
         Return True if the filter was added
         Return False if the filter_name was already in the bank
         """
+        self.__fbank.add_filter(filter_name,filter_func,parameters=parameters)
 
     def remove_filter(self,filter_name):
         """
@@ -73,6 +81,7 @@ class Tree():
         Only custom filters that were added here can be removed
         Return False if the filter was not removed
         """
+        self.__fbank.remove_filter(filter_name)
 
 ################### ViewTree #####################
 
@@ -96,10 +105,11 @@ class ViewTree(gobject.GObject):
 #        return self.__maintree.get_node(nid)
 
     def print_tree(self):
+        return self.__ft.print_tree()
 
     #return a list of nid of displayed nodes
     def get_all_nodes(self):
-
+        return self.__ft.get_all_nodes()
 
     def get_n_nodes(self,withfilters=[],transparent_filters=True):
         """
@@ -111,22 +121,25 @@ class ViewTree(gobject.GObject):
         If transparent_filters = False, we only take into account 
         the applied filters that doesn't have the transparent parameters.
         """
+        return self.__ft.get_n_nodes(withfilters=withfilters,\
+                                    transparent_filters=transparent_filters)
 
     def get_node_for_path(self, path):
+        return self.__ft.get_node_for_path(path)
 
-    def get_paths_for_node(self, node):
+    def get_paths_for_node(self, nid):
 
-    def next_node(self, node,parent):
+    def next_node(self, nid,pid):
 
-    def node_has_child(self, node):
+    def node_has_child(self, nid):
 
-    def node_n_children(self, node):
+    def node_n_children(self, nid):
 
-    def node_nth_child(self, node, n):
+    def node_nth_child(self, nid, n):
 
-    def node_parents(self, node):
+    def node_parents(self, nid):
 
-    def is_displayed(self,tid):
+    def is_displayed(self,nid):
 
     ####### Change filters #################
     def apply_filter(self,filter_name,parameters=None,\

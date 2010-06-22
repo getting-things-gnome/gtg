@@ -31,13 +31,13 @@ class Filter:
     def __init__(self,func,req):
         self.func = func
         self.dic = {}
-        self.req = req
+        self.tree = req
 
     def set_parameters(self,dic):
         self.dic = dic
     
     def is_displayed(self,tid):
-        task = self.req.get_task(tid)
+        task = self.tree.get_node(tid)
         value = True
         if not task:
             value = False
@@ -103,7 +103,7 @@ class FiltersBank:
     Stores filter objects in a centralized place.
     """
 
-    def __init__(self,req,tree=None):
+    def __init__(self,tree):
         """
         Create several stock filters:
 
@@ -113,47 +113,46 @@ class FiltersBank:
         notag - Tasks with no tags
         """
         self.tree = tree
-        self.req = req
         self.available_filters = {}
         self.custom_filters = {}
         #Workview
-        filt_obj = Filter(self.workview,self.req)
+        filt_obj = Filter(self.workview,self.tree)
         self.available_filters['workview'] = filt_obj
         #Active
-        filt_obj = Filter(self.active,self.req)
+        filt_obj = Filter(self.active,self.tree)
         self.available_filters['active'] = filt_obj
         #closed
-        filt_obj = Filter(self.closed,self.req)
+        filt_obj = Filter(self.closed,self.tree)
         param = {}
         param['flat'] = True
         filt_obj.set_parameters(param)
         self.available_filters['closed'] = filt_obj
         #notag
-        filt_obj = Filter(self.notag,self.req)
+        filt_obj = Filter(self.notag,self.tree)
         param = {}
         param['ignore_when_counting'] = True
         filt_obj.set_parameters(param)
         self.available_filters['notag'] = filt_obj
         #workable
-        filt_obj = Filter(self.is_workable,self.req)
+        filt_obj = Filter(self.is_workable,self.tree)
         self.available_filters['workable'] = filt_obj
         #workable
-        filt_obj = Filter(self.is_started,self.req)
+        filt_obj = Filter(self.is_started,self.tree)
         self.available_filters['started'] = filt_obj
         #workdue
-        filt_obj = Filter(self.workdue,self.req)
+        filt_obj = Filter(self.workdue,self.tree)
         self.available_filters['workdue'] = filt_obj
         #workstarted
-        filt_obj = Filter(self.workstarted,self.req)
+        filt_obj = Filter(self.workstarted,self.tree)
         self.available_filters['workstarted'] = filt_obj
         #worktostart
-        filt_obj = Filter(self.worktostart,self.req)
+        filt_obj = Filter(self.worktostart,self.tree)
         self.available_filters['worktostart'] = filt_obj
         #worklate
-        filt_obj = Filter(self.worklate,self.req)
+        filt_obj = Filter(self.worklate,self.tree)
         self.available_filters['worklate'] = filt_obj
         #no_disabled_tag
-        filt_obj = Filter(self.no_disabled_tag,self.req)
+        filt_obj = Filter(self.no_disabled_tag,self.tree)
         param = {}
         param['ignore_when_counting'] = True
         filt_obj.set_parameters(param)
@@ -272,12 +271,12 @@ class FiltersBank:
                 negate = True
                 filter_name = filter_name[1:]
             if filter_name.startswith('@'):
-                filter_obj = SimpleTagFilter(filter_name,self.req)
+                filter_obj = SimpleTagFilter(filter_name,self.tree)
                 param = {}
                 param['ignore_when_counting'] = True
                 filter_obj.set_parameters(param)
             else:
-                filter_obj = Filter(filter_func,self.req)
+                filter_obj = Filter(filter_func,self.tree)
             self.custom_filters[filter_name] = filter_obj
             return True
         else:
