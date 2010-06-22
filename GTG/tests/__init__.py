@@ -33,27 +33,17 @@ from GTG.tests import (
     test_apidocs,
     test_backends,
     test_datastore,
-    test_bidict,
-    test_twokeydict,
-    test_syncengine,
-    test_syncmeme,
-    test_backend_tomboy,
     test_filteredtree,
     )
 
 def test_suite():
     return unittest.TestSuite([
-        test_twokeydict.test_suite(),
         test_tagstore.test_suite(),
         test_taskviewserial.test_suite(),
     	test_tree.test_suite(),
         test_apidocs.test_suite(),
         test_backends.test_suite(),
         test_datastore.test_suite(),
-        test_bidict.test_suite(),
-        test_syncengine.test_suite(),
-        test_syncmeme.test_suite(),
-        test_backend_tomboy.test_suite(),
         test_filteredtree.test_suite(),
         ])
 

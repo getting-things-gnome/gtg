@@ -559,7 +559,10 @@ class GenericBackend(object):
             self.please_quit = True
             try:
                 self.to_set_timer.cancel()
-                self.to_set_timer.join()
+            except:
+                pass
+            try:
+                self.to_set_timer.join(5)
             except:
                 pass
         self.please_quit = False

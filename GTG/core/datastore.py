@@ -247,7 +247,7 @@ class DataStore(object):
             return
         self.is_default_backend_loaded = True
         for backend in self.backends.itervalues():
-            if backend.is_enabled():
+            if backend.is_enabled() and not backend.is_default():
                 backend.initialize()
                 backend.start_get_tasks()
                 self.flush_all_tasks(backend.get_id())
@@ -526,7 +526,10 @@ class TaskSource():
         if self.to_set_timer != None:
             try:
                 self.to_set_timer.cancel()
-                self.to_set_timer.join()
+            except:
+                pass
+            try:
+                self.to_set_timer.join(5)
             except:
                 pass
         self.launch_setting_thread()
