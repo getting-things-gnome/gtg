@@ -76,63 +76,68 @@ class TestFilteredTree(unittest.TestCase):
             i+=1
             self.green_nodes += 1
 
+    def test_viewtree_n_nodes(self):
+        view = self.tree.get_viewtree()
+        total = self.red_nodes + self.blue_nodes + self.green_nodes
+        self.assertEqual(total,view.get_n_nodes())
+        self.assertEqual(self.green_nodes,view.get_n_nodes(withfilters=['green'])
 
-    def test_root(self):
-        #A tree created without an argument has a root
-        root = tree.get_root()
-        self.assertEqual('root', root.get_id())
-        
-    def test_add_node(self):
-        #Add a node to a tree the retrieve it with its id.
-        tree = self._build_tree(1)
-        get = tree.get_node('1@1')
-        self.assertEqual('1@1',get.get_id())
-        
-    def test_remove_node(self):
-        #Add a node to a tree the retrieve it with its id.
-        tree = self._build_tree(1)
-        tree.remove_node('1@1')
-        get = tree.get_node('1@1')
-        self.assertEqual(None,get)
-        
-    def test_all_nodes(self):
-        #you can retrieve all nodes, the tree being flat or not
-        tree1 = self._build_tree(4)
-        tree2 = self._build_tree(4,flat=False)
-        flat = len(tree1.get_all_nodes())
-        stair = len(tree2.get_all_nodes())
-        self.assertEqual(4,flat)
-        #not flat have n + n - 1 nodes
-        self.assertEqual(7,stair)
-        
-    def test_parent(self):
-        tree = self._build_tree(4,flat=False)
-        #tree.print_tree()
-        mynode = tree.get_node('3@3')
-        self.assertEqual(True,mynode.has_parent())
-        p = mynode.get_parents()[0]
-        par = tree.get_node(p)
-        self.assertEqual('2@2',par.get_id())
-        
-    def test_get_path(self):
-        tree = self._build_tree(4,flat=False)
-        mynode = tree.get_node('2@2')
-        node_path = tree.get_path_for_node(mynode)
-        self.assertEqual((0,0),node_path)
-        mynode = tree.get_node('2@1')
-        node_path = tree.get_path_for_node(mynode)
-        self.assertEqual((1,),node_path)
-        
-    def test_visit(self):
-        self.counter = 0
-        self.counter2 = 0
-        def pre(node):
-            self.counter += 1
-        def post(node):
-            self.counter2 += 1
-        tree = self._build_tree(4,flat=False)
-        tree.visit_tree(pre_func=pre,post_func=post)
-        self.assertEqual(7,self.counter)
+#    def test_root(self):
+#        #A tree created without an argument has a root
+#        root = tree.get_root()
+#        self.assertEqual('root', root.get_id())
+#        
+#    def test_add_node(self):
+#        #Add a node to a tree the retrieve it with its id.
+#        tree = self._build_tree(1)
+#        get = tree.get_node('1@1')
+#        self.assertEqual('1@1',get.get_id())
+#        
+#    def test_remove_node(self):
+#        #Add a node to a tree the retrieve it with its id.
+#        tree = self._build_tree(1)
+#        tree.remove_node('1@1')
+#        get = tree.get_node('1@1')
+#        self.assertEqual(None,get)
+#        
+#    def test_all_nodes(self):
+#        #you can retrieve all nodes, the tree being flat or not
+#        tree1 = self._build_tree(4)
+#        tree2 = self._build_tree(4,flat=False)
+#        flat = len(tree1.get_all_nodes())
+#        stair = len(tree2.get_all_nodes())
+#        self.assertEqual(4,flat)
+#        #not flat have n + n - 1 nodes
+#        self.assertEqual(7,stair)
+#        
+#    def test_parent(self):
+#        tree = self._build_tree(4,flat=False)
+#        #tree.print_tree()
+#        mynode = tree.get_node('3@3')
+#        self.assertEqual(True,mynode.has_parent())
+#        p = mynode.get_parents()[0]
+#        par = tree.get_node(p)
+#        self.assertEqual('2@2',par.get_id())
+#        
+#    def test_get_path(self):
+#        tree = self._build_tree(4,flat=False)
+#        mynode = tree.get_node('2@2')
+#        node_path = tree.get_path_for_node(mynode)
+#        self.assertEqual((0,0),node_path)
+#        mynode = tree.get_node('2@1')
+#        node_path = tree.get_path_for_node(mynode)
+#        self.assertEqual((1,),node_path)
+#        
+#    def test_visit(self):
+#        self.counter = 0
+#        self.counter2 = 0
+#        def pre(node):
+#            self.counter += 1
+#        def post(node):
+#            self.counter2 += 1
+#        tree = self._build_tree(4,flat=False)
+#        tree.visit_tree(pre_func=pre,post_func=post)
+#        self.assertEqual(7,self.counter)
         self.assertEqual(7,self.counter2)
         
     def test_get_node(self):

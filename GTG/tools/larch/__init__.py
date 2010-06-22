@@ -57,9 +57,12 @@ class Tree():
     def list_filters(self):
     """ List, by name, all available filters """
 
-    def add_filter(self,filter_name,filter_func):
+    def add_filter(self,filter_name,filter_func,parameters=None):
         """
         Adds a filter to the filter bank 
+        @filter_name : name to give to the filter
+        @filter_func : the function that will filter the nodes
+        @parameters : some default parameters fot that filter
         Return True if the filter was added
         Return False if the filter_name was already in the bank
         """
@@ -88,9 +91,9 @@ class ViewTree(gobject.GObject):
         self.__maintree = maintree
         self.__ft = FilteredTree(maintree,filters_bank)
 
-    #only by commodities
-    def get_node(self,nid):
-        return self.__maintree.get_node(nid)
+#    #only by commodities
+#    def get_node(self,nid):
+#        return self.__maintree.get_node(nid)
 
     def print_tree(self):
 
