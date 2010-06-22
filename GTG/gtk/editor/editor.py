@@ -39,7 +39,7 @@ except: # pylint: disable-msg=W0702
 from GTG                     import _
 from GTG                     import ngettext
 from GTG                     import PLUGIN_DIR
-from GTG                     import DATA_DIR
+from GTG.core                import CoreConfig
 from GTG.gtk.editor          import GnomeConfig
 from GTG.gtk.editor.taskview import TaskView
 from GTG.core.plugins.engine import PluginEngine
@@ -176,7 +176,7 @@ class TaskEditor:
         self.pengine = PluginEngine(PLUGIN_DIR)
         self.te_plugin_api = PluginAPI(window = self.window,
                                        config = None,
-                                       data_dir = DATA_DIR,
+                                       data_dir = CoreConfig().get_data_dir(),
                                        builder = self.builder, 
                                        requester = self.req,
                                        tagpopup = None,

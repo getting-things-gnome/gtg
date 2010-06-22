@@ -35,7 +35,7 @@ edit-apidocs:
 # Check for coding standard violations & flakes.
 lint: pyflakes pep8
 
-.PHONY: check lint pyflakes pep8 apidocs
+.PHONY: check lint pyflakes pep8 apidocs edit-apidocs clean
 
 #Ignore the exit code in pyflakes, so that pep8 is always run when "make lint"
 .IGNORE: pyflakes

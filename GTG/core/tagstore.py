@@ -123,11 +123,6 @@ class TagStore(Tree):
             tagname = "@" + tagname
         return self.get_node(tagname)
 
-    def remove_tag(self, tag_name):
-        node = self.get_node(tag_name)
-        path = self.get_path_for_node(node)
-        self.req._tag_path_deleted(path)
-        
     #FIXME : also add a new filter
     def rename_tag(self, oldname, newname):
         if len(newname) > 0 and \

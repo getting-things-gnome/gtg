@@ -270,7 +270,7 @@ class PreferencesDialog:
             self.config["plugins"]["enabled"] = \
               self.pengine.enabled_plugins().keys()
 
-        self.config_obj.save_config()
+        self.config_obj.save()
 
         self.dialog.hide()
         return True

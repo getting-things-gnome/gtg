@@ -39,8 +39,13 @@ from GTG.tools               import clipboard
 from GTG.core.plugins.engine import PluginEngine
 from GTG.core.plugins.api    import PluginAPI
 from GTG.tools.logger        import Log
+from GTG.gtk.backends_dialog import BackendsDialog
+
+
 
 class Manager:
+    
+
     ############## init #####################################################
     def __init__(self, req, config):
         self.config_obj = config
@@ -72,9 +77,9 @@ class Manager:
         #Deletion UI
         self.delete_dialog = None
         
-        #Preferences windows
-        # Initialize "Preferences" dialog
-        self.preferences = None
+        #Preferences and Backends windows
+        # Initialize  dialogs
+        self.preferences_dialog = None
         
         #DBus
         DBusTaskWrapper(self.req, self)
@@ -89,7 +94,7 @@ class Manager:
         # initializes the plugin api class
         self.plugin_api = PluginAPI(window         = self.browser.window,
                                     config         = self.config,
-                                    data_dir       = GTG.DATA_DIR,
+                                    data_dir = self.config_obj.get_data_dir(),
                                     builder        = self.browser.builder,
                                     requester      = self.req,
                                     tagpopup       = self.browser.tagpopup,
@@ -189,8 +194,8 @@ class Manager:
             
 ################ Others dialog ############################################
 
-    def show_preferences(self, config_priv, sender=None):
-        if not self.preferences:
+    def open_preferences(self, config_priv, sender=None):
+        if not hasattr(self, "preferences"):
             self.preferences = PreferencesDialog(self.pengine, self.p_apis, \
                     self.config_obj)
         self.preferences.activate(config_priv)

@@ -38,7 +38,11 @@ class DeletionUI():
         """if we pass a tid as a parameter, we delete directly
         otherwise, we will look which tid is selected"""
         for tid in self.tids_todelete:
-            self.req.delete_task(tid)
+            task = self.req.get_task(tid)
+            if task:
+                task.delete()
+            else:
+                print "trying to delete task already deleted"
         self.tids_todelete = []
 
     def delete_tasks(self, tids=None):
