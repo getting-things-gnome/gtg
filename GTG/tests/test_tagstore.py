@@ -23,6 +23,7 @@ import unittest
 
 from GTG.core.tagstore   import Tag
 from GTG.core.datastore import DataStore
+from GTG.core import CoreConfig
 
 
 
@@ -117,4 +118,6 @@ class TestTag(unittest.TestCase):
         self.assertEqual(0, len(save_calls))
 
 def test_suite():
+    CoreConfig().set_data_dir("./test_data")
+    CoreConfig().set_conf_dir("./test_data")
     return unittest.TestLoader().loadTestsFromTestCase(TestTag)

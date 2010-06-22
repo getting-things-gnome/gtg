@@ -27,6 +27,8 @@ import os.path
 import shutil
 import uuid
 
+from GTG.core import CoreConfig
+
 
 
 class TestApiDocs(unittest.TestCase):
@@ -50,4 +52,6 @@ class TestApiDocs(unittest.TestCase):
         shutil.rmtree(api_dir)
 
 def test_suite():
+    CoreConfig().set_data_dir("./test_data")
+    CoreConfig().set_conf_dir("./test_data")
     return unittest.TestLoader().loadTestsFromTestCase(TestApiDocs)

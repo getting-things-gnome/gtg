@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Gettings Things Gnome! - a personal organizer for the GNOME desktop
+# Getting Things Gnome! - a personal organizer for the GNOME desktop
 # Copyright (c) 2008-2009 - Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
@@ -39,18 +39,18 @@ class Requester(gobject.GObject):
     Multiple L{Requester}s can exist on the same datastore, so they should
     never have state of their own.
     """
-    __gsignals__ = {'task-added': (gobject.SIGNAL_RUN_FIRST, \
-                                    gobject.TYPE_NONE, (str, )),
-                    'task-deleted': (gobject.SIGNAL_RUN_FIRST, \
-                                    gobject.TYPE_NONE, (str, )),
-                    'task-modified': (gobject.SIGNAL_RUN_FIRST, \
-                                    gobject.TYPE_NONE, (str, )),
-                    'tag-added': (gobject.SIGNAL_RUN_FIRST, \
-                                    gobject.TYPE_NONE, (str, )),
-                    'tag-deleted': (gobject.SIGNAL_RUN_FIRST, \
-                                    gobject.TYPE_NONE, (str, )),
-                    'tag-modified': (gobject.SIGNAL_RUN_FIRST, \
-                                    gobject.TYPE_NONE, (str, ))}
+
+    __string_signal__ = (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str, ))
+
+    __gsignals__ = {'task-added' : __string_signal__, \
+              'task-deleted'     : __string_signal__, \
+              'task-modified'    : __string_signal__, \
+              'task-tagged'      : __string_signal__, \
+              'task-untagged'    : __string_signal__, \
+              'tag-added'        : __string_signal__, \
+              'tag-deleted'      : __string_signal__, \
+              'tag-path-deleted' : __string_signal__, \
+              'tag-modified'     : __string_signal__}
 
     def __init__(self, datastore):
         """Construct a L{Requester}."""
@@ -72,12 +72,19 @@ class Requester(gobject.GObject):
         self.counter_call += 1
         #print "signal task_modified %s (%s modifications)" %(tid,self.counter_call)
         gobject.idle_add(self.emit, "task-modified", tid)
-        
+
+    def _task_deleted(self, tid):
+        #when this is emitted, task has *already* been deleted
+        gobject.idle_add(self.emit, "task-deleted", tid)
+
     def _tag_added(self,tagname):
         gobject.idle_add(self.emit, "tag-added", tagname)
 
     def _tag_modified(self,tagname):
         gobject.idle_add(self.emit, "tag-modified", tagname)
+
+    def _tag_path_deleted(self, path):
+        gobject.idle_add(self.emit, "tag-path-deleted", path)
         
     def _tag_deleted(self,tagname):
         gobject.idle_add(self.emit, "tag-deleted", tagname)
@@ -126,6 +133,7 @@ class Requester(gobject.GObject):
 
     ######### Filters bank #######################
     # Get the filter object for a given name
+
     def get_filter(self,filter_name):
         return self.filters.get_filter(filter_name)
     
@@ -162,7 +170,7 @@ class Requester(gobject.GObject):
         task = self.ds.get_task(tid)
         return task
 
-    def new_task(self, pid=None, tags=None, newtask=True):
+    def new_task(self, tags=None, newtask=True):
         """Create a new task.
 
         Note: this modifies the datastore.
@@ -175,11 +183,12 @@ class Requester(gobject.GObject):
             existed, C{False} if importing an existing task from a backend.
         @return: A task from the data store
         """
-        task = self.ds.new_task(pid=pid)
+        task = self.ds.new_task()
         if tags:
             for t in tags:
                 assert(isinstance(t, Tag) == False)
                 task.tag_added(t)
+        self._task_loaded(task.get_id())
         return task
 
     def delete_task(self, tid):
@@ -196,11 +205,11 @@ class Requester(gobject.GObject):
             for tag in task.get_tags():
                 self.emit('tag-modified', tag.get_name())
         self.emit('task-deleted', tid)
-        #return True
-        return self.ds.delete_task(tid)
+        return self.basetree.remove_node(tid)
 
     ############### Tags ##########################
     ###############################################
+
     def get_tag_tree(self):
         return self.ds.get_tagstore()
 
@@ -251,3 +260,27 @@ class Requester(gobject.GObject):
                 l.append(t.get_name())
         l.sort(cmp=lambda x, y: cmp(x.lower(),y.lower()))
         return l
+
+    ############## Backends #######################
+    ###############################################
+
+    def get_all_backends(self, disabled = False):
+        return self.ds.get_all_backends(disabled)
+
+    def register_backend(self, dic):
+        return self.ds.register_backend(dic)
+
+    def flush_all_tasks(self, backend_id):
+        return self.ds.flush_all_tasks(backend_id)
+
+    def get_backend(self, backend_id):
+        return self.ds.get_backend(backend_id)
+
+    def set_backend_enabled(self, backend_id, state):
+        return self.ds.set_backend_enabled(backend_id, state)
+
+    def remove_backend(self, backend_id):
+        return self.ds.remove_backend(backend_id)
+
+    def backend_change_attached_tags(self, backend_id, tags):
+        return self.ds.backend_change_attached_tags(backend_id, tags)

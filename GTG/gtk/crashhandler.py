@@ -33,6 +33,12 @@ If you're using multiple threads, use gtkcrashhandler_thread decorator."""
 import sys
 import os
 import time
+import signal
+from contextlib import contextmanager
+
+from GTG import info
+
+
 try:
     import pygtk
     pygtk.require("2.0") # not tested on earlier versions
@@ -297,3 +303,21 @@ if __name__ == "__main__":
             return "gtkcrashhandler.py should imported, not run"
     raise DoNotRunException()
 
+
+## We handle initialization directly here, since this module will be used as a
+#  singleton
+        #we listen for signals from the system in order to save our configuration
+        # if GTG is forcefully terminated (e.g.: on shutdown).
+@contextmanager
+def signal_catcher(callback):
+    #if TERM or ABORT are caught, we execute the callback function
+    for s in [signal.SIGABRT, signal.SIGTERM]:
+        signal.signal(s, lambda a,b: callback())
+    yield
+
+initialize(app_name = "Getting Things GNOME!",
+           message  =  "GTG" + info.VERSION + 
+           _(" has crashed. Please report the bug on <a "\
+             "href=\"http://bugs.edge.launchpad.net/gtg\">our Launchpad page</a>."\
+             " If you have Apport installed, it will be started for you."),       \
+          use_apport = True)

@@ -60,7 +60,15 @@ def task_from_xml(task,xmlnode) :
     cur_tags = xmlnode.getAttribute("tags").replace(' ','').split(",")
     if "" in cur_tags: cur_tags.remove("")
     for tag in cur_tags: cur_task.tag_added(saxutils.unescape(tag))
-    
+
+    #REMOTE TASK IDS
+    remote_ids_list = xmlnode.getElementsByTagName("task-remote-ids")
+    for remote_id in remote_ids_list:
+        if remote_id.childNodes:
+            node = remote_id.childNodes[0]
+            backend_id = node.firstChild.nodeValue
+            remote_task_id = node.childNodes[1].firstChild.nodeValue
+            task.add_remote_id(backend_id, remote_task_id)
     return cur_task
 
 #Task as parameter the doc where to put the XML node
@@ -99,4 +107,18 @@ def task_to_xml(doc,task) :
         #t_xml.appendChild(element.firstChild)
         cleanxml.addTextNode(doc,t_xml,"content",desc)
     #self.__write_textnode(doc,t_xml,"content",t.get_text())
+
+    #REMOTE TASK IDS
+    remote_ids_element = doc.createElement("task-remote-ids")
+    t_xml.appendChild(remote_ids_element)
+    remote_ids_dict = task.get_remote_ids()
+    for backend_id, task_id in remote_ids_dict.iteritems():
+        backend_element = doc.createElement('backend')
+        remote_ids_element.appendChild(backend_element)
+        backend_element.appendChild(doc.createTextNode(backend_id))
+        task_element = doc.createElement('task-id')
+        backend_element.appendChild(task_element)
+        task_element.appendChild(doc.createTextNode(task_id))
+
+
     return t_xml

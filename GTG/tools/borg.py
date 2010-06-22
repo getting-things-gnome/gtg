@@ -17,37 +17,17 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-"""Tests for GTG backends.
 
-Some of these tests will generate files in
-xdg.BaseDirectory.xdg_data_home/gtg directory.
-"""
 
-# Standard imports
-import unittest
+class Borg(object):
+    """
+    This pattern ensures that all instances of a particular class share
+    the same state (just inherit this class to have it working)
+    """
 
-from GTG.gtk.editor import taskviewserial
-from GTG.core import CoreConfig
+    _borg_state = {}
     
-class GtgBackendsUniTests(unittest.TestCase):
-    """Tests for GTG backends."""
+    def __init__(self):
+        self.__dict__ = self._borg_state
 
-    def __init__(self, test):
-        unittest.TestCase.__init__(self, test)
-        self.taskfile = ''
-        self.datafile = ''
-        self.taskpath = ''
-        self.datapath = ''
 
-    def test_unserializer_parsexml(self):
-        """Tests for parsexml in unserializing :
-        - the task should be preserved
-        """
-        taskview = None
-        unserial = taskviewserial.Unserializer(taskview)
-        
-        
-def test_suite():
-    CoreConfig().set_data_dir("./test_data")
-    CoreConfig().set_conf_dir("./test_data")
-    return unittest.TestLoader().loadTestsFromName(__name__)

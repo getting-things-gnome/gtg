@@ -40,6 +40,7 @@ XMLROOT = "tagstore"
 # There's only one Tag store by user. It will store all the tag used
 # and their attribute.
 class TagStore(Tree):
+
     
     def __init__(self,requester):
         Tree.__init__(self)
@@ -50,7 +51,7 @@ class TagStore(Tree):
         
         ### building the initial tags
         # Build the "all tasks tag"
-        self.alltag_tag = self.new_tag("gtg-tags-all")
+        self.alltag_tag = self.new_tag(CoreConfig.ALLTASKS_TAG)
         self.alltag_tag.set_attribute("special","all")
         self.alltag_tag.set_attribute("label","<span weight='bold'>%s</span>"\
                                              % _("All tasks"))
@@ -68,7 +69,7 @@ class TagStore(Tree):
         self.sep_tag.set_attribute("special","sep")
         self.sep_tag.set_attribute("order",2)
 
-        self.filename = os.path.join(CoreConfig.DATA_DIR, XMLFILE)
+        self.filename = os.path.join(CoreConfig().get_data_dir(), XMLFILE)
         doc, self.xmlstore = cleanxml.openxmlfile(self.filename,
             XMLROOT) #pylint: disable-msg=W0612
         for t in self.xmlstore.childNodes:
@@ -121,6 +122,11 @@ class TagStore(Tree):
         if tagname[0] != "@":
             tagname = "@" + tagname
         return self.get_node(tagname)
+
+    def remove_tag(self, tag_name):
+        node = self.get_node(tag_name)
+        path = self.get_path_for_node(node)
+        self.req._tag_path_deleted(path)
         
     #FIXME : also add a new filter
     def rename_tag(self, oldname, newname):
@@ -316,9 +322,12 @@ class Tag(TreeNode):
     def add_task(self, tid):
         if tid not in self.tasks:
             self.tasks.append(tid)      
-    def remove_task(self,tid):
+
+    def remove_task(self, tid):
         if tid in self.tasks:
             self.tasks.remove(tid)          
+            self.req._tag_modified(self.get_name())
+
     def get_tasks(self):
         #return a copy of the list
         toreturn = self.tasks[:]
