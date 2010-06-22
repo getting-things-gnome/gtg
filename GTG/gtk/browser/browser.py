@@ -426,7 +426,7 @@ class TaskBrowser:
 ### HELPER FUNCTIONS ########################################################
 
     def open_preferences(self,widget):
-        self.vmanager.show_preferences(self.priv)
+        self.vmanager.open_preferences(self.priv)
         
     def quit(self,widget=None):
         self.vmanager.close_browser()
