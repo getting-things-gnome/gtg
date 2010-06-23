@@ -317,10 +317,7 @@ class DataStore(object):
         def _internal_flush_all_tasks():
             backend = self.backends[backend_id]
             for task_id in self.requester.get_all_tasks_list():
-                if backend.should_task_id_be_stored(task_id):
-                    backend.queue_set_task(None, task_id)
-                else:
-                    backend.queue_remove_task(None, task_id)
+                backend.queue_set_task(None, task_id)
         t = threading.Thread(target = _internal_flush_all_tasks).start()
         self.backends[backend_id].start_get_tasks()
 
