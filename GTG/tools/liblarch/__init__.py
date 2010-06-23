@@ -27,6 +27,7 @@ class Tree():
     def __init__(self):
         self.__tree = MainTree()
         self.__fbank = FiltersBank(self.__tree)
+        self.mainview = ViewTree(self.__tree,self.__fbank,static=True)
 
     ###### nodes handling ######
     def get_node(self,nid):
@@ -56,6 +57,10 @@ class Tree():
         return
 
     ############ Views ############
+    #The main view is the bare tree, without any filters on it.
+    def get_main_view(self):
+        return self.mainview
+        
     def get_viewtree(self,refresh=True):
         vt = ViewTree(self.__tree,self.__fbank,refresh=refresh)
         return vt
@@ -97,14 +102,17 @@ class ViewTree(gobject.GObject):
                     'node-modified-inview': (gobject.SIGNAL_RUN_FIRST, \
                                             gobject.TYPE_NONE, (str, )),}
                                             
-    def __init__(self,maintree,filters_bank,refresh=True):
+    def __init__(self,maintree,filters_bank,refresh=True,static=False):
         gobject.GObject.__init__(self)
         self.__maintree = maintree
+        if static:
+            refresh = False
+        self.static = static
         self.__ft = FilteredTree(maintree,filters_bank,refresh=refresh)
 
-#    #only by commodities
-#    def get_node(self,nid):
-#        return self.__maintree.get_node(nid)
+    #only by commodities
+    def get_node(self,nid):
+        return self.__maintree.get_node(nid)
 
     def print_tree(self):
         return self.__ft.print_tree()
@@ -167,7 +175,10 @@ class ViewTree(gobject.GObject):
         @param reset : optional boolean. Should we remove other filters?
         @param refresh : should we refresh after applying this filter ?
         """
-        print "not implemented"
+        if self.static:
+            print "cannot apply filter on the main static view"
+        else:
+            print "not implemented"
         return
 
     def unapply_filter(self,filter_name,refresh=True):
@@ -175,12 +186,18 @@ class ViewTree(gobject.GObject):
         Removes a filter from the tree.
         @param filter_name: The name of an already added filter to remove
         """
-        print "not implemented"
+        if self.static:
+            print "cannot apply filter on the main static view"
+        else:
+            print "not implemented"
         return
 
     def reset_filters(self,refresh=True):
         """
         Clears all filters currently set on the tree.
         """
-        print "not implemented"
+        if self.static:
+            print "cannot apply filter on the main static view"
+        else:
+            print "not implemented"
         return

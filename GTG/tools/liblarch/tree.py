@@ -40,6 +40,10 @@ class MainTree(gobject.GObject):
         else:
             self.root = TreeNode(id=self.root_id)
         self.root.set_tree(self)
+        
+    def __modified(self,nid):
+        if nid != 'root' and nid in self.nodes:
+            self.emit("node-modified", nid)
 
     def __str__(self):
         return "<Tree: root = '%s'>" % (str(self.root))
@@ -155,6 +159,9 @@ class MainTree(gobject.GObject):
                 if [parent_id,child_id] not in self.pending_relationships:
                     self.pending_relationships.append([parent_id,child_id])
                 toreturn = True
+        if toreturn:
+            self.__modified(parent_id)
+            self.__modified(child_id)
         return toreturn
     
     #break an existing relationship. The child is added to the root
@@ -173,6 +180,9 @@ class MainTree(gobject.GObject):
                 #if no more parent left, adding to the root
                 if not c.has_parent():
                     self.root.add_child(child_id)
+        if toreturn:
+            self.__modified(parent_id)
+            self.__modified(child_id)
         return toreturn
             
     #Trying to make a function that bypass the weirdiness of lists

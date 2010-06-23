@@ -150,20 +150,12 @@ class FilteredTree(gobject.GObject):
         """
         return self.tree.get_root()
         
-    def get_all_keys(self):
+    def get_all_nodes(self):
         """
         returns list of all displayed node keys
         """
         return list(self.displayed_nodes)
-        
-    def get_all_nodes(self):
-        """
-        returns list of all nodes
-        """
-        k = []
-        for n in self.get_all_nodes():
-            k.append(self.get_node(n))
-        return k
+
         
     def get_n_nodes(self,withfilters=[],transparent_filters=True):
         """
@@ -215,10 +207,8 @@ class FilteredTree(gobject.GObject):
     def __task_modified(self,sender,tid):
         if tid not in self.tasks_to_modify:
             self.tasks_to_modify.append(tid)
-            node = self.get_node(tid)
-            if node:
-                inroot = self.__is_root(node)
-                self.__update_node(tid,inroot)
+            inroot = self.__is_root(tid)
+            self.__update_node(tid,inroot)
             self.tasks_to_modify.remove(tid)
 
     def __task_deleted(self,sender,tid):
@@ -560,10 +550,9 @@ class FilteredTree(gobject.GObject):
                 self.flat = filt.is_flat()
         #First things, we list the nodes that will be
         #ultimately displayed
-        for n in self.tree.get_all_nodes():
-            tid = n.get_id()
-            if self.__is_displayed(tid):
-                to_add.append(tid)
+        for nid in self.tree.get_all_keys():
+            if self.__is_displayed(nid):
+                to_add.append(nid)
         #Second step, we empty the current tree as we will rebuild it
         #from scratch
         for rid in list(self.virtual_root):
@@ -645,9 +634,10 @@ class FilteredTree(gobject.GObject):
 
     # Return True if the node should be a virtual root node
     # regardless of the current state
-    def __is_root(self,n):
+    def __is_root(self,nid):
         is_root = True
-        if not self.flat and n.has_parent():
+        n = self.tree.get_node(nid)
+        if n and not self.flat and n.has_parent():
             for par in n.get_parents():
                 if self.__is_displayed(par):
                     is_root = False
@@ -683,13 +673,12 @@ class FilteredTree(gobject.GObject):
             i = 0
             while i < nc:
                 ch = self.node_nth_child(node,i)
-                chid = ch.get_id()
-                if chid in self.virtual_root:
-                    #the child was in the VR. It should not be
-                    #because its parent is in now
-#                    if tid in DEBUG_TID:
-#                        print "updating children %s of node %s" %(chid,tid)
-                    self.__update_node(chid,False)
+                if ch:
+                    chid = ch.get_id()
+                    if chid in self.virtual_root:
+                        #the child was in the VR. It should not be
+                        #because its parent is in now
+                        self.__update_node(chid,False)
                 i += 1
     
     def __update_node(self,tid,inroot):
@@ -711,9 +700,11 @@ class FilteredTree(gobject.GObject):
                     self.emit("task-modified-inview", tid)
                     #I don't remember why we have to update the children.
                     if not self.flat:
-                        child_list = self.get_node(tid).get_children()
-                        for c in child_list:
-                            self.__update_node(c,False)
+                        node = self.get_node(tid)
+                        if node:
+                            child_list = node.get_children()
+                            for c in child_list:
+                                self.__update_node(c,False)
             else:
                 #if the task was displayed previously but shouldn't be anymore
                 #we remove it
@@ -727,7 +718,7 @@ class FilteredTree(gobject.GObject):
     
     def __add_node(self,tid,inroot=None):
         self.__adding_queue.append([tid,inroot])
-        if not self.__adding_lock and len(self.__adding_queue) > 0:
+        if tid and not self.__adding_lock and len(self.__adding_queue) > 0:
             self.__adding_lock = True
             self.__adding_loop()
 
@@ -737,9 +728,9 @@ class FilteredTree(gobject.GObject):
             if not self.is_displayed(tid):
     #            if tid in DEBUG_TID:
     #                print "adding inroot %s the node %s" %(inroot,tid)
-                node = self.get_node(tid)
+                node = self.tree.get_node(tid)
                 if inroot == None:
-                    inroot = self.__is_root(node)
+                    inroot = self.__is_root(tid)
                 #If the parent's node is not already displayed, we wait
                 #(the len of parents is 0 means no parent dislayed)
                 parents = self.node_parents(node)
@@ -762,12 +753,12 @@ class FilteredTree(gobject.GObject):
                     #We added a new node so we can check with those waiting
                     lost_nodes = []
                     while len(self.node_to_add) > 0:
-                        n = self.node_to_add.pop(0)
-                        toad = self.get_node(n)
+                        nid = self.node_to_add.pop(0)
+                        toad = self.get_node(nid)
                         if len(self.node_parents(toad)) > 0:
-                            self.__add_node(n,False)
+                            self.__add_node(nid,False)
                         else:
-                            lost_nodes.append(n)
+                            lost_nodes.append(nid)
                     self.node_to_add += lost_nodes
         self.__adding_lock = False
     
@@ -776,7 +767,7 @@ class FilteredTree(gobject.GObject):
             self.node_to_remove.append(tid)
             isroot = False
             if tid in self.displayed_nodes:
-                isroot = self.__is_root(self.get_node(tid))
+                isroot = self.__is_root(tid)
                 self.remove_count += 1
                 self.__nodes_count -= 1
                 self.emit('task-deleted-inview',tid)
@@ -793,7 +784,7 @@ class FilteredTree(gobject.GObject):
                 for p in parent:
                     pid = p.get_id()
                     if pid not in self.__clean_list:
-                        inroot = self.__is_root(p)
+                        inroot = self.__is_root(pid)
                         self.__update_node(pid,inroot)
             self.node_to_remove.remove(tid)
         
