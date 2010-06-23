@@ -19,12 +19,17 @@
 # -----------------------------------------------------------------------------
 import gtk
 
-from GTG     import _
+from GTG     import _, ngettext
 from GTG.gtk import ViewConfig
 
 
+
 class DeletionUI():
-    def __init__(self,req):
+
+    
+    MAXIMUM_TIDS_TO_SHOW = 20
+
+    def __init__(self, req):
         self.req = req
         self.tids_todelete = []
         # Load window tree
@@ -53,19 +58,28 @@ class DeletionUI():
             cdlabel2 = self.builder.get_object("cd-label2")
             cdlabel3 = self.builder.get_object("cd-label3")
             cdlabel4 = self.builder.get_object("cd-label4")
-            if len(self.tids_todelete) == 1:
-                label_text = _("Deleting a task cannot be undone, and will delete the following task: ")
-                cdlabel2.set_label(_("Are you sure you want to delete this task?"))
-                cdlabel3.set_label(_("Keep selected task"))
-                cdlabel4.set_label(_("Permanently remove task"))
-            else:
-                label_text = _("Deleting a task cannot be undone, and will delete the following tasks: ")
-                cdlabel2.set_label(_("Are you sure you want to delete these tasks?"))
-                cdlabel3.set_label(_("Keep selected tasks"))
-                cdlabel4.set_label(_("Permanently remove tasks"))
+            singular = len(self.tids_todelete)
+            label_text = ngettext("Deleting a task cannot be undone, "
+                                  "and will delete the following tasks: ",
+                                  "Deleting a task cannot be undone, "
+                                  "and will delete the following task: ",
+                                  singular)
+            cdlabel2.set_label(ngettext("Are you sure you want to delete these "
+                                       "tasks?",
+                                       "Are you sure you want to delete this "
+                                       "task?",
+                                       singular))
+
+            cdlabel3.set_label(ngettext("Keep selected tasks",
+                                        "Keep selected task",
+                                       singular))
+            cdlabel4.set_label(ngettext("Permanently remove tasks",
+                                       "Permanently remove task",
+                                       singular))
             label_text = label_text[0:label_text.find(":") + 1]
             
-            # I find the tasks that are going to be deleted
+            # I find the tasks that are going to be deleted, avoiding to fetch
+            # too many titles (no more that the maximum capacity)
             tasks = []
             for tid in self.tids_todelete:
                 def recursive_list_tasks(task_list, root):
@@ -73,12 +87,24 @@ class DeletionUI():
                        their children, recursively"""
                     if root not in task_list:
                         task_list.append(root)
+                        if len(task_list) >= self.MAXIMUM_TIDS_TO_SHOW:
+                            return
                         for i in root.get_subtasks():
                             recursive_list_tasks(task_list, i)
                 task = self.req.get_task(tid)
                 recursive_list_tasks(tasks, task)
+                len_tasks = len(tasks)
+                #we don't want to end with just one task that doesn't fit the
+                # screen and a line saying "And one more task", so we go a
+                # little over our limit
+                if len_tasks > self.MAXIMUM_TIDS_TO_SHOW + 2:
+                    tasks = tasks[: self.MAXIMUM_TIDS_TO_SHOW + 2]
+                    break
             titles_list = [task.get_title() for task in tasks]
             titles = reduce (lambda x, y: x + "\n - " + y, titles_list)
+            missing_titles_count = len(self.tids_todelete) - len_tasks
+            if missing_titles_count > 2:
+               titles += _("\nAnd %d more tasks" % missing_titles_count)
             label.set_text("%s %s" % (label_text, "\n - " + titles))
             delete_dialog = self.builder.get_object("confirm_delete")
             delete_dialog.resize(1, 1)
