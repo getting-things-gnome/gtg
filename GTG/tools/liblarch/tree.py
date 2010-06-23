@@ -189,16 +189,16 @@ class MainTree(gobject.GObject):
     def get_node(self,id):
         return self.nodes.get(id)
             
-    def get_all_keys(self):
+    def get_all_nodes(self):
         return list(self.nodes.keys())
             
-    def get_all_nodes(self):
-        li = []
-        for k in self.nodes.keys():
-            no = self.get_node(k)
-            if no:
-                li.append(no)
-        return li
+#    def get_all_nodes(self):
+#        li = []
+#        for k in self.nodes.keys():
+#            no = self.get_node(k)
+#            if no:
+#                li.append(no)
+#        return li
 
     def has_node(self, id):
         return (self.nodes.get(id) != None)

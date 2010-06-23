@@ -105,10 +105,14 @@ class ViewTree(gobject.GObject):
     def __init__(self,maintree,filters_bank,refresh=True,static=False):
         gobject.GObject.__init__(self)
         self.__maintree = maintree
-        if static:
-            refresh = False
         self.static = static
-        self.__ft = FilteredTree(maintree,filters_bank,refresh=refresh)
+        #If we are static, we directly ask the tree. No need of an
+        #FilteredTree layer.
+        if static:
+            self.__ft = maintree
+        else:
+            self.__ft = FilteredTree(maintree,filters_bank,refresh=refresh)
+        
 
     #only by commodities
     def get_node(self,nid):
@@ -131,7 +135,14 @@ class ViewTree(gobject.GObject):
         If transparent_filters = False, we only take into account 
         the applied filters that doesn't have the transparent parameters.
         """
-        return self.__ft.get_n_nodes(withfilters=withfilters,\
+        if self.static and len(withfilters) > 0:
+            #TODO : raises an error
+            print "WARNING: filters cannot be applied to a static tree"
+            print "the filter parameter will be dismissed"
+        if self.static:
+            return len(self.__maintree.get_all_nodes())
+        else:
+            return self.__ft.get_n_nodes(withfilters=withfilters,\
                                     transparent_filters=transparent_filters)
 
     def get_node_for_path(self, path):

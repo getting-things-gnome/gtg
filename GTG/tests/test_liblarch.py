@@ -111,7 +111,9 @@ class TestFilteredTree(unittest.TestCase):
         #also comparing with another view
         self.assertEqual(total,self.view.get_n_nodes())
         self.assertEqual(self.blue_nodes,self.view.get_n_nodes(withfilters=['blue']))
-        
+    
+    #When you remove a parent, the child nodes should be added to the root if
+    #they don't have any other parents
     def test_removing_parent(self):
         view = self.tree.get_viewtree(refresh=True)
         node = DummyNode('temp')
