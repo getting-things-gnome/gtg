@@ -21,8 +21,8 @@
 
 import unittest
 
-from GTG.tools.larch import Tree
-from GTG.tools.larch.tree import TreeNode
+from GTG.tools.liblarch import Tree
+from GTG.tools.liblarch.tree import TreeNode
 
 
 #This is a dummy treenode that only have one properties: a color
@@ -85,12 +85,9 @@ class TestFilteredTree(unittest.TestCase):
         return node.has_color('green')
     def is_red(self,node,parameters=None):
         return node.has_color('red')
-
-    def test_viewtree_n_nodes(self):
-        view = self.tree.get_viewtree(refresh=True)
-        total = self.red_nodes + self.blue_nodes + self.green_nodes
-        self.assertEqual(total,view.get_n_nodes())
-        self.assertEqual(self.green_nodes,view.get_n_nodes(withfilters=['green']))
+        
+    #### Testing nodes movements in the tree
+    #### We test by counting nodes that meet some criterias
 
     def test_add_remove_node(self):
         view = self.tree.get_viewtree(refresh=True)
@@ -99,11 +96,35 @@ class TestFilteredTree(unittest.TestCase):
         self.tree.add_node(node,parent_id=str(0))
         shouldbe = self.blue_nodes + 1
         total = self.red_nodes + self.blue_nodes + self.green_nodes
+        #Testing that the blue node count has increased
         self.assertEqual(total+1,view.get_n_nodes())
         self.assertEqual(shouldbe,view.get_n_nodes(withfilters=['blue']))
         self.tree.del_node('temp')
+        #Testing that it goes back to normal
         self.assertEqual(total,view.get_n_nodes())
         self.assertEqual(self.blue_nodes,view.get_n_nodes(withfilters=['blue']))
+        
+        
+    #### Testing each method of the ViewTree
+    
+    def test_viewtree_get_n_nodes(self):
+        view = self.tree.get_viewtree(refresh=True)
+        total = self.red_nodes + self.blue_nodes + self.green_nodes
+        self.assertEqual(total,view.get_n_nodes())
+        self.assertEqual(self.green_nodes,view.get_n_nodes(withfilters=['green']))
+        
+    
+    def test_viewtree_get_all_nodes(self):
+    def test_viewtree_get_node_for_path(self):
+    def test_viewtree_get_paths_for_node(self):
+    def test_viewtree_next_node(self):
+    def test_viewtree_node_has_child(self):
+    def test_viewtree_node_n_children(self):
+    def test_viewtree_node_nth_child(self):
+    def test_viewtree_node_parents(self):
+    def test_viewtree_is_displayed(self):
+        
+    
 
 def test_suite():
     return unittest.TestLoader().loadTestsFromName(__name__)
