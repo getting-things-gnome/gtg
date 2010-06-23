@@ -54,7 +54,8 @@ class TestFilteredTree(unittest.TestCase):
         self.green_nodes = 0
         #Larch, is the tree. Learn to recognize it.
         self.tree = Tree()
-        self.view = self.tree.get_main_view()
+        self.view = self.tree.get_viewtree()
+        self.mainview = self.tree.get_main_view()
         self.tree.add_filter('blue',self.is_blue)
         self.tree.add_filter('green',self.is_green)
         self.tree.add_filter('red',self.is_red)
@@ -127,6 +128,10 @@ class TestFilteredTree(unittest.TestCase):
         self.failIf('0' in all_nodes)
         self.assert_('temp' in all_nodes)
         
+    def test_mainview(self):
+        #we should test that mainview is always up-to-date
+        #and raise exception when trying to add filters on it
+        pass
         
     #### Testing each method of the ViewTree
     

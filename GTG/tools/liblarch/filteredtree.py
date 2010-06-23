@@ -550,7 +550,7 @@ class FilteredTree(gobject.GObject):
                 self.flat = filt.is_flat()
         #First things, we list the nodes that will be
         #ultimately displayed
-        for nid in self.tree.get_all_keys():
+        for nid in self.tree.get_all_nodes():
             if self.__is_displayed(nid):
                 to_add.append(nid)
         #Second step, we empty the current tree as we will rebuild it

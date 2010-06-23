@@ -95,9 +95,10 @@ class MainTree(gobject.GObject):
             self.emit("node-added", id)
             return True
 
-    #this will remove a node and all his children
+    #this will remove a node but not his children
+    #if recursive: will also remove children and children of childrens
     #does nothing if the node doesn't exist
-    def remove_node(self, id):
+    def remove_node(self, id,recursive=False):
         node = self.get_node(id)
         path = self.get_path_for_node(node)
         if not node :
@@ -105,7 +106,10 @@ class MainTree(gobject.GObject):
         else:
             if node.has_child():
                 for c_id in node.get_children():
-                    self.remove_node(c_id)
+                    if not recursive:
+                        self.break_relationship(id,c_id)
+                    else:
+                        self.remove_node(c_id,recursive=recursive)
             if node.has_parent():
                 for p_id in node.get_parents():
                     par = self.get_node(p_id)
