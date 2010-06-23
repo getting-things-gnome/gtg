@@ -21,8 +21,8 @@
 
 import unittest
 
-from GTG.tools.larch import Tree
-from GTG.tools.larch.tree import TreeNode
+from GTG.tools.liblarch import Tree
+from GTG.tools.liblarch.tree import TreeNode
 
 
 #This is a dummy treenode that only have one properties: a color
@@ -54,6 +54,8 @@ class TestFilteredTree(unittest.TestCase):
         self.green_nodes = 0
         #Larch, is the tree. Learn to recognize it.
         self.tree = Tree()
+        self.view = self.tree.get_viewtree()
+        self.mainview = self.tree.get_main_view()
         self.tree.add_filter('blue',self.is_blue)
         self.tree.add_filter('green',self.is_green)
         self.tree.add_filter('red',self.is_red)
@@ -78,6 +80,7 @@ class TestFilteredTree(unittest.TestCase):
             self.tree.add_node(node,parent_id=str(i-1))
             i+=1
             self.green_nodes += 1
+        self.total = self.red_nodes + self.blue_nodes + self.green_nodes
     ####Filters
     def is_blue(self,node,parameters=None):
         return node.has_color('blue')
@@ -85,12 +88,9 @@ class TestFilteredTree(unittest.TestCase):
         return node.has_color('green')
     def is_red(self,node,parameters=None):
         return node.has_color('red')
-
-    def test_viewtree_n_nodes(self):
-        view = self.tree.get_viewtree(refresh=True)
-        total = self.red_nodes + self.blue_nodes + self.green_nodes
-        self.assertEqual(total,view.get_n_nodes())
-        self.assertEqual(self.green_nodes,view.get_n_nodes(withfilters=['green']))
+        
+    #### Testing nodes movements in the tree
+    #### We test by counting nodes that meet some criterias
 
     def test_add_remove_node(self):
         view = self.tree.get_viewtree(refresh=True)
@@ -99,11 +99,78 @@ class TestFilteredTree(unittest.TestCase):
         self.tree.add_node(node,parent_id=str(0))
         shouldbe = self.blue_nodes + 1
         total = self.red_nodes + self.blue_nodes + self.green_nodes
+        #Testing that the blue node count has increased
         self.assertEqual(total+1,view.get_n_nodes())
         self.assertEqual(shouldbe,view.get_n_nodes(withfilters=['blue']))
+        #also comparing with another view
+        self.assertEqual(total+1,self.view.get_n_nodes())
+        self.assertEqual(shouldbe,self.view.get_n_nodes(withfilters=['blue']))
         self.tree.del_node('temp')
+        #Testing that it goes back to normal
         self.assertEqual(total,view.get_n_nodes())
         self.assertEqual(self.blue_nodes,view.get_n_nodes(withfilters=['blue']))
+        #also comparing with another view
+        self.assertEqual(total,self.view.get_n_nodes())
+        self.assertEqual(self.blue_nodes,self.view.get_n_nodes(withfilters=['blue']))
+    
+    #When you remove a parent, the child nodes should be added to the root if
+    #they don't have any other parents
+    def test_removing_parent(self):
+        view = self.tree.get_viewtree(refresh=True)
+        node = DummyNode('temp')
+        node.add_color('blue')
+        self.tree.add_node(node,parent_id='0')
+        all_nodes = self.view.get_all_nodes()
+        self.assert_('0' in all_nodes)
+        self.assert_('temp' in all_nodes)
+        self.tree.del_node('0')
+        all_nodes = self.view.get_all_nodes()
+        self.failIf('0' in all_nodes)
+        self.assert_('temp' in all_nodes)
+        
+    def test_mainview(self):
+        #we should test that mainview is always up-to-date
+        #and raise exception when trying to add filters on it
+        pass
+        
+    #### Testing each method of the ViewTree
+    
+    def test_viewtree_get_n_nodes(self):
+        total = self.red_nodes + self.blue_nodes + self.green_nodes
+        self.assertEqual(total,self.view.get_n_nodes())
+        self.assertEqual(self.green_nodes,self.view.get_n_nodes(withfilters=['green']))
+        
+    
+    def test_viewtree_get_all_nodes(self):
+        all_nodes = self.view.get_all_nodes()
+        self.assertEqual(True,'0' in all_nodes)
+        self.assertEqual(False,'tmp' in all_nodes)
+        self.assertEqual(self.total,len(all_nodes))
+        node = DummyNode('temp')
+        node.add_color('blue')
+        self.tree.add_node(node,parent_id=str(0))
+        all_nodes = self.view.get_all_nodes()
+        self.assert_('0' in all_nodes)
+        self.assert_('temp' in all_nodes)
+        self.assertEqual(self.total+1,len(all_nodes))
+        self.tree.del_node('1')
+        all_nodes = self.view.get_all_nodes()
+        self.failIf('1' in all_nodes)
+        self.assert_('temp' in all_nodes)
+        self.assertEqual(self.total,len(all_nodes))
+        
+        
+        
+#    def test_viewtree_get_node_for_path(self):
+#    def test_viewtree_get_paths_for_node(self):
+#    def test_viewtree_next_node(self):
+#    def test_viewtree_node_has_child(self):
+#    def test_viewtree_node_n_children(self):
+#    def test_viewtree_node_nth_child(self):
+#    def test_viewtree_node_parents(self):
+#    def test_viewtree_is_displayed(self):
+        
+    
 
 def test_suite():
     return unittest.TestLoader().loadTestsFromName(__name__)

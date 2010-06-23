@@ -40,6 +40,10 @@ class MainTree(gobject.GObject):
         else:
             self.root = TreeNode(id=self.root_id)
         self.root.set_tree(self)
+        
+    def __modified(self,nid):
+        if nid != 'root' and nid in self.nodes:
+            self.emit("node-modified", nid)
 
     def __str__(self):
         return "<Tree: root = '%s'>" % (str(self.root))
@@ -91,9 +95,10 @@ class MainTree(gobject.GObject):
             self.emit("node-added", id)
             return True
 
-    #this will remove a node and all his children
+    #this will remove a node but not his children
+    #if recursive: will also remove children and children of childrens
     #does nothing if the node doesn't exist
-    def remove_node(self, id):
+    def remove_node(self, id,recursive=False):
         node = self.get_node(id)
         path = self.get_path_for_node(node)
         if not node :
@@ -101,7 +106,10 @@ class MainTree(gobject.GObject):
         else:
             if node.has_child():
                 for c_id in node.get_children():
-                    self.remove_node(c_id)
+                    if not recursive:
+                        self.break_relationship(id,c_id)
+                    else:
+                        self.remove_node(c_id,recursive=recursive)
             if node.has_parent():
                 for p_id in node.get_parents():
                     par = self.get_node(p_id)
@@ -155,6 +163,9 @@ class MainTree(gobject.GObject):
                 if [parent_id,child_id] not in self.pending_relationships:
                     self.pending_relationships.append([parent_id,child_id])
                 toreturn = True
+        if toreturn:
+            self.__modified(parent_id)
+            self.__modified(child_id)
         return toreturn
     
     #break an existing relationship. The child is added to the root
@@ -173,22 +184,25 @@ class MainTree(gobject.GObject):
                 #if no more parent left, adding to the root
                 if not c.has_parent():
                     self.root.add_child(child_id)
+        if toreturn:
+            self.__modified(parent_id)
+            self.__modified(child_id)
         return toreturn
             
     #Trying to make a function that bypass the weirdiness of lists
     def get_node(self,id):
         return self.nodes.get(id)
             
-    def get_all_keys(self):
+    def get_all_nodes(self):
         return list(self.nodes.keys())
             
-    def get_all_nodes(self):
-        li = []
-        for k in self.nodes.keys():
-            no = self.get_node(k)
-            if no:
-                li.append(no)
-        return li
+#    def get_all_nodes(self):
+#        li = []
+#        for k in self.nodes.keys():
+#            no = self.get_node(k)
+#            if no:
+#                li.append(no)
+#        return li
 
     def has_node(self, id):
         return (self.nodes.get(id) != None)

@@ -19,14 +19,15 @@
 
 import gobject
 
-from GTG.tools.larch.tree import MainTree
-from GTG.tools.larch.filteredtree import FilteredTree
-from GTG.tools.larch.filters_bank import FiltersBank
+from GTG.tools.liblarch.tree import MainTree
+from GTG.tools.liblarch.filteredtree import FilteredTree
+from GTG.tools.liblarch.filters_bank import FiltersBank
 
 class Tree():
     def __init__(self):
         self.__tree = MainTree()
         self.__fbank = FiltersBank(self.__tree)
+        self.mainview = ViewTree(self.__tree,self.__fbank,static=True)
 
     ###### nodes handling ######
     def get_node(self,nid):
@@ -56,6 +57,10 @@ class Tree():
         return
 
     ############ Views ############
+    #The main view is the bare tree, without any filters on it.
+    def get_main_view(self):
+        return self.mainview
+        
     def get_viewtree(self,refresh=True):
         vt = ViewTree(self.__tree,self.__fbank,refresh=refresh)
         return vt
@@ -89,22 +94,29 @@ class Tree():
 class ViewTree(gobject.GObject):
 
     #Those are the three signals you want to catch if displaying
-    #a filteredtree. The argument of all signals is the tid of the task
-    __gsignals__ = {'task-added-inview': (gobject.SIGNAL_RUN_FIRST, \
+    #a filteredtree. The argument of all signals is the nid of the node
+    __gsignals__ = {'node-added-inview': (gobject.SIGNAL_RUN_FIRST, \
                                           gobject.TYPE_NONE, (str, )),
-                    'task-deleted-inview': (gobject.SIGNAL_RUN_FIRST, \
+                    'node-deleted-inview': (gobject.SIGNAL_RUN_FIRST, \
                                             gobject.TYPE_NONE, (str, )),
-                    'task-modified-inview': (gobject.SIGNAL_RUN_FIRST, \
+                    'node-modified-inview': (gobject.SIGNAL_RUN_FIRST, \
                                             gobject.TYPE_NONE, (str, )),}
                                             
-    def __init__(self,maintree,filters_bank,refresh=True):
+    def __init__(self,maintree,filters_bank,refresh=True,static=False):
         gobject.GObject.__init__(self)
         self.__maintree = maintree
-        self.__ft = FilteredTree(maintree,filters_bank,refresh=refresh)
+        self.static = static
+        #If we are static, we directly ask the tree. No need of an
+        #FilteredTree layer.
+        if static:
+            self.__ft = maintree
+        else:
+            self.__ft = FilteredTree(maintree,filters_bank,refresh=refresh)
+        
 
-#    #only by commodities
-#    def get_node(self,nid):
-#        return self.__maintree.get_node(nid)
+    #only by commodities
+    def get_node(self,nid):
+        return self.__maintree.get_node(nid)
 
     def print_tree(self):
         return self.__ft.print_tree()
@@ -123,7 +135,14 @@ class ViewTree(gobject.GObject):
         If transparent_filters = False, we only take into account 
         the applied filters that doesn't have the transparent parameters.
         """
-        return self.__ft.get_n_nodes(withfilters=withfilters,\
+        if self.static and len(withfilters) > 0:
+            #TODO : raises an error
+            print "WARNING: filters cannot be applied to a static tree"
+            print "the filter parameter will be dismissed"
+        if self.static:
+            return len(self.__maintree.get_all_nodes())
+        else:
+            return self.__ft.get_n_nodes(withfilters=withfilters,\
                                     transparent_filters=transparent_filters)
 
     def get_node_for_path(self, path):
@@ -167,7 +186,10 @@ class ViewTree(gobject.GObject):
         @param reset : optional boolean. Should we remove other filters?
         @param refresh : should we refresh after applying this filter ?
         """
-        print "not implemented"
+        if self.static:
+            print "cannot apply filter on the main static view"
+        else:
+            print "not implemented"
         return
 
     def unapply_filter(self,filter_name,refresh=True):
@@ -175,12 +197,18 @@ class ViewTree(gobject.GObject):
         Removes a filter from the tree.
         @param filter_name: The name of an already added filter to remove
         """
-        print "not implemented"
+        if self.static:
+            print "cannot apply filter on the main static view"
+        else:
+            print "not implemented"
         return
 
     def reset_filters(self,refresh=True):
         """
         Clears all filters currently set on the tree.
         """
-        print "not implemented"
+        if self.static:
+            print "cannot apply filter on the main static view"
+        else:
+            print "not implemented"
         return
