@@ -19,9 +19,9 @@
 
 import gobject
 
-from GTG.tools.larch.tree import MainTree
-from GTG.tools.larch.filteredtree import FilteredTree
-from GTG.tools.larch.filters_bank import FiltersBank
+from GTG.tools.liblarch.tree import MainTree
+from GTG.tools.liblarch.filteredtree import FilteredTree
+from GTG.tools.liblarch.filters_bank import FiltersBank
 
 class Tree():
     def __init__(self):
@@ -89,12 +89,12 @@ class Tree():
 class ViewTree(gobject.GObject):
 
     #Those are the three signals you want to catch if displaying
-    #a filteredtree. The argument of all signals is the tid of the task
-    __gsignals__ = {'task-added-inview': (gobject.SIGNAL_RUN_FIRST, \
+    #a filteredtree. The argument of all signals is the nid of the node
+    __gsignals__ = {'node-added-inview': (gobject.SIGNAL_RUN_FIRST, \
                                           gobject.TYPE_NONE, (str, )),
-                    'task-deleted-inview': (gobject.SIGNAL_RUN_FIRST, \
+                    'node-deleted-inview': (gobject.SIGNAL_RUN_FIRST, \
                                             gobject.TYPE_NONE, (str, )),
-                    'task-modified-inview': (gobject.SIGNAL_RUN_FIRST, \
+                    'node-modified-inview': (gobject.SIGNAL_RUN_FIRST, \
                                             gobject.TYPE_NONE, (str, )),}
                                             
     def __init__(self,maintree,filters_bank,refresh=True):

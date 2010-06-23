@@ -26,7 +26,7 @@ from GTG.tests import (
     test_taskviewserial,
     test_tree,
     test_apidocs,
-    test_filteredtree,
+    test_liblarch,
     )
 
 
@@ -36,5 +36,5 @@ def test_suite():
         test_taskviewserial.test_suite(),
     	test_tree.test_suite(),
         test_apidocs.test_suite(),
-        test_filteredtree.test_suite(),
+        test_liblarch.test_suite(),
         ])

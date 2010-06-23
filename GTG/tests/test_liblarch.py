@@ -21,8 +21,8 @@
 
 import unittest
 
-from GTG.tools.larch import Tree
-from GTG.tools.larch.tree import TreeNode
+from GTG.tools.liblarch import Tree
+from GTG.tools.liblarch.tree import TreeNode
 
 
 #This is a dummy treenode that only have one properties: a color
