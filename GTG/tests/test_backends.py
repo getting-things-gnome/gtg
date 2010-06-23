@@ -32,7 +32,6 @@ import xdg
 from GTG.backends import backend_localfile as localfile
 from GTG.core import datastore
 from GTG.tools import cleanxml
-from GTG.core import CoreConfig
 
 
 class GtgBackendsUniTests(unittest.TestCase):
@@ -45,10 +44,6 @@ class GtgBackendsUniTests(unittest.TestCase):
         self.taskpath = ''
         self.datapath = ''
     
-    def SetUp(self):
-        CoreConfig().set_data_dir("./test_data")
-        CoreConfig().set_conf_dir("./test_data")
-
     def test_localfile_get_name(self):
         """Tests for localfile/get_name function :
         - a string is expected.
@@ -186,6 +181,4 @@ class GtgBackendsUniTests(unittest.TestCase):
 
 
 def test_suite():
-    CoreConfig().set_data_dir("./test_data")
-    CoreConfig().set_conf_dir("./test_data")
     return unittest.TestLoader().loadTestsFromName(__name__)

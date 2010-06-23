@@ -283,8 +283,6 @@ class TestDatastore(unittest.TestCase):
 
 
 def test_suite():
-    CoreConfig().set_data_dir("./test_data")
-    CoreConfig().set_conf_dir("./test_data")
     return unittest.TestLoader().loadTestsFromTestCase(TestDatastore)
 
 

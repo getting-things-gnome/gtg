@@ -43,6 +43,8 @@ class BackendSignals(Borg):
         self._gobject = _BackendSignalsGObject()
 
     def __getattr__(self, attr):
+        if attr == "_gobject" and not "_gobject" in self.__dict__:
+            raise AttributeError
         return getattr(self._gobject, attr)
 
 
