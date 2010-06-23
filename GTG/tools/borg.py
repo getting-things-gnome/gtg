@@ -17,33 +17,17 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-"""Unit tests for GTG."""
-
-from GTG.tools.testingmode import TestingMode
-TestingMode().set_testing_mode(True)
 
 
-import unittest
+class Borg(object):
+    """
+    This pattern ensures that all instances of a particular class share
+    the same state (just inherit this class to have it working)
+    """
 
+    _borg_state = {}
+    
+    def __init__(self):
+        self.__dict__ = self._borg_state
 
-from GTG.tests import (
-    test_tagstore,
-    test_taskviewserial,
-    test_tree,
-    test_apidocs,
-    test_backends,
-    test_datastore,
-    test_filteredtree,
-    )
-
-def test_suite():
-    return unittest.TestSuite([
-        test_tagstore.test_suite(),
-        test_taskviewserial.test_suite(),
-    	test_tree.test_suite(),
-        test_apidocs.test_suite(),
-        test_backends.test_suite(),
-        test_datastore.test_suite(),
-        test_filteredtree.test_suite(),
-        ])
 

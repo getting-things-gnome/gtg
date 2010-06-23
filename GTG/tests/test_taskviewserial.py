@@ -27,6 +27,7 @@ xdg.BaseDirectory.xdg_data_home/gtg directory.
 import unittest
 
 from GTG.gtk.editor import taskviewserial
+from GTG.core import CoreConfig
     
 class GtgBackendsUniTests(unittest.TestCase):
     """Tests for GTG backends."""
@@ -47,4 +48,6 @@ class GtgBackendsUniTests(unittest.TestCase):
         
         
 def test_suite():
+    CoreConfig().set_data_dir("./test_data")
+    CoreConfig().set_conf_dir("./test_data")
     return unittest.TestLoader().loadTestsFromName(__name__)

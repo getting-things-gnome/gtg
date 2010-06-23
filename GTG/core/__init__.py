@@ -41,136 +41,80 @@ If you want to display only a subset of tasks, you can either:
 #=== IMPORT ====================================================================
 import os
 from xdg.BaseDirectory import xdg_data_home, xdg_config_home
-from GTG.tools         import cleanxml
 from configobj         import ConfigObj
+from GTG.tools.testingmode import TestingMode
 
-from GTG.core          import firstrun_tasks
+import GTG
+from GTG.tools.logger import Log
+from GTG.tools.borg   import Borg
 
-class CoreConfig:
+
+
+class CoreConfig(Borg):
     
+
     #The projects and tasks are of course DATA !
     #We then use XDG_DATA for them
     #Don't forget the "/" at the end.
-    DATA_DIR  = os.path.join(xdg_data_home,'gtg/')
     DATA_FILE = "projects.xml"
-    CONF_DIR = os.path.join(xdg_config_home,'gtg/')
     CONF_FILE = "gtg.conf"
     TASK_CONF_FILE = "tasks.conf"
     conf_dict = None
     #DBUS
     BUSNAME = "org.GTG"
     BUSINTERFACE = "/org/GTG"
+    #TAGS
+    ALLTASKS_TAG = "gtg-tags-all"
 
     def __init__(self):
-        if not os.path.exists(self.CONF_DIR):
-            os.makedirs(self.CONF_DIR)
-        if not os.path.exists(self.DATA_DIR):
-            os.makedirs(self.DATA_DIR)
-        if not os.path.exists(self.CONF_DIR + self.CONF_FILE):
-            f = open(self.CONF_DIR + self.CONF_FILE, "w")
+        if  hasattr(self, 'data_dir'):
+            #Borg has already been initialized
+            return
+        if TestingMode().get_testing_mode():
+            #we avoid running tests in the user data dir
+            self.data_dir = '/tmp/GTG_TESTS/data'
+            self.conf_dir = '/tmp/GTG_TESTS/conf'
+        else:
+            self.data_dir = os.path.join(xdg_data_home,'gtg/')
+            self.conf_dir = os.path.join(xdg_config_home,'gtg/')
+        if not os.path.exists(self.conf_dir):
+            os.makedirs(self.conf_dir)
+        if not os.path.exists(self.data_dir):
+            os.makedirs(self.data_dir)
+        if not os.path.exists(self.conf_dir + self.CONF_FILE):
+            f = open(self.conf_dir + self.CONF_FILE, "w")
             f.close()
-        if not os.path.exists(self.CONF_DIR + self.TASK_CONF_FILE):
-            f = open(self.CONF_DIR + self.TASK_CONF_FILE, "w")
+        if not os.path.exists(self.conf_dir + self.TASK_CONF_FILE):
+            f = open(self.conf_dir + self.TASK_CONF_FILE, "w")
             f.close()
-        for file in [self.CONF_DIR + self.CONF_FILE,
-                     self.CONF_DIR + self.TASK_CONF_FILE]:
+        for file in [self.conf_dir + self.CONF_FILE,
+                     self.conf_dir + self.TASK_CONF_FILE]:
             if not ((file, os.R_OK) and os.access(file, os.W_OK)):
                 raise Exception("File " + file + \
-                            " is a configuration file for gtg, but it " + \
+                            " is a configuration file for gtg, but it "
                             "cannot be read or written. Please check it")
-        self.conf_dict = ConfigObj(self.CONF_DIR + self.CONF_FILE)
-        self.task_conf_dict = ConfigObj(self.CONF_DIR + self.TASK_CONF_FILE)
+        self.conf_dict = ConfigObj(self.conf_dir + self.CONF_FILE)
+        self.task_conf_dict = ConfigObj(self.conf_dir + self.TASK_CONF_FILE)
     
-    def save_config(self):
+    def save(self):
+        ''' Saves the configuration of CoreConfig '''
         self.conf_dict.write()
         self.task_conf_dict.write()
-    
-    def get_backends_list(self):
-        backend_fn = []
 
-        # Check if config dir exists, if not create it
-        if not os.path.exists(self.DATA_DIR):
-            os.makedirs(self.DATA_DIR)
+    def get_icons_directories(self):
+        '''
+        Returns the directories containing the icons
+        '''
+        return [GTG.DATA_DIR, os.path.join(GTG.DATA_DIR, "icons")]
 
-        # Read configuration file, if it does not exist, create one
-        datafile = self.DATA_DIR + self.DATA_FILE
-        doc, configxml = cleanxml.openxmlfile(datafile,"config") #pylint: disable-msg=W0612
-        xmlproject = doc.getElementsByTagName("backend")
-        # collect configred backends
-        pid = 1
-        for xp in xmlproject:
-            dic = {}
-            #We have some retrocompatibility code
-            #A backend without the module attribute is pre-rev.105
-            #and is considered as "filename"
-            if xp.hasAttribute("module"):
-                dic["module"] = str(xp.getAttribute("module"))
-                dic["pid"] = str(xp.getAttribute("pid"))
-            #The following "else" could be removed later
-            else:
-                dic["module"] = "localfile"
-                dic["pid"] = str(pid)
-            
-            dic["xmlobject"] = xp
-            pid += 1
-            backend_fn.append(dic)
-                
-        firstrun = False
-        #If no backend available, we create a new using localfile
-        if len(backend_fn) == 0:
-            dic = {}
-            dic["module"] = "localfile"
-            dic["pid"] = "1"
-            backend_fn.append(dic)
-            firstrun = True
-            
-        #Now that the backend list is build, we will construct them
-        #Remember that b is a dictionnary
-        for b in backend_fn:
-            #We dynamically import modules needed
-            module_name = "GTG.backends.%s"%b["module"]
-            #FIXME : we should throw an error if the backend is not importable
-            module   = __import__(module_name)
-            module   = getattr(module, "backends")
-            classobj = getattr(module, b["module"])
-            b["parameters"] = classobj.get_parameters()
-            #If creating the default backend, we don't have the xmlobject yet
-            if "xmlobject" in b:
-                xp = b.pop("xmlobject")
-                #We will try to get the parameters
-                for key in b["parameters"]:
-                    if xp.hasAttribute(key):
-                        b[key] = str(xp.getAttribute(key))
-            if firstrun:
-                frx = firstrun_tasks.populate()
-                back = classobj.Backend(b,firstrunxml=frx)
-            else:
-                back = classobj.Backend(b)
-            #We put the backend itself in the dic
-            b["backend"] = back
-            
-        return backend_fn
-        
+    def get_data_dir(self):
+        return self.data_dir
 
-    #If initial save, we don't close stuffs.
-    def save_datastore(self,ds,initial_save=False):
-        doc,xmlconfig = cleanxml.emptydoc("config")
-        for b in ds.get_all_backends():
-            param = b.get_parameters()
-            t_xml = doc.createElement("backend")
-            for key in param:
-                #We dont want parameters,backend,xmlobject
-                if key not in ["backend","parameters","xmlobject"]:
-                    t_xml.setAttribute(str(key),str(param[key]))
-            #Saving all the projects at close
-            xmlconfig.appendChild(t_xml)
-            if not initial_save:
-                b.quit()
-            
-        datafile = self.DATA_DIR + self.DATA_FILE
-        cleanxml.savexml(datafile,doc,backup=True)
+    def set_data_dir(self, path):
+        self.data_dir = path
 
-        #Saving the tagstore
-        if not initial_save:
-            ts = ds.get_tagstore()
-            ts.save()
+    def get_conf_dir(self):
+        return self.conf_dir
+
+    def set_conf_dir(self, path):
+        self.conf_dir = path

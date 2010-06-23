@@ -41,6 +41,7 @@ class Debug(object):
         #Shouldn't be needed, but the following line makes sure that
         # this is a Singleton.
         self.__dict__['_Debug__logger'] = Debug.__logger
+        self.debugging_mode = False
 
     def __init_logger(self):
         Debug.__logger = logging.getLogger('gtg_logger')
@@ -59,6 +60,11 @@ class Debug(object):
     def __setattr__(self, attr, value):
         """ Delegates to the real logger """
         return setattr(Debug.__logger, attr, value)
+
+    def set_debugging_mode(self, value):
+        self.debugging_mode = value
+    def is_debugging_mode(self):
+        return self.debugging_mode
 
 #The singleton itself
 Log = Debug()
