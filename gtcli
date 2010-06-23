@@ -194,9 +194,10 @@ def summary_of_tasks(criteria):
 
     day = date.today()
     print "%-20s %5s %5s" %("", "Start", "Due")
-    print "%-20s %5d %5d" %('unscheduled', 
-                            report['unscheduled']['starting'],
-                            report['unscheduled']['due'])
+    if report.has_key('unscheduled'):
+        print "%-20s %5d %5d" %('unscheduled', 
+                                report['unscheduled']['starting'],
+                                report['unscheduled']['due'])
     num_days = 22
     if criteria and 'today' in criteria:
         num_days = 1
