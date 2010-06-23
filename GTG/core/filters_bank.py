@@ -242,13 +242,17 @@ class FiltersBank:
         ret = task.get_status() in [Task.STA_DISMISSED, Task.STA_DONE]
         return ret
 
-    def backend_filter(self, task, tags_to_match_set):
+    def backend_filter(self, task, parameters):
         '''
         Filter that checks if two tags sets intersect. It is used to check if a
         task should be stored inside a backend
         @param task: a task object
         @oaram tags_to_match_set: a *set* of tag names
         '''
+        try:
+            tags_to_match_set = parameters['tags']
+        except KeyError:
+            return []
         all_tasks_tag = self.req.get_alltag_tag().get_name()
         if all_tasks_tag in tags_to_match_set:
             return True

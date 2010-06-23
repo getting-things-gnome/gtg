@@ -412,7 +412,7 @@ class TaskSource():
         '''
         raw_filter = self.req.get_filter("backend_filter").get_function()
         return lambda task: raw_filter(task, \
-                              set(self.backend.get_attached_tags()))
+                        {"tags": set(self.backend.get_attached_tags())})
 
     def should_task_id_be_stored(self, task_id):
         '''
