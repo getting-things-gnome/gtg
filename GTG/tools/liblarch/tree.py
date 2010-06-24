@@ -350,16 +350,16 @@ class TreeNode():
         return toreturn
     
     #set_parent means that we remove all other parents
+    #if par_id is None, we will remove all parents, thus being on the root.
     def set_parent(self,par_id):
         is_already_parent_flag = False
-        if par_id:
-            for i in self.parents:
-                if i != par_id:
-                    assert(self.remove_parent(i) == True)
-                else:
-                    is_already_parent_flag = True
-            if not is_already_parent_flag:
-                self.add_parent(par_id)
+        for i in self.parents:
+            if i != par_id:
+                assert(self.remove_parent(i) == True)
+            else:
+                is_already_parent_flag = True
+        if par_id and not is_already_parent_flag:
+            self.add_parent(par_id)
             
     def remove_parent(self,id):
         if id in self.parents:

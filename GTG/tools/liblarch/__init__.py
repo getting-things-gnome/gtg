@@ -47,11 +47,16 @@ class Tree():
     #move the node to a new parent (dismissing all other parents)
     #use pid None to move it to the root
     def move_node(self,nid,new_parent_id=None):
-        print "not implemented"
-        return
-
-    #if pid is None, the rood is added but, then, 
-    #all other parents are dismissed
+        node = self.get_node(nid)
+        toreturn = False
+        if node:
+            node.set_parent(new_parent_id)
+            toreturn = True
+        else:
+            toreturn = False
+        return toreturn
+        
+    #if pid is None, nothing is done
     def add_parent(self,nid,new_parent_id=None):
         print "not implemented"
         return
@@ -117,6 +122,17 @@ class ViewTree(gobject.GObject):
     #only by commodities
     def get_node(self,nid):
         return self.__maintree.get_node(nid)
+        
+    def __get_static_node(self,nid):
+        toreturn = None
+        if self.static:
+            if not nid or nid == 'root':
+                toreturn = self.__maintree.get_root()
+            else:
+                toreturn = self.__maintree.get_node(nid)
+        else:
+            print "should not get a static node in a viewtree"
+        return toreturn
 
     def print_tree(self):
         return self.__ft.print_tree()
@@ -157,20 +173,41 @@ class ViewTree(gobject.GObject):
         return
 
     def node_has_child(self, nid):
-        print "not implemented"
-        return
+        toreturn = False
+        if self.static:
+            node = self.__get_static_node(nid)
+            toreturn = node.has_child()
+        else:
+            toreturn = self.__ft.node_has_child(nid)
+        return toreturn
 
     def node_n_children(self, nid):
         print "not implemented"
         return
+        
+    def node_all_children(self, nid=None):
+        toreturn = []
+        if self.static:
+            node = self.__get_static_node(nid)
+            if node:
+                toreturn = node.get_children() 
+        else:
+            toreturn = self.__ft.node_all_children(nid)
+        return toreturn
 
     def node_nth_child(self, nid, n):
         print "not implemented"
         return
 
     def node_parents(self, nid):
-        print "not implemented"
-        return
+        toreturn = []
+        if self.static:
+            node = self.__get_static_node(nid)
+            if node:
+                toreturn = node.get_parents()
+        else:
+            toreturn = self.__ft.node_parents(nid)
+        return toreturn
 
     def is_displayed(self,nid):
         print "not implemented"

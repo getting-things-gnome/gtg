@@ -376,37 +376,35 @@ class FilteredTree(gobject.GObject):
         return child
 
     #Done
-    def node_has_child(self, node):
+    def node_has_child(self, nid):
         """
         Returns true if the given node has any children
         """
         #print "on_iter_has_child for node %s" %node
         #we should say "has_good_child"
 #        print "node has %s children" %self.node_n_children(node)
-        if not self.flat and node and self.node_n_children(node)>0:
+        if not self.flat and self.node_n_children(nid)>0:
             return True
         else:
-            if not node:
-                print "NODE IS NULL, we should maybe return True"
             return False
 
-    #Done
-    def node_n_children(self, node):
+    def node_n_children(self,nid):
+        return len(self.node_all_children(nid))
+    
+    def node_all_children(self, nid):
         """
         Returns number of children for the given node
         """
         #we should return the number of "good" children
-        if not node:
-            toreturn = len(self.virtual_root)
-            id = 'root'
-        elif self.flat:
-            toreturn = 0
-        else:
-            n = 0
-            for cid in node.get_children():
-                if self.is_displayed(cid):
-                    n+= 1
-            toreturn = n
+        toreturn = []
+        if not nid or nid == 'root':
+            toreturn = list(self.virtual_root)
+        elif not self.flat:
+            node = self.tree.get_node(nid)
+            if node:
+                for cid in node.get_children():
+                    if self.is_displayed(cid):
+                        toreturn.append(cid)
         return toreturn
 
     #Done
@@ -450,14 +448,18 @@ class FilteredTree(gobject.GObject):
         return toreturn
 
     #Done
-    def node_parents(self, node):
+    def node_parents(self, nid):
         """
         Returns parent of the given node, or None if there is no 
         parent (such as if the node is a child of the virtual root),
         or if the parent is not displayable.
         """
-        #return None if we are at a Virtual root
+        #return [] if we are at a Virtual root
         parents_nodes = []
+        if not nid:
+            Log.debug("requested a parent of the root")
+            return parents_nodes
+        node = self.tree.get_node(nid)
         if node == None:
             Log.debug("requested a parent of a non-existing node")
             return parents_nodes
