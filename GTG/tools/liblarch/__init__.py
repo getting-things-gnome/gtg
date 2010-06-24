@@ -182,8 +182,7 @@ class ViewTree(gobject.GObject):
         return toreturn
 
     def node_n_children(self, nid):
-        print "not implemented"
-        return
+        return len(self.node_all_children(nid))
         
     def node_all_children(self, nid=None):
         toreturn = []
