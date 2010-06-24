@@ -42,7 +42,7 @@ class DummyNode(TreeNode):
         if color in self.colors:
             self.colors.pop(color)
 
-class TestFilteredTree(unittest.TestCase):
+class TestLibLarch(unittest.TestCase):
     """Tests for `Tree`."""
 
 
@@ -170,6 +170,7 @@ class TestFilteredTree(unittest.TestCase):
         self.assertEqual(total,self.view.get_n_nodes())
         self.assertEqual(self.green_nodes,self.view.get_n_nodes(withfilters=['green']))
         #TODO: test after applying a filter on the view
+        #TODO : do the same test on the mainview
         
     
     def test_viewtree_get_all_nodes(self):
@@ -190,7 +191,7 @@ class TestFilteredTree(unittest.TestCase):
         self.assert_('temp' in all_nodes)
         self.assertEqual(self.total,len(all_nodes))
         #TODO: test after applying a filter on the view
-        
+        #TODO : do the same test on the mainview
         
         
 #    def test_viewtree_get_node_for_path(self):
@@ -204,10 +205,37 @@ class TestFilteredTree(unittest.TestCase):
         self.tree.add_node(node,parent_id='0')
         self.assert_(view.node_has_child('0'))
         #TODO: test after applying a filter on the view
+        #TODO : do the same test on the mainview
     
 #    def test_viewtree_node_n_children(self):
 
     def test_viewtree_node_all_children(self):
+        view = self.tree.get_viewtree(refresh=True)
+        self.assertEqual(0,len(view.node_all_children('0')))
+        #checking that 0 and 1 are in root
+        self.assert_('0' in view.node_all_children())
+        self.assert_('1' in view.node_all_children())
+        node = DummyNode('temp')
+        node.add_color('blue')
+        #adding a new children
+        self.tree.add_node(node,parent_id='0')
+        self.assertEqual(1,len(view.node_all_children('0')))
+        self.assert_('temp' in view.node_all_children('0'))
+        #moving an existing children
+        self.tree.move_node('1','0')
+        self.assertEqual(2,len(view.node_all_children('0')))
+        self.assert_('1' in view.node_all_children('0'))
+        self.failIf('1' in view.node_all_children())
+        #removing a node
+        self.tree.del_node('temp')
+        self.assertEqual(1,len(view.node_all_children('0')))
+        self.failIf('temp' in view.node_all_children('0'))
+        #moving a node elsewhere
+        self.tree.move_node('1')
+        self.assertEqual(0,len(view.node_all_children('0')))
+        self.failIf('1' in view.node_all_children('0'))
+        #checking that '1' is back in root
+        self.assert_('1' in view.node_all_children())
         
     
 #    def test_viewtree_node_nth_child(self):

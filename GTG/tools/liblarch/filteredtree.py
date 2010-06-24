@@ -388,23 +388,23 @@ class FilteredTree(gobject.GObject):
         else:
             return False
 
-    #Done
-    def node_n_children(self, nid):
+    def node_n_children(self,nid):
+        return len(self.node_all_children(nid))
+    
+    def node_all_children(self, nid):
         """
         Returns number of children for the given node
         """
         #we should return the number of "good" children
-        toreturn = 0
+        toreturn = []
         if not nid or nid == 'root':
-            toreturn = len(self.virtual_root)
+            toreturn = list(self.virtual_root)
         elif not self.flat:
-            n = 0
             node = self.tree.get_node(nid)
             if node:
                 for cid in node.get_children():
                     if self.is_displayed(cid):
-                        n+= 1
-                toreturn = n
+                        toreturn.append(cid)
         return toreturn
 
     #Done
@@ -448,14 +448,18 @@ class FilteredTree(gobject.GObject):
         return toreturn
 
     #Done
-    def node_parents(self, node):
+    def node_parents(self, nid):
         """
         Returns parent of the given node, or None if there is no 
         parent (such as if the node is a child of the virtual root),
         or if the parent is not displayable.
         """
-        #return None if we are at a Virtual root
+        #return [] if we are at a Virtual root
         parents_nodes = []
+        if not nid:
+            Log.debug("requested a parent of the root")
+            return parents_nodes
+        node = self.tree.get_node(nid)
         if node == None:
             Log.debug("requested a parent of a non-existing node")
             return parents_nodes

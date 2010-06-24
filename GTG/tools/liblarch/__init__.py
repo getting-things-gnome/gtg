@@ -122,6 +122,17 @@ class ViewTree(gobject.GObject):
     #only by commodities
     def get_node(self,nid):
         return self.__maintree.get_node(nid)
+        
+    def __get_static_node(self,nid):
+        toreturn = None
+        if self.static:
+            if not nid or nid == 'root':
+                toreturn = self.__maintree.get_root()
+            else:
+                toreturn = self.__maintree.get_node(nid)
+        else:
+            print "should not get a static node in a viewtree"
+        return toreturn
 
     def print_tree(self):
         return self.__ft.print_tree()
@@ -164,7 +175,7 @@ class ViewTree(gobject.GObject):
     def node_has_child(self, nid):
         toreturn = False
         if self.static:
-            node = self.__ft.get_node(nid)
+            node = self.__get_static_node(nid)
             toreturn = node.has_child()
         else:
             toreturn = self.__ft.node_has_child(nid)
@@ -174,17 +185,29 @@ class ViewTree(gobject.GObject):
         print "not implemented"
         return
         
-    def node_all_children(self, nid):
-        print "not implemented"
-        return
+    def node_all_children(self, nid=None):
+        toreturn = []
+        if self.static:
+            node = self.__get_static_node(nid)
+            if node:
+                toreturn = node.get_children() 
+        else:
+            toreturn = self.__ft.node_all_children(nid)
+        return toreturn
 
     def node_nth_child(self, nid, n):
         print "not implemented"
         return
 
     def node_parents(self, nid):
-        print "not implemented"
-        return
+        toreturn = []
+        if self.static:
+            node = self.__get_static_node(nid)
+            if node:
+                toreturn = node.get_parents()
+        else:
+            toreturn = self.__ft.node_parents(nid)
+        return toreturn
 
     def is_displayed(self,nid):
         print "not implemented"
