@@ -47,11 +47,16 @@ class Tree():
     #move the node to a new parent (dismissing all other parents)
     #use pid None to move it to the root
     def move_node(self,nid,new_parent_id=None):
-        print "not implemented"
-        return
-
-    #if pid is None, the rood is added but, then, 
-    #all other parents are dismissed
+        node = self.get_node(nid)
+        toreturn = False
+        if node:
+            node.set_parent(new_parent_id)
+            toreturn = True
+        else:
+            toreturn = False
+        return toreturn
+        
+    #if pid is None, nothing is done
     def add_parent(self,nid,new_parent_id=None):
         print "not implemented"
         return
@@ -157,10 +162,19 @@ class ViewTree(gobject.GObject):
         return
 
     def node_has_child(self, nid):
-        print "not implemented"
-        return
+        toreturn = False
+        if self.static:
+            node = self.__ft.get_node(nid)
+            toreturn = node.has_child()
+        else:
+            toreturn = self.__ft.node_has_child(nid)
+        return toreturn
 
     def node_n_children(self, nid):
+        print "not implemented"
+        return
+        
+    def node_all_children(self, nid):
         print "not implemented"
         return
 

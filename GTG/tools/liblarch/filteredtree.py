@@ -376,37 +376,35 @@ class FilteredTree(gobject.GObject):
         return child
 
     #Done
-    def node_has_child(self, node):
+    def node_has_child(self, nid):
         """
         Returns true if the given node has any children
         """
         #print "on_iter_has_child for node %s" %node
         #we should say "has_good_child"
 #        print "node has %s children" %self.node_n_children(node)
-        if not self.flat and node and self.node_n_children(node)>0:
+        if not self.flat and self.node_n_children(nid)>0:
             return True
         else:
-            if not node:
-                print "NODE IS NULL, we should maybe return True"
             return False
 
     #Done
-    def node_n_children(self, node):
+    def node_n_children(self, nid):
         """
         Returns number of children for the given node
         """
         #we should return the number of "good" children
-        if not node:
+        toreturn = 0
+        if not nid or nid == 'root':
             toreturn = len(self.virtual_root)
-            id = 'root'
-        elif self.flat:
-            toreturn = 0
-        else:
+        elif not self.flat:
             n = 0
-            for cid in node.get_children():
-                if self.is_displayed(cid):
-                    n+= 1
-            toreturn = n
+            node = self.tree.get_node(nid)
+            if node:
+                for cid in node.get_children():
+                    if self.is_displayed(cid):
+                        n+= 1
+                toreturn = n
         return toreturn
 
     #Done
