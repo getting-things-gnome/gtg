@@ -96,7 +96,7 @@ class TestLibLarch(unittest.TestCase):
         view = self.tree.get_viewtree(refresh=True)
         node = DummyNode('temp')
         node.add_color('blue')
-        self.tree.add_node(node,parent_id=str(0))
+        self.tree.add_node(node,parent_id='0')
         shouldbe = self.blue_nodes + 1
         total = self.red_nodes + self.blue_nodes + self.green_nodes
         #Testing that the blue node count has increased
@@ -112,6 +112,10 @@ class TestLibLarch(unittest.TestCase):
         #also comparing with another view
         self.assertEqual(total,self.view.get_n_nodes())
         self.assertEqual(self.blue_nodes,self.view.get_n_nodes(withfilters=['blue']))
+        
+    def test_modifying_node(self):
+        #TODO
+        pass
     
     #When you remove a parent, the child nodes should be added to the root if
     #they don't have any other parents
@@ -151,7 +155,9 @@ class TestLibLarch(unittest.TestCase):
         self.assert_('temp' in all_nodes)
         self.assertEqual(0,len(self.mainview.node_parents('temp')))
         
-#    def test_add_parent(self):
+    def test_add_parent(self):
+        #TODO
+        pass
     
     #we try to add a task as a child of one of its grand-children.
     #Nothing should happen
@@ -207,8 +213,7 @@ class TestLibLarch(unittest.TestCase):
         #TODO: test after applying a filter on the view
         #TODO : do the same test on the mainview
     
-#    def test_viewtree_node_n_children(self):
-
+    #We also test node_n_children here. Nearly the same method
     def test_viewtree_node_all_children(self):
         view = self.tree.get_viewtree(refresh=True)
         self.assertEqual(0,len(view.node_all_children('0')))
@@ -219,28 +224,45 @@ class TestLibLarch(unittest.TestCase):
         node.add_color('blue')
         #adding a new children
         self.tree.add_node(node,parent_id='0')
-        self.assertEqual(1,len(view.node_all_children('0')))
+        self.assertEqual(1,view.node_n_children('0'))
         self.assert_('temp' in view.node_all_children('0'))
         #moving an existing children
         self.tree.move_node('1','0')
-        self.assertEqual(2,len(view.node_all_children('0')))
+        self.assertEqual(2,view.node_n_children('0'))
         self.assert_('1' in view.node_all_children('0'))
         self.failIf('1' in view.node_all_children())
         #removing a node
         self.tree.del_node('temp')
-        self.assertEqual(1,len(view.node_all_children('0')))
+        self.assertEqual(1,view.node_n_children('0'))
         self.failIf('temp' in view.node_all_children('0'))
         #moving a node elsewhere
         self.tree.move_node('1')
-        self.assertEqual(0,len(view.node_all_children('0')))
+        self.assertEqual(0,view.node_n_children('0'))
         self.failIf('1' in view.node_all_children('0'))
         #checking that '1' is back in root
         self.assert_('1' in view.node_all_children())
+        #TODO: test after applying a filter on the view
+        #TODO : do the same test on the mainview
         
     
 #    def test_viewtree_node_nth_child(self):
 #    def test_viewtree_node_parents(self):
 #    def test_viewtree_is_displayed(self):
+
+
+########### Filters
+
+    def test_simple_filter(self):
+        #TODO
+        pass
+    
+    def test_leaf_filter(self):
+        #TODO
+        pass
+    
+    def test_multiple_filters(self):
+        #TODO
+        pass
         
     
 
