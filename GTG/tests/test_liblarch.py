@@ -201,8 +201,12 @@ class TestLibLarch(unittest.TestCase):
         
         
 #    def test_viewtree_get_node_for_path(self):
+        #TODO
 #    def test_viewtree_get_paths_for_node(self):
+        #TODO
 #    def test_viewtree_next_node(self):
+        #TODO
+
     def test_viewtree_node_has_child(self):
         view = self.tree.get_viewtree(refresh=True)
         node = DummyNode('temp')
@@ -246,8 +250,11 @@ class TestLibLarch(unittest.TestCase):
         
     
 #    def test_viewtree_node_nth_child(self):
+        #TODO
 #    def test_viewtree_node_parents(self):
+        #TODO
 #    def test_viewtree_is_displayed(self):
+        #TODO
 
 
 ########### Filters
