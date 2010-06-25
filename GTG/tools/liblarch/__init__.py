@@ -40,9 +40,8 @@ class Tree():
     def del_node(self,nid):
         return self.__tree.remove_node(nid)
 
-    def modify_node(self,nid):
-        print "not implemented"
-        return
+    def refresh_node(self,nid):
+        self.__tree.modify_node(nid)
         
     #move the node to a new parent (dismissing all other parents)
     #use pid None to move it to the root
@@ -58,7 +57,8 @@ class Tree():
         
     #if pid is None, nothing is done
     def add_parent(self,nid,new_parent_id=None):
-        print "not implemented"
+        #TODO
+        print "add_parent not implemented"
         return
 
     ############ Views ############
@@ -165,11 +165,13 @@ class ViewTree(gobject.GObject):
         return self.__ft.get_node_for_path(path)
 
     def get_paths_for_node(self, nid):
-        print "not implemented"
+        #TODO
+        print "get_paths_for_node not implemented"
         return
 
     def next_node(self, nid,pid):
-        print "not implemented"
+        #TODO
+        print "next_node not implemented"
         return
 
     def node_has_child(self, nid):
@@ -181,7 +183,8 @@ class ViewTree(gobject.GObject):
             toreturn = self.__ft.node_has_child(nid)
         return toreturn
 
-    def node_n_children(self, nid):
+    #if nid is None, return the number of nodes at the root
+    def node_n_children(self, nid=None):
         return len(self.node_all_children(nid))
         
     def node_all_children(self, nid=None):
@@ -195,7 +198,8 @@ class ViewTree(gobject.GObject):
         return toreturn
 
     def node_nth_child(self, nid, n):
-        print "not implemented"
+        #TODO
+        print "node_nth_child not implemented"
         return
 
     def node_parents(self, nid):
@@ -209,8 +213,7 @@ class ViewTree(gobject.GObject):
         return toreturn
 
     def is_displayed(self,nid):
-        print "not implemented"
-        return
+        return self.__ft.is_displayed(nid)
 
     ####### Change filters #################
     def apply_filter(self,filter_name,parameters=None,\
@@ -225,7 +228,8 @@ class ViewTree(gobject.GObject):
         if self.static:
             print "cannot apply filter on the main static view"
         else:
-            print "not implemented"
+            self.__ft.apply_filter(filter_name,parameters=parameters,\
+                                    reset=reset,refresh=refresh)
         return
 
     def unapply_filter(self,filter_name,refresh=True):
@@ -236,7 +240,7 @@ class ViewTree(gobject.GObject):
         if self.static:
             print "cannot apply filter on the main static view"
         else:
-            print "not implemented"
+            self.__ft.unapply_filter(filter_name, refresh=refresh)
         return
 
     def reset_filters(self,refresh=True):
@@ -246,5 +250,5 @@ class ViewTree(gobject.GObject):
         if self.static:
             print "cannot apply filter on the main static view"
         else:
-            print "not implemented"
+             self.__ft.reset_filters(refresh=refresh)
         return
