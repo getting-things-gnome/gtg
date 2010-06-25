@@ -45,18 +45,17 @@
 """This is the top-level exec script for running GTG"""
 
 #=== IMPORT ===================================================================
-from contextlib import contextmanager
 import os
 import logging
-import signal
 
 import dbus
 
 #our own imports
-from GTG                import _, info
+from GTG.backends              import BackendFactory
+from GTG                import _
 from GTG.core           import CoreConfig
 from GTG.core.datastore import DataStore
-from GTG.gtk            import crashhandler
+from GTG.gtk.crashhandler import signal_catcher
 from GTG.gtk.manager    import Manager
 from GTG.tools.logger   import Log
 
@@ -93,54 +92,55 @@ def check_instance(directory):
 #=== MAIN CLASS ===============================================================
 
 def main(options=None, args=None):
+    '''
+    Calling this starts the full GTG experience  ( :-D )
+    '''
+    config, ds, req = core_main_init(options, args)
+    # Launch task browser
+    manager = Manager(req, config)
+    #main loop
+    #To be more user friendly and get the logs of crashes, we show an apport
+    # hooked window upon crashes
+    with signal_catcher(manager.close_browser):
+        manager.main()
+    core_main_quit(config, ds)
+
+def core_main_init(options = None, args = None):
+    ''' 
+    Part of the main function prior to the UI initialization.
+    '''
     # Debugging subsystem initialization
     if options.debug:
         Log.setLevel(logging.DEBUG)
         Log.debug("Debug output enabled.")
-    
+        Log.set_debugging_mode(True)
     config = CoreConfig()
-    check_instance(config.DATA_DIR)
-    backends_list = config.get_backends_list()
-
-    #initialize Apport hook for crash handling
-    crashhandler.initialize(app_name = "Getting Things GNOME!", message="GTG"
-      + info.VERSION + _(" has crashed. Please report the bug on <a href=\""
-      "http://bugs.edge.launchpad.net/gtg\">our Launchpad page</a>. If you "
-      "have Apport installed, it will be started for you."), use_apport = True)
-    
+    check_instance(config.get_data_dir())
+    backends_list = BackendFactory().get_saved_backends_list()
     # Load data store
     ds = DataStore()
-    
+    # Register backends 
     for backend_dic in backends_list:
         ds.register_backend(backend_dic)
-    
     #save directly the backends to be sure to write projects.xml
-    config.save_datastore(ds,initial_save=True)
+    ds.save(quit = False)
         
     # Launch task browser
     req = ds.get_requester()
-    manager = Manager(req, config)
- 
-    #we listen for signals from the system in order to save our configuration
-    # if GTG is forcefully terminated (e.g.: on shutdown).
-    @contextmanager
-    def signal_catcher():
-        #if TERM or ABORT are caught, we close the browser
-        for s in [signal.SIGABRT, signal.SIGTERM]:
-            signal.signal(s, lambda a,b: manager.close_browser())
-        yield
+    return config, ds, req
 
-    #main loop
-    with signal_catcher():
-        manager.main()
-      
+def core_main_quit(config, ds):
+    '''
+    Last bits of code executed in GTG, after the UI has been shut off. 
+    Currently, it's just saving everything.
+    '''
     # Ideally we should load window geometry configuration from a config.
     # backend like gconf at some point, and restore the appearance of the
     # application as the user last exited it.
-
+    #
     # Ending the application: we save configuration
-    config.save_config()
-    config.save_datastore(ds)
+    config.save()
+    ds.save(quit = True)
 
 #=== EXECUTION ================================================================
 

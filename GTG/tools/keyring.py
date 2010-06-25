@@ -17,33 +17,32 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-"""Unit tests for GTG."""
+import gnomekeyring
 
-from GTG.tools.testingmode import TestingMode
-TestingMode().set_testing_mode(True)
-
-
-import unittest
+from GTG.tools.borg import Borg
 
 
-from GTG.tests import (
-    test_tagstore,
-    test_taskviewserial,
-    test_tree,
-    test_apidocs,
-    test_backends,
-    test_datastore,
-    test_liblarch,
-    )
 
-def test_suite():
-    return unittest.TestSuite([
-#        test_tagstore.test_suite(),
-#        test_taskviewserial.test_suite(),
-#        test_tree.test_suite(),
-#        test_apidocs.test_suite(),
-#        test_backends.test_suite(),
-#        test_datastore.test_suite(),
-        test_liblarch.test_suite(),
-        ])
+class Keyring(Borg):
 
+
+    def __init__(self):
+        super(Keyring, self).__init__()
+        if not hasattr(self, "keyring"):
+            self.keyring = gnomekeyring.get_default_keyring_sync()
+
+    def set_password(self, name, password, userid = ""):
+        return gnomekeyring.item_create_sync(
+                    self.keyring,
+                    gnomekeyring.ITEM_GENERIC_SECRET,
+                    name,
+                    {"backend": name},
+                    password,
+                    True)
+
+    def get_password(self, item_id):
+        try:
+            item_info = gnomekeyring.item_get_info_sync(self.keyring, item_id)
+            return item_info.get_secret()
+        except (gnomekeyring.DeniedError, gnomekeyring.NoMatchError):
+            return ""

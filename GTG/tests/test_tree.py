@@ -23,6 +23,8 @@ import unittest
 
 from GTG.core.tree import Tree,TreeNode
 
+
+
 class TestTree(unittest.TestCase):
     """Tests for `Tree`."""
     

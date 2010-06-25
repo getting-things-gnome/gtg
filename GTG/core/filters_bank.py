@@ -35,6 +35,10 @@ class Filter:
 
     def set_parameters(self,dic):
         self.dic = dic
+
+    def get_function(self):
+        '''Returns the filtering function'''
+        return self.func
     
     def is_displayed(self,tid):
         task = self.req.get_task(tid)
@@ -152,6 +156,9 @@ class FiltersBank:
         #worklate
         filt_obj = Filter(self.worklate,self.req)
         self.available_filters['worklate'] = filt_obj
+        #backend filter
+        filt_obj = Filter(self.backend_filter, self.req)
+        self.available_filters['backend_filter'] = filt_obj
         #no_disabled_tag
         filt_obj = Filter(self.no_disabled_tag,self.req)
         param = {}
@@ -234,6 +241,23 @@ class FiltersBank:
         """ Filter of tasks which are closed """
         ret = task.get_status() in [Task.STA_DISMISSED, Task.STA_DONE]
         return ret
+
+    def backend_filter(self, task, parameters):
+        '''
+        Filter that checks if two tags sets intersect. It is used to check if a
+        task should be stored inside a backend
+        @param task: a task object
+        @oaram tags_to_match_set: a *set* of tag names
+        '''
+        try:
+            tags_to_match_set = parameters['tags']
+        except KeyError:
+            return []
+        all_tasks_tag = self.req.get_alltag_tag().get_name()
+        if all_tasks_tag in tags_to_match_set:
+            return True
+        task_tags = set(task.get_tags_name())
+        return task_tags.intersection(tags_to_match_set)
         
     def no_disabled_tag(self,task,parameters=None):
         """Filter of task that don't have any disabled/nonworkview tag"""

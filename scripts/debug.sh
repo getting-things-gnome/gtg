@@ -42,6 +42,7 @@ fi
 if [ $norun -eq 0 ]; then
     if [ $profile -eq 1 ]; then
 	python -m cProfile -o gtg.prof ./gtg
+    python ./scripts/profile_interpret.sh
     else
 	./gtg $args
     fi

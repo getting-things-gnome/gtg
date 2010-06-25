@@ -48,10 +48,10 @@ class Task(TreeNode):
         #tid is a string ! (we have to choose a type and stick to it)
         self.tid = str(ze_id)
         self.set_uuid(uuid.uuid4())
+        self.remote_ids = {}
         self.content = ""
         #self.content = \
         #    "<content>Press Escape or close this task to save it</content>"
-        self.sync_func = None
         self.title = _("My new task")
         #available status are: Active - Done - Dismiss - Note
         self.status = self.STA_ACTIVE
@@ -78,7 +78,6 @@ class Task(TreeNode):
             self.loaded = True
             if signal:
                 self.req._task_loaded(self.tid)
-                #not sure the following is necessary
                 #self.req._task_modified(self.tid)
 
     def set_to_keep(self):
@@ -102,6 +101,25 @@ class Task(TreeNode):
             self.sync()
         return self.uuid
 
+    def get_remote_ids(self):
+        '''
+        A task usually has a different id in all the different backends.
+        This function returns a dictionary backend_id->the id the task has
+        in that backend
+        @returns dict: dictionary backend_id->task remote id
+        '''
+        return self.remote_ids
+
+    def add_remote_id(self, backend_id, task_remote_id):
+        '''
+        A task usually has a different id in all the different backends.
+        This function adds a relationship backend_id-> remote_id that can be
+        retrieved using get_remote_ids
+        @param backend_id: string representing the backend id
+        @param task_remote_id: the id for this task in the backend backend_id
+        '''
+        self.remote_ids[str(backend_id)] = str(task_remote_id)
+
     def get_title(self):
         return self.title
 
@@ -115,7 +133,7 @@ class Task(TreeNode):
             self.title = title.strip('\t\n')
         else:
             self.title = "(no title task)"
-        #Avoid unecessary sync
+        #Avoid unnecessary sync
         if self.title != old_title:
             self.sync()
             return True
@@ -294,8 +312,7 @@ class Task(TreeNode):
         """Add a newly created subtask to this task. Return the task added as
         a subtask
         """
-        uid, pid = self.get_id().split('@') #pylint: disable-msg=W0612
-        subt     = self.req.new_task(pid=pid, newtask=True)
+        subt     = self.req.new_task(newtask=True)
         #we use the inherited childrens
         self.add_child(subt.get_id())
         return subt
@@ -427,37 +444,32 @@ class Task(TreeNode):
     #This method is called by the datastore and should not be called directly
     #Use the requester
     def delete(self):
-        self.set_sync_func(None, callsync=False)
+        #we issue a delete for all the children
         for task in self.get_subtasks():
-            task.remove_parent(self.get_id())
-            self.req.delete_task(task.get_id())
+            #I think it's superfluous (invernizzi)
+            #task.remove_parent(self.get_id())
+            task.delete()
+        #we tell the parents we have to go
         for i in self.get_parents():
             task = self.req.get_task(i)
             task.remove_child(self.get_id())
+        #we tell the tags about the deletion
         for tagname in self.tags:
             tag = self.req.get_tag(tagname)
             tag.remove_task(self.get_id())
-        #then we remove effectively the task
-        #self.req.delete_task(self.get_id())
-
-    #This is a callback. The "sync" function has to be set
-    def set_sync_func(self, sync, callsync=True):
-        self.sync_func = sync
-        #We call it immediatly to save stuffs that were set before this
-        if callsync and self.is_loaded():
-            self.sync()
+        #then we signal the we are ready to be removed
+        self.req._task_deleted(self.get_id())
 
     def sync(self):
         self._modified_update()
-        if self.sync_func and self.is_loaded():
-            self.sync_func(self)
+        if self.is_loaded():
             self.call_modified()
             return True
         else:
             return False
     
     #This function send the modified signals for the tasks, 
-    #parents and childrens       
+    #parents and children
     def call_modified(self):
         #we first modify children
         for s in self.get_children():
@@ -469,9 +481,10 @@ class Task(TreeNode):
             self.req._task_modified(p)
 
     def _modified_update(self):
+        '''
+        Updates the modified timestamp
+        '''
         self.modified = datetime.now()
-
-
 
 ### TAG FUNCTIONS ############################################################
 #
@@ -509,6 +522,8 @@ class Task(TreeNode):
         #Do not add the same tag twice
         if not t in self.tags:
             self.tags.append(t)
+            #we notify the backends
+            #self.req.tag_was_added_to_task(self, tagname)
             for child in self.get_subtasks():
                 if child.can_be_deleted:
                     child.add_tag(t)

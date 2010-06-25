@@ -23,7 +23,6 @@
 #=== IMPORT ===================================================================
 #system imports
 import locale
-import os
 import re
 import time
 import webbrowser
@@ -35,18 +34,16 @@ import gtk
 
 #our own imports
 import GTG
+from GTG.core                       import CoreConfig
 from GTG                         import _, info, ngettext
 from GTG.core.task               import Task
-#from GTG.core.tagstore           import Tag
 from GTG.gtk.browser             import GnomeConfig, tasktree, tagtree
-#from GTG.taskbrowser.preferences import PreferencesDialog
 from GTG.gtk.browser.tasktree    import TaskTreeModel,\
                                         ActiveTaskTreeView,\
                                         ClosedTaskTreeView
 from GTG.gtk.browser.tagtree     import TagTree
 from GTG.tools                   import openurl
-from GTG.tools.dates             import strtodate,\
-                                        no_date,\
+from GTG.tools.dates             import no_date,\
                                         FuzzyDate, \
                                         get_canonical_date
 from GTG.tools.logger            import Log
@@ -159,7 +156,7 @@ class TaskBrowser:
         self.priv['quick_add_cbs']            = []
 
     def _init_icon_theme(self):
-        icon_dirs = [GTG.DATA_DIR, os.path.join(GTG.DATA_DIR, "icons")]
+        icon_dirs = CoreConfig().get_icons_directories()
         for i in icon_dirs:
             gtk.icon_theme_get_default().prepend_search_path(i)
             gtk.window_set_default_icon_name("gtg")
@@ -429,7 +426,7 @@ class TaskBrowser:
 ### HELPER FUNCTIONS ########################################################
 
     def open_preferences(self,widget):
-        self.vmanager.show_preferences(self.priv)
+        self.vmanager.open_preferences(self.priv)
         
     def quit(self,widget=None):
         self.vmanager.close_browser()
