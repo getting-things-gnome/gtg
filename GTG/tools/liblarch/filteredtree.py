@@ -570,13 +570,12 @@ class FilteredTree(gobject.GObject):
 
     ####### Change filters #################
     def apply_filter(self,filter_name,parameters=None,\
-                     reset=False,imtherequester=False,refresh=True):
+                     reset=False,refresh=True):
         """
         Applies a new filter to the tree.  Can't be called on the main tree.
         @param filter_name: The name of an already registered filter to apply
         @param parameters: Optional parameters to pass to the filter
         @param reset : optional boolean. Should we remove other filters?
-        @param imtherequester: If true enables adding filters to the main tree
         """
         if reset:
             self.applied_filters = []
@@ -592,11 +591,10 @@ class FilteredTree(gobject.GObject):
         else:
             return False
     
-    def unapply_filter(self,filter_name,imtherequester=False,refresh=True):
+    def unapply_filter(self,filter_name,refresh=True):
         """
         Removes a filter from the tree.  Can't be called on the main tree.
         @param filter_name: The name of an already added filter to remove
-        @param imtherequester: If true enables removing filters from the main tree
         """
         if filter_name in self.applied_filters:
             self.applied_filters.remove(filter_name)
@@ -606,21 +604,19 @@ class FilteredTree(gobject.GObject):
         else:
             return False
 
-    def reset_filters(self,imtherequester=False,refresh=True):
+    def reset_filters(self,refresh=True):
         """
         Clears all filters currently set on the tree.  Can't be called on 
         the main tree.
-        @param imtherequester: If true enables clearing filters from the main tree
         """
         self.applied_filters = []
         if refresh:
             self.refilter()
 
-    def reset_tag_filters(self,refilter=True,imtherequester=False):
+    def reset_tag_filters(self,refilter=True):
         """
         Clears all filters currently set on the tree.  Can't be called on 
         the main tree.
-        @param imtherequester: If true enables clearing filters from the main tree
         """
         if "notag" in self.applied_filters:
             self.applied_filters.remove('notag')
