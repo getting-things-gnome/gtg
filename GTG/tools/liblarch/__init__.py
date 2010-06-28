@@ -100,12 +100,12 @@ class ViewTree(gobject.GObject):
 
     #Those are the three signals you want to catch if displaying
     #a filteredtree. The argument of all signals is the nid of the node
-    __gsignals__ = {'node-added-inview': (gobject.SIGNAL_RUN_FIRST, \
-                                          gobject.TYPE_NONE, (str, )),
-                    'node-deleted-inview': (gobject.SIGNAL_RUN_FIRST, \
-                                            gobject.TYPE_NONE, (str, )),
-                    'node-modified-inview': (gobject.SIGNAL_RUN_FIRST, \
-                                            gobject.TYPE_NONE, (str, )),}
+#    __gsignals__ = {'node-added-inview': (gobject.SIGNAL_RUN_FIRST, \
+#                                          gobject.TYPE_NONE, (str, )),
+#                    'node-deleted-inview': (gobject.SIGNAL_RUN_FIRST, \
+#                                            gobject.TYPE_NONE, (str, )),
+#                    'node-modified-inview': (gobject.SIGNAL_RUN_FIRST, \
+#                                            gobject.TYPE_NONE, (str, )),}
                                             
     def __init__(self,maintree,filters_bank,refresh=True,static=False):
         gobject.GObject.__init__(self)
