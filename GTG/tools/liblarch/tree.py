@@ -41,6 +41,9 @@ class MainTree(gobject.GObject):
             self.root = TreeNode(id=self.root_id)
         self.root.set_tree(self)
         
+    def modify_node(self,nid):
+        self.__modified(nid)
+        
     def __modified(self,nid):
         if nid != 'root' and nid in self.nodes:
             self.emit("node-modified", nid)
@@ -204,6 +207,9 @@ class MainTree(gobject.GObject):
 #                li.append(no)
 #        return li
 
+    def is_displayed(self,id):
+        return self.has_node(id)
+
     def has_node(self, id):
         return (self.nodes.get(id) != None)
 
@@ -285,6 +291,10 @@ class TreeNode():
 
     def __str__(self):
         return "<TreeNode: '%s'>" % (self.id)
+        
+    def modified(self):
+        if self.tree:
+            self.tree.modify_node(self.id)
         
     def set_tree(self,tree):
         self.tree = tree

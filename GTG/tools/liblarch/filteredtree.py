@@ -464,22 +464,13 @@ class FilteredTree(gobject.GObject):
             Log.debug("requested a parent of a non-existing node")
             return parents_nodes
         tid = node.get_id()
-#        if node and tid in self.virtual_root:
-#            return parents_nodes
         #we return only parents that are not root and displayed
         if node and node.has_parent():
             for pid in node.get_parents():
-                parent = self.tree.get_node(pid)
-#                if pid in DEBUG_TID:
-#                    print "%%%%parent %s is displayed : %s" %(pid,self.is_displayed(pid))
-                if self.is_displayed(pid) and parent != self.tree.get_root():
-                    parents_nodes.append(parent)
+                if self.is_displayed(pid):
+                    parents_nodes.append(pid)
 #            if len(parents_nodes) == 0:
 #                print "ERROR : %s has no parent and is not in VR" %tid
-#        if not self.flat and tid in self.virtual_root and len(parents_nodes) > 0:
-#            self.__root_update(tid,False)
-#        if tid in DEBUG_TID:
-#            print "%s has parents %s but return %s" %(tid,node.get_parents(),parents_nodes)
         return parents_nodes
 
 
@@ -570,13 +561,12 @@ class FilteredTree(gobject.GObject):
 
     ####### Change filters #################
     def apply_filter(self,filter_name,parameters=None,\
-                     reset=False,imtherequester=False,refresh=True):
+                     reset=False,refresh=True):
         """
         Applies a new filter to the tree.  Can't be called on the main tree.
         @param filter_name: The name of an already registered filter to apply
         @param parameters: Optional parameters to pass to the filter
         @param reset : optional boolean. Should we remove other filters?
-        @param imtherequester: If true enables adding filters to the main tree
         """
         if reset:
             self.applied_filters = []
@@ -592,11 +582,10 @@ class FilteredTree(gobject.GObject):
         else:
             return False
     
-    def unapply_filter(self,filter_name,imtherequester=False,refresh=True):
+    def unapply_filter(self,filter_name,refresh=True):
         """
         Removes a filter from the tree.  Can't be called on the main tree.
         @param filter_name: The name of an already added filter to remove
-        @param imtherequester: If true enables removing filters from the main tree
         """
         if filter_name in self.applied_filters:
             self.applied_filters.remove(filter_name)
@@ -606,21 +595,19 @@ class FilteredTree(gobject.GObject):
         else:
             return False
 
-    def reset_filters(self,imtherequester=False,refresh=True):
+    def reset_filters(self,refresh=True):
         """
         Clears all filters currently set on the tree.  Can't be called on 
         the main tree.
-        @param imtherequester: If true enables clearing filters from the main tree
         """
         self.applied_filters = []
         if refresh:
             self.refilter()
 
-    def reset_tag_filters(self,refilter=True,imtherequester=False):
+    def reset_tag_filters(self,refilter=True):
         """
         Clears all filters currently set on the tree.  Can't be called on 
         the main tree.
-        @param imtherequester: If true enables clearing filters from the main tree
         """
         if "notag" in self.applied_filters:
             self.applied_filters.remove('notag')
@@ -659,8 +646,7 @@ class FilteredTree(gobject.GObject):
                 children_update = True
         else:
             if tid in self.virtual_root:
-#                if tid in DEBUG_TID:
-#                    print "removin %s from VR" %tid
+#                print "removin %s from VR" %tid
                 self.virtual_root.remove(tid)
             #even if you are not a root, 
             #your children should not be in VR either
@@ -670,8 +656,7 @@ class FilteredTree(gobject.GObject):
         if not self.flat and children_update:
             node = self.get_node(tid)
             nc = self.node_n_children(node)
-#            if tid in DEBUG_TID:
-#                print "updating %s childrens of node %s" %(nc,tid)
+#            print "updating %s childrens of node %s" %(nc,tid)
             i = 0
             while i < nc:
                 ch = self.node_nth_child(node,i)
@@ -685,16 +670,13 @@ class FilteredTree(gobject.GObject):
     
     def __update_node(self,tid,inroot):
         if tid not in self.node_to_remove:
-#            if tid in DEBUG_TID:
-#                print "updating inroot %s the node %s" %(inroot,tid)
             todis = self.__is_displayed(tid) 
             curdis = self.is_displayed(tid)
             if todis:
                 #if the task was not displayed previously but now should
                 #we add it.
                 if not curdis:
-#                    if tid in DEBUG_TID:
-#                        print "*update_node : adding node %s" %tid
+#                    print "*update_node : adding node %s" %tid
                     self.__add_node(tid)
                 else:
                     self.__root_update(tid,inroot)
@@ -728,14 +710,11 @@ class FilteredTree(gobject.GObject):
         while len(self.__adding_queue) > 0:
             tid,inroot = self.__adding_queue.pop(0)
             if not self.is_displayed(tid):
-    #            if tid in DEBUG_TID:
-    #                print "adding inroot %s the node %s" %(inroot,tid)
-                node = self.tree.get_node(tid)
                 if inroot == None:
                     inroot = self.__is_root(tid)
                 #If the parent's node is not already displayed, we wait
                 #(the len of parents is 0 means no parent dislayed)
-                parents = self.node_parents(node)
+                parents = self.node_parents(tid)
                 if not inroot and len(parents) <= 0:
                     if tid not in self.node_to_add:
                         self.node_to_add.append(tid)
