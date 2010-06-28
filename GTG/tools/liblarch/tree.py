@@ -292,6 +292,10 @@ class TreeNode():
     def __str__(self):
         return "<TreeNode: '%s'>" % (self.id)
         
+    def modified(self):
+        if self.tree:
+            self.tree.modify_node(self.id)
+        
     def set_tree(self,tree):
         self.tree = tree
         for rel in list(self.pending_relationship):
