@@ -177,8 +177,19 @@ class TestLibLarch(unittest.TestCase):
         self.assertEqual(0,len(self.mainview.node_parents('temp')))
         
     def test_add_parent(self):
-        #TODO
-        pass
+        view = self.tree.get_viewtree(refresh=True)
+        node = DummyNode('temp')
+        node.add_color('blue')
+        self.tree.add_node(node,parent_id='0')
+        #Testing initial situation
+        self.assert_(view.node_has_child('0'))
+        self.assert_('temp' in view.node_all_children('0'))
+        self.assert_('temp' not in view.node_all_children('1'))
+        #Adding another parent
+        self.tree.add_parent('temp','1')
+        self.assert_(view.node_has_child('1'))
+        self.assert_('temp' in view.node_all_children('1'))
+        self.assert_('temp' in view.node_all_children('0'))
     
     #we try to add a task as a child of one of its grand-children.
     #Nothing should happen
@@ -196,7 +207,6 @@ class TestLibLarch(unittest.TestCase):
         total = self.red_nodes + self.blue_nodes + self.green_nodes
         self.assertEqual(total,self.view.get_n_nodes())
         self.assertEqual(self.green_nodes,self.view.get_n_nodes(withfilters=['green']))
-        #TODO: test after applying a filter on the view
         #TODO : do the same test on the mainview
         
     
@@ -217,7 +227,6 @@ class TestLibLarch(unittest.TestCase):
         self.failIf('1' in all_nodes)
         self.assert_('temp' in all_nodes)
         self.assertEqual(self.total,len(all_nodes))
-        #TODO: test after applying a filter on the view
         #TODO : do the same test on the mainview
         
         
@@ -235,7 +244,6 @@ class TestLibLarch(unittest.TestCase):
         self.failIf(view.node_has_child('0'))
         self.tree.add_node(node,parent_id='0')
         self.assert_(view.node_has_child('0'))
-        #TODO: test after applying a filter on the view
         #TODO : do the same test on the mainview
     
     #We also test node_n_children here. Nearly the same method

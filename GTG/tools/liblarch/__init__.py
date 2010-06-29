@@ -57,9 +57,13 @@ class Tree():
         
     #if pid is None, nothing is done
     def add_parent(self,nid,new_parent_id=None):
-        #TODO
-        print "add_parent not implemented"
-        return
+        node = self.get_node(nid)
+        toreturn = False
+        if node:
+            toreturn = node.add_parent(new_parent_id)
+        else:
+            toreturn = False
+        return toreturn
 
     ############ Views ############
     #The main view is the bare tree, without any filters on it.
