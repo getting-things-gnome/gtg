@@ -312,10 +312,46 @@ class TestLibLarch(unittest.TestCase):
     
 #    def test_viewtree_node_nth_child(self):
         #TODO
-#    def test_viewtree_node_parents(self):
-        #TODO
-#    def test_viewtree_is_displayed(self):
-        #TODO
+        
+    def test_viewtree_node_parents(self):
+        view = self.tree.get_viewtree(refresh=True)
+        #Checking that a node at the root has no parents
+        self.assertEqual([],view.node_parents('0'))
+        self.assertEqual([],self.mainview.node_parents('0'))
+        #Adding a child
+        node = DummyNode('temp')
+        node.add_color('blue')
+        self.tree.add_node(node,parent_id='0')
+        self.assertEqual(['0'],view.node_parents('temp'))
+        self.assertEqual(['0'],self.mainview.node_parents('temp'))
+        #adding a second parent
+        self.tree.add_parent('temp','1')
+        self.assertEqual(['0','1'],view.node_parents('temp'))
+        self.assertEqual(['0','1'],self.mainview.node_parents('temp'))
+        #now with a filter
+        view.apply_filter('blue')
+        self.assertEqual([],view.node_parents('temp'))
+        #if the node is not displayed, that should not change the parents
+        view.unapply_filter('blue')
+        view.apply_filter('red')
+        self.assertEqual(['0','1'],view.node_parents('temp'))
+        
+
+    def test_viewtree_is_displayed(self):
+        view = self.tree.get_viewtree(refresh=True)
+        node = DummyNode('temp')
+        node.add_color('blue')
+        self.failIf(view.is_displayed('temp'))
+        self.failIf(self.mainview.is_displayed('temp'))
+        #Adding the node to the tree
+        self.tree.add_node(node,parent_id='0')
+        self.assert_(view.is_displayed('temp'))
+        self.assert_(self.mainview.is_displayed('temp'))
+        view.apply_filter('blue')
+        self.assert_(view.is_displayed('temp'))
+        view.apply_filter('red')
+        self.failIf(view.is_displayed('temp'))
+
 
 
 ############ Filters

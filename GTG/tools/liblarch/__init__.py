@@ -207,6 +207,13 @@ class ViewTree(gobject.GObject):
         return
 
     def node_parents(self, nid):
+        """
+        Returns displayed parents of the given node, or [] if there is no 
+        parent (such as if the node is a child of the virtual root),
+        or if the parent is not displayable.
+        Doesn't check wheter node nid is displayed or not. (we only care about
+        parents)
+        """
         toreturn = []
         if self.static:
             node = self.__get_static_node(nid)
