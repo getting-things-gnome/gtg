@@ -202,9 +202,14 @@ class ViewTree(gobject.GObject):
         return toreturn
 
     def node_nth_child(self, nid, n):
-        #TODO
-        print "node_nth_child not implemented"
-        return
+        toreturn = None
+        if self.static:
+            node = self.__get_static_node(nid)
+            if node:
+                toreturn = node.get_nth_child(n)
+        else:
+            toreturn = self.__ft.node_nth_child(nid,n)
+        return toreturn
 
     def node_parents(self, nid):
         """

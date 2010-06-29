@@ -396,7 +396,7 @@ class TreeNode():
     def get_nth_child(self, index):
         try:
             id = self.children[index]
-            return self.tree.get_node(id)
+            return id
         except(IndexError):
             raise ValueError("Index is not in the children list")
 

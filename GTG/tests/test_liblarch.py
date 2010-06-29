@@ -310,8 +310,21 @@ class TestLibLarch(unittest.TestCase):
         self.assert_('1' in self.mainview.node_all_children())
         
     
-#    def test_viewtree_node_nth_child(self):
-        #TODO
+    def test_viewtree_node_nth_child(self):
+        view = self.tree.get_viewtree(refresh=True)
+        node = DummyNode('temp')
+        node.add_color('blue')
+        #Asking for a child that doesn't exist should raise an exception
+        self.assertRaises(ValueError,view.node_nth_child,'0',0)
+        self.assertRaises(ValueError,self.mainview.node_nth_child,'0',0)
+        #Adding the node to the tree
+        self.tree.add_node(node,parent_id='0')
+        self.assertEqual('temp',view.node_nth_child('0',0))
+        self.assertEqual('temp',self.mainview.node_nth_child('0',0))
+        #Now with a filter
+        view.apply_filter('red')
+        self.assertRaises(ValueError,view.node_nth_child,'0',0)
+        
         
     def test_viewtree_node_parents(self):
         view = self.tree.get_viewtree(refresh=True)

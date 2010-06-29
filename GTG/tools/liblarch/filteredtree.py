@@ -406,34 +406,35 @@ class FilteredTree(gobject.GObject):
         return toreturn
 
     #Done
-    def node_nth_child(self, node, n):
+    def node_nth_child(self, nid, n):
         """
         Retrieves the nth child of the node.
         @param node: The parent node, or None to look at children of the
         virtual_root.
         """
         #we return the nth good children !
-        if not node:
+        toreturn = None
+        if not nid:
             if len(self.virtual_root) > n:
-                to_id = self.virtual_root[n]
-                toreturn = self.get_node(to_id)
-#                print "## node_nth_child : %s" %to_id
+                to_return = self.virtual_root[n]
             else:
                 toreturn = None
+                raise ValueError("Root has only %s children,"%len(self.virtual_root)+\
+                                     "you are asking for %s" %n)
         elif self.flat:
             #If we are flat, nobody has children
             toreturn = None
         else:
+            node = self.get_node(nid)
             total = node.get_n_children()
             cur = 0
             good = 0
             toreturn = None
             while good <= n and cur < total:
-                curn = node.get_nth_child(cur)
-                if curn and self.is_displayed(curn.get_id()):
-                    cid = curn.get_id()
+                curid = node.get_nth_child(cur)
+                if curid and self.is_displayed(curid):
                     if good == n:
-                        toreturn = curn
+                        toreturn = curid
                         #if we have a child, it cannot be in the root
 #                        if cid in self.virtual_root:
 ##                            isroot = self.__is_root(curn)
@@ -443,6 +444,9 @@ class FilteredTree(gobject.GObject):
 #                            self.__root_update(cid,False)
                     good += 1
                 cur += 1
+            if not toreturn:
+                raise ValueError("Node %s has only children,"%total+\
+                                     "you are asking for %s" %n)
         return toreturn
 
     #Done
