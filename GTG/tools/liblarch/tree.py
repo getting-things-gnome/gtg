@@ -147,9 +147,10 @@ class MainTree(gobject.GObject):
                     if parent_id != 'root' and not c.has_parent(parent_id):
                         c.add_parent(parent_id)
                         toreturn = True
-                        #removing the root from the list of parent
-                        if self.root.has_child(child_id):
-                            self.root.remove_child(child_id)
+                    #removing the root from the list of parent
+                    if toreturn and parent_id != 'root' and \
+                                                self.root.has_child(child_id):
+                        self.root.remove_child(child_id)
                     if not toreturn:
                         Log.debug("  * * * * * Relationship already existing")
                 else:
@@ -347,9 +348,6 @@ class TreeNode():
         return list(self.parents)
 
     def add_parent(self, parent_id):
-#        root = self.tree.get_root()
-#        print "removing root node has parent"
-#        self.tree.break_relationship(root.get_id(),self.get_id())
         if parent_id not in self.parents:
             self.parents.append(parent_id)
             toreturn = self.new_relationship(parent_id, self.get_id())
@@ -370,6 +368,8 @@ class TreeNode():
                 is_already_parent_flag = True
         if par_id and not is_already_parent_flag:
             self.add_parent(par_id)
+        elif par_id == None:
+            self.new_relationship('root', self.get_id())
             
     def remove_parent(self,id):
         if id in self.parents:
@@ -396,7 +396,7 @@ class TreeNode():
     def get_nth_child(self, index):
         try:
             id = self.children[index]
-            return self.tree.get_node(id)
+            return id
         except(IndexError):
             raise ValueError("Index is not in the children list")
 

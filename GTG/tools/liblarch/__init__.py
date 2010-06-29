@@ -57,9 +57,13 @@ class Tree():
         
     #if pid is None, nothing is done
     def add_parent(self,nid,new_parent_id=None):
-        #TODO
-        print "add_parent not implemented"
-        return
+        node = self.get_node(nid)
+        toreturn = False
+        if node:
+            toreturn = node.add_parent(new_parent_id)
+        else:
+            toreturn = False
+        return toreturn
 
     ############ Views ############
     #The main view is the bare tree, without any filters on it.
@@ -198,11 +202,23 @@ class ViewTree(gobject.GObject):
         return toreturn
 
     def node_nth_child(self, nid, n):
-        #TODO
-        print "node_nth_child not implemented"
-        return
+        toreturn = None
+        if self.static:
+            node = self.__get_static_node(nid)
+            if node:
+                toreturn = node.get_nth_child(n)
+        else:
+            toreturn = self.__ft.node_nth_child(nid,n)
+        return toreturn
 
     def node_parents(self, nid):
+        """
+        Returns displayed parents of the given node, or [] if there is no 
+        parent (such as if the node is a child of the virtual root),
+        or if the parent is not displayable.
+        Doesn't check wheter node nid is displayed or not. (we only care about
+        parents)
+        """
         toreturn = []
         if self.static:
             node = self.__get_static_node(nid)

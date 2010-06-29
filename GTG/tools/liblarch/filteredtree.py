@@ -254,17 +254,17 @@ class FilteredTree(gobject.GObject):
         else:
             return None
 
-    def get_paths_for_node(self, node):
+    def get_paths_for_node(self, tid):
         """
         Return a list of paths for a given node
         Return an empty list if no path for that Node.
         """
         toreturn = []
         if node:
-            tid = node.get_id()
-            pars = self.node_parents(node)
+            node = self.get_node(tid)
+            pars = self.node_parents(tid)
         #For that node, we should convert the base_path to path
-        if not node or not self.is_displayed(node.get_id()):
+        if not node or not self.is_displayed(tid):
             return toreturn
         #This is the cache so we don't compute it all the time
         #TODO: this is commented out as it still doesn't work with filter
@@ -326,41 +326,39 @@ class FilteredTree(gobject.GObject):
         return toreturn
 
     #Done
-    def next_node(self, node,parent):
+    def next_node(self, nid,pid):
         """
         Returns the next sibling node, or None if there are no other siblings
         """
         #We should take the next good node, not the next base node
-        nextnode = None
-        if node:
-            tid = node.get_id()
-            if tid in self.virtual_root:
-                i = self.virtual_root.index(tid) + 1
-                if len(self.virtual_root) > i:
-                    nextnode_id = self.virtual_root[i]
-                    if self.is_displayed(nextnode_id):
-                        nextnode = self.get_node(nextnode_id)
-            else:
-                parents_nodes = self.node_parents(node)
-                if len(parents_nodes) >= 1:
-                    if parent in parents_nodes:
-                        parent_node = parent
-                    else:
-                        parent_node = parents_nodes[0]
-                    total = self.node_n_children(parent)
-                    c = 0
-                    next_id = None
-                    while c < total and not next_id:
-                        child = self.node_nth_child(parent,c)
-                        c += 1
-                        if child == node:
-                            next_id = c
-                    if next_id < total:
-                        nextnode = self.node_nth_child(parent,next_id)
+        toreturn = None
+        if nid in self.virtual_root:
+            i = self.virtual_root.index(tid) + 1
+            if len(self.virtual_root) > i:
+                nextnode_id = self.virtual_root[i]
+                if self.is_displayed(nextnode_id):
+                    toreturn = nextnode_id
+        else:
+            parents_nodes = self.node_parents(nid)
+            if len(parents_nodes) >= 1:
+                if pid in parents_nodes:
+                    parent_node = pid
+                else:
+                    parent_node = parents_nodes[0]
+                total = self.node_n_children(pid)
+                c = 0
+                next_id = None
+                while c < total and not next_id:
+                    child_id = self.node_nth_child(pid,c)
+                    c += 1
+                    if child_id == nid:
+                        next_id = c
+                if next_id < total:
+                    toreturn = self.node_nth_child(pid,next_id)
         #check to see if our result is correct
-        if nextnode and not self.is_displayed(nextnode.get_id()):
-            nextnode = None
-        return nextnode
+        if toreturn and not self.is_displayed(toreturn):
+            toreturn = None
+        return toreturn
 
     #Done
     def node_children(self, parent):
@@ -408,34 +406,35 @@ class FilteredTree(gobject.GObject):
         return toreturn
 
     #Done
-    def node_nth_child(self, node, n):
+    def node_nth_child(self, nid, n):
         """
         Retrieves the nth child of the node.
         @param node: The parent node, or None to look at children of the
         virtual_root.
         """
         #we return the nth good children !
-        if not node:
+        toreturn = None
+        if not nid:
             if len(self.virtual_root) > n:
-                to_id = self.virtual_root[n]
-                toreturn = self.get_node(to_id)
-#                print "## node_nth_child : %s" %to_id
+                to_return = self.virtual_root[n]
             else:
                 toreturn = None
+                raise ValueError("Root has only %s children,"%len(self.virtual_root)+\
+                                     "you are asking for %s" %n)
         elif self.flat:
             #If we are flat, nobody has children
             toreturn = None
         else:
+            node = self.get_node(nid)
             total = node.get_n_children()
             cur = 0
             good = 0
             toreturn = None
             while good <= n and cur < total:
-                curn = node.get_nth_child(cur)
-                if curn and self.is_displayed(curn.get_id()):
-                    cid = curn.get_id()
+                curid = node.get_nth_child(cur)
+                if curid and self.is_displayed(curid):
                     if good == n:
-                        toreturn = curn
+                        toreturn = curid
                         #if we have a child, it cannot be in the root
 #                        if cid in self.virtual_root:
 ##                            isroot = self.__is_root(curn)
@@ -445,12 +444,15 @@ class FilteredTree(gobject.GObject):
 #                            self.__root_update(cid,False)
                     good += 1
                 cur += 1
+            if not toreturn:
+                raise ValueError("Node %s has only children,"%total+\
+                                     "you are asking for %s" %n)
         return toreturn
 
     #Done
     def node_parents(self, nid):
         """
-        Returns parent of the given node, or None if there is no 
+        Returns parents of the given node, or [] if there is no 
         parent (such as if the node is a child of the virtual root),
         or if the parent is not displayable.
         """
@@ -463,7 +465,6 @@ class FilteredTree(gobject.GObject):
         if node == None:
             Log.debug("requested a parent of a non-existing node")
             return parents_nodes
-        tid = node.get_id()
         #we return only parents that are not root and displayed
         if node and node.has_parent():
             for pid in node.get_parents():
@@ -735,8 +736,7 @@ class FilteredTree(gobject.GObject):
                     lost_nodes = []
                     while len(self.node_to_add) > 0:
                         nid = self.node_to_add.pop(0)
-                        toad = self.get_node(nid)
-                        if len(self.node_parents(toad)) > 0:
+                        if len(self.node_parents(nid)) > 0:
                             self.__add_node(nid,False)
                         else:
                             lost_nodes.append(nid)
@@ -758,7 +758,7 @@ class FilteredTree(gobject.GObject):
                 self.counted_nodes.remove(tid)
                 self.count_cache = {}
             #Test if this is necessary
-            parent = self.node_parents(self.get_node(tid))
+            parent = self.node_parents(tid)
             #we don't need to update parents if the node is root
             #this might happen with flat filter
             if not isroot:

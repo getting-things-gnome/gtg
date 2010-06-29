@@ -137,209 +137,298 @@ class TestLibLarch(unittest.TestCase):
         self.assert_(viewred.is_displayed('temp'))
 
 
-#    
-#    #When you remove a parent, the child nodes should be added to the root if
-#    #they don't have any other parents
-#    def test_removing_parent(self):
-#        view = self.tree.get_viewtree(refresh=True)
-#        node = DummyNode('temp')
-#        node.add_color('blue')
-#        self.tree.add_node(node,parent_id='0')
-#        all_nodes = self.view.get_all_nodes()
-#        self.assert_('0' in all_nodes)
-#        self.assert_('temp' in all_nodes)
-#        self.tree.del_node('0')
-#        all_nodes = self.view.get_all_nodes()
-#        self.failIf('0' in all_nodes)
-#        self.assert_('temp' in all_nodes)
-#        
-#    def test_move_node(self):
-#        view = self.tree.get_viewtree(refresh=True)
-#        node = DummyNode('temp')
-#        node.add_color('blue')
-#        self.tree.add_node(node,parent_id='0')
-#        #Testing initial situation
-#        self.assert_(view.node_has_child('0'))
-#        self.assert_('temp' in view.node_all_children('0'))
-#        self.assert_('temp' not in view.node_all_children('1'))
-#        #Moving node
-#        self.tree.move_node('temp','1')
-#        self.assert_(view.node_has_child('1'))
-#        self.assert_('temp' in view.node_all_children('1'))
-#        self.assert_('temp' not in view.node_all_children('0'))
-#        #Now moving to root
-#        self.tree.move_node('temp')
-#        self.assert_('temp' not in view.node_all_children('1'))
-#        self.assert_('temp' not in view.node_all_children('0'))
-#        #temp still exist and doesn't have any parents
-#        all_nodes = self.mainview.get_all_nodes()
-#        self.assert_('temp' in all_nodes)
-#        self.assertEqual(0,len(self.mainview.node_parents('temp')))
-#        
-#    def test_add_parent(self):
-#        #TODO
-#        pass
-#    
-#    #we try to add a task as a child of one of its grand-children.
-#    #Nothing should happen
-##    def test_cyclic_paradox(self):
-#        
-#    def test_mainview(self):
-#        #we should test that mainview is always up-to-date
-#        #and raise exception when trying to add filters on it
-#        #TODO
-#        pass
-#        
-#    #### Testing each method of the ViewTree
-#    
-#    def test_viewtree_get_n_nodes(self):
-#        total = self.red_nodes + self.blue_nodes + self.green_nodes
-#        self.assertEqual(total,self.view.get_n_nodes())
-#        self.assertEqual(self.green_nodes,self.view.get_n_nodes(withfilters=['green']))
-#        #TODO: test after applying a filter on the view
-#        #TODO : do the same test on the mainview
-#        
-#    
-#    def test_viewtree_get_all_nodes(self):
-#        all_nodes = self.view.get_all_nodes()
-#        self.assertEqual(True,'0' in all_nodes)
-#        self.assertEqual(False,'tmp' in all_nodes)
-#        self.assertEqual(self.total,len(all_nodes))
-#        node = DummyNode('temp')
-#        node.add_color('blue')
-#        self.tree.add_node(node,parent_id=str(0))
-#        all_nodes = self.view.get_all_nodes()
-#        self.assert_('0' in all_nodes)
-#        self.assert_('temp' in all_nodes)
-#        self.assertEqual(self.total+1,len(all_nodes))
-#        self.tree.del_node('1')
-#        all_nodes = self.view.get_all_nodes()
-#        self.failIf('1' in all_nodes)
-#        self.assert_('temp' in all_nodes)
-#        self.assertEqual(self.total,len(all_nodes))
-#        #TODO: test after applying a filter on the view
-#        #TODO : do the same test on the mainview
-#        
-#        
-##    def test_viewtree_get_node_for_path(self):
-#        #TODO
-##    def test_viewtree_get_paths_for_node(self):
-#        #TODO
-##    def test_viewtree_next_node(self):
-#        #TODO
+    
+    #When you remove a parent, the child nodes should be added to the root if
+    #they don't have any other parents
+    def test_removing_parent(self):
+        view = self.tree.get_viewtree(refresh=True)
+        node = DummyNode('temp')
+        node.add_color('blue')
+        self.tree.add_node(node,parent_id='0')
+        all_nodes = self.view.get_all_nodes()
+        self.assert_('0' in all_nodes)
+        self.assert_('temp' in all_nodes)
+        self.tree.del_node('0')
+        all_nodes = self.view.get_all_nodes()
+        self.failIf('0' in all_nodes)
+        self.assert_('temp' in all_nodes)
+        
+    def test_move_node(self):
+        view = self.tree.get_viewtree(refresh=True)
+        node = DummyNode('temp')
+        node.add_color('blue')
+        self.tree.add_node(node,parent_id='0')
+        #Testing initial situation
+        self.assert_(view.node_has_child('0'))
+        self.assert_('temp' in view.node_all_children('0'))
+        self.assert_('temp' not in view.node_all_children('1'))
+        #Moving node
+        self.tree.move_node('temp','1')
+        self.assert_(view.node_has_child('1'))
+        self.assert_('temp' in view.node_all_children('1'))
+        self.assert_('temp' not in view.node_all_children('0'))
+        #Now moving to root
+        self.tree.move_node('temp')
+        self.assert_('temp' not in view.node_all_children('1'))
+        self.assert_('temp' not in view.node_all_children('0'))
+        #temp still exist and doesn't have any parents
+        all_nodes = self.mainview.get_all_nodes()
+        self.assert_('temp' in all_nodes)
+        self.assertEqual(0,len(self.mainview.node_parents('temp')))
+        
+    def test_add_parent(self):
+        view = self.tree.get_viewtree(refresh=True)
+        node = DummyNode('temp')
+        node.add_color('blue')
+        self.tree.add_node(node,parent_id='0')
+        #Testing initial situation
+        self.assert_(view.node_has_child('0'))
+        self.assert_('temp' in view.node_all_children('0'))
+        self.assert_('temp' not in view.node_all_children('1'))
+        #Adding another parent
+        self.tree.add_parent('temp','1')
+        self.assert_(view.node_has_child('1'))
+        self.assert_('temp' in view.node_all_children('1'))
+        self.assert_('temp' in view.node_all_children('0'))
+    
+    #we try to add a task as a child of one of its grand-children.
+    #Nothing should happen
+#    def test_cyclic_paradox(self):
+        
+    def test_mainview(self):
+        #we should test that mainview is always up-to-date
+        #and raise exception when trying to add filters on it
+        #TODO
+        pass
+        
+    #### Testing each method of the ViewTree
+    
+    def test_viewtree_get_n_nodes(self):
+        total = self.red_nodes + self.blue_nodes + self.green_nodes
+        self.assertEqual(total,self.view.get_n_nodes())
+        self.assertEqual(self.green_nodes,self.view.get_n_nodes(withfilters=['green']))
+        self.assertEqual(total,self.mainview.get_n_nodes())
+        
+    
+    def test_viewtree_get_all_nodes(self):
+        all_nodes = self.view.get_all_nodes()
+        all_nodes2 = self.mainview.get_all_nodes()
+        self.assertEqual(True,'0' in all_nodes)
+        self.assertEqual(False,'tmp' in all_nodes)
+        self.assertEqual(self.total,len(all_nodes))
+        #Mainview
+        self.assertEqual(True,'0' in all_nodes2)
+        self.assertEqual(False,'tmp' in all_nodes2)
+        self.assertEqual(self.total,len(all_nodes2))
+        #adding a node
+        node = DummyNode('temp')
+        node.add_color('blue')
+        self.tree.add_node(node,parent_id=str(0))
+        all_nodes = self.view.get_all_nodes()
+        all_nodes2 = self.mainview.get_all_nodes()
+        self.assert_('0' in all_nodes)
+        self.assert_('temp' in all_nodes)
+        self.assertEqual(self.total+1,len(all_nodes))
+        #Mainview
+        self.assert_('0' in all_nodes2)
+        self.assert_('temp' in all_nodes2)
+        self.assertEqual(self.total+1,len(all_nodes2))
+        #Removing the node
+        self.tree.del_node('1')
+        all_nodes = self.view.get_all_nodes()
+        all_nodes2 = self.mainview.get_all_nodes()
+        self.failIf('1' in all_nodes)
+        self.assert_('temp' in all_nodes)
+        self.assertEqual(self.total,len(all_nodes))
+        #mainview
+        self.failIf('1' in all_nodes2)
+        self.assert_('temp' in all_nodes2)
+        self.assertEqual(self.total,len(all_nodes2))
+        
+        
+#    def test_viewtree_get_node_for_path(self):
+        #TODO
+#    def test_viewtree_get_paths_for_node(self):
+        #TODO
+#    def test_viewtree_next_node(self):
+        #TODO
 
-#    def test_viewtree_node_has_child(self):
-#        view = self.tree.get_viewtree(refresh=True)
-#        node = DummyNode('temp')
-#        node.add_color('blue')
-#        self.failIf(view.node_has_child('0'))
-#        self.tree.add_node(node,parent_id='0')
-#        self.assert_(view.node_has_child('0'))
-#        #TODO: test after applying a filter on the view
-#        #TODO : do the same test on the mainview
-#    
-#    #We also test node_n_children here. Nearly the same method
-#    def test_viewtree_node_all_children(self):
-#        view = self.tree.get_viewtree(refresh=True)
-#        self.assertEqual(0,len(view.node_all_children('0')))
-#        #checking that 0 and 1 are in root
-#        self.assert_('0' in view.node_all_children())
-#        self.assert_('1' in view.node_all_children())
-#        node = DummyNode('temp')
-#        node.add_color('blue')
-#        #adding a new children
-#        self.tree.add_node(node,parent_id='0')
-#        self.assertEqual(1,view.node_n_children('0'))
-#        self.assert_('temp' in view.node_all_children('0'))
-#        #moving an existing children
-#        self.tree.move_node('1','0')
-#        self.assertEqual(2,view.node_n_children('0'))
-#        self.assert_('1' in view.node_all_children('0'))
-#        self.failIf('1' in view.node_all_children())
-#        #removing a node
-#        self.tree.del_node('temp')
-#        self.assertEqual(1,view.node_n_children('0'))
-#        self.failIf('temp' in view.node_all_children('0'))
-#        #moving a node elsewhere
-#        self.tree.move_node('1')
-#        self.assertEqual(0,view.node_n_children('0'))
-#        self.failIf('1' in view.node_all_children('0'))
-#        #checking that '1' is back in root
-#        self.assert_('1' in view.node_all_children())
-#        #TODO: test after applying a filter on the view
-#        #TODO : do the same test on the mainview
-#        
-#    
-##    def test_viewtree_node_nth_child(self):
-#        #TODO
-##    def test_viewtree_node_parents(self):
-#        #TODO
-##    def test_viewtree_is_displayed(self):
-#        #TODO
+    def test_viewtree_node_has_child(self):
+        view = self.tree.get_viewtree(refresh=True)
+        node = DummyNode('temp')
+        node.add_color('blue')
+        self.failIf(view.node_has_child('0'))
+        self.failIf(self.mainview.node_has_child('0'))
+        #Adding the node to the tree
+        self.tree.add_node(node,parent_id='0')
+        self.assert_(view.node_has_child('0'))
+        self.assert_(self.mainview.node_has_child('0'))
+    
+    #We also test node_n_children here. Nearly the same method
+    def test_viewtree_node_all_children(self):
+        view = self.tree.get_viewtree(refresh=True)
+        self.assertEqual(0,len(view.node_all_children('0')))
+        #checking that 0 and 1 are in root
+        self.assert_('0' in view.node_all_children())
+        self.assert_('1' in view.node_all_children())
+        self.assert_('0' in self.mainview.node_all_children())
+        self.assert_('1' in self.mainview.node_all_children())
+        node = DummyNode('temp')
+        node.add_color('blue')
+        #adding a new children
+        self.tree.add_node(node,parent_id='0')
+        self.assertEqual(1,view.node_n_children('0'))
+        self.assert_('temp' in view.node_all_children('0'))
+        self.assertEqual(1,self.mainview.node_n_children('0'))
+        self.assert_('temp' in self.mainview.node_all_children('0'))
+        #Testing with a filter
+        view.apply_filter('red')
+        self.failIf('temp' in view.node_all_children('0'))
+        view.unapply_filter('red')
+        #moving an existing children
+        self.tree.move_node('1','0')
+        self.assertEqual(2,view.node_n_children('0'))
+        self.assert_('1' in view.node_all_children('0'))
+        self.failIf('1' in view.node_all_children())
+        self.assertEqual(2,self.mainview.node_n_children('0'))
+        self.assert_('1' in self.mainview.node_all_children('0'))
+        self.failIf('1' in self.mainview.node_all_children())
+        #removing a node
+        self.tree.del_node('temp')
+        self.assertEqual(1,view.node_n_children('0'))
+        self.failIf('temp' in view.node_all_children('0'))
+        self.assertEqual(1,self.mainview.node_n_children('0'))
+        self.failIf('temp' in self.mainview.node_all_children('0'))
+        #moving a node elsewhere
+        self.tree.move_node('1')
+        self.assertEqual(0,view.node_n_children('0'))
+        self.failIf('1' in view.node_all_children('0'))
+        self.assertEqual(0,self.mainview.node_n_children('0'))
+        self.failIf('1' in self.mainview.node_all_children('0'))
+        #checking that '1' is back in root
+        self.assert_('1' in view.node_all_children())
+        self.assert_('1' in self.mainview.node_all_children())
+        
+    
+    def test_viewtree_node_nth_child(self):
+        view = self.tree.get_viewtree(refresh=True)
+        node = DummyNode('temp')
+        node.add_color('blue')
+        #Asking for a child that doesn't exist should raise an exception
+        self.assertRaises(ValueError,view.node_nth_child,'0',0)
+        self.assertRaises(ValueError,self.mainview.node_nth_child,'0',0)
+        #Adding the node to the tree
+        self.tree.add_node(node,parent_id='0')
+        self.assertEqual('temp',view.node_nth_child('0',0))
+        self.assertEqual('temp',self.mainview.node_nth_child('0',0))
+        #Now with a filter
+        view.apply_filter('red')
+        self.assertRaises(ValueError,view.node_nth_child,'0',0)
+        
+        
+    def test_viewtree_node_parents(self):
+        view = self.tree.get_viewtree(refresh=True)
+        #Checking that a node at the root has no parents
+        self.assertEqual([],view.node_parents('0'))
+        self.assertEqual([],self.mainview.node_parents('0'))
+        #Adding a child
+        node = DummyNode('temp')
+        node.add_color('blue')
+        self.tree.add_node(node,parent_id='0')
+        self.assertEqual(['0'],view.node_parents('temp'))
+        self.assertEqual(['0'],self.mainview.node_parents('temp'))
+        #adding a second parent
+        self.tree.add_parent('temp','1')
+        self.assertEqual(['0','1'],view.node_parents('temp'))
+        self.assertEqual(['0','1'],self.mainview.node_parents('temp'))
+        #now with a filter
+        view.apply_filter('blue')
+        self.assertEqual([],view.node_parents('temp'))
+        #if the node is not displayed, that should not change the parents
+        view.unapply_filter('blue')
+        view.apply_filter('red')
+        self.assertEqual(['0','1'],view.node_parents('temp'))
+        
+
+    def test_viewtree_is_displayed(self):
+        view = self.tree.get_viewtree(refresh=True)
+        node = DummyNode('temp')
+        node.add_color('blue')
+        self.failIf(view.is_displayed('temp'))
+        self.failIf(self.mainview.is_displayed('temp'))
+        #Adding the node to the tree
+        self.tree.add_node(node,parent_id='0')
+        self.assert_(view.is_displayed('temp'))
+        self.assert_(self.mainview.is_displayed('temp'))
+        view.apply_filter('blue')
+        self.assert_(view.is_displayed('temp'))
+        view.apply_filter('red')
+        self.failIf(view.is_displayed('temp'))
+
 
 
 ############ Filters
 
-#    def test_simple_filter(self):
-#        view = self.tree.get_viewtree(refresh=False)
-#        view.apply_filter('red')
-#        self.assertEqual(self.red_nodes,view.get_n_nodes())
-#        self.assertEqual(self.red_nodes,view.get_n_nodes(withfilters=['red']))
-#        self.assertEqual(0,view.get_n_nodes(withfilters=['blue']))
-#        #Red nodes are all at the root
-#        self.assertEqual(self.red_nodes,view.node_n_children())
-#        #applying another filter
-#        view.apply_filter('green')
-#        self.assertEqual(0,view.get_n_nodes())
-#        #unapplying the first filter
-#        view.unapply_filter('red')
-#        self.assertEqual(self.green_nodes,view.get_n_nodes())
-#        self.assertEqual(self.green_nodes,view.get_n_nodes(withfilters=['green']))
-#        self.assertEqual(0,view.get_n_nodes(withfilters=['red']))
-#        #There's only one green node at the root
-#        self.assertEqual(1,view.node_n_children())
-#        #Modifying a node to make it red and green
-#        self.failIf(view.is_displayed('0'))
-#        node = view.get_node('0')
-#        node.add_color('green')
-#        #It should now be in the view
-#        self.assert_(view.is_displayed('0'))
-#        self.assertEqual(1,view.get_n_nodes(withfilters=['red']))
-#        self.assertEqual(2,view.node_n_children())
-#        #Now, we add a new node
-#        node = DummyNode('temp')
-#        node.add_color('green')
-#        self.tree.add_node(node)
-#        #It should now be in the view
-#        self.assert_(view.is_displayed('temp'))
-#        self.assertEqual(3,view.node_n_children())
-#        #We remove it
-#        self.tree.del_node('temp')
-#        self.failIf(view.is_displayed('temp'))
-#        self.assertEqual(2,view.node_n_children())
-#        #We add it again as a children of a non-displayed node
-#        self.tree.add_node(node,parent_id='1')
-#        self.assert_(view.is_displayed('temp'))
-#        self.assertEqual(3,view.node_n_children())
-#        #It should not have parent
-#        self.assertEqual(0,len(view.node_parents('temp')))
-#    
-#    def test_leaf_filter(self):
-#        #TODO
-#        pass
-#    
-#    def test_multiple_filters(self):
-#        #TODO
-#        pass
-#        
-#    def test_transparent_filters(self):
-#        #TODO
-#        pass
-#        
-#    def test_flat_filters(self):
-#        #TODO
-#        pass
-#        
+    def test_simple_filter(self):
+        view = self.tree.get_viewtree(refresh=False)
+        view.apply_filter('red')
+        self.assertEqual(self.red_nodes,view.get_n_nodes())
+        self.assertEqual(self.red_nodes,view.get_n_nodes(withfilters=['red']))
+        self.assertEqual(0,view.get_n_nodes(withfilters=['blue']))
+        #Red nodes are all at the root
+        self.assertEqual(self.red_nodes,view.node_n_children())
+        #applying another filter
+        view.apply_filter('green')
+        self.assertEqual(0,view.get_n_nodes())
+        #unapplying the first filter
+        view.unapply_filter('red')
+        self.assertEqual(self.green_nodes,view.get_n_nodes())
+        self.assertEqual(self.green_nodes,view.get_n_nodes(withfilters=['green']))
+        self.assertEqual(0,view.get_n_nodes(withfilters=['red']))
+        #There's only one green node at the root
+        self.assertEqual(1,view.node_n_children())
+        #Modifying a node to make it red and green
+        self.failIf(view.is_displayed('0'))
+        node = view.get_node('0')
+        node.add_color('green')
+        #It should now be in the view
+        self.assert_(view.is_displayed('0'))
+        self.assertEqual(1,view.get_n_nodes(withfilters=['red']))
+        self.assertEqual(2,view.node_n_children())
+        #Now, we add a new node
+        node = DummyNode('temp')
+        node.add_color('green')
+        self.tree.add_node(node)
+        #It should now be in the view
+        self.assert_(view.is_displayed('temp'))
+        self.assertEqual(3,view.node_n_children())
+        #We remove it
+        self.tree.del_node('temp')
+        self.failIf(view.is_displayed('temp'))
+        self.assertEqual(2,view.node_n_children())
+        #We add it again as a children of a non-displayed node
+        self.tree.add_node(node,parent_id='1')
+        self.assert_(view.is_displayed('temp'))
+        self.assertEqual(3,view.node_n_children())
+        #It should not have parent
+        self.assertEqual(0,len(view.node_parents('temp')))
+    
+    def test_leaf_filter(self):
+        #TODO
+        pass
+    
+    def test_multiple_filters(self):
+        #TODO
+        pass
+        
+    def test_transparent_filters(self):
+        #TODO
+        pass
+        
+    def test_flat_filters(self):
+        #TODO
+        pass
+        
     
 
 def test_suite():
