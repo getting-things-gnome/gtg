@@ -303,7 +303,7 @@ class FilteredTree(gobject.GObject):
                 pos = 0
                 max = self.node_n_children(par)
                 child = self.node_children(par)
-                while pos < max and node != child:
+                while pos < max-1 and node != child:
                     pos += 1
                     child = self.node_nth_child(par,pos)
                 par_paths = self.get_paths_for_node(par)

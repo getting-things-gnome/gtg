@@ -135,7 +135,8 @@ class ViewTree(gobject.GObject):
             else:
                 toreturn = self.__maintree.get_node(nid)
         else:
-            print "should not get a static node in a viewtree"
+            raise Exception("Bad programmer: should not get a static node"+\
+                            " in a viewtree")
         return toreturn
 
     def print_tree(self):
@@ -158,7 +159,7 @@ class ViewTree(gobject.GObject):
         if self.static and len(withfilters) > 0:
             raise Exception("WARNING: filters cannot be applied" +\
                             "to a static tree\n"+\
-                            "the filter parameter will be dismissed")
+                     "the filter parameter of get_n_nodes will be dismissed")
         if self.static:
             return len(self.__maintree.get_all_nodes())
         else:
@@ -241,7 +242,8 @@ class ViewTree(gobject.GObject):
         @param refresh : should we refresh after applying this filter ?
         """
         if self.static:
-            print "cannot apply filter on the main static view"
+            raise Exception("WARNING: filters cannot be applied" +\
+                            "to a static tree\n")
         else:
             self.__ft.apply_filter(filter_name,parameters=parameters,\
                                     reset=reset,refresh=refresh)

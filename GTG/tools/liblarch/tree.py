@@ -52,7 +52,7 @@ class MainTree(gobject.GObject):
         return "<Tree: root = '%s'>" % (str(self.root))
 
     def get_node_for_path(self, path):
-        return self._node_for_path(self.root,path)
+        return self._node_for_path(None,path)
 
     def get_paths_for_node(self, node):
         toreturn = self._paths_for_node(node)
@@ -241,14 +241,18 @@ class MainTree(gobject.GObject):
 
 ### HELPER FUNCTION FOR TREE #################################################
 #
-    def _node_for_path(self,node,path):
-        if path[0] < node.get_n_children():
+    def _node_for_path(self,nid,path):
+        if nid:
+            node = self.get_node(nid)
+        else:
+            node = self.root
+        if node and path[0] < node.get_n_children():
             if len(path) == 1:
                 return node.get_nth_child(path[0])
             else:
-                node = node.get_nth_child(path[0])
+                nid = node.get_nth_child(path[0])
                 path = path[1:]
-                return self._node_for_path(node, path)
+                return self._node_for_path(nid, path)
         else:
             return None
 

@@ -258,8 +258,29 @@ class TestLibLarch(unittest.TestCase):
         nid2b = self.mainview.next_node(nid2)
         path2b = self.mainview.get_paths_for_node(nid2b)
         self.assertEqual([(1,)],path2b)
-        #TODO: with children
-        #TODO with filters
+        #with children
+        node = DummyNode('temp')
+        node.add_color('blue')
+        self.tree.add_node(node,parent_id=nid1)
+        self.tree.add_parent('temp',nid2)
+        self. assertEqual('temp',view.get_node_for_path((0,0)))
+        self. assertEqual('temp',self.mainview.get_node_for_path((0,0)))
+        #Adding a child to the child
+        node2 = DummyNode('temp2')
+        node2.add_color('blue')
+        self.tree.add_node(node2,parent_id=nid1)
+        node = DummyNode('temp_child')
+        node.add_color('blue')
+        self.tree.add_node(node,parent_id='temp2')
+        self.assertEqual('temp_child',view.get_node_for_path((0,1,0)))
+        self.tree.add_parent('temp2',nid2)
+        self.assertEqual('temp_child',self.mainview.get_node_for_path((0,1,0)))
+        #with filters
+        view.apply_filter('blue')
+        pl = view.get_paths_for_node('temp2')
+        for p in pl:
+            pp = p + (0,)
+            self.assertEqual('temp_child',view.get_node_for_path(pp))
         
     def test_viewtree_get_paths_for_node(self):
         view = self.tree.get_viewtree(refresh=True)
