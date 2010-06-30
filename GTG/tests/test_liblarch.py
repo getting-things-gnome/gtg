@@ -61,6 +61,7 @@ class TestLibLarch(unittest.TestCase):
         self.tree.add_filter('blue',self.is_blue)
         self.tree.add_filter('green',self.is_green)
         self.tree.add_filter('red',self.is_red)
+        self.tree.add_filter('leaf',self.is_leaf)
         #first, we add some red nodes at the root
         while i < 5:
             node = DummyNode(str(i))
@@ -90,6 +91,8 @@ class TestLibLarch(unittest.TestCase):
         return node.has_color('green')
     def is_red(self,node,parameters=None):
         return node.has_color('red')
+    def is_leaf(self,node,paremeters=None):
+        return not node.has_child()
         
     #### Testing nodes movements in the tree
     #### We test by counting nodes that meet some criterias
@@ -198,8 +201,7 @@ class TestLibLarch(unittest.TestCase):
     def test_mainview(self):
         #we should test that mainview is always up-to-date
         #and raise exception when trying to add filters on it
-        #TODO
-        pass
+        self.assertRaises(Exception,self.mainview.apply_filter,'blue')
         
     #### Testing each method of the ViewTree
     
@@ -246,12 +248,93 @@ class TestLibLarch(unittest.TestCase):
         self.assertEqual(self.total,len(all_nodes2))
         
         
-#    def test_viewtree_get_node_for_path(self):
-        #TODO
-#    def test_viewtree_get_paths_for_node(self):
-        #TODO
-#    def test_viewtree_next_node(self):
-        #TODO
+    def test_viewtree_get_node_for_path(self):
+        view = self.tree.get_viewtree(refresh=True)
+        #nid1 and nid2 are not always the same
+        nid1 = view.get_node_for_path((0,))
+        nid2 = self.mainview.get_node_for_path((0,))
+        #Thus we do a mix of test.
+        nid1b = view.next_node(nid1)
+        path1b = view.get_paths_for_node(nid1b)
+        self.assertEqual([(1,)],path1b)
+        #same for mainview
+        nid2b = self.mainview.next_node(nid2)
+        path2b = self.mainview.get_paths_for_node(nid2b)
+        self.assertEqual([(1,)],path2b)
+        #with children
+        node = DummyNode('temp')
+        node.add_color('blue')
+        self.tree.add_node(node,parent_id=nid1)
+        self.tree.add_parent('temp',nid2)
+        self. assertEqual('temp',view.get_node_for_path((0,0)))
+        self. assertEqual('temp',self.mainview.get_node_for_path((0,0)))
+        #Adding a child to the child
+        node2 = DummyNode('temp2')
+        node2.add_color('blue')
+        self.tree.add_node(node2,parent_id=nid1)
+        node = DummyNode('temp_child')
+        node.add_color('blue')
+        self.tree.add_node(node,parent_id='temp2')
+        self.assertEqual('temp_child',view.get_node_for_path((0,1,0)))
+        self.tree.add_parent('temp2',nid2)
+        self.assertEqual('temp_child',self.mainview.get_node_for_path((0,1,0)))
+        #with filters
+        view.apply_filter('blue')
+        pl = view.get_paths_for_node('temp2')
+        for p in pl:
+            pp = p + (0,)
+            self.assertEqual('temp_child',view.get_node_for_path(pp))
+        
+    def test_viewtree_get_paths_for_node(self):
+        view = self.tree.get_viewtree(refresh=True)
+        #testing the root path
+        self.assertEqual([()],view.get_paths_for_node())
+        self.assertEqual([()],self.mainview.get_paths_for_node())
+        #with children
+        #the first blue node is:
+        firstgreen = self.red_nodes + self.blue_nodes - 1
+        pp = view.get_paths_for_node(str(firstgreen))[0]
+        i = 0
+        #Testing all the green nodes (that are in stairs)
+        while i < self.green_nodes:
+            returned = view.get_paths_for_node(str(firstgreen+i))[0]
+            self.assertEqual(pp,returned)
+            i+=1
+            pp += (0,)
+        #with filters
+        view.apply_filter('green')
+        pp = view.get_paths_for_node(str(firstgreen+1))[0]
+        i = 1
+        #Testing all the green nodes (that are in stairs)
+        while i < self.green_nodes:
+            returned = view.get_paths_for_node(str(firstgreen+i))[0]
+            self.assertEqual(pp,returned)
+            i+=1
+            pp += (0,)
+        
+    def test_viewtree_next_node(self):
+        view = self.tree.get_viewtree(refresh=True)
+        node = DummyNode('temp')
+        node.add_color('blue')
+        node.add_color('green')
+        self.tree.add_node(node,parent_id='0')
+        view = self.tree.get_viewtree(refresh=True)
+        node = DummyNode('temp2')
+        node.add_color('red')
+        self.tree.add_node(node,parent_id='0')
+        #we give the pid
+        self.assertEqual('temp2',view.next_node('temp',pid='0'))
+        self.assertEqual('temp2',self.mainview.next_node('temp',pid='0'))
+        #or we give not (should be the same here because only one parent)
+        self.assertEqual('temp2',view.next_node('temp'))
+        self.assertEqual('temp2',self.mainview.next_node('temp'))
+        #next node for last node.
+        self.assertEqual(None,view.next_node('temp2'))
+        self.assertEqual(None,self.mainview.next_node('temp2'))
+        #with filters, temp should not have any next node
+        view.apply_filter('blue',refresh=False)
+        view.apply_filter('green')
+        self.assertEqual(None,view.next_node('temp'))
 
     def test_viewtree_node_has_child(self):
         view = self.tree.get_viewtree(refresh=True)
@@ -412,22 +495,30 @@ class TestLibLarch(unittest.TestCase):
         self.assertEqual(3,view.node_n_children())
         #It should not have parent
         self.assertEqual(0,len(view.node_parents('temp')))
-    
+
     def test_leaf_filter(self):
-        #TODO
-        pass
-    
-    def test_multiple_filters(self):
-        #TODO
-        pass
-        
-    def test_transparent_filters(self):
-        #TODO
-        pass
-        
-    def test_flat_filters(self):
-        #TODO
-        pass
+        view = self.tree.get_viewtree(refresh=False)
+        view.apply_filter('leaf')
+        total = self.red_nodes + self.blue_nodes
+        self.assertEqual(total,view.get_n_nodes())
+        view.apply_filter('green')
+        self.assertEqual(1,view.get_n_nodes())
+        nid = view.get_node_for_path((0,))
+        #Now, we add a new node
+        node = DummyNode('temp')
+        node.add_color('green')
+        self.tree.add_node(node,parent_id=nid)
+        self.assertEqual(1,view.get_n_nodes())
+        nid = view.get_node_for_path((0,))
+        self.assertEqual('temp',nid)
+
+#    def test_transparent_filters(self):
+#        #TODO
+#        pass
+#        
+#    def test_flat_filters(self):
+#        #TODO
+#        pass
         
     
 

@@ -135,7 +135,8 @@ class ViewTree(gobject.GObject):
             else:
                 toreturn = self.__maintree.get_node(nid)
         else:
-            print "should not get a static node in a viewtree"
+            raise Exception("Bad programmer: should not get a static node"+\
+                            " in a viewtree")
         return toreturn
 
     def print_tree(self):
@@ -156,9 +157,9 @@ class ViewTree(gobject.GObject):
         the applied filters that doesn't have the transparent parameters.
         """
         if self.static and len(withfilters) > 0:
-            #TODO : raises an error
-            print "WARNING: filters cannot be applied to a static tree"
-            print "the filter parameter will be dismissed"
+            raise Exception("WARNING: filters cannot be applied" +\
+                            "to a static tree\n"+\
+                     "the filter parameter of get_n_nodes will be dismissed")
         if self.static:
             return len(self.__maintree.get_all_nodes())
         else:
@@ -168,16 +169,15 @@ class ViewTree(gobject.GObject):
     def get_node_for_path(self, path):
         return self.__ft.get_node_for_path(path)
 
-    def get_paths_for_node(self, nid):
-        #TODO
-        print "get_paths_for_node not implemented"
-        return
+    #If nid is none, return root path
+    def get_paths_for_node(self, nid=None):
+        return self.__ft.get_paths_for_node(nid)
 
-    def next_node(self, nid,pid):
-        #TODO
-        print "next_node not implemented"
-        return
-
+    #pid is used only if nid has multiple parents.
+    #if pid is none, a random parent is used.
+    def next_node(self, nid,pid=None):
+        return self.__ft.next_node(nid,pid)
+        
     def node_has_child(self, nid):
         toreturn = False
         if self.static:
@@ -242,7 +242,8 @@ class ViewTree(gobject.GObject):
         @param refresh : should we refresh after applying this filter ?
         """
         if self.static:
-            print "cannot apply filter on the main static view"
+            raise Exception("WARNING: filters cannot be applied" +\
+                            "to a static tree\n")
         else:
             self.__ft.apply_filter(filter_name,parameters=parameters,\
                                     reset=reset,refresh=refresh)
@@ -254,7 +255,8 @@ class ViewTree(gobject.GObject):
         @param filter_name: The name of an already added filter to remove
         """
         if self.static:
-            print "cannot apply filter on the main static view"
+            raise Exception("WARNING: filters cannot be unapplied" +\
+                            "from a static tree\n")
         else:
             self.__ft.unapply_filter(filter_name, refresh=refresh)
         return
@@ -264,7 +266,8 @@ class ViewTree(gobject.GObject):
         Clears all filters currently set on the tree.
         """
         if self.static:
-            print "cannot apply filter on the main static view"
+            raise Exception("WARNING: filters cannot be reset" +\
+                            "on a static tree\n")
         else:
              self.__ft.reset_filters(refresh=refresh)
         return

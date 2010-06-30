@@ -219,8 +219,7 @@ class FilteredTree(gobject.GObject):
     def print_tree(self):
         print "displayed : %s" %self.displayed_nodes
         for rid in self.virtual_root:
-            r = self.tree.get_node(rid)
-            self.__print_from_node(r)
+            self.__print_from_node(rid)
 
     #The path received is only for tasks that are displayed
     #We have to find the good node.
@@ -230,27 +229,26 @@ class FilteredTree(gobject.GObject):
         """
         #We should convert the path to the base.path
         if not path or str(path) == '()':
-            return self.tree.get_root()
+            return None
         p0 = path[0]
         if len(self.virtual_root) > p0:
             n1id = self.virtual_root[p0]
-            n1 = self.get_node(n1id)
             pa = path[1:]
-            toreturn = self.__node_for_path(n1,pa)
+            toreturn = self.__node_for_path(n1id,pa)
         else:
             toreturn = None
         return toreturn
 
-    def __node_for_path(self,basenode,path):
+    def __node_for_path(self,basenode_id,path):
         if len(path) == 0 or self.flat:
-            return basenode
-        elif path[0] < self.node_n_children(basenode):
+            return basenode_id
+        elif path[0] < self.node_n_children(basenode_id):
             if len(path) == 1:
-                return self.node_nth_child(basenode,path[0])
+                return self.node_nth_child(basenode_id,path[0])
             else:
-                node = self.node_nth_child(basenode,path[0])
+                node_id = self.node_nth_child(basenode_id,path[0])
                 path = path[1:]
-                return self.__node_for_path(node, path)
+                return self.__node_for_path(node_id, path)
         else:
             return None
 
@@ -260,9 +258,11 @@ class FilteredTree(gobject.GObject):
         Return an empty list if no path for that Node.
         """
         toreturn = []
-        if node:
+        if tid:
             node = self.get_node(tid)
             pars = self.node_parents(tid)
+        else:
+            return [()]
         #For that node, we should convert the base_path to path
         if not node or not self.is_displayed(tid):
             return toreturn
@@ -302,7 +302,7 @@ class FilteredTree(gobject.GObject):
                 pos = 0
                 max = self.node_n_children(par)
                 child = self.node_children(par)
-                while pos < max and node != child:
+                while pos < max-1 and node != child:
                     pos += 1
                     child = self.node_nth_child(par,pos)
                 par_paths = self.get_paths_for_node(par)
@@ -325,15 +325,16 @@ class FilteredTree(gobject.GObject):
         self.path_for_node_cache[tid] = toreturn
         return toreturn
 
-    #Done
-    def next_node(self, nid,pid):
+    #pid is used only if nid has multiple parents.
+    #if pid is none, a random parent is used.
+    def next_node(self, nid,pid=None):
         """
         Returns the next sibling node, or None if there are no other siblings
         """
         #We should take the next good node, not the next base node
         toreturn = None
         if nid in self.virtual_root:
-            i = self.virtual_root.index(tid) + 1
+            i = self.virtual_root.index(nid) + 1
             if len(self.virtual_root) > i:
                 nextnode_id = self.virtual_root[i]
                 if self.is_displayed(nextnode_id):
@@ -341,20 +342,20 @@ class FilteredTree(gobject.GObject):
         else:
             parents_nodes = self.node_parents(nid)
             if len(parents_nodes) >= 1:
-                if pid in parents_nodes:
+                if pid and pid in parents_nodes:
                     parent_node = pid
                 else:
                     parent_node = parents_nodes[0]
-                total = self.node_n_children(pid)
+                total = self.node_n_children(parent_node)
                 c = 0
-                next_id = None
-                while c < total and not next_id:
-                    child_id = self.node_nth_child(pid,c)
+                next_id = -1
+                while c < total and next_id < 0:
+                    child_id = self.node_nth_child(parent_node,c)
                     c += 1
                     if child_id == nid:
                         next_id = c
-                if next_id < total:
-                    toreturn = self.node_nth_child(pid,next_id)
+                if next_id >= 0 and next_id < total:
+                    toreturn = self.node_nth_child(parent_node,next_id)
         #check to see if our result is correct
         if toreturn and not self.is_displayed(toreturn):
             toreturn = None
@@ -542,18 +543,19 @@ class FilteredTree(gobject.GObject):
             filt = self.fbank.get_filter(f)
             if filt and not self.flat:
                 self.flat = filt.is_flat()
-        #First things, we list the nodes that will be
-        #ultimately displayed
-        for nid in self.tree.get_all_nodes():
-            if self.__is_displayed(nid):
-                to_add.append(nid)
-        #Second step, we empty the current tree as we will rebuild it
+        #First step, we empty the current tree as we will rebuild it
         #from scratch
         for rid in list(self.virtual_root):
             n = self.get_node(rid)
             self.__clean_from_node(n)
         #We reinitialize the tree before adding nodes that should be added
         self.displayed_nodes = []
+        #Then, we list the nodes that will be
+        #ultimately displayed
+        for nid in self.tree.get_all_nodes():
+            if self.__is_displayed(nid):
+                to_add.append(nid)
+        #And we add them
         for nid in list(to_add):
             self.__add_node(nid)
         #end of refiltering
@@ -770,18 +772,19 @@ class FilteredTree(gobject.GObject):
             self.node_to_remove.remove(tid)
         
     #This function print the actual tree. Useful for debugging
-    def __print_from_node(self, node, prefix=""):
-        print "%s%s    (%s) " %(prefix,node.get_id(),\
-                    str(self.get_paths_for_node(node)))
+    def __print_from_node(self, nid, prefix=""):
+        print "%s%s    (%s) " %(prefix,nid,\
+                    str(self.get_paths_for_node(nid)))
         prefix = prefix + "->"
-        if self.node_has_child(node):
-            child = self.node_children(node)
-            nn = self.node_n_children
+        node = self.tree.get_node(nid)
+        if self.node_has_child(nid):
+            child_id = self.node_children(nid)
+            nn = self.node_n_children(nid)
             n = 0
-            while child and n < nn:
+            while n < nn:
+                self.__print_from_node(child_id,prefix)
+                child_id = self.node_nth_child(nid,n)
                 n += 1
-                self.__print_from_node(child,prefix)
-                child = self.node_nth_child(node,n)
     
     #This function removes all the nodes, leaves first.
     def __clean_from_node(self, node):
