@@ -219,8 +219,7 @@ class FilteredTree(gobject.GObject):
     def print_tree(self):
         print "displayed : %s" %self.displayed_nodes
         for rid in self.virtual_root:
-            r = self.tree.get_node(rid)
-            self.__print_from_node(r)
+            self.__print_from_node(rid)
 
     #The path received is only for tasks that are displayed
     #We have to find the good node.
@@ -544,11 +543,6 @@ class FilteredTree(gobject.GObject):
             filt = self.fbank.get_filter(f)
             if filt and not self.flat:
                 self.flat = filt.is_flat()
-        #First things, we list the nodes that will be
-        #ultimately displayed
-        for nid in self.tree.get_all_nodes():
-            if self.__is_displayed(nid):
-                to_add.append(nid)
         #Second step, we empty the current tree as we will rebuild it
         #from scratch
         for rid in list(self.virtual_root):
@@ -556,6 +550,11 @@ class FilteredTree(gobject.GObject):
             self.__clean_from_node(n)
         #We reinitialize the tree before adding nodes that should be added
         self.displayed_nodes = []
+        #First things, we list the nodes that will be
+        #ultimately displayed
+        for nid in self.tree.get_all_nodes():
+            if self.__is_displayed(nid):
+                to_add.append(nid)
         for nid in list(to_add):
             self.__add_node(nid)
         #end of refiltering
@@ -772,18 +771,19 @@ class FilteredTree(gobject.GObject):
             self.node_to_remove.remove(tid)
         
     #This function print the actual tree. Useful for debugging
-    def __print_from_node(self, node, prefix=""):
-        print "%s%s    (%s) " %(prefix,node.get_id(),\
-                    str(self.get_paths_for_node(node)))
+    def __print_from_node(self, nid, prefix=""):
+        print "%s%s    (%s) " %(prefix,nid,\
+                    str(self.get_paths_for_node(nid)))
         prefix = prefix + "->"
-        if self.node_has_child(node):
-            child = self.node_children(node)
-            nn = self.node_n_children
+        node = self.tree.get_node(nid)
+        if self.node_has_child(nid):
+            child_id = self.node_children(nid)
+            nn = self.node_n_children(nid)
             n = 0
-            while child and n < nn:
+            while n < nn:
+                self.__print_from_node(child_id,prefix)
+                child_id = self.node_nth_child(nid,n)
                 n += 1
-                self.__print_from_node(child,prefix)
-                child = self.node_nth_child(node,n)
     
     #This function removes all the nodes, leaves first.
     def __clean_from_node(self, node):

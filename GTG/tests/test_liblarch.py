@@ -61,6 +61,7 @@ class TestLibLarch(unittest.TestCase):
         self.tree.add_filter('blue',self.is_blue)
         self.tree.add_filter('green',self.is_green)
         self.tree.add_filter('red',self.is_red)
+        self.tree.add_filter('leaf',self.is_leaf)
         #first, we add some red nodes at the root
         while i < 5:
             node = DummyNode(str(i))
@@ -90,6 +91,8 @@ class TestLibLarch(unittest.TestCase):
         return node.has_color('green')
     def is_red(self,node,parameters=None):
         return node.has_color('red')
+    def is_leaf(self,node,paremeters=None):
+        return not node.has_child()
         
     #### Testing nodes movements in the tree
     #### We test by counting nodes that meet some criterias
@@ -494,20 +497,24 @@ class TestLibLarch(unittest.TestCase):
         self.assertEqual(0,len(view.node_parents('temp')))
     
     def test_leaf_filter(self):
-        #TODO
-        pass
+        view = self.tree.get_viewtree(refresh=False)
+        view.apply_filter('leaf')
+        total = self.red_nodes + self.blue_nodes
+        self.assertEqual(total,view.get_n_nodes())
+        view.apply_filter('green')
+        self.assertEqual(1,view.get_n_nodes())
     
-    def test_multiple_filters(self):
-        #TODO
-        pass
-        
-    def test_transparent_filters(self):
-        #TODO
-        pass
-        
-    def test_flat_filters(self):
-        #TODO
-        pass
+#    def test_multiple_filters(self):
+#        #TODO
+#        pass
+#        
+#    def test_transparent_filters(self):
+#        #TODO
+#        pass
+#        
+#    def test_flat_filters(self):
+#        #TODO
+#        pass
         
     
 
