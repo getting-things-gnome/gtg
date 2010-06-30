@@ -495,7 +495,7 @@ class TestLibLarch(unittest.TestCase):
         self.assertEqual(3,view.node_n_children())
         #It should not have parent
         self.assertEqual(0,len(view.node_parents('temp')))
-    
+
     def test_leaf_filter(self):
         view = self.tree.get_viewtree(refresh=False)
         view.apply_filter('leaf')
@@ -503,11 +503,15 @@ class TestLibLarch(unittest.TestCase):
         self.assertEqual(total,view.get_n_nodes())
         view.apply_filter('green')
         self.assertEqual(1,view.get_n_nodes())
-    
-#    def test_multiple_filters(self):
-#        #TODO
-#        pass
-#        
+        nid = view.get_node_for_path((0,))
+        #Now, we add a new node
+        node = DummyNode('temp')
+        node.add_color('green')
+        self.tree.add_node(node,parent_id=nid)
+        self.assertEqual(1,view.get_n_nodes())
+        nid = view.get_node_for_path((0,))
+        self.assertEqual('temp',nid)
+
 #    def test_transparent_filters(self):
 #        #TODO
 #        pass

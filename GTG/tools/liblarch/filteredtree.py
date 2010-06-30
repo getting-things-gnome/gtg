@@ -543,18 +543,19 @@ class FilteredTree(gobject.GObject):
             filt = self.fbank.get_filter(f)
             if filt and not self.flat:
                 self.flat = filt.is_flat()
-        #Second step, we empty the current tree as we will rebuild it
+        #First step, we empty the current tree as we will rebuild it
         #from scratch
         for rid in list(self.virtual_root):
             n = self.get_node(rid)
             self.__clean_from_node(n)
         #We reinitialize the tree before adding nodes that should be added
         self.displayed_nodes = []
-        #First things, we list the nodes that will be
+        #Then, we list the nodes that will be
         #ultimately displayed
         for nid in self.tree.get_all_nodes():
             if self.__is_displayed(nid):
                 to_add.append(nid)
+        #And we add them
         for nid in list(to_add):
             self.__add_node(nid)
         #end of refiltering
