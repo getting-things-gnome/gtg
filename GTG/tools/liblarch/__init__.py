@@ -156,9 +156,9 @@ class ViewTree(gobject.GObject):
         the applied filters that doesn't have the transparent parameters.
         """
         if self.static and len(withfilters) > 0:
-            #TODO : raises an error
-            print "WARNING: filters cannot be applied to a static tree"
-            print "the filter parameter will be dismissed"
+            raise Exception("WARNING: filters cannot be applied" +\
+                            "to a static tree\n"+\
+                            "the filter parameter will be dismissed")
         if self.static:
             return len(self.__maintree.get_all_nodes())
         else:

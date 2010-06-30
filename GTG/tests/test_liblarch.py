@@ -198,8 +198,7 @@ class TestLibLarch(unittest.TestCase):
     def test_mainview(self):
         #we should test that mainview is always up-to-date
         #and raise exception when trying to add filters on it
-        #TODO
-        pass
+        self.assertRaises(Exception,self.mainview.apply_filter,'blue')
         
     #### Testing each method of the ViewTree
     
@@ -259,15 +258,19 @@ class TestLibLarch(unittest.TestCase):
         nid2b = self.mainview.next_node(nid2)
         path2b = self.mainview.get_paths_for_node(nid2b)
         self.assertEqual([(1,)],path2b)
+        #TODO: with children
+        #TODO with filters
         
     def test_viewtree_get_paths_for_node(self):
         view = self.tree.get_viewtree(refresh=True)
         #testing the root path
         self.assertEqual([()],view.get_paths_for_node())
         self.assertEqual([()],self.mainview.get_paths_for_node())
+        #TODO: with children
+        #TODO with filters
         
 #    def test_viewtree_next_node(self):
-        #TODO
+        #TODO : next node for last node.
 
     def test_viewtree_node_has_child(self):
         view = self.tree.get_viewtree(refresh=True)
