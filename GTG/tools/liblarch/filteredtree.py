@@ -230,27 +230,26 @@ class FilteredTree(gobject.GObject):
         """
         #We should convert the path to the base.path
         if not path or str(path) == '()':
-            return self.tree.get_root()
+            return None
         p0 = path[0]
         if len(self.virtual_root) > p0:
             n1id = self.virtual_root[p0]
-            n1 = self.get_node(n1id)
             pa = path[1:]
-            toreturn = self.__node_for_path(n1,pa)
+            toreturn = self.__node_for_path(n1id,pa)
         else:
             toreturn = None
         return toreturn
 
-    def __node_for_path(self,basenode,path):
+    def __node_for_path(self,basenode_id,path):
         if len(path) == 0 or self.flat:
-            return basenode
-        elif path[0] < self.node_n_children(basenode):
+            return basenode_id
+        elif path[0] < self.node_n_children(basenode_id):
             if len(path) == 1:
-                return self.node_nth_child(basenode,path[0])
+                return self.node_nth_child(basenode_id,path[0])
             else:
-                node = self.node_nth_child(basenode,path[0])
+                node_id = self.node_nth_child(basenode_id,path[0])
                 path = path[1:]
-                return self.__node_for_path(node, path)
+                return self.__node_for_path(node_id, path)
         else:
             return None
 
@@ -260,9 +259,11 @@ class FilteredTree(gobject.GObject):
         Return an empty list if no path for that Node.
         """
         toreturn = []
-        if node:
+        if tid:
             node = self.get_node(tid)
             pars = self.node_parents(tid)
+        else:
+            return [()]
         #For that node, we should convert the base_path to path
         if not node or not self.is_displayed(tid):
             return toreturn
@@ -325,15 +326,16 @@ class FilteredTree(gobject.GObject):
         self.path_for_node_cache[tid] = toreturn
         return toreturn
 
-    #Done
-    def next_node(self, nid,pid):
+    #pid is used only if nid has multiple parents.
+    #if pid is none, a random parent is used.
+    def next_node(self, nid,pid=None):
         """
         Returns the next sibling node, or None if there are no other siblings
         """
         #We should take the next good node, not the next base node
         toreturn = None
         if nid in self.virtual_root:
-            i = self.virtual_root.index(tid) + 1
+            i = self.virtual_root.index(nid) + 1
             if len(self.virtual_root) > i:
                 nextnode_id = self.virtual_root[i]
                 if self.is_displayed(nextnode_id):

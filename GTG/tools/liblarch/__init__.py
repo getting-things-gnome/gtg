@@ -168,16 +168,15 @@ class ViewTree(gobject.GObject):
     def get_node_for_path(self, path):
         return self.__ft.get_node_for_path(path)
 
-    def get_paths_for_node(self, nid):
-        #TODO
-        print "get_paths_for_node not implemented"
-        return
+    #If nid is none, return root path
+    def get_paths_for_node(self, nid=None):
+        return self.__ft.get_paths_for_node(nid)
 
-    def next_node(self, nid,pid):
-        #TODO
-        print "next_node not implemented"
-        return
-
+    #pid is used only if nid has multiple parents.
+    #if pid is none, a random parent is used.
+    def next_node(self, nid,pid=None):
+        return self.__ft.next_node(nid,pid)
+        
     def node_has_child(self, nid):
         toreturn = False
         if self.static:

@@ -246,10 +246,26 @@ class TestLibLarch(unittest.TestCase):
         self.assertEqual(self.total,len(all_nodes2))
         
         
-#    def test_viewtree_get_node_for_path(self):
-        #TODO
-#    def test_viewtree_get_paths_for_node(self):
-        #TODO
+    def test_viewtree_get_node_for_path(self):
+        view = self.tree.get_viewtree(refresh=True)
+        #nid1 and nid2 are not always the same
+        nid1 = view.get_node_for_path((0,))
+        nid2 = self.mainview.get_node_for_path((0,))
+        #Thus we do a mix of test.
+        nid1b = view.next_node(nid1)
+        path1b = view.get_paths_for_node(nid1b)
+        self.assertEqual([(1,)],path1b)
+        #same for mainview
+        nid2b = self.mainview.next_node(nid2)
+        path2b = self.mainview.get_paths_for_node(nid2b)
+        self.assertEqual([(1,)],path2b)
+        
+    def test_viewtree_get_paths_for_node(self):
+        view = self.tree.get_viewtree(refresh=True)
+        #testing the root path
+        self.assertEqual([()],view.get_paths_for_node())
+        self.assertEqual([()],self.mainview.get_paths_for_node())
+        
 #    def test_viewtree_next_node(self):
         #TODO
 
