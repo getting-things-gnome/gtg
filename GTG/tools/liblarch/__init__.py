@@ -255,7 +255,8 @@ class ViewTree(gobject.GObject):
         @param filter_name: The name of an already added filter to remove
         """
         if self.static:
-            print "cannot apply filter on the main static view"
+            raise Exception("WARNING: filters cannot be unapplied" +\
+                            "from a static tree\n")
         else:
             self.__ft.unapply_filter(filter_name, refresh=refresh)
         return
@@ -265,7 +266,8 @@ class ViewTree(gobject.GObject):
         Clears all filters currently set on the tree.
         """
         if self.static:
-            print "cannot apply filter on the main static view"
+            raise Exception("WARNING: filters cannot be reset" +\
+                            "on a static tree\n")
         else:
              self.__ft.reset_filters(refresh=refresh)
         return

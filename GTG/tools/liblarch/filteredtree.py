@@ -343,20 +343,20 @@ class FilteredTree(gobject.GObject):
         else:
             parents_nodes = self.node_parents(nid)
             if len(parents_nodes) >= 1:
-                if pid in parents_nodes:
+                if pid and pid in parents_nodes:
                     parent_node = pid
                 else:
                     parent_node = parents_nodes[0]
-                total = self.node_n_children(pid)
+                total = self.node_n_children(parent_node)
                 c = 0
-                next_id = None
-                while c < total and not next_id:
-                    child_id = self.node_nth_child(pid,c)
+                next_id = -1
+                while c < total and next_id < 0:
+                    child_id = self.node_nth_child(parent_node,c)
                     c += 1
                     if child_id == nid:
                         next_id = c
-                if next_id < total:
-                    toreturn = self.node_nth_child(pid,next_id)
+                if next_id >= 0 and next_id < total:
+                    toreturn = self.node_nth_child(parent_node,next_id)
         #check to see if our result is correct
         if toreturn and not self.is_displayed(toreturn):
             toreturn = None

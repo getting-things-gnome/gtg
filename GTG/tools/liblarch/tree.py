@@ -220,7 +220,7 @@ class MainTree(gobject.GObject):
         if not parent:
             parent = self.root
         index = parent.get_child_index(nid)
-        if parent.get_n_children() > index:
+        if parent.get_n_children() > index+1:
             toreturn = parent.get_nth_child(index+1)
         return toreturn
 
