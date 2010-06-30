@@ -369,8 +369,9 @@ class Tag(TreeNode):
         return len(self.tasks) > 0
     def is_actively_used(self):
         toreturn = False
-        for task in self.tasks:
-            if self.req.get_task(task).get_status() == "Active":
+        for tid in self.tasks:
+            task = self.req.get_task(tid)
+            if task and task.get_status() == "Active":
                 toreturn = True
         return toreturn
 
