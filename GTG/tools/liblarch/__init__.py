@@ -31,6 +31,10 @@ class Tree():
 
     ###### nodes handling ######
     def get_node(self,nid):
+        """
+        return the node object defined by the Node id nid.
+        raises a ValueError if the node doesn't exist in the tree
+        """
         return self.__tree.get_node(nid)
 
     def add_node(self,node,parent_id=None):
@@ -210,6 +214,9 @@ class ViewTree(gobject.GObject):
         else:
             toreturn = self.__ft.node_nth_child(nid,n)
         return toreturn
+        
+    def node_has_parent(self,nid):
+        return len(self.node_parents(nid)) > 0
 
     def node_parents(self, nid):
         """

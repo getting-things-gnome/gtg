@@ -463,7 +463,7 @@ class FilteredTree(gobject.GObject):
             Log.debug("requested a parent of the root")
             return parents_nodes
         #we return only parents that are not root and displayed
-        if self.tree.has_node(nid):
+        if not self.flat and self.tree.has_node(nid):
             node = self.tree.get_node(nid)
             if node.has_parent():
                 for pid in node.get_parents():

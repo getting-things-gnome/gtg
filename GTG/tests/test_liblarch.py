@@ -546,30 +546,28 @@ class TestLibLarch(unittest.TestCase):
         
     #green are stairs
     #the flat filter should make them flat
-#    def test_flat_filters(self):
-#        view = self.tree.get_viewtree(refresh=False)
-#        view.apply_filter('flatgreen')
-#        view.print_tree()
-#        #all green nodes should be visibles
-#        self.assertEqual(self.green_nodes,view.get_n_nodes())
-#        i = 0
-#        nodes = []
-#        #we check that the paths are on the root
-#        while i < self.green_nodes:
-#            nid = view.get_node_for_path((i,))
-#            nodes.append(nid)
-#            print nodes
-#            self.failIf(nid == None)
-#            #let see if a node has parent
-#            node = self.tree.get_node(nid)
-#            self.failIf(node.has_parent())
-#            #and, of course, it cannot have children
-#            self.failIf(node.has_children())
-#            i += 1
-#        #we check that we have seen all the nodes
-#        i = 1
-#        while i <= self.green_nodes :
-#            self.assert_(str(self.total-i) in nodes)
+    def test_flat_filters(self):
+        view = self.tree.get_viewtree(refresh=False)
+        view.apply_filter('flatgreen')
+        #all green nodes should be visibles
+        self.assertEqual(self.green_nodes,view.get_n_nodes())
+        i = 0
+        nodes = []
+        #we check that the paths are on the root
+        while i < self.green_nodes:
+            nid = view.get_node_for_path((i,))
+            nodes.append(nid)
+            self.failIf(nid == None)
+            #let see if a node has parent
+            self.failIf(view.node_has_parent(nid))
+            #and, of course, it cannot have children
+            self.failIf(view.node_has_child(nid))
+            i += 1
+        #we check that we have seen all the nodes
+        i = 1
+        while i <= self.green_nodes :
+            self.assert_(str(self.total-i) in nodes)
+            i += 1
         
 #    def test_transparent_filters(self):
 #        #TODO
