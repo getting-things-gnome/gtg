@@ -462,17 +462,15 @@ class FilteredTree(gobject.GObject):
         if not nid:
             Log.debug("requested a parent of the root")
             return parents_nodes
-        node = self.tree.get_node(nid)
-        if node == None:
-            Log.debug("requested a parent of a non-existing node")
-            return parents_nodes
         #we return only parents that are not root and displayed
-        if node and node.has_parent():
-            for pid in node.get_parents():
-                if self.is_displayed(pid):
-                    parents_nodes.append(pid)
-#            if len(parents_nodes) == 0:
-#                print "ERROR : %s has no parent and is not in VR" %tid
+        if self.tree.has_node(nid):
+            node = self.tree.get_node(nid)
+            if node.has_parent():
+                for pid in node.get_parents():
+                    if self.is_displayed(pid):
+                        parents_nodes.append(pid)
+        else:
+            Log.debug("requested a parent of a non-existing node")
         return parents_nodes
 
 
@@ -546,8 +544,7 @@ class FilteredTree(gobject.GObject):
         #First step, we empty the current tree as we will rebuild it
         #from scratch
         for rid in list(self.virtual_root):
-            n = self.get_node(rid)
-            self.__clean_from_node(n)
+            self.__clean_from_node(rid)
         #We reinitialize the tree before adding nodes that should be added
         self.displayed_nodes = []
         #Then, we list the nodes that will be
@@ -628,11 +625,12 @@ class FilteredTree(gobject.GObject):
     # regardless of the current state
     def __is_root(self,nid):
         is_root = True
-        n = self.tree.get_node(nid)
-        if n and not self.flat and n.has_parent():
-            for par in n.get_parents():
-                if self.__is_displayed(par):
-                    is_root = False
+        if not self.flat and self.tree.has_node(nid):
+            n = self.tree.get_node(nid)
+            if n.has_parent():
+                for par in n.get_parents():
+                    if self.__is_displayed(par):
+                        is_root = False
         return is_root
     
     # Put or remove a node from the virtual root
@@ -657,18 +655,15 @@ class FilteredTree(gobject.GObject):
                 children_update = True
         #now we handle childrens
         if not self.flat and children_update:
-            node = self.get_node(tid)
-            nc = self.node_n_children(node)
+            nc = self.node_n_children(tid)
 #            print "updating %s childrens of node %s" %(nc,tid)
             i = 0
             while i < nc:
-                ch = self.node_nth_child(node,i)
-                if ch:
-                    chid = ch.get_id()
-                    if chid in self.virtual_root:
-                        #the child was in the VR. It should not be
-                        #because its parent is in now
-                        self.__update_node(chid,False)
+                chid = self.node_nth_child(tid,i)
+                if chid in self.virtual_root:
+                    #the child was in the VR. It should not be
+                    #because its parent is in now
+                    self.__update_node(chid,False)
                 i += 1
     
     def __update_node(self,tid,inroot):
@@ -712,7 +707,7 @@ class FilteredTree(gobject.GObject):
     def __adding_loop(self):
         while len(self.__adding_queue) > 0:
             tid,inroot = self.__adding_queue.pop(0)
-            if not self.is_displayed(tid):
+            if self.tree.has_node(tid) and not self.is_displayed(tid):
                 if inroot == None:
                     inroot = self.__is_root(tid)
                 #If the parent's node is not already displayed, we wait
@@ -764,8 +759,7 @@ class FilteredTree(gobject.GObject):
             #we don't need to update parents if the node is root
             #this might happen with flat filter
             if not isroot:
-                for p in parent:
-                    pid = p.get_id()
+                for pid in parent:
                     if pid not in self.__clean_list:
                         inroot = self.__is_root(pid)
                         self.__update_node(pid,inroot)
@@ -787,16 +781,14 @@ class FilteredTree(gobject.GObject):
                 n += 1
     
     #This function removes all the nodes, leaves first.
-    def __clean_from_node(self, node):
-        nid = node.get_id()
+    def __clean_from_node(self, nid):
         if nid not in self.__clean_list:
             self.__clean_list.append(nid)
-            if self.node_has_child(node):
-                n = self.node_n_children(node)
-                child = self.node_nth_child(node,n-1)
-                while child and n > 0:
-                    self.__clean_from_node(child)
+            if self.node_has_child(nid):
+                n = self.node_n_children(nid)
+                while n > 0:
+                    child_id = self.node_nth_child(nid,n-1)
+                    self.__clean_from_node(child_id)
                     n = n-1
-                    child = self.node_nth_child(node,n-1)
             self.__remove_node(nid)
             self.__clean_list.remove(nid)

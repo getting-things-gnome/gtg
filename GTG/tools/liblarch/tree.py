@@ -136,9 +136,12 @@ class MainTree(gobject.GObject):
 #                Log.debug("    -> adding %s to the root" %child_id)
                 p = self.get_root()
             else:
-                p = self.get_node(parent_id)
-            c = self.get_node(child_id)
-            if p and c :
+                if self.has_node(parent_id):
+                    p = self.get_node(parent_id)
+                else:
+                    p = None
+            if p and self.has_node(child_id):
+                c = self.get_node(child_id)
                 #no circular relationship allowed
                 if not p.has_parent(child_id) and not c.has_child(parent_id):
                     if not p.has_child(child_id):
@@ -176,9 +179,9 @@ class MainTree(gobject.GObject):
     #return False if the relationship didn't exist    
     def break_relationship(self,parent_id,child_id):
         toreturn = False
-        p = self.get_node(parent_id)
-        c = self.get_node(child_id)
-        if p and c :
+        if self.has_node(parent_id) and self.has_node(child_id):
+            p = self.get_node(parent_id)
+            c = self.get_node(child_id)
             if p.has_child(child_id):
                 ret = p.remove_child(child_id)
                 toreturn = True
@@ -194,8 +197,15 @@ class MainTree(gobject.GObject):
         return toreturn
             
     #Trying to make a function that bypass the weirdiness of lists
-    def get_node(self,id):
-        return self.nodes.get(id)
+    def get_node(self,id=None):
+        toreturn = None
+        if id in self.nodes:
+            toreturn = self.nodes[id]
+        elif id == 'root' or id == None:
+            toreturn = self.root
+        else:
+            raise ValueError("Node %s is not in the tree. Wrong get_node()"%id)
+        return toreturn
             
     def get_all_nodes(self):
         return list(self.nodes.keys())
@@ -228,7 +238,7 @@ class MainTree(gobject.GObject):
         return self.has_node(id)
 
     def has_node(self, id):
-        return (self.nodes.get(id) != None)
+        return (id in self.nodes)
 
     def print_tree(self):
         self._print_from_node(self.root)

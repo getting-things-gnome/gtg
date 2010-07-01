@@ -62,6 +62,10 @@ class TestLibLarch(unittest.TestCase):
         self.tree.add_filter('green',self.is_green)
         self.tree.add_filter('red',self.is_red)
         self.tree.add_filter('leaf',self.is_leaf)
+        param = {}
+        param['flat'] = True
+        self.tree.add_filter('flatgreen',self.is_green,parameters=param)
+        self.tree.add_filter('flatleaves',self.is_leaf,parameters=param)
         #first, we add some red nodes at the root
         while i < 5:
             node = DummyNode(str(i))
@@ -77,6 +81,7 @@ class TestLibLarch(unittest.TestCase):
             i+=1
             self.blue_nodes += 1
         #finally, we add some green nodes as children of the last nodes
+        # (stairs-like configuration)
         while i < 15:
             node = DummyNode(str(i))
             node.add_color('green')
@@ -91,11 +96,20 @@ class TestLibLarch(unittest.TestCase):
         return node.has_color('green')
     def is_red(self,node,parameters=None):
         return node.has_color('red')
-    def is_leaf(self,node,paremeters=None):
+    def is_leaf(self,node,parameters=None):
         return not node.has_child()
+        
         
     #### Testing nodes movements in the tree
     #### We test by counting nodes that meet some criterias
+    
+    def test_get_node(self):
+        #we test that get node works for the last node
+        node = self.tree.get_node(str(self.total-1))
+        self.assert_(node != None)
+        self.assertEqual(str(self.total-1),node.get_id())
+        #and not for an non-existing node
+        self.assertRaises(ValueError,self.tree.get_node,str(self.total))
 
     def test_add_remove_node(self):
         view = self.tree.get_viewtree(refresh=True)
@@ -197,6 +211,7 @@ class TestLibLarch(unittest.TestCase):
     #we try to add a task as a child of one of its grand-children.
     #Nothing should happen
 #    def test_cyclic_paradox(self):
+        #TODO
         
     def test_mainview(self):
         #we should test that mainview is always up-to-date
@@ -512,14 +527,53 @@ class TestLibLarch(unittest.TestCase):
         nid = view.get_node_for_path((0,))
         self.assertEqual('temp',nid)
 
+    #we copy/paste the test
+    def test_flatleaves_filters(self):
+        view = self.tree.get_viewtree(refresh=False)
+        view.apply_filter('flatleaves')
+        total = self.red_nodes + self.blue_nodes
+        self.assertEqual(total,view.get_n_nodes())
+        view.apply_filter('green')
+        self.assertEqual(1,view.get_n_nodes())
+        nid = view.get_node_for_path((0,))
+        #Now, we add a new node
+        node = DummyNode('temp')
+        node.add_color('green')
+        self.tree.add_node(node,parent_id=nid)
+        self.assertEqual(1,view.get_n_nodes())
+        nid = view.get_node_for_path((0,))
+        self.assertEqual('temp',nid)
+        
+    #green are stairs
+    #the flat filter should make them flat
+#    def test_flat_filters(self):
+#        view = self.tree.get_viewtree(refresh=False)
+#        view.apply_filter('flatgreen')
+#        view.print_tree()
+#        #all green nodes should be visibles
+#        self.assertEqual(self.green_nodes,view.get_n_nodes())
+#        i = 0
+#        nodes = []
+#        #we check that the paths are on the root
+#        while i < self.green_nodes:
+#            nid = view.get_node_for_path((i,))
+#            nodes.append(nid)
+#            print nodes
+#            self.failIf(nid == None)
+#            #let see if a node has parent
+#            node = self.tree.get_node(nid)
+#            self.failIf(node.has_parent())
+#            #and, of course, it cannot have children
+#            self.failIf(node.has_children())
+#            i += 1
+#        #we check that we have seen all the nodes
+#        i = 1
+#        while i <= self.green_nodes :
+#            self.assert_(str(self.total-i) in nodes)
+        
 #    def test_transparent_filters(self):
 #        #TODO
 #        pass
-#        
-#    def test_flat_filters(self):
-#        #TODO
-#        pass
-        
     
 
 def test_suite():

@@ -38,11 +38,12 @@ class Filter:
             self.dic = dic
     
     def is_displayed(self,tid):
-        task = self.tree.get_node(tid)
-        value = True
-        if not task:
-            value = False
-        elif self.dic:
+        if self.tree.has_node(tid):
+            task = self.tree.get_node(tid)
+            value = True
+        else:
+            return False
+        if self.dic:
             value = self.func(task,parameters=self.dic)
         else:
             value = self.func(task)
