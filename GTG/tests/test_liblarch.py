@@ -210,8 +210,17 @@ class TestLibLarch(unittest.TestCase):
     
     #we try to add a task as a child of one of its grand-children.
     #Nothing should happen
-#    def test_cyclic_paradox(self):
-        #TODO
+    def test_cyclic_paradox(self):
+        node = DummyNode('temp')
+        node.add_color('blue')
+        self.tree.add_node(node,parent_id='0')
+        self.tree.add_parent('0','1')
+        self.assert_('1' in self.mainview.node_parents('0'))
+        self.assert_('0' in self.mainview.node_parents('temp'))
+        #direct circular relationship
+        self.assertRaises(Exception,self.tree.add_parent,'0','temp')
+        #More complex circular relationship
+        self.assertRaises(Exception,self.tree.add_parent,'1','temp')
         
     def test_mainview(self):
         #we should test that mainview is always up-to-date

@@ -126,6 +126,15 @@ class MainTree(gobject.GObject):
     #create a new relationship between nodes if it doesn't already exist
     #return False if nothing was done
     def new_relationship(self,parent_id,child_id):
+        #Genealogic search is a function we use to build a list of every
+        #ancestor of a node
+        def genealogic_search(nid):
+            if nid not in genealogy:
+                genealogy.append(nid)
+                if self.has_node(nid):
+                    node = self.get_node(nid)
+                    for par in node.get_parents():
+                        genealogic_search(par)
         Log.debug("new relationship between %s and %s" %(parent_id,child_id))
         if [parent_id,child_id] in self.pending_relationships:
             self.pending_relationships.remove([parent_id,child_id])
@@ -142,8 +151,12 @@ class MainTree(gobject.GObject):
                     p = None
             if p and self.has_node(child_id):
                 c = self.get_node(child_id)
-                #no circular relationship allowed
-                if not p.has_parent(child_id) and not c.has_child(parent_id):
+                #Avoid the typical time-traveller problem 
+                #being-the-father-of-yourself or the grand-father.
+                #We need some genealogic research !
+                genealogy = []
+                genealogic_search(parent_id)
+                if child_id not in genealogy:
                     if not p.has_child(child_id):
                         p.add_child(child_id)
                         toreturn = True
@@ -160,6 +173,8 @@ class MainTree(gobject.GObject):
                     #a circular relationship was found
                     #undo everything
                     Log.debug("  * * * * * Circular relationship found : undo")
+                    raise Exception("Cannot build circular relationship"+\
+                                    "between %s and %s" %(parent_id,child_id))
                     self.break_relationship(parent_id,child_id)
                     toreturn = False
             else:

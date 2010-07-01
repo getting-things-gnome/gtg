@@ -36,6 +36,9 @@ class Tree():
         raises a ValueError if the node doesn't exist in the tree
         """
         return self.__tree.get_node(nid)
+        
+    def has_node(self,nid):
+        return self.__tree.has_node(nid)
 
     def add_node(self,node,parent_id=None):
         node.set_tree(self.__tree)
@@ -50,9 +53,8 @@ class Tree():
     #move the node to a new parent (dismissing all other parents)
     #use pid None to move it to the root
     def move_node(self,nid,new_parent_id=None):
-        node = self.get_node(nid)
-        toreturn = False
-        if node:
+        if self.has_node(nid):
+            node = self.get_node(nid)
             node.set_parent(new_parent_id)
             toreturn = True
         else:
@@ -61,9 +63,8 @@ class Tree():
         
     #if pid is None, nothing is done
     def add_parent(self,nid,new_parent_id=None):
-        node = self.get_node(nid)
-        toreturn = False
-        if node:
+        if self.has_node(nid):
+            node = self.get_node(nid)
             toreturn = node.add_parent(new_parent_id)
         else:
             toreturn = False

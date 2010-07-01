@@ -424,7 +424,8 @@ class TaskTreeModel(gtk.GenericTreeModel):
         """Moves the task identified by child_tid under
            parent_tid, removing all the precedent parents.
            Child becomes a root task if parent_tid is None"""
-#        print "move task %s to parent %s" %(child_tid,parent_tid)
+        #The genealogic search has been moved to liblarch and should be
+        #removed from here
         def genealogic_search(tid):
             if tid not in genealogy:
                 genealogy.append(tid)
