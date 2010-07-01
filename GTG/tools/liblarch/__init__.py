@@ -151,14 +151,14 @@ class ViewTree(gobject.GObject):
     def get_all_nodes(self):
         return self.__ft.get_all_nodes()
 
-    def get_n_nodes(self,withfilters=[],transparent_filters=True):
+    def get_n_nodes(self,withfilters=[],include_transparent=True):
         """
         returns quantity of displayed nodes in this tree
         if the withfilters is set, returns the quantity of nodes
         that will be displayed if we apply those filters to the current
         tree. It means that the currently applied filters are also taken into
         account.
-        If transparent_filters = False, we only take into account 
+        If include_transparent = False, we only take into account 
         the applied filters that doesn't have the transparent parameters.
         """
         if self.static and len(withfilters) > 0:
@@ -169,7 +169,7 @@ class ViewTree(gobject.GObject):
             return len(self.__maintree.get_all_nodes())
         else:
             return self.__ft.get_n_nodes(withfilters=withfilters,\
-                                    transparent_filters=transparent_filters)
+                                    include_transparent=include_transparent)
 
     def get_node_for_path(self, path):
         return self.__ft.get_node_for_path(path)

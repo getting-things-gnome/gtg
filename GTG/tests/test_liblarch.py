@@ -66,6 +66,10 @@ class TestLibLarch(unittest.TestCase):
         param['flat'] = True
         self.tree.add_filter('flatgreen',self.is_green,parameters=param)
         self.tree.add_filter('flatleaves',self.is_leaf,parameters=param)
+        param = {}
+        param['transparent'] = True
+        self.tree.add_filter('transblue',self.is_blue,parameters=param)
+        self.tree.add_filter('transgreen',self.is_green,parameters=param)
         #first, we add some red nodes at the root
         while i < 5:
             node = DummyNode(str(i))
@@ -578,10 +582,17 @@ class TestLibLarch(unittest.TestCase):
             self.assert_(str(self.total-i) in nodes)
             i += 1
         
-#    def test_transparent_filters(self):
-#        #TODO
-#        pass
-    
+    def test_transparent_filters(self):
+        view = self.tree.get_viewtree(refresh=False)
+        view.apply_filter('transgreen')
+        self.assertEqual(self.green_nodes,view.get_n_nodes())
+        self.assertEqual(self.total,view.get_n_nodes(include_transparent=False))
+        #Now with filters in the counting
+        count1 = view.get_n_nodes(withfilters=['transblue'])
+        count2 = view.get_n_nodes(withfilters=['transblue'],\
+                                                    include_transparent=False)
+        self.assertEqual(0,count1)
+        self.assertEqual(self.blue_nodes,count2)
 
 def test_suite():
     return unittest.TestLoader().loadTestsFromName(__name__)

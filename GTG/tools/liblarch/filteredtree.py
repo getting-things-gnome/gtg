@@ -157,19 +157,19 @@ class FilteredTree(gobject.GObject):
         return list(self.displayed_nodes)
 
         
-    def get_n_nodes(self,withfilters=[],transparent_filters=True):
+    def get_n_nodes(self,withfilters=[],include_transparent=True):
         """
         returns quantity of displayed nodes in this tree
         if the withfilters is set, returns the quantity of nodes
         that will be displayed if we apply those filters to the current
         tree. It means that the currently applied filters are also taken into
         account.
-        If transparent_filters=False, we only take into account the applied filters
+        If include_transparent=False, we only take into account the applied filters
         that doesn't have the transparent parameters.
         """
         toreturn = 0
         usecache = False
-        if transparent_filters:
+        if not include_transparent:
             #Currently, the cache only work for one filter
             if len(withfilters) == 1:
                 usecache = True
@@ -502,7 +502,7 @@ class FilteredTree(gobject.GObject):
                 if filt:
                     temp = filt.is_displayed(tid)
                     result = result and temp
-                    if not filt.get_parameters('ignore_when_counting'):
+                    if not filt.get_parameters('transparent'):
                         counting_result = counting_result and temp
             if counting_result and tid not in self.counted_nodes:
                 #This is an hard custom optimisation for task counting

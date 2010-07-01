@@ -132,7 +132,7 @@ class FiltersBank:
         #notag
         filt_obj = Filter(self.notag,self.tree)
         param = {}
-        param['ignore_when_counting'] = True
+        param['transparent'] = True
         filt_obj.set_parameters(param)
         self.available_filters['notag'] = filt_obj
         #workable
@@ -156,7 +156,7 @@ class FiltersBank:
         #no_disabled_tag
         filt_obj = Filter(self.no_disabled_tag,self.tree)
         param = {}
-        param['ignore_when_counting'] = True
+        param['transparent'] = True
         filt_obj.set_parameters(param)
         self.available_filters['no_disabled_tag'] = filt_obj
 
@@ -275,7 +275,7 @@ class FiltersBank:
             if filter_name.startswith('@'):
                 filter_obj = SimpleTagFilter(filter_name,self.tree)
                 param = {}
-                param['ignore_when_counting'] = True
+                param['transparent'] = True
                 filter_obj.set_parameters(param)
             else:
                 filter_obj = Filter(filter_func,self.tree)
