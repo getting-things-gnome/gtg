@@ -62,6 +62,14 @@ class TestLibLarch(unittest.TestCase):
         self.tree.add_filter('green',self.is_green)
         self.tree.add_filter('red',self.is_red)
         self.tree.add_filter('leaf',self.is_leaf)
+        param = {}
+        param['flat'] = True
+        self.tree.add_filter('flatgreen',self.is_green,parameters=param)
+        self.tree.add_filter('flatleaves',self.is_leaf,parameters=param)
+        param = {}
+        param['transparent'] = True
+        self.tree.add_filter('transblue',self.is_blue,parameters=param)
+        self.tree.add_filter('transgreen',self.is_green,parameters=param)
         #first, we add some red nodes at the root
         while i < 5:
             node = DummyNode(str(i))
@@ -77,6 +85,7 @@ class TestLibLarch(unittest.TestCase):
             i+=1
             self.blue_nodes += 1
         #finally, we add some green nodes as children of the last nodes
+        # (stairs-like configuration)
         while i < 15:
             node = DummyNode(str(i))
             node.add_color('green')
@@ -91,11 +100,20 @@ class TestLibLarch(unittest.TestCase):
         return node.has_color('green')
     def is_red(self,node,parameters=None):
         return node.has_color('red')
-    def is_leaf(self,node,paremeters=None):
+    def is_leaf(self,node,parameters=None):
         return not node.has_child()
+        
         
     #### Testing nodes movements in the tree
     #### We test by counting nodes that meet some criterias
+    
+    def test_get_node(self):
+        #we test that get node works for the last node
+        node = self.tree.get_node(str(self.total-1))
+        self.assert_(node != None)
+        self.assertEqual(str(self.total-1),node.get_id())
+        #and not for an non-existing node
+        self.assertRaises(ValueError,self.tree.get_node,str(self.total))
 
     def test_add_remove_node(self):
         view = self.tree.get_viewtree(refresh=True)
@@ -196,7 +214,17 @@ class TestLibLarch(unittest.TestCase):
     
     #we try to add a task as a child of one of its grand-children.
     #Nothing should happen
-#    def test_cyclic_paradox(self):
+    def test_cyclic_paradox(self):
+        node = DummyNode('temp')
+        node.add_color('blue')
+        self.tree.add_node(node,parent_id='0')
+        self.tree.add_parent('0','1')
+        self.assert_('1' in self.mainview.node_parents('0'))
+        self.assert_('0' in self.mainview.node_parents('temp'))
+        #direct circular relationship
+        self.assertRaises(Exception,self.tree.add_parent,'0','temp')
+        #More complex circular relationship
+        self.assertRaises(Exception,self.tree.add_parent,'1','temp')
         
     def test_mainview(self):
         #we should test that mainview is always up-to-date
@@ -512,15 +540,59 @@ class TestLibLarch(unittest.TestCase):
         nid = view.get_node_for_path((0,))
         self.assertEqual('temp',nid)
 
-#    def test_transparent_filters(self):
-#        #TODO
-#        pass
-#        
-#    def test_flat_filters(self):
-#        #TODO
-#        pass
+    #we copy/paste the test
+    def test_flatleaves_filters(self):
+        view = self.tree.get_viewtree(refresh=False)
+        view.apply_filter('flatleaves')
+        total = self.red_nodes + self.blue_nodes
+        self.assertEqual(total,view.get_n_nodes())
+        view.apply_filter('green')
+        self.assertEqual(1,view.get_n_nodes())
+        nid = view.get_node_for_path((0,))
+        #Now, we add a new node
+        node = DummyNode('temp')
+        node.add_color('green')
+        self.tree.add_node(node,parent_id=nid)
+        self.assertEqual(1,view.get_n_nodes())
+        nid = view.get_node_for_path((0,))
+        self.assertEqual('temp',nid)
         
-    
+    #green are stairs
+    #the flat filter should make them flat
+    def test_flat_filters(self):
+        view = self.tree.get_viewtree(refresh=False)
+        view.apply_filter('flatgreen')
+        #all green nodes should be visibles
+        self.assertEqual(self.green_nodes,view.get_n_nodes())
+        i = 0
+        nodes = []
+        #we check that the paths are on the root
+        while i < self.green_nodes:
+            nid = view.get_node_for_path((i,))
+            nodes.append(nid)
+            self.failIf(nid == None)
+            #let see if a node has parent
+            self.failIf(view.node_has_parent(nid))
+            #and, of course, it cannot have children
+            self.failIf(view.node_has_child(nid))
+            i += 1
+        #we check that we have seen all the nodes
+        i = 1
+        while i <= self.green_nodes :
+            self.assert_(str(self.total-i) in nodes)
+            i += 1
+        
+    def test_transparent_filters(self):
+        view = self.tree.get_viewtree(refresh=False)
+        view.apply_filter('transgreen')
+        self.assertEqual(self.green_nodes,view.get_n_nodes())
+        self.assertEqual(self.total,view.get_n_nodes(include_transparent=False))
+        #Now with filters in the counting
+        count1 = view.get_n_nodes(withfilters=['transblue'])
+        count2 = view.get_n_nodes(withfilters=['transblue'],\
+                                                    include_transparent=False)
+        self.assertEqual(0,count1)
+        self.assertEqual(self.blue_nodes,count2)
 
 def test_suite():
     return unittest.TestLoader().loadTestsFromName(__name__)

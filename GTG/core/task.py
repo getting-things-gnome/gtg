@@ -340,6 +340,8 @@ class Task(TreeNode):
             Log.debug("child addition failed (or still pending)")
             return False
             
+            
+    #FIXME: remove this function. Handle that on the remove level
     def remove_child(self,tid):
         """Removed a subtask from the task.
 
@@ -368,6 +370,7 @@ class Task(TreeNode):
                 zelist.append(t)
         return zelist
         
+    #FIXME : why is this function used ? It's higly specific. Remove it ?
     def get_self_and_all_subtasks(self, active_only=False, tasks=[]):
         tasks.append(self)
         for tid in self.get_children():
@@ -378,6 +381,7 @@ class Task(TreeNode):
         return tasks
 
     def get_subtask(self, tid):
+        #FIXME : remove this function. This is not useful
         """Return the task corresponding to a given ID.
 
         @param tid: the ID of the task to return.
@@ -388,6 +392,8 @@ class Task(TreeNode):
 
     #Take a tid object as parameter
     def add_parent(self, parent_tid):
+        #FIXME : the sync should be automatically done
+        #at the tree level. remove this function
         Log.debug("adding parent %s to task %s" %(parent_tid, self.get_id()))
         added = TreeNode.add_parent(self, parent_tid)
         if added:
@@ -400,6 +406,8 @@ class Task(TreeNode):
 
     #Take a tid as parameter
     def remove_parent(self, tid):
+        #FIXME : the sync should be automatically done
+        #at the tree level. remove this function
         TreeNode.remove_parent(self,tid)
         self.sync()
         parent = self.req.get_task(tid)
@@ -409,6 +417,7 @@ class Task(TreeNode):
     #Return true is the task has parent
     #If tag is provided, return True only
     #if the parent has this particular tag
+    #FIXME : this function should be removed. Use the tree instead !
     def has_parents(self, tag=None):
         has_par = TreeNode.has_parent(self)
         #The "all tag" argument
