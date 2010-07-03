@@ -111,12 +111,23 @@ def show_task(tid):
     print
     print content
 
-def postpone_task(tid, startdate):
+def postpone(identifier, startdate):
     """ Change the start date of a task """
     timi = connect_to_gtg()
-    task_data = timi.get_task(tid)
-    task_data['startdate'] = startdate
-    timi.modify_task(tid, task_data)
+    
+    tasks = []
+    if identifier[0] == '@':
+        filters = _criteria_to_filters(identifier)
+        filters.extend(['active','workview'])
+        timi = connect_to_gtg()
+        tasks = timi.get_tasks_filtered(filters)
+    else:
+        tasks = [ timi.get_task(identifier) ]
+
+    for task in tasks:
+        task['startdate'] = startdate
+        print task['id']
+        timi.modify_task(task['id'], task)
 
 def open_task_editor(tid):
     """ Load task in the task editor gui """
@@ -256,10 +267,9 @@ def list_tasks(criteria, count_only=False):
             print "%s:" %(key[1:])
         for task in tasks_tree[key]:
             text = textwrap.fill(task['title'], 
-                          initial_indent='',
-                          subsequent_indent='            ')
+                                 initial_indent='',
+                                 subsequent_indent='            ')
             print "  %-8s  %s" %(task['id'], text)
-
 
 if __name__ == '__main__':
     try:
@@ -328,7 +338,7 @@ if __name__ == '__main__':
         if len(args)<3:
             usage()
             sys.exit(1)
-        postpone_task(args[1], args[2])
+        postpone(args[1], args[2])
 
     elif command == "show":
         if len(args)<2:
