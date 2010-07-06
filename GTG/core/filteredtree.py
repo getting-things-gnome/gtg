@@ -661,7 +661,7 @@ class FilteredTree(gobject.GObject):
     # regardless of the current state
     def __is_root(self,n):
         is_root = True
-        if not self.flat and n.has_parent():
+        if not self.flat and n and n.has_parent():
             for par in n.get_parents():
                 if self.__is_displayed(par):
                     is_root = False
@@ -697,13 +697,14 @@ class FilteredTree(gobject.GObject):
             i = 0
             while i < nc:
                 ch = self.node_nth_child(node,i)
-                chid = ch.get_id()
-                if chid in self.virtual_root:
-                    #the child was in the VR. It should not be
-                    #because its parent is in now
+                if ch:
+                    chid = ch.get_id()
+                    if chid in self.virtual_root:
+                        #the child was in the VR. It should not be
+                        #because its parent is in now
 #                    if tid in DEBUG_TID:
 #                        print "updating children %s of node %s" %(chid,tid)
-                    self.__update_node(chid,False)
+                        self.__update_node(chid,False)
                 i += 1
     
     def __update_node(self,tid,inroot):
