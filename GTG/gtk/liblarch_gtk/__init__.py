@@ -53,6 +53,7 @@ class TreeView(gtk.TreeView):
         #We apply a treemodelsort on top of it
         self.modelsort = gtk.TreeModelSort(self.treemodel)
         self.set_model(self.modelsort)
+        self.show()
         
         
         
