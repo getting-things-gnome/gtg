@@ -21,8 +21,11 @@
 
 import unittest
 
+import gtk
+
 from GTG.tools.liblarch import Tree
 from GTG.tools.liblarch.tree import TreeNode
+from GTG.gtk.liblarch_gtk import TreeView
 
 
 #This is a dummy treenode that only have one properties: a color
@@ -46,7 +49,6 @@ class DummyNode(TreeNode):
 
 class TestLibLarch(unittest.TestCase):
     """Tests for `Tree`."""
-
 
     def setUp(self):
         i = 0
@@ -93,6 +95,19 @@ class TestLibLarch(unittest.TestCase):
             i+=1
             self.green_nodes += 1
         self.total = self.red_nodes + self.blue_nodes + self.green_nodes
+        #now testing the GTK treeview
+        #The columns description:
+        desc = {}
+        col = {}
+        col['title'] = "Node name"
+        render_text = gtk.CellRendererText()
+        col['renderer'] = ['markup',render_text]
+        def get_node_name(node):
+            return node.get_id()
+        col['value'] = [str,get_node_name]
+        desc['titles'] = col
+        treeview = TreeView(self.view,desc)
+        
     ####Filters
     def is_blue(self,node,parameters=None):
         return node.has_color('blue')
