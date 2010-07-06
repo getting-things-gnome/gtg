@@ -75,7 +75,6 @@ class TaskIterStore():
     def get(self,nid,path):
         key = self.__key(nid,path)
         toreturn = None
-        deleted = False
 #        print "get iter for node %s (toadd: %s)" %(node.get_id(),self.__model.tasks_to_add)
         if nid in self.__model.tasks_to_add:
             #This is a crude hack. If the task is in tasks_to_add, it means
@@ -95,14 +94,9 @@ class TaskIterStore():
                 #we should then remove that previous node
                 self.remove(stored_nid,path,all=False)
                 self.__model.row_deleted(path)
-                deleted = stored_nid
         if not toreturn:
             toreturn = TaskIter(self.__tree,nid,path)
         self.__store[key] = toreturn
-        if deleted:
-            #if we removed a node, we should readd it.
-            #sometimes, it is not necessary (see the hack above)
-            self.__model.to_add_task(None,deleted)
         return toreturn
 
     def remove(self,nid,path,all=True):
@@ -201,15 +195,12 @@ class TreeModel(gtk.GenericTreeModel):
     def on_get_iter(self, path):
         #We have to return None if there's no node on that path
         iter = None
-#        print "on_get_iter for %s" %(str(path))
         nid = self.tree.get_node_for_path(path)
         if nid:
             rowref = self.iter_store.get(nid,path)
             if  nid in self.tasks_to_add:
                 #print "WE WILL NOT ADD %s" %node.get_id()
                 self.tasks_to_add.remove(nid)
-            #This will become the payload of a Gtk.TreeIter 
-            #if called with .get_iter()
             return rowref
         else:
             return None
@@ -218,7 +209,6 @@ class TreeModel(gtk.GenericTreeModel):
 #        print "on_get_path"
         if rowref and rowref.is_valid():
             path = rowref.get_path()
-#            print "path of iter is correct : %s" %(path in paths)
             return path
         else:
             return None
@@ -243,16 +233,13 @@ class TreeModel(gtk.GenericTreeModel):
                     toreturn = self.iter_store.get(next,n)
             if len(npaths) > 0 and not toreturn:
                 print "!!!!!!!! We didn't find iter_next for %s" %rowref
-#        print "iter_next for iter %s is %s" %(rowref,toreturn)
         return toreturn
 
     def on_iter_children(self, rowref):
-#        print "on_iter_children"
         return self.on_iter_nth_child(rowref,0)
             
 
     def on_iter_has_child(self, rowref):
-#        print "on_iter_has_child"
         if rowref and rowref.is_valid():
             nid = rowref.get_node()
             toreturn = self.tree.node_has_child(nid)
@@ -261,17 +248,14 @@ class TreeModel(gtk.GenericTreeModel):
             return False
 
     def on_iter_n_children(self, rowref):
-#        print "on_iter_n_children"
         if rowref:
             node = rowref.get_node()
             toreturn = self.tree.node_n_children(node)
         else:
             toreturn = self.tree.node_n_children(None)
-#        print "on_iter %s n_children %s" %(rowref,toreturn)
         return toreturn
 
     def on_iter_nth_child(self, rowref, n):
-#        print "on_iter %s _nth_child %s" %(iter,n)
         toreturn = None
         if rowref and rowref.is_valid():
             nid = rowref.get_node()
@@ -285,7 +269,6 @@ class TreeModel(gtk.GenericTreeModel):
                 if not toreturn:
                     print "PROBLEM: child %s have the path %s but parent %s has %s"\
                             %(child,cpaths,nid,path)
-#        print "returning %s" %toreturn
         return toreturn
 
     def on_iter_parent(self, rowref):

@@ -280,8 +280,7 @@ class FilteredTree(gobject.GObject):
                 path = (ind,)
                 toreturn.append(path)
             else:
-                print "*** *** %s has parents but is not in VR" %tid
-                print "*** is in nodes to add %s ? " %(tid in self.node_to_add)
+                raise Exception("%s has parents but is not in VR" %tid)
                 
 #            parents = self.node_parents(node)
 #            if len(parents) > 0:

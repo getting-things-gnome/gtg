@@ -173,7 +173,7 @@ class TestLibLarch(unittest.TestCase):
         self.assert_(viewred.is_displayed('temp'))
 
 
-    
+
     #When you remove a parent, the child nodes should be added to the root if
     #they don't have any other parents
     def test_removing_parent(self):
@@ -188,7 +188,7 @@ class TestLibLarch(unittest.TestCase):
         all_nodes = self.view.get_all_nodes()
         self.failIf('0' in all_nodes)
         self.assert_('temp' in all_nodes)
-        
+
     def test_move_node(self):
         view = self.tree.get_viewtree(refresh=True)
         node = DummyNode('temp')
@@ -211,7 +211,7 @@ class TestLibLarch(unittest.TestCase):
         all_nodes = self.mainview.get_all_nodes()
         self.assert_('temp' in all_nodes)
         self.assertEqual(0,len(self.mainview.node_parents('temp')))
-        
+
     def test_add_parent(self):
         view = self.tree.get_viewtree(refresh=True)
         node = DummyNode('temp')
