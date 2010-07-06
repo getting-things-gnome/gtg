@@ -20,35 +20,97 @@ import gtk
 
 class TreeviewFactory():
 
-    def active_tasks_treeview(self,tree):
-        # Tag column
-        tag_col     = gtk.TreeViewColumn()
-        render_tags = CellRendererTags()
-#        tag_col.set_title(_("Tags"))
-        tag_col.pack_start(render_tags, expand=False)
-        tag_col.add_attribute(render_tags, "tag_list", COL_TAGS)
-        render_tags.set_property('xalign', 0.0)
-        tag_col.set_resizable(False)
-        tag_col.set_cell_data_func(render_tags, self._celldatafunction)
-        #tag_col.set_clickable         (True)
-        #tag_col.connect               ('clicked', tv_sort_cb)
-        self.append_column(tag_col)
-        self.set_column(COL_TAGS, tag_col)
+    def __init__(self,requester,config):
+        self.req = requester
+        self.config = config
 
-        # Title column
-        title_col   = gtk.TreeViewColumn()
+    #Functions for tasks columns
+    def _count_active_subtasks_rec(self, task):
+        count = 0
+        if task.has_child():
+            for tid in task.get_children():
+                task = self.req.get_task(tid)
+                if task and task.get_status() == Task.STA_ACTIVE:
+                    count = count + 1 + self._count_active_subtasks_rec(task)
+        return count
+    
+    def task_bg_color(tags,bg):
+        if self.config['bg-color-enabled']:
+            return color.background_color(tags,bg)
+        else:
+            return None
+    
+    #return an ordered list of tags of a task
+    def task_tags_column(self,node):
+        tags = node.get_tags()
+        tags.sort(key = lambda x: x.get_name())
+        return tags
+        
+    #task title
+    def task_title_column(self, node):
+        return saxutils.escape(node.get_title())
+        
+    #task title/label
+    def task_label_column(self, node):
+        title = saxutils.escape(task.get_title())
+        print "we need the style here"
+        color = self.style.text[gtk.STATE_INSENSITIVE].to_string()
+        if task.get_status() == Task.STA_ACTIVE:
+            count = self._count_active_subtasks_rec(task)
+            if count != 0:
+                title += " (%s)" % count
+            
+            if self.config["contents_preview_enable"]:
+            	excerpt = saxutils.escape(task.get_excerpt(lines=1, \
+            		strip_tags=True, strip_subtasks=True))
+            	title += " <span size='small' color='%s'>%s</span>" \
+            		%(color, excerpt) 
+        elif task.get_status() == Task.STA_DISMISSED:
+            title = "<span color='%s'>%s</span>"%(color, title)
+        return title
+
+
+    ######## The Factory #######################
+    def active_tasks_treeview(self,tree):
+        desc = {}
+        
+        #invisible 'title' column
+        col = {}
         render_text = gtk.CellRendererText()
         render_text.set_property("ellipsize", pango.ELLIPSIZE_END)
-        title_col.set_title(_("Title"))
-        title_col.pack_start(render_text, expand=True)
-        title_col.add_attribute(render_text, "markup", COL_LABEL)
-        title_col.set_resizable(True)
-        title_col.set_expand(True)
-        title_col.set_sort_column_id(COL_TITLE)
-        title_col.set_cell_data_func(render_text, self._celldatafunction)
-        self.append_column(title_col)
-        self.set_column(COL_TITLE, title_col)
-        self.set_search_column(COL_TITLE)
+        col['renderer'] = ['markup',render_text]
+        col['value'] = [str,task_title_column]
+        desc['visible'] = False
+        desc['title'] = col
+        
+        # "tags" column (no title)
+        col = {}
+        render_tags = CellRendererTags()
+        render_tags.set_property('xalign', 0.0)
+        col['renderer'] = ['tag_list',render_tags]
+        col['value'] = [str,self.task_tags_column]
+        col['expandable'] = False
+        col['resizable'] = False
+        col.set_bg_color(task_bg_color,'tags')
+        desc['tags'] = col
+
+
+        # "label" column
+        col = {}
+        col['title'] = _("Title")
+        render_text = gtk.CellRendererText()
+        render_text.set_property("ellipsize", pango.ELLIPSIZE_END)
+        col['renderer'] = ['markup',render_text]
+        col['value'] = [str,task_label_column]
+        col['expandable'] = True
+        col['resizable'] = True
+        col.set_bg_color(task_bg_color,'tags')
+        col.set_sort_column
+        desc['label'] = col
+        
+
+
+        
 
         # Start date column
         sdate_col   = gtk.TreeViewColumn()
@@ -59,8 +121,7 @@ class TreeviewFactory():
         sdate_col.set_resizable(False)
         sdate_col.set_sort_column_id(COL_SDATE)
         sdate_col.set_cell_data_func(render_text, self._celldatafunction)
-        self.append_column(sdate_col)
-        self.set_column(COL_SDATE, sdate_col)
+
 
         # Due column
         ddate_col   = gtk.TreeViewColumn()
@@ -71,22 +132,20 @@ class TreeviewFactory():
         ddate_col.set_resizable(False)
         ddate_col.set_sort_column_id(COL_DDATE)
         ddate_col.set_cell_data_func(render_text, self._celldatafunction)
-        self.append_column(ddate_col)
-        self.set_column(COL_DUE, ddate_col)
 
-        # days left
-#        dleft_col   = gtk.TreeViewColumn()
-#        render_text = gtk.CellRendererText()
-#        dleft_col.set_title(_("Days left"))
-#        dleft_col.pack_start(render_text, expand=False)
-#        dleft_col.add_attribute(render_text, "markup", COL_DLEFT)
-#        dleft_col.set_resizable(False)
-#        dleft_col.set_sort_column_id(COL_DLEFT)
-#        dleft_col.set_cell_data_func(render_text, self._celldatafunction)
-#        self.append_column(dleft_col)
-#        self.set_column(COL_DLEFT, dleft_col)
 
-        # Global treeview properties
+        
+        #Returning the treeview
+        treeview = TreeView(tree,desc)
+        
+        #Now that the treeview is done, we can polish
+        #TODO : those two functions are not implemented
+        treeview.change_sort_column_id('label','title')
+        treeview.set_main_search_column(COL_TITLE)
+        
+         # Global treeview properties
         self.set_property("expander-column", title_col)
         self.set_property("enable-tree-lines", False)
         self.set_rules_hint(False)
+        
+        return treeview

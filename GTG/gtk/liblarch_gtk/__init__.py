@@ -25,6 +25,8 @@ class TreeView(gtk.TreeView):
     def __init__(self, tree, description):
         gtk.TreeView.__init__(self)
         self.columns = {}
+        self.bg_color_func = None
+        self.bg_color_column = None
         
         #We build the model
         self.treemodel = TreeModel(tree)
@@ -37,16 +39,28 @@ class TreeView(gtk.TreeView):
             self.columns[col_name] = [col_nbr,col]
             renderer = desc["renderer"][1]
             rend_attribute = desc["renderer"][0]
-            #TODO : handle those variables
-            expand = True
-            resizable = True
-            visible = True
+            #Those are default value that can be changed later
+            if desc.has_key['expandable']:
+                expand = desc['expandable']
+            else:
+                expand = True
+            if desc.has_key['resizable']:
+                resizable = desc['resizable']
+            else:
+                resizable = True
+            if desc.has_key['visible']:
+                visible = desc['visible']
+            else:
+                visible = True
+            col.set_visible(visible)
             #title is not mandatory
             if desc.has_key('title'):
                 col.set_title(desc['title'])
             col.pack_start(renderer, expand=expand)
             col.add_attribute(renderer, rend_attribute, col_nbr)
+            #By default, resizable
             col.set_resizable(resizable)
+            col.set_cell_data_func(renderer, self._celldatafunction)
             self.append_column(col)
         
         
@@ -56,7 +70,29 @@ class TreeView(gtk.TreeView):
         self.show()
         
         
+    def set_col_resizable(self,col_name,resizable):
+        self.columns[col_name][1].set_resizable(resizable)
+    
+    def set_col_visible(self,col_name,visible):
+        self.columns[col_name][1].set_visible(visible)
         
+    def set_bg_color(self,color_func,color_column):
+        if self.columns.has_key(color_column):
+            self.bg_color_column = self.columns[color_column][0]
+            self.bg_color_func = color_func
+        else:
+            raise ValueError("There is no colum %s to use to set color"%color_column)
+
+
+    def _celldatafunction(self, column, cell, model, iter):
+        col = None
+        if self.bg_color_func and self.bg_color_column:
+            bgcolor = column.get_tree_view().get_style().base[gtk.STATE_NORMAL]
+            if iter and model.iter_is_valid(iter):
+                value = model.get_value(iter, self.bg_color_column)
+                if value:
+                    col = self.bg_color_func(value, bgcolor)
+        cell.set_property("cell-background", col)
         
 #        #TODO
 #        self.task_modelsort.set_sort_func(\
