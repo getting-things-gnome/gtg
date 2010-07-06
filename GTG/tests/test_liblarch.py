@@ -95,7 +95,7 @@ class TestLibLarch(unittest.TestCase):
             i+=1
             self.green_nodes += 1
         self.total = self.red_nodes + self.blue_nodes + self.green_nodes
-        #now testing the GTK treeview
+        ################now testing the GTK treeview ##################
         #The columns description:
         desc = {}
         col = {}

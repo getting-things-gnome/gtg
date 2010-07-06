@@ -153,9 +153,9 @@ class TreeModel(gtk.GenericTreeModel):
         self.value_list.append([str,get_nodeid])
         self.iter_store = TaskIterStore(self.tree,self)
         self.tasks_to_add = []
-#        self.tree.connect('task-added-inview',self.to_add_task)
-#        self.tree.connect('task-deleted-inview',self.remove_task)
-#        self.tree.connect('task-modified-inview',self.update_task)
+        self.tree.connect('node-added-inview',self.to_add_task)
+        self.tree.connect('node-deleted-inview',self.remove_task)
+        self.tree.connect('node-modified-inview',self.update_task)
 
 ### TREE MODEL HELPER FUNCTIONS ###############################################
 
@@ -301,20 +301,15 @@ class TreeModel(gtk.GenericTreeModel):
 #        # get the node and signal it's changed
 #        print "tasktree update_task %s" %tid
         if self.tree.is_displayed(tid):
-            my_node = self.tree.get_node(tid)
-#            print "update %s" %my_node.get_title()
-            if my_node and my_node.is_loaded():
-                node_paths = self.tree.get_paths_for_node(my_node)
-#                print "getting iter for path %s (%s is displayed %s)" \
-#                        %(str(node_paths),tid,self.tree.is_displayed(tid))
-                for node_path in node_paths:
-                    node_iter = self.get_iter(node_path)
-                    if self.iter_is_valid(node_iter):
-                        self.row_changed(node_path, node_iter)
+            node_paths = self.tree.get_paths_for_node(tid)
+            for node_path in node_paths:
+                node_iter = self.get_iter(node_path)
+                if self.iter_is_valid(node_iter):
+                    self.row_changed(node_path, node_iter)
 #                    print "child_toggled 1 : %s" %my_node.get_title()
-                        self.row_has_child_toggled(node_path, node_iter)
-                if len(node_paths) == 0: 
-                    print "Error :! no path for node %s !" %my_node.get_id()
+                    self.row_has_child_toggled(node_path, node_iter)
+            if len(node_paths) == 0: 
+                raise  ValueError("Error :! no path for node %s !" %tid)
 
     def to_add_task(self,sender,tid):
 #        print "%s is to_add" %(tid)
@@ -327,20 +322,17 @@ class TreeModel(gtk.GenericTreeModel):
         #self.lock = True
         while len(self.tasks_to_add) > 0:
             tid = self.tasks_to_add.pop(0)
-            task = self.tree.get_node(tid)
-            run = False
-            if task:
-                run = True
-                node_paths = self.tree.get_paths_for_node(task)
-                parents = self.tree.node_parents(task)
-                for p in parents:
-                    #if we realize that a parent is still to add, we
-                    #don't insert the current task but we put it at the end
-                    #of the queue
-                    pid = p.get_id()
-                    if pid in self.tasks_to_add:
-                        self.tasks_to_add.append(tid)
-                        run = False
+
+            run = True
+            node_paths = self.tree.get_paths_for_node(tid)
+            parents = self.tree.node_parents(tid)
+            for pid in parents:
+                #if we realize that a parent is still to add, we
+                #don't insert the current task but we put it at the end
+                #of the queue
+                if pid in self.tasks_to_add:
+                    self.tasks_to_add.append(tid)
+                    run = False
 #                    else:
 #                        print "parent %s is displayed %s" %(pid,self.tree.is_displayed(pid))
             if run:
@@ -350,11 +342,11 @@ class TreeModel(gtk.GenericTreeModel):
                         self.row_inserted(node_path, node_iter)
                         #following is mandatory if 
                         #we added a child task before his parent.
-                        if self.tree.node_has_child(task):
+                        if self.tree.node_has_child(tid):
         #                    print "child_toggled 2 : %s" %task.get_title()
                             self.row_has_child_toggled(node_path,node_iter)
-                for p in parents:
-                        for par_path in self.tree.get_paths_for_node(p):
+                for pid in parents:
+                        for par_path in self.tree.get_paths_for_node(pid):
                             par_iter = self.get_iter(par_path)
     #                            print "child_toggled 3 : %s" %p.get_title()
                             if self.iter_is_valid(par_iter):
@@ -365,12 +357,11 @@ class TreeModel(gtk.GenericTreeModel):
         #a task has been removed from the view. Therefore,
         # the widgets that represent it should be removed
         Log.debug("tasktree remove_task %s" %tid)
-        node = self.tree.get_node(tid)
         removed = False
-        node_paths = self.tree.get_paths_for_node(node)
+        node_paths = self.tree.get_paths_for_node(tid)
         for node_path in node_paths:
             Log.debug("* tasktree REMOVE %s - %s " %(tid,node_path))
-            self.iter_store.remove(node,node_path)
+            self.iter_store.remove(tid,node_path)
 #            print "     remove row %s" %str(node_path)
             self.row_deleted(node_path)
             removed = True

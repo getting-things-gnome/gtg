@@ -109,12 +109,12 @@ class ViewTree(gobject.GObject):
 
     #Those are the three signals you want to catch if displaying
     #a filteredtree. The argument of all signals is the nid of the node
-#    __gsignals__ = {'node-added-inview': (gobject.SIGNAL_RUN_FIRST, \
-#                                          gobject.TYPE_NONE, (str, )),
-#                    'node-deleted-inview': (gobject.SIGNAL_RUN_FIRST, \
-#                                            gobject.TYPE_NONE, (str, )),
-#                    'node-modified-inview': (gobject.SIGNAL_RUN_FIRST, \
-#                                            gobject.TYPE_NONE, (str, )),}
+    __gsignals__ = {'node-added-inview': (gobject.SIGNAL_RUN_FIRST, \
+                                          gobject.TYPE_NONE, (str, )),
+                    'node-deleted-inview': (gobject.SIGNAL_RUN_FIRST, \
+                                            gobject.TYPE_NONE, (str, )),
+                    'node-modified-inview': (gobject.SIGNAL_RUN_FIRST, \
+                                            gobject.TYPE_NONE, (str, )),}
                                             
     def __init__(self,maintree,filters_bank,refresh=True,static=False):
         gobject.GObject.__init__(self)
@@ -126,6 +126,20 @@ class ViewTree(gobject.GObject):
             self.__ft = maintree
         else:
             self.__ft = FilteredTree(maintree,filters_bank,refresh=refresh)
+            self.__ft.connect('node-added-inview',self.__emit,'add')
+            self.__ft.connect('node-deleted-inview',self.__emit,'del')
+            self.__ft.connect('node-modified-inview',self.__emit,'mod')
+            
+    def __emit(self,sender,tid,data=None):
+        if data == 'add':
+            self.emit('node-added-inview',tid)
+        elif data == 'del':
+            self.emit('node-deleted-inview',tid)
+        elif data == 'mod':
+            self.emit('node-modified-inview',tid)
+        else:
+            raise ValueError("Wrong signal %s" %data)
+            
         
 
     #only by commodities

@@ -83,11 +83,11 @@ class FilteredTree(gobject.GObject):
 
     #Those are the three signals you want to catch if displaying
     #a filteredtree. The argument of all signals is the tid of the task
-    __gsignals__ = {'task-added-inview': (gobject.SIGNAL_RUN_FIRST, \
+    __gsignals__ = {'node-added-inview': (gobject.SIGNAL_RUN_FIRST, \
                                           gobject.TYPE_NONE, (str, )),
-                    'task-deleted-inview': (gobject.SIGNAL_RUN_FIRST, \
+                    'node-deleted-inview': (gobject.SIGNAL_RUN_FIRST, \
                                             gobject.TYPE_NONE, (str, )),
-                    'task-modified-inview': (gobject.SIGNAL_RUN_FIRST, \
+                    'node-modified-inview': (gobject.SIGNAL_RUN_FIRST, \
                                             gobject.TYPE_NONE, (str, )),}
 
     def __init__(self,tree,filtersbank,refresh=True):
@@ -679,7 +679,7 @@ class FilteredTree(gobject.GObject):
                 else:
                     self.__root_update(tid,inroot)
                     self.update_count += 1
-                    self.emit("task-modified-inview", tid)
+                    self.emit("node-modified-inview", tid)
                     #I don't remember why we have to update the children.
                     if not self.flat:
                         node = self.get_node(tid)
@@ -693,7 +693,7 @@ class FilteredTree(gobject.GObject):
                 if curdis:
                     self.__remove_node(tid)
                 else:
-                    self.emit("task-deleted-inview", tid)
+                    self.emit("node-deleted-inview", tid)
 
 
     
@@ -728,7 +728,7 @@ class FilteredTree(gobject.GObject):
                         self.node_to_add.remove(tid)
                     #Should be in displayed_nodes before updating the root
                     self.__root_update(tid,inroot)
-                    self.emit("task-added-inview", tid)
+                    self.emit("node-added-inview", tid)
                     #We added a new node so we can check with those waiting
                     lost_nodes = []
                     while len(self.node_to_add) > 0:
@@ -748,7 +748,7 @@ class FilteredTree(gobject.GObject):
                 isroot = self.__is_root(tid)
                 self.remove_count += 1
                 self.__nodes_count -= 1
-                self.emit('task-deleted-inview',tid)
+                self.emit('node-deleted-inview',tid)
                 self.__root_update(tid,False)
                 self.displayed_nodes.remove(tid)
             if tid in self.counted_nodes:
