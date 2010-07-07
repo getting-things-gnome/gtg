@@ -17,6 +17,8 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 import gtk
+import gobject
+import pango
 
 class TreeviewFactory():
 
@@ -54,7 +56,7 @@ class TreeviewFactory():
     def task_label_column(self, node):
         title = saxutils.escape(task.get_title())
         print "we need the style here"
-        color = self.style.text[gtk.STATE_INSENSITIVE].to_string()
+        color = self.treeview.style.text[gtk.STATE_INSENSITIVE].to_string()
         if task.get_status() == Task.STA_ACTIVE:
             count = self._count_active_subtasks_rec(task)
             if count != 0:
@@ -68,6 +70,13 @@ class TreeviewFactory():
         elif task.get_status() == Task.STA_DISMISSED:
             title = "<span color='%s'>%s</span>"%(color, title)
         return title
+        
+    #task start date
+    def task_sdate_column(self,node):
+        return node.get_start_date().to_readable_string()
+        
+    def task_duedate_column(self,node):
+        return node.get_due_date().to_readable_string()
 
 
     ######## The Factory #######################
@@ -75,77 +84,74 @@ class TreeviewFactory():
         desc = {}
         
         #invisible 'title' column
+        col_name = 'title'
         col = {}
         render_text = gtk.CellRendererText()
         render_text.set_property("ellipsize", pango.ELLIPSIZE_END)
         col['renderer'] = ['markup',render_text]
         col['value'] = [str,task_title_column]
-        desc['visible'] = False
-        desc['title'] = col
+        col['visible'] = False
+        desc[col_name] = col
         
         # "tags" column (no title)
+        col_name = 'tags'
         col = {}
         render_tags = CellRendererTags()
         render_tags.set_property('xalign', 0.0)
         col['renderer'] = ['tag_list',render_tags]
-        col['value'] = [str,self.task_tags_column]
+        col['value'] = [gobject.TYPE_PYOBJECT,self.task_tags_column]
         col['expandable'] = False
         col['resizable'] = False
-        col.set_bg_color(task_bg_color,'tags')
-        desc['tags'] = col
-
+        desc[col_name] = col
 
         # "label" column
+        col_name = 'label'
         col = {}
         col['title'] = _("Title")
         render_text = gtk.CellRendererText()
         render_text.set_property("ellipsize", pango.ELLIPSIZE_END)
         col['renderer'] = ['markup',render_text]
-        col['value'] = [str,task_label_column]
+        col['value'] = [str,self.task_label_column]
         col['expandable'] = True
         col['resizable'] = True
-        col.set_bg_color(task_bg_color,'tags')
-        col.set_sort_column
-        desc['label'] = col
+        col['sorting'] = 'title'
+        desc[col_name] = col
         
-
-
-        
-
-        # Start date column
-        sdate_col   = gtk.TreeViewColumn()
+        # "startdate" column
+        col_name = 'startdate'
+        col = {}
+        col['title'] = _("Start date")
         render_text = gtk.CellRendererText()
-        sdate_col.set_title(_("Start date"))
-        sdate_col.pack_start(render_text, expand=False)
-        sdate_col.add_attribute(render_text, "markup", COL_SDATE)
-        sdate_col.set_resizable(False)
-        sdate_col.set_sort_column_id(COL_SDATE)
-        sdate_col.set_cell_data_func(render_text, self._celldatafunction)
+        col['expandable'] = False
+        col['renderer'] = ['markup',render_text]
+        col['resizable'] = False
+        col['value'] = [str,self.task_sdate_column]
+        desc[col_name] = col
 
-
-        # Due column
-        ddate_col   = gtk.TreeViewColumn()
+        # 'duedate' column
+        col_name = 'duedate'
+        col = {}
+        col['title'] = _("Due")
         render_text = gtk.CellRendererText()
-        ddate_col.set_title(_("Due"))
-        ddate_col.pack_start(render_text, expand=False)
-        ddate_col.add_attribute(render_text, "markup", COL_DUE)
-        ddate_col.set_resizable(False)
-        ddate_col.set_sort_column_id(COL_DDATE)
-        ddate_col.set_cell_data_func(render_text, self._celldatafunction)
+        col['expandable'] = False
+        col['renderer'] = ['markup',render_text]
+        col['resizable'] = False
+        col['value'] = [str,self.task_duedate_column]
+        desc[col_name] = col
 
-
-        
         #Returning the treeview
         treeview = TreeView(tree,desc)
         
         #Now that the treeview is done, we can polish
-        #TODO : those two functions are not implemented
-        treeview.change_sort_column_id('label','title')
-        treeview.set_main_search_column(COL_TITLE)
-        
+        treeview.set_main_search_column('label')
+        treeview.set_expander_column('label')
+        #Background colors
+        treeview.set_bg_color(self.task_bg_color,'tags')
          # Global treeview properties
-        self.set_property("expander-column", title_col)
-        self.set_property("enable-tree-lines", False)
-        self.set_rules_hint(False)
+        treeview.set_property("enable-tree-lines", False)
+        treeview.set_rules_hint(False)
+        
+        return treeview
+        
         
         return treeview

@@ -40,15 +40,15 @@ class TreeView(gtk.TreeView):
             renderer = desc["renderer"][1]
             rend_attribute = desc["renderer"][0]
             #Those are default value that can be changed later
-            if desc.has_key['expandable']:
+            if desc.has_key('expandable'):
                 expand = desc['expandable']
             else:
                 expand = True
-            if desc.has_key['resizable']:
+            if desc.has_key('resizable'):
                 resizable = desc['resizable']
             else:
                 resizable = True
-            if desc.has_key['visible']:
+            if desc.has_key('visible'):
                 visible = desc['visible']
             else:
                 visible = True
@@ -61,6 +61,9 @@ class TreeView(gtk.TreeView):
             #By default, resizable
             col.set_resizable(resizable)
             col.set_cell_data_func(renderer, self._celldatafunction)
+            if desc.has_key('sorting'):
+                sort_nbr = self.columns[desc['sorting']][0]
+                col.set_sort_column_id(sort_nbr)
             self.append_column(col)
         
         
@@ -69,6 +72,16 @@ class TreeView(gtk.TreeView):
         self.set_model(self.modelsort)
         self.show()
         
+    def get_columns(self):
+        return self.columns.keys()
+        
+    def set_main_search_column(self,col_name):
+        sort_nbr = self.columns[col_name][0]
+        self.set_search_column(sort_nbr)
+    
+    def set_expander_column(self,col_name):
+        col = self.columns[col_name][1]
+        self.set_property("expander-column", col)
         
     def set_col_resizable(self,col_name,resizable):
         self.columns[col_name][1].set_resizable(resizable)

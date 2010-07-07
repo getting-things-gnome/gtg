@@ -39,9 +39,10 @@ from GTG                         import _, info, ngettext
 from GTG.core.task               import Task
 from GTG.gtk.browser             import GnomeConfig, tasktree, tagtree
 from GTG.gtk.browser.tasktree    import TaskTreeModel,\
-                                        ActiveTaskTreeView,\
+#                                        ActiveTaskTreeView,\
                                         ClosedTaskTreeView
 from GTG.gtk.browser.tagtree     import TagTree
+from GTG.gtk.browser.treeview_factory import TreeviewFactory
 from GTG.tools                   import openurl
 from GTG.tools.dates             import no_date,\
                                         FuzzyDate, \
@@ -86,6 +87,7 @@ class TaskBrowser:
         self.tag_active = False
         
         #treeviews handlers
+        self.tv_factory = TreeviewFactory(self.req,self.config)
         self.tags_tv = None
         self.tasks_tv = None
         self.ctask_tv = ClosedTaskTreeView(self.req)

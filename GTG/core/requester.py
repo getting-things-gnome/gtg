@@ -23,8 +23,7 @@ A nice general purpose interface for the datastore and tagstore
 
 import gobject
 
-from GTG.core.filteredtree import FilteredTree
-from GTG.core.filters_bank import FiltersBank
+
 from GTG.core.task         import Task
 from GTG.core.tagstore     import Tag
 from GTG.tools.dates       import date_today
@@ -57,9 +56,9 @@ class Requester(gobject.GObject):
         gobject.GObject.__init__(self)
         self.ds = datastore
         self.basetree = self.ds.get_tasks_tree()
-        self.main_tree = FilteredTree(self,self.basetree,maintree=True)
+        self.main_tree = self.basetree.get_viewtree()
         
-        self.filters = FiltersBank(self,tree=self.main_tree)
+        #TODO build filters here
         self.counter_call = 0
 
     ############# Signals #########################
@@ -90,43 +89,34 @@ class Requester(gobject.GObject):
         gobject.idle_add(self.emit, "tag-deleted", tagname)
         
     ############ Tasks Tree ######################
-    # This is the main FilteredTree. You cannot apply filters
-    # directly to it, you have to pass them through the requester.
+    # This is the main FilteredTree. 
     # This is the tree as it is displayed in the main window
     def get_main_tasks_tree(self):
         return self.main_tree
         
     # This is a FilteredTree that you have to handle yourself.
     # You can apply/unapply filters on it as you wish.
-    def get_custom_tasks_tree(self):
-        return FilteredTree(self,self.basetree,maintree=False)
+    def get_custom_tasks_tree(self,refresh=True):
+        return self.basetree.get_viewtree(refresh=refresh)
         
-    def get_main_tasks_list(self):
-        return self.main_tree.get_all_keys()
         
-    def get_main_n_tasks(self):
-        return self.main_tree.get_n_nodes()
-    
-    def get_all_tasks_list(self):
-        return self.basetree.get_all_keys()
-        
-    # Apply a given filter to the main FilteredTree
-    def apply_filter(self,filter_name,parameters=None,refresh=True):
-        r = self.main_tree.apply_filter(filter_name,parameters=parameters,\
-                                        imtherequester=True,refresh=refresh)
-        return r
-            
-    # Unapply a filter from the main FilteredTree.
-    # Does nothing if the filter was not previously applied.
-    def unapply_filter(self,filter_name):
-        r = self.main_tree.unapply_filter(filter_name,imtherequester=True)
-        return r
+#    # Apply a given filter to the main FilteredTree
+#    def apply_filter(self,filter_name,parameters=None,refresh=True):
+#        r = self.main_tree.apply_filter(filter_name,parameters=parameters,\
+#                                        imtherequester=True,refresh=refresh)
+#        return r
+#            
+#    # Unapply a filter from the main FilteredTree.
+#    # Does nothing if the filter was not previously applied.
+#    def unapply_filter(self,filter_name):
+#        r = self.main_tree.unapply_filter(filter_name,imtherequester=True)
+#        return r
 
-    def reset_filters(self):
-        self.main_tree.reset_filters(imtherequester=True)
-        
-    def reset_tag_filters(self,refilter=True):
-        self.main_tree.reset_tag_filters(refilter=refilter,imtherequester=True)
+#    def reset_filters(self):
+#        self.main_tree.reset_filters(imtherequester=True)
+#        
+#    def reset_tag_filters(self,refilter=True):
+#        self.main_tree.reset_tag_filters(refilter=refilter,imtherequester=True)
         
     def is_displayed(self,task):
         return self.main_tree.is_displayed(task)

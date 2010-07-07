@@ -27,9 +27,9 @@ import uuid
 import os.path
 from collections import deque
 
+from GTG.tools.liblarch import Tree
 from GTG.core                    import tagstore, requester
 from GTG.core.task               import Task
-from GTG.core.tree               import Tree
 from GTG.core                    import CoreConfig
 from GTG.tools.logger            import Log
 from GTG.backends.genericbackend import GenericBackend
@@ -96,12 +96,12 @@ class DataStore(object):
     ### Tasks functions
     ##########################################################################
 
-    def get_all_tasks(self):
-        '''
-        Returns list of all keys of open tasks
-        @return a list of strings: a list of task ids
-        '''
-        return self.open_tasks.get_all_keys()
+#    def get_all_tasks(self):
+#        '''
+#        Returns list of all keys of open tasks
+#        @return a list of strings: a list of task ids
+#        '''
+#        return self.open_tasks.get_all_keys()
 
     def has_task(self, tid):
         '''
