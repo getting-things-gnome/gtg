@@ -37,10 +37,7 @@ import GTG
 from GTG.core                       import CoreConfig
 from GTG                         import _, info, ngettext
 from GTG.core.task               import Task
-from GTG.gtk.browser             import GnomeConfig, tasktree, tagtree
-from GTG.gtk.browser.tasktree    import TaskTreeModel,\
-#                                        ActiveTaskTreeView,\
-                                        ClosedTaskTreeView
+from GTG.gtk.browser             import GnomeConfig, tagtree
 from GTG.gtk.browser.tagtree     import TagTree
 from GTG.gtk.browser.treeview_factory import TreeviewFactory
 from GTG.tools                   import openurl
@@ -88,10 +85,12 @@ class TaskBrowser:
         
         #treeviews handlers
         self.tv_factory = TreeviewFactory(self.req,self.config)
+        self.tasks_tree = self.req.get_main_tasks_tree()
         self.tags_tv = None
-        self.tasks_tv = None
-        self.ctask_tv = ClosedTaskTreeView(self.req)
+        self.task_tv = self.tv_factory.active_tasks_treeview(self.tasks_tree)
         self.ctask_tree = None
+        self.ctask_tv = None
+
 
         ### YOU CAN DEFINE YOUR INTERNAL MECHANICS VARIABLES BELOW
         
@@ -167,14 +166,7 @@ class TaskBrowser:
     # it should be "init_active_tasks_pane", "init_sidebar", etc.
     def _init_models(self):
         # Active Tasks
-        self.req.apply_filter('active',refresh=False)
-        self.task_tree_model = TaskTreeModel(self.req, self.priv)
-        self.task_modelsort = gtk.TreeModelSort(self.task_tree_model)
-        self.task_modelsort.set_sort_func(\
-            tasktree.COL_DDATE, self.date_sort_func)
-        self.task_modelsort.set_sort_func(\
-            tasktree.COL_DLEFT, self.date_sort_func)
-
+        self.tasks_tree.apply_filter('active',refresh=False)
         # Tags
         self.tagtree = TagTree(self.req)
 
@@ -213,8 +205,6 @@ class TaskBrowser:
 
     def _init_ui_widget(self):
         # The Active tasks treeview
-        self.task_tv = ActiveTaskTreeView(self.req)
-        self.task_tv.set_model(self.task_modelsort)
         self.main_pane.add(self.task_tv)
 
         # The tags treeview
@@ -337,21 +327,9 @@ class TaskBrowser:
         self.task_tv.connect('row-collapsed',\
             self.on_task_treeview_row_collapsed)
 
-        # Closed tasks TreeView
-        self.ctask_tv.connect('row-activated',\
-            self.on_edit_done_task)
-        self.ctask_tv.connect('button-press-event',\
-            self.on_closed_task_treeview_button_press_event)
-        self.ctask_tv.connect('key-press-event',\
-            self.on_closed_task_treeview_key_press_event)
-
         # Connect requester signals to TreeModels
         self.req.connect("task-added", self.on_task_added) 
         self.req.connect("task-deleted", self.on_task_deleted)
-        
-        # Connect signals from models
-        self.task_modelsort.connect("row-has-child-toggled",\
-                                    self.on_task_child_toggled)
 
         #Tags treeview
         self.tags_tv.connect('cursor-changed',\
@@ -363,9 +341,10 @@ class TaskBrowser:
         
         # Selection changes
         self.selection = self.task_tv.get_selection()
-        self.closed_selection = self.ctask_tv.get_selection()
+        if self.ctask_tv:
+            self.closed_selection = self.ctask_tv.get_selection()
+            self.closed_selection.connect("changed", self.on_taskdone_cursor_changed)
         self.selection.connect("changed", self.on_task_cursor_changed)
-        self.closed_selection.connect("changed", self.on_taskdone_cursor_changed)
         self.req.connect("task-deleted", self.update_buttons_sensitivity)
 
     def _init_view_defaults(self):
@@ -376,9 +355,6 @@ class TaskBrowser:
         self.builder.get_object("view_toolbar").set_active(TOOLBAR)
         self.priv["bg_color_enable"] = BG_COLOR
         self.priv["contents_preview_enable"] = CONTENTS_PREVIEW
-        # Set sorting order
-        self.task_modelsort.set_sort_column_id(\
-            tasktree.COL_DLEFT, gtk.SORT_ASCENDING)
 
     def _add_accelerator_for_widget(self, agr, name, accel):
         widget    = self.builder.get_object(name)
@@ -564,7 +540,7 @@ class TaskBrowser:
         self._update_window_title()
 
     def _update_window_title(self):
-        count = self.req.get_main_n_tasks()
+        count = self.tasks_tree.get_n_nodes()
         #Set the title of the window:
         parenthesis = ""
         if count == 0:
@@ -777,7 +753,6 @@ class TaskBrowser:
         tags, notag_only = self.get_selected_tags()
         for t in tags:
             t.set_attribute("color", strcolor)
-#        self.task_tv.refresh()
         self.tags_tv.refresh()
 
     def on_colorchooser_activate(self, widget):
@@ -807,7 +782,6 @@ class TaskBrowser:
             for t in tags:
                 t.set_attribute("color", strcolor)
         self.reset_cursor()
-#        self.task_tv.refresh()
         color_dialog.destroy()
         
     def on_resetcolor_activate(self, widget):
@@ -841,6 +815,17 @@ class TaskBrowser:
             
     def show_closed_pane(self):
         # The done/dismissed taks treeview
+        if not self.ctask_tree:
+            self.ctask_tree = self.req.get_custom_tasks_tree()
+            self.ctask_tv = self.tv_factory.active_tasks_treeview(self.ctask_tree)
+            self.ctask_tree.apply_filter('closed')
+                    # Closed tasks TreeView
+            self.ctask_tv.connect('row-activated',\
+                self.on_edit_done_task)
+            self.ctask_tv.connect('button-press-event',\
+                self.on_closed_task_treeview_button_press_event)
+            self.ctask_tv.connect('key-press-event',\
+                self.on_closed_task_treeview_key_press_event)
 
         if not self.closed_pane:
             self.closed_pane = gtk.ScrolledWindow()
@@ -852,21 +837,12 @@ class TaskBrowser:
             # Already contains the closed pane
             return
 
-        self.ctask_tree = self.req.get_custom_tasks_tree()
-        self.ctask_tree.apply_filter('closed')
-        ctask_tree_model = TaskTreeModel(self.req, self.priv, \
-                                         self.ctask_tree)
-        ctask_modelsort = gtk.TreeModelSort(ctask_tree_model)
-        self.ctask_tv.set_model(ctask_modelsort)
-        ctask_modelsort.set_sort_column_id(\
-            tasktree.COL_CDATE, gtk.SORT_DESCENDING)
-        ctask_modelsort.set_sort_func(\
-            tasktree.COL_CDATE, self.date_sort_func,'closed')
         self.add_page_to_accessory_notebook("Closed", self.closed_pane)
         self.builder.get_object("view_closed").set_active(True)
 
     def hide_closed_pane(self):
-        self.ctask_tv.set_model(None)
+        if self.ctask_tv:
+            self.ctask_tv.set_model(None)
         self.ctask_tree = None
         self.remove_page_from_accessory_notebook(self.closed_pane)
         self.builder.get_object("view_closed").set_active(False)
@@ -903,7 +879,7 @@ class TaskBrowser:
             self.task_tv.collapse_row(path)
 
     def on_task_treeview_row_expanded(self, treeview, iter, path):
-        tid = treeview.get_model().get_value(iter, tasktree.COL_TID)
+        tid = treeview.get_model().get_value(iter, 0)
         if tid in self.priv["collapsed_tids"]:
             self.priv["collapsed_tids"].remove(tid)
         
@@ -1232,7 +1208,6 @@ class TaskBrowser:
             if self.ctask_tree:
                 self.ctask_tree.reset_tag_filters()
                         
-#        self.task_tv.get_selection().unselect_all()
         self.ctask_tv.get_selection().unselect_all()
         self._update_window_title()
 

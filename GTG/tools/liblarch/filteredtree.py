@@ -444,9 +444,9 @@ class FilteredTree(gobject.GObject):
 #                            self.__root_update(cid,False)
                     good += 1
                 cur += 1
-            if not toreturn:
-                raise ValueError("Node %s has only children,"%total+\
-                                     "you are asking for %s" %n)
+#            if not toreturn:
+#                raise ValueError("Node %s has only %s children,"%(nid,total)+\
+#                                     "you are asking for %s" %n)
         return toreturn
 
     #Done

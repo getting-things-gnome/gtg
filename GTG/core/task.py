@@ -29,7 +29,7 @@ import xml.sax.saxutils as saxutils
 from GTG              import _
 from GTG.tools.dates  import date_today, no_date, Date
 from datetime         import datetime
-from GTG.core.tree    import TreeNode
+from GTG.tools.liblarch.tree    import TreeNode
 from GTG.tools.logger import Log
 
 

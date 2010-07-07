@@ -89,7 +89,7 @@ class Requester(gobject.GObject):
         gobject.idle_add(self.emit, "tag-deleted", tagname)
         
     ############ Tasks Tree ######################
-    # This is the main FilteredTree. 
+    # This is the main Fiself.basetreelteredTree. 
     # This is the tree as it is displayed in the main window
     def get_main_tasks_tree(self):
         return self.main_tree
@@ -115,7 +115,8 @@ class Requester(gobject.GObject):
 #    def reset_filters(self):
 #        self.main_tree.reset_filters(imtherequester=True)
 #        
-#    def reset_tag_filters(self,refilter=True):
+    def reset_tag_filters(self,refilter=True):
+        print "reset tag filters not implemented"
 #        self.main_tree.reset_tag_filters(refilter=refilter,imtherequester=True)
         
     def is_displayed(self,task):
@@ -125,23 +126,23 @@ class Requester(gobject.GObject):
     # Get the filter object for a given name
 
     def get_filter(self,filter_name):
-        return self.filters.get_filter(filter_name)
+        return self.basetree.get_filter(filter_name)
     
     # List, by name, all available filters
     def list_filters(self):
-        return self.filters.list_filters()
+        return self.basetree.list_filters()
     
     # Add a filter to the filter bank
     # Return True if the filter was added
     # Return False if the filter_name was already in the bank
     def add_filter(self,filter_name,filter_func):
-        return self.filters.add_filter(filter_name,filter_func)
+        return self.basetree.add_filter(filter_name,filter_func)
         
     # Remove a filter from the bank.
     # Only custom filters that were added here can be removed
     # Return False if the filter was not removed
     def remove_filter(self,filter_name):
-        return self.filters.remove_filter(filter_name)
+        return self.basetree.remove_filter(filter_name)
 
     ############## Tasks ##########################
     ###############################################

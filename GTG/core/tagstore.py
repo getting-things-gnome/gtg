@@ -29,7 +29,7 @@ import xml.sax.saxutils as saxutils
 
 from GTG              import _
 from GTG.core         import CoreConfig
-from GTG.core.tree    import Tree, TreeNode
+from GTG.core.old.tree    import Tree, TreeNode
 from GTG.tools        import cleanxml
 from GTG.tools.logger import Log
 

@@ -378,7 +378,7 @@ class TaskSource():
         self.backend.register_datastore(datastore)
         self.to_set = deque()
         self.to_remove = deque()
-        self.task_filter = self.get_task_filter_for_backend()
+#        self.task_filter = self.get_task_filter_for_backend()
         if Log.is_debugging_mode():
             self.timer_timestep = 5
         else:
@@ -421,7 +421,10 @@ class TaskSource():
         @returns bool: True if the task should be stored
         '''
         task = self.req.get_task(task_id)
-        return self.task_filter(task)
+        #FIXME: it will be a lot easier to add, instead,
+        # a filter to a tree and check that this task is well in the tree
+#        return self.task_filter(task)
+        return True
 
     def queue_set_task(self, sender, tid):
         """

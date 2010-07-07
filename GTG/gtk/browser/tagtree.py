@@ -233,15 +233,15 @@ class TagTreeModel(gtk.GenericTreeModel):
             sp_id = tag.get_attribute("special")
             if sp_id == "all":
                 toreturn = self.tasktree.get_n_nodes(\
-                        withfilters=['no_disabled_tag'],countednodes=True)
+                        withfilters=['no_disabled_tag'],include_transparent=True)
             elif sp_id == "notag":
                 toreturn = self.tasktree.get_n_nodes(\
-                                withfilters=['notag'],countednodes=True)
+                                withfilters=['notag'],include_transparent=True)
             elif sp_id == "sep" :
                 toreturn = 0
             else:
                 toreturn = self.tasktree.get_n_nodes(\
-                                    withfilters=[tname],countednodes=True)
+                                    withfilters=[tname],include_transparent=True)
             self.count_cache[tname] = toreturn
     #        time2 = time.time()
     #        self.time_tag_count += (time2 - time1)

@@ -83,19 +83,20 @@ class SimpleTagFilter:
         self.dic = dic
     
     def is_displayed(self,tid):
-        task = self.req.get_task(tid)
-        value = True
-        if not task:
-            value = False
-        else:
-            tags = [self.tname]
-            tt = self.req.get_tag(self.tname)
-            if tt:
-                tags += tt.get_children()
-            value = task.has_tags(tags)
-        if 'negate' in self.dic and self.dic['negate']:
-            value = not value
-        return value
+        return True
+#        task = self.tree.get_node(tid)
+#        value = True
+#        if not task:
+#            value = False
+#        else:
+#            tags = [self.tname]
+#            tt = self.req.get_tag(self.tname)
+#            if tt:
+#                tags += tt.get_children()
+#            value = task.has_tags(tags)
+#        if 'negate' in self.dic and self.dic['negate']:
+#            value = not value
+#        return value
             
     def is_flat(self):
         return False

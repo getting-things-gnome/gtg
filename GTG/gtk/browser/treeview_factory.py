@@ -20,6 +20,10 @@ import gtk
 import gobject
 import pango
 
+from GTG     import _
+from GTG.gtk.browser.CellRendererTags import CellRendererTags
+from GTG.gtk.liblarch_gtk import TreeView
+
 class TreeviewFactory():
 
     def __init__(self,requester,config):
@@ -89,8 +93,9 @@ class TreeviewFactory():
         render_text = gtk.CellRendererText()
         render_text.set_property("ellipsize", pango.ELLIPSIZE_END)
         col['renderer'] = ['markup',render_text]
-        col['value'] = [str,task_title_column]
+        col['value'] = [str,self.task_title_column]
         col['visible'] = False
+        col['order'] = 0
         desc[col_name] = col
         
         # "tags" column (no title)
@@ -102,6 +107,7 @@ class TreeviewFactory():
         col['value'] = [gobject.TYPE_PYOBJECT,self.task_tags_column]
         col['expandable'] = False
         col['resizable'] = False
+        col['order'] = 1
         desc[col_name] = col
 
         # "label" column
@@ -115,6 +121,7 @@ class TreeviewFactory():
         col['expandable'] = True
         col['resizable'] = True
         col['sorting'] = 'title'
+        col['order'] = 2
         desc[col_name] = col
         
         # "startdate" column
@@ -126,6 +133,7 @@ class TreeviewFactory():
         col['renderer'] = ['markup',render_text]
         col['resizable'] = False
         col['value'] = [str,self.task_sdate_column]
+        col['order'] = 3
         desc[col_name] = col
 
         # 'duedate' column
@@ -137,6 +145,7 @@ class TreeviewFactory():
         col['renderer'] = ['markup',render_text]
         col['resizable'] = False
         col['value'] = [str,self.task_duedate_column]
+        col['order'] = 4
         desc[col_name] = col
 
         #Returning the treeview
@@ -151,6 +160,18 @@ class TreeviewFactory():
         treeview.set_property("enable-tree-lines", False)
         treeview.set_rules_hint(False)
         
+        
+        #TODO
+#        self.task_modelsort.set_sort_func(\
+#            tasktree.COL_DDATE, self.date_sort_func)
+#        self.task_modelsort.set_sort_func(\
+#            tasktree.COL_DLEFT, self.date_sort_func)
+# Connect signals from models
+#        self.task_modelsort.connect("row-has-child-toggled",\
+#                                    self.on_task_child_toggled)
+# Set sorting order
+#        self.task_modelsort.set_sort_column_id(\
+#            tasktree.COL_DLEFT, gtk.SORT_ASCENDING)
         return treeview
         
         

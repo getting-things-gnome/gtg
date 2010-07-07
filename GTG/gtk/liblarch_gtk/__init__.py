@@ -30,9 +30,21 @@ class TreeView(gtk.TreeView):
         
         #We build the model
         self.treemodel = TreeModel(tree)
+        self.order_of_col = {}
         
-        
+        #Building a list of ordered columns
         for col_name in description:
+            last = 9999
+            desc = description[col_name]
+            if desc.has_key('order'):
+                order = desc['order']
+            else:
+                order = last
+                last += 1
+            self.order_of_col[order] = col_name
+            
+        for col_nbr in sorted(self.order_of_col.keys()):
+            col_name = self.order_of_col[col_nbr]
             desc = description[col_name]
             col_nbr = self.treemodel.add_col(desc['value'])
             col = gtk.TreeViewColumn()

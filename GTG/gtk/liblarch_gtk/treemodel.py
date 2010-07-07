@@ -58,7 +58,7 @@ class TaskIter():
         return self.__path in self.__tree.get_paths_for_node(self.__node)
 
     def __str__(self):
-        return "iter %s  for path %s" %(self.__node.get_id(),str(self.__path))
+        return "iter %s  for path %s" %(self.__node,str(self.__path))
 
 class TaskIterStore():
     def __init__(self,tree,model):
@@ -121,21 +121,6 @@ class TaskIterStore():
 
 
 class TreeModel(gtk.GenericTreeModel):
-    column_types = (\
-        str,\
-        gobject.TYPE_PYOBJECT,\
-        str,\
-        str,\
-        str,\
-        str,\
-        str,\
-        gobject.TYPE_PYOBJECT,\
-        str,\
-        str,\
-        str,\
-        str)
-
-    col_len = len(column_types)
 
     def __init__(self, tree):
         gtk.GenericTreeModel.__init__(self)
@@ -184,7 +169,8 @@ class TreeModel(gtk.GenericTreeModel):
     def on_get_value(self, rowref, column):
         if not rowref:
             raise ValueError('Asking the value of an empty rowref')
-        node = rowref.get_node()
+        nid = rowref.get_node()
+        node = self.tree.get_node(nid)
         if len(self.value_list) <= column:
             raise ValueError('The tree model doesnt have enough columns!')
         func = self.value_list[column][1]
