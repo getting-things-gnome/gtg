@@ -329,8 +329,8 @@ class FilteredTree(gobject.GObject):
                 if self.path_for_node_cache.has_key(tid):
                     toreturn = self.path_for_node_cache[tid]
                 else:
-                    print "ghost position for %s" %tid
-                    print "VR : %s " %self.virtual_root
+                    Log.debug("ghost position for %s" %tid)
+                    Log.debug("VR : %s " %self.virtual_root)
                     print self.path_for_node_cache
                     
         self.path_for_node_cache[tid] = toreturn
