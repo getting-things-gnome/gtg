@@ -291,8 +291,8 @@ class FilteredTree(gobject.GObject):
                 path = (ind,)
                 toreturn.append(path)
             else:
-                print "*** *** %s has parents but is not in VR" %tid
-                print "*** is in nodes to add %s ? " %(tid in self.node_to_add)
+                print "*** Task id %s has parents but is not in virtual root" %tid
+                Log.debug("*** is in node_to_add? %s" %(tid in self.node_to_add))
                 
 #            parents = self.node_parents(node)
 #            if len(parents) > 0:
@@ -331,7 +331,7 @@ class FilteredTree(gobject.GObject):
                 else:
                     Log.debug("ghost position for %s" %tid)
                     Log.debug("VR : %s " %self.virtual_root)
-                    print self.path_for_node_cache
+                    Log.debug(self.path_for_node_cache)
                     
         self.path_for_node_cache[tid] = toreturn
         return toreturn
