@@ -46,7 +46,7 @@ class Tree():
     #a deleted path can be requested only once
     def get_deleted_path(self,id):
         toreturn = None
-        print "old paths are : %s" %self.old_paths
+        Log.debug( "old paths are : %s" %self.old_paths )
         if self.old_paths.has_key(id):
             toreturn = self.old_paths.pop(id)
         return toreturn
