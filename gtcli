@@ -268,8 +268,8 @@ def list_tasks(criteria, count_only=False):
         for task in tasks_tree[key]:
             text = textwrap.fill(task['title'], 
                                  initial_indent='',
-                                 subsequent_indent='            ')
-            print "  %-8s  %s" %(task['id'], text)
+                                 subsequent_indent='                                        ')
+            print "  %-36s  %s" %(task['id'], text)
 
 if __name__ == '__main__':
     try:
