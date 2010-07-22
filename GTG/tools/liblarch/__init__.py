@@ -16,18 +16,18 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-
 import gobject
 
 from GTG.tools.liblarch.tree import MainTree
 from GTG.tools.liblarch.filteredtree import FilteredTree
 from GTG.tools.liblarch.filters_bank import FiltersBank
 
+
 class Tree():
     def __init__(self):
         self.__tree = MainTree()
         self.__fbank = FiltersBank(self.__tree)
-        self.mainview = ViewTree(self.__tree,self.__fbank,static=True)
+        self.mainview = ViewTree(self.__tree, self.__fbank, static=True)
 
     ###### nodes handling ######
     def get_node(self,nid):
@@ -36,7 +36,7 @@ class Tree():
         raises a ValueError if the node doesn't exist in the tree
         """
         return self.__tree.get_node(nid)
-        
+
     def has_node(self,nid):
         return self.__tree.has_node(nid)
 
@@ -49,10 +49,10 @@ class Tree():
 
     def refresh_node(self,nid):
         self.__tree.modify_node(nid)
-        
+
     #move the node to a new parent (dismissing all other parents)
     #use pid None to move it to the root
-    def move_node(self,nid,new_parent_id=None):
+    def move_node(self, nid, new_parent_id=None):
         if self.has_node(nid):
             node = self.get_node(nid)
             node.set_parent(new_parent_id)
@@ -60,7 +60,7 @@ class Tree():
         else:
             toreturn = False
         return toreturn
-        
+
     #if pid is None, nothing is done
     def add_parent(self,nid,new_parent_id=None):
         if self.has_node(nid):
@@ -106,7 +106,6 @@ class Tree():
 ################### ViewTree #####################
 
 class ViewTree(gobject.GObject):
-
     #Those are the three signals you want to catch if displaying
     #a filteredtree. The argument of all signals is the nid of the node
     __gsignals__ = {'node-added-inview': (gobject.SIGNAL_RUN_FIRST, \
@@ -115,7 +114,7 @@ class ViewTree(gobject.GObject):
                                             gobject.TYPE_NONE, (str, )),
                     'node-modified-inview': (gobject.SIGNAL_RUN_FIRST, \
                                             gobject.TYPE_NONE, (str, )),}
-                                            
+
     def __init__(self,maintree,filters_bank,refresh=True,static=False):
         gobject.GObject.__init__(self)
         self.__maintree = maintree
@@ -129,7 +128,7 @@ class ViewTree(gobject.GObject):
             self.__ft.connect('node-added-inview',self.__emit,'add')
             self.__ft.connect('node-deleted-inview',self.__emit,'del')
             self.__ft.connect('node-modified-inview',self.__emit,'mod')
-            
+
     def __emit(self,sender,tid,data=None):
         if data == 'add':
             self.emit('node-added-inview',tid)
@@ -139,13 +138,11 @@ class ViewTree(gobject.GObject):
             self.emit('node-modified-inview',tid)
         else:
             raise ValueError("Wrong signal %s" %data)
-            
-        
 
     #only by commodities
     def get_node(self,nid):
         return self.__maintree.get_node(nid)
-        
+
     def __get_static_node(self,nid):
         toreturn = None
         if self.static:
@@ -196,7 +193,7 @@ class ViewTree(gobject.GObject):
     #if pid is none, a random parent is used.
     def next_node(self, nid,pid=None):
         return self.__ft.next_node(nid,pid)
-        
+
     def node_has_child(self, nid):
         toreturn = False
         if self.static:
@@ -209,7 +206,7 @@ class ViewTree(gobject.GObject):
     #if nid is None, return the number of nodes at the root
     def node_n_children(self, nid=None):
         return len(self.node_all_children(nid))
-        
+
     def node_all_children(self, nid=None):
         toreturn = []
         if self.static:
@@ -229,7 +226,7 @@ class ViewTree(gobject.GObject):
         else:
             toreturn = self.__ft.node_nth_child(nid,n)
         return toreturn
-        
+
     def node_has_parent(self,nid):
         return len(self.node_parents(nid)) > 0
 
@@ -269,7 +266,6 @@ class ViewTree(gobject.GObject):
         else:
             self.__ft.apply_filter(filter_name,parameters=parameters,\
                                     reset=reset,refresh=refresh)
-        return
 
     def unapply_filter(self,filter_name,refresh=True):
         """
@@ -281,7 +277,6 @@ class ViewTree(gobject.GObject):
                             "from a static tree\n")
         else:
             self.__ft.unapply_filter(filter_name, refresh=refresh)
-        return
 
     def reset_filters(self,refresh=True):
         """
@@ -292,4 +287,4 @@ class ViewTree(gobject.GObject):
                             "on a static tree\n")
         else:
              self.__ft.reset_filters(refresh=refresh)
-        return
+

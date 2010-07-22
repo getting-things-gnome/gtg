@@ -426,7 +426,7 @@ class FilteredTree(gobject.GObject):
             toreturn = None
         else:
             node = self.get_node(nid)
-            total = node.get_n_children()
+            total = len(node.children)
             cur = 0
             good = 0
             toreturn = None
