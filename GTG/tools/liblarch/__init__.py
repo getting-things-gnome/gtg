@@ -212,7 +212,7 @@ class ViewTree(gobject.GObject):
         if self.static:
             node = self.__get_static_node(nid)
             if node:
-                toreturn = node.get_children() 
+                toreturn = node.children
         else:
             toreturn = self.__ft.node_all_children(nid)
         return toreturn

@@ -65,11 +65,22 @@ class MainTree(gobject.GObject):
         return "<Tree: root = '%s'>" % (str(self.root))
 
     def get_node_for_path(self, path):
-        """Return the ID of a node for a given *path*."""
+        """Return the ID of a node for a given *path*.
+        
+        A *path* is a sequence of indices, with earlier indices being closer
+        to the top of the tree. For example, the path (3,5,7) means "the
+        seventh child of the fifth child of the third child of the root node".
+        
+        """
+        path.reverse()
         return self._node_for_path(None, path)
 
     def get_paths_for_node(self, node_id):
-        """Return all unique paths to the node *node_id*."""
+        """Return all unique paths to the node *node_id*.
+        
+        See get_node_for_path() for a description of the format of paths.
+        
+        """
         return self._paths_for_node(node_id)
 
     def get_deleted_path(self,id):
@@ -136,7 +147,7 @@ class MainTree(gobject.GObject):
         if not node:
             return
         if node.has_child():
-            for child_id in node.get_children():
+            for child_id in node.children:
                 if recursive:
                     self.remove_node(child_id, recursive=True)
                 else:
@@ -304,28 +315,33 @@ class MainTree(gobject.GObject):
     def visit_tree(self, pre_func=None, post_func=None):
         # TODO: docstring
         if self.root.has_child():
-            for c in self.root.get_children():
+            for c in self.root.children:
                 node = self.root.get_child(c)
                 self._visit_node(node, pre_func, post_func)
 
-### HELPER FUNCTION FOR TREE #################################################
-#
+#### Helper functions
     def _node_for_path(self, node_id, path):
-        if node_id:
+        """Recursively return the next node along a *path*.
+        
+        The path starts at *node_id*.
+        
+        """
+        if self.has_node(node_id):
             node = self.get_node(node_id)
         else:
             node = self.root
-        if node and path[0] < len(node.children):
-            if len(path) == 1:
-                return node.get_nth_child(path[0])
+        index = path.pop()
+        if index < len(node.children):
+            if len(path) == 0:
+                return node.get_nth_child(index)
             else:
-                node_id = node.get_nth_child(path[0])
-                path = path[1:]
-                return self._node_for_path(node_id, path)
+                child_id = node.get_nth_child(index)
+                return self._node_for_path(child_id, path)
         else:
             return None
 
     def _paths_for_node(self, nid=None):
+        # TODO: docstring
         toreturn = []
         if nid:
             node = self.get_node(nid)
@@ -353,18 +369,31 @@ class MainTree(gobject.GObject):
         return toreturn
 
     def _print_from_node(self, node, prefix=""):
+        """
+        """
+        # TODO: maybe return a string instead of printing to stdout
         print prefix + node.id
         prefix = prefix + " "
         if node.has_child():
-            for c in node.get_children():
+            for c in node.children:
                 cur_node = node.get_child(c)
                 self._print_from_node(cur_node, prefix)
 
     def _visit_node(self, node, pre_func=None, post_func=None):
+        """Recursively walk the tree and call functions on every node.
+        
+        The entire portion of the tree under the node *node* is walked. The
+        *pre_func* callback is called on a node BEFORE its children are
+        processed. The *post_func* callback is called on a node AFTER its
+        children are processed.
+        
+        Either callback may be None, in which case no action occurs.
+        
+        """
         if pre_func:
             pre_func(node)
         if node.has_child():
-            for c in node.get_children():
+            for c in node.children:
                 cur_node = node.get_child(c)
                 self._visit_node(cur_node, pre_func, post_func)
         if post_func:
@@ -547,6 +576,7 @@ class TreeNode(object):
             return self.tree.break_relationship(self.id, child_id)
         else:
             return False
+
 
 class RootNode(TreeNode):
     """A special class for trees with no data in the root node."""
