@@ -16,6 +16,16 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
+"""Liblarch tree library
+
+Liblarch implements a tree (more precisely, a directed acyclic graph (DAG))
+data structure for general use, as well as the concept of tree filters.
+
+A tree filter is a...
+
+The View...
+
+"""
 import gobject
 
 from GTG.tools.liblarch.tree import MainTree
@@ -24,59 +34,56 @@ from GTG.tools.liblarch.filters_bank import FiltersBank
 
 
 class Tree():
+    """The main tree class."""
+    # TODO: complete docstring
     def __init__(self):
+        # TODO: docstring
         self.__tree = MainTree()
-        self.__fbank = FiltersBank(self.__tree)
+        self.__fbank = FiltersBank()
         self.mainview = ViewTree(self.__tree, self.__fbank, static=True)
 
     ###### nodes handling ######
-    def get_node(self,nid):
+    def get_node(self, node_id):
         """
         return the node object defined by the Node id nid.
         raises a ValueError if the node doesn't exist in the tree
         """
-        return self.__tree.get_node(nid)
+        return self.__tree.get_node(node_id)
 
-    def has_node(self,nid):
-        return self.__tree.has_node(nid)
+    def has_node(self, node_id):
+        # TODO: docstring
+        return self.__tree.has_node(node_id)
 
-    def add_node(self,node,parent_id=None):
-        node.set_tree(self.__tree)
-        self.__tree.add_node(node,parent_id=parent_id)
+    def add_node(self, node, parent_id=None):
+        # TODO: docstring
+        self.__tree.add_node(node, parent_id=parent_id)
 
-    def del_node(self,nid):
-        return self.__tree.remove_node(nid)
+    def del_node(self, node_id):
+        # TODO: docstring
+        return self.__tree.remove_node(node_id)
 
-    def refresh_node(self,nid):
-        self.__tree.modify_node(nid)
+    def refresh_node(self, node_id):
+        # TODO: docstring
+        # TODO: why use 'refresh' and 'modify'?
+        self.__tree.modify_node(node_id)
 
-    #move the node to a new parent (dismissing all other parents)
-    #use pid None to move it to the root
-    def move_node(self, nid, new_parent_id=None):
-        if self.has_node(nid):
-            node = self.get_node(nid)
-            node.set_parent(new_parent_id)
-            toreturn = True
-        else:
-            toreturn = False
-        return toreturn
+    # TODO: this probably gives the wrong value for 'self' in move_node
+    move_node = lambda self, *args: MainTree.move_node(self.__tree, *args)
+    print_tree = lambda self: MainTree.print_tree(self.__tree)
+
 
     #if pid is None, nothing is done
-    def add_parent(self,nid,new_parent_id=None):
-        if self.has_node(nid):
-            node = self.get_node(nid)
-            toreturn = node.add_parent(new_parent_id)
-        else:
-            toreturn = False
-        return toreturn
+    def add_parent(self, node_id, new_parent_id=None):
+        # TODO: eliminate this shorthand
+        return self.get_node(node_id).add_parent(new_parent_id)
 
     ############ Views ############
     #The main view is the bare tree, without any filters on it.
     def get_main_view(self):
         return self.mainview
-        
+
     def get_viewtree(self,refresh=True):
-        vt = ViewTree(self.__tree,self.__fbank,refresh=refresh)
+        vt = ViewTree(self.__tree, self.__fbank, refresh=refresh)
         return vt
 
     ########### Filters bank ######
@@ -84,7 +91,7 @@ class Tree():
         """ List, by name, all available filters """
         return self.__fbank.list_filters()
 
-    def add_filter(self,filter_name,filter_func,parameters=None):
+    def add_filter(self, filter_name, filter_func, parameters={}):
         """
         Adds a filter to the filter bank 
         @filter_name : name to give to the filter
@@ -93,7 +100,8 @@ class Tree():
         Return True if the filter was added
         Return False if the filter_name was already in the bank
         """
-        return self.__fbank.add_filter(filter_name,filter_func,parameters=parameters)
+        return self.__fbank.add_filter(filter_name, filter_func,
+          parameters=parameters)
 
     def remove_filter(self,filter_name):
         """
@@ -103,7 +111,6 @@ class Tree():
         """
         return self.__fbank.remove_filter(filter_name)
 
-################### ViewTree #####################
 
 class ViewTree(gobject.GObject):
     #Those are the three signals you want to catch if displaying
@@ -115,7 +122,7 @@ class ViewTree(gobject.GObject):
                     'node-modified-inview': (gobject.SIGNAL_RUN_FIRST, \
                                             gobject.TYPE_NONE, (str, )),}
 
-    def __init__(self,maintree,filters_bank,refresh=True,static=False):
+    def __init__(self, maintree, filters_bank, refresh=True, static=False):
         gobject.GObject.__init__(self)
         self.__maintree = maintree
         self.static = static
@@ -124,10 +131,10 @@ class ViewTree(gobject.GObject):
         if static:
             self.__ft = maintree
         else:
-            self.__ft = FilteredTree(maintree,filters_bank,refresh=refresh)
-            self.__ft.connect('node-added-inview',self.__emit,'add')
-            self.__ft.connect('node-deleted-inview',self.__emit,'del')
-            self.__ft.connect('node-modified-inview',self.__emit,'mod')
+            self.__ft = FilteredTree(maintree, filters_bank, refresh=refresh)
+            self.__ft.connect('node-added-inview', self.__emit, 'add')
+            self.__ft.connect('node-deleted-inview', self.__emit, 'del')
+            self.__ft.connect('node-modified-inview', self.__emit, 'mod')
 
     def __emit(self,sender,tid,data=None):
         if data == 'add':
@@ -162,7 +169,7 @@ class ViewTree(gobject.GObject):
     def get_all_nodes(self):
         return self.__ft.get_all_nodes()
 
-    def get_n_nodes(self,withfilters=[],include_transparent=True):
+    def get_n_nodes(self, withfilters=[], include_transparent=True):
         """
         returns quantity of displayed nodes in this tree
         if the withfilters is set, returns the quantity of nodes
@@ -179,8 +186,8 @@ class ViewTree(gobject.GObject):
         if self.static:
             return len(self.__maintree.get_all_nodes())
         else:
-            return self.__ft.get_n_nodes(withfilters=withfilters,\
-                                    include_transparent=include_transparent)
+            return self.__ft.get_n_nodes(withfilters=withfilters,
+              include_transparent=include_transparent)
 
     def get_node_for_path(self, path):
         return self.__ft.get_node_for_path(path)
@@ -191,8 +198,8 @@ class ViewTree(gobject.GObject):
 
     #pid is used only if nid has multiple parents.
     #if pid is none, a random parent is used.
-    def next_node(self, nid,pid=None):
-        return self.__ft.next_node(nid,pid)
+    def next_node(self, node_id, parent_id=None):
+        return self.__ft.next_node(node_id, parent_id)
 
     def node_has_child(self, nid):
         toreturn = False
@@ -207,14 +214,14 @@ class ViewTree(gobject.GObject):
     def node_n_children(self, nid=None):
         return len(self.node_all_children(nid))
 
-    def node_all_children(self, nid=None):
+    def node_all_children(self, node_id=None):
         toreturn = []
         if self.static:
-            node = self.__get_static_node(nid)
+            node = self.__get_static_node(node_id)
             if node:
                 toreturn = node.children
         else:
-            toreturn = self.__ft.node_all_children(nid)
+            toreturn = self.__ft.node_all_children(node_id)
         return toreturn
 
     def node_nth_child(self, nid, n):
@@ -242,7 +249,7 @@ class ViewTree(gobject.GObject):
         if self.static:
             node = self.__get_static_node(nid)
             if node:
-                toreturn = node.get_parents()
+                toreturn = node.parents
         else:
             toreturn = self.__ft.node_parents(nid)
         return toreturn
@@ -251,8 +258,8 @@ class ViewTree(gobject.GObject):
         return self.__ft.is_displayed(nid)
 
     ####### Change filters #################
-    def apply_filter(self,filter_name,parameters=None,\
-                     reset=False,refresh=True):
+    def apply_filter(self, filter_name, parameters={}, reset=False,
+      refresh=True):
         """
         Applies a new filter to the tree.
         @param filter_name: The name of an already registered filter to apply

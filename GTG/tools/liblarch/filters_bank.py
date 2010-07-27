@@ -16,54 +16,76 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # 
-
 """
 filters_bank stores all of GTG's filters in centralized place
 """
-
+# TODO: GTG-specific filters should be outside liblarch
 from datetime import datetime
 
 from GTG.core.task import Task
-from GTG.tools.dates  import date_today, no_date, Date
+from GTG.tools.dates import date_today, no_date, Date
 
 
 class Filter:
-    def __init__(self,func,req):
-        self.func = func
-        self.dic = {}
-        self.tree = req
-
-    def set_parameters(self,dic):
-        if dic:
-            self.dic = dic
-    
-    def is_displayed(self,tid):
-        if self.tree.has_node(tid):
-            task = self.tree.get_node(tid)
-            value = True
-        else:
-            return False
-        if self.dic:
-            value = self.func(task,parameters=self.dic)
-        else:
-            value = self.func(task)
-        if 'negate' in self.dic and self.dic['negate']:
-            value = not value
-        return value
+    """Base class for filters."""
+    def __init__(self, func, params={}):
+        """Initialize the filter.
         
-    def get_parameters(self,param):
-        if self.dic.has_key(param):
-            return self.dic[param]
-        else:
-            return None
+        *func* is a callback accepts two arguments:
+        
+        """
+        self.function = func
+        # call dict() to make sure the params are in the right format
+        self.parameters = dict(params)
 
-    #return True is the filter is a flat list only
-    def is_flat(self):
-        if self.dic.has_key('flat'):
-            return self.dic['flat']
+    def set_parameters(self, dic):
+        """Set the parameters to be passed to the filter callback.
+        
+        *dic* should be a dictionary.
+        
+        """
+        self.parameters.update(dic)
+
+    def is_displayed(self, node):
+        """Filter a node.
+        
+        A liblarch TreeNode (or an instance of a subclass) is with the ID
+        *node_id* is retrieved from the Filter's associated tree.
+        
+        """
+        if len(self.parameters) > 0:
+            displayed = self.function(node, parameters=self.parameters)
         else:
-            return False
-            
+            displayed = self.function(node)
+        if self.parameters.get('negate', False):
+            displayed = not displayed
+        return displayed
+
+    # alias for is_displayed
+    filter = is_displayed
+
+    def get_parameter(self, name):
+        """Get a filter parameter named *name*.
+        
+        If the parameter does not exist, None is returned.
+        
+        """
+        return self.parameters.get(name, None)
+
+    def is_flat(self):
+        """Return True if the filter is a flat list only."""
+        return self.parameters.get('flat', False)
+
+
+class TagFilter(Filter):
+    def __init__(self, tag):
+        self._tag = tag
+        Filter.__init__(self, self._filter)
+
+    def _filter(self, node):
+        pass
+
+
 class SimpleTagFilter:
     def __init__(self,tagname,req):
         self.req = req
@@ -100,13 +122,13 @@ class SimpleTagFilter:
             
     def is_flat(self):
         return False
-    
+
+
 class FiltersBank:
     """
     Stores filter objects in a centralized place.
     """
-
-    def __init__(self,tree):
+    def __init__(self):
         """
         Create several stock filters:
 
@@ -115,51 +137,23 @@ class FiltersBank:
         closed - Tasks of status closed or dismissed
         notag - Tasks with no tags
         """
-        self.tree = tree
         self.available_filters = {}
         self.custom_filters = {}
-        #Workview
-        filt_obj = Filter(self.workview,self.tree)
-        self.available_filters['workview'] = filt_obj
-        #Active
-        filt_obj = Filter(self.active,self.tree)
-        self.available_filters['active'] = filt_obj
-        #closed
-        filt_obj = Filter(self.closed,self.tree)
-        param = {}
-        param['flat'] = True
-        filt_obj.set_parameters(param)
-        self.available_filters['closed'] = filt_obj
-        #notag
-        filt_obj = Filter(self.notag,self.tree)
-        param = {}
-        param['transparent'] = True
-        filt_obj.set_parameters(param)
-        self.available_filters['notag'] = filt_obj
-        #workable
-        filt_obj = Filter(self.is_workable,self.tree)
-        self.available_filters['workable'] = filt_obj
-        #workable
-        filt_obj = Filter(self.is_started,self.tree)
-        self.available_filters['started'] = filt_obj
-        #workdue
-        filt_obj = Filter(self.workdue,self.tree)
-        self.available_filters['workdue'] = filt_obj
-        #workstarted
-        filt_obj = Filter(self.workstarted,self.tree)
-        self.available_filters['workstarted'] = filt_obj
-        #worktostart
-        filt_obj = Filter(self.worktostart,self.tree)
-        self.available_filters['worktostart'] = filt_obj
-        #worklate
-        filt_obj = Filter(self.worklate,self.tree)
-        self.available_filters['worklate'] = filt_obj
-        #no_disabled_tag
-        filt_obj = Filter(self.no_disabled_tag,self.tree)
-        param = {}
-        param['transparent'] = True
-        filt_obj.set_parameters(param)
-        self.available_filters['no_disabled_tag'] = filt_obj
+        f = {
+          'workview': Filter(self.workview),
+          'active': Filter(self.active),
+          'closed': Filter(self.closed, {'flat': True}),
+          'notag': Filter(self.notag, {'transparent': True}),
+          'workable': Filter(self.is_workable),
+          'started': Filter(self.is_started),
+          'workdue': Filter(self.workdue),
+          'workstarted': Filter(self.workstarted),
+          'worktostart': Filter(self.worktostart),
+          'worklate': Filter(self.worklate),
+          'no_disabled_tag': Filter(self.no_disabled_tag,
+            {'transparent': True}),
+          }
+        self.available_filters.update(f)
 
     ######### hardcoded filters #############
     def notag(self,task,parameters=None):
@@ -246,23 +240,23 @@ class FiltersBank:
         return toreturn
         
     ##########################################
-        
-    def get_filter(self,filter_name):
-        """ Get the filter object for a given name """
+    def get_filter(self, filter_name):
+        """ Get the filter object for a given *filter_name*."""
         if self.available_filters.has_key(filter_name):
             return self.available_filters[filter_name]
         elif self.custom_filters.has_key(filter_name):
             return self.custom_filters[filter_name]
         else:
-            return None
-    
+            raise KeyError("FiltersBank contains no filter '%s'" %
+              filter_name)
+
     def list_filters(self):
-        """ List, by name, all available filters """
+        """List, by name, all available filters."""
         liste = self.available_filters.keys()
         liste += self.custom_filters.keys()
         return liste
-    
-    def add_filter(self,filter_name,filter_func,parameters=None):
+
+    def add_filter(self, filter_name, filter_func, parameters={}):
         """
         Adds a filter to the filter bank 
         Return True if the filter was added
@@ -274,18 +268,17 @@ class FiltersBank:
                 negate = True
                 filter_name = filter_name[1:]
             if filter_name.startswith('@'):
-                filter_obj = SimpleTagFilter(filter_name,self.tree)
+                filter_obj = SimpleTagFilter(filter_name)
                 param = {}
                 param['transparent'] = True
                 filter_obj.set_parameters(param)
             else:
-                filter_obj = Filter(filter_func,self.tree)
-                filter_obj.set_parameters(parameters)
+                filter_obj = Filter(filter_func, parameters)
             self.custom_filters[filter_name] = filter_obj
             return True
         else:
             return False
-        
+
     def remove_filter(self,filter_name):
         """
         Remove a filter from the bank.
@@ -301,3 +294,4 @@ class FiltersBank:
                 return False
         else:
             return False
+

@@ -72,15 +72,67 @@ An important point to stress is that information needs to be passed from
 bottom to top, with no horizontal communication at all between views.
 
 """
+import Queue
 
 import gobject
 
+from GTG.tools.liblarch.tree import RootNode
 from GTG.tools.logger import Log
+
 
 COUNT_CACHING_ENABLED = True
 
-class FilteredTree(gobject.GObject):
 
+class VirtualRootNode(RootNode):
+    """A virtual root node for a filtered tree.
+    
+    The VirtualRootNode has the same ID as the root node of the *tree* passed
+    to the constructor. It can be used to keep a list of 
+    
+    """
+    def __init__(self, tree):
+        RootNode.__init__(self, tree.root._type)
+        self._tree = tree
+        self._true_root = tree.root
+
+    def _get_id(self):
+        return self._tree.root.id
+
+
+class FilteredTree(gobject.GObject):
+    """A tree data structure with filtering.
+    
+    A FilteredTree has an associated MainTree and FiltersBank. Some Filters
+    from the FiltersBank are applied to every node in the MainTree. The nodes
+    are either 'filtered' (do not appear in the FilteredTree) or 'displayed'
+    (do appear in the FilteredTree)
+    
+    If a MainTree node with children is filtered, then the layout of the
+    FilteredTree is different, as follows: any displayed children of the
+    filtered node are made children of a "virtual root".
+    
+    An example. In the tree:
+    
+     A
+     `B
+     `C
+      `D
+       `E
+      `F
+     G
+    
+    ...suppose node C is filtered. Then D and F have no parent in the
+    FilteredTree, so they become children of the "virtual root". The
+    FilteredTree layout is:
+    
+    A
+    `B
+    D
+    `E
+    F
+    G
+    
+    """
     #Those are the three signals you want to catch if displaying
     #a filteredtree. The argument of all signals is the tid of the task
     __gsignals__ = {'node-added-inview': (gobject.SIGNAL_RUN_FIRST, \
@@ -90,7 +142,7 @@ class FilteredTree(gobject.GObject):
                     'node-modified-inview': (gobject.SIGNAL_RUN_FIRST, \
                                             gobject.TYPE_NONE, (str, )),}
 
-    def __init__(self,tree,filtersbank,refresh=True):
+    def __init__(self, tree, filtersbank, refresh=True):
         """
         Construct a FilteredTree object on top of an existing task tree.
         @param req: The requestor object
@@ -107,65 +159,67 @@ class FilteredTree(gobject.GObject):
         self.remove_count = 0
         self.__nodes_count = 0
         self.flat = False
-        #virtual root is the list of root nodes
-        #initially, they are the root nodes of the original tree
-        self.virtual_root = []
-        self.displayed_nodes = []
+        # virtual root is the list of root nodes
+        # initially, they are the root nodes of the original tree
+        self.vroot = VirtualRootNode(self.tree)
+        self.displayed_nodes = set()
         #This is for profiling
 #        self.using_cache = 0
         #useful for temp storage :
-        self.node_to_add = []
-        self.__adding_queue = []
         self.__adding_lock = False
-        self.tasks_to_modify = []
-        self.node_to_remove = []
-        self.__clean_list = []
+        # sets of nodes to process.
+        # TODO: if order is important, change to Queue.Queue() or []
+        self._to_modify = set()
+        self._to_remove = set()
+        self._to_add = Queue.Queue()
+        self._to_clean = set()
         #an initial refilter is always needed if we don't apply a filter
         #for performance reason, we do it only if refresh = True
         self.__reset_cache()
         if refresh:
             self.refilter()
-        #connecting
-        self.tree.connect("node-added", self.__task_added)
-        self.tree.connect("node-modified", self.__task_modified)
-        self.tree.connect("node-deleted", self.__task_deleted)
+        # connect to signals
+        self.tree.connect("node-added", self.__node_added)
+        self.tree.connect("node-modified", self.__node_modified)
+        self.tree.connect("node-deleted", self.__node_deleted)
 
     def __reset_cache(self):
         self.path_for_node_cache = {}
-        self.counted_nodes = []
+        self.counted_nodes = set()
         self.count_cache = {}
 
     #### Standard tree functions
-    def get_node(self,id):
+    def get_node(self, id):
         """
         Retrieves the given node
         @param id: The tid of the task node
         @return: Node from the underlying tree
         """
         return self.tree.get_node(id)
-    
+
     def get_root(self):
         """
         returns the root node
         """
         return self.tree.get_root()
-        
+
     def get_all_nodes(self):
         """
         returns list of all displayed node keys
         """
         return list(self.displayed_nodes)
 
+    def get_n_nodes(self, withfilters=[], include_transparent=True):
+        """Return the number of displayed nodes in the tree.
         
-    def get_n_nodes(self,withfilters=[],include_transparent=True):
-        """
-        returns quantity of displayed nodes in this tree
-        if the withfilters is set, returns the quantity of nodes
+        If the withfilters is set, returns the quantity of nodes
         that will be displayed if we apply those filters to the current
         tree. It means that the currently applied filters are also taken into
         account.
-        If include_transparent=False, we only take into account the applied filters
-        that doesn't have the transparent parameters.
+        
+        If include_transparent=False, we only take into account the applied
+        filters that doesn't have the transparent parameters.
+        
         """
         toreturn = 0
         usecache = False
@@ -184,11 +238,12 @@ class FilteredTree(gobject.GObject):
 #                print "we used cache %s" %(self.using_cache)
             else:
                 for tid in zelist:
+                    node = self.tree.get_node(tid)
                     result = True
                     for f in withfilters:
                         filt = self.fbank.get_filter(f)
                         if filt:
-                            result = result and filt.is_displayed(tid)
+                            result = result and filt.is_displayed(node)
                     if result:
                         toreturn += 1
                 if COUNT_CACHING_ENABLED and usecache:
@@ -196,30 +251,27 @@ class FilteredTree(gobject.GObject):
         else:
             toreturn = len(zelist)
         return toreturn
-        
-    ### signals functions
-    def __task_added(self,sender,tid):
-        todis = self.__is_displayed(tid)
-        curdis = self.is_displayed(tid)
-        if todis and not curdis:
-            self.__add_node(tid)
-        
-    def __task_modified(self,sender,tid):
-        if tid not in self.tasks_to_modify:
-            self.tasks_to_modify.append(tid)
-            inroot = self.__is_root(tid)
-            self.__update_node(tid,inroot)
-            self.tasks_to_modify.remove(tid)
 
-    def __task_deleted(self,sender,tid):
-        self.__remove_node(tid)
-        
+    ### GObject signal callbacks
+    def __node_added(self, sender, node_id):
+        if self.__filter_node(node_id) and node_id not in self.displayed_nodes:
+            self.__add_node(node_id)
+
+    def __node_modified(self, sender, node_id):
+        """Callback for the node-modified signal."""
+        if node_id not in self._to_modify:
+            self._to_modify.add(node_id)
+            self.__update_node(node_id)
+            self._to_modify.remove(node_id)
+
+    def __node_deleted(self, sender, node_id):
+        self.__remove_node(node_id)
+
     ####TreeModel functions ##############################
-
     def print_tree(self):
-        print "displayed : %s" %self.displayed_nodes
-        for rid in self.virtual_root:
-            self.__print_from_node(rid)
+        print "displayed : %s" % self.displayed_nodes
+        for node_id in self.vroot.children:
+            self.__print_from_node(node_id)
 
     #The path received is only for tasks that are displayed
     #We have to find the good node.
@@ -231,8 +283,8 @@ class FilteredTree(gobject.GObject):
         if not path or str(path) == '()':
             return None
         p0 = path[0]
-        if len(self.virtual_root) > p0:
-            n1id = self.virtual_root[p0]
+        if len(self.vroot.children) > p0:
+            n1id = self.vroot.children[p0]
             pa = path[1:]
             toreturn = self.__node_for_path(n1id,pa)
         else:
@@ -264,7 +316,7 @@ class FilteredTree(gobject.GObject):
         else:
             return [()]
         #For that node, we should convert the base_path to path
-        if not node or not self.is_displayed(tid):
+        if not node or tid not in self.displayed_nodes:
             return toreturn
         #This is the cache so we don't compute it all the time
         #TODO: this is commented out as it still doesn't work with filter
@@ -275,8 +327,8 @@ class FilteredTree(gobject.GObject):
             toreturn.append(path)
 #        elif tid in self.virtual_root:
         elif len(pars) <= 0:
-            if tid in self.virtual_root:
-                ind = self.virtual_root.index(tid)
+            if tid in self.vroot.children:
+                ind = self.vroot.children.index(tid)
                 path = (ind,)
                 toreturn.append(path)
             else:
@@ -318,7 +370,7 @@ class FilteredTree(gobject.GObject):
                     toreturn = self.path_for_node_cache[tid]
                 else:
                     print "ghost position for %s" %tid
-                    print "VR : %s " %self.virtual_root
+                    print "VR : %s " % self.vroot.children
                     print self.path_for_node_cache
                     
         self.path_for_node_cache[tid] = toreturn
@@ -326,37 +378,37 @@ class FilteredTree(gobject.GObject):
 
     #pid is used only if nid has multiple parents.
     #if pid is none, a random parent is used.
-    def next_node(self, nid,pid=None):
+    def next_node(self, node_id, parent_id=None):
         """
         Returns the next sibling node, or None if there are no other siblings
         """
         #We should take the next good node, not the next base node
         toreturn = None
-        if nid in self.virtual_root:
-            i = self.virtual_root.index(nid) + 1
-            if len(self.virtual_root) > i:
-                nextnode_id = self.virtual_root[i]
-                if self.is_displayed(nextnode_id):
+        if node_id in self.vroot.children:
+            i = self.vroot.children.index(node_id) + 1
+            if len(self.vroot.children) > i:
+                nextnode_id = self.vroot.children[i]
+                if nextnode_id in self.displayed_nodes:
                     toreturn = nextnode_id
         else:
-            parents_nodes = self.node_parents(nid)
-            if len(parents_nodes) >= 1:
-                if pid and pid in parents_nodes:
-                    parent_node = pid
+            parents_nodes = self.node_parents(node_id).copy()
+            if len(parents_nodes):
+                if parent_id and parent_id in parents_nodes:
+                    parent_node = parent_id
                 else:
-                    parent_node = parents_nodes[0]
+                    parent_node = parents_nodes.pop()
                 total = self.node_n_children(parent_node)
                 c = 0
                 next_id = -1
                 while c < total and next_id < 0:
-                    child_id = self.node_nth_child(parent_node,c)
+                    child_id = self.node_nth_child(parent_node, c)
                     c += 1
-                    if child_id == nid:
+                    if child_id == node_id:
                         next_id = c
                 if next_id >= 0 and next_id < total:
-                    toreturn = self.node_nth_child(parent_node,next_id)
+                    toreturn = self.node_nth_child(parent_node, next_id)
         #check to see if our result is correct
-        if toreturn and not self.is_displayed(toreturn):
+        if toreturn and toreturn not in self.displayed_nodes:
             toreturn = None
         return toreturn
 
@@ -374,193 +426,128 @@ class FilteredTree(gobject.GObject):
         return child
 
     #Done
-    def node_has_child(self, nid):
-        """
-        Returns true if the given node has any children
-        """
-        #print "on_iter_has_child for node %s" %node
-        #we should say "has_good_child"
-#        print "node has %s children" %self.node_n_children(node)
-        if not self.flat and self.node_n_children(nid)>0:
-            return True
-        else:
-            return False
+    def node_has_child(self, node_id=None):
+        """Return True if the given node has any displayed children."""
+        return not self.flat and len(self.node_all_children(node_id)) > 0
 
     def node_n_children(self,nid):
         return len(self.node_all_children(nid))
-    
-    def node_all_children(self, nid):
-        """
-        Returns number of children for the given node
-        """
-        #we should return the number of "good" children
-        toreturn = []
-        if not nid or nid == 'root':
-            toreturn = list(self.virtual_root)
-        elif not self.flat:
-            node = self.tree.get_node(nid)
-            if node:
-                for cid in node.get_children():
-                    if self.is_displayed(cid):
-                        toreturn.append(cid)
-        return toreturn
 
-    #Done
-    def node_nth_child(self, nid, n):
+    def node_all_children(self, node_id):
+        """Returns a list of IDs of children for the given node."""
+        children = []
+        if not self.flat:
+            node = self.tree.get_node(node_id)
+            for child_id in node.children:
+                if child_id in self.displayed_nodes:
+                    children.append(child_id)
+        return children
+
+    def __displayed_children(self, node_id):
+        """Return a list of displayed children for the node with ID *node_id*.
+        
+        The children are listed in the same order as they are in the unfiltered
+        tree.
+        
         """
-        Retrieves the nth child of the node.
-        @param node: The parent node, or None to look at children of the
-        virtual_root.
-        """
-        #we return the nth good children !
-        toreturn = None
-        if not nid:
-            if len(self.virtual_root) > n:
-                to_return = self.virtual_root[n]
-            else:
-                toreturn = None
-                raise ValueError("Root has only %s children,"%len(self.virtual_root)+\
-                                     "you are asking for %s" %n)
-        elif self.flat:
-            #If we are flat, nobody has children
-            toreturn = None
+        return filter(lambda c: c in self.displayed_nodes,
+          self.tree.get_node(node_id).children)
+
+    def node_nth_child(self, node_id, n):
+        """Return the *n*th displayed child of the node with ID *node_id*."""
+        if self.flat:
+            return None
         else:
-            node = self.get_node(nid)
-            total = len(node.children)
-            cur = 0
-            good = 0
-            toreturn = None
-            while good <= n and cur < total:
-                curid = node.get_nth_child(cur)
-                if curid and self.is_displayed(curid):
-                    if good == n:
-                        toreturn = curid
-                        #if we have a child, it cannot be in the root
-#                        if cid in self.virtual_root:
-##                            isroot = self.__is_root(curn)
-#                            print "*** children %s of task %s is also in VR" \
-#                                                    %(cid,node.get_id())
-#                            print "   we will correct that error now"
-#                            self.__root_update(cid,False)
-                    good += 1
-                cur += 1
-#            if not toreturn:
-#                raise ValueError("Node %s has only %s children,"%(nid,total)+\
-#                                     "you are asking for %s" %n)
-        return toreturn
+            return self.__displayed_children(node_id)[n]
 
-    #Done
-    def node_parents(self, nid):
-        """
-        Returns parents of the given node, or [] if there is no 
-        parent (such as if the node is a child of the virtual root),
-        or if the parent is not displayable.
-        """
-        #return [] if we are at a Virtual root
-        parents_nodes = []
-        if not nid:
-            Log.debug("requested a parent of the root")
-            return parents_nodes
-        #we return only parents that are not root and displayed
-        if not self.flat and self.tree.has_node(nid):
-            node = self.tree.get_node(nid)
-            if node.has_parent():
-                for pid in node.get_parents():
-                    if self.is_displayed(pid):
-                        parents_nodes.append(pid)
-        else:
-            Log.debug("requested a parent of a non-existing node")
-        return parents_nodes
-
+    def node_parents(self, node_id):
+        """Return a set of IDs of all displayed parents of the node with ID
+        *node_id*."""
+        return self.displayed_nodes.intersection(
+          self.tree.get_node(node_id).parents)
 
     #### Filtering methods #########
-    
-    def is_displayed(self,tid):
+    def is_displayed(self, node_id):
         """
-        This is a public method that return True if the task is
+        This is a public method that return True if the node is
         currently displayed in the tree
         """
-        if tid:
-            toreturn = tid in self.displayed_nodes
+        if node_id:
+            toreturn = node_id in self.displayed_nodes
         else:
             toreturn = False
         return toreturn
-    
-    def __is_displayed(self, tid):
+
+    def __is_displayed(self, node_id):
         """
-        This is a private method that return True if the task *should*
-        be displayed in the tree, regardless of its current status
+        This is a private method that return True if the node *should*
+        be displayed in the tree, regardless of its current status.
         """
-        if tid:
+        if node_id == self.vroot.id:
+            return False
+        else:
             result = True
             counting_result = True
             cache_key = ""
-            for f in self.applied_filters:
-                filt = self.fbank.get_filter(f)
-                cache_key += f
-                if filt:
-                    temp = filt.is_displayed(tid)
-                    result = result and temp
-                    if not filt.get_parameters('transparent'):
-                        counting_result = counting_result and temp
-            if counting_result and tid not in self.counted_nodes:
+            node = self.tree.get_node(node_id)
+            for filter_name in self.applied_filters:
+                f = self.fbank.get_filter(filter_name)
+                cache_key += filter_name
+                temp = f.filter(node)
+                result = result and temp
+                if not f.get_parameter('transparent'):
+                    counting_result = counting_result and temp
+            if counting_result and node_id not in self.counted_nodes:
                 #This is an hard custom optimisation for task counting
                 #Normally, we would here reset the cache of counted tasks
                 #But this slow down a lot the startup.
                 #So, we update manually the cache.
                 for k in self.count_cache.keys():
                     f = self.fbank.get_filter(k)
-                    if f.is_displayed(tid):
+                    if f.filter(node):
                         self.count_cache[k] += 1
-                self.counted_nodes.append(tid)
-            elif not counting_result and tid in self.counted_nodes:
+                self.counted_nodes.add(node_id)
+            elif not counting_result and node_id in self.counted_nodes:
                 #Removing node is less critical so we just reset the cache.
                 self.count_cache = {}
-                self.counted_nodes.remove(tid)
-        else:
-            result = False
-        return result
-        
+                self.counted_nodes.remove(node_id)
+            return True
+
+    __filter_node = __is_displayed
+
     def refilter(self):
-        """
-        rebuilds the tree from scratch. It should be called only when 
-        the filter is changed (i.e. only filters_bank should call it).
+        """Rebuild the FilteredTree from scratch.
+        
+        This method should be called only when the set of applied filters is
+        changed (i.e. only filters_bank should call it).
+        
         """
         self.update_count = 0
         self.add_count = 0
         self.remove_count = 0
-        virtual_root2 = []
-        to_add = []
-#        self.counted_nodes = []
-#        self.count_cache = {}
         self.__reset_cache()
-        #If we have only one flat filter, the result is flat
+        # the FilteredTree is flat if *any* applied filter is flat
         self.flat = False
-        for f in self.applied_filters:
-            filt = self.fbank.get_filter(f)
-            if filt and not self.flat:
-                self.flat = filt.is_flat()
-        #First step, we empty the current tree as we will rebuild it
-        #from scratch
-        for rid in list(self.virtual_root):
-            self.__clean_from_node(rid)
-        #We reinitialize the tree before adding nodes that should be added
-        self.displayed_nodes = []
-        #Then, we list the nodes that will be
-        #ultimately displayed
-        for nid in self.tree.get_all_nodes():
-            if self.__is_displayed(nid):
-                to_add.append(nid)
-        #And we add them
-        for nid in list(to_add):
-            self.__add_node(nid)
-        #end of refiltering
-#        print "*** end of refiltering ****"
-#        self.print_tree()
+        for filter_name in self.applied_filters:
+            if self.fbank.get_filter(filter_name).is_flat():
+                self.flat = True
+                break
+        # first empty the current tree
+        for node_id in self.vroot.children:
+            self.__clean_from_node(node_id)
+        self.displayed_nodes = set()
+        # list nodes that will be ultimately displayed
+        to_add = []
+        for node_id in self.tree.get_all_nodes():
+            if self.__filter_node(node_id):
+                to_add.append(node_id)
+        # finally, add them
+        for node_id in to_add:
+            self.__add_node(node_id)
 
     ####### Change filters #################
-    def apply_filter(self,filter_name,parameters=None,\
-                     reset=False,refresh=True):
+    def apply_filter(self, filter_name, parameters={}, reset=False,
+      refresh=True):
         """
         Applies a new filter to the tree.  Can't be called on the main tree.
         @param filter_name: The name of an already registered filter to apply
@@ -569,19 +556,22 @@ class FilteredTree(gobject.GObject):
         """
         if reset:
             self.applied_filters = []
-        if parameters:
-            filt = self.fbank.get_filter(filter_name)
-            if filt:
-                filt.set_parameters(parameters)
-        if filter_name not in self.applied_filters:
-            self.applied_filters.append(filter_name)
-            if refresh:
-                self.refilter()
-            return True
-        else:
-            return False
-    
-    def unapply_filter(self,filter_name,refresh=True):
+        try:
+            f = self.fbank.get_filter(filter_name)
+            if len(parameters):
+                f.set_parameters(parameters)
+            if filter_name not in self.applied_filters:
+                self.applied_filters.append(filter_name)
+                if refresh:
+                    self.refilter()
+                return True
+            else:
+                return False
+        except KeyError, e:
+            # the requested filter doesn't exist
+            raise e
+
+    def unapply_filter(self, filter_name, refresh=True):
         """
         Removes a filter from the tree.  Can't be called on the main tree.
         @param filter_name: The name of an already added filter to remove
@@ -594,7 +584,7 @@ class FilteredTree(gobject.GObject):
         else:
             return False
 
-    def reset_filters(self,refresh=True):
+    def reset_filters(self, refresh=True):
         """
         Clears all filters currently set on the tree.  Can't be called on 
         the main tree.
@@ -603,11 +593,12 @@ class FilteredTree(gobject.GObject):
         if refresh:
             self.refilter()
 
-    def reset_tag_filters(self,refilter=True):
+    def reset_tag_filters(self, refilter=True):
         """
         Clears all filters currently set on the tree.  Can't be called on 
         the main tree.
         """
+        # TODO: this is tag-specific, remove
         if "notag" in self.applied_filters:
             self.applied_filters.remove('notag')
         if "no_disabled_tag" in self.applied_filters:
@@ -618,152 +609,109 @@ class FilteredTree(gobject.GObject):
         if refilter:
             self.refilter()
 
-    ####### Private methods #################
-
-    # Return True if the node should be a virtual root node
-    # regardless of the current state
-    def __is_root(self,nid):
+    ### Private methods
+    def __is_root(self, node_id):
+        """Return True if a node should be a virtual root node.
+        
+        If none of the parents of the node with ID *node_id* will be displayed
+        with 
+        
+        """
         is_root = True
-        if not self.flat and self.tree.has_node(nid):
-            n = self.tree.get_node(nid)
-            if n.has_parent():
-                for par in n.get_parents():
-                    if self.__is_displayed(par):
-                        is_root = False
+        if not self.flat:
+            for parent_id in self.tree.get_node(node_id).parents:
+                if self.__filter_node(parent_id):
+                    is_root = False
+                    break
         return is_root
-    
-    # Put or remove a node from the virtual root
-    def __root_update(self,tid,inroot):
-#        if tid in DEBUG_TID:
-#            print "calling root update %s for %s" %(inroot,tid)
-        children_update = False
-        if inroot:
-            if tid not in self.virtual_root:
-#                if tid in DEBUG_TID:
-#                    print "appending %s to VR" %tid
-                self.virtual_root.append(tid)
-                #We will also update the children of that node
-                children_update = True
-        else:
-            if tid in self.virtual_root:
-#                print "removin %s from VR" %tid
-                self.virtual_root.remove(tid)
-            #even if you are not a root, 
-            #your children should not be in VR either
-            else:
-                children_update = True
-        #now we handle childrens
-        if not self.flat and children_update:
-            nc = self.node_n_children(tid)
-#            print "updating %s childrens of node %s" %(nc,tid)
-            i = 0
-            while i < nc:
-                chid = self.node_nth_child(tid,i)
-                if chid in self.virtual_root:
-                    #the child was in the VR. It should not be
-                    #because its parent is in now
-                    self.__update_node(chid,False)
-                i += 1
-    
-    def __update_node(self,tid,inroot):
-        if tid not in self.node_to_remove:
-            todis = self.__is_displayed(tid) 
-            curdis = self.is_displayed(tid)
-            if todis:
+
+    def __update_node(self, node_id):
+        if node_id not in self._to_remove:
+            curdis = node_id in self.displayed_nodes
+            if self.__filter_node(node_id):
                 #if the task was not displayed previously but now should
                 #we add it.
                 if not curdis:
 #                    print "*update_node : adding node %s" %tid
-                    self.__add_node(tid)
+                    self.__add_node(node_id)
                 else:
-                    self.__root_update(tid,inroot)
                     self.update_count += 1
-                    self.emit("node-modified-inview", tid)
+                    self.emit("node-modified-inview", node_id)
                     #I don't remember why we have to update the children.
                     if not self.flat:
-                        node = self.get_node(tid)
-                        if node:
-                            child_list = node.get_children()
-                            for c in child_list:
-                                self.__update_node(c,False)
+                        for child_id in self.get_node(node_id).children:
+                            self.__update_node(child_id)
             else:
                 #if the task was displayed previously but shouldn't be anymore
                 #we remove it
                 if curdis:
-                    self.__remove_node(tid)
+                    self.__remove_node(node_id)
                 else:
-                    self.emit("node-deleted-inview", tid)
+                    self.emit("node-deleted-inview", node_id)
 
-
-    
-    
-    def __add_node(self,tid,inroot=None):
-        self.__adding_queue.append([tid,inroot])
-        if tid and not self.__adding_lock and len(self.__adding_queue) > 0:
+    def __add_node(self, node_id):
+        """Add the node with ID *node_id* to the displayed nodes."""
+        self._to_add.put_nowait(node_id)
+        if not self.__adding_lock and not self._to_add.empty():
             self.__adding_lock = True
             self.__adding_loop()
 
     def __adding_loop(self):
-        while len(self.__adding_queue) > 0:
-            tid,inroot = self.__adding_queue.pop(0)
-            if self.tree.has_node(tid) and not self.is_displayed(tid):
-                if inroot == None:
-                    inroot = self.__is_root(tid)
-                #If the parent's node is not already displayed, we wait
-                #(the len of parents is 0 means no parent dislayed)
-                parents = self.node_parents(tid)
-                if not inroot and len(parents) <= 0:
-                    if tid not in self.node_to_add:
-                        self.node_to_add.append(tid)
-                elif inroot and len(parents) > 0:
-                    #"we add to the root a task with parents !!!!!"
-                    if tid not in self.node_to_add:
-                        self.node_to_add.append(tid)
-                else:
-                    self.add_count += 1
-                    self.__nodes_count += 1
-                    self.displayed_nodes.append(tid)
-                    if tid in self.node_to_add:
-                        self.node_to_add.remove(tid)
-                    #Should be in displayed_nodes before updating the root
-                    self.__root_update(tid,inroot)
-                    self.emit("node-added-inview", tid)
-                    #We added a new node so we can check with those waiting
-                    lost_nodes = []
-                    while len(self.node_to_add) > 0:
-                        nid = self.node_to_add.pop(0)
-                        if len(self.node_parents(nid)) > 0:
-                            self.__add_node(nid,False)
-                        else:
-                            lost_nodes.append(nid)
-                    self.node_to_add += lost_nodes
-        self.__adding_lock = False
-    
-    def __remove_node(self,tid):
-        if tid not in self.node_to_remove:
-            self.node_to_remove.append(tid)
+        """Process nodes to be added until none are left."""
+        try:
+            while True:
+                node_id = self._to_add.get_nowait()
+                if node_id in self.displayed_nodes:
+                    # TODO: check if this ever happens
+                    continue
+                is_root = self.__is_root(node_id)
+                # if the parent node(s) will be displayed, wait 'til at least
+                # one is displayed
+                if not is_root and len(self.node_parents(node_id)) == 0:
+                    if self._to_add.empty():
+                        # node_id is going to get recycled endlessly. Give up.
+                        pass
+                    else:
+                        # try again later
+                        self._to_add.put_nowait(node_id)
+                        continue
+                if is_root:
+                        # the node is going to be under the virtual root
+                    self.vroot.children.append(node_id)
+                # actually add the node
+                self.add_count += 1
+                self.__nodes_count += 1
+                self.displayed_nodes.add(node_id)
+                # should be in displayed_nodes before updating the root
+                self.emit("node-added-inview", node_id)
+        except Queue.Empty:
+            self.__adding_lock = False
+
+    def __remove_node(self, node_id):
+        if node_id not in self._to_remove:
+            self._to_remove.add(node_id)
             isroot = False
-            if tid in self.displayed_nodes:
-                isroot = self.__is_root(tid)
+            if node_id in self.displayed_nodes:
+                isroot = self.__is_root(node_id)
                 self.remove_count += 1
                 self.__nodes_count -= 1
-                self.emit('node-deleted-inview',tid)
-                self.__root_update(tid,False)
-                self.displayed_nodes.remove(tid)
-            if tid in self.counted_nodes:
-                self.counted_nodes.remove(tid)
+                self.emit('node-deleted-inview', node_id)
+                self.displayed_nodes.remove(node_id)
+            if node_id in self.vroot.children:
+                self.vroot.children.remove(node_id)
+            if node_id in self.counted_nodes:
+                self.counted_nodes.remove(node_id)
                 self.count_cache = {}
-            #Test if this is necessary
-            parent = self.node_parents(tid)
-            #we don't need to update parents if the node is root
-            #this might happen with flat filter
+            # TODO: test if this is necessary
             if not isroot:
+                parent = self.node_parents(node_id)
+                #we don't need to update parents if the node is root
+                #this might happen with flat filter
                 for pid in parent:
-                    if pid not in self.__clean_list:
-                        inroot = self.__is_root(pid)
-                        self.__update_node(pid,inroot)
-            self.node_to_remove.remove(tid)
-        
+                    if pid not in self._to_clean:
+                        self.__update_node(pid)
+            self._to_remove.remove(node_id)
+
     #This function print the actual tree. Useful for debugging
     def __print_from_node(self, nid, prefix=""):
         print "%s%s    (%s) " %(prefix,nid,\
@@ -778,16 +726,18 @@ class FilteredTree(gobject.GObject):
                 self.__print_from_node(child_id,prefix)
                 child_id = self.node_nth_child(nid,n)
                 n += 1
-    
-    #This function removes all the nodes, leaves first.
-    def __clean_from_node(self, nid):
-        if nid not in self.__clean_list:
-            self.__clean_list.append(nid)
-            if self.node_has_child(nid):
-                n = self.node_n_children(nid)
+
+    def __clean_from_node(self, node_id):
+        """Remove all nodes, leaves first."""
+        if node_id not in self._to_clean:
+            self._to_clean.add(node_id)
+            # recursively clean children
+            if self.node_has_child(node_id):
+                n = self.node_n_children(node_id)
                 while n > 0:
-                    child_id = self.node_nth_child(nid,n-1)
+                    child_id = self.node_nth_child(node_id, n-1)
                     self.__clean_from_node(child_id)
                     n = n-1
-            self.__remove_node(nid)
-            self.__clean_list.remove(nid)
+            self.__remove_node(node_id)
+            self._to_clean.remove(node_id)
+

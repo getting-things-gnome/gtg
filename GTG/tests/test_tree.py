@@ -21,7 +21,7 @@
 
 import unittest
 
-from GTG.core.tree import Tree,TreeNode
+from GTG.core.old.tree import Tree,TreeNode
 from GTG.core import CoreConfig
 
 
