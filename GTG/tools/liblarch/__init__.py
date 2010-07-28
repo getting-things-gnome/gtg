@@ -193,21 +193,21 @@ class ViewTree(gobject.GObject):
         return self.__ft.get_node_for_path(path)
 
     #If nid is none, return root path
-    def get_paths_for_node(self, nid=None):
-        return self.__ft.get_paths_for_node(nid)
+    def get_paths_for_node(self, node_id=None):
+        return self.__ft.get_paths_for_node(node_id)
 
     #pid is used only if nid has multiple parents.
     #if pid is none, a random parent is used.
     def next_node(self, node_id, parent_id=None):
         return self.__ft.next_node(node_id, parent_id)
 
-    def node_has_child(self, nid):
+    def node_has_child(self, node_id):
         toreturn = False
         if self.static:
-            node = self.__get_static_node(nid)
-            toreturn = node.has_child()
+            node = self.__get_static_node(node_id)
+            toreturn = len(node.children) != 0
         else:
-            toreturn = self.__ft.node_has_child(nid)
+            toreturn = self.__ft.node_has_child(node_id)
         return toreturn
 
     #if nid is None, return the number of nodes at the root
@@ -221,7 +221,7 @@ class ViewTree(gobject.GObject):
             if node:
                 toreturn = node.children
         else:
-            toreturn = self.__ft.node_all_children(node_id)
+            toreturn = self.__ft.node_children(node_id)
         return toreturn
 
     def node_nth_child(self, nid, n):
@@ -250,6 +250,10 @@ class ViewTree(gobject.GObject):
             node = self.__get_static_node(nid)
             if node:
                 toreturn = node.parents
+            try:
+                toreturn.remove(self.__maintree.root.id)
+            except KeyError:
+                pass
         else:
             toreturn = self.__ft.node_parents(nid)
         return toreturn
@@ -271,8 +275,8 @@ class ViewTree(gobject.GObject):
             raise Exception("WARNING: filters cannot be applied" +\
                             "to a static tree\n")
         else:
-            self.__ft.apply_filter(filter_name,parameters=parameters,\
-                                    reset=reset,refresh=refresh)
+            self.__ft.apply_filter(filter_name, parameters=parameters,
+              reset=reset, refresh=refresh)
 
     def unapply_filter(self,filter_name,refresh=True):
         """
