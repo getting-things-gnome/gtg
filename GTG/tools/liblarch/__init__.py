@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Gettings Things Gnome! - a personal organizer for the GNOME desktop
+# Getting Things Gnome! - a personal organizer for the GNOME desktop
 # Copyright (c) 2008-2010- Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
@@ -18,12 +18,21 @@
 # -----------------------------------------------------------------------------
 
 import gobject
+import functools
 
 from GTG.tools.liblarch.tree import MainTree
 from GTG.tools.liblarch.filteredtree import FilteredTree
 from GTG.tools.liblarch.filters_bank import FiltersBank
 
+
+
 class Tree():
+    '''A thin wrapper to MainTree that adds filtering capabilities.
+        It also provides a few methods to operate complex operation on the
+        MainTree (e.g, move_node)
+    '''
+
+
     def __init__(self):
         self.__tree = MainTree()
         self.__fbank = FiltersBank(self.__tree)
@@ -36,7 +45,7 @@ class Tree():
         raises a ValueError if the node doesn't exist in the tree
         """
         return self.__tree.get_node(nid)
-        
+    
     def has_node(self,nid):
         return self.__tree.has_node(nid)
 
@@ -50,9 +59,11 @@ class Tree():
     def refresh_node(self,nid):
         self.__tree.modify_node(nid)
         
-    #move the node to a new parent (dismissing all other parents)
-    #use pid None to move it to the root
     def move_node(self,nid,new_parent_id=None):
+        """
+        Move the node to a new parent (dismissing all other parents)
+        use pid None to move it to the root
+        """
         if self.has_node(nid):
             node = self.get_node(nid)
             node.set_parent(new_parent_id)
@@ -109,14 +120,22 @@ class ViewTree(gobject.GObject):
 
     #Those are the three signals you want to catch if displaying
     #a filteredtree. The argument of all signals is the nid of the node
-    __gsignals__ = {'node-added-inview': (gobject.SIGNAL_RUN_FIRST, \
-                                          gobject.TYPE_NONE, (str, )),
-                    'node-deleted-inview': (gobject.SIGNAL_RUN_FIRST, \
-                                            gobject.TYPE_NONE, (str, )),
-                    'node-modified-inview': (gobject.SIGNAL_RUN_FIRST, \
-                                            gobject.TYPE_NONE, (str, )),}
+    __gsignal_str = (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str, ))
+    __gsignals__ = {'node-added-inview'   : __gsignal_str,
+                    'node-deleted-inview' : __gsignal_str,
+                    'node-modified-inview': __gsignal_str,}
                                             
-    def __init__(self,maintree,filters_bank,refresh=True,static=False):
+    def __init__(self, maintree, filters_bank, refresh = True, static = False):
+        '''A ViewTree is the interface that should be used to display Tree(s).
+
+           @param maintree: a Tree object, cointaining all the nodes
+           @param filters_bank: a FiltersBank object. Filters can be added
+                                dinamically to that.
+           @param refresh: if True, this ViewTree is automatically refreshed
+                           after applying a filter.
+           @param static: if True, this is the view of the complete maintree.
+                           Filters cannot be added to such a view.
+        '''
         gobject.GObject.__init__(self)
         self.__maintree = maintree
         self.static = static
@@ -125,22 +144,16 @@ class ViewTree(gobject.GObject):
         if static:
             self.__ft = maintree
         else:
-            self.__ft = FilteredTree(maintree,filters_bank,refresh=refresh)
-            self.__ft.connect('node-added-inview',self.__emit,'add')
-            self.__ft.connect('node-deleted-inview',self.__emit,'del')
-            self.__ft.connect('node-modified-inview',self.__emit,'mod')
+            self.__ft = FilteredTree(maintree, filters_bank, refresh = refresh)
+            self.__ft.connect('node-added-inview', \
+                        functools.partial(self.__emit, 'node-added-inview'))
+            self.__ft.connect('node-deleted-inview', \
+                        functools.partial(self.__emit, 'node-deleted-inview'))
+            self.__ft.connect('node-modified-inview', \
+                        functools.partial(self.__emit, 'node-modified-inview'))
             
-    def __emit(self,sender,tid,data=None):
-        if data == 'add':
-            self.emit('node-added-inview',tid)
-        elif data == 'del':
-            self.emit('node-deleted-inview',tid)
-        elif data == 'mod':
-            self.emit('node-modified-inview',tid)
-        else:
-            raise ValueError("Wrong signal %s" %data)
-            
-        
+    def __emit(self, signal_name, sender, tid, data = None):
+        self.emit(signal_name, tid)
 
     #only by commodities
     def get_node(self,nid):
