@@ -285,7 +285,7 @@ class FilteredTree(gobject.GObject):
             return self.tree.root
         else:
             # this line will raise KeyError if path[0] is too high
-            node_id = self.vroot.children[path[0]]
+            node_id = self.vroot._children[path[0]]
             return self.__node_for_path(node_id, list(path[1:]))
 
     def __node_for_path(self, node_id, path):
@@ -311,11 +311,11 @@ class FilteredTree(gobject.GObject):
         def find_path(node_id):
             paths = []
             for parent_id in self.node_parents(node_id):
-                i = self.get_node(parent_id).children.index(node_id)
+                i = self.get_node(parent_id)._children.index(node_id)
                 for parent_path in find_path(parent_id):
                     paths.append(tuple(list(parent_path) + [i]))
             if not len(paths):
-                paths.append((self.vroot.children.index(node_id),))
+                paths.append((self.vroot._children.index(node_id),))
             return paths
         
         result = find_path(node_id)
@@ -329,10 +329,10 @@ class FilteredTree(gobject.GObject):
         """
         #We should take the next good node, not the next base node
         toreturn = None
-        if node_id in self.vroot.children:
-            i = self.vroot.children.index(node_id) + 1
-            if len(self.vroot.children) > i:
-                nextnode_id = self.vroot.children[i]
+        if node_id in self.vroot._children:
+            i = self.vroot._children.index(node_id) + 1
+            if len(self.vroot._children) > i:
+                nextnode_id = self.vroot._children[i]
                 if nextnode_id in self.displayed_nodes:
                     toreturn = nextnode_id
         else:
@@ -390,10 +390,10 @@ class FilteredTree(gobject.GObject):
         else:
             node = self.tree.get_node(node_id)
             if node.id == self.vroot.id:
-                return self.vroot.children
+                return self.vroot._children
             else:
                 return filter(lambda c: c in self.displayed_nodes,
-                  node.children)
+                  node._children)
 
     def node_nth_child(self, node_id, n):
         """Return the *n*th displayed child of the node with ID *node_id*."""
@@ -406,7 +406,7 @@ class FilteredTree(gobject.GObject):
         """Return a set of IDs of all displayed parents of the node with ID
         *node_id*."""
         return self.displayed_nodes.intersection(
-          self.tree.get_node(node_id).parents)
+          self.tree.get_node(node_id)._parents)
 
     #### Filtering methods #########
     def is_displayed(self, node_id):
@@ -477,8 +477,8 @@ class FilteredTree(gobject.GObject):
         # first empty the current tree
         self.__clean_tree()
         self.displayed_nodes = set()
-        if len(self.vroot.children) != 0:
-            print "self.vroot.children = %s after __clean_from_node" % self.vroot.children
+        if len(self.vroot._children) != 0:
+            print "self.vroot._children = %s after __clean_from_node" % self.vroot._children
         # list nodes that will be ultimately displayed
         for node_id in self.tree.get_all_nodes():
             if self.__filter_node(node_id):
@@ -560,7 +560,7 @@ class FilteredTree(gobject.GObject):
         """
         is_root = True
         if not self.flat:
-            for parent_id in self.tree.get_node(node_id).parents:
+            for parent_id in self.tree.get_node(node_id)._parents:
                 if self.__filter_node(parent_id):
                     is_root = False
                     break
@@ -582,18 +582,18 @@ class FilteredTree(gobject.GObject):
                 self.emit("node-modified-inview", node_id)
                 #I don't remember why we have to update the children.
 #                if not self.flat:
-#                    for child_id in self.get_node(node_id).children:
+#                    for child_id in self.get_node(node_id)._children:
 #                        self.__update_node(child_id)
                 # node should be & is displayed. Maybe it is updated because
                 # its relationship changed?
                 if self.__is_root(node_id):
-                    if node_id not in self.vroot.children:
+                    if node_id not in self.vroot._children:
                         # the node became a virtual root node
-                        self.vroot.children.append(node_id)
+                        self.vroot._children.append(node_id)
                 else:
-                    if node_id in self.vroot.children:
+                    if node_id in self.vroot._children:
                         # the node moved out of the virtual root
-                        self.vroot.children.remove(node_id)
+                        self.vroot._children.remove(node_id)
         else:
             #if the task was displayed previously but shouldn't be anymore
             #we remove it
@@ -629,9 +629,9 @@ class FilteredTree(gobject.GObject):
                         # try again later
                         self._to_add.put_nowait(node_id)
                         continue
-                if is_root and node_id not in self.vroot.children:
+                if is_root and node_id not in self.vroot._children:
                     # the node is going to be under the virtual root
-                    self.vroot.children.append(node_id)
+                    self.vroot._children.append(node_id)
                 # actually add the node
                 self.add_count += 1
                 self.__nodes_count += 1
@@ -647,8 +647,8 @@ class FilteredTree(gobject.GObject):
             paths = str(self.get_paths_for_node(node.id))
             children = self.node_children(node.id)
         else:
-            paths = self.vroot.children
-            children = self.vroot.children
+            paths = self.vroot._children
+            children = self.vroot._children
         print "%s%s    (%s) " % (prefix, node.id, paths)
         for child_id in children:
             child = self.tree.get_node(child_id)
@@ -665,7 +665,7 @@ class FilteredTree(gobject.GObject):
                 self._cleaning.add(node_id)
         # we could just use self.displayed_nodes here, but we want to remove
         # leaf nodes first
-        for child_id in reversed(self.vroot.children):
+        for child_id in reversed(self.vroot._children):
             recursive_clean(child_id)
         try:
             # one at a time, get a node out of the queue and clean it
@@ -686,8 +686,8 @@ class FilteredTree(gobject.GObject):
             self.__nodes_count -= 1
             self.emit('node-deleted-inview', node_id)
             self.displayed_nodes.remove(node_id)
-        if node_id in self.vroot.children:
-            self.vroot.children.remove(node_id)
+        if node_id in self.vroot._children:
+            self.vroot._children.remove(node_id)
         if node_id in self.counted_nodes:
             self.counted_nodes.remove(node_id)
             self.count_cache = {}

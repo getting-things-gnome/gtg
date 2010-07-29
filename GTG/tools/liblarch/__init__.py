@@ -71,7 +71,6 @@ class Tree():
     move_node = lambda self, *args: MainTree.move_node(self.__tree, *args)
     print_tree = lambda self: MainTree.print_tree(self.__tree)
 
-
     #if pid is None, nothing is done
     def add_parent(self, node_id, new_parent_id=None):
         # TODO: eliminate this shorthand
@@ -205,7 +204,7 @@ class ViewTree(gobject.GObject):
         toreturn = False
         if self.static:
             node = self.__get_static_node(node_id)
-            toreturn = len(node.children) != 0
+            toreturn = len(node._children) != 0
         else:
             toreturn = self.__ft.node_has_child(node_id)
         return toreturn
@@ -219,7 +218,7 @@ class ViewTree(gobject.GObject):
         if self.static:
             node = self.__get_static_node(node_id)
             if node:
-                toreturn = node.children
+                toreturn = node._children
         else:
             toreturn = self.__ft.node_children(node_id)
         return toreturn
@@ -249,7 +248,8 @@ class ViewTree(gobject.GObject):
         if self.static:
             node = self.__get_static_node(nid)
             if node:
-                toreturn = node.parents
+                toreturn = node._parents
+            # don't return the ID of the root node
             try:
                 toreturn.remove(self.__maintree.root.id)
             except KeyError:

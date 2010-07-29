@@ -166,13 +166,13 @@ class MainTree(gobject.GObject):
         """
         node = self.get_node(node_id)
         if node.has_child():
-            for child_id in node.children:
+            for child_id in node._children:
                 if recursive:
                     self.remove_node(child_id, recursive=True)
                 else:
                     self.break_relationship(node_id, child_id)
         if node.has_parent():
-            for parent_id in node.parents:
+            for parent_id in node._parents:
                 par = self.get_node(parent_id)
                 par.remove_child(node_id)
         else:
@@ -213,7 +213,7 @@ class MainTree(gobject.GObject):
             elif node.has_parent():
                 # not a direct parent, but the node has other parents. Recurse
                 circular = False
-                for parent_id in node.parents:
+                for parent_id in node._parents:
                     circular = is_descendant(self.get_node(parent_id), target)
                     if circular:
                         # some level of recursion found circular. No need to
@@ -248,11 +248,11 @@ class MainTree(gobject.GObject):
                 raise Exception('Attempt to create circular relationship '
                   'bewteen nodes %s and %s' % (parent_id, child_id))
             # it's not circular!
-            if child_id not in p.children:
-                p.children.append(child_id)
+            if child_id not in p._children:
+                p._children.append(child_id)
                 success = True
-            if parent_id not in c.parents:
-                c.parents.add(parent_id)
+            if parent_id not in c._parents:
+                c._parents.add(parent_id)
                 success = True
         except ValueError, e:
             # at least one of the nodes was not in the tree, maybe because it's
@@ -287,10 +287,10 @@ class MainTree(gobject.GObject):
             c = self.get_node(child_id)
             # successful if both nodes recognized the relationship we are
             # breaking
-            p.children.remove(child_id)
-            c.parents.remove(parent_id)
+            p._children.remove(child_id)
+            c._parents.remove(parent_id)
             # if the child is now parentless, add it under the root
-            if len(c.parents) == 0:
+            if len(c._parents) == 0:
                 c.add_parent(self.root.id)
             success = True
         except ValueError:
@@ -332,14 +332,14 @@ class MainTree(gobject.GObject):
         """
         # get the parents of node_id
         node = self.get_node(node_id)
-        parent_ids = node.parents
+        parent_ids = node._parents
         # choose the appropriate parent
         if parent_id not in parent_ids:
             parent_id = list(parent_ids)[0]
         parent = self.get_node(parent_id)
         # find the index of node_id under the parent
         index = parent.get_child_index(node_id)
-        if len(parent.children) > index + 1:
+        if len(parent._children) > index + 1:
             return parent.get_nth_child(index + 1)
 
     def is_displayed(self, node_id):
@@ -374,7 +374,7 @@ class MainTree(gobject.GObject):
         
         """
         if self.root.has_child():
-            for c in self.root.children:
+            for c in self.root._children:
                 node = self.root.get_child(c)
                 self._visit_node(node, pre_func, post_func)
 
@@ -390,7 +390,7 @@ class MainTree(gobject.GObject):
         else:
             node = self.root
         index = path.pop()
-        if index < len(node.children):
+        if index < len(node._children):
             if len(path) == 0:
                 return node.get_nth_child(index)
             else:
@@ -404,9 +404,9 @@ class MainTree(gobject.GObject):
         
         """
         paths = []
-        parent_ids = self.get_node(node_id).parents
+        parent_ids = self.get_node(node_id)._parents
         for parent_id in parent_ids:
-            i = self.get_node(parent_id).children.index(node_id)
+            i = self.get_node(parent_id)._children.index(node_id)
             for parent_path in self.__paths_for_node(parent_id):
                 paths.append(tuple(list(parent_path) + [i]))
         if not len(paths):
@@ -416,7 +416,7 @@ class MainTree(gobject.GObject):
     def _print_from_node(self, node, prefix='`— '):
         """Helper function for print_tree()."""
         print prefix + str(node.id)
-        for child_id in node.children:
+        for child_id in node._children:
             cur_node = node.get_child(child_id)
             self._print_from_node(cur_node, '  %s' % prefix)
 
@@ -425,7 +425,7 @@ class MainTree(gobject.GObject):
         if pre_func:
             pre_func(node)
         if node.has_child():
-            for c in node.children:
+            for c in node._children:
                 cur_node = node.get_child(c)
                 self._visit_node(cur_node, pre_func, post_func)
         if post_func:
@@ -448,8 +448,8 @@ class TreeNode(object):
     def __init__(self, parent=None):
         """Initialize a new node."""
         # new-style property for the ID. It is read-only.
-        self.parents = set()
-        self.children = []
+        self._parents = set()
+        self._children = []
         self._tree = None
         if parent:
             self.add_parent(parent)
@@ -498,7 +498,7 @@ class TreeNode(object):
         If there is no such child, None is returned.
         
         """
-        if child_id in self.children:
+        if child_id in self._children:
             return self.tree.get_node(child_id)
         else:
             return None
@@ -509,19 +509,19 @@ class TreeNode(object):
         If there is no such child, None is returned.
         
         """
-        if child_id in self.children:
-            return self.children.index(child_id)
+        if child_id in self._children:
+            return self._children.index(child_id)
         else:
             return None
 
     def get_children(self):
         """Return a list of IDs for children of this node."""
-        return self.children
+        return self._children
 
     def get_nth_child(self, index):
         """Return the ID of the *index*th child of this node."""
         try:
-            return self.children[index]
+            return self._children[index]
         except IndexError:
             raise IndexError('TreeNode has less than %d children.' % index)
 
@@ -533,9 +533,9 @@ class TreeNode(object):
         
         """
         if child_id is None:
-            return len(self.children) != 0
+            return len(self._children) != 0
         else:
-            return child_id in self.children
+            return child_id in self._children
 
     def remove_child(self, child_id):
         """Remove the node *child_id* from this node's children."""
@@ -554,10 +554,10 @@ class TreeNode(object):
         
         """
         if parent_id:
-            return parent_id in self.parents
+            return parent_id in self._parents
         else:
-            return len(self.parents) > 0 or (self.tree and
-              self.parents == [self.tree.root.id])
+            return len(self._parents) > 0 or (self.tree and
+              self._parents == [self.tree.root.id])
 
     def remove_parent(self, parent_id):
         """Remove the node *parent_id* from this node's parents."""
@@ -570,12 +570,12 @@ class TreeNode(object):
         the argument *parent_id* is None, all parents are removed.
         
         """
-        if new_parent_id in self.parents:
+        if new_parent_id in self._parents:
             return False
         else:
             # create the new relationship *first*
             self.tree.new_relationship(new_parent_id, self.id)
-            for parent_id in self.parents.copy():
+            for parent_id in self._parents.copy():
                 if parent_id != new_parent_id:
                     self.tree.break_relationship(parent_id, self.id)
             return True
