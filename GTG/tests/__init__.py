@@ -29,7 +29,6 @@ import unittest
 from GTG.tests import (
     test_tagstore,
     test_taskviewserial,
-    test_tree,
     test_apidocs,
     test_backends,
     test_datastore,
