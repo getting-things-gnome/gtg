@@ -594,29 +594,36 @@ class FilteredTree(gobject.GObject):
         else:
             return False
 
-    def reset_filters(self,refresh=True):
+    def reset_filters(self,refresh=True,transparent_only=False):
         """
         Clears all filters currently set on the tree.  Can't be called on 
         the main tree.
+        Remove only transparents filters if transparent_only is True
         """
-        self.applied_filters = []
+        if transparent_only:
+            for f in list(self.applied_filters):
+                filt = self.fbank.get_filter(f)
+                if filt.get_parameters('transparent'):
+                    self.applied_filters.remove(f)
+        else:
+            self.applied_filters = []
         if refresh:
             self.refilter()
 
-    def reset_tag_filters(self,refilter=True):
-        """
-        Clears all filters currently set on the tree.  Can't be called on 
-        the main tree.
-        """
-        if "notag" in self.applied_filters:
-            self.applied_filters.remove('notag')
-        if "no_disabled_tag" in self.applied_filters:
-            self.applied_filters.remove('no_disabled_tag')
-        for f in self.applied_filters:
-            if f.startswith('@'):
-                self.applied_filters.remove(f)
-        if refilter:
-            self.refilter()
+#    def reset_tag_filters(self,refilter=True):
+#        """
+#        Clears all filters currently set on the tree.  Can't be called on 
+#        the main tree.
+#        """
+#        if "notag" in self.applied_filters:
+#            self.applied_filters.remove('notag')
+#        if "no_disabled_tag" in self.applied_filters:
+#            self.applied_filters.remove('no_disabled_tag')
+#        for f in self.applied_filters:
+#            if f.startswith('@'):
+#                self.applied_filters.remove(f)
+#        if refilter:
+#            self.refilter()
 
     ####### Private methods #################
 

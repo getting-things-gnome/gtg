@@ -283,7 +283,7 @@ class ViewTree(gobject.GObject):
             self.__ft.unapply_filter(filter_name, refresh=refresh)
         return
 
-    def reset_filters(self,refresh=True):
+    def reset_filters(self,refresh=True,transparent_only=False):
         """
         Clears all filters currently set on the tree.
         """
@@ -291,5 +291,6 @@ class ViewTree(gobject.GObject):
             raise Exception("WARNING: filters cannot be reset" +\
                             "on a static tree\n")
         else:
-             self.__ft.reset_filters(refresh=refresh)
+             self.__ft.reset_filters(refresh=refresh,\
+                                        transparent_only=transparent_only)
         return

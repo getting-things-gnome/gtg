@@ -1198,17 +1198,17 @@ class TaskBrowser:
                 newtag = ['no_disabled_tag']
         #FIXME:handle multiple tags case
         if len(newtag) > 0:
-            self.req.reset_tag_filters(refilter=False)
-            self.req.apply_filter(newtag[0])
+            self.tasks_tree.reset_filters(refresh=False,transparent_only=True)
+            self.tasks_tree.apply_filter(newtag[0])
             if self.ctask_tree:
                 self.ctask_tree.apply_filter('closed',reset=True,refresh=False)
                 self.ctask_tree.apply_filter(newtag[0])
         else:
-            self.req.reset_tag_filters(refilter=False)
+            self.tasks_tree.reset_filters(refresh=False,transparent_only=True)
             if self.ctask_tree:
-                self.ctask_tree.reset_tag_filters()
+                self.ctask_tree.reset_filters(transparent_only=True)
                         
-        self.ctask_tv.get_selection().unselect_all()
+#        self.ctask_tv.get_selection().unselect_all()
         self._update_window_title()
 
     def on_taskdone_cursor_changed(self, selection=None):
