@@ -1,6 +1,7 @@
 [GTG Plugin]
 Module=export
 Name=Export and print
+Short-description="Exports the tasks in the current view into a variety of formats."
 Description="""Exports the tasks in the current view into
 a variety of formats. You can also personalize the format
 of your tasks by writing your own template"""

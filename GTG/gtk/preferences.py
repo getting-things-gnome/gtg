@@ -39,7 +39,7 @@ PLUGINS_COL_ENABLED = 1
 PLUGINS_COL_NAME = 2
 PLUGINS_COL_DESC = 3
 PLUGINS_COL_ACTIVATABLE = 4
-
+PLUGINS_COL_SHORT_DESC = 5
 
 def plugin_icon(column, cell, store, iter):
     """Callback to set the content of a PluginTree cell.
@@ -151,7 +151,7 @@ class PreferencesDialog:
         # create and clear a gtk.ListStore
         if not hasattr(self, 'plugin_store'):
             # see constants PLUGINS_COL_* for column meanings
-            self.plugin_store = gtk.ListStore(str, 'gboolean', str, str,
+            self.plugin_store = gtk.ListStore(str, 'gboolean', str, str, str,
               'gboolean',)
         self.plugin_store.clear()
         # refresh the status of all plugins
@@ -159,7 +159,7 @@ class PreferencesDialog:
         # repopulate the store
         for name, p in self.pengine.plugins.iteritems():
             self.plugin_store.append([name, p.enabled, p.full_name,
-              p.description, not p.error,]) # activateable if there is no error
+              p.short_description, p.description, not p.error,]) # activateable if there is no error
 
     def  _refresh_preferences_store(self):
         """Sets the correct value in the preferences checkboxes"""
@@ -173,7 +173,7 @@ class PreferencesDialog:
         """Initialize the PluginTree gtk.TreeView.
         
         The format is modelled after the one used in gedit; see
-        http://git.gnome.org/browse/gedit/tree/gedit/gedit-plugin-manager.c
+        http://git.gnome.org/browse/gedit/tree/gedit/gedit-plugin-mapnager.c
         
         """
         # force creation of the gtk.ListStore so we can reference it
@@ -195,6 +195,7 @@ class PreferencesDialog:
         # icon renderer for the plugin name column
         icon_renderer = gtk.CellRendererPixbuf()
         icon_renderer.set_property('stock-size', gtk.ICON_SIZE_SMALL_TOOLBAR)
+        icon_renderer.set_property('xpad', 3)
         column.pack_start(icon_renderer, expand=False)
         column.set_cell_data_func(icon_renderer, plugin_icon)
         # text renderer for the plugin name column

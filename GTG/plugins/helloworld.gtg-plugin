@@ -1,6 +1,7 @@
 [GTG Plugin]
 Module=helloworld
 Name=Hello World
+Short-description="Short plugin description goes here."
 Description="Plugin Description goes here. Hello World!"
 Authors=Paulo Cabido <paulo.cabido@gmail.com>
 Version=0.1.1
