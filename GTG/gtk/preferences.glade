@@ -47,6 +47,7 @@
                             <child>
                               <object class="GtkAlignment" id="prefs-alignment7">
                                 <property name="visible">True</property>
+                                <property name="bottom_padding">15</property>
                                 <property name="left_padding">12</property>
                                 <child>
                                   <object class="GtkVBox" id="prefs-vbox7">
@@ -62,6 +63,7 @@
                                       </object>
                                       <packing>
                                         <property name="expand">False</property>
+                                        <property name="padding">3</property>
                                         <property name="position">0</property>
                                       </packing>
                                     </child>
@@ -72,12 +74,14 @@
                             <child type="label">
                               <object class="GtkLabel" id="prefs-label8">
                                 <property name="visible">True</property>
+                                <property name="ypad">5</property>
                                 <property name="label" translatable="yes">&lt;b&gt;General&lt;/b&gt;</property>
                                 <property name="use_markup">True</property>
                               </object>
                             </child>
                           </object>
                           <packing>
+                            <property name="expand">False</property>
                             <property name="position">0</property>
                           </packing>
                         </child>
@@ -89,13 +93,14 @@
                             <child>
                               <object class="GtkAlignment" id="prefs-alignment5">
                                 <property name="visible">True</property>
+                                <property name="bottom_padding">15</property>
                                 <property name="left_padding">12</property>
                                 <child>
                                   <object class="GtkVBox" id="prefs-vbox3">
                                     <property name="visible">True</property>
                                     <child>
                                       <object class="GtkCheckButton" id="pref_show_preview">
-                                        <property name="label" translatable="yes">Show task text preview</property>
+                                        <property name="label" translatable="yes">Show description preview in the task list.</property>
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">False</property>
@@ -104,15 +109,16 @@
                                       </object>
                                       <packing>
                                         <property name="expand">False</property>
+                                        <property name="padding">3</property>
                                         <property name="position">0</property>
                                       </packing>
                                     </child>
                                     <child>
                                       <object class="GtkHBox" id="prefs-hbox1">
-                                        <property name="visible">True</property>
+                                        <property name="no_show_all">True</property>
                                         <child>
                                           <object class="GtkCheckButton" id="pref_hide_closed">
-                                            <property name="label" translatable="yes">Hide closed tasks older than</property>
+                                            <property name="label" translatable="yes">Hide closed tasks older than </property>
                                             <property name="visible">True</property>
                                             <property name="sensitive">False</property>
                                             <property name="can_focus">True</property>
@@ -137,6 +143,7 @@
                                       </object>
                                       <packing>
                                         <property name="expand">False</property>
+                                        <property name="padding">3</property>
                                         <property name="position">1</property>
                                       </packing>
                                     </child>
@@ -147,12 +154,14 @@
                             <child type="label">
                               <object class="GtkLabel" id="prefs-label4">
                                 <property name="visible">True</property>
+                                <property name="ypad">5</property>
                                 <property name="label" translatable="yes">&lt;b&gt;Task Browser&lt;/b&gt;</property>
                                 <property name="use_markup">True</property>
                               </object>
                             </child>
                           </object>
                           <packing>
+                            <property name="expand">False</property>
                             <property name="position">1</property>
                           </packing>
                         </child>
@@ -164,6 +173,7 @@
                             <child>
                               <object class="GtkAlignment" id="prefs-alignment6">
                                 <property name="visible">True</property>
+                                <property name="bottom_padding">15</property>
                                 <property name="left_padding">12</property>
                                 <child>
                                   <object class="GtkVBox" id="prefs-vbox4">
@@ -171,15 +181,16 @@
                                     <child>
                                       <object class="GtkCheckButton" id="pref_check_spelling">
                                         <property name="label" translatable="yes">Check spelling</property>
-                                        <property name="visible">True</property>
                                         <property name="sensitive">False</property>
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">False</property>
+                                        <property name="no_show_all">True</property>
                                         <property name="draw_indicator">True</property>
                                         <signal name="toggled" handler="on_pref_check_spelling_toggled"/>
                                       </object>
                                       <packing>
                                         <property name="expand">False</property>
+                                        <property name="padding">3</property>
                                         <property name="position">0</property>
                                       </packing>
                                     </child>
@@ -189,13 +200,15 @@
                             </child>
                             <child type="label">
                               <object class="GtkLabel" id="prefs-label5">
-                                <property name="visible">True</property>
+                                <property name="no_show_all">True</property>
+                                <property name="ypad">5</property>
                                 <property name="label" translatable="yes">&lt;b&gt;Task Editor&lt;/b&gt;</property>
                                 <property name="use_markup">True</property>
                               </object>
                             </child>
                           </object>
                           <packing>
+                            <property name="expand">False</property>
                             <property name="position">2</property>
                           </packing>
                         </child>
