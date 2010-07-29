@@ -28,6 +28,7 @@ import unittest
 
 from GTG.tests import (
     test_tagstore,
+    test_signal_testing,
     test_taskviewserial,
     test_apidocs,
     test_backends,
@@ -44,5 +45,6 @@ def test_suite():
 #        test_backends.test_suite(),
 #        test_datastore.test_suite(),
         test_liblarch.test_suite(),
+        test_signal_testing.test_suite(),
         ])
 

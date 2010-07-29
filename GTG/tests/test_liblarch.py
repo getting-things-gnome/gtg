@@ -20,12 +20,15 @@
 """Tests for the tagstore."""
 
 import unittest
-
 import gtk
+import time
+import threading
+import gobject
 
 from GTG.tools.liblarch import Tree
 from GTG.tools.liblarch.tree import TreeNode
 from GTG.gtk.liblarch_gtk import TreeView
+from GTG.tests.signals_testing import SignalCatcher, GobjectSignalsManager
 
 
 #This is a dummy treenode that only have one properties: a color
@@ -49,6 +52,7 @@ class DummyNode(TreeNode):
 
 class TestLibLarch(unittest.TestCase):
     """Tests for `Tree`."""
+
 
     def setUp(self):
         i = 0
@@ -107,6 +111,13 @@ class TestLibLarch(unittest.TestCase):
         col['value'] = [str,get_node_name]
         desc['titles'] = col
         treeview = TreeView(self.view,desc)
+        #initalize gobject signaling system
+        self.gobject_signal_manager = GobjectSignalsManager()
+        self.gobject_signal_manager.init_signals()
+
+    def tearDown(self):
+        #stopping gobject main loop
+        self.gobject_signal_manager.terminate_signals()
         
     ####Filters
     def is_blue(self,node,parameters=None):
@@ -134,7 +145,14 @@ class TestLibLarch(unittest.TestCase):
         view = self.tree.get_viewtree(refresh=True)
         node = DummyNode('temp')
         node.add_color('blue')
-        self.tree.add_node(node,parent_id='0')
+        with SignalCatcher(self, view, 'node-modified-inview') \
+                    as [bad_signal_catched_event, bad_signal_arguments]:
+            with SignalCatcher(self, view, 'node-added-inview') \
+                    as [signal_catched_event, signal_arguments]:
+                self.tree.add_node(node,parent_id='0')
+                signal_catched_event.wait()
+                bad_signal_catched_event.wait()
+            self.assertEqual(['temp'], signal_arguments)
         shouldbe = self.blue_nodes + 1
         total = self.red_nodes + self.blue_nodes + self.green_nodes
         #Testing that the blue node count has increased
@@ -436,7 +454,7 @@ class TestLibLarch(unittest.TestCase):
         self.assert_('1' in self.mainview.node_all_children())
         
     
-    def test_viewtree_node_nth_child(self):
+    def pest_viewtree_node_nth_child(self):
         view = self.tree.get_viewtree(refresh=True)
         node = DummyNode('temp')
         node.add_color('blue')
@@ -490,6 +508,8 @@ class TestLibLarch(unittest.TestCase):
         self.assert_(view.is_displayed('temp'))
         view.apply_filter('red')
         self.failIf(view.is_displayed('temp'))
+
+
 
 
 
@@ -609,5 +629,11 @@ class TestLibLarch(unittest.TestCase):
         self.assertEqual(0,count1)
         self.assertEqual(self.blue_nodes,count2)
 
+    def test_view_signals(self):
+        view = self.tree.get_viewtree(refresh = True)
+        
 def test_suite():
     return unittest.TestLoader().loadTestsFromName(__name__)
+
+
+
