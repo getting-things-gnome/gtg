@@ -690,7 +690,7 @@ class TaskBrowser:
         quickadd_pane      = self.quickadd_pane.get_property("visible")
         toolbar            = self.toolbar.get_property("visible")
         #task_tv_sort_id    = self.task_ts.get_sort_column_id()
-        sort_column, sort_order = self.task_modelsort.get_sort_column_id()
+#        sort_column, sort_order = self.task_modelsort.get_sort_column_id()
         closed_pane_height = self.builder.get_object("vpaned1").get_position()
 
         if self.priv['workview']:
@@ -731,10 +731,10 @@ class TaskBrowser:
             'view':
                 view,
             }
-        if   sort_column is not None and sort_order == gtk.SORT_ASCENDING:
-            self.config["browser"]["tasklist_sort"]  = [sort_column, 0]
-        elif sort_column is not None and sort_order == gtk.SORT_DESCENDING:
-            self.config["browser"]["tasklist_sort"]  = [sort_column, 1]
+#        if   sort_column is not None and sort_order == gtk.SORT_ASCENDING:
+#            self.config["browser"]["tasklist_sort"]  = [sort_column, 0]
+#        elif sort_column is not None and sort_order == gtk.SORT_DESCENDING:
+#            self.config["browser"]["tasklist_sort"]  = [sort_column, 1]
         self.config["browser"]["view"] = view
 
     def on_about_clicked(self, widget):
