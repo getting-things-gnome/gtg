@@ -24,6 +24,7 @@ import gtk
 import pango
 from xdg.BaseDirectory import xdg_config_home
 
+from GTG              import _
 from GTG.core.plugins import GnomeConfig
 from GTG.gtk          import ViewConfig
 
@@ -32,14 +33,16 @@ __all__ = [
   'PreferencesDialog',
   ]
 
+# Default plugin information text
+PLUGINS_DEFAULT_DESC = _("Click on a plugin to get a description here.")
 
 # columns in PreferencesDialog.plugin_store
 PLUGINS_COL_ID = 0
 PLUGINS_COL_ENABLED = 1
 PLUGINS_COL_NAME = 2
-PLUGINS_COL_DESC = 3
-PLUGINS_COL_ACTIVATABLE = 4
-PLUGINS_COL_SHORT_DESC = 5
+PLUGINS_COL_SHORT_DESC = 3
+PLUGINS_COL_DESC = 4
+PLUGINS_COL_ACTIVATABLE = 5
 
 def plugin_icon(column, cell, store, iter):
     """Callback to set the content of a PluginTree cell.
@@ -59,7 +62,7 @@ def plugin_markup(column, cell, store, iter):
     
     """
     name = store.get_value(iter, PLUGINS_COL_NAME)
-    desc = store.get_value(iter, PLUGINS_COL_DESC)
+    desc = store.get_value(iter, PLUGINS_COL_SHORT_DESC)
     cell.set_property('markup', "<b>%s</b>\n%s" % (name, desc))
     cell.set_property('sensitive', store.get_value(iter,
       PLUGINS_COL_ACTIVATABLE))
