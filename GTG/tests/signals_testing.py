@@ -1,6 +1,7 @@
 import threading
 import gobject
 import time
+import unittest
 
 from GTG.tools.watchdog import Watchdog
 
@@ -71,3 +72,4 @@ class GobjectSignalsManager(object):
 
     def terminate_signals(self):
         self.main_loop.quit()
+

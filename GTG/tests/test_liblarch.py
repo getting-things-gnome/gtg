@@ -24,6 +24,7 @@ import gtk
 import time
 import threading
 import gobject
+import functools
 
 from GTG.tools.liblarch import Tree
 from GTG.tools.liblarch.tree import TreeNode
@@ -53,6 +54,33 @@ class DummyNode(TreeNode):
 class TestLibLarch(unittest.TestCase):
     """Tests for `Tree`."""
 
+#    def assertEmitted(self, generator, signal_name):
+#        with SignalCatcher(self, generator, signal_name) \
+#                    as [signal_catched_event, signal_arguments]:
+#            yield None
+#            signal_catched_event.wait()
+#            self.signal_arguments = signal_arguments
+    
+    def assertSignal(self, generator, signal_name, function):
+        def new(*args, **kws):
+            with SignalCatcher(self, generator, signal_name) \
+                    as [signal_catched_event, signal_arguments]:
+                function(*args, **kws)
+                signal_catched_event.wait()
+            self.signal_arguments_list.append([signal_name, signal_arguments])
+            return None
+        return new
+
+    def assertSignalExpected(self, generator, signal_name, expected, function):
+        def new(*args, **kws):
+            with SignalCatcher(self, generator, signal_name) \
+                    as [signal_catched_event, signal_arguments]:
+                function(*args, **kws)
+                signal_catched_event.wait()
+                self.assertEqual(expected, signal_arguments)
+            return None
+        return new
+        
 
     def setUp(self):
         i = 0
@@ -114,6 +142,19 @@ class TestLibLarch(unittest.TestCase):
         #initalize gobject signaling system
         self.gobject_signal_manager = GobjectSignalsManager()
         self.gobject_signal_manager.init_signals()
+        self.signal_arguments_list = []
+        self.assertNodeAddedInview = functools.partial ( \
+            self.assertSignal, self.view, 'node-added-inview')
+        self.assertNodeModifiedInview = functools.partial ( \
+            self.assertSignal, self.view, 'node-modified-inview')
+        self.assertNodeDeletedInview = functools.partial ( \
+            self.assertSignal, self.view, 'node-deleted-inview')
+        self.assertNodeAddedInviewExp = functools.partial ( \
+            self.assertSignalExpected, self.view, 'node-added-inview')
+        self.assertNodeModifiedInviewExp = functools.partial ( \
+            self.assertSignalExpected, self.view, 'node-modified-inview')
+        self.assertNodeDeletedInviewExp = functools.partial ( \
+            self.assertSignalExpected, self.view, 'node-deleted-inview')
 
     def tearDown(self):
         #stopping gobject main loop
@@ -145,14 +186,9 @@ class TestLibLarch(unittest.TestCase):
         view = self.tree.get_viewtree(refresh=True)
         node = DummyNode('temp')
         node.add_color('blue')
-        with SignalCatcher(self, view, 'node-modified-inview') \
-                    as [bad_signal_catched_event, bad_signal_arguments]:
-            with SignalCatcher(self, view, 'node-added-inview') \
-                    as [signal_catched_event, signal_arguments]:
-                self.tree.add_node(node,parent_id='0')
-                signal_catched_event.wait()
-                bad_signal_catched_event.wait()
-            self.assertEqual(['temp'], signal_arguments)
+        self.assertNodeModifiedInviewExp(['0', '0'],
+                self.assertNodeAddedInviewExp([node.get_id()],\
+                                self.tree.add_node))(node, parent_id = '0')
         shouldbe = self.blue_nodes + 1
         total = self.red_nodes + self.blue_nodes + self.green_nodes
         #Testing that the blue node count has increased
@@ -177,7 +213,7 @@ class TestLibLarch(unittest.TestCase):
         node = DummyNode('temp')
         node.add_color('blue')
         #Do you see : we are modifying a child
-        self.tree.add_node(node,parent_id='0')
+        self.assertNodeModifiedInviewExp(['0', '0'], self.tree.add_node)(node,parent_id='0')
         #Node is blue
         self.assert_(viewblue.is_displayed('temp'))
         self.failIf(viewred.is_displayed('temp'))
@@ -190,8 +226,6 @@ class TestLibLarch(unittest.TestCase):
         self.failIf(viewblue.is_displayed('temp'))
         self.assert_(viewred.is_displayed('temp'))
 
-
-
     #When you remove a parent, the child nodes should be added to the root if
     #they don't have any other parents
     def test_removing_parent(self):
@@ -202,7 +236,7 @@ class TestLibLarch(unittest.TestCase):
         all_nodes = self.view.get_all_nodes()
         self.assert_('0' in all_nodes)
         self.assert_('temp' in all_nodes)
-        self.tree.del_node('0')
+        self.assertNodeDeletedInviewExp(['0'], self.tree.del_node)('0')
         all_nodes = self.view.get_all_nodes()
         self.failIf('0' in all_nodes)
         self.assert_('temp' in all_nodes)
@@ -217,7 +251,12 @@ class TestLibLarch(unittest.TestCase):
         self.assert_('temp' in view.node_all_children('0'))
         self.assert_('temp' not in view.node_all_children('1'))
         #Moving node
-        self.tree.move_node('temp','1')
+        self.assertNodeModifiedInview(\
+                self.assertNodeModifiedInview(self.tree.move_node))('temp','1')
+#        print self.signal_arguments_list
+#        self.assertTrue(['node-modified-inview', [node.get_id()]] in \
+#                        self.signal_arguments_list)
+
         self.assert_(view.node_has_child('1'))
         self.assert_('temp' in view.node_all_children('1'))
         self.assert_('temp' not in view.node_all_children('0'))
