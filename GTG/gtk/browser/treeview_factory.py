@@ -19,8 +19,10 @@
 import gtk
 import gobject
 import pango
+import xml.sax.saxutils as saxutils
 
 from GTG     import _
+from GTG.core.task import Task
 from GTG.gtk.browser.CellRendererTags import CellRendererTags
 from GTG.gtk.liblarch_gtk import TreeView
 
@@ -59,20 +61,21 @@ class TreeviewFactory():
         
     #task title/label
     def task_label_column(self, node):
-        title = saxutils.escape(task.get_title())
+        title = saxutils.escape(node.get_title())
         print "we need the style here"
-        color = self.treeview.style.text[gtk.STATE_INSENSITIVE].to_string()
-        if task.get_status() == Task.STA_ACTIVE:
-            count = self._count_active_subtasks_rec(task)
+#        color = self.treeview.style.text[gtk.STATE_INSENSITIVE].to_string()
+        color = "#F00"
+        if node.get_status() == Task.STA_ACTIVE:
+            count = self._count_active_subtasks_rec(node)
             if count != 0:
                 title += " (%s)" % count
             
-            if self.config["contents_preview_enable"]:
-            	excerpt = saxutils.escape(task.get_excerpt(lines=1, \
+            if self.config.has_key("contents_preview_enable"):
+            	excerpt = saxutils.escape(node.get_excerpt(lines=1, \
             		strip_tags=True, strip_subtasks=True))
             	title += " <span size='small' color='%s'>%s</span>" \
             		%(color, excerpt) 
-        elif task.get_status() == Task.STA_DISMISSED:
+        elif node.get_status() == Task.STA_DISMISSED:
             title = "<span color='%s'>%s</span>"%(color, title)
         print "task_label_column"
         return title
@@ -102,17 +105,17 @@ class TreeviewFactory():
         col['order'] = 0
         desc[col_name] = col
         
-        # "tags" column (no title)
-        col_name = 'tags'
-        col = {}
-        render_tags = CellRendererTags()
-        render_tags.set_property('xalign', 0.0)
-        col['renderer'] = ['tag_list',render_tags]
-        col['value'] = [gobject.TYPE_PYOBJECT,self.task_tags_column]
-        col['expandable'] = False
-        col['resizable'] = False
-        col['order'] = 1
-        desc[col_name] = col
+#        # "tags" column (no title)
+#        col_name = 'tags'
+#        col = {}
+#        render_tags = CellRendererTags()
+#        render_tags.set_property('xalign', 0.0)
+#        col['renderer'] = ['tag_list',render_tags]
+#        col['value'] = [gobject.TYPE_PYOBJECT,self.task_tags_column]
+#        col['expandable'] = False
+#        col['resizable'] = False
+#        col['order'] = 1
+#        desc[col_name] = col
 
         # "label" column
         col_name = 'label'
@@ -159,7 +162,7 @@ class TreeviewFactory():
         treeview.set_main_search_column('label')
         treeview.set_expander_column('label')
         #Background colors
-        treeview.set_bg_color(self.task_bg_color,'tags')
+#        treeview.set_bg_color(self.task_bg_color,'tags')
          # Global treeview properties
         treeview.set_property("enable-tree-lines", False)
         treeview.set_rules_hint(False)

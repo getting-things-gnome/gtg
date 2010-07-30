@@ -175,7 +175,8 @@ class TreeModel(gtk.GenericTreeModel):
             raise ValueError('The tree model doesnt have enough columns!')
         func = self.value_list[column][1]
         print "on_get_value %s %s" %(rowref,column)
-        return func(node)
+        toreturn = func(node)
+        return toreturn
             
 
 
