@@ -34,7 +34,8 @@ class SignalCatcher(object):
     def __enter__(self):
 
         def __signal_callback(*args):
-            self.signal_arguments += args[1:]
+            del self.signal_arguments[:]
+            self.signal_arguments.extend(args[1:])
             self.signal_catched_event.set()
 
         self.handler = \
