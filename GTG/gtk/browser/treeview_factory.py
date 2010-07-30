@@ -56,13 +56,11 @@ class TreeviewFactory():
         
     #task title
     def task_title_column(self, node):
-        print "tast_title_column"
         return saxutils.escape(node.get_title())
         
     #task title/label
     def task_label_column(self, node):
         title = saxutils.escape(node.get_title())
-        print "we need the style here"
 #        color = self.treeview.style.text[gtk.STATE_INSENSITIVE].to_string()
         color = "#F00"
         if node.get_status() == Task.STA_ACTIVE:
@@ -77,16 +75,13 @@ class TreeviewFactory():
             		%(color, excerpt) 
         elif node.get_status() == Task.STA_DISMISSED:
             title = "<span color='%s'>%s</span>"%(color, title)
-        print "task_label_column"
         return title
         
     #task start date
     def task_sdate_column(self,node):
-        print "task_sdate_column"
         return node.get_start_date().to_readable_string()
         
     def task_duedate_column(self,node):
-        print "task_duetade_column"
         return node.get_due_date().to_readable_string()
 
 
@@ -105,17 +100,17 @@ class TreeviewFactory():
         col['order'] = 0
         desc[col_name] = col
         
-#        # "tags" column (no title)
-#        col_name = 'tags'
-#        col = {}
-#        render_tags = CellRendererTags()
-#        render_tags.set_property('xalign', 0.0)
-#        col['renderer'] = ['tag_list',render_tags]
-#        col['value'] = [gobject.TYPE_PYOBJECT,self.task_tags_column]
-#        col['expandable'] = False
-#        col['resizable'] = False
-#        col['order'] = 1
-#        desc[col_name] = col
+        # "tags" column (no title)
+        col_name = 'tags'
+        col = {}
+        render_tags = CellRendererTags()
+        render_tags.set_property('xalign', 0.0)
+        col['renderer'] = ['tag_list',render_tags]
+        col['value'] = [gobject.TYPE_PYOBJECT,self.task_tags_column]
+        col['expandable'] = False
+        col['resizable'] = False
+        col['order'] = 1
+        desc[col_name] = col
 
         # "label" column
         col_name = 'label'
@@ -156,7 +151,6 @@ class TreeviewFactory():
         desc[col_name] = col
 
         #Returning the treeview
-        print desc
         treeview = TreeView(tree,desc)
         
         #Now that the treeview is done, we can polish

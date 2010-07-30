@@ -148,8 +148,8 @@ class TreeModel(gtk.GenericTreeModel):
 #        return count
 
     def  add_col(self,value):
-        index = len(value)
         self.value_list.append(value)
+        index = self.value_list.index(value)
         return index
 
 ### TREEMODEL INTERFACE ######################################################
@@ -174,7 +174,6 @@ class TreeModel(gtk.GenericTreeModel):
         if len(self.value_list) <= column:
             raise ValueError('The tree model doesnt have enough columns!')
         func = self.value_list[column][1]
-        print "on_get_value %s %s" %(rowref,column)
         toreturn = func(node)
         return toreturn
             
