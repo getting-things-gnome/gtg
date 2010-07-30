@@ -21,7 +21,9 @@ class TestSignalTesting(unittest.TestCase):
             generator.emit_signal('one', arg)
             signal_catched_event.wait()
         self.assertEqual(len(signal_arguments), 1)
-        self.assertEqual(arg, signal_arguments[0])
+        self.assertEqual(len(signal_arguments[0]), 1)
+        one_signal_arguments = signal_arguments[0]
+        self.assertEqual(arg, one_signal_arguments[0])
 
     def test_signal_missing(self):
         generator = FakeGobject()

@@ -14,12 +14,13 @@ class SignalCatcher(object):
 
 
     def __init__(self, unittest,  generator, signal_name,\
-                 should_be_caught = True):
+                 should_be_caught = True, how_many_signals = 1):
         self.signal_catched_event = threading.Event()
         self.generator = generator
         self.signal_name = signal_name
         self.signal_arguments = []
         self.unittest = unittest
+        self.how_many_signals = how_many_signals
         self.should_be_caught = should_be_caught
 
         def _on_failure():
@@ -34,9 +35,9 @@ class SignalCatcher(object):
     def __enter__(self):
 
         def __signal_callback(*args):
-            del self.signal_arguments[:]
-            self.signal_arguments.extend(args[1:])
-            self.signal_catched_event.set()
+            self.signal_arguments.append(args[1:])
+            if len(self.signal_arguments) >= self.how_many_signals:
+                self.signal_catched_event.set()
 
         self.handler = \
                 self.generator.connect(self.signal_name, __signal_callback)
