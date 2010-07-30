@@ -291,10 +291,11 @@ class TestLibLarch(unittest.TestCase):
         view = self.tree.get_viewtree(refresh = True)
         node = DummyNode('temp')
         node.add_color('blue')
-#        self.assertSignal(self.view, \
-#                          'node-modified-inview', \
-#                          self.tree.add_node, 2)(node, parent_id = '0')
-        self.tree.add_node(node, parent_id = '0')
+        self.assertSignal(self.view, \
+                          'node-modified-inview', \
+                          self.tree.add_node, 2)(node, parent_id = '0')
+        self.assert_(('temp',) in self.recorded_signals['node-modified-inview'])
+        self.assert_(('0',) in self.recorded_signals['node-modified-inview'])
         #Testing initial situation
         self.assert_(view.node_has_child('0'))
         self.assert_('temp' in view.node_all_children('0'))
