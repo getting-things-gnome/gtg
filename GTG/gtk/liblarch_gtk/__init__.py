@@ -49,8 +49,11 @@ class TreeView(gtk.TreeView):
             col_nbr = self.treemodel.add_col(desc['value'])
             col = gtk.TreeViewColumn()
             self.columns[col_name] = [col_nbr,col]
-            renderer = desc["renderer"][1]
-            rend_attribute = desc["renderer"][0]
+            if desc.has_key('renderer'):    
+                renderer = desc["renderer"][1]
+                rend_attribute = desc["renderer"][0]
+            else:
+                raise ValueError("The treeview description should have a renderer")
             #Those are default value that can be changed later
             if desc.has_key('expandable'):
                 expand = desc['expandable']

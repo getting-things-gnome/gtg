@@ -174,6 +174,7 @@ class TreeModel(gtk.GenericTreeModel):
         if len(self.value_list) <= column:
             raise ValueError('The tree model doesnt have enough columns!')
         func = self.value_list[column][1]
+        print "on_get_value %s %s" %(rowref,column)
         return func(node)
             
 
@@ -218,7 +219,7 @@ class TreeModel(gtk.GenericTreeModel):
                 if path[:-1] == n[:-1]:
                     toreturn = self.iter_store.get(next,n)
             if len(npaths) > 0 and not toreturn:
-                print "!!!!!!!! We didn't find iter_next for %s" %rowref
+                print "!!!!!!!! We didn't find iter_next for %s but we have %s" %(rowref,npaths)
         return toreturn
 
     def on_iter_children(self, rowref):

@@ -54,6 +54,7 @@ class TreeviewFactory():
         
     #task title
     def task_title_column(self, node):
+        print "tast_title_column"
         return saxutils.escape(node.get_title())
         
     #task title/label
@@ -73,13 +74,16 @@ class TreeviewFactory():
             		%(color, excerpt) 
         elif task.get_status() == Task.STA_DISMISSED:
             title = "<span color='%s'>%s</span>"%(color, title)
+        print "task_label_column"
         return title
         
     #task start date
     def task_sdate_column(self,node):
+        print "task_sdate_column"
         return node.get_start_date().to_readable_string()
         
     def task_duedate_column(self,node):
+        print "task_duetade_column"
         return node.get_due_date().to_readable_string()
 
 
