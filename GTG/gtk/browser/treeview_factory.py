@@ -156,6 +156,7 @@ class TreeviewFactory():
         desc[col_name] = col
 
         #Returning the treeview
+        print desc
         treeview = TreeView(tree,desc)
         
         #Now that the treeview is done, we can polish
