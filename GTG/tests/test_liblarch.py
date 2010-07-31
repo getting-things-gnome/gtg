@@ -327,8 +327,8 @@ class TestLibLarch(unittest.TestCase):
     def test_viewtree_get_paths_for_node(self):
         view = self.tree.get_viewtree(refresh=True)
         #testing the root path
-        self.assertEqual([()],view.get_paths_for_node())
-        self.assertEqual([()],self.mainview.get_paths_for_node())
+        self.assertEqual([()], view.get_paths_for_node())
+        self.assertEqual([()], self.mainview.get_paths_for_node())
         #with children
         #the first blue node is:
         firstgreen = self.red_nodes + self.blue_nodes - 1
