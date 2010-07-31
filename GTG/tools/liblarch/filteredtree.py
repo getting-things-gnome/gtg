@@ -170,13 +170,13 @@ class FilteredTree(gobject.GObject):
         self._cleaning = set()
         #an initial refilter is always needed if we don't apply a filter
         #for performance reason, we do it only if refresh = True
-        self.__reset_cache()
+        self._reset_cache()
         if refresh:
             self._refilter()
         # connect to signals
-        self._tree.connect("node-added", self.__node_added)
-        self._tree.connect("node-modified", self.__node_modified)
-        self._tree.connect("node-deleted", self.__node_deleted)
+        self._tree.connect("node-added", self._node_added)
+        self._tree.connect("node-modified", self._node_modified)
+        self._tree.connect("node-deleted", self._node_deleted)
 
     ### Standard tree functions
     def apply_filter(self, filter_name, parameters={}, reset=False,
@@ -268,7 +268,7 @@ class FilteredTree(gobject.GObject):
             # this line will raise KeyError if path[0] is out of range
             node_id = self._vroot._children[path[0]]
             # recurse
-            return self.__node_for_path(node_id, list(path[1:]))
+            return self._node_for_path(node_id, list(path[1:]))
 
     def get_paths_for_node(self, node_id=None):
         """
@@ -390,7 +390,7 @@ class FilteredTree(gobject.GObject):
         self.update_count = 0
         self.add_count = 0
         self.remove_count = 0
-        self.__reset_cache()
+        self._reset_cache()
         # the FilteredTree is flat if *any* applied filter is flat
         self.flat = False
         for filter_name in self._applied_filters:
@@ -398,31 +398,25 @@ class FilteredTree(gobject.GObject):
                 self.flat = True
                 break
         # first empty the current tree
-        self.__clean_tree()
+        self._clean_tree()
         self._displayed_nodes = set()
         if len(self._vroot._children) != 0:
             print "self._vroot._children = %s after __clean_from_node" % self._vroot._children
         # list nodes that will be ultimately displayed
         for node_id in self._tree.get_all_nodes():
-            if self.__filter_node(node_id):
+            if self._filter_node(node_id):
                 self._to_add.put_nowait(node_id)
         # finally, add them
-        self.__add_nodes()
+        self._add_nodes()
 
     def reset_filters(self, refresh=True):
-        """
-        Clears all filters currently set on the tree.  Can't be called on 
-        the main tree.
-        """
+        """Clears all filters currently set on the tree."""
         self._applied_filters = []
         if refresh:
             self._refilter()
 
     def reset_tag_filters(self, refilter=True):
-        """
-        Clears all filters currently set on the tree.  Can't be called on 
-        the main tree.
-        """
+        """Clears all tag filters currently set on the tree."""
         # TODO: this is tag-specific, remove
         if "notag" in self._applied_filters:
             self._applied_filters.remove('notag')
@@ -435,8 +429,9 @@ class FilteredTree(gobject.GObject):
             self._refilter()
 
     def to_string(self):
+        """Convert the tree to a string."""
         result = 'displayed : %s\n' % self._displayed_nodes
-        result += self.__node_to_string(self._vroot)
+        result += self._node_to_string(self._vroot)
         return result
 
     def to_json(self):
@@ -461,12 +456,12 @@ class FilteredTree(gobject.GObject):
             return False
 
     ### Private methods
-    def __add_node(self, node_id):
+    def _add_node(self, node_id):
         """Add the node with ID *node_id* to the displayed nodes."""
         self._to_add.put_nowait(node_id)
         self.__adding_loop()
 
-    def __add_nodes(self):
+    def _add_nodes(self):
         """Start the adding loop if the _to_add queue contains IDs."""
         if not self.__adding_lock and not self._to_add.empty():
             self.__adding_lock = True
@@ -477,7 +472,7 @@ class FilteredTree(gobject.GObject):
         try:
             while True:
                 node_id = self._to_add.get_nowait()
-                is_root = self.__is_root(node_id)
+                is_root = self._is_root(node_id)
                 # if the parent node(s) will be displayed, wait 'til at least
                 # one is displayed
                 if not is_root and len(self.node_parents(node_id)) == 0:
@@ -499,11 +494,11 @@ class FilteredTree(gobject.GObject):
         except Queue.Empty:
             self.__adding_lock = False
 
-    def __clean_node(self, node_id):
+    def _clean_node(self, node_id):
         """Undisplay a single node."""
         is_root = False
         if node_id in self._displayed_nodes:
-            is_root = self.__is_root(node_id)
+            is_root = self._is_root(node_id)
             self.emit('node-deleted-inview', node_id)
             self._displayed_nodes.remove(node_id)
         if node_id in self._vroot._children:
@@ -517,9 +512,9 @@ class FilteredTree(gobject.GObject):
             #this might happen with flat filter
             for parent_id in self.node_parents(node_id):
                 if parent_id not in self._cleaning:
-                    self.__update_node(parent_id)
+                    self._update_node(parent_id)
 
-    def __clean_tree(self):
+    def _clean_tree(self):
         """Undisplay all nodes."""
         # a callback function to fill a queue
         def recursive_clean(node_id):
@@ -536,13 +531,13 @@ class FilteredTree(gobject.GObject):
             # one at a time, get a node out of the queue and clean it
             while True:
                 node_id = self._to_clean.get_nowait()
-                self.__clean_node(node_id)
+                self._clean_node(node_id)
                 self._cleaning.remove(node_id)
         except Queue.Empty:
             # when the queue is empty, we're done
             return
 
-    def __filter_node(self, node_id):
+    def _filter_node(self, node_id):
         """Return True if the node with ID *node_id* should be displayed.
 
         This method applies the currently active filters to the node and
@@ -579,7 +574,7 @@ class FilteredTree(gobject.GObject):
                 self.counted_nodes.remove(node_id)
             return result
 
-    def __is_root(self, node_id):
+    def _is_root(self, node_id):
         """Return True if a node should be a virtual root node.
         
         If none of the parents of the node with ID *node_id* will be displayed
@@ -589,12 +584,12 @@ class FilteredTree(gobject.GObject):
         is_root = True
         if not self.flat:
             for parent_id in self._tree.get_node(node_id)._parents:
-                if self.__filter_node(parent_id):
+                if self._filter_node(parent_id):
                     is_root = False
                     break
         return is_root
 
-    def __node_for_path(self, node_id, path):
+    def _node_for_path(self, node_id, path):
         """Recursive helper for get_node_for_path().
         
         Return the ID of the node found by following *path* from *node_id*.
@@ -608,9 +603,9 @@ class FilteredTree(gobject.GObject):
             index = path.pop(0)
             child_id = self.node_children(node_id)[index]
             # recurse
-            return self.__node_for_path(child_id, path)
+            return self._node_for_path(child_id, path)
 
-    def __node_to_string(self, node, prefix='`— '):
+    def _node_to_string(self, node, prefix='`— '):
         """Recursive helper for to_string().
         
         Generate a string with the node IDs, paths and hierarchy,
@@ -627,36 +622,32 @@ class FilteredTree(gobject.GObject):
         for child_id in children:
             child = self._tree.get_node(child_id)
             # recurse
-            result += self.__node_to_string(child, '  %s' % prefix)
+            result += self._node_to_string(child, '  %s' % prefix)
         return result
 
-    def __reset_cache(self):
+    def _reset_cache(self):
         """Reset caches."""
         self.path_for_node_cache = {}
         self.counted_nodes = set()
         self.count_cache = {}
 
-    def __update_node(self, node_id):
+    def _update_node(self, node_id):
         """Update a node."""
         if node_id in self._cleaning:
             # prevent recursion
             return
         displayed = node_id in self._displayed_nodes
-        if self.__filter_node(node_id):
+        if self._filter_node(node_id):
             #if the task was not displayed previously but now should
             #we add it.
             if not displayed:
-                self.__add_node(node_id)
+                self._add_node(node_id)
             else:
                 self.update_count += 1
                 self.emit("node-modified-inview", node_id)
-                #I don't remember why we have to update the children.
-#                if not self.flat:
-#                    for child_id in self.get_node(node_id)._children:
-#                        self.__update_node(child_id)
                 # node should be & is displayed. Maybe it is updated because
                 # its relationship changed?
-                if self.__is_root(node_id):
+                if self._is_root(node_id):
                     if node_id not in self._vroot._children:
                         # the node became a virtual root node
                         self._vroot._children.append(node_id)
@@ -668,27 +659,27 @@ class FilteredTree(gobject.GObject):
             #if the task was displayed previously but shouldn't be anymore
             #we remove it
             if displayed:
-                self.__clean_node(node_id)
+                self._clean_node(node_id)
             else:
                 self.emit("node-deleted-inview", node_id)
 
     ### Private methods: GObject signal callbacks
-    def __node_added(self, sender, node_id):
+    def _node_added(self, sender, node_id):
         """Callback for the node-added signal."""
-        # these checks are in a specific order. __filter_node() is much slower,
+        # these checks are in a specific order. _filter_node() is much slower,
         # so try it second
-        if node_id not in self._displayed_nodes and self.__filter_node(node_id):
-            self.__add_node(node_id)
+        if node_id not in self._displayed_nodes and self._filter_node(node_id):
+            self._add_node(node_id)
 
-    def __node_modified(self, sender, node_id):
+    def _node_modified(self, sender, node_id):
         """Callback for the node-modified signal."""
         if node_id not in self._to_modify:
             self._to_modify.add(node_id)
-            self.__update_node(node_id)
+            self._update_node(node_id)
             self._to_modify.remove(node_id)
 
-    def __node_deleted(self, sender, node_id):
+    def _node_deleted(self, sender, node_id):
         """Callback for the node-deleted signal."""
         # un-display the node, adjust as necessary
-        self.__clean_node(node_id)
+        self._clean_node(node_id)
 

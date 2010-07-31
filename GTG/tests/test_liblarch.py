@@ -23,8 +23,7 @@ import unittest
 
 import gtk
 
-from GTG.tools.liblarch import Tree
-from GTG.tools.liblarch.tree import TreeNode
+from GTG.tools.liblarch import *
 from GTG.gtk.liblarch_gtk import TreeView
 
 
@@ -50,6 +49,7 @@ class DummyNode(TreeNode):
         if color in self.colors:
             self.colors.remove(color)
         self.modified()
+
 
 class TestLibLarch(unittest.TestCase):
     """Tests for `Tree`."""

@@ -19,25 +19,34 @@
 """Liblarch tree library
 
 Liblarch implements a tree (more precisely, a directed acyclic graph (DAG))
-data structure for general use, as well as the concept of tree filters.
+data structure for general use, as well as the concept of *tree filtering*.
 
-A tree filter is a...
+The nodes in a tree are subclassed from TreeNode. See the TreeNode
+documentation for notes on how to do this.
 
-The View...
+A tree filter is a callback function that can be applied to TreeNodes (or
+subclass instances), and returns True or False. By applying the filter to
+every node in a tree, some subset of the nodes can be kept ("displayed") while
+the rest are hidden ("filtered").
+
+The main Tree class keeps track of both the unfiltered data structure, and
+also generates new ViewTrees (get_view() method) that can each have a different
+set of applied filters.
 
 """
 import gobject
 
-from GTG.tools.liblarch.tree import MainTree
+from GTG.tools.liblarch.tree import MainTree, TreeNode
 from GTG.tools.liblarch.filteredtree import FilteredTree
-from GTG.tools.liblarch.filters_bank import FiltersBank
+from GTG.tools.liblarch.filters_bank import FiltersBank, Filter
+
+
+__all__ = 'Filter', 'Tree', 'TreeNode',
 
 
 class Tree():
     """The main tree class."""
-    # TODO: complete docstring
     def __init__(self):
-        # TODO: docstring
         self.__tree = MainTree()
         self.__fbank = FiltersBank()
         self._main_view = ViewTree(self.__tree)
@@ -47,29 +56,36 @@ class Tree():
         return self.get_node(node_id).add_parent(new_parent_id)
 
     def add_filter(self, filter_name, filter_func, parameters={}):
-        """
-        Adds a filter to the filter bank 
+        """Adds a filter to the filter bank.
+        
         @filter_name : name to give to the filter
         @filter_func : the function that will filter the nodes
         @parameters : some default parameters fot that filter
         Return True if the filter was added
         Return False if the filter_name was already in the bank
+        
         """
         return self.__fbank.add_filter(filter_name, filter_func,
           parameters=parameters)
 
     def add_node(self, node, parent_id=None):
-        # TODO: docstring
+        """Add a new *node* to the tree.
+        
+        If the optional *parent_id* is given, the new node is made a child of
+        the node with that ID. Otherwise it is made a child of the root node.
+        
+        """
         self.__tree.add_node(node, parent_id=parent_id)
 
     def delete_node(self, node_id):
-        # TODO: docstring
+        """Delete node by ID."""
         return self.__tree.delete_node(node_id)
 
     def get_node(self, node_id):
-        """
-        return the node object defined by the Node id nid.
-        raises a ValueError if the node doesn't exist in the tree
+        """Return the node object with the given ID.
+        
+        Raises a ValueError if the node doesn't exist in the tree.
+        
         """
         return self.__tree.get_node(node_id)
 
@@ -94,6 +110,7 @@ class Tree():
         return self.__fbank.list_filters()
 
     move_node = lambda self, *args: MainTree.move_node(self.__tree, *args)
+    """Move a node."""
 
     def refresh_node(self, node_id):
         # TODO: docstring
@@ -122,7 +139,18 @@ class UnfilteredTreeError(Exception):
 class ViewTree(gobject.GObject):
     """Views on the data in a tree.
     
-    A
+    The constructor accepts a MainTree instance *tree*, an optional FiltersBank
+    instance *filters_bank*.
+    
+    If no *filters_bank* is given, the ViewTree is an unfiltered, direct view
+    of the MainTree. The methods apply_filter(), unapply_filter(), etc. will
+    throw exceptions.
+    
+    If *filters_bank* is given, the ViewTree supports filtering using any
+    filter from that bank. Also, the optional parameter *refresh* determines
+    whether the view is automatically refiltered whenever the set of applied
+    filters changes.
+    
     """
     #Those are the three signals you want to catch if displaying
     #a filteredtree. The argument of all signals is the nid of the node
@@ -149,25 +177,27 @@ class ViewTree(gobject.GObject):
       ]
 
     def __init__(self, tree, filters_bank=None, refresh=True):
+        """Initialize the ViewTree."""
         gobject.GObject.__init__(self)
         self.filtered = (filters_bank is not None)
         if self.filtered:
             ft = FilteredTree(tree, filters_bank, refresh=refresh)
-            ft.connect('node-added-inview', self.__emit, 'add')
-            ft.connect('node-deleted-inview', self.__emit, 'del')
-            ft.connect('node-modified-inview', self.__emit, 'mod')
+            ft.connect('node-added-inview', self._emit, 'add')
+            ft.connect('node-deleted-inview', self._emit, 'del')
+            ft.connect('node-modified-inview', self._emit, 'mod')
             self._tree = ft
         else:
             self._tree = tree
 
     def apply_filter(self, filter_name, parameters={}, reset=False,
       refresh=True):
-        """
-        Applies a new filter to the tree.
+        """Applies a new filter to the tree.
+        
         @param filter_name: The name of an already registered filter to apply
         @param parameters: Optional parameters to pass to the filter
         @param reset : optional boolean. Should we remove other filters?
         @param refresh : should we refresh after applying this filter ?
+        
         """
         try:
             self._tree.apply_filter(filter_name, parameters=parameters,
@@ -176,19 +206,25 @@ class ViewTree(gobject.GObject):
             raise UnfilteredTreeError, 'Cannot apply filters on an unfiltered'\
               ' tree.'
 
-    def __emit(self,sender,tid,data=None):
+    def _emit(self, sender, node_id, data=None):
+        """Emit signals.
+        
+        ViewTree simply propagates upwards the signals raised by the underlying
+        FilteredTree.
+        
+        """
         if data == 'add':
-            self.emit('node-added-inview',tid)
+            self.emit('node-added-inview', node_id)
         elif data == 'del':
-            self.emit('node-deleted-inview',tid)
+            self.emit('node-deleted-inview', node_id)
         elif data == 'mod':
-            self.emit('node-modified-inview',tid)
+            self.emit('node-modified-inview', node_id)
         else:
-            raise ValueError("Wrong signal %s" %data)
+            raise ValueError("Wrong signal %s" % data)
 
     def get_n_nodes(self, withfilters=[], include_transparent=True):
-        """
-        returns quantity of displayed nodes in this tree
+        """Returns quantity of displayed nodes in this tree.
+        
         if the withfilters is set, returns the quantity of nodes
         that will be displayed if we apply those filters to the current
         tree. It means that the currently applied filters are also taken into
@@ -247,12 +283,11 @@ class ViewTree(gobject.GObject):
         if self.filtered:
             return self._tree.node_is_displayed(node_id)
         else:
-            raise UnfilteredTreeError
+            raise UnfilteredTreeError, 'Nodes are not displayed/hidden in an'\
+              'unfiltered tree.'
 
     def reset_filters(self, refresh=True):
-        """
-        Clears all filters currently set on the tree.
-        """
+        """Clears all filters currently set on the tree."""
         try:
             self._tree.reset_filters(refresh=refresh)
         except AttributeError:
