@@ -66,10 +66,6 @@ class Tree():
         # TODO: docstring
         return self.__tree.delete_node(node_id)
 
-    def get_main_view(self):
-        """Return the main (unfiltered) ViewTree on the current tree."""
-        return self._main_view
-
     def get_node(self, node_id):
         """
         return the node object defined by the Node id nid.
@@ -77,13 +73,19 @@ class Tree():
         """
         return self.__tree.get_node(node_id)
 
-    def get_viewtree(self, refresh=True):
-        """Return a new ViewTree on the contents of the current tree."""
-        return ViewTree(self.__tree, self.__fbank, refresh=refresh)
-
     def get_view(self, main=False, refresh=True):
+        """Return a ViewTree on the contents of the current tree.
+        
+        If *main* is False, a ViewTree is returned that supports filtering.
+        Otherwise, the ViewTree is unfiltered.
+        
+        For a filtered ViewTree, *refresh* determines whether the tree
+        contents are automatically updated after any change to the applied
+        filters.
+        
+        """
         if main:
-            return self.mainview
+            return self._main_view
         else:
             return ViewTree(self.__tree, self.__fbank, refresh=refresh)
 
