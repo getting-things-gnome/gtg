@@ -172,7 +172,7 @@ class FilteredTree(gobject.GObject):
         #for performance reason, we do it only if refresh = True
         self.__reset_cache()
         if refresh:
-            self.refilter()
+            self._refilter()
         # connect to signals
         self._tree.connect("node-added", self.__node_added)
         self._tree.connect("node-modified", self.__node_modified)
@@ -196,7 +196,7 @@ class FilteredTree(gobject.GObject):
             if filter_name not in self._applied_filters:
                 self._applied_filters.append(filter_name)
                 if refresh:
-                    self.refilter()
+                    self._refilter()
                 return True
             else:
                 return False
@@ -299,10 +299,6 @@ class FilteredTree(gobject.GObject):
         """Return the root node."""
         return self._tree.get_root()
 
-    def is_displayed(self, node_id):
-        """Return true if the node with ID *node_id* is displayed."""
-        return node_id in self._displayed_nodes
-
     def next_node(self, node_id, parent_id=None):
         """Returns the next sibling node of *node_id*.
         
@@ -361,9 +357,9 @@ class FilteredTree(gobject.GObject):
                 return filter(lambda c: c in self._displayed_nodes,
                   node._children)
 
-    def node_has_child(self, node_id=None):
-        """Return True if the given node has any displayed children."""
-        return not self.flat and self.node_n_children(node_id) > 0
+    def node_is_displayed(self, node_id):
+        """Return true if the node with ID *node_id* is displayed."""
+        return node_id in self._displayed_nodes
 
     def node_n_children(self, node_id):
         return len(self.node_children(node_id))
@@ -379,10 +375,12 @@ class FilteredTree(gobject.GObject):
     def node_parents(self, node_id):
         """Return a set of IDs of all displayed parents of the node with ID
         *node_id*."""
+        # the root node's ID is never in _displayed_nodes, so it is not
+        # returned
         return self._displayed_nodes.intersection(
           self._tree.get_node(node_id)._parents)
 
-    def refilter(self):
+    def _refilter(self):
         """Rebuild the FilteredTree from scratch.
         
         This method should be called only when the set of applied filters is
@@ -418,7 +416,7 @@ class FilteredTree(gobject.GObject):
         """
         self._applied_filters = []
         if refresh:
-            self.refilter()
+            self._refilter()
 
     def reset_tag_filters(self, refilter=True):
         """
@@ -434,12 +432,20 @@ class FilteredTree(gobject.GObject):
             if f.startswith('@'):
                 self._applied_filters.remove(f)
         if refilter:
-            self.refilter()
+            self._refilter()
 
     def to_string(self):
         result = 'displayed : %s\n' % self._displayed_nodes
         result += self.__node_to_string(self._vroot)
         return result
+
+    def to_json(self):
+        def to_json_recurse(node):
+            result = {}
+            for child_id in self.node_children(node.id):
+                result[child_id] = to_json_recurse(self.get_node(child_id))
+            return result
+        return dumps({self._root.id: to_json_recurse(self._root)}, **kwargs)
 
     def unapply_filter(self, filter_name, refresh=True):
         """
@@ -449,7 +455,7 @@ class FilteredTree(gobject.GObject):
         if filter_name in self._applied_filters:
             self._applied_filters.remove(filter_name)
             if refresh:
-                self.refilter()
+                self._refilter()
             return True
         else:
             return False

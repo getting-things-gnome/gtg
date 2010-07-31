@@ -62,9 +62,9 @@ class Tree():
         # TODO: docstring
         self.__tree.add_node(node, parent_id=parent_id)
 
-    def del_node(self, node_id):
+    def delete_node(self, node_id):
         # TODO: docstring
-        return self.__tree.remove_node(node_id)
+        return self.__tree.delete_node(node_id)
 
     def get_main_view(self):
         """Return the main (unfiltered) ViewTree on the current tree."""
@@ -86,10 +86,6 @@ class Tree():
             return self.mainview
         else:
             return ViewTree(self.__tree, self.__fbank, refresh=refresh)
-
-    def has_node(self, node_id):
-        # TODO: docstring
-        return self.__tree.has_node(node_id)
 
     def list_filters(self):
         """ List, by name, all available filters """
@@ -214,17 +210,7 @@ class ViewTree(gobject.GObject):
         else:
             raise AttributeError
 
-    def node_has_child(self, node_id):
-        if self.filtered:
-            return self._tree.node_has_child(node_id)
-        else:
-            return self._tree.get_node(node_id).has_child()
-
-    #if nid is None, return the number of nodes at the root
-    def node_n_children(self, node_id=None):
-        return len(self.node_all_children(node_id))
-
-    def node_all_children(self, node_id=None):
+    def node_children(self, node_id=None):
         if self.filtered:
             return self._tree.node_children(node_id)
         else:
@@ -235,9 +221,6 @@ class ViewTree(gobject.GObject):
             return self._tree.node_nth_child(node_id, n)
         else:
             return self._tree.get_node(node_id).get_nth_child(n)
-
-    def node_has_parent(self, node_id):
-        return len(self.node_parents(node_id)) > 0
 
     def node_parents(self, node_id):
         """
@@ -258,11 +241,11 @@ class ViewTree(gobject.GObject):
                 pass
             return result
 
-    def is_displayed(self, node_id):
+    def node_is_displayed(self, node_id):
         if self.filtered:
-            return self._tree.is_displayed(node_id)
+            return self._tree.node_is_displayed(node_id)
         else:
-            return self._tree.has_node(node_id)
+            raise UnfilteredTreeError
 
     def reset_filters(self, refresh=True):
         """

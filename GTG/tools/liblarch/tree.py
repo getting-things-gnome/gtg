@@ -117,10 +117,10 @@ class MainTree(gobject.GObject):
             Return True if *target* is an ancestor of *node*, otherwise False.
             
             """
-            if node.has_parent(target.id):
+            if target.id in node._parents:
                 # the target is a parent of the node. Circular!
                 return True
-            elif node.has_parent():
+            elif len(node._parents):
                 # not a direct parent, but the node has other parents. Recurse
                 circular = False
                 for parent_id in node._parents:
@@ -311,7 +311,7 @@ class MainTree(gobject.GObject):
             parent_id = list(parent_ids)[0]
         parent = self.get_node(parent_id)
         # find the index of node_id under the parent
-        index = parent.get_child_index(node_id)
+        index = parent._children.index(node_id)
         if len(parent._children) > index + 1:
             return parent._children[index + 1]
 
@@ -356,7 +356,7 @@ class MainTree(gobject.GObject):
             cur_node = node.get_child(child_id)
             self._print_from_node(cur_node, '  %s' % prefix)
 
-    def remove_node(self, node_id, recursive=False):
+    def delete_node(self, node_id, recursive=False):
         """Remove a node with ID *node_id* from the tree.
         
         If the node has any children, and *recursive* is false, they are made
@@ -373,7 +373,7 @@ class MainTree(gobject.GObject):
                     self.remove_node(child_id, recursive=True)
                 else:
                     self.break_relationship(node_id, child_id)
-        if node.has_parent():
+        if len(node._parents):
             for parent_id in node._parents:
                 par = self.get_node(parent_id)
                 par.remove_child(node_id)
@@ -409,7 +409,7 @@ class MainTree(gobject.GObject):
         def to_json_recurse(node):
             result = {}
             for child_id in node._children:
-                result[child_id] = self.__to_json(self.get_node(child_id))
+                result[child_id] = self.to_json_recurse(self.get_node(child_id))
             return result
         return dumps({self._root.id: to_json_recurse(self._root)}, **kwargs)
 
@@ -485,17 +485,6 @@ class TreeNode(object):
         else:
             return None
 
-    def get_child_index(self, child_id):
-        """Return the index of the child with ID *child_id*.
-        
-        If there is no such child, None is returned.
-        
-        """
-        if child_id in self._children:
-            return self._children.index(child_id)
-        else:
-            return None
-
     def get_children(self):
         """Return a list of IDs for children of this node."""
         return self._children
@@ -533,18 +522,14 @@ class TreeNode(object):
         else:
             return child_id in self._children
 
-    def has_parent(self, parent_id=None):
+    def has_parent(self, parent_id):
         """Return True if the node has a parent.
         
         If *parent_id* is not None, return True if that node is a parent of
         this node.
         
         """
-        if parent_id:
-            return parent_id in self._parents
-        else:
-            return len(self._parents) > 0 or (self.tree and
-              self._parents == [self.tree._root.id])
+        return parent_id in self._parents
 
     def modified(self):
         try:
