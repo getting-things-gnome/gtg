@@ -61,6 +61,7 @@ class TreeviewFactory():
     #task title/label
     def task_label_column(self, node):
         title = saxutils.escape(node.get_title())
+        #FIXME
 #        color = self.treeview.style.text[gtk.STATE_INSENSITIVE].to_string()
         color = "#F00"
         if node.get_status() == Task.STA_ACTIVE:
@@ -157,7 +158,7 @@ class TreeviewFactory():
         treeview.set_main_search_column('label')
         treeview.set_expander_column('label')
         #Background colors
-#        treeview.set_bg_color(self.task_bg_color,'tags')
+        treeview.set_bg_color(self.task_bg_color,'tags')
          # Global treeview properties
         treeview.set_property("enable-tree-lines", False)
         treeview.set_rules_hint(False)
@@ -176,5 +177,3 @@ class TreeviewFactory():
 #            tasktree.COL_DLEFT, gtk.SORT_ASCENDING)
         return treeview
         
-        
-        return treeview
