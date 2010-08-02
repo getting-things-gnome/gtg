@@ -307,12 +307,12 @@ class TestLibLarch(unittest.TestCase):
         self.assertEqual(0,len(self.mainview.node_parents('temp')))
 
     def test_add_parent(self):
-        view = self.tree.get_viewtree(refresh = True)
-        """Test that a task can have two parents.
+        """Test that a node can have two parents.
 
         Verify that when a node with a parent gets a second parent, 
-        the task can be found in both parent nodes.
+        the node can be found in both parent nodes.
         """
+        view = self.tree.get_viewtree(refresh = True)
         node = DummyNode('temp')
         node.add_color('blue')
         self.assertSignal(self.view, \
@@ -338,7 +338,9 @@ class TestLibLarch(unittest.TestCase):
     
     #we try to add a task as a child of one of its grand-children.
     #Nothing should happen
+
     def test_cyclic_paradox(self):
+        """Try to add a node as a child of one of its grand-children."""
         node = DummyNode('temp')
         node.add_color('blue')
         self.tree.add_node(node,parent_id='0')
@@ -655,9 +657,9 @@ class TestLibLarch(unittest.TestCase):
         view = self.tree.get_viewtree(refresh=False)
         """Test use of filters to restrict nodes shown.
 
-        When the 'red' filter is applied, only tasks with the 'red' color
+        When the 'red' filter is applied, only nodes with the 'red' color
         should be returned.  Applying the 'blue' filter on top of that should
-        result in no nodes, since there are no tasks with both 'red' and 'blue'.
+        result in no nodes, since there are no nodes with both 'red' and 'blue'.
 
         When two filters are applied, and the second one is removed, the
         result should be the same as if only the first one had been applied.
