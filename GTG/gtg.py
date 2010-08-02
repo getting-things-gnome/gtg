@@ -122,7 +122,7 @@ def core_main_init(options = None, args = None):
     # Register backends 
     for backend_dic in backends_list:
         ds.register_backend(backend_dic)
-    #save directly the backends to be sure to write projects.xml
+    #save the backends directly to be sure projects.xml is written
     ds.save(quit = False)
         
     # Launch task browser
@@ -134,7 +134,7 @@ def core_main_quit(config, ds):
     Last bits of code executed in GTG, after the UI has been shut off. 
     Currently, it's just saving everything.
     '''
-    # Ideally we should load window geometry configuration from a config.
+    # Ideally we should load window geometry configuration from a config
     # backend like gconf at some point, and restore the appearance of the
     # application as the user last exited it.
     #
