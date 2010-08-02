@@ -1,6 +1,6 @@
 #!/bin/bash
 
-args=""
+args="--no-crash-handler"
 set="default"
 norun=0
 profile=0
@@ -11,7 +11,7 @@ mkdir -p tmp
 # Interpret arguments
 while getopts dnps: o
 do  case "$o" in
-    d)   args="-d";;
+    d)   args="$args -d";;
     n)   norun=1;;
     p)   profile=1;;
     s)   set="$OPTARG";;

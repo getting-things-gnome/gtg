@@ -101,7 +101,11 @@ def main(options=None, args=None):
     #main loop
     #To be more user friendly and get the logs of crashes, we show an apport
     # hooked window upon crashes
-    #with signal_catcher(manager.close_browser):
+    import sys
+    if options.no_crash_handler == False:
+        #FIXME: Why is this disabled?  Please comment when disabling functionality so we know. :-)
+        #with signal_catcher(manager.close_browser):
+        pass
     manager.main()
     core_main_quit(config, ds)
 

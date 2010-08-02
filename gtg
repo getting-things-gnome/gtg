@@ -42,6 +42,8 @@ try:
     parser = OptionParser()
     parser.add_option('-d', '--debug', action='store_true', dest='debug',
       help="enable debug output", default=False)
+    parser.add_option('-c', '--no-crash-handler', action='store_true', dest='no_crash_handler',
+      help="Disable the automatic crash handler", default=False)
     (options, args) = parser.parse_args()
 
     if not X_is_running():
