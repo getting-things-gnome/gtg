@@ -168,18 +168,20 @@ class FilteredTree(gobject.GObject):
         
     def get_n_nodes(self,withfilters=[],countednodes=False):
         """
-        returns quantity of displayed nodes in this tree
-        if the withfilters is set, returns the quantity of nodes
+        Returns quantity of nodes displayed in this tree.
+
+        If withfilters is specified, returns the quantity of nodes
         that will be displayed if we apply those filters to the current
         tree. It means that the currently applied filters are also taken into
         account.
-        If countednodes = True, we only take into account the applied filters
-        that doesn't have the counting parameters.
+
+        If countednodes = True, we only account for the applied filters
+        that don't have the counting parameters.
         """
         toreturn = 0
         usecache = False
         if countednodes:
-            #Currently, the cache only work for one filter
+            #Currently, the cache only works for one filter
             if len(withfilters) == 1:
                 usecache = True
             zelist = self.counted_nodes
@@ -189,8 +191,6 @@ class FilteredTree(gobject.GObject):
             key = "".join(withfilters)
             if usecache and self.count_cache.has_key(key):
                 toreturn = self.count_cache[key]
-#                self.using_cache += 1
-#                print "we used cache %s" %(self.using_cache)
             else:
                 for tid in zelist:
                     result = True
@@ -321,11 +321,11 @@ class FilteredTree(gobject.GObject):
                     path = par_path + (pos,)
                     toreturn.append(path)
             if len(toreturn) == 0:
-                #if we are here, it means that we have a ghost task that 
-                #is not really displayed but still here, in the tree
-                #it happens sometimes when we remove a parent with children
-                #if we still have a recorded path for the ghost task,
-                #we return it. This provides ghost task from staying displayed
+                #If we are here, it means that we have a ghost task that 
+                #is not really displayed but still here in the tree.
+                #It happens sometimes when we remove a parent with children.
+                #If we still have a recorded path for the ghost task,
+                #we return it. This provides ghost task from staying displayed.
                 if self.path_for_node_cache.has_key(tid):
                     toreturn = self.path_for_node_cache[tid]
                 else:
@@ -523,10 +523,10 @@ class FilteredTree(gobject.GObject):
                     if not filt.get_parameters('ignore_when_counting'):
                         counting_result = counting_result and temp
             if counting_result and tid not in self.counted_nodes:
-                #This is an hard custom optimisation for task counting
+                #This is a hard custom optimisation for task counting
                 #Normally, we would here reset the cache of counted tasks
-                #But this slow down a lot the startup.
-                #So, we update manually the cache.
+                #But this slows the startup down a lot.
+                #So we update the cache manually.
                 for k in self.count_cache.keys():
                     f = self.req.get_filter(k)
                     if f.is_displayed(tid):

@@ -83,17 +83,24 @@ class SimpleTagFilter:
         
     def set_parameters(self,dic):
         self.dic = dic
-    
+
+    def get_all_descendant_tags(self, tname):
+        tags = [tname]
+        tt = self.req.get_tag(tname)
+        if tt:
+            children = tt.get_children()
+            tags.extend(children)
+            for child_tag in children:
+                tags.extend(self.get_all_descendant_tags(child_tag))
+        return tags
+
     def is_displayed(self,tid):
         task = self.req.get_task(tid)
         value = True
         if not task:
             value = False
         else:
-            tags = [self.tname]
-            tt = self.req.get_tag(self.tname)
-            if tt:
-                tags += tt.get_children()
+            tags = self.get_all_descendant_tags(self.tname)
             value = task.has_tags(tags)
         if 'negate' in self.dic and self.dic['negate']:
             value = not value
