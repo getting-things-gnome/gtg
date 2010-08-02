@@ -315,7 +315,7 @@ class TagTreeModel(gtk.GenericTreeModel):
                 parent_node = self.tree.get_root()
                 remove_after = True
             idx = parent_node.get_child_index(tid) + 1
-            if parent_node.get_n_children() > idx:
+            if len(parent_node.children) > idx:
                 nextnode = parent_node.get_nth_child(idx)
             else:
                 nextnode = None
@@ -351,8 +351,8 @@ class TagTreeModel(gtk.GenericTreeModel):
 #        print "on_iter_n_children: %s" % str(node)
         if not node:
             node = self.tree.get_root()
-#            print "root has %s children" %node.get_n_children()
-        return node.get_n_children()
+#            print "root has %s children" % len(node.children)
+        return len(node.children)
 
     def on_iter_nth_child(self, node, n):
 #        print "on_iter_nth_child: %s" % str(node)
