@@ -1209,7 +1209,7 @@ class TaskBrowser:
                 task.set_status(Task.STA_DISMISSED)
 
     def on_select_tag(self, widget=None, row=None, col=None):
-        #When you clic on a tag, you want to unselect the tasks
+        #When you click on a tag, you want to unselect the tasks
         taglist, notag = self.get_selected_tags()
         if notag:
             newtag = ["notag"]
