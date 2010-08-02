@@ -97,6 +97,12 @@ class TestLibLarch(unittest.TestCase):
                           fake_gobject.emit_n_signals, 33)(33)
 
     def setUp(self):
+        """Set up a dummy tree with filters and nodes.
+
+        Construct a Tree for testing, with some filters for testing, including
+        filters with parameters 'flat' and 'transparent'.  Create a collection of
+        nodes with some of the properties these filters filter on.
+        """
         i = 0
         #node numbers, used to check
         self.red_nodes = 0
@@ -190,6 +196,8 @@ class TestLibLarch(unittest.TestCase):
     #### We test by counting nodes that meet some criterias
     
     def test_get_node(self):
+        """Test that one node can be retrieved from the tree
+        """
         #we test that get node works for the last node
         node = self.tree.get_node(str(self.total-1))
         self.assert_(node != None)
@@ -198,6 +206,7 @@ class TestLibLarch(unittest.TestCase):
         self.assertRaises(ValueError,self.tree.get_node,str(self.total))
 
     def test_add_remove_node(self):
+        """ DISABLED (?) """
         return
         view = self.tree.get_viewtree(refresh=True)
         node = DummyNode('temp')
@@ -222,6 +231,7 @@ class TestLibLarch(unittest.TestCase):
         self.assertEqual(self.blue_nodes,self.view.get_n_nodes(withfilters=['blue']))
         
     def test_modifying_node(self):
+        """ DISABLED (?) """
         return
         viewblue = self.tree.get_viewtree(refresh=False)
         viewblue.apply_filter('blue')
@@ -243,9 +253,13 @@ class TestLibLarch(unittest.TestCase):
         self.failIf(viewblue.is_displayed('temp'))
         self.assert_(viewred.is_displayed('temp'))
 
-    #When you remove a parent, the child nodes should be added to the root if
-    #they don't have any other parents
     def test_removing_parent(self):
+        """ DISABLED (?) """
+        """Test behavior of node when its parent goes away.
+
+        When you remove a parent, the child nodes should be added to
+        the root if they don't have any other parents.
+        """
         return
         view = self.tree.get_viewtree(refresh=True)
         node = DummyNode('temp')
@@ -261,6 +275,11 @@ class TestLibLarch(unittest.TestCase):
 
     def test_move_node(self):
         view = self.tree.get_viewtree(refresh=True)
+        """Test node movement from parents.
+
+        Check that node can be moved from one node to another,
+        and to root.  When moved to root, verify it has no parents.
+        """
         node = DummyNode('temp')
         node.add_color('blue')
         self.tree.add_node(node,parent_id='0')
@@ -289,6 +308,11 @@ class TestLibLarch(unittest.TestCase):
 
     def test_add_parent(self):
         view = self.tree.get_viewtree(refresh = True)
+        """Test that a task can have two parents.
+
+        Verify that when a node with a parent gets a second parent, 
+        the task can be found in both parent nodes.
+        """
         node = DummyNode('temp')
         node.add_color('blue')
         self.assertSignal(self.view, \
@@ -327,13 +351,22 @@ class TestLibLarch(unittest.TestCase):
         self.assertRaises(Exception,self.tree.add_parent,'1','temp')
         
     def test_mainview(self):
-        #we should test that mainview is always up-to-date
-        #and raise exception when trying to add filters on it
+        """Verify mainview behavior
+
+        Test that mainview is always up-to-date and raise exception when
+        trying to add filters on it
+        """
         self.assertRaises(Exception,self.mainview.apply_filter,'blue')
         
     #### Testing each method of the ViewTree
     
+    ### Testing each method of the TreeView
     def test_viewtree_get_n_nodes(self):
+        """ Test get_n_nodes() method of TreeView
+
+        Check that retrieving counts of nodes with various filters returns
+        the expected collections.
+        """
         total = self.red_nodes + self.blue_nodes + self.green_nodes
         self.assertEqual(total,self.view.get_n_nodes())
         self.assertEqual(self.green_nodes,self.view.get_n_nodes(withfilters=['green']))
@@ -442,6 +475,11 @@ class TestLibLarch(unittest.TestCase):
         
     def test_viewtree_next_node(self):
         view = self.tree.get_viewtree(refresh=True)
+        """Test next_node() for TreeView.
+
+        Add two nodes to a parent, then verify various ways of looking
+        at the next node in the parent's list.
+        """
         node = DummyNode('temp')
         node.add_color('blue')
         node.add_color('green')
@@ -466,6 +504,11 @@ class TestLibLarch(unittest.TestCase):
 
     def test_viewtree_node_has_child(self):
         view = self.tree.get_viewtree(refresh=True)
+        """Test node_has_child() for TreeView
+
+        Verify that TreeView's node_n_children()'s return changes after
+        a node is added to an empty TreeView instance.
+        """
         node = DummyNode('temp')
         node.add_color('blue')
         self.failIf(view.node_has_child('0'))
@@ -475,10 +518,13 @@ class TestLibLarch(unittest.TestCase):
         self.assert_(view.node_has_child('0'))
         self.assert_(self.mainview.node_has_child('0'))
     
-    #We also test node_n_children here. Nearly the same method
     def test_viewtree_node_all_children(self):
         view = self.tree.get_viewtree(refresh=True)
         self.assertEqual(0,len(view.node_all_children('0')))
+        """Test node_all_children() for TreeView.
+
+        We also test node_n_children here. Nearly the same method.
+        """
         #checking that 0 and 1 are in root
         self.assert_('0' in view.node_all_children())
         self.assert_('1' in view.node_all_children())
@@ -521,8 +567,15 @@ class TestLibLarch(unittest.TestCase):
         self.assert_('1' in self.mainview.node_all_children())
         
     
+    # FIXME: pest ;-)
     def pest_viewtree_node_nth_child(self):
         view = self.tree.get_viewtree(refresh=True)
+        """Test node_nth_child() for TreeView.
+
+        Verify that when retrieving a given child node, that it is
+        returned, except when requesting a node not in the tree or that
+        is not present due being filtered out.
+        """
         node = DummyNode('temp')
         node.add_color('blue')
         #Asking for a child that doesn't exist should raise an exception
@@ -539,6 +592,12 @@ class TestLibLarch(unittest.TestCase):
         
     def test_viewtree_node_parents(self):
         view = self.tree.get_viewtree(refresh=True)
+        """Test node_parents() for TreeView.
+
+        Verify that a node's parents can be retrieved, if it has any.
+        Check that if a node has multiple parents, that both parents are
+        returned.
+        """
         #Checking that a node at the root has no parents
         self.assertEqual([],view.node_parents('0'))
         self.assertEqual([],self.mainview.node_parents('0'))
@@ -563,6 +622,11 @@ class TestLibLarch(unittest.TestCase):
 
     def test_viewtree_is_displayed(self):
         view = self.tree.get_viewtree(refresh=True)
+        """Test is_displayed() for TreeView.
+
+        Verify that a node is shown as displayed once it's been added
+        to the tree, but not if an active filter should be hiding it.
+        """
         node = DummyNode('temp')
         node.add_color('blue')
         self.failIf(view.is_displayed('temp'))
@@ -584,6 +648,20 @@ class TestLibLarch(unittest.TestCase):
 
     def test_simple_filter(self):
         view = self.tree.get_viewtree(refresh=False)
+        """Test use of filters to restrict nodes shown.
+
+        When the 'red' filter is applied, only tasks with the 'red' color
+        should be returned.  Applying the 'blue' filter on top of that should
+        result in no nodes, since there are no tasks with both 'red' and 'blue'.
+
+        When two filters are applied, and the second one is removed, the
+        result should be the same as if only the first one had been applied.
+
+        When a node gains a color, check that it is filtered appropriately.
+
+        When a displayed node is added to a non-displayed parent, it
+        should still be displayed.
+        """
         view.apply_filter('red')
         self.assertEqual(self.red_nodes,view.get_n_nodes())
         self.assertEqual(self.red_nodes,view.get_n_nodes(withfilters=['red']))
@@ -628,6 +706,11 @@ class TestLibLarch(unittest.TestCase):
 
     def test_leaf_filter(self):
         view = self.tree.get_viewtree(refresh=False)
+        """Test filtering to show only the leaf nodes.
+
+        When the 'leaf' filter is applied and a child added to a node,
+        the parent node should not be present in the results.
+        """
         view.apply_filter('leaf')
         total = self.red_nodes + self.blue_nodes
         self.assertEqual(total,view.get_n_nodes())
@@ -645,6 +728,8 @@ class TestLibLarch(unittest.TestCase):
     #we copy/paste the test
     def test_flatleaves_filters(self):
         view = self.tree.get_viewtree(refresh=False)
+        """FIXME: Document me please
+        """
         view.apply_filter('flatleaves')
         total = self.red_nodes + self.blue_nodes
         self.assertEqual(total,view.get_n_nodes())
@@ -663,6 +748,8 @@ class TestLibLarch(unittest.TestCase):
     #the flat filter should make them flat
     def test_flat_filters(self):
         view = self.tree.get_viewtree(refresh=False)
+        """FIXME: Document me please
+        """
         view.apply_filter('flatgreen')
         #all green nodes should be visibles
         self.assertEqual(self.green_nodes,view.get_n_nodes())
@@ -686,6 +773,11 @@ class TestLibLarch(unittest.TestCase):
         
     def test_transparent_filters(self):
         view = self.tree.get_viewtree(refresh=False)
+        """Test excluding transparent filters
+
+        Filters marked with the 'transparent' property should apply in get_n_nodes()
+        normally, but can be turned off via the include_transparent parameter.
+        """
         view.apply_filter('transgreen')
         self.assertEqual(self.green_nodes,view.get_n_nodes())
         self.assertEqual(self.total,view.get_n_nodes(include_transparent=False))
@@ -699,6 +791,7 @@ class TestLibLarch(unittest.TestCase):
     def test_view_signals(self):
         view = self.tree.get_viewtree(refresh = True)
         
+        #FIXME:  Appears unimplemented?
 def test_suite():
     return unittest.TestLoader().loadTestsFromName(__name__)
 
