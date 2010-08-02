@@ -54,8 +54,8 @@ class Tree():
     """
     def __init__(self):
         self.__tree = MainTree()
-        self.__fbank = FiltersBank(self.__tree)
-        self.mainview = ViewTree(self.__tree,self.__fbank,static=True)
+        self.__fbank = FiltersBank()
+        self._main_view = ViewTree(self.__tree)
 
     def add_filter(self, filter_name, filter_func, parameters={}):
         """Adds a filter to the filter bank.

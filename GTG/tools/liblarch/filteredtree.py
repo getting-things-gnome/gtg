@@ -283,13 +283,22 @@ class FilteredTree(gobject.GObject):
             return [()]
 
         def find_path(node_id):
+            """Recursive helper. Find the paths to *node_id*."""
             paths = []
+            # will recurse once for each parent, to get its paths
             for parent_id in self.node_parents(node_id):
-                i = self.get_node(parent_id)._children.index(node_id)
+                # index of *node_id* under this parent
+                i = self.node_children(parent_id).index(node_id)
+                # paths to the parent
                 for parent_path in find_path(parent_id):
+                    # construct the paths
                     paths.append(tuple(list(parent_path) + [i]))
+            # we got nothing - must be at the vroot
             if not len(paths):
-                paths.append((self._vroot._children.index(node_id),))
+                try:
+                    paths.append((self._vroot._children.index(node_id),))
+                except:
+                    pass
             return paths
         
         result = find_path(node_id)
@@ -655,7 +664,6 @@ class FilteredTree(gobject.GObject):
                 self._add_node(node_id)
             else:
                 self.update_count += 1
-                self.emit("node-modified-inview", node_id)
                 # node should be & is displayed. Maybe it is updated because
                 # its relationship changed?
                 if self._is_root(node_id):
@@ -666,6 +674,7 @@ class FilteredTree(gobject.GObject):
                     if node_id in self._vroot._children:
                         # the node moved out of the virtual root
                         self._vroot._children.remove(node_id)
+                self.emit("node-modified-inview", node_id)
         else:
             #if the task was displayed previously but shouldn't be anymore
             #we remove it

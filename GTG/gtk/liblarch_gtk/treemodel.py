@@ -206,11 +206,9 @@ class TreeModel(gtk.GenericTreeModel):
         if rowref and rowref.is_valid():
             path = rowref.get_path()
             ppath = path[:-1]
-            if ppath == ():
-                ppath = None
             pid = self.tree.get_node_for_path(ppath)
             nid = rowref.get_node()
-            next = self.tree.next_node(nid,pid=pid)
+            next = self.tree.next_node(nid, parent_id=pid)
             #We have the next node. To know the path to use
             # we will find, in its paths, the one with 
             #the same root as the current node
@@ -229,7 +227,7 @@ class TreeModel(gtk.GenericTreeModel):
     def on_iter_has_child(self, rowref):
         if rowref and rowref.is_valid():
             nid = rowref.get_node()
-            toreturn = self.tree.node_has_child(nid)
+            toreturn = len(self.tree.node_children(nid))
             return toreturn
         else:
             return False
@@ -237,9 +235,9 @@ class TreeModel(gtk.GenericTreeModel):
     def on_iter_n_children(self, rowref):
         if rowref:
             node = rowref.get_node()
-            toreturn = self.tree.node_n_children(node)
+            toreturn = len(self.tree.node_children(node))
         else:
-            toreturn = self.tree.node_n_children(None)
+            toreturn = len(self.tree.node_children(None))
         return toreturn
 
     def on_iter_nth_child(self, rowref, n):
@@ -270,7 +268,7 @@ class TreeModel(gtk.GenericTreeModel):
     def update_task(self, sender, tid):
 #        # get the node and signal it's changed
 #        print "tasktree update_task %s" %tid
-        if self.tree.is_displayed(tid):
+        if self.tree.node_is_displayed(tid):
             node_paths = self.tree.get_paths_for_node(tid)
             for node_path in node_paths:
                 node_iter = self.get_iter(node_path)
@@ -312,7 +310,7 @@ class TreeModel(gtk.GenericTreeModel):
                         self.row_inserted(node_path, node_iter)
                         #following is mandatory if 
                         #we added a child task before his parent.
-                        if self.tree.node_has_child(tid):
+                        if len(self.tree.node_children(tid)):
         #                    print "child_toggled 2 : %s" %task.get_title()
                             self.row_has_child_toggled(node_path,node_iter)
                 for pid in parents:
