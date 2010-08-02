@@ -42,8 +42,8 @@ class TreeviewFactory():
                     count = count + 1 + self._count_active_subtasks_rec(task)
         return count
     
-    def task_bg_color(tags,bg):
-        if self.config['bg-color-enabled']:
+    def task_bg_color(self,tags,bg):
+        if self.config.get('bg-color-enabled',False):
             return color.background_color(tags,bg)
         else:
             return None
