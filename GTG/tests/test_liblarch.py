@@ -569,13 +569,18 @@ class TestLibLarch(unittest.TestCase):
     
     # FIXME: pest ;-)
     def pest_viewtree_node_nth_child(self):
-        view = self.tree.get_viewtree(refresh=True)
         """Test node_nth_child() for TreeView.
 
         Verify that when retrieving a given child node, that it is
         returned, except when requesting a node not in the tree or that
         is not present due being filtered out.
         """
+        view = self.tree.get_viewtree(refresh=True)
+        self.assert_('1' in view.node_children())
+        self.assert_('1' in self.mainview.node_children())
+
+    def test_viewtree_node_nth_child(self):
+        view = self.tree.get_viewtree(refresh=True)
         node = DummyNode('temp')
         node.add_color('blue')
         #Asking for a child that doesn't exist should raise an exception
