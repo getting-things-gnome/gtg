@@ -43,7 +43,7 @@ class Task(TreeNode):
     STA_DONE      = "Done"
 
     def __init__(self, ze_id, requester, newtask=False):
-        TreeNode.__init__(self)
+        TreeNode.__init__(self, ze_id)
         #the id of this task in the project should be set
         #tid is a string ! (we have to choose a type and stick to it)
         self.tid = str(ze_id)

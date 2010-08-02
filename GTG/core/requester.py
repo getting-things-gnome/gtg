@@ -56,7 +56,7 @@ class Requester(gobject.GObject):
         gobject.GObject.__init__(self)
         self.ds = datastore
         self.basetree = self.ds.get_tasks_tree()
-        self.main_tree = self.basetree.get_view(main=True)
+        self.main_tree = self.basetree.get_viewtree()
         
         #TODO build filters here
         self.counter_call = 0
