@@ -295,10 +295,7 @@ class FilteredTree(gobject.GObject):
                     paths.append(tuple(list(parent_path) + [i]))
             # we got nothing - must be at the vroot
             if not len(paths):
-                try:
-                    paths.append((self._vroot._children.index(node_id),))
-                except:
-                    pass
+                paths.append((self._vroot._children.index(node_id),))
             return paths
         
         result = find_path(node_id)
