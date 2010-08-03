@@ -86,12 +86,11 @@ class TaskBrowser:
         #treeviews handlers
         self.vtree_panes = {}
         self.tv_factory = TreeviewFactory(self.req,self.config)
-        self.tasks_tree = self.req.get_main_tasks_tree()
+        self.tasks_tree = {}
+        self.tasks_tree['active'] = self.req.get_main_tasks_tree()
         self.tags_tv = None
         self.vtree_panes['active'] = \
-                        self.tv_factory.active_tasks_treeview(self.tasks_tree)
-        self.ctask_tree = None
-        self.ctask_tv = None
+                self.tv_factory.active_tasks_treeview(self.tasks_tree['active'])
 
 
         ### YOU CAN DEFINE YOUR INTERNAL MECHANICS VARIABLES BELOW
@@ -104,7 +103,7 @@ class TaskBrowser:
 
         # Set up models
         # Active Tasks
-        self.tasks_tree.apply_filter('active',refresh=False)
+        self.tasks_tree['active'].apply_filter('active',refresh=False)
         # Tags
         self.tagtree = TagTree(self.req)
 
@@ -339,8 +338,8 @@ class TaskBrowser:
         
         # Selection changes
         self.selection = self.vtree_panes['active'].get_selection()
-        if self.ctask_tv:
-            self.closed_selection = self.ctask_tv.get_selection()
+        if self.vtree_panes.has_key('closed'):
+            self.closed_selection = self.vtree_panes['closed'].get_selection()
             self.closed_selection.connect("changed", self.on_taskdone_cursor_changed)
         self.selection.connect("changed", self.on_task_cursor_changed)
         self.req.connect("task-deleted", self.update_buttons_sensitivity)
@@ -538,7 +537,7 @@ class TaskBrowser:
         self._update_window_title()
 
     def _update_window_title(self):
-        count = self.tasks_tree.get_n_nodes()
+        count = self.tasks_tree['active'].get_n_nodes()
         #Set the title of the window:
         parenthesis = ""
         if count == 0:
@@ -813,23 +812,24 @@ class TaskBrowser:
             
     def show_closed_pane(self):
         # The done/dismissed taks treeview
-        if not self.ctask_tree:
-            self.ctask_tree = self.req.get_custom_tasks_tree()
-            self.ctask_tv = self.tv_factory.active_tasks_treeview(self.ctask_tree)
-            self.ctask_tree.apply_filter('closed')
+        if not self.tasks_tree.has_key('closed'):
+            self.tasks_tree['closed'] = self.req.get_custom_tasks_tree()
+            self.vtree_panes['closed'] = \
+                        self.tv_factory.active_tasks_treeview(self.tasks_tree['closed'])
+            self.tasks_tree['closed'].apply_filter('closed')
                     # Closed tasks TreeView
-            self.ctask_tv.connect('row-activated',\
+            self.vtree_panes['closed'].connect('row-activated',\
                 self.on_edit_done_task)
-            self.ctask_tv.connect('button-press-event',\
+            self.vtree_panes['closed'].connect('button-press-event',\
                 self.on_closed_task_treeview_button_press_event)
-            self.ctask_tv.connect('key-press-event',\
+            self.vtree_panes['closed'].connect('key-press-event',\
                 self.on_closed_task_treeview_key_press_event)
 
         if not self.closed_pane:
             self.closed_pane = gtk.ScrolledWindow()
             self.closed_pane.set_size_request(-1, 100)
             self.closed_pane.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-            self.closed_pane.add(self.ctask_tv)
+            self.closed_pane.add(self.vtree_panes['closed'])
 
         elif self.accessory_notebook.page_num(self.closed_pane) != -1:
             # Already contains the closed pane
@@ -839,21 +839,23 @@ class TaskBrowser:
         self.builder.get_object("view_closed").set_active(True)
 
     def hide_closed_pane(self):
-        if self.ctask_tv:
-            self.ctask_tv.set_model(None)
-        self.ctask_tree = None
+        if self.vtree_panes.has_key('closed'):
+            self.vtree_panes['closed'].set_model(None)
+            del self.vtree_panes['closed']
+        if self.tasks_tree.has_key('closed'):
+            del self.tasks_tree['closed']
         self.remove_page_from_accessory_notebook(self.closed_pane)
         self.builder.get_object("view_closed").set_active(False)
 
     def on_bg_color_toggled(self, widget):
         if widget.get_active():
             self.priv["bg_color_enable"] = True
-            self.vtree_panes['active'].set_bg_color(True)
-            self.ctask_tv.set_bg_color(True)
+            for v in self.vtree_panes:
+                self.vtree_panes[v].set_bg_color(True)
         else:
             self.priv["bg_color_enable"] = False
-            self.vtree_panes['active'].set_bg_color(False)
-            self.ctask_tv.set_bg_color(False)
+            for v in self.vtree_panes:
+                self.vtree_panes[v].set_bg_color(False)
 
     def on_toolbar_toggled(self, widget):
         if widget.get_active():
@@ -1066,7 +1068,7 @@ class TaskBrowser:
             self.vmanager.open_task(tid)
 
     def on_edit_done_task(self, widget, row=None, col=None):
-        tid = self.get_selected_task(self.ctask_tv)
+        tid = self.get_selected_task(self.vtree_panes['closed'])
         if tid:
             self.vmanager.open_task(tid)
 
@@ -1195,16 +1197,12 @@ class TaskBrowser:
             else:
                 newtag = ['no_disabled_tag']
         #FIXME:handle multiple tags case
-        if len(newtag) > 0:
-            self.tasks_tree.reset_filters(refresh=False,transparent_only=True)
-            self.tasks_tree.apply_filter(newtag[0])
-            if self.ctask_tree:
-                self.ctask_tree.apply_filter('closed',reset=True,refresh=False)
-                self.ctask_tree.apply_filter(newtag[0])
-        else:
-            self.tasks_tree.reset_filters(refresh=False,transparent_only=True)
-            if self.ctask_tree:
-                self.ctask_tree.reset_filters(transparent_only=True)
+        for t in self.tasks_tree:
+            #1st we reset the tags filter
+            self.tasks_tree[t].reset_filters(refresh=False,transparent_only=True)
+            #then applying the tag
+            if len(newtag) > 0:
+                self.tasks_tree[t].apply_filter(newtag[0])
                         
 #        self.ctask_tv.get_selection().unselect_all()
         self._update_window_title()
@@ -1246,7 +1244,7 @@ class TaskBrowser:
         update_button(self.dismissbutton, settings_dismiss)
         update_menu_item(self.dismiss_mi, settings_dismiss)
         if selection.count_selected_rows() > 0:
-            tid = self.get_selected_task(self.ctask_tv)
+            tid = self.get_selected_task(self.vtree_panes['closed'])
             task = self.req.get_task(tid)
             self.vtree_panes['active'].get_selection().unselect_all()
             if task.get_status() == "Dismiss":
@@ -1274,8 +1272,8 @@ class TaskBrowser:
         self.donebutton.set_icon_name("gtg-task-done")
         self.dismissbutton.set_icon_name("gtg-task-dismiss")
         if selection.count_selected_rows() > 0:
-            if self.ctask_tv:
-                self.ctask_tv.get_selection().unselect_all()
+            if self.vtree_panes.has_key('closed'):
+                self.vtree_panes['closed'].get_selection().unselect_all()
             self.donebutton.set_label(GnomeConfig.MARK_DONE)
             self.donebutton.set_tooltip_text(GnomeConfig.MARK_DONE_TOOLTIP)
             self.dismissbutton.set_label(GnomeConfig.MARK_DISMISS)
@@ -1297,7 +1295,7 @@ class TaskBrowser:
     #using dummy parameters that are given by the signal
     def update_buttons_sensitivity(self,a=None,b=None,c=None):
         enable = self.selection.count_selected_rows() 
-        if self.ctask_tv:
+        if self.vtree_panes.has_key('closed'):
             enable += self.closed_selection.count_selected_rows() > 0
         self.edit_mi.set_sensitive(enable)
         self.new_subtask_mi.set_sensitive(enable)
@@ -1317,6 +1315,7 @@ class TaskBrowser:
         :param tv: The tree view to find the selected task in. Defaults to
             the task_tview.
         """
+#       TODO: this can be removed
 #        if not tv:
 #            tview = self.task_tv
 #            selection = tview.get_selection()
@@ -1335,6 +1334,7 @@ class TaskBrowser:
 
         ids = self.get_selected_tasks(tv)
         if len(ids) > 0:
+            #fixme : we should also unselect all the others
             return ids[0]
         else:
             return None
@@ -1357,27 +1357,6 @@ class TaskBrowser:
                     selected = self.vtree_panes[i].get_selected_nodes()
         return selected
         
-#        if not tv:
-#            tview = self.task_tv
-#        else:
-#            tview = tv
-#        # Get the selection in the gtk.TreeView
-#        selection = tview.get_selection()
-#        #If we don't have anything and no tview specified
-#        #Let's have a look in the closed task view
-#        if selection and selection.count_selected_rows() <= 0 and not tv:
-#            tview = self.ctask_tv
-#            selection = tview.get_selection()
-#        # Get the selection iter
-#        if selection.count_selected_rows() <= 0:
-#            ids = [None]
-#        else:
-#            model, paths = selection.get_selected_rows()
-#            iters = [model.get_iter(path) for path in paths]
-#            ts  = tview.get_model()
-#            #0 is the column of the tid
-#            ids = [ts.get_value(iter, 0) for iter in iters]
-#        return ids
 
     def get_selected_tags(self):
         notag_only = False
