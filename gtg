@@ -40,10 +40,12 @@ def X_is_running():
 
 try:
     parser = OptionParser()
-    parser.add_option('-d', '--debug', action='store_true', dest='debug',
-      help="enable debug output", default=False)
+    parser.add_option('-b', '--boot-test', action='store_true', dest='boot_test',
+      help="Exit immediately after completing boot-up actions", default=False)
     parser.add_option('-c', '--no-crash-handler', action='store_true', dest='no_crash_handler',
       help="Disable the automatic crash handler", default=False)
+    parser.add_option('-d', '--debug', action='store_true', dest='debug',
+      help="enable debug output", default=False)
     (options, args) = parser.parse_args()
 
     if not X_is_running():

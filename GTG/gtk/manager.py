@@ -208,9 +208,12 @@ class Manager:
                     self.close_task(t)
             
 ### MAIN ###################################################################
-    def main(self):
+    def main(self, once_thru=False):
         gobject.threads_init()
-        gtk.main()
+        if once_thru:
+            gtk.main_iteration()
+        else:
+            gtk.main()
         return 0
         
         

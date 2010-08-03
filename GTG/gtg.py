@@ -106,7 +106,7 @@ def main(options=None, args=None):
         #FIXME: Why is this disabled?  Please comment when disabling functionality so we know. :-)
         #with signal_catcher(manager.close_browser):
         pass
-    manager.main()
+    manager.main(once_thru=options.boot_test)
     core_main_quit(config, ds)
 
 def core_main_init(options = None, args = None):
