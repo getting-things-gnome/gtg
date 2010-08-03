@@ -350,7 +350,7 @@ class TaskBrowser:
         self.builder.get_object("view_closed").set_active(CLOSED_PANE)
         self.builder.get_object("view_quickadd").set_active(QUICKADD_PANE)
         self.builder.get_object("view_toolbar").set_active(TOOLBAR)
-        self.priv["bg_color_enable"] = BG_COLOR
+        self.config["browser"]["bg_color_enable"] = BG_COLOR
         self.priv["contents_preview_enable"] = CONTENTS_PREVIEW
 
     def _add_accelerator_for_widget(self, agr, name, accel):
@@ -467,8 +467,7 @@ class TaskBrowser:
                 self.builder.get_object("view_quickadd").set_active(False)
 
         if "bg_color_enable" in self.config["browser"]:
-            bgcol_enable = eval(self.config["browser"]["bg_color_enable"])
-            self.priv["bg_color_enable"] = bgcol_enable
+            bgcol_enable = self.config["browser"].get("bg_color_enable",BG_COLOR)
             self.builder.get_object("bgcol_enable").set_active(bgcol_enable)
 
         if "contents_preview_enable" in self.config["browser"]:
@@ -706,7 +705,7 @@ class TaskBrowser:
             'y_pos':
                 self.priv["window_ypos"],
             'bg_color_enable':
-                self.priv["bg_color_enable"],
+                self.config["browser"]["bg_color_enable"],
             'contents_preview_enable':
                 self.priv["contents_preview_enable"],
             'collapsed_tasks':
@@ -849,13 +848,9 @@ class TaskBrowser:
 
     def on_bg_color_toggled(self, widget):
         if widget.get_active():
-            self.priv["bg_color_enable"] = True
-            for v in self.vtree_panes:
-                self.vtree_panes[v].set_bg_color(True)
+            self.config["browser"]["bg_color_enable"] = True
         else:
-            self.priv["bg_color_enable"] = False
-            for v in self.vtree_panes:
-                self.vtree_panes[v].set_bg_color(False)
+            self.config["browser"]["bg_color_enable"] = False
 
     def on_toolbar_toggled(self, widget):
         if widget.get_active():

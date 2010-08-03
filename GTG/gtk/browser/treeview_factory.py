@@ -25,6 +25,7 @@ from GTG     import _
 from GTG.core.task import Task
 from GTG.gtk.browser.CellRendererTags import CellRendererTags
 from GTG.gtk.liblarch_gtk import TreeView
+from GTG.gtk import colors
 
 class TreeviewFactory():
 
@@ -43,8 +44,8 @@ class TreeviewFactory():
         return count
     
     def task_bg_color(self,tags,bg):
-        if self.config.get('bg-color-enabled',False):
-            return color.background_color(tags,bg)
+        if self.config['browser'].get('bg_color_enable',False):
+            return colors.background_color(tags,bg)
         else:
             return None
     
