@@ -84,10 +84,12 @@ class TaskBrowser:
         self.tag_active = False
         
         #treeviews handlers
+        self.vtree_panes = {}
         self.tv_factory = TreeviewFactory(self.req,self.config)
         self.tasks_tree = self.req.get_main_tasks_tree()
         self.tags_tv = None
-        self.task_tv = self.tv_factory.active_tasks_treeview(self.tasks_tree)
+        self.vtree_panes['active'] = \
+                        self.tv_factory.active_tasks_treeview(self.tasks_tree)
         self.ctask_tree = None
         self.ctask_tv = None
 
@@ -101,7 +103,10 @@ class TaskBrowser:
         self._init_icon_theme()
 
         # Set up models
-        self._init_models()
+        # Active Tasks
+        self.tasks_tree.apply_filter('active',refresh=False)
+        # Tags
+        self.tagtree = TagTree(self.req)
 
         # Load window tree
         self.builder = gtk.Builder() 
@@ -137,7 +142,7 @@ class TaskBrowser:
         self.restore_state_from_conf()
 
         #Expand all the tasks in the taskview
-        self.task_tv.expand_all()
+        self.vtree_panes['active'].expand_all()
         self.on_select_tag()
         self.window.show()
 
@@ -162,13 +167,6 @@ class TaskBrowser:
             gtk.icon_theme_get_default().prepend_search_path(i)
             gtk.window_set_default_icon_name("gtg")
 
-    #FIXME: we should group the initialization by widgets, not by type of methods
-    # it should be "init_active_tasks_pane", "init_sidebar", etc.
-    def _init_models(self):
-        # Active Tasks
-        self.tasks_tree.apply_filter('active',refresh=False)
-        # Tags
-        self.tagtree = TagTree(self.req)
 
     def _init_widget_aliases(self):
         self.window             = self.builder.get_object("MainWindow")
@@ -205,7 +203,7 @@ class TaskBrowser:
 
     def _init_ui_widget(self):
         # The Active tasks treeview
-        self.main_pane.add(self.task_tv)
+        self.main_pane.add(self.vtree_panes['active'])
 
         # The tags treeview
         self.tags_tv = self.tagtree.get_tagtreeview()
@@ -316,15 +314,15 @@ class TaskBrowser:
                     self.window.connect("delete-event", self.on_delete)
 
         # Active tasks TreeView
-        self.task_tv.connect('row-activated',\
+        self.vtree_panes['active'].connect('row-activated',\
             self.on_edit_active_task)
-        self.task_tv.connect('button-press-event',\
+        self.vtree_panes['active'].connect('button-press-event',\
             self.on_task_treeview_button_press_event)
-        self.task_tv.connect('key-press-event',\
+        self.vtree_panes['active'].connect('key-press-event',\
             self.on_task_treeview_key_press_event)
-        self.task_tv.connect('row-expanded',\
+        self.vtree_panes['active'].connect('row-expanded',\
             self.on_task_treeview_row_expanded)
-        self.task_tv.connect('row-collapsed',\
+        self.vtree_panes['active'].connect('row-collapsed',\
             self.on_task_treeview_row_collapsed)
 
         # Connect requester signals to TreeModels
@@ -340,7 +338,7 @@ class TaskBrowser:
             self.on_tag_treeview_button_press_event)
         
         # Selection changes
-        self.selection = self.task_tv.get_selection()
+        self.selection = self.vtree_panes['active'].get_selection()
         if self.ctask_tv:
             self.closed_selection = self.ctask_tv.get_selection()
             self.closed_selection.connect("changed", self.on_taskdone_cursor_changed)
@@ -536,7 +534,7 @@ class TaskBrowser:
         else:
             self.req.unapply_filter('workview')
         self.tagtree.refilter()
-        self.task_tv.display_start_column(not tobeset)
+        self.vtree_panes['active'].display_start_column(not tobeset)
         self._update_window_title()
 
     def _update_window_title(self):
@@ -850,11 +848,11 @@ class TaskBrowser:
     def on_bg_color_toggled(self, widget):
         if widget.get_active():
             self.priv["bg_color_enable"] = True
-            self.task_tv.set_bg_color(True)
+            self.vtree_panes['active'].set_bg_color(True)
             self.ctask_tv.set_bg_color(True)
         else:
             self.priv["bg_color_enable"] = False
-            self.task_tv.set_bg_color(False)
+            self.vtree_panes['active'].set_bg_color(False)
             self.ctask_tv.set_bg_color(False)
 
     def on_toolbar_toggled(self, widget):
@@ -874,9 +872,9 @@ class TaskBrowser:
         if tid not in self.priv.get("collapsed_tids", []):
             curiter = model.get_iter(path)
             if model.iter_is_valid(curiter):
-                self.task_tv.expand_row(path, False)
+                self.vtree_panes['active'].expand_row(path, False)
         else:
-            self.task_tv.collapse_row(path)
+            self.vtree_panes['active'].collapse_row(path)
 
     def on_task_treeview_row_expanded(self, treeview, iter, path):
         tid = treeview.get_model().get_value(iter, 0)
@@ -1250,7 +1248,7 @@ class TaskBrowser:
         if selection.count_selected_rows() > 0:
             tid = self.get_selected_task(self.ctask_tv)
             task = self.req.get_task(tid)
-            self.task_tv.get_selection().unselect_all()
+            self.vtree_panes['active'].get_selection().unselect_all()
             if task.get_status() == "Dismiss":
                 self.builder.get_object(
                     "ctcm_mark_as_not_done").set_sensitive(False)
@@ -1319,24 +1317,24 @@ class TaskBrowser:
         :param tv: The tree view to find the selected task in. Defaults to
             the task_tview.
         """
-        if not tv:
-            tview = self.task_tv
-            selection = tview.get_selection()
-            #If we don't have anything and no tview specified
-            #Let's have a look in the closed task view
-            if selection and selection.count_selected_rows() <= 0 and not tv:
-                tview = self.ctask_tv
-                selection = tview.get_selection()
-            if selection.count_selected_rows() <= 0:
-                return None
-            else:
-                model, paths = selection.get_selected_rows()
-                if len(paths) >0 :
-                    selection.unselect_all()
-                    selection.select_path(paths[0])
+#        if not tv:
+#            tview = self.task_tv
+#            selection = tview.get_selection()
+#            #If we don't have anything and no tview specified
+#            #Let's have a look in the closed task view
+#            if selection and selection.count_selected_rows() <= 0 and not tv:
+#                tview = self.ctask_tv
+#                selection = tview.get_selection()
+#            if selection.count_selected_rows() <= 0:
+#                return None
+#            else:
+#                model, paths = selection.get_selected_rows()
+#                if len(paths) >0 :
+#                    selection.unselect_all()
+#                    selection.select_path(paths[0])
 
         ids = self.get_selected_tasks(tv)
-        if ids != None:
+        if len(ids) > 0:
             return ids[0]
         else:
             return None
@@ -1348,27 +1346,38 @@ class TaskBrowser:
         :param tv: The tree view to find the selected task in. Defaults to
             the task_tview.
         """
-        if not tv:
-            tview = self.task_tv
+        selected = []
+        if tv:
+            selected = self.vtree_panes[tv].get_selected_nodes()
         else:
-            tview = tv
-        # Get the selection in the gtk.TreeView
-        selection = tview.get_selection()
-        #If we don't have anything and no tview specified
-        #Let's have a look in the closed task view
-        if selection and selection.count_selected_rows() <= 0 and not tv:
-            tview = self.ctask_tv
-            selection = tview.get_selection()
-        # Get the selection iter
-        if selection.count_selected_rows() <= 0:
-            ids = [None]
-        else:
-            model, paths = selection.get_selected_rows()
-            iters = [model.get_iter(path) for path in paths]
-            ts  = tview.get_model()
-            #0 is the column of the tid
-            ids = [ts.get_value(iter, 0) for iter in iters]
-        return ids
+            if self.vtree_panes.has_key('active'):
+                selected = self.vtree_panes['active'].get_selected_nodes()
+            for i in self.vtree_panes:
+                if len(selected) == 0:
+                    selected = self.vtree_panes[i].get_selected_nodes()
+        return selected
+        
+#        if not tv:
+#            tview = self.task_tv
+#        else:
+#            tview = tv
+#        # Get the selection in the gtk.TreeView
+#        selection = tview.get_selection()
+#        #If we don't have anything and no tview specified
+#        #Let's have a look in the closed task view
+#        if selection and selection.count_selected_rows() <= 0 and not tv:
+#            tview = self.ctask_tv
+#            selection = tview.get_selection()
+#        # Get the selection iter
+#        if selection.count_selected_rows() <= 0:
+#            ids = [None]
+#        else:
+#            model, paths = selection.get_selected_rows()
+#            iters = [model.get_iter(path) for path in paths]
+#            ts  = tview.get_model()
+#            #0 is the column of the tid
+#            ids = [ts.get_value(iter, 0) for iter in iters]
+#        return ids
 
     def get_selected_tags(self):
         notag_only = False

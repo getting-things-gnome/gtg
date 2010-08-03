@@ -122,6 +122,21 @@ class TreeView(gtk.TreeView):
                     col = self.bg_color_func(value, bgcolor)
         cell.set_property("cell-background", col)
         
+    def get_selected_nodes(self):
+        ''' Return the selected nodes ID'''
+        # Get the selection in the gtk.TreeView
+        selection = self.get_selection()
+        # Get the selection iter
+        if selection.count_selected_rows() <= 0:
+            ids = []
+        else:
+            model, paths = selection.get_selected_rows()
+            iters = [model.get_iter(path) for path in paths]
+            ts  = self.get_model()
+            #0 is the column of the tid
+            ids = [ts.get_value(iter, 0) for iter in iters]
+        return ids
+        
 #        #TODO
 #        self.task_modelsort.set_sort_func(\
 #            tasktree.COL_DDATE, self.date_sort_func)
