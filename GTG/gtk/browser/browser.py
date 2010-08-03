@@ -529,11 +529,11 @@ class TaskBrowser:
         self.toggle_workview.set_active(tobeset)
         self.priv['workview'] = tobeset
         if tobeset:
-            self.req.apply_filter('workview')
+            self.tasks_tree['active'].apply_filter('workview')
         else:
-            self.req.unapply_filter('workview')
+            self.tasks_tree['active'].unapply_filter('workview')
         self.tagtree.refilter()
-        self.vtree_panes['active'].display_start_column(not tobeset)
+        self.vtree_panes['active'].set_col_visible('startdate',not tobeset)
         self._update_window_title()
 
     def _update_window_title(self):
@@ -884,7 +884,7 @@ class TaskBrowser:
             self.priv["collapsed_tids"].remove(tid)
         
     def on_task_treeview_row_collapsed(self, treeview, iter, path):
-        tid = treeview.get_model().get_value(iter, tasktree.COL_TID)
+        tid = treeview.get_model().get_value(iter, 0)
         if tid not in self.priv["collapsed_tids"]:
             self.priv["collapsed_tids"].append(tid)
 
@@ -1295,8 +1295,8 @@ class TaskBrowser:
     #using dummy parameters that are given by the signal
     def update_buttons_sensitivity(self,a=None,b=None,c=None):
         enable = self.selection.count_selected_rows() 
-        if self.vtree_panes.has_key('closed'):
-            enable += self.closed_selection.count_selected_rows() > 0
+#        if self.vtree_panes.has_key('closed'):
+#            enable += self.closed_selection.count_selected_rows() > 0
         self.edit_mi.set_sensitive(enable)
         self.new_subtask_mi.set_sensitive(enable)
         self.done_mi.set_sensitive(enable)
