@@ -223,6 +223,8 @@ class TreeModel(gtk.GenericTreeModel):
         return toreturn
 
     def on_iter_children(self, rowref):
+        #By Gtk.treeview definition, we have to return None
+        #if rowref doesn't have any children
         nid = rowref.get_node()
         if self.tree.node_n_children(nid) > 0:
             return self.on_iter_nth_child(rowref,0)
