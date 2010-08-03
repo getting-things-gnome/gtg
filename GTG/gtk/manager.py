@@ -49,6 +49,7 @@ class Manager:
     def __init__(self, req, config):
         self.config_obj = config
         self.config = config.conf_dict
+
         self.task_config = config.task_conf_dict
         self.req = req
         # Editors
@@ -82,6 +83,7 @@ class Manager:
         
         #DBus
         DBusTaskWrapper(self.req, self)
+        Log.debug("Manager initialization finished")
         
     def __init_plugin_engine(self):
         #FIXME : the plugin engine should not require the browser.
@@ -125,6 +127,7 @@ class Manager:
     def open_browser(self):
         if not self.browser:
             self.browser = TaskBrowser(self.req, self, self.config)
+        Log.debug("Browser is open")
 
     #FIXME : the browser should not be the center of the universe.
     # In fact, we should build a system where view can register themselves

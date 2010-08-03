@@ -34,7 +34,7 @@ import gtk
 
 #our own imports
 import GTG
-from GTG.core                       import CoreConfig
+from GTG.core                    import CoreConfig
 from GTG                         import _, info, ngettext
 from GTG.core.task               import Task
 from GTG.gtk.browser             import GnomeConfig, tasktree, tagtree
@@ -92,7 +92,7 @@ class TaskBrowser:
         self.ctask_tree = None
 
         ### YOU CAN DEFINE YOUR INTERNAL MECHANICS VARIABLES BELOW
-        
+
         # Setup default values for view
         self._init_browser_config()
 
@@ -412,7 +412,7 @@ class TaskBrowser:
         self.tag_list = self.req.get_all_tags()
         for i in self.tag_list:
             self.tag_list_model.append([i.get_name()[1:]])
-               
+
     def _init_tag_completion(self):
         #Initialize tag completion.
         self.tag_completion = gtk.EntryCompletion()
@@ -538,7 +538,6 @@ class TaskBrowser:
             for t in odic:
                 ted = self.vmanager.open_task(t)
 
-    
     def _start_gtg_maximized(self):
         #This is needed as a hook point to let the Notification are plugin
         #start gtg minimized
@@ -1224,6 +1223,7 @@ class TaskBrowser:
                 newtag = [taglist[0].get_name()]
             else:
                 newtag = ['no_disabled_tag']
+
         #FIXME:handle multiple tags case
         if len(newtag) > 0:
             self.req.reset_tag_filters(refilter=False)
