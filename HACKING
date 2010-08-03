@@ -78,6 +78,61 @@ pep8``. If you wish to find all PEP 8 violations in a particular file, use::
   ./scripts/pep8.py --repeat FILENAME
 
 
+Commenting-out Code
+-------------------
+Try to avoid leaving commented out code in the codebase.  Or at least,
+if some code must be left commented out, also include a comment
+or TODO or FIXME explaining why it was disabled.  If possible include a
+bug lp#.
+
+Some common reasons why one might create commented code are:
+
+ a.  I was unsure of my fix
+ b.  I wasn't sure what the original code was supposed to do
+ c.  I needed to disable it to work around some problem
+ d.  I removed or broke other code that this code depends on
+ e.  I started implementing something but haven't finished it yet
+ f.  I need this for debugging problems that might still exist
+
+Obviously none of these are great situations to be in, but it happens.
+
+Ideally, commenting out a line of code should be a signal to yourself
+that one of these things has happened, and that you probably should ask
+for help before merging it to trunk, and it should stay in a branch for
+now.
+
+But that may not always be possible.  So more practically, when
+commenting out code please ALWAYS explain why you commented it out.
+This enables other developers (who may know the code better) to figure
+out and solve the problem.
+
+So instead of this:
+
+  #foo.animate(x)
+
+consider doing it like this:
+
+  #FIXME:  If x is None, it causes animate() to crash.  But x should
+  #never be None, so this *should* always work.  I can't reproduce the 
+  #crash so can't tell what makes x None.  Leaving it disabled for now
+  #until someone can reproduce it and investigate.  (LP: #12345)
+  #
+  #foo.animate(x)
+
+Especially, avoid commented out code used for debugging.  Instead of
+this:
+
+  #print "Testing: ", 1, 2, 3
+
+consider doing it like this:
+
+  Log.debug("Testing %d %d %d", 1, 2, 3)
+
+Historically, there has been code left commented out in the codebase for
+various reasons.  As you run across such code, please help us tidy the
+codebase by either commenting why it's disabled, or remove it.
+
+
 API Style
 ---------
 Whereever possible, prefer using tid/tagname instead of passing task/tag
@@ -111,7 +166,7 @@ All modules should begin with the following header::
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
 # Gettings Things Gnome! - a personal organizer for the GNOME desktop
-# Copyright (c) 2008-2009 - Lionel Dricot & Bertrand Rousseau
+# Copyright (c) 2008-2010 - Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
