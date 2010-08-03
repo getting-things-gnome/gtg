@@ -815,7 +815,7 @@ class TaskBrowser:
         if not self.tasks_tree.has_key('closed'):
             self.tasks_tree['closed'] = self.req.get_custom_tasks_tree()
             self.vtree_panes['closed'] = \
-                        self.tv_factory.active_tasks_treeview(self.tasks_tree['closed'])
+                        self.tv_factory.closed_tasks_treeview(self.tasks_tree['closed'])
             self.tasks_tree['closed'].apply_filter('closed')
                     # Closed tasks TreeView
             self.vtree_panes['closed'].connect('row-activated',\

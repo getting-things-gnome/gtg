@@ -84,12 +84,67 @@ class TreeviewFactory():
         
     def task_duedate_column(self,node):
         return node.get_due_date().to_readable_string()
+        
+    def task_cdate_column(self,node):
+        return node.get_closed_date().to_readable_string()
 
 
     ######## The Factory #######################
     def active_tasks_treeview(self,tree):
-        desc = {}
+        #Build the title/label/tags columns
+        desc = self.common_desc_for_tasks(tree)
         
+        # "startdate" column
+        col_name = 'startdate'
+        col = {}
+        col['title'] = _("Start date")
+        render_text = gtk.CellRendererText()
+        col['expandable'] = False
+        col['renderer'] = ['markup',render_text]
+        col['resizable'] = False
+        col['value'] = [str,self.task_sdate_column]
+        col['order'] = 3
+        desc[col_name] = col
+
+        # 'duedate' column
+        col_name = 'duedate'
+        col = {}
+        col['title'] = _("Due")
+        render_text = gtk.CellRendererText()
+        col['expandable'] = False
+        col['renderer'] = ['markup',render_text]
+        col['resizable'] = False
+        col['value'] = [str,self.task_duedate_column]
+        col['order'] = 4
+        desc[col_name] = col
+
+        #Returning the treeview
+        treeview = self.build_task_treeview(tree,desc)
+        return treeview
+        
+    def closed_tasks_treeview(self,tree):
+        #Build the title/label/tags columns
+        desc = self.common_desc_for_tasks(tree)
+        
+        # "startdate" column
+        col_name = 'closeddate'
+        col = {}
+        col['title'] = _("Closed date")
+        render_text = gtk.CellRendererText()
+        col['expandable'] = False
+        col['renderer'] = ['markup',render_text]
+        col['resizable'] = False
+        col['value'] = [str,self.task_cdate_column]
+        col['order'] = 3
+        desc[col_name] = col
+
+        #Returning the treeview
+        treeview = self.build_task_treeview(tree,desc)
+        return treeview
+        
+    
+    def common_desc_for_tasks(self,tree):
+        desc = {}
         #invisible 'title' column
         col_name = 'title'
         col = {}
@@ -126,34 +181,10 @@ class TreeviewFactory():
         col['sorting'] = 'title'
         col['order'] = 2
         desc[col_name] = col
+        return desc
         
-        # "startdate" column
-        col_name = 'startdate'
-        col = {}
-        col['title'] = _("Start date")
-        render_text = gtk.CellRendererText()
-        col['expandable'] = False
-        col['renderer'] = ['markup',render_text]
-        col['resizable'] = False
-        col['value'] = [str,self.task_sdate_column]
-        col['order'] = 3
-        desc[col_name] = col
-
-        # 'duedate' column
-        col_name = 'duedate'
-        col = {}
-        col['title'] = _("Due")
-        render_text = gtk.CellRendererText()
-        col['expandable'] = False
-        col['renderer'] = ['markup',render_text]
-        col['resizable'] = False
-        col['value'] = [str,self.task_duedate_column]
-        col['order'] = 4
-        desc[col_name] = col
-
-        #Returning the treeview
+    def build_task_treeview(self,tree,desc):
         treeview = TreeView(tree,desc)
-        
         #Now that the treeview is done, we can polish
         treeview.set_main_search_column('label')
         treeview.set_expander_column('label')
@@ -162,7 +193,6 @@ class TreeviewFactory():
          # Global treeview properties
         treeview.set_property("enable-tree-lines", False)
         treeview.set_rules_hint(False)
-        
         return treeview
         
         
