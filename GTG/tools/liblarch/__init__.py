@@ -237,9 +237,13 @@ class ViewTree(gobject.GObject):
         toreturn = None
         if self.static:
             node = self.__get_static_node(nid)
-            if node:
+            if node and node.get_n_children() > n:
                 toreturn = node.get_nth_child(n)
+            else:
+                raise ValueError("node %s has less than %s nodes" %(nid,n))
         else:
+            if self.__ft.node_n_children(nid) <= n:
+                raise ValueError("viewtree has less than %s nodes" %n)
             toreturn = self.__ft.node_nth_child(nid,n)
         return toreturn
         
