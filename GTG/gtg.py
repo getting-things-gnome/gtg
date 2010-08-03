@@ -101,12 +101,11 @@ def main(options=None, args=None):
     #main loop
     #To be more user friendly and get the logs of crashes, we show an apport
     # hooked window upon crashes
-    import sys
     if options.no_crash_handler == False:
         #FIXME: Why is this disabled?  Please comment when disabling functionality so we know. :-)
         #with signal_catcher(manager.close_browser):
         pass
-    manager.main()
+    manager.main(once_thru=options.boot_test)
     core_main_quit(config, ds)
 
 def core_main_init(options = None, args = None):
@@ -118,6 +117,7 @@ def core_main_init(options = None, args = None):
         Log.setLevel(logging.DEBUG)
         Log.debug("Debug output enabled.")
         Log.set_debugging_mode(True)
+
     config = CoreConfig()
     check_instance(config.get_data_dir())
     backends_list = BackendFactory().get_saved_backends_list()
@@ -128,7 +128,7 @@ def core_main_init(options = None, args = None):
         ds.register_backend(backend_dic)
     #save the backends directly to be sure projects.xml is written
     ds.save(quit = False)
-        
+    
     # Launch task browser
     req = ds.get_requester()
     return config, ds, req
