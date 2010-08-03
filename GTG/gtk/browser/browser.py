@@ -967,6 +967,7 @@ class TaskBrowser:
                 f(task)
 
     def on_tag_treeview_button_press_event(self, treeview, event):
+        Log.debug("Received button event #%d at %d,%d" %(event.button, event.x, event.y))
         if event.button == 3:
             x = int(event.x)
             y = int(event.y)
@@ -1031,15 +1032,20 @@ class TaskBrowser:
             self.reset_cursor()
 
     def on_task_treeview_button_press_event(self, treeview, event):
+        """Pop up context menu on right mouse click in the main task tree view"""
+        Log.debug("Received button event #%d at %d,%d" %(event.button, event.x, event.y))
         if event.button == 3:
             x = int(event.x)
             y = int(event.y)
             time = event.time
             pthinfo = treeview.get_path_at_pos(x, y)
             if pthinfo is not None:
-                if treeview.get_selection().count_selected_rows() <= 0:
-                    path, col, cellx, celly = pthinfo
+                path, col, cellx, celly = pthinfo
+                selection = treeview.get_selection()
+                if selection.count_selected_rows() <= 0:
                     treeview.set_cursor(path, col, 0)
+                else:
+                    selection.select_path(path)
                 treeview.grab_focus()
                 self.taskpopup.popup(None, None, None, event.button, time)
             return 1
