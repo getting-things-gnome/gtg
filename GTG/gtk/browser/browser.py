@@ -1276,7 +1276,8 @@ class TaskBrowser:
         self.donebutton.set_icon_name("gtg-task-done")
         self.dismissbutton.set_icon_name("gtg-task-dismiss")
         if selection.count_selected_rows() > 0:
-            self.ctask_tv.get_selection().unselect_all()
+            if self.ctask_tv:
+                self.ctask_tv.get_selection().unselect_all()
             self.donebutton.set_label(GnomeConfig.MARK_DONE)
             self.donebutton.set_tooltip_text(GnomeConfig.MARK_DONE_TOOLTIP)
             self.dismissbutton.set_label(GnomeConfig.MARK_DISMISS)
@@ -1297,8 +1298,9 @@ class TaskBrowser:
 
     #using dummy parameters that are given by the signal
     def update_buttons_sensitivity(self,a=None,b=None,c=None):
-        enable = self.selection.count_selected_rows() + \
-           self.closed_selection.count_selected_rows() > 0
+        enable = self.selection.count_selected_rows() 
+        if self.ctask_tv:
+            enable += self.closed_selection.count_selected_rows() > 0
         self.edit_mi.set_sensitive(enable)
         self.new_subtask_mi.set_sensitive(enable)
         self.done_mi.set_sensitive(enable)
@@ -1364,7 +1366,8 @@ class TaskBrowser:
             model, paths = selection.get_selected_rows()
             iters = [model.get_iter(path) for path in paths]
             ts  = tview.get_model()
-            ids = [ts.get_value(iter, tasktree.COL_TID) for iter in iters]
+            #0 is the column of the tid
+            ids = [ts.get_value(iter, 0) for iter in iters]
         return ids
 
     def get_selected_tags(self):

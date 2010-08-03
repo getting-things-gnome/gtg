@@ -42,8 +42,8 @@ class TreeviewFactory():
                     count = count + 1 + self._count_active_subtasks_rec(task)
         return count
     
-    def task_bg_color(tags,bg):
-        if self.config['bg-color-enabled']:
+    def task_bg_color(self,tags,bg):
+        if self.config.get('bg-color-enabled',False):
             return color.background_color(tags,bg)
         else:
             return None
@@ -163,6 +163,8 @@ class TreeviewFactory():
         treeview.set_property("enable-tree-lines", False)
         treeview.set_rules_hint(False)
         
+        return treeview
+        
         
         #TODO
 #        self.task_modelsort.set_sort_func(\
@@ -175,5 +177,4 @@ class TreeviewFactory():
 # Set sorting order
 #        self.task_modelsort.set_sort_column_id(\
 #            tasktree.COL_DLEFT, gtk.SORT_ASCENDING)
-        return treeview
         
