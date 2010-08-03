@@ -223,7 +223,11 @@ class TreeModel(gtk.GenericTreeModel):
         return toreturn
 
     def on_iter_children(self, rowref):
-        return self.on_iter_nth_child(rowref,0)
+        nid = rowref.get_node()
+        if self.tree.node_n_children(nid) > 0:
+            return self.on_iter_nth_child(rowref,0)
+        else:
+            return None
             
 
     def on_iter_has_child(self, rowref):
