@@ -163,6 +163,8 @@ class TreeviewFactory():
         treeview.set_property("enable-tree-lines", False)
         treeview.set_rules_hint(False)
         
+        return treeview
+        
         
         #TODO
 #        self.task_modelsort.set_sort_func(\
@@ -175,5 +177,4 @@ class TreeviewFactory():
 # Set sorting order
 #        self.task_modelsort.set_sort_column_id(\
 #            tasktree.COL_DLEFT, gtk.SORT_ASCENDING)
-        return treeview
         
