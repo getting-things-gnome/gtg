@@ -350,6 +350,8 @@ class TaskBrowser:
         self.builder.get_object("view_closed").set_active(CLOSED_PANE)
         self.builder.get_object("view_quickadd").set_active(QUICKADD_PANE)
         self.builder.get_object("view_toolbar").set_active(TOOLBAR)
+        if not self.config.has_key('browser'):
+            self.config['browser'] = {}
         self.config["browser"]["bg_color_enable"] = BG_COLOR
         self.priv["contents_preview_enable"] = CONTENTS_PREVIEW
 
@@ -704,8 +706,8 @@ class TaskBrowser:
                 self.priv["window_xpos"],
             'y_pos':
                 self.priv["window_ypos"],
-            'bg_color_enable':
-                self.config["browser"]["bg_color_enable"],
+#            'bg_color_enable':
+#                self.config["browser"]["bg_color_enable"],
             'contents_preview_enable':
                 self.priv["contents_preview_enable"],
             'collapsed_tasks':
