@@ -37,8 +37,8 @@ XMLFILE = "tags.xml"
 XMLROOT = "tagstore"
 
 
-# There's only one Tag store by user. It will store all the tag used
-# and their attribute.
+# There's only one Tag store per user. It will store all the tags used
+# and their attributes.
 class TagStore(Tree):
 
     
