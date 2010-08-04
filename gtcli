@@ -210,18 +210,18 @@ def summary_of_tasks(criteria):
                                 report['unscheduled']['starting'],
                                 report['unscheduled']['due'])
     num_days = 22
+    fmt = "%a  %-m-%-d"
     if criteria and 'today' in criteria:
         num_days = 1
     for i in range(0, num_days):
         d = day + timedelta(i)
         dstr = str(d)
         if dstr in report:
-            fmt = "%a  %-m-%-d"
             print "%-20s %5d %5d" %(d.strftime(fmt),
                                     report[dstr]['starting'],
                                     report[dstr]['due'])
         else:
-            print "%-20s %5d %5d" %(dstr, 0, 0)
+            print "%-20s %5d %5d" %(d.strftime(fmt), 0, 0)
             
 
 def list_tasks(criteria, count_only=False):
