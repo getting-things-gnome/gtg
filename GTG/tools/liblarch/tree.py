@@ -342,6 +342,8 @@ class TreeNode():
         return "<TreeNode: '%s'>" % (self.id)
         
     def modified(self):
+        #FIXME : we should maybe have
+        # a directional recursive update
         if self.tree:
             #we first modify children
             for s in self.get_children():

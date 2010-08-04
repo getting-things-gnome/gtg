@@ -25,7 +25,6 @@ import gobject
 
 from GTG                              import _
 from GTG.gtk.browser.CellRendererTags import CellRendererTags
-from GTG.gtk.browser.tasktree         import COL_OBJ as TASKTREE_COL_OBJ
 from GTG.tools.logger                 import Log
 
 
@@ -36,6 +35,9 @@ COL_OBJ   = 3
 COL_COLOR = 4
 COL_COUNT = 5
 COL_SEP   = 6
+
+#FIXME : this should disappear
+TASKTREE_COL_OBJ = 0
 
 
 class TagTree():
