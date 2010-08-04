@@ -78,7 +78,6 @@ class Task(TreeNode):
             self.loaded = True
             if signal:
                 self.req._task_loaded(self.tid)
-                #self.req._task_modified(self.tid)
 
     def set_to_keep(self):
         self.can_be_deleted = False
@@ -181,13 +180,13 @@ class Task(TreeNode):
         return self.status
 
     def get_modified(self):
-        return self.modified
+        return self.last_modified
 
     def get_modified_string(self):
-        return self.modified.strftime("%Y-%m-%dT%H:%M:%S")
+        return self.last_modified.strftime("%Y-%m-%dT%H:%M:%S")
 
     def set_modified(self, modified):
-        self.modified = modified
+        self.last_modified = modified
 
     def set_due_date(self, fulldate):
         assert(isinstance(fulldate, Date))
@@ -472,28 +471,16 @@ class Task(TreeNode):
     def sync(self):
         self._modified_update()
         if self.is_loaded():
-            self.call_modified()
+            self.modified()
             return True
         else:
             return False
-    
-    #This function send the modified signals for the tasks, 
-    #parents and children
-    def call_modified(self):
-        #we first modify children
-        for s in self.get_children():
-            self.req._task_modified(s)
-        #then the task
-        self.req._task_modified(self.tid)
-        #then parents
-        for p in self.get_parents():
-            self.req._task_modified(p)
 
     def _modified_update(self):
         '''
         Updates the modified timestamp
         '''
-        self.modified = datetime.now()
+        self.last_modified = datetime.now()
 
 ### TAG FUNCTIONS ############################################################
 #

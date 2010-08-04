@@ -343,7 +343,14 @@ class TreeNode():
         
     def modified(self):
         if self.tree:
+            #we first modify children
+            for s in self.get_children():
+                self.tree.modify_node(s)
+            #then the task
             self.tree.modify_node(self.id)
+            #then parents
+            for p in self.get_parents():
+                self.tree.modify_node(p)
         
     def set_tree(self,tree):
         self.tree = tree
