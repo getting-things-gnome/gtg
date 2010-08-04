@@ -3,7 +3,7 @@
 
 # -----------------------------------------------------------------------------
 # Getting Things Gnome! - A personal organizer for the GNOME desktop
-# Copyright (c) 2008,2009 Lionel Dricot & Bertrand Rousseau
+# Copyright (c) 2008,2009,2010 Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -27,7 +27,7 @@ import dbus
 import uuid
 
 def connect():
-    #We will connect on the session bus
+    # We will connect on the session bus
     bus = dbus.SessionBus()
     liste = bus.list_names()
     busname = "org.gnome.GTG"
@@ -36,9 +36,17 @@ def connect():
 
 if __name__ == '__main__':
     if len(sys.argv) == 1:
-         print "Usage: " + sys.argv[0] + " <number-of-tasks>"
+         print "Usage: " + sys.argv[0] + " <number-of-tasks> [number-of-words-in-bodies]"
          sys.exit(1)
     total_tasks = int(sys.argv[1])
+
+    text_length = 0
+    if len(sys.argv) > 2:
+        text_length = int(sys.argv[2])
+
     gtg = connect()
     for i in xrange(total_tasks):
-        gtg.new_task("Active", str(uuid.uuid4()), "","","","","","")
+        lengthy_text = ""
+        for i in xrange(text_length):
+            lengthy_text += str(uuid.uuid4())
+        gtg.new_task("Active", str(uuid.uuid4()), '', '', '', [], lengthy_text, [])
