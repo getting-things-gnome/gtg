@@ -34,9 +34,9 @@ def get_task(title, body) :
     #We will connect on the session bus
     bus = dbus.SessionBus()
     liste = bus.list_names()
-    busname = "org.GTG"
-    remote_object = bus.get_object(busname,"/org/GTG")
-    timi = dbus.Interface(remote_object,dbus_interface="org.GTG")
+    busname = "org.gnome.GTG"
+    remote_object = bus.get_object(busname,"/org/gnome/GTG")
+    timi = dbus.Interface(remote_object,dbus_interface="org.gnome.GTG")
     #Calling the method
     timi.open_new_task(title, body)
 

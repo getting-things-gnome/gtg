@@ -69,9 +69,9 @@ def connect_to_gtg():
             raise
 
     liste = bus.list_names()
-    busname = "org.GTG"
-    remote_object = bus.get_object(busname,"/org/GTG")
-    return dbus.Interface(remote_object,dbus_interface="org.GTG")
+    busname = "org.gnome.GTG"
+    remote_object = bus.get_object(busname,"/org/gnome/GTG")
+    return dbus.Interface(remote_object,dbus_interface="org.gnome.GTG")
 
 def new_task(title, body):
     """ Retrieve task via dbus """
