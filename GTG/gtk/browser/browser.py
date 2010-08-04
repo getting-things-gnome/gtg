@@ -23,7 +23,6 @@
 #=== IMPORT ===================================================================
 #system imports
 import locale
-import re
 import time
 import webbrowser
 
@@ -887,57 +886,11 @@ class TaskBrowser:
 
     def on_quickadd_activate(self, widget):
         text = self.quickadd_entry.get_text()
-        due_date = no_date
-        defer_date = no_date
         if text:
             tags, notagonly = self.get_selected_tags()
-            # Get tags in the title
-            #NOTE: the ?: tells regexp that the first one is 
-            # a non-capturing group, so it must not be returned
-            # to findall. http://www.amk.ca/python/howto/regex/regex.html
-            # ~~~~Invernizzi
-            for match in re.findall(r'(?:^|[\s])(@\w+)', text):
-                tags.append(GTG.core.tagstore.Tag(match, self.req))
-                # Remove the @
-                #text =text.replace(match,match[1:],1)
-            # Get attributes
-            regexp = r'([\s]*)([\w-]+):([^\s]+)'
-            for spaces, attribute, args in re.findall(regexp, text):
-                valid_attribute = True
-                if attribute.lower() in ["tags", "tag"] or \
-                   attribute.lower() in [_("tags"), _("tag")]:
-                    for tag in args.split(","):
-                        if not tag.startswith("@") :
-                            tag = "@"+tag
-                        tags.append(GTG.core.tagstore.Tag(tag, self.req))
-                elif attribute.lower() == "defer" or \
-                     attribute.lower() == _("defer"):
-                    defer_date = get_canonical_date(args)
-                    if not defer_date:
-                        valid_attribute = False
-                elif attribute.lower() == "due" or \
-                     attribute.lower() == _("due"):
-                    due_date = get_canonical_date(args)
-                    if not due_date:
-                        valid_attribute = False
-                else:
-                    # attribute is unknown
-                    valid_attribute = False
-                if valid_attribute:
-                    # if the command is valid we have to remove it
-                    # from the task title
-                    text = \
-                        text.replace("%s%s:%s" % (spaces, attribute, args), "")
-            # Create the new task
-            task = self.req.new_task(tags=[t.get_name() for t in tags], newtask=True)
-            if text != "":
-                task.set_title(text.strip())
-                task.set_to_keep()
-            task.set_due_date(due_date)
-            task.set_start_date(defer_date)
+            task = self.req.new_task(newtask=True)
+            task.set_complex_title(text,tags=tags)
             self.quickadd_entry.set_text('')
-            # Refresh the treeview
-            #self.do_refresh(toselect=id_toselect)
             for f in self.priv['quick_add_cbs']:
                 f(task)
 

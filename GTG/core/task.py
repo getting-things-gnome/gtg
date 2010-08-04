@@ -24,13 +24,18 @@ task.py contains the Task class which represents (guess what) a task
 import xml.dom.minidom
 import uuid
 import cgi
+import re
 import xml.sax.saxutils as saxutils
 
+import GTG
 from GTG              import _
 from GTG.tools.dates  import date_today, no_date, Date
 from datetime         import datetime
 from GTG.tools.liblarch.tree    import TreeNode
 from GTG.tools.logger import Log
+from GTG.tools.dates             import no_date,\
+                                        FuzzyDate, \
+                                        get_canonical_date
 
 
 class Task(TreeNode):
@@ -138,6 +143,59 @@ class Task(TreeNode):
             return True
         else:
             return False
+            
+    #TODO : should we merge this function with set_title ?
+    def set_complex_title(self,text,tags=[]):
+        due_date = no_date
+        defer_date = no_date
+        if text:
+            
+            # Get tags in the title
+            #NOTE: the ?: tells regexp that the first one is 
+            # a non-capturing group, so it must not be returned
+            # to findall. http://www.amk.ca/python/howto/regex/regex.html
+            # ~~~~Invernizzi
+            for match in re.findall(r'(?:^|[\s])(@\w+)', text):
+                tags.append(GTG.core.tagstore.Tag(match, self.req))
+                # Remove the @
+                #text =text.replace(match,match[1:],1)
+            # Get attributes
+            regexp = r'([\s]*)([\w-]+):([^\s]+)'
+            for spaces, attribute, args in re.findall(regexp, text):
+                valid_attribute = True
+                if attribute.lower() in ["tags", "tag"] or \
+                   attribute.lower() in [_("tags"), _("tag")]:
+                    for tag in args.split(","):
+                        if not tag.startswith("@") :
+                            tag = "@"+tag
+                        tags.append(GTG.core.tagstore.Tag(tag, self.req))
+                elif attribute.lower() == "defer" or \
+                     attribute.lower() == _("defer"):
+                    defer_date = get_canonical_date(args)
+                    if not defer_date:
+                        valid_attribute = False
+                elif attribute.lower() == "due" or \
+                     attribute.lower() == _("due"):
+                    due_date = get_canonical_date(args)
+                    if not due_date:
+                        valid_attribute = False
+                else:
+                    # attribute is unknown
+                    valid_attribute = False
+                if valid_attribute:
+                    # if the command is valid we have to remove it
+                    # from the task title
+                    text = \
+                        text.replace("%s%s:%s" % (spaces, attribute, args), "")
+#            # Create the new task
+#            task = self.req.new_task(tags=[t.get_name() for t in tags], newtask=True)
+            for t in tags:
+                self.add_tag(t.get_name())
+            if text != "":
+                self.set_title(text.strip())
+                self.set_to_keep()
+            self.set_due_date(due_date)
+            self.set_start_date(defer_date)
 
     def set_status(self, status, donedate=None):
         old_status = self.status
