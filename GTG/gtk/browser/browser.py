@@ -36,7 +36,7 @@ import GTG
 from GTG.core                       import CoreConfig
 from GTG                         import _, info, ngettext
 from GTG.core.task               import Task
-from GTG.gtk.browser             import GnomeConfig, tagtree
+from GTG.gtk.browser             import GnomeConfig
 from GTG.gtk.browser.treeview_factory import TreeviewFactory
 from GTG.tools                   import openurl
 from GTG.tools.dates             import no_date,\

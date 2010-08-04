@@ -99,22 +99,6 @@ class Requester(gobject.GObject):
     def get_custom_tasks_tree(self,refresh=True):
         return self.basetree.get_viewtree(refresh=refresh)
         
-        
-#    # Apply a given filter to the main FilteredTree
-#    def apply_filter(self,filter_name,parameters=None,refresh=True):
-#        r = self.main_tree.apply_filter(filter_name,parameters=parameters,\
-#                                        imtherequester=True,refresh=refresh)
-#        return r
-#            
-#    # Unapply a filter from the main FilteredTree.
-#    # Does nothing if the filter was not previously applied.
-#    def unapply_filter(self,filter_name):
-#        r = self.main_tree.unapply_filter(filter_name,imtherequester=True)
-#        return r
-
-#    def reset_filters(self):
-#        self.main_tree.reset_filters(imtherequester=True)
-#        
     def reset_tag_filters(self,refilter=True):
         print "reset tag filters not implemented"
 #        self.main_tree.reset_tag_filters(refilter=refilter,imtherequester=True)
@@ -237,10 +221,14 @@ class Requester(gobject.GObject):
         return l
 
     def get_notag_tag(self):
-        return self.ds.get_tagstore().get_notag_tag()
+        print "no tag not implemented"
+        return None
+#        return self.ds.get_tagstore().get_notag_tag()
 
     def get_alltag_tag(self):
-        return self.ds.get_tagstore().get_alltag_tag()
+        print "all tag not implemented"
+        return None
+#        return self.ds.get_tagstore().get_alltag_tag()
 
     def get_used_tags(self):
         """Return tags currently used by a task.
@@ -248,7 +236,9 @@ class Requester(gobject.GObject):
         @return: A list of tag names used by a task.
         """
         l = []
-        for t in self.ds.get_tagstore().get_all_tags():
+        view = self.ds.get_tagstore().get_main_view()
+        for tname in view.get_all_nodes():
+            t = self.get_tag(tname)
             if t.is_actively_used() and t not in l:
                 l.append(t.get_name())
         l.sort(cmp=lambda x, y: cmp(x.lower(),y.lower()))

@@ -37,8 +37,10 @@ XMLFILE = "tags.xml"
 XMLROOT = "tagstore"
 
 
-# There's only one Tag store by user. It will store all the tag used
-# and their attribute.
+# The TagStore is deprecated (we are now using liblarch
+# Keeping the code until it is feature complete.
+
+
 #class TagStore(Tree):
 
 #    
