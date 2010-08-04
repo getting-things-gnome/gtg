@@ -47,7 +47,11 @@ class TreeView(gtk.TreeView):
             col_name = self.order_of_col[col_nbr]
             desc = description[col_name]
             col_nbr = self.treemodel.add_col(desc['value'])
-            col = gtk.TreeViewColumn()
+            if desc.get('new_column',True):
+                col = gtk.TreeViewColumn()
+                newcol = True
+            else:
+                newcol = False
             self.columns[col_name] = [col_nbr,col]
             if desc.has_key('renderer'):    
                 renderer = desc["renderer"][1]
@@ -79,7 +83,8 @@ class TreeView(gtk.TreeView):
             if desc.has_key('sorting'):
                 sort_nbr = self.columns[desc['sorting']][0]
                 col.set_sort_column_id(sort_nbr)
-            self.append_column(col)
+            if newcol:
+                self.append_column(col)
         
         
         #We apply a treemodelsort on top of it

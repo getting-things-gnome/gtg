@@ -95,10 +95,30 @@ class TreeviewFactory():
     #############################
     #Functions for tags columns
     #############################
-    def tag_name(self,node):
+    def tag_list(self,node):
         #FIXME: we should really use the name instead of the object
         tname = node.get_id()
         return [node]
+    
+    def tag_name(self,node):
+        return node.get_id()
+        
+    def get_tag_count(self,node):
+        tasktree = self.req.get_main_tasks_tree()
+        sp_id = node.get_attribute("special")
+        if sp_id == "all":
+            toreturn = tasktree.get_n_nodes(\
+                    withfilters=['no_disabled_tag'],include_transparent=True)
+        elif sp_id == "notag":
+            toreturn = tasktree.get_n_nodes(\
+                            withfilters=['notag'],include_transparent=True)
+        elif sp_id == "sep" :
+            toreturn = 0
+        else:
+            tname = node.get_name()
+            toreturn = tasktree.get_n_nodes(\
+                                withfilters=[tname],include_transparent=True)
+        return toreturn
 
     ############################################
     ######## The Factory #######################
@@ -111,11 +131,42 @@ class TreeviewFactory():
         col = {}
         render_tags = CellRendererTags()
         render_tags.set_property('ypad', 3)
+        col['title'] = _("Tags")
         col['renderer'] = ['tag_list',render_tags]
-        col['value'] = [gobject.TYPE_PYOBJECT,self.tag_name]
+        col['value'] = [gobject.TYPE_PYOBJECT,self.tag_list]
         col['expandable'] = False
         col['resizable'] = False
         col['order'] = 1
+        desc[col_name] = col
+        
+        #Tag names
+        col_name = 'tagname'
+        col = {}
+        render_text = gtk.CellRendererText()
+        render_text.set_property('editable', True) 
+        render_text.set_property('ypad', 3)
+        #FIXME : renaming tag feature
+        render_text.connect("edited", self.req.rename_tag)
+        col['renderer'] = ['markup',render_text]
+        col['value'] = [str,self.tag_name]
+        col['expandable'] = True
+        col['new_column'] = False
+        col['order'] = 2
+        desc[col_name] = col
+        
+        #Tag count
+        col_name = 'tagcount'
+        col = {}
+        render_text = gtk.CellRendererText()
+        render_text.set_property('xpad', 3)
+        render_text.set_property('ypad', 3)
+        render_text.set_property("foreground", "#888a85")
+        render_text.set_property('xalign', 1.0)
+        col['renderer'] = ['markup',render_text]
+        col['value'] = [str,self.get_tag_count]
+        col['expandable'] = False
+        col['new_column'] = False
+        col['order'] = 3
         desc[col_name] = col
         
         return self.build_tag_treeview(tree,desc)
