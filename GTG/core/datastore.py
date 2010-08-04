@@ -27,9 +27,10 @@ import uuid
 import os.path
 from collections import deque
 
-from GTG.tools.liblarch import Tree
-from GTG.core                    import tagstore, requester
+from GTG.tools.liblarch          import Tree
+from GTG.core                    import requester
 from GTG.core.task               import Task
+from GTG.core.tagstore           import Tag
 from GTG.core                    import CoreConfig
 from GTG.tools.logger            import Log
 from GTG.backends.genericbackend import GenericBackend
@@ -57,7 +58,7 @@ class DataStore(object):
         self.backends = {} #dictionary {backend_name_string: Backend instance}
         self.open_tasks = Tree()
         self.requester = requester.Requester(self)
-        self.tagstore = tagstore.TagStore(self.requester)
+        self.__tagstore = Tree()
         self._backend_signals = BackendSignals()
         self.mutex = threading.RLock()
         self.is_default_backend_loaded = False
@@ -74,7 +75,7 @@ class DataStore(object):
         Helper function to obtain the Tagstore associated with this DataStore
         @return GTG.core.tagstore.TagStore: the tagstore object
         '''
-        return self.tagstore
+        return self.__tagstore
 
     def get_requester(self):
         '''
@@ -91,17 +92,50 @@ class DataStore(object):
         @returns GTG.core.tree.Tree: a task tree (the main one)
         '''
         return self.open_tasks
+        
+    ##########################################################################
+    ### Tags functions
+    ##########################################################################
+    
+    #To be used in the filters bank
+    def tag_filter_func(self,node,parameters):
+        #FIXME: we should take tag children into account
+        tname = parameters['tag']
+        return node.has_tags([tname])
+    
+    
+    def new_tag(self,tagname):
+        """Create a new tag and return it or return the existing one
+        with corresponding name"""
+        #we create a new tag from a name
+        tname = tagname.encode("UTF-8")
+        #if tname not in self.tags:
+        if not self.__tagstore.has_node(tname):
+            tag = Tag(tname, req=self.requester)
+            self.__tagstore.add_node(tag)
+            p = {'tag':tname,'transparent':True}
+            self.open_tasks.add_filter(tname,self.tag_filter_func,parameters=p)
+            tag.set_save_callback(self.save)
+            Log.debug("********* tag added %s *******" % tagname)
+        else:
+            raise IndexError('tag %s was already in the datastore' %tagname)
+        return tag
+        
+    def rename_tag(self,oldname,newname):
+        print "Tag renaming not implemented yet"
+    
+    def get_tag(self,tagname):
+        if tagname[0] != "@":
+            tagname = "@" + tagname
+        if self.__tagstore.has_node(tagname):
+            return self.__tagstore.get_node(tagname)
+        else:
+            return None
+    
 
     ##########################################################################
     ### Tasks functions
     ##########################################################################
-
-#    def get_all_tasks(self):
-#        '''
-#        Returns list of all keys of open tasks
-#        @return a list of strings: a list of task ids
-#        '''
-#        return self.open_tasks.get_all_keys()
 
     def has_task(self, tid):
         '''
@@ -350,8 +384,9 @@ class DataStore(object):
         cleanxml.savexml(datafile,doc,backup=True)
 
         #Saving the tagstore
-        ts = self.get_tagstore()
-        ts.save()
+        #FIXME : we need to save the tagstore !
+#        ts = self.get_tagstore()
+#        ts.save()
 
     def request_task_deletion(self, tid):
         ''' 

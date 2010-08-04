@@ -37,7 +37,6 @@ from GTG.core                       import CoreConfig
 from GTG                         import _, info, ngettext
 from GTG.core.task               import Task
 from GTG.gtk.browser             import GnomeConfig, tagtree
-from GTG.gtk.browser.tagtree     import TagTree
 from GTG.gtk.browser.treeview_factory import TreeviewFactory
 from GTG.tools                   import openurl
 from GTG.tools.dates             import no_date,\
@@ -87,7 +86,6 @@ class TaskBrowser:
         self.tv_factory = TreeviewFactory(self.req,self.config)
         self.tasks_tree = {}
         self.tasks_tree['active'] = self.req.get_main_tasks_tree()
-        self.tags_tv = None
         self.vtree_panes['active'] = \
                 self.tv_factory.active_tasks_treeview(self.tasks_tree['active'])
 
@@ -104,7 +102,7 @@ class TaskBrowser:
         # Active Tasks
         self.tasks_tree['active'].apply_filter('active',refresh=False)
         # Tags
-        self.tagtree = TagTree(self.req)
+        self.tagtree = self.tv_factory.tags_treeview(self.req.get_tag_tree())
 
         # Load window tree
         self.builder = gtk.Builder() 
@@ -204,8 +202,7 @@ class TaskBrowser:
         self.main_pane.add(self.vtree_panes['active'])
 
         # The tags treeview
-        self.tags_tv = self.tagtree.get_tagtreeview()
-        self.sidebar_container.add(self.tags_tv)
+        self.sidebar_container.add(self.tagtree)
 
     def _init_toolbar_tooltips(self):
         self.donebutton.set_tooltip_text(GnomeConfig.MARK_DONE_TOOLTIP)
@@ -328,11 +325,11 @@ class TaskBrowser:
         self.req.connect("task-deleted", self.on_task_deleted)
 
         #Tags treeview
-        self.tags_tv.connect('cursor-changed',\
+        self.tagtree.connect('cursor-changed',\
             self.on_select_tag)
-        self.tags_tv.connect('row-activated',\
+        self.tagtree.connect('row-activated',\
             self.on_select_tag)
-        self.tags_tv.connect('button-press-event',\
+        self.tagtree.connect('button-press-event',\
             self.on_tag_treeview_button_press_event)
         
         # Selection changes
@@ -478,7 +475,8 @@ class TaskBrowser:
                 
         if "collapsed_tags" in self.config["browser"]:
             toset = self.config["browser"]["collapsed_tags"]
-            self.tagtree.set_collapsed_tags(toset)
+            #FIXME: Not available in liblarch
+#            self.tagtree.set_collapsed_tags(toset)
 
         if "tasklist_sort" in self.config["browser"]:
             col_id, order = self.config["browser"]["tasklist_sort"]
@@ -529,7 +527,6 @@ class TaskBrowser:
             self.tasks_tree['active'].apply_filter('workview')
         else:
             self.tasks_tree['active'].unapply_filter('workview')
-        self.tagtree.refilter()
         self.vtree_panes['active'].set_col_visible('startdate',not tobeset)
         self._update_window_title()
 
@@ -708,8 +705,9 @@ class TaskBrowser:
                 self.priv["contents_preview_enable"],
             'collapsed_tasks':
                 self.priv["collapsed_tids"],
-            'collapsed_tags':
-                self.tagtree.get_collapsed_tags(),
+            #FIXME : to implement in liblarch
+#            'collapsed_tags':
+#                self.tagtree.get_collapsed_tags(),
             'tag_pane':
                 tag_sidebar,
             'tag_pane_width':
@@ -745,9 +743,9 @@ class TaskBrowser:
         gtkcolor = widget.get_current_color()
         strcolor = gtk.color_selection_palette_to_string([gtkcolor])
         tags, notag_only = self.get_selected_tags()
-        for t in tags:
+        for tname in tags:
+            t = self.req.get_tag(tname)
             t.set_attribute("color", strcolor)
-        self.tags_tv.refresh()
 
     def on_colorchooser_activate(self, widget):
         #TODO: Color chooser should be refactorized in its own class. Well, in
@@ -762,7 +760,8 @@ class TaskBrowser:
         tags, notag_only = self.get_selected_tags()
         init_color = None
         if len(tags) == 1:
-            color = tags[0].get_attribute("color")
+            ta = self.req.get_tag(tags[0])
+            color = ta.get_attribute("color")
             if color != None:
                 colorspec = gtk.gdk.color_parse(color)
                 colorsel.set_previous_color(colorspec)
@@ -784,7 +783,6 @@ class TaskBrowser:
         for t in tags:
             t.del_attribute("color")
         self.reset_cursor()
-        self.tags_tv.refresh()
         
     def on_tagcontext_deactivate(self, menushell):
         self.reset_cursor()
@@ -922,7 +920,7 @@ class TaskBrowser:
                     # want to popup the menu for normal tags.
 
                     display_in_workview_item = self.tagpopup.get_children()[2]
-                    selected_tag = selected_tags[0]
+                    selected_tag = self.req.get_tag(selected_tags[0])
                     nonworkview = selected_tag.get_attribute("nonworkview")
                     # We must invert because the tagstore has "True" for tasks
                     # that are *not* in workview, and the checkbox is set if
@@ -953,8 +951,9 @@ class TaskBrowser:
         toset = str(not self.nonworkviewtag_cb.get_active())
         if len(tags) > 0:
             tags[0].set_attribute("nonworkview", toset)
-        if self.priv['workview']:
-            self.tagtree.refilter()
+        #Following should not be needed with liblarch
+#        if self.priv['workview']:
+#            self.tagtree.refilter()
         if not self.dont_reset:
             self.reset_cursor()
 
@@ -1143,7 +1142,7 @@ class TaskBrowser:
             newtag = ["notag"]
         else:
             if taglist and len(taglist) > 0:
-                newtag = [taglist[0].get_name()]
+                newtag = [taglist[0]]
             else:
                 newtag = ['no_disabled_tag']
         #FIXME:handle multiple tags case
@@ -1309,25 +1308,28 @@ class TaskBrowser:
         
 
     def get_selected_tags(self):
+        #Fixme : the notag only !
         notag_only = False
         tag = []
-        if self.tags_tv:
-            t_selected = self.tags_tv.get_selection()
-            model      = self.tags_tv.get_model()
-            t_iter = None
-            if t_selected:
-                tmodel, t_iter = t_selected.get_selected()
-            if t_iter:
-                selected = model.get_value(t_iter, tagtree.COL_OBJ)
-                special  = selected.get_attribute("special")
-                if special == "all":
-                    tag = []
-                    selected = None
-                #notag means we want to display only tasks without any tag
-                if special == "notag":
-                    notag_only = True
-                if not notag_only and selected:
-                    tag.append(selected)
+        if self.tagtree:
+            tag = self.tagtree.get_selected_nodes()
+        #following should not be needed with liblarch_gtk
+#            t_selected = self.tagtree.get_selection()
+#            model      = self.tagtree.get_model()
+#            t_iter = None
+#            if t_selected:
+#                tmodel, t_iter = t_selected.get_selected()
+#            if t_iter:
+#                selected = model.get_value(t_iter, tagtree.COL_OBJ)
+#                special  = selected.get_attribute("special")
+#                if special == "all":
+#                    tag = []
+#                    selected = None
+#                #notag means we want to display only tasks without any tag
+#                if special == "notag":
+#                    notag_only = True
+#                if not notag_only and selected:
+#                    tag.append(selected)
             #If no selection, we display all
         return tag, notag_only
     
@@ -1339,7 +1341,7 @@ class TaskBrowser:
         if self.tag_active:
             self.tag_active = False
             path, col = self.previous_cursor
-            self.tags_tv.set_cursor(path, col, 0)
+            self.tagtree.set_cursor(path, col, 0)
                 
     def set_target_cursor(self):
         """ Selects the last tag to be right clicked. 
@@ -1352,7 +1354,7 @@ class TaskBrowser:
         if not self.tag_active:
             self.tag_active = True
             path, col = self.target_cursor
-            self.tags_tv.set_cursor(path, col, 0)
+            self.tagtree.set_cursor(path, col, 0)
 
     def add_page_to_sidebar_notebook(self, icon, page):
         """Adds a new page tab to the left panel.  The tab will 

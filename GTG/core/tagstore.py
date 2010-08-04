@@ -29,7 +29,7 @@ import xml.sax.saxutils as saxutils
 
 from GTG              import _
 from GTG.core         import CoreConfig
-from GTG.core.old.tree    import Tree, TreeNode
+from GTG.tools.liblarch.tree    import TreeNode
 from GTG.tools        import cleanxml
 from GTG.tools.logger import Log
 
@@ -39,174 +39,174 @@ XMLROOT = "tagstore"
 
 # There's only one Tag store by user. It will store all the tag used
 # and their attribute.
-class TagStore(Tree):
+#class TagStore(Tree):
 
-    
-    def __init__(self,requester):
-        Tree.__init__(self)
-        self.req = requester
-        self.req.connect('tag-modified',self.update_tag)
-        
-        self.loaded = False
-        
-        ### building the initial tags
-        # Build the "all tasks tag"
-        self.alltag_tag = self.new_tag(CoreConfig.ALLTASKS_TAG)
-        self.alltag_tag.set_attribute("special","all")
-        self.alltag_tag.set_attribute("label","<span weight='bold'>%s</span>"\
-                                             % _("All tasks"))
-        self.alltag_tag.set_attribute("icon","gtg-tags-all")
-        self.alltag_tag.set_attribute("order",0)
-        # Build the "without tag tag"
-        self.notag_tag = self.new_tag("gtg-tags-none")
-        self.notag_tag.set_attribute("special","notag")
-        self.notag_tag.set_attribute("label","<span weight='bold'>%s</span>"\
-                                             % _("Tasks with no tags"))
-        self.notag_tag.set_attribute("icon","gtg-tags-none")
-        self.notag_tag.set_attribute("order",1)
-        # Build the separator
-        self.sep_tag = self.new_tag("gtg-tags-sep")
-        self.sep_tag.set_attribute("special","sep")
-        self.sep_tag.set_attribute("order",2)
+#    
+#    def __init__(self,requester):
+#        Tree.__init__(self)
+#        self.req = requester
+#        self.req.connect('tag-modified',self.update_tag)
+#        
+#        self.loaded = False
+#        
+#        ### building the initial tags
+#        # Build the "all tasks tag"
+#        self.alltag_tag = self.new_tag(CoreConfig.ALLTASKS_TAG)
+#        self.alltag_tag.set_attribute("special","all")
+#        self.alltag_tag.set_attribute("label","<span weight='bold'>%s</span>"\
+#                                             % _("All tasks"))
+#        self.alltag_tag.set_attribute("icon","gtg-tags-all")
+#        self.alltag_tag.set_attribute("order",0)
+#        # Build the "without tag tag"
+#        self.notag_tag = self.new_tag("gtg-tags-none")
+#        self.notag_tag.set_attribute("special","notag")
+#        self.notag_tag.set_attribute("label","<span weight='bold'>%s</span>"\
+#                                             % _("Tasks with no tags"))
+#        self.notag_tag.set_attribute("icon","gtg-tags-none")
+#        self.notag_tag.set_attribute("order",1)
+#        # Build the separator
+#        self.sep_tag = self.new_tag("gtg-tags-sep")
+#        self.sep_tag.set_attribute("special","sep")
+#        self.sep_tag.set_attribute("order",2)
 
-        self.filename = os.path.join(CoreConfig().get_data_dir(), XMLFILE)
-        doc, self.xmlstore = cleanxml.openxmlfile(self.filename,
-            XMLROOT) #pylint: disable-msg=W0612
-        for t in self.xmlstore.childNodes:
-            #We should only care about tag with a name beginning with "@"
-            #Other are special tags
-            tagname = t.getAttribute("name")
-            tag = self.new_tag(tagname)
-            attr = t.attributes
-            i = 0
-            while i < attr.length:
-                at_name = attr.item(i).name
-                at_val = t.getAttribute(at_name)
-                tag.set_attribute(at_name, at_val)
-                i += 1
-            parent = tag.get_attribute('parent')
-            if parent:
-                pnode=self.new_tag(parent)
-                tag.set_parent(pnode.get_id())
-        self.loaded = True
+#        self.filename = os.path.join(CoreConfig().get_data_dir(), XMLFILE)
+#        doc, self.xmlstore = cleanxml.openxmlfile(self.filename,
+#            XMLROOT) #pylint: disable-msg=W0612
+#        for t in self.xmlstore.childNodes:
+#            #We should only care about tag with a name beginning with "@"
+#            #Other are special tags
+#            tagname = t.getAttribute("name")
+#            tag = self.new_tag(tagname)
+#            attr = t.attributes
+#            i = 0
+#            while i < attr.length:
+#                at_name = attr.item(i).name
+#                at_val = t.getAttribute(at_name)
+#                tag.set_attribute(at_name, at_val)
+#                i += 1
+#            parent = tag.get_attribute('parent')
+#            if parent:
+#                pnode=self.new_tag(parent)
+#                tag.set_parent(pnode.get_id())
+#        self.loaded = True
 
-    def update_tag(self,sender,tagname):
-        tag = self.get_tag(tagname)
-        if tag and tag.is_removable():
-            self.remove_tag(tagname)
-            
-    def remove_tag(self,tagname):
-        self.req._tag_deleted(tagname)
-        self.remove_node(tagname)
+#    def update_tag(self,sender,tagname):
+#        tag = self.get_tag(tagname)
+#        if tag and tag.is_removable():
+#            self.remove_tag(tagname)
+#            
+#    def remove_tag(self,tagname):
+#        self.req._tag_deleted(tagname)
+#        self.remove_node(tagname)
 
-    def new_tag(self, tagname):
-        """Create a new tag and return it or return the existing one
-        with corresponding name"""
-        #we create a new tag from a name
-        tname = tagname.encode("UTF-8")
-        #if tname not in self.tags:
-        if not self.has_node(tname):
-            tag = Tag(tname, req=self.req)
-            self.add_node(tag)
-            self.req._tag_added(tname)
-            self.req.add_filter(tname,None)
-            for c in tag.get_children():
-                self.req._tag_modified(c)
-            #self.tags[tname] = tag
-            tag.set_save_callback(self.save)
-        Log.debug("********* tag added %s *******" % tagname)
-#        self.print_tree()
-        return self.get_node(tname)
+#    def new_tag(self, tagname):
+#        """Create a new tag and return it or return the existing one
+#        with corresponding name"""
+#        #we create a new tag from a name
+#        tname = tagname.encode("UTF-8")
+#        #if tname not in self.tags:
+#        if not self.has_node(tname):
+#            tag = Tag(tname, req=self.req)
+#            self.add_node(tag)
+#            self.req._tag_added(tname)
+#            self.open_tasks.add_filter(tname,None)
+#            for c in tag.get_children():
+#                self.req._tag_modified(c)
+#            #self.tags[tname] = tag
+#            tag.set_save_callback(self.save)
+#        Log.debug("********* tag added %s *******" % tagname)
+##        self.print_tree()
+#        return self.get_node(tname)
 
-    def get_tag(self, tagname):
-        if tagname[0] != "@":
-            tagname = "@" + tagname
-        return self.get_node(tagname)
+#    def get_tag(self, tagname):
+#        if tagname[0] != "@":
+#            tagname = "@" + tagname
+#        return self.get_node(tagname)
 
-    #FIXME : also add a new filter
-    def rename_tag(self, oldname, newname):
-        if len(newname) > 0 and \
-                            oldname not in ['gtg-tags-none','gtg-tags-all']:
-            if newname[0] != "@":
-                newname = "@" + newname
-            if newname != oldname and newname != None :
-                otag = self.get_node(oldname)
-                if not self.has_node(newname):
-                    ntag = self.new_tag(newname)
-                else:
-                    ntag = self.get_tag(newname)
-                    #copy attributes
-                for att in otag.get_all_attributes(butname=True):
-                    if not ntag.get_attribute(att):
-                        ntag.set_attribute(att,otag.get_attribute(att))
-                #restore position in tree
-                if otag.has_parent():
-                    opar = otag.get_parent()
-                    ntag.set_parent(opar)
-                for ch in otag.get_children():
-                    tagchild = self.get_tag(ch)
-                    tagchild.set_parent(ntag)
-                #copy tasks
-                for tid in otag.get_tasks():
-                    tas = self.req.get_task(tid)
-                    tas.rename_tag(oldname,newname)
-                #remove the old one
-                self.remove_tag(oldname)
-                self.req._tag_modified(oldname)
-#        print "tag %s has %s tasks" %(newname,self.get_node(newname).get_tasks_nbr())
-                
-    def get_all_tags_name(self, attname=None, attvalue=None):
-        """Return the name of all tags
-        Optionally, if you pass the attname and attvalue argument, it will
-        only add tags that have the given value for the given attribute
-        excluding tags that don't have this attribute
-        (except if attvalue is None)"""
-        l = []
-        for t in self.get_all_nodes():
-            if not attname:
-                l.append(t.get_name())
-            elif t.get_attribute(attname) == attvalue:
-                l.append(t.get_name())
-        return l
+#    #FIXME : also add a new filter
+#    def rename_tag(self, oldname, newname):
+#        if len(newname) > 0 and \
+#                            oldname not in ['gtg-tags-none','gtg-tags-all']:
+#            if newname[0] != "@":
+#                newname = "@" + newname
+#            if newname != oldname and newname != None :
+#                otag = self.get_node(oldname)
+#                if not self.has_node(newname):
+#                    ntag = self.new_tag(newname)
+#                else:
+#                    ntag = self.get_tag(newname)
+#                    #copy attributes
+#                for att in otag.get_all_attributes(butname=True):
+#                    if not ntag.get_attribute(att):
+#                        ntag.set_attribute(att,otag.get_attribute(att))
+#                #restore position in tree
+#                if otag.has_parent():
+#                    opar = otag.get_parent()
+#                    ntag.set_parent(opar)
+#                for ch in otag.get_children():
+#                    tagchild = self.get_tag(ch)
+#                    tagchild.set_parent(ntag)
+#                #copy tasks
+#                for tid in otag.get_tasks():
+#                    tas = self.req.get_task(tid)
+#                    tas.rename_tag(oldname,newname)
+#                #remove the old one
+#                self.remove_tag(oldname)
+#                self.req._tag_modified(oldname)
+##        print "tag %s has %s tasks" %(newname,self.get_node(newname).get_tasks_nbr())
+#                
+#    def get_all_tags_name(self, attname=None, attvalue=None):
+#        """Return the name of all tags
+#        Optionally, if you pass the attname and attvalue argument, it will
+#        only add tags that have the given value for the given attribute
+#        excluding tags that don't have this attribute
+#        (except if attvalue is None)"""
+#        l = []
+#        for t in self.get_all_nodes():
+#            if not attname:
+#                l.append(t.get_name())
+#            elif t.get_attribute(attname) == attvalue:
+#                l.append(t.get_name())
+#        return l
 
-    def get_all_tags(self, attname=None, attvalue=None):
-        l = []
-        for t in self.get_all_nodes():
-            if not attname:
-                l.append(t)
-            elif t.get_attribute(attname) == attvalue:
-                l.append(t)
-        return l
+#    def get_all_tags(self, attname=None, attvalue=None):
+#        l = []
+#        for t in self.get_all_nodes():
+#            if not attname:
+#                l.append(t)
+#            elif t.get_attribute(attname) == attvalue:
+#                l.append(t)
+#        return l
 
-    def save(self):
-        if self.loaded:
-            doc, xmlroot = cleanxml.emptydoc(XMLROOT)
-            tags = self.get_all_tags()
-            already_saved = [] #We avoid saving the same tag twice
-            #we don't save tags with no attributes
-            #It saves space and allow the saved list growth to be controlled
-            for t in tags:
-                attr = t.get_all_attributes(butname = True, withparent = True)
-                if "special" not in attr and len(attr) > 0:
-                    tagname = t.get_name()
-                    if not tagname in already_saved:
-                        t_xml = doc.createElement("tag")
-                        t_xml.setAttribute("name", tagname)
-                        already_saved.append(tagname)
-                        for a in attr:
-                            value = t.get_attribute(a)
-                            if value:
-                                t_xml.setAttribute(a, value)
-                        xmlroot.appendChild(t_xml)
-            cleanxml.savexml(self.filename, doc)
+#    def save(self):
+#        if self.loaded:
+#            doc, xmlroot = cleanxml.emptydoc(XMLROOT)
+#            tags = self.get_all_tags()
+#            already_saved = [] #We avoid saving the same tag twice
+#            #we don't save tags with no attributes
+#            #It saves space and allow the saved list growth to be controlled
+#            for t in tags:
+#                attr = t.get_all_attributes(butname = True, withparent = True)
+#                if "special" not in attr and len(attr) > 0:
+#                    tagname = t.get_name()
+#                    if not tagname in already_saved:
+#                        t_xml = doc.createElement("tag")
+#                        t_xml.setAttribute("name", tagname)
+#                        already_saved.append(tagname)
+#                        for a in attr:
+#                            value = t.get_attribute(a)
+#                            if value:
+#                                t_xml.setAttribute(a, value)
+#                        xmlroot.appendChild(t_xml)
+#            cleanxml.savexml(self.filename, doc)
 
-    def get_alltag_tag(self):
-        ''' Returns the "All Tasks" tag'''
-        return self.alltag_tag
+#    def get_alltag_tag(self):
+#        ''' Returns the "All Tasks" tag'''
+#        return self.alltag_tag
 
-    def get_notag_tag(self):
-        ''' Returns the "No tags" tag'''
-        return self.notag_tag
+#    def get_notag_tag(self):
+#        ''' Returns the "No tags" tag'''
+#        return self.notag_tag
 
 ### Tag Objects ##############################################################
 #
@@ -335,31 +335,6 @@ class Tag(TreeNode):
                 toreturn.append(ti)
         return toreturn 
         
-#    We do not need this anymore.
-#    #TODO: we want to optimize this task. Really.
-#    def get_tasks_nbr(self,workview=False):
-#        tasks = self.get_tasks()
-#        temp_list = []
-#        #workview in a non workviewable tag
-#        if workview and self.get_attribute("nonworkview") == "True":
-#            for t in tasks:
-#                ta = self.req.get_task(t)
-#                if ta.is_in_workview(tag=self) and t not in temp_list:
-#                    temp_list.append(t)
-#        #workview in a workviewable tag
-#        elif workview:
-#            for t in tasks:
-#                ta = self.req.get_task(t)
-#                if ta and ta.is_in_workview() and t not in temp_list:
-#                    temp_list.append(t)
-#        #non workview
-#        else:
-#            for t in tasks:
-#                ta = self.req.get_task(t)
-#                if ta and ta.get_status() == "Active" and t not in temp_list:
-#                    temp_list.append(t)
-#        toreturn = len(temp_list)
-#        return toreturn
     #is it useful to keep the tag in the tagstore.
     #if no attributes and no tasks, it is not useful.
     def is_removable(self):

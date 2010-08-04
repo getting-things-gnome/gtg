@@ -32,8 +32,11 @@ class TreeviewFactory():
     def __init__(self,requester,config):
         self.req = requester
         self.config = config
-
+        
+        
+    #############################
     #Functions for tasks columns
+    ################################
     def _count_active_subtasks_rec(self, task):
         count = 0
         if task.has_child():
@@ -88,9 +91,35 @@ class TreeviewFactory():
         
     def task_cdate_column(self,node):
         return node.get_closed_date().to_readable_string()
+        
+    #############################
+    #Functions for tags columns
+    #############################
+    def tag_name(self,node):
+        #FIXME: we should really use the name instead of the object
+        tname = node.get_id()
+        return [node]
 
-
+    ############################################
     ######## The Factory #######################
+    ############################################
+    def tags_treeview(self,tree):
+        desc = {}
+        
+        #Tags color
+        col_name = 'color'
+        col = {}
+        render_tags = CellRendererTags()
+        render_tags.set_property('ypad', 3)
+        col['renderer'] = ['tag_list',render_tags]
+        col['value'] = [gobject.TYPE_PYOBJECT,self.tag_name]
+        col['expandable'] = False
+        col['resizable'] = False
+        col['order'] = 1
+        desc[col_name] = col
+        
+        return self.build_tag_treeview(tree,desc)
+    
     def active_tasks_treeview(self,tree):
         #Build the title/label/tags columns
         desc = self.common_desc_for_tasks(tree)
@@ -196,8 +225,17 @@ class TreeviewFactory():
         treeview.set_rules_hint(False)
         return treeview
         
+    def build_tag_treeview(self,tree,desc):
+        treeview = TreeView(tree,desc)
+        # Global treeview properties
+        treeview.set_property("enable-tree-lines", False)
+        treeview.set_rules_hint(False)
+        return treeview
+        
         
         #TODO
+        #This code was in the old tasktree and I'm not sure liblarch-gtk
+        #already implement those features 
 #        self.task_modelsort.set_sort_func(\
 #            tasktree.COL_DDATE, self.date_sort_func)
 #        self.task_modelsort.set_sort_func(\

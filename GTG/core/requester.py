@@ -202,7 +202,7 @@ class Requester(gobject.GObject):
     ###############################################
 
     def get_tag_tree(self):
-        return self.ds.get_tagstore()
+        return self.ds.get_tagstore().get_main_view()
 
     def new_tag(self, tagname):
         """Create a new tag called 'tagname'.
@@ -212,13 +212,13 @@ class Requester(gobject.GObject):
         @param tagname: The name of the new tag.
         @return: The newly-created tag.
         """
-        return self.ds.get_tagstore().new_tag(tagname)
+        return self.ds.new_tag(tagname)
 
     def rename_tag(self, oldname, newname):
-        self.ds.get_tagstore().rename_tag(oldname, newname)
+        self.ds.rename_tag(oldname, newname)
 
     def get_tag(self, tagname):
-        return self.ds.get_tagstore().get_tag(tagname)
+        return self.ds.get_tag(tagname)
 
     def get_all_tags(self):
         """Return a list of every tag that was used.
@@ -227,7 +227,9 @@ class Requester(gobject.GObject):
         @return: A list of tags used by a open or closed task.
         """
         l = []
-        for t in self.ds.get_tagstore().get_all_tags():
+        view = self.ds.get_tagstore().get_main_view()
+        for tname in view.get_all_nodes():
+            t = self.get_tag(tname)
             if t.is_used() and t not in l:
                 l.append(t)
         l.sort(cmp=lambda x, y: cmp(x.get_name().lower(),\

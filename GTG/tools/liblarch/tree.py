@@ -271,7 +271,7 @@ class MainTree(gobject.GObject):
             node = self.get_node(nid)
         else:
             node = self.root
-        if node and path[0] < node.get_n_children():
+        if node and path and path[0] < node.get_n_children():
             if len(path) == 1:
                 return node.get_nth_child(path[0])
             else:

@@ -97,7 +97,7 @@ class Manager:
                                     builder        = self.browser.builder,
                                     requester      = self.req,
                                     tagpopup       = self.browser.tagpopup,
-                                    tagview        = self.browser.tags_tv,
+                                    tagview        = self.browser.tagtree,
                                     task           = None,
                                     texteditor     = None,
                                     quick_add_cbs  = self.browser.priv['quick_add_cbs'],
