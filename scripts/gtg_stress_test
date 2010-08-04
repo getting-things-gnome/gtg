@@ -30,9 +30,9 @@ def connect():
     #We will connect on the session bus
     bus = dbus.SessionBus()
     liste = bus.list_names()
-    busname = "org.GTG"
-    remote_object = bus.get_object(busname,"/org/GTG")
-    return dbus.Interface(remote_object,dbus_interface="org.GTG")
+    busname = "org.gnome.GTG"
+    remote_object = bus.get_object(busname,"/org/gnome/GTG")
+    return dbus.Interface(remote_object,dbus_interface="org.gnome.GTG")
 
 if __name__ == '__main__':
     if len(sys.argv) == 1:

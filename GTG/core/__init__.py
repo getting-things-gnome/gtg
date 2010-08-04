@@ -61,8 +61,8 @@ class CoreConfig(Borg):
     TASK_CONF_FILE = "tasks.conf"
     conf_dict = None
     #DBUS
-    BUSNAME = "org.GTG"
-    BUSINTERFACE = "/org/GTG"
+    BUSNAME = "org.gnome.GTG"
+    BUSINTERFACE = "/org/gnome/GTG"
     #TAGS
     ALLTASKS_TAG = "gtg-tags-all"
 
