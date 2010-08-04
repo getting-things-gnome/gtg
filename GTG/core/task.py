@@ -332,8 +332,6 @@ class Task(TreeNode):
                 for t in self.get_tags():
                     child.tag_added(t.get_name())
             self.sync()
-            #This one should be handled by the self.call_modified()
-#            child.sync()
             return True
         else:
             Log.debug("child addition failed (or still pending)")
@@ -471,6 +469,7 @@ class Task(TreeNode):
     def sync(self):
         self._modified_update()
         if self.is_loaded():
+            #This is a liblarch call to the TreeNode ancestor
             self.modified()
             return True
         else:

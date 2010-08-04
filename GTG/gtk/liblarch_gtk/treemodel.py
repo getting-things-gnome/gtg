@@ -275,7 +275,6 @@ class TreeModel(gtk.GenericTreeModel):
 
     def update_task(self, sender, tid):
 #        # get the node and signal it's changed
-        print "tasktree update_task %s" %tid
         if self.tree.is_displayed(tid):
             node_paths = self.tree.get_paths_for_node(tid)
             for node_path in node_paths:
