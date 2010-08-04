@@ -121,9 +121,13 @@ class ViewTree(gobject.GObject):
     #Those are the three signals you want to catch if displaying
     #a filteredtree. The argument of all signals is the nid of the node
     __gsignal_str = (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str, ))
+    #FIXME: should we unify those signals ? They are conceptually different
     __gsignals__ = {'node-added-inview'   : __gsignal_str,
                     'node-deleted-inview' : __gsignal_str,
-                    'node-modified-inview': __gsignal_str,}
+                    'node-modified-inview': __gsignal_str,
+                    'node-added'   : __gsignal_str,
+                    'node-deleted' : __gsignal_str,
+                    'node-modified': __gsignal_str,}
                                             
     def __init__(self, maintree, filters_bank, refresh = True, static = False):
         '''A ViewTree is the interface that should be used to display Tree(s).
@@ -143,6 +147,12 @@ class ViewTree(gobject.GObject):
         #FilteredTree layer.
         if static:
             self.__ft = maintree
+            self.__ft.connect('node-added', \
+                        functools.partial(self.__emit, 'node-added'))
+            self.__ft.connect('node-deleted', \
+                        functools.partial(self.__emit, 'node-deleted'))
+            self.__ft.connect('node-modified', \
+                        functools.partial(self.__emit, 'node-modified'))
         else:
             self.__ft = FilteredTree(maintree, filters_bank, refresh = refresh)
             self.__ft.connect('node-added-inview', \
@@ -153,6 +163,7 @@ class ViewTree(gobject.GObject):
                         functools.partial(self.__emit, 'node-modified-inview'))
             
     def __emit(self, signal_name, sender, tid, data = None):
+#        print "emitting signal %s for node %s" %(signal_name,tid)
         self.emit(signal_name, tid)
 
     #only by commodities

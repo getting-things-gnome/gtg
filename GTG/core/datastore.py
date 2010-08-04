@@ -376,6 +376,7 @@ class TaskSource():
         self.backend = backend
         self.req = requester
         self.backend.register_datastore(datastore)
+        self.tasktree = datastore.get_tasks_tree().get_main_view()
         self.to_set = deque()
         self.to_remove = deque()
 #        self.task_filter = self.get_task_filter_for_backend()
@@ -502,10 +503,10 @@ class TaskSource():
         Helper function to connect signals
         '''
         if not self.set_task_handle:
-            self.set_task_handle = self.req.connect('task-modified', \
+            self.set_task_handle = self.tasktree.connect('node-modified', \
                                                     self.queue_set_task)
         if not self.remove_task_handle:
-            self.remove_task_handle = self.req.connect('task-deleted',\
+            self.remove_task_handle = self.tasktree.connect('node-deleted',\
                                                    self.queue_remove_task)
 
     def _disconnect_signals(self):
@@ -513,10 +514,10 @@ class TaskSource():
         Helper function to disconnect signals
         '''
         if self.set_task_handle:
-            self.req.disconnect(self.set_task_handle)
+            self.tasktree.disconnect(self.set_task_handle)
             self.set_task_handle = None
         if  self.remove_task_handle:
-            self.req.disconnect(self.remove_task_handle)
+            self.tasktree.disconnect(self.remove_task_handle)
             self.remove_task_handle = None
 
     def sync(self):
@@ -573,8 +574,9 @@ class FilteredDataStore(Borg):
                     'push_task',
                     'get_task',
                     'has_task',
-                    'request_task_deletion']:
+                    'request_task_deletion',
+                    'get_tasks_tree',]:
             return getattr(self.datastore, attr)
         else:
-            raise AttributeError
+            raise AttributeError("No attribute %s" %attr)
 
