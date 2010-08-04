@@ -143,7 +143,7 @@ class DataStore(object):
         in its own internal representation.
         @return: The task object that was created.
         """
-        task = self.task_factory(uuid.uuid4(), True)
+        task = self.task_factory(str(uuid.uuid4()), True)
         self.open_tasks.add_node(task)
         return task
         

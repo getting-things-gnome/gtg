@@ -50,7 +50,7 @@ class Tree():
         return self.__tree.has_node(nid)
 
     def add_node(self,node,parent_id=None):
-        node.set_tree(self.__tree)
+#        node.set_tree(self.__tree)
         self.__tree.add_node(node,parent_id=parent_id)
 
     def del_node(self,nid):
@@ -163,7 +163,7 @@ class ViewTree(gobject.GObject):
                         functools.partial(self.__emit, 'node-modified-inview'))
             
     def __emit(self, signal_name, sender, tid, data = None):
-#        print "emitting signal %s for node %s" %(signal_name,tid)
+#        print "emitting signal %s for node %s from %s" %(signal_name,tid,self)
         self.emit(signal_name, tid)
 
     #only by commodities

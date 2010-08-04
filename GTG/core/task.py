@@ -103,7 +103,7 @@ class Task(TreeNode):
         if self.uuid == "":
             self.set_uuid(uuid.uuid4())
             self.sync()
-        return self.uuid
+        return str(self.uuid)
 
     def get_remote_ids(self):
         '''
