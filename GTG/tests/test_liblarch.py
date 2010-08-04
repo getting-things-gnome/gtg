@@ -79,7 +79,11 @@ class TestLibLarch(unittest.TestCase):
                     as [signal_catched_event, signal_arguments]:
                 function(*args, **kws)
                 signal_catched_event.wait()
-                self.assertEqual(expected, signal_arguments)
+                for e in expected:
+                    #signal arguments is a list of tuple
+                    #In this test, we only consider the first one.
+                    #Is it right ?
+                    self.assert_(e in signal_arguments[0])
             return None
         return new
 
@@ -206,13 +210,13 @@ class TestLibLarch(unittest.TestCase):
         self.assertRaises(ValueError,self.tree.get_node,str(self.total))
 
     def test_add_remove_node(self):
-        """ DISABLED (?) """
-        return
+        """ Test the adding and removal of nodes """
         view = self.tree.get_viewtree(refresh=True)
         node = DummyNode('temp')
         node.add_color('blue')
+        expected_arg = ['temp']
         self.assertNodeModifiedInviewExp(['0'],
-                self.assertNodeAddedInviewExp([node.get_id()],\
+                self.assertNodeAddedInviewExp(expected_arg,\
                                 self.tree.add_node))(node, parent_id = '0')
         shouldbe = self.blue_nodes + 1
         total = self.red_nodes + self.blue_nodes + self.green_nodes
@@ -231,8 +235,7 @@ class TestLibLarch(unittest.TestCase):
         self.assertEqual(self.blue_nodes,self.view.get_n_nodes(withfilters=['blue']))
         
     def test_modifying_node(self):
-        """ DISABLED (?) """
-        return
+        """ Modifying a node and see if the change is reflected in filters """
         viewblue = self.tree.get_viewtree(refresh=False)
         viewblue.apply_filter('blue')
         viewred = self.tree.get_viewtree(refresh=False)
@@ -254,13 +257,11 @@ class TestLibLarch(unittest.TestCase):
         self.assert_(viewred.is_displayed('temp'))
 
     def test_removing_parent(self):
-        """ DISABLED (?) """
         """Test behavior of node when its parent goes away.
 
         When you remove a parent, the child nodes should be added to
         the root if they don't have any other parents.
         """
-        return
         view = self.tree.get_viewtree(refresh=True)
         node = DummyNode('temp')
         node.add_color('blue')
@@ -568,9 +569,7 @@ class TestLibLarch(unittest.TestCase):
         self.assert_('1' in view.node_all_children())
         self.assert_('1' in self.mainview.node_all_children())
         
-    
-    # FIXME: pest ;-)
-    def pest_viewtree_node_nth_child(self):
+    def test_viewtree_node_nth_child(self):
         """Test node_nth_child() for TreeView.
 
         Verify that when retrieving a given child node, that it is
@@ -755,7 +754,11 @@ class TestLibLarch(unittest.TestCase):
     #the flat filter should make them flat
     def test_flat_filters(self):
         view = self.tree.get_viewtree(refresh=False)
-        """FIXME: Document me please
+        """Test a flat filter.
+        
+        Green nodes are in "stairs" (each one being the child of another)
+        By applying a filter with the flat properties, we test that
+        all the nodes are now seen "flately".
         """
         view.apply_filter('flatgreen')
         #all green nodes should be visibles
