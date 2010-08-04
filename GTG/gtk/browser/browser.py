@@ -1104,6 +1104,8 @@ class TaskBrowser:
         if not tid:
             #tid_to_delete is a [project,task] tuple
             tids_todelete = self.get_selected_tasks()
+            if not tids_todelete:
+                return
         else:
             tids_todelete = [tid]
         Log.debug("going to delete %s" % tids_todelete)
@@ -1388,7 +1390,7 @@ class TaskBrowser:
             selection = tview.get_selection()
         # Get the selection iter
         if selection.count_selected_rows() <= 0:
-            ids = [None]
+            ids = []
         else:
             model, paths = selection.get_selected_rows()
             iters = [model.get_iter(path) for path in paths]
