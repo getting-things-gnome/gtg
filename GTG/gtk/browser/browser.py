@@ -337,9 +337,6 @@ class TaskBrowser:
         
         # Selection changes
         self.selection = self.vtree_panes['active'].get_selection()
-        if self.vtree_panes.has_key('closed'):
-            self.closed_selection = self.vtree_panes['closed'].get_selection()
-            self.closed_selection.connect("changed", self.on_taskdone_cursor_changed)
         self.selection.connect("changed", self.on_task_cursor_changed)
         self.req.connect("task-deleted", self.update_buttons_sensitivity)
 
@@ -824,6 +821,9 @@ class TaskBrowser:
                 self.on_closed_task_treeview_button_press_event)
             self.vtree_panes['closed'].connect('key-press-event',\
                 self.on_closed_task_treeview_key_press_event)
+                
+            self.closed_selection = self.vtree_panes['closed'].get_selection()
+            self.closed_selection.connect("changed", self.on_taskdone_cursor_changed)
 
         if not self.closed_pane:
             self.closed_pane = gtk.ScrolledWindow()
@@ -1018,7 +1018,7 @@ class TaskBrowser:
             self.vmanager.open_task(tid)
 
     def on_edit_done_task(self, widget, row=None, col=None):
-        tid = self.get_selected_task(self.vtree_panes['closed'])
+        tid = self.get_selected_task('closed')
         if tid:
             self.vmanager.open_task(tid)
 
@@ -1194,7 +1194,7 @@ class TaskBrowser:
         update_button(self.dismissbutton, settings_dismiss)
         update_menu_item(self.dismiss_mi, settings_dismiss)
         if selection.count_selected_rows() > 0:
-            tid = self.get_selected_task(self.vtree_panes['closed'])
+            tid = self.get_selected_task('closed')
             task = self.req.get_task(tid)
             self.vtree_panes['active'].get_selection().unselect_all()
             if task.get_status() == "Dismiss":
@@ -1245,8 +1245,8 @@ class TaskBrowser:
     #using dummy parameters that are given by the signal
     def update_buttons_sensitivity(self,a=None,b=None,c=None):
         enable = self.selection.count_selected_rows() 
-#        if self.vtree_panes.has_key('closed'):
-#            enable += self.closed_selection.count_selected_rows() > 0
+        if self.vtree_panes.has_key('closed'):
+            enable += self.closed_selection.count_selected_rows() > 0
         self.edit_mi.set_sensitive(enable)
         self.new_subtask_mi.set_sensitive(enable)
         self.done_mi.set_sensitive(enable)
