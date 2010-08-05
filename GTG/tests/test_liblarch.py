@@ -287,6 +287,8 @@ class TestLibLarch(unittest.TestCase):
         all_nodes = self.view.get_all_nodes()
         self.assert_('0' in all_nodes)
         self.assert_('temp' in all_nodes)
+        #FIXME: luca, how can we check that both temp and 0 signals
+        #are sent ? (ploum)
         self.assertNodeDeletedInviewExp(['temp'], self.tree.del_node)\
                                                         ('0',recursive=True)
         all_nodes = self.view.get_all_nodes()
