@@ -507,22 +507,24 @@ class Task(TreeNode):
     #Method called before the task is deleted
     #This method is called by the datastore and should not be called directly
     #Use the requester
-    def delete(self):
-        #we issue a delete for all the children
-        for task in self.get_subtasks():
-            #I think it's superfluous (invernizzi)
-            #task.remove_parent(self.get_id())
-            task.delete()
-        #we tell the parents we have to go
-        for i in self.get_parents():
-            task = self.req.get_task(i)
-            task.remove_child(self.get_id())
-        #we tell the tags about the deletion
-        for tagname in self.tags:
-            tag = self.req.get_tag(tagname)
-            tag.remove_task(self.get_id())
-        #then we signal the we are ready to be removed
-        self.req._task_deleted(self.get_id())
+    
+    #This should be handled on liblarch level
+#    def delete(self):
+#        #we issue a delete for all the children
+#        for task in self.get_subtasks():
+#            #I think it's superfluous (invernizzi)
+#            #task.remove_parent(self.get_id())
+#            task.delete()
+#        #we tell the parents we have to go
+#        for i in self.get_parents():
+#            task = self.req.get_task(i)
+#            task.remove_child(self.get_id())
+#        #we tell the tags about the deletion
+#        for tagname in self.tags:
+#            tag = self.req.get_tag(tagname)
+#            tag.remove_task(self.get_id())
+#        #then we signal the we are ready to be removed
+#        self.req._task_deleted(self.get_id())
 
     def sync(self):
         self._modified_update()
