@@ -22,7 +22,11 @@ import gtk
 from GTG.gtk.backends_dialog.backendscombo import BackendsCombo
 from GTG.backends                          import BackendFactory
 from GTG                                   import _, ngettext
-from GTG.tools.moduletopackage             import ModuleToPackage
+
+#The code for showing the required modules has been disabled since it
+# seems that backends will be packaged separately (as plugins). I'm
+# leaving this here in case we change that decision (invernizzi).
+#from GTG.tools.moduletopackage             import ModuleToPackage
 
 
 
