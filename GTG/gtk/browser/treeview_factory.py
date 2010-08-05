@@ -33,6 +33,12 @@ class TreeviewFactory():
         self.req = requester
         self.config = config
         
+        #Initial unactive color
+        #This is a crude hack. As we don't have a reference to the 
+        #treeview to retrieve the style, we save that color when we 
+        #build the treeview.
+        self.unactive_color = "#888a85"
+        
         
     #############################
     #Functions for tasks columns
@@ -67,19 +73,19 @@ class TreeviewFactory():
         title = saxutils.escape(node.get_title())
         #FIXME
 #        color = self.treeview.style.text[gtk.STATE_INSENSITIVE].to_string()
-        color = "#F00"
+        color = "red"
         if node.get_status() == Task.STA_ACTIVE:
             count = self._count_active_subtasks_rec(node)
             if count != 0:
                 title += " (%s)" % count
             
-            if self.config.has_key("contents_preview_enable"):
+            if self.config['browser'].get("contents_preview_enable",False):
             	excerpt = saxutils.escape(node.get_excerpt(lines=1, \
             		strip_tags=True, strip_subtasks=True))
             	title += " <span size='small' color='%s'>%s</span>" \
-            		%(color, excerpt) 
+            		%(self.unactive_color, excerpt) 
         elif node.get_status() == Task.STA_DISMISSED:
-            title = "<span color='%s'>%s</span>"%(color, title)
+            title = "<span color='%s'>%s</span>"%(self.unactive_color, title)
         return title
         
     #task start date
@@ -118,7 +124,7 @@ class TreeviewFactory():
             tname = node.get_name()
             toreturn = tasktree.get_n_nodes(\
                                 withfilters=[tname],include_transparent=True)
-        return toreturn
+        return "<span color='%s'>%s</span>" %(self.unactive_color,toreturn)
 
     ############################################
     ######## The Factory #######################
@@ -160,7 +166,6 @@ class TreeviewFactory():
         render_text = gtk.CellRendererText()
         render_text.set_property('xpad', 3)
         render_text.set_property('ypad', 3)
-        render_text.set_property("foreground", "#888a85")
         render_text.set_property('xalign', 1.0)
         col['renderer'] = ['markup',render_text]
         col['value'] = [str,self.get_tag_count]
@@ -224,6 +229,8 @@ class TreeviewFactory():
         return treeview
         
     
+    #This build the first tag/title columns, common
+    #to both active and closed tasks treeview
     def common_desc_for_tasks(self,tree):
         desc = {}
         #invisible 'title' column
@@ -274,6 +281,9 @@ class TreeviewFactory():
          # Global treeview properties
         treeview.set_property("enable-tree-lines", False)
         treeview.set_rules_hint(False)
+        #Updating the unactive color (same for everyone)
+        self.unactive_color = \
+                        treeview.style.text[gtk.STATE_INSENSITIVE].to_string()
         return treeview
         
     def build_tag_treeview(self,tree,desc):
@@ -281,6 +291,9 @@ class TreeviewFactory():
         # Global treeview properties
         treeview.set_property("enable-tree-lines", False)
         treeview.set_rules_hint(False)
+        #Updating the unactive color (same for everyone)
+        self.unactive_color = \
+                        treeview.style.text[gtk.STATE_INSENSITIVE].to_string()
         return treeview
         
         
