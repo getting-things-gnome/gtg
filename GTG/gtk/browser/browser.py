@@ -145,7 +145,6 @@ class TaskBrowser:
 ### INIT HELPER FUNCTIONS #####################################################
 #
     def _init_browser_config(self):
-        self.priv["collapsed_tids"]           = []
         self.priv["tasklist"]                 = {}
         self.priv["tasklist"]["sort_column"]  = None
         self.priv["tasklist"]["sort_order"]   = gtk.SORT_ASCENDING
@@ -469,9 +468,8 @@ class TaskBrowser:
             self.priv["contents_preview_enable"] = \
                     eval(self.config["browser"]["contents_preview_enable"])
         
-        if "collapsed_tasks" in self.config["browser"]:
-            self.priv["collapsed_tids"] = self.config[
-                "browser"]["collapsed_tasks"]
+        if "collapsed_tasks" not in self.config["browser"]:
+            self.config["browser"]["collapsed_tasks"] = []
                 
         if "collapsed_tags" in self.config["browser"]:
             toset = self.config["browser"]["collapsed_tags"]
@@ -667,9 +665,9 @@ class TaskBrowser:
 
     def on_delete(self, widget, user_data):
         # Cleanup collapsed row list
-        for tid in self.priv["collapsed_tids"]:
+        for tid in self.config['browser']["collapsed_tasks"]:
             if not self.req.has_task(tid):
-                self.priv["collapsed_tids"].remove(tid)
+                self.config['browser']["collapsed_tasks"].remove(tid)
 
         # Get configuration values
         tag_sidebar        = self.sidebar.get_property("visible")
@@ -703,8 +701,6 @@ class TaskBrowser:
 #                self.config["browser"]["bg_color_enable"],
             'contents_preview_enable':
                 self.priv["contents_preview_enable"],
-            'collapsed_tasks':
-                self.priv["collapsed_tids"],
             #FIXME : to implement in liblarch
 #            'collapsed_tags':
 #                self.tagtree.get_collapsed_tags(),
@@ -865,7 +861,7 @@ class TaskBrowser:
 
     def on_task_child_toggled(self, model, path, iter):
         tid = model.get_value(iter, tasktree.COL_TID)
-        if tid not in self.priv.get("collapsed_tids", []):
+        if tid not in self.config['browser'].get("collapsed_tasks", []):
             curiter = model.get_iter(path)
             if model.iter_is_valid(curiter):
                 self.vtree_panes['active'].expand_row(path, False)
@@ -874,13 +870,13 @@ class TaskBrowser:
 
     def on_task_treeview_row_expanded(self, treeview, iter, path):
         tid = treeview.get_model().get_value(iter, 0)
-        if tid in self.priv["collapsed_tids"]:
-            self.priv["collapsed_tids"].remove(tid)
+        if tid in self.config['browser']["collapsed_tasks"]:
+            self.config['browser']["collapsed_tasks"].remove(tid)
         
     def on_task_treeview_row_collapsed(self, treeview, iter, path):
         tid = treeview.get_model().get_value(iter, 0)
-        if tid not in self.priv["collapsed_tids"]:
-            self.priv["collapsed_tids"].append(tid)
+        if tid not in self.config['browser'].get("collapsed_tasks",[]):
+            self.config['browser']["collapsed_tasks"].append(tid)
 
     def on_quickadd_activate(self, widget):
         text = self.quickadd_entry.get_text()
