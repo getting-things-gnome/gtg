@@ -62,7 +62,7 @@ class TreeView(gtk.TreeView):
             if desc.has_key('expandable'):
                 expand = desc['expandable']
             else:
-                expand = True
+                expand = False
             if desc.has_key('resizable'):
                 resizable = desc['resizable']
             else:
@@ -79,6 +79,7 @@ class TreeView(gtk.TreeView):
             col.add_attribute(renderer, rend_attribute, col_nbr)
             #By default, resizable
             col.set_resizable(resizable)
+            col.set_expand(expand)
             col.set_cell_data_func(renderer, self._celldatafunction)
             if desc.has_key('sorting'):
                 sort_nbr = self.columns[desc['sorting']][0]
