@@ -273,6 +273,25 @@ class TestLibLarch(unittest.TestCase):
         all_nodes = self.view.get_all_nodes()
         self.failIf('0' in all_nodes)
         self.assert_('temp' in all_nodes)
+        
+    def test_recursive_removing_parent(self):
+        """Test behavior of node when its parent goes away.
+
+        When you remove a parent recursively, all the children
+        are also removed !
+        """
+        view = self.tree.get_viewtree(refresh=True)
+        node = DummyNode('temp')
+        node.add_color('blue')
+        self.tree.add_node(node,parent_id='0')
+        all_nodes = self.view.get_all_nodes()
+        self.assert_('0' in all_nodes)
+        self.assert_('temp' in all_nodes)
+        self.assertNodeDeletedInviewExp(['temp'], self.tree.del_node)\
+                                                        ('0',recursive=True)
+        all_nodes = self.view.get_all_nodes()
+        self.failIf('0' in all_nodes)
+        self.failIf('temp' in all_nodes)
 
     def test_move_node(self):
         view = self.tree.get_viewtree(refresh=True)
@@ -734,7 +753,8 @@ class TestLibLarch(unittest.TestCase):
     #we copy/paste the test
     def test_flatleaves_filters(self):
         view = self.tree.get_viewtree(refresh=False)
-        """FIXME: Document me please
+        """We apply a leaves + flat filter and the result
+        should be the same as a simple leaf filter.
         """
         view.apply_filter('flatleaves')
         total = self.red_nodes + self.blue_nodes
