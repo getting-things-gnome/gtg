@@ -264,13 +264,13 @@ class TreeModel(gtk.GenericTreeModel):
 #            removed = True
 #        return removed
                     
-    def move_task(self, parent_tid, child_tid):
-        """Moves the task identified by child_tid under
-           parent_tid, removing all the precedent parents.
-           Child becomes a root task if parent_tid is None"""
-        #The genealogic search has been moved to liblarch and should be
-        #removed from here
-        print "Move task not yet implemented in liblarch_gtk (and it shouldnot)"
+#    def move_task(self, parent_tid, child_tid):
+#        """Moves the task identified by child_tid under
+#           parent_tid, removing all the precedent parents.
+#           Child becomes a root task if parent_tid is None"""
+#        #The genealogic search has been moved to liblarch and should be
+#        #removed from here
+#        print "Move task not yet implemented in liblarch_gtk (and it shouldnot)"
 #        def genealogic_search(tid):
 #            if tid not in genealogy:
 #                genealogy.append(tid)
