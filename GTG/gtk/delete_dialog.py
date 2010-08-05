@@ -43,7 +43,7 @@ class DeletionUI():
         """if we pass a tid as a parameter, we delete directly
         otherwise, we will look which tid is selected"""
         for tid in self.tids_todelete:
-            self.req.delete_task(tid)
+            self.req.delete_task(tid,recursive=True)
         self.tids_todelete = []
 
     def delete_tasks(self, tids=None):

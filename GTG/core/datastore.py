@@ -511,7 +511,6 @@ class TaskSource():
         @param sender: not used, any value will do
         @param tid: The Task ID of the task to be removed
         '''
-        print "queue_remove: removing %s" %tid
         if tid not in self.to_remove:
             self.to_remove.appendleft(tid)
             self.__try_launch_setting_thread()

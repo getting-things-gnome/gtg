@@ -166,8 +166,9 @@ class Requester(gobject.GObject):
         self._task_loaded(task.get_id())
         return task
 
-    def delete_task(self, tid):
-        """Delete the task 'tid'.
+    def delete_task(self, tid,recursive=True):
+        """Delete the task 'tid' and, by default, delete recursively
+        all the childrens.
 
         Note: this modifies the datastore.
 
@@ -180,9 +181,7 @@ class Requester(gobject.GObject):
         if task:
             for tag in task.get_tags():
                 self.emit('tag-modified', tag.get_name())
-        #Signal should be sent by liblarch.
-#        self.emit('task-deleted', tid)
-        return self.basetree.del_node(tid)
+        return self.basetree.del_node(tid,recursive=recursive)
 
     ############### Tags ##########################
     ###############################################
