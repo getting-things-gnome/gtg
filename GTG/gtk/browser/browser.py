@@ -138,7 +138,9 @@ class TaskBrowser:
         self.restore_state_from_conf()
 
         #Expand all the tasks in the taskview
-        self.vtree_panes['active'].expand_all()
+        print "********* Will expand ************"
+        r = self.vtree_panes['active'].expand_all()
+        print "********** expanded ***************"
         self.on_select_tag()
         self.window.show()
 
@@ -860,7 +862,7 @@ class TaskBrowser:
             self.quickadd_pane.hide()
 
     def on_task_child_toggled(self, model, path, iter):
-        tid = model.get_value(iter, tasktree.COL_TID)
+        tid = model.get_value(iter, 0)
         if tid not in self.config['browser'].get("collapsed_tasks", []):
             curiter = model.get_iter(path)
             if model.iter_is_valid(curiter):

@@ -121,9 +121,11 @@ class ViewTree(gobject.GObject):
     #Those are the three signals you want to catch if displaying
     #a filteredtree. The argument of all signals is the nid of the node
     __gsignal_str = (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str, ))
+    __gsignal_str2 = (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, \
+                                                (str,gobject.TYPE_PYOBJECT, ))
     #FIXME: should we unify those signals ? They are conceptually different
     __gsignals__ = {'node-added-inview'   : __gsignal_str,
-                    'node-deleted-inview' : __gsignal_str,
+                    'node-deleted-inview' : __gsignal_str2,
                     'node-modified-inview': __gsignal_str,
                     'node-added'   : __gsignal_str,
                     'node-deleted' : __gsignal_str,
@@ -164,7 +166,10 @@ class ViewTree(gobject.GObject):
             
     def __emit(self, signal_name, sender, tid, data = None):
 #        print "emitting signal %s for node %s from %s" %(signal_name,tid,self)
-        self.emit(signal_name, tid)
+        if data:
+            self.emit(signal_name,tid,data)
+        else:
+            self.emit(signal_name, tid)
 
     #only by commodities
     def get_node(self,nid):

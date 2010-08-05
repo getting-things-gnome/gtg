@@ -86,7 +86,7 @@ class FilteredTree(gobject.GObject):
     __gsignals__ = {'node-added-inview': (gobject.SIGNAL_RUN_FIRST, \
                                           gobject.TYPE_NONE, (str, )),
                     'node-deleted-inview': (gobject.SIGNAL_RUN_FIRST, \
-                                            gobject.TYPE_NONE, (str, )),
+                                            gobject.TYPE_NONE, (str,gobject.TYPE_PYOBJECT, )),
                     'node-modified-inview': (gobject.SIGNAL_RUN_FIRST, \
                                             gobject.TYPE_NONE, (str, )),}
 
@@ -699,7 +699,8 @@ class FilteredTree(gobject.GObject):
                 if curdis:
                     self.__remove_node(tid)
                 else:
-                    self.emit("node-deleted-inview", tid)
+                    paths = self.get_paths_for_node(tid)
+                    self.emit("node-deleted-inview", tid, paths)
 
 
     
@@ -754,7 +755,8 @@ class FilteredTree(gobject.GObject):
                 isroot = self.__is_root(tid)
                 self.remove_count += 1
                 self.__nodes_count -= 1
-                self.emit('node-deleted-inview',tid)
+                paths = self.get_paths_for_node(tid)
+                self.emit('node-deleted-inview',tid,paths)
                 self.__root_update(tid,False)
                 self.displayed_nodes.remove(tid)
             if tid in self.counted_nodes:
