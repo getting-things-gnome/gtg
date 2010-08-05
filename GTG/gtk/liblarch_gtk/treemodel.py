@@ -177,30 +177,34 @@ class TreeModel(gtk.GenericTreeModel):
 
     def update_task(self, sender, tid,data=None):
         print "update task : %s %s" %(data,tid)
-        if self.tree.is_displayed(tid):
-            node_paths = self.tree.get_paths_for_node(tid)
-            for node_path in node_paths:
-                if data == 'add':
-                    rowref = self.get_iter(node_path)
-                    self.row_inserted(node_path, rowref)
-                else:
-                    rowref = self.get_iter(node_path)
-                    self.row_changed(node_path, rowref)
-                if self.tree.node_has_child(tid):
-                    self.row_has_child_toggled(node_path, rowref)
-            if len(node_paths) == 0: 
-                raise  ValueError("Error :! no path for node %s !" %tid)
+        node_paths = self.tree.get_paths_for_node(tid)
+        for node_path in node_paths:
+            if data == 'add':
+                rowref = self.get_iter(node_path)
+                self.row_inserted(node_path, rowref)
+                #Toggling the parent ( FIXME: this should be done
+                #on liblarch level !!!
+                if self.tree.node_has_parent(tid):
+                    for p in self.tree.node_parents(tid):
+                        self.update_task(None,p,data='parent_update')
+            else:
+                rowref = self.get_iter(node_path)
+                self.row_changed(node_path, rowref)
+            if self.tree.node_has_child(tid):
+                self.row_has_child_toggled(node_path, rowref)
+        if len(node_paths) == 0: 
+            raise  ValueError("Error :! no path for node %s !" %tid)
                 
     def remove_task(self,sender,tid,paths=None):
         if paths:
             for p in paths:
-                print "removing %s" %str(p)
+                print "removing task %s on %s" %(tid,str(p))
                 self.row_deleted(p)
         else:
             print "we should get the path"
             
             
-########### The following should be removed ############################
+########### The following should be removed onc liblarch-gtk is working ######
 
 #    def add_task(self,sender,tid,data=None):
 #        print "add date : %s" %data
@@ -266,7 +270,7 @@ class TreeModel(gtk.GenericTreeModel):
            Child becomes a root task if parent_tid is None"""
         #The genealogic search has been moved to liblarch and should be
         #removed from here
-        print "Move task not yet implemented in liblarch_gtk"
+        print "Move task not yet implemented in liblarch_gtk (and it shouldnot)"
 #        def genealogic_search(tid):
 #            if tid not in genealogy:
 #                genealogy.append(tid)

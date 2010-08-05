@@ -160,16 +160,15 @@ class ViewTree(gobject.GObject):
             self.__ft.connect('node-added-inview', \
                         functools.partial(self.__emit, 'node-added-inview'))
             self.__ft.connect('node-deleted-inview', \
-                        functools.partial(self.__emit, 'node-deleted-inview'))
+                        self.__emit_del)
             self.__ft.connect('node-modified-inview', \
                         functools.partial(self.__emit, 'node-modified-inview'))
             
-    def __emit(self, signal_name, sender, tid, data = None):
-#        print "emitting signal %s for node %s from %s" %(signal_name,tid,self)
-        if data:
-            self.emit(signal_name,tid,data)
-        else:
-            self.emit(signal_name, tid)
+    def __emit(self, signal_name, sender, tid):
+        self.emit(signal_name, tid)
+            
+    def __emit_del(self,sender,tid,data):
+        self.emit('node-deleted-inview',tid,data)
 
     #only by commodities
     def get_node(self,nid):
