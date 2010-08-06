@@ -701,7 +701,11 @@ class FilteredTree(gobject.GObject):
                 if curdis:
                     self.__remove_node(tid)
                 else:
-                    paths = self.get_paths_for_node(tid)
+                    #FIXME: we should not fail silently !
+                    if self.is_displayed(tid):
+                        paths = self.get_paths_for_node(tid)
+                    else:
+                        paths = None
                     self.emit("node-deleted-inview", tid, paths)
 
 
