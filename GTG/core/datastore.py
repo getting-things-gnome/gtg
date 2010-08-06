@@ -27,11 +27,11 @@ import uuid
 import os.path
 from collections import deque
 
-from GTG.tools.liblarch          import Tree
 from GTG.core                    import requester
 from GTG.core.task               import Task
 from GTG.core.tagstore           import Tag
 from GTG.core                    import CoreConfig
+from GTG.core.treefactory        import TreeFactory
 from GTG.tools.logger            import Log
 from GTG.backends.genericbackend import GenericBackend
 from GTG.tools                   import cleanxml
@@ -56,9 +56,10 @@ class DataStore(object):
         Initializes a DataStore object
         '''
         self.backends = {} #dictionary {backend_name_string: Backend instance}
-        self.open_tasks = Tree()
+        self.treefactory = TreeFactory()
+        self.open_tasks = self.treefactory.get_tasks_tree()
         self.requester = requester.Requester(self)
-        self.__tagstore = Tree()
+        self.__tagstore = self.treefactory.get_tags_tree()
         self._backend_signals = BackendSignals()
         self.mutex = threading.RLock()
         self.is_default_backend_loaded = False
@@ -97,13 +98,6 @@ class DataStore(object):
     ### Tags functions
     ##########################################################################
     
-    #To be used in the filters bank
-    def tag_filter_func(self,node,parameters):
-        #FIXME: we should take tag children into account
-        tname = parameters['tag']
-        return node.has_tags([tname])
-    
-    
     def new_tag(self,tagname):
         """Create a new tag and return it or return the existing one
         with corresponding name"""
@@ -114,7 +108,7 @@ class DataStore(object):
             tag = Tag(tname, req=self.requester)
             self.__tagstore.add_node(tag)
             p = {'tag':tname,'transparent':True}
-            self.open_tasks.add_filter(tname,self.tag_filter_func,parameters=p)
+            self.open_tasks.add_filter(tname,self.treefactory.tag_filter,parameters=p)
             tag.set_save_callback(self.save)
             Log.debug("********* tag added %s *******" % tagname)
         else:
