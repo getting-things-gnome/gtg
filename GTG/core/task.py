@@ -573,7 +573,6 @@ class Task(TreeNode):
         tag = self.req.get_tag(t)
         if not tag:
             tag = self.req.new_tag(t)
-        tag.add_task(self.get_id())
         #Do not add the same tag twice
         if not t in self.tags:
             self.tags.append(t)
