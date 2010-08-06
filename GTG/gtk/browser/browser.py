@@ -614,14 +614,6 @@ class TaskBrowser:
                 return True
             else:
                 return False          
-            
-    def tag_list_refresh(self):
-        taglist = self.req.get_all_tags()
-        if not taglist == self.tag_list:
-            for i in taglist:
-                if i not in self.tag_list:
-                    self.tag_list_model.append([i.get_name()[1:]])
-            self.tag_list = taglist
 
     def _add_page(self, notebook, label, page):
         notebook.append_page(page, label)
@@ -698,8 +690,6 @@ class TaskBrowser:
                 self.priv["window_xpos"],
             'y_pos':
                 self.priv["window_ypos"],
-#            'bg_color_enable':
-#                self.config["browser"]["bg_color_enable"],
             'contents_preview_enable':
                 self.priv["contents_preview_enable"],
             #FIXME : to implement in liblarch
@@ -1261,23 +1251,6 @@ class TaskBrowser:
         :param tv: The tree view to find the selected task in. Defaults to
             the task_tview.
         """
-#       TODO: this can be removed
-#        if not tv:
-#            tview = self.task_tv
-#            selection = tview.get_selection()
-#            #If we don't have anything and no tview specified
-#            #Let's have a look in the closed task view
-#            if selection and selection.count_selected_rows() <= 0 and not tv:
-#                tview = self.ctask_tv
-#                selection = tview.get_selection()
-#            if selection.count_selected_rows() <= 0:
-#                return None
-#            else:
-#                model, paths = selection.get_selected_rows()
-#                if len(paths) >0 :
-#                    selection.unselect_all()
-#                    selection.select_path(paths[0])
-
         ids = self.get_selected_tasks(tv)
         if len(ids) > 0:
             #fixme : we should also unselect all the others
@@ -1310,23 +1283,6 @@ class TaskBrowser:
         tag = []
         if self.tagtree:
             tag = self.tagtree.get_selected_nodes()
-        #following should not be needed with liblarch_gtk
-#            t_selected = self.tagtree.get_selection()
-#            model      = self.tagtree.get_model()
-#            t_iter = None
-#            if t_selected:
-#                tmodel, t_iter = t_selected.get_selected()
-#            if t_iter:
-#                selected = model.get_value(t_iter, tagtree.COL_OBJ)
-#                special  = selected.get_attribute("special")
-#                if special == "all":
-#                    tag = []
-#                    selected = None
-#                #notag means we want to display only tasks without any tag
-#                if special == "notag":
-#                    notag_only = True
-#                if not notag_only and selected:
-#                    tag.append(selected)
             #If no selection, we display all
         return tag, notag_only
     

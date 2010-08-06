@@ -198,23 +198,6 @@ class Requester(gobject.GObject):
     def get_tag(self, tagname):
         return self.ds.get_tag(tagname)
 
-#    def get_all_tags(self):
-#        #FIXME : we should use a viewtree here
-#        """Return a list of every tag that was used.
-#        We don't return tag that were used only on permanently deleted tasks.
-
-#        @return: A list of tags used by a open or closed task.
-#        """
-#        l = []
-#        view = self.ds.get_tagstore().get_main_view()
-#        for tname in view.get_all_nodes():
-#            t = self.get_tag(tname)
-#            if t not in l:
-#                l.append(t)
-#        l.sort(cmp=lambda x, y: cmp(x.get_name().lower(),\
-#            y.get_name().lower()))
-#        return l
-
     def get_notag_tag(self):
         print "no tag not implemented"
         return None
@@ -231,11 +214,8 @@ class Requester(gobject.GObject):
         @return: A list of tag names used by a task.
         """
         l = []
-        view = self.ds.get_tagstore().get_main_view()
-        for tname in view.get_all_nodes():
-            t = self.get_tag(tname)
-            if t.is_actively_used() and t not in l:
-                l.append(t.get_name())
+        view = self.ds.get_tagstore().get_viewtree(name='active')
+        l = view.get_all_nodes()
         l.sort(cmp=lambda x, y: cmp(x.lower(),y.lower()))
         return l
 
