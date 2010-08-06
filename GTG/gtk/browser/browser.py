@@ -1579,7 +1579,8 @@ class TaskBrowser:
         '''
         if isinstance(child, CustomInfoBar) and\
             child.get_backend_id() == backend_id:
-            self.vbox_toolbars.remove(child)
+            if self.vbox_toolbars:
+                self.vbox_toolbars.remove(child)
 
     def remove_backend_infobar(self, sender, backend_id):
         '''
@@ -1593,7 +1594,8 @@ class TaskBrowser:
         backend = self.req.get_backend(backend_id)
         if not backend or (backend and backend.is_enabled()):
             #remove old infobar related to backend_id, if any
-            self.vbox_toolbars.foreach(self.__remove_backend_infobar, \
+            if self.vbox_toolbars:
+                self.vbox_toolbars.foreach(self.__remove_backend_infobar, \
                                        backend_id)
 
     def _new_infobar(self, backend_id):
@@ -1604,6 +1606,8 @@ class TaskBrowser:
         @returns gtk.Infobar: the created infobar
         '''
         #remove old infobar related to backend_id, if any
+        if not self.vbox_toolbars:
+            return
         self.vbox_toolbars.foreach(self.__remove_backend_infobar, backend_id)
         #add a new one
         infobar = CustomInfoBar(self.req, self, self.vmanager, backend_id)
