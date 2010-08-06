@@ -69,8 +69,9 @@ class Task(TreeNode):
         self.req = requester
         #If we don't have a newtask, we will have to load it.
         self.loaded = newtask
-        if self.loaded:
-            self.req._task_loaded(self.tid)
+        #Should not be necessary with the new backends
+#        if self.loaded:
+#            self.req._task_loaded(self.tid)
         self.attributes={}
         self._modified_update()
 
@@ -81,8 +82,8 @@ class Task(TreeNode):
         #avoid doing it multiple times
         if not self.loaded:
             self.loaded = True
-            if signal:
-                self.req._task_loaded(self.tid)
+#            if signal:
+#                self.req._task_loaded(self.tid)
 
     def set_to_keep(self):
         self.can_be_deleted = False
@@ -581,7 +582,7 @@ class Task(TreeNode):
             for child in self.get_subtasks():
                 if child.can_be_deleted:
                     child.add_tag(t)
-            self.req._tag_modified(t)
+            tag.modified()
             return True
     
     def add_tag(self, tagname):
@@ -619,7 +620,8 @@ class Task(TreeNode):
                     child.remove_tag(tagname)
         self.content = self._strip_tag(self.content, tagname)
         if modified:
-            self.req._tag_modified(tagname)
+            tag = self.req.get_tag(tagname)
+            tag.modified()
                        
     def _strip_tag(self, text, tagname,newtag=''):
         return (text

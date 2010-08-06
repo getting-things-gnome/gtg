@@ -66,26 +66,6 @@ class Requester(gobject.GObject):
     def _task_loaded(self, tid):
         gobject.idle_add(self.emit, "task-added", tid)
 
-    def _task_modified(self, tid):
-        self.counter_call += 1
-        #print "signal task_modified %s (%s modifications)" %(tid,self.counter_call)
-        gobject.idle_add(self.emit, "task-modified", tid)
-
-    def _task_deleted(self, tid):
-        #when this is emitted, task has *already* been deleted
-        gobject.idle_add(self.emit, "task-deleted", tid)
-
-    def _tag_added(self,tagname):
-        gobject.idle_add(self.emit, "tag-added", tagname)
-
-    def _tag_modified(self,tagname):
-        gobject.idle_add(self.emit, "tag-modified", tagname)
-
-    def _tag_path_deleted(self, path):
-        gobject.idle_add(self.emit, "tag-path-deleted", path)
-        
-    def _tag_deleted(self,tagname):
-        gobject.idle_add(self.emit, "tag-deleted", tagname)
         
     ############ Tasks Tree ######################
     # By default, we return the task tree of the main window
@@ -180,7 +160,7 @@ class Requester(gobject.GObject):
     ###############################################
 
     def get_tag_tree(self):
-        return self.ds.get_tagstore().get_main_view()
+        return self.ds.get_tagstore().get_viewtree(name='active')
 
     def new_tag(self, tagname):
         """Create a new tag called 'tagname'.

@@ -331,16 +331,16 @@ class Tag(TreeNode):
         sp_id = self.get_attribute("special")
         if sp_id == "all":
             toreturn = tasktree.get_n_nodes(\
-                    withfilters=['no_disabled_tag'],include_transparent=True)
+                    withfilters=['no_disabled_tag'],include_transparent=False)
         elif sp_id == "notag":
             toreturn = tasktree.get_n_nodes(\
-                            withfilters=['notag'],include_transparent=True)
+                            withfilters=['notag'],include_transparent=False)
         elif sp_id == "sep" :
             toreturn = 0
         else:
             tname = self.get_name()
             toreturn = tasktree.get_n_nodes(\
-                                withfilters=[tname],include_transparent=True)
+                                withfilters=[tname],include_transparent=False)
         return toreturn
         
     #is it useful to keep the tag in the tagstore.
@@ -351,7 +351,11 @@ class Tag(TreeNode):
     def is_used(self):
         return self.get_total_tasks_count() > 0
     def is_actively_used(self):
-        return self.get_active_tasks_count() > 0
+        if self.get_attribute('special'):
+            return True
+        else:
+#            print "tag %s has %s active tasks" %(self.get_name(),self.get_active_tasks_count())
+            return self.get_active_tasks_count() > 0
 
     def __str__(self):
         return "Tag: %s" % self.get_name()

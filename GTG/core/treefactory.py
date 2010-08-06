@@ -96,18 +96,32 @@ class TreeFactory:
         sep_tag.set_attribute("order",2)
         tagtree.add_node(sep_tag)
         
+        tagtree.add_filter('active',self.actively_used_tag)
+        tagtree.add_filter('used',self.used_tag)
+        
+        activeview = tagtree.get_viewtree('active')
+        activeview.apply_filter('active')
+        
+        usedview = tagtree.get_viewtree('used')
+        usedview.apply_filter('used')
+        
         self.tagtree = tagtree
         return tagtree
     
     ################# Tag Filters ##########################################
     
-    #TODO : filter to display only tags with active tasks
+    #filter to display only tags with active tasks
+    def actively_used_tag(self,node,parameters=None):
+        return node.is_actively_used()
+        
+    def used_tag(self,node,parameters=None):
+        return node.is_used()
         
         
     ################# Task Filters #########################################
     #That one is used to filters tag. Is it built dynamically each times
     #a tag is added to the tagstore
-    def tag_filter(self,node,parameters):
+    def tag_filter(self,node,parameters=None):
         #FIXME: we should take tag children into account
         #Bryce : use self.tagtree to find children/parents of tags
         tname = parameters['tag']
