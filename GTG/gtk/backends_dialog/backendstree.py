@@ -57,6 +57,7 @@ class BackendsTree(gtk.TreeView):
         self.liststore.clear()
         for backend in self.req.get_all_backends(disabled = True):
             self.add_backend(backend)
+            self.on_backend_state_changed(None, backend.get_id())
 
     def on_backend_added(self, sender, backend_id):
         '''
