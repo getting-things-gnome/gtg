@@ -284,3 +284,6 @@ class Requester(gobject.GObject):
 
     def backend_change_attached_tags(self, backend_id, tags):
         return self.ds.backend_change_attached_tags(backend_id, tags)
+
+    def save_datastore(self):
+        return self.ds.save()

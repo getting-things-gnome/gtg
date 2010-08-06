@@ -34,7 +34,9 @@ import gtk
 
 #our own imports
 import GTG
-from GTG.core                    import CoreConfig
+from GTG.backends.backendsignals import BackendSignals
+from GTG.gtk.browser.custominfobar import CustomInfoBar
+from GTG.core                       import CoreConfig
 from GTG                         import _, info, ngettext
 from GTG.core.task               import Task
 from GTG.gtk.browser             import GnomeConfig, tasktree, tagtree
@@ -206,6 +208,7 @@ class TaskBrowser:
         self.sidebar_notebook   = self.builder.get_object("sidebar_notebook")
         self.main_notebook      = self.builder.get_object("main_notebook")
         self.accessory_notebook = self.builder.get_object("accessory_notebook")
+        self.vbox_toolbars      = self.builder.get_object("vbox_toolbars")
         
         self.closed_pane        = None
 
@@ -313,6 +316,8 @@ class TaskBrowser:
                 self.on_nonworkviewtag_toggled,
             "on_preferences_activate":
                 self.open_preferences,
+            "on_edit_backends_activate":
+                self.open_edit_backends,
         }
         self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
 
@@ -346,6 +351,16 @@ class TaskBrowser:
         # Connect requester signals to TreeModels
         self.req.connect("task-added", self.on_task_added) 
         self.req.connect("task-deleted", self.on_task_deleted)
+        #this causes changed be shouwn only on save
+        #tree = self.task_tree_model.get_tree()
+        #tree.connect("task-added-inview", self.on_task_added) 
+        #tree.connect("task-deleted-inview", self.on_task_deleted)
+        b_signals = BackendSignals()
+        b_signals.connect(b_signals.BACKEND_FAILED, self.on_backend_failed)
+        b_signals.connect(b_signals.BACKEND_STATE_TOGGLED, \
+                          self.remove_backend_infobar)
+        b_signals.connect(b_signals.INTERACTION_REQUESTED, \
+                          self.on_backend_needing_interaction)
         
         # Connect signals from models
         self.task_modelsort.connect("row-has-child-toggled",\
@@ -425,9 +440,12 @@ class TaskBrowser:
 
 ### HELPER FUNCTIONS ########################################################
 
-    def open_preferences(self,widget):
+    def open_preferences(self, widget):
         self.vmanager.open_preferences(self.priv)
         
+    def open_edit_backends(self, widget):
+        self.vmanager.open_edit_backends()
+
     def quit(self,widget=None):
         self.vmanager.close_browser()
         
@@ -522,7 +540,7 @@ class TaskBrowser:
                     col_id,\
                     self.priv["tasklist"]["sort_order"])
             except:
-                print "Invalid configuration for sorting columns"
+                Log.error("Invalid configuration for sorting columns")
 
         if "view" in self.config["browser"]:
             view = self.config["browser"]["view"]
@@ -1516,3 +1534,82 @@ class TaskBrowser:
         """ Returns true if window is the currently active window """
         return self.window.get_property("is-active")
 
+## BACKENDS RELATED METHODS ##################################################
+
+    def on_backend_failed(self, sender, backend_id, error_code):
+        '''
+        Signal callback.
+        When a backend fails to work, loads a gtk.Infobar to alert the user
+
+        @param sender: not used, only here for signal compatibility
+        @param backend_id: the id of the failing backend 
+        @param error_code: a backend error code, as specified in BackendsSignals
+        '''
+        infobar = self._new_infobar(backend_id)
+        infobar.set_error_code(error_code)
+
+    def on_backend_needing_interaction(self, sender, backend_id, description, \
+                                       interaction_type, callback):
+        '''
+        Signal callback.
+        When a backend needs some kind of feedback from the user,
+        loads a gtk.Infobar to alert the user.
+        This is used, for example, to request confirmation after authenticating
+        via OAuth.
+
+        @param sender: not used, only here for signal compatibility
+        @param backend_id: the id of the failing backend 
+        @param description: a string describing the interaction needed
+        @param interaction_type: a string describing the type of interaction
+                                 (yes/no, only confirm, ok/cancel...)
+        @param callback: the function to call when the user provides the
+                         feedback
+        '''
+        infobar = self._new_infobar(backend_id)
+        infobar.set_interaction_request(description, interaction_type, callback)
+
+
+    def __remove_backend_infobar(self, child, backend_id):
+        '''
+        Helper function to remove an gtk.Infobar related to a backend
+
+        @param child: a gtk.Infobar
+        @param backend_id: the id of the backend which gtk.Infobar should be
+                            removed.
+        '''
+        if isinstance(child, CustomInfoBar) and\
+            child.get_backend_id() == backend_id:
+            if self.vbox_toolbars:
+                self.vbox_toolbars.remove(child)
+
+    def remove_backend_infobar(self, sender, backend_id):
+        '''
+        Signal callback.
+        Deletes the gtk.Infobars related to a backend
+
+        @param sender: not used, only here for signal compatibility
+        @param backend_id: the id of the backend which gtk.Infobar should be
+                            removed.
+        '''
+        backend = self.req.get_backend(backend_id)
+        if not backend or (backend and backend.is_enabled()):
+            #remove old infobar related to backend_id, if any
+            if self.vbox_toolbars:
+                self.vbox_toolbars.foreach(self.__remove_backend_infobar, \
+                                       backend_id)
+
+    def _new_infobar(self, backend_id):
+        '''
+        Helper function to create a new infobar for a backend
+        
+        @param backend_id: the backend for which we're creating the infobar
+        @returns gtk.Infobar: the created infobar
+        '''
+        #remove old infobar related to backend_id, if any
+        if not self.vbox_toolbars:
+            return
+        self.vbox_toolbars.foreach(self.__remove_backend_infobar, backend_id)
+        #add a new one
+        infobar = CustomInfoBar(self.req, self, self.vmanager, backend_id)
+        self.vbox_toolbars.pack_start(infobar, True)
+        return infobar

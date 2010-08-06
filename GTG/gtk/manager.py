@@ -39,10 +39,11 @@ from GTG.tools               import clipboard
 from GTG.core.plugins.engine import PluginEngine
 from GTG.core.plugins.api    import PluginAPI
 from GTG.tools.logger        import Log
+from GTG.gtk.backends_dialog import BackendsDialog
 
 
 
-class Manager:
+class Manager(object):
     
 
     ############## init #####################################################
@@ -80,6 +81,7 @@ class Manager:
         #Preferences and Backends windows
         # Initialize  dialogs
         self.preferences_dialog = None
+        self.edit_backends_dialog = None
         
         #DBus
         DBusTaskWrapper(self.req, self)
@@ -196,6 +198,16 @@ class Manager:
             
 ################ Others dialog ############################################
 
+    def open_edit_backends(self, sender = None, backend_id = None):
+        if not self.edit_backends_dialog:
+            self.edit_backends_dialog = BackendsDialog(self.req)
+        self.edit_backends_dialog.activate()
+        if backend_id != None:
+            self.edit_backends_dialog.show_config_for_backend(backend_id)
+
+    def configure_backend(self, backend_id):
+        self.open_edit_backends(None, backend_id)
+
     def open_preferences(self, config_priv, sender=None):
         if not hasattr(self, "preferences"):
             self.preferences = PreferencesDialog(self.pengine, self.p_apis, \
@@ -211,14 +223,18 @@ class Manager:
                     self.close_task(t)
             
 ### MAIN ###################################################################
-    def main(self, once_thru=False):
+
+    def main(self, once_thru = False,  uri_list = []):
+        for uri in uri_list:
+            if uri.startswith("gtg://"):
+                self.open_task(uri[6:])
+        print "MAIN"
         gobject.threads_init()
         if once_thru:
             gtk.main_iteration()
         else:
             gtk.main()
         return 0
-        
         
     def quit(self,sender=None):
         gtk.main_quit()
