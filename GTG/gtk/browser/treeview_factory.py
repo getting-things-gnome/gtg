@@ -110,20 +110,7 @@ class TreeviewFactory():
         return node.get_id()
         
     def get_tag_count(self,node):
-        tasktree = self.req.get_main_tasks_tree()
-        sp_id = node.get_attribute("special")
-        if sp_id == "all":
-            toreturn = tasktree.get_n_nodes(\
-                    withfilters=['no_disabled_tag'],include_transparent=True)
-        elif sp_id == "notag":
-            toreturn = tasktree.get_n_nodes(\
-                            withfilters=['notag'],include_transparent=True)
-        elif sp_id == "sep" :
-            toreturn = 0
-        else:
-            tname = node.get_name()
-            toreturn = tasktree.get_n_nodes(\
-                                withfilters=[tname],include_transparent=True)
+        toreturn = node.get_active_tasks_count()
         return "<span color='%s'>%s</span>" %(self.unactive_color,toreturn)
 
     ############################################

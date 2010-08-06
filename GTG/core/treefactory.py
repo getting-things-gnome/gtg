@@ -22,6 +22,11 @@ from GTG.core.task               import Task
 
 class TreeFactory:
 
+    def __init__(self):
+        #Keep the tree in memory jus in case we have to use it for filters.
+        self.tasktree = None
+        self.tagtree = None
+
     def get_tasks_tree(self):
         '''This create a liblarch tree suitable for tasks, 
         including default filters
@@ -49,8 +54,7 @@ class TreeFactory:
             else:
                 param = None
             tasktree.add_filter(f,filt[0],param)
-        
-        
+        self.tasktree = tasktree
         return tasktree
     
     
@@ -59,17 +63,22 @@ class TreeFactory:
         including the all_tags_tag and notag_tag.
         '''
         tagtree = Tree()
+        self.tagtree = tagtree
         return tagtree
     
     ################# Tag Filters ##########################################
     
-    def tag_filter(self,node,parameters):
-        #FIXME: we should take tag children into account
-        tname = parameters['tag']
-        return node.has_tags([tname])
+    #TODO : filter to display only tags with active tasks
         
         
     ################# Task Filters #########################################
+    #That one is used to filters tag. Is it built dynamically each times
+    #a tag is added to the tagstore
+    def tag_filter(self,node,parameters):
+        #FIXME: we should take tag children into account
+        #Bryce : use self.tagtree to find children/parents of tags
+        tname = parameters['tag']
+        return node.has_tags([tname])
     
     def notag(self,task,parameters=None):
         """ Filter of tasks without tags """

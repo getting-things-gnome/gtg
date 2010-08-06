@@ -84,10 +84,9 @@ class TaskBrowser:
         #treeviews handlers
         self.vtree_panes = {}
         self.tv_factory = TreeviewFactory(self.req,self.config)
-        self.tasks_tree = {}
-        self.tasks_tree['active'] = self.req.get_main_tasks_tree()
+        self.activetree = self.req.get_tasks_tree(name='active')
         self.vtree_panes['active'] = \
-                self.tv_factory.active_tasks_treeview(self.tasks_tree['active'])
+                self.tv_factory.active_tasks_treeview(self.activetree)
 
 
         ### YOU CAN DEFINE YOUR INTERNAL MECHANICS VARIABLES BELOW
@@ -100,7 +99,7 @@ class TaskBrowser:
 
         # Set up models
         # Active Tasks
-        self.tasks_tree['active'].apply_filter('active',refresh=False)
+        self.activetree.apply_filter('active',refresh=False)
         # Tags
         self.tagtree = self.tv_factory.tags_treeview(self.req.get_tag_tree())
 
@@ -524,14 +523,14 @@ class TaskBrowser:
         self.toggle_workview.set_active(tobeset)
         self.priv['workview'] = tobeset
         if tobeset:
-            self.tasks_tree['active'].apply_filter('workview')
+            self.activetree.apply_filter('workview')
         else:
-            self.tasks_tree['active'].unapply_filter('workview')
+            self.activetree.unapply_filter('workview')
         self.vtree_panes['active'].set_col_visible('startdate',not tobeset)
         self._update_window_title()
 
     def _update_window_title(self):
-        count = self.tasks_tree['active'].get_n_nodes()
+        count = self.activetree.get_n_nodes()
         #Set the title of the window:
         parenthesis = ""
         if count == 0:
@@ -805,11 +804,11 @@ class TaskBrowser:
             
     def show_closed_pane(self):
         # The done/dismissed taks treeview
-        if not self.tasks_tree.has_key('closed'):
-            self.tasks_tree['closed'] = self.req.get_custom_tasks_tree()
+        if not self.vtree_panes.has_key('closed'):
+            closedtree = self.req.get_tasks_tree(name='closed')
             self.vtree_panes['closed'] = \
-                        self.tv_factory.closed_tasks_treeview(self.tasks_tree['closed'])
-            self.tasks_tree['closed'].apply_filter('closed')
+                        self.tv_factory.closed_tasks_treeview(closedtree)
+            closedtree.apply_filter('closed')
                     # Closed tasks TreeView
             self.vtree_panes['closed'].connect('row-activated',\
                 self.on_edit_done_task)
@@ -838,8 +837,6 @@ class TaskBrowser:
         if self.vtree_panes.has_key('closed'):
             self.vtree_panes['closed'].set_model(None)
             del self.vtree_panes['closed']
-        if self.tasks_tree.has_key('closed'):
-            del self.tasks_tree['closed']
         self.remove_page_from_accessory_notebook(self.closed_pane)
         self.builder.get_object("view_closed").set_active(False)
 
@@ -1144,12 +1141,14 @@ class TaskBrowser:
             else:
                 newtag = ['no_disabled_tag']
         #FIXME:handle multiple tags case
-        for t in self.tasks_tree:
+        #We apply filters for every visible ViewTree
+        for t in self.vtree_panes:
             #1st we reset the tags filter
-            self.tasks_tree[t].reset_filters(refresh=False,transparent_only=True)
+            vtree = self.req.get_tasks_tree(name=t)
+            vtree.reset_filters(refresh=False,transparent_only=True)
             #then applying the tag
             if len(newtag) > 0:
-                self.tasks_tree[t].apply_filter(newtag[0])
+                vtree.apply_filter(newtag[0])
                         
 #        self.ctask_tv.get_selection().unselect_all()
         self._update_window_title()

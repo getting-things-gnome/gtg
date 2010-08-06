@@ -36,7 +36,10 @@ class Tree():
     def __init__(self):
         self.__tree = MainTree()
         self.__fbank = FiltersBank(self.__tree)
-        self.mainview = ViewTree(self.__tree,self.__fbank,static=True)
+        self.views = {}
+        #main is a reserved name for a viewtree. It is the complete viewtree,
+        #without anyfilter
+        self.views['main'] = ViewTree(self.__tree,self.__fbank,static=True)
 
     ###### nodes handling ######
     def get_node(self,nid):
@@ -84,10 +87,23 @@ class Tree():
     ############ Views ############
     #The main view is the bare tree, without any filters on it.
     def get_main_view(self):
-        return self.mainview
+        return self.views['main']
         
-    def get_viewtree(self,refresh=True):
-        vt = ViewTree(self.__tree,self.__fbank,refresh=refresh)
+    def get_viewtree(self,name=None,refresh=True):
+        '''This returns a viewtree.
+        If name is given and a view of that name already exists,
+        that existing view is returned. Else, a view with that name
+        is created. If name is None, the view is not remembered.
+        If refresh is False, the view is not initialized (meaning that it 
+        will probably not reflect the Tree. This is useful as an optimization
+        if you plan to apply filter.
+        '''
+        if name and self.views.has_key(name):
+            vt = self.views[name]
+        else:
+            vt = ViewTree(self.__tree,self.__fbank,refresh=refresh)
+            if name:
+                self.views[name] = vt
         return vt
 
     ########### Filters bank ######
@@ -149,6 +165,8 @@ class ViewTree(gobject.GObject):
         #FilteredTree layer.
         if static:
             self.__ft = maintree
+            #Needed for the get_n_nodes with filters
+            self.__ft2 = FilteredTree(maintree, filters_bank, refresh = refresh)
             self.__ft.connect('node-added', \
                         functools.partial(self.__emit, 'node-added'))
             self.__ft.connect('node-deleted', \
@@ -157,6 +175,7 @@ class ViewTree(gobject.GObject):
                         functools.partial(self.__emit, 'node-modified'))
         else:
             self.__ft = FilteredTree(maintree, filters_bank, refresh = refresh)
+            self.__ft2 = self.__ft
             self.__ft.connect('node-added-inview', \
                         functools.partial(self.__emit, 'node-added-inview'))
             self.__ft.connect('node-deleted-inview', \
@@ -203,14 +222,14 @@ class ViewTree(gobject.GObject):
         If include_transparent = False, we only take into account 
         the applied filters that doesn't have the transparent parameters.
         """
-        if self.static and len(withfilters) > 0:
-            raise Exception("WARNING: filters cannot be applied" +\
-                            "to a static tree\n"+\
-                     "the filter parameter of get_n_nodes will be dismissed")
-        if self.static:
+#        if self.static and len(withfilters) > 0:
+#            raise Exception("WARNING: filters cannot be applied" +\
+#                            "to a static tree\n"+\
+#                     "the filter parameter of get_n_nodes will be dismissed")
+        if self.static and len(withfilters) == 0:
             return len(self.__maintree.get_all_nodes())
         else:
-            return self.__ft.get_n_nodes(withfilters=withfilters,\
+            return self.__ft2.get_n_nodes(withfilters=withfilters,\
                                     include_transparent=include_transparent)
 
     def get_node_for_path(self, path):

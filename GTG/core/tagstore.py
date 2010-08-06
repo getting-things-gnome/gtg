@@ -236,7 +236,6 @@ class Tag(TreeNode):
         self._attributes = {'name': self._name}
         self._save = None
         #list of tasks associated with this tag
-        self.tasks = []
 
     def get_name(self):
         """Return the name of the tag."""
@@ -316,26 +315,33 @@ class Tag(TreeNode):
         return attributes
 
     ### TASK relation ####      
-    def add_task(self, tid):
-        if tid not in self.tasks:
-            self.tasks.append(tid)      
-
-    def remove_task(self, tid):
-        if tid in self.tasks:
-            self.tasks.remove(tid)          
-            self.req._tag_modified(self.get_name())
 
     def get_tasks(self):
-        #return a copy of the list
-        toreturn = self.tasks[:]
-        tmplist = []
-        for c in self.get_children():
-            node = self.tree.get_node(c)
-            tmplist.extend(node.get_tasks())
-        for ti in tmplist:
-            if ti not in toreturn:
-                toreturn.append(ti)
-        return toreturn 
+        #TODO
+       print "Tag.get_tasks should be reimplemented using a ViewTree"
+       
+    def get_active_tasks_count(self):
+        return self.__get_count('active')
+        
+    def get_total_tasks_count(self):
+        return self.__get_count('main')
+        
+    def __get_count(self,tasktreename):
+        tasktree = self.req.get_tasks_tree(name=tasktreename)
+        sp_id = self.get_attribute("special")
+        if sp_id == "all":
+            toreturn = tasktree.get_n_nodes(\
+                    withfilters=['no_disabled_tag'],include_transparent=True)
+        elif sp_id == "notag":
+            toreturn = tasktree.get_n_nodes(\
+                            withfilters=['notag'],include_transparent=True)
+        elif sp_id == "sep" :
+            toreturn = 0
+        else:
+            tname = self.get_name()
+            toreturn = tasktree.get_n_nodes(\
+                                withfilters=[tname],include_transparent=True)
+        return toreturn
         
     #is it useful to keep the tag in the tagstore.
     #if no attributes and no tasks, it is not useful.
@@ -343,13 +349,9 @@ class Tag(TreeNode):
         attr = self.get_all_attributes(butname = True, withparent = True)
         return (len(attr) <= 0 and not self.is_used())
     def is_used(self):
-        return len(self.tasks) > 0
+        return self.get_total_tasks_count() > 0
     def is_actively_used(self):
-        toreturn = False
-        for task in self.tasks:
-            if self.req.get_task(task).get_status() == "Active":
-                toreturn = True
-        return toreturn
+        return self.get_active_tasks_count() > 0
 
     def __str__(self):
         return "Tag: %s" % self.get_name()
