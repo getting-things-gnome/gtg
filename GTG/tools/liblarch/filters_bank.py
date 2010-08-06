@@ -280,11 +280,12 @@ class FiltersBank:
             if filter_name.startswith('!'):
                 negate = True
                 filter_name = filter_name[1:]
-            if filter_name.startswith('@'):
-                filter_obj = SimpleTagFilter(filter_name,self.tree)
-                param = {}
-                param['transparent'] = True
-                filter_obj.set_parameters(param)
+#This code was before the liblarch migration.
+#            if filter_name.startswith('@'):
+#                filter_obj = SimpleTagFilter(filter_name,self.tree)
+#                param = {}
+#                param['transparent'] = True
+#                filter_obj.set_parameters(param)
             else:
                 filter_obj = Filter(filter_func,self.tree)
                 filter_obj.set_parameters(parameters)
