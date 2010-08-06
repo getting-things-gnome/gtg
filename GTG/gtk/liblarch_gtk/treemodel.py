@@ -106,7 +106,7 @@ class TreeModel(gtk.GenericTreeModel):
         if len(self.value_list) <= n:
             raise ValueError('The tree model doesnt have enough columns!')
         return self.value_list[n][0]
-        
+    
     def on_get_value(self, rowref, column):
         if not rowref:
             raise ValueError('Asking the value of an empty rowref')

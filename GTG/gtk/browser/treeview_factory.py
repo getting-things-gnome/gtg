@@ -112,6 +112,9 @@ class TreeviewFactory():
     def get_tag_count(self,node):
         toreturn = node.get_active_tasks_count()
         return "<span color='%s'>%s</span>" %(self.unactive_color,toreturn)
+        
+    def is_tag_separator_filter(self,tag):
+        return tag.get_attribute('special') == 'sep'
 
     ############################################
     ######## The Factory #######################
@@ -278,6 +281,8 @@ class TreeviewFactory():
         # Global treeview properties
         treeview.set_property("enable-tree-lines", False)
         treeview.set_rules_hint(False)
+        treeview.set_row_separator_func(self.is_tag_separator_filter)
+        treeview.set_headers_visible(False)
         #Updating the unactive color (same for everyone)
         self.unactive_color = \
                         treeview.style.text[gtk.STATE_INSENSITIVE].to_string()

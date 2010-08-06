@@ -27,7 +27,9 @@ class TreeView(gtk.TreeView):
         self.columns = {}
         self.bg_color_func = None
         self.bg_color_column = None
+        self.separator_func = None
         
+        self.basetree = tree
         #We build the model
         self.treemodel = TreeModel(tree)
         self.order_of_col = {}
@@ -127,6 +129,21 @@ class TreeView(gtk.TreeView):
                 if value:
                     col = self.bg_color_func(value, bgcolor)
         cell.set_property("cell-background", col)
+        
+    def _separator_func(self, model, itera, user_data=None):
+        if itera and model.iter_is_valid(itera):
+            nid = model.get_value(itera, 0)
+            node = self.basetree.get_node(nid)
+            if self.separator_func:
+                return self.separator_func(node)
+            else:
+                return False
+        else:
+            return False
+            
+    def set_row_separator_func(self,func):
+        self.separator_func = func
+        gtk.TreeView.set_row_separator_func(self,self._separator_func)
         
     def get_selected_nodes(self):
         ''' Return the selected nodes ID'''
