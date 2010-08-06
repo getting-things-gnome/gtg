@@ -573,6 +573,8 @@ class FilteredTree(gobject.GObject):
             filt = self.fbank.get_filter(filter_name)
             if filt:
                 filt.set_parameters(parameters)
+            else:
+                raise ValueError("No filter of name %s in the bank") %filter_name
         if filter_name not in self.applied_filters:
             self.applied_filters.append(filter_name)
             if refresh:

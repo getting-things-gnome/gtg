@@ -105,13 +105,6 @@ class Requester(gobject.GObject):
         return self.__basetree.get_viewtree(name='active').is_displayed(task)
 
     ######### Filters bank #######################
-    # Get the filter object for a given name
-
-    def get_filter(self,filter_name):
-        #FIXME : remove that method
-        print "why do we need to get the filter %s ?" %filter_name
-        return self.__basetree.get_filter(filter_name)
-    
     # List, by name, all available filters
     def list_filters(self):
         return self.__basetree.list_filters()
@@ -205,21 +198,22 @@ class Requester(gobject.GObject):
     def get_tag(self, tagname):
         return self.ds.get_tag(tagname)
 
-    def get_all_tags(self):
-        """Return a list of every tag that was used.
-        We don't return tag that were used only on permanently deleted tasks.
+#    def get_all_tags(self):
+#        #FIXME : we should use a viewtree here
+#        """Return a list of every tag that was used.
+#        We don't return tag that were used only on permanently deleted tasks.
 
-        @return: A list of tags used by a open or closed task.
-        """
-        l = []
-        view = self.ds.get_tagstore().get_main_view()
-        for tname in view.get_all_nodes():
-            t = self.get_tag(tname)
-            if t.is_used() and t not in l:
-                l.append(t)
-        l.sort(cmp=lambda x, y: cmp(x.get_name().lower(),\
-            y.get_name().lower()))
-        return l
+#        @return: A list of tags used by a open or closed task.
+#        """
+#        l = []
+#        view = self.ds.get_tagstore().get_main_view()
+#        for tname in view.get_all_nodes():
+#            t = self.get_tag(tname)
+#            if t not in l:
+#                l.append(t)
+#        l.sort(cmp=lambda x, y: cmp(x.get_name().lower(),\
+#            y.get_name().lower()))
+#        return l
 
     def get_notag_tag(self):
         print "no tag not implemented"

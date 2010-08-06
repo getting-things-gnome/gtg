@@ -57,9 +57,9 @@ class DataStore(object):
         '''
         self.backends = {} #dictionary {backend_name_string: Backend instance}
         self.treefactory = TreeFactory()
-        self.open_tasks = self.treefactory.get_tasks_tree()
+        self.__tasks = self.treefactory.get_tasks_tree()
         self.requester = requester.Requester(self)
-        self.__tagstore = self.treefactory.get_tags_tree()
+        self.__tagstore = self.treefactory.get_tags_tree(self.requester)
         self._backend_signals = BackendSignals()
         self.mutex = threading.RLock()
         self.is_default_backend_loaded = False
@@ -92,7 +92,7 @@ class DataStore(object):
         Datastore
         @returns GTG.core.tree.Tree: a task tree (the main one)
         '''
-        return self.open_tasks
+        return self.__tasks
         
     ##########################################################################
     ### Tags functions
@@ -108,7 +108,7 @@ class DataStore(object):
             tag = Tag(tname, req=self.requester)
             self.__tagstore.add_node(tag)
             p = {'tag':tname,'transparent':True}
-            self.open_tasks.add_filter(tname,self.treefactory.tag_filter,parameters=p)
+            self.__tasks.add_filter(tname,self.treefactory.tag_filter,parameters=p)
             tag.set_save_callback(self.save)
             Log.debug("********* tag added %s *******" % tagname)
         else:
@@ -138,7 +138,7 @@ class DataStore(object):
         @param tid: Task ID to search for
         @return bool: True if the task is present
         '''
-        return self.open_tasks.has_node(tid)
+        return self.__tasks.has_node(tid)
 
     def get_task(self, tid):
         '''
@@ -149,7 +149,7 @@ class DataStore(object):
         or not
         '''
         if self.has_task(tid):
-            return self.open_tasks.get_node(tid)
+            return self.__tasks.get_node(tid)
         else:
             Log.debug("requested non-existent task")
             return None
@@ -172,7 +172,7 @@ class DataStore(object):
         @return: The task object that was created.
         """
         task = self.task_factory(str(uuid.uuid4()), True)
-        self.open_tasks.add_node(task)
+        self.__tasks.add_node(task)
         return task
         
     @synchronized
@@ -187,7 +187,7 @@ class DataStore(object):
         if self.has_task(task.get_id()):
             return False
         else:
-            self.open_tasks.add_node(task)
+            self.__tasks.add_node(task)
             task.set_loaded()
             if self.is_default_backend_loaded:
                 task.sync()

@@ -379,9 +379,9 @@ class TaskBrowser:
 
     def _init_tag_list(self):
         self.tag_list_model = gtk.ListStore(gobject.TYPE_STRING)
-        self.tag_list = self.req.get_all_tags()
+        self.tag_list = self.req.get_tag_tree().get_all_nodes()
         for i in self.tag_list:
-            self.tag_list_model.append([i.get_name()[1:]])
+            self.tag_list_model.append([i[1:]])
                
     def _init_tag_completion(self):
         #Initialize tag completion.

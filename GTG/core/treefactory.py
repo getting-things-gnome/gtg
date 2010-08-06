@@ -17,8 +17,11 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
+from GTG                         import _
 from GTG.tools.liblarch          import Tree
 from GTG.core.task               import Task
+from GTG.core.tagstore           import Tag
+from GTG.core         import CoreConfig
 
 class TreeFactory:
 
@@ -58,11 +61,41 @@ class TreeFactory:
         return tasktree
     
     
-    def get_tags_tree(self):
+    def get_tags_tree(self,req):
         '''This create a liblarch tree suitable for tags,
         including the all_tags_tag and notag_tag.
         '''
         tagtree = Tree()
+        
+        ### building the initial tags
+        # Build the "all tasks tag"
+        alltag = Tag(CoreConfig.ALLTASKS_TAG, req=req)
+        alltag.set_attribute("special","all")
+        alltag.set_attribute("label","<span weight='bold'>%s</span>"\
+                                             % _("All tasks"))
+        alltag.set_attribute("icon","gtg-tags-all")
+        alltag.set_attribute("order",0)
+        tagtree.add_node(alltag)
+        p = {'transparent':True}
+        self.tasktree.add_filter(CoreConfig.ALLTASKS_TAG,\
+                                    self.alltag,parameters=p)
+        # Build the "without tag tag"
+        notag_tag = Tag(CoreConfig.NOTAG_TAG,req=req)
+        notag_tag.set_attribute("special","notag")
+        notag_tag.set_attribute("label","<span weight='bold'>%s</span>"\
+                                             % _("Tasks with no tags"))
+        notag_tag.set_attribute("icon","gtg-tags-none")
+        notag_tag.set_attribute("order",1)
+        tagtree.add_node(notag_tag)
+        p = {'transparent':True}
+        self.tasktree.add_filter(CoreConfig.NOTAG_TAG,\
+                                    self.notag,parameters=p)
+        # Build the separator
+        sep_tag = Tag(CoreConfig.SEP_TAG,req=req)
+        sep_tag.set_attribute("special","sep")
+        sep_tag.set_attribute("order",2)
+        tagtree.add_node(sep_tag)
+        
         self.tagtree = tagtree
         return tagtree
     
@@ -79,6 +112,9 @@ class TreeFactory:
         #Bryce : use self.tagtree to find children/parents of tags
         tname = parameters['tag']
         return node.has_tags([tname])
+        
+    def alltag(self,task,parameters=None):
+        return True
     
     def notag(self,task,parameters=None):
         """ Filter of tasks without tags """
