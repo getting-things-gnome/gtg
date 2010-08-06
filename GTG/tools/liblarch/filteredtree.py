@@ -280,7 +280,7 @@ class FilteredTree(gobject.GObject):
                 path = (ind,)
                 toreturn.append(path)
             else:
-                raise Exception("%s has parents but is not in VR" %tid)
+                raise Exception("%s has no parent but is not in VR" %tid)
                 
 #            parents = self.node_parents(node)
 #            if len(parents) > 0:

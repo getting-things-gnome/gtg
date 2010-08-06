@@ -107,7 +107,7 @@ class TreeviewFactory():
         return [node]
     
     def tag_name(self,node):
-        return node.get_id()
+        return node.get_attribute('label')
         
     def get_tag_count(self,node):
         toreturn = node.get_active_tasks_count()
