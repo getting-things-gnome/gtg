@@ -26,6 +26,9 @@ from GTG.core.task import Task
 from GTG.gtk.browser.CellRendererTags import CellRendererTags
 from GTG.gtk.liblarch_gtk import TreeView
 from GTG.gtk import colors
+from GTG.tools.dates             import no_date,\
+                                        FuzzyDate, \
+                                        get_canonical_date
 
 class TreeviewFactory():
 
@@ -99,34 +102,69 @@ class TreeviewFactory():
         return node.get_closed_date().to_readable_string()
         
     def start_date_sorting(self,nid1,nid2):
-        t1 = self.__get_date(nid1,'start')
-        t2 = self.__get_date(nid2,'start')
-        sort = cmp(t2, t1)
+        sort = self.__date_comp(nid1,nid2,'start')
         return sort
         
     def due_date_sorting(self,nid1,nid2):
-        t1 = self.__get_date(nid1,'due')
-        t2 = self.__get_date(nid2,'due')
-        sort = cmp(t2, t1)
+        sort = self.__date_comp(nid1,nid2,'due')
         return sort
     
     def closed_date_sorting(self,nid1,nid2):
-        t1 = self.__get_date(nid1,'closed')
-        t2 = self.__get_date(nid2,'closed')
-        sort = cmp(t2, t1)
+        sort = self.__date_comp(nid1,nid2,'closed')
         return sort
         
-    def __get_date(self,nid,parameter):
-        toreturn = None
-        task = self.req.get_task(nid)
-        if task:
-            if parameter == 'start':
-                toreturn = task.get_start_date()
-            elif parameter == 'due':
-                toreturn == task.get_due_date()
-            elif parameter == 'closed':
-                toreturn == task.get_closed_date()
-        return toreturn
+        
+    def __date_comp(self,nid1,nid2,para):
+        
+        task1 = self.req.get_task(nid1)
+        task2 = self.req.get_task(nid2)
+        if task1 and task2:
+            if para == 'start':
+                t1 = task1.get_start_date()
+                t2 = task2.get_start_date()
+            elif para == 'due':
+                t1 == task1.get_due_date()
+                t2 == task2.get_due_date()
+            elif para == 'closed':
+                t1 == task1.get_closed_date()
+                t2 == task2.get_closed_date()
+            else:
+                raise ValueError('invalid date comparison parameter: %s')%para
+            sort = cmp(t2,t1)
+        else:
+            sort = 0
+        
+        def reverse_if_descending(s):
+            """Make a cmp() result relative to the top instead of following 
+               user-specified sort direction"""
+            if order == gtk.SORT_ASCENDING:
+                return s
+            else:
+                return -1 * s
+        
+        
+        if sort == 0:
+            # Put fuzzy dates below real dates
+            if isinstance(t1, FuzzyDate) and not isinstance(t2, FuzzyDate):
+                sort = reverse_if_descending(1)
+            elif isinstance(t2, FuzzyDate) and not isinstance(t1, FuzzyDate):
+                sort = reverse_if_descending(-1)
+        
+        if sort == 0: # Group tasks with the same tag together for visual cleanness 
+            t1_tags = task1.get_tags_name()
+            t1_tags.sort()
+            t2_tags = task2.get_tags_name()
+            t2_tags.sort()
+            sort = reverse_if_descending(cmp(t1_tags, t2_tags))
+            
+        if sort == 0:  # Break ties by sorting by title
+            t1_title = task1.get_title()
+            t2_title = task2.get_title()
+            t1_title = locale.strxfrm(t1_title)
+            t2_title = locale.strxfrm(t2_title)
+            sort = reverse_if_descending(cmp(t1_title, t2_title))
+        
+        return sort
         
     #############################
     #Functions for tags columns

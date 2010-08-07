@@ -40,7 +40,6 @@ from GTG.gtk.browser             import GnomeConfig
 from GTG.gtk.browser.treeview_factory import TreeviewFactory
 from GTG.tools                   import openurl
 from GTG.tools.dates             import no_date,\
-                                        FuzzyDate, \
                                         get_canonical_date
 from GTG.tools.logger            import Log
 #from GTG.tools                   import clipboard
@@ -545,57 +544,6 @@ class TaskBrowser:
     def get_tasktitle(self, tid):
         task = self.req.get_task(tid)
         return task.get_title()
-
-    def date_sort_func(self, model, iter1, iter2, user_data=None):
-        closed = (user_data == "closed")
-#        order = model.get_sort_column_id()[1]
-        order = self.task_modelsort.get_sort_column_id()[1]
-        task1 = model.get_value(iter1, tasktree.COL_OBJ)
-        task2 = model.get_value(iter2, tasktree.COL_OBJ)
-        if task1 and task2:
-            if closed:
-                t1 = task1.get_closed_date()
-                t2 = task2.get_closed_date()
-            else:
-                t1 = task1.get_due_date()
-                t2 = task2.get_due_date()
-            sort = cmp(t2, t1)
-        else:
-            sort = -1
-        
-        #sort = 0
-        
-        def reverse_if_descending(s):
-            """Make a cmp() result relative to the top instead of following 
-               user-specified sort direction"""
-            if order == gtk.SORT_ASCENDING:
-                return s
-            else:
-                return -1 * s
-        
-        
-        if sort == 0:
-            # Put fuzzy dates below real dates
-            if isinstance(t1, FuzzyDate) and not isinstance(t2, FuzzyDate):
-                sort = reverse_if_descending(1)
-            elif isinstance(t2, FuzzyDate) and not isinstance(t1, FuzzyDate):
-                sort = reverse_if_descending(-1)
-        
-        if sort == 0: # Group tasks with the same tag together for visual cleanness 
-            t1_tags = task1.get_tags_name()
-            t1_tags.sort()
-            t2_tags = task2.get_tags_name()
-            t2_tags.sort()
-            sort = reverse_if_descending(cmp(t1_tags, t2_tags))
-            
-        if sort == 0:  # Break ties by sorting by title
-            t1_title = task1.get_title()
-            t2_title = task2.get_title()
-            t1_title = locale.strxfrm(t1_title)
-            t2_title = locale.strxfrm(t2_title)
-            sort = reverse_if_descending(cmp(t1_title, t2_title))
-                
-        return sort
                 
     def tag_match_func(self, completion, key, iter, column):
         model = completion.get_model()
