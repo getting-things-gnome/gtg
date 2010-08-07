@@ -17,10 +17,30 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 import gtk
+import gobject
 
 from GTG.gtk.liblarch_gtk.treemodel import TreeModel
 
 class TreeView(gtk.TreeView):
+
+    __string_signal__ = (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str, ))
+    __gsignals__ = {'node-expanded' : __string_signal__, \
+                    'node-collapsed': __string_signal__, \
+                    }
+                    
+                    
+    def __emit(self,sender,iter,path,data=None):
+        #don't ask me why but it seems that iter is not valid.
+        #we will then retrieve another iter using the path
+        itera = self.treemodel.get_iter(path)
+        if self.treemodel.iter_is_valid(itera):
+            nid = self.treemodel.get_value(itera,0)
+            if data == 'expanded':
+                self.emit('node-expanded',nid)
+            elif data == 'collapsed':
+                self.emit('node-collapsed',nid)
+        else:
+            print "sending %s for invalid iter %s" %(data,path) 
 
     def __init__(self, tree, description):
         gtk.TreeView.__init__(self)
@@ -33,6 +53,8 @@ class TreeView(gtk.TreeView):
         #We build the model
         self.treemodel = TreeModel(tree)
         self.order_of_col = {}
+        self.connect('row-expanded',self.__emit,'expanded')
+        self.connect('row-collapsed',self.__emit,'collapsed')
         
         #Building a list of ordered columns
         for col_name in description:

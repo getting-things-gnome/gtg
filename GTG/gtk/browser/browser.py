@@ -315,10 +315,10 @@ class TaskBrowser:
             self.on_task_treeview_button_press_event)
         self.vtree_panes['active'].connect('key-press-event',\
             self.on_task_treeview_key_press_event)
-        self.vtree_panes['active'].connect('row-expanded',\
-            self.on_task_treeview_row_expanded)
-        self.vtree_panes['active'].connect('row-collapsed',\
-            self.on_task_treeview_row_collapsed)
+        self.vtree_panes['active'].connect('node-expanded',\
+            self.on_task_expanded)
+        self.vtree_panes['active'].connect('node-collapsed',\
+            self.on_task_collapsed)
 
         # Connect requester signals to TreeModels
         self.req.connect("task-added", self.on_task_added) 
@@ -848,22 +848,11 @@ class TaskBrowser:
         else:
             self.quickadd_pane.hide()
 
-    def on_task_child_toggled(self, model, path, iter):
-        tid = model.get_value(iter, 0)
-        if tid not in self.config['browser'].get("collapsed_tasks", []):
-            curiter = model.get_iter(path)
-            if model.iter_is_valid(curiter):
-                self.vtree_panes['active'].expand_row(path, False)
-        else:
-            self.vtree_panes['active'].collapse_row(path)
-
-    def on_task_treeview_row_expanded(self, treeview, iter, path):
-        tid = treeview.get_model().get_value(iter, 0)
+    def on_task_expanded(self, sender, tid):
         if tid in self.config['browser']["collapsed_tasks"]:
             self.config['browser']["collapsed_tasks"].remove(tid)
         
-    def on_task_treeview_row_collapsed(self, treeview, iter, path):
-        tid = treeview.get_model().get_value(iter, 0)
+    def on_task_collapsed(self, sender, tid):
         if tid not in self.config['browser'].get("collapsed_tasks",[]):
             self.config['browser']["collapsed_tasks"].append(tid)
 

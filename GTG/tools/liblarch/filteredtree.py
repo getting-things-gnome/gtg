@@ -700,13 +700,17 @@ class FilteredTree(gobject.GObject):
                 #we remove it
                 if curdis:
                     self.__remove_node(tid)
-                else:
+#                else:
+                    #We update a node not displayed and not to display !
+                    #There's nothing todo
                     #FIXME: we should not fail silently !
-                    if self.is_displayed(tid):
-                        paths = self.get_paths_for_node(tid)
-                    else:
-                        paths = None
-                    self.emit("node-deleted-inview", tid, paths)
+#                    if self.is_displayed(tid):
+#                        paths = self.get_paths_for_node(tid)
+#                        self.emit("node-deleted-inview", tid, paths)
+##                    else:
+#                        paths = None
+#                        print "we don't have path to delete for %s" %tid
+                    
 
 
     
