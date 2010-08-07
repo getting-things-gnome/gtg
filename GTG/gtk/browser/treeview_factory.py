@@ -373,6 +373,7 @@ class TreeviewFactory():
         #Updating the unactive color (same for everyone)
         self.unactive_color = \
                         treeview.style.text[gtk.STATE_INSENSITIVE].to_string()
+        treeview.set_sort_column('tagname')
         return treeview
         
         

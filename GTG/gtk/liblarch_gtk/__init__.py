@@ -142,6 +142,10 @@ class TreeView(gtk.TreeView):
         
     def set_col_resizable(self,col_name,resizable):
         self.columns[col_name][1].set_resizable(resizable)
+        
+    def set_sort_column(self,col_name):
+        if ENABLE_SORTING:
+            self.treemodel.set_sort_column_id(self.columns[col_name][0],0)
     
     def set_col_visible(self,col_name,visible):
         self.columns[col_name][1].set_visible(visible)
