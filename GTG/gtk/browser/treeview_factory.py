@@ -115,7 +115,10 @@ class TreeviewFactory():
         
         
     def __date_comp(self,nid1,nid2,para):
-        
+        '''This is a quite complex method to sort tasks by date,
+        handling fuzzy date and complex situation.
+        Return -1 if nid1 is before nid2, return 1 otherwise
+        '''
         task1 = self.req.get_task(nid1)
         task2 = self.req.get_task(nid2)
         if task1 and task2:
@@ -134,6 +137,7 @@ class TreeviewFactory():
         else:
             sort = 0
         
+        #local function
         def reverse_if_descending(s):
             """Make a cmp() result relative to the top instead of following 
                user-specified sort direction"""
@@ -141,8 +145,6 @@ class TreeviewFactory():
                 return s
             else:
                 return -1 * s
-        
-        
         if sort == 0:
             # Put fuzzy dates below real dates
             if isinstance(t1, FuzzyDate) and not isinstance(t2, FuzzyDate):
