@@ -181,28 +181,28 @@ class TreeModel(gtk.GenericTreeModel):
         else:
             return None
             
-    def add_task(self,tid,paths=None):
-        self.update_task(tid,paths=paths,data='add')
+    def add_task(self,tid,paths):
+        self.update_task(tid,paths,data='add')
 
-    def update_task(self, tid,paths=None,data=None):
+    def update_task(self, tid,paths,data=None):
 #        print "update task : %s %s" %(data,tid)
-        node_paths = self.tree.get_paths_for_node(tid)
-        for node_path in node_paths:
+        for node_path in paths:
+#            print "asking rowref for path %s" %str(node_path)
+            rowref = self.get_iter(node_path)
             if data == 'add':
-                print "asking rowref for path %s" %str(node_path)
-                rowref = self.get_iter(node_path)
+#                print "adding %s on path %s" %(tid,str(node_path))
                 self.row_inserted(node_path, rowref)
                 #Toggling the parent ( FIXME: this should be done
                 #on liblarch level !!!
-                if self.tree.node_has_parent(tid):
-                    for p in self.tree.node_parents(tid):
-                        self.update_task(p,data='parent_update')
+#                if self.tree.node_has_parent(tid):
+#                    for p in self.tree.node_parents(tid):
+#                        self.update_task(p,data='parent_update')
             else:
-                rowref = self.get_iter(node_path)
                 self.row_changed(node_path, rowref)
             if self.tree.node_has_child(tid):
+#                print "child toggling for %s %s" %(tid,str(node_path))
                 self.row_has_child_toggled(node_path, rowref)
-        if len(node_paths) == 0: 
+        if len(paths) == 0: 
             raise  ValueError("Error :! no path for node %s !" %tid)
                 
     def remove_task(self,tid,paths=None):

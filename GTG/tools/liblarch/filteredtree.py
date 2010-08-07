@@ -134,9 +134,10 @@ class FilteredTree():
     def set_callback(self,event,func):
         self.cllbcks[event] = func
         
-    def callback(self,event,tid,paths=None):
+    def callback(self,event,tid):
         func = self.cllbcks.get(event,None)
         if func:
+            paths = self.get_paths_for_node(tid)
             func(tid,paths)
 
     def __reset_cache(self):
@@ -755,6 +756,9 @@ class FilteredTree():
                     #Should be in displayed_nodes before updating the root
                     self.__root_update(tid,inroot)
                     self.callback("added", tid)
+                    for p in parents:
+                        if self.is_displayed(p):
+                            self.callback("modified", p)
                     #We added a new node so we can check with those waiting
                     lost_nodes = []
                     while len(self.node_to_add) > 0:
@@ -774,8 +778,7 @@ class FilteredTree():
                 isroot = self.__is_root(tid)
                 self.remove_count += 1
                 self.__nodes_count -= 1
-                paths = self.get_paths_for_node(tid)
-                self.callback('deleted',tid,paths)
+                self.callback('deleted',tid)
                 self.__root_update(tid,False)
                 self.displayed_nodes.remove(tid)
             if tid in self.counted_nodes:
