@@ -99,15 +99,34 @@ class TreeviewFactory():
         return node.get_closed_date().to_readable_string()
         
     def start_date_sorting(self,nid1,nid2):
-        task1 = self.req.get_task(nid1)
-        task2 = self.req.get_task(nid2)
-        if task1 and task2:
-            t1 = task1.get_start_date()
-            t2 = task2.get_start_date()
-            sort = cmp(t2, t1)
-        else:
-            sort = -1
+        t1 = self.__get_date(nid1,'start')
+        t2 = self.__get_date(nid2,'start')
+        sort = cmp(t2, t1)
         return sort
+        
+    def due_date_sorting(self,nid1,nid2):
+        t1 = self.__get_date(nid1,'due')
+        t2 = self.__get_date(nid2,'due')
+        sort = cmp(t2, t1)
+        return sort
+    
+    def closed_date_sorting(self,nid1,nid2):
+        t1 = self.__get_date(nid1,'closed')
+        t2 = self.__get_date(nid2,'closed')
+        sort = cmp(t2, t1)
+        return sort
+        
+    def __get_date(self,nid,parameter):
+        toreturn = None
+        task = self.req.get_task(nid)
+        if task:
+            if parameter == 'start':
+                toreturn = task.get_start_date()
+            elif parameter == 'due':
+                toreturn == task.get_due_date()
+            elif parameter == 'closed':
+                toreturn == task.get_closed_date()
+        return toreturn
         
     #############################
     #Functions for tags columns
@@ -204,6 +223,7 @@ class TreeviewFactory():
         col['resizable'] = False
         col['value'] = [str,self.task_duedate_column]
         col['order'] = 4
+        col['sorting_func'] = self.due_date_sorting
         desc[col_name] = col
 
         #Returning the treeview
@@ -224,6 +244,7 @@ class TreeviewFactory():
         col['resizable'] = False
         col['value'] = [str,self.task_cdate_column]
         col['order'] = 3
+        col['sorting_func'] = self.closed_date_sorting
         desc[col_name] = col
 
         #Returning the treeview
