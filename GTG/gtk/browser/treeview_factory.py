@@ -384,14 +384,3 @@ class TreeviewFactory():
         treeview.set_sort_column('tagname')
         return treeview
         
-        
-        #TODO
-        #This code was in the old tasktree and I'm not sure liblarch-gtk
-        #already implement those features 
-# Connect signals from models
-#        self.task_modelsort.connect("row-has-child-toggled",\
-#                                    self.on_task_child_toggled)
-# Set sorting order
-#        self.task_modelsort.set_sort_column_id(\
-#            tasktree.COL_DLEFT, gtk.SORT_ASCENDING)
-        

@@ -212,13 +212,3 @@ class TreeView(gtk.TreeView):
             #0 is the column of the tid
             ids = [ts.get_value(iter, 0) for iter in iters]
         return ids
-        
-#        #TODO
-#        self.task_modelsort.set_sort_func(\
-#            tasktree.COL_DDATE, self.date_sort_func)
-#        self.task_modelsort.set_sort_func(\
-#            tasktree.COL_DLEFT, self.date_sort_func)
-#        self.task_modelsort.connect("row-has-child-toggled",\
-#                                    self.on_task_child_toggled)
-#        self.task_modelsort.set_sort_column_id(\
-#            tasktree.COL_DLEFT, gtk.SORT_ASCENDING)

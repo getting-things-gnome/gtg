@@ -121,7 +121,6 @@ class TreeModel(gtk.GenericTreeModel):
 
     def on_get_iter(self, path):
         #We have to return None if there's no node on that path
-        iter = None
         nid = self.tree.get_node_for_path(path)
         if nid:
             rowref = self.__build_rowref(path)
