@@ -73,22 +73,21 @@ bottom to top, with no horizontal communication at all between views.
 
 """
 
-import gobject
 
 from GTG.tools.logger import Log
 
 COUNT_CACHING_ENABLED = True
 
-class FilteredTree(gobject.GObject):
+class FilteredTree():
 
     #Those are the three signals you want to catch if displaying
     #a filteredtree. The argument of all signals is the tid of the task
-    __gsignals__ = {'node-added-inview': (gobject.SIGNAL_RUN_FIRST, \
-                                          gobject.TYPE_NONE, (str, )),
-                    'node-deleted-inview': (gobject.SIGNAL_RUN_FIRST, \
-                                            gobject.TYPE_NONE, (str,gobject.TYPE_PYOBJECT, )),
-                    'node-modified-inview': (gobject.SIGNAL_RUN_FIRST, \
-                                            gobject.TYPE_NONE, (str, )),}
+#    __gsignals__ = {'node-added-inview': (gobject.SIGNAL_RUN_FIRST, \
+#                                          gobject.TYPE_NONE, (str, )),
+#                    'node-deleted-inview': (gobject.SIGNAL_RUN_FIRST, \
+#                                            gobject.TYPE_NONE, (str,gobject.TYPE_PYOBJECT, )),
+#                    'node-modified-inview': (gobject.SIGNAL_RUN_FIRST, \
+#                                            gobject.TYPE_NONE, (str, )),}
 
     def __init__(self,tree,filtersbank,refresh=True):
         """
@@ -98,8 +97,8 @@ class FilteredTree(gobject.GObject):
         @param maintree: Whether this tree is the main tree.  The requester
         must be used to change filters against the main tree.
         """
-        gobject.GObject.__init__(self)
         self.applied_filters = []
+        self.cllbcks = {}
         self.tree = tree
         self.fbank = filtersbank
         self.update_count = 0
@@ -129,6 +128,16 @@ class FilteredTree(gobject.GObject):
         self.tree.connect("node-added", self.__task_added)
         self.tree.connect("node-modified", self.__task_modified)
         self.tree.connect("node-deleted", self.__task_deleted)
+    
+    
+    #those callbacks are called instead of signals.
+    def set_callback(self,event,func):
+        self.cllbcks[event] = func
+        
+    def callback(self,event,tid,paths=None):
+        func = self.cllbcks.get(event,None)
+        if func:
+            func(tid,paths)
 
     def __reset_cache(self):
         self.path_for_node_cache = {}
@@ -687,7 +696,7 @@ class FilteredTree(gobject.GObject):
                 else:
                     self.__root_update(tid,inroot)
                     self.update_count += 1
-                    self.emit("node-modified-inview", tid)
+                    self.callback("modified", tid)
                     #I don't remember why we have to update the children.
                     if not self.flat:
                         node = self.get_node(tid)
@@ -745,7 +754,7 @@ class FilteredTree(gobject.GObject):
                         self.node_to_add.remove(tid)
                     #Should be in displayed_nodes before updating the root
                     self.__root_update(tid,inroot)
-                    self.emit("node-added-inview", tid)
+                    self.callback("added", tid)
                     #We added a new node so we can check with those waiting
                     lost_nodes = []
                     while len(self.node_to_add) > 0:
@@ -766,7 +775,7 @@ class FilteredTree(gobject.GObject):
                 self.remove_count += 1
                 self.__nodes_count -= 1
                 paths = self.get_paths_for_node(tid)
-                self.emit('node-deleted-inview',tid,paths)
+                self.callback('deleted',tid,paths)
                 self.__root_update(tid,False)
                 self.displayed_nodes.remove(tid)
             if tid in self.counted_nodes:

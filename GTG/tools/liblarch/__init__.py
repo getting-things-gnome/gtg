@@ -176,17 +176,17 @@ class ViewTree(gobject.GObject):
         else:
             self.__ft = FilteredTree(maintree, filters_bank, refresh = refresh)
             self.__ft2 = self.__ft
-            self.__ft.connect('node-added-inview', \
+            self.__ft.set_callback('added', \
                         functools.partial(self.__emit, 'node-added-inview'))
-            self.__ft.connect('node-deleted-inview', \
+            self.__ft.set_callback('deleted', \
                         self.__emit_del)
-            self.__ft.connect('node-modified-inview', \
+            self.__ft.set_callback('modified', \
                         functools.partial(self.__emit, 'node-modified-inview'))
             
-    def __emit(self, signal_name, sender, tid):
+    def __emit(self, signal_name, tid,paths):
         self.emit(signal_name, tid)
             
-    def __emit_del(self,sender,tid,data):
+    def __emit_del(self,tid,data):
         self.emit('node-deleted-inview',tid,data)
 
     #only by commodities
