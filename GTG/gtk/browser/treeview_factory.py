@@ -282,6 +282,7 @@ class TreeviewFactory():
 
         #Returning the treeview
         treeview = self.build_task_treeview(tree,desc)
+        treeview.set_sort_column('duedate')
         return treeview
         
     def closed_tasks_treeview(self,tree):
@@ -303,6 +304,7 @@ class TreeviewFactory():
 
         #Returning the treeview
         treeview = self.build_task_treeview(tree,desc)
+        treeview.set_sort_column('closeddate')
         return treeview
         
     
