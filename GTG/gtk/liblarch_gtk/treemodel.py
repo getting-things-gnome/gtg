@@ -165,7 +165,12 @@ class TreeModel(gtk.GenericTreeModel):
         return self.tree.node_n_children(nid)
 
     def on_iter_nth_child(self, rowref, n):
-        nid = self.__get_nid_from_rowref(rowref)
+        if rowref:
+            nid = self.__get_nid_from_rowref(rowref)
+        else:
+            #if rowref == None, we use the root
+            nid = None
+            rowref = ()
         cid = self.tree.node_nth_child(nid,n)
         return rowref + (cid,)
 
