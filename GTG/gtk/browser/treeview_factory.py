@@ -114,6 +114,8 @@ class TreeviewFactory():
         sort = self.__date_comp(task1,task2,'closed')
         return sort
         
+    def title_sorting(self,task1,task2,order):
+        return cmp(task1.get_title(),task2.get_title())
         
     def __date_comp(self,task1,task2,para,order):
         '''This is a quite complex method to sort tasks by date,
@@ -324,6 +326,7 @@ class TreeviewFactory():
         col['value'] = [str,self.task_title_column]
         col['visible'] = False
         col['order'] = 0
+        col['sorting_func'] = self.title_sorting
         desc[col_name] = col
         
         # "tags" column (no title)
