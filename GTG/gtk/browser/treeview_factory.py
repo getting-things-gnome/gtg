@@ -20,6 +20,7 @@ import gtk
 import gobject
 import pango
 import xml.sax.saxutils as saxutils
+import locale
 
 from GTG     import _
 from GTG.core.task import Task
@@ -101,36 +102,34 @@ class TreeviewFactory():
     def task_cdate_column(self,node):
         return node.get_closed_date().to_readable_string()
         
-    def start_date_sorting(self,nid1,nid2):
-        sort = self.__date_comp(nid1,nid2,'start')
+    def start_date_sorting(self,task1,task2):
+        sort = self.__date_comp(task1,task2,'start')
         return sort
         
-    def due_date_sorting(self,nid1,nid2):
-        sort = self.__date_comp(nid1,nid2,'due')
+    def due_date_sorting(self,task1,task2):
+        sort = self.__date_comp(task1,task2,'due')
         return sort
     
-    def closed_date_sorting(self,nid1,nid2):
-        sort = self.__date_comp(nid1,nid2,'closed')
+    def closed_date_sorting(self,task1,task2):
+        sort = self.__date_comp(task1,task2,'closed')
         return sort
         
         
-    def __date_comp(self,nid1,nid2,para):
+    def __date_comp(self,task1,task2,para):
         '''This is a quite complex method to sort tasks by date,
         handling fuzzy date and complex situation.
         Return -1 if nid1 is before nid2, return 1 otherwise
         '''
-        task1 = self.req.get_task(nid1)
-        task2 = self.req.get_task(nid2)
         if task1 and task2:
             if para == 'start':
                 t1 = task1.get_start_date()
                 t2 = task2.get_start_date()
             elif para == 'due':
-                t1 == task1.get_due_date()
-                t2 == task2.get_due_date()
+                t1 = task1.get_due_date()
+                t2 = task2.get_due_date()
             elif para == 'closed':
-                t1 == task1.get_closed_date()
-                t2 == task2.get_closed_date()
+                t1 = task1.get_closed_date()
+                t2 = task2.get_closed_date()
             else:
                 raise ValueError('invalid date comparison parameter: %s')%para
             sort = cmp(t2,t1)
@@ -141,10 +140,8 @@ class TreeviewFactory():
         def reverse_if_descending(s):
             """Make a cmp() result relative to the top instead of following 
                user-specified sort direction"""
-            if order == gtk.SORT_ASCENDING:
-                return s
-            else:
-                return -1 * s
+            return s
+
         if sort == 0:
             # Put fuzzy dates below real dates
             if isinstance(t1, FuzzyDate) and not isinstance(t2, FuzzyDate):
@@ -185,6 +182,22 @@ class TreeviewFactory():
         
     def is_tag_separator_filter(self,tag):
         return tag.get_attribute('special') == 'sep'
+        
+    def tag_sorting(self,t1,t2):
+        t1_sp = t1.get_attribute("special")
+        t2_sp = t2.get_attribute("special")
+        t1_name = locale.strxfrm(t1.get_name())
+        t2_name = locale.strxfrm(t2.get_name())
+        if not t1_sp and not t2_sp:
+            return cmp(t1_name, t2_name)
+        elif not t1_sp and t2_sp:
+            return 1
+        elif t1_sp and not t2_sp:
+            return -1
+        else:
+            t1_order = t1.get_attribute("order")
+            t2_order = t2.get_attribute("order")
+            return cmp(t1_order, t2_order)
 
     ############################################
     ######## The Factory #######################
@@ -218,6 +231,7 @@ class TreeviewFactory():
         col['expandable'] = True
         col['new_column'] = False
         col['order'] = 2
+        col['sorting_func'] = self.tag_sorting
         desc[col_name] = col
         
         #Tag count
@@ -365,10 +379,6 @@ class TreeviewFactory():
         #TODO
         #This code was in the old tasktree and I'm not sure liblarch-gtk
         #already implement those features 
-#        self.task_modelsort.set_sort_func(\
-#            tasktree.COL_DDATE, self.date_sort_func)
-#        self.task_modelsort.set_sort_func(\
-#            tasktree.COL_DLEFT, self.date_sort_func)
 # Connect signals from models
 #        self.task_modelsort.connect("row-has-child-toggled",\
 #                                    self.on_task_child_toggled)

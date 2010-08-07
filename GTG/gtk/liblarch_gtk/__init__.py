@@ -120,10 +120,9 @@ class TreeView(gtk.TreeView):
                     sort_nbr = self.columns[desc['sorting']][0]
                     col.set_sort_column_id(sort_nbr)
                 if desc.has_key('sorting_func'):
-                    print "setting sort_func for col %s" %col_name
-                    col.set_sort_column_id(col_nbr)
                     self.treemodel.set_sort_func(col_nbr,self._sort_func,\
                                                         desc['sorting_func'])
+                    col.set_sort_column_id(col_nbr)
             if newcol:
                 self.append_column(col)
         
@@ -161,7 +160,9 @@ class TreeView(gtk.TreeView):
         nid1 = model.get_value(iter1, 0)
         nid2 = model.get_value(iter2, 0)
         if nid1 and nid2 and func:
-            sort = func(nid1,nid2)
+            node1 = self.basetree.get_node(nid1)
+            node2 = self.basetree.get_node(nid2)
+            sort = func(node1,node2)
         else:
             sort = -1
         return sort
