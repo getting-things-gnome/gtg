@@ -102,20 +102,20 @@ class TreeviewFactory():
     def task_cdate_column(self,node):
         return node.get_closed_date().to_readable_string()
         
-    def start_date_sorting(self,task1,task2):
-        sort = self.__date_comp(task1,task2,'start')
+    def start_date_sorting(self,task1,task2,order):
+        sort = self.__date_comp(task1,task2,'start',order)
         return sort
         
-    def due_date_sorting(self,task1,task2):
-        sort = self.__date_comp(task1,task2,'due')
+    def due_date_sorting(self,task1,task2,order):
+        sort = self.__date_comp(task1,task2,'due',order)
         return sort
     
-    def closed_date_sorting(self,task1,task2):
+    def closed_date_sorting(self,task1,task2,order):
         sort = self.__date_comp(task1,task2,'closed')
         return sort
         
         
-    def __date_comp(self,task1,task2,para):
+    def __date_comp(self,task1,task2,para,order):
         '''This is a quite complex method to sort tasks by date,
         handling fuzzy date and complex situation.
         Return -1 if nid1 is before nid2, return 1 otherwise
@@ -140,7 +140,10 @@ class TreeviewFactory():
         def reverse_if_descending(s):
             """Make a cmp() result relative to the top instead of following 
                user-specified sort direction"""
-            return s
+            if order == gtk.SORT_ASCENDING:
+                return s
+            else:
+                return -1*s
 
         if sort == 0:
             # Put fuzzy dates below real dates
@@ -183,7 +186,7 @@ class TreeviewFactory():
     def is_tag_separator_filter(self,tag):
         return tag.get_attribute('special') == 'sep'
         
-    def tag_sorting(self,t1,t2):
+    def tag_sorting(self,t1,t2,order):
         t1_sp = t1.get_attribute("special")
         t2_sp = t2.get_attribute("special")
         t1_name = locale.strxfrm(t1.get_name())

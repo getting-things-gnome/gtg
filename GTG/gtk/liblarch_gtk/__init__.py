@@ -164,9 +164,10 @@ class TreeView(gtk.TreeView):
         nid1 = model.get_value(iter1, 0)
         nid2 = model.get_value(iter2, 0)
         if nid1 and nid2 and func:
+            id,order = self.treemodel.get_sort_column_id()
             node1 = self.basetree.get_node(nid1)
             node2 = self.basetree.get_node(nid2)
-            sort = func(node1,node2)
+            sort = func(node1,node2,order)
         else:
             sort = -1
         return sort
