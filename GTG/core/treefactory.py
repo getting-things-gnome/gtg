@@ -17,6 +17,10 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
+from datetime import datetime
+
+from GTG.tools.dates  import date_today, no_date, Date
+
 from GTG                         import _
 from GTG.tools.liblarch          import Tree
 from GTG.core.task               import Task

@@ -98,6 +98,17 @@ class TreeviewFactory():
     def task_cdate_column(self,node):
         return node.get_closed_date().to_readable_string()
         
+    def start_date_sorting(self,nid1,nid2):
+        task1 = self.req.get_task(nid1)
+        task2 = self.req.get_task(nid2)
+        if task1 and task2:
+            t1 = task1.get_start_date()
+            t2 = task2.get_start_date()
+            sort = cmp(t2, t1)
+        else:
+            sort = -1
+        return sort
+        
     #############################
     #Functions for tags columns
     #############################
@@ -180,6 +191,7 @@ class TreeviewFactory():
         col['resizable'] = False
         col['value'] = [str,self.task_sdate_column]
         col['order'] = 3
+        col['sorting_func'] = self.start_date_sorting
         desc[col_name] = col
 
         # 'duedate' column

@@ -16,6 +16,11 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
+
+#useful for debugging purpose.
+#Disabling that will disable the TreeModelSort on top of our TreeModel
+ENABLE_SORTING = 1
+
 import gtk
 import gobject
 
@@ -51,7 +56,12 @@ class TreeView(gtk.TreeView):
         
         self.basetree = tree
         #We build the model
-        self.treemodel = TreeModel(tree)
+        self.basetreemodel = TreeModel(tree)
+        #We apply a treemodelsort on top of it
+        if ENABLE_SORTING:
+            self.treemodel = gtk.TreeModelSort(self.basetreemodel)
+        else:
+            self.treemodel = self.basetreemodel
         self.order_of_col = {}
         self.connect('row-expanded',self.__emit,'expanded')
         self.connect('row-collapsed',self.__emit,'collapsed')
@@ -70,7 +80,7 @@ class TreeView(gtk.TreeView):
         for col_nbr in sorted(self.order_of_col.keys()):
             col_name = self.order_of_col[col_nbr]
             desc = description[col_name]
-            col_nbr = self.treemodel.add_col(desc['value'])
+            col_nbr = self.basetreemodel.add_col(desc['value'])
             if desc.get('new_column',True):
                 col = gtk.TreeViewColumn()
                 newcol = True
@@ -105,16 +115,19 @@ class TreeView(gtk.TreeView):
             col.set_resizable(resizable)
             col.set_expand(expand)
             col.set_cell_data_func(renderer, self._celldatafunction)
-            if desc.has_key('sorting'):
-                sort_nbr = self.columns[desc['sorting']][0]
-                col.set_sort_column_id(sort_nbr)
+            if ENABLE_SORTING:
+                if desc.has_key('sorting'):
+                    sort_nbr = self.columns[desc['sorting']][0]
+                    col.set_sort_column_id(sort_nbr)
+                if desc.has_key('sorting_func'):
+                    print "setting sort_func for col %s" %col_name
+                    col.set_sort_column_id(col_nbr)
+                    self.treemodel.set_sort_func(col_nbr,self._sort_func,\
+                                                        desc['sorting_func'])
             if newcol:
                 self.append_column(col)
         
-        
-        #We apply a treemodelsort on top of it
-        self.modelsort = gtk.TreeModelSort(self.treemodel)
-        self.set_model(self.modelsort)
+        self.set_model(self.treemodel)
         self.show()
         
     def get_columns(self):
@@ -140,6 +153,18 @@ class TreeView(gtk.TreeView):
             self.bg_color_func = color_func
         else:
             raise ValueError("There is no colum %s to use to set color"%color_column)
+            
+    
+    #this is the GTK sorting function. It receive, as paramenter, a liblarch
+    #sorting function which compares nid.
+    def _sort_func(self, model, iter1, iter2, func=None):
+        nid1 = model.get_value(iter1, 0)
+        nid2 = model.get_value(iter2, 0)
+        if nid1 and nid2 and func:
+            sort = func(nid1,nid2)
+        else:
+            sort = -1
+        return sort
 
 
     def _celldatafunction(self, column, cell, model, iter):

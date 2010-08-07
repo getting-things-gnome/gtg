@@ -21,10 +21,6 @@
 filters_bank stores all of GTG's filters in centralized place
 """
 
-from datetime import datetime
-
-from GTG.tools.dates  import date_today, no_date, Date
-
 
 class Filter:
     def __init__(self,func,req):
