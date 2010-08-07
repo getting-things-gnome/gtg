@@ -754,6 +754,9 @@ class FilteredTree():
                     if tid in self.node_to_add:
                         self.node_to_add.remove(tid)
                     #Should be in displayed_nodes before updating the root
+                    #FIXME le root_update alors que le nœud n'est pas encore 
+                    #ajouté peut mener un enfant à l'erreur
+                    # has no parent but is not in VR
                     self.__root_update(tid,inroot)
                     self.callback("added", tid)
                     for p in parents:

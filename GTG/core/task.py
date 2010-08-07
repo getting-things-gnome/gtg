@@ -446,34 +446,35 @@ class Task(TreeNode):
 
     ### PARENTS ##############################################################
 
-    #Take a tid object as parameter
-    def add_parent(self, parent_tid):
-        #FIXME : the sync should be automatically done
-        #at the tree level. remove this function
-        Log.debug("adding parent %s to task %s" %(parent_tid, self.get_id()))
-        added = TreeNode.add_parent(self, parent_tid)
-        if added:
-            self.sync()
-            #the parent is handled by the sync
-#            self.req.get_task(parent_tid).sync()
-            return True
-        else:
-            return False
+#   Not necessary anymore with liblarch
+#    #Take a tid object as parameter
+#    def add_parent(self, parent_tid):
+#        #FIXME : the sync should be automatically done
+#        #at the tree level. remove this function
+#        Log.debug("adding parent %s to task %s" %(parent_tid, self.get_id()))
+#        added = TreeNode.add_parent(self, parent_tid)
+#        if added:
+#            self.sync()
+#            #the parent is handled by the sync
+##            self.req.get_task(parent_tid).sync()
+#            return True
+#        else:
+#            return False
 
-    #Take a tid as parameter
-    def remove_parent(self, tid):
-        #FIXME : the sync should be automatically done
-        #at the tree level. remove this function
-        TreeNode.remove_parent(self,tid)
-        self.sync()
-        parent = self.req.get_task(tid)
-        if parent:
-            parent.sync()
+#    #Take a tid as parameter
+#    def remove_parent(self, tid):
+#        #FIXME : the sync should be automatically done
+#        #at the tree level. remove this function
+#        TreeNode.remove_parent(self,tid)
+#        self.sync()
+#        parent = self.req.get_task(tid)
+#        if parent:
+#            parent.sync()
 
     #Return true is the task has parent
     #If tag is provided, return True only
     #if the parent has this particular tag
-    #FIXME : this function should be removed. Use the tree instead !
+    #FIXME : this function should be removed. Use the liblarch instead !
     def has_parents(self, tag=None):
         has_par = TreeNode.has_parent(self)
         #The "all tag" argument
@@ -504,28 +505,6 @@ class Task(TreeNode):
         Returns C{None} if there is no attribute matching C{att_name}.
         """
         return self.attributes.get((namespace, att_name), None)
-
-    #Method called before the task is deleted
-    #This method is called by the datastore and should not be called directly
-    #Use the requester
-    
-    #This should be handled on liblarch level
-#    def delete(self):
-#        #we issue a delete for all the children
-#        for task in self.get_subtasks():
-#            #I think it's superfluous (invernizzi)
-#            #task.remove_parent(self.get_id())
-#            task.delete()
-#        #we tell the parents we have to go
-#        for i in self.get_parents():
-#            task = self.req.get_task(i)
-#            task.remove_child(self.get_id())
-#        #we tell the tags about the deletion
-#        for tagname in self.tags:
-#            tag = self.req.get_tag(tagname)
-#            tag.remove_task(self.get_id())
-#        #then we signal the we are ready to be removed
-#        self.req._task_deleted(self.get_id())
 
     def sync(self):
         self._modified_update()
