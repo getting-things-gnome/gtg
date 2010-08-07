@@ -38,9 +38,9 @@ class TreeModel(gtk.GenericTreeModel):
         self.value_list.append([str,get_nodeid])
 #        self.iter_store = TaskIterStore(self.tree,self)
 #        self.tasks_to_add = []
-        self.tree.connect('node-added-inview',self.update_task,'add')
-        self.tree.connect('node-deleted-inview',self.remove_task)
-        self.tree.connect('node-modified-inview',self.update_task,'update')
+        self.tree.register_cllbck('node-added-inview',self.add_task)
+        self.tree.register_cllbck('node-deleted-inview',self.remove_task)
+        self.tree.register_cllbck('node-modified-inview',self.update_task)
 
 ### TREE MODEL HELPER FUNCTIONS ###############################################
 
@@ -180,19 +180,23 @@ class TreeModel(gtk.GenericTreeModel):
             return rowref[:-1]
         else:
             return None
+            
+    def add_task(self,tid,paths=None):
+        self.update_task(tid,paths=paths,data='add')
 
-    def update_task(self, sender, tid,data=None):
+    def update_task(self, tid,paths=None,data=None):
 #        print "update task : %s %s" %(data,tid)
         node_paths = self.tree.get_paths_for_node(tid)
         for node_path in node_paths:
             if data == 'add':
+                print "asking rowref for path %s" %str(node_path)
                 rowref = self.get_iter(node_path)
                 self.row_inserted(node_path, rowref)
                 #Toggling the parent ( FIXME: this should be done
                 #on liblarch level !!!
                 if self.tree.node_has_parent(tid):
                     for p in self.tree.node_parents(tid):
-                        self.update_task(None,p,data='parent_update')
+                        self.update_task(p,data='parent_update')
             else:
                 rowref = self.get_iter(node_path)
                 self.row_changed(node_path, rowref)
@@ -201,7 +205,7 @@ class TreeModel(gtk.GenericTreeModel):
         if len(node_paths) == 0: 
             raise  ValueError("Error :! no path for node %s !" %tid)
                 
-    def remove_task(self,sender,tid,paths=None):
+    def remove_task(self,tid,paths=None):
         if paths:
             for p in paths:
 #                print "removing task %s on %s" %(tid,str(p))

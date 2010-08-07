@@ -161,8 +161,9 @@ class ViewTree(gobject.GObject):
         gobject.GObject.__init__(self)
         self.__maintree = maintree
         self.static = static
+        self.__cllbcks = {}
         #If we are static, we directly ask the tree. No need of an
-        #FilteredTree layer.
+        #FilteredTree layer
         if static:
             self.__ft = maintree
             #Needed for the get_n_nodes with filters
@@ -179,15 +180,30 @@ class ViewTree(gobject.GObject):
             self.__ft.set_callback('added', \
                         functools.partial(self.__emit, 'node-added-inview'))
             self.__ft.set_callback('deleted', \
-                        self.__emit_del)
+                        functools.partial(self.__emit, 'node-deleted-inview'))
             self.__ft.set_callback('modified', \
                         functools.partial(self.__emit, 'node-modified-inview'))
             
     def __emit(self, signal_name, tid,paths):
-        self.emit(signal_name, tid)
-            
-    def __emit_del(self,tid,data):
-        self.emit('node-deleted-inview',tid,data)
+        for k in self.__cllbcks.get(signal_name,[]):
+            self.__cllbcks[signal_name][k](tid,paths)
+        if signal_name == 'node-deleted-inview':
+            self.emit(signal_name, tid,paths)
+        else:
+            self.emit(signal_name, tid)
+        
+    def register_cllbck(self,event,func):
+        if not self.__cllbcks.has_key(event):
+            self.__cllbcks[event] = {}
+        dic = self.__cllbcks[event]
+        #finding a free key
+        k = 0
+        while dic.has_key(k):
+            k += 1
+        #registering
+        dic[k] = func
+        #returning the key so we can later unregister a callback
+        return k
 
     #only by commodities
     def get_node(self,nid):
