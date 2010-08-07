@@ -111,7 +111,7 @@ class TreeviewFactory():
         return sort
     
     def closed_date_sorting(self,task1,task2,order):
-        sort = self.__date_comp(task1,task2,'closed')
+        sort = self.__date_comp(task1,task2,'closed',order)
         return sort
         
     def title_sorting(self,task1,task2,order):
