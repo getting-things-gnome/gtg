@@ -96,7 +96,9 @@ class MainTree(gobject.GObject):
             #We add the node
             node.set_tree(self)
             if parent_id:
+                #PLOUM_DEBUG : if not parent_id
 #                parent_id = 'root'
+                #Comment lines beneath
                 parent = self.get_node(parent_id)
                 if parent: 
                     node.set_parent(parent_id)
@@ -104,6 +106,7 @@ class MainTree(gobject.GObject):
             else:
                 self.root.add_child(id)
             self.nodes[id] = node
+            #PLOUM_DEBUG : why is this not working ?
 #            self.new_relationship(id,parent_id)
             #build the relationships that were waiting for that node
             for rel in list(self.pending_relationships):
@@ -190,7 +193,7 @@ class MainTree(gobject.GObject):
                     raise Exception("Cannot build circular relationship"+\
                                     "between %s and %s" %(parent_id,child_id))
                     self.break_relationship(parent_id,child_id)
-                    toreturn = False
+                    toreturn = True
             else:
                 #at least one of the node is not loaded. Save the relation for later
                 #undo everything
@@ -199,7 +202,8 @@ class MainTree(gobject.GObject):
                 #save it for later
                 if [parent_id,child_id] not in self.pending_relationships:
                     self.pending_relationships.append([parent_id,child_id])
-                toreturn = False
+                #PLOUM_DEBUG : while is that True ? It should be False
+                toreturn = True
         if toreturn:
             self.__modified(parent_id)
 #            print "sending modified for child %s" %child_id
@@ -263,8 +267,9 @@ class MainTree(gobject.GObject):
         if not parent:
             parent = self.root
         index = parent.get_child_index(nid)
-        if not index:
-            raise IndexError('node %s is not a child of %s' %(nid,parid))
+        ##PLOUM_DEBUG : we shoul raise this exception
+#        if not index:
+#            raise IndexError('node %s is not a child of %s' %(nid,parid))
         if parent.get_n_children() > index+1:
             toreturn = parent.get_nth_child(index+1)
         return toreturn

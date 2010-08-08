@@ -275,6 +275,7 @@ class TestLibLarch(unittest.TestCase):
         self.failIf('0' in all_nodes)
         self.assert_('temp' in all_nodes)
         
+        #PLOUM_DEBUG : to uncomment
 #    def test_adding_to_late_parent(self):
 #        '''Add a node to a parent not yet in the tree
 #        then add the parent later'''
