@@ -77,7 +77,7 @@ bottom to top, with no horizontal communication at all between views.
 from GTG.tools.logger import Log
 
 COUNT_CACHING_ENABLED = True
-##PLOUM_DEBUG : it should work without signals too !
+##PLOUM_DEBUG : it should work without signals too ! (only slower)
 USE_SIGNALS = 1
 
 class FilteredTree():
