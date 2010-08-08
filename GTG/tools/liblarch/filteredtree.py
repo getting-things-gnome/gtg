@@ -77,6 +77,7 @@ bottom to top, with no horizontal communication at all between views.
 from GTG.tools.logger import Log
 
 COUNT_CACHING_ENABLED = True
+USE_SIGNALS = 1
 
 class FilteredTree():
 
@@ -125,9 +126,14 @@ class FilteredTree():
         if refresh:
             self.refilter()
         #connecting
-        self.tree.connect("node-added", self.__task_added)
-        self.tree.connect("node-modified", self.__task_modified)
-        self.tree.connect("node-deleted", self.__task_deleted)
+        if USE_SIGNALS:
+            self.tree.connect("node-added", self.__task_added)
+            self.tree.connect("node-modified", self.__task_modified)
+            self.tree.connect("node-deleted", self.__task_deleted)
+        else:
+            self.tree.set_callback("node-added", self.__task_added)
+            self.tree.set_callback("node-modified", self.__task_modified)
+            self.tree.set_callback("node-deleted", self.__task_deleted)
     
     
     #those callbacks are called instead of signals.
@@ -290,6 +296,12 @@ class FilteredTree():
                 path = (ind,)
                 toreturn.append(path)
             else:
+                node = self.get_node(tid)
+                realparents = node.get_parents()
+                print "real parents are : %s" %str(realparents)
+                for p in realparents:
+                    print "%s is displayed : %s" %(p,self.is_displayed(p))
+                    print "but the truth is : %s" %self.__is_displayed(p)
                 raise Exception("%s has no parent but is not in VR" %tid)
                 
 #            parents = self.node_parents(node)
@@ -757,6 +769,7 @@ class FilteredTree():
                     #FIXME le root_update alors que le nœud n'est pas encore 
                     #ajouté peut mener un enfant à l'erreur
                     # has no parent but is not in VR
+                    
                     self.__root_update(tid,inroot)
                     self.callback("added", tid)
                     for p in parents:

@@ -83,6 +83,7 @@ class TestLibLarch(unittest.TestCase):
                     #signal arguments is a list of tuple
                     #In this test, we only consider the first one.
                     #Is it right ?
+                    self.assert_(len(signal_arguments) > 0)
                     self.assert_(e in signal_arguments[0])
             return None
         return new
@@ -274,6 +275,17 @@ class TestLibLarch(unittest.TestCase):
         self.failIf('0' in all_nodes)
         self.assert_('temp' in all_nodes)
         
+#    def test_adding_to_late_parent(self):
+#        '''Add a node to a parent not yet in the tree
+#        then add the parent later'''
+#        view = self.tree.get_viewtree(refresh=True)
+#        node = DummyNode('child')
+#        self.tree.add_node(node,parent_id='futur')
+#        all_nodes = self.view.get_all_nodes()
+#        self.assert_('child' in all_nodes)
+#        self.failIf('futur' in all_nodes)
+        
+        
     def test_recursive_removing_parent(self):
         """Test behavior of node when its parent goes away.
 
@@ -438,6 +450,8 @@ class TestLibLarch(unittest.TestCase):
         #nid1 and nid2 are not always the same
         nid1 = view.get_node_for_path((0,))
         nid2 = self.mainview.get_node_for_path((0,))
+        self.assert_(nid1 != None)
+        self.assert_(nid2 != None)
         #Thus we do a mix of test.
         nid1b = view.next_node(nid1)
         path1b = view.get_paths_for_node(nid1b)

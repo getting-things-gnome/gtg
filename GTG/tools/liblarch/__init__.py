@@ -292,8 +292,9 @@ class ViewTree(gobject.GObject):
             else:
                 raise ValueError("node %s has less than %s nodes" %(nid,n))
         else:
-            if self.__ft.node_n_children(nid) <= n:
-                raise ValueError("viewtree has less than %s nodes" %n)
+            realn = self.__ft.node_n_children(nid)
+            if realn < n:
+                raise ValueError("viewtree has %s, less than %s nodes" %(realn,n))
             toreturn = self.__ft.node_nth_child(nid,n)
         return toreturn
         

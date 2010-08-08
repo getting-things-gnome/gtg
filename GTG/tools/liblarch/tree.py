@@ -35,18 +35,30 @@ class MainTree(gobject.GObject):
         self.nodes = {}
         self.old_paths = {}
         self.pending_relationships = []
+        self.cllbcks = {}
         if root:
             self.root = root
         else:
             self.root = TreeNode(id=self.root_id)
         self.root.set_tree(self)
         
+    #those callbacks are called instead of signals.
+    def set_callback(self,event,func):
+        self.cllbcks[event] = func
+        
+    def callback(self,event,tid):
+        self.emit(event,tid)
+        func = self.cllbcks.get(event,None)
+        if func:
+            #None is the sender of the signal
+            func(None,tid)
+        
     def modify_node(self,nid):
         self.__modified(nid)
         
     def __modified(self,nid):
         if nid != 'root' and nid in self.nodes:
-            self.emit("node-modified", nid)
+            self.callback("node-modified", nid)
 
     def __str__(self):
         return "<Tree: root = '%s'>" % (str(self.root))
@@ -84,18 +96,20 @@ class MainTree(gobject.GObject):
             #We add the node
             node.set_tree(self)
             if parent_id:
+#                parent_id = 'root'
                 parent = self.get_node(parent_id)
                 if parent: 
-                    node.set_parent(parent.get_id())
+                    node.set_parent(parent_id)
                     parent.add_child(id)
             else:
                 self.root.add_child(id)
             self.nodes[id] = node
+#            self.new_relationship(id,parent_id)
             #build the relationships that were waiting for that node
             for rel in list(self.pending_relationships):
                 if id in rel:
                     self.new_relationship(rel[0],rel[1])
-            self.emit("node-added", id)
+            self.callback("node-added", id)
             return True
 
     #this will remove a node but not his children
@@ -120,7 +134,7 @@ class MainTree(gobject.GObject):
             else:
                 self.root.remove_child(id)
 #            self.old_paths[id] = paths
-            self.emit("node-deleted", id)
+            self.callback("node-deleted", id)
             self.nodes.pop(id)
         
     #create a new relationship between nodes if it doesn't already exist
@@ -180,13 +194,15 @@ class MainTree(gobject.GObject):
             else:
                 #at least one of the node is not loaded. Save the relation for later
                 #undo everything
+#                print "breaking relation %s %s" %(parent_id,child_id)
                 self.break_relationship(parent_id,child_id)
                 #save it for later
                 if [parent_id,child_id] not in self.pending_relationships:
                     self.pending_relationships.append([parent_id,child_id])
-                toreturn = True
+                toreturn = False
         if toreturn:
             self.__modified(parent_id)
+#            print "sending modified for child %s" %child_id
             self.__modified(child_id)
         return toreturn
     
@@ -232,6 +248,8 @@ class MainTree(gobject.GObject):
         Returns the next sibling node, or None if there are no other siblings
         """
         #We should take the next good node, not the next base node
+        if not nid:
+            raise ValueError('nid should be different than None')
         toreturn = None
         node = self.get_node(nid)
         parents_id = node.get_parents()
@@ -245,6 +263,8 @@ class MainTree(gobject.GObject):
         if not parent:
             parent = self.root
         index = parent.get_child_index(nid)
+        if not index:
+            raise IndexError('node %s is not a child of %s' %(nid,parid))
         if parent.get_n_children() > index+1:
             toreturn = parent.get_nth_child(index+1)
         return toreturn
