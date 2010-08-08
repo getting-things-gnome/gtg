@@ -35,7 +35,7 @@ class MainTree(gobject.GObject):
         self.nodes = {}
         self.old_paths = {}
         self.pending_relationships = []
-        self.cllbcks = {}
+        self.__cllbcks = {}
         if root:
             self.root = root
         else:
@@ -43,16 +43,26 @@ class MainTree(gobject.GObject):
         self.root.set_tree(self)
         
     #those callbacks are called instead of signals.
-    def set_callback(self,event,func):
-        self.cllbcks[event] = func
+#    def set_callback(self,event,func):
+#        self.cllbcks[event] = func
+        
+    def register_callback(self,event,func):
+        if not self.__cllbcks.has_key(event):
+            self.__cllbcks[event] = {}
+        dic = self.__cllbcks[event]
+        #finding a free key
+        k = 0
+        while dic.has_key(k):
+            k += 1
+        #registering
+        dic[k] = func
+        #returning the key so we can later unregister a callback
+        return k
         
     def callback(self,event,tid):
         self.emit(event,tid)
-        func = self.cllbcks.get(event,None)
-        if func:
-            print "PLOUM callback for %s %s" %(event,tid)
-            #None is the sender of the signal
-            func(tid)
+        for k in self.__cllbcks.get(event,[]):
+            self.__cllbcks[event][k](tid)
         
     def modify_node(self,nid):
         self.__modified(nid)
