@@ -47,15 +47,13 @@ class MainTree(gobject.GObject):
         self.cllbcks[event] = func
         
     def callback(self,event,tid):
-        print "PLOUM_DEBUG : will be emitting signal %s for %s" %(event,tid)
         self.emit(event,tid)
         func = self.cllbcks.get(event,None)
         if func:
             #None is the sender of the signal
-            func(None,tid)
+            func(tid)
         
     def modify_node(self,nid):
-        print "modify_node for %s" %nid
         self.__modified(nid)
         
     def __modified(self,nid):
@@ -75,7 +73,6 @@ class MainTree(gobject.GObject):
     #a deleted path can be requested only once
     def get_deleted_path(self,id):
         toreturn = None
-        print "old paths are : %s" %self.old_paths
         if self.old_paths.has_key(id):
             toreturn = self.old_paths.pop(id)
         return toreturn
@@ -376,11 +373,9 @@ class TreeNode():
             for s in self.get_children():
                 self.tree.modify_node(s)
             #then the task
-            print "will be emitting signal for itself %s" %self.id
             self.tree.modify_node(self.id)
             #then parents
             for p in self.get_parents():
-                print "will be emitting signal for parent %s" %p
                 self.tree.modify_node(p)
         
     def set_tree(self,tree):

@@ -72,7 +72,7 @@ An important point to stress is that information needs to be passed from
 bottom to top, with no horizontal communication at all between views.
 
 """
-
+import functools
 
 from GTG.tools.logger import Log
 
@@ -123,9 +123,13 @@ class FilteredTree():
             self.tree.connect("node-modified", self.__task_modified)
             self.tree.connect("node-deleted", self.__task_deleted)
         else:
-            self.tree.set_callback("node-added", self.__task_added)
-            self.tree.set_callback("node-modified", self.__task_modified)
-            self.tree.set_callback("node-deleted", self.__task_deleted)
+            #The None is to fake the signal sender
+            self.tree.set_callback("node-added", functools.partial(\
+                                                self.__task_added,None))
+            self.tree.set_callback("node-modified", functools.partial(\
+                                                self.__task_modified,None))
+            self.tree.set_callback("node-deleted", functools.partial(\
+                                                self.__task_deleted,None))
     
     
     #those callbacks are called instead of signals.

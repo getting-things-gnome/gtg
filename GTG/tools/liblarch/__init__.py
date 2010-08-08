@@ -168,26 +168,26 @@ class ViewTree(gobject.GObject):
             self.__ft = maintree
             #Needed for the get_n_nodes with filters
             self.__ft2 = FilteredTree(maintree, filters_bank, refresh = refresh)
-            self.__ft.connect('node-added', \
+            self.__ft.set_callback('node-added', \
                         functools.partial(self.__emit, 'node-added'))
-            self.__ft.connect('node-deleted', \
+            self.__ft.set_callback('node-deleted', \
                         functools.partial(self.__emit, 'node-deleted'))
-            self.__ft.connect('node-modified', \
+            self.__ft.set_callback('node-modified', \
                         functools.partial(self.__emit, 'node-modified'))
         else:
             self.__ft = FilteredTree(maintree, filters_bank, refresh = refresh)
             self.__ft2 = self.__ft
             self.__ft.set_callback('added', \
-                        functools.partial(self.__emit, 'node-added-inview',None))
+                        functools.partial(self.__emit, 'node-added-inview'))
             self.__ft.set_callback('deleted', \
-                        functools.partial(self.__emit, 'node-deleted-inview',None))
+                        functools.partial(self.__emit, 'node-deleted-inview'))
             self.__ft.set_callback('modified', \
-                        functools.partial(self.__emit, 'node-modified-inview',None))
+                        functools.partial(self.__emit, 'node-modified-inview'))
             
-    def __emit(self, signal_name, sender,tid,paths=None):
-#        for k in self.__cllbcks.get(signal_name,[]):
-#            self.__cllbcks[signal_name][k](tid,paths)
-        print "emitting signal %s for %s (static=%s)" %(signal_name,tid,self.static)
+    def __emit(self, signal_name, tid,paths=None):
+        for k in self.__cllbcks.get(signal_name,[]):
+            self.__cllbcks[signal_name][k](tid,paths)
+#        print "emitting signal %s for %s (static=%s)" %(signal_name,tid,self.static)
         if signal_name == 'node-deleted-inview':
             self.emit(signal_name, tid,paths)
         else:
