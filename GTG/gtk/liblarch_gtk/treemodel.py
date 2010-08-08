@@ -108,6 +108,7 @@ class TreeModel(gtk.GenericTreeModel):
         return self.value_list[n][0]
     
     def on_get_value(self, rowref, column):
+#        print "get_value  for %s %s" %(str(rowref),column)
         if not rowref:
             raise ValueError('Asking the value of an empty rowref')
 #        if not self.iter_is_valid(rowref):
@@ -133,6 +134,7 @@ class TreeModel(gtk.GenericTreeModel):
 
     def on_iter_next(self, rowref):
         toreturn = None
+#        print "iter_next for %s" %str(rowref)
         if rowref:
             nid = self.__get_nid_from_rowref(rowref)
             if len(rowref) > 1:
@@ -143,6 +145,10 @@ class TreeModel(gtk.GenericTreeModel):
             #We have the next node, we have to build the rowref
             if next_id:
                 toreturn = rowref[:-1] + (next_id,)
+        if not toreturn:
+            print "###########  iter_next returns None for rowref %s" %str(rowref)
+        else:
+            print "******** %s is next node of %s ********" %(toreturn,str(rowref))
         return toreturn
 
     def on_iter_children(self, rowref):
@@ -187,13 +193,14 @@ class TreeModel(gtk.GenericTreeModel):
     def update_task(self, tid,paths,data=None):
 #        print "update task : %s %s" %(data,tid)
         for node_path in paths:
-#            print "asking rowref for path %s" %str(node_path)
+#            print "updating rowref for path %s" %str(node_path)
             rowref = self.get_iter(node_path)
             if data == 'add':
 #                print "adding %s on path %s" %(tid,str(node_path))
                 self.row_inserted(node_path, rowref)
                 #Toggling the parent ( FIXME: this should be done
                 #on liblarch level !!!
+                #PLOUM_DEBUG : remove this code
 #                if self.tree.node_has_parent(tid):
 #                    for p in self.tree.node_parents(tid):
 #                        self.update_task(p,data='parent_update')

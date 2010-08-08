@@ -61,7 +61,9 @@ class MainTree(gobject.GObject):
         
     def callback(self,event,tid):
         self.emit(event,tid)
-        for k in self.__cllbcks.get(event,[]):
+        #avoid that the dic change dynamically while we are using it
+        calls = dict(self.__cllbcks.get(event,[]))
+        for k in calls:
             self.__cllbcks[event][k](tid)
         
     def modify_node(self,nid):

@@ -351,11 +351,16 @@ class FilteredTree():
         #We should take the next good node, not the next base node
         toreturn = None
         if nid in self.virtual_root:
+            if pid:
+                raise Exception('Asking for next_node of %s'%nid+\
+                        'with parent %s but node is in VR'%pid)
             i = self.virtual_root.index(nid) + 1
             if len(self.virtual_root) > i:
                 nextnode_id = self.virtual_root[i]
                 if self.is_displayed(nextnode_id):
                     toreturn = nextnode_id
+            else:
+                print "%s is %s in the VR of size %s" %(nid,i,len(self.virtual_root))
         else:
             parents_nodes = self.node_parents(nid)
             if len(parents_nodes) >= 1:
@@ -373,8 +378,14 @@ class FilteredTree():
                         next_id = c
                 if next_id >= 0 and next_id < total:
                     toreturn = self.node_nth_child(parent_node,next_id)
+                    print "we return None for %s because node_nth_child do so"%(next_id)
+                else:
+                    print "we found next_id %s (total %s) but return None" %(next_id,total)
+            else:
+                print "parent %s of %s is of len %s" %(parent_node.get_id(),nid,len(parents_node))
         #check to see if our result is correct
         if toreturn and not self.is_displayed(toreturn):
+            print "we return None because %s is not displayed" %toreturn
             toreturn = None
         return toreturn
 
