@@ -105,19 +105,10 @@ class MainTree(gobject.GObject):
         else:
             #We add the node
             node.set_tree(self)
-            if parent_id:
-                #PLOUM_DEBUG : if not parent_id
-#                parent_id = 'root'
-                #Comment lines beneath
-                parent = self.get_node(parent_id)
-                if parent: 
-                    node.set_parent(parent_id)
-                    parent.add_child(id)
-            else:
-                self.root.add_child(id)
             self.nodes[id] = node
-            #PLOUM_DEBUG : why is this not working ?
-#            self.new_relationship(id,parent_id)
+            if not parent_id:
+                parent_id = 'root'
+            self.new_relationship(parent_id,id)
             #build the relationships that were waiting for that node
             for rel in list(self.pending_relationships):
                 if id in rel:
@@ -277,9 +268,8 @@ class MainTree(gobject.GObject):
         if not parent:
             parent = self.root
         index = parent.get_child_index(nid)
-        ##PLOUM_DEBUG : we shoul raise this exception
-#        if not index:
-#            raise IndexError('node %s is not a child of %s' %(nid,parid))
+        if not index:
+            raise IndexError('node %s is not a child of %s' %(nid,parid))
         if parent.get_n_children() > index+1:
             toreturn = parent.get_nth_child(index+1)
         return toreturn

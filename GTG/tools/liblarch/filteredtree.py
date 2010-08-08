@@ -77,7 +77,7 @@ import functools
 from GTG.tools.logger import Log
 
 COUNT_CACHING_ENABLED = True
-##PLOUM_DEBUG : it should work without signals too ! (only slower)
+## if FT doesn't use signals, it might be slower (but easier to debug)
 FT_USE_SIGNALS = 0
 
 class FilteredTree():
@@ -294,7 +294,7 @@ class FilteredTree():
             else:
                 node = self.get_node(tid)
                 realparents = node.get_parents()
-                print "real parents are : %s" %str(realparents)
+                print "real parents of %s are : %s" %(tid,str(realparents))
                 for p in realparents:
                     print "%s is displayed : %s" %(p,self.is_displayed(p))
                     print "but the truth is : %s" %self.__is_displayed(p)

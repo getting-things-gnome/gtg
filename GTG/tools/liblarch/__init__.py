@@ -185,7 +185,6 @@ class ViewTree(gobject.GObject):
     def __emit(self, signal_name, tid,paths=None):
         for k in self.__cllbcks.get(signal_name,[]):
             self.__cllbcks[signal_name][k](tid,paths)
-#        print "emitting signal %s for %s (static=%s)" %(signal_name,tid,self.static)
         if signal_name == 'node-deleted-inview':
             self.emit(signal_name, tid,paths)
         else:
