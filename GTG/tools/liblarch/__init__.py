@@ -164,19 +164,17 @@ class ViewTree(gobject.GObject):
         self.__cllbcks = {}
         #If we are static, we directly ask the tree. No need of an
         #FilteredTree layer
+        self.__ft = FilteredTree(maintree, filters_bank, refresh = refresh)
         if static:
-            self.__ft = maintree
             #Needed for the get_n_nodes with filters
-            self.__ft2 = FilteredTree(maintree, filters_bank, refresh = refresh)
-            self.__ft.set_callback('node-added', \
+            self.__ft = FilteredTree(maintree, filters_bank, refresh = refresh)
+            self.__ft.set_callback('added', \
                         functools.partial(self.__emit, 'node-added'))
-            self.__ft.set_callback('node-deleted', \
+            self.__ft.set_callback('deleted', \
                         functools.partial(self.__emit, 'node-deleted'))
-            self.__ft.set_callback('node-modified', \
+            self.__ft.set_callback('modified', \
                         functools.partial(self.__emit, 'node-modified'))
         else:
-            self.__ft = FilteredTree(maintree, filters_bank, refresh = refresh)
-            self.__ft2 = self.__ft
             self.__ft.set_callback('added', \
                         functools.partial(self.__emit, 'node-added-inview'))
             self.__ft.set_callback('deleted', \
@@ -218,7 +216,7 @@ class ViewTree(gobject.GObject):
             else:
                 toreturn = self.__maintree.get_node(nid)
         else:
-            raise Exception("Bad programmer: should not get a static node"+\
+            raise Exception("You should not get a static node"+\
                             " in a viewtree")
         return toreturn
 
@@ -239,14 +237,7 @@ class ViewTree(gobject.GObject):
         If include_transparent = False, we only take into account 
         the applied filters that doesn't have the transparent parameters.
         """
-#        if self.static and len(withfilters) > 0:
-#            raise Exception("WARNING: filters cannot be applied" +\
-#                            "to a static tree\n"+\
-#                     "the filter parameter of get_n_nodes will be dismissed")
-        if self.static and len(withfilters) == 0:
-            return len(self.__maintree.get_all_nodes())
-        else:
-            return self.__ft2.get_n_nodes(withfilters=withfilters,\
+        return self.__ft.get_n_nodes(withfilters=withfilters,\
                                     include_transparent=include_transparent)
 
     def get_node_for_path(self, path):
@@ -262,12 +253,7 @@ class ViewTree(gobject.GObject):
         return self.__ft.next_node(nid,pid)
         
     def node_has_child(self, nid):
-        toreturn = False
-        if self.static:
-            node = self.__get_static_node(nid)
-            toreturn = node.has_child()
-        else:
-            toreturn = self.__ft.node_has_child(nid)
+        toreturn = self.__ft.node_has_child(nid)
         return toreturn
 
     #if nid is None, return the number of nodes at the root
@@ -275,13 +261,7 @@ class ViewTree(gobject.GObject):
         return len(self.node_all_children(nid))
         
     def node_all_children(self, nid=None):
-        toreturn = []
-        if self.static:
-            node = self.__get_static_node(nid)
-            if node:
-                toreturn = node.get_children() 
-        else:
-            toreturn = self.__ft.node_all_children(nid)
+        toreturn = self.__ft.node_all_children(nid)
         return toreturn
 
     def node_nth_child(self, nid, n):
@@ -310,13 +290,7 @@ class ViewTree(gobject.GObject):
         Doesn't check wheter node nid is displayed or not. (we only care about
         parents)
         """
-        toreturn = []
-        if self.static:
-            node = self.__get_static_node(nid)
-            if node:
-                toreturn = node.get_parents()
-        else:
-            toreturn = self.__ft.node_parents(nid)
+        toreturn = self.__ft.node_parents(nid)
         return toreturn
 
     def is_displayed(self,nid):

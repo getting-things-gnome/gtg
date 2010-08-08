@@ -50,6 +50,7 @@ class MainTree(gobject.GObject):
         self.emit(event,tid)
         func = self.cllbcks.get(event,None)
         if func:
+            print "PLOUM callback for %s %s" %(event,tid)
             #None is the sender of the signal
             func(tid)
         

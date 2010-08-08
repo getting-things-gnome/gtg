@@ -78,7 +78,7 @@ from GTG.tools.logger import Log
 
 COUNT_CACHING_ENABLED = True
 ##PLOUM_DEBUG : it should work without signals too ! (only slower)
-USE_SIGNALS = 1
+FT_USE_SIGNALS = 1
 
 class FilteredTree():
 
@@ -118,7 +118,7 @@ class FilteredTree():
         if refresh:
             self.refilter()
         #connecting
-        if USE_SIGNALS:
+        if FT_USE_SIGNALS:
             self.tree.connect("node-added", self.__task_added)
             self.tree.connect("node-modified", self.__task_modified)
             self.tree.connect("node-deleted", self.__task_deleted)
