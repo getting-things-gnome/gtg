@@ -281,16 +281,39 @@ class TestLibLarch(unittest.TestCase):
         view = self.tree.get_viewtree(refresh=True)
         node = DummyNode('child')
         self.tree.add_node(node,parent_id='futur')
-        all_nodes = self.view.get_all_nodes()
+        all_nodes = view.get_all_nodes()
         self.assert_('child' in all_nodes)
         self.failIf('futur' in all_nodes)
         self.assertEqual(len(view.node_parents('child')),0)
         #now inserting the parent
         node2 = DummyNode('futur')
         self.tree.add_node(node2)
-        all_nodes = self.view.get_all_nodes()
+        all_nodes = view.get_all_nodes()
         self.assert_('child' in all_nodes)
         self.assert_('futur' in all_nodes)
+        self.assert_('futur' in view.node_parents('child'))
+        #TODO the same test but with filters
+        
+    def test_adding_to_late_parent_with_leaf_filter(self):
+        '''Add a node to a parent not yet in the tree
+        then add the parent later'''
+        view = self.tree.get_viewtree(refresh=True)
+        node = DummyNode('child')
+        self.tree.add_node(node,parent_id='futur')
+        all_nodes = view.get_all_nodes()
+        self.assert_('child' in all_nodes)
+        self.failIf('futur' in all_nodes)
+        self.assertEqual(len(view.node_parents('child')),0)
+        #now inserting the parent
+        view.apply_filter('leaf')
+        node2 = DummyNode('futur')
+        self.tree.add_node(node2)
+        all_nodes = view.get_all_nodes()
+        self.assert_('child' in all_nodes)
+        self.failIf('futur' in all_nodes)
+        self.failIf('futur' in view.node_parents('child'))
+        view.reset_filters()
+        self.assert_(view.is_displayed('futur'))
         self.assert_('futur' in view.node_parents('child'))
         
         
