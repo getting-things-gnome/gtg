@@ -47,6 +47,7 @@ class MainTree(gobject.GObject):
         self.cllbcks[event] = func
         
     def callback(self,event,tid):
+        print "PLOUM_DEBUG : will be emitting signal %s for %s" %(event,tid)
         self.emit(event,tid)
         func = self.cllbcks.get(event,None)
         if func:
@@ -54,6 +55,7 @@ class MainTree(gobject.GObject):
             func(None,tid)
         
     def modify_node(self,nid):
+        print "modify_node for %s" %nid
         self.__modified(nid)
         
     def __modified(self,nid):
@@ -374,9 +376,11 @@ class TreeNode():
             for s in self.get_children():
                 self.tree.modify_node(s)
             #then the task
+            print "will be emitting signal for itself %s" %self.id
             self.tree.modify_node(self.id)
             #then parents
             for p in self.get_parents():
+                print "will be emitting signal for parent %s" %p
                 self.tree.modify_node(p)
         
     def set_tree(self,tree):

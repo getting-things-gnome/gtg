@@ -82,15 +82,6 @@ USE_SIGNALS = 1
 
 class FilteredTree():
 
-    #Those are the three signals you want to catch if displaying
-    #a filteredtree. The argument of all signals is the tid of the task
-#    __gsignals__ = {'node-added-inview': (gobject.SIGNAL_RUN_FIRST, \
-#                                          gobject.TYPE_NONE, (str, )),
-#                    'node-deleted-inview': (gobject.SIGNAL_RUN_FIRST, \
-#                                            gobject.TYPE_NONE, (str,gobject.TYPE_PYOBJECT, )),
-#                    'node-modified-inview': (gobject.SIGNAL_RUN_FIRST, \
-#                                            gobject.TYPE_NONE, (str, )),}
-
     def __init__(self,tree,filtersbank,refresh=True):
         """
         Construct a FilteredTree object on top of an existing task tree.
