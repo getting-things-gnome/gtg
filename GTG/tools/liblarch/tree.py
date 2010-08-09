@@ -112,13 +112,14 @@ class MainTree(gobject.GObject):
             #we build the relationship before adding the node !
             #That's crucial, else, the node will exist while
             #children might not be yet aware of the relationship
-#            print "##### adding node %s with parent %s" %(id,parent_id)
             self.new_relationship(parent_id,id)
             self.nodes[id] = node
             #build the relationships that were waiting for that node
             for rel in list(self.pending_relationships):
                 if id in rel:
-                    self.new_relationship(rel[0],rel[1])
+                    #don't send the refresh after adding the relationship
+                    #it will be done by the node-added callback
+                    self.new_relationship(rel[0],rel[1],refresh_nodes=False)
             self.callback("node-added", id)
             return True
 
@@ -149,7 +150,7 @@ class MainTree(gobject.GObject):
         
     #create a new relationship between nodes if it doesn't already exist
     #return False if nothing was done
-    def new_relationship(self,parent_id,child_id):
+    def new_relationship(self,parent_id,child_id,refresh_nodes=True):
         #Genealogic search is a function we use to build a list of every
         #ancestor of a node
         def genealogic_search(nid):
@@ -212,7 +213,7 @@ class MainTree(gobject.GObject):
                 if [parent_id,child_id] not in self.pending_relationships:
                     self.pending_relationships.append([parent_id,child_id])
                 toreturn = False
-        if toreturn:
+        if refresh_nodes and toreturn:
 #            print "we modify parent %s then child %s" %(parent_id,child_id)
             if parent_id != 'root':
                 self.__modified(parent_id)
