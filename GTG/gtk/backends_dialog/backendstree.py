@@ -69,6 +69,8 @@ class BackendsTree(gtk.TreeView):
         '''
         #Add
         backend = self.req.get_backend(backend_id)
+        if not backend:
+            return
         self.add_backend(backend)
         #Select
         self.select_backend(backend_id)
