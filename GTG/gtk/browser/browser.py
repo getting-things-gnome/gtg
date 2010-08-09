@@ -868,7 +868,8 @@ class TaskBrowser:
         #for tasks that are not in workview (and also convert to string)
         toset = str(not self.nonworkviewtag_cb.get_active())
         if len(tags) > 0:
-            tags[0].set_attribute("nonworkview", toset)
+            tag = self.req.get_tag(tags[0])
+            tag.set_attribute("nonworkview", toset)
         #Following should not be needed with liblarch
 #        if self.priv['workview']:
 #            self.tagtree.refilter()

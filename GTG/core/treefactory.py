@@ -106,7 +106,7 @@ class TreeFactory:
         tagtree.add_filter('used',self.used_tag)
         
         activeview = tagtree.get_viewtree(name='active')
-        activeview.apply_filter('active')
+#        activeview.apply_filter('active')
         
         usedview = tagtree.get_viewtree(name='used')
         usedview.apply_filter('used')
