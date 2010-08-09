@@ -791,7 +791,10 @@ class FilteredTree(gobject.GObject):
             self.node_to_remove.append(tid)
             isroot = False
             if tid in self.displayed_nodes:
-                isroot = self.__is_root(self.get_node(tid))
+                node = self.get_node(tid)
+                if not node:
+                    return
+                isroot = self.__is_root(node)
                 self.remove_count += 1
                 self.__nodes_count -= 1
                 self.emit('task-deleted-inview',tid)

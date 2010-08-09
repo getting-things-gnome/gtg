@@ -505,7 +505,9 @@ class Task(TreeNode):
     def get_tags(self):
         l = []
         for tname in self.tags:
-            l.append(self.req.get_tag(tname))
+            tag = self.req.get_tag(tname)
+            if tag:
+                l.append(tag)
         return l
         
     def rename_tag(self, old, new):

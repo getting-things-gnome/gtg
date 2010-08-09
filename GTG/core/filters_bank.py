@@ -256,6 +256,8 @@ class FiltersBank:
         @param task: a task object
         @oaram tags_to_match_set: a *set* of tag names
         '''
+        if task == None:
+            return []
         try:
             tags_to_match_set = parameters['tags']
         except KeyError:
