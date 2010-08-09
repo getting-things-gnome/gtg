@@ -92,3 +92,13 @@ else:
 
 if os.path.isdir(os.path.join(config_home, 'gtg/plugins')):
     PLUGIN_DIR.append(os.path.join(config_home, 'gtg/plugins'))
+
+#Register GTG URI (temporary, it should be created by a schema upon installing)
+import gconf
+domain = "/desktop/gnome/url-handlers/gtg/"
+client = gconf.client_get_default()
+#this should work both in debugging mode and in deployed mode
+client.set_string(os.path.join(domain, "command"), "gtg %s")
+client.set_bool(os.path.join(domain, "enabled"), True)
+client.set_bool(os.path.join(domain, "needs_terminal"), False)
+
