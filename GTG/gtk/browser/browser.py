@@ -711,7 +711,8 @@ class TaskBrowser:
     def on_resetcolor_activate(self, widget):
         self.set_target_cursor()
         tags, notag_only = self.get_selected_tags()
-        for t in tags:
+        for tname in tags:
+            t = self.req.get_tag(tname)
             t.del_attribute("color")
         self.reset_cursor()
         

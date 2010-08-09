@@ -230,7 +230,7 @@ class TreeviewFactory():
         render_text.set_property('editable', True) 
         render_text.set_property('ypad', 3)
         #FIXME : renaming tag feature
-        render_text.connect("edited", self.req.rename_tag)
+#        render_text.connect("edited", self.req.rename_tag)
         col['renderer'] = ['markup',render_text]
         col['value'] = [str,self.tag_name]
         col['expandable'] = True

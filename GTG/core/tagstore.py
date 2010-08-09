@@ -344,7 +344,7 @@ class Tag(TreeNode):
             toreturn = tasktree.get_n_nodes(\
                                 withfilters=[tname],include_transparent=False)
 #            toreturn = tasktree.get_n_nodes(include_transparent=False)
-            print "we will return %s for %s" %(toreturn,tname)
+#            print "we will return %s for %s" %(toreturn,tname)
         return toreturn
         
     #is it useful to keep the tag in the tagstore.
@@ -358,7 +358,7 @@ class Tag(TreeNode):
         if self.get_attribute('special'):
             return True
         else:
-            print "tag %s has %s active tasks" %(self.get_name(),self.get_active_tasks_count())
+#            print "tag %s has %s active tasks" %(self.get_name(),self.get_active_tasks_count())
             return self.get_active_tasks_count() > 0
 
     def __str__(self):
