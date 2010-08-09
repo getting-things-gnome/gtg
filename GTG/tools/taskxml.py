@@ -20,6 +20,7 @@
 #Functions to convert a Task object to an XML string and back
 import xml.dom.minidom
 import xml.sax.saxutils as saxutils
+import datetime
 
 from GTG.tools import cleanxml
 from GTG.tools import dates
@@ -55,7 +56,6 @@ def task_from_xml(task,xmlnode) :
             content = xml.dom.minidom.parseString(tas)
             cur_task.set_text(content.firstChild.toxml()) #pylint: disable-msg=E1103 
     cur_task.set_due_date(dates.strtodate(cleanxml.readTextNode(xmlnode,"duedate")))
-    cur_task.set_modified(cleanxml.readTextNode(xmlnode,"modified"))
     cur_task.set_start_date(dates.strtodate(cleanxml.readTextNode(xmlnode,"startdate")))
     cur_tags = xmlnode.getAttribute("tags").replace(' ','').split(",")
     if "" in cur_tags: cur_tags.remove("")
@@ -69,6 +69,11 @@ def task_from_xml(task,xmlnode) :
             backend_id = node.firstChild.nodeValue
             remote_task_id = node.childNodes[1].firstChild.nodeValue
             task.add_remote_id(backend_id, remote_task_id)
+    modified_string = cleanxml.readTextNode(xmlnode,"modified")
+    if modified_string:
+        modified_datetime = datetime.datetime.strptime(modified_string,\
+                                                    "%Y-%m-%dT%H:%M:%S")
+        cur_task.set_modified(modified_datetime)
     return cur_task
 
 #Task as parameter the doc where to put the XML node
