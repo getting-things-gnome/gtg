@@ -317,8 +317,7 @@ class TestLibLarch(unittest.TestCase):
         self.assert_('futur' in view.node_parents('child'))
         
     def test_addchild_with_late_parent(self):
-        '''Add a node to a parent not yet in the tree
-        then add the parent later'''
+        '''Add a child to a node which is not yet in the tree'''
         view = self.tree.get_viewtree(refresh=True)
         node = DummyNode('child')
         node2 = DummyNode('futur')

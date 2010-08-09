@@ -107,10 +107,13 @@ class MainTree(gobject.GObject):
         else:
             #We add the node
             node.set_tree(self)
-            self.nodes[id] = node
             if not parent_id:
                 parent_id = 'root'
+            #we build the relationship before adding the node !
+            #That's crucial, else, the node will exist while
+            #children might not be yet aware of the relationship
             self.new_relationship(parent_id,id)
+            self.nodes[id] = node
             #build the relationships that were waiting for that node
             for rel in list(self.pending_relationships):
                 if id in rel:
