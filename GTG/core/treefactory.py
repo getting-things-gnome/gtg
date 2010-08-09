@@ -100,6 +100,8 @@ class TreeFactory:
         sep_tag.set_attribute("order",2)
         tagtree.add_node(sep_tag)
         
+        
+        #### Filters 
         tagtree.add_filter('active',self.actively_used_tag)
         tagtree.add_filter('used',self.used_tag)
         
@@ -110,6 +112,7 @@ class TreeFactory:
         usedview.apply_filter('used')
         
         self.tagtree = tagtree
+        self.tagtree_loaded = True
         return tagtree
     
     ################# Tag Filters ##########################################

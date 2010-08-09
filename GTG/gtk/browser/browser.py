@@ -136,9 +136,7 @@ class TaskBrowser:
         self.restore_state_from_conf()
 
         #Expand all the tasks in the taskview
-#        print "********* Will expand ************"
-#        r = self.vtree_panes['active'].expand_all()
-#        print "********** expanded ***************"
+        r = self.vtree_panes['active'].expand_all()
         self.on_select_tag()
         self.window.show()
 

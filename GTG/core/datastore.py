@@ -17,6 +17,9 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
+TAG_XMLFILE = "tags.xml"
+TAG_XMLROOT = "tagstore"
+
 """
 The DaataStore contains a list of TagSource objects, which are proxies
 between a backend and the datastore itself
@@ -26,6 +29,7 @@ import threading
 import uuid
 import os.path
 from collections import deque
+import xml.sax.saxutils as saxutils
 
 from GTG.core                    import requester
 from GTG.core.task               import Task
@@ -59,7 +63,9 @@ class DataStore(object):
         self.treefactory = TreeFactory()
         self.__tasks = self.treefactory.get_tasks_tree()
         self.requester = requester.Requester(self)
+        self.tagfile = None
         self.__tagstore = self.treefactory.get_tags_tree(self.requester)
+        self.load_tag_tree()
         self._backend_signals = BackendSignals()
         self.mutex = threading.RLock()
         self.is_default_backend_loaded = False
@@ -125,6 +131,51 @@ class DataStore(object):
             return self.__tagstore.get_node(tagname)
         else:
             return None
+            
+    def load_tag_tree(self):
+        # Loading tags
+        tagfile = os.path.join(CoreConfig().get_data_dir(), TAG_XMLFILE)
+        doc, xmlstore = cleanxml.openxmlfile(tagfile,TAG_XMLROOT)
+        for t in xmlstore.childNodes:
+            #We should only care about tag with a name beginning with "@"
+            #Other are special tags
+            tagname = t.getAttribute("name")
+            tag = self.new_tag(tagname)
+            attr = t.attributes
+            i = 0
+            while i < attr.length:
+                at_name = attr.item(i).name
+                at_val = t.getAttribute(at_name)
+                tag.set_attribute(at_name, at_val)
+                i += 1
+            parent = tag.get_attribute('parent')
+            if parent:
+                pnode=self.new_tag(parent)
+                tag.set_parent(pnode.get_id())
+        self.tagfile = tagfile
+                
+    def save_tagtree(self):
+        if self.tagfile:
+            doc, xmlroot = cleanxml.emptydoc(TAG_XMLROOT)
+            tags = self.__tagstore.get_main_view().get_all_nodes()
+            already_saved = [] #We avoid saving the same tag twice
+            #we don't save tags with no attributes
+            #It saves space and allow the saved list growth to be controlled
+            for tname in tags:
+                t = self.__tagstore.get_node(tname)
+                attr = t.get_all_attributes(butname = True, withparent = True)
+                if "special" not in attr and len(attr) > 0:
+                    tagname = t.get_name()
+                    if not tagname in already_saved:
+                        t_xml = doc.createElement("tag")
+                        t_xml.setAttribute("name", tagname)
+                        already_saved.append(tagname)
+                        for a in attr:
+                            value = t.get_attribute(a)
+                            if value:
+                                t_xml.setAttribute(a, value)
+                        xmlroot.appendChild(t_xml)
+            cleanxml.savexml(self.tagfile, doc)
     
 
     ##########################################################################
@@ -378,10 +429,8 @@ class DataStore(object):
         cleanxml.savexml(datafile,doc,backup=True)
 
         #Saving the tagstore
-        #FIXME : we need to save the tagstore !
-#        ts = self.get_tagstore()
-#        ts.save()
-
+        self.save_tagtree()
+        
     def request_task_deletion(self, tid):
         ''' 
         This is a proxy function to request a task deletion from a backend
