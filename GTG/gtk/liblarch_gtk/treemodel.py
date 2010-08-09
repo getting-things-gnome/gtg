@@ -193,22 +193,21 @@ class TreeModel(gtk.GenericTreeModel):
     def update_task(self, tid,paths,data=None):
 #        print "update task : %s %s" %(data,tid)
         for node_path in paths:
-#            print "updating rowref for path %s" %str(node_path)
-            rowref = self.get_iter(node_path)
-            if data == 'add':
-#                print "adding %s on path %s" %(tid,str(node_path))
-                self.row_inserted(node_path, rowref)
-                #Toggling the parent ( FIXME: this should be done
-                #on liblarch level !!!
-                #PLOUM_DEBUG : remove this code
-#                if self.tree.node_has_parent(tid):
-#                    for p in self.tree.node_parents(tid):
-#                        self.update_task(p,data='parent_update')
-            else:
-                self.row_changed(node_path, rowref)
-            if self.tree.node_has_child(tid):
-#                print "child toggling for %s %s" %(tid,str(node_path))
-                self.row_has_child_toggled(node_path, rowref)
+#            print "updating %s for path %s" %(tid,str(node_path))
+#            print "other paths are %s" %(str(self.tree.get_paths_for_node(tid)))
+
+            #PLOUM_DEBUG : we check if the path still link back to 
+            #a node. This is more than probably a bug in liblarch. FIXME
+            if tid == self.tree.get_node_for_path(node_path):
+                rowref = self.get_iter(node_path)
+                if data == 'add':
+    #                print "adding %s on path %s" %(tid,str(node_path))
+                    self.row_inserted(node_path, rowref)
+                else:
+                    self.row_changed(node_path, rowref)
+                if self.tree.node_has_child(tid):
+    #                print "child toggling for %s %s" %(tid,str(node_path))
+                    self.row_has_child_toggled(node_path, rowref)
         if len(paths) == 0: 
             raise  ValueError("Error :! no path for node %s !" %tid)
                 
