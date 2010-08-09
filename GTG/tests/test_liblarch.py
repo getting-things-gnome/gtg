@@ -338,6 +338,28 @@ class TestLibLarch(unittest.TestCase):
         self.assert_(view.is_displayed('futur'))
         self.assert_('futur' in view.node_parents('child'))
         
+    def test_addparent_with_late_child(self):
+        '''Add a child not yet in the tree to a node'''
+        view = self.tree.get_viewtree(refresh=True)
+        node = DummyNode('parent')
+        node2 = DummyNode('futur')
+        node.add_child('futur')
+        self.tree.add_node(node)
+        all_nodes = view.get_all_nodes()
+        self.assert_('parent' in all_nodes)
+        self.failIf('futur' in all_nodes)
+        self.assertEqual(view.node_n_children('parent'),0)
+        #now inserting the parent
+        view.apply_filter('leaf')
+        self.tree.add_node(node2)
+        all_nodes = view.get_all_nodes()
+        self.assert_('futur' in all_nodes)
+        self.failIf('parent' in all_nodes)
+        self.failIf('parent' in view.node_parents('futur'))
+        view.reset_filters()
+        self.assert_(view.is_displayed('parent'))
+        self.assert_('futur' in view.node_all_children('parent'))
+        
         
     def test_recursive_removing_parent(self):
         """Test behavior of node when its parent goes away.

@@ -109,6 +109,8 @@ class FilteredTree():
         self.node_to_add = []
         self.__adding_queue = []
         self.__adding_lock = False
+        self.__updating_queue = []
+        self.__updating_lock = False
         self.tasks_to_modify = []
         self.node_to_remove = []
         self.__clean_list = []
@@ -672,19 +674,16 @@ class FilteredTree():
     
     # Put or remove a node from the virtual root
     def __root_update(self,tid,inroot):
-#        if tid in DEBUG_TID:
-#            print "calling root update %s for %s" %(inroot,tid)
         children_update = False
         if inroot:
             if tid not in self.virtual_root:
-#                if tid in DEBUG_TID:
-#                    print "appending %s to VR" %tid
+#                print "* * * appending %s to VR %s" %(tid,self.virtual_root)
                 self.virtual_root.append(tid)
                 #We will also update the children of that node
                 children_update = True
         else:
             if tid in self.virtual_root:
-#                print "removin %s from VR" %tid
+#                print "- - - removin %s from VR %s" %(tid,self.virtual_root)
                 self.virtual_root.remove(tid)
             #even if you are not a root, 
             #your children should not be in VR either
@@ -702,47 +701,55 @@ class FilteredTree():
                 if chid in self.virtual_root:
                     #the child was in the VR. It should not be
                     #because its parent is in now
-                    print "we will update %s, son of %s" %(chid,tid)
+#                    print "we will update %s, son of %s" %(chid,tid)
                     self.__update_node(chid,False)
                 i += 1
+                
+    def __update_node(self,tid,inroot=None):
+        self.__updating_queue.append([tid,inroot])
+        if tid and not self.__updating_lock and len(self.__updating_queue) > 0:
+            self.__updating_lock = True
+            self.__updating_loop()
     
-    def __update_node(self,tid,inroot):
-        if tid not in self.node_to_remove:
-            todis = self.__is_displayed(tid) 
-            curdis = self.is_displayed(tid)
-            if todis:
-                #if the task was not displayed previously but now should
-                #we add it.
-                if not curdis:
-#                    print "*update_node : adding node %s" %tid
-                    self.__add_node(tid)
+    def __updating_loop(self):
+        while len(self.__updating_queue) > 0:
+            tid,inroot = self.__updating_queue.pop(0)
+            if tid not in self.node_to_remove and tid != 'root':
+                todis = self.__is_displayed(tid) 
+                curdis = self.is_displayed(tid)
+                if todis:
+                    #if the task was not displayed previously but now should
+                    #we add it.
+                    if not curdis:
+    #                    print "*update_node : adding node %s" %tid
+                        self.__add_node(tid)
+                    else:
+                        self.__root_update(tid,inroot)
+                        self.update_count += 1
+                        self.callback("modified", tid)
+                        #I don't remember why we have to update the children.
+                        if not self.flat:
+                            node = self.get_node(tid)
+                            if node:
+                                child_list = node.get_children()
+                                for c in child_list:
+                                    self.__update_node(c,False)
                 else:
-                    self.__root_update(tid,inroot)
-                    self.update_count += 1
-                    self.callback("modified", tid)
-                    #I don't remember why we have to update the children.
-                    if not self.flat:
-                        node = self.get_node(tid)
-                        if node:
-                            child_list = node.get_children()
-                            for c in child_list:
-                                self.__update_node(c,False)
-            else:
-                #if the task was displayed previously but shouldn't be anymore
-                #we remove it
-                if curdis:
-                    self.__remove_node(tid)
-#                else:
-                    #We update a node not displayed and not to display !
-                    #There's nothing todo
-                    #FIXME: we should not fail silently !
-#                    if self.is_displayed(tid):
-#                        paths = self.get_paths_for_node(tid)
-#                        self.emit("node-deleted-inview", tid, paths)
-##                    else:
-#                        paths = None
-#                        print "we don't have path to delete for %s" %tid
-                    
+                    #if the task was displayed previously but shouldn't be anymore
+                    #we remove it
+                    if curdis:
+                        self.__remove_node(tid)
+    #                else:
+                        #We update a node not displayed and not to display !
+                        #There's nothing todo
+                        #FIXME: we should not fail silently !
+    #                    if self.is_displayed(tid):
+    #                        paths = self.get_paths_for_node(tid)
+    #                        self.emit("node-deleted-inview", tid, paths)
+    ##                    else:
+    #                        paths = None
+    #                        print "we don't have path to delete for %s" %tid
+                        
 
 
     

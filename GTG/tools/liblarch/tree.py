@@ -112,6 +112,7 @@ class MainTree(gobject.GObject):
             #we build the relationship before adding the node !
             #That's crucial, else, the node will exist while
             #children might not be yet aware of the relationship
+#            print "##### adding node %s with parent %s" %(id,parent_id)
             self.new_relationship(parent_id,id)
             self.nodes[id] = node
             #build the relationships that were waiting for that node
@@ -211,10 +212,12 @@ class MainTree(gobject.GObject):
                 if [parent_id,child_id] not in self.pending_relationships:
                     self.pending_relationships.append([parent_id,child_id])
                 #PLOUM_DEBUG : while is that True ? It should be False
-                toreturn = True
+#                print "Undoing relationship %s->%s" %(parent_id,child_id)
+                toreturn = False
         if toreturn:
-            self.__modified(parent_id)
-#            print "sending modified for child %s" %child_id
+#            print "we modify parent %s then child %s" %(parent_id,child_id)
+            if parent_id != 'root':
+                self.__modified(parent_id)
             self.__modified(child_id)
         return toreturn
     
