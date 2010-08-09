@@ -219,11 +219,7 @@ class FilteredTree():
             self.__add_node(tid)
         
     def __task_modified(self,sender,tid):
-        if tid not in self.tasks_to_modify:
-            self.tasks_to_modify.append(tid)
-            inroot = self.__is_root(tid)
-            self.__update_node(tid,inroot)
-            self.tasks_to_modify.remove(tid)
+        self.__update_node(tid,None)
 
     def __task_deleted(self,sender,tid):
         self.__remove_node(tid)
@@ -687,10 +683,6 @@ class FilteredTree():
                 self.virtual_root.remove(tid)
             #even if you are not a root, 
             #your children should not be in VR either
-            #PLOUM_DEBUG : why is that necesary ?
-            #commenting it out for now
-#            else:
-#                children_update = True
         #now we handle childrens
         if not self.flat and children_update:
             nc = self.node_n_children(tid)
@@ -727,6 +719,10 @@ class FilteredTree():
     def __execution_loop(self):
         while len(self.__updating_queue) > 0:
             tid,inroot,action = self.__updating_queue.pop(0)
+#            print "# # # %s %s %s popped out" %(tid,inroot,action)
+            if inroot == None:
+                inroot = self.__is_root(tid)
+#            print "lis is %s" %self.__updating_queue
             if action == 'update':
                 self.__updating_loop(tid,inroot)
             elif action == 'delete':

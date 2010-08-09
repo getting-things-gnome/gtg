@@ -202,7 +202,7 @@ class MainTree(gobject.GObject):
                     raise Exception("Cannot build circular relationship"+\
                                     "between %s and %s" %(parent_id,child_id))
                     self.break_relationship(parent_id,child_id)
-                    toreturn = True
+                    toreturn = False
             else:
                 #at least one of the node is not loaded. Save the relation for later
                 #undo everything
@@ -211,8 +211,6 @@ class MainTree(gobject.GObject):
                 #save it for later
                 if [parent_id,child_id] not in self.pending_relationships:
                     self.pending_relationships.append([parent_id,child_id])
-                #PLOUM_DEBUG : while is that True ? It should be False
-#                print "Undoing relationship %s->%s" %(parent_id,child_id)
                 toreturn = False
         if toreturn:
 #            print "we modify parent %s then child %s" %(parent_id,child_id)
@@ -441,6 +439,7 @@ class TreeNode():
 
     def add_parent(self, parent_id):
         if parent_id not in self.parents:
+#            print " ++++++++ adding parent %s to %s" %(parent_id,self.get_id())
             self.parents.append(parent_id)
             toreturn = self.new_relationship(parent_id, self.get_id())
 #            if not toreturn:
@@ -465,6 +464,7 @@ class TreeNode():
             
     def remove_parent(self,id):
         if id in self.parents:
+#            print " --------removing parent %s to %s" %(id,self.get_id())
             self.parents.remove(id)
             ret = self.tree.break_relationship(id,self.get_id())
             return ret
