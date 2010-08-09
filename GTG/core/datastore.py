@@ -150,7 +150,10 @@ class DataStore(object):
                 i += 1
             parent = tag.get_attribute('parent')
             if parent:
-                pnode=self.new_tag(parent)
+                if self.__tagstore.has_node(parent):
+                    pnode = self.__tagstore.get_node(parent)
+                else:
+                    pnode=self.new_tag(parent)
                 tag.set_parent(pnode.get_id())
         self.tagfile = tagfile
                 
