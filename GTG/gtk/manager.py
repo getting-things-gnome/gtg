@@ -224,11 +224,7 @@ class Manager(object):
             
 ### MAIN ###################################################################
 
-    def main(self, once_thru = False,  uri_list = []):
-        for uri in uri_list:
-            if uri.startswith("gtg://"):
-                self.open_task(uri[6:])
-        print "MAIN"
+    def main(self, once_thru = False):
         gobject.threads_init()
         if once_thru:
             gtk.main_iteration()
