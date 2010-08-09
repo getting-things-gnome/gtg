@@ -211,7 +211,11 @@ class Manager:
                     self.close_task(t)
             
 ### MAIN ###################################################################
-    def main(self, once_thru=False):
+
+    def main(self, once_thru = False,  uri_list = []):
+        for uri in uri_list:
+            if uri.startswith("gtg://"):
+                self.open_task(uri[6:])
         gobject.threads_init()
         if once_thru:
             gtk.main_iteration()
