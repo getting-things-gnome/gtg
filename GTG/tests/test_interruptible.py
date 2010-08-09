@@ -34,6 +34,7 @@ class TestInterruptible(unittest.TestCase):
     '''
 
     def test_interruptible_decorator(self):
+        '''Tests for the @interruptible decorator.'''
         self.quit_condition = False
         cancellation_point = lambda: _cancellation_point(\
                                         lambda: self.quit_condition)
@@ -54,15 +55,6 @@ class TestInterruptible(unittest.TestCase):
             countdown -= 1
         self.assertFalse(thread.is_alive())
 
-
-
-
-
-
-
-
-
-    
 
 def test_suite():
     return unittest.TestLoader().loadTestsFromTestCase(TestInterruptible)
