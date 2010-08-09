@@ -359,8 +359,8 @@ class FilteredTree():
                 nextnode_id = self.virtual_root[i]
                 if self.is_displayed(nextnode_id):
                     toreturn = nextnode_id
-            else:
-                print "%s is %s in the VR of size %s" %(nid,i,len(self.virtual_root))
+#            else:
+#                print "%s is %s in the VR of size %s" %(nid,i,len(self.virtual_root))
         else:
             parents_nodes = self.node_parents(nid)
             if len(parents_nodes) >= 1:
@@ -378,14 +378,14 @@ class FilteredTree():
                         next_id = c
                 if next_id >= 0 and next_id < total:
                     toreturn = self.node_nth_child(parent_node,next_id)
-                    print "we return None for %s because node_nth_child do so"%(next_id)
-                else:
-                    print "we found next_id %s (total %s) but return None" %(next_id,total)
-            else:
-                print "parent %s of %s is of len %s" %(parent_node.get_id(),nid,len(parents_node))
+#                    print "we return None for %s because node_nth_child do so"%(next_id)
+#                else:
+#                    print "we found next_id %s (total %s) but return None" %(next_id,total)
+#            else:
+#                print "parent %s of %s is of len %s" %(parent_node.get_id(),nid,len(parents_node))
         #check to see if our result is correct
         if toreturn and not self.is_displayed(toreturn):
-            print "we return None because %s is not displayed" %toreturn
+#            print "we return None because %s is not displayed" %toreturn
             toreturn = None
         return toreturn
 
@@ -688,8 +688,10 @@ class FilteredTree():
                 self.virtual_root.remove(tid)
             #even if you are not a root, 
             #your children should not be in VR either
-            else:
-                children_update = True
+            #PLOUM_DEBUG : why is that necesary ?
+            #commenting it out for now
+#            else:
+#                children_update = True
         #now we handle childrens
         if not self.flat and children_update:
             nc = self.node_n_children(tid)
@@ -700,6 +702,7 @@ class FilteredTree():
                 if chid in self.virtual_root:
                     #the child was in the VR. It should not be
                     #because its parent is in now
+                    print "we will update %s, son of %s" %(chid,tid)
                     self.__update_node(chid,False)
                 i += 1
     

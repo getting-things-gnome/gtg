@@ -145,10 +145,10 @@ class TreeModel(gtk.GenericTreeModel):
             #We have the next node, we have to build the rowref
             if next_id:
                 toreturn = rowref[:-1] + (next_id,)
-        if not toreturn:
-            print "###########  iter_next returns None for rowref %s" %str(rowref)
-        else:
-            print "******** %s is next node of %s ********" %(toreturn,str(rowref))
+#        if not toreturn:
+#            print "###########  iter_next returns None for rowref %s" %str(rowref)
+#        else:
+#            print "******** %s is next node of %s ********" %(toreturn,str(rowref))
         return toreturn
 
     def on_iter_children(self, rowref):

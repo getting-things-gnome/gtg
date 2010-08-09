@@ -178,9 +178,11 @@ class MainTree(gobject.GObject):
                 genealogic_search(parent_id)
                 if child_id not in genealogy:
                     if not p.has_child(child_id):
+#                        print "adding child %s to %s" %(child_id,parent_id)
                         p.add_child(child_id)
                         toreturn = True
                     if parent_id != 'root' and not c.has_parent(parent_id):
+#                        print "adding parent %s to %s" %(parent_id,child_id)
                         c.add_parent(parent_id)
                         toreturn = True
                     #removing the root from the list of parent
