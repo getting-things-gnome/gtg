@@ -228,7 +228,6 @@ class Manager(object):
         for uri in uri_list:
             if uri.startswith("gtg://"):
                 self.open_task(uri[6:])
-        print "MAIN"
         gobject.threads_init()
         if once_thru:
             gtk.main_iteration()
