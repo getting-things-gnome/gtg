@@ -522,12 +522,17 @@ class GenericBackend(object):
 
     def get_parameter_type(self, param_name):
         '''
-        Given the name of a parameter, returns its type. 
+        Given the name of a parameter, returns its type. If the parameter is one
+        of the default ones, it does not have a type: in that case, it returns
+        None
 
         @param param_name: the name of the parameter
-        @returns string: the type
+        @returns string: the type, or None
         '''
-        return self.get_static_parameters()[param_name][self.PARAM_TYPE]
+        try:
+            return self.get_static_parameters()[param_name][self.PARAM_TYPE]
+        except:
+            return None
 
     def register_datastore(self, datastore):
         '''
