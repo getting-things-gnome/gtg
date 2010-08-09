@@ -706,104 +706,115 @@ class FilteredTree():
                 i += 1
                 
     def __update_node(self,tid,inroot=None):
-        self.__updating_queue.append([tid,inroot])
-        if tid and not self.__updating_lock and len(self.__updating_queue) > 0:
+        self.__updating_queue.append([tid,inroot,'update'])
+        if not self.__updating_lock and len(self.__updating_queue) > 0:
             self.__updating_lock = True
-            self.__updating_loop()
-    
-    def __updating_loop(self):
-        while len(self.__updating_queue) > 0:
-            tid,inroot = self.__updating_queue.pop(0)
-            if tid not in self.node_to_remove and tid != 'root':
-                todis = self.__is_displayed(tid) 
-                curdis = self.is_displayed(tid)
-                if todis:
-                    #if the task was not displayed previously but now should
-                    #we add it.
-                    if not curdis:
-    #                    print "*update_node : adding node %s" %tid
-                        self.__add_node(tid)
-                    else:
-                        self.__root_update(tid,inroot)
-                        self.update_count += 1
-                        self.callback("modified", tid)
-                        #I don't remember why we have to update the children.
-                        if not self.flat:
-                            node = self.get_node(tid)
-                            if node:
-                                child_list = node.get_children()
-                                for c in child_list:
-                                    self.__update_node(c,False)
-                else:
-                    #if the task was displayed previously but shouldn't be anymore
-                    #we remove it
-                    if curdis:
-                        self.__remove_node(tid)
-    #                else:
-                        #We update a node not displayed and not to display !
-                        #There's nothing todo
-                        #FIXME: we should not fail silently !
-    #                    if self.is_displayed(tid):
-    #                        paths = self.get_paths_for_node(tid)
-    #                        self.emit("node-deleted-inview", tid, paths)
-    ##                    else:
-    #                        paths = None
-    #                        print "we don't have path to delete for %s" %tid
-                        
-
-
-    
-    
+            self.__execution_loop()
+            
     def __add_node(self,tid,inroot=None):
-        self.__adding_queue.append([tid,inroot])
-        if tid and not self.__adding_lock and len(self.__adding_queue) > 0:
-            self.__adding_lock = True
-            self.__adding_loop()
-
-    def __adding_loop(self):
-        while len(self.__adding_queue) > 0:
-            tid,inroot = self.__adding_queue.pop(0)
-            if self.tree.has_node(tid) and not self.is_displayed(tid):
-                if inroot == None:
-                    inroot = self.__is_root(tid)
-                #If the parent's node is not already displayed, we wait
-                #(the len of parents is 0 means no parent dislayed)
-                parents = self.node_parents(tid)
-                if not inroot and len(parents) <= 0:
-                    if tid not in self.node_to_add:
-                        self.node_to_add.append(tid)
-                elif inroot and len(parents) > 0:
-                    #"we add to the root a task with parents !!!!!"
-                    if tid not in self.node_to_add:
-                        self.node_to_add.append(tid)
-                else:
-                    self.add_count += 1
-                    self.__nodes_count += 1
-                    self.displayed_nodes.append(tid)
-                    if tid in self.node_to_add:
-                        self.node_to_add.remove(tid)
-                    #Should be in displayed_nodes before updating the root
-                    #FIXME le root_update alors que le nœud n'est pas encore 
-                    #ajouté peut mener un enfant à l'erreur
-                    # has no parent but is not in VR
-                    
-                    self.__root_update(tid,inroot)
-                    self.callback("added", tid)
-                    for p in parents:
-                        if self.is_displayed(p):
-                            self.callback("modified", p)
-                    #We added a new node so we can check with those waiting
-                    lost_nodes = []
-                    while len(self.node_to_add) > 0:
-                        nid = self.node_to_add.pop(0)
-                        if len(self.node_parents(nid)) > 0:
-                            self.__add_node(nid,False)
-                        else:
-                            lost_nodes.append(nid)
-                    self.node_to_add += lost_nodes
-        self.__adding_lock = False
+        self.__updating_queue.append([tid,inroot,'add'])
+        if not self.__updating_lock and len(self.__updating_queue) > 0:
+            self.__updating_lock = True
+            self.__execution_loop()
+            
+    def __remove_node(self,tid,inroot=None):
+        self.__updating_queue.append([tid,inroot,'delete'])
+        if not self.__updating_lock and len(self.__updating_queue) > 0:
+            self.__updating_lock = True
+            self.__execution_loop()
+            
+            
+    def __execution_loop(self):
+        while len(self.__updating_queue) > 0:
+            tid,inroot,action = self.__updating_queue.pop(0)
+            if action == 'update':
+                self.__updating_loop(tid,inroot)
+            elif action == 'delete':
+                self.__removing_loop(tid)
+            elif action == 'add':
+                self.__adding_loop(tid,inroot)
+            else:
+                raise ValueError('%s in not a valid action for the loop') %action
+        self.__updating_lock = False
     
-    def __remove_node(self,tid):
+    def __updating_loop(self,tid,inroot):
+        if tid not in self.node_to_remove and tid != 'root':
+            todis = self.__is_displayed(tid) 
+            curdis = self.is_displayed(tid)
+            if todis:
+                #if the task was not displayed previously but now should
+                #we add it.
+                if not curdis:
+#                    print "*update_node : adding node %s" %tid
+                    self.__add_node(tid)
+                else:
+                    self.__root_update(tid,inroot)
+                    self.update_count += 1
+                    self.callback("modified", tid)
+                    #I don't remember why we have to update the children.
+                    if not self.flat:
+                        node = self.get_node(tid)
+                        if node:
+                            child_list = node.get_children()
+                            for c in child_list:
+                                self.__update_node(c,False)
+            else:
+                #if the task was displayed previously but shouldn't be anymore
+                #we remove it
+                if curdis:
+                    self.__remove_node(tid)
+#                else:
+                    #We update a node not displayed and not to display !
+                    #There's nothing todo
+                    #FIXME: we should not fail silently !
+#                    if self.is_displayed(tid):
+#                        paths = self.get_paths_for_node(tid)
+#                        self.emit("node-deleted-inview", tid, paths)
+##                    else:
+#                        paths = None
+#                        print "we don't have path to delete for %s" %tid
+
+    def __adding_loop(self,tid,inroot):
+        if self.tree.has_node(tid) and not self.is_displayed(tid):
+            if inroot == None:
+                inroot = self.__is_root(tid)
+            #If the parent's node is not already displayed, we wait
+            #(the len of parents is 0 means no parent dislayed)
+            parents = self.node_parents(tid)
+            if not inroot and len(parents) <= 0:
+                if tid not in self.node_to_add:
+                    self.node_to_add.append(tid)
+            elif inroot and len(parents) > 0:
+                #"we add to the root a task with parents !!!!!"
+                if tid not in self.node_to_add:
+                    self.node_to_add.append(tid)
+            else:
+                self.add_count += 1
+                self.__nodes_count += 1
+                self.displayed_nodes.append(tid)
+                if tid in self.node_to_add:
+                    self.node_to_add.remove(tid)
+                #Should be in displayed_nodes before updating the root
+                #FIXME le root_update alors que le nœud n'est pas encore 
+                #ajouté peut mener un enfant à l'erreur
+                # has no parent but is not in VR
+                
+                self.__root_update(tid,inroot)
+                self.callback("added", tid)
+                for p in parents:
+                    if self.is_displayed(p):
+                        self.callback("modified", p)
+                #We added a new node so we can check with those waiting
+                lost_nodes = []
+                while len(self.node_to_add) > 0:
+                    nid = self.node_to_add.pop(0)
+                    if len(self.node_parents(nid)) > 0:
+                        self.__add_node(nid,False)
+                    else:
+                        lost_nodes.append(nid)
+                self.node_to_add += lost_nodes
+    
+    def __removing_loop(self,tid):
         if tid not in self.node_to_remove:
             self.node_to_remove.append(tid)
             isroot = False
