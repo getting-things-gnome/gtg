@@ -17,7 +17,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 DEBUG_MODEL = False
-TM_USE_SIGNALS = False
+TM_USE_SIGNALS = True
 TM_IDLE_ADD = False
 
 import xml.sax.saxutils as saxutils
