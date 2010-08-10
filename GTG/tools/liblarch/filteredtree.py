@@ -144,7 +144,7 @@ class FilteredTree():
         func = self.cllbcks.get(event,None)
         if func:
             paths = self.get_paths_for_node(tid)
-            if len(paths) <= 0:
+            if not paths or len(paths) <= 0:
                 raise Exception('cllbck %s for %s but it has no paths'%(event,tid))
             func(tid,paths)
 
@@ -223,7 +223,8 @@ class FilteredTree():
             self.__add_node(tid)
         
     def __task_modified(self,sender,tid):
-        self.__update_node(tid,None)
+        inroot = self.__is_root(tid)
+        self.__update_node(tid,inroot)
 
     def __task_deleted(self,sender,tid):
         self.__remove_node(tid)
@@ -297,6 +298,7 @@ class FilteredTree():
                 node = self.get_node(tid)
                 realparents = node.get_parents()
                 print "real parents of %s are : %s" %(tid,str(realparents))
+                print "displayed_nodes are %s" %self.displayed_nodes
                 for p in realparents:
                     print "%s is displayed : %s" %(p,self.is_displayed(p))
                     print "but the truth is : %s" %self.__is_displayed(p)
@@ -648,7 +650,7 @@ class FilteredTree():
             n = self.tree.get_node(nid)
             if n.has_parent():
                 for par in n.get_parents():
-                    if self.__is_displayed(par):
+                    if self.is_displayed(par):
                         is_root = False
         return is_root
     

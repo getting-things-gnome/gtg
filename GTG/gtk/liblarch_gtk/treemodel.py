@@ -17,6 +17,8 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 DEBUG_MODEL = False
+TM_USE_SIGNALS = False
+TM_IDLE_ADD = False
 
 import xml.sax.saxutils as saxutils
 
@@ -38,9 +40,14 @@ class TreeModel(gtk.GenericTreeModel):
         def get_nodeid(node):
             return node.get_id()
         self.value_list.append([str,get_nodeid])
-        self.tree.register_cllbck('node-added-inview',self.add_task)
-        self.tree.register_cllbck('node-deleted-inview',self.remove_task)
-        self.tree.register_cllbck('node-modified-inview',self.update_task)
+        if TM_USE_SIGNALS:
+            self.tree.connect('node-added-inview',self.__add_task)
+            self.tree.connect('node-deleted-inview',self.__remove_task)
+            self.tree.connect('node-modified-inview',self.__update_task)
+        else:
+            self.tree.register_cllbck('node-added-inview',self.add_task)
+            self.tree.register_cllbck('node-deleted-inview',self.remove_task)
+            self.tree.register_cllbck('node-modified-inview',self.update_task)
 
 ### TREE MODEL HELPER FUNCTIONS ###############################################
 
@@ -167,6 +174,8 @@ class TreeModel(gtk.GenericTreeModel):
             return None
 
     def on_iter_has_child(self, rowref):
+        if DEBUG_MODEL:
+            print "on_iter_has_child %s" %str(rowref)
         nid = self.__get_nid_from_rowref(rowref)
         return self.tree.node_has_child(nid)
 
@@ -180,6 +189,8 @@ class TreeModel(gtk.GenericTreeModel):
         return self.tree.node_n_children(nid)
 
     def on_iter_nth_child(self, rowref, n):
+        if DEBUG_MODEL:
+            print "on iter child nbr %s for %s" %(n,str(rowref))
         if rowref:
             nid = self.__get_nid_from_rowref(rowref)
         else:
@@ -190,16 +201,31 @@ class TreeModel(gtk.GenericTreeModel):
         return rowref + (cid,)
 
     def on_iter_parent(self, rowref):
+        if DEBUG_MODEL:
+            print "on iter parent %s" %str(rowref)
         if len(rowref) >= 1:
             return rowref[:-1]
         else:
             return None
             
     def add_task(self,tid,paths):
-        self.update_task(tid,paths,data='add')
+        if TM_IDLE_ADD:
+            gobject.idle_add(self.__update_task,None,tid,paths,'add')
+        else:
+            self.__update_task(None,tid,paths,'add')
+        
+    def __add_task(self,sender,tid,paths):
+        self.__update_task(sender,tid,paths,'add')
 
     def update_task(self, tid,paths,data=None):
-#        print "update task : %s %s" %(data,tid)
+        if TM_IDLE_ADD:
+            gobject.idle_add(self.__update_task,None,tid,paths,data)
+        else:
+            self.__update_task(None,tid,paths,data)
+    
+    def __update_task(self,sender,tid,paths,data=None):
+        if DEBUG_MODEL:
+            print "update task : %s %s" %(data,tid)
         for node_path in paths:
 #            print "updating %s for path %s" %(tid,str(node_path))
 #            print "other paths are %s" %(str(self.tree.get_paths_for_node(tid)))
@@ -217,7 +243,7 @@ class TreeModel(gtk.GenericTreeModel):
                     self.row_has_child_toggled(node_path, rowref)
             else:
                 raise ValueError("path for %s is supposed" %tid +\
-                        "to be %s, not the one of %s "%(node_path, actual_tid))
+                        "to be %s, the one of %s "%(node_path, actual_tid))
 #                print "************"
 #                print "path for %s is supposed to be %s "%(tid,node_path)
 #                print "but in fact, tid for that path is %s" %actual_tid
@@ -226,8 +252,14 @@ class TreeModel(gtk.GenericTreeModel):
 #                self.tree.print_tree()
         if len(paths) == 0: 
             raise  ValueError("Error :! no path for node %s !" %tid)
-                
+            
     def remove_task(self,tid,paths=None):
+        if TM_IDLE_ADD:
+            gobject.idle_add(self.__remove_task,None,tid,paths)
+        else:
+            self.__remove_task(None,tid,paths)
+                
+    def __remove_task(self,sender,tid,paths=None):
         if paths:
             for p in paths:
 #                print "removing task %s on %s" %(tid,str(p))

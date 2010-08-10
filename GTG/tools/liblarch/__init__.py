@@ -17,6 +17,9 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
+#This doesn't work
+IDLE_ADD = False
+
 import gobject
 import functools
 
@@ -53,14 +56,23 @@ class Tree():
         return self.__tree.has_node(nid)
 
     def add_node(self,node,parent_id=None):
-#        node.set_tree(self.__tree)
-        self.__tree.add_node(node,parent_id=parent_id)
+        if IDLE_ADD:
+            gobject.idle_add(self.__tree.add_node,node,parent_id)
+        else:
+            self.__tree.add_node(node,parent_id=parent_id)
 
     def del_node(self,nid,recursive=False):
-        return self.__tree.remove_node(nid,recursive=recursive)
+        if IDLE_ADD:
+            gobject.idle_add(self.__tree.remove_node,nid,recursive)
+            return True
+        else:
+            return self.__tree.remove_node(nid,recursive=recursive)
 
     def refresh_node(self,nid):
-        self.__tree.modify_node(nid)
+        if IDLE_ADD:
+            gobject.idle_add(self.__tree.modify_node,nid)
+        else:
+            self.__tree.modify_node(nid)
         
     def move_node(self,nid,new_parent_id=None):
         """
@@ -69,7 +81,10 @@ class Tree():
         """
         if self.has_node(nid):
             node = self.get_node(nid)
-            node.set_parent(new_parent_id)
+            if IDLE_ADD:
+                gobject.idle_add(node.set_parent,new_parent_id)
+            else:
+                node.set_parent(new_parent_id)
             toreturn = True
         else:
             toreturn = False
@@ -79,7 +94,11 @@ class Tree():
     def add_parent(self,nid,new_parent_id=None):
         if self.has_node(nid):
             node = self.get_node(nid)
-            toreturn = node.add_parent(new_parent_id)
+            if IDLE_ADD:
+                gobject.idle_add(node.add_parent,new_parent_id)
+                toreturn = True
+            else:
+                toreturn = node.add_parent(new_parent_id)
         else:
             toreturn = False
         return toreturn
@@ -140,9 +159,9 @@ class ViewTree(gobject.GObject):
     __gsignal_str2 = (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, \
                                                 (str,gobject.TYPE_PYOBJECT, ))
     #FIXME: should we unify those signals ? They are conceptually different
-    __gsignals__ = {'node-added-inview'   : __gsignal_str,
+    __gsignals__ = {'node-added-inview'   : __gsignal_str2,
                     'node-deleted-inview' : __gsignal_str2,
-                    'node-modified-inview': __gsignal_str,
+                    'node-modified-inview': __gsignal_str2,
                     'node-added'   : __gsignal_str,
                     'node-deleted' : __gsignal_str,
                     'node-modified': __gsignal_str,}
@@ -185,7 +204,7 @@ class ViewTree(gobject.GObject):
     def __emit(self, signal_name, tid,paths=None):
         for k in self.__cllbcks.get(signal_name,[]):
             self.__cllbcks[signal_name][k](tid,paths)
-        if signal_name == 'node-deleted-inview':
+        if signal_name.endswith('-inview'):
             self.emit(signal_name, tid,paths)
         else:
             self.emit(signal_name, tid)

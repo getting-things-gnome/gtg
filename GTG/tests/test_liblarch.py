@@ -462,9 +462,9 @@ class TestLibLarch(unittest.TestCase):
         self.assertSignal(self.view, \
                           'node-modified-inview', \
                           self.tree.move_node, 3)('temp','1')
-        self.assert_(('temp',) in self.recorded_signals['node-modified-inview'])
-        self.assert_(('0',) in self.recorded_signals['node-modified-inview'])
-        self.assert_(('1',) in self.recorded_signals['node-modified-inview'])
+        self.assert_(('temp',[(1,0)]) in self.recorded_signals['node-modified-inview'])
+        self.assert_(('0',[(0,)]) in self.recorded_signals['node-modified-inview'])
+        self.assert_(('1',[(1,)]) in self.recorded_signals['node-modified-inview'])
         self.assert_(view.node_has_child('1'))
         self.assert_('temp' in view.node_all_children('1'))
         self.assert_('temp' not in view.node_all_children('0'))
@@ -491,7 +491,7 @@ class TestLibLarch(unittest.TestCase):
                           self.tree.add_node, 2)(node, parent_id = '0')
         #Not checking temp. Indeed, it has been added, so there should not 
         #be any modified signal
-        self.assert_(('0',) in self.recorded_signals['node-modified-inview'])
+        self.assert_(('0',[(0,)]) in self.recorded_signals['node-modified-inview'])
         #Testing initial situation
         self.assert_(view.node_has_child('0'))
         self.assert_('temp' in view.node_all_children('0'))
@@ -501,8 +501,8 @@ class TestLibLarch(unittest.TestCase):
                           'node-modified-inview', \
                           self.tree.add_parent, 2)('temp','1')
         self.tree.add_parent('temp','1')
-        self.assert_(('temp',) in self.recorded_signals['node-modified-inview'])
-        self.assert_(('1',) in self.recorded_signals['node-modified-inview'])
+        self.assert_(('temp',[(0,0),(1,0)]) in self.recorded_signals['node-modified-inview'])
+        self.assert_(('1',[(1,)]) in self.recorded_signals['node-modified-inview'])
         self.assert_(view.node_has_child('1'))
         self.assert_('temp' in view.node_all_children('1'))
         self.assert_('temp' in view.node_all_children('0'))
