@@ -40,6 +40,8 @@ class TreeModel(gtk.GenericTreeModel):
         def get_nodeid(node):
             return node.get_id()
         self.value_list.append([str,get_nodeid])
+        
+    def connect_model(self):
         if TM_USE_SIGNALS:
             self.tree.connect('node-added-inview',self.__add_task)
             self.tree.connect('node-deleted-inview',self.__remove_task)
@@ -115,8 +117,8 @@ class TreeModel(gtk.GenericTreeModel):
         return self.value_list[n][0]
     
     def on_get_value(self, rowref, column):
-        if DEBUG_MODEL:
-            print "get_value  for %s %s" %(str(rowref),column)
+#        if DEBUG_MODEL:
+#            print "get_value  for %s %s" %(str(rowref),column)
         if not rowref:
             raise ValueError('Asking the value of an empty rowref')
         node = self.__get_node_from_rowref(rowref)
@@ -156,10 +158,11 @@ class TreeModel(gtk.GenericTreeModel):
             #We have the next node, we have to build the rowref
             if next_id:
                 toreturn = rowref[:-1] + (next_id,)
-#        if not toreturn:
-#            print "###########  iter_next returns None for rowref %s" %str(rowref)
-#        else:
-#            print "******** %s is next node of %s ********" %(toreturn,str(rowref))
+        if DEBUG_MODEL:
+            if not toreturn:
+                print "###########  iter_next returns None for rowref %s" %str(rowref)
+            else:
+                print "******** %s is next node of %s ********" %(toreturn,str(rowref))
         return toreturn
 
     def on_iter_children(self, rowref):
@@ -174,10 +177,11 @@ class TreeModel(gtk.GenericTreeModel):
             return None
 
     def on_iter_has_child(self, rowref):
-        if DEBUG_MODEL:
-            print "on_iter_has_child %s" %str(rowref)
         nid = self.__get_nid_from_rowref(rowref)
-        return self.tree.node_has_child(nid)
+        toreturn = self.tree.node_has_child(nid)
+        if DEBUG_MODEL:
+            print "on_iter_has_child %s : %s" %(str(rowref),toreturn)
+        return toreturn
 
     def on_iter_n_children(self, rowref):
         if rowref:
@@ -233,13 +237,18 @@ class TreeModel(gtk.GenericTreeModel):
             if tid == actual_tid:
                 rowref = self.get_iter(node_path)
                 if data == 'add':
-    #                print "adding %s on path %s" %(tid,str(node_path))
+                    if DEBUG_MODEL:
+                        print "     adding %s on path %s" %(tid,str(node_path))
+                    #PLOUM_DEBUG: maybe we should queue signals as long as 
+                    #the treeview is not fully built
                     self.row_inserted(node_path, rowref)
                 else:
-#                    print "row changed for %s" %tid
+                    if DEBUG_MODEL:
+                        print "     adding %s on path %s" %(tid,str(node_path))
                     self.row_changed(node_path, rowref)
                 if self.tree.node_has_child(tid):
-    #                print "child toggling for %s %s" %(tid,str(node_path))
+                    if DEBUG_MODEL:
+                        print "     child toggling for %s %s" %(tid,str(node_path))
                     self.row_has_child_toggled(node_path, rowref)
             else:
                 raise ValueError("path for %s is supposed" %tid +\

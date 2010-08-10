@@ -199,7 +199,7 @@ class FilteredTree():
             if usecache and self.count_cache.has_key(key):
                 toreturn = self.count_cache[key]
 #                self.using_cache += 1
-                print "we used cache to return %s for %s" %(toreturn,key)
+#                print "we used cache to return %s for %s" %(toreturn,key)
             else:
                 for tid in zelist:
                     result = True

@@ -46,6 +46,10 @@ class TreeView(gtk.TreeView):
                 self.emit('node-collapsed',nid)
         else:
             print "sending %s for invalid iter %s" %(data,path) 
+            
+    def show(self):
+        gtk.TreeView.show(self)
+        self.basetreemodel.connect_model()
 
     def __init__(self, tree, description):
         gtk.TreeView.__init__(self)
