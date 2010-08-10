@@ -323,7 +323,9 @@ class Tag(TreeNode):
        print "Tag.get_tasks should be reimplemented using a ViewTree"
        
     def get_active_tasks_count(self):
-        return self.__get_count('active')
+        count = self.__get_count('active')
+#        print "%s has %s tasks" %(self.get_name(),count)
+        return count
         
     def get_total_tasks_count(self):
         return self.__get_count('main')
@@ -344,7 +346,7 @@ class Tag(TreeNode):
             toreturn = tasktree.get_n_nodes(\
                                 withfilters=[tname],include_transparent=False)
 #            toreturn = tasktree.get_n_nodes(include_transparent=False)
-#            print "we will return %s for %s" %(toreturn,tname)
+#            print "we will return %s for %s (tasktree %s)" %(toreturn,tname,tasktree)
         return toreturn
         
     #is it useful to keep the tag in the tagstore.

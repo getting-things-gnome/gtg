@@ -106,7 +106,7 @@ class TreeFactory:
         tagtree.add_filter('used',self.used_tag)
         
         activeview = tagtree.get_viewtree(name='active')
-#        activeview.apply_filter('active')
+        activeview.apply_filter('active')
         
         usedview = tagtree.get_viewtree(name='used')
         usedview.apply_filter('used')
@@ -119,6 +119,9 @@ class TreeFactory:
     
     #filter to display only tags with active tasks
     def actively_used_tag(self,node,parameters=None):
+#        print "active filter"
+        used = node.get_active_tasks_count()
+        #        print "%s has %s tasks" %(node,used)
         return node.is_actively_used()
         
     def used_tag(self,node,parameters=None):

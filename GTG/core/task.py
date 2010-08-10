@@ -511,6 +511,8 @@ class Task(TreeNode):
         if self.is_loaded():
             #This is a liblarch call to the TreeNode ancestor
             self.modified()
+            for t in self.get_tags():
+                t.modified()
             return True
         else:
             return False
@@ -600,6 +602,7 @@ class Task(TreeNode):
         self.content = self._strip_tag(self.content, tagname)
         if modified:
             tag = self.req.get_tag(tagname)
+            print "tag %s modified" %tagname
             tag.modified()
                        
     def _strip_tag(self, text, tagname,newtag=''):

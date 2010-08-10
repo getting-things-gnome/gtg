@@ -205,13 +205,14 @@ class TreeModel(gtk.GenericTreeModel):
     #                print "adding %s on path %s" %(tid,str(node_path))
                     self.row_inserted(node_path, rowref)
                 else:
+#                    print "row changed for %s" %tid
                     self.row_changed(node_path, rowref)
                 if self.tree.node_has_child(tid):
     #                print "child toggling for %s %s" %(tid,str(node_path))
                     self.row_has_child_toggled(node_path, rowref)
-#            else:
-#                raise ValueError("path for %s is supposed" %tid +\
-#                        "to be %s, not the one of %s "%(node_path, actual_tid))
+            else:
+                raise ValueError("path for %s is supposed" %tid +\
+                        "to be %s, not the one of %s "%(node_path, actual_tid))
 #                print "************"
 #                print "path for %s is supposed to be %s "%(tid,node_path)
 #                print "but in fact, tid for that path is %s" %actual_tid
@@ -225,10 +226,10 @@ class TreeModel(gtk.GenericTreeModel):
     def remove_task(self,tid,paths=None):
         if paths:
             for p in paths:
-#                print "removing task %s on %s" %(tid,str(p))
+                print "removing task %s on %s" %(tid,str(p))
                 self.row_deleted(p)
         else:
-            print "we should get the path in order to delete %s" %tid
+            raise ValueError('no paths to delete for %s' %tid)
             
             
 ########### The following should be removed onc liblarch-gtk is working ######
