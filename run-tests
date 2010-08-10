@@ -25,16 +25,46 @@ import unittest
 
 from GTG.tests import test_suite
 
+TEST_MODULE_PREFIX = "GTG.tests."
 
 def main(args):
     runner = unittest.TextTestRunner(
-        stream=sys.stdout, descriptions=False, verbosity=1)
-    test = test_suite()
-    result = runner.run(test)
-    if result.wasSuccessful():
-        return 0
+                    stream = sys.stdout,
+                    descriptions = True,
+                    verbosity = 1)
+    if len(args) > 0:
+        #if we have specified the name of the test in the command line
+        suites = []
+        for module_name in args:
+            #load the module
+            module_path = TEST_MODULE_PREFIX + module_name
+            module = __import__(module_path)
+            sys.modules[module_path] = module
+            globals()[module_path] = module
+            tests = getattr(module, "tests")
+            a_test = getattr(tests, module_name)
+            suites.append(getattr(a_test, "test_suite")())
     else:
-        return 1
+        #otherwise, run all tests
+        suites = [test_suite()]
+        print suites
+
+    #run the tests
+    tests_are_successful = True
+    for suite in suites:
+        result = runner.run(suite)
+        tests_are_successful &= result.wasSuccessful()
+
+    #show the aggregated result of all the tests
+    if tests_are_successful:
+        print "ALL TESTS ARE SUCCESSFUL"
+    else:
+        print """
+        ****************************************
+        SOME TESTS *FAILED*!
+        ****************************************
+        """
+    return tests_are_successful
 
 
 if __name__ == '__main__':
