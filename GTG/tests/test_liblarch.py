@@ -317,8 +317,15 @@ class TestLibLarch(unittest.TestCase):
         self.assert_('futur' in view.node_parents('child'))
         
     def test_addchild_with_late_parent(self):
-        '''Add a child to a node which is not yet in the tree'''
+        '''Add a child to a node which is not yet in the tree. 
+        We also check with a callback that the path sent is well
+        corresponding to the nid received.
+        '''
+        def check_path(nid,path):
+            realnode = view.get_node_for_path(path)
+            self.assertEqual(nid,realnode)
         view = self.tree.get_viewtree(refresh=True)
+        view.register_cllbck('node-modified-inview',check_path)
         node = DummyNode('child')
         node2 = DummyNode('futur')
         node3 = DummyNode('child2')
@@ -919,6 +926,17 @@ class TestLibLarch(unittest.TestCase):
 
     def test_view_signals(self):
         view = self.tree.get_viewtree(refresh = True)
+        
+#    def test_update_callback(self):
+#        '''We test the update callbacks and we check that the path
+#            received is well corresponding to the nid received'''
+#        def check_path(nid,paths):
+#            print view
+#            print nid,paths
+#        view = self.tree.get_viewtree(refresh=False)
+#        view.register_cllbck('node-modified-inview',check_path)
+#        view.register_cllbck('node-added-inview',check_path)
+#        view.apply_filter('leaf')
         
         #FIXME:  Appears unimplemented?
 def test_suite():

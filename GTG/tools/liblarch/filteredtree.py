@@ -576,7 +576,7 @@ class FilteredTree():
         #Then, we list the nodes that will be
         #ultimately displayed
         for nid in self.tree.get_all_nodes():
-            if self.__is_displayed(nid):
+            if self.__is_displayed(nid) and self.__is_root(nid):
                 to_add.append(nid)
         #And we add them
         for nid in list(to_add):
@@ -719,10 +719,11 @@ class FilteredTree():
     def __execution_loop(self):
         while len(self.__updating_queue) > 0:
             tid,inroot,action = self.__updating_queue.pop(0)
-#            print "# # # %s %s %s popped out" %(tid,inroot,action)
+            if tid == '1@1':
+                print "# # # %s %s %s popped out" %(tid,inroot,action)
+                print "lis is %s" %self.__updating_queue
             if inroot == None:
                 inroot = self.__is_root(tid)
-#            print "lis is %s" %self.__updating_queue
             if action == 'update':
                 self.__updating_loop(tid,inroot)
             elif action == 'delete':

@@ -198,7 +198,8 @@ class TreeModel(gtk.GenericTreeModel):
 
             #PLOUM_DEBUG : we check if the path still link back to 
             #a node. This is more than probably a bug in liblarch. FIXME
-            if tid == self.tree.get_node_for_path(node_path):
+            actual_tid = self.tree.get_node_for_path(node_path)
+            if tid == actual_tid:
                 rowref = self.get_iter(node_path)
                 if data == 'add':
     #                print "adding %s on path %s" %(tid,str(node_path))
@@ -208,6 +209,10 @@ class TreeModel(gtk.GenericTreeModel):
                 if self.tree.node_has_child(tid):
     #                print "child toggling for %s %s" %(tid,str(node_path))
                     self.row_has_child_toggled(node_path, rowref)
+            else:
+                print "path for %s is supposed to be %s "%(tid,node_path)
+                print "but in fact, tid for that path is %s" %actual_tid
+#                print a
         if len(paths) == 0: 
             raise  ValueError("Error :! no path for node %s !" %tid)
                 
