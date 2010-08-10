@@ -605,7 +605,6 @@ class Task(TreeNode):
         self.content = self._strip_tag(self.content, tagname)
         if modified:
             tag = self.req.get_tag(tagname)
-            print "tag %s modified" %tagname
             tag.modified()
                        
     def _strip_tag(self, text, tagname,newtag=''):
