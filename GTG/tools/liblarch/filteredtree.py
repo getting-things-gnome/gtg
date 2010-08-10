@@ -78,7 +78,7 @@ from GTG.tools.logger import Log
 
 #PLOUM_DEBUG : COUNT_CACHING seems to be broken : write test to detect it
 #Edit dynamically a tag an you will see why it is broken
-COUNT_CACHING_ENABLED = False
+COUNT_CACHING_ENABLED = True
 ## if FT doesn't use signals, it might be slower (but easier to debug)
 FT_USE_SIGNALS = 0
 
@@ -199,7 +199,7 @@ class FilteredTree():
             if usecache and self.count_cache.has_key(key):
                 toreturn = self.count_cache[key]
 #                self.using_cache += 1
-#                print "we used cache %s" %(self.using_cache)
+                print "we used cache to return %s for %s" %(toreturn,key)
             else:
                 for tid in zelist:
                     result = True
@@ -542,6 +542,7 @@ class FilteredTree():
         rebuilds the tree from scratch. It should be called only when 
         the filter is changed (i.e. only filters_bank should call it).
         """
+#        print "start refilter with %s" %self.applied_filters
         self.update_count = 0
         self.add_count = 0
         self.remove_count = 0
