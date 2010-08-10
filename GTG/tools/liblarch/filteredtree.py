@@ -464,14 +464,11 @@ class FilteredTree():
                 if curid and self.is_displayed(curid):
                     if good == n:
                         toreturn = curid
-                        #if we have a child, it cannot be in the root
-#                        if cid in self.virtual_root:
-##                            isroot = self.__is_root(curn)
-#                            print "*** children %s of task %s is also in VR" \
-#                                                    %(cid,node.get_id())
-#                            print "   we will correct that error now"
-#                            self.__root_update(cid,False)
                     good += 1
+                else:
+                    if nid == '64@1':
+                        print "%s (child of %s) is not displayed" %(curid,nid)
+                        print "all children : %s" %self.node_all_children(nid)
                 cur += 1
 #            if not toreturn:
 #                raise ValueError("Node %s has only %s children,"%(nid,total)+\
@@ -690,18 +687,24 @@ class FilteredTree():
                 i += 1
                 
     def __update_node(self,tid,inroot=None):
+        if not tid:
+            raise ValueError('cannot update node None')
         self.__updating_queue.append([tid,inroot,'update'])
         if not self.__updating_lock and len(self.__updating_queue) > 0:
             self.__updating_lock = True
             self.__execution_loop()
             
     def __add_node(self,tid,inroot=None):
+        if not tid:
+            raise ValueError('cannot add node None')
         self.__updating_queue.append([tid,inroot,'add'])
         if not self.__updating_lock and len(self.__updating_queue) > 0:
             self.__updating_lock = True
             self.__execution_loop()
             
     def __remove_node(self,tid,inroot=None):
+        if not tid:
+            raise ValueError('cannot remove node None')
         self.__updating_queue.append([tid,inroot,'delete'])
         if not self.__updating_lock and len(self.__updating_queue) > 0:
             self.__updating_lock = True
@@ -711,9 +714,9 @@ class FilteredTree():
     def __execution_loop(self):
         while len(self.__updating_queue) > 0:
             tid,inroot,action = self.__updating_queue.pop(0)
-#            if tid == '1@1':
-#            print "# # # %s %s %s popped out" %(tid,inroot,action)
-#            print "       lis is %s" %self.__updating_queue
+            if tid == tid.startswith('@'):
+                print "# # # %s %s %s popped out" %(tid,inroot,action)
+                print "       lis is %s" %self.__updating_queue
             if inroot == None:
                 inroot = self.__is_root(tid)
             if action == 'update':
@@ -751,10 +754,12 @@ class FilteredTree():
                 #if the task was displayed previously but shouldn't be anymore
                 #we remove it
                 if curdis:
+#                    print "we remove %s" %tid
                     self.__remove_node(tid)
 #                else:
                     #We update a node not displayed and not to display !
                     #There's nothing todo
+#                    print "%s is already not displayed" %tid
                     #FIXME: we should not fail silently !
 #                    if self.is_displayed(tid):
 #                        paths = self.get_paths_for_node(tid)
@@ -849,13 +854,19 @@ class FilteredTree():
     
     #This function removes all the nodes, leaves first.
     def __clean_from_node(self, nid):
+        #We don't accept the root
+        if not nid:
+            raise ValueError('cannot clean from node None')
         if nid not in self.__clean_list:
             self.__clean_list.append(nid)
-            if self.node_has_child(nid):
+            while self.node_has_child(nid):
                 n = self.node_n_children(nid)
-                while n > 0:
-                    child_id = self.node_nth_child(nid,n-1)
+                n = n-1
+                child_id = self.node_nth_child(nid,n)
+                if child_id:
                     self.__clean_from_node(child_id)
-                    n = n-1
+                else:
+                    self.__print_from_node(nid)
+                    raise IndexError('no child %s for node %s (nbr is %s)'%(n,nid,n+1))
             self.__remove_node(nid)
             self.__clean_list.remove(nid)

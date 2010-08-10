@@ -191,7 +191,7 @@ class TreeModel(gtk.GenericTreeModel):
         self.update_task(tid,paths,data='add')
 
     def update_task(self, tid,paths,data=None):
-        print "update task : %s %s" %(data,tid)
+#        print "update task : %s %s" %(data,tid)
         for node_path in paths:
 #            print "updating %s for path %s" %(tid,str(node_path))
 #            print "other paths are %s" %(str(self.tree.get_paths_for_node(tid)))

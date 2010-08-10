@@ -316,6 +316,17 @@ class TestLibLarch(unittest.TestCase):
             self.assert_(p in paths)
             p = r + (1,)
             self.assert_(p in paths)
+            
+    def test_clean_multiple_parents(self):
+        view = self.tree.get_viewtree(refresh=True)
+        node = DummyNode('child')
+        node2 = DummyNode('child2')
+        self.tree.add_node(node,parent_id='0')
+        self.tree.add_node(node2,parent_id='child')
+        node.add_parent('1')
+        node2.add_parent('1')
+        self.assertEqual(len(view.node_parents('child')),2)
+        view.apply_filter('blue')
         
     def test_adding_to_late_parent_with_leaf_filter(self):
         '''Add a node to a parent not yet in the tree
