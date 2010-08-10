@@ -415,7 +415,7 @@ class TreeNode():
 
     def has_parent(self,id=None):
         if id:
-            return id in self.parents
+            toreturn = self.tree.has_node(id) and (id in self.parents)
         else:
             toreturn = len(self.parents) > 0
         return toreturn
@@ -436,7 +436,12 @@ class TreeNode():
         '''
         Return a list of parent ids
         '''
-        return list(self.parents)
+        toreturn = []
+        if self.tree:
+            for p in self.parents:
+                if self.tree.has_node(p):
+                    toreturn.append(p)
+        return toreturn
 
     def add_parent(self, parent_id):
         if parent_id not in self.parents:

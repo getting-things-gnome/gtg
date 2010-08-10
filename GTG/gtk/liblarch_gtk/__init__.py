@@ -19,7 +19,7 @@
 
 #useful for debugging purpose.
 #Disabling that will disable the TreeModelSort on top of our TreeModel
-ENABLE_SORTING = 1
+ENABLE_SORTING = 0
 
 import gtk
 import gobject
@@ -161,14 +161,18 @@ class TreeView(gtk.TreeView):
     #this is the GTK sorting function. It receive, as paramenter, a liblarch
     #sorting function which compares nid.
     def _sort_func(self, model, iter1, iter2, func=None):
-        nid1 = model.get_value(iter1, 0)
-        nid2 = model.get_value(iter2, 0)
-        if nid1 and nid2 and func:
-            id,order = self.treemodel.get_sort_column_id()
-            node1 = self.basetree.get_node(nid1)
-            node2 = self.basetree.get_node(nid2)
-            sort = func(node1,node2,order)
+        if model.iter_is_valid(iter1) and model.iter_is_valid(iter2):
+            nid1 = model.get_value(iter1, 0)
+            nid2 = model.get_value(iter2, 0)
+            if nid1 and nid2 and func:
+                id,order = self.treemodel.get_sort_column_id()
+                node1 = self.basetree.get_node(nid1)
+                node2 = self.basetree.get_node(nid2)
+                sort = func(node1,node2,order)
+            else:
+                sort = -1
         else:
+            print "some of the iter given for sorting are invalid. WTF?"
             sort = -1
         return sort
 

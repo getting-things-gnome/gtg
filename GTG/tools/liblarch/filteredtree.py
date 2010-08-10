@@ -145,7 +145,7 @@ class FilteredTree():
         if func:
             paths = self.get_paths_for_node(tid)
             if len(paths) <= 0:
-                raise Exception('%s for %s but it has no paths')%(event,tid)
+                raise Exception('cllbck %s for %s but it has no paths'%(event,tid))
             func(tid,paths)
 
     def __reset_cache(self):
@@ -301,22 +301,8 @@ class FilteredTree():
                     print "%s is displayed : %s" %(p,self.is_displayed(p))
                     print "but the truth is : %s" %self.__is_displayed(p)
                 raise Exception("%s has no parent but is not in VR" %tid)
-                
-#            parents = self.node_parents(node)
-#            if len(parents) > 0:
-#                print "WARNING :  %s was in VR with %s parents" %(tid,len(parents))
         #The node is not a virtual root
         else:
-#            if len(pars) <= 0:
-#                #if we don't have parent, we add the task
-#                #to the virtual root.
-#                if tid in DEBUG_TID:
-#                    print "we should not update %s from the get_path method" %tid
-#                self.__root_update(tid,True)
-#                ind = self.virtual_root.index(tid)
-#                path = (ind,)
-#                toreturn.append(path)
-#            else:
             for par in pars:
                 pos = 0
                 max = self.node_n_children(par)
@@ -724,9 +710,9 @@ class FilteredTree():
     def __execution_loop(self):
         while len(self.__updating_queue) > 0:
             tid,inroot,action = self.__updating_queue.pop(0)
-            if tid == tid.startswith('@'):
-                print "# # # %s %s %s popped out" %(tid,inroot,action)
-                print "       lis is %s" %self.__updating_queue
+#            if tid.startswith('@'):
+#                print "# # # %s %s %s popped out" %(tid,inroot,action)
+#                print "       lis is %s" %self.__updating_queue
             if inroot == None:
                 inroot = self.__is_root(tid)
             if action == 'update':
@@ -752,8 +738,10 @@ class FilteredTree():
                 else:
                     self.__root_update(tid,inroot)
                     self.update_count += 1
+#                    if tid.startswith('@'):
+#                        self.print_tree()
                     self.callback("modified", tid)
-                    #I don't remember why we have to update the children.
+                    #We update the children.
                     if not self.flat:
                         node = self.get_node(tid)
                         if node:

@@ -16,6 +16,8 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
+DEBUG_MODEL = False
+
 import xml.sax.saxutils as saxutils
 
 import gtk
@@ -106,11 +108,10 @@ class TreeModel(gtk.GenericTreeModel):
         return self.value_list[n][0]
     
     def on_get_value(self, rowref, column):
-#        print "get_value  for %s %s" %(str(rowref),column)
+        if DEBUG_MODEL:
+            print "get_value  for %s %s" %(str(rowref),column)
         if not rowref:
             raise ValueError('Asking the value of an empty rowref')
-#        if not self.iter_is_valid(rowref):
-#            raise ValueError('Get value for bad rowref %s' %rowref)
         node = self.__get_node_from_rowref(rowref)
         if len(self.value_list) <= column:
             raise ValueError('The tree model doesnt have enough columns!')
@@ -121,6 +122,8 @@ class TreeModel(gtk.GenericTreeModel):
     def on_get_iter(self, path):
         #We have to return None if there's no node on that path
         nid = self.tree.get_node_for_path(path)
+        if DEBUG_MODEL:
+            print "on_get_iter for path %s -> %s" %(path,nid)
         if nid:
             rowref = self.__build_rowref(path)
             return rowref
@@ -128,11 +131,14 @@ class TreeModel(gtk.GenericTreeModel):
             return None
 
     def on_get_path(self, rowref):
+        if DEBUG_MODEL:
+            print "on_get_path for %s" %str(rowref)
         return self.__get_path_from_rowref(rowref)
 
     def on_iter_next(self, rowref):
         toreturn = None
-#        print "iter_next for %s" %str(rowref)
+        if DEBUG_MODEL:
+            print "iter_next for %s" %str(rowref)
         if rowref:
             nid = self.__get_nid_from_rowref(rowref)
             if len(rowref) > 1:
@@ -152,6 +158,8 @@ class TreeModel(gtk.GenericTreeModel):
     def on_iter_children(self, rowref):
         #By Gtk.treeview definition, we have to return None
         #if rowref doesn't have any children
+        if DEBUG_MODEL:
+            print "on_iter_children %s" %str(rowref)
         nid = self.__get_nid_from_rowref(rowref)
         if self.tree.node_n_children(nid) > 0:
             return self.on_iter_nth_child(rowref,0)
@@ -167,6 +175,8 @@ class TreeModel(gtk.GenericTreeModel):
             nid = self.__get_nid_from_rowref(rowref)
         else:
             nid = None
+        if DEBUG_MODEL:
+            print "returning iter_n_children for %s (%s)" %(str(rowref),nid)
         return self.tree.node_n_children(nid)
 
     def on_iter_nth_child(self, rowref, n):

@@ -294,6 +294,19 @@ class TestLibLarch(unittest.TestCase):
         self.assert_('futur' in view.node_parents('child'))
         #TODO the same test but with filters
         
+    def test_adding_to_late_parent2(self):
+        '''Another tricky case with late parent. This was
+        a very rare but existing crash'''
+        view = self.tree.get_viewtree(refresh=True)
+        node = DummyNode('child')
+        self.tree.add_node(node)
+        node2 = DummyNode('futur')
+        node.add_parent('futur')
+        node.modified()
+        self.assertEqual(len(view.node_parents('child')),0)
+        self.tree.add_node(node2)
+        self.assert_('futur' in view.node_parents('child'))
+        
     def test_multiple_children(self):
         '''We test a node with two children.'''
         view = self.tree.get_viewtree(refresh=True)
