@@ -82,6 +82,8 @@ class Task(TreeNode):
         #avoid doing it multiple times
         if not self.loaded:
             self.loaded = True
+            for t in self.get_tags():
+                t.modified()
 #            if signal:
 #                self.req._task_loaded(self.tid)
 

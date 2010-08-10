@@ -318,20 +318,30 @@ class Tag(TreeNode):
 
     ### TASK relation ####      
 
-    def get_tasks(self):
-        #TODO
-       print "Tag.get_tasks should be reimplemented using a ViewTree"
+    def get_tasks(self,filters=[]):
+        tasktree = self.req.get_tasks_tree(name=self.get_name(),refresh=False)
+        for f in filters:
+            tasktree.apply_filter(f,refresh=False)
+        tasktree.apply_filter(self.get_name())
+        return tasktree.get_all_nodes()
        
     def get_active_tasks_count(self):
-        count = self.__get_count('active')
+        count = self.__get_count(filters=['active'])
+        #PLOUM_DEBUG : this can be optimized by using
+        #the existing active tree. FIXME (currently broken)
+#        tree = self.req.get_tasks_tree(name='active')
+#        count = self.__get_count(tasktree=tree)
 #        print "%s has %s tasks" %(self.get_name(),count)
         return count
         
     def get_total_tasks_count(self):
-        return self.__get_count('main')
+        return self.__get_count()
         
-    def __get_count(self,tasktreename):
-        tasktree = self.req.get_tasks_tree(name=tasktreename)
+    def __get_count(self,filters=[],tasktree=None):
+        if not tasktree:
+            tasktree = self.req.get_tasks_tree()
+        for f in filters:
+            tasktree.apply_filter(f)
         sp_id = self.get_attribute("special")
         if sp_id == "all":
             toreturn = tasktree.get_n_nodes(\
@@ -345,8 +355,6 @@ class Tag(TreeNode):
             tname = self.get_name()
             toreturn = tasktree.get_n_nodes(\
                                 withfilters=[tname],include_transparent=False)
-#            toreturn = tasktree.get_n_nodes(include_transparent=False)
-#            print "we will return %s for %s (tasktree %s)" %(toreturn,tname,tasktree)
         return toreturn
         
     #is it useful to keep the tag in the tagstore.

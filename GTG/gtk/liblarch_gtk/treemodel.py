@@ -36,8 +36,6 @@ class TreeModel(gtk.GenericTreeModel):
         def get_nodeid(node):
             return node.get_id()
         self.value_list.append([str,get_nodeid])
-#        self.iter_store = TaskIterStore(self.tree,self)
-#        self.tasks_to_add = []
         self.tree.register_cllbck('node-added-inview',self.add_task)
         self.tree.register_cllbck('node-deleted-inview',self.remove_task)
         self.tree.register_cllbck('node-modified-inview',self.update_task)
@@ -195,9 +193,6 @@ class TreeModel(gtk.GenericTreeModel):
         for node_path in paths:
 #            print "updating %s for path %s" %(tid,str(node_path))
 #            print "other paths are %s" %(str(self.tree.get_paths_for_node(tid)))
-
-            #PLOUM_DEBUG : we check if the path still link back to 
-            #a node. This is more than probably a bug in liblarch. FIXME
             actual_tid = self.tree.get_node_for_path(node_path)
             if tid == actual_tid:
                 rowref = self.get_iter(node_path)
@@ -219,7 +214,6 @@ class TreeModel(gtk.GenericTreeModel):
 #                print "and paths are %s" %str(self.tree.get_paths_for_node(tid))
 #                print "and paths for real are %s" %str(self.tree.get_paths_for_node(actual_tid))
 #                self.tree.print_tree()
-#                print a
         if len(paths) == 0: 
             raise  ValueError("Error :! no path for node %s !" %tid)
                 

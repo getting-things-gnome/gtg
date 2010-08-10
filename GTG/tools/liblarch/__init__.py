@@ -296,6 +296,9 @@ class ViewTree(gobject.GObject):
         return self.__ft.is_displayed(nid)
 
     ####### Change filters #################
+    def list_applied_filters(self):
+        return self.__ft.list_applied_filters()
+        
     def apply_filter(self,filter_name,parameters=None,\
                      reset=False,refresh=True):
         """

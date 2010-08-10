@@ -120,9 +120,10 @@ class TreeFactory:
     #filter to display only tags with active tasks
     def actively_used_tag(self,node,parameters=None):
 #        print "active filter"
-        used = node.get_active_tasks_count()
-        #        print "%s has %s tasks" %(node,used)
-        return node.is_actively_used()
+#        used = node.get_tasks(filters=['active'])
+        toreturn = node.is_actively_used()
+#        print "%s has %s tasks -> returning %s" %(node.get_name(),used,toreturn)
+        return toreturn
         
     def used_tag(self,node,parameters=None):
         return node.is_used()

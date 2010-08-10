@@ -76,7 +76,9 @@ import functools
 
 from GTG.tools.logger import Log
 
-COUNT_CACHING_ENABLED = True
+#PLOUM_DEBUG : COUNT_CACHING seems to be broken : write test to detect it
+#Edit dynamically a tag an you will see why it is broken
+COUNT_CACHING_ENABLED = False
 ## if FT doesn't use signals, it might be slower (but easier to debug)
 FT_USE_SIGNALS = 0
 
@@ -635,12 +637,20 @@ class FilteredTree():
         if transparent_only:
             for f in list(self.applied_filters):
                 filt = self.fbank.get_filter(f)
-                if filt.get_parameters('transparent'):
-                    self.applied_filters.remove(f)
+                if filt:
+                    if filt.get_parameters('transparent'):
+                        self.applied_filters.remove(f)
+                else:
+                    print "bank is %s" %self.applied_filters
+                    raise IndexError('Applied filter %s doesnt' %f +\
+                                    'exist anymore in the bank')
         else:
             self.applied_filters = []
         if refresh:
             self.refilter()
+            
+    def list_applied_filters(self):
+        return list(self.applied_filters)
 
     ####### Private methods #################
 
