@@ -142,6 +142,8 @@ class FilteredTree():
         func = self.cllbcks.get(event,None)
         if func:
             paths = self.get_paths_for_node(tid)
+            if len(paths) <= 0:
+                raise Exception('%s for %s but it has no paths')%(event,tid)
             func(tid,paths)
 
     def __reset_cache(self):
@@ -317,7 +319,7 @@ class FilteredTree():
                 pos = 0
                 max = self.node_n_children(par)
                 child = self.node_children(par)
-                while pos < max-1 and node != child:
+                while pos < max-1 and tid != child:
                     pos += 1
                     child = self.node_nth_child(par,pos)
                 par_paths = self.get_paths_for_node(par)
@@ -576,10 +578,14 @@ class FilteredTree():
         #Then, we list the nodes that will be
         #ultimately displayed
         for nid in self.tree.get_all_nodes():
-            if self.__is_displayed(nid) and self.__is_root(nid):
+            if self.__is_displayed(nid):
+#                if self.__is_root(nid):
+#                    self.__add_node(nid)
+#                else:
                 to_add.append(nid)
         #And we add them
         for nid in list(to_add):
+#            print "we add %s from %s" %(nid,to_add)
             self.__add_node(nid)
         #end of refiltering
 #        print "*** end of refiltering ****"
@@ -639,21 +645,6 @@ class FilteredTree():
         if refresh:
             self.refilter()
 
-#    def reset_tag_filters(self,refilter=True):
-#        """
-#        Clears all filters currently set on the tree.  Can't be called on 
-#        the main tree.
-#        """
-#        if "notag" in self.applied_filters:
-#            self.applied_filters.remove('notag')
-#        if "no_disabled_tag" in self.applied_filters:
-#            self.applied_filters.remove('no_disabled_tag')
-#        for f in self.applied_filters:
-#            if f.startswith('@'):
-#                self.applied_filters.remove(f)
-#        if refilter:
-#            self.refilter()
-
     ####### Private methods #################
 
     # Return True if the node should be a virtual root node
@@ -675,6 +666,7 @@ class FilteredTree():
             if tid not in self.virtual_root:
 #                print "* * * appending %s to VR %s" %(tid,self.virtual_root)
                 self.virtual_root.append(tid)
+                self.virtual_root.sort()
                 #We will also update the children of that node
                 children_update = True
         else:
@@ -719,9 +711,9 @@ class FilteredTree():
     def __execution_loop(self):
         while len(self.__updating_queue) > 0:
             tid,inroot,action = self.__updating_queue.pop(0)
-            if tid == '1@1':
-                print "# # # %s %s %s popped out" %(tid,inroot,action)
-                print "lis is %s" %self.__updating_queue
+#            if tid == '1@1':
+#            print "# # # %s %s %s popped out" %(tid,inroot,action)
+#            print "       lis is %s" %self.__updating_queue
             if inroot == None:
                 inroot = self.__is_root(tid)
             if action == 'update':
@@ -797,10 +789,14 @@ class FilteredTree():
                 # has no parent but is not in VR
                 
                 self.__root_update(tid,inroot)
+#                print "* * we add %s" %(tid)
                 self.callback("added", tid)
+#                print "- -  we finished the callback for %s" %tid
                 for p in parents:
                     if self.is_displayed(p):
+#                        print "* * we update %s, parent of added %s" %(p,tid)
                         self.callback("modified", p)
+#                        print "- -  we finished the callback for p %s" %p
                 #We added a new node so we can check with those waiting
                 lost_nodes = []
                 while len(self.node_to_add) > 0:

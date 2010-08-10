@@ -511,6 +511,7 @@ class TreeNode():
     def add_child(self, id):
         if id not in self.children:
             self.children.append(id)
+            self.children.sort()
             toreturn = self.new_relationship(self.get_id(),id)
 #            Log.debug("new relationship : %s" %toreturn)
         else:

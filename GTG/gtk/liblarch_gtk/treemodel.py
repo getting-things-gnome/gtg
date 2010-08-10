@@ -209,9 +209,15 @@ class TreeModel(gtk.GenericTreeModel):
                 if self.tree.node_has_child(tid):
     #                print "child toggling for %s %s" %(tid,str(node_path))
                     self.row_has_child_toggled(node_path, rowref)
-            else:
-                print "path for %s is supposed to be %s "%(tid,node_path)
-                print "but in fact, tid for that path is %s" %actual_tid
+#            else:
+#                raise ValueError("path for %s is supposed" %tid +\
+#                        "to be %s, not the one of %s "%(node_path, actual_tid))
+#                print "************"
+#                print "path for %s is supposed to be %s "%(tid,node_path)
+#                print "but in fact, tid for that path is %s" %actual_tid
+#                print "and paths are %s" %str(self.tree.get_paths_for_node(tid))
+#                print "and paths for real are %s" %str(self.tree.get_paths_for_node(actual_tid))
+#                self.tree.print_tree()
 #                print a
         if len(paths) == 0: 
             raise  ValueError("Error :! no path for node %s !" %tid)
