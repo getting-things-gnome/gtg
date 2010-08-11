@@ -393,17 +393,21 @@ class TestLibLarch(unittest.TestCase):
         view = self.tree.get_viewtree(refresh=False)
         view.apply_filter('red')
         self.assertEqual(view.node_parents('child'),['0'])
-        self.assertEqual(view.get_paths_for_node('child'),[(0,0)])
+        path0 = view.get_paths_for_node('0')[0]
+        pathchild = path0 + (0,)
+        self.assertEqual(view.get_paths_for_node('child'),[pathchild])
         node0 = view.get_node('0')
         node0.add_color('blue')
         self.assertEqual(view.node_parents('child'),['0'])
-        self.assertEqual(view.get_paths_for_node('child'),[(0,0)])
+        self.assertEqual(view.get_paths_for_node('child'),[pathchild])
         node0.remove_color('red')
         self.assertEqual(view.node_parents('child'),[])
-        self.assertNotEqual(view.get_paths_for_node('child'),[(0,0)])
+        self.assertEqual(len(view.get_paths_for_node('child')[0]),1)
         node0.add_color('red')
+        path0 = view.get_paths_for_node('0')[0]
+        pathchild = path0 + (0,)
         self.assertEqual(view.node_parents('child'),['0'])
-        self.assertEqual(view.get_paths_for_node('child'),[(0,0)])
+        self.assertEqual(view.get_paths_for_node('child'),[pathchild])
         
     def test_addchild_with_late_parent(self):
         '''Add a child to a node which is not yet in the tree. 

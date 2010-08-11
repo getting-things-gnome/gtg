@@ -25,6 +25,8 @@ import xml.sax.saxutils as saxutils
 import gtk
 import gobject
 import pango
+if DEBUG_MODEL:
+    import threading
 
 from GTG                              import _
 from GTG.tools.logger                 import Log
@@ -132,6 +134,7 @@ class TreeModel(gtk.GenericTreeModel):
         #We have to return None if there's no node on that path
         nid = self.tree.get_node_for_path(path)
         if DEBUG_MODEL:
+            print threading.current_thread()
             print "on_get_iter for path %s -> %s" %(path,nid)
         if nid:
             rowref = self.__build_rowref(path)
@@ -141,12 +144,14 @@ class TreeModel(gtk.GenericTreeModel):
 
     def on_get_path(self, rowref):
         if DEBUG_MODEL:
+            print threading.current_thread()
             print "on_get_path for %s" %str(rowref)
         return self.__get_path_from_rowref(rowref)
 
     def on_iter_next(self, rowref):
         toreturn = None
         if DEBUG_MODEL:
+            print threading.current_thread()
             print "iter_next for %s" %str(rowref)
         if rowref:
             nid = self.__get_nid_from_rowref(rowref)
@@ -159,16 +164,19 @@ class TreeModel(gtk.GenericTreeModel):
             if next_id:
                 toreturn = rowref[:-1] + (next_id,)
         if DEBUG_MODEL:
-            if not toreturn:
-                print "###########  iter_next returns None for rowref %s" %str(rowref)
-            else:
-                print "******** %s is next node of %s ********" %(toreturn,str(rowref))
+            print threading.current_thread()
+#        if not toreturn:
+#            print "###########  iter_next returns None for rowref %s" %str(rowref)
+#            self.tree.print_tree()
+#        else:
+#            print "******** %s is next node of %s ********" %(toreturn,str(rowref))
         return toreturn
 
     def on_iter_children(self, rowref):
         #By Gtk.treeview definition, we have to return None
         #if rowref doesn't have any children
         if DEBUG_MODEL:
+            print threading.current_thread()
             print "on_iter_children %s" %str(rowref)
         nid = self.__get_nid_from_rowref(rowref)
         if self.tree.node_n_children(nid) > 0:
@@ -180,6 +188,7 @@ class TreeModel(gtk.GenericTreeModel):
         nid = self.__get_nid_from_rowref(rowref)
         toreturn = self.tree.node_has_child(nid)
         if DEBUG_MODEL:
+            print threading.current_thread()
             print "on_iter_has_child %s : %s" %(str(rowref),toreturn)
         return toreturn
 
@@ -189,11 +198,13 @@ class TreeModel(gtk.GenericTreeModel):
         else:
             nid = None
         if DEBUG_MODEL:
+            print threading.current_thread()
             print "returning iter_n_children for %s (%s)" %(str(rowref),nid)
         return self.tree.node_n_children(nid)
 
     def on_iter_nth_child(self, rowref, n):
         if DEBUG_MODEL:
+            print threading.current_thread()
             print "on iter child nbr %s for %s" %(n,str(rowref))
         if rowref:
             nid = self.__get_nid_from_rowref(rowref)
@@ -206,6 +217,7 @@ class TreeModel(gtk.GenericTreeModel):
 
     def on_iter_parent(self, rowref):
         if DEBUG_MODEL:
+            print threading.current_thread()
             print "on iter parent %s" %str(rowref)
         if len(rowref) >= 1:
             return rowref[:-1]
@@ -229,6 +241,7 @@ class TreeModel(gtk.GenericTreeModel):
     
     def __update_task(self,sender,tid,paths,data=None):
         if DEBUG_MODEL:
+            print threading.current_thread()
             print "update task : %s %s" %(data,tid)
         for node_path in paths:
 #            print "updating %s for path %s" %(tid,str(node_path))
@@ -274,6 +287,7 @@ class TreeModel(gtk.GenericTreeModel):
         if paths:
             for p in paths:
                 if DEBUG_MODEL:
+                    print threading.current_thread()
                     print "removing task %s on %s" %(tid,str(p))
                     self.tree.print_tree()
                 self.row_deleted(p)

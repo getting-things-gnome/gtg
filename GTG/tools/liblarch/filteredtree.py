@@ -676,14 +676,29 @@ class FilteredTree():
             if tid not in self.virtual_root:
 #                print "* * * appending %s to VR %s" %(tid,self.virtual_root)
                 self.virtual_root.append(tid)
-                self.virtual_root.sort()
+                #We do not sort the virtual root to avoid refreshing all 
+                #other nodes. The VR is thus changed only when a node is 
+                #removed.
+#                self.virtual_root.sort()
                 #We will also update the children of that node
                 children_update = True
         else:
             if tid in self.virtual_root:
 #                print "- - - removin %s from VR %s" %(tid,self.virtual_root)
 #                self.callback("deleted", tid)
+                index = self.virtual_root.index(tid)
                 self.virtual_root.remove(tid)
+                #Because we removed a node from the virtual root,
+                #We changed the path for all nodes that follow the removed one
+                #We will then update then
+                while index < len(self.virtual_root):
+#                    print "sending %s for %s" %(index,self.virtual_root)
+                    tid = self.virtual_root[index]
+                    #Don't forget to invalidate the old path
+                    if self.path_for_node_cache.has_key(tid):
+                        self.path_for_node_cache[tid] = None
+                    self.callback("modified", tid)
+                    index += 1
             #even if you are not a root, 
             #your children should not be in VR either
         #now we handle childrens
