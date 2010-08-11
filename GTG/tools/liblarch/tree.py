@@ -93,6 +93,10 @@ class MainTree(gobject.GObject):
 
     def get_root(self):
         return self.root
+        
+    def refresh_all(self):
+        for nid in self.nodes:
+            self.modify_node(nid)
 
     def set_root(self, root):
         self.root = root

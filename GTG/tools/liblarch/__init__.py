@@ -73,6 +73,10 @@ class Tree():
             gobject.idle_add(self.__tree.modify_node,nid)
         else:
             self.__tree.modify_node(nid)
+            
+    def refresh_all(self):
+        for nid in self.__tree.get_all_nodes():
+            self.refresh_node(nid)
         
     def move_node(self,nid,new_parent_id=None):
         """
@@ -244,6 +248,9 @@ class ViewTree(gobject.GObject):
     #return a list of nid of displayed nodes
     def get_all_nodes(self):
         return self.__ft.get_all_nodes()
+        
+    def refresh_all(self):
+        self.__maintree.refresh_all()
 
     def get_n_nodes(self,withfilters=[],include_transparent=True):
         """

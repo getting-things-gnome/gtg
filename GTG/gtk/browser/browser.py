@@ -100,7 +100,8 @@ class TaskBrowser:
         # Active Tasks
         self.activetree.apply_filter('active',refresh=False)
         # Tags
-        self.tagtree = self.tv_factory.tags_treeview(self.req.get_tag_tree())
+        self.tagtree = self.req.get_tag_tree()
+        self.tagtreeview = self.tv_factory.tags_treeview(self.tagtree)
 
         # Load window tree
         self.builder = gtk.Builder() 
@@ -199,7 +200,7 @@ class TaskBrowser:
         self.main_pane.add(self.vtree_panes['active'])
 
         # The tags treeview
-        self.sidebar_container.add(self.tagtree)
+        self.sidebar_container.add(self.tagtreeview)
 
     def _init_toolbar_tooltips(self):
         self.donebutton.set_tooltip_text(GnomeConfig.MARK_DONE_TOOLTIP)
@@ -322,11 +323,11 @@ class TaskBrowser:
         self.req.connect("task-deleted", self.on_task_deleted)
 
         #Tags treeview
-        self.tagtree.connect('cursor-changed',\
+        self.tagtreeview.connect('cursor-changed',\
             self.on_select_tag)
-        self.tagtree.connect('row-activated',\
+        self.tagtreeview.connect('row-activated',\
             self.on_select_tag)
-        self.tagtree.connect('button-press-event',\
+        self.tagtreeview.connect('button-press-event',\
             self.on_tag_treeview_button_press_event)
         
         # Selection changes
@@ -472,7 +473,7 @@ class TaskBrowser:
         if "collapsed_tags" in self.config["browser"]:
             toset = self.config["browser"]["collapsed_tags"]
             #FIXME: Not available in liblarch
-#            self.tagtree.set_collapsed_tags(toset)
+#            self.tagtreeview.set_collapsed_tags(toset)
 
         if "tasklist_sort" in self.config["browser"]:
             col_id, order = self.config["browser"]["tasklist_sort"]
@@ -523,6 +524,7 @@ class TaskBrowser:
             self.activetree.apply_filter('workview')
         else:
             self.activetree.unapply_filter('workview')
+        self.tagtree.refresh_all()
         self.vtree_panes['active'].set_col_visible('startdate',not tobeset)
         self._update_window_title()
 
@@ -638,7 +640,7 @@ class TaskBrowser:
                 self.priv["contents_preview_enable"],
             #FIXME : to implement in liblarch
 #            'collapsed_tags':
-#                self.tagtree.get_collapsed_tags(),
+#                self.tagtreeview.get_collapsed_tags(),
             'tag_pane':
                 tag_sidebar,
             'tag_pane_width':
@@ -873,7 +875,7 @@ class TaskBrowser:
             tag.set_attribute("nonworkview", toset)
         #Following should not be needed with liblarch
 #        if self.priv['workview']:
-#            self.tagtree.refilter()
+#            self.tagtreeview.refilter()
         if not self.dont_reset:
             self.reset_cursor()
 
@@ -1216,8 +1218,8 @@ class TaskBrowser:
         #Fixme : the notag only !
         notag_only = False
         tag = []
-        if self.tagtree:
-            tag = self.tagtree.get_selected_nodes()
+        if self.tagtreeview:
+            tag = self.tagtreeview.get_selected_nodes()
             #If no selection, we display all
         return tag, notag_only
     
@@ -1229,7 +1231,7 @@ class TaskBrowser:
         if self.tag_active:
             self.tag_active = False
             path, col = self.previous_cursor
-            self.tagtree.set_cursor(path, col, 0)
+            self.tagtreeview.set_cursor(path, col, 0)
                 
     def set_target_cursor(self):
         """ Selects the last tag to be right clicked. 
@@ -1242,7 +1244,7 @@ class TaskBrowser:
         if not self.tag_active:
             self.tag_active = True
             path, col = self.target_cursor
-            self.tagtree.set_cursor(path, col, 0)
+            self.tagtreeview.set_cursor(path, col, 0)
 
     def add_page_to_sidebar_notebook(self, icon, page):
         """Adds a new page tab to the left panel.  The tab will 
