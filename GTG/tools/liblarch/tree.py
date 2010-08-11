@@ -42,8 +42,6 @@ class MainTree(gobject.GObject):
         else:
             self.root = TreeNode(id=self.root_id)
         self.root.set_tree(self)
-        #Modifying the tree is not thread-safe
-        self.lock = threading.Lock()
         
     #those callbacks are called instead of signals.
 #    def set_callback(self,event,func):
@@ -71,6 +69,7 @@ class MainTree(gobject.GObject):
         
     def modify_node(self,nid):
         self.__modified(nid)
+
         
     def __modified(self,nid):
         if nid != 'root' and nid in self.nodes:
@@ -392,7 +391,8 @@ class TreeNode():
 #            for s in self.get_children():
 #                self.tree.modify_node(s)
             #then the task
-            self.tree.modify_node(self.id)
+#            self.tree.modify_node(self.id)
+            gobject.idle_add(self.tree.modify_node,self.id)
             #then parents
 #            for p in self.get_parents():
 #                self.tree.modify_node(p)

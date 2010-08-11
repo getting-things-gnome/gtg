@@ -26,6 +26,7 @@ between a backend and the datastore itself
 """
 
 import threading
+import gobject
 import uuid
 import os.path
 from collections import deque
