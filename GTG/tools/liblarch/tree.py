@@ -18,6 +18,7 @@
 # -----------------------------------------------------------------------------
 
 import gobject
+import threading
 
 from GTG.tools.logger import Log
 
@@ -41,6 +42,8 @@ class MainTree(gobject.GObject):
         else:
             self.root = TreeNode(id=self.root_id)
         self.root.set_tree(self)
+        #Modifying the tree is not thread-safe
+        self.lock = threading.Lock()
         
     #those callbacks are called instead of signals.
 #    def set_callback(self,event,func):

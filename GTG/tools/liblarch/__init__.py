@@ -207,7 +207,8 @@ class ViewTree(gobject.GObject):
             
     def __emit(self, signal_name, tid,paths=None):
         for k in self.__cllbcks.get(signal_name,[]):
-            self.__cllbcks[signal_name][k](tid,paths)
+            f = self.__cllbcks[signal_name][k]
+            f(tid,paths)
         if signal_name.endswith('-inview'):
             self.emit(signal_name, tid,paths)
         else:
