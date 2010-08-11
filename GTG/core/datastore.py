@@ -68,6 +68,7 @@ class DataStore(object):
         self._backend_signals.connect('default-backend-loaded', \
                                       self._activate_non_default_backends)
         self.filtered_datastore = FilteredDataStore(self)
+        self._backend_mutex = threading.Lock()
 
     ##########################################################################
     ### Helper functions (get_ methods for Datastore embedded objects)
@@ -428,6 +429,16 @@ class DataStore(object):
         @param tid: the tid of the task to remove
         '''
         self.requester.delete_task(tid)
+    
+    def get_backend_mutex(self):
+        '''
+        Returns the mutex object used by backends to avoid modifying a task
+        at the same time.
+
+        @returns threading.Lock
+        '''
+        return self._backend_mutex
+
 
 
 
@@ -469,7 +480,6 @@ class TaskSource():
              threading.Thread(target = self.__start_get_tasks)
         self.start_get_tasks_thread.setDaemon(True)
         self.start_get_tasks_thread.start()
-
 
     def __start_get_tasks(self):
         '''
@@ -658,10 +668,11 @@ class FilteredDataStore(Borg):
         self.datastore = datastore
 
     def __getattr__(self, attr):
-        if attr in ['task_factory', \
+        if attr in ['task_factory',
                     'push_task',
                     'get_task',
                     'has_task',
+                    'get_backend_mutex',
                     'request_task_deletion']:
             return getattr(self.datastore, attr)
         elif attr in ['get_all_tags']:
