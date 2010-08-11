@@ -17,7 +17,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 DEBUG_MODEL = False
-TM_USE_SIGNALS = True
+TM_USE_SIGNALS = False
 TM_IDLE_ADD = False
 
 import xml.sax.saxutils as saxutils
@@ -244,7 +244,7 @@ class TreeModel(gtk.GenericTreeModel):
                     self.row_inserted(node_path, rowref)
                 else:
                     if DEBUG_MODEL:
-                        print "     adding %s on path %s" %(tid,str(node_path))
+                        print "     modifying %s on path %s" %(tid,str(node_path))
                     self.row_changed(node_path, rowref)
                 if self.tree.node_has_child(tid):
                     if DEBUG_MODEL:
@@ -261,6 +261,8 @@ class TreeModel(gtk.GenericTreeModel):
 #                self.tree.print_tree()
         if len(paths) == 0: 
             raise  ValueError("Error :! no path for node %s !" %tid)
+#        print " = ============================="
+#        self.tree.print_tree()
             
     def remove_task(self,tid,paths=None):
         if TM_IDLE_ADD:
@@ -271,7 +273,9 @@ class TreeModel(gtk.GenericTreeModel):
     def __remove_task(self,sender,tid,paths=None):
         if paths:
             for p in paths:
-#                print "removing task %s on %s" %(tid,str(p))
+                if DEBUG_MODEL:
+                    print "removing task %s on %s" %(tid,str(p))
+                    self.tree.print_tree()
                 self.row_deleted(p)
         else:
             raise ValueError('no paths to delete for %s' %tid)

@@ -383,14 +383,16 @@ class TreeNode():
         #FIXME : we should maybe have
         # a directional recursive update
         if self.tree:
+            #PLOUM_DEBUG: why should we refresh parents and children ?
+            #Doesn't look like it's needed
             #we first modify children
-            for s in self.get_children():
-                self.tree.modify_node(s)
+#            for s in self.get_children():
+#                self.tree.modify_node(s)
             #then the task
             self.tree.modify_node(self.id)
             #then parents
-            for p in self.get_parents():
-                self.tree.modify_node(p)
+#            for p in self.get_parents():
+#                self.tree.modify_node(p)
         
     def set_tree(self,tree):
         self.tree = tree
@@ -520,8 +522,16 @@ class TreeNode():
     def add_child(self, id):
         if id not in self.children:
             self.children.append(id)
-            self.children.sort()
+#            print "%%%% old  is %s" %self.children
+#            self.children.sort()
+#            print "%%%% new  is %s" %self.children
             toreturn = self.new_relationship(self.get_id(),id)
+            #The path for children might have changed
+#            if self.tree:
+#                print "modifying children of %s" %(self.id)
+#                for cid in self.children:
+#                    if cid != id:
+#                        self.tree.modify_node(cid)
 #            Log.debug("new relationship : %s" %toreturn)
         else:
             Log.debug("%s was already in children of %s" %(id,self.get_id()))
@@ -530,8 +540,16 @@ class TreeNode():
 
     def remove_child(self, id):
         if id in self.children:
+            index = self.get_child_index(id)
             self.children.remove(id)
-            ret = self.tree.break_relationship(self.get_id(),id)
+            if self.tree:
+                ret = self.tree.break_relationship(self.get_id(),id)
+                #The children list has been modified, so has been the paths
+                #for some node
+                while index < len(self.children):
+                    self.tree.modify_node(self.children[index])
+                    index += 1
+                
             return ret
         else:
             return False

@@ -363,6 +363,25 @@ class TestLibLarch(unittest.TestCase):
         self.assert_(view.is_displayed('futur'))
         self.assert_('futur' in view.node_parents('child'))
         
+    def test_updating_parent(self):
+        node = DummyNode('child')
+        node.add_color('red')
+        self.tree.add_node(node,parent_id='0')
+        view = self.tree.get_viewtree(refresh=False)
+        view.apply_filter('red')
+        self.assertEqual(view.node_parents('child'),['0'])
+        self.assertEqual(view.get_paths_for_node('child'),[(0,0)])
+        node0 = view.get_node('0')
+        node0.add_color('blue')
+        self.assertEqual(view.node_parents('child'),['0'])
+        self.assertEqual(view.get_paths_for_node('child'),[(0,0)])
+        node0.remove_color('red')
+        self.assertEqual(view.node_parents('child'),[])
+        self.assertNotEqual(view.get_paths_for_node('child'),[(0,0)])
+        node0.add_color('red')
+        self.assertEqual(view.node_parents('child'),['0'])
+        self.assertEqual(view.get_paths_for_node('child'),[(0,0)])
+        
     def test_addchild_with_late_parent(self):
         '''Add a child to a node which is not yet in the tree. 
         We also check with a callback that the path sent is well

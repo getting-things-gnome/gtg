@@ -235,6 +235,14 @@ class FilteredTree():
         print "displayed : %s" %self.displayed_nodes
         for rid in self.virtual_root:
             self.__print_from_node(rid)
+        #alternate implementation using next_node
+#        if len(self.virtual_root) > 0:
+#            rid = self.virtual_root[0]
+#            self.__print_from_node(rid)
+#            rid = self.next_node(rid)
+#            while rid:
+#                self.__print_from_node(rid)
+#                rid = self.next_node(rid)
 
     #The path received is only for tasks that are displayed
     #We have to find the good node.
@@ -350,7 +358,8 @@ class FilteredTree():
                 if self.is_displayed(nextnode_id):
                     toreturn = nextnode_id
 #            else:
-#                print "%s is %s in the VR of size %s" %(nid,i,len(self.virtual_root))
+#                print "%s is %s in the VR %s" %(nid,i,self.virtual_root)
+#                self.print_tree()
         else:
             parents_nodes = self.node_parents(nid)
             if len(parents_nodes) >= 1:
@@ -377,6 +386,7 @@ class FilteredTree():
         if toreturn and not self.is_displayed(toreturn):
 #            print "we return None because %s is not displayed" %toreturn
             toreturn = None
+#        print "we return next_node %s for %s" %(toreturn,nid)
         return toreturn
 
     #Done
@@ -668,6 +678,7 @@ class FilteredTree():
         else:
             if tid in self.virtual_root:
 #                print "- - - removin %s from VR %s" %(tid,self.virtual_root)
+#                self.callback("deleted", tid)
                 self.virtual_root.remove(tid)
             #even if you are not a root, 
             #your children should not be in VR either
@@ -714,10 +725,11 @@ class FilteredTree():
         while len(self.__updating_queue) > 0:
             tid,inroot,action = self.__updating_queue.pop(0)
 #            if tid.startswith('@'):
-#                print "# # # %s %s %s popped out" %(tid,inroot,action)
-#                print "       lis is %s" %self.__updating_queue
+#            print "# # # %s %s %s popped out" %(tid,inroot,action)
+#            print "       lis is %s" %self.__updating_queue
             if inroot == None:
                 inroot = self.__is_root(tid)
+#            print "inroot is %s" %inroot
             if action == 'update':
                 self.__updating_loop(tid,inroot)
             elif action == 'delete':
@@ -843,14 +855,12 @@ class FilteredTree():
         print "%s%s    (%s) " %(prefix,nid,\
                     str(self.get_paths_for_node(nid)))
         prefix = prefix + "->"
-        node = self.tree.get_node(nid)
         if self.node_has_child(nid):
-            child_id = self.node_children(nid)
             nn = self.node_n_children(nid)
             n = 0
             while n < nn:
-                self.__print_from_node(child_id,prefix)
                 child_id = self.node_nth_child(nid,n)
+                self.__print_from_node(child_id,prefix)
                 n += 1
     
     #This function removes all the nodes, leaves first.
