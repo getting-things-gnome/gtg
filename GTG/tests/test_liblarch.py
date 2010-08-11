@@ -81,10 +81,13 @@ class TestLibLarch(unittest.TestCase):
                 signal_catched_event.wait()
                 for e in expected:
                     #signal arguments is a list of tuple
-                    #In this test, we only consider the first one.
-                    #Is it right ?
+                    #In this test, we only consider any of the arguments
                     self.assert_(len(signal_arguments) > 0)
-                    self.assert_(e in signal_arguments[0])
+                    #It should be at least in one of the arguments:
+                    result = False
+                    for ar in signal_arguments:
+                        result = result or (e in ar)
+                    self.assert_(result)
             return None
         return new
 
@@ -304,8 +307,28 @@ class TestLibLarch(unittest.TestCase):
         node.add_parent('futur')
         node.modified()
         self.assertEqual(len(view.node_parents('child')),0)
+        self.assertNotEqual(view.get_paths_for_node('child'),[(0,0)])
         self.tree.add_node(node2)
         self.assert_('futur' in view.node_parents('child'))
+        
+    def test_adding_to_late_parent3(self):
+        '''Another tricky case with late parent. This was
+        a very rare but existing crash'''
+        view = self.tree.get_viewtree(refresh=True)
+        view.apply_filter('red')
+        node = DummyNode('child')
+        node.add_color('red')
+        self.tree.add_node(node)
+        node2 = view.get_node('0')
+        node2.remove_color('red')
+        node.add_parent('0')
+        node.modified()
+        self.assertEqual(len(view.node_parents('child')),0)
+        self.assertNotEqual(view.get_paths_for_node('child'),[(0,0)])
+#        view.print_tree()
+        node2.add_color('red')
+#        view.print_tree()
+        self.assert_('0' in view.node_parents('child'))
         
     def test_multiple_children(self):
         '''We test a node with two children.'''

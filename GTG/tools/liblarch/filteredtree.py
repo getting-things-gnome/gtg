@@ -140,10 +140,14 @@ class FilteredTree():
     def set_callback(self,event,func):
         self.cllbcks[event] = func
         
-    def callback(self,event,tid):
+    def callback(self,event,tid,paths=None):
         func = self.cllbcks.get(event,None)
         if func:
-            paths = self.get_paths_for_node(tid)
+#            paths = self.get_paths_for_node(tid)
+            if not paths:
+                paths = self.path_for_node_cache.get(tid,None)
+            if not paths:
+                paths = self.get_paths_for_node(tid)
             if not paths or len(paths) <= 0:
                 raise Exception('cllbck %s for %s but it has no paths'%(event,tid))
             func(tid,paths)
@@ -751,11 +755,18 @@ class FilteredTree():
 #                    print "*update_node : adding node %s" %tid
                     self.__add_node(tid)
                 else:
+                    oldpath = self.path_for_node_cache.get(tid,None)
                     self.__root_update(tid,inroot)
                     self.update_count += 1
 #                    if tid.startswith('@'):
 #                        self.print_tree()
-                    self.callback("modified", tid)
+                    newpath = self.get_paths_for_node(tid)
+                    if oldpath == newpath:
+                        self.callback("modified", tid)
+                    else:
+                        if oldpath:
+                            self.callback('deleted',tid,oldpath)
+                            self.callback('added',tid)
                     #We update the children.
                     if not self.flat:
                         node = self.get_node(tid)
@@ -831,11 +842,17 @@ class FilteredTree():
             isroot = False
             if tid in self.displayed_nodes:
                 isroot = self.__is_root(tid)
+                children = self.node_all_children(tid)
                 self.remove_count += 1
                 self.__nodes_count -= 1
                 self.callback('deleted',tid)
                 self.__root_update(tid,False)
                 self.displayed_nodes.remove(tid)
+                if self.path_for_node_cache.has_key(tid):
+                    self.path_for_node_cache[tid] = None
+                #As we have removed a node, path have changed for the children
+                for cid in children:
+                    self.__update_node(cid)
             if tid in self.counted_nodes:
                 self.counted_nodes.remove(tid)
                 self.count_cache = {}
