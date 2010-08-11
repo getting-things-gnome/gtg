@@ -20,30 +20,42 @@
 """Unit tests for GTG."""
 
 from GTG.tools.testingmode import TestingMode
-TestingMode().set_testing_mode(True)
-
 
 import unittest
+import os
+import sys
 
 
-from GTG.tests import (
-    test_tagstore,
-    test_taskviewserial,
-    test_tree,
-    test_apidocs,
-    test_backends,
-    test_datastore,
-    test_liblarch,
-    )
+TEST_MODULE_PREFIX = "GTG.tests."
 
 def test_suite():
-    return unittest.TestSuite([
-        test_tagstore.test_suite(),
-        test_taskviewserial.test_suite(),
-        test_tree.test_suite(),
-        test_apidocs.test_suite(),
-        test_backends.test_suite(),
-        test_datastore.test_suite(),
-        test_liblarch.test_suite(),
-        ])
+    '''
+    Automatically loads all the tests in the GTG/tests directory and returns a
+    unittest.TestSuite filled with them
+    '''
+    #This call sets the "testing mode" before GTG is even started, so that
+    # every part of GTG will know if it's being tested or not (useful to load
+    # fake modules that mimic the behaviour of external libraries ...
+    TestingMode().set_testing_mode(True)
 
+    #find all the test files
+    test_dir = os.path.dirname(__file__)
+    test_files = filter(lambda f: f.endswith(".py") and f.startswith("test_"),
+                        os.listdir(test_dir))
+
+
+    #Loading of the test files and adding to the TestSuite
+    test_suite = unittest.TestSuite()
+    for module_name in [f[: -3] for f in test_files]:
+            #module loading
+            module_path = TEST_MODULE_PREFIX + module_name
+            module = __import__(module_path)
+            sys.modules[module_path] = module
+            globals()[module_path] = module
+            #fetching the testsuite
+            tests = getattr(module, "tests")
+            a_test = getattr(tests, module_name)
+            #adding it to the unittest.TestSuite
+            test_suite.addTest(getattr(a_test, "test_suite")())
+
+    return test_suite
