@@ -241,7 +241,8 @@ class DataStore(object):
         if self.has_task(task.get_id()):
             return False
         else:
-            self.__tasks.add_node(task)
+#            self.__tasks.add_node(task)
+            gobject.idle_add(self.__tasks.add_node,task)
             task.set_loaded()
             if self.is_default_backend_loaded:
                 task.sync()
