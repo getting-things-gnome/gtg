@@ -928,7 +928,7 @@ class TaskBrowser:
             self.priv["collapsed_tids"].append(tid)
 
     def on_quickadd_activate(self, widget):
-        text = self.quickadd_entry.get_text()
+        text = unicode(self.quickadd_entry.get_text())
         due_date = no_date
         defer_date = no_date
         if text:
@@ -938,7 +938,7 @@ class TaskBrowser:
             # a non-capturing group, so it must not be returned
             # to findall. http://www.amk.ca/python/howto/regex/regex.html
             # ~~~~Invernizzi
-            for match in re.findall(r'(?:^|[\s])(@\w+)', text):
+            for match in re.findall(r'(?:^|[\s])(@\w+)', text, re.UNICODE):
                 tags.append(GTG.core.tagstore.Tag(match, self.req))
                 # Remove the @
                 #text =text.replace(match,match[1:],1)
