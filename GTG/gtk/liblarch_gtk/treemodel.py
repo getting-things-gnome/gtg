@@ -130,8 +130,6 @@ class TreeModel(gtk.GenericTreeModel):
             t = threading.current_thread()
             if t != self.thread:
                 raise Exception('! could not acces get_value from thread %s' %t)
-#        if DEBUG_MODEL:
-#            print "get_value  for %s %s" %(str(rowref),column)
         if not rowref:
             raise ValueError('Asking the value of an empty rowref')
         node = self.__get_node_from_rowref(rowref)
@@ -139,6 +137,8 @@ class TreeModel(gtk.GenericTreeModel):
             raise ValueError('The tree model doesnt have enough columns!')
         func = self.value_list[column][1]
         toreturn = func(node)
+#        if DEBUG_MODEL:
+#            print "get_value  for %s %s : %s" %(str(rowref),column,toreturn)
         return toreturn
 
     def on_get_iter(self, path):
@@ -148,24 +148,24 @@ class TreeModel(gtk.GenericTreeModel):
                 raise Exception('! could not acces get_iter from thread %s' %t)
         #We have to return None if there's no node on that path
         nid = self.tree.get_node_for_path(path)
-        if DEBUG_MODEL:
-            print "1 : %s" %threading.current_thread()
-            print "on_get_iter for path %s -> %s" %(path,nid)
         if nid:
             rowref = self.__build_rowref(path)
-            return rowref
+            toreturn = rowref
         else:
-            return None
+            toreturn = None
+        if DEBUG_MODEL:
+            print "on_get_iter for path %s -> %s : %s" %(path,nid,toreturn)
+        return toreturn
 
     def on_get_path(self, rowref):
         if THREAD_PROTECTION:
             t = threading.current_thread()
             if t != self.thread:
                 raise Exception('! could not acces get_path from thread %s' %t)
+        toreturn = self.__get_path_from_rowref(rowref)
         if DEBUG_MODEL:
-            print "2 : %s" %threading.current_thread()
-            print "on_get_path for %s" %str(rowref)
-        return self.__get_path_from_rowref(rowref)
+            print "on_get_path for %s : %s" %(str(rowref),toreturn)
+        return toreturn
 
     def on_iter_next(self, rowref):
         if THREAD_PROTECTION:
@@ -173,9 +173,6 @@ class TreeModel(gtk.GenericTreeModel):
             if t != self.thread:
                 raise Exception('! could not acces iter_next from thread %s' %t)
         toreturn = None
-        if DEBUG_MODEL:
-            print "3 : %s" %threading.current_thread()
-            print "iter_next for %s" %str(rowref)
         if rowref:
             nid = self.__get_nid_from_rowref(rowref)
             if len(rowref) > 1:
@@ -187,7 +184,7 @@ class TreeModel(gtk.GenericTreeModel):
             if next_id:
                 toreturn = rowref[:-1] + (next_id,)
         if DEBUG_MODEL:
-            print "3b : %s" %threading.current_thread()
+            print "iter_next for %s : %s" %(str(rowref),toreturn)
 #        if not toreturn:
 #            print "###########  iter_next returns None for rowref %s" %str(rowref)
 #            self.tree.print_tree()
@@ -202,14 +199,14 @@ class TreeModel(gtk.GenericTreeModel):
             t = threading.current_thread()
             if t != self.thread:
                 raise Exception('! could not acces iter_children from thread %s' %t)
-        if DEBUG_MODEL:
-            print "4 : %s" %threading.current_thread()
-            print "on_iter_children %s" %str(rowref)
         nid = self.__get_nid_from_rowref(rowref)
         if self.tree.node_n_children(nid) > 0:
-            return self.on_iter_nth_child(rowref,0)
+            toreturn = self.on_iter_nth_child(rowref,0)
         else:
-            return None
+            toreturn = None
+        if DEBUG_MODEL:
+            print "on_iter_children %s : %s" %(str(rowref),toreturn)
+        return toreturn
 
     def on_iter_has_child(self, rowref):
         if THREAD_PROTECTION:
@@ -219,7 +216,6 @@ class TreeModel(gtk.GenericTreeModel):
         nid = self.__get_nid_from_rowref(rowref)
         toreturn = self.tree.node_has_child(nid)
         if DEBUG_MODEL:
-            print "5 : %s" %threading.current_thread()
             print "on_iter_has_child %s : %s" %(str(rowref),toreturn)
         return toreturn
 
@@ -232,19 +228,16 @@ class TreeModel(gtk.GenericTreeModel):
             nid = self.__get_nid_from_rowref(rowref)
         else:
             nid = None
+        toreturn = self.tree.node_n_children(nid)
         if DEBUG_MODEL:
-            print "6 : %s" %threading.current_thread()
-            print "returning iter_n_children for %s (%s)" %(str(rowref),nid)
-        return self.tree.node_n_children(nid)
+            print "returning iter_n_children for %s (%s) : %s" %(str(rowref),nid,toreturn)
+        return toreturn
 
     def on_iter_nth_child(self, rowref, n):
         if THREAD_PROTECTION:
             t = threading.current_thread()
             if t != self.thread:
                 raise Exception('! could not acces iter_nth_child from thread %s' %t)
-        if DEBUG_MODEL:
-            print "7 : %s" %threading.current_thread()
-            print "on iter child nbr %s for %s" %(n,str(rowref))
         if rowref:
             nid = self.__get_nid_from_rowref(rowref)
         else:
@@ -252,20 +245,23 @@ class TreeModel(gtk.GenericTreeModel):
             nid = None
             rowref = ()
         cid = self.tree.node_nth_child(nid,n)
-        return rowref + (cid,)
+        toreturn = rowref + (cid,)
+        if DEBUG_MODEL:
+            print "on iter child nbr %s for %s : %s" %(n,str(rowref),toreturn)
+        return toreturn
 
     def on_iter_parent(self, rowref):
         if THREAD_PROTECTION:
             t = threading.current_thread()
             if t != self.thread:
                 raise Exception('! could not acces iter_parent from thread %s' %t)
-        if DEBUG_MODEL:
-            print "8 : %s" %threading.current_thread()
-            print "on iter parent %s" %str(rowref)
         if len(rowref) >= 1:
-            return rowref[:-1]
+            toreturn = rowref[:-1]
         else:
-            return None
+            toreturn = None
+        if DEBUG_MODEL:
+            print "on iter parent %s :%s" %(str(rowref),toreturn)
+        return toreturn
             
     def add_task(self,tid,paths):
         if TM_IDLE_ADD:
@@ -287,20 +283,17 @@ class TreeModel(gtk.GenericTreeModel):
             t = threading.current_thread()
             if t != self.thread:
                 raise Exception('! could not update_task from thread %s' %t)
-        if DEBUG_MODEL:
-            print "9 : %s" %threading.current_thread()
-            print "update task : %s %s" %(data,tid)
         for node_path in paths:
 #            print "updating %s for path %s" %(tid,str(node_path))
 #            print "other paths are %s" %(str(self.tree.get_paths_for_node(tid)))
             actual_tid = self.tree.get_node_for_path(node_path)
             if tid == actual_tid:
+                if DEBUG_MODEL:
+                    print "    ! this is the update/add %s get_iter" %tid
                 rowref = self.get_iter(node_path)
                 if data == 'add':
                     if DEBUG_MODEL:
                         print "     adding %s on path %s" %(tid,str(node_path))
-                    #PLOUM_DEBUG: maybe we should queue signals as long as 
-                    #the treeview is not fully built
                     self.row_inserted(node_path, rowref)
                 else:
                     if DEBUG_MODEL:
@@ -338,9 +331,7 @@ class TreeModel(gtk.GenericTreeModel):
         if paths:
             for p in paths:
                 if DEBUG_MODEL:
-                    print "10 : %s" %threading.current_thread()
-                    print "removing task %s on %s" %(tid,str(p))
-                    self.tree.print_tree()
+                    print "     deleting row %s" %str(p)
                 self.row_deleted(p)
         else:
             raise ValueError('no paths to delete for %s' %tid)

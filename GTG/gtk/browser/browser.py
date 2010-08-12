@@ -100,8 +100,8 @@ class TaskBrowser:
         # Active Tasks
         self.activetree.apply_filter('active',refresh=False)
         # Tags
-        self.tagtree = self.req.get_tag_tree()
-        self.tagtreeview = self.tv_factory.tags_treeview(self.tagtree)
+        self.tagtree = None
+        self.tagtreeview = None
 
         # Load window tree
         self.builder = gtk.Builder() 
@@ -199,7 +199,17 @@ class TaskBrowser:
         # The Active tasks treeview
         self.main_pane.add(self.vtree_panes['active'])
 
+    def init_tags_sidebar(self):
         # The tags treeview
+        self.tagtree = self.req.get_tag_tree()
+        self.tagtreeview = self.tv_factory.tags_treeview(self.tagtree)
+        #Tags treeview
+        self.tagtreeview.connect('cursor-changed',\
+            self.on_select_tag)
+        self.tagtreeview.connect('row-activated',\
+            self.on_select_tag)
+        self.tagtreeview.connect('button-press-event',\
+            self.on_tag_treeview_button_press_event)
         self.sidebar_container.add(self.tagtreeview)
 
     def _init_toolbar_tooltips(self):
@@ -322,13 +332,6 @@ class TaskBrowser:
         self.req.connect("task-added", self.on_task_added) 
         self.req.connect("task-deleted", self.on_task_deleted)
 
-        #Tags treeview
-        self.tagtreeview.connect('cursor-changed',\
-            self.on_select_tag)
-        self.tagtreeview.connect('row-activated',\
-            self.on_select_tag)
-        self.tagtreeview.connect('button-press-event',\
-            self.on_tag_treeview_button_press_event)
         
         # Selection changes
         self.selection = self.vtree_panes['active'].get_selection()
@@ -428,6 +431,8 @@ class TaskBrowser:
                 self.sidebar.hide()
             else:
                 self.builder.get_object("view_sidebar").set_active(True)
+                if not self.tagtreeview:
+                    self.init_tags_sidebar()
                 self.sidebar.show()
 
         if "tag_pane_width" in self.config["browser"]:
@@ -524,7 +529,8 @@ class TaskBrowser:
             self.activetree.apply_filter('workview')
         else:
             self.activetree.unapply_filter('workview')
-        self.tagtree.refresh_all()
+        if self.tagtreeview:
+            self.tagtree.refresh_all()
         self.vtree_panes['active'].set_col_visible('startdate',not tobeset)
         self._update_window_title()
 
@@ -731,6 +737,8 @@ class TaskBrowser:
             self.sidebar.hide()
         else:
             view_sidebar.set_active(True)
+            if not self.tagtreeview:
+                self.init_tags_sidebar()
             self.sidebar.show()
 
     def on_closed_toggled(self, widget):
@@ -1231,7 +1239,8 @@ class TaskBrowser:
         if self.tag_active:
             self.tag_active = False
             path, col = self.previous_cursor
-            self.tagtreeview.set_cursor(path, col, 0)
+            if self.tagtreeview:
+                self.tagtreeview.set_cursor(path, col, 0)
                 
     def set_target_cursor(self):
         """ Selects the last tag to be right clicked. 
@@ -1244,7 +1253,8 @@ class TaskBrowser:
         if not self.tag_active:
             self.tag_active = True
             path, col = self.target_cursor
-            self.tagtreeview.set_cursor(path, col, 0)
+            if self.tagtreeview:
+                self.tagtreeview.set_cursor(path, col, 0)
 
     def add_page_to_sidebar_notebook(self, icon, page):
         """Adds a new page tab to the left panel.  The tab will 
