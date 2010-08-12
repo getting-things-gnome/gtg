@@ -18,6 +18,7 @@
 # -----------------------------------------------------------------------------
 
 THREAD_PROTECTION = True
+DEBUG_THREAD = False
 
 import gobject
 import threading
@@ -391,13 +392,13 @@ class TreeNode():
         self.thread = thread
         
     def modified(self):
-        if self.thread_protection:
-            t = threading.current_thread()
-            if t != self.thread:
-                raise Exception('! could not modified from thread %s' %t)
         #FIXME : we should maybe have
         # a directional recursive update
         if self.tree:
+            if self.thread_protection:
+                t = threading.current_thread()
+                if t != self.thread:
+                    raise Exception('! could not modified from thread %s' %t)
             #PLOUM_DEBUG: why should we refresh parents and children ?
             #Doesn't look like it's needed
             #we first modify children
@@ -478,7 +479,8 @@ class TreeNode():
             t = threading.current_thread()
             if t != self.thread:
 #                raise Exception('! could not get_parents from thread %s' %t)
-                print "we allow treenode.get_parents from another thread"
+                if DEBUG_THREAD:
+                    print "we allow treenode.get_parents from another thread"
         toreturn = []
         if self.tree:
             for p in self.parents:
@@ -545,7 +547,8 @@ class TreeNode():
             t = threading.current_thread()
             if t != self.thread:
 #                raise Exception('! could not get_children from thread %s' %t)
-                print "we allow treenode.get_children from another thread"
+                if DEBUG_THREAD:
+                    print "we allow treenode.get_children from another thread"
         return list(self.children)
 
     def get_n_children(self):

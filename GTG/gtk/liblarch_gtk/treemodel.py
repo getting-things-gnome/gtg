@@ -331,7 +331,8 @@ class TreeModel(gtk.GenericTreeModel):
         if paths:
             for p in paths:
                 if DEBUG_MODEL:
-                    print "     deleting row %s" %str(p)
+                    print "     deleting row %s  (it's tid %s)" %(str(p),tid)
+                    self.tree.print_tree()
                 self.row_deleted(p)
         else:
             raise ValueError('no paths to delete for %s' %tid)
