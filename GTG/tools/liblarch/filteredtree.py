@@ -144,8 +144,8 @@ class FilteredTree():
         func = self.cllbcks.get(event,None)
         if func:
 #            paths = self.get_paths_for_node(tid)
-            if not paths:
-                paths = self.path_for_node_cache.get(tid,None)
+#            if not paths:
+#                paths = self.path_for_node_cache.get(tid,None)
             if not paths:
                 paths = self.get_paths_for_node(tid)
             if not paths or len(paths) <= 0:
@@ -236,7 +236,9 @@ class FilteredTree():
     ####TreeModel functions ##############################
 
     def print_tree(self,string=None):
-        toprint = "displayed : %s" %self.displayed_nodes
+        toprint = "displayed : %s\n" %self.displayed_nodes
+        toprint += "VR is : %s\n" %self.virtual_root
+        toprint += "updating_queue is : %s" %self.__updating_queue
         if string:
             string = toprint + "\n"
         else:
@@ -282,8 +284,14 @@ class FilteredTree():
                 return self.__node_for_path(node_id, path)
         else:
             return None
+            
+    def get_paths_for_node(self,tid):
+        toreturn = self.path_for_node_cache.get(tid,None)
+        if not toreturn:
+            toreturn = self.__get_paths_for_node(tid)
+        return toreturn
 
-    def get_paths_for_node(self, tid):
+    def __get_paths_for_node(self, tid):
         """
         Return a list of paths for a given node
         Return an empty list if no path for that Node.
@@ -328,7 +336,7 @@ class FilteredTree():
                 while pos < max-1 and tid != child:
                     pos += 1
                     child = self.node_nth_child(par,pos)
-                par_paths = self.get_paths_for_node(par)
+                par_paths = self.__get_paths_for_node(par)
                 for par_path in par_paths:
                     path = par_path + (pos,)
                     toreturn.append(path)
@@ -779,13 +787,16 @@ class FilteredTree():
                     self.update_count += 1
 #                    if tid.startswith('@'):
 #                        self.print_tree()
-                    newpaths = self.get_paths_for_node(tid)
+                    newpaths = self.__get_paths_for_node(tid)
                     if oldpaths == newpaths:
                         self.callback("modified", tid)
                     else:
                         if oldpaths:
+                            print "removing %s from %s" %(tid,str(oldpaths))
                             self.callback('deleted',tid,oldpaths)
-                            self.callback('added',tid)
+                            print "adding %s to %s"%(tid,str(newpaths))
+                            self.print_tree()
+                            self.callback('added',tid,newpaths)
                     #We update the children.
                     if not self.flat:
                         node = self.get_node(tid)
@@ -864,9 +875,7 @@ class FilteredTree():
                 children = self.node_all_children(tid)
                 self.remove_count += 1
                 self.__nodes_count -= 1
-                oldpaths = self.path_for_node_cache.get(tid,None)
-                if not oldpaths:
-                    oldpaths = self.get_paths_for_node(tid)
+                oldpaths = self.get_paths_for_node(tid)
                 self.__root_update(tid,False)
                 self.displayed_nodes.remove(tid)
                 if self.path_for_node_cache.has_key(tid):
