@@ -417,8 +417,15 @@ class TestLibLarch(unittest.TestCase):
         def check_path(nid,path):
             realnode = view.get_node_for_path(path)
 #            self.assertEqual(nid,realnode)
+        def printtree(tid,paths=None):
+            treestr = ' '
+            #The printtree method returns an error when the printed tree
+            #is not logical. Thus, by connecting a print tree to signals,
+            #the test will fail if there's any inconsistencies.
+            view.print_tree(string=treestr)
         view = self.tree.get_viewtree(refresh=True)
         view.register_cllbck('node-modified-inview',check_path)
+        view.register_cllbck('node-deleted-inview',printtree)
         node = DummyNode('child')
         node2 = DummyNode('futur')
         node3 = DummyNode('child2')

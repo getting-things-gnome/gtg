@@ -288,8 +288,8 @@ class ViewTree(gobject.GObject):
                             " in a viewtree")
         return toreturn
 
-    def print_tree(self):
-        return self.__ft.print_tree()
+    def print_tree(self,string=None):
+        return self.__ft.print_tree(string=string)
 
     #return a list of nid of displayed nodes
     def get_all_nodes(self):

@@ -235,10 +235,14 @@ class FilteredTree():
         
     ####TreeModel functions ##############################
 
-    def print_tree(self):
-        print "displayed : %s" %self.displayed_nodes
+    def print_tree(self,string=None):
+        toprint = "displayed : %s" %self.displayed_nodes
+        if string:
+            string = toprint + "\n"
+        else:
+            print toprint
         for rid in self.virtual_root:
-            self.__print_from_node(rid)
+            self.__print_from_node(rid,string=string)
         #alternate implementation using next_node
 #        if len(self.virtual_root) > 0:
 #            rid = self.virtual_root[0]
@@ -886,16 +890,30 @@ class FilteredTree():
             self.node_to_remove.remove(tid)
         
     #This function print the actual tree. Useful for debugging
-    def __print_from_node(self, nid, prefix=""):
-        print "%s%s    (%s) " %(prefix,nid,\
-                    str(self.get_paths_for_node(nid)))
-        prefix = prefix + "->"
+    def __print_from_node(self, nid, level=0,string=None):
+        prefix = "->"*level
+        paths = self.get_paths_for_node(nid)
+        toprint = "%s%s    (%s) " %(prefix,nid,\
+                    str(paths))
+        if string:
+            string += toprint
+            string += "\n"
+        else:
+            print toprint
+        level += 1
+        is_good = False
+        for p in paths:
+            if len(p) == level:
+                is_good = True
+        if not is_good:
+            raise Exception('theres no path of level %s' %level +\
+                            'for node %s - %s' %(nid,str(paths)))
         if self.node_has_child(nid):
             nn = self.node_n_children(nid)
             n = 0
             while n < nn:
                 child_id = self.node_nth_child(nid,n)
-                self.__print_from_node(child_id,prefix)
+                self.__print_from_node(child_id,level,string=string)
                 n += 1
     
     #This function removes all the nodes, leaves first.
