@@ -770,17 +770,17 @@ class FilteredTree():
 #                    print "*update_node : adding node %s" %tid
                     self.__add_node(tid)
                 else:
-                    oldpath = self.path_for_node_cache.get(tid,None)
+                    oldpaths = self.path_for_node_cache.get(tid,None)
                     self.__root_update(tid,inroot)
                     self.update_count += 1
 #                    if tid.startswith('@'):
 #                        self.print_tree()
-                    newpath = self.get_paths_for_node(tid)
-                    if oldpath == newpath:
+                    newpaths = self.get_paths_for_node(tid)
+                    if oldpaths == newpaths:
                         self.callback("modified", tid)
                     else:
-                        if oldpath:
-                            self.callback('deleted',tid,oldpath)
+                        if oldpaths:
+                            self.callback('deleted',tid,oldpaths)
                             self.callback('added',tid)
                     #We update the children.
                     if not self.flat:
@@ -860,11 +860,14 @@ class FilteredTree():
                 children = self.node_all_children(tid)
                 self.remove_count += 1
                 self.__nodes_count -= 1
-                self.callback('deleted',tid)
+                oldpaths = self.path_for_node_cache.get(tid,None)
+                if not oldpaths:
+                    oldpaths = self.get_paths_for_node(tid)
                 self.__root_update(tid,False)
                 self.displayed_nodes.remove(tid)
                 if self.path_for_node_cache.has_key(tid):
                     self.path_for_node_cache[tid] = None
+                self.callback('deleted',tid,oldpaths)
                 #As we have removed a node, path have changed for the children
                 for cid in children:
                     self.__update_node(cid)
