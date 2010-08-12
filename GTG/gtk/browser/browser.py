@@ -1041,10 +1041,11 @@ class TaskBrowser:
             if pthinfo is not None:
                 path, col, cellx, celly = pthinfo
                 selection = treeview.get_selection()
-                if selection.count_selected_rows() <= 0:
+                if selection.count_selected_rows() > 0 :
+                    if not selection.path_is_selected(path) :
+                        treeview.set_cursor(path, col, 0)
+                else :
                     treeview.set_cursor(path, col, 0)
-                else:
-                    selection.select_path(path)
                 treeview.grab_focus()
                 self.taskpopup.popup(None, None, None, event.button, time)
             return 1
