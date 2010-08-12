@@ -116,6 +116,8 @@ class FilteredTree():
         self.tasks_to_modify = []
         self.node_to_remove = []
         self.__clean_list = []
+        self.state_node_cache = {}
+        self.state_path_cache = {}
         #an initial refilter is always needed if we don't apply a filter
         #for performance reason, we do it only if refresh = True
         self.__reset_cache()
@@ -336,7 +338,7 @@ class FilteredTree():
                 while pos < max-1 and tid != child:
                     pos += 1
                     child = self.node_nth_child(par,pos)
-                par_paths = self.__get_paths_for_node(par)
+                par_paths = self.get_paths_for_node(par)
                 for par_path in par_paths:
                     path = par_path + (pos,)
                     toreturn.append(path)
@@ -576,7 +578,6 @@ class FilteredTree():
         to_add = []
 #        self.counted_nodes = []
 #        self.count_cache = {}
-        self.__reset_cache()
         #If we have only one flat filter, the result is flat
         self.flat = False
         for f in self.applied_filters:
@@ -589,6 +590,7 @@ class FilteredTree():
             self.__clean_from_node(rid)
         #We reinitialize the tree before adding nodes that should be added
         self.displayed_nodes = []
+        self.__reset_cache()
         #Then, we list the nodes that will be
         #ultimately displayed
         for nid in self.tree.get_all_nodes():
@@ -782,6 +784,7 @@ class FilteredTree():
 #                    print "*update_node : adding node %s" %tid
                     self.__add_node(tid)
                 else:
+                    haschild = self.node_has_child(tid)
                     oldpaths = self.path_for_node_cache.get(tid,None)
                     self.__root_update(tid,inroot)
                     self.update_count += 1
@@ -793,6 +796,8 @@ class FilteredTree():
                     else:
                         if oldpaths:
                             print "removing %s from %s" %(tid,str(oldpaths))
+                            if haschild:
+                                print "########## Removing %s but it as children" %tid
                             self.callback('deleted',tid,oldpaths)
                             print "adding %s to %s"%(tid,str(newpaths))
                             self.print_tree()
@@ -849,6 +854,8 @@ class FilteredTree():
                 
                 self.__root_update(tid,inroot)
 #                print "* * we add %s" %(tid)
+                #Now, we reset the cache for that node
+                self.state_node_cache = {}
                 self.callback("added", tid)
 #                print "- -  we finished the callback for %s" %tid
                 for p in parents:
