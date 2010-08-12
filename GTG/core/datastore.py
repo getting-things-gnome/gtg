@@ -66,6 +66,7 @@ class DataStore(object):
         self.requester = requester.Requester(self)
         self.tagfile = None
         self.__tagstore = self.treefactory.get_tags_tree(self.requester)
+        self.added_tag = {}
         self.load_tag_tree()
         self._backend_signals = BackendSignals()
         self.mutex = threading.RLock()
@@ -109,17 +110,26 @@ class DataStore(object):
         """Create a new tag and return it or return the existing one
         with corresponding name"""
         def adding_tag(tname,tag):
-            self.__tagstore.add_node(tag)
-            p = {'tag':tname,'transparent':True}
-            self.__tasks.add_filter(tname,self.treefactory.tag_filter,parameters=p)
-            tag.set_save_callback(self.save)
-            Log.debug("********* tag added %s *******" % tagname)
+            if not self.__tagstore.has_node(tname):
+                self.__tagstore.add_node(tag)
+                p = {'tag':tname,'transparent':True}
+                self.__tasks.add_filter(tname,self.treefactory.tag_filter,parameters=p)
+                tag.set_save_callback(self.save)
+                self.added_tag.pop(tname)
+                Log.debug("********* tag added %s *******" % tname)
+            else:
+                print "Warning: Trying to add tag %s multiple times" %tname
         #we create a new tag from a name
         tname = tagname.encode("UTF-8")
         #if tname not in self.tags:
         if not self.__tagstore.has_node(tname):
-            tag = Tag(tname, req=self.requester)
-            gobject.idle_add(adding_tag,tname,tag)
+            if tname not in self.added_tag:
+                tag = Tag(tname, req=self.requester)
+                self.added_tag[tname] = tag
+                gobject.idle_add(adding_tag,tname,tag)
+            else:
+                #it means that we are in the process of adding the tag
+                tag = self.added_tag[tname]
         else:
             raise IndexError('tag %s was already in the datastore' %tagname)
         return tag
@@ -153,11 +163,11 @@ class DataStore(object):
                 i += 1
             parent = tag.get_attribute('parent')
             if parent:
-                if self.__tagstore.has_node(parent):
-                    pnode = self.__tagstore.get_node(parent)
-                else:
-                    pnode=self.new_tag(parent)
-                tag.set_parent(pnode.get_id())
+#                if self.__tagstore.has_node(parent):
+#                    pnode = self.__tagstore.get_node(parent)
+#                else:
+#                    pnode=self.new_tag(parent)
+                tag.set_parent(parent)
         self.tagfile = tagfile
                 
     def save_tagtree(self):

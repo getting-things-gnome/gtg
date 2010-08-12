@@ -916,7 +916,7 @@ class TaskBrowser:
 
     def on_add_task(self, widget, status=None):
         tags, notagonly = self.get_selected_tags()
-        task = self.req.new_task(tags=[t.get_name() for t in tags], newtask=True)
+        task = self.req.new_task(tags=[t for t in tags], newtask=True)
         uid = task.get_id()
         if status:
             task.set_status(status)

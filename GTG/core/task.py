@@ -535,7 +535,10 @@ class Task(TreeNode):
     def get_tags(self):
         l = []
         for tname in self.tags:
-            l.append(self.req.get_tag(tname))
+            tag = self.req.get_tag(tname)
+            if not tag:
+                tag = self.req.new_tag(tname)
+            l.append(tag)
         return l
         
     def rename_tag(self, old, new):
@@ -554,9 +557,6 @@ class Task(TreeNode):
         """
         #print "tag %s added to task %s" %(tagname,self.get_id())
         t = tagname.encode("UTF-8")
-        tag = self.req.get_tag(t)
-        if not tag:
-            tag = self.req.new_tag(t)
         #Do not add the same tag twice
         if not t in self.tags:
             self.tags.append(t)
@@ -566,6 +566,9 @@ class Task(TreeNode):
                 if child.can_be_deleted:
                     child.add_tag(t)
             if self.is_loaded():
+                tag = self.req.get_tag(t)
+                if not tag:
+                    tag = self.req.new_tag(t)
                 tag.modified()
             return True
     

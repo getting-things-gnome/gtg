@@ -544,7 +544,8 @@ class TreeNode():
         if self.thread_protection:
             t = threading.current_thread()
             if t != self.thread:
-                raise Exception('! could not get_children from thread %s' %t)
+#                raise Exception('! could not get_children from thread %s' %t)
+                print "we allow treenode.get_children from another thread"
         return list(self.children)
 
     def get_n_children(self):
