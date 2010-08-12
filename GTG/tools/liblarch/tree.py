@@ -17,6 +17,8 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
+THREAD_PROTECTION = True
+
 import gobject
 import threading
 
@@ -30,8 +32,9 @@ class MainTree(gobject.GObject):
                     'node-modified': (gobject.SIGNAL_RUN_FIRST, \
                                     gobject.TYPE_NONE, (str, ))}
 
-    def __init__(self, root=None):
+    def __init__(self, root=None,thread=None):
         gobject.GObject.__init__(self)
+        self.thread = thread
         self.root_id = 'root'
         self.nodes = {}
         self.old_paths = {}
@@ -41,6 +44,7 @@ class MainTree(gobject.GObject):
             self.root = root
         else:
             self.root = TreeNode(id=self.root_id)
+        self.root.set_thread(self.thread)
         self.root.set_tree(self)
         
     #those callbacks are called instead of signals.
@@ -377,11 +381,20 @@ class TreeNode():
         self.pending_relationship = []
         if parent:
             self.add_parent(parent)
+        self.thread = None
+        self.thread_protection = False
 
     def __str__(self):
         return "<TreeNode: '%s'>" % (self.id)
         
+    def set_thread(self,thread):
+        self.thread = thread
+        
     def modified(self):
+        if self.thread_protection:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not modified from thread %s' %t)
         #FIXME : we should maybe have
         # a directional recursive update
         if self.tree:
@@ -391,17 +404,25 @@ class TreeNode():
 #            for s in self.get_children():
 #                self.tree.modify_node(s)
             #then the task
-#            self.tree.modify_node(self.id)
-            gobject.idle_add(self.tree.modify_node,self.id)
+            self.tree.modify_node(self.id)
+#            gobject.idle_add(self.tree.modify_node,self.id)
             #then parents
 #            for p in self.get_parents():
 #                self.tree.modify_node(p)
         
     def set_tree(self,tree):
+        if self.thread_protection:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not acces set_tree from thread %s' %t)
         self.tree = tree
         for rel in list(self.pending_relationship):
             self.tree.new_relationship(rel[0],rel[1])
             self.pending_relationship.remove(rel)
+        if THREAD_PROTECTION:
+            self.thread_protection = True
+            if not self.thread:
+                raise Exception('We should have received the thread')
             
     def get_tree(self):
         return self.tree
@@ -411,6 +432,10 @@ class TreeNode():
         
     
     def new_relationship(self,par,chi):
+        if self.thread_protection:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not new_relationship from thread %s' %t)
         if self.tree:
             return self.tree.new_relationship(par,chi)
         else:
@@ -432,6 +457,10 @@ class TreeNode():
     #this one return only one parent.
     #useful for tree where we know that there is only one
     def get_parent(self):
+        if self.thread_protection:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not get_parent from thread %s' %t)
         #we should throw an error if there are multiples parents
         if len(self.parents) > 1 :
             print "Warning: get_parent will return one random parent for task %s because there are multiple parents." %(self.get_id())
@@ -445,6 +474,10 @@ class TreeNode():
         '''
         Return a list of parent ids
         '''
+        if self.thread_protection:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not get_parents from thread %s' %t)
         toreturn = []
         if self.tree:
             for p in self.parents:
@@ -453,6 +486,10 @@ class TreeNode():
         return toreturn
 
     def add_parent(self, parent_id):
+        if self.thread_protection:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not add_parent from thread %s' %t)
         if parent_id not in self.parents:
 #            print " ++++++++ adding parent %s to %s" %(parent_id,self.get_id())
             self.parents.append(parent_id)
@@ -466,6 +503,10 @@ class TreeNode():
     #set_parent means that we remove all other parents
     #if par_id is None, we will remove all parents, thus being on the root.
     def set_parent(self,par_id):
+        if self.thread_protection:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not acces set_parent from thread %s' %t)
         is_already_parent_flag = False
         for i in self.parents:
             if i != par_id:
@@ -478,6 +519,10 @@ class TreeNode():
             self.new_relationship('root', self.get_id())
             
     def remove_parent(self,id):
+        if self.thread_protection:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not remove_parent from thread %s' %t)
         if id in self.parents:
 #            print " --------removing parent %s to %s" %(id,self.get_id())
             self.parents.remove(id)
@@ -495,12 +540,24 @@ class TreeNode():
             return len(self.children) != 0
 
     def get_children(self):
+        if self.thread_protection:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not get_children from thread %s' %t)
         return list(self.children)
 
     def get_n_children(self):
+        if self.thread_protection:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not get_n_children from thread %s' %t)
         return len(self.children)
 
     def get_nth_child(self, index):
+        if self.thread_protection:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not get_nth_child from thread %s' %t)
         try:
             id = self.children[index]
             return id
@@ -508,12 +565,20 @@ class TreeNode():
             raise ValueError("Index is not in the children list")
 
     def get_child(self, id):
+        if self.thread_protection:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not get_child from thread %s' %t)
         if id in self.children:
             return self.tree.get_node(id)
         else:
             return None
 
     def get_child_index(self, id):
+        if self.thread_protection:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not get_child_index from thread %s' %t)
         if id in self.children:
             return self.children.index(id)
         else:
@@ -523,6 +588,11 @@ class TreeNode():
     #takes the id of the child as parameter.
     #if the child is not already in the tree, the relation is anyway "saved"
     def add_child(self, id):
+        if self.thread_protection:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not add_child from thread %s' %t+\
+                                'should be %s' %self.thread)
         if id not in self.children:
             self.children.append(id)
 #            print "%%%% old  is %s" %self.children
@@ -542,6 +612,10 @@ class TreeNode():
         return toreturn
 
     def remove_child(self, id):
+        if self.thread_protection:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not remove_chil from thread %s' %t)
         if id in self.children:
             index = self.get_child_index(id)
             self.children.remove(id)

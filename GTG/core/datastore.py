@@ -108,16 +108,18 @@ class DataStore(object):
     def new_tag(self,tagname):
         """Create a new tag and return it or return the existing one
         with corresponding name"""
-        #we create a new tag from a name
-        tname = tagname.encode("UTF-8")
-        #if tname not in self.tags:
-        if not self.__tagstore.has_node(tname):
-            tag = Tag(tname, req=self.requester)
+        def adding_tag(tname,tag):
             self.__tagstore.add_node(tag)
             p = {'tag':tname,'transparent':True}
             self.__tasks.add_filter(tname,self.treefactory.tag_filter,parameters=p)
             tag.set_save_callback(self.save)
             Log.debug("********* tag added %s *******" % tagname)
+        #we create a new tag from a name
+        tname = tagname.encode("UTF-8")
+        #if tname not in self.tags:
+        if not self.__tagstore.has_node(tname):
+            tag = Tag(tname, req=self.requester)
+            gobject.idle_add(adding_tag,tname,tag)
         else:
             raise IndexError('tag %s was already in the datastore' %tagname)
         return tag
@@ -238,15 +240,16 @@ class DataStore(object):
         @param task: A valid task object  (a GTG.core.task.Task)
         @return bool: True if the task has been accepted
         '''
-
-        if self.has_task(task.get_id()):
-            return False
-        else:
-#            self.__tasks.add_node(task)
-            gobject.idle_add(self.__tasks.add_node,task)
+        def adding(task):
+            self.__tasks.add_node(task)
             task.set_loaded()
             if self.is_default_backend_loaded:
                 task.sync()
+        if self.has_task(task.get_id()):
+            return False
+        else:
+            #Thread protection
+            gobject.idle_add(adding,task)
             return True
 
     ##########################################################################

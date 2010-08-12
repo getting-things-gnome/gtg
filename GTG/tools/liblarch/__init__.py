@@ -19,9 +19,11 @@
 
 #This doesn't work
 IDLE_ADD = False
+THREAD_PROTECTION = True
 
 import gobject
 import functools
+import threading
 
 from GTG.tools.liblarch.tree import MainTree
 from GTG.tools.liblarch.filteredtree import FilteredTree
@@ -37,12 +39,16 @@ class Tree():
 
 
     def __init__(self):
-        self.__tree = MainTree()
+        if THREAD_PROTECTION:
+            self.thread = threading.current_thread()
+        self.__tree = MainTree(thread=self.thread)
         self.__fbank = FiltersBank(self.__tree)
         self.views = {}
         #main is a reserved name for a viewtree. It is the complete viewtree,
         #without anyfilter
         self.views['main'] = ViewTree(self.__tree,self.__fbank,static=True)
+        if THREAD_PROTECTION:
+            self.views['main'].set_thread(self.thread)
 
     ###### nodes handling ######
     def get_node(self,nid):
@@ -56,12 +62,21 @@ class Tree():
         return self.__tree.has_node(nid)
 
     def add_node(self,node,parent_id=None):
+        if THREAD_PROTECTION:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not acces add_node from thread %s' %t)
+            node.set_thread(self.thread)
         if IDLE_ADD:
             gobject.idle_add(self.__tree.add_node,node,parent_id)
         else:
             self.__tree.add_node(node,parent_id=parent_id)
 
     def del_node(self,nid,recursive=False):
+        if THREAD_PROTECTION:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not acces del_node from thread %s' %t)
         if IDLE_ADD:
             gobject.idle_add(self.__tree.remove_node,nid,recursive)
             return True
@@ -69,6 +84,10 @@ class Tree():
             return self.__tree.remove_node(nid,recursive=recursive)
 
     def refresh_node(self,nid):
+        if THREAD_PROTECTION:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not refres_node from thread %s' %t)
         if IDLE_ADD:
             gobject.idle_add(self.__tree.modify_node,nid)
         else:
@@ -83,6 +102,10 @@ class Tree():
         Move the node to a new parent (dismissing all other parents)
         use pid None to move it to the root
         """
+        if THREAD_PROTECTION:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not move_node from thread %s' %t)
         if self.has_node(nid):
             node = self.get_node(nid)
             if IDLE_ADD:
@@ -96,6 +119,10 @@ class Tree():
         
     #if pid is None, nothing is done
     def add_parent(self,nid,new_parent_id=None):
+        if THREAD_PROTECTION:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not add_parent from thread %s' %t)
         if self.has_node(nid):
             node = self.get_node(nid)
             if IDLE_ADD:
@@ -125,6 +152,8 @@ class Tree():
             vt = self.views[name]
         else:
             vt = ViewTree(self.__tree,self.__fbank,refresh=refresh)
+            if THREAD_PROTECTION:
+                vt.set_thread(self.thread)
             if name:
                 self.views[name] = vt
         return vt
@@ -143,6 +172,10 @@ class Tree():
         Return True if the filter was added
         Return False if the filter_name was already in the bank
         """
+        if THREAD_PROTECTION:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not add_filter from thread %s' %t)
         return self.__fbank.add_filter(filter_name,filter_func,parameters=parameters)
 
     def remove_filter(self,filter_name):
@@ -151,6 +184,10 @@ class Tree():
         Only custom filters that were added here can be removed
         Return False if the filter was not removed
         """
+        if THREAD_PROTECTION:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not remove_filter from thread %s' %t)
         return self.__fbank.remove_filter(filter_name)
 
 ################### ViewTree #####################
@@ -185,6 +222,7 @@ class ViewTree(gobject.GObject):
         self.__maintree = maintree
         self.static = static
         self.__cllbcks = {}
+        self.thread = None
         #If we are static, we directly ask the tree. No need of an
         #FilteredTree layer
         self.__ft = FilteredTree(maintree, filters_bank, refresh = refresh)
@@ -204,6 +242,9 @@ class ViewTree(gobject.GObject):
                         functools.partial(self.__emit, 'node-deleted-inview'))
             self.__ft.set_callback('modified', \
                         functools.partial(self.__emit, 'node-modified-inview'))
+                        
+    def set_thread(self,thread):
+        self.thread = thread
             
     def __emit(self, signal_name, tid,paths=None):
         for k in self.__cllbcks.get(signal_name,[]):
@@ -215,6 +256,10 @@ class ViewTree(gobject.GObject):
             self.emit(signal_name, tid)
         
     def register_cllbck(self,event,func):
+        if THREAD_PROTECTION:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not register_cllbck from thread %s' %t)
         if not self.__cllbcks.has_key(event):
             self.__cllbcks[event] = {}
         dic = self.__cllbcks[event]
@@ -251,6 +296,10 @@ class ViewTree(gobject.GObject):
         return self.__ft.get_all_nodes()
         
     def refresh_all(self):
+        if THREAD_PROTECTION:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not refresh_all from thread %s' %t)
         self.__maintree.refresh_all()
 
     def get_n_nodes(self,withfilters=[],include_transparent=True):
@@ -267,30 +316,58 @@ class ViewTree(gobject.GObject):
                                     include_transparent=include_transparent)
 
     def get_node_for_path(self, path):
+        if THREAD_PROTECTION:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not get_node_for_path from thread %s' %t)
         return self.__ft.get_node_for_path(path)
 
     #If nid is none, return root path
     def get_paths_for_node(self, nid=None):
+        if THREAD_PROTECTION:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not get_paths_for_node from thread %s' %t)
         return self.__ft.get_paths_for_node(nid)
 
     #pid is used only if nid has multiple parents.
     #if pid is none, a random parent is used.
     def next_node(self, nid,pid=None):
+        if THREAD_PROTECTION:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not next_node from thread %s' %t)
         return self.__ft.next_node(nid,pid)
         
     def node_has_child(self, nid):
+        if THREAD_PROTECTION:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not has_child from thread %s' %t)
         toreturn = self.__ft.node_has_child(nid)
         return toreturn
 
     #if nid is None, return the number of nodes at the root
     def node_n_children(self, nid=None):
+        if THREAD_PROTECTION:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not node_n_children from thread %s' %t)
         return len(self.node_all_children(nid))
         
     def node_all_children(self, nid=None):
+        if THREAD_PROTECTION:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not node_all_children from thread %s' %t)
         toreturn = self.__ft.node_all_children(nid)
         return toreturn
 
     def node_nth_child(self, nid, n):
+        if THREAD_PROTECTION:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not node_nth_child from thread %s' %t)
         toreturn = None
         if self.static:
             node = self.__get_static_node(nid)
@@ -306,6 +383,10 @@ class ViewTree(gobject.GObject):
         return toreturn
         
     def node_has_parent(self,nid):
+        if THREAD_PROTECTION:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not node_has_parent from thread %s' %t)
         return len(self.node_parents(nid)) > 0
 
     def node_parents(self, nid):
@@ -316,10 +397,18 @@ class ViewTree(gobject.GObject):
         Doesn't check wheter node nid is displayed or not. (we only care about
         parents)
         """
+        if THREAD_PROTECTION:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not node_parents from thread %s' %t)
         toreturn = self.__ft.node_parents(nid)
         return toreturn
 
     def is_displayed(self,nid):
+        if THREAD_PROTECTION:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not is_displayed from thread %s' %t)
         return self.__ft.is_displayed(nid)
 
     ####### Change filters #################
@@ -335,6 +424,10 @@ class ViewTree(gobject.GObject):
         @param reset : optional boolean. Should we remove other filters?
         @param refresh : should we refresh after applying this filter ?
         """
+        if THREAD_PROTECTION:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not apply_filter from thread %s' %t)
         if self.static:
             raise Exception("WARNING: filters cannot be applied" +\
                             "to a static tree\n")
@@ -348,6 +441,10 @@ class ViewTree(gobject.GObject):
         Removes a filter from the tree.
         @param filter_name: The name of an already added filter to remove
         """
+        if THREAD_PROTECTION:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not unapply_filter from thread %s' %t)
         if self.static:
             raise Exception("WARNING: filters cannot be unapplied" +\
                             "from a static tree\n")
@@ -359,6 +456,10 @@ class ViewTree(gobject.GObject):
         """
         Clears all filters currently set on the tree.
         """
+        if THREAD_PROTECTION:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not reset_filters from thread %s' %t)
         if self.static:
             raise Exception("WARNING: filters cannot be reset" +\
                             "on a static tree\n")
