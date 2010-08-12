@@ -477,7 +477,8 @@ class TreeNode():
         if self.thread_protection:
             t = threading.current_thread()
             if t != self.thread:
-                raise Exception('! could not get_parents from thread %s' %t)
+#                raise Exception('! could not get_parents from thread %s' %t)
+                print "we allow treenode.get_parents from another thread"
         toreturn = []
         if self.tree:
             for p in self.parents:
