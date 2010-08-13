@@ -971,7 +971,9 @@ class TaskBrowser:
                     text = \
                         text.replace("%s%s:%s" % (spaces, attribute, args), "")
             # Create the new task
-            task = self.req.new_task(tags=[t.get_name() for t in tags], newtask=True)
+            task = self.req.new_task( newtask=True)
+            for tag in tags:
+                task.add_tag(tag.get_name())
             if text != "":
                 task.set_title(text.strip())
                 task.set_to_keep()
