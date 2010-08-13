@@ -4,6 +4,7 @@
     * Fixed bug with data consistency #579189, by Marko Kevac
     * Added samba bugzilla to the bugzilla plugin, by Jelmer Vernoij
     * Fixed bug #532392, a start date is later than a due date, by Volodymyr Floreskul
+    * Extended backend system to support multiple backends by Luca Invernizzi
 
 2010-03-01 Getting Things GNOME! 0.2.2
     * Autostart on login, by Luca Invernizzi
