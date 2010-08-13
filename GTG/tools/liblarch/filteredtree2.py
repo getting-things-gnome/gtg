@@ -105,6 +105,9 @@ class FilteredTree():
         self.cache_nodes = {}
         self.cllbcks = {}
         
+        self.__updating_lock = False
+        self.__updating_queue = []
+        
         #filters
         #self.__flat should only be used by dynamic functions, not static one
         self.__flat = False
@@ -135,21 +138,6 @@ class FilteredTree():
             self.tree.register_callback("node-deleted", functools.partial(\
                                                 self.__task_deleted,None))
         
-        
-     ### signals functions
-#    def __task_added(self,sender,tid):
-#        todis = self.__is_displayed(tid)
-#        curdis = self.is_displayed(tid)
-#        if todis and not curdis:
-#            self.__add_node(tid)
-#        
-#    def __task_modified(self,sender,tid):
-#        inroot = self.__is_root(tid)
-#        self.__update_node(tid,inroot)
-
-#    def __task_deleted(self,sender,tid):
-#        self.__remove_node(tid)
-        
     #those callbacks are called instead of signals.
     def set_callback(self,event,func):
         self.cllbcks[event] = func
@@ -171,10 +159,110 @@ class FilteredTree():
         """
         return self.tree.get_node(id)
         
+################## External update functions ###################
+         ### signals functions
+    def __task_added(self,sender,tid):
+        todis = self.__is_displayed(tid)
+        curdis = self.is_displayed(tid)
+        if todis and not curdis:
+            self.external_add_node(tid)
+        
+    def __task_modified(self,sender,tid):
+        self.external_update_node(tid)
+
+    def __task_deleted(self,sender,tid):
+        self.external_remove_node(tid)
+
+    def external_update_node(self,tid):
+        if not tid:
+            raise ValueError('cannot update node None')
+        self.__updating_queue.append([tid,'update'])
+        if not self.__updating_lock and len(self.__updating_queue) > 0:
+            self.__updating_lock = True
+            self.__execution_loop()
+
+    def external_add_node(self,tid):
+        if not tid:
+            raise ValueError('cannot add node None')
+        self.__updating_queue.append([tid,'add'])
+        if not self.__updating_lock and len(self.__updating_queue) > 0:
+            self.__updating_lock = True
+            self.__execution_loop()
+            
+    def external_remove_node(self,tid):
+        if not tid:
+            raise ValueError('cannot remove node None')
+        self.__updating_queue.append([tid,'delete'])
+        if not self.__updating_lock and len(self.__updating_queue) > 0:
+            self.__updating_lock = True
+            self.__execution_loop()
+            
+            
+    def __execution_loop(self):
+        while len(self.__updating_queue) > 0:
+            tid,action = self.__updating_queue.pop(0)
+#            print "# # # %s %s popped out" %(tid,action)
+#            print "       lis is %s" %self.__updating_queue
+            if action == 'update':
+                self.__update_node(tid)
+            elif action == 'delete':
+                self.__delete_node(tid)
+            elif action == 'add':
+                self.__add_node(tid)
+            else:
+                raise ValueError('%s in not a valid action for the loop') %action
+        self.__updating_lock = False
+        
 ################# Static cached Filtered Tree ##################
     # Basically, our we save statically our FT in cache_vr and cache_nodes
     #All external functions get their result from that cache
     #This enforce the external state of the FT being consistent at any time !
+    
+    def print_tree(self,string=None):
+        toprint = "displayed : %s\n" %self.get_all_nodes()
+        toprint += "VR is : %s\n" %self.cache_vr
+        toprint += "updating_queue is : %s" %self.__updating_queue
+        if string:
+            string = toprint + "\n"
+        else:
+            print toprint
+        for rid in self.cache_vr:
+            self.print_from_node(rid,string=string)
+        #alternate implementation using next_node
+#        if len(self.virtual_root) > 0:
+#            rid = self.virtual_root[0]
+#            self.__print_from_node(rid)
+#            rid = self.next_node(rid)
+#            while rid:
+#                self.__print_from_node(rid)
+#                rid = self.next_node(rid)
+
+    #This function print the actual tree. Useful for debugging
+    def print_from_node(self, nid, level=0,string=None):
+        prefix = "->"*level
+        paths = self.get_paths_for_node(nid)
+        toprint = "%s%s    (%s) " %(prefix,nid,\
+                    str(paths))
+        if string:
+            string += toprint
+            string += "\n"
+        else:
+            print toprint
+        level += 1
+        is_good = False
+        for p in paths:
+            if len(p) == level:
+                is_good = True
+        if not is_good:
+            raise Exception('theres no path of level %s' %level +\
+                            'for node %s - %s' %(nid,str(paths)))
+        if self.node_has_child(nid):
+            nn = self.node_n_children(nid)
+            n = 0
+            while n < nn:
+                child_id = self.node_nth_child(nid,n)
+                self.print_from_node(child_id,level,string=string)
+                n += 1
     
     #Those 3 functions are static except if the cache was not yet used.
     #Could it be a source of bug ?
@@ -532,6 +620,7 @@ class FilteredTree():
         # 3. send the signal (it means that the state is valid)
         self.callback('deleted',nid,oldpaths)
         # 4. update next_node  (PLOUM_DEBUG: this is the trickiest point)
+        return True
     
     def __add_node(self,nid):
         #1. Add the node
@@ -563,6 +652,7 @@ class FilteredTree():
         #3. Add the children
         for c in children:
             self.__add_node(c)
+        return True
         
     
     def __update_node(self,nid):
@@ -570,11 +660,12 @@ class FilteredTree():
         newpaths = self.__get_paths_for_node(nid).sort()
         if oldpaths == newpaths:
             self.callback("modified", tid,newpaths)
-        elif oldpaths:
-            self.__delete_node(nid,oldpaths)
-            self.__add_node(nid,newpaths)
-        else:
-            self.__add_node(nid,newpaths)
+        else
+            if len(oldpaths) > 0:
+                self.__delete_node(nid,oldpaths)
+            if len(newpaths) > 0:
+                self.__add_node(nid,newpaths)
+        return True
             
 ################# Filters functions #####################################
     
