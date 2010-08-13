@@ -46,6 +46,26 @@ class SyncMeme(object):
     #      if the object was really changed, or it has just updated its
     #      modified time (invernizzi)
 
+    def __init__(self,
+                 local_modified = None,
+                 remote_modified = None,
+                 origin = None):
+        '''
+        Creates a new SyncMeme, updating the modified times for both the
+        local and remote objects, and sets the given origin.
+        If any of the parameters is set to None, it's ignored.
+
+        @param local_modified: the modified time for the local object
+        @param remote_modified: the modified time for the remote object
+        @param origin: an object that identifies whether the local or the remote is
+                       the original object, the other one being a copy.
+        '''
+        if local_modified != None:
+            self.set_local_last_modified(local_modified)
+        if remote_modified != None:
+            self.set_remote_last_modified(remote_modified)
+        if origin != None:
+            self.set_origin(origin)
 
     def set_local_last_modified(self, modified_datetime):
         '''
