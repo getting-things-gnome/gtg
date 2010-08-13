@@ -292,7 +292,10 @@ class FilteredTree():
         return toreturn
     
     def node_parents(self,tid):
-        toreturn = self.cache_nodes[tid]['parents']
+        if self.cache_nodes.has_key(tid):
+            toreturn = self.cache_nodes[tid]['parents']
+        else:
+            raise IndexError('%s is not in the cache_nodes %s' %(tid,self.cache_nodes))
         return toreturn
     
     
@@ -602,7 +605,7 @@ class FilteredTree():
         
         
     def __delete_node(self,nid):
-#        print "remove node %s" %nid
+        print "remove node %s" %nid
         def del_next(nid,chi):
             index = chi.index(nid)
             l = []
