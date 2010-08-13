@@ -118,6 +118,7 @@ class FilteredTree():
         #counting optimisation
         self.counted_nodes = []
         self.count_cache = {}
+        self.deleting_queue = []
         
         #an initial refilter is always needed if we don't apply a filter
         #for performance reason, we do it only if refresh = True
@@ -295,7 +296,10 @@ class FilteredTree():
         if self.cache_nodes.has_key(tid):
             toreturn = self.cache_nodes[tid]['parents']
         else:
-            raise IndexError('%s is not in the cache_nodes %s' %(tid,self.cache_nodes))
+            #if the node is not displayed, we return None.
+            #Maybe it's a bit hard to crash on that
+            toreturn = None
+#            raise IndexError('%s is not in the cache_nodes %s' %(tid,self.get_all_nodes()))
         return toreturn
     
     
@@ -483,28 +487,24 @@ class FilteredTree():
         if not node or not self.__is_displayed(tid):
 #            print "node %s does not exist or is not displayed : no paths" %tid
             return toreturn
-#        elif node == self.get_root():
-#            path = ()
-#            toreturn.append(path)
-#        elif tid in self.virtual_root:
         #FIXME : should not use cache VR in this function !
         elif len(pars) <= 0:
-            if len(self.__node_parents(tid)) <= 0:
-                if tid in self.cache_vr:
-                    ind = self.cache_vr.index(tid)
-                else:
-                    #tid will be added to the end of cache_vr
-                    ind = len(self.cache_vr)
-                path = (ind,)
-                toreturn.append(path)
+#            if len(self.__node_parents(tid)) <= 0:
+            if tid in self.cache_vr:
+                ind = self.cache_vr.index(tid)
             else:
-                realparents = node.get_parents()
-                print "real parents of %s are : %s" %(tid,str(realparents))
-                print "displayed_nodes are %s" %self.cache_nodes.keys()
-                for p in realparents:
-                    print "%s is displayed : %s" %(p,self.is_displayed(p))
-                    print "but the truth is : %s" %self.__is_displayed(p)
-                raise Exception("%s has no parent but is not in VR" %tid)
+                #tid will be added to the end of cache_vr
+                ind = len(self.cache_vr)
+            path = (ind,)
+            toreturn.append(path)
+#            else:
+#                realparents = node.get_parents()
+#                print "real parents of %s are : %s" %(tid,str(realparents))
+#                print "displayed_nodes are %s" %self.cache_nodes.keys()
+#                for p in realparents:
+#                    print "%s is displayed : %s" %(p,self.is_displayed(p))
+#                    print "but the truth is : %s" %self.__is_displayed(p)
+#                raise Exception("%s has no parent but is not in VR" %tid)
         #The node is not a virtual root
         else:
             for par in pars:
@@ -521,6 +521,7 @@ class FilteredTree():
                     for par_path in par_paths:
                         path = par_path + (pos,)
                         toreturn.append(path)
+                    node = self.get_node(par)
 #                    print "children of %s are %s" %(par,children)
             if len(toreturn) == 0:
                 #if we are here, it means that we have a ghost task that 
@@ -605,54 +606,63 @@ class FilteredTree():
         
         
     def __delete_node(self,nid):
-        print "remove node %s" %nid
-        def del_next(nid,chi):
-            index = chi.index(nid)
-            l = []
-            if len(chi) > index+1:
-                l = chi[index+1:]
-            l.reverse
-            for n in l:
-                self.__delete_node(n)
-                to_readd.append(n)
-        # 1. recursively delete all children, left-leaf first
-        # and also delete all next_nodes (that we will readd afterward)
-        to_readd = []
-        if nid in self.cache_vr:
-            ch = list(self.cache_vr)
-            del_next(nid,ch)
-        else:
-            for p in self.node_parents(nid):
-                ch = self.node_all_children(p)
+        if self.is_displayed(nid):
+            self.deleting_queue.append(nid)
+#            print "remove node %s (queue: %s)" %(nid,self.deleting_queue)
+            def del_next(nid,chi):
+                index = chi.index(nid)
+                l = []
+                if len(chi) > index+1:
+                    l = chi[index+1:]
+                l.reverse
+#                print "deleting the next nodes of %s : %s" %(nid,l)
+#                print "queue is : %s" %self.deleting_queue
+                for n in l:
+                    self.__delete_node(n)
+                    to_readd.append(n)
+            # 1. recursively delete all children, left-leaf first
+            # and also delete all next_nodes (that we will readd afterward)
+            to_readd = []
+            if nid in self.cache_vr:
+                ch = list(self.cache_vr)
                 del_next(nid,ch)
-        children = self.node_all_children(nid)
-        oldpaths = self.get_paths_for_node(nid)
-        i = len(children)
-        while i > 0:
-            i -= 1
-            self.__delete_node(children[i])
-        # 2. delete the node itself
-        if nid in self.cache_vr:
-            self.cache_vr.remove(nid)
+            else:
+                for p in self.node_parents(nid):
+                    ch = self.node_all_children(p)
+                    del_next(nid,ch)
+            children = self.node_all_children(nid)
+            oldpaths = self.get_paths_for_node(nid)
+            i = len(children)
+#            print "deleting all the childrens of %s : %s" %(nid,children)
+#            print "queue is : %s" %self.deleting_queue
+            while i > 0:
+                i -= 1
+                self.__delete_node(children[i])
+            # 2. delete the node itself
+            if nid in self.cache_vr:
+                self.cache_vr.remove(nid)
+            else:
+                parents = self.node_parents(nid)
+                if len(parents) <= 0:
+                    raise Exception('%s has no parents and is not in VR'%(nid))
+                for p in parents:
+                    p_dic = self.cache_nodes[p]['children']
+                    index = p_dic.index(nid)
+                    p_dic.remove(nid)
+                    #PLOUM_DEBUG: we should update the remaining node, isn't it ?
+    #                print "removing node %s from children of %s" %(nid,p)
+    #                print "  -> we should update %s in children" %p_dic[index:]
+            self.cache_nodes.pop(nid)
+            # 3. send the signal (it means that the state is valid)
+            self.callback('deleted',nid,oldpaths)
+            # 4. update next_node  (PLOUM_DEBUG: this is the trickiest point)
+            to_readd.reverse()
+            for n in to_readd:
+                self.__add_node(n)
+            self.deleting_queue.remove(nid)
+            return True
         else:
-            parents = self.node_parents(nid)
-            if len(parents) <= 0:
-                raise Exception('%s has no parents and is not in VR'%(nid))
-            for p in parents:
-                p_dic = self.cache_nodes[p]['children']
-                index = p_dic.index(nid)
-                p_dic.remove(nid)
-                #PLOUM_DEBUG: we should update the remaining node, isn't it ?
-#                print "removing node %s from children of %s" %(nid,p)
-#                print "  -> we should update %s in children" %p_dic[index:]
-        self.cache_nodes.pop(nid)
-        # 3. send the signal (it means that the state is valid)
-        self.callback('deleted',nid,oldpaths)
-        # 4. update next_node  (PLOUM_DEBUG: this is the trickiest point)
-        to_readd.reverse()
-        for n in to_readd:
-            self.__add_node(n)
-        return True
+            return False
     
     def __add_node(self,nid):
         #we only add node that really need it.
@@ -682,10 +692,17 @@ class FilteredTree():
             if nid in self.cache_vr:
                 raise Exception('%s was already in VR'%nid)
             self.cache_vr.append(nid)
-         #1a. We create the node
-        node_dic = {}
         #The parents have to be updated in order for get paths to work
         newpaths = self.__get_paths_for_node(nid)
+        #We remove the nodes that we are replacing
+        to_readd = []
+        for p in newpaths:
+            nnode = self.get_node_for_path(p)
+            if nnode:
+                to_readd.append(nnode)
+                self.__delete_node(nnode)
+        #1a. We create the node
+        node_dic = {}
         node_dic['paths'] = newpaths
         node_dic['parents'] = dis_parents
         node_dic['children'] = []  # childrens will add themselves afterward
@@ -697,7 +714,7 @@ class FilteredTree():
         for p in newpaths:
             other = self.get_node_for_path(p)
             if nid != other:
-                self.print_tree()
+#                self.print_tree()
                 raise Exception('we try to add %s on path %s' %(nid,str(p))+\
                                 'while it looks like it the path of %s' %other)
         self.callback('added',nid,newpaths)
@@ -707,11 +724,14 @@ class FilteredTree():
             #maybe the child already exists as a child of another node
             if self.is_displayed(c):
                 self.cache_nodes[c]['parents'].append(nid)
+                self.cache_nodes[c]['paths'] = self.__get_paths_for_node(c)
                 self.cache_nodes[nid]['children'].append(c)
-                print "we added %s to %s" %(c,nid)
+#                print "we added %s to %s" %(c,nid)
 #                self.__update_node(c)
             else:
                 self.__add_node(c)
+        for n in to_readd:
+            self.__add_node(n)
         return True
         
     
@@ -722,11 +742,16 @@ class FilteredTree():
 #            print "update for %s : %s - %s" %(nid,str(oldpaths),str(newpaths))
             if oldpaths == newpaths:
                 self.callback("modified", nid,newpaths)
+            elif len(oldpaths) > 0 and len(newpaths) > 0:
+                self.__delete_node(nid)
+                self.__add_node(nid)
             else:
-                if len(oldpaths) > 0:
-                    self.__delete_node(nid)
-                if len(newpaths) > 0:
-                    self.__add_node(nid)
+                children = self.__node_all_children(nid)
+                self.__delete_node(nid)
+                #It's not because the node is not displayed anymore
+                #that the children are not. Update them.
+                for c in children:
+                    self.__update_node(c)
             return True
         else:
             self.__add_node(nid)
