@@ -603,17 +603,25 @@ class FilteredTree():
         
     def __delete_node(self,nid):
 #        print "remove node %s" %nid
-        # 1. recursively delete all children, left-leaf first
-        # and also delete all next_nodes (that we will readd afterward)
-        to_readd = []
-        for p in self.node_parents(nid):
-            ch = self.node_all_children(p)
-            index = ch.index(nid)
-            l = ch[index+1:]
-            l.reverse()
+        def del_next(nid,chi):
+            index = chi.index(nid)
+            l = []
+            if len(chi) > index+1:
+                l = chi[index+1:]
+            l.reverse
             for n in l:
                 self.__delete_node(n)
                 to_readd.append(n)
+        # 1. recursively delete all children, left-leaf first
+        # and also delete all next_nodes (that we will readd afterward)
+        to_readd = []
+        if nid in self.cache_vr:
+            ch = list(self.cache_vr)
+            del_next(nid,ch)
+        else:
+            for p in self.node_parents(nid):
+                ch = self.node_all_children(p)
+                del_next(nid,ch)
         children = self.node_all_children(nid)
         oldpaths = self.get_paths_for_node(nid)
         i = len(children)
@@ -621,16 +629,10 @@ class FilteredTree():
             i -= 1
             self.__delete_node(children[i])
         # 2. delete the node itself
-        parents = self.node_parents(nid)
         if nid in self.cache_vr:
-            #check consistency
-            if len(parents) > 0:
-                raise Exception('%s has parents %s and is in VR'%(nid,parents))
-            index = self.cache_vr.index(nid)
-#            print "removing node %s from the VR" %nid
-#            print "  -> we should update %s in the VR" %self.cache_vr[index:]
             self.cache_vr.remove(nid)
         else:
+            parents = self.node_parents(nid)
             if len(parents) <= 0:
                 raise Exception('%s has no parents and is not in VR'%(nid))
             for p in parents:
