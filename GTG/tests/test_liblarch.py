@@ -554,6 +554,7 @@ class TestLibLarch(unittest.TestCase):
                           'node-modified-inview', \
                           self.tree.add_parent, 2)('temp','1')
         self.tree.add_parent('temp','1')
+        print "*** %s" %self.recorded_signals['node-modified-inview']
         self.assert_(('temp',[(0,0),(1,0)]) in self.recorded_signals['node-modified-inview'])
         self.assert_(('1',[(1,)]) in self.recorded_signals['node-modified-inview'])
         self.assert_(view.node_has_child('1'))
