@@ -47,7 +47,6 @@ def main(args):
     else:
         #otherwise, run all tests
         suites = [test_suite()]
-        print suites
 
     #run the tests
     tests_are_successful = True
