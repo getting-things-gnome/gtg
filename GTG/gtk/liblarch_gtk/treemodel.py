@@ -304,7 +304,7 @@ class TreeModel(gtk.GenericTreeModel):
                         print "     child toggling for %s %s" %(tid,str(node_path))
                     self.row_has_child_toggled(node_path, rowref)
             else:
-                raise ValueError("path for %s is supposed" %tid +\
+                raise ValueError("%s path for %s is supposed" %(data,tid) +\
                         "to be %s, the one of %s "%(node_path, actual_tid))
 #                print "************"
 #                print "path for %s is supposed to be %s "%(tid,node_path)

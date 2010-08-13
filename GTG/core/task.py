@@ -26,6 +26,7 @@ import uuid
 import cgi
 import re
 import xml.sax.saxutils as saxutils
+import gobject
 
 import GTG
 from GTG              import _
@@ -512,9 +513,9 @@ class Task(TreeNode):
         self._modified_update()
         if self.is_loaded():
             #This is a liblarch call to the TreeNode ancestor
-            self.modified()
+            gobject.idle_add(self.modified)
             for t in self.get_tags():
-                t.modified()
+                gobject.idle_add(t.modified)
             return True
         else:
             return False

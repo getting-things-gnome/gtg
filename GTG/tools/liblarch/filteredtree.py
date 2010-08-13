@@ -518,6 +518,7 @@ class FilteredTree():
                     for par_path in par_paths:
                         path = par_path + (pos,)
                         toreturn.append(path)
+#                    print "children of %s are %s" %(par,children)
             if len(toreturn) == 0:
                 #if we are here, it means that we have a ghost task that 
                 #is not really displayed but still here, in the tree
@@ -603,6 +604,16 @@ class FilteredTree():
     def __delete_node(self,nid):
 #        print "remove node %s" %nid
         # 1. recursively delete all children, left-leaf first
+        # and also delete all next_nodes (that we will readd afterward)
+        to_readd = []
+        for p in self.node_parents(nid):
+            ch = self.node_all_children(p)
+            index = ch.index(nid)
+            l = ch[index+1:]
+            l.reverse()
+            for n in l:
+                self.__delete_node(n)
+                to_readd.append(n)
         children = self.node_all_children(nid)
         oldpaths = self.get_paths_for_node(nid)
         i = len(children)
@@ -614,7 +625,7 @@ class FilteredTree():
         if nid in self.cache_vr:
             #check consistency
             if len(parents) > 0:
-                raise Exception('%s has parents % and is in VR'%(nid,parents))
+                raise Exception('%s has parents %s and is in VR'%(nid,parents))
             index = self.cache_vr.index(nid)
 #            print "removing node %s from the VR" %nid
 #            print "  -> we should update %s in the VR" %self.cache_vr[index:]
@@ -633,6 +644,9 @@ class FilteredTree():
         # 3. send the signal (it means that the state is valid)
         self.callback('deleted',nid,oldpaths)
         # 4. update next_node  (PLOUM_DEBUG: this is the trickiest point)
+        to_readd.reverse()
+        for n in to_readd:
+            self.__add_node(n)
         return True
     
     def __add_node(self,nid):
@@ -674,6 +688,13 @@ class FilteredTree():
             raise Exception('%s was already a visible node when added' %nid)
         self.cache_nodes[nid] = node_dic
         #2. send the signal (it means that the state is valid)
+        #we make a sanity check before raising the signal
+        for p in newpaths:
+            other = self.get_node_for_path(p)
+            if nid != other:
+                self.print_tree()
+                raise Exception('we try to add %s on path %s' %(nid,str(p))+\
+                                'while it looks like it the path of %s' %other)
         self.callback('added',nid,newpaths)
         #3. Add the children
         children = self.__node_all_children(nid)
@@ -682,6 +703,8 @@ class FilteredTree():
             if self.is_displayed(c):
                 self.cache_nodes[c]['parents'].append(nid)
                 self.cache_nodes[nid]['children'].append(c)
+                print "we added %s to %s" %(c,nid)
+#                self.__update_node(c)
             else:
                 self.__add_node(c)
         return True
@@ -689,8 +712,9 @@ class FilteredTree():
     
     def __update_node(self,nid):
         if self.is_displayed(nid):
-            oldpaths = self.get_paths_for_node(nid).sort()
-            newpaths = self.__get_paths_for_node(nid).sort()
+            oldpaths = self.get_paths_for_node(nid)
+            newpaths = self.__get_paths_for_node(nid)
+#            print "update for %s : %s - %s" %(nid,str(oldpaths),str(newpaths))
             if oldpaths == newpaths:
                 self.callback("modified", nid,newpaths)
             else:
