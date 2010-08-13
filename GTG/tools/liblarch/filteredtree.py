@@ -274,7 +274,13 @@ class FilteredTree():
     #Those 3 functions are static except if the cache was not yet used.
     #Could it be a source of bug ?
     def get_paths_for_node(self,tid):
-        toreturn = self.cache_nodes[tid]['paths']
+        if tid and self.is_displayed(tid):
+            toreturn = self.cache_nodes[tid]['paths']
+        elif not tid:
+            #root
+            toreturn = [()]
+        else:
+            toreturn = []
         return toreturn
     
     def node_all_children(self,tid):
@@ -472,7 +478,7 @@ class FilteredTree():
             return [()]
         #For that node, we should convert the base_path to path
         if not node or not self.__is_displayed(tid):
-            print "node %s does not exist or is not displayed : no paths" %nid
+#            print "node %s does not exist or is not displayed : no paths" %tid
             return toreturn
 #        elif node == self.get_root():
 #            path = ()
@@ -480,8 +486,12 @@ class FilteredTree():
 #        elif tid in self.virtual_root:
         #FIXME : should not use cache VR in this function !
         elif len(pars) <= 0:
-            if tid in self.cache_vr:
-                ind = self.cache_vr.index(tid)
+            if len(self.__node_parents(tid)) <= 0:
+                if tid in self.cache_vr:
+                    ind = self.cache_vr.index(tid)
+                else:
+                    #tid will be added to the end of cache_vr
+                    ind = len(self.cache_vr)
                 path = (ind,)
                 toreturn.append(path)
             else:
@@ -513,7 +523,7 @@ class FilteredTree():
                 #is not really displayed but still here, in the tree
                 #it happens sometimes when we remove a parent with children
                 raise Exception('ghost position for %s' %tid +\
-                                "VR : %s " %self.virtual_root)
+                                "VR : %s " %self.cache_vr)
         return toreturn
 
     
@@ -606,8 +616,8 @@ class FilteredTree():
             if len(parents) > 0:
                 raise Exception('%s has parents % and is in VR'%(nid,parents))
             index = self.cache_vr.index(nid)
-            print "removing node %s from the VR" %nid
-            print "  -> we should update %s in the VR" %self.cache_vr[index:]
+#            print "removing node %s from the VR" %nid
+#            print "  -> we should update %s in the VR" %self.cache_vr[index:]
             self.cache_vr.remove(nid)
         else:
             if len(parents) <= 0:
@@ -617,8 +627,8 @@ class FilteredTree():
                 index = p_dic.index(nid)
                 p_dic.remove(nid)
                 #PLOUM_DEBUG: we should update the remaining node, isn't it ?
-                print "removing node %s from children of %s" %(nid,p)
-                print "  -> we should update %s in children" %p_dic[index:]
+#                print "removing node %s from children of %s" %(nid,p)
+#                print "  -> we should update %s in children" %p_dic[index:]
         self.cache_nodes.pop(nid)
         # 3. send the signal (it means that the state is valid)
         self.callback('deleted',nid,oldpaths)
@@ -678,16 +688,19 @@ class FilteredTree():
         
     
     def __update_node(self,nid):
-        oldpaths = self.get_paths_for_node(nid).sort()
-        newpaths = self.__get_paths_for_node(nid).sort()
-        if oldpaths == newpaths:
-            self.callback("modified", tid,newpaths)
+        if self.is_displayed(nid):
+            oldpaths = self.get_paths_for_node(nid).sort()
+            newpaths = self.__get_paths_for_node(nid).sort()
+            if oldpaths == newpaths:
+                self.callback("modified", nid,newpaths)
+            else:
+                if len(oldpaths) > 0:
+                    self.__delete_node(nid)
+                if len(newpaths) > 0:
+                    self.__add_node(nid)
+            return True
         else:
-            if len(oldpaths) > 0:
-                self.__delete_node(nid,oldpaths)
-            if len(newpaths) > 0:
-                self.__add_node(nid,newpaths)
-        return True
+            self.__add_node(nid)
             
 ################# Filters functions #####################################
     
