@@ -92,6 +92,7 @@ class FilteredTree():
         @param maintree: Whether this tree is the main tree.  The requester
         must be used to change filters against the main tree.
         """
+        self.tree = tree
         #The cached Virtual Root
         self.cache_vr = []
         #The state of the tree
@@ -104,9 +105,20 @@ class FilteredTree():
         self.cache_nodes = {}
         self.cllbcks = {}
         
-        
         #filters
-        self.flat = False
+        #self.__flat should only be used by dynamic functions, not static one
+        self.__flat = False
+        self.applied_filters = []
+        self.fbank = filtersbank
+        
+        #counting optimisation
+        self.counted_nodes = []
+        self.count_cache = {}
+        
+        #an initial refilter is always needed if we don't apply a filter
+        #for performance reason, we do it only if refresh = True
+        if refresh:
+            self.refilter()
         
         
         #End of initialisation : we connect the FT to the MainTree
@@ -210,8 +222,35 @@ class FilteredTree():
         If include_transparent=False, we only take into account the applied filters
         that doesn't have the transparent parameters.
         """
-        #TODO
-        print "get_n_nodes not implemented"
+        toreturn = 0
+        usecache = False
+        if not include_transparent:
+            #Currently, the cache only work for one filter
+            if len(withfilters) == 1:
+                usecache = True
+            zelist = self.counted_nodes
+        else:
+            zelist = self.get_all_nodes()
+        if len(withfilters) > 0:
+            key = "".join(withfilters)
+            if usecache and self.count_cache.has_key(key):
+                toreturn = self.count_cache[key]
+#                self.using_cache += 1
+#                print "we used cache to return %s for %s" %(toreturn,key)
+            else:
+                for tid in zelist:
+                    result = True
+                    for f in withfilters:
+                        filt = self.fbank.get_filter(f)
+                        if filt:
+                            result = result and filt.is_displayed(tid)
+                    if result:
+                        toreturn += 1
+                if COUNT_CACHING_ENABLED and usecache:
+                    self.count_cache[key] = toreturn
+        else:
+            toreturn = len(zelist)
+        return toreturn
         
         
     #The path received is only for tasks that are displayed
@@ -233,7 +272,7 @@ class FilteredTree():
         return toreturn
 
     def __node_for_path(self,basenode_id,path):
-        if len(path) == 0 or self.flat:
+        if len(path) == 0:
             return basenode_id
         elif path[0] < self.node_n_children(basenode_id):
             if len(path) == 1:
@@ -303,10 +342,7 @@ class FilteredTree():
         """
         Returns true if the given node has any children
         """
-        if not self.flat and self.node_n_children(nid)>0:
-            return True
-        else:
-            return False
+        return self.node_n_children(nid)>0:
     
     def node_n_children(self,nid):
         return len(self.node_all_children(nid))
@@ -338,28 +374,129 @@ class FilteredTree():
 ####################### Dynamic functions ###################################
 
     def __get_paths_for_node(self,tid):
-    
-#        self.cache_node[tid]['paths'] = toreturn
+        """
+        Return a list of paths for a given node
+        Return an empty list if no path for that Node.
+        """
+        toreturn = []
+        if tid:
+            node = self.get_node(tid)
+            pars = self.__node_parents(tid)
+        else:
+            return [()]
+        #For that node, we should convert the base_path to path
+        if not node or not self.__is_displayed(tid):
+            print "node %s does not exist or is not displayed : no paths" %nid
+            return toreturn
+#        elif node == self.get_root():
+#            path = ()
+#            toreturn.append(path)
+#        elif tid in self.virtual_root:
+        #FIXME : should not use cache VR in this function !
+        elif len(pars) <= 0:
+            if tid in self.cache_vr:
+                ind = self.cache_vr.index(tid)
+                path = (ind,)
+                toreturn.append(path)
+            else:
+                realparents = node.get_parents()
+                print "real parents of %s are : %s" %(tid,str(realparents))
+                print "displayed_nodes are %s" %self.cache_nodes.keys()
+                for p in realparents:
+                    print "%s is displayed : %s" %(p,self.is_displayed(p))
+                    print "but the truth is : %s" %self.__is_displayed(p)
+                raise Exception("%s has no parent but is not in VR" %tid)
+        #The node is not a virtual root
+        else:
+            for par in pars:
+                pos = -1
+                children = self.__node_all_children(par)
+                max = len(children)
+                while pos < max-1 and tid != child:
+                    pos += 1
+                    child = children[pos]
+                par_paths = self.__get_paths_for_node(par)
+                for par_path in par_paths:
+                    path = par_path + (pos,)
+                    toreturn.append(path)
+            if len(toreturn) == 0:
+                #if we are here, it means that we have a ghost task that 
+                #is not really displayed but still here, in the tree
+                #it happens sometimes when we remove a parent with children
+                raise Exception('ghost position for %s' %tid +\
+                                "VR : %s " %self.virtual_root)
         return toreturn
+
     
     def __node_all_children(self,tid):
-        if self.flat:
-            toreturn = []
-        else:
-            
-        
-#        self.cache_node[tid]['children'] = toreturn
+        toreturn = []
+        if not tid:
+            #FIXME : maybe we should not use cache_vr
+            toreturn = list(self.cache_vr)
+        elif not self.__flat:
+            node = self.tree.get_node(nid)
+            if node:
+                for cid in node.get_children():
+                    if self.__is_displayed(cid):
+                        toreturn.append(cid)
         return toreturn
     
     def __node_parents(self,tid):
-        if self.flat:
-            toreturn = []
+        """
+        Returns parents of the given node, or [] if there is no 
+        parent (such as if the node is a child of the virtual root),
+        or if the parent is not displayable.
+        """
+        if not nid:
+            raise ValueError("requested a parent of the root")
+        if not self.tree.has_node(nid):
+            raise ValueError("requested a parent of a non-existing node")
+        #return [] if we are at a Virtual root
+        parents_nodes = []
+        #we return only parents that are not root and displayed
+        if not self.__flat :
+            node = self.tree.get_node(nid)
+            if node.has_parent():
+                for pid in node.get_parents():
+                    if self.__is_displayed(pid):
+                        parents_nodes.append(pid)
+        return parents_nodes
+
+        
+    def __is_displayed(self,tid):
+        """
+        This is a private method that return True if the task *should*
+        be displayed in the tree, regardless of its current status
+        """
+        if tid:
+            result = True
+            counting_result = True
+            cache_key = ""
+            for f in self.applied_filters:
+                filt = self.fbank.get_filter(f)
+                cache_key += f
+                if filt:
+                    temp = filt.is_displayed(tid)
+                    result = result and temp
+                    if not filt.get_parameters('transparent'):
+                        counting_result = counting_result and temp
+            if counting_result and tid not in self.counted_nodes:
+                #This is an hard custom optimisation for task counting
+                #Normally, we would here reset the cache of counted tasks
+                #But this slow down a lot the startup.
+                #So, we update manually the cache.
+                for k in self.count_cache.keys():
+                    f = self.fbank.get_filter(k)
+                    if f.is_displayed(tid):
+                        self.count_cache[k] += 1
+                self.counted_nodes.append(tid)
+            elif not counting_result and tid in self.counted_nodes:
+                #Removing node is less critical so we just reset the cache.
+                self.count_cache = {}
+                self.counted_nodes.remove(tid)
         else:
-    
-#        self.cache_node[tid]['parents'] = toreturn
-        return toreturn
-        
-        
+            result = False
+        return result
         
 #################### Update the static state ################################
         
@@ -400,11 +537,6 @@ class FilteredTree():
         #1. Add the node
         parents = self.__node_parents(nid)
         chidren = self.__node_all_children(nid)
-        #1a. We create the node
-        node_dic = {}
-        node_dic['paths'] = self.__get_paths_for_node(nid)
-        node_dic['parents'] = parents
-        node_dic['children'] = []  # childrens will add themselves afterward
         #1b. we add it as a child for its parents
         if len(parents) > 0:
             for p in parents:
@@ -417,7 +549,12 @@ class FilteredTree():
             if nid in self.cache_vr:
                 raise Exception('%s was already in VR'%nid)
             self.cache_vr.append(nid)
-        #1c. we add the node
+         #1a. We create the node
+        node_dic = {}
+        #The parents have to be updated in order for get paths to work
+        node_dic['paths'] = self.__get_paths_for_node(nid)
+        node_dic['parents'] = parents
+        node_dic['children'] = []  # childrens will add themselves afterward
         if self.cache_nodes.has_key(nid):
             raise Exception('%s was already a visible node when added' %nid)
         self.cache_nodes[nid] = node_dic
@@ -438,3 +575,97 @@ class FilteredTree():
             self.__add_node(nid,newpaths)
         else:
             self.__add_node(nid,newpaths)
+            
+################# Filters functions #####################################
+    
+    def refilter(self):
+        """
+        rebuilds the tree from scratch. It should be called only when 
+        the filter is changed (i.e. only filters_bank should call it).
+        """
+        #If we have only one flat filter, the result is flat
+        self.__flat = False
+        for f in self.applied_filters:
+            filt = self.fbank.get_filter(f)
+            if filt and not self.__flat:
+                self.__flat = filt.is_flat()
+        #First step, we empty the current tree as we will rebuild it
+        #from scratch
+        #we delete them left-leaf first !
+        pos = len(self.cache_vr)
+        while size > 0:
+            pos -= 1
+            self.__delete_node(self.cache_vr[pos])
+        #The cache should now be empty
+        if len(self.cache_nodes) >0:
+            raise Exception('cache_nodes should be empty but %s'%self.cache_nodes)
+        if len(self.cache_vr) > 0:
+            raise Exception('cache_vr should be empty but %s'%self.cache_vr)
+        for nid in self.tree.get_all_nodes():
+            #only add root nodes (those who don't have parents)
+            if self.__is_displayed(nid) and len(self.__node_parents(nid)) == 0:
+                self.__add_node(nid)
+        #print "*** end of refiltering ****"
+        #self.print_tree()
+
+    ####### Change filters #################
+    def apply_filter(self,filter_name,parameters=None,\
+                     reset=False,refresh=True):
+        """
+        Applies a new filter to the tree.  Can't be called on the main tree.
+        @param filter_name: The name of an already registered filter to apply
+        @param parameters: Optional parameters to pass to the filter
+        @param reset : optional boolean. Should we remove other filters?
+        """
+        if reset:
+            self.applied_filters = []
+        if parameters:
+            filt = self.fbank.get_filter(filter_name)
+            if filt:
+                filt.set_parameters(parameters)
+            else:
+                raise ValueError("No filter of name %s in the bank") %filter_name
+        if filter_name not in self.applied_filters:
+            self.applied_filters.append(filter_name)
+            if refresh:
+                self.refilter()
+            return True
+        else:
+            return False
+    
+    def unapply_filter(self,filter_name,refresh=True):
+        """
+        Removes a filter from the tree.  Can't be called on the main tree.
+        @param filter_name: The name of an already added filter to remove
+        """
+        if filter_name in self.applied_filters:
+            self.applied_filters.remove(filter_name)
+            if refresh:
+                self.refilter()
+            return True
+        else:
+            return False
+
+    def reset_filters(self,refresh=True,transparent_only=False):
+        """
+        Clears all filters currently set on the tree.  Can't be called on 
+        the main tree.
+        Remove only transparents filters if transparent_only is True
+        """
+        if transparent_only:
+            for f in list(self.applied_filters):
+                filt = self.fbank.get_filter(f)
+                if filt:
+                    if filt.get_parameters('transparent'):
+                        self.applied_filters.remove(f)
+                else:
+                    print "bank is %s" %self.applied_filters
+                    raise IndexError('Applied filter %s doesnt' %f +\
+                                    'exist anymore in the bank')
+        else:
+            self.applied_filters = []
+        if refresh:
+            self.refilter()
+            
+    def list_applied_filters(self):
+        return list(self.applied_filters)
