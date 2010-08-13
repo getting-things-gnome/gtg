@@ -628,9 +628,9 @@ class TreeNode():
                 ret = self.tree.break_relationship(self.get_id(),id)
                 #The children list has been modified, so has been the paths
                 #for some node
-#                while index < len(self.children):
-#                    self.tree.modify_node(self.children[index])
-#                    index += 1
+                while index < len(self.children):
+                    self.tree.modify_node(self.children[index])
+                    index += 1
                 
             return ret
         else:

@@ -480,7 +480,10 @@ class FilteredTree():
         toreturn = []
         if tid:
             node = self.get_node(tid)
-            pars = self.__node_parents(tid)
+            pars = []
+            for p in self.__node_parents(tid):
+                if self.is_displayed(p):
+                    pars.append(p)
         else:
             return [()]
         #For that node, we should convert the base_path to path
@@ -527,7 +530,7 @@ class FilteredTree():
                 #if we are here, it means that we have a ghost task that 
                 #is not really displayed but still here, in the tree
                 #it happens sometimes when we remove a parent with children
-                raise Exception('ghost position for %s' %tid +\
+                raise Exception('ghost position for %s (par:%s) ' %(tid,pars) +\
                                 "VR : %s " %self.cache_vr)
         return toreturn
 
@@ -591,7 +594,7 @@ class FilteredTree():
                 #So, we update manually the cache.
                 for k in self.count_cache.keys():
                     f = self.fbank.get_filter(k)
-                    if f.is_displayed(tid):
+                    if f and f.is_displayed(tid):
                         self.count_cache[k] += 1
                 self.counted_nodes.append(tid)
             elif not counting_result and tid in self.counted_nodes:
@@ -606,7 +609,7 @@ class FilteredTree():
         
         
     def __delete_node(self,nid):
-        if self.is_displayed(nid):
+        if self.is_displayed(nid) and nid not in self.deleting_queue:
             self.deleting_queue.append(nid)
 #            print "remove node %s (queue: %s)" %(nid,self.deleting_queue)
             def del_next(nid,chi):
