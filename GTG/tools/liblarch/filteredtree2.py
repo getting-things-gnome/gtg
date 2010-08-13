@@ -1,0 +1,440 @@
+# -*- coding: utf-8 -*-
+# -----------------------------------------------------------------------------
+# Gettings Things Gnome! - a personal organizer for the GNOME desktop
+# Copyright (c) 2008-2009 - Lionel Dricot & Bertrand Rousseau
+#
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program.  If not, see <http://www.gnu.org/licenses/>.
+# -----------------------------------------------------------------------------
+#
+"""
+FilteredTree provides a filtered view (subset) of tasks
+
+FilteredTree
+============
+The problem we have is that, sometimes, we don't want to display all tasks.
+We want tasks to be filtered (workview, tags, …)
+
+The expected approach would be to put a gtk.TreeModelFilter above our
+TaskTree. Unfortunately, this doesn't work because TreeModelFilter hides
+all children of hidden nodes (not what we want!)
+
+The solution we have found is to insert a fake tree between Tree and
+TaskTree.  This fake tree is called FilteredTree and maps path and node
+methods to a result corresponding to the filtered tree.
+
+Note that the nodes are not aware that they are in a filtered tree.
+Use the FilteredTree methods, not the node methods directly.
+If you believe a function would be useful in a filtered tree, don't 
+hesitate to make a proposal.
+
+To be more efficient, a quick way to optimize the FilteredTree is to cache
+all answers in a dictionary so we don't have to compute the answer 
+all the time. This is not done yet.
+
+B{Warning}: this is very fragile. Calls to any GTK registered view should be
+perfecly in sync with changes in the underlying model.
+We definitely should develop some unit tests for this class.
+
+Structure of the source:
+
+ 1. Standard tree functions mapping (get_node, get_all_nodes, get_all_keys)
+ 2. Receiving signal functions ( task-added,task-modified,task-deleted)
+ 3. Treemodel helper functions. To make it easy to build a treemodel on top.
+ 4. Filtering : is_displayed() and refilter()
+ 5. Changing the filters (not for the main FilteredTree)
+ 6. Private helpers.
+
+There's one main FilteredTree that you can get through the requester. This
+main FilteredTree uses the filters applied throughout the requester. This
+allows plugin writers to easily get the current displayed tree (main view).
+
+You can create your own filters on top of this main FilteredTree, or you
+can create your own personal FilteredTree custom view and apply your own
+filters on top of it without interfering with the main view.  (This is
+how the closed tasks pane is currently built.)
+
+For custom views, the plugin writers are able to get their own
+FilteredTree and apply on it the filters they want. (this is not finished
+yet but in good shape).
+
+An important point to stress is that information needs to be passed from
+bottom to top, with no horizontal communication at all between views.
+
+"""
+import functools
+
+from GTG.tools.logger import Log
+
+#PLOUM_DEBUG : COUNT_CACHING seems to be broken : write test to detect it
+#Edit dynamically a tag an you will see why it is broken
+COUNT_CACHING_ENABLED = True
+## if FT doesn't use signals, it might be slower (but easier to debug)
+FT_USE_SIGNALS = 0
+
+class FilteredTree():
+
+    def __init__(self,tree,filtersbank,refresh=True):
+        """
+        Construct a FilteredTree object on top of an existing task tree.
+        @param req: The requestor object
+        @param tree: The tree to filter from
+        @param maintree: Whether this tree is the main tree.  The requester
+        must be used to change filters against the main tree.
+        """
+        #The cached Virtual Root
+        self.cache_vr = []
+        #The state of the tree
+        #each displayed nodes is a key in the dic. The value is another dic
+        #that contains the following :
+        # 'paths' :  a list of the paths for that node
+        # 'children' : the ordered list of childrens of that node 
+        # 'parents' : the ordered list of parents 
+        # if the value of one is None, it might be dynamically computed TBC
+        self.cache_nodes = {}
+        self.cllbcks = {}
+        
+        
+        #filters
+        self.flat = False
+        
+        
+        #End of initialisation : we connect the FT to the MainTree
+        if FT_USE_SIGNALS:
+            self.tree.connect("node-added", self.__task_added)
+            self.tree.connect("node-modified", self.__task_modified)
+            self.tree.connect("node-deleted", self.__task_deleted)
+        else:
+            #The None is to fake the signal sender
+            self.tree.register_callback("node-added", functools.partial(\
+                                                self.__task_added,None))
+            self.tree.register_callback("node-modified", functools.partial(\
+                                                self.__task_modified,None))
+            self.tree.register_callback("node-deleted", functools.partial(\
+                                                self.__task_deleted,None))
+        
+        
+     ### signals functions
+#    def __task_added(self,sender,tid):
+#        todis = self.__is_displayed(tid)
+#        curdis = self.is_displayed(tid)
+#        if todis and not curdis:
+#            self.__add_node(tid)
+#        
+#    def __task_modified(self,sender,tid):
+#        inroot = self.__is_root(tid)
+#        self.__update_node(tid,inroot)
+
+#    def __task_deleted(self,sender,tid):
+#        self.__remove_node(tid)
+        
+    #those callbacks are called instead of signals.
+    def set_callback(self,event,func):
+        self.cllbcks[event] = func
+        
+    def callback(self,event,tid,paths=None):
+        func = self.cllbcks.get(event,None)
+        if func:
+            if not paths:
+                paths = self.get_paths_for_node(tid)
+            if not paths or len(paths) <= 0:
+                raise Exception('cllbck %s for %s but it has no paths'%(event,tid))
+            func(tid,paths)
+            
+    def get_node(self,id):
+        """
+        Retrieves the given node
+        @param id: The tid of the task node
+        @return: Node from the underlying tree
+        """
+        return self.tree.get_node(id)
+        
+################# Static cached Filtered Tree ##################
+    # Basically, our we save statically our FT in cache_vr and cache_nodes
+    #All external functions get their result from that cache
+    #This enforce the external state of the FT being consistent at any time !
+    
+    #Those 3 functions are static except if the cache was not yet used.
+    #Could it be a source of bug ?
+    def get_paths_for_node(self,tid):
+        toreturn = self.cache_nodes[tid]['paths']
+        if not toreturn:
+            print "the path was not in the cache for %s" %tid
+            toreturn = self.__get_paths_for_node(tid)
+        return toreturn
+    
+    def node_all_children(self,tid):
+        if tid:
+            toreturn = self.cache_nodes[tid]['children']
+            if not toreturn:
+                print "all_children was not in the cache for %s" %tid
+                toreturn = self.__node_all_children(tid)
+        else:
+            #We consider the root node.
+            toreturn = list(self.cache_vr)
+        return toreturn
+    
+    def node_parents(self,tid):
+        toreturn = self.cache_nodes[tid]['parents']
+        if not toreturn:
+            print "parents were not in the cache for %s" %tid
+            toreturn = self.__node_parents(tid)
+        return toreturn
+    
+    
+    #All the following functions returns a static result based on the state 
+    #of cache_vr and cache_nodes. No other information should be required.
+    def get_all_nodes(self):
+        """
+        returns list of all displayed node keys
+        """
+        return self.cache_node.keys()
+        
+    def get_n_nodes(self,withfilters=[],include_transparent=True):
+        """
+        returns quantity of displayed nodes in this tree
+        if the withfilters is set, returns the quantity of nodes
+        that will be displayed if we apply those filters to the current
+        tree. It means that the currently applied filters are also taken into
+        account.
+        If include_transparent=False, we only take into account the applied filters
+        that doesn't have the transparent parameters.
+        """
+        #TODO
+        print "get_n_nodes not implemented"
+        
+        
+    #The path received is only for tasks that are displayed
+    #We have to find the good node.
+    def get_node_for_path(self, path):
+        """
+        Returns node for the given path.
+        """
+        #We should convert the path to the base.path
+        if not path or str(path) == '()':
+            return None
+        p0 = path[0]
+        if len(self.cache_vr) > p0:
+            n1id = self.cache_vr[p0]
+            pa = path[1:]
+            toreturn = self.__node_for_path(n1id,pa)
+        else:
+            toreturn = None
+        return toreturn
+
+    def __node_for_path(self,basenode_id,path):
+        if len(path) == 0 or self.flat:
+            return basenode_id
+        elif path[0] < self.node_n_children(basenode_id):
+            if len(path) == 1:
+                return self.node_nth_child(basenode_id,path[0])
+            else:
+                node_id = self.node_nth_child(basenode_id,path[0])
+                path = path[1:]
+                return self.__node_for_path(node_id, path)
+        else:
+            return None
+        
+    #pid is used only if nid has multiple parents.
+    #if pid is none, a random parent is used.
+    def next_node(self, nid,pid=None):
+        """
+        Returns the next sibling node, or None if there are no other siblings
+        """
+        #We should take the next good node, not the next base node
+        toreturn = None
+        if nid in self.cache_vr:
+            if pid:
+                raise Exception('Asking for next_node of %s'%nid+\
+                        'with parent %s but node is in VR'%pid)
+            i = self.cache_vr.index(nid) + 1
+            if len(self.cache_vr) > i:
+                nextnode_id = self.cache_vr[i]
+                if self.is_displayed(nextnode_id):
+                    toreturn = nextnode_id
+        else:
+            parents_nodes = self.node_parents(nid)
+            if len(parents_nodes) >= 1:
+                if pid and pid in parents_nodes:
+                    parent_node = pid
+                else:
+                    parent_node = parents_nodes[0]
+                total = self.node_n_children(parent_node)
+                c = 0
+                next_id = -1
+                while c < total and next_id < 0:
+                    child_id = self.node_nth_child(parent_node,c)
+                    c += 1
+                    if child_id == nid:
+                        next_id = c
+                if next_id >= 0 and next_id < total:
+                    toreturn = self.node_nth_child(parent_node,next_id)
+            else:
+                raise Exception('asking for next_node of %s' %nid +\
+                                'which has no parents but is not in VR')
+        #check to see if our result is correct
+        if toreturn and not self.is_displayed(toreturn):
+            toreturn = None
+            raise ValueError('next_node %s aims to return %s' %(nid,toreturn)+\
+                            'but it is not displayed')
+        return toreturn
+    
+    def node_children(self, parent):
+        """
+        Returns the first child node of the given parent, or None
+        if the parent has no children.
+        @param parent: The parent node or None to retrieve the children
+        of the virtual root.
+        """
+        child = self.node_nth_child(parent,0)
+        return child
+        
+    def node_has_child(self, nid):
+        """
+        Returns true if the given node has any children
+        """
+        if not self.flat and self.node_n_children(nid)>0:
+            return True
+        else:
+            return False
+    
+    def node_n_children(self,nid):
+        return len(self.node_all_children(nid))
+        
+    def node_nth_child(self, nid, n):
+        """
+        Retrieves the nth child of the node.
+        @param node: The parent node, or None to look at children of the
+        virtual_root.
+        """
+        toreturn = None
+        children = self.node_all_children(nid)
+        if len(children) > n:
+            toreturn = children[n]
+        #we return None if n is too big.
+#        else:
+#            raise Exception('Try to get child nbr %s of %s' %(n,nid) +\
+#                            'but it has only %s children' %len(children))
+        return toreturn
+        
+    def is_displayed(self,nid):
+        return self.cache_nodes.has_key(nid)
+        
+    def is_root(self,nid):
+        return nid in self.cache_vr
+        
+####################### End of static state functions #######################
+
+####################### Dynamic functions ###################################
+
+    def __get_paths_for_node(self,tid):
+    
+#        self.cache_node[tid]['paths'] = toreturn
+        return toreturn
+    
+    def __node_all_children(self,tid):
+        if self.flat:
+            toreturn = []
+        else:
+            
+        
+#        self.cache_node[tid]['children'] = toreturn
+        return toreturn
+    
+    def __node_parents(self,tid):
+        if self.flat:
+            toreturn = []
+        else:
+    
+#        self.cache_node[tid]['parents'] = toreturn
+        return toreturn
+        
+        
+        
+#################### Update the static state ################################
+        
+        
+    def __delete_node(self,nid):
+        # 1. recursively delete all children, left-leaf first
+        children = self.node_all_children(nid)
+        i = len(children)
+        while i > 0:
+            i -= 1
+            self.__delete_node(children[i])
+        # 2. delete the node itself
+        parents = self.node_parents(nid)
+        if nid in self.cache_vr:
+            #check consistency
+            if len(parents) > 0:
+                raise Exception('%s has parents % and is in VR'%(nid,parents))
+            index = self.cache_vr.index(nid)
+            print "removing node %s from the VR" %nid
+            print "  -> we should update %s in the VR" %self.cache_vr[index:]
+            self.cache_vr.remove(nid)
+        else:
+            if len(parents) <= 0:
+                raise Exception('%s has no parents and is not in VR'%(nid))
+            for p in parents:
+                p_dic = self.cache_nodes[p]['children']
+                p_dic.remove(nid)
+                index = p_dic.index(nid)
+                #PLOUM_DEBUG: we should update the remaining node, isn't it ?
+                print "removing node %s from children of %s" %(nid,p)
+                print "  -> we should update %s in children" %p_dic[index:]
+        self.cache_nodes.pop(nid)
+        # 3. send the signal (it means that the state is valid)
+        self.callback('deleted',nid,oldpaths)
+        # 4. update next_node  (PLOUM_DEBUG: this is the trickiest point)
+    
+    def __add_node(self,nid):
+        #1. Add the node
+        parents = self.__node_parents(nid)
+        chidren = self.__node_all_children(nid)
+        #1a. We create the node
+        node_dic = {}
+        node_dic['paths'] = self.__get_paths_for_node(nid)
+        node_dic['parents'] = parents
+        node_dic['children'] = []  # childrens will add themselves afterward
+        #1b. we add it as a child for its parents
+        if len(parents) > 0:
+            for p in parents:
+                p_child = self.cache_nodes[p]['children']
+                if nid not in p_child:
+                    p_child.append(nid)
+                else:
+                    raise Exception("%s was already in children of parent %s"%(nid,p))
+        else:
+            if nid in self.cache_vr:
+                raise Exception('%s was already in VR'%nid)
+            self.cache_vr.append(nid)
+        #1c. we add the node
+        if self.cache_nodes.has_key(nid):
+            raise Exception('%s was already a visible node when added' %nid)
+        self.cache_nodes[nid] = node_dic
+        #2. send the signal (it means that the state is valid)
+        self.callback('added',nid,newpaths)
+        #3. Add the children
+        for c in children:
+            self.__add_node(c)
+        
+    
+    def __update_node(self,nid):
+        oldpaths = self.get_paths_for_node(nid).sort()
+        newpaths = self.__get_paths_for_node(nid).sort()
+        if oldpaths == newpaths:
+            self.callback("modified", tid,newpaths)
+        elif oldpaths:
+            self.__delete_node(nid,oldpaths)
+            self.__add_node(nid,newpaths)
+        else:
+            self.__add_node(nid,newpaths)
