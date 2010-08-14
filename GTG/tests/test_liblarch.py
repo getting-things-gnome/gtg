@@ -766,6 +766,8 @@ class TestLibLarch(unittest.TestCase):
         self.failIf('temp' in view.node_all_children('0'))
         view.unapply_filter('red')
         #moving an existing children
+        view.print_tree()
+        print "**************************"
         self.tree.move_node('1','0')
         self.assertEqual(2,view.node_n_children('0'))
         self.assert_('1' in view.node_all_children('0'))
