@@ -14,7 +14,8 @@ class SignalCatcher(object):
 
 
     def __init__(self, unittest,  generator, signal_name,\
-                 should_be_caught = True, how_many_signals = 1):
+                 should_be_caught = True, how_many_signals = 1, \
+                error_code = "No error code set"):
         self.signal_catched_event = threading.Event()
         self.generator = generator
         self.signal_name = signal_name
@@ -22,12 +23,14 @@ class SignalCatcher(object):
         self.unittest = unittest
         self.how_many_signals = how_many_signals
         self.should_be_caught = should_be_caught
+        self.error_code = error_code
 
         def _on_failure():
             #we need to release the waiting thread
             self.signal_catched_event.set()
             self.missed = True
             #then we notify the error
+            print "An expected signal wasn't received",  error_code
             self.unittest.assertFalse(should_be_caught)
 
         self.watchdog = Watchdog(3, _on_failure)

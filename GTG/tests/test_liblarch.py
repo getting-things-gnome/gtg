@@ -21,10 +21,9 @@
 
 import unittest
 import gtk
-import time
-import threading
 import gobject
 import functools
+import inspect
 
 from GTG.tools.liblarch import Tree
 from GTG.tools.liblarch.tree import TreeNode
@@ -60,22 +59,36 @@ class TestLibLarch(unittest.TestCase):
 #            yield None
 #            signal_catched_event.wait()
 #            self.signal_arguments = signal_arguments
-    
+
+
+    def caller_name(self):
+        '''
+        Returns the filename and the line of the calling function.
+        Precisely, it returns the calling calling function (because
+        you're calling this one).
+        '''
+        frame=inspect.currentframe()
+        frame=frame.f_back.f_back
+        code=frame.f_code
+        return code.co_filename, code.co_firstlineno    
+
     def assertSignal(self, generator, signal_name, function, \
                      how_many_signals = 1):
-        def new(how_many_signals, *args, **kws):
+        def new(how_many_signals, error_code, *args, **kws):
             with SignalCatcher(self, generator, signal_name,\
-                               how_many_signals = how_many_signals)\
+                               how_many_signals = how_many_signals,
+                               error_code = error_code)\
                     as [signal_catched_event, signal_arguments]:
                 function(*args, **kws)
                 signal_catched_event.wait()
                 self.recorded_signals[signal_name] += signal_arguments
             return None
-        return functools.partial(new, how_many_signals)
+        return functools.partial(new, how_many_signals, self.caller_name())
 
     def assertSignalExpected(self, generator, signal_name, expected, function):
         def new(*args, **kws):
-            with SignalCatcher(self, generator, signal_name) \
+            with SignalCatcher(self, generator, signal_name,
+                               error_code = self.caller_name()) \
                     as [signal_catched_event, signal_arguments]:
                 function(*args, **kws)
                 signal_catched_event.wait()
@@ -498,12 +511,12 @@ class TestLibLarch(unittest.TestCase):
         self.failIf('temp' in all_nodes)
 
     def test_move_node(self):
-        view = self.tree.get_viewtree(refresh=True)
         """Test node movement from parents.
 
         Check that node can be moved from one node to another,
         and to root.  When moved to root, verify it has no parents.
         """
+        view = self.tree.get_viewtree(refresh=True)
         node = DummyNode('temp')
         node.add_color('blue')
         self.tree.add_node(node,parent_id='0')
@@ -514,7 +527,7 @@ class TestLibLarch(unittest.TestCase):
         #Moving node
         self.assertSignal(self.view, \
                           'node-modified-inview', \
-                          self.tree.move_node, 3)('temp','1')
+                          self.tree.move_node, 2)('temp','1')
         self.assert_(('0',[(0,)]) in self.recorded_signals['node-modified-inview'])
         self.assert_(('1',[(1,)]) in self.recorded_signals['node-modified-inview'])
         self.assert_(view.node_has_child('1'))
@@ -540,7 +553,7 @@ class TestLibLarch(unittest.TestCase):
         node.add_color('blue')
         self.assertSignal(self.view, \
                           'node-modified-inview', \
-                          self.tree.add_node, 2)(node, parent_id = '0')
+                          self.tree.add_node, 1)(node, parent_id = '0')
         #Not checking temp. Indeed, it has been added, so there should not 
         #be any modified signal
         self.assert_(('0',[(0,)]) in self.recorded_signals['node-modified-inview'])
@@ -551,7 +564,7 @@ class TestLibLarch(unittest.TestCase):
         #Adding another parent
         self.assertSignal(self.view, \
                           'node-modified-inview', \
-                          self.tree.add_parent, 2)('temp','1')
+                          self.tree.add_parent, 1)('temp','1')
 #        This test doesn't make sense as temp is not modified but added/removed
 #        self.assert_(('temp',[(0,0),(1,0)]) in self.recorded_signals['node-modified-inview'])
         self.assert_(('1',[(1,)]) in self.recorded_signals['node-modified-inview'])
