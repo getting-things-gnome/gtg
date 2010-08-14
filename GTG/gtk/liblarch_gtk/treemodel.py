@@ -263,79 +263,72 @@ class TreeModel(gtk.GenericTreeModel):
             print "on iter parent %s :%s" %(str(rowref),toreturn)
         return toreturn
             
-    def add_task(self,tid,paths):
+    def add_task(self,tid,path):
         if TM_IDLE_ADD:
-            gobject.idle_add(self.__update_task,None,tid,paths,'add')
+            gobject.idle_add(self.__update_task,None,tid,path,'add')
         else:
-            self.__update_task(None,tid,paths,'add')
+            self.__update_task(None,tid,path,'add')
         
-    def __add_task(self,sender,tid,paths):
-        self.__update_task(sender,tid,paths,'add')
+    def __add_task(self,sender,tid,path):
+        self.__update_task(sender,tid,path,'add')
 
-    def update_task(self, tid,paths,data=None):
+    def update_task(self, tid,path,data=None):
         if TM_IDLE_ADD:
-            gobject.idle_add(self.__update_task,None,tid,paths,data)
+            gobject.idle_add(self.__update_task,None,tid,path,data)
         else:
-            self.__update_task(None,tid,paths,data)
+            self.__update_task(None,tid,path,data)
     
-    def __update_task(self,sender,tid,paths,data=None):
+    def __update_task(self,sender,tid,node_path,data=None):
         if THREAD_PROTECTION:
             t = threading.current_thread()
             if t != self.thread:
                 raise Exception('! could not update_task from thread %s' %t)
-        for node_path in paths:
-#            print "updating %s for path %s" %(tid,str(node_path))
-#            print "other paths are %s" %(str(self.tree.get_paths_for_node(tid)))
-            actual_tid = self.tree.get_node_for_path(node_path)
-            if tid == actual_tid:
+#       print "updating %s for path %s" %(tid,str(node_path))
+#       print "other paths are %s" %(str(self.tree.get_paths_for_node(tid)))
+        actual_tid = self.tree.get_node_for_path(node_path)
+        if tid == actual_tid:
+            if DEBUG_MODEL:
+                print "    ! this is the update/add %s get_iter" %tid
+            rowref = self.get_iter(node_path)
+            if data == 'add':
                 if DEBUG_MODEL:
-                    print "    ! this is the update/add %s get_iter" %tid
-                rowref = self.get_iter(node_path)
-                if data == 'add':
-                    if DEBUG_MODEL:
-                        print "     adding %s on path %s" %(tid,str(node_path))
-                    self.row_inserted(node_path, rowref)
-                else:
-                    if DEBUG_MODEL:
-                        print "     modifying %s on path %s" %(tid,str(node_path))
-                    self.row_changed(node_path, rowref)
-                if self.tree.node_has_child(tid):
-                    if DEBUG_MODEL:
-                        print "     child toggling for %s %s" %(tid,str(node_path))
-                    self.row_has_child_toggled(node_path, rowref)
+                    print "     adding %s on path %s" %(tid,str(node_path))
+                self.row_inserted(node_path, rowref)
             else:
-                raise ValueError("%s path for %s is supposed" %(data,tid) +\
-                        "to be %s, the one of %s "%(node_path, actual_tid))
+                if DEBUG_MODEL:
+                    print "     modifying %s on path %s" %(tid,str(node_path))
+                self.row_changed(node_path, rowref)
+            if self.tree.node_has_child(tid):
+                if DEBUG_MODEL:
+                    print "     child toggling for %s %s" %(tid,str(node_path))
+                self.row_has_child_toggled(node_path, rowref)
+        else:
+            raise ValueError("%s path for %s is supposed" %(data,tid) +\
+                    "to be %s, the one of %s "%(node_path, actual_tid))
 #                print "************"
 #                print "path for %s is supposed to be %s "%(tid,node_path)
 #                print "but in fact, tid for that path is %s" %actual_tid
 #                print "and paths are %s" %str(self.tree.get_paths_for_node(tid))
 #                print "and paths for real are %s" %str(self.tree.get_paths_for_node(actual_tid))
 #                self.tree.print_tree()
-        if len(paths) == 0: 
-            raise  ValueError("Error :! no path for node %s !" %tid)
 #        print " = ============================="
 #        self.tree.print_tree()
             
-    def remove_task(self,tid,paths=None):
+    def remove_task(self,tid,path):
         if TM_IDLE_ADD:
-            gobject.idle_add(self.__remove_task,None,tid,paths)
+            gobject.idle_add(self.__remove_task,None,tid,path)
         else:
-            self.__remove_task(None,tid,paths)
+            self.__remove_task(None,tid,path)
                 
-    def __remove_task(self,sender,tid,paths=None):
+    def __remove_task(self,sender,tid,path):
         if THREAD_PROTECTION:
             t = threading.current_thread()
             if t != self.thread:
                 raise Exception('! could not remove_task from thread %s' %t)
-        if paths:
-            for p in paths:
-                if DEBUG_MODEL:
-                    print "     deleting row %s  (it's tid %s)" %(str(p),tid)
-                    self.tree.print_tree()
-                self.row_deleted(p)
-        else:
-            raise ValueError('no paths to delete for %s' %tid)
+        if DEBUG_MODEL:
+            print "     deleting row %s  (it's tid %s)" %(str(path),tid)
+            self.tree.print_tree()
+        self.row_deleted(path)
             
             
 ########### The following should be removed onc liblarch-gtk is working ######

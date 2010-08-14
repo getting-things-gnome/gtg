@@ -144,14 +144,12 @@ class FilteredTree():
     def set_callback(self,event,func):
         self.cllbcks[event] = func
         
-    def callback(self,event,tid,paths=None):
+    def callback(self,event,tid,path):
         func = self.cllbcks.get(event,None)
         if func:
-            if not paths:
-                paths = self.get_paths_for_node(tid)
-            if not paths or len(paths) <= 0:
+            if not path or len(path) <= 0:
                 raise Exception('cllbck %s for %s but it has no paths'%(event,tid))
-            func(tid,paths)
+            func(tid,path)
             
     def get_node(self,id):
         """
@@ -647,7 +645,6 @@ class FilteredTree():
         3. Deleting the node itself.
         4. Re-adding all the next_nodes
         '''
-        print "delete_node %s %s" %(nid,str(paths))
         if self.is_displayed(nid): # and nid not in self.deleting_queue:
             self.deleting_queue.append(nid)
             if not paths:
@@ -666,7 +663,7 @@ class FilteredTree():
                     i -= 1
                     cpath = p + (i,)
                     if not cpath in self.get_paths_for_node(children[i]):
-                        raise Exception('%s should be in paths of' %cpath +\
+                        raise Exception('%s should be in paths of' %str(cpath) +\
                                         'children %s' %children[i])
                     self.__delete_node(children[i],[cpath])
                 # 2. delete the node itself
@@ -678,9 +675,6 @@ class FilteredTree():
                     p_dic = self.cache_nodes[parent]['children']
 #                    index = p_dic.index(nid)
                     p_dic.remove(nid)
-                    #PLOUM_DEBUG: we should update the remaining node, isn't it ?
-    #                print "removing node %s from children of %s" %(nid,p)
-    #                print "  -> we should update %s in children" %p_dic[index:]
                 cached = self.cache_nodes[nid]
                 if parent:
                     cached['parents'].remove(parent)
@@ -691,8 +685,8 @@ class FilteredTree():
                 if len(cached['paths']) <= 0:
                     self.cache_nodes.pop(nid)
                 # 3. send the signal (it means that the state is valid)
-                print "We delete %s from path %s" %(nid,str(p))
-                self.callback('deleted',nid,[p])
+#                print "We delete %s from path %s" %(nid,str(p))
+                self.callback('deleted',nid,p)
                 # 4. update next_node  (PLOUM_DEBUG: this is the trickiest point)
                 nexts.reverse()
                 for n in nexts:
@@ -715,7 +709,8 @@ class FilteredTree():
         #We remove the paths that are already displayed
         if curdis:
             for pp in self.get_paths_for_node(nid):
-                paths.remove(pp)
+                if pp in paths:
+                    paths.remove(pp)
             node_dic = self.cache_nodes[nid]
         else:
             #Not displayed, creating the node
@@ -732,7 +727,7 @@ class FilteredTree():
             other = self.get_node_for_path(p)
             to_readd = None
             if other:
-                print "adding %s to path % but occupied by %s"%(nid,str(p),other)
+#                print "adding %s to path % but occupied by %s"%(nid,str(p),other)
                 to_readd = other
                 self.__delete_node(other)
             if p not in node_dic['paths']:
@@ -762,8 +757,8 @@ class FilteredTree():
             if nid != other:
                 raise Exception('we try to add %s on path %s' %(nid,str(p))+\
                                 'while it looks like it the path of %s' %other)
-            print "we add node %s to path %s" %(nid,str(p))
-            self.callback('added',nid,[p])
+#            print "we add node %s to path %s" %(nid,str(p))
+            self.callback('added',nid,p)
             #3. Add the children
             children = self.__node_all_children(nid)
             i = 0
@@ -791,19 +786,35 @@ class FilteredTree():
         if self.is_displayed(nid):
             oldpaths = self.get_paths_for_node(nid)
             newpaths = self.__get_paths_for_node(nid)
+            to_remove = []
+            to_add = []
+            to_update = []
 #            print "update for %s : %s - %s" %(nid,str(oldpaths),str(newpaths))
-            if oldpaths == newpaths:
-                self.callback("modified", nid,newpaths)
-            elif len(oldpaths) > 0 and len(newpaths) > 0:
-                self.__delete_node(nid)
-                self.__add_node(nid)
-            else:
-                children = self.__node_all_children(nid)
-                self.__delete_node(nid)
+            for p in oldpaths:
+                if p in newpaths:
+                    to_update.append(p)
+                else:
+                    to_remove.append(p)
+            for p in newpaths:
+                if p not in oldpaths:
+                    to_add.append(p)
+                elif p not in to_update:
+                    raise Exception('%s should be in paths to update'%str(p))
+                    
+            #removing paths that should
+            for p in to_remove:
                 #It's not because the node is not displayed anymore
                 #that the children are not. Update them.
+                children = self.__node_all_children(nid)
+                self.__delete_node(nid,[p])
                 for c in children:
                     self.__update_node(c)
+            #adding
+            for p in to_add:
+                self.__add_node(nid,[p])
+            #and, eventually, updating unchanged paths
+            for p in to_update:
+                self.callback("modified", nid,p)
             return True
         else:
             self.__add_node(nid)
@@ -816,7 +827,7 @@ class FilteredTree():
         the filter is changed (i.e. only filters_bank should call it).
         """
         #If we have only one flat filter, the result is flat
-        print " * * *  Start refilter * * *  *"
+#        print " * * *  Start refilter * * *  *"
         self.__flat = False
         for f in self.applied_filters:
             filt = self.fbank.get_filter(f)
@@ -838,7 +849,7 @@ class FilteredTree():
             #only add root nodes (those who don't have parents)
             if self.__is_displayed(nid) and len(self.__node_parents(nid)) == 0:
                 self.__add_node(nid)
-        print "*** end of refiltering ****"
+#        print "*** end of refiltering ****"
         #self.print_tree()
 
     ####### Change filters #################
