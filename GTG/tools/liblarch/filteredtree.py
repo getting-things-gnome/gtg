@@ -118,7 +118,6 @@ class FilteredTree():
         #counting optimisation
         self.counted_nodes = []
         self.count_cache = {}
-        self.deleting_queue = []
         
         #an initial refilter is always needed if we don't apply a filter
         #for performance reason, we do it only if refresh = True
@@ -160,6 +159,9 @@ class FilteredTree():
         return self.tree.get_node(id)
         
 ################## External update functions ###################
+# Here, we catch node added/deleted/modified signal from the MainTree.
+# With a queue mechanism, we ensure that only one instruction at a time
+# is realized.
          ### signals functions
     def __task_added(self,sender,tid):
         todis = self.__is_displayed(tid)
@@ -234,8 +236,6 @@ class FilteredTree():
             toprint += self.print_from_node(rid,string=string)
             toprint += '\n'
         return toprint
-            
-        
         #alternate implementation using next_node
 #        if len(self.virtual_root) > 0:
 #            rid = self.virtual_root[0]
@@ -246,6 +246,7 @@ class FilteredTree():
 #                rid = self.next_node(rid)
 
     #This function print the actual tree. Useful for debugging
+    #The function also check the validity of the tree
     def print_from_node(self, nid, level=0,string=None):
         prefix = "->"*level
         paths = self.get_paths_for_node(nid)
@@ -271,8 +272,6 @@ class FilteredTree():
                 n += 1
         return toprint
     
-    #Those 3 functions are static except if the cache was not yet used.
-    #Could it be a source of bug ?
     def get_paths_for_node(self,tid):
         if tid and self.is_displayed(tid):
             toreturn = self.cache_nodes[tid]['paths']
@@ -292,13 +291,12 @@ class FilteredTree():
         return toreturn
     
     def node_parents(self,tid):
+        error = "node_parents for %s\n" %tid
         if self.cache_nodes.has_key(tid):
             toreturn = self.cache_nodes[tid]['parents']
         else:
-            #if the node is not displayed, we return None.
-            #Maybe it's a bit hard to crash on that
-#            toreturn = None
-            raise IndexError('%s is not in the cache_nodes %s' %(tid,self.get_all_nodes()))
+            error += '%s is not in the cache_nodes %s' %(tid,self.get_all_nodes())
+            raise IndexError(error)
         return toreturn
     
     
@@ -456,9 +454,6 @@ class FilteredTree():
         if len(children) > n:
             toreturn = children[n]
         #we return None if n is too big.
-#        else:
-#            raise Exception('Try to get child nbr %s of %s' %(n,nid) +\
-#                            'but it has only %s children' %len(children))
         return toreturn
         
     def is_displayed(self,nid):
@@ -470,6 +465,9 @@ class FilteredTree():
 ####################### End of static state functions #######################
 
 ####################### Dynamic functions ###################################
+# Those functions get their value from the real state of MainTree
+# They don't touch the cache at all !
+# Well, the get_paths_for_node touch it a bit…
 
     def __get_paths_for_node(self,tid):
         """
@@ -491,7 +489,6 @@ class FilteredTree():
             return toreturn
         #FIXME : should not use cache VR in this function !
         elif len(pars) <= 0:
-#            if len(self.__node_parents(tid)) <= 0:
             if tid in self.cache_vr:
                 ind = self.cache_vr.index(tid)
             else:
@@ -499,14 +496,6 @@ class FilteredTree():
                 ind = len(self.cache_vr)
             path = (ind,)
             toreturn.append(path)
-#            else:
-#                realparents = node.get_parents()
-#                print "real parents of %s are : %s" %(tid,str(realparents))
-#                print "displayed_nodes are %s" %self.cache_nodes.keys()
-#                for p in realparents:
-#                    print "%s is displayed : %s" %(p,self.is_displayed(p))
-#                    print "but the truth is : %s" %self.__is_displayed(p)
-#                raise Exception("%s has no parent but is not in VR" %tid)
         #The node is not a virtual root
         else:
             for par in pars:
