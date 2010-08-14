@@ -58,6 +58,9 @@ def main(args):
             if len(arg_content) > 1:
                 path = TEST_MODULE_PREFIX + arg
                 suites.append(unittest.TestLoader().loadTestsFromName(path))
+                #NOTE: this can be done easily with pattern matching with 
+                #      unittest.TestLoader().discover(..), but that's only from 
+                #      python 2.7 on. 
             else:
                 suites.append(getattr(a_test, "test_suite")())
     else:
