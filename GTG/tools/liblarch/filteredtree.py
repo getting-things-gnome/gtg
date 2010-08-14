@@ -848,6 +848,8 @@ class FilteredTree():
                     to_update.append(p)
                 else:
                     to_remove.append(p)
+            to_remove.sort()
+            to_remove.reverse()
                     
             #removing paths that should
             for p in to_remove:
@@ -861,17 +863,30 @@ class FilteredTree():
                     self.__update_node(c)
                     
             newpaths = self.__get_paths_for_node(nid)
-            error += "new newpaths is %s" %newpaths
+            error += "new newpaths are %s\n" %newpaths
+#            added_par = []
             for p in newpaths:
                 if p not in oldpaths:
+#                    shouldadd = True
+#                    #We also check if it's not a parent we already add
+#                    if len(p) > 1:
+#                        thispar = self.get_node_for_path(p[:-1])
+#                        if thispar in added_par:
+#                            shouldadd = False
+#                        else:
+#                            added_par.append(thispar)
+#                    if shouldadd:
                     to_add.append(p)
                 elif p not in to_update:
                     error += '%s should be in paths to update'%str(p)
                     raise Exception(error)
+            to_add.sort()
+            error += "paths to_add are %s\n" %to_add
                     
             #adding
             for p in to_add:
                 error += "update (add) of %s to path %s\n" %(nid,str(p))
+                print error
                 pars = self.__node_parents(nid)
                 if len(p) > 1:
                     onegood = False
