@@ -646,7 +646,6 @@ class FilteredTree():
         4. Re-adding all the next_nodes
         '''
         if self.is_displayed(nid): # and nid not in self.deleting_queue:
-            self.deleting_queue.append(nid)
             if not paths:
                 paths = self.get_paths_for_node(nid)
 #            print "remove node %s from path %s" %(nid,str(paths))
@@ -678,19 +677,33 @@ class FilteredTree():
                     parent = self.get_node_for_path(p[:-1])
                     p_dic = self.cache_nodes[parent]['children']
 #                    index = p_dic.index(nid)
-                    p_dic.remove(nid)
                 cached = self.cache_nodes[nid]
+                error = ''
+                n_paths = 0
                 if parent:
-                    cached['parents'].remove(parent)
+                    #We remove the parent only if the parent has 
+                    #only one path left
+                    ppaths = self.get_paths_for_node(parent)
+                    if len(ppaths) == 1:
+                        cached['parents'].remove(parent)
+                        p_dic.remove(nid)
+                    elif len(ppaths) > 1:
+                        #if we don't remove the parent, we should have one
+                        #path less than all the parents paths
+                        n_paths -= 1
+                        error += "paths of %s are %s\n" %(parent,ppaths)
+                    else:
+                        raise Exception('cannot delete %s' %nid +\
+                                        'parent %s has no path' %parent)
                 cached['paths'].remove(p)
                 #autochecking sanity
                 #the number of paths should be the number of parents paths
                 #If a parent has 2 paths -> chidren alse have 2
-                n_paths = 0
                 for cparent in cached['parents']:
                     n_paths += len(self.get_paths_for_node(cparent))
+                    error += "parent %s has %s paths\n" %(cparent,n_paths)
                 if n_paths != len(cached['paths']):
-                    error = "We are in the process of deleting %s -%s\n" %(nid,str(p))
+                    error += "We are in the process of deleting %s %s\n" %(nid,str(p))
                     error += "we removed it from parent %s\n" %parent
                     error += "paths/parents mismatch in %s" %cached
                     raise Exception(error)
@@ -703,7 +716,6 @@ class FilteredTree():
                 nexts.reverse()
                 for n in nexts:
                     self.__add_node(n[0])
-            self.deleting_queue.remove(nid)
             return True
         else:
             return False
