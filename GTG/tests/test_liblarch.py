@@ -50,15 +50,10 @@ class DummyNode(TreeNode):
             self.colors.remove(color)
         self.modified()
 
+
+
 class TestLibLarch(unittest.TestCase):
     """Tests for `Tree`."""
-
-#    def assertEmitted(self, generator, signal_name):
-#        with SignalCatcher(self, generator, signal_name) \
-#                    as [signal_catched_event, signal_arguments]:
-#            yield None
-#            signal_catched_event.wait()
-#            self.signal_arguments = signal_arguments
 
 
     def caller_name(self):
@@ -801,11 +796,6 @@ class TestLibLarch(unittest.TestCase):
         returned, except when requesting a node not in the tree or that
         is not present due being filtered out.
         """
-        view = self.tree.get_viewtree(refresh=True)
-        self.assert_('1' in view.node_children())
-        self.assert_('1' in self.mainview.node_children())
-
-    def test_viewtree_node_nth_child(self):
         view = self.tree.get_viewtree(refresh=True)
         node = DummyNode('temp')
         node.add_color('blue')
