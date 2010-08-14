@@ -48,10 +48,6 @@ class MainTree(gobject.GObject):
         self.root.set_thread(self.thread)
         self.root.set_tree(self)
         
-    #those callbacks are called instead of signals.
-#    def set_callback(self,event,func):
-#        self.cllbcks[event] = func
-        
     def register_callback(self,event,func):
         if not self.__cllbcks.has_key(event):
             self.__cllbcks[event] = {}

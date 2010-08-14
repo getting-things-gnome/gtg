@@ -118,6 +118,7 @@ class FilteredTree():
         #counting optimisation
         self.counted_nodes = []
         self.count_cache = {}
+        self.trace = ''
         
         #an initial refilter is always needed if we don't apply a filter
         #for performance reason, we do it only if refresh = True
@@ -260,8 +261,10 @@ class FilteredTree():
             if len(p) == level:
                 is_good = True
         if not is_good:
-            raise Exception('theres no path of level %s' %level +\
-                            'for node %s - %s' %(nid,str(paths)))
+            error = 'theres no path of level %s' %level +\
+                            'for node %s - %s' %(nid,str(paths))
+            error += '\n\nDEBUG TRACE\n\n%s' %self.trace
+            raise Exception(error)
         if self.node_has_child(nid):
             nn = self.node_n_children(nid)
             n = 0
@@ -648,7 +651,7 @@ class FilteredTree():
         if self.is_displayed(nid): # and nid not in self.deleting_queue:
             if not paths:
                 paths = self.get_paths_for_node(nid)
-#            print "remove node %s from path %s" %(nid,str(paths))
+            self.trace += "remove node %s from path %s\n" %(nid,str(paths))
             #0. we first delete next_nodes, left first
             for p in paths:
                 error += "We are in the process of deleting %s %s\n" %(nid,str(p))
@@ -720,6 +723,7 @@ class FilteredTree():
     
     def __add_node(self,nid,paths=None):
         error = "Adding node %s to paths %s\n" %(nid,paths)
+        self.trace += error
         #we only add node that really need it.
         curdis = self.is_displayed(nid)
         newdis = self.__is_displayed(nid)
@@ -875,7 +879,7 @@ class FilteredTree():
             #adding
             for p in to_add:
                 error += "update (add) of %s to path %s\n" %(nid,str(p))
-                print error
+#                print error
                 pars = self.__node_parents(nid)
                 if len(p) > 1:
                     onegood = False
