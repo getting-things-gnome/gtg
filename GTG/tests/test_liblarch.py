@@ -206,8 +206,8 @@ class TestLibLarch(unittest.TestCase):
                             self.assertSignal(self.view, \
                                               'node-added-inview', \
                                           self.tree.add_node))(node, parent_id = '0')
-        self.assert_(('temp',[(0, 0)]) in self.recorded_signals['node-added-inview'])
-        self.assert_(('0',[(0, )]) in \
+        self.assert_(('temp',(0, 0)) in self.recorded_signals['node-added-inview'])
+        self.assert_(('0',(0, )) in \
                      self.recorded_signals['node-modified-inview'])
         shouldbe = self.blue_nodes + 1
         total = self.red_nodes + self.blue_nodes + self.green_nodes
@@ -237,7 +237,7 @@ class TestLibLarch(unittest.TestCase):
         self.assertSignal(self.view, \
                           'node-modified-inview', \
                           self.tree.add_node, 1)(node,parent_id='0')
-        self.assert_(('0',[(0, )]) in self.recorded_signals['node-modified-inview'])
+        self.assert_(('0',(0, )) in self.recorded_signals['node-modified-inview'])
         #Node is blue
         self.assert_(viewblue.is_displayed('temp'))
         self.failIf(viewred.is_displayed('temp'))
@@ -266,7 +266,7 @@ class TestLibLarch(unittest.TestCase):
         self.assertSignal(self.view, \
                           'node-deleted-inview', \
                           self.tree.del_node, 1)('0')
-        self.assert_(('0',[(0, )]) in self.recorded_signals['node-deleted-inview'])
+        self.assert_(('0',(0, )) in self.recorded_signals['node-deleted-inview'])
         all_nodes = self.view.get_all_nodes()
         self.failIf('0' in all_nodes)
         self.assert_('temp' in all_nodes)
@@ -489,8 +489,8 @@ class TestLibLarch(unittest.TestCase):
                           'node-deleted-inview', \
                           self.tree.del_node, 1)('0', recursive = True)
         print "A lot of deleted signals", self.recorded_signals['node-deleted-inview']
-        self.assert_(('temp',[(0, 0)]) in self.recorded_signals['node-deleted-inview'])
-        self.assert_(('0',[(0,)]) in self.recorded_signals['node-deleted-inview'])
+        self.assert_(('temp',(0, 0)) in self.recorded_signals['node-deleted-inview'])
+        self.assert_(('0',(0,)) in self.recorded_signals['node-deleted-inview'])
         all_nodes = self.view.get_all_nodes()
         self.failIf('0' in all_nodes)
         self.failIf('temp' in all_nodes)
@@ -513,8 +513,8 @@ class TestLibLarch(unittest.TestCase):
         self.assertSignal(self.view, \
                           'node-modified-inview', \
                           self.tree.move_node, 2)('temp','1')
-        self.assert_(('0',[(0,)]) in self.recorded_signals['node-modified-inview'])
-        self.assert_(('1',[(1,)]) in self.recorded_signals['node-modified-inview'])
+        self.assert_(('0',(0,)) in self.recorded_signals['node-modified-inview'])
+        self.assert_(('1',(1,)) in self.recorded_signals['node-modified-inview'])
         self.assert_(view.node_has_child('1'))
         self.assert_('temp' in view.node_all_children('1'))
         self.assert_('temp' not in view.node_all_children('0'))
@@ -541,7 +541,7 @@ class TestLibLarch(unittest.TestCase):
                           self.tree.add_node, 1)(node, parent_id = '0')
         #Not checking temp. Indeed, it has been added, so there should not 
         #be any modified signal
-        self.assert_(('0',[(0,)]) in self.recorded_signals['node-modified-inview'])
+        self.assert_(('0',(0,)) in self.recorded_signals['node-modified-inview'])
         #Testing initial situation
         self.assert_(view.node_has_child('0'))
         self.assert_('temp' in view.node_all_children('0'))
@@ -550,7 +550,7 @@ class TestLibLarch(unittest.TestCase):
         self.assertSignal(self.view, \
                           'node-modified-inview', \
                           self.tree.add_parent, 1)('temp','1')
-        self.assert_(('1',[(1,)]) in self.recorded_signals['node-modified-inview'])
+        self.assert_(('1',(1,)) in self.recorded_signals['node-modified-inview'])
         self.assert_(view.node_has_child('1'))
         self.assert_('temp' in view.node_all_children('1'))
         self.assert_('temp' in view.node_all_children('0'))
