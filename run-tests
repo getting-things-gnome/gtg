@@ -32,10 +32,22 @@ def main(args):
                     stream = sys.stdout,
                     descriptions = True,
                     verbosity = 1)
+    if "-h" in args:
+        print "USAGE:"
+        print "./run_tests  to run all tests"
+        print "./run_tests  [module_name ..] to run tests from the listed " + \
+              "modules"
+        print "./run_tests  [function_path ..] to run the selected " + \
+              "functions as tests"
+        return
     if len(args) > 0:
         #if we have specified the name of the test in the command line
         suites = []
-        for module_name in args:
+        for arg in args:
+            #each arg can be a module name (as test_liblarch), or a module name
+            # "dot" a function name (as test_liblarch.test_something)
+            arg_content = arg.split(".")
+            module_name = arg_content[0]
             #load the module
             module_path = TEST_MODULE_PREFIX + module_name
             module = __import__(module_path)
@@ -43,7 +55,11 @@ def main(args):
             globals()[module_path] = module
             tests = getattr(module, "tests")
             a_test = getattr(tests, module_name)
-            suites.append(getattr(a_test, "test_suite")())
+            if len(arg_content) > 1:
+                path = TEST_MODULE_PREFIX + arg
+                suites.append(unittest.TestLoader().loadTestsFromName(path))
+            else:
+                suites.append(getattr(a_test, "test_suite")())
     else:
         #otherwise, run all tests
         suites = [test_suite()]
