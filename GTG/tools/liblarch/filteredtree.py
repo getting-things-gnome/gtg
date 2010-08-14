@@ -611,7 +611,7 @@ class FilteredTree():
         for that path.
         The list is returned in reverse order (last next_node first)
         '''
-        print "nextnodes %s %s" %(nid,str(path))
+#        print "nextnodes %s %s" %(nid,str(path))
         if len(path) >= 2:
             index = path[-1]
             parpath = path[:-1]
@@ -634,7 +634,6 @@ class FilteredTree():
             if not cpath in self.get_paths_for_node(c):
                 raise Exception('%s should be in paths of node %s' %(cpath,c))
             nexts.append([c,cpath])
-            print nexts
         nexts.reverse()
         return nexts
         
@@ -703,75 +702,88 @@ class FilteredTree():
         else:
             return False
     
-    def __add_node(self,nid):
+    def __add_node(self,nid,paths=None):
         #we only add node that really need it.
         curdis = self.is_displayed(nid)
         newdis = self.__is_displayed(nid)
-        if curdis or not newdis:
+        #it should not be displayed, don't add it.
+        if not newdis:
             return False
-#        print "add node %s" %(nid)
         #1. Add the node
-        parents = self.__node_parents(nid)
-        dis_parents = []
-        for p in parents:
-            #Check that at least some parents are displayed
-            if self.is_displayed(p):
-                dis_parents.append(p)
-#        if len(dis_parents) == 0
-#            raise Exception('node %s needs at least one displayed parent'%s)
-        #1b. we add it as a child for its parents
-        if len(dis_parents) > 0:
-            for p in dis_parents:
-                p_child = self.cache_nodes[p]['children']
+        if not paths:
+            paths = self.__get_paths_for_node(nid)
+        #We remove the paths that are already displayed
+        if curdis:
+            for pp in self.get_paths_for_node(nid):
+                paths.remove(pp)
+            node_dic = self.cache_nodes[nid]
+        else:
+            #Not displayed, creating the node
+            node_dic = {}
+            node_dic['paths'] = []
+            node_dic['parents'] = []
+            node_dic['children'] = []  # childrens will add themselves afterward
+            if self.cache_nodes.has_key(nid):
+                raise Exception('%s was already a visible node when added' %nid)
+            self.cache_nodes[nid] = node_dic
+        #Now we add each path separately
+        for p in paths:
+            #check that the path is free
+            other = self.get_node_for_path(p)
+            to_readd = None
+            if other:
+                print "adding %s to path % but occupied by %s"%(nid,str(p),other)
+                to_readd = other
+                self.__delete_node(other)
+            if p not in node_dic['paths']:
+                node_dic['paths'].append(p)
+            else:
+                raise Exception('path %s was already in node %s'%(str(p),nid))
+            if len(p) > 1:
+                parent = self.get_node_for_path(p[:-1])
+                if not self.is_displayed(parent):
+                    #We should add a node to a non-existing parent
+                    break
+                p_child = self.cache_nodes[parent]['children']
+                if parent not in node_dic['parents']:
+                    node_dic['parents'].append(parent)
                 if nid not in p_child:
                     p_child.append(nid)
+#                else:
+#                    raise Exception("%s was already in children of parent %s"%(nid,p))
+            else:
+                if nid not in self.cache_vr:
+                    self.cache_vr.append(nid)
                 else:
-                    raise Exception("%s was already in children of parent %s"%(nid,p))
-        else:
-            if nid in self.cache_vr:
-                raise Exception('%s was already in VR'%nid)
-            self.cache_vr.append(nid)
-        #The parents have to be updated in order for get paths to work
-        newpaths = self.__get_paths_for_node(nid)
-        #We remove the nodes that we are replacing
-        to_readd = []
-        for p in newpaths:
-            nnode = self.get_node_for_path(p)
-            if nnode:
-                to_readd.append(nnode)
-                self.__delete_node(nnode)
-        #1a. We create the node
-        node_dic = {}
-        node_dic['paths'] = newpaths
-        node_dic['parents'] = dis_parents
-        node_dic['children'] = []  # childrens will add themselves afterward
-        if self.cache_nodes.has_key(nid):
-            raise Exception('%s was already a visible node when added' %nid)
-        self.cache_nodes[nid] = node_dic
-        #2. send the signal (it means that the state is valid)
-        #we make a sanity check before raising the signal
-        for p in newpaths:
+                    raise Exception("%s was already in VR"%nid)
+            #2. send the signal (it means that the state is valid)
+            #we make a sanity check before raising the signal
             other = self.get_node_for_path(p)
             if nid != other:
-#                self.print_tree()
                 raise Exception('we try to add %s on path %s' %(nid,str(p))+\
                                 'while it looks like it the path of %s' %other)
-        print "we add node %s to path %s" %(nid,str(newpaths))
-        self.callback('added',nid,newpaths)
-        #3. Add the children
-        children = self.__node_all_children(nid)
-        for c in children:
-            #maybe the child already exists as a child of another node
-            if self.is_displayed(c):
-                self.cache_nodes[c]['parents'].append(nid)
-                self.cache_nodes[c]['paths'] = self.__get_paths_for_node(c)
-                self.cache_nodes[nid]['children'].append(c)
+            print "we add node %s to path %s" %(nid,str(p))
+            self.callback('added',nid,[p])
+            #3. Add the children
+            children = self.__node_all_children(nid)
+            i = 0
+            while i < len(children):
+                c = children[i]
+                #maybe the child already exists as a child of another node
+                if self.is_displayed(c):
+                    self.cache_nodes[c]['parents'].append(nid)
+                    self.cache_nodes[nid]['children'].append(c)
+                    self.cache_nodes[c]['paths'] = self.__get_paths_for_node(c)
 #                print "we added %s to %s" %(c,nid)
 #                self.__update_node(c)
-            else:
-                self.__add_node(c)
-        for n in to_readd:
-            self.__add_node(n)
+                else:
+                    cpath = p + (i,)
+                    self.__add_node(c,[cpath])
+                i += 1
+            if to_readd:
+                other_index = p[-1] + 1
+                opath = p[:-1] + (other_index,)
+                self.__add_node(to_readd,[opath])
         return True
         
     
