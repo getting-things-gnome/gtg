@@ -224,16 +224,18 @@ class FilteredTree():
     #All external functions get their result from that cache
     #This enforce the external state of the FT being consistent at any time !
     
-    def print_tree(self,string=None):
+    def print_tree(self,string=False):
         toprint = "displayed : %s\n" %self.get_all_nodes()
         toprint += "VR is : %s\n" %self.cache_vr
-        toprint += "updating_queue is : %s" %self.__updating_queue
-        if string:
-            string = toprint + "\n"
-        else:
+        toprint += "updating_queue is : %s\n" %self.__updating_queue
+        if not string:
             print toprint
         for rid in self.cache_vr:
-            self.print_from_node(rid,string=string)
+            toprint += self.print_from_node(rid,string=string)
+            toprint += '\n'
+        return toprint
+            
+        
         #alternate implementation using next_node
 #        if len(self.virtual_root) > 0:
 #            rid = self.virtual_root[0]
@@ -249,10 +251,7 @@ class FilteredTree():
         paths = self.get_paths_for_node(nid)
         toprint = "%s%s    (%s) " %(prefix,nid,\
                     str(paths))
-        if string:
-            string += toprint
-            string += "\n"
-        else:
+        if not string:
             print toprint
         level += 1
         is_good = False
@@ -267,8 +266,10 @@ class FilteredTree():
             n = 0
             while n < nn:
                 child_id = self.node_nth_child(nid,n)
-                self.print_from_node(child_id,level,string=string)
+                toprint += '\n'
+                toprint += self.print_from_node(child_id,level,string=string)
                 n += 1
+        return toprint
     
     #Those 3 functions are static except if the cache was not yet used.
     #Could it be a source of bug ?
@@ -636,7 +637,8 @@ class FilteredTree():
             cpaths = self.get_paths_for_node(c)
             if not cpath in cpaths:
                 error += '%s should be in paths of node %s\n' %(cpath,c)
-                error += 'but paths are %s' %cpaths
+                error += 'but paths are %s\n' %cpaths
+#                error += self.print_tree(string=True)
                 raise Exception(error)
             nexts.append([c,cpath])
             error += "nexts are now : %s\n" %nexts
@@ -717,7 +719,7 @@ class FilteredTree():
                 if len(cached['paths']) <= 0:
                     self.cache_nodes.pop(nid)
                 # 3. send the signal (it means that the state is valid)
-#                print "We delete %s from path %s" %(nid,str(p))
+#                print "******** We delete %s from path %s" %(nid,str(p))
                 self.callback('deleted',nid,p)
                 # 4. update next_node  ( this is the trickiest point)
                 nexts.reverse()
@@ -798,7 +800,7 @@ class FilteredTree():
                     error += "parent %s has children %s\n"%(par,pchildrens)
                     error += "parent paths are %s" %self.get_paths_for_node(par)
                 raise Exception(error)
-#            print "we add node %s to path %s" %(nid,str(p))
+#            print "++++++ we add node %s to path %s" %(nid,str(p))
             self.callback('added',nid,p)
             #3. Add the children
             children = self.__node_all_children(nid)

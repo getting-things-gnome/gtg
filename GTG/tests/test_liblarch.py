@@ -415,7 +415,7 @@ class TestLibLarch(unittest.TestCase):
             #The printtree method returns an error when the printed tree
             #is not logical. Thus, by connecting a print tree to signals,
             #the test will fail if there's any inconsistencies.
-            view.print_tree(string=treestr)
+            view.print_tree(string=True)
         view = self.tree.get_viewtree(refresh=True)
         view.register_cllbck('node-modified-inview',check_path)
         view.register_cllbck('node-deleted-inview',printtree)
@@ -468,6 +468,10 @@ class TestLibLarch(unittest.TestCase):
         self.assert_(view.is_displayed('parent'))
         self.assert_('futur' in view.node_all_children('parent'))
         
+    def test_add_child_to_a_parent_after(self):
+        view = self.tree.get_viewtree(refresh=True)
+        print view.print_tree(string=True)
+        
         
     def test_recursive_removing_parent(self):
         """Test behavior of node when its parent goes away.
@@ -482,13 +486,11 @@ class TestLibLarch(unittest.TestCase):
         all_nodes = self.view.get_all_nodes()
         self.assert_('0' in all_nodes)
         self.assert_('temp' in all_nodes)
-        print "ploum, why so many signals are sent here?"
-        view.print_tree()
-        print "nothing before the deletion", self.recorded_signals['node-deleted-inview']
+#        print "nothing before the deletion", self.recorded_signals['node-deleted-inview']
         self.assertSignal(self.view, \
                           'node-deleted-inview', \
                           self.tree.del_node, 1)('0', recursive = True)
-        print "A lot of deleted signals", self.recorded_signals['node-deleted-inview']
+#        print "A lot of deleted signals", self.recorded_signals['node-deleted-inview']
         self.assert_(('temp',(0, 0)) in self.recorded_signals['node-deleted-inview'])
         self.assert_(('0',(0,)) in self.recorded_signals['node-deleted-inview'])
         all_nodes = self.view.get_all_nodes()
@@ -766,8 +768,6 @@ class TestLibLarch(unittest.TestCase):
         self.failIf('temp' in view.node_all_children('0'))
         view.unapply_filter('red')
         #moving an existing children
-        view.print_tree()
-        print "**************************"
         self.tree.move_node('1','0')
         self.assertEqual(2,view.node_n_children('0'))
         self.assert_('1' in view.node_all_children('0'))
