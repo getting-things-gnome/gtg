@@ -28,7 +28,7 @@ class TestSignalTesting(unittest.TestCase):
     def test_signal_missing(self):
         generator = FakeGobject()
         arg = str(uuid.uuid4())
-        with SignalCatcher(self, generator, 'two', False) \
+        with SignalCatcher(self, generator, 'two', False, error_code = None) \
                 as [signal_catched_event, signal_arguments]:
             generator.emit_signal('one', arg)
             signal_catched_event.wait()

@@ -30,7 +30,9 @@ class SignalCatcher(object):
             self.signal_catched_event.set()
             self.missed = True
             #then we notify the error
-            print "An expected signal wasn't received",  error_code
+            #if the error_code is set to None, we're expecting it to fail.
+            if error_code != None:
+                print "An expected signal wasn't received %s" % str(error_code)
             self.unittest.assertFalse(should_be_caught)
 
         self.watchdog = Watchdog(3, _on_failure)

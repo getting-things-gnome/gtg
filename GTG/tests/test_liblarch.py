@@ -85,25 +85,6 @@ class TestLibLarch(unittest.TestCase):
             return None
         return functools.partial(new, how_many_signals, self.caller_name())
 
-    def assertSignalExpected(self, generator, signal_name, expected, function):
-        def new(*args, **kws):
-            with SignalCatcher(self, generator, signal_name,
-                               error_code = self.caller_name()) \
-                    as [signal_catched_event, signal_arguments]:
-                function(*args, **kws)
-                signal_catched_event.wait()
-                for e in expected:
-                    #signal arguments is a list of tuple
-                    #In this test, we only consider any of the arguments
-                    self.assert_(len(signal_arguments) > 0)
-                    #It should be at least in one of the arguments:
-                    result = False
-                    for ar in signal_arguments:
-                        result = result or (e in ar)
-                    self.assert_(result)
-            return None
-        return new
-
     def test_assertSignal(self):
         class FakeGobject(gobject.GObject):
             __gsignals__ = {'node-added-inview': (gobject.SIGNAL_RUN_FIRST,
@@ -192,12 +173,6 @@ class TestLibLarch(unittest.TestCase):
             self.assertSignal, self.view, 'node-modified-inview')
         self.assertNodeDeletedInview = functools.partial ( \
             self.assertSignal, self.view, 'node-deleted-inview')
-        self.assertNodeAddedInviewExp = functools.partial ( \
-            self.assertSignalExpected, self.view, 'node-added-inview')
-        self.assertNodeModifiedInviewExp = functools.partial ( \
-            self.assertSignalExpected, self.view, 'node-modified-inview')
-        self.assertNodeDeletedInviewExp = functools.partial ( \
-            self.assertSignalExpected, self.view, 'node-deleted-inview')
 
     def tearDown(self):
         #stopping gobject main loop
@@ -231,10 +206,14 @@ class TestLibLarch(unittest.TestCase):
         view = self.tree.get_viewtree(refresh=True)
         node = DummyNode('temp')
         node.add_color('blue')
-        expected_arg = ['temp']
-        self.assertNodeModifiedInviewExp(['0'],
-                self.assertNodeAddedInviewExp(expected_arg,\
-                                self.tree.add_node))(node, parent_id = '0')
+        self.assertSignal(self.view, \
+                            'node-modified-inview', \
+                            self.assertSignal(self.view, \
+                                              'node-added-inview', \
+                                          self.tree.add_node))(node, parent_id = '0')
+        self.assert_(('temp',[(0, 0)]) in self.recorded_signals['node-added-inview'])
+        self.assert_(('0',[(0, )]) in \
+                     self.recorded_signals['node-modified-inview'])
         shouldbe = self.blue_nodes + 1
         total = self.red_nodes + self.blue_nodes + self.green_nodes
         #Testing that the blue node count has increased
@@ -260,7 +239,10 @@ class TestLibLarch(unittest.TestCase):
         node = DummyNode('temp')
         node.add_color('blue')
         #Do you see : we are modifying a child
-        self.assertNodeModifiedInviewExp(['0'], self.tree.add_node)(node,parent_id='0')
+        self.assertSignal(self.view, \
+                          'node-modified-inview', \
+                          self.tree.add_node, 1)(node,parent_id='0')
+        self.assert_(('0',[(0, )]) in self.recorded_signals['node-modified-inview'])
         #Node is blue
         self.assert_(viewblue.is_displayed('temp'))
         self.failIf(viewred.is_displayed('temp'))
@@ -286,7 +268,10 @@ class TestLibLarch(unittest.TestCase):
         all_nodes = self.view.get_all_nodes()
         self.assert_('0' in all_nodes)
         self.assert_('temp' in all_nodes)
-        self.assertNodeDeletedInviewExp(['0'], self.tree.del_node)('0')
+        self.assertSignal(self.view, \
+                          'node-deleted-inview', \
+                          self.tree.del_node, 1)('0')
+        self.assert_(('0',[(0, )]) in self.recorded_signals['node-deleted-inview'])
         all_nodes = self.view.get_all_nodes()
         self.failIf('0' in all_nodes)
         self.assert_('temp' in all_nodes)
@@ -502,10 +487,14 @@ class TestLibLarch(unittest.TestCase):
         all_nodes = self.view.get_all_nodes()
         self.assert_('0' in all_nodes)
         self.assert_('temp' in all_nodes)
-        #FIXME: luca, how can we check that both temp and 0 signals
-        #are sent ? (ploum)
-        self.assertNodeDeletedInviewExp(['temp'], self.tree.del_node)\
-                                                        ('0',recursive=True)
+        print "ploum, why so many signals are sent here?"
+        print "nothing before the deletion", self.recorded_signals['node-deleted-inview']
+        self.assertSignal(self.view, \
+                          'node-deleted-inview', \
+                          self.tree.del_node, 1)('0', recursive = True)
+        print "A lot of deleted signals", self.recorded_signals['node-deleted-inview']
+        self.assert_(('temp',[(0, 0)]) in self.recorded_signals['node-deleted-inview'])
+        self.assert_(('0',[(0,)]) in self.recorded_signals['node-deleted-inview'])
         all_nodes = self.view.get_all_nodes()
         self.failIf('0' in all_nodes)
         self.failIf('temp' in all_nodes)
@@ -565,8 +554,6 @@ class TestLibLarch(unittest.TestCase):
         self.assertSignal(self.view, \
                           'node-modified-inview', \
                           self.tree.add_parent, 1)('temp','1')
-#        This test doesn't make sense as temp is not modified but added/removed
-#        self.assert_(('temp',[(0,0),(1,0)]) in self.recorded_signals['node-modified-inview'])
         self.assert_(('1',[(1,)]) in self.recorded_signals['node-modified-inview'])
         self.assert_(view.node_has_child('1'))
         self.assert_('temp' in view.node_all_children('1'))
