@@ -706,12 +706,13 @@ class FilteredTree():
                     #We accept a root nod for n_paths == 0
                     if not (n_paths == 0 and len(cached['paths'][0]) == 1):
                         error += "we removed it from parent %s\n" %parent
-                        error += "paths/parents mismatch in %s (%s)" %(cached,n_paths)
+                        error += "paths/parents mismatch in %s (%s)\n" %(cached,n_paths)
+                        error += self.trace
                         raise Exception(error)
                 if len(cached['paths']) <= 0:
                     self.cache_nodes.pop(nid)
                 # 3. send the signal (it means that the state is valid)
-#                print "******** We delete %s from path %s" %(nid,str(p))
+                self.trace += "****** We delete %s from path %s\n" %(nid,str(p))
                 self.callback('deleted',nid,p)
                 # 4. update next_node  ( this is the trickiest point)
                 nexts.reverse()
@@ -730,7 +731,6 @@ class FilteredTree():
         #it should not be displayed, don't add it.
         if not newdis:
             return False
-        #1. Add the node
         if not paths:
             paths = self.__get_paths_for_node(nid)
             error += "%s got the paths %s\n" %(nid,paths)
@@ -740,6 +740,7 @@ class FilteredTree():
                 if pp in paths:
                     paths.remove(pp)
                     error += "path %s is already displayed. Not to add\n"%str(pp)
+                    self.trace += "we wont add path %s for %s\n" %(str(pp),nid)
             node_dic = self.cache_nodes[nid]
         else:
             #Not displayed, creating the node
@@ -755,8 +756,9 @@ class FilteredTree():
             #check that the path is free
             other = self.get_node_for_path(p)
             to_readd = None
-            if other:
-#                print "adding %s to path % but occupied by %s"%(nid,str(p),other)
+            if other and other != nid:
+                self.trace += "adding %s to path %s but occupied by %s\n"\
+                                                        %(nid,str(p),other)
                 to_readd = other
                 self.__delete_node(other)
             if p not in node_dic['paths']:
@@ -793,7 +795,7 @@ class FilteredTree():
                     error += "parent %s has children %s\n"%(par,pchildrens)
                     error += "parent paths are %s" %self.get_paths_for_node(par)
                 raise Exception(error)
-#            print "++++++ we add node %s to path %s" %(nid,str(p))
+            self.trace += " +++++ %s added to %s\n" %(nid,str(p))
             self.callback('added',nid,p)
             #3. Add the children
             children = self.__node_all_children(nid)
@@ -801,17 +803,17 @@ class FilteredTree():
             while i < len(children):
                 c = children[i]
                 #maybe the child already exists as a child of another node
-                if self.is_displayed(c):
-                    if nid not in self.cache_nodes[c]['parents']:
-                        self.cache_nodes[c]['parents'].append(nid)
-                    if c not in self.cache_nodes[nid]['children']:
-                        self.cache_nodes[nid]['children'].append(c)
-                    self.cache_nodes[c]['paths'] = self.__get_paths_for_node(c)
-#                print "we added %s to %s" %(c,nid)
-#                self.__update_node(c)
-                else:
-                    cpath = p + (i,)
-                    self.__add_node(c,[cpath])
+#                if self.is_displayed(c):
+#                    if nid not in self.cache_nodes[c]['parents']:
+#                        self.cache_nodes[c]['parents'].append(nid)
+#                    if c not in self.cache_nodes[nid]['children']:
+#                        self.cache_nodes[nid]['children'].append(c)
+#                    self.cache_nodes[c]['paths'] = self.__get_paths_for_node(c)
+###                print "we added %s to %s" %(c,nid)
+#                    self.__update_node(c)
+#                else:
+                cpath = p + (i,)
+                self.__add_node(c,[cpath])
                 i += 1
             if to_readd:
                 other_index = p[-1] + 1
