@@ -835,10 +835,10 @@ class TestLibLarch(unittest.TestCase):
         #now with a filter
         view.apply_filter('blue')
         self.assertEqual([],view.node_parents('temp'))
-        #if the node is not displayed, parents are None
+        #if the node is not displayed, asking for parents will raise an error
         view.unapply_filter('blue')
         view.apply_filter('red')
-        self.assertEqual(None,view.node_parents('temp'))
+        self.assertRaises(IndexError,view.node_parents,'temp')
         
 
     def test_viewtree_is_displayed(self):

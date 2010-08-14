@@ -662,9 +662,13 @@ class FilteredTree():
                 while i > 0:
                     i -= 1
                     cpath = p + (i,)
-                    if not cpath in self.get_paths_for_node(children[i]):
-                        raise Exception('%s should be in paths of' %str(cpath) +\
-                                        'children %s' %children[i])
+                    real_cpaths = self.get_paths_for_node(children[i])
+                    if not cpath in real_cpaths:
+                        error = "I'm in the process of deleting %s -%s\n" %(nid,str(p))
+                        error += "thus, I want to remove children %s\n" %children
+                        error += "but %s is not in paths of %s " %(str(cpath),children[i])
+                        error += "children paths are : %s" %real_cpaths
+                        raise Exception(error)
                     self.__delete_node(children[i],[cpath])
                 # 2. delete the node itself
                 if len(p) == 1:
@@ -679,9 +683,17 @@ class FilteredTree():
                 if parent:
                     cached['parents'].remove(parent)
                 cached['paths'].remove(p)
-                if len(cached['parents']) != len(cached['paths']):
-                    raise Exception('%s should have same number of' %cached+\
-                                    'parents and paths (node %s)' %nid)
+                #autochecking sanity
+                #the number of paths should be the number of parents paths
+                #If a parent has 2 paths -> chidren alse have 2
+                n_paths = 0
+                for cparent in cached['parents']:
+                    n_paths += len(self.get_paths_for_node(cparent))
+                if n_paths != len(cached['paths']):
+                    error = "We are in the process of deleting %s -%s\n" %(nid,str(p))
+                    error += "we removed it from parent %s\n" %parent
+                    error += "paths/parents mismatch in %s" %cached
+                    raise Exception(error)
                 if len(cached['paths']) <= 0:
                     self.cache_nodes.pop(nid)
                 # 3. send the signal (it means that the state is valid)
@@ -766,8 +778,10 @@ class FilteredTree():
                 c = children[i]
                 #maybe the child already exists as a child of another node
                 if self.is_displayed(c):
-                    self.cache_nodes[c]['parents'].append(nid)
-                    self.cache_nodes[nid]['children'].append(c)
+                    if nid not in self.cache_nodes[c]['parents']:
+                        self.cache_nodes[c]['parents'].append(nid)
+                    if c not in self.cache_nodes[nid]['children']:
+                        self.cache_nodes[nid]['children'].append(c)
                     self.cache_nodes[c]['paths'] = self.__get_paths_for_node(c)
 #                print "we added %s to %s" %(c,nid)
 #                self.__update_node(c)
