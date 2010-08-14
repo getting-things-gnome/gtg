@@ -611,6 +611,7 @@ class FilteredTree():
         for that path.
         The list is returned in reverse order (last next_node first)
         '''
+        print "nextnodes %s %s" %(nid,str(path))
         if len(path) >= 2:
             index = path[-1]
             parpath = path[:-1]
@@ -629,10 +630,11 @@ class FilteredTree():
         while i < len(par_child):
             c = par_child[i]
             cpath = parpath + (i,)
-            index += 1
+            i += 1
             if not cpath in self.get_paths_for_node(c):
                 raise Exception('%s should be in paths of node %s' %(cpath,c))
             nexts.append([c,cpath])
+            print nexts
         nexts.reverse()
         return nexts
         
@@ -646,6 +648,7 @@ class FilteredTree():
         3. Deleting the node itself.
         4. Re-adding all the next_nodes
         '''
+        print "delete_node %s %s" %(nid,str(paths))
         if self.is_displayed(nid): # and nid not in self.deleting_queue:
             self.deleting_queue.append(nid)
             if not paths:
@@ -660,8 +663,6 @@ class FilteredTree():
                     self.__delete_node(n[0],[n[1]])
                 children = self.node_all_children(nid)
                 i = len(children)
-#               print "deleting all the childrens of %s : %s" %(nid,children)
-#               print "queue is : %s" %self.deleting_queue
                 while i > 0:
                     i -= 1
                     cpath = p + (i,)
@@ -696,7 +697,7 @@ class FilteredTree():
                 # 4. update next_node  (PLOUM_DEBUG: this is the trickiest point)
                 nexts.reverse()
                 for n in nexts:
-                    self.__add_node(n)
+                    self.__add_node(n[0])
             self.deleting_queue.remove(nid)
             return True
         else:
