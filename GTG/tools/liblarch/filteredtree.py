@@ -207,16 +207,13 @@ class FilteredTree():
 #            print "# # # %s %s popped out" %(tid,action)
 #            print "       lis is %s" %self.__updating_queue
             if action == 'update':
+                self.trace += " - - External update of %s\n" %tid
                 self.__update_node(tid)
             elif action == 'delete':
+                self.trace += " - - External delete of %s\n" %tid
                 self.__delete_node(tid)
             elif action == 'add':
-                #we only add if parents are already displayed
-#                toadd = False
-#                for p in self.__node_parents(tid):
-#                    if self.is_displayed(p):
-#                        toadd =True
-#                if toadd:
+                self.trace += " - - External add of %s\n" %tid
                 self.__add_node(tid)
             else:
                 raise ValueError('%s in not a valid action for the loop') %action
@@ -651,7 +648,7 @@ class FilteredTree():
         if self.is_displayed(nid): # and nid not in self.deleting_queue:
             if not paths:
                 paths = self.get_paths_for_node(nid)
-            self.trace += "remove node %s from path %s\n" %(nid,str(paths))
+            self.trace += "      remove %s from path %s\n" %(nid,str(paths))
             #0. we first delete next_nodes, left first
             for p in paths:
                 error += "We are in the process of deleting %s %s\n" %(nid,str(p))
@@ -724,7 +721,7 @@ class FilteredTree():
     
     def __add_node(self,nid,paths=None):
         error = "Adding node %s to paths %s\n" %(nid,paths)
-        self.trace += error
+        self.trace += "      "+error
         #we only add node that really need it.
         curdis = self.is_displayed(nid)
         newdis = self.__is_displayed(nid)
@@ -740,7 +737,7 @@ class FilteredTree():
                 if pp in paths:
                     paths.remove(pp)
                     error += "path %s is already displayed. Not to add\n"%str(pp)
-                    self.trace += "we wont add path %s for %s\n" %(str(pp),nid)
+                    self.trace += "    we wont add path %s for %s\n" %(str(pp),nid)
             node_dic = self.cache_nodes[nid]
         else:
             #Not displayed, creating the node
@@ -757,7 +754,7 @@ class FilteredTree():
             other = self.get_node_for_path(p)
             to_readd = None
             if other and other != nid:
-                self.trace += "adding %s to path %s but occupied by %s\n"\
+                self.trace += "     adding %s to path %s but occupied by %s\n"\
                                                         %(nid,str(p),other)
                 to_readd = other
                 self.__delete_node(other)
@@ -839,9 +836,7 @@ class FilteredTree():
             to_add = []
             to_update = []
             for p in oldpaths:
-                if p in newpaths:
-                    to_update.append(p)
-                else:
+                if p not in newpaths:
                     to_remove.append(p)
             to_remove.sort()
             to_remove.reverse()
@@ -857,24 +852,14 @@ class FilteredTree():
                     error += "updating children %s\n" %c
                     self.__update_node(c)
                     
+            #updating newpaths
             newpaths = self.__get_paths_for_node(nid)
             error += "new newpaths are %s\n" %newpaths
-#            added_par = []
             for p in newpaths:
                 if p not in oldpaths:
-#                    shouldadd = True
-#                    #We also check if it's not a parent we already add
-#                    if len(p) > 1:
-#                        thispar = self.get_node_for_path(p[:-1])
-#                        if thispar in added_par:
-#                            shouldadd = False
-#                        else:
-#                            added_par.append(thispar)
-#                    if shouldadd:
                     to_add.append(p)
-                elif p not in to_update:
-                    error += '%s should be in paths to update'%str(p)
-                    raise Exception(error)
+                else:
+                    to_update.append(p)
             to_add.sort()
             error += "paths to_add are %s\n" %to_add
                     
@@ -900,6 +885,14 @@ class FilteredTree():
                 
             #and, eventually, updating unchanged paths
             for p in to_update:
+                self.trace += " ______ %s modified in %s\n" %(nid,str(p))
+                #autocheck
+                other = self.get_node_for_path(p)
+                if other != nid:
+                    error += "%s is supposed to be the path " %str(p) +\
+                             "of %s but it's the one of %s\n" %(nid,other)
+                    error += self.trace
+                    raise Exception(error)
                 self.callback("modified", nid,p)
             return True
         else:

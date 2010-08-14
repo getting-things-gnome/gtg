@@ -469,19 +469,19 @@ class TestLibLarch(unittest.TestCase):
         self.assert_('futur' in view.node_all_children('parent'))
         
     def test_move_node_to_a_multiple_parent(self):
-#        view = self.tree.get_viewtree(refresh=True)
+        view = self.tree.get_viewtree(refresh=True)
         node = self.tree.get_node('13')
         node3 = self.tree.get_node('3')
         node.add_parent('9')
         node.add_parent('10')
-        self.mainview.print_tree(string=False)
+#        self.mainview.print_tree(string=False)
         self.tree.del_node('3')
-        self.mainview.print_tree(string=False)
-#        self.tree.add(node3,parent_id='13')
-#        self.assertEqual(len(view.get_paths_for_node('3')),3)
-#        self.tree.del_node('3')
-#        self.tree.move_node('4','13')
-#        self.assertEqual(len(view.get_paths_for_node('4')),3)
+#        self.mainview.print_tree(string=False)
+        self.tree.add_node(node3,parent_id='13')
+        self.assertEqual(len(view.get_paths_for_node('3')),3)
+        self.tree.del_node('3')
+        self.tree.move_node('4','13')
+        self.assertEqual(len(view.get_paths_for_node('4')),3)
         
         
     def test_recursive_removing_parent(self):
