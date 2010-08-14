@@ -761,7 +761,9 @@ class FilteredTree():
             if p not in node_dic['paths']:
                 node_dic['paths'].append(p)
             else:
-                raise Exception('path %s was already in node %s'%(str(p),nid))
+                error += "%s is already cached for node %s\n" %(str(p),nid)
+                error += self.trace
+                raise Exception(error)
             if len(p) > 1:
                 parent = self.get_node_for_path(p[:-1])
                 if not self.is_displayed(parent):
