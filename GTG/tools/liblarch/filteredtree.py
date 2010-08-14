@@ -609,29 +609,37 @@ class FilteredTree():
         for that path.
         The list is returned in reverse order (last next_node first)
         '''
-#        print "nextnodes %s %s" %(nid,str(path))
+        error = "nextnodes %s %s\n" %(nid,str(path))
         if len(path) >= 2:
             index = path[-1]
             parpath = path[:-1]
             par = self.get_node_for_path(parpath)
             par_child = self.node_all_children(par)
+            error += "parent is %s and has child %s\n" %(par,par_child)
         elif len(path) == 1:
             index = path[0]
             parpath = ()
             par_child = list(self.cache_vr)
+            error += "we are using VR : %s\n" %par_child
         else:
-            raise ValueError('not path given for next_nodes of %s' %nid)
+            error += 'the path is empty !'
+            raise ValueError(error)
         if par_child[index] != nid:
-            raise ValueError('%s should be child %s in %s')%(nid,index,par_child)
+            error += '%s is index %s in children %s'%(nid,index,par_child)
+            raise ValueError(error)
         nexts = []
         i = index+1
         while i < len(par_child):
             c = par_child[i]
             cpath = parpath + (i,)
             i += 1
-            if not cpath in self.get_paths_for_node(c):
-                raise Exception('%s should be in paths of node %s' %(cpath,c))
+            cpaths = self.get_paths_for_node(c)
+            if not cpath in cpaths:
+                error += '%s should be in paths of node %s\n' %(cpath,c)
+                error += 'but paths are %s' %cpaths
+                raise Exception(error)
             nexts.append([c,cpath])
+            error += "nexts are now : %s\n" %nexts
         nexts.reverse()
         return nexts
         
@@ -818,6 +826,13 @@ class FilteredTree():
         
     
     def __update_node(self,nid):
+        '''to update a node, we:
+        1. take old and new paths
+        2. we remove all occurence that are in oldpaths and not in newpaths
+        3. we refresh newpaths to reflect the deletions.
+        4. We add the occurence in newpaths and not in oldpaths
+        5. we update nodes that are in both paths
+        '''
         error = " Updating node %s\n" %nid
         if self.is_displayed(nid):
             oldpaths = self.get_paths_for_node(nid)
