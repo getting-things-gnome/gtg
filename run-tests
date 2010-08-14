@@ -57,14 +57,14 @@ def main(args):
     #show the aggregated result of all the tests
     if tests_are_successful:
         print "ALL TESTS ARE SUCCESSFUL"
+        return 0
     else:
         print """
         ****************************************
         SOME TESTS *FAILED*!
         ****************************************
         """
-    return tests_are_successful
-
+        return 1
 
 if __name__ == '__main__':
     sys.exit(main(sys.argv[1:]))

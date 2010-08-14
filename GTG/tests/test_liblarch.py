@@ -488,6 +488,7 @@ class TestLibLarch(unittest.TestCase):
         self.assert_('0' in all_nodes)
         self.assert_('temp' in all_nodes)
         print "ploum, why so many signals are sent here?"
+        view.print_tree()
         print "nothing before the deletion", self.recorded_signals['node-deleted-inview']
         self.assertSignal(self.view, \
                           'node-deleted-inview', \
