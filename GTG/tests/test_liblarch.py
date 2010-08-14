@@ -961,10 +961,10 @@ class TestLibLarch(unittest.TestCase):
 
     #we copy/paste the test
     def test_flatleaves_filters(self):
-        view = self.tree.get_viewtree(refresh=False)
         """We apply a leaves + flat filter and the result
         should be the same as a simple leaf filter.
         """
+        view = self.tree.get_viewtree(refresh=False)
         view.apply_filter('flatleaves')
         total = self.red_nodes + self.blue_nodes
         self.assertEqual(total,view.get_n_nodes())
@@ -982,13 +982,13 @@ class TestLibLarch(unittest.TestCase):
     #green are stairs
     #the flat filter should make them flat
     def test_flat_filters(self):
-        view = self.tree.get_viewtree(refresh=False)
         """Test a flat filter.
         
         Green nodes are in "stairs" (each one being the child of another)
         By applying a filter with the flat properties, we test that
         all the nodes are now seen "flately".
         """
+        view = self.tree.get_viewtree(refresh=False)
         view.apply_filter('flatgreen')
         #all green nodes should be visibles
         self.assertEqual(self.green_nodes,view.get_n_nodes())
