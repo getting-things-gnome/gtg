@@ -298,8 +298,8 @@ class FilteredTree():
         else:
             #if the node is not displayed, we return None.
             #Maybe it's a bit hard to crash on that
-            toreturn = None
-#            raise IndexError('%s is not in the cache_nodes %s' %(tid,self.get_all_nodes()))
+#            toreturn = None
+            raise IndexError('%s is not in the cache_nodes %s' %(tid,self.get_all_nodes()))
         return toreturn
     
     
@@ -606,62 +606,97 @@ class FilteredTree():
         return result
         
 #################### Update the static state ################################
+    def __next_nodes(self,nid,path):
+        '''given a node and a path, return all the next nodes of that node
+        for that path.
+        The list is returned in reverse order (last next_node first)
+        '''
+        if len(path) >= 2:
+            index = path[-1]
+            parpath = path[:-1]
+            par = self.get_node_for_path(parpath)
+            par_child = self.node_all_children(par)
+        elif len(path) == 1:
+            index = path[0]
+            parpath = ()
+            par_child = list(self.cache_vr)
+        else:
+            raise ValueError('not path given for next_nodes of %s' %nid)
+        if par_child[index] != nid:
+            raise ValueError('%s should be child %s in %s')%(nid,index,par_child)
+        nexts = []
+        i = index+1
+        while i < len(par_child):
+            c = par_child[i]
+            cpath = parpath + (i,)
+            index += 1
+            if not cpath in self.get_paths_for_node(c):
+                raise Exception('%s should be in paths of node %s' %(cpath,c))
+            nexts.append([c,cpath])
+        nexts.reverse()
+        return nexts
         
         
-    def __delete_node(self,nid):
-        if self.is_displayed(nid) and nid not in self.deleting_queue:
+    def __delete_node(self,nid,paths=None):
+        '''Delete occurence of node nid for given paths.
+        if paths is None, then the node is removed for every paths it belongs to.
+        Deleting a node means :
+        1. Deleting all the next_nodes
+        2. Deleting all the children.
+        3. Deleting the node itself.
+        4. Re-adding all the next_nodes
+        '''
+        if self.is_displayed(nid): # and nid not in self.deleting_queue:
             self.deleting_queue.append(nid)
-#            print "remove node %s (queue: %s)" %(nid,self.deleting_queue)
-            def del_next(nid,chi):
-                index = chi.index(nid)
-                l = []
-                if len(chi) > index+1:
-                    l = chi[index+1:]
-                l.reverse
-#                print "deleting the next nodes of %s : %s" %(nid,l)
-#                print "queue is : %s" %self.deleting_queue
-                for n in l:
-                    self.__delete_node(n)
-                    to_readd.append(n)
-            # 1. recursively delete all children, left-leaf first
-            # and also delete all next_nodes (that we will readd afterward)
-            to_readd = []
-            if nid in self.cache_vr:
-                ch = list(self.cache_vr)
-                del_next(nid,ch)
-            else:
-                for p in self.node_parents(nid):
-                    ch = self.node_all_children(p)
-                    del_next(nid,ch)
-            children = self.node_all_children(nid)
-            oldpaths = self.get_paths_for_node(nid)
-            i = len(children)
-#            print "deleting all the childrens of %s : %s" %(nid,children)
-#            print "queue is : %s" %self.deleting_queue
-            while i > 0:
-                i -= 1
-                self.__delete_node(children[i])
-            # 2. delete the node itself
-            if nid in self.cache_vr:
-                self.cache_vr.remove(nid)
-            else:
-                parents = self.node_parents(nid)
-                if len(parents) <= 0:
-                    raise Exception('%s has no parents and is not in VR'%(nid))
-                for p in parents:
-                    p_dic = self.cache_nodes[p]['children']
-                    index = p_dic.index(nid)
+            if not paths:
+                paths = self.get_paths_for_node(nid)
+#            print "remove node %s from path %s" %(nid,str(paths))
+            #0. we first delete next_nodes, left first
+            for p in paths:
+                nexts = self.__next_nodes(nid,p)
+                # 1. recursively delete all children, left-leaf first
+                # and also delete all next_nodes (that we will readd afterward)
+                for n in nexts:
+                    self.__delete_node(n[0],[n[1]])
+                children = self.node_all_children(nid)
+                i = len(children)
+#               print "deleting all the childrens of %s : %s" %(nid,children)
+#               print "queue is : %s" %self.deleting_queue
+                while i > 0:
+                    i -= 1
+                    cpath = p + (i,)
+                    if not cpath in self.get_paths_for_node(children[i]):
+                        raise Exception('%s should be in paths of' %cpath +\
+                                        'children %s' %children[i])
+                    self.__delete_node(children[i],[cpath])
+                # 2. delete the node itself
+                if len(p) == 1:
+                    self.cache_vr.remove(nid)
+                    parent = None
+                else:
+                    parent = self.get_node_for_path(p[:-1])
+                    p_dic = self.cache_nodes[parent]['children']
+#                    index = p_dic.index(nid)
                     p_dic.remove(nid)
                     #PLOUM_DEBUG: we should update the remaining node, isn't it ?
     #                print "removing node %s from children of %s" %(nid,p)
     #                print "  -> we should update %s in children" %p_dic[index:]
-            self.cache_nodes.pop(nid)
-            # 3. send the signal (it means that the state is valid)
-            self.callback('deleted',nid,oldpaths)
-            # 4. update next_node  (PLOUM_DEBUG: this is the trickiest point)
-            to_readd.reverse()
-            for n in to_readd:
-                self.__add_node(n)
+                cached = self.cache_nodes[nid]
+                if parent:
+                    cached['parents'].remove(parent)
+                cached['paths'].remove(p)
+                if len(cached['parents']) != len(cached['paths']):
+                    raise Exception('%s should have same number of' %cached+\
+                                    'parents and paths (node %s)' %nid)
+                if len(cached['paths']) <= 0:
+                    self.cache_nodes.pop(nid)
+                # 3. send the signal (it means that the state is valid)
+                print "We delete %s from path %s" %(nid,str(p))
+                self.callback('deleted',nid,[p])
+                # 4. update next_node  (PLOUM_DEBUG: this is the trickiest point)
+                nexts.reverse()
+                for n in nexts:
+                    self.__add_node(n)
             self.deleting_queue.remove(nid)
             return True
         else:
@@ -720,6 +755,7 @@ class FilteredTree():
 #                self.print_tree()
                 raise Exception('we try to add %s on path %s' %(nid,str(p))+\
                                 'while it looks like it the path of %s' %other)
+        print "we add node %s to path %s" %(nid,str(newpaths))
         self.callback('added',nid,newpaths)
         #3. Add the children
         children = self.__node_all_children(nid)
@@ -767,6 +803,7 @@ class FilteredTree():
         the filter is changed (i.e. only filters_bank should call it).
         """
         #If we have only one flat filter, the result is flat
+        print " * * *  Start refilter * * *  *"
         self.__flat = False
         for f in self.applied_filters:
             filt = self.fbank.get_filter(f)
@@ -788,7 +825,7 @@ class FilteredTree():
             #only add root nodes (those who don't have parents)
             if self.__is_displayed(nid) and len(self.__node_parents(nid)) == 0:
                 self.__add_node(nid)
-        #print "*** end of refiltering ****"
+        print "*** end of refiltering ****"
         #self.print_tree()
 
     ####### Change filters #################
