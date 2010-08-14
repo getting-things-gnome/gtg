@@ -788,6 +788,7 @@ class FilteredTree():
                 for par in self.node_parents(nid):
                     pchildrens = self.node_all_children(par)
                     error += "parent %s has children %s\n"%(par,pchildrens)
+                    error += "parent paths are %s" %self.get_paths_for_node(par)
                 raise Exception(error)
 #            print "we add node %s to path %s" %(nid,str(p))
             self.callback('added',nid,p)
