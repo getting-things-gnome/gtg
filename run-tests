@@ -28,7 +28,7 @@ from GTG.tests import test_suite
 
 def main(args):
     runner = unittest.TextTestRunner(
-        stream=sys.stdout, descriptions=False, verbosity=1)
+        stream=sys.stdout, descriptions=False, verbosity=3)
     test = test_suite()
     result = runner.run(test)
     if result.wasSuccessful():
