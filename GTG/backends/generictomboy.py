@@ -29,6 +29,7 @@ import threading
 import uuid
 import dbus
 import datetime
+import unicodedata
 
 from GTG.tools.testingmode       import TestingMode
 from GTG.tools.borg              import Borg
@@ -98,7 +99,7 @@ class GenericTomboy(GenericBackend):
         '''
         with self.TomboyConnection(self, *self.BUS_ADDRESS) as tomboy:
             with self.DbusWatchdog(self):
-                tomboy_notes = [str(note_id) for note_id in \
+                tomboy_notes = [note_id for note_id in \
                                 tomboy.ListAllNotes()]
         #adding the new ones
         for note in tomboy_notes:
@@ -142,7 +143,6 @@ class GenericTomboy(GenericBackend):
         @param note: the id of the Tomboy note
         @param something: not used, here for signal callback compatibility
         '''
-        note = str(note)
         with self.datastore.get_backend_mutex():
             self.cancellation_point()
             try:
@@ -270,7 +270,7 @@ class GenericTomboy(GenericBackend):
                     title = task.get_title()
                     duplicate_counter = 1
                     with self.DbusWatchdog(self):
-                        note = str(tomboy.CreateNamedNote(title))
+                        note = tomboy.CreateNamedNote(title)
                         while note == "":
                             duplicate_counter += 1
                             note = tomboy.CreateNamedNote(title + "(%d)" %
@@ -322,7 +322,6 @@ class GenericTomboy(GenericBackend):
 
         @param note: the id of the Tomboy note
         '''
-        note = str(note)
         self.cancellation_point()
         #NOTE: we let some seconds pass before executing the real callback, as
         #      the editing of the Tomboy note may still be in progress
@@ -406,12 +405,12 @@ class GenericTomboy(GenericBackend):
         try:
             end_of_title = content.index('\n')
         except ValueError:
-            return content, ""
+            return content, unicode("")
         title = content[: end_of_title]
         if len(content) > end_of_title:
             return title, content[end_of_title +1 :]
         else:
-            return title, ""
+            return title, unicode("")
 
     def _populate_task(self, task, note):
         '''
@@ -437,7 +436,10 @@ class GenericTomboy(GenericBackend):
         for tag in new_tags_list:
             task.add_tag(tag)
         #extract title and text
-        [title, text] = self._tomboy_split_title_and_text(content)
+        [title, text] = self._tomboy_split_title_and_text(unicode(content))
+        #Tomboy speaks unicode, we don't
+        title = unicodedata.normalize('NFKD', title).encode('ascii', 'ignore')
+        text = unicodedata.normalize('NFKD', text).encode('ascii', 'ignore')
         task.set_title(title)
         task.set_text(text)
         task.add_remote_id(self.get_id(), note)
@@ -462,6 +464,9 @@ class GenericTomboy(GenericBackend):
         Proxy method for SyncEngine.break_relationship, which also saves the
         state of the synchronization.
         '''
+        #tomboy passes Dbus.String objects, which are not pickable. We convert
+        # those to unicode
+        kwargs["remote_id"] = unicode(kwargs["remote_id"])
         try:
             self.sync_engine.break_relationship(*args, **kwargs)
             #we try to save the state at each change in the sync_engine:
@@ -476,6 +481,10 @@ class GenericTomboy(GenericBackend):
         Proxy method for SyncEngine.break_relationship, which also saves the
         state of the synchronization.
         '''
+        #tomboy passes Dbus.String objects, which are not pickable. We convert
+        # those to unicode
+        kwargs["remote_id"] = unicode(kwargs["remote_id"])
+
         self.sync_engine.record_relationship(*args, **kwargs)
         #we try to save the state at each change in the sync_engine:
         #it's slower, but it should avoid widespread task
