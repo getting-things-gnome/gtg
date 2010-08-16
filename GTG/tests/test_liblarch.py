@@ -469,6 +469,9 @@ class TestLibLarch(unittest.TestCase):
         self.assert_('futur' in view.node_all_children('parent'))
         
     def test_more_late_child(self):
+        '''This one is trickier. We add a node with some children.
+        Then, we add later a new child between the existing children.
+        '''
         view = self.tree.get_viewtree(refresh=True)
         node = DummyNode('parent')
         node1 = DummyNode('futur1')

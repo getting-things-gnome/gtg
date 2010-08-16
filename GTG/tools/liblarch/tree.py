@@ -595,18 +595,21 @@ class TreeNode():
                 raise Exception('! could not add_child from thread %s' %t+\
                                 'should be %s' %self.thread)
         if id not in self.children:
+            #We put at the end not that are not yet in tree.
+            #it looks like it is not necessary
+#            newc = []
+#            nonloaded = []
+#            for c in self.children:
+#                if self.tree and self.tree.has_node(c):
+#                    newc.append(c)
+#                else:
+#                    nonloaded.append(c)
+#            newc.append(id)
+#            for n in nonloaded:
+#                newc.append(n)
+#            self.children = newc
             self.children.append(id)
-#            print "%%%% old  is %s" %self.children
-#            self.children.sort()
-#            print "%%%% new  is %s" %self.children
             toreturn = self.new_relationship(self.get_id(),id)
-            #The path for children might have changed
-#            if self.tree:
-#                print "modifying children of %s" %(self.id)
-#                for cid in self.children:
-#                    if cid != id:
-#                        self.tree.modify_node(cid)
-#            Log.debug("new relationship : %s" %toreturn)
         else:
             Log.debug("%s was already in children of %s" %(id,self.get_id()))
             toreturn = False
