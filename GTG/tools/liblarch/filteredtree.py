@@ -765,12 +765,14 @@ class FilteredTree():
         for p in paths:
             #check that the path is free
             other = self.get_node_for_path(p)
-            to_readd = None
+            to_readd = []
             if other and other != nid:
                 self.trace += "     adding %s to path %s but occupied by %s\n"\
                                                         %(nid,str(p),other)
-                to_readd = other
-                self.__delete_node(other,[p])
+                to_readd = self.__next_nodes(other,p)
+                to_readd.append([other,p])
+                for t in to_readd:
+                    self.__delete_node(t[0],[t[1]])
             if p not in node_dic['paths']:
                 node_dic['paths'].append(p)
             else:
@@ -833,10 +835,12 @@ class FilteredTree():
                 cpath = p + (i,)
                 self.__add_node(c,[cpath])
                 i += 1
-            if to_readd:
-                other_index = p[-1] + 1
-                opath = p[:-1] + (other_index,)
-                self.__add_node(to_readd,[opath])
+            to_readd.reverse()
+            for t in to_readd:
+                
+                other_index = t[1][-1] + 1
+                opath = t[1][:-1] + (other_index,)
+                self.__add_node(t[0],[opath])
         return True
         
     
