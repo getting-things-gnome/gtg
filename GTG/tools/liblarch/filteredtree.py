@@ -118,7 +118,7 @@ class FilteredTree():
         #counting optimisation
         self.counted_nodes = []
         self.count_cache = {}
-        self.trace = ''
+        self.trace = '\nDEBUG TRACE for ViewTree %s\n----------------\n\n'%self
         
         #an initial refilter is always needed if we don't apply a filter
         #for performance reason, we do it only if refresh = True
@@ -608,6 +608,10 @@ class FilteredTree():
             par = self.get_node_for_path(parpath)
             par_child = self.node_all_children(par)
             error += "parent is %s and has child %s\n" %(par,par_child)
+            if not par:
+                error += "There's no node for %s\n" %str(parpath)
+                error += self.trace
+                raise Exception(error)
         elif len(path) == 1:
             index = path[0]
             parpath = ()
@@ -799,7 +803,8 @@ class FilteredTree():
                 for par in self.node_parents(nid):
                     pchildrens = self.node_all_children(par)
                     error += "parent %s has children %s\n"%(par,pchildrens)
-                    error += "parent paths are %s" %self.get_paths_for_node(par)
+                    error += "parent paths are %s\n" %self.get_paths_for_node(par)
+                    error += self.trace
                 raise Exception(error)
             self.trace += " +++++ %s added to %s\n" %(nid,str(p))
             self.callback('added',nid,p)
@@ -818,6 +823,11 @@ class FilteredTree():
 ###                print "we added %s to %s" %(c,nid)
 #                    self.__update_node(c)
 #                else:
+#                If child is already at the root, we remove it first.
+#                if self.is_displayed(c):
+#                    for pp in self.get_paths_for_node(c):
+#                        if len(pp) == 1:
+#                            self.__delete_node(c,[pp])
                 cpath = p + (i,)
                 self.__add_node(c,[cpath])
                 i += 1
