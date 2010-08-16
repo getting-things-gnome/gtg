@@ -508,6 +508,8 @@ class FilteredTree():
                     while pos < max-1 and tid != child:
                         pos += 1
                         child = children[pos]
+#                        if tid != child and not self.is_displayed(child):
+#                            raise Exception('Child %s in not displayed'%child)
                     par_paths = self.__get_paths_for_node(par)
                     for par_path in par_paths:
                         path = par_path + (pos,)
@@ -768,7 +770,7 @@ class FilteredTree():
                 self.trace += "     adding %s to path %s but occupied by %s\n"\
                                                         %(nid,str(p),other)
                 to_readd = other
-                self.__delete_node(other)
+                self.__delete_node(other,[p])
             if p not in node_dic['paths']:
                 node_dic['paths'].append(p)
             else:

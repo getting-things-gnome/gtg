@@ -468,6 +468,26 @@ class TestLibLarch(unittest.TestCase):
         self.assert_(view.is_displayed('parent'))
         self.assert_('futur' in view.node_all_children('parent'))
         
+    def test_more_late_child(self):
+        view = self.tree.get_viewtree(refresh=True)
+        node = DummyNode('parent')
+        node1 = DummyNode('futur1')
+        node2 = DummyNode('futur2')
+        node3 = DummyNode('futur3')
+        node4 = DummyNode('futur4')
+        node.add_child('futur1')
+        node.add_child('futur2')
+        node.add_child('futur3')
+        node.add_child('futur4')
+        self.tree.add_node(node)
+        self.tree.add_node(node1)
+        #look, we miss the node 2 !
+        self.tree.add_node(node3)
+        self.tree.add_node(node4)
+        self.assertEqual(view.node_n_children('parent'),3)
+        self.tree.add_node(node2)
+        self.assertEqual(view.node_n_children('parent'),4)
+        
     def test_move_node_to_a_multiple_parent(self):
         view = self.tree.get_viewtree(refresh=True)
         node = self.tree.get_node('13')
