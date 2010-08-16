@@ -520,6 +520,8 @@ class FilteredTree():
                 #it happens sometimes when we remove a parent with children
                 raise Exception('ghost position for %s (par:%s) ' %(tid,pars) +\
                                 "VR : %s " %self.cache_vr)
+        if toreturn:
+            toreturn.sort()
         return toreturn
 
     
@@ -624,12 +626,14 @@ class FilteredTree():
             cpath = parpath + (i,)
             i += 1
             cpaths = self.get_paths_for_node(c)
-            if not cpath in cpaths:
-                error += '%s should be in paths of node %s\n' %(cpath,c)
-                error += 'but paths are %s\n' %cpaths
-#                error += self.print_tree(string=True)
-                raise Exception(error)
-            nexts.append([c,cpath])
+#            if not cpath in cpaths:
+#                error += '%s should be in paths of node %s\n' %(cpath,c)
+#                error += 'but paths are %s\n' %cpaths
+##                error += self.print_tree(string=True)
+##                raise Exception(error)
+            if cpath in cpaths:
+                nexts.append([c,cpath])
+            #else: it means that we have already deleted the next nodes
             error += "nexts are now : %s\n" %nexts
         nexts.reverse()
         return nexts
@@ -650,6 +654,8 @@ class FilteredTree():
                 paths = self.get_paths_for_node(nid)
             self.trace += "      remove %s from path %s\n" %(nid,str(paths))
             #0. we first delete next_nodes, left first
+            paths.sort()
+            paths.reverse()
             for p in paths:
                 error += "We are in the process of deleting %s %s\n" %(nid,str(p))
                 nexts = self.__next_nodes(nid,p)
@@ -665,10 +671,11 @@ class FilteredTree():
                     real_cpaths = self.get_paths_for_node(children[i])
                     if not cpath in real_cpaths:
                         error += "thus, I want to remove children %s\n" %children
-                        error += "but %s is not in paths of %s " %(str(cpath),children[i])
+                        error += "but %s is not in paths of %s\n " %(str(cpath),children[i])
                         error += "children paths are : %s" %real_cpaths
-                        raise Exception(error)
-                    self.__delete_node(children[i],[cpath])
+#                        raise Exception(error)
+                    else:
+                        self.__delete_node(children[i],[cpath])
                 # 2. delete the node itself
                 cached = self.cache_nodes[nid]
                 n_paths = 0
@@ -696,16 +703,16 @@ class FilteredTree():
                 #autochecking sanity
                 #the number of paths should be the number of parents paths
                 #If a parent has 2 paths -> chidren alse have 2
-                for cparent in cached['parents']:
-                    n_paths += len(self.get_paths_for_node(cparent))
-                    error += "parent %s has %s paths\n" %(cparent,n_paths)
-                if n_paths != len(cached['paths']):
-                    #We accept a root nod for n_paths == 0
-                    if not (n_paths == 0 and len(cached['paths'][0]) == 1):
-                        error += "we removed it from parent %s\n" %parent
-                        error += "paths/parents mismatch in %s (%s)\n" %(cached,n_paths)
-                        error += self.trace
-                        raise Exception(error)
+#                for cparent in cached['parents']:
+#                    n_paths += len(self.get_paths_for_node(cparent))
+#                    error += "parent %s has %s paths left\n" %(cparent,n_paths)
+#                if n_paths != len(cached['paths']):
+#                    #We accept a root nod for n_paths == 0
+#                    if not (n_paths == 0 and len(cached['paths'][0]) == 1):
+#                        error += "we removed it from parent %s\n" %parent
+#                        error += "paths/parents mismatch in %s (%s)\n" %(cached,n_paths)
+#                        error += self.trace
+#                        raise Exception(error)
                 if len(cached['paths']) <= 0:
                     self.cache_nodes.pop(nid)
                 # 3. send the signal (it means that the state is valid)
