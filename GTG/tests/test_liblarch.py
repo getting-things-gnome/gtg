@@ -1102,7 +1102,11 @@ class TestLibLarch(unittest.TestCase):
         self.tree.add_node(node)
         self.assertEqual(view.node_n_children('parent'),6)
         view.apply_filter('blue')
+        self.assertFalse(view.is_displayed('parent'))
         print view.print_tree(string=True)
+        node.add_color('blue')
+        self.assertEqual(view.node_n_children('parent'),6)
+        
 
         
 def test_suite():
