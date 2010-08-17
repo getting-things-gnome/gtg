@@ -55,7 +55,7 @@ from GTG.backends              import BackendFactory
 from GTG                import _
 from GTG.core           import CoreConfig
 from GTG.core.datastore import DataStore
-from GTG.gtk.crashhandler import signal_catcher
+#from GTG.gtk.crashhandler import signal_catcher
 from GTG.gtk.manager    import Manager
 from GTG.tools.logger   import Log
 
@@ -101,8 +101,11 @@ def main(options=None, args=None):
     #main loop
     #To be more user friendly and get the logs of crashes, we show an apport
     # hooked window upon crashes
-    with signal_catcher(manager.close_browser):
-        manager.main()
+    if options.no_crash_handler == False:
+        #FIXME: Why is this disabled?  Please comment when disabling functionality so we know. :-)
+        #with signal_catcher(manager.close_browser):
+        pass
+    manager.main(once_thru=options.boot_test)
     core_main_quit(config, ds)
 
 def core_main_init(options = None, args = None):
@@ -114,6 +117,7 @@ def core_main_init(options = None, args = None):
         Log.setLevel(logging.DEBUG)
         Log.debug("Debug output enabled.")
         Log.set_debugging_mode(True)
+
     config = CoreConfig()
     check_instance(config.get_data_dir())
     backends_list = BackendFactory().get_saved_backends_list()
@@ -122,9 +126,9 @@ def core_main_init(options = None, args = None):
     # Register backends 
     for backend_dic in backends_list:
         ds.register_backend(backend_dic)
-    #save directly the backends to be sure to write projects.xml
+    #save the backends directly to be sure projects.xml is written
     ds.save(quit = False)
-        
+    
     # Launch task browser
     req = ds.get_requester()
     return config, ds, req
@@ -134,7 +138,7 @@ def core_main_quit(config, ds):
     Last bits of code executed in GTG, after the UI has been shut off. 
     Currently, it's just saving everything.
     '''
-    # Ideally we should load window geometry configuration from a config.
+    # Ideally we should load window geometry configuration from a config
     # backend like gconf at some point, and restore the appearance of the
     # application as the user last exited it.
     #
