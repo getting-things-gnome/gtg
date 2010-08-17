@@ -79,7 +79,7 @@ import time
 from GTG.tools.logger import Log
 
 #PLOUM_DEBUG : COUNT_CACHING seems to be broken : write test to detect it
-DEBUG = False
+DEBUG = True
 #Edit dynamically a tag an you will see why it is broken
 COUNT_CACHING_ENABLED = True
 ## if FT doesn't use signals, it might be slower (but easier to debug)
@@ -656,13 +656,13 @@ class FilteredTree():
             index = path[-1]
             parpath = path[:-1]
             par = self.get_node_for_path(parpath)
-            par_child = self.node_all_children(par)
-            error += "parent is %s and has child %s\n" %(par,par_child)
             if not par:
                 error += "There's no node for %s\n" %str(parpath)
                 if DEBUG:
                     error += self.trace
                 raise Exception(error)
+            par_child = self.node_all_children(par)
+            error += "parent is %s and has child %s\n" %(par,par_child)
         elif len(path) == 1:
             index = path[0]
             parpath = ()

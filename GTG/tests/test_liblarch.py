@@ -888,7 +888,7 @@ class TestLibLarch(unittest.TestCase):
         self.tree.add_node(node,parent_id='0')
         self.assertEqual(['0'],view.node_parents('temp'))
         self.assertEqual(['0'],self.mainview.node_parents('temp'))
-        #adding a second parent
+        #adding a second node.add_child('0')parent
         self.tree.add_parent('temp','1')
         self.assertEqual(['0','1'],view.node_parents('temp'))
         self.assertEqual(['0','1'],self.mainview.node_parents('temp'))
@@ -1089,7 +1089,22 @@ class TestLibLarch(unittest.TestCase):
         view.apply_filter('leaf')
         view.unapply_filter('leaf')
         
-        #FIXME:  Appears unimplemented?
+    def test_torture(self):
+        view = self.tree.get_viewtree(refresh = True)
+        node = DummyNode('parent')
+        node.add_child('1')
+        node.add_child('3')
+        node.add_child('5')
+        node.add_child('7')
+        node.add_child('9')
+        node.add_child('11')
+        self.assertFalse(view.is_displayed('parent'))
+        self.tree.add_node(node)
+        self.assertEqual(view.node_n_children('parent'),6)
+        view.apply_filter('blue')
+        print view.print_tree(string=True)
+
+        
 def test_suite():
     return unittest.TestLoader().loadTestsFromName(__name__)
 
