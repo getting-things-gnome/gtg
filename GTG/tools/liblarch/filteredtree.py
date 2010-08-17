@@ -302,6 +302,12 @@ class FilteredTree():
             toreturn = [()]
         else:
             toreturn = []
+        if len(toreturn) > 1:
+            for t in toreturn:
+                if len(t) <= 1:
+                    error = "Cannot return paths %s for %s\n" %(toreturn,tid)
+                    error += "%s is in VR: %s" %(tid,tid in self.cache_vr)
+                    raise Exception(error)
         return toreturn
     
     def node_all_children(self,tid):
@@ -557,6 +563,13 @@ class FilteredTree():
                 #it happens sometimes when we remove a parent with children
                 raise Exception('ghost position for %s (par:%s) ' %(tid,pars) +\
                                 "VR : %s " %self.cache_vr)
+        #We cannot have a root path if there are other paths
+        if len(toreturn) > 1:
+            for t in toreturn:
+                if len(t) <= 1:
+                    error = 'Cannot have path %s for node %s'%(t,tid)
+                    error += "bcause paths are %s" %toreturn
+                    raise Exception(error)
         if toreturn:
             toreturn.sort()
         return toreturn
@@ -787,6 +800,9 @@ class FilteredTree():
                     if DEBUG:
                         self.trace += "    we wont add path %s for %s\n" %(str(pp),nid)
             node_dic = self.cache_nodes[nid]
+            #We remove the occurence at the root
+            if len(pp) == 1 and pp not in paths:
+                self.__delete_node(nid,[pp])
         else:
             #Not displayed, creating the node
             node_dic = {}
@@ -831,6 +847,8 @@ class FilteredTree():
                     if nid not in p_child:
                         p_child.append(nid)
                 else:
+                    #We only add to VR if there are no other paths !
+#                    if node_dic['paths'] == [p] and len(paths) ==1:
                     if nid not in self.cache_vr:
                         self.cache_vr.append(nid)
                     else:
