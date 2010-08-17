@@ -1077,16 +1077,17 @@ class TestLibLarch(unittest.TestCase):
     def test_view_signals(self):
         view = self.tree.get_viewtree(refresh = True)
         
-#    def test_update_callback(self):
-#        '''We test the update callbacks and we check that the path
-#            received is well corresponding to the nid received'''
-#        def check_path(nid,paths):
-#            print view
-#            print nid,paths
-#        view = self.tree.get_viewtree(refresh=False)
-#        view.register_cllbck('node-modified-inview',check_path)
-#        view.register_cllbck('node-added-inview',check_path)
-#        view.apply_filter('leaf')
+    def test_update_callback(self):
+        '''We test the update callbacks and we check that the path
+            received is well corresponding to the nid received'''
+        def check_path(nid,path):
+            self.assertEqual(view.get_node_for_path(path),nid)
+            self.assert_(path in view.get_paths_for_node(nid))
+        view = self.tree.get_viewtree(refresh=False)
+        view.register_cllbck('node-modified-inview',check_path)
+        view.register_cllbck('node-added-inview',check_path)
+        view.apply_filter('leaf')
+        view.unapply_filter('leaf')
         
         #FIXME:  Appears unimplemented?
 def test_suite():

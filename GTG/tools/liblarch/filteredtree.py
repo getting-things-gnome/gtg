@@ -223,7 +223,7 @@ class FilteredTree():
             else:
                 raise ValueError('%s in not a valid action for the loop') %action
             prof[1] += time.time() - t
-            self.print_profile()
+#            self.print_profile()
         self.__updating_lock = False
         
     def print_profile(self):
@@ -380,6 +380,17 @@ class FilteredTree():
             pa = path[1:]
             toreturn = self.__node_for_path(n1id,pa)
         else:
+            toreturn = None
+        #If the node doesn't have the computed path, ignore it
+        if toreturn and not self.is_displayed(toreturn):
+            #This case is not acceptable
+            error = "Getting node for path %s returns %s\n" %(str(path),toreturn)
+            error += "But 3 is not displayed.\n"
+            par = self.get_node_for_path(path[:-1])
+            childrens = self.cache_nodes[par]
+            error += "It should not be in childs %s of %s" %(par,childrens)
+            raise Exception(error)
+        elif toreturn and path not in self.get_paths_for_node(toreturn):
             toreturn = None
         return toreturn
 
@@ -706,38 +717,31 @@ class FilteredTree():
                     parent = None
                 else:
                     parent = self.get_node_for_path(p[:-1])
-                    p_dic = self.cache_nodes[parent]['children']
-                    #We remove the parent only if the parent has 
-                    #only one path left
-                    ppaths = self.get_paths_for_node(parent)
-                    if len(ppaths) == 1:
+                    p_dic = self.cache_nodes[parent]
+                    #We remove the parent if the node doesn't have
+                    #any other path related to this parent 
+                    removepar = True
+                    for pp in cached['paths']:
+                        if pp != p and pp[:-1] in p_dic['paths']:
+                            removepar = False
+                    if removepar:
                         cached['parents'].remove(parent)
-                        p_dic.remove(nid)
-                    elif len(ppaths) > 1:
-                        #if we don't remove the parent, we should have one
-                        #path less than all the parents paths
-                        n_paths -= 1
-                        error += "paths of parent %s are %s\n" %(parent,ppaths)
-                    else:
-                        raise Exception('cannot delete %s' %nid +\
-                                        'parent %s has no path' %parent)
+                        p_dic['children'].remove(nid)
                 cached['paths'].remove(p)
-                #autochecking sanity
-                #the number of paths should be the number of parents paths
-                #If a parent has 2 paths -> chidren alse have 2
-#                for cparent in cached['parents']:
-#                    n_paths += len(self.get_paths_for_node(cparent))
-#                    error += "parent %s has %s paths left\n" %(cparent,n_paths)
-#                if n_paths != len(cached['paths']):
-#                    #We accept a root nod for n_paths == 0
-#                    if not (n_paths == 0 and len(cached['paths'][0]) == 1):
-#                        error += "we removed it from parent %s\n" %parent
-#                        error += "paths/parents mismatch in %s (%s)\n" %(cached,n_paths)
-#                        error += self.trace
-#                        raise Exception(error)
+                #Now we remove the node if it doesn't have any path left
                 if len(cached['paths']) <= 0:
                     self.cache_nodes.pop(nid)
                 # 3. send the signal (it means that the state is valid)
+                #Autocheck
+                if p in self.get_paths_for_node(nid):
+                    error += "We should have removed %s of node %s\n" %(str(p),nid)
+                    error += self.trace
+                    raise Exception(error)
+                if nid == self.get_node_for_path(p):
+                    error += "%s should not be anymore at path %s\n" %(nid,str(p))
+                    error += "paths of %s are %s" %(nid,self.get_paths_for_node(nid))
+                    error += self.trace
+                    raise Exception(error)
                 self.trace += "****** We delete %s from path %s\n" %(nid,str(p))
                 self.callback('deleted',nid,p)
                 # 4. update next_node  ( this is the trickiest point)
