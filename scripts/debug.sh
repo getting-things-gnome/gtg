@@ -1,6 +1,6 @@
 #!/bin/bash
 
-args=""
+args="--no-crash-handler"
 set="default"
 norun=0
 profile=0
@@ -9,13 +9,14 @@ profile=0
 mkdir -p tmp
 
 # Interpret arguments
-while getopts dnps: o
+while getopts bdnps: o
 do  case "$o" in
-    d)   args="-d";;
+    b)   args="$args --boot-test";;
+    d)   args="$args -d";;
     n)   norun=1;;
     p)   profile=1;;
     s)   set="$OPTARG";;
-    [?]) echo >&2 "Usage: $0 [-s dataset] [-d] [-n] [-p]"
+    [?]) echo >&2 "Usage: $0 [-s dataset] [-b] [-d] [-n] [-p]"
          exit 1;;
     esac
 done
@@ -41,7 +42,7 @@ fi
 
 if [ $norun -eq 0 ]; then
     if [ $profile -eq 1 ]; then
-	python -m cProfile -o gtg.prof ./gtg
+	python -m cProfile -o gtg.prof ./gtg $args
     python ./scripts/profile_interpret.sh
     else
 	./gtg $args
