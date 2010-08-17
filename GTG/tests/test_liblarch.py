@@ -491,6 +491,30 @@ class TestLibLarch(unittest.TestCase):
         self.tree.add_node(node2)
         self.assertEqual(view.node_n_children('parent'),4)
         
+    def test_late_first_child(self):
+        '''Futur2 is the child of parent
+           Futur1 is both the child of parent and futur2
+           Futur1 will be added later, forcing a reorganization.
+        '''
+        view = self.tree.get_viewtree(refresh=True)
+        node = DummyNode('parent')
+        node1 = DummyNode('futur1')
+        node2 = DummyNode('futur2')
+        node.add_child('futur1')
+        node.add_child('futur2')
+        node2.add_child('futur1')
+        self.tree.add_node(node)
+        self.tree.add_node(node2)
+        #Look, we didn't add futur1
+        self.assertEqual(view.node_n_children('parent'),1)
+        self.assertEqual(view.node_n_children('futur2'),0)
+        self.assertFalse(view.is_displayed('futur1'))
+        #Now we add it !
+        self.tree.add_node(node1)
+        self.assertEqual(view.node_n_children('parent'),2)
+        self.assertEqual(view.node_n_children('futur2'),1)
+        self.assert_(view.is_displayed('futur1'))
+        
     def test_move_node_to_a_multiple_parent(self):
         view = self.tree.get_viewtree(refresh=True)
         node = self.tree.get_node('13')
