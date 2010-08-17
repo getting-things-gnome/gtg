@@ -79,6 +79,7 @@ import time
 from GTG.tools.logger import Log
 
 #PLOUM_DEBUG : COUNT_CACHING seems to be broken : write test to detect it
+DEBUG = False
 #Edit dynamically a tag an you will see why it is broken
 COUNT_CACHING_ENABLED = True
 ## if FT doesn't use signals, it might be slower (but easier to debug)
@@ -119,7 +120,8 @@ class FilteredTree():
         #counting optimisation
         self.counted_nodes = []
         self.count_cache = {}
-        self.trace = '\nDEBUG TRACE for ViewTree %s\n----------------\n\n'%self
+        if DEBUG:
+            self.trace = '\nDEBUG TRACE for ViewTree %s\n-------------\n\n'%self
         self.profile = {'add':[0,0],'delete':[0,0],'update':[0,0]}
         
         #an initial refilter is always needed if we don't apply a filter
@@ -212,13 +214,16 @@ class FilteredTree():
             prof[0] += 1
             t = time.time()
             if action == 'update':
-                self.trace += " - - External update of %s\n" %tid
+                if DEBUG:
+                    self.trace += " - - External update of %s\n" %tid
                 self.__update_node(tid)
             elif action == 'delete':
-                self.trace += " - - External delete of %s\n" %tid
+                if DEBUG:
+                    self.trace += " - - External delete of %s\n" %tid
                 self.__delete_node(tid)
             elif action == 'add':
-                self.trace += " - - External add of %s\n" %tid
+                if DEBUG:
+                    self.trace += " - - External add of %s\n" %tid
                 self.__add_node(tid)
             else:
                 raise ValueError('%s in not a valid action for the loop') %action
@@ -276,7 +281,8 @@ class FilteredTree():
         if not is_good:
             error = 'theres no path of level %s' %level +\
                             'for node %s - %s' %(nid,str(paths))
-            error += '\n\nDEBUG TRACE\n\n%s' %self.trace
+            if DEBUG:
+                error += '\n\nDEBUG TRACE\n\n%s' %self.trace
             raise Exception(error)
         if self.node_has_child(nid):
             nn = self.node_n_children(nid)
@@ -399,13 +405,15 @@ class FilteredTree():
             return basenode_id
         elif path[0] < self.node_n_children(basenode_id):
             if len(path) == 1:
-                return self.node_nth_child(basenode_id,path[0])
+                toreturn = self.node_nth_child(basenode_id,path[0])
+#                if toreturn and path0 not 
             else:
                 node_id = self.node_nth_child(basenode_id,path[0])
                 path = path[1:]
-                return self.__node_for_path(node_id, path)
+                toreturn = self.__node_for_path(node_id, path)
         else:
-            return None
+            toreturn = None
+        return toreturn
 
     #pid is used only if nid has multiple parents.
     #if pid is none, a random parent is used.
@@ -639,7 +647,8 @@ class FilteredTree():
             error += "parent is %s and has child %s\n" %(par,par_child)
             if not par:
                 error += "There's no node for %s\n" %str(parpath)
-                error += self.trace
+                if DEBUG:
+                    error += self.trace
                 raise Exception(error)
         elif len(path) == 1:
             index = path[0]
@@ -685,7 +694,8 @@ class FilteredTree():
         if self.is_displayed(nid): # and nid not in self.deleting_queue:
             if not paths:
                 paths = self.get_paths_for_node(nid)
-            self.trace += "      remove %s from path %s\n" %(nid,str(paths))
+            if DEBUG:
+                self.trace += "      remove %s from path %s\n" %(nid,str(paths))
             #0. we first delete next_nodes, left first
             paths.sort()
             paths.reverse()
@@ -735,14 +745,17 @@ class FilteredTree():
                 #Autocheck
                 if p in self.get_paths_for_node(nid):
                     error += "We should have removed %s of node %s\n" %(str(p),nid)
-                    error += self.trace
+                    if DEBUG:
+                        error += self.trace
                     raise Exception(error)
                 if nid == self.get_node_for_path(p):
                     error += "%s should not be anymore at path %s\n" %(nid,str(p))
                     error += "paths of %s are %s" %(nid,self.get_paths_for_node(nid))
-                    error += self.trace
+                    if DEBUG:
+                        error += self.trace
                     raise Exception(error)
-                self.trace += "****** We delete %s from path %s\n" %(nid,str(p))
+                if DEBUG:
+                    self.trace += "****** We delete %s from path %s\n" %(nid,str(p))
                 self.callback('deleted',nid,p)
                 # 4. update next_node  ( this is the trickiest point)
                 nexts.reverse()
@@ -754,7 +767,8 @@ class FilteredTree():
     
     def __add_node(self,nid,paths=None):
         error = "Adding node %s to paths %s\n" %(nid,paths)
-        self.trace += "      "+error
+        if DEBUG:
+            self.trace += "      "+error
         #we only add node that really need it.
         curdis = self.is_displayed(nid)
         newdis = self.__is_displayed(nid)
@@ -770,7 +784,8 @@ class FilteredTree():
                 if pp in paths:
                     paths.remove(pp)
                     error += "path %s is already displayed. Not to add\n"%str(pp)
-                    self.trace += "    we wont add path %s for %s\n" %(str(pp),nid)
+                    if DEBUG:
+                        self.trace += "    we wont add path %s for %s\n" %(str(pp),nid)
             node_dic = self.cache_nodes[nid]
         else:
             #Not displayed, creating the node
@@ -787,12 +802,20 @@ class FilteredTree():
             other = self.get_node_for_path(p)
             to_readd = []
             if other and other != nid:
-                self.trace += "     adding %s to path %s but occupied by %s\n"\
+                error += "     adding %s to path %s but occupied by %s\n"\
                                                         %(nid,str(p),other)
                 to_readd = self.__next_nodes(other,p)
                 to_readd.append([other,p])
                 for t in to_readd:
-                    self.__delete_node(t[0],[t[1]])
+                    ret = self.__delete_node(t[0])
+                    error += "%s was deleted : %s\n" %(t[0],ret)
+                    if self.cache_nodes.has_key(t[0]):
+                        error += "%s cached : %s\n" %(t[0],self.cache_nodes[t[0]])
+                        raise Exception(error)
+                    par = self.get_node_for_path(t[1][:-1])
+                    if t[0] in self.cache_nodes[par]['children']:
+                        error += "%s is still in %s childrens" %(t[0],par)
+                        raise Exception(error)
             if p not in node_dic['paths']:
                 #We do all the work only if the node doesn't already 
                 #has that path !
@@ -807,8 +830,6 @@ class FilteredTree():
                         node_dic['parents'].append(parent)
                     if nid not in p_child:
                         p_child.append(nid)
-#                    else:
-#                        raise Exception("%s was already in children of parent %s"%(nid,p))
                 else:
                     if nid not in self.cache_vr:
                         self.cache_vr.append(nid)
@@ -821,14 +842,16 @@ class FilteredTree():
                     error += 'we try to add %s on path %s\n' %(nid,str(p))
                     error += 'while it looks like it the path of %s\n' %other
                     error += 'cached = %s\n' %self.cache_nodes[nid]
-                    error += 'cached VR = %s\n' %self.cache_vr
+#                    error += 'cached VR = %s\n' %self.cache_vr
                     for par in self.node_parents(nid):
                         pchildrens = self.node_all_children(par)
                         error += "parent %s has children %s\n"%(par,pchildrens)
                         error += "parent paths are %s\n" %self.get_paths_for_node(par)
-                        error += self.trace
+                        if DEBUG:
+                            error += self.trace
                     raise Exception(error)
-                self.trace += " +++++ %s added to %s\n" %(nid,str(p))
+                if DEBUG:
+                    self.trace += " +++++ %s added to %s\n" %(nid,str(p))
                 self.callback('added',nid,p)
                 #3. Add the children
                 children = self.__node_all_children(nid)
@@ -928,13 +951,15 @@ class FilteredTree():
                 
             #and, eventually, updating unchanged paths
             for p in to_update:
-                self.trace += " ______ %s modified in %s\n" %(nid,str(p))
+                if DEBUG:
+                    self.trace += " ______ %s modified in %s\n" %(nid,str(p))
                 #autocheck
                 other = self.get_node_for_path(p)
                 if other != nid:
                     error += "%s is supposed to be the path " %str(p) +\
                              "of %s but it's the one of %s\n" %(nid,other)
-                    error += self.trace
+                    if DEBUG:
+                        error += self.trace
                     raise Exception(error)
                 self.callback("modified", nid,p)
             return True
