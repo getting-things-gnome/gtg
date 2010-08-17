@@ -74,6 +74,7 @@ bottom to top, with no horizontal communication at all between views.
 """
 import functools
 import threading
+import time
 
 from GTG.tools.logger import Log
 
@@ -119,6 +120,7 @@ class FilteredTree():
         self.counted_nodes = []
         self.count_cache = {}
         self.trace = '\nDEBUG TRACE for ViewTree %s\n----------------\n\n'%self
+        self.profile = {'add':[0,0],'delete':[0,0],'update':[0,0]}
         
         #an initial refilter is always needed if we don't apply a filter
         #for performance reason, we do it only if refresh = True
@@ -206,6 +208,9 @@ class FilteredTree():
             tid,action = self.__updating_queue.pop(0)
 #            print "# # # %s %s popped out" %(tid,action)
 #            print "       lis is %s" %self.__updating_queue
+            prof = self.profile[action]
+            prof[0] += 1
+            t = time.time()
             if action == 'update':
                 self.trace += " - - External update of %s\n" %tid
                 self.__update_node(tid)
@@ -217,7 +222,18 @@ class FilteredTree():
                 self.__add_node(tid)
             else:
                 raise ValueError('%s in not a valid action for the loop') %action
+            prof[1] += time.time() - t
+            self.print_profile()
         self.__updating_lock = False
+        
+    def print_profile(self):
+        print "*********%s *******" %self
+        for act in ['add','delete','update']:
+            pr = self.profile[act]
+            if pr[0] > 0:
+                mean = pr[1] / (pr[0]*1.0)
+                print "%s %s in %s s (%s mean)" %(pr[0],act,pr[1],mean)
+        print "**************************************"
         
 ################# Static cached Filtered Tree ##################
     # Basically, our we save statically our FT in cache_vr and cache_nodes
