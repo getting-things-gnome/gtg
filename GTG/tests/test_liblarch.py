@@ -1090,6 +1090,9 @@ class TestLibLarch(unittest.TestCase):
         view.unapply_filter('leaf')
         
     def test_torture(self):
+        '''This is a torture test, where we will do whatever
+        we want in random order.
+        '''
         view = self.tree.get_viewtree(refresh = True)
         node = DummyNode('parent')
         node.add_child('1')
