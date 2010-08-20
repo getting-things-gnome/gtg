@@ -155,13 +155,9 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkImageMenuItem" id="backends_mi">
-                        <property name="label">_Backends</property>
+                      <object class="GtkMenuItem" id="backends_mi">
+                        <property name="label">Backends</property>
                         <property name="visible">True</property>
-                        <property name="use_underline">True</property>
-                        <property name="image">image4</property>
-                        <property name="use_stock">False</property>
-                        <property name="accel_group">accelgroup1</property>
                         <signal name="activate" handler="on_edit_backends_activate"/>
                       </object>
                     </child>
