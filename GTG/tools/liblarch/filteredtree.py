@@ -716,28 +716,28 @@ class FilteredTree():
             if pars:
                 for p in pars:
                     ppaths = self.get_paths_for_node(p)
-                    nindex = self.cache_nodes[p]['childrens'].index(p)
+                    nindex = self.cache_nodes[p]['children'].index(p)
                     npaths = []
                     for pp in ppaths:
-                        npaths.append(pp + (nindex,)
+                        npaths.append(pp + (nindex,))
             else:
                 npaths = self.get_paths_for_node(nid)
                 pars = self.cache_nodes[nid]['parents']
             #We remove the node from the parents
-            for p in pars:
-                self.cache_nodes[p]['childrens'].remove(nid)
+            for p in list(pars):
+                self.cache_nodes[p]['children'].remove(nid)
                 #removing the parents
-                self.cache_nodes[nid]['parents'].remove(p)
+                pars.remove(p)
             #Now we remove the node if it is not displayed at all anymore
             if not self.__is_displayed(nid):
                 #We need childrens only if we delete totally the node
-                childrens = self.cache_vr[nid]['childrens']
+                childrens = self.cache_nodes[nid]['children']
                 for c in childrens:
                     self.cache_nodes[c]['parents'].remove(nid)
                     self.__update_node(c)
                 if nid in self.cache_vr:
-                    self.cache_vr.pop(nid)
-                    
+                    self.cache_vr.remove(nid)
+#                print "popping out %s" %nid
                 self.cache_nodes.pop(nid)
                 for pa in npaths:
                     self.callback('deleted',nid,pa)
@@ -749,11 +749,55 @@ class FilteredTree():
         if self.__is_displayed(nid):
             if not pars:
                 pars = self.__node_parents(nid)
+                
+            if not self.is_displayed(nid):
+                node_dic = {}
+                node_dic['parents'] = []
+                node_dic['children'] = []
+                self.cache_nodes[nid] = node_dic
+            else:
+                node_dic = self.cache_nodes[nid]
+                
+            for par in pars:
+                if not self.is_displayed(par):
+                    self.__add_node(par)
+                parnode = self.cache_nodes[par]
+                if nid not in parnode['children']:
+                    parnode['children'].append(nid)
+                if par not in node_dic['parents']:
+                    node_dic['parents'].append(par)
+            if len(node_dic['parents']) == 0:
+                if nid not in self.cache_vr:
+                    self.cache_vr.append(nid)
+            
+            for p in self.get_paths_for_node(nid):
+#                print "+++ adding %s to %s" %(nid,str(p))
+                self.callback('added',nid,p)
+            for child in self.__node_all_children(nid):
+                self.__add_node(child,pars=[nid])
             return True
         else:
             return False
     
-    def __update_node(self,nid,pid=None):
+    def __update_node(self,nid):
+        curdis = self.is_displayed(nid)
+        todis = self.__is_displayed(nid)
+        if curdis:
+            if todis:
+                node_dic = self.cache_nodes[nid]
+                if len(node_dic['parents']) == 0 and nid not in self.cache_vr:
+                    self.cache_vr.append(nid)
+                if len(node_dic['parents']) > 0 and nid in self.cache_vr:
+                    self.cache_vr.remove(nid)
+                for path in self.get_paths_for_node(nid):
+#                    print "updating %s for %s" %(nid,str(path))
+                    self.callback('updated',nid,path)
+            else:
+                self.__delete_node(nid)
+        elif not curdis and todis:
+            self.__add_node(nid)
+        else:
+            print "nothing to do for %s" %nid
         
         
 #    def __delete_node(self,nid,paths=None):
@@ -1063,10 +1107,26 @@ class FilteredTree():
         #First step, we empty the current tree as we will rebuild it
         #from scratch
         #we delete them left-leaf first !
-        pos = len(self.cache_vr)
-        while pos > 0:
-            pos -= 1
-            self.__delete_node(self.cache_vr[pos])
+#        pos = len(self.cache_vr)
+#        while pos > 0:
+#            pos -= 1
+#            self.__delete_node(self.cache_vr[pos])
+        while len(self.cache_nodes) > 0:
+            keys = self.cache_nodes.keys()
+            for k in keys:
+                if len(self.cache_nodes[k]['children']) == 0:
+                    self.__delete_node(k)
+                    if self.cache_nodes.has_key(k):
+                        for par in self.cache_nodes[k]['parents']:
+                            self.cache_nodes[par]['children'].remove(k)
+                        self.cache_nodes.pop(k)
+                    if k in self.cache_vr:
+                        self.cache_vr.remove(k)
+                else:
+                    for c in self.cache_nodes[k]['children']:
+                        if c not in self.cache_nodes.keys():
+                            error = "%s is still a child of %s\n" %(c,k)
+                            raise Exception(error)
         #The cache should now be empty
         if len(self.cache_nodes) >0:
             raise Exception('cache_nodes should be empty but %s'%self.cache_nodes)
@@ -1077,7 +1137,7 @@ class FilteredTree():
             if self.__is_displayed(nid) and len(self.__node_parents(nid)) == 0:
                 self.__add_node(nid)
 #        print "*** end of refiltering ****"
-        #self.print_tree()
+#        self.print_tree()
 
     ####### Change filters #################
     def apply_filter(self,filter_name,parameters=None,\
