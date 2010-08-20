@@ -295,6 +295,7 @@ class FilteredTree():
         return toprint
     
     def get_paths_for_node(self,nid):
+        error = "Get path for %s\n" %nid
         if not nid:
             return [()]
         toreturn = []
@@ -305,6 +306,9 @@ class FilteredTree():
                 toreturn.append((index,))
             else:
                 for p in pars:
+                    if nid not in self.cache_nodes[p]['children']:
+                        error += "%s not in children of %s" %(nid,p)
+                        raise Exception(error)
                     index = self.cache_nodes[p]['children'].index(nid)
                     for pp in self.get_paths_for_node(p):
                         mypath = pp + (index,)
@@ -716,7 +720,7 @@ class FilteredTree():
             if pars:
                 for p in pars:
                     ppaths = self.get_paths_for_node(p)
-                    nindex = self.cache_nodes[p]['children'].index(p)
+                    nindex = self.cache_nodes[p]['children'].index(nid)
                     npaths = []
                     for pp in ppaths:
                         npaths.append(pp + (nindex,))
@@ -782,10 +786,18 @@ class FilteredTree():
     def __update_node(self,nid):
         curdis = self.is_displayed(nid)
         todis = self.__is_displayed(nid)
+        error = "\n\n *** updating %s ****\n\n" %nid
         if curdis:
             if todis:
                 node_dic = self.cache_nodes[nid]
-                for ch in self.__node_all_children(nid):
+                new_children = self.__node_all_children(nid)
+                error += "Before the update : %s\n" %self.cache_nodes
+                #We remove uneeded childrens
+                for ch in list(node_dic['children']):
+                    if ch not in new_children:
+                        self.__delete_node(ch,pars=[nid])
+                #We add new childrens that were not there
+                for ch in new_children:
                     if ch not in node_dic['children']:
                         self.__add_node(ch,pars=[nid])
                         
@@ -793,6 +805,15 @@ class FilteredTree():
                     self.cache_vr.append(nid)
                 if len(node_dic['parents']) > 0 and nid in self.cache_vr:
                     self.cache_vr.remove(nid)
+                    
+                #DEBUG
+                error += "before signal : %s\n" %self.cache_nodes
+                for p in node_dic['parents']:
+                    if nid not in self.cache_nodes[p]['children']:
+                        error += "%s not in childrens of %s\n" %(nid,p)
+                        error += self.trace
+                        raise Exception(error)
+                    
                 for path in self.get_paths_for_node(nid):
 #                    print "updating %s for %s" %(nid,str(path))
                     self.callback('updated',nid,path)
@@ -800,8 +821,8 @@ class FilteredTree():
                 self.__delete_node(nid)
         elif not curdis and todis:
             self.__add_node(nid)
-        else:
-            print "nothing to do for %s" %nid
+#        else:
+#            print "nothing to do for %s" %nid
         
         
 #    def __delete_node(self,nid,paths=None):
