@@ -225,9 +225,9 @@ class BackendsTree(gtk.TreeView):
 
         @param backend_id: the id of the backend to select
         '''
+        selection = self.get_selection()
         if backend_id in self.backendid_to_iter:
             backend_iter = self.backendid_to_iter[backend_id]
-            selection = self.get_selection()
             if selection:
                 selection.select_iter(backend_iter)
         else:
@@ -236,7 +236,8 @@ class BackendsTree(gtk.TreeView):
                 self.on_select_row()
             else:
                 #If nothing is selected, we select the first entry
-                self.get_selection().select_path("0")
+                if selection:
+                    selection.select_path("0")
         self.dialog.on_backend_selected(self.get_selected_backend_id())
 
     def get_selected_backend_id(self):
