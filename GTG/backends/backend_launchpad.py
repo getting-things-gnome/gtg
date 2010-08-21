@@ -111,7 +111,6 @@ class Backend(PeriodicImportBackend):
             SERVICE_ROOT = STAGING_SERVICE_ROOT
         else:
             SERVICE_ROOT = EDGE_SERVICE_ROOT
-            SERVICE_ROOT = STAGING_SERVICE_ROOT
         try:
             self.cancellation_point()
             self.launchpad = Launchpad.login_anonymously(GTG_NAME, \
