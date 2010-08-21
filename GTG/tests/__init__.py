@@ -46,7 +46,7 @@ def test_suite():
 
     #Loading of the test files and adding to the TestSuite
     test_suite = unittest.TestSuite()
-    for module_name in [f[: -3] for f in test_files]:
+    for module_name in [f[:-3] for f in test_files]:
             #module loading
             module_path = TEST_MODULE_PREFIX + module_name
             module = __import__(module_path)
