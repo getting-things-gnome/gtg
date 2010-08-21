@@ -143,13 +143,14 @@ class Backend(PeriodicImportBackend):
         #Adding and updating
         for bug in my_bugs:
             self.cancellation_point()
-            with self.datastore.get_backend_mutex():
-                self._process_launchpad_bug(bug)
+            self._process_launchpad_bug(bug)
         #removing the old ones
         last_bug_list = self.sync_engine.get_all_remote()
         new_bug_list = [bug.self_link for bug in my_bugs]
         for bug_link in set(last_bug_list).difference(set(new_bug_list)):
             self.cancellation_point()
+            #we make sure that the other backends are not modifying the task
+            # set
             with self.datastore.get_backend_mutex():
                 tid = self.sync_engine.get_local_id(bug_link)
                 self.datastore.request_task_deletion(tid)
@@ -179,51 +180,51 @@ class Backend(PeriodicImportBackend):
                  self.datastore.has_task, lambda b: True)
         Log.debug("processing launchpad (%s)" % (action))
 
+        if action == None:
+            return
+
+        bug_dic = self._prefetch_bug_data(bug)
+        #for the rest of the function, no access to bug must be made, so
+        # that the time of blocking inside the with statements is short.
+        #To be sure of that, set bug to None
+        bug = None
+
         with self.datastore.get_backend_mutex():
             if action == SyncEngine.ADD:
                 tid = str(uuid.uuid4())
                 task = self.datastore.task_factory(tid)
-                self._populate_task(task, bug)
+                self._populate_task(task, bug_dic)
                 self.sync_engine.record_relationship(local_id = tid,\
-                            remote_id = str(bug.self_link), \
+                            remote_id = str(bug_dic['self_link']), \
                             meme = SyncMeme(\
                                         task.get_modified(), \
-                                        self._get_bug_modified_datetime(bug), \
+                                        bug_dic['modified'], \
                                         self.get_id()))
                 self.datastore.push_task(task)
-                self.save_state()
                 
             elif action == SyncEngine.UPDATE:
                 task = self.datastore.get_task(tid)
-                self._populate_task(task, bug)
-                meme = self.sync_engine.get_meme_from_remote_id(bug.self_link)
+                self._populate_task(task, bug_dic)
+                meme = self.sync_engine.get_meme_from_remote_id( \
+                                                    bug_dic['self_link'])
                 meme.set_local_last_modified(task.get_modified())
-                meme.set_remote_last_modified(self._get_bug_modified_datetime(bug))
-                self.save_state()
+                meme.set_remote_last_modified(bug_dic['modified'])
+        self.save_state()
 
-    def _populate_task(self, task, bug):
+    def _populate_task(self, task, bug_dic):
         '''
         Fills a GTG task with the data from a launchpad bug.
 
         @param task: a Task
-        @param bug: a launchpad bug
+        @param bug: a launchpad bug dictionary, generated with
+                    _prefetch_bug_data
         '''
-        #we fetch all the necessary info from the bug beforehand.
-        #If something bad happens, at least we haven't modified the task yet
-        # and we can terminate gracefully
-        title = bug.title
-        text = bug.description
-        new_tags = set(['@' + str(tag) for tag in bug.tags])
-        self_link = bug.self_link
-        #to enforce the aforementioned separation in fetching-data/modify-task
-        #we set bug to None
-        bug = None
-
-        if task.get_title() != title:
-            task.set_title(title)
-        if task.get_excerpt() != text:
-            task.set_text(text)
+        if task.get_title() != bug_dic['title']:
+            task.set_title(bug_dic['title'])
+        if task.get_excerpt() != bug_dic['text']:
+            task.set_text(bug_dic['text'])
         if self._parameters["import-bug-tags"]:
+            new_tags = set(['@' + str(tag) for tag in bug_dic['tags']])
             current_tags = set(task.get_tags_name())
             #remove the lost tags
             for tag in current_tags.difference(new_tags):
@@ -231,7 +232,7 @@ class Backend(PeriodicImportBackend):
             #add the new ones
             for tag in new_tags.difference(current_tags):
                 task.add_tag(tag)
-        task.add_remote_id(self.get_id(), self_link)
+        task.add_remote_id(self.get_id(), bug_dic['self_link'])
 
     def _get_bug_modified_datetime(self, bug):
         '''
@@ -244,4 +245,22 @@ class Backend(PeriodicImportBackend):
         return datetime.datetime.strptime(\
                 bug.date_last_updated.strftime("YYYY-MM-DDTHH:MM:SS.mmmmmm"),
                 "YYYY-MM-DDTHH:MM:SS.mmmmmm")
+
+    def _prefetch_bug_data(self, bug):
+        '''
+        We fetch all the necessary info that we need from the bug to populate a
+        task beforehand (these will be used in _populate_task).
+        This function takes a long time to complete (all access to bug data are 
+        requests on then net), but it can crash without having the state of the 
+        related task half-changed.
+
+        @param bug: a launchpad bug
+        @returns dict: a dictionary containing the relevant bug attributes
+        '''
+        return {'title': bug.title,
+                'text': bug.description,
+                'tags': bug.tags,
+                'self_link': bug.self_link,
+                'modified': self._get_bug_modified_datetime(bug),
+               }
 
