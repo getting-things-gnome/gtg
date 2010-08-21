@@ -45,19 +45,29 @@ class PeriodicImportBackend(GenericBackend):
           (in minutes)
     '''
 
+    def __init__(self, parameters):
+        super(PeriodicImportBackend, self).__init__(parameters)
+        self.running_iteration = False
+
     @interruptible
     def start_get_tasks(self):
         '''
         This function launches the first periodic import, and schedules the
         next ones.
         '''
-        try:
-            if self.import_timer:
-                self.import_timer.cancel()
-        except:
-            pass
-        self._start_get_tasks()
-        self.cancellation_point()
+        #if we're already importing, we skip this import cycle.
+        if not self.running_iteration:
+            try:
+                #if an iteration was scheduled, we cancel it
+                if self.import_timer:
+                    self.import_timer.cancel()
+            except:
+                pass
+            self.running_iteration = True
+            self._start_get_tasks()
+            self.running_iteration = False
+            self.cancellation_point()
+
         if self.is_enabled() == False:
             return
         self.import_timer = threading.Timer( \
