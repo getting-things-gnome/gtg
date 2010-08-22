@@ -165,7 +165,8 @@ class CustomInfoBar(gtk.InfoBar):
         interaction request
         '''
         title, description\
-                = getattr(self.backend, self.callback)("get_title")
+                = getattr(self.backend,
+                          self.callback)("get_ui_dialog_text")
         self.dialog = gtk.Window()#type = gtk.WINDOW_POPUP)
         self.dialog.set_title(title)
         self.dialog.set_transient_for(self.browser.window)
