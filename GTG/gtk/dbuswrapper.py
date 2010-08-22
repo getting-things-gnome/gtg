@@ -113,13 +113,13 @@ class DBusTaskWrapper(dbus.service.Object):
          filters_bank documentation for a list of stock filters.
         @return: List of ids
         """
-        tree = self.req.get_custom_tasks_tree()
+        tree = self.req.get_tasks_tree()
         for filter in filters:
             if filter[0] == '!':
                 tree.apply_filter(filter[1:], parameters={'negate': 1} )
             else:
                 tree.apply_filter(filter)
-        return tree.get_all_keys()
+        return tree.get_all_nodes()
 
     @dbus.service.method(BUSNAME, in_signature="as")
     def get_tasks_filtered(self, filters):
