@@ -100,7 +100,11 @@ class ImportTagsUI(gtk.VBox):
             tags = [GenericBackend.ALLTASKS_TAG]
         else:
             tags = self.tags_entry.get_text().split(",")
+            #stripping spaces
+            tags = map(lambda t: t.strip(), tags)
+            #removing empty tags
             tags = filter(lambda t: t, tags)
+
         self.backend.set_parameter(self.parameter_name, tags)
 
     def _refresh_textbox_state(self):
