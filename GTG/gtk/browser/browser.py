@@ -47,6 +47,7 @@ from GTG.tools.dates             import no_date,\
                                         FuzzyDate, \
                                         get_canonical_date
 from GTG.tools.logger            import Log
+from GTG.tools.tags              import extract_tags_from_text
 #from GTG.tools                   import clipboard
 
 
@@ -916,14 +917,8 @@ class TaskBrowser:
         if text:
             tags, notagonly = self.get_selected_tags()
             # Get tags in the title
-            #NOTE: the ?: tells regexp that the first one is 
-            # a non-capturing group, so it must not be returned
-            # to findall. http://www.amk.ca/python/howto/regex/regex.html
-            # ~~~~Invernizzi
-            for match in re.findall(r'(?:^|[\s])(@\w+)', text, re.UNICODE):
-                tags.append(GTG.core.tagstore.Tag(match, self.req))
-                # Remove the @
-                #text =text.replace(match,match[1:],1)
+            for tag_text in extract_tags_from_text(text):
+                tags.append(GTG.core.tagstore.Tag(tag_text, self.req))
             # Get attributes
             regexp = r'([\s]*)([\w-]+):([^\s]+)'
             for spaces, attribute, args in re.findall(regexp, text):
