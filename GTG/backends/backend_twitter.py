@@ -37,7 +37,8 @@ from GTG.backends.genericbackend        import GenericBackend
 from GTG.core                           import CoreConfig
 from GTG.backends.backendsignals        import BackendSignals
 from GTG.backends.periodicimportbackend import PeriodicImportBackend
-
+from GTG.backends.syncengine            import SyncEngine
+from GTG.tools.logger                   import Log
 
 
 class Backend(PeriodicImportBackend):
@@ -95,27 +96,27 @@ class Backend(PeriodicImportBackend):
         #loading the list of already imported tasks
         self.data_path = os.path.join('backends/twitter/', "tasks_dict-%s" %\
                                      self.get_id())
-        self.twitter_ids = self._load_pickled_file(self.data_path, \
-                             {"my-tweets": [], "replies": [], "direct": []})
+        self.sync_engine = self._load_pickled_file(self.data_path, \
+                                                   SyncEngine())
         #loading the parameters for oauth
         self.auth_path = os.path.join('backends/twitter/', "auth-%s" %\
                                      self.get_id())
         self.auth_params = self._load_pickled_file(self.auth_path, None)
+        self.authenticated  = False
+        self.authenticating = False
 
     def initialize(self):
         '''
         See GenericBackend for an explanation of this function.
         '''
         super(Backend, self).initialize()
-        self.authenticated  = False
-        self.authenticating = False
 
     def save_state(self):
         '''
         See GenericBackend for an explanation of this function.
         Saves the state of the synchronization.
         '''
-        self._store_pickled_file(self.data_path, self.twitter_ids)
+        self._store_pickled_file(self.data_path, self.sync_engine)
 
 ###############################################################################
 ### IMPORTING TWEETS ##########################################################
@@ -127,66 +128,63 @@ class Backend(PeriodicImportBackend):
         '''
         #abort if authentication is in progress or hasn't been done (in which
         # case, start it)
+        self.cancellation_point()
         if not self.authenticated:
             if not self.authenticating:
                 self._start_authentication()
             return
         #do the import
         if self._parameters["import-from-direct-messages"]:
-            self._import_tweets_list(self.api.direct_messages(), "direct")
+            for tweet in self.api.direct_messages():
+                self._process_tweet(tweet)
         if self._parameters["import-from-my-tweets"]:
-            self._import_tweets_list(self.api.user_timeline(), "my-tweets")
+            for tweet in self.api.user_timeline():
+                self._process_tweet(tweet)
         if self._parameters["import-from-replies"]:
-            self._import_tweets_list(self.api.mentions(), "replies")
+            for tweet in self.api.mentions():
+                self._process_tweet(tweet)
 
-    def _import_tweets_list(self, tweets_list, tweet_type):
+    def _process_tweet(self, tweet):
         '''
-        Given a list of tweets, checks if a task representing them must be
+        Given a tweet, checks if a task representing it must be
         created in GTG and, if so, it creates it.
 
-        @param tweets_list: a list of twitter messages
-        @param tweet_type: a string with the type of the messages being
-                           imported. This is used only because we update the
-                           list self.twitter_ids[tweet_type] to store only the
-                           tweets that are currently seen by the tweety library
-                           (last 100 tweets? something similar). This way, we
-                           avoid memory leaks over long periods.
+        @param tweet: a tweet.
         '''
-        new_ids = []
-        for message in tweets_list:
-            message_id = str(message.id)
-            new_ids.append(message_id)
-
-            #if it's not tagged or we have already imported it, we skip it
-            if message_id in self.twitter_ids[tweet_type]:
-                continue
-            
-            #we check if the tweet should be imported (if not, we skip it)
-            importable = False
-            if CoreConfig.ALLTASKS_TAG in self._parameters["import-tags"]:
-                importable = True
-            else:
-                text = message.text.lower()
-                for tag in self._parameters["import-tags"]:
-                    if tag in text:
-                        importable = True
-                        break
-            if importable == False:
-                continue
-
-            #we import the tweet
-            task = self.datastore.task_factory(uuid.uuid4())
-            self._populate_task(task, message)
+        self.cancellation_point()
+        tweet_id = str(tweet.id)
+        is_syncable = self._is_tweet_syncable(tweet)
+        #the "lambda" is because we don't consider tweets deletion (to be
+        # faster)
+        action, tid = self.sync_engine.analyze_remote_id(\
+                                        tweet_id, \
+                                        self.datastore.has_task, \
+                                        lambda tweet_id: True, \
+                                        is_syncable)
+        Log.debug("processing tweet (%s, %s)" % (action, is_syncable))
+        
+        self.cancellation_point()
+        if action == None or action == SyncEngine.UPDATE:
+            return
+        
+        elif action == SyncEngine.ADD:
+            tid = str(uuid.uuid4())
+            task = self.datastore.task_factory(tid)
+            self._populate_task(task, tweet)
+            #we care only to add tweets and if the list of tags which must be
+            #imported changes (lost-syncability can happen). Thus, we don't
+            # care about SyncMeme(s)
+            self.sync_engine.record_relationship(local_id = tid,\
+                                     remote_id = tweet_id, \
+                                     meme = None)
             self.datastore.push_task(task)
-            #we keep up to date the twitter_ids list, in case something goes
-            #wrong
-            self.twitter_ids[tweet_type].append(message_id)
-            #store the state of the synchronization to file
-            self.save_state()
 
-        #everything went well. We substitute the old twitter_ids list with the
-        #new one, thus removing tweets that have gone out of scope of the api
-        self.twitter_ids[tweet_type] = new_ids
+        elif action == SyncEngine.LOST_SYNCABILITY:
+            self.sync_engine.break_relationship(remote_id = tweet_id)
+            self.datastore.request_task_deletion(tid)
+
+        self.save_state()
+
 
     def _populate_task(self, task, message):
         '''
@@ -211,9 +209,8 @@ class Backend(PeriodicImportBackend):
             text = text[:g.start()] + '@' + text[g.start() + 1:]
         #add tags objects (it's not enough to have @tag in the text to add a
         # tag
-        matches = re.finditer("(?<![^|\s])(@\w+)", text)
-        for g in matches:
-            task.add_tag(text[g.start() : g.end()])
+        for tag in self._extract_tags_from_text(text):
+            task.add_tag(tag)
 
         split_text = text.split(",", 1)
         task.set_title(split_text[0])
@@ -221,6 +218,28 @@ class Backend(PeriodicImportBackend):
             task.set_text(split_text[1])
 
         task.add_remote_id(self.get_id(), str(message.id))
+
+    def _is_tweet_syncable(self, tweet):
+        '''
+        Returns True if the given tweet matches the user-specified tags to be
+        synced
+
+        @param tweet: a tweet
+        '''
+        if CoreConfig.ALLTASKS_TAG in self._parameters["import-tags"]:
+            return True
+        else:
+            tags = set(Backend._extract_tags_from_text(tweet.text))
+            return tags.intersection(set(self._parameters["import-tags"])) \
+                    != set()
+    
+    @staticmethod
+    def _extract_tags_from_text(text):
+        '''
+        Given a string, returns a list of @tags and #hashtags
+        '''
+        return list(re.findall(r'(?:^|[\s])((?:#|@)\w+)', text))
+        
 
 ###############################################################################
 ### AUTHENTICATION ############################################################
@@ -231,7 +250,8 @@ class Backend(PeriodicImportBackend):
         Fist step of authentication: opening the browser with the oauth page
         '''
 
-        #NOTE: just found out that tweepy works with identi.ca.
+        #NOTE: just found out that tweepy works with identi.ca (update:
+        #      currently broken!).
         #      However, twitter is moving to oauth only authentication, while
         #      identica uses standard login. For now, I'll keep the backends
         #      separate, using two different libraries (Invernizzi)
@@ -240,6 +260,7 @@ class Backend(PeriodicImportBackend):
                 #secure=True)
         self.auth = tweepy.OAuthHandler(self.CONSUMER_KEY, \
                                         self.CONSUMER_SECRET)
+        self.cancellation_point()
         if self.auth_params == None:
             #no previous contact with the server has been made: no stored
             # oauth token found
@@ -253,12 +274,14 @@ class Backend(PeriodicImportBackend):
                 "on_authentication_step")
         else:
             #we have gone through authentication successfully before.
+            self.cancellation_point()
             try:
                 self.auth.set_access_token(self.auth_params[0],\
                                        self.auth_params[1])
             except tweepy.TweepError, e:
                 self._on_auth_error(e)
                 return
+            self.cancellation_point()
             self._end_authentication()
 
     def on_authentication_step(self, step_type = "", pin = ""):
@@ -291,9 +314,11 @@ class Backend(PeriodicImportBackend):
         importing tweets
         '''
         self.authenticated = True
+        self.authenticating = False
         self.api = tweepy.API(auth_handler = self.auth, \
                               secure = True, \
                               retry_count = 3)
+        self.cancellation_point()
         self.start_get_tasks()
 
     def _on_auth_error(self, exception):
