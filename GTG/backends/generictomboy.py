@@ -24,7 +24,6 @@ Contains the Backend class for both Tomboy and Gnote
 #    qdbus org.gnome.Tomboy /org/gnome/Tomboy/RemoteControl
 
 import os
-import re
 import threading
 import uuid
 import dbus
@@ -39,6 +38,7 @@ from GTG.backends.syncengine     import SyncEngine, SyncMeme
 from GTG.tools.logger            import Log
 from GTG.tools.watchdog          import Watchdog
 from GTG.tools.interruptible     import interruptible
+from GTG.tools.tags              import extract_tags_from_text
 
 
 
@@ -425,8 +425,7 @@ class GenericTomboy(GenericBackend):
             with self.DbusWatchdog(self):
                 content = tomboy.GetNoteContents(note)
         #update the tags list
-        matches = re.finditer("(?<![^|\s])(@\w+)", content)
-        new_tags_list = [content[g.start() : g.end()] for g in matches]
+        new_tags_list = extract_tags_from_text(content)
         for tag in task.get_tags_name():
             try:
                 new_tags_list.remove(tag)
