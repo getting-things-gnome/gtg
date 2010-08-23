@@ -138,7 +138,8 @@ class TaskBrowser:
         #Expand all the tasks in the taskview
         self.task_tv.expand_all()
         self.on_select_tag()
-        self.window.show()
+
+        self.window.hide()
 
 ### INIT HELPER FUNCTIONS #####################################################
 #
