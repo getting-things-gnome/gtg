@@ -54,7 +54,7 @@ class Backend(PeriodicImportBackend):
         GenericBackend.BACKEND_AUTHORS:    ["Luca Invernizzi"], \
         GenericBackend.BACKEND_TYPE:       GenericBackend.TYPE_IMPORT, \
         GenericBackend.BACKEND_DESCRIPTION: \
-            _("Imports your twitter  messages into your GTG  " + \
+            _("Imports your twitter  messages into your GTG " + \
               "tasks. You can choose to either import all your " + \
               "messages or just those with a set of hash tags. \n" + \
               "The message will be interpreted following this" + \
@@ -105,12 +105,6 @@ class Backend(PeriodicImportBackend):
         self.authenticated  = False
         self.authenticating = False
 
-    def initialize(self):
-        '''
-        See GenericBackend for an explanation of this function.
-        '''
-        super(Backend, self).initialize()
-
     def save_state(self):
         '''
         See GenericBackend for an explanation of this function.
@@ -133,16 +127,17 @@ class Backend(PeriodicImportBackend):
             if not self.authenticating:
                 self._start_authentication()
             return
-        #do the import
+        #select what to import
+        tweets_to_import = []
         if self._parameters["import-from-direct-messages"]:
-            for tweet in self.api.direct_messages():
-                self._process_tweet(tweet)
+            tweets_to_import += self.api.direct_messages()
         if self._parameters["import-from-my-tweets"]:
-            for tweet in self.api.user_timeline():
-                self._process_tweet(tweet)
+            tweets_to_import += self.api.user_timeline()
         if self._parameters["import-from-replies"]:
-            for tweet in self.api.mentions():
-                self._process_tweet(tweet)
+            tweets_to_import += self.api.mentions()
+        #do the import
+        for tweet in tweets_to_import:
+            self._process_tweet(tweet)
 
     def _process_tweet(self, tweet):
         '''
@@ -239,7 +234,6 @@ class Backend(PeriodicImportBackend):
         Given a string, returns a list of @tags and #hashtags
         '''
         return list(re.findall(r'(?:^|[\s])((?:#|@)\w+)', text))
-        
 
 ###############################################################################
 ### AUTHENTICATION ############################################################
