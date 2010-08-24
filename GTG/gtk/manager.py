@@ -40,6 +40,7 @@ from GTG.core.plugins.engine import PluginEngine
 from GTG.core.plugins.api    import PluginAPI
 from GTG.tools.logger        import Log
 from GTG.gtk.backends_dialog import BackendsDialog
+from GTG.backends.backendsignals import BackendSignals
 
 
 
@@ -59,6 +60,7 @@ class Manager(object):
                                  # right now
                                  
         self.browser = None
+        self.gtk_terminate = False #if true, the gtk main is not started
         self.pengine = None
         self.plugins = None
         self.plugin_api = None
@@ -66,11 +68,9 @@ class Manager(object):
                                  
         #Shared clipboard
         self.clipboard = clipboard.TaskClipboard(self.req)
-        
-        #Browser
-        #FIXME : the browser should not be built by default and should be a 
-        # window like another and not necessary (like the editor)
-        self.open_browser()
+
+        #Browser (still hidden)
+        self.browser = TaskBrowser(self.req, self, self.config)
         
         #Plugins (that needs to be after the browser, this is ugly)
         self.__init_plugin_engine()
@@ -127,9 +127,8 @@ class Manager(object):
     ############## Browser #################################################
 
     def open_browser(self):
-        if not self.browser:
-            self.browser = TaskBrowser(self.req, self, self.config)
         Log.debug("Browser is open")
+        self.browser.show()
 
     #FIXME : the browser should not be the center of the universe.
     # In fact, we should build a system where view can register themselves
@@ -192,9 +191,17 @@ class Manager(object):
                 #else, it close_task would be called once again 
                 #by editor.close
                 editor.close()
-#        else:
-            #FIXME: this one should be a debug statement
-#            print "the %s editor was already unregistered" %tid
+        self.check_quit_condition()
+
+    def check_quit_condition(self):
+        '''
+        checking if we need to shut down the whole GTG (if no window is open)
+        '''
+        if not self.is_browser_visible() and not self.opened_task:
+            #no need to live
+            print "AAAAAAAAAAA"
+            self.quit()
+        print self.opened_task
             
 ################ Others dialog ############################################
 
@@ -221,18 +228,40 @@ class Manager(object):
             for t in tids:
                 if t in self.opened_task:
                     self.close_task(t)
+
+### URIS ###################################################################
+
+    def open_uri_list(self, unused, uri_list):
+        '''
+        Open the Editor windows of the tasks associated with the uris given.
+        Uris are of the form gtg://<taskid>
+        '''
+        print self.req.get_all_tasks_list()
+        for uri in uri_list:
+            if uri.startswith("gtg://"):
+                self.open_task(uri[6:])
+        #if no window was opened, we just quit
+        self.check_quit_condition()
+
             
 ### MAIN ###################################################################
 
     def main(self, once_thru = False,  uri_list = []):
-        for uri in uri_list:
-            if uri.startswith("gtg://"):
-                self.open_task(uri[6:])
-        gobject.threads_init()
-        if once_thru:
-            gtk.main_iteration()
+        if uri_list:
+            #before opening the requested tasks, we make sure that all of them
+            #are loaded.
+            BackendSignals().connect('default-backend-loaded',
+                                     self.open_uri_list,
+                                     uri_list)
         else:
-            gtk.main()
+            self.open_browser()
+        
+        gobject.threads_init()
+        if not self.gtk_terminate:
+            if once_thru:
+                gtk.main_iteration()
+            else:
+                gtk.main()
         return 0
         
     def quit(self,sender=None):
