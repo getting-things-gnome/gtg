@@ -48,6 +48,7 @@ class PeriodicImportBackend(GenericBackend):
     def __init__(self, parameters):
         super(PeriodicImportBackend, self).__init__(parameters)
         self.running_iteration = False
+        self.urgent_iteration = False
 
     @interruptible
     def start_get_tasks(self):
@@ -55,7 +56,9 @@ class PeriodicImportBackend(GenericBackend):
         This function launches the first periodic import, and schedules the
         next ones.
         '''
-        #if we're already importing, we skip this import cycle.
+        self.cancellation_point()
+        #if we're already importing, we queue a "urgent" import cycle after this
+        #one. The feeling of responsiveness of the backend is improved.
         if not self.running_iteration:
             try:
                 #if an iteration was scheduled, we cancel it
@@ -63,17 +66,31 @@ class PeriodicImportBackend(GenericBackend):
                     self.import_timer.cancel()
             except:
                 pass
+            if self.is_enabled() == False:
+                return
+            
+            #we schedule the next iteration, just in case this one fails
+            if not self.urgent_iteration:
+                self.import_timer = threading.Timer( \
+                                    self._parameters['period'] * 60.0, \
+                                    self.start_get_tasks)
+                self.import_timer.start()
+
+            #execute the iteration
             self.running_iteration = True
             self._start_get_tasks()
             self.running_iteration = False
             self.cancellation_point()
+            
+            #execute eventual urgent iteration
+            #NOTE: this way, if the iteration fails, the whole periodic import
+            #      cycle fails.
+            if self.urgent_iteration:
+                self.urgent_iteration = False
+                self.start_get_tasks()
+        else:
+            self.urgent_iteration = True
 
-        if self.is_enabled() == False:
-            return
-        self.import_timer = threading.Timer( \
-                                self._parameters['period'] * 60.0, \
-                                self.start_get_tasks)
-        self.import_timer.start()
 
     def _start_get_tasks(self):
         '''
