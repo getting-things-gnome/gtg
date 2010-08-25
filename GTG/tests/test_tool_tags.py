@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
 # Gettings Things Gnome! - a personal organizer for the GNOME desktop
@@ -18,24 +17,40 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-"""Runs the GTG unit tests."""
+'''
+Tests for the tags utilities
+'''
 
-import sys
 import unittest
 
-from GTG.tests import test_suite
+from GTG.tools.tags import *
 
 
-def main(args):
-    runner = unittest.TextTestRunner(
-        stream=sys.stdout, descriptions=False, verbosity=3)
-    test = test_suite()
-    result = runner.run(test)
-    if result.wasSuccessful():
-        return 0
-    else:
-        return 1
+
+class TestTagsUtils(unittest.TestCase):
+    '''
+    Tests for the tags utilities
+    '''
+    
+    def test_extract_tags_from_text(self):
+        '''
+        Test for extracting tags from a string
+        '''
+        tests = (\
+                 ("@mamma mia", ["@mamma"]),
+                 ("vive le @roy", ["@roy"]),
+                 ("hey @mr. jack!", ["@mr"]),
+                 ("no @emails allowed: invernizzi.l@gmail.com", ["@emails"]),
+                 ("and no @@diff stuff", []),
+                 ("@we @do @love @tags!", ["@we", "@do", "@love", "@tags"]),
+                )
+        for text, tags in tests:
+            self.assertEqual(extract_tags_from_text(text), tags)
 
 
-if __name__ == '__main__':
-    sys.exit(main(sys.argv[1:]))
+
+
+
+def test_suite():
+    return unittest.TestLoader().loadTestsFromTestCase(TestTagsUtils)
+
