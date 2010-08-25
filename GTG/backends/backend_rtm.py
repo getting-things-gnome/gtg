@@ -22,7 +22,9 @@ Remember the milk backend
 '''
 
 import os
+import cgi
 import uuid
+import time
 import threading
 import datetime
 import subprocess
@@ -54,7 +56,7 @@ class Backend(PeriodicImportBackend):
         GenericBackend.BACKEND_TYPE:       GenericBackend.TYPE_READWRITE, \
         GenericBackend.BACKEND_DESCRIPTION: \
             _("This backend synchronizes your tasks with the web service"
-              " RememberTheMilk (http://rememberthemilk.com).\n"
+              " RememberTheMilk:\n\t\thttp://rememberthemilk.com\n\n"
               "Note: This product uses the Remember The Milk API but is not"
               " endorsed or certified by Remember The Milk"),\
         }
@@ -86,6 +88,7 @@ class Backend(PeriodicImportBackend):
         self.token = self._load_pickled_file(self.token_path, None)
         self.enqueued_start_get_task = False
         self.login_event = threading.Event()
+        self._this_is_the_first_loop = True
         
     def initialize(self):
         """
@@ -129,27 +132,15 @@ class Backend(PeriodicImportBackend):
         """
         See PeriodicImportBackend for an explanation of this function.
         """
-        #we verify authentication
-        if not self.rtm_proxy.is_authenticated():
-            #we try to reach RTM to trigger the authentication process
-            threading.Thread(target = self.rtm_proxy.get_rtm_tasks_dict).start()
-            if self.enqueued_start_get_task:
-                return
-            else:
-                self.enqueued_start_get_task = True
-                self.rtm_proxy.wait_for_authentication()
-                self.enqueued_start_get_task = False
-        
-        #we save the token, if authentication was ok
-        if not hasattr(self, 'token_saved'):
-            self._store_pickled_file(self.token_path,
-                                 self.rtm_proxy.get_auth_token())
-            self.token_saved = True
 
         #we get the old list of synced tasks, and compare with the new tasks set
         stored_rtm_task_ids = self.sync_engine.get_all_remote()
         current_rtm_task_ids = [tid for tid in \
                             self.rtm_proxy.get_rtm_tasks_dict().iterkeys()]
+
+        if self._this_is_the_first_loop:
+            self._on_successful_authentication()
+
         for rtm_task_id in current_rtm_task_ids:
             self.cancellation_point()
             #Adding and updating
@@ -169,6 +160,18 @@ class Backend(PeriodicImportBackend):
                 except KeyError:
                     pass
         
+    def _on_successful_authentication(self):
+        '''
+        Saves the token and requests a full flush on first autentication
+        '''
+        self._this_is_the_first_loop = False
+        self._store_pickled_file(self.token_path,
+                             self.rtm_proxy.get_auth_token())
+        #we ask the Datastore to flush all the tasks on us
+        threading.Timer(10,
+                        self.datastore.flush_all_tasks,
+                        args =(self.get_id(),)).start()
+
     @interruptible
     def remove_task(self, tid):
         """
@@ -219,8 +222,17 @@ class Backend(PeriodicImportBackend):
             return
 
         if action == SyncEngine.ADD:
-            rtm_task = self.rtm_proxy.create_new_rtm_task(task.get_title())
-            self._populate_rtm_task(task, rtm_task)
+            if task.get_status() != Task.STA_ACTIVE:
+                #OPTIMIZATION:
+                #we don't sync tasks that have already been closed before we
+                # even synced them once
+                return
+            try:
+                rtm_task = self.rtm_proxy.create_new_rtm_task(task.get_title())
+                self._populate_rtm_task(task, rtm_task)
+            except:
+                rtm_task.delete()
+                raise
             meme = SyncMeme(task.get_modified(),
                             rtm_task.get_modified(),
                             "GTG")
@@ -240,7 +252,12 @@ class Backend(PeriodicImportBackend):
                 newest = meme.which_is_newest(task.get_modified(),
                                               rtm_task.get_modified())
                 if newest == "local":
-                    self._populate_rtm_task(task, rtm_task)
+                    transaction_ids = []
+                    try:
+                        self._populate_rtm_task(task, rtm_task, transaction_ids)
+                    except:
+                        self.rtm_proxy.unroll_changes(transaction_ids)
+                        raise
                     meme.set_remote_last_modified(rtm_task.get_modified())
                     meme.set_local_last_modified(task.get_modified())
                 else:
@@ -300,6 +317,11 @@ class Backend(PeriodicImportBackend):
             return
 
         if action == SyncEngine.ADD:
+            if rtm_task.get_status() != Task.STA_ACTIVE:
+                #OPTIMIZATION:
+                #we don't sync tasks that have already been closed before we
+                # even saw them
+                return
             tid = str(uuid.uuid4())
             task = self.datastore.task_factory(tid)
             self._populate_task(task, rtm_task)
@@ -367,9 +389,13 @@ class Backend(PeriodicImportBackend):
                 tag = matching_tags[0]
             task.add_tag(tag)
 
-    def _populate_rtm_task(self, task, rtm_task):
+    def _populate_rtm_task(self, task, rtm_task, transaction_ids = []):
         '''
         Copies the content of a Task into a RTMTask
+
+        @param task: a GTG Task
+        @param rtm_task: an RTMTask
+        @param transaction_ids: a list to fill with transaction ids
         '''
         #Get methods of an rtm_task are fast, set are slow: therefore,
         # we try to use set as rarely as possible
@@ -378,13 +404,13 @@ class Backend(PeriodicImportBackend):
         # task it doesn't linger for ten seconds in the RTM Inbox
         status = task.get_status()
         if rtm_task.get_status() != status:
-            rtm_task.set_status(status)
+            self.__call_or_retry(rtm_task.set_status, status, transaction_ids)
         title = task.get_title()
         if rtm_task.get_title() != title:
-            rtm_task.set_title(title)
+            self.__call_or_retry(rtm_task.set_title, title, transaction_ids)
         text = task.get_excerpt(strip_tags = True, strip_subtasks = True)
         if rtm_task.get_text() != text:
-            rtm_task.set_text(text)
+            self.__call_or_retry(rtm_task.set_text, text, transaction_ids)
         tags = task.get_tags_name()
         rtm_task_tags = []
         for tag in rtm_task.get_tags():
@@ -393,13 +419,27 @@ class Backend(PeriodicImportBackend):
             rtm_task_tags.append(tag)
         #rtm tags are lowercase only
         if rtm_task_tags != [t.lower() for t in tags]:
-            rtm_task.set_tags(tags)
+            self.__call_or_retry(rtm_task.set_tags, tags, transaction_ids)
         if isinstance(task.get_due_date(), NoDate):
             due_date = None
         else:
             due_date = task.get_due_date().to_py_date()
         if rtm_task.get_due_date() != due_date:
-            rtm_task.set_due_date(due_date)
+            self.__call_or_retry(rtm_task.set_due_date, due_date,
+                                 transaction_ids)
+
+    def __call_or_retry(self, fun, *args):
+        '''
+        This function cannot stand the call "fun" to fail, so it retries
+        three times before giving up.
+        '''
+        MAX_ATTEMPTS = 3
+        for i in xrange(MAX_ATTEMPTS):
+            try:
+                return fun(*args)
+            except:
+                if i >= MAX_ATTEMPTS:
+                    raise
 
     def _rtm_task_is_syncable_per_attached_tags(self, rtm_task):
         '''
@@ -489,6 +529,7 @@ class RTMProxy(object):
                 subprocess.Popen(['xdg-open', self.rtm.getAuthURL()])
                 self.auth_confirm()
                 try:
+                    time.sleep(1)
                     self.token = self.rtm.getToken()
                 except Exception, e:
                     #something went wrong.
@@ -517,6 +558,14 @@ class RTMProxy(object):
     ##########################################################################
     ### RTM TASKS HANDLING ###################################################
     ##########################################################################
+
+    def unroll_changes(self, transaction_ids):
+        '''
+        Roll backs the changes tracked by the list of transaction_ids given
+        '''
+        for transaction_id in transaction_ids:
+            self.rtm.transactions.undo(timeline = self.timeline,
+                                       transaction_id = transaction_id)
 
     def get_rtm_tasks_dict(self):
         '''
@@ -621,7 +670,6 @@ class RTMProxy(object):
         # got it
         self._rtm_task_dict = rtm_tasks_dict
         self.__rtm_task_dict_timestamp = datetime.datetime.now()
-        print "UNLOCK"
         self.is_not_refreshing.set()
 
     def has_rtm_task(self, rtm_task_id):
@@ -637,7 +685,7 @@ class RTMProxy(object):
         #self.refresh_rtm_tasks_dict()
         #return rtm_task_id in self.get_rtm_tasks_dict()
 
-    def create_new_rtm_task(self, title):
+    def create_new_rtm_task(self, title, transaction_ids = []):
         '''
         Creates a new rtm task
         '''
@@ -653,6 +701,7 @@ class RTMProxy(object):
             # because the fact that the list is created is used to keep track of
             # list updates
             self._rtm_task_dict[rtm_task.get_id()] = rtm_task
+        transaction_ids.append(result.transaction.id)
         return rtm_task
 
 
@@ -717,13 +766,15 @@ class RTMTask(object):
         '''Returns the title of the task, if any'''
         return self.rtm_taskseries.name
 
-    def set_title(self, title):
+    def set_title(self, title, transaction_ids = []):
         '''Sets the task title'''
-        self.rtm.tasks.setName(timeline      = self.timeline,
-                               list_id       = self.rtm_list.id,
-                               taskseries_id = self.rtm_taskseries.id,
-                               task_id       = self.rtm_task.id,
-                               name          = title)
+        title = cgi.escape(title)
+        result = self.rtm.tasks.setName(timeline      = self.timeline,
+                                        list_id       = self.rtm_list.id,
+                                        taskseries_id = self.rtm_taskseries.id,
+                                        task_id       = self.rtm_task.id,
+                                        name          = title)
+        transaction_ids.append(result.transaction.id)
 
     def get_id(self):
         '''Return the task id. The taskseries id is *different*'''
@@ -733,17 +784,19 @@ class RTMTask(object):
         '''Returns the task status, in GTG terminology'''
         return RTM_TO_GTG_STATUS[self.rtm_task.completed == ""]
 
-    def set_status(self, gtg_status):
+    def set_status(self, gtg_status, transaction_ids = []):
         '''Sets the task status, in GTG terminology'''
         status = GTG_TO_RTM_STATUS[gtg_status]
         if status == True:
             api_call = self.rtm.tasks.uncomplete
         else:
             api_call = self.rtm.tasks.complete
-        api_call(timeline      = self.timeline,
-                 list_id       = self.rtm_list.id,
-                 taskseries_id = self.rtm_taskseries.id,
-                 task_id       = self.rtm_task.id)
+        result = api_call(timeline      = self.timeline,
+                          list_id       = self.rtm_list.id,
+                          taskseries_id = self.rtm_taskseries.id,
+                          task_id       = self.rtm_task.id)
+        transaction_ids.append(result.transaction.id)
+
 
     def get_tags(self):
         '''Returns the task tags'''
@@ -770,7 +823,7 @@ class RTMTask(object):
         else:
             return [list_or_object]
 
-    def set_tags(self, tags):
+    def set_tags(self, tags, transaction_ids = []):
         '''
         Sets a new set of tags to a task. Old tags are deleted.
         '''
@@ -781,11 +834,12 @@ class RTMTask(object):
             tagstxt = reduce(lambda x,y: x + ", " + y, tags)
         else:
             tagstxt = ""
-        self.rtm.tasks.setTags(timeline     = self.timeline,
-                              list_id       = self.rtm_list.id,
-                              taskseries_id = self.rtm_taskseries.id,
-                              task_id       = self.rtm_task.id,
-                              tags          = tagstxt)
+        result = self.rtm.tasks.setTags(timeline     = self.timeline,
+                                        list_id       = self.rtm_list.id,
+                                        taskseries_id = self.rtm_taskseries.id,
+                                        task_id       = self.rtm_task.id,
+                                        tags          = tagstxt)
+        transaction_ids.append(result.transaction.id)
 
     def get_text(self):
         '''
@@ -799,7 +853,7 @@ class RTMTask(object):
             return "".join(map(lambda note: "%s\n" %getattr(note, '$t'),
                                 note_list))
 
-    def set_text(self, text):
+    def set_text(self, text, transaction_ids = []):
         '''
         deletes all the old notes in a task and sets a single note with the
         given text
@@ -809,16 +863,35 @@ class RTMTask(object):
         if notes:
             note_list = self.__getattr_the_rtm_way(notes, 'note')
             for note_id in [note.id for note in note_list]:
-                self.rtm.tasksNotes.delete(timeline = self.timeline,
-                                           note_id  = note_id)
+                result = self.rtm.tasksNotes.delete(timeline = self.timeline,
+                                                    note_id  = note_id)
+                transaction_ids.append(result.transaction.id)
+
         if text == "":
             return
-        self.rtm.tasksNotes.add(timeline      = self.timeline,
-                                list_id       = self.rtm_list.id,
-                                taskseries_id = self.rtm_taskseries.id,
-                                task_id       = self.rtm_task.id,
-                                note_title    = "",
-                                note_text     = text)
+        text = cgi.escape(text)
+
+        #RTM does not support well long notes (that is, it denies the request)
+        #Thus, we split long text in chunks. To make them show in the correct
+        #order on the website, we have to upload them from the last to the first 
+        # (they show the most recent on top)
+        text_cursor_end = len(text)
+        while True:
+            text_cursor_start = text_cursor_end - 1000
+            if text_cursor_start < 0:
+                text_cursor_start = 0
+
+            result = self.rtm.tasksNotes.add(timeline      = self.timeline,
+                                             list_id       = self.rtm_list.id,
+                                             taskseries_id = self.rtm_taskseries.id,
+                                             task_id       = self.rtm_task.id,
+                                             note_title    = "",
+                                             note_text     = text[text_cursor_start:
+                                                                  text_cursor_end])
+            transaction_ids.append(result.transaction.id)
+            if text_cursor_start <= 0:
+                break
+            text_cursor_end = text_cursor_start - 1
 
     def get_due_date(self):
         '''
@@ -833,23 +906,19 @@ class RTMTask(object):
         else:
             return NoDate()
 
-    def set_due_date(self, due):
+    def set_due_date(self, due, transaction_ids = []):
         '''
         Sets the task due date
         '''
+        kwargs = {'timeline':      self.timeline,
+                  'list_id':       self.rtm_list.id,
+                  'taskseries_id': self.rtm_taskseries.id,
+                  'task_id':       self.rtm_task.id}
         if due != None:
-            due_string = self.__time_date_to_rtm(due)
-            self.rtm.tasks.setDueDate(timeline      = self.timeline,
-                                      list_id       = self.rtm_list.id,
-                                      taskseries_id = self.rtm_taskseries.id,
-                                      task_id       = self.rtm_task.id,
-                                      parse = 1, \
-                                      due=due_string)
-        else:
-            self.rtm.tasks.setDueDate(timeline      = self.timeline,
-                                      list_id       = self.rtm_list.id,
-                                      taskseries_id = self.rtm_taskseries.id,
-                                      task_id       = self.rtm_task.id)
+            kwargs['parse'] = 1
+            kwargs['due'] = self.__time_date_to_rtm(due)
+        result = self.rtm.tasks.setDueDate(**kwargs)
+        transaction_ids.append(result.transaction.id)
 
     def get_modified(self):
         '''
