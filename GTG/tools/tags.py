@@ -1,7 +1,6 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Gettings Things Gnome! - a personal organizer for the GNOME desktop
+# Getting Things Gnome! - a personal organizer for the GNOME desktop
 # Copyright (c) 2008-2009 - Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
@@ -18,24 +17,12 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-"""Runs the GTG unit tests."""
+import re
 
-import sys
-import unittest
+__all__ = ["extract_tags_from_text", ]
 
-from GTG.tests import test_suite
-
-
-def main(args):
-    runner = unittest.TextTestRunner(
-        stream=sys.stdout, descriptions=False, verbosity=3)
-    test = test_suite()
-    result = runner.run(test)
-    if result.wasSuccessful():
-        return 0
-    else:
-        return 1
-
-
-if __name__ == '__main__':
-    sys.exit(main(sys.argv[1:]))
+def extract_tags_from_text(text):
+    '''
+    Given a string, returns a list of the @tags contained in that
+    '''
+    return re.findall(r'(?:^|[\s])(@\w+)', text)

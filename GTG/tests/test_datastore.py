@@ -23,8 +23,8 @@ Tests for the datastore
 
 import unittest
 import uuid
-import random
 import time
+from random import randint
 
 import GTG
 from GTG.core.datastore import DataStore
@@ -32,13 +32,11 @@ from GTG.backends.genericbackend import GenericBackend
 from GTG.core import CoreConfig
 
 
-
 class TestDatastore(unittest.TestCase):
     '''
     Tests for the DataStore object.
     '''
 
-    
     def setUp(self):
         '''
         Creates the environment for the tests
@@ -53,12 +51,12 @@ class TestDatastore(unittest.TestCase):
         '''
         #generate a Task with a random id
         tid = str(uuid.uuid4())
-        task = self.datastore.task_factory(tid, newtask = True)
+        task = self.datastore.task_factory(tid, newtask=True)
         self.assertTrue(isinstance(task, GTG.core.task.Task))
         self.assertEqual(task.get_id(), tid)
         self.assertEqual(task.is_new(), True)
         tid = str(uuid.uuid4())
-        task = self.datastore.task_factory(tid, newtask = False)
+        task = self.datastore.task_factory(tid, newtask=False)
         self.assertEqual(task.is_new(), False)
 
     def test_new_task_and_has_task(self):
@@ -81,7 +79,7 @@ class TestDatastore(unittest.TestCase):
         for i in xrange(1, 10):
             task = self.datastore.new_task()
             task_ids.append(task.get_id())
-            return_list =self.datastore.get_all_tasks()
+            return_list = self.datastore.get_all_tasks()
             self.assertEqual(len(return_list), i)
             task_ids.sort()
             return_list.sort()
@@ -96,7 +94,6 @@ class TestDatastore(unittest.TestCase):
         self.assertTrue(isinstance(self.datastore.get_task(task.get_id()),
                                    GTG.core.task.Task))
         self.assertEqual(self.datastore.get_task(task.get_id()), task)
-
 
     def test_get_tagstore(self):
         '''
@@ -146,13 +143,13 @@ class TestDatastore(unittest.TestCase):
         get_all_backends and get_backend function as a side effect
         '''
         #create a simple backend dictionary
-        backend = FakeBackend(enabled = True)
-        tasks_in_backend_count = int(random.random() * 20)
+        backend = FakeBackend(enabled=True)
+        tasks_in_backend_count = randint(1, 20)
         for temp in xrange(0, tasks_in_backend_count):
             backend.fake_add_random_task()
         backend_dic = {'backend': backend, 'pid': 'a'}
         self.datastore.register_backend(backend_dic)
-        all_backends = self.datastore.get_all_backends(disabled = True)
+        all_backends = self.datastore.get_all_backends(disabled=True)
         self.assertEqual(len(all_backends), 1)
         registered_backend = self.datastore.get_backend(backend.get_id())
         self.assertEqual(backend.get_id(), registered_backend.get_id())
@@ -166,14 +163,14 @@ class TestDatastore(unittest.TestCase):
                          tasks_in_backend_count)
 
         #same test, disabled backend
-        backend = FakeBackend(enabled = False)
-        for temp in xrange(1, int(random.random() * 20)):
+        backend = FakeBackend(enabled=False)
+        for temp in xrange(1, randint(2, 20)):
             backend.fake_add_random_task()
-        backend_dic = {'backend': backend, 'pid':'b'}
+        backend_dic = {'backend': backend, 'pid': 'b'}
         self.datastore.register_backend(backend_dic)
-        all_backends = self.datastore.get_all_backends(disabled = True)
+        all_backends = self.datastore.get_all_backends(disabled=True)
         self.assertEqual(len(all_backends), 2)
-        all_backends = self.datastore.get_all_backends(disabled = False)
+        all_backends = self.datastore.get_all_backends(disabled=False)
         self.assertEqual(len(all_backends), 1)
         registered_backend = self.datastore.get_backend(backend.get_id())
         self.assertEqual(backend.get_id(), registered_backend.get_id())
@@ -191,8 +188,8 @@ class TestDatastore(unittest.TestCase):
         '''
         Tests the set_backend_enabled function
         '''
-        enabled_backend = FakeBackend(enabled = True)
-        disabled_backend = FakeBackend(enabled = False)
+        enabled_backend = FakeBackend(enabled=True)
+        disabled_backend = FakeBackend(enabled=False)
         self.datastore.register_backend({'backend': enabled_backend, \
                                 'pid': str(uuid.uuid4()), \
                                 GenericBackend.KEY_DEFAULT_BACKEND: False})
@@ -216,13 +213,13 @@ class TestDatastore(unittest.TestCase):
 #        self.datastore.set_backend_enabled(disabled_backend.get_id(), True)
 #        self.assertEqual(disabled_backend.fake_get_initialized_count(), 1)
 #        self.assertTrue(disabled_backend.is_enabled())
-            
+
     def test_remove_backend(self):
         '''
         Tests the remove_backend function
         '''
-        enabled_backend = FakeBackend(enabled = True)
-        disabled_backend = FakeBackend(enabled = False)
+        enabled_backend = FakeBackend(enabled=True)
+        disabled_backend = FakeBackend(enabled=False)
         self.datastore.register_backend({'backend': enabled_backend, \
                                 'pid': str(uuid.uuid4()), \
                                 GenericBackend.KEY_DEFAULT_BACKEND: False})
@@ -234,34 +231,34 @@ class TestDatastore(unittest.TestCase):
         self.assertFalse(enabled_backend.is_enabled())
         self.assertTrue(enabled_backend.fake_is_purged())
         self.assertEqual( \
-            len(self.datastore.get_all_backends(disabled = True)), 1)
+            len(self.datastore.get_all_backends(disabled=True)), 1)
         #removing a disabled backend
         self.datastore.remove_backend(disabled_backend.get_id())
         self.assertFalse(disabled_backend.is_enabled())
         self.assertTrue(disabled_backend.fake_is_purged())
         self.assertEqual( \
-            len(self.datastore.get_all_backends(disabled = True)), 0)
+            len(self.datastore.get_all_backends(disabled=True)), 0)
 
     def test_flush_all_tasks(self):
         '''
         Tests the flush_all_tasks function
         '''
         #we add some tasks in the datastore
-        tasks_in_datastore_count = 10 #int(random.random() * 20)
+        tasks_in_datastore_count = 10 #randint(1, 20)
         for temp in xrange(0, tasks_in_datastore_count):
             self.datastore.new_task()
         datastore_stored_tids = self.datastore.get_all_tasks()
         self.assertEqual(tasks_in_datastore_count, len(datastore_stored_tids))
 
         #we enable a backend
-        backend = FakeBackend(enabled = True)
+        backend = FakeBackend(enabled=True)
         self.datastore.register_backend({'backend': backend, 'pid': 'a'})
         #we wait for the signal storm to wear off
-        time.sleep(5)
+        time.sleep(2)
         #we sync
         self.datastore.get_backend(backend.get_id()).sync()
         #and we inject task in the backend
-        tasks_in_backend_count = 5 #int(random.random() * 20)
+        tasks_in_backend_count = 5 #randint(1, 20)
         for temp in xrange(0, tasks_in_backend_count):
             backend.fake_add_random_task()
         backend_stored_tids = backend.fake_get_task_ids()
@@ -281,10 +278,8 @@ class TestDatastore(unittest.TestCase):
         self.assertEqual(new_backend_stored_tids, new_datastore_stored_tids)
 
 
-
 def test_suite():
     return unittest.TestLoader().loadTestsFromTestCase(TestDatastore)
-
 
 
 class FakeBackend(unittest.TestCase):
@@ -292,7 +287,7 @@ class FakeBackend(unittest.TestCase):
     Mimics the behavior of a simple backend. Just used for testing
     '''
 
-    def __init__(self, enabled = True):
+    def __init__(self, enabled=True):
         self.enabled = enabled
         self.initialized_count = 0
         self.tasks_ids = []
@@ -322,7 +317,7 @@ class FakeBackend(unittest.TestCase):
         for task_id in self.tasks_ids:
             self.datastore.push_task(self.datastore.task_factory(task_id))
 
-    def quit(self, disabled = False):
+    def quit(self, disabled=False):
         self.enabled = not disabled
 
     def purge(self):

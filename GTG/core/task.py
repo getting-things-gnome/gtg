@@ -562,6 +562,8 @@ class Task(TreeNode):
             
             self.content = "<content><tag>%s</tag>%s%s</content>" % (
                 tagname, sep, c)
+            #we modify the task internal state, thus we have to call for a sync
+            self.sync()
 
     #remove by tagname
     def remove_tag(self, tagname):
