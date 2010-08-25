@@ -185,7 +185,7 @@ class BackendsDialog(object):
         signals = {
          'on_add_button_clicked': self.on_add_button,
          'on_BackendsDialog_delete_event': self.on_close,
-         'on_quit_button_clicked': self.on_close,
+         'on_close_button_clicked': self.on_close,
          'on_remove_button_clicked': self.on_remove_button,
         }
         builder.connect_signals(signals)
