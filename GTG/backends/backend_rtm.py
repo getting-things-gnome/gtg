@@ -56,7 +56,7 @@ class Backend(PeriodicImportBackend):
         GenericBackend.BACKEND_TYPE:       GenericBackend.TYPE_READWRITE, \
         GenericBackend.BACKEND_DESCRIPTION: \
             _("This backend synchronizes your tasks with the web service"
-              " RememberTheMilk (http://rememberthemilk.com).\n"
+              " RememberTheMilk:\n\t\thttp://rememberthemilk.com\n\n"
               "Note: This product uses the Remember The Milk API but is not"
               " endorsed or certified by Remember The Milk"),\
         }
