@@ -178,7 +178,7 @@ class GenericTomboy(GenericBackend):
         and which is the copy, and deletes the copy.
 
         @param tid: a GTG task tid
-        #param note: a tomboy note id
+        @param note: a tomboy note id
         '''
         self.cancellation_point()
         meme = self.sync_engine.get_meme_from_remote_id(note)
