@@ -132,13 +132,13 @@
                 <property name="visible">True</property>
                 <property name="layout_style">end</property>
                 <child>
-                  <object class="GtkButton" id="quit_button">
-                    <property name="label">gtk-quit</property>
+                  <object class="GtkButton" id="close_button">
+                    <property name="label">gtk-close</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="use_stock">True</property>
-                    <signal name="clicked" handler="on_quit_button_clicked"/>
+                    <signal name="clicked" handler="on_close_button_clicked"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
