@@ -89,9 +89,13 @@ class ConfigurePanel(gtk.VBox):
         hbox_top = gtk.HBox()
         self.human_name_label = gtk.Label()
         self.human_name_label.set_alignment(xalign = 0, yalign = 0.5)
-        self.spinner = gtk.Spinner()
-        self.spinner.set_size_request(32, 32)
+        try:
+            self.spinner = gtk.Spinner()
+        except AttributeError:
+            #worarkound for archlinux: bug #624204
+            self.spinner = gtk.HBox()
         self.spinner.connect("show", self.on_spinner_show)
+        self.spinner.set_size_request(32, 32)
         align_spin = gtk.Alignment(xalign = 1, yalign = 0)
         align_spin.add(self.spinner)
         hbox_top.pack_start(self.human_name_label, True)
@@ -290,9 +294,11 @@ class ConfigurePanel(gtk.VBox):
         '''
         self.should_spinner_be_shown = active
         if active:
-            self.spinner.start()
+            if isinstance(self.spinner, gtk.Spinner):
+                self.spinner.start()
             self.spinner.show()
         else:
             self.spinner.hide()
-            self.spinner.stop()
+            if isinstance(self.spinner, gtk.Spinner):
+                self.spinner.stop()
 
