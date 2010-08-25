@@ -441,7 +441,6 @@ class DataStore(object):
 
 
 
-
 class TaskSource():
     '''
     Transparent interface between the real backend and the DataStore.
@@ -673,6 +672,7 @@ class FilteredDataStore(Borg):
                     'get_task',
                     'has_task',
                     'get_backend_mutex',
+                    'flush_all_tasks',
                     'request_task_deletion']:
             return getattr(self.datastore, attr)
         elif attr in ['get_all_tags']:
