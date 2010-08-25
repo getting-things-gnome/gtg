@@ -116,7 +116,6 @@ class Backend(PeriodicImportBackend):
         #we need to authenticate only to see the direct messages or the replies
         # (why the replies? Don't know. But python-twitter requires that)
         # (invernizzi)
-        print "GETTING THEM"
         with self.controlled_execution(self._parameters['username'],\
                                        self._parameters['password'], \
                                        self.base_url, \
@@ -153,7 +152,6 @@ class Backend(PeriodicImportBackend):
                                         lambda tweet_id: True, \
                                         is_syncable)
         Log.debug("processing tweet (%s, %s)" % (action, is_syncable))
-        print action, tweet.GetText()
         
         self.cancellation_point()
         if action == None or action == SyncEngine.UPDATE:
