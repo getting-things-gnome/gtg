@@ -50,7 +50,7 @@ class ParametersUI(gtk.VBox):
     '''
 
 
-    COMMON_WIDTH = 150
+    COMMON_WIDTH = 160
 
     def __init__(self, requester):
         '''Constructs the list of the possible widgets.
@@ -97,7 +97,12 @@ class ParametersUI(gtk.VBox):
                              "parameter": "import-from-my-tweets"}) \
                ),\
                ("import-bug-tags", self.UI_generator(CheckBoxUI, \
-                            {"text": _("Tag your tasks with the bug tags"), \
+                            {"text": _("Tag your GTG tasks with the bug tags"), \
+                             "parameter": "import-bug-tags"}) \
+               ),\
+               ("tag-with-project-name", self.UI_generator(CheckBoxUI, \
+                            {"text": _("Tag your GTG tasks with the project "
+                                       "targeted by the bug"), \
                              "parameter": "import-bug-tags"}) \
                ),\
             ) 

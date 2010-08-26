@@ -19,7 +19,7 @@
 
 import gtk
 
-from GTG import _
+from GTG import _, ngettext
 
 
 
@@ -48,7 +48,7 @@ class PeriodUI(gtk.HBox):
         
         @param width: the width of the gtk.Label object
         '''
-        period_label = gtk.Label(_("Period:"))
+        period_label = gtk.Label(_("Check for new tasks every"))
         period_label.set_alignment(xalign = 0, yalign = 0.5)
         period_label.set_size_request(width = width, height = -1)
         self.pack_start(period_label, False)
@@ -65,6 +65,10 @@ class PeriodUI(gtk.HBox):
         self.period_spin = gtk.SpinButton(adjustment = self.adjustment,
                                           climb_rate = 0.3,
                                           digits = 0)
+        self.minutes_label = gtk.Label()
+        self.update_minutes_label()
+        self.minutes_label.set_alignment(xalign = 0, yalign = 0.5)
+        self.pack_start(self.minutes_label, False)
         align.add(self.period_spin)
         self.show_all()
 
@@ -83,6 +87,10 @@ class PeriodUI(gtk.HBox):
 
         @param sender: not used, only here for signal compatibility
         '''
+        self.update_minutes_label()
         if self.backend.is_enabled() and not self.backend.is_default():
             self.req.set_backend_enabled(self.backend.get_id(), False)
 
+    def update_minutes_label(self):
+        self.minutes_label.set_markup(ngettext(" minute", " minutes",
+                                           int(self.adjustment.get_value())))
