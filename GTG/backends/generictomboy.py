@@ -425,15 +425,7 @@ class GenericTomboy(GenericBackend):
             with self.DbusWatchdog(self):
                 content = tomboy.GetNoteContents(note)
         #update the tags list
-        new_tags_list = extract_tags_from_text(content)
-        for tag in task.get_tags_name():
-            try:
-                new_tags_list.remove(tag)
-                task.remove_tag(tag)
-            except:
-                task.add_tag(tag)
-        for tag in new_tags_list:
-            task.add_tag(tag)
+        task.set_only_these_tags(extract_tags_from_text(content))
         #extract title and text
         [title, text] = self._tomboy_split_title_and_text(unicode(content))
         #Tomboy speaks unicode, we don't
