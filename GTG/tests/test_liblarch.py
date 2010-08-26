@@ -201,14 +201,18 @@ class TestLibLarch(unittest.TestCase):
         view = self.tree.get_viewtree(refresh=True)
         node = DummyNode('temp')
         node.add_color('blue')
+        print "########## Start of tests #############"
         self.assertSignal(self.view, \
                             'node-modified-inview', \
                             self.assertSignal(self.view, \
                                               'node-added-inview', \
                                           self.tree.add_node))(node, parent_id = '0')
         self.assert_(('temp',(0, 0)) in self.recorded_signals['node-added-inview'])
+        print "#################################"
+        print self.recorded_signals
         self.assert_(('0',(0, )) in \
                      self.recorded_signals['node-modified-inview'])
+        print "############## end of tests ###################"
         shouldbe = self.blue_nodes + 1
         total = self.red_nodes + self.blue_nodes + self.green_nodes
         #Testing that the blue node count has increased

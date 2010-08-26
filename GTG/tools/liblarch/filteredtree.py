@@ -153,6 +153,8 @@ class FilteredTree():
         if func:
             if not path or len(path) <= 0:
                 raise Exception('cllbck %s for %s but it has no paths'%(event,tid))
+            if event == 'updated':
+                print " $$$$$$$$$$$ update for %s %s" %(tid,str(path))
             func(tid,path)
             
     def get_node(self,id):
@@ -726,12 +728,12 @@ class FilteredTree():
                         npaths.append(pp + (nindex,))
             else:
                 npaths = self.get_paths_for_node(nid)
-                pars = self.cache_nodes[nid]['parents']
+                pars = list(self.cache_nodes[nid]['parents'])
             #We remove the node from the parents
-            for p in list(pars):
+            for p in pars:
                 self.cache_nodes[p]['children'].remove(nid)
                 #removing the parents
-                pars.remove(p)
+                self.cache_nodes[nid]['parents'].remove(p)
             #Now we remove the node if it is not displayed at all anymore
             if not self.__is_displayed(nid):
                 #We need childrens only if we delete totally the node
@@ -795,7 +797,9 @@ class FilteredTree():
                 #We remove uneeded childrens
                 for ch in list(node_dic['children']):
                     if ch not in new_children:
+                        self.trace += " ....removing child %s of %s\n" %(ch,nid)
                         self.__delete_node(ch,pars=[nid])
+                        self.trace += "  ...child is now :%s\n"%self.cache_nodes[ch]
                 #We add new childrens that were not there
                 for ch in new_children:
                     if ch not in node_dic['children']:
@@ -813,10 +817,15 @@ class FilteredTree():
                         error += "%s not in childrens of %s\n" %(nid,p)
                         error += self.trace
                         raise Exception(error)
+                for p in node_dic['children']:
+                    if nid not in self.cache_nodes[p]['parents']:
+                        error += "%s not in parents of %s\n" %(nid,p)
+                        error += self.trace
+                        raise Exception(error)
                     
                 for path in self.get_paths_for_node(nid):
 #                    print "updating %s for %s" %(nid,str(path))
-                    self.callback('updated',nid,path)
+                    self.callback('modified',nid,path)
             else:
                 self.__delete_node(nid)
         elif not curdis and todis:
