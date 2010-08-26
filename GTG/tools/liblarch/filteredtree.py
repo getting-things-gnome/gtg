@@ -153,8 +153,6 @@ class FilteredTree():
         if func:
             if not path or len(path) <= 0:
                 raise Exception('cllbck %s for %s but it has no paths'%(event,tid))
-            if event == 'updated':
-                print " $$$$$$$$$$$ update for %s %s" %(tid,str(path))
             func(tid,path)
             
     def get_node(self,id):
