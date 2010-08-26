@@ -31,7 +31,7 @@ from launchpadlib.launchpad import Launchpad, \
                                    EDGE_SERVICE_ROOT
 
 from GTG.tools.testingmode       import TestingMode
-from GTG                         import _
+from GTG                         import _, ngettext
 from GTG.backends.genericbackend import GenericBackend
 from GTG.backends.backendsignals import BackendSignals
 from GTG.backends.syncengine     import SyncEngine, SyncMeme
@@ -278,12 +278,14 @@ class Backend(PeriodicImportBackend):
         @returns dict: a dictionary containing the relevant bug attributes
         '''
         bug = bug_task.bug
+        owner = bug.owner
         bug_dic = {'title': bug.title,
                    'text': bug.description,
                    'tags': bug.tags,
                    'self_link': bug.self_link,
                    'modified': self._get_bug_modified_datetime(bug),
-                   'owner': bug.owner.display_name}
+                   'owner': owner.display_name,
+                   'owner_karma': owner.karma}
         #find the projects target of the bug
         projects = []
         for task in bug.bug_tasks:
@@ -303,7 +305,16 @@ class Backend(PeriodicImportBackend):
         '''
         Creates the text that describes a bug
         '''
-        text = _("Reported by: ") + bug_dic["owner"]
-        text += bug_dic["text"]
+        text = _("Reported by: ") + '%s(karma: %s)' % \
+                    (bug_dic["owner"], bug_dic["owner_karma"]) + '\n'
+        projects = [dic['project_short'] for dic in bug_dic['projects']]
+        #one link is enough, since they're all alias
+        bug_project = bug_dic['projects'][0]['project_short']
+        text += _("Link to bug: " ) + \
+                "https://bugs.edge.launchpad.net/%s/+bug/%s" % \
+                (bug_project,
+                 bug_dic['self_link'][bug_dic['self_link'].rindex("/") + 1 :])\
+                + '\n'
+        text += '\n' + bug_dic["text"]
         return text
 
