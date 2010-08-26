@@ -72,10 +72,10 @@ class Backend(PeriodicImportBackend):
 ###############################################################################
 
     def __init__(self, parameters):
-        """
+        '''
         See GenericBackend for an explanation of this function.
         Loads the saved state of the sync, if any
-        """
+        '''
         super(Backend, self).__init__(parameters)
         #loading the saved state of the synchronization, if any
         self.sync_engine_path = os.path.join('backends/rtm/', \
@@ -301,6 +301,10 @@ class Backend(PeriodicImportBackend):
             self.datastore.request_task_deletion(tid)
             
     def _process_rtm_task(self, rtm_task_id):
+        '''
+        Takes a rtm task id and carries out the necessary operations to
+        refresh the sync state
+        '''
         self.cancellation_point()
         if not self.rtm_proxy.is_authenticated():
             return
