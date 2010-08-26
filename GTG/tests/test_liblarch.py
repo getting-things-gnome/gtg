@@ -218,11 +218,8 @@ class TestLibLarch(unittest.TestCase):
         #also comparing with another view
         self.assertEqual(total+1,self.view.get_n_nodes())
         self.assertEqual(shouldbe,self.view.get_n_nodes(withfilters=['blue']))
-        print "####### 1 ########"
         self.tree.del_node('temp')
         #Testing that it goes back to normal
-        print "###### 2 ########"
-        print view.print_tree()
         self.assertEqual(total,view.get_n_nodes())
         self.assertEqual(self.blue_nodes,view.get_n_nodes(withfilters=['blue']))
         #also comparing with another view
