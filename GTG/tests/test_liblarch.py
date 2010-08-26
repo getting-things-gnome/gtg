@@ -29,6 +29,7 @@ from GTG.tools.liblarch import Tree
 from GTG.tools.liblarch.tree import TreeNode
 from GTG.gtk.liblarch_gtk import TreeView
 from GTG.tests.signals_testing import SignalCatcher, GobjectSignalsManager
+from GTG.tests.tree_testing import TreeTester
 
 
 #This is a dummy treenode that only have one properties: a color
@@ -108,6 +109,7 @@ class TestLibLarch(unittest.TestCase):
         #Larch, is the tree. Learn to recognize it.
         self.tree = Tree()
         self.view = self.tree.get_viewtree()
+        self.tester = TreeTester(self.view)
         self.mainview = self.tree.get_main_view()
         self.tree.add_filter('blue',self.is_blue)
         self.tree.add_filter('green',self.is_green)
@@ -170,6 +172,7 @@ class TestLibLarch(unittest.TestCase):
             self.assertSignal, self.view, 'node-deleted-inview')
 
     def tearDown(self):
+        self.tester.test_validity()
         #stopping gobject main loop
         self.gobject_signal_manager.terminate_signals()
         
@@ -225,12 +228,15 @@ class TestLibLarch(unittest.TestCase):
         #also comparing with another view
         self.assertEqual(total,self.view.get_n_nodes())
         self.assertEqual(self.blue_nodes,self.view.get_n_nodes(withfilters=['blue']))
+        self.tester.test_validity()
         
     def test_modifying_node(self):
         """ Modifying a node and see if the change is reflected in filters """
         viewblue = self.tree.get_viewtree(refresh=False)
+        testblue = TreeTester(viewblue)
         viewblue.apply_filter('blue')
         viewred = self.tree.get_viewtree(refresh=False)
+        testred = TreeTester(viewred)
         viewred.apply_filter('red')
         node = DummyNode('temp')
         node.add_color('blue')
@@ -250,6 +256,8 @@ class TestLibLarch(unittest.TestCase):
         node.remove_color('blue')
         self.failIf(viewblue.is_displayed('temp'))
         self.assert_(viewred.is_displayed('temp'))
+        testred.test_validity()
+        testblue.test_validity()
 
     def test_removing_parent(self):
         """Test behavior of node when its parent goes away.
@@ -1095,6 +1103,7 @@ class TestLibLarch(unittest.TestCase):
         we want in random order.
         '''
         view = self.tree.get_viewtree(refresh = True)
+        test = TreeTester(view)
         node = DummyNode('parent')
         node.add_child('1')
         node.add_child('3')
@@ -1104,11 +1113,15 @@ class TestLibLarch(unittest.TestCase):
         node.add_child('11')
         self.assertFalse(view.is_displayed('parent'))
         self.tree.add_node(node)
+        test.test_validity()
         self.assertEqual(view.node_n_children('parent'),6)
         view.apply_filter('blue')
+        test.test_validity()
         self.assertFalse(view.is_displayed('parent'))
         print view.print_tree(string=True)
         node.add_color('blue')
+        test.test_validity()
+        print view.print_tree(string=True)
         self.assertEqual(view.node_n_children('parent'),6)
         
 
