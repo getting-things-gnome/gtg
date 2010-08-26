@@ -152,8 +152,9 @@ class MainTree(gobject.GObject):
             else:
                 self.root.remove_child(id)
 #            self.old_paths[id] = paths
-            self.callback("node-deleted", id)
             self.nodes.pop(id)
+            self.callback("node-deleted", id)
+            
         
     #create a new relationship between nodes if it doesn't already exist
     #return False if nothing was done

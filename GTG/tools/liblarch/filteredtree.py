@@ -741,7 +741,6 @@ class FilteredTree():
                     self.__update_node(c)
                 if nid in self.cache_vr:
                     self.cache_vr.remove(nid)
-#                print "popping out %s" %nid
                 self.cache_nodes.pop(nid)
                 for pa in npaths:
                     self.callback('deleted',nid,pa)
