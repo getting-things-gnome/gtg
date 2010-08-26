@@ -103,7 +103,7 @@ class ParametersUI(gtk.VBox):
                ("tag-with-project-name", self.UI_generator(CheckBoxUI, \
                             {"text": _("Tag your GTG tasks with the project "
                                        "targeted by the bug"), \
-                             "parameter": "import-bug-tags"}) \
+                             "parameter": "tag-with-project-name"}) \
                ),\
             ) 
     def UI_generator(self, param_type, special_arguments = {}):
