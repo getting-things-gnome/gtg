@@ -73,11 +73,14 @@ class Backend(PeriodicImportBackend):
     _static_parameters = {
         "username": { \
             GenericBackend.PARAM_TYPE: GenericBackend.TYPE_STRING, \
-            GenericBackend.PARAM_DEFAULT_VALUE: "sabdfl"}, \
+            GenericBackend.PARAM_DEFAULT_VALUE: "insert your username here"}, \
         "period": { \
             GenericBackend.PARAM_TYPE: GenericBackend.TYPE_INT, \
             GenericBackend.PARAM_DEFAULT_VALUE: 2, },
         "import-bug-tags": { \
+            GenericBackend.PARAM_TYPE: GenericBackend.TYPE_BOOL, \
+            GenericBackend.PARAM_DEFAULT_VALUE: False}, \
+        "tag-with-project-name": { \
             GenericBackend.PARAM_TYPE: GenericBackend.TYPE_BOOL, \
             GenericBackend.PARAM_DEFAULT_VALUE: True}, \
         }
@@ -104,6 +107,18 @@ class Backend(PeriodicImportBackend):
         Connect to launchpad and updates the state of GTG tasks to reflect the
         bugs on launchpad.
         '''
+
+        ###########IMPORTANT NOTE!
+        # Bugs can be splitted in bug tasks (such as, you can assign a single
+        # bug to multiple projects: you have one bug and several bug tasks).
+        # At least, one bug contains a bug task (if it's referring to a single
+        # project).
+        # Here, we process bug tasks, since those are the ones that get assigned
+        # to someone.
+        # To avoid having multiple GTG Tasks for the same bug (because we use
+        # bug tasks, this may happen if somebody is working at the same bug for
+        # different projects), we use the bug self_link for indexing the tasks.
+
         #Connecting to Launchpad
         CACHE_DIR = os.path.join(xdg_cache_home, 'gtg/backends/', \
                                  self.get_id())
@@ -139,14 +154,13 @@ class Backend(PeriodicImportBackend):
                        "Triaged",
                        "In Progress",
                        "Fix Committed"])
-        my_bugs = [bug_task.bug for bug_task in my_bugs_tasks]
         #Adding and updating
-        for bug in my_bugs:
+        for bug_task in my_bugs_tasks:
             self.cancellation_point()
-            self._process_launchpad_bug(bug)
+            self._process_launchpad_bug(bug_task)
         #removing the old ones
         last_bug_list = self.sync_engine.get_all_remote()
-        new_bug_list = [bug.self_link for bug in my_bugs]
+        new_bug_list = [bug.bug.self_link for bug in my_bugs_tasks]
         for bug_link in set(last_bug_list).difference(set(new_bug_list)):
             self.cancellation_point()
             #we make sure that the other backends are not modifying the task
@@ -221,17 +235,23 @@ class Backend(PeriodicImportBackend):
         '''
         if task.get_title() != bug_dic['title']:
             task.set_title(bug_dic['title'])
-        if task.get_excerpt() != bug_dic['text']:
-            task.set_text(bug_dic['text'])
+        text = self._build_bug_text(bug_dic)
+        if task.get_excerpt() != text:
+            task.set_text(text)
+        new_tags_sources = []
         if self._parameters["import-bug-tags"]:
-            new_tags = set(['@' + str(tag) for tag in bug_dic['tags']])
-            current_tags = set(task.get_tags_name())
-            #remove the lost tags
-            for tag in current_tags.difference(new_tags):
-                task.remove_tag(tag)
-            #add the new ones
-            for tag in new_tags.difference(current_tags):
-                task.add_tag(tag)
+            new_tags_sources += bug_dic['tags']
+        if self._parameters["tag-with-project-name"]:
+            new_tags_sources += [dic['project_short'] \
+                                    for dic in bug_dic['projects']]
+        new_tags = set(['@' + str(tag) for tag in new_tags_sources])
+        current_tags = set(task.get_tags_name())
+        #remove the lost tags
+        for tag in current_tags.difference(new_tags):
+            task.remove_tag(tag)
+        #add the new ones
+        for tag in new_tags.difference(current_tags):
+            task.add_tag(tag)
         task.add_remote_id(self.get_id(), bug_dic['self_link'])
 
     def _get_bug_modified_datetime(self, bug):
@@ -246,7 +266,7 @@ class Backend(PeriodicImportBackend):
                 bug.date_last_updated.strftime("YYYY-MM-DDTHH:MM:SS.mmmmmm"),
                 "YYYY-MM-DDTHH:MM:SS.mmmmmm")
 
-    def _prefetch_bug_data(self, bug):
+    def _prefetch_bug_data(self, bug_task):
         '''
         We fetch all the necessary info that we need from the bug to populate a
         task beforehand (these will be used in _populate_task).
@@ -254,13 +274,36 @@ class Backend(PeriodicImportBackend):
         requests on then net), but it can crash without having the state of the 
         related task half-changed.
 
-        @param bug: a launchpad bug
+        @param bug: a launchpad bug task
         @returns dict: a dictionary containing the relevant bug attributes
         '''
-        return {'title': bug.title,
-                'text': bug.description,
-                'tags': bug.tags,
-                'self_link': bug.self_link,
-                'modified': self._get_bug_modified_datetime(bug),
-               }
+        bug = bug_task.bug
+        bug_dic = {'title': bug.title,
+                   'text': bug.description,
+                   'tags': bug.tags,
+                   'self_link': bug.self_link,
+                   'modified': self._get_bug_modified_datetime(bug),
+                   'owner': bug.owner.display_name}
+        #find the projects target of the bug
+        projects = []
+        for task in bug.bug_tasks:
+            #workaround: assignee.name doesn't work, although
+            #            assignee.display_name does.
+            a_sl = task.assignee.self_link
+            a_sl[a_sl.index("~") + 1 :]
+            if a_sl[a_sl.index("~") + 1 :] == self._parameters["username"]:
+                t_sl = task.target.self_link
+                projects.append(
+                    {"project_short": t_sl[t_sl.rindex("/") + 1 :],
+                     "project_long":  task.bug_target_display_name,})
+        bug_dic["projects"] = projects
+        return bug_dic
+
+    def _build_bug_text(self, bug_dic):
+        '''
+        Creates the text that describes a bug
+        '''
+        text = _("Reported by: ") + bug_dic["owner"]
+        text += bug_dic["text"]
+        return text
 
