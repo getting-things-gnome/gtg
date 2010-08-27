@@ -730,15 +730,19 @@ class FilteredTree():
             #We remove the node from the parents
             for p in pars:
                 self.cache_nodes[p]['children'].remove(nid)
+                #FIXME : reorder the children !
                 #removing the parents
                 self.cache_nodes[nid]['parents'].remove(p)
             #Now we remove the node if it is not displayed at all anymore
             if not self.__is_displayed(nid):
                 #We need childrens only if we delete totally the node
-                childrens = self.cache_nodes[nid]['children']
-                for c in childrens:
-                    self.cache_nodes[c]['parents'].remove(nid)
-                    self.__update_node(c)
+                if self.tree.has_node(nid):
+                    #if the node has been completely removed,
+                    #children have already been moved.
+                    childrens = self.cache_nodes[nid]['children']
+                    for c in childrens:
+                        self.cache_nodes[c]['parents'].remove(nid)
+                        self.__update_node(c)
                 if nid in self.cache_vr:
                     self.cache_vr.remove(nid)
                 self.cache_nodes.pop(nid)
@@ -760,6 +764,10 @@ class FilteredTree():
                 self.cache_nodes[nid] = node_dic
             else:
                 node_dic = self.cache_nodes[nid]
+            
+#            #Firstly, we remove children that are already present.
+#            for child in self.__node_all_children(nid):
+#                self.__add_node(child,pars=[nid])
                 
             for par in pars:
                 if not self.is_displayed(par):

@@ -9,9 +9,12 @@ class TreeTester:
         self.tree.register_cllbck('node-added-inview',self.add)
         self.tree.register_cllbck('node-deleted-inview',self.delete)
         self.tree.register_cllbck('node-modified-inview',self.update)
+        self.tree.register_cllbck('node-children-reordered',self.update)
+        self.trace = "* * * * * * * *\n"
         
         
     def add(self,nid,path):
+        self.trace += "adding %s to path %s\n" %(nid,str(path))
         currentnode = self.paths.get(path,None)
         if currentnode and currentnode != nid:
             raise Exception('path %s is already occupied by %s' %(str(path),nid))
@@ -25,6 +28,7 @@ class TreeTester:
         self.paths[path] = nid
     
     def delete(self,nid,path):
+        self.trace += "removing %s from path %s\n" %(nid,str(path))
         if nid != self.paths.get(path,None):
             raise Exception('%s is not assigned to path %s'%(nid,str(path)))
         if path not in self.nodes.get(nid,[]):
@@ -33,6 +37,7 @@ class TreeTester:
         self.paths.pop(path)
     
     def update(self,nid,path):
+        self.trace += "updating %s in path %s\n" %(nid,str(path))
         error = "updating node %s for path %s\n" %(nid,str(path))
         #Nothing to do, we just update.
         for p in self.nodes[nid]:
@@ -45,6 +50,8 @@ class TreeTester:
         n = self.paths[path]
         if path not in self.nodes[n] or n != nid:
             raise Exception('Mismatching node for path %s'%str(p))
+            
+    def reordered(self,nid,path,neworder):
     
     
     def test_validity(self):
@@ -59,6 +66,7 @@ class TreeTester:
         return True
         
     def print_tree(self):
-        st = "nodes are %s\n" %self.nodes
+        st = self.trace
+        st += "nodes are %s\n" %self.nodes
         st += "paths are %s\n" %self.paths
         return st
