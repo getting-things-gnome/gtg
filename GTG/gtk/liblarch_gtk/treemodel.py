@@ -336,7 +336,7 @@ class TreeModel(gtk.GenericTreeModel):
         actual_nid = self.tree.get_node_for_path(node_path)
         if nid == actual_nid:
             rowref = self.get_iter(node_path)
-            self.rows_reordered(path,rowref,neworder
+            self.rows_reordered(path,rowref,neworder)
         else:
             raise Exception('path/node mismatch in reorder')
             

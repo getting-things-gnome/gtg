@@ -52,6 +52,23 @@ class TreeTester:
             raise Exception('Mismatching node for path %s'%str(p))
             
     def reordered(self,nid,path,neworder):
+        if not path:
+            path = ()
+        i = 0
+        newpaths = {}
+        #we first update self.nodes with the new paths
+        while i < len(neworder):
+            old = neworder[i]
+            oldp = path + (old,)
+            newp = path + (i,)
+            n = self.paths[oldp]
+            self.nodes[n].remove(oldp)
+            self.nodes[n].append(newp)
+            newpaths[newp] = n
+        #now we can update self.paths
+        for p in newpaths:
+            self.paths[p] = newpaths[p]
+            
     
     
     def test_validity(self):
