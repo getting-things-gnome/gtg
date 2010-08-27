@@ -33,10 +33,15 @@ class TreeTester:
         self.paths.pop(path)
     
     def update(self,nid,path):
+        error = "updating node %s for path %s\n" %(nid,str(path))
         #Nothing to do, we just update.
         for p in self.nodes[nid]:
             if self.paths[p] != nid:
                 raise Exception('Mismatching path for %s'%nid)
+        if not self.paths.has_key(path):
+            error += '%s is not in stored paths (node %s)\n'%(str(path),nid)
+            error += self.print_tree()
+            raise Exception(error)
         n = self.paths[path]
         if path not in self.nodes[n] or n != nid:
             raise Exception('Mismatching node for path %s'%str(p))
@@ -52,3 +57,8 @@ class TreeTester:
             if p not in self.nodes[n]:
                 raise Exception('Mismatching node for path %s'%str(p))
         return True
+        
+    def print_tree(self):
+        st = "nodes are %s\n" %self.nodes
+        st += "paths are %s\n" %self.paths
+        return st

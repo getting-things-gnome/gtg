@@ -145,14 +145,15 @@ class MainTree(gobject.GObject):
                         self.break_relationship(id,c_id)
                     else:
                         self.remove_node(c_id,recursive=recursive)
+            #By removing the node early, we avoid unnecessary 
+            #update of that node
+            self.nodes.pop(id)
             if node.has_parent():
                 for p_id in node.get_parents():
                     par = self.get_node(p_id)
                     par.remove_child(id)
             else:
                 self.root.remove_child(id)
-#            self.old_paths[id] = paths
-            self.nodes.pop(id)
             self.callback("node-deleted", id)
             
         
