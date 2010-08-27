@@ -61,6 +61,7 @@ class TreeTester:
             path = ()
         i = 0
         newpaths = {}
+        toremove = []
         #we first update self.nodes with the new paths
         while i < len(neworder):
             if i != neworder[i]:
@@ -74,10 +75,15 @@ class TreeTester:
                         self.nodes[n].remove(pp)
                         newpp = newp + pp[le:]
                         self.nodes[n].append(newpp)
+                        self.trace += "    change %s path from %s to %s\n" %(n,pp,newpp)
                         newpaths[newpp] = n
+                        toremove.append(pp)
             i += 1
         #now we can update self.paths
+        for p in toremove:
+            self.paths.pop(p)
         for p in newpaths:
+            self.trace += "    adding %s to paths %s\n" %(newpaths[p],str(p))
             self.paths[p] = newpaths[p]
             
     
@@ -90,7 +96,9 @@ class TreeTester:
         for p in self.paths.keys():
             n = self.paths[p]
             if p not in self.nodes[n]:
-                raise Exception('Mismatching node for path %s'%str(p))
+                error = 'Mismatching node for path %s\n'%str(p)
+                error += self.print_tree()
+                raise Exception(error)
         return True
         
     def print_tree(self):
