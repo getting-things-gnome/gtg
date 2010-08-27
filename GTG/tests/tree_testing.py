@@ -9,7 +9,7 @@ class TreeTester:
         self.tree.register_cllbck('node-added-inview',self.add)
         self.tree.register_cllbck('node-deleted-inview',self.delete)
         self.tree.register_cllbck('node-modified-inview',self.update)
-        self.tree.register_cllbck('node-children-reordered',self.update)
+        self.tree.register_cllbck('node-children-reordered',self.reordered)
         self.trace = "* * * * * * * *\n"
         
         
@@ -39,6 +39,10 @@ class TreeTester:
     def update(self,nid,path):
         self.trace += "updating %s in path %s\n" %(nid,str(path))
         error = "updating node %s for path %s\n" %(nid,str(path))
+        if not self.nodes.has_key(nid):
+            error += "%s is not in nodes !\n" %nid
+            error += self.print_tree()
+            raise Exception(error)
         #Nothing to do, we just update.
         for p in self.nodes[nid]:
             if self.paths[p] != nid:
@@ -52,19 +56,26 @@ class TreeTester:
             raise Exception('Mismatching node for path %s'%str(p))
             
     def reordered(self,nid,path,neworder):
+        self.trace += "reordering children of %s (%s) : %s\n" %(nid,str(path),neworder)
         if not path:
             path = ()
         i = 0
         newpaths = {}
         #we first update self.nodes with the new paths
         while i < len(neworder):
-            old = neworder[i]
-            oldp = path + (old,)
-            newp = path + (i,)
-            n = self.paths[oldp]
-            self.nodes[n].remove(oldp)
-            self.nodes[n].append(newp)
-            newpaths[newp] = n
+            if i != neworder[i]:
+                old = neworder[i]
+                oldp = path + (old,)
+                newp = path + (i,)
+                le = len(newp)
+                for pp in self.paths.keys():
+                    if pp[0:le] == oldp:
+                        n = self.paths[pp]
+                        self.nodes[n].remove(pp)
+                        newpp = newp + pp[le:]
+                        self.nodes[n].append(newpp)
+                        newpaths[newpp] = n
+            i += 1
         #now we can update self.paths
         for p in newpaths:
             self.paths[p] = newpaths[p]

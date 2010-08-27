@@ -333,9 +333,12 @@ class TreeModel(gtk.GenericTreeModel):
         self.row_deleted(path)
             
     def __reorder(self,nid,path,neworder):
-        actual_nid = self.tree.get_node_for_path(node_path)
+        actual_nid = self.tree.get_node_for_path(path)
         if nid == actual_nid:
-            rowref = self.get_iter(node_path)
+            if path:
+                rowref = self.get_iter(path)
+            else:
+                rowref = None
             self.rows_reordered(path,rowref,neworder)
         else:
             raise Exception('path/node mismatch in reorder')

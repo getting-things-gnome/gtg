@@ -148,12 +148,16 @@ class FilteredTree():
     def set_callback(self,event,func):
         self.cllbcks[event] = func
         
-    def callback(self,event,tid,path):
+    def callback(self,event,tid,path,neworder=None):
         func = self.cllbcks.get(event,None)
         if func:
-            if not path or len(path) <= 0:
-                raise Exception('cllbck %s for %s but it has no paths'%(event,tid))
-            func(tid,path)
+#           The reordered callback might take None as arguments
+#            if not path or len(path) <= 0:
+#                raise Exception('cllbck %s for %s but it has no paths'%(event,tid))
+            if neworder:
+                func(tid,path,neworder)
+            else:
+                func(tid,path)
             
     def get_node(self,id):
         """
@@ -730,7 +734,7 @@ class FilteredTree():
             #We remove the node from the parents
             for p in pars:
                 self.cache_nodes[p]['children'].remove(nid)
-                #FIXME : reorder the children !
+                #FIXME : reorder the parent !
                 #removing the parents
                 self.cache_nodes[nid]['parents'].remove(p)
             #Now we remove the node if it is not displayed at all anymore
@@ -745,6 +749,7 @@ class FilteredTree():
                         self.__update_node(c)
                 if nid in self.cache_vr:
                     self.cache_vr.remove(nid)
+                    #FIXME : reoredr VR
                 self.cache_nodes.pop(nid)
                 for pa in npaths:
                     self.callback('deleted',nid,pa)
@@ -813,7 +818,7 @@ class FilteredTree():
                 if len(node_dic['parents']) == 0 and nid not in self.cache_vr:
                     self.cache_vr.append(nid)
                 if len(node_dic['parents']) > 0 and nid in self.cache_vr:
-                    self.cache_vr.remove(nid)
+                    self.__remove_from_vr(nid)
                     
                 #DEBUG
                 error += "before signal : %s\n" %self.cache_nodes
@@ -838,6 +843,22 @@ class FilteredTree():
 #        else:
 #            print "nothing to do for %s" %nid
         
+    
+    #This function remove a node from the VR but
+    #doesn't touche the cache_nodes.
+    def __remove_from_vr(self,nid):
+        index = self.cache_vr.index(nid)
+        if index != (len(self.cache_vr)-1):
+            neworder = range(0,len(self.cache_vr))
+            self.cache_vr.remove(nid)
+            neworder.remove(index)
+            self.cache_vr.append(nid)
+            neworder.append(index)
+            self.callback('reordered',None,None,neworder)
+        path = (self.cache_vr.index(nid),)
+        self.callback('deleted',nid,path)
+        self.cache_vr.remove(nid)
+    
         
 #    def __delete_node(self,nid,paths=None):
 #        '''Delete occurence of node nid for given paths.
@@ -1150,6 +1171,7 @@ class FilteredTree():
 #        while pos > 0:
 #            pos -= 1
 #            self.__delete_node(self.cache_vr[pos])
+        #FIXME : really delete left leaf first or use reorder !
         while len(self.cache_nodes) > 0:
             keys = self.cache_nodes.keys()
             for k in keys:
