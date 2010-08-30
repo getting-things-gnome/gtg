@@ -1,9 +1,35 @@
+# -*- coding: utf-8 -*-
+# -----------------------------------------------------------------------------
+# Gettings Things Gnome! - a personal organizer for the GNOME desktop
+# Copyright (c) 2008-2010 - Lionel Dricot & Bertrand Rousseau
+#
+# This program is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program.  If not, see <http://www.gnu.org/licenses/>.
+# -----------------------------------------------------------------------------
+
+#If True, the TreeTester will automatically reorder node on the same level
+#as a deleted node. If False, it means that Liblarch has the responsability
+#to handle that itself.
+REORDER_ON_DELETE = False
+
 class TreeTester:
     '''A class that will check if a tree implementation is consistent
     by connecting to emitted signals and crashing on any problem'''
     def __init__(self,viewtree):
         self.tree = viewtree
         #both dict should always be synchronized
+        #They are the internal representation of the tree,
+        #based only on received signals
         self.nodes = {}
         self.paths = {}
         self.tree.register_cllbck('node-added-inview',self.add)
@@ -33,6 +59,9 @@ class TreeTester:
             raise Exception('%s is not assigned to path %s'%(nid,str(path)))
         if path not in self.nodes.get(nid,[]):
             raise Exception('%s is not a path of node %s'%(str(path),nid))
+        if REORDER_ON_DELETE:
+            index = path[-1:]
+            print "reorder on delete not yet implemented"
         self.nodes[nid].remove(path)
         self.paths.pop(path)
     
