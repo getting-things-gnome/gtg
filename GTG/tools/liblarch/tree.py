@@ -508,22 +508,14 @@ class TreeNode():
             if t != self.thread:
                 raise Exception('! could not acces set_parent from thread %s' %t)
         is_already_parent_flag = False
-        toremove = []
         for i in self.parents:
             if i != par_id:
-#                assert(self.remove_parent(i) == True)
-                toremove.append(i)
+                self.remove_parent(i)
             else:
                 is_already_parent_flag = True
         if par_id and not is_already_parent_flag:
             self.add_parent(par_id)
-            for p in toremove:
-                self.remove_parent(p)
-            
-        elif par_id == None:
-#            self.new_relationship('root', self.get_id())
-            for p in toremove:
-                self.remove_parent(p)
+
             
     def remove_parent(self,id):
         if self.thread_protection:
