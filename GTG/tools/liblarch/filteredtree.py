@@ -778,6 +778,7 @@ class FilteredTree():
                         
                 if len(node_dic['parents']) == 0 and nid not in self.cache_vr:
                     self.cache_vr.append(nid)
+                    self.__add_node(nid)
                 if len(node_dic['parents']) > 0 and nid in self.cache_vr:
                     self.__remove_from_vr(nid)
                     

@@ -63,6 +63,8 @@ class TreeTester:
             index = path[-1:]
             print "reorder on delete not yet implemented"
         self.nodes[nid].remove(path)
+        if len(self.nodes[nid]) == 0:
+            self.nodes.pop(nid)
         self.paths.pop(path)
     
     def update(self,nid,path):
@@ -119,6 +121,8 @@ class TreeTester:
     
     def test_validity(self):
         for n in self.nodes.keys():
+            if len(self.nodes[n]) == 0:
+                raise Exception('Node %s is stored without any path'%n)
             for p in self.nodes[n]:
                 if self.paths[p] != n:
                     raise Exception('Mismatching path for %s'%n)
