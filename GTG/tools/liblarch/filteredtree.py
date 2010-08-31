@@ -126,6 +126,7 @@ class FilteredTree():
         
         #an initial refilter is always needed if we don't apply a filter
         #for performance reason, we do it only if refresh = True
+        self.inrefresh = False
         if refresh:
             self.refilter()
         
@@ -306,6 +307,10 @@ class FilteredTree():
         if nid and self.is_displayed(nid):
             pars = self.cache_nodes[nid]['parents']
             if len(pars) == 0:
+                if nid not in self.cache_vr:
+                    error = '%s has no parent and is not in VR\n' %nid
+                    error += self.trace
+                    raise Exception(error)
                 index = self.cache_vr.index(nid)
                 toreturn.append((index,))
             else:
@@ -640,7 +645,7 @@ class FilteredTree():
         This is a private method that return True if the task *should*
         be displayed in the tree, regardless of its current status
         """
-        if tid and self.tree.has_node(tid):
+        if tid and self.tree.has_node(tid) and not self.inrefresh:
             result = True
             counting_result = True
             cache_key = ""
@@ -673,6 +678,7 @@ class FilteredTree():
 #################### Update the static state ################################
         
     def __delete_node(self,nid,pars=None):
+        self.trace += "Deleting node %s with pars %s\n" %(nid,pars)
         if self.is_displayed(nid):
             if pars:
                 for p in pars:
@@ -690,27 +696,33 @@ class FilteredTree():
                     self.__make_last_child(nid,None)
                 npaths = self.get_paths_for_node(nid)
                 
+            #We recursively delete children if necessary
+            if not self.__is_displayed(nid) and self.tree.has_node(nid):
+                childrens = list(self.cache_nodes[nid]['children'])
+                childrens.reverse()
+                for c in childrens:
+                    self.__delete_node(c,pars=[nid])
+                
             #We remove the node from the parents
             for p in pars:
                 self.cache_nodes[p]['children'].remove(nid)
                 #FIXME : reorder the parent !
                 #removing the parents
                 self.cache_nodes[nid]['parents'].remove(p)
-#            if len(pars) == 0:
-#                self.__make_last_child(nid,None)
+
             #Now we remove the node if it is not displayed at all anymore
             if not self.__is_displayed(nid):
                 #We need childrens only if we delete totally the node
                 if self.tree.has_node(nid):
                     #if the node has been completely removed,
                     #children have already been moved.
-                    childrens = self.cache_nodes[nid]['children']
                     for c in childrens:
-                        self.cache_nodes[c]['parents'].remove(nid)
-                        self.__update_node(c)
+                        #Children might be added elsewhere
+                        if self.__is_displayed(c):
+                            self.__update_node(c)
+
                 if nid in self.cache_vr:
                     self.cache_vr.remove(nid)
-                    #FIXME : reoredr VR
                 self.cache_nodes.pop(nid)
                 for pa in npaths:
                     self.callback('deleted',nid,pa)
@@ -826,6 +838,10 @@ class FilteredTree():
             children = self.cache_nodes[parent]['children']
         else:
             children = self.cache_vr
+        if nid not in children:
+            error = "node %s is not in children %s of parent %s\n"%(nid,children,parent)
+            error += self.trace
+            raise Exception(error)
         index = children.index(nid)
         if index != (len(children)-1):
             neworder = range(0,len(children))
@@ -846,6 +862,7 @@ class FilteredTree():
         rebuilds the tree from scratch. It should be called only when 
         the filter is changed (i.e. only filters_bank should call it).
         """
+        self.inrefresh = True
         #If we have only one flat filter, the result is flat
 #        print " * * *  Start refilter * * *  *"
         self.__flat = False
@@ -856,32 +873,34 @@ class FilteredTree():
         #First step, we empty the current tree as we will rebuild it
         #from scratch
         #we delete them left-leaf first !
-#        pos = len(self.cache_vr)
-#        while pos > 0:
-#            pos -= 1
-#            self.__delete_node(self.cache_vr[pos])
+        pos = len(self.cache_vr)
+        while pos > 0:
+            pos -= 1
+            self.__delete_node(self.cache_vr[pos])
         #FIXME : really delete left leaf first or use reorder !
-        while len(self.cache_nodes) > 0:
-            keys = self.cache_nodes.keys()
-            for k in keys:
-                if len(self.cache_nodes[k]['children']) == 0:
-                    self.__delete_node(k)
-                    if self.cache_nodes.has_key(k):
-                        for par in self.cache_nodes[k]['parents']:
-                            self.cache_nodes[par]['children'].remove(k)
-                        self.cache_nodes.pop(k)
-                    if k in self.cache_vr:
-                        self.cache_vr.remove(k)
-                else:
-                    for c in self.cache_nodes[k]['children']:
-                        if c not in self.cache_nodes.keys():
-                            error = "%s is still a child of %s\n" %(c,k)
-                            raise Exception(error)
+        
+#        while len(self.cache_nodes) > 0:
+#            keys = self.cache_nodes.keys()
+#            for k in keys:
+#                if len(self.cache_nodes[k]['children']) == 0:
+#                    self.__delete_node(k)
+#                    if self.cache_nodes.has_key(k):
+#                        for par in self.cache_nodes[k]['parents']:
+#                            self.cache_nodes[par]['children'].remove(k)
+#                        self.cache_nodes.pop(k)
+#                    if k in self.cache_vr:
+#                        self.cache_vr.remove(k)
+#                else:
+#                    for c in self.cache_nodes[k]['children']:
+#                        if c not in self.cache_nodes.keys():
+#                            error = "%s is still a child of %s\n" %(c,k)
+#                            raise Exception(error)
         #The cache should now be empty
         if len(self.cache_nodes) >0:
             raise Exception('cache_nodes should be empty but %s'%self.cache_nodes)
         if len(self.cache_vr) > 0:
             raise Exception('cache_vr should be empty but %s'%self.cache_vr)
+        self.inrefresh = False
         for nid in self.tree.get_all_nodes():
             #only add root nodes (those who don't have parents)
             if self.__is_displayed(nid) and len(self.__node_parents(nid)) == 0:

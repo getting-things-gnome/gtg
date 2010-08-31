@@ -1104,8 +1104,9 @@ class TestLibLarch(unittest.TestCase):
         '''This is a torture test, where we will do whatever
         we want in random order.
         '''
-        view = self.tree.get_viewtree(refresh = True)
+        view = self.tree.get_viewtree(refresh = False)
         test = TreeTester(view)
+        view.reset_filters(refresh=True)
         node = DummyNode('parent')
         node.add_child('1')
         node.add_child('3')

@@ -56,7 +56,9 @@ class TreeTester:
     def delete(self,nid,path):
         self.trace += "removing %s from path %s\n" %(nid,str(path))
         if nid != self.paths.get(path,None):
-            raise Exception('%s is not assigned to path %s'%(nid,str(path)))
+            error = '%s is not assigned to path %s\n'%(nid,str(path))
+            error += self.print_tree()
+            raise Exception(error)
         if path not in self.nodes.get(nid,[]):
             raise Exception('%s is not a path of node %s'%(str(path),nid))
         if REORDER_ON_DELETE:
@@ -88,6 +90,7 @@ class TreeTester:
             
     def reordered(self,nid,path,neworder):
         self.trace += "reordering children of %s (%s) : %s\n" %(nid,str(path),neworder)
+        self.trace += "VR is %s\n" %self.tree.node_all_children()
         if not path:
             path = ()
         i = 0
