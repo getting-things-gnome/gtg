@@ -319,12 +319,12 @@ class Tag(TreeNode):
 
     ### TASK relation ####      
 
-    def get_tasks(self,filters=[]):
-        tasktree = self.req.get_tasks_tree(name=self.get_name(),refresh=False)
-        for f in filters:
-            tasktree.apply_filter(f,refresh=False)
-        tasktree.apply_filter(self.get_name())
-        return tasktree.get_all_nodes()
+#    def get_tasks(self,filters=[]):
+#        tasktree = self.req.get_tasks_tree(name=self.get_name(),refresh=False)
+#        for f in filters:
+#            tasktree.apply_filter(f,refresh=False)
+#        tasktree.apply_filter(self.get_name())
+#        return tasktree.get_all_nodes()
        
     def get_active_tasks_count(self):
 #        count = self.__get_count(filters=['active'])

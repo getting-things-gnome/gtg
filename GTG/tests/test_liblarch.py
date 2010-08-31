@@ -942,6 +942,7 @@ class TestLibLarch(unittest.TestCase):
 
     def test_simple_filter(self):
         view = self.tree.get_viewtree(refresh=False)
+        test = TreeTester(view)
         """Test use of filters to restrict nodes shown.
 
         When the 'red' filter is applied, only nodes with the 'red' color
@@ -957,6 +958,7 @@ class TestLibLarch(unittest.TestCase):
         should still be displayed.
         """
         view.apply_filter('red')
+        test.test_validity()
         self.assertEqual(self.red_nodes,view.get_n_nodes())
         self.assertEqual(self.red_nodes,view.get_n_nodes(withfilters=['red']))
         self.assertEqual(0,view.get_n_nodes(withfilters=['blue']))
@@ -964,9 +966,11 @@ class TestLibLarch(unittest.TestCase):
         self.assertEqual(self.red_nodes,view.node_n_children())
         #applying another filter
         view.apply_filter('green')
+        test.test_validity()
         self.assertEqual(0,view.get_n_nodes())
         #unapplying the first filter
         view.unapply_filter('red')
+        test.test_validity()
         self.assertEqual(self.green_nodes,view.get_n_nodes())
         self.assertEqual(self.green_nodes,view.get_n_nodes(withfilters=['green']))
         self.assertEqual(0,view.get_n_nodes(withfilters=['red']))
@@ -984,15 +988,18 @@ class TestLibLarch(unittest.TestCase):
         node = DummyNode('temp')
         node.add_color('green')
         self.tree.add_node(node)
+        test.test_validity()
         #It should now be in the view
         self.assert_(view.is_displayed('temp'))
         self.assertEqual(3,view.node_n_children())
         #We remove it
         self.tree.del_node('temp')
+        test.test_validity()
         self.failIf(view.is_displayed('temp'))
         self.assertEqual(2,view.node_n_children())
         #We add it again as a children of a non-displayed node
         self.tree.add_node(node,parent_id='1')
+        test.test_validity()
         self.assert_(view.is_displayed('temp'))
         self.assertEqual(3,view.node_n_children())
         #It should not have parent
@@ -1000,6 +1007,7 @@ class TestLibLarch(unittest.TestCase):
 
     def test_leaf_filter(self):
         view = self.tree.get_viewtree(refresh=False)
+        test = TreeTester(view)
         """Test filtering to show only the leaf nodes.
 
         When the 'leaf' filter is applied and a child added to a node,
@@ -1018,6 +1026,7 @@ class TestLibLarch(unittest.TestCase):
         self.assertEqual(1,view.get_n_nodes())
         nid = view.get_node_for_path((0,))
         self.assertEqual('temp',nid)
+        test.test_validity()
 
     #we copy/paste the test
     def test_flatleaves_filters(self):
@@ -1025,6 +1034,7 @@ class TestLibLarch(unittest.TestCase):
         should be the same as a simple leaf filter.
         """
         view = self.tree.get_viewtree(refresh=False)
+        test = TreeTester(view)
         view.apply_filter('flatleaves')
         total = self.red_nodes + self.blue_nodes
         self.assertEqual(total,view.get_n_nodes())
@@ -1038,6 +1048,7 @@ class TestLibLarch(unittest.TestCase):
         self.assertEqual(1,view.get_n_nodes())
         nid = view.get_node_for_path((0,))
         self.assertEqual('temp',nid)
+        test.test_validity()
         
     #green are stairs
     #the flat filter should make them flat
@@ -1049,6 +1060,7 @@ class TestLibLarch(unittest.TestCase):
         all the nodes are now seen "flately".
         """
         view = self.tree.get_viewtree(refresh=False)
+        test = TreeTester(view)
         view.apply_filter('flatgreen')
         #all green nodes should be visibles
         self.assertEqual(self.green_nodes,view.get_n_nodes())
@@ -1069,9 +1081,11 @@ class TestLibLarch(unittest.TestCase):
         while i <= self.green_nodes :
             self.assert_(str(self.total-i) in nodes)
             i += 1
+        test.test_validity()
         
     def test_transparent_filters(self):
         view = self.tree.get_viewtree(refresh=False)
+        test = TreeTester(view)
         """Test excluding transparent filters
 
         Filters marked with the 'transparent' property should apply in get_n_nodes()
@@ -1086,6 +1100,7 @@ class TestLibLarch(unittest.TestCase):
                                                     include_transparent=False)
         self.assertEqual(0,count1)
         self.assertEqual(self.blue_nodes,count2)
+        test.test_validity()
 
     def test_view_signals(self):
         view = self.tree.get_viewtree(refresh = True)
@@ -1097,10 +1112,12 @@ class TestLibLarch(unittest.TestCase):
             self.assertEqual(view.get_node_for_path(path),nid)
             self.assert_(path in view.get_paths_for_node(nid))
         view = self.tree.get_viewtree(refresh=False)
+        test = TreeTester(view)
         view.register_cllbck('node-modified-inview',check_path)
         view.register_cllbck('node-added-inview',check_path)
         view.apply_filter('leaf')
         view.unapply_filter('leaf')
+        test.test_validity()
         
     def test_torture(self):
         '''This is a torture test, where we will do whatever
@@ -1128,6 +1145,22 @@ class TestLibLarch(unittest.TestCase):
         test.test_validity()
         self.assertEqual(view.node_n_children('parent'),3)
         
+    def test_copypasting_child(self):
+        view = self.tree.get_viewtree(refresh = False)
+        test = TreeTester(view)
+        view.apply_filter('green')
+        node = DummyNode('child')
+        node.add_color('green')
+        node1 = DummyNode('child2')
+        node1.add_color('green')
+        node2 = DummyNode('parent')
+        node2.add_color('green')
+        self.tree.add_node(node2)
+        self.tree.add_node(node,parent_id='10')
+        self.tree.add_node(node1,parent_id='10')
+        #We copy paste 'child' into 'parent'
+        node2.add_child('child')
+        test.test_validity()
 
         
 def test_suite():

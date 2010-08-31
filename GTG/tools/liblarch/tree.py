@@ -396,17 +396,9 @@ class TreeNode():
                 t = threading.current_thread()
                 if t != self.thread:
                     raise Exception('! could not modified from thread %s' %t)
-            #PLOUM_DEBUG: why should we refresh parents and children ?
-            #Doesn't look like it's needed
-            #we first modify children
-#            for s in self.get_children():
-#                self.tree.modify_node(s)
             #then the task
             self.tree.modify_node(self.id)
 #            gobject.idle_add(self.tree.modify_node,self.id)
-            #then parents
-#            for p in self.get_parents():
-#                self.tree.modify_node(p)
         
     def set_tree(self,tree):
         if self.thread_protection:
@@ -491,11 +483,8 @@ class TreeNode():
             if t != self.thread:
                 raise Exception('! could not add_parent from thread %s' %t)
         if parent_id not in self.parents:
-#            print " ++++++++ adding parent %s to %s" %(parent_id,self.get_id())
             self.parents.append(parent_id)
             toreturn = self.new_relationship(parent_id, self.get_id())
-#            if not toreturn:
-#                Log.debug("** parent addition failed (probably already done)*")
         else:
             toreturn = False
         return toreturn
@@ -523,7 +512,6 @@ class TreeNode():
             if t != self.thread:
                 raise Exception('! could not remove_parent from thread %s' %t)
         if id in self.parents:
-#            print " --------removing parent %s from %s" %(id,self.get_id())
             self.parents.remove(id)
             ret = self.tree.break_relationship(id,self.get_id())
             return ret
@@ -542,7 +530,6 @@ class TreeNode():
         if self.thread_protection:
             t = threading.current_thread()
             if t != self.thread:
-#                raise Exception('! could not get_children from thread %s' %t)
                 if DEBUG_THREAD:
                     print "we allow treenode.get_children from another thread"
         return list(self.children)
@@ -625,11 +612,6 @@ class TreeNode():
             self.children.remove(id)
             if self.tree:
                 ret = self.tree.break_relationship(self.get_id(),id)
-                #The children list has been modified, so has been the paths
-                #for some node
-                while index < len(self.children):
-                    self.tree.modify_node(self.children[index])
-                    index += 1
                 
             return ret
         else:

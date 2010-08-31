@@ -213,7 +213,7 @@ class FilteredTree():
     def __execution_loop(self):
         while len(self.__updating_queue) > 0:
             tid,action = self.__updating_queue.pop(0)
-#            print "# # # %s %s popped out" %(tid,action)
+#            print "# # # %s %s popped out (tree %s)" %(tid,action,self.applied_filters)
 #            print "       lis is %s" %self.__updating_queue
             prof = self.profile[action]
             prof[0] += 1

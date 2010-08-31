@@ -329,7 +329,7 @@ class TreeModel(gtk.GenericTreeModel):
                 raise Exception('! could not remove_task from thread %s' %t)
         if DEBUG_MODEL:
             print "     deleting row %s  (it's tid %s)" %(str(path),tid)
-            self.tree.print_tree()
+#            self.tree.print_tree()
         self.row_deleted(path)
             
     def __reorder(self,nid,path,neworder):

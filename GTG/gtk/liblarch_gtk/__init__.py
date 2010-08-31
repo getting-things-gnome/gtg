@@ -19,7 +19,7 @@
 
 #useful for debugging purpose.
 #Disabling that will disable the TreeModelSort on top of our TreeModel
-ENABLE_SORTING = 0
+ENABLE_SORTING = True
 
 import gtk
 import gobject
