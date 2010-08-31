@@ -20,6 +20,8 @@
 TAG_XMLFILE = "tags.xml"
 TAG_XMLROOT = "tagstore"
 
+MULTITHREADS = False
+
 """
 The DaataStore contains a list of TagSource objects, which are proxies
 between a backend and the datastore itself
@@ -126,8 +128,10 @@ class DataStore(object):
             if tname not in self.added_tag:
                 tag = Tag(tname, req=self.requester)
                 self.added_tag[tname] = tag
-#                gobject.idle_add(adding_tag,tname,tag)
-                adding_tag(tname,tag)
+                if MULTITHREADS:
+                    adding_tag(tname,tag)
+                else:
+                    gobject.idle_add(adding_tag,tname,tag)
             else:
                 #it means that we are in the process of adding the tag
                 tag = self.added_tag[tname]
@@ -260,8 +264,10 @@ class DataStore(object):
             return False
         else:
             #Thread protection
-#            gobject.idle_add(adding,task)
-            adding(task)
+            if MULTITHREADS:
+                adding(task)
+            else:
+                gobject.idle_add(adding,task)
             return True
 
     ##########################################################################
