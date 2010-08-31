@@ -783,9 +783,9 @@ class FilteredTree():
                 #We remove uneeded childrens
                 for ch in list(node_dic['children']):
                     if ch not in new_children:
-                        self.trace += " ....removing child %s of %s\n" %(ch,nid)
+#                        self.trace += " ....removing child %s of %s\n" %(ch,nid)
                         self.__delete_node(ch,pars=[nid])
-                        self.trace += "  ...child is now :%s\n"%self.cache_nodes[ch]
+#                        self.trace += "  ...child is now :%s\n"%self.cache_nodes[ch]
                 #We add new childrens that were not there
                 for ch in new_children:
                     if ch not in node_dic['children']:
