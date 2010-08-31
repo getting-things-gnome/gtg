@@ -1126,7 +1126,7 @@ class TestLibLarch(unittest.TestCase):
 #        print view.print_tree(string=True)
         node.add_color('blue')
         test.test_validity()
-#        print view.print_tree(string=True)
+        print view.print_tree(string=True)
         self.assertEqual(view.node_n_children('parent'),6)
         
 
