@@ -135,6 +135,10 @@ class TreeTester:
                 error = 'Mismatching node for path %s\n'%str(p)
                 error += self.print_tree()
                 raise Exception(error)
+            if len(p) == 1 and len(self.nodes[n]) > 1:
+                error = 'Node %s has multiple paths and is in the VR\n' %n
+                error += self.print_tree()
+                raise Exception(error)
         return True
         
     def print_tree(self):

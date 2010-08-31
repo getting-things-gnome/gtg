@@ -724,8 +724,8 @@ class FilteredTree():
                 if nid in self.cache_vr:
                     self.cache_vr.remove(nid)
                 self.cache_nodes.pop(nid)
-                for pa in npaths:
-                    self.callback('deleted',nid,pa)
+            for pa in npaths:
+                self.callback('deleted',nid,pa)
             return True
         else:
             return False
@@ -758,6 +758,9 @@ class FilteredTree():
             if len(node_dic['parents']) == 0:
                 if nid not in self.cache_vr:
                     self.cache_vr.append(nid)
+            else:
+                if nid in self.cache_vr:
+                    self.__remove_from_vr(nid)
             
             for p in self.get_paths_for_node(nid):
 #                print "+++ adding %s to %s" %(nid,str(p))
@@ -877,24 +880,6 @@ class FilteredTree():
         while pos > 0:
             pos -= 1
             self.__delete_node(self.cache_vr[pos])
-        #FIXME : really delete left leaf first or use reorder !
-        
-#        while len(self.cache_nodes) > 0:
-#            keys = self.cache_nodes.keys()
-#            for k in keys:
-#                if len(self.cache_nodes[k]['children']) == 0:
-#                    self.__delete_node(k)
-#                    if self.cache_nodes.has_key(k):
-#                        for par in self.cache_nodes[k]['parents']:
-#                            self.cache_nodes[par]['children'].remove(k)
-#                        self.cache_nodes.pop(k)
-#                    if k in self.cache_vr:
-#                        self.cache_vr.remove(k)
-#                else:
-#                    for c in self.cache_nodes[k]['children']:
-#                        if c not in self.cache_nodes.keys():
-#                            error = "%s is still a child of %s\n" %(c,k)
-#                            raise Exception(error)
         #The cache should now be empty
         if len(self.cache_nodes) >0:
             raise Exception('cache_nodes should be empty but %s'%self.cache_nodes)

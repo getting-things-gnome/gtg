@@ -523,7 +523,7 @@ class TreeNode():
             if t != self.thread:
                 raise Exception('! could not remove_parent from thread %s' %t)
         if id in self.parents:
-#            print " --------removing parent %s to %s" %(id,self.get_id())
+#            print " --------removing parent %s from %s" %(id,self.get_id())
             self.parents.remove(id)
             ret = self.tree.break_relationship(id,self.get_id())
             return ret
