@@ -19,7 +19,7 @@
 
 #This doesn't work
 IDLE_ADD = False
-THREAD_PROTECTION = True
+THREAD_PROTECTION = False
 
 import gobject
 import functools
@@ -41,7 +41,9 @@ class Tree():
     def __init__(self):
         if THREAD_PROTECTION:
             self.thread = threading.current_thread()
-        self.__tree = MainTree(thread=self.thread)
+            self.__tree = MainTree(thread=self.thread)
+        else:
+            self.__tree = MainTree()
         self.__fbank = FiltersBank(self.__tree)
         self.views = {}
         #main is a reserved name for a viewtree. It is the complete viewtree,

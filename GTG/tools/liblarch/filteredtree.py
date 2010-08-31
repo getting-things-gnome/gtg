@@ -83,7 +83,7 @@ DEBUG = True
 #Edit dynamically a tag an you will see why it is broken
 COUNT_CACHING_ENABLED = True
 ## if FT doesn't use signals, it might be slower (but easier to debug)
-FT_USE_SIGNALS = 0
+FT_USE_SIGNALS = False
 
 class FilteredTree():
 
@@ -817,8 +817,6 @@ class FilteredTree():
                 self.__delete_node(nid)
         elif not curdis and todis:
             self.__add_node(nid)
-#        else:
-#            print "nothing to do for %s" %nid
         
     
     #This function remove a node from the VR but

@@ -126,7 +126,8 @@ class DataStore(object):
             if tname not in self.added_tag:
                 tag = Tag(tname, req=self.requester)
                 self.added_tag[tname] = tag
-                gobject.idle_add(adding_tag,tname,tag)
+#                gobject.idle_add(adding_tag,tname,tag)
+                adding_tag(tname,tag)
             else:
                 #it means that we are in the process of adding the tag
                 tag = self.added_tag[tname]
@@ -259,7 +260,8 @@ class DataStore(object):
             return False
         else:
             #Thread protection
-            gobject.idle_add(adding,task)
+#            gobject.idle_add(adding,task)
+            adding(task)
             return True
 
     ##########################################################################

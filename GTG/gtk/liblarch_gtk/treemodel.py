@@ -17,9 +17,9 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 DEBUG_MODEL = False
-TM_USE_SIGNALS = False
-TM_IDLE_ADD = False
-THREAD_PROTECTION = True
+TM_USE_SIGNALS = True
+TM_IDLE_ADD = True
+THREAD_PROTECTION = False
 
 import xml.sax.saxutils as saxutils
 
@@ -56,7 +56,7 @@ class TreeModel(gtk.GenericTreeModel):
             self.tree.register_cllbck('node-added-inview',self.add_task)
             self.tree.register_cllbck('node-deleted-inview',self.remove_task)
             self.tree.register_cllbck('node-modified-inview',self.update_task)
-            self.tree.register_cllbck('node-children-reordered',self.__reorder)
+            self.tree.register_cllbck('node-children-reordered',self.reorder)
 
 ### TREE MODEL HELPER FUNCTIONS ###############################################
 
@@ -331,8 +331,14 @@ class TreeModel(gtk.GenericTreeModel):
             print "     deleting row %s  (it's tid %s)" %(str(path),tid)
 #            self.tree.print_tree()
         self.row_deleted(path)
+        
+    def reorder(self,sender,nid,path,neworder):
+        if TM_IDLE_ADD:
+            gobject.idle_add(self.__reorder,None,nid,path,neworder)
+        else:
+            self.__reorder(None,nid,path,neworder)
             
-    def __reorder(self,nid,path,neworder):
+    def __reorder(self,sender,nid,path,neworder):
         actual_nid = self.tree.get_node_for_path(path)
         if nid == actual_nid:
             if path:

@@ -17,7 +17,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-THREAD_PROTECTION = True
+THREAD_PROTECTION = False
 DEBUG_THREAD = False
 
 import gobject
