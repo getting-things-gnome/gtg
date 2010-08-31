@@ -29,6 +29,7 @@ from GTG.tools.liblarch import Tree
 from GTG.tools.liblarch.tree import TreeNode
 from GTG.gtk.liblarch_gtk import TreeView
 from GTG.tests.signals_testing import SignalCatcher, GobjectSignalsManager
+from GTG.tests.tree_testing import TreeTester
 
 
 #This is a dummy treenode that only have one properties: a color
@@ -108,6 +109,7 @@ class TestLibLarch(unittest.TestCase):
         #Larch, is the tree. Learn to recognize it.
         self.tree = Tree()
         self.view = self.tree.get_viewtree()
+        self.tester = TreeTester(self.view)
         self.mainview = self.tree.get_main_view()
         self.tree.add_filter('blue',self.is_blue)
         self.tree.add_filter('green',self.is_green)
@@ -170,8 +172,11 @@ class TestLibLarch(unittest.TestCase):
             self.assertSignal, self.view, 'node-deleted-inview')
 
     def tearDown(self):
-        #stopping gobject main loop
-        self.gobject_signal_manager.terminate_signals()
+        try:
+            self.tester.test_validity()
+        finally:
+            #stopping gobject main loop
+            self.gobject_signal_manager.terminate_signals()
         
     ####Filters
     def is_blue(self,node,parameters=None):
@@ -201,6 +206,7 @@ class TestLibLarch(unittest.TestCase):
         view = self.tree.get_viewtree(refresh=True)
         node = DummyNode('temp')
         node.add_color('blue')
+
         self.assertSignal(self.view, \
                             'node-modified-inview', \
                             self.assertSignal(self.view, \
@@ -224,12 +230,15 @@ class TestLibLarch(unittest.TestCase):
         #also comparing with another view
         self.assertEqual(total,self.view.get_n_nodes())
         self.assertEqual(self.blue_nodes,self.view.get_n_nodes(withfilters=['blue']))
+        self.tester.test_validity()
         
     def test_modifying_node(self):
         """ Modifying a node and see if the change is reflected in filters """
         viewblue = self.tree.get_viewtree(refresh=False)
+        testblue = TreeTester(viewblue)
         viewblue.apply_filter('blue')
         viewred = self.tree.get_viewtree(refresh=False)
+        testred = TreeTester(viewred)
         viewred.apply_filter('red')
         node = DummyNode('temp')
         node.add_color('blue')
@@ -249,6 +258,8 @@ class TestLibLarch(unittest.TestCase):
         node.remove_color('blue')
         self.failIf(viewblue.is_displayed('temp'))
         self.assert_(viewred.is_displayed('temp'))
+        testred.test_validity()
+        testblue.test_validity()
 
     def test_removing_parent(self):
         """Test behavior of node when its parent goes away.
@@ -266,7 +277,7 @@ class TestLibLarch(unittest.TestCase):
         self.assertSignal(self.view, \
                           'node-deleted-inview', \
                           self.tree.del_node, 1)('0')
-        self.assert_(('0',(0, )) in self.recorded_signals['node-deleted-inview'])
+#        self.assert_(('0',(0, )) in self.recorded_signals['node-deleted-inview'])
         all_nodes = self.view.get_all_nodes()
         self.failIf('0' in all_nodes)
         self.assert_('temp' in all_nodes)
@@ -523,6 +534,7 @@ class TestLibLarch(unittest.TestCase):
         node.add_parent('10')
 #        self.mainview.print_tree(string=False)
         self.tree.del_node('3')
+        self.failIf(self.tree.has_node('3'))
 #        self.mainview.print_tree(string=False)
         self.tree.add_node(node3,parent_id='13')
         self.assertEqual(len(view.get_paths_for_node('3')),3)
@@ -550,7 +562,8 @@ class TestLibLarch(unittest.TestCase):
                           self.tree.del_node, 1)('0', recursive = True)
 #        print "A lot of deleted signals", self.recorded_signals['node-deleted-inview']
         self.assert_(('temp',(0, 0)) in self.recorded_signals['node-deleted-inview'])
-        self.assert_(('0',(0,)) in self.recorded_signals['node-deleted-inview'])
+        #FIXME : the deleted path is not necesarly the one given
+#        self.assert_(('0',(0,)) in self.recorded_signals['node-deleted-inview'])
         all_nodes = self.view.get_all_nodes()
         self.failIf('0' in all_nodes)
         self.failIf('temp' in all_nodes)
@@ -573,7 +586,7 @@ class TestLibLarch(unittest.TestCase):
         self.assertSignal(self.view, \
                           'node-modified-inview', \
                           self.tree.move_node, 2)('temp','1')
-        self.assert_(('0',(0,)) in self.recorded_signals['node-modified-inview'])
+#        self.assert_(('0',(0,)) in self.recorded_signals['node-modified-inview'])
         self.assert_(('1',(1,)) in self.recorded_signals['node-modified-inview'])
         self.assert_(view.node_has_child('1'))
         self.assert_('temp' in view.node_all_children('1'))
@@ -1093,7 +1106,9 @@ class TestLibLarch(unittest.TestCase):
         '''This is a torture test, where we will do whatever
         we want in random order.
         '''
-        view = self.tree.get_viewtree(refresh = True)
+        view = self.tree.get_viewtree(refresh = False)
+        test = TreeTester(view)
+        view.reset_filters(refresh=True)
         node = DummyNode('parent')
         node.add_child('1')
         node.add_child('3')
@@ -1103,12 +1118,15 @@ class TestLibLarch(unittest.TestCase):
         node.add_child('11')
         self.assertFalse(view.is_displayed('parent'))
         self.tree.add_node(node)
+        test.test_validity()
         self.assertEqual(view.node_n_children('parent'),6)
         view.apply_filter('blue')
+        test.test_validity()
         self.assertFalse(view.is_displayed('parent'))
-        print view.print_tree(string=True)
+#        print view.print_tree(string=True)
         node.add_color('blue')
-        self.assertEqual(view.node_n_children('parent'),6)
+        test.test_validity()
+        self.assertEqual(view.node_n_children('parent'),3)
         
 
         

@@ -99,7 +99,7 @@ class MainTree(gobject.GObject):
         
     def refresh_all(self):
         for nid in self.nodes:
-            self.modify_node(nid)
+            self.__modified(nid)
 
     def set_root(self, root):
         self.root = root
@@ -124,8 +124,6 @@ class MainTree(gobject.GObject):
             #build the relationships that were waiting for that node
             for rel in list(self.pending_relationships):
                 if id in rel:
-                    #don't send the refresh after adding the relationship
-                    #it will be done by the node-added callback
                     self.new_relationship(rel[0],rel[1],refresh_nodes=False)
             self.callback("node-added", id)
             return True
@@ -139,6 +137,9 @@ class MainTree(gobject.GObject):
         if not node :
             return
         else:
+            #By removing the node early, we avoid unnecessary 
+            #update of that node
+            self.nodes.pop(id)
             if node.has_child():
                 for c_id in node.get_children():
                     if not recursive:
@@ -151,9 +152,8 @@ class MainTree(gobject.GObject):
                     par.remove_child(id)
             else:
                 self.root.remove_child(id)
-#            self.old_paths[id] = paths
             self.callback("node-deleted", id)
-            self.nodes.pop(id)
+            
         
     #create a new relationship between nodes if it doesn't already exist
     #return False if nothing was done
@@ -231,12 +231,13 @@ class MainTree(gobject.GObject):
     #return False if the relationship didn't exist    
     def break_relationship(self,parent_id,child_id):
         toreturn = False
-        if self.has_node(parent_id) and self.has_node(child_id):
+        if self.has_node(parent_id):
             p = self.get_node(parent_id)
-            c = self.get_node(child_id)
             if p.has_child(child_id):
                 ret = p.remove_child(child_id)
                 toreturn = True
+        if self.has_node(child_id):
+            c = self.get_node(child_id)
             if c.has_parent(parent_id):
                 c.remove_parent(parent_id)
                 toreturn = True
@@ -509,13 +510,12 @@ class TreeNode():
         is_already_parent_flag = False
         for i in self.parents:
             if i != par_id:
-                assert(self.remove_parent(i) == True)
+                self.remove_parent(i)
             else:
                 is_already_parent_flag = True
         if par_id and not is_already_parent_flag:
             self.add_parent(par_id)
-        elif par_id == None:
-            self.new_relationship('root', self.get_id())
+
             
     def remove_parent(self,id):
         if self.thread_protection:
@@ -523,7 +523,7 @@ class TreeNode():
             if t != self.thread:
                 raise Exception('! could not remove_parent from thread %s' %t)
         if id in self.parents:
-#            print " --------removing parent %s to %s" %(id,self.get_id())
+#            print " --------removing parent %s from %s" %(id,self.get_id())
             self.parents.remove(id)
             ret = self.tree.break_relationship(id,self.get_id())
             return ret

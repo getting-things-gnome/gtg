@@ -126,6 +126,7 @@ class FilteredTree():
         
         #an initial refilter is always needed if we don't apply a filter
         #for performance reason, we do it only if refresh = True
+        self.inrefresh = False
         if refresh:
             self.refilter()
         
@@ -148,12 +149,16 @@ class FilteredTree():
     def set_callback(self,event,func):
         self.cllbcks[event] = func
         
-    def callback(self,event,tid,path):
+    def callback(self,event,tid,path,neworder=None):
         func = self.cllbcks.get(event,None)
         if func:
-            if not path or len(path) <= 0:
-                raise Exception('cllbck %s for %s but it has no paths'%(event,tid))
-            func(tid,path)
+#           The reordered callback might take None as arguments
+#            if not path or len(path) <= 0:
+#                raise Exception('cllbck %s for %s but it has no paths'%(event,tid))
+            if neworder:
+                func(tid,path,neworder)
+            else:
+                func(tid,path)
             
     def get_node(self,id):
         """
@@ -294,21 +299,46 @@ class FilteredTree():
                 n += 1
         return toprint
     
-    def get_paths_for_node(self,tid):
-        if tid and self.is_displayed(tid):
-            toreturn = self.cache_nodes[tid]['paths']
-        elif not tid:
-            #root
-            toreturn = [()]
-        else:
-            toreturn = []
-        if len(toreturn) > 1:
-            for t in toreturn:
-                if len(t) <= 1:
-                    error = "Cannot return paths %s for %s\n" %(toreturn,tid)
-                    error += "%s is in VR: %s" %(tid,tid in self.cache_vr)
+    def get_paths_for_node(self,nid):
+        error = "Get path for %s\n" %nid
+        if not nid:
+            return [()]
+        toreturn = []
+        if nid and self.is_displayed(nid):
+            pars = self.cache_nodes[nid]['parents']
+            if len(pars) == 0:
+                if nid not in self.cache_vr:
+                    error = '%s has no parent and is not in VR\n' %nid
+                    error += self.trace
                     raise Exception(error)
+                index = self.cache_vr.index(nid)
+                toreturn.append((index,))
+            else:
+                for p in pars:
+                    if nid not in self.cache_nodes[p]['children']:
+                        error += "%s not in children of %s" %(nid,p)
+                        raise Exception(error)
+                    index = self.cache_nodes[p]['children'].index(nid)
+                    for pp in self.get_paths_for_node(p):
+                        mypath = pp + (index,)
+                        toreturn.append(mypath)
         return toreturn
+    
+#    def get_paths_for_node(self,tid):
+#        if tid and self.is_displayed(tid):
+#            toreturn = self.cache_nodes[tid]['paths']
+#        elif not tid:
+#            #root
+#            toreturn = [()]
+#        else:
+#            toreturn = []
+#        if len(toreturn) > 1:
+#            for t in toreturn:
+#                if len(t) <= 1:
+#                    error = "Cannot return paths %s for %s\n" %(toreturn,tid)
+#                    error += "%s is in VR: %s" %(tid,tid in self.cache_vr)
+#                    raise Exception(error)
+#        return toreturn
     
     def node_all_children(self,tid):
         if tid:
@@ -615,7 +645,7 @@ class FilteredTree():
         This is a private method that return True if the task *should*
         be displayed in the tree, regardless of its current status
         """
-        if tid and self.tree.has_node(tid):
+        if tid and self.tree.has_node(tid) and not self.inrefresh:
             result = True
             counting_result = True
             cache_key = ""
@@ -646,344 +676,188 @@ class FilteredTree():
         return result
         
 #################### Update the static state ################################
-    def __next_nodes(self,nid,path):
-        '''given a node and a path, return all the next nodes of that node
-        for that path.
-        The list is returned in reverse order (last next_node first)
-        '''
-        error = "nextnodes %s %s\n" %(nid,str(path))
-        if len(path) >= 2:
-            index = path[-1]
-            parpath = path[:-1]
-            par = self.get_node_for_path(parpath)
-            if not par:
-                error += "There's no node for %s\n" %str(parpath)
-                if DEBUG:
-                    error += self.trace
-                raise Exception(error)
-            par_child = self.node_all_children(par)
-            error += "parent is %s and has child %s\n" %(par,par_child)
-        elif len(path) == 1:
-            index = path[0]
-            parpath = ()
-            par_child = list(self.cache_vr)
-            error += "we are using VR : %s\n" %par_child
-        else:
-            error += 'the path is empty !'
-            raise ValueError(error)
-        if par_child[index] != nid:
-            error += '%s is index %s in children %s'%(nid,index,par_child)
-            raise ValueError(error)
-        nexts = []
-        i = index+1
-        while i < len(par_child):
-            c = par_child[i]
-            cpath = parpath + (i,)
-            i += 1
-            cpaths = self.get_paths_for_node(c)
-#            if not cpath in cpaths:
-#                error += '%s should be in paths of node %s\n' %(cpath,c)
-#                error += 'but paths are %s\n' %cpaths
-##                error += self.print_tree(string=True)
-##                raise Exception(error)
-            if cpath in cpaths:
-                nexts.append([c,cpath])
-            #else: it means that we have already deleted the next nodes
-            error += "nexts are now : %s\n" %nexts
-        nexts.reverse()
-        return nexts
         
-        
-    def __delete_node(self,nid,paths=None):
-        '''Delete occurence of node nid for given paths.
-        if paths is None, then the node is removed for every paths it belongs to.
-        Deleting a node means :
-        1. Deleting all the next_nodes
-        2. Deleting all the children.
-        3. Deleting the node itself.
-        4. Re-adding all the next_nodes
-        '''
-        error = 'Delete node %s (p=%s)\n' %(nid,paths)
-        if self.is_displayed(nid): # and nid not in self.deleting_queue:
-            if not paths:
-                paths = self.get_paths_for_node(nid)
-            if DEBUG:
-                self.trace += "      remove %s from path %s\n" %(nid,str(paths))
-            #0. we first delete next_nodes, left first
-            paths.sort()
-            paths.reverse()
-            for p in paths:
-                error += "We are in the process of deleting %s %s\n" %(nid,str(p))
-                nexts = self.__next_nodes(nid,p)
-                # 1. recursively delete all children, left-leaf first
-                # and also delete all next_nodes (that we will readd afterward)
-                for n in nexts:
-                    self.__delete_node(n[0],[n[1]])
-                children = self.node_all_children(nid)
-                i = len(children)
-                while i > 0:
-                    i -= 1
-                    cpath = p + (i,)
-                    real_cpaths = self.get_paths_for_node(children[i])
-                    if not cpath in real_cpaths:
-                        error += "thus, I want to remove children %s\n" %children
-                        error += "but %s is not in paths of %s\n " %(str(cpath),children[i])
-                        error += "children paths are : %s" %real_cpaths
-#                        raise Exception(error)
-                    else:
-                        self.__delete_node(children[i],[cpath])
-                # 2. delete the node itself
-                cached = self.cache_nodes[nid]
-                n_paths = 0
-                if len(p) == 1:
+    def __delete_node(self,nid,pars=None):
+        self.trace += "Deleting node %s with pars %s\n" %(nid,pars)
+        if self.is_displayed(nid):
+            if pars:
+                for p in pars:
+                    self.__make_last_child(nid,p)
+                    ppaths = self.get_paths_for_node(p)
+                    nindex = self.cache_nodes[p]['children'].index(nid)
+                    npaths = []
+                    for pp in ppaths:
+                        npaths.append(pp + (nindex,))
+            else:
+                pars = list(self.cache_nodes[nid]['parents'])
+                for p in pars:
+                    self.__make_last_child(nid,p)
+                if len(pars) == 0:
+                    self.__make_last_child(nid,None)
+                npaths = self.get_paths_for_node(nid)
+                
+            #We recursively delete children if necessary
+            if not self.__is_displayed(nid) and self.tree.has_node(nid):
+                childrens = list(self.cache_nodes[nid]['children'])
+                childrens.reverse()
+                for c in childrens:
+                    self.__delete_node(c,pars=[nid])
+                
+            #We remove the node from the parents
+            for p in pars:
+                self.cache_nodes[p]['children'].remove(nid)
+                #FIXME : reorder the parent !
+                #removing the parents
+                self.cache_nodes[nid]['parents'].remove(p)
+
+            #Now we remove the node if it is not displayed at all anymore
+            if not self.__is_displayed(nid):
+                #We need childrens only if we delete totally the node
+                if self.tree.has_node(nid):
+                    #if the node has been completely removed,
+                    #children have already been moved.
+                    for c in childrens:
+                        #Children might be added elsewhere
+                        if self.__is_displayed(c):
+                            self.__update_node(c)
+
+                if nid in self.cache_vr:
                     self.cache_vr.remove(nid)
-                    parent = None
-                else:
-                    parent = self.get_node_for_path(p[:-1])
-                    p_dic = self.cache_nodes[parent]
-                    #We remove the parent if the node doesn't have
-                    #any other path related to this parent 
-                    removepar = True
-                    for pp in cached['paths']:
-                        if pp != p and pp[:-1] in p_dic['paths']:
-                            removepar = False
-                    if removepar:
-                        cached['parents'].remove(parent)
-                        p_dic['children'].remove(nid)
-                cached['paths'].remove(p)
-                #Now we remove the node if it doesn't have any path left
-                if len(cached['paths']) <= 0:
-                    self.cache_nodes.pop(nid)
-                # 3. send the signal (it means that the state is valid)
-                #Autocheck
-                if p in self.get_paths_for_node(nid):
-                    error += "We should have removed %s of node %s\n" %(str(p),nid)
-                    if DEBUG:
-                        error += self.trace
-                    raise Exception(error)
-                if nid == self.get_node_for_path(p):
-                    error += "%s should not be anymore at path %s\n" %(nid,str(p))
-                    error += "paths of %s are %s" %(nid,self.get_paths_for_node(nid))
-                    if DEBUG:
-                        error += self.trace
-                    raise Exception(error)
-                if DEBUG:
-                    self.trace += "****** We delete %s from path %s\n" %(nid,str(p))
-                self.callback('deleted',nid,p)
-                # 4. update next_node  ( this is the trickiest point)
-                nexts.reverse()
-                for n in nexts:
-                    self.__add_node(n[0])
+                self.cache_nodes.pop(nid)
+            for pa in npaths:
+                self.callback('deleted',nid,pa)
             return True
         else:
             return False
     
-    def __add_node(self,nid,paths=None):
-        error = "Adding node %s to paths %s\n" %(nid,paths)
-        if DEBUG:
-            self.trace += "      "+error
-        #we only add node that really need it.
-        curdis = self.is_displayed(nid)
-        newdis = self.__is_displayed(nid)
-        #it should not be displayed, don't add it.
-        if not newdis:
-            return False
-        if not paths:
-            paths = self.__get_paths_for_node(nid)
-            error += "%s got the paths %s\n" %(nid,paths)
-        #We remove the paths that are already displayed
-        if curdis:
-            for pp in self.get_paths_for_node(nid):
-                if pp in paths:
-                    paths.remove(pp)
-                    error += "path %s is already displayed. Not to add\n"%str(pp)
-                    if DEBUG:
-                        self.trace += "    we wont add path %s for %s\n" %(str(pp),nid)
-            node_dic = self.cache_nodes[nid]
-            #We remove the occurence at the root
-            if len(pp) == 1 and pp not in paths:
-                self.__delete_node(nid,[pp])
-        else:
-            #Not displayed, creating the node
-            node_dic = {}
-            node_dic['paths'] = []
-            node_dic['parents'] = []
-            node_dic['children'] = []  # childrens will add themselves afterward
-            if self.cache_nodes.has_key(nid):
-                raise Exception('%s was already a visible node when added' %nid)
-            self.cache_nodes[nid] = node_dic
-        #Now we add each path separately
-        for p in paths:
-            #check that the path is free
-            other = self.get_node_for_path(p)
-            to_readd = []
-            if other and other != nid:
-                error += "     adding %s to path %s but occupied by %s\n"\
-                                                        %(nid,str(p),other)
-                to_readd = self.__next_nodes(other,p)
-                to_readd.append([other,p])
-                for t in to_readd:
-                    ret = self.__delete_node(t[0])
-                    error += "%s was deleted : %s\n" %(t[0],ret)
-                    if self.cache_nodes.has_key(t[0]):
-                        error += "%s cached : %s\n" %(t[0],self.cache_nodes[t[0]])
-                        raise Exception(error)
-                    par = self.get_node_for_path(t[1][:-1])
-                    if t[0] in self.cache_nodes[par]['children']:
-                        error += "%s is still in %s childrens" %(t[0],par)
-                        raise Exception(error)
-            if p not in node_dic['paths']:
-                #We do all the work only if the node doesn't already 
-                #has that path !
-                node_dic['paths'].append(p)
-                if len(p) > 1:
-                    parent = self.get_node_for_path(p[:-1])
-                    if not self.is_displayed(parent):
-                        #We should add a node to a non-existing parent
-                        break
-                    p_child = self.cache_nodes[parent]['children']
-                    if parent not in node_dic['parents']:
-                        node_dic['parents'].append(parent)
-                    if nid not in p_child:
-                        p_child.append(nid)
-                else:
-                    #We only add to VR if there are no other paths !
-#                    if node_dic['paths'] == [p] and len(paths) ==1:
-                    if nid not in self.cache_vr:
-                        self.cache_vr.append(nid)
-                    else:
-                        raise Exception("%s was already in VR"%nid)
-                #2. send the signal (it means that the state is valid)
-                #we make a sanity check before raising the signal
-                other = self.get_node_for_path(p)
-                if nid != other:
-                    error += 'we try to add %s on path %s\n' %(nid,str(p))
-                    error += 'while it looks like it the path of %s\n' %other
-                    error += 'cached = %s\n' %self.cache_nodes[nid]
-#                    error += 'cached VR = %s\n' %self.cache_vr
-                    for par in self.node_parents(nid):
-                        pchildrens = self.node_all_children(par)
-                        error += "parent %s has children %s\n"%(par,pchildrens)
-                        error += "parent paths are %s\n" %self.get_paths_for_node(par)
-                        if DEBUG:
-                            error += self.trace
-                    raise Exception(error)
-                if DEBUG:
-                    self.trace += " +++++ %s added to %s\n" %(nid,str(p))
+    def __add_node(self,nid,pars=None):
+        if self.__is_displayed(nid):
+            if not pars:
+                pars = self.__node_parents(nid)
+                
+            if not self.is_displayed(nid):
+                node_dic = {}
+                node_dic['parents'] = []
+                node_dic['children'] = []
+                self.cache_nodes[nid] = node_dic
+            else:
+                node_dic = self.cache_nodes[nid]
+            
+#            #Firstly, we remove children that are already present.
+#            for child in self.__node_all_children(nid):
+#                self.__add_node(child,pars=[nid])
+                
+            for par in pars:
+                if not self.is_displayed(par):
+                    self.__add_node(par)
+                parnode = self.cache_nodes[par]
+                if nid not in parnode['children']:
+                    parnode['children'].append(nid)
+                if par not in node_dic['parents']:
+                    node_dic['parents'].append(par)
+            if len(node_dic['parents']) == 0:
+                if nid not in self.cache_vr:
+                    self.cache_vr.append(nid)
+            else:
+                if nid in self.cache_vr:
+                    self.__remove_from_vr(nid)
+            
+            for p in self.get_paths_for_node(nid):
+#                print "+++ adding %s to %s" %(nid,str(p))
                 self.callback('added',nid,p)
-                #3. Add the children
-                children = self.__node_all_children(nid)
-                i = 0
-                while i < len(children):
-                    c = children[i]
-                    #maybe the child already exists as a child of another node
-    #                if self.is_displayed(c):
-    #                    if nid not in self.cache_nodes[c]['parents']:
-    #                        self.cache_nodes[c]['parents'].append(nid)
-    #                    if c not in self.cache_nodes[nid]['children']:
-    #                        self.cache_nodes[nid]['children'].append(c)
-    #                    self.cache_nodes[c]['paths'] = self.__get_paths_for_node(c)
-    ###                print "we added %s to %s" %(c,nid)
-    #                    self.__update_node(c)
-    #                else:
-    #                If child is already at the root, we remove it first.
-    #                if self.is_displayed(c):
-    #                    for pp in self.get_paths_for_node(c):
-    #                        if len(pp) == 1:
-    #                            self.__delete_node(c,[pp])
-                    cpath = p + (i,)
-                    self.__add_node(c,[cpath])
-                    i += 1
-                to_readd.reverse()
-                for t in to_readd:
-                    
-                    other_index = t[1][-1] + 1
-                    opath = t[1][:-1] + (other_index,)
-                    self.__add_node(t[0],[opath])
-        return True
-        
+            for child in self.__node_all_children(nid):
+                self.__add_node(child,pars=[nid])
+            return True
+        else:
+            return False
     
     def __update_node(self,nid):
-        '''to update a node, we:
-        1. take old and new paths
-        2. we remove all occurence that are in oldpaths and not in newpaths
-        3. we refresh newpaths to reflect the deletions.
-        4. We add the occurence in newpaths and not in oldpaths
-        5. we update nodes that are in both paths
-        '''
-        error = " Updating node %s\n" %nid
-        if self.is_displayed(nid):
-            oldpaths = self.get_paths_for_node(nid)
-            newpaths = self.__get_paths_for_node(nid)
-            error += "old: %s  and new :%s\n" %(oldpaths,newpaths)
-            to_remove = []
-            to_add = []
-            to_update = []
-            for p in oldpaths:
-                if p not in newpaths:
-                    to_remove.append(p)
-            to_remove.sort()
-            to_remove.reverse()
+        curdis = self.is_displayed(nid)
+        todis = self.__is_displayed(nid)
+        error = "\n\n *** updating %s ****\n\n" %nid
+        if curdis:
+            if todis:
+                node_dic = self.cache_nodes[nid]
+                new_children = self.__node_all_children(nid)
+                error += "Before the update : %s\n" %self.cache_nodes
+                #We remove uneeded childrens
+                for ch in list(node_dic['children']):
+                    if ch not in new_children:
+#                        self.trace += " ....removing child %s of %s\n" %(ch,nid)
+                        self.__delete_node(ch,pars=[nid])
+#                        self.trace += "  ...child is now :%s\n"%self.cache_nodes[ch]
+                #We add new childrens that were not there
+                for ch in new_children:
+                    if ch not in node_dic['children']:
+                        self.__add_node(ch,pars=[nid])
+                        
+                if len(node_dic['parents']) == 0 and nid not in self.cache_vr:
+                    self.cache_vr.append(nid)
+                    self.__add_node(nid)
+                if len(node_dic['parents']) > 0 and nid in self.cache_vr:
+                    self.__remove_from_vr(nid)
                     
-            #removing paths that should
-            for p in to_remove:
-                #It's not because the node is not displayed anymore
-                #that the children are not. Update them.
-                children = self.__node_all_children(nid)
-                error += "deleting %s from path %s\n" %(nid,str(p))
-                self.__delete_node(nid,[p])
-                for c in children:
-                    error += "updating children %s\n" %c
-                    self.__update_node(c)
-                    
-            #updating newpaths
-            newpaths = self.__get_paths_for_node(nid)
-            error += "new newpaths are %s\n" %newpaths
-            for p in newpaths:
-                if p not in oldpaths:
-                    to_add.append(p)
-                else:
-                    to_update.append(p)
-            to_add.sort()
-            error += "paths to_add are %s\n" %to_add
-                    
-            #adding
-            for p in to_add:
-                error += "update (add) of %s to path %s\n" %(nid,str(p))
-#                print error
-                pars = self.__node_parents(nid)
-                if len(p) > 1:
-                    onegood = False
-                    for par in pars:
-                        parpaths = self.get_paths_for_node(par)
-                        error += "parent %s has paths %s\n" %(par,parpaths)
-                        if p[:-1] in parpaths:
-                            onegood = True
-                    if not onegood:
-                        raise Exception(error)
-                else:
-                    if not len(pars) == 0:
-                        error += "but node has parents %s" %pars
-                        raise Exception(error)
-                self.__add_node(nid,[p])
-                
-            #and, eventually, updating unchanged paths
-            for p in to_update:
-                if DEBUG:
-                    self.trace += " ______ %s modified in %s\n" %(nid,str(p))
-                #autocheck
-                other = self.get_node_for_path(p)
-                if other != nid:
-                    error += "%s is supposed to be the path " %str(p) +\
-                             "of %s but it's the one of %s\n" %(nid,other)
-                    if DEBUG:
+                #DEBUG
+                error += "before signal : %s\n" %self.cache_nodes
+                for p in node_dic['parents']:
+                    if nid not in self.cache_nodes[p]['children']:
+                        error += "%s not in childrens of %s\n" %(nid,p)
                         error += self.trace
-                    raise Exception(error)
-                self.callback("modified", nid,p)
-            return True
-        else:
+                        raise Exception(error)
+                for p in node_dic['children']:
+                    if nid not in self.cache_nodes[p]['parents']:
+                        error += "%s not in parents of %s\n" %(nid,p)
+                        error += self.trace
+                        raise Exception(error)
+                    
+                for path in self.get_paths_for_node(nid):
+#                    print "updating %s for %s" %(nid,str(path))
+                    self.callback('modified',nid,path)
+            else:
+                self.__delete_node(nid)
+        elif not curdis and todis:
             self.__add_node(nid)
-            
+#        else:
+#            print "nothing to do for %s" %nid
+        
+    
+    #This function remove a node from the VR but
+    #doesn't touche the cache_nodes.
+    def __remove_from_vr(self,nid):
+        index = self.cache_vr.index(nid)
+        if index != (len(self.cache_vr)-1):
+            neworder = range(0,len(self.cache_vr))
+            self.cache_vr.remove(nid)
+            neworder.remove(index)
+            self.cache_vr.append(nid)
+            neworder.append(index)
+            self.callback('reordered',None,None,neworder)
+        path = (self.cache_vr.index(nid),)
+        self.callback('deleted',nid,path)
+        self.cache_vr.remove(nid)
+        
+    def __make_last_child(self,nid,parent):
+        if parent:
+            children = self.cache_nodes[parent]['children']
+        else:
+            children = self.cache_vr
+        if nid not in children:
+            error = "node %s is not in children %s of parent %s\n"%(nid,children,parent)
+            error += self.trace
+            raise Exception(error)
+        index = children.index(nid)
+        if index != (len(children)-1):
+            neworder = range(0,len(children))
+            children.remove(nid)
+            neworder.remove(index)
+            children.append(nid)
+            neworder.append(index)
+            if parent:
+                for path in self.get_paths_for_node(parent):
+                    self.callback('reordered',parent,path,neworder)
+            else:
+                self.callback('reordered',None,None,neworder)
+    
 ################# Filters functions #####################################
     
     def refilter(self):
@@ -991,6 +865,7 @@ class FilteredTree():
         rebuilds the tree from scratch. It should be called only when 
         the filter is changed (i.e. only filters_bank should call it).
         """
+        self.inrefresh = True
         #If we have only one flat filter, the result is flat
 #        print " * * *  Start refilter * * *  *"
         self.__flat = False
@@ -1010,12 +885,13 @@ class FilteredTree():
             raise Exception('cache_nodes should be empty but %s'%self.cache_nodes)
         if len(self.cache_vr) > 0:
             raise Exception('cache_vr should be empty but %s'%self.cache_vr)
+        self.inrefresh = False
         for nid in self.tree.get_all_nodes():
             #only add root nodes (those who don't have parents)
             if self.__is_displayed(nid) and len(self.__node_parents(nid)) == 0:
                 self.__add_node(nid)
 #        print "*** end of refiltering ****"
-        #self.print_tree()
+#        self.print_tree()
 
     ####### Change filters #################
     def apply_filter(self,filter_name,parameters=None,\

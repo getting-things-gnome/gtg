@@ -199,10 +199,14 @@ class ViewTree(gobject.GObject):
     __gsignal_str = (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str, ))
     __gsignal_str2 = (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, \
                                                 (str,gobject.TYPE_PYOBJECT, ))
+    __gsignal_str3 = (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, \
+                                                (str,gobject.TYPE_PYOBJECT,\
+                                                    gobject.TYPE_PYOBJECT,  ))
     #FIXME: should we unify those signals ? They are conceptually different
     __gsignals__ = {'node-added-inview'   : __gsignal_str2,
                     'node-deleted-inview' : __gsignal_str2,
                     'node-modified-inview': __gsignal_str2,
+                    'node-children-reordered': __gsignal_str3,
                     'node-added'   : __gsignal_str,
                     'node-deleted' : __gsignal_str,
                     'node-modified': __gsignal_str,}
@@ -242,16 +246,23 @@ class ViewTree(gobject.GObject):
                         functools.partial(self.__emit, 'node-deleted-inview'))
             self.__ft.set_callback('modified', \
                         functools.partial(self.__emit, 'node-modified-inview'))
+            self.__ft.set_callback('reordered', \
+                        functools.partial(self.__emit, 'node-children-reordered'))
                         
     def set_thread(self,thread):
         self.thread = thread
             
-    def __emit(self, signal_name, tid,paths=None):
+    def __emit(self, signal_name, tid,path,neworder=None):
         for k in self.__cllbcks.get(signal_name,[]):
             f = self.__cllbcks[signal_name][k]
-            f(tid,paths)
+            if neworder:
+                f(tid,path,neworder)
+            else:
+                f(tid,path)
         if signal_name.endswith('-inview'):
-            self.emit(signal_name, tid,paths)
+            self.emit(signal_name, tid,path)
+        elif signal_name.endswith('-reordered'):
+            self.emit(signal_name,tid,path,neworder)
         else:
             self.emit(signal_name, tid)
         
