@@ -26,6 +26,7 @@ import time
 import uuid
 import datetime
 import evolution
+from dateutil.tz                        import tzutc, tzlocal
 
 from GTG.backends.genericbackend        import GenericBackend
 from GTG                                import _
@@ -168,27 +169,29 @@ class Backend(PeriodicImportBackend):
         if action == SyncEngine.ADD:
             evo_task = evolution.ecal.ECalComponent( \
                         ical = evolution.ecal.CAL_COMPONENT_TODO)
-            self._evolution_tasks.add_object(evo_task)
-            self._populate_evo_task(task, evo_task)
-            meme = SyncMeme(task.get_modified(),
-                            self._evo_get_modified(evo_task),
-                            "GTG")
-            self.sync_engine.record_relationship( \
-                local_id = tid, remote_id = evo_task.get_uid(), meme = meme)
+            with self.datastore.get_backend_mutex():
+                self._evolution_tasks.add_object(evo_task)
+                self._populate_evo_task(task, evo_task)
+                meme = SyncMeme(task.get_modified(),
+                                self._evo_get_modified(evo_task),
+                                "GTG")
+                self.sync_engine.record_relationship( \
+                    local_id = tid, remote_id = evo_task.get_uid(), meme = meme)
 
         elif action == SyncEngine.UPDATE:
-            evo_task = self._evo_get_task(evo_task_id)
-            meme = self.sync_engine.get_meme_from_local_id(task.get_id())
-            newest = meme.which_is_newest(task.get_modified(),
-                                 self._evo_get_modified(evo_task))
-            if newest == "local":
-                self._populate_evo_task(task, evo_task)
-                meme.set_remote_last_modified( \
-                            self._evo_get_modified(evo_task))
-                meme.set_local_last_modified(task.get_modified())
-            else:
-                #we skip saving the state
-                return
+            with self.datastore.get_backend_mutex():
+                evo_task = self._evo_get_task(evo_task_id)
+                meme = self.sync_engine.get_meme_from_local_id(task.get_id())
+                newest = meme.which_is_newest(task.get_modified(),
+                                     self._evo_get_modified(evo_task))
+                if newest == "local":
+                    self._populate_evo_task(task, evo_task)
+                    meme.set_remote_last_modified( \
+                                self._evo_get_modified(evo_task))
+                    meme.set_local_last_modified(task.get_modified())
+                else:
+                    #we skip saving the state
+                    return
 
         elif action == SyncEngine.REMOVE:
             self.datastore.request_task_deletion(tid)
@@ -218,24 +221,25 @@ class Backend(PeriodicImportBackend):
         Log.debug('GTG<-Evo set task (%s, %s)' % (action, is_syncable))
 
         if action == SyncEngine.ADD:
-            tid = str(uuid.uuid4())
-            task = self.datastore.task_factory(tid)
-            self._populate_task(task, evo_task)
-            meme = SyncMeme(task.get_modified(),
-                            self._evo_get_modified(evo_task),
-                            "GTG")
-            self.sync_engine.record_relationship(local_id = tid,
-                                                 remote_id = evo_task_id,
-                                                 meme = meme)
-            self.datastore.push_task(task)
+            with self.datastore.get_backend_mutex():
+                tid = str(uuid.uuid4())
+                task = self.datastore.task_factory(tid)
+                self._populate_task(task, evo_task)
+                meme = SyncMeme(task.get_modified(),
+                                self._evo_get_modified(evo_task),
+                                "GTG")
+                self.sync_engine.record_relationship(local_id = tid,
+                                                     remote_id = evo_task_id,
+                                                     meme = meme)
+                self.datastore.push_task(task)
 
         elif action == SyncEngine.UPDATE:
-            task = self.datastore.get_task(tid)
-            meme = self.sync_engine.get_meme_from_remote_id(evo_task_id)
-            newest = meme.which_is_newest(task.get_modified(),
-                                self._evo_get_modified(evo_task))
-            if newest == "remote":
-                with self.datastore.get_backend_mutex():
+            with self.datastore.get_backend_mutex():
+                task = self.datastore.get_task(tid)
+                meme = self.sync_engine.get_meme_from_remote_id(evo_task_id)
+                newest = meme.which_is_newest(task.get_modified(),
+                                    self._evo_get_modified(evo_task))
+                if newest == "remote":
                     self._populate_task(task, evo_task)
                     meme.set_remote_last_modified( \
                             self._evo_get_modified(evo_task))
@@ -287,11 +291,10 @@ class Backend(PeriodicImportBackend):
         task.set_text(text)
         due_date_timestamp = evo_task.get_due()
         if isinstance(due_date_timestamp, (int, float)):
-            datetime_due_date = RealDate(datetime.datetime.fromtimestamp(\
-                        due_date_timestamp + time.timezone).date())
+            due_date = self.__date_from_evo_to_gtg(due_date_timestamp)
         else:
-            datetime_due_date = NoDate()
-        task.set_due_date(datetime_due_date)
+            due_date = NoDate()
+        task.set_due_date(due_date)
         status = evo_task.get_status()
         if task.get_status() != _EVOLUTION_TO_GTG_STATUS[status]:
             task.set_status(_EVOLUTION_TO_GTG_STATUS[status])
@@ -304,18 +307,15 @@ class Backend(PeriodicImportBackend):
             evo_task.set_description(text)
         due_date = task.get_due_date()
         if isinstance(due_date, NoDate):
-            #FIXME: how to unset due dates 
             evo_task.set_due(None)
-            print "DUE DATE UNSETTING UNSUPPORTED"
         else:
-            #FIXME: this is strange - review
-            due_date_for_evo = int(time.mktime(\
-                        due_date.to_py_date().timetuple()) - \
-                        time.timezone) - time.timezone
-            evo_task.set_due(due_date_for_evo)
+            evo_task.set_due(self.__date_from_gtg_to_evo(due_date))
         status = task.get_status()
         if _EVOLUTION_TO_GTG_STATUS[evo_task.get_status()] != status:
             evo_task.set_status(_GTG_TO_EVOLUTION_STATUS[status])
+        #this calls are sometime ignored by evolution. Doing it twice
+        # is a hackish way to solve the problem. (TODO: send bug report)
+        self._evolution_tasks.update_object(evo_task)
         self._evolution_tasks.update_object(evo_task)
 
     def _exec_lost_syncability(self, tid, evo_task):
@@ -346,3 +346,37 @@ class Backend(PeriodicImportBackend):
         evo_tags = set(extract_tags_from_text(evo_task.get_description()))
         return evo_task.is_disjoint(attached_tags)
 
+    def __date_from_evo_to_gtg(self, evo_date_timestamp):
+        """
+        Converts an evolution date object into the format understood by GTG
+
+        @param evo_date: an int, which represent time from epoch in UTC
+                        convention
+        """
+        evo_datetime = datetime.datetime.fromtimestamp(evo_date_timestamp)
+        #See self.__date_from_gtg_to_evo for an explanation
+        evo_datetime = evo_datetime.replace(tzinfo = tzlocal())
+        gtg_datetime = evo_datetime.astimezone(tzutc())
+        #we strip timezone infos, as they're not used or expected in GTG
+        gtg_datetime.replace(tzinfo = None)
+        return RealDate(gtg_datetime.date())
+
+    def __date_from_gtg_to_evo(self, gtg_date):
+        """
+        Converts a datetime.date object into the format understood by Evolution
+
+        @param gtg_date: a GTG Date object
+        """
+        #GTG thinks in local time, evolution in utc
+        #to convert date objects between different timezones, we must convert
+        #them to datetime objects
+        gtg_datetime = datetime.datetime.combine(gtg_date.to_py_date(), datetime.time(0))
+        #We don't want to express GTG date into a UTC equivalent. Instead, we
+        #want the *same* date in GTG and evolution. Therefore, we must not do
+        #the conversion Local-> UTC (which would point to the same moment in
+        #time in different conventions), but do the opposite conversion UTC->
+        #Local (which will refer to different points in time, but to the same
+        #written date)
+        gtg_datetime = gtg_datetime.replace(tzinfo = tzutc())
+        evo_datetime = gtg_datetime.astimezone(tzlocal())
+        return int(time.mktime(evo_datetime.timetuple()))
