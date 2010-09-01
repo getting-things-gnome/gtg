@@ -30,6 +30,7 @@ from launchpadlib.launchpad import Launchpad, \
                                    STAGING_SERVICE_ROOT, \
                                    EDGE_SERVICE_ROOT
 
+from GTG.core.task               import Task
 from GTG.tools.testingmode       import TestingMode
 from GTG                         import _, ngettext
 from GTG.backends.genericbackend import GenericBackend
@@ -215,7 +216,7 @@ class Backend(PeriodicImportBackend):
                                         bug_dic['modified'], \
                                         self.get_id()))
                 self.datastore.push_task(task)
-                
+
             elif action == SyncEngine.UPDATE:
                 task = self.datastore.get_task(tid)
                 self._populate_task(task, bug_dic)
@@ -233,8 +234,14 @@ class Backend(PeriodicImportBackend):
         @param bug: a launchpad bug dictionary, generated with
                     _prefetch_bug_data
         '''
+        #set task status
+        if bug_dic["completed"]:
+            task.set_status(Task.STA_DONE)
+        else:
+            task.set_status(Task.STA_ACTIVE)
         if task.get_title() != bug_dic['title']:
-            task.set_title(bug_dic['title'])
+            task.set_title(_("Bug") + " %s: " % bug_dic["number"]
+                           + bug_dic['title'])
         text = self._build_bug_text(bug_dic)
         if task.get_excerpt() != text:
             task.set_text(text)
@@ -285,13 +292,19 @@ class Backend(PeriodicImportBackend):
                    'self_link': bug.self_link,
                    'modified': self._get_bug_modified_datetime(bug),
                    'owner': owner.display_name,
+                   'completed': bug_task.is_complete,
                    'owner_karma': owner.karma}
+        bug_dic['number'] = bug_dic['self_link'][bug_dic['self_link'].rindex("/") + 1 :]
         #find the projects target of the bug
         projects = []
         for task in bug.bug_tasks:
             #workaround: assignee.name doesn't work, although
             #            assignee.display_name does.
-            a_sl = task.assignee.self_link
+            try:
+                a_sl = task.assignee.self_link
+            except AttributeError:
+                #bug task is not assigned to anyone
+                continue
             a_sl[a_sl.index("~") + 1 :]
             if a_sl[a_sl.index("~") + 1 :] == self._parameters["username"]:
                 t_sl = task.target.self_link
@@ -312,9 +325,7 @@ class Backend(PeriodicImportBackend):
         bug_project = bug_dic['projects'][0]['project_short']
         text += _("Link to bug: " ) + \
                 "https://bugs.edge.launchpad.net/%s/+bug/%s" % \
-                (bug_project,
-                 bug_dic['self_link'][bug_dic['self_link'].rindex("/") + 1 :])\
-                + '\n'
+                (bug_project, bug_dic["number"]) + '\n'
         text += '\n' + bug_dic["text"]
         return text
 
