@@ -77,6 +77,9 @@ class Backend(PeriodicImportBackend):
         "period": { \
             GenericBackend.PARAM_TYPE: GenericBackend.TYPE_INT, \
             GenericBackend.PARAM_DEFAULT_VALUE: 10, },
+        "is-first-run": { \
+            GenericBackend.PARAM_TYPE: GenericBackend.TYPE_BOOL, \
+            GenericBackend.PARAM_DEFAULT_VALUE: True, },
         }
 
 ###############################################################################
@@ -107,6 +110,41 @@ class Backend(PeriodicImportBackend):
         stored_evolution_task_ids = set(self.sync_engine.get_all_remote())
         current_evolution_task_ids = set([task.get_uid() \
                for task in self._evolution_tasks.get_all_objects()])
+        #If it's the very first time the backend is run, it's possible that the
+        # user already synced his tasks in some way (but we don't know that).
+        # Therefore, we attempt to induce those tasks relationships matching the
+        # titles.
+        if self._parameters["is-first-run"]:
+            gtg_titles_dic = {}
+            for tid in self.datastore.get_all_tasks():
+                gtg_task = self.datastore.get_task(tid)
+                if not self._gtg_task_is_syncable_per_attached_tags(gtg_task):
+                    continue
+                gtg_title = gtg_task.get_title()
+                if gtg_titles_dic.has_key(gtg_title):
+                    gtg_titles_dic[gtg_task.get_title()].append(tid)
+                else:
+                    gtg_titles_dic[gtg_task.get_title()] = [tid]
+            for evo_task_id in current_evolution_task_ids:
+                evo_task = self._evo_get_task(evo_task_id)
+                try:
+                    tids = gtg_titles_dic[evo_task.get_summary()]
+                    #we remove the tid, so that it can't be linked to two
+                    # different evolution tasks
+                    tid = tids.pop()
+                    gtg_task = self.datastore.get_task(tid)
+                    meme = SyncMeme(gtg_task.get_modified(),
+                                    self._evo_get_modified(evo_task),
+                                    "GTG")
+                    self.sync_engine.record_relationship( \
+                         local_id = tid,
+                         remote_id = evo_task.get_uid(),
+                         meme = meme)
+                except KeyError:
+                    pass
+            #a first run has been completed successfully
+            self._parameters["is-first-run"] = False
+
         for evo_task_id in current_evolution_task_ids:
             #Adding and updating
             self.cancellation_point()
