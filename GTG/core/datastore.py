@@ -671,6 +671,7 @@ class FilteredDataStore(Borg):
                     'push_task',
                     'get_task',
                     'has_task',
+                    'get_all_tasks',
                     'get_backend_mutex',
                     'flush_all_tasks',
                     'request_task_deletion']:
