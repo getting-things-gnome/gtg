@@ -356,11 +356,13 @@ class TaskEditor:
         taglist = self.req.get_used_tags()
         menu = gtk.Menu()
         tag_count = 0
-        for t in taglist :
-            if not self.task.has_tags(tag_list=[t]) :
+        for tagname in taglist:
+            tag_object = self.req.get_tag(tagname)
+            if not tag_object.is_special() and \
+               not self.task.has_tags(tag_list=[tagname]):
                 tag_count += 1
-                mi = gtk.MenuItem(label=t, use_underline=False)
-                mi.connect("activate",self.inserttag,t)
+                mi = gtk.MenuItem(label = tagname, use_underline=False)
+                mi.connect("activate", self.inserttag, tagname)
                 mi.show()
                 menu.append(mi)
         if tag_count > 0 :

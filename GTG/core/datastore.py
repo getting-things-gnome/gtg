@@ -138,8 +138,12 @@ class DataStore(object):
         print "Tag renaming not implemented yet"
     
     def get_tag(self,tagname):
-        if tagname[0] != "@":
-            tagname = "@" + tagname
+        #The following is wrong, as we have special tags that do not start with
+        # @. I'm leaving this here temporary to help in merging (as it will
+        # probably generate a conflict). Remove at will after merging
+        # (invernizzi)
+        #if tagname[0] != "@":
+        #    tagname = "@" + tagname
         if self.__tagstore.has_node(tagname):
             return self.__tagstore.get_node(tagname)
         else:
