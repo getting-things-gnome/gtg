@@ -1328,3 +1328,5 @@ class TaskBrowser:
         """ Returns true if window is the currently active window """
         return self.window.get_property("is-active")
 
+    def get_builder(self):
+        return self.builder

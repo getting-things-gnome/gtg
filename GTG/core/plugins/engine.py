@@ -23,6 +23,8 @@ import types
 from configobj import ConfigObj
 import dbus
 
+from GTG.tools.borg import Borg
+
 
 
 class Plugin(object):
@@ -140,62 +142,61 @@ class Plugin(object):
 
 
 
-class PluginEngine:
-    """A class to manage plugins."""
+class PluginEngine(Borg):
+    """
+    A class to manage plugins. Only one can exist.
+    """
 
 
-    def __init__(self, plugin_path):
-        """Initialize the plugin engine."""
-        self.plugins = {}
+    def __init__(self, plugin_path = None):
+        """Initialize the plugin engine.
+        """
+        super(PluginEngine, self).__init__()
+        if hasattr(self, "plugin_path"):
+            #Borg has already been initialized, skip
+            return
+
         self.plugin_path = plugin_path
         self.initialized_plugins = []
+        self.plugins = {}
 
-    def set_plugins(self, plugins):
-        self.plugins = plugins
-
-    def load_plugins(self):       
-        """Load all plugins."""
         # find all plugin info files (*.gtg-plugin)
-        plugin_info_files = []
         for path in self.plugin_path:
             for f in os.listdir(path):
                 info_file = os.path.join(path, f)
                 if os.path.isfile(info_file) and f.endswith('.gtg-plugin'):
-                    plugin_info_files.append(info_file)
-        # initialize plugins based on info file contents
-        for info_file in plugin_info_files:
-            info = ConfigObj(info_file)
-            p = Plugin(info["GTG Plugin"], self.plugin_path)
-            self.plugins[p.module_name] = p
-        return self.plugins
+                    info = ConfigObj(info_file)
+                    p = Plugin(info["GTG Plugin"], self.plugin_path)
+                    self.plugins[p.module_name] = p
 
-    def active_plugins(self):
-        """Return a dictionary of only active plugins."""
-        print "WE HaVE ", self.plugins
-        plugins = filter(lambda (name,p): p.active, self.plugins.iteritems())
-        return dict(plugins)
+    def get_plugin(self, module_name):
+        return self.plugins[module_name]
 
-    def inactive_plugins(self):
-        """Return a dictionary of only inactive plugins."""
-        plugins = filter(lambda (name,p): not p.active,
-          self.plugins.iteritems())
-        return dict(plugins)
-
-    def enabled_plugins(self):
-        """Return a dictionary of only enabled plugins."""
-        plugins = filter(lambda (name,p): p.enabled, self.plugins.iteritems())
-        return dict(plugins)
-
-    def disabled_plugins(self):
-        """Return a dictionary of only disabled plugins."""
-        return dict(filter(lambda (name,p): not p.enabled,
-          self.plugins.iteritems()))
+    def get_plugins(self, kind_of_plugins = "all"):
+        """
+        Returns a list of plugins
+        filtering only a kind of plugin
+        @param kind_of_plugins: one of "active",
+                                       "inactive",
+                                       "enabled",
+                                       "disabled",
+                                       "all"
+        """
+        all_plugins = self.plugins.itervalues()
+        if kind_of_plugins == "all":
+            return all_plugins
+        def filter_fun(plugin):
+            return (kind_of_plugins == "active"   and plugin.active) or \
+                   (kind_of_plugins == "inactive" and not plugin.active) or \
+                   (kind_of_plugins == "enabled"  and plugin.enabled) or \
+                   (kind_of_plugins == "disabled" and not plugin.enabled)
+        return filter(filter_fun, all_plugins)
 
     def activate_plugins(self, plugin_apis, plugins=[]):
         """Activate plugins."""
         assert(isinstance(plugins, list), True)
         if not plugins:
-            plugins = self.inactive_plugins().itervalues()
+            plugins = self.get_plugins("inactive")
         for plugin in plugins:
             # activate enabled plugins without errors
             if plugin.enabled and not plugin.error:
@@ -203,7 +204,6 @@ class PluginEngine:
                 plugin.active = True
                 for api in plugin_apis:
                     plugin.instance.activate(api)
-                    print "ACTIVATED",plugin
                     if api.is_editor():
                         plugin.instance.onTaskOpened(api)
                         # also refresh the content of the task
@@ -213,11 +213,9 @@ class PluginEngine:
 
     def deactivate_plugins(self, plugin_apis, plugins=[]):
         """Deactivate plugins."""
-        if len(plugins) == 0:
-            plugins = self.active_plugins().itervalues()
-        elif not hasattr(plugins, '__iter__'):
-            raise TypeError('expecting list of plugins to deactivate, got %s' %
-              type(plugins))
+        assert(isinstance(plugins, list), True)
+        if not plugins:
+            plugins = self.get_plugins("active")
         for plugin in plugins:
             # deactivate disabled plugins
             if not plugin.enabled:
@@ -239,23 +237,28 @@ class PluginEngine:
     def onTaskLoad(self, plugin_api):
         """Pass the onTaskLoad signal to all active plugins."""
         print "####################################ACTIVEPLUGS"
-        print self.active_plugins()
-        for plugin in self.active_plugins().itervalues():
+        print self.get_plugins("active")
+        print "HERE", self.get_plugins()
+        for plugin in self.get_plugins():
+            print plugin.module_name, plugin.active
+        for plugin in self.get_plugins("active"):
             print "ONTASKOPENED"
             plugin.instance.onTaskOpened(plugin_api)
 
-    def onTaskClose(self, plugins, plugin_api):
+    def onTaskClose(self, plugin_api):
         """Pass the onTaskClose signal to all active plugins."""
-        for plugin in self.active_plugins().itervalues():
+        for plugin in self.get_plugins("active"):
             if hasattr(plugin.instance, 'onTaskClosed'):
                 plugin.instance.onTaskClosed(plugin_api)
+
+#FIXME: What are these for? must check someday! (invernizzi)
 
     def recheck_plugins(self, plugin_apis):
         """Check plugins to make sure their states are consistent.
 
         TODO: somehow make this unnecessary?
         """
-        for plugin in self.plugins.itervalues():
+        for plugin in self.get_plugins():
             try:
                 if plugin.instance and plugin.enabled and plugin.active:
                     self.deactivate_plugins(plugin_apis, [plugin])
@@ -275,7 +278,7 @@ class PluginEngine:
 
     def recheck_plugin_errors(self, check_all=False):
         """Attempt a reload of plugins with errors, or all plugins."""
-        for plugin in self.plugins.itervalues():
+        for plugin in self.get_plugins():
             if check_all or plugin.error:
                 plugin.reload(self.plugin_path)
 

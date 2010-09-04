@@ -36,9 +36,7 @@ try:
 except: # pylint: disable-msg=W0702
     raise SystemExit(1)
 
-from GTG                     import _
-from GTG                     import ngettext
-from GTG                     import PLUGIN_DIR
+from GTG                     import _, ngettext
 from GTG.core                import CoreConfig
 from GTG.gtk.editor          import GnomeConfig
 from GTG.gtk.editor.taskview import TaskView
@@ -60,7 +58,6 @@ class TaskEditor:
                  requester, 
                  vmanager, 
                  task, 
-                 plugins,
                  taskconfig = None,
                  plugin_apis = None,
                  thisisnew = False,
@@ -172,23 +169,10 @@ class TaskEditor:
         self.window.connect("destroy", self.destruction)
         
         # plugins
-        print "THESE", plugins
-        self.plugins = plugins
-        self.pengine = PluginEngine(PLUGIN_DIR)
-        self.pengine.set_plugins(self.plugins)
-        self.te_plugin_api = PluginAPI(window = self.window,
-                                       config = None,
-                                       data_dir = CoreConfig().get_data_dir(),
-                                       builder = self.builder, 
-                                       requester = self.req,
-                                       tagpopup = None,
-                                       tagview = None,
-                                       task = task, 
-                                       view_manager = None,
-                                       texteditor = self)
-        self.p_apis.append(self.te_plugin_api)
-        print "ONTAsKLOad"
-        self.pengine.onTaskLoad(self.te_plugin_api)
+        self.pengine = PluginEngine()
+        self.plugin_api = PluginAPI(self.req, self.vmanager, self)
+        self.p_apis.append(self.plugin_api)
+        self.pengine.onTaskLoad(self.plugin_api)
         
         #Putting the refresh callback at the end make the start a lot faster
         self.textview.refresh_callback(self.refresh_editor)
@@ -625,8 +609,8 @@ class TaskEditor:
     #Will be linked to this destruction method that will save the task
     def destruction(self,a=None) :#pylint: disable-msg=W0613
         #Save should be also called when buffer is modified
-        self.pengine.onTaskClose(self.plugins, self.te_plugin_api)
-        self.p_apis.remove(self.te_plugin_api)
+        self.pengine.onTaskClose(self.plugin_api)
+        self.p_apis.remove(self.plugin_api)
         tid = self.task.get_id()
         if self.task.is_new():
             self.req.delete_task(tid)
@@ -660,3 +644,11 @@ class TaskEditor:
             self.cal_widget.disconnect(self.sigid_month)
             self.sigid_month = None
 
+    def get_builder(self):
+        return self.builder
+
+    def get_task(self):
+        return self.task
+
+    def get_textview(self):
+        return self.textview

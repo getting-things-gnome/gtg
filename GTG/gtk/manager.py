@@ -68,7 +68,6 @@ class Manager:
         # window like another and not necessary (like the editor)
         self.open_browser()
         
-        #Plugins (that needs to be after the browser, this is ugly)
         self.__init_plugin_engine()
         
         #Deletion UI
@@ -82,43 +81,17 @@ class Manager:
         DBusTaskWrapper(self.req, self)
         
     def __init_plugin_engine(self):
-        #FIXME : the plugin engine should not require the browser.
-        # It should be the browser that need the plugin engine
-        # plugins - Init
         self.pengine = PluginEngine(GTG.PLUGIN_DIR)
-        # loads the plugins in the plugin dir
-        self.plugins = self.pengine.load_plugins()
-        print "AAAAAAAAAAA", self.plugins
         # initializes the plugin api class
-        self.plugin_api = PluginAPI(window         = self.browser.window,
-                                    config         = self.config,
-                                    data_dir = self.config_obj.get_data_dir(),
-                                    builder        = self.browser.builder,
-                                    requester      = self.req,
-                                    tagpopup       = self.browser.tagpopup,
-                                    tagview        = self.browser.tagtree,
-                                    task           = None,
-                                    texteditor     = None,
-                                    quick_add_cbs  = self.browser.priv['quick_add_cbs'],
-                                    view_manager   = self)
+        self.plugin_api = PluginAPI(self.req, self)
         self.p_apis.append(self.plugin_api)
-        # enable some plugins
-        if len(self.pengine.plugins) > 0:
-            # checks the conf for user settings
-            if "plugins" in self.config:
-                if "enabled" in self.config["plugins"]:
-                    plugins_enabled = self.config["plugins"]["enabled"]
-                    print "ENABLED PER CONFIG", plugins_enabled
-                if "disabled" in self.config["plugins"]:
-                    plugins_disabled = self.config["plugins"]["disabled"]
-                for name, plugin in self.pengine.plugins.iteritems():
-                    print name, plugin
-                    if name in plugins_enabled and name not in plugins_disabled:
-                        plugin.enabled = True
-                        print "ENABLED", name
-                    else:
-                        # plugins not explicitly enabled are disabled
-                        plugin.enabled = False
+        # checks the conf for user settings
+        try:
+            plugins_enabled = self.config["plugins"]["enabled"]
+        except KeyError:
+            Log.debug("no enabled plugin")
+        for plugin in self.pengine.get_plugins():
+            plugin.enabled = plugin.module_name in plugins_enabled
         # initializes and activates each plugin (that is enabled)
         self.pengine.activate_plugins(self.p_apis)
         
@@ -149,8 +122,18 @@ class Manager:
     def is_browser_visible(self,sender=None):
         return self.browser.is_visible()
 
+    def get_browser(self):
+        #used by the plugin api to hook in the browser
+        return self.browser
+
 ################# Task Editor ############################################
 
+    def get_opened_editors(self):
+        '''
+        Returns a dict of task_uid -> TaskEditor, one for each opened editor
+        window
+        '''
+        return self.opened_task
 
     def open_task(self, uid,thisisnew = False):
         """Open the task identified by 'uid'.
@@ -164,12 +147,10 @@ class Manager:
             tv = self.opened_task[uid]
             tv.present()
         elif t:
-            print "**************************PLUGINS?", self.plugins
             tv = TaskEditor(
                 requester = self.req, \
                 vmanager = self, \
                 task = t, \
-                plugins = self.plugins, \
                 taskconfig = self.task_config, \
                 plugin_apis = self.p_apis, \
                 thisisnew = thisisnew,\
@@ -227,12 +208,13 @@ class Manager:
         self.config["browser"]["opened_tasks"] = open_task
         
         # adds the plugin settings to the conf
+        #FIXME: this code is replicated in the preference window.
         if len(self.pengine.plugins) > 0:
             self.config["plugins"] = {}
             self.config["plugins"]["disabled"] = \
-              self.pengine.disabled_plugins().keys()
+              [p.module_name for p in self.pengine.get_plugins("disabled")]
             self.config["plugins"]["enabled"] = \
-              self.pengine.enabled_plugins().keys()
+              [p.module_name for p in self.pengine.get_plugins("enabled")]
         # plugins are deactivated
         self.pengine.deactivate_plugins(self.p_apis)
 

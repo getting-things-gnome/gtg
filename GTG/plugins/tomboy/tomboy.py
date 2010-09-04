@@ -124,7 +124,7 @@ Please install it or disable the Tomboy/Gnote plugin in GTG"))
                                    self.plugin_api)
         self.tb_Taskbutton.show_all()
         print "ADDING!!!"
-        self.plugin_api.add_task_toolbar_item(self.tb_Taskbutton)
+        self.plugin_api.add_toolbar_item(self.tb_Taskbutton)
 
 
     # Converts all the textual tokens in tomboy note widgets
@@ -164,14 +164,14 @@ Please install it or disable the Tomboy/Gnote plugin in GTG"))
         #NOTE: get_textview() only works in this function
         # (see GTG/core/plugins/api.py docs)
         self.plugin_api = plugin_api
-        self.textview = plugin_api.get_textview()
+        self.textview = plugin_api.get_ui().get_textview()
         self.addButtonToToolbar(plugin_api)
         self.convertTokensToWidgets()
 
     def deactivate(self, plugin_api):
         try:
             self.onTaskClosed(self.plugin_api)
-            self.plugin_api.remove_task_toolbar_item(self.tb_Taskbutton)
+            self.plugin_api.remove_toolbar_item(self.tb_Taskbutton)
         except AttributeError:
             #the plugin wasn't used
             pass
