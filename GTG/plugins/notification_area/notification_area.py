@@ -108,7 +108,8 @@ class NotificationArea:
         self.requester.connect("task-modified", self.on_task_modified)
         #initial menu populate, just in case the plugin is not activated at GTG
         # startup time
-        task_list = self.requester.get_active_tasks_list(workable = True)
+        task_list = self.requester.get_tasks_tree().get_all_nodes()
+        #task_list = self.requester.get_active_tasks_list(workable = True)
         map(lambda tid: self.on_task_added(self.requester, tid), task_list)
         #realizing the menu
         self.menu.show_all()

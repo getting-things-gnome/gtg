@@ -172,8 +172,10 @@ class TaskEditor:
         self.window.connect("destroy", self.destruction)
         
         # plugins
+        print "THESE", plugins
         self.plugins = plugins
         self.pengine = PluginEngine(PLUGIN_DIR)
+        self.pengine.set_plugins(self.plugins)
         self.te_plugin_api = PluginAPI(window = self.window,
                                        config = None,
                                        data_dir = CoreConfig().get_data_dir(),
@@ -185,7 +187,8 @@ class TaskEditor:
                                        view_manager = None,
                                        texteditor = self)
         self.p_apis.append(self.te_plugin_api)
-        self.pengine.onTaskLoad(self.plugins)
+        print "ONTAsKLOad"
+        self.pengine.onTaskLoad(self.te_plugin_api)
         
         #Putting the refresh callback at the end make the start a lot faster
         self.textview.refresh_callback(self.refresh_editor)

@@ -58,8 +58,6 @@ class Manager:
                                  
         self.browser = None
         self.pengine = None
-        self.plugins = None
-        self.plugin_api = None
         self.p_apis = []
                                  
         #Shared clipboard
@@ -90,6 +88,7 @@ class Manager:
         self.pengine = PluginEngine(GTG.PLUGIN_DIR)
         # loads the plugins in the plugin dir
         self.plugins = self.pengine.load_plugins()
+        print "AAAAAAAAAAA", self.plugins
         # initializes the plugin api class
         self.plugin_api = PluginAPI(window         = self.browser.window,
                                     config         = self.config,
@@ -109,11 +108,14 @@ class Manager:
             if "plugins" in self.config:
                 if "enabled" in self.config["plugins"]:
                     plugins_enabled = self.config["plugins"]["enabled"]
+                    print "ENABLED PER CONFIG", plugins_enabled
                 if "disabled" in self.config["plugins"]:
                     plugins_disabled = self.config["plugins"]["disabled"]
                 for name, plugin in self.pengine.plugins.iteritems():
+                    print name, plugin
                     if name in plugins_enabled and name not in plugins_disabled:
                         plugin.enabled = True
+                        print "ENABLED", name
                     else:
                         # plugins not explicitly enabled are disabled
                         plugin.enabled = False
@@ -162,6 +164,7 @@ class Manager:
             tv = self.opened_task[uid]
             tv.present()
         elif t:
+            print "**************************PLUGINS?", self.plugins
             tv = TaskEditor(
                 requester = self.req, \
                 vmanager = self, \

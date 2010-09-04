@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Gettings Things Gnome! - a personal organizer for the GNOME desktop
+# Getting Things Gnome! - a personal organizer for the GNOME desktop
 # Copyright (c) 2008-2009 - Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
@@ -24,8 +24,11 @@ from configobj import ConfigObj
 import dbus
 
 
+
 class Plugin(object):
     """A class to represent a plugin."""
+
+
     # A reference to an instance of the plugin class
     instance = None
     # True if the plugin has been enabled by the user.
@@ -36,7 +39,7 @@ class Plugin(object):
     _active = False
     missing_modules = []
     missing_dbus = []
-    
+
     def __init__(self, info, module_path):
         """Initialize the Plugin using a ConfigObj."""
         info_fields = {
@@ -60,20 +63,20 @@ class Plugin(object):
             self.dbus_depends = [self.dbus_depends]
         self._load_module(module_path)
         self._check_dbus_depends()
-    
+
     # 'active' property
     def _get_active(self):
         return self._active
-    
+
     def _set_active(self, value):
         if value:
             self.instance = self.plugin_class()
         else:
             self.instance = None
         self._active = value
-    
+
     active = property(_get_active, _set_active)
-    
+
     def _check_dbus_depends(self):
         """Check the availability of DBus interfaces this plugin depends on."""
         self.missing_dbus = []
@@ -89,7 +92,7 @@ class Plugin(object):
                 if dbobj:
                     self.missing_dbus.append((dbobj))
                     self.error = True
-    
+
     def _check_module_depends(self):
         """Check the availability of modules this plugin depends on."""
         self.missing_modules = []
@@ -99,12 +102,12 @@ class Plugin(object):
             except:
                 self.missing_modules.append(mod_name)
                 self.error = True
-    
+
     def is_configurable(self):
         """Since some plugins don't have a is_configurable() method."""
         return self.instance and hasattr(self.instance, 'is_configurable') and (
           self.instance.is_configurable())
-    
+
     def _load_module(self, module_path):
         """Load the module containing this plugin."""
         try:
@@ -129,21 +132,27 @@ class Plugin(object):
             # load_module() failed for some other reason
             print e
             self.error = True
-    
+
     def reload(self, module_path):
         if not self.active:
             self._load_module(module_path)
             self._check_dbus_depends()
 
 
+
 class PluginEngine:
     """A class to manage plugins."""
+
+
     def __init__(self, plugin_path):
         """Initialize the plugin engine."""
         self.plugins = {}
         self.plugin_path = plugin_path
         self.initialized_plugins = []
-    
+
+    def set_plugins(self, plugins):
+        self.plugins = plugins
+
     def load_plugins(self):       
         """Load all plugins."""
         # find all plugin info files (*.gtg-plugin)
@@ -158,35 +167,35 @@ class PluginEngine:
             info = ConfigObj(info_file)
             p = Plugin(info["GTG Plugin"], self.plugin_path)
             self.plugins[p.module_name] = p
-    
+        return self.plugins
+
     def active_plugins(self):
         """Return a dictionary of only active plugins."""
+        print "WE HaVE ", self.plugins
         plugins = filter(lambda (name,p): p.active, self.plugins.iteritems())
         return dict(plugins)
-    
+
     def inactive_plugins(self):
         """Return a dictionary of only inactive plugins."""
         plugins = filter(lambda (name,p): not p.active,
           self.plugins.iteritems())
         return dict(plugins)
-    
+
     def enabled_plugins(self):
         """Return a dictionary of only enabled plugins."""
         plugins = filter(lambda (name,p): p.enabled, self.plugins.iteritems())
         return dict(plugins)
-    
+
     def disabled_plugins(self):
         """Return a dictionary of only disabled plugins."""
         return dict(filter(lambda (name,p): not p.enabled,
           self.plugins.iteritems()))
-    
+
     def activate_plugins(self, plugin_apis, plugins=[]):
         """Activate plugins."""
-        if len(plugins) == 0:
+        assert(isinstance(plugins, list), True)
+        if not plugins:
             plugins = self.inactive_plugins().itervalues()
-        elif not hasattr(plugins, '__iter__'):
-            raise TypeError('expecting list of plugins to activate, got %s' %
-              type(plugins))
         for plugin in plugins:
             # activate enabled plugins without errors
             if plugin.enabled and not plugin.error:
@@ -194,13 +203,14 @@ class PluginEngine:
                 plugin.active = True
                 for api in plugin_apis:
                     plugin.instance.activate(api)
+                    print "ACTIVATED",plugin
                     if api.is_editor():
                         plugin.instance.onTaskOpened(api)
                         # also refresh the content of the task
                         tv = api.get_textview()
                         if tv:
                             tv.modified(refresheditor=False)
-    
+
     def deactivate_plugins(self, plugin_apis, plugins=[]):
         """Deactivate plugins."""
         if len(plugins) == 0:
@@ -214,7 +224,7 @@ class PluginEngine:
                 for api in plugin_apis:
                     plugin.instance.deactivate(api)
                     if api.is_editor():
-                        plugin.instance.onTaskOpened(api)
+                        plugin.instance.onTaskClosed(api)
                         # also refresh the content of the task
                         tv = api.get_textview()
                         if tv:
@@ -225,23 +235,25 @@ class PluginEngine:
                 for api in plugin_apis:
                     if hasattr(plugin.instance, 'onQuit'):
                         plugin.instance.onQuit(api)
-    
+
     def onTaskLoad(self, plugin_api):
         """Pass the onTaskLoad signal to all active plugins."""
+        print "####################################ACTIVEPLUGS"
+        print self.active_plugins()
         for plugin in self.active_plugins().itervalues():
+            print "ONTASKOPENED"
             plugin.instance.onTaskOpened(plugin_api)
-     
+
     def onTaskClose(self, plugins, plugin_api):
         """Pass the onTaskClose signal to all active plugins."""
         for plugin in self.active_plugins().itervalues():
             if hasattr(plugin.instance, 'onTaskClosed'):
                 plugin.instance.onTaskClosed(plugin_api)
-    
+
     def recheck_plugins(self, plugin_apis):
         """Check plugins to make sure their states are consistent.
-        
+
         TODO: somehow make this unnecessary?
-        
         """
         for plugin in self.plugins.itervalues():
             try:
@@ -260,7 +272,7 @@ class PluginEngine:
                         self.activate_plguins(plugin_apis, [plugin])
             except Exception, e:
                 print "Error: %s" % e
-    
+
     def recheck_plugin_errors(self, check_all=False):
         """Attempt a reload of plugins with errors, or all plugins."""
         for plugin in self.plugins.itervalues():
