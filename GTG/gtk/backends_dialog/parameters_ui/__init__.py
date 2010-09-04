@@ -24,11 +24,6 @@ built for them: it should play along the lines of the separation between GTG
 server and client
 '''
 
-#FIXME: all the parameters have one function in common (2 lines total).
-#       Evaluate if there is a clean way to avoid duplication of this code,
-#       without becoming too difficult to understand.
-#       (invernizzi)
-
 import gtk
 import functools
 
@@ -50,7 +45,7 @@ class ParametersUI(gtk.VBox):
     '''
 
 
-    COMMON_WIDTH = 160
+    COMMON_WIDTH = 170
 
     def __init__(self, requester):
         '''Constructs the list of the possible widgets.
@@ -58,7 +53,7 @@ class ParametersUI(gtk.VBox):
         @param requester: a GTG.core.requester.Requester object
         '''
         super(ParametersUI, self).__init__(False)
-        self.req = requester 
+        self.req = requester
         self.set_spacing(10)
 
         #builds a list of widget generators. More precisely, it's a

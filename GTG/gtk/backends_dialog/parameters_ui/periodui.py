@@ -50,6 +50,7 @@ class PeriodUI(gtk.HBox):
         '''
         period_label = gtk.Label(_("Check for new tasks every"))
         period_label.set_alignment(xalign = 0, yalign = 0.5)
+        period_label.set_line_wrap(True)
         period_label.set_size_request(width = width, height = -1)
         self.pack_start(period_label, False)
         align = gtk.Alignment(xalign = 0, yalign = 0.5, xscale = 1)
