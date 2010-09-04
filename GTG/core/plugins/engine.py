@@ -88,7 +88,7 @@ class Plugin(object):
                     self.error = True
             else:
                 if dbobj:
-                    self.missing_dbus.append((dbobj))
+                    self.missing_dbus.append(dbobj)
                     self.error = True
     
     def _check_module_depends(self):
