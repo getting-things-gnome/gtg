@@ -50,6 +50,7 @@ class PathUI(gtk.HBox):
         @param width: the width of the gtk.Label object
         '''
         label = gtk.Label(_("Filename:"))
+        label.set_line_wrap(True)
         label.set_alignment(xalign = 0, yalign = 0.5)
         label.set_size_request(width = width, height = -1)
         self.pack_start(label, False)
