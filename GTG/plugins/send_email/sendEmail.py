@@ -13,58 +13,39 @@
 #
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
-import sys
+
 import gio
-try:
-    import pygtk
-    pygtk.require("2.0")
-except: # pylint: disable-msg=W0702
-    sys.exit(1)
-try:
-    import gtk
-except: # pylint: disable-msg=W0702
-    sys.exit(1)
+import gtk
 import urllib
+
+from GTG import _
 
 
 class pluginSendEmail:
 
-    def __init__(self):
-        #GUI initialization
-        self.builder = gtk.Builder()
-
-    def activate(self, plugin_api):
-        self.plugin_api = plugin_api
-
-    def onTaskClosed(self, plugin_api):
-        pass
 
     def onTaskOpened(self, plugin_api):
+        self.plugin_api = plugin_api
         # add a item (button) to the ToolBar
         tb_Taskicon = gtk.Image()
         tb_Taskicon.set_from_icon_name('mail-send', 32)
-        tb_Taskicon.show()
         self.tb_Taskbutton = gtk.ToolButton(tb_Taskicon)
-        self.tb_Taskbutton.set_label("Send via email")
+        self.tb_Taskbutton.set_label(_("Send via email"))
         self.tb_Taskbutton.connect('clicked', self.onTbTaskButton, plugin_api)
-        self.task_separator = gtk.SeparatorToolItem()
-        plugin_api.add_task_toolbar_item(self.task_separator)
-        plugin_api.add_task_toolbar_item(self.tb_Taskbutton)
+        self.tb_Taskbutton.show_all()
+        plugin_api.add_toolbar_item(self.tb_Taskbutton)
 
     def deactivate(self, plugin_api):
         #everything should be removed, in case a task is currently opened
-        #we may not be loaded in the taskeditor, so we have to check
-        if hasattr(self, "task_separator"):
-            plugin_api.remove_task_toolbar_item(self.task_separator)
-        if hasattr(self, "tb_Taskbutton"):
-            print self.tb_Taskbutton
-            plugin_api.remove_task_toolbar_item(self.tb_Taskbutton)
-            print "ciao"
+        try:
+            self.plugin_api.remove_task_toolbar_item(self.tb_Taskbutton)
+        except:
+            pass
 
 ## CORE FUNCTIONS ##############################################################
 
     def onTbTaskButton(self, widget, plugin_api):
-        task = plugin_api.get_task()
+        task = plugin_api.get_ui().get_task()
         parameters = urllib.urlencode({'subject': task.get_title(),
                                        'body':    task.get_excerpt()})
         parameters = parameters.replace('+','%20')
