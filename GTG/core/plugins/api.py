@@ -58,7 +58,8 @@ class PluginAPI:
         else:
             self.__ui = self.__view_manager.get_browser()
             self.__builder = self.__ui.get_builder()
-            self.__toolbar = self.__builder.get_object('task_tb')
+            self.__toolbar = self.__builder.get_object('task_toolbar')
+            print "TASKBROW", self.__toolbar
             self.__task_id = None
 
 #=== Accessor methods ========================================================
