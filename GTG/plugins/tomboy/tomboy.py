@@ -293,7 +293,7 @@ Do you want to create it?")))
     #creates the tomboy widget
     def widgetCreate(self, tomboy_note_title):
         image = gtk.Image()
-        window = self.plugin_api.get_window()
+        window = self.plugin_api.get_ui().get_window()
         window.realize()
         window_style = window.get_style()
         pixbuf=gtk.gdk.\

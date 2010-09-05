@@ -26,6 +26,7 @@ from xdg.BaseDirectory import xdg_config_home
 
 from GTG.core.plugins import GnomeConfig
 from GTG.gtk          import ViewConfig
+from GTG.core.plugins.engine import PluginEngine
 
 
 __all__ = [
@@ -98,7 +99,7 @@ class PreferencesDialog:
     __AUTOSTART_DIRECTORY = os.path.join(xdg_config_home, "autostart")
     __AUTOSTART_FILE = "gtg.desktop"
 
-    def __init__(self, pengine, p_apis, config_obj):
+    def __init__(self, config_obj):
         """Constructor."""
         self.config_obj = config_obj
         self.config = self.config_obj.conf_dict
@@ -121,8 +122,7 @@ class PreferencesDialog:
         # keep a reference to the parent task browser
         #FIXME: this is not needed and should be removed
 #        self.tb = taskbrowser
-        self.pengine = pengine
-        self.p_apis = p_apis
+        self.pengine = PluginEngine()
         # initialize tree models
         self._init_backend_tree()
         # this can't happen yet, due to the order of things in
@@ -310,8 +310,7 @@ class PreferencesDialog:
         #pcd = self.plugin_config_dialog
         #pcd.show_all()
         # ...for now, use existing code.
-        self.pengine.get_plugin(plugin_id).instance.configure_dialog(
-          self.p_apis, self.dialog)
+        self.pengine.get_plugin(plugin_id).instance.configure_dialog(self.dialog)
 
     def on_plugin_config_close(self, widget):
         """Close the PluginConfigDialog."""
@@ -330,9 +329,9 @@ class PreferencesDialog:
         p = self.pengine.get_plugin(plugin_id)
         p.enabled = not self.plugin_store.get_value(iter, PLUGINS_COL_ENABLED)
         if p.enabled:
-            self.pengine.activate_plugins(self.p_apis, [p])
+            self.pengine.activate_plugins([p])
         else:
-            self.pengine.deactivate_plugins(self.p_apis, [p])
+            self.pengine.deactivate_plugins([p])
         self.plugin_store.set_value(iter, PLUGINS_COL_ENABLED, p.enabled)
         self._update_plugin_configure(p)
     

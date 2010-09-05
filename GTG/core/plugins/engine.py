@@ -159,6 +159,7 @@ class PluginEngine(Borg):
         self.plugin_path = plugin_path
         self.initialized_plugins = []
         self.plugins = {}
+        self.plugin_apis = []
 
         # find all plugin info files (*.gtg-plugin)
         for path in self.plugin_path:
@@ -192,7 +193,14 @@ class PluginEngine(Borg):
                    (kind_of_plugins == "disabled" and not plugin.enabled)
         return filter(filter_fun, all_plugins)
 
-    def activate_plugins(self, plugin_apis, plugins=[]):
+    def register_api(self, api):
+        '''Adds a plugin api to the list of currently loaded apis'''
+        self.plugin_apis.append(api)
+
+    def remove_api(self, api):
+        self.plugin_apis.remove(api)
+
+    def activate_plugins(self, plugins=[]):
         """Activate plugins."""
         assert(isinstance(plugins, list), True)
         if not plugins:
@@ -202,16 +210,16 @@ class PluginEngine(Borg):
             if plugin.enabled and not plugin.error:
                 # activate the plugin
                 plugin.active = True
-                for api in plugin_apis:
+                for api in self.plugin_apis:
                     plugin.instance.activate(api)
                     if api.is_editor():
                         plugin.instance.onTaskOpened(api)
                         # also refresh the content of the task
-                        tv = api.get_textview()
+                        tv = api.get_ui().get_textview()
                         if tv:
                             tv.modified(refresheditor=False)
 
-    def deactivate_plugins(self, plugin_apis, plugins=[]):
+    def deactivate_plugins(self, plugins=[]):
         """Deactivate plugins."""
         assert(isinstance(plugins, list), True)
         if not plugins:
@@ -219,18 +227,18 @@ class PluginEngine(Borg):
         for plugin in plugins:
             # deactivate disabled plugins
             if not plugin.enabled:
-                for api in plugin_apis:
+                for api in self.plugin_apis:
                     plugin.instance.deactivate(api)
                     if api.is_editor():
                         plugin.instance.onTaskClosed(api)
                         # also refresh the content of the task
-                        tv = api.get_textview()
+                        tv = api.get_ui().get_textview()
                         if tv:
                             tv.modified(refresheditor=False)
                 plugin.active = False
             # if plugin is enabled and has onQuit member, execute it
             else:
-                for api in plugin_apis:
+                for api in self.plugin_apis:
                     if hasattr(plugin.instance, 'onQuit'):
                         plugin.instance.onQuit(api)
 
@@ -261,18 +269,18 @@ class PluginEngine(Borg):
         for plugin in self.get_plugins():
             try:
                 if plugin.instance and plugin.enabled and plugin.active:
-                    self.deactivate_plugins(plugin_apis, [plugin])
+                    self.deactivate_plugins(self.plugin_apis, [plugin])
                 elif plugin.instance is None and plugin.enabled and (not
                   plugin.active):
                     if plugin.error:
                         plugin.enabled = False
                     else:
-                        self.activate_plugins(plugin_apis, [plugin])
+                        self.activate_plugins(self.plugin_apis, [plugin])
                 elif plugin.instance and plugin.enabled and not plugin.active:
                     if plugin.error:
                         plugin.enabled = False
                     else:
-                        self.activate_plguins(plugin_apis, [plugin])
+                        self.activate_plguins(self.plugin_apis, [plugin])
             except Exception, e:
                 print "Error: %s" % e
 

@@ -21,6 +21,9 @@ import os
 import pickle
 from xdg.BaseDirectory import xdg_config_home
 
+from GTG.tools.logger  import Log
+
+
 
 class PluginAPI:
     """The plugin engine's API.
@@ -37,7 +40,8 @@ class PluginAPI:
                  requester,
                  view_manager,
                  taskeditor = None):
-        """Construct a L{PluginAPI} object.
+        """
+        Construct a PluginAPI object.
 
         @param requester: The requester.
         @param view_manager: The view manager
@@ -48,26 +52,55 @@ class PluginAPI:
         self.__view_manager = view_manager
         if taskeditor:
             self.__ui = taskeditor
+            self.__builder = self.__ui.get_builder()
+            self.__toolbar = self.__builder.get_object('task_tb1')
             self.__task_id = taskeditor.get_task()
         else:
             self.__ui = self.__view_manager.get_browser()
-            self.__task_id = None
-        self.__builder = self.__ui.get_builder()
-        if taskeditor:
-            self.__toolbar = self.__builder.get_object('task_tb1')
-        else:
+            self.__builder = self.__ui.get_builder()
             self.__toolbar = self.__builder.get_object('task_tb')
+            self.__task_id = None
+
+#=== Accessor methods ========================================================
 
     def is_editor(self):
+        """
+        Returns true if this is an Editor API
+        """
         return bool(self.__task_id)
 
     def is_browser(self):
+        """
+        Returns true if this is a Browser API
+        """
         return not self.is_editor()
 
     def get_view_manager(self):
+        """
+        returns a GTG.gtk.manager.Manager
+        """
         return self.__view_manager
 
-#=== General Methods ==========================================================
+    def get_requester(self):
+        """
+        returns a GTG.core.requester.Requester
+        """
+        return self.__requester
+
+    def get_gtk_builder(self):
+        """
+        Returns the gtk builder for the parent window
+        """
+        return self.__builder
+
+    def get_ui(self):
+        '''
+        Returns a Browser or an Editor
+        '''
+        return self.__ui
+
+#=== Changing the UI =========================================================
+
     def add_menu_item(self, item):
         """Adds a menu entry to the Plugin Menu of the Main Window 
         (task browser).
@@ -75,10 +108,8 @@ class PluginAPI:
         @param item: The gtk.MenuItem that is going to be added.  
         """
         widget = self.__builder.get_object('plugin_mi')
-        if widget:
-            widget.show_all()
-            widget.get_submenu().append(item)
-        item.show()
+        widget.get_submenu().append(item)
+        widget.show_all()
 
     def remove_menu_item(self, item):
         """Removes a menu entry from the Plugin Menu of the Main Window 
@@ -88,17 +119,14 @@ class PluginAPI:
         @return: Returns C{True} if the operation has sucess or c{False} if it 
         fails.  
         """
+        menu = self.__builder.get_object('plugin_mi')
+        submenu = menu.get_submenu()
         try:
-            wi = self.__builder.get_object('plugin_mi')
-            if wi:
-                menu = wi.get_submenu()
-                menu.remove(item)
-                if len(menu.get_children()) == 0:
-                    wi.hide()
-            return True
-        except Exception, e:
-            print "Error removing menu item: %s" % e
-            return True
+            submenu.remove(item)
+        except:
+            pass
+        if not submenu.get_children():
+                menu.hide()
 
     def add_toolbar_item(self, widget):
         """Adds a button to the task browser's toolbar or the task editor
@@ -112,7 +140,7 @@ class PluginAPI:
 
     def remove_task_toolbar_item(self, widget):
         """
-        Remove a widget from the task editor's toolbar.
+        Remove a widget from the toolbar.
         """
         try:
             self.__toolbar.remove(widget)
@@ -146,25 +174,8 @@ class PluginAPI:
                 if wi and widg_id in self.taskwidget_widg:
                     wi.remove(self.taskwidget_widg.pop(widg_id))
             except Exception, e:
-                print "Error removing the toolbar item in the TaskEditor: %s" %e
-
-    def get_requester(self):
-        """Returns the requester.
-
-        @return: The requester.
-        """
-        return self.__requester
-
-    def get_gtk_builder(self):
-        """Returns the gtk builder for the parent window
-        """
-        return self.__builder
-
-    def get_ui(self):
-        '''
-        Returns a Browser or an Editor
-        '''
-        return self.__ui
+                Log.debug("Error removing the toolbar item in the TaskEditor:"
+                          "%s" %e)
 
 #=== file saving/loading ======================================================
 

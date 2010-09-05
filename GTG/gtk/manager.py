@@ -57,8 +57,6 @@ class Manager:
                                  # right now
                                  
         self.browser = None
-        self.pengine = None
-        self.p_apis = []
                                  
         #Shared clipboard
         self.clipboard = clipboard.TaskClipboard(self.req)
@@ -84,16 +82,16 @@ class Manager:
         self.pengine = PluginEngine(GTG.PLUGIN_DIR)
         # initializes the plugin api class
         self.plugin_api = PluginAPI(self.req, self)
-        self.p_apis.append(self.plugin_api)
+        self.pengine.register_api(self.plugin_api)
         # checks the conf for user settings
         try:
             plugins_enabled = self.config["plugins"]["enabled"]
         except KeyError:
-            Log.debug("no enabled plugin")
+            plugins_enabled = []
         for plugin in self.pengine.get_plugins():
             plugin.enabled = plugin.module_name in plugins_enabled
         # initializes and activates each plugin (that is enabled)
-        self.pengine.activate_plugins(self.p_apis)
+        self.pengine.activate_plugins()
         
     ############## Browser #################################################
 
@@ -152,7 +150,6 @@ class Manager:
                 vmanager = self, \
                 task = t, \
                 taskconfig = self.task_config, \
-                plugin_apis = self.p_apis, \
                 thisisnew = thisisnew,\
                 clipboard = self.clipboard)
             #registering as opened
@@ -179,8 +176,7 @@ class Manager:
 
     def open_preferences(self, config_priv, sender=None):
         if not hasattr(self, "preferences"):
-            self.preferences = PreferencesDialog(self.pengine, self.p_apis, \
-                    self.config_obj)
+            self.preferences = PreferencesDialog(self.config_obj)
         self.preferences.activate(config_priv)
         
     def ask_delete_tasks(self, tids):
@@ -216,5 +212,5 @@ class Manager:
             self.config["plugins"]["enabled"] = \
               [p.module_name for p in self.pengine.get_plugins("enabled")]
         # plugins are deactivated
-        self.pengine.deactivate_plugins(self.p_apis)
+        self.pengine.deactivate_plugins()
 

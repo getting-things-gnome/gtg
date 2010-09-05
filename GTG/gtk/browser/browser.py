@@ -1330,3 +1330,6 @@ class TaskBrowser:
 
     def get_builder(self):
         return self.builder
+
+    def get_window(self):
+        return self.window

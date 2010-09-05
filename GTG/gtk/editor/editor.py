@@ -59,13 +59,11 @@ class TaskEditor:
                  vmanager, 
                  task, 
                  taskconfig = None,
-                 plugin_apis = None,
                  thisisnew = False,
                  clipboard = None) :
         self.req = requester
         self.vmanager = vmanager
         self.config = taskconfig
-        self.p_apis = plugin_apis
         self.time = None
         self.clipboard = clipboard
         self.builder = gtk.Builder() 
@@ -171,7 +169,7 @@ class TaskEditor:
         # plugins
         self.pengine = PluginEngine()
         self.plugin_api = PluginAPI(self.req, self.vmanager, self)
-        self.p_apis.append(self.plugin_api)
+        self.pengine.register_api(self.plugin_api)
         self.pengine.onTaskLoad(self.plugin_api)
         
         #Putting the refresh callback at the end make the start a lot faster
@@ -610,7 +608,7 @@ class TaskEditor:
     def destruction(self,a=None) :#pylint: disable-msg=W0613
         #Save should be also called when buffer is modified
         self.pengine.onTaskClose(self.plugin_api)
-        self.p_apis.remove(self.plugin_api)
+        self.pengine.remove_api(self.plugin_api)
         tid = self.task.get_id()
         if self.task.is_new():
             self.req.delete_task(tid)
@@ -652,3 +650,6 @@ class TaskEditor:
 
     def get_textview(self):
         return self.textview
+
+    def get_window(self):
+        return self.window
