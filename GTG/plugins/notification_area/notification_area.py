@@ -108,7 +108,8 @@ class NotificationArea:
         self.requester.connect("task-modified", self.on_task_modified)
         #initial menu populate, just in case the plugin is not activated at GTG
         # startup time
-        task_list = self.requester.get_active_tasks_list(workable = True)
+        task_list = self.requester.get_tasks_tree().get_all_nodes()
+        #task_list = self.requester.get_active_tasks_list(workable = True)
         map(lambda tid: self.on_task_added(self.requester, tid), task_list)
         #realizing the menu
         self.menu.show_all()
@@ -252,7 +253,7 @@ class NotificationArea:
         """A configurable plugin should have this method and return True"""
         return True
 
-    def configure_dialog(self, plugin_apis, manager_dialog):
+    def configure_dialog(self, manager_dialog):
         self.preferences_load()
         self.preferences_dialog.set_transient_for(manager_dialog)
         self.chbox_minimized.set_active(self.preferences["start_minimized"])

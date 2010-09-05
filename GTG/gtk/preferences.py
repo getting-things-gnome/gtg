@@ -26,6 +26,7 @@ from xdg.BaseDirectory import xdg_config_home
 
 from GTG.core.plugins import GnomeConfig
 from GTG.gtk          import ViewConfig
+from GTG.core.plugins.engine import PluginEngine
 
 
 __all__ = [
@@ -98,7 +99,7 @@ class PreferencesDialog:
     __AUTOSTART_DIRECTORY = os.path.join(xdg_config_home, "autostart")
     __AUTOSTART_FILE = "gtg.desktop"
 
-    def __init__(self, pengine, p_apis, config_obj):
+    def __init__(self, config_obj):
         """Constructor."""
         self.config_obj = config_obj
         self.config = self.config_obj.conf_dict
@@ -121,8 +122,7 @@ class PreferencesDialog:
         # keep a reference to the parent task browser
         #FIXME: this is not needed and should be removed
 #        self.tb = taskbrowser
-        self.pengine = pengine
-        self.p_apis = p_apis
+        self.pengine = PluginEngine()
         # initialize tree models
         self._init_backend_tree()
         # this can't happen yet, due to the order of things in
@@ -157,8 +157,8 @@ class PreferencesDialog:
         # refresh the status of all plugins
         self.pengine.recheck_plugin_errors(True)
         # repopulate the store
-        for name, p in self.pengine.plugins.iteritems():
-            self.plugin_store.append([name, p.enabled, p.full_name,
+        for p in self.pengine.get_plugins():
+            self.plugin_store.append([p.module_name, p.enabled, p.full_name,
               p.description, not p.error,]) # activateable if there is no error
 
     def  _refresh_preferences_store(self):
@@ -263,12 +263,12 @@ class PreferencesDialog:
     def on_close(self, widget, data = None):
         """Close the preferences dialog."""
 
-        if len(self.pengine.plugins) > 0:
+        if self.pengine.get_plugins():
             self.config["plugins"] = {}
             self.config["plugins"]["disabled"] = \
-              self.pengine.disabled_plugins().keys()
+              [p.module_name for p in self.pengine.get_plugins("disabled")]
             self.config["plugins"]["enabled"] = \
-              self.pengine.enabled_plugins().keys()
+              [p.module_name for p in self.pengine.get_plugins("enabled")]
 
         self.config_obj.save()
 
@@ -285,7 +285,7 @@ class PreferencesDialog:
         if iter == None:
             return
         plugin_id = self.plugin_store.get_value(iter, PLUGINS_COL_ID)
-        p = self.pengine.plugins[plugin_id]
+        p = self.pengine.get_plugin(plugin_id)
         pad = self.plugin_about_dialog
         pad.set_name(p.full_name)
         pad.set_version(p.version)
@@ -310,8 +310,7 @@ class PreferencesDialog:
         #pcd = self.plugin_config_dialog
         #pcd.show_all()
         # ...for now, use existing code.
-        self.pengine.plugins[plugin_id].instance.configure_dialog(
-          self.p_apis, self.dialog)
+        self.pengine.get_plugin(plugin_id).instance.configure_dialog(self.dialog)
 
     def on_plugin_config_close(self, widget):
         """Close the PluginConfigDialog."""
@@ -321,18 +320,18 @@ class PreferencesDialog:
         (model, iter) = plugin_tree.get_selection().get_selected()
         if iter is not None:
             plugin_id = model.get_value(iter, PLUGINS_COL_ID)
-            self._update_plugin_configure(self.pengine.plugins[plugin_id])
+            self._update_plugin_configure(self.pengine.get_plugin(plugin_id))
 
     def on_plugin_toggle(self, widget, path):
         """Toggle a plugin enabled/disabled."""
         iter = self.plugin_store.get_iter(path)
         plugin_id = self.plugin_store.get_value(iter, PLUGINS_COL_ID)
-        p = self.pengine.plugins[plugin_id]
+        p = self.pengine.get_plugin(plugin_id)
         p.enabled = not self.plugin_store.get_value(iter, PLUGINS_COL_ENABLED)
         if p.enabled:
-            self.pengine.activate_plugins(self.p_apis, [p])
+            self.pengine.activate_plugins([p])
         else:
-            self.pengine.deactivate_plugins(self.p_apis, [p])
+            self.pengine.deactivate_plugins([p])
         self.plugin_store.set_value(iter, PLUGINS_COL_ENABLED, p.enabled)
         self._update_plugin_configure(p)
     

@@ -31,6 +31,7 @@ from GTG import _
 from GTG.plugins.tomboy.combobox_enhanced import smartifyComboboxEntry
 
 
+
 class pluginTomboy:
 
 
@@ -41,8 +42,6 @@ class pluginTomboy:
         self.token_end = '|'
         self.path = os.path.dirname(os.path.abspath(__file__))
         self.findTomboyIconPath()
-        self.separator_item =  None
-        self.tb_Taskbutton = None
 
     #Tomboy installation is checked through the presence of its icon
     def findTomboyIconPath(self):
@@ -63,7 +62,6 @@ class pluginTomboy:
     #Function called upon plug-in activation
     def activate(self, plugin_api):
         self.builder = gtk.Builder() 
-        self.plugin_api = plugin_api
 
     #Returns true is Tomboy/Gnote is present, otherwise shows a dialog
     #(only once)  and returns False 
@@ -83,8 +81,6 @@ Please install it or disable the Tomboy/Gnote plugin in GTG"))
                 dialog.run() 
                 dialog.destroy()
         return self.activated
-
-
 
     #Return a textual token to represent the Tomboy widget. It's useful
     # since the task is saved as pure text
@@ -116,17 +112,19 @@ Please install it or disable the Tomboy/Gnote plugin in GTG"))
     def addButtonToToolbar(self, plugin_api):
         if not self.checkTomboyPresent():
             return
+        print "ADDING"
         tb_Taskbutton_image = gtk.Image()
         tb_Taskbutton_image_path = self.tomboy_icon_path
         tb_Taskbutton_pixbuf=gtk.gdk.\
                 pixbuf_new_from_file_at_size(tb_Taskbutton_image_path, 16, 16)
         tb_Taskbutton_image.set_from_pixbuf(tb_Taskbutton_pixbuf)
-        tb_Taskbutton_image.show()
-        tb_Taskbutton = gtk.ToolButton(tb_Taskbutton_image)
-        tb_Taskbutton.set_label(_("Add Tomboy note"))
-        tb_Taskbutton.connect('clicked', self.onTbTaskButton, plugin_api)
-        self.separator_item = plugin_api.add_task_toolbar_item(gtk.SeparatorToolItem())
-        self.tb_Taskbutton = plugin_api.add_task_toolbar_item(tb_Taskbutton)
+        self.tb_Taskbutton = gtk.ToolButton(tb_Taskbutton_image)
+        self.tb_Taskbutton.set_label(_("Add Tomboy note"))
+        self.tb_Taskbutton.connect('clicked', self.onTbTaskButton,
+                                   self.plugin_api)
+        self.tb_Taskbutton.show_all()
+        print "ADDING!!!"
+        self.plugin_api.add_toolbar_item(self.tb_Taskbutton)
 
 
     # Converts all the textual tokens in tomboy note widgets
@@ -161,18 +159,22 @@ Please install it or disable the Tomboy/Gnote plugin in GTG"))
             token_ending = text.find(self.token_end)
 
     def onTaskOpened(self, plugin_api):
-        if not self.checkTomboyPresent():
+        if not self.checkTomboyPresent() or not plugin_api.is_editor():
             return
         #NOTE: get_textview() only works in this function
         # (see GTG/core/plugins/api.py docs)
-        self.textview = plugin_api.get_textview()
+        self.plugin_api = plugin_api
+        self.textview = plugin_api.get_ui().get_textview()
         self.addButtonToToolbar(plugin_api)
         self.convertTokensToWidgets()
 
     def deactivate(self, plugin_api):
-        self.onTaskClosed(plugin_api)
-        plugin_api.remove_task_toolbar_item(self.separator_item)
-        plugin_api.remove_task_toolbar_item(self.tb_Taskbutton)
+        try:
+            self.onTaskClosed(self.plugin_api)
+            self.plugin_api.remove_toolbar_item(self.tb_Taskbutton)
+        except AttributeError:
+            #the plugin wasn't used
+            pass
 
     def close_dialog(self, widget, data=None):
         self.dialog.destroy()
@@ -291,7 +293,7 @@ Do you want to create it?")))
     #creates the tomboy widget
     def widgetCreate(self, tomboy_note_title):
         image = gtk.Image()
-        window = self.plugin_api.get_window()
+        window = self.plugin_api.get_ui().get_window()
         window.realize()
         window_style = window.get_style()
         pixbuf=gtk.gdk.\

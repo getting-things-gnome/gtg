@@ -447,7 +447,7 @@ class pluginExport:
         """A configurable plugin should have this method and return True"""
         return True
 
-    def configure_dialog(self, plugin_apis, manager_dialog):
+    def configure_dialog(self, manager_dialog):
         self.preferences_load()
         self.preferences_dialog.set_transient_for(manager_dialog)
         self.pref_chbox_menu.set_active(self.preferences["menu_entry"])
