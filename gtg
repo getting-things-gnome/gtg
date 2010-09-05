@@ -32,10 +32,13 @@ from optparse import OptionParser
 
 
 def X_is_running():
-    from subprocess import Popen, PIPE
-    p = Popen(["xset", "-q"], stdout=PIPE, stderr=PIPE)
-    p.communicate()
-    return p.returncode == 0
+    from gtk.gdk import Screen
+    try:
+        if Screen().get_display():
+            return True
+    except RuntimeError:
+        pass
+    return False
 
 
 try:
