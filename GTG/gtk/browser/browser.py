@@ -69,10 +69,15 @@ class Timer:
         print "%s : %s" %(self.st,time.time() - self.start)
 
 
-class TaskBrowser:
+class TaskBrowser(gobject.GObject):
     """ The UI for browsing open and closed tasks, and listing tags in a tree """
 
+    __string_signal__ = (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str, ))
+    __gsignals__ = {'task-added-via-quick-add' : __string_signal__, \
+                   }
+
     def __init__(self, requester, vmanager, config):
+        gobject.GObject.__init__(self)
         # Object prime variables
         self.priv   = {}
         self.req    = requester
@@ -153,7 +158,6 @@ class TaskBrowser:
         self.priv['selected_rows']            = None
         self.priv['workview']                 = False
         self.priv['filter_cbs']               = []
-        self.priv['quick_add_cbs']            = []
 
     def _init_icon_theme(self):
         icon_dirs = CoreConfig().get_icons_directories()
@@ -818,8 +822,8 @@ class TaskBrowser:
             task = self.req.new_task(newtask=True)
             task.set_complex_title(text,tags=tags)
             self.quickadd_entry.set_text('')
-            for f in self.priv['quick_add_cbs']:
-                f(task)
+            gobject.idle_add(self.emit, "task-added-via-quick-add",
+                             task.get_id())
 
     def on_tag_treeview_button_press_event(self, treeview, event):
         if event.button == 3:

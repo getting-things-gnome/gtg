@@ -38,9 +38,8 @@ class hamsterPlugin:
         self.vbox = None
         self.button=gtk.ToolButton()
         self.menu_item = gtk.MenuItem(_("Start task in Hamster"))
+        self.menu_item.show_all()
         self.taskbutton = None
-        self.separator = gtk.SeparatorToolItem()
-        self.task_separator = None
     
     #### Interaction with Hamster
     def sendTask(self, task):
@@ -158,8 +157,7 @@ class hamsterPlugin:
         self.button.set_tooltip_text(_("Start a new activity in Hamster Time" +\
                                        "Tracker based on the selected task"))
         self.button.connect('clicked', self.browser_cb, plugin_api)
-        # saves the separator's index to later remove it
-        plugin_api.add_toolbar_item(self.separator)
+        self.button.show()
         plugin_api.add_toolbar_item(self.button)
         
         # set up preferences
@@ -174,8 +172,8 @@ class hamsterPlugin:
         button.set_tooltip_text(_("Start a new activity in Hamster Time " + \
                              " Tracker based on this task"))
         button.connect('clicked', self.task_cb, plugin_api)
-        self.task_separator = plugin_api.add_task_toolbar_item(gtk.SeparatorToolItem())
-        self.taskbutton = plugin_api.add_task_toolbar_item(button)
+        button.show()
+        self.taskbutton = plugin_api.add_toolbar_item(button)
         
         task = plugin_api.get_task()
         records = self.get_records(task)
@@ -233,16 +231,16 @@ class hamsterPlugin:
     def deactivate(self, plugin_api):
         plugin_api.remove_menu_item(self.menu_item)
         plugin_api.remove_toolbar_item(self.button)
-        plugin_api.remove_toolbar_item(self.separator)
-        plugin_api.remove_task_toolbar_item(self.task_separator)
-        plugin_api.remove_task_toolbar_item(self.taskbutton)
+        plugin_api.remove_toolbar_item(self.taskbutton)
         plugin_api.remove_widget_from_taskeditor(self.vbox)
         
     def browser_cb(self, widget, plugin_api):
-        self.sendTask(plugin_api.get_selected_task())
+        task_id = plugin_api.get_ui().get_selected_task()
+        self.sendTask(plugin_api.get_requester().get_task(task_id))
         
     def task_cb(self, widget, plugin_api):
-        self.sendTask(plugin_api.get_task())
+        task = plugin_api.get_ui().get_task()
+        self.sendTask(task)
         
         
     #### Preference Handling
@@ -251,7 +249,7 @@ class hamsterPlugin:
         """A configurable plugin should have this method and return True"""
         return True
 
-    def configure_dialog(self, plugin_apis, manager_dialog):
+    def configure_dialog(self, manager_dialog):
         self.preferences_load()
         self.preferences_dialog.set_transient_for(manager_dialog)
         

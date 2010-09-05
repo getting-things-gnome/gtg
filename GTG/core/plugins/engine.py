@@ -211,9 +211,15 @@ class PluginEngine(Borg):
                 # activate the plugin
                 plugin.active = True
                 for api in self.plugin_apis:
-                    plugin.instance.activate(api)
+                    try:
+                        plugin.instance.activate(api)
+                    except AttributeError:
+                        pass
                     if api.is_editor():
-                        plugin.instance.onTaskOpened(api)
+                        try:
+                            plugin.instance.onTaskOpened(api)
+                        except AttributeError:
+                            pass
                         # also refresh the content of the task
                         tv = api.get_ui().get_textview()
                         if tv:
@@ -228,9 +234,15 @@ class PluginEngine(Borg):
             # deactivate disabled plugins
             if not plugin.enabled:
                 for api in self.plugin_apis:
-                    plugin.instance.deactivate(api)
+                    try:
+                        plugin.instance.deactivate(api)
+                    except AttributeError:
+                        pass
                     if api.is_editor():
-                        plugin.instance.onTaskClosed(api)
+                        try:
+                            plugin.instance.onTaskClosed(api)
+                        except AttributeError:
+                            pass
                         # also refresh the content of the task
                         tv = api.get_ui().get_textview()
                         if tv:
@@ -239,8 +251,10 @@ class PluginEngine(Borg):
             # if plugin is enabled and has onQuit member, execute it
             else:
                 for api in self.plugin_apis:
-                    if hasattr(plugin.instance, 'onQuit'):
+                    try:
                         plugin.instance.onQuit(api)
+                    except AttributeError:
+                        pass
 
     def onTaskLoad(self, plugin_api):
         """Pass the onTaskLoad signal to all active plugins."""
@@ -250,14 +264,19 @@ class PluginEngine(Borg):
         for plugin in self.get_plugins():
             print plugin.module_name, plugin.active
         for plugin in self.get_plugins("active"):
-            print "ONTASKOPENED"
-            plugin.instance.onTaskOpened(plugin_api)
+            try:
+                plugin.instance.onTaskOpened(plugin_api)
+            except AttributeError:
+                pass
 
     def onTaskClose(self, plugin_api):
         """Pass the onTaskClose signal to all active plugins."""
         for plugin in self.get_plugins("active"):
             if hasattr(plugin.instance, 'onTaskClosed'):
-                plugin.instance.onTaskClosed(plugin_api)
+                try:
+                    plugin.instance.onTaskClosed(plugin_api)
+                except AttributeError:
+                    pass
 
 #FIXME: What are these for? must check someday! (invernizzi)
 
