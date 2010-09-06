@@ -19,6 +19,7 @@ import gtk
 import shutil
 import gobject
 import tempfile
+import threading
 import subprocess
 from Cheetah.Template  import Template as CheetahTemplate
 from xdg.BaseDirectory import xdg_config_home
@@ -26,6 +27,7 @@ from xdg.BaseDirectory import xdg_config_home
 from GTG                          import _
 from GTG.plugins.export.task_str  import tree_to_TaskStr
 from GTG.plugins.export.templates import TemplateFactory
+from GTG.tools.logger             import Log
 
 
 
@@ -53,7 +55,7 @@ class pluginExport:
                                             self.combo_get_path(self.combo))
         return self.template
 
-    def export_generate(self):
+    def export_generate(self, document_ready):
         #Template loading and cutting
         timespan = None
         if self.export_all_active.get_active():
@@ -83,40 +85,70 @@ class pluginExport:
             f.write(document)
             self.document_path = f.name
         if self.template.get_script_path():
-            self.document_path = \
-                subprocess.Popen(args = ['/bin/sh',
-                                         '-c',
-                                         self.template.get_script_path() + \
-                                         " " + self.document_path],
-                                        shell = False,
-                                        stdout = subprocess.PIPE\
-                                ).communicate()[0]
-            if self.document_path == "ERROR":
-                raise Exception
+            def __script_worker(self):
+                try:
+                    self.document_path = \
+                        subprocess.Popen(args = ['/bin/sh',
+                                             '-c',
+                                             self.template.get_script_path() + \
+                                             " " + self.document_path],
+                                            shell = False,
+                                            stdout = subprocess.PIPE\
+                                    ).communicate()[0]
+                except:
+                    pass
+                if self.document_path == "ERROR":
+                    Log.debug("Document creation failed")
+                    self.document_path = None
+                document_ready.set()
+            worker_thread = threading.Thread(
+                            target = __script_worker,
+                            args   = (self, ))
+            worker_thread.setDaemon(True)
+            worker_thread.start()
+        else:
+            document_ready.set()
 
-    def export_execute_with_ui(self):
+    def export_execute_with_ui(self, document_ready):
         if not self.load_template():
             self.show_error_dialog(_("Template not found"))
             return False
         #REMOVE ME
         try:
-            self.export_generate()
+            self.export_generate(document_ready)
         except Exception, e:
-            self.show_error_dialog(_("Could not generate the document: %s") % e)
+            self.show_error_dialog( \
+                            _("Could not generate the document: %s") % e)
             return False
         return True
 
-    def on_export_open(self, widget = None):
-        if not self.export_execute_with_ui():
-            return
-        subprocess.Popen(['xdg-open', self.document_path])
+    def on_export_open(self, widget = None, saving = False):
+        document_ready = threading.Event()
+        self.export_execute_with_ui(document_ready)
+        self.save_button.set_sensitive(False)
+        self.open_button.set_sensitive(False)
+        if saving:
+            filename = self.__get_filename_from_gtk_dialog()
+        else:
+            filename = None
+        def __wait_for_document_ready(self, document_ready, filename, saving):
+            document_ready.wait()
+            if filename:
+                if saving:
+                    shutil.copyfile(self.document_path, filename)
+            else:
+                subprocess.Popen(['xdg-open', self.document_path])
+            gobject.idle_add(self.save_button.set_sensitive, True)
+            gobject.idle_add(self.open_button.set_sensitive, True)
+
+        event_thread = threading.Thread( \
+                        target = __wait_for_document_ready,
+                        args = (self, document_ready, filename, saving))
+        event_thread.setDaemon(True)
+        event_thread.start()
 
     def on_export_save(self, widget = None):
-        if not self.export_execute_with_ui():
-            return
-        filename = self.__get_filename_from_gtk_dialog()
-        if filename:
-            shutil.copyfile(self.document_path, filename)
+        self.on_export_open(saving = True)
 
     def hide(self):
         self.__gtk_hide()
@@ -142,13 +174,15 @@ class pluginExport:
         self.builder.add_from_file(os.path.join(
                                   os.path.dirname(os.path.abspath(__file__)) + \
                                    "/export.ui"))
-        self.export_dialog      = self.builder.get_object("export_dialog")
         self.combo = self.builder.get_object("export_combo_templ")
+        self.export_dialog      = self.builder.get_object("export_dialog")
         self.export_image       = self.builder.get_object("export_image")
         self.preferences_dialog = self.builder.get_object("preferences_dialog")
         self.pref_chbox_menu    = self.builder.get_object("pref_chbox_menu")
         self.pref_chbox_toolbar = self.builder.get_object("pref_chbox_toolbar")
         self.description_label  = self.builder.get_object("label_description")
+        self.save_button        = self.builder.get_object("export_btn_save")
+        self.open_button        = self.builder.get_object("export_btn_open")
 
         self.export_all_active         = self.builder.get_object("export_all_active_rb")
         self.export_finished_last_week = self.builder.get_object("export_finished_last_week_rb")

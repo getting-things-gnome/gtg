@@ -215,7 +215,7 @@ just select the tag in GTG's main window. You may need to press F9 to see all th
             <property name="visible">True</property>
             <property name="yalign">1</property>
             <child>
-              <object class="GtkHBox" id="hbox30">
+              <object class="GtkHBox" id="buttonbox">
                 <property name="height_request">50</property>
                 <property name="visible">True</property>
                 <property name="border_width">12</property>
