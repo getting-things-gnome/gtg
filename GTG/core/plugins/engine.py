@@ -130,9 +130,8 @@ class Plugin(object):
                 # no dependencies in info file; use the ImportError instead
                 self.missing_modules.append(str(e).split(" ")[3])
             self.error = True
-        except Exception, e:
+        except Exception:
             # load_module() failed for some other reason
-            print e
             self.error = True
 
     def reload(self, module_path):
@@ -211,15 +210,11 @@ class PluginEngine(Borg):
                 # activate the plugin
                 plugin.active = True
                 for api in self.plugin_apis:
-                    try:
+                    if hasattr(plugin.instance, "activate"):
                         plugin.instance.activate(api)
-                    except AttributeError:
-                        pass
                     if api.is_editor():
-                        try:
+                        if hasattr(plugin.instance, "onTaskOpened"):
                             plugin.instance.onTaskOpened(api)
-                        except AttributeError:
-                            pass
                         # also refresh the content of the task
                         tv = api.get_ui().get_textview()
                         if tv:
@@ -234,15 +229,11 @@ class PluginEngine(Borg):
             # deactivate disabled plugins
             if not plugin.enabled:
                 for api in self.plugin_apis:
-                    try:
+                    if hasattr(plugin.instance, "deactivate"):
                         plugin.instance.deactivate(api)
-                    except AttributeError:
-                        pass
                     if api.is_editor():
-                        try:
+                        if hasattr(plugin.instance, "onTaskClosed"):
                             plugin.instance.onTaskClosed(api)
-                        except AttributeError:
-                            pass
                         # also refresh the content of the task
                         tv = api.get_ui().get_textview()
                         if tv:
@@ -251,32 +242,20 @@ class PluginEngine(Borg):
             # if plugin is enabled and has onQuit member, execute it
             else:
                 for api in self.plugin_apis:
-                    try:
+                    if hasattr(plugin.instance, "onQuit"):
                         plugin.instance.onQuit(api)
-                    except AttributeError:
-                        pass
 
     def onTaskLoad(self, plugin_api):
         """Pass the onTaskLoad signal to all active plugins."""
-        print "####################################ACTIVEPLUGS"
-        print self.get_plugins("active")
-        print "HERE", self.get_plugins()
-        for plugin in self.get_plugins():
-            print plugin.module_name, plugin.active
         for plugin in self.get_plugins("active"):
-            try:
+            if hasattr(plugin.instance, "onTaskOpened"):
                 plugin.instance.onTaskOpened(plugin_api)
-            except AttributeError:
-                pass
 
     def onTaskClose(self, plugin_api):
         """Pass the onTaskClose signal to all active plugins."""
         for plugin in self.get_plugins("active"):
             if hasattr(plugin.instance, 'onTaskClosed'):
-                try:
-                    plugin.instance.onTaskClosed(plugin_api)
-                except AttributeError:
-                    pass
+                plugin.instance.onTaskClosed(plugin_api)
 
 #FIXME: What are these for? must check someday! (invernizzi)
 
