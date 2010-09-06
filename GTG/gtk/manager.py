@@ -57,7 +57,7 @@ class Manager:
                                  # right now
                                  
         self.browser = None
-        self.__start_browser_hidden = True
+        self.__start_browser_hidden = False
                                  
         #Shared clipboard
         self.clipboard = clipboard.TaskClipboard(self.req)
