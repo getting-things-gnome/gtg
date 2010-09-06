@@ -55,7 +55,7 @@
                             </child>
                             <child>
                               <object class="GtkRadioButton" id="export_all_finished_rb">
-                                <property name="label" translatable="yes">All finished tasks</property>
+                                <property name="label" translatable="yes">Completed tasks shown in the browser</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
@@ -69,7 +69,7 @@
                             </child>
                             <child>
                               <object class="GtkRadioButton" id="export_all_active_rb">
-                                <property name="label" translatable="yes">All active tasks</property>
+                                <property name="label" translatable="yes">Active tasks shown in the browser</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
