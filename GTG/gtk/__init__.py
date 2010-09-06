@@ -28,7 +28,9 @@ from GTG     import _
 
 
 class ViewConfig:
+
+
     current_rep = os.path.dirname(os.path.abspath(__file__))
     DELETE_GLADE_FILE  = os.path.join(current_rep, "deletion.glade")
     PREFERENCES_GLADE_FILE = os.path.join(current_rep, "preferences.glade")
-
+    BACKENDS_GLADE_FILE = os.path.join(current_rep, "backends_dialog.glade")

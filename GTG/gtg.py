@@ -46,8 +46,8 @@
 
 #=== IMPORT ===================================================================
 import os
+import sys
 import logging
-
 import dbus
 
 #our own imports
@@ -66,8 +66,11 @@ from GTG.tools.logger   import Log
 #that's why we put the pid file in the data directory :
 #we allow one instance of gtg by data directory.
 
-def check_instance(directory):
-    """Check if gtg is already running."""
+def check_instance(directory, uri_list = []):
+    """
+    Check if gtg is already running.
+    If so, open the tasks whose ids are in the uri_list
+    """
     pidfile = os.path.join(directory, "gtg.pid")
     if not os.path.exists(pidfile):
         open(pidfile, "w").close()
@@ -83,6 +86,10 @@ def check_instance(directory):
             d=dbus.SessionBus().get_object(CoreConfig.BUSNAME,\
                                            CoreConfig.BUSINTERFACE)
             d.show_task_browser()
+            #if the user has specified a task to open, do that
+            for uri in uri_list:
+                if uri.startswith("gtg://"):
+                    d.open_task_editor(uri[6:])
             raise SystemExit
             
     #write the pid file
@@ -101,8 +108,11 @@ def main(options=None, args=None):
     #main loop
     #To be more user friendly and get the logs of crashes, we show an apport
     # hooked window upon crashes
-    with signal_catcher(manager.close_browser):
-        manager.main()
+    if options.no_crash_handler == False:
+        with signal_catcher(manager.close_browser):
+            manager.main(once_thru=options.boot_test, uri_list = args)
+    else:
+        manager.main(once_thru=options.boot_test, uri_list = args)
     core_main_quit(config, ds)
 
 def core_main_init(options = None, args = None):
@@ -113,18 +123,20 @@ def core_main_init(options = None, args = None):
     if options.debug:
         Log.setLevel(logging.DEBUG)
         Log.debug("Debug output enabled.")
-        Log.set_debugging_mode(True)
+    else:
+        Log.setLevel(logging.INFO)
+    Log.set_debugging_mode(options.debug)
     config = CoreConfig()
-    check_instance(config.get_data_dir())
+    check_instance(config.get_data_dir(), args)
     backends_list = BackendFactory().get_saved_backends_list()
     # Load data store
     ds = DataStore()
     # Register backends 
     for backend_dic in backends_list:
         ds.register_backend(backend_dic)
-    #save directly the backends to be sure to write projects.xml
+    #save the backends directly to be sure projects.xml is written
     ds.save(quit = False)
-        
+    
     # Launch task browser
     req = ds.get_requester()
     return config, ds, req
@@ -134,13 +146,15 @@ def core_main_quit(config, ds):
     Last bits of code executed in GTG, after the UI has been shut off. 
     Currently, it's just saving everything.
     '''
-    # Ideally we should load window geometry configuration from a config.
+    # Ideally we should load window geometry configuration from a config
     # backend like gconf at some point, and restore the appearance of the
     # application as the user last exited it.
     #
     # Ending the application: we save configuration
     config.save()
     ds.save(quit = True)
+    sys.exit(0)
+
 
 #=== EXECUTION ================================================================
 

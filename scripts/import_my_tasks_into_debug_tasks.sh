@@ -9,4 +9,9 @@ mkdir -p tmp/default/xdg/config/gtg/
 yes|cp -Rf ~/.local/share/gtg/* tmp/default/xdg/data/gtg/
 yes|cp -Rf ~/.config/gtg/* tmp/default/xdg/config/gtg/
 
+tmpfile=$(mktemp)
+cat tmp/default/xdg/data/gtg/projects.xml|
+ sed -e 's/\/home\/.*\/\.local\/share/tmp\/default\/xdg\/data/' > tmpfile
+cat tmpfile > tmp/default/xdg/data/gtg/projects.xml
+rm tmpfile
 

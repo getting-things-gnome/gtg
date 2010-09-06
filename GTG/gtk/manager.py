@@ -39,16 +39,19 @@ from GTG.tools               import clipboard
 from GTG.core.plugins.engine import PluginEngine
 from GTG.core.plugins.api    import PluginAPI
 from GTG.tools.logger        import Log
+from GTG.gtk.backends_dialog import BackendsDialog
+from GTG.backends.backendsignals import BackendSignals
 
 
 
-class Manager:
+class Manager(object):
     
 
     ############## init #####################################################
     def __init__(self, req, config):
         self.config_obj = config
         self.config = config.conf_dict
+
         self.task_config = config.task_conf_dict
         self.req = req
         # Editors
@@ -58,14 +61,13 @@ class Manager:
                                  
         self.browser = None
         self.__start_browser_hidden = False
+        self.gtk_terminate = False #if true, the gtk main is not started
                                  
         #Shared clipboard
         self.clipboard = clipboard.TaskClipboard(self.req)
-        
-        #Browser
-        #FIXME : the browser should not be built by default and should be a 
-        # window like another and not necessary (like the editor)
-        self.open_browser()
+
+        #Browser (still hidden)
+        self.browser = TaskBrowser(self.req, self, self.config)
         
         self.__init_plugin_engine()
         
@@ -78,9 +80,11 @@ class Manager:
         #Preferences and Backends windows
         # Initialize  dialogs
         self.preferences_dialog = None
+        self.edit_backends_dialog = None
         
         #DBus
         DBusTaskWrapper(self.req, self)
+        Log.debug("Manager initialization finished")
         
     def __init_plugin_engine(self):
         self.pengine = PluginEngine(GTG.PLUGIN_DIR)
@@ -100,8 +104,8 @@ class Manager:
     ############## Browser #################################################
 
     def open_browser(self):
-        if not self.browser:
-            self.browser = TaskBrowser(self.req, self, self.config)
+        Log.debug("Browser is open")
+        self.browser.show()
 
     #FIXME : the browser should not be the center of the universe.
     # In fact, we should build a system where view can register themselves
@@ -177,11 +181,29 @@ class Manager:
                 #else, it close_task would be called once again 
                 #by editor.close
                 editor.close()
-#        else:
-            #FIXME: this one should be a debug statement
-#            print "the %s editor was already unregistered" %tid
+        self.check_quit_condition()
+
+    def check_quit_condition(self):
+        '''
+        checking if we need to shut down the whole GTG (if no window is open)
+        '''
+        if not self.is_browser_visible() and not self.opened_task:
+            #no need to live
+            print "AAAAAAAAAAA"
+            self.quit()
+        print self.opened_task
             
 ################ Others dialog ############################################
+
+    def open_edit_backends(self, sender = None, backend_id = None):
+        if not self.edit_backends_dialog:
+            self.edit_backends_dialog = BackendsDialog(self.req)
+        self.edit_backends_dialog.activate()
+        if backend_id != None:
+            self.edit_backends_dialog.show_config_for_backend(backend_id)
+
+    def configure_backend(self, backend_id):
+        self.open_edit_backends(None, backend_id)
 
     def open_preferences(self, config_priv, sender=None):
         if not hasattr(self, "preferences"):
@@ -195,13 +217,41 @@ class Manager:
             for t in tids:
                 if t in self.opened_task:
                     self.close_task(t)
+
+### URIS ###################################################################
+
+    def open_uri_list(self, unused, uri_list):
+        '''
+        Open the Editor windows of the tasks associated with the uris given.
+        Uris are of the form gtg://<taskid>
+        '''
+        print self.req.get_all_tasks_list()
+        for uri in uri_list:
+            if uri.startswith("gtg://"):
+                self.open_task(uri[6:])
+        #if no window was opened, we just quit
+        self.check_quit_condition()
+
             
 ### MAIN ###################################################################
-    def main(self):
-        gobject.threads_init()
-        gtk.main()
-        return 0
+
+    def main(self, once_thru = False,  uri_list = []):
+        if uri_list:
+            #before opening the requested tasks, we make sure that all of them
+            #are loaded.
+            BackendSignals().connect('default-backend-loaded',
+                                     self.open_uri_list,
+                                     uri_list)
+        else:
+            self.open_browser()
         
+        gobject.threads_init()
+        if not self.gtk_terminate:
+            if once_thru:
+                gtk.main_iteration()
+            else:
+                gtk.main()
+        return 0
         
     def quit(self,sender=None):
         gtk.main_quit()

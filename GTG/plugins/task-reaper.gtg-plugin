@@ -1,6 +1,7 @@
 [GTG Plugin]
 Module=task_reaper
 Name=Closed tasks remover
+Short-description="Delete old tasks automatically."
 Description="""This plugin deletes the task that have been
 closed more than a few  days ago. The number of days can be
 configured in the preference menu. There is also an option 

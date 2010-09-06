@@ -105,15 +105,20 @@ If you have some trouble with GTG, we might be able to help you or to solve your
     #Task 6@1: Learn how to use the QuickAdd Entry
     title7 = _("Learn how to use the QuickAdd Entry")
     text7 = _("""The quickadd entry is the quickest way to create a new task. You can show or hide it in the View menu.
+
 For adding a task you just have to type its title in the entry and press return. The task will be created and selected in the task browser. If a tag is selected in the tag panel, this tag is applied to the task you create.
-You can also create a task with attributes like tags, due date or defer date in the quickadd entry.
-For that the syntax is :
 
-tags:tag1,tag2,tag3 : This way you can apply as many tags as you wish using comma as separator
+You can also create a task with the attributes "tags", "due", and "defer" in the quickadd entry. The syntax for these attributes is:
 
-due:date or defer:date : This way you can apply a due date or a defer date. date can be yyyy-mm-dd (for example 2009-04-01) or yyyymmdd (20090401) or mmdd (0401, in this case the year is implicitly the current one) or today or tomorrow or a weekday name (due:monday means due next Monday)
+tags:tag1,tag2,tag3
+ - This way you can apply as many tags as you wish using comma as separator
+
+due:date 
+defer:date 
+ - This way you can apply a due date or a defer date. date can be yyyy-mm-dd (for example 2009-04-01) or yyyymmdd (20090401) or mmdd (0401, in this case the year is implicitly the current one) or today or tomorrow or a weekday name (due:monday means due next Monday)
 
 Attributes which are added in this way apply but do not appear in the title.
+
 If a word begins with @, it is interpreted as a tag.""")
 
     t7 = addtask(doc, "6@1", title7, text7, [], [])

@@ -49,6 +49,7 @@ class Plugin(object):
           'full_name': 'Name',
           'version': 'Version',
           'authors': 'Authors',
+          'short_description': 'Short-description',
           'description': 'Description',
           'module_depends': 'Dependencies',
           'dbus_depends': 'Dbus-dependencies',

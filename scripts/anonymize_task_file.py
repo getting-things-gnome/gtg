@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: UTF-8 -*-
+### -*- coding: utf-8 -*-
 # Copyright © 2010 Marko Kevac <marko@kevac.org>
 #
 # This program is free software: you can redistribute it and/or modify
@@ -15,8 +15,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import os
 import sys
 from xml.dom.minidom import parse
+from xdg.BaseDirectory import xdg_data_home
 
 def anonymize(filename, outputfile):
 
@@ -64,14 +66,42 @@ def anonymize(filename, outputfile):
     except Exception, err:
         print "error while saving output file: %s" % err
 
-def main():
-    if len(sys.argv) != 3:
-        print "Remove private data from your tasks file."
-        print "Usage: %s <taskfile> <outputfile>" % sys.argv[0]
-        sys.exit(1)
+def usage():
+    print "Usage: %s [taskfile] [outputfile]" % sys.argv[0]
+    print
+    print "Removes private data from specified taskfile, or your"
+    print "default gtg tasks file if unspecified.  Writes output"
+    print "to /tmp/gtg-tasks.xml by default, or to specified"
+    print "outputfile if provided."
+    sys.exit(1)
 
-    xmlfile = sys.argv[1]
-    outputfile = sys.argv[2]
+def main():
+    #if len(sys.argv) != 3:
+    #    usage()
+
+    if len(sys.argv) > 1:
+        xmlfile = sys.argv[1]
+    else:
+        try:
+            # Or use CoreConfig().get_data_dir() . CoreConfig.???
+            # which needs 'from GTG.core import import CoreConfig'
+            data_dir = os.path.join(xdg_data_home, "gtg")
+            project_filepath = os.path.join(data_dir, "projects.xml")
+            dom = parse(project_filepath)
+            xmlproject = dom.getElementsByTagName("backend")[0]
+            xmlfile = str(xmlproject.getAttribute("path"))
+
+            print "Reading tasks from %s" %(xmlfile)
+        except:
+            print
+            usage()
+
+    if len(sys.argv) > 2:
+        outputfile = sys.argv[2]
+    else:
+        # Use a reasonable default, and write out where it's sent
+        outputfile = "/tmp/gtg-tasks.xml"
+        print "Saving anonymized tasks to %s" %(outputfile)
 
     anonymize(xmlfile, outputfile)
 

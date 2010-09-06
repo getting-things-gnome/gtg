@@ -69,9 +69,9 @@ def connect_to_gtg():
             raise
 
     liste = bus.list_names()
-    busname = "org.GTG"
-    remote_object = bus.get_object(busname,"/org/GTG")
-    return dbus.Interface(remote_object,dbus_interface="org.GTG")
+    busname = "org.gnome.GTG"
+    remote_object = bus.get_object(busname,"/org/gnome/GTG")
+    return dbus.Interface(remote_object,dbus_interface="org.gnome.GTG")
 
 def new_task(title, body):
     """ Retrieve task via dbus """
@@ -111,12 +111,23 @@ def show_task(tid):
     print
     print content
 
-def postpone_task(tid, startdate):
+def postpone(identifier, startdate):
     """ Change the start date of a task """
     timi = connect_to_gtg()
-    task_data = timi.get_task(tid)
-    task_data['startdate'] = startdate
-    timi.modify_task(tid, task_data)
+    
+    tasks = []
+    if identifier[0] == '@':
+        filters = _criteria_to_filters(identifier)
+        filters.extend(['active','workview'])
+        timi = connect_to_gtg()
+        tasks = timi.get_tasks_filtered(filters)
+    else:
+        tasks = [ timi.get_task(identifier) ]
+
+    for task in tasks:
+        task['startdate'] = startdate
+        print task['id']
+        timi.modify_task(task['id'], task)
 
 def open_task_editor(tid):
     """ Load task in the task editor gui """
@@ -199,18 +210,18 @@ def summary_of_tasks(criteria):
                                 report['unscheduled']['starting'],
                                 report['unscheduled']['due'])
     num_days = 22
+    fmt = "%a  %-m-%-d"
     if criteria and 'today' in criteria:
         num_days = 1
     for i in range(0, num_days):
         d = day + timedelta(i)
         dstr = str(d)
         if dstr in report:
-            fmt = "%a  %-m-%-d"
             print "%-20s %5d %5d" %(d.strftime(fmt),
                                     report[dstr]['starting'],
                                     report[dstr]['due'])
         else:
-            print "%-20s %5d %5d" %(dstr, 0, 0)
+            print "%-20s %5d %5d" %(d.strftime(fmt), 0, 0)
             
 
 def list_tasks(criteria, count_only=False):
@@ -256,10 +267,9 @@ def list_tasks(criteria, count_only=False):
             print "%s:" %(key[1:])
         for task in tasks_tree[key]:
             text = textwrap.fill(task['title'], 
-                          initial_indent='',
-                          subsequent_indent='            ')
-            print "  %-8s  %s" %(task['id'], text)
-
+                                 initial_indent='',
+                                 subsequent_indent='                                        ')
+            print "  %-36s  %s" %(task['id'], text)
 
 if __name__ == '__main__':
     try:
@@ -328,7 +338,7 @@ if __name__ == '__main__':
         if len(args)<3:
             usage()
             sys.exit(1)
-        postpone_task(args[1], args[2])
+        postpone(args[1], args[2])
 
     elif command == "show":
         if len(args)<2:

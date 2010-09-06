@@ -1,6 +1,7 @@
 [GTG Plugin]
 Module=bugzilla
 Name=Bugzilla
+Short-description="Allow to link a task with a bugzilla ticket."
 Description="""Allow to link a task with a bugzilla ticket
 Just paste the URL of the ticket in the quick add entry
 and a new task will be created for this bug.
