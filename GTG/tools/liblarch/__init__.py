@@ -299,6 +299,9 @@ class ViewTree(gobject.GObject):
                             " in a viewtree")
         return toreturn
 
+    def get_root(self):
+        return self.__maintree.get_root()
+
     def print_tree(self,string=None):
         return self.__ft.print_tree(string=string)
 
