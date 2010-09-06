@@ -73,7 +73,9 @@ class TaskBrowser(gobject.GObject):
     """ The UI for browsing open and closed tasks, and listing tags in a tree """
 
     __string_signal__ = (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str, ))
+    __none_signal__ = (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, tuple())
     __gsignals__ = {'task-added-via-quick-add' : __string_signal__, \
+                    'visibility-toggled': __none_signal__,
                    }
 
     def __init__(self, requester, vmanager, config):
@@ -144,6 +146,7 @@ class TaskBrowser(gobject.GObject):
         #Expand all the tasks in the taskview
         r = self.vtree_panes['active'].expand_all()
         self.on_select_tag()
+        self.browser_shown = True
         self.window.show()
 
 ### INIT HELPER FUNCTIONS #####################################################
@@ -1316,13 +1319,17 @@ class TaskBrowser(gobject.GObject):
 
     def hide(self):
         """ Hides the task browser """
+        self.browser_shown = False
         self.window.hide()
+        gobject.idle_add(self.emit, "visibility-toggled")
 
     def show(self):
         """ Unhides the TaskBrowser """
+        self.browser_shown = True
         self.window.present()
         #redraws the GDK window, bringing it to front
         self.window.show()
+        gobject.idle_add(self.emit, "visibility-toggled")
 
     def iconify(self):
         """ Minimizes the TaskBrowser """
@@ -1356,3 +1363,6 @@ class TaskBrowser(gobject.GObject):
         view.
         '''
         return self.__create_closed_tree()
+
+    def is_shown(self):
+        return self.browser_shown
