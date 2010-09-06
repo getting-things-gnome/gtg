@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import os
 import gtk
 try:
     import appindicator
@@ -76,18 +77,15 @@ class NotificationArea:
         self.__init_gtk()
         self.__connect_to_tree()
         #Load the preferences
-#        self.preference_dialog_init()
-#        self.preferences_load()
-#        self.preferences_apply(True)
-        #self.set_browser_minimize(self.browser_minimize)
+        self.preference_dialog_init()
+        self.preferences_load()
+        self.preferences_apply(True)
 
     def deactivate(self, plugin_api):
         if self.__indicator:
             self.__indicator.set_status(appindicator.STATUS_PASSIVE)
         else:
             self.__status_icon.set_visible(False)
-        #Restoring pristine state
-        #self.set_browser_minimize(self.browser.on_delete)
 
 ## Helper methods ##############################################################
 
@@ -177,8 +175,6 @@ class NotificationArea:
                             for c in virtual_root.get_children()],
                    lambda t: self.__on_task_added(None, t, None))
 
-
-
     def __on_task_added(self, sender, tid, something):
         self.__task_separator.show()
         task = self.__requester.get_task(tid)
@@ -220,82 +216,63 @@ class NotificationArea:
         if not self.__indicator:
             menu.popup(None, None, gtk.status_icon_position_menu, \
                        button, timestamp, icon)
-### Preferences methods #########################################################
-#
-#    def is_configurable(self):
-#        """A configurable plugin should have this method and return True"""
-#        return True
-#
-#    def configure_dialog(self, manager_dialog):
-#        self.preference_dialog_init()
-#        self.preferences_load()
-#        self.chbox_minimized.set_active(self.preferences["start_minimized"])
-#        self.preferences_dialog.show_all()
-#        self.preferences_dialog.set_transient_for(manager_dialog)
-#
-#    def on_preferences_cancel(self, widget = None, data = None):
-#        self.preferences_dialog.hide()
-#        return True
-#
-#    def on_preferences_ok(self, widget = None, data = None):
-#        self.preferences["start_minimized"] = self.chbox_minimized.get_active()
-#        self.preferences_apply(False)
-#        self.preferences_store()
-#        self.preferences_dialog.hide()
-#
-#    def preferences_load(self):
-#        data = self.plugin_api.load_configuration_object(self.PLUGIN_NAME,\
-#                                                         "preferences")
-#        if data == None or type(data) != type (dict()):
-#            self.preferences = self.DEFAULT_PREFERENCES
-#        else:
-#            self.preferences = data
-#
-#    def preferences_store(self):
-#        self.plugin_api.save_configuration_object(self.PLUGIN_NAME,\
-#                                                  "preferences", \
-#                                                  self.preferences)
-#
-#    def preferences_apply(self, first_start):
-#        if self.plugin_api.is_browser():
-#            if not first_start:
-#                #We should really just save it, no changes are necessary
-#                return
-#            self.minimized = self.preferences["start_minimized"]
-#            self._disconnect_check_signal()
-#            self.view_main_window.set_active(not self.minimized)
-#            self._connect_check_signal()
-#            if self.minimized:
-#                #set the method in TaskBrowser to realize the main 
-#                # window instead of showing it
-#                def _method_start_minimized(self):
-#                    self.browser.window.realize()
-#                    return False
-#                if self.browser:
-#                    self.browser._start_gtg_maximized = partial( \
-#                            _method_start_minimized, self)
-#                    #this lines are needed to store the height and width (and x
-#                    # and y coordinates) of the
-#                    # main window (if gtg window is never show, it would give
-#                    # a KeyError on quitting while looking for those values)
-#                    self.rowser.on_size_allocate()
-#                    self.browser.on_move()
-#
-#    def preference_dialog_init(self):
-#        self.builder = gtk.Builder()
-#        self.builder.add_from_file(os.path.dirname(os.path.abspath(__file__)) +\
-#                                   "/notification_area.ui")
-#        self.preferences_dialog = self.builder.get_object("preferences_dialog")
-#        self.chbox_minimized = self.builder.get_object("pref_chbox_minimized")
-#        SIGNAL_CONNECTIONS_DIC = {
-#            "on_preferences_dialog_delete_event":
-#                self.on_preferences_cancel,
-#            "on_btn_preferences_cancel_clicked":
-#                self.on_preferences_cancel,
-#            "on_btn_preferences_ok_clicked":
-#                self.on_preferences_ok
-#        }
-#        self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
+
+### Preferences methods #######################################################
+
+    def is_configurable(self):
+        """A configurable plugin should have this method and return True"""
+        return True
+
+    def configure_dialog(self, manager_dialog):
+        self.preference_dialog_init()
+        self.preferences_load()
+        self.chbox_minimized.set_active(self.preferences["start_minimized"])
+        self.preferences_dialog.show_all()
+        self.preferences_dialog.set_transient_for(manager_dialog)
+
+    def on_preferences_cancel(self, widget = None, data = None):
+        self.preferences_dialog.hide()
+        return True
+
+    def on_preferences_ok(self, widget = None, data = None):
+        self.preferences["start_minimized"] = self.chbox_minimized.get_active()
+        self.preferences_apply(False)
+        self.preferences_store()
+        self.preferences_dialog.hide()
+
+    def preferences_load(self):
+        data = self.__plugin_api.load_configuration_object(self.PLUGIN_NAME,
+                                                         "preferences")
+        if not data or isinstance(data, dict):
+            self.preferences = self.DEFAULT_PREFERENCES
+        else:
+            self.preferences = data
+
+    def preferences_store(self):
+        self.__plugin_api.save_configuration_object(self.PLUGIN_NAME,
+                                                  "preferences",
+                                                  self.preferences)
+
+    def preferences_apply(self, first_start):
+        if self.preferences["start_minimized"]:
+            self.__view_manager.start_browser_hidden()
+
+    def preference_dialog_init(self):
+        self.builder = gtk.Builder()
+        self.builder.add_from_file(os.path.join(
+                    os.path.dirname(os.path.abspath(__file__)),
+                    "notification_area.ui"))
+        self.preferences_dialog = self.builder.get_object("preferences_dialog")
+        self.chbox_minimized = self.builder.get_object("pref_chbox_minimized")
+        SIGNAL_CONNECTIONS_DIC = {
+            "on_preferences_dialog_delete_event":
+                self.on_preferences_cancel,
+            "on_btn_preferences_cancel_clicked":
+                self.on_preferences_cancel,
+            "on_btn_preferences_ok_clicked":
+                self.on_preferences_ok
+        }
+        self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
 
 
 

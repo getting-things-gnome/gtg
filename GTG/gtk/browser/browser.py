@@ -146,8 +146,7 @@ class TaskBrowser(gobject.GObject):
         #Expand all the tasks in the taskview
         r = self.vtree_panes['active'].expand_all()
         self.on_select_tag()
-        self.browser_shown = True
-        self.window.show()
+        self.browser_shown = False
 
 ### INIT HELPER FUNCTIONS #####################################################
 #

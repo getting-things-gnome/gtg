@@ -130,9 +130,8 @@ class Plugin(object):
                 # no dependencies in info file; use the ImportError instead
                 self.missing_modules.append(str(e).split(" ")[3])
             self.error = True
-        except Exception, e:
+        except Exception:
             # load_module() failed for some other reason
-            print e
             self.error = True
 
     def reload(self, module_path):
@@ -248,11 +247,6 @@ class PluginEngine(Borg):
 
     def onTaskLoad(self, plugin_api):
         """Pass the onTaskLoad signal to all active plugins."""
-        print "####################################ACTIVEPLUGS"
-        print self.get_plugins("active")
-        print "HERE", self.get_plugins()
-        for plugin in self.get_plugins():
-            print plugin.module_name, plugin.active
         for plugin in self.get_plugins("active"):
             if hasattr(plugin.instance, "onTaskOpened"):
                 plugin.instance.onTaskOpened(plugin_api)

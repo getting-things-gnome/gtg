@@ -57,6 +57,7 @@ class Manager:
                                  # right now
                                  
         self.browser = None
+        self.__start_browser_hidden = True
                                  
         #Shared clipboard
         self.clipboard = clipboard.TaskClipboard(self.req)
@@ -67,6 +68,9 @@ class Manager:
         self.open_browser()
         
         self.__init_plugin_engine()
+        
+        if not self.__start_browser_hidden:
+            self.show_browser()
         
         #Deletion UI
         self.delete_dialog = None
@@ -106,6 +110,8 @@ class Manager:
     # "stay_alive view" is closed (and then unregistered).
     # Currently, the browser is our only "stay_alive" view.
     def close_browser(self,sender=None):
+        self.hide_browser()
+        #may take a while to quit
         self.quit()
 
     def hide_browser(self,sender=None):
@@ -123,6 +129,9 @@ class Manager:
     def get_browser(self):
         #used by the plugin api to hook in the browser
         return self.browser
+
+    def start_browser_hidden(self):
+        self.__start_browser_hidden = True
 
 ################# Task Editor ############################################
 
