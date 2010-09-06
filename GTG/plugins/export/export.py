@@ -166,7 +166,7 @@ class pluginExport:
         self.menu_entry = False
         self.toolbar_entry = False
         self.path = os.path.dirname(os.path.abspath(__file__))
-        self.menu_item = gtk.MenuItem(_("Print the tasks in the current view"))
+        self.menu_item = gtk.MenuItem(_("Export the tasks currently listed"))
         self.menu_item.connect('activate', self.__gtk_activate)
         self.tb_button = gtk.ToolButton(gtk.STOCK_PRINT)
         self.tb_button.connect('clicked', self.__gtk_activate)
