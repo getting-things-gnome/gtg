@@ -77,14 +77,22 @@ class pluginExport:
         self.__purge_saved_document()
         #we save the created document in a temporary file with the same suffix
         #as the template (it's script-friendly)
-        with tempfile.NamedTemporaryFile(suffix = self.template.get_suffix(),
-                                         delete = False) as f:
+        with tempfile.NamedTemporaryFile(\
+                            suffix = ".%s" % self.template.get_suffix(),
+                            delete = False) as f:
             f.write(document)
             self.document_path = f.name
         if self.template.get_script_path():
-            subprocess.Popen(['xdg-open',
-                              self.template.get_script_path(),
-                              self.document_path])
+            self.document_path = \
+                subprocess.Popen(args = ['/bin/sh',
+                                         '-c',
+                                         self.template.get_script_path() + \
+                                         " " + self.document_path],
+                                        shell = False,
+                                        stdout = subprocess.PIPE\
+                                ).communicate()[0]
+            if self.document_path == "ERROR":
+                raise Exception
 
     def export_execute_with_ui(self):
         if not self.load_template():
