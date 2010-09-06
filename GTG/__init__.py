@@ -49,19 +49,7 @@ DIST_ROOTDIR = "/usr/share/gtg"
 
 #Translation setup (from pyroom)
 GETTEXT_DOMAIN = 'gtg'
-LOCALE_PATH = abspath(join(dirname(__file__), pardir, 'locales'))
-if not os.path.isdir(LOCALE_PATH):
-    if os.path.isdir('/usr/local/share/locale') and os.uname()[0] != 'Linux':
-        LOCALE_PATH = '/usr/local/share/locale'
-    else:
-        LOCALE_PATH = '/usr/share/locale'
-languages_used = []
-lc, encoding = locale.getdefaultlocale()
-if lc:
-    languages_used = [lc]
-lang_in_env = os.environ.get('LANGUAGE', None)
-if lang_in_env:
-    languages_used.extend(lang_in_env.split(':'))
+LOCALE_PATH = gettext.bindtextdomain(GETTEXT_DOMAIN)
 
 for module in gettext, loaded_glade:
     #check if glade is well loaded to avoid error in Fedora build farm
@@ -69,9 +57,7 @@ for module in gettext, loaded_glade:
         module.bindtextdomain(GETTEXT_DOMAIN, LOCALE_PATH)
         module.textdomain(GETTEXT_DOMAIN)
 
-translation = gettext.translation(GETTEXT_DOMAIN, LOCALE_PATH,
-                                  languages=languages_used,
-                                  fallback=True)
+translation = gettext.translation(GETTEXT_DOMAIN, LOCALE_PATH, fallback=True)
 
 _ = translation.gettext
 ngettext = translation.ngettext

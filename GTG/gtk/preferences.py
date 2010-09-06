@@ -79,19 +79,18 @@ def plugin_error_text(plugin):
     modules = plugin.missing_modules
     dbus = plugin.missing_dbus
     # convert to strings
-    if len(modules) > 0:
+    if modules:
       modules = "<small><b>%s</b></small>" % ', '.join(modules)
-    if len(dbus) > 0:
-      ifaces = ["%s:%s" % (a,b) for (a,b) in dbus]
+    if dbus:
+      ifaces = ["%s:%s" % (a, b) for (a, b) in dbus]
       dbus = "<small><b>%s</b></small>" % ', '.join(ifaces)
-      print dbus, len(dbus)
     # combine
-    if len(modules) > 0 and len(dbus) == 0:
-        text += '\n'.join([GnomeConfig.MODULEMISSING, '', modules])
-    elif len(modules) == 0 and len(dbus) > 0:
-        text += '\n'.join([GnomeConfig.DBUSMISSING, '', dbus])
-    elif len(modules) > 0 and len(dbus) > 0:
-        text += '\n'.join([GnomeConfig.MODULANDDBUS, '', modules, dbus])
+    if modules and not dbus:
+        text += '\n'.join((GnomeConfig.MODULEMISSING, modules))
+    elif dbus and not modules:
+        text += '\n'.join((GnomeConfig.DBUSMISSING,  dbus))
+    elif modules and dbus:
+        text += '\n'.join((GnomeConfig.MODULANDDBUS, modules, dbus))
     else:
         text += GnomeConfig.UNKNOWN
     return text
