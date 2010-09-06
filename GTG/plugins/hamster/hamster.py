@@ -175,7 +175,7 @@ class hamsterPlugin:
         button.show()
         self.taskbutton = plugin_api.add_toolbar_item(button)
         
-        task = plugin_api.get_task()
+        task = plugin_api.get_ui().get_task()
         records = self.get_records(task)
         
         if len(records):
