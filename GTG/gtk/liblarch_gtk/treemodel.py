@@ -45,7 +45,7 @@ class TreeModel(gtk.GenericTreeModel):
         self.value_list.append([str,get_nodeid])
         if THREAD_PROTECTION:
             self.thread = threading.current_thread()
-        
+
     def connect_model(self):
         if TM_USE_SIGNALS:
             self.tree.connect('node-added-inview',self.__add_task)
@@ -64,8 +64,8 @@ class TreeModel(gtk.GenericTreeModel):
         self.value_list.append(value)
         index = self.value_list.index(value)
         return index
-        
-    
+
+
     def __build_rowref(self,path):
         '''The rowref is the like the path but with ancestors ID instead
         of position. This ensure that each rowref is unique and that we
@@ -80,18 +80,18 @@ class TreeModel(gtk.GenericTreeModel):
                 rowref = (nid,) + rowref
             path = path[:-1]
         return rowref
-            
+
     def __get_nid_from_rowref(self,rowref):
         if len(rowref) <= 0:
             raise ValueError('Rowref is empty ! Returning root ?')
         nid = rowref[-1]
         return nid
-        
+
     def __get_node_from_rowref(self,rowref):
         nid = self.__get_nid_from_rowref(rowref)
         node = self.tree.get_node(nid)
         return node
-        
+
     def __get_path_from_rowref(self,rowref):
         path = ()
         size = len(rowref)
@@ -106,8 +106,8 @@ class TreeModel(gtk.GenericTreeModel):
         if len(path) != size:
             raise ValueError('path %s should be of size %s' %(path,size))
         return path
-            
-        
+
+
 
 ### TREEMODEL INTERFACE ######################################################
 #
@@ -126,7 +126,7 @@ class TreeModel(gtk.GenericTreeModel):
         if len(self.value_list) <= n:
             raise ValueError('The tree model doesnt have enough columns!')
         return self.value_list[n][0]
-    
+
     def on_get_value(self, rowref, column):
         if THREAD_PROTECTION:
             t = threading.current_thread()
@@ -264,13 +264,13 @@ class TreeModel(gtk.GenericTreeModel):
         if DEBUG_MODEL:
             print "on iter parent %s :%s" %(str(rowref),toreturn)
         return toreturn
-            
+
     def add_task(self,tid,path):
         if TM_IDLE_ADD:
             gobject.idle_add(self.__update_task,None,tid,path,'add')
         else:
             self.__update_task(None,tid,path,'add')
-        
+
     def __add_task(self,sender,tid,path):
         self.__update_task(sender,tid,path,'add')
 
@@ -279,7 +279,7 @@ class TreeModel(gtk.GenericTreeModel):
             gobject.idle_add(self.__update_task,None,tid,path,data)
         else:
             self.__update_task(None,tid,path,data)
-    
+
     def __update_task(self,sender,tid,node_path,data=None):
         if THREAD_PROTECTION:
             t = threading.current_thread()
@@ -315,13 +315,13 @@ class TreeModel(gtk.GenericTreeModel):
 #                self.tree.print_tree()
 #        print " = ============================="
 #        self.tree.print_tree()
-            
+
     def remove_task(self,tid,path):
         if TM_IDLE_ADD:
             gobject.idle_add(self.__remove_task,None,tid,path)
         else:
             self.__remove_task(None,tid,path)
-                
+
     def __remove_task(self,sender,tid,path):
         if THREAD_PROTECTION:
             t = threading.current_thread()
@@ -331,7 +331,7 @@ class TreeModel(gtk.GenericTreeModel):
             print "     deleting row %s  (it's tid %s)" %(str(path),tid)
             self.tree.print_tree()
         self.row_deleted(path)
-            
+
     def __reorder(self,nid,path,neworder):
         actual_nid = self.tree.get_node_for_path(path)
         if nid == actual_nid:
@@ -342,7 +342,7 @@ class TreeModel(gtk.GenericTreeModel):
             self.rows_reordered(path,rowref,neworder)
         else:
             raise Exception('path/node mismatch in reorder')
-            
+
 ########### The following should be removed onc liblarch-gtk is working ######
 
 #    def add_task(self,sender,tid,data=None):
@@ -353,7 +353,7 @@ class TreeModel(gtk.GenericTreeModel):
 #            self.row_inserted(node_path, rowref)
 #            if self.tree.node_has_child(tid):
 #                self.row_has_child_toggled(node_path, rowref)
-#        if len(node_paths) == 0: 
+#        if len(node_paths) == 0:
 #            raise  ValueError("Error :! no path for node %s !" %tid)
 #        while len(self.tasks_to_add) > 0:
 #            tid = self.tasks_to_add.pop(0)
@@ -375,7 +375,7 @@ class TreeModel(gtk.GenericTreeModel):
 #                    node_iter = self.get_iter(node_path)
 #                    if self.iter_is_valid(node_iter):
 #                        self.row_inserted(node_path, node_iter)
-#                        #following is mandatory if 
+#                        #following is mandatory if
 #                        #we added a child task before his parent.
 #                        if self.tree.node_has_child(tid):
 #        #                    print "child_toggled 2 : %s" %task.get_title()
@@ -402,7 +402,7 @@ class TreeModel(gtk.GenericTreeModel):
 #            self.row_deleted(node_path)
 #            removed = True
 #        return removed
-                    
+
 #    def move_task(self, parent_tid, child_tid):
 #        """Moves the task identified by child_tid under
 #           parent_tid, removing all the precedent parents.
@@ -431,7 +431,7 @@ class TreeModel(gtk.GenericTreeModel):
 #            return
 #        #if we move a task, this task should be saved, even if new
 #        child_task.set_to_keep()
-#        # Remove old parents 
+#        # Remove old parents
 #        for pid in current_parents:
 #            #We first remove the node from the view (to have the path)
 #            node_paths = self.tree.get_paths_for_node(child_task)
@@ -452,3 +452,4 @@ class TreeModel(gtk.GenericTreeModel):
 #        #if we had a filter, we have to refilter after the drag-n-drop
 #        #This is not optimal and could be improved
 #        self.tree.refilter()
+
