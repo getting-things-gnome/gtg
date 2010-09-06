@@ -80,7 +80,8 @@ For a more advanced usage of templates, scroll down to the end of this document
     <body>
 
         <ul>
-            #for $task in $tasks$task_template($task)
+            #for $task in $tasks:
+                $task_template($task)
             #end for
 
         </ul>

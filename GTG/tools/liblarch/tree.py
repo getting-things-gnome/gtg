@@ -536,7 +536,7 @@ class TreeNode():
         if id :
             return id in self.children
         else:
-            return len(self.children) != 0
+            return bool(self.children)
 
     def get_children(self):
         if self.thread_protection:

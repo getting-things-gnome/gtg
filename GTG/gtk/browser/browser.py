@@ -750,14 +750,18 @@ class TaskBrowser(gobject.GObject):
             self.show_closed_pane()
         else:
             self.hide_closed_pane()
+
+    def __create_closed_tree(self):
+        closedtree = self.req.get_tasks_tree(name='closed')
+        closedtree.apply_filter('closed')
+        return closedtree
             
     def show_closed_pane(self):
-        # The done/dismissed taks treeview
+        # The done/dismissed tasks treeview
         if not self.vtree_panes.has_key('closed'):
-            closedtree = self.req.get_tasks_tree(name='closed')
             self.vtree_panes['closed'] = \
-                        self.tv_factory.closed_tasks_treeview(closedtree)
-            closedtree.apply_filter('closed')
+                        self.tv_factory.closed_tasks_treeview(\
+                                                self.__create_closed_tree())
                     # Closed tasks TreeView
             self.vtree_panes['closed'].connect('row-activated',\
                 self.on_edit_done_task)
@@ -1337,3 +1341,18 @@ class TaskBrowser(gobject.GObject):
 
     def get_window(self):
         return self.window
+
+    def get_active_tree(self):
+        '''
+        Returns the browser tree with all the filters applied. The tasks in
+        the tree are the same as the ones shown in the browser current view
+        '''
+        return self.activetree
+
+    def get_closed_tree(self):
+        '''
+        Returns the browser tree with all the filters applied. The tasks in
+        the tree are the same as the ones shown in the browser current closed
+        view.
+        '''
+        return self.__create_closed_tree()
