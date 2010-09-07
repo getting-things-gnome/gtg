@@ -216,7 +216,7 @@ class DataStore(object):
 
         @return a list of strings: a list of task ids
         '''
-        return self.open_tasks.get_all_keys()
+        return self.__tasks.get_main_view().get_all_nodes()
 
     def has_task(self, tid):
         '''
@@ -478,7 +478,7 @@ class DataStore(object):
         '''
         def _internal_flush_all_tasks():
             backend = self.backends[backend_id]
-            for task_id in self.requester.get_all_tasks_list():
+            for task_id in self.get_all_tasks():
                 if self.please_quit:
                     break
                 backend.queue_set_task(None, task_id)
@@ -566,8 +566,6 @@ class TaskSource():
         self.backend = backend
         self.req = requester
         self.backend.register_datastore(datastore)
-        print datastore
-        print dir(datastore)
         self.tasktree = datastore.get_tasks_tree().get_main_view()
         self.to_set = deque()
         self.to_remove = deque()

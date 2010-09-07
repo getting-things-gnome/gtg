@@ -56,7 +56,7 @@ class TreeModel(gtk.GenericTreeModel):
             self.tree.register_cllbck('node-added-inview',self.add_task)
             self.tree.register_cllbck('node-deleted-inview',self.remove_task)
             self.tree.register_cllbck('node-modified-inview',self.update_task)
-            self.tree.register_cllbck('node-children-reordered',self.__reorder)
+            self.tree.register_cllbck('node-children-reordered',self.reorder)
 
 ### TREE MODEL HELPER FUNCTIONS ###############################################
 
@@ -332,7 +332,7 @@ class TreeModel(gtk.GenericTreeModel):
             self.tree.print_tree()
         self.row_deleted(path)
 
-    def __reorder(self,nid,path,neworder):
+    def __reorder(self, sender, nid,path,neworder):
         actual_nid = self.tree.get_node_for_path(path)
         if nid == actual_nid:
             if path:
@@ -342,6 +342,12 @@ class TreeModel(gtk.GenericTreeModel):
             self.rows_reordered(path,rowref,neworder)
         else:
             raise Exception('path/node mismatch in reorder')
+
+    def reorder(self, nid, path, neworder):
+        if TM_IDLE_ADD:
+            gobject.idle_add(self.__reorder,None, nid,path, neworder)
+        else:
+            self.__reorder(None,nid,path,neworder)
 
 ########### The following should be removed onc liblarch-gtk is working ######
 

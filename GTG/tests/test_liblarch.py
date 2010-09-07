@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Gettings Things Gnome! - a personal organizer for the GNOME desktop
+# Getting Things Gnome! - a personal organizer for the GNOME desktop
 # Copyright (c) 2008-2010- Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
@@ -24,6 +24,7 @@ import gtk
 import gobject
 import functools
 import inspect
+import time
 
 from GTG.tools.liblarch import Tree
 from GTG.tools.liblarch.tree import TreeNode
@@ -1127,7 +1128,29 @@ class TestLibLarch(unittest.TestCase):
         node.add_color('blue')
         test.test_validity()
         self.assertEqual(view.node_n_children('parent'),3)
-        
+
+    def test_speed(self):
+        '''
+        Performance tests. Patches that reduce performance too much are not
+        acceptable
+        '''
+        view = self.tree.get_viewtree(refresh = False)
+        test = TreeTester(view)
+        calls = [(self.tree.add_node, "ADDING"),
+                 (self.tree.refresh_node, "UPDATING"),
+                 (self.tree.del_node, "REMOVING")]
+        for call, name in calls:
+            start = time.time()
+            for index in xrange(2000):
+                node = DummyNode("stress" + str(index))
+                call(node)
+            end = time.time()
+            test.test_validity()
+            self.assertTrue(view.is_displayed('stress0'))
+            print self.tree.get_node("stress0")
+            print "\n%s 2000 NODES: %f" % (name, end - start)
+
+
 
         
 def test_suite():
