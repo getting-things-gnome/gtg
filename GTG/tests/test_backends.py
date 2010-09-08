@@ -101,7 +101,6 @@ class GtgBackendsUniTests(unittest.TestCase):
         beobj.remove_task("0@1")
         beobj.quit()
         dataline = open(self.taskpath, 'r').read()
-        print dataline
         if "0@1" in dataline:
             res = False
         else:

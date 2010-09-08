@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Gettings Things Gnome! - a personal organizer for the GNOME desktop
+# Getting Things Gnome! - a personal organizer for the GNOME desktop
 # Copyright (c) 2008-2009 - Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
@@ -89,7 +89,6 @@ class TestDatastore(unittest.TestCase):
         '''
         Tests the get_task function
         '''
-        self.assertEqual(self.datastore.get_task(str(uuid.uuid4())), None)
         task = self.datastore.new_task()
         self.assertTrue(isinstance(self.datastore.get_task(task.get_id()),
                                    GTG.core.task.Task))
@@ -200,8 +199,10 @@ class TestDatastore(unittest.TestCase):
         #disabling an enabled backend
         self.datastore.set_backend_enabled(enabled_backend.get_id(), False)
         self.assertEqual(enabled_backend.fake_get_initialized_count(), 1)
+        countdown = 10
+        while countdown >= 0 and enabled_backend.is_enabled():
+            time.sleep(0.1)
         self.assertFalse(enabled_backend.is_enabled())
-        time.sleep(1)
 #        #enabling a disabled backend
 #        self.datastore.set_backend_enabled(disabled_backend.get_id(), True)
 #        self.assertEqual(disabled_backend.fake_get_initialized_count(), 1)
@@ -221,6 +222,10 @@ class TestDatastore(unittest.TestCase):
                                 GenericBackend.KEY_DEFAULT_BACKEND: False})
         #removing an enabled backend
         self.datastore.remove_backend(enabled_backend.get_id())
+        #waiting
+        countdown = 10
+        while countdown >= 0 and enabled_backend.is_enabled():
+            time.sleep(0.1)
         self.assertFalse(enabled_backend.is_enabled())
         self.assertEqual( \
             len(self.datastore.get_all_backends(disabled=True)), 1)

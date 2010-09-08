@@ -24,9 +24,7 @@ A nice general purpose interface for the datastore and tagstore
 import gobject
 
 
-from GTG.core.task         import Task
 from GTG.core.tagstore     import Tag
-from GTG.tools.dates       import date_today
 from GTG.tools.logger      import Log
 
 class Requester(gobject.GObject):
@@ -149,7 +147,6 @@ class Requester(gobject.GObject):
         """
         #send the signal before actually deleting the task !
         Log.debug("deleting task %s" % tid)
-        print "requester : deleting %s" %tid
         task = self.get_task(tid)
         if task:
             for tag in task.get_tags():

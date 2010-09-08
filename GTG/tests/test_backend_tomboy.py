@@ -107,7 +107,6 @@ class TestBackendTomboy(unittest.TestCase):
     def tearDown(self):
         if not self.child_process_pid: return
         self.datastore.save(quit = True) 
-        print "QUIT"
         time.sleep(0.5)
         self.tomboy.FakeQuit()
         self.bus.close()
