@@ -21,11 +21,6 @@
 filters_bank stores all of GTG's filters in centralized place
 """
 
-from datetime import datetime
-
-from GTG.core.task import Task
-from GTG.tools.dates  import date_today, no_date, Date
-
 
 class Filter:
     def __init__(self,func,req):
@@ -64,41 +59,6 @@ class Filter:
         else:
             return False
             
-class SimpleTagFilter:
-    def __init__(self,tagname,req):
-        self.req = req
-        self.tname = tagname
-        self.dic = {}
-        
-    def set_parameters(self,dic):
-        self.dic = dic
-        
-    def get_parameters(self,param):
-        if self.dic.has_key(param):
-            return self.dic[param]
-        else:
-            return None
-        
-    def set_parameters(self,dic):
-        self.dic = dic
-    
-    def is_displayed(self,tid):
-        task = self.req.get_task(tid)
-        value = True
-        if not task:
-            value = False
-        else:
-            tags = [self.tname]
-            tt = self.req.get_tag(self.tname)
-            if tt:
-                tags += tt.get_children()
-            value = task.has_tags(tags)
-        if 'negate' in self.dic and self.dic['negate']:
-            value = not value
-        return value
-            
-    def is_flat(self):
-        return False
     
 class FiltersBank:
     """
@@ -117,133 +77,7 @@ class FiltersBank:
         self.tree = tree
         self.available_filters = {}
         self.custom_filters = {}
-        #Workview
-        filt_obj = Filter(self.workview,self.tree)
-        self.available_filters['workview'] = filt_obj
-        #Active
-        filt_obj = Filter(self.active,self.tree)
-        self.available_filters['active'] = filt_obj
-        #closed
-        filt_obj = Filter(self.closed,self.tree)
-        param = {}
-        param['flat'] = True
-        filt_obj.set_parameters(param)
-        self.available_filters['closed'] = filt_obj
-        #notag
-        filt_obj = Filter(self.notag,self.tree)
-        param = {}
-        param['transparent'] = True
-        filt_obj.set_parameters(param)
-        self.available_filters['notag'] = filt_obj
-        #workable
-        filt_obj = Filter(self.is_workable,self.tree)
-        self.available_filters['workable'] = filt_obj
-        #workable
-        filt_obj = Filter(self.is_started,self.tree)
-        self.available_filters['started'] = filt_obj
-        #workdue
-        filt_obj = Filter(self.workdue,self.tree)
-        self.available_filters['workdue'] = filt_obj
-        #workstarted
-        filt_obj = Filter(self.workstarted,self.tree)
-        self.available_filters['workstarted'] = filt_obj
-        #worktostart
-        filt_obj = Filter(self.worktostart,self.tree)
-        self.available_filters['worktostart'] = filt_obj
-        #worklate
-        filt_obj = Filter(self.worklate,self.tree)
-        self.available_filters['worklate'] = filt_obj
-        #no_disabled_tag
-        filt_obj = Filter(self.no_disabled_tag,self.tree)
-        param = {}
-        param['transparent'] = True
-        filt_obj.set_parameters(param)
-        self.available_filters['no_disabled_tag'] = filt_obj
 
-    ######### hardcoded filters #############
-    def notag(self,task,parameters=None):
-        """ Filter of tasks without tags """
-        return task.has_tags(notag_only=True)
-        
-    def is_leaf(self,task,parameters=None):
-        """ Filter of tasks which have no children """
-        return not task.has_child()
-    
-    def is_workable(self,task,parameters=None):
-        """ Filter of tasks that can be worked """
-        workable = True
-        for c in task.get_subtasks():
-            if c and c.get_status() == Task.STA_ACTIVE:
-                workable = False
-        return workable
-        
-    def is_started(self,task,parameters=None):
-        '''Filter for tasks that are already started'''
-        start_date = task.get_start_date()
-        if start_date :
-            #Seems like pylint falsely assumes that subtraction always results
-            #in an object of the same type. The subtraction of dates 
-            #results in a datetime.timedelta object 
-            #that does have a 'days' member.
-            difference = date_today() - start_date
-            if difference.days == 0:
-                # Don't count today's tasks started until morning
-                return datetime.now().hour > 4
-            else:
-                return difference.days > 0 #pylint: disable-msg=E1101
-        else:
-            return True
-            
-    def workview(self,task,parameters=None):
-        wv = self.active(task) and\
-             self.is_started(task) and\
-             self.is_workable(task)
-        return wv
-        
-    def workdue(self,task):
-        ''' Filter for tasks due within the next day '''
-        wv = self.workview(task) and \
-             task.get_due_date() != no_date and \
-             task.get_days_left() < 2
-        return wv
-
-    def worklate(self,task):
-        ''' Filter for tasks due within the next day '''
-        wv = self.workview(task) and \
-             task.get_due_date() != no_date and \
-             task.get_days_late() > 0
-        return wv
-
-    def workstarted(self,task):
-        ''' Filter for workable tasks with a start date specified '''
-        wv = self.workview(task) and \
-             task.start_date
-        return wv
-        
-    def worktostart(self,task):
-        ''' Filter for workable tasks without a start date specified '''
-        wv = self.workview(task) and \
-             not task.start_date
-        return wv
-        
-    def active(self,task,parameters=None):
-        """ Filter of tasks which are active """
-        #FIXME: we should also handle unactive tags
-        return task.get_status() == Task.STA_ACTIVE
-        
-    def closed(self,task,parameters=None):
-        """ Filter of tasks which are closed """
-        ret = task.get_status() in [Task.STA_DISMISSED, Task.STA_DONE]
-        return ret
-        
-    def no_disabled_tag(self,task,parameters=None):
-        """Filter of task that don't have any disabled/nonworkview tag"""
-        toreturn = True
-        for t in task.get_tags():
-            if t.get_attribute("nonworkview") == "True":
-                toreturn = False
-        return toreturn
-        
     ##########################################
         
     def get_filter(self,filter_name):
@@ -272,11 +106,6 @@ class FiltersBank:
             if filter_name.startswith('!'):
                 negate = True
                 filter_name = filter_name[1:]
-            if filter_name.startswith('@'):
-                filter_obj = SimpleTagFilter(filter_name,self.tree)
-                param = {}
-                param['transparent'] = True
-                filter_obj.set_parameters(param)
             else:
                 filter_obj = Filter(filter_func,self.tree)
                 filter_obj.set_parameters(parameters)

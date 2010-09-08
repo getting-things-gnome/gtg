@@ -24,18 +24,69 @@ import sys
 import unittest
 
 from GTG.tests import test_suite
+from GTG.tools.testingmode import TestingMode
 
+TEST_MODULE_PREFIX = "GTG.tests."
 
 def main(args):
     runner = unittest.TextTestRunner(
-        stream=sys.stdout, descriptions=False, verbosity=3)
-    test = test_suite()
-    result = runner.run(test)
-    if result.wasSuccessful():
+                    stream = sys.stdout,
+                    descriptions = True,
+                    verbosity = 1)
+    if "-h" in args:
+        print "USAGE:"
+        print "./run_tests  to run all tests"
+        print "./run_tests  [module_name ..] to run tests from the listed " + \
+              "modules"
+        print "./run_tests  [function_path ..] to run the selected " + \
+              "functions as tests"
+        return
+    if args:
+        #if we have specified the name of the test in the command line
+        suites = []
+        # fake modules that mimic the behaviour of external libraries ...
+        TestingMode().set_testing_mode(True)
+        for arg in args:
+            #each arg can be a module name (as test_liblarch), or a module name
+            # "dot" a function name (as test_liblarch.test_something)
+            arg_content = arg.split(".")
+            module_name = arg_content[0]
+            #load the module
+            module_path = TEST_MODULE_PREFIX + module_name
+            module = __import__(module_path)
+            sys.modules[module_path] = module
+            globals()[module_path] = module
+            tests = getattr(module, "tests")
+            a_test = getattr(tests, module_name)
+            if len(arg_content) > 1:
+                path = TEST_MODULE_PREFIX + arg
+                suites.append(unittest.TestLoader().loadTestsFromName(path))
+                #NOTE: this can be done easily with pattern matching with 
+                #      unittest.TestLoader().discover(..), but that's only from 
+                #      python 2.7 on. 
+            else:
+                suites.append(getattr(a_test, "test_suite")())
+    else:
+        #otherwise, run all tests
+        suites = [test_suite()]
+
+    #run the tests
+    tests_are_successful = True
+    for suite in suites:
+        result = runner.run(suite)
+        tests_are_successful &= result.wasSuccessful()
+
+    #show the aggregated result of all the tests
+    if tests_are_successful:
+        print "ALL TESTS ARE SUCCESSFUL"
         return 0
     else:
+        print """
+        ****************************************
+        SOME TESTS *FAILED*!
+        ****************************************
+        """
         return 1
-
 
 if __name__ == '__main__':
     sys.exit(main(sys.argv[1:]))

@@ -65,6 +65,8 @@ class CoreConfig(Borg):
     BUSINTERFACE = "/org/gnome/GTG"
     #TAGS
     ALLTASKS_TAG = "gtg-tags-all"
+    NOTAG_TAG = "gtg-tags-none"
+    SEP_TAG = "gtg-tags-sep"
 
     def __init__(self):
         if  hasattr(self, 'data_dir'):

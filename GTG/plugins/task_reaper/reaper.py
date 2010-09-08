@@ -103,6 +103,7 @@ class pluginReaper:
 
     def schedule_autopurge(self):
         self.timer = Timer(self.TIME_BETWEEN_PURGES, self.delete_old_closed_tasks)
+        self.timer.setDaemon(True)
         self.timer.start()
         self.__log("Automatic deletion of old tasks scheduled")
 
@@ -116,12 +117,10 @@ class pluginReaper:
         self.__log("Starting deletion of old tasks")
         today = datetime.datetime.now().date()
         requester = self.plugin_api.get_requester()
-        closed_tids = requester.get_tasks_list(status = [Task.STA_DISMISSED,
-                                                  Task.STA_DONE])
-        closed_tasks = [requester.get_task(tid) for tid in closed_tids]
-        #print [t.get_title() for t in closed_tasks]
+        closed_tree = requester.get_tasks_tree(name = 'inactive')
+        closed_tasks = [requester.get_task(tid) for tid in \
+                        closed_tree.get_all_nodes()]
         delta = datetime.timedelta(days = self.preferences["max_days"])
-        #print [t.get_closed_date().to_py_date() for t in closed_tasks]
         to_remove = filter(lambda t: t.get_closed_date().to_py_date() < today -delta,\
                            closed_tasks)
         map(lambda t: requester.delete_task(t.get_id()), to_remove)
@@ -136,7 +135,7 @@ class pluginReaper:
         """A configurable plugin should have this method and return True"""
         return True
 
-    def configure_dialog(self, plugin_apis, manager_dialog):
+    def configure_dialog(self, manager_dialog):
         self.preferences_load()
         self.preferences_dialog.set_transient_for(manager_dialog)
         self.pref_chbox_is_automatic.set_active(self.preferences["is_automatic"])

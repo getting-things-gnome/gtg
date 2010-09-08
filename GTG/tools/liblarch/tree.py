@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Gettings Things Gnome! - a personal organizer for the GNOME desktop
+# Getting Things Gnome! - a personal organizer for the GNOME desktop
 # Copyright (c) 2008-2009 - Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
@@ -17,7 +17,11 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
+THREAD_PROTECTION = False
+DEBUG_THREAD = False
+
 import gobject
+import threading
 
 from GTG.tools.logger import Log
 
@@ -29,24 +33,48 @@ class MainTree(gobject.GObject):
                     'node-modified': (gobject.SIGNAL_RUN_FIRST, \
                                     gobject.TYPE_NONE, (str, ))}
 
-    def __init__(self, root=None):
+    def __init__(self, root=None,thread=None):
         gobject.GObject.__init__(self)
+        self.thread = thread
         self.root_id = 'root'
         self.nodes = {}
         self.old_paths = {}
         self.pending_relationships = []
+        self.__cllbcks = {}
         if root:
             self.root = root
         else:
             self.root = TreeNode(id=self.root_id)
+        self.root.set_thread(self.thread)
         self.root.set_tree(self)
+        
+    def register_callback(self,event,func):
+        if not self.__cllbcks.has_key(event):
+            self.__cllbcks[event] = {}
+        dic = self.__cllbcks[event]
+        #finding a free key
+        k = 0
+        while dic.has_key(k):
+            k += 1
+        #registering
+        dic[k] = func
+        #returning the key so we can later unregister a callback
+        return k
+        
+    def callback(self,event,tid):
+        self.emit(event,tid)
+        #avoid that the dic change dynamically while we are using it
+        calls = dict(self.__cllbcks.get(event,[]))
+        for k in calls:
+            self.__cllbcks[event][k](tid)
         
     def modify_node(self,nid):
         self.__modified(nid)
+
         
     def __modified(self,nid):
         if nid != 'root' and nid in self.nodes:
-            self.emit("node-modified", nid)
+            self.callback("node-modified", nid)
 
     def __str__(self):
         return "<Tree: root = '%s'>" % (str(self.root))
@@ -61,7 +89,6 @@ class MainTree(gobject.GObject):
     #a deleted path can be requested only once
     def get_deleted_path(self,id):
         toreturn = None
-        print "old paths are : %s" %self.old_paths
         if self.old_paths.has_key(id):
             toreturn = self.old_paths.pop(id)
         return toreturn
@@ -69,6 +96,11 @@ class MainTree(gobject.GObject):
 
     def get_root(self):
         return self.root
+        
+    def refresh_all(self):
+        nodes = self.nodes.copy()
+        for nid in nodes:
+            self.__modified(nid)
 
     def set_root(self, root):
         self.root = root
@@ -83,19 +115,18 @@ class MainTree(gobject.GObject):
         else:
             #We add the node
             node.set_tree(self)
-            if parent_id:
-                parent = self.get_node(parent_id)
-                if parent: 
-                    node.set_parent(parent.get_id())
-                    parent.add_child(id)
-            else:
-                self.root.add_child(id)
+            if not parent_id:
+                parent_id = 'root'
+            #we build the relationship before adding the node !
+            #That's crucial, else, the node will exist while
+            #children might not be yet aware of the relationship
+            self.new_relationship(parent_id,id)
             self.nodes[id] = node
             #build the relationships that were waiting for that node
             for rel in list(self.pending_relationships):
                 if id in rel:
-                    self.new_relationship(rel[0],rel[1])
-            self.emit("node-added", id)
+                    self.new_relationship(rel[0],rel[1],refresh_nodes=False)
+            self.callback("node-added", id)
             return True
 
     #this will remove a node but not his children
@@ -107,6 +138,9 @@ class MainTree(gobject.GObject):
         if not node :
             return
         else:
+            #By removing the node early, we avoid unnecessary 
+            #update of that node
+            self.nodes.pop(id)
             if node.has_child():
                 for c_id in node.get_children():
                     if not recursive:
@@ -119,13 +153,12 @@ class MainTree(gobject.GObject):
                     par.remove_child(id)
             else:
                 self.root.remove_child(id)
-#            self.old_paths[id] = paths
-            self.emit("node-deleted", id)
-            self.nodes.pop(id)
+            self.callback("node-deleted", id)
+            
         
     #create a new relationship between nodes if it doesn't already exist
     #return False if nothing was done
-    def new_relationship(self,parent_id,child_id):
+    def new_relationship(self,parent_id,child_id,refresh_nodes=True):
         #Genealogic search is a function we use to build a list of every
         #ancestor of a node
         def genealogic_search(nid):
@@ -158,9 +191,11 @@ class MainTree(gobject.GObject):
                 genealogic_search(parent_id)
                 if child_id not in genealogy:
                     if not p.has_child(child_id):
+#                        print "adding child %s to %s" %(child_id,parent_id)
                         p.add_child(child_id)
                         toreturn = True
                     if parent_id != 'root' and not c.has_parent(parent_id):
+#                        print "adding parent %s to %s" %(parent_id,child_id)
                         c.add_parent(parent_id)
                         toreturn = True
                     #removing the root from the list of parent
@@ -180,13 +215,16 @@ class MainTree(gobject.GObject):
             else:
                 #at least one of the node is not loaded. Save the relation for later
                 #undo everything
+#                print "breaking relation %s %s" %(parent_id,child_id)
                 self.break_relationship(parent_id,child_id)
                 #save it for later
                 if [parent_id,child_id] not in self.pending_relationships:
                     self.pending_relationships.append([parent_id,child_id])
-                toreturn = True
-        if toreturn:
-            self.__modified(parent_id)
+                toreturn = False
+        if refresh_nodes and toreturn:
+#            print "we modify parent %s then child %s" %(parent_id,child_id)
+            if parent_id != 'root':
+                self.__modified(parent_id)
             self.__modified(child_id)
         return toreturn
     
@@ -194,12 +232,13 @@ class MainTree(gobject.GObject):
     #return False if the relationship didn't exist    
     def break_relationship(self,parent_id,child_id):
         toreturn = False
-        if self.has_node(parent_id) and self.has_node(child_id):
+        if self.has_node(parent_id):
             p = self.get_node(parent_id)
-            c = self.get_node(child_id)
             if p.has_child(child_id):
                 ret = p.remove_child(child_id)
                 toreturn = True
+        if self.has_node(child_id):
+            c = self.get_node(child_id)
             if c.has_parent(parent_id):
                 c.remove_parent(parent_id)
                 toreturn = True
@@ -232,6 +271,8 @@ class MainTree(gobject.GObject):
         Returns the next sibling node, or None if there are no other siblings
         """
         #We should take the next good node, not the next base node
+        if not nid:
+            raise ValueError('nid should be different than None')
         toreturn = None
         node = self.get_node(nid)
         parents_id = node.get_parents()
@@ -245,6 +286,8 @@ class MainTree(gobject.GObject):
         if not parent:
             parent = self.root
         index = parent.get_child_index(nid)
+        if not index:
+            raise IndexError('node %s is not a child of %s' %(nid,parid))
         if parent.get_n_children() > index+1:
             toreturn = parent.get_nth_child(index+1)
         return toreturn
@@ -271,7 +314,7 @@ class MainTree(gobject.GObject):
             node = self.get_node(nid)
         else:
             node = self.root
-        if node and path[0] < node.get_n_children():
+        if node and path and path[0] < node.get_n_children():
             if len(path) == 1:
                 return node.get_nth_child(path[0])
             else:
@@ -337,19 +380,40 @@ class TreeNode():
         self.pending_relationship = []
         if parent:
             self.add_parent(parent)
+        self.thread = None
+        self.thread_protection = False
 
     def __str__(self):
         return "<TreeNode: '%s'>" % (self.id)
         
+    def set_thread(self,thread):
+        self.thread = thread
+        
     def modified(self):
+        #FIXME : we should maybe have
+        # a directional recursive update
         if self.tree:
+            if self.thread_protection:
+                t = threading.current_thread()
+                if t != self.thread:
+                    raise Exception('! could not modified from thread %s' %t)
+            #then the task
             self.tree.modify_node(self.id)
+#            gobject.idle_add(self.tree.modify_node,self.id)
         
     def set_tree(self,tree):
+        if self.thread_protection:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not acces set_tree from thread %s' %t)
         self.tree = tree
         for rel in list(self.pending_relationship):
             self.tree.new_relationship(rel[0],rel[1])
             self.pending_relationship.remove(rel)
+        if THREAD_PROTECTION:
+            self.thread_protection = True
+            if not self.thread:
+                raise Exception('We should have received the thread')
             
     def get_tree(self):
         return self.tree
@@ -359,6 +423,10 @@ class TreeNode():
         
     
     def new_relationship(self,par,chi):
+        if self.thread_protection:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not new_relationship from thread %s' %t)
         if self.tree:
             return self.tree.new_relationship(par,chi)
         else:
@@ -372,7 +440,7 @@ class TreeNode():
 
     def has_parent(self,id=None):
         if id:
-            return id in self.parents
+            toreturn = self.tree.has_node(id) and (id in self.parents)
         else:
             toreturn = len(self.parents) > 0
         return toreturn
@@ -380,6 +448,10 @@ class TreeNode():
     #this one return only one parent.
     #useful for tree where we know that there is only one
     def get_parent(self):
+        if self.thread_protection:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not get_parent from thread %s' %t)
         #we should throw an error if there are multiples parents
         if len(self.parents) > 1 :
             print "Warning: get_parent will return one random parent for task %s because there are multiple parents." %(self.get_id())
@@ -393,14 +465,27 @@ class TreeNode():
         '''
         Return a list of parent ids
         '''
-        return list(self.parents)
+        if self.thread_protection:
+            t = threading.current_thread()
+            if t != self.thread:
+#                raise Exception('! could not get_parents from thread %s' %t)
+                if DEBUG_THREAD:
+                    print "we allow treenode.get_parents from another thread"
+        toreturn = []
+        if self.tree:
+            for p in self.parents:
+                if self.tree.has_node(p):
+                    toreturn.append(p)
+        return toreturn
 
     def add_parent(self, parent_id):
+        if self.thread_protection:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not add_parent from thread %s' %t)
         if parent_id not in self.parents:
             self.parents.append(parent_id)
             toreturn = self.new_relationship(parent_id, self.get_id())
-#            if not toreturn:
-#                Log.debug("** parent addition failed (probably already done)*")
         else:
             toreturn = False
         return toreturn
@@ -408,18 +493,25 @@ class TreeNode():
     #set_parent means that we remove all other parents
     #if par_id is None, we will remove all parents, thus being on the root.
     def set_parent(self,par_id):
+        if self.thread_protection:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not acces set_parent from thread %s' %t)
         is_already_parent_flag = False
         for i in self.parents:
             if i != par_id:
-                assert(self.remove_parent(i) == True)
+                self.remove_parent(i)
             else:
                 is_already_parent_flag = True
         if par_id and not is_already_parent_flag:
             self.add_parent(par_id)
-        elif par_id == None:
-            self.new_relationship('root', self.get_id())
+
             
     def remove_parent(self,id):
+        if self.thread_protection:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not remove_parent from thread %s' %t)
         if id in self.parents:
             self.parents.remove(id)
             ret = self.tree.break_relationship(id,self.get_id())
@@ -433,15 +525,28 @@ class TreeNode():
         if id :
             return id in self.children
         else:
-            return len(self.children) != 0
+            return bool(self.children)
 
     def get_children(self):
+        if self.thread_protection:
+            t = threading.current_thread()
+            if t != self.thread:
+                if DEBUG_THREAD:
+                    print "we allow treenode.get_children from another thread"
         return list(self.children)
 
     def get_n_children(self):
+        if self.thread_protection:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not get_n_children from thread %s' %t)
         return len(self.children)
 
     def get_nth_child(self, index):
+        if self.thread_protection:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not get_nth_child from thread %s' %t)
         try:
             id = self.children[index]
             return id
@@ -449,12 +554,20 @@ class TreeNode():
             raise ValueError("Index is not in the children list")
 
     def get_child(self, id):
+        if self.thread_protection:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not get_child from thread %s' %t)
         if id in self.children:
             return self.tree.get_node(id)
         else:
             return None
 
     def get_child_index(self, id):
+        if self.thread_protection:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not get_child_index from thread %s' %t)
         if id in self.children:
             return self.children.index(id)
         else:
@@ -464,19 +577,41 @@ class TreeNode():
     #takes the id of the child as parameter.
     #if the child is not already in the tree, the relation is anyway "saved"
     def add_child(self, id):
+        if self.thread_protection:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not add_child from thread %s' %t+\
+                                'should be %s' %self.thread)
         if id not in self.children:
+            #We put at the end not that are not yet in tree.
+            #it looks like it is not necessary
+#            newc = []
+#            nonloaded = []
+#            for c in self.children:
+#                if self.tree and self.tree.has_node(c):
+#                    newc.append(c)
+#                else:
+#                    nonloaded.append(c)
+#            newc.append(id)
+#            for n in nonloaded:
+#                newc.append(n)
+#            self.children = newc
             self.children.append(id)
             toreturn = self.new_relationship(self.get_id(),id)
-#            Log.debug("new relationship : %s" %toreturn)
         else:
             Log.debug("%s was already in children of %s" %(id,self.get_id()))
             toreturn = False
         return toreturn
 
     def remove_child(self, id):
+        if self.thread_protection:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not remove_chil from thread %s' %t)
         if id in self.children:
             self.children.remove(id)
-            ret = self.tree.break_relationship(self.get_id(),id)
+            if self.tree:
+                ret = self.tree.break_relationship(self.get_id(),id)
             return ret
         else:
             return False

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Gettings Things Gnome! - a personal organizer for the GNOME desktop
+# Getting Things Gnome! - a personal organizer for the GNOME desktop
 # Copyright (c) 2008-2009 - Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
@@ -30,8 +30,8 @@ import xdg
 
 # GTG imports
 from GTG.backends import backend_localfile as localfile
-from GTG.core import datastore
 from GTG.tools import cleanxml
+from GTG.core import CoreConfig
 
 
 class GtgBackendsUniTests(unittest.TestCase):
@@ -44,6 +44,10 @@ class GtgBackendsUniTests(unittest.TestCase):
         self.taskpath = ''
         self.datapath = ''
     
+    def SetUp(self):
+        CoreConfig().set_data_dir("./test_data")
+        CoreConfig().set_conf_dir("./test_data")
+
     def test_localfile_get_name(self):
         """Tests for localfile/get_name function :
         - a string is expected.
@@ -97,59 +101,12 @@ class GtgBackendsUniTests(unittest.TestCase):
         beobj.remove_task("0@1")
         beobj.quit()
         dataline = open(self.taskpath, 'r').read()
-        print dataline
         if "0@1" in dataline:
             res = False
         else:
             res = True
         expectedres = True
         self.assertEqual(res, expectedres)
-
-#    def test_localfile_backend_method4(self):
-#        """Tests for localfile/Backend/get_task method:
-#        - Compares task titles to check if method works.
-#        """
-#        self.create_test_environment()
-#        doc, configxml = cleanxml.openxmlfile(self.datapath, 'config')
-#        xmlproject = doc.getElementsByTagName('backend')
-#        for domobj in xmlproject:
-#            dic = {}
-#            if domobj.hasAttribute("module"):
-#                dic["module"] = str(domobj.getAttribute("module"))
-#                dic["pid"] = str(domobj.getAttribute("pid"))
-#                dic["xmlobject"] = domobj
-#                dic["filename"] = self.taskfile
-#        beobj = localfile.Backend(dic)
-#        dstore = datastore.DataStore()
-#        newtask = dstore.new_task(tid="0@2", pid="1", newtask=True)
-#        beobj.get_task(newtask, "0@1")
-#        self.assertEqual(newtask.get_title(), u"Ceci est un test")
-
-#    def test_localfile_backend_method5(self):
-#        """Tests for localfile/Backend/set_task method:
-#        - parses task file to check if new task has been stored.
-#        """
-#        self.create_test_environment()
-#        doc, configxml = cleanxml.openxmlfile(self.datapath, 'config')
-#        xmlproject = doc.getElementsByTagName('backend')
-#        for domobj in xmlproject:
-#            dic = {}
-#            if domobj.hasAttribute("module"):
-#                dic["module"] = str(domobj.getAttribute("module"))
-#                dic["pid"] = str(domobj.getAttribute("pid"))
-#                dic["xmlobject"] = domobj
-#                dic["filename"] = self.taskfile
-#        beobj = localfile.Backend(dic)
-#        dstore = datastore.DataStore()
-#        newtask = dstore.new_task(tid="0@2", pid="1", newtask=True)
-#        beobj.set_task(newtask)
-#        dataline = open(self.taskpath, 'r').read()
-#        if "0@2" in dataline:
-#            res = True
-#        else:
-#            res = False
-#        expectedres = True
-#        self.assertEqual(res, expectedres)
 
     def create_test_environment(self):
         """Create the test environment"""

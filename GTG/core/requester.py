@@ -23,11 +23,8 @@ A nice general purpose interface for the datastore and tagstore
 
 import gobject
 
-from GTG.core.filteredtree import FilteredTree
-from GTG.core.filters_bank import FiltersBank
-from GTG.core.task         import Task
+
 from GTG.core.tagstore     import Tag
-from GTG.tools.dates       import date_today
 from GTG.tools.logger      import Log
 
 class Requester(gobject.GObject):
@@ -56,10 +53,9 @@ class Requester(gobject.GObject):
         """Construct a L{Requester}."""
         gobject.GObject.__init__(self)
         self.ds = datastore
-        self.basetree = self.ds.get_tasks_tree()
-        self.main_tree = FilteredTree(self,self.basetree,maintree=True)
+        self.__basetree = self.ds.get_tasks_tree()
         
-        self.filters = FiltersBank(self,tree=self.main_tree)
+        #TODO build filters here
         self.counter_call = 0
 
     ############# Signals #########################
@@ -68,90 +64,40 @@ class Requester(gobject.GObject):
     def _task_loaded(self, tid):
         gobject.idle_add(self.emit, "task-added", tid)
 
-    def _task_modified(self, tid):
-        self.counter_call += 1
-        #print "signal task_modified %s (%s modifications)" %(tid,self.counter_call)
-        gobject.idle_add(self.emit, "task-modified", tid)
-
-    def _task_deleted(self, tid):
-        #when this is emitted, task has *already* been deleted
-        gobject.idle_add(self.emit, "task-deleted", tid)
-
-    def _tag_added(self,tagname):
-        gobject.idle_add(self.emit, "tag-added", tagname)
-
-    def _tag_modified(self,tagname):
-        gobject.idle_add(self.emit, "tag-modified", tagname)
-
-    def _tag_path_deleted(self, path):
-        gobject.idle_add(self.emit, "tag-path-deleted", path)
-        
-    def _tag_deleted(self,tagname):
-        gobject.idle_add(self.emit, "tag-deleted", tagname)
         
     ############ Tasks Tree ######################
-    # This is the main FilteredTree. You cannot apply filters
-    # directly to it, you have to pass them through the requester.
-    # This is the tree as it is displayed in the main window
-    def get_main_tasks_tree(self):
-        return self.main_tree
+    # By default, we return the task tree of the main window
+    def get_tasks_tree(self,name='active',refresh=True):
+        return self.__basetree.get_viewtree(name=name,refresh=refresh)
         
     # This is a FilteredTree that you have to handle yourself.
     # You can apply/unapply filters on it as you wish.
-    def get_custom_tasks_tree(self):
-        return FilteredTree(self,self.basetree,maintree=False)
-        
-    def get_main_tasks_list(self):
-        return self.main_tree.get_all_keys()
-        
-    def get_main_n_tasks(self):
-        return self.main_tree.get_n_nodes()
-    
-    def get_all_tasks_list(self):
-        return self.basetree.get_all_keys()
-        
-    # Apply a given filter to the main FilteredTree
-    def apply_filter(self,filter_name,parameters=None,refresh=True):
-        r = self.main_tree.apply_filter(filter_name,parameters=parameters,\
-                                        imtherequester=True,refresh=refresh)
-        return r
-            
-    # Unapply a filter from the main FilteredTree.
-    # Does nothing if the filter was not previously applied.
-    def unapply_filter(self,filter_name):
-        r = self.main_tree.unapply_filter(filter_name,imtherequester=True)
-        return r
-
-    def reset_filters(self):
-        self.main_tree.reset_filters(imtherequester=True)
+#    def get_custom_tasks_tree(self,name=None,refresh=True):
+#        return self.__basetree.get_viewtree(name=name,refresh=refresh)
         
     def reset_tag_filters(self,refilter=True):
-        self.main_tree.reset_tag_filters(refilter=refilter,imtherequester=True)
+        print "reset tag filters not implemented"
+#        self.main_tree.reset_tag_filters(refilter=refilter,imtherequester=True)
         
     def is_displayed(self,task):
-        return self.main_tree.is_displayed(task)
+        return self.__basetree.get_viewtree(name='active').is_displayed(task)
 
     ######### Filters bank #######################
-    # Get the filter object for a given name
-
-    def get_filter(self,filter_name):
-        return self.filters.get_filter(filter_name)
-    
     # List, by name, all available filters
     def list_filters(self):
-        return self.filters.list_filters()
+        return self.__basetree.list_filters()
     
     # Add a filter to the filter bank
     # Return True if the filter was added
     # Return False if the filter_name was already in the bank
     def add_filter(self,filter_name,filter_func):
-        return self.filters.add_filter(filter_name,filter_func)
+        return self.__basetree.add_filter(filter_name,filter_func)
         
     # Remove a filter from the bank.
     # Only custom filters that were added here can be removed
     # Return False if the filter was not removed
     def remove_filter(self,filter_name):
-        return self.filters.remove_filter(filter_name)
+        return self.__basetree.remove_filter(filter_name)
 
     ############## Tasks ##########################
     ###############################################
@@ -191,8 +137,9 @@ class Requester(gobject.GObject):
         self._task_loaded(task.get_id())
         return task
 
-    def delete_task(self, tid):
-        """Delete the task 'tid'.
+    def delete_task(self, tid,recursive=True):
+        """Delete the task 'tid' and, by default, delete recursively
+        all the childrens.
 
         Note: this modifies the datastore.
 
@@ -204,14 +151,13 @@ class Requester(gobject.GObject):
         if task:
             for tag in task.get_tags():
                 self.emit('tag-modified', tag.get_name())
-        self.emit('task-deleted', tid)
-        return self.basetree.remove_node(tid)
+        return self.__basetree.del_node(tid,recursive=recursive)
 
     ############### Tags ##########################
     ###############################################
 
     def get_tag_tree(self):
-        return self.ds.get_tagstore()
+        return self.ds.get_tagstore().get_viewtree(name='active')
 
     def new_tag(self, tagname):
         """Create a new tag called 'tagname'.
@@ -221,33 +167,23 @@ class Requester(gobject.GObject):
         @param tagname: The name of the new tag.
         @return: The newly-created tag.
         """
-        return self.ds.get_tagstore().new_tag(tagname)
+        return self.ds.new_tag(tagname)
 
     def rename_tag(self, oldname, newname):
-        self.ds.get_tagstore().rename_tag(oldname, newname)
+        self.ds.rename_tag(oldname, newname)
 
     def get_tag(self, tagname):
-        return self.ds.get_tagstore().get_tag(tagname)
-
-    def get_all_tags(self):
-        """Return a list of every tag that was used.
-        We don't return tag that were used only on permanently deleted tasks.
-
-        @return: A list of tags used by a open or closed task.
-        """
-        l = []
-        for t in self.ds.get_tagstore().get_all_tags():
-            if t.is_used() and t not in l:
-                l.append(t)
-        l.sort(cmp=lambda x, y: cmp(x.get_name().lower(),\
-            y.get_name().lower()))
-        return l
+        return self.ds.get_tag(tagname)
 
     def get_notag_tag(self):
-        return self.ds.get_tagstore().get_notag_tag()
+        print "no tag not implemented"
+        return None
+#        return self.ds.get_tagstore().get_notag_tag()
 
     def get_alltag_tag(self):
-        return self.ds.get_tagstore().get_alltag_tag()
+        print "all tag not implemented"
+        return None
+#        return self.ds.get_tagstore().get_alltag_tag()
 
     def get_used_tags(self):
         """Return tags currently used by a task.
@@ -255,9 +191,8 @@ class Requester(gobject.GObject):
         @return: A list of tag names used by a task.
         """
         l = []
-        for t in self.ds.get_tagstore().get_all_tags():
-            if t.is_actively_used() and t not in l:
-                l.append(t.get_name())
+        view = self.ds.get_tagstore().get_viewtree(name='active')
+        l = view.get_all_nodes()
         l.sort(cmp=lambda x, y: cmp(x.lower(),y.lower()))
         return l
 
@@ -284,3 +219,6 @@ class Requester(gobject.GObject):
 
     def backend_change_attached_tags(self, backend_id, tags):
         return self.ds.backend_change_attached_tags(backend_id, tags)
+
+    def save_datastore(self):
+        return self.ds.save()

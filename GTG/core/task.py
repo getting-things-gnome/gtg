@@ -24,13 +24,19 @@ task.py contains the Task class which represents (guess what) a task
 import xml.dom.minidom
 import uuid
 import cgi
+import re
 import xml.sax.saxutils as saxutils
+import gobject
 
+import GTG
 from GTG              import _
 from GTG.tools.dates  import date_today, no_date, Date
 from datetime         import datetime
-from GTG.core.tree    import TreeNode
+from GTG.tools.liblarch.tree    import TreeNode
 from GTG.tools.logger import Log
+from GTG.tools.dates             import no_date,\
+                                        FuzzyDate, \
+                                        get_canonical_date
 
 
 class Task(TreeNode):
@@ -64,8 +70,9 @@ class Task(TreeNode):
         self.req = requester
         #If we don't have a newtask, we will have to load it.
         self.loaded = newtask
-        if self.loaded:
-            self.req._task_loaded(self.tid)
+        #Should not be necessary with the new backends
+#        if self.loaded:
+#            self.req._task_loaded(self.tid)
         self.attributes={}
         self._modified_update()
 
@@ -76,9 +83,10 @@ class Task(TreeNode):
         #avoid doing it multiple times
         if not self.loaded:
             self.loaded = True
-            if signal:
-                self.req._task_loaded(self.tid)
-                #self.req._task_modified(self.tid)
+            for t in self.get_tags():
+                t.modified()
+#            if signal:
+#                self.req._task_loaded(self.tid)
 
     def set_to_keep(self):
         self.can_be_deleted = False
@@ -99,7 +107,7 @@ class Task(TreeNode):
         if self.uuid == "":
             self.set_uuid(uuid.uuid4())
             self.sync()
-        return self.uuid
+        return str(self.uuid)
 
     def get_remote_ids(self):
         '''
@@ -139,6 +147,59 @@ class Task(TreeNode):
             return True
         else:
             return False
+            
+    #TODO : should we merge this function with set_title ?
+    def set_complex_title(self,text,tags=[]):
+        due_date = no_date
+        defer_date = no_date
+        if text:
+            
+            # Get tags in the title
+            #NOTE: the ?: tells regexp that the first one is 
+            # a non-capturing group, so it must not be returned
+            # to findall. http://www.amk.ca/python/howto/regex/regex.html
+            # ~~~~Invernizzi
+            for match in re.findall(r'(?:^|[\s])(@\w+)', text):
+                tags.append(GTG.core.tagstore.Tag(match, self.req))
+                # Remove the @
+                #text =text.replace(match,match[1:],1)
+            # Get attributes
+            regexp = r'([\s]*)([\w-]+):([^\s]+)'
+            for spaces, attribute, args in re.findall(regexp, text):
+                valid_attribute = True
+                if attribute.lower() in ["tags", "tag"] or \
+                   attribute.lower() in [_("tags"), _("tag")]:
+                    for tag in args.split(","):
+                        if not tag.startswith("@") :
+                            tag = "@"+tag
+                        tags.append(GTG.core.tagstore.Tag(tag, self.req))
+                elif attribute.lower() == "defer" or \
+                     attribute.lower() == _("defer"):
+                    defer_date = get_canonical_date(args)
+                    if not defer_date:
+                        valid_attribute = False
+                elif attribute.lower() == "due" or \
+                     attribute.lower() == _("due"):
+                    due_date = get_canonical_date(args)
+                    if not due_date:
+                        valid_attribute = False
+                else:
+                    # attribute is unknown
+                    valid_attribute = False
+                if valid_attribute:
+                    # if the command is valid we have to remove it
+                    # from the task title
+                    text = \
+                        text.replace("%s%s:%s" % (spaces, attribute, args), "")
+#            # Create the new task
+#            task = self.req.new_task(tags=[t.get_name() for t in tags], newtask=True)
+            for t in tags:
+                self.add_tag(t.get_name())
+            if text != "":
+                self.set_title(text.strip())
+                self.set_to_keep()
+            self.set_due_date(due_date)
+            self.set_start_date(defer_date)
 
     def set_status(self, status, donedate=None):
         old_status = self.status
@@ -181,13 +242,13 @@ class Task(TreeNode):
         return self.status
 
     def get_modified(self):
-        return self.modified
+        return self.last_modified
 
     def get_modified_string(self):
-        return self.modified.strftime("%Y-%m-%dT%H:%M:%S")
+        return self.last_modified.strftime("%Y-%m-%dT%H:%M:%S")
 
     def set_modified(self, modified):
-        self.modified = modified
+        self.last_modified = modified
 
     def set_due_date(self, fulldate):
         assert(isinstance(fulldate, Date))
@@ -333,8 +394,6 @@ class Task(TreeNode):
                 for t in self.get_tags():
                     child.tag_added(t.get_name())
             self.sync()
-            #This one should be handled by the self.call_modified()
-#            child.sync()
             return True
         else:
             Log.debug("child addition failed (or still pending)")
@@ -390,34 +449,35 @@ class Task(TreeNode):
 
     ### PARENTS ##############################################################
 
-    #Take a tid object as parameter
-    def add_parent(self, parent_tid):
-        #FIXME : the sync should be automatically done
-        #at the tree level. remove this function
-        Log.debug("adding parent %s to task %s" %(parent_tid, self.get_id()))
-        added = TreeNode.add_parent(self, parent_tid)
-        if added:
-            self.sync()
-            #the parent is handled by the sync
-#            self.req.get_task(parent_tid).sync()
-            return True
-        else:
-            return False
+#   Not necessary anymore with liblarch
+#    #Take a tid object as parameter
+#    def add_parent(self, parent_tid):
+#        #FIXME : the sync should be automatically done
+#        #at the tree level. remove this function
+#        Log.debug("adding parent %s to task %s" %(parent_tid, self.get_id()))
+#        added = TreeNode.add_parent(self, parent_tid)
+#        if added:
+#            self.sync()
+#            #the parent is handled by the sync
+##            self.req.get_task(parent_tid).sync()
+#            return True
+#        else:
+#            return False
 
-    #Take a tid as parameter
-    def remove_parent(self, tid):
-        #FIXME : the sync should be automatically done
-        #at the tree level. remove this function
-        TreeNode.remove_parent(self,tid)
-        self.sync()
-        parent = self.req.get_task(tid)
-        if parent:
-            parent.sync()
+#    #Take a tid as parameter
+#    def remove_parent(self, tid):
+#        #FIXME : the sync should be automatically done
+#        #at the tree level. remove this function
+#        TreeNode.remove_parent(self,tid)
+#        self.sync()
+#        parent = self.req.get_task(tid)
+#        if parent:
+#            parent.sync()
 
     #Return true is the task has parent
     #If tag is provided, return True only
     #if the parent has this particular tag
-    #FIXME : this function should be removed. Use the tree instead !
+    #FIXME : this function should be removed. Use the liblarch instead !
     def has_parents(self, tag=None):
         has_par = TreeNode.has_parent(self)
         #The "all tag" argument
@@ -449,51 +509,22 @@ class Task(TreeNode):
         """
         return self.attributes.get((namespace, att_name), None)
 
-    #Method called before the task is deleted
-    #This method is called by the datastore and should not be called directly
-    #Use the requester
-    def delete(self):
-        #we issue a delete for all the children
-        for task in self.get_subtasks():
-            #I think it's superfluous (invernizzi)
-            #task.remove_parent(self.get_id())
-            task.delete()
-        #we tell the parents we have to go
-        for i in self.get_parents():
-            task = self.req.get_task(i)
-            task.remove_child(self.get_id())
-        #we tell the tags about the deletion
-        for tagname in self.tags:
-            tag = self.req.get_tag(tagname)
-            tag.remove_task(self.get_id())
-        #then we signal the we are ready to be removed
-        self.req._task_deleted(self.get_id())
-
     def sync(self):
         self._modified_update()
         if self.is_loaded():
-            self.call_modified()
+            #This is a liblarch call to the TreeNode ancestor
+            gobject.idle_add(self.modified)
+            for t in self.get_tags():
+                gobject.idle_add(t.modified)
             return True
         else:
             return False
-    
-    #This function send the modified signals for the tasks, 
-    #parents and children
-    def call_modified(self):
-        #we first modify children
-        for s in self.get_children():
-            self.req._task_modified(s)
-        #then the task
-        self.req._task_modified(self.tid)
-        #then parents
-        for p in self.get_parents():
-            self.req._task_modified(p)
 
     def _modified_update(self):
         '''
         Updates the modified timestamp
         '''
-        self.modified = datetime.now()
+        self.last_modified = datetime.now()
 
 ### TAG FUNCTIONS ############################################################
 #
@@ -505,7 +536,10 @@ class Task(TreeNode):
     def get_tags(self):
         l = []
         for tname in self.tags:
-            l.append(self.req.get_tag(tname))
+            tag = self.req.get_tag(tname)
+            if not tag:
+                tag = self.req.new_tag(tname)
+            l.append(tag)
         return l
         
     def rename_tag(self, old, new):
@@ -513,9 +547,9 @@ class Task(TreeNode):
         enew = saxutils.escape(saxutils.unescape(new))
         self.content = self.content.replace(eold, enew)
         self.remove_tag(old)
-        self.req._tag_modified(old)
+        self.req.get_tag(old).modified()
         self.tag_added(new)
-        self.req._tag_modified(new)
+        self.req.get_tag(new).modifiel()
         self.sync()
 
     def tag_added(self, tagname):
@@ -524,10 +558,6 @@ class Task(TreeNode):
         """
         #print "tag %s added to task %s" %(tagname,self.get_id())
         t = tagname.encode("UTF-8")
-        tag = self.req.get_tag(t)
-        if not tag:
-            tag = self.req.new_tag(t)
-        tag.add_task(self.get_id())
         #Do not add the same tag twice
         if not t in self.tags:
             self.tags.append(t)
@@ -536,7 +566,11 @@ class Task(TreeNode):
             for child in self.get_subtasks():
                 if child.can_be_deleted:
                     child.add_tag(t)
-            self.req._tag_modified(t)
+            if self.is_loaded():
+                tag = self.req.get_tag(t)
+                if not tag:
+                    tag = self.req.new_tag(t)
+                tag.modified()
             return True
     
     def add_tag(self, tagname):
@@ -567,11 +601,7 @@ class Task(TreeNode):
 
     #remove by tagname
     def remove_tag(self, tagname):
-        t = self.req.get_tag(tagname)
         modified = False
-        if t:
-            t.remove_task(self.get_id())
-            modified = True
         if tagname in self.tags:
             self.tags.remove(tagname)
             modified = True
@@ -580,7 +610,8 @@ class Task(TreeNode):
                     child.remove_tag(tagname)
         self.content = self._strip_tag(self.content, tagname)
         if modified:
-            self.req._tag_modified(tagname)
+            tag = self.req.get_tag(tagname)
+            tag.modified()
     
     def set_only_these_tags(self, tags_list):
         '''
@@ -594,7 +625,7 @@ class Task(TreeNode):
                 self.remove_tag(tag)
         for tag in tags_list:
             self.add_tag(tag)
-                       
+
     def _strip_tag(self, text, tagname,newtag=''):
         return (text
                     .replace('<tag>%s</tag>\n\n'%(tagname), newtag) #trail \n

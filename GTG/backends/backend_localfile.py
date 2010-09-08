@@ -20,6 +20,9 @@
 '''
 Localfile is a read/write backend that will store your tasks in an XML file
 This file will be in your $XDG_DATA_DIR/gtg folder.
+
+This backend contains comments that are meant as a reference, in case someone
+wants to write a backend.
 '''
 
 import os
@@ -29,18 +32,30 @@ from GTG.backends.genericbackend import GenericBackend
 from GTG.core                    import CoreConfig
 from GTG.tools                   import cleanxml, taskxml
 from GTG                         import _
+from GTG.tools.logger            import Log
 
 
 
 class Backend(GenericBackend):
+    '''
+    Localfile backend, which stores your tasks in a XML file in the standard
+    XDG_DATA_DIR/gtg folder (the path is configurable).
+    An instance of this class is used as the default backend for GTG.
+    This backend loads all the tasks stored in the localfile after it's enabled,
+    and from that point on just writes the changes to the file: it does not
+    listen for eventual file changes
+    '''
     
 
     DEFAULT_PATH = CoreConfig().get_data_dir() #default path for filenames
 
 
-    #Description of the backend (mainly it's data we show the user, only the
-    # name is used internally. Please note that BACKEND_NAME and
-    # BACKEND_ICON_NAME should *not* be translated.
+    #General description of the backend: these are used to show a description of
+    # the backend to the user when s/he is considering adding it.
+    # BACKEND_NAME is the name of the backend used internally (it must be
+    # unique).
+    #Please note that BACKEND_NAME and BACKEND_ICON_NAME should *not* be
+    #translated.
     _general_description = { \
         GenericBackend.BACKEND_NAME:       "backend_localfile", \
         GenericBackend.BACKEND_HUMAN_NAME: _("Local File"), \
@@ -53,10 +68,14 @@ class Backend(GenericBackend):
               "for GTG to save your tasks."),\
         }
 
-    #parameters to configure a new backend of this type.
-    #NOTE: should we always give back a different default filename? it can be
-    #      done, but I'd like to keep this backend simple, so that it can be
-    #      used as example (invernizzi)
+    #These are the parameters to configure a new backend of this type. A
+    # parameter has a name, a type and a default value.
+    # Here, we define a parameter "path", which is a string, and has a default
+    # value as a random file in the default path
+    #NOTE: to keep this simple, the filename default path is the same until GTG
+    #      is restarted. I consider this a minor annoyance, and we can avoid
+    #      coding the change of the path each time a backend is
+    #      created (invernizzi)
     _static_parameters = { \
         "path": { \
             GenericBackend.PARAM_TYPE: GenericBackend.TYPE_STRING, \
@@ -64,30 +83,22 @@ class Backend(GenericBackend):
                  os.path.join(DEFAULT_PATH, "gtg_tasks-%s.xml" %(uuid.uuid4()))
         }}
 
-    def _get_default_filename_path(self, filename = None):
-        '''
-        Generates a default path with a random filename
-        @param filename: specify a filename
-        '''
-        if not filename:
-            filename = "gtg_tasks-%s.xml" % (uuid.uuid4())
-        return os.path.join(self.DEFAULT_PATH, filename)
-
     def __init__(self, parameters):
         """
         Instantiates a new backend.
 
-        @param parameters: should match the dictionary returned in
-        get_parameters. Anyway, the backend should care if one expected
-        value is None or does not exist in the dictionary. 
-        @firstrun: only needed for the default backend. It should be
-        omitted for all other backends.
+        @param parameters: A dictionary of parameters, generated from
+        _static_parameters. A few parameters are added to those, the list of
+        these is in the "DefaultBackend" class, look for the KEY_* constants.
+    
+        The backend should take care if one expected value is None or
+        does not exist in the dictionary.
         """
         super(Backend, self).__init__(parameters)
-        self.tids = []
+        self.tids = [] #we keep the list of loaded task ids here
         #####RETROCOMPATIBILIY
-        #NOTE: retrocompatibility. We convert "filename" to "path"
-        #      and we forget about "filename"
+        #NOTE: retrocompatibility from the 0.2 series to 0.3.
+        # We convert "filename" to "path and we forget about "filename "
         if "need_conversion" in parameters:
             parameters["path"] = os.path.join(self.DEFAULT_PATH, \
                                         parameters["need_conversion"])
@@ -99,24 +110,30 @@ class Backend(GenericBackend):
                                 self._parameters["path"], "project")
 
     def initialize(self):
+        """This is called when a backend is enabled"""
         super(Backend, self).initialize()
         self.doc, self.xmlproj = cleanxml.openxmlfile( \
                                 self._parameters["path"], "project")
 
     def this_is_the_first_run(self, xml):
-        #Create the default tasks for the first run.
-        #We write the XML object in a file
+        """
+        Called upon the very first GTG startup.
+        This function is needed only in this backend, because it can be used as
+        default one.
+        The xml parameter is an object containing GTG default tasks. It will be
+        saved to a file, and the backend will be set as default.
+        @param xml: an xml object containing the default tasks.
+        """
         self._parameters[self.KEY_DEFAULT_BACKEND] = True
         cleanxml.savexml(self._parameters["path"], xml)
         self.doc, self.xmlproj = cleanxml.openxmlfile(\
                         self._parameters["path"], "project")
-        self._parameters[self.KEY_DEFAULT_BACKEND] = True
 
     def start_get_tasks(self):
         '''
-        Once this function is launched, the backend can start pushing
-        tasks to gtg parameters.
-        
+        This function starts submitting the tasks from the XML file into GTG core.
+        It's run as a separate thread.
+                
         @return: start_get_tasks() might not return or finish
         '''
         tid_list = []
@@ -130,52 +147,63 @@ class Backend(GenericBackend):
                 self.datastore.push_task(task)
 
     def set_task(self, task):
-            tid = task.get_id()
-            existing = None
-            #First, we find the existing task from the treenode
-            for node in self.xmlproj.childNodes:
-                if node.getAttribute("id") == tid:
-                    existing = node
-            t_xml = taskxml.task_to_xml(self.doc, task)
-            modified = False
-            #We then replace the existing node
-            if existing and t_xml:
-                #We will write only if the task has changed
-                if t_xml.toxml() != existing.toxml():
-                    self.xmlproj.replaceChild(t_xml, existing)
-                    modified = True
-            #If the node doesn't exist, we create it
-            # (it might not be the case in all backends
-            else:
-                self.xmlproj.appendChild(t_xml)
-                modified = True
-            #In this particular backend, we write all the tasks
-            #This is inherent to the XML file backend
-            if modified and self._parameters["path"] and self.doc :
-                cleanxml.savexml(self._parameters["path"], self.doc)
+        '''
+        This function is called from GTG core whenever a task should be
+        saved, either because it's a new one or it has been modified.
+        This function will look into the loaded XML object if the task is
+        present, and if it's not, it will create it. Then, it will save the
+        task data in the XML object.
 
-    def remove_task(self, tid):
-        ''' Completely remove the task with ID = tid '''
+        @param task: the task object to save
+        '''
+        tid = task.get_id()
+        #We create an XML representation of the task
+        t_xml = taskxml.task_to_xml(self.doc, task)
+
+        #we find if the task exists in the XML treenode.
+        existing = None
         for node in self.xmlproj.childNodes:
             if node.getAttribute("id") == tid:
+                existing = node
+
+        modified = False
+        #We then replace the existing node
+        if existing and t_xml:
+            #We will write only if the task has changed
+            if t_xml.toxml() != existing.toxml():
+                self.xmlproj.replaceChild(t_xml, existing)
+                modified = True
+        #If the node doesn't exist, we create it
+        else:
+            self.xmlproj.appendChild(t_xml)
+            modified = True
+
+        #if the XML object has changed, we save it to file
+        if modified and self._parameters["path"] and self.doc :
+            cleanxml.savexml(self._parameters["path"], self.doc)
+
+    def remove_task(self, tid):
+        ''' This function is called from GTG core whenever a task must be
+        removed from the backend. Note that the task could be not present here.
+        
+        @param tid: the id of the task to delete
+        '''
+        modified = False
+        for node in self.xmlproj.childNodes:
+            if node.getAttribute("id") == tid:
+                modified = True
                 self.xmlproj.removeChild(node)
                 if tid in self.tids:
                     self.tids.remove(tid)
-        cleanxml.savexml(self._parameters["path"], self.doc)
 
+        #We save the XML file only if it's necessary
+        if modified:
+            cleanxml.savexml(self._parameters["path"], self.doc)
 
-    def quit(self, disable = False):
-        '''
-        Called when GTG quits or disconnects the backend.
-        '''
-        super(Backend, self).quit(disable)
-
-    def save_state(self):
-        cleanxml.savexml(self._parameters["path"], self.doc, backup=True)
-
-    def get_number_of_tasks(self):
-        '''
-        Returns the number of tasks stored in the backend. Doesn't need to be a
-        fast function, is called just for the UI
-        '''
-        return len(self.tids)
+#NOTE: This is not used currently. Therefore, I'm disabling it (invernizzi)
+#    def get_number_of_tasks(self):
+#        '''
+#        Returns the number of tasks stored in the backend. Doesn't need to be a
+#        fast function, is called just for the UI
+#        '''
+#        return len(self.tids)

@@ -34,7 +34,7 @@ class TestApiDocs(unittest.TestCase):
 
     
     def test_pydoctor(self):
-        if int(subprocess.call(['which', 'pydoctor'])):
+        if int(subprocess.call(['which', 'pydoctor'], stdout = subprocess.PIPE)):
             #if no pydoctor is present, abort the test w/out giving error
             return
         GTG_basedir = os.path.dirname(GTG.__file__)
@@ -46,7 +46,10 @@ class TestApiDocs(unittest.TestCase):
                 '--html-output=' + api_dir , 
                 '--project-name=GTG',
                 '--project-url=http://gtg.fritalk.com/']
-        assert(int(subprocess.call(args)) == 0)
+        #we suppress printing of errors to keep a clean output
+        assert(int(subprocess.call(args,
+                                   stdout = subprocess.PIPE,
+                                   stderr = subprocess.PIPE,)) == 0)
         shutil.rmtree(api_dir)
 
 def test_suite():

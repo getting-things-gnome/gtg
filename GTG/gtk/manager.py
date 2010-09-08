@@ -39,10 +39,12 @@ from GTG.tools               import clipboard
 from GTG.core.plugins.engine import PluginEngine
 from GTG.core.plugins.api    import PluginAPI
 from GTG.tools.logger        import Log
+from GTG.gtk.backends_dialog import BackendsDialog
+from GTG.backends.backendsignals import BackendSignals
 
 
 
-class Manager:
+class Manager(object):
     
 
     ############## init #####################################################
@@ -58,21 +60,19 @@ class Manager:
                                  # right now
                                  
         self.browser = None
-        self.pengine = None
-        self.plugins = None
-        self.plugin_api = None
-        self.p_apis = []
+        self.__start_browser_hidden = False
+        self.gtk_terminate = False #if true, the gtk main is not started
                                  
         #Shared clipboard
         self.clipboard = clipboard.TaskClipboard(self.req)
+
+        #Browser (still hidden)
+        self.browser = TaskBrowser(self.req, self, self.config)
         
-        #Browser
-        #FIXME : the browser should not be built by default and should be a 
-        # window like another and not necessary (like the editor)
-        self.open_browser()
-        
-        #Plugins (that needs to be after the browser, this is ugly)
         self.__init_plugin_engine()
+        
+        if not self.__start_browser_hidden:
+            self.show_browser()
         
         #Deletion UI
         self.delete_dialog = None
@@ -80,47 +80,26 @@ class Manager:
         #Preferences and Backends windows
         # Initialize  dialogs
         self.preferences_dialog = None
+        self.edit_backends_dialog = None
         
         #DBus
         DBusTaskWrapper(self.req, self)
         Log.debug("Manager initialization finished")
         
     def __init_plugin_engine(self):
-        #FIXME : the plugin engine should not require the browser.
-        # It should be the browser that need the plugin engine
-        # plugins - Init
         self.pengine = PluginEngine(GTG.PLUGIN_DIR)
-        # loads the plugins in the plugin dir
-        self.plugins = self.pengine.load_plugins()
         # initializes the plugin api class
-        self.plugin_api = PluginAPI(window         = self.browser.window,
-                                    config         = self.config,
-                                    data_dir = self.config_obj.get_data_dir(),
-                                    builder        = self.browser.builder,
-                                    requester      = self.req,
-                                    tagpopup       = self.browser.tagpopup,
-                                    tagview        = self.browser.tags_tv,
-                                    task           = None,
-                                    texteditor     = None,
-                                    quick_add_cbs  = self.browser.priv['quick_add_cbs'],
-                                    view_manager   = self)
-        self.p_apis.append(self.plugin_api)
-        # enable some plugins
-        if len(self.pengine.plugins) > 0:
-            # checks the conf for user settings
-            if "plugins" in self.config:
-                if "enabled" in self.config["plugins"]:
-                    plugins_enabled = self.config["plugins"]["enabled"]
-                if "disabled" in self.config["plugins"]:
-                    plugins_disabled = self.config["plugins"]["disabled"]
-                for name, plugin in self.pengine.plugins.iteritems():
-                    if name in plugins_enabled and name not in plugins_disabled:
-                        plugin.enabled = True
-                    else:
-                        # plugins not explicitly enabled are disabled
-                        plugin.enabled = False
+        self.plugin_api = PluginAPI(self.req, self)
+        self.pengine.register_api(self.plugin_api)
+        # checks the conf for user settings
+        try:
+            plugins_enabled = self.config["plugins"]["enabled"]
+        except KeyError:
+            plugins_enabled = []
+        for plugin in self.pengine.get_plugins():
+            plugin.enabled = plugin.module_name in plugins_enabled
         # initializes and activates each plugin (that is enabled)
-        self.pengine.activate_plugins(self.p_apis)
+        self.pengine.activate_plugins()
         
     ############## Browser #################################################
 
@@ -136,6 +115,8 @@ class Manager:
     # "stay_alive view" is closed (and then unregistered).
     # Currently, the browser is our only "stay_alive" view.
     def close_browser(self,sender=None):
+        self.hide_browser()
+        #may take a while to quit
         self.quit()
 
     def hide_browser(self,sender=None):
@@ -150,8 +131,21 @@ class Manager:
     def is_browser_visible(self,sender=None):
         return self.browser.is_visible()
 
+    def get_browser(self):
+        #used by the plugin api to hook in the browser
+        return self.browser
+
+    def start_browser_hidden(self):
+        self.__start_browser_hidden = True
+
 ################# Task Editor ############################################
 
+    def get_opened_editors(self):
+        '''
+        Returns a dict of task_uid -> TaskEditor, one for each opened editor
+        window
+        '''
+        return self.opened_task
 
     def open_task(self, uid,thisisnew = False):
         """Open the task identified by 'uid'.
@@ -169,9 +163,7 @@ class Manager:
                 requester = self.req, \
                 vmanager = self, \
                 task = t, \
-                plugins = self.plugins, \
                 taskconfig = self.task_config, \
-                plugin_apis = self.p_apis, \
                 thisisnew = thisisnew,\
                 clipboard = self.clipboard)
             #registering as opened
@@ -190,16 +182,33 @@ class Manager:
                 #else, it close_task would be called once again 
                 #by editor.close
                 editor.close()
-#        else:
-            #FIXME: this one should be a debug statement
-#            print "the %s editor was already unregistered" %tid
+        self.check_quit_condition()
+
+    def check_quit_condition(self):
+        '''
+        checking if we need to shut down the whole GTG (if no window is open)
+        '''
+        if not self.is_browser_visible() and not self.opened_task:
+            #no need to live
+            print "AAAAAAAAAAA"
+            self.quit()
+        print self.opened_task
             
 ################ Others dialog ############################################
 
+    def open_edit_backends(self, sender = None, backend_id = None):
+        if not self.edit_backends_dialog:
+            self.edit_backends_dialog = BackendsDialog(self.req)
+        self.edit_backends_dialog.activate()
+        if backend_id != None:
+            self.edit_backends_dialog.show_config_for_backend(backend_id)
+
+    def configure_backend(self, backend_id):
+        self.open_edit_backends(None, backend_id)
+
     def open_preferences(self, config_priv, sender=None):
         if not hasattr(self, "preferences"):
-            self.preferences = PreferencesDialog(self.pengine, self.p_apis, \
-                    self.config_obj)
+            self.preferences = PreferencesDialog(self.config_obj)
         self.preferences.activate(config_priv)
         
     def ask_delete_tasks(self, tids):
@@ -209,16 +218,39 @@ class Manager:
             for t in tids:
                 if t in self.opened_task:
                     self.close_task(t)
+
+### URIS ###################################################################
+
+    def open_uri_list(self, unused, uri_list):
+        '''
+        Open the Editor windows of the tasks associated with the uris given.
+        Uris are of the form gtg://<taskid>
+        '''
+        print self.req.get_all_tasks_list()
+        for uri in uri_list:
+            if uri.startswith("gtg://"):
+                self.open_task(uri[6:])
+        #if no window was opened, we just quit
+        self.check_quit_condition()
+
             
 ### MAIN ###################################################################
-    def main(self, once_thru=False):
-        gobject.threads_init()
-        if once_thru:
-            gtk.main_iteration()
+    def main(self, once_thru = False,  uri_list = []):
+        if uri_list:
+            #before opening the requested tasks, we make sure that all of them
+            #are loaded.
+            BackendSignals().connect('default-backend-loaded',
+                                     self.open_uri_list,
+                                     uri_list)
         else:
-            gtk.main()
+            self.open_browser()
+        gobject.threads_init()
+        if not self.gtk_terminate:
+            if once_thru:
+                gtk.main_iteration()
+            else:
+                gtk.main()
         return 0
-        
         
     def quit(self,sender=None):
         gtk.main_quit()
@@ -230,12 +262,13 @@ class Manager:
         self.config["browser"]["opened_tasks"] = open_task
         
         # adds the plugin settings to the conf
+        #FIXME: this code is replicated in the preference window.
         if len(self.pengine.plugins) > 0:
             self.config["plugins"] = {}
             self.config["plugins"]["disabled"] = \
-              self.pengine.disabled_plugins().keys()
+              [p.module_name for p in self.pengine.get_plugins("disabled")]
             self.config["plugins"]["enabled"] = \
-              self.pengine.enabled_plugins().keys()
+              [p.module_name for p in self.pengine.get_plugins("enabled")]
         # plugins are deactivated
-        self.pengine.deactivate_plugins(self.p_apis)
+        self.pengine.deactivate_plugins()
 

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Gettings Things Gnome! - a personal organizer for the GNOME desktop
+# Getting Things Gnome! - a personal organizer for the GNOME desktop
 # Copyright (c) 2008-2009 - Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
@@ -89,18 +89,10 @@ class TestDatastore(unittest.TestCase):
         '''
         Tests the get_task function
         '''
-        self.assertEqual(self.datastore.get_task(str(uuid.uuid4())), None)
         task = self.datastore.new_task()
         self.assertTrue(isinstance(self.datastore.get_task(task.get_id()),
                                    GTG.core.task.Task))
         self.assertEqual(self.datastore.get_task(task.get_id()), task)
-
-    def test_get_tagstore(self):
-        '''
-        Tests the get_tagstore function
-        '''
-        tagstore = self.datastore.get_tagstore()
-        self.assertTrue(isinstance(tagstore, GTG.core.tagstore.TagStore))
 
     def test_get_requester(self):
         '''
@@ -114,7 +106,7 @@ class TestDatastore(unittest.TestCase):
         Tests the get_tasks_tree function
         '''
         tasks_tree = self.datastore.get_tasks_tree()
-        self.assertTrue(isinstance(tasks_tree, GTG.core.tree.Tree))
+        self.assertTrue(isinstance(tasks_tree, GTG.tools.liblarch.Tree))
 
     def test_push_task(self):
         '''
@@ -207,8 +199,10 @@ class TestDatastore(unittest.TestCase):
         #disabling an enabled backend
         self.datastore.set_backend_enabled(enabled_backend.get_id(), False)
         self.assertEqual(enabled_backend.fake_get_initialized_count(), 1)
+        countdown = 10
+        while countdown >= 0 and enabled_backend.is_enabled():
+            time.sleep(0.1)
         self.assertFalse(enabled_backend.is_enabled())
-        time.sleep(1)
 #        #enabling a disabled backend
 #        self.datastore.set_backend_enabled(disabled_backend.get_id(), True)
 #        self.assertEqual(disabled_backend.fake_get_initialized_count(), 1)
@@ -228,14 +222,16 @@ class TestDatastore(unittest.TestCase):
                                 GenericBackend.KEY_DEFAULT_BACKEND: False})
         #removing an enabled backend
         self.datastore.remove_backend(enabled_backend.get_id())
+        #waiting
+        countdown = 10
+        while countdown >= 0 and enabled_backend.is_enabled():
+            time.sleep(0.1)
         self.assertFalse(enabled_backend.is_enabled())
-        self.assertTrue(enabled_backend.fake_is_purged())
         self.assertEqual( \
             len(self.datastore.get_all_backends(disabled=True)), 1)
         #removing a disabled backend
         self.datastore.remove_backend(disabled_backend.get_id())
         self.assertFalse(disabled_backend.is_enabled())
-        self.assertTrue(disabled_backend.fake_is_purged())
         self.assertEqual( \
             len(self.datastore.get_all_backends(disabled=True)), 0)
 
@@ -320,9 +316,6 @@ class FakeBackend(unittest.TestCase):
     def quit(self, disabled=False):
         self.enabled = not disabled
 
-    def purge(self):
-        self.purged = True
-
     def is_default(self):
         return True
 
@@ -349,5 +342,3 @@ class FakeBackend(unittest.TestCase):
     def fake_add_random_task(self):
         self.tasks_ids.append(str(uuid.uuid4()))
 
-    def fake_is_purged(self):
-        return self.purged
