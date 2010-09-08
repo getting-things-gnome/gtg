@@ -409,7 +409,12 @@ class TaskEditor:
         
         self.__opened_date = data
         if self.__opened_date == "due" :
+            #we open a calendar that's pointed on:
+            #    the due date, the start date (if due is not set), or today
+            #    (which is the default)
             toset = self.task.get_due_date()
+            if not toset or self.task.get_start_date() > toset:
+                toset = self.task.get_start_date()
             self.calendar_fuzzydate_btns.show()
         elif self.__opened_date == "start" :
             toset = self.task.get_start_date()
