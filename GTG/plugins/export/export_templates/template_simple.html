@@ -71,16 +71,22 @@ For a more advanced usage of templates, scroll down to the end of this document
 
 ~~Luca Invernizzi: <invernizzi.l@gmail.com> ~~
 -->
+#from GTG.gtk.colors import get_colored_tag_markup
+
 <html>
     <head>
         <title> Things to do </title>
         <meta http-equiv="content-type" content="text/html; charset=UTF-8" >
+        <style type="text/css">
+            ul{list-style-type: square;}
+        </style>
 
     </head>
     <body>
 
         <ul>
-            #for $task in $tasks$task_template($task)
+            #for $task in $tasks
+                $task_template($task)
             #end for
 
         </ul>
@@ -94,7 +100,7 @@ For a more advanced usage of templates, scroll down to the end of this document
                     #if $task.has_tags
                     (#slurp 
                         #for $tag in $task.tags:
-                            $tag #slurp
+                            $get_colored_tag_markup($plugin_api.get_requester(), $tag, True) #slurp
                         #end for
                         )#slurp
                     #end if
@@ -125,6 +131,7 @@ For a more advanced usage of templates, scroll down to the end of this document
 ## just take it out
 #import re
 #def remove_html_tags($data):
+    #return $data
     ##Removing subtask anchor points
     #set $p = $re.compile(r'^.*<subtask>[0-9]*@[0-9]*</subtask>.*$',$re.MULTILINE)
     #set $data = $p.sub('', $data)
@@ -152,7 +159,7 @@ To see this code working, delete the "##" at the beginning of each line
 and take it out of the html comment
 
 
-##  #for $tag in $plugin_api.get_requester().get_all_tags()
+##  #for $tag in $plugin_api.get_requester().get_tag_tree().get_all_nodes()
 ##      $tag.get_name()
 ##  #end for
 
