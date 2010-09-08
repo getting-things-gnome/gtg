@@ -1168,32 +1168,32 @@ class TestLibLarch(unittest.TestCase):
         Performance tests. Patches that reduce performance too much are not
         acceptable
         '''
+        BIG_NUMBER = 200
         view = self.tree.get_viewtree(refresh = False)
         test = TreeTester(view)
-        calls = [(self.tree.add_node, "ADDING"),
-                 (self.tree.refresh_node, "UPDATING"),
-                 (self.tree.del_node, "REMOVING")]
-        for call, name in calls:
-            start = time.time()
-            for index in xrange(2000):
-                node = DummyNode("stress" + str(index))
-                call(node)
-            end = time.time()
-            test.test_validity()
-            if call != self.tree.del_node:
-                #the stress0 node is in the view(per the following assert),
-                # but accessing the view from the tree says it's not there.
-                # If you comment the try-except statement, liblarch
-                # complains that it can't remove a node which hasn't
-                # been added.
-                self.assertTrue(view.is_displayed('stress0'))
-                try:
-                     self.tree.get_main_view().get_node("stress0")
-                except Exception, e:
-                    #we let the test continue even if the node is not found
-                    print e
-            print "\n%s 2000 NODES: %f" % (name, end - start)
+        nodes_id = []
+        start = time.time()
+        for index in xrange(BIG_NUMBER):
+            node = DummyNode("stress" + str(index))
+            nodes_id.append(node.get_id())
+            self.tree.add_node(node)
+        end = time.time()
+        test.test_validity()
+        print "\nADDING %d NODES: %f" % (BIG_NUMBER, end - start)
 
+        start = time.time()
+        for node_id in nodes_id:
+            self.tree.refresh_node(node_id)
+        end = time.time()
+        test.test_validity()
+        print "\nUPDATING %d NODES: %f" % (BIG_NUMBER, end - start)
+
+        start = time.time()
+        for node_id in nodes_id:
+            self.tree.del_node(node_id)
+        end = time.time()
+        test.test_validity()
+        print "\nDELETING %d NODES: %f" % (BIG_NUMBER, end - start)
         
 def test_suite():
     return unittest.TestLoader().loadTestsFromName(__name__)
