@@ -19,11 +19,14 @@ import glob
 import os.path
 from xdg.BaseDirectory import xdg_config_home
 
+from GTG.tools.borg import Borg
 
 
-class TemplateFactory(object):
+
+class TemplateFactory(Borg):
     '''
-    A stateless Factory which provides an easy access to the templates.
+    A Factory which provides an easy access to the templates. It caches
+    templates for the sake of speed.
     '''
 
 
@@ -32,6 +35,14 @@ class TemplateFactory(object):
                          "gtg/plugins/export/export_templates"),
             os.path.join(os.path.dirname(os.path.abspath(__file__)),
                          "export_templates/")]
+
+    def __init__(self):
+        super(TemplateFactory, self).__init__()
+        if hasattr(self, "_cache"):
+            #The borg has already been initialized
+            return
+        self._cache = {}
+
     @classmethod
     def get_templates_paths(cls):
         '''
@@ -43,11 +54,12 @@ class TemplateFactory(object):
             template_list += glob.glob(os.path.join(a_dir, "template_*"))
         return template_list
 
-    @classmethod
-    def create_template(cls, path):
+    def create_template(self, path):
         if not path:
             return None
-        return Template(path)
+        if not path in self._cache:
+            self._cache[path] = Template(path)
+        return self._cache[path]
 
 
 
@@ -58,8 +70,28 @@ class Template(object):
         self.__template_path = path
         self.__image_path = self.__find_template_file(path, "thumbnail_")
         self.__script_path = self.__find_template_file(path, "script_")
-        self.__description_path = \
+        self.__description = ""
+        self.__title = ""
+        description_path = \
                 self.__find_template_file(path, "description_", ".py")
+        if description_path:
+            #template description are stored in python module for easier l10n.
+            #thus, we need to import the module given its path
+            directory_path= os.path.dirname(description_path)
+            if directory_path not in sys.path:
+                sys.path.append(directory_path)
+            module_name = os.path.basename(\
+                            description_path).replace(".py", "")
+            try:
+                module = __import__(module_name,
+                                    globals(),
+                                    locals(),
+                                    ['description'],
+                                    0)
+                self.__description =  module.description
+                self.__title =  module.title
+            except (ImportError, AttributeError):
+                pass
 
     @classmethod
     def __find_template_file(cls, path,  prefix, suffix = ""):
@@ -87,22 +119,7 @@ class Template(object):
         return self.__template_path[self.__template_path.rindex(".") +1 :]
 
     def get_description(self):
-        if self.__description_path:
-            #Template description are stored in python module for easier l10n.
-            #Thus, we need to import the module given its path
-            directory_path= os.path.dirname(self.__description_path)
-            if directory_path not in sys.path:
-                sys.path.append(directory_path)
-            module_name = os.path.basename(\
-                            self.__description_path).replace(".py", "")
-            try:
-                module = __import__(module_name,
-                                    globals(),
-                                    locals(),
-                                    ['description'],
-                                    0)
-                return module.description
-            except (ImportError, AttributeError):
-                pass
-        return ""
+        return self.__description
 
+    def get_title(self):
+        return self.__title

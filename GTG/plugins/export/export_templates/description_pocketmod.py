@@ -15,6 +15,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from GTG import _
+title = _("Foldable booklet (PDF)")
 description = _("A template to create a <a"
                 " href=\"http://www.pocketmod.com\">PocketMod</a>, which is a "
                 " small foldable booklet.")
