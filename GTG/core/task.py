@@ -29,14 +29,12 @@ import xml.sax.saxutils as saxutils
 import gobject
 
 import GTG
-from GTG              import _
-from GTG.tools.dates  import date_today, no_date, Date
-from datetime         import datetime
-from GTG.tools.liblarch.tree    import TreeNode
-from GTG.tools.logger import Log
-from GTG.tools.dates             import no_date,\
-                                        FuzzyDate, \
-                                        get_canonical_date
+from GTG                     import _
+from GTG.tools.dates         import date_today, no_date, Date
+from datetime                import datetime
+from GTG.tools.liblarch.tree import TreeNode
+from GTG.tools.logger        import Log
+from GTG.tools.dates         import no_date, get_canonical_date
 
 
 class Task(TreeNode):
@@ -52,7 +50,8 @@ class Task(TreeNode):
         TreeNode.__init__(self, ze_id)
         #the id of this task in the project should be set
         #tid is a string ! (we have to choose a type and stick to it)
-        self.tid = str(ze_id)
+        assert(isinstance(ze_id, str))
+        self.tid = ze_id
         self.set_uuid(uuid.uuid4())
         self.remote_ids = {}
         self.content = ""
@@ -68,6 +67,7 @@ class Task(TreeNode):
         # tags
         self.tags = []
         self.req = requester
+        self.__main_treeview = requester.get_main_view()
         #If we don't have a newtask, we will have to load it.
         self.loaded = newtask
         #Should not be necessary with the new backends
@@ -417,20 +417,15 @@ class Task(TreeNode):
         else:
             return False
 
-
-    #FIXME : remove this method
     def get_subtasks(self):
-#        print "Deprecation Warning : use get_children instead of get_subtasks"
-        #XXX: is this useful?
-        zelist = []
-        for i in self.get_children():
-            t = self.req.get_task(i)
-            if t:
-                zelist.append(t)
-        return zelist
-        
-    #FIXME : why is this function used ? It's higly specific. Remove it ?
+        return [self.get_child(nid) for nid in \
+                self.__main_treeview.node_all_children(self.get_id())]
+
+    #FIXME : why is this function used ? It's higly specific. Remove it?
+    #        (Lionel)
+    #Agreed. it's only used by the "add tag to all subtasks" widget.
     def get_self_and_all_subtasks(self, active_only=False, tasks=[]):
+        print "DEPRECATED FUNCTION: get_self_and_all_subtasks"
         tasks.append(self)
         for tid in self.get_children():
             i = self.req.get_task(tid)
@@ -446,33 +441,6 @@ class Task(TreeNode):
         @param tid: the ID of the task to return.
         """
         return self.req.get_task(tid)
-
-    ### PARENTS ##############################################################
-
-#   Not necessary anymore with liblarch
-#    #Take a tid object as parameter
-#    def add_parent(self, parent_tid):
-#        #FIXME : the sync should be automatically done
-#        #at the tree level. remove this function
-#        Log.debug("adding parent %s to task %s" %(parent_tid, self.get_id()))
-#        added = TreeNode.add_parent(self, parent_tid)
-#        if added:
-#            self.sync()
-#            #the parent is handled by the sync
-##            self.req.get_task(parent_tid).sync()
-#            return True
-#        else:
-#            return False
-
-#    #Take a tid as parameter
-#    def remove_parent(self, tid):
-#        #FIXME : the sync should be automatically done
-#        #at the tree level. remove this function
-#        TreeNode.remove_parent(self,tid)
-#        self.sync()
-#        parent = self.req.get_task(tid)
-#        if parent:
-#            parent.sync()
 
     #Return true is the task has parent
     #If tag is provided, return True only

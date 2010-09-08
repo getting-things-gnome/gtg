@@ -342,7 +342,10 @@ class FilteredTree():
     
     def node_all_children(self,tid):
         if tid:
-            toreturn = self.cache_nodes[tid]['children']
+            try:
+                toreturn = self.cache_nodes[tid]['children']
+            except KeyError:
+                toreturn = []
         else:
             #We consider the root node.
             toreturn = list(self.cache_vr)

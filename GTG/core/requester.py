@@ -69,6 +69,9 @@ class Requester(gobject.GObject):
     # By default, we return the task tree of the main window
     def get_tasks_tree(self,name='active',refresh=True):
         return self.__basetree.get_viewtree(name=name,refresh=refresh)
+
+    def get_main_view(self):
+        return self.__basetree.get_main_view()
         
     # This is a FilteredTree that you have to handle yourself.
     # You can apply/unapply filters on it as you wish.
