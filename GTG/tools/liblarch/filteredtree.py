@@ -401,12 +401,20 @@ class FilteredTree():
                         filt = self.fbank.get_filter(f)
                         if filt:
                             result = result and filt.is_displayed(tid)
+                            print "%s is displayed for filter %s : %s" %(tid,f,result)
+                        else:
+                            result = False
+                            #There's a problem here !
+                            #what do we do when the filter doesn't exist yet ?
+#                            raise Exception("why is there no filter %s?" %f)
                     if result:
                         toreturn += 1
                 if COUNT_CACHING_ENABLED and usecache:
                     self.count_cache[key] = toreturn
         else:
             toreturn = len(zelist)
+#        print "get_n_nodes with filters %s = %s" %(withfilters,toreturn)
+#        print self.count_cache, self.counted_nodes
         return toreturn
         
         

@@ -333,22 +333,14 @@ class Tag(TreeNode):
         tree = self.req.get_tasks_tree(name='active')
         count = self.__get_count(tasktree=tree)
 #        print "%s has %s tasks, not %s" %(self.get_name(),count,count)
-        #This is a try at a very ugly workaround
-#        if count != self._tasks_count:
-#            self._tasks_count = count
-#            self.modified()
-#        if count != count2:
-#            raise ValueError
         return count
         
     def get_total_tasks_count(self):
         return self.__get_count()
         
-    def __get_count(self,filters=[],tasktree=None):
+    def __get_count(self,tasktree=None):
         if not tasktree:
             tasktree = self.req.get_tasks_tree()
-        for f in filters:
-            tasktree.apply_filter(f)
         sp_id = self.get_attribute("special")
         if sp_id == "all":
             toreturn = tasktree.get_n_nodes(\

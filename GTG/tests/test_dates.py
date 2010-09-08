@@ -24,6 +24,7 @@ Tests for the various Date classes
 import unittest
 
 from GTG.tools.dates import get_canonical_date
+from GTG import _
 
 class TestDates(unittest.TestCase):
     '''
@@ -34,9 +35,11 @@ class TestDates(unittest.TestCase):
         '''
         Tests for "get_canonical_date"
         '''
-        for str in ["1985-03-29", "now", "soon", "later", ""]:
-            date = get_canonical_date(str)
-            self.assertEqual(date.__str__(), str)
+        known_values = (("1985-03-29", "1985-03-29"), ("now", _("now")),
+                        ("soon", _("soon")), ("later", _("later"), ("", ""))
+        for value, result in known_values:
+            date = get_canonical_date(value)
+            self.assertEqual(date.__str__(), result)
 
 def test_suite():
     return unittest.TestLoader().loadTestsFromTestCase(TestDates)

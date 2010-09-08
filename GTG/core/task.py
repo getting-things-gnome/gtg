@@ -611,20 +611,22 @@ class Task(TreeNode):
     #return true if at least one of the list is in the task
     def has_tags(self, tag_list=None, notag_only=False):
         #We want to see if the task has no tags
+        toreturn = False
         if notag_only:
-            return self.tags == []
+            toreturn = self.tags == []
         #Here, the user ask for the "empty" tag
         #And virtually every task has it.
         elif tag_list == [] or tag_list == None:
-            return True
+            toreturn = True
         elif tag_list:
             for tag in tag_list:
                 if tag in self.tags:
-                    return True
+                    toreturn = True
         else:
             #Well, if we don't filter on tags or notag, it's true, of course
-            return True
-        return False
+            toreturn = True
+        print "task %s has tag %s : %s" %(self.get_id(),tag_list,toreturn)
+        return toreturn
 
     #return the color of one tag that have a color defined
     #Yes, the choosen color is a bit random in case of multiple colored tags

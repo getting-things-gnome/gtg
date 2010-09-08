@@ -120,9 +120,9 @@ class DataStore(object):
         with corresponding name"""
         def adding_tag(tname,tag):
             if not self.__tagstore.has_node(tname):
-                self.__tagstore.add_node(tag)
                 p = {'tag':tname,'transparent':True}
                 self.__tasks.add_filter(tname,self.treefactory.tag_filter,parameters=p)
+                self.__tagstore.add_node(tag)
                 tag.set_save_callback(self.save)
                 self.added_tag.pop(tname)
                 Log.debug("********* tag added %s *******" % tname)

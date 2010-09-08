@@ -202,7 +202,7 @@ class PluginEngine(Borg):
 
     def activate_plugins(self, plugins=[]):
         """Activate plugins."""
-        assert(isinstance(plugins, list), True)
+        assert(isinstance(plugins, list))
         if not plugins:
             plugins = self.get_plugins("inactive")
         for plugin in plugins:
