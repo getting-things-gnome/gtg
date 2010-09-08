@@ -1,6 +1,7 @@
 [GTG Plugin]
 Module=import_json
 Name=Import from JSON
+Short-description="Imports tasks from JSON formatted files."
 Description='''Imports tasks from JSON formatted files.
 '''
 Authors=Bryce Harrington <bryce@canonical.com>

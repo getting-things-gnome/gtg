@@ -216,8 +216,8 @@ class geolocalizedTasks:
     def is_configurable(self):
         return True
     
-    def configure_dialog(self, plugin_api, manager_dialog):
-        self.on_geolocalized_preferences(plugin_api)
+    def configure_dialog(self,  manager_dialog):
+        self.on_geolocalized_preferences()
     
     def location_changed(self):
         # TODO: This should refresh the task ang tag list
@@ -285,12 +285,12 @@ class geolocalizedTasks:
     #                            self.plugin_api.add_task_to_filter(task.get_id())
                                 
     #=== GEOLOCALIZED PREFERENCES===================================================    
-    def on_geolocalized_preferences(self, plugin_apis):
+    def on_geolocalized_preferences(self):
         wTree = gtk.glade.XML(self.glade_file, "Preferences")
         dialog = wTree.get_widget("Preferences")
         dialog.connect("response", self.preferences_close)
-        for api in plugin_apis:
-            api.set_parent_window(dialog)
+        #for api in plugin_apis:
+        #    api.set_parent_window(dialog)
         
         check_network = wTree.get_widget("check_network")
         check_cellphone = wTree.get_widget("check_cellphone")

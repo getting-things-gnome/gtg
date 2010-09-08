@@ -37,13 +37,31 @@ class BackendSignals(Borg):
     ERRNO_DBUS = "Dbus interface cannot be connected"
 
     def __init__(self):
+        '''Checks that this is the only instance, and instantiates the
+        gobject'''
         super(BackendSignals, self).__init__()
         if  hasattr(self, "_gobject"):
             return
         self._gobject = _BackendSignalsGObject()
 
     def __getattr__(self, attr):
+        '''
+        From outside the class, there should be no difference between self's
+        attributes and self._gobject's attributes.
+        '''
+        if attr == "_gobject" and not "_gobject" in self.__dict__:
+            raise AttributeError
         return getattr(self._gobject, attr)
+
+
+def signal_type_factory(*args):
+    '''
+    Simply returns a gobject signal type
+
+    @returns tuple
+    '''
+    return (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, args)
+
 
 
 class _BackendSignalsGObject(gobject.GObject):
@@ -62,23 +80,22 @@ class _BackendSignalsGObject(gobject.GObject):
     BACKEND_FAILED = 'backend-failed' #something went wrong with a backend
     BACKEND_SYNC_STARTED = 'backend-sync-started'
     BACKEND_SYNC_ENDED = 'backend-sync-ended'
+    INTERACTION_REQUESTED = 'user-interaction-requested'
 
-    __string_signal__ = (gobject.SIGNAL_RUN_FIRST, \
-                     gobject.TYPE_NONE, (str, ))
-    __none_signal__   = (gobject.SIGNAL_RUN_FIRST, \
-                     gobject.TYPE_NONE, ( ))
-    __string_string_signal__ = (gobject.SIGNAL_RUN_FIRST, \
-                    gobject.TYPE_NONE, (str, str, ))
+    INTERACTION_CONFIRM = 'confirm'
+    INTERACTION_TEXT = 'text'
 
-    __gsignals__ = {BACKEND_STATE_TOGGLED : __string_signal__, \
-                    BACKEND_RENAMED       : __string_signal__, \
-                    BACKEND_ADDED         : __string_signal__, \
-                    BACKEND_REMOVED       : __string_signal__, \
-                    BACKEND_SYNC_STARTED  : __string_signal__, \
-                    BACKEND_SYNC_ENDED    : __string_signal__, \
-                    DEFAULT_BACKEND_LOADED: __none_signal__, \
-                    BACKEND_FAILED        : __string_string_signal__}
-
+    __gsignals__ = {BACKEND_STATE_TOGGLED : signal_type_factory(str), \
+                    BACKEND_RENAMED       : signal_type_factory(str), \
+                    BACKEND_ADDED         : signal_type_factory(str), \
+                    BACKEND_REMOVED       : signal_type_factory(str), \
+                    BACKEND_SYNC_STARTED  : signal_type_factory(str), \
+                    BACKEND_SYNC_ENDED    : signal_type_factory(str), \
+                    DEFAULT_BACKEND_LOADED: signal_type_factory(), \
+                    BACKEND_FAILED        : signal_type_factory(str, str), \
+                    INTERACTION_REQUESTED : signal_type_factory(str, str, \
+                                                                str,  str)}
+    
     def __init__(self):
         super(_BackendSignalsGObject, self).__init__()
         self.backends_currently_syncing = []
@@ -110,6 +127,11 @@ class _BackendSignalsGObject(gobject.GObject):
         gobject.idle_add(self.emit, self.BACKEND_FAILED, backend_id, \
                          error_code)
 
+    def interaction_requested(self, backend_id, description, \
+                              interaction_type, callback_str):
+        gobject.idle_add(self.emit, self.INTERACTION_REQUESTED, \
+                         backend_id, description, interaction_type, callback_str)
+
     def backend_sync_started(self, backend_id):
         self._emit_signal(self.BACKEND_SYNC_STARTED, backend_id)
         self.backends_currently_syncing.append(backend_id)
@@ -123,3 +145,4 @@ class _BackendSignalsGObject(gobject.GObject):
     
     def is_backend_syncing(self, backend_id):
         return backend_id in self.backends_currently_syncing
+

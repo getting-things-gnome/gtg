@@ -32,8 +32,8 @@ class TreeView(gtk.TreeView):
     __gsignals__ = {'node-expanded' : __string_signal__, \
                     'node-collapsed': __string_signal__, \
                     }
-                    
-                    
+
+
     def __emit(self,sender,iter,path,data=None):
         #don't ask me why but it seems that iter is not valid.
         #we will then retrieve another iter using the path
@@ -45,8 +45,8 @@ class TreeView(gtk.TreeView):
             elif data == 'collapsed':
                 self.emit('node-collapsed',nid)
         else:
-            print "sending %s for invalid iter %s" %(data,path) 
-            
+            print "sending %s for invalid iter %s" %(data,path)
+
     def show(self):
         gtk.TreeView.show(self)
         self.basetreemodel.connect_model()
@@ -57,7 +57,7 @@ class TreeView(gtk.TreeView):
         self.bg_color_func = None
         self.bg_color_column = None
         self.separator_func = None
-        
+
         self.basetree = tree
         #We build the model
         self.basetreemodel = TreeModel(tree)
@@ -69,7 +69,7 @@ class TreeView(gtk.TreeView):
         self.order_of_col = {}
         self.connect('row-expanded',self.__emit,'expanded')
         self.connect('row-collapsed',self.__emit,'collapsed')
-        
+
         #Building a list of ordered columns
         for col_name in description:
             last = 9999
@@ -80,7 +80,7 @@ class TreeView(gtk.TreeView):
                 order = last
                 last += 1
             self.order_of_col[order] = col_name
-            
+
         for col_nbr in sorted(self.order_of_col.keys()):
             col_name = self.order_of_col[col_nbr]
             desc = description[col_name]
@@ -91,7 +91,7 @@ class TreeView(gtk.TreeView):
             else:
                 newcol = False
             self.columns[col_name] = [col_nbr,col]
-            if desc.has_key('renderer'):    
+            if desc.has_key('renderer'):
                 renderer = desc["renderer"][1]
                 rend_attribute = desc["renderer"][0]
             else:
@@ -129,39 +129,39 @@ class TreeView(gtk.TreeView):
                     col.set_sort_column_id(col_nbr)
             if newcol:
                 self.append_column(col)
-        
+
         self.set_model(self.treemodel)
         self.show()
-        
+
     def get_columns(self):
         return self.columns.keys()
-        
+
     def set_main_search_column(self,col_name):
         sort_nbr = self.columns[col_name][0]
         self.set_search_column(sort_nbr)
-    
+
     def set_expander_column(self,col_name):
         col = self.columns[col_name][1]
         self.set_property("expander-column", col)
-        
+
     def set_col_resizable(self,col_name,resizable):
         self.columns[col_name][1].set_resizable(resizable)
-        
+
     def set_sort_column(self,col_name):
         if ENABLE_SORTING:
             self.treemodel.set_sort_column_id(self.columns[col_name][0],0)
-    
+
     def set_col_visible(self,col_name,visible):
         self.columns[col_name][1].set_visible(visible)
-        
+
     def set_bg_color(self,color_func,color_column):
         if self.columns.has_key(color_column):
             self.bg_color_column = self.columns[color_column][0]
             self.bg_color_func = color_func
         else:
             raise ValueError("There is no colum %s to use to set color"%color_column)
-            
-    
+
+
     #this is the GTK sorting function. It receive, as paramenter, a liblarch
     #sorting function which compares nid.
     def _sort_func(self, model, iter1, iter2, func=None):
@@ -190,7 +190,7 @@ class TreeView(gtk.TreeView):
                 if value:
                     col = self.bg_color_func(value, bgcolor)
         cell.set_property("cell-background", col)
-        
+
     def _separator_func(self, model, itera, user_data=None):
         if itera and model.iter_is_valid(itera):
             nid = model.get_value(itera, 0)
@@ -201,11 +201,11 @@ class TreeView(gtk.TreeView):
                 return False
         else:
             return False
-            
+
     def set_row_separator_func(self,func):
         self.separator_func = func
         gtk.TreeView.set_row_separator_func(self,self._separator_func)
-        
+
     def get_selected_nodes(self):
         ''' Return the selected nodes ID'''
         # Get the selection in the gtk.TreeView

@@ -66,7 +66,7 @@ def create_data_files():
                        ['data/icons/hicolor/scalable/apps/gtg.svg']))
     # misc
     data_files.append(('share/applications', ['gtg.desktop']))
-    data_files.append(('share/dbus-1/services', ['org.GTG.service']))
+    data_files.append(('share/dbus-1/services', ['org.gnome.GTG.service']))
     data_files.append(('share/man/man1', ['doc/gtg.1', 'doc/gtg_new_task.1']))
     return data_files
 

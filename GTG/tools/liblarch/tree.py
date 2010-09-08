@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Gettings Things Gnome! - a personal organizer for the GNOME desktop
+# Getting Things Gnome! - a personal organizer for the GNOME desktop
 # Copyright (c) 2008-2009 - Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
@@ -524,7 +524,7 @@ class TreeNode():
         if id :
             return id in self.children
         else:
-            return len(self.children) != 0
+            return bool(self.children)
 
     def get_children(self):
         if self.thread_protection:
@@ -612,6 +612,41 @@ class TreeNode():
             self.children.remove(id)
             if self.tree:
                 ret = self.tree.break_relationship(self.get_id(),id)
+                #The children list has been modified, so has been the paths
+                #for some node
+                while index < len(self.children):
+                    ###################################################
+                    ###################################################
+                    ###################################################
+                    ###################################################
+                    ###################################################
+                    ###################################################
+                    ###################################################
+                    ###################################################
+                    ###################################################
+                    ###################################################
+                    ###################################################
+                    ###################################################
+                    ###################################################
+                    ###################################################
+                    ###################################################
+                    ###################################################
+                    ###################################################
+                    ###################################################
+                    ###################################################
+                    ###################################################
+                    ###################################################
+                    ###################################################
+                    #SUPERULTRAWARNING!
+                    #Note: I think this is not necessary. This was lowering the
+                    #      performance for node removal badly (if the node had
+                    #      several other siblings after it.
+                    #      Not sure if it's right to avoid this, though
+                    #      (invernizzi)
+                    #
+                    break
+                    self.tree.modify_node(self.children[index])
+                    index += 1
                 
             return ret
         else:

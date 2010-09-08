@@ -24,6 +24,7 @@ import sys
 import unittest
 
 from GTG.tests import test_suite
+from GTG.tools.testingmode import TestingMode
 
 TEST_MODULE_PREFIX = "GTG.tests."
 
@@ -40,9 +41,11 @@ def main(args):
         print "./run_tests  [function_path ..] to run the selected " + \
               "functions as tests"
         return
-    if len(args) > 0:
+    if args:
         #if we have specified the name of the test in the command line
         suites = []
+        # fake modules that mimic the behaviour of external libraries ...
+        TestingMode().set_testing_mode(True)
         for arg in args:
             #each arg can be a module name (as test_liblarch), or a module name
             # "dot" a function name (as test_liblarch.test_something)

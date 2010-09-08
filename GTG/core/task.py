@@ -596,6 +596,8 @@ class Task(TreeNode):
             
             self.content = "<content><tag>%s</tag>%s%s</content>" % (
                 tagname, sep, c)
+            #we modify the task internal state, thus we have to call for a sync
+            self.sync()
 
     #remove by tagname
     def remove_tag(self, tagname):
@@ -610,7 +612,20 @@ class Task(TreeNode):
         if modified:
             tag = self.req.get_tag(tagname)
             tag.modified()
-                       
+    
+    def set_only_these_tags(self, tags_list):
+        '''
+        Given a list of strings representing tags, it makes sure that
+        this task has those and only those tags.
+        '''
+        for tag in self.get_tags_name():
+            try:
+                tags_list.remove(tag)
+            except:
+                self.remove_tag(tag)
+        for tag in tags_list:
+            self.add_tag(tag)
+
     def _strip_tag(self, text, tagname,newtag=''):
         return (text
                     .replace('<tag>%s</tag>\n\n'%(tagname), newtag) #trail \n

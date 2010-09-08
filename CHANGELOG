@@ -1,7 +1,14 @@
 ????-??-?? Getting Things GNOME! ?.?.?
+    * Fixed crash traceback when pressing 'delete' key, by Jeff Oliver
     * Added link to web documentation in Help menu, by Ronan Jouchet
     * Fixed bug with data consistency #579189, by Marko Kevac
     * Added samba bugzilla to the bugzilla plugin, by Jelmer Vernoij
+    * Fixed bug #532392, a start date is later than a due date, by Volodymyr Floreskul
+    * Extended backend system to support multiple backends by Luca Invernizzi
+    * support for gtg:// URIs by Luca Invernizzi
+    * Added utilities for complex backends by Luca Invernizzi
+    * Added a window to add/delete/edit backends by Luca Invernizzi
+    * New Tomboy/Gnote backend, by Luca Invernizzi
 
 2010-03-01 Getting Things GNOME! 0.2.2
     * Autostart on login, by Luca Invernizzi

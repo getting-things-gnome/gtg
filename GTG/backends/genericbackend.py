@@ -18,7 +18,8 @@
 # -----------------------------------------------------------------------------
 
 '''
-FIXME: document!
+This file contains the most generic representation of a backend, the
+GenericBackend class
 '''
 
 import os
@@ -29,69 +30,71 @@ import threading
 from collections import deque
 
 from GTG.backends.backendsignals import BackendSignals
-from GTG.tools.keyring import Keyring
-from GTG.core import CoreConfig
-from GTG.tools.logger import Log
-
+from GTG.tools.keyring           import Keyring
+from GTG.core                    import CoreConfig
+from GTG.tools.logger            import Log
+from GTG.tools.interruptible     import _cancellation_point
 
 
 
 class GenericBackend(object):
     '''
-    Base class for every backend. It's a little more than an interface which
-    methods have to be redefined in order for the backend to run.
+    Base class for every backend.
+    It defines the interface a backend must have and takes care of all the
+    operations common to all backends.
+    A particular backend should redefine all the methods marked as such.
     '''
 
 
-    #BACKEND TYPE DESCRIPTION
-    #"_general_description" is a dictionary that holds the values for the
-    # following keys:
-    BACKEND_NAME = "name" #the backend gtg internal name (doesn't change in
-                          # translations, *must be unique*)
-    BACKEND_HUMAN_NAME = "human-friendly-name" #The name shown to the user
-    BACKEND_DESCRIPTION = "description" #A short description of the backend
-    BACKEND_AUTHORS = "authors" #a list of strings
-    BACKEND_TYPE = "type"
-    #BACKEND_TYPE is one of:
-    TYPE_READWRITE = "readwrite"
-    TYPE_READONLY = "readonly"
-    TYPE_IMPORT = "import"
-    TYPE_EXPORT = "export"
+   ###########################################################################
+   ### BACKEND INTERFACE #####################################################
+   ###########################################################################
+
+    #General description of the backend: these parameters are used
+    #to show a description of the backend to the user when s/he is
+    #considering adding it.
+    # For an example, see the GTG/backends/backend_localfile.py file
+    #_general_description has this format:
+    #_general_description = {
+    #    GenericBackend.BACKEND_NAME:       "backend_unique_identifier", \
+    #    GenericBackend.BACKEND_HUMAN_NAME: _("Human friendly name"), \
+    #    GenericBackend.BACKEND_AUTHORS:    ["First author", \
+    #                                        "Chuck Norris"], \
+    #    GenericBackend.BACKEND_TYPE:       GenericBackend.TYPE_READWRITE, \
+    #    GenericBackend.BACKEND_DESCRIPTION: \
+    #        _("Short description of the backend"),\
+    #    }
+    # The complete list of constants and their meaning is given below.
     _general_description = {}
 
-
-    #"static_parameters" is a dictionary of dictionaries, each of which
-    #representing a parameter needed to configure the backend.
-    #each "sub-dictionary" is identified by this a key representing its name.
-    #"static_parameters" will be part of the definition of each
-    #particular backend.
-    # Each dictionary contains the keys:
-    #PARAM_DESCRIPTION = "description" #short description (shown to the user
-                                      # during configuration)
-    PARAM_DEFAULT_VALUE = "default_value" # its default value
-    PARAM_TYPE = "type"  
-    #PARAM_TYPE is one of the following (changing this changes the way
-    # the user can configure the parameter)
-    TYPE_PASSWORD = "password" #the real password is stored in the GNOME
-                               # keyring
-                               # This is just a key to find it there
-    TYPE_STRING = "string"  #generic string, nothing fancy is done
-    TYPE_INT = "int"  #edit box can contain only integers
-    TYPE_BOOL = "bool" #checkbox is shown
-    TYPE_LIST_OF_STRINGS = "liststring" #list of strings. the "," character is
-                                        # prohibited in strings
+    #These are the parameters to configure a new backend of this type. A
+    # parameter has a name, a type and a default value.
+    # For an example, see the GTG/backends/backend_localfile.py file
+    #_static_parameters has this format:
+    #_static_parameters = { \
+    #    "param1_name": { \
+    #        GenericBackend.PARAM_TYPE: GenericBackend.TYPE_STRING,
+    #        GenericBackend.PARAM_DEFAULT_VALUE: "my default value",
+    #    },
+    #    "param2_name": {
+    #        GenericBackend.PARAM_TYPE: GenericBackend.TYPE_INT,
+    #        GenericBackend.PARAM_DEFAULT_VALUE: 42,
+    #        }}
+    # The complete list of constants and their meaning is given below.
     _static_parameters = {}
 
     def initialize(self):
         '''
-        Called each time it is enabled again (including on backend creation).
+        Called each time it is enabled (including on backend creation).
         Please note that a class instance for each disabled backend *is*
         created, but it's not initialized. 
         Optional. 
         NOTE: make sure to call super().initialize()
         '''
-        for module_name in self.get_required_modules():
-            sys.modules[module_name]= __import__(module_name)
+        #NOTE: I'm disabling this since support for runtime checking of the
+        #        presence of the necessary modules is disabled. (invernizzi)
+#        for module_name in self.get_required_modules():
+#            sys.modules[module_name]= __import__(module_name)
         self._parameters[self.KEY_ENABLED] = True
         self._is_initialized = True
         #we signal that the backend has been enabled
@@ -99,65 +102,66 @@ class GenericBackend(object):
 
     def start_get_tasks(self):
         '''
-        Once this function is launched, the backend can start pushing
-        tasks to gtg parameters.
+        This function starts submitting the tasks from the backend into GTG
+        core.
+        It's run as a separate thread.
 
         @return: start_get_tasks() might not return or finish
         '''
-        raise NotImplemented()
+        return
 
     def set_task(self, task):
         '''
-        Save the task in the backend. If the task id is new for the 
-        backend, then a new task must be created.
+        This function is called from GTG core whenever a task should be
+        saved, either because it's a new one or it has been modified.
+        If the task id is new for the backend, then a new task must be
+        created. No special notification that the task is a new one is given.
+
+        @param task: the task object to save
         '''
         pass
 
     def remove_task(self, tid):
-        ''' Completely remove the task with ID = tid '''
+        ''' This function is called from GTG core whenever a task must be
+        removed from the backend. Note that the task could be not present here.
+        
+        @param tid: the id of the task to delete
+        '''
         pass
-
-    def has_task(self, tid):
-        '''Returns true if the backend has an internal idea 
-           of the task corresponding to the tid. False otherwise'''
-        raise NotImplemented()
-
-    def new_task_id(self):
-        '''
-        Returns an available ID for a new task so that a task with this ID
-        can be saved with set_task later.
-        '''
-        raise NotImplemented()
 
     def this_is_the_first_run(self, xml):
         '''
-        Steps to execute if it's the first time the backend is run. Optional.
+        Optional, and almost surely not needed.
+        Called upon the very first GTG startup.
+        This function is needed only in the default backend (XML localfile,
+        currently).
+        The xml parameter is an object containing GTG default tasks.
+        
+        @param xml: an xml object containing the default tasks.
         '''
         pass
 
-    def purge(self):
-        '''
-        Called when a backend will be removed from GTG. Useful for removing
-        configuration files. Optional.
-        '''
-        pass
+#NOTE: task counting is disabled in the UI, so I've disabled it here
+#      (invernizzi)
+#    def get_number_of_tasks(self):
+#        '''
+#        Returns the number of tasks stored in the backend. Doesn't need
+#        to be a fast function, is called just for the UI
+#        '''
+#        raise NotImplemented()
 
-    def get_number_of_tasks(self):
-        '''
-        Returns the number of tasks stored in the backend. Doesn't need to be a
-        fast function, is called just for the UI
-        '''
-        raise NotImplemented()
-
-    @staticmethod
-    def get_required_modules():
-        return []
+#NOTE: I'm disabling this since support for runtime checking of the
+#        presence of the necessary modules is disabled. (invernizzi)
+#    @staticmethod
+#    def get_required_modules():
+#        return []
 
     def quit(self, disable = False):
         '''
-        Called when GTG quits or disconnects the backend. Remember to execute
-        also this function when quitting. If disable is True, the backend won't
-        be automatically loaded at next GTG start
+        Called when GTG quits or the user wants to disable the backend.
+        
+        @param disable: If disable is True, the backend won't
+                        be automatically loaded when GTG starts
         '''
         self._is_initialized = False
         if disable:
@@ -179,6 +183,44 @@ class GenericBackend(object):
 ###### You don't need to reimplement the functions below this line ############
 ###############################################################################
 
+   ###########################################################################
+   ### CONSTANTS #############################################################
+   ###########################################################################
+    #BACKEND TYPE DESCRIPTION
+    # Each backend must have a "_general_description" attribute, which
+    # is a dictionary that holds the values for the following keys.
+    BACKEND_NAME = "name" #the backend gtg internal name (doesn't change in
+                          # translations, *must be unique*)
+    BACKEND_HUMAN_NAME = "human-friendly-name" #The name shown to the user
+    BACKEND_DESCRIPTION = "description" #A short description of the backend
+    BACKEND_AUTHORS = "authors" #a list of strings
+    BACKEND_TYPE = "type"
+    #BACKEND_TYPE is one of:
+    TYPE_READWRITE = "readwrite"
+    TYPE_READONLY = "readonly"
+    TYPE_IMPORT = "import"
+    TYPE_EXPORT = "export"
+
+
+    #"static_parameters" is a dictionary of dictionaries, each of which
+    # are a description of a parameter needed to configure the backend and
+    # is identified in the outer dictionary by a key which is the name of the
+    # parameter.
+    # For an example, see the GTG/backends/backend_localfile.py file
+    # Each dictionary contains the keys:
+    PARAM_DEFAULT_VALUE = "default_value" # its default value
+    PARAM_TYPE = "type"  
+    #PARAM_TYPE is one of the following (changing this changes the way
+    # the user can configure the parameter)
+    TYPE_PASSWORD = "password" #the real password is stored in the GNOME
+                               # keyring
+                               # This is just a key to find it there
+    TYPE_STRING = "string"  #generic string, nothing fancy is done
+    TYPE_INT = "int"  #edit box can contain only integers
+    TYPE_BOOL = "bool" #checkbox is shown
+    TYPE_LIST_OF_STRINGS = "liststring" #list of strings. the "," character is
+                                        # prohibited in strings
+
     #These parameters are common to all backends and necessary.
     # They will be added automatically to your _static_parameters list
     #NOTE: for now I'm disabling changing the default backend. Once it's all
@@ -189,7 +231,11 @@ class GenericBackend(object):
     KEY_ATTACHED_TAGS = "attached-tags"
     KEY_USER = "user"
     KEY_PID = "pid"
-    ALLTASKS_TAG = "gtg-tags-all"  #IXME: moved here to avoid circular imports
+    ALLTASKS_TAG = "gtg-tags-all" #NOTE: this has been moved here to avoid
+                                  #    circular imports. It's the same as in
+                                  #    the CoreConfig class, because it's the
+                                  #    same thing conceptually. It doesn't
+                                  #    matter it the naming diverges.
 
     _static_parameters_obligatory = { \
                                     KEY_DEFAULT_BACKEND: { \
@@ -229,28 +275,30 @@ class GenericBackend(object):
         '''
         Helper method, used to obtain the full list of the static_parameters
         (user configured and default ones)
+
+        @returns dict: the dict containing all the static parameters
         '''
-        if hasattr(cls, "_static_parameters"):
-            temp_dic = cls._static_parameters_obligatory.copy()
-            if cls._general_description[cls.BACKEND_TYPE] == cls.TYPE_READWRITE:
-                for key, value in \
-                          cls._static_parameters_obligatory_for_rw.iteritems():
-                    temp_dic[key] = value
-            for key, value in cls._static_parameters.iteritems():
+        temp_dic = cls._static_parameters_obligatory.copy()
+        if cls._general_description[cls.BACKEND_TYPE] == \
+                                                        cls.TYPE_READWRITE:
+            for key, value in \
+                      cls._static_parameters_obligatory_for_rw.iteritems():
                 temp_dic[key] = value
-            return temp_dic 
-        else:
-            raise NotImplemented("_static_parameters not implemented for " + \
-                                 "backend %s" % type(cls))
+        for key, value in cls._static_parameters.iteritems():
+            temp_dic[key] = value
+        return temp_dic 
 
     def __init__(self, parameters):
         """
-        Instantiates a new backend. Please note that this is called also for
-        disabled backends. Those are not initialized, so you might want to check
-        out the initialize() function.
+        Instantiates a new backend. Please note that this is called also
+        for disabled backends. Those are not initialized, so you might
+        want to check out the initialize() function.
         """
         if self.KEY_DEFAULT_BACKEND not in parameters:
+            #if it's not specified, then this is the default backend
+            #(for retro-compatibility with the GTG 0.2 series)
             parameters[self.KEY_DEFAULT_BACKEND] = True
+        #default backends should get all the tasks
         if parameters[self.KEY_DEFAULT_BACKEND] or \
                 (not self.KEY_ATTACHED_TAGS in parameters and \
                 self._general_description[self.BACKEND_TYPE] \
@@ -259,12 +307,17 @@ class GenericBackend(object):
         self._parameters = parameters
         self._signal_manager = BackendSignals()
         self._is_initialized = False
+        #if debugging mode is enabled, tasks should be saved as soon as they're
+        # marked as modified. If in normal mode, we prefer speed over easier
+        # debugging.
         if Log.is_debugging_mode():
             self.timer_timestep = 5
         else:
             self.timer_timestep = 1 
         self.to_set_timer = None
         self.please_quit = False
+        self.cancellation_point = lambda: _cancellation_point(\
+                                        lambda: self.please_quit)
         self.to_set = deque()
         self.to_remove = deque()
 
@@ -274,6 +327,9 @@ class GenericBackend(object):
         '''
         if hasattr(self._parameters, self.KEY_DEFAULT_BACKEND) and \
                    self._parameters[self.KEY_DEFAULT_BACKEND]:
+            #default backends should get all the tasks
+            #NOTE: this shouldn't be needed, but it doesn't cost anything and it
+            #      could avoid potential tasks losses.
             return [self.ALLTASKS_TAG]
         try:
             return self._parameters[self.KEY_ATTACHED_TAGS]
@@ -283,6 +339,8 @@ class GenericBackend(object):
     def set_attached_tags(self, tags):
         '''
         Changes the set of attached tags
+
+        @param tags: the new attached_tags set
         '''
         self._parameters[self.KEY_ATTACHED_TAGS] = tags
 
@@ -300,6 +358,12 @@ class GenericBackend(object):
         return self._parameters
 
     def set_parameter(self, parameter, value):
+        '''
+        Change a parameter for this backend
+
+        @param parameter: the parameter name
+        @param value: the new value
+        '''
         self._parameters[parameter] = value
 
     @classmethod
@@ -330,24 +394,22 @@ class GenericBackend(object):
     def _get_from_general_description(cls, key):
         '''
         Helper method to extract values from cls._general_description.
-        Raises an exception if the key is missing (helpful for developers
-        adding new backends).
+
+        @param key: the key to extract
         '''
-        if key in cls._general_description:
-            return cls._general_description[key]
-        else:
-            raise NotImplemented("Key %s is missing from " +\
-                    "'self._general_description' of a backend (%s). " +
-                    "Please add the corresponding value" % (key, type(cls)))
+        return cls._general_description[key]
 
     @classmethod
     def cast_param_type_from_string(cls, param_value, param_type):
         '''
         Parameters are saved in a text format, so we have to cast them to the
         appropriate type on loading. This function does exactly that.
+
+        @param param_value: the actual value of the parameter, in a string
+                            format
+        @param param_type: the wanted type
+        @returns something: the casted param_value
         '''
-        #FIXME: we could use pickle (dumps and loads), at least in some cases
-        #       (invernizzi)
         if param_type in cls._type_converter:
             return cls._type_converter[param_type](param_value)
         elif param_type == cls.TYPE_BOOL:
@@ -374,6 +436,10 @@ class GenericBackend(object):
     def cast_param_type_to_string(self, param_type, param_value):
         '''
         Inverse of cast_param_type_from_string
+
+        @param param_value: the actual value of the parameter
+        @param param_type: the type of the parameter (password...)
+        @returns something: param_value casted to string
         '''
         if param_type == GenericBackend.TYPE_PASSWORD:
             if param_value == None:
@@ -391,20 +457,27 @@ class GenericBackend(object):
     def get_id(self):
         '''
         returns the backends id, used in the datastore for indexing backends
+
+        @returns string: the backend id
         '''
         return self.get_name() + "@" + self._parameters["pid"]
 
     @classmethod
     def get_human_default_name(cls):
         '''
-        returns the user friendly default backend name. 
+        returns the user friendly default backend name, without eventual user
+        modifications.
+
+        @returns string: the default "human name"
         '''
         return cls._general_description[cls.BACKEND_HUMAN_NAME]
 
     def get_human_name(self):
         '''
         returns the user customized backend name. If the user hasn't
-        customized it, returns the default one
+        customized it, returns the default one.
+
+        @returns string: the "human name" of this backend
         '''
         if self.KEY_HUMAN_NAME in self._parameters and \
                     self._parameters[self.KEY_HUMAN_NAME] != "":
@@ -415,6 +488,8 @@ class GenericBackend(object):
     def set_human_name(self, name):
         '''
         sets a custom name for the backend
+
+        @param name: the new name
         '''
         self._parameters[self.KEY_HUMAN_NAME] = name
         #we signal the change
@@ -423,29 +498,49 @@ class GenericBackend(object):
     def is_enabled(self):
         '''
         Returns if the backend is enabled
+
+        @returns bool
         '''
         return self.get_parameters()[GenericBackend.KEY_ENABLED] or \
-               self.is_default()
+                self.is_default()
 
     def is_default(self):
         '''
         Returns if the backend is enabled
+
+        @returns bool
         '''
         return self.get_parameters()[GenericBackend.KEY_DEFAULT_BACKEND]
 
     def is_initialized(self):
         '''
         Returns if the backend is up and running
+
+        @returns is_initialized
         '''
         return self._is_initialized
 
     def get_parameter_type(self, param_name):
+        '''
+        Given the name of a parameter, returns its type. If the parameter is one
+        of the default ones, it does not have a type: in that case, it returns
+        None
+
+        @param param_name: the name of the parameter
+        @returns string: the type, or None
+        '''
         try:
             return self.get_static_parameters()[param_name][self.PARAM_TYPE]
-        except KeyError:
+        except:
             return None
 
     def register_datastore(self, datastore):
+        '''
+        Setter function to inform the backend about the datastore that's loading
+        it.
+
+        @param datastore: a Datastore
+        '''
         self.datastore = datastore
 
 ###############################################################################
@@ -455,6 +550,7 @@ class GenericBackend(object):
     def _store_pickled_file(self, path, data):
         '''
         A helper function to save some object in a file.
+
         @param path: a relative path. A good choice is
         "backend_name/object_name"
         @param data: the object
@@ -467,15 +563,13 @@ class GenericBackend(object):
             if exception.errno != errno.EEXIST: 
                 raise
         #saving
-        #try:
         with open(path, 'wb') as file:
                 pickle.dump(data, file)
-                #except pickle.PickleError:
-                    #pass
 
     def _load_pickled_file(self, path, default_value = None):
         '''
         A helper function to load some object from a file.
+
         @param path: the relative path of the file
         @param default_value: the value to return if the file is missing or
         corrupt
@@ -485,11 +579,29 @@ class GenericBackend(object):
         if not os.path.exists(path):
             return default_value
         else:
-            try:
-                with open(path, 'r') as file:
+            with open(path, 'r') as file:
+                try:
                     return pickle.load(file)
-            except pickle.PickleError:
-                return default_value
+                except pickle.PickleError:
+                    Log.error("PICKLE ERROR")
+                    return default_value
+
+    def _gtg_task_is_syncable_per_attached_tags(self, task):
+        '''
+        Helper function which checks if the given task satisfies the filtering
+        imposed by the tags attached to the backend.
+        That means, if a user wants a backend to sync only tasks tagged @works,
+        this function should be used to check if that is verified.
+
+        @returns bool: True if the task should be synced
+        '''
+        attached_tags = self.get_attached_tags()
+        if GenericBackend.ALLTASKS_TAG in attached_tags:
+            return True
+        for tag in task.get_tags_name():
+            if tag in attached_tags:
+                return  True
+        return False
 
 ###############################################################################
 ### THREADING #################################################################
@@ -504,25 +616,29 @@ class GenericBackend(object):
                                         self.launch_setting_thread)
             self.to_set_timer.start()
 
-    def launch_setting_thread(self):
+    def launch_setting_thread(self, bypass_quit_request = False):
         '''
         This function is launched as a separate thread. Its job is to perform
-        the changes that have been issued from GTG core. In particular, for
-        each task in the self.to_set queue, a task has to be modified or to be
-        created (if the tid is new), and for each task in the self.to_remove
-        queue, a task has to be deleted
+        the changes that have been issued from GTG core. 
+        In particular, for each task in the self.to_set queue, a task
+        has to be modified or to be created (if the tid is new), and for
+        each task in the self.to_remove queue, a task has to be deleted
+
+        @param bypass_quit_request: if True, the thread should not be stopped
+                                    even if asked by self.please_quit = True.
+                                    It's used when the backend quits, to finish
+                                    syncing all pending tasks
         '''
-        while not self.please_quit:
+        while not self.please_quit or bypass_quit_request:
             try:
                 task = self.to_set.pop()
             except IndexError:
                 break
-            #time.sleep(4)
             tid = task.get_id()
             if tid  not in self.to_remove:
                 self.set_task(task)
 
-        while not self.please_quit:
+        while not self.please_quit or bypass_quit_request:
             try:
                 tid = self.to_remove.pop()
             except IndexError:
@@ -532,7 +648,12 @@ class GenericBackend(object):
         self.to_set_timer = None
 
     def queue_set_task(self, task):
-        ''' Save the task in the backend. '''
+        ''' Save the task in the backend. In particular, it just enqueues the
+        task in the self.to_set queue. A thread will shortly run to apply the
+        requested changes.
+        
+        @param task: the task that should be saved
+        '''
         tid = task.get_id()
         if task not in self.to_set and tid not in self.to_remove:
             self.to_set.appendleft(task)
@@ -540,7 +661,10 @@ class GenericBackend(object):
 
     def queue_remove_task(self, tid):
         '''
-        Queues task to be removed.
+        Queues task to be removed. In particular, it just enqueues the
+        task in the self.to_remove queue. A thread will shortly run to apply the
+        requested changes.
+
         @param tid: The Task ID of the task to be removed
         '''
         if tid not in self.to_remove:
@@ -553,8 +677,6 @@ class GenericBackend(object):
         Helper method. Forces the backend to perform all the pending changes.
         It is usually called upon quitting the backend.
         '''
-        #FIXME: this function should become part of the r/w r/o generic class
-        #  for backends
         if self.to_set_timer != None:
             self.please_quit = True
             try:
@@ -562,10 +684,10 @@ class GenericBackend(object):
             except:
                 pass
             try:
-                self.to_set_timer.join(5)
+                self.to_set_timer.join()
             except:
                 pass
-        self.please_quit = False
-        self.launch_setting_thread()
+        self.launch_setting_thread(bypass_quit_request = True)
         self.save_state()
+
 

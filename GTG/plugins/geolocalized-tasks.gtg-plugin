@@ -1,6 +1,7 @@
 [GTG Plugin]
 Module=geolocalized_tasks
 Name=Geolocalized Tasks
+Short-description="This plugin adds geolocalized tasks to GTG!."
 Description="""This plugin adds geolocalized tasks to GTG!.
 WARNING: This plugin is still under heavy development."""
 Authors=Paulo Cabido <paulo.cabido@gmail.com>

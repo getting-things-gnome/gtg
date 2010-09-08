@@ -49,19 +49,7 @@ DIST_ROOTDIR = "/usr/share/gtg"
 
 #Translation setup (from pyroom)
 GETTEXT_DOMAIN = 'gtg'
-LOCALE_PATH = abspath(join(dirname(__file__), pardir, 'locales'))
-if not os.path.isdir(LOCALE_PATH):
-    if os.path.isdir('/usr/local/share/locale') and os.uname()[0] != 'Linux':
-        LOCALE_PATH = '/usr/local/share/locale'
-    else:
-        LOCALE_PATH = '/usr/share/locale'
-languages_used = []
-lc, encoding = locale.getdefaultlocale()
-if lc:
-    languages_used = [lc]
-lang_in_env = os.environ.get('LANGUAGE', None)
-if lang_in_env:
-    languages_used.extend(lang_in_env.split(':'))
+LOCALE_PATH = gettext.bindtextdomain(GETTEXT_DOMAIN)
 
 for module in gettext, loaded_glade:
     #check if glade is well loaded to avoid error in Fedora build farm
@@ -69,9 +57,7 @@ for module in gettext, loaded_glade:
         module.bindtextdomain(GETTEXT_DOMAIN, LOCALE_PATH)
         module.textdomain(GETTEXT_DOMAIN)
 
-translation = gettext.translation(GETTEXT_DOMAIN, LOCALE_PATH,
-                                  languages=languages_used,
-                                  fallback=True)
+translation = gettext.translation(GETTEXT_DOMAIN, LOCALE_PATH, fallback=True)
 
 _ = translation.gettext
 ngettext = translation.ngettext
@@ -92,3 +78,13 @@ else:
 
 if os.path.isdir(os.path.join(config_home, 'gtg/plugins')):
     PLUGIN_DIR.append(os.path.join(config_home, 'gtg/plugins'))
+
+#Register GTG URI (temporary, it should be created by a schema upon installing)
+import gconf
+domain = "/desktop/gnome/url-handlers/gtg/"
+client = gconf.client_get_default()
+#this should work both in debugging mode and in deployed mode
+client.set_string(os.path.join(domain, "command"), "gtg %s")
+client.set_bool(os.path.join(domain, "enabled"), True)
+client.set_bool(os.path.join(domain, "needs_terminal"), False)
+

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Various information about GTG. Should be updated for every release."""
 
+NAME            = "Getting Things GNOME!"
 URL             = "http://gtg.fritalk.com"
 EMAIL           = "gtg-contributors@lists.launchpad.net"
 VERSION         = '0.3-development'

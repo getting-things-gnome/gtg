@@ -14,20 +14,37 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import gobject
+import threading
 from urlparse import urlparse
 
 from GTG.plugins.bugzilla.server import ServersStore
 from GTG.plugins.bugzilla.bug import Bug
 
+
+
 class pluginBugzilla:
+
 
     def __init__(self):
         self.servers = ServersStore()
 
     def activate(self, plugin_api):
-        plugin_api.register_quick_add_cb(self.task_added_cb)
+        self.plugin_api = plugin_api
+        self.connect_id = plugin_api.get_ui().connect("task-added-via-quick-add", \
+                                      self.task_added_cb)
 
-    def task_added_cb(self, task):
+    def task_added_cb(self, sender, task_id):
+        #this is a gobject callback that will block the Browser.
+        #decoupling with a thread. All interaction with task and tags objects
+        #(anything in a Tree) must be done with gobject.idle_add (invernizzi)
+        thread = threading.Thread(target = self.__analyze_task,
+                                  args = (task_id, ))
+        thread.setDaemon(True)
+        thread.start()
+
+    def __analyze_task(self, task_id):
+        task = self.plugin_api.get_requester().get_task(task_id)
         url = task.get_title()
         r = urlparse(url)
         if r.hostname is None:
@@ -55,17 +72,14 @@ class pluginBugzilla:
             # can't find the title of the bug
             return
 
-        task.set_title('#%s: %s' % (nb, title))
+        gobject.idle_add(task.set_title, '#%s: %s' % (nb, title))
 
         text = "%s\n\n%s" % (url, bug.get_description())
-        task.set_text(text)
+        gobject.idle_add(task.set_text, text)
 
         tag = server.get_tag(bug)
         if tag is not None:
-            task.add_tag('@%s' % tag)
+            gobject.idle_add(task.add_tag, '@%s' % tag)
 
     def deactivate(self, plugin_api):
-        plugin_api.unregister_quick_add_cb(self.task_added_cb)
-
-    def onTaskOpened(self, plugin_api):
-        pass
+        plugin_api.get_ui().disconnect(self.connect_id)

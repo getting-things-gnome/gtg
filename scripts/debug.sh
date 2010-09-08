@@ -1,5 +1,11 @@
 #!/bin/bash
 
+#Don't let the user execute this as root, it breaks graphical login (Changes /tmp permissions)
+if [ $UID -eq 0 ]; then
+    echo "GTG shouldn't be run as root, terminating"
+    exit
+fi
+
 args="--no-crash-handler"
 set="default"
 norun=0

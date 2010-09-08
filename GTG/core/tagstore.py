@@ -369,14 +369,15 @@ class Tag(TreeNode):
     def is_removable(self):
         attr = self.get_all_attributes(butname = True, withparent = True)
         return (len(attr) <= 0 and not self.is_used())
+
+    def is_special(self):
+        return bool(self.get_attribute('special'))
+
     def is_used(self):
         return self.get_total_tasks_count() > 0
+
     def is_actively_used(self):
-        if self.get_attribute('special'):
-            return True
-        else:
-#            print "tag %s has %s active tasks" %(self.get_name(),self.get_active_tasks_count())
-            return self.get_active_tasks_count() > 0
+        return  self.is_special() or self.get_active_tasks_count() > 0
 
     def __str__(self):
         return "Tag: %s" % self.get_name()

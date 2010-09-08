@@ -1,0 +1,166 @@
+<?xml version="1.0"?>
+<interface>
+  <requires lib="gtk+" version="2.16"/>
+  <!-- interface-naming-policy project-wide -->
+  <object class="GtkWindow" id="backends_dialog">
+    <property name="window_position">mouse</property>
+    <signal name="delete_event" handler="on_BackendsDialog_delete_event"/>
+    <child>
+      <object class="GtkAlignment" id="alignment1">
+        <property name="visible">True</property>
+        <property name="top_padding">10</property>
+        <property name="bottom_padding">10</property>
+        <property name="left_padding">10</property>
+        <property name="right_padding">10</property>
+        <child>
+          <object class="GtkVBox" id="vbox1">
+            <property name="visible">True</property>
+            <property name="spacing">10</property>
+            <child>
+              <object class="GtkHBox" id="big_central_hbox">
+                <property name="visible">True</property>
+                <property name="spacing">10</property>
+                <child>
+                  <object class="GtkVBox" id="vbox2">
+                    <property name="visible">True</property>
+                    <child>
+                      <object class="GtkAlignment" id="treeview_window">
+                        <property name="height_request">400</property>
+                        <property name="visible">True</property>
+                        <child>
+                          <placeholder/>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkAlignment" id="alignment2">
+                        <property name="height_request">30</property>
+                        <property name="visible">True</property>
+                        <property name="yalign">1</property>
+                        <property name="top_padding">20</property>
+                        <property name="bottom_padding">10</property>
+                        <property name="left_padding">10</property>
+                        <property name="right_padding">10</property>
+                        <child>
+                          <object class="GtkHButtonBox" id="hbuttonbox3">
+                            <property name="visible">True</property>
+                            <property name="spacing">10</property>
+                            <property name="homogeneous">True</property>
+                            <child>
+                              <object class="GtkButton" id="add_button">
+                                <property name="label">gtk-add</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="use_stock">True</property>
+                                <signal name="clicked" handler="on_add_button_clicked"/>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkButton" id="remove_button">
+                                <property name="label">gtk-remove</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="use_stock">True</property>
+                                <signal name="clicked" handler="on_remove_button_clicked"/>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkScrolledWindow" id="central_pane_window">
+                    <property name="width_request">450</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="vadjustment">adjustment1</property>
+                    <property name="hscrollbar_policy">automatic</property>
+                    <property name="vscrollbar_policy">automatic</property>
+                    <child>
+                      <object class="GtkViewport" id="central_pane1">
+                        <property name="visible">True</property>
+                        <property name="resize_mode">queue</property>
+                        <child>
+                          <object class="GtkAlignment" id="central_pane">
+                            <property name="visible">True</property>
+                            <property name="left_padding">10</property>
+                            <property name="right_padding">10</property>
+                            <child>
+                              <placeholder/>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkHButtonBox" id="hbuttonbox2">
+                <property name="visible">True</property>
+                <property name="layout_style">end</property>
+                <child>
+                  <object class="GtkButton" id="close_button">
+                    <property name="label">gtk-close</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="use_stock">True</property>
+                    <signal name="clicked" handler="on_close_button_clicked"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="GtkAdjustment" id="adjustment1">
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+    <property name="page_size">10</property>
+  </object>
+</interface>

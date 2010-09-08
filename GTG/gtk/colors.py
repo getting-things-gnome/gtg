@@ -20,7 +20,7 @@ import gtk
 
 #Take list of Tags and give the background color that should be applied
 #The returned color might be None (in which case, the default is used)
-def background_color(tags, bgcolor=None):
+def background_color(tags, bgcolor = None):
     if not bgcolor:
         bgcolor = gtk.gdk.color_parse("#FFFFFF")
     # Compute color
@@ -52,3 +52,29 @@ def background_color(tags, bgcolor=None):
         my_color = gtk.gdk.Color(red, green, blue).to_string()
     return my_color
 
+def get_colored_tag_markup(req, tag_name):
+    '''
+    Given a tag name, returns a string containing the markup to color the
+    tag name
+    '''
+    tag = req.get_tag(tag_name)
+    if tag is None:
+        #no task loaded with that tag, color cannot be taken
+        return tag_name
+    else:
+        tag_color = tag.get_attribute("color")
+        if tag_color:
+            return '<span color="%s">%s</span>' % (tag_color, tag_name)
+        else:
+            return tag_name
+
+def get_colored_tags_markup(req, tag_names):
+    '''
+    Calls get_colored_tag_markup for each tag_name in tag_names
+    '''
+    tag_markups = map(lambda t: get_colored_tag_markup(req, t), tag_names)
+    tags_txt = ""
+    if tag_markups:
+        #reduce crashes if applied to an empty list
+        tags_txt = reduce(lambda a, b: a + ", " + b, tag_markups)
+    return tags_txt
