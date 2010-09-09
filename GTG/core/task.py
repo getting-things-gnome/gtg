@@ -517,7 +517,7 @@ class Task(TreeNode):
         self.remove_tag(old)
         self.req.get_tag(old).modified()
         self.tag_added(new)
-        self.req.get_tag(new).modifiel()
+        self.req.get_tag(new).modified()
         self.sync()
 
     def tag_added(self, tagname):

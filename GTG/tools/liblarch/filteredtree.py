@@ -406,7 +406,7 @@ class FilteredTree():
                             result = False
                             #There's a problem here !
                             #what do we do when the filter doesn't exist yet ?
-#                            raise Exception("why is there no filter %s?" %f)
+                            raise Exception("why is there no filter %s?" %f)
                     if result:
                         toreturn += 1
                 if COUNT_CACHING_ENABLED and usecache:

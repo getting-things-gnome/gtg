@@ -22,6 +22,7 @@
 import unittest
 
 from GTG.core.tagstore   import Tag
+from GTG.core.task import Task
 from GTG.core.datastore import DataStore
 
 
@@ -115,6 +116,17 @@ class TestTag(unittest.TestCase):
         tag = Tag('old', self.req)
         tag.set_attribute('name', 'new')
         self.assertEqual(0, len(save_calls))
+        
+    def test_intask_counting_after_rename(self):
+        '''We test that the task counting for tags work
+        even after tag renaming (stuttering tag bug)'''
+        t = self.req.new_task(tags=['@testtag'])
+        tag = self.req.get_tag('@testtag')
+        self.assertEqual(tag.get_active_tasks_count(),1)
+        t.rename_tag('@testtag','@test')
+        tag2 = self.req.get_tag('@test')
+        self.assertEqual(tag2.get_active_tasks_count(),1)
+        self.assertEqual(tag.get_active_tasks_count(),0)
 
 def test_suite():
     return unittest.TestLoader().loadTestsFromTestCase(TestTag)
