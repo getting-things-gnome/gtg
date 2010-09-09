@@ -393,7 +393,7 @@ class FilteredTree():
             if usecache and self.count_cache.has_key(key):
                 toreturn = self.count_cache[key]
 #                self.using_cache += 1
-#                print "we used cache to return %s for %s" %(toreturn,key)
+                print "we used cache to return %s for %s" %(toreturn,key)
             else:
                 for tid in zelist:
                     result = True
@@ -682,6 +682,7 @@ class FilteredTree():
                 #Removing node is less critical so we just reset the cache.
                 self.count_cache = {}
                 self.counted_nodes.remove(tid)
+#            print "__is_displayed %s : %s" %(tid,result)
         else:
             result = False
         return result

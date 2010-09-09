@@ -667,6 +667,19 @@ class TestLibLarch(unittest.TestCase):
         self.assertEqual(self.green_nodes,self.view.get_n_nodes(withfilters=['green']))
         self.assertEqual(total,self.mainview.get_n_nodes())
         
+    def test_viewtree_get_n_nodes_with_cache(self):
+        '''Testing the cache of the get_n_nodes'''
+        nbr = self.green_nodes
+        self.assertEqual(nbr,self.mainview.get_n_nodes(\
+                            withfilters=['green'],include_transparent=False))
+        node = self.tree.get_node('0')
+        node.add_color('green')
+        print "###########\n#################\n"
+        self.assertEqual(nbr+1,self.mainview.get_n_nodes(\
+                            withfilters=['green'],include_transparent=False))
+        node.remove_color('green')
+        self.assertEqual(nbr,self.mainview.get_n_nodes(\
+                            withfilters=['green'],include_transparent=False))
     
     def test_viewtree_get_all_nodes(self):
         all_nodes = self.view.get_all_nodes()

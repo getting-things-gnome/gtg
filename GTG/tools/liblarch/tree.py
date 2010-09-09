@@ -398,6 +398,7 @@ class TreeNode():
                 if t != self.thread:
                     raise Exception('! could not modified from thread %s' %t)
             #then the task
+#            print "modify for %s sent to the tree" %self.id
             self.tree.modify_node(self.id)
 #            gobject.idle_add(self.tree.modify_node,self.id)
         

@@ -20,10 +20,13 @@
 """Tests for the tagstore."""
 
 import unittest
+import gobject
 
 from GTG.core.tagstore   import Tag
 from GTG.core.task import Task
 from GTG.core.datastore import DataStore
+
+from GTG.tests.signals_testing import SignalCatcher, GobjectSignalsManager
 
 
 
@@ -34,6 +37,14 @@ class TestTag(unittest.TestCase):
     def setUp(self):
         ds = DataStore()
         self.req = ds.get_requester()
+        #initalize gobject signaling system
+        self.gobject_signal_manager = GobjectSignalsManager()
+        self.gobject_signal_manager.init_signals()
+        
+    def tearDown(self):
+#        finally:
+        #stopping gobject main loop
+        self.gobject_signal_manager.terminate_signals()
 
     def test_name(self):
         # The first argument to the Tag constructor is the name, which you can
@@ -126,6 +137,9 @@ class TestTag(unittest.TestCase):
         t.rename_tag('@testtag','@test')
         tag2 = self.req.get_tag('@test')
         self.assertEqual(tag2.get_active_tasks_count(),1)
+#        self.assertEqual(tag.get_active_tasks_count(),0)
+#        import time
+#        time.sleep(2)
         self.assertEqual(tag.get_active_tasks_count(),0)
 
 def test_suite():
