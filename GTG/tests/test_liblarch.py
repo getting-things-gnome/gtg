@@ -674,10 +674,13 @@ class TestLibLarch(unittest.TestCase):
                             withfilters=['green'],include_transparent=False))
         node = self.tree.get_node('0')
         node.add_color('green')
-        print "###########\n#################\n"
+        
         self.assertEqual(nbr+1,self.mainview.get_n_nodes(\
                             withfilters=['green'],include_transparent=False))
+        print "Removing color of the node green"
+        print "---------------------"
         node.remove_color('green')
+        print "###########\n#################\n"
         self.assertEqual(nbr,self.mainview.get_n_nodes(\
                             withfilters=['green'],include_transparent=False))
     
