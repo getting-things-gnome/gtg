@@ -398,10 +398,10 @@ class FilteredTree():
             if usecache and self.count_cache.has_key(key):
                 toreturn = self.count_cache[key]
 #                self.using_cache += 1
-                print "we used cache to return %s for %s" %(toreturn,key)
+#                print "we used cache to return %s for %s" %(toreturn,key)
             else:
+                temp_list = []
                 for tid in zelist:
-                    temp_list = []
                     result = True
                     for f in withfilters:
                         filt = self.fbank.get_filter(f)
@@ -417,7 +417,7 @@ class FilteredTree():
                     self.counted_nodes[key] = temp_list
         else:
             toreturn = len(zelist)
-        print "get_n_nodes with filters %s = %s" %(withfilters,zelist)
+#        print "get_n_nodes with filters %s = %s" %(withfilters,zelist)
 #        print self.count_cache, self.counted_nodes
         return toreturn
         
@@ -672,7 +672,7 @@ class FilteredTree():
                     result = result and temp
                     if not filt.get_parameters('transparent'):
                         counting_result = counting_result and temp
-                print "     counting_result for %s : %s" %(f,counting_result)
+#                print "     counting_result for %s : %s" %(f,counting_result)
             if counting_result:    # and tid not in self.counted_nodes:
                 #This is an hard custom optimisation for task counting
                 #Normally, we would here reset the cache of counted tasks
@@ -683,7 +683,7 @@ class FilteredTree():
                         f = self.fbank.get_filter(k)
                         if f and f.is_displayed(tid):
                             self.count_cache[k] += 1
-                        print "%s is displayed for filter %s : %s" %(tid,f.is_displayed(tid),k)
+#                        print "%s is displayed for filter %s : %s" %(tid,f.is_displayed(tid),k)
                         self.counted_nodes[k].append(tid)
             elif not counting_result: #and tid in self.counted_nodes:
                 #Removing node is less critical so we just reset the cache.
@@ -691,8 +691,9 @@ class FilteredTree():
                     if tid in self.counted_nodes[k]:
                         self.count_cache[k] -= 1
                         self.counted_nodes[k].remove(tid)
-            print "__is_displayed %s : %s  - %s " %(tid,result,self.count_cache)
-            print counting_result
+                        
+#            print "__is_displayed %s : %s  - %s " %(tid,result,self.count_cache)
+#            print counting_result
         else:
             result = False
         return result
