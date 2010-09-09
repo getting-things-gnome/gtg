@@ -223,7 +223,7 @@ class PluginEngine(Borg):
 
     def deactivate_plugins(self, plugins=[]):
         """Deactivate plugins."""
-        assert(isinstance(plugins, list), True)
+        assert(isinstance(plugins, list))
         if not plugins:
             plugins = self.get_plugins("active")
         for plugin in plugins:
