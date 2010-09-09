@@ -36,7 +36,7 @@ class TestDates(unittest.TestCase):
         Tests for "get_canonical_date"
         '''
         known_values = (("1985-03-29", "1985-03-29"), ("now", _("now")),
-                        ("soon", _("soon")), ("later", _("later"), ("", ""))
+                        ("soon", _("soon")), ("later", _("later")), ("", ""))
         for value, result in known_values:
             date = get_canonical_date(value)
             self.assertEqual(date.__str__(), result)
