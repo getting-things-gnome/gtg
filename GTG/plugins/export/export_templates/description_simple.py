@@ -15,5 +15,6 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from GTG import _
+title = _("A simple Web page (nicely printable)")
 description = _("A template to create a simple HTML page with some tasks."
                 " It can be printed nicely.")

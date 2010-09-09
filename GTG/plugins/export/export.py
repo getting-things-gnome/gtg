@@ -51,7 +51,7 @@ class pluginExport:
 ## CALLBACK AND CORE FUNCTIONS ################################################
 
     def load_template(self):
-        self.template = TemplateFactory.create_template(\
+        self.template = TemplateFactory().create_template(\
                                             self.combo_get_path(self.combo))
         return self.template
 
@@ -210,7 +210,7 @@ class pluginExport:
         #Populating combo boxes
         self.export_dialog.set_transient_for(\
                                 self.plugin_api.get_ui().get_window())
-        self.combo_decorator(self.combo, TemplateFactory.get_templates_paths())
+        self.combo_decorator(self.combo, TemplateFactory().get_templates_paths())
         self.export_dialog.show_all()
 
     def __gtk_deactivate(self):
@@ -257,8 +257,8 @@ class pluginExport:
         self.empty_tree_model(list_store)
         for template_path in a_list:
             iter = list_store.append()
-            list_store.set(iter, 0, \
-                os.path.basename(template_path).replace("template_", ""))
+            list_store.set(iter, 0,
+                 TemplateFactory().create_template(template_path).get_title())
             list_store.set(iter, 1, template_path)
         return self.export_list_store
 

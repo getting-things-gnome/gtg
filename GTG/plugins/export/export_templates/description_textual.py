@@ -15,4 +15,5 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from GTG import _
+title = _("Text-only")
 description = _("A template to create a simple text file with some tasks.")

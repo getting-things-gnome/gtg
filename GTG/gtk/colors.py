@@ -52,10 +52,11 @@ def background_color(tags, bgcolor = None):
         my_color = gtk.gdk.Color(red, green, blue).to_string()
     return my_color
 
-def get_colored_tag_markup(req, tag_name):
+def get_colored_tag_markup(req, tag_name, html = False):
     '''
     Given a tag name, returns a string containing the markup to color the
     tag name
+    if html, returns a string insertable in html
     '''
     tag = req.get_tag(tag_name)
     if tag is None:
@@ -64,7 +65,11 @@ def get_colored_tag_markup(req, tag_name):
     else:
         tag_color = tag.get_attribute("color")
         if tag_color:
-            return '<span color="%s">%s</span>' % (tag_color, tag_name)
+            if html:
+                format_string ='<span style="color:%s">%s</span>'
+            else:
+                format_string = '<span color="%s">%s</span>'
+            return format_string % (tag_color, tag_name)
         else:
             return tag_name
 
