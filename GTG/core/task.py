@@ -478,11 +478,13 @@ class Task(TreeNode):
         return self.attributes.get((namespace, att_name), None)
 
     def sync(self):
+#        print "ask for %s sync" %self.id
         self._modified_update()
         if self.is_loaded():
             #This is a liblarch call to the TreeNode ancestor
             gobject.idle_add(self.modified)
             for t in self.get_tags():
+#                print "%s is well synced" %self.id
                 gobject.idle_add(t.modified)
             return True
         else:
@@ -514,11 +516,19 @@ class Task(TreeNode):
         eold = saxutils.escape(saxutils.unescape(old))
         enew = saxutils.escape(saxutils.unescape(new))
         self.content = self.content.replace(eold, enew)
+        oldt = self.req.get_tag(old)
         self.remove_tag(old)
-        self.req.get_tag(old).modified()
+        print "\n############################"
+        print "task.py : before modified : %s" %oldt.get_total_tasks_count()
+        oldt.modified()
+        print "task.py : after modified : %s" %oldt.get_total_tasks_count()
+        print "#############################\n"
         self.tag_added(new)
-        self.req.get_tag(new).modifiel()
+        self.req.get_tag(new).modified()
         self.sync()
+#        oldt.modified()
+        print "task.py : after sync : %s" %oldt.get_total_tasks_count()
+        print "#############################\n"
 
     def tag_added(self, tagname):
         """
@@ -625,7 +635,7 @@ class Task(TreeNode):
         else:
             #Well, if we don't filter on tags or notag, it's true, of course
             toreturn = True
-        print "task %s has tag %s : %s" %(self.get_id(),tag_list,toreturn)
+#        print "task %s has tag %s : %s" %(self.get_id(),tag_list,toreturn)
         return toreturn
 
     #return the color of one tag that have a color defined
