@@ -692,6 +692,7 @@ class FilteredTree():
                         self.count_cache[k] -= 1
                         self.counted_nodes[k].remove(tid)
             print "__is_displayed %s : %s  - %s " %(tid,result,self.count_cache)
+            print counting_result
         else:
             result = False
         return result
