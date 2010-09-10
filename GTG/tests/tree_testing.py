@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Gettings Things Gnome! - a personal organizer for the GNOME desktop
+# Getting Things Gnome! - a personal organizer for the GNOME desktop
 # Copyright (c) 2008-2010 - Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
@@ -146,3 +146,10 @@ class TreeTester:
         st += "nodes are %s\n" %self.nodes
         st += "paths are %s\n" %self.paths
         return st
+
+    def quit(self):
+        self.tree.deregister_cllbck('node-added-inview',self.add)
+        self.tree.deregister_cllbck('node-deleted-inview',self.delete)
+        self.tree.deregister_cllbck('node-modified-inview',self.update)
+        self.tree.deregister_cllbck('node-children-reordered',self.reordered)
+
