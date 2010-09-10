@@ -86,6 +86,8 @@ class Tree():
             return self.__tree.remove_node(nid,recursive=recursive)
 
     def refresh_node(self,nid):
+        #FIXME: Transform this thread-protection code in a @decorator or in a
+        #function, since it's repeated (invernizzi)
         if THREAD_PROTECTION:
             t = threading.current_thread()
             if t != self.thread:
@@ -284,6 +286,12 @@ class ViewTree(gobject.GObject):
         dic[k] = func
         #returning the key so we can later unregister a callback
         return k
+
+    def deregister_cllbck(self,event,func):
+        try:
+            del self.__cllbcks[event][func]
+        except KeyError:
+            pass
 
     #only by commodities
     def get_node(self,nid):

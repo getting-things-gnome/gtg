@@ -677,10 +677,7 @@ class TestLibLarch(unittest.TestCase):
         
         self.assertEqual(nbr+1,self.mainview.get_n_nodes(\
                             withfilters=['green'],include_transparent=False))
-        print "Removing color of the node green"
-        print "---------------------"
         node.remove_color('green')
-        print "###########\n#################\n"
         self.assertEqual(nbr,self.mainview.get_n_nodes(\
                             withfilters=['green'],include_transparent=False))
     
@@ -1184,9 +1181,9 @@ class TestLibLarch(unittest.TestCase):
         Performance tests. Patches that reduce performance too much are not
         acceptable
         '''
-        BIG_NUMBER = 20
+        self.tester.quit()
+        BIG_NUMBER = 100 #FIXME: deleting 200 nodes takes too long
         view = self.tree.get_viewtree(refresh = False)
-        test = TreeTester(view)
         nodes_id = []
         start = time.time()
         for index in xrange(BIG_NUMBER):
@@ -1194,23 +1191,20 @@ class TestLibLarch(unittest.TestCase):
             nodes_id.append(node.get_id())
             self.tree.add_node(node)
         end = time.time()
-        test.test_validity()
         print "\nADDING %d NODES: %f" % (BIG_NUMBER, end - start)
 
         start = time.time()
         for node_id in nodes_id:
             self.tree.refresh_node(node_id)
         end = time.time()
-        test.test_validity()
         print "\nUPDATING %d NODES: %f" % (BIG_NUMBER, end - start)
 
         start = time.time()
         for node_id in nodes_id:
             self.tree.del_node(node_id)
         end = time.time()
-        test.test_validity()
         print "\nDELETING %d NODES: %f" % (BIG_NUMBER, end - start)
-        
+
 def test_suite():
     return unittest.TestLoader().loadTestsFromName(__name__)
 
