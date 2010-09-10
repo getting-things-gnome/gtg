@@ -518,17 +518,10 @@ class Task(TreeNode):
         self.content = self.content.replace(eold, enew)
         oldt = self.req.get_tag(old)
         self.remove_tag(old)
-        print "\n############################"
-        print "task.py : before modified : %s" %oldt.get_total_tasks_count()
         oldt.modified()
-        print "task.py : after modified : %s" %oldt.get_total_tasks_count()
-        print "#############################\n"
         self.tag_added(new)
         self.req.get_tag(new).modified()
         self.sync()
-#        oldt.modified()
-        print "task.py : after sync : %s" %oldt.get_total_tasks_count()
-        print "#############################\n"
 
     def tag_added(self, tagname):
         """

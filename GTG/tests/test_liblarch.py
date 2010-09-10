@@ -677,10 +677,7 @@ class TestLibLarch(unittest.TestCase):
         
         self.assertEqual(nbr+1,self.mainview.get_n_nodes(\
                             withfilters=['green'],include_transparent=False))
-        print "Removing color of the node green"
-        print "---------------------"
         node.remove_color('green')
-        print "###########\n#################\n"
         self.assertEqual(nbr,self.mainview.get_n_nodes(\
                             withfilters=['green'],include_transparent=False))
     
