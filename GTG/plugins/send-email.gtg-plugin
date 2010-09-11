@@ -3,8 +3,8 @@ Module=send_email
 Name=Send task via email
 Short-description="Easily send a task via email."
 Description="""Adds a button on the toolbar to send
-easily a task via email"""
-Authors=Luca Invernizzi <invernizzi.l@gmail.com>
-Version=0.1.1
+easily a task via email, also sends status, due_dates, tags and subtasks."""
+Authors=Luca Invernizzi <invernizzi.l@gmail.com>, Thibault Févry <ThibaultFevry@gmail.com>
+Version=0.2.0
 Enabled=False
 Dependencies=gio, urllib

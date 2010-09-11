@@ -316,7 +316,7 @@ class Task(TreeNode):
         Warning: all markup informations are stripped down. Empty lines are
         also removed
         """
-        #defensive programmtion to avoid returning None
+        #defensive programmation to avoid returning None
         if self.content:
             txt = self.content
             if strip_tags:
