@@ -39,10 +39,12 @@ class pluginSendEmail:
         # add a item (button) to the ToolBar
         tb_Taskicon = gtk.Image()
         tb_Taskicon.set_from_icon_name('mail-send', 32)
+
         self.tb_Taskbutton = gtk.ToolButton(tb_Taskicon)
         self.tb_Taskbutton.set_label(_("Send via email"))
         self.tb_Taskbutton.connect('clicked', self.onTbTaskButton, plugin_api)
         self.tb_Taskbutton.show_all()
+
         plugin_api.add_toolbar_item(self.tb_Taskbutton)
 
     def deactivate(self, plugin_api):
@@ -79,4 +81,4 @@ class pluginSendEmail:
 
         # FIXME: Email should be configurable, but I hate gtk.
         gio.app_info_get_default_for_uri_scheme('mailto').launch_uris( \
-                ['mailto:gtg@example.com?' + parameters])
+                ['mailto:' + _('gtg@example.com?') + parameters])
