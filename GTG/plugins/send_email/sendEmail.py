@@ -73,8 +73,10 @@ class pluginSendEmail:
         _("\nTask content:\n%s") % (task.get_excerpt())
 
         # Title contains the title and the start and due dates.
-        title = _("Task: %s (Starts on: %s; Ends on: %s)") % (
-        task.get_title(), task.get_start_date(), task.get_due_date())
+        title = _("Task: %(task_title)s (Starts on: %(start_date)s; Ends on: \
+        %(end_date)s)") % {'task_title': task.get_title(),\
+                           'start_date': task.get_start_date(),\
+                           'end_date': task.get_due_date()}
 
         parameters = urllib.urlencode({'subject': title, 'body': body})
         parameters = parameters.replace('+', '%20')
