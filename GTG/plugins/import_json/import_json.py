@@ -79,8 +79,8 @@ class pluginImportJson:
         
     def deactivate(self, plugin_api):
         plugin_api.remove_menu_item(self.menu_item)
-        plugin_api.remove_toolbar_item(self.tb_button)
-        plugin_api.remove_toolbar_item(self.separator)
+        plugin_api.remove_task_toolbar_item(self.tb_button)
+        plugin_api.remove_task_toolbar_item(self.separator)
         self.txtImport = None
 
     def loadDialog(self):
