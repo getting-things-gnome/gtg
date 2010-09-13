@@ -176,7 +176,8 @@ class TreeFactory:
     def workview(self,task,parameters=None):
         wv = self.active(task) and\
              self.is_started(task) and\
-             self.is_workable(task)
+             self.is_workable(task) and\
+             self.no_disabled_tag(task)
         return wv
         
     def workdue(self,task):
