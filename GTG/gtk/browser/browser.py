@@ -150,6 +150,10 @@ class TaskBrowser(gobject.GObject):
         r = self.vtree_panes['active'].expand_all()
         self.on_select_tag()
         self.browser_shown = False
+        
+        #Update the title when a task change
+        self.activetree.register_cllbck('node-added-inview',self._update_window_title)
+        self.activetree.register_cllbck('node-deleted-inview',self._update_window_title)
 
 ### INIT HELPER FUNCTIONS #####################################################
 #
@@ -340,13 +344,6 @@ class TaskBrowser(gobject.GObject):
         self.vtree_panes['active'].connect('node-collapsed',\
             self.on_task_collapsed)
 
-        # Connect requester signals to TreeModels
-        self.req.connect("task-added", self.on_task_added) 
-        self.req.connect("task-deleted", self.on_task_deleted)
-        #this causes changed be shouwn only on save
-        #tree = self.task_tree_model.get_tree()
-        #tree.connect("task-added-inview", self.on_task_added) 
-        #tree.connect("task-deleted-inview", self.on_task_deleted)
         b_signals = BackendSignals()
         b_signals.connect(b_signals.BACKEND_FAILED, self.on_backend_failed)
         b_signals.connect(b_signals.BACKEND_STATE_TOGGLED, \
@@ -554,9 +551,8 @@ class TaskBrowser(gobject.GObject):
         if self.tagtreeview:
             self.tagtree.refresh_all()
         self.vtree_panes['active'].set_col_visible('startdate',not tobeset)
-        self._update_window_title()
 
-    def _update_window_title(self):
+    def _update_window_title(self,nid=None,path=None):
         count = self.activetree.get_n_nodes()
         #Set the title of the window:
         parenthesis = ""
@@ -1121,9 +1117,6 @@ class TaskBrowser(gobject.GObject):
             #then applying the tag
             if len(newtag) > 0:
                 vtree.apply_filter(newtag[0])
-                        
-#        self.ctask_tv.get_selection().unselect_all()
-        self._update_window_title()
 
     def on_taskdone_cursor_changed(self, selection=None):
         """Called when selection changes in closed task view.
@@ -1202,13 +1195,6 @@ class TaskBrowser(gobject.GObject):
         #Saving is now done in main.py
         self.on_delete(None, None)
         self.quit()
-
-    def on_task_added(self, sender, tid):
-        Log.debug("Add task with ID: %s" % tid)
-        self._update_window_title()
-
-    def on_task_deleted(self, sender, tid):
-        self._update_window_title()
 
     #using dummy parameters that are given by the signal
     def update_buttons_sensitivity(self,a=None,b=None,c=None):
