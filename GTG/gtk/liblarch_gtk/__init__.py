@@ -26,6 +26,10 @@ import gobject
 
 from GTG.gtk.liblarch_gtk.treemodel import TreeModel
 
+DND_TARGETS = [
+        ('gtg/task-iter-str', gtk.TARGET_SAME_WIDGET, 0)
+    ]
+
 class TreeView(gtk.TreeView):
 
     __string_signal__ = (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str, ))
@@ -131,6 +135,28 @@ class TreeView(gtk.TreeView):
                 self.append_column(col)
 
         self.set_model(self.treemodel)
+        
+        # Drag and drop initialization
+        self.enable_model_drag_source(\
+            gtk.gdk.BUTTON1_MASK,
+            DND_TARGETS,
+            gtk.gdk.ACTION_DEFAULT | gtk.gdk.ACTION_MOVE)
+        self.enable_model_drag_dest(\
+            DND_TARGETS,
+            gtk.gdk.ACTION_DEFAULT)
+        self.drag_source_set(\
+            gtk.gdk.BUTTON1_MASK,
+            DND_TARGETS,
+            gtk.gdk.ACTION_DEFAULT | gtk.gdk.ACTION_MOVE)
+        self.drag_dest_set(\
+            gtk.DEST_DEFAULT_ALL,
+            DND_TARGETS,
+            gtk.gdk.ACTION_DEFAULT | gtk.gdk.ACTION_MOVE)
+        self.connect('drag_drop', self.on_drag_drop)
+        self.connect('drag_data_get', self.on_drag_data_get)
+        self.connect('drag_data_received', self.on_drag_data_received)
+        #end of DnD initialization
+        
         self.show()
 
     def get_columns(self):
@@ -220,3 +246,68 @@ class TreeView(gtk.TreeView):
             #0 is the column of the tid
             ids = [ts.get_value(iter, 0) for iter in iters]
         return ids
+        
+        
+    ######### DRAG-N-DROP functions #####################################
+    
+    def on_drag_drop(self, treeview, context, selection, info, timestamp):
+        self.emit_stop_by_name('drag_drop')
+
+    def on_drag_data_get(self, treeview, context, selection, info, timestamp):
+        """Extract data from the source of the DnD operation. Here the id of
+        the parent task and the id of the selected task is passed to the
+        destination"""
+        treeselection = treeview.get_selection()
+        model, paths = treeselection.get_selected_rows()
+        iters = [model.get_iter(path) for path in paths]
+        iter_str = ','.join([model.get_string_from_iter(iter) for iter in iters])
+        selection.set('gtg/task-iter-str', 0, iter_str)
+        return
+
+    def on_drag_data_received(self, treeview, context, x, y, selection, info,\
+                              timestamp):
+        model          = treeview.get_model()
+        drop_info = treeview.get_dest_row_at_pos(x, y)
+        if drop_info:
+            path, position = drop_info
+            iter = model.get_iter(path)
+            # Must add the task to the parent of the task situated\
+            # before/after 
+            if position == gtk.TREE_VIEW_DROP_BEFORE or\
+               position == gtk.TREE_VIEW_DROP_AFTER:
+                # Get sibling parent
+                destination_iter = model.iter_parent(iter)
+            else:
+                # Must add task as a child of the dropped-on iter
+                # Get parent
+                destination_iter = iter
+            if destination_iter:
+                destination_tid = model.get_value(destination_iter, 0)
+            else:
+                #it means we have drag-n-dropped above the first task
+                # we should consider the destination as a root then.
+                destination_tid = None
+        else:
+            # Must add the task to the root
+            # Parent = root => iter=None
+            destination_tid = None
+
+        # Get dragged iter as a TaskTreeModel iter
+        iters = selection.data.split(',')
+        for iter in iters:
+            try:
+                dragged_iter = model.get_iter_from_string(iter)
+            except ValueError:
+                #I hate to silently fail but we have no choice.
+                #It means that the iter is not good.
+                #Thanks shitty gtk API for not allowing us to test the string
+                dragged_iter = None
+            if dragged_iter and model.iter_is_valid(dragged_iter):
+                dragged_tid = model.get_value(dragged_iter, 0)
+                #TODO: it should be configurable for each TreeView if you want:
+                # 0 : no drag-n-drop at all
+                # 1 : drag-n-drop move the node
+                # 2 : drag-n-drop copy the node 
+                self.basetree.get_basetree().move_node(dragged_tid,\
+                                                new_parent_id=destination_tid)
+        self.emit_stop_by_name('drag_data_received')
