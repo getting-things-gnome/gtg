@@ -304,7 +304,10 @@ class TreeView(gtk.TreeView):
                 dragged_iter = None
             if dragged_iter and model.iter_is_valid(dragged_iter):
                 dragged_tid = model.get_value(dragged_iter, 0)
-                #print "we will move %s to %s" %(dragged_tid,destination_tid)
+                #TODO: it should be configurable for each TreeView if you want:
+                # 0 : no drag-n-drop at all
+                # 1 : drag-n-drop move the node
+                # 2 : drag-n-drop copy the node 
                 self.basetree.get_basetree().move_node(dragged_tid,\
                                                 new_parent_id=destination_tid)
         self.emit_stop_by_name('drag_data_received')
