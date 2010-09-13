@@ -222,7 +222,6 @@ class MainTree(gobject.GObject):
                     self.pending_relationships.append([parent_id,child_id])
                 toreturn = False
         if refresh_nodes and toreturn:
-#            print "we modify parent %s then child %s" %(parent_id,child_id)
             if parent_id != 'root':
                 self.__modified(parent_id)
             self.__modified(child_id)

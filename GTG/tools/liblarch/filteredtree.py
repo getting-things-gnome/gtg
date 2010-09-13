@@ -155,8 +155,6 @@ class FilteredTree():
         func = self.cllbcks.get(event,None)
         if func:
 #           The reordered callback might take None as arguments
-#            if not path or len(path) <= 0:
-#                raise Exception('cllbck %s for %s but it has no paths'%(event,tid))
             if neworder:
                 func(tid,path,neworder)
             else:

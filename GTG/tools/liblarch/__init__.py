@@ -238,12 +238,12 @@ class ViewTree(gobject.GObject):
         self.__ft = FilteredTree(maintree, filters_bank, refresh = refresh)
         if static:
             #Needed for the get_n_nodes with filters
-            self.__ft = FilteredTree(maintree, filters_bank, refresh = refresh)
-            self.__ft.set_callback('added', \
+#            self.__ft = FilteredTree(maintree, filters_bank, refresh = refresh)
+            self.__maintree.register_callback('node-added', \
                         functools.partial(self.__emit, 'node-added'))
-            self.__ft.set_callback('deleted', \
+            self.__maintree.register_callback('node-deleted', \
                         functools.partial(self.__emit, 'node-deleted'))
-            self.__ft.set_callback('modified', \
+            self.__maintree.register_callback('node-modified', \
                         functools.partial(self.__emit, 'node-modified'))
         else:
             self.__ft.set_callback('added', \
@@ -261,7 +261,7 @@ class ViewTree(gobject.GObject):
     def get_basetree(self):
         return self.maininterface
             
-    def __emit(self, signal_name, tid,path,neworder=None):
+    def __emit(self, signal_name, tid,path=None,neworder=None):
         for k in self.__cllbcks.get(signal_name,[]):
             f = self.__cllbcks[signal_name][k]
             if neworder:

@@ -137,10 +137,12 @@ class TreeView(gtk.TreeView):
         self.set_model(self.treemodel)
         
         # Drag and drop initialization
-        self.enable_model_drag_source(\
-            gtk.gdk.BUTTON1_MASK,
-            DND_TARGETS,
-            gtk.gdk.ACTION_DEFAULT | gtk.gdk.ACTION_MOVE)
+        #It looks like the enable_model_drag_source is not needed
+        #Worst : it crashes GTG !
+#        self.enable_model_drag_source(\
+#            gtk.gdk.BUTTON1_MASK,
+#            DND_TARGETS,
+#            gtk.gdk.ACTION_DEFAULT | gtk.gdk.ACTION_MOVE)
         self.enable_model_drag_dest(\
             DND_TARGETS,
             gtk.gdk.ACTION_DEFAULT)
