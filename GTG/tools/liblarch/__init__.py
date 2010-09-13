@@ -48,7 +48,7 @@ class Tree():
         self.views = {}
         #main is a reserved name for a viewtree. It is the complete viewtree,
         #without anyfilter
-        self.views['main'] = ViewTree(self.__tree,self.__fbank,static=True)
+        self.views['main'] = ViewTree(self,self.__tree,self.__fbank,static=True)
         if THREAD_PROTECTION:
             self.views['main'].set_thread(self.thread)
 
@@ -153,7 +153,7 @@ class Tree():
         if name and self.views.has_key(name):
             vt = self.views[name]
         else:
-            vt = ViewTree(self.__tree,self.__fbank,refresh=refresh)
+            vt = ViewTree(self,self.__tree,self.__fbank,refresh=refresh)
             if THREAD_PROTECTION:
                 vt.set_thread(self.thread)
             if name:
@@ -213,7 +213,8 @@ class ViewTree(gobject.GObject):
                     'node-deleted' : __gsignal_str,
                     'node-modified': __gsignal_str,}
                                             
-    def __init__(self, maintree, filters_bank, refresh = True, static = False):
+    def __init__(self, maininterface, maintree, filters_bank,\
+                                             refresh = True, static = False):
         '''A ViewTree is the interface that should be used to display Tree(s).
 
            @param maintree: a Tree object, cointaining all the nodes
@@ -225,6 +226,7 @@ class ViewTree(gobject.GObject):
                            Filters cannot be added to such a view.
         '''
         gobject.GObject.__init__(self)
+        self.maininterface = maininterface
         self.__maintree = maintree
         self.static = static
         self.__cllbcks = {}
@@ -253,6 +255,9 @@ class ViewTree(gobject.GObject):
                         
     def set_thread(self,thread):
         self.thread = thread
+        
+    def get_basetree(self):
+        return self.maininterface
             
     def __emit(self, signal_name, tid,path,neworder=None):
         for k in self.__cllbcks.get(signal_name,[]):

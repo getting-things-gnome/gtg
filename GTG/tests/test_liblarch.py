@@ -1181,7 +1181,7 @@ class TestLibLarch(unittest.TestCase):
         Performance tests. Patches that reduce performance too much are not
         acceptable
         '''
-        BIG_NUMBER = 20
+        BIG_NUMBER = 150
         view = self.tree.get_viewtree(refresh = False)
         test = TreeTester(view)
         nodes_id = []
