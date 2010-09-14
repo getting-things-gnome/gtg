@@ -242,8 +242,8 @@ class MainTree(gobject.GObject):
                 c.remove_parent(parent_id)
                 toreturn = True
                 #if no more parent left, adding to the root
-                if not c.has_parent():
-                    self.root.add_child(child_id)
+            if not c.has_parent() and c not in self.root.get_children():
+                self.root.add_child(child_id)
         if toreturn:
             self.__modified(parent_id)
             self.__modified(child_id)
@@ -285,8 +285,10 @@ class MainTree(gobject.GObject):
         if not parent:
             parent = self.root
         index = parent.get_child_index(nid)
-        if not index:
-            raise IndexError('node %s is not a child of %s' %(nid,parid))
+        if index == None:
+            error = 'children are : %s\n' %parent.get_children()
+            error += 'node %s is not a child of %s' %(nid,parid)
+            raise IndexError(error)
         if parent.get_n_children() > index+1:
             toreturn = parent.get_nth_child(index+1)
         return toreturn
@@ -297,7 +299,9 @@ class MainTree(gobject.GObject):
     def has_node(self, id):
         return (id in self.nodes)
 
-    def print_tree(self):
+    def print_tree(self,string=None):
+        if string:
+            print "print_tree with string is not implemented in tree.py"
         self._print_from_node(self.root)
 
     def visit_tree(self, pre_func=None, post_func=None):
@@ -583,19 +587,6 @@ class TreeNode():
                 raise Exception('! could not add_child from thread %s' %t+\
                                 'should be %s' %self.thread)
         if id not in self.children:
-            #We put at the end not that are not yet in tree.
-            #it looks like it is not necessary
-#            newc = []
-#            nonloaded = []
-#            for c in self.children:
-#                if self.tree and self.tree.has_node(c):
-#                    newc.append(c)
-#                else:
-#                    nonloaded.append(c)
-#            newc.append(id)
-#            for n in nonloaded:
-#                newc.append(n)
-#            self.children = newc
             self.children.append(id)
             toreturn = self.new_relationship(self.get_id(),id)
         else:

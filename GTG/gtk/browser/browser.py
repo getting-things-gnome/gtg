@@ -93,7 +93,7 @@ class TaskBrowser(gobject.GObject):
         #treeviews handlers
         self.vtree_panes = {}
         self.tv_factory = TreeviewFactory(self.req,self.config)
-        self.activetree = self.req.get_tasks_tree(name='active')
+        self.activetree = self.req.get_tasks_tree(name='active',refresh=False)
         self.vtree_panes['active'] = \
                 self.tv_factory.active_tasks_treeview(self.activetree)
 
@@ -148,6 +148,7 @@ class TaskBrowser(gobject.GObject):
 
         #Expand all the tasks in the taskview
         r = self.vtree_panes['active'].expand_all()
+        print"expand all and select"
         self.on_select_tag()
         self.browser_shown = False
         
@@ -766,8 +767,8 @@ class TaskBrowser(gobject.GObject):
             self.hide_closed_pane()
 
     def __create_closed_tree(self):
-        closedtree = self.req.get_tasks_tree(name='closed')
-        closedtree.apply_filter('closed')
+        closedtree = self.req.get_tasks_tree(name='closed',refresh=False)
+        closedtree.apply_filter('closed',refresh=False)
         return closedtree
             
     def show_closed_pane(self):
@@ -1106,17 +1107,17 @@ class TaskBrowser(gobject.GObject):
             if taglist and len(taglist) > 0:
                 newtag = [taglist[0]]
             else:
-                newtag = ['no_disabled_tag']
+                newtag = ['gtg-tags-all']
 
         #FIXME:handle multiple tags case
         #We apply filters for every visible ViewTree
         for t in self.vtree_panes:
             #1st we reset the tags filter
-            vtree = self.req.get_tasks_tree(name=t)
+            vtree = self.req.get_tasks_tree(name=t,refresh=False)
             vtree.reset_filters(refresh=False,transparent_only=True)
             #then applying the tag
             if len(newtag) > 0:
-                vtree.apply_filter(newtag[0])
+                vtree.apply_filter(newtag[0],refresh=True)
 
     def on_taskdone_cursor_changed(self, selection=None):
         """Called when selection changes in closed task view.

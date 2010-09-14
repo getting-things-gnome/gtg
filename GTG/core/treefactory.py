@@ -102,14 +102,15 @@ class TreeFactory:
         
         
         #### Filters 
-        tagtree.add_filter('active',self.actively_used_tag)
-        tagtree.add_filter('used',self.used_tag)
+        tagtree.add_filter('activetag',self.actively_used_tag)
+        tagtree.add_filter('usedtag',self.used_tag)
         
-        activeview = tagtree.get_viewtree(name='active',refresh=False)
-        activeview.apply_filter('active')
+        activeview = tagtree.get_viewtree(name='activetags',refresh=False)
+        activeview.apply_filter('activetag')
         
-        usedview = tagtree.get_viewtree(name='used',refresh=False)
-        usedview.apply_filter('used')
+        #This view doesn't seem to be used. So it's not useful to build it now
+#        usedview = tagtree.get_viewtree(name='usedtags',refresh=False)
+#        usedview.apply_filter('usedtag')
         
         self.tagtree = tagtree
         self.tagtree_loaded = True

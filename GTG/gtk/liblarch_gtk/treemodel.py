@@ -296,6 +296,10 @@ class TreeModel(gtk.GenericTreeModel):
                 if DEBUG_MODEL:
                     print "     adding %s on path %s" %(tid,str(node_path))
                 self.row_inserted(node_path, rowref)
+                if len(node_path) > 1:
+                    parpath = node_path[:-1]
+                    parrowref = self.get_iter(parpath)
+                    self.row_has_child_toggled(parpath,parrowref)
             else:
                 if DEBUG_MODEL:
                     print "     modifying %s on path %s" %(tid,str(node_path))
@@ -331,6 +335,11 @@ class TreeModel(gtk.GenericTreeModel):
             print "     deleting row %s  (it's tid %s)" %(str(path),tid)
 #            self.tree.print_tree()
         self.row_deleted(path)
+#        print "removing %s from path %s" %(tid,str(path))
+        if len(path) > 1:
+            parpath = path[:-1]
+            parrowref = self.get_iter(parpath)
+            self.row_has_child_toggled(parpath,parrowref)
         
     def reorder(self,sender,nid,path,neworder):
         if TM_IDLE_ADD:
@@ -348,115 +357,4 @@ class TreeModel(gtk.GenericTreeModel):
             self.rows_reordered(path,rowref,neworder)
         else:
             raise Exception('path/node mismatch in reorder')
-
-
-########### The following should be removed onc liblarch-gtk is working ######
-
-#    def add_task(self,sender,tid,data=None):
-#        print "add date : %s" %data
-#        node_paths = self.tree.get_paths_for_node(tid)
-#        for node_path in node_paths:
-#            rowref = self.get_iter(node_path)
-#            self.row_inserted(node_path, rowref)
-#            if self.tree.node_has_child(tid):
-#                self.row_has_child_toggled(node_path, rowref)
-#        if len(node_paths) == 0:
-#            raise  ValueError("Error :! no path for node %s !" %tid)
-#        while len(self.tasks_to_add) > 0:
-#            tid = self.tasks_to_add.pop(0)
-
-#            run = True
-#            node_paths = self.tree.get_paths_for_node(tid)
-#            parents = self.tree.node_parents(tid)
-#            for pid in parents:
-#                #if we realize that a parent is still to add, we
-#                #don't insert the current task but we put it at the end
-#                #of the queue
-#                if pid in self.tasks_to_add:
-#                    self.tasks_to_add.append(tid)
-#                    run = False
-##                    else:
-##                        print "parent %s is displayed %s" %(pid,self.tree.is_displayed(pid))
-#            if run:
-#                for node_path in node_paths:
-#                    node_iter = self.get_iter(node_path)
-#                    if self.iter_is_valid(node_iter):
-#                        self.row_inserted(node_path, node_iter)
-#                        #following is mandatory if
-#                        #we added a child task before his parent.
-#                        if self.tree.node_has_child(tid):
-#        #                    print "child_toggled 2 : %s" %task.get_title()
-#                            self.row_has_child_toggled(node_path,node_iter)
-#                for pid in parents:
-#                        for par_path in self.tree.get_paths_for_node(pid):
-#                            par_iter = self.get_iter(par_path)
-#    #                            print "child_toggled 3 : %s" %p.get_title()
-#                            if self.iter_is_valid(par_iter):
-#                                self.row_has_child_toggled(par_path, par_iter)
-#        self.lock = False
-
-#    def remove_task(self, sender, tid):
-#        #a task has been removed from the view. Therefore,
-#        # the widgets that represent it should be removed
-#        Log.debug("tasktree remove_task %s" %tid)
-#        print "Move task not yet implemented in liblarch_gtk"
-#        removed = False
-#        node_paths = self.tree.get_paths_for_node(tid)
-#        for node_path in node_paths:
-#            Log.debug("* tasktree REMOVE %s - %s " %(tid,node_path))
-#            self.iter_store.remove(tid,node_path)
-##            print "     remove row %s" %str(node_path)
-#            self.row_deleted(node_path)
-#            removed = True
-#        return removed
-
-#    def move_task(self, parent_tid, child_tid):
-#        """Moves the task identified by child_tid under
-#           parent_tid, removing all the precedent parents.
-#           Child becomes a root task if parent_tid is None"""
-#        #The genealogic search has been moved to liblarch and should be
-#        #removed from here
-#        print "Move task not yet implemented in liblarch_gtk (and it shouldnot)"
-#        def genealogic_search(tid):
-#            if tid not in genealogy:
-#                genealogy.append(tid)
-#                task = self.req.get_task(tid)
-#                for par in task.get_parents():
-#                    genealogic_search(par)
-#        child_task = self.req.get_task(child_tid)
-#        current_parents = child_task.get_parents()
-#        genealogy = []
-#        if parent_tid:
-#            parent_task = self.req.get_task(parent_tid)
-#            parents_parents = parent_task.get_parents()
-#            for p in parents_parents:
-#                genealogic_search(p)
-
-#        #Avoid the typical time-traveller problem being-the-father-of-yourself
-#        #or the grand-father. We need some genealogic research !
-#        if child_tid in genealogy or parent_tid == child_tid:
-#            return
-#        #if we move a task, this task should be saved, even if new
-#        child_task.set_to_keep()
-#        # Remove old parents
-#        for pid in current_parents:
-#            #We first remove the node from the view (to have the path)
-#            node_paths = self.tree.get_paths_for_node(child_task)
-#            for node_path in node_paths:
-#                self.row_deleted(node_path)
-#            #then, we remove the parent
-#            child_task.remove_parent(pid)
-#        #Set new parent
-#        if parent_tid:
-#            child_task.add_parent(parent_tid)
-#        #If we don't have a new parent, add that task to the root
-#        else:
-#            node_paths = self.tree.get_paths_for_node(child_task)
-#            for node_path in node_paths:
-#                node_iter = self.get_iter(node_path)
-#                if self.iter_is_valid(node_iter):
-#                    self.row_inserted(node_path, node_iter)
-#        #if we had a filter, we have to refilter after the drag-n-drop
-#        #This is not optimal and could be improved
-#        self.tree.refilter()
 
