@@ -194,7 +194,7 @@ class Task(TreeNode):
 #            # Create the new task
 #            task = self.req.new_task(tags=[t.get_name() for t in tags], newtask=True)
             for t in tags:
-                self.add_tag(t.get_name())
+                self.add_tag(t)
             if text != "":
                 self.set_title(text.strip())
                 self.set_to_keep()
