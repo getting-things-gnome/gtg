@@ -95,6 +95,9 @@ class FilteredTree():
         @param maintree: Whether this tree is the main tree.  The requester
         must be used to change filters against the main tree.
         """
+        #The filtertree will not return anything if it has not be refreshed
+        #at least once.
+        self.__initialized = False
         self.tree = tree
         #The cached Virtual Root
         self.cache_vr = []
@@ -126,13 +129,6 @@ class FilteredTree():
             self.trace = '\nDEBUG TRACE for ViewTree %s\n-------------\n\n'%self
         self.profile = {'add':[0,0],'delete':[0,0],'update':[0,0]}
         
-        #an initial refilter is always needed if we don't apply a filter
-        #for performance reason, we do it only if refresh = True
-        self.inrefresh = False
-        if refresh:
-            self.refilter()
-        
-        
         #End of initialisation : we connect the FT to the MainTree
         if FT_USE_SIGNALS:
             self.tree.connect("node-added", self.__task_added)
@@ -146,6 +142,12 @@ class FilteredTree():
                                                 self.__task_modified,None))
             self.tree.register_callback("node-deleted", functools.partial(\
                                                 self.__task_deleted,None))
+                                                
+        #an initial refilter is always needed if we don't apply a filter
+        #for performance reason, we do it only if refresh = True
+        self.inrefresh = False
+        if refresh:
+            self.refilter()
         
     #those callbacks are called instead of signals.
     def set_callback(self,event,func):
@@ -153,7 +155,7 @@ class FilteredTree():
         
     def callback(self,event,tid,path,neworder=None):
         func = self.cllbcks.get(event,None)
-        if func:
+        if func and self.__initialized:
 #           The reordered callback might take None as arguments
             if neworder:
                 func(tid,path,neworder)
@@ -188,26 +190,29 @@ class FilteredTree():
     def external_update_node(self,tid):
         if not tid:
             raise ValueError('cannot update node None')
-        self.__updating_queue.append([tid,'update'])
-        if not self.__updating_lock and len(self.__updating_queue) > 0:
-            self.__updating_lock = True
-            self.__execution_loop()
+        if self.__initialized:
+            self.__updating_queue.append([tid,'update'])
+            if not self.__updating_lock and len(self.__updating_queue) > 0:
+                self.__updating_lock = True
+                self.__execution_loop()
 
     def external_add_node(self,tid):
         if not tid:
             raise ValueError('cannot add node None')
-        self.__updating_queue.append([tid,'add'])
-        if not self.__updating_lock and len(self.__updating_queue) > 0:
-            self.__updating_lock = True
-            self.__execution_loop()
+        if self.__initialized:
+            self.__updating_queue.append([tid,'add'])
+            if not self.__updating_lock and len(self.__updating_queue) > 0:
+                self.__updating_lock = True
+                self.__execution_loop()
             
     def external_remove_node(self,tid):
         if not tid:
             raise ValueError('cannot remove node None')
-        self.__updating_queue.append([tid,'delete'])
-        if not self.__updating_lock and len(self.__updating_queue) > 0:
-            self.__updating_lock = True
-            self.__execution_loop()
+        if self.__initialized:
+            self.__updating_queue.append([tid,'delete'])
+            if not self.__updating_lock and len(self.__updating_queue) > 0:
+                self.__updating_lock = True
+                self.__execution_loop()
             
             
     def __execution_loop(self):
@@ -905,8 +910,9 @@ class FilteredTree():
         the filter is changed (i.e. only filters_bank should call it).
         """
         self.inrefresh = True
+        self.__initialized = True
         #If we have only one flat filter, the result is flat
-        print " * * *  Start refilter * * *  * %s" %self.applied_filters
+#        print " * * *  Start refilter * * *  * %s" %self.applied_filters
         self.__flat = False
         for f in self.applied_filters:
             filt = self.fbank.get_filter(f)
