@@ -662,7 +662,7 @@ class RTMProxy(object):
         if not list_object_list:
             return []
         #we asked for one, so we should get one
-        assert(len(list_object_list), 1)
+        assert(len(list_object_list) == 1)
         list_object = list_object_list[0]
         #check that the given list is the correct one
         assert(list_object.id == list_id)
