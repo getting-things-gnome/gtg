@@ -297,7 +297,9 @@ class MainTree(gobject.GObject):
     def has_node(self, id):
         return (id in self.nodes)
 
-    def print_tree(self):
+    def print_tree(self,string=None):
+        if string:
+            print "print_tree with string is not implemented in tree.py"
         self._print_from_node(self.root)
 
     def visit_tree(self, pre_func=None, post_func=None):

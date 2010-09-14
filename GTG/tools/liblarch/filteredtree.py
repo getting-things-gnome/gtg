@@ -906,7 +906,7 @@ class FilteredTree():
         """
         self.inrefresh = True
         #If we have only one flat filter, the result is flat
-        print " * * *  Start refilter * * *  * %s" %self.applied_filters
+#        print " * * *  Start refilter * * *  * %s" %self.applied_filters
         self.__flat = False
         for f in self.applied_filters:
             filt = self.fbank.get_filter(f)
