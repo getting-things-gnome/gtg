@@ -138,7 +138,7 @@ class PluginAPI:
         #-1 means "append to the end"
         self.__toolbar.insert(widget, -1)
 
-    def remove_task_toolbar_item(self, widget):
+    def remove_toolbar_item(self, widget):
         """
         Remove a widget from the toolbar.
         """

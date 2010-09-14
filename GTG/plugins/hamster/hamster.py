@@ -37,9 +37,6 @@ class hamsterPlugin:
         #task editor widget
         self.vbox = None
         self.button=gtk.ToolButton()
-        self.menu_item = gtk.MenuItem(_("Start task in Hamster"))
-        self.menu_item.show_all()
-        self.taskbutton = None
     
     #### Interaction with Hamster
     def sendTask(self, task):
@@ -148,32 +145,33 @@ class hamsterPlugin:
         self.hamster=dbus.SessionBus().get_object('org.gnome.Hamster', '/org/gnome/Hamster')
         
         # add menu item
-        self.menu_item.connect('activate', self.browser_cb, plugin_api)
-        plugin_api.add_menu_item(self.menu_item)
-        
-        # and button
-        self.button.set_label(_("Start in Hamster"))
-        self.button.set_icon_name('hamster-applet')
-        self.button.set_tooltip_text(_("Start a new activity in Hamster Time" +\
-                                       "Tracker based on the selected task"))
-        self.button.connect('clicked', self.browser_cb, plugin_api)
-        self.button.show()
-        plugin_api.add_toolbar_item(self.button)
-        
+        if plugin_api.is_browser():
+            self.menu_item = gtk.MenuItem(_("Start task in Hamster"))
+            self.menu_item.show_all()
+            self.menu_item.connect('activate', self.browser_cb, plugin_api)
+            plugin_api.add_menu_item(self.menu_item)
+            # and button
+            self.button.set_label(_("Start in Hamster"))
+            self.button.set_icon_name('hamster-applet')
+            self.button.set_tooltip_text(_("Start a new activity in Hamster Time" +\
+                                           "Tracker based on the selected task"))
+            self.button.connect('clicked', self.browser_cb, plugin_api)
+            self.button.show()
+            plugin_api.add_toolbar_item(self.button)
         # set up preferences
         self.preference_dialog_init()
         self.preferences_load()
 
     def onTaskOpened(self, plugin_api):
         # add button
-        button = gtk.ToolButton()
-        button.set_label("Start")
-        button.set_icon_name('hamster-applet')
-        button.set_tooltip_text(_("Start a new activity in Hamster Time " + \
+        self.taskbutton = gtk.ToolButton()
+        self.taskbutton.set_label("Start")
+        self.taskbutton.set_icon_name('hamster-applet')
+        self.taskbutton.set_tooltip_text(_("Start a new activity in Hamster Time " + \
                              " Tracker based on this task"))
-        button.connect('clicked', self.task_cb, plugin_api)
-        button.show()
-        self.taskbutton = plugin_api.add_toolbar_item(button)
+        self.taskbutton.connect('clicked', self.task_cb, plugin_api)
+        self.taskbutton.show()
+        plugin_api.add_toolbar_item(self.taskbutton)
         
         task = plugin_api.get_ui().get_task()
         records = self.get_records(task)
@@ -229,10 +227,12 @@ class hamsterPlugin:
             self.vbox = plugin_api.add_widget_to_taskeditor(vbox)
         
     def deactivate(self, plugin_api):
-        plugin_api.remove_menu_item(self.menu_item)
-        plugin_api.remove_toolbar_item(self.button)
-        plugin_api.remove_toolbar_item(self.taskbutton)
-        plugin_api.remove_widget_from_taskeditor(self.vbox)
+        if plugin_api.is_browser():
+            plugin_api.remove_menu_item(self.menu_item)
+            plugin_api.remove_toolbar_item(self.button)
+        else:
+            plugin_api.remove_toolbar_item(self.taskbutton)
+            plugin_api.remove_widget_from_taskeditor(self.vbox)
         
     def browser_cb(self, widget, plugin_api):
         task_id = plugin_api.get_ui().get_selected_task()
