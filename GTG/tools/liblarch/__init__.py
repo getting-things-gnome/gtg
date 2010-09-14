@@ -237,6 +237,7 @@ class ViewTree(gobject.GObject):
         #If we are static, we directly ask the tree. No need of an
         #FilteredTree layer
         self.__ft = None
+        self.__fbank = filters_bank
         if static:
             #Needed for the get_n_nodes with filters
 #            self.__ft = FilteredTree(maintree, filters_bank, refresh = refresh)
@@ -351,7 +352,7 @@ class ViewTree(gobject.GObject):
         """
         if not self.__ft:
             print "you cannot get_n_nodes for a static tree"
-            self.__ft = FilteredTree(maintree, filters_bank, refresh = refresh)
+            self.__ft = FilteredTree(self.__maintree, self.__fbank, refresh = True)
         return self.__ft.get_n_nodes(withfilters=withfilters,\
                                     include_transparent=include_transparent)
 
@@ -360,7 +361,10 @@ class ViewTree(gobject.GObject):
             t = threading.current_thread()
             if t != self.thread:
                 raise Exception('! could not get_node_for_path from thread %s' %t)
-        return self.__ft.get_node_for_path(path)
+        if self.static:
+            return self.__maintree.get_node_for_path(path)
+        else:
+            return self.__ft.get_node_for_path(path)
 
     #If nid is none, return root path
     def get_paths_for_node(self, nid=None):
@@ -410,7 +414,10 @@ class ViewTree(gobject.GObject):
             if t != self.thread:
                 raise Exception('! could not node_all_children from thread %s' %t)
         if self.static:
-            toreturn = self.__maintree.get_node(nid).get_children()
+            if not nid or self.__maintree.has_node(nid):
+                toreturn = self.__maintree.get_node(nid).get_children()
+            else:
+                toreturn = []
         else:
             toreturn = self.__ft.node_all_children(nid)
         return toreturn
@@ -465,7 +472,7 @@ class ViewTree(gobject.GObject):
             if t != self.thread:
                 raise Exception('! could not is_displayed from thread %s' %t)
         if self.static:
-            return self.__maintree.has_child(nid)
+            return self.__maintree.has_node(nid)
         else:
             return self.__ft.is_displayed(nid)
 
