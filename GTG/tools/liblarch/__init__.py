@@ -155,6 +155,7 @@ class Tree():
         if name and self.views.has_key(name):
             vt = self.views[name]
         else:
+            print "   -> creating new viewtree %s  - %s" %(name,self.views.keys())
             vt = ViewTree(self,self.__tree,self.__fbank,refresh=refresh)
             if THREAD_PROTECTION:
                 vt.set_thread(self.thread)

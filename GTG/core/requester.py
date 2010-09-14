@@ -160,7 +160,7 @@ class Requester(gobject.GObject):
     ###############################################
 
     def get_tag_tree(self):
-        return self.ds.get_tagstore().get_viewtree(name='active')
+        return self.ds.get_tagstore().get_viewtree(name='activetags')
 
     def new_tag(self, tagname):
         """Create a new tag called 'tagname'.
