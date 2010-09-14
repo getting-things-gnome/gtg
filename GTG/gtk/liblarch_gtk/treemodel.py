@@ -18,8 +18,14 @@
 # -----------------------------------------------------------------------------
 DEBUG_MODEL = False
 TM_USE_SIGNALS = True
-TM_IDLE_ADD = True
+TM_IDLE_ADD = False
 THREAD_PROTECTION = False
+ROW_IDLE_ADD = False
+
+#I believe that the correct setup should be : 
+# signals = False
+# idle_add = True (to only have the call in the gtk.mainloop)
+#thread_protection = True
 
 import xml.sax.saxutils as saxutils
 
@@ -295,19 +301,19 @@ class TreeModel(gtk.GenericTreeModel):
             if data == 'add':
                 if DEBUG_MODEL:
                     print "     adding %s on path %s" %(tid,str(node_path))
-                self.row_inserted(node_path, rowref)
+                self.row_func('inserted',node_path, rowref)
                 if len(node_path) > 1:
                     parpath = node_path[:-1]
                     parrowref = self.get_iter(parpath)
-                    self.row_has_child_toggled(parpath,parrowref)
+                    self.row_func('child_toggled',parpath,parrowref)
             else:
                 if DEBUG_MODEL:
                     print "     modifying %s on path %s" %(tid,str(node_path))
-                self.row_changed(node_path, rowref)
+                self.row_func('changed',node_path, rowref)
             if self.tree.node_has_child(tid):
                 if DEBUG_MODEL:
                     print "     child toggling for %s %s" %(tid,str(node_path))
-                self.row_has_child_toggled(node_path, rowref)
+                self.row_func('child_toggled',node_path, rowref)
         else:
             raise ValueError("%s path for %s is supposed" %(data,tid) +\
                     "to be %s, the one of %s "%(node_path, actual_tid))
@@ -334,14 +340,14 @@ class TreeModel(gtk.GenericTreeModel):
         if DEBUG_MODEL:
             print "     deleting row %s  (it's tid %s)" %(str(path),tid)
 #            self.tree.print_tree()
-        self.row_deleted(path)
+        self.row_func('delete',path)
 #        print "removing %s from path %s" %(tid,str(path))
         if len(path) > 1:
             parpath = path[:-1]
             parrowref = self.get_iter(parpath)
-            self.row_has_child_toggled(parpath,parrowref)
+            self.row_func('child_toggled',parpath,parrowref)
         
-    def reorder(self,sender,nid,path,neworder):
+    def reorder(self,nid,path,neworder):
         if TM_IDLE_ADD:
             gobject.idle_add(self.__reorder,None,nid,path,neworder)
         else:
@@ -357,4 +363,20 @@ class TreeModel(gtk.GenericTreeModel):
             self.rows_reordered(path,rowref,neworder)
         else:
             raise Exception('path/node mismatch in reorder')
+            
+    #This function send the signals to the treeview
+    def row_func(self,func,*args):
+        if func == 'delete':
+            f = self.row_deleted
+        elif func == "child_toggled":
+            f = self.row_has_child_toggled
+        elif func == 'inserted':
+            f = self.row_inserted
+        elif func == 'changed':
+            f = self.row_changed
+        if ROW_IDLE_ADD:
+            gobject.idle_add(f,*args)
+        else:
+            f(*args)
+        
 
