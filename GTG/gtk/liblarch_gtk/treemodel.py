@@ -296,6 +296,10 @@ class TreeModel(gtk.GenericTreeModel):
                 if DEBUG_MODEL:
                     print "     adding %s on path %s" %(tid,str(node_path))
                 self.row_inserted(node_path, rowref)
+                if len(node_path) > 1:
+                    parpath = node_path[:-1]
+                    parrowref = self.get_iter(parpath)
+                    self.row_has_child_toggled(parpath,parrowref)
             else:
                 if DEBUG_MODEL:
                     print "     modifying %s on path %s" %(tid,str(node_path))
@@ -331,6 +335,11 @@ class TreeModel(gtk.GenericTreeModel):
             print "     deleting row %s  (it's tid %s)" %(str(path),tid)
 #            self.tree.print_tree()
         self.row_deleted(path)
+        print "removing from path %s" %str(path)
+        if len(path) > 1:
+            parpath = path[:-1]
+            parrowref = self.get_iter(parpath)
+            self.row_has_child_toggled(parpath,parrowref)
         
     def reorder(self,sender,nid,path,neworder):
         if TM_IDLE_ADD:
