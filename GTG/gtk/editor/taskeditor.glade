@@ -11,7 +11,6 @@
       <object class="GtkVBox" id="vbox4">
         <property name="visible">True</property>
         <property name="extension_events">cursor</property>
-        <property name="orientation">vertical</property>
         <child>
           <object class="GtkToolbar" id="task_tb1">
             <property name="visible">True</property>
@@ -350,7 +349,6 @@
     <child>
       <object class="GtkVBox" id="vbox5">
         <property name="visible">True</property>
-        <property name="orientation">vertical</property>
         <child>
           <object class="GtkCalendar" id="calendar1">
             <property name="visible">True</property>
@@ -370,7 +368,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <signal name="released" handler="on_set_fuzzydate_now"/>
+                <signal name="clicked" handler="on_set_fuzzydate_now"/>
               </object>
               <packing>
                 <property name="position">0</property>
@@ -382,7 +380,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <signal name="released" handler="on_set_fuzzydate_soon"/>
+                <signal name="clicked" handler="on_set_fuzzydate_soon"/>
               </object>
               <packing>
                 <property name="position">1</property>
@@ -394,7 +392,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <signal name="released" handler="on_set_fuzzydate_later"/>
+                <signal name="clicked" handler="on_set_fuzzydate_later"/>
               </object>
               <packing>
                 <property name="position">2</property>
@@ -406,7 +404,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkButton" id="button2">
+          <object class="GtkButton" id="button_clear">
             <property name="label">gtk-clear</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
