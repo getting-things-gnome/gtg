@@ -151,6 +151,7 @@ class TaskEditor:
             self.task.set_to_keep()
         self.textview.modified(full=True)
         self.window.connect("destroy", self.destruction)
+        self.calendar.connect("date-changed", self.on_date_changed)
 
         # plugins
         self.pengine = PluginEngine()
@@ -378,36 +379,36 @@ class TaskEditor:
 
 
 
-    def on_date_pressed(self, widget, date_kind): 
-        """Called when the due button is clicked."""
+    def on_date_pressed(self, widget, date_kind):
+        """Called when a date-changing button is clicked."""
         if date_kind == GTGCalendar.DATE_KIND_DUE:
-            #we open a calendar that's pointed on:
+            #we display a calendar open on a day:
             #    the due date, the start date (if due is not set), or today
-            #    (which is the default)
-            toset = self.task.get_due_date()
-            if not toset or self.task.get_start_date() > toset:
-                toset = self.task.get_start_date()
+            #    (which is the default of the GTGCalendar class)
+            date = self.task.get_due_date()
+            if not date or self.task.get_start_date() > date:
+                date = self.task.get_start_date()
         elif date_kind == GTGCalendar.DATE_KIND_START:
-            toset = self.task.get_start_date()
+            date = self.task.get_start_date()
         elif date_kind == GTGCalendar.DATE_KIND_CLOSED:
-            toset = self.task.get_closed_date()
-
-        self.calendar.set_date(toset, date_kind)
+            date = self.task.get_closed_date()
+        self.calendar.set_date(date, date_kind)
+        #we show the calendar at the right position
         rect = widget.get_allocation()
         x, y = widget.window.get_origin()
         self.calendar.show_at_position(x + rect.x + rect.width,
                                        y + rect.y)
 
 
-    def set_opened_date(self, date):
-        if self.__opened_date == "due" :
+    def on_date_changed(self, calendar):
+        date, date_kind = calendar.get_selected_date()
+        if date_kind == GTGCalendar.DATE_KIND_DUE:
             self.task.set_due_date(date)
-        elif self.__opened_date == "start" :
+        elif date_kind == GTGCalendar.DATE_KIND_START:
             self.task.set_start_date(date)
-        elif self.__opened_date == "closed" :
+        elif date_kind == GTGCalendar.DATE_KIND_CLOSED:
             self.task.set_closed_date(date)
         self.refresh_editor()
-        self.__close_calendar()
 
     def dismiss(self,widget) : #pylint: disable-msg=W0613
         stat = self.task.get_status()
