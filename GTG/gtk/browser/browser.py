@@ -25,6 +25,7 @@
 import locale
 import time
 import webbrowser
+import threading
 
 import pygtk
 pygtk.require('2.0')
@@ -836,9 +837,49 @@ class TaskBrowser(gobject.GObject):
         defer_date = no_date
         if text:
             tags, notagonly = self.get_selected_tags()
+            #We will select quick-added task in browser.
+            #This has proven to be quite complex and deserves an explanation.
+            #We register a callback on the sorted treemodel that we're
+            #displaying, which is a TreeModelSort. When a row gets added, we're
+            #notified of it.
+            # We have to verify that that row belongs to the task we should
+            # select. So, we have to wait for the task to be created, and then
+            # wait for its tid to show up (invernizzi)
+            def select_next_added_task_in_browser(treemodelsort, path, iter, self):
+                def selecter(treemodelsort, path, iter, self):
+                    self.__last_quick_added_tid_event.wait()
+                    treeview = self.vtree_panes['active']
+                    liblarch_path = treemodelsort.convert_path_to_child_path(path)
+                    tid = self.activetree.get_node_for_path(liblarch_path)
+                    if self.__last_quick_added_tid == tid:
+                        #this is the correct task
+                        treemodelsort.disconnect(self.__quick_add_select_handle)
+                        selection = treeview.get_selection()
+                        selection.unselect_all()
+                        selection.select_path(path)
+                        #we move the focus to the treeview, so that pressing 
+                        # ENTER will open the task. However, this could be
+                        # annoying if another task must be added after this one.
+                        # Feel free to revert this line (invernizzi)
+                        treeview.grab_focus()
+                thread = threading.Thread(target = selecter,
+                                 args = (treemodelsort, path, iter, self))
+                thread.setDaemon(True)
+                thread.start()
+            #event that is set when the new task is created
+            self.__last_quick_added_tid_event = threading.Event()
+            self.__quick_add_select_handle = \
+                self.vtree_panes['active'].get_sorted_treemodel().connect(\
+                                    "row-inserted",
+                                    select_next_added_task_in_browser,
+                                    self)
             task = self.req.new_task(newtask=True)
+            self.__last_quick_added_tid = task.get_id()
+            self.__last_quick_added_tid_event.set()
             task.set_complex_title(text,tags=tags)
             self.quickadd_entry.set_text('')
+
+            #signal the event for the plugins to catch
             gobject.idle_add(self.emit, "task-added-via-quick-add",
                              task.get_id())
 

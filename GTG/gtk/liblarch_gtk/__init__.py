@@ -249,6 +249,8 @@ class TreeView(gtk.TreeView):
             ids = [ts.get_value(iter, 0) for iter in iters]
         return ids
         
+    def get_sorted_treemodel(self):
+        return self.treemodel
         
     ######### DRAG-N-DROP functions #####################################
     
