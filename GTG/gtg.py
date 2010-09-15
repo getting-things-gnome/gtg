@@ -55,7 +55,6 @@ from GTG.backends              import BackendFactory
 from GTG                import _
 from GTG.core           import CoreConfig
 from GTG.core.datastore import DataStore
-from GTG.gtk.crashhandler import signal_catcher
 from GTG.gtk.manager    import Manager
 from GTG.tools.logger   import Log
 
@@ -109,6 +108,7 @@ def main(options=None, args=None):
     #To be more user friendly and get the logs of crashes, we show an apport
     # hooked window upon crashes
     if options.no_crash_handler == False:
+        from GTG.gtk.crashhandler import signal_catcher
         with signal_catcher(manager.close_browser):
             manager.main(once_thru=options.boot_test, uri_list = args)
     else:
