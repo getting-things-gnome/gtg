@@ -566,10 +566,6 @@ class TaskBrowser(gobject.GObject):
         self.window.set_title("%s - "%parenthesis + WINDOW_TITLE)
 
 
-    def get_tasktitle(self, tid):
-        task = self.req.get_task(tid)
-        return task.get_title()
-                
     def tag_match_func(self, completion, key, iter, column):
         model = completion.get_model()
         text = model.get_value(iter, column)
