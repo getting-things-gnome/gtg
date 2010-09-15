@@ -22,14 +22,12 @@ import pango
 import xml.sax.saxutils as saxutils
 import locale
 
-from GTG     import _
-from GTG.core.task import Task
+from GTG                              import _
+from GTG.core.task                    import Task
 from GTG.gtk.browser.CellRendererTags import CellRendererTags
-from GTG.gtk.liblarch_gtk import TreeView
-from GTG.gtk import colors
-from GTG.tools.dates             import no_date,\
-                                        FuzzyDate, \
-                                        get_canonical_date
+from GTG.gtk.liblarch_gtk             import TreeView
+from GTG.gtk                          import colors
+from GTG.tools                        import dates
 
 class TreeviewFactory():
 
@@ -74,7 +72,13 @@ class TreeviewFactory():
         
     #task title/label
     def task_label_column(self, node):
-        title = saxutils.escape(node.get_title())
+        str_format = "%s"
+        #we mark in bold tasks which are due now and those marked as Now (fuzzy
+        # date)
+        due = node.get_due_date()
+        if (due.days_left == 0 or due == dates.NOW):
+            str_format = "<b>%s</b>"
+        title = str_format % saxutils.escape(node.get_title())
         #FIXME
 #        color = self.treeview.style.text[gtk.STATE_INSENSITIVE].to_string()
         color = "red"
@@ -149,9 +153,11 @@ class TreeviewFactory():
 
         if sort == 0:
             # Put fuzzy dates below real dates
-            if isinstance(t1, FuzzyDate) and not isinstance(t2, FuzzyDate):
+            if isinstance(t1, dates.FuzzyDate) \
+               and not isinstance(t2, dates.FuzzyDate):
                 sort = reverse_if_descending(1)
-            elif isinstance(t2, FuzzyDate) and not isinstance(t1, FuzzyDate):
+            elif isinstance(t2, dates.FuzzyDate) \
+                    and not isinstance(t1, dates.FuzzyDate):
                 sort = reverse_if_descending(-1)
         
         if sort == 0: # Group tasks with the same tag together for visual cleanness 
@@ -383,4 +389,4 @@ class TreeviewFactory():
                         treeview.style.text[gtk.STATE_INSENSITIVE].to_string()
         treeview.set_sort_column('tagname')
         return treeview
-        
+
