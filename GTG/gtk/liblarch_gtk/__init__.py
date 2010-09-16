@@ -60,6 +60,10 @@ class TreeView(gtk.TreeView):
         
         self.dnd_internal_target = ''
         self.dnd_external_targets = {}
+        
+        #multiple_selection
+        self.multiple_selection = False
+        self.defer_select=False
 
         self.basetree = tree
         #We build the model
@@ -185,6 +189,16 @@ class TreeView(gtk.TreeView):
             dnd_targets,
             gtk.gdk.ACTION_DEFAULT | gtk.gdk.ACTION_MOVE)
         #end of DnD initialization
+        
+    def set_multiple_selection(self,bol):
+        self.multiple_selection = bol
+        if bol:
+            self.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
+            self.connect('button_press_event', self.on_button_press)
+            self.connect('button_release_event', self.on_button_release)
+        else:
+            self.get_selection().set_mode(gtk.SELECTION_SINGLE)
+            #FIXME : we have to disconnect the two signals !
         
 
     def get_columns(self):
@@ -361,3 +375,31 @@ class TreeView(gtk.TreeView):
                 source = src_model.get_value(i,0)
                 f(source, destination_tid)
         self.emit_stop_by_name('drag_data_received')
+        
+        ############### Multiple selection functions ########################
+        
+    def on_button_press(self, widget, event):
+        # Here we intercept mouse clicks on selected items so that we can
+        # drag multiple items without the click selecting only one
+        target = self.get_path_at_pos(int(event.x), int(event.y))
+        if (target \
+           and event.type == gtk.gdk.BUTTON_PRESS\
+           and event.button == 1\
+           and not (event.state & (gtk.gdk.CONTROL_MASK|gtk.gdk.SHIFT_MASK))\
+           and self.get_selection().path_is_selected(target[0])):
+               # disable selection
+               self.get_selection().set_select_function(lambda *ignore: False)
+               self.defer_select = target[0]
+            
+    def on_button_release(self, widget, event):
+        # re-enable selection
+        self.get_selection().set_select_function(lambda *ignore: True)
+        
+        target = self.get_path_at_pos(int(event.x), int(event.y))    
+        if (self.defer_select and target 
+           and self.defer_select == target[0]
+           and not (event.x==0 and event.y==0)): # certain drag and drop 
+                                                 # operations still have path
+               # if user didn't drag, simulate the click previously ignored
+               self.set_cursor(target[0], target[1], False)
+        self.defer_select=False
