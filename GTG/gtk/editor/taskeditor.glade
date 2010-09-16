@@ -368,7 +368,6 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <signal name="clicked" handler="on_set_fuzzydate_now"/>
               </object>
               <packing>
                 <property name="position">0</property>
@@ -380,7 +379,6 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <signal name="clicked" handler="on_set_fuzzydate_soon"/>
               </object>
               <packing>
                 <property name="position">1</property>
@@ -392,7 +390,6 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <signal name="clicked" handler="on_set_fuzzydate_later"/>
               </object>
               <packing>
                 <property name="position">2</property>
@@ -410,7 +407,6 @@
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
             <property name="use_stock">True</property>
-            <signal name="released" handler="on_nodate"/>
           </object>
           <packing>
             <property name="expand">False</property>
