@@ -210,8 +210,14 @@ class TreeviewFactory():
             t2_order = t2.get_attribute("order")
             return cmp(t1_order, t2_order)
             
-    def tag_task_dnd(self,source,target):
-        print "DND : %s to %s" %(source,target)
+    def ontag_task_dnd(self,source,target):
+        if target.startswith('@'):
+            task = self.req.get_task(source)
+            task.add_tag(target)
+        elif target == 'gtg-tags-none':
+            task = self.req.get_task(source)
+            for t in task.get_tags_name():
+                task.remove_tag(t)
 
     ############################################
     ######## The Factory #######################
@@ -389,7 +395,7 @@ class TreeviewFactory():
         treeview.set_row_separator_func(self.is_tag_separator_filter)
         treeview.set_headers_visible(False)
         treeview.set_dnd_name('gtg/tag-iter-str')
-        treeview.set_dnd_external('gtg/task-iter-str',self.tag_task_dnd)
+        treeview.set_dnd_external('gtg/task-iter-str',self.ontag_task_dnd)
         #Updating the unactive color (same for everyone)
         self.unactive_color = \
                         treeview.style.text[gtk.STATE_INSENSITIVE].to_string()

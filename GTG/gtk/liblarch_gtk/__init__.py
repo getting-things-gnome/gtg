@@ -346,5 +346,5 @@ class TreeView(gtk.TreeView):
                 src_model = context.get_source_widget().get_model()
                 i = src_model.get_iter_from_string(iter)
                 source = src_model.get_value(i,0)
-                print "iter is %s and destination is %s" %(source, destination_tid)
+                f(source, destination_tid)
         self.emit_stop_by_name('drag_data_received')
