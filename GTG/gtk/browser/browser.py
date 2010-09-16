@@ -857,11 +857,6 @@ class TaskBrowser(gobject.GObject):
                         selection = treeview.get_selection()
                         selection.unselect_all()
                         selection.select_path(path)
-                        #we move the focus to the treeview, so that pressing 
-                        # ENTER will open the task. However, this could be
-                        # annoying if another task must be added after this one.
-                        # Feel free to revert this line (invernizzi)
-                        treeview.grab_focus()
                 thread = threading.Thread(target = selecter,
                                  args = (treemodelsort, path, iter, self))
                 thread.setDaemon(True)
@@ -882,6 +877,12 @@ class TaskBrowser(gobject.GObject):
             #signal the event for the plugins to catch
             gobject.idle_add(self.emit, "task-added-via-quick-add",
                              task.get_id())
+        else:
+            #if no text is selected, we open the currently selected task
+            nids = self.vtree_panes['active'].get_selected_nodes()
+            for nid in nids:
+                self.vmanager.open_task(nid)
+            
 
     def on_tag_treeview_button_press_event(self, treeview, event):
         Log.debug("Received button event #%d at %d,%d" %(event.button, event.x, event.y))

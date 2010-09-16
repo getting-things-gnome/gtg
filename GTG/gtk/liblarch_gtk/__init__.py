@@ -251,7 +251,20 @@ class TreeView(gtk.TreeView):
         
     def get_sorted_treemodel(self):
         return self.treemodel
-        
+
+    def get_selected_nids(self):
+        '''
+        returns a list containing the node ids selected in the treeview
+        '''
+        #we get the rows selected in the treemodelsort
+        treemodel, rows = self.get_selection().get_selected_rows()
+        #we find the paths for the unsorted model
+        liblarch_paths = [treemodel.convert_path_to_child_path(path) \
+                                for path in rows]
+        #we fetch the selected nids
+        return [self.basetree.get_node_for_path(liblarch_path) \
+                    for liblarch_path in liblarch_paths]
+
     ######### DRAG-N-DROP functions #####################################
     
     def on_drag_drop(self, treeview, context, selection, info, timestamp):
