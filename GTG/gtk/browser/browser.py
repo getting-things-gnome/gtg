@@ -147,9 +147,6 @@ class TaskBrowser(gobject.GObject):
         
         self.restore_state_from_conf()
 
-        #Expand all the tasks in the taskview
-        r = self.vtree_panes['active'].expand_all()
-        print"expand all and select"
         self.on_select_tag()
         self.browser_shown = False
         
@@ -494,8 +491,12 @@ class TaskBrowser(gobject.GObject):
             self.priv["contents_preview_enable"] = \
                     eval(self.config["browser"]["contents_preview_enable"])
         
-        if "collapsed_tasks" not in self.config["browser"]:
+        if "collapsed_tasks" not in self.config["browser"].keys():
+            print "no collapsed_tasks in browser"
             self.config["browser"]["collapsed_tasks"] = []
+        for t in self.config["browser"]["collapsed_tasks"]:
+#            print "browser.py : collapsing %s" %t
+            self.vtree_panes['active'].collapse_node(t)
                 
         if "collapsed_tags" in self.config["browser"]:
             toset = self.config["browser"]["collapsed_tags"]
@@ -647,37 +648,37 @@ class TaskBrowser(gobject.GObject):
             view = "workview"
         else:
             view = "default"
-
         # Populate configuration dictionary
-        self.config["browser"] = {
-            'width':
-                self.priv["window_width"],
-            'height':
-                self.priv["window_height"],
-            'x_pos':
-                self.priv["window_xpos"],
-            'y_pos':
-                self.priv["window_ypos"],
-            'contents_preview_enable':
-                self.priv["contents_preview_enable"],
-            #FIXME : to implement in liblarch
-#            'collapsed_tags':
-#                self.tagtreeview.get_collapsed_tags(),
-            'tag_pane':
-                tag_sidebar,
-            'tag_pane_width':
-                tag_sidebar_width,
-            'closed_task_pane':
-                closed_pane,
-            'ctask_pane_height':
-                closed_pane_height,
-            'toolbar':
-                toolbar,
-            'quick_add':
-                quickadd_pane,
-            'view':
-                view,
-            }
+        #FIXME :this is crazy ! We are overwriting our config before closing it !
+#        self.config["browser"] = {
+#            'width':
+#                self.priv["window_width"],
+#            'height':
+#                self.priv["window_height"],
+#            'x_pos':
+#                self.priv["window_xpos"],
+#            'y_pos':
+#                self.priv["window_ypos"],
+#            'contents_preview_enable':
+#                self.priv["contents_preview_enable"],
+#            #FIXME : to implement in liblarch
+##            'collapsed_tags':
+##                self.tagtreeview.get_collapsed_tags(),
+#            'tag_pane':
+#                tag_sidebar,
+#            'tag_pane_width':
+#                tag_sidebar_width,
+#            'closed_task_pane':
+#                closed_pane,
+#            'ctask_pane_height':
+#                closed_pane_height,
+#            'toolbar':
+#                toolbar,
+#            'quick_add':
+#                quickadd_pane,
+#            'view':
+#                view,
+#            }
 #        if   sort_column is not None and sort_order == gtk.SORT_ASCENDING:
 #            self.config["browser"]["tasklist_sort"]  = [sort_column, 0]
 #        elif sort_column is not None and sort_order == gtk.SORT_DESCENDING:
@@ -824,12 +825,19 @@ class TaskBrowser(gobject.GObject):
             self.quickadd_pane.hide()
 
     def on_task_expanded(self, sender, tid):
+#        print "browser.py : on_task_expanded %s" %tid
         if tid in self.config['browser']["collapsed_tasks"]:
             self.config['browser']["collapsed_tasks"].remove(tid)
         
     def on_task_collapsed(self, sender, tid):
-        if tid not in self.config['browser'].get("collapsed_tasks",[]):
-            self.config['browser']["collapsed_tasks"].append(tid)
+#        print "browser.py : on task_collapsed %s" %tid
+        if tid not in self.config['browser']["collapsed_tasks"]:
+            l= self.config['browser']["collapsed_tasks"]
+            print l
+            self.config['browser']["collapsed_tasks"] = [tid]
+#            l.append(str(tid))
+            print l, self.config['browser']["collapsed_tasks"]
+        print "in config : %s" %self.config['browser']["collapsed_tasks"]
 
     def on_quickadd_activate(self, widget):
         text = unicode(self.quickadd_entry.get_text())

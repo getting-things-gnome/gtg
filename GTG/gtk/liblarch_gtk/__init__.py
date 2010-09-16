@@ -138,7 +138,14 @@ class TreeView(gtk.TreeView):
                 self.append_column(col)
 
         self.set_model(self.treemodel)
+        self.treemodel.connect('row-has-child-toggled',self.child_toggled_cllb)
+        self.expand_all()
         self.show()
+        
+    
+    def child_toggled_cllb(self,treemodel,path,iter,param=None):
+        if not self.row_expanded(path):
+            self.expand_row(path,False)
         
         
     def set_dnd_name(self,dndname):
@@ -291,11 +298,17 @@ class TreeView(gtk.TreeView):
         
     def get_sorted_treemodel(self):
         return self.treemodel
+        
+    def collapse_node(self,nid):
+        paths = self.basetree.get_paths_for_node(nid)
+        for path in paths:
+            self.collapse_row(path)
 
     def get_selected_nids(self):
         '''
         returns a list containing the node ids selected in the treeview
         '''
+        #FIXME : this is a duplicate of get_selected_nodes
         #we get the rows selected in the treemodelsort
         treemodel, rows = self.get_selection().get_selected_rows()
         #we find the paths for the unsorted model

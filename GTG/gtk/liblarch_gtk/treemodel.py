@@ -291,7 +291,6 @@ class TreeModel(gtk.GenericTreeModel):
             t = threading.current_thread()
             if t != self.thread:
                 raise Exception('! could not update_task from thread %s' %t)
-#       print "updating %s for path %s" %(tid,str(node_path))
 #       print "other paths are %s" %(str(self.tree.get_paths_for_node(tid)))
         actual_tid = self.tree.get_node_for_path(node_path)
         if tid == actual_tid:
@@ -305,6 +304,8 @@ class TreeModel(gtk.GenericTreeModel):
                 if len(node_path) > 1:
                     parpath = node_path[:-1]
                     parrowref = self.get_iter(parpath)
+                    if DEBUG_MODEL:
+                        print "*** child toggled for parent %s" %str(parpath)
                     self.row_func('child_toggled',parpath,parrowref)
             else:
                 if DEBUG_MODEL:
