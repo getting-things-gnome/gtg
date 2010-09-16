@@ -26,10 +26,6 @@ import gobject
 
 from GTG.gtk.liblarch_gtk.treemodel import TreeModel
 
-DND_TARGETS = [
-        ('gtg/task-iter-str', gtk.TARGET_SAME_WIDGET, 0)
-    ]
-
 class TreeView(gtk.TreeView):
 
     __string_signal__ = (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str, ))
@@ -61,6 +57,9 @@ class TreeView(gtk.TreeView):
         self.bg_color_func = None
         self.bg_color_column = None
         self.separator_func = None
+        
+        self.dnd_internal_target = ''
+        self.dnd_external_targets = {}
 
         self.basetree = tree
         #We build the model
@@ -135,7 +134,38 @@ class TreeView(gtk.TreeView):
                 self.append_column(col)
 
         self.set_model(self.treemodel)
+        self.show()
         
+        
+    def set_dnd_name(self,dndname):
+        self.dnd_internal_target = dndname
+        self.__init_dnd()
+        self.connect('drag_drop', self.on_drag_drop)
+        self.connect('drag_data_get', self.on_drag_data_get)
+        self.connect('drag_data_received', self.on_drag_data_received)
+        
+    def set_dnd_external(self,sourcename,func):
+        i = 1
+        while self.dnd_external_targets.has_key(i):
+            i += 1
+        self.dnd_external_targets[i] = [sourcename,func]
+        self.__init_dnd()
+        
+        
+    #Initialize drag-n-drop
+    def __init_dnd(self):
+        if self.dnd_internal_target == '':
+            error = 'Cannot initialize DND without a valid name\n'
+            error += 'Use set_dnd_name() first'
+            raise Exception(error)
+            
+        dnd_targets = [
+            (self.dnd_internal_target,gtk.TARGET_SAME_WIDGET,0),
+            ]
+        for t in self.dnd_external_targets.keys():
+            name = self.dnd_external_targets[t][0]
+            dnd_targets.append((name,gtk.TARGET_SAME_APP,t))
+    
         # Drag and drop initialization
         #It looks like the enable_model_drag_source is not needed
         #Worst : it crashes GTG !
@@ -144,22 +174,18 @@ class TreeView(gtk.TreeView):
 #            DND_TARGETS,
 #            gtk.gdk.ACTION_DEFAULT | gtk.gdk.ACTION_MOVE)
         self.enable_model_drag_dest(\
-            DND_TARGETS,
+            dnd_targets,
             gtk.gdk.ACTION_DEFAULT)
         self.drag_source_set(\
             gtk.gdk.BUTTON1_MASK,
-            DND_TARGETS,
+            dnd_targets,
             gtk.gdk.ACTION_DEFAULT | gtk.gdk.ACTION_MOVE)
         self.drag_dest_set(\
             gtk.DEST_DEFAULT_ALL,
-            DND_TARGETS,
+            dnd_targets,
             gtk.gdk.ACTION_DEFAULT | gtk.gdk.ACTION_MOVE)
-        self.connect('drag_drop', self.on_drag_drop)
-        self.connect('drag_data_get', self.on_drag_data_get)
-        self.connect('drag_data_received', self.on_drag_data_received)
         #end of DnD initialization
         
-        self.show()
 
     def get_columns(self):
         return self.columns.keys()
@@ -278,7 +304,7 @@ class TreeView(gtk.TreeView):
         model, paths = treeselection.get_selected_rows()
         iters = [model.get_iter(path) for path in paths]
         iter_str = ','.join([model.get_string_from_iter(iter) for iter in iters])
-        selection.set('gtg/task-iter-str', 0, iter_str)
+        selection.set(self.dnd_internal_target, 0, iter_str)
         return
 
     def on_drag_data_received(self, treeview, context, x, y, selection, info,\
@@ -312,19 +338,26 @@ class TreeView(gtk.TreeView):
         # Get dragged iter as a TaskTreeModel iter
         iters = selection.data.split(',')
         for iter in iters:
-            try:
-                dragged_iter = model.get_iter_from_string(iter)
-            except ValueError:
-                #I hate to silently fail but we have no choice.
-                #It means that the iter is not good.
-                #Thanks shitty gtk API for not allowing us to test the string
-                dragged_iter = None
-            if dragged_iter and model.iter_is_valid(dragged_iter):
-                dragged_tid = model.get_value(dragged_iter, 0)
-                #TODO: it should be configurable for each TreeView if you want:
-                # 0 : no drag-n-drop at all
-                # 1 : drag-n-drop move the node
-                # 2 : drag-n-drop copy the node 
-                self.basetree.get_basetree().move_node(dragged_tid,\
-                                                new_parent_id=destination_tid)
+            if info == 0:
+                try:
+                    dragged_iter = model.get_iter_from_string(iter)
+                except ValueError:
+                    #I hate to silently fail but we have no choice.
+                    #It means that the iter is not good.
+                    #Thanks shitty gtk API for not allowing us to test the string
+                    dragged_iter = None
+                if dragged_iter and model.iter_is_valid(dragged_iter):
+                    dragged_tid = model.get_value(dragged_iter, 0)
+                    #TODO: it should be configurable for each TreeView if you want:
+                    # 0 : no drag-n-drop at all
+                    # 1 : drag-n-drop move the node
+                    # 2 : drag-n-drop copy the node 
+                    self.basetree.get_basetree().move_node(dragged_tid,\
+                                                    new_parent_id=destination_tid)
+            elif self.dnd_external_targets.has_key(info) and destination_tid:
+                f = self.dnd_external_targets[info][1]
+                src_model = context.get_source_widget().get_model()
+                i = src_model.get_iter_from_string(iter)
+                source = src_model.get_value(i,0)
+                f(source, destination_tid)
         self.emit_stop_by_name('drag_data_received')
