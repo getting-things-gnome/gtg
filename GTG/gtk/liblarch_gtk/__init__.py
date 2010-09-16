@@ -144,7 +144,8 @@ class TreeView(gtk.TreeView):
     
     def child_toggled_cllb(self,treemodel,path,iter,param=None):
         print "expand_row for %s - %s" %(str(path),iter)
-        self.expand_row(path,False)
+        if not self.row_expanded(path):
+            self.expand_row(path,False)
         
         
     def set_dnd_name(self,dndname):
