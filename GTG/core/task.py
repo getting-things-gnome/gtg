@@ -150,6 +150,8 @@ class Task(TreeNode):
             
     #TODO : should we merge this function with set_title ?
     def set_complex_title(self,text,tags=[]):
+        if tags:
+            assert(isinstance(tags[0], str))
         due_date = no_date
         defer_date = no_date
         if text:
@@ -160,7 +162,7 @@ class Task(TreeNode):
             # to findall. http://www.amk.ca/python/howto/regex/regex.html
             # ~~~~Invernizzi
             for match in re.findall(r'(?:^|[\s])(@\w+)', text):
-                tags.append(GTG.core.tagstore.Tag(match, self.req))
+                tags.append(match)
                 # Remove the @
                 #text =text.replace(match,match[1:],1)
             # Get attributes
@@ -172,7 +174,7 @@ class Task(TreeNode):
                     for tag in args.split(","):
                         if not tag.startswith("@") :
                             tag = "@"+tag
-                        tags.append(GTG.core.tagstore.Tag(tag, self.req))
+                        tags.append(tag)
                 elif attribute.lower() == "defer" or \
                      attribute.lower() == _("defer"):
                     defer_date = get_canonical_date(args)
