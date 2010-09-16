@@ -138,7 +138,13 @@ class TreeView(gtk.TreeView):
                 self.append_column(col)
 
         self.set_model(self.treemodel)
+        self.treemodel.connect('row-has-child-toggled',self.child_toggled_cllb)
         self.show()
+        
+    
+    def child_toggled_cllb(self,treemodel,path,iter,param=None):
+        print "expand_row for %s - %s" %(str(path),iter)
+        self.expand_row(path,False)
         
         
     def set_dnd_name(self,dndname):

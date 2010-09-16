@@ -824,10 +824,12 @@ class TaskBrowser(gobject.GObject):
             self.quickadd_pane.hide()
 
     def on_task_expanded(self, sender, tid):
+        print "browser.py : on_task_expanded %s" %tid
         if tid in self.config['browser']["collapsed_tasks"]:
             self.config['browser']["collapsed_tasks"].remove(tid)
         
     def on_task_collapsed(self, sender, tid):
+        print "browser.py : on task_collapsed %s" %tid
         if tid not in self.config['browser'].get("collapsed_tasks",[]):
             self.config['browser']["collapsed_tasks"].append(tid)
 
