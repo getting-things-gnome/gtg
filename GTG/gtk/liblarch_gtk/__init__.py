@@ -26,10 +26,6 @@ import gobject
 
 from GTG.gtk.liblarch_gtk.treemodel import TreeModel
 
-DND_TARGETS = [
-        ('gtg/task-iter-str', gtk.TARGET_SAME_WIDGET, 0)
-    ]
-
 class TreeView(gtk.TreeView):
 
     __string_signal__ = (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str, ))
@@ -61,6 +57,9 @@ class TreeView(gtk.TreeView):
         self.bg_color_func = None
         self.bg_color_column = None
         self.separator_func = None
+        
+        self.dnd_internal_target = ''
+        self.dnd_external_targets = {}
 
         self.basetree = tree
         #We build the model
@@ -135,7 +134,32 @@ class TreeView(gtk.TreeView):
                 self.append_column(col)
 
         self.set_model(self.treemodel)
+        self.show()
         
+        
+    def set_dnd_name(self,dndname):
+        self.dnd_internal_target = dndname
+        self.__init_dnd()
+        self.connect('drag_drop', self.on_drag_drop)
+        self.connect('drag_data_get', self.on_drag_data_get)
+        self.connect('drag_data_received', self.on_drag_data_received)
+        
+        
+    #Initialize drag-n-drop
+    def __init_dnd(self):
+        if self.dnd_internal_target == '':
+            error = 'Cannot initialize DND without a valid name\n'
+            error += 'Use set_dnd_name() first'
+            raise Exception(error)
+            
+        dnd_targets = [
+            (self.dnd_internal_target,gtk.TARGET_SAME_WIDGET,0),
+            ]
+        i = 1
+        for t in self.dnd_external_targets.keys():
+            dnd_targets.append((t,gtk.TARGET_SAME_APP,i))
+            i += 1
+    
         # Drag and drop initialization
         #It looks like the enable_model_drag_source is not needed
         #Worst : it crashes GTG !
@@ -144,22 +168,18 @@ class TreeView(gtk.TreeView):
 #            DND_TARGETS,
 #            gtk.gdk.ACTION_DEFAULT | gtk.gdk.ACTION_MOVE)
         self.enable_model_drag_dest(\
-            DND_TARGETS,
+            dnd_targets,
             gtk.gdk.ACTION_DEFAULT)
         self.drag_source_set(\
             gtk.gdk.BUTTON1_MASK,
-            DND_TARGETS,
+            dnd_targets,
             gtk.gdk.ACTION_DEFAULT | gtk.gdk.ACTION_MOVE)
         self.drag_dest_set(\
             gtk.DEST_DEFAULT_ALL,
-            DND_TARGETS,
+            dnd_targets,
             gtk.gdk.ACTION_DEFAULT | gtk.gdk.ACTION_MOVE)
-        self.connect('drag_drop', self.on_drag_drop)
-        self.connect('drag_data_get', self.on_drag_data_get)
-        self.connect('drag_data_received', self.on_drag_data_received)
         #end of DnD initialization
         
-        self.show()
 
     def get_columns(self):
         return self.columns.keys()
@@ -265,7 +285,7 @@ class TreeView(gtk.TreeView):
         model, paths = treeselection.get_selected_rows()
         iters = [model.get_iter(path) for path in paths]
         iter_str = ','.join([model.get_string_from_iter(iter) for iter in iters])
-        selection.set('gtg/task-iter-str', 0, iter_str)
+        selection.set(self.dnd_internal_target, 0, iter_str)
         return
 
     def on_drag_data_received(self, treeview, context, x, y, selection, info,\
