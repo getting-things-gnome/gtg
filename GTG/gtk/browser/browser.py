@@ -648,8 +648,6 @@ class TaskBrowser(gobject.GObject):
             view = "workview"
         else:
             view = "default"
-
-        print "before overwriting config : %s" %self.config['browser']['collapsed_tasks']
         # Populate configuration dictionary
         #FIXME :this is crazy ! We are overwriting our config before closing it !
 #        self.config["browser"] = {
