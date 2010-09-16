@@ -495,7 +495,7 @@ class TaskBrowser(gobject.GObject):
             print "no collapsed_tasks in browser"
             self.config["browser"]["collapsed_tasks"] = []
         for t in self.config["browser"]["collapsed_tasks"]:
-            print "browser.py : collapsing %s" %t
+#            print "browser.py : collapsing %s" %t
             self.vtree_panes['active'].collapse_node(t)
                 
         if "collapsed_tags" in self.config["browser"]:
@@ -825,12 +825,12 @@ class TaskBrowser(gobject.GObject):
             self.quickadd_pane.hide()
 
     def on_task_expanded(self, sender, tid):
-        print "browser.py : on_task_expanded %s" %tid
+#        print "browser.py : on_task_expanded %s" %tid
         if tid in self.config['browser']["collapsed_tasks"]:
             self.config['browser']["collapsed_tasks"].remove(tid)
         
     def on_task_collapsed(self, sender, tid):
-        print "browser.py : on task_collapsed %s" %tid
+#        print "browser.py : on task_collapsed %s" %tid
         if tid not in self.config['browser']["collapsed_tasks"]:
             l= self.config['browser']["collapsed_tasks"]
             print l
