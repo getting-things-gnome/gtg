@@ -698,7 +698,7 @@ class TaskBrowser(gobject.GObject):
     def on_color_changed(self, widget):
         gtkcolor = widget.get_current_color()
         strcolor = gtk.color_selection_palette_to_string([gtkcolor])
-        tags, notag_only = self.get_selected_tags()
+        tags = self.get_selected_tags()
         for tname in tags:
             t = self.req.get_tag(tname)
             t.set_attribute("color", strcolor)
@@ -713,7 +713,7 @@ class TaskBrowser(gobject.GObject):
         colorsel.connect("color_changed", self.on_color_changed)
 
         # Get previous color
-        tags, notag_only = self.get_selected_tags()
+        tags= self.get_selected_tags()
         init_color = None
         if len(tags) == 1:
             ta = self.req.get_tag(tags[0])
@@ -727,7 +727,7 @@ class TaskBrowser(gobject.GObject):
         # Check response and set color if required
         if response != gtk.RESPONSE_OK and init_color:
             strcolor = gtk.color_selection_palette_to_string([init_color])
-            tags, notag_only = self.get_selected_tags()
+            tags = self.get_selected_tags()
             for t in tags:
                 t.set_attribute("color", strcolor)
         self.reset_cursor()
@@ -735,7 +735,7 @@ class TaskBrowser(gobject.GObject):
         
     def on_resetcolor_activate(self, widget):
         self.set_target_cursor()
-        tags, notag_only = self.get_selected_tags()
+        tags = self.get_selected_tags()
         for tname in tags:
             t = self.req.get_tag(tname)
             t.del_attribute("color")
@@ -772,9 +772,9 @@ class TaskBrowser(gobject.GObject):
     def show_closed_pane(self):
         # The done/dismissed tasks treeview
         if not self.vtree_panes.has_key('closed'):
+            ctree = self.__create_closed_tree()
             self.vtree_panes['closed'] = \
-                        self.tv_factory.closed_tasks_treeview(\
-                                                self.__create_closed_tree())
+                         self.tv_factory.closed_tasks_treeview(ctree)
                     # Closed tasks TreeView
             self.vtree_panes['closed'].connect('row-activated',\
                 self.on_edit_done_task)
@@ -785,7 +785,7 @@ class TaskBrowser(gobject.GObject):
                 
             self.closed_selection = self.vtree_panes['closed'].get_selection()
             self.closed_selection.connect("changed", self.on_taskdone_cursor_changed)
-
+            ctree.apply_filter(self.get_selected_tags()[0],refresh=True)
         if not self.closed_pane:
             self.closed_pane = gtk.ScrolledWindow()
             self.closed_pane.set_size_request(-1, 100)
@@ -800,9 +800,14 @@ class TaskBrowser(gobject.GObject):
         self.builder.get_object("view_closed").set_active(True)
 
     def hide_closed_pane(self):
-        if self.vtree_panes.has_key('closed'):
-            self.vtree_panes['closed'].set_model(None)
-            del self.vtree_panes['closed']
+        #If we destroy completely the vtree, we cannot display it anymore
+        #Check is to hide/show the closed task pane multiple times.
+        #I let this code commented for now because it might be useful
+        #for performance reason, to really destroy the view when we don't 
+        #display it. (Lionel, 17092010)
+#        if self.vtree_panes.has_key('closed'):
+#            self.vtree_panes['closed'].set_model(None)
+#            del self.vtree_panes['closed']
         self.remove_page_from_accessory_notebook(self.closed_pane)
         self.builder.get_object("view_closed").set_active(False)
 
@@ -844,7 +849,7 @@ class TaskBrowser(gobject.GObject):
         due_date = no_date
         defer_date = no_date
         if text:
-            tags, notagonly = self.get_selected_tags()
+            tags = self.get_selected_tags(nospecial=True)
             #We will select quick-added task in browser.
             #This has proven to be quite complex and deserves an explanation.
             #We register a callback on the sorted treemodel that we're
@@ -914,7 +919,8 @@ class TaskBrowser(gobject.GObject):
                 # later on.
                 self.target_cursor = path, col
                 treeview.set_cursor(path, col, 0)
-                selected_tags = self.get_selected_tags()[0]
+                #the nospecial=True disable right clicking for special tags
+                selected_tags = self.get_selected_tags(nospecial=True)
                 if len(selected_tags) > 0:
                     # Then we are looking at single, normal tag rather than
                     # the special 'All tags' or 'Tasks without tags'. We only
@@ -953,9 +959,6 @@ class TaskBrowser(gobject.GObject):
         if len(tags) > 0:
             tag = self.req.get_tag(tags[0])
             tag.set_attribute("nonworkview", toset)
-        #Following should not be needed with liblarch
-#        if self.priv['workview']:
-#            self.tagtreeview.refilter()
         if not self.dont_reset:
             self.reset_cursor()
 
@@ -1000,7 +1003,7 @@ class TaskBrowser(gobject.GObject):
             self.on_delete_tasks()
 
     def on_add_task(self, widget, status=None):
-        tags, notagonly = self.get_selected_tags()
+        tags = self.get_selected_tags()
         task = self.req.new_task(tags=[t for t in tags], newtask=True)
         uid = task.get_id()
         if status:
@@ -1016,7 +1019,6 @@ class TaskBrowser(gobject.GObject):
             #task.add_parent(uid)
             zetask.add_child(task.get_id())
             self.vmanager.open_task(task.get_id(),thisisnew=True)
-            #self.do_refresh()
 
     def on_edit_active_task(self, widget, row=None, col=None):
         tid = self.get_selected_task()
@@ -1146,24 +1148,16 @@ class TaskBrowser(gobject.GObject):
 
     def on_select_tag(self, widget=None, row=None, col=None):
         #When you click on a tag, you want to unselect the tasks
-        taglist, notag = self.get_selected_tags()
-        if notag:
-            newtag = ["notag"]
-        else:
-            if taglist and len(taglist) > 0:
-                newtag = [taglist[0]]
-            else:
-                newtag = ['gtg-tags-all']
-
-        #FIXME:handle multiple tags case
+        taglist = self.get_selected_tags()
         #We apply filters for every visible ViewTree
         for t in self.vtree_panes:
             #1st we reset the tags filter
             vtree = self.req.get_tasks_tree(name=t,refresh=False)
             vtree.reset_filters(refresh=False,transparent_only=True)
             #then applying the tag
-            if len(newtag) > 0:
-                vtree.apply_filter(newtag[0],refresh=True)
+            if len(taglist) > 0:
+                #FIXME : support for multiple tags selection
+                vtree.apply_filter(taglist[0],refresh=True)
 
     def on_taskdone_cursor_changed(self, selection=None):
         """Called when selection changes in closed task view.
@@ -1291,15 +1285,19 @@ class TaskBrowser(gobject.GObject):
                     selected = self.vtree_panes[i].get_selected_nodes()
         return selected
         
-
-    def get_selected_tags(self):
-        #Fixme : the notag only !
-        notag_only = False
-        tag = []
+    #If nospecial=True, only normal @tag are considered
+    def get_selected_tags(self,nospecial=False):
+        taglist = []
         if self.tagtreeview:
-            tag = self.tagtreeview.get_selected_nodes()
-            #If no selection, we display all
-        return tag, notag_only
+            taglist = self.tagtreeview.get_selected_nodes()
+        #If no selection, we display all
+        if not nospecial and (not taglist or len(taglist) < 0):
+            taglist = ['gtg-tags-all']
+        if nospecial:
+            for t in list(taglist):
+                if not t.startswith('@'):
+                    taglist.remove(t)
+        return taglist
     
     def reset_cursor(self):
         """ Returns the cursor to the tag that was selected prior
