@@ -915,7 +915,7 @@ class TaskBrowser(gobject.GObject):
                 # later on.
                 self.target_cursor = path, col
                 treeview.set_cursor(path, col, 0)
-                selected_tags = self.get_selected_tags()
+                selected_tags = self.get_selected_tags(nospecial=True)
                 if len(selected_tags) > 0:
                     # Then we are looking at single, normal tag rather than
                     # the special 'All tags' or 'Tasks without tags'. We only
