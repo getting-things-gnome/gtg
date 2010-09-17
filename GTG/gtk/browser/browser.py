@@ -785,8 +785,7 @@ class TaskBrowser(gobject.GObject):
                 
             self.closed_selection = self.vtree_panes['closed'].get_selection()
             self.closed_selection.connect("changed", self.on_taskdone_cursor_changed)
-#            print "on select tag"
-#            self.on_select_tag()
+            ctree.apply_filter(self.get_selected_tags()[0],refresh=True)
         if not self.closed_pane:
             self.closed_pane = gtk.ScrolledWindow()
             self.closed_pane.set_size_request(-1, 100)
@@ -801,9 +800,14 @@ class TaskBrowser(gobject.GObject):
         self.builder.get_object("view_closed").set_active(True)
 
     def hide_closed_pane(self):
-        if self.vtree_panes.has_key('closed'):
-            self.vtree_panes['closed'].set_model(None)
-            del self.vtree_panes['closed']
+        #If we destroy completely the vtree, we cannot display it anymore
+        #Check is to hide/show the closed task pane multiple times.
+        #I let this code commented for now because it might be useful
+        #for performance reason, to really destroy the view when we don't 
+        #display it. (Lionel, 17092010)
+#        if self.vtree_panes.has_key('closed'):
+#            self.vtree_panes['closed'].set_model(None)
+#            del self.vtree_panes['closed']
         self.remove_page_from_accessory_notebook(self.closed_pane)
         self.builder.get_object("view_closed").set_active(False)
 
@@ -915,6 +919,7 @@ class TaskBrowser(gobject.GObject):
                 # later on.
                 self.target_cursor = path, col
                 treeview.set_cursor(path, col, 0)
+                #the nospecial=True disable right clicking for special tags
                 selected_tags = self.get_selected_tags(nospecial=True)
                 if len(selected_tags) > 0:
                     # Then we are looking at single, normal tag rather than
@@ -954,9 +959,6 @@ class TaskBrowser(gobject.GObject):
         if len(tags) > 0:
             tag = self.req.get_tag(tags[0])
             tag.set_attribute("nonworkview", toset)
-        #Following should not be needed with liblarch
-#        if self.priv['workview']:
-#            self.tagtreeview.refilter()
         if not self.dont_reset:
             self.reset_cursor()
 
@@ -1017,7 +1019,6 @@ class TaskBrowser(gobject.GObject):
             #task.add_parent(uid)
             zetask.add_child(task.get_id())
             self.vmanager.open_task(task.get_id(),thisisnew=True)
-            #self.do_refresh()
 
     def on_edit_active_task(self, widget, row=None, col=None):
         tid = self.get_selected_task()
