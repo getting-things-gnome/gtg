@@ -749,12 +749,6 @@ class FilteredTree():
                 for c in childrens:
                     self.__delete_node(c,pars=[nid])
                 
-            #We remove the node from the parents
-            for p in pars:
-                self.cache_nodes[p]['children'].remove(nid)
-                #FIXME : reorder the parent !
-                #removing the parents
-                self.cache_nodes[nid]['parents'].remove(p)
 
             #Now we remove the node if it is not displayed at all anymore
             if not self.__is_displayed(nid):
@@ -766,10 +760,19 @@ class FilteredTree():
                         #Children might be added elsewhere
                         if self.__is_displayed(c):
                             self.__update_node(c)
-
+                #CACHE_MODIF
                 if nid in self.cache_vr:
                     self.cache_vr.remove(nid)
                 self.cache_nodes.pop(nid)
+                
+            #CACHE_MODIF
+            #We remove the node from the parents
+            for p in pars:
+                self.cache_nodes[p]['children'].remove(nid)
+                #removing the parents
+                if self.cache_nodes.has_key(nid):
+                    self.cache_nodes[nid]['parents'].remove(p)
+                
             for pa in npaths:
                 self.callback('deleted',nid,pa)
             return True
