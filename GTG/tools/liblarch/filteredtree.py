@@ -113,7 +113,7 @@ class FilteredTree():
         self.cache_transcount = {}
         self.cllbcks = {}
         
-        self.__updating_lock = False
+        self.__updating_lock = threading.Lock()
         self.__updating_queue = []
         
         #filters
@@ -192,8 +192,8 @@ class FilteredTree():
             raise ValueError('cannot update node None')
         if self.__initialized:
             self.__updating_queue.append([tid,'update'])
-            if not self.__updating_lock and len(self.__updating_queue) > 0:
-                self.__updating_lock = True
+            if self.__updating_lock.acquire(False) \
+                                        and len(self.__updating_queue) > 0:
                 self.__execution_loop()
 
     def external_add_node(self,tid):
@@ -201,8 +201,8 @@ class FilteredTree():
             raise ValueError('cannot add node None')
         if self.__initialized:
             self.__updating_queue.append([tid,'add'])
-            if not self.__updating_lock and len(self.__updating_queue) > 0:
-                self.__updating_lock = True
+            if self.__updating_lock.acquire(False)\
+                                        and len(self.__updating_queue) > 0:
                 self.__execution_loop()
             
     def external_remove_node(self,tid):
@@ -210,8 +210,8 @@ class FilteredTree():
             raise ValueError('cannot remove node None')
         if self.__initialized:
             self.__updating_queue.append([tid,'delete'])
-            if not self.__updating_lock and len(self.__updating_queue) > 0:
-                self.__updating_lock = True
+            if self.__updating_lock.acquire(False)\
+                                        and len(self.__updating_queue) > 0:
                 self.__execution_loop()
             
             
@@ -239,7 +239,7 @@ class FilteredTree():
                 raise ValueError('%s in not a valid action for the loop') %action
             prof[1] += time.time() - t
 #            self.print_profile()
-        self.__updating_lock = False
+        self.__updating_lock.release()
         
     def print_profile(self):
         print "*********%s *******" %self
