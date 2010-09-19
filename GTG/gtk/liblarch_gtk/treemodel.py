@@ -16,9 +16,9 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-DEBUG_MODEL = True
-TM_USE_SIGNALS = False
-TM_IDLE_ADD = True
+DEBUG_MODEL = False
+TM_USE_SIGNALS = True
+TM_IDLE_ADD = False
 THREAD_PROTECTION = True
 ROW_IDLE_ADD = False
 
@@ -298,22 +298,22 @@ class TreeModel(gtk.GenericTreeModel):
                 print "    ! this is the update/add %s get_iter" %tid
             rowref = self.get_iter(node_path)
             if data == 'add':
-#                if DEBUG_MODEL:
-                print "     adding %s on path %s" %(tid,str(node_path))
+                if DEBUG_MODEL:
+                    print "     adding %s on path %s" %(tid,str(node_path))
                 self.row_func('inserted',node_path, rowref)
                 if len(node_path) > 1:
                     parpath = node_path[:-1]
                     parrowref = self.get_iter(parpath)
-#                    if DEBUG_MODEL:
-                    print "*** child toggled for parent %s" %str(parpath)
+                    if DEBUG_MODEL:
+                        print "*** child toggled for parent %s" %str(parpath)
                     self.row_func('child_toggled',parpath,parrowref)
             else:
-#                if DEBUG_MODEL:
-                print "     modifying %s on path %s" %(tid,str(node_path))
+                if DEBUG_MODEL:
+                    print "     modifying %s on path %s" %(tid,str(node_path))
                 self.row_func('changed',node_path, rowref)
             if self.tree.node_has_child(tid):
-#                if DEBUG_MODEL:
-                print "     child toggling for %s %s" %(tid,str(node_path))
+                if DEBUG_MODEL:
+                    print "     child toggling for %s %s" %(tid,str(node_path))
                 self.row_func('child_toggled',node_path, rowref)
         else:
             raise ValueError("%s path for %s is supposed" %(data,tid) +\
