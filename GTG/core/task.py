@@ -484,10 +484,10 @@ class Task(TreeNode):
         self._modified_update()
         if self.is_loaded():
             #This is a liblarch call to the TreeNode ancestor
-            gobject.idle_add(self.modified)
+            self.modified()
             for t in self.get_tags():
 #                print "%s is well synced" %self.id
-                gobject.idle_add(t.modified)
+                t.modified()
             return True
         else:
             return False
