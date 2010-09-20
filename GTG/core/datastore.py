@@ -20,7 +20,8 @@
 TAG_XMLFILE = "tags.xml"
 TAG_XMLROOT = "tagstore"
 
-MULTITHREADS = True #with False, it fails to pass tests (invernizzi)
+#I disabled that since we don't want idle_add here
+#MULTITHREADS = True #with False, it fails to pass tests (invernizzi)
 
 """
 Contains the Datastore object, which is the manager of all the active backends
@@ -135,10 +136,7 @@ class DataStore(object):
             if tname not in self.added_tag:
                 tag = Tag(tname, req=self.requester)
                 self.added_tag[tname] = tag
-                if MULTITHREADS:
-                    adding_tag(tname,tag)
-                else:
-                    gobject.idle_add(adding_tag,tname,tag)
+                adding_tag(tname,tag)
             else:
                 #it means that we are in the process of adding the tag
                 tag = self.added_tag[tname]
@@ -290,10 +288,7 @@ class DataStore(object):
             return False
         else:
             #Thread protection
-            if MULTITHREADS:
-                adding(task)
-            else:
-                gobject.idle_add(adding,task)
+            adding(task)
             return True
 
     ##########################################################################
