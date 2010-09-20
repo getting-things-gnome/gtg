@@ -101,6 +101,7 @@ class FilteredTree():
         self.tree = tree
         #The cached Virtual Root
         self.cache_vr = []
+        self.tmp_vr = []
         #The state of the tree
         #each displayed nodes is a key in the dic. The value is another dic
         #that contains the following :
@@ -108,12 +109,15 @@ class FilteredTree():
         # 'parents' : the ordered list of parents 
         # if the value of one is None, it might be dynamically computed TBC
         self.cache_nodes = {}
+        self.tmp_nodes = {}
         #the list of displayed nodes if we only use non transparent filters.
         self.cache_opaque = []
         self.cache_transcount = {}
         self.cllbcks = {}
         
         self.__updating_lock = threading.Lock()
+        self.state_lock = threading.Lock()
+        self.state_id = 0
         self.__updating_queue = []
         
         #filters
@@ -695,7 +699,7 @@ class FilteredTree():
                         self.cache_transcount[k].remove(tid)
             
             
-            
+            #This could be removed when performances are good
 #                #This is an hard custom optimisation for task counting
 #                #Normally, we would here reset the cache of counted tasks
 #                #But this slow down a lot the startup.
@@ -722,6 +726,13 @@ class FilteredTree():
         return result
         
 #################### Update the static state ################################
+
+    def __commit_state(self):
+        self.state_lock.acquire(True)
+        self.cache_nodes = self.tmp_nodes.copy()
+        self.cache_vr = list(self.tmp_vr)
+        self.state_id += 1
+        self.state_lock.release()
         
     def __delete_node(self,nid,pars=None):
         self.trace += "Deleting node %s with pars %s\n" %(nid,pars)
@@ -762,18 +773,21 @@ class FilteredTree():
                             self.__update_node(c)
                 #CACHE_MODIF
                 if nid in self.cache_vr:
-                    self.cache_vr.remove(nid)
-                self.cache_nodes.pop(nid)
+                    self.tmp_vr.remove(nid)
+                self.tmp_nodes.pop(nid)
                 
             #CACHE_MODIF
             #We remove the node from the parents
             for p in pars:
-                self.cache_nodes[p]['children'].remove(nid)
+                self.tmp_nodes[p]['children'].remove(nid)
                 #removing the parents
-                if self.cache_nodes.has_key(nid):
-                    self.cache_nodes[nid]['parents'].remove(p)
+                if self.tmp_nodes.has_key(nid):
+                    self.tmp_nodes[nid]['parents'].remove(p)
                 
             for pa in npaths:
+                #FIXME : should we send the callback while protected 
+                #by the lock ?
+                self.__commit_state()
                 self.callback('deleted',nid,pa)
             return True
         else:

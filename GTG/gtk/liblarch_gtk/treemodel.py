@@ -16,9 +16,9 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-DEBUG_MODEL = False
-TM_USE_SIGNALS = True
-TM_IDLE_ADD = False
+DEBUG_MODEL = True
+TM_USE_SIGNALS = False
+TM_IDLE_ADD = True
 THREAD_PROTECTION = True
 ROW_IDLE_ADD = False
 
