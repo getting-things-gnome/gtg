@@ -555,7 +555,7 @@ class TaskBrowser(gobject.GObject):
             self.tagtree.refresh_all()
         self.vtree_panes['active'].set_col_visible('startdate',not tobeset)
 
-    def _update_window_title(self,nid=None,path=None):
+    def _update_window_title(self,nid=None,path=None,state_id=None):
         count = self.activetree.get_n_nodes()
         #Set the title of the window:
         parenthesis = ""

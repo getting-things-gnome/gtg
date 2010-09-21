@@ -176,7 +176,7 @@ class FilteredTree():
         if func and self.__initialized:
 #           The reordered callback might take None as arguments
             if neworder:
-                func(tid,path,neworder,self.state_id)
+                func(tid,path,self.state_id,neworder)
             else:
                 func(tid,path,self.state_id)
             
