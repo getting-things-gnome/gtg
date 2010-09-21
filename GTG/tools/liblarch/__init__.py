@@ -264,13 +264,13 @@ class ViewTree(gobject.GObject):
     def get_basetree(self):
         return self.maininterface
             
-    def __emit(self, signal_name, tid,path=None,neworder=None):
+    def __emit(self, signal_name, tid,path=None,neworder=None,state_id=None):
         for k in self.__cllbcks.get(signal_name,[]):
             f = self.__cllbcks[signal_name][k]
             if neworder:
-                f(tid,path,neworder)
+                f(tid,path,neworder,state_id)
             else:
-                f(tid,path)
+                f(tid,path,state_id)
         if signal_name.endswith('-inview'):
             self.emit(signal_name, tid,path)
         elif signal_name.endswith('-reordered'):

@@ -271,7 +271,7 @@ class TreeModel(gtk.GenericTreeModel):
             print "on iter parent %s :%s" %(str(rowref),toreturn)
         return toreturn
 
-    def add_task(self,tid,path):
+    def add_task(self,tid,path,state_id):
         if TM_IDLE_ADD:
             gobject.idle_add(self.__update_task,None,tid,path,'add')
         else:
@@ -280,7 +280,7 @@ class TreeModel(gtk.GenericTreeModel):
     def __add_task(self,sender,tid,path):
         self.__update_task(sender,tid,path,'add')
 
-    def update_task(self, tid,path,data=None):
+    def update_task(self, tid,path,state_id,data=None):
         if TM_IDLE_ADD:
             gobject.idle_add(self.__update_task,None,tid,path,data)
         else:
@@ -327,7 +327,7 @@ class TreeModel(gtk.GenericTreeModel):
 #        print " = ============================="
 #        self.tree.print_tree()
 
-    def remove_task(self,tid,path):
+    def remove_task(self,tid,path,state_id):
         if TM_IDLE_ADD:
             gobject.idle_add(self.__remove_task,None,tid,path)
         else:
@@ -348,7 +348,7 @@ class TreeModel(gtk.GenericTreeModel):
             parrowref = self.get_iter(parpath)
             self.row_func('child_toggled',parpath,parrowref)
         
-    def reorder(self,nid,path,neworder):
+    def reorder(self,nid,path,neworder,state_id):
         if TM_IDLE_ADD:
             gobject.idle_add(self.__reorder,None,nid,path,neworder)
         else:
