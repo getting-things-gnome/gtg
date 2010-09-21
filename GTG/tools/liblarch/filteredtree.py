@@ -1,3 +1,4 @@
+from __future__ import with_statement
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
 # Gettings Things Gnome! - a personal organizer for the GNOME desktop
@@ -85,6 +86,19 @@ COUNT_CACHING_ENABLED = True
 ## if FT doesn't use signals, it might be slower (but easier to debug)
 FT_USE_SIGNALS = False
 
+def synchronized(fun):
+    def newf(*args,**kw):
+        with args[0].state_lock:
+            return fun(*args,**kw)
+    return newf
+    
+#    def fwrap(function):
+#        def newFunction(*args, **kw):
+#            with fun.__self__.state_lock:
+#                return function(*args, **kw)
+#        return newFunction
+#    return fwrap(fun)
+
 class FilteredTree():
 
     def __init__(self,tree,filtersbank,refresh=True):
@@ -116,7 +130,7 @@ class FilteredTree():
         self.cllbcks = {}
         
         self.__updating_lock = threading.Lock()
-        self.state_lock = threading.Lock()
+        self.state_lock = threading.RLock()
         self.state_id = 0
         self.__updating_queue = []
         
@@ -259,6 +273,7 @@ class FilteredTree():
     #All external functions get their result from that cache
     #This enforce the external state of the FT being consistent at any time !
     
+    @synchronized
     def print_tree(self,string=False):
         toprint = "displayed : %s\n" %self.get_all_nodes()
         toprint += "VR is : %s\n" %self.cache_vr
@@ -280,6 +295,7 @@ class FilteredTree():
 
     #This function print the actual tree. Useful for debugging
     #The function also check the validity of the tree
+    @synchronized
     def print_from_node(self, nid, level=0,string=None):
         prefix = "->"*level
         paths = self.get_paths_for_node(nid)
@@ -308,6 +324,7 @@ class FilteredTree():
                 n += 1
         return toprint
     
+    @synchronized
     def get_paths_for_node(self,nid):
         error = "Get path for %s\n" %nid
         if not nid:
@@ -349,6 +366,7 @@ class FilteredTree():
 #                    raise Exception(error)
 #        return toreturn
     
+    @synchronized
     def node_all_children(self,tid):
         if tid:
             try:
@@ -360,6 +378,7 @@ class FilteredTree():
             toreturn = list(self.cache_vr)
         return toreturn
     
+    @synchronized
     def node_parents(self,tid):
         error = "node_parents for %s\n" %tid
         if self.cache_nodes.has_key(tid):
@@ -372,12 +391,14 @@ class FilteredTree():
     
     #All the following functions returns a static result based on the state 
     #of cache_vr and cache_nodes. No other information should be required.
+    @synchronized
     def get_all_nodes(self):
         """
         returns list of all displayed node keys
         """
         return self.cache_nodes.keys()
-        
+    
+    @synchronized
     def get_n_nodes(self,withfilters=[],include_transparent=True):
         """
         returns quantity of displayed nodes in this tree
@@ -431,6 +452,7 @@ class FilteredTree():
         
     #The path received is only for tasks that are displayed
     #We have to find the good node.
+    @synchronized
     def get_node_for_path(self, path):
         """
         Returns node for the given path.
@@ -458,6 +480,7 @@ class FilteredTree():
             toreturn = None
         return toreturn
 
+    @synchronized
     def __node_for_path(self,basenode_id,path):
         if len(path) == 0:
             return basenode_id
@@ -475,6 +498,7 @@ class FilteredTree():
 
     #pid is used only if nid has multiple parents.
     #if pid is none, a random parent is used.
+    @synchronized
     def next_node(self, nid,pid=None):
         """
         Returns the next sibling node, or None if there are no other siblings
@@ -517,6 +541,7 @@ class FilteredTree():
                             'but it is not displayed')
         return toreturn
     
+    @synchronized
     def node_children(self, parent):
         """
         Returns the first child node of the given parent, or None
@@ -527,15 +552,18 @@ class FilteredTree():
         child = self.node_nth_child(parent,0)
         return child
         
+    @synchronized
     def node_has_child(self, nid):
         """
         Returns true if the given node has any children
         """
         return self.node_n_children(nid)>0
     
+    @synchronized
     def node_n_children(self,nid):
         return len(self.node_all_children(nid))
-        
+    
+    @synchronized
     def node_nth_child(self, nid, n):
         """
         Retrieves the nth child of the node.
@@ -548,10 +576,12 @@ class FilteredTree():
             toreturn = children[n]
         #we return None if n is too big.
         return toreturn
-        
+    
+    @synchronized
     def is_displayed(self,nid):
         return self.cache_nodes.has_key(nid)
-        
+    
+    @synchronized
     def is_root(self,nid):
         return nid in self.cache_vr
         
@@ -794,37 +824,43 @@ class FilteredTree():
             return False
     
     def __add_node(self,nid,pars=None):
+        #We will save the callbacks that should be sent to send them
+        #after the commit_state.
+        cllbcks = []
         if self.__is_displayed(nid):
             if not pars:
                 pars = self.__node_parents(nid)
-                
+            #adding the parents
+            for par in pars:
+                if not self.is_displayed(par):
+                    self.__add_node(par)
+                    
+            #creating the node
+            #CACHE_MODIF
             if not self.is_displayed(nid):
                 node_dic = {}
                 node_dic['parents'] = []
                 node_dic['children'] = []
-                self.cache_nodes[nid] = node_dic
+                self.tmp_nodes[nid] = node_dic
             else:
-                node_dic = self.cache_nodes[nid]
-            
-#            #Firstly, we remove children that are already present.
-#            for child in self.__node_all_children(nid):
-#                self.__add_node(child,pars=[nid])
+                node_dic = self.tmp_nodes[nid]
                 
             for par in pars:
-                if not self.is_displayed(par):
-                    self.__add_node(par)
-                parnode = self.cache_nodes[par]
+                parnode = self.tmp_nodes[par]
                 if nid not in parnode['children']:
                     parnode['children'].append(nid)
                 if par not in node_dic['parents']:
                     node_dic['parents'].append(par)
             if len(node_dic['parents']) == 0:
-                if nid not in self.cache_vr:
-                    self.cache_vr.append(nid)
+                if nid not in self.tmp_vr:
+                    self.tmp_vr.append(nid)
             else:
-                if nid in self.cache_vr:
-                    self.__remove_from_vr(nid)
-            
+                if nid in self.tmp_vr:
+                    cllbks = self.__remove_from_vr(nid)
+            #Commit state
+            self.__commit_state()
+            for c in cllbcks:
+                self.callback(*c)
             for p in self.get_paths_for_node(nid):
 #                print "+++ adding %s to %s" %(nid,str(p))
                 self.callback('added',nid,p)
@@ -854,11 +890,15 @@ class FilteredTree():
                     if ch not in node_dic['children']:
                         self.__add_node(ch,pars=[nid])
                         
+                #CACHE_MODIF
                 if len(node_dic['parents']) == 0 and nid not in self.cache_vr:
-                    self.cache_vr.append(nid)
+                    self.tmp_vr.append(nid)
                     self.__add_node(nid)
                 if len(node_dic['parents']) > 0 and nid in self.cache_vr:
-                    self.__remove_from_vr(nid)
+                    cllbcks = self.__remove_from_vr(nid)
+                    self.__commit_state()
+                    for c in cllbcks:
+                        self.callback(*c)
                     
                 #DEBUG
                 error += "before signal : %s\n" %self.cache_nodes
@@ -885,17 +925,19 @@ class FilteredTree():
     #This function remove a node from the VR but
     #doesn't touche the cache_nodes.
     def __remove_from_vr(self,nid):
-        index = self.cache_vr.index(nid)
+        index = self.tmp_vr.index(nid)
+        tosend = []
         if index != (len(self.cache_vr)-1):
             neworder = range(0,len(self.cache_vr))
-            self.cache_vr.remove(nid)
+            self.tmp_vr.remove(nid)
             neworder.remove(index)
-            self.cache_vr.append(nid)
+            self.tmp_vr.append(nid)
             neworder.append(index)
-            self.callback('reordered',None,None,neworder)
-        path = (self.cache_vr.index(nid),)
-        self.callback('deleted',nid,path)
-        self.cache_vr.remove(nid)
+            tosend.append(['reordered',None,None,neworder])
+        path = (self.tmp_vr.index(nid),)
+        tosend.append(['deleted',nid,path])
+        self.tmp_vr.remove(nid)
+        return tosend
         
     def __make_last_child(self,nid,parent):
         if parent:
