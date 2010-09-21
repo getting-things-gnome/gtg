@@ -284,7 +284,7 @@ class TreeModel(gtk.GenericTreeModel):
     def add_task(self,tid,path,state_id):
         print "receiving add_task %s to state %s (current:%s)" %(tid,state_id,self.state_id)
         if TM_IDLE_ADD:
-            gobject.idle_add(self.__update_task,None,tid,path,state_id,'add')
+            gobject.idle_add(self.__update_task,None,tid,path,state_id,'add',priority=gobject.PRIORITY_HIGH)
         else:
             self.__update_task(None,tid,path,state_id,'add')
 
@@ -294,7 +294,7 @@ class TreeModel(gtk.GenericTreeModel):
 
     def update_task(self, tid,path,state_id,data=None):
         if TM_IDLE_ADD:
-            gobject.idle_add(self.__update_task,None,tid,path,state_id,data)
+            gobject.idle_add(self.__update_task,None,tid,path,state_id,data,priority=gobject.PRIORITY_HIGH)
         else:
             self.__update_task(None,tid,path,state_id,data)
         
@@ -305,7 +305,7 @@ class TreeModel(gtk.GenericTreeModel):
             if t != self.thread:
                 raise Exception('! could not update_task from thread %s' %t)
 #        print "other paths are %s" %(str(self.tree.get_paths_for_node(tid)))
-        if True:#state_id > 7 or state_id == 1:#self.state_id:
+        if state_id > self.state_id:
             self.state_id = state_id
             actual_tid = self.tree.get_node_for_path(node_path)
             if tid == actual_tid:
@@ -346,7 +346,7 @@ class TreeModel(gtk.GenericTreeModel):
 
     def remove_task(self,tid,path,state_id):
         if TM_IDLE_ADD:
-            gobject.idle_add(self.__remove_task,None,tid,path,state_id)
+            gobject.idle_add(self.__remove_task,None,tid,path,state_id,priority=gobject.PRIORITY_HIGH)
         else:
             self.__remove_task(None,tid,path,state_id)
 
@@ -355,7 +355,7 @@ class TreeModel(gtk.GenericTreeModel):
             t = threading.current_thread()
             if t != self.thread:
                 raise Exception('! could not remove_task from thread %s' %t)
-        if True:#state_id > 7:#self.state_id:
+        if True:#state_id > self.state_id:
             self.state_id = state_id
             if DEBUG_MODEL:
                 print "     deleting row %s  (it's tid %s)" %(str(path),tid)
@@ -370,7 +370,7 @@ class TreeModel(gtk.GenericTreeModel):
             print "dismiss deleting task %s to state %s (current:%s)" %(tid,state_id,self.state_id)
         
     def reorder(self,nid,path,neworder,state_id):
-        if True:#state_id > 7:#self.state_id:
+        if state_id > self.state_id:
             self.state_id = state_id
             if TM_IDLE_ADD:
                 gobject.idle_add(self.__reorder,None,nid,path,neworder)
