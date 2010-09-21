@@ -49,6 +49,7 @@ class TreeView(gtk.TreeView):
 
     def show(self):
         gtk.TreeView.show(self)
+        print "#####################################"
         self.basetreemodel.connect_model()
 
     def __init__(self, tree, description):

@@ -166,6 +166,9 @@ class FilteredTree():
         self.inrefresh = False
         if refresh:
             self.refilter()
+            
+    def get_state_id(self):
+        return self.state_id
         
     #those callbacks are called instead of signals.
     def set_callback(self,event,func):

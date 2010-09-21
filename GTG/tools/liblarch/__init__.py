@@ -263,6 +263,9 @@ class ViewTree(gobject.GObject):
         
     def get_basetree(self):
         return self.maininterface
+        
+    def get_state_id(self):
+        return self.__ft.get_state_id()
             
     def __emit(self, signal_name, tid,path=None,state_id=None,neworder=None,):
         for k in self.__cllbcks.get(signal_name,[]):
