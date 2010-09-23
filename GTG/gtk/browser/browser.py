@@ -870,10 +870,7 @@ class TaskBrowser(gobject.GObject):
                         selection = treeview.get_selection()
                         selection.unselect_all()
                         selection.select_path(path)
-#                thread = threading.Thread(target = selecter,
-#                                 args = (treemodelsort, path, iter, self))
-#                thread.setDaemon(True)
-#                thread.start()
+                #It cannot be another thread than the main gtk thread !
                 gobject.idle_add(selecter,treemodelsort, path, iter, self)
             #event that is set when the new task is created
             self.__last_quick_added_tid_event = threading.Event()
