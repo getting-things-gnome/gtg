@@ -346,14 +346,13 @@ class TreeModel(gtk.GenericTreeModel):
             t = threading.current_thread()
             if t != self.thread:
                 raise Exception('! could not remove_task from thread %s' %t)
-#        if DEBUG_MODEL:
-        print "     deleting row %s  (it's tid %s)" %(str(path),tid)
+        if DEBUG_MODEL:
+            print "     deleting row %s  (it's tid %s)" %(str(path),tid)
         self.state_id = state_id
         self.row_func('delete',path)
 #        print "removing %s from path %s" %(tid,str(path))
         if len(path) > 1:
             parpath = path[:-1]
-            print "after deleting %s, getting iter for %s" %(str(path),str(parpath))
             parrowref = self.get_iter(parpath)
             self.row_func('child_toggled',parpath,parrowref)
         

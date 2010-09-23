@@ -486,13 +486,13 @@ class FilteredTree():
             return None
         p0 = path[0]
         if len(vr) > p0:
-            n1id = self.cache_vr[p0]
+            n1id = vr[p0]
             pa = path[1:]
             toreturn = self.__node_for_path(n1id,pa,state_id=state_id)
         else:
             toreturn = None
         #If the node doesn't have the computed path, ignore it
-        if toreturn and not self.is_displayed(toreturn):
+        if toreturn and not self.is_displayed(toreturn,state_id=state_id):
             #This case is not acceptable
             error = "Getting node for path %s returns %s\n" %(str(path),toreturn)
             error += "But 3 is not displayed.\n"
