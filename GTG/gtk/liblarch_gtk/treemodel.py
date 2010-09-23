@@ -44,8 +44,8 @@ class TreeModel(gtk.GenericTreeModel):
     def __init__(self, tree):
         gtk.GenericTreeModel.__init__(self)
         self.lock = False
-        self.state_id = 0
         self.tree = tree
+        self.state_id = 0
         self.value_list = []
         def get_nodeid(node):
             return node.get_id()
@@ -64,6 +64,7 @@ class TreeModel(gtk.GenericTreeModel):
             self.tree.register_cllbck('node-deleted-inview',self.remove_task)
             self.tree.register_cllbck('node-modified-inview',self.update_task)
             self.tree.register_cllbck('node-children-reordered',self.reorder)
+        self.state_id = self.tree.get_state_id()
 
 ### TREE MODEL HELPER FUNCTIONS ###############################################
 
@@ -79,8 +80,7 @@ class TreeModel(gtk.GenericTreeModel):
         are a real tree, not an acyclic directed graphs'''
         rowref = ()
         while len(path) > 0:
-            nid = self.tree.get_node_for_path(path)
-            self.state_id = self.tree.get_state_id()
+            nid = self.tree.get_node_for_path(path,state_id=self.state_id)
             if not nid:
                 rowref = None
                 raise IndexError('building rowref : No node for path %s'%path)
@@ -98,7 +98,6 @@ class TreeModel(gtk.GenericTreeModel):
     def __get_node_from_rowref(self,rowref):
         nid = self.__get_nid_from_rowref(rowref)
         node = self.tree.get_node(nid)
-        self.state_id = self.tree.get_state_id()
         return node
 
     def __get_path_from_rowref(self,rowref):
@@ -107,11 +106,10 @@ class TreeModel(gtk.GenericTreeModel):
         while len(rowref) > 0:
             nid = rowref[0]
             rowref = rowref[1:]
-            temp_list = self.tree.get_paths_for_node(nid)
+            temp_list = self.tree.get_paths_for_node(nid,state_id=self.state_id)
             for p in temp_list:
                 if p[:-1] == path :
                     path = p
-            self.state_id = self.tree.get_state_id()
         #security check
         if len(path) != size:
             raise ValueError('path %s should be of size %s' %(path,size))
@@ -159,13 +157,12 @@ class TreeModel(gtk.GenericTreeModel):
             if t != self.thread:
                 raise Exception('! could not acces get_iter from thread %s' %t)
         #We have to return None if there's no node on that path
-        nid = self.tree.get_node_for_path(path)
+        nid = self.tree.get_node_for_path(path,state_id=self.state_id)
         if nid:
             rowref = self.__build_rowref(path)
             toreturn = rowref
         else:
             toreturn = None
-        self.state_id = self.tree.get_state_id()
         if DEBUG_MODEL:
             print "on_get_iter for path %s -> %s : %s" %(path,nid,toreturn)
         return toreturn
@@ -190,13 +187,12 @@ class TreeModel(gtk.GenericTreeModel):
             nid = self.__get_nid_from_rowref(rowref)
             if len(rowref) > 1:
                 pid = self.__get_nid_from_rowref(rowref[:-1])
-                next_id = self.tree.next_node(nid,pid=pid)
+                next_id = self.tree.next_node(nid,pid=pid,state_id=self.state_id)
             else:
-                next_id = self.tree.next_node(nid)
+                next_id = self.tree.next_node(nid,state_id=self.state_id)
             #We have the next node, we have to build the rowref
             if next_id:
                 toreturn = rowref[:-1] + (next_id,)
-        self.state_id = self.tree.get_state_id()
         if DEBUG_MODEL:
             print "iter_next for %s : %s" %(str(rowref),toreturn)
 #        if not toreturn:
@@ -214,11 +210,10 @@ class TreeModel(gtk.GenericTreeModel):
             if t != self.thread:
                 raise Exception('! could not acces iter_children from thread %s' %t)
         nid = self.__get_nid_from_rowref(rowref)
-        if self.tree.node_n_children(nid) > 0:
+        if self.tree.node_n_children(nid,state_id=self.state_id) > 0:
             toreturn = self.on_iter_nth_child(rowref,0)
         else:
             toreturn = None
-        self.state_id = self.tree.get_state_id()
         if DEBUG_MODEL:
             print "on_iter_children %s : %s" %(str(rowref),toreturn)
         return toreturn
@@ -229,10 +224,9 @@ class TreeModel(gtk.GenericTreeModel):
             if t != self.thread:
                 raise Exception('! could not acces iter_has_child from thread %s' %t)
         nid = self.__get_nid_from_rowref(rowref)
-        toreturn = self.tree.node_has_child(nid)
-        self.state_id = self.tree.get_state_id()
+        toreturn = self.tree.node_has_child(nid,state_id=self.state_id)
         if DEBUG_MODEL:
-            print "on_iter_has_child %s : %s" %(str(rowref),toreturn)
+            print "on_iter_has_child %s : %s (state %s)" %(str(rowref),toreturn,self.state_id)
         return toreturn
 
     def on_iter_n_children(self, rowref):
@@ -244,10 +238,9 @@ class TreeModel(gtk.GenericTreeModel):
             nid = self.__get_nid_from_rowref(rowref)
         else:
             nid = None
-        toreturn = self.tree.node_n_children(nid)
-        self.state_id = self.tree.get_state_id()
+        toreturn = self.tree.node_n_children(nid,state_id=self.state_id)
         if DEBUG_MODEL:
-            print "returning iter_n_children for %s (%s) : %s" %(str(rowref),nid,toreturn)
+            print "returning iter_n_children for %s (%s) : %s (state %s)" %(str(rowref),nid,toreturn,self.state_id)
         return toreturn
 
     def on_iter_nth_child(self, rowref, n):
@@ -261,11 +254,10 @@ class TreeModel(gtk.GenericTreeModel):
             #if rowref == None, we use the root
             nid = None
             rowref = ()
-        cid = self.tree.node_nth_child(nid,n)
-        self.state_id = self.tree.get_state_id()
+        cid = self.tree.node_nth_child(nid,n,state_id=self.state_id)
         toreturn = rowref + (cid,)
         if DEBUG_MODEL:
-            print "on iter child nbr %s for %s : %s" %(n,str(rowref),toreturn)
+            print "on iter child nbr %s for %s : %s (state %s)" %(n,str(rowref),toreturn,self.state_id)
         return toreturn
 
     def on_iter_parent(self, rowref):
@@ -305,44 +297,44 @@ class TreeModel(gtk.GenericTreeModel):
             if t != self.thread:
                 raise Exception('! could not update_task from thread %s' %t)
 #        print "other paths are %s" %(str(self.tree.get_paths_for_node(tid)))
-        if state_id > self.state_id:
+        actual_tid = self.tree.get_node_for_path(node_path,state_id=state_id)
+        if tid == actual_tid:
+            if DEBUG_MODEL:
+                print "    ! this is the update/add %s get_iter" %tid
+            print "TM li 304 : get iter for %s (state %s)" %(str(node_path),state_id)
             self.state_id = state_id
-            actual_tid = self.tree.get_node_for_path(node_path)
-            if tid == actual_tid:
+            rowref = self.get_iter(node_path)
+            if data == 'add':
                 if DEBUG_MODEL:
-                    print "    ! this is the update/add %s get_iter" %tid
-                rowref = self.get_iter(node_path)
-                if data == 'add':
+                    print "     adding %s on path %s" %(tid,str(node_path))
+                self.state_id = state_id
+                self.row_func('inserted',node_path, rowref)
+                if len(node_path) > 1:
+                    parpath = node_path[:-1]
+                    parrowref = self.get_iter(parpath)
                     if DEBUG_MODEL:
-                        print "     adding %s on path %s" %(tid,str(node_path))
-                    self.row_func('inserted',node_path, rowref)
-                    if len(node_path) > 1:
-                        parpath = node_path[:-1]
-                        parrowref = self.get_iter(parpath)
-                        if DEBUG_MODEL:
-                            print "*** child toggled for parent %s" %str(parpath)
-                        self.row_func('child_toggled',parpath,parrowref)
-                else:
-                    if DEBUG_MODEL:
-                        print "     modifying %s on path %s" %(tid,str(node_path))
-                    self.row_func('changed',node_path, rowref)
-                if self.tree.node_has_child(tid):
-                    if DEBUG_MODEL:
-                        print "     child toggling for %s %s" %(tid,str(node_path))
-                    self.row_func('child_toggled',node_path, rowref)
+                        print "*** child toggled for parent %s" %str(parpath)
+                    self.row_func('child_toggled',parpath,parrowref)
             else:
-                raise ValueError("%s path for %s is supposed" %(data,tid) +\
-                        "to be %s, the one of %s "%(node_path, actual_tid))
-    #                print "************"
-    #                print "path for %s is supposed to be %s "%(tid,node_path)
-    #                print "but in fact, tid for that path is %s" %actual_tid
-    #                print "and paths are %s" %str(self.tree.get_paths_for_node(tid))
-    #                print "and paths for real are %s" %str(self.tree.get_paths_for_node(actual_tid))
-    #                self.tree.print_tree()
-    #        print " = ============================="
-    #        self.tree.print_tree()
+                if DEBUG_MODEL:
+                    print "     modifying %s on path %s" %(tid,str(node_path))
+                self.state_id = state_id
+                self.row_func('changed',node_path, rowref)
+            if self.tree.node_has_child(tid,state_id=state_id):
+                if DEBUG_MODEL:
+                    print "     child toggling for %s %s" %(tid,str(node_path))
+                self.row_func('child_toggled',node_path, rowref)
         else:
-            print "dismiss updating task %s to state %s (current:%s)" %(tid,state_id,self.state_id)
+            raise ValueError("%s path for %s is supposed" %(data,tid) +\
+                    "to be %s, the one of %s "%(node_path, actual_tid))
+#                print "************"
+#                print "path for %s is supposed to be %s "%(tid,node_path)
+#                print "but in fact, tid for that path is %s" %actual_tid
+#                print "and paths are %s" %str(self.tree.get_paths_for_node(tid))
+#                print "and paths for real are %s" %str(self.tree.get_paths_for_node(actual_tid))
+#                self.tree.print_tree()
+#        print " = ============================="
+#        self.tree.print_tree()%(tid,state_id,self.state_id)
 
     def remove_task(self,tid,path,state_id):
         if TM_IDLE_ADD:
@@ -355,35 +347,32 @@ class TreeModel(gtk.GenericTreeModel):
             t = threading.current_thread()
             if t != self.thread:
                 raise Exception('! could not remove_task from thread %s' %t)
-        if True:#state_id > self.state_id:
-            self.state_id = state_id
-            if DEBUG_MODEL:
-                print "     deleting row %s  (it's tid %s)" %(str(path),tid)
-    #            self.tree.print_tree()
-            self.row_func('delete',path)
-    #        print "removing %s from path %s" %(tid,str(path))
-            if len(path) > 1:
-                parpath = path[:-1]
-                parrowref = self.get_iter(parpath)
-                self.row_func('child_toggled',parpath,parrowref)
-        else:
-            print "dismiss deleting task %s to state %s (current:%s)" %(tid,state_id,self.state_id)
+        if DEBUG_MODEL:
+            print "     deleting row %s  (it's tid %s)" %(str(path),tid)
+        self.state_id = state_id
+        self.row_func('delete',path)
+#        print "removing %s from path %s" %(tid,str(path))
+        if len(path) > 1:
+            parpath = path[:-1]
+            parrowref = self.get_iter(parpath)
+            self.row_func('child_toggled',parpath,parrowref)
         
     def reorder(self,nid,path,neworder,state_id):
         if state_id > self.state_id:
             self.state_id = state_id
             if TM_IDLE_ADD:
-                gobject.idle_add(self.__reorder,None,nid,path,neworder)
+                gobject.idle_add(self.__reorder,None,nid,path,neworder,state_id)
             else:
-                self.__reorder(None,nid,path,neworder)
+                self.__reorder(None,nid,path,neworder,state_id)
             
-    def __reorder(self, sender, nid,path,neworder):
-        actual_nid = self.tree.get_node_for_path(path)
+    def __reorder(self, sender, nid,path,neworder,state_id):
+        actual_nid = self.tree.get_node_for_path(path,state_id=state_id)
         if nid == actual_nid:
             if path:
                 rowref = self.get_iter(path)
             else:
                 rowref = None
+            self.state_id = state_id
             self.rows_reordered(path,rowref,neworder)
         else:
             raise Exception('path/node mismatch in reorder')
