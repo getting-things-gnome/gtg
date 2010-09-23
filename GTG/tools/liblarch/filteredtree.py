@@ -899,10 +899,15 @@ class FilteredTree():
             #Commit state
             self.__commit_state()
             for c in cllbcks:
+                if len(cllbcks) > 1:
+                    raise Exception('No multiple cllbcks in FT 903 !')
                 self.callback(*c)
-            for p in self.get_paths_for_node(nid):
+            ppp = self.get_paths_for_node(nid)
+            for p in ppp:
 #                print "+++ adding %s to %s" %(nid,str(p))
                 #FIXME : no multiple signals !
+                if len(ppp) > 1:
+                    raise Exception('No multiples signals added allowed !')
                 self.callback('added',nid,p)
             for child in self.__node_all_children(nid):
                 self.__add_node(child,pars=[nid])
@@ -1061,9 +1066,10 @@ class FilteredTree():
             self.applied_filters.append(filter_name)
             if refresh:
                 self.refilter()
-            return True
+            toreturn = True
         else:
-            return False
+            toreturn = False
+        return toreturn
     
     def unapply_filter(self,filter_name,refresh=True):
         """

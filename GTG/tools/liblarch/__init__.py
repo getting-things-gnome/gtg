@@ -271,7 +271,6 @@ class ViewTree(gobject.GObject):
         for k in self.__cllbcks.get(signal_name,[]):
             f = self.__cllbcks[signal_name][k]
             if neworder:
-                print neworder
                 f(tid,path,neworder,state_id)
             elif state_id:
                 f(tid,path,state_id)

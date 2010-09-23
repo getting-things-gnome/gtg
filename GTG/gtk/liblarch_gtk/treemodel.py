@@ -274,7 +274,8 @@ class TreeModel(gtk.GenericTreeModel):
         return toreturn
 
     def add_task(self,tid,path,state_id):
-        print "receiving add_task %s to state %s (current:%s)" %(tid,state_id,self.state_id)
+        if DEBUG_MODEL:
+            print "receiving add_task %s to state %s (current:%s)" %(tid,state_id,self.state_id)
         if TM_IDLE_ADD:
             gobject.idle_add(self.__update_task,None,tid,path,state_id,'add',priority=gobject.PRIORITY_HIGH)
         else:
@@ -306,7 +307,6 @@ class TreeModel(gtk.GenericTreeModel):
             if data == 'add':
                 if DEBUG_MODEL:
                     print "     adding %s on path %s" %(tid,str(node_path))
-                self.state_id = state_id
                 self.row_func('inserted',node_path, rowref)
                 if len(node_path) > 1:
                     parpath = node_path[:-1]
@@ -317,7 +317,6 @@ class TreeModel(gtk.GenericTreeModel):
             else:
                 if DEBUG_MODEL:
                     print "     modifying %s on path %s" %(tid,str(node_path))
-                self.state_id = state_id
                 self.row_func('changed',node_path, rowref)
             if self.tree.node_has_child(tid,state_id=state_id):
                 if DEBUG_MODEL:
