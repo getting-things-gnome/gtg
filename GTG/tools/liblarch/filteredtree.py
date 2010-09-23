@@ -853,9 +853,10 @@ class FilteredTree():
                     self.tmp_nodes[nid]['parents'].remove(p)
                 
             for pa in npaths:
-                #FIXME : should we send the callback while protected 
-                #by the lock ?
+                #FIXME : no multiple signals !
                 self.__commit_state()
+                if len(npaths) > 1:
+                    raise Exception('We cannot send multiple signals at once')
                 self.callback('deleted',nid,pa)
             return True
         else:
@@ -901,6 +902,7 @@ class FilteredTree():
                 self.callback(*c)
             for p in self.get_paths_for_node(nid):
 #                print "+++ adding %s to %s" %(nid,str(p))
+                #FIXME : no multiple signals !
                 self.callback('added',nid,p)
             for child in self.__node_all_children(nid):
                 self.__add_node(child,pars=[nid])
@@ -934,8 +936,11 @@ class FilteredTree():
                     self.__add_node(nid)
                 if len(node_dic['parents']) > 0 and nid in self.cache_vr:
                     cllbcks = self.__remove_from_vr(nid)
+                    #FIXME : not multiple signals !
                     self.__commit_state()
                     for c in cllbcks:
+                        if len(cllbcks) > 1:
+                            raise Exception('No multiple callbacks')
                         self.callback(*c)
                     
                 #DEBUG
