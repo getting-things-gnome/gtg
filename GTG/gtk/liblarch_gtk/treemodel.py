@@ -17,10 +17,8 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 DEBUG_MODEL = False
-TM_USE_SIGNALS = False
 TM_IDLE_ADD = True
 THREAD_PROTECTION = True
-ROW_IDLE_ADD = False
 
 #I believe that the correct setup should be : 
 # signals = False
@@ -54,16 +52,16 @@ class TreeModel(gtk.GenericTreeModel):
             self.thread = threading.current_thread()
 
     def connect_model(self):
-        if TM_USE_SIGNALS:
-            self.tree.connect('node-added-inview',self.__add_task)
-            self.tree.connect('node-deleted-inview',self.__remove_task)
-            self.tree.connect('node-modified-inview',self.__update_task)
-            self.tree.connect('node-children-reordered',self.__reorder)
-        else:
-            self.tree.register_cllbck('node-added-inview',self.add_task)
-            self.tree.register_cllbck('node-deleted-inview',self.remove_task)
-            self.tree.register_cllbck('node-modified-inview',self.update_task)
-            self.tree.register_cllbck('node-children-reordered',self.reorder)
+        #Not to be used
+#        if TM_USE_SIGNALS:
+#            self.tree.connect('node-added-inview',self.__add_task)
+#            self.tree.connect('node-deleted-inview',self.__remove_task)
+#            self.tree.connect('node-modified-inview',self.__update_task)
+#            self.tree.connect('node-children-reordered',self.__reorder)
+        self.tree.register_cllbck('node-added-inview',self.add_task)
+        self.tree.register_cllbck('node-deleted-inview',self.remove_task)
+        self.tree.register_cllbck('node-modified-inview',self.update_task)
+        self.tree.register_cllbck('node-children-reordered',self.reorder)
         self.state_id = self.tree.get_state_id()
 
 ### TREE MODEL HELPER FUNCTIONS ###############################################
@@ -385,9 +383,6 @@ class TreeModel(gtk.GenericTreeModel):
             f = self.row_inserted
         elif func == 'changed':
             f = self.row_changed
-        if ROW_IDLE_ADD:
-            gobject.idle_add(f,*args)
-        else:
-            f(*args)
+        f(*args)
         
 
