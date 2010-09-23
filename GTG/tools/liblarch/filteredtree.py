@@ -390,7 +390,6 @@ class FilteredTree():
         else:
             #We consider the root node.
             toreturn = list(vr)
-        print "FT : %s children for %s at state %s" %(toreturn,tid,state_id)
         return toreturn
     
     @synchronized

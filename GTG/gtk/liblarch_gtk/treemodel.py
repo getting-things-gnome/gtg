@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-DEBUG_MODEL = True
+DEBUG_MODEL = False
 TM_USE_SIGNALS = False
 TM_IDLE_ADD = True
 THREAD_PROTECTION = True
@@ -301,7 +301,6 @@ class TreeModel(gtk.GenericTreeModel):
         if tid == actual_tid:
             if DEBUG_MODEL:
                 print "    ! this is the update/add %s get_iter" %tid
-            print "TM li 304 : get iter for %s (state %s)" %(str(node_path),state_id)
             self.state_id = state_id
             rowref = self.get_iter(node_path)
             if data == 'add':
@@ -354,6 +353,7 @@ class TreeModel(gtk.GenericTreeModel):
 #        print "removing %s from path %s" %(tid,str(path))
         if len(path) > 1:
             parpath = path[:-1]
+            print "after deleting %s, getting iter for %s" %(str(path),str(parpath))
             parrowref = self.get_iter(parpath)
             self.row_func('child_toggled',parpath,parrowref)
         
