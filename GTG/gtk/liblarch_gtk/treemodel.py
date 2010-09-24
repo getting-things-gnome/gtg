@@ -273,22 +273,14 @@ class TreeModel(gtk.GenericTreeModel):
 
     def add_task(self,tid,path,state_id):
         if DEBUG_MODEL:
-            print "receiving add_task %s to state %s (current:%s)" %(tid,state_id,self.state_id)
-        if TM_IDLE_ADD:
-            gobject.idle_add(self.__update_task,None,tid,path,state_id,'add',priority=gobject.PRIORITY_HIGH)
-        else:
-            self.__update_task(None,tid,path,state_id,'add')
-
-    def __add_task(self,sender,tid,path):
-        #TOREMOVE
-        self.__update_task(sender,tid,path,'add')
+            print "receiving add_task %s to state %s (current:%s)" \
+                                            %(tid,state_id,self.state_id)
+        gobject.idle_add(self.__update_task,None,tid,path,state_id,'add',\
+                                            priority=gobject.PRIORITY_HIGH)
 
     def update_task(self, tid,path,state_id,data=None):
-        if TM_IDLE_ADD:
-            gobject.idle_add(self.__update_task,None,tid,path,state_id,data,priority=gobject.PRIORITY_HIGH)
-        else:
-            self.__update_task(None,tid,path,state_id,data)
-        
+        gobject.idle_add(self.__update_task,None,tid,path,state_id,\
+                                    data,priority=gobject.PRIORITY_HIGH)
 
     def __update_task(self,sender,tid,node_path,state_id,data=None):
         if THREAD_PROTECTION:
@@ -333,10 +325,8 @@ class TreeModel(gtk.GenericTreeModel):
 #        self.tree.print_tree()%(tid,state_id,self.state_id)
 
     def remove_task(self,tid,path,state_id):
-        if TM_IDLE_ADD:
-            gobject.idle_add(self.__remove_task,None,tid,path,state_id,priority=gobject.PRIORITY_HIGH)
-        else:
-            self.__remove_task(None,tid,path,state_id)
+        gobject.idle_add(self.__remove_task,None,tid,path,state_id,\
+                                            priority=gobject.PRIORITY_HIGH)
 
     def __remove_task(self,sender,tid,path,state_id):
         if THREAD_PROTECTION:
@@ -354,21 +344,21 @@ class TreeModel(gtk.GenericTreeModel):
             self.row_func('child_toggled',parpath,parrowref)
         
     def reorder(self,nid,path,neworder,state_id):
-        if state_id > self.state_id:
-            self.state_id = state_id
-            if TM_IDLE_ADD:
-                gobject.idle_add(self.__reorder,None,nid,path,neworder,state_id)
-            else:
-                self.__reorder(None,nid,path,neworder,state_id)
+        gobject.idle_add(self.__reorder,None,nid,path,neworder,state_id,\
+                                            priority=gobject.PRIORITY_HIGH)
             
     def __reorder(self, sender, nid,path,neworder,state_id):
+        if THREAD_PROTECTION:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not reorder tasks from thread %s' %t)
+        self.state_id = state_id
         actual_nid = self.tree.get_node_for_path(path,state_id=state_id)
         if nid == actual_nid:
             if path:
                 rowref = self.get_iter(path)
             else:
                 rowref = None
-            self.state_id = state_id
             self.rows_reordered(path,rowref,neworder)
         else:
             raise Exception('path/node mismatch in reorder')
