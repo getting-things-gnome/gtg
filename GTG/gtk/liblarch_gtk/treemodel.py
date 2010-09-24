@@ -359,7 +359,7 @@ class TreeModel(gtk.GenericTreeModel):
                 rowref = self.get_iter(path)
             else:
                 rowref = None
-            self.rows_reordered(path,rowref,neworder)
+            self.row_func('reordered',path,rowref,neworder)
         else:
             raise Exception('path/node mismatch in reorder')
             
@@ -373,6 +373,8 @@ class TreeModel(gtk.GenericTreeModel):
             f = self.row_inserted
         elif func == 'changed':
             f = self.row_changed
+        elif func == 'reordered':
+            f = self.rows_reordered
         f(*args)
         
 

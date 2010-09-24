@@ -906,8 +906,7 @@ class FilteredTree():
             for p in ppp:
 #                print "+++ adding %s to %s" %(nid,str(p))
                 #FIXME : no multiple signals !
-                if len(ppp) > 1:
-                    raise Exception('No multiples signals added allowed !')
+                raise Exception('Callbacks without commit_state')
                 self.callback('added',nid,p)
             for child in self.__node_all_children(nid):
                 self.__add_node(child,pars=[nid])
@@ -1005,8 +1004,10 @@ class FilteredTree():
             neworder.append(index)
             if parent:
                 for path in self.get_paths_for_node(parent):
+                    raise Exception('Callback without commit_state !')
                     self.callback('reordered',parent,path,neworder)
             else:
+                raise Exception('callback without commit state !')
                 self.callback('reordered',None,None,neworder)
     
 ################# Filters functions #####################################
