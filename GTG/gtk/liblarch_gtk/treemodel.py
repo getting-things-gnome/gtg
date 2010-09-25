@@ -18,7 +18,7 @@
 # -----------------------------------------------------------------------------
 DEBUG_MODEL = False
 TM_IDLE_ADD = True
-THREAD_PROTECTION = True
+THREAD_PROTECTION = False
 
 #I believe that the correct setup should be : 
 # signals = False

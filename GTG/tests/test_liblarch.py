@@ -419,10 +419,10 @@ class TestLibLarch(unittest.TestCase):
         We also check with a callback that the path sent is well
         corresponding to the nid received.
         '''
-        def check_path(nid,path):
+        def check_path(nid,path,state_id):
             realnode = view.get_node_for_path(path)
 #            self.assertEqual(nid,realnode)
-        def printtree(tid,paths=None):
+        def printtree(tid,paths=None,state_id=None):
             treestr = ' '
             #The printtree method returns an error when the printed tree
             #is not logical. Thus, by connecting a print tree to signals,
@@ -1122,7 +1122,7 @@ class TestLibLarch(unittest.TestCase):
     def test_update_callback(self):
         '''We test the update callbacks and we check that the path
             received is well corresponding to the nid received'''
-        def check_path(nid,path):
+        def check_path(nid,path,state_id):
             self.assertEqual(view.get_node_for_path(path),nid)
             self.assert_(path in view.get_paths_for_node(nid))
         view = self.tree.get_viewtree(refresh=False)
