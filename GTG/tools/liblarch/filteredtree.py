@@ -802,6 +802,9 @@ class FilteredTree():
         self.history[self.state_id] = hist
         self.state_lock.release()
         
+    #If pars = None, we consider all the parents (or the node in the VR). 
+    # Don't forget that
+    # a node can be in Virtual Root only if it doesn't have any parent.
     def __delete_node(self,nid,pars=None):
         self.trace += "Deleting node %s with pars %s\n" %(nid,pars)
         if self.is_displayed(nid):
@@ -863,15 +866,7 @@ class FilteredTree():
             return False
     
     def __add_node(self,nid,pars=None):
-        #We will save the callbacks that should be sent to send them
-        #after the commit_state.
-        
-        #1. We remove the node from the VR if it has parents.
-        
-        #2. We add the node, one path at a time.
-        
-        
-        cllbcks = []
+        #We only add node that should be displayed
         if self.__is_displayed(nid):
             if not pars:
                 pars = self.__node_parents(nid)
@@ -879,9 +874,12 @@ class FilteredTree():
             for par in pars:
                 if not self.is_displayed(par):
                     self.__add_node(par)
-                    
-            #creating the node
-            #CACHE_MODIF
+        
+            #1. We remove the node from the VR if it has parents.
+            if len(pars) > 0 and nid in self.tmp_vr:
+                self.__delete_node(nid)
+                
+            #2. We create the node object (or take the existing one)
             if not self.is_displayed(nid):
                 node_dic = {}
                 node_dic['parents'] = []
@@ -889,36 +887,39 @@ class FilteredTree():
                 self.tmp_nodes[nid] = node_dic
             else:
                 node_dic = self.tmp_nodes[nid]
-                
+        
+            #2. We add the node, one path at a time.
             for par in pars:
                 parnode = self.tmp_nodes[par]
                 if nid not in parnode['children']:
                     parnode['children'].append(nid)
                 if par not in node_dic['parents']:
                     node_dic['parents'].append(par)
+                parpaths = self.get_paths_for_node(par)
+                ind = parnode['children'].index(nid)
+                self.__commit_state()
+                #FIXME : if a parent has multiple paths, we send 
+                #multiple signals for one commit_state !
+                #that's not good hacker, that's not good.
+                for pp in parpaths:
+                    path = pp + (ind,)
+                    self.callback('added',nid,path)
+                
             if len(node_dic['parents']) == 0:
                 if nid not in self.tmp_vr:
                     self.tmp_vr.append(nid)
-            else:
-                if nid in self.tmp_vr:
-                    cllbks = self.__remove_from_vr(nid)
-            #Commit state
-            self.__commit_state()
-            for c in cllbcks:
-                if len(cllbcks) > 1:
-                    raise Exception('No multiple cllbcks in FT 903 !')
-                self.callback(*c)
-            ppp = self.get_paths_for_node(nid)
-            for p in ppp:
-#                print "+++ adding %s to %s" %(nid,str(p))
-                #FIXME : no multiple signals !
-                raise Exception('Callbacks without commit_state')
-                self.callback('added',nid,p)
+                    ind = self.tmp_vr.index(nid)
+                    self.__commit_state()
+                    self.callback('added',nid,(ind,))
+                    
+            #Finally, we add the childrens of that node 
             for child in self.__node_all_children(nid):
                 self.__add_node(child,pars=[nid])
             return True
+        
         else:
             return False
+            
     
     def __update_node(self,nid):
         curdis = self.is_displayed(nid)
