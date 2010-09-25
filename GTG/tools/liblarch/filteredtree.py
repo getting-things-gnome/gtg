@@ -865,6 +865,12 @@ class FilteredTree():
     def __add_node(self,nid,pars=None):
         #We will save the callbacks that should be sent to send them
         #after the commit_state.
+        
+        #1. We remove the node from the VR if it has parents.
+        
+        #2. We add the node, one path at a time.
+        
+        
         cllbcks = []
         if self.__is_displayed(nid):
             if not pars:
