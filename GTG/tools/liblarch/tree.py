@@ -562,7 +562,9 @@ class TreeNode():
             t = threading.current_thread()
             if t != self.thread:
                 raise Exception('! could not get_child from thread %s' %t)
-        if id in self.children:
+        if self.tree == None:
+            raise Exception('task %s has not tree !' %self.id)
+        if self.tree and self.tree.has_node(id) and id in self.children:
             return self.tree.get_node(id)
         else:
             return None
