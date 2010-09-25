@@ -535,6 +535,7 @@ class FilteredTree():
         toreturn = None
         if nid in vr:
             if pid:
+                print "next_node %s (par %s, state %s)" %(nid,pid,state_id)
                 raise Exception('Asking for next_node of %s'%nid+\
                         'with parent %s but node is in VR'%pid)
             i = vr.index(nid) + 1
@@ -808,6 +809,7 @@ class FilteredTree():
     def __delete_node(self,nid,pars=None):
         self.trace += "Deleting node %s with pars %s\n" %(nid,pars)
         if self.is_displayed(nid):
+            complete_delete = True
             if pars:
                 for p in pars:
                     self.__make_last_child(nid,p)
@@ -816,6 +818,8 @@ class FilteredTree():
                     npaths = []
                     for pp in ppaths:
                         npaths.append(pp + (nindex,))
+                    if len(pars) < len(self.cache_nodes[nid]['parents']):
+                        complete_delete = False
             else:
                 pars = list(self.cache_nodes[nid]['parents'])
                 for p in pars:
@@ -825,41 +829,26 @@ class FilteredTree():
                 npaths = self.get_paths_for_node(nid)
                 
             #We recursively delete children if necessary
-            if not self.__is_displayed(nid) and self.tree.has_node(nid):
+            if complete_delete and self.tree.has_node(nid):
                 childrens = list(self.cache_nodes[nid]['children'])
                 childrens.reverse()
                 for c in childrens:
                     self.__delete_node(c,pars=[nid])
-                
-
-            #Now we remove the node if it is not displayed at all anymore
-            if not self.__is_displayed(nid):
-                #We need childrens only if we delete totally the node
-                if self.tree.has_node(nid):
-                    #if the node has been completely removed,
-                    #children have already been moved.
-                    for c in childrens:
-                        #Children might be added elsewhere
-                        if self.__is_displayed(c):
-                            self.__update_node(c)
-                #CACHE_MODIF
                 if nid in self.cache_vr:
                     self.tmp_vr.remove(nid)
                 self.tmp_nodes.pop(nid)
                 
-            #CACHE_MODIF
-            #We remove the node from the parents
             for p in pars:
                 self.tmp_nodes[p]['children'].remove(nid)
                 #removing the parents
                 if self.tmp_nodes.has_key(nid):
                     self.tmp_nodes[nid]['parents'].remove(p)
-                
+                    
             for pa in npaths:
                 #FIXME : no multiple signals !
                 self.__commit_state()
                 if len(npaths) > 1:
-                    raise Exception('We cannot send multiple signals at once')
+                    print "***WARNING : we send multiple delete signals for one commit"
                 self.callback('deleted',nid,pa)
             return True
         else:
@@ -901,6 +890,8 @@ class FilteredTree():
                 #FIXME : if a parent has multiple paths, we send 
                 #multiple signals for one commit_state !
                 #that's not good hacker, that's not good.
+                if len(parpaths) > 1:
+                    print "*** WARNING ***, multiple signals sent for one commit"
                 for pp in parpaths:
                     path = pp + (ind,)
                     self.callback('added',nid,path)
@@ -995,9 +986,9 @@ class FilteredTree():
         
     def __make_last_child(self,nid,parent):
         if parent:
-            children = self.cache_nodes[parent]['children']
+            children = self.tmp_nodes[parent]['children']
         else:
-            children = self.cache_vr
+            children = self.tmp_vr
         if nid not in children:
             error = "node %s is not in children %s of parent %s\n"%(nid,children,parent)
             error += self.trace
@@ -1011,10 +1002,10 @@ class FilteredTree():
             neworder.append(index)
             if parent:
                 for path in self.get_paths_for_node(parent):
-                    raise Exception('Callback without commit_state !')
+                    self.__commit_state()
                     self.callback('reordered',parent,path,neworder)
             else:
-                raise Exception('callback without commit state !')
+                self.__commit_state()
                 self.callback('reordered',None,None,neworder)
     
 ################# Filters functions #####################################
