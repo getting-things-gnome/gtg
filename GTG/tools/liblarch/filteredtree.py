@@ -947,14 +947,15 @@ class FilteredTree():
                     
                 #DEBUG
                 error += "before signal : %s\n" %self.cache_nodes
-                for p in node_dic['parents']:
+                for p in self.cache_nodes[nid]['parents']:
                     if nid not in self.cache_nodes[p]['children']:
                         error += "%s not in childrens of %s\n" %(nid,p)
                         error += self.trace
                         raise Exception(error)
-                for p in node_dic['children']:
-                    if nid not in self.cache_nodes[p]['parents']:
-                        error += "%s not in parents of %s\n" %(nid,p)
+                for c in self.cache_nodes[nid]['children']:
+                    if not self.cache_nodes.has_key(c) or \
+                                nid not in self.cache_nodes[c]['parents']:
+                        error += "%s not in parents of %s\n" %(nid,c)
                         error += self.trace
                         raise Exception(error)
                     
