@@ -15,6 +15,6 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from GTG import _
-title = _("A sexy Web page (nicely printable)")
-description = _("A template to create a simple HTML page with some tasks."
-                " It can be printed nicely.")
+title = _("A professional-looking HTML page")
+description = _("A template to create a HTML page with some tasks and tags."
+                " Tags colors are also displayed.")

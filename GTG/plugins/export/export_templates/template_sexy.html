@@ -104,10 +104,19 @@ For a more advanced usage of templates, scroll down to the end of this document
 
             .clear { float: none; clear: both; }
 
-            ## Output CSS classes for each of the tag's, setting background-color to the tag colour
-##            #for $tag in $plugin_api.get_requester().get_tag_tree().get_all_nodes():
-##            .$tag.get_name().replace('@', '') { background-color: $tag.get_attribute('color'); }
-##            #end for
+            ## Output CSS classes for each of the tags, setting background-color to the tag colour
+            #for $tag in $plugin_api.get_requester().get_tag_tree().get_all_nodes():
+                #set $tag_obj = $plugin_api.get_requester().get_tag_tree().get_node($tag)
+                #if $tag_obj.is_special():
+                    #continue
+                #end if
+                #try:
+                span.#slurp
+$tag.replace('@', '') { background-color: $tag_obj.get_attribute('color'); }
+                #except:
+                    #pass
+                #end try
+            #end for
         </style>
     </head>
     <body>
@@ -137,11 +146,13 @@ $task_template($task)#slurp
         #def task_template($task, $is_subtask = '')
             <tr>
                 #if $task.has_tags
-                <td class="tag">#slurp
-#for $tag in $task.tags:
-<span class="$tag.replace('@', '')" title="$tag.replace('@', '')">&nbsp;</span>#slurp
-#end for
-#end if#</td>
+                    <td class="tag">#slurp
+                    #for $tag in $task.tags:
+                        <span class="$tag.replace('@', '')" title="$tag.replace('@', '')">&nbsp;</span>#slurp
+                    #end for
+                #else
+                    <td class="tag">#slurp
+                #end if#</td>
                 <td>
                 #if $task.has_title
                     <p #if $is_subtask != ''
@@ -172,10 +183,10 @@ $task.due_date#slurp
 <div class="tags-key">
 <h3>Tags Key</h3>
     #for $tag in $plugin_api.get_requester().get_tag_tree().get_all_nodes():
-##	$tag_obj = $plugin_api.get_requester().get_tag_tree().get_node($tag)
-##	#if $tag_obj.is_special():
-##	    #continue
-##	#end if
+        #set $tag_obj = $plugin_api.get_requester().get_tag_tree().get_node($tag)
+        #if $tag_obj.is_special():
+            #continue
+        #end if
         <p class="tag"><span class="$tag.replace('@', '')" title="$tag.replace('@', '')">&nbsp;</span>$tag.replace('@', '')</p>
     #end for
     <br class="clear" />
