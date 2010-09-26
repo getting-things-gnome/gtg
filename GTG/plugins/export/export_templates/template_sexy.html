@@ -1,0 +1,225 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+<!--
+ -*- coding: utf-8 -*-
+ pylint: disable-msg=W0201
+ -----------------------------------------------------------------------------
+ Getting Things Gnome! - a personal organizer for the GNOME desktop
+ Copyright (c) 2008-2009 - Lionel Dricot & Bertrand Rousseau
+
+ This program is free software: you can redistribute it and/or modify it under
+ the terms of the GNU General Public License as published by the Free Software
+ Foundation, either version 3 of the License, or (at your option) any later
+ version.
+
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ details.
+
+ You should have received a copy of the GNU General Public License along with
+ this program.  If not, see <http://www.gnu.org/licenses/>.
+ -----------------------------------------------------------------------------
+-->
+
+<!--
+ -----------------------------------------------------------------------------
+ Author: Duncan Lock <dunc@dflock.co.uk>
+ Date: 2010-10-24
+ This is a modified version of Luca's original template_simple.html
+ -----------------------------------------------------------------------------
+-->
+
+<!--
+So you want to write your own template for Getting things GNOME?
+Cool. Now, these templates are interpreted with a python library 
+called Cheetah. If you know a little about python or some other
+scripting languare, just dive in, it's really straightforward.
+A little note: #slurp is used to avoid the trailing newline addition, 
+like echo -n if you are into CLIs.
+Otherwise, a nice and easy tutorial about it can be found 
+here:
+http://www.devshed.com/c/a/Python/Templating-with-Cheetah/
+
+The last thing you may want to know are the variables you can use.
+Here's the list:
+tasks                -> The list of all exported tasks
+task.title           -> The task title
+task.has_title       -> True/False, wheter the task has a title (it should)
+task.text            -> The task description
+task.has_text
+task.status          -> The task status (Active,..)
+task.has_status
+task.subtasks        -> List of subtasks
+task.has_subtasks
+task.tags            -> List of tags
+task.has_tags
+task.modified
+task.has_modified
+task.due_date
+task.has_due_date
+task.closed_date
+task.has_closed_date
+task.start_date
+task.has_start_date
+task.days_left
+task.has_days_left
+
+## Remember to put a $ before any varible (e.g.: $tasks), I won't do
+## it here so that it shows up in the source of the generated html
+## (the ## are the comment escaping in Cheetah, so these line won't 
+## show up)
+
+If you write down a nice template, please send it back to the GTG project:
+go to https://edge.launchpad.net/gtg, and open a bug requesting to include your
+template (remember to attach the file). It's good karma!
+
+For a more advanced usage of templates, scroll down to the end of this document
+
+~~Luca Invernizzi: <invernizzi.l@gmail.com> ~~
+-->
+<html>
+    <head>
+        <title>Tasklist</title>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8" >
+
+        <style>
+            body { font-family: 'Droid Sans', Calibri, 'Lucida Grande' Helvetica, sans-serif; padding: 0 0.5em 2em 0.5em; }
+            div.tags-key { padding: 0.2em; border: 1px solid #ccc; border-radius: 4px; -webkit-border-radius: 4px; -moz-border-radius: 4px; }
+            div.tags-key h3 { margin: 0.4em 0.5em; padding: 0.15em 0.2em; border-bottom: 1px solid #ddd; }
+            p.tag { float: left; padding: 0.3em; margin: 0.1em 0.3em; width: 20%; }
+
+            table { border-collapse: collapse; margin-bottom: 2em; }
+            th { border: 1px solid #ddd; background-color: #dedede; padding: 0.2em; }
+            td { border: 1px solid #ddd; padding: 0.2em; }
+
+            p.tag span, td.tag span { display: inline-block; width: 20px; height: 20px; margin: 0.2em; border: 1px solid #bbb; border-radius: 4px; -webkit-border-radius: 4px; -moz-border-radius: 4px; }
+            td.tag span { display: inline-block; margin: 0 0.2em; float: left; }
+            td.tag { width: 60px; }
+
+            td p.task { margin: 0.1em 0 0.1em 0.2em; }
+            td p.subtask { color: #666; margin: 0.1em 0 0.1em 2em; }
+            td p.subtask:before { content: "\21d2 "; margin-right: 0.3em; }
+            td p.description { font-style: italic; font-size: 90%; color: #bbb; margin: 0 0.5em 0.2em 0.7em; }
+
+            .clear { float: none; clear: both; }
+
+            ## Output CSS classes for each of the tag's, setting background-color to the tag colour
+##            #for $tag in $plugin_api.get_requester().get_tag_tree().get_all_nodes():
+##            .$tag.get_name().replace('@', '') { background-color: $tag.get_attribute('color'); }
+##            #end for
+        </style>
+    </head>
+    <body>
+        <h1>Tasklist</h1>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Tags</th>
+                    <th>Title</th>
+                    <th>Due</th>
+                </tr>
+            </thead>
+            <colgroup>
+                <col width="10%">
+                <col width="*">
+                <col width="10%">
+            <colgroup>
+            <tbody>
+            #for $task in $tasks:
+$task_template($task)#slurp
+            #end for
+            </tbody>
+        </table>
+
+        <!-- this is the function that generates a task -->
+        #def task_template($task, $is_subtask = '')
+            <tr>
+                #if $task.has_tags
+                <td class="tag">#slurp
+#for $tag in $task.tags:
+<span class="$tag.replace('@', '')" title="$tag.replace('@', '')">&nbsp;</span>#slurp
+#end for
+#end if#</td>
+                <td>
+                #if $task.has_title
+                    <p #if $is_subtask != ''
+class="$is_subtask"#slurp
+                        #else
+class="task"#slurp
+                        #end if
+>$task.title</p>
+                    #if $task.has_text
+                    <p class="description">$remove_html_tags($task.text)</p>
+                    #end if
+                #end if
+                </td>
+                <td>#slurp
+#if $task.has_due_date
+$task.due_date#slurp
+#end if#</td>
+            </tr>
+            #if $task.has_subtasks
+            <tr>
+                #for $subtask in $task.subtasks:
+                    $task_template($subtask, 'subtask')
+                #end for
+            </tr>
+            #end if
+        #end def
+
+<div class="tags-key">
+<h3>Tags Key</h3>
+    #for $tag in $plugin_api.get_requester().get_tag_tree().get_all_nodes():
+##	$tag_obj = $plugin_api.get_requester().get_tag_tree().get_node($tag)
+##	#if $tag_obj.is_special():
+##	    #continue
+##	#end if
+        <p class="tag"><span class="$tag.replace('@', '')" title="$tag.replace('@', '')">&nbsp;</span>$tag.replace('@', '')</p>
+    #end for
+    <br class="clear" />
+</div>
+
+
+##This is just to avoid annoying characters around. If you don't believe me,
+## just take it out
+#import re
+#def remove_html_tags($data):
+    ##Removing subtask anchor points
+    #set $p = $re.compile(r'^.*<subtask>[0-9]*@[0-9]*</subtask>.*$',$re.MULTILINE)
+    #set $data = $p.sub('', $data)
+    ##Removing tags
+    #set $p = $re.compile(r'@[a-z,0-9]*',$re.IGNORECASE)
+    #set $data = $p.sub('', $data)
+    ##Removing <something> and </something>
+    #set $p = $re.compile(r'<.*?>')
+    #set $data = $p.sub('', $data)
+    ##Removing lines only with commas (tags lines)
+    #set $p = $re.compile(r'^[\s,\,]*$')
+    #return $p.sub('', $data).strip().strip(',')
+#end def
+
+
+<!-- If you need to write something fancy, GTG's templates let you do so.
+You're given full access to GTG's API through the $plugin_api variable.
+Have a look in GTG/core/plugins/api.py to discover how to use it,
+or look at http://live.gnome.org/gtg/pluginHowTo  (you are only interested
+in the "Plugin API" part of that page, so scroll down).
+
+An example of usage of that is given in the following lines, that list 
+all GTG's tags.
+To see this code working, delete the "##" at the beginning of each line 
+and take it out of the html comment
+
+
+##  #for $tag in $plugin_api.get_requester().get_all_tags()
+##      $tag.get_name()
+##  #end for
+
+-->
+
+
+    </body>
+</html>
+
