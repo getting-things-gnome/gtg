@@ -854,7 +854,7 @@ class FilteredTree():
                     print "***WARNING : we send multiple delete signals for one commit"
                 self.callback('deleted',nid,pa)
             self.timer += time.time() - timer1
-            print "time spent in delete : %s" %self.timer
+#            print "time spent in delete : %s" %self.timer
             return True
         else:
             return False

@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-DEBUG_MODEL = True
+DEBUG_MODEL = False
 TM_IDLE_ADD = True
 THREAD_PROTECTION = True
 
@@ -302,11 +302,15 @@ class TreeModel(gtk.GenericTreeModel):
         if tid == actual_tid:
             if DEBUG_MODEL:
                 print "    ! this is the update/add %s get_iter" %tid
-            self.state_id = state_id
-            rowref = self.get_iter(node_path)
+#            self.state_id = state_id
             if data == 'add':
                 if DEBUG_MODEL:
                     print "     adding %s on path %s" %(tid,str(node_path))
+                if self.state_id != state_id - 1:
+                    print "We are at state %s and want to go directly to %s"\
+                                                     %(self.state_id,state_id)
+                self.state_id = state_id
+                rowref = self.get_iter(node_path)
                 self.row_func('inserted',node_path, rowref)
                 if len(node_path) > 1:
                     parpath = node_path[:-1]
@@ -317,6 +321,10 @@ class TreeModel(gtk.GenericTreeModel):
             else:
                 if DEBUG_MODEL:
                     print "     modifying %s on path %s" %(tid,str(node_path))
+                if self.state_id != state_id:
+                    print "we send node-modified for state %s at %s" %(state_id,self.state_id)
+                self.state_id = state_id
+                rowref = self.get_iter(node_path)
                 self.row_func('changed',node_path, rowref)
             if self.tree.node_has_child(tid,state_id=state_id):
                 if DEBUG_MODEL:
@@ -345,6 +353,9 @@ class TreeModel(gtk.GenericTreeModel):
                 raise Exception('! could not remove_task from thread %s' %t)
         if DEBUG_MODEL:
             print "     deleting row %s  (it's tid %s)" %(str(path),tid)
+        if self.state_id != state_id - 1:
+                print "We are at state %s and want to go directly to %s"\
+                                                     %(self.state_id,state_id)
         self.state_id = state_id
         self.row_func('delete',path)
 #        print "removing %s from path %s" %(tid,str(path))
