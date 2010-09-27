@@ -555,7 +555,7 @@ class TaskBrowser(gobject.GObject):
             self.tagtree.refresh_all()
         self.vtree_panes['active'].set_col_visible('startdate',not tobeset)
 
-    def _update_window_title(self,nid=None,path=None):
+    def _update_window_title(self,nid=None,path=None,state_id=None):
         count = self.activetree.get_n_nodes()
         #Set the title of the window:
         parenthesis = ""
@@ -870,10 +870,8 @@ class TaskBrowser(gobject.GObject):
                         selection = treeview.get_selection()
                         selection.unselect_all()
                         selection.select_path(path)
-                thread = threading.Thread(target = selecter,
-                                 args = (treemodelsort, path, iter, self))
-                thread.setDaemon(True)
-                thread.start()
+                #It cannot be another thread than the main gtk thread !
+                gobject.idle_add(selecter,treemodelsort, path, iter, self)
             #event that is set when the new task is created
             self.__last_quick_added_tid_event = threading.Event()
             self.__quick_add_select_handle = \

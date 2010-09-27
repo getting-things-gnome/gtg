@@ -39,7 +39,7 @@ class TreeTester:
         self.trace = "* * * * * * * *\n"
         
         
-    def add(self,nid,path):
+    def add(self,nid,path,state_id):
         self.trace += "adding %s to path %s\n" %(nid,str(path))
         currentnode = self.paths.get(path,None)
         if currentnode and currentnode != nid:
@@ -53,7 +53,7 @@ class TreeTester:
             node.append(path)
         self.paths[path] = nid
     
-    def delete(self,nid,path):
+    def delete(self,nid,path,state_id):
         self.trace += "removing %s from path %s\n" %(nid,str(path))
         if nid != self.paths.get(path,None):
             error = '%s is not assigned to path %s\n'%(nid,str(path))
@@ -69,7 +69,7 @@ class TreeTester:
             self.nodes.pop(nid)
         self.paths.pop(path)
     
-    def update(self,nid,path):
+    def update(self,nid,path,state_id):
         self.trace += "updating %s in path %s\n" %(nid,str(path))
         error = "updating node %s for path %s\n" %(nid,str(path))
         if not self.nodes.has_key(nid):
@@ -88,7 +88,7 @@ class TreeTester:
         if path not in self.nodes[n] or n != nid:
             raise Exception('Mismatching node for path %s'%str(p))
             
-    def reordered(self,nid,path,neworder):
+    def reordered(self,nid,path,neworder,state_id):
         self.trace += "reordering children of %s (%s) : %s\n" %(nid,str(path),neworder)
         self.trace += "VR is %s\n" %self.tree.node_all_children()
         if not path:

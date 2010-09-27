@@ -152,7 +152,8 @@ class TreeFactory:
     def is_workable(self,task,parameters=None):
         """ Filter of tasks that can be worked """
         workable = True
-        for c in task.get_subtasks():
+        for cid in task.get_children():
+            c = task.get_child(cid)
             if c and c.get_status() == Task.STA_ACTIVE:
                 workable = False
         return workable

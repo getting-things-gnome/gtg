@@ -263,12 +263,17 @@ class ViewTree(gobject.GObject):
         
     def get_basetree(self):
         return self.maininterface
+        
+    def get_state_id(self):
+        return self.__ft.get_state_id()
             
-    def __emit(self, signal_name, tid,path=None,neworder=None):
+    def __emit(self, signal_name, tid,path=None,state_id=None,neworder=None,):
         for k in self.__cllbcks.get(signal_name,[]):
             f = self.__cllbcks[signal_name][k]
             if neworder:
-                f(tid,path,neworder)
+                f(tid,path,neworder,state_id)
+            elif state_id:
+                f(tid,path,state_id)
             else:
                 f(tid,path)
         if signal_name.endswith('-inview'):
@@ -320,18 +325,18 @@ class ViewTree(gobject.GObject):
     def get_root(self):
         return self.__maintree.get_root()
 
-    def print_tree(self,string=None):
+    def print_tree(self,string=None,state_id=None):
         if self.static:
             return self.__maintree.print_tree(string=string)
         else:
-            return self.__ft.print_tree(string=string)
+            return self.__ft.print_tree(string=string,state_id=state_id)
 
     #return a list of nid of displayed nodes
-    def get_all_nodes(self):
+    def get_all_nodes(self,state_id=None):
         if self.static:
             return self.__maintree.get_all_nodes()
         else:
-            return self.__ft.get_all_nodes()
+            return self.__ft.get_all_nodes(state_id=state_id)
         
     def refresh_all(self):
         if THREAD_PROTECTION:
@@ -356,7 +361,7 @@ class ViewTree(gobject.GObject):
         return self.__ft.get_n_nodes(withfilters=withfilters,\
                                     include_transparent=include_transparent)
 
-    def get_node_for_path(self, path):
+    def get_node_for_path(self, path,state_id=None):
         if THREAD_PROTECTION:
             t = threading.current_thread()
             if t != self.thread:
@@ -364,10 +369,10 @@ class ViewTree(gobject.GObject):
         if self.static:
             return self.__maintree.get_node_for_path(path)
         else:
-            return self.__ft.get_node_for_path(path)
+            return self.__ft.get_node_for_path(path,state_id=state_id)
 
     #If nid is none, return root path
-    def get_paths_for_node(self, nid=None):
+    def get_paths_for_node(self, nid=None,state_id=None):
         if THREAD_PROTECTION:
             t = threading.current_thread()
             if t != self.thread:
@@ -375,11 +380,11 @@ class ViewTree(gobject.GObject):
         if self.static:
             return self.__maintree._paths_for_node(nid)
         else:
-            return self.__ft.get_paths_for_node(nid)
+            return self.__ft.get_paths_for_node(nid,state_id=state_id)
 
     #pid is used only if nid has multiple parents.
     #if pid is none, a random parent is used.
-    def next_node(self, nid,pid=None):
+    def next_node(self, nid,pid=None,state_id=None):
         if THREAD_PROTECTION:
             t = threading.current_thread()
             if t != self.thread:
@@ -387,9 +392,9 @@ class ViewTree(gobject.GObject):
         if self.static:
             return self.__maintree.next_node(nid,pid=pid)
         else:
-            return self.__ft.next_node(nid,pid)
+            return self.__ft.next_node(nid,pid,state_id=state_id)
         
-    def node_has_child(self, nid):
+    def node_has_child(self, nid,state_id=None):
         if THREAD_PROTECTION:
             t = threading.current_thread()
             if t != self.thread:
@@ -397,18 +402,18 @@ class ViewTree(gobject.GObject):
         if self.static:
             toreturn = self.__maintree.get_node(nid).has_child()
         else:
-            toreturn = self.__ft.node_has_child(nid)
+            toreturn = self.__ft.node_has_child(nid,state_id=state_id)
         return toreturn
 
     #if nid is None, return the number of nodes at the root
-    def node_n_children(self, nid=None):
+    def node_n_children(self, nid=None,state_id=None):
         if THREAD_PROTECTION:
             t = threading.current_thread()
             if t != self.thread:
                 raise Exception('! could not node_n_children from thread %s' %t)
-        return len(self.node_all_children(nid))
+        return len(self.node_all_children(nid,state_id=state_id))
         
-    def node_all_children(self, nid=None):
+    def node_all_children(self, nid=None,state_id=None):
         if THREAD_PROTECTION:
             t = threading.current_thread()
             if t != self.thread:
@@ -419,10 +424,10 @@ class ViewTree(gobject.GObject):
             else:
                 toreturn = []
         else:
-            toreturn = self.__ft.node_all_children(nid)
+            toreturn = self.__ft.node_all_children(nid,state_id=state_id)
         return toreturn
 
-    def node_nth_child(self, nid, n):
+    def node_nth_child(self, nid, n,state_id=None):
         if THREAD_PROTECTION:
             t = threading.current_thread()
             if t != self.thread:
@@ -435,20 +440,20 @@ class ViewTree(gobject.GObject):
             else:
                 raise ValueError("node %s has less than %s nodes" %(nid,n))
         else:
-            realn = self.__ft.node_n_children(nid)
+            realn = self.__ft.node_n_children(nid,state_id=state_id)
             if realn <= n:
                 raise ValueError("viewtree has %s nodes, no node %s" %(realn,n))
-            toreturn = self.__ft.node_nth_child(nid,n)
+            toreturn = self.__ft.node_nth_child(nid,n,state_id=state_id)
         return toreturn
         
-    def node_has_parent(self,nid):
+    def node_has_parent(self,nid,state_id=None):
         if THREAD_PROTECTION:
             t = threading.current_thread()
             if t != self.thread:
                 raise Exception('! could not node_has_parent from thread %s' %t)
-        return len(self.node_parents(nid)) > 0
+        return len(self.node_parents(nid,state_id=state_id)) > 0
 
-    def node_parents(self, nid):
+    def node_parents(self, nid,state_id=None):
         """
         Returns displayed parents of the given node, or [] if there is no 
         parent (such as if the node is a child of the virtual root),
@@ -463,10 +468,10 @@ class ViewTree(gobject.GObject):
         if self.static:
             toreturn = self.__maintree.get_node(nid).get_parents()
         else:
-            toreturn = self.__ft.node_parents(nid)
+            toreturn = self.__ft.node_parents(nid,state_id=state_id)
         return toreturn
 
-    def is_displayed(self,nid):
+    def is_displayed(self,nid,state_id=None):
         if THREAD_PROTECTION:
             t = threading.current_thread()
             if t != self.thread:
@@ -474,7 +479,7 @@ class ViewTree(gobject.GObject):
         if self.static:
             return self.__maintree.has_node(nid)
         else:
-            return self.__ft.is_displayed(nid)
+            return self.__ft.is_displayed(nid,state_id=state_id)
 
     ####### Change filters #################
     def list_applied_filters(self):

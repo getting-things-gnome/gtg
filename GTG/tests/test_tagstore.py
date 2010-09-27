@@ -40,6 +40,9 @@ class TestTag(unittest.TestCase):
         #initalize gobject signaling system
         self.gobject_signal_manager = GobjectSignalsManager()
         self.gobject_signal_manager.init_signals()
+        #refresh the viewtree for tasks
+        tt = self.req.get_tasks_tree()
+        tt.reset_filters()
         
     def tearDown(self):
 #        finally:
@@ -132,14 +135,12 @@ class TestTag(unittest.TestCase):
         '''We test that the task counting for tags work
         even after tag renaming (stuttering tag bug)'''
         t = self.req.new_task(tags=['@testtag'])
+        t.modified()
         tag = self.req.get_tag('@testtag')
         self.assertEqual(tag.get_active_tasks_count(),1)
         t.rename_tag('@testtag','@test')
         tag2 = self.req.get_tag('@test')
         self.assertEqual(tag2.get_active_tasks_count(),1)
-#        self.assertEqual(tag.get_active_tasks_count(),0)
-#        import time
-#        time.sleep(2)
         self.assertEqual(tag.get_active_tasks_count(),0)
 
 def test_suite():

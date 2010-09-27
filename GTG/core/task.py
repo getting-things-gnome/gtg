@@ -418,10 +418,11 @@ class Task(TreeNode):
             return True
         else:
             return False
-
+            
+            
+    #FIXME: remove this function and use liblarch instead.
     def get_subtasks(self):
-        return [self.get_child(nid) for nid in \
-                self.__main_treeview.node_all_children(self.get_id())]
+        return [self.get_child(nid) for nid in self.get_children()]
 
     #FIXME : why is this function used ? It's higly specific. Remove it?
     #        (Lionel)
@@ -484,10 +485,10 @@ class Task(TreeNode):
         self._modified_update()
         if self.is_loaded():
             #This is a liblarch call to the TreeNode ancestor
-            gobject.idle_add(self.modified)
+            self.modified()
             for t in self.get_tags():
 #                print "%s is well synced" %self.id
-                gobject.idle_add(t.modified)
+                t.modified()
             return True
         else:
             return False
@@ -536,10 +537,11 @@ class Task(TreeNode):
             self.tags.append(t)
             #we notify the backends
             #self.req.tag_was_added_to_task(self, tagname)
-            for child in self.get_subtasks():
-                if child.can_be_deleted:
-                    child.add_tag(t)
             if self.is_loaded():
+                for child in self.get_subtasks():
+                    if child.can_be_deleted:
+                        child.add_tag(t)
+            
                 tag = self.req.get_tag(t)
                 if not tag:
                     tag = self.req.new_tag(t)

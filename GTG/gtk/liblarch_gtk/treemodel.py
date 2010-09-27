@@ -17,10 +17,8 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 DEBUG_MODEL = False
-TM_USE_SIGNALS = True
-TM_IDLE_ADD = False
-THREAD_PROTECTION = True
-ROW_IDLE_ADD = False
+TM_IDLE_ADD = True
+THREAD_PROTECTION = False
 
 #I believe that the correct setup should be : 
 # signals = False
@@ -38,6 +36,17 @@ if DEBUG_MODEL or THREAD_PROTECTION:
 from GTG                              import _
 from GTG.tools.logger                 import Log
 
+PRIORITY = gobject.PRIORITY_HIGH
+
+def threadsafe(fun):
+    def newf(*args,**kw):
+        if THREAD_PROTECTION:
+            t = threading.current_thread()
+            if t != args[0].thread:
+                raise Exception('! could not acces %s from thread %s' \
+                                                        %(fun.__name__,t))
+        return fun(*args,**kw)
+    return newf
 
 class TreeModel(gtk.GenericTreeModel):
 
@@ -45,6 +54,7 @@ class TreeModel(gtk.GenericTreeModel):
         gtk.GenericTreeModel.__init__(self)
         self.lock = False
         self.tree = tree
+        self.state_id = 0
         self.value_list = []
         def get_nodeid(node):
             return node.get_id()
@@ -52,33 +62,53 @@ class TreeModel(gtk.GenericTreeModel):
         if THREAD_PROTECTION:
             self.thread = threading.current_thread()
 
+    @threadsafe
     def connect_model(self):
-        if TM_USE_SIGNALS:
-            self.tree.connect('node-added-inview',self.__add_task)
-            self.tree.connect('node-deleted-inview',self.__remove_task)
-            self.tree.connect('node-modified-inview',self.__update_task)
-            self.tree.connect('node-children-reordered',self.__reorder)
-        else:
-            self.tree.register_cllbck('node-added-inview',self.add_task)
-            self.tree.register_cllbck('node-deleted-inview',self.remove_task)
-            self.tree.register_cllbck('node-modified-inview',self.update_task)
-            self.tree.register_cllbck('node-children-reordered',self.reorder)
+        self.tree.register_cllbck('node-added-inview',self.add_task)
+        self.tree.register_cllbck('node-deleted-inview',self.remove_task)
+        self.tree.register_cllbck('node-modified-inview',self.update_task)
+        self.tree.register_cllbck('node-children-reordered',self.reorder)
+        self.state_id = self.tree.get_state_id()
+        
+        
+#### function called by other threads. Those are the only not threadsafe-
+#### decorated methods
+
+    def add_task(self,tid,path,state_id):
+#        if DEBUG_MODEL:
+#            print "receiving add_task %s to state %s (current:%s)" \
+#                                            %(tid,state_id,self.state_id)
+        gobject.idle_add(self.__update_task,None,tid,path,state_id,'add',\
+                                            priority=PRIORITY)
+
+    def update_task(self, tid,path,state_id,data=None):
+        gobject.idle_add(self.__update_task,None,tid,path,state_id,\
+                                    data,priority=PRIORITY)
+                                    
+    def remove_task(self,tid,path,state_id):
+        gobject.idle_add(self.__remove_task,None,tid,path,state_id,\
+                                            priority=PRIORITY)
+                                            
+    def reorder(self,nid,path,neworder,state_id):
+        gobject.idle_add(self.__reorder,None,nid,path,neworder,state_id,\
+                                            priority=PRIORITY)
 
 ### TREE MODEL HELPER FUNCTIONS ###############################################
 
+    @threadsafe
     def  add_col(self,value):
         self.value_list.append(value)
         index = self.value_list.index(value)
         return index
 
-
+    @threadsafe
     def __build_rowref(self,path):
         '''The rowref is the like the path but with ancestors ID instead
         of position. This ensure that each rowref is unique and that we
         are a real tree, not an acyclic directed graphs'''
         rowref = ()
         while len(path) > 0:
-            nid = self.tree.get_node_for_path(path)
+            nid = self.tree.get_node_for_path(path,state_id=self.state_id)
             if not nid:
                 rowref = None
                 raise IndexError('building rowref : No node for path %s'%path)
@@ -87,24 +117,27 @@ class TreeModel(gtk.GenericTreeModel):
             path = path[:-1]
         return rowref
 
+    @threadsafe
     def __get_nid_from_rowref(self,rowref):
         if len(rowref) <= 0:
             raise ValueError('Rowref is empty ! Returning root ?')
         nid = rowref[-1]
         return nid
 
+    @threadsafe
     def __get_node_from_rowref(self,rowref):
         nid = self.__get_nid_from_rowref(rowref)
         node = self.tree.get_node(nid)
         return node
 
+    @threadsafe
     def __get_path_from_rowref(self,rowref):
         path = ()
         size = len(rowref)
         while len(rowref) > 0:
             nid = rowref[0]
             rowref = rowref[1:]
-            temp_list = self.tree.get_paths_for_node(nid)
+            temp_list = self.tree.get_paths_for_node(nid,state_id=self.state_id)
             for p in temp_list:
                 if p[:-1] == path :
                     path = p
@@ -117,27 +150,23 @@ class TreeModel(gtk.GenericTreeModel):
 
 ### TREEMODEL INTERFACE ######################################################
 #
+    @threadsafe
     def on_get_flags(self):
 #        print "on_get_flags"
         return gtk.TREE_MODEL_ITERS_PERSIST
 
+    @threadsafe
     def on_get_n_columns(self):
         return len(self.value_list)
 
+    @threadsafe
     def on_get_column_type(self, n):
-        if THREAD_PROTECTION:
-            t = threading.current_thread()
-            if t != self.thread:
-                raise Exception('! could not acces get_column from thread %s' %t)
         if len(self.value_list) <= n:
             raise ValueError('The tree model doesnt have enough columns!')
         return self.value_list[n][0]
 
+    @threadsafe
     def on_get_value(self, rowref, column):
-        if THREAD_PROTECTION:
-            t = threading.current_thread()
-            if t != self.thread:
-                raise Exception('! could not acces get_value from thread %s' %t)
         if not rowref:
             raise ValueError('Asking the value of an empty rowref')
         node = self.__get_node_from_rowref(rowref)
@@ -149,45 +178,36 @@ class TreeModel(gtk.GenericTreeModel):
 #            print "get_value  for %s %s : %s" %(str(rowref),column,toreturn)
         return toreturn
 
+    @threadsafe
     def on_get_iter(self, path):
-        if THREAD_PROTECTION:
-            t = threading.current_thread()
-            if t != self.thread:
-                raise Exception('! could not acces get_iter from thread %s' %t)
         #We have to return None if there's no node on that path
-        nid = self.tree.get_node_for_path(path)
+        nid = self.tree.get_node_for_path(path,state_id=self.state_id)
         if nid:
             rowref = self.__build_rowref(path)
             toreturn = rowref
         else:
             toreturn = None
         if DEBUG_MODEL:
-            print "on_get_iter for path %s -> %s : %s" %(path,nid,toreturn)
+            print "on_get_iter for path %s (state %s) -> %s : %s" %(path,self.state_id,nid,toreturn)
         return toreturn
 
+    @threadsafe
     def on_get_path(self, rowref):
-        if THREAD_PROTECTION:
-            t = threading.current_thread()
-            if t != self.thread:
-                raise Exception('! could not acces get_path from thread %s' %t)
         toreturn = self.__get_path_from_rowref(rowref)
         if DEBUG_MODEL:
             print "on_get_path for %s : %s" %(str(rowref),toreturn)
         return toreturn
 
+    @threadsafe
     def on_iter_next(self, rowref):
-        if THREAD_PROTECTION:
-            t = threading.current_thread()
-            if t != self.thread:
-                raise Exception('! could not acces iter_next from thread %s' %t)
         toreturn = None
         if rowref:
             nid = self.__get_nid_from_rowref(rowref)
             if len(rowref) > 1:
                 pid = self.__get_nid_from_rowref(rowref[:-1])
-                next_id = self.tree.next_node(nid,pid=pid)
+                next_id = self.tree.next_node(nid,pid=pid,state_id=self.state_id)
             else:
-                next_id = self.tree.next_node(nid)
+                next_id = self.tree.next_node(nid,state_id=self.state_id)
             #We have the next node, we have to build the rowref
             if next_id:
                 toreturn = rowref[:-1] + (next_id,)
@@ -200,69 +220,55 @@ class TreeModel(gtk.GenericTreeModel):
 #            print "******** %s is next node of %s ********" %(toreturn,str(rowref))
         return toreturn
 
+    @threadsafe
     def on_iter_children(self, rowref):
         #By Gtk.treeview definition, we have to return None
         #if rowref doesn't have any children
-        if THREAD_PROTECTION:
-            t = threading.current_thread()
-            if t != self.thread:
-                raise Exception('! could not acces iter_children from thread %s' %t)
         nid = self.__get_nid_from_rowref(rowref)
-        if self.tree.node_n_children(nid) > 0:
+        if self.tree.node_n_children(nid,state_id=self.state_id) > 0:
             toreturn = self.on_iter_nth_child(rowref,0)
         else:
             toreturn = None
         if DEBUG_MODEL:
-            print "on_iter_children %s : %s" %(str(rowref),toreturn)
+            print "on_iter_children %s (state %s): %s" %(str(rowref),self.state_id,toreturn)
+            print self.tree.print_tree(string=True,state_id=self.state_id)
         return toreturn
 
+    @threadsafe
     def on_iter_has_child(self, rowref):
-        if THREAD_PROTECTION:
-            t = threading.current_thread()
-            if t != self.thread:
-                raise Exception('! could not acces iter_has_child from thread %s' %t)
         nid = self.__get_nid_from_rowref(rowref)
-        toreturn = self.tree.node_has_child(nid)
+        toreturn = self.tree.node_has_child(nid,state_id=self.state_id)
         if DEBUG_MODEL:
-            print "on_iter_has_child %s : %s" %(str(rowref),toreturn)
+            print "on_iter_has_child %s : %s (state %s)" %(str(rowref),toreturn,self.state_id)
         return toreturn
 
+    @threadsafe
     def on_iter_n_children(self, rowref):
-        if THREAD_PROTECTION:
-            t = threading.current_thread()
-            if t != self.thread:
-                raise Exception('! could not acces iter_n_children from thread %s' %t)
         if rowref:
             nid = self.__get_nid_from_rowref(rowref)
         else:
             nid = None
-        toreturn = self.tree.node_n_children(nid)
+        toreturn = self.tree.node_n_children(nid,state_id=self.state_id)
         if DEBUG_MODEL:
-            print "returning iter_n_children for %s (%s) : %s" %(str(rowref),nid,toreturn)
+            print "returning iter_n_children for %s (%s) : %s (state %s)" %(str(rowref),nid,toreturn,self.state_id)
         return toreturn
 
+    @threadsafe
     def on_iter_nth_child(self, rowref, n):
-        if THREAD_PROTECTION:
-            t = threading.current_thread()
-            if t != self.thread:
-                raise Exception('! could not acces iter_nth_child from thread %s' %t)
         if rowref:
             nid = self.__get_nid_from_rowref(rowref)
         else:
             #if rowref == None, we use the root
             nid = None
             rowref = ()
-        cid = self.tree.node_nth_child(nid,n)
+        cid = self.tree.node_nth_child(nid,n,state_id=self.state_id)
         toreturn = rowref + (cid,)
         if DEBUG_MODEL:
-            print "on iter child nbr %s for %s : %s" %(n,str(rowref),toreturn)
+            print "on iter child nbr %s for %s : %s (state %s)" %(n,str(rowref),toreturn,self.state_id)
         return toreturn
 
+    @threadsafe
     def on_iter_parent(self, rowref):
-        if THREAD_PROTECTION:
-            t = threading.current_thread()
-            if t != self.thread:
-                raise Exception('! could not acces iter_parent from thread %s' %t)
         if len(rowref) >= 1:
             toreturn = rowref[:-1]
         else:
@@ -271,35 +277,22 @@ class TreeModel(gtk.GenericTreeModel):
             print "on iter parent %s :%s" %(str(rowref),toreturn)
         return toreturn
 
-    def add_task(self,tid,path):
-        if TM_IDLE_ADD:
-            gobject.idle_add(self.__update_task,None,tid,path,'add')
-        else:
-            self.__update_task(None,tid,path,'add')
-
-    def __add_task(self,sender,tid,path):
-        self.__update_task(sender,tid,path,'add')
-
-    def update_task(self, tid,path,data=None):
-        if TM_IDLE_ADD:
-            gobject.idle_add(self.__update_task,None,tid,path,data)
-        else:
-            self.__update_task(None,tid,path,data)
-
-    def __update_task(self,sender,tid,node_path,data=None):
-        if THREAD_PROTECTION:
-            t = threading.current_thread()
-            if t != self.thread:
-                raise Exception('! could not update_task from thread %s' %t)
+    @threadsafe
+    def __update_task(self,sender,tid,node_path,state_id,data=None):
 #        print "other paths are %s" %(str(self.tree.get_paths_for_node(tid)))
-        actual_tid = self.tree.get_node_for_path(node_path)
+        actual_tid = self.tree.get_node_for_path(node_path,state_id=state_id)
         if tid == actual_tid:
             if DEBUG_MODEL:
                 print "    ! this is the update/add %s get_iter" %tid
-            rowref = self.get_iter(node_path)
+#            self.state_id = state_id
             if data == 'add':
                 if DEBUG_MODEL:
                     print "     adding %s on path %s" %(tid,str(node_path))
+                if self.state_id != state_id - 1:
+                    print "We are at state %s and want to go directly to %s"\
+                                                     %(self.state_id,state_id)
+                self.state_id = state_id
+                rowref = self.get_iter(node_path)
                 self.row_func('inserted',node_path, rowref)
                 if len(node_path) > 1:
                     parpath = node_path[:-1]
@@ -310,8 +303,12 @@ class TreeModel(gtk.GenericTreeModel):
             else:
                 if DEBUG_MODEL:
                     print "     modifying %s on path %s" %(tid,str(node_path))
+                if self.state_id != state_id:
+                    print "we send node-modified for state %s at %s" %(state_id,self.state_id)
+                self.state_id = state_id
+                rowref = self.get_iter(node_path)
                 self.row_func('changed',node_path, rowref)
-            if self.tree.node_has_child(tid):
+            if self.tree.node_has_child(tid,state_id=state_id):
                 if DEBUG_MODEL:
                     print "     child toggling for %s %s" %(tid,str(node_path))
                 self.row_func('child_toggled',node_path, rowref)
@@ -325,47 +322,41 @@ class TreeModel(gtk.GenericTreeModel):
 #                print "and paths for real are %s" %str(self.tree.get_paths_for_node(actual_tid))
 #                self.tree.print_tree()
 #        print " = ============================="
-#        self.tree.print_tree()
+#        self.tree.print_tree()%(tid,state_id,self.state_id)
 
-    def remove_task(self,tid,path):
-        if TM_IDLE_ADD:
-            gobject.idle_add(self.__remove_task,None,tid,path)
-        else:
-            self.__remove_task(None,tid,path)
-
-    def __remove_task(self,sender,tid,path):
-        if THREAD_PROTECTION:
-            t = threading.current_thread()
-            if t != self.thread:
-                raise Exception('! could not remove_task from thread %s' %t)
+    @threadsafe
+    def __remove_task(self,sender,tid,path,state_id):
         if DEBUG_MODEL:
             print "     deleting row %s  (it's tid %s)" %(str(path),tid)
-#            self.tree.print_tree()
+        if self.state_id != state_id - 1:
+                print "We are at state %s and want to go directly to %s"\
+                                                     %(self.state_id,state_id)
+        self.state_id = state_id
         self.row_func('delete',path)
 #        print "removing %s from path %s" %(tid,str(path))
         if len(path) > 1:
             parpath = path[:-1]
             parrowref = self.get_iter(parpath)
             self.row_func('child_toggled',parpath,parrowref)
-        
-    def reorder(self,nid,path,neworder):
-        if TM_IDLE_ADD:
-            gobject.idle_add(self.__reorder,None,nid,path,neworder)
-        else:
-            self.__reorder(None,nid,path,neworder)
-            
-    def __reorder(self, sender, nid,path,neworder):
-        actual_nid = self.tree.get_node_for_path(path)
+           
+    @threadsafe 
+    def __reorder(self, sender, nid,path,neworder,state_id):
+        if self.state_id != state_id - 1:
+                print "We are at state %s and want to go directly to %s"\
+                                                     %(self.state_id,state_id)
+        self.state_id = state_id
+        actual_nid = self.tree.get_node_for_path(path,state_id=state_id)
         if nid == actual_nid:
             if path:
                 rowref = self.get_iter(path)
             else:
                 rowref = None
-            self.rows_reordered(path,rowref,neworder)
+            self.row_func('reordered',path,rowref,neworder)
         else:
             raise Exception('path/node mismatch in reorder')
             
     #This function send the signals to the treeview
+    @threadsafe
     def row_func(self,func,*args):
         if func == 'delete':
             f = self.row_deleted
@@ -375,9 +366,8 @@ class TreeModel(gtk.GenericTreeModel):
             f = self.row_inserted
         elif func == 'changed':
             f = self.row_changed
-        if ROW_IDLE_ADD:
-            gobject.idle_add(f,*args)
-        else:
-            f(*args)
+        elif func == 'reordered':
+            f = self.rows_reordered
+        f(*args)
         
 

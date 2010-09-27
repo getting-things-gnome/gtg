@@ -133,27 +133,30 @@ class MainTree(gobject.GObject):
     #if recursive: will also remove children and children of childrens
     #does nothing if the node doesn't exist
     def remove_node(self, id,recursive=False):
-        node = self.get_node(id)
-#        paths = self.get_paths_for_node(node)
-        if not node :
-            return
-        else:
-            #By removing the node early, we avoid unnecessary 
-            #update of that node
-            self.nodes.pop(id)
-            if node.has_child():
-                for c_id in node.get_children():
-                    if not recursive:
-                        self.break_relationship(id,c_id)
-                    else:
-                        self.remove_node(c_id,recursive=recursive)
-            if node.has_parent():
-                for p_id in node.get_parents():
-                    par = self.get_node(p_id)
-                    par.remove_child(id)
+        if self.has_node(id):
+            node = self.get_node(id)
+    #        paths = self.get_paths_for_node(node)
+            if not node :
+                return
             else:
-                self.root.remove_child(id)
-            self.callback("node-deleted", id)
+                #By removing the node early, we avoid unnecessary 
+                #update of that node
+                self.nodes.pop(id)
+                if node.has_child():
+                    for c_id in node.get_children():
+                        if not recursive:
+                            self.break_relationship(id,c_id)
+                        else:
+                            self.remove_node(c_id,recursive=recursive)
+                if node.has_parent():
+                    for p_id in node.get_parents():
+                        par = self.get_node(p_id)
+                        par.remove_child(id)
+                else:
+                    self.root.remove_child(id)
+                self.callback("node-deleted", id)
+        else:
+            print "*** Warning *** Trying to remove a non-existing node"
             
         
     #create a new relationship between nodes if it doesn't already exist
@@ -403,7 +406,6 @@ class TreeNode():
             #then the task
 #            print "modify for %s sent to the tree" %self.id
             self.tree.modify_node(self.id)
-#            gobject.idle_add(self.tree.modify_node,self.id)
         
     def set_tree(self,tree):
         if self.thread_protection:
@@ -562,7 +564,9 @@ class TreeNode():
             t = threading.current_thread()
             if t != self.thread:
                 raise Exception('! could not get_child from thread %s' %t)
-        if id in self.children:
+        if self.tree == None:
+            raise Exception('task %s has not tree !' %self.id)
+        if self.tree and self.tree.has_node(id) and id in self.children:
             return self.tree.get_node(id)
         else:
             return None
