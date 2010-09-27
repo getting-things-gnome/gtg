@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-DEBUG_MODEL = False
+DEBUG_MODEL = True
 TM_IDLE_ADD = True
 THREAD_PROTECTION = True
 
@@ -36,6 +36,7 @@ if DEBUG_MODEL or THREAD_PROTECTION:
 from GTG                              import _
 from GTG.tools.logger                 import Log
 
+PRIORITY = gobject.PRIORITY_HIGH
 
 class TreeModel(gtk.GenericTreeModel):
 
@@ -118,10 +119,18 @@ class TreeModel(gtk.GenericTreeModel):
 ### TREEMODEL INTERFACE ######################################################
 #
     def on_get_flags(self):
+        if THREAD_PROTECTION:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not acces get_flags from thread %s' %t)
 #        print "on_get_flags"
         return gtk.TREE_MODEL_ITERS_PERSIST
 
     def on_get_n_columns(self):
+        if THREAD_PROTECTION:
+            t = threading.current_thread()
+            if t != self.thread:
+                raise Exception('! could not acces get_n_column from thread %s' %t)
         return len(self.value_list)
 
     def on_get_column_type(self, n):
@@ -162,7 +171,7 @@ class TreeModel(gtk.GenericTreeModel):
         else:
             toreturn = None
         if DEBUG_MODEL:
-            print "on_get_iter for path %s -> %s : %s" %(path,nid,toreturn)
+            print "on_get_iter for path %s (state %s) -> %s : %s" %(path,self.state_id,nid,toreturn)
         return toreturn
 
     def on_get_path(self, rowref):
@@ -213,7 +222,8 @@ class TreeModel(gtk.GenericTreeModel):
         else:
             toreturn = None
         if DEBUG_MODEL:
-            print "on_iter_children %s : %s" %(str(rowref),toreturn)
+            print "on_iter_children %s (state %s): %s" %(str(rowref),self.state_id,toreturn)
+            print self.tree.print_tree(string=True,state_id=self.state_id)
         return toreturn
 
     def on_iter_has_child(self, rowref):
@@ -276,11 +286,11 @@ class TreeModel(gtk.GenericTreeModel):
             print "receiving add_task %s to state %s (current:%s)" \
                                             %(tid,state_id,self.state_id)
         gobject.idle_add(self.__update_task,None,tid,path,state_id,'add',\
-                                            priority=gobject.PRIORITY_HIGH)
+                                            priority=PRIORITY)
 
     def update_task(self, tid,path,state_id,data=None):
         gobject.idle_add(self.__update_task,None,tid,path,state_id,\
-                                    data,priority=gobject.PRIORITY_HIGH)
+                                    data,priority=PRIORITY)
 
     def __update_task(self,sender,tid,node_path,state_id,data=None):
         if THREAD_PROTECTION:
@@ -326,7 +336,7 @@ class TreeModel(gtk.GenericTreeModel):
 
     def remove_task(self,tid,path,state_id):
         gobject.idle_add(self.__remove_task,None,tid,path,state_id,\
-                                            priority=gobject.PRIORITY_HIGH)
+                                            priority=PRIORITY)
 
     def __remove_task(self,sender,tid,path,state_id):
         if THREAD_PROTECTION:
@@ -345,7 +355,7 @@ class TreeModel(gtk.GenericTreeModel):
         
     def reorder(self,nid,path,neworder,state_id):
         gobject.idle_add(self.__reorder,None,nid,path,neworder,state_id,\
-                                            priority=gobject.PRIORITY_HIGH)
+                                            priority=PRIORITY)
             
     def __reorder(self, sender, nid,path,neworder,state_id):
         if THREAD_PROTECTION:

@@ -325,11 +325,11 @@ class ViewTree(gobject.GObject):
     def get_root(self):
         return self.__maintree.get_root()
 
-    def print_tree(self,string=None):
+    def print_tree(self,string=None,state_id=None):
         if self.static:
             return self.__maintree.print_tree(string=string)
         else:
-            return self.__ft.print_tree(string=string)
+            return self.__ft.print_tree(string=string,state_id=state_id)
 
     #return a list of nid of displayed nodes
     def get_all_nodes(self,state_id=None):

@@ -133,6 +133,8 @@ class FilteredTree():
         self.cache_transcount = {}
         self.cllbcks = {}
         
+        self.timer = 0
+        
         self.__updating_lock = threading.Lock()
         self.state_lock = threading.RLock()
         self.__updating_queue = []
@@ -280,14 +282,14 @@ class FilteredTree():
     #This enforce the external state of the FT being consistent at any time !
     
     @synchronized
-    def print_tree(self,string=False):
-        toprint = "displayed : %s\n" %self.get_all_nodes()
+    def print_tree(self,string=False,state_id=None):
+        toprint = "displayed : %s\n" %self.get_all_nodes(state_id=state_id)
         toprint += "VR is : %s\n" %self.cache_vr
         toprint += "updating_queue is : %s\n" %self.__updating_queue
         if not string:
             print toprint
         for rid in self.cache_vr:
-            toprint += self.print_from_node(rid,string=string)
+            toprint += self.print_from_node(rid,string=string,state_id=state_id)
             toprint += '\n'
         return toprint
         #alternate implementation using next_node
@@ -302,9 +304,9 @@ class FilteredTree():
     #This function print the actual tree. Useful for debugging
     #The function also check the validity of the tree
     @synchronized
-    def print_from_node(self, nid, level=0,string=None):
+    def print_from_node(self, nid, level=0,string=None,state_id=None):
         prefix = "->"*level
-        paths = self.get_paths_for_node(nid)
+        paths = self.get_paths_for_node(nid,state_id=state_id)
         toprint = "%s%s    (%s) " %(prefix,nid,\
                     str(paths))
         if not string:
@@ -320,13 +322,13 @@ class FilteredTree():
             if DEBUG:
                 error += '\n\nDEBUG TRACE\n\n%s' %self.trace
             raise Exception(error)
-        if self.node_has_child(nid):
-            nn = self.node_n_children(nid)
+        if self.node_has_child(nid,state_id=state_id):
+            nn = self.node_n_children(nid,state_id=state_id)
             n = 0
             while n < nn:
-                child_id = self.node_nth_child(nid,n)
+                child_id = self.node_nth_child(nid,n,state_id=state_id)
                 toprint += '\n'
-                toprint += self.print_from_node(child_id,level,string=string)
+                toprint += self.print_from_node(child_id,level,string=string,state_id=state_id)
                 n += 1
         return toprint
     
@@ -807,6 +809,7 @@ class FilteredTree():
     # Don't forget that
     # a node can be in Virtual Root only if it doesn't have any parent.
     def __delete_node(self,nid,pars=None):
+        timer1 = time.time()
         self.trace += "Deleting node %s with pars %s\n" %(nid,pars)
         if self.is_displayed(nid):
             complete_delete = True
@@ -850,6 +853,8 @@ class FilteredTree():
                 if len(npaths) > 1:
                     print "***WARNING : we send multiple delete signals for one commit"
                 self.callback('deleted',nid,pa)
+            self.timer += time.time() - timer1
+            print "time spent in delete : %s" %self.timer
             return True
         else:
             return False
