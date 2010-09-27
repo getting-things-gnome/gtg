@@ -280,7 +280,6 @@ class TestLibLarch(unittest.TestCase):
                           self.tree.del_node, 1)('0')
 #        self.assert_(('0',(0, )) in self.recorded_signals['node-deleted-inview'])
         all_nodes = self.view.get_all_nodes()
-        print all_nodes
         self.failIf('0' in all_nodes)
         self.assert_('temp' in all_nodes)
         

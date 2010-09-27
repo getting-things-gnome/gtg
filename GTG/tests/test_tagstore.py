@@ -40,6 +40,9 @@ class TestTag(unittest.TestCase):
         #initalize gobject signaling system
         self.gobject_signal_manager = GobjectSignalsManager()
         self.gobject_signal_manager.init_signals()
+        #refresh the viewtree for tasks
+        tt = self.req.get_tasks_tree()
+        tt.reset_filters()
         
     def tearDown(self):
 #        finally:
