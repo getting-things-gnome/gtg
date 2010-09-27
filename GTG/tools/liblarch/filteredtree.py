@@ -811,6 +811,7 @@ class FilteredTree():
     def __delete_node(self,nid,pars=None):
         timer1 = time.time()
         self.trace += "Deleting node %s with pars %s\n" %(nid,pars)
+        childrens = []
         if self.is_displayed(nid):
             complete_delete = True
             if pars:
@@ -853,6 +854,10 @@ class FilteredTree():
                 if len(npaths) > 1:
                     print "***WARNING : we send multiple delete signals for one commit"
                 self.callback('deleted',nid,pa)
+                
+            childrens.reverse()
+            for c in childrens:
+                self.__add_node(c)
             self.timer += time.time() - timer1
 #            print "time spent in delete : %s" %self.timer
             return True
