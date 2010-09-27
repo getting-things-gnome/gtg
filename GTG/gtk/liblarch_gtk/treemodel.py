@@ -43,7 +43,8 @@ def threadsafe(fun):
         if THREAD_PROTECTION:
             t = threading.current_thread()
             if t != args[0].thread:
-                raise Exception('! could not acces %s from thread %s' %(fun,t))
+                raise Exception('! could not acces %s from thread %s' \
+                                                        %(fun.__name__,t))
         return fun(*args,**kw)
     return newf
 
@@ -63,17 +64,34 @@ class TreeModel(gtk.GenericTreeModel):
 
     @threadsafe
     def connect_model(self):
-        #Not to be used
-#        if TM_USE_SIGNALS:
-#            self.tree.connect('node-added-inview',self.__add_task)
-#            self.tree.connect('node-deleted-inview',self.__remove_task)
-#            self.tree.connect('node-modified-inview',self.__update_task)
-#            self.tree.connect('node-children-reordered',self.__reorder)
         self.tree.register_cllbck('node-added-inview',self.add_task)
         self.tree.register_cllbck('node-deleted-inview',self.remove_task)
         self.tree.register_cllbck('node-modified-inview',self.update_task)
         self.tree.register_cllbck('node-children-reordered',self.reorder)
         self.state_id = self.tree.get_state_id()
+        
+        
+#### function called by other threads. Those are the only not threadsafe-
+#### decorated methods
+
+    def add_task(self,tid,path,state_id):
+#        if DEBUG_MODEL:
+#            print "receiving add_task %s to state %s (current:%s)" \
+#                                            %(tid,state_id,self.state_id)
+        gobject.idle_add(self.__update_task,None,tid,path,state_id,'add',\
+                                            priority=PRIORITY)
+
+    def update_task(self, tid,path,state_id,data=None):
+        gobject.idle_add(self.__update_task,None,tid,path,state_id,\
+                                    data,priority=PRIORITY)
+                                    
+    def remove_task(self,tid,path,state_id):
+        gobject.idle_add(self.__remove_task,None,tid,path,state_id,\
+                                            priority=PRIORITY)
+                                            
+    def reorder(self,nid,path,neworder,state_id):
+        gobject.idle_add(self.__reorder,None,nid,path,neworder,state_id,\
+                                            priority=PRIORITY)
 
 ### TREE MODEL HELPER FUNCTIONS ###############################################
 
@@ -83,7 +101,7 @@ class TreeModel(gtk.GenericTreeModel):
         index = self.value_list.index(value)
         return index
 
-
+    @threadsafe
     def __build_rowref(self,path):
         '''The rowref is the like the path but with ancestors ID instead
         of position. This ensure that each rowref is unique and that we
@@ -99,17 +117,20 @@ class TreeModel(gtk.GenericTreeModel):
             path = path[:-1]
         return rowref
 
+    @threadsafe
     def __get_nid_from_rowref(self,rowref):
         if len(rowref) <= 0:
             raise ValueError('Rowref is empty ! Returning root ?')
         nid = rowref[-1]
         return nid
 
+    @threadsafe
     def __get_node_from_rowref(self,rowref):
         nid = self.__get_nid_from_rowref(rowref)
         node = self.tree.get_node(nid)
         return node
 
+    @threadsafe
     def __get_path_from_rowref(self,rowref):
         path = ()
         size = len(rowref)
@@ -256,17 +277,6 @@ class TreeModel(gtk.GenericTreeModel):
             print "on iter parent %s :%s" %(str(rowref),toreturn)
         return toreturn
 
-    def add_task(self,tid,path,state_id):
-        if DEBUG_MODEL:
-            print "receiving add_task %s to state %s (current:%s)" \
-                                            %(tid,state_id,self.state_id)
-        gobject.idle_add(self.__update_task,None,tid,path,state_id,'add',\
-                                            priority=PRIORITY)
-
-    def update_task(self, tid,path,state_id,data=None):
-        gobject.idle_add(self.__update_task,None,tid,path,state_id,\
-                                    data,priority=PRIORITY)
-
     @threadsafe
     def __update_task(self,sender,tid,node_path,state_id,data=None):
 #        print "other paths are %s" %(str(self.tree.get_paths_for_node(tid)))
@@ -314,10 +324,6 @@ class TreeModel(gtk.GenericTreeModel):
 #        print " = ============================="
 #        self.tree.print_tree()%(tid,state_id,self.state_id)
 
-    def remove_task(self,tid,path,state_id):
-        gobject.idle_add(self.__remove_task,None,tid,path,state_id,\
-                                            priority=PRIORITY)
-
     @threadsafe
     def __remove_task(self,sender,tid,path,state_id):
         if DEBUG_MODEL:
@@ -332,10 +338,6 @@ class TreeModel(gtk.GenericTreeModel):
             parpath = path[:-1]
             parrowref = self.get_iter(parpath)
             self.row_func('child_toggled',parpath,parrowref)
-        
-    def reorder(self,nid,path,neworder,state_id):
-        gobject.idle_add(self.__reorder,None,nid,path,neworder,state_id,\
-                                            priority=PRIORITY)
            
     @threadsafe 
     def __reorder(self, sender, nid,path,neworder,state_id):
@@ -354,6 +356,7 @@ class TreeModel(gtk.GenericTreeModel):
             raise Exception('path/node mismatch in reorder')
             
     #This function send the signals to the treeview
+    @threadsafe
     def row_func(self,func,*args):
         if func == 'delete':
             f = self.row_deleted

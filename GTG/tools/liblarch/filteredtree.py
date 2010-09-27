@@ -832,7 +832,7 @@ class FilteredTree():
                 npaths = self.get_paths_for_node(nid)
                 
             #We recursively delete children if necessary
-            if complete_delete and self.tree.has_node(nid):
+            if complete_delete:
                 childrens = list(self.cache_nodes[nid]['children'])
                 childrens.reverse()
                 for c in childrens:
