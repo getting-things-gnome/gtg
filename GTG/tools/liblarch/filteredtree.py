@@ -353,6 +353,8 @@ class FilteredTree():
                 toreturn.append((index,))
             else:
                 for p in pars:
+                    if not nodes.has_key(p):
+                        raise Exception('parent %s is not in nodes %s'%(p,nodes.keys()))
                     if nid not in nodes[p]['children']:
                         error += "%s not in children of %s" %(nid,p)
                         raise Exception(error)
@@ -876,6 +878,15 @@ class FilteredTree():
     def __add_node(self,nid,pars=None):
         #We only add node that should be displayed
         if self.__is_displayed(nid):
+#            if not self.is_displayed(nid):
+#                clist = self.__node_all_children(nid)
+#                vr = list(self.tmp_vr)
+#                print "(adding %s) will remove %s" %(nid,clist)
+#                for c in clist:
+#                    if c in vr:
+#                        print "*** deleting %s" %c
+#                        self.__delete_node(c)
+        
             if not pars:
                 pars = self.__node_parents(nid)
             #adding the parents
@@ -886,9 +897,17 @@ class FilteredTree():
             #1. We remove the node from the VR if it has parents.
             if len(pars) > 0 and nid in self.tmp_vr:
                 self.__delete_node(nid)
-                
+            
+            already = self.is_displayed(nid)
+            #if the node is not yet displayed, remove the children 
+            #that are in the VR
+#            if not already:
+#                for c in self.__node_all_children(nid):
+#                    if c in self.tmp_vr:
+#                        self.__delete_node(c)
+            
             #2. We create the node object (or take the existing one)
-            if not self.is_displayed(nid):
+            if not already:
                 node_dic = {}
                 node_dic['parents'] = []
                 node_dic['children'] = []

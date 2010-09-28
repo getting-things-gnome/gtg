@@ -43,6 +43,7 @@ class TreeTester:
     def add(self,nid,path,state_id):
         self.state_id = state_id
         self.trace += "adding %s to path %s\n" %(nid,str(path))
+        print "adding %s to path %s" %(nid,str(path))
         currentnode = self.paths.get(path,None)
         if currentnode and currentnode != nid:
             raise Exception('path %s is already occupied by %s' %(str(path),nid))
@@ -58,6 +59,7 @@ class TreeTester:
     def delete(self,nid,path,state_id):
         self.state_id = state_id
         self.trace += "removing %s from path %s\n" %(nid,str(path))
+        print "removing %s from path %s" %(nid,str(path))
         if nid != self.paths.get(path,None):
             error = '%s is not assigned to path %s\n'%(nid,str(path))
             error += self.print_tree()
@@ -93,6 +95,7 @@ class TreeTester:
             raise Exception('Mismatching node for path %s'%str(p))
             
     def reordered(self,nid,path,neworder,state_id):
+        print "reordering"
         self.state_id = state_id
         self.trace += "reordering children of %s (%s) : %s\n" %(nid,str(path),neworder)
         self.trace += "VR is %s\n" %self.tree.node_all_children()
@@ -136,7 +139,12 @@ class TreeTester:
                 if self.paths[p] != n:
                     raise Exception('Mismatching path for %s'%n)
                 if p not in paths:
-                    raise Exception('we have a unknown stored path for %s' %n)
+                    error = 'we have a unknown stored path for %s\n' %n
+                    nn = self.tree.get_node_for_path(p)
+                    error += '  path %s is the path of %s\n' %(str(p),str(nn))
+                    error += '  parent is %s' %self.tree.get_node_for_path(p[:-1])
+#                    error += self.trace
+                    raise Exception(error)
                 paths.remove(p)
             if len(paths) > 0:
                 raise Exception('why is this path existing for %s' %n)
