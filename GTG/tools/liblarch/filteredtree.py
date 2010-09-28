@@ -538,6 +538,7 @@ class FilteredTree():
         if nid in vr:
             if pid:
                 print "next_node %s (par %s, state %s)" %(nid,pid,state_id)
+                print "   (the current state is %s)" %self.state_id
                 raise Exception('Asking for next_node of %s'%nid+\
                         'with parent %s but node is in VR'%pid)
             i = vr.index(nid) + 1
@@ -794,15 +795,18 @@ class FilteredTree():
         
 #################### Update the static state ################################
 
-    def __commit_state(self):
+    def __commit_state(self,pointless=False):
         self.state_lock.acquire(True)
-        hist = []
-        self.cache_nodes = deepcopy(self.tmp_nodes)
-        hist.append(deepcopy(self.tmp_nodes))
-        self.cache_vr = list(self.tmp_vr)
-        hist.append(list(self.tmp_vr))
+        if not pointless:
+            hist = []
+            self.cache_nodes = deepcopy(self.tmp_nodes)
+            hist.append(deepcopy(self.tmp_nodes))
+            self.cache_vr = list(self.tmp_vr)
+            hist.append(list(self.tmp_vr))
+            self.history[self.state_id+1] = hist
+        else:
+            self.history[self.state_id+1] = self.history[self.state_id]
         self.state_id += 1
-        self.history[self.state_id] = hist
         self.state_lock.release()
         
     #If pars = None, we consider all the parents (or the node in the VR). 
@@ -847,12 +851,17 @@ class FilteredTree():
                 #removing the parents
                 if self.tmp_nodes.has_key(nid):
                     self.tmp_nodes[nid]['parents'].remove(p)
-                    
+            
+            pa_count = 0
+            pointless = False
             for pa in npaths:
+                pa_count += 1
                 #FIXME : no multiple signals !
-                self.__commit_state()
                 if len(npaths) > 1:
                     print "***WARNING : we send multiple delete signals for one commit"
+                if pa_count > 1:
+                    pointless = True
+                self.__commit_state(pointless)
                 self.callback('deleted',nid,pa)
                 
             childrens.reverse()
@@ -896,14 +905,19 @@ class FilteredTree():
                     node_dic['parents'].append(par)
                 parpaths = self.get_paths_for_node(par)
                 ind = parnode['children'].index(nid)
-                self.__commit_state()
                 #FIXME : if a parent has multiple paths, we send 
                 #multiple signals for one commit_state !
                 #that's not good hacker, that's not good.
                 if len(parpaths) > 1:
                     print "*** WARNING ***, multiple signals sent for one commit"
+                p_count = 0
+                pointless = False
                 for pp in parpaths:
+                    p_count += 1
                     path = pp + (ind,)
+                    if p_count > 1 :
+                        pointless = True
+                    self.__commit_state(pointless)
                     self.callback('added',nid,path)
                 
             if len(node_dic['parents']) == 0:
@@ -971,6 +985,7 @@ class FilteredTree():
                     
                 for path in self.get_paths_for_node(nid):
 #                    print "updating %s for %s" %(nid,str(path))
+                    self.__commit_state(pointless=True)
                     self.callback('modified',nid,path)
             else:
                 self.__delete_node(nid)
