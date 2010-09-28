@@ -30,8 +30,7 @@ import xml.sax.saxutils as saxutils
 import gtk
 import gobject
 import pango
-if DEBUG_MODEL or THREAD_PROTECTION:
-    import threading
+import threading
 
 from GTG                              import _
 from GTG.tools.logger                 import Log
@@ -56,6 +55,8 @@ class TreeModel(gtk.GenericTreeModel):
         self.tree = tree
         self.state_id = 0
         self.value_list = []
+        self.__queue = {}
+        self.__execute_lock = threading.Lock()
         def get_nodeid(node):
             return node.get_id()
         self.value_list.append([str,get_nodeid])
@@ -75,23 +76,54 @@ class TreeModel(gtk.GenericTreeModel):
 #### decorated methods
 
     def add_task(self,tid,path,state_id):
-#        if DEBUG_MODEL:
-#            print "receiving add_task %s to state %s (current:%s)" \
-#                                            %(tid,state_id,self.state_id)
-        gobject.idle_add(self.__update_task,None,tid,path,state_id,'add',\
-                                            priority=PRIORITY)
+        run = [self.__update_task,[None,tid,path,state_id,'add']]
+        self.__queue[state_id] = run
+        self.launch_loop()
+#        gobject.idle_add(self.__update_task,None,tid,path,state_id,'add',\
+#                                            priority=PRIORITY)
 
     def update_task(self, tid,path,state_id,data=None):
-        gobject.idle_add(self.__update_task,None,tid,path,state_id,\
-                                    data,priority=PRIORITY)
+        run = [self.__update_task,[None,tid,path,state_id]]
+        if self.__queue.has_key(state_id):
+            print "error, there's already a state %s" %state_id
+        else:
+            self.__queue[state_id] = run
+            self.launch_loop()
+#        gobject.idle_add(self.__update_task,None,tid,path,state_id,\
+#                                    data,priority=PRIORITY)
                                     
     def remove_task(self,tid,path,state_id):
-        gobject.idle_add(self.__remove_task,None,tid,path,state_id,\
-                                            priority=PRIORITY)
+        run = [self.__remove_task,[None,tid,path,state_id]]
+        self.__queue[state_id] = run
+        self.launch_loop()
+#        gobject.idle_add(self.__remove_task,None,tid,path,state_id,\
+#                                            priority=PRIORITY)
                                             
     def reorder(self,nid,path,neworder,state_id):
-        gobject.idle_add(self.__reorder,None,nid,path,neworder,state_id,\
-                                            priority=PRIORITY)
+        run = [self.__reorder,[None,nid,path,neworder,state_id]]
+        self.__queue[state_id] = run
+        self.launch_loop()
+#        gobject.idle_add(self.__reorder,None,nid,path,neworder,state_id,\
+#                                            priority=PRIORITY)
+                                            
+    def launch_loop(self):
+        if self.__execute_lock.acquire(False):
+            gobject.idle_add(self.__execution_loop,priority=PRIORITY)
+                                            
+
+###### Execution loop ######################################################
+
+    @threadsafe
+    def __execution_loop(self):
+        while self.__queue.has_key(self.state_id) or \
+                                        self.__queue.has_key(self.state_id+1):
+            while self.__queue.has_key(self.state_id):
+                torun = self.__queue.pop(self.state_id)
+                torun[0](*torun[1])
+            while self.__queue.has_key(self.state_id+1):
+                torun = self.__queue.pop(self.state_id+1)
+                torun[0](*torun[1])
+        self.__execute_lock.release()
 
 ### TREE MODEL HELPER FUNCTIONS ###############################################
 
@@ -303,8 +335,8 @@ class TreeModel(gtk.GenericTreeModel):
             else:
                 if DEBUG_MODEL:
                     print "     modifying %s on path %s" %(tid,str(node_path))
-                if self.state_id != state_id:
-                    print "we send node-modified for state %s at %s" %(state_id,self.state_id)
+#                if self.state_id != state_id:
+#                    print "we send node-modified for state %s at %s" %(state_id,self.state_id)
                 self.state_id = state_id
                 rowref = self.get_iter(node_path)
                 self.row_func('changed',node_path, rowref)

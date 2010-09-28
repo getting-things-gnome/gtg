@@ -353,6 +353,8 @@ class FilteredTree():
                 toreturn.append((index,))
             else:
                 for p in pars:
+                    if not nodes.has_key(p):
+                        raise Exception('parent %s is not in nodes %s'%(p,nodes.keys()))
                     if nid not in nodes[p]['children']:
                         error += "%s not in children of %s" %(nid,p)
                         raise Exception(error)
@@ -538,6 +540,7 @@ class FilteredTree():
         if nid in vr:
             if pid:
                 print "next_node %s (par %s, state %s)" %(nid,pid,state_id)
+                print "   (the current state is %s)" %self.state_id
                 raise Exception('Asking for next_node of %s'%nid+\
                         'with parent %s but node is in VR'%pid)
             i = vr.index(nid) + 1
@@ -794,15 +797,18 @@ class FilteredTree():
         
 #################### Update the static state ################################
 
-    def __commit_state(self):
+    def __commit_state(self,pointless=False):
         self.state_lock.acquire(True)
-        hist = []
-        self.cache_nodes = deepcopy(self.tmp_nodes)
-        hist.append(deepcopy(self.tmp_nodes))
-        self.cache_vr = list(self.tmp_vr)
-        hist.append(list(self.tmp_vr))
+        if not pointless:
+            hist = []
+            self.cache_nodes = deepcopy(self.tmp_nodes)
+            hist.append(deepcopy(self.tmp_nodes))
+            self.cache_vr = list(self.tmp_vr)
+            hist.append(list(self.tmp_vr))
+            self.history[self.state_id+1] = hist
+        else:
+            self.history[self.state_id+1] = self.history[self.state_id]
         self.state_id += 1
-        self.history[self.state_id] = hist
         self.state_lock.release()
         
     #If pars = None, we consider all the parents (or the node in the VR). 
@@ -847,12 +853,17 @@ class FilteredTree():
                 #removing the parents
                 if self.tmp_nodes.has_key(nid):
                     self.tmp_nodes[nid]['parents'].remove(p)
-                    
+            
+            pa_count = 0
+            pointless = False
             for pa in npaths:
+                pa_count += 1
                 #FIXME : no multiple signals !
-                self.__commit_state()
                 if len(npaths) > 1:
                     print "***WARNING : we send multiple delete signals for one commit"
+                if pa_count > 1:
+                    pointless = True
+                self.__commit_state(pointless)
                 self.callback('deleted',nid,pa)
                 
             childrens.reverse()
@@ -867,6 +878,15 @@ class FilteredTree():
     def __add_node(self,nid,pars=None):
         #We only add node that should be displayed
         if self.__is_displayed(nid):
+#            if not self.is_displayed(nid):
+#                clist = self.__node_all_children(nid)
+#                vr = list(self.tmp_vr)
+#                print "(adding %s) will remove %s" %(nid,clist)
+#                for c in clist:
+#                    if c in vr:
+#                        print "*** deleting %s" %c
+#                        self.__delete_node(c)
+        
             if not pars:
                 pars = self.__node_parents(nid)
             #adding the parents
@@ -877,9 +897,17 @@ class FilteredTree():
             #1. We remove the node from the VR if it has parents.
             if len(pars) > 0 and nid in self.tmp_vr:
                 self.__delete_node(nid)
-                
+            
+            already = self.is_displayed(nid)
+            #if the node is not yet displayed, remove the children 
+            #that are in the VR
+#            if not already:
+#                for c in self.__node_all_children(nid):
+#                    if c in self.tmp_vr:
+#                        self.__delete_node(c)
+            
             #2. We create the node object (or take the existing one)
-            if not self.is_displayed(nid):
+            if not already:
                 node_dic = {}
                 node_dic['parents'] = []
                 node_dic['children'] = []
@@ -896,14 +924,19 @@ class FilteredTree():
                     node_dic['parents'].append(par)
                 parpaths = self.get_paths_for_node(par)
                 ind = parnode['children'].index(nid)
-                self.__commit_state()
                 #FIXME : if a parent has multiple paths, we send 
                 #multiple signals for one commit_state !
                 #that's not good hacker, that's not good.
                 if len(parpaths) > 1:
                     print "*** WARNING ***, multiple signals sent for one commit"
+                p_count = 0
+                pointless = False
                 for pp in parpaths:
+                    p_count += 1
                     path = pp + (ind,)
+                    if p_count > 1 :
+                        pointless = True
+                    self.__commit_state(pointless)
                     self.callback('added',nid,path)
                 
             if len(node_dic['parents']) == 0:
@@ -971,6 +1004,7 @@ class FilteredTree():
                     
                 for path in self.get_paths_for_node(nid):
 #                    print "updating %s for %s" %(nid,str(path))
+                    self.__commit_state(pointless=True)
                     self.callback('modified',nid,path)
             else:
                 self.__delete_node(nid)
