@@ -37,9 +37,11 @@ class TreeTester:
         self.tree.register_cllbck('node-modified-inview',self.update)
         self.tree.register_cllbck('node-children-reordered',self.reordered)
         self.trace = "* * * * * * * *\n"
+        self.state_id = 0
         
         
     def add(self,nid,path,state_id):
+        self.state_id = state_id
         self.trace += "adding %s to path %s\n" %(nid,str(path))
         currentnode = self.paths.get(path,None)
         if currentnode and currentnode != nid:
@@ -54,6 +56,7 @@ class TreeTester:
         self.paths[path] = nid
     
     def delete(self,nid,path,state_id):
+        self.state_id = state_id
         self.trace += "removing %s from path %s\n" %(nid,str(path))
         if nid != self.paths.get(path,None):
             error = '%s is not assigned to path %s\n'%(nid,str(path))
@@ -70,6 +73,7 @@ class TreeTester:
         self.paths.pop(path)
     
     def update(self,nid,path,state_id):
+        self.state_id = state_id
         self.trace += "updating %s in path %s\n" %(nid,str(path))
         error = "updating node %s for path %s\n" %(nid,str(path))
         if not self.nodes.has_key(nid):
@@ -89,6 +93,7 @@ class TreeTester:
             raise Exception('Mismatching node for path %s'%str(p))
             
     def reordered(self,nid,path,neworder,state_id):
+        self.state_id = state_id
         self.trace += "reordering children of %s (%s) : %s\n" %(nid,str(path),neworder)
         self.trace += "VR is %s\n" %self.tree.node_all_children()
         if not path:
@@ -124,13 +129,23 @@ class TreeTester:
     
     def test_validity(self):
         for n in self.nodes.keys():
+            paths = self.tree.get_paths_for_node(n,state_id=self.state_id)
             if len(self.nodes[n]) == 0:
                 raise Exception('Node %s is stored without any path'%n)
             for p in self.nodes[n]:
                 if self.paths[p] != n:
                     raise Exception('Mismatching path for %s'%n)
+                if p not in paths:
+                    raise Exception('we have a unknown stored path for %s' %n)
+                paths.remove(p)
+            if len(paths) > 0:
+                raise Exception('why is this path existing for %s' %n)
         for p in self.paths.keys():
+            node = self.tree.get_node_for_path(p,state_id=self.state_id)
             n = self.paths[p]
+            if n != node:
+                error = 'Node for path is %s but should be %s' %(node,n)
+                raise Exception(error)
             if p not in self.nodes[n]:
                 error = 'Mismatching node for path %s\n'%str(p)
                 error += self.print_tree()
