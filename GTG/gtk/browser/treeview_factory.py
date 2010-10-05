@@ -55,7 +55,7 @@ class TreeviewFactory():
         return count
     
     def task_bg_color(self,tags,bg):
-        if self.config['browser'].get('bg_color_enable',False):
+        if self.config.get('bg_color_enable'):
             return colors.background_color(tags,bg)
         else:
             return None
@@ -87,7 +87,7 @@ class TreeviewFactory():
             if count != 0:
                 title += " (%s)" % count
             
-            if self.config['browser'].get("contents_preview_enable",False):
+            if self.config.get("contents_preview_enable"):
             	excerpt = saxutils.escape(node.get_excerpt(lines=1, \
             		strip_tags=True, strip_subtasks=True))
             	title += " <span size='small' color='%s'>%s</span>" \

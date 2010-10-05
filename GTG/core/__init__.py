@@ -49,6 +49,29 @@ from GTG.tools.logger import Log
 from GTG.tools.borg   import Borg
 
 
+DEFAULTS = {
+'browser': {
+            'bg_color_enable' : False,
+            "contents_preview_enable" : False,
+            'tag_pane' : False,
+            "tag_pane_width": 120,
+            "closed_task_pane" : False,
+            'ctask_pane_height' : 65,
+            'toolbar' : True,
+            'quick_add' : True,
+            "bg_color_enable": True,
+            'collapsed_tasks' : [],
+            'collapsed_tags' : [],
+            'view' : 'normal',
+            "opened_tasks": [],
+            'width': 400,
+            'height':400,
+            'x_pos':10,
+            'y_pos':10,
+            }
+}
+
+
 class SubConfig():
     def __init__(self,name,conf_dic):
         self.__name = name
@@ -61,8 +84,14 @@ class SubConfig():
     def get(self,name):
         if self.__conf.has_key(name):
             toreturn = self.__conf[name]
+            #Converting to the good type
+            if self.__defaults.has_key(name):
+                ntype = type(self.__defaults[name])
+                if ntype in (bool,int):
+                    toreturn = eval(toreturn)
         elif self.__defaults.has_key(name):
             toreturn = self.__defaults[name]
+            self.__conf[name] = toreturn
         else:
             print "Warning : no default conf value for %s in %s" %(name,self.__name)
             toreturn = None

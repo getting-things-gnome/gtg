@@ -67,7 +67,7 @@ class Manager(object):
         self.clipboard = clipboard.TaskClipboard(self.req)
 
         #Browser (still hidden)
-        self.browser = TaskBrowser(self.req, self, self.config)
+        self.browser = TaskBrowser(self.req, self)
         
         self.__init_plugin_engine()
         
@@ -105,7 +105,7 @@ class Manager(object):
 
     def open_browser(self):
         if not self.browser:
-            self.browser = TaskBrowser(self.req, self, self.config)
+            self.browser = TaskBrowser(self.req, self)
         Log.debug("Browser is open")
 
     #FIXME : the browser should not be the center of the universe.

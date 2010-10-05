@@ -60,7 +60,7 @@ SIDEBAR          = False
 CLOSED_PANE      = False
 QUICKADD_PANE    = True
 TOOLBAR          = True
-BG_COLOR         = True
+#BG_COLOR         = True
 CONTENTS_PREVIEW = True
 TIME             = 0
 
@@ -82,13 +82,13 @@ class TaskBrowser(gobject.GObject):
                     'visibility-toggled': __none_signal__,
                    }
 
-    def __init__(self, requester, vmanager, config):
+    def __init__(self, requester, vmanager):
         gobject.GObject.__init__(self)
         # Object prime variables
         self.priv   = {}
         self.req    = requester
         self.vmanager = vmanager
-        self.config = config
+        self.config = self.req.get_config('browser')
         self.tag_active = False
         
         #treeviews handlers
@@ -360,10 +360,6 @@ class TaskBrowser(gobject.GObject):
         self.builder.get_object("view_closed").set_active(CLOSED_PANE)
         self.builder.get_object("view_quickadd").set_active(QUICKADD_PANE)
         self.builder.get_object("view_toolbar").set_active(TOOLBAR)
-        if not self.config.has_key('browser'):
-            self.config['browser'] = {}
-        self.config["browser"]["bg_color_enable"] = BG_COLOR
-        self.priv["contents_preview_enable"] = CONTENTS_PREVIEW
 
     def _add_accelerator_for_widget(self, agr, name, accel):
         widget    = self.builder.get_object(name)
@@ -423,113 +419,94 @@ class TaskBrowser(gobject.GObject):
         
     def restore_state_from_conf(self):
 
-        # Extract state from configuration dictionary
-        if not "browser" in self.config:
-            #necessary to have the minimum width of the tag pane
-            # inferior to the "first run" width
-            self.builder.get_object("hpaned1").set_position(250)
-            return
+#        # Extract state from configuration dictionary
+#        if not "browser" in self.config:
+#            #necessary to have the minimum width of the tag pane
+#            # inferior to the "first run" width
+#            self.builder.get_object("hpaned1").set_position(250)
+#            return
 
-        if ("width" in self.config["browser"] and
-            "height" in self.config["browser"]):
-            width = int(self.config["browser"]["width"])
-            height = int(self.config["browser"]["height"])
+        width = self.config.get('width')
+        height = self.config.get('height')
+        if width and height:
             self.window.resize(width, height)
 
-        if ("x_pos" in self.config["browser"] and
-            "y_pos" in self.config["browser"]):
-
-            xpos = int(self.config["browser"]["x_pos"])
-            ypos = int(self.config["browser"]["y_pos"])
+        xpos = self.config.get("x_pos")
+        ypos = self.config.get("y_pos")
+        if ypos and xpos:
             self.window.move(xpos, ypos)
 
-        if "tag_pane" in self.config["browser"]:
-            tag_pane = eval(self.config["browser"]["tag_pane"])
-            if not tag_pane:
-                self.builder.get_object("view_sidebar").set_active(False)
-                self.sidebar.hide()
-            else:
-                self.builder.get_object("view_sidebar").set_active(True)
-                if not self.tagtreeview:
-                    self.init_tags_sidebar()
-                self.sidebar.show()
+        tag_pane = self.config.get("tag_pane")
+        if not tag_pane:
+            self.builder.get_object("view_sidebar").set_active(False)
+            self.sidebar.hide()
+        else:
+            self.builder.get_object("view_sidebar").set_active(True)
+            if not self.tagtreeview:
+                self.init_tags_sidebar()
+            self.sidebar.show()
 
-        if "tag_pane_width" in self.config["browser"]:
-            tag_pane_width = int(self.config["browser"]["tag_pane_width"])
-            self.builder.get_object("hpaned1").set_position(tag_pane_width)
+        tag_pane_width = self.config.get("tag_pane_width")
+        self.builder.get_object("hpaned1").set_position(tag_pane_width)
 
-        if "closed_task_pane" in self.config["browser"]:
-            closed_task_pane = eval(
-                self.config["browser"]["closed_task_pane"])
-            if not closed_task_pane:
-                self.hide_closed_pane()
-            else:
-                self.show_closed_pane()
+        closed_task_pane = self.config.get("closed_task_pane")
+        if not closed_task_pane:
+            self.hide_closed_pane()
+        else:
+            self.show_closed_pane()
 
-        if "ctask_pane_height" in self.config["browser"]:
-            ctask_pane_height = eval(
-                self.config["browser"]["ctask_pane_height"])
-            self.builder.get_object("vpaned1").set_position(ctask_pane_height)
+        ctask_pane_height = self.config.get("ctask_pane_height")
+        self.builder.get_object("vpaned1").set_position(ctask_pane_height)
 
-        if "toolbar" in self.config["browser"]:
-            toolbar = eval(self.config["browser"]["toolbar"])
-            if not toolbar:
-                self.toolbar.hide()
-                self.builder.get_object("view_toolbar").set_active(False)
+        toolbar = self.config.get("toolbar")
+        if not toolbar:
+            self.toolbar.hide()
+            self.builder.get_object("view_toolbar").set_active(False)
 
-        if "quick_add" in self.config["browser"]:
-            quickadd_pane = eval(self.config["browser"]["quick_add"])
-            if not quickadd_pane:
-                self.quickadd_pane.hide()
-                self.builder.get_object("view_quickadd").set_active(False)
+        quickadd_pane = self.config.get("quick_add")
+        if not quickadd_pane:
+            self.quickadd_pane.hide()
+            self.builder.get_object("view_quickadd").set_active(False)
 
-        if "bg_color_enable" in self.config["browser"]:
-            bgcol_enable = self.config["browser"].get("bg_color_enable",BG_COLOR)
-            self.builder.get_object("bgcol_enable").set_active(bgcol_enable)
-
-        if "contents_preview_enable" in self.config["browser"]:
-            self.priv["contents_preview_enable"] = \
-                    eval(self.config["browser"]["contents_preview_enable"])
+        bgcol_enable = self.config.get("bg_color_enable")
+        self.builder.get_object("bgcol_enable").set_active(bgcol_enable)
         
-        if "collapsed_tasks" not in self.config["browser"].keys():
-            print "no collapsed_tasks in browser"
-            self.config["browser"]["collapsed_tasks"] = []
-        for t in self.config["browser"]["collapsed_tasks"]:
-#            print "browser.py : collapsing %s" %t
+        for t in self.config.get("collapsed_tasks"):
             self.vtree_panes['active'].collapse_node(t)
                 
-        if "collapsed_tags" in self.config["browser"]:
-            toset = self.config["browser"]["collapsed_tags"]
-            #FIXME: Not available in liblarch
+        for t in self.config.get("collapsed_tags"):
+            #FIXME
+            print "Collapsing tag %s not implememted in browser.py" %t
 #            self.tagtreeview.set_collapsed_tags(toset)
 
-        if "tasklist_sort" in self.config["browser"]:
-            col_id, order = self.config["browser"]["tasklist_sort"]
-            self.priv["sort_column"] = col_id
-            try:
-                col_id, order = int(col_id), int(order)
-                self.priv["tasklist"]["sort_column"] = col_id
-                if order == 0:
-                    self.priv["tasklist"]["sort_order"] = gtk.SORT_ASCENDING
-                if order == 1:
-                    self.priv["tasklist"]["sort_order"] = gtk.SORT_DESCENDING
-                self.task_modelsort.set_sort_column_id(\
-                    col_id,\
-                    self.priv["tasklist"]["sort_order"])
-            except:
-                Log.error("Invalid configuration for sorting columns")
+        #FIXME
+        #Sorting not yet saved in the config
+#        if "tasklist_sort" in self.config["browser"]:
+#            col_id, order = self.config["browser"]["tasklist_sort"]
+#            self.priv["sort_column"] = col_id
+#            try:
+#                col_id, order = int(col_id), int(order)
+#                self.priv["tasklist"]["sort_column"] = col_id
+#                if order == 0:
+#                    self.priv["tasklist"]["sort_order"] = gtk.SORT_ASCENDING
+#                if order == 1:
+#                    self.priv["tasklist"]["sort_order"] = gtk.SORT_DESCENDING
+#                self.task_modelsort.set_sort_column_id(\
+#                    col_id,\
+#                    self.priv["tasklist"]["sort_order"])
+#            except:
+#                Log.error("Invalid configuration for sorting columns")
 
-        if "view" in self.config["browser"]:
-            view = self.config["browser"]["view"]
+            view = self.config.get("view")
             if view == "workview":
                 self.do_toggle_workview()
                 
-        if self._start_gtg_maximized() and \
-           "opened_tasks" in self.config["browser"]:
-            odic = self.config["browser"]["opened_tasks"]
-            #odic can contain also "None" or "None,", so we skip them
-            if odic == "None" or (len(odic)> 0 and odic[0] == "None"):
-                return
+        if self._start_gtg_maximized():
+            odic = self.config.get("opened_tasks")
+            #This should be removed. This is bad !
+#            #odic can contain also "None" or "None,", so we skip them
+#            if odic == "None" or (len(odic)> 0 and odic[0] == "None"):
+#                return
             for t in odic:
                 ted = self.vmanager.open_task(t)
 
@@ -629,9 +606,10 @@ class TaskBrowser(gobject.GObject):
 
     def on_delete(self, widget, user_data):
         # Cleanup collapsed row list
-        for tid in self.config['browser']["collapsed_tasks"]:
+        colt = self.config.get("collapsed_tasks")
+        for tid in colt:
             if not self.req.has_task(tid):
-                self.config['browser']["collapsed_tasks"].remove(tid)
+                colt.remove(tid)
 
         # Get configuration values
         tag_sidebar        = self.sidebar.get_property("visible")
@@ -683,7 +661,7 @@ class TaskBrowser(gobject.GObject):
 #            self.config["browser"]["tasklist_sort"]  = [sort_column, 0]
 #        elif sort_column is not None and sort_order == gtk.SORT_DESCENDING:
 #            self.config["browser"]["tasklist_sort"]  = [sort_column, 1]
-        self.config["browser"]["view"] = view
+        self.config.set("view",view)
 
     def on_about_clicked(self, widget):
         self.about.show()
@@ -813,9 +791,9 @@ class TaskBrowser(gobject.GObject):
 
     def on_bg_color_toggled(self, widget):
         if widget.get_active():
-            self.config["browser"]["bg_color_enable"] = True
+            self.config.set("bg_color_enable",True)
         else:
-            self.config["browser"]["bg_color_enable"] = False
+            self.config.set("bg_color_enable",False)
 
     def on_toolbar_toggled(self, widget):
         if widget.get_active():
@@ -831,18 +809,15 @@ class TaskBrowser(gobject.GObject):
 
     def on_task_expanded(self, sender, tid):
 #        print "browser.py : on_task_expanded %s" %tid
-        if tid in self.config['browser']["collapsed_tasks"]:
-            self.config['browser']["collapsed_tasks"].remove(tid)
+        colt = self.config.get("collapsed_tasks")
+        if tid in colt:
+            colt.remove(tid)
         
     def on_task_collapsed(self, sender, tid):
 #        print "browser.py : on task_collapsed %s" %tid
-        if tid not in self.config['browser']["collapsed_tasks"]:
-            l= self.config['browser']["collapsed_tasks"]
-            print l
-            self.config['browser']["collapsed_tasks"] = [tid]
-#            l.append(str(tid))
-            print l, self.config['browser']["collapsed_tasks"]
-        print "in config : %s" %self.config['browser']["collapsed_tasks"]
+        colt = self.config.get("collapsed_tasks")
+        if tid not in colt:
+            colt.append(str(tid))
 
     def on_quickadd_activate(self, widget):
         text = unicode(self.quickadd_entry.get_text())
