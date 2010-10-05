@@ -49,10 +49,31 @@ from GTG.tools.logger import Log
 from GTG.tools.borg   import Borg
 
 
+class SubConfig():
+    def __init__(self,name,conf_dic):
+        self.__name = name
+        self.__conf = conf_dic
+        if DEFAULTS.has_key(name):
+            self.__defaults = DEFAULTS[name]
+        else:
+            self.__defaults = {}
+        
+    def get(self,name):
+        if self.__conf.has_key(name):
+            toreturn = self.__conf[name]
+        elif self.__defaults.has_key(name):
+            toreturn = self.__defaults[name]
+        else:
+            print "Warning : no default conf value for %s in %s" %(name,self.__name)
+            toreturn = None
+        return toreturn 
+    
+    def set(self,name,value):
+        self.__conf[name] = value
+
+
 
 class CoreConfig(Borg):
-    
-
     #The projects and tasks are of course DATA !
     #We then use XDG_DATA for them
     #Don't forget the "/" at the end.
@@ -102,6 +123,11 @@ class CoreConfig(Borg):
         ''' Saves the configuration of CoreConfig '''
         self.conf_dict.write()
         self.task_conf_dict.write()
+        
+    def get_subconfig(self,name):
+        if not self.conf_dict.has_key(name):
+            self.conf_dict[name] = {}
+        return SubConfig(name,self.conf_dict[name])
 
     def get_icons_directories(self):
         '''

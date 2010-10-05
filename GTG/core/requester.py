@@ -49,10 +49,11 @@ class Requester(gobject.GObject):
               'tag-path-deleted' : __string_signal__, \
               'tag-modified'     : __string_signal__}
 
-    def __init__(self, datastore):
+    def __init__(self, datastore,global_conf):
         """Construct a L{Requester}."""
         gobject.GObject.__init__(self)
         self.ds = datastore
+        self.__config = global_conf
         self.__basetree = self.ds.get_tasks_tree()
         
         #TODO build filters here
@@ -62,6 +63,7 @@ class Requester(gobject.GObject):
     #Used by the tasks to emit the task added/modified signal
     #Should NOT be used by anyone else
     def _task_loaded(self, tid):
+        print "requester send signal : task-added for %s" %tid
         gobject.idle_add(self.emit, "task-added", tid)
 
         
@@ -77,10 +79,6 @@ class Requester(gobject.GObject):
     # You can apply/unapply filters on it as you wish.
 #    def get_custom_tasks_tree(self,name=None,refresh=True):
 #        return self.__basetree.get_viewtree(name=name,refresh=refresh)
-        
-    def reset_tag_filters(self,refilter=True):
-        print "reset tag filters not implemented"
-#        self.main_tree.reset_tag_filters(refilter=refilter,imtherequester=True)
         
     def is_displayed(self,task):
         return self.__basetree.get_viewtree(name='active').is_displayed(task)
@@ -225,3 +223,14 @@ class Requester(gobject.GObject):
 
     def save_datastore(self):
         return self.ds.save()
+        
+    ############## Config ############################
+    ##################################################
+    def get_global_config(self):
+        return self.__config
+        
+    def get_config(self,name):
+        return self.__config.get_subconfig(name)
+    
+    def save_config(self):
+        self.__config.save()

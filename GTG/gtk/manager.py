@@ -48,12 +48,12 @@ class Manager(object):
     
 
     ############## init #####################################################
-    def __init__(self, req, config):
-        self.config_obj = config
-        self.config = config.conf_dict
-
-        self.task_config = config.task_conf_dict
+    def __init__(self, req):
         self.req = req
+        self.config_obj = self.req.get_global_config()
+        self.config = self.config_obj.conf_dict
+        self.task_config = self.config_obj.task_conf_dict
+        
         # Editors
         self.opened_task  = {}   # This is the list of tasks that are already
                                  # opened in an editor of course it's empty
