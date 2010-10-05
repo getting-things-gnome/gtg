@@ -57,14 +57,14 @@ class DataStore(object):
     '''
 
 
-    def __init__(self):
+    def __init__(self,global_conf):
         '''
         Initializes a DataStore object
         '''
         self.backends = {} #dictionary {backend_name_string: Backend instance}
         self.treefactory = TreeFactory()
         self.__tasks = self.treefactory.get_tasks_tree()
-        self.requester = requester.Requester(self)
+        self.requester = requester.Requester(self,global_conf)
         self.tagfile = None
         self.__tagstore = self.treefactory.get_tags_tree(self.requester)
         self.added_tag = {}

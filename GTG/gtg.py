@@ -101,9 +101,9 @@ def main(options=None, args=None):
     '''
     Calling this starts the full GTG experience  ( :-D )
     '''
-    config, ds, req = core_main_init(options, args)
+    ds, req = core_main_init(options, args)
     # Launch task browser
-    manager = Manager(req, config)
+    manager = Manager(req)
     #main loop
     #To be more user friendly and get the logs of crashes, we show an apport
     # hooked window upon crashes
@@ -113,7 +113,7 @@ def main(options=None, args=None):
             manager.main(once_thru=options.boot_test, uri_list = args)
     else:
         manager.main(once_thru=options.boot_test, uri_list = args)
-    core_main_quit(config, ds)
+    core_main_quit(req,ds)
 
 def core_main_init(options = None, args = None):
     ''' 
@@ -130,7 +130,7 @@ def core_main_init(options = None, args = None):
     check_instance(config.get_data_dir(), args)
     backends_list = BackendFactory().get_saved_backends_list()
     # Load data store
-    ds = DataStore()
+    ds = DataStore(config)
     # Register backends 
     for backend_dic in backends_list:
         ds.register_backend(backend_dic)
@@ -139,9 +139,9 @@ def core_main_init(options = None, args = None):
     
     # Launch task browser
     req = ds.get_requester()
-    return config, ds, req
+    return ds, req
 
-def core_main_quit(config, ds):
+def core_main_quit(req,ds):
     '''
     Last bits of code executed in GTG, after the UI has been shut off. 
     Currently, it's just saving everything.
@@ -151,7 +151,7 @@ def core_main_quit(config, ds):
     # application as the user last exited it.
     #
     # Ending the application: we save configuration
-    config.save()
+    req.save_config()
     ds.save(quit = True)
     sys.exit(0)
 

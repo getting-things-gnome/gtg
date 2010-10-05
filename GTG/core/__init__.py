@@ -49,10 +49,76 @@ from GTG.tools.logger import Log
 from GTG.tools.borg   import Borg
 
 
+DEFAULTS = {
+'browser': {
+            'bg_color_enable' : False,
+            "contents_preview_enable" : False,
+            'tag_pane' : False,
+            "sidebar_width": 120,
+            "closed_task_pane" : False,
+            'bottom_pane_position' : 300,
+            'toolbar' : True,
+            'quick_add' : True,
+            "bg_color_enable": True,
+            'collapsed_tasks' : [],
+            'collapsed_tags' : [],
+            'view' : 'default',
+            "opened_tasks": [],
+            'width': 400,
+            'height':400,
+            'x_pos':10,
+            'y_pos':10,
+            }
+}
+
+
+#Instead of accessing directly the ConfigObj dic, each module will have
+#one SubConfig object. (one SubConfig object always match one first level
+#element of the ConfigObj directory)
+#
+#The goal of the SubConfig object is to handle default value and converting
+#String to Bool and Int when needed. 
+#
+#Each GTG component using config should be ported to SubConfig and, for each
+#setting, a default value should be written in the DEFAULTS above.
+#
+#Currently done : browser
+#Todo : editor, plugins
+class SubConfig():
+    def __init__(self,name,conf_dic):
+        self.__name = name
+        self.__conf = conf_dic
+        if DEFAULTS.has_key(name):
+            self.__defaults = DEFAULTS[name]
+        else:
+            self.__defaults = {}
+        
+    #This return the value of the setting (or the default one)
+    #
+    #If a default value exists and is a Int or a Bool, the returned
+    #value is converted to that type.
+    def get(self,name):
+        if self.__conf.has_key(name):
+            toreturn = self.__conf[name]
+            #Converting to the good type
+            if self.__defaults.has_key(name):
+                ntype = type(self.__defaults[name])
+                if ntype in (bool,int) and type(toreturn) == str:
+                    toreturn = eval(toreturn)
+        elif self.__defaults.has_key(name):
+            toreturn = self.__defaults[name]
+            self.__conf[name] = toreturn
+        else:
+            print "Warning : no default conf value for %s in %s" %(name,self.__name)
+            toreturn = None
+        return toreturn 
+    
+    def set(self,name,value):
+        self.__conf[name] = str(value)
+
+
 
 class CoreConfig(Borg):
-    
-
     #The projects and tasks are of course DATA !
     #We then use XDG_DATA for them
     #Don't forget the "/" at the end.
@@ -102,6 +168,11 @@ class CoreConfig(Borg):
         ''' Saves the configuration of CoreConfig '''
         self.conf_dict.write()
         self.task_conf_dict.write()
+        
+    def get_subconfig(self,name):
+        if not self.conf_dict.has_key(name):
+            self.conf_dict[name] = {}
+        return SubConfig(name,self.conf_dict[name])
 
     def get_icons_directories(self):
         '''
