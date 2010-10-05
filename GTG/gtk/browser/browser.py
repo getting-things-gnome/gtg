@@ -55,13 +55,6 @@ WINDOW_TITLE = "Getting Things GNOME!"
 DOCUMENTATION_URL = "http://live.gnome.org/gtg/documentation"
 
 #Some default preferences that we should save in a file
-WORKVIEW         = False
-SIDEBAR          = False
-CLOSED_PANE      = False
-QUICKADD_PANE    = True
-TOOLBAR          = True
-#BG_COLOR         = True
-CONTENTS_PREVIEW = True
 TIME             = 0
 
 
@@ -132,11 +125,6 @@ class TaskBrowser(gobject.GObject):
 
         #Create our dictionary and connect it
         self._init_signal_connections()
-
-        # Setting the default for the view
-        # When there is no config, this should define the first configuration
-        # of the UI
-        self._init_view_defaults()
 
         # Define accelerator keys
         self._init_accelerators()
@@ -354,13 +342,6 @@ class TaskBrowser(gobject.GObject):
         self.selection.connect("changed", self.on_task_cursor_changed)
         self.req.connect("task-deleted", self.update_buttons_sensitivity)
 
-    def _init_view_defaults(self):
-        self.menu_view_workview.set_active(WORKVIEW)
-        self.builder.get_object("view_sidebar").set_active(SIDEBAR)
-        self.builder.get_object("view_closed").set_active(CLOSED_PANE)
-        self.builder.get_object("view_quickadd").set_active(QUICKADD_PANE)
-        self.builder.get_object("view_toolbar").set_active(TOOLBAR)
-
     def _add_accelerator_for_widget(self, agr, name, accel):
         widget    = self.builder.get_object(name)
         key, mod  = gtk.accelerator_parse(accel)
@@ -446,8 +427,8 @@ class TaskBrowser(gobject.GObject):
                 self.init_tags_sidebar()
             self.sidebar.show()
 
-        tag_pane_width = self.config.get("tag_pane_width")
-        self.builder.get_object("hpaned1").set_position(tag_pane_width)
+        sidebar_width = self.config.get("sidebar_width")
+        self.builder.get_object("hpaned1").set_position(sidebar_width)
 
         closed_task_pane = self.config.get("closed_task_pane")
         if not closed_task_pane:
@@ -455,16 +436,20 @@ class TaskBrowser(gobject.GObject):
         else:
             self.show_closed_pane()
 
-        ctask_pane_height = self.config.get("ctask_pane_height")
-        self.builder.get_object("vpaned1").set_position(ctask_pane_height)
+        botpos = self.config.get("bottom_pane_position")
+        self.builder.get_object("vpaned1").set_position(botpos)
 
         toolbar = self.config.get("toolbar")
-        if not toolbar:
+        if toolbar:
+            self.builder.get_object("view_toolbar").set_active(1)
+        else:
             self.toolbar.hide()
             self.builder.get_object("view_toolbar").set_active(False)
 
         quickadd_pane = self.config.get("quick_add")
-        if not quickadd_pane:
+        if quickadd_pane:
+            self.builder.get_object("view_quickadd").set_active(True)
+        else:
             self.quickadd_pane.hide()
             self.builder.get_object("view_quickadd").set_active(False)
 
@@ -497,8 +482,7 @@ class TaskBrowser(gobject.GObject):
 #            except:
 #                Log.error("Invalid configuration for sorting columns")
 
-        view = self.config.get("view")
-        self.set_view(view)
+        self.set_view(self.config.get("view"))
                 
         if self._start_gtg_maximized():
             odic = self.config.get("opened_tasks")
@@ -614,65 +598,17 @@ class TaskBrowser(gobject.GObject):
         self.config.set('width',width)
         self.config.set('height',height)
 
+    #on_delete is called when the user close the window
     def on_delete(self, widget, user_data):
         # Cleanup collapsed row list
         colt = self.config.get("collapsed_tasks")
         for tid in colt:
             if not self.req.has_task(tid):
                 colt.remove(tid)
-
-        # Get configuration values
-        tag_sidebar        = self.sidebar.get_property("visible")
-        tag_sidebar_width  = self.builder.get_object("hpaned1").get_position()
-        if self.closed_pane:
-            closed_pane    = self.closed_pane.get_property("visible")
-        else:
-            closed_pane    = False
-        quickadd_pane      = self.quickadd_pane.get_property("visible")
-        toolbar            = self.toolbar.get_property("visible")
-        closed_pane_height = self.builder.get_object("vpaned1").get_position()
-
-#        if self.priv['workview']:
-#            view = "workview"
-#        else:
-#            view = "default"
-#        self.config.set("view",view)
-        
-        # Populate configuration dictionary
-        #FIXME :this is crazy ! We are overwriting our config before closing it !
-#        self.config["browser"] = {
-#            'width':
-#                self.priv["window_width"],
-#            'height':
-#                self.priv["window_height"],
-#            'x_pos':
-#                self.priv["window_xpos"],
-#            'y_pos':
-#                self.priv["window_ypos"],
-#            'contents_preview_enable':
-#                self.priv["contents_preview_enable"],
-#            #FIXME : to implement in liblarch
-##            'collapsed_tags':
-##                self.tagtreeview.get_collapsed_tags(),
-#            'tag_pane':
-#                tag_sidebar,
-#            'tag_pane_width':
-#                tag_sidebar_width,
-#            'closed_task_pane':
-#                closed_pane,
-#            'ctask_pane_height':
-#                closed_pane_height,
-#            'toolbar':
-#                toolbar,
-#            'quick_add':
-#                quickadd_pane,
-#            'view':
-#                view,
-#            }
-#        if   sort_column is not None and sort_order == gtk.SORT_ASCENDING:
-#            self.config["browser"]["tasklist_sort"]  = [sort_column, 0]
-#        elif sort_column is not None and sort_order == gtk.SORT_DESCENDING:
-#            self.config["browser"]["tasklist_sort"]  = [sort_column, 1]
+        botpos = self.builder.get_object("vpaned1").get_position()
+        self.config.set('bottom_pane_position',botpos)
+        sidepos = self.builder.get_object("hpaned1").get_position()
+        self.config.set('sidebar_width',sidepos)
 
     def on_about_clicked(self, widget):
         self.about.show()
@@ -789,6 +725,7 @@ class TaskBrowser(gobject.GObject):
 
         self.add_page_to_accessory_notebook("Closed", self.closed_pane)
         self.builder.get_object("view_closed").set_active(True)
+        self.config.set('closed_task_pane',True)
 
     def hide_closed_pane(self):
         #If we destroy completely the vtree, we cannot display it anymore
@@ -801,6 +738,7 @@ class TaskBrowser(gobject.GObject):
 #            del self.vtree_panes['closed']
         self.remove_page_from_accessory_notebook(self.closed_pane)
         self.builder.get_object("view_closed").set_active(False)
+        self.config.set('closed_task_pane',False)
 
     def on_bg_color_toggled(self, widget):
         if widget.get_active():
@@ -811,14 +749,18 @@ class TaskBrowser(gobject.GObject):
     def on_toolbar_toggled(self, widget):
         if widget.get_active():
             self.toolbar.show()
+            self.config.set('toolbar',True)
         else:
             self.toolbar.hide()
+            self.config.set('toolbar',False)
 
     def on_toggle_quickadd(self, widget):
         if widget.get_active():
             self.quickadd_pane.show()
+            self.config.set('quick_add',True)
         else:
             self.quickadd_pane.hide()
+            self.config.set('quick_add',False)
 
     def on_task_expanded(self, sender, tid):
 #        print "browser.py : on_task_expanded %s" %tid

@@ -54,9 +54,9 @@ DEFAULTS = {
             'bg_color_enable' : False,
             "contents_preview_enable" : False,
             'tag_pane' : False,
-            "tag_pane_width": 120,
+            "sidebar_width": 120,
             "closed_task_pane" : False,
-            'ctask_pane_height' : 15,
+            'bottom_pane_position' : 300,
             'toolbar' : True,
             'quick_add' : True,
             "bg_color_enable": True,
@@ -114,7 +114,7 @@ class SubConfig():
         return toreturn 
     
     def set(self,name,value):
-        self.__conf[name] = value
+        self.__conf[name] = str(value)
 
 
 
