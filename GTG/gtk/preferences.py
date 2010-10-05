@@ -168,6 +168,8 @@ class PreferencesDialog:
         autostart_path = os.path.join(self.__AUTOSTART_DIRECTORY, \
                                       self.__AUTOSTART_FILE)
         self.pref_autostart.set_active(os.path.isfile(autostart_path))
+        #This set_active method doesn't even understand what a boolean is!
+        #what a PITA !
         if self.config_priv.get("contents_preview_enable"):
             toset = 1
         else:

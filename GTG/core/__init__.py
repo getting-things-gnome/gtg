@@ -56,7 +56,7 @@ DEFAULTS = {
             'tag_pane' : False,
             "tag_pane_width": 120,
             "closed_task_pane" : False,
-            'ctask_pane_height' : 65,
+            'ctask_pane_height' : 15,
             'toolbar' : True,
             'quick_add' : True,
             "bg_color_enable": True,
@@ -72,6 +72,18 @@ DEFAULTS = {
 }
 
 
+#Instead of accessing directly the ConfigObj dic, each module will have
+#one SubConfig object. (one SubConfig object always match one first level
+#element of the ConfigObj directory)
+#
+#The goal of the SubConfig object is to handle default value and converting
+#String to Bool and Int when needed. 
+#
+#Each GTG component using config should be ported to SubConfig and, for each
+#setting, a default value should be written in the DEFAULTS above.
+#
+#Currently done : browser
+#Todo : editor, plugins
 class SubConfig():
     def __init__(self,name,conf_dic):
         self.__name = name
@@ -81,6 +93,10 @@ class SubConfig():
         else:
             self.__defaults = {}
         
+    #This return the value of the setting (or the default one)
+    #
+    #If a default value exists and is a Int or a Bool, the returned
+    #value is converted to that type.
     def get(self,name):
         if self.__conf.has_key(name):
             toreturn = self.__conf[name]

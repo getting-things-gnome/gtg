@@ -498,8 +498,7 @@ class TaskBrowser(gobject.GObject):
 #                Log.error("Invalid configuration for sorting columns")
 
         view = self.config.get("view")
-        if view == "workview":
-            self.do_toggle_workview()
+        self.set_view(view)
                 
         if self._start_gtg_maximized():
             odic = self.config.get("opened_tasks")
@@ -520,17 +519,28 @@ class TaskBrowser(gobject.GObject):
         #menu_state   = self.menu_view_workview.get_active()
         #button_state = self.toggle_workview.get_active()
         #We do something only if both widget are in different state
-        tobeset = not self.priv['workview']
-        self.menu_view_workview.set_active(tobeset)
-        self.toggle_workview.set_active(tobeset)
-        self.priv['workview'] = tobeset
-        if tobeset:
-            self.activetree.apply_filter('workview')
+        if self.config.get('view') == 'workview':
+            self.set_view('default')
         else:
+            self.set_view('workview')
+        
+        
+    def set_view(self,viewname):
+        if viewname == 'default':
             self.activetree.unapply_filter('workview')
+            workview = False
+        elif viewname == 'workview':
+            self.activetree.apply_filter('workview')
+            workview = True
+        else:
+            raise Exception('Cannot set the view %s' %viewname)
+        self.menu_view_workview.set_active(workview)
+        self.toggle_workview.set_active(workview)
+        #The config_set has to be after the toggle, else you will have a loop
+        self.config.set('view',viewname)
         if self.tagtreeview:
             self.tagtree.refresh_all()
-        self.vtree_panes['active'].set_col_visible('startdate',not tobeset)
+        self.vtree_panes['active'].set_col_visible('startdate',not workview)
 
     def _update_window_title(self,nid=None,path=None,state_id=None):
         count = self.activetree.get_n_nodes()
@@ -622,11 +632,11 @@ class TaskBrowser(gobject.GObject):
         toolbar            = self.toolbar.get_property("visible")
         closed_pane_height = self.builder.get_object("vpaned1").get_position()
 
-        if self.priv['workview']:
-            view = "workview"
-        else:
-            view = "default"
-        self.config.set("view",view)
+#        if self.priv['workview']:
+#            view = "workview"
+#        else:
+#            view = "default"
+#        self.config.set("view",view)
         
         # Populate configuration dictionary
         #FIXME :this is crazy ! We are overwriting our config before closing it !
@@ -730,12 +740,14 @@ class TaskBrowser(gobject.GObject):
         view_sidebar = self.builder.get_object("view_sidebar")
         if self.sidebar.get_property("visible"):
             view_sidebar.set_active(False)
+            self.config.set("tag_pane",False)
             self.sidebar.hide()
         else:
             view_sidebar.set_active(True)
             if not self.tagtreeview:
                 self.init_tags_sidebar()
             self.sidebar.show()
+            self.config.set("tag_pane",True)
 
     def on_closed_toggled(self, widget):
         if widget.get_active():
