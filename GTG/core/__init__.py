@@ -62,7 +62,7 @@ DEFAULTS = {
             "bg_color_enable": True,
             'collapsed_tasks' : [],
             'collapsed_tags' : [],
-            'view' : 'normal',
+            'view' : 'default',
             "opened_tasks": [],
             'width': 400,
             'height':400,
@@ -87,7 +87,7 @@ class SubConfig():
             #Converting to the good type
             if self.__defaults.has_key(name):
                 ntype = type(self.__defaults[name])
-                if ntype in (bool,int):
+                if ntype in (bool,int) and type(toreturn) == str:
                     toreturn = eval(toreturn)
         elif self.__defaults.has_key(name):
             toreturn = self.__defaults[name]

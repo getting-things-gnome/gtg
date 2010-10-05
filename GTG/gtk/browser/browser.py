@@ -409,7 +409,7 @@ class TaskBrowser(gobject.GObject):
 ### HELPER FUNCTIONS ########################################################
 
     def open_preferences(self, widget):
-        self.vmanager.open_preferences(self.priv)
+        self.vmanager.open_preferences(self.config)
         
     def open_edit_backends(self, widget):
         self.vmanager.open_edit_backends()
@@ -497,9 +497,9 @@ class TaskBrowser(gobject.GObject):
 #            except:
 #                Log.error("Invalid configuration for sorting columns")
 
-            view = self.config.get("view")
-            if view == "workview":
-                self.do_toggle_workview()
+        view = self.config.get("view")
+        if view == "workview":
+            self.do_toggle_workview()
                 
         if self._start_gtg_maximized():
             odic = self.config.get("opened_tasks")
@@ -596,13 +596,13 @@ class TaskBrowser(gobject.GObject):
         
     def on_move(self, widget = None, data = None):
         xpos, ypos = self.window.get_position()
-        self.priv["window_xpos"] = xpos
-        self.priv["window_ypos"] = ypos
+        self.config.set('x_pos',xpos)
+        self.config.set('y_pos',ypos)
 
     def on_size_allocate(self, widget = None, data = None):
         width, height = self.window.get_size()
-        self.priv["window_width"]  = width
-        self.priv["window_height"] = height
+        self.config.set('width',width)
+        self.config.set('height',height)
 
     def on_delete(self, widget, user_data):
         # Cleanup collapsed row list
@@ -626,6 +626,8 @@ class TaskBrowser(gobject.GObject):
             view = "workview"
         else:
             view = "default"
+        self.config.set("view",view)
+        
         # Populate configuration dictionary
         #FIXME :this is crazy ! We are overwriting our config before closing it !
 #        self.config["browser"] = {
@@ -661,7 +663,6 @@ class TaskBrowser(gobject.GObject):
 #            self.config["browser"]["tasklist_sort"]  = [sort_column, 0]
 #        elif sort_column is not None and sort_order == gtk.SORT_DESCENDING:
 #            self.config["browser"]["tasklist_sort"]  = [sort_column, 1]
-        self.config.set("view",view)
 
     def on_about_clicked(self, widget):
         self.about.show()

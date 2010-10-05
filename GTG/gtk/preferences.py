@@ -168,7 +168,11 @@ class PreferencesDialog:
         autostart_path = os.path.join(self.__AUTOSTART_DIRECTORY, \
                                       self.__AUTOSTART_FILE)
         self.pref_autostart.set_active(os.path.isfile(autostart_path))
-        self.pref_show_preview.set_active(self.config_priv["contents_preview_enable"])
+        if self.config_priv.get("contents_preview_enable"):
+            toset = 1
+        else:
+            toset = 0
+        self.pref_show_preview.set_active(toset)
 
 
     def _init_plugin_tree(self):
@@ -340,7 +344,7 @@ class PreferencesDialog:
     
     def toggle_preview(self, widget):
         """Toggle previews in the task view on or off."""
-        self.config_priv["contents_preview_enable"] = widget.get_active()
+        self.config_priv.set("contents_preview_enable",widget.get_active())
     
     def toggle_spellcheck(self, widget):
         """Toggle spell checking on or off."""
