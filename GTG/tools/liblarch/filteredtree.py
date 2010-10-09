@@ -218,8 +218,7 @@ class FilteredTree():
             raise ValueError('cannot update node None')
         if self.__initialized:
             self.__updating_queue.append([tid,'update'])
-            if self.__updating_lock.acquire(False) \
-                                        and len(self.__updating_queue) > 0:
+            if self.__updating_lock.acquire(False):
                 self.__execution_loop()
 
     def external_add_node(self,tid):
@@ -227,8 +226,7 @@ class FilteredTree():
             raise ValueError('cannot add node None')
         if self.__initialized:
             self.__updating_queue.append([tid,'add'])
-            if self.__updating_lock.acquire(False)\
-                                        and len(self.__updating_queue) > 0:
+            if self.__updating_lock.acquire(False):
                 self.__execution_loop()
             
     def external_remove_node(self,tid):
@@ -236,8 +234,7 @@ class FilteredTree():
             raise ValueError('cannot remove node None')
         if self.__initialized:
             self.__updating_queue.append([tid,'delete'])
-            if self.__updating_lock.acquire(False)\
-                                        and len(self.__updating_queue) > 0:
+            if self.__updating_lock.acquire(False):
                 self.__execution_loop()
             
             
