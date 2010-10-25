@@ -18,7 +18,7 @@
 # {
 #  "specs": {
 #   "my-spec": {
-#    ...
+#    "details_url": "http://www.gnome.org/",
 #    "work_items": [
 #     {
 #      "assignee": "john-doe",
