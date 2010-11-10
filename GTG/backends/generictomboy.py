@@ -97,6 +97,7 @@ class GenericTomboy(GenericBackend):
         Gets all the notes from Tomboy and sees if they must be added in GTG
         (and, if so, it adds them).
         '''
+        tomboy_notes = []
         with self.TomboyConnection(self, *self.BUS_ADDRESS) as tomboy:
             with self.DbusWatchdog(self):
                 tomboy_notes = [note_id for note_id in \
