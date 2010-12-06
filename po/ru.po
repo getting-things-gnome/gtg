@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-03-27 15:20+0100\n"
-"PO-Revision-Date: 2010-11-26 21:22+0000\n"
+"PO-Revision-Date: 2010-12-06 01:02+0000\n"
 "Last-Translator: Alexey Ivanov <alexey.ivanes@gmail.com>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2010-11-27 04:56+0000\n"
+"X-Launchpad-Export-Date: 2010-12-06 04:52+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: GTG/tools/dates.py:51
@@ -147,8 +147,9 @@ msgstr[2] "Выполнено за %(days)d дней до срока"
 #, python-format
 msgid "Due tomorrow!"
 msgid_plural "%(days)d days left"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Задания на завтра"
+msgstr[1] "Задания на завтра"
+msgstr[2] "Задания на завтра"
 
 #: GTG/taskeditor/editor.py:332
 msgid "Due today!"
@@ -158,8 +159,9 @@ msgstr "Задания на сегодня"
 #, python-format
 msgid "Due yesterday!"
 msgid_plural "Was %(days)d days ago"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Вчерашние задания"
+msgstr[1] "Вчерашние задания"
+msgstr[2] "Вчерашние задания"
 
 #: GTG/taskeditor/taskeditor.glade.h:1
 msgid "Closed on"
@@ -689,7 +691,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:48
 msgid "Learn how to use tags"
-msgstr "Научится использовать теги"
+msgstr "Научиться использовать метки"
 
 #: GTG/core/firstrun_tasks.py:49
 msgid ""
