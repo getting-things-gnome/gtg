@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-03-27 15:20+0100\n"
-"PO-Revision-Date: 2010-04-23 15:32+0000\n"
-"Last-Translator: DiegoJ <diegojromerolopez@gmail.com>\n"
+"PO-Revision-Date: 2010-12-11 00:35+0000\n"
+"Last-Translator: Fitoschido <Unknown>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2010-04-24 03:53+0000\n"
+"X-Launchpad-Export-Date: 2010-12-11 05:10+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: GTG/tools/dates.py:51
@@ -178,7 +178,7 @@ msgstr "Añadir subtarea"
 
 #: GTG/taskeditor/taskeditor.glade.h:6
 msgid "Insert tag"
-msgstr "Añadir etiqueta"
+msgstr "Insertar etiqueta"
 
 #: GTG/taskeditor/taskeditor.glade.h:7
 msgid "Later"
@@ -222,7 +222,7 @@ msgstr "Mantener como nota"
 
 #: GTG/taskeditor/__init__.py:36
 msgid "Make a Task"
-msgstr "Crear una Tarea"
+msgstr "Crear una tarea"
 
 #: GTG/taskeditor/__init__.py:38
 msgid "Mark this task as done"
@@ -454,7 +454,7 @@ msgstr "_Tareas"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:51
 msgid "_View"
-msgstr "_Vista"
+msgstr "_Ver"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:52
 msgid "_Work View"
@@ -1156,9 +1156,6 @@ msgstr "Cerrando en un segundo"
 #~ msgid "_Keep selected task"
 #~ msgstr "_Mantener la tarea seleccionada"
 
-#~ msgid "Thank you for trying out GTG :-)"
-#~ msgstr "Gracias por usar GTF :-)"
-
 #, python-format
 #~ msgid "Was %s days ago"
 #~ msgstr "Fue hace %s días"
@@ -1173,9 +1170,6 @@ msgstr "Cerrando en un segundo"
 #~ msgid "Due today !"
 #~ msgstr "¡Vence hoy!"
 
-#~ msgid "New Note"
-#~ msgstr "Nueva Nota"
-
 #~ msgid "Permanently _remove task"
 #~ msgstr "Bo_rrar tarea permanentemente"
 
@@ -1186,23 +1180,11 @@ msgstr "Cerrando en un segundo"
 #~ msgstr "<span weight=\"bold\">Vence en</span>"
 
 #~ msgid ""
-#~ "What is an actionable task? It's a task you can do directly, right now."
-#~ msgstr ""
-#~ "¿Qué es una tarea iniciable? Es una tarea que puedes empezar inmediatamente, "
-#~ "ahora mismo."
-
-#~ msgid ""
 #~ "It's a task that is already &quot;start-able&quot;, i.e. the start date is "
 #~ "already over."
 #~ msgstr ""
 #~ "Es una tarea que ya se puede &quot;empezar&quot;, es decir, la fecha de "
 #~ "inicio ya ha pasado."
-
-#~ msgid "It becomes yellow, it's a tag."
-#~ msgstr "Se vuelve amarillo, es una etiqueta."
-
-#~ msgid "Try to type a word beginning with @ here:"
-#~ msgstr "Intenta escribir una palabra que empiece con @ aquí:"
 
 #~ msgid "Description:"
 #~ msgstr "Descripción:"
@@ -1210,58 +1192,14 @@ msgstr "Cerrando en un segundo"
 #~ msgid "Authors:  "
 #~ msgstr "Autores:  "
 
-#~ msgid ""
-#~ "Once a task is done, you can push the &quot;Mark as done&quot; button. If "
-#~ "the task is not relevant any-more, simply press &quot;Dismiss&quot;."
-#~ msgstr ""
-#~ "Una vez que una tarea está terminada, puedes pulsar el botón &quot;Marcar "
-#~ "como terminada&quot;. Si la tarea ya no es relevante, simplemente pulsa "
-#~ "&quot;Descartar&quot;"
-
 #~ msgid "Plugin Manager"
 #~ msgstr "Gestor de complementos"
 
 #~ msgid "Version: "
 #~ msgstr "Versión: "
 
-#~ msgid ""
-#~ "We hope that you will appreciate GTG. Please send us bug reports and ideas "
-#~ "for improvement using: "
-#~ msgstr ""
-#~ "Esperamos que valores GTG. Por favor envíanos informes de problemas e ideas "
-#~ "para mejorar mediante: "
-
-#~ msgid ""
-#~ "A task might be composed of multiple subtasks that appear as links in the "
-#~ "description. Simply click on the following link:"
-#~ msgstr ""
-#~ "Una tarea puede estar compuesta de múltiples subtareas que aparecen como "
-#~ "enlaces en la descripción. Simplemente haz click en el siguiente enlace:"
-
 #~ msgid "You can also use the &quot;insert subtask&quot; button."
 #~ msgstr "También puedes usar el botón de &quot;Añadir subtarea&quot;."
-
-#~ msgid ""
-#~ "If you press the &quot;Workview&quot; button, only actionable tasks will be "
-#~ "displayed."
-#~ msgstr ""
-#~ "Si pulsas el botón de &quot;Vista de trabajo&quot; sólo se mostrarán las "
-#~ "tareas iniciables."
-
-#~ msgid "Thus, the workview will only show you tasks you should do right now."
-#~ msgstr ""
-#~ "Por lo tanto, la vista de trabajo sólo te mostrará tareas que deberías "
-#~ "realizar en este momento."
-
-#~ msgid ""
-#~ "If you have some trouble with GTG, we might be able to help you or to solve "
-#~ "your problem really quickly."
-#~ msgstr ""
-#~ "Si tienes algún problema con GTG, puede que te podamos ayudar o solucionar "
-#~ "el problema rápidamente."
-
-#~ msgid "Please, report them on our Launchpad page:"
-#~ msgstr "Por favor, infórmanos de ellos en nuestra página de Launchpad:"
 
 #~ msgid ""
 #~ "GTG is still very alpha software. We like it and use it everyday but you "
@@ -1269,36 +1207,6 @@ msgstr "Cerrando en un segundo"
 #~ msgstr ""
 #~ "GTG es todavía software en estado alfa. A nosotros nos gusta y lo usamos "
 #~ "cada día pero encontrarás algunos errores."
-
-#~ msgid "Also, marking a parent as done will mark all the subtasks as done."
-#~ msgstr ""
-#~ "Además, marcar la tarea padre como terminada marcará todas sus subtareas "
-#~ "como terminadas."
-
-#~ msgid ""
-#~ "In the task description (this window), if you begin a line with &quot;-"
-#~ "&quot;, it will be considered as a &quot;subtask&quot;, something that needs "
-#~ "to be done in order to accomplish your task. Just try to write &quot;- test "
-#~ "subtask&quot; on the next line and press enter."
-#~ msgstr ""
-#~ "En la descripción de la tarea (esta ventana), si empiezas una línea con "
-#~ "&quot;-&quot; se la considerará como una &quot;subtarea&quot;, algo que "
-#~ "tiene que hacerse para completar tu tarea. Prueba a escribir &quot;-subtarea "
-#~ "de prueba&quot; en la siguiente línea y presiona Enter."
-
-#~ msgid ""
-#~ "It's a task that doesn't have open subtasks, i.e. you can do the task itself "
-#~ "directly."
-#~ msgstr ""
-#~ "Es una tarea que no tiene subtareas abiertas, es decir, puedes realizar la "
-#~ "tarea directamente."
-
-#~ msgid ""
-#~ "We need you to make this software better. Any contribution, any idea is "
-#~ "welcome."
-#~ msgstr ""
-#~ "Te necesitamos para mejorar el software. Cualquier contribución, cualquier "
-#~ "idea es bienvenida."
 
 #, python-format
 #~ msgid "(%s active tasks)"
@@ -1350,15 +1258,6 @@ msgstr "Cerrando en un segundo"
 #~ msgid "Insert Note"
 #~ msgstr "Insertar nota"
 
-#~ msgid ""
-#~ "If you choose to close this current task, subtasks will be automatically "
-#~ "closed too. We indeed consider that, if you achieve a given task, you don't "
-#~ "need to do the subtask anymore."
-#~ msgstr ""
-#~ "Si decide cerrar esta tarea, sus subtareas se cerrarán también. "
-#~ "Considereamos que, si completa cierta tarea, ya no necesita hacer sus "
-#~ "subtareas."
-
 #~ msgid "Due yesterday"
 #~ msgstr "Venció ayer"
 
@@ -1369,10 +1268,6 @@ msgstr "Cerrando en un segundo"
 
 #~ msgid "Other stuff you should read:"
 #~ msgstr "Otras cosas que debería leer:"
-
-#~ msgid "Welcome to Getting Things Gnome!, your new task manager."
-#~ msgstr ""
-#~ "¡Bienvenido a Getting Things Gnome! Su nuevo administrador de tareas."
 
 #~ msgid ""
 #~ "<span weight=\"bold\" size=\"large\">Are you sure you want delete this "
@@ -1463,15 +1358,6 @@ msgstr "Cerrando en un segundo"
 #~ "quiere completar la tarea, márquela como descartada. Las tareas Hechas y "
 #~ "Descartadas se mantienen en el panel de tareas cerradas, ocultas por "
 #~ "defecto, pero puede habilitarlas en el menú Ver."
-
-#~ msgid ""
-#~ "In GTG, everything is a task. From building a bridge over the Pacific Ocean "
-#~ "to changing a light bulb or organizing a party. When you edit a task, it is "
-#~ "automatically saved."
-#~ msgstr ""
-#~ "En GTG, todo es una tarea. Desde construir un puente sobre el Océano "
-#~ "Pacífico a cambiar una bombilla u organizar una fiesta. Cuando editas una "
-#~ "tarea, ésta es guardada automáticamente."
 
 #~ msgid "1 active task"
 #~ msgstr "1 tarea activa"
