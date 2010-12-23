@@ -268,7 +268,7 @@ class ViewTree(gobject.GObject):
         return self.__ft.get_state_id()
             
     def __emit(self, signal_name, tid,path=None,state_id=None,neworder=None,):
-        for k in self.__cllbcks.get(signal_name,[]):
+        for k in self.__cllbcks.get(signal_name, {}).copy():
             f = self.__cllbcks[signal_name][k]
             if neworder:
                 f(tid,path,neworder,state_id)
