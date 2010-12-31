@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Various information about GTG. Should be updated for every release."""
+"""Various information about GTG. Should be updated for every release. Contains the information displayed in GTG's Credits."""
 
 NAME            = "Getting Things GNOME!"
 URL             = "http://gtg.fritalk.com"
