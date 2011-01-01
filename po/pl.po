@@ -9,15 +9,15 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-03-27 15:20+0100\n"
-"PO-Revision-Date: 2010-10-30 17:11+0000\n"
-"Last-Translator: Piotr Strębski <strebski@o2.pl>\n"
+"PO-Revision-Date: 2010-12-31 22:04+0000\n"
+"Last-Translator: Radek Puła <Unknown>\n"
 "Language-Team: Polish <ponton@jabster.pl>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
 "|| n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2010-10-31 05:06+0000\n"
+"X-Launchpad-Export-Date: 2011-01-01 05:06+0000\n"
 "X-Generator: Launchpad (build Unknown)\n"
 
 #: GTG/tools/dates.py:51
@@ -403,7 +403,7 @@ msgstr "Znacznik jest wyświetlony w widoku roboczym"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:37
 msgid "TagName"
-msgstr ""
+msgstr "Nazwa znacznika"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:38 GTG/taskbrowser/tagtree.py:352
 #: GTG/taskbrowser/tasktree.py:330 GTG/taskbrowser/tasktree.py:482
@@ -765,6 +765,7 @@ msgstr ""
 #: GTG/core/plugins/__init__.py:32
 msgid "Everything necessary to run this plugin is available."
 msgstr ""
+"Wszystkie składniki potrzebne do uruchomienia tej wtyczki są dostępne."
 
 #: GTG/core/plugins/__init__.py:33
 msgid "The plugin can not be loaded"
@@ -913,6 +914,8 @@ msgid ""
 "Tomboy/Gnote not found. Please install it or disable the Tomboy/Gnote plugin "
 "in GTG"
 msgstr ""
+"Nie znaleziono Notatnika Tomboy/Gnote. Zainstaluj go lub wyłącz wtyczkę w "
+"opcjach GTG"
 
 #: GTG/plugins/tomboy/tomboy.py:126
 msgid "Add Tomboy note"
@@ -1117,6 +1120,12 @@ msgstr "Sekunda do zamknięcia"
 #~ msgid "<span weight=\"bold\">Starting on</span>"
 #~ msgstr "<span weight=\"bold\">Termin początkowy</span>"
 
+#~ msgid "gtk-clear"
+#~ msgstr "gtk-clear"
+
+#~ msgid "gtk-close"
+#~ msgstr "gtk-close"
+
 #~ msgid "Due tomorrow !"
 #~ msgstr "Na jutro!"
 
@@ -1127,21 +1136,101 @@ msgstr "Sekunda do zamknięcia"
 #~ msgid "Due today !"
 #~ msgstr "Na dzisiaj!"
 
+#~ msgid "Due for yesterday"
+#~ msgstr "Na wczoraj"
+
 #, python-format
 #~ msgid "Was %s days ago"
 #~ msgstr "Było %s dni temu"
 
+#~ msgid ""
+#~ "<span weight=\"bold\" size=\"large\">Are you sure you want delete this "
+#~ "task?</span>\n"
+#~ "\n"
+#~ "Deleting a task cannot be undone."
+#~ msgstr ""
+#~ "<span weight=\"bold\" size=\"large\">Czy na pewno chcesz usunąć to "
+#~ "zadanie?</span>\n"
+#~ "\n"
+#~ "Tej czynności nie da się cofnąć."
+
+#~ msgid "Choose a color"
+#~ msgstr "Wybierz kolor"
+
+#~ msgid "Copyrights© 2008, 2009 Lionel Dricot, Bertrand Rousseau"
+#~ msgstr "Copyrights© 2008, 2009 Lionel Dricot, Bertrand Rousseau"
+
 #~ msgid "New Note"
 #~ msgstr "Nowa notatka"
 
+#~ msgid "Permanently _remove task"
+#~ msgstr "_Usuń zadanie"
+
 #~ msgid "View Notes"
 #~ msgstr "Przejrzyj notatki"
+
+#~ msgid "_File"
+#~ msgstr "_Plik"
+
+#~ msgid "_Keep selected task"
+#~ msgstr "_Zachowaj zaznaczone zadanie"
+
+#~ msgid "gtk-about"
+#~ msgstr "gtk-about"
+
+#~ msgid "gtk-add"
+#~ msgstr "gtk-add"
+
+#~ msgid "gtk-cancel"
+#~ msgstr "gtk-cancel"
+
+#~ msgid "gtk-delete"
+#~ msgstr "gtk-delete"
+
+#~ msgid "gtk-edit"
+#~ msgstr "gtk-edit"
+
+#~ msgid "gtk-help"
+#~ msgstr "gtk-help"
+
+#~ msgid "gtk-ok"
+#~ msgstr "gtk-ok"
+
+#~ msgid "gtk-quit"
+#~ msgstr "gtk-quit"
+
+#~ msgid "gtk-redo"
+#~ msgstr "gtk-redo"
+
+#~ msgid "gtk-select-color"
+#~ msgstr "gtk-select-color"
+
+#~ msgid "gtk-undo"
+#~ msgstr "gtk-undo"
+
+#~ msgid "<span weight=\"bold\">All tags</span>"
+#~ msgstr "<span weight=\"bold\">Wszystkie znaczniki</span>"
+
+#~ msgid "<span weight=\"bold\">Tasks without tags</span>"
+#~ msgstr "<span weight=\"bold\">Zadania bez znaczników</span>"
+
+#~ msgid "(no active tasks)"
+#~ msgstr "(żadnych aktywnych zadań)"
+
+#~ msgid "(1 active task)"
+#~ msgstr "(1 aktywne zadanie)"
 
 #~ msgid "Due date"
 #~ msgstr "Do dnia"
 
 #~ msgid "Days left"
 #~ msgstr "Pozostało dni"
+
+#~ msgid "Notes"
+#~ msgstr "Notatki"
+
+#~ msgid "Welcome in Getting Things Gnome!, your new task manager."
+#~ msgstr "Witamy w Getting Things Gnome!, twoim nowym organizerze."
 
 #~ msgid ""
 #~ "In GTG, everything is a task. From building a bridge over the Pacific Ocean "
@@ -1160,8 +1249,30 @@ msgstr "Sekunda do zamknięcia"
 #~ "wykonane&quot;. Jeśli zadanie przestało już być istotne, po prostu naciśnij "
 #~ "przycisk &quot;Oddal&quot;."
 
+#~ msgid ""
+#~ "A task might be composed of multiple subtasks that appear as links in the "
+#~ "description. Simply click on the following link :"
+#~ msgstr ""
+#~ "Zadanie może zawierać wiele zadań podrzędnych, pokazywanych jako odnośniki w "
+#~ "opisie. Wystarczy kliknąć na dany odnośnik."
+
+#~ msgid "Don't forget to mark this subtask as done !"
+#~ msgstr "Nie zapomnij oznaczyć zadania podrzędnego jako wykonanego!"
+
+#~ msgid "Other stuff you should read :"
+#~ msgstr "Pozostałe rzeczy, które powinieneś przeczytać:"
+
+#~ msgid ""
+#~ "We hope that you will appreciate GTG. Please send us bug reports and ideas "
+#~ "for improvement using : "
+#~ msgstr ""
+#~ "Mamy nadzieję, że docenisz GTG. Zgłaszaj nam wszelkie błędy i pomysły. "
+
 #~ msgid "Thank you for trying out GTG :-)"
 #~ msgstr "Dziękujemy za wypróbowanie GTG. :-)"
+
+#~ msgid "Learn to use subtasks"
+#~ msgstr "Naucz się używać zadań podrzędnych."
 
 #~ msgid ""
 #~ "In the task description (this window), if you begin a line with &quot;-"
@@ -1177,13 +1288,70 @@ msgstr "Sekunda do zamknięcia"
 #~ msgid "You can also use the &quot;insert subtask&quot; button."
 #~ msgstr "Możesz także użyć przycisku &quot;Wstaw zadanie podrzędne&quot;."
 
+#~ msgid ""
+#~ "Task and subtasks can be re-organized by drag-n-drop in the tasks list."
+#~ msgstr ""
+#~ "Zadania i zadania podrzędne mogą być szeregowane metodą przeciągnij-i-upuść."
+
+#~ msgid ""
+#~ "Some concept come with subtasks : for example, a subtask due date can never "
+#~ "be after its parent due date."
+#~ msgstr ""
+#~ "Z zadaniami podrzędnymi związane są pewne ograniczenia, np. zadanie "
+#~ "podrzędne nie może mieć terminu końcowego później niż zadanie nadrzędne."
+
 #~ msgid "Also, marking a parent as done will mark all the subtasks as done."
 #~ msgstr ""
 #~ "Dodatkowo, oznaczenie zadania nadrzędnego jako wykonanego, spowoduje takie "
 #~ "oznaczenie również wśród zadań podrzędnych."
 
+#~ msgid "Learn to use tags"
+#~ msgstr "Naucz się używać znaczników."
+
+#~ msgid "A tag is a simple word that begin with &quot;@&quot;."
+#~ msgstr "Znacznik jest słowem, które zaczyna się &quot;@&quot;."
+
+#~ msgid "Try to type a word beginning with @ here :"
+#~ msgstr "Spróbuj wpisać słowo zaczynające się @:"
+
 #~ msgid "It becomes yellow, it's a tag."
 #~ msgstr "Znacznik przyjmuje kolor żółty."
+
+#~ msgid ""
+#~ "Tags are useful to sort your tasks. In the view menu, you can enable a "
+#~ "sidebar which displays all the tags you are using so you can easily see "
+#~ "tasks for a given tag. There's no limit to the number of tags a task can "
+#~ "have."
+#~ msgstr ""
+#~ "Znaczniki są użyteczne do sortowania zadań. W menu Widok możesz włączyć "
+#~ "panel boczny, które wyświetla wszystkie użyte znaczniki. Dzięki temu można "
+#~ "łatwo zobaczyć zadania oznaczone danym słowem. Nie ma żadnego ograniczenia "
+#~ "na liczbę znaczników, jakie może mieć pojedyncze zadanie."
+
+#~ msgid ""
+#~ "If you right click on a tag in the sidebar you can also set its color. It "
+#~ "will permit you to have a more colorful list of tasks, if you want it that "
+#~ "way."
+#~ msgstr ""
+#~ "Jeśli klikniesz prawym przyciskiem myszy na znaczniku w panelu bocznym, "
+#~ "możesz ustawić mu kolor. Dzięki temu łatwiej rozróżnisz zadania na liście."
+
+#~ msgid ""
+#~ "A new tag is only added to the current task. There's no recursivity and the "
+#~ "tag is not applied to subtasks. But when you create a new subtask, this "
+#~ "subtask will inherit the tags of its parent as a good primary default (it "
+#~ "will also be the case if you add a tag to a parent just after creating a "
+#~ "subtask). Of course, you can modify at any time the tags of this particular "
+#~ "subtask. It will never be changed by the parent."
+#~ msgstr ""
+#~ "Nowy znacznik jest dodawany tylko do bieżącego zadania. Nie ma żadnej "
+#~ "rekurencji i znacznik nie jest dodawany do zadań podrzędnych. Jednak kiedy "
+#~ "utworzysz nowe zadanie podrzędne, domyślnie odziedziczy ono znaczniki po "
+#~ "swoim zadaniu nadrzędnym. Oczywiście możesz zmodyfikować znaczniki, kiedy "
+#~ "chcesz, ale nie zmienią się znaczniki zadania podrzędnego."
+
+#~ msgid "Using the Workview"
+#~ msgstr "Użycie widoku roboczego"
 
 #~ msgid ""
 #~ "If you press the &quot;Workview&quot; button, only actionable tasks will be "
@@ -1218,11 +1386,28 @@ msgstr "Sekunda do zamknięcia"
 #~ "wykonać."
 
 #~ msgid ""
+#~ "If you use tags, you can right click on a tag in the sidebar and choose to "
+#~ "not display tasks with this particular tag in the workview. It's very useful "
+#~ "if you have a tag like &quot;someday&quot; that you use for tasks you would "
+#~ "like to do but are not particularly urgent."
+#~ msgstr ""
+#~ "Jeśli używasz znaczników, możesz kliknąć prawym przyciskiem myszy na "
+#~ "znaczniku w panelu bocznym i ustawić, by nie wyświetlały się w widoku "
+#~ "roboczym. Jest to przydatne, gdy masz znacznik w rodzaju &quot;kiedyś&quot;, "
+#~ "który używasz do zadań, które chciałbyś kiedyś wykonać, ale nie są "
+#~ "szczególnie ważne."
+
+#~ msgid ""
 #~ "GTG is still very alpha software. We like it and use it everyday but you "
 #~ "will encounter some bugs."
 #~ msgstr ""
 #~ "GTG jest wciąż we wczesnej fazie rozwoju. Możesz niestety napotkać parę "
 #~ "błędów."
+
+#~ msgid ""
+#~ "Please, report them ! We need you to make this software better. Any "
+#~ "contribution, any idea is welcome."
+#~ msgstr "Prosimy o ich zgłoszenie! Dzięki temu będziemy w stanie je poprawić."
 
 #~ msgid ""
 #~ "If you have some trouble with GTG, we might be able to help you or to solve "
@@ -1258,6 +1443,13 @@ msgstr "Sekunda do zamknięcia"
 #~ msgid "Due yesterday"
 #~ msgstr "Na wczoraj"
 
+#, python-format
+#~ msgid "(%s active tasks)"
+#~ msgstr "(%s aktywnych zadań)"
+
+#~ msgid "Toggle the work view"
+#~ msgstr "Przełącz na widok roboczy"
+
 #~ msgid "Welcome to Getting Things Gnome!, your new task manager."
 #~ msgstr "Witamy w Getting Things Gnome!, Twoim nowym menadżerze zadań."
 
@@ -1278,11 +1470,24 @@ msgstr "Sekunda do zamknięcia"
 #~ msgid "Hello World"
 #~ msgstr "Witaj świecie"
 
+#~ msgid "API call failed"
+#~ msgstr "Wywołanie API nie powiodło się"
+
 #~ msgid "Synchronization failed."
 #~ msgstr "Synchronizacja nie powiodła się."
 
 #~ msgid "Analyzing tasks..."
 #~ msgstr "Analizowanie zadań..."
+
+#~ msgid ""
+#~ "<span weight=\"bold\" size=\"large\">Are you sure you want delete this "
+#~ "task?</span>\n"
+#~ "\n"
+#~ "Deleting a task cannot be undone, and will delete the following tasks: "
+#~ msgstr ""
+#~ "<span weight=\"bold\" size=\"large\">Na pewno usunąć to zadanie?</span>\n"
+#~ "\n"
+#~ "Operacji usuwania nie można cofnąć. Do usunięcia: "
 
 #~ msgid "Running first synchronization..."
 #~ msgstr "Uruchamianie pierwszej synchronizacji..."
@@ -1328,3 +1533,108 @@ msgstr "Sekunda do zamknięcia"
 #~ msgstr[0] "%(days)d dzień pozostał"
 #~ msgstr[1] "%(days)d dni pozostały"
 #~ msgstr[2] "%(days)d dni pozostało"
+
+#~ msgid "If a word begins with @, it is interpreted as a tag."
+#~ msgstr "Jeśli wyraz zaczyna się @, jest interpretowany jako tag."
+
+#~ msgid "A tag is a simple word that begins with &quot;@&quot;."
+#~ msgstr "Tag to proste słowo które zaczyna się od &quot;@&quot;."
+
+#~ msgid ""
+#~ "Once you've read the above subtask, mark it as Done. If you don't want to do "
+#~ "the task, mark it as dismissed. Done and Dismissed tasks are kept in the "
+#~ "closed tasks pane, hidden by default but you can easily enable it in the "
+#~ "View menu."
+#~ msgstr ""
+#~ "Kiedy już przeczytasz powyższe pod-zadanie, oznacz je jako Wykonane. Jeśli "
+#~ "nie chcesz zajmować się zadaniem, oznacz je jako odrzucone. Wykonane i "
+#~ "Odrzucone zadania są przechowywane w zamkniętym, domyślnie ukrytym panelu "
+#~ "zadań, który możesz aktywować w menu Widok"
+
+#~ msgid ""
+#~ "Tasks and subtasks can be re-organized by drag-n-drop in the tasks list."
+#~ msgstr ""
+#~ "Zadania i pod-zadania mogą być ponownie organizowane przez przeciąganie i "
+#~ "upuszczanie na listę zadań."
+
+#~ msgid ""
+#~ "Some concepts come with subtasks: for example, a subtask's due date can "
+#~ "never be after its parent's due date."
+#~ msgstr ""
+#~ "Niektóre pomysły na pod-zadania: na przykład końcowa data pod-zadania nie "
+#~ "może być późniejsza niż data zakończenia zadania nadrzędnego."
+
+#~ msgid ""
+#~ "If you use tags, you can right click on a tag in the sidebar and choose to "
+#~ "hide tasks assigned to this particular tag in the workview. It's very useful "
+#~ "if you have a tag like &quot;someday&quot; that you use for tasks you would "
+#~ "like to do but are not particularly urgent."
+#~ msgstr ""
+#~ "Jeśli używasz tagów, możesz kliknąć prawym klawiszem na boczny panel i ukryć "
+#~ "zadania przypisane do określonego tagu w widoku zadań. To bardzo przydatne, "
+#~ "jeśli masz tag w stylu &quot;kiedyś&quot;, którego używasz do zadań, które "
+#~ "chcesz zrobić, ale nie są pilne."
+
+#~ msgid ""
+#~ "If you right click on a tag in the sidebar you can also set its color. It "
+#~ "will allow you to have a more colorful list of tasks, if you want it that "
+#~ "way."
+#~ msgstr ""
+#~ "Jeśli klikniesz prawym klawiszem na tag w panelu bocznym możesz ustawić jego "
+#~ "kolor. To pozwoli Ci dodać barw do Twojej listy zadań, jeśli to lubisz."
+
+#~ msgid ""
+#~ "Tags are useful to sort your tasks. In the view menu, you can enable a "
+#~ "sidebar which displays all the tags you are using so you can easily see "
+#~ "tasks assigned to a given tag. There's no limit to the number of tags a task "
+#~ "can have."
+#~ msgstr ""
+#~ "Tagi są przydatne do sortowania Twoich zadań. W menu Widok możesz włączyć "
+#~ "boczny panel wyświetlający wszystkie tagi, których używasz, dzięki czemu "
+#~ "możesz łatwo znaleźć zadania przypisane do konkretnego tagu. Nie ma "
+#~ "ograniczeń co do ilości tagów dla zadania."
+
+#~ msgid ""
+#~ "You can drag-n-drop a tag onto another to create \"subtags\". As an example, "
+#~ "if you drag the tag @to_pay onto the tag @money, every task tagged with "
+#~ "@to_pay will also appear in the view of @money (but the @money tag is not "
+#~ "added to the task)."
+#~ msgstr ""
+#~ "Możesz przeciągać i upuszczać jeden tag na inny, aby stworzyć \"pod-tag\". "
+#~ "Na przykład jeśli przeciągniesz tag @to_pay na tag @money, każde zadanie "
+#~ "oznaczone @to_pay pojawi się także widoku tagu @money (chociaż tag @money "
+#~ "nie jest dodany do zadana)."
+
+#~ msgid ""
+#~ "If you choose to close this current task, subtasks will be automatically "
+#~ "closed too. We indeed consider that, if you achieve a given task, you don't "
+#~ "need to do the subtask anymore."
+#~ msgstr ""
+#~ "Jeśli zdecydujesz się zamknąć aktywna zadanie, pod-zadania zostaną także "
+#~ "zamknięte. Uważamy, że jeśli ukończyłeś określone zadanie, nie musisz "
+#~ "wykonywać pod-zadań."
+
+#~ msgid ""
+#~ "A new tag is only added to the current task. There's no recursion and the "
+#~ "tag is not applied to subtasks. But when you create a new subtask, this "
+#~ "subtask will inherit the tags of its parent as a good primary default (it "
+#~ "will also be the case if you add a tag to a parent just after creating a "
+#~ "subtask). Of course, you can modify at any time the tags of this particular "
+#~ "subtask. It will never be changed by the parent."
+#~ msgstr ""
+#~ "Nowy tag jest dodany tylko do aktualnego zadania. Tagi nie stosują się do "
+#~ "pod-zadań. Jednak kiedy tworzysz nowe pod-zadanie, odziedziczy ono tagi "
+#~ "zadania nadrzędnego, jako podstawowe (będzie tak także w przypadku, gdy "
+#~ "dodasz tag do nadrzędnego zadania zaraz po stworzeniu pod-zadania). "
+#~ "Oczywiście w każdej chwili możesz modyfikować tagi określonego pod-zadania. "
+#~ "Nigdy nie zostaną zmienione przez zadanie nadrzędne."
+
+#~ msgid "Please, report them on our Launchpad page:"
+#~ msgstr "Prosimy o zgłaszanie ich na stronie Launchpad:"
+
+#~ msgid ""
+#~ "Some examples of the current plugins are Syncing with Remember the Milk and "
+#~ "Evolution, Tomboy/Gnote integration and Geolocalized Tasks."
+#~ msgstr ""
+#~ "Przykłady obecnych wtyczek to: synchronizacja z Remember the Milk i "
+#~ "Evolution, integracja z Tomboy/Gnote i zadania Geolokalizowane."
