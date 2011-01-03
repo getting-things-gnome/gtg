@@ -37,7 +37,7 @@
 #
 #   Each id are *strings*
 #   tid are the form "X@Y" where Y is the pid.
-#   For example : 21@2 is the 21th task of the 2nd project
+#   For example : 21@2 is the 21st task of the 2nd project
 #   This way, we are sure that a tid is unique accross multiple projects
 #
 #==============================================================================
@@ -51,7 +51,7 @@ import logging
 import dbus
 
 #our own imports
-from GTG.backends              import BackendFactory
+from GTG.backends       import BackendFactory
 from GTG                import _
 from GTG.core           import CoreConfig
 from GTG.core.datastore import DataStore
@@ -90,7 +90,7 @@ def check_instance(directory, uri_list = []):
                 if uri.startswith("gtg://"):
                     d.open_task_editor(uri[6:])
             raise SystemExit
-            
+
     #write the pid file
     with open(pidfile, "w") as f:
         f.write(`os.getpid()`)
@@ -113,10 +113,10 @@ def main(options=None, args=None):
             manager.main(once_thru=options.boot_test, uri_list = args)
     else:
         manager.main(once_thru=options.boot_test, uri_list = args)
-    core_main_quit(req,ds)
+    core_main_quit(req, ds)
 
 def core_main_init(options = None, args = None):
-    ''' 
+    '''
     Part of the main function prior to the UI initialization.
     '''
     # Debugging subsystem initialization
@@ -131,19 +131,19 @@ def core_main_init(options = None, args = None):
     backends_list = BackendFactory().get_saved_backends_list()
     # Load data store
     ds = DataStore(config)
-    # Register backends 
+    # Register backends
     for backend_dic in backends_list:
         ds.register_backend(backend_dic)
     #save the backends directly to be sure projects.xml is written
     ds.save(quit = False)
-    
+
     # Launch task browser
     req = ds.get_requester()
     return ds, req
 
-def core_main_quit(req,ds):
+def core_main_quit(req, ds):
     '''
-    Last bits of code executed in GTG, after the UI has been shut off. 
+    Last bits of code executed in GTG, after the UI has been shut off.
     Currently, it's just saving everything.
     '''
     # Ideally we should load window geometry configuration from a config

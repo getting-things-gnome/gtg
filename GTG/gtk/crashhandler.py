@@ -55,11 +55,11 @@ import threading
 
 APP_NAME = None
 MESSAGE = _("We're terribly sorry. Could you help us fix the problem by " \
-		  "reporting the crash?")
+          "reporting the crash?")
 USE_APPORT = False
 
 _old_sys_excepthook = None # None means that initialize() has not been called
-						   # yet.
+                           # yet.
 
 dialog = None
 
@@ -81,11 +81,11 @@ def initialize(app_name=None, message=None, use_apport=False):
     """
     global APP_NAME, MESSAGE, USE_APPORT, _gtk_initialized, _old_sys_excepthook
     if app_name:
-    	APP_NAME = _(app_name)
+        APP_NAME = _(app_name)
     if not message is None:
-    	MESSAGE = _(message)
+        MESSAGE = _(message)
     if use_apport:
-    	USE_APPORT = use_apport
+        USE_APPORT = use_apport
     if _gtk_initialized == True and _old_sys_excepthook is None:
         # save sys.excepthook first, as it may not be sys.__excepthook__
         # (for example, it might be Apport's python hook)
@@ -107,12 +107,12 @@ def _replacement_excepthook(type, value, tracebk, thread=None):
     add_apport_button = False
     global USE_APPORT
     if USE_APPORT:
-    	# see if this file is from a properly installed distribution package
+        # see if this file is from a properly installed distribution package
         try:
             from apport.fileutils import likely_packaged
             try:
                 filename = os.path.realpath(os.path.join(os.getcwdu(),
-                	sys.argv[0]))
+                    sys.argv[0]))
             except:
                 filename = os.path.realpath("/proc/%i/exe" % os.getpid())
             if not os.path.isfile(filename) or not os.access(filename, os.X_OK):
@@ -130,7 +130,7 @@ def _replacement_excepthook(type, value, tracebk, thread=None):
             import re
             from apport.packaging_impl import impl as apport_packaging
             newconfiguration = "# temporary apport configuration file " \
-                        	   "by gtkcrashhandler.py\n\n"
+                               "by gtkcrashhandler.py\n\n"
             try:
                 for line in open(apport_packaging.configuration):
                     if re.search('^\s*enabled\s*=\s*0\s*$', line) is None:
@@ -186,7 +186,6 @@ def show_error_window(error_string, add_apport_button=False):
     text_label = gtk.Label()
     text_label.set_markup(MESSAGE)
     text_label.set_alignment(0, 0.5)
-    
     text_label.set_line_wrap(True)
     def text_label_size_allocate(widget, rect):
         """Lets label resize correctly while wrapping text."""
@@ -242,11 +241,11 @@ def show_error_window(error_string, add_apport_button=False):
 
 def on_expanded(widget):
     global dialog
-    dialog.set_size_request(600,600)
+    dialog.set_size_request(600, 600)
 
 
 def gtkcrashhandler_thread(run):
-    """gtkcrashhandler_thread is a decorator for the run() method of 
+    """gtkcrashhandler_thread is a decorator for the run() method of
     threading.Thread.
 
     If you forget to use this decorator, exceptions in threads will be
@@ -273,7 +272,7 @@ def gtkcrashhandler_thread(run):
             if gtk.main_level() > 0:
                 gobject.idle_add(
                     lambda ee=ee, tb=tb, thread=threading.currentThread():
-                    _replacement_excepthook(ee.__class__,ee,tb,thread=thread))
+                    _replacement_excepthook(ee.__class__, ee, tb, thread=thread))
             else:
                 time.sleep(0.1) # ugly hack, seems like threads that are
                                 # started before running gtk.main() cause
@@ -295,9 +294,9 @@ def gtkcrashhandler_thread(run):
 if __name__ == "__main__":
     # throw test exception
     initialize(app_name="gtkcrashhandler", message="Don't worry, though. This "
-    	"is just a test. To use the code properly, call "
-    	"gtkcrashhandler.initialize() in your PyGTK app to automatically catch "
-    	" any Python exceptions like this.")
+        "is just a test. To use the code properly, call "
+        "gtkcrashhandler.initialize() in your PyGTK app to automatically catch "
+        " any Python exceptions like this.")
     class DoNotRunException(Exception):
         def __str__(self):
             return "gtkcrashhandler.py should imported, not run"
@@ -312,7 +311,7 @@ if __name__ == "__main__":
 def signal_catcher(callback):
     #if TERM or ABORT are caught, we execute the callback function
     for s in [signal.SIGABRT, signal.SIGTERM]:
-        signal.signal(s, lambda a,b: callback())
+        signal.signal(s, lambda a, b: callback())
     yield
 
 initialize(app_name = "Getting Things GNOME!",
