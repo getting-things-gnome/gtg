@@ -25,10 +25,10 @@ import os as _os
 import sys as _sys
 
 try:
-    import gnome as _gnome
-    _has_gnome = True
+    import gtk as _gtk
+    _has_gtk = True
 except ImportError:
-    _has_gnome = False
+    _has_gtk = False
 
 def _spawn_executable(close_stdout = False, close_stderr = False, *args):
     pid = _os.fork()
@@ -66,8 +66,8 @@ _has_exo = _test_executable('exo-open')
 def openurl(url):
     if _has_xdg: # freedesktop is the best choice :p
         return _spawn_quiet('xdg-open', url)
-    elif _has_gnome: # shouldn't also check for gnome-open ?
-        return _gnome.url_show(url)
+    elif _has_gtk:
+        return _gtk.show_uri(None, url, _gtk.gdk.CURRENT_TIME)
     elif _has_exo: # for xfce
         return _spawn_quiet('exo-open', url)
     # add your favorite desktop here ;)
