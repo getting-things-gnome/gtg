@@ -18,6 +18,7 @@
 # -----------------------------------------------------------------------------
 import gtk
 import dbus
+import re
 import time
 import os
 from calendar import timegm
@@ -54,23 +55,27 @@ class hamsterPlugin:
         elif self.preferences['activity'] == 'title':
             activity = gtg_title
         # hamster can't handle ',' or '@' in activity name
-        activity = activity.replace(',', '').replace('@', '')
+        activity = activity.replace(',', '')
+        activity = re.sub('\ +@.*', '', activity)
         
         category = ""
         if self.preferences['category'] == 'auto_tag':
             hamster_activities=dict([(unicode(x[0]), unicode(x[1])) for x in self.hamster.GetActivities()])
             if (gtg_title in hamster_activities
                 or gtg_title.replace(",", "") in hamster_activities):
-                    category = "@%s" % hamster_activities[gtg_title]
+                    category = "%s" % hamster_activities[gtg_title]
         
         if (self.preferences['category'] == 'tag' or 
           (self.preferences['category'] == 'auto_tag' and not category)):
             # See if any of the tags match existing categories
-            categories = dict([(unicode(x).lower(), unicode(x)) for x in self.hamster.GetCategories()])
+            categories = dict([(unicode(x[1]).lower(), unicode(x[1])) for x in self.hamster.GetCategories()])
             intersection = set(categories.keys()).intersection(set([x.lower() for x in gtg_tags]))
             if len(intersection) > 0:
-                category = "@%s" % categories[intersection.pop()]
-        
+                category = "%s" % categories[intersection.pop()]
+            else:
+                # Force category if not found
+                category = gtg_tags[0]
+
         description = ""
         if self.preferences['description'] == 'title':
            description = gtg_title
@@ -90,7 +95,7 @@ class hamsterPlugin:
         tag_str = "".join([" #" + x for x in tag_candidates])
             
         #print '%s%s,%s%s'%(activity, category, description, tag_str)
-        hamster_id=self.hamster.AddFact('%s%s,%s%s'%(activity, category, description, tag_str), 0, 0)
+        hamster_id=self.hamster.AddFact(activity, tag_str, 0, 0, category, description)
         
         ids=self.get_hamster_ids(task)
         ids.append(str(hamster_id))
