@@ -393,4 +393,3 @@ class FakeTomboy(dbus.service.Object):
     def _fake_quit(self):
         self.main_loop.quit()
         sys.exit(0)
-

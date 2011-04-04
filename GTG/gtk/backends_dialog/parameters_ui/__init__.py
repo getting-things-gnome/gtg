@@ -17,7 +17,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 '''
-This modules reads a bakcn configuration and generates a series of widgets to
+This module reads a bakcn configuration and generates a series of widgets to
 let the user see the configuration and modify it.
 In this manner, backends do not need to know anything about their UI since it's
 built for them: it should play along the lines of the separation between GTG
@@ -146,4 +146,3 @@ class ParametersUI(gtk.VBox):
         def _commit_changes(child):
             child.commit_changes()
         self.foreach(_commit_changes)
-

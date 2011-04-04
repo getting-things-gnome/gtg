@@ -75,4 +75,3 @@ class TextUI(gtk.HBox):
         '''
         if self.backend.is_enabled() and not self.backend.is_default():
             self.req.set_backend_enabled(self.backend.get_id(), False)
-

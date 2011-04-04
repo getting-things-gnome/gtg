@@ -810,4 +810,3 @@ class FilteredDataStore(Borg):
             return self.datastore.requester.get_all_tags
         else:
             raise AttributeError("No attribute %s" %attr)
-

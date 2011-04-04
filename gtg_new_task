@@ -20,7 +20,7 @@
 # -----------------------------------------------------------------------------
 
 """
-This script create a new task and launch the editor to display it. GTG should be running
+This script creates a new task and launches the editor to display it. GTG should be running
 """
 
 import re
