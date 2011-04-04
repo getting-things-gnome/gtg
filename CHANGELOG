@@ -9,6 +9,7 @@
     * Added utilities for complex backends by Luca Invernizzi
     * Added a window to add/delete/edit backends by Luca Invernizzi
     * New Tomboy/Gnote backend, by Luca Invernizzi
+    * Right click behaviour in the task treeview is now consistant with other GNOME applications, by Jonathan Barnoud
 
 2010-03-01 Getting Things GNOME! 0.2.2
     * Autostart on login, by Luca Invernizzi
