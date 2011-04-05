@@ -11,6 +11,9 @@
     * New Tomboy/Gnote backend, by Luca Invernizzi
     * Right click behaviour in the task treeview is now consistant with other GNOME applications, by Jonathan Barnoud
 
+2011-04-06 Getting Things GNOME! 0.3
+    * Underscore characters in tasks not treated as accelerators (bug #676088) fixed, by Madhumitha Viswanathan
+ 
 2010-03-01 Getting Things GNOME! 0.2.2
     * Autostart on login, by Luca Invernizzi
     * Preferences dialog, by Paul Kishimoto
