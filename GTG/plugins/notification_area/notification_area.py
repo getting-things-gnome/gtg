@@ -188,7 +188,7 @@ class NotificationArea:
         except:
             pass
         #creating the menu item
-        menu_item = gtk.MenuItem(title)
+        menu_item = gtk.MenuItem(title,False)
         menu_item.connect('activate', self.__open_task, tid)
         menu_item.show()
         position = self.__tasks_in_menu.sorted_insert((title, tid, menu_item))
