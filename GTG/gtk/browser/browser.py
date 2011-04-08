@@ -132,6 +132,10 @@ class TaskBrowser(gobject.GObject):
         #Autocompletion for Tags
         self._init_tag_list()
         self._init_tag_completion()
+
+        # Rember values from last time
+        self.last_added_tags = "NewTag"
+        self.last_apply_tags_to_subtasks = False
         
         self.restore_state_from_conf()
 
@@ -1008,9 +1012,9 @@ class TaskBrowser(gobject.GObject):
             # We don't want to reset the text entry and checkbox if we got
             # sent back here after a warning.
             if not tryagain:
-                tag_entry.set_text("NewTag")
-                apply_to_subtasks.set_active(False)
+                tag_entry.set_text(self.last_added_tags)
                 tag_entry.set_completion(self.tag_completion)
+                apply_to_subtasks.set_active(self.last_apply_tags_to_subtasks)
             tag_entry.grab_focus()
             addtag_dialog = self.builder.get_object("addtag_dialog")
             addtag_dialog.run()
@@ -1046,6 +1050,10 @@ class TaskBrowser(gobject.GObject):
             for new_tag in new_tags:
                 task.add_tag(new_tag)
             task.sync()
+
+        # Rember the last actions
+        self.last_added_tags = tag_entry.get_text()
+        self.last_apply_tags_to_subtasks = apply_to_subtasks.get_active()
       
     def on_tag_entry_key_press_event(self, widget, event):
         if gtk.gdk.keyval_name(event.keyval) == "Return":
