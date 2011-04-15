@@ -45,11 +45,11 @@ msgstr "Neue Aufgabe"
 
 #: GTG/taskeditor/__init__.py:35
 msgid "Mark this task as done"
-msgstr "Als erledigt markieren"
+msgstr "Erledigt"
 
 #: GTG/taskeditor/__init__.py:36 GTG/taskeditor/__init__.py:38
 msgid "Mark this task as to be done"
-msgstr "Als unerledigt markieren"
+msgstr "Unerledigt"
 
 #: GTG/taskeditor/__init__.py:37
 msgid "Mark this task as not to be done anymore"
@@ -93,7 +93,7 @@ msgstr "Später"
 
 #: GTG/taskeditor/taskeditor.glade.h:9
 msgid "Mark Done"
-msgstr "Als erledigt markieren"
+msgstr "Erledigt"
 
 #: GTG/taskeditor/taskeditor.glade.h:10
 msgid "Now"
