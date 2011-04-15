@@ -19,7 +19,7 @@
 
 
 """
-Backends are a way to store permanently a project on a medium
+Backends are a way to permanently store a project on a medium
 (like on the hard disk or on the internet)
 and to read projects from this medium
 """
