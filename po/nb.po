@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2010-03-27 15:20+0100\n"
-"PO-Revision-Date: 2010-04-19 08:14+0000\n"
-"Last-Translator: Terje Andre Arnøy <Unknown>\n"
+"PO-Revision-Date: 2011-04-30 14:37+0000\n"
+"Last-Translator: Runar Ingebrigtsen <runar@rin.no>\n"
 "Language-Team: Norwegian Bokmal <nb@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2010-04-20 03:34+0000\n"
-"X-Generator: Launchpad (build Unknown)\n"
+"X-Launchpad-Export-Date: 2011-05-01 04:57+0000\n"
+"X-Generator: Launchpad (build 12758)\n"
 
 #: GTG/tools/dates.py:51
 msgid "Today"
@@ -26,8 +26,8 @@ msgstr "I dag"
 #, python-format
 msgid "Yesterday"
 msgid_plural "%(days)d days ago"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "I går"
+msgstr[1] "%(days)d dager siden"
 
 #: GTG/tools/dates.py:57
 #, python-format
@@ -78,11 +78,11 @@ msgstr "søndag"
 
 #: GTG/tools/dates.py:183
 msgid "today"
-msgstr "idag"
+msgstr "i dag"
 
 #: GTG/tools/dates.py:184
 msgid "tomorrow"
-msgstr "imorgen"
+msgstr "i morgen"
 
 #: GTG/tools/dates.py:185
 msgid "next week"
@@ -128,15 +128,15 @@ msgstr "_ignorer problemet"
 #, python-format
 msgid "Completed %(days)d day late"
 msgid_plural "Completed %(days)d days late"
-msgstr[0] "avsluttet %(days)d dag på overtid"
-msgstr[1] "avsluttet %(days)d dager på overtid"
+msgstr[0] "Fullført %(days)d dag på overtid"
+msgstr[1] "Fullført %(days)d dager på overtid"
 
 #: GTG/taskeditor/editor.py:324
 #, python-format
 msgid "Completed %(days)d day early"
 msgid_plural "Completed %(days)d days early"
-msgstr[0] "avsluttet %(days)d dag før fristen"
-msgstr[1] "avsluttet %(days)d dager før fristen"
+msgstr[0] "Fullført %(days)d dag i forkant"
+msgstr[1] "Fullført %(days)d dager i forkant"
 
 #: GTG/taskeditor/editor.py:330
 #, python-format
@@ -158,7 +158,7 @@ msgstr[1] ""
 
 #: GTG/taskeditor/taskeditor.glade.h:1
 msgid "Closed on"
-msgstr "Lukket på"
+msgstr "Lukket den"
 
 #: GTG/taskeditor/taskeditor.glade.h:2 GTG/taskbrowser/taskbrowser.glade.h:13
 msgid "Delete"
@@ -171,7 +171,7 @@ msgstr "Avvis"
 
 #: GTG/taskeditor/taskeditor.glade.h:4
 msgid "Due for"
-msgstr "Må gjøres for"
+msgstr "Forfallsdato"
 
 #: GTG/taskeditor/taskeditor.glade.h:5
 msgid "Insert subtask"
@@ -187,7 +187,7 @@ msgstr "Senere"
 
 #: GTG/taskeditor/taskeditor.glade.h:8
 msgid "Mark Done"
-msgstr "Merk som Utført"
+msgstr "Merk som utført"
 
 #: GTG/taskeditor/taskeditor.glade.h:9
 msgid "Now"
@@ -199,7 +199,7 @@ msgstr "Snart"
 
 #: GTG/taskeditor/taskeditor.glade.h:11
 msgid "Starting on"
-msgstr "Starter på"
+msgstr "Startdato"
 
 #: GTG/taskeditor/taskeditor.glade.h:12
 msgid "Task"
@@ -227,15 +227,15 @@ msgstr "Lag et gjøremål"
 
 #: GTG/taskeditor/__init__.py:38
 msgid "Mark this task as done"
-msgstr "Merk at dette gjøremålet er utført"
+msgstr "Merk dette gjøremålet som utført"
 
 #: GTG/taskeditor/__init__.py:39 GTG/taskeditor/__init__.py:41
 msgid "Mark this task as to be done"
-msgstr ""
+msgstr "Merk dette gjøremålet som ikke utført"
 
 #: GTG/taskeditor/__init__.py:40
 msgid "Mark this task as not to be done anymore"
-msgstr ""
+msgstr "Merk dette gjøremålet som ikke relevant/utdatert"
 
 #: GTG/taskeditor/__init__.py:42
 msgid "Permanently remove this task"
@@ -255,7 +255,8 @@ msgid ""
 "Getting Things Gnome! is an organizer for the GNOME desktop environment."
 msgstr ""
 "\n"
-"Gjøremål Til Gnome! er et organiseringsverkøy for skrivebordsmiljøet GNOME."
+"Getting Things Gnome! (GTG) er et gjøremålsverktøy for skrivebordsmiljøet "
+"GNOME."
 
 #: GTG/taskbrowser/taskbrowser.glade.h:3
 msgid "About GTG!"
@@ -271,15 +272,15 @@ msgstr "Legg til etikett..."
 
 #: GTG/taskbrowser/taskbrowser.glade.h:6
 msgid "Add a Tag..."
-msgstr "Legg till en etikett..."
+msgstr "Legg til en etikett..."
 
 #: GTG/taskbrowser/taskbrowser.glade.h:7
 msgid "Add a subtask"
-msgstr "Legg til et delmål"
+msgstr "Legg til delmål"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:8
 msgid "Apply to subtasks"
-msgstr ""
+msgstr "Gjør gjeldende for delmål"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:9
 msgid "Cancel"
@@ -287,7 +288,7 @@ msgstr "Avbryt"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:10
 msgid "Copyrights&#xA9; 2008, 2009 Lionel Dricot, Bertrand Rousseau"
-msgstr "Opphavsrett (C) 2008-2009 Lionel Dricot, Bertrand Rousseau"
+msgstr "Opphavsrett &#xA9; 2008, 2009 Lionel Dricot, Bertrand Rousseau"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:11 GTG/taskbrowser/__init__.py:46
 msgid "Create a new task"
@@ -303,7 +304,7 @@ msgstr "Rediger"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:16
 msgid "Enter the name of the tag(s) you wish to add:"
-msgstr ""
+msgstr "Skriv inn navnene på etiketten(e) du vil bruke"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:17
 msgid "GTG website"
@@ -311,7 +312,7 @@ msgstr "GTG nettsted"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:18
 msgid "Getting Things Gnome!"
-msgstr "Gjøremål Til GNOME"
+msgstr "Getting Things Gnome!"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:19
 msgid ""
@@ -329,14 +330,27 @@ msgid ""
 "Getting Things Gnome!; if not, write to the Free Software Foundation, Inc., "
 "51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA."
 msgstr ""
+"Getting Things Gnome! er fri programvare. Du kan distribuere den og/eller "
+"endre den i tråd med GNU General Public License, som utgitt av Free Software "
+"Foundation; enten versjon 3 av lisensen, eller (etter eget "
+"forgodtbefinnende) en hvilken som helst senere utgave.\n"
+"\n"
+"Getting Things Gnome! blir distribuert med et håp om å være nyttig, men UTEN "
+"NOEN GARANTI; uten selv den impliserte garantien for SALGBARHET eller "
+"EGNETHET TIL ET BESTEMT FORMÅL. Se GNU General Public Licence for flere "
+"detaljer.\n"
+"\n"
+"Du skal ha mottatt en kopi av GNU General Public Licence sammen med Getting "
+"Things Gnome!; hvis ikke, skriv til Free Software Foundation, Inc., 51 "
+"Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA."
 
 #: GTG/taskbrowser/taskbrowser.glade.h:24
 msgid ""
 "Hint: you can add several tags by separating them with\n"
 "commas."
 msgstr ""
-"Hint: du kan legge til flere etiketter ved å separere disse ved bruk av\n"
-"komma"
+"Hint: Du kan legge til flere etiketter ved å skille dem med\n"
+"komma."
 
 #: GTG/taskbrowser/taskbrowser.glade.h:26
 msgid "Mark as Done"
@@ -348,7 +362,7 @@ msgstr "Merk som ikke utført"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:28
 msgid "Mark as _Done"
-msgstr "_Merk som utført"
+msgstr "Merk som _utført"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:29
 msgid "New Subtask"
@@ -356,11 +370,11 @@ msgstr "Nytt delmål"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:30
 msgid "New Task"
-msgstr "Nytt Gjøremål"
+msgstr "Nytt gjøremål"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:31
 msgid "New _Subtask"
-msgstr "Nytt _del gjøremål"
+msgstr "Nytt _delmål"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:32
 msgid "New _Task"
@@ -368,11 +382,11 @@ msgstr "Nytt _gjøremål"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:33
 msgid "Redo"
-msgstr "Gjenopprett"
+msgstr "Gjenta"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:34
 msgid "Reset Color"
-msgstr "Gjenopprett farger"
+msgstr "Gjenopprett farge"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:35
 msgid "T_oolbar"
@@ -384,7 +398,7 @@ msgstr "Etiketten vises i arbeidsoversikten"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:37
 msgid "TagName"
-msgstr "Etikett Navn"
+msgstr "EtikettNavn"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:38 GTG/taskbrowser/tagtree.py:352
 #: GTG/taskbrowser/tasktree.py:330 GTG/taskbrowser/tasktree.py:482
@@ -405,15 +419,15 @@ msgstr "Arbeidsoversikt"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:42
 msgid "_Background Colors"
-msgstr "_Bakgrunnsfarge"
+msgstr "_Bakgrunnsfarger"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:43
 msgid "_Closed Tasks Pane"
-msgstr "Avsluttede _Gjøremål"
+msgstr "_Felt For Lukkede Oppgaver"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:44
 msgid "_Edit"
-msgstr "R_ediger"
+msgstr "_Endre"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:45
 msgid "_Help"
@@ -425,23 +439,23 @@ msgstr "_Programtillegg"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:47
 msgid "_Quick Add Entry"
-msgstr ""
+msgstr "Legg til Oppføring hurtig"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:48
 msgid "_Schedule for..."
-msgstr ""
+msgstr "_Tidfest til..."
 
 #: GTG/taskbrowser/taskbrowser.glade.h:49
 msgid "_Tags Sidebar"
-msgstr "_Etikett vindu"
+msgstr "Sidevindu for Etiketter"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:50
 msgid "_Tasks"
-msgstr "_Gjøremål"
+msgstr "_Oppgaver"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:51
 msgid "_View"
-msgstr "_Visning"
+msgstr "_Vis"
 
 #: GTG/taskbrowser/taskbrowser.glade.h:52
 msgid "_Work View"
@@ -469,42 +483,42 @@ msgstr "i _dag"
 
 #: GTG/taskbrowser/__init__.py:37
 msgid "Mark the selected task as done"
-msgstr "Merk valgte gjøremål som utført"
+msgstr "Merk valgt oppgave som ferdig"
 
 #: GTG/taskbrowser/__init__.py:39 GTG/taskbrowser/__init__.py:43
 msgid "Mark the selected task as to be done"
-msgstr "Valgte gjøremål skal utføres"
+msgstr "Merk valgt oppgave som gjøremål"
 
 #: GTG/taskbrowser/__init__.py:41
 msgid "Mark the task as not to be done anymore"
-msgstr "Valgte gjøremål skal ikke utføres lengre"
+msgstr "Merk oppgaven som forlatt"
 
 #: GTG/taskbrowser/__init__.py:44
 msgid "Permanently remove the selected task"
-msgstr "Fjern valgte gjøremål permanent"
+msgstr "Fjern valgt oppgave permanent"
 
 #: GTG/taskbrowser/__init__.py:45
 msgid "Edit the selected task"
-msgstr "Rediger valgte gjøremål"
+msgstr "Rediger valgt oppgave"
 
 #: GTG/taskbrowser/__init__.py:47
 msgid "Create a new subtask"
-msgstr "Opprett nytt delmål"
+msgstr "Opprett ny deloppgave"
 
 #: GTG/taskbrowser/__init__.py:48
 msgid "Display only the currently actionable tasks"
-msgstr "Vis kun påbegynte gjøremål"
+msgstr "Vis kun oppgaver som er tilgjengelige nå"
 
 #: GTG/taskbrowser/browser.py:570
 msgid "no active tasks"
-msgstr "ingen aktive gjøremål"
+msgstr "Ingen aktive oppgaver"
 
 #: GTG/taskbrowser/browser.py:572
 #, python-format
 msgid "%(tasks)d active task"
 msgid_plural "%(tasks)d active tasks"
-msgstr[0] "%(tasks)d aktive gjøremål"
-msgstr[1] "%(tasks)d aktive gjøremål"
+msgstr[0] "%(tasks)d aktiv oppgave"
+msgstr[1] "%(tasks)d aktive oppgaver"
 
 #: GTG/taskbrowser/browser.py:955
 msgid "tags"
@@ -516,11 +530,11 @@ msgstr "etikett"
 
 #: GTG/taskbrowser/browser.py:961
 msgid "defer"
-msgstr "Utsett"
+msgstr "utsett"
 
 #: GTG/taskbrowser/browser.py:966
 msgid "due"
-msgstr ""
+msgstr "forfaller"
 
 #: GTG/taskbrowser/tasktree.py:345 GTG/taskbrowser/tasktree.py:506
 msgid "Title"
@@ -528,11 +542,11 @@ msgstr "Tittel"
 
 #: GTG/taskbrowser/tasktree.py:359
 msgid "Start date"
-msgstr "Start dato"
+msgstr "Startdato"
 
 #: GTG/taskbrowser/tasktree.py:371
 msgid "Due"
-msgstr ""
+msgstr "Forfaller"
 
 #: GTG/taskbrowser/tasktree.py:494
 msgid "Closing date"
@@ -540,7 +554,7 @@ msgstr "Avslutningsdato"
 
 #: GTG/gtg.py:86
 msgid "gtg is already running!"
-msgstr "GTG kjører allerede!"
+msgstr "gtg kjører allerede!"
 
 #: GTG/gtg.py:110
 msgid ""
@@ -551,15 +565,15 @@ msgstr ""
 
 #: GTG/core/task.py:53
 msgid "My new task"
-msgstr "Mitt nye gjøremål"
+msgstr "Min nye oppgave"
 
 #: GTG/core/tagstore.py:52
 msgid "All tasks"
-msgstr "Alle gjøremål"
+msgstr "Alle oppgaver"
 
 #: GTG/core/tagstore.py:59
 msgid "Tasks with no tags"
-msgstr "Gjøremål uten etiketter"
+msgstr "Oppgaver uten etiketter"
 
 #: GTG/core/firstrun_tasks.py:8
 msgid "Getting started with GTG"
@@ -659,7 +673,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:66
 msgid "Learn how to use the Workview"
-msgstr "Lær å bruke Arbeidsliste"
+msgstr "Lær å bruke Arbeidslisten"
 
 #: GTG/core/firstrun_tasks.py:67
 msgid ""
@@ -684,7 +698,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:82
 msgid "Learn how to use Plugins"
-msgstr ""
+msgstr "Lær å bruke programtillegg"
 
 #: GTG/core/firstrun_tasks.py:83
 msgid ""
@@ -698,7 +712,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:92
 msgid "Reporting bugs"
-msgstr ""
+msgstr "Rapportering av problemer"
 
 #: GTG/core/firstrun_tasks.py:93
 msgid ""
@@ -717,7 +731,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:106
 msgid "Learn how to use the QuickAdd Entry"
-msgstr ""
+msgstr "Lær å bruke Legg til oppføring hurtig"
 
 #: GTG/core/firstrun_tasks.py:107
 msgid ""
@@ -746,6 +760,7 @@ msgstr ""
 #: GTG/core/plugins/__init__.py:32
 msgid "Everything necessary to run this plugin is available."
 msgstr ""
+"Alt som er tilgjenbgelig for å kjøre dette programtillegget er tilgjengelig."
 
 #: GTG/core/plugins/__init__.py:33
 msgid "The plugin can not be loaded"
@@ -761,7 +776,7 @@ msgstr "Vennligst installer følgende python moduler:"
 
 #: GTG/core/plugins/__init__.py:37
 msgid "Some remote dbus objects are missing."
-msgstr ""
+msgstr "Noen ekstrene dbus-objekter mangler."
 
 #: GTG/core/plugins/__init__.py:38
 msgid "Please start the following applications:"
@@ -769,57 +784,60 @@ msgstr "Vennligst start følgende programmer:"
 
 #: GTG/core/plugins/__init__.py:40
 msgid "Some modules and remote dbus objects are missing."
-msgstr ""
+msgstr "Noen moduler eller eksterne dbus-objekter mangler."
 
 #: GTG/core/plugins/__init__.py:41
 msgid "Please install or start the following components:"
-msgstr ""
+msgstr "Vennligst installer følgende komponenter:"
 
 #: GTG/core/plugins/__init__.py:43
 msgid "Unknown error while loading the plugin."
-msgstr ""
+msgstr "Ukjent feil under lasting av programtillegget."
 
 #: GTG/core/plugins/__init__.py:44
 msgid "Very helpful message, isn't it? Please report a bug."
-msgstr ""
+msgstr "Veldig nyttig melding, ikke sant? Vennligst repporter et problem."
 
 #: GTG/viewmanager/delete_dialog.py:58
 msgid ""
 "Deleting a task cannot be undone, and will delete the following task: "
 msgstr ""
+"Sletting av en oppgave kan ikke oppheves, og vil slette følgende oppgaver: "
 
 #: GTG/viewmanager/delete_dialog.py:59
 msgid "Are you sure you want to delete this task?"
-msgstr "Er du sikker på at du vil slette dette gjøremålet?"
+msgstr "Er du sikker på at du vil slette denne oppgaven?"
 
 #: GTG/viewmanager/delete_dialog.py:60
 msgid "Keep selected task"
-msgstr "Behold valgte gjøremål"
+msgstr "Behold valgt oppgave"
 
 #: GTG/viewmanager/delete_dialog.py:61
 msgid "Permanently remove task"
-msgstr ""
+msgstr "Fjern oppgave permanent"
 
 #: GTG/viewmanager/delete_dialog.py:63
 msgid ""
 "Deleting a task cannot be undone, and will delete the following tasks: "
 msgstr ""
+"Sletting av en oppgave kan ikke oppheves, og vil slette de følgende "
+"oppgavene: "
 
 #: GTG/viewmanager/delete_dialog.py:64
 msgid "Are you sure you want to delete these tasks?"
-msgstr "Er du sikker på at du vil slette disse gjøremålene?"
+msgstr "Er du sikker på at du vil slette disse oppgavene?"
 
 #: GTG/viewmanager/delete_dialog.py:65
 msgid "Keep selected tasks"
-msgstr "Behold valgte gjøremål"
+msgstr "Behold valgte oppgaver"
 
 #: GTG/viewmanager/delete_dialog.py:66
 msgid "Permanently remove tasks"
-msgstr ""
+msgstr "Fjern oppgaver permanent"
 
 #: GTG/viewmanager/preferences.glade.h:1
 msgid "<b>Dependencies</b>"
-msgstr ""
+msgstr "<b>Avhengighetsforhold</b>"
 
 #: GTG/viewmanager/preferences.glade.h:2
 msgid "<b>General</b>"
@@ -847,7 +865,7 @@ msgstr "Sjekk staving"
 
 #: GTG/viewmanager/preferences.glade.h:8
 msgid "Getting Things GNOME! Preferences"
-msgstr ""
+msgstr "GTG instillinger"
 
 #: GTG/viewmanager/preferences.glade.h:9
 msgid "Hide closed tasks older than"
@@ -855,7 +873,7 @@ msgstr "Gjøm avsluttede gjøremål eldre enn"
 
 #: GTG/viewmanager/preferences.glade.h:10
 msgid "Plugins"
-msgstr "Tillegg"
+msgstr "Programtillegg"
 
 #: GTG/viewmanager/preferences.glade.h:11
 msgid "Show task text preview"
@@ -863,7 +881,7 @@ msgstr ""
 
 #: GTG/viewmanager/preferences.glade.h:12
 msgid "Start Getting Things GNOME! on every login"
-msgstr "Start Gjøremål Til GNOME! ved hver innlogging"
+msgstr "Start Getting Things GNOME! ved hver innlogging"
 
 #: GTG/viewmanager/preferences.glade.h:13
 msgid "Storage"
@@ -890,6 +908,8 @@ msgid ""
 "Tomboy/Gnote not found. Please install it or disable the Tomboy/Gnote plugin "
 "in GTG"
 msgstr ""
+"Tomboy/Gnote ikke funnet. Vennligst installer det eller skru av Tomboy/Gnote-"
+"programtillegget i GTG."
 
 #: GTG/plugins/tomboy/tomboy.py:126
 msgid "Add Tomboy note"
@@ -900,6 +920,8 @@ msgid ""
 " was found on the system, but it doesn't provide a dbus interface. the "
 "Tomboy/Gnote plugin will not work with it."
 msgstr ""
+" ble funnet på systemet, men den tilbyr ikke et dbus-grensesnitt. "
+"Tomboy/Gnote-programtillegget kan ikke jobbe med det."
 
 #: GTG/plugins/tomboy/tomboy.py:241
 msgid "That note does not exist!"
@@ -919,15 +941,15 @@ msgstr "_Vis Hovedvindu"
 
 #: GTG/plugins/notification_area/notification_area.py:217
 msgid "Add _New Task"
-msgstr "Legg til _Nytt Gjøremål"
+msgstr "Legg til _Ny Oppgave"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:1
 msgid "<b>Location Determination Method</b>"
-msgstr ""
+msgstr "<b>Stedsbestemmelsesmetode</b>"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:2
 msgid "<b>Proximity Factor</b>"
-msgstr ""
+msgstr "<b>Nærhetsfaktor</b>"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:3
 msgid ""
@@ -947,15 +969,15 @@ msgstr "Sett på ny etikett"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:7
 msgid "Geolocalized-tasks Preferences"
-msgstr ""
+msgstr "Geolocalized-tasks Innstillinger"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:8
 msgid "Set the task's location"
-msgstr "Sett sted for gjøremål"
+msgstr "Angi sted for oppgave"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:9
 msgid "Use cellphone"
-msgstr "bruk mobiltelefon"
+msgstr "Bruk mobiltelefon"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:10
 msgid "Use gps"
@@ -967,7 +989,7 @@ msgstr "Bruk nettverk"
 
 #: GTG/plugins/export/export.py:302
 msgid "Template not found"
-msgstr "Kan ikke finne mal"
+msgstr "Mal ikke funet"
 
 #: GTG/plugins/export/export.py:303
 msgid "Can't load the template file"
@@ -979,19 +1001,19 @@ msgstr "Velg sted å lagre listen din"
 
 #: GTG/plugins/hamster/hamster.py:40
 msgid "Start task in Hamster"
-msgstr ""
+msgstr "Start prat i Hamster"
 
 #: GTG/plugins/hamster/hamster.py:156
 msgid "Start in Hamster"
-msgstr ""
+msgstr "Start i Hamster"
 
 #: GTG/plugins/hamster/hamster.py:158
 msgid "Start a new activity in Hamster Time"
-msgstr ""
+msgstr "Start en ny aktivitet i Hamster"
 
 #: GTG/plugins/hamster/hamster.py:174
 msgid "Start a new activity in Hamster Time "
-msgstr ""
+msgstr "Start en ny aktivitet i Hamster Time "
 
 #: GTG/plugins/rtm_sync/pyrtm/rtm.py:59
 msgid "Invalid state"
@@ -1015,7 +1037,7 @@ msgstr "Kunne ikke koble seg til Remember The Milk"
 
 #: GTG/plugins/rtm_sync/rtm_sync.py:187
 msgid "Authentication failed."
-msgstr ""
+msgstr "Autentisering mislyktes."
 
 #: GTG/plugins/rtm_sync/rtm_sync.py:187
 msgid "Please retry."
@@ -1026,14 +1048,16 @@ msgid ""
 "Please authenticate to Remember The Milk in the browser that is being opened "
 "now. When done, press OK"
 msgstr ""
+"Vennligst bekreft til Remember the Milk i oversikten som åpnes nå. Deretter, "
+"trykk OK."
 
 #: GTG/plugins/rtm_sync/rtmProxy.py:165
 msgid "saving critical object failed"
-msgstr "Lagring kritiske objekter sviktet"
+msgstr "Lagring av kritiske objekter mislyktes"
 
 #: GTG/plugins/rtm_sync/syncEngine.py:83
 msgid "Downloading task list..."
-msgstr "Laster ned liste over gjøremål"
+msgstr "Laster ned oppgaveliste"
 
 #: GTG/plugins/rtm_sync/syncEngine.py:84
 msgid "Downloading..."
@@ -1041,23 +1065,23 @@ msgstr "Laster ned..."
 
 #: GTG/plugins/rtm_sync/syncEngine.py:119
 msgid "Adding tasks to rtm.."
-msgstr "Legger til gjøremål til RTM"
+msgstr "Legger oppgaver til RTM"
 
 #: GTG/plugins/rtm_sync/syncEngine.py:129
 msgid "Adding tasks to gtg.."
-msgstr "Legger til gjøremål i gtg"
+msgstr "Legger til oppgaver i GTG"
 
 #: GTG/plugins/rtm_sync/syncEngine.py:139
 msgid "Deleting tasks from rtm.."
-msgstr "Sletter gjøremål fra RTM"
+msgstr "Sletter oppgaver fra RTM"
 
 #: GTG/plugins/rtm_sync/syncEngine.py:150
 msgid "Deleting tasks from gtg.."
-msgstr "Sletter gjøremål fra GTG"
+msgstr "Sletter oppgaver fra GTG"
 
 #: GTG/plugins/rtm_sync/syncEngine.py:160
 msgid "Updating changed tasks.."
-msgstr "Oppdaterer endrede gjøremål.."
+msgstr "Oppdaterer endrede oppgaver.."
 
 #: GTG/plugins/rtm_sync/syncEngine.py:185
 #: GTG/plugins/rtm_sync/syncEngine.py:190
@@ -1089,6 +1113,42 @@ msgstr "Lukkes om et øyeblikk"
 #~ msgid "New Note"
 #~ msgstr "Nytt notat"
 
+#~ msgid "Days left"
+#~ msgstr "Dager igjen"
+
+#~ msgid "Due date"
+#~ msgstr "Forfallsdato"
+
+#~ msgid "Analyzing tasks..."
+#~ msgstr "Undersøker gjøremål..."
+
+#~ msgid "Updating remaining tasks.."
+#~ msgstr "Oppdaterer gjenværende gjøremål..."
+
+#~ msgid "Running first synchronization..."
+#~ msgstr "kjører første synkronisering..."
+
+#~ msgid "Analyzing last sync..."
+#~ msgstr "Sjekker siste synkronisering..."
+
+#~ msgid "Hello World"
+#~ msgstr "Hallo Verden"
+
+#~ msgid ""
+#~ "Tomboy not found. Please install it or disable the Tomboy plugin in GTG"
+#~ msgstr ""
+#~ "Fant ikke Tomboy. Installer programmet eller slå av Tomboy programtillegget "
+#~ "i GTG."
+
+#~ msgid "Description:"
+#~ msgstr "Beskrivelse:"
+
+#~ msgid "Version: "
+#~ msgstr "Versjon: "
+
+#~ msgid "Authors:  "
+#~ msgstr "Forfattere:  "
+
 #~ msgid ""
 #~ "In GTG, everything is a task. From building a bridge over the Pacific Ocean "
 #~ "to changing a light bulb or organizing a party. When you edit a task, it is "
@@ -1101,9 +1161,6 @@ msgstr "Lukkes om et øyeblikk"
 #, python-format
 #~ msgid "%s days left"
 #~ msgstr "%s dager igjen"
-
-#~ msgid "View Notes"
-#~ msgstr "Vis Notater"
 
 #~ msgid ""
 #~ "Once you've read the above subtask, mark it as Done. If you don't want to do "
@@ -1153,41 +1210,15 @@ msgstr "Lukkes om et øyeblikk"
 #~ "Hvis man har utført et gjøremål, så trenger man ikke delmålene."
 
 #~ msgid ""
-#~ "In the task description (this window), if you begin a line with &quot;-"
-#~ "&quot;, it will be considered as a &quot;subtask&quot;, something that needs "
-#~ "to be done in order to accomplish your task. Just try to write &quot;- test "
-#~ "subtask&quot; on the next line and press enter."
-#~ msgstr ""
-#~ "I beskrivelsen av gjøremålet (dette vinduet) kan du begynne en linje med "
-#~ "&quot;-&quot;. Denne linjen vil da bli tolket som et &quot;delmål&quot;, og "
-#~ "er noe som du må fullføre før du kan fullføre gjøremålet. Prøv å skriv "
-#~ "&quot;- delmåls test&quot; på den neste linjen og trykk Enter-knappen."
-
-#~ msgid ""
 #~ "Tasks and subtasks can be re-organized by drag-n-drop in the tasks list."
 #~ msgstr ""
 #~ "Gjøremål og delmål kan omorganiseres ved at de flyttes i listen over gjøremål"
 
-#~ msgid ""
-#~ "Some concepts come with subtasks: for example, a subtask's due date can "
-#~ "never be after its parent's due date."
-#~ msgstr ""
-#~ "Delmål begrenses av enkelte ting: for eksempel, et delmål kan ikke ha en "
-#~ "forfallsdato etter gjøremålet det tilhører."
-
-#~ msgid "A tag is a simple word that begins with &quot;@&quot;."
-#~ msgstr "En etikett er et enkelt ord som begynner med en &quot;@&quot;."
-
 #~ msgid "You can also use the &quot;insert subtask&quot; button."
 #~ msgstr "Du kan også bruke &quot;Sett inn delmål&quot;-knappen"
 
-#~ msgid "Also, marking a parent as done will mark all the subtasks as done."
-#~ msgstr ""
-#~ "Hvis du merker et gjøremål som utført, så merkes alle delmålene også som "
-#~ "utført."
-
-#~ msgid "Try to type a word beginning with @ here:"
-#~ msgstr "Prøv å skriv inn et ord som begynner med en @ her:"
+#~ msgid "<span weight=\"bold\">Starting on</span>"
+#~ msgstr "Starter den"
 
 #~ msgid "1 active task"
 #~ msgstr "1 aktivt gjøremål"
@@ -1201,17 +1232,243 @@ msgstr "Lukkes om et øyeblikk"
 #~ "Velkommen til Gjøremål Til Gnome!, ditt nye verktøy for å organisere dine "
 #~ "gjøremål."
 
+#~ msgid "<b>No Plugin Selected</b>"
+#~ msgstr "<b>Ingen programtillegg er valgt</b>"
+
+#~ msgid "Synchronization failed."
+#~ msgstr "Synkronisering sviktet."
+
+#~ msgid "Plugin Manager"
+#~ msgstr "Tilleggsbehandler"
+
+#, python-format
+#~ msgid "%(days)d day left"
+#~ msgid_plural "%(days)d days left"
+#~ msgstr[0] "%(days)d dag gjenstår"
+#~ msgstr[1] "%(days)d dager gjenstår"
+
+#, python-format
+#~ msgid "Was %(days)d day ago"
+#~ msgid_plural "Was %(days)d days ago"
+#~ msgstr[0] "Var %(days)d dag siden"
+#~ msgstr[1] "Var %(days)d dager siden"
+
+#~ msgid ""
+#~ "In the task description (this window), if you begin a line with &quot;-"
+#~ "&quot;, it will be considered as a &quot;subtask&quot;, something that needs "
+#~ "to be done in order to accomplish your task. Just try to write &quot;- test "
+#~ "subtask&quot; on the next line and press enter."
+#~ msgstr ""
+#~ "I oppgavebeskrivelsen (dette vinduet) kan du begynne en linje med &quot;-"
+#~ "&quot;. Denne linjen vil da bli tolket som en &quot;deloppgave&quot;, og er "
+#~ "noe du må fullføre før du kan fullføre oppgaven. Bare p røv å skriv &quot;-"
+#~ "test deloppgave&quot; på den neste linjen og trykk enter."
+
+#~ msgid ""
+#~ "Some concepts come with subtasks: for example, a subtask's due date can "
+#~ "never be after its parent's due date."
+#~ msgstr ""
+#~ "Noen konsepter følger deloppgaver: for eksempel, en deloppgave kan ikke ha "
+#~ "en senere forfallsdato enn oppgaven den tilhører"
+
+#~ msgid "A tag is a simple word that begins with &quot;@&quot;."
+#~ msgstr "En etikett er et enkelt ord som begynner med &quot;@&quot;."
+
+#~ msgid ""
+#~ "If you right click on a tag in the sidebar you can also set its color. It "
+#~ "will allow you to have a more colorful list of tasks, if you want it that "
+#~ "way."
+#~ msgstr ""
+#~ "Hvis du høyreklikker på en etikett i sidevinduet, kan du justere dens farge. "
+#~ "Det mulliggjør en mer fargerik oppgaveliste for de som ønsker det."
+
+#~ msgid ""
+#~ "Tags are useful to sort your tasks. In the view menu, you can enable a "
+#~ "sidebar which displays all the tags you are using so you can easily see "
+#~ "tasks assigned to a given tag. There's no limit to the number of tags a task "
+#~ "can have."
+#~ msgstr ""
+#~ "Etiketter er nyttige for å sortere oppgavene dine. I Vis-menyen kan du skru "
+#~ "på et sidevindu som viser alle etikettene du bruker så du enkelt kan se "
+#~ "oppgavene som bærer en gitt etikett. Det er ingen grense for antall "
+#~ "etiketter en oppgave kan ha."
+
+#~ msgid ""
+#~ "You can drag-n-drop a tag onto another to create \"subtags\". As an example, "
+#~ "if you drag the tag @to_pay onto the tag @money, every task tagged with "
+#~ "@to_pay will also appear in the view of @money (but the @money tag is not "
+#~ "added to the task)."
+#~ msgstr ""
+#~ "Du kan slepe og slippe en etikett på en annen for å lage underetiketter. Som "
+#~ "et eksempel, hvis du slipper etiketten @betal_til på etiketten @penger, vil "
+#~ "oppgaver med @betal_til etiketten også dukke opp i visningen av @penger-"
+#~ "etiketten (uten at @penger-etiketten legges til oppgaven)."
+
 #~ msgid "It becomes yellow, it's a tag."
-#~ msgstr "Teksten farges gul, som indikerer at det er en etikett."
+#~ msgstr "Den blir gul, som betyr at det er en etikett."
+
+#~ msgid "Try to type a word beginning with @ here:"
+#~ msgstr "Prøv å skriv inn et ord som begynner med @ her:"
+
+#~ msgid "Also, marking a parent as done will mark all the subtasks as done."
+#~ msgstr ""
+#~ "Videre, merking av en 'forelder' som ferdig, vil merke alle deloppgavene som "
+#~ "ferdige."
 
 #~ msgid ""
 #~ "If you press the &quot;Workview&quot; button, only actionable tasks will be "
 #~ "displayed."
 #~ msgstr ""
-#~ "Hvis du trykker på &quot;Arbeidsliste&quot;, vil bare åpne gjøremål vises."
+#~ "Hvis du trykker på &quot;Arbeidsliste&quot;, vil bare gjeldene oppgaver "
+#~ "vises."
 
 #~ msgid ""
 #~ "What is an actionable task? It's a task you can do directly, right now."
 #~ msgstr ""
-#~ "Hva er et åpent gjøremål? Det er de som du kan og skal gjennomføre nå, der "
-#~ "startdatoen er passert."
+#~ "Hva er en gjeldene oppgave? Det er en oppgave du kan ta fatt på umiddelbart."
+
+#~ msgid ""
+#~ "It's a task that is already &quot;start-able&quot;, i.e. the start date is "
+#~ "already over."
+#~ msgstr ""
+#~ "Det er en oppgave som er &quot;påbegynnbar&quote;, d.v.s. at startdatoen er "
+#~ "passert."
+
+#~ msgid ""
+#~ "It's a task that doesn't have open subtasks, i.e. you can do the task itself "
+#~ "directly."
+#~ msgstr ""
+#~ "Det er en oppgave som ikke har aktuelle deloppgaver, d.v.s. at du kan gjøre "
+#~ "selve oppgaven direkte."
+
+#~ msgid "Thus, the workview will only show you tasks you should do right now."
+#~ msgstr ""
+#~ "Derfor vil arbeidslisten bare vise oppgaver du burde gjøre umiddelbart."
+
+#~ msgid ""
+#~ "A new tag is only added to the current task. There's no recursion and the "
+#~ "tag is not applied to subtasks. But when you create a new subtask, this "
+#~ "subtask will inherit the tags of its parent as a good primary default (it "
+#~ "will also be the case if you add a tag to a parent just after creating a "
+#~ "subtask). Of course, you can modify at any time the tags of this particular "
+#~ "subtask. It will never be changed by the parent."
+#~ msgstr ""
+#~ "En ny etikett blir bare lagt til den gjeldene oppgaven. Det er ingen "
+#~ "tilbakevirkning og etiketten fester seg ikke til deloppgaver. Men når du "
+#~ "lager en ny deloppgave vil den arve etikettene fra sin 'forelder' som en god "
+#~ "første standard (Dette gjelder også hvis du legger til en etikett til en "
+#~ "'forelder'-oppgave kort etter å ha laget en deloppgave. Selvfølgelig kan du "
+#~ "når som helst modifisere den bestemte deloppgaven. Den vil aldri bli endret "
+#~ "av sin 'forelder'."
+
+#~ msgid ""
+#~ "If you use tags, you can right click on a tag in the sidebar and choose to "
+#~ "hide tasks assigned to this particular tag in the workview. It's very useful "
+#~ "if you have a tag like &quot;someday&quot; that you use for tasks you would "
+#~ "like to do but are not particularly urgent."
+#~ msgstr ""
+#~ "Hvis du bruker etiketter, kan du høyreklikke på en etikett i sidevinduet og "
+#~ "skjulte oppgaver med denne bestemte etiketten i arbeidslisten. Det er veldig "
+#~ "nyttig hvis du har en etikett som f.eks. @en_vakker_dag som du bruker på "
+#~ "oppgaver du vil gjøre, men som ikke haster noe særlig."
+
+#~ msgid "GTG has the ability to add plugins to extend it's core functionality."
+#~ msgstr ""
+#~ "GTG har mulighet til å tillegges programtillegg for å utvide "
+#~ "kjernefunksjonaliteten."
+
+#~ msgid ""
+#~ "GTG is still very alpha software. We like it and use it everyday but you "
+#~ "will encounter some bugs."
+#~ msgstr ""
+#~ "GTG er veldig alpha-programvare. Vi liker den og og bruker den hvær dag, men "
+#~ "du kommer til å støte på noen problemer."
+
+#~ msgid ""
+#~ "We need you to make this software better. Any contribution, any idea is "
+#~ "welcome."
+#~ msgstr ""
+#~ "Vi trenger deg for å utbedre denne programvaren. Hvilket som helst bidrag og "
+#~ "hvilken som helst ide er velkommen."
+
+#~ msgid ""
+#~ "For adding a task you just have to type its title in the entry and press "
+#~ "return. The task will be created and selected in the task browser. If a tag "
+#~ "is selected in the tag panel, this tag is applied to the task you create."
+#~ msgstr ""
+#~ "For å legge til en oppgave må du bare skrive inn dens tittel i oppføringen "
+#~ "og trykke enter. Oppgaven vil lages og velges i oppgavesøket. Hvis en "
+#~ "etikett er valgt i etikettpanelet, vil denne etiketten klistres på oppgaven "
+#~ "du lager."
+
+#~ msgid ""
+#~ "The quickadd entry is the quickest way to create a new task. You can show or "
+#~ "hide it in the View menu."
+#~ msgstr ""
+#~ "Å legge til oppføring hurtig er den raskeste måten å lage en ny oppgave på. "
+#~ "Du kan vise eller skjule den i Vis-menyen."
+
+#~ msgid ""
+#~ "If you have some trouble with GTG, we might be able to help you or to solve "
+#~ "your problem really quickly."
+#~ msgstr ""
+#~ "Om du har problemer med GTG, kan vi kanskje hjelpe deg eller løse problemet "
+#~ "veldig hurtig."
+
+#~ msgid "Please, report them on our Launchpad page:"
+#~ msgstr "Vennligst, rapporter dem på vår Launchpadside:"
+
+#~ msgid ""
+#~ "Some examples of the current plugins are Syncing with Remember the Milk and "
+#~ "Evolution, Tomboy/Gnote integration and Geolocalized Tasks."
+#~ msgstr ""
+#~ "Noen eksempler på gjeldene programtillegg er synkronisering med Remember the "
+#~ "Milk og Evolution, Tomboy/Gnote interering og Geolocalized Tasks."
+
+#~ msgid ""
+#~ "due:date or defer:date : This way you can apply a due date or a defer date. "
+#~ "date can be yyyy-mm-dd (for exemple 2009-04-01) or yyyymmdd (20090401) or "
+#~ "mmdd (0401, in this case the year is implicitly the current one) or today or "
+#~ "tomorrow or a weekday name (due:monday means due next Monday)"
+#~ msgstr ""
+#~ "forfall:dato eller utsett:dato : På denne måten kan du legge til en "
+#~ "forfallsdato eller en utsettelsesdato. Datoen kan være åååå-mm-dd (for "
+#~ "eksempel 2009-04-01) eller åååmmdd (20090401) eller mmdd (0401 når året "
+#~ "implisitt er det gjeldene) eller i dag eller i morgen eller navnet på en "
+#~ "ukedag (forfall:mandag betyr at oppgaven forfaller neste mandag)."
+
+#~ msgid ""
+#~ "tags:tag1,tag2,tag3 : This way you can apply as many tags as you wish using "
+#~ "comma as separator"
+#~ msgstr ""
+#~ "etiketter:etikett1,etikett2, etikett3 : På den måten kan du legge til så "
+#~ "mange etiketter som du ønsker ved å skille dem med komma."
+
+#~ msgid "If a word begins with @, it is interpreted as a tag."
+#~ msgstr "Om et ord begynner med @, blir det tolket som en etikett."
+
+#~ msgid ""
+#~ "Attributes which are added in this way apply but do not appear in the title."
+#~ msgstr "Attributter som legges til på denne måten vises ikke i tittelen."
+
+#~ msgid "For that the syntax is :"
+#~ msgstr "For det er syntaksen:"
+
+#~ msgid ""
+#~ "You can also create a task with attributes like tags, due date or defer date "
+#~ "in the quickadd entry."
+#~ msgstr ""
+#~ "Du kan også lage en oppgave med attributter som etiketter, forfallsdato "
+#~ "eller utsettelsesdato gjennom Legg til oppføring hurtig."
+
+#~ msgid "Due tomorrow !"
+#~ msgstr "Løper ut i morgen!"
+
+#~ msgid "Due yesterday"
+#~ msgstr "Utløpt siden i går"
+
+#~ msgid "Due today !"
+#~ msgstr "Løper ut i dag!"
+
+#~ msgid "View Notes"
+#~ msgstr "Vis notater"
