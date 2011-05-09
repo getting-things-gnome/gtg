@@ -57,7 +57,7 @@ class DataStore(object):
     '''
 
 
-    def __init__(self,global_conf):
+    def __init__(self,global_conf=CoreConfig()):
         '''
         Initializes a DataStore object
         '''
