@@ -25,6 +25,7 @@ import gobject
 from GTG.core.tagstore   import Tag
 from GTG.core.task import Task
 from GTG.core.datastore import DataStore
+from GTG.core           import CoreConfig
 
 from GTG.tests.signals_testing import SignalCatcher, GobjectSignalsManager
 
@@ -35,7 +36,7 @@ class TestTag(unittest.TestCase):
 
     
     def setUp(self):
-        ds = DataStore()
+        ds = DataStore(CoreConfig())
         self.req = ds.get_requester()
         #initalize gobject signaling system
         self.gobject_signal_manager = GobjectSignalsManager()
