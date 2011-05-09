@@ -20,14 +20,11 @@
 """Tests for the tagstore."""
 
 import unittest
-import gobject
 
 from GTG.core.tagstore   import Tag
-from GTG.core.task import Task
 from GTG.core.datastore import DataStore
-from GTG.core           import CoreConfig
 
-from GTG.tests.signals_testing import SignalCatcher, GobjectSignalsManager
+from GTG.tests.signals_testing import GobjectSignalsManager
 
 
 
@@ -36,7 +33,7 @@ class TestTag(unittest.TestCase):
 
     
     def setUp(self):
-        ds = DataStore(CoreConfig())
+        ds = DataStore()
         self.req = ds.get_requester()
         #initalize gobject signaling system
         self.gobject_signal_manager = GobjectSignalsManager()
