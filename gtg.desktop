@@ -1,13 +1,20 @@
 [Desktop Entry]
 Version=1.0
 Name=Getting Things GNOME!
-Icon=gtg
+# KDE 4 uses GenericName
+GenericName=Getting Things GNOME!
+# Gnome and KDE 3 use Comment
 Comment=Personal organizer for the GNOME desktop environment
 Comment[pl]=Osobisty organizer dla środowiska GNOME
+Icon=gtg
 Exec=/usr/bin/gtg %F
 Terminal=false
 Type=Application
 Categories=GNOME;GTK;Office;
 StartupNotify=true
-Name[en_US]=Getting Things GNOME!
-Name[pl]=Getting Things GNOME!
+X-Ayatana-Desktop-Shortcuts=NewTask
+
+[NewTask Shortcut Group]
+Name=New Task
+Exec=gtg_new_task
+TargetEnvironment=Unity
