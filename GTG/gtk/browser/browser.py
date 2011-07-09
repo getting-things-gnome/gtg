@@ -46,6 +46,7 @@ from GTG.tools.dates             import no_date,\
                                         get_canonical_date
 from GTG.tools.logger            import Log
 from GTG.tools.tags              import extract_tags_from_text
+from GTG.core.search             import Search
 #from GTG.tools                   import clipboard
 
 
@@ -132,7 +133,13 @@ class TaskBrowser(gobject.GObject):
         #Autocompletion for Tags
         self._init_tag_list()
         self._init_tag_completion()
-
+        
+        #structure to show save history on the combobox
+        self.searchliststore = gtk.ListStore(gobject.TYPE_STRING)
+        self.quickadd_entry.set_model(self.searchliststore)
+        #this should be adjustable in preferences
+        self.maxHistory = 5
+        
         # Rember values from last time
         self.last_added_tags = "NewTag"
         self.last_apply_tags_to_subtasks = False
@@ -197,6 +204,7 @@ class TaskBrowser(gobject.GObject):
         self.main_notebook      = self.builder.get_object("main_notebook")
         self.accessory_notebook = self.builder.get_object("accessory_notebook")
         self.vbox_toolbars      = self.builder.get_object("vbox_toolbars")
+        self.search_label_error = self.builder.get_object("search_label_error")
         
         self.closed_pane        = None
 
@@ -292,9 +300,11 @@ class TaskBrowser(gobject.GObject):
             "on_bg_color_toggled":
                 self.on_bg_color_toggled,
             "on_quickadd_field_activate":
-                self.on_quickadd_activate,
+                self.on_quicksearch_activate,
             "on_quickadd_button_activate":
                 self.on_quickadd_activate,
+            "on_quicksearch_button_activate":
+                self.on_quicksearch_activate,
             "on_view_quickadd_toggled":
                 self.on_toggle_quickadd,
             "on_view_toolbar_toggled":
@@ -366,6 +376,10 @@ class TaskBrowser(gobject.GObject):
         self._add_accelerator_for_widget(agr, "delete_mi",      "Cancel")
         self._add_accelerator_for_widget(agr, "tcm_addtag",     "<Control>t")
         self._add_accelerator_for_widget(agr, "view_closed",    "<Control>F9")
+        #self._add_accelerator_for_widget(agr, "view_search",    "<Control>f")
+        
+        #key, mod    = gtk.accelerator_parse("<Control>f")
+        #self.builder.get_object("MainWindow").add_accelerator("search", agr, key, mod, gtk.ACCEL_VISIBLE)
 
         edit_button = self.builder.get_object("edit_b")
         key, mod    = gtk.accelerator_parse("<Control>e")
@@ -779,7 +793,7 @@ class TaskBrowser(gobject.GObject):
             colt.append(str(tid))
 
     def on_quickadd_activate(self, widget):
-        text = unicode(self.quickadd_entry.get_text())
+        text = unicode(self.get_combobox_text())
         due_date = no_date
         defer_date = no_date
         if text:
@@ -817,7 +831,7 @@ class TaskBrowser(gobject.GObject):
             self.__last_quick_added_tid = task.get_id()
             self.__last_quick_added_tid_event.set()
             task.set_complex_title(text,tags=tags)
-            self.quickadd_entry.set_text('')
+            self.set_combobox_text(self.quickadd_entry,'')
 
             #signal the event for the plugins to catch
             gobject.idle_add(self.emit, "task-added-via-quick-add",
@@ -828,7 +842,6 @@ class TaskBrowser(gobject.GObject):
             for nid in nids:
                 self.vmanager.open_task(nid)
             
-
     def on_tag_treeview_button_press_event(self, treeview, event):
         Log.debug("Received button event #%d at %d,%d" %(event.button, event.x, event.y))
         if event.button == 3:
@@ -1440,3 +1453,112 @@ class TaskBrowser(gobject.GObject):
         infobar = CustomInfoBar(self.req, self, self.vmanager, backend_id)
         self.vbox_toolbars.pack_start(infobar, True)
         return infobar
+    
+    
+###############################################################################
+# SEARCH RELATED STUFF
+###############################################################################
+
+    def get_active_text(self,combobox):
+        """
+        gets the active text from the text combobox search text
+        """
+        model = combobox.get_model()
+        active = combobox.get_active()
+        if active < 0:
+            return None
+        return model[active][0]
+
+    def get_combobox_text(self):
+        """
+        get the text from the entry of the combobox
+        """
+        entry = self.quickadd_entry.get_child()
+        return entry.get_text()
+    
+    def set_combobox_text(self, text):
+        """
+        set the text from the entry of the combobox
+        """
+        entry = self.quickadd_entry.get_child()
+        entry.set_text(text)
+        
+    def add_item_to_box (self, text, clean=True):
+        """
+        Add an item to the combox
+        
+        if clean is not set or true it also erases the value of the combox text
+        """
+        #clean the text
+        self.set_combobox_text('')
+        item = self.searchliststore.get_iter_first ()
+        i = 0
+        #iterate all the values
+        while ( item != None ):
+            #doesn't add if the search is already in history
+            if (text == self.searchliststore.get_value (item, 0)):
+                #if the ocorrence is in the first value, does nothing
+                if i==0:
+                    return
+                else:
+                    #remove the duplicate and advance to insert at the begin
+                    self.searchliststore.remove(item)
+                    break
+            #trim results to max history size
+            if i==self.maxHistory-1:
+                self.searchliststore.remove(item)
+                break
+            #next menu item
+            item = self.searchliststore.iter_next(item)
+            i+= 1
+        self.searchliststore.prepend([text])
+        self.quickadd_entry.set_text_column(0)
+        
+    def set_model_from_list (self, items):
+        """
+        Populate a ComboBox or ComboBoxEntry based on a list of strings.
+        
+        Useful when reloading gtg for filling past history
+        """
+        self.searchliststore = gtk.ListStore(str)
+        for i in items:
+            self.searchliststore.prepend([i])
+        self.quickadd_entry.set_model(self.searchliststore)
+        if type(self.quickadd_entry) == gtk.ComboBoxEntry:
+            cb.set_text_column(0)
+        elif type(self.quickadd_entry) == gtk.ComboBox:
+            cell = gtk.CellRendererText()
+            self.quickadd_entry.pack_start(cell, True)
+            self.quickadd_entry.add_attribute(cell, 'text', 0)
+            
+    def on_quicksearch_activate(self, widget):
+        '''
+        deals with a search based on the text input in the quickadd_entry
+        still in debug
+        '''
+        self.search_label_error.hide()
+        text = unicode(self.get_combobox_text())
+        #if there is text, construct a new search
+        if text:
+            s = Search(text, self.req)
+            #s.test()
+            self.activetree = s.returnSearchTree()
+            s.buildSearchTokens()
+            #if the search is not valid
+            if not s.isValid():
+                #set the error message and paint it red
+                #BUG the label area doeent resize after it hides
+                self.search_label_error.set_text(s.returnError())
+                self.search_label_error.show()
+            else:
+                "if its a valid search, put it on the search history"
+                self.add_item_to_box(text)
+                return
+        #if no text is given, open the search builder
+        else:
+            search_dialog = self.builder.get_object("search_dialog")
+            search_dialog.run()
+            search_dialog.hide()
+            #nids = self.vtree_panes['active'].get_selected_nodes()
+            #for nid in nids:
+            #    self.vmanager.open_task(nid)

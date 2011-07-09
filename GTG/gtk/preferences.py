@@ -118,6 +118,7 @@ class PreferencesDialog:
           'plugin_config_dialog': 'PluginConfigDialog',
           'pref_autostart': 'pref_autostart',
           'pref_show_preview': 'pref_show_preview'
+        
           }
         for attr, widget in widgets.iteritems():
             setattr(self, attr, self.builder.get_object(widget))
