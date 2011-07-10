@@ -139,6 +139,7 @@ class TaskBrowser(gobject.GObject):
         self.quickadd_entry.set_model(self.searchliststore)
         #this should be adjustable in preferences
         self.maxHistory = 5
+        self.s = None
         
         # Rember values from last time
         self.last_added_tags = "NewTag"
@@ -323,6 +324,10 @@ class TaskBrowser(gobject.GObject):
                 self.open_preferences,
             "on_edit_backends_activate":
                 self.open_edit_backends,
+            "normalView_clicked_cb":
+                self.normalView_clicked_cb,
+            "allview_clicked_cb":
+                self.allview_clicked_cb,
         }
         self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
 
@@ -1520,6 +1525,7 @@ class TaskBrowser(gobject.GObject):
         
         Useful when reloading gtg for filling past history
         """
+        tags = self.get_all_tags()
         self.searchliststore = gtk.ListStore(str)
         for i in items:
             self.searchliststore.prepend([i])
@@ -1537,12 +1543,12 @@ class TaskBrowser(gobject.GObject):
         still in debug
         '''
         self.search_label_error.hide()
-        text = unicode(self.get_combobox_text())
+        tags = self.get_all_tags()
+        text = self.get_combobox_text()
         #if there is text, construct a new search
         if text:
-            s = Search(text, self.req)
-            #s.test()
-            self.activetree = s.returnSearchTree()
+            s = Search(text, self.req, self.activetree, tags)
+            s.removeFilters()
             s.buildSearchTokens()
             #if the search is not valid
             if not s.isValid():
@@ -1551,7 +1557,7 @@ class TaskBrowser(gobject.GObject):
                 self.search_label_error.set_text(s.returnError())
                 self.search_label_error.show()
             else:
-                "if its a valid search, put it on the search history"
+                #if its a valid search, put it on the search history
                 self.add_item_to_box(text)
                 return
         #if no text is given, open the search builder
@@ -1562,3 +1568,26 @@ class TaskBrowser(gobject.GObject):
             #nids = self.vtree_panes['active'].get_selected_nodes()
             #for nid in nids:
             #    self.vmanager.open_task(nid)
+            
+            
+    def normalView_clicked_cb(self,widget):
+        if not self.s:
+            self.s = Search('', self.req, self.activetree, self.get_all_tags())
+        self.s.resetToActiveTree()
+        
+    def allview_clicked_cb(self,widget):
+        if not self.s:
+            self.s = Search('', self.req, self.activetree, self.get_all_tags())
+        self.s.removeFilters()
+    
+    def get_all_tags(self):
+        """
+        Gets all tags from all tasks
+        """
+        temptree = self.req.get_all_tag_tree()
+        temptree.reset_filters()
+        #self.tag_list_model = gtk.ListStore(gobject.TYPE_STRING)
+        tags = temptree.get_all_nodes()
+        return tags
+        #for i in self.tag_list:
+            #self.tag_list_model.append([i[1:]])

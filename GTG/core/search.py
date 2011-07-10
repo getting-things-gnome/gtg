@@ -68,9 +68,14 @@ class Search:
     literalNotation = '"'
     
     
-    def __init__(self, text, requester):
+    def __init__(self, text, requester, tree, tags):
         '''
         initialize the search object
+        parameter:
+         - text of the query
+         - requester
+         - task tree view
+         - tag tree view
         '''
         self.title = ("My new search")
         self.text = text
@@ -81,6 +86,9 @@ class Search:
         self.joinTokens = self.joinKeywords.split(' ')
         self.stateTokens = self.stateKeywords.split(' ')
         self.temporalTokens = self.temporalKeywords.split(' ')
+        self.tree = tree
+        self.oldFilters =[]
+        self.alltags = tags
         
     def buildSearchTokens(self):
         '''
@@ -95,10 +103,10 @@ class Search:
             self.valid = False
             self.error += self.ERROR_QUOTATIONMARK
             return
-        #find literal searches
-        #this should be always first as literal searches (deligned by "") can
-        #be used when a user wants to search for a reserved search word o a task text
-        match = re.findall(r'(?P<command>(?<=!)\S+\s?)|(?P<tag>(?<=@)\S+\s?)|(?P<task>(?<=#)\S+\s?)|(?P<literal>".+?")|(?P<word>(?![!"#@])\S+\s?)', self.text)
+        #separate in groups with diferent meanings
+        #MISSING
+        # - diferente date formats"
+        match = re.findall(r'(?P<command>(?<=!)\S+\s?)|(?P<tag>@\S+\s?)|(?P<task>(?<=#)\S+\s?)|(?P<date>[01][0-2][/\.-]?[0-3][0-9][/\.-]\d{4})|(?P<literal>".+?")|(?P<word>(?![!"#@])\S+\s?)', self.text)
         #self.printMatches(match)
         #analise the sets
         #sets are given in a list of sub,lists
@@ -119,15 +127,24 @@ class Search:
                         return
                 #if its a tag
                 elif word == 1:
-                    print("tag: "+str(sets[word]))
+                    #if (x in sets[word] for x in self.alltags):
+                    if(sum(map(lambda x: x in sets[word], self.alltags))):
+                        continue
+                    else:
+                        self.error = self.ERROR_TAG + sets[word]
+                        self.valid = False
+                        return
                 #if its a task
                 elif word == 2:
                     print("task: "+str(sets[word]))
-                #if its a literal
+                #if its a date
                 elif word == 3:
+                    print("date: "+str(sets[word]))
+                #if its a literal
+                elif word == 4:
                     print("literal: "+str(sets[word]))
                 #if its a word
-                elif word == 4:
+                elif word == 5:
                     print("word: "+str(sets[word]))
         self.valid = True
         return
@@ -144,8 +161,21 @@ class Search:
         '''
         return self.error
     
-    def returnSearchTree(self):
-        return self.req.get_main_view()
+    def removeFilters(self):
+        """
+        Removes all the filters from the tree
+        """
+        self.oldFilters = self.tree.list_applied_filters()
+        print(self.tree.list_applied_filters())
+        self.tree.reset_filters() 
+        print(self.tree.list_applied_filters())
+        
+    def resetToActiveTree(self):
+        """
+        re-aplyes the original filters
+        """
+        for x in self.oldFilters:
+            self.tree.apply_filter(x)
 
     def __str__(self):
         '''
@@ -159,9 +189,6 @@ class Search:
 # DEGUB STUFF
 ###############################################################################
     def test(self):
-        print (self.req.list_filters())
-        print (self.req.get_tag_tree())
-        self.req.remove_filter('no_disabled_tag')
         print (self.req.list_filters())
 
     def printMatches(self, match):

@@ -159,6 +159,12 @@ class Requester(gobject.GObject):
 
     def get_tag_tree(self):
         return self.ds.get_tagstore().get_viewtree(name='activetags')
+    
+    def get_all_tag_tree(self):
+        """
+        creates a diferent tree for searches to use
+        """
+        return self.ds.get_tagstore().get_viewtree(name='searchAll')
 
     def new_tag(self, tagname):
         """Create a new tag called 'tagname'.

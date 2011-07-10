@@ -426,6 +426,30 @@
                     <property name="homogeneous">True</property>
                   </packing>
                 </child>
+                <child>
+                  <object class="GtkToolButton" id="allview">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">Delete</property>
+                    <property name="icon_name">dialog-apply</property>
+                    <signal name="clicked" handler="allview_clicked_cb"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="homogeneous">True</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkToolButton" id="normalView">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">Delete</property>
+                    <property name="icon_name">dialog-no</property>
+                    <signal name="clicked" handler="normalView_clicked_cb"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="homogeneous">True</property>
+                  </packing>
+                </child>
               </object>
               <packing>
                 <property name="expand">False</property>
