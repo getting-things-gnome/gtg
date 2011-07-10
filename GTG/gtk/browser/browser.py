@@ -1571,11 +1571,21 @@ class TaskBrowser(gobject.GObject):
             
             
     def normalView_clicked_cb(self,widget):
+        """
+        helper button
+        
+        Shows active tasks
+        """
         if not self.s:
             self.s = Search('', self.req, self.activetree, self.get_all_tags())
         self.s.resetToActiveTree()
         
     def allview_clicked_cb(self,widget):
+        """
+        helper button
+        
+        Shows all tasks
+        """
         if not self.s:
             self.s = Search('', self.req, self.activetree, self.get_all_tags())
         self.s.removeFilters()
@@ -1586,8 +1596,5 @@ class TaskBrowser(gobject.GObject):
         """
         temptree = self.req.get_all_tag_tree()
         temptree.reset_filters()
-        #self.tag_list_model = gtk.ListStore(gobject.TYPE_STRING)
         tags = temptree.get_all_nodes()
         return tags
-        #for i in self.tag_list:
-            #self.tag_list_model.append([i[1:]])

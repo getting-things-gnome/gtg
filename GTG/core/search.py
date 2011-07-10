@@ -165,11 +165,23 @@ class Search:
         """
         Removes all the filters from the tree
         """
+        print(self.get_all_tasks_title())
         self.oldFilters = self.tree.list_applied_filters()
-        print(self.tree.list_applied_filters())
-        self.tree.reset_filters() 
-        print(self.tree.list_applied_filters())
-        
+        #print(self.tree.list_applied_filters())
+        self.tree.reset_filters()
+        print(self.get_all_tasks_title())
+        #print(self.tree.list_applied_filters())
+    
+    def get_all_tasks_title(self):
+        """
+        Gets the titles from all tasks
+        """
+        titles = []
+        nodes = self.tree.get_all_nodes()
+        for x in nodes:
+            titles.append(self.tree.get_node(x).get_title())
+        return titles
+    
     def resetToActiveTree(self):
         """
         re-aplyes the original filters
