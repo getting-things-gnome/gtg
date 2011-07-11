@@ -22,6 +22,7 @@ import re
 import GTG
 from GTG.core.datastore import DataStore
 from GTG                import _, info, ngettext
+from bzrlib.urlutils import join
 '''
 search.py - contains all search related definitions and operations
 '''
@@ -36,30 +37,51 @@ class Search:
     ERROR_GENERIC = _("Error in search: ")
     ERROR_QUOTATIONMARK = _("Bad use of quotation marks")
     ERROR_COMMAND = _("Invalid use of commands")
-    ERROR_NOTACOMMAND = _("is not a command word.")
+    ERROR_NOTACOMMAND = _(" is not a command word.")
     ERROR_TAG = _("No tag named ")
-    ERROR_TASK = _("No task named named")
-    
+    ERROR_TASK = _("No task named ")
     
     #usable join keyWords
-    joinKeywords = _("and AND + " +
-                      "or OR | " +
-                      "not NOT -")
+    andKeyword = _("and +")
+    orKeyword = _("or |")
+    notKeyword = _("not -")
     
     #usable task state keyWords
-    stateKeywords = _("active ACTIVE " +
-                      "dismissed DISMISSED " +
-                      "done DONE")
+    activeKeywords = _("active")
+    dismissedKeyword = _("dismissed")
+    doneKeyword = _("done")
     
     #usable temporal keywords
-    temporalKeywords = _("before BEFORE " +
-                        "after AFTER " +
-                        "past PAST " +
-                        "future FUTURE " +
-                        "today TODAY " +
-                        "tomorrow TOMORROW " +
-                        "nextmonth NEXTMONTH " +
-                        "nodate NODATE ")
+    beforeKeywords = _("before")
+    afterKeywords = _("after")
+    pastKeywords = _("past")
+    futureKeywords = _("future")
+    todayKeywords = _("today")
+    tommorrowKeywords = _("tomorrow")
+    nextmonthKeywords = _("nextmonth")
+    nodateKeywords = _("nodate")
+    
+    #keywords for translations
+    #translate this to add the original english and an additional language to all keywords
+    #usable join keyWords
+    andKeywordTranslation = _("")
+    orKeywordTranslation = _("")
+    notKeywordTranslation = _("")
+    
+    #usable task state keyWords
+    activeKeywordsTranslation = _("")
+    dismissedKeywordTranslation = _("")
+    doneKeywordTranslation = _("")
+    
+    #usable temporal keywords
+    beforeKeywordsTranslation = _("")
+    afterKeywordsTranslation = _("")
+    pastKeywordsTranslation = _("")
+    futureKeywordsTranslation = _("")
+    todayKeywordsTranslation = _("")
+    tommorrowKeywordsTranslation = _("")
+    nextmonthKeywordsTranslation = _("")
+    nodateKeywordsTranslation = _("")
     
     #caracter notations for diferent restrictions
     taskNotation = '#'
@@ -83,12 +105,42 @@ class Search:
         self.valid = False
         self.req = requester
         #separate keywords in lists
-        self.joinTokens = self.joinKeywords.split(' ')
-        self.stateTokens = self.stateKeywords.split(' ')
-        self.temporalTokens = self.temporalKeywords.split(' ')
+        self.dicKeyword = self.initKeywords()
         self.tree = tree
         self.oldFilters =[]
+        #get all tags
         self.alltags = tags
+        #gets the titles of tasks
+        self.allTaskTitles = self.get_all_tasks_title();
+        
+    def initKeywords(self):
+        """
+        gets all keywords, including translations and puts it in lists
+        """
+        dic = {}
+        #join Keywords including translations
+        dic["and"] = self.andKeyword.split(' ') + self.mysplit(self.andKeywordTranslation, ' ')
+        dic["or"] = self.orKeyword.split(' ') + self.mysplit(self.orKeywordTranslation, ' ')
+        dic["not"] = self.notKeyword.split(' ') + self.mysplit(self.notKeywordTranslation, ' ')
+        dic["join"] = dic.get("and")+dic.get("or")+dic.get("not")
+        #state keywords
+        dic["active"] = self.activeKeywords.split(' ') + self.mysplit(self.activeKeywordsTranslation, ' ')
+        dic["dismissed"] = self.dismissedKeyword.split(' ') + self.mysplit(self.dismissedKeywordTranslation, ' ')
+        dic["done"] = self.doneKeyword.split(' ') + self.mysplit(self.doneKeywordTranslation, ' ')
+        dic["state"] = dic.get("active") + dic.get("dismissed") + dic.get("done")
+        #temporal keywords
+        dic["before"]    = self.beforeKeywords.split(' ') + self.mysplit(self.beforeKeywordsTranslation, ' ')
+        dic["after"]     = self.afterKeywords.split(' ') + self.mysplit(self.afterKeywordsTranslation, ' ')
+        dic["past"]      = self.pastKeywords.split(' ') + self.mysplit(self.pastKeywordsTranslation, ' ')
+        dic["future"]    = self.futureKeywords.split(' ') + self.mysplit(self.futureKeywordsTranslation, ' ')
+        dic["today"]     = self.todayKeywords.split(' ') + self.mysplit(self.todayKeywordsTranslation, ' ')
+        dic["tommorrow"] = self.tommorrowKeywords.split(' ') + self.mysplit(self.tommorrowKeywordsTranslation, ' ')
+        dic["nextmonth"] = self.nextmonthKeywords.split(' ') + self.mysplit(self.nextmonthKeywordsTranslation, ' ')
+        dic["nodate"]    = self.nodateKeywords.split(' ') + self.mysplit(self.nodateKeywordsTranslation, ' ')
+        dic["temporal"] = dic.get("before") + dic.get("after") + dic.get("past") + \
+            dic.get("future") + dic.get("today") + dic.get("tommorrow") + \
+            dic.get("nextmonth") + dic.get("nodate")
+        return dic
         
     def buildSearchTokens(self):
         '''
@@ -98,6 +150,7 @@ class Search:
         #reset error message
         self.error = ""
         tempTokens = {}
+        commands = self.dicKeyword["join"]+self.dicKeyword["temporal"] + self.dicKeyword["state"]
         #if the number of " is not pair, the search query is considered invalid
         if (self.text.count('"') % 2) != 0:
             self.valid = False
@@ -107,7 +160,6 @@ class Search:
         #MISSING
         # - diferente date formats"
         match = re.findall(r'(?P<command>(?<=!)\S+\s?)|(?P<tag>@\S+\s?)|(?P<task>(?<=#)\S+\s?)|(?P<date>[01][0-2][/\.-]?[0-3][0-9][/\.-]\d{4})|(?P<literal>".+?")|(?P<word>(?![!"#@])\S+\s?)', self.text)
-        #self.printMatches(match)
         #analise the sets
         #sets are given in a list of sub,lists
         #each main list will have a sublist with one of 5 possible positions with text
@@ -119,16 +171,16 @@ class Search:
                 #if its a command
                 elif word == 0:
                     #if its not a valid command word, set error and return
-                    if (sets[word] not in self.joinKeywords and
-                        sets[word] not in self.stateKeywords and 
-                        sets[word] not in self.temporalKeywords):
+                    if(sum(map(lambda x: x.lower() in sets[word].lower(), commands))):
+                        continue
+                    else:
                         self.error = self.commandNotation + sets[word] + self.ERROR_NOTACOMMAND
                         self.valid = False
                         return
                 #if its a tag
                 elif word == 1:
-                    #if (x in sets[word] for x in self.alltags):
-                    if(sum(map(lambda x: x in sets[word], self.alltags))):
+                    #Ignore case of words
+                    if(sum(map(lambda x: x.lower() in sets[word].lower(), self.alltags))):
                         continue
                     else:
                         self.error = self.ERROR_TAG + sets[word]
@@ -136,7 +188,13 @@ class Search:
                         return
                 #if its a task
                 elif word == 2:
-                    print("task: "+str(sets[word]))
+                    #Ignore case of words
+                    if(sum(map(lambda x: x.lower() in sets[word].lower(), self.allTaskTitles))):
+                        continue
+                    else:
+                        self.error = self.ERROR_TAG + sets[word]
+                        self.valid = False
+                        return
                 #if its a date
                 elif word == 3:
                     print("date: "+str(sets[word]))
@@ -188,7 +246,10 @@ class Search:
         """
         for x in self.oldFilters:
             self.tree.apply_filter(x)
-
+            
+    def mysplit(self, s, delim=None):
+        return [x for x in s.split(delim) if x]
+       
     def __str__(self):
         '''
         String representation of the search object
