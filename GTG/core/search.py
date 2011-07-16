@@ -111,7 +111,7 @@ class Search:
         #get all tags
         self.alltags = tags
         #gets the titles of tasks
-        self.allTaskTitles = self.get_all_tasks_title();
+        self.allTaskTitles = self.req.get_all_titles();
         
     def initKeywords(self):
         """
@@ -192,7 +192,7 @@ class Search:
                     if(sum(map(lambda x: x.lower() in sets[word].lower(), self.allTaskTitles))):
                         continue
                     else:
-                        self.error = self.ERROR_TAG + sets[word]
+                        self.error = self.ERROR_TASK + sets[word]
                         self.valid = False
                         return
                 #if its a date
@@ -223,22 +223,10 @@ class Search:
         """
         Removes all the filters from the tree
         """
-        print(self.get_all_tasks_title())
+        print(self.req.get_all_titles())
         self.oldFilters = self.tree.list_applied_filters()
-        #print(self.tree.list_applied_filters())
         self.tree.reset_filters()
-        print(self.get_all_tasks_title())
-        #print(self.tree.list_applied_filters())
-    
-    def get_all_tasks_title(self):
-        """
-        Gets the titles from all tasks
-        """
-        titles = []
-        nodes = self.tree.get_all_nodes()
-        for x in nodes:
-            titles.append(self.tree.get_node(x).get_title())
-        return titles
+        print(self.req.get_all_titles())
     
     def resetToActiveTree(self):
         """
@@ -248,6 +236,10 @@ class Search:
             self.tree.apply_filter(x)
             
     def mysplit(self, s, delim=None):
+    	"""
+    	string split that removes empty strings
+    	useful for when there are no translations
+    	"""
         return [x for x in s.split(delim) if x]
        
     def __str__(self):

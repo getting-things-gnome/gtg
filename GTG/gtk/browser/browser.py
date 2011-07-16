@@ -328,6 +328,10 @@ class TaskBrowser(gobject.GObject):
                 self.normalView_clicked_cb,
             "allview_clicked_cb":
                 self.allview_clicked_cb,
+            "on_add_tags":
+                self.on_add_tags,
+            "on_add_tasks":
+                self.on_add_tags,
         }
         self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
 
@@ -1543,7 +1547,7 @@ class TaskBrowser(gobject.GObject):
         still in debug
         '''
         self.search_label_error.hide()
-        tags = self.get_all_tags()
+        tags = self.req.get_all_tags()
         text = self.get_combobox_text()
         #if there is text, construct a new search
         if text:
@@ -1568,8 +1572,6 @@ class TaskBrowser(gobject.GObject):
             #nids = self.vtree_panes['active'].get_selected_nodes()
             #for nid in nids:
             #    self.vmanager.open_task(nid)
-            
-            
     def normalView_clicked_cb(self,widget):
         """
         helper button
@@ -1589,12 +1591,83 @@ class TaskBrowser(gobject.GObject):
         if not self.s:
             self.s = Search('', self.req, self.activetree, self.get_all_tags())
         self.s.removeFilters()
-    
-    def get_all_tags(self):
+        
+###########################advanced search dialogs#############################
+
+    def on_add_tags(self, widget, task=False):
         """
-        Gets all tags from all tasks
+        displays windows to select tags
+        
+        task - if its true is a addtask action
+               if its false is a addtag action
+               
+               used this way to avoid repeating code
         """
-        temptree = self.req.get_all_tag_tree()
-        temptree.reset_filters()
-        tags = temptree.get_all_nodes()
-        return tags
+        window = gtk.Dialog()
+        window.set_title("Select tags...")
+        window.set_border_width(0)
+        window.set_size_request(300, 300)
+        window.set_focus(None)
+        # create a new scrolled window.
+        scrolled_window = gtk.ScrolledWindow()
+        scrolled_window.set_border_width(10)
+        #scrollbars
+        scrolled_window.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        # The dialog window is created with a vbox packed into it.
+        window.vbox.pack_start(scrolled_window, True, True, 0)
+        scrolled_window.show()
+        if task:
+            #get the tasks
+            items = self.req.get_all_titles()
+        else:
+            #get the tagsv
+            items = self.req.get_all_tags_clean()
+        # create a table
+        table = gtk.Table(len(items), 1, False)
+        # set the spacing to 10 on x and 10 on y
+        table.set_row_spacings(10)
+        table.set_col_spacings(10)
+        # pack the table into the scrolled window
+        scrolled_window.add_with_viewport(table)
+        table.show()
+        #popolate checkboxes
+        count = 0
+        list=[]
+        for i in items:
+            button = gtk.CheckButton(i)
+            table.attach(button, 0, 1, count, count+1)
+            count += 1
+            button.show()
+            list.append(button)
+        # Add a "close" button to the bottom of the dialog
+        button = gtk.Button("Add")
+        #button.connect_object("clicked", self.destroy, window)
+        # this makes it so the button is the default.
+        button.set_flags(gtk.CAN_DEFAULT)
+        window.action_area.pack_start( button, True, True, 0)
+        # This grabs this button to be the default button. Simply hitting
+        # the "Enter" key will cause this button to activate.
+        button.grab_default()
+        button_click = button.connect("clicked", self.on_tag_button_clicked, [list,window])
+        button.show()
+        window.run()
+        window.hide()
+        
+    def on_tag_button_clicked(self, widget, tuple):
+        """
+        on add tags close, get the values of all checkboxes and
+        put them on the search text
+        """
+        list=tuple[0]
+        window=tuple[1]
+        for x in list:
+            if x.get_active():
+                self.add_to_advanced_search(x.get_label())
+        window.hide()
+        
+    def add_to_advanced_search(self, str):
+        """
+        add items to advanced search entry
+        """
+        text = self.builder.get_object("search_entry")
+        text.insert_text(str + " ", text.get_text_length())

@@ -153,6 +153,16 @@ class Requester(gobject.GObject):
             for tag in task.get_tags():
                 self.emit('tag-modified', tag.get_name())
         return self.__basetree.del_node(tid,recursive=recursive)
+    
+    def get_all_titles(self):
+        """
+        Gets the titles from all tasks
+        """
+        titles = []
+        nodes = self.get_main_view().get_all_nodes()
+        for x in nodes:
+            titles.append(self.get_main_view().get_node(x).get_title())
+        return titles
 
     ############### Tags ##########################
     ###############################################
@@ -160,12 +170,6 @@ class Requester(gobject.GObject):
     def get_tag_tree(self):
         return self.ds.get_tagstore().get_viewtree(name='activetags')
     
-    def get_all_tag_tree(self):
-        """
-        creates a diferent tree for searches to use
-        """
-        return self.ds.get_tagstore().get_viewtree(name='searchAll')
-
     def new_tag(self, tagname):
         """Create a new tag called 'tagname'.
 
@@ -202,6 +206,28 @@ class Requester(gobject.GObject):
         l = view.get_all_nodes()
         l.sort(cmp=lambda x, y: cmp(x.lower(),y.lower()))
         return l
+    
+    def get_all_tags(self):
+        """
+        Gets all tags from all tasks
+        """
+        temptree = self.ds.get_tagstore().get_viewtree(name='searchAll')
+        temptree.reset_filters()
+        tags = temptree.get_all_nodes()
+        return tags
+    
+    def get_all_tags_clean(self):
+        """
+        Gets all tags from all tasks except 
+        gtg-tags-none, gtg-tags-all and gtg-tags-sep
+        """
+        temptree = self.ds.get_tagstore().get_viewtree(name='searchAll')
+        temptree.reset_filters()
+        tags = temptree.get_all_nodes()
+        tags.remove("gtg-tags-none")
+        tags.remove("gtg-tags-all")
+        tags.remove("gtg-tags-sep")
+        return tags
 
     ############## Backends #######################
     ###############################################
