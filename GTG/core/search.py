@@ -22,7 +22,6 @@ import re
 import GTG
 from GTG.core.datastore import DataStore
 from GTG                import _, info, ngettext
-from bzrlib.urlutils import join
 '''
 search.py - contains all search related definitions and operations
 '''
@@ -90,7 +89,7 @@ class Search:
     literalNotation = '"'
     
     
-    def __init__(self, text, requester, tree, tags):
+    def __init__(self, text, requester, tree):
         '''
         initialize the search object
         parameter:
@@ -109,7 +108,7 @@ class Search:
         self.tree = tree
         self.oldFilters =[]
         #get all tags
-        self.alltags = tags
+        self.alltags = requester.get_all_tags()
         #gets the titles of tasks
         self.allTaskTitles = self.req.get_all_titles();
         
@@ -159,7 +158,7 @@ class Search:
         #separate in groups with diferent meanings
         #MISSING
         # - diferente date formats"
-        match = re.findall(r'(?P<command>(?<=!)\S+\s?)|(?P<tag>@\S+\s?)|(?P<task>(?<=#)\S+\s?)|(?P<date>[01][0-2][/\.-]?[0-3][0-9][/\.-]\d{4})|(?P<literal>".+?")|(?P<word>(?![!"#@])\S+\s?)', self.text)
+        match = re.findall(r'(?P<command>(?<=!)\S+\s?)|(?P<tag>@\S+\s?)|(?P<task>#.+#)|(?P<date>[01][0-2][/\.-]?[0-3][0-9][/\.-]\d{4})|(?P<literal>".+?")|(?P<word>(?![!"#@])\S+\s?)', self.text)
         #analise the sets
         #sets are given in a list of sub,lists
         #each main list will have a sublist with one of 5 possible positions with text
