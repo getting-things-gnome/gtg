@@ -94,10 +94,22 @@ class TreeFactory:
         p = {'transparent':True}
         self.tasktree.add_filter(CoreConfig.NOTAG_TAG,\
                                     self.notag,parameters=p)
+        
+        # Build the search tag
+        search_tag = Tag(CoreConfig.SEARCH_TAG,req=req)
+        search_tag.set_attribute("special","search")
+        search_tag.set_attribute("label","<span weight='bold'>%s</span>"\
+                                             % _("Search"))
+        search_tag.set_attribute("icon","gtg-tags-search")
+        search_tag.set_attribute("order",2)
+        tagtree.add_node(search_tag)
+        p = {'transparent':True}
+        self.tasktree.add_filter(CoreConfig.SEARCH_TAG,\
+                                    self.alltag,parameters=p)
         # Build the separator
         sep_tag = Tag(CoreConfig.SEP_TAG,req=req)
         sep_tag.set_attribute("special","sep")
-        sep_tag.set_attribute("order",2)
+        sep_tag.set_attribute("order",3)
         tagtree.add_node(sep_tag)
         
         
@@ -108,6 +120,8 @@ class TreeFactory:
         activeview = tagtree.get_viewtree(name='activetags',refresh=False)
         activeview.apply_filter('activetag')
         
+        searchview = tagtree.get_viewtree(name='search',refresh=True)
+        activeview.apply_filter('alltag')
         #This view doesn't seem to be used. So it's not useful to build it now
 #        usedview = tagtree.get_viewtree(name='usedtags',refresh=False)
 #        usedview.apply_filter('usedtag')

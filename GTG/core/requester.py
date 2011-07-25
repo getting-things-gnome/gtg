@@ -58,6 +58,7 @@ class Requester(gobject.GObject):
         
         #TODO build filters here
         self.counter_call = 0
+        self.searcActive = False
 
     ############# Signals #########################
     #Used by the tasks to emit the task added/modified signal
@@ -74,6 +75,13 @@ class Requester(gobject.GObject):
 
     def get_main_view(self):
         return self.__basetree.get_main_view()
+    
+    def get_search_tree(self,name='search',refresh=True):
+        """
+        return the search tree
+        only used by search operations to show a tree without interfearing with the main
+        """
+        return self.__basetree.get_viewtree(name=name,refresh=refresh)
         
     # This is a FilteredTree that you have to handle yourself.
     # You can apply/unapply filters on it as you wish.
@@ -166,6 +174,20 @@ class Requester(gobject.GObject):
 
     ############### Tags ##########################
     ###############################################
+    
+    def search_is_active(self):
+        """
+        returns if there is a search active or not
+        
+        used mainly for stoping certain actions before a search is done
+        """
+        return self.searcActive
+    
+    def set_search_status(self, status):
+        """
+        sets the status of searches
+        """
+        self.searcActive = status
 
     def get_tag_tree(self):
         return self.ds.get_tagstore().get_viewtree(name='activetags')

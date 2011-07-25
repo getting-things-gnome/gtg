@@ -141,6 +141,8 @@ class TaskBrowser(gobject.GObject):
         #this should be adjustable in preferences
         self.maxHistory = 5
         self.s = None
+        self.search_tree = self.req.get_search_tree()
+        self.search_tree.reset_filters()
         searchWindow = self.builder.get_object("search_dialog")
         searchWindow.connect("close", self.on_search_dialog_close)
         # Rember values from last time
@@ -1144,10 +1146,24 @@ class TaskBrowser(gobject.GObject):
         for t in self.vtree_panes:
             #1st we reset the tags filter
             vtree = self.req.get_tasks_tree(name=t,refresh=False)
-            vtree.reset_filters(refresh=False,transparent_only=True)
+            if taglist[0] == "gtg-tags-search" and t=='active':
+                    vtree.reset_filters(refresh=False,transparent_only=False)
+            else:
+                vtree.reset_filters(refresh=False,transparent_only=True)
             #then applying the tag
+            #if its a serach, dont apply the normal filters
             if len(taglist) > 0:
-                #FIXME : support for multiple tags selection
+                #get filter aplyed
+                filters = vtree.list_applied_filters()
+                #set the filter in case searchview removed them earlyer
+                if taglist[0] != "gtg-tags-search" and t=='active':
+                    if 'active' not in filters:
+                        vtree.apply_filter('active',refresh=False)
+                        
+                if taglist[0] != "gtg-tags-search" and t=='closed':
+                    if 'closed' not in filters:
+                        vtree.apply_filter('closed',refresh=False)
+                        
                 vtree.apply_filter(taglist[0],refresh=True)
 
     def on_taskdone_cursor_changed(self, selection=None):
