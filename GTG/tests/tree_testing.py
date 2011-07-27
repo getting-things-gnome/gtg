@@ -37,13 +37,10 @@ class TreeTester:
         self.tree.register_cllbck('node-modified-inview',self.update)
         self.tree.register_cllbck('node-children-reordered',self.reordered)
         self.trace = "* * * * * * * *\n"
-        self.state_id = 0
         
         
-    def add(self,nid,path,state_id):
-        self.state_id = state_id
+    def add(self,nid,path):
         self.trace += "adding %s to path %s\n" %(nid,str(path))
-        print "adding %s to path %s" %(nid,str(path))
         currentnode = self.paths.get(path,None)
         if currentnode and currentnode != nid:
             raise Exception('path %s is already occupied by %s' %(str(path),nid))
@@ -55,11 +52,9 @@ class TreeTester:
         if path not in node:
             node.append(path)
         self.paths[path] = nid
-    
-    def delete(self,nid,path,state_id):
-        self.state_id = state_id
+
+    def delete(self,nid,path):
         self.trace += "removing %s from path %s\n" %(nid,str(path))
-        print "removing %s from path %s" %(nid,str(path))
         if nid != self.paths.get(path,None):
             error = '%s is not assigned to path %s\n'%(nid,str(path))
             error += self.print_tree()
@@ -72,10 +67,53 @@ class TreeTester:
         self.nodes[nid].remove(path)
         if len(self.nodes[nid]) == 0:
             self.nodes.pop(nid)
+
         self.paths.pop(path)
+
+        # Move other paths lower like in real TreeModel
+        path_prefix = path[:-1]
+        index = path[-1]
+
+        assert path_prefix + (index,) == path, "%s vs %s" % (path_prefix + (index,), path)
+
+        def check_prefix(path):
+            """ Is this path affected by the change?
+            Conditions:
+              * the same prefix
+                (3, 1, 2, 3) vs (3,1,2,4) OK
+                (3, 1, 2, 3) vs (3,1,2,4,0) OK
+                (3, 1, 2, 3) vs (3,2,2,4) FALSE
+              * higher index
+                (3, 1, 2, 3) vs (3,1,2,2) FALSE
+            """
+            if len(path) <= len(path_prefix):
+                return False
+
+            for i, pos in enumerate(path_prefix):
+                if path[i] != pos:
+                    return False
+
+            return path[len(path_prefix)] > index
+
+        paths = list(self.paths.keys())
+        paths.sort()
+
+        for path in paths:
+            old_path = path
+            if check_prefix(path):
+                new_path =  list(path)
+                new_path[len(path_prefix)] -= 1
+                new_path = tuple(new_path)
+
+                assert new_path not in self.paths
+
+                nid = self.paths[old_path]
+                self.nodes[nid].remove(old_path)
+                del self.paths[old_path]
+                self.nodes[nid].append(new_path)
+                self.paths[new_path] = nid
     
-    def update(self,nid,path,state_id):
-        self.state_id = state_id
+    def update(self,nid,path):
         self.trace += "updating %s in path %s\n" %(nid,str(path))
         error = "updating node %s for path %s\n" %(nid,str(path))
         if not self.nodes.has_key(nid):
@@ -94,9 +132,8 @@ class TreeTester:
         if path not in self.nodes[n] or n != nid:
             raise Exception('Mismatching node for path %s'%str(p))
             
-    def reordered(self,nid,path,neworder,state_id):
+    def reordered(self,nid,path,neworder):
         print "reordering"
-        self.state_id = state_id
         self.trace += "reordering children of %s (%s) : %s\n" %(nid,str(path),neworder)
         self.trace += "VR is %s\n" %self.tree.node_all_children()
         if not path:
@@ -132,7 +169,7 @@ class TreeTester:
     
     def test_validity(self):
         for n in self.nodes.keys():
-            paths = self.tree.get_paths_for_node(n,state_id=self.state_id)
+            paths = self.tree.get_paths_for_node(n)
             if len(self.nodes[n]) == 0:
                 raise Exception('Node %s is stored without any path'%n)
             for p in self.nodes[n]:
@@ -149,7 +186,7 @@ class TreeTester:
             if len(paths) > 0:
                 raise Exception('why is this path existing for %s' %n)
         for p in self.paths.keys():
-            node = self.tree.get_node_for_path(p,state_id=self.state_id)
+            node = self.tree.get_node_for_path(p)
             n = self.paths[p]
             if n != node:
                 error = 'Node for path is %s but should be %s' %(node,n)

@@ -58,6 +58,9 @@ class Filter:
             return self.dic['flat']
         else:
             return False
+    # FIXME simplify a little bit
+# FIXME add is_transparent
+# FIXME tid, req
             
     
 class FiltersBank:
