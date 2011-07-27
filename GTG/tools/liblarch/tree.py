@@ -201,7 +201,8 @@ class MainTree:
                 self.get_current_state(callback, node_id, child_node)
 
     def refresh_all(self):
-        for node_id in self.nodes:
+        # FIXME needed to add .keys()
+        for node_id in self.nodes.keys():
             self.modify_node(node_id)
 
 #FIXME rewrite this function
