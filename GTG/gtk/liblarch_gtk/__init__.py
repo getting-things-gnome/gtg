@@ -163,7 +163,6 @@ class TreeView(gtk.TreeView):
         """ Sets Drag'n'Drop name and initialize Drag'n'Drop support"""
         self.dnd_internal_target = dndname
         self.__init_dnd()
-        self.connect('drag_drop', self.on_drag_drop)
         self.connect('drag_data_get', self.on_drag_data_get)
         self.connect('drag_data_received', self.on_drag_data_received)
 
@@ -182,11 +181,13 @@ class TreeView(gtk.TreeView):
             * name
             * scope - just the same widget / same application
             * id
-        
-        Do calls: enable_model_drag_dest(), drag_source_set(), drag_dest_set()
 
-        It looks like enable_model-drag_source() is not needed. 
-        Worst: it crashes GTG!
+        Enable DND by calling enable_model_drag_dest(), 
+        enable_model-drag_source()
+
+        It didnt use support from gtk.Widget(drag_source_set(),
+        drag_dest_set()). To know difference, look in PyGTK FAQ:
+        http://faq.pygtk.org/index.py?file=faq13.033.htp&req=show
         """
 
         if self.dnd_internal_target == '':
@@ -199,21 +200,12 @@ class TreeView(gtk.TreeView):
             name = self.dnd_external_targets[target][0]
             dnd_targets.append((name, gtk.TARGET_SAME_APP, target))
     
+        self.enable_model_drag_source( gtk.gdk.BUTTON1_MASK,
+            dnd_targets, gtk.gdk.ACTION_DEFAULT | gtk.gdk.ACTION_MOVE)
+
         self.enable_model_drag_dest(\
-            dnd_targets, gtk.gdk.ACTION_DEFAULT)
-
-        self.drag_source_set(\
-            gtk.gdk.BUTTON1_MASK, dnd_targets,
-            gtk.gdk.ACTION_DEFAULT | gtk.gdk.ACTION_MOVE)
-
-        self.drag_dest_set(\
-            gtk.DEST_DEFAULT_ALL, dnd_targets,
-            gtk.gdk.ACTION_DEFAULT | gtk.gdk.ACTION_MOVE)
+            dnd_targets, gtk.gdk.ACTION_DEFAULT | gtk.gdk.ACTION_MOVE)
     
-    def on_drag_drop(self, treeview, context, selection, info, timestamp):
-        """ Stop propagating drag_drop signal to other widgets """
-        self.emit_stop_by_name('drag_drop')
-
     def on_drag_data_get(self, treeview, context, selection, info, timestamp):
         """ Extract data from the source of the DnD operation.
         
@@ -242,8 +234,6 @@ class TreeView(gtk.TreeView):
         In case of internal DND we just use Tree.move_node().
         In case of external DND we call function associated with that DND
         set by self.set_dnd_external()
-        
-        In the end forbid the next propagation of this signal.
         """
         #TODO: it should be configurable for each TreeView if you want:
         # 0 : no drag-n-drop at all
@@ -308,9 +298,8 @@ class TreeView(gtk.TreeView):
                 i = src_model.get_iter_from_string(iter)
                 source = src_model.get_value(i,0)
 
+                # Handle external Drag'n'Drop
                 f(source, destination_tid)
-
-        self.emit_stop_by_name('drag_data_received')
 
     def get_selected_nodes(self):
         """ Return list of node ids from liblarch for selected nodes """
