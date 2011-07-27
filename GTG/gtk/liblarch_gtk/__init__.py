@@ -24,9 +24,21 @@ from GTG.gtk.liblarch_gtk.treemodel import TreeModel
 
 class TreeView(gtk.TreeView):
     """ The interface for liblarch_gtk """
+    # FIXME Docstring => comment to the whole class
+
+    __string_signal__ = (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str, ))
+    __gsignals__ = {'node-expanded' : __string_signal__, \
+                    'node-collapsed': __string_signal__, \
+                    }
+
+    # FIXME __emit METHOD
 
     def __init__(self, tree, description):
         gtk.TreeView.__init__(self)
+        self.columns = {}
+        self.dnd_internal_target = ''
+        self.bg_color_func = None
+        self.bg_color_column = None
 
         # Sort columns
         self.order_of_column = []
@@ -64,8 +76,11 @@ class TreeView(gtk.TreeView):
             col.set_resizable(resizable)
             col.set_expand(expand)
 
-            #col.set_cell_data_func(renderer, self._celldatafunction)
+            # Allow to set background color
+            col.set_cell_data_func(renderer, self._celldatafunction)
+
             self.append_column(col)
+            self.columns[col_name] = (col_num, col)
 
         self.basetree = tree
         self.basetreemodel = TreeModel(tree, types)
@@ -74,26 +89,80 @@ class TreeView(gtk.TreeView):
         self.set_model(self.treemodel)
         # FIXME? Should it be there?
 
-        #FIXME?
         self.expand_all()
         self.show()
 
-#FIXME this code is taken from older liblarch 
-        self.treemodel.connect('row-has-child-toggled',self.child_toggled_cllb)
+        self.treemodel.connect('row-has-child-toggled', self.on_child_toggled)
 
-    def child_toggled_cllb(self,treemodel,path,iter,param=None):
+    def on_child_toggled(self, treemodel, path, iter, param=None):
         if not self.row_expanded(path):
-            self.expand_row(path,False)
-#FIXME end
-
+            self.expand_row(path, False)
 
     def show(self):
-        """ Shows the TreeView and at the same time connect basetreemodel to
-        liblarch tree
-        
-        FIXME: fetch the stable state of tree at this moment """
+        """ Shows the TreeView and connect basetreemodel to LibLarch """
         gtk.TreeView.show(self)
         self.basetreemodel.connect_model()
+
+    def set_main_search_column(self, col_name):
+        """ Set search column for GTK integrate search
+        This is just wrapper to use internal representation of columns"""
+        col_num, col = self.columns[col_name]
+        self.set_search_column(col_num)
+
+    def set_expander_column(self, col_name):
+        """ Set expander column (that which expands through free space)
+        This is just wrapper to use internal representation of columns"""
+        col_num, col = self.columns[col_name]
+        self.set_property("expander-column", col)
+
+    def set_sort_column(self, colname):
+        # FIXME not implemented yet
+        print "FIXME: implement set_sort_column()"
+
+    def set_col_visible(self, col_name,visible):
+        """ Set visiblity of column.
+        Allow to hide/show certain column """
+        col_num, col = self.columns[col_name]
+        col.set_visible(visible)
+
+    def set_bg_color(self, color_func, color_column):
+        if self.columns.has_key(color_column):
+            self.bg_color_column = self.columns[color_column][0]
+            self.bg_color_func = color_func
+        else:
+            raise ValueError("There is no colum %s to use to set color" % color_column)
+
+    def set_dnd_name(self, dndname):
+        """ Sets Drag'n'Drop name and initialize Drag'n'Drop support"""
+        self.dnd_internal_target = dndname
+        # FIXME add support of DND
+        #self.__init_dnd()
+        #self.connect('drag_drop', self.on_drag_drop)
+        #self.connect('drag_data_get', self.on_drag_data_get)
+        #self.connect('drag_data_received', self.on_drag_data_received)
+
+    def _celldatafunction(self, column, cell, model, iter):
+        """ Determine background color for cell
+        
+        Requirements: self.bg_color_func and self.bg_color_column must be set
+        (see self.set_bg_color())
+        
+        We need:
+            * the standard color for a cell (it depends on GTK theme).
+            * value of column which the background is generated from
+              (e.g. list of tags)
+
+        Then the function for calculating background color is called.
+        Result is set as background of cell.
+        """
+        color = None
+        if self.bg_color_func and self.bg_color_column:
+            bgcolor = column.get_tree_view().get_style().base[gtk.STATE_NORMAL]
+            if iter and model.iter_is_valid(iter):
+                value = model.get_value(iter, self.bg_color_column)
+                if value:
+                    color = self.bg_color_func(value, bgcolor)
+        cell.set_property("cell-background", color)
 
     def get_selected_nodes(self):
         """ Return list of node ids from liblarch for selected nodes """
