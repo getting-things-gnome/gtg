@@ -280,7 +280,13 @@ class TreeView(gtk.TreeView):
         tree = self.basetree.get_basetree()
 
         # Get dragged iter as a TaskTreeModel iter
-        iters = selection.data.split(',')
+        # If there is no selected task (empty selection.data), 
+        # explictly skip handling it (set to empty list)
+        if selection.data == '':
+            iters = []
+        else:
+            iters = selection.data.split(',')
+
         for iter in iters:
             if info == 0:
                 try:
