@@ -21,6 +21,7 @@ import gtk
 import gobject
 
 from GTG.gtk.liblarch_gtk.treemodel import TreeModel
+from GTG.tools.logger import Log
 
 class TreeView(gtk.TreeView):
     """ The interface for liblarch_gtk """
@@ -289,7 +290,10 @@ class TreeView(gtk.TreeView):
 
                 if dragged_iter and model.iter_is_valid(dragged_iter):
                     dragged_tid = model.get_value(dragged_iter, 0)
-                    tree.move_node(dragged_tid, new_parent_id=destination_tid)
+                    try:
+                        tree.move_node(dragged_tid, new_parent_id=destination_tid)
+                    except Exception, e:
+                        Log.debug('Problem with dragging: %s' % e)
 
             elif info in self.dnd_external_targets and destination_tid:
                 f = self.dnd_external_targets[info][1]
