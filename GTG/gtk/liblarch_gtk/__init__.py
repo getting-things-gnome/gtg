@@ -23,26 +23,62 @@ import gobject
 from GTG.gtk.liblarch_gtk.treemodel import TreeModel
 from GTG.tools.logger import Log
 
+# Useful for debugging purpose.
+# Disabling that will disable the TreeModelSort on top of our TreeModel
+ENABLE_SORTING = True
+#FIXME Drag and Drop does not work with ENABLE_SORTING = True :-(
+
 class TreeView(gtk.TreeView):
-    """ The interface for liblarch_gtk """
-    # FIXME Docstring => comment to the whole class
+    """ Widget which display LibLarch FilteredTree.
+
+    This widget extends gtk.TreeView by several features:
+      * Drag'n'Drop support
+      * Sorting support
+      * separator rows
+      * background color of a row
+      * selection of multiple rows
+    """
 
     __string_signal__ = (gobject.SIGNAL_RUN_FIRST, gobject.TYPE_NONE, (str, ))
     __gsignals__ = {'node-expanded' : __string_signal__, \
                     'node-collapsed': __string_signal__, \
                     }
 
-    # FIXME __emit METHOD
-
     def __init__(self, tree, description):
+        """ Build the widget
+
+        @param  tree - LibLarch FilteredTree
+        @param  description - definition of columns.
+
+        Parameters of description dictionary for a column:
+          * value => (type of values, function for generating value from a node)
+          * renderer => (renderer_attribute, renderer object)
+
+          Optional:
+          * order => specify order of column otherwise use natural oreder
+          * expandable => is the column expandable?
+          * resizable => is the column resizable?
+          * visible => is the column visible?
+          * title => title of column
+          * sorting => allow default sorting on this column
+          * sorting_func => use special function for sorting on this func
+
+        Example of columns descriptions:
+        description = { 'title': {
+                'value': [str, self.task_title_column],
+                'renderer': ['markup', gtk.CellRendererText()],
+                'order': 0
+            }}
+        """
         gtk.TreeView.__init__(self)
         self.columns = {}
         self.bg_color_func = None
         self.bg_color_column = None
+        self.separator_func = None
 
         self.dnd_internal_target = ''
         self.dnd_external_targets = {}
-
+        
         # Sort columns
         self.order_of_column = []
         last = 9999
@@ -53,6 +89,8 @@ class TreeView(gtk.TreeView):
             self.order_of_column.append((order, col_name))
 
         types = []
+        sorting_func = []
+
         # Build columns according to the order
         for col_num, (order_num, col_name) in enumerate(sorted(self.order_of_column), 1):
             desc = description[col_name]
@@ -62,16 +100,15 @@ class TreeView(gtk.TreeView):
             resizable = desc.get('resizable', True)
             visible = desc.get('visible', True)
 
-            if desc.has_key('renderer'):
-                renderer = desc["renderer"][1]
-                rend_attribute = desc["renderer"][0]
+            if 'renderer' in desc:
+                rend_attribute, renderer = desc['renderer']
             else:
                 raise ValueError("The treeview description should have a renderer")
 
             col = gtk.TreeViewColumn()
             col.set_visible(visible)
 
-            if desc.has_key('title'):
+            if 'title' in desc:
                 col.set_title(desc['title'])
 
             col.pack_start(renderer, expand=expand)
@@ -82,29 +119,81 @@ class TreeView(gtk.TreeView):
             # Allow to set background color
             col.set_cell_data_func(renderer, self._celldatafunction)
 
+            if ENABLE_SORTING:
+                if 'sorting' in desc:
+                    # Just allow sorting and use default comparing
+                    sort_num, sort_col = self.columns[desc['sorting']]
+                    col.set_sort_column_id(sort_num)
+
+                if 'sorting_func' in desc:
+                    # Use special funcion for comparing, e.g. dates
+                    sorting_func.append((col_num, col, desc['sorting_func']))
+
             self.append_column(col)
             self.columns[col_name] = (col_num, col)
 
         self.basetree = tree
+        # Build the model around LibLarch tree
         self.basetreemodel = TreeModel(tree, types)
-        self.treemodel = self.basetreemodel
+        # Apply TreeModelSort to be able to sort
+        if ENABLE_SORTING:
+            self.treemodel = MyTreeModelSort(self.basetreemodel)
+            for col_num, col, sort_func in sorting_func:
+                self.treemodel.set_sort_func(col_num,
+                    self._sort_func, sort_func)
+                col.set_sort_column_id(col_num)
+        else:
+            self.treemodel = self.basetreemodel
 
         self.set_model(self.treemodel)
-        # FIXME? Should it be there?
 
         self.expand_all()
         self.show()
 
+        self.connect('row-expanded', self.__emit, 'expanded')
+        self.connect('row-collapsed', self.__emit, 'collapsed')
         self.treemodel.connect('row-has-child-toggled', self.on_child_toggled)
 
+    def __emit(self, sender, iter, path, data):
+        """ Emitt expanded/collapsed signal """
+        node_id = self.treemodel.get_value(iter, 0)
+        if data == 'expanded':
+            self.emit('node-expanded', node_id)
+        elif data == 'collapsed':
+            self.emit('node-collapsed', node_id)
+
     def on_child_toggled(self, treemodel, path, iter, param=None):
+        """ Expand row """
         if not self.row_expanded(path):
             self.expand_row(path, False)
+
+    def collapse_node(self, node_id):
+        """ Hide children of a node
+        
+        This method is needed for "rember collapsed nodes" feature of GTG.
+        Transform node_id into paths and those paths collapse. By default all
+        children are expanded (see self.expand_all())"""
+
+        paths = self.basetree.get_paths_for_node(node_id)
+        for path in paths:
+            try:
+                self.collapse_row(path)
+            except TypeError, e:
+                # FIXME why this is so?
+                # FIXME what to do, if task is not in FilteredTree yet?
+                print "FIXME: problem with TreeView.collapse_node():", e
+
+                # FIXME this is just a workaround, discuss it with ploum
+                gobject.idle_add(self.collapse_node, node_id)
 
     def show(self):
         """ Shows the TreeView and connect basetreemodel to LibLarch """
         gtk.TreeView.show(self)
         self.basetreemodel.connect_model()
+
+    def get_columns(self):
+        """ Return the list of columns name """
+        return self.columns.keys()
 
     def set_main_search_column(self, col_name):
         """ Set search column for GTK integrate search
@@ -118,9 +207,11 @@ class TreeView(gtk.TreeView):
         col_num, col = self.columns[col_name]
         self.set_property("expander-column", col)
 
-    def set_sort_column(self, colname):
-        # FIXME not implemented yet
-        print "FIXME: implement set_sort_column()"
+    def set_sort_column(self, col_name):
+        """ Select column to sort by it by default """
+        if ENABLE_SORTING:
+            col_num, col = self.columns[col_name]
+            self.treemodel.set_sort_column_id(col_num, gtk.SORT_ASCENDING)
 
     def set_col_visible(self, col_name,visible):
         """ Set visiblity of column.
@@ -128,12 +219,40 @@ class TreeView(gtk.TreeView):
         col_num, col = self.columns[col_name]
         col.set_visible(visible)
 
+    def set_col_resizable(self, col_name, resizable):
+        """ Allow/forbid column to be resizable """
+        col_num, col = self.columns[col_name]
+        col.set_resizable(resizable)
+
     def set_bg_color(self, color_func, color_column):
+        """ Set which column and function for generating background color """
         if self.columns.has_key(color_column):
             self.bg_color_column = self.columns[color_column][0]
             self.bg_color_func = color_func
         else:
             raise ValueError("There is no colum %s to use to set color" % color_column)
+
+    def _sort_func(self, model, iter1, iter2, func=None):
+        """ Sort two iterators by function which gets node objects.
+
+        This is a simple wrapper which prepares node objects and then
+        call comparing function. In other case return default value -1
+        """
+
+        if model.iter_is_valid(iter1) and model.iter_is_valid(iter2):
+            node_id_a = model.get_value(iter1, 0)
+            node_id_b = model.get_value(iter2, 0)
+            if node_id_a and node_id_b and func:
+                id, order = self.treemodel.get_sort_column_id()
+                node_a = self.basetree.get_node(node_id_a)
+                node_b = self.basetree.get_node(node_id_b)
+                sort = func(node_id_a, node_id_b, order)
+            else:
+                sort = -1
+        else:
+            print "some of the iter given for sorting are invalid. WTF?"
+            sort = -1
+        return sort
 
     def _celldatafunction(self, column, cell, model, iter):
         """ Determine background color for cell
@@ -161,11 +280,17 @@ class TreeView(gtk.TreeView):
     ######### DRAG-N-DROP functions #####################################
 
     def set_dnd_name(self, dndname):
-        """ Sets Drag'n'Drop name and initialize Drag'n'Drop support"""
+        """ Sets Drag'n'Drop name and initialize Drag'n'Drop support
+        
+        If ENABLE_SORTING, drag_drop signal must be handled by this widget."""
         self.dnd_internal_target = dndname
         self.__init_dnd()
         self.connect('drag_data_get', self.on_drag_data_get)
         self.connect('drag_data_received', self.on_drag_data_received)
+
+        if ENABLE_SORTING:
+            #self.connect('drag_drop', self.on_drag_drop)
+            pass
 
     def set_dnd_external(self, sourcename, func):
         """ Add a new external target and initialize Drag'n'Drop support"""
@@ -206,6 +331,14 @@ class TreeView(gtk.TreeView):
 
         self.enable_model_drag_dest(\
             dnd_targets, gtk.gdk.ACTION_DEFAULT | gtk.gdk.ACTION_MOVE)
+
+    def on_drag_drop(self, treeview, context, selection, info, timestamp):
+        """ When using TreeModelSort, drag_drop signal must be handled to
+        prevent GTK warning in console.
+
+        Do nothing, just prevent default callback.
+        """
+        self.emit_stop_by_name('drag_drop')
     
     def on_drag_data_get(self, treeview, context, selection, info, timestamp):
         """ Extract data from the source of the DnD operation.
@@ -305,11 +438,32 @@ class TreeView(gtk.TreeView):
                 # Handle external Drag'n'Drop
                 f(source, destination_tid)
 
-    def get_selected_nodes(self):
-        """ Return list of node ids from liblarch for selected nodes """
 
-        # FIXME this code is copy'n'paste from old code
-        ''' Return the selected nodes ID'''
+    ######### Separators support ##############################################
+    def _separator_func(self, model, itera, user_data=None):
+        """ Call user function to determine if this node is separator """
+        if itera and model.iter_is_valid(itera):
+            nid = model.get_value(itera, 0)
+            node = self.basetree.get_node(nid)
+            if self.separator_func:
+                return self.separator_func(node)
+            else:
+                return False
+        else:
+            return False
+
+    def set_row_separator_func(self, func):
+        """ Enable support for row separators.
+
+        @param func - function which determines if a node is separator,
+            None will disable support for row separators.
+        """
+        self.separator_func = func
+        gtk.TreeView.set_row_separator_func(self,self._separator_func)
+
+    ######### Multiple selection ####################################################
+    def get_selected_nodes(self):
+        """ Return list of node_id from liblarch for selected nodes """
         # Get the selection in the gtk.TreeView
         selection = self.get_selection()
         # Get the selection iter
@@ -324,13 +478,14 @@ class TreeView(gtk.TreeView):
 
         return ids
 
-    def set_multiple_selection(self,bol):
-        # FIXME implementation, copy'n'paste
-        if bol:
-            self.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
-        #    self.connect('button_press_event', self.on_button_press)
-        #    self.connect('button_release_event', self.on_button_release)
-        else:
-            self.get_selection().set_mode(gtk.SELECTION_SINGLE)
-            #FIXME : we have to disconnect the two signals !
+    def set_multiple_selection(self, multiple_selection):
+        """ Allow/forbid multiple selection in TreeView """
+        # TODO support for dragging multiple rows at the same time
+        # See LP #817433
 
+        if multiple_selection:
+            selection_type = gtk.SELECTION_MULTIPLE
+        else:
+            selection_type = gtk.SELECTION_SINGLE
+
+        self.get_selection().set_mode(selection_type)
