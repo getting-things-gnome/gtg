@@ -37,14 +37,14 @@ class TreeModel(gtk.TreeStore):
         
         Also asks for the current status by providing add_task callback.
         We are able to connect to liblarch tree on the fly. """
-# FIXME This wasn't needed before using GenericTreeModel. It somehow managed to get all those changes on request. Discuss it with ploum
 
         self.tree.register_cllbck('node-added-inview',self.add_task)
         self.tree.register_cllbck('node-deleted-inview',self.remove_task)
         self.tree.register_cllbck('node-modified-inview',self.update_task)
         self.tree.register_cllbck('node-children-reordered',self.reorder_nodes)
 
-        self.tree.get_current_state(self.add_task)
+        # Request the current state
+        self.tree.get_current_state()
 
     def my_get_iter(self, path):
         """ Many times I get problem with iter_path, therefore there is my own implementation """

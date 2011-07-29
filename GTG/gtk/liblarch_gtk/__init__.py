@@ -25,8 +25,10 @@ from GTG.tools.logger import Log
 
 # Useful for debugging purpose.
 # Disabling that will disable the TreeModelSort on top of our TreeModel
-ENABLE_SORTING = True
+ENABLE_SORTING = False
 #FIXME Drag and Drop does not work with ENABLE_SORTING = True :-(
+#FIXME on-child-row_expanded is really slow with ENABLE_SORTING = True :-(
+# see test delete_child_randomly
 
 class TreeView(gtk.TreeView):
     """ Widget which display LibLarch FilteredTree.

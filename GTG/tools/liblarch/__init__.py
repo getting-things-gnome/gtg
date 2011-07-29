@@ -241,10 +241,16 @@ class ViewTree:
     def refresh_all(self):
         self.__maintree.refresh_all()
 
-    def get_current_state(self, callback):
-        #FIXME support for filtered trees
-# FIXME description => on the fly
-        self.__maintree.get_current_state(callback)
+    def get_current_state(self):
+        """ Request current state to be send by signals/callbacks.
+
+        This allow LibLarch widget to connect on fly (e.g. after FilteredTree
+        is up and has some nodes). """
+
+        if self.static:
+            self.__maintree.refersh_all()
+        else:
+            self.__ft.get_current_state()
 
     def print_tree(self, string=None):
         """ Print the shown tree, i.e. MainTree or FilteredTree """

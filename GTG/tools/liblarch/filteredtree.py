@@ -511,6 +511,16 @@ class FilteredTree():
             parents.remove(self.root_id)
         return parents
 
+    def get_current_state(self):
+        """ Allows to connect LibLarch widget on fly to FilteredTree
+        
+        Sends 'added' signal/callback for every nodes that is currently
+        in FilteredTree. After that, FilteredTree and TreeModel are
+        in the same state
+        """
+        for node_id in self.nodes[self.root_id]['children']:
+            self.send_add_tree(node_id, self.root_id)
+
 #### FILTERS ##################################################################
     def list_applied_filters(self):
         return list(self.applied_filters)

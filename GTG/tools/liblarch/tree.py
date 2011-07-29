@@ -180,26 +180,6 @@ class MainTree:
 #FIXME shouldnt be switched?
         return True
 
-    def get_current_state(self, callback, parent_id=None, nodes=None):
-# FIXME description => on the fly
-# FIXME order
-# FIXME this needs refractoring
-
-        if nodes is None:
-            for node in self.root.get_children():
-                self.get_current_state(callback, None, node)
-        else:
-            node = self.nodes[nodes]
-            node_id = node.get_id()
-            paths = self.get_paths_for_node(node_id)
-            # FIXME use the correct path, implement own algorithm
-            path = paths[0]
-            #print "Calling ADD: for ", node_id, path
-            callback(node_id, path)
-
-            for child_node in node.get_children():
-                self.get_current_state(callback, node_id, child_node)
-
     def refresh_all(self):
         # FIXME needed to add .keys()
         for node_id in self.nodes.keys():
