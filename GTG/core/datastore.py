@@ -723,10 +723,10 @@ class TaskSource():
         Helper function to connect signals
         '''
         if not self.set_task_handle:
-            self.set_task_handle = self.tasktree.connect('node-modified', \
+            self.set_task_handle = self.tasktree.register_cllbck('node-modified', \
                                                     self.queue_set_task)
         if not self.remove_task_handle:
-            self.remove_task_handle = self.tasktree.connect('node-deleted',\
+            self.remove_task_handle = self.tasktree.register_cllbck('node-deleted',\
                                                    self.queue_remove_task)
 
     def _disconnect_signals(self):
@@ -734,10 +734,10 @@ class TaskSource():
         Helper function to disconnect signals
         '''
         if self.set_task_handle:
-            self.tasktree.disconnect(self.set_task_handle)
+            self.tasktree.deregister_cllbck(self.set_task_handle)
             self.set_task_handle = None
         if  self.remove_task_handle:
-            self.tasktree.disconnect(self.remove_task_handle)
+            self.tasktree.deregister_cllbck(self.remove_task_handle)
             self.remove_task_handle = None
 
     def sync(self):
