@@ -49,9 +49,10 @@ class TreeviewFactory():
         count = 0
         if task.has_child():
             for tid in task.get_children():
-                task = self.req.get_task(tid)
-                if task and task.get_status() == Task.STA_ACTIVE:
-                    count = count + 1 + self._count_active_subtasks_rec(task)
+                sub_task = self.req.get_task(tid)
+                if sub_task and sub_task.get_status() == Task.STA_ACTIVE:
+                    count = count + 1 + self._count_active_subtasks_rec(sub_task)
+
         return count
     
     def task_bg_color(self,tags,bg):
