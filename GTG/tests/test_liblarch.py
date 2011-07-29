@@ -1458,5 +1458,53 @@ class TestLibLarch(unittest.TestCase):
 
         self.tree.del_node("A")
 
+    def test_add_children_first(self):
+        """ Set children of a task first and only then add it tree.
+
+        This is the way the localfile backend works. """
+
+        CHILDREN_NUM = 6
+        children = ['%d@1' % i for i in range(1, CHILDREN_NUM+1)]
+        master_id = '0@1'
+
+        view = self.tree.get_main_view()
+        # We need to access root of the tree
+        tree_root = view.get_node('root')
+
+        # Clean tree first
+        for node_id in view.get_all_nodes():
+            self.tree.del_node(node_id)
+
+        self.assertEqual([], view.get_all_nodes())
+        self.assertEqual([], tree_root.get_children())
+
+        # Add master node with reference of children
+        master = DummyNode(master_id)
+        for child_id in children:
+            master.add_child(child_id)
+        self.tree.add_node(master)
+
+        # Now add children
+        for child_id in children:
+            self.tree.add_node(DummyNode(child_id))
+
+        view.print_tree()
+
+        # Check status
+        self.assertEqual([master_id] + children, sorted(view.get_all_nodes()))
+
+        # Master node
+        self.assertEqual([], view.node_parents(master_id))
+        self.assertEqual(children, view.node_all_children(master_id))
+
+        # Children
+        for node_id in children:
+            self.assertEqual([master_id], view.node_parents(node_id))
+            self.assertEqual([], view.node_all_children(node_id))
+
+        # Check root => there should be no nodes but master
+        self.assertEqual([master_id], tree_root.get_children())
+        self.assertEqual([master_id], view.nodes_all_children('root'))
+
 def test_suite():
     return unittest.TestLoader().loadTestsFromName(__name__)
