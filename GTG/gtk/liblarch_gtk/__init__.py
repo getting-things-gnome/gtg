@@ -137,7 +137,7 @@ class TreeView(gtk.TreeView):
         self.basetreemodel = TreeModel(tree, types)
         # Apply TreeModelSort to be able to sort
         if ENABLE_SORTING:
-            self.treemodel = MyTreeModelSort(self.basetreemodel)
+            self.treemodel = gtk.TreeModelSort(self.basetreemodel)
             for col_num, col, sort_func in sorting_func:
                 self.treemodel.set_sort_func(col_num,
                     self._sort_func, sort_func)
@@ -238,7 +238,6 @@ class TreeView(gtk.TreeView):
         This is a simple wrapper which prepares node objects and then
         call comparing function. In other case return default value -1
         """
-
         if model.iter_is_valid(iter1) and model.iter_is_valid(iter2):
             node_id_a = model.get_value(iter1, 0)
             node_id_b = model.get_value(iter2, 0)
@@ -246,7 +245,7 @@ class TreeView(gtk.TreeView):
                 id, order = self.treemodel.get_sort_column_id()
                 node_a = self.basetree.get_node(node_id_a)
                 node_b = self.basetree.get_node(node_id_b)
-                sort = func(node_id_a, node_id_b, order)
+                sort = func(node_a, node_b, order)
             else:
                 sort = -1
         else:
@@ -443,8 +442,8 @@ class TreeView(gtk.TreeView):
     def _separator_func(self, model, itera, user_data=None):
         """ Call user function to determine if this node is separator """
         if itera and model.iter_is_valid(itera):
-            nid = model.get_value(itera, 0)
-            node = self.basetree.get_node(nid)
+            node_id = model.get_value(itera, 0)
+            node = self.basetree.get_node(node_id)
             if self.separator_func:
                 return self.separator_func(node)
             else:
