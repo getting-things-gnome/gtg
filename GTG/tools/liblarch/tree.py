@@ -26,23 +26,31 @@ import gobject
 
 
 class SyncQueue:
-    def __init__(self):
+    def __init__(self, callback):
         self._queue = []
+        self._handler = None
+        self.callback = callback
         self._lock = threading.Lock()
 
     def push(self, *element):
         self._lock.acquire()
         self._queue.append(element)
+
+        if self._handler is None:
+            self._handler = gobject.idle_add(self.callback)
         self._lock.release()
 
     def process(self):
         """ Get slice of the queue and process it """
-        # FIXME return just slice of queue
         self._lock.acquire()
         if len(self._queue) > 0:
             toreturn = [self._queue.pop(0)]
         else:
             toreturn = []
+
+        if len(self._queue) == 0:
+            gobject.source_remove(self._handler)
+            self._handler = None
         self._lock.release()
         return toreturn
         
@@ -63,11 +71,10 @@ class MainTree:
             self.root = TreeNode(self.root_id)
         self.root.set_tree(self)
 
-        self._queue = SyncQueue()
+        self._queue = SyncQueue(self._process_queue)
         self._execution_lock = threading.Lock()
 
         self._origin_thread = threading.current_thread()
-        gobject.idle_add(self._process_queue)
 
     def __str__(self):
         return "<Tree: root = '%s'>" % (str(self.root))
