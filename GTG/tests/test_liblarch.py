@@ -671,6 +671,7 @@ class TestLibLarch(unittest.TestCase):
 
     def test_cyclic_paradox(self):
         """Try to add a node as a child of one of its grand-children."""
+        view = self.tree.get_main_view()
         node = DummyNode('temp')
         node.add_color('blue')
         self.tree.add_node(node,parent_id='0')
@@ -681,6 +682,8 @@ class TestLibLarch(unittest.TestCase):
         self.assertRaises(Exception,self.tree.add_parent,'0','temp')
         #More complex circular relationship
         self.assertRaises(Exception,self.tree.add_parent,'1','temp')
+        # And then printing => if it stops, nothing ciruclar stays there
+        view.print_tree(True)
         
     def test_mainview(self):
         """Verify mainview behavior
@@ -1488,8 +1491,6 @@ class TestLibLarch(unittest.TestCase):
         for child_id in children:
             self.tree.add_node(DummyNode(child_id))
 
-        view.print_tree()
-
         # Check status
         self.assertEqual([master_id] + children, sorted(view.get_all_nodes()))
 
@@ -1504,7 +1505,49 @@ class TestLibLarch(unittest.TestCase):
 
         # Check root => there should be no nodes but master
         self.assertEqual([master_id], tree_root.get_children())
-        self.assertEqual([master_id], view.nodes_all_children('root'))
+
+    def test_maintree_print_tree(self):
+        """ Test MainTree's print_tree() to string """
+        view = self.tree.get_main_view()
+        self.assertEqual(view.print_tree(True),
+"""root
+ 0
+ 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+  10
+   11
+    12
+     13
+      14
+""")
+        self.tree.add_node(DummyNode('temp'), '0')
+        self.assertEqual(['temp'], view.node_all_children('0'))
+        self.assertEqual(view.print_tree(True),
+"""root
+ 0
+  temp
+ 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+  10
+   11
+    12
+     13
+      14
+""")
 
 def test_suite():
     return unittest.TestLoader().loadTestsFromName(__name__)

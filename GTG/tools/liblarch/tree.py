@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
 # Getting Things Gnome! - a personal organizer for the GNOME desktop
-# Copyright (c) 2008-2010 - Lionel Dricot & Bertrand Rousseau
+# Copyright (c) 2008-2011 - Lionel Dricot & Bertrand Rousseau
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -17,22 +17,28 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-# FIXME lock should be used just for MainTree and TreeNode
-# FIXME make sure public interface is not called from each other (prevent deadlock)
 
-from GTG.tools.logger import Log
 import threading
 import gobject
 
+from GTG.tools.logger import Log
 
 class SyncQueue:
+    """ Synchronized queue for processing requests"""
+
     def __init__(self, callback):
+        """ Initialize synchronized queue.
+
+        @param callback - function for processing requests"""
         self._queue = []
         self._handler = None
         self.callback = callback
         self._lock = threading.Lock()
 
     def push(self, *element):
+        """ Add a new element to the queue.
+
+        Schedule its processing if it is not already.  """
         self._lock.acquire()
         self._queue.append(element)
 
@@ -41,25 +47,35 @@ class SyncQueue:
         self._lock.release()
 
     def process(self):
-        """ Get slice of the queue and process it """
+        """ Return elements to process
+        
+        At the moment, it returns just one element. In the future more
+        elements may be better to return (to speed it up).
+        
+        If there is no request left, disable processing. """
+
         self._lock.acquire()
         if len(self._queue) > 0:
             toreturn = [self._queue.pop(0)]
         else:
             toreturn = []
 
-        if len(self._queue) == 0:
+        if len(self._queue) == 0 and self._handler is not None:
             gobject.source_remove(self._handler)
             self._handler = None
         self._lock.release()
         return toreturn
-        
+
 class MainTree:
-    """Stores all nodes"""
+    """ Tree which stores and handle all requests """
 
     def __init__(self, root=None):
+        """ Initialize MainTree.
+
+        @param root - the "root" node which contains all nodes
+        """
+
         self.nodes = {}
-        self.old_paths = {}
         self.pending_relationships = []
 
         self.__cllbcks = {}
@@ -72,15 +88,16 @@ class MainTree:
         self.root.set_tree(self)
 
         self._queue = SyncQueue(self._process_queue)
-        self._execution_lock = threading.Lock()
-
         self._origin_thread = threading.current_thread()
 
     def __str__(self):
-        return "<Tree: root = '%s'>" % (str(self.root))
+        return "<Tree: root = '%s'>" % self.root
 
-####### PUBLIC INTERFACE ######################################################
+    def get_root(self):
+        """ Return root node """
+        return self.root
 
+####### INTERFACE FOR CALLBACKS ###############################################
     def register_callback(self, event, func):
         """ Store function and return unique key which can be used to
         unregister the callback later """
@@ -103,600 +120,512 @@ class MainTree:
         except KeyError:
             pass
 
-    def get_root(self):
-        return self.root
+    def _callback(self, event, node_id):
+        """ Inform others about the event """
+        for func in self.__cllbcks.get(event, {}).itervalues():
+            func(node_id)
 
-    def set_root(self, root):
-# FIXME change root_id?
-        self.root = root
-        self.root.set_tree(self)
-
-    def get_node_for_path(self, path):
-        return self._node_for_path(None,path)
-
-    def get_paths_for_node(self, node_id):
-        return self._paths_for_node(node_id)
-
-    def get_deleted_path(self,node_id):
-        """ Deleted path can be requested only once """
-# FIXME do i need this?
-        if self.old_paths.has_key(node_id):
-            return self.old_paths.pop(node_id)
-        else:
-            return None
-
-    def add_node(self, node_id, parent_id=None):
-        self.external_request(self._add_node, node_id, parent_id)
+####### INTERFACE FOR HANDLING REQUESTS #######################################
+    def add_node(self, node, parent_id=None):
+        self.external_request(self._add_node, node, parent_id)
 
     def remove_node(self, node_id, recursive=False):
         self.external_request(self._remove_node, node_id, recursive)
 
     def modify_node(self, node_id):
-        self.external_request(self.__modified, node_id)
+        self.external_request(self._modify_node, node_id)
 
-    def new_relationship(self, parent_id, child_id, refresh_nodes=True):
-        self._new_relationship(parent_id, child_id, refresh_nodes)
-        #self._external_request(self._new_relationship, parent_id, child_id, refresh_nodes)
+    def new_relationship(self, parent_id, child_id):
+        self.external_request(self._new_relationship, parent_id, child_id)
 
     def break_relationship(self, parent_id, child_id):
-        self._break_relationship(parent_id, child_id)
-        #self._external_request(self._break_relationship, parent_id, child_id)
+        self.external_request(self._break_relationship, parent_id, child_id)
 
     def external_request(self, request_type, *args):
+        """ Put the reqest into queue and in the main thread handle it """
+
         self._queue.push(request_type, *args)
 
         if self._origin_thread == threading.current_thread():
             self._process_queue()
 
     def _process_queue(self):
-        # FIXME Why execution lock is problem?
-        #if not self._execution_lock.acquire(False):
-        #   return True
-
+        """ Process requests from queue """
         for action in self._queue.process():
             func = action[0]
             func(*action[1:])
 
-        #elf._execution_lock.release()
-        return True
-
-    def _add_node(self, node, parent_id=None):
-        """ Add a node (TreeNode) to the tree.
-
-        If parent_id is None, it's a child of the root"""
-#FIXME change return codes to Exceptions?
-        node_id = node.get_id()
-        if self.nodes.has_key(node_id):
-            print "Error : A node with this id %s already exists" % node_id
-            return False
-
-        #We add the node
-        node.set_tree(self)
-        if not parent_id:
-            parent_id = 'root'
-        #we build the relationship before adding the node !
-        #That's crucial, else, the node will exist while
-        #children might not be yet aware of the relationship
-        self._new_relationship(parent_id, node_id)
-        self.nodes[node_id] = node
-        #build the relationships that were waiting for that node
-        for rel in list(self.pending_relationships):
-            if node_id in rel:
-                self._new_relationship(rel[0],rel[1],refresh_nodes=False)
-        self.callback("node-added", node_id)
-#FIXME shouldnt be switched?
+        # return True to process other requests as well
         return True
 
     def refresh_all(self):
-        # FIXME needed to add .keys()
+        """ Refresh all nodes """
         for node_id in self.nodes.keys():
             self.modify_node(node_id)
 
-#FIXME rewrite this function
-#FIXME should this method public
-    #this will remove a node but not his children
-    #if recursive: will also remove children and children of childrens
-    #does nothing if the node doesn't exist
-    def _remove_node(self, node_id,recursive=False):
-        if self.has_node(node_id):
-            node = self.get_node(node_id)
-    #        paths = self.get_paths_for_node(node)
-            if not node :
-                return
-            else:
-                #By removing the node early, we avoid unnecessary 
-                #update of that node
-                self.nodes.pop(node_id)
-                if node.has_child():
-                    for c_id in node.get_children():
-# FIXME test this use case:
-# i will recurively remove sub-tree and then add the same nodes. I guess, they 
-# will have the relationship already there (without adding)
-                        if not recursive:
-                            self._break_relationship(node_id,c_id)
-                        else:
-                            self.remove_node(c_id,recursive=recursive)
-                if node.has_parent():
-                    for p_id in node.get_parents():
-                        par = self.get_node(p_id)
-                        par.internal_remove_child(node_id)
-                else:
-                    self.root.remove_child(node_id)
-                self.callback("node-deleted", node_id)
-        else:
-            print "*** Warning *** Trying to remove a non-existing node"
-            
+####### IMPLEMENTATION OF HANDLING REQUESTS ###################################
+    def _create_relationship(self, parent_id, child_id):
+        """ Create relationship without any checks """
+        parent = self.nodes[parent_id]
+        child = self.nodes[child_id]
+
+        if child_id not in parent.children:
+            parent.children.append(child_id)
+
+        if parent_id not in child.parents:
+            child.parents.append(parent_id)
+
+        if child_id in self.root.children:
+            self.root.children.remove(child_id)
+
+    def _destroy_relationship(self, parent_id, child_id):
+        """ Destroy relationship without any checks """
+        parent = self.nodes[parent_id]
+        child = self.nodes[child_id]
+
+        if child_id in parent.children:
+            parent.children.remove(child_id)
+
+        if parent_id in child.parents:
+            child.parents.remove(parent_id)
+
+    def _is_circular_relation(self, parent_id, child_id):
+        """ Would the new relation be circular?
         
-#FIXME rewrite this function
-#FIXME should this method public
-# FIXME WRITE method
-    #create a new relationship between nodes if it doesn't already exist
-    #return False if nothing was done
-    def _new_relationship(self,parent_id,child_id,refresh_nodes=True):
-        def genealogic_search(node_id):
-            """ Builds a list of every ancestor of a node. It is used to
-            prevent cyclic dependencies. """
+        Go over every possible ancestors. If one of them is child_id,
+        this would be circular relation.
+        """
 
-            if node_id not in genealogy:
-                genealogy.append(node_id)
-                if self.has_node(node_id):
-                    node = self.get_node(node_id)
-                    for par in node.get_parents():
-                        genealogic_search(par)
-
-        Log.debug("new relationship between %s and %s" %(parent_id,child_id))
-
-        if [parent_id,child_id] in self.pending_relationships:
-            self.pending_relationships.remove([parent_id,child_id])
-
-        toreturn = False
-        #no relationship allowed with yourself
-        if parent_id != child_id:
-#FIXME hardcoded value => use self.root_id
-            if parent_id == 'root':
-#                Log.debug("    -> adding %s to the root" %child_id)
-                p = self.get_root()
-            else:
-                if self.has_node(parent_id):
-                    p = self.get_node(parent_id)
-                else:
-                    p = None
-
-            if p and self.has_node(child_id):
-                c = self.get_node(child_id)
-                #Avoid the typical time-traveller problem 
-                #being-the-father-of-yourself or the grand-father.
-                #We need some genealogic research !
-                genealogy = []
-                genealogic_search(parent_id)
-                if child_id not in genealogy:
-                    if not p.has_child(child_id):
-                        #print "adding child %s to %s" %(child_id,parent_id)
-                        p.internal_add_child(child_id)
-                        toreturn = True
-                    if parent_id != 'root' and not c.has_parent(parent_id):
-                        #print "adding parent %s to %s" %(parent_id,child_id)
-                        c.internal_add_parent(parent_id)
-                        toreturn = True
-                    #removing the root from the list of parent
-                    if toreturn and parent_id != 'root' and \
-                                                self.root.has_child(child_id):
-                        self.root.remove_child(child_id)
-                    if not toreturn:
-                        Log.debug("  * * * * * Relationship already existing")
-                else:
-                    #FIXME There was an unreachable code, I moved exception lower
-                    # FIXME discuss what should be consitent state after detecting circular relationship. The current behavior? Or should remove the last added thing? (I am not sure)
-                    #a circular relationship was found
-                    #undo everything
-                    Log.debug("  * * * * * Circular relationship found : undo")
-                    self._break_relationship(parent_id,child_id)
-                    toreturn = False
-                    raise Exception("Cannot build circular relationship"+\
-                                    "between %s and %s" %(parent_id,child_id))
-            else:
-                #at least one of the node is not loaded. Save the relation for later
-                #undo everything
-#                print "breaking relation %s %s" %(parent_id,child_id)
-                self._break_relationship(parent_id,child_id)
-                #save it for later
-                if [parent_id,child_id] not in self.pending_relationships:
-                    self.pending_relationships.append([parent_id,child_id])
-                toreturn = False
-
-        if refresh_nodes and toreturn:
-            if parent_id != 'root':
-                self.__modified(parent_id)
-            self.__modified(child_id)
-
-        return toreturn
-    
-#FIXME rewrite this function
-#FIXME should this method public
-# FIXME WRITE method
-    #break an existing relationship. The child is added to the root
-    #return False if the relationship didn't exist    
-    def _break_relationship(self,parent_id,child_id):
-        toreturn = False
-        if self.has_node(parent_id):
-            p = self.get_node(parent_id)
-            if p.has_child(child_id):
-                ret = p.remove_child(child_id)
-                toreturn = True
-        if self.has_node(child_id):
-            c = self.get_node(child_id)
-            if c.has_parent(parent_id):
-                c.internal_remove_parent(parent_id)
-                toreturn = True
-                #if no more parent left, adding to the root
-            if not c.has_parent() and c not in self.root.get_children():
-                self.root.add_child(child_id)
-        if toreturn:
-            self.__modified(parent_id)
-            self.__modified(child_id)
-        return toreturn
+        visited = []
+        ancestors = [parent_id]
+        while ancestors != []:
+            node_id = ancestors.pop(0)
+            if node_id == child_id:
+                return True
             
-#FIXME rewrite this function
-#FIXME should this method public
-    #Trying to make a function that bypass the weirdiness of lists
-    def get_node(self, node_id=None):
-        toreturn = None
+            if node_id not in self.nodes:
+                continue
+    
+            for ancestor_id in self.nodes[node_id].parents:
+                if ancestor_id not in visited:
+                    ancestors.append(ancestor_id)
+
+        return False
+        
+    def _add_node(self, node, parent_id):
+        """ Add a node to the tree
+
+        @param node - node to be added
+        @param parent_id - parent to add or it will be add to root
+        """
+        node_id = node.get_id()
         if node_id in self.nodes:
-            toreturn = self.nodes[node_id]
-        elif node_id == 'root' or node_id == None:
-            toreturn = self.root
+            print "Error: Node '%s' already exists" % node_id
+            return False
+
+        node.set_tree(self)
+        self.nodes[node_id] = node
+
+        add_to_root = True
+        parents_to_refresh = []
+        children_to_refresh = []
+
+        # Build pending relationships
+        for rel_parent_id, rel_child_id in list(self.pending_relationships):
+            # Adding as a child
+            if rel_child_id == node_id and rel_parent_id in self.nodes:
+                if not self._is_circular_relation(rel_parent_id, node_id):
+                    self._create_relationship(rel_parent_id, node_id)
+                    add_to_root = False
+                    parents_to_refresh.append(rel_parent_id)
+                else:
+                    print "Error: Detected pending circular relationship", \
+                        rel_parent_id, rel_child_id
+                self.pending_relationships.remove((rel_parent_id, rel_child_id))
+
+            # Adding as a parent
+            if rel_parent_id == node_id and rel_child_id in self.nodes:
+                if not self._is_circular_relation(node_id, rel_child_id):
+                    self._create_relationship(node_id, rel_child_id)
+                    children_to_refresh.append(rel_child_id)
+                else:
+                    print "Error: Detected pending circular relationship", \
+                        rel_parent_id, rel_child_id
+                self.pending_relationships.remove((rel_parent_id, rel_child_id))
+
+        # Build relationship with given parent
+        if parent_id is not None:
+            if self._is_circular_relation(parent_id, node_id):
+                raise Exception('Creating circular relationship between %s and %s' % \
+                     (parent_id, node_id))
+            if parent_id in self.nodes:
+                self._create_relationship(parent_id, node_id)
+                add_to_root = False
+                parents_to_refresh.append(parent_id)
+            else:
+                self.pending_relationships.append((parent_id, node_id))
+
+        # Add at least to root
+        if add_to_root:
+            self.root.children.append(node_id)
+
+        # Send callbacks
+        for parent_id in parents_to_refresh:
+            self._callback("node-modified", parent_id)
+
+        self._callback("node-added", node_id)
+
+        for child_id in children_to_refresh:
+            self._callback("node-modified", parent_id)
+
+    def _remove_node(self, node_id, recursive=False):
+        """ Remove node from tree """
+
+        if node_id not in self.nodes:
+            print "*** Warning *** Trying to remove a non-existing node"
+            return
+
+        # Do not remove root node
+        if node_id is None:
+            return
+
+        # Remove pending relationships with this node
+        for relation in list(self.pending_relationships):
+            if node_id in relation:
+                self.pending_relationships.remove(relation)
+
+        node = self.nodes[node_id]
+
+        # Handle parents
+        for parent_id in node.parents:
+            self._destroy_relationship(parent_id, node_id)
+            self._callback('node-modified', parent_id)
+
+        # Handle children
+        for child_id in node.children:
+            if recursive:
+                self._remove_node(child_id, True)
+            else:
+                self._destroy_relationship(node_id, child_id)
+                self._callback('node-modified', child_id)
+                if self.nodes[child_id].parents == []:
+                    self.root.children.append(child_id)
+
+        if node_id in self.root.children:
+            self.root.children.remove(node_id)
+
+        self.nodes.pop(node_id)
+        self._callback('node-deleted', node_id)
+
+    def _modify_node(self, node_id):
+        """ Force update of a node """
+        if node_id != self.root_id and node_id in self.nodes:
+            self._callback('node-modified', node_id)
+
+    def _new_relationship(self, parent_id, child_id):
+        """ Creates a new relationship 
+        
+        This method is used mainly from TreeNode"""
+
+        if (parent_id, child_id) in self.pending_relationships:
+            self.pending_relationships.remove((parent_id, child_id))
+
+        if not parent_id or not child_id or parent_id == child_id:
+            return False
+
+        if parent_id not in self.nodes or child_id not in self.nodes:
+            self.pending_relationships.append((parent_id, child_id))
+            return True
+
+        if self._is_circular_relation(parent_id, child_id):
+            self._destroy_relationship(parent_id, child_id)
+            raise Exception('Cannot build circular relationship between %s and %s' % (parent_id, child_id))
+
+
+        self._create_relationship(parent_id, child_id)
+
+        # Remove from root when having a new relationship
+        if child_id in self.root.children:
+            self.root.children.remove(child_id)
+
+        self._callback('node-modified', parent_id)
+        self._callback('node-modified', child_id)
+
+    def _break_relationship(self, parent_id, child_id):
+        """ Remove a relationship
+
+        This method is used mainly from TreeNode """
+        for rel_parent, rel_child in list(self.pending_relationships):
+            if rel_parent == parent_id and rel_child == child_id:
+                self.pending_relationships.remove((rel_parent, rel_child))
+
+        if not parent_id or not child_id or parent_id == child_id:
+            return False
+
+        if parent_id not in self.nodes or child_id not in self.nodes:
+            return False
+
+        self._destroy_relationship(parent_id, child_id)
+
+        # Move to root if beak the last parent
+        if self.nodes[child_id].get_parents() == []:
+            self.root.add_child(child_id)
+
+        self._callback('node-modified', parent_id)
+        self._callback('node-modified', child_id)
+
+
+####### INTERFACE FOR READING STATE OF TREE ###################################
+    def has_node(self, node_id):
+        """ Is this node_id in this tree? """
+        return node_id in self.nodes
+
+    def get_node(self, node_id=None):
+        """ Return node of tree or root node of this tree """
+        if node_id in self.nodes:
+            return self.nodes[node_id]
+        elif node_id == self.root_id or node_id is None:
+            return self.root
         else:
-            raise ValueError("Node %s is not in the tree. Wrong get_node()" % node_id)
-        return toreturn
-            
+            raise ValueError("Node %s is not in the tree" % node_id)
+
+    def get_node_for_path(self, path):
+        """ Convert path into node_id
+        
+        @return node_id if path is valid, None otherwise
+        """
+        if len(path) == 0:
+            return None
+
+        node_id = self.root_id
+        for index in path:
+            node = self.get_node(node_id)
+            if node and 0 <= index < len(node.children):
+                node_id = node.children[index]
+            else:
+                return None
+
+        return node_id
+
+    def get_paths_for_node(self, node_id):
+        """ Get all paths for node_id """
+        if not node_id or node_id == self.root_id:
+            return [()]
+        elif node_id in self.nodes:
+            node = self.nodes[node_id]
+            if node.has_parent():
+                paths = []
+                for parent_id in node.get_parents():
+                    if parent_id not in self.nodes:
+                        continue
+                    index = parent.get_child_index(node_id)
+                    for path in self.get_paths_for_node(parent_id):
+                        paths.append(path + (index,))
+                return paths
+            else:
+                index = self.root.get_child_index(node_id)
+                return [(index,)]
+        else:
+            raise ValueError("Cannot get path for non existing node %s" % node_id)
+
     def get_all_nodes(self):
-        return list(self.nodes.keys())
-    
-#FIXME rewrite this function
-#FIXME should this method public
-    #parent_id is used only if node_id has multiple parents.
-    #if parent_id is none, a random parent is used.
-    def next_node(self,node_id,parent_id=None):
+        """ Return list of all nodes in this tree """
+        return self.nodes.keys()
+
+    def next_node(self, node_id, parent_id=None):
+        """ Return the next sibling node or None if there is none
+        
+        @param  node_id - we look for siblings of this node
+        @param parent_id - specify which siblings should be used, 
+            if task has more parents. If None, random parent will be used
         """
-        Returns the next sibling node, or None if there are no other siblings
-        """
-        #We should take the next good node, not the next base node
-        if not node_id:
+        if node_id is None:
             raise ValueError('node_id should be different than None')
-        toreturn = None
+
         node = self.get_node(node_id)
         parents_id = node.get_parents()
         if len(parents_id) == 0:
-            parid = 'root'
+            parid = self.root_id
         elif parent_id in parents_id:
             parid = parent_id
         else:
             parid = parents_id[0]
+
         parent = self.get_node(parid)
         if not parent:
-            parent = self.root
+            raise ValueError('Parent does not exist')
+
         index = parent.get_child_index(node_id)
         if index == None:
             error = 'children are : %s\n' %parent.get_children()
             error += 'node %s is not a child of %s' %(node_id,parid)
             raise IndexError(error)
+
         if parent.get_n_children() > index+1:
-            toreturn = parent.get_nth_child(index+1)
-        return toreturn
-
-#FIXME rewrite this function
-#FIXME should this method public
-#FIXME wtf? shouldnt it be somewhere different?
-    def is_displayed(self, node_id):
-        return self.has_node(node_id)
-
-#FIXME rewrite this function
-#FIXME should this method public
-    def has_node(self, node_id):
-        return (node_id in self.nodes)
-
-#FIXME rewrite this function
-#FIXME should this method public
-    def print_tree(self,string=None):
-        if string:
-            print "print_tree with string is not implemented in tree.py"
-        self._print_from_node(self.root)
-
-#FIXME rewrite this function
-#FIXME should this method public
-    def visit_tree(self, pre_func=None, post_func=None):
-        if self.root.has_child():
-            for c in self.root.get_children():
-                node = self.root.get_child(c)
-                self._visit_node(node, pre_func, post_func)
-
-####### PRIVATE METHODS #######################################################
-        
-    def callback(self, event, node_id):
-        """ Inform others about the event. """
-# FIXME MAKE this private => prepend _
-        for func in self.__cllbcks.get(event, {}).itervalues():
-            func(node_id)
-        
-    def __modified(self, node_id):
-# FIXME why two underscores?
-        if node_id != 'root' and node_id in self.nodes:
-            self.callback("node-modified", node_id)
-
-#FIXME rewrite this function
-    def _node_for_path(self,node_id,path):
-        if node_id:
-            node = self.get_node(node_id)
-        else:
-            node = self.root
-
-        if node and path and path[0] < node.get_n_children():
-            if len(path) == 1:
-                return node.get_nth_child(path[0])
-            else:
-                node_id = node.get_nth_child(path[0])
-                path = path[1:]
-                return self._node_for_path(node_id, path)
+            return parent.get_nth_child(index+1)
         else:
             return None
 
-#FIXME rewrite this function
-#FIXME added paretn_id
-    def _paths_for_node(self, node_id=None):
-        toreturn = []
-        if node_id:
-            node = self.get_node(node_id)
+    def print_tree(self, string=False):
+        output = self.root_id + "\n"
+        stack = [(" ", child_id) for child_id in reversed(self.root.children)]
+
+        while stack != []:
+            prefix, node_id = stack.pop()
+            output += prefix + node_id + "\n"
+            prefix += " "
+            for child_id in reversed(self.nodes[node_id].children):
+                stack.append((prefix, child_id))
+
+        if string:
+            return output
         else:
-            node = self.root
-        if node: 
-            if node == self.root:
-                toreturn = [()]
-            elif not node.has_parent():
-                index  = self.root.get_child_index(node_id)
-                toad = (index, )
-                toreturn.append(toad)
-            else:
-                parents_id = node.get_parents()
+            print output,
 
-
-# FIXME i am not able to determine path for children if I dont know the whole path (parent can also be multiparent child... It will be really problematic!!!!
-
-                for parent_id in parents_id:
-                    parent = self.get_node(parent_id)
-                    #print parent
-                    if parent:
-                        index  = parent.get_child_index(node_id)
-                        for p in self._paths_for_node(parent_id):
-                            toreturn.append(p+(index,))
-# FIXME I am not sure why there is this code. I guess, the author wanted to handle the state when there is no parent. But how it is possible, that this bug wasnt discovered before? Does anybody use this function? FIXME
-                #else:
-                #    toreturn = [()]
-        else:
-            raise ValueError("Cannot get path for non existing node %s" %node_id)
-        return toreturn
-
-#FIXME rewrite this function
-    def _print_from_node(self, node, prefix=""):
-        print prefix + node.node_id
-        prefix = prefix + " "
-        if node.has_child():
-            for c in node.get_children():
-                cur_node = node.get_child(c)
-                self._print_from_node(cur_node, prefix)
-
-#FIXME rewrite this function
-    def _visit_node(self, node, pre_func=None, post_func=None):
-        if pre_func:
-            pre_func(node)
-        if node.has_child():
-            for c in node.get_children():
-                cur_node = node.get_child(c)
-                self._visit_node(cur_node, pre_func, post_func)
-        if post_func:
-            post_func(node)
-
-
-class TreeNode():
-    """A single node of a tree"""
+class TreeNode:
+    """ Object just for a single node in Tree """
+# FIXME maybe add a lock which prevents changing root at the wrong moment,
+# updating children, etc
 
     def __init__(self, node_id, parent=None):
+        """ Initializes node
+
+        @param node_id - unique identifier of node (str)
+        @param parent - node_id of parent
+        """
         self.node_id = node_id
 
         self.parents = []
         self.children = []
 
         self.tree = None
-        self.pending_relationship = []
+        self.pending_relationships = []
 
         if parent:
             self.add_parent(parent)
 
     def __str__(self):
         return "<TreeNode: '%s'>" % (self.node_id)
-        
-    def modified(self):
-        #FIXME : we should maybe have
-        # a directional recursive update
-        if self.tree:
-            #then the task
-#            print "modify for %s sent to the tree" %self.id
-            self.tree.modify_node(self.node_id)
-#FIXME exception if not tree
-#FIXME maybe add a special decorator @mustBeInTree
-        
-    def set_tree(self, tree):
-        self.tree = tree
-        for rel in list(self.pending_relationship):
-            self.tree.new_relationship(rel[0],rel[1])
-            self.pending_relationship.remove(rel)
-        # WTF? Why to remove relationship, why not immediately? should it be run in different thread? Or better said, will more than one thread work on it? FIXME
-            
-    def get_tree(self):
-        return self.tree
 
     def get_id(self):
+        """ Return node_id """
         return self.node_id
-    
-    def new_relationship(self,par,chi):
-        if self.tree:
-            return self.tree.new_relationship(par,chi)
-        else:
-            self.pending_relationship.append([par,chi])
-            #it's pending, we return False
-            Log.debug("** There's still no tree, relationship is pending")
-            return False
         
-        
-##### Parents
-
-    def has_parent(self,node_id=None):
-        # FIXME get rid of has_node function
-        if node_id:
-            toreturn = self.tree.has_node(node_id) and (node_id in self.parents)
-        else:
-            toreturn = len(self.parents) > 0
-        return toreturn
-    
-    #this one return only one parent.
-    #useful for tree where we know that there is only one
-    def get_parent(self):
-# FIXME get rid of has_parent() => transform it to _has_parent
-        #we should throw an error if there are multiples parents
-        if len(self.parents) > 1 :
-            print "Warning: get_parent will return one random parent for task %s because there are multiple parents." %(self.get_id())
-            print "Get_parent is deprecated. Please use get_parents instead"
-        if self.has_parent():
-            return self.parents[0]
-        else:
-            return None
-
-    def get_parents(self):
-#FIXME  shouldnt this be just
-# return self.parents?
-        '''
-        Return a list of parent ids
-        '''
-        toreturn = []
+    def modified(self):
+        """ Force to update node (because it has changed) """
         if self.tree:
-            for p in self.parents:
-                if self.tree.has_node(p):
-                    toreturn.append(p)
-        return toreturn
+            self.tree.modify_node(self.node_id)
 
+    def set_tree(self, tree):
+        """ Set tree which is should contain this node.
+        
+        This method should be called only from MainTree. It is not
+        part of public interface. """
+        self.tree = tree
+        for parent_id, child_id in self.pending_relationships:
+            self.tree.new_relationship(parent_id, child_id)
+        self.pending_relationships = []
+
+    def get_tree(self):
+        """ Return associated tree with this node """
+        return self.tree
+
+    def new_relationship(self, parent_id, child_id):
+        """ Create new relationship or save it for later if there is no tree """
+        if self.tree:
+            self.tree.new_relationship(parent_id, child_id)
+        else:
+            self.pending_relationships.append((parent_id, child_id))
+
+####### Parents ###############################################################
     def add_parent(self, parent_id):
-        self.external_request(self.internal_add_parent, parent_id)
-
-    def internal_add_parent(self, parent_id):
+        """ Add a new parent """
         if parent_id not in self.parents:
             self.parents.append(parent_id)
-#FIXME two times the same relationship
-            toreturn = self.new_relationship(parent_id, self.get_id())
-        else:
-            toreturn = False
-        return toreturn
-    
-    #set_parent means that we remove all other parents
-    #if parent_id is None, we will remove all parents, thus being on the root.
-    def set_parent(self,parent_id):
-#this has some optimization to do not remove parent if it is not necessary
-        self.external_request(self.internal_set_parent, parent_id)
+            self.new_relationship(parent_id, self.node_id)
 
-    def internal_set_parent(self, parent_id):
+    def set_parent(self, parent_id):
+        """ Remove other parents and set this parent as only parent """
         is_already_parent_flag = False
-        for i in self.parents:
-            if i != parent_id:
-                self.remove_parent(i)
+        for node_id in self.parents:
+            if node_id != parent_id:
+                self.remove_parent(node_id)
             else:
                 is_already_parent_flag = True
+
         if parent_id and not is_already_parent_flag:
             self.add_parent(parent_id)
 
-            
-    def remove_parent(self,node_id):
-        self.external_request(self.internal_remove_parent, node_id)
+    def remove_parent(self, parent_id):
+        """ Remove parent """
+        if parent_id in self.parents:
+            self.parents.remove(parent_id)
+            self.tree.break_relationship(parent_id, self.node_id)
 
-    def internal_remove_parent(self, node_id):
-        if node_id in self.parents:
-            self.parents.remove(node_id)
-            ret = self.tree.break_relationship(node_id,self.get_id())
-            return ret
+    def has_parent(self, parent_id=None):
+        """ Has parent/parents?
+
+        @param parent_id - None => has any parent?
+            not None => has this parent?
+        """
+        if parent_id:
+            return self.tree.has_node(parent_id) and parent_id in self.parents
         else:
-            return False
-            
-###### Children
+            return len(self.parents) > 0
 
-    def has_child(self,node_id=None):
-        if node_id :
-            return node_id in self.children
+    def get_parents(self):
+        """ Return parents of node """
+        parents = []
+        if self.tree:
+            for parent_id in self.parents:
+                if self.tree.has_node(parent_id):
+                    parents.append(parent_id)
+
+        return parents
+
+####### Children ##############################################################
+    def add_child(self, child_id):
+        """ Add a children to node """
+        if child_id not in self.children:
+            self.children.append(child_id)
+            self.new_relationship(self.node_id, child_id)
+        else:
+            Log.debug("%s was already in children of %s" % (child_id, self.node_id))
+
+    def has_child(self, child_id=None):
+        """ Has child/children?
+
+        @param child_id - None => has any child?
+            not None => has this child?
+        """
+        if child_id:
+            return child_id in self.children
         else:
             return bool(self.children)
 
     def get_children(self):
-        return list(self.children)
+        """ Return children of nodes """
+        children = []
+        if self.tree:
+            for child_id in self.children:
+                if self.tree.has_node(child_id):
+                    children.append(child_id)
+
+        return children
 
     def get_n_children(self):
-        return len(self.children)
+        """ Return count of children """
+        return len(self.get_children())
 
     def get_nth_child(self, index):
+        """ Return nth child """
         try:
             return self.children[index]
         except(IndexError):
-            raise ValueError("Index is not in the children list")
-
-    def get_child(self, node_id):
-        if self.tree == None:
-            raise Exception('task %s has not tree !' % self.node_id)
-        if self.tree and self.tree.has_node(node_id) and node_id in self.children:
-            return self.tree.get_node(node_id)
-        else:
-            return None
+            raise ValueError("Requested non-existing child")
 
     def get_child_index(self, node_id):
         if node_id in self.children:
             return self.children.index(node_id)
         else:
             return None
-
-    #return True if the child was added correctly. False otherwise
-    #takes the node_id of the child as parameter.
-    #if the child is not already in the tree, the relation is anyway "saved"
-    def add_child(self, node_id):
-        self.external_request(self.internal_add_child, node_id)
-
-    def internal_add_child(self, node_id):
-        if node_id not in self.children:
-            self.children.append(node_id)
-            toreturn = self.new_relationship(self.get_id(),node_id)
-        else:
-            Log.debug("%s was already in children of %s" %(node_id,self.get_id()))
-            toreturn = False
-        return toreturn
-
-    def remove_child(self, node_id):
-        self.external_request(self.internal_remove_child, node_id)
-
-    def internal_remove_child(self, node_id):
-        if node_id in self.children:
-            self.children.remove(node_id)
-            if self.tree:
-                ret = self.tree.break_relationship(self.get_id(),node_id)
-            return ret
-        else:
-            return False
-
-    def external_request(self, func, *params):
-        if self.tree:
-            self.tree.external_request(func, *params)
-        else:
-            func(*params)
-        
-    def change_id(self,newid):
-        oldid = self.node_id
-        self.node_id = newid
-        for p in self.parents:
-            par = self.tree.get(p)
-            par.remove_child(oldid)
-            par.add_child(self.node_id)
-        for c in self.get_children():
-            c.add_parent(newid)
-            c.remove_parent(oldid)
