@@ -796,8 +796,7 @@ class TaskBrowser(gobject.GObject):
                 def selecter(treemodelsort, path, iter, self):
                     self.__last_quick_added_tid_event.wait()
                     treeview = self.vtree_panes['active']
-                    liblarch_path = treemodelsort.convert_path_to_child_path(path)
-                    tid = self.activetree.get_node_for_path(liblarch_path)
+                    tid = self.activetree.get_node_for_path(path)
                     if self.__last_quick_added_tid == tid:
                         #this is the correct task
                         treemodelsort.disconnect(self.__quick_add_select_handle)
@@ -809,7 +808,7 @@ class TaskBrowser(gobject.GObject):
             #event that is set when the new task is created
             self.__last_quick_added_tid_event = threading.Event()
             self.__quick_add_select_handle = \
-                self.vtree_panes['active'].get_sorted_treemodel().connect(\
+                self.vtree_panes['active'].get_model().connect(\
                                     "row-inserted",
                                     select_next_added_task_in_browser,
                                     self)
