@@ -326,7 +326,6 @@ class MainTree:
         """ Creates a new relationship 
         
         This method is used mainly from TreeNode"""
-
         if (parent_id, child_id) in self.pending_relationships:
             self.pending_relationships.remove((parent_id, child_id))
 
@@ -474,7 +473,7 @@ class MainTree:
             prefix, node_id = stack.pop()
             output += prefix + node_id + "\n"
             prefix += " "
-            for child_id in reversed(self.nodes[node_id].children):
+            for child_id in reversed(self.nodes[node_id].get_children()):
                 stack.append((prefix, child_id))
 
         if string:
