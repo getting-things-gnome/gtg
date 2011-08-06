@@ -1549,5 +1549,25 @@ class TestLibLarch(unittest.TestCase):
       14
 """)
 
+    def test_almost_circular_dependencies(self):
+        """ Have the nasty tree:
+        n1
+        -n2
+        -n3
+        --n2
+        """
+
+        a = DummyNode("a")
+        b = DummyNode("b")
+        c = DummyNode("c")
+
+        a.add_child("b")
+        a.add_child("c")
+        c.add_child("b")
+
+        self.tree.add_node(a)
+        self.tree.add_node(b)
+        self.tree.add_node(c)
+
 def test_suite():
     return unittest.TestLoader().loadTestsFromName(__name__)
