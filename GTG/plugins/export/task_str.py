@@ -90,7 +90,7 @@ def tree_to_TaskStr(tree, nodes, plugin_api, days = None):
         task_str = TaskStr_factory(task)
         tasks_str.append(task_str)
         if node.has_child():
-            children = [node.get_child(c) for c in node.get_children()]
+            children = [tree.get_node(c) for c in node.get_children()]
             task_str.subtasks = tree_to_TaskStr(tree,
                                                 children,
                                                 plugin_api,

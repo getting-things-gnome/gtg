@@ -166,12 +166,12 @@ class NotificationArea:
                 if tree.is_displayed(tid):
                     fun(tid)
                     if node.has_child():
-                        children = [node.get_child(c) \
+                        children = [self.__tree.get_node(c) \
                                     for c in node.get_children()]
                         visit_tree(tree, children, fun)
         virtual_root = self.__tree.get_root()
         visit_tree(self.__tree,
-                   [virtual_root.get_child(c) \
+                   [self.__tree.get_node(c) \
                             for c in virtual_root.get_children()],
                    lambda t: self.__on_task_added(None, t, None))
 

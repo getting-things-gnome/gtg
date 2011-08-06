@@ -69,7 +69,7 @@ class pluginExport:
             tree.apply_filter('closed')
             timespan = -7
         meta_root_node = tree.get_root()
-        root_nodes = [meta_root_node.get_child(c) \
+        root_nodes = [tree.get_node(c)
                                         for c in meta_root_node.get_children()]
         tasks_str = tree_to_TaskStr(tree, root_nodes, self.plugin_api, timespan)
         document = str(CheetahTemplate(
