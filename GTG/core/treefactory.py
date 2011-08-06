@@ -151,12 +151,16 @@ class TreeFactory:
     
     def is_workable(self,task,parameters=None):
         """ Filter of tasks that can be worked """
-        workable = True
-        for cid in task.get_children():
-            c = task.get_child(cid)
-            if c and c.get_status() == Task.STA_ACTIVE:
-                workable = False
-        return workable
+        tree = task.get_tree()
+        for child_id in task.get_children():
+            if not tree.has_node(child_id):
+                continue
+
+            child = tree.get_node(child_id)
+            if child.get_status() == Task.STA_ACTIVE:
+                return False
+
+        return True
         
     def is_started(self,task,parameters=None):
         '''Filter for tasks that are already started'''
