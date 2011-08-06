@@ -67,7 +67,7 @@ class SyncQueue:
 class MainTree:
     """ Tree which stores and handle all requests """
 
-    def __init__(self, root=None):
+    def __init__(self):
         """ Initialize MainTree.
 
         @param root - the "root" node which contains all nodes
@@ -79,10 +79,7 @@ class MainTree:
         self.__cllbcks = {}
 
         self.root_id = 'root'
-        if root:
-            self.root = root
-        else:
-            self.root = TreeNode(self.root_id)
+        self.root = TreeNode(self.root_id)
         self.root.set_tree(self)
 
         self._queue = SyncQueue(self._process_queue)
@@ -222,6 +219,11 @@ class MainTree:
             return False
 
         node.set_tree(self)
+        for relationship in node.pending_relationships:
+            if relationship not in self.pending_relationships:
+                self.pending_relationships.append(relationship)
+        node.pending_relationships = []
+
         self.nodes[node_id] = node
 
         add_to_root = True
@@ -520,9 +522,6 @@ class TreeNode:
         This method should be called only from MainTree. It is not
         part of public interface. """
         self.tree = tree
-        for parent_id, child_id in self.pending_relationships:
-            self.tree.new_relationship(parent_id, child_id)
-        self.pending_relationships = []
 
     def get_tree(self):
         """ Return associated tree with this node """
