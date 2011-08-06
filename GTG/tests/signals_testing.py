@@ -6,7 +6,6 @@ import unittest
 from GTG.tools.watchdog import Watchdog
 
 
-
 class SignalCatcher(object):
     '''
     A class to test signals

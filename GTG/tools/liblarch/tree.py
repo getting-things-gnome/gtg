@@ -21,8 +21,6 @@
 import threading
 import gobject
 
-from GTG.tools.logger import Log
-
 class SyncQueue:
     """ Synchronized queue for processing requests"""
 
@@ -326,6 +324,7 @@ class MainTree:
         """ Creates a new relationship 
         
         This method is used mainly from TreeNode"""
+
         if (parent_id, child_id) in self.pending_relationships:
             self.pending_relationships.remove((parent_id, child_id))
 
@@ -589,7 +588,7 @@ class TreeNode:
             self.children.append(child_id)
             self.new_relationship(self.node_id, child_id)
         else:
-            Log.debug("%s was already in children of %s" % (child_id, self.node_id))
+            print "%s was already in children of %s" % (child_id, self.node_id)
 
     def has_child(self, child_id=None):
         """ Has child/children?
