@@ -60,7 +60,7 @@ class Tree:
 
     def refresh_all(self):
         """ Refresh all nodes """
-        sefl.__tree.refresh_all()
+        self.__tree.refresh_all()
 
     def move_node(self, node_id, new_parent_id=None):
         """ Move the node to a new parent (dismissing all other parents)
