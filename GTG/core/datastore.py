@@ -483,7 +483,7 @@ class DataStore(object):
             for task_id in self.get_all_tasks():
                 if self.please_quit:
                     break
-                backend.queue_set_task(None, task_id)
+                backend.queue_set_task(task_id)
         t = threading.Thread(target = _internal_flush_all_tasks)
         t.start()
         self.backends[backend_id].start_get_tasks()
@@ -640,13 +640,13 @@ class TaskSource():
 #        return self.task_filter(task)
         return True
 
-    def queue_set_task(self, sender, tid):
+    def queue_set_task(self, tid, path=None):
         """
         Updates the task in the DataStore.  Actually, it adds the task to a
         queue to be updated asynchronously.
 
-        @param sender: not used, any value will do.
         @param task: The Task object to be updated.
+        @param path: its path in TreeView widget => not used there
         """
         if self.should_task_id_be_stored(tid):
             if tid not in self.to_set and tid not in self.to_remove:
