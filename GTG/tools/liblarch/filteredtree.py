@@ -203,6 +203,29 @@ class FilteredTree():
             for path in self.get_paths_for_node(node_id):
                 self.callback(action, node_id, path)
 
+# FIXME I must admit, this is a little bit awkward. When adding/removing
+# a node, we want to update parent later. But! We have to make sure parent
+# is okay because we need a place to put / remove children. Then we send
+# modified signal. When parents are solved, we do not have to care about
+# them and just care about the children. But when we finish dealing with
+# children, the parent is not update. In most case, this is not a problem.
+# But current GTG shows count of subtasks in the name of parent and we NEED
+# to update parent.
+#
+# I am not sure what can we do about it. Maybe design a new algorithm?
+# Maybe an optimization of signals could help. Top of my head, we can cache
+# the callbacks and reduce redundant 'modified' signals (a heuristic needed)
+#
+# Please, use profiler first - maybe it does not matter at all (in that case
+# feel free to remove this long comment)
+#
+# (Izidor, 2011-08-07)
+        if action in ['added', 'deleted']:
+            for parent_id in self.nodes[node_id]['parents']:
+                if parent_id != self.root_id:
+                    for path in self.get_paths_for_node(parent_id):
+                        self.callback('modified', parent_id, path)
+
         if action == 'deleted':
             # Remove node from cache
             for parent_id in self.nodes[node_id]['parents']:
