@@ -487,6 +487,17 @@ class TaskBrowser(gobject.GObject):
 #                Log.error("Invalid configuration for sorting columns")
 
         self.set_view(self.config.get("view"))
+
+#FIXME this is just a big hack, it should be refractored in the future,
+# maybe better designed
+        def open_task(req, t):
+            if req.has_task(t):
+                self.vmanager.open_task(t)
+                # Do not do it again
+                return False
+            else:
+                # Try it later
+                return True
                 
         if self._start_gtg_maximized():
             odic = self.config.get("opened_tasks")
@@ -495,7 +506,7 @@ class TaskBrowser(gobject.GObject):
 #            if odic == "None" or (len(odic)> 0 and odic[0] == "None"):
 #                return
             for t in odic:
-                ted = self.vmanager.open_task(t)
+                gobject.idle_add(open_task, self.req, t)
 
     def _start_gtg_maximized(self):
         #This is needed as a hook point to let the Notification are plugin
