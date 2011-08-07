@@ -883,13 +883,12 @@ class TaskBrowser(gobject.GObject):
 
     def on_nonworkviewtag_toggled(self, widget):
         self.set_target_cursor()
-        tags = self.get_selected_tags()[0]
+        tag_id = self.get_selected_tags()[0]
         #We must inverse because the tagstore has True
         #for tasks that are not in workview (and also convert to string)
         toset = str(not self.nonworkviewtag_cb.get_active())
-        if len(tags) > 0:
-            tag = self.req.get_tag(tags[0])
-            tag.set_attribute("nonworkview", toset)
+        tag = self.req.get_tag(tag_id)
+        tag.set_attribute("nonworkview", toset)
         if not self.dont_reset:
             self.reset_cursor()
 

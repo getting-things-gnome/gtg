@@ -157,6 +157,7 @@ class DataStore(object):
         if self.__tagstore.has_node(tagname):
             return self.__tagstore.get_node(tagname)
         else:
+            Log.error("Requested non-exiting tag '%s'" % tagname)
             return None
             
     def load_tag_tree(self):
