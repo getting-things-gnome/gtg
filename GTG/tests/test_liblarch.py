@@ -1569,5 +1569,46 @@ class TestLibLarch(unittest.TestCase):
         self.tree.add_node(b)
         self.tree.add_node(c)
 
+    def test_remove_tasks(self):
+        """ This test case is based on real code and a bug.
+        have node 'a' with children 'b', 'c' and then remove
+        'a' recursively. """
+        a = DummyNode("a")
+        b = DummyNode("b")
+        c = DummyNode("c")
+
+        a.add_child("b")
+        a.add_child("c")
+
+        self.tree.add_node(a)
+        self.tree.add_node(b)
+        self.tree.add_node(c)
+
+        for node_id in ['a', 'b', 'c']:
+            if self.tree.has_node(node_id):
+                self.tree.del_node(node_id, True)
+
+    def test_remove_recursively_clean(self):
+        """ Test that when we have task with many subtasks,
+        all will be removed and no will left in tree """
+        N = 50
+        prefix = "child_"
+
+        view = self.tree.get_main_view()
+
+        parent = DummyNode("parent")
+        self.tree.add_node(parent)
+        for i in range(N):
+            node_id = prefix + str(i)
+            self.tree.add_node(DummyNode(node_id))
+            parent.add_child(node_id)
+
+        self.tree.del_node("parent", True)
+
+        self.assertTrue("parent" not in view.get_all_nodes())
+        # No orphans are left
+        for node_id in view.get_all_nodes():
+            self.assertFalse(node_id.startswith(prefix))
+
 def test_suite():
     return unittest.TestLoader().loadTestsFromName(__name__)

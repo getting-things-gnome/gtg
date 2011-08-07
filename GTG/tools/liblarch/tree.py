@@ -302,7 +302,7 @@ class MainTree:
             self._callback('node-modified', parent_id)
 
         # Handle children
-        for child_id in node.children:
+        for child_id in list(node.children):
             if recursive:
                 self._remove_node(child_id, True)
             else:
