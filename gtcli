@@ -249,7 +249,7 @@ def list_tasks(criteria, count_only=False):
         else:
             tags = []
             for tag in list(task['tags']):
-                tags.append(str(tag))
+                tags.append(tag)
                 if tag not in tasks_tree:
                     tasks_tree[tag] = []
                 tasks_tree[tag].append(task)
