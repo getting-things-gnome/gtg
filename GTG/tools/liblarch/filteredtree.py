@@ -219,8 +219,16 @@ class FilteredTree():
 # Please, use profiler first - maybe it does not matter at all (in that case
 # feel free to remove this long comment)
 #
+# The algorithm should be updated to every time update every ancestor!
+#
 # (Izidor, 2011-08-07)
-        if action in ['added', 'deleted']:
+        queue = list(self.nodes[node_id]['parents'])
+        while queue != []:
+            parent_id = queue.pop(0)
+            if parent_id == self.root_id:
+                continue
+            queue.extend(self.nodes[parent_id]['parents'])
+            
             for parent_id in self.nodes[node_id]['parents']:
                 if parent_id != self.root_id:
                     for path in self.get_paths_for_node(parent_id):
