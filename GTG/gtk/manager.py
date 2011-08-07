@@ -208,7 +208,7 @@ class Manager(object):
 
     def open_preferences(self, config_priv, sender=None):
         if not hasattr(self, "preferences"):
-            self.preferences = PreferencesDialog(self.config_obj)
+            self.preferences = PreferencesDialog(self.config_obj, self.req)
         self.preferences.activate(config_priv)
         
     def ask_delete_tasks(self, tids):

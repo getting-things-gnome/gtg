@@ -101,9 +101,10 @@ class PreferencesDialog:
     __AUTOSTART_DIRECTORY = os.path.join(xdg_config_home, "autostart")
     __AUTOSTART_FILE = "gtg.desktop"
 
-    def __init__(self, config_obj):
+    def __init__(self, config_obj, req):
         """Constructor."""
         self.config_obj = config_obj
+        self.req = req
         self.config = self.config_obj.conf_dict
         self.builder = gtk.Builder() 
         self.builder.add_from_file(ViewConfig.PREFERENCES_GLADE_FILE)
@@ -347,6 +348,9 @@ class PreferencesDialog:
     def toggle_preview(self, widget):
         """Toggle previews in the task view on or off."""
         self.config_priv.set("contents_preview_enable",widget.get_active())
+        view = self.req.get_tasks_tree(refresh=False)
+        view.refresh_all()
+
     
     def toggle_spellcheck(self, widget):
         """Toggle spell checking on or off."""
