@@ -157,7 +157,6 @@ class DataStore(object):
         if self.__tagstore.has_node(tagname):
             return self.__tagstore.get_node(tagname)
         else:
-            Log.error("Requested non-exiting tag '%s'" % tagname)
             return None
             
     def load_tag_tree(self):
@@ -635,7 +634,7 @@ class TaskSource():
         @param task_id: a task id
         @returns bool: True if the task should be stored
         '''
-        task = self.req.get_task(task_id)
+        #task = self.req.get_task(task_id)
         #FIXME: it will be a lot easier to add, instead,
         # a filter to a tree and check that this task is well in the tree
 #        return self.task_filter(task)
@@ -654,7 +653,7 @@ class TaskSource():
                 self.to_set.appendleft(tid)
                 self.__try_launch_setting_thread()
         else:
-            self.queue_remove_task(None, tid)
+            self.queue_remove_task(tid, path)
             
     def launch_setting_thread(self, bypass_please_quit = False):
         '''
@@ -688,7 +687,7 @@ class TaskSource():
         #we release the weak lock
         self.to_set_timer = None
     
-    def queue_remove_task(self, sender, tid):
+    def queue_remove_task(self, tid, path=None):
         '''
         Queues task to be removed.
 
