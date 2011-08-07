@@ -154,10 +154,12 @@ class NotificationArea:
 
     def __connect_to_tree(self):
         self.__tree = self.__requester.get_tasks_tree()
+        # Request a new view so we do not influence anybody
+        self.__tree = self.__tree.get_basetree().get_viewtree(refresh=False)
         self.__tree.apply_filter('workview')
-        self.__tree.connect("node-added-inview", self.__on_task_added)
-        self.__tree.connect("node-deleted-inview", self.__on_task_deleted)
-        self.__tree.connect("node-modified-inview", self.__on_task_added)
+        self.__tree.register_cllbck("node-added-inview", self.__on_task_added)
+        self.__tree.register_cllbck("node-deleted-inview", self.__on_task_deleted)
+        self.__tree.register_cllbck("node-modified-inview", self.__on_task_added)
 
         #Flushing all tasks, as the plugin may have been started after GTG
         def visit_tree(tree, nodes, fun):
@@ -173,9 +175,9 @@ class NotificationArea:
         visit_tree(self.__tree,
                    [self.__tree.get_node(c) \
                             for c in virtual_root.get_children()],
-                   lambda t: self.__on_task_added(None, t, None))
+                   lambda t: self.__on_task_added(t, None))
 
-    def __on_task_added(self, sender, tid, something):
+    def __on_task_added(self, tid, path):
         self.__task_separator.show()
         task = self.__requester.get_task(tid)
         #ellipsis of the title
@@ -205,7 +207,7 @@ class NotificationArea:
             short_title = short_title.strip() + "..."
         return short_title
 
-    def __on_task_deleted(self, sender, tid, something):
+    def __on_task_deleted(self, tid, path):
         try:
             menu_item = self.__tasks_in_menu.pop_by_key(tid)[2]
             self.__menu.remove(menu_item)
