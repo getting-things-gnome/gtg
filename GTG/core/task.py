@@ -422,7 +422,8 @@ class Task(TreeNode):
             
     #FIXME: remove this function and use liblarch instead.
     def get_subtasks(self):
-        return [self.get_child(nid) for nid in self.get_children()]
+        tree = self.get_tree()
+        return [tree.get_node(node_id) for node_id in self.get_children()]
 
     #FIXME : why is this function used ? It's higly specific. Remove it?
     #        (Lionel)

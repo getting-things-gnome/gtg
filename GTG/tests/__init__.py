@@ -19,12 +19,9 @@
 
 """Unit tests for GTG."""
 
-from GTG.tools.testingmode import TestingMode
-
 import unittest
 import os
 import sys
-
 
 TEST_MODULE_PREFIX = "GTG.tests."
 
@@ -33,11 +30,6 @@ def test_suite():
     Automatically loads all the tests in the GTG/tests directory and returns a
     unittest.TestSuite filled with them
     '''
-    #This call sets the "testing mode" before GTG is even started, so that
-    # every part of GTG will know if it's being tested or not (useful to load
-    # fake modules that mimic the behaviour of external libraries ...
-    TestingMode().set_testing_mode(True)
-
     #find all the test files
     test_dir = os.path.dirname(__file__)
     test_files = filter(lambda f: f.endswith(".py") and f.startswith("test_"),
@@ -53,7 +45,13 @@ def test_suite():
             sys.modules[module_path] = module
             globals()[module_path] = module
             #fetching the testsuite
-            tests = getattr(module, "tests")
+
+            # Crude hack to satisfy both GIT repository and GTG trunk
+            if TEST_MODULE_PREFIX == "GTG.tests.":
+                tests = getattr(module, "tests")
+            else:
+                tests = module
+
             a_test = getattr(tests, module_name)
             #adding it to the unittest.TestSuite
             test_suite.addTest(getattr(a_test, "test_suite")())

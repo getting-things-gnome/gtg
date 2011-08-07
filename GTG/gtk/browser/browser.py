@@ -487,6 +487,17 @@ class TaskBrowser(gobject.GObject):
 #                Log.error("Invalid configuration for sorting columns")
 
         self.set_view(self.config.get("view"))
+
+#FIXME this is just a big hack, it should be refractored in the future,
+# maybe better designed
+        def open_task(req, t):
+            if req.has_task(t):
+                self.vmanager.open_task(t)
+                # Do not do it again
+                return False
+            else:
+                # Try it later
+                return True
                 
         if self._start_gtg_maximized():
             odic = self.config.get("opened_tasks")
@@ -495,7 +506,7 @@ class TaskBrowser(gobject.GObject):
 #            if odic == "None" or (len(odic)> 0 and odic[0] == "None"):
 #                return
             for t in odic:
-                ted = self.vmanager.open_task(t)
+                gobject.idle_add(open_task, self.req, t)
 
     def _start_gtg_maximized(self):
         #This is needed as a hook point to let the Notification are plugin
@@ -796,8 +807,7 @@ class TaskBrowser(gobject.GObject):
                 def selecter(treemodelsort, path, iter, self):
                     self.__last_quick_added_tid_event.wait()
                     treeview = self.vtree_panes['active']
-                    liblarch_path = treemodelsort.convert_path_to_child_path(path)
-                    tid = self.activetree.get_node_for_path(liblarch_path)
+                    tid = self.activetree.get_node_for_path(path)
                     if self.__last_quick_added_tid == tid:
                         #this is the correct task
                         treemodelsort.disconnect(self.__quick_add_select_handle)
@@ -809,7 +819,7 @@ class TaskBrowser(gobject.GObject):
             #event that is set when the new task is created
             self.__last_quick_added_tid_event = threading.Event()
             self.__quick_add_select_handle = \
-                self.vtree_panes['active'].get_sorted_treemodel().connect(\
+                self.vtree_panes['active'].get_model().connect(\
                                     "row-inserted",
                                     select_next_added_task_in_browser,
                                     self)
@@ -884,13 +894,12 @@ class TaskBrowser(gobject.GObject):
 
     def on_nonworkviewtag_toggled(self, widget):
         self.set_target_cursor()
-        tags = self.get_selected_tags()[0]
+        tag_id = self.get_selected_tags()[0]
         #We must inverse because the tagstore has True
         #for tasks that are not in workview (and also convert to string)
         toset = str(not self.nonworkviewtag_cb.get_active())
-        if len(tags) > 0:
-            tag = self.req.get_tag(tags[0])
-            tag.set_attribute("nonworkview", toset)
+        tag = self.req.get_tag(tag_id)
+        tag.set_attribute("nonworkview", toset)
         if not self.dont_reset:
             self.reset_cursor()
 

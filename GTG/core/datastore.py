@@ -242,7 +242,7 @@ class DataStore(object):
         if self.has_task(tid):
             return self.__tasks.get_node(tid)
         else:
-            Log.error("requested non-existent task")
+            Log.error("requested non-existent task %s" % tid)
             return None
         
     def task_factory(self, tid, newtask = False):
@@ -483,7 +483,7 @@ class DataStore(object):
             for task_id in self.get_all_tasks():
                 if self.please_quit:
                     break
-                backend.queue_set_task(None, task_id)
+                backend.queue_set_task(task_id)
         t = threading.Thread(target = _internal_flush_all_tasks)
         t.start()
         self.backends[backend_id].start_get_tasks()
@@ -634,26 +634,26 @@ class TaskSource():
         @param task_id: a task id
         @returns bool: True if the task should be stored
         '''
-        task = self.req.get_task(task_id)
+        #task = self.req.get_task(task_id)
         #FIXME: it will be a lot easier to add, instead,
         # a filter to a tree and check that this task is well in the tree
 #        return self.task_filter(task)
         return True
 
-    def queue_set_task(self, sender, tid):
+    def queue_set_task(self, tid, path=None):
         """
         Updates the task in the DataStore.  Actually, it adds the task to a
         queue to be updated asynchronously.
 
-        @param sender: not used, any value will do.
         @param task: The Task object to be updated.
+        @param path: its path in TreeView widget => not used there
         """
         if self.should_task_id_be_stored(tid):
             if tid not in self.to_set and tid not in self.to_remove:
                 self.to_set.appendleft(tid)
                 self.__try_launch_setting_thread()
         else:
-            self.queue_remove_task(None, tid)
+            self.queue_remove_task(tid, path)
             
     def launch_setting_thread(self, bypass_please_quit = False):
         '''
@@ -687,7 +687,7 @@ class TaskSource():
         #we release the weak lock
         self.to_set_timer = None
     
-    def queue_remove_task(self, sender, tid):
+    def queue_remove_task(self, tid, path=None):
         '''
         Queues task to be removed.
 
@@ -723,10 +723,10 @@ class TaskSource():
         Helper function to connect signals
         '''
         if not self.set_task_handle:
-            self.set_task_handle = self.tasktree.connect('node-modified', \
+            self.set_task_handle = self.tasktree.register_cllbck('node-modified', \
                                                     self.queue_set_task)
         if not self.remove_task_handle:
-            self.remove_task_handle = self.tasktree.connect('node-deleted',\
+            self.remove_task_handle = self.tasktree.register_cllbck('node-deleted',\
                                                    self.queue_remove_task)
 
     def _disconnect_signals(self):
@@ -734,10 +734,10 @@ class TaskSource():
         Helper function to disconnect signals
         '''
         if self.set_task_handle:
-            self.tasktree.disconnect(self.set_task_handle)
+            self.tasktree.deregister_cllbck(self.set_task_handle)
             self.set_task_handle = None
         if  self.remove_task_handle:
-            self.tasktree.disconnect(self.remove_task_handle)
+            self.tasktree.deregister_cllbck(self.remove_task_handle)
             self.remove_task_handle = None
 
     def sync(self):

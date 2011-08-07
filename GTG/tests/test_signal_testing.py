@@ -25,6 +25,7 @@ class TestSignalTesting(unittest.TestCase):
         one_signal_arguments = signal_arguments[0]
         self.assertEqual(arg, one_signal_arguments[0])
 
+    @unittest.skip("It is slow and do not affect the current code")
     def test_signal_missing(self):
         generator = FakeGobject()
         arg = str(uuid.uuid4())
