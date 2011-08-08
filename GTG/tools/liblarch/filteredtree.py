@@ -199,7 +199,7 @@ class FilteredTree():
                 self.send_remove_tree(child_id, node_id)
                 self.nodes[child_id]['parents'].remove(node_id)
 
-        if action in ['modified', 'deleted']:
+        if action == 'modified':
             for path in self.get_paths_for_node(node_id):
                 self.callback(action, node_id, path)
 
@@ -222,7 +222,22 @@ class FilteredTree():
 # The algorithm should be updated to every time update every ancestor!
 #
 # (Izidor, 2011-08-07)
+
+# FIXME the order of following action must be proper => when deleted signal is sent,
+# the node must be already deleted => we must cache it locally and solve callback later
         queue = list(self.nodes[node_id]['parents'])
+
+        if action == 'deleted':
+            paths = self.get_paths_for_node(node_id)
+
+            # Remove node from cache
+            for parent_id in self.nodes[node_id]['parents']:
+                self.nodes[parent_id]['children'].remove(node_id)
+
+            del self.nodes[node_id]
+            for path in paths:
+                self.callback(action, node_id, path)
+
         while queue != []:
             parent_id = queue.pop(0)
             if parent_id == self.root_id:
@@ -234,11 +249,6 @@ class FilteredTree():
                     for path in self.get_paths_for_node(parent_id):
                         self.callback('modified', parent_id, path)
 
-        if action == 'deleted':
-            # Remove node from cache
-            for parent_id in self.nodes[node_id]['parents']:
-                self.nodes[parent_id]['children'].remove(node_id)
-            del self.nodes[node_id]
 
         return completely_updated
 
