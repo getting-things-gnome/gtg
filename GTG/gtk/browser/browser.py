@@ -945,8 +945,8 @@ class TaskBrowser(gobject.GObject):
             self.on_delete_tasks()
 
     def on_add_task(self, widget, status=None):
-        tags = self.get_selected_tags()
-        task = self.req.new_task(tags=[t for t in tags], newtask=True)
+        tags = [tag for tag in self.get_selected_tags() if not tag.startswith('gtg-tag')]
+        task = self.req.new_task(tags=tags, newtask=True)
         uid = task.get_id()
         if status:
             task.set_status(status)
