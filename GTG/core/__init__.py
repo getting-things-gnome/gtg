@@ -19,12 +19,12 @@
 
 
 """
-The core functionality GTG.
+GTG's core functionality.
 
 In order to not interact directly with the datastore, we provide
 "requesters".  The requester is only an interface and there can be as
-many requester as you want as long as they are all from the same
-datastore.  Requester also provides an interface for the tagstore
+many requesters as you want as long as they are all from the same
+datastore.  Requester also provides an interface for the tagstore.
 
 If you want to display only a subset of tasks, you can either:
 
