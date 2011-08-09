@@ -123,7 +123,9 @@ class pluginReaper:
         delta = datetime.timedelta(days = self.preferences["max_days"])
         to_remove = filter(lambda t: t.get_closed_date().to_py_date() < today -delta,\
                            closed_tasks)
-        map(lambda t: requester.delete_task(t.get_id()), to_remove)
+        for task in to_remove:
+            if requester.has_task(task.get_id()):
+                requester.delete_task(task.get_id())
         #If automatic purging is on, schedule another run
         if self.is_automatic:
             self.schedule_autopurge()
