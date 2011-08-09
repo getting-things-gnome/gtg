@@ -118,6 +118,7 @@ class MainTree:
     def _callback(self, event, node_id):
         """ Inform others about the event """
         for func in self.__cllbcks.get(event, {}).itervalues():
+#            print "running %s %s" %(str(func),node_id)
             func(node_id)
 
 ####### INTERFACE FOR HANDLING REQUESTS #######################################
@@ -252,7 +253,7 @@ class MainTree:
                     print "Error: Detected pending circular relationship", \
                         rel_parent_id, rel_child_id
                 self.pending_relationships.remove((rel_parent_id, rel_child_id))
-
+        
         # Build relationship with given parent
         if parent_id is not None:
             if self._is_circular_relation(parent_id, node_id):
@@ -270,13 +271,19 @@ class MainTree:
             self.root.children.append(node_id)
 
         # Send callbacks
+        
+        #FIXME: this callback is very slow with treemodelsort
         for parent_id in parents_to_refresh:
             self._callback("node-modified", parent_id)
-
+            
+        #FIXME: this callback is very slow with treemodelsort
         self._callback("node-added", node_id)
-
+        
+        #this callback is really fast. No problem
         for child_id in children_to_refresh:
-            self._callback("node-modified", parent_id)
+            #FIXME: why parent_id? this should be a bug!
+            #removing this doesn't affect the tests. Why is it useful?
+            self._callback("node-modified", child_id)
 
     def _remove_node(self, node_id, recursive=False):
         """ Remove node from tree """
