@@ -244,10 +244,8 @@ class FilteredTree():
                 continue
             queue.extend(self.nodes[parent_id]['parents'])
             
-            for parent_id in self.nodes[node_id]['parents']:
-                if parent_id != self.root_id:
-                    for path in self.get_paths_for_node(parent_id):
-                        self.callback('modified', parent_id, path)
+            for path in self.get_paths_for_node(parent_id):
+                self.callback('modified', parent_id, path)
 
 
         return completely_updated
