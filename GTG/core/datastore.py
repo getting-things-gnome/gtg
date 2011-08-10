@@ -734,10 +734,10 @@ class TaskSource():
         Helper function to disconnect signals
         '''
         if self.set_task_handle:
-            self.tasktree.deregister_cllbck(self.set_task_handle)
+            self.tasktree.deregister_cllbck('node-modified', self.set_task_handle)
             self.set_task_handle = None
         if  self.remove_task_handle:
-            self.tasktree.deregister_cllbck(self.remove_task_handle)
+            self.tasktree.deregister_cllbck('node-deleted', self.remove_task_handle)
             self.remove_task_handle = None
 
     def sync(self):
