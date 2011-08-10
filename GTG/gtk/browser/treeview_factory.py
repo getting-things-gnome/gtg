@@ -180,13 +180,11 @@ class TreeviewFactory():
     #############################
     #Functions for tags columns
     #############################
-    def tag_list(self,node):
-        #FIXME: we should really use the name instead of the object
-        tname = node.get_id()
-        return [node]
-    
     def tag_name(self,node):
         label = node.get_attribute("label")
+        if label.startswith('@'):
+            label = label[1:]
+
         if node.get_attribute("nonworkview") == "True":
             return "<span color='%s'>%s</span>" %(self.unactive_color, label)
         else:
@@ -229,6 +227,25 @@ class TreeviewFactory():
     ############################################
     def tags_treeview(self,tree):
         desc = {}
+
+        # Tag id
+        #col_name = 'id'
+        #col = {}
+        #col['renderer'] = ['markup', gtk.CellRendererText()]
+        #col['value'] = [str, lambda node: node.get_id()]
+        #col['visible'] = True
+        #col['order'] = 0
+        #desc[col_name] = col
+
+        #Tag id
+        col_name = 'tag_id'
+        col = {}
+        col['renderer'] = ['markup', gtk.CellRendererText()]
+        col['value'] = [str, lambda node: node.get_id()]
+        col['visible'] = False
+        col['order'] = 0
+        col['sorting_func'] = self.tag_sorting
+        desc[col_name] = col
         
         #Tags color
         col_name = 'color'
@@ -236,8 +253,8 @@ class TreeviewFactory():
         render_tags = CellRendererTags()
         render_tags.set_property('ypad', 3)
         col['title'] = _("Tags")
-        col['renderer'] = ['tag_list',render_tags]
-        col['value'] = [gobject.TYPE_PYOBJECT,self.tag_list]
+        col['renderer'] = ['tag',render_tags]
+        col['value'] = [gobject.TYPE_PYOBJECT,lambda node: node]
         col['expandable'] = False
         col['resizable'] = False
         col['order'] = 1
@@ -257,7 +274,6 @@ class TreeviewFactory():
         col['expandable'] = True
         col['new_column'] = False
         col['order'] = 2
-        col['sorting_func'] = self.tag_sorting
         desc[col_name] = col
         
         #Tag count
@@ -416,5 +432,5 @@ class TreeviewFactory():
         #Updating the unactive color (same for everyone)
         self.unactive_color = \
                         treeview.style.text[gtk.STATE_INSENSITIVE].to_string()
-        treeview.set_sort_column('tagname')
+        treeview.set_sort_column('tag_id')
         return treeview 
