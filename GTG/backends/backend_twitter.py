@@ -39,6 +39,7 @@ from GTG.backends.backendsignals        import BackendSignals
 from GTG.backends.periodicimportbackend import PeriodicImportBackend
 from GTG.backends.syncengine            import SyncEngine
 from GTG.tools.logger                   import Log
+from GTG.tools.openurl                  import openurl
 
 
 class Backend(PeriodicImportBackend):
@@ -259,7 +260,8 @@ class Backend(PeriodicImportBackend):
             #no previous contact with the server has been made: no stored
             # oauth token found
             self.authenticating = True
-            subprocess.Popen(['xdg-open', self.auth.get_authorization_url()])
+            Log.info("Openning browser for twitter authentification")
+            openurl(self.auth.get_authorization_url())
             BackendSignals().interaction_requested(self.get_id(),
                 "You need to authenticate to <b>Twitter</b>. A browser"
                 " is opening with the correct page. When you have "
