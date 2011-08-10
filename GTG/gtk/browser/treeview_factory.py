@@ -186,7 +186,11 @@ class TreeviewFactory():
         return [node]
     
     def tag_name(self,node):
-        return node.get_attribute('label')
+        label = node.get_attribute("label")
+        if node.get_attribute("nonworkview") == "True":
+            return "<span color='%s'>%s</span>" %(self.unactive_color, label)
+        else:
+            return label
         
     def get_tag_count(self,node):
         toreturn = node.get_active_tasks_count()
