@@ -130,7 +130,7 @@ class TreeModel(gtk.TreeStore):
 
         for column_num, (python_type, access_method) in enumerate(self.types):
             value = access_method(node)
-#            self.set_value(iterator, column_num, value)
+            self.set_value(iterator, column_num, value)
 
     def reorder_nodes(self, node_id, path, neworder):
         """ Reorder nodes.

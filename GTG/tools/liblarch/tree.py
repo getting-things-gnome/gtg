@@ -118,7 +118,6 @@ class MainTree:
     def _callback(self, event, node_id):
         """ Inform others about the event """
         for func in self.__cllbcks.get(event, {}).itervalues():
-#            print "running %s %s" %(str(func),node_id)
             func(node_id)
 
 ####### INTERFACE FOR HANDLING REQUESTS #######################################
@@ -271,14 +270,14 @@ class MainTree:
             self.root.children.append(node_id)
 
         # Send callbacks
-        
+
         #FIXME: this callback is very slow with treemodelsort
         for parent_id in parents_to_refresh:
             self._callback("node-modified", parent_id)
-            
+
         #FIXME: this callback is very slow with treemodelsort
         self._callback("node-added", node_id)
-        
+
         #this callback is really fast. No problem
         for child_id in children_to_refresh:
             #FIXME: why parent_id? this should be a bug!
