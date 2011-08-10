@@ -88,7 +88,6 @@ class FilteredTree():
         # First thing is to find all nodes to update
         need_update = [node_id]
         visited = []
-
         # Go up
         queue = [node_id]
         while queue != []:
@@ -107,7 +106,7 @@ class FilteredTree():
                     queue.append(parent_id)
                     if parent_id not in need_update:
                         need_update.insert(0, parent_id)
-
+                        
         # Go down
         queue = [node_id]
         while queue != []:
@@ -187,6 +186,7 @@ class FilteredTree():
                 self.send_remove_tree(node_id, parent_id)
                 self.nodes[parent_id]['children'].remove(node_id)
 
+            #there might be some optimization here
             for parent_id in add_to:
                 if parent_id in self.nodes:
                     self.nodes[parent_id]['children'].append(node_id)
@@ -199,6 +199,7 @@ class FilteredTree():
                 self.send_remove_tree(child_id, node_id)
                 self.nodes[child_id]['parents'].remove(node_id)
 
+        #there might be some optimization here
         if action == 'modified':
             for path in self.get_paths_for_node(node_id):
                 self.callback(action, node_id, path)
@@ -246,7 +247,6 @@ class FilteredTree():
             
             for path in self.get_paths_for_node(parent_id):
                 self.callback('modified', parent_id, path)
-
 
         return completely_updated
 

@@ -1356,7 +1356,7 @@ class TestLibLarch(unittest.TestCase):
 
         # Fairly random number (Debian-like :-D)
         SEED_NUMBER = 4
-        ADD_NODES_TO_TREE = 30
+        ADD_NODES_TO_TREE = 20
         BASE_ID = 100
 
         original_state = random.getstate()
