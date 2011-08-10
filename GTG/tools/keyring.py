@@ -17,15 +17,16 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
-import gnomekeyring
+
+try:
+    import gnomekeyring
+except ImportError:
+    gnomekeyring = None
 
 from GTG.tools.borg import Borg
+from GTG.tools.logger import Log
 
-
-
-class Keyring(Borg):
-
-
+class GNOMEKeyring(Borg):
     def __init__(self):
         super(Keyring, self).__init__()
         if not hasattr(self, "keyring"):
@@ -46,3 +47,30 @@ class Keyring(Borg):
             return item_info.get_secret()
         except (gnomekeyring.DeniedError, gnomekeyring.NoMatchError):
             return ""
+
+class FallbackKeyring(Borg):
+    def __init__(self):
+        super(Keyring, self).__init__()
+        if not hasattr(self, "keyring"):
+            self.keyring = {}
+            self.max_key = 1
+
+    def set_password(self, name, password, userid = ""):
+        """ This implementation does nto need name and userid.
+        It is there because of GNOMEKeyring """
+
+        # Find unused key
+        while self.max_key in self.keyring:
+            self.max_key += 1
+
+        self.keyring[self.max_key] = password
+        return self.max_key
+
+    def get_password(self, key):
+        return self.keyring.get(key, "")
+
+if gnomekeyring is not None:
+    Keyring = GNOMEKeyring 
+else:
+    Log.info("GNOME keyring was not found, passwords will be not stored after restart of GTG")
+    Keyring = FallbackKeyring
