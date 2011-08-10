@@ -243,7 +243,8 @@ class TreeviewFactory():
         col_name = 'tagname'
         col = {}
         render_text = gtk.CellRendererText()
-        render_text.set_property('editable', True) 
+        # FIXME Change it to True when tag renaming will be implemented
+        render_text.set_property('editable', False) 
         render_text.set_property('ypad', 3)
         #FIXME : renaming tag feature
 #        render_text.connect("edited", self.req.rename_tag)
@@ -268,8 +269,18 @@ class TreeviewFactory():
         col['new_column'] = False
         col['order'] = 3
         desc[col_name] = col
-        
+
+        active_tasks_tree = self.req.get_tasks_tree()
+        active_tasks_tree.register_cllbck('node-added-inview', self._update_special_tags)
+        active_tasks_tree.register_cllbck('node-modified-inview', self._update_special_tags)
+        active_tasks_tree.register_cllbck('node-deleted-inview', self._update_special_tags)
+
         return self.build_tag_treeview(tree,desc)
+
+    def _update_special_tags(self, node_id, path):
+        tree = self.req.get_tag_tree().get_basetree()
+        tree.refresh_node('gtg-tags-all')
+        tree.refresh_node('gtg-tags-none')
     
     def active_tasks_treeview(self,tree):
         #Build the title/label/tags columns
@@ -402,5 +413,4 @@ class TreeviewFactory():
         self.unactive_color = \
                         treeview.style.text[gtk.STATE_INSENSITIVE].to_string()
         treeview.set_sort_column('tagname')
-        return treeview
-
+        return treeview 

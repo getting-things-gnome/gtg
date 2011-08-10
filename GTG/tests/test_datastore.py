@@ -25,12 +25,20 @@ import unittest
 import uuid
 import time
 from random import randint
+import gobject
 
 import GTG
 from GTG.core.datastore import DataStore
 from GTG.backends.genericbackend import GenericBackend
 from GTG.core import CoreConfig
 
+def sleep_within_loop(duration):
+    main_loop = gobject.MainLoop()
+    gobject.timeout_add(duration*1000, main_loop.quit)
+    # FIXME: I am not sure why, but I need add this
+    # dumb thing to run _process method of LibLarch
+    gobject.idle_add(lambda: True)
+    main_loop.run()
 
 class TestDatastore(unittest.TestCase):
     '''
@@ -150,7 +158,7 @@ class TestDatastore(unittest.TestCase):
         self.assertTrue(registered_backend.is_enabled())
         self.assertEqual(registered_backend.fake_get_initialized_count(), 1)
         #we give some time for the backend to push all its tasks
-        time.sleep(1)
+        sleep_within_loop(1)
         self.assertEqual(len(self.datastore.get_all_tasks()), \
                          tasks_in_backend_count)
 
@@ -250,7 +258,7 @@ class TestDatastore(unittest.TestCase):
         backend = FakeBackend(enabled=True)
         self.datastore.register_backend({'backend': backend, 'pid': 'a'})
         #we wait for the signal storm to wear off
-        time.sleep(2)
+        sleep_within_loop(2)
         #we sync
         self.datastore.get_backend(backend.get_id()).sync()
         #and we inject task in the backend
@@ -261,7 +269,7 @@ class TestDatastore(unittest.TestCase):
         self.assertEqual(tasks_in_backend_count, len(backend_stored_tids))
         self.datastore.flush_all_tasks(backend.get_id())
         #we wait for the signal storm to wear off
-        time.sleep(2)
+        sleep_within_loop(2)
         #we sync
         self.datastore.get_backend(backend.get_id()).sync()
         all_tasks_count = tasks_in_backend_count + tasks_in_datastore_count
