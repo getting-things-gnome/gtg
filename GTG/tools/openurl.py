@@ -24,6 +24,8 @@
 import os as _os
 import sys as _sys
 
+from GTG.tools.logger import Log
+
 try:
     import gtk as _gtk
     _has_gtk = True
@@ -64,6 +66,7 @@ _has_xdg = _test_executable('xdg-open')
 _has_exo = _test_executable('exo-open')
 
 def openurl(url):
+    Log.debug("Opening URL %s" % url)
     if _has_xdg: # freedesktop is the best choice :p
         return _spawn_quiet('xdg-open', url)
     elif _has_gtk:
