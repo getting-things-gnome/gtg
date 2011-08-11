@@ -461,7 +461,11 @@ class TaskBrowser(gobject.GObject):
         self.builder.get_object("bgcol_enable").set_active(bgcol_enable)
         
         for path_s in self.config.get("collapsed_tasks"):
-            path = tuple(path_s[1:-1].split(","))
+            #the tuple was stored as a string. we have to reconstruct it
+            path = ()
+            for p in path_s[1:-1].split(","):
+                p = p.strip(" '")
+                path += (p,)
             if path[-1] == '':
                 path = path[:-1]
             self.vtree_panes['active'].collapse_node(path)
@@ -470,24 +474,6 @@ class TaskBrowser(gobject.GObject):
             #FIXME
             print "Collapsing tag %s not implememted in browser.py" %t
 #            self.tagtreeview.set_collapsed_tags(toset)
-
-        #FIXME
-        #Sorting not yet saved in the config
-#        if "tasklist_sort" in self.config["browser"]:
-#            col_id, order = self.config["browser"]["tasklist_sort"]
-#            self.priv["sort_column"] = col_id
-#            try:
-#                col_id, order = int(col_id), int(order)
-#                self.priv["tasklist"]["sort_column"] = col_id
-#                if order == 0:
-#                    self.priv["tasklist"]["sort_order"] = gtk.SORT_ASCENDING
-#                if order == 1:
-#                    self.priv["tasklist"]["sort_order"] = gtk.SORT_DESCENDING
-#                self.task_modelsort.set_sort_column_id(\
-#                    col_id,\
-#                    self.priv["tasklist"]["sort_order"])
-#            except:
-#                Log.error("Invalid configuration for sorting columns")
 
         self.set_view(self.config.get("view"))
 
@@ -619,10 +605,7 @@ class TaskBrowser(gobject.GObject):
     #on_delete is called when the user close the window
     def on_delete(self, widget, user_data):
         # Cleanup collapsed row list
-#        colt = self.config.get("collapsed_tasks")
-#        for tid in colt:
-#            if not self.req.has_task(tid):
-#                colt.remove(tid)
+        #TODO: the cleanup should better be done on task deletion
         botpos = self.builder.get_object("vpaned1").get_position()
         self.config.set('bottom_pane_position',botpos)
         sidepos = self.builder.get_object("hpaned1").get_position()
@@ -782,17 +765,14 @@ class TaskBrowser(gobject.GObject):
             self.config.set('quick_add',False)
 
     def on_task_expanded(self, sender, tid):
-#        print "browser.py : on_task_expanded %s" %tid
         colt = self.config.get("collapsed_tasks")
         if tid in colt:
             colt.remove(tid)
         
     def on_task_collapsed(self, sender, tid):
-        print "browser.py : on task_collapsed %s" %tid
         colt = self.config.get("collapsed_tasks")
         if tid not in colt:
             colt.append(str(tid))
-        print self.config.get("collapsed_tasks")
 
     def on_quickadd_activate(self, widget):
         text = unicode(self.quickadd_entry.get_text())

@@ -68,7 +68,11 @@ class TreeModel(gtk.TreeStore):
                 if depth+1 < len(path):
                     depth += 1
                     iter = self.iter_children(iter)
-                    current_nid = self.get_value(iter,0)
+                    if iter:
+                        current_nid = self.get_value(iter,0)
+                    else:
+                        #we didn't find the iter, let's return none
+                        return None
                 else:
                     break
             return iter

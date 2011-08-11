@@ -190,29 +190,25 @@ class TreeView(gtk.TreeView):
         This method is needed for "rember collapsed nodes" feature of GTG.
         Transform node_id into paths and those paths collapse. By default all
         children are expanded (see self.expand_all())"""
-#        print "collapse node %s" %node_id
-        node_id = llpath[-1]
+        node_id = llpath[-1].strip("'")
         if not node_id:
             raise Exception('pas de node_id pour %s' %str(llpath))
         if not self.basetree.is_displayed(node_id):
             self.basetree.queue_action(node_id,self.collapse_node,param=llpath)
         else:
-            print "running collapsing node for %s" %node_id
-            orig_paths = self.basetree.get_paths_for_node(node_id)
-            print "paths for %s are %s" %(node_id,str(orig_paths))
-            paths = []
-            for p in orig_paths:
-                path = ()
-                i = self.basetreemodel.my_get_iter(p)
-                if i:
-                    path += (self.basetreemodel.get_path(i),)
-                    paths.append(path)
-                    for path in paths:
-                        print "collapsing path %s" %path
-                        gobject.idle_add(self.collapse_row,path)
-                    
+            iter = self.basetreemodel.my_get_iter(llpath)
+            if iter:
+                target_path = self.basetreemodel.get_path(iter)
+                if self.basetreemodel.get_value(iter,0) == node_id:
+#                    print "we will collapse %s at %s" %(node_id,str(target_path))
+                    self.collapse_row(target_path)
                 else:
                     self.basetree.queue_action(node_id,self.collapse_node,param=llpath)
+            else:
+                #if we don't have iter, it is probably because the TreeModel
+                #is not loaded yet. Let just wait one more time
+                self.basetree.queue_action(node_id,self.collapse_node,param=llpath)
+                        
 
     def show(self):
         """ Shows the TreeView and connect basetreemodel to LibLarch """
@@ -277,7 +273,7 @@ class TreeView(gtk.TreeView):
             else:
                 sort = -1
         else:
-            print "some of the iter given for sorting are invalid. WTF?"
+#            print "some of the iter given for sorting are invalid. WTF?"
             sort = -1
         return sort
 
