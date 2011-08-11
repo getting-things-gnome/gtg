@@ -190,6 +190,7 @@ class TreeView(gtk.TreeView):
         This method is needed for "rember collapsed nodes" feature of GTG.
         Transform node_id into paths and those paths collapse. By default all
         children are expanded (see self.expand_all())"""
+        print "collapse node %s" %node_id
         if not self.basetree.is_displayed(node_id):
             self.basetree.queue_action(node_id,self.collapse_node,param=node_id)
         else:

@@ -616,14 +616,15 @@ class TaskBrowser(gobject.GObject):
     #on_delete is called when the user close the window
     def on_delete(self, widget, user_data):
         # Cleanup collapsed row list
-        colt = self.config.get("collapsed_tasks")
-        for tid in colt:
-            if not self.req.has_task(tid):
-                colt.remove(tid)
+#        colt = self.config.get("collapsed_tasks")
+#        for tid in colt:
+#            if not self.req.has_task(tid):
+#                colt.remove(tid)
         botpos = self.builder.get_object("vpaned1").get_position()
         self.config.set('bottom_pane_position',botpos)
         sidepos = self.builder.get_object("hpaned1").get_position()
         self.config.set('sidebar_width',sidepos)
+        print "collapsed on close: %s" %str(self.config.get("collapsed_tasks"))
 
     def on_about_clicked(self, widget):
         self.about.show()
@@ -784,10 +785,11 @@ class TaskBrowser(gobject.GObject):
             colt.remove(tid)
         
     def on_task_collapsed(self, sender, tid):
-#        print "browser.py : on task_collapsed %s" %tid
+        print "browser.py : on task_collapsed %s" %tid
         colt = self.config.get("collapsed_tasks")
         if tid not in colt:
             colt.append(str(tid))
+        print self.config.get("collapsed_tasks")
 
     def on_quickadd_activate(self, widget):
         text = unicode(self.quickadd_entry.get_text())

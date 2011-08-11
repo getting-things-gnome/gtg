@@ -71,7 +71,7 @@ class FilteredTree():
                 print "runonce : now"
                 gobject.idle_add(func,param)
             else:
-                print "runonce : later"
+                print "runonce : later (node_id is %s)" %node_id
                 self.cllbcks[node_id] = [func,node_id,param]
         else:
             self.cllbcks[event] = [func,node_id,param]
@@ -90,7 +90,7 @@ class FilteredTree():
         """
         if event == 'added':
             func,nid,param = self.cllbcks.get(node_id, (None,None,None))
-            if nid == node_id:
+            if nid == node_id and self.is_displayed(node_id):
                 print "calling the runonce stored for %s" %nid
                 func(param)
                 self.cllbcks.pop(node_id)
