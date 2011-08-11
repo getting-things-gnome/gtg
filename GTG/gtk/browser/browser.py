@@ -460,8 +460,11 @@ class TaskBrowser(gobject.GObject):
         bgcol_enable = self.config.get("bg_color_enable")
         self.builder.get_object("bgcol_enable").set_active(bgcol_enable)
         
-        for t in self.config.get("collapsed_tasks"):
-            self.vtree_panes['active'].collapse_node(t)
+        for path_s in self.config.get("collapsed_tasks"):
+            path = tuple(path_s[1:-1].split(","))
+            if path[-1] == '':
+                path = path[:-1]
+            self.vtree_panes['active'].collapse_node(path)
                 
         for t in self.config.get("collapsed_tags"):
             #FIXME

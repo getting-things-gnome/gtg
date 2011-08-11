@@ -184,15 +184,18 @@ class TreeView(gtk.TreeView):
         if not self.row_expanded(path):
             self.expand_row(path, True)
 
-    def collapse_node(self, node_id):
+    def collapse_node(self, llpath):
         """ Hide children of a node
         
         This method is needed for "rember collapsed nodes" feature of GTG.
         Transform node_id into paths and those paths collapse. By default all
         children are expanded (see self.expand_all())"""
-        print "collapse node %s" %node_id
+#        print "collapse node %s" %node_id
+        node_id = llpath[-1]
+        if not node_id:
+            raise Exception('pas de node_id pour %s' %str(llpath))
         if not self.basetree.is_displayed(node_id):
-            self.basetree.queue_action(node_id,self.collapse_node,param=node_id)
+            self.basetree.queue_action(node_id,self.collapse_node,param=llpath)
         else:
             print "running collapsing node for %s" %node_id
             orig_paths = self.basetree.get_paths_for_node(node_id)
@@ -209,7 +212,7 @@ class TreeView(gtk.TreeView):
                         gobject.idle_add(self.collapse_row,path)
                     
                 else:
-                    self.basetree.queue_action(node_id,self.collapse_node,param=node_id)
+                    self.basetree.queue_action(node_id,self.collapse_node,param=llpath)
 
     def show(self):
         """ Shows the TreeView and connect basetreemodel to LibLarch """
