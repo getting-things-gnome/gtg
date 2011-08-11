@@ -252,8 +252,7 @@ class FilteredTree():
 
     def send_add_tree(self, node_id, parent_id):
         paths = self.get_paths_for_node(parent_id)
-        index = self.nodes[parent_id]['children'].index(node_id)
-        queue = [(node_id, (index, ))]
+        queue = [(node_id, (node_id, ))]
 
         while queue != []:
             node_id, relative_path = queue.pop(0)
@@ -262,21 +261,20 @@ class FilteredTree():
                 path = start_path + relative_path
                 self.callback('added', node_id, path)
 
-            for index, child_id in enumerate(self.nodes[node_id]['children']):
-                queue.append((child_id, relative_path + (index,)))
+            for child_id in self.nodes[node_id]['children']:
+                queue.append((child_id, relative_path + (child_id,)))
 
     def send_remove_tree(self, node_id, parent_id):
         paths = self.get_paths_for_node(parent_id)
-        index = self.nodes[parent_id]['children'].index(node_id)
-        stack = [(node_id, (index, ), True)]
+        stack = [(node_id, (node_id, ), True)]
 
         while stack != []:
             node_id, relative_path, first_time = stack.pop()
 
             if first_time:
                 stack.append((node_id, relative_path, False))
-                for index, child_id in enumerate(self.nodes[node_id]['children']):
-                    stack.append((child_id, relative_path + (index,), True))
+                for child_id in self.nodes[node_id]['children']:
+                    stack.append((child_id, relative_path + (child_id,), True))
 
             else:
                 for start_path in paths:
@@ -399,12 +397,10 @@ class FilteredTree():
                     raise Exception("Parent %s does not exists" % parent_id)
                 if node_id not in self.nodes[parent_id]['children']:
                     raise Exception("%s is not children of %s" % (node_id, parent_id))
-                index = self.nodes[parent_id]['children'].index(node_id)
 
                 for parent_path in self.get_paths_for_node(parent_id):
-                    mypath = parent_path + (index,)
+                    mypath = parent_path + (node_id,)
                     toreturn.append(mypath)
-
             return toreturn
 
     def print_tree(self, string=False):
@@ -515,15 +511,11 @@ class FilteredTree():
     def get_node_for_path(self, path):
         if not path or path == ():
             return None
-
-        node_id = self.root_id
-        for index in path:
-            if 0 <= index < len(self.nodes[node_id]['children']):
-                node_id = self.nodes[node_id]['children'][index]
-            else:
-                return None
-
-        return node_id
+        node_id = path[-1]
+        if path in self.get_paths_for_node(node_id):
+            return node_id
+        else:
+            return None
 
     def next_node(self, node_id, parent_id):
         if node_id == self.root_id:

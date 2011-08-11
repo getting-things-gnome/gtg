@@ -26,6 +26,7 @@ from GTG.gtk.liblarch_gtk.treemodel import TreeModel
 # Useful for debugging purpose.
 # Disabling that will disable the TreeModelSort on top of our TreeModel
 ENABLE_SORTING = True
+USE_TREEMODELFILTER = False
 #FIXME Drag and Drop does not work with ENABLE_SORTING = True :-(
 #Problem: on-child-row_expanded is really slow with ENABLE_SORTING = True :-(
 #Answer: this is not our fault but a known bug in gtk.treemodelsort.
@@ -128,7 +129,6 @@ class TreeView(gtk.TreeView):
             if ENABLE_SORTING:
                 if 'sorting' in desc:
                     # Just allow sorting and use default comparing
-                    print self.columns
                     sort_num, sort_col = self.columns[desc['sorting']]
                     col.set_sort_column_id(sort_num)
 
@@ -141,15 +141,21 @@ class TreeView(gtk.TreeView):
         self.basetree = tree
         # Build the model around LibLarch tree
         self.basetreemodel = TreeModel(tree, types)
+        #Applying an intermediate treemodelfilter, for debugging purpose
+        if USE_TREEMODELFILTER:
+            treemodelfilter = self.basetreemodel.filter_new()
+        else:
+            treemodelfilter = self.basetreemodel
         # Apply TreeModelSort to be able to sort
         if ENABLE_SORTING:
-            self.treemodel = gtk.TreeModelSort(self.basetreemodel)
+#            self.treemodel = gtk.TreeModelSort(treemodelfilter)
+            self.treemodel = self.basetreemodel
             for col_num, col, sort_func in sorting_func:
                 self.treemodel.set_sort_func(col_num,
                     self._sort_func, sort_func)
                 col.set_sort_column_id(col_num)
         else:
-            self.treemodel = self.basetreemodel
+            self.treemodel = treemodelfilter
 
         self.set_model(self.treemodel)
 
@@ -294,10 +300,10 @@ class TreeView(gtk.TreeView):
         self.connect('drag_data_get', self.on_drag_data_get)
         self.connect('drag_data_received', self.on_drag_data_received)
 
-        if ENABLE_SORTING:
-            self.connect('drag_drop', self.on_drag_drop)
-            self.connect('button_press_event', self.on_button_press)
-            self.connect('button_release_event', self.on_button_release)
+#        if ENABLE_SORTING:
+#            self.connect('drag_drop', self.on_drag_drop)
+#            self.connect('button_press_event', self.on_button_press)
+#            self.connect('button_release_event', self.on_button_release)
             
 
     def set_dnd_external(self, sourcename, func):
@@ -341,49 +347,49 @@ class TreeView(gtk.TreeView):
         self.enable_model_drag_dest(\
             dnd_targets, gtk.gdk.ACTION_DEFAULT | gtk.gdk.ACTION_MOVE)
             
-        self.drag_source_set(\
-            gtk.gdk.BUTTON1_MASK,
-            [('gtg/task-iter-str', gtk.TARGET_SAME_WIDGET, 0)],
-            gtk.gdk.ACTION_DEFAULT | gtk.gdk.ACTION_MOVE)
+#        self.drag_source_set(\
+#            gtk.gdk.BUTTON1_MASK,
+#            [('gtg/task-iter-str', gtk.TARGET_SAME_WIDGET, 0)],
+#            gtk.gdk.ACTION_DEFAULT | gtk.gdk.ACTION_MOVE)
 
-        self.drag_dest_set(\
-            gtk.DEST_DEFAULT_ALL,
-            [('gtg/task-iter-str', gtk.TARGET_SAME_WIDGET, 0)],
-            gtk.gdk.ACTION_DEFAULT | gtk.gdk.ACTION_MOVE)
+#        self.drag_dest_set(\
+#            gtk.DEST_DEFAULT_ALL,
+#            [('gtg/task-iter-str', gtk.TARGET_SAME_WIDGET, 0)],
+#            gtk.gdk.ACTION_DEFAULT | gtk.gdk.ACTION_MOVE)
             
-    def on_button_press(self, widget, event):
-        # Here we intercept mouse clicks on selected items so that we can
-        # drag multiple items without the click selecting only one
-        target = self.get_path_at_pos(int(event.x), int(event.y))
-        if (target 
-           and event.type == gtk.gdk.BUTTON_PRESS
-           and not (event.state & (gtk.gdk.CONTROL_MASK|gtk.gdk.SHIFT_MASK))
-           and self.get_selection().path_is_selected(target[0])):
-               # disable selection
-               self.get_selection().set_select_function(lambda *ignore: False)
-               self.defer_select = target[0]
-            
-    def on_button_release(self, widget, event):
-        # re-enable selection
-        self.get_selection().set_select_function(lambda *ignore: True)
-        
-        target = self.get_path_at_pos(int(event.x), int(event.y))    
-        if (self.defer_select and target 
-           and self.defer_select == target[0]
-           and not (event.x==0 and event.y==0)): # certain drag and drop 
-                                                 # operations still have path
-               # if user didn't drag, simulate the click previously ignored
-               self.set_cursor(target[0], target[1], False)
-            
-        self.defer_select=False
+#    def on_button_press(self, widget, event):
+#        # Here we intercept mouse clicks on selected items so that we can
+#        # drag multiple items without the click selecting only one
+#        target = self.get_path_at_pos(int(event.x), int(event.y))
+#        if (target 
+#           and event.type == gtk.gdk.BUTTON_PRESS
+#           and not (event.state & (gtk.gdk.CONTROL_MASK|gtk.gdk.SHIFT_MASK))
+#           and self.get_selection().path_is_selected(target[0])):
+#               # disable selection
+#               self.get_selection().set_select_function(lambda *ignore: False)
+#               self.defer_select = target[0]
+#            
+#    def on_button_release(self, widget, event):
+#        # re-enable selection
+#        self.get_selection().set_select_function(lambda *ignore: True)
+#        
+#        target = self.get_path_at_pos(int(event.x), int(event.y))    
+#        if (self.defer_select and target 
+#           and self.defer_select == target[0]
+#           and not (event.x==0 and event.y==0)): # certain drag and drop 
+#                                                 # operations still have path
+#               # if user didn't drag, simulate the click previously ignored
+#               self.set_cursor(target[0], target[1], False)
+#            
+#        self.defer_select=False
 
-    def on_drag_drop(self, treeview, context, selection, info, timestamp):
-        """ When using TreeModelSort, drag_drop signal must be handled to
-        prevent GTK warning in console.
+#    def on_drag_drop(self, treeview, context, selection, info, timestamp):
+#        """ When using TreeModelSort, drag_drop signal must be handled to
+#        prevent GTK warning in console.
 
-        Do nothing, just prevent default callback.
-        """
-        self.emit_stop_by_name('drag_drop')
+#        Do nothing, just prevent default callback.
+#        """
+#        self.emit_stop_by_name('drag_drop')
     
     def on_drag_data_get(self, treeview, context, selection, info, timestamp):
         """ Extract data from the source of the DnD operation.
@@ -456,34 +462,37 @@ class TreeView(gtk.TreeView):
         else:
             iters = selection.data.split(',')
 
+        dragged_iters = []
         for iter in iters:
             if info == 0:
                 try:
-                    dragged_iter = model.get_iter_from_string(iter)
+                    dragged_iters.append(model.get_iter_from_string(iter))
                 except ValueError:
                     #I hate to silently fail but we have no choice.
                     #It means that the iter is not good.
                     #Thanks shitty gtk API for not allowing us to test the string
+                    print "cannot get an iter from %s" %iter
                     dragged_iter = None
 
+            elif info in self.dnd_external_targets and destination_tid:
+                f = self.dnd_external_targets[info][1]
+
+                src_model = context.get_source_widget().get_model()
+                dragged_iters.append(src_model.get_iter_from_string(iter))
+                
+                
+        for dragged_iter in dragged_iters:
+            if info == 0:
                 if dragged_iter and model.iter_is_valid(dragged_iter):
                     dragged_tid = model.get_value(dragged_iter, 0)
                     try:
                         tree.move_node(dragged_tid, new_parent_id=destination_tid)
                     except Exception, e:
                         print 'Problem with dragging: %s' % e
-
-            elif info in self.dnd_external_targets and destination_tid:
-                f = self.dnd_external_targets[info][1]
-
-                src_model = context.get_source_widget().get_model()
-                i = src_model.get_iter_from_string(iter)
-                source = src_model.get_value(i,0)
-
+            elif info in self.dnd_external_targets and destination_tid:    
+                source = src_model.get_value(dragged_iter,0)
                 # Handle external Drag'n'Drop
                 f(source, destination_tid)
-                
-        self.emit_stop_by_name('drag_data_received')
 
 
     ######### Separators support ##############################################
