@@ -18,6 +18,7 @@ from __future__ import with_statement
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 #
+import gobject
 
 class FilteredTree():
     # FIXME comment of class
@@ -57,26 +58,43 @@ class FilteredTree():
         if refresh:
             self.refilter()
 
-    def set_callback(self, event, func):
+    def set_callback(self, event, func,node_id=None, param=None):
         """ Register a callback for an event.
 
         It is possible to have just one callback for event.
         @param event: one of added, modified, deleted, reordered
         @param func: callback function
         """
-        self.cllbcks[event] = func
+        if event == 'runonce' and node_id:
+            print "run_once for node %s" %node_id
+            if self.is_displayed(node_id):
+                print "runonce : now"
+                gobject.idle_add(func,param)
+            else:
+                print "runonce : later"
+                self.cllbcks[node_id] = [func,node_id,param]
+        else:
+            self.cllbcks[event] = [func,node_id,param]
         
     def callback(self, event, node_id, path, neworder=None):
         """ Run a callback.
 
         To call callback, the object must be initialized and function exists.
 
-        @param event: one of added, modified, deleted, reordered
+        @param event: one of added, modified, deleted, reordered, runonce
         @param node_id: node_id parameter for callback function
         @param path: path parameter for callback function
         @param neworder: neworder parameter for reorder callback function
+        
+        The runonce event is actually only run once, when a given task appears.
         """
-        func = self.cllbcks.get(event, None)
+        if event == 'added':
+            func,nid,param = self.cllbcks.get(node_id, (None,None,None))
+            if nid == node_id:
+                print "calling the runonce stored for %s" %nid
+                func(param)
+                self.cllbcks.pop(node_id)
+        func,nid,param = self.cllbcks.get(event, (None,None,None))
         if func:
             if neworder:
                 func(node_id, path, neworder)

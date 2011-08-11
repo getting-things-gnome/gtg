@@ -49,14 +49,14 @@ class TreeModel(gtk.TreeStore):
     def my_get_iter(self, path):
         """ Because we sort the TreeStore, paths in the treestore are
         not the same as paths in the FilteredTree. We do the  conversion here"""
-        if path == ():
+        iter = self.get_iter_root()
+        if path == () or not iter:
             return None
         else:
             #The following code is ugly. Yuk!
             #We just wanted to convert a node path like (node1,node2,)
             #to an iterator.
-            #don't look at it! Ploum, DS2011
-            iter = self.get_iter_root()
+            #don't look at it! Ploum, DS2011          
             current_nid = self.get_value(iter,0)
             depth = 0
             while iter and current_nid != str(path[-1]):

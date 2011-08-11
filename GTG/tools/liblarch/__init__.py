@@ -179,6 +179,9 @@ class ViewTree:
             self.__ft.set_callback('reordered', \
                         functools.partial(self.__emit, 'node-children-reordered'))
                         
+    def queue_action(self, node_id,func,param=None):
+        self.__ft.set_callback('runonce',func,node_id=node_id,param=param)
+                        
     def get_basetree(self):
         """ Return Tree object """
         return self.maininterface

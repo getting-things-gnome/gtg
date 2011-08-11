@@ -27,10 +27,6 @@ from GTG.gtk.liblarch_gtk.treemodel import TreeModel
 # Disabling that will disable the TreeModelSort on top of our TreeModel
 ENABLE_SORTING = True
 USE_TREEMODELFILTER = False
-#FIXME Drag and Drop does not work with ENABLE_SORTING = True :-(
-#Problem: on-child-row_expanded is really slow with ENABLE_SORTING = True :-(
-#Answer: this is not our fault but a known bug in gtk.treemodelsort.
-# see test delete_child_randomly
 
 class TreeView(gtk.TreeView):
     """ Widget which display LibLarch FilteredTree.
@@ -64,8 +60,6 @@ class TreeView(gtk.TreeView):
           * resizable => is the column resizable?
           * visible => is the column visible?
           * title => title of column
-          * new_colum => do not create a separate column, just continue with the previous one
-                (this can be used to create columns without borders)
           * sorting => allow default sorting on this column
           * sorting_func => use special function for sorting on this func
 
@@ -96,8 +90,6 @@ class TreeView(gtk.TreeView):
 
         types = []
         sorting_func = []
-        # Build the first coulumn if user starts with new_colum=False
-        col = gtk.TreeViewColumn()
 
         # Build columns according to the order
         for col_num, (order_num, col_name) in enumerate(sorted(self.order_of_column), 1):
@@ -114,13 +106,7 @@ class TreeView(gtk.TreeView):
                 rend_attribute = 'markup'
                 renderer = gtk.CellRendererText()
 
-            # If new_colum=False, do not create new column, use the previous one
-            # It will create columns without borders
-            if desc.get('new_column',True):
-                col = gtk.TreeViewColumn()
-                newcol = True
-            else:
-                newcol = False
+            col = gtk.TreeViewColumn()
             col.set_visible(visible)
 
             if 'title' in desc:
@@ -134,8 +120,7 @@ class TreeView(gtk.TreeView):
             # Allow to set background color
             col.set_cell_data_func(renderer, self._celldatafunction)
             
-            if newcol:
-                self.append_column(col)
+            self.append_column(col)
             self.columns[col_name] = (col_num, col)
 
             if ENABLE_SORTING:
@@ -147,6 +132,8 @@ class TreeView(gtk.TreeView):
                 if 'sorting_func' in desc:
                     # Use special funcion for comparing, e.g. dates
                     sorting_func.append((col_num, col, desc['sorting_func']))
+
+            
 
         self.basetree = tree
         # Build the model around LibLarch tree
@@ -180,10 +167,17 @@ class TreeView(gtk.TreeView):
     def __emit(self, sender, iter, path, data):
         """ Emitt expanded/collapsed signal """
         node_id = self.treemodel.get_value(iter, 0)
+        #recreating the path of the collapsed node
+        ll_path = ()
+        i = 1
+        while i <= len(path):
+            temp_iter = self.treemodel.get_iter(path[:i])
+            ll_path += (self.treemodel.get_value(temp_iter,0),)
+            i+=1
         if data == 'expanded':
-            self.emit('node-expanded', node_id)
+            self.emit('node-expanded', ll_path)
         elif data == 'collapsed':
-            self.emit('node-collapsed', node_id)
+            self.emit('node-collapsed', ll_path)
 
     def on_child_toggled(self, treemodel, path, iter, param=None):
         """ Expand row """
@@ -196,18 +190,25 @@ class TreeView(gtk.TreeView):
         This method is needed for "rember collapsed nodes" feature of GTG.
         Transform node_id into paths and those paths collapse. By default all
         children are expanded (see self.expand_all())"""
-
-        paths = self.basetree.get_paths_for_node(node_id)
-        for path in paths:
-            try:
-                self.collapse_row(path)
-            except TypeError, e:
-                # FIXME why this is so?
-                # FIXME what to do, if task is not in FilteredTree yet?
-                print "FIXME: problem with TreeView.collapse_node():", e
-
-                # FIXME this is just a workaround, discuss it with ploum
-                gobject.idle_add(self.collapse_node, node_id)
+        if not self.basetree.is_displayed(node_id):
+            self.basetree.queue_action(node_id,self.collapse_node,param=node_id)
+        else:
+            print "running collapsing node for %s" %node_id
+            orig_paths = self.basetree.get_paths_for_node(node_id)
+            print "paths for %s are %s" %(node_id,str(orig_paths))
+            paths = []
+            for p in orig_paths:
+                path = ()
+                i = self.basetreemodel.my_get_iter(p)
+                if i:
+                    path += (self.basetreemodel.get_path(i),)
+                    paths.append(path)
+                    for path in paths:
+                        print "collapsing path %s" %path
+                        gobject.idle_add(self.collapse_row,path)
+                    
+                else:
+                    self.basetree.queue_action(node_id,self.collapse_node,param=node_id)
 
     def show(self):
         """ Shows the TreeView and connect basetreemodel to LibLarch """
