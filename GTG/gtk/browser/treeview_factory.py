@@ -310,9 +310,7 @@ class TreeviewFactory():
         col_name = 'startdate'
         col = {}
         col['title'] = _("Start date")
-        render_text = gtk.CellRendererText()
         col['expandable'] = False
-        col['renderer'] = ['markup',render_text]
         col['resizable'] = False
         col['value'] = [str,self.task_sdate_column]
         col['order'] = 3
@@ -323,9 +321,7 @@ class TreeviewFactory():
         col_name = 'duedate'
         col = {}
         col['title'] = _("Due")
-        render_text = gtk.CellRendererText()
         col['expandable'] = False
-        col['renderer'] = ['markup',render_text]
         col['resizable'] = False
         col['value'] = [str,self.task_duedate_column]
         col['order'] = 4
@@ -345,9 +341,7 @@ class TreeviewFactory():
         col_name = 'closeddate'
         col = {}
         col['title'] = _("Closed date")
-        render_text = gtk.CellRendererText()
         col['expandable'] = False
-        col['renderer'] = ['markup',render_text]
         col['resizable'] = False
         col['value'] = [str,self.task_cdate_column]
         col['order'] = 3

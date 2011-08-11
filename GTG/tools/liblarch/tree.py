@@ -400,17 +400,13 @@ class MainTree:
         
         @return node_id if path is valid, None otherwise
         """
-        if len(path) == 0:
+        if not path or path == ():
             return None
-
-        node_id = self.root_id
-        for index in path:
-            node = self.get_node(node_id)
-            if node and 0 <= index < len(node.children):
-                node_id = node.children[index]
-            else:
-                return None
-
+        node_id = path[-1]
+        if path in self.get_paths_for_node(node_id):
+            return node_id
+        else:
+            return None
         return node_id
 
     def get_paths_for_node(self, node_id):
@@ -424,13 +420,11 @@ class MainTree:
                 for parent_id in node.get_parents():
                     if parent_id not in self.nodes:
                         continue
-                    index = parent.get_child_index(node_id)
                     for path in self.get_paths_for_node(parent_id):
-                        paths.append(path + (index,))
+                        paths.append(path + (node_id,))
                 return paths
             else:
-                index = self.root.get_child_index(node_id)
-                return [(index,)]
+                return [(node_id,)]
         else:
             raise ValueError("Cannot get path for non existing node %s" % node_id)
 
