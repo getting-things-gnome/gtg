@@ -38,7 +38,7 @@ def get_task(title, body) :
     remote_object = bus.get_object(busname,"/org/gnome/GTG")
     timi = dbus.Interface(remote_object,dbus_interface="org.gnome.GTG")
     #Calling the method
-    timi.open_new_task(title, body)
+    timi.OpenNewTask(title, body)
 
 def usage():
     print _("Usage: %s [-i | --interactive] [-h | --help]") % sys.argv[0]
