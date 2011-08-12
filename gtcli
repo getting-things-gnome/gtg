@@ -76,24 +76,24 @@ def connect_to_gtg():
 def new_task(title, body):
     """ Retrieve task via dbus """
     timi = connect_to_gtg()
-    timi.new_task("Active", title, '', '', '', [], body, [])
+    timi.NewTask("Active", title, '', '', '', [], body, [])
 
 def delete_task(tid):
     """ Remove a task via dbus """
     timi = connect_to_gtg()
-    timi.delete_task(tid)
+    timi.DeleteTask(tid)
 
 def close_task(tid):
     """ Marks a task closed """
     timi = connect_to_gtg()
-    task_data = timi.get_task(tid)
+    task_data = timi.GetTask(tid)
     task_data['status'] = "Done"
-    timi.modify_task(tid, task_data)
+    timi.ModifyTask(tid, task_data)
 
 def show_task(tid):
     """ Displays a given task """
     timi = connect_to_gtg()
-    task_data = timi.get_task(tid)
+    task_data = timi.GetTask(tid)
     content_regex = re.compile(r"<content>(.+)</content>", re.DOTALL)
 
     content = task_data['text'] + "\n(unknown)"
@@ -120,31 +120,31 @@ def postpone(identifier, startdate):
         filters = _criteria_to_filters(identifier)
         filters.extend(['active','workview'])
         timi = connect_to_gtg()
-        tasks = timi.get_tasks_filtered(filters)
+        tasks = timi.GetTasksFiltered(filters)
     else:
-        tasks = [ timi.get_task(identifier) ]
+        tasks = [ timi.GeTask(identifier) ]
 
     for task in tasks:
         task['startdate'] = startdate
         print "%-12s %-20s %s" %(task['id'], ", ".join(task['tags']), task['title'])
-        timi.modify_task(task['id'], task)
+        timi.ModifyTask(task['id'], task)
 
 def open_task_editor(tid):
     """ Load task in the task editor gui """
     timi = connect_to_gtg()
-    task_data = timi.open_task_editor(tid)
+    task_data = timi.OpenTaskEditor(tid)
 
 def toggle_browser_visibility(state):
     """ Cause the task browser to be displayed """
     timi = connect_to_gtg()
     if state == "hide":
-        timi.hide_task_browser()
+        timi.HideTaskBrowser()
     elif state == "minimize" or state == "iconify":
-        if not timi.is_task_browser_visible():
-            timi.show_task_browser()
-        timi.iconify_task_browser()
+        if not timi.IsTaskBrowserVisible():
+            timi.ShowTaskBrowser()
+        timi.IconifyTaskBrowser()
     else:
-        timi.show_task_browser()
+        timi.ShowTaskBrowser()
 
 def _criteria_to_filters(criteria):
     if not criteria:
@@ -163,7 +163,7 @@ def count_tasks(criteria):
 
     filters = _criteria_to_filters(criteria)
     timi = connect_to_gtg()
-    tasks = timi.get_tasks_filtered(filters)
+    tasks = timi.GetTasksFiltered(filters)
 
     total = 0
     for task in tasks:
@@ -183,7 +183,7 @@ def summary_of_tasks(criteria):
     filters = _criteria_to_filters(criteria)
     filters.append('active')
     timi = connect_to_gtg()
-    tasks = timi.get_tasks_filtered(filters)
+    tasks = timi.GetTasksFiltered(filters)
 
     report = { }
     for t in tasks:
@@ -235,7 +235,7 @@ def list_tasks(criteria, count_only=False):
 
     filters = _criteria_to_filters(criteria)
     timi = connect_to_gtg()
-    tasks = timi.get_tasks_filtered(filters)
+    tasks = timi.GetTasksFiltered(filters)
 
     tasks_tree = { }
     notag = '@__notag'

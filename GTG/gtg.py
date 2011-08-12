@@ -90,11 +90,11 @@ def check_instance(directory, uri_list = []):
                 # between GTG versions), we won't do anything more
                 raise SystemExit
 
-            d.show_task_browser()
+            d.ShowTaskBrowser()
             #if the user has specified a task to open, do that
             for uri in uri_list:
                 if uri.startswith("gtg://"):
-                    d.open_task_editor(uri[6:])
+                    d.OpenTaskEditor(uri[6:])
             raise SystemExit
 
     #write the pid file

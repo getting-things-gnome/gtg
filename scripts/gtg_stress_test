@@ -49,4 +49,4 @@ if __name__ == '__main__':
         lengthy_text = ""
         for i in xrange(text_length):
             lengthy_text += str(uuid.uuid4())
-        gtg.new_task("Active", str(uuid.uuid4()), '', '', '', [], lengthy_text, [])
+        gtg.NewTask("Active", str(uuid.uuid4()), '', '', '', [], lengthy_text, [])

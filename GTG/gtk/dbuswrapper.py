@@ -84,7 +84,7 @@ class DBusTaskWrapper(dbus.service.Object):
         self.view_manager = view_manager
 
     @dbus.service.method(BUSNAME)
-    def get_task(self, tid):
+    def GetTask(self, tid):
         """
         Retrieve a specific task by ID and return the data
         """
@@ -92,21 +92,21 @@ class DBusTaskWrapper(dbus.service.Object):
         return toret
 
     @dbus.service.method(BUSNAME)
-    def get_tasks(self):
+    def GetTasks(self):
         """
         Retrieve a list of task data dicts
         """
         return self.get_tasks_filtered(['all'])
 
     @dbus.service.method(BUSNAME, in_signature="as")
-    def get_active_tasks(self, tags):
+    def GetActiveTasks(self, tags):
         """
         Retrieve a list of task data dicts
         """
         return self.get_tasks_filtered(['active', 'workable'])
 
     @dbus.service.method(BUSNAME, in_signature="as")
-    def get_task_ids_filtered(self, filters):
+    def GetTaskIdsFiltered(self, filters):
         """
         Filters the task list and provides list of remaining ids
         @param:  List of strings for filters to apply.  See the
@@ -123,21 +123,21 @@ class DBusTaskWrapper(dbus.service.Object):
         return view.get_all_nodes()
 
     @dbus.service.method(BUSNAME, in_signature="as")
-    def get_tasks_filtered(self, filters):
+    def GetTasksFiltered(self, filters):
         """
         Gets a list of tasks for the given filters
         @param:  List of strings for filters to apply.  See the
          filters_bank documentation for a list of stock filters.
         @return: List of task dicts
         """
-        tasks = self.get_task_ids_filtered(filters)
+        tasks = self.GetTaskIdsFiltered(filters)
         if tasks:
-            return [self.get_task(id) for id in tasks]
+            return [self.GetTask(id) for id in tasks]
         else:
             return dbus.Array([], "s")
 
     @dbus.service.method(BUSNAME)
-    def has_task(self, tid):
+    def HasTask(self, tid):
         """
         Returns true if the task id is present in the task backend.
         Task could be either open or closed, but not deleted.
@@ -145,14 +145,14 @@ class DBusTaskWrapper(dbus.service.Object):
         return self.req.has_task(tid)
 
     @dbus.service.method(BUSNAME)
-    def delete_task(self, tid):
+    def DeleteTask(self, tid):
         """
         Delete the given task id from the repository.
         """
         self.req.delete_task(tid)
 
     @dbus.service.method(BUSNAME, in_signature="sssssassas")
-    def new_task(self, status, title, duedate, startdate, donedate, tags,
+    def NewTask(self, status, title, duedate, startdate, donedate, tags,
                  text, subtasks):
         """
         Generate a new task object and return the task data as a dict
@@ -178,7 +178,7 @@ class DBusTaskWrapper(dbus.service.Object):
         return task_to_dict(nt)
 
     @dbus.service.method(BUSNAME)
-    def modify_task(self, tid, task_data):
+    def ModifyTask(self, tid, task_data):
         """
         Updates the task with ID tid using the provided information
         in the task_data structure.  Note that any fields left blank
@@ -201,7 +201,7 @@ class DBusTaskWrapper(dbus.service.Object):
         return task_to_dict(task)
 
     @dbus.service.method(BUSNAME)
-    def open_task_editor(self, tid):
+    def OpenTaskEditor(self, tid):
         """
         Launches the GUI task editor showing the task with ID tid.
 
@@ -210,7 +210,7 @@ class DBusTaskWrapper(dbus.service.Object):
         self.view_manager.open_task(tid)
         
     @dbus.service.method(BUSNAME, in_signature="ss")
-    def open_new_task(self, title, description):
+    def OpenNewTask(self, title, description):
         """
         Launches the GUI task editor with a new task.  The task is not
         guaranteed to exist after the editor is closed, since the user
@@ -226,7 +226,7 @@ class DBusTaskWrapper(dbus.service.Object):
         self.view_manager.open_task(uid,thisisnew=True)
 
     @dbus.service.method(BUSNAME)
-    def hide_task_browser(self):
+    def HideTaskBrowser(self):
         """
         Causes the main task browser to become invisible.  It is still
         running but there will be no visible indication of this.
@@ -234,14 +234,14 @@ class DBusTaskWrapper(dbus.service.Object):
         self.view_manager.hide_browser()
 
     @dbus.service.method(BUSNAME)
-    def iconify_task_browser(self):
+    def IconifyTaskBrowser(self):
         """
         Minimizes the task browser
         """
         self.view_manager.iconify_browser()
 
     @dbus.service.method(BUSNAME)
-    def show_task_browser(self):
+    def ShowTaskBrowser(self):
         """
         Shows and unminimizes the task browser and brings it to the
         top of the z-order.
@@ -249,7 +249,7 @@ class DBusTaskWrapper(dbus.service.Object):
         self.view_manager.show_browser()
 
     @dbus.service.method(BUSNAME)
-    def is_task_browser_visible(self):
+    def IsTaskBrowserVisible(self):
         """
         Returns true if task browser is visible, either minimized or
         unminimized, with or without active focus.
