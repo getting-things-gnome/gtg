@@ -60,6 +60,8 @@ class TreeView(gtk.TreeView):
           * resizable => is the column resizable?
           * visible => is the column visible?
           * title => title of column
+          * new_colum => do not create a separate column, just continue with the previous one
+                (this can be used to create columns without borders)
           * sorting => allow default sorting on this column
           * sorting_func => use special function for sorting on this func
 
@@ -90,6 +92,8 @@ class TreeView(gtk.TreeView):
 
         types = []
         sorting_func = []
+        # Build the first coulumn if user starts with new_colum=False
+        col = gtk.TreeViewColumn()
 
         # Build columns according to the order
         for col_num, (order_num, col_name) in enumerate(sorted(self.order_of_column), 1):
@@ -106,7 +110,13 @@ class TreeView(gtk.TreeView):
                 rend_attribute = 'markup'
                 renderer = gtk.CellRendererText()
 
-            col = gtk.TreeViewColumn()
+            # If new_colum=False, do not create new column, use the previous one
+            # It will create columns without borders
+            if desc.get('new_column',True):
+                col = gtk.TreeViewColumn()
+                newcol = True
+            else:
+                newcol = False
             col.set_visible(visible)
 
             if 'title' in desc:
@@ -120,7 +130,8 @@ class TreeView(gtk.TreeView):
             # Allow to set background color
             col.set_cell_data_func(renderer, self._celldatafunction)
             
-            self.append_column(col)
+            if newcol:
+                self.append_column(col)
             self.columns[col_name] = (col_num, col)
 
             if ENABLE_SORTING:
@@ -132,8 +143,6 @@ class TreeView(gtk.TreeView):
                 if 'sorting_func' in desc:
                     # Use special funcion for comparing, e.g. dates
                     sorting_func.append((col_num, col, desc['sorting_func']))
-
-            
 
         self.basetree = tree
         # Build the model around LibLarch tree
