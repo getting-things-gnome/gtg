@@ -8,13 +8,12 @@ __all__ = (
         )
 
 
-import warnings
 import urllib
 import time
 from hashlib import md5
-from GTG import _
 
-warnings.simplefilter('default', ImportWarning)
+from GTG import _
+from GTG.tools.logger import Log
 
 _use_simplejson = False
 try:
@@ -28,15 +27,10 @@ except ImportError:
         pass
     
 if not _use_simplejson:
-    warnings.warn("simplejson module is not available, "
+    Log.warning("simplejson module is not available, "
              "falling back to the internal JSON parser. "
              "Please consider installing the simplejson module from "
-             "http://pypi.python.org/pypi/simplejson.", ImportWarning,
-             stacklevel=2)
-
-#logging.basicConfig()
-#LOG = logging.getLogger(__name__)
-#LOG.setLevel(logging.INFO)
+             "http://pypi.python.org/pypi/simplejson.")
 
 SERVICE_URL = 'http://api.rememberthemilk.com/services/rest/'
 AUTH_SERVICE_URL = 'http://www.rememberthemilk.com/services/auth/'
@@ -162,7 +156,7 @@ class RTMAPICategory:
 
         for param in params:
             if param not in rargs + oargs:
-                warnings.warn('Invalid parameter (%s)' % param)
+                Log.error('Invalid parameter (%s)' % param)
 
         return self.rtm.get(method=aname,
                             auth_token=self.rtm.authInfo.get('token'),
