@@ -280,7 +280,10 @@ class DataStore(object):
         @return bool: True if the task has been accepted
         '''
         def adding(task):
-            self.__tasks.add_node(task)
+            vip = False
+            if task.get_status() == "Active":
+                vip = True
+            self.__tasks.add_node(task,high_priority=vip )
             task.set_loaded()
             if self.is_default_backend_loaded:
                 task.sync()

@@ -29,6 +29,7 @@ class SyncQueue:
 
         @param callback - function for processing requests"""
         self._queue = []
+        self._vip_queue = []
         self._handler = None
         self.callback = callback
         self._lock = threading.Lock()
@@ -36,9 +37,24 @@ class SyncQueue:
     def push(self, *element):
         """ Add a new element to the queue.
 
-        Schedule its processing if it is not already.  """
+        Schedule its processing if it is not already.  
+        """
         self._lock.acquire()
         self._queue.append(element)
+
+        if self._handler is None:
+            self._handler = gobject.idle_add(self.callback)
+        self._lock.release()
+        
+    def priority_push(self, *element):
+        """ Add a new element to the queue.
+
+        Schedule its processing if it is not already.  
+        vip element are in a priority queue. They will be processed first
+        (this comment was actually written in Berlin Airport, after having
+        to wait in an economy class queue)"""
+        self._lock.acquire()
+        self._vip_queue.append(element)
 
         if self._handler is None:
             self._handler = gobject.idle_add(self.callback)
@@ -53,12 +69,15 @@ class SyncQueue:
         If there is no request left, disable processing. """
 
         self._lock.acquire()
-        if len(self._queue) > 0:
+        if len(self._vip_queue) > 0:
+            toreturn = [self._vip_queue.pop(0)]
+        elif len(self._queue) > 0:
             toreturn = [self._queue.pop(0)]
         else:
             toreturn = []
 
-        if len(self._queue) == 0 and self._handler is not None:
+        if len(self._queue) == 0 and len(self._vip_queue) == 0 and\
+                                                self._handler is not None:
             gobject.source_remove(self._handler)
             self._handler = None
         self._lock.release()
@@ -121,25 +140,27 @@ class MainTree:
             func(node_id)
 
 ####### INTERFACE FOR HANDLING REQUESTS #######################################
-    def add_node(self, node, parent_id=None):
-        self.external_request(self._add_node, node, parent_id)
+    def add_node(self, node, parent_id=None, high_priority=False):
+        self._external_request(self._add_node, high_priority, node, parent_id)
 
     def remove_node(self, node_id, recursive=False):
-        self.external_request(self._remove_node, node_id, recursive)
+        self._external_request(self._remove_node, True, node_id, recursive)
 
     def modify_node(self, node_id):
-        self.external_request(self._modify_node, node_id)
+        self._external_request(self._modify_node, False, node_id)
 
     def new_relationship(self, parent_id, child_id):
-        self.external_request(self._new_relationship, parent_id, child_id)
+        self._external_request(self._new_relationship, False, parent_id, child_id)
 
     def break_relationship(self, parent_id, child_id):
-        self.external_request(self._break_relationship, parent_id, child_id)
+        self._external_request(self._break_relationship, False, parent_id, child_id)
 
-    def external_request(self, request_type, *args):
+    def _external_request(self, request_type, vip, *args):
         """ Put the reqest into queue and in the main thread handle it """
-
-        self._queue.push(request_type, *args)
+        if vip:
+            self._queue.priority_push(request_type, *args)
+        else:
+            self._queue.push(request_type, *args)
 
         if self._origin_thread == threading.current_thread():
             self._process_queue()
