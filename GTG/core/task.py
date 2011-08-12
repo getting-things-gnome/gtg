@@ -161,13 +161,13 @@ class Task(TreeNode):
             # a non-capturing group, so it must not be returned
             # to findall. http://www.amk.ca/python/howto/regex/regex.html
             # ~~~~Invernizzi
-            for match in re.findall(r'(?:^|[\s])(@\w+)', text):
+            for match in re.findall(r'(?:^|[\s])(@\w+)', text, re.UNICODE):
                 tags.append(match)
                 # Remove the @
                 #text =text.replace(match,match[1:],1)
             # Get attributes
             regexp = r'([\s]*)([\w-]+):([^\s]+)'
-            for spaces, attribute, args in re.findall(regexp, text):
+            for spaces, attribute, args in re.findall(regexp, text, re.UNICODE):
                 valid_attribute = True
                 if attribute.lower() in ["tags", "tag"] or \
                    attribute.lower() in [_("tags"), _("tag")]:
