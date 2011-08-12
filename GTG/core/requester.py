@@ -63,7 +63,6 @@ class Requester(gobject.GObject):
     #Used by the tasks to emit the task added/modified signal
     #Should NOT be used by anyone else
     def _task_loaded(self, tid):
-        print "requester send signal : task-added for %s" %tid
         gobject.idle_add(self.emit, "task-added", tid)
 
         

@@ -72,7 +72,9 @@ class FilteredTree():
                 #it is essential to idle_add to avoid hard recursion
                 gobject.idle_add(func,param)
             else:
-                self.cllbcks[node_id] = [func,node_id,param]
+                if not self.cllbcks.has_key(node_id):
+                    self.cllbcks[node_id] = []
+                self.cllbcks[node_id].append([func,node_id,param])
         else:
             self.cllbcks[event] = [func,node_id,param]
         
@@ -90,12 +92,13 @@ class FilteredTree():
         """
         
         if event == 'added':
-            func,nid,param = self.cllbcks.get(node_id, (None,None,None))
-            if nid and self.is_displayed(nid):
-                func(param)
-                self.cllbcks.pop(node_id)
-            elif nid:
-                raise Exception('%s is not displayed but %s was added' %(nid,node_id))
+            for func,nid,param in self.cllbcks.get(node_id,[]):
+                if nid and self.is_displayed(nid):
+                    func(param)
+                    if self.cllbcks.has_key(node_id):
+                        self.cllbcks.pop(node_id)
+                else:
+                    raise Exception('%s is not displayed but %s was added' %(nid,node_id))
         func,nid,param = self.cllbcks.get(event, (None,None,None))
         if func:
             if neworder:
@@ -352,8 +355,6 @@ class FilteredTree():
                     can_be_displayed = filt.is_displayed(node_id)
                     if not can_be_displayed:
                         return False
-                else:
-                    return False
             return True
         else:
             return False
