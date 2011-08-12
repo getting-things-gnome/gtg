@@ -120,9 +120,11 @@ class TreeModel(gtk.TreeStore):
 
         iterator = self.my_get_iter(iter_path)
         it = self.insert(iterator, -1, row)
+        
+#        print "adding task %s to path %s" %(node_id,str(path))
 
         # Show the new task if possible
-        self.row_has_child_toggled(self.get_path(it), it)
+#        self.row_has_child_toggled(self.get_path(it), it)
 
     def remove_task(self, node_id, path):
         """ Remove instance of node.
@@ -149,6 +151,7 @@ class TreeModel(gtk.TreeStore):
         for column_num, (python_type, access_method) in enumerate(self.types):
             value = access_method(node)
             self.set_value(iterator, column_num, value)
+#        print "node %s has been updated on path %s" %(node_id,str(path))
 
     def reorder_nodes(self, node_id, path, neworder):
         """ Reorder nodes.
