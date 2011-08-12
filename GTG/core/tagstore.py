@@ -62,6 +62,14 @@ class Tag(TreeNode):
         self._save = None
         self._tasks_count = 0
         #list of tasks associated with this tag
+        
+    #overiding some functions to not allow dnd of special tags
+    def add_parent(self,parent_id):
+        if not self.is_special() and not self.req.get_tag(parent_id).is_special():
+            TreeNode.add_parent(self,parent_id) 
+    def add_child(self,child_id):
+        if not self.is_special() and not self.req.get_tag(child_id).is_special():
+            TreeNode.add_child(self,child_id)
 
     def get_name(self):
         """Return the name of the tag."""
@@ -143,13 +151,6 @@ class Tag(TreeNode):
         return attributes
 
     ### TASK relation ####      
-
-#    def get_tasks(self,filters=[]):
-#        tasktree = self.req.get_tasks_tree(name=self.get_name(),refresh=False)
-#        for f in filters:
-#            tasktree.apply_filter(f,refresh=False)
-#        tasktree.apply_filter(self.get_name())
-#        return tasktree.get_all_nodes()
        
     def get_active_tasks_count(self):
 #        count = self.__get_count(filters=['active'])
@@ -157,7 +158,6 @@ class Tag(TreeNode):
         #the existing active tree. (but seems to be sometimes buggy)
         tree = self.req.get_tasks_tree(name='active',refresh=False)
         count = self.__get_count(tasktree=tree)
-#        print "%s has %s tasks, not %s" %(self.get_name(),count,count)
         return count
         
     def get_total_tasks_count(self):

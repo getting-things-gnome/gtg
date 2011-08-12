@@ -65,7 +65,6 @@ class Tree:
     def move_node(self, node_id, new_parent_id=None):
         """ Move the node to a new parent (dismissing all other parents)
         use pid None to move it to the root """
-
         if self.has_node(node_id):
             node = self.get_node(node_id)
             node.set_parent(new_parent_id)

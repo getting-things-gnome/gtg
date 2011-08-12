@@ -549,7 +549,6 @@ class TreeNode:
                 self.remove_parent(node_id)
             else:
                 is_already_parent_flag = True
-
         if parent_id and not is_already_parent_flag:
             self.add_parent(parent_id)
 
