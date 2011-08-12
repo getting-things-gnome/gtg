@@ -15,8 +15,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2011-08-11 04:51+0000\n"
-"X-Generator: Launchpad (build 13644)\n"
+"X-Launchpad-Export-Date: 2011-08-12 04:36+0000\n"
+"X-Generator: Launchpad (build 13662)\n"
 
 #: GTG/tools/dates.py:51
 msgid "Today"
@@ -160,7 +160,7 @@ msgstr ""
 
 #: GTG/taskeditor/taskeditor.glade.h:2 GTG/taskbrowser/taskbrowser.glade.h:13
 msgid "Delete"
-msgstr ""
+msgstr "Deler"
 
 #: GTG/taskeditor/taskeditor.glade.h:3 GTG/taskeditor/__init__.py:33
 #: GTG/taskbrowser/taskbrowser.glade.h:14 GTG/taskbrowser/__init__.py:40
