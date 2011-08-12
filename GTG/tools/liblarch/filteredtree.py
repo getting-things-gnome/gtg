@@ -352,6 +352,8 @@ class FilteredTree():
                     can_be_displayed = filt.is_displayed(node_id)
                     if not can_be_displayed:
                         return False
+                else:
+                    return False
             return True
         else:
             return False

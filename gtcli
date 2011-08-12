@@ -126,7 +126,7 @@ def postpone(identifier, startdate):
 
     for task in tasks:
         task['startdate'] = startdate
-        print task['id']
+        print "%-12s %-20s %s" %(task['id'], ", ".join(task['tags']), task['title'])
         timi.modify_task(task['id'], task)
 
 def open_task_editor(tid):
