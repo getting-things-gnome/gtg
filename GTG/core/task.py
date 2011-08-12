@@ -618,6 +618,18 @@ class Task(TreeNode):
     #tag_list is a list of tags names
     #return true if at least one of the list is in the task
     def has_tags(self, tag_list=None, notag_only=False):
+        #recursive function to explore the tags and its children
+        def children_tag(tagname):
+            toreturn = False
+            if tagname in self.tags:
+                toreturn = True
+            else:
+                tag = self.req.get_tag(tagname)
+                for tagc_name in tag.get_children():
+                    if not toreturn:
+                        toreturn = children_tag(tagc_name)
+            return toreturn
+                
         #We want to see if the task has no tags
         toreturn = False
         if notag_only:
@@ -627,9 +639,9 @@ class Task(TreeNode):
         elif tag_list == [] or tag_list == None:
             toreturn = True
         elif tag_list:
-            for tag in tag_list:
-                if tag in self.tags:
-                    toreturn = True
+            for tagname in tag_list:
+                if not toreturn:
+                    toreturn = children_tag(tagname) 
         else:
             #Well, if we don't filter on tags or notag, it's true, of course
             toreturn = True

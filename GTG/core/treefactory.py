@@ -135,7 +135,6 @@ class TreeFactory:
         #Bryce : use self.tagtree to find children/parents of tags
         tname = parameters['tag']
         toreturn = node.has_tags([tname])
-#        print "node %s has tag %s : %s" %(node.get_id(),tname,toreturn)
         return toreturn
         
     def alltag(self,task,parameters=None):
