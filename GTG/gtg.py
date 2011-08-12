@@ -82,8 +82,14 @@ def check_instance(directory, uri_list = []):
         p_name = os.popen("/bin/ps -f %s" % pid).read()
         if p == 0 and "gtg" in p_name:
             print _("gtg is already running!")
-            d=dbus.SessionBus().get_object(CoreConfig.BUSNAME,\
+            try:
+                d=dbus.SessionBus().get_object(CoreConfig.BUSNAME,\
                                            CoreConfig.BUSINTERFACE)
+            except dbus.exceptions.DBusException:
+                # If we cant't connect to the interface (e.g. changed interface
+                # between GTG versions), we won't do anything more
+                raise SystemExit
+
             d.show_task_browser()
             #if the user has specified a task to open, do that
             for uri in uri_list:
