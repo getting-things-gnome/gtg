@@ -1610,6 +1610,53 @@ class TestLibLarch(unittest.TestCase):
         # No orphans are left
         for node_id in view.get_all_nodes():
             self.assertFalse(node_id.startswith(prefix))
+            
+    def test_queue_action_one_action(self):
+        self.testvalue = 0
+        def action(x):
+            self.testvalue += x
+        self.tree = Tree()
+        self.view = self.tree.get_viewtree()
+        self.tree.add_filter('blue',self.is_blue)
+        self.tree.add_filter('green',self.is_green)
+        self.view.apply_filter('green')
+        bl = DummyNode('bl')
+        bl.add_color('blue')
+        gr = DummyNode('gr')
+        gr.add_color('green')
+        self.view.queue_action('bl',action,1)
+        self.view.queue_action('gr',action,2)
+        self.assertEqual(self.testvalue,0)
+        self.tree.add_node(bl)
+        self.assertEqual(self.testvalue,0)
+        self.tree.add_node(gr)
+        self.assertEqual(self.testvalue,2)
+        
+    def test_queue_action_multiples_actions(self):
+        self.testvalue = 0
+        def action(x):
+            self.testvalue += x
+        self.tree = Tree()
+        self.view = self.tree.get_viewtree()
+        self.tree.add_filter('blue',self.is_blue)
+        self.tree.add_filter('green',self.is_green)
+        self.view.apply_filter('green')
+        bl = DummyNode('bl')
+        bl.add_color('blue')
+        gr = DummyNode('gr')
+        gr.add_color('green')
+        self.view.queue_action('bl',action,1)
+        self.view.queue_action('bl',action,3)
+        self.view.queue_action('gr',action,2)
+        self.assertEqual(self.testvalue,0)
+        self.tree.add_node(bl)
+        self.assertEqual(self.testvalue,0)
+        self.tree.add_node(gr)
+        self.assertEqual(self.testvalue,2)
+        self.view.unapply_filter('green')
+        #test value should be 2 + 1 + 3 = 6
+        self.assertEqual(self.testvalue,6)
+        
 
 def test_suite():
     return unittest.TestLoader().loadTestsFromName(__name__)

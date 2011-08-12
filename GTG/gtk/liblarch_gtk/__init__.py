@@ -271,19 +271,22 @@ class TreeView(gtk.TreeView):
         This is a simple wrapper which prepares node objects and then
         call comparing function. In other case return default value -1
         """
-        if model.iter_is_valid(iter1) and model.iter_is_valid(iter2):
-            node_id_a = model.get_value(iter1, 0)
-            node_id_b = model.get_value(iter2, 0)
-            if node_id_a and node_id_b and func:
-                id, order = self.treemodel.get_sort_column_id()
-                node_a = self.basetree.get_node(node_id_a)
-                node_b = self.basetree.get_node(node_id_b)
-                sort = func(node_a, node_b, order)
-            else:
-                sort = -1
+#        if model.iter_is_valid(iter1) and model.iter_is_valid(iter2):
+        node_id_a = model.get_value(iter1, 0)
+        node_id_b = model.get_value(iter2, 0)
+        if node_id_a and node_id_b and func:
+            id, order = self.treemodel.get_sort_column_id()
+            node_a = self.basetree.get_node(node_id_a)
+            node_b = self.basetree.get_node(node_id_b)
+            sort = func(node_a, node_b, order)
         else:
-#            print "some of the iter given for sorting are invalid. WTF?"
             sort = -1
+#        else:
+#            print "some of the iter given for sorting are invalid. WTF?"
+#            print "iter1: %s" %model.get_string_from_iter(iter1)
+#            print "iter2: %s" %model.get_value(iter2,0)
+#            raise Exception('iter %s and %s are invalid' %(iter1,iter2))
+#            sort = -1
         return sort
 
     def _celldatafunction(self, column, cell, model, iter):
