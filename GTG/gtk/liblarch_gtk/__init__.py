@@ -267,11 +267,9 @@ class TreeView(gtk.TreeView):
 
     def _sort_func(self, model, iter1, iter2, func=None):
         """ Sort two iterators by function which gets node objects.
-
         This is a simple wrapper which prepares node objects and then
         call comparing function. In other case return default value -1
         """
-#        if model.iter_is_valid(iter1) and model.iter_is_valid(iter2):
         node_id_a = model.get_value(iter1, 0)
         node_id_b = model.get_value(iter2, 0)
         if node_id_a and node_id_b and func:
@@ -281,12 +279,6 @@ class TreeView(gtk.TreeView):
             sort = func(node_a, node_b, order)
         else:
             sort = -1
-#        else:
-#            print "some of the iter given for sorting are invalid. WTF?"
-#            print "iter1: %s" %model.get_string_from_iter(iter1)
-#            print "iter2: %s" %model.get_value(iter2,0)
-#            raise Exception('iter %s and %s are invalid' %(iter1,iter2))
-#            sort = -1
         return sort
 
     def _celldatafunction(self, column, cell, model, iter):
@@ -322,11 +314,6 @@ class TreeView(gtk.TreeView):
         self.__init_dnd()
         self.connect('drag_data_get', self.on_drag_data_get)
         self.connect('drag_data_received', self.on_drag_data_received)
-
-#        if ENABLE_SORTING:
-#            self.connect('drag_drop', self.on_drag_drop)
-#            self.connect('button_press_event', self.on_button_press)
-#            self.connect('button_release_event', self.on_button_release)
             
 
     def set_dnd_external(self, sourcename, func):
@@ -369,50 +356,6 @@ class TreeView(gtk.TreeView):
 
         self.enable_model_drag_dest(\
             dnd_targets, gtk.gdk.ACTION_DEFAULT | gtk.gdk.ACTION_MOVE)
-            
-#        self.drag_source_set(\
-#            gtk.gdk.BUTTON1_MASK,
-#            [('gtg/task-iter-str', gtk.TARGET_SAME_WIDGET, 0)],
-#            gtk.gdk.ACTION_DEFAULT | gtk.gdk.ACTION_MOVE)
-
-#        self.drag_dest_set(\
-#            gtk.DEST_DEFAULT_ALL,
-#            [('gtg/task-iter-str', gtk.TARGET_SAME_WIDGET, 0)],
-#            gtk.gdk.ACTION_DEFAULT | gtk.gdk.ACTION_MOVE)
-            
-#    def on_button_press(self, widget, event):
-#        # Here we intercept mouse clicks on selected items so that we can
-#        # drag multiple items without the click selecting only one
-#        target = self.get_path_at_pos(int(event.x), int(event.y))
-#        if (target 
-#           and event.type == gtk.gdk.BUTTON_PRESS
-#           and not (event.state & (gtk.gdk.CONTROL_MASK|gtk.gdk.SHIFT_MASK))
-#           and self.get_selection().path_is_selected(target[0])):
-#               # disable selection
-#               self.get_selection().set_select_function(lambda *ignore: False)
-#               self.defer_select = target[0]
-#            
-#    def on_button_release(self, widget, event):
-#        # re-enable selection
-#        self.get_selection().set_select_function(lambda *ignore: True)
-#        
-#        target = self.get_path_at_pos(int(event.x), int(event.y))    
-#        if (self.defer_select and target 
-#           and self.defer_select == target[0]
-#           and not (event.x==0 and event.y==0)): # certain drag and drop 
-#                                                 # operations still have path
-#               # if user didn't drag, simulate the click previously ignored
-#               self.set_cursor(target[0], target[1], False)
-#            
-#        self.defer_select=False
-
-#    def on_drag_drop(self, treeview, context, selection, info, timestamp):
-#        """ When using TreeModelSort, drag_drop signal must be handled to
-#        prevent GTK warning in console.
-
-#        Do nothing, just prevent default callback.
-#        """
-#        self.emit_stop_by_name('drag_drop')
     
     def on_drag_data_get(self, treeview, context, selection, info, timestamp):
         """ Extract data from the source of the DnD operation.
