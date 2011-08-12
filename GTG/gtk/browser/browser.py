@@ -251,14 +251,34 @@ class TaskBrowser(gobject.GObject):
                 self.on_mark_as_done,
             "on_mark_as_started":
                 self.on_mark_as_started,
-            "on_schedule_for_tomorrow":
-                self.on_schedule_for_tomorrow,
-            "on_schedule_for_next_week":
-                self.on_schedule_for_next_week,
-            "on_schedule_for_next_month":
-                self.on_schedule_for_next_month,
-            "on_schedule_for_next_year":
-                self.on_schedule_for_next_year,
+            "on_start_for_tomorrow":
+                self.on_start_for_tomorrow,
+            "on_start_for_next_week":
+                self.on_start_for_next_week,
+            "on_start_for_next_month":
+                self.on_start_for_next_month,
+            "on_start_for_next_year":
+                self.on_start_for_next_year,
+            "on_start_clear":
+                self.on_start_clear,
+            "on_set_due_today":
+                self.on_set_due_today,
+            "on_set_due_tomorrow":
+                self.on_set_due_tomorrow,
+            "on_set_due_next_week":
+                self.on_set_due_next_week,
+            "on_set_due_next_month":
+                self.on_set_due_next_month,
+            "on_set_due_next_year":
+                self.on_set_due_next_year,
+            "on_set_due_now":
+                self.on_set_due_now,
+            "on_set_due_soon":
+                self.on_set_due_soon,
+            "on_set_due_later":
+                self.on_set_due_later,
+            "on_set_due_clear":
+                self.on_set_due_clear,
             "on_dismiss_task":
                 self.on_dismiss_task,
             "on_move":
@@ -970,29 +990,77 @@ class TaskBrowser(gobject.GObject):
         self.vmanager.ask_delete_tasks(tids_todelete)
 
     def update_start_date(self, widget, new_start_date):
-        tasks_uid = filter(lambda uid: uid != None, self.get_selected_tasks())
-        if len(tasks_uid) == 0:
-            return
-        tasks = [self.req.get_task(uid) for uid in tasks_uid]
-        tasks_status = [task.get_status() for task in tasks]
-        for uid, task, status in zip(tasks_uid, tasks, tasks_status):
-            task.set_start_date(get_canonical_date(new_start_date))
+        tasks = [self.req.get_task(uid) 
+            for uid in self.get_selected_tasks()
+            if uid is not None]
+
+        if new_start_date:
+            start_date = get_canonical_date(new_start_date)
+        else:
+            start_date = no_date
+
+        for task in tasks:
+            task.set_start_date(start_date)
         #FIXME: If the task dialog is displayed, refresh its start_date widget
 
     def on_mark_as_started(self, widget):
         self.update_start_date(widget, "today")
 
-    def on_schedule_for_tomorrow(self, widget):
+    def on_start_for_tomorrow(self, widget):
         self.update_start_date(widget, "tomorrow")
 
-    def on_schedule_for_next_week(self, widget):
+    def on_start_for_next_week(self, widget):
         self.update_start_date(widget, "next week")
 
-    def on_schedule_for_next_month(self, widget):
+    def on_start_for_next_month(self, widget):
         self.update_start_date(widget, "next month")
 
-    def on_schedule_for_next_year(self, widget):
+    def on_start_for_next_year(self, widget):
         self.update_start_date(widget, "next year")
+
+    def on_start_clear(self, widget):
+        self.update_start_date(widget, None)
+        
+    def update_due_date(self, widget, new_due_date):
+        tasks = [self.req.get_task(uid) 
+            for uid in self.get_selected_tasks()
+            if uid is not None]
+
+        if new_due_date:
+            due_date = get_canonical_date(new_due_date)
+        else:
+            due_date = no_date
+
+        for task in tasks:
+            task.set_due_date(due_date)
+        #FIXME: If the task dialog is displayed, refresh its due_date widget
+
+    def on_set_due_today(self, widget):
+        self.update_due_date(widget, "today")
+
+    def on_set_due_tomorrow(self, widget):
+        self.update_due_date(widget, "tomorrow")
+
+    def on_set_due_next_week(self, widget):
+        self.update_due_date(widget, "next week")
+
+    def on_set_due_next_month(self, widget):
+        self.update_due_date(widget, "next month")
+
+    def on_set_due_next_year(self, widget):
+        self.update_due_date(widget, "next year")
+        
+    def on_set_due_now(self, widget):
+        self.update_due_date(widget, "now")
+        
+    def on_set_due_soon(self, widget):
+        self.update_due_date(widget, "soon")
+        
+    def on_set_due_later(self, widget):
+        self.update_due_date(widget, "later")
+
+    def on_set_due_clear(self, widget):
+        self.update_due_date(widget, None)
 
     def on_add_new_tag(self, widget=None, tid=None, tryagain = False):
         if not tid:
