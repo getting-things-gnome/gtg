@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2010-03-27 15:20+0100\n"
+"POT-Creation-Date: 2011-08-12 11:38+0200\n"
 "PO-Revision-Date: 2010-10-28 11:31+0000\n"
 "Last-Translator: Svetoslav Stefanov <svetlisashkov@yahoo.com>\n"
 "Language-Team: Bulgarian <bg@li.org>\n"
@@ -15,566 +15,366 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2010-10-29 05:31+0000\n"
-"X-Generator: Launchpad (build Unknown)\n"
+"X-Launchpad-Export-Date: 2011-08-13 04:53+0000\n"
+"X-Generator: Launchpad (build 13674)\n"
 
-#: GTG/tools/dates.py:51
-msgid "Today"
-msgstr "Днес"
+#: GTG/plugins/notification_area/notification_area.py:95
+msgid "_View Main Window"
+msgstr "_Преглед на Основния Прозорец"
 
-#: GTG/tools/dates.py:54
+#: GTG/plugins/notification_area/notification_area.py:106
+msgid "Add _New Task"
+msgstr "Добавяне на _Нова Задача"
+
+#: GTG/plugins/export/export_templates/description_textual.py:18
+msgid "Text-only"
+msgstr ""
+
+#: GTG/plugins/export/export_templates/description_textual.py:19
+msgid "A template to create a simple text file with some tasks."
+msgstr ""
+
+#: GTG/plugins/export/export_templates/description_simple.py:18
+msgid "A simple Web page (nicely printable)"
+msgstr ""
+
+#: GTG/plugins/export/export_templates/description_simple.py:19
+msgid ""
+"A template to create a simple HTML page with some tasks. It can be printed "
+"nicely."
+msgstr ""
+
+#: GTG/plugins/export/export_templates/description_statusrpt.py:18
+msgid "Status report"
+msgstr ""
+
+#: GTG/plugins/export/export_templates/description_statusrpt.py:19
+msgid "A template to create a compact text file listing only task titles."
+msgstr ""
+
+#: GTG/plugins/export/export_templates/description_pocketmod.py:18
+msgid "Foldable booklet (PDF)"
+msgstr ""
+
+#: GTG/plugins/export/export_templates/description_pocketmod.py:19
+msgid ""
+"A template to create a <a href=\"http://www.pocketmod.com\">PocketMod</a>, "
+"which is a  small foldable booklet."
+msgstr ""
+
+#: GTG/plugins/export/export_templates/description_sexy.py:18
+msgid "A professional-looking HTML page"
+msgstr ""
+
+#: GTG/plugins/export/export_templates/description_sexy.py:19
+msgid ""
+"A template to create a HTML page with some tasks and tags. Tags colors are "
+"also displayed."
+msgstr ""
+
+#: GTG/plugins/export/export.py:114
+msgid "Template not found"
+msgstr "Шаблонът не е открит"
+
+#: GTG/plugins/export/export.py:121
 #, python-format
-msgid "Yesterday"
-msgid_plural "%(days)d days ago"
-msgstr[0] "Вчера"
-msgstr[1] "преди %(days)d  дни"
+msgid "Could not generate the document: %s"
+msgstr ""
 
-#: GTG/tools/dates.py:57
+#: GTG/plugins/export/export.py:169
+msgid "Export the tasks currently listed"
+msgstr ""
+
+#: GTG/plugins/export/export.py:322
+msgid "Choose where to save your list"
+msgstr "Изберете място за съхранение на списъка"
+
+#: GTG/plugins/send_email/sendEmail.py:44
+msgid "Send via email"
+msgstr ""
+
+#: GTG/plugins/send_email/sendEmail.py:69
 #, python-format
-msgid "Tomorrow"
-msgid_plural "In %(days)d days"
-msgstr[0] "Утре"
-msgstr[1] "след %(days)d  дни"
+msgid "Status: %s"
+msgstr ""
 
-#: GTG/tools/dates.py:96 GTG/tools/dates.py:138
+#: GTG/plugins/send_email/sendEmail.py:70
+#, python-format
+msgid ""
+"\n"
+"Tags: %s"
+msgstr ""
+
+#: GTG/plugins/send_email/sendEmail.py:71
+#, python-format
+msgid ""
+"\n"
+"Subtasks:\n"
+"%s"
+msgstr ""
+
+#: GTG/plugins/send_email/sendEmail.py:73
+#, python-format
+msgid ""
+"\n"
+"Task content:\n"
+"%s"
+msgstr ""
+
+#: GTG/plugins/send_email/sendEmail.py:76
+#, python-format
+msgid "Task: %(task_title)s"
+msgstr ""
+
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:1
+msgid "<b>Location Determination Method</b>"
+msgstr "<b>Начин за установяване на местоположението</b>"
+
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:2
+msgid "<b>Proximity Factor</b>"
+msgstr "<b>Фактор на близост</b>"
+
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:3
+msgid ""
+"<small>Distance in kilometers from \n"
+"the current location.</small>"
+msgstr ""
+"<small>Разстояние от текущата \n"
+"позиция в километри.</small>"
+
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:5
+msgid "Associate with existing tag"
+msgstr "Присъединяване към съществуващ етикет"
+
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:6
+msgid "Associate with new tag"
+msgstr "Присъединяване към нов етикет"
+
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:7
+msgid "Geolocalized-tasks Preferences"
+msgstr "Настройка на геолокализирани задачи"
+
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:8
+msgid "Set the task's location"
+msgstr "Местоположение на задачата"
+
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:9
+msgid "Use cellphone"
+msgstr "Използване на мобилен телефон"
+
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:10
+msgid "Use gps"
+msgstr "Използване на GPS"
+
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:11
+msgid "Use network"
+msgstr "Използване на мрежата"
+
+#: GTG/plugins/hamster/hamster.py:154
+msgid "Start task in Hamster"
+msgstr "Стартиране на задача в Hamster"
+
+#: GTG/plugins/hamster/hamster.py:159
+msgid "Start in Hamster"
+msgstr "Стартиране в Hamster"
+
+#: GTG/plugins/hamster/hamster.py:161
+msgid "Start a new activity in Hamster Time"
+msgstr "Стартиране на нова дейност в Hamster Time"
+
+#: GTG/plugins/hamster/hamster.py:175
+msgid "Start a new activity in Hamster Time "
+msgstr "Стартиране на нова дейност в Hamster Time "
+
+#: GTG/plugins/tomboy/tomboy.py:79
+msgid ""
+"Tomboy/Gnote not found. Please install it or disable the Tomboy/Gnote plugin "
+"in GTG"
+msgstr ""
+"Приложението Tomboy/Gnote не е открито. Моля инсталирайте го или изключете "
+"приставката за него в GTG"
+
+#: GTG/plugins/tomboy/tomboy.py:122
+msgid "Add Tomboy note"
+msgstr "Добавяне на бележка в Tomboy"
+
+#: GTG/plugins/tomboy/tomboy.py:196
+msgid ""
+" was found on the system, but it doesn't provide a dbus interface. the "
+"Tomboy/Gnote plugin will not work with it."
+msgstr ""
+" беше открито в системата, но не осигурява dbus интерфейс. Приставката за "
+"Tomboy/Gnote няма да работи с него."
+
+#: GTG/plugins/tomboy/tomboy.py:243
+msgid "That note does not exist!"
+msgstr "Тази бележка не съществува!"
+
+#: GTG/plugins/tomboy/tomboy.py:248
+msgid "That note does not exist. Do you want to create a new one?"
+msgstr "Бележка не съществува. Желаете ли създаването на нова?"
+
+#: GTG/plugins/tomboy/tomboy.py:276
+msgid "This Tomboy note does not exist anymore. Do you want to create it?"
+msgstr "Тази Tomboy бележка вече не съществува. Искате ли да я създадете?"
+
+#: GTG/tests/test_dates.py:38 GTG/tools/dates.py:95 GTG/tools/dates.py:137
 msgid "now"
 msgstr "сега"
 
-#: GTG/tools/dates.py:97 GTG/tools/dates.py:140
+#: GTG/tests/test_dates.py:39 GTG/tools/dates.py:96 GTG/tools/dates.py:139
 msgid "soon"
 msgstr "скоро"
 
-#: GTG/tools/dates.py:98 GTG/tools/dates.py:142
+#: GTG/tests/test_dates.py:39 GTG/tools/dates.py:97 GTG/tools/dates.py:141
 msgid "later"
 msgstr "по-късно"
 
-#: GTG/tools/dates.py:180
-msgid "monday"
-msgstr "понеделник"
-
-#: GTG/tools/dates.py:180
-msgid "tuesday"
-msgstr "вторник"
-
-#: GTG/tools/dates.py:180
-msgid "wednesday"
-msgstr "сряда"
-
-#: GTG/tools/dates.py:181
-msgid "thursday"
-msgstr "четвъртък"
-
-#: GTG/tools/dates.py:181
-msgid "friday"
-msgstr "петък"
-
-#: GTG/tools/dates.py:181
-msgid "saturday"
-msgstr "събота"
-
-#: GTG/tools/dates.py:182
-msgid "sunday"
-msgstr "неделя"
-
-#: GTG/tools/dates.py:183
-msgid "today"
-msgstr "днес"
-
-#: GTG/tools/dates.py:184
-msgid "tomorrow"
-msgstr "утре"
-
-#: GTG/tools/dates.py:185
-msgid "next week"
-msgstr "следващата седмица"
-
-#: GTG/tools/dates.py:186
-msgid "next month"
-msgstr "следващия месец"
-
-#: GTG/tools/dates.py:187
-msgid "next year"
-msgstr "следващата фодина"
-
-#: GTG/tools/gtkcrashhandler.py:58
-msgid ""
-"We're terribly sorry. Could you help us fix the problem by reporting the "
-"crash?"
+#: GTG/backends/backend_identica.py:54
+msgid "Identi.ca"
 msgstr ""
-"Ужасно съжаляваме. Ще ни помогнете ли да решим проблема, като съобщите за "
-"грешката?"
 
-#: GTG/tools/gtkcrashhandler.py:169
-msgid "An error has occurred"
-msgstr "Възникна грешка"
-
-#: GTG/tools/gtkcrashhandler.py:177
-msgid "It looks like an error has occurred."
-msgstr "Изглежда възникна грешка"
-
-#: GTG/tools/gtkcrashhandler.py:212
-msgid "_Details"
-msgstr "_Подробности"
-
-#: GTG/tools/gtkcrashhandler.py:218
-msgid "_Report this problem..."
-msgstr "_Докладвай този проблем..."
-
-#: GTG/tools/gtkcrashhandler.py:222
-msgid "_Ignore the error"
-msgstr "_Игнорирай грешката"
-
-#: GTG/taskeditor/editor.py:321
-#, python-format
-msgid "Completed %(days)d day late"
-msgid_plural "Completed %(days)d days late"
-msgstr[0] "Завършена с %(days)d ден закъснение"
-msgstr[1] "Завършена с %(days)d дни закъснение"
-
-#: GTG/taskeditor/editor.py:324
-#, python-format
-msgid "Completed %(days)d day early"
-msgid_plural "Completed %(days)d days early"
-msgstr[0] "Завършена с %(days)d ден по рано"
-msgstr[1] "Завършена с %(days)d дни по рано"
-
-#: GTG/taskeditor/editor.py:330
-#, python-format
-msgid "Due tomorrow!"
-msgid_plural "%(days)d days left"
-msgstr[0] "За утре!"
-msgstr[1] "Остават още %(days)d"
-
-#: GTG/taskeditor/editor.py:332
-msgid "Due today!"
-msgstr "За днес!"
-
-#: GTG/taskeditor/editor.py:335
-#, python-format
-msgid "Due yesterday!"
-msgid_plural "Was %(days)d days ago"
-msgstr[0] "За вчера!"
-msgstr[1] "Беше преди %(days)d дни"
-
-#: GTG/taskeditor/taskeditor.glade.h:1
-msgid "Closed on"
-msgstr "Затворено на"
-
-#: GTG/taskeditor/taskeditor.glade.h:2 GTG/taskbrowser/taskbrowser.glade.h:13
-msgid "Delete"
-msgstr "Изтриване"
-
-#: GTG/taskeditor/taskeditor.glade.h:3 GTG/taskeditor/__init__.py:33
-#: GTG/taskbrowser/taskbrowser.glade.h:14 GTG/taskbrowser/__init__.py:40
-msgid "Dismiss"
-msgstr "Отхвърляне"
-
-#: GTG/taskeditor/taskeditor.glade.h:4
-msgid "Due for"
-msgstr "Насрочено за"
-
-#: GTG/taskeditor/taskeditor.glade.h:5
-msgid "Insert subtask"
-msgstr "Вмъкване на подзадача"
-
-#: GTG/taskeditor/taskeditor.glade.h:6
-msgid "Insert tag"
-msgstr "Вмъкване на етикет"
-
-#: GTG/taskeditor/taskeditor.glade.h:7
-msgid "Later"
-msgstr "По-късно"
-
-#: GTG/taskeditor/taskeditor.glade.h:8
-msgid "Mark Done"
-msgstr "Отбелезване като завършена"
-
-#: GTG/taskeditor/taskeditor.glade.h:9
-msgid "Now"
-msgstr "Сега"
-
-#: GTG/taskeditor/taskeditor.glade.h:10
-msgid "Soon"
-msgstr "Скоро"
-
-#: GTG/taskeditor/taskeditor.glade.h:11
-msgid "Starting on"
-msgstr "Започвайки от"
-
-#: GTG/taskeditor/taskeditor.glade.h:12
-msgid "Task"
-msgstr "Задача"
-
-#: GTG/taskeditor/__init__.py:31 GTG/taskbrowser/__init__.py:36
-msgid "Mark as done"
-msgstr "Изпълнена"
-
-#: GTG/taskeditor/__init__.py:32 GTG/taskbrowser/__init__.py:38
-msgid "Mark as not done"
-msgstr "Неизпълнена"
-
-#: GTG/taskeditor/__init__.py:34 GTG/taskbrowser/__init__.py:42
-msgid "Undismiss"
-msgstr "Възстановяване"
-
-#: GTG/taskeditor/__init__.py:35
-msgid "Keep as Note"
-msgstr "Запазване като бележка"
-
-#: GTG/taskeditor/__init__.py:36
-msgid "Make a Task"
-msgstr "Преобразуване в задача"
-
-#: GTG/taskeditor/__init__.py:38
-msgid "Mark this task as done"
-msgstr "Маркиране на задачата като изпълнена"
-
-#: GTG/taskeditor/__init__.py:39 GTG/taskeditor/__init__.py:41
-msgid "Mark this task as to be done"
-msgstr "Маркиране на задачата като неизпълнена"
-
-#: GTG/taskeditor/__init__.py:40
-msgid "Mark this task as not to be done anymore"
-msgstr "Маркиране на задачата като вече ненужна"
-
-#: GTG/taskeditor/__init__.py:42
-msgid "Permanently remove this task"
-msgstr "Окончателно премахване на задачата"
-
-#: GTG/taskeditor/__init__.py:43
-msgid "Insert a subtask in this task"
-msgstr "Вмъкване на подзадача в тази задача"
-
-#: GTG/taskeditor/__init__.py:44
-msgid "Insert a tag in this task"
-msgstr "Вмъкване на етикет в задачата"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:1
-msgid ""
-"\n"
-"Getting Things Gnome! is an organizer for the GNOME desktop environment."
+#: GTG/backends/backend_identica.py:58
+msgid "Imports your identi.ca  messages into your GTG "
 msgstr ""
-"\n"
-"Getting Things Gnome! е организатор за работната среда GNOME."
 
-#: GTG/taskbrowser/taskbrowser.glade.h:3
-msgid "About GTG!"
-msgstr "Относно GTG!"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:4
-msgid "Add Tag"
-msgstr "Добавяне на Етикет"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:5
-msgid "Add Tag..."
-msgstr "Добавяне на Етикет..."
-
-#: GTG/taskbrowser/taskbrowser.glade.h:6
-msgid "Add a Tag..."
-msgstr "Добавяне на Етикет..."
-
-#: GTG/taskbrowser/taskbrowser.glade.h:7
-msgid "Add a subtask"
-msgstr "Добавяне на подзадача"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:8
-msgid "Apply to subtasks"
-msgstr "Приложи към подзадачи"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:9
-msgid "Cancel"
-msgstr "Отказ"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:10
-msgid "Copyrights&#xA9; 2008, 2009 Lionel Dricot, Bertrand Rousseau"
-msgstr "Авторски права&#xA9; 2008, 2009 Lionel Dricot, Bertrand Rousseau"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:11 GTG/taskbrowser/__init__.py:46
-msgid "Create a new task"
-msgstr "Създаване на задача"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:12
-msgid "D_ismiss"
-msgstr "Отхвърляне"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:15
-msgid "Edit"
-msgstr "Редактиране"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:16
-msgid "Enter the name of the tag(s) you wish to add:"
-msgstr "Въведете името за етикет/ите, които желаете да добавите:"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:17
-msgid "GTG website"
-msgstr "страницата на GTG в Интернет"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:18
-msgid "Getting Things Gnome!"
-msgstr "Getting Things Gnome!"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:19
-msgid ""
-"Getting Things Gnome! is free software; you can redistribute it and/or "
-"modify it under the terms of the GNU General Public License as published by "
-"the Free Software Foundation; either version 3 of the License, or (at your "
-"option) any later version.\n"
-"\n"
-"Getting Things Gnome! is distributed in the hope that it will be useful, but "
-"WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY "
-"or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
-"more details.\n"
-"\n"
-"You should have received a copy of the GNU General Public License along with "
-"Getting Things Gnome!; if not, write to the Free Software Foundation, Inc., "
-"51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA."
+#: GTG/backends/backend_gnote.py:42
+msgid "Gnote"
 msgstr ""
-"Getting Things Gnome! е свободен софтуер; можете да разпространяване и/или "
-"променяте според условията на Общия Публичен Лиценз на ГНУ от Фондацията за "
-"свободен софтуер; версия 3 или (по ваш избор) по-късна.\n"
-"\n"
-"Getting Things Gnome! се разпространява с надеждата да бъде от полза, но БЕЗ "
-"НИКАКВА ГАРАНЦИЯ; дори и без косвена гаранция за ПРИГОДНОСТ ЗА ОПРЕДЕЛЕНА "
-"ЦЕЛ. Вижте Общия публичен лиценз на ГНУ за повече информация.\n"
-"\n"
-"Би трябвало да сте получили копие на Общия публичен лиценз на ГНУ заедно с "
-"Getting Things Gnome!; в случай, че не сте, пишете до Free Software "
-"Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, "
-"USA."
 
-#: GTG/taskbrowser/taskbrowser.glade.h:24
+#: GTG/backends/backend_gnote.py:46
 msgid ""
-"Hint: you can add several tags by separating them with\n"
-"commas."
+"This backend can synchronize all or part of your Gnote notes in GTG. If you "
+"decide it would be handy to have one of your notes in your TODO list, just "
+"tag it with the tag you have chosen (you'll configure it later), and it will "
+"appear in GTG."
 msgstr ""
-"Съвет: Можете да добавите няколко етикета, като ги разделите със\n"
-"запетаи."
 
-#: GTG/taskbrowser/taskbrowser.glade.h:26
-msgid "Mark as Done"
-msgstr "Изпълнена"
+#: GTG/backends/backend_rtm.py:54
+msgid "Remember The Milk"
+msgstr ""
 
-#: GTG/taskbrowser/taskbrowser.glade.h:27
-msgid "Mark as Not Done"
-msgstr "Неизпълнена"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:28
-msgid "Mark as _Done"
-msgstr "Маркиране като _Изпълнена"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:29
-msgid "New Subtask"
-msgstr "Нова подзадача"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:30
-msgid "New Task"
-msgstr "Нова задача"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:31
-msgid "New _Subtask"
-msgstr "Нова _подзадача"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:32
-msgid "New _Task"
-msgstr "Нова _задача"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:33
-msgid "Redo"
-msgstr "Възстановяване"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:34
-msgid "Reset Color"
-msgstr "Връщане на началния цвят"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:35
-msgid "T_oolbar"
-msgstr "Лента с _инструменти"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:36
-msgid "Tag is displayed in the workview"
-msgstr "Показване в работния изглед"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:37
-msgid "TagName"
-msgstr "ИмеЕтикет"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:38 GTG/taskbrowser/tagtree.py:352
-#: GTG/taskbrowser/tasktree.py:330 GTG/taskbrowser/tasktree.py:482
-msgid "Tags"
-msgstr "Етикети"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:39
-msgid "Und_ismiss"
-msgstr "Активиране"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:40
-msgid "Undo"
-msgstr "Отмяна"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:41
-msgid "Work View"
-msgstr "Работен изглед"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:42
-msgid "_Background Colors"
-msgstr "Цветове за фон"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:43
-msgid "_Closed Tasks Pane"
-msgstr "Приключени задачи"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:44
-msgid "_Edit"
-msgstr "_Редактиране"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:45
-msgid "_Help"
-msgstr "_Помощ"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:46
-msgid "_Plugins"
-msgstr "_Приставки"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:47
-msgid "_Quick Add Entry"
-msgstr "Поле за бързо добавяне"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:48
-msgid "_Schedule for..."
-msgstr "_График за..."
-
-#: GTG/taskbrowser/taskbrowser.glade.h:49
-msgid "_Tags Sidebar"
-msgstr "_Странична лента с етикети"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:50
-msgid "_Tasks"
-msgstr "_Задачи"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:51
-msgid "_View"
-msgstr "_Изглед"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:52
-msgid "_Work View"
-msgstr "_Работен изглед"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:53
-msgid "_tomorrow"
-msgstr "_ytre"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:54
-msgid "next _month"
-msgstr "следващия _месец"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:55
-msgid "next _week"
-msgstr "следващата _седмица"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:56
-msgid "next _year"
-msgstr "следващата _година"
-
-#: GTG/taskbrowser/taskbrowser.glade.h:57
-msgid "t_oday"
-msgstr "д_нес"
-
-#: GTG/taskbrowser/__init__.py:37
-msgid "Mark the selected task as done"
-msgstr "Маркиране на задачата като изпълнена"
-
-#: GTG/taskbrowser/__init__.py:39 GTG/taskbrowser/__init__.py:43
-msgid "Mark the selected task as to be done"
-msgstr "Маркиране на задачата за изпълнение"
-
-#: GTG/taskbrowser/__init__.py:41
-msgid "Mark the task as not to be done anymore"
-msgstr "Отхвърляне на задачата като неподлежаща на изпълнение"
-
-#: GTG/taskbrowser/__init__.py:44
-msgid "Permanently remove the selected task"
-msgstr "Окончателно изтриване на избраната задача"
-
-#: GTG/taskbrowser/__init__.py:45
-msgid "Edit the selected task"
-msgstr "Редактиране на избраната задача"
-
-#: GTG/taskbrowser/__init__.py:47
-msgid "Create a new subtask"
-msgstr "Създаване на нова подзадача"
-
-#: GTG/taskbrowser/__init__.py:48
-msgid "Display only the currently actionable tasks"
-msgstr "Показване само на  действителен задачи в момента"
-
-#: GTG/taskbrowser/browser.py:570
-msgid "no active tasks"
-msgstr "няма активни задачи"
-
-#: GTG/taskbrowser/browser.py:572
-#, python-format
-msgid "%(tasks)d active task"
-msgid_plural "%(tasks)d active tasks"
-msgstr[0] "%(tasks)d активна задача"
-msgstr[1] "%(tasks)d активни задачи"
-
-#: GTG/taskbrowser/browser.py:955
-msgid "tags"
-msgstr "етикети"
-
-#: GTG/taskbrowser/browser.py:955
-msgid "tag"
-msgstr "етикет"
-
-#: GTG/taskbrowser/browser.py:961
-msgid "defer"
-msgstr "отлагане"
-
-#: GTG/taskbrowser/browser.py:966
-msgid "due"
-msgstr "срок"
-
-#: GTG/taskbrowser/tasktree.py:345 GTG/taskbrowser/tasktree.py:506
-msgid "Title"
-msgstr "Заглавие"
-
-#: GTG/taskbrowser/tasktree.py:359
-msgid "Start date"
-msgstr "Начална дата"
-
-#: GTG/taskbrowser/tasktree.py:371
-msgid "Due"
-msgstr "Краен срок"
-
-#: GTG/taskbrowser/tasktree.py:494
-msgid "Closing date"
-msgstr "Приключване"
-
-#: GTG/gtg.py:86
-msgid "gtg is already running!"
-msgstr "gtg вече е стартирана"
-
-#: GTG/gtg.py:110
+#: GTG/backends/backend_rtm.py:58
 msgid ""
-" has crashed. Please report the bug on <a "
-"href=\"http://bugs.edge.launchpad.net/gtg\">our Launchpad page</a>. If you "
-"have Apport installed, it will be started for you."
+"This backend synchronizes your tasks with the web service RememberTheMilk:\n"
+"\t\thttp://rememberthemilk.com\n"
+"\n"
+"Note: This product uses the Remember The Milk API but is not endorsed or "
+"certified by Remember The Milk"
 msgstr ""
-" прекъсна. Моля съобщете за грешката на <a "
-"href=\"http://bugs.edge.launchpad.net/gtg\">нашата страница в Launchpad</a>. "
-"Ако имате инсталирана програмата Apport, тя ще бъде пусната."
 
-#: GTG/core/task.py:53
-msgid "My new task"
-msgstr "Моята нова задача"
+#: GTG/backends/backend_twitter.py:54
+msgid "Twitter"
+msgstr ""
 
-#: GTG/core/tagstore.py:52
-msgid "All tasks"
-msgstr "Всички задачи"
+#: GTG/backends/backend_twitter.py:58
+msgid "Imports your twitter  messages into your GTG "
+msgstr ""
 
-#: GTG/core/tagstore.py:59
-msgid "Tasks with no tags"
-msgstr "Задачи без етикети"
+#: GTG/backends/backend_tomboy.py:41
+msgid "Tomboy"
+msgstr ""
+
+#: GTG/backends/backend_tomboy.py:45
+msgid ""
+"This backend can synchronize all or part of your Tomboy notes in GTG. If you "
+"decide it would be handy to have one of your notes in your TODO list, just "
+"tag it with the tag you have chosen (you'll configure it later), and it will "
+"appear in GTG."
+msgstr ""
+
+#: GTG/backends/backend_evolution.py:69
+msgid "Evolution tasks"
+msgstr ""
+
+#: GTG/backends/backend_evolution.py:73
+msgid "Lets you synchronize your GTG tasks with Evolution tasks"
+msgstr ""
+
+#: GTG/backends/backend_localfile.py:61
+msgid "Local File"
+msgstr ""
+
+#: GTG/backends/backend_localfile.py:66
+msgid "Your tasks are saved in a text file (XML format). "
+msgstr ""
+
+#: GTG/backends/backend_launchpad.py:53
+msgid "Launchpad"
+msgstr ""
+
+#: GTG/backends/backend_launchpad.py:57
+msgid ""
+"This backend lets you import the bugs assigned to you (or someone else) on "
+"Launchpad in GTG. As the bug state changes in Launchpad, the GTG task is  "
+"updated.\n"
+"Please note that this is a read only backend, which means that if you open "
+"one of the imported tasks and  change one of the:\n"
+"  - title\n"
+"  - description\n"
+"  - tags\n"
+"Your changes <b>will</b> be reverted when the associated bug is modified. "
+"Apart from those, you are free to set  any other field (start/due dates, "
+"subtasks...): your  changes will be preserved. This is useful to add  "
+"personal annotations to bug"
+msgstr ""
+
+#: GTG/backends/backend_launchpad.py:243
+msgid "Bug"
+msgstr ""
+
+#: GTG/backends/backend_launchpad.py:321
+msgid "Reported by: "
+msgstr ""
+
+#: GTG/backends/backend_launchpad.py:326
+msgid "Link to bug: "
+msgstr ""
+
+#: GTG/backends/rtm/rtm.py:53
+msgid "Invalid state"
+msgstr "Невалидно състояние"
+
+#: GTG/core/plugins/__init__.py:32
+msgid "Everything necessary to run this plugin is available."
+msgstr ""
+"Всичко необходимо за стартирането на тази приставка е на разположение."
+
+#: GTG/core/plugins/__init__.py:33
+msgid "The plugin can not be loaded"
+msgstr "Приставката не може да бъде заредена"
+
+#: GTG/core/plugins/__init__.py:34
+msgid "Some python modules are missing"
+msgstr "Липсват модули на python"
+
+#: GTG/core/plugins/__init__.py:35
+msgid "Please install the following python modules:"
+msgstr "Инсталирайте следните модули на python:"
+
+#: GTG/core/plugins/__init__.py:37
+msgid "Some remote dbus objects are missing."
+msgstr "Липсват отдалечени обекти на dbus."
+
+#: GTG/core/plugins/__init__.py:38
+msgid "Please start the following applications:"
+msgstr "Стартирайте следните приложения:"
+
+#: GTG/core/plugins/__init__.py:40
+msgid "Some modules and remote dbus objects are missing."
+msgstr "Липсват модули и отдалечени обекти на dbus."
+
+#: GTG/core/plugins/__init__.py:41
+msgid "Please install or start the following components:"
+msgstr "Инсталирайте или стартирайте следните компоненти:"
+
+#: GTG/core/plugins/__init__.py:43
+msgid "Unknown error while loading the plugin."
+msgstr "Непозната грешка при зареждане на приставката."
+
+#: GTG/core/plugins/__init__.py:44
+msgid "Very helpful message, isn't it? Please report a bug."
+msgstr "Страхотно съобщение, нали? Моля, докладвайте за грешка."
 
 #: GTG/core/firstrun_tasks.py:8
 msgid "Getting started with GTG"
@@ -836,403 +636,840 @@ msgstr "Научете как да използвате полето за бър
 msgid ""
 "The quickadd entry is the quickest way to create a new task. You can show or "
 "hide it in the View menu.\n"
+"\n"
 "For adding a task you just have to type its title in the entry and press "
 "return. The task will be created and selected in the task browser. If a tag "
 "is selected in the tag panel, this tag is applied to the task you create.\n"
-"You can also create a task with attributes like tags, due date or defer date "
-"in the quickadd entry.\n"
-"For that the syntax is :\n"
 "\n"
-"tags:tag1,tag2,tag3 : This way you can apply as many tags as you wish using "
-"comma as separator\n"
+"You can also create a task with the attributes \"tags\", \"due\", and "
+"\"defer\" in the quickadd entry. The syntax for these attributes is:\n"
 "\n"
-"due:date or defer:date : This way you can apply a due date or a defer date. "
-"date can be yyyy-mm-dd (for exemple 2009-04-01) or yyyymmdd (20090401) or "
-"mmdd (0401, in this case the year is implicitly the current one) or today or "
-"tomorrow or a weekday name (due:monday means due next Monday)\n"
+"tags:tag1,tag2,tag3\n"
+" - This way you can apply as many tags as you wish using comma as separator\n"
+"\n"
+"due:date \n"
+"defer:date \n"
+" - This way you can apply a due date or a defer date. date can be yyyy-mm-dd "
+"(for example 2009-04-01) or yyyymmdd (20090401) or mmdd (0401, in this case "
+"the year is implicitly the current one) or today or tomorrow or a weekday "
+"name (due:monday means due next Monday)\n"
 "\n"
 "Attributes which are added in this way apply but do not appear in the "
 "title.\n"
+"\n"
 "If a word begins with @, it is interpreted as a tag."
 msgstr ""
 
-#: GTG/core/plugins/__init__.py:32
-msgid "Everything necessary to run this plugin is available."
+#: GTG/core/task.py:60
+msgid "My new task"
+msgstr "Моята нова задача"
+
+#: GTG/core/task.py:173
+msgid "tags"
+msgstr "етикети"
+
+#: GTG/core/task.py:173
+msgid "tag"
+msgstr "етикет"
+
+#: GTG/core/task.py:179
+msgid "defer"
+msgstr "отлагане"
+
+#: GTG/core/task.py:184
+msgid "due"
+msgstr "срок"
+
+#: GTG/core/treefactory.py:79
+#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:70
+msgid "All tasks"
+msgstr "Всички задачи"
+
+#: GTG/core/treefactory.py:90
+msgid "Tasks with no tags"
+msgstr "Задачи без етикети"
+
+#: GTG/tools/dates.py:50
+msgid "Today"
+msgstr "Днес"
+
+#: GTG/tools/dates.py:53
+#, python-format
+msgid "Yesterday"
+msgid_plural "%(days)d days ago"
+msgstr[0] "Вчера"
+msgstr[1] "преди %(days)d  дни"
+
+#: GTG/tools/dates.py:56
+#, python-format
+msgid "Tomorrow"
+msgid_plural "In %(days)d days"
+msgstr[0] "Утре"
+msgstr[1] "след %(days)d  дни"
+
+#: GTG/tools/dates.py:187
+msgid "monday"
+msgstr "понеделник"
+
+#: GTG/tools/dates.py:187
+msgid "tuesday"
+msgstr "вторник"
+
+#: GTG/tools/dates.py:187
+msgid "wednesday"
+msgstr "сряда"
+
+#: GTG/tools/dates.py:188
+msgid "thursday"
+msgstr "четвъртък"
+
+#: GTG/tools/dates.py:188
+msgid "friday"
+msgstr "петък"
+
+#: GTG/tools/dates.py:188
+msgid "saturday"
+msgstr "събота"
+
+#: GTG/tools/dates.py:189
+msgid "sunday"
+msgstr "неделя"
+
+#: GTG/tools/dates.py:196
+msgid "today"
+msgstr "днес"
+
+#: GTG/tools/dates.py:197
+msgid "tomorrow"
+msgstr "утре"
+
+#: GTG/tools/dates.py:198
+msgid "next week"
+msgstr "следващата седмица"
+
+#: GTG/tools/dates.py:199
+msgid "next month"
+msgstr "следващия месец"
+
+#: GTG/tools/dates.py:200
+msgid "next year"
+msgstr "следващата фодина"
+
+#: GTG/gtg.py:84
+msgid "gtg is already running!"
+msgstr "gtg вече е стартирана"
+
+#: GTG/gtk/backends_dialog/parameters_ui/pathui.py:52
+msgid "Filename:"
 msgstr ""
-"Всичко необходимо за стартирането на тази приставка е на разположение."
 
-#: GTG/core/plugins/__init__.py:33
-msgid "The plugin can not be loaded"
-msgstr "Приставката не може да бъде заредена"
-
-#: GTG/core/plugins/__init__.py:34
-msgid "Some python modules are missing"
-msgstr "Липсват модули на python"
-
-#: GTG/core/plugins/__init__.py:35
-msgid "Please install the following python modules:"
-msgstr "Инсталирайте следните модули на python:"
-
-#: GTG/core/plugins/__init__.py:37
-msgid "Some remote dbus objects are missing."
-msgstr "Липсват отдалечени обекти на dbus."
-
-#: GTG/core/plugins/__init__.py:38
-msgid "Please start the following applications:"
-msgstr "Стартирайте следните приложения:"
-
-#: GTG/core/plugins/__init__.py:40
-msgid "Some modules and remote dbus objects are missing."
-msgstr "Липсват модули и отдалечени обекти на dbus."
-
-#: GTG/core/plugins/__init__.py:41
-msgid "Please install or start the following components:"
-msgstr "Инсталирайте или стартирайте следните компоненти:"
-
-#: GTG/core/plugins/__init__.py:43
-msgid "Unknown error while loading the plugin."
-msgstr "Непозната грешка при зареждане на приставката."
-
-#: GTG/core/plugins/__init__.py:44
-msgid "Very helpful message, isn't it? Please report a bug."
-msgstr "Страхотно съобщение, нали? Моля, докладвайте за грешка."
-
-#: GTG/viewmanager/delete_dialog.py:58
-msgid ""
-"Deleting a task cannot be undone, and will delete the following task: "
+#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:63
+msgid "Import tags"
 msgstr ""
-"Изтриването на задача не може да бъде отменено и ще изтрие следната задача: "
 
-#: GTG/viewmanager/delete_dialog.py:59
-msgid "Are you sure you want to delete this task?"
-msgstr "Сигурни ли сте, че искате да изтриете тази задача?"
-
-#: GTG/viewmanager/delete_dialog.py:60
-msgid "Keep selected task"
-msgstr "Запази избраните задачи"
-
-#: GTG/viewmanager/delete_dialog.py:61
-msgid "Permanently remove task"
-msgstr "Премахване на задачата за винаги"
-
-#: GTG/viewmanager/delete_dialog.py:63
-msgid ""
-"Deleting a task cannot be undone, and will delete the following tasks: "
+#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:64
+msgid "All tags"
 msgstr ""
-"Изтриването на задача не може да бъде отменено и ще изтрие следните задачи: "
 
-#: GTG/viewmanager/delete_dialog.py:64
-msgid "Are you sure you want to delete these tasks?"
-msgstr "Наистина ли искате да изтриете тези задачи?"
+#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:65
+msgid "Just these tags"
+msgstr ""
 
-#: GTG/viewmanager/delete_dialog.py:65
-msgid "Keep selected tasks"
-msgstr "Запазване на избраните задачи"
+#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:69
+msgid "Tags to sync"
+msgstr ""
 
-#: GTG/viewmanager/delete_dialog.py:66
-msgid "Permanently remove tasks"
-msgstr "Окончателно премахване на задачи"
+#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:71
+msgid "Tasks with these tags"
+msgstr ""
 
-#: GTG/viewmanager/preferences.glade.h:1
+#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:76
+msgid "Username"
+msgstr ""
+
+#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:82
+msgid "Import tasks from @ replies "
+msgstr ""
+
+#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:87
+msgid "Import tasks from direct messages"
+msgstr ""
+
+#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:91
+msgid "Import tasks from your tweets"
+msgstr ""
+
+#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:95
+msgid "Tag your GTG tasks with the bug tags"
+msgstr ""
+
+#: GTG/gtk/backends_dialog/parameters_ui/__init__.py:99
+msgid "Tag your GTG tasks with the project targeted by the bug"
+msgstr ""
+
+#: GTG/gtk/backends_dialog/parameters_ui/passwordui.py:50
+msgid "Password:"
+msgstr ""
+
+#: GTG/gtk/backends_dialog/parameters_ui/periodui.py:51
+msgid "Check for new tasks every"
+msgstr ""
+
+#: GTG/gtk/backends_dialog/parameters_ui/periodui.py:96
+msgid " minute"
+msgid_plural " minutes"
+msgstr[0] ""
+msgstr[1] ""
+
+#: GTG/gtk/backends_dialog/addpanel.py:177
+#: GTG/gtk/backends_dialog/configurepanel.py:197
+msgid "Syncing is <span color=\"red\">disabled</span>"
+msgstr ""
+
+#: GTG/gtk/backends_dialog/addpanel.py:183
+msgid "Author"
+msgid_plural "Authors"
+msgstr[0] ""
+msgstr[1] ""
+
+#: GTG/gtk/backends_dialog/__init__.py:287
+#, python-format
+msgid "Do you really want to remove the backend '%s'?"
+msgstr ""
+
+#: GTG/gtk/backends_dialog/configurepanel.py:162
+msgid "Ready to start syncing"
+msgstr ""
+
+#: GTG/gtk/backends_dialog/configurepanel.py:164
+#, python-format
+msgid "Syncing your only task"
+msgid_plural "Syncing all %d tasks"
+msgstr[0] ""
+msgstr[1] ""
+
+#: GTG/gtk/backends_dialog/configurepanel.py:169
+#, python-format
+msgid "There's no task tagged %s"
+msgstr ""
+
+#: GTG/gtk/backends_dialog/configurepanel.py:171
+#, python-format
+msgid "Syncing a task tagged %s"
+msgid_plural "Syncing %d tasks tagged %s"
+msgstr[0] ""
+msgstr[1] ""
+
+#: GTG/gtk/backends_dialog/configurepanel.py:182
+msgid "Disable syncing"
+msgstr ""
+
+#: GTG/gtk/backends_dialog/configurepanel.py:184
+msgid "Enable syncing"
+msgstr ""
+
+#: GTG/gtk/backends_dialog/configurepanel.py:192
+msgid "This is the default backend"
+msgstr ""
+
+#: GTG/gtk/backends_dialog/configurepanel.py:195
+msgid "Syncing is enabled"
+msgstr ""
+
+#: GTG/gtk/preferences.glade.h:1
 msgid "<b>Dependencies</b>"
 msgstr "<b>Зависими</b>"
 
-#: GTG/viewmanager/preferences.glade.h:2
+#: GTG/gtk/preferences.glade.h:2
 msgid "<b>General</b>"
 msgstr "<b>Основен</b>"
 
-#: GTG/viewmanager/preferences.glade.h:3
+#: GTG/gtk/preferences.glade.h:3
 msgid "<b>Task Browser</b>"
 msgstr "<b>Преглед на задачи</b>"
 
-#: GTG/viewmanager/preferences.glade.h:4
+#: GTG/gtk/preferences.glade.h:4
 msgid "<b>Task Editor</b>"
 msgstr "<b>Редактор на задачи</b>"
 
-#: GTG/viewmanager/preferences.glade.h:5
+#: GTG/gtk/preferences.glade.h:5
 msgid "Active _Plugins:"
 msgstr "_Включени приставки:"
 
-#: GTG/viewmanager/preferences.glade.h:6
+#: GTG/gtk/preferences.glade.h:6
 msgid "Behaviour"
 msgstr "Поведение"
 
-#: GTG/viewmanager/preferences.glade.h:7
+#: GTG/gtk/preferences.glade.h:7
 msgid "Check spelling"
 msgstr "Проверка на провописа"
 
-#: GTG/viewmanager/preferences.glade.h:8
+#: GTG/gtk/preferences.glade.h:8
 msgid "Getting Things GNOME! Preferences"
 msgstr "Настройки на Getting Things GNOME!"
 
-#: GTG/viewmanager/preferences.glade.h:9
-msgid "Hide closed tasks older than"
-msgstr "Скрий затворени задачи на повече от"
+#: GTG/gtk/preferences.glade.h:9
+msgid "Hide closed tasks older than "
+msgstr ""
 
-#: GTG/viewmanager/preferences.glade.h:10
+#: GTG/gtk/preferences.glade.h:10
 msgid "Plugins"
 msgstr "Приставки"
 
-#: GTG/viewmanager/preferences.glade.h:11
-msgid "Show task text preview"
-msgstr "Покажи преглед на текста на задачата"
+#: GTG/gtk/preferences.glade.h:11
+msgid "Show description preview in the task list."
+msgstr ""
 
-#: GTG/viewmanager/preferences.glade.h:12
+#: GTG/gtk/preferences.glade.h:12
 msgid "Start Getting Things GNOME! on every login"
 msgstr "Стартиране на Getting Things GNOME! при всяко включване"
 
-#: GTG/viewmanager/preferences.glade.h:13
-msgid "Storage"
-msgstr "Хранилище"
-
-#: GTG/viewmanager/preferences.glade.h:14
-msgid "Task _Backends:"
-msgstr "_Модули на задачата:"
-
-#: GTG/viewmanager/preferences.glade.h:15
+#: GTG/gtk/preferences.glade.h:13
 msgid "_About Plugin"
 msgstr "_Относно приставката"
 
-#: GTG/viewmanager/deletion.glade.h:1
+#: GTG/gtk/delete_dialog.py:63
+msgid ""
+"Deleting a task cannot be undone, and will delete the following tasks: "
+msgid_plural ""
+"Deleting a task cannot be undone, and will delete the following task: "
+msgstr[0] ""
+msgstr[1] ""
+
+#: GTG/gtk/delete_dialog.py:68
+msgid "Are you sure you want to delete these tasks?"
+msgid_plural "Are you sure you want to delete this task?"
+msgstr[0] ""
+msgstr[1] ""
+
+#: GTG/gtk/delete_dialog.py:74
+msgid "Keep selected tasks"
+msgid_plural "Keep selected task"
+msgstr[0] ""
+msgstr[1] ""
+
+#: GTG/gtk/delete_dialog.py:77
+msgid "Permanently remove tasks"
+msgid_plural "Permanently remove task"
+msgstr[0] ""
+msgstr[1] ""
+
+#: GTG/gtk/delete_dialog.py:108
+#, python-format
+msgid ""
+"\n"
+"And %d more tasks"
+msgstr ""
+
+#: GTG/gtk/preferences.py:38
+msgid "Click on a plugin to get a description here."
+msgstr ""
+
+#: GTG/gtk/browser/custominfobar.py:36
+#, python-format
+msgid ""
+"The <b>%s</b> backend cannot login with the supplied authentication data and "
+"has been disabled. To retry the login, re-enable the backend."
+msgstr ""
+
+#: GTG/gtk/browser/custominfobar.py:40
+#, python-format
+msgid "Due to a network problem, I cannot contact the <b>%s</b> backend."
+msgstr ""
+
+#: GTG/gtk/browser/custominfobar.py:43
+#, python-format
+msgid "Cannot connect to DBUS, I've disabled the <b>%s</b> backend."
+msgstr ""
+
+#: GTG/gtk/browser/custominfobar.py:105
+msgid "Configure backend"
+msgstr ""
+
+#: GTG/gtk/browser/custominfobar.py:106
+msgid "Ignore"
+msgstr ""
+
+#: GTG/gtk/browser/custominfobar.py:114 GTG/gtk/browser/custominfobar.py:119
+msgid "Ok"
+msgstr ""
+
+#: GTG/gtk/browser/custominfobar.py:140
+msgid "Confirm"
+msgstr ""
+
+#: GTG/gtk/browser/custominfobar.py:142
+msgid "Continue"
+msgstr ""
+
+#: GTG/gtk/browser/treeview_factory.py:255
+#: GTG/gtk/browser/taskbrowser.glade.h:39
+msgid "Tags"
+msgstr "Етикети"
+
+#: GTG/gtk/browser/treeview_factory.py:312
+msgid "Start date"
+msgstr "Начална дата"
+
+#: GTG/gtk/browser/treeview_factory.py:323
+msgid "Due"
+msgstr "Краен срок"
+
+#: GTG/gtk/browser/treeview_factory.py:343
+msgid "Closed date"
+msgstr ""
+
+#: GTG/gtk/browser/treeview_factory.py:388
+msgid "Title"
+msgstr "Заглавие"
+
+#: GTG/gtk/browser/browser.py:538
+msgid "no active tasks"
+msgstr "няма активни задачи"
+
+#: GTG/gtk/browser/browser.py:540
+#, python-format
+msgid "%(tasks)d active task"
+msgid_plural "%(tasks)d active tasks"
+msgstr[0] "%(tasks)d активна задача"
+msgstr[1] "%(tasks)d активни задачи"
+
+#: GTG/gtk/browser/__init__.py:34 GTG/gtk/editor/__init__.py:31
+msgid "Mark as done"
+msgstr "Изпълнена"
+
+#: GTG/gtk/browser/__init__.py:35
+msgid "Mark the selected task as done"
+msgstr "Маркиране на задачата като изпълнена"
+
+#: GTG/gtk/browser/__init__.py:36 GTG/gtk/editor/__init__.py:32
+msgid "Mark as not done"
+msgstr "Неизпълнена"
+
+#: GTG/gtk/browser/__init__.py:37 GTG/gtk/browser/__init__.py:41
+msgid "Mark the selected task as to be done"
+msgstr "Маркиране на задачата за изпълнение"
+
+#: GTG/gtk/browser/__init__.py:38 GTG/gtk/browser/taskbrowser.glade.h:14
+#: GTG/gtk/editor/__init__.py:33 GTG/gtk/editor/taskeditor.glade.h:3
+msgid "Dismiss"
+msgstr "Отхвърляне"
+
+#: GTG/gtk/browser/__init__.py:39
+msgid "Mark the task as not to be done anymore"
+msgstr "Отхвърляне на задачата като неподлежаща на изпълнение"
+
+#: GTG/gtk/browser/__init__.py:40 GTG/gtk/editor/__init__.py:34
+msgid "Undismiss"
+msgstr "Възстановяване"
+
+#: GTG/gtk/browser/__init__.py:42
+msgid "Permanently remove the selected task"
+msgstr "Окончателно изтриване на избраната задача"
+
+#: GTG/gtk/browser/__init__.py:43
+msgid "Edit the selected task"
+msgstr "Редактиране на избраната задача"
+
+#: GTG/gtk/browser/__init__.py:44 GTG/gtk/browser/taskbrowser.glade.h:11
+msgid "Create a new task"
+msgstr "Създаване на задача"
+
+#: GTG/gtk/browser/__init__.py:45
+msgid "Create a new subtask"
+msgstr "Създаване на нова подзадача"
+
+#: GTG/gtk/browser/__init__.py:46
+msgid "Display only the currently actionable tasks"
+msgstr "Показване само на  действителен задачи в момента"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:1
+msgid ""
+"\n"
+"Getting Things Gnome! is an organizer for the GNOME desktop environment."
+msgstr ""
+"\n"
+"Getting Things Gnome! е организатор за работната среда GNOME."
+
+#: GTG/gtk/browser/taskbrowser.glade.h:3
+msgid "About GTG!"
+msgstr "Относно GTG!"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:4
+msgid "Add Tag"
+msgstr "Добавяне на Етикет"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:5
+msgid "Add Tag..."
+msgstr "Добавяне на Етикет..."
+
+#: GTG/gtk/browser/taskbrowser.glade.h:6
+msgid "Add a Tag..."
+msgstr "Добавяне на Етикет..."
+
+#: GTG/gtk/browser/taskbrowser.glade.h:7
+msgid "Add a subtask"
+msgstr "Добавяне на подзадача"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:8
+msgid "Apply to subtasks"
+msgstr "Приложи към подзадачи"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:9
+msgid "Cancel"
+msgstr "Отказ"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:10
+msgid "Copyrights&#xA9; 2008, 2009 Lionel Dricot, Bertrand Rousseau"
+msgstr "Авторски права&#xA9; 2008, 2009 Lionel Dricot, Bertrand Rousseau"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:12
+msgid "D_ismiss"
+msgstr "Отхвърляне"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:13 GTG/gtk/editor/taskeditor.glade.h:2
+msgid "Delete"
+msgstr "Изтриване"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:15
+msgid "Edit"
+msgstr "Редактиране"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:16
+msgid "Enter the name of the tag(s) you wish to add:"
+msgstr "Въведете името за етикет/ите, които желаете да добавите:"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:17
+msgid "GTG website"
+msgstr "страницата на GTG в Интернет"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:18
+msgid "Getting Things Gnome!"
+msgstr "Getting Things Gnome!"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:19
+msgid ""
+"Getting Things Gnome! is free software; you can redistribute it and/or "
+"modify it under the terms of the GNU General Public License as published by "
+"the Free Software Foundation; either version 3 of the License, or (at your "
+"option) any later version.\n"
+"\n"
+"Getting Things Gnome! is distributed in the hope that it will be useful, but "
+"WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY "
+"or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
+"more details.\n"
+"\n"
+"You should have received a copy of the GNU General Public License along with "
+"Getting Things Gnome!; if not, write to the Free Software Foundation, Inc., "
+"51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA."
+msgstr ""
+"Getting Things Gnome! е свободен софтуер; можете да разпространяване и/или "
+"променяте според условията на Общия Публичен Лиценз на ГНУ от Фондацията за "
+"свободен софтуер; версия 3 или (по ваш избор) по-късна.\n"
+"\n"
+"Getting Things Gnome! се разпространява с надеждата да бъде от полза, но БЕЗ "
+"НИКАКВА ГАРАНЦИЯ; дори и без косвена гаранция за ПРИГОДНОСТ ЗА ОПРЕДЕЛЕНА "
+"ЦЕЛ. Вижте Общия публичен лиценз на ГНУ за повече информация.\n"
+"\n"
+"Би трябвало да сте получили копие на Общия публичен лиценз на ГНУ заедно с "
+"Getting Things Gnome!; в случай, че не сте, пишете до Free Software "
+"Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, "
+"USA."
+
+#: GTG/gtk/browser/taskbrowser.glade.h:24
+msgid ""
+"Hint: you can add several tags by separating them with\n"
+"commas."
+msgstr ""
+"Съвет: Можете да добавите няколко етикета, като ги разделите със\n"
+"запетаи."
+
+#: GTG/gtk/browser/taskbrowser.glade.h:26
+msgid "Mark as Done"
+msgstr "Изпълнена"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:27
+msgid "Mark as Not Done"
+msgstr "Неизпълнена"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:28
+msgid "Mark as _Done"
+msgstr "Маркиране като _Изпълнена"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:29
+msgid "New Subtask"
+msgstr "Нова подзадача"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:30
+msgid "New Task"
+msgstr "Нова задача"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:31
+msgid "New _Subtask"
+msgstr "Нова _подзадача"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:32
+msgid "New _Task"
+msgstr "Нова _задача"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:33
+msgid "Open GTG documentation in your web browser"
+msgstr ""
+
+#: GTG/gtk/browser/taskbrowser.glade.h:34
+msgid "Redo"
+msgstr "Възстановяване"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:35
+msgid "Reset Color"
+msgstr "Връщане на началния цвят"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:36
+msgid "T_oolbar"
+msgstr "Лента с _инструменти"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:37
+msgid "Tag is displayed in the workview"
+msgstr "Показване в работния изглед"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:38
+msgid "TagName"
+msgstr "ИмеЕтикет"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:40
+msgid "Tasks"
+msgstr ""
+
+#: GTG/gtk/browser/taskbrowser.glade.h:41
+msgid "Und_ismiss"
+msgstr "Активиране"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:42
+msgid "Undo"
+msgstr "Отмяна"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:43
+msgid "Work View"
+msgstr "Работен изглед"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:44
+msgid "_Background Colors"
+msgstr "Цветове за фон"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:45
+msgid "_Closed Tasks Pane"
+msgstr "Приключени задачи"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:46
+msgid "_Edit"
+msgstr "_Редактиране"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:47
+msgid "_Help"
+msgstr "_Помощ"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:48
+msgid "_Plugins"
+msgstr "_Приставки"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:49
+msgid "_Quick Add Entry"
+msgstr "Поле за бързо добавяне"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:50
+msgid "_Schedule for..."
+msgstr "_График за..."
+
+#: GTG/gtk/browser/taskbrowser.glade.h:51
+msgid "_Tags Sidebar"
+msgstr "_Странична лента с етикети"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:52
+msgid "_Tasks"
+msgstr "_Задачи"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:53
+msgid "_View"
+msgstr "_Изглед"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:54
+msgid "_Work View"
+msgstr "_Работен изглед"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:55
+msgid "_tomorrow"
+msgstr "_ytre"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:56
+msgid "next _month"
+msgstr "следващия _месец"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:57
+msgid "next _week"
+msgstr "следващата _седмица"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:58
+msgid "next _year"
+msgstr "следващата _година"
+
+#: GTG/gtk/browser/taskbrowser.glade.h:59
+msgid "t_oday"
+msgstr "д_нес"
+
+#: GTG/gtk/editor/editor.py:302
+#, python-format
+msgid "Completed %(days)d day late"
+msgid_plural "Completed %(days)d days late"
+msgstr[0] "Завършена с %(days)d ден закъснение"
+msgstr[1] "Завършена с %(days)d дни закъснение"
+
+#: GTG/gtk/editor/editor.py:305
+#, python-format
+msgid "Completed %(days)d day early"
+msgid_plural "Completed %(days)d days early"
+msgstr[0] "Завършена с %(days)d ден по рано"
+msgstr[1] "Завършена с %(days)d дни по рано"
+
+#: GTG/gtk/editor/editor.py:311
+#, python-format
+msgid "Due tomorrow!"
+msgid_plural "%(days)d days left"
+msgstr[0] "За утре!"
+msgstr[1] "Остават още %(days)d"
+
+#: GTG/gtk/editor/editor.py:313
+msgid "Due today!"
+msgstr "За днес!"
+
+#: GTG/gtk/editor/editor.py:316
+#, python-format
+msgid "Due yesterday!"
+msgid_plural "Was %(days)d days ago"
+msgstr[0] "За вчера!"
+msgstr[1] "Беше преди %(days)d дни"
+
+#: GTG/gtk/editor/__init__.py:35
+msgid "Keep as Note"
+msgstr "Запазване като бележка"
+
+#: GTG/gtk/editor/__init__.py:36
+msgid "Make a Task"
+msgstr "Преобразуване в задача"
+
+#: GTG/gtk/editor/__init__.py:38
+msgid "Mark this task as done"
+msgstr "Маркиране на задачата като изпълнена"
+
+#: GTG/gtk/editor/__init__.py:39 GTG/gtk/editor/__init__.py:41
+msgid "Mark this task as to be done"
+msgstr "Маркиране на задачата като неизпълнена"
+
+#: GTG/gtk/editor/__init__.py:40
+msgid "Mark this task as not to be done anymore"
+msgstr "Маркиране на задачата като вече ненужна"
+
+#: GTG/gtk/editor/__init__.py:42
+msgid "Permanently remove this task"
+msgstr "Окончателно премахване на задачата"
+
+#: GTG/gtk/editor/__init__.py:43
+msgid "Insert a subtask in this task"
+msgstr "Вмъкване на подзадача в тази задача"
+
+#: GTG/gtk/editor/__init__.py:44
+msgid "Insert a tag in this task"
+msgstr "Вмъкване на етикет в задачата"
+
+#: GTG/gtk/editor/taskeditor.glade.h:1
+msgid "Closed on"
+msgstr "Затворено на"
+
+#: GTG/gtk/editor/taskeditor.glade.h:4
+msgid "Due for"
+msgstr "Насрочено за"
+
+#: GTG/gtk/editor/taskeditor.glade.h:5
+msgid "Insert subtask"
+msgstr "Вмъкване на подзадача"
+
+#: GTG/gtk/editor/taskeditor.glade.h:6
+msgid "Insert tag"
+msgstr "Вмъкване на етикет"
+
+#: GTG/gtk/editor/taskeditor.glade.h:7
+msgid "Later"
+msgstr "По-късно"
+
+#: GTG/gtk/editor/taskeditor.glade.h:8
+msgid "Mark Done"
+msgstr "Отбелезване като завършена"
+
+#: GTG/gtk/editor/taskeditor.glade.h:9
+msgid "Now"
+msgstr "Сега"
+
+#: GTG/gtk/editor/taskeditor.glade.h:10
+msgid "Soon"
+msgstr "Скоро"
+
+#: GTG/gtk/editor/taskeditor.glade.h:11
+msgid "Starting on"
+msgstr "Започвайки от"
+
+#: GTG/gtk/editor/taskeditor.glade.h:12
+msgid "Task"
+msgstr "Задача"
+
+#: GTG/gtk/deletion.glade.h:1
 msgid "Confirm task deletion"
 msgstr "Потвърдете изтриването на задачата"
 
-#: GTG/plugins/evolution_sync/evolutionSync.py:28
-msgid "Synchronize with Evolution"
-msgstr "Синхронизиране с Evolution"
-
-#: GTG/plugins/tomboy/tomboy.py:81
+#: GTG/gtk/crashhandler.py:57
 msgid ""
-"Tomboy/Gnote not found. Please install it or disable the Tomboy/Gnote plugin "
-"in GTG"
+"We're terribly sorry. Could you help us fix the problem by reporting the "
+"crash?"
 msgstr ""
-"Приложението Tomboy/Gnote не е открито. Моля инсталирайте го или изключете "
-"приставката за него в GTG"
+"Ужасно съжаляваме. Ще ни помогнете ли да решим проблема, като съобщите за "
+"грешката?"
 
-#: GTG/plugins/tomboy/tomboy.py:126
-msgid "Add Tomboy note"
-msgstr "Добавяне на бележка в Tomboy"
+#: GTG/gtk/crashhandler.py:170
+msgid "An error has occurred"
+msgstr "Възникна грешка"
 
-#: GTG/plugins/tomboy/tomboy.py:194
+#: GTG/gtk/crashhandler.py:180
+msgid "It looks like an error has occurred."
+msgstr "Изглежда възникна грешка"
+
+#: GTG/gtk/crashhandler.py:214
+msgid "_Details"
+msgstr "_Подробности"
+
+#: GTG/gtk/crashhandler.py:221
+msgid "_Report this problem..."
+msgstr "_Докладвай този проблем..."
+
+#: GTG/gtk/crashhandler.py:225
+msgid "_Ignore the error"
+msgstr "_Игнорирай грешката"
+
+#: GTG/gtk/crashhandler.py:319
 msgid ""
-" was found on the system, but it doesn't provide a dbus interface. the "
-"Tomboy/Gnote plugin will not work with it."
+" has crashed. Please report the bug on <a "
+"href=\"http://bugs.edge.launchpad.net/gtg\">our Launchpad page</a>. If you "
+"have Apport installed, it will be started for you."
 msgstr ""
-" беше открито в системата, но не осигурява dbus интерфейс. Приставката за "
-"Tomboy/Gnote няма да работи с него."
-
-#: GTG/plugins/tomboy/tomboy.py:241
-msgid "That note does not exist!"
-msgstr "Тази бележка не съществува!"
-
-#: GTG/plugins/tomboy/tomboy.py:246
-msgid "That note does not exist. Do you want to create a new one?"
-msgstr "Бележка не съществува. Желаете ли създаването на нова?"
-
-#: GTG/plugins/tomboy/tomboy.py:274
-msgid "This Tomboy note does not exist anymore. Do you want to create it?"
-msgstr "Тази Tomboy бележка вече не съществува. Искате ли да я създадете?"
-
-#: GTG/plugins/notification_area/notification_area.py:209
-msgid "_View Main Window"
-msgstr "_Преглед на Основния Прозорец"
-
-#: GTG/plugins/notification_area/notification_area.py:217
-msgid "Add _New Task"
-msgstr "Добавяне на _Нова Задача"
-
-#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:1
-msgid "<b>Location Determination Method</b>"
-msgstr "<b>Начин за установяване на местоположението</b>"
-
-#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:2
-msgid "<b>Proximity Factor</b>"
-msgstr "<b>Фактор на близост</b>"
-
-#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:3
-msgid ""
-"<small>Distance in kilometers from \n"
-"the current location.</small>"
-msgstr ""
-"<small>Разстояние от текущата \n"
-"позиция в километри.</small>"
-
-#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:5
-msgid "Associate with existing tag"
-msgstr "Присъединяване към съществуващ етикет"
-
-#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:6
-msgid "Associate with new tag"
-msgstr "Присъединяване към нов етикет"
-
-#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:7
-msgid "Geolocalized-tasks Preferences"
-msgstr "Настройка на геолокализирани задачи"
-
-#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:8
-msgid "Set the task's location"
-msgstr "Местоположение на задачата"
-
-#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:9
-msgid "Use cellphone"
-msgstr "Използване на мобилен телефон"
-
-#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:10
-msgid "Use gps"
-msgstr "Използване на GPS"
-
-#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:11
-msgid "Use network"
-msgstr "Използване на мрежата"
-
-#: GTG/plugins/export/export.py:302
-msgid "Template not found"
-msgstr "Шаблонът не е открит"
-
-#: GTG/plugins/export/export.py:303
-msgid "Can't load the template file"
-msgstr "Неуспешно зареждане на шаблонен файл"
-
-#: GTG/plugins/export/export.py:332
-msgid "Choose where to save your list"
-msgstr "Изберете място за съхранение на списъка"
-
-#: GTG/plugins/hamster/hamster.py:40
-msgid "Start task in Hamster"
-msgstr "Стартиране на задача в Hamster"
-
-#: GTG/plugins/hamster/hamster.py:156
-msgid "Start in Hamster"
-msgstr "Стартиране в Hamster"
-
-#: GTG/plugins/hamster/hamster.py:158
-msgid "Start a new activity in Hamster Time"
-msgstr "Стартиране на нова дейност в Hamster Time"
-
-#: GTG/plugins/hamster/hamster.py:174
-msgid "Start a new activity in Hamster Time "
-msgstr "Стартиране на нова дейност в Hamster Time "
-
-#: GTG/plugins/rtm_sync/pyrtm/rtm.py:59
-msgid "Invalid state"
-msgstr "Невалидно състояние"
-
-#: GTG/plugins/rtm_sync/rtm_sync.py:75 GTG/plugins/rtm_sync/rtm_sync.py:80
-msgid "Synchronize with RTM"
-msgstr "Синхронизиране с RTM"
-
-#: GTG/plugins/rtm_sync/rtm_sync.py:141
-msgid "Synchronization started"
-msgstr "Започване на синхронизация"
-
-#: GTG/plugins/rtm_sync/rtm_sync.py:154
-msgid "Trying to access, please stand by..."
-msgstr "Опит за връзка, изчакайте..."
-
-#: GTG/plugins/rtm_sync/rtm_sync.py:172
-msgid "Couldn't connect to Remember The Milk"
-msgstr "Неуспех на връзката с Remember The Milk"
-
-#: GTG/plugins/rtm_sync/rtm_sync.py:187
-msgid "Authentication failed."
-msgstr "Неуспех при удостоверяването."
-
-#: GTG/plugins/rtm_sync/rtm_sync.py:187
-msgid "Please retry."
-msgstr "Моля, опитайте отново."
-
-#: GTG/plugins/rtm_sync/rtm_sync.py:191
-msgid ""
-"Please authenticate to Remember The Milk in the browser that is being opened "
-"now. When done, press OK"
-msgstr ""
-"Удостоверете се в Remember The Milk в прозореца, който се отваря. Натиснете "
-"„Добре“ когато сте готови."
-
-#: GTG/plugins/rtm_sync/rtmProxy.py:165
-msgid "saving critical object failed"
-msgstr "провален запис на критичен обект"
-
-#: GTG/plugins/rtm_sync/syncEngine.py:83
-msgid "Downloading task list..."
-msgstr "Изтегляне на списъка със задачи..."
-
-#: GTG/plugins/rtm_sync/syncEngine.py:84
-msgid "Downloading..."
-msgstr "Изтегляне..."
-
-#: GTG/plugins/rtm_sync/syncEngine.py:119
-msgid "Adding tasks to rtm.."
-msgstr "Добавяне на задачи към rtm..."
-
-#: GTG/plugins/rtm_sync/syncEngine.py:129
-msgid "Adding tasks to gtg.."
-msgstr "Добавяне на задачи към gtg..."
-
-#: GTG/plugins/rtm_sync/syncEngine.py:139
-msgid "Deleting tasks from rtm.."
-msgstr "Изтриване на задачи от rtm..."
-
-#: GTG/plugins/rtm_sync/syncEngine.py:150
-msgid "Deleting tasks from gtg.."
-msgstr "Изтриване на задачи от gtg..."
-
-#: GTG/plugins/rtm_sync/syncEngine.py:160
-msgid "Updating changed tasks.."
-msgstr "Актуализиране променените задачи .."
-
-#: GTG/plugins/rtm_sync/syncEngine.py:185
-#: GTG/plugins/rtm_sync/syncEngine.py:190
-#: GTG/plugins/rtm_sync/syncEngine.py:193
-#: GTG/plugins/rtm_sync/syncEngine.py:196
-msgid "Updating "
-msgstr "Обновяване "
-
-#: GTG/plugins/rtm_sync/syncEngine.py:204
-msgid "Saving current state.."
-msgstr "Запазване на състоянието..."
-
-#: GTG/plugins/rtm_sync/syncEngine.py:211
-msgid "Synchronization completed."
-msgstr "Сихронизацията е завършена."
-
-#: GTG/plugins/rtm_sync/syncEngine.py:234
-msgid "Adding "
-msgstr "Добавяне "
-
-#: GTG/plugins/rtm_sync/syncEngine.py:243
-msgid "Deleting "
-msgstr "Изтриване "
-
-#: GTG/plugins/rtm_sync/syncEngine.py:273
-msgid "Closing in one second"
-msgstr "Затваряне след секунда"
+" прекъсна. Моля съобщете за грешката на <a "
+"href=\"http://bugs.edge.launchpad.net/gtg\">нашата страница в Launchpad</a>. "
+"Ако имате инсталирана програмата Apport, тя ще бъде пусната."
 
 #~ msgid "Try to type a word beginning with @ here:"
 #~ msgstr "Опитайте да напишете дума започваща с @ тук:"
 
-#~ msgid "Authors:  "
-#~ msgstr "Автори:  "
+#~ msgid "Deleting "
+#~ msgstr "Изтриване "
 
-#~ msgid "Description:"
-#~ msgstr "Описание:"
-
-#~ msgid "Version: "
-#~ msgstr "Версия: "
-
-#~ msgid "Synchronization failed."
-#~ msgstr "Синхронизацията е неуспешна."
-
-#, python-format
-#~ msgid "%s days left"
-#~ msgstr "остават %s дни"
-
-#, python-format
-#~ msgid "Was %s days ago"
-#~ msgstr "Беше преди %s дни"
-
-#~ msgid "Plugin _Preferences"
-#~ msgstr "Настройка на разширенията"
+#~ msgid "Synchronization completed."
+#~ msgstr "Сихронизацията е завършена."
 
 #~ msgid ""
 #~ "Once you've read the above subtask, mark it as Done. If you don't want to do "
@@ -1267,6 +1504,9 @@ msgstr "Затваряне след секунда"
 #~ msgstr ""
 #~ "Задачите могат да се състоят от под-задачи, които се появяват кат връзки в "
 #~ "описанието. Просто изберете следната връзка:"
+
+#~ msgid "Closing date"
+#~ msgstr "Приключване"
 
 #~ msgid "Thank you for trying out GTG :-)"
 #~ msgstr "Благорадим ви, че опитахте GTG :-)"
@@ -1346,12 +1586,6 @@ msgstr "Затваряне след секунда"
 #~ "използваме ежедневно, но сигурно ще попаднете на грешки."
 
 #~ msgid ""
-#~ "Tomboy not found. Please install it or disable the Tomboy plugin in GTG"
-#~ msgstr ""
-#~ "Не е намерен Tomboy. Инсталирайте го или забранете добавката за ингеграция с "
-#~ "Tomboy."
-
-#~ msgid ""
 #~ "If you have some trouble with GTG, we might be able to help you or to solve "
 #~ "your problem really quickly."
 #~ msgstr "Ако имате проблем с GTG може да успеем да ви помогнем много бързо."
@@ -1366,20 +1600,32 @@ msgstr "Затваряне след секунда"
 #~ "Имаме нужда от вас за да подобрим програмата. Всеки принос, всяка идея са "
 #~ "добре дошли."
 
-#~ msgid "Analyzing tasks..."
-#~ msgstr "Анализиране на задачите..."
+#~ msgid "saving critical object failed"
+#~ msgstr "провален запис на критичен обект"
 
-#~ msgid "Updating remaining tasks.."
-#~ msgstr "Обнявяване на оставащите задачи"
+#~ msgid "Closing in one second"
+#~ msgstr "Затваряне след секунда"
 
-#~ msgid "Running first synchronization..."
-#~ msgstr "Първична синхронизация..."
+#~ msgid "Deleting tasks from gtg.."
+#~ msgstr "Изтриване на задачи от gtg..."
 
-#~ msgid "Analyzing last sync..."
-#~ msgstr "Анализиране на последната синхронизация..."
+#~ msgid "Updating "
+#~ msgstr "Обновяване "
 
-#~ msgid "<b>Authentication failed</b>.Please retry."
-#~ msgstr "<b>Провалено удостоверяване</b>. Опитайте пак."
+#~ msgid "Deleting tasks from rtm.."
+#~ msgstr "Изтриване на задачи от rtm..."
+
+#~ msgid "Couldn't connect to Remember The Milk"
+#~ msgstr "Неуспех на връзката с Remember The Milk"
+
+#~ msgid "Trying to access, please stand by..."
+#~ msgstr "Опит за връзка, изчакайте..."
+
+#~ msgid "Synchronization started"
+#~ msgstr "Започване на синхронизация"
+
+#~ msgid "Can't load the template file"
+#~ msgstr "Неуспешно зареждане на шаблонен файл"
 
 #~ msgid ""
 #~ "You can drag-n-drop a tag onto another to create \"subtags\". As an example, "
@@ -1398,11 +1644,20 @@ msgstr "Затваряне след секунда"
 #~ msgid "View Notes"
 #~ msgstr "Преглед на бележките"
 
-#~ msgid "<b>No Plugin Selected</b>"
-#~ msgstr "<b>Не е избрана приставка</b>"
+#~ msgid "Adding tasks to gtg.."
+#~ msgstr "Добавяне на задачи към gtg..."
 
-#~ msgid "Plugin Manager"
-#~ msgstr "Управление на приставки"
+#~ msgid "Adding "
+#~ msgstr "Добавяне "
+
+#~ msgid "Adding tasks to rtm.."
+#~ msgstr "Добавяне на задачи към rtm..."
+
+#~ msgid "Downloading task list..."
+#~ msgstr "Изтегляне на списъка със задачи..."
+
+#~ msgid "Saving current state.."
+#~ msgstr "Запазване на състоянието..."
 
 #~ msgid ""
 #~ "In the task description (this window), if you begin a line with &quot;-"
@@ -1464,12 +1719,6 @@ msgstr "Затваряне след секунда"
 #~ "Работния изглед. Това е особено полезно ако имате етикет подобен на „някой "
 #~ "ден“, който използвате за задачи, които не са особено спешни."
 
-#~ msgid "<span weight=\"bold\">Due for</span>"
-#~ msgstr "<span weight=\"bold\">Краен срок</span>"
-
-#~ msgid "<span weight=\"bold\">Starting on</span>"
-#~ msgstr "<span weight=\"bold\">Начало</span>"
-
 #~ msgid "Due tomorrow !"
 #~ msgstr "За утре !"
 
@@ -1479,47 +1728,40 @@ msgstr "Затваряне след секунда"
 #~ msgid "Due yesterday"
 #~ msgstr "За вчера !"
 
-#~ msgid "1 active task"
-#~ msgstr "1 активна задача"
-
-#~ msgid "_Keep selected tasks"
-#~ msgstr "_Съхранявайне на избраните задачи"
-
-#~ msgid ""
-#~ "<span weight=\"bold\" size=\"large\">Are you sure you want delete these "
-#~ "tasks?</span>\n"
-#~ "\n"
-#~ "Deleting a task cannot be undone, and will delete the following tasks: "
-#~ msgstr ""
-#~ "<span weight=\"bold\" size=\"large\">Наистина ли искате да изтриете тези "
-#~ "задачи?</span>\n"
-#~ "\n"
-#~ "Изтриването на дадена задача не може да бъде отменено  и ще изтриете "
-#~ "следните задачи: "
-
-#~ msgid "Permanently _remove tasks"
-#~ msgstr "_Премахване на задачи за винаги"
-
-#, python-format
-#~ msgid "%s active tasks"
-#~ msgstr "%s активни задачи"
-
-#, python-format
-#~ msgid "In %s days"
-#~ msgstr "В %s дни"
-
-#, python-format
-#~ msgid "%s days ago"
-#~ msgstr "%s дни на зад"
-
 #~ msgid "If a word begins with @, it is interpreted as a tag."
 #~ msgstr "Ако думата започва с @, това се тълкува като етикет."
+
+#~ msgid "Please retry."
+#~ msgstr "Моля, опитайте отново."
 
 #, python-format
 #~ msgid "%(days)d day left"
 #~ msgid_plural "%(days)d days left"
 #~ msgstr[0] "остава %(days)d ден"
 #~ msgstr[1] "остават %(days)d ден"
+
+#~ msgid "Are you sure you want to delete this task?"
+#~ msgstr "Сигурни ли сте, че искате да изтриете тази задача?"
+
+#~ msgid "Authentication failed."
+#~ msgstr "Неуспех при удостоверяването."
+
+#~ msgid "Updating changed tasks.."
+#~ msgstr "Актуализиране променените задачи .."
+
+#~ msgid "Downloading..."
+#~ msgstr "Изтегляне..."
+
+#~ msgid "Permanently remove task"
+#~ msgstr "Премахване на задачата за винаги"
+
+#~ msgid "Keep selected task"
+#~ msgstr "Запази избраните задачи"
+
+#~ msgid ""
+#~ "Deleting a task cannot be undone, and will delete the following task: "
+#~ msgstr ""
+#~ "Изтриването на задача не може да бъде отменено и ще изтрие следната задача: "
 
 #, python-format
 #~ msgid "Was %(days)d day ago"
@@ -1553,6 +1795,19 @@ msgstr "Затваряне след секунда"
 #~ "Attributes which are added in this way apply but do not appear in the title."
 #~ msgstr ""
 #~ "Атрибути, въведени по този начин, се прилагат но не се появяват в заглавието."
+
+#~ msgid "Synchronize with Evolution"
+#~ msgstr "Синхронизиране с Evolution"
+
+#~ msgid "Synchronize with RTM"
+#~ msgstr "Синхронизиране с RTM"
+
+#~ msgid ""
+#~ "Please authenticate to Remember The Milk in the browser that is being opened "
+#~ "now. When done, press OK"
+#~ msgstr ""
+#~ "Удостоверете се в Remember The Milk в прозореца, който се отваря. Натиснете "
+#~ "„Добре“ когато сте готови."
 
 #~ msgid ""
 #~ "You can also create a task with attributes like tags, due date or defer date "
@@ -1589,3 +1844,6 @@ msgstr "Затваряне след секунда"
 #~ "ггггммдд (20090401) или ммдд (0401, като в този случай, годината "
 #~ "задължително се приема за текущата) или днес или утре, или ден от седмицата "
 #~ "(due:понеделник означава до следващия понеделник)"
+
+#~ msgid "Welcome to Getting Things Gnome!, your new task manager."
+#~ msgstr "Добре дошли в Getting Things Gnome!, вашият нов организатор."
