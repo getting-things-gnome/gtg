@@ -1091,7 +1091,9 @@ class TaskBrowser(gobject.GObject):
             tags = [t.strip() for t in text.split(" ")]
             for tag in tags:
                 if tag:
-                    new_tags.append("@" + tag)
+                    if not tag.startswith('@'):
+                        tag = "@" + tag 
+                    new_tags.append(tag)
         # If the checkbox is checked, add all the subtasks to the list of
         # tasks to add.
         if apply_to_subtasks.get_active():
