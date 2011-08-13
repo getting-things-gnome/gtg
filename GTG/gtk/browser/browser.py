@@ -129,10 +129,6 @@ class TaskBrowser(gobject.GObject):
         # Define accelerator keys
         self._init_accelerators()
         
-        #Autocompletion for Tags
-        self._init_tag_list()
-        self._init_tag_completion()
-
         # Rember values from last time
         self.last_added_tags = "NewTag"
         self.last_apply_tags_to_subtasks = False
@@ -208,6 +204,7 @@ class TaskBrowser(gobject.GObject):
         # The tags treeview
         self.tagtree = self.req.get_tag_tree()
         self.tagtreeview = self.tv_factory.tags_treeview(self.tagtree)
+        self._init_tag_completion()
         #Tags treeview
         self.tagtreeview.connect('cursor-changed',\
             self.on_select_tag)
@@ -395,18 +392,12 @@ class TaskBrowser(gobject.GObject):
         key, mod = gtk.accelerator_parse("<Control>l")
         quickadd_field.add_accelerator("grab-focus", agr, key, mod, gtk.ACCEL_VISIBLE)
 
-    def _init_tag_list(self):
-        self.tag_list_model = gtk.ListStore(gobject.TYPE_STRING)
-        self.tag_list = self.req.get_tag_tree().get_all_nodes()
-        for i in self.tag_list:
-            self.tag_list_model.append([i[1:]])
-
     def _init_tag_completion(self):
         #Initialize tag completion.
         self.tag_completion = gtk.EntryCompletion()
-        self.tag_completion.set_model(self.tag_list_model)
-        self.tag_completion.set_text_column(0)
-        self.tag_completion.set_match_func(self.tag_match_func, 0)
+        self.tag_completion.set_model(self.tagtreeview.get_model())
+        self.tag_completion.set_text_column(3)
+        self.tag_completion.set_match_func(self.tag_match_func, 3)
         self.tag_completion.set_inline_completion(True)
         self.tag_completion.set_inline_selection(True)
         self.tag_completion.set_popup_single_match(False)
@@ -572,13 +563,16 @@ class TaskBrowser(gobject.GObject):
             # with an uppercase letter.
             text = text.lower()
             # Exclude the special tags.
-            if text == "tg-tags-all" or text == "tg-tags-sep" or \
-               text =="tg-tags-none":
+            if text.startswith("<span") or text.startswith('gtg-tags-'):
                 return False
             # Are we typing the first letters of a tag?
             elif text.startswith(key):
+                #FIXME: this doesn't work for UNICODE, I don't know why
                 return True
             else:
+#                print "no completion for text %s" %text
+#                print " key is %s (len=%s)" %(key,len(key))
+#                print " start of text is : %s" %(text[:len(key)])
                 return False          
 
     def _add_page(self, notebook, label, page):
