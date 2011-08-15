@@ -14,15 +14,30 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
-# Imports JSON files with the following syntax:
+# This plugin was built for a specific purpose and is not a general-purpose or
+# full-featured JSON importer.
+#
+# It imports JSON files with the following syntax.
+#
+# There just be a top-level key named "specs", with key names of your choosing.
+# Each sub sub-hash must have a "details_url" or "url" key, whose values
+# becomes part of the description of every item in the "work_items" array.
+# There is no way to set any other description, nor it is possible to import
+# tags, or dates.
+#
+# Only items with a "status" of "todo" are imported, the rest are skipped.
+
+# The software will first scan the file to find all the "assignee" values in the file
+# And then pop-up a dialog as you to choose an username. It then imports only the TODO
+# items for those usernames. The username is not actually imported.
+
 # {
 #  "specs": {
 #   "my-spec": {
-#    ...
+#    "details_url": "http://www.gnome.org/",
 #    "work_items": [
 #     {
 #      "assignee": "john-doe",
-#      "date": "2010-01-23",
 #      "description": "Do something",
 #      "spec": "my-spec",
 #      "status": "todo"

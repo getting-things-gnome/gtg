@@ -3,7 +3,7 @@
   <!-- interface-requires gtk+ 2.6 -->
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkDialog" id="dlg_import_json">
-    <property name="width_request">300</property>
+    <property name="width_request">400</property>
     <property name="title" translatable="yes">Import from JSON</property>
     <property name="type_hint">dialog</property>
     <property name="has_separator">False</property>
@@ -19,7 +19,7 @@
                 <property name="visible">True</property>
                 <property name="xalign">0</property>
                 <property name="yalign">1</property>
-                <property name="label" translatable="yes">Location to import:</property>
+                <property name="label" translatable="yes">Location to import. (Local paths start with file:///):</property>
                 <property name="wrap">True</property>
               </object>
               <packing>
