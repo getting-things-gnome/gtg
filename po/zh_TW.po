@@ -1,0 +1,1417 @@
+# Traditional Chinese translation for gtg
+# Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009, 2011
+# This file is distributed under the same license as the gtg package.
+# Rex Tsai <chihchun@kalug.linux.org.tw>, 2011.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gtg\n"
+"Report-Msgid-Bugs-To: Rex Tsai <chihchun@kalug.linux.org.tw>\n"
+"POT-Creation-Date: 2010-03-27 15:20+0100\n"
+"PO-Revision-Date: 2010-03-20 03:54+0000\n"
+"Last-Translator: Rex Tsai <chihchun@kalug.linux.org.tw>\n"
+"Language-Team: Chinese (traditional) <chinese-l10n@googlegroups.com>\n"
+"Language: zh_TW\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Launchpad-Export-Date: 2010-03-21 04:43+0000\n"
+"X-Generator: Launchpad (build Unknown)\n"
+
+#: GTG/tools/dates.py:51
+msgid "Today"
+msgstr "今日"
+
+#: GTG/tools/dates.py:54
+msgid "Yesterday"
+msgid_plural "%(days)d days ago"
+msgstr[0] "日"
+
+#: GTG/tools/dates.py:57
+msgid "Tomorrow"
+msgid_plural "在 %(days)d 日"
+msgstr[0] "明日"
+
+#: GTG/tools/dates.py:96 GTG/tools/dates.py:138
+msgid "now"
+msgstr "現在"
+
+#: GTG/tools/dates.py:97 GTG/tools/dates.py:140
+msgid "soon"
+msgstr "馬上"
+
+#: GTG/tools/dates.py:98 GTG/tools/dates.py:142
+msgid "later"
+msgstr "稍後"
+
+#: GTG/tools/dates.py:180
+msgid "monday"
+msgstr "星期一"
+
+#: GTG/tools/dates.py:180
+msgid "tuesday"
+msgstr "星期二"
+
+#: GTG/tools/dates.py:180
+msgid "wednesday"
+msgstr "星期三"
+
+#: GTG/tools/dates.py:181
+msgid "thursday"
+msgstr "星期四"
+
+#: GTG/tools/dates.py:181
+msgid "friday"
+msgstr "星期五"
+
+#: GTG/tools/dates.py:181
+msgid "saturday"
+msgstr "星期六"
+
+#: GTG/tools/dates.py:182
+msgid "sunday"
+msgstr "星期天"
+
+#: GTG/tools/dates.py:183
+msgid "today"
+msgstr "今日"
+
+#: GTG/tools/dates.py:184
+msgid "tomorrow"
+msgstr "明日"
+
+#: GTG/tools/dates.py:185
+msgid "next week"
+msgstr "下周"
+
+#: GTG/tools/dates.py:186
+msgid "next month"
+msgstr "下月"
+
+#: GTG/tools/dates.py:187
+msgid "next year"
+msgstr "明年"
+
+#: GTG/tools/gtkcrashhandler.py:58
+msgid ""
+"We're terribly sorry. Could you help us fix the problem by reporting the "
+"crash?"
+msgstr ""
+"非常抱歉。可以請您回報這次當機，幫助我們解決這個問題？"
+
+#: GTG/tools/gtkcrashhandler.py:169
+msgid "An error has occurred"
+msgstr "發生了一個錯誤"
+
+#: GTG/tools/gtkcrashhandler.py:177
+msgid "It looks like an error has occurred."
+msgstr "看起來發生了錯誤"
+
+#: GTG/tools/gtkcrashhandler.py:212
+msgid "_Details"
+msgstr "細節 (_D)"
+
+#: GTG/tools/gtkcrashhandler.py:218
+msgid "_Report this problem..."
+msgstr "回報這個問題 (_R)..."
+
+#: GTG/tools/gtkcrashhandler.py:222
+msgid "_Ignore the error"
+msgstr "忽略錯誤 (_I)"
+
+#: GTG/taskeditor/editor.py:321
+#, python-format
+msgid "Completed %(days)d day late"
+msgid_plural "Completed %(days)d days late"
+msgstr[0] "延遲 %(days)d 日完成"
+msgstr[1] "延遲 %(days)d 日完成"
+
+#: GTG/taskeditor/editor.py:324
+#, python-format
+msgid "Completed %(days)d day early"
+msgid_plural "Completed %(days)d days early"
+msgstr[0] "提早 %(days)d 日完成"
+msgstr[1] "提早 %(days)d 日完成"
+
+#: GTG/taskeditor/editor.py:330
+#, python-format
+msgid "Due tomorrow!"
+msgid_plural "%(days)d days left"
+msgstr[0] "明日到期!"
+
+#: GTG/taskeditor/editor.py:332
+msgid "Due today!"
+msgstr "今日到期!"
+
+#: GTG/taskeditor/editor.py:335
+#,python-format
+msgid "Due yesterday!"
+msgid_plural "Was %(days)d days ago"
+msgstr[0] "昨天應辦"
+
+#: GTG/taskeditor/taskeditor.glade.h:1
+msgid "Closed on"
+msgstr "關閉於"
+
+#: GTG/taskeditor/taskeditor.glade.h:2 GTG/taskbrowser/taskbrowser.glade.h:13
+msgid "Delete"
+msgstr "刪除"
+
+#: GTG/taskeditor/taskeditor.glade.h:3 GTG/taskeditor/__init__.py:33
+#: GTG/taskbrowser/taskbrowser.glade.h:14 GTG/taskbrowser/__init__.py:40
+msgid "Dismiss"
+msgstr "解除"
+
+#: GTG/taskeditor/taskeditor.glade.h:4
+msgid "Due for"
+msgstr "到期"
+
+#: GTG/taskeditor/taskeditor.glade.h:5
+msgid "Insert subtask"
+msgstr "插入子任務"
+
+#: GTG/taskeditor/taskeditor.glade.h:6
+msgid "Insert tag"
+msgstr "插入標籤"
+
+#: GTG/taskeditor/taskeditor.glade.h:7
+msgid "Later"
+msgstr "以後"
+
+#: GTG/taskeditor/taskeditor.glade.h:8
+msgid "Mark Done"
+msgstr "標籤完成"
+
+#: GTG/taskeditor/taskeditor.glade.h:9
+msgid "Now"
+msgstr "現在"
+
+#: GTG/taskeditor/taskeditor.glade.h:10
+msgid "Soon"
+msgstr "馬上"
+
+#: GTG/taskeditor/taskeditor.glade.h:11
+msgid "Starting on"
+msgstr "開始"
+
+#: GTG/taskeditor/taskeditor.glade.h:12
+msgid "Task"
+msgstr "任務"
+
+#: GTG/taskeditor/__init__.py:31 GTG/taskbrowser/__init__.py:36
+msgid "Mark as done"
+msgstr "標示為完成"
+
+#: GTG/taskeditor/__init__.py:32 GTG/taskbrowser/__init__.py:38
+msgid "Mark as not done"
+msgstr "標示為未完成"
+
+#: GTG/taskeditor/__init__.py:34 GTG/taskbrowser/__init__.py:42
+msgid "Undismiss"
+msgstr "撤銷解除"
+
+#: GTG/taskeditor/__init__.py:35
+msgid "Keep as Note"
+msgstr "整理為記錄"
+
+#: GTG/taskeditor/__init__.py:36
+msgid "Make a Task"
+msgstr "建立一項任務"
+
+#: GTG/taskeditor/__init__.py:38
+msgid "Mark this task as done"
+msgstr "將此任務標籤為完成"
+
+#: GTG/taskeditor/__init__.py:39 GTG/taskeditor/__init__.py:41
+msgid "Mark this task as to be done"
+msgstr "將此任務標籤為待辦"
+
+#: GTG/taskeditor/__init__.py:40
+msgid "Mark this task as not to be done anymore"
+msgstr "將此任務標籤為過期"
+
+#: GTG/taskeditor/__init__.py:42
+msgid "Permanently remove this task"
+msgstr "永久移除此任務"
+
+#: GTG/taskeditor/__init__.py:43
+msgid "Insert a subtask in this task"
+msgstr "在此任務中插入子任務"
+
+#: GTG/taskeditor/__init__.py:44
+msgid "Insert a tag in this task"
+msgstr "在此任務中插入標籤"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:1
+msgid ""
+"\n"
+"Getting Things Gnome! is an organizer for the GNOME desktop environment."
+msgstr ""
+"\n"
+"Getting Things Gnome! 是一個基於 GNOME 桌面環境的組織工具"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:3
+msgid "About GTG!"
+msgstr "關於 GTG!"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:4
+msgid "Add Tag"
+msgstr "新增標籤"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:5
+msgid "Add Tag..."
+msgstr "新增標籤..."
+
+#: GTG/taskbrowser/taskbrowser.glade.h:6
+msgid "Add a Tag..."
+msgstr "新增一個標籤..."
+
+#: GTG/taskbrowser/taskbrowser.glade.h:7
+msgid "Add a subtask"
+msgstr "增加一個子任務"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:8
+msgid "Apply to subtasks"
+msgstr "應用到子任務"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:9
+msgid "Cancel"
+msgstr "取消"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:10
+msgid "Copyrights&#xA9; 2008, 2009 Lionel Dricot, Bertrand Rousseau"
+msgstr "版權所有&#xA9; 2008, 2009 Lionel Dricot, Bertrand Rousseau"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:11 GTG/taskbrowser/__init__.py:46
+msgid "Create a new task"
+msgstr "建立一個新任務"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:12
+msgid "D_ismiss"
+msgstr "解除"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:15
+msgid "Edit"
+msgstr "編輯"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:16
+msgid "Enter the name of the tag(s) you wish to add:"
+msgstr "輸入您希望新增的標籤名稱:"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:17
+msgid "GTG website"
+msgstr "GTG主頁"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:18
+msgid "Getting Things Gnome!"
+msgstr "Getting Things Gnome!"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:19
+msgid ""
+"Getting Things Gnome! is free software; you can redistribute it and/or "
+"modify it under the terms of the GNU General Public License as published by "
+"the Free Software Foundation; either version 3 of the License, or (at your "
+"option) any later version.\n"
+"\n"
+"Getting Things Gnome! is distributed in the hope that it will be useful, but "
+"WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY "
+"or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for "
+"more details.\n"
+"\n"
+"You should have received a copy of the GNU General Public License along with "
+"Getting Things Gnome!; if not, write to the Free Software Foundation, Inc., "
+"51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA."
+msgstr ""
+"Getting Things Gnome! 是一套自由軟體; 你可以在自由軟體基金會的 GNU General "
+"Public License 授權下散布或修改此軟體; 使用第三版授權，或您屬意的新版授權。\n" 
+"\n"
+"Getting Things Gnome! 希望在有用的前提下散布，但是不提供擔保; 不提供暗示的"
+"銷售性或任何特定意圖的擔保。請見 GNU General Public License 了解細節。\n"
+"\n"
+"您應該與 Gettings Things Gnome 一起收到一份 GNU General Public License 的副本！"
+"如果沒有收到，請聯絡給自由軟體基金會"
+"51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA."
+
+#: GTG/taskbrowser/taskbrowser.glade.h:24
+msgid ""
+"Hint: you can add several tags by separating them with\n"
+"commas."
+msgstr ""
+"提示: 您可以新增多個標籤，標籤之間用\n"
+"逗號分開。"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:26
+msgid "Mark as Done"
+msgstr "標籤為完成"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:27
+msgid "Mark as Not Done"
+msgstr "標籤為未完成"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:28
+msgid "Mark as _Done"
+msgstr "標籤為完成(_D)"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:29
+msgid "New Subtask"
+msgstr "新子任務"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:30
+msgid "New Task"
+msgstr "新任務"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:31
+msgid "New _Subtask"
+msgstr "新建子任務(_S)"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:32
+msgid "New _Task"
+msgstr "新建任務(_T)"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:33
+msgid "Redo"
+msgstr "重做"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:34
+msgid "Reset Color"
+msgstr "重置顏色"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:35
+msgid "T_oolbar"
+msgstr "工具欄(_O)"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:36
+msgid "Tag is displayed in the workview"
+msgstr "標籤已經被顯示于工作視圖"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:37
+msgid "TagName"
+msgstr "標籤名稱"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:38 GTG/taskbrowser/tagtree.py:352
+#: GTG/taskbrowser/tasktree.py:330 GTG/taskbrowser/tasktree.py:482
+msgid "Tags"
+msgstr "標籤"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:39
+msgid "Und_ismiss"
+msgstr "取消解除(_i)"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:40
+msgid "Undo"
+msgstr "撤銷"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:41
+msgid "Work View"
+msgstr "工作視圖"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:42
+msgid "_Background Colors"
+msgstr "背景顏色(_B)"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:43
+msgid "_Closed Tasks Pane"
+msgstr "關閉任務窗格(_C)"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:44
+msgid "_Edit"
+msgstr "編輯(_E)"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:45
+msgid "_Help"
+msgstr "幫助(_H)"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:46
+msgid "_Plugins"
+msgstr "外掛(_P)"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:47
+msgid "_Quick Add Entry"
+msgstr "快速新增條目(_Q)"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:48
+msgid "_Schedule for..."
+msgstr "安排到...(_S)"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:49
+msgid "_Tags Sidebar"
+msgstr "標籤欄(_T)"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:50
+msgid "_Tasks"
+msgstr "任務(_T)"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:51
+msgid "_View"
+msgstr "視圖(_T)"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:52
+msgid "_Work View"
+msgstr "工作視圖(_W)"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:53
+msgid "_tomorrow"
+msgstr "明日(_t)"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:54
+msgid "next _month"
+msgstr "下月(_m)"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:55
+msgid "next _week"
+msgstr "下周(_w)"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:56
+msgid "next _year"
+msgstr "明年(_y)"
+
+#: GTG/taskbrowser/taskbrowser.glade.h:57
+msgid "t_oday"
+msgstr "今日(_o)"
+
+#: GTG/taskbrowser/__init__.py:37
+msgid "Mark the selected task as done"
+msgstr "把選擇的任務標籤為完成"
+
+#: GTG/taskbrowser/__init__.py:39 GTG/taskbrowser/__init__.py:43
+msgid "Mark the selected task as to be done"
+msgstr "把選擇的任務標籤為待辦"
+
+#: GTG/taskbrowser/__init__.py:41
+msgid "Mark the task as not to be done anymore"
+msgstr "標籤該任務為過期"
+
+#: GTG/taskbrowser/__init__.py:44
+msgid "Permanently remove the selected task"
+msgstr "永久移除選擇的任務."
+
+#: GTG/taskbrowser/__init__.py:45
+msgid "Edit the selected task"
+msgstr "編輯選擇的任務"
+
+#: GTG/taskbrowser/__init__.py:47
+msgid "Create a new subtask"
+msgstr "建立一個新的子任務"
+
+#: GTG/taskbrowser/__init__.py:48
+msgid "Display only the currently actionable tasks"
+msgstr "只顯示當前可採取行動的任務"
+
+#: GTG/taskbrowser/browser.py:570
+msgid "no active tasks"
+msgstr "沒有活動任務"
+
+#: GTG/taskbrowser/browser.py:572
+#, python-format
+msgid "%(tasks)d active task"
+msgid_plural "%(tasks)d active tasks"
+msgstr[0] "%(tasks)d 待辦任務"
+msgstr[1] "%(tasks)d 待辦任務"
+
+#: GTG/taskbrowser/browser.py:955
+msgid "tags"
+msgstr "標籤"
+
+#: GTG/taskbrowser/browser.py:955
+msgid "tag"
+msgstr "標籤"
+
+#: GTG/taskbrowser/browser.py:961
+msgid "defer"
+msgstr "推遲"
+
+#: GTG/taskbrowser/browser.py:966
+msgid "due"
+msgstr "到期"
+
+#: GTG/taskbrowser/tasktree.py:345 GTG/taskbrowser/tasktree.py:506
+msgid "Title"
+msgstr "標題"
+
+#: GTG/taskbrowser/tasktree.py:359
+msgid "Start date"
+msgstr "開始日期"
+
+#: GTG/taskbrowser/tasktree.py:371
+msgid "Due"
+msgstr "到期"
+
+#: GTG/taskbrowser/tasktree.py:494
+msgid "Closing date"
+msgstr "關閉日期"
+
+#: GTG/gtg.py:86
+msgid "gtg is already running!"
+msgstr "gtg 已經在運行！"
+
+#: GTG/gtg.py:110
+msgid ""
+" has crashed. Please report the bug on <a href=\"http://bugs.edge.launchpad."
+"net/gtg\">our Launchpad page</a>. If you have Apport installed, it will be "
+"started for you."
+msgstr ""
+" 已當機。請回報臭蟲到 <a href=\"http://bugs.edge.launchpad.net/gtg\">我們的"
+" Launchpad 網頁</a>. 如果您裝了 Apport 它會協助您收集資料"
+
+#: GTG/core/task.py:53
+msgid "My new task"
+msgstr "我的新任務"
+
+#: GTG/core/tagstore.py:52
+msgid "All tasks"
+msgstr "全部任務"
+
+#: GTG/core/tagstore.py:59
+msgid "Tasks with no tags"
+msgstr "沒有標籤的任務"
+
+#: GTG/core/firstrun_tasks.py:8
+msgid "Getting started with GTG"
+msgstr "GTG入門指南"
+
+#: GTG/core/firstrun_tasks.py:9
+msgid ""
+"Welcome to Getting Things Gnome!, your new task manager.\n"
+"\n"
+"In GTG, everything is a task. From building a bridge over the Pacific Ocean "
+"to changing a light bulb or organizing a party. When you edit a task, it is "
+"automatically saved.\n"
+"\n"
+"Once a task is done, you can push the &quot;Mark as done&quot; button. If "
+"the task is not relevant any-more, simply press &quot;Dismiss&quot;.\n"
+"\n"
+"A task might be composed of multiple subtasks that appear as links in the "
+"description. Simply click on the following link:"
+msgstr ""
+"歡迎使用 Getting Things Gnome!, 您的新任務管理員。\n"
+"\n"
+"在 GTG, 所有事情都是一項任務。從建立一道跨越太平洋的河流，到更換電燈泡，或"
+"籌備一個派對。當您編輯一項任務，它會自動儲存。\n"
+"\n"
+"只要完成任務，您可以按下 &quot;標示為完成&quot; 選單。如果該任務已經不重要，"
+"可以選擇 &quot;取消&quot;。"
+"\n"
+"一個任務可能會有好幾個子任務，並以連結方式顯示在敘述中，請點選以下連結:"
+
+#: GTG/core/firstrun_tasks.py:17
+msgid ""
+"Once you've read the above subtask, mark it as Done. If you don't want to do "
+"the task, mark it as dismissed. Done and Dismissed tasks are kept in the "
+"closed tasks pane, hidden by default but you can easily enable it in the "
+"View menu.\n"
+"\n"
+"If you choose to close this current task, subtasks will be automatically "
+"closed too. We indeed consider that, if you achieve a given task, you don't "
+"need to do the subtask anymore.\n"
+"Other stuff you should read:"
+msgstr ""
+"如果您已經讀完上述字任務，請標示為完成。如果您無意執行該任務，標示為取消"
+"完成與取消都會保持在已完成任務列，預設隱藏，但您可以輕易的在檢視選單中叫出。"
+"\n"
+"如果您選擇關閉當下任務，子任務也會一併被關閉。我們正在考慮如果您封存一項任務"
+"，您將無須再處理此任務。\n"
+"其他您應該閱讀的東西: "
+
+#: GTG/core/firstrun_tasks.py:26
+msgid ""
+"We hope that you will appreciate GTG. Please send us bug reports and ideas "
+"for improvement using:\n"
+"    https://bugs.launchpad.net/gtg\n"
+"\n"
+"Thank you for trying out GTG :-)"
+msgstr ""
+"我們希望您喜歡 GTG。請送想法與臭蟲回報來幫助改善軟體: \n"
+"    https://bugs.launchpad.net/gtg\n"
+"\n"
+"感謝試用 GTG :-)"
+
+#: GTG/core/firstrun_tasks.py:34
+msgid "Learn how to use subtasks"
+msgstr "學習如何使用子任務"
+
+#: GTG/core/firstrun_tasks.py:35
+msgid ""
+"In the task description (this window), if you begin a line with &quot;-"
+"&quot;, it will be considered as a &quot;subtask&quot;, something that needs "
+"to be done in order to accomplish your task. Just try to write &quot;- test "
+"subtask&quot; on the next line and press enter.\n"
+"\n"
+"You can also use the &quot;insert subtask&quot; button.\n"
+"\n"
+"Tasks and subtasks can be re-organized by drag-n-drop in the tasks list.\n"
+"\n"
+"Some concepts come with subtasks: for example, a subtask's due date can "
+"never be after its parent's due date.\n"
+"\n"
+"Also, marking a parent as done will mark all the subtasks as done."
+msgstr ""
+"在任務敘述中 (此視窗), 如果您用 &quot;-&quot; 開始新行，他會被視為&quot;子任務&quot;,"
+"必須先被完成，才能結束您的任務。試著在下一行寫 &quot;- test subtask&quot; 並按下 Enter.\n"
+"\n"
+"您也可以用 &quot;插入 子任務&quot; 按鍵\n"
+"\n"
+"任務與子任務可以透過拖拉方式重新整理。\n"
+"\n"
+"概念: 子任務到期日不可以比母任務到期日晚。\n"
+"\n"
+"另外，將母任務標示為完成，也同時會將所有子任務標示完成。"
+
+#: GTG/core/firstrun_tasks.py:48
+msgid "Learn how to use tags"
+msgstr "學習如何使用標籤"
+
+#: GTG/core/firstrun_tasks.py:49
+msgid ""
+"A tag is a simple word that begins with &quot;@&quot;.\n"
+"\n"
+"Try to type a word beginning with @ here:\n"
+"\n"
+"It becomes yellow, it's a tag.\n"
+"\n"
+"Tags are useful to sort your tasks. In the view menu, you can enable a "
+"sidebar which displays all the tags you are using so you can easily see "
+"tasks assigned to a given tag. There's no limit to the number of tags a task "
+"can have.\n"
+"\n"
+"You can drag-n-drop a tag onto another to create \"subtags\". As an example, "
+"if you drag the tag @to_pay onto the tag @money, every task tagged with "
+"@to_pay will also appear in the view of @money (but the @money tag is not "
+"added to the task).\n"
+"\n"
+"If you right click on a tag in the sidebar you can also set its color. It "
+"will allow you to have a more colorful list of tasks, if you want it that "
+"way.\n"
+"\n"
+"A new tag is only added to the current task. There's no recursion and the "
+"tag is not applied to subtasks. But when you create a new subtask, this "
+"subtask will inherit the tags of its parent as a good primary default (it "
+"will also be the case if you add a tag to a parent just after creating a "
+"subtask). Of course, you can modify at any time the tags of this particular "
+"subtask. It will never be changed by the parent."
+msgstr ""
+"ㄧ個標籤是任何以 &quot;@&quot; 為開始的文字。\n"
+"\n"
+"請試著在此輸入任何以 @ 開始的文字: \n"
+"\n"
+"它會變成黃色，這是一個標籤。\n"
+"\n"
+"標籤很適合用來排序任務。在檢視選單中，您可以啟動側邊列，來顯示所有標籤。"
+"並可以用來過濾屬於特定標籤的任務。一個任務可以屬於許多不同的標籤。\n"
+"\n"
+"您可以拖拉標籤到另外一個標籤，變成 \"子標籤\"。舉例，如果將 @待付 拖拉到"
+"@現金，所有標示為 @待付 的項目也會出現在 @現金 中。(但 @現金標籤不會加入"
+"到任務中。)\n"
+"\n"
+"如果您在側欄中右鍵點選一個標籤，您可以改變它的顏色。它會讓你的列表色彩豐"
+"富，如果您喜歡的話。\n"
+"\n"
+"一個新的標籤只會加到目前的任務。沒有遞迴性，標籤也不會加到子任務中。不過"
+"如果您建立一個新子任務，子任務會繼承母任務的標籤。當然，您可以隨時更改特"
+"定子任務的標籤，而不會影響到母任務。"
+
+#: GTG/core/firstrun_tasks.py:66
+msgid "Learn how to use the Workview"
+msgstr "學習如何使用工作視圖"
+
+#: GTG/core/firstrun_tasks.py:67
+msgid ""
+"If you press the &quot;Workview&quot; button, only actionable tasks will be "
+"displayed.\n"
+"\n"
+"What is an actionable task? It's a task you can do directly, right now.\n"
+"\n"
+"It's a task that is already &quot;start-able&quot;, i.e. the start date is "
+"already over.\n"
+"\n"
+"It's a task that doesn't have open subtasks, i.e. you can do the task itself "
+"directly.\n"
+"\n"
+"Thus, the workview will only show you tasks you should do right now.\n"
+"\n"
+"If you use tags, you can right click on a tag in the sidebar and choose to "
+"hide tasks assigned to this particular tag in the workview. It's very useful "
+"if you have a tag like &quot;someday&quot; that you use for tasks you would "
+"like to do but are not particularly urgent."
+msgstr ""
+"如果你按下 &quot;工作視圖&quot; 按鈕，只會顯示可執行的任務。\n"
+"\n"
+"所謂可執行任務，即是你可以馬上直接執行的任務。\n"
+"\n"
+"可執行任務是已經可以開始 &quot;start-able&quot;，像是已超過開始時間\n"
+"\n"
+"可執行任務必須沒有未完成子任務，您可以馬上直接只做此任務。\n"
+"\n"
+"因此，&quot;工作視圖&quot; 只顯示您應該馬上做的任務。\n"
+"\n"
+"如果您使用標籤，您可以選擇側邊的標籤來隱藏特定標籤任務。這非常有用，如果您"
+"有那種 &quot;改天&quot; 的標籤，您想做但是不急的任務。"
+
+#: GTG/core/firstrun_tasks.py:82
+msgid "Learn how to use Plugins"
+msgstr "學習如何使用外掛"
+
+#: GTG/core/firstrun_tasks.py:83
+msgid ""
+"GTG has the ability to add plugins to extend it's core functionality.\n"
+"\n"
+"Some examples of the current plugins are Syncing with Remember the Milk and "
+"Evolution, Tomboy/Gnote integration and Geolocalized Tasks.\n"
+"You can find the Plugin Manager by selecting Edit in the Menu Bar, then "
+"clicking Preferences. You will then see a tab labeled Plugins."
+msgstr ""
+"GTG 可通過新增外掛，擴展其核心功能。\n"
+"\n"
+"現有外掛的例子包括與 Remember the Milk 和 Evolution 同步。Tomboy/Gnote 整合，"
+"以及具備地理定位特點的任務。您可以通過點擊選單欄的編輯選單，然後選擇偏好選"
+"項，找到外掛管理器。您會看到名為外掛的標籤頁。"
+
+#: GTG/core/firstrun_tasks.py:92
+msgid "Reporting bugs"
+msgstr "報告缺陷"
+
+#: GTG/core/firstrun_tasks.py:93
+msgid ""
+"GTG is still very alpha software. We like it and use it everyday but you "
+"will encounter some bugs.\n"
+"\n"
+"Please, report them on our Launchpad page:\n"
+"https://bugs.launchpad.net/gtg\n"
+"\n"
+"We need you to make this software better. Any contribution, any idea is "
+"welcome.\n"
+"\n"
+"If you have some trouble with GTG, we might be able to help you or to solve "
+"your problem really quickly."
+msgstr ""
+"GTG 還是非常年輕的軟體。我們喜歡每日用它，但您可能會碰到一些臭蟲。\n"
+"\n"
+"請將這些問題回報到我們的 Launchpad 網頁:\n"
+"https://bugs.launchpad.net/gtg\n"
+"\n"
+"我們需要您的協助來改善軟體。歡迎任何建議與貢獻。\n"
+"\n"
+"如果您有使用 GTG 的問題，我們或許可以協助您快速解決。"
+
+#: GTG/core/firstrun_tasks.py:106
+msgid "Learn how to use the QuickAdd Entry"
+msgstr "學習如何使用快速新增欄位"
+
+#: GTG/core/firstrun_tasks.py:107
+msgid ""
+"The quickadd entry is the quickest way to create a new task. You can show or "
+"hide it in the View menu.\n"
+"For adding a task you just have to type its title in the entry and press "
+"return. The task will be created and selected in the task browser. If a tag "
+"is selected in the tag panel, this tag is applied to the task you create.\n"
+"You can also create a task with attributes like tags, due date or defer date "
+"in the quickadd entry.\n"
+"For that the syntax is :\n"
+"\n"
+"tags:tag1,tag2,tag3 : This way you can apply as many tags as you wish using "
+"comma as separator\n"
+"\n"
+"due:date or defer:date : This way you can apply a due date or a defer date. "
+"date can be yyyy-mm-dd (for exemple 2009-04-01) or yyyymmdd (20090401) or "
+"mmdd (0401, in this case the year is implicitly the current one) or today or "
+"tomorrow or a weekday name (due:monday means due next Monday)\n"
+"\n"
+"Attributes which are added in this way apply but do not appear in the "
+"title.\n"
+"If a word begins with @, it is interpreted as a tag."
+msgstr ""
+"快速新增欄位是最快新增任務的方法，您可以在檢視選單中顯示或隱藏之。\n"
+"要新增一項任務，您只要輸入標題並按下 Enter。任務就會在任務瀏覽器中被"
+"建立並選擇。如果在標籤欄中選擇了認一標籤，該標籤也會自動套用到新任務上。\n"
+"您也可以透過快速新增欄位，新增任務的一些屬性，像是標籤，到期日或延後日。\n"
+"語法是: :\n"
+"\n"
+"tags:tag1,tag2,tag3 : 您可以用分號加入很多標籤。\n"
+"\n"
+"due:date or defer:date : 這樣您可以加入到期日或延遲日。"
+"日期格式可以是 yyyy-mm-dd (像是 2009-04-01) or yyyymmdd (20090401) 或 "
+"mmdd (0401, 年份會直接採用今年) 或 today 或 "
+"tomorrow 或是星期幾 (due:monday means due next Monday)\n"
+"\n"
+"屬性不會顯示顯示在標籤中。若文字開始為 @, 會被當作一個標籤"
+
+#: GTG/core/plugins/__init__.py:32
+msgid "Everything necessary to run this plugin is available."
+msgstr "已具備運行此外掛的所有條件。"
+
+#: GTG/core/plugins/__init__.py:33
+msgid "The plugin can not be loaded"
+msgstr "無法載入此外掛"
+
+#: GTG/core/plugins/__init__.py:34
+msgid "Some python modules are missing"
+msgstr "缺少某些 python 模組"
+
+#: GTG/core/plugins/__init__.py:35
+msgid "Please install the following python modules:"
+msgstr "請安裝下列 python 模組："
+
+#: GTG/core/plugins/__init__.py:37
+msgid "Some remote dbus objects are missing."
+msgstr "缺少某些遠程 dbus 物件。"
+
+#: GTG/core/plugins/__init__.py:38
+msgid "Please start the following applications:"
+msgstr "請啟動以下程序："
+
+#: GTG/core/plugins/__init__.py:40
+msgid "Some modules and remote dbus objects are missing."
+msgstr "缺少某些模組和遠程 dbus 物件。"
+
+#: GTG/core/plugins/__init__.py:41
+msgid "Please install or start the following components:"
+msgstr "請安裝或啟動下列元件："
+
+#: GTG/core/plugins/__init__.py:43
+msgid "Unknown error while loading the plugin."
+msgstr "載入外掛時出現未知錯誤。"
+
+#: GTG/core/plugins/__init__.py:44
+msgid "Very helpful message, isn't it? Please report a bug."
+msgstr "是不是很有用的訊息？ 請提交 bug 報告。"
+
+#: GTG/viewmanager/delete_dialog.py:58
+msgid "Deleting a task cannot be undone, and will delete the following task: "
+msgstr "刪除任務後無法撤銷，並將刪除下列任務： "
+
+#: GTG/viewmanager/delete_dialog.py:59
+msgid "Are you sure you want to delete this task?"
+msgstr "您確定要刪除此任務嗎？"
+
+#: GTG/viewmanager/delete_dialog.py:60
+msgid "Keep selected task"
+msgstr "保留所選任務"
+
+#: GTG/viewmanager/delete_dialog.py:61
+msgid "Permanently remove task"
+msgstr "永久刪除任務"
+
+#: GTG/viewmanager/delete_dialog.py:63
+msgid "Deleting a task cannot be undone, and will delete the following tasks: "
+msgstr "刪除任務後無法撤銷，並將刪除下列任務： "
+
+#: GTG/viewmanager/delete_dialog.py:64
+msgid "Are you sure you want to delete these tasks?"
+msgstr "您確定要刪除這些任務嗎？"
+
+#: GTG/viewmanager/delete_dialog.py:65
+msgid "Keep selected tasks"
+msgstr "保留所選任務"
+
+#: GTG/viewmanager/delete_dialog.py:66
+msgid "Permanently remove tasks"
+msgstr "永久刪除任務"
+
+#: GTG/viewmanager/preferences.glade.h:1
+msgid "<b>Dependencies</b>"
+msgstr "<b>依賴關系</b>"
+
+#: GTG/viewmanager/preferences.glade.h:2
+msgid "<b>General</b>"
+msgstr "<b>一般</b>"
+
+#: GTG/viewmanager/preferences.glade.h:3
+msgid "<b>Task Browser</b>"
+msgstr "<b>任務瀏覽器</b>"
+
+#: GTG/viewmanager/preferences.glade.h:4
+msgid "<b>Task Editor</b>"
+msgstr "<b>任務編輯器</b>"
+
+#: GTG/viewmanager/preferences.glade.h:5
+msgid "Active _Plugins:"
+msgstr "活動外掛(_P)："
+
+#: GTG/viewmanager/preferences.glade.h:6
+msgid "Behaviour"
+msgstr "行為"
+
+#: GTG/viewmanager/preferences.glade.h:7
+msgid "Check spelling"
+msgstr "拼寫檢查"
+
+#: GTG/viewmanager/preferences.glade.h:8
+msgid "Getting Things GNOME! Preferences"
+msgstr "Getting Things GNOME! 偏好"
+
+#: GTG/viewmanager/preferences.glade.h:9
+msgid "Hide closed tasks older than"
+msgstr "隱藏已完成任務"
+
+#: GTG/viewmanager/preferences.glade.h:10
+msgid "Plugins"
+msgstr "外掛"
+
+#: GTG/viewmanager/preferences.glade.h:11
+msgid "Show task text preview"
+msgstr "顯示任務文本預覽"
+
+#: GTG/viewmanager/preferences.glade.h:12
+msgid "Start Getting Things GNOME! on every login"
+msgstr "每次登錄自動運行 Getting Things GNOME!"
+
+#: GTG/viewmanager/preferences.glade.h:13
+msgid "Storage"
+msgstr "儲存"
+
+#: GTG/viewmanager/preferences.glade.h:14
+msgid "Task _Backends:"
+msgstr "任務後端(_B)："
+
+#: GTG/viewmanager/preferences.glade.h:15
+msgid "_About Plugin"
+msgstr "關於外掛(_A)"
+
+#: GTG/viewmanager/deletion.glade.h:1
+msgid "Confirm task deletion"
+msgstr "確定刪除任務"
+
+#: GTG/plugins/evolution_sync/evolutionSync.py:28
+msgid "Synchronize with Evolution"
+msgstr "和 Evolution 同步"
+
+#: GTG/plugins/tomboy/tomboy.py:81
+msgid ""
+"Tomboy/Gnote not found. Please install it or disable the Tomboy/Gnote plugin "
+"in GTG"
+msgstr ""
+"未找到 Tomboy 或 Gnote。請安裝這些軟件，或在 GTG 中禁用 Tomboy/Gnote 外掛。"
+
+#: GTG/plugins/tomboy/tomboy.py:126
+msgid "Add Tomboy note"
+msgstr "新增 Tomboy 筆記"
+
+#: GTG/plugins/tomboy/tomboy.py:194
+msgid ""
+" was found on the system, but it doesn't provide a dbus interface. the "
+"Tomboy/Gnote plugin will not work with it."
+msgstr ""
+" 存在系統中, 但是它沒有提供 dbus 介面，Tomboy/Gnote 外掛將無法運作。"
+
+#: GTG/plugins/tomboy/tomboy.py:241
+msgid "That note does not exist!"
+msgstr "筆記不存在！"
+
+#: GTG/plugins/tomboy/tomboy.py:246
+msgid "That note does not exist. Do you want to create a new one?"
+msgstr "筆記不存在。您想建一個新的嗎？"
+
+#: GTG/plugins/tomboy/tomboy.py:274
+msgid "This Tomboy note does not exist anymore. Do you want to create it?"
+msgstr "這個 Tomboy 筆記不存在了。您想建立它嗎？"
+
+#: GTG/plugins/notification_area/notification_area.py:209
+msgid "_View Main Window"
+msgstr "查看主窗口(_V)"
+
+#: GTG/plugins/notification_area/notification_area.py:217
+msgid "Add _New Task"
+msgstr "新增新任務(_N)"
+
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:1
+msgid "<b>Location Determination Method</b>"
+msgstr "<b>位置判定方法</b>"
+
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:2
+msgid "<b>Proximity Factor</b>"
+msgstr "<b>相鄰因素</b>"
+
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:3
+msgid ""
+"<small>Distance in kilometers from \n"
+"the current location.</small>"
+msgstr ""
+"<small>從當前位置到目的地\n"
+"的距離，以千米計。</small>"
+
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:5
+msgid "Associate with existing tag"
+msgstr "連結到已存在的標籤"
+
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:6
+msgid "Associate with new tag"
+msgstr "連結到新標籤"
+
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:7
+msgid "Geolocalized-tasks Preferences"
+msgstr "位置相關任務偏好"
+
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:8
+msgid "Set the task's location"
+msgstr "設置任務位置"
+
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:9
+msgid "Use cellphone"
+msgstr "使用手機"
+
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:10
+msgid "Use gps"
+msgstr "使用 GPS"
+
+#: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:11
+msgid "Use network"
+msgstr "使用網絡"
+
+#: GTG/plugins/export/export.py:302
+msgid "Template not found"
+msgstr "沒找到模板"
+
+#: GTG/plugins/export/export.py:303
+msgid "Can't load the template file"
+msgstr "無法加載模板文件"
+
+#: GTG/plugins/export/export.py:332
+msgid "Choose where to save your list"
+msgstr "選擇保存列表的位置"
+
+#: GTG/plugins/hamster/hamster.py:40
+msgid "Start task in Hamster"
+msgstr "開始 Hamster 中的任務"
+
+#: GTG/plugins/hamster/hamster.py:156
+msgid "Start in Hamster"
+msgstr "在 Hamster 中開始"
+
+#: GTG/plugins/hamster/hamster.py:158
+msgid "Start a new activity in Hamster Time"
+msgstr "在 Hamster Time 中開始一項新活動"
+
+#: GTG/plugins/hamster/hamster.py:174
+msgid "Start a new activity in Hamster Time "
+msgstr "在 Hamster Time 中開始一項新活動 "
+
+#: GTG/plugins/rtm_sync/pyrtm/rtm.py:59
+msgid "Invalid state"
+msgstr "無效的狀態"
+
+#: GTG/plugins/rtm_sync/rtm_sync.py:75 GTG/plugins/rtm_sync/rtm_sync.py:80
+msgid "Synchronize with RTM"
+msgstr "與 RTM 同步"
+
+#: GTG/plugins/rtm_sync/rtm_sync.py:141
+msgid "Synchronization started"
+msgstr "同步已開始"
+
+#: GTG/plugins/rtm_sync/rtm_sync.py:154
+msgid "Trying to access, please stand by..."
+msgstr "正在嘗試訪問，請等候……"
+
+#: GTG/plugins/rtm_sync/rtm_sync.py:172
+msgid "Couldn't connect to Remember The Milk"
+msgstr "無法連接“提醒牛奶(Remember The Milk)”"
+
+#: GTG/plugins/rtm_sync/rtm_sync.py:187
+msgid "Authentication failed."
+msgstr "認證失敗。"
+
+#: GTG/plugins/rtm_sync/rtm_sync.py:187
+msgid "Please retry."
+msgstr "請重試。"
+
+#: GTG/plugins/rtm_sync/rtm_sync.py:191
+msgid ""
+"Please authenticate to Remember The Milk in the browser that is being opened "
+"now. When done, press OK"
+msgstr ""
+"請允許在現在已經打開的瀏覽器裡使用 Remember The Milk，完成後，點確定。"
+
+#: GTG/plugins/rtm_sync/rtmProxy.py:165
+msgid "saving critical object failed"
+msgstr "保存關鍵物件失敗"
+
+#: GTG/plugins/rtm_sync/syncEngine.py:83
+msgid "Downloading task list..."
+msgstr "下載任務列表..."
+
+#: GTG/plugins/rtm_sync/syncEngine.py:84
+msgid "Downloading..."
+msgstr "下載中..."
+
+#: GTG/plugins/rtm_sync/syncEngine.py:119
+msgid "Adding tasks to rtm.."
+msgstr "新增任務到rtm"
+
+#: GTG/plugins/rtm_sync/syncEngine.py:129
+msgid "Adding tasks to gtg.."
+msgstr "新增任務到 gtg.."
+
+#: GTG/plugins/rtm_sync/syncEngine.py:139
+msgid "Deleting tasks from rtm.."
+msgstr "正在從 rtm 中刪除任務..."
+
+#: GTG/plugins/rtm_sync/syncEngine.py:150
+msgid "Deleting tasks from gtg.."
+msgstr "從 gtg 刪除任務..."
+
+#: GTG/plugins/rtm_sync/syncEngine.py:160
+msgid "Updating changed tasks.."
+msgstr "正在更新已改變的任務..."
+
+#: GTG/plugins/rtm_sync/syncEngine.py:185
+#: GTG/plugins/rtm_sync/syncEngine.py:190
+#: GTG/plugins/rtm_sync/syncEngine.py:193
+#: GTG/plugins/rtm_sync/syncEngine.py:196
+msgid "Updating "
+msgstr "更新 "
+
+#: GTG/plugins/rtm_sync/syncEngine.py:204
+msgid "Saving current state.."
+msgstr "正在保存當前狀態..."
+
+#: GTG/plugins/rtm_sync/syncEngine.py:211
+msgid "Synchronization completed."
+msgstr "同步成功"
+
+#: GTG/plugins/rtm_sync/syncEngine.py:234
+msgid "Adding "
+msgstr "新增 "
+
+#: GTG/plugins/rtm_sync/syncEngine.py:243
+msgid "Deleting "
+msgstr "正在刪除 "
+
+#: GTG/plugins/rtm_sync/syncEngine.py:273
+msgid "Closing in one second"
+msgstr "將于 1 秒內關閉"
+
+msgid "View Notes"
+msgstr "檢視筆記"
+
+msgid ""
+"In GTG, everything is a task. From building a bridge over the Pacific Ocean "
+"to changing a light bulb or organizing a party. When you edit a task, it is "
+"automatically saved."
+msgstr ""
+"在 GTG 中，所有事情都可以是一件工作任務。從建一座跨越太平洋的橋到換一顆燈泡，"
+"或是籌辦一個 Party。當您編輯一個工作任務，GTG 將會自動儲存每一工作任務。"
+
+msgid ""
+"Once you've read the above subtask, mark it as Done. If you don't want to do "
+"the task, mark it as dismissed. Done and Dismissed tasks are kept in the "
+"closed tasks pane, hidden by default but you can easily enable it in the "
+"View menu."
+msgstr ""
+"一旦您已經閱讀以上的子任務，請將它們標示已完成。如果不想要完成它或是放棄它，"
+"請將它標示為 \"取消\"。已完成或是取消的工作任務會移到 \"已完成任務面板\" 中。"
+"預設為不顯示面板，但您可以在 \"檢視\" 中開啟它。"
+
+msgid ""
+"Once a task is done, you can push the &quot;Mark as done&quot; button. If "
+"the task is not relevant any-more, simply press &quot;Dismiss&quot;."
+msgstr ""
+"一旦工作任務完成，您可以點擊 \"標示已完成\" 按鈕來完成它。如果想要放棄某工作"
+"任務不再執行，可以點擊 \"取消\" 來放棄此任務。"
+
+msgid ""
+"In the task description (this window), if you begin a line with &quot;-"
+"&quot;, it will be considered as a &quot;subtask&quot;, something that needs "
+"to be done in order to accomplish your task. Just try to write &quot;- test "
+"subtask&quot; on the next line and press enter."
+msgstr ""
+"在工作任務描述中（目前此視窗），如果您以 &quot;-&quot; 啟一新行，這將會被認為"
+"是一 &quot;子任務&quot;，是您工作任務需要完成的子任務。試試在新的一行打上 "
+"&quot;- 測試&quot;"
+
+msgid "You can also use the &quot;insert subtask&quot; button."
+msgstr "您也可以使用 &quot;插入子任務&quot; 按鈕"
+
+msgid "Other stuff you should read:"
+msgstr "其他您要注意的事情："
+
+msgid ""
+"We hope that you will appreciate GTG. Please send us bug reports and ideas "
+"for improvement using: "
+msgstr "我們希望您繼續支持 GTG，任何批評與指教，歡迎讓我們知道： "
+
+msgid ""
+"A task might be composed of multiple subtasks that appear as links in the "
+"description. Simply click on the following link:"
+msgstr ""
+"一個工作任務或許是經由許多子任務來完成的，子任務會以連結的方式在任務描述中呈"
+"現。就像以下的示範連結："
+
+msgid ""
+"If you choose to close this current task, subtasks will be automatically "
+"closed too. We indeed consider that, if you achieve a given task, you don't "
+"need to do the subtask anymore."
+msgstr ""
+"如果您選擇關閉一個工作任務，其子任務也會一同被關閉。因為我們想過，您將工作任"
+"務解決掉了，應該也不需要再解決子任務了吧！"
+
+msgid "Thank you for trying out GTG :-)"
+msgstr "感謝您使用 GTG :-)"
+
+msgid ""
+"Tasks and subtasks can be re-organized by drag-n-drop in the tasks list."
+msgstr "工作任務與子任務可以在列表中，利用拖曳的方式重新組織。"
+
+msgid ""
+"Some concepts come with subtasks: for example, a subtask's due date can "
+"never be after its parent's due date."
+msgstr "一些子任務的概念：例如子任務的到期日，不能晚於其工作任務的到期日。"
+
+msgid "A tag is a simple word that begins with &quot;@&quot;."
+msgstr "一個標籤就是將一個單字前面加上 &quot;@&quot;"
+
+msgid ""
+"If you right click on a tag in the sidebar you can also set its color. It "
+"will allow you to have a more colorful list of tasks, if you want it that "
+"way."
+msgstr ""
+"如果您在側邊右鍵點一個標籤，您可以設定其顯示顏色。它可以讓您的工作任務更多彩"
+"多姿，如果您想要的話。"
+
+msgid ""
+"Tags are useful to sort your tasks. In the view menu, you can enable a "
+"sidebar which displays all the tags you are using so you can easily see "
+"tasks assigned to a given tag. There's no limit to the number of tags a task "
+"can have."
+msgstr ""
+"標籤對您的工作任務排序相當好用。在 \"檢視\" 清單中，您可以開啟側邊列顯示所有"
+"的標籤，所以您可以看到工作任務被分配到何種標籤。任一工作任務沒有規定可以被標"
+"示多少個標籤的限制。"
+
+msgid ""
+"You can drag-n-drop a tag onto another to create \"subtags\". As an example, "
+"if you drag the tag @to_pay onto the tag @money, every task tagged with "
+"@to_pay will also appear in the view of @money (but the @money tag is not "
+"added to the task)."
+msgstr ""
+"您可以拖曳一個標籤到另一個標籤來產生一個子標籤。例如您拖曳 @to_pay 到 @money "
+"標籤，每一個被標示 @to_pay 的工作任務也會在 @money 中顯示，但是 @money 不會被"
+"加入到 @to_pay 的工作任務中，之會單純的顯示。"
+
+msgid "It becomes yellow, it's a tag."
+msgstr "變成黃色的，它是一個標籤。"
+
+msgid "Try to type a word beginning with @ here:"
+msgstr "試試在這裡輸入一個前面有 @ 與單字"
+
+msgid "Also, marking a parent as done will mark all the subtasks as done."
+msgstr "相對的，將工作任務標示為已完成，其子任務也會認為已完成。"
+
+msgid ""
+"If you press the &quot;Workview&quot; button, only actionable tasks will be "
+"displayed."
+msgstr "如果您點 &quot;工作總覽&quot;，只會顯示可進行的工作任務。"
+
+msgid "What is an actionable task? It's a task you can do directly, right now."
+msgstr "什麼是可進行的工作任務？就是您現在可以直接動手完成的任務。"
+
+msgid ""
+"It's a task that is already &quot;start-able&quot;, i.e. the start date is "
+"already over."
+msgstr "像是已經可以開始的任務，例如開始時間已經超過了。"
+
+msgid ""
+"It's a task that doesn't have open subtasks, i.e. you can do the task itself "
+"directly."
+msgstr "或是沒有開啟子任務的，例如您可以獨自完成的任務。"
+
+msgid "Welcome to Getting Things Gnome!, your new task manager."
+msgstr "歡迎使用 Getting Things Gnome! 管理您的工作任務。"
+
+msgid "Thus, the workview will only show you tasks you should do right now."
+msgstr "因此，工作總覽將只會顯示您此刻應該完成的工作任務。"
+
+msgid ""
+"GTG is still very alpha software. We like it and use it everyday but you "
+"will encounter some bugs."
+msgstr ""
+"GTG 還是一個開發中的軟體。我們喜歡它，也每天使用它，但您可能會遇到一些問題。"
+
+msgid ""
+"If you use tags, you can right click on a tag in the sidebar and choose to "
+"hide tasks assigned to this particular tag in the workview. It's very useful "
+"if you have a tag like &quot;someday&quot; that you use for tasks you would "
+"like to do but are not particularly urgent."
+msgstr ""
+"如果您使用標籤，您可以在側邊點右鍵，選擇某些標籤不顯示在工作總覽中。那相當有"
+"用的，例如您有個標籤類似 &quot;有朝一日&quot; 的非急迫事情，就可以這樣使用。"
+
+msgid "Please, report them on our Launchpad page:"
+msgstr "請回報到我們的 Launchpad 專頁："
+
+msgid ""
+"We need you to make this software better. Any contribution, any idea is "
+"welcome."
+msgstr "我們需要您協助讓軟體更好，非常歡迎任何的貢獻與想法。"
+
+msgid "GTG has the ability to add plugins to extend it's core functionality."
+msgstr "GTG 能利用擴充套件來增加其功能性。"
+
+msgid ""
+"Some examples of the current plugins are Syncing with Remember the Milk and "
+"Evolution, Tomboy/Gnote integration and Geolocalized Tasks."
+msgstr ""
+"依目前的套件您可以同步到 Remember the Milk 與 Evolution、與 Tomboy/Gnote 整合"
+"或是在工作任務中加入地理定位資訊。"
+
+msgid ""
+"The quickadd entry is the quickest way to create a new task. You can show or "
+"hide it in the View menu."
+msgstr ""
+"快速新增一個迅速的方法來新增工作任務。您可以在 \"檢視\" 中顯示或是隱藏它。"
+
+msgid ""
+"If you have some trouble with GTG, we might be able to help you or to solve "
+"your problem really quickly."
+msgstr "如果您遇到一些問題，我們會盡可能的協助您或是解決您的問題。"
+
+msgid ""
+"due:date or defer:date : This way you can apply a due date or a defer date. "
+"date can be yyyy-mm-dd (for exemple 2009-04-01) or yyyymmdd (20090401) or "
+"mmdd (0401, in this case the year is implicitly the current one) or today or "
+"tomorrow or a weekday name (due:monday means due next Monday)"
+msgstr ""
+"due:時間 或 defer:時間：這樣可以設定到期時間或延遲時間。日期可以為 yyyy-mm-"
+"dd （例：2010-04-01）或 yyyymmdd（例：20100401）或 mmdd （0401，在此格式中，"
+"年份會自動以今年為預設），或 today、tomorrow，或是星期名稱（英文）（例：due:"
+"monday，指的是下週一）"
+
+msgid "If a word begins with @, it is interpreted as a tag."
+msgstr "如果以 @ 開頭的字，將視為一個標籤。"
+
+msgid "For that the syntax is :"
+msgstr "利用以下的語法格式："
+
+msgid ""
+"tags:tag1,tag2,tag3 : This way you can apply as many tags as you wish using "
+"comma as separator"
+msgstr ""
+"tags:tag1,tag2,tag3：這樣可以套用多組標籤，每個標籤請用 \",\"（英文半形逗點）"
+"分隔。"
+
+msgid ""
+"You can also create a task with attributes like tags, due date or defer date "
+"in the quickadd entry."
+msgstr "您也可以新增一個標籤性質的工作任務，到期日或是延遲日在快速新增中輸入。"
+
+msgid ""
+"A new tag is only added to the current task. There's no recursion and the "
+"tag is not applied to subtasks. But when you create a new subtask, this "
+"subtask will inherit the tags of its parent as a good primary default (it "
+"will also be the case if you add a tag to a parent just after creating a "
+"subtask). Of course, you can modify at any time the tags of this particular "
+"subtask. It will never be changed by the parent."
+msgstr ""
+"新的標籤只能新增在當前的工作任務中。無法循環或是在子任務中新增。但是當您新增"
+"一個子任務，子任務會自動繼承主要任務的標籤。當然您可以在之後自訂每個子任務的"
+"標籤，不會影響主要工作任務的設定。"
+
+msgid ""
+"Attributes which are added in this way apply but do not appear in the title."
+msgstr "使用此方式新增屬性，但不會出現在標題。"
+
+msgid ""
+"For adding a task you just have to type its title in the entry and press "
+"return. The task will be created and selected in the task browser. If a tag "
+"is selected in the tag panel, this tag is applied to the task you create."
+msgstr ""
+"新增一個工作任務您只需要輸入它的標題。工作任務就會自動新增在列表中與選取。如"
+"果您在輸入前已在標籤側邊欄選取一個標籤，所新增的工作任務會自動新增該標籤。"
