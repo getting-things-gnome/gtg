@@ -85,17 +85,16 @@ def check_instance(directory, uri_list = []):
             try:
                 d=dbus.SessionBus().get_object(CoreConfig.BUSNAME,\
                                            CoreConfig.BUSINTERFACE)
+                d.ShowTaskBrowser()
+                #if the user has specified a task to open, do that
+                for uri in uri_list:
+                    if uri.startswith("gtg://"):
+                        d.OpenTaskEditor(uri[6:])
+                raise SystemExit
             except dbus.exceptions.DBusException:
                 # If we cant't connect to the interface (e.g. changed interface
                 # between GTG versions), we won't do anything more
                 raise SystemExit
-
-            d.ShowTaskBrowser()
-            #if the user has specified a task to open, do that
-            for uri in uri_list:
-                if uri.startswith("gtg://"):
-                    d.OpenTaskEditor(uri[6:])
-            raise SystemExit
 
     #write the pid file
     with open(pidfile, "w") as f:
