@@ -83,10 +83,6 @@ class Task(TreeNode):
         #avoid doing it multiple times
         if not self.loaded:
             self.loaded = True
-            for t in self.get_tags():
-                t.modified()
-#            if signal:
-#                self.req._task_loaded(self.tid)
 
     def set_to_keep(self):
         self.can_be_deleted = False
@@ -487,12 +483,16 @@ class Task(TreeNode):
         if self.is_loaded():
             #This is a liblarch call to the TreeNode ancestor
             self.modified()
-            for t in self.get_tags():
-#                print "%s is well synced" %self.id
-                t.modified()
             return True
         else:
             return False
+          
+#   the following is not currently needed  
+#    def modified(self):
+#        TreeNode.modified(self)
+#        for t in self.get_tags():
+#            gobject.idle_add(t.modified)
+        
 
     def _modified_update(self):
         '''

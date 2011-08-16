@@ -624,7 +624,6 @@ class TaskBrowser(gobject.GObject):
         self.config.set('bottom_pane_position',botpos)
         sidepos = self.builder.get_object("hpaned1").get_position()
         self.config.set('sidebar_width',sidepos)
-        print "collapsed on close: %s" %str(self.config.get("collapsed_tasks"))
 
     def on_about_clicked(self, widget):
         self.about.show()

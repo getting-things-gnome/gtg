@@ -291,16 +291,18 @@ class TreeviewFactory():
         desc[col_name] = col
 
         active_tasks_tree = self.req.get_tasks_tree()
-        active_tasks_tree.register_cllbck('node-added-inview', self._update_special_tags)
-        active_tasks_tree.register_cllbck('node-modified-inview', self._update_special_tags)
-        active_tasks_tree.register_cllbck('node-deleted-inview', self._update_special_tags)
+        active_tasks_tree.register_cllbck('node-added-inview', self._update_tags)
+        active_tasks_tree.register_cllbck('node-modified-inview', self._update_tags)
+        active_tasks_tree.register_cllbck('node-deleted-inview', self._update_tags)
 
         return self.build_tag_treeview(tree,desc)
 
-    def _update_special_tags(self, node_id, path):
+    def _update_tags(self, node_id, path):
         tree = self.req.get_tag_tree().get_basetree()
         tree.refresh_node('gtg-tags-all')
         tree.refresh_node('gtg-tags-none')
+        for t in self.req.get_task(node_id).get_tags():
+            tree.refresh_node(t.get_name())
     
     def active_tasks_treeview(self,tree):
         #Build the title/label/tags columns

@@ -153,11 +153,7 @@ class Tag(TreeNode):
     ### TASK relation ####      
        
     def get_active_tasks_count(self):
-#        count = self.__get_count(filters=['active'])
-        #PLOUM_DEBUG : this can be optimized by using
-        #the existing active tree. (but seems to be sometimes buggy)
-        tree = self.req.get_tasks_tree(name='active',refresh=False)
-        count = self.__get_count(tasktree=tree)
+        count = self.__get_count()
         return count
         
     def get_total_tasks_count(self):

@@ -175,22 +175,13 @@ class Requester(gobject.GObject):
     def get_tag(self, tagname):
         return self.ds.get_tag(tagname)
 
-    def get_notag_tag(self):
-        print "no tag not implemented"
-        return None
-#        return self.ds.get_tagstore().get_notag_tag()
-
-    def get_alltag_tag(self):
-        print "all tag not implemented"
-        return None
-#        return self.ds.get_tagstore().get_alltag_tag()
-
     def get_used_tags(self):
         """Return tags currently used by a task.
 
         @return: A list of tag names used by a task.
         """
         l = []
+        #FIXME: let's use another view instead of the activetags one
         view = self.ds.get_tagstore().get_viewtree(name='activetags')
         l = view.get_all_nodes()
         l.sort(cmp=lambda x, y: cmp(x.lower(),y.lower()))
