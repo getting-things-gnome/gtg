@@ -1,22 +1,23 @@
-# Chinese (Traditional) translation for gtg
-# Copyright (c) 2010 Rosetta Contributors and Canonical Ltd 2010
+# Traditional Chinese translation for gtg
+# Copyright (c) 2009 Rosetta Contributors and Canonical Ltd 2009, 2011
 # This file is distributed under the same license as the gtg package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2010.
+# Rex Tsai <chihchun@kalug.linux.org.tw>, 2011.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: gtg\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"Report-Msgid-Bugs-To: Rex Tsai <chihchun@kalug.linux.org.tw>\n"
 "POT-Creation-Date: 2011-08-12 11:38+0200\n"
-"PO-Revision-Date: 2010-04-11 16:34+0000\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: Chinese (Traditional) <zh_TW@li.org>\n"
+"PO-Revision-Date: 2011-08-15 19:02+0000\n"
+"Last-Translator: Rex Tsai <Unknown>\n"
+"Language-Team: Chinese (traditional) <chinese-l10n@googlegroups.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Launchpad-Export-Date: 2011-08-13 04:54+0000\n"
-"X-Generator: Launchpad (build 13674)\n"
+"X-Launchpad-Export-Date: 2011-08-16 04:38+0000\n"
+"X-Generator: Launchpad (build 13687)\n"
+"Language: zh_TW\n"
 
 #: GTG/plugins/notification_area/notification_area.py:95
 msgid "_View Main Window"
@@ -389,6 +390,12 @@ msgid ""
 "A task might be composed of multiple subtasks that appear as links in the "
 "description. Simply click on the following link:"
 msgstr ""
+"歡迎使用 Getting Things Gnome!, 您的新任務管理員。\n"
+"\n"
+"在 GTG, 所有事情都是一項任務。從建立一道跨越太平洋的河流，到更換電燈泡，或籌備一個派對。當您編輯一項任務，它會自動儲存。\n"
+"\n"
+"只要完成任務，您可以按下 &quot;標示為完成&quot; 選單。如果該任務已經不重要，可以選擇 &quot;取消&quot;。\n"
+"一個任務可能會有好幾個子任務，並以連結方式顯示在敘述中，請點選以下連結:"
 
 #: GTG/core/firstrun_tasks.py:17
 msgid ""
@@ -402,6 +409,9 @@ msgid ""
 "need to do the subtask anymore.\n"
 "Other stuff you should read:"
 msgstr ""
+"如果您已經讀完上述字任務，請標示為完成。如果您無意執行該任務，標示為取消完成與取消都會保持在已完成任務列，預設隱藏，但您可以輕易的在檢視選單中叫出。\n"
+"如果您選擇關閉當下任務，子任務也會一併被關閉。我們正在考慮如果您封存一項任務，您將無須再處理此任務。\n"
+"其他您應該閱讀的東西:"
 
 #: GTG/core/firstrun_tasks.py:26
 msgid ""
@@ -411,6 +421,10 @@ msgid ""
 "\n"
 "Thank you for trying out GTG :-)"
 msgstr ""
+"我們希望您喜歡 GTG。請送想法與臭蟲回報來幫助改善軟體: \n"
+"    https://bugs.launchpad.net/gtg\n"
+"\n"
+"感謝試用 GTG :-)"
 
 #: GTG/core/firstrun_tasks.py:34
 msgid "Learn how to use subtasks"
@@ -432,6 +446,17 @@ msgid ""
 "\n"
 "Also, marking a parent as done will mark all the subtasks as done."
 msgstr ""
+"在任務敘述中 (此視窗), 如果您用 &quot;-&quot; "
+"開始新行，他會被視為&quot;子任務&quot;,必須先被完成，才能結束您的任務。試著在下一行寫 &quot;- test subtask&quot; "
+"並按下 Enter.\n"
+"\n"
+"您也可以用 &quot;插入 子任務&quot; 按鍵\n"
+"\n"
+"任務與子任務可以透過拖拉方式重新整理。\n"
+"\n"
+"概念: 子任務到期日不可以比母任務到期日晚。\n"
+"\n"
+"另外，將母任務標示為完成，也同時會將所有子任務標示完成。"
 
 #: GTG/core/firstrun_tasks.py:48
 msgid "Learn how to use tags"
@@ -466,6 +491,21 @@ msgid ""
 "subtask). Of course, you can modify at any time the tags of this particular "
 "subtask. It will never be changed by the parent."
 msgstr ""
+"ㄧ個標籤是任何以 &quot;@&quot; 為開始的文字。\n"
+"\n"
+"請試著在此輸入任何以 @ 開始的文字: \n"
+"\n"
+"它會變成黃色，這是一個標籤。\n"
+"\n"
+"標籤很適合用來排序任務。在檢視選單中，您可以啟動側邊列，來顯示所有標籤。並可以用來過濾屬於特定標籤的任務。一個任務可以屬於許多不同的標籤。\n"
+"\n"
+"您可以拖拉標籤到另外一個標籤，變成 \"子標籤\"。舉例，如果將 @待付 拖拉到@現金，所有標示為 @待付 的項目也會出現在 @現金 中。(但 "
+"@現金標籤不會加入到任務中。)\n"
+"\n"
+"如果您在側欄中右鍵點選一個標籤，您可以改變它的顏色。它會讓你的列表色彩豐富，如果您喜歡的話。\n"
+"\n"
+"一個新的標籤只會加到目前的任務。沒有遞迴性，標籤也不會加到子任務中。不過如果您建立一個新子任務，子任務會繼承母任務的標籤。當然，您可以隨時更改特定子任務的"
+"標籤，而不會影響到母任務。"
 
 #: GTG/core/firstrun_tasks.py:66
 msgid "Learn how to use the Workview"
@@ -491,6 +531,17 @@ msgid ""
 "if you have a tag like &quot;someday&quot; that you use for tasks you would "
 "like to do but are not particularly urgent."
 msgstr ""
+"如果你按下 &quot;工作視圖&quot; 按鈕，只會顯示可執行的任務。\n"
+"\n"
+"所謂可執行任務，即是你可以馬上直接執行的任務。\n"
+"\n"
+"可執行任務是已經可以開始 &quot;start-able&quot;，像是已超過開始時間\n"
+"\n"
+"可執行任務必須沒有未完成子任務，您可以馬上直接只做此任務。\n"
+"\n"
+"因此，&quot;工作視圖&quot; 只顯示您應該馬上做的任務。\n"
+"\n"
+"如果您使用標籤，您可以選擇側邊的標籤來隱藏特定標籤任務。這非常有用，如果您有那種 &quot;改天&quot; 的標籤，您想做但是不急的任務。"
 
 #: GTG/core/firstrun_tasks.py:82
 msgid "Learn how to use Plugins"
@@ -505,6 +556,10 @@ msgid ""
 "You can find the Plugin Manager by selecting Edit in the Menu Bar, then "
 "clicking Preferences. You will then see a tab labeled Plugins."
 msgstr ""
+"GTG 可通過新增外掛，擴展其核心功能。\n"
+"\n"
+"現有外掛的例子包括與 Remember the Milk 和 Evolution 同步。Tomboy/Gnote "
+"整合，以及具備地理定位特點的任務。您可以通過點擊選單欄的編輯選單，然後選擇偏好選項，找到外掛管理器。您會看到名為外掛的標籤頁。"
 
 #: GTG/core/firstrun_tasks.py:92
 msgid "Reporting bugs"
@@ -524,6 +579,14 @@ msgid ""
 "If you have some trouble with GTG, we might be able to help you or to solve "
 "your problem really quickly."
 msgstr ""
+"GTG 還是非常年輕的軟體。我們喜歡每日用它，但您可能會碰到一些臭蟲。\n"
+"\n"
+"請將這些問題回報到我們的 Launchpad 網頁:\n"
+"https://bugs.launchpad.net/gtg\n"
+"\n"
+"我們需要您的協助來改善軟體。歡迎任何建議與貢獻。\n"
+"\n"
+"如果您有使用 GTG 的問題，我們或許可以協助您快速解決。"
 
 #: GTG/core/firstrun_tasks.py:106
 msgid "Learn how to use the QuickAdd Entry"
@@ -781,11 +844,11 @@ msgstr "<b>一般</b>"
 
 #: GTG/gtk/preferences.glade.h:3
 msgid "<b>Task Browser</b>"
-msgstr ""
+msgstr "<b>任務瀏覽器</b>"
 
 #: GTG/gtk/preferences.glade.h:4
 msgid "<b>Task Editor</b>"
-msgstr ""
+msgstr "<b>任務編輯器</b>"
 
 #: GTG/gtk/preferences.glade.h:5
 msgid "Active _Plugins:"
@@ -797,7 +860,7 @@ msgstr "行為"
 
 #: GTG/gtk/preferences.glade.h:7
 msgid "Check spelling"
-msgstr ""
+msgstr "拼寫檢查"
 
 #: GTG/gtk/preferences.glade.h:8
 msgid "Getting Things GNOME! Preferences"
@@ -1232,7 +1295,7 @@ msgstr[1] ""
 
 #: GTG/gtk/editor/editor.py:313
 msgid "Due today!"
-msgstr ""
+msgstr "今日到期!"
 
 #: GTG/gtk/editor/editor.py:316
 #, python-format
@@ -1321,27 +1384,27 @@ msgstr "確認任務刪除"
 msgid ""
 "We're terribly sorry. Could you help us fix the problem by reporting the "
 "crash?"
-msgstr ""
+msgstr "非常抱歉。可以請您回報這次當機，幫助我們解決這個問題？"
 
 #: GTG/gtk/crashhandler.py:170
 msgid "An error has occurred"
-msgstr ""
+msgstr "發生了一個錯誤"
 
 #: GTG/gtk/crashhandler.py:180
 msgid "It looks like an error has occurred."
-msgstr ""
+msgstr "看起來發生了錯誤"
 
 #: GTG/gtk/crashhandler.py:214
 msgid "_Details"
-msgstr ""
+msgstr "細節 (_D)"
 
 #: GTG/gtk/crashhandler.py:221
 msgid "_Report this problem..."
-msgstr ""
+msgstr "回報這個問題 (_R)..."
 
 #: GTG/gtk/crashhandler.py:225
 msgid "_Ignore the error"
-msgstr ""
+msgstr "忽略錯誤 (_I)"
 
 #: GTG/gtk/crashhandler.py:319
 msgid ""
@@ -1349,6 +1412,8 @@ msgid ""
 "href=\"http://bugs.edge.launchpad.net/gtg\">our Launchpad page</a>. If you "
 "have Apport installed, it will be started for you."
 msgstr ""
+" 已當機。請回報臭蟲到 <a href=\"http://bugs.edge.launchpad.net/gtg\">我們的 Launchpad "
+"網頁</a>. 如果您裝了 Apport 它會協助您收集資料"
 
 #~ msgid "Due tomorrow !"
 #~ msgstr "明天截止"
