@@ -301,8 +301,10 @@ class TreeviewFactory():
         tree = self.req.get_tag_tree().get_basetree()
         tree.refresh_node('gtg-tags-all')
         tree.refresh_node('gtg-tags-none')
-        for t in self.req.get_task(node_id).get_tags():
-            tree.refresh_node(t.get_name())
+        task = self.req.get_task(node_id)
+        if task:
+            for t in self.req.get_task(node_id).get_tags():
+                tree.refresh_node(t.get_name())
     
     def active_tasks_treeview(self,tree):
         #Build the title/label/tags columns
