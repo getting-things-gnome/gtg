@@ -384,32 +384,25 @@ class Task(TreeNode):
         Log.debug("adding child %s to task %s" %(tid, self.get_id()))
         self.can_be_deleted = False
         #the core of the method is in the TreeNode object
-        if TreeNode.add_child(self,tid):
-            #now we set inherited attributes only if it's a new task
-            child = self.req.get_task(tid)
-            if child.can_be_deleted:
-                child.set_start_date(self.get_start_date())
-                for t in self.get_tags():
-                    child.tag_added(t.get_name())
-            self.sync()
-            return True
-        else:
-            Log.debug("child addition failed (or still pending)")
-            return False
+        TreeNode.add_child(self,tid)
+        #now we set inherited attributes only if it's a new task
+        child = self.req.get_task(tid)
+        if child and child.can_be_deleted:
+            child.set_start_date(self.get_start_date())
+            for t in self.get_tags():
+                child.tag_added(t.get_name())
+        self.sync()
+        return True
             
-            
-    #FIXME: remove this function. Handle that on the remove level
     def remove_child(self,tid):
         """Removed a subtask from the task.
 
         @param tid: the ID of the task to remove
         """
-        if TreeNode.remove_child(self,tid):
-            task = self.req.get_task(tid)
-            if task.can_be_deleted:
-                #child is a new, unmodified task
-                # It should be deleted
-                self.req.delete_task(tid)
+        c = self.req.get_task(tid)
+        c.remove_parent(self.get_id())
+        if c.can_be_deleted:
+            self.req.delete_task(tid)
             self.sync()
             return True
         else:
