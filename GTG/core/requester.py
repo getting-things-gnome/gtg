@@ -181,6 +181,7 @@ class Requester(gobject.GObject):
         @return: A list of tag names used by a task.
         """
         l = []
+        #FIXME: let's use another view instead of the activetags one
         view = self.ds.get_tagstore().get_viewtree(name='activetags')
         l = view.get_all_nodes()
         l.sort(cmp=lambda x, y: cmp(x.lower(),y.lower()))
