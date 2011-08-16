@@ -175,16 +175,6 @@ class Requester(gobject.GObject):
     def get_tag(self, tagname):
         return self.ds.get_tag(tagname)
 
-    def get_notag_tag(self):
-        print "no tag not implemented"
-        return None
-#        return self.ds.get_tagstore().get_notag_tag()
-
-    def get_alltag_tag(self):
-        print "all tag not implemented"
-        return None
-#        return self.ds.get_tagstore().get_alltag_tag()
-
     def get_used_tags(self):
         """Return tags currently used by a task.
 
