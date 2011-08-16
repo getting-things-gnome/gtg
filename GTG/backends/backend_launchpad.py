@@ -159,9 +159,10 @@ class Backend(PeriodicImportBackend):
         for bug_task in my_bugs_tasks:
             self.cancellation_point()
             self._process_launchpad_bug(bug_task)
+
         #removing the old ones
         last_bug_list = self.sync_engine.get_all_remote()
-        new_bug_list = [bug.bug.self_link for bug in my_bugs_tasks]
+        new_bug_list = [bug.self_link for bug in my_bugs_tasks]
         for bug_link in set(last_bug_list).difference(set(new_bug_list)):
             self.cancellation_point()
             #we make sure that the other backends are not modifying the task
@@ -285,11 +286,13 @@ class Backend(PeriodicImportBackend):
         @returns dict: a dictionary containing the relevant bug attributes
         '''
         bug = bug_task.bug
+        # We need to use original link, not from bug object
+        self_link = bug_task.self_link
         owner = bug.owner
         bug_dic = {'title': bug.title,
                    'text': bug.description,
                    'tags': bug.tags,
-                   'self_link': bug.self_link,
+                   'self_link': self_link,
                    'modified': self._get_bug_modified_datetime(bug),
                    'owner': owner.display_name,
                    'completed': bug_task.is_complete,

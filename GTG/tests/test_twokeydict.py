@@ -93,6 +93,18 @@ class TestTwoKeyDict(unittest.TestCase):
             self.assertEqual(tw_dict._get_primary_key(triplet[1]), \
                              triplet[0])
 
+    def test_missing_and_then_add(self):
+        # Primary
+        local_id = '3ea957cb-417f-4944-be6c-02a1b0a84bd2'
+        # Secondary
+        remote_id = 'https://api.launchpad.net/1.0/bugs/345808'
+        value = "Hello world"
+
+        tw_dict = TwoKeyDict()
+        self.assertRaises(KeyError, tw_dict._get_secondary_key, remote_id)
+        tw_dict.add((local_id, remote_id, value))
+        self.assertEqual(remote_id, tw_dict._get_secondary_key(local_id))
+
 def test_suite():
     return unittest.TestLoader().loadTestsFromTestCase(TestTwoKeyDict)
 
