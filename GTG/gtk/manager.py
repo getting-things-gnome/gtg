@@ -189,10 +189,8 @@ class Manager(object):
         checking if we need to shut down the whole GTG (if no window is open)
         '''
         if not self.is_browser_visible() and not self.opened_task:
-            #no need to live
-            print "AAAAAAAAAAA"
+            #no need to live"
             self.quit()
-        print self.opened_task
             
 ################ Others dialog ############################################
 
