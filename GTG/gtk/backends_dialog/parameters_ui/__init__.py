@@ -78,6 +78,10 @@ class ParametersUI(gtk.VBox):
                ), \
                ("password"     , self.UI_generator(PasswordUI)), \
                ("period"       , self.UI_generator(PeriodUI)), \
+               ("service-url", self.UI_generator(TextUI, \
+                            {"description": _("Service URL"), \
+                             "parameter_name": "service-url"}) \
+               ),\
                ("import-from-replies", self.UI_generator(CheckBoxUI, \
                             {"text": _("Import tasks from @ replies " + \
                                                          "directed to you"), \
@@ -100,7 +104,7 @@ class ParametersUI(gtk.VBox):
                                        "targeted by the bug"), \
                              "parameter": "tag-with-project-name"}) \
                ),\
-            ) 
+           ) 
     def UI_generator(self, param_type, special_arguments = {}):
         '''A helper function to build a widget type from a template.
         It passes to the created widget generator a series of common parameters,
