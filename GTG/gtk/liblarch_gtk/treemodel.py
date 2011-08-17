@@ -30,7 +30,9 @@ class TreeModel(gtk.TreeStore):
         only_types = [python_type for python_type, access_method in self.types]
 
         gtk.TreeStore.__init__(self, *only_types)
+        self.cache_paths = {}
         self.tree = tree
+        self.count = 0
 
     def connect_model(self):
         """ Register "signals", callbacks from liblarch.
@@ -48,34 +50,26 @@ class TreeModel(gtk.TreeStore):
 
     def my_get_iter(self, path):
         """ Because we sort the TreeStore, paths in the treestore are
-        not the same as paths in the FilteredTree. We do the  conversion here"""
-        iter = self.get_iter_root()
-        if path == () or not iter:
+        not the same as paths in the FilteredTree. We do the  conversion here.
+        We receive a Liblarch path as argument and return a gtk.TreeIter"""
+        #The function is recursive. We take iter for path (A,B,C) in cache.
+        #If there is not, we take iter for path (A,B) and try to find C.
+        if path == ():
             return None
-        else:
-            #The following code is ugly. Yuk!
-            #We just wanted to convert a node path like (node1,node2,)
-            #to an iterator.
-            #don't look at it! Ploum, DS2011          
-            current_nid = self.get_value(iter,0)
-            depth = 0
-            while iter and current_nid != str(path[-1]):
-                in_the_path = path[depth]
-                while iter and current_nid != str(in_the_path):
-                    iter = self.iter_next(iter)
-                    if iter:
-                        current_nid = self.get_value(iter,0)
-                if depth+1 < len(path):
-                    depth += 1
-                    iter = self.iter_children(iter)
-                    if iter:
-                        current_nid = self.get_value(iter,0)
-                    else:
-                        #we didn't find the iter, let's return none
-                        return None
-                else:
-                    break
+        nid = str(path[-1])
+        #We try to use the cache
+        iter = self.cache_paths.get(path,None)
+        if iter and self.iter_is_valid(iter) and nid == self.get_value(iter,0):
             return iter
+        root = self.my_get_iter(path[:-1])
+        if root:
+            iter = self.iter_children(root)
+        else:
+            iter = self.get_iter_first()
+        while iter and self.get_value(iter,0) != nid:
+            iter = self.iter_next(iter)
+        self.cache_paths[path] = iter
+        return iter
 
     def print_tree(self):
         """ Print TreeStore as Tree into console """
@@ -145,13 +139,14 @@ class TreeModel(gtk.TreeStore):
         @param node_id: identification of task
         @param path: identification of position
         """
+        self.count += 1
         node = self.tree.get_node(node_id)
         iterator = self.my_get_iter(path)
 
         for column_num, (python_type, access_method) in enumerate(self.types):
             value = access_method(node)
             self.set_value(iterator, column_num, value)
-#        print "node %s has been updated on path %s" %(node_id,str(path))
+#        print "update node has been called : %s times" %self.count
 
     def reorder_nodes(self, node_id, path, neworder):
         """ Reorder nodes.

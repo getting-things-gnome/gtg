@@ -33,6 +33,7 @@ class TreeviewFactory():
 
     def __init__(self,requester,config):
         self.req = requester
+        self.mainview = self.req.get_tasks_tree()
         self.config = config
         
         #Initial unactive color
@@ -45,15 +46,17 @@ class TreeviewFactory():
     #############################
     #Functions for tasks columns
     ################################
-    def _count_active_subtasks_rec(self, task):
-        count = 0
+        
+    def _has_hidden_subtask(self,task):
+        #not recursive
+        display_count = self.mainview.node_n_children(task.get_id())
+        real_count = 0
         if task.has_child():
             for tid in task.get_children():
                 sub_task = self.req.get_task(tid)
                 if sub_task and sub_task.get_status() == Task.STA_ACTIVE:
-                    count = count + 1 + self._count_active_subtasks_rec(sub_task)
-
-        return count
+                    real_count = real_count + 1
+        return display_count < real_count
     
     def task_bg_color(self,tags,bg):
         if self.config.get('bg_color_enable'):
@@ -79,12 +82,15 @@ class TreeviewFactory():
         due = node.get_due_date()
         if (due.days_left == 0 or due == dates.NOW):
             str_format = "<b>%s</b>"
+        if self._has_hidden_subtask(node):
+            str_format = "<span color='%s'>%s</span>"\
+                                            %(self.unactive_color,str_format)
         title = str_format % saxutils.escape(node.get_title())
         #FIXME
 #        color = self.treeview.style.text[gtk.STATE_INSENSITIVE].to_string()
         color = "red"
         if node.get_status() == Task.STA_ACTIVE:
-            count = self._count_active_subtasks_rec(node)
+            count = self.mainview.node_n_children(node.get_id(),recursive=True)
             if count != 0:
                 title += " (%s)" % count
             

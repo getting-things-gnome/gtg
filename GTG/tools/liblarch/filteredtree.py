@@ -54,6 +54,9 @@ class FilteredTree():
         self.__flat = False
         self.applied_filters = []
         self.fbank = filtersbank
+        
+        #DEBUG
+        self.count = 0
 
         if refresh:
             self.refilter()
@@ -100,6 +103,9 @@ class FilteredTree():
                 else:
                     raise Exception('%s is not displayed but %s was added' %(nid,node_id))
         func,nid,param = self.cllbcks.get(event, (None,None,None))
+        if event == "modified":
+                self.count += 1
+#                print "FT has sent modified %s times" %self.count
         if func:
             if neworder:
                 func(node_id, path, neworder)
@@ -109,6 +115,7 @@ class FilteredTree():
 #### EXTERNAL MODIFICATION ####################################################
     def __external_modify(self, node_id):
         # First thing is to find all nodes to update
+#        print "####### external_modify called for %s" %node_id
         need_update = [node_id]
         visited = []
         # Go up
@@ -269,6 +276,7 @@ class FilteredTree():
             queue.extend(self.nodes[parent_id]['parents'])
             
             for path in self.get_paths_for_node(parent_id):
+#                print "sending modified for %s at path %s" %(parent_id,str(path))
                 self.callback('modified', parent_id, path)
 
         return completely_updated
@@ -567,8 +575,22 @@ class FilteredTree():
     def node_has_child(self, node_id):
         return len(self.nodes[node_id]['children']) > 0
 
-    def node_n_children(self, node_id):
-        return len(self.nodes[node_id]['children'])
+    def node_n_children(self, node_id, recursive=False):
+        if node_id == None:
+            node_id = self.root_id
+        if not self.nodes.has_key(node_id):
+            return 0
+        if recursive:
+            total = 0
+            #We avoid recursion in a loop
+            #because the dict might be updated in the meantime
+            cids = list(self.nodes[node_id]['children'])   
+            for cid in cids: 
+                total += self.node_n_children(cid,recursive=True)
+                total += 1 #we count the node itself ofcourse
+            return total  
+        else:
+            return len(self.nodes[node_id]['children'])
 
     def node_nth_child(self, node_id, n):
         return self.nodes[node_id]['children'][n]
