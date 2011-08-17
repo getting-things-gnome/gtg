@@ -166,6 +166,7 @@ class TaskBrowser(gobject.GObject):
         self.window             = self.builder.get_object("MainWindow")
         self.tagpopup           = self.builder.get_object("tag_context_menu")
         self.nonworkviewtag_cb  = self.builder.get_object("nonworkviewtag_mi")
+        self.nonworkviewtag_cb.set_label(GnomeConfig.TAG_IN_WORKVIEW_TOGG)
         self.taskpopup          = self.builder.get_object("task_context_menu")
         self.defertopopup       = self.builder.get_object("defer_to_context_menu")
         self.ctaskpopup         = self.builder.get_object("closed_task_context_menu")
@@ -895,9 +896,14 @@ class TaskBrowser(gobject.GObject):
         tag_id = self.get_selected_tags()[0]
         #We must inverse because the tagstore has True
         #for tasks that are not in workview (and also convert to string)
-        toset = str(not self.nonworkviewtag_cb.get_active())
+        toset = not self.nonworkviewtag_cb.get_active()
         tag = self.req.get_tag(tag_id)
-        tag.set_attribute("nonworkview", toset)
+        tag.set_attribute("nonworkview", str(toset))
+        if toset:
+            label = GnomeConfig.TAG_NOTIN_WORKVIEW_TOGG
+        else:
+            label = GnomeConfig.TAG_IN_WORKVIEW_TOGG
+        self.nonworkviewtag_cb.set_label(label)
         if not self.dont_reset:
             self.reset_cursor()
 
