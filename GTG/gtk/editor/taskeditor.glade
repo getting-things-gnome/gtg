@@ -386,7 +386,7 @@
             </child>
             <child>
               <object class="GtkButton" id="button_later">
-                <property name="label" translatable="yes">Later</property>
+                <property name="label" translatable="yes">Someday</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
