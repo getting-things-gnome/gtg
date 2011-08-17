@@ -238,7 +238,9 @@ class DataStore(object):
         if self.has_task(tid):
             return self.__tasks.get_node(tid)
         else:
-            Log.error("requested non-existent task %s" % tid)
+            #Log.error("requested non-existent task %s" % tid)
+            #This is not an error: it is normal to request a task which
+            #might not exist yet.
             return None
         
     def task_factory(self, tid, newtask = False):
