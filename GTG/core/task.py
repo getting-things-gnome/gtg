@@ -390,7 +390,7 @@ class Task(TreeNode):
         if child and child.can_be_deleted:
             child.set_start_date(self.get_start_date())
             for t in self.get_tags():
-                child.tag_added(t.get_name())
+                child.add_tag(t.get_name())
         self.sync()
         return True
             
@@ -524,7 +524,7 @@ class Task(TreeNode):
         """
         Adds a tag. Does not add '@tag' to the contents. See add_tag
         """
-        #print "tag %s added to task %s" %(tagname,self.get_id())
+#        print "tag %s added to task %s" %(tagname,self.get_title())
         t = tagname.encode("UTF-8")
         #Do not add the same tag twice
         if not t in self.tags:
@@ -544,6 +544,7 @@ class Task(TreeNode):
     
     def add_tag(self, tagname):
         "Add a tag to the task and insert '@tag' into the task's content"
+#        print "add tag %s to task %s" %(tagname,self.get_title())
         if self.tag_added(tagname):
             c = self.content
             
