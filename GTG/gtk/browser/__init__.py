@@ -44,4 +44,6 @@ class GnomeConfig:
     NEW_TASK_TOOLTIP        = _("Create a new task")
     NEW_SUBTASK_TOOLTIP     = _("Create a new subtask")
     WORKVIEW_TOGGLE_TOOLTIP = _("Display only the currently actionable tasks")
+    TAG_IN_WORKVIEW_TOGG    = _("Hide this tag from the workview")
+    TAG_NOTIN_WORKVIEW_TOGG = _("Show this tag in the workview")
 
