@@ -58,7 +58,7 @@ class Requester(gobject.GObject):
         
         #TODO build filters here
         self.counter_call = 0
-        self.searcActive = False
+        self.searchActive = False
 
     ############# Signals #########################
     #Used by the tasks to emit the task added/modified signal
@@ -79,7 +79,7 @@ class Requester(gobject.GObject):
     def get_search_tree(self,name='search',refresh=True):
         """
         return the search tree
-        only used by search operations to show a tree without interfearing with the main
+        only used by search operations to show a tree without interfering with the main
         """
         return self.__basetree.get_viewtree(name=name,refresh=refresh)
         
@@ -171,6 +171,17 @@ class Requester(gobject.GObject):
         for x in nodes:
             titles.append(self.get_main_view().get_node(x).get_title())
         return titles
+    def get_all_titles_lowercase(self):
+        """
+        Gets the titles from all tasks, lowercased
+        
+        useful for non case-sensitive searches
+        """
+        titles = []
+        nodes = self.get_main_view().get_all_nodes()
+        for x in nodes:
+            titles.append(self.get_main_view().get_node(x).get_title().lower())
+        return titles
 
     ############### Tags ##########################
     ###############################################
@@ -181,13 +192,13 @@ class Requester(gobject.GObject):
         
         used mainly for stoping certain actions before a search is done
         """
-        return self.searcActive
+        return self.searchActive
     
     def set_search_status(self, status):
         """
         sets the status of searches
         """
-        self.searcActive = status
+        self.searchActive = status
 
     def get_tag_tree(self):
         return self.ds.get_tagstore().get_viewtree(name='activetags')
@@ -233,22 +244,10 @@ class Requester(gobject.GObject):
         """
         Gets all tags from all tasks
         """
-        temptree = self.ds.get_tagstore().get_viewtree(name='searchAll')
+        temptree = self.ds.get_tagstore().get_viewtree(name='unfiltered')
         temptree.reset_filters()
         tags = temptree.get_all_nodes()
-        return tags
-    
-    def get_all_tags_clean(self):
-        """
-        Gets all tags from all tasks except 
-        gtg-tags-none, gtg-tags-all and gtg-tags-sep
-        """
-        temptree = self.ds.get_tagstore().get_viewtree(name='searchAll')
-        temptree.reset_filters()
-        tags = temptree.get_all_nodes()
-        tags.remove("gtg-tags-none")
-        tags.remove("gtg-tags-all")
-        tags.remove("gtg-tags-sep")
+        #tags = self.get_main_view().get_all_nodes()
         return tags
 
     ############## Backends #######################
