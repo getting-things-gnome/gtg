@@ -1,6 +1,7 @@
 
 # Run all of the tests.
-check:
+# FIXME rename this command back to check to be part of building process
+check-tests:
 	./run-tests
 
 # Get rid of stale files or files made during testing.
