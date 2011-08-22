@@ -1,3 +1,9 @@
+gtg (0.2.9) unstable; urgency=low
+
+  * New daily PPA
+
+ -- Izidor Matusov <izidor.matusov@gmail.com>  Mon, 22 Aug 2011 14:45:37 +0200
+
 gtg (0.2.4-1~karmic1) karmic; urgency=low
 
   * New upstream bugfix release.
