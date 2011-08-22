@@ -216,15 +216,18 @@ class DataStore(object):
         tagfile = os.path.join(CoreConfig().get_data_dir(), TAG_XMLFILE)
         doc, xmlstore = cleanxml.openxmlfile(tagfile,TAG_XMLROOT)
         for t in xmlstore.childNodes:
-            #We should only care about tag with a name beginning with "@"
+            #We should only care about tag with a name beginning with "@", search tags and views
             #Other are special tags
-            parent = t.getAttribute('parent')
             tagname = t.getAttribute("name")
+            #parent dictates what the element is
+            parent = t.getAttribute('parent')
+            #a search is linear. by the time it finds a search all the params are extracted
             if parent == 'search':
                 self.new_view(tagname, self.view_params[tagname])
             #if the xml finds a view
             elif parent == 'view':
                 self.view_params[tagname] = {}
+                #iterates all elements of parameters
                 for i in t.childNodes:
                     name = i.getAttribute("name")
                     self.view_params[tagname][name] = []
@@ -294,19 +297,17 @@ class DataStore(object):
                 for el in self.view_params[view]:
                     element = doc.createElement(el)
                     element.setAttribute("name", el)
+                    #a text parameter
                     if el == 'tasks' or el == 'tags' or el == 'words' or el == 'literals':
                         for i in self.view_params[view].get(el):
-                        #special case where you have to save 2 values
                             cleanxml.addTextNode(doc,element,"value",str(i[0]))
                             cleanxml.addTextNode(doc,element,"text",str(i[1]))
-                        #element.setAttribute("value", str(i[0]))
-                        #element.setAttribute("text", str(i[1]))
+                    #simple parameters
                     else:
                         cleanxml.addTextNode(doc,element,"value",str(self.view_params[view].get(el)))
                             #element.setAttribute("value", str(i))
                     t_xml.appendChild(element)
                 xmlroot.appendChild(t_xml)
-            
             #we don't save tags with no attributes
             #It saves space and allow the saved list growth to be controlled
             for tname in tags:
@@ -324,6 +325,7 @@ class DataStore(object):
                                 t_xml.setAttribute(a, value)
                         xmlroot.appendChild(t_xml)
                         
+            #finally, save it
             cleanxml.savexml(self.tagfile, doc)
     
     def add_view_control(self, name, params):

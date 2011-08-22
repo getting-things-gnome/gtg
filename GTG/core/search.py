@@ -30,20 +30,7 @@ search.py - contains all search related definitions and operations
 class Search:
     ''' 
     This class represent a search instance in GTG.
-    This class should be saved later for search history
     '''
-    
-    #text for errors - abandoned as errors messagens ended up not being shown,
-    #but marked on the text entry
-    #    
-    #ERROR_GENERIC = _("Error in search: ")
-    #ERROR_QUOTATIONMARK = _("Bad use of quotation marks")
-    #ERROR_COMMAND = _("Invalid use of commands")
-    #ERROR_NOTACOMMAND = _(" is not a command word.")
-    #ERROR_TAG = _("No tag named ")
-    #ERROR_TASK = _("No task named ")
-    #ERROR_CONSECUTIVENOT = _("cannot be used in succession")
-    #ERROR_ISNOTVALIDSEARCH = _(" is not a valid search")
     
     #usable join keyWords
     andKeyword = _("and +")
@@ -95,7 +82,7 @@ class Search:
     laterKeywordsTranslation = _("")
     lateKeywordsTranslation = _("")
     
-    #caracter notations for diferent restrictions
+    #character notations for different restrictions
     taskNotation = '#'
     tagNotation = '@'
     commandNotation = '!'
@@ -131,8 +118,6 @@ class Search:
         self.paramsToFilter = {}
         #get all tags
         self.alltags = self.req.get_all_tags()
-        #gets the titles of tasks
-        self.allTaskTitles = self.req.get_all_titles();
         
 ##################################private#####################################
 
@@ -150,14 +135,11 @@ class Search:
         dic = {}
         #join Keywords including translations
         dic["and"] = self.andKeyword.split(' ') + self._my_split(self.andKeywordTranslation, ' ')
-        #dic["or"] = self.orKeyword.split(' ') + self._my_split(self.orKeywordTranslation, ' ')
         dic["not"] = self.notKeyword.split(' ') + self._my_split(self.notKeywordTranslation, ' ')
-        #dic["join"] = dic.get("and")+dic.get("not")#+dic.get("or")
         #state keywords
         dic["active"] = self.activeKeywords.split(' ') + self._my_split(self.activeKeywordsTranslation, ' ')
         dic["dismissed"] = self.dismissedKeyword.split(' ') + self._my_split(self.dismissedKeywordTranslation, ' ')
         dic["done"] = self.doneKeyword.split(' ') + self._my_split(self.doneKeywordTranslation, ' ')
-        #dic["state"] = dic.get("active") + dic.get("dismissed") + dic.get("done")
         #temporal keywords
         dic["before"]    = self.beforeKeywords.split(' ') + self._my_split(self.beforeKeywordsTranslation, ' ')
         dic["after"]     = self.afterKeywords.split(' ') + self._my_split(self.afterKeywordsTranslation, ' ')
@@ -171,9 +153,6 @@ class Search:
         dic["soon"]    = self.soonKeywords.split(' ') + self._my_split(self.soonKeywordsTranslation, ' ')
         dic["later"]    = self.laterKeywords.split(' ') + self._my_split(self.laterKeywordsTranslation, ' ')
         dic["late"]    = self.lateKeywords.split(' ') + self._my_split(self.lateKeywordsTranslation, ' ')
-        #dic["temporal"] = dic.get("before") + dic.get("after") + dic.get("past") + \
-        #    dic.get("future") + dic.get("today") + dic.get("tomorrow") + dic.get("nodate") + \
-        #    dic.get("nextmonth") + dic.get("now") + dic.get("soon") + dic.get("later") + dic.get("late")
         return dic
         
     def build_search_tokens(self):
@@ -200,7 +179,15 @@ class Search:
         #MISSING
         # - different date formats"
         # - wildcard searches
-        match = re.findall(r'(?P<command>(?<=!)\S+(?=\s)?)|(?P<tag>@\S+(?=\s)?)|(?P<task>#.+?#)|(?P<date>[01][0-2][/\.-]?[0-3][0-9][/\.-]\d{4})|(?P<literal>".+?")|(?P<word>(?![!"#@])\S+(?=\s)?)', self.text)
+        expression = re.compile(r"""
+                    (?P<command>(?<=!)\S+(?=\s)?)|                      # commands
+                    (?P<tag>@\S+(?=\s)?)                                # tags
+                    |(?P<task>\#.+?\#)|                                 # tasks
+                    (?P<date>[01][0-2][/\.-]?[0-3][0-9][/\.-]\d{4})|    # dates - needs work
+                    (?P<literal>".+?")|                                 # literals
+                    (?P<word>(?![!"#@])\S+(?=\s)?)                      # words
+                    """, re.VERBOSE)
+        match = expression.findall(self.text)
         #analyze the sets
         #sets are given in a list of sub,lists
         #each main list will have a sublist with one of 5 possible positions with text
@@ -347,7 +334,7 @@ class Search:
                 elif word == 2:
                     #verifies if the task exists
                     taskStriped = sets[word].strip('#')
-                    if(sum(map(lambda x: x.lower() == taskStriped.lower(), self.allTaskTitles))):
+                    if(sum(map(lambda x: x.lower() == taskStriped.lower(), self.req.get_all_titles()))):
                         if 'tasks' not in self.paramsToFilter:
                             self.paramsToFilter['tasks'] = []
                         self.paramsToFilter['tasks'].append((value, taskStriped))
@@ -416,24 +403,6 @@ class Search:
         Return the error message
         '''
         return self.error
-    
-    """def removeFilters(self):
-        
-        Removes all the filters from the tree
-       
-        self.oldFilters = self.tree.list_applied_filters()
-        self.tree.reset_filters()
-        #self.req.add_filter('leaf',self.is_leaf)
-        #self.tree.apply_filter('leaf')
-    
-    def resetToOriginalTree(self):
-        
-        re-aplyes the original filters
-        
-        for x in self.oldFilters:
-            self.tree.apply_filter(x)
-            
-    """
     
     def get_commands(self):
         """

@@ -178,15 +178,43 @@ class Requester(gobject.GObject):
                 titles.append(self.get_main_view().get_node(x).get_title())
         return titles
     
-    def get_first_task(self, tree='search'):
+    def task_exist(self,text, lowercase=False):
+        """
+        Checks if a task exists by its title
+        
+        if lowercase, titles are not case checked :)
+        """
+        #gets all nodes
+        nodes = self.get_main_view().get_all_nodes()
+        #case insensitive
+        if lowercase:
+            for x in nodes:
+                if text.lower() == self.get_main_view().get_node(x).get_title().lower():
+                    return True
+        #case sensitive
+        else:
+            for x in nodes:
+                if text == self.get_main_view().get_node(x).get_title():
+                    return True
+        #if its gets here, there's no task by that name
+        return False
+    
+    def get_task_id(self, text, tree='search'):
         """
         returns the first task from a treeview
         
         default is a search view
+        if there's 2 tasks with the same title, opens the first it finds...
         """
+        #lowercase
+        text = text.lower()
+        #gets nodes from requested tree
         nodes = self.get_search_tree(tree,False).get_all_nodes()
-        if len(nodes)>0:
-            return nodes[0]
+        for x in nodes:
+            if text == self.get_main_view().get_node(x).get_title().lower():
+                return self.get_main_view().get_node(x).get_id()
+        else:
+            raise IndexError("Task %s not in search tree" % text)
         
     ############### Tags ##########################
     ###############################################

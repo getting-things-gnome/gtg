@@ -1670,10 +1670,10 @@ class TaskBrowser(gobject.GObject):
         open = False
         add = True
         save = False
-        text = self.getMainEntryText().lower()
+        text = self.getMainEntryText()
         #if the text is exactly a title of a task, filter for that task only
-        if text in self.taskTitles:
-            text = ''.join(['#',text,'#'])
+        if self.req.task_exist(text, lowercase=True) :
+            #text = ''.join(['#',text,'#'])
             open = True
         #create the search
         self.s = Search(text, self.req, self.searchtree)
@@ -1731,7 +1731,6 @@ class TaskBrowser(gobject.GObject):
         self.completion = self.builder.get_object("quickadd_entrycompletion")
         self.quickadd_entry.set_completion(self.completion)
         self.update_autocomplete()
-        self.taskTitles = self.req.get_all_titles(lowercase=True)
         #text in pago markup for bold actions
         self.autoCompleteAdd = _("<b>Add Task</b>")
         self.autoCompleteOpen = _("<b>Open Task</b>")
@@ -1745,14 +1744,13 @@ class TaskBrowser(gobject.GObject):
         """
         self.autoCompleteliststore = gtk.ListStore(str)
         tags = self.req.get_all_tags()
-        self.taskTitles = self.req.get_all_titles()
         commands = self.s.get_commands()
         for s in tags:
             #removes special tags
             if not s.startswith("@") :
                 continue
             self.autoCompleteliststore.append([s])
-        for s in self.taskTitles:
+        for s in self.req.get_all_titles(lowercase=True):
             self.autoCompleteliststore.append([s])
         for s in commands:
             self.autoCompleteliststore.append([s])
@@ -1803,7 +1801,7 @@ class TaskBrowser(gobject.GObject):
             self.on_quickadd_activate(widget)
         #opens the task with that name
         elif self.autocompleteActions[0] is self.autoCompleteOpen:
-            self.vmanager.open_task(self.req.get_first_task())
+            self.vmanager.open_task(self.req.get_task_id(self.getMainEntryText()))
         #save as view
         elif self.autocompleteActions[0] is self.autoCompleteSave:
             self.createView()
@@ -1819,7 +1817,7 @@ class TaskBrowser(gobject.GObject):
             self.on_quickadd_activate(None)
         #open a task
         elif self.autocompleteActions[index] is self.autoCompleteOpen:
-            self.vmanager.open_task(self.req.get_first_task())
+            self.vmanager.open_task(self.req.get_task_id(self.getMainEntryText()))
         #save a search as a view
         elif self.autocompleteActions[index] is self.autoCompleteSave:
             self.createView()
@@ -1830,7 +1828,7 @@ class TaskBrowser(gobject.GObject):
         """
         Create a new view as a searched save on the tag tree
         
-        saves searches are stored????????
+        saves searches are stored by the datastore
         """
         #give nunbers to repeated views
         numeral = 1
@@ -1874,6 +1872,5 @@ class TaskBrowser(gobject.GObject):
         """
         callback for when a match is selected on the entry autocomplete
         """
-        print(model.get_string_from_iter(iter))
-        #self.setMainEntryText(self.getMainEntryText())
+        
         
