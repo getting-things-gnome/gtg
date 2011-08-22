@@ -245,7 +245,9 @@ class TreeFactory:
     def search(self,task,parameters=None):
         """
         Single filter that has all the search parameters
-        Should be more efficient than to have multiple filters
+        
+        parameters will have a dictionary in which keys will be a kind of filter to apply
+        the search will check for the existence of parameters, check it's negated or not 
         """
         #escape case
         if parameters == None:
