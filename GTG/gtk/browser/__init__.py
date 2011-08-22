@@ -44,4 +44,7 @@ class GnomeConfig:
     NEW_TASK_TOOLTIP        = _("Create a new task")
     NEW_SUBTASK_TOOLTIP     = _("Create a new subtask")
     WORKVIEW_TOGGLE_TOOLTIP = _("Display only the currently actionable tasks")
+    SAVEASVIEW              = _("Save as View...")
+    QUICKADD_ENTRY_TOOLTIP  = _("you can filter, create or open your tasks here\nSearch using ! for commands, @ for tags or dates")
+    QUICKADD_ICON_TOOLTIP   = _("Clear")
 

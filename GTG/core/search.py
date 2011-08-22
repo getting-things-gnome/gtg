@@ -33,15 +33,17 @@ class Search:
     This class should be saved later for search history
     '''
     
-    #text for errors
-    ERROR_GENERIC = _("Error in search: ")
-    ERROR_QUOTATIONMARK = _("Bad use of quotation marks")
-    ERROR_COMMAND = _("Invalid use of commands")
-    ERROR_NOTACOMMAND = _(" is not a command word.")
-    ERROR_TAG = _("No tag named ")
-    ERROR_TASK = _("No task named ")
-    ERROR_CONSECUTIVENOT = _("cannot be used in succession")
-    ERROR_ISNOTVALIDSEARCH = _(" is not a valid search")
+    #text for errors - abandoned as errors messagens ended up not being shown,
+    #but marked on the text entry
+    #    
+    #ERROR_GENERIC = _("Error in search: ")
+    #ERROR_QUOTATIONMARK = _("Bad use of quotation marks")
+    #ERROR_COMMAND = _("Invalid use of commands")
+    #ERROR_NOTACOMMAND = _(" is not a command word.")
+    #ERROR_TAG = _("No tag named ")
+    #ERROR_TASK = _("No task named ")
+    #ERROR_CONSECUTIVENOT = _("cannot be used in succession")
+    #ERROR_ISNOTVALIDSEARCH = _(" is not a valid search")
     
     #usable join keyWords
     andKeyword = _("and +")
@@ -123,7 +125,7 @@ class Search:
         
         self.error = ''
         #separate keywords in lists
-        self.dicKeyword = self.initKeywords()
+        self.dicKeyword = self._init_keywords()
         self.tree = tree
         self.oldFilters =[]
         self.paramsToFilter = {}
@@ -131,44 +133,50 @@ class Search:
         self.alltags = self.req.get_all_tags()
         #gets the titles of tasks
         self.allTaskTitles = self.req.get_all_titles();
-        #add the filter to the filteer bank
-        #FIXME: this should be added when the app starts
-        self.req.add_filter('search', self.search)
         
-    def initKeywords(self):
+##################################private#####################################
+
+    def _my_split(self, s, delim=None):
+        """
+        string split that removes empty strings
+        useful for when there are no translations
+        """
+        return [x for x in s.split(delim) if x]
+    
+    def _init_keywords(self):
         """
         gets all keywords, including translations and puts it in lists
         """
         dic = {}
         #join Keywords including translations
-        dic["and"] = self.andKeyword.split(' ') + self.mysplit(self.andKeywordTranslation, ' ')
-        #dic["or"] = self.orKeyword.split(' ') + self.mysplit(self.orKeywordTranslation, ' ')
-        dic["not"] = self.notKeyword.split(' ') + self.mysplit(self.notKeywordTranslation, ' ')
+        dic["and"] = self.andKeyword.split(' ') + self._my_split(self.andKeywordTranslation, ' ')
+        #dic["or"] = self.orKeyword.split(' ') + self._my_split(self.orKeywordTranslation, ' ')
+        dic["not"] = self.notKeyword.split(' ') + self._my_split(self.notKeywordTranslation, ' ')
         #dic["join"] = dic.get("and")+dic.get("not")#+dic.get("or")
         #state keywords
-        dic["active"] = self.activeKeywords.split(' ') + self.mysplit(self.activeKeywordsTranslation, ' ')
-        dic["dismissed"] = self.dismissedKeyword.split(' ') + self.mysplit(self.dismissedKeywordTranslation, ' ')
-        dic["done"] = self.doneKeyword.split(' ') + self.mysplit(self.doneKeywordTranslation, ' ')
+        dic["active"] = self.activeKeywords.split(' ') + self._my_split(self.activeKeywordsTranslation, ' ')
+        dic["dismissed"] = self.dismissedKeyword.split(' ') + self._my_split(self.dismissedKeywordTranslation, ' ')
+        dic["done"] = self.doneKeyword.split(' ') + self._my_split(self.doneKeywordTranslation, ' ')
         #dic["state"] = dic.get("active") + dic.get("dismissed") + dic.get("done")
         #temporal keywords
-        dic["before"]    = self.beforeKeywords.split(' ') + self.mysplit(self.beforeKeywordsTranslation, ' ')
-        dic["after"]     = self.afterKeywords.split(' ') + self.mysplit(self.afterKeywordsTranslation, ' ')
-        dic["past"]      = self.pastKeywords.split(' ') + self.mysplit(self.pastKeywordsTranslation, ' ')
-        dic["future"]    = self.futureKeywords.split(' ') + self.mysplit(self.futureKeywordsTranslation, ' ')
-        dic["today"]     = self.todayKeywords.split(' ') + self.mysplit(self.todayKeywordsTranslation, ' ')
-        dic["tomorrow"] = self.tomorrowKeywords.split(' ') + self.mysplit(self.tomorrowKeywordsTranslation, ' ')
-        dic["nextmonth"] = self.nextmonthKeywords.split(' ') + self.mysplit(self.nextmonthKeywordsTranslation, ' ')
-        dic["nodate"]    = self.nodateKeywords.split(' ') + self.mysplit(self.nodateKeywordsTranslation, ' ')
-        dic["now"]    = self.nowKeywords.split(' ') + self.mysplit(self.nowKeywordsTranslation, ' ')
-        dic["soon"]    = self.soonKeywords.split(' ') + self.mysplit(self.soonKeywordsTranslation, ' ')
-        dic["later"]    = self.laterKeywords.split(' ') + self.mysplit(self.laterKeywordsTranslation, ' ')
-        dic["late"]    = self.lateKeywords.split(' ') + self.mysplit(self.lateKeywordsTranslation, ' ')
+        dic["before"]    = self.beforeKeywords.split(' ') + self._my_split(self.beforeKeywordsTranslation, ' ')
+        dic["after"]     = self.afterKeywords.split(' ') + self._my_split(self.afterKeywordsTranslation, ' ')
+        dic["past"]      = self.pastKeywords.split(' ') + self._my_split(self.pastKeywordsTranslation, ' ')
+        dic["future"]    = self.futureKeywords.split(' ') + self._my_split(self.futureKeywordsTranslation, ' ')
+        dic["today"]     = self.todayKeywords.split(' ') + self._my_split(self.todayKeywordsTranslation, ' ')
+        dic["tomorrow"] = self.tomorrowKeywords.split(' ') + self._my_split(self.tomorrowKeywordsTranslation, ' ')
+        dic["nextmonth"] = self.nextmonthKeywords.split(' ') + self._my_split(self.nextmonthKeywordsTranslation, ' ')
+        dic["nodate"]    = self.nodateKeywords.split(' ') + self._my_split(self.nodateKeywordsTranslation, ' ')
+        dic["now"]    = self.nowKeywords.split(' ') + self._my_split(self.nowKeywordsTranslation, ' ')
+        dic["soon"]    = self.soonKeywords.split(' ') + self._my_split(self.soonKeywordsTranslation, ' ')
+        dic["later"]    = self.laterKeywords.split(' ') + self._my_split(self.laterKeywordsTranslation, ' ')
+        dic["late"]    = self.lateKeywords.split(' ') + self._my_split(self.lateKeywordsTranslation, ' ')
         #dic["temporal"] = dic.get("before") + dic.get("after") + dic.get("past") + \
         #    dic.get("future") + dic.get("today") + dic.get("tomorrow") + dic.get("nodate") + \
         #    dic.get("nextmonth") + dic.get("now") + dic.get("soon") + dic.get("later") + dic.get("late")
         return dic
         
-    def buildSearchTokens(self):
+    def build_search_tokens(self):
         '''
         From the text given on the builder, separate the text, check if its a valid syntax,
         prepares the data for filters and sets flag and error message for a valid search or not 
@@ -178,18 +186,15 @@ class Search:
         sequence = -1
         # the OR clausule is discarted for now, until i see a purpose
         #clause = False
-        #list for error strings
-        errorlist = []
-        #reset error message
-        self.error = ""
+        errorList=[]
+        self.error = ''
         tempTokens = {}
         #if its empty, is valid but returns
         if self.empty:
             return
         #if the number of " is not pair, the search query is considered invalid
         if (self.text.count('"') % 2) != 0:
-            errorlist.append(self.ERROR_QUOTATIONMARK)
-            self.error = ''.join(errorlist)
+            self.error = '"'
             self.valid = False
             return
         #MISSING
@@ -213,9 +218,7 @@ class Search:
                         #if the last operation is false, so is the next
                         #you cannot negate !and
                         if not value:
-                            errorlist.append(self.text)
-                            errorlist.append(self.ERROR_ISNOTVALIDSEARCH)
-                            self.error = ''.join(errorlist)
+                            self.error = sets[word]
                             self.valid = False
                             return
                         #gets the value from last entry
@@ -228,11 +231,9 @@ class Search:
                             value = False
                             #cannot be 2 negations in a row
                         else:
-                            errorlist.append(self.commandNotation)
-                            errorlist.append(sets[word])
-                            errorlist.append(' ')
-                            errorlist.append(self.ERROR_CONSECUTIVENOT)
-                            self.error = ''.join(errorlist)
+                            errorList.append(self.commandNotation)
+                            errorList.append(sets[word])
+                            self.error = ''.join(errorList)
                             self.valid = False
                             return
                         continue
@@ -321,10 +322,9 @@ class Search:
                         continue
                     #case the command given doens't exist, return error
                     else:
-                        errorlist.append(self.commandNotation)
-                        errorlist.append(sets[word])
-                        errorlist.append(self.ERROR_NOTACOMMAND)
-                        self.error = ''.join(errorlist)
+                        errorList.append(self.commandNotation)
+                        errorList.append(sets[word])
+                        self.error = ''.join(errorList)
                         self.valid = False
                         return
                 
@@ -340,9 +340,7 @@ class Search:
                             value = True
                         continue
                     else:
-                        errorlist.append(self.ERROR_TAG)
-                        errorlist.append(sets[word])
-                        self.error = ''.join(errorlist)
+                        self.error = sets[word]
                         self.valid = False
                         return
                 #if its a task
@@ -357,14 +355,12 @@ class Search:
                             value = True
                         continue
                     else:
-                        errorlist.append(self.ERROR_TASK)
-                        errorlist.append(sets[word])
-                        self.error = ''.join(errorlist)
+                        self.error = sets[word]
                         self.valid = False
                         return
                 #if its a date
                 elif word == 3:
-                    print("date: "+str(sets[word]))
+                    print("not implemented")
                 #if its a literal
                 elif word == 4:
                     literalStriped = sets[word].strip('"')
@@ -384,14 +380,12 @@ class Search:
                     continue
         self.valid = True
         if len (self.paramsToFilter) < 1:
-            errorlist.append(self.text)
-            errorlist.append(self.ERROR_ISNOTVALIDSEARCH)
-            self.error = ''.join(errorlist)
+            self.error = 'NONE'
             self.valid = False
             return
         return True
     
-    def applySearch(self):
+    def apply_search(self):
         """
         apply the search to the desired tree
         
@@ -404,49 +398,44 @@ class Search:
             self.tree.apply_filter('search', self.paramsToFilter)
             return True
     
-    def isValid(self):
+    def is_valid(self):
         '''
         returns true if the search tokens given are valid
-        returns false if the tokens are not yet given or are not compilant with the syntax
+        returns false if the tokens are not yet given or are not compliant with the syntax
         '''
         return self.valid
     
-    def isEmpty(self):
+    def is_empty(self):
         '''
         return True if the search string is ''
         '''
         return self.empty
     
-    def returnError(self):
+    def return_error(self):
         '''
         Return the error message
         '''
         return self.error
     
-    def removeFilters(self):
-        """
+    """def removeFilters(self):
+        
         Removes all the filters from the tree
-        """
+       
         self.oldFilters = self.tree.list_applied_filters()
         self.tree.reset_filters()
         #self.req.add_filter('leaf',self.is_leaf)
         #self.tree.apply_filter('leaf')
     
     def resetToOriginalTree(self):
-        """
+        
         re-aplyes the original filters
-        """
+        
         for x in self.oldFilters:
             self.tree.apply_filter(x)
             
-    def mysplit(self, s, delim=None):
-    	"""
-    	string split that removes empty strings
-    	useful for when there are no translations
-    	"""
-        return [x for x in s.split(delim) if x]
+    """
     
-    def getCommands(self):
+    def get_commands(self):
         """
         returns the list of commands with the ! at the beginning
         
@@ -461,7 +450,7 @@ class Search:
                 dictlist.append('!'+ key)
         return sorted(dictlist)
     
-    def getParams(self):
+    def get_params(self):
         """
         returns the parameters from the search query
         """
@@ -473,7 +462,7 @@ class Search:
         '''
         s = ""
         s = s + "Search Object\n"
-        s = s + 'valid = ' + str(self.isValid()) + '\n'
+        s = s + 'valid = ' + str(self.is_valid()) + '\n'
         s = s + self.text + "\n"
         return s
     
@@ -481,214 +470,12 @@ class Search:
 # Search Filters
 ###############################################################################
 
-    def search(self,task,parameters=None):
-        """
-        Single filter that has all the search parameters
-        Should be more efficient than to have multiple filters
-        """
-        #escape case
-        if parameters == None:
-            return False
-        #if a task is active
-        if 'active' in parameters:
-            if parameters.get('active'):
-                if task.get_status() != Task.STA_ACTIVE:
-                    return False
-            else:
-                if task.get_status() == Task.STA_ACTIVE:
-                    return False
-        #if a task is Dismissed
-        if 'dismissed' in parameters:
-            if parameters.get('dismissed'):
-                if task.get_status() != Task.STA_DISMISSED:
-                    return False
-            else:
-                if task.get_status() == Task.STA_DISMISSED:
-                    return False
-        #if a task is Done
-        if 'done' in parameters:
-            if parameters.get('done'):
-                if task.get_status() != Task.STA_DONE:
-                    return False
-            else:
-                if task.get_status() == Task.STA_DONE:
-                    return False
-        #check the due date for a now
-        if 'now' in parameters:
-            #if no state is defined, it shows only active tasks
-            if 'active' not in parameters and 'done' not in parameters and 'dismissed' not in parameters:
-                if task.get_status() != Task.STA_ACTIVE:
-                    return False
-            if parameters.get('now'):
-                if str(task.get_due_date()) not in self.dicKeyword["now"]:
-                    return False
-            else:
-                if str(task.get_due_date()) in self.dicKeyword["now"]:
-                    return False
-        #check the due date for a soon
-        if 'soon' in parameters:
-            #if no state is defined, it shows only active tasks
-            if 'active' not in parameters and 'done' not in parameters and 'dismissed' not in parameters:
-                if task.get_status() != Task.STA_ACTIVE:
-                    return False
-            if parameters.get('soon'):
-                if str(task.get_due_date()) not in self.dicKeyword["soon"]:
-                    return False
-            else:
-                if str(task.get_due_date()) in self.dicKeyword["soon"]:
-                    return False
-        #check the due date for a later
-        if 'later' in parameters:
-            #if no state is defined, it shows only active tasks
-            if 'active' not in parameters and 'done' not in parameters and 'dismissed' not in parameters:
-                if task.get_status() != Task.STA_ACTIVE:
-                    return False
-            if parameters.get('later'):
-                if str(task.get_due_date()) not in self.dicKeyword["later"]:
-                    return False
-            else:
-                if str(task.get_due_date()) in self.dicKeyword["later"]:
-                    return False
-        #check the due date for a later
-        if 'late' in parameters:
-            #if no state is defined, it shows only active tasks
-            if 'active' not in parameters and 'done' not in parameters and 'dismissed' not in parameters:
-                if task.get_status() != Task.STA_ACTIVE:
-                    return False
-            if parameters.get('late'):
-                if task.get_days_left() > -1 or task.get_days_left() == None:
-                    return False
-            else:
-                if task.get_days_left() < 0 and task.get_days_left() != None:
-                    return False
-        #check for tasks that have no date defined
-        if 'nodate' in parameters:
-            #if no state is defined, it shows only active tasks
-            if 'active' not in parameters and 'done' not in parameters and 'dismissed' not in parameters:
-                if task.get_status() != Task.STA_ACTIVE:
-                    return False
-            if parameters.get('nodate'):
-                if str(task.get_due_date()) != '':
-                    return False
-            else:
-                if str(task.get_due_date()) == '':
-                    return False
-        #check for tasks that are due tomorrow
-        if 'tomorrow' in parameters:
-            #if no state is defined, it shows only active tasks
-            if 'active' not in parameters and 'done' not in parameters and 'dismissed' not in parameters:
-                if task.get_status() != Task.STA_ACTIVE:
-                    return False
-            if parameters.get('tomorrow'):
-                if task.get_days_left() != 1:
-                    return False
-            else:
-                if task.get_days_left() == 1:
-                    return False
-        #check for tasks that are due today
-        if 'today' in parameters:
-            #if no state is defined, it shows only active tasks
-            if 'active' not in parameters and 'done' not in parameters and 'dismissed' not in parameters:
-                if task.get_status() != Task.STA_ACTIVE:
-                    return False
-            if parameters.get('today'):
-                if task.get_days_left() != 0:
-                    return False
-            else:
-                if task.get_days_left() == 0:
-                    return False
-        #task titles
-        if 'tasks' in parameters:
-            for tasks in parameters.get('tasks'):
-                if tasks[0]:
-                    if task.get_title().lower() != tasks[1]:
-                        return False
-                else:
-                    if task.get_title().lower() == tasks[1]:
-                        return False
-        #tags
-        if 'tags' in parameters:
-            for tags in parameters.get('tags'):
-                if tags[1] not in task.get_tags_name():
-                    if tags[0]:
-                        return False
-                else:
-                    if not tags[0]:
-                        return False
-        #words
-        if 'words' in parameters:
-            #tags are also included in the search
-            #maybe latter i'll add the option to chose
-            for words in parameters.get('words'):
-                text = task.get_excerpt(strip_tags=False).lower()
-                title = task.get_title().lower()
-                #search for the word
-                if text.find(words[1]) > -1 or words[1] in title:
-                    if not words[0]:
-                        return False
-                else:
-                    if words[0]:
-                        return False
-        #literas ex. "abc"
-        if 'literals' in parameters:
-            #tthis one is the same thing as the word search
-            #only the literal includes spaces, special chars, etc
-            #should define latter one more specific stuff about literals
-            for literals in parameters.get('literals'):
-                #search for the word
-                text = task.get_excerpt(strip_tags=False).lower()
-                title = task.get_title().lower()
-                if text.find(literals[1]) > -1 or literals[1] in title:
-                    if not literals[0]:
-                        return False
-                else:
-                    if literals[0]:
-                        return False
-        #if it gets here, the task is in the search params
-        return True
+    """
+    The filter used for search is on treefactory.py
     
-    def active(self,task,parameters=None):
-        """ Filter of tasks which are active """
-        #FIXME: we should also handle unactive tags
-        return task.get_status() == Task.STA_ACTIVE
-
-    def dismissed(self,task,parameters=None):
-        """ Filter of tasks which are active """
-        #FIXME: we should also handle unactive tags
-        return task.get_status() == Task.STA_DISMISSED
-
-    def done(self,task,parameters=None):
-        """ Filter of tasks which are active """
-        #FIXME: we should also handle unactive tags
-        return task.get_status() == Task.STA_DONE
-
-###############################################################################
-# DEGUB STUFF
-###############################################################################
-    def test(self):
-        print (self.req.list_filters())
-        
-
-    def printMatches(self, match):
-        """
-        prints the result of the the regular expression
-        
-        Keyword arguments:
-        match -- list of values returned from the .findall() of the regular expression
-        """
-        print(match)
-        for sets in match:
-            for word in range(len(sets)):
-                print("sets. " + sets[word])
-                if sets[word] =='':
-                    continue
-                elif word == 0:
-                    print("command: "+str(sets[word]))
-                elif word == 1:
-                    print("tag: "+str(sets[word]))
-                elif word == 2:
-                    print("task: "+str(sets[word]))
-                elif word == 3:
-                    print("literal: "+str(sets[word]))
-                elif word == 4:
-                    print("word: "+str(sets[word]))
+    Its there to be inserted into filterbank when gtg starts and also to be 
+    connected to the tagtree element AKA tagsidebar ^^
+    
+    as such any any additional variables to the search have to go through 
+    self.paramsToFilter{} as that is always passed to the filter
+    """

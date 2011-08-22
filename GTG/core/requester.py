@@ -162,27 +162,32 @@ class Requester(gobject.GObject):
                 self.emit('tag-modified', tag.get_name())
         return self.__basetree.del_node(tid,recursive=recursive)
     
-    def get_all_titles(self):
+    def get_all_titles(self, lowercase=False):
         """
         Gets the titles from all tasks
-        """
-        titles = []
-        nodes = self.get_main_view().get_all_nodes()
-        for x in nodes:
-            titles.append(self.get_main_view().get_node(x).get_title())
-        return titles
-    def get_all_titles_lowercase(self):
-        """
-        Gets the titles from all tasks, lowercased
         
-        useful for non case-sensitive searches
+        if lowercase, titles are return in lowercase :)
         """
         titles = []
         nodes = self.get_main_view().get_all_nodes()
-        for x in nodes:
-            titles.append(self.get_main_view().get_node(x).get_title().lower())
+        if lowercase:
+            for x in nodes:
+                titles.append(self.get_main_view().get_node(x).get_title().lower())
+        else:
+            for x in nodes:
+                titles.append(self.get_main_view().get_node(x).get_title())
         return titles
-
+    
+    def get_first_task(self, tree='search'):
+        """
+        returns the first task from a treeview
+        
+        default is a search view
+        """
+        nodes = self.get_search_tree(tree,False).get_all_nodes()
+        if len(nodes)>0:
+            return nodes[0]
+        
     ############### Tags ##########################
     ###############################################
     
@@ -212,7 +217,25 @@ class Requester(gobject.GObject):
         @return: The newly-created tag.
         """
         return self.ds.new_tag(tagname)
-
+    
+    def new_view(self, viewname, params):
+        """
+        Similar to the above
+        Create a new view with the given name.
+        Note: this modifies the datastore.
+        
+        @param viename: The name of the new view.
+        @param param:   parameters of the search to save
+        @return:        The newly-created view.
+        """
+        return self.ds.new_view(viewname, params)
+    
+    def remove_view(self, viewname):
+        """
+        calls datastore to remove the given view
+        """
+        self.ds.remove_view(viewname)
+    
     def rename_tag(self, oldname, newname):
         self.ds.rename_tag(oldname, newname)
 
@@ -244,11 +267,20 @@ class Requester(gobject.GObject):
         """
         Gets all tags from all tasks
         """
-        temptree = self.ds.get_tagstore().get_viewtree(name='unfiltered')
-        temptree.reset_filters()
-        tags = temptree.get_all_nodes()
-        #tags = self.get_main_view().get_all_nodes()
+        tags = self.ds.get_tagstore().get_main_view().get_all_nodes()
         return tags
+    
+    def get_view_names(self):
+        """
+        returns the names of all views
+        """
+        return self.ds.get_view_control_names()
+    
+    def get_view_dic(self):
+        """
+        returns the dic of all views and params
+        """
+        return self.ds.get_view_dic()
 
     ############## Backends #######################
     ###############################################

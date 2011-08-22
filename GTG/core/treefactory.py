@@ -106,6 +106,7 @@ class TreeFactory:
         p = {'transparent':True}
         self.tasktree.add_filter('search',\
                                     self.search,parameters=None)
+        
         # Build the separator
         sep_tag = Tag(CoreConfig.SEP_TAG,req=req)
         sep_tag.set_attribute("special","sep")
@@ -280,10 +281,10 @@ class TreeFactory:
                 if task.get_status() != Task.STA_ACTIVE:
                     return False
             if parameters.get('now'):
-                if str(task.get_due_date()) not in self.dicKeyword["now"]:
+                if str(task.get_due_date()) != 'now':
                     return False
             else:
-                if str(task.get_due_date()) in self.dicKeyword["now"]:
+                if str(task.get_due_date()) == 'now':
                     return False
         #check the due date for a soon
         if 'soon' in parameters:
@@ -292,10 +293,10 @@ class TreeFactory:
                 if task.get_status() != Task.STA_ACTIVE:
                     return False
             if parameters.get('soon'):
-                if str(task.get_due_date()) not in self.dicKeyword["soon"]:
+                if str(task.get_due_date()) != 'soon':
                     return False
             else:
-                if str(task.get_due_date()) in self.dicKeyword["soon"]:
+                if str(task.get_due_date()) == 'soon':
                     return False
         #check the due date for a later
         if 'later' in parameters:
@@ -304,10 +305,10 @@ class TreeFactory:
                 if task.get_status() != Task.STA_ACTIVE:
                     return False
             if parameters.get('later'):
-                if str(task.get_due_date()) not in self.dicKeyword["later"]:
+                if str(task.get_due_date()) != 'later':
                     return False
             else:
-                if str(task.get_due_date()) in self.dicKeyword["later"]:
+                if str(task.get_due_date()) == 'later':
                     return False
         #check the due date for a later
         if 'late' in parameters:

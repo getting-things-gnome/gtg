@@ -67,6 +67,7 @@ class DataStore(object):
         self.requester = requester.Requester(self,global_conf)
         self.tagfile = None
         self.__tagstore = self.treefactory.get_tags_tree(self.requester)
+        self.view_params = {}
         self.added_tag = {}
         self.load_tag_tree()
         self._backend_signals = BackendSignals()
@@ -143,6 +144,39 @@ class DataStore(object):
         else:
             raise IndexError('tag %s was already in the datastore' %tagname)
         return tag
+    
+    def new_view(self,viewname, params):
+        """Create a new view and return it or return the existing one
+        with corresponding name"""
+        def adding_view(vname,tag, params):
+            #if not self.__tagstore.get_node('search').has_node(tname):
+            if not self.__tagstore.has_node(vname):
+                self.__tasks.add_filter(vname,self.treefactory.search,parameters=params)
+                self.__tagstore.add_node(tag,'search')
+                tag.set_save_callback(self.save)
+                self.added_tag.pop(vname)
+                Log.debug("********* view added %s *******" % vname)
+            else:
+                print "Warning: Trying to add tag %s multiple times" %tname
+        #we create a new view from a name
+        vname = viewname.encode("UTF-8")
+        #if vname not in self.tags:
+        if not self.__tagstore.has_node(vname):
+            if vname not in self.added_tag:
+                tag = Tag(vname, req=self.requester)
+                #tag.set_attribute("special","searchsaved")
+                tag.set_attribute("label","<span weight='bold'>%s</span>"%(vname))
+                tag.set_attribute("icon","search")
+                self.added_tag[vname] = tag
+                adding_view(vname,tag, params)
+                #puts for save on exit
+                self.add_view_control(vname, params)
+            else:
+                #it means that we are in the process of adding the tag
+                tag = self.added_tag[tname]
+        else:
+            raise IndexError('view %s was already in the datastore' %vname)
+        return tag
         
     def rename_tag(self,oldname,newname):
         print "Tag renaming not implemented yet"
@@ -158,37 +192,121 @@ class DataStore(object):
             return self.__tagstore.get_node(tagname)
         else:
             return None
+    def remove_view(self,viewname):
+        """
+        Removes a tag from the tagtree
+        Should only be used to remove views
+        """
+        if self.__tagstore.has_node(viewname):
+            self.__tagstore.del_node(viewname)
+            self.del_view_control(viewname)
+        else:
+            raise IndexError("No view to by named %s" % viewname)
             
     def load_tag_tree(self):
+        """
+        Loads the tag tree from a xml file
+        """
+        def convert_to_boolean(value):
+            if value == 'True':
+                return True
+            else:
+                return False
         # Loading tags
         tagfile = os.path.join(CoreConfig().get_data_dir(), TAG_XMLFILE)
         doc, xmlstore = cleanxml.openxmlfile(tagfile,TAG_XMLROOT)
         for t in xmlstore.childNodes:
             #We should only care about tag with a name beginning with "@"
             #Other are special tags
+            parent = t.getAttribute('parent')
             tagname = t.getAttribute("name")
-            tag = self.new_tag(tagname)
-            attr = t.attributes
-            i = 0
-            while i < attr.length:
-                at_name = attr.item(i).name
-                at_val = t.getAttribute(at_name)
-                tag.set_attribute(at_name, at_val)
-                i += 1
-            parent = tag.get_attribute('parent')
-            if parent:
-#                if self.__tagstore.has_node(parent):
-#                    pnode = self.__tagstore.get_node(parent)
-#                else:
-#                    pnode=self.new_tag(parent)
-                tag.set_parent(parent)
+            if parent == 'search':
+                self.new_view(tagname, self.view_params[tagname])
+            #if the xml finds a view
+            elif parent == 'view':
+                self.view_params[tagname] = {}
+                for i in t.childNodes:
+                    name = i.getAttribute("name")
+                    self.view_params[tagname][name] = []
+                    value = []
+                    #if its one of these, has two nodes
+                    if name == 'tasks' or name == 'tags' or name == 'words' or name == 'literals':
+                        text = []
+                        sub_list = i.getElementsByTagName("text")
+                        #gets the text
+                        for s in sub_list :
+                            text.append(str(s.childNodes[0].nodeValue))
+                        #gets the values
+                        sub_list = i.getElementsByTagName("value")
+                        #from xml
+                        for s in sub_list :
+                            bool = convert_to_boolean(str(s.childNodes[0].nodeValue))
+                            value.append(bool)
+                        #into parameters
+                        for i in range(len(text)):
+                            self.view_params[tagname][name].append((value[i],text[i]))
+                    else:
+                        #gets the values
+                        sub_list = i.getElementsByTagName("value")
+                        #from xml
+                        for s in sub_list :
+                            bool = convert_to_boolean(str(s.childNodes[0].nodeValue))
+                            value.append(bool)
+                        #into parameters
+                        for i in range(len(value)):
+                            self.view_params[tagname][name].append(value[i])
+            else:
+                tag = self.new_tag(tagname)
+                attr = t.attributes
+                i = 0
+                while i < attr.length:
+                    at_name = attr.item(i).name
+                    at_val = t.getAttribute(at_name)
+                    tag.set_attribute(at_name, at_val)
+                    i += 1
+                #parent = tag.get_attribute('parent')
+                if parent:
+    #                if self.__tagstore.has_node(parent):
+    #                    pnode = self.__tagstore.get_node(parent)
+    #                else:
+    #                    pnode=self.new_tag(parent)
+                    tag.set_parent(parent)
+                    #self.__tagstore.add_node(tag,parent)
         self.tagfile = tagfile
+        
                 
     def save_tagtree(self):
+        """
+        saves the tag tree to a xml file
+        """
         if self.tagfile:
             doc, xmlroot = cleanxml.emptydoc(TAG_XMLROOT)
             tags = self.__tagstore.get_main_view().get_all_nodes()
             already_saved = [] #We avoid saving the same tag twice
+            
+            #save views
+            for view in self.view_params:
+                #set name and view so it can be identified on load
+                t_xml = doc.createElement("view")
+                t_xml.setAttribute("name", view)
+                t_xml.setAttribute("parent", 'view')
+                #for each parameter
+                for el in self.view_params[view]:
+                    element = doc.createElement(el)
+                    element.setAttribute("name", el)
+                    if el == 'tasks' or el == 'tags' or el == 'words' or el == 'literals':
+                        for i in self.view_params[view].get(el):
+                        #special case where you have to save 2 values
+                            cleanxml.addTextNode(doc,element,"value",str(i[0]))
+                            cleanxml.addTextNode(doc,element,"text",str(i[1]))
+                        #element.setAttribute("value", str(i[0]))
+                        #element.setAttribute("text", str(i[1]))
+                    else:
+                        cleanxml.addTextNode(doc,element,"value",str(self.view_params[view].get(el)))
+                            #element.setAttribute("value", str(i))
+                    t_xml.appendChild(element)
+                xmlroot.appendChild(t_xml)
+            
             #we don't save tags with no attributes
             #It saves space and allow the saved list growth to be controlled
             for tname in tags:
@@ -205,9 +323,33 @@ class DataStore(object):
                             if value:
                                 t_xml.setAttribute(a, value)
                         xmlroot.appendChild(t_xml)
+                        
             cleanxml.savexml(self.tagfile, doc)
     
-
+    def add_view_control(self, name, params):
+        """
+        adds a view and its parameters to the control dic
+        """
+        self.view_params[name] = params
+    
+    def del_view_control(self, name):
+        """
+        adds a view and its parameters to the control dic
+        """
+        del(self.view_params[name])
+        
+    def get_view_control_names(self):
+        """
+        returns the names of the views
+        """
+        return self.view_params.keys()
+    
+    def get_view_dic(self):
+        """
+        returns the dic of the views
+        """
+        return self.view_params
+        
     ##########################################################################
     ### Tasks functions
     ##########################################################################
