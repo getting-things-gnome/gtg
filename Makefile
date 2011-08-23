@@ -2,7 +2,8 @@
 build:
 
 # Run all of the tests.
-check:
+# FIXME special name to not run tests
+make-a-sanity-check:
 	./run-tests
 
 # Get rid of stale files or files made during testing.
