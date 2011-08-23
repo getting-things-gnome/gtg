@@ -1,7 +1,8 @@
+# Just dump action to pack GTG correctly at Launchpad PPA
+build:
 
 # Run all of the tests.
-# FIXME rename this command back to check to be part of building process
-check-tests:
+check:
 	./run-tests
 
 # Get rid of stale files or files made during testing.
