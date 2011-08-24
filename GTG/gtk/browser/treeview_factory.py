@@ -41,6 +41,10 @@ class TreeviewFactory():
         #treeview to retrieve the style, we save that color when we 
         #build the treeview.
         self.unactive_color = "#888a85"
+
+        # List of keys for connecting/disconnecting Tag tree
+        self.tag_cllbcks = []
+
         
         
     #############################
@@ -296,12 +300,23 @@ class TreeviewFactory():
         col['order'] = 3
         desc[col_name] = col
 
-        active_tasks_tree = self.req.get_tasks_tree()
-        active_tasks_tree.register_cllbck('node-added-inview', self._update_tags)
-        active_tasks_tree.register_cllbck('node-modified-inview', self._update_tags)
-        active_tasks_tree.register_cllbck('node-deleted-inview', self._update_tags)
+        self.enable_update_tags()
 
         return self.build_tag_treeview(tree,desc)
+
+    def enable_update_tags(self):
+        self.tag_cllbcks = []
+
+        tasks = self.req.get_tasks_tree()
+        for event in 'node-added-inview', 'node-modified-inview', 'node-deleted-inview':
+            handle = tasks.register_cllbck(event, self._update_tags)
+            self.tag_cllbcks.append((event, handle))
+
+    def disable_update_tags(self):
+        tasks = self.req.get_tasks_tree()
+        for event, handle in self.tag_cllbcks:
+            tasks.deregister_cllbck(event, handle)
+        self.tag_cllbcks = []
 
     def _update_tags(self, node_id, path):
         tree = self.req.get_tag_tree().get_basetree()

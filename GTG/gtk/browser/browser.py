@@ -93,6 +93,7 @@ class TaskBrowser(gobject.GObject):
 
 
         ### YOU CAN DEFINE YOUR INTERNAL MECHANICS VARIABLES BELOW
+        self.in_toggle_workview = False
 
         # Setup default values for view
         self._init_browser_config()
@@ -515,15 +516,36 @@ class TaskBrowser(gobject.GObject):
         return True
 
     def do_toggle_workview(self):
-        #We have to be careful here to avoid a loop of signals
-        #menu_state   = self.menu_view_workview.get_active()
-        #button_state = self.toggle_workview.get_active()
-        #We do something only if both widget are in different state
+        """ Switch between default and work view
+
+        Updating tags is disabled while changing view. It consumes
+        a lot of CPU cycles and the user does not see it. Afterwards,
+        updating of tags is re-enabled and all tags are refreshed.
+
+        Because workview can be switched from more than one button
+        (currently toggle button and check menu item), we need to change
+        status of others also. It invokes again this method => 
+        a loop of signals.
+        
+        It is more flexible to have a dedicated variable
+        (self.in_toggle_workview) which prevents that recursion. The other way
+        how to solve this is to checking state of those two buttons and check
+        if they are not the same. Adding another way may complicate things...
+        """
+
+        if self.in_toggle_workview:
+            return
+        self.in_toggle_workview = True
+        self.tv_factory.disable_update_tags()
+
         if self.config.get('view') == 'workview':
             self.set_view('default')
         else:
             self.set_view('workview')
-        
+
+        self.tv_factory.enable_update_tags()
+        self.tagtree.refresh_all()
+        self.in_toggle_workview = False
         
     def set_view(self,viewname):
         if viewname == 'default':
@@ -538,8 +560,6 @@ class TaskBrowser(gobject.GObject):
         self.toggle_workview.set_active(workview)
         #The config_set has to be after the toggle, else you will have a loop
         self.config.set('view',viewname)
-        if self.tagtreeview:
-            self.tagtree.refresh_all()
         self.vtree_panes['active'].set_col_visible('startdate',not workview)
 
     def _update_window_title(self,nid=None,path=None,state_id=None):
