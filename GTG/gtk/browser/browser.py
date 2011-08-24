@@ -1167,6 +1167,8 @@ class TaskBrowser(gobject.GObject):
                 task.set_status(Task.STA_DISMISSED)
 
     def on_select_tag(self, widget=None, row=None, col=None):
+        self.tv_factory.disable_update_tags()
+
         #When you click on a tag, you want to unselect the tasks
         taglist = self.get_selected_tags()
         #We apply filters for every visible ViewTree
@@ -1178,6 +1180,13 @@ class TaskBrowser(gobject.GObject):
             if len(taglist) > 0:
                 #FIXME : support for multiple tags selection
                 vtree.apply_filter(taglist[0],refresh=True)
+
+        # When enable_update_tags we should update all tags to match
+        # the current state. However, applying tag filter does not influence
+        # other tags, because of transparent filter. Therefore there is no
+        # self.tagree.refresh_all() => a significant optimization!
+        # See do_toggle_workview()
+        self.tv_factory.enable_update_tags()
 
     def on_taskdone_cursor_changed(self, selection=None):
         """Called when selection changes in closed task view.
