@@ -450,7 +450,7 @@ class TaskView(gtk.TextView):
                 conti = end.forward_to_line_end()
         #We don't want to deserialize the title
         #Let's get the pure text directly
-        title = self.buff.get_text(start,end)
+        title = unicode(self.buff.get_text(start,end))
         #Let's strip blank lines
         stripped = title.strip(' \n\t')
         return stripped
