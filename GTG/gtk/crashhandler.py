@@ -172,6 +172,10 @@ def show_error_window(error_string, add_apport_button=False):
     if APP_NAME:
         title = APP_NAME
     global dialog
+    # Do not allow more than one error window
+    if dialog is not None:
+        return 1
+
     dialog = gtk.Dialog(title)
 
 
