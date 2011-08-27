@@ -25,7 +25,6 @@ import calendar
 import httplib
 import os
 import rfc822
-import simplejson
 import sys
 import tempfile
 import textwrap
@@ -35,6 +34,12 @@ import urllib2
 import urlparse
 import gzip
 import StringIO
+
+# Choose simplejson or json library by their availability
+try:
+    import simplejson as json
+except ImportError:
+    import json
 
 try:
   from hashlib import md5
@@ -390,7 +395,7 @@ class Status(object):
     Returns:
       A JSON string representation of this twitter.Status instance
    '''
-    return simplejson.dumps(self.AsDict(), sort_keys=True)
+    return json.dumps(self.AsDict(), sort_keys=True)
 
   def AsDict(self):
     '''A dict representation of this twitter.Status instance.
@@ -893,7 +898,7 @@ class User(object):
     Returns:
       A JSON string representation of this twitter.User instance
    '''
-    return simplejson.dumps(self.AsDict(), sort_keys=True)
+    return json.dumps(self.AsDict(), sort_keys=True)
 
   def AsDict(self):
     '''A dict representation of this twitter.User instance.
@@ -1205,7 +1210,7 @@ class DirectMessage(object):
     Returns:
       A JSON string representation of this twitter.DirectMessage instance
    '''
-    return simplejson.dumps(self.AsDict(), sort_keys=True)
+    return json.dumps(self.AsDict(), sort_keys=True)
 
   def AsDict(self):
     '''A dict representation of this twitter.DirectMessage instance.
@@ -1381,7 +1386,7 @@ class Api(object):
 
     url  = '%s/statuses/public_timeline.json' % self.base_url
     json = self._FetchUrl(url,  parameters=parameters)
-    data = simplejson.loads(json)
+    data = json.loads(json)
 
     self._CheckForTwitterError(data)
 
@@ -1471,7 +1476,7 @@ class Api(object):
     # Make and send requests
     url  = 'http://search.twitter.com/search.json'
     json = self._FetchUrl(url, parameters=parameters)
-    data = simplejson.loads(json)
+    data = json.loads(json)
 
     self._CheckForTwitterError(data)
 
@@ -1537,7 +1542,7 @@ class Api(object):
     if since_id:
       parameters['since_id'] = since_id
     json = self._FetchUrl(url, parameters=parameters)
-    data = simplejson.loads(json)
+    data = json.loads(json)
     self._CheckForTwitterError(data)
     return [Status.NewFromJsonDict(x) for x in data]
 
@@ -1620,7 +1625,7 @@ class Api(object):
         raise TwitterError("page must be an integer")
 
     json = self._FetchUrl(url, parameters=parameters)
-    data = simplejson.loads(json)
+    data = json.loads(json)
     self._CheckForTwitterError(data)
     return [Status.NewFromJsonDict(x) for x in data]
 
@@ -1642,7 +1647,7 @@ class Api(object):
       raise TwitterError("id must be an long integer")
     url = '%s/statuses/show/%s.json' % (self.base_url, id)
     json = self._FetchUrl(url)
-    data = simplejson.loads(json)
+    data = json.loads(json)
     self._CheckForTwitterError(data)
     return Status.NewFromJsonDict(data)
 
@@ -1665,7 +1670,7 @@ class Api(object):
       raise TwitterError("id must be an integer")
     url = '%s/statuses/destroy/%s.json' % (self.base_url, id)
     json = self._FetchUrl(url, post_data={})
-    data = simplejson.loads(json)
+    data = json.loads(json)
     self._CheckForTwitterError(data)
     return Status.NewFromJsonDict(data)
 
@@ -1700,7 +1705,7 @@ class Api(object):
     if in_reply_to_status_id:
       data['in_reply_to_status_id'] = in_reply_to_status_id
     json = self._FetchUrl(url, post_data=data)
-    data = simplejson.loads(json)
+    data = json.loads(json)
     self._CheckForTwitterError(data)
     return Status.NewFromJsonDict(data)
 
@@ -1763,7 +1768,7 @@ class Api(object):
     if page:
       parameters['page'] = page
     json = self._FetchUrl(url, parameters=parameters)
-    data = simplejson.loads(json)
+    data = json.loads(json)
     self._CheckForTwitterError(data)
     return [Status.NewFromJsonDict(x) for x in data]
 
@@ -1789,7 +1794,7 @@ class Api(object):
     if page:
       parameters['page'] = page
     json = self._FetchUrl(url, parameters=parameters)
-    data = simplejson.loads(json)
+    data = json.loads(json)
     self._CheckForTwitterError(data)
     return [User.NewFromJsonDict(x) for x in data]
 
@@ -1822,7 +1827,7 @@ class Api(object):
       if page:
           parameters['page'] = page
       json = self._FetchUrl(url, parameters=parameters)
-      data = simplejson.loads(json)
+      data = json.loads(json)
       self._CheckForTwitterError(data)
       return data
 
@@ -1841,7 +1846,7 @@ class Api(object):
     if page:
       parameters['page'] = page
     json = self._FetchUrl(url, parameters=parameters)
-    data = simplejson.loads(json)
+    data = json.loads(json)
     self._CheckForTwitterError(data)
     return [User.NewFromJsonDict(x) for x in data]
 
@@ -1855,7 +1860,7 @@ class Api(object):
     '''
     url = '%s/statuses/featured.json' % self.base_url
     json = self._FetchUrl(url)
-    data = simplejson.loads(json)
+    data = json.loads(json)
     self._CheckForTwitterError(data)
     return [User.NewFromJsonDict(x) for x in data]
 
@@ -1872,7 +1877,7 @@ class Api(object):
     '''
     url = '%s/users/show/%s.json' % (self.base_url, user)
     json = self._FetchUrl(url)
-    data = simplejson.loads(json)
+    data = json.loads(json)
     self._CheckForTwitterError(data)
     return User.NewFromJsonDict(data)
 
@@ -1903,7 +1908,7 @@ class Api(object):
     if page:
       parameters['page'] = page 
     json = self._FetchUrl(url, parameters=parameters)
-    data = simplejson.loads(json)
+    data = json.loads(json)
     self._CheckForTwitterError(data)
     return [DirectMessage.NewFromJsonDict(x) for x in data]
 
@@ -1924,7 +1929,7 @@ class Api(object):
     url = '%s/direct_messages/new.json' % self.base_url
     data = {'text': text, 'user': user}
     json = self._FetchUrl(url, post_data=data)
-    data = simplejson.loads(json)
+    data = json.loads(json)
     self._CheckForTwitterError(data)
     return DirectMessage.NewFromJsonDict(data)
 
@@ -1943,7 +1948,7 @@ class Api(object):
     '''
     url = '%s/direct_messages/destroy/%s.json' % (self.base_url, id)
     json = self._FetchUrl(url, post_data={})
-    data = simplejson.loads(json)
+    data = json.loads(json)
     self._CheckForTwitterError(data)
     return DirectMessage.NewFromJsonDict(data)
 
@@ -1959,7 +1964,7 @@ class Api(object):
     '''
     url = '%s/friendships/create/%s.json' % (self.base_url, user)
     json = self._FetchUrl(url, post_data={})
-    data = simplejson.loads(json)
+    data = json.loads(json)
     self._CheckForTwitterError(data)
     return User.NewFromJsonDict(data)
 
@@ -1975,7 +1980,7 @@ class Api(object):
     '''
     url = '%s/friendships/destroy/%s.json' % (self.base_url, user)
     json = self._FetchUrl(url, post_data={})
-    data = simplejson.loads(json)
+    data = json.loads(json)
     self._CheckForTwitterError(data)
     return User.NewFromJsonDict(data)
 
@@ -1992,7 +1997,7 @@ class Api(object):
     '''
     url = '%s/favorites/create/%s.json' % (self.base_url, status.id)
     json = self._FetchUrl(url, post_data={})
-    data = simplejson.loads(json)
+    data = json.loads(json)
     self._CheckForTwitterError(data)
     return Status.NewFromJsonDict(data)
 
@@ -2009,7 +2014,7 @@ class Api(object):
     '''
     url = '%s/favorites/destroy/%s.json' % (self.base_url, status.id)
     json = self._FetchUrl(url, post_data={})
-    data = simplejson.loads(json)
+    data = json.loads(json)
     self._CheckForTwitterError(data)
     return Status.NewFromJsonDict(data)
 
@@ -2041,7 +2046,7 @@ class Api(object):
       url = '%s/favorites.json' % self.base_url
 
     json = self._FetchUrl(url, parameters=parameters)
-    data = simplejson.loads(json)
+    data = json.loads(json)
 
     self._CheckForTwitterError(data)
 
@@ -2086,7 +2091,7 @@ class Api(object):
       parameters['page'] = page
 
     json = self._FetchUrl(url, parameters=parameters)
-    data = simplejson.loads(json)
+    data = json.loads(json)
 
     self._CheckForTwitterError(data)
 
@@ -2102,7 +2107,7 @@ class Api(object):
     '''
     url = '%s/users/show.json?email=%s' % (self.base_url, email)
     json = self._FetchUrl(url)
-    data = simplejson.loads(json)
+    data = json.loads(json)
     self._CheckForTwitterError(data)
     return User.NewFromJsonDict(data)
 
@@ -2123,7 +2128,7 @@ class Api(object):
         return None
       else:
         raise http_error
-    data = simplejson.loads(json)
+    data = json.loads(json)
     self._CheckForTwitterError(data)
     return User.NewFromJsonDict(data)
 
@@ -2221,7 +2226,7 @@ class Api(object):
     '''
     url  = '%s/account/rate_limit_status.json' % self.base_url
     json = self._FetchUrl(url, no_cache=True)
-    data = simplejson.loads(json)
+    data = json.loads(json)
 
     self._CheckForTwitterError(data)
 

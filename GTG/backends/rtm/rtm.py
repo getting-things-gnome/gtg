@@ -15,18 +15,22 @@ from hashlib import md5
 from GTG import _
 from GTG.tools.logger import Log
 
-_use_simplejson = False
+_use_jsonlib = False
 try:
-    import simplejson
-    _use_simplejson = True
+    import simplejson as json
+    _use_jsonlib = True
 except ImportError:
     try:
-        from django.utils import simplejson
-        _use_simplejson = True
+        import json as json
+        _use_jsonlib = True
     except ImportError:
-        pass
+        try:
+            from django.utils import simplejson as json
+            _use_jsonlib = True
+        except ImportError:
+            pass
     
-if not _use_simplejson:
+if not _use_jsonlib:
     Log.warning("simplejson module is not available, "
              "falling back to the internal JSON parser. "
              "Please consider installing the simplejson module from "
@@ -91,8 +95,8 @@ class RTM(object):
         json = openURL(SERVICE_URL, params).read()
 
         #LOG.debug("JSON response: \n%s" % json)
-        if _use_simplejson:
-            data = dottedDict('ROOT', simplejson.loads(json))
+        if _use_jsonlib:
+            data = dottedDict('ROOT', json.loads(json))
         else:
             data = dottedJSON(json)
         rsp = data.rsp

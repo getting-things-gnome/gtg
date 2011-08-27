@@ -7,4 +7,4 @@ Description='''Imports tasks from JSON formatted files.
 Authors=Bryce Harrington <bryce@canonical.com>
 Version=0.1
 Enabled=False
-Dependencies=re,urllib2,simplejson
+Dependencies=re,urllib2

@@ -56,7 +56,13 @@ import gtk
 import os
 import re
 import urllib2
-import simplejson as json
+
+# Choose simplejson or json by which is available
+try:
+    import simplejson as json
+except ImportError:
+    import json
+
 from GTG.tools.readurl import readurl
 
 class pluginImportJson:
