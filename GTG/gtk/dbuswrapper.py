@@ -96,14 +96,14 @@ class DBusTaskWrapper(dbus.service.Object):
         """
         Retrieve a list of task data dicts
         """
-        return self.get_tasks_filtered(['all'])
+        return self.GetTasksFiltered(['all'])
 
     @dbus.service.method(BUSNAME, in_signature="as")
     def GetActiveTasks(self, tags):
         """
         Retrieve a list of task data dicts
         """
-        return self.get_tasks_filtered(['active', 'workable'])
+        return self.GetTasksFiltered(['active', 'workable'])
 
     @dbus.service.method(BUSNAME, in_signature="as")
     def GetTaskIdsFiltered(self, filters):
