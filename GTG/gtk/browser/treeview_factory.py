@@ -29,6 +29,26 @@ from GTG.gtk.liblarch_gtk             import TreeView
 from GTG.gtk                          import colors
 from GTG.tools                        import dates
 
+
+class AutoExpandTreeView(TreeView):
+    """TreeView which hide the expander column when not needed"""
+
+    def __init__(self, tree, desc):
+        TreeView.__init__(self, tree, desc)
+        self.show_expander = False
+        self.treemodel.connect("row-has-child-toggled", self.__show_expander_col)
+        self.__show_expander_col(self.treemodel, None, None)
+
+    def __has_child(self, model, path, iter):
+        if model.iter_has_child(iter):
+            self.show_expander = True
+            return True
+
+    def __show_expander_col(self, treemodel, path, iter):
+        self.show_expander = False
+        treemodel.foreach(self.__has_child)
+        self.set_show_expanders(self.show_expander)
+
 class TreeviewFactory():
 
     def __init__(self,requester,config):
@@ -423,7 +443,7 @@ class TreeviewFactory():
         return desc
         
     def build_task_treeview(self,tree,desc):
-        treeview = TreeView(tree,desc)
+        treeview = AutoExpandTreeView(tree,desc)
         #Now that the treeview is done, we can polish
         treeview.set_main_search_column('label')
         treeview.set_expander_column('label')
@@ -440,7 +460,7 @@ class TreeviewFactory():
         return treeview
         
     def build_tag_treeview(self,tree,desc):
-        treeview = TreeView(tree,desc)
+        treeview = AutoExpandTreeView(tree,desc)
         # Global treeview properties
         treeview.set_property("enable-tree-lines", False)
         treeview.set_rules_hint(False)
