@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2011-08-17 12:40+0200\n"
-"PO-Revision-Date: 2010-04-10 12:27+0000\n"
+"PO-Revision-Date: 2011-09-11 11:07+0000\n"
 "Last-Translator: Saša Teković <Unknown>\n"
 "Language-Team: Croatian <hr@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -16,8 +16,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Launchpad-Export-Date: 2011-08-18 04:39+0000\n"
-"X-Generator: Launchpad (build 13697)\n"
+"X-Launchpad-Export-Date: 2011-09-12 04:54+0000\n"
+"X-Generator: Launchpad (build 13900)\n"
 
 #: GTG/gtk/deletion.glade.h:1
 msgid "Confirm task deletion"
@@ -57,7 +57,7 @@ msgstr "Getting Things GNOME! osobitosti"
 
 #: GTG/gtk/preferences.glade.h:9
 msgid "Hide closed tasks older than "
-msgstr ""
+msgstr "Sakrij skrivene zadatke koji su stariji od "
 
 #: GTG/gtk/preferences.glade.h:10
 msgid "Plugins"
@@ -65,7 +65,7 @@ msgstr "Dodaci"
 
 #: GTG/gtk/preferences.glade.h:11
 msgid "Show description preview in the task list."
-msgstr ""
+msgstr "Prikaži pretpregled opisa na popisu zadataka."
 
 #: GTG/gtk/preferences.glade.h:12
 msgid "Start Getting Things GNOME! on every login"
@@ -77,7 +77,7 @@ msgstr "_O dodatku"
 
 #: GTG/gtk/preferences.py:38
 msgid "Click on a plugin to get a description here."
-msgstr ""
+msgstr "Kliknite na dodatak da biste vidjeli opis ovdje."
 
 #: GTG/gtk/delete_dialog.py:63
 msgid ""
@@ -85,25 +85,32 @@ msgid ""
 msgid_plural ""
 "Deleting a task cannot be undone, and will delete the following task: "
 msgstr[0] ""
+"Brisanje zadatka se ne može poništiti. Bit će obrisan sljedeći zadatak: "
 msgstr[1] ""
+"Brisanje zadatka se ne može poništiti. Bit će obrisani sljedeći zadaci "
+msgstr[2] ""
+"Brisanje zadatka se ne može poništiti. Bit će obrisani sljedeći zadaci "
 
 #: GTG/gtk/delete_dialog.py:68
 msgid "Are you sure you want to delete these tasks?"
 msgid_plural "Are you sure you want to delete this task?"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Jeste li sigurni da želite obrisati ovaj zadatak?"
+msgstr[1] "Jeste li sigurni da želite obrisati ove zadatke?"
+msgstr[2] "Jeste li sigurni da želite obrisati ove zadatke?"
 
 #: GTG/gtk/delete_dialog.py:74
 msgid "Keep selected tasks"
 msgid_plural "Keep selected task"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Zadrži označeni zadatak"
+msgstr[1] "Zadrži označene zadatke"
+msgstr[2] "Zadrži označene zadatke"
 
 #: GTG/gtk/delete_dialog.py:77
 msgid "Permanently remove tasks"
 msgid_plural "Permanently remove task"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Trajno ukloni zadatak"
+msgstr[1] "Trajno ukloni zadatke"
+msgstr[2] "Trajno ukloni zadatke"
 
 #: GTG/gtk/delete_dialog.py:108
 #, python-format
@@ -111,30 +118,32 @@ msgid ""
 "\n"
 "And %d more tasks"
 msgstr ""
+"\n"
+"I još %d zadatka"
 
 #: GTG/gtk/backends_dialog/parameters_ui/passwordui.py:50
 msgid "Password:"
-msgstr ""
+msgstr "Lozinka:"
 
 #: GTG/gtk/backends_dialog/parameters_ui/pathui.py:52
 msgid "Filename:"
-msgstr ""
+msgstr "Naziv datoteke:"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:63
 msgid "Import tags"
-msgstr ""
+msgstr "Uvoz oznaka"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:64
 msgid "All tags"
-msgstr ""
+msgstr "Sve oznake"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:65
 msgid "Just these tags"
-msgstr ""
+msgstr "Samo ove oznake"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:69
 msgid "Tags to sync"
-msgstr ""
+msgstr "Oznake koje će se sinkronizirati"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:70
 #: GTG/core/treefactory.py:79
@@ -143,96 +152,100 @@ msgstr "Svi zadaci"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:71
 msgid "Tasks with these tags"
-msgstr ""
+msgstr "Zadaci s ovim oznakama"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:76
 msgid "Username"
-msgstr ""
+msgstr "Korisničko ime"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:82
 msgid "Import tasks from @ replies "
-msgstr ""
+msgstr "Uvoz zadataka iz @ odgovora "
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:87
 msgid "Import tasks from direct messages"
-msgstr ""
+msgstr "Uvoz zadataka iz izravnih poruka"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:91
 msgid "Import tasks from your tweets"
-msgstr ""
+msgstr "Uvoz zadataka iz vaših tweetova"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:95
 msgid "Tag your GTG tasks with the bug tags"
-msgstr ""
+msgstr "Označite svoje GTG zadatke s oznakama grešaka"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:99
 msgid "Tag your GTG tasks with the project targeted by the bug"
-msgstr ""
+msgstr "Označite svoj GTG zadatke s projektom na kojeg ciljaju greške"
 
 #: GTG/gtk/backends_dialog/parameters_ui/periodui.py:51
 msgid "Check for new tasks every"
-msgstr ""
+msgstr "Provjeri nove zadatke svakih"
 
 #: GTG/gtk/backends_dialog/parameters_ui/periodui.py:96
 msgid " minute"
 msgid_plural " minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] " minutu"
+msgstr[1] " minute"
+msgstr[2] " minuta"
 
 #: GTG/gtk/backends_dialog/configurepanel.py:162
 msgid "Ready to start syncing"
-msgstr ""
+msgstr "Spremno za početak sinkronizacije"
 
 #: GTG/gtk/backends_dialog/configurepanel.py:164
 #, python-format
 msgid "Syncing your only task"
 msgid_plural "Syncing all %d tasks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Sinkronizacija vašeg jedinog zadatka"
+msgstr[1] "Sinkronizacija sva %d zadatka"
+msgstr[2] "Sinkronizacija svih %d zadataka"
 
 #: GTG/gtk/backends_dialog/configurepanel.py:169
 #, python-format
 msgid "There's no task tagged %s"
-msgstr ""
+msgstr "Nema zadataka s oznakom %s"
 
 #: GTG/gtk/backends_dialog/configurepanel.py:171
 #, python-format
 msgid "Syncing a task tagged %s"
 msgid_plural "Syncing %d tasks tagged %s"
 msgstr[0] ""
-msgstr[1] ""
+msgstr[1] "Sinkronizacija %d zadatka s oznakom %s"
+msgstr[2] "Sinkronizacija %d zadataka s oznakom %s"
 
 #: GTG/gtk/backends_dialog/configurepanel.py:182
 msgid "Disable syncing"
-msgstr ""
+msgstr "Onemogući sinkronizaciju"
 
 #: GTG/gtk/backends_dialog/configurepanel.py:184
 msgid "Enable syncing"
-msgstr ""
+msgstr "Omogući sinkronizaciju"
 
 #: GTG/gtk/backends_dialog/configurepanel.py:192
 msgid "This is the default backend"
-msgstr ""
+msgstr "Ovo je zadani pozadinski servis"
 
 #: GTG/gtk/backends_dialog/configurepanel.py:195
 msgid "Syncing is enabled"
-msgstr ""
+msgstr "Sinkronizacija je omogućena"
 
 #: GTG/gtk/backends_dialog/configurepanel.py:197
 #: GTG/gtk/backends_dialog/addpanel.py:177
 msgid "Syncing is <span color=\"red\">disabled</span>"
-msgstr ""
+msgstr "Sinkronizacija je <span color=\"red\">onemogućena</span>"
 
 #: GTG/gtk/backends_dialog/addpanel.py:183
 msgid "Author"
 msgid_plural "Authors"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Autor"
+msgstr[1] "Autora"
+msgstr[2] "Autora"
 
 #: GTG/gtk/backends_dialog/__init__.py:287
 #, python-format
 msgid "Do you really want to remove the backend '%s'?"
-msgstr ""
+msgstr "Jeste li sigurni da želite ukloniti pozadinski servis '%s'?"
 
 #: GTG/gtk/editor/taskeditor.glade.h:1
 msgid "Closed on"
@@ -269,7 +282,7 @@ msgstr "Sada"
 
 #: GTG/gtk/editor/taskeditor.glade.h:9
 msgid "Someday"
-msgstr ""
+msgstr "Jednoga dana"
 
 #: GTG/gtk/editor/taskeditor.glade.h:10
 msgid "Soon"
@@ -543,7 +556,7 @@ msgstr "_Novi zadatak"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:33
 msgid "Open GTG documentation in your web browser"
-msgstr ""
+msgstr "Otvori GTG dokumentaciju u web pregledniku"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:34
 msgid "Redo"
@@ -555,7 +568,7 @@ msgstr "Vrati izvornu boju"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:36
 msgid "Set due date"
-msgstr ""
+msgstr "Postavi datum isteka"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:37
 msgid "T_oolbar"
@@ -572,7 +585,7 @@ msgstr "Oznake"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:40
 msgid "Tasks"
-msgstr ""
+msgstr "Zadaci"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:41
 msgid "Und_ismiss"
@@ -612,7 +625,7 @@ msgstr "_Brzo dodavanje stavke"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:50
 msgid "_Set start date"
-msgstr ""
+msgstr "Po_stavi datum početka"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:51
 msgid "_Tags Sidebar"
@@ -632,23 +645,23 @@ msgstr "_Radni prikaz"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:55
 msgid "_clear due date"
-msgstr ""
+msgstr "_ukloni datum isteka"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:56
 msgid "_clear start date"
-msgstr ""
+msgstr "_ukloni datum početka"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:57
 msgid "_later"
-msgstr ""
+msgstr "_kasnije"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:58
 msgid "_now"
-msgstr ""
+msgstr "sa_da"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:59
 msgid "_soon"
-msgstr ""
+msgstr "u_skoro"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:60
 msgid "_tomorrow"
@@ -700,11 +713,11 @@ msgstr "Prikaži samo trenutno akcijske zadatke"
 
 #: GTG/gtk/browser/__init__.py:47
 msgid "Hide this tag from the workview"
-msgstr ""
+msgstr "Sakrij ovu oznaku iz radnog prikaza"
 
 #: GTG/gtk/browser/__init__.py:48
 msgid "Show this tag in the workview"
-msgstr ""
+msgstr "Prikaži ovu oznaku u radnom prikazu"
 
 #: GTG/gtk/browser/custominfobar.py:36
 #, python-format
@@ -712,36 +725,42 @@ msgid ""
 "The <b>%s</b> backend cannot login with the supplied authentication data and "
 "has been disabled. To retry the login, re-enable the backend."
 msgstr ""
+"Pozadinski servis <b>%s</b> se ne može prijaviti s danim podacima, te je "
+"onemogućen. Da biste se ponovili prijavu, trebat ćete pokrenuti pozadinski "
+"servis."
 
 #: GTG/gtk/browser/custominfobar.py:40
 #, python-format
 msgid "Due to a network problem, I cannot contact the <b>%s</b> backend."
 msgstr ""
+"Kontaktiranje pozadinskog servisa <b>%s</b> nije moguće zbog mrežnog "
+"problema."
 
 #: GTG/gtk/browser/custominfobar.py:43
 #, python-format
 msgid "Cannot connect to DBUS, I've disabled the <b>%s</b> backend."
 msgstr ""
+"Spajanje na DBUS nije moguće. Pozadinski servis <b>%s</b> je onemogućen."
 
 #: GTG/gtk/browser/custominfobar.py:105
 msgid "Configure backend"
-msgstr ""
+msgstr "Podešavanje pozadinskog servisa"
 
 #: GTG/gtk/browser/custominfobar.py:106
 msgid "Ignore"
-msgstr ""
+msgstr "Ignoriraj"
 
 #: GTG/gtk/browser/custominfobar.py:114 GTG/gtk/browser/custominfobar.py:119
 msgid "Ok"
-msgstr ""
+msgstr "U redu"
 
 #: GTG/gtk/browser/custominfobar.py:140
 msgid "Confirm"
-msgstr ""
+msgstr "Potvrdi"
 
 #: GTG/gtk/browser/custominfobar.py:142
 msgid "Continue"
-msgstr ""
+msgstr "Nastavi"
 
 #: GTG/gtk/browser/treeview_factory.py:316
 msgid "Start date"
@@ -753,7 +772,7 @@ msgstr "Krajnji rok"
 
 #: GTG/gtk/browser/treeview_factory.py:347
 msgid "Closed date"
-msgstr ""
+msgstr "Zatvoreno stanje"
 
 #: GTG/gtk/browser/treeview_factory.py:392
 msgid "Title"
@@ -801,12 +820,12 @@ msgstr "Ova Tomboy bilješka više ne postoji. Želite li je stvoriti?"
 
 #: GTG/plugins/send_email/sendEmail.py:44
 msgid "Send via email"
-msgstr ""
+msgstr "Pošalji e-poštom"
 
 #: GTG/plugins/send_email/sendEmail.py:69
 #, python-format
 msgid "Status: %s"
-msgstr ""
+msgstr "Stanje: %s"
 
 #: GTG/plugins/send_email/sendEmail.py:70
 #, python-format
@@ -814,6 +833,8 @@ msgid ""
 "\n"
 "Tags: %s"
 msgstr ""
+"\n"
+"Oznake: %s"
 
 #: GTG/plugins/send_email/sendEmail.py:71
 #, python-format
@@ -822,6 +843,9 @@ msgid ""
 "Subtasks:\n"
 "%s"
 msgstr ""
+"\n"
+"Podzadaci:\n"
+"%s"
 
 #: GTG/plugins/send_email/sendEmail.py:73
 #, python-format
@@ -830,11 +854,14 @@ msgid ""
 "Task content:\n"
 "%s"
 msgstr ""
+"\n"
+"Sadržaj zadatka:\n"
+"%s"
 
 #: GTG/plugins/send_email/sendEmail.py:76
 #, python-format
 msgid "Task: %(task_title)s"
-msgstr ""
+msgstr "Zadatak: %(task_title)s"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:1
 msgid "<b>Location Determination Method</b>"
@@ -887,11 +914,11 @@ msgstr "Predložak nije pronađen"
 #: GTG/plugins/export/export.py:121
 #, python-format
 msgid "Could not generate the document: %s"
-msgstr ""
+msgstr "Stvaranje dokumenta nije uspjelo: %s"
 
 #: GTG/plugins/export/export.py:169
 msgid "Export the tasks currently listed"
-msgstr ""
+msgstr "Izvezi trenutno izlistane zadatke"
 
 #: GTG/plugins/export/export.py:322
 msgid "Choose where to save your list"
@@ -899,49 +926,57 @@ msgstr "Odaberite gdje želite spremiti vaš popis"
 
 #: GTG/plugins/export/export_templates/description_pocketmod.py:18
 msgid "Foldable booklet (PDF)"
-msgstr ""
+msgstr "Presavijena knjižica (PDF)"
 
 #: GTG/plugins/export/export_templates/description_pocketmod.py:19
 msgid ""
 "A template to create a <a href=\"http://www.pocketmod.com\">PocketMod</a>, "
 "which is a  small foldable booklet."
 msgstr ""
+"Predložak za stvaranje <a href=\"http://www.pocketmod.com\">PocketModa</a>, "
+"koji je mala, presavijena knjižica."
 
 #: GTG/plugins/export/export_templates/description_simple.py:18
 msgid "A simple Web page (nicely printable)"
-msgstr ""
+msgstr "Jednostavna web stranica (lijepo ispisiva)"
 
 #: GTG/plugins/export/export_templates/description_simple.py:19
 msgid ""
 "A template to create a simple HTML page with some tasks. It can be printed "
 "nicely."
 msgstr ""
+"Predložak za stvaranje jednostavne HTML stranice sa zadacima. Može se lijepo "
+"ispisati."
 
 #: GTG/plugins/export/export_templates/description_sexy.py:18
 msgid "A professional-looking HTML page"
-msgstr ""
+msgstr "Profesionalna HTML stranica"
 
 #: GTG/plugins/export/export_templates/description_sexy.py:19
 msgid ""
 "A template to create a HTML page with some tasks and tags. Tags colors are "
 "also displayed."
 msgstr ""
+"Predložak za stvaranje HTML stranice sa zadacima i oznakama u različitim "
+"bojama."
 
 #: GTG/plugins/export/export_templates/description_textual.py:18
 msgid "Text-only"
-msgstr ""
+msgstr "Samo tekst"
 
 #: GTG/plugins/export/export_templates/description_textual.py:19
 msgid "A template to create a simple text file with some tasks."
-msgstr ""
+msgstr "Predložak za stvaranje jednostavne tekstualne datoteke sa zadacima."
 
 #: GTG/plugins/export/export_templates/description_statusrpt.py:18
 msgid "Status report"
-msgstr ""
+msgstr "Izvještaj o stanju"
 
 #: GTG/plugins/export/export_templates/description_statusrpt.py:19
 msgid "A template to create a compact text file listing only task titles."
 msgstr ""
+"Predložak za stvaranje kompaktne tekstualne datoteke koja sadrži samo "
+"naslove zadataka."
 
 #: GTG/plugins/hamster/hamster.py:154
 msgid "Start task in Hamster"
@@ -965,7 +1000,7 @@ msgstr "gtg je već pokrenut!"
 
 #: GTG/backends/backend_rtm.py:54
 msgid "Remember The Milk"
-msgstr ""
+msgstr "Remember The Milk"
 
 #: GTG/backends/backend_rtm.py:58
 msgid ""
@@ -975,10 +1010,16 @@ msgid ""
 "Note: This product uses the Remember The Milk API but is not endorsed or "
 "certified by Remember The Milk"
 msgstr ""
+"Ovaj pozadinski servis sinkronizira vaše zadatke s web servisom "
+"RememberTheMilk:\n"
+"\t\thttp://rememberthemilk.com\n"
+"\n"
+"Napomena: ovaj proizvod koristi Remember The Milk API, ali nije podržan ili "
+"certificiran od strane Remember The Milka"
 
 #: GTG/backends/backend_tomboy.py:41
 msgid "Tomboy"
-msgstr ""
+msgstr "Tomboy"
 
 #: GTG/backends/backend_tomboy.py:45
 msgid ""
@@ -987,10 +1028,14 @@ msgid ""
 "tag it with the tag you have chosen (you'll configure it later), and it will "
 "appear in GTG."
 msgstr ""
+"Ovaj pozadinski servis sinkronizira sve ili dio vaših Tomboy bilješki s GTG-"
+"om. Ako procijenite da bi bilo dobro imati jednu od vaših bilješki na popisu "
+"zadataka, jednostavno upotrijebite oznaku koju ste sami odredili (odabrat "
+"ćete je kasnije), a bilješka će se automatski pojaviti u GTG-u."
 
 #: GTG/backends/backend_launchpad.py:53
 msgid "Launchpad"
-msgstr ""
+msgstr "Launchpad"
 
 #: GTG/backends/backend_launchpad.py:57
 msgid ""
@@ -1007,26 +1052,38 @@ msgid ""
 "subtasks...): your  changes will be preserved. This is useful to add  "
 "personal annotations to bug"
 msgstr ""
+"Ovaj pozadinski servis vam omogućava uvoz grešaka koje su vam dodijeljene "
+"(ili su dodijeljene nekom drugom) na Launchpadu. Promjene stanja greške "
+"odrazit će se i u GTG zadatku.\n"
+"Imajte na umu da ovaj pozadinski servis podržava samo čitanje, što znači da "
+"ako otvorite jedan od uvezenih zadataka i promijenite :\n"
+"  - naslov\n"
+"  - opis\n"
+"  - oznake\n"
+"vaše će promjene <b>biti poništene</b> kada se pripadajuća greška promijeni. "
+"Osim navedenih stvari, možete slobodno postaviti bilo koje drugo polje "
+"(datum početka/kraja, podzadaci...) - vaše će promjene biti sačuvane. Ovo je "
+"korisno za dodavanje osobnih bilješki za grešku"
 
 #: GTG/backends/backend_launchpad.py:244
 msgid "Bug"
-msgstr ""
+msgstr "Greška"
 
 #: GTG/backends/backend_launchpad.py:324
 msgid "Reported by: "
-msgstr ""
+msgstr "Prijavio/la: "
 
 #: GTG/backends/backend_launchpad.py:329
 msgid "Link to bug: "
-msgstr ""
+msgstr "Poveznica na grešku: "
 
 #: GTG/backends/backend_twitter.py:54
 msgid "Twitter"
-msgstr ""
+msgstr "Twitter"
 
 #: GTG/backends/backend_twitter.py:58
 msgid "Imports your twitter  messages into your GTG "
-msgstr ""
+msgstr "Uvozi vaše Twitter poruke u GTG "
 
 #: GTG/backends/rtm/rtm.py:53
 msgid "Invalid state"
@@ -1034,23 +1091,23 @@ msgstr "Neispravno stanje"
 
 #: GTG/backends/backend_identica.py:54
 msgid "Identi.ca"
-msgstr ""
+msgstr "Identi.ca"
 
 #: GTG/backends/backend_identica.py:58
 msgid "Imports your identi.ca  messages into your GTG "
-msgstr ""
+msgstr "Uvozi vaše Identi.ca poruke u GTG "
 
 #: GTG/backends/backend_localfile.py:61
 msgid "Local File"
-msgstr ""
+msgstr "Lokalna datoteka"
 
 #: GTG/backends/backend_localfile.py:66
 msgid "Your tasks are saved in a text file (XML format). "
-msgstr ""
+msgstr "Vaši su zadaci spremljeni u tekstualnu datoteku (XML format). "
 
 #: GTG/backends/backend_gnote.py:42
 msgid "Gnote"
-msgstr ""
+msgstr "Gnote"
 
 #: GTG/backends/backend_gnote.py:46
 msgid ""
@@ -1059,14 +1116,18 @@ msgid ""
 "tag it with the tag you have chosen (you'll configure it later), and it will "
 "appear in GTG."
 msgstr ""
+"Ovaj pozadinski servis sinkronizira sve ili dio vaših Gnote bilješki s GTG-"
+"om. Ako procijenite da bi bilo dobro imati jednu od bilješki na popisu "
+"zadataka, jednostavno označite bilješku s oznakom koju ste odabrali (podesit "
+"ćete je kasnije), a poruka će se pojaviti u GTG-u."
 
 #: GTG/backends/backend_evolution.py:69
 msgid "Evolution tasks"
-msgstr ""
+msgstr "Evolution zadaci"
 
 #: GTG/backends/backend_evolution.py:73
 msgid "Lets you synchronize your GTG tasks with Evolution tasks"
-msgstr ""
+msgstr "Omogućava vam sinkronizaciju GTG zadataka s Evolution zadacima"
 
 #: GTG/core/firstrun_tasks.py:8
 msgid "Getting started with GTG"
@@ -1357,6 +1418,33 @@ msgid ""
 "\n"
 "If a word begins with @, it is interpreted as a tag."
 msgstr ""
+"Stavka Brzog dodavanja je najbrži način za stvaranje novog zadatka. Možete "
+"je prikazati ili sakriti u izborniku Prikaz.\n"
+"\n"
+"Da biste dodali zadatak, trebate samo upisati njegov naslov i pritisnuti "
+"tipku enter. Zadatak će biti stvoren i odabran u pregledniku zadataka. Ako "
+"je odabrana oznaka u traci oznaka, ta će oznaka već biti dodana novom "
+"zadatku.\n"
+"\n"
+"Zadatak također možete stvoriti s atributima \"tags\", \"due\" i \"defer\" u "
+"stavci brzog dodavanja. Sintaksa za ove atribute je:\n"
+"\n"
+"tags:tag1,tag2,tag3\n"
+" - na ovaj način možete primijeniti koliko god oznaka želite. Svaka oznaka "
+"je odvojena zarezom\n"
+"\n"
+"due:date \n"
+"defer:date \n"
+" - na ovaj način možete primijeniti datum isteka ili odgode. Datum može biti "
+"u formatima yyyy-mm-dd (npr. 2009-04-01), yyyymmdd (20090401), mmdd (0401, u "
+"ovom slučaju se podrazumijeva odabir tekuće godine) ili  today, tomorrow, te "
+"ime dana  (due:monday znači da je datum isteka idući ponedjeljak)\n"
+"\n"
+"Atributi koji su dodani na ovaj način će biti primijenjeni, ali neće biti "
+"prikazani u naslovu.\n"
+"\n"
+"Ako riječ započinje sa znakom @, tada će ta riječ biti postavljena kao "
+"oznaka."
 
 #: GTG/core/plugins/__init__.py:32
 msgid "Everything necessary to run this plugin is available."
