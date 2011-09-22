@@ -114,14 +114,16 @@ def openxmlfile(zefile,root ):
         
     except xml.parsers.expat.ExpatError, msg:
         f.close()
-        Log.debug("Error parsing XML file %s: %s" %(zefile, msg))
+        errormsg = "Error parsing XML file %s: %s" %(zefile, msg)
+        Log.debug(errormsg)
         if os.path.exists(tmpfile):
             Log.debug("Something happened to the tags file. Using backup")
             os.rename(tmpfile, zefile)
             # Ok, try one more time now
             return openxmlfile(zefile, root)
+        # At least, print error message so users are not so much confused
+        print errormsg
         sys.exit(1)
-#    print "closing %s file" %zefile
 
 
 #Return a doc element with only one root element of the name "root"
