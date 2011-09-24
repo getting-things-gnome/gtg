@@ -28,14 +28,15 @@ import openerplib
 
 from xdg.BaseDirectory import xdg_cache_home
 
-from GTG.core.task               import Task
+from GTG import _
 from GTG.backends.genericbackend        import GenericBackend
 from GTG.backends.periodicimportbackend import PeriodicImportBackend
 from GTG.backends.backendsignals import BackendSignals
 from GTG.backends.syncengine     import SyncEngine, SyncMeme
-from GTG import _
-from GTG.tools.logger import Log
+from GTG.core.task               import Task
 from GTG.tools.dates import RealDate, no_date
+from GTG.tools.interruptible            import interruptible
+from GTG.tools.logger import Log
 
 def as_datetime(datestr):
     if not datestr:
@@ -49,7 +50,7 @@ class Backend(PeriodicImportBackend):
         GenericBackend.BACKEND_NAME:       "backend_openerp", \
         GenericBackend.BACKEND_HUMAN_NAME: _("OpenERP"), \
         GenericBackend.BACKEND_AUTHORS:    ["Viktor Nagy"], \
-        GenericBackend.BACKEND_TYPE:       GenericBackend.TYPE_READONLY, \
+        GenericBackend.BACKEND_TYPE:       GenericBackend.TYPE_READWRITE, \
         GenericBackend.BACKEND_DESCRIPTION: \
             _("This backend synchronizes your tasks with an OpenERP server"),
         }
@@ -118,10 +119,74 @@ class Backend(PeriodicImportBackend):
         """
         self._store_pickled_file(self.sync_engine_path, self.sync_engine)
 
+    @interruptible
+    def remove_task(self, tid):
+        """
+        See GenericBackend for an explanation of this function.
+        """
+        self.cancellation_point()
+        try:
+            oerp_id = self.sync_engine.get_remote_id(tid)
+            Log.debug("removing task %s from OpenERP" % oerp_id)
+            self._unlink_task(oerp_id)
+        except KeyError:
+            pass
+        try:
+            self.sync_engine.break_relationship(local_id = tid)
+        except:
+            pass
+
+    @interruptible
+    def set_task(self, task):
+        """
+        TODO: write set_task method
+        """
+        self.cancellation_point()
+        tid = task.get_id()
+        is_syncable = self._gtg_task_is_syncable_per_attached_tags(task)
+        action, oerp_id = self.sync_engine.analyze_local_id( \
+                                tid, \
+                                self.datastore.has_task, \
+                                self._erp_has_task, \
+                                is_syncable)
+        Log.debug("GTG->OERP set task (%s, %s)" % (action, is_syncable))
+
+        if action == None:
+            return
+
+        if action == SyncEngine.ADD:
+            Log.debug('Adding task')
+            return # raise NotImplementedError
+
+        elif action == SyncEngine.UPDATE:
+            # we deal only with updating openerp state
+            by_status = {
+                Task.STA_ACTIVE: lambda oerp_id: \
+                    self._set_open(oerp_id),
+                Task.STA_DISMISSED: lambda oerp_id: \
+                    self._set_state(oerp_id,'cancel'),
+                Task.STA_DONE: lambda oerp_id: \
+                    self._set_state(oerp_id,'close'),
+            }
+            try:
+                by_status[task.get_status()](oerp_id)
+            except:
+                # the given state transition might not be available
+                raise
+
+        elif action == SyncEngine.REMOVE:
+            self.datastore.request_task_deletion(tid)
+            try:
+                self.sync_engine.break_relationship(local_id = tid)
+            except KeyError:
+                pass
+
+        elif action == SyncEngine.LOST_SYNCABILITY:
+            pass
+
 ###################################
 ### OpenERP related
 ###################################
-
 
     def _check_server(self):
         """connect to server"""
@@ -150,13 +215,18 @@ class Backend(PeriodicImportBackend):
 
         return True
 
+    def _get_model(self):
+        if not self.server:
+            self._check_server()
+        return self.server.get_model('project.task')
+
     def _sync_tasks(self):
         '''
         Download tasks from the server and register them in GTG
 
         Existing tasks should not be registered.
         '''
-        task_model = self.server.get_model("project.task")
+        task_model = self._get_model()
         task_ids = task_model.search([("user_id","=", self.server.user_id)])
         tasks = task_model.read(task_ids,
                     ['name', 'description', 'context_id',
@@ -284,7 +354,7 @@ class Backend(PeriodicImportBackend):
         if oerp.has_key('timebox_id'):
             tags.append(oerp['timebox_id'] \
                     and oerp['timebox_id'][1].replace(' ', '_') or 'NoTimebox')
-        new_tags = set(['@' + str(tag) for tag in tags])
+        new_tags = set(['@' + str(tag) for tag in filter(None, tags)])
 
         current_tags = set(gtg.get_tags_name())
         #remove the lost tags
@@ -294,4 +364,32 @@ class Backend(PeriodicImportBackend):
         for tag in new_tags.difference(current_tags):
             gtg.add_tag(tag)
         gtg.add_remote_id(self.get_id(), oerp['rid'])
+
+    def _unlink_task(self, task_id):
+        """Delete a task on the server"""
+        task_model = self._get_model()
+        task_id = int(task_id.split('$')[1])
+        task_model.unlink(task_id)
+
+    def _erp_has_task(self, task_id):
+        Log.debug('Checking task %d' % int(task_id.split('$')[1]))
+        task_model = self._get_model()
+        if task_model.read(int(task_id.split('$')[1]), ['id']):
+            return True
+        return False
+
+    def _set_state(self, oerp_id, state):
+        Log.debug('Setting task %s to %s' % (oerp_id, state))
+        task_model = self._get_model()
+        oerp_id = int(oerp_id.split('$')[1])
+        getattr(task_model, 'do_%s' % state)([oerp_id])
+
+    def _set_open(self, oerp_id):
+        ''' this might mean reopen or open '''
+        task_model = self._get_model()
+        tid = int(oerp_id.split('$')[1])
+        if task_model.read(tid, ['state'])['state'] == 'draft':
+            self._set_state(oerp_id, 'open')
+        else:
+            self._set_state(oerp_id, 'reopen')
 
