@@ -56,7 +56,7 @@ def plugin_icon(column, cell, store, iter):
       PLUGINS_COL_ACTIVATABLE))
 
 
-def plugin_markup(column, cell, store, iter):
+def plugin_markup(column, cell, store, iter, self):
     """Callback to set the content of a PluginTree cell.
     
     See PreferencesDialog._init_plugin_tree().
@@ -64,7 +64,15 @@ def plugin_markup(column, cell, store, iter):
     """
     name = store.get_value(iter, PLUGINS_COL_NAME)
     desc = store.get_value(iter, PLUGINS_COL_SHORT_DESC)
-    cell.set_property('markup', "<b>%s</b>\n%s" % (name, desc))
+    plugin_id = store.get_value(iter, PLUGINS_COL_ID)
+    p = self.pengine.get_plugin(plugin_id)
+    dep = plugin_error_text(p)
+    if dep != 'Everything necessary to run this plugin is available.':
+        dep = dep.split('\n')
+        dep = dep[2] + '\n' + dep[3]
+        cell.set_property('markup', "<b>%s</b>\n%s\n<i>%s</i>" % (name, desc, dep))
+    else:
+        cell.set_property('markup', "<b>%s</b>\n%s" % (name, desc))
     cell.set_property('sensitive', store.get_value(iter,
       PLUGINS_COL_ACTIVATABLE))
 
@@ -211,7 +219,7 @@ class PreferencesDialog:
         name_renderer = gtk.CellRendererText()
         name_renderer.set_property('ellipsize', pango.ELLIPSIZE_END)
         column.pack_start(name_renderer)
-        column.set_cell_data_func(name_renderer, plugin_markup)
+        column.set_cell_data_func(name_renderer, plugin_markup, self)
 
         self.plugin_tree.append_column(column)
 
