@@ -87,8 +87,8 @@ class GenericBackend(object):
         '''
         Called each time it is enabled (including on backend creation).
         Please note that a class instance for each disabled backend *is*
-        created, but it's not initialized. 
-        Optional. 
+        created, but it's not initialized.
+        Optional.
         NOTE: make sure to call super().initialize()
         '''
         #NOTE: I'm disabling this since support for runtime checking of the
@@ -124,7 +124,7 @@ class GenericBackend(object):
     def remove_task(self, tid):
         ''' This function is called from GTG core whenever a task must be
         removed from the backend. Note that the task could be not present here.
-        
+
         @param tid: the id of the task to delete
         '''
         pass
@@ -136,7 +136,7 @@ class GenericBackend(object):
         This function is needed only in the default backend (XML localfile,
         currently).
         The xml parameter is an object containing GTG default tasks.
-        
+
         @param xml: an xml object containing the default tasks.
         '''
         pass
@@ -159,7 +159,7 @@ class GenericBackend(object):
     def quit(self, disable = False):
         '''
         Called when GTG quits or the user wants to disable the backend.
-        
+
         @param disable: If disable is True, the backend won't
                         be automatically loaded when GTG starts
         '''
@@ -209,7 +209,7 @@ class GenericBackend(object):
     # For an example, see the GTG/backends/backend_localfile.py file
     # Each dictionary contains the keys:
     PARAM_DEFAULT_VALUE = "default_value" # its default value
-    PARAM_TYPE = "type"  
+    PARAM_TYPE = "type"
     #PARAM_TYPE is one of the following (changing this changes the way
     # the user can configure the parameter)
     TYPE_PASSWORD = "password" #the real password is stored in the GNOME
@@ -264,7 +264,7 @@ class GenericBackend(object):
                                          PARAM_TYPE: TYPE_LIST_OF_STRINGS, \
                                          PARAM_DEFAULT_VALUE: [ALLTASKS_TAG], \
                                     }}
-    
+
     #Handy dictionary used in type conversion (from string to type)
     _type_converter = {TYPE_STRING: str,
                        TYPE_INT: int,
@@ -286,7 +286,7 @@ class GenericBackend(object):
                 temp_dic[key] = value
         for key, value in cls._static_parameters.iteritems():
             temp_dic[key] = value
-        return temp_dic 
+        return temp_dic
 
     def __init__(self, parameters):
         """
@@ -313,7 +313,7 @@ class GenericBackend(object):
         if Log.is_debugging_mode():
             self.timer_timestep = 5
         else:
-            self.timer_timestep = 1 
+            self.timer_timestep = 1
         self.to_set_timer = None
         self.please_quit = False
         self.cancellation_point = lambda: _cancellation_point(\
@@ -560,7 +560,7 @@ class GenericBackend(object):
         try:
             os.makedirs(os.path.dirname(path))
         except OSError, exception:
-            if exception.errno != errno.EEXIST: 
+            if exception.errno != errno.EEXIST:
                 raise
         #saving
         with open(path, 'wb') as file:
@@ -619,7 +619,7 @@ class GenericBackend(object):
     def launch_setting_thread(self, bypass_quit_request = False):
         '''
         This function is launched as a separate thread. Its job is to perform
-        the changes that have been issued from GTG core. 
+        the changes that have been issued from GTG core.
         In particular, for each task in the self.to_set queue, a task
         has to be modified or to be created (if the tid is new), and for
         each task in the self.to_remove queue, a task has to be deleted
@@ -651,7 +651,7 @@ class GenericBackend(object):
         ''' Save the task in the backend. In particular, it just enqueues the
         task in the self.to_set queue. A thread will shortly run to apply the
         requested changes.
-        
+
         @param task: the task that should be saved
         '''
         tid = task.get_id()
