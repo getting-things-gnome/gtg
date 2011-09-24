@@ -171,15 +171,24 @@ class Backend(PeriodicImportBackend):
         # merge last modified date with generic task data
         logs = task_model.perm_read(task_ids, {}, False)
         self.cancellation_point()
-        tasks = dict(map(lambda t: (str(t['id']), t), tasks))
-        map(lambda l: tasks[str(l['id'])].update(l), logs)
+        def get_task_id(id):
+            return '%s$%d' % (self._parameters['server_host'], id)
+
+        def adjust_task(task):
+            id = task['id']
+            task['rid'] = get_task_id(id)
+            return (id, task)
+
+        tasks = dict(map(adjust_task, tasks))
+        map(lambda l: tasks[l['id']].update(l), logs)
 
         for task in tasks.values():
             self._process_openerp_task(task)
 
         #removing the old ones
         last_task_list = self.sync_engine.get_all_remote()
-        for task_link in set(last_task_list).difference(set(tasks.keys())):
+        new_task_keys = map(get_task_id, tasks.keys())
+        for task_link in set(last_task_list).difference(set(new_task_keys)):
             self.cancellation_point()
             #we make sure that the other backends are not modifying the task
             # set
@@ -197,7 +206,7 @@ class Backend(PeriodicImportBackend):
         updated.
         '''
         Log.debug("Processing task %s (%d)" % (task['name'], task['id']))
-        action, tid = self.sync_engine.analyze_remote_id(str(task['id']),
+        action, tid = self.sync_engine.analyze_remote_id(task['rid'],
                 self.datastore.has_task, lambda b: True)
 
         if action == None:
@@ -210,7 +219,7 @@ class Backend(PeriodicImportBackend):
                 gtg = self.datastore.task_factory(tid)
                 self._populate_task(gtg, task)
                 self.sync_engine.record_relationship(local_id = tid,\
-                            remote_id = str(task['id']), \
+                            remote_id = task['rid'], \
                             meme = SyncMeme(\
                                         gtg.get_modified(), \
                                         as_datetime(task['write_date']), \
@@ -221,7 +230,7 @@ class Backend(PeriodicImportBackend):
                 gtg = self.datastore.get_task(tid)
                 self._populate_task(gtg, task)
                 meme = self.sync_engine.get_meme_from_remote_id( \
-                                                    str(task['id']))
+                                                    task['rid'])
                 meme.set_local_last_modified(gtg.get_modified())
                 meme.set_remote_last_modified(as_datetime(task['write_date']))
         self.save_state()
@@ -287,5 +296,5 @@ class Backend(PeriodicImportBackend):
         #add the new ones
         for tag in new_tags.difference(current_tags):
             gtg.add_tag(tag)
-        gtg.add_remote_id(self.get_id(), str(oerp['id']))
+        gtg.add_remote_id(self.get_id(), oerp['rid'])
 
