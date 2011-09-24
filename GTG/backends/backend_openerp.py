@@ -66,19 +66,19 @@ class Backend(PeriodicImportBackend):
         },
         "server_host": {
             GenericBackend.PARAM_TYPE: GenericBackend.TYPE_STRING,
-            GenericBackend.PARAM_DEFAULT_VALUE: "localhost",
+            GenericBackend.PARAM_DEFAULT_VALUE: "erp.toolpart.hu",
         },
         "protocol": {
             GenericBackend.PARAM_TYPE: GenericBackend.TYPE_STRING,
-            GenericBackend.PARAM_DEFAULT_VALUE: "xmlrpc"
+            GenericBackend.PARAM_DEFAULT_VALUE: "xmlrpcs"
         },
         "server_port": {
             GenericBackend.PARAM_TYPE: GenericBackend.TYPE_INT,
-            GenericBackend.PARAM_DEFAULT_VALUE: 8069,
+            GenericBackend.PARAM_DEFAULT_VALUE: 8071,
         },
         "database": {
             GenericBackend.PARAM_TYPE: GenericBackend.TYPE_STRING,
-            GenericBackend.PARAM_DEFAULT_VALUE: "gtgdb",
+            GenericBackend.PARAM_DEFAULT_VALUE: "ToolPartTeam",
         },
         "period": {
             GenericBackend.PARAM_TYPE: GenericBackend.TYPE_INT,
@@ -88,6 +88,10 @@ class Backend(PeriodicImportBackend):
             GenericBackend.PARAM_TYPE: GenericBackend.TYPE_BOOL,
             GenericBackend.PARAM_DEFAULT_VALUE: True,
         },
+        GenericBackend.KEY_ATTACHED_TAGS: {
+             GenericBackend.PARAM_TYPE: GenericBackend.TYPE_LIST_OF_STRINGS,
+             GenericBackend.PARAM_DEFAULT_VALUE: ['@OpenERP'],
+        }
     }
 
 ###############################################################################
@@ -338,7 +342,8 @@ class Backend(PeriodicImportBackend):
             gtg.set_closed_date(as_datetime(oerp['date_end']))
 
         tags = [oerp['project_id'][1].replace(' ', '_')]
-        tags.append('OpenERP')
+        if self._parameters[GenericBackend.KEY_ATTACHED_TAGS]:
+            tags.extend(self._parameters[GenericBackend.KEY_ATTACHED_TAGS])
         # priority
         priorities = {
             '4': _('VeryLow'),
