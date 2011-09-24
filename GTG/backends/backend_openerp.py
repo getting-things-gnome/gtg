@@ -35,17 +35,13 @@ from GTG.backends.backendsignals import BackendSignals
 from GTG.backends.syncengine     import SyncEngine, SyncMeme
 from GTG import _
 from GTG.tools.logger import Log
+from GTG.tools.dates import RealDate, no_date
 
 def as_datetime(datestr):
     if not datestr:
-        return datetime.datetime.min
+        return no_date
 
-    if len(datestr) > 20:
-        return datetime.datetime.strptime(datestr, "%Y-%m-%d %H:%M:%S.%f")
-    elif len(datestr) > 10:
-        return datetime.datetime.strptime(datestr, "%Y-%m-%d %H:%M:%S")
-    else:
-        return datetime.datetime.strptime(datestr, "%Y-%m-%d")
+    return RealDate(datetime.datetime.strptime(datestr[:10], "%Y-%m-%d").date())
 
 class Backend(PeriodicImportBackend):
 
@@ -69,19 +65,19 @@ class Backend(PeriodicImportBackend):
         },
         "server_host": {
             GenericBackend.PARAM_TYPE: GenericBackend.TYPE_STRING,
-            GenericBackend.PARAM_DEFAULT_VALUE: "localhost",
+            GenericBackend.PARAM_DEFAULT_VALUE: "erp.toolpart.hu",
         },
         "protocol": {
             GenericBackend.PARAM_TYPE: GenericBackend.TYPE_STRING,
-            GenericBackend.PARAM_DEFAULT_VALUE: "xmlrpc"
+            GenericBackend.PARAM_DEFAULT_VALUE: "xmlrpcs"
         },
         "server_port": {
             GenericBackend.PARAM_TYPE: GenericBackend.TYPE_INT,
-            GenericBackend.PARAM_DEFAULT_VALUE: 8069,
+            GenericBackend.PARAM_DEFAULT_VALUE: 8071,
         },
         "database": {
             GenericBackend.PARAM_TYPE: GenericBackend.TYPE_STRING,
-            GenericBackend.PARAM_DEFAULT_VALUE: "gtgdb",
+            GenericBackend.PARAM_DEFAULT_VALUE: "ToolPartTeam",
         },
         "period": {
             GenericBackend.PARAM_TYPE: GenericBackend.TYPE_INT,
@@ -181,6 +177,7 @@ class Backend(PeriodicImportBackend):
 
         tasks = dict(map(adjust_task, tasks))
         map(lambda l: tasks[l['id']].update(l), logs)
+        Log.debug(str(tasks))
 
         for task in tasks.values():
             self._process_openerp_task(task)
