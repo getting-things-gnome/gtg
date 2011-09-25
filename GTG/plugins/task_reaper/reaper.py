@@ -106,6 +106,8 @@ class pluginReaper:
         self.timer.setDaemon(True)
         self.timer.start()
         self.__log("Automatic deletion of old tasks scheduled")
+        # Also run the first iteration immediately
+        self.delete_old_closed_tasks()
 
     def cancel_autopurge(self):
         if self.timer:
