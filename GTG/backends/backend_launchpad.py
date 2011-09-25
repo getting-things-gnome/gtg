@@ -295,7 +295,7 @@ class Backend(PeriodicImportBackend):
                    'self_link': self_link,
                    'modified': self._get_bug_modified_datetime(bug),
                    'owner': owner.display_name,
-                   'completed': bug_task.is_complete,
+                   'completed': bug_task.status in ["Fix Committed", "Fix Released"],
                    'owner_karma': owner.karma}
         bug_dic['number'] = bug_dic['self_link'][bug_dic['self_link'].rindex("/") + 1 :]
         #find the projects target of the bug
