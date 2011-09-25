@@ -165,7 +165,7 @@ class Tag(TreeNode):
         sp_id = self.get_attribute("special")
         if sp_id == "all":
             toreturn = tasktree.get_n_nodes(\
-                    withfilters=['no_disabled_tag'],include_transparent=False)
+                    withfilters=['active'],include_transparent=False)
         elif sp_id == "notag":
             toreturn = tasktree.get_n_nodes(\
                             withfilters=['notag'],include_transparent=False)
