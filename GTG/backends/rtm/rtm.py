@@ -92,13 +92,13 @@ class RTM(object):
         params['format'] = 'json'
         params['api_sig'] = self._sign(params)
 
-        json = openURL(SERVICE_URL, params).read()
+        json_data = openURL(SERVICE_URL, params).read()
 
         #LOG.debug("JSON response: \n%s" % json)
         if _use_jsonlib:
-            data = dottedDict('ROOT', json.loads(json))
+            data = dottedDict('ROOT', json.loads(json_data))
         else:
-            data = dottedJSON(json)
+            data = dottedJSON(json_data)
         rsp = data.rsp
 
         if rsp.stat == 'fail':
