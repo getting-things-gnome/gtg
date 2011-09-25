@@ -100,6 +100,11 @@ def check_instance(directory, uri_list = []):
     with open(pidfile, "w") as f:
         f.write(`os.getpid()`)
 
+def remove_pidfile(directory):
+    """Remove the pid file"""
+    pidfile = os.path.join(directory, "gtg.pid")
+    os.remove(pidfile)
+
 #=== MAIN CLASS ===============================================================
 
 def main(options=None, args=None):
@@ -158,6 +163,8 @@ def core_main_quit(req, ds):
     # Ending the application: we save configuration
     req.save_config()
     ds.save(quit = True)
+    config = req.get_global_config()
+    remove_pidfile(config.get_data_dir())
     sys.exit(0)
 
 
