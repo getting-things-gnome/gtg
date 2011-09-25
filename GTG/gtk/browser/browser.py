@@ -541,6 +541,7 @@ class TaskBrowser(gobject.GObject):
 
         if self.in_toggle_workview:
             return
+
         self.in_toggle_workview = True
         self.tv_factory.disable_update_tags()
 
@@ -549,8 +550,10 @@ class TaskBrowser(gobject.GObject):
         else:
             self.set_view('workview')
 
-        self.tv_factory.enable_update_tags()
-        self.tagtree.refresh_all()
+        if self.tagtree is not None:
+            self.tv_factory.enable_update_tags()
+            self.tagtree.refresh_all()
+
         self.in_toggle_workview = False
         
     def set_view(self,viewname):
@@ -1159,7 +1162,13 @@ class TaskBrowser(gobject.GObject):
         tasks_status = [task.get_status() for task in tasks]
         for uid, task, status in zip(tasks_uid, tasks, tasks_status):
             if status == Task.STA_DONE:
+                # Marking as undone
                 task.set_status(Task.STA_ACTIVE)
+                # Parents of that task must be updated - not to be shown
+                # in workview, update children count, etc.
+                for parent_id in task.get_parents():
+                    parent = self.req.get_task(parent_id)
+                    parent.modified()
             else:
                 task.set_status(Task.STA_DONE)
 
