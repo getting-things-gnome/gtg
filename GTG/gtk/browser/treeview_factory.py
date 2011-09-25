@@ -264,15 +264,6 @@ class TreeviewFactory():
     def tags_treeview(self,tree):
         desc = {}
 
-        # Tag id
-        #col_name = 'id'
-        #col = {}
-        #col['renderer'] = ['markup', gtk.CellRendererText()]
-        #col['value'] = [str, lambda node: node.get_id()]
-        #col['visible'] = True
-        #col['order'] = 0
-        #desc[col_name] = col
-
         #Tag id
         col_name = 'tag_id'
         col = {}
