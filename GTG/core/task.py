@@ -143,7 +143,7 @@ class Task(TreeNode):
             return True
         else:
             return False
-            
+
     #TODO : should we merge this function with set_title ?
     def set_complex_title(self,text,tags=[]):
         if tags:
@@ -151,9 +151,9 @@ class Task(TreeNode):
         due_date = no_date
         defer_date = no_date
         if text:
-            
+
             # Get tags in the title
-            #NOTE: the ?: tells regexp that the first one is 
+            #NOTE: the ?: tells regexp that the first one is
             # a non-capturing group, so it must not be returned
             # to findall. http://www.amk.ca/python/howto/regex/regex.html
             # ~~~~Invernizzi
@@ -262,7 +262,7 @@ class Task(TreeNode):
             pardate = self.req.get_task(par).get_due_date()
             if pardate and zedate > pardate:
                 zedate = pardate
-        
+
         return zedate
 
     def set_start_date(self, fulldate):
@@ -277,7 +277,7 @@ class Task(TreeNode):
         assert(isinstance(fulldate, Date))
         self.closed_date = fulldate
         self.sync()
-        
+
     def get_closed_date(self):
         return self.closed_date
 
@@ -286,7 +286,7 @@ class Task(TreeNode):
         if due_date == no_date:
             return None
         return due_date.days_left()
-    
+
     def get_days_late(self):
         due_date = self.get_due_date()
         if due_date == no_date:
@@ -375,7 +375,7 @@ class Task(TreeNode):
         #we use the inherited childrens
         self.add_child(subt.get_id())
         return subt
-        
+
     def add_child(self, tid):
         """Add a subtask to this task
 
@@ -393,7 +393,7 @@ class Task(TreeNode):
                 child.add_tag(t.get_name())
         self.sync()
         return True
-            
+
     def remove_child(self,tid):
         """Removed a subtask from the task.
 
@@ -407,8 +407,8 @@ class Task(TreeNode):
             return True
         else:
             return False
-            
-            
+
+
     #FIXME: remove this function and use liblarch instead.
     def get_subtasks(self):
         tree = self.get_tree()
@@ -462,7 +462,7 @@ class Task(TreeNode):
         val = unicode(str(att_value), "UTF-8")
         self.attributes[(namespace, att_name)] = val
         self.sync()
-    
+
     def get_attribute(self, att_name, namespace=""):
         """Get the attribute C{att_name}.
 
@@ -479,13 +479,13 @@ class Task(TreeNode):
             return True
         else:
             return False
-          
-#   the following is not currently needed  
+
+#   the following is not currently needed
 #    def modified(self):
 #        TreeNode.modified(self)
 #        for t in self.get_tags():
 #            gobject.idle_add(t.modified)
-        
+
 
     def _modified_update(self):
         '''
@@ -508,7 +508,7 @@ class Task(TreeNode):
                 tag = self.req.new_tag(tname)
             l.append(tag)
         return l
-        
+
     def rename_tag(self, old, new):
         eold = saxutils.escape(saxutils.unescape(old))
         enew = saxutils.escape(saxutils.unescape(new))
@@ -535,25 +535,25 @@ class Task(TreeNode):
                 for child in self.get_subtasks():
                     if child.can_be_deleted:
                         child.add_tag(t)
-            
+
                 tag = self.req.get_tag(t)
                 if not tag:
                     tag = self.req.new_tag(t)
                 tag.modified()
             return True
-    
+
     def add_tag(self, tagname):
         "Add a tag to the task and insert '@tag' into the task's content"
 #        print "add tag %s to task %s" %(tagname,self.get_title())
         if self.tag_added(tagname):
             c = self.content
-            
+
             #strip <content>...</content> tags
             if c.startswith('<content>'):
                 c = c[len('<content>'):]
             if c.endswith('</content>'):
                 c = c[:-len('</content>')]
-            
+
             if not c:
                 # don't need a separator if it's the only text
                 sep = ''
@@ -563,7 +563,7 @@ class Task(TreeNode):
             else:
                 # other text at the beginning, so put the tag on its own line
                 sep = '\n\n'
-            
+
             self.content = "<content><tag>%s</tag>%s%s</content>" % (
                 tagname, sep, c)
             #we modify the task internal state, thus we have to call for a sync
@@ -581,8 +581,9 @@ class Task(TreeNode):
         self.content = self._strip_tag(self.content, tagname)
         if modified:
             tag = self.req.get_tag(tagname)
-            tag.modified()
-    
+            if tag:
+                tag.modified()
+
     def set_only_these_tags(self, tags_list):
         '''
         Given a list of strings representing tags, it makes sure that
@@ -602,12 +603,12 @@ class Task(TreeNode):
                     .replace('<tag>%s</tag>, '%(tagname), newtag) #trail comma
                     .replace('<tag>%s</tag>'%(tagname), newtag)
                     #in case XML is missing (bug #504899)
-                    .replace('%s\n\n'%(tagname), newtag) 
-                    .replace('%s, '%(tagname), newtag) 
+                    .replace('%s\n\n'%(tagname), newtag)
+                    .replace('%s, '%(tagname), newtag)
                     #don't forget a space a the end
                     .replace('%s '%(tagname), newtag)
                )
-     
+
 
     #tag_list is a list of tags names
     #return true if at least one of the list is in the task
@@ -623,7 +624,7 @@ class Task(TreeNode):
                     if not toreturn:
                         toreturn = children_tag(tagc_name)
             return toreturn
-                
+
         #We want to see if the task has no tags
         toreturn = False
         if notag_only:
@@ -635,7 +636,7 @@ class Task(TreeNode):
         elif tag_list:
             for tagname in tag_list:
                 if not toreturn:
-                    toreturn = children_tag(tagname) 
+                    toreturn = children_tag(tagname)
         else:
             #Well, if we don't filter on tags or notag, it's true, of course
             toreturn = True
