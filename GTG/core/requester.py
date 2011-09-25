@@ -187,6 +187,10 @@ class Requester(gobject.GObject):
         l.sort(cmp=lambda x, y: cmp(x.lower(),y.lower()))
         return l
 
+    def get_all_tags(self):
+        tags = self.get_used_tags()
+        return set(self.get_tag(tag) for tag in tags)
+
     ############## Backends #######################
     ###############################################
 
