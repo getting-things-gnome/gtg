@@ -578,6 +578,7 @@ class TaskSource():
             self.timer_timestep = 5
         else:
             self.timer_timestep = 1 
+        self.add_task_handle = None
         self.set_task_handle = None
         self.remove_task_handle = None
         self.to_set_timer = None
@@ -723,6 +724,9 @@ class TaskSource():
         '''
         Helper function to connect signals
         '''
+        if not self.add_task_handle:
+            self.add_task_handle = self.tasktree.register_cllbck('node-added', \
+                                                    self.queue_set_task)
         if not self.set_task_handle:
             self.set_task_handle = self.tasktree.register_cllbck('node-modified', \
                                                     self.queue_set_task)
@@ -734,6 +738,9 @@ class TaskSource():
         '''
         Helper function to disconnect signals
         '''
+        if self.add_task_handle:
+            self.tasktree.deregister_cllbck('node-added', self.set_task_handle)
+            self.add_task_handle = None
         if self.set_task_handle:
             self.tasktree.deregister_cllbck('node-modified', self.set_task_handle)
             self.set_task_handle = None
