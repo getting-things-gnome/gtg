@@ -1130,7 +1130,10 @@ class TaskBrowser(gobject.GObject):
         if apply_to_subtasks.get_active():
             for tid in self.tids_to_addtag:
                 task = self.req.get_task(tid)
-                for i in task.get_self_and_all_subtasks():
+                # FIXME: Python not reinitialize the default value of its parameter
+                # therefore it must be done manually. This function should be refractored
+                # as far it is marked as depricated
+                for i in task.get_self_and_all_subtasks(tasks=[]):
                     taskid = i.get_id()
                     if taskid not in self.tids_to_addtag: 
                         self.tids_to_addtag.append(taskid)        
