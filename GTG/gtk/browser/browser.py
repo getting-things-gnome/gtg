@@ -78,11 +78,11 @@ class TaskBrowser(gobject.GObject):
     def __init__(self, requester, vmanager):
         gobject.GObject.__init__(self)
         # Object prime variables
-        self.priv   = {}
         self.req    = requester
         self.vmanager = vmanager
         self.config = self.req.get_config('browser')
         self.tag_active = False
+        self.filter_cbs = []
         
         #treeviews handlers
         self.vtree_panes = {}
@@ -94,9 +94,6 @@ class TaskBrowser(gobject.GObject):
 
         ### YOU CAN DEFINE YOUR INTERNAL MECHANICS VARIABLES BELOW
         self.in_toggle_workview = False
-
-        # Setup default values for view
-        self._init_browser_config()
 
         # Setup GTG icon theme
         self._init_icon_theme()
@@ -148,17 +145,6 @@ class TaskBrowser(gobject.GObject):
 
 ### INIT HELPER FUNCTIONS #####################################################
 #
-    def _init_browser_config(self):
-        self.priv["tasklist"]                 = {}
-        self.priv["tasklist"]["sort_column"]  = None
-        self.priv["tasklist"]["sort_order"]   = gtk.SORT_ASCENDING
-        self.priv["ctasklist"]                = {}
-        self.priv["ctasklist"]["sort_column"] = None
-        self.priv["ctasklist"]["sort_order"]  = gtk.SORT_ASCENDING
-        self.priv['selected_rows']            = None
-        self.priv['workview']                 = False
-        self.priv['filter_cbs']               = []
-
     def _init_icon_theme(self):
         icon_dirs = CoreConfig().get_icons_directories()
         for i in icon_dirs:
@@ -476,6 +462,16 @@ class TaskBrowser(gobject.GObject):
             self.quickadd_pane.hide()
             self.builder.get_object("view_quickadd").set_active(False)
 
+        # Callbacks for sorting and restoring previous state
+        model = self.vtree_panes['active'].get_model()
+        model.connect('sort-column-changed', self.on_sort_column_changed)
+        sort_column = self.config.get('tasklist_sort_column')
+        sort_order = self.config.get('tasklist_sort_order')
+
+        if sort_column and sort_order:
+            sort_column, sort_order = int(sort_column), int(sort_order)
+            model.set_sort_column_id(sort_column, sort_order)
+
         bgcol_enable = self.config.get("bg_color_enable")
         self.builder.get_object("bgcol_enable").set_active(bgcol_enable)
         
@@ -629,13 +625,24 @@ class TaskBrowser(gobject.GObject):
 # Typically, reaction to user input & interactions with the GUI
 #
     def register_filter_callback(self, cb):
-        if cb not in self.priv['filter_cbs']:
-            self.priv['filter_cbs'].append(cb)
+        print "DEPRECATED function register_filter_callback."
+        print "It is only dummy funnction now, doing nothing, ready for removing"
         
     def unregister_filter_callback(self, cb):
-        if cb in self.priv['filter_cbs']:
-            self.priv['filter_cbs'].remove(cb)
+        print "DEPRECATED function unregister_filter_callback."
+        print "It is only dummy funnction now, doing nothing, ready for removing"
         
+    def on_sort_column_changed(self, model):
+        sort_column, sort_order = model.get_sort_column_id()
+
+        if sort_order == gtk.SORT_ASCENDING:
+            sort_order = 0
+        else:
+            sort_order = 1
+
+        self.config.set('tasklist_sort_column', sort_column)
+        self.config.set('tasklist_sort_order', sort_order)
+
     def on_move(self, widget = None, data = None):
         xpos, ypos = self.window.get_position()
         self.config.set('x_pos',xpos)

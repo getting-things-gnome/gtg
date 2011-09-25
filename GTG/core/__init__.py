@@ -68,6 +68,8 @@ DEFAULTS = {
             'height':400,
             'x_pos':10,
             'y_pos':10,
+            'tasklist_sort_column':5,
+            'tasklist_sort_order': 1,
             }
 }
 
