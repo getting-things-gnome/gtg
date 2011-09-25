@@ -81,6 +81,8 @@ if os.path.isdir(os.path.join(config_home, 'gtg/plugins')):
 
 #Register GTG URI (temporary, it should be created by a schema upon installing)
 # FIXME Discuss it with Luca
+# FIXME it was commented out because of automatic build
+"""
 try:
     import gconf
     domain = "/desktop/gnome/url-handlers/gtg/"
@@ -92,3 +94,4 @@ try:
 except ImportError:
     # Ignore it on systems which do not have GConf
     pass
+"""
