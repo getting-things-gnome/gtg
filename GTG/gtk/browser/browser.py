@@ -124,6 +124,9 @@ class TaskBrowser(gobject.GObject):
         # Initialize "About" dialog
         self._init_about_dialog()
 
+        # Initialize tag completion
+        self._init_tag_completion()
+
         #Create our dictionary and connect it
         self._init_signal_connections()
 
@@ -206,7 +209,6 @@ class TaskBrowser(gobject.GObject):
         # The tags treeview
         self.tagtree = self.req.get_tag_tree()
         self.tagtreeview = self.tv_factory.tags_treeview(self.tagtree)
-        self._init_tag_completion()
         #Tags treeview
         self.tagtreeview.connect('cursor-changed',\
             self.on_select_tag)
@@ -396,10 +398,14 @@ class TaskBrowser(gobject.GObject):
 
     def _init_tag_completion(self):
         #Initialize tag completion.
+        tagtree = self.req.get_tag_tree()
+        completion_view = self.tv_factory.tags_completion_treeview(tagtree)
+        col_num = 1
+
         self.tag_completion = gtk.EntryCompletion()
-        self.tag_completion.set_model(self.tagtreeview.get_model())
-        self.tag_completion.set_text_column(3)
-        self.tag_completion.set_match_func(self.tag_match_func, 3)
+        self.tag_completion.set_model(completion_view.get_model())
+        self.tag_completion.set_text_column(col_num)
+        self.tag_completion.set_match_func(self.tag_match_func, col_num)
         self.tag_completion.set_inline_completion(True)
         self.tag_completion.set_inline_selection(True)
         self.tag_completion.set_popup_single_match(False)

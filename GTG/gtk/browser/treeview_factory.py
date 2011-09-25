@@ -255,6 +255,12 @@ class TreeviewFactory():
     ############################################
     ######## The Factory #######################
     ############################################
+    def tags_completion_treeview(self, tree):
+        desc = {}
+        desc['tagname'] = {'value': [str, self.tag_name]}
+
+        return TreeView(tree, desc)
+
     def tags_treeview(self,tree):
         desc = {}
 
