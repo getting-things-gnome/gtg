@@ -16,6 +16,7 @@ AUTHORS     = ["Main developers:", \
                "\tLuca Invernizzi <invernizzi.l@gmail.com>", \
                "\tKevin Mehall <km@kevinmehall.net>", \
                "\tLuca Falavigna <dktrkranz@debian.org>", \
+               "\tIzidor Matušov <izidor.matusov@gmail.com>", \
                "Contributors:", \
                "\tGérôme Fournier <>", \
                "\tAntons Rebguns <arebgun@gmail.com>", \
@@ -34,6 +35,13 @@ AUTHORS     = ["Main developers:", \
                "\tChris Johnston <chrisjohnston@ubuntu.com>", \
                "\tDavid Planella <david.planella@jabber.org>", \
                "\tMarko Kevac <marko@kevac.org>", \
+               "\tVolodymyr Floreskul <exufer@gmail.com>", \
+               "\tJeff Oliver <kaiserfro@gmail.com>", \
+               "\tAndrew Starr-Bochicchio <andrewsomething@ubuntu.com>", \
+               "\tDaniel Neel <dneelyep@gmail.com>", \
+               "\tIvan Evtukhovich <evtuhovich@gmail.com>", \
+               "\tMadhumitha Viswanathan <madhuvishy@gmail.com>", \
+               "\tFabio Prina <fabio@nimsh.com>", \
 ]
 ARTISTS     = ["Kalle Persson <kalle@kallepersson.se>", \
                 "Bertrand Rousseau <bertrand.rousseau@gmail.com>"]
@@ -54,6 +62,8 @@ Polish: Tomasz Maciejewski
 Portuguese: Paulo Cabido 
 Russian: Alexey Kostyuk, Alexey Nedilko, a220, mrk, wiz
 Simplified Chinese: Harold.luo
+Slovak: Slavko (linux-slavino)
 Spanish: David Prieto, DiegoJ, Pititjo
 Swedish: Christian Widell, Daniel Holm, Kalle Persson, Petri Rosenström
+Traditional Chinese: Rex Tsai
 Turkish: Murat Güneş"""
