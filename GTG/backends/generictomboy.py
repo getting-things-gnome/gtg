@@ -458,7 +458,8 @@ class GenericTomboy(GenericBackend):
         '''
         #tomboy passes Dbus.String objects, which are not pickable. We convert
         # those to unicode
-        kwargs["remote_id"] = unicode(kwargs["remote_id"])
+        if "remote_id" in kwargs:
+            kwargs["remote_id"] = unicode(kwargs["remote_id"])
         try:
             self.sync_engine.break_relationship(*args, **kwargs)
             #we try to save the state at each change in the sync_engine:
@@ -475,7 +476,8 @@ class GenericTomboy(GenericBackend):
         '''
         #tomboy passes Dbus.String objects, which are not pickable. We convert
         # those to unicode
-        kwargs["remote_id"] = unicode(kwargs["remote_id"])
+        if "remote_id" in kwargs:
+            kwargs["remote_id"] = unicode(kwargs["remote_id"])
 
         self.sync_engine.record_relationship(*args, **kwargs)
         #we try to save the state at each change in the sync_engine:
