@@ -72,7 +72,7 @@ class pluginTomboy:
             # only once
             if not self.activated:
                 dialog = gtk.MessageDialog(parent = \
-                     self.plugin_api.get_window(),
+                     self.plugin_api.get_ui().get_window(),
                      flags = gtk.DIALOG_DESTROY_WITH_PARENT,
                      type = gtk.MESSAGE_ERROR,
                      buttons=gtk.BUTTONS_OK,
@@ -189,7 +189,7 @@ Please install it or disable the Tomboy/Gnote plugin in GTG"))
         except dbus.DBusException, exception:
             if not hasattr(self, "disable_flag"):
                 dialog = gtk.MessageDialog(parent = \
-                     self.plugin_api.get_window(),
+                     self.plugin_api.get_ui().get_window(),
                      flags = gtk.DIALOG_DESTROY_WITH_PARENT,
                      type = gtk.MESSAGE_ERROR,
                      buttons=gtk.BUTTONS_OK,
@@ -269,7 +269,7 @@ exist. Do you want to create a new one?"))
         note = tomboy.FindNote(widget.tomboy_note_title)
         if str(note) == "":
             dialog = gtk.MessageDialog(parent = \
-                 self.plugin_api.get_window(),
+                 self.plugin_api.get_ui().get_window(),
                  flags = gtk.DIALOG_DESTROY_WITH_PARENT,
                  type = gtk.MESSAGE_WARNING,
                   buttons=gtk.BUTTONS_YES_NO,
