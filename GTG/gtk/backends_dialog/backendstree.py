@@ -116,6 +116,10 @@ class BackendsTree(gtk.TreeView):
                            (color, backend_name)
             self.liststore[b_path][self.COLUMN_TEXT] = text
 
+            # Also refresh the tags
+            new_tags = self._get_markup_for_tags(backend.get_attached_tags())
+            self.liststore[b_path][self.COLUMN_TAGS] = new_tags
+
     def _get_markup_for_tags(self, tag_names):
         '''Given a list of tags names, generates the pango markup to render that
         list with the tag colors used in GTG
