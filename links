@@ -1,2 +1,3 @@
 usr/share/gtg/gtg		usr/bin/gtg
 usr/share/gtg/gtg_new_task	usr/bin/gtg_new_task
+usr/share/gtg/gtcli             usr/bin/gtcli
