@@ -55,7 +55,14 @@ class BackendsTree(gtk.TreeView):
         '''refreshes the gtk.Liststore'''
         self.backendid_to_iter = {}
         self.liststore.clear()
-        for backend in self.req.get_all_backends(disabled = True):
+
+        # Sort backends
+        # 1, put default backend on top
+        # 2, sort backends by human name
+        backends = list(self.req.get_all_backends(disabled = True))
+        backends = sorted(backends, key=lambda backend:(not backend.is_default(), backend.get_human_name()))
+
+        for backend in backends:
             self.add_backend(backend)
             self.on_backend_state_changed(None, backend.get_id())
 
@@ -72,6 +79,7 @@ class BackendsTree(gtk.TreeView):
         if not backend:
             return
         self.add_backend(backend)
+        self.refresh()
         #Select
         self.select_backend(backend_id)
         #Update it's enabled state
