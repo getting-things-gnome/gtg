@@ -73,9 +73,15 @@ class BackendFactory(Borg):
                 __import__(extended_module_name)
             except ImportError, exception:
                 #Something is wrong with this backend, skipping
-                Log.debug("Backend %s could not be loaded: %s" % \
+                Log.warning("Backend %s could not be loaded: %s" % \
                           (module_name, str(exception)))
                 continue
+            except Exception, exception:
+                # Other exception log as errors
+                Log.error("Malformated backend %s: %s" % \
+                        (module_name, str(exception)))
+                continue
+
             self.backend_modules[module_name] = \
                     sys.modules[extended_module_name]
 
