@@ -26,6 +26,7 @@ import locale
 import time
 import webbrowser
 import threading
+import unicodedata
 
 import pygtk
 pygtk.require('2.0')
@@ -584,22 +585,17 @@ class TaskBrowser(gobject.GObject):
         model = completion.get_model()
         text = model.get_value(iter, column)
         if text:
-            # key is lowercase regardless of input, so text should be
-            # lowercase as well, otherwise we leave out all tags beginning
-            # with an uppercase letter.
+            # key is always lowercase => convert text also into lowercase
             text = text.lower()
+
             # Exclude the special tags.
             if text.startswith("<span") or text.startswith('gtg-tags-'):
                 return False
-            # Are we typing the first letters of a tag?
-            elif text.startswith(key):
-                #FIXME: this doesn't work for UNICODE, I don't know why
-                return True
             else:
-#                print "no completion for text %s" %text
-#                print " key is %s (len=%s)" %(key,len(key))
-#                print " start of text is : %s" %(text[:len(key)])
-                return False          
+                # Compare normalized unicode representation
+                text = unicodedata.normalize('NFC', unicode(text))
+                key =  unicodedata.normalize('NFC', unicode(key))
+                return text.startswith(key)
 
     def _add_page(self, notebook, label, page):
         notebook.append_page(page, label)
