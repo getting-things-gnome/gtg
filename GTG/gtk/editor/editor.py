@@ -382,11 +382,14 @@ class TaskEditor:
     def on_date_pressed(self, widget, date_kind):
         """Called when a date-changing button is clicked."""
         if date_kind == GTGCalendar.DATE_KIND_DUE:
-            #we display a calendar open on a day:
-            #    the due date, the start date (if due is not set), or today
-            #    (which is the default of the GTGCalendar class)
             date = self.task.get_due_date()
-            if not date or self.task.get_start_date() > date:
+
+            # is due_date < start_date ?
+            # no_date need special care because we want to no_date < anything
+            start_date = self.task.get_start_date()
+            due_before_start = start_date != dates.no_date and start_date > date
+
+            if not date or due_before_start:
                 date = self.task.get_start_date()
         elif date_kind == GTGCalendar.DATE_KIND_START:
             date = self.task.get_start_date()
