@@ -127,14 +127,14 @@ class GTGCalendar(gobject.GObject):
         self.__window.hide()
         gtk.gdk.pointer_ungrab()
         self.__window.grab_remove()
-        try:
+        if self.__sigid is not None:
             self.__calendar.disconnect(self.__sigid)
-        except:
-            pass
-        try:
+            self.__sigid = None
+
+        if self.__sigid_month is not None:
             self.__calendar.disconnect(self.__sigid_month)
-        except:
-            pass
+            self.__sigid_month = None
+
 
     def __day_selected(self, widget, date_type):
         self.__date_type = date_type
