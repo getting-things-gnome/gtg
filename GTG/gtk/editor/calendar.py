@@ -76,20 +76,31 @@ class GTGCalendar(gobject.GObject):
         self.__date = date
         if isinstance(date, dates.RealDate):
             self.__calendar.select_day(date.day())
-            cal_date = self.__from_datetime_to_calendar(date.to_py_date())
-            self.__calendar.select_month(cal_date.month, cal_date.year)
+            # Calendar use 0..11 for a month so we need -1
+            # We can't use conversion through python standard datetime because often times it is invalid date
+            self.__calendar.select_month(date.month()-1, date.year())
 
     def __mark_today_in_bold(self):
+        """ Mark today in bold
+
+        If the current showed month is the current month (has the same year
+        and month), then make the current day bold. Otherwise no day should
+        be bold.
+        """
         today = datetime.date.today()
-        date = self.__from_calendar_date_to_datetime(\
-                                        self.__calendar.get_date())
-        #if it's an actual RealDate, and the month and year coincide with
-        #today's date
-        if not isinstance(self.__date, dates.FuzzyDate) and \
-               date.year == today.year and date.month == today.month:
+
+        # Get the current displayed month
+        # (month must be corrected because calendar is 0-based)
+        year, month, day = self.__calendar.get_date()
+        month +=1
+
+        if today.year == year and today.month == month:
             self.__calendar.mark_day(today.day)
         else:
-            self.__calendar.unmark_day(today.day)
+            # If marked day is 31th, and the next month does not have 31th day,
+            # unmark_day raises a warning. Clear_marks() is clever way how
+            # to let PyGTK solve it's bussiness.
+            self.__calendar.clear_marks()
 
 
     def show_at_position(self, x, y):
@@ -151,6 +162,7 @@ class GTGCalendar(gobject.GObject):
             self.__date = dates.SOON
         elif date_type == "FuzzyLater":
             self.__date = dates.LATER
+
         if self.__is_user_just_browsing_the_calendar:
             #this day-selected signal was caused by a month/year change. 
             # We discard it
@@ -159,10 +171,6 @@ class GTGCalendar(gobject.GObject):
             self.close_calendar()
             #we inform the Editor that the date has changed
             gobject.idle_add(self.emit, "date-changed")
-            try:
-                self.__calendar.disconnect(self.__mouse_sigid)
-            except:
-                pass
 
     def __from_calendar_date_to_datetime(self, calendar_date):
         '''
@@ -173,10 +181,6 @@ class GTGCalendar(gobject.GObject):
         '''
         year, month, day = calendar_date
         return datetime.date(year, month + 1, day)
-
-    def __from_datetime_to_calendar(self, date):
-        '''Opposite of __from_calendar_date_to_datetime'''
-        return datetime.date(date.year, date.month - 1, date.day)
 
     def __month_changed(self, widget):
         self.__is_user_just_browsing_the_calendar = True
