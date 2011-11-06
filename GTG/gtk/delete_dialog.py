@@ -32,6 +32,8 @@ class DeletionUI():
     def __init__(self, req):
         self.req = req
         self.tids_todelete = []
+        # Tags which must be updated
+        self.update_tags = []
         # Load window tree
         self.builder = gtk.Builder() 
         self.builder.add_from_file(ViewConfig.DELETE_GLADE_FILE)
@@ -47,18 +49,31 @@ class DeletionUI():
                 self.req.delete_task(tid,recursive=True)
         self.tids_todelete = []
 
+        # Update tags
+        for tagname in self.update_tags:
+            tag = self.req.get_tag(tagname)
+            tag.modified()
+        self.update_tags = []
+
     def delete_tasks(self, tids=None):
         if tids:
             self.tids_todelete = tids
         #We must at least have something to delete !
         if len(self.tids_todelete) > 0:
             tasks = []
+            self.update_tags = []
             for tid in self.tids_todelete:
                 def recursive_list_tasks(task_list, root):
                     """Populate a list of all the subtasks and 
-                       their children, recursively"""
+                       their children, recursively.
+                       
+                       Also collect the list of affected tags
+                       which should be refreshed"""
                     if root not in task_list:
                         task_list.append(root)
+                        for tagname in root.get_tags_name():
+                            if tagname not in self.update_tags:
+                                self.update_tags.append(tagname)
                         for i in root.get_subtasks():
                             if i not in task_list:
                                 recursive_list_tasks(task_list, i)
