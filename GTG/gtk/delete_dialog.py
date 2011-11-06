@@ -27,7 +27,7 @@ from GTG.gtk import ViewConfig
 class DeletionUI():
 
     
-    MAXIMUM_TIDS_TO_SHOW = 20
+    MAXIMUM_TIDS_TO_SHOW = 5
 
     def __init__(self, req):
         self.req = req
@@ -52,35 +52,6 @@ class DeletionUI():
             self.tids_todelete = tids
         #We must at least have something to delete !
         if len(self.tids_todelete) > 0:
-            # We fill the text and the buttons' labels according to the number 
-            # of tasks to delete
-            label = self.builder.get_object("label1")
-            label_text = label.get_text()
-            cdlabel2 = self.builder.get_object("cd-label2")
-            cdlabel3 = self.builder.get_object("cd-label3")
-            cdlabel4 = self.builder.get_object("cd-label4")
-            singular = len(self.tids_todelete)
-            label_text = ngettext("Deleting a task cannot be undone, "
-                                  "and will delete the following tasks: ",
-                                  "Deleting a task cannot be undone, "
-                                  "and will delete the following task: ",
-                                  singular)
-            cdlabel2.set_label(ngettext("Are you sure you want to delete these "
-                                       "tasks?",
-                                       "Are you sure you want to delete this "
-                                       "task?",
-                                       singular))
-
-            cdlabel3.set_label(ngettext("Keep selected tasks",
-                                        "Keep selected task",
-                                       singular))
-            cdlabel4.set_label(ngettext("Permanently remove tasks",
-                                       "Permanently remove task",
-                                       singular))
-            label_text = label_text[0:label_text.find(":") + 1]
-            
-            # I find the tasks that are going to be deleted, avoiding to fetch
-            # too many titles (no more that the maximum capacity)
             tasks = []
             for tid in self.tids_todelete:
                 def recursive_list_tasks(task_list, root):
@@ -88,27 +59,55 @@ class DeletionUI():
                        their children, recursively"""
                     if root not in task_list:
                         task_list.append(root)
-                        if len(task_list) >= self.MAXIMUM_TIDS_TO_SHOW:
-                            return
                         for i in root.get_subtasks():
-                            recursive_list_tasks(task_list, i)
+                            if i not in task_list:
+                                recursive_list_tasks(task_list, i)
                 task = self.req.get_task(tid)
                 recursive_list_tasks(tasks, task)
-                len_tasks = len(tasks)
-                #we don't want to end with just one task that doesn't fit the
-                # screen and a line saying "And one more task", so we go a
-                # little over our limit
-                if len_tasks > self.MAXIMUM_TIDS_TO_SHOW + 2:
-                    tasks = tasks[: self.MAXIMUM_TIDS_TO_SHOW + 2]
-                    break
-            titles_list = [task.get_title() for task in tasks]
-            titles = reduce (lambda x, y: x + "\n - " + y, titles_list)
-            missing_titles_count = len(self.tids_todelete) - len_tasks
-            if missing_titles_count > 2:
-               titles += _("\nAnd %d more tasks" % missing_titles_count)
-            label.set_text("%s %s" % (label_text, "\n - " + titles))
+
+            # We fill the text and the buttons' labels according to the number 
+            # of tasks to delete
+            label = self.builder.get_object("label1")
+            label_text = label.get_text()
+            cdlabel2 = self.builder.get_object("cd-label2")
+            cdlabel3 = self.builder.get_object("cd-label3")
+            cdlabel4 = self.builder.get_object("cd-label4")
+            singular = len(tasks)
+            label_text = ngettext("Deleting a task cannot be undone, "
+                                  "and will delete the following task: ",
+                                  "Deleting a task cannot be undone, "
+                                  "and will delete the following tasks: ",
+                                  singular)
+            cdlabel2.set_label(ngettext("Are you sure you want to delete this "
+                                       "task?",
+                                       "Are you sure you want to delete these "
+                                       "tasks?",
+                                       singular))
+
+            cdlabel3.set_label(ngettext("Keep selected task",
+                                        "Keep selected tasks",
+                                       singular))
+            cdlabel4.set_label(ngettext("Permanently remove task",
+                                       "Permanently remove tasks",
+                                       singular))
+            label_text = label_text[0:label_text.find(":") + 1]
+            
+            #we don't want to end with just one task that doesn't fit the
+            # screen and a line saying "And one more task", so we go a
+            # little over our limit
+            missing_titles_count = len(tasks) - self.MAXIMUM_TIDS_TO_SHOW
+            if missing_titles_count >= 2:
+                tasks = tasks[: self.MAXIMUM_TIDS_TO_SHOW]
+                titles_suffix = _("\nAnd %d more tasks" % missing_titles_count)
+            else:
+                titles_suffix = ""
+
+            titles = "".join("\n - " + task.get_title() for task in tasks)
+            label.set_text(label_text + titles + titles_suffix)
             delete_dialog = self.builder.get_object("confirm_delete")
             delete_dialog.resize(1, 1)
+            cancel_button = self.builder.get_object("cancel")
+            cancel_button.grab_focus()
             delete_dialog.run()
             delete_dialog.hide()
             #has the task been deleted ?
