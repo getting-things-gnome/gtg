@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright (c) 2009 - Paulo Cabido <paulo.cabido@gmail.com>
 #                    - Luca Invernizzi <invernizzi.l@gmail.com> 
+#                    - Izidor Matušov <izidor.matusov@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -101,6 +102,7 @@ class NotificationArea:
                                                 self.__on_browser_toggled,
                                                 view_browser_checkbox)
         self.__menu.append(view_browser_checkbox)
+        self.checkbox = view_browser_checkbox
         #add "new task"
         menuItem = gtk.ImageMenuItem(gtk.STOCK_ADD)
         menuItem.get_children()[0].set_label(_('Add _New Task'))
@@ -116,6 +118,7 @@ class NotificationArea:
         self.__task_separator.show()
         self.__menu.append(self.__task_separator)
         self.__menu_top_length = len(self.__menu)
+        self.set_browser_minimize(self.browser_minimize)
         if self.__indicator:
             self.__indicator.set_menu(self.__menu)
             self.__indicator.set_status(appindicator.STATUS_ACTIVE)
@@ -279,6 +282,37 @@ class NotificationArea:
         }
         self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
 
+    def browser_minimize(self, widget, user_data):
+        print "XXXXXXXXXXXXXXXXXXXXXXX"
+        self.minimize(None)
+        print "XYZ"
+        #We return true to prevent the call to gtk.main_quit()
+        return True
+
+    def set_browser_minimize(self, method):
+        browser = self.__view_manager.get_browser()
+        browser.window.disconnect(browser.delete_event_handle)
+        browser.delete_event_handle = \
+                browser.window.connect("delete-event", method)
 
 
-
+    def minimize(self, widget = None, plugin_api = None):
+        self.checkbox.disconnect(self.__signal_handler)
+        """
+        if self.minimized:
+            self.view_main_window.set_active(True)
+            self.view_main_window.show()
+            self.plugin_api.show_window()
+            self.minimized = False
+        else:
+            self.view_main_window.set_active(False)
+            self.view_main_window.show()
+            self.plugin_api.hide_window()
+            #self.minimized = True
+            """
+        self.__view_manager.hide_browser()
+        print "-------------"
+        print
+        print
+        self.__signal_handler = self.checkbox.connect('activate',
+                                               self.__toggle_browser)

@@ -406,6 +406,7 @@ class TaskBrowser(gobject.GObject):
         self.vmanager.open_edit_backends()
 
     def quit(self,widget=None):
+        print "quit method"
         self.vmanager.close_browser()
         
     def restore_state_from_conf(self):
@@ -657,6 +658,7 @@ class TaskBrowser(gobject.GObject):
         self.config.set('bottom_pane_position',botpos)
         sidepos = self.builder.get_object("hpaned1").get_position()
         self.config.set('sidebar_width',sidepos)
+        print "on_delete"
 
     def on_about_clicked(self, widget):
         self.about.show()
