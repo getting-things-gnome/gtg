@@ -224,7 +224,6 @@ class Manager(object):
         Open the Editor windows of the tasks associated with the uris given.
         Uris are of the form gtg://<taskid>
         '''
-        print self.req.get_all_tasks_list()
         for uri in uri_list:
             if uri.startswith("gtg://"):
                 self.open_task(uri[6:])
