@@ -82,7 +82,7 @@ class TreeFactory:
         tagtree.add_node(alltag)
         p = {'transparent': True}
         self.tasktree.add_filter(CoreConfig.ALLTASKS_TAG,\
-                                    self.alltag,parameters=p)
+                                    self.alltag, parameters=p)
         # Build the "without tag tag"
         notag_tag = Tag(CoreConfig.NOTAG_TAG, req=req)
         notag_tag.set_attribute("special", "notag")
