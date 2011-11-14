@@ -27,6 +27,7 @@ import gobject
 from GTG.core.tagstore     import Tag
 from GTG.tools.logger      import Log
 
+
 class Requester(gobject.GObject):
     """A view on a GTG datastore.
 
@@ -49,13 +50,13 @@ class Requester(gobject.GObject):
               'tag-path-deleted' : __string_signal__, \
               'tag-modified'     : __string_signal__}
 
-    def __init__(self, datastore,global_conf):
+    def __init__(self, datastore, global_conf):
         """Construct a L{Requester}."""
         gobject.GObject.__init__(self)
         self.ds = datastore
         self.__config = global_conf
         self.__basetree = self.ds.get_tasks_tree()
-        
+
         #TODO build filters here
         self.counter_call = 0
 
@@ -65,38 +66,37 @@ class Requester(gobject.GObject):
     def _task_loaded(self, tid):
         gobject.idle_add(self.emit, "task-added", tid)
 
-        
     ############ Tasks Tree ######################
     # By default, we return the task tree of the main window
-    def get_tasks_tree(self,name='active',refresh=True):
-        return self.__basetree.get_viewtree(name=name,refresh=refresh)
+    def get_tasks_tree(self, name='active', refresh=True):
+        return self.__basetree.get_viewtree(name=name, refresh=refresh)
 
     def get_main_view(self):
         return self.__basetree.get_main_view()
-        
+
     # This is a FilteredTree that you have to handle yourself.
     # You can apply/unapply filters on it as you wish.
-#    def get_custom_tasks_tree(self,name=None,refresh=True):
-#        return self.__basetree.get_viewtree(name=name,refresh=refresh)
-        
-    def is_displayed(self,task):
+#    def get_custom_tasks_tree(self, name=None, refresh=True):
+#        return self.__basetree.get_viewtree(name=name, refresh=refresh)
+
+    def is_displayed(self, task):
         return self.__basetree.get_viewtree(name='active').is_displayed(task)
 
     ######### Filters bank #######################
     # List, by name, all available filters
     def list_filters(self):
         return self.__basetree.list_filters()
-    
+
     # Add a filter to the filter bank
     # Return True if the filter was added
     # Return False if the filter_name was already in the bank
-    def add_filter(self,filter_name,filter_func):
-        return self.__basetree.add_filter(filter_name,filter_func)
-        
+    def add_filter(self, filter_name, filter_func):
+        return self.__basetree.add_filter(filter_name, filter_func)
+
     # Remove a filter from the bank.
     # Only custom filters that were added here can be removed
     # Return False if the filter was not removed
-    def remove_filter(self,filter_name):
+    def remove_filter(self, filter_name):
         return self.__basetree.remove_filter(filter_name)
 
     ############## Tasks ##########################
@@ -137,7 +137,7 @@ class Requester(gobject.GObject):
         self._task_loaded(task.get_id())
         return task
 
-    def delete_task(self, tid,recursive=True):
+    def delete_task(self, tid, recursive=True):
         """Delete the task 'tid' and, by default, delete recursively
         all the childrens.
 
@@ -151,7 +151,7 @@ class Requester(gobject.GObject):
         if task:
             for tag in task.get_tags():
                 self.emit('tag-modified', tag.get_name())
-        return self.__basetree.del_node(tid,recursive=recursive)
+        return self.__basetree.del_node(tid, recursive=recursive)
 
     ############### Tags ##########################
     ###############################################
@@ -184,7 +184,7 @@ class Requester(gobject.GObject):
         #FIXME: let's use another view instead of the activetags one
         view = self.ds.get_tagstore().get_viewtree(name='activetags')
         l = view.get_all_nodes()
-        l.sort(cmp=lambda x, y: cmp(x.lower(),y.lower()))
+        l.sort(cmp=lambda x, y: cmp(x.lower(), y.lower()))
         return l
 
     def get_all_tags(self):
@@ -194,7 +194,7 @@ class Requester(gobject.GObject):
     ############## Backends #######################
     ###############################################
 
-    def get_all_backends(self, disabled = False):
+    def get_all_backends(self, disabled=False):
         return self.ds.get_all_backends(disabled)
 
     def register_backend(self, dic):
@@ -217,14 +217,14 @@ class Requester(gobject.GObject):
 
     def save_datastore(self):
         return self.ds.save()
-        
+
     ############## Config ############################
     ##################################################
     def get_global_config(self):
         return self.__config
-        
-    def get_config(self,name):
+
+    def get_config(self, name):
         return self.__config.get_subconfig(name)
-    
+
     def save_config(self):
         self.__config.save()
