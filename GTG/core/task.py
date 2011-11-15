@@ -73,13 +73,13 @@ class Task(TreeNode):
         #Should not be necessary with the new backends
 #        if self.loaded:
 #            self.req._task_loaded(self.tid)
-        self.attributes={}
+        self.attributes = {}
         self._modified_update()
 
     def is_loaded(self):
         return self.loaded
 
-    def set_loaded(self,signal=True):
+    def set_loaded(self, signal=True):
         #avoid doing it multiple times
         if not self.loaded:
             self.loaded = True
@@ -143,17 +143,17 @@ class Task(TreeNode):
             return True
         else:
             return False
-            
+
     #TODO : should we merge this function with set_title ?
-    def set_complex_title(self,text,tags=[]):
+    def set_complex_title(self, text, tags=[]):
         if tags:
             assert(isinstance(tags[0], str))
         due_date = no_date
         defer_date = no_date
         if text:
-            
+
             # Get tags in the title
-            #NOTE: the ?: tells regexp that the first one is 
+            #NOTE: the ?: tells regexp that the first one is
             # a non-capturing group, so it must not be returned
             # to findall. http://www.amk.ca/python/howto/regex/regex.html
             # ~~~~Invernizzi
@@ -168,8 +168,8 @@ class Task(TreeNode):
                 if attribute.lower() in ["tags", "tag"] or \
                    attribute.lower() in [_("tags"), _("tag")]:
                     for tag in args.split(","):
-                        if not tag.startswith("@") :
-                            tag = "@"+tag
+                        if not tag.startswith("@"):
+                            tag = "@" + tag
                         tags.append(tag)
                 elif attribute.lower() == "defer" or \
                      attribute.lower() == _("defer"):
@@ -262,7 +262,7 @@ class Task(TreeNode):
             pardate = self.req.get_task(par).get_due_date()
             if pardate and zedate > pardate:
                 zedate = pardate
-        
+
         return zedate
 
     def set_start_date(self, fulldate):
@@ -277,7 +277,7 @@ class Task(TreeNode):
         assert(isinstance(fulldate, Date))
         self.closed_date = fulldate
         self.sync()
-        
+
     def get_closed_date(self):
         return self.closed_date
 
@@ -286,7 +286,7 @@ class Task(TreeNode):
         if due_date == no_date:
             return None
         return due_date.days_left()
-    
+
     def get_days_late(self):
         due_date = self.get_due_date()
         if due_date == no_date:
@@ -343,8 +343,8 @@ class Task(TreeNode):
         if element:
             for n in element.childNodes:
                 if n.nodeType == n.ELEMENT_NODE:
-                    if strip_subtasks and n.tagName=='subtask':
-                        if txt[-2:]=='→ ':
+                    if strip_subtasks and n.tagName == 'subtask':
+                        if txt[-2:] == '→ ':
                             txt = txt[:-2]
                     else:
                         txt += self.__strip_content(n, strip_subtasks)
@@ -357,10 +357,10 @@ class Task(TreeNode):
         if texte != "<content/>":
             #defensive programmation to filter bad formatted tasks
             if not texte.startswith("<content>"):
-                texte = cgi.escape(texte, quote = True)
-                texte = "<content>%s" %texte
+                texte = cgi.escape(texte, quote=True)
+                texte = "<content>%s" % texte
             if not texte.endswith("</content>"):
-                texte = "%s</content>" %texte
+                texte = "%s</content>" % texte
             self.content = str(texte)
         else:
             self.content = ''
@@ -371,20 +371,20 @@ class Task(TreeNode):
         """Add a newly created subtask to this task. Return the task added as
         a subtask
         """
-        subt     = self.req.new_task(newtask=True)
+        subt = self.req.new_task(newtask=True)
         #we use the inherited childrens
         self.add_child(subt.get_id())
         return subt
-        
+
     def add_child(self, tid):
         """Add a subtask to this task
 
         @param child: the added task
         """
-        Log.debug("adding child %s to task %s" %(tid, self.get_id()))
+        Log.debug("adding child %s to task %s" % (tid, self.get_id()))
         self.can_be_deleted = False
         #the core of the method is in the TreeNode object
-        TreeNode.add_child(self,tid)
+        TreeNode.add_child(self, tid)
         #now we set inherited attributes only if it's a new task
         child = self.req.get_task(tid)
         if child and child.can_be_deleted:
@@ -393,8 +393,8 @@ class Task(TreeNode):
                 child.add_tag(t.get_name())
         self.sync()
         return True
-            
-    def remove_child(self,tid):
+
+    def remove_child(self, tid):
         """Removed a subtask from the task.
 
         @param tid: the ID of the task to remove
@@ -407,8 +407,7 @@ class Task(TreeNode):
             return True
         else:
             return False
-            
-            
+
     #FIXME: remove this function and use liblarch instead.
     def get_subtasks(self):
         tree = self.get_tree()
@@ -462,7 +461,7 @@ class Task(TreeNode):
         val = unicode(str(att_value), "UTF-8")
         self.attributes[(namespace, att_name)] = val
         self.sync()
-    
+
     def get_attribute(self, att_name, namespace=""):
         """Get the attribute C{att_name}.
 
@@ -479,13 +478,12 @@ class Task(TreeNode):
             return True
         else:
             return False
-          
-#   the following is not currently needed  
+
+#   the following is not currently needed
 #    def modified(self):
 #        TreeNode.modified(self)
 #        for t in self.get_tags():
 #            gobject.idle_add(t.modified)
-        
 
     def _modified_update(self):
         '''
@@ -508,7 +506,7 @@ class Task(TreeNode):
                 tag = self.req.new_tag(tname)
             l.append(tag)
         return l
-        
+
     def rename_tag(self, old, new):
         eold = saxutils.escape(saxutils.unescape(old))
         enew = saxutils.escape(saxutils.unescape(new))
@@ -535,25 +533,25 @@ class Task(TreeNode):
                 for child in self.get_subtasks():
                     if child.can_be_deleted:
                         child.add_tag(t)
-            
+
                 tag = self.req.get_tag(t)
                 if not tag:
                     tag = self.req.new_tag(t)
                 tag.modified()
             return True
-    
+
     def add_tag(self, tagname):
         "Add a tag to the task and insert '@tag' into the task's content"
 #        print "add tag %s to task %s" %(tagname,self.get_title())
         if self.tag_added(tagname):
             c = self.content
-            
+
             #strip <content>...</content> tags
             if c.startswith('<content>'):
                 c = c[len('<content>'):]
             if c.endswith('</content>'):
                 c = c[:-len('</content>')]
-            
+
             if not c:
                 # don't need a separator if it's the only text
                 sep = ''
@@ -563,7 +561,7 @@ class Task(TreeNode):
             else:
                 # other text at the beginning, so put the tag on its own line
                 sep = '\n\n'
-            
+
             self.content = "<content><tag>%s</tag>%s%s</content>" % (
                 tagname, sep, c)
             #we modify the task internal state, thus we have to call for a sync
@@ -582,7 +580,7 @@ class Task(TreeNode):
         if modified:
             tag = self.req.get_tag(tagname)
             tag.modified()
-    
+
     def set_only_these_tags(self, tags_list):
         '''
         Given a list of strings representing tags, it makes sure that
@@ -596,18 +594,17 @@ class Task(TreeNode):
         for tag in tags_list:
             self.add_tag(tag)
 
-    def _strip_tag(self, text, tagname,newtag=''):
+    def _strip_tag(self, text, tagname, newtag=''):
         return (text
-                    .replace('<tag>%s</tag>\n\n'%(tagname), newtag) #trail \n
-                    .replace('<tag>%s</tag>, '%(tagname), newtag) #trail comma
-                    .replace('<tag>%s</tag>'%(tagname), newtag)
+                    .replace('<tag>%s</tag>\n\n' % (tagname), newtag) #trail \n
+                    .replace('<tag>%s</tag>, ' % (tagname), newtag) #trail comma
+                    .replace('<tag>%s</tag>' % (tagname), newtag)
                     #in case XML is missing (bug #504899)
-                    .replace('%s\n\n'%(tagname), newtag) 
-                    .replace('%s, '%(tagname), newtag) 
+                    .replace('%s\n\n' % (tagname), newtag)
+                    .replace('%s, ' % (tagname), newtag)
                     #don't forget a space a the end
-                    .replace('%s '%(tagname), newtag)
+                    .replace('%s ' % (tagname), newtag)
                )
-     
 
     #tag_list is a list of tags names
     #return true if at least one of the list is in the task
@@ -623,7 +620,7 @@ class Task(TreeNode):
                     if not toreturn:
                         toreturn = children_tag(tagc_name)
             return toreturn
-                
+
         #We want to see if the task has no tags
         toreturn = False
         if notag_only:
@@ -635,7 +632,7 @@ class Task(TreeNode):
         elif tag_list:
             for tagname in tag_list:
                 if not toreturn:
-                    toreturn = children_tag(tagname) 
+                    toreturn = children_tag(tagname)
         else:
             #Well, if we don't filter on tags or notag, it's true, of course
             toreturn = True
@@ -658,5 +655,5 @@ class Task(TreeNode):
         s = s + "Title:  " + self.title + "\n"
         s = s + "Id:     " + self.tid + "\n"
         s = s + "Status: " + self.status + "\n"
-        s = s + "Tags:   "  + str(self.tags)
+        s = s + "Tags:   " + str(self.tags)
         return s

@@ -24,7 +24,6 @@ from xdg.BaseDirectory import xdg_config_home
 from GTG.tools.logger  import Log
 
 
-
 class PluginAPI:
     """The plugin engine's API.
 
@@ -39,7 +38,7 @@ class PluginAPI:
     def __init__(self,
                  requester,
                  view_manager,
-                 taskeditor = None):
+                 taskeditor=None):
         """
         Construct a PluginAPI object.
 
@@ -102,22 +101,22 @@ class PluginAPI:
 #=== Changing the UI =========================================================
 
     def add_menu_item(self, item):
-        """Adds a menu entry to the Plugin Menu of the Main Window 
+        """Adds a menu entry to the Plugin Menu of the Main Window
         (task browser).
 
-        @param item: The gtk.MenuItem that is going to be added.  
+        @param item: The gtk.MenuItem that is going to be added.
         """
         widget = self.__builder.get_object('plugin_mi')
         widget.get_submenu().append(item)
         widget.show_all()
 
     def remove_menu_item(self, item):
-        """Removes a menu entry from the Plugin Menu of the Main Window 
+        """Removes a menu entry from the Plugin Menu of the Main Window
         (task browser).
 
         @param item: The gtk.MenuItem that is going to be removed.
-        @return: Returns C{True} if the operation has sucess or c{False} if it 
-        fails.  
+        @return: Returns C{True} if the operation has sucess or c{False} if it
+        fails.
         """
         menu = self.__builder.get_object('plugin_mi')
         submenu = menu.get_submenu()
@@ -132,7 +131,7 @@ class PluginAPI:
         """Adds a button to the task browser's toolbar or the task editor
         toolbar, depending on which plugin api it's being used.
 
-        @param widget: The gtk.ToolButton that is going to be added to the 
+        @param widget: The gtk.ToolButton that is going to be added to the
         toolbar.
         """
         #-1 means "append to the end"
@@ -145,12 +144,12 @@ class PluginAPI:
         try:
             self.__toolbar.remove(widget)
         except Exception, e:
-            print "Error removing the toolbar item in the TaskEditor: %s" %e
+            print "Error removing the toolbar item in the TaskEditor: %s" % e
 
     def add_widget_to_taskeditor(self, widget):
         """Adds a widget to the bottom of the task editor dialog
 
-        @param widget: The gtk.Widget that is going to be added. 
+        @param widget: The gtk.Widget that is going to be added.
         """
         vbox = self.__builder.get_object('vbox4')
         if vbox:
@@ -163,7 +162,7 @@ class PluginAPI:
         else:
             return None
 
-    def remove_widget_from_taskeditor(self,widg_id):
+    def remove_widget_from_taskeditor(self, widg_id):
         """Remove a widget from the bottom of the task editor dialog
 
         @param widget: The gtk.Widget that is going to be removed
@@ -175,12 +174,12 @@ class PluginAPI:
                     wi.remove(self.taskwidget_widg.pop(widg_id))
             except Exception, e:
                 Log.debug("Error removing the toolbar item in the TaskEditor:"
-                          "%s" %e)
+                          "%s" % e)
 
 #=== file saving/loading ======================================================
 
     def load_configuration_object(self, plugin_name, filename, \
-                                  basedir = xdg_config_home):
+                                  basedir=xdg_config_home):
         dirname = os.path.join(basedir, 'gtg/plugins', plugin_name)
         path = os.path.join(dirname, filename)
         if os.path.isdir(dirname):
@@ -195,9 +194,8 @@ class PluginAPI:
             os.makedirs(dirname)
 
     def save_configuration_object(self, plugin_name, filename, item, \
-                                 basedir = xdg_config_home):
+                                 basedir=xdg_config_home):
         dirname = os.path.join(basedir, 'gtg/plugins', plugin_name)
         path = os.path.join(dirname, filename)
         with open(path, 'wb') as file:
-             pickle.dump(item, file)
-
+            pickle.dump(item, file)

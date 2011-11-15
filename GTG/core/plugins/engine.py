@@ -26,10 +26,8 @@ import dbus
 from GTG.tools.borg import Borg
 
 
-
 class Plugin(object):
     """A class to represent a plugin."""
-
 
     # A reference to an instance of the plugin class
     instance = None
@@ -141,14 +139,12 @@ class Plugin(object):
             self._check_dbus_depends()
 
 
-
 class PluginEngine(Borg):
     """
     A class to manage plugins. Only one can exist.
     """
 
-
-    def __init__(self, plugin_path = None):
+    def __init__(self, plugin_path=None):
         """Initialize the plugin engine.
         """
         super(PluginEngine, self).__init__()
@@ -173,7 +169,7 @@ class PluginEngine(Borg):
     def get_plugin(self, module_name):
         return self.plugins[module_name]
 
-    def get_plugins(self, kind_of_plugins = "all"):
+    def get_plugins(self, kind_of_plugins="all"):
         """
         Returns a list of plugins
         filtering only a kind of plugin
@@ -186,6 +182,7 @@ class PluginEngine(Borg):
         all_plugins = self.plugins.itervalues()
         if kind_of_plugins == "all":
             return all_plugins
+
         def filter_fun(plugin):
             return (kind_of_plugins == "active"   and plugin.active) or \
                    (kind_of_plugins == "inactive" and not plugin.active) or \
@@ -288,4 +285,3 @@ class PluginEngine(Borg):
         for plugin in self.get_plugins():
             if check_all or plugin.error:
                 plugin.reload(self.plugin_path)
-

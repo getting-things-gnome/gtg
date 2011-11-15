@@ -38,6 +38,7 @@ XMLROOT = "tagstore"
 
 #TODO: rename this file to tag.py
 
+
 class Tag(TreeNode):
     """A short name that can be applied to L{Task}s.
 
@@ -62,20 +63,21 @@ class Tag(TreeNode):
         self._save = None
         self._tasks_count = 0
         #list of tasks associated with this tag
-        
+
     #overiding some functions to not allow dnd of special tags
-    def add_parent(self,parent_id):
+    def add_parent(self, parent_id):
         if not self.is_special() and not self.req.get_tag(parent_id).is_special():
-            TreeNode.add_parent(self,parent_id) 
-    def add_child(self,child_id):
+            TreeNode.add_parent(self, parent_id)
+
+    def add_child(self, child_id):
         if not self.is_special() and not self.req.get_tag(child_id).is_special():
-            TreeNode.add_child(self,child_id)
+            TreeNode.add_child(self, child_id)
 
     def get_name(self):
         """Return the name of the tag."""
         return self.get_attribute("name")
 
-    def set_save_callback(self,save):
+    def set_save_callback(self, save):
         self._save = save
 
     def set_attribute(self, att_name, att_value):
@@ -115,26 +117,26 @@ class Tag(TreeNode):
             if self.has_parent():
                 parents_id = self.get_parents()
                 if len(parents_id) > 0:
-                    to_return = reduce(lambda a,b: "%s,%s" % (a, b), parents_id)
+                    to_return = reduce(lambda a, b: "%s,%s" % (a, b), parents_id)
         elif att_name == 'label':
-            to_return = self._attributes.get(att_name,self.get_id())
+            to_return = self._attributes.get(att_name, self.get_id())
         else:
             to_return = self._attributes.get(att_name, None)
         return to_return
-        
+
     def del_attribute(self, att_name):
         """Deletes the attribute C{att_name}.
         """
         if not att_name in self._attributes:
             return
-        elif att_name in ['name','parent']:
+        elif att_name in ['name', 'parent']:
             return
         else:
             del self._attributes[att_name]
         if self._save:
             self._save()
 
-    def get_all_attributes(self, butname=False, withparent = False):
+    def get_all_attributes(self, butname=False, withparent=False):
         """Return a list of all attribute names.
 
         @param butname: If True, exclude C{name} from the list of attribute
@@ -150,37 +152,37 @@ class Tag(TreeNode):
                 attributes.append("parent")
         return attributes
 
-    ### TASK relation ####      
-       
+    ### TASK relation ####
+
     def get_active_tasks_count(self):
         count = self.__get_count()
         return count
-        
+
     def get_total_tasks_count(self):
         return self.__get_count()
-        
-    def __get_count(self,tasktree=None):
+
+    def __get_count(self, tasktree=None):
         if not tasktree:
             tasktree = self.req.get_tasks_tree()
         sp_id = self.get_attribute("special")
         if sp_id == "all":
             toreturn = tasktree.get_n_nodes(\
-                    withfilters=['active'],include_transparent=False)
+                    withfilters=['active'], include_transparent=False)
         elif sp_id == "notag":
             toreturn = tasktree.get_n_nodes(\
-                            withfilters=['notag'],include_transparent=False)
-        elif sp_id == "sep" :
+                            withfilters=['notag'], include_transparent=False)
+        elif sp_id == "sep":
             toreturn = 0
         else:
             tname = self.get_name()
             toreturn = tasktree.get_n_nodes(\
-                                withfilters=[tname],include_transparent=False)
+                                withfilters=[tname], include_transparent=False)
         return toreturn
-        
+
     #is it useful to keep the tag in the tagstore.
     #if no attributes and no tasks, it is not useful.
     def is_removable(self):
-        attr = self.get_all_attributes(butname = True, withparent = True)
+        attr = self.get_all_attributes(butname=True, withparent=True)
         return (len(attr) <= 0 and not self.is_used())
 
     def is_special(self):

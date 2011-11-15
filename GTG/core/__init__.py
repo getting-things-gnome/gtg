@@ -51,24 +51,24 @@ from GTG.tools.borg   import Borg
 
 DEFAULTS = {
 'browser': {
-            'bg_color_enable' : False,
-            "contents_preview_enable" : False,
-            'tag_pane' : False,
+            'bg_color_enable': False,
+            "contents_preview_enable": False,
+            'tag_pane': False,
             "sidebar_width": 120,
-            "closed_task_pane" : False,
-            'bottom_pane_position' : 300,
-            'toolbar' : True,
-            'quick_add' : True,
+            "closed_task_pane": False,
+            'bottom_pane_position': 300,
+            'toolbar': True,
+            'quick_add': True,
             "bg_color_enable": True,
-            'collapsed_tasks' : [],
-            'collapsed_tags' : [],
-            'view' : 'default',
+            'collapsed_tasks': [],
+            'collapsed_tags': [],
+            'view': 'default',
             "opened_tasks": [],
             'width': 400,
-            'height':400,
-            'x_pos':10,
-            'y_pos':10,
-            'tasklist_sort_column':5,
+            'height': 400,
+            'x_pos': 10,
+            'y_pos': 10,
+            'tasklist_sort_column': 5,
             'tasklist_sort_order': 1,
             }
 }
@@ -79,7 +79,7 @@ DEFAULTS = {
 #element of the ConfigObj directory)
 #
 #The goal of the SubConfig object is to handle default value and converting
-#String to Bool and Int when needed. 
+#String to Bool and Int when needed.
 #
 #Each GTG component using config should be ported to SubConfig and, for each
 #setting, a default value should be written in the DEFAULTS above.
@@ -87,37 +87,36 @@ DEFAULTS = {
 #Currently done : browser
 #Todo : editor, plugins
 class SubConfig():
-    def __init__(self,name,conf_dic):
+    def __init__(self, name, conf_dic):
         self.__name = name
         self.__conf = conf_dic
-        if DEFAULTS.has_key(name):
+        if name in DEFAULTS:
             self.__defaults = DEFAULTS[name]
         else:
             self.__defaults = {}
-        
+
     #This return the value of the setting (or the default one)
     #
     #If a default value exists and is a Int or a Bool, the returned
     #value is converted to that type.
-    def get(self,name):
-        if self.__conf.has_key(name):
+    def get(self, name):
+        if name in self.__conf:
             toreturn = self.__conf[name]
             #Converting to the good type
-            if self.__defaults.has_key(name):
+            if name in self.__defaults:
                 ntype = type(self.__defaults[name])
-                if ntype in (bool,int) and type(toreturn) == str:
+                if ntype in (bool, int) and type(toreturn) == str:
                     toreturn = eval(toreturn)
-        elif self.__defaults.has_key(name):
+        elif name in self.__defaults:
             toreturn = self.__defaults[name]
             self.__conf[name] = toreturn
         else:
-            print "Warning : no default conf value for %s in %s" %(name,self.__name)
+            print "Warning : no default conf value for %s in %s" % (name, self.__name)
             toreturn = None
-        return toreturn 
-    
-    def set(self,name,value):
-        self.__conf[name] = str(value)
+        return toreturn
 
+    def set(self, name, value):
+        self.__conf[name] = str(value)
 
 
 class CoreConfig(Borg):
@@ -145,8 +144,8 @@ class CoreConfig(Borg):
             self.data_dir = '/tmp/GTG_TESTS/data'
             self.conf_dir = '/tmp/GTG_TESTS/conf'
         else:
-            self.data_dir = os.path.join(xdg_data_home,'gtg/')
-            self.conf_dir = os.path.join(xdg_config_home,'gtg/')
+            self.data_dir = os.path.join(xdg_data_home, 'gtg/')
+            self.conf_dir = os.path.join(xdg_config_home, 'gtg/')
         if not os.path.exists(self.conf_dir):
             os.makedirs(self.conf_dir)
         if not os.path.exists(self.data_dir):
@@ -165,16 +164,16 @@ class CoreConfig(Borg):
                             "cannot be read or written. Please check it")
         self.conf_dict = ConfigObj(self.conf_dir + self.CONF_FILE)
         self.task_conf_dict = ConfigObj(self.conf_dir + self.TASK_CONF_FILE)
-    
+
     def save(self):
         ''' Saves the configuration of CoreConfig '''
         self.conf_dict.write()
         self.task_conf_dict.write()
-        
-    def get_subconfig(self,name):
-        if not self.conf_dict.has_key(name):
+
+    def get_subconfig(self, name):
+        if not name in self.conf_dict:
             self.conf_dict[name] = {}
-        return SubConfig(name,self.conf_dict[name])
+        return SubConfig(name, self.conf_dict[name])
 
     def get_icons_directories(self):
         '''
