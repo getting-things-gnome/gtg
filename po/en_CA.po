@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2011-08-17 12:40+0200\n"
-"PO-Revision-Date: 2010-02-28 17:46+0000\n"
-"Last-Translator: Paul Kishimoto <mail@paul.kishimoto.name>\n"
+"PO-Revision-Date: 2011-11-15 03:42+0000\n"
+"Last-Translator: Anthony Harrington <untaintableangel@hotmail.co.uk>\n"
 "Language-Team: English (Canada) <en_CA@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2011-08-18 04:39+0000\n"
-"X-Generator: Launchpad (build 13697)\n"
+"X-Launchpad-Export-Date: 2011-11-15 05:06+0000\n"
+"X-Generator: Launchpad (build 14291)\n"
 
 #: GTG/gtk/deletion.glade.h:1
 msgid "Confirm task deletion"
@@ -95,14 +95,14 @@ msgstr[1] ""
 #: GTG/gtk/delete_dialog.py:74
 msgid "Keep selected tasks"
 msgid_plural "Keep selected task"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Keep selected task"
+msgstr[1] "Keep selected tasks"
 
 #: GTG/gtk/delete_dialog.py:77
 msgid "Permanently remove tasks"
 msgid_plural "Permanently remove task"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Permanently remove task"
+msgstr[1] "Permanently remove tasks"
 
 #: GTG/gtk/delete_dialog.py:108
 #, python-format

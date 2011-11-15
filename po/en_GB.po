@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2011-08-17 12:40+0200\n"
-"PO-Revision-Date: 2010-03-30 00:12+0000\n"
-"Last-Translator: Jonathon Hodges <Unknown>\n"
+"PO-Revision-Date: 2011-11-15 03:40+0000\n"
+"Last-Translator: Anthony Harrington <untaintableangel@hotmail.co.uk>\n"
 "Language-Team: English (United Kingdom) <en_GB@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2011-08-18 04:39+0000\n"
-"X-Generator: Launchpad (build 13697)\n"
+"X-Launchpad-Export-Date: 2011-11-15 05:06+0000\n"
+"X-Generator: Launchpad (build 14291)\n"
 
 #: GTG/gtk/deletion.glade.h:1
 msgid "Confirm task deletion"
@@ -56,7 +56,7 @@ msgstr "Getting Things GNOME! Preferences"
 
 #: GTG/gtk/preferences.glade.h:9
 msgid "Hide closed tasks older than "
-msgstr ""
+msgstr "Hide closed tasks older than "
 
 #: GTG/gtk/preferences.glade.h:10
 msgid "Plugins"
@@ -84,25 +84,27 @@ msgid ""
 msgid_plural ""
 "Deleting a task cannot be undone, and will delete the following task: "
 msgstr[0] ""
+"Deleting a task cannot be undone. This will delete the follow task: "
 msgstr[1] ""
+"Deleting a task cannot be undone. This will delete the follow tasks: "
 
 #: GTG/gtk/delete_dialog.py:68
 msgid "Are you sure you want to delete these tasks?"
 msgid_plural "Are you sure you want to delete this task?"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Are you sure you want to delete this task?"
+msgstr[1] "Are you sure you want to delete these tasks?"
 
 #: GTG/gtk/delete_dialog.py:74
 msgid "Keep selected tasks"
 msgid_plural "Keep selected task"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Keep selected task"
+msgstr[1] "Keep selected tasks"
 
 #: GTG/gtk/delete_dialog.py:77
 msgid "Permanently remove tasks"
 msgid_plural "Permanently remove task"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Permanently remove task"
+msgstr[1] "Permanently remove tasks"
 
 #: GTG/gtk/delete_dialog.py:108
 #, python-format
@@ -110,14 +112,16 @@ msgid ""
 "\n"
 "And %d more tasks"
 msgstr ""
+"\n"
+"And %d more tasks"
 
 #: GTG/gtk/backends_dialog/parameters_ui/passwordui.py:50
 msgid "Password:"
-msgstr ""
+msgstr "Password:"
 
 #: GTG/gtk/backends_dialog/parameters_ui/pathui.py:52
 msgid "Filename:"
-msgstr ""
+msgstr "Filename:"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:63
 msgid "Import tags"
@@ -125,11 +129,11 @@ msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:64
 msgid "All tags"
-msgstr ""
+msgstr "All tags"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:65
 msgid "Just these tags"
-msgstr ""
+msgstr "Just these tags"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:69
 msgid "Tags to sync"
@@ -142,41 +146,41 @@ msgstr "All tasks"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:71
 msgid "Tasks with these tags"
-msgstr ""
+msgstr "Tasks with these tags"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:76
 msgid "Username"
-msgstr ""
+msgstr "Username"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:82
 msgid "Import tasks from @ replies "
-msgstr ""
+msgstr "Import tasks from @ replies "
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:87
 msgid "Import tasks from direct messages"
-msgstr ""
+msgstr "Import tasks from direct messages"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:91
 msgid "Import tasks from your tweets"
-msgstr ""
+msgstr "Import tasks from your tweets"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:95
 msgid "Tag your GTG tasks with the bug tags"
-msgstr ""
+msgstr "Tag your GTG tasks with the bug tags"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:99
 msgid "Tag your GTG tasks with the project targeted by the bug"
-msgstr ""
+msgstr "Tag your GTG tasks with the project targeted by the bug"
 
 #: GTG/gtk/backends_dialog/parameters_ui/periodui.py:51
 msgid "Check for new tasks every"
-msgstr ""
+msgstr "Check for new tasks every"
 
 #: GTG/gtk/backends_dialog/parameters_ui/periodui.py:96
 msgid " minute"
 msgid_plural " minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] " minute"
+msgstr[1] " minutes"
 
 #: GTG/gtk/backends_dialog/configurepanel.py:162
 msgid "Ready to start syncing"
@@ -186,8 +190,8 @@ msgstr ""
 #, python-format
 msgid "Syncing your only task"
 msgid_plural "Syncing all %d tasks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Syncing your only task"
+msgstr[1] "Syncing all %d tasks"
 
 #: GTG/gtk/backends_dialog/configurepanel.py:169
 #, python-format
@@ -203,15 +207,15 @@ msgstr[1] ""
 
 #: GTG/gtk/backends_dialog/configurepanel.py:182
 msgid "Disable syncing"
-msgstr ""
+msgstr "Disable syncing"
 
 #: GTG/gtk/backends_dialog/configurepanel.py:184
 msgid "Enable syncing"
-msgstr ""
+msgstr "Enable syncing"
 
 #: GTG/gtk/backends_dialog/configurepanel.py:192
 msgid "This is the default backend"
-msgstr ""
+msgstr "This is the default backend"
 
 #: GTG/gtk/backends_dialog/configurepanel.py:195
 msgid "Syncing is enabled"
@@ -231,7 +235,7 @@ msgstr[1] ""
 #: GTG/gtk/backends_dialog/__init__.py:287
 #, python-format
 msgid "Do you really want to remove the backend '%s'?"
-msgstr ""
+msgstr "Do you really want to remove the backend '%s'?"
 
 #: GTG/gtk/editor/taskeditor.glade.h:1
 msgid "Closed on"
@@ -551,7 +555,7 @@ msgstr "Reset Colour"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:36
 msgid "Set due date"
-msgstr ""
+msgstr "Set due date"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:37
 msgid "T_oolbar"
@@ -568,7 +572,7 @@ msgstr "Tags"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:40
 msgid "Tasks"
-msgstr ""
+msgstr "Tasks"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:41
 msgid "Und_ismiss"
@@ -608,7 +612,7 @@ msgstr "_Quick Add Entry"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:50
 msgid "_Set start date"
-msgstr ""
+msgstr "_Set start date"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:51
 msgid "_Tags Sidebar"
@@ -1814,15 +1818,6 @@ msgstr "next year"
 #~ "tomorrow or a weekday name (due:monday means due next Monday)"
 
 #~ msgid ""
-#~ "For adding a task you just have to type its title in the entry and press "
-#~ "return. The task will be created and selected in the task browser. If a tag "
-#~ "is selected in the tag panel, this tag is applied to the task you create."
-#~ msgstr ""
-#~ "For adding a task you just have to type its title in the entry and press "
-#~ "return. The task will be created and selected in the task browser. If a tag "
-#~ "is selected in the tag panel, this tag is applied to the task you create."
-
-#~ msgid ""
 #~ "The quickadd entry is the quickest way to create a new task. You can show or "
 #~ "hide it in the View menu."
 #~ msgstr ""
@@ -1885,3 +1880,12 @@ msgstr "next year"
 #~ msgid_plural "Was %(days)d days ago"
 #~ msgstr[0] "Was %(days)d day ago"
 #~ msgstr[1] "Was %(days)d days ago"
+
+#~ msgid ""
+#~ "For adding a task you just have to type its title in the entry and press "
+#~ "return. The task will be created and selected in the task browser. If a tag "
+#~ "is selected in the tag panel, this tag is applied to the task you create."
+#~ msgstr ""
+#~ "For adding a task, you just have to type its title in the entry and press "
+#~ "return. The task will be created and selected in the task browser. If a tag "
+#~ "is selected in the tag panel, this tag is applied to the task you create."
