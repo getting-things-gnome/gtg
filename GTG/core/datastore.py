@@ -56,15 +56,14 @@ class DataStore(object):
     Requester instead (which also sends signals as you issue commands).
     '''
 
-
-    def __init__(self,global_conf=CoreConfig()):
+    def __init__(self, global_conf=CoreConfig()):
         '''
         Initializes a DataStore object
         '''
         self.backends = {} #dictionary {backend_name_string: Backend instance}
         self.treefactory = TreeFactory()
         self.__tasks = self.treefactory.get_tasks_tree()
-        self.requester = requester.Requester(self,global_conf)
+        self.requester = requester.Requester(self, global_conf)
         self.tagfile = None
         self.__tagstore = self.treefactory.get_tags_tree(self.requester)
         self.added_tag = {}
@@ -102,7 +101,7 @@ class DataStore(object):
                                                this datastore
         '''
         return self.requester
-        
+
     def get_tasks_tree(self):
         '''
         Helper function to get a Tree with all the tasks contained in this
@@ -111,24 +110,24 @@ class DataStore(object):
         @returns GTG.core.tree.Tree: a task tree (the main one)
         '''
         return self.__tasks
-        
+
     ##########################################################################
     ### Tags functions
     ##########################################################################
-    
-    def new_tag(self,tagname):
+
+    def new_tag(self, tagname):
         """Create a new tag and return it or return the existing one
         with corresponding name"""
-        def adding_tag(tname,tag):
+        def adding_tag(tname, tag):
             if not self.__tagstore.has_node(tname):
-                p = {'tag':tname,'transparent':True}
-                self.__tasks.add_filter(tname,self.treefactory.tag_filter,parameters=p)
+                p = {'tag': tname, 'transparent': True}
+                self.__tasks.add_filter(tname, self.treefactory.tag_filter, parameters=p)
                 self.__tagstore.add_node(tag)
                 tag.set_save_callback(self.save)
                 self.added_tag.pop(tname)
                 Log.debug("********* tag added %s *******" % tname)
             else:
-                print "Warning: Trying to add tag %s multiple times" %tname
+                print "Warning: Trying to add tag %s multiple times" % tname
         #we create a new tag from a name
         tname = tagname.encode("UTF-8")
         #if tname not in self.tags:
@@ -136,18 +135,18 @@ class DataStore(object):
             if tname not in self.added_tag:
                 tag = Tag(tname, req=self.requester)
                 self.added_tag[tname] = tag
-                adding_tag(tname,tag)
+                adding_tag(tname, tag)
             else:
                 #it means that we are in the process of adding the tag
                 tag = self.added_tag[tname]
         else:
-            raise IndexError('tag %s was already in the datastore' %tagname)
+            raise IndexError('tag %s was already in the datastore' % tagname)
         return tag
-        
-    def rename_tag(self,oldname,newname):
+
+    def rename_tag(self, oldname, newname):
         print "Tag renaming not implemented yet"
-    
-    def get_tag(self,tagname):
+
+    def get_tag(self, tagname):
         #The following is wrong, as we have special tags that do not start with
         # @. I'm leaving this here temporary to help in merging (as it will
         # probably generate a conflict). Remove at will after merging
@@ -158,11 +157,11 @@ class DataStore(object):
             return self.__tagstore.get_node(tagname)
         else:
             return None
-            
+
     def load_tag_tree(self):
         # Loading tags
         tagfile = os.path.join(CoreConfig().get_data_dir(), TAG_XMLFILE)
-        doc, xmlstore = cleanxml.openxmlfile(tagfile,TAG_XMLROOT)
+        doc, xmlstore = cleanxml.openxmlfile(tagfile, TAG_XMLROOT)
         for t in xmlstore.childNodes:
             #We should only care about tag with a name beginning with "@"
             #Other are special tags
@@ -179,7 +178,7 @@ class DataStore(object):
             if parent:
                 tag.set_parent(parent)
         self.tagfile = tagfile
-                
+
     def save_tagtree(self):
         if self.tagfile:
             doc, xmlroot = cleanxml.emptydoc(TAG_XMLROOT)
@@ -189,7 +188,7 @@ class DataStore(object):
             #It saves space and allow the saved list growth to be controlled
             for tname in tags:
                 t = self.__tagstore.get_node(tname)
-                attr = t.get_all_attributes(butname = True, withparent = True)
+                attr = t.get_all_attributes(butname=True, withparent=True)
                 if "special" not in attr and len(attr) > 0:
                     tagname = t.get_name()
                     if not tagname in already_saved:
@@ -202,7 +201,6 @@ class DataStore(object):
                                 t_xml.setAttribute(a, value)
                         xmlroot.appendChild(t_xml)
             cleanxml.savexml(self.tagfile, doc)
-    
 
     ##########################################################################
     ### Tasks functions
@@ -242,8 +240,8 @@ class DataStore(object):
             #This is not an error: it is normal to request a task which
             #might not exist yet.
             return None
-        
-    def task_factory(self, tid, newtask = False):
+
+    def task_factory(self, tid, newtask=False):
         '''
         Instantiates the given task id as a Task object.
 
@@ -265,7 +263,7 @@ class DataStore(object):
         task = self.task_factory(str(uuid.uuid4()), True)
         self.__tasks.add_node(task)
         return task
-        
+
     @synchronized
     def push_task(self, task):
         '''
@@ -281,7 +279,7 @@ class DataStore(object):
             vip = False
             if task.get_status() == "Active":
                 vip = True
-            self.__tasks.add_node(task,high_priority=vip )
+            self.__tasks.add_node(task, high_priority=vip)
             task.set_loaded()
             if self.is_default_backend_loaded:
                 task.sync()
@@ -296,8 +294,8 @@ class DataStore(object):
     ### Backends functions
     ##########################################################################
 
-    def get_all_backends(self, disabled = False):
-        """ 
+    def get_all_backends(self, disabled=False):
+        """
         returns list of all registered backends for this DataStore.
 
         @param disabled: If disabled is True, attaches also the list of disabled backends
@@ -343,15 +341,15 @@ class DataStore(object):
                 return None
             #creating the TaskSource which will wrap the backend,
             # filtering the tasks that should hit the backend.
-            source = TaskSource(requester = self.requester,
-                                backend = backend,
-                                datastore = self.filtered_datastore)
+            source = TaskSource(requester=self.requester,
+                                backend=backend,
+                                datastore=self.filtered_datastore)
             self.backends[backend.get_id()] = source
             #we notify that a new backend is present
             self._backend_signals.backend_added(backend.get_id())
             #saving the backend in the correct dictionary (backends for enabled
             # backends, disabled_backends for the disabled ones)
-            #this is useful for retro-compatibility 
+            #this is useful for retro-compatibility
             if not GenericBackend.KEY_ENABLED in backend_dic:
                 source.set_parameter(GenericBackend.KEY_ENABLED, True)
             if not GenericBackend.KEY_DEFAULT_BACKEND in backend_dic:
@@ -359,7 +357,7 @@ class DataStore(object):
             #if it's enabled, we initialize it
             if source.is_enabled() and \
                (self.is_default_backend_loaded or source.is_default()):
-                source.initialize(connect_signals = False)
+                source.initialize(connect_signals=False)
                 #Filling the backend
                 #Doing this at start is more efficient than
                 #after the GUI is launched
@@ -368,7 +366,7 @@ class DataStore(object):
         else:
             Log.error("Tried to register a backend without a  pid")
 
-    def _activate_non_default_backends(self, sender = None):
+    def _activate_non_default_backends(self, sender=None):
         '''
         Non-default backends have to wait until the default loads before
         being  activated. This function is called after the first default
@@ -379,7 +377,6 @@ class DataStore(object):
         if self.is_default_backend_loaded:
             Log.debug("spurious call")
             return
-
 
         self.is_default_backend_loaded = True
         for backend in self.backends.itervalues():
@@ -402,8 +399,8 @@ class DataStore(object):
             backend.start_get_tasks()
             self.flush_all_tasks(backend.get_id())
 
-        thread = threading.Thread(target = __backend_startup,
-                                          args = (self, backend))
+        thread = threading.Thread(target=__backend_startup,
+                                          args=(self, backend))
         thread.setDaemon(True)
         thread.start()
 
@@ -427,8 +424,8 @@ class DataStore(object):
             if current_state == True and state == False:
                 #we disable the backend
                 #FIXME!!!
-                threading.Thread(target = backend.quit, \
-                                 kwargs = {'disable': True}).start()
+                threading.Thread(target=backend.quit, \
+                                 kwargs={'disable': True}).start()
             elif current_state == False and state == True:
                 if self.is_default_backend_loaded == True:
                     self._backend_startup(backend)
@@ -474,7 +471,7 @@ class DataStore(object):
         identified with backend_id. If tasks need to be added or removed, it
         will be done here.
         It has to be run after the creation of a new backend (or an alteration
-        of its "attached tags"), so that the tasks which are already loaded in 
+        of its "attached tags"), so that the tasks which are already loaded in
         the Tree will be saved in the proper backends
 
         @param backend_id: a backend id
@@ -485,13 +482,13 @@ class DataStore(object):
                 if self.please_quit:
                     break
                 backend.queue_set_task(task_id)
-        t = threading.Thread(target = _internal_flush_all_tasks)
+        t = threading.Thread(target=_internal_flush_all_tasks)
         t.start()
         self.backends[backend_id].start_get_tasks()
 
-    def save(self, quit = False):
+    def save(self, quit=False):
         '''
-        Saves the backends parameters. 
+        Saves the backends parameters.
 
         @param quit: If quit is true, backends are shut down
         '''
@@ -499,23 +496,23 @@ class DataStore(object):
             self.start_get_tasks_thread.join()
         except Exception, e:
             pass
-        doc,xmlconfig = cleanxml.emptydoc("config")
+        doc, xmlconfig = cleanxml.emptydoc("config")
         #we ask all the backends to quit first.
         if quit:
             #we quit backends in parallel
             threads_dic = {}
             for b in self.get_all_backends():
-                thread = threading.Thread(target = b.quit)
+                thread = threading.Thread(target=b.quit)
                 threads_dic[b.get_id()] = thread
                 thread.start()
             for backend_id, thread in threads_dic.iteritems():
                 #after 20 seconds, we give up
                 thread.join(20)
                 if thread.isAlive():
-                    Log.error("The %s backend stalled while quitting", 
+                    Log.error("The %s backend stalled while quitting",
                               backend_id)
         #we save the parameters
-        for b in self.get_all_backends(disabled = True):
+        for b in self.get_all_backends(disabled=True):
             t_xml = doc.createElement("backend")
             for key, value in b.get_parameters().iteritems():
                 if key in ["backend", "xmlobject"]:
@@ -528,18 +525,18 @@ class DataStore(object):
             #Saving all the projects at close
             xmlconfig.appendChild(t_xml)
         datafile = os.path.join(CoreConfig().get_data_dir(), CoreConfig.DATA_FILE)
-        cleanxml.savexml(datafile,doc,backup=True)
+        cleanxml.savexml(datafile, doc, backup=True)
         #Saving the tagstore
         self.save_tagtree()
-        
+
     def request_task_deletion(self, tid):
-        ''' 
+        '''
         This is a proxy function to request a task deletion from a backend
 
         @param tid: the tid of the task to remove
         '''
         self.requester.delete_task(tid)
-    
+
     def get_backend_mutex(self):
         '''
         Returns the mutex object used by backends to avoid modifying a task
@@ -550,13 +547,11 @@ class DataStore(object):
         return self._backend_mutex
 
 
-
 class TaskSource():
     '''
     Transparent interface between the real backend and the DataStore.
     Is in charge of connecting and disconnecting to signals
     '''
-
 
     def __init__(self, requester, backend, datastore):
         """
@@ -577,18 +572,18 @@ class TaskSource():
         if Log.is_debugging_mode():
             self.timer_timestep = 5
         else:
-            self.timer_timestep = 1 
+            self.timer_timestep = 1
         self.add_task_handle = None
         self.set_task_handle = None
         self.remove_task_handle = None
         self.to_set_timer = None
-        
+
     def start_get_tasks(self):
         ''''
         Maps the TaskSource to the backend and starts threading.
         '''
         self.start_get_tasks_thread = \
-             threading.Thread(target = self.__start_get_tasks)
+             threading.Thread(target=self.__start_get_tasks)
         self.start_get_tasks_thread.setDaemon(True)
         self.start_get_tasks_thread.start()
 
@@ -656,8 +651,8 @@ class TaskSource():
                 self.__try_launch_setting_thread()
         else:
             self.queue_remove_task(tid, path)
-            
-    def launch_setting_thread(self, bypass_please_quit = False):
+
+    def launch_setting_thread(self, bypass_please_quit=False):
         '''
         Operates the threads to set and remove tasks.
         Releases the lock when it is done.
@@ -688,7 +683,7 @@ class TaskSource():
             self.backend.queue_remove_task(tid)
         #we release the weak lock
         self.to_set_timer = None
-    
+
     def queue_remove_task(self, tid, path=None):
         '''
         Queues task to be removed.
@@ -710,7 +705,7 @@ class TaskSource():
             self.to_set_timer.setDaemon(True)
             self.to_set_timer.start()
 
-    def initialize(self, connect_signals = True):
+    def initialize(self, connect_signals=True):
         '''
         Initializes the backend and starts looking for signals.
 
@@ -764,9 +759,9 @@ class TaskSource():
             self.start_get_tasks_thread.join(3)
         except:
             pass
-        self.launch_setting_thread(bypass_please_quit = True)
+        self.launch_setting_thread(bypass_please_quit=True)
 
-    def quit(self, disable = False):
+    def quit(self, disable=False):
         '''
         Quits the backend and disconnect the signals
 
@@ -776,7 +771,7 @@ class TaskSource():
         self.please_quit = True
         self.sync()
         self.backend.quit(disable)
-    
+
     def __getattr__(self, attr):
         '''
         Delegates all the functions not defined here to the real backend
@@ -784,20 +779,18 @@ class TaskSource():
 
         @param attr: attribute to get
         '''
-        if attr in self.__dict__: 
+        if attr in self.__dict__:
             return self.__dict__[attr]
         else:
             return getattr(self.backend, attr)
 
 
-
 class FilteredDataStore(Borg):
-    ''' 
+    '''
     This class acts as an interface to the Datastore.
     It is used to hide most of the methods of the Datastore.
     The backends can safely use the remaining methods.
     '''
-
 
     def __init__(self, datastore):
         super(FilteredDataStore, self).__init__()
@@ -817,4 +810,4 @@ class FilteredDataStore(Borg):
         elif attr in ['get_all_tags']:
             return self.datastore.requester.get_all_tags
         else:
-            raise AttributeError("No attribute %s" %attr)
+            raise AttributeError("No attribute %s" % attr)
