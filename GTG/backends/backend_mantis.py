@@ -32,6 +32,9 @@ from suds.client import Client
 
 '''
 Backend for importing mantis issues in GTG
+
+Dependencies:
+  * python-suds
 '''
 class Backend(PeriodicImportBackend):
     _general_description = { \
