@@ -579,7 +579,8 @@ class Task(TreeNode):
         self.content = self._strip_tag(self.content, tagname)
         if modified:
             tag = self.req.get_tag(tagname)
-            tag.modified()
+            if tag:
+                tag.modified()
 
     def set_only_these_tags(self, tags_list):
         '''
