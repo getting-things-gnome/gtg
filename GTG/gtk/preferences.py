@@ -67,16 +67,40 @@ def plugin_markup(column, cell, store, iter, self):
     desc = store.get_value(iter, PLUGINS_COL_SHORT_DESC)
     plugin_id = store.get_value(iter, PLUGINS_COL_ID)
     p = self.pengine.get_plugin(plugin_id)
-    dep = plugin_error_text(p)
-    if dep != 'Everything necessary to run this plugin is available.':
-        dep = dep.split('\n')
-        dep = dep[2] + '\n' + dep[3]
-        cell.set_property('markup', "<b>%s</b>\n%s\n<i>%s</i>" % (name, desc, dep))
+    error_text = plugin_error_short_text(p)
+    if error_text != "":
+        cell.set_property('markup', "<b>%s</b>\n%s\n<i>%s</i>" % (name, desc, error_text))
     else:
         cell.set_property('markup', "<b>%s</b>\n%s" % (name, desc))
     cell.set_property('sensitive', store.get_value(iter,
       PLUGINS_COL_ACTIVATABLE))
 
+def plugin_error_short_text(plugin):
+    """ Return small version of description of missing module dependencies
+    for displaying in plugin markup """
+    if not plugin.error:
+        return ""
+
+    # get lists
+    modules = plugin.missing_modules
+    dbus = plugin.missing_dbus
+
+    # convert to strings
+    if modules:
+        modules = "<small><b>%s</b></small>" % ', '.join(modules)
+    if dbus:
+        ifaces = ["%s:%s" % (a, b) for (a, b) in dbus]
+        dbus = "<small><b>%s</b></small>" % ', '.join(ifaces)
+    # combine
+    if modules and not dbus:
+        text = '\n'.join((GnomeConfig.miss2, modules))
+    elif dbus and not modules:
+        text = '\n'.join((GnomeConfig.dmiss2, dbus))
+    elif modules and dbus:
+        text = '\n'.join((GnomeConfig.bmiss2, modules, dbus))
+    else:
+        test = ""
+    return text
 
 def plugin_error_text(plugin):
     """Generate some helpful text about missing module dependencies."""
