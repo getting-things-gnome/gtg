@@ -569,7 +569,7 @@ class TaskView(gtk.TextView):
                 if url.startswith("http://") or url.startswith("https://") :
                     texttag = self.create_anchor_tag(buff,url,text=None,typ="http")
                     buff.apply_tag(texttag, prev , it)
-            elif text in ["bug","lp","bgo","fdo"] :
+            elif text in ["bug","lp","bgo","fdo", "bko"] :
                 if it.get_char() == " " :
                     it.forward_char()
                 if it.get_char() == "#" :
@@ -583,6 +583,8 @@ class TaskView(gtk.TextView):
                         topoint = "https://launchpad.net/bugs/%s" %nbr
                     elif url.startswith("bgo #") :
                         topoint = "http://bugzilla.gnome.org/show_bug.cgi?id=%s" %nbr
+                    elif url.startswith("bko #") :
+                        topoint = "https://bugs.kde.org/show_bug.cgi?id=%s" %nbr
                     elif url.startswith("fdo #") :
                         topoint = "http://bugs.freedesktop.org/show_bug.cgi?id=%s" %nbr
                     if topoint :
