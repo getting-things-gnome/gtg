@@ -1,4 +1,5 @@
 ????-??-?? Getting Things GNOME! ?.?.?
+    * Added Mantis Bug Tracker backend, by Alayn Gortazar
     * Fixed crash traceback when pressing 'delete' key, by Jeff Oliver
     * Added link to web documentation in Help menu, by Ronan Jouchet
     * Fixed bug with data consistency #579189, by Marko Kevac
