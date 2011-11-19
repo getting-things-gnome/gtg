@@ -47,27 +47,59 @@ PLUGINS_COL_ACTIVATABLE = 5
 
 def plugin_icon(column, cell, store, iter):
     """Callback to set the content of a PluginTree cell.
-    
+
     See PreferencesDialog._init_plugin_tree().
-    
+
     """
     cell.set_property('icon-name', 'gtg-plugin')
     cell.set_property('sensitive', store.get_value(iter,
       PLUGINS_COL_ACTIVATABLE))
 
 
-def plugin_markup(column, cell, store, iter):
+def plugin_markup(column, cell, store, iter, self):
     """Callback to set the content of a PluginTree cell.
-    
+
     See PreferencesDialog._init_plugin_tree().
-    
+
     """
     name = store.get_value(iter, PLUGINS_COL_NAME)
     desc = store.get_value(iter, PLUGINS_COL_SHORT_DESC)
-    cell.set_property('markup', "<b>%s</b>\n%s" % (name, desc))
+    plugin_id = store.get_value(iter, PLUGINS_COL_ID)
+    p = self.pengine.get_plugin(plugin_id)
+    error_text = plugin_error_short_text(p)
+    if error_text != "":
+        cell.set_property('markup', "<b>%s</b>\n%s\n<i>%s</i>" % (name, desc, error_text))
+    else:
+        cell.set_property('markup', "<b>%s</b>\n%s" % (name, desc))
     cell.set_property('sensitive', store.get_value(iter,
       PLUGINS_COL_ACTIVATABLE))
 
+def plugin_error_short_text(plugin):
+    """ Return small version of description of missing module dependencies
+    for displaying in plugin markup """
+    if not plugin.error:
+        return ""
+
+    # get lists
+    modules = plugin.missing_modules
+    dbus = plugin.missing_dbus
+
+    # convert to strings
+    if modules:
+        modules = "<small><b>%s</b></small>" % ', '.join(modules)
+    if dbus:
+        ifaces = ["%s:%s" % (a, b) for (a, b) in dbus]
+        dbus = "<small><b>%s</b></small>" % ', '.join(ifaces)
+    # combine
+    if modules and not dbus:
+        text = '\n'.join((GnomeConfig.miss2, modules))
+    elif dbus and not modules:
+        text = '\n'.join((GnomeConfig.dmiss2, dbus))
+    elif modules and dbus:
+        text = '\n'.join((GnomeConfig.bmiss2, modules, dbus))
+    else:
+        test = ""
+    return text
 
 def plugin_error_text(plugin):
     """Generate some helpful text about missing module dependencies."""
@@ -80,15 +112,15 @@ def plugin_error_text(plugin):
     dbus = plugin.missing_dbus
     # convert to strings
     if modules:
-      modules = "<small><b>%s</b></small>" % ', '.join(modules)
+        modules = "<small><b>%s</b></small>" % ', '.join(modules)
     if dbus:
-      ifaces = ["%s:%s" % (a, b) for (a, b) in dbus]
-      dbus = "<small><b>%s</b></small>" % ', '.join(ifaces)
+        ifaces = ["%s:%s" % (a, b) for (a, b) in dbus]
+        dbus = "<small><b>%s</b></small>" % ', '.join(ifaces)
     # combine
     if modules and not dbus:
         text += '\n'.join((GnomeConfig.MODULEMISSING, modules))
     elif dbus and not modules:
-        text += '\n'.join((GnomeConfig.DBUSMISSING,  dbus))
+        text += '\n'.join((GnomeConfig.DBUSMISSING, dbus))
     elif modules and dbus:
         text += '\n'.join((GnomeConfig.MODULANDDBUS, modules, dbus))
     else:
@@ -106,7 +138,7 @@ class PreferencesDialog:
         self.config_obj = config_obj
         self.req = req
         self.config = self.config_obj.conf_dict
-        self.builder = gtk.Builder() 
+        self.builder = gtk.Builder()
         self.builder.add_from_file(ViewConfig.PREFERENCES_GLADE_FILE)
         # store references to some objects
         widgets = {
@@ -155,14 +187,14 @@ class PreferencesDialog:
         if not hasattr(self, 'plugin_store'):
             # see constants PLUGINS_COL_* for column meanings
             self.plugin_store = gtk.ListStore(str, 'gboolean', str, str, str,
-              'gboolean',)
+              'gboolean', )
         self.plugin_store.clear()
         # refresh the status of all plugins
         self.pengine.recheck_plugin_errors(True)
         # repopulate the store
         for name, p in self.pengine.plugins.iteritems():
             self.plugin_store.append([name, p.enabled, p.full_name,
-              p.short_description, p.description, not p.error,]) # activateable if there is no error
+              p.short_description, p.description, not p.error, ]) # activateable if there is no error
 
     def  _refresh_preferences_store(self):
         """Sets the correct value in the preferences checkboxes"""
@@ -177,13 +209,12 @@ class PreferencesDialog:
             toset = 0
         self.pref_show_preview.set_active(toset)
 
-
     def _init_plugin_tree(self):
         """Initialize the PluginTree gtk.TreeView.
-        
+
         The format is modelled after the one used in gedit; see
         http://git.gnome.org/browse/gedit/tree/gedit/gedit-plugin-mapnager.c
-        
+
         """
         # force creation of the gtk.ListStore so we can reference it
         self._refresh_plugin_store()
@@ -211,7 +242,7 @@ class PreferencesDialog:
         name_renderer = gtk.CellRendererText()
         name_renderer.set_property('ellipsize', pango.ELLIPSIZE_END)
         column.pack_start(name_renderer)
-        column.set_cell_data_func(name_renderer, plugin_markup)
+        column.set_cell_data_func(name_renderer, plugin_markup, self)
 
         self.plugin_tree.append_column(column)
 
@@ -344,18 +375,17 @@ class PreferencesDialog:
             self.pengine.deactivate_plugins([p])
         self.plugin_store.set_value(iter, PLUGINS_COL_ENABLED, p.enabled)
         self._update_plugin_configure(p)
-    
+
     def toggle_preview(self, widget):
         """Toggle previews in the task view on or off."""
-        self.config_priv.set("contents_preview_enable",widget.get_active())
+        self.config_priv.set("contents_preview_enable", widget.get_active())
         view = self.req.get_tasks_tree(refresh=False)
         view.refresh_all()
 
-    
     def toggle_spellcheck(self, widget):
         """Toggle spell checking on or off."""
         print __name__
-    
+
     def _update_plugin_configure(self, plugin):
         """Enable the "Configure Plugin" button if appropriate."""
         configurable = plugin.active and plugin.is_configurable()
@@ -365,7 +395,7 @@ class PreferencesDialog:
         """Toggle GTG autostarting with the GNOME desktop"""
         autostart_path = os.path.join(self.__AUTOSTART_DIRECTORY, \
                                       self.__AUTOSTART_FILE)
-        if widget.get_active() == False: 
+        if widget.get_active() == False:
             #Disable autostart, removing the file in autostart_path
             if os.path.isfile(autostart_path):
                 os.remove(autostart_path)
