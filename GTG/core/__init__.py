@@ -134,6 +134,7 @@ class CoreConfig(Borg):
     ALLTASKS_TAG = "gtg-tags-all"
     NOTAG_TAG = "gtg-tags-none"
     SEP_TAG = "gtg-tags-sep"
+    SEARCH_TAG = "search"
 
     def __init__(self):
         if  hasattr(self, 'data_dir'):

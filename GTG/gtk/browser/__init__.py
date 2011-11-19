@@ -46,4 +46,6 @@ class GnomeConfig:
     WORKVIEW_TOGGLE_TOOLTIP = _("Display only the currently actionable tasks")
     TAG_IN_WORKVIEW_TOGG    = _("Hide this tag from the workview")
     TAG_NOTIN_WORKVIEW_TOGG = _("Show this tag in the workview")
-
+    SAVEASVIEW              = _("Save as View...")
+    QUICKADD_ENTRY_TOOLTIP  = _("you can filter, create or open your tasks here\nSearch using ! for commands, @ for tags or dates")
+    QUICKADD_ICON_TOOLTIP   = _("Clear")

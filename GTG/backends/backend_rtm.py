@@ -424,8 +424,7 @@ class Backend(PeriodicImportBackend):
             task.remove_tag(tag)
         #tags to add
         for tag in tags.difference(gtg_tags_lower):
-            gtg_all_tags = [t.get_name() for t in \
-                            self.datastore.get_all_tags()]
+            gtg_all_tags = self.datastore.get_all_tags()
             matching_tags = filter(lambda t: t.lower() == tag, gtg_all_tags)
             if len(matching_tags) !=  0:
                 tag = matching_tags[0]

@@ -171,7 +171,12 @@ class Tag(TreeNode):
         elif sp_id == "notag":
             toreturn = tasktree.get_n_nodes(\
                             withfilters=['notag'], include_transparent=False)
-        elif sp_id == "sep":
+        elif sp_id == "search" :
+            if self.req.search_is_active():
+                toreturn = (self.req.get_search_tree()).get_n_nodes(include_transparent=False)
+            else:
+                toreturn = 0
+        elif sp_id == "sep" :
             toreturn = 0
         else:
             tname = self.get_name()

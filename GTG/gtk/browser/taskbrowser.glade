@@ -1,37 +1,44 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk+" version="2.16"/>
-  <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="MainWindow">
+    <property name="can_focus">False</property>
     <property name="title" translatable="yes">Getting Things Gnome!</property>
     <property name="default_width">700</property>
     <property name="default_height">550</property>
-    <signal name="configure_event" handler="on_move"/>
-    <signal name="size_allocate" handler="on_size_allocate"/>
+    <signal name="configure-event" handler="on_move" swapped="no"/>
+    <signal name="size-allocate" handler="on_size_allocate" swapped="no"/>
     <child>
       <object class="GtkVBox" id="master_vbox">
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
         <child>
           <object class="GtkMenuBar" id="browser_menu">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <child>
               <object class="GtkMenuItem" id="bm_task">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="use_action_appearance">False</property>
                 <property name="label" translatable="yes">_Tasks</property>
                 <property name="use_underline">True</property>
                 <child type="submenu">
                   <object class="GtkMenu" id="tasks_menu">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <child>
                       <object class="GtkImageMenuItem" id="new_task_mi">
                         <property name="label" translatable="yes">New _Task</property>
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="tooltip_text" translatable="yes">Create a new task</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="image">bm_img_task</property>
                         <property name="use_stock">False</property>
                         <property name="always_show_image">True</property>
-                        <signal name="activate" handler="on_add_task"/>
+                        <signal name="activate" handler="on_add_task" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -39,11 +46,13 @@
                         <property name="label" translatable="yes">New _Subtask</property>
                         <property name="visible">True</property>
                         <property name="sensitive">False</property>
+                        <property name="can_focus">False</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="image">bm_img_subtask</property>
                         <property name="use_stock">False</property>
                         <property name="always_show_image">True</property>
-                        <signal name="activate" handler="on_add_subtask"/>
+                        <signal name="activate" handler="on_add_subtask" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -51,15 +60,18 @@
                         <property name="label">gtk-edit</property>
                         <property name="visible">True</property>
                         <property name="sensitive">False</property>
+                        <property name="can_focus">False</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <property name="accel_group">accelgroup1</property>
-                        <signal name="activate" handler="on_edit_active_task"/>
+                        <signal name="activate" handler="on_edit_active_task" swapped="no"/>
                       </object>
                     </child>
                     <child>
                       <object class="GtkSeparatorMenuItem" id="separator_1">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                       </object>
                     </child>
                     <child>
@@ -67,11 +79,13 @@
                         <property name="label" translatable="yes">Mark as _Done</property>
                         <property name="visible">True</property>
                         <property name="sensitive">False</property>
+                        <property name="can_focus">False</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="image">bm_img_done</property>
                         <property name="use_stock">False</property>
                         <property name="always_show_image">True</property>
-                        <signal name="activate" handler="on_mark_as_done"/>
+                        <signal name="activate" handler="on_mark_as_done" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -79,11 +93,13 @@
                         <property name="label" translatable="yes">D_ismiss</property>
                         <property name="visible">True</property>
                         <property name="sensitive">False</property>
+                        <property name="can_focus">False</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="image">bm_img_dismiss</property>
                         <property name="use_stock">False</property>
                         <property name="always_show_image">True</property>
-                        <signal name="activate" handler="on_dismiss_task"/>
+                        <signal name="activate" handler="on_dismiss_task" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -91,25 +107,30 @@
                         <property name="label">gtk-delete</property>
                         <property name="visible">True</property>
                         <property name="sensitive">False</property>
+                        <property name="can_focus">False</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <property name="accel_group">accelgroup1</property>
-                        <signal name="activate" handler="on_delete_task"/>
+                        <signal name="activate" handler="on_delete_task" swapped="no"/>
                       </object>
                     </child>
                     <child>
                       <object class="GtkSeparatorMenuItem" id="separator_2">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                       </object>
                     </child>
                     <child>
                       <object class="GtkImageMenuItem" id="file_quit">
                         <property name="label">gtk-quit</property>
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <property name="accel_group">accelgroup1</property>
-                        <signal name="activate" handler="gtk_main_quit"/>
+                        <signal name="activate" handler="gtk_main_quit" swapped="no"/>
                       </object>
                     </child>
                   </object>
@@ -119,14 +140,19 @@
             <child>
               <object class="GtkMenuItem" id="bm_edit">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="use_action_appearance">False</property>
                 <property name="label" translatable="yes">_Edit</property>
                 <property name="use_underline">True</property>
                 <child type="submenu">
                   <object class="GtkMenu" id="edit_menu">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <child>
                       <object class="GtkImageMenuItem" id="edit_undo">
                         <property name="label">gtk-undo</property>
+                        <property name="can_focus">False</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <property name="accel_group">accelgroup1</property>
@@ -135,29 +161,37 @@
                     <child>
                       <object class="GtkImageMenuItem" id="edit_redo">
                         <property name="label">gtk-redo</property>
+                        <property name="can_focus">False</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <property name="accel_group">accelgroup1</property>
                       </object>
                     </child>
                     <child>
-                      <object class="GtkSeparatorMenuItem" id="separator_3"/>
+                      <object class="GtkSeparatorMenuItem" id="separator_3">
+                        <property name="can_focus">False</property>
+                      </object>
                     </child>
                     <child>
                       <object class="GtkImageMenuItem" id="edit_preferences_mi">
                         <property name="label">gtk-preferences</property>
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <property name="accel_group">accelgroup1</property>
-                        <signal name="activate" handler="on_preferences_activate"/>
+                        <signal name="activate" handler="on_preferences_activate" swapped="no"/>
                       </object>
                     </child>
                     <child>
                       <object class="GtkMenuItem" id="backends_mi">
-                        <property name="label">Backends</property>
                         <property name="visible">True</property>
-                        <signal name="activate" handler="on_edit_backends_activate"/>
+                        <property name="can_focus">False</property>
+                        <property name="use_action_appearance">False</property>
+                        <property name="label">Backends</property>
+                        <signal name="activate" handler="on_edit_backends_activate" swapped="no"/>
                       </object>
                     </child>
                   </object>
@@ -167,68 +201,85 @@
             <child>
               <object class="GtkMenuItem" id="menu_view">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="use_action_appearance">False</property>
                 <property name="label" translatable="yes">_View</property>
                 <property name="use_underline">True</property>
                 <child type="submenu">
                   <object class="GtkMenu" id="view_menu">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <child>
                       <object class="GtkCheckMenuItem" id="view_workview">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="label" translatable="yes">_Work View</property>
                         <property name="use_underline">True</property>
-                        <signal name="toggled" handler="on_view_workview_toggled"/>
+                        <signal name="toggled" handler="on_view_workview_toggled" swapped="no"/>
                       </object>
                     </child>
                     <child>
                       <object class="GtkSeparatorMenuItem" id="separator_4">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                       </object>
                     </child>
                     <child>
                       <object class="GtkCheckMenuItem" id="bgcol_enable">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="label" translatable="yes">_Background Colors</property>
                         <property name="use_underline">True</property>
                         <property name="active">True</property>
-                        <signal name="toggled" handler="on_bg_color_toggled"/>
+                        <signal name="toggled" handler="on_bg_color_toggled" swapped="no"/>
                       </object>
                     </child>
                     <child>
                       <object class="GtkSeparatorMenuItem" id="separator_5">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                       </object>
                     </child>
                     <child>
                       <object class="GtkCheckMenuItem" id="view_sidebar">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="label" translatable="yes">_Tags Sidebar</property>
                         <property name="use_underline">True</property>
-                        <signal name="toggled" handler="on_view_sidebar_toggled"/>
+                        <signal name="toggled" handler="on_view_sidebar_toggled" swapped="no"/>
                       </object>
                     </child>
                     <child>
                       <object class="GtkCheckMenuItem" id="view_closed">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="label" translatable="yes">_Closed Tasks Pane</property>
                         <property name="use_underline">True</property>
-                        <signal name="toggled" handler="on_view_closed_toggled"/>
+                        <signal name="toggled" handler="on_view_closed_toggled" swapped="no"/>
                       </object>
                     </child>
                     <child>
                       <object class="GtkCheckMenuItem" id="view_toolbar">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="label" translatable="yes">T_oolbar</property>
                         <property name="use_underline">True</property>
-                        <signal name="toggled" handler="on_view_toolbar_toggled"/>
+                        <signal name="toggled" handler="on_view_toolbar_toggled" swapped="no"/>
                       </object>
                     </child>
                     <child>
                       <object class="GtkCheckMenuItem" id="view_quickadd">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="label" translatable="yes">_Quick Add Entry</property>
                         <property name="use_underline">True</property>
-                        <signal name="toggled" handler="on_view_quickadd_toggled"/>
+                        <signal name="toggled" handler="on_view_quickadd_toggled" swapped="no"/>
                       </object>
                     </child>
                   </object>
@@ -237,11 +288,14 @@
             </child>
             <child>
               <object class="GtkMenuItem" id="plugin_mi">
+                <property name="can_focus">False</property>
+                <property name="use_action_appearance">False</property>
                 <property name="label" translatable="yes">_Plugins</property>
                 <property name="use_underline">True</property>
                 <child type="submenu">
                   <object class="GtkMenu" id="plugins_menu">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                   </object>
                 </child>
               </object>
@@ -249,30 +303,37 @@
             <child>
               <object class="GtkMenuItem" id="help_mi">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="use_action_appearance">False</property>
                 <property name="label" translatable="yes">_Help</property>
                 <property name="use_underline">True</property>
                 <child type="submenu">
                   <object class="GtkMenu" id="help_menu">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <child>
                       <object class="GtkImageMenuItem" id="gtk_help_mi">
                         <property name="label">gtk-help</property>
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="tooltip_text" translatable="yes">Open GTG documentation in your web browser</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <property name="accel_group">accelgroup1</property>
-                        <signal name="activate" handler="on_documentation_clicked"/>
+                        <signal name="activate" handler="on_documentation_clicked" swapped="no"/>
                       </object>
                     </child>
                     <child>
                       <object class="GtkImageMenuItem" id="gtk_about_mi">
                         <property name="label">gtk-about</property>
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                         <property name="accel_group">accelgroup1</property>
-                        <signal name="activate" handler="on_about_clicked"/>
+                        <signal name="activate" handler="on_about_clicked" swapped="no"/>
                       </object>
                     </child>
                   </object>
@@ -282,22 +343,27 @@
           </object>
           <packing>
             <property name="expand">False</property>
+            <property name="fill">True</property>
             <property name="position">0</property>
           </packing>
         </child>
         <child>
           <object class="GtkVBox" id="vbox_toolbars">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <child>
               <object class="GtkToolbar" id="task_toolbar">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <child>
                   <object class="GtkToolButton" id="new_task_b">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="use_action_appearance">False</property>
                     <property name="is_important">True</property>
                     <property name="label" translatable="yes">New Task</property>
                     <property name="icon_name">gtg-task-new</property>
-                    <signal name="clicked" handler="on_add_task"/>
+                    <signal name="clicked" handler="on_add_task" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -306,9 +372,11 @@
                 </child>
                 <child>
                   <object class="GtkToolButton" id="new_subtask_b">
+                    <property name="can_focus">False</property>
+                    <property name="use_action_appearance">False</property>
                     <property name="label" translatable="yes">New Subtask</property>
                     <property name="icon_name">gtg-task-new</property>
-                    <signal name="clicked" handler="on_add_subtask"/>
+                    <signal name="clicked" handler="on_add_subtask" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -318,11 +386,13 @@
                 <child>
                   <object class="GtkToolButton" id="edit_b">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="use_action_appearance">False</property>
                     <property name="visible_horizontal">False</property>
                     <property name="visible_vertical">False</property>
                     <property name="label" translatable="yes">Edit</property>
                     <property name="stock_id">gtk-edit</property>
-                    <signal name="clicked" handler="on_edit_active_task"/>
+                    <signal name="clicked" handler="on_edit_active_task" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -330,7 +400,9 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkSeparatorToolItem" id="&lt;separateur&gt;"/>
+                  <object class="GtkSeparatorToolItem" id="&lt;separateur&gt;">
+                    <property name="can_focus">False</property>
+                  </object>
                   <packing>
                     <property name="expand">False</property>
                     <property name="homogeneous">True</property>
@@ -338,6 +410,8 @@
                 </child>
                 <child>
                   <object class="GtkToolButton" id="Undo">
+                    <property name="can_focus">False</property>
+                    <property name="use_action_appearance">False</property>
                     <property name="label" translatable="yes">Undo</property>
                     <property name="stock_id">gtk-undo</property>
                   </object>
@@ -348,6 +422,8 @@
                 </child>
                 <child>
                   <object class="GtkToolButton" id="Redo">
+                    <property name="can_focus">False</property>
+                    <property name="use_action_appearance">False</property>
                     <property name="label" translatable="yes">Redo</property>
                     <property name="stock_id">gtk-redo</property>
                   </object>
@@ -359,6 +435,7 @@
                 <child>
                   <object class="GtkSeparatorToolItem" id="separator_6">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -369,10 +446,12 @@
                   <object class="GtkToolButton" id="done_b">
                     <property name="visible">True</property>
                     <property name="sensitive">False</property>
+                    <property name="can_focus">False</property>
+                    <property name="use_action_appearance">False</property>
                     <property name="is_important">True</property>
                     <property name="label" translatable="yes">Mark as Done</property>
                     <property name="icon_name">gtg-task-done</property>
-                    <signal name="clicked" handler="on_mark_as_done"/>
+                    <signal name="clicked" handler="on_mark_as_done" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -383,9 +462,11 @@
                   <object class="GtkToolButton" id="dismiss_b">
                     <property name="visible">True</property>
                     <property name="sensitive">False</property>
+                    <property name="can_focus">False</property>
+                    <property name="use_action_appearance">False</property>
                     <property name="label" translatable="yes">Dismiss</property>
                     <property name="icon_name">gtg-task-dismiss</property>
-                    <signal name="clicked" handler="on_dismiss_task"/>
+                    <signal name="clicked" handler="on_dismiss_task" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -395,9 +476,11 @@
                 <child>
                   <object class="GtkToolButton" id="delete_b">
                     <property name="sensitive">False</property>
+                    <property name="can_focus">False</property>
+                    <property name="use_action_appearance">False</property>
                     <property name="label" translatable="yes">Delete</property>
                     <property name="icon_name">edit-delete</property>
-                    <signal name="clicked" handler="on_delete_task"/>
+                    <signal name="clicked" handler="on_delete_task" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -407,6 +490,7 @@
                 <child>
                   <object class="GtkSeparatorToolItem" id="separator_7">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -416,10 +500,12 @@
                 <child>
                   <object class="GtkToggleToolButton" id="workview_toggle">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="use_action_appearance">False</property>
                     <property name="is_important">True</property>
                     <property name="label" translatable="yes">Work View</property>
                     <property name="stock_id">gtk-index</property>
-                    <signal name="toggled" handler="on_workview_toggled"/>
+                    <signal name="toggled" handler="on_workview_toggled" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -429,6 +515,7 @@
               </object>
               <packing>
                 <property name="expand">False</property>
+                <property name="fill">True</property>
                 <property name="position">0</property>
               </packing>
             </child>
@@ -446,27 +533,34 @@
             <child>
               <object class="GtkVBox" id="sidebar_vbox">
                 <property name="width_request">75</property>
+                <property name="can_focus">False</property>
                 <child>
                   <object class="GtkHBox" id="hbox4">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <child>
                       <object class="GtkImage" id="sidebar_img_icon">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="xpad">5</property>
                         <property name="icon_name">gtg-tag</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
+                        <property name="fill">True</property>
                         <property name="position">0</property>
                       </packing>
                     </child>
                     <child>
                       <object class="GtkLabel" id="tags_label">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="xalign">0</property>
                         <property name="label" translatable="yes">Tags</property>
                       </object>
                       <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
                         <property name="position">1</property>
                       </packing>
                     </child>
@@ -475,11 +569,13 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="relief">none</property>
-                        <signal name="clicked" handler="on_view_sidebar_toggled"/>
+                        <signal name="clicked" handler="on_view_sidebar_toggled" swapped="no"/>
                         <child>
                           <object class="GtkImage" id="sidebar_img_close">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <property name="stock">gtk-close</property>
                             <property name="icon-size">1</property>
                           </object>
@@ -487,12 +583,14 @@
                       </object>
                       <packing>
                         <property name="expand">False</property>
+                        <property name="fill">True</property>
                         <property name="position">2</property>
                       </packing>
                     </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
+                    <property name="fill">True</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
@@ -502,13 +600,11 @@
                     <property name="can_focus">True</property>
                     <property name="tab_pos">bottom</property>
                     <property name="show_tabs">False</property>
-                    <property name="group_id">1</property>
                     <child>
                       <object class="GtkScrolledWindow" id="sidebar-scroll">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="hscrollbar_policy">never</property>
-                        <property name="vscrollbar_policy">automatic</property>
                         <property name="shadow_type">in</property>
                         <child>
                           <placeholder/>
@@ -518,6 +614,7 @@
                     <child type="tab">
                       <object class="GtkLabel" id="tags_tree_label">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Tags</property>
                       </object>
                       <packing>
@@ -526,6 +623,8 @@
                     </child>
                   </object>
                   <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
@@ -538,9 +637,11 @@
             <child>
               <object class="GtkVBox" id="main_vbox">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <child>
                   <object class="GtkHBox" id="quickadd_pane">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <child>
                       <object class="GtkEntry" id="quickadd_field">
                         <property name="visible">True</property>
@@ -548,25 +649,19 @@
                         <property name="has_focus">True</property>
                         <property name="is_focus">True</property>
                         <property name="can_default">True</property>
-                        <signal name="activate" handler="on_quickadd_field_activate"/>
+                        <!-- FIXME -->
+                        <property name="invisible_char">●</property>
+                        <property name="secondary_icon_stock">gtk-clear</property>
+                        <signal name="changed" handler="on_quickadd_field_changed" swapped="no"/>
+                        <signal name="key-release-event" handler="on_quickadd_key_release" swapped="no"/>
+                        <signal name="activate" handler="on_quickadd_field_activate" swapped="no"/>
+                        <signal name="icon-press" handler="on_quickadd_field_icon_press" swapped="no"/>
+                        <signal name="key-press-event" handler="on_quickadd_key_press" swapped="no"/>
                       </object>
                       <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
                         <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkButton" id="quickadd_b">
-                        <property name="label">gtk-add</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
-                        <property name="use_stock">True</property>
-                        <signal name="clicked" handler="on_quickadd_button_activate"/>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">1</property>
                       </packing>
                     </child>
                   </object>
@@ -587,13 +682,10 @@
                         <property name="can_focus">True</property>
                         <property name="tab_pos">bottom</property>
                         <property name="show_tabs">False</property>
-                        <property name="group_id">2</property>
                         <child>
                           <object class="GtkScrolledWindow" id="main_pane">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
-                            <property name="hscrollbar_policy">automatic</property>
-                            <property name="vscrollbar_policy">automatic</property>
                             <child>
                               <placeholder/>
                             </child>
@@ -602,6 +694,7 @@
                         <child type="tab">
                           <object class="GtkLabel" id="tasks_tab_label">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <property name="label" translatable="yes">Tasks</property>
                           </object>
                           <packing>
@@ -619,7 +712,6 @@
                         <property name="can_focus">True</property>
                         <property name="tab_pos">bottom</property>
                         <property name="show_tabs">False</property>
-                        <property name="group_id">2</property>
                         <child>
                           <placeholder/>
                         </child>
@@ -631,6 +723,8 @@
                     </child>
                   </object>
                   <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
@@ -642,53 +736,23 @@
             </child>
           </object>
           <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
             <property name="position">2</property>
           </packing>
         </child>
       </object>
     </child>
   </object>
-  <object class="GtkMenu" id="tag_context_menu">
-    <property name="visible">True</property>
-    <property name="no_show_all">True</property>
-    <signal name="deactivate" handler="on_tagcontext_deactivate"/>
-    <child>
-      <object class="GtkImageMenuItem" id="colorchooser_mi">
-        <property name="label">gtk-select-color</property>
-        <property name="visible">True</property>
-        <property name="use_underline">True</property>
-        <property name="use_stock">True</property>
-        <property name="accel_group">accelgroup1</property>
-        <signal name="activate" handler="on_colorchooser_activate"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkImageMenuItem" id="resetcolor_mi">
-        <property name="label" translatable="yes">Reset Color</property>
-        <property name="visible">True</property>
-        <property name="image">image2</property>
-        <property name="use_stock">False</property>
-        <property name="accel_group">accelgroup1</property>
-        <signal name="activate" handler="on_resetcolor_activate"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkCheckMenuItem" id="nonworkviewtag_mi">
-        <property name="visible">True</property>
-        <property name="use_underline">True</property>
-        <property name="active">True</property>
-        <signal name="toggled" handler="on_nonworkviewtag_toggled"/>
-      </object>
-    </child>
-  </object>
   <object class="GtkAboutDialog" id="about_dialog">
+    <property name="can_focus">False</property>
     <property name="border_width">5</property>
     <property name="title" translatable="yes">About GTG!</property>
     <property name="resizable">False</property>
     <property name="window_position">center-on-parent</property>
     <property name="type_hint">dialog</property>
     <property name="program_name">Getting Things Gnome!</property>
-    <property name="copyright" translatable="yes">Copyrights&#xA9; 2008, 2009 Lionel Dricot, Bertrand Rousseau</property>
+    <property name="copyright" translatable="yes">Copyrights© 2008, 2009 Lionel Dricot, Bertrand Rousseau</property>
     <property name="comments" translatable="yes">
 Getting Things Gnome! is an organizer for the GNOME desktop environment.</property>
     <property name="website_label" translatable="yes">GTG website</property>
@@ -701,19 +765,22 @@ You should have received a copy of the GNU General Public License along with Get
 Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
     <property name="logo_icon_name">gtg</property>
     <property name="wrap_license">True</property>
-    <signal name="response" handler="on_about_close"/>
-    <signal name="delete_event" handler="on_about_delete"/>
+    <signal name="delete-event" handler="on_about_delete" swapped="no"/>
+    <signal name="response" handler="on_about_close" swapped="no"/>
     <child internal-child="vbox">
-      <object class="GtkVBox" id="about_dialog_vbox">
+      <object class="GtkBox" id="about_dialog_vbox">
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
         <property name="spacing">2</property>
         <child internal-child="action_area">
-          <object class="GtkHButtonBox" id="dialog-action_area2">
+          <object class="GtkButtonBox" id="dialog-action_area2">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="layout_style">end</property>
           </object>
           <packing>
             <property name="expand">False</property>
+            <property name="fill">True</property>
             <property name="pack_type">end</property>
             <property name="position">0</property>
           </packing>
@@ -721,334 +788,22 @@ Bertrand Rousseau (bertrand.rousseau@gmail.com)</property>
       </object>
     </child>
   </object>
-  <object class="GtkMenu" id="task_context_menu">
-    <property name="visible">True</property>
-    <child>
-      <object class="GtkImageMenuItem" id="tcm_add_subtask">
-        <property name="label" translatable="yes">Add a subtask</property>
-        <property name="visible">True</property>
-        <property name="use_underline">True</property>
-        <property name="image">tcm_img_add_subtask</property>
-        <property name="use_stock">False</property>
-        <property name="always_show_image">True</property>
-        <signal name="activate" handler="on_add_subtask"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkImageMenuItem" id="tcm_edit">
-        <property name="label">gtk-edit</property>
-        <property name="visible">True</property>
-        <property name="use_underline">True</property>
-        <property name="use_stock">True</property>
-        <property name="accel_group">accelgroup1</property>
-        <signal name="activate" handler="on_edit_active_task"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkSeparatorMenuItem" id="separator_8">
-        <property name="visible">True</property>
-      </object>
-    </child>
-    <child>
-      <object class="GtkImageMenuItem" id="tcm_mark_as_done">
-        <property name="label" translatable="yes">Mark as _Done</property>
-        <property name="visible">True</property>
-        <property name="use_underline">True</property>
-        <property name="image">tcm_img_mark_done</property>
-        <property name="use_stock">False</property>
-        <property name="always_show_image">True</property>
-        <signal name="activate" handler="on_mark_as_done"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkImageMenuItem" id="tcm_dismiss">
-        <property name="label" translatable="yes">D_ismiss</property>
-        <property name="visible">True</property>
-        <property name="use_underline">True</property>
-        <property name="image">tcm_img_dismiss</property>
-        <property name="use_stock">False</property>
-        <property name="always_show_image">True</property>
-        <signal name="activate" handler="on_dismiss_task"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkImageMenuItem" id="tcm_delete">
-        <property name="label">gtk-delete</property>
-        <property name="visible">True</property>
-        <property name="use_underline">True</property>
-        <property name="use_stock">True</property>
-        <property name="accel_group">accelgroup1</property>
-        <signal name="activate" handler="on_delete_task"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkSeparatorMenuItem" id="separator_9">
-        <property name="visible">True</property>
-      </object>
-    </child>
-    <child>
-      <object class="GtkImageMenuItem" id="tcm_start_menu">
-        <property name="label" translatable="yes">_Set start date</property>
-        <property name="submenu">start_for_context_menu</property>
-        <property name="visible">True</property>
-        <property name="use_underline">True</property>
-        <property name="use_stock">False</property>
-      </object>
-    </child>
-    <child>
-      <object class="GtkImageMenuItem" id="tcm_due_menu">
-        <property name="label" translatable="yes">Set due date</property>
-        <property name="submenu">due_context_menu</property>
-        <property name="visible">True</property>
-        <property name="use_underline">True</property>
-        <property name="use_stock">False</property>
-      </object>
-    </child>
-    <child>
-      <object class="GtkSeparatorMenuItem" id="separatormenuitem6">
-        <property name="visible">True</property>
-      </object>
-    </child>
-    <child>
-      <object class="GtkImageMenuItem" id="tcm_addtag">
-        <property name="label" translatable="yes">Add Tag...</property>
-        <property name="visible">True</property>
-        <property name="image">image3</property>
-        <property name="use_stock">False</property>
-        <signal name="activate" handler="on_add_new_tag"/>
-      </object>
-    </child>
-  </object>
-  <object class="GtkMenu" id="start_for_context_menu">
-    <property name="visible">True</property>
-    <child>
-      <object class="GtkImageMenuItem" id="tcm_mark_as_started">
-        <property name="label" translatable="yes">t_oday</property>
-        <property name="visible">True</property>
-        <property name="use_underline">True</property>
-        <property name="use_stock">False</property>
-        <signal name="activate" handler="on_mark_as_started"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkImageMenuItem" id="tcm_start_for_tomorrow">
-        <property name="label" translatable="yes">_tomorrow</property>
-        <property name="visible">True</property>
-        <property name="use_underline">True</property>
-        <property name="use_stock">False</property>
-        <signal name="activate" handler="on_start_for_tomorrow"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkImageMenuItem" id="tcm_start_for_next_week">
-        <property name="label" translatable="yes">next _week</property>
-        <property name="visible">True</property>
-        <property name="use_underline">True</property>
-        <property name="use_stock">False</property>
-        <signal name="activate" handler="on_start_for_next_week"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkImageMenuItem" id="tcm_start_for_next_month">
-        <property name="label" translatable="yes">next _month</property>
-        <property name="visible">True</property>
-        <property name="use_underline">True</property>
-        <property name="use_stock">False</property>
-        <signal name="activate" handler="on_start_for_next_month"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkImageMenuItem" id="tcm_start_for_next_year">
-        <property name="label" translatable="yes">next _year</property>
-        <property name="visible">True</property>
-        <property name="use_underline">True</property>
-        <property name="use_stock">False</property>
-        <signal name="activate" handler="on_start_for_next_year"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkSeparatorMenuItem" id="menuitem1">
-        <property name="visible">True</property>
-      </object>
-    </child>
-    <child>
-      <object class="GtkImageMenuItem" id="tcm_start_clear">
-        <property name="label" translatable="yes">_clear start date</property>
-        <property name="visible">True</property>
-        <property name="use_underline">True</property>
-        <property name="use_stock">False</property>
-        <signal name="activate" handler="on_start_clear"/>
-      </object>
-    </child>
-  </object>
-  <object class="GtkMenu" id="closed_task_context_menu">
-    <property name="visible">True</property>
-    <child>
-      <object class="GtkImageMenuItem" id="ctcm_edit">
-        <property name="label">gtk-edit</property>
-        <property name="visible">True</property>
-        <property name="use_underline">True</property>
-        <property name="use_stock">True</property>
-        <property name="accel_group">accelgroup1</property>
-        <signal name="activate" handler="on_edit_done_task"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkSeparatorMenuItem" id="separator_10">
-        <property name="visible">True</property>
-      </object>
-    </child>
-    <child>
-      <object class="GtkImageMenuItem" id="ctcm_mark_as_not_done">
-        <property name="label" translatable="yes">Mark as Not Done</property>
-        <property name="visible">True</property>
-        <property name="use_underline">True</property>
-        <property name="image">ctcm_img_mark_not_done</property>
-        <property name="use_stock">False</property>
-        <property name="always_show_image">True</property>
-        <signal name="activate" handler="on_mark_as_done"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkImageMenuItem" id="ctcm_undismiss">
-        <property name="label" translatable="yes">Und_ismiss</property>
-        <property name="visible">True</property>
-        <property name="use_underline">True</property>
-        <property name="image">tcm_img_undismiss</property>
-        <property name="use_stock">False</property>
-        <property name="always_show_image">True</property>
-        <signal name="activate" handler="on_dismiss_task"/>
-      </object>
-    </child>
-    <child>
-      <object class="GtkImageMenuItem" id="ctcm_delete">
-        <property name="label">gtk-delete</property>
-        <property name="visible">True</property>
-        <property name="use_underline">True</property>
-        <property name="use_stock">True</property>
-        <property name="accel_group">accelgroup1</property>
-        <signal name="activate" handler="on_delete_task"/>
-      </object>
-    </child>
-  </object>
-  <object class="GtkImage" id="bm_img_task">
-    <property name="visible">True</property>
-    <property name="pixel_size">16</property>
-    <property name="icon_name">gtg-task-new</property>
-  </object>
-  <object class="GtkImage" id="bm_img_subtask">
-    <property name="visible">True</property>
-    <property name="pixel_size">16</property>
-    <property name="icon_name">gtg-task-new</property>
-  </object>
-  <object class="GtkImage" id="bm_img_done">
-    <property name="visible">True</property>
-    <property name="pixel_size">16</property>
-    <property name="icon_name">gtg-task-done</property>
-  </object>
-  <object class="GtkImage" id="bm_img_dismiss">
-    <property name="visible">True</property>
-    <property name="pixel_size">16</property>
-    <property name="icon_name">gtg-task-dismiss</property>
-  </object>
-  <object class="GtkImage" id="tcm_img_add_subtask">
-    <property name="visible">True</property>
-    <property name="pixel_size">16</property>
-    <property name="icon_name">gtg-task-new</property>
-  </object>
-  <object class="GtkImage" id="tcm_img_mark_done">
-    <property name="visible">True</property>
-    <property name="yalign">0.49000000953674316</property>
-    <property name="pixel_size">16</property>
-    <property name="icon_name">gtg-task-done</property>
-  </object>
-  <object class="GtkImage" id="tcm_img_dismiss">
-    <property name="visible">True</property>
-    <property name="pixel_size">16</property>
-    <property name="icon_name">gtg-task-dismiss</property>
-  </object>
-  <object class="GtkImage" id="ctcm_img_mark_not_done">
-    <property name="visible">True</property>
-    <property name="pixel_size">16</property>
-    <property name="icon_name">gtg-task-undone</property>
-  </object>
-  <object class="GtkImage" id="tcm_img_undismiss">
-    <property name="visible">True</property>
-    <property name="pixel_size">16</property>
-    <property name="icon_name">gtg-task-undismiss</property>
-  </object>
   <object class="GtkAccelGroup" id="accelgroup1"/>
-  <object class="GtkImage" id="image1">
-    <property name="visible">True</property>
-    <property name="stock">gtk-save-as</property>
-  </object>
-  <object class="GtkImage" id="image2">
-    <property name="visible">True</property>
-    <property name="xalign">0.44999998807907104</property>
-    <property name="yalign">0.47999998927116394</property>
-    <property name="stock">gtk-revert-to-saved</property>
-  </object>
   <object class="GtkDialog" id="addtag_dialog">
+    <property name="can_focus">False</property>
     <property name="border_width">5</property>
     <property name="title" translatable="yes">Add a Tag...</property>
     <property name="window_position">center-on-parent</property>
     <property name="type_hint">dialog</property>
-    <property name="has_separator">False</property>
     <child internal-child="vbox">
-      <object class="GtkVBox" id="addtag_dialog_vbox">
+      <object class="GtkBox" id="addtag_dialog_vbox">
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
         <property name="spacing">2</property>
-        <child>
-          <object class="GtkLabel" id="addtag_label">
-            <property name="visible">True</property>
-            <property name="label" translatable="yes">Enter the name of the tag(s) you wish to add:</property>
-          </object>
-          <packing>
-            <property name="position">1</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkEntry" id="tag_entry">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="is_focus">True</property>
-            <property name="invisible_char">&#x25CF;</property>
-            <property name="activates_default">True</property>
-            <property name="text" translatable="yes">TagName</property>
-            <property name="shadow_type">none</property>
-          </object>
-          <packing>
-            <property name="position">2</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkLabel" id="hint_label">
-            <property name="visible">True</property>
-            <property name="label" translatable="yes">Hint: you can add several tags by separating them with
-commas.</property>
-            <attributes>
-              <attribute name="foreground" value="#77bd77bd77bd"/>
-            </attributes>
-          </object>
-          <packing>
-            <property name="position">3</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkCheckButton" id="apply_to_subtasks">
-            <property name="label" translatable="yes">Apply to subtasks</property>
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">False</property>
-            <property name="draw_indicator">True</property>
-          </object>
-          <packing>
-            <property name="position">4</property>
-          </packing>
-        </child>
         <child internal-child="action_area">
-          <object class="GtkHButtonBox" id="dialog-action_area3">
+          <object class="GtkButtonBox" id="dialog-action_area3">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="layout_style">end</property>
             <child>
               <object class="GtkButton" id="addtag_ok">
@@ -1058,8 +813,9 @@ commas.</property>
                 <property name="can_default">True</property>
                 <property name="has_default">True</property>
                 <property name="receives_default">False</property>
-                <signal name="clicked" handler="on_addtag_confirm"/>
-                <signal name="activate" handler="on_addtag_confirm"/>
+                <property name="use_action_appearance">False</property>
+                <signal name="activate" handler="on_addtag_confirm" swapped="no"/>
+                <signal name="clicked" handler="on_addtag_confirm" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -1073,6 +829,7 @@ commas.</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
+                <property name="use_action_appearance">False</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -1083,8 +840,68 @@ commas.</property>
           </object>
           <packing>
             <property name="expand">False</property>
+            <property name="fill">True</property>
             <property name="pack_type">end</property>
             <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="addtag_label">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">Enter the name of the tag(s) you wish to add:</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry" id="tag_entry">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="is_focus">True</property>
+            <property name="invisible_char">●</property>
+            <property name="activates_default">True</property>
+            <property name="text" translatable="yes">TagName</property>
+            <property name="shadow_type">none</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="hint_label">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">Hint: you can add several tags by separating them with
+commas.</property>
+            <attributes>
+              <attribute name="foreground" value="#77bd77bd77bd"/>
+            </attributes>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">3</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkCheckButton" id="apply_to_subtasks">
+            <property name="label" translatable="yes">Apply to subtasks</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">False</property>
+            <property name="use_action_appearance">False</property>
+            <property name="draw_indicator">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">4</property>
           </packing>
         </child>
       </object>
@@ -1094,106 +911,515 @@ commas.</property>
       <action-widget response="0">addtag_cancel</action-widget>
     </action-widgets>
   </object>
-  <object class="GtkImage" id="image3">
+  <object class="GtkImage" id="bm_img_dismiss">
     <property name="visible">True</property>
+    <property name="can_focus">False</property>
     <property name="pixel_size">16</property>
-    <property name="icon_name">gtg-tag</property>
+    <property name="icon_name">gtg-task-dismiss</property>
   </object>
-  <object class="GtkImage" id="image4">
+  <object class="GtkImage" id="bm_img_done">
     <property name="visible">True</property>
-    <property name="stock">gtk-home</property>
+    <property name="can_focus">False</property>
+    <property name="pixel_size">16</property>
+    <property name="icon_name">gtg-task-done</property>
+  </object>
+  <object class="GtkImage" id="bm_img_subtask">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="pixel_size">16</property>
+    <property name="icon_name">gtg-task-new</property>
+  </object>
+  <object class="GtkImage" id="bm_img_task">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="pixel_size">16</property>
+    <property name="icon_name">gtg-task-new</property>
+  </object>
+  <object class="GtkMenu" id="closed_task_context_menu">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <child>
+      <object class="GtkImageMenuItem" id="ctcm_edit">
+        <property name="label">gtk-edit</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_action_appearance">False</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">True</property>
+        <property name="accel_group">accelgroup1</property>
+        <signal name="activate" handler="on_edit_done_task" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkSeparatorMenuItem" id="separator_10">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="ctcm_mark_as_not_done">
+        <property name="label" translatable="yes">Mark as Not Done</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_action_appearance">False</property>
+        <property name="use_underline">True</property>
+        <property name="image">ctcm_img_mark_not_done</property>
+        <property name="use_stock">False</property>
+        <property name="always_show_image">True</property>
+        <signal name="activate" handler="on_mark_as_done" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="ctcm_undismiss">
+        <property name="label" translatable="yes">Und_ismiss</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_action_appearance">False</property>
+        <property name="use_underline">True</property>
+        <property name="image">tcm_img_undismiss</property>
+        <property name="use_stock">False</property>
+        <property name="always_show_image">True</property>
+        <signal name="activate" handler="on_dismiss_task" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="ctcm_delete">
+        <property name="label">gtk-delete</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_action_appearance">False</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">True</property>
+        <property name="accel_group">accelgroup1</property>
+        <signal name="activate" handler="on_delete_task" swapped="no"/>
+      </object>
+    </child>
+  </object>
+  <object class="GtkImage" id="ctcm_img_mark_not_done">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="pixel_size">16</property>
+    <property name="icon_name">gtg-task-undone</property>
   </object>
   <object class="GtkMenu" id="due_context_menu">
     <property name="visible">True</property>
+    <property name="can_focus">False</property>
     <child>
       <object class="GtkImageMenuItem" id="tcm_due_today">
         <property name="label" translatable="yes">t_oday</property>
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_action_appearance">False</property>
         <property name="use_underline">True</property>
         <property name="use_stock">False</property>
-        <signal name="activate" handler="on_set_due_today"/>
+        <signal name="activate" handler="on_set_due_today" swapped="no"/>
       </object>
     </child>
     <child>
       <object class="GtkImageMenuItem" id="tcm_due_tomorrow">
         <property name="label" translatable="yes">_tomorrow</property>
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_action_appearance">False</property>
         <property name="use_underline">True</property>
         <property name="use_stock">False</property>
-        <signal name="activate" handler="on_set_due_tomorrow"/>
+        <signal name="activate" handler="on_set_due_tomorrow" swapped="no"/>
       </object>
     </child>
     <child>
       <object class="GtkImageMenuItem" id="tcm_due_next_week">
         <property name="label" translatable="yes">next _week</property>
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_action_appearance">False</property>
         <property name="use_underline">True</property>
         <property name="use_stock">False</property>
-        <signal name="activate" handler="on_set_due_next_week"/>
+        <signal name="activate" handler="on_set_due_next_week" swapped="no"/>
       </object>
     </child>
     <child>
       <object class="GtkImageMenuItem" id="tcm_due_next_month">
         <property name="label" translatable="yes">next _month</property>
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_action_appearance">False</property>
         <property name="use_underline">True</property>
         <property name="use_stock">False</property>
-        <signal name="activate" handler="on_set_due_next_month"/>
+        <signal name="activate" handler="on_set_due_next_month" swapped="no"/>
       </object>
     </child>
     <child>
       <object class="GtkImageMenuItem" id="tcm_due_next_year">
         <property name="label" translatable="yes">next _year</property>
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_action_appearance">False</property>
         <property name="use_underline">True</property>
         <property name="use_stock">False</property>
-        <signal name="activate" handler="on_set_due_next_year"/>
+        <signal name="activate" handler="on_set_due_next_year" swapped="no"/>
       </object>
     </child>
     <child>
       <object class="GtkSeparatorMenuItem" id="menuitem2">
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
       </object>
     </child>
     <child>
       <object class="GtkImageMenuItem" id="tcm_due_now">
         <property name="label" translatable="yes">_now</property>
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_action_appearance">False</property>
         <property name="use_underline">True</property>
         <property name="use_stock">False</property>
-        <signal name="activate" handler="on_set_due_now"/>
+        <signal name="activate" handler="on_set_due_now" swapped="no"/>
       </object>
     </child>
     <child>
       <object class="GtkImageMenuItem" id="tcm_due_soon">
         <property name="label" translatable="yes">_soon</property>
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_action_appearance">False</property>
         <property name="use_underline">True</property>
         <property name="use_stock">False</property>
-        <signal name="activate" handler="on_set_due_soon"/>
+        <signal name="activate" handler="on_set_due_soon" swapped="no"/>
       </object>
     </child>
     <child>
       <object class="GtkImageMenuItem" id="tcm_due_later">
         <property name="label" translatable="yes">_later</property>
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_action_appearance">False</property>
         <property name="use_underline">True</property>
         <property name="use_stock">False</property>
-        <signal name="activate" handler="on_set_due_later"/>
+        <signal name="activate" handler="on_set_due_later" swapped="no"/>
       </object>
     </child>
     <child>
       <object class="GtkSeparatorMenuItem" id="menuitem3">
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
       </object>
     </child>
     <child>
       <object class="GtkImageMenuItem" id="tcm_due_clear">
         <property name="label" translatable="yes">_clear due date</property>
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_action_appearance">False</property>
         <property name="use_underline">True</property>
         <property name="use_stock">False</property>
-        <signal name="activate" handler="on_set_due_clear"/>
+        <signal name="activate" handler="on_set_due_clear" swapped="no"/>
+      </object>
+    </child>
+  </object>
+  <object class="GtkImage" id="image1">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-save-as</property>
+  </object>
+  <object class="GtkImage" id="image2">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="xalign">0.44999998807907104</property>
+    <property name="yalign">0.47999998927116394</property>
+    <property name="stock">gtk-revert-to-saved</property>
+  </object>
+  <object class="GtkImage" id="image3">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="pixel_size">16</property>
+    <property name="icon_name">gtg-tag</property>
+  </object>
+  <object class="GtkImage" id="image4">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-home</property>
+  </object>
+  <object class="GtkImage" id="image5">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-delete</property>
+  </object>
+  <object class="GtkEntryCompletion" id="quickadd_entrycompletion">
+    <property name="popup_set_width">False</property>
+    <signal name="action-activated" handler="on_quickadd_entrycompletion_action_activated" swapped="no"/>
+  </object>
+  <object class="GtkMenu" id="start_for_context_menu">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <child>
+      <object class="GtkImageMenuItem" id="tcm_mark_as_started">
+        <property name="label" translatable="yes">t_oday</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_action_appearance">False</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">False</property>
+        <signal name="activate" handler="on_mark_as_started" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="tcm_start_for_tomorrow">
+        <property name="label" translatable="yes">_tomorrow</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_action_appearance">False</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">False</property>
+        <signal name="activate" handler="on_start_for_tomorrow" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="tcm_start_for_next_week">
+        <property name="label" translatable="yes">next _week</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_action_appearance">False</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">False</property>
+        <signal name="activate" handler="on_start_for_next_week" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="tcm_start_for_next_month">
+        <property name="label" translatable="yes">next _month</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_action_appearance">False</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">False</property>
+        <signal name="activate" handler="on_start_for_next_month" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="tcm_start_for_next_year">
+        <property name="label" translatable="yes">next _year</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_action_appearance">False</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">False</property>
+        <signal name="activate" handler="on_start_for_next_year" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkSeparatorMenuItem" id="menuitem1">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="tcm_start_clear">
+        <property name="label" translatable="yes">_clear start date</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_action_appearance">False</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">False</property>
+        <signal name="activate" handler="on_start_clear" swapped="no"/>
+      </object>
+    </child>
+  </object>
+  <object class="GtkMenu" id="tag_context_menu">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="no_show_all">True</property>
+    <signal name="deactivate" handler="on_tagcontext_deactivate" swapped="no"/>
+    <child>
+      <object class="GtkImageMenuItem" id="colorchooser_mi">
+        <property name="label">gtk-select-color</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_action_appearance">False</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">True</property>
+        <property name="accel_group">accelgroup1</property>
+        <signal name="activate" handler="on_colorchooser_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="resetcolor_mi">
+        <property name="label" translatable="yes">Reset Color</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_action_appearance">False</property>
+        <property name="image">image2</property>
+        <property name="use_stock">False</property>
+        <property name="accel_group">accelgroup1</property>
+        <signal name="activate" handler="on_resetcolor_activate" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkCheckMenuItem" id="nonworkviewtag_mi">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_action_appearance">False</property>
+        <property name="use_underline">True</property>
+        <property name="active">True</property>
+        <signal name="toggled" handler="on_nonworkviewtag_toggled" swapped="no"/>
+      </object>
+    </child>
+  </object>
+  <object class="GtkMenu" id="task_context_menu">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <child>
+      <object class="GtkImageMenuItem" id="tcm_add_subtask">
+        <property name="label" translatable="yes">Add a subtask</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_action_appearance">False</property>
+        <property name="use_underline">True</property>
+        <property name="image">tcm_img_add_subtask</property>
+        <property name="use_stock">False</property>
+        <property name="always_show_image">True</property>
+        <signal name="activate" handler="on_add_subtask" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="tcm_edit">
+        <property name="label">gtk-edit</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_action_appearance">False</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">True</property>
+        <property name="accel_group">accelgroup1</property>
+        <signal name="activate" handler="on_edit_active_task" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkSeparatorMenuItem" id="separator_8">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="tcm_mark_as_done">
+        <property name="label" translatable="yes">Mark as _Done</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_action_appearance">False</property>
+        <property name="use_underline">True</property>
+        <property name="image">tcm_img_mark_done</property>
+        <property name="use_stock">False</property>
+        <property name="always_show_image">True</property>
+        <signal name="activate" handler="on_mark_as_done" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="tcm_dismiss">
+        <property name="label" translatable="yes">D_ismiss</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_action_appearance">False</property>
+        <property name="use_underline">True</property>
+        <property name="image">tcm_img_dismiss</property>
+        <property name="use_stock">False</property>
+        <property name="always_show_image">True</property>
+        <signal name="activate" handler="on_dismiss_task" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="tcm_delete">
+        <property name="label">gtk-delete</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_action_appearance">False</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">True</property>
+        <property name="accel_group">accelgroup1</property>
+        <signal name="activate" handler="on_delete_task" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkSeparatorMenuItem" id="separator_9">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="tcm_start_menu">
+        <property name="label" translatable="yes">_Set start date</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_action_appearance">False</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">False</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="tcm_due_menu">
+        <property name="label" translatable="yes">Set due date</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_action_appearance">False</property>
+        <property name="use_underline">True</property>
+        <property name="use_stock">False</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkSeparatorMenuItem" id="separatormenuitem6">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkImageMenuItem" id="tcm_addtag">
+        <property name="label" translatable="yes">Add Tag...</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_action_appearance">False</property>
+        <property name="image">image3</property>
+        <property name="use_stock">False</property>
+        <signal name="activate" handler="on_add_new_tag" swapped="no"/>
+      </object>
+    </child>
+  </object>
+  <object class="GtkImage" id="tcm_img_add_subtask">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="pixel_size">16</property>
+    <property name="icon_name">gtg-task-new</property>
+  </object>
+  <object class="GtkImage" id="tcm_img_dismiss">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="pixel_size">16</property>
+    <property name="icon_name">gtg-task-dismiss</property>
+  </object>
+  <object class="GtkImage" id="tcm_img_mark_done">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="yalign">0.49000000953674316</property>
+    <property name="pixel_size">16</property>
+    <property name="icon_name">gtg-task-done</property>
+  </object>
+  <object class="GtkImage" id="tcm_img_undismiss">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="pixel_size">16</property>
+    <property name="icon_name">gtg-task-undismiss</property>
+  </object>
+  <object class="GtkMenu" id="view_context_menu">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <child>
+      <object class="GtkImageMenuItem" id="view_delete">
+        <property name="label">Delete</property>
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="use_action_appearance">False</property>
+        <property name="use_underline">True</property>
+        <property name="image">image5</property>
+        <property name="use_stock">False</property>
+        <property name="accel_group">accelgroup1</property>
+        <property name="always_show_image">True</property>
+        <signal name="activate" handler="on_view_delete_activate" swapped="no"/>
       </object>
     </child>
   </object>
