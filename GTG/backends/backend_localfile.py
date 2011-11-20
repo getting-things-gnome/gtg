@@ -198,7 +198,7 @@ class Backend(GenericBackend):
 
         #We save the XML file only if it's necessary
         if modified:
-            cleanxml.savexml(self._parameters["path"], self.doc)
+            cleanxml.savexml(self._parameters["path"], self.doc, backup=True)
 
 #NOTE: This is not used currently. Therefore, I'm disabling it (invernizzi)
 #    def get_number_of_tasks(self):
