@@ -420,6 +420,10 @@ class DataStore(object):
             vip = False
             if task.get_status() == "Active":
                 vip = True
+            else:
+                #Tasks closed in the last 7 days are also VIP
+                if task.get_closed_date().days_left() >= -7:
+                    vip = True
             self.__tasks.add_node(task, high_priority=vip)
             task.set_loaded()
             if self.is_default_backend_loaded:
