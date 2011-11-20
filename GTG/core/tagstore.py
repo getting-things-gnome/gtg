@@ -66,7 +66,8 @@ class Tag(TreeNode):
 
     #overiding some functions to not allow dnd of special tags
     def add_parent(self, parent_id):
-        if not self.is_special() and not self.req.get_tag(parent_id).is_special():
+        p = self.req.get_tag(parent_id)
+        if p and not self.is_special() and not p.is_special():
             TreeNode.add_parent(self, parent_id)
 
     def add_child(self, child_id):
