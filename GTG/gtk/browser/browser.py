@@ -61,6 +61,8 @@ DOCUMENTATION_URL = "http://live.gnome.org/gtg/documentation"
 #Some default preferences that we should save in a file
 TIME             = 0
 
+# Do we want to use Search? (It is really slow right now)
+USE_QUICK_ADD_AS_A_SEARCH = False
 
 class Timer:
     def __init__(self,st):
@@ -101,6 +103,15 @@ class TaskBrowser(gobject.GObject):
 
         ### YOU CAN DEFINE YOUR INTERNAL MECHANICS VARIABLES BELOW
         self.in_toggle_workview = False
+
+        # FIXME we should put the performance of search into order so it is possible to use it without problems
+        if USE_QUICK_ADD_AS_A_SEARCH:
+            self.quickadd_callback = self.on_quicksearch_activate
+            self.quickadd_changed = self.on_quicksearch_changed
+        else:
+            self.quickadd_callback = self.on_quickadd_activate
+            # Just ignore
+            self.quickadd_changed = lambda widget: None
 
         # Setup GTG icon theme
         self._init_icon_theme()
@@ -375,13 +386,17 @@ class TaskBrowser(gobject.GObject):
             "on_bg_color_toggled":
                 self.on_bg_color_toggled,
             "on_quickadd_field_activate":
-                self.on_quicksearch_activate,
+                # FIXME put in normal after SEARCH has good performance
+                #self.on_quicksearch_activate,
+                self.quickadd_callback,
             "on_quickadd_entrycompletion_action_activated":
                 self.on_entrycompletion_action_activated,
             "on_quickadd_field_icon_press":
                 self.on_quicksearch_iconpress,
             "on_quickadd_field_changed":
-                self.on_quicksearch_changed,
+                # FIXME put in normal after SEARCH has good performance
+                #self.on_quicksearch_changed,
+                self.quickadd_changed,
 #FIXME remove
             "on_quickadd_button_activate":
                 self.on_quickadd_activate,
