@@ -28,13 +28,13 @@ from GTG.tools.borg        import Borg
 from GTG.tools.sorted_dict import SortedDict
 
 
+#FIXME notification area is closed after closing the last task window
 
 class NotificationArea:
-    '''
+    """
     Plugin that display a notification area widget or an indicator
     to quickly access tasks.
-    '''
-
+    """
 
     DEFAULT_PREFERENCES = {"start_minimized": False}
     PLUGIN_NAME = "notification_area"
@@ -65,7 +65,7 @@ class NotificationArea:
 
     def __init__(self):
         self.__indicator = NotificationArea.TheIndicator().get_indicator()
-        print "INDI", self.__indicator
+        self.__browser_handler = None
 
     def activate(self, plugin_api):
         self.__plugin_api = plugin_api
@@ -80,13 +80,19 @@ class NotificationArea:
         #Load the preferences
         self.preference_dialog_init()
         self.preferences_load()
-        self.preferences_apply(True)
+
+        self.__set_browser_close_callback(self.__on_browser_minimize)
+        if self.preferences["start_minimized"]:
+            self.__view_manager.start_browser_hidden()
 
     def deactivate(self, plugin_api):
         if self.__indicator:
             self.__indicator.set_status(appindicator.STATUS_PASSIVE)
         else:
             self.__status_icon.set_visible(False)
+
+        # Allow to close browser after deactivation
+        self.__set_browser_close_callback(None)
 
 ## Helper methods ##############################################################
 
@@ -118,12 +124,13 @@ class NotificationArea:
         self.__task_separator.show()
         self.__menu.append(self.__task_separator)
         self.__menu_top_length = len(self.__menu)
-        self.set_browser_minimize(self.browser_minimize)
+
         if self.__indicator:
             self.__indicator.set_menu(self.__menu)
             self.__indicator.set_status(appindicator.STATUS_ACTIVE)
         else:
             print "ELSE?"
+#FIXME TODO there should be not GTG
             icon = gtk.gdk.pixbuf_new_from_file_at_size(DATA_DIR + \
                                 "/icons/hicolor/16x16/apps/gtg.png", 16, 16)
             self.status_icon = gtk.status_icon_new_from_pixbuf(icon)
@@ -133,18 +140,6 @@ class NotificationArea:
             self.status_icon.connect('popup-menu', \
                                      self.__on_icon_popup, \
                                      self.__menu)
-
-    def __toggle_browser(self, sender = None, data = None):
-        if self.__plugin_api.get_ui().is_shown():
-            self.__plugin_api.get_view_manager().hide_browser()
-        else:
-            self.__plugin_api.get_view_manager().show_browser()
-
-    def __on_browser_toggled(self, sender, checkbox):
-        checkbox.disconnect(self.__signal_handler)
-        checkbox.set_active(self.__view_manager.get_browser().is_shown())
-        self.__signal_handler = checkbox.connect('activate',
-                                               self.__toggle_browser)
 
     def __open_task(self, widget, tid = None):
         """
@@ -227,31 +222,10 @@ class NotificationArea:
 
 ### Preferences methods #######################################################
 
-    def is_configurable(self):
-        """A configurable plugin should have this method and return True"""
-        return True
-
-    def configure_dialog(self, manager_dialog):
-        self.preference_dialog_init()
-        self.preferences_load()
-        self.chbox_minimized.set_active(self.preferences["start_minimized"])
-        self.preferences_dialog.show_all()
-        self.preferences_dialog.set_transient_for(manager_dialog)
-
-    def on_preferences_cancel(self, widget = None, data = None):
-        self.preferences_dialog.hide()
-        return True
-
-    def on_preferences_ok(self, widget = None, data = None):
-        self.preferences["start_minimized"] = self.chbox_minimized.get_active()
-        self.preferences_apply(False)
-        self.preferences_store()
-        self.preferences_dialog.hide()
-
     def preferences_load(self):
         data = self.__plugin_api.load_configuration_object(self.PLUGIN_NAME,
                                                          "preferences")
-        if not data or isinstance(data, dict):
+        if not data or not isinstance(data, dict):
             self.preferences = self.DEFAULT_PREFERENCES
         else:
             self.preferences = data
@@ -260,10 +234,9 @@ class NotificationArea:
         self.__plugin_api.save_configuration_object(self.PLUGIN_NAME,
                                                   "preferences",
                                                   self.preferences)
-
-    def preferences_apply(self, first_start):
-        if self.preferences["start_minimized"]:
-            self.__view_manager.start_browser_hidden()
+    def is_configurable(self):
+        """A configurable plugin should have this method and return True"""
+        return True
 
     def preference_dialog_init(self):
         self.builder = gtk.Builder()
@@ -282,37 +255,48 @@ class NotificationArea:
         }
         self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
 
-    def browser_minimize(self, widget, user_data):
-        print "XXXXXXXXXXXXXXXXXXXXXXX"
-        self.minimize(None)
-        print "XYZ"
-        #We return true to prevent the call to gtk.main_quit()
+    def configure_dialog(self, manager_dialog):
+        self.chbox_minimized.set_active(self.preferences["start_minimized"])
+        self.preferences_dialog.show_all()
+        self.preferences_dialog.set_transient_for(manager_dialog)
+
+    def on_preferences_cancel(self, widget = None, data = None):
+        self.preferences_dialog.hide()
         return True
 
-    def set_browser_minimize(self, method):
-        browser = self.__view_manager.get_browser()
-        browser.window.disconnect(browser.delete_event_handle)
-        browser.delete_event_handle = \
-                browser.window.connect("delete-event", method)
+    def on_preferences_ok(self, widget = None, data = None):
+        self.preferences["start_minimized"] = self.chbox_minimized.get_active()
+        self.preferences_store()
+        self.preferences_dialog.hide()
 
+### Browser methods ###########################################################
 
-    def minimize(self, widget = None, plugin_api = None):
-        self.checkbox.disconnect(self.__signal_handler)
-        """
-        if self.minimized:
-            self.view_main_window.set_active(True)
-            self.view_main_window.show()
-            self.plugin_api.show_window()
-            self.minimized = False
-        else:
-            self.view_main_window.set_active(False)
-            self.view_main_window.show()
-            self.plugin_api.hide_window()
-            #self.minimized = True
-            """
-        self.__view_manager.hide_browser()
-        print "-------------"
-        print
-        print
-        self.__signal_handler = self.checkbox.connect('activate',
+    def __on_browser_toggled(self, sender, checkbox):
+        checkbox.disconnect(self.__signal_handler)
+        is_shown = self.__view_manager.get_browser().is_shown()
+        checkbox.set_active(is_shown)
+        self.__signal_handler = checkbox.connect('activate',
                                                self.__toggle_browser)
+
+    def __on_browser_minimize(self, widget = None, plugin_api = None):
+        self.__view_manager.hide_browser()
+        return True
+
+    def __toggle_browser(self, sender = None, data = None):
+        if self.__plugin_api.get_ui().is_shown():
+            self.__plugin_api.get_view_manager().hide_browser()
+        else:
+            self.__plugin_api.get_view_manager().show_browser()
+
+    def __set_browser_close_callback(self, method):
+        """ Set a callback for browser's close event. If method is None,
+        unset the previous callback """
+
+        browser = self.__view_manager.get_browser()
+
+        if self.__browser_handler is not None:
+            browser.window.disconnect(self.__browser_handler)
+
+        if method is not None:
+            self.__browser_handler = browser.window.connect(
+                "delete-event", method)

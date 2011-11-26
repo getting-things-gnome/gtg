@@ -115,13 +115,11 @@ class Manager(object):
     # "stay_alive view" is closed (and then unregistered).
     # Currently, the browser is our only "stay_alive" view.
     def close_browser(self,sender=None):
-        print "close_browser()"
         self.hide_browser()
         #may take a while to quit
         self.quit()
 
     def hide_browser(self,sender=None):
-        print "hide_browser()"
         self.browser.hide()
 
     def iconify_browser(self,sender=None):
@@ -149,7 +147,7 @@ class Manager(object):
         '''
         return self.opened_task
 
-    def open_task(self, uid,thisisnew = False):
+    def open_task(self, uid, thisisnew = False):
         """Open the task identified by 'uid'.
 
         If a Task editor is already opened for a given task, we present it.
@@ -226,7 +224,6 @@ class Manager(object):
         Open the Editor windows of the tasks associated with the uris given.
         Uris are of the form gtg://<taskid>
         '''
-        print self.req.get_all_tasks_list()
         for uri in uri_list:
             if uri.startswith("gtg://"):
                 self.open_task(uri[6:])

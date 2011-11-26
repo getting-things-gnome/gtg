@@ -324,12 +324,8 @@ class TaskBrowser(gobject.GObject):
         }
         self.builder.connect_signals(SIGNAL_CONNECTIONS_DIC)
 
-        if (self.window):
-            self.window.connect("destroy", self.quit)
-            #The following is needed to let the Notification Area plugin to
-            # minimize the window instead of closing the program
-            self.delete_event_handle = \
-                    self.window.connect("delete-event", self.on_delete)
+        # When destroying this window, quit GTG
+        self.window.connect("destroy", self.quit)
 
         # Active tasks TreeView
         self.vtree_panes['active'].connect('row-activated',\
@@ -406,7 +402,6 @@ class TaskBrowser(gobject.GObject):
         self.vmanager.open_edit_backends()
 
     def quit(self,widget=None):
-        print "quit method"
         self.vmanager.close_browser()
         
     def restore_state_from_conf(self):
@@ -440,6 +435,7 @@ class TaskBrowser(gobject.GObject):
 
         sidebar_width = self.config.get("sidebar_width")
         self.builder.get_object("hpaned1").set_position(sidebar_width)
+        self.builder.get_object("hpaned1").connect('notify::position', self.on_sidebar_width)
 
         closed_task_pane = self.config.get("closed_task_pane")
         if not closed_task_pane:
@@ -449,6 +445,7 @@ class TaskBrowser(gobject.GObject):
 
         botpos = self.config.get("bottom_pane_position")
         self.builder.get_object("vpaned1").set_position(botpos)
+        self.builder.get_object("vpaned1").connect('notify::position', self.on_bottom_pane_position)
 
         toolbar = self.config.get("toolbar")
         if toolbar:
@@ -505,19 +502,9 @@ class TaskBrowser(gobject.GObject):
                 # Try it later
                 return True
                 
-        if self._start_gtg_maximized():
-            odic = self.config.get("opened_tasks")
-            #This should be removed. This is bad !
-#            #odic can contain also "None" or "None,", so we skip them
-#            if odic == "None" or (len(odic)> 0 and odic[0] == "None"):
-#                return
-            for t in odic:
-                gobject.idle_add(open_task, self.req, t)
-
-    def _start_gtg_maximized(self):
-        #This is needed as a hook point to let the Notification are plugin
-        #start gtg minimized
-        return True
+        odic = self.config.get("opened_tasks")
+        for t in odic:
+            gobject.idle_add(open_task, self.req, t)
 
     def do_toggle_workview(self):
         """ Switch between default and work view
@@ -650,15 +637,11 @@ class TaskBrowser(gobject.GObject):
         self.config.set('width',width)
         self.config.set('height',height)
 
-    #on_delete is called when the user close the window
-    def on_delete(self, widget, user_data):
-        # Cleanup collapsed row list
-        #TODO: the cleanup should better be done on task deletion
-        botpos = self.builder.get_object("vpaned1").get_position()
-        self.config.set('bottom_pane_position',botpos)
-        sidepos = self.builder.get_object("hpaned1").get_position()
-        self.config.set('sidebar_width',sidepos)
-        print "on_delete"
+    def on_bottom_pane_position(self, widget, data = None):
+        self.config.set('bottom_pane_position', widget.get_position())
+
+    def on_sidebar_width(self, widget, data = None):
+        self.config.set('sidebar_width', widget.get_position())
 
     def on_about_clicked(self, widget):
         self.about.show()
@@ -1286,7 +1269,6 @@ class TaskBrowser(gobject.GObject):
     def on_close(self, widget=None):
         """Closing the window."""
         #Saving is now done in main.py
-        self.on_delete(None, None)
         self.quit()
 
     #using dummy parameters that are given by the signal
