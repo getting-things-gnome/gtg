@@ -14,11 +14,11 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from bugz import Bugz
+from bugz import bugzilla
 
 class Bug:
     def __init__(self, base, nb):
-        self.bug = Bugz(base).get(nb)
+        self.bug = bugzilla.Bugz(base).get(nb)
         if self.bug is None:
             raise Exception('Failed to create bug')
 

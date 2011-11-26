@@ -83,7 +83,8 @@ def plugin_error_short_text(plugin):
     # get lists
     modules = plugin.missing_modules
     dbus = plugin.missing_dbus
-
+    text = ""
+    
     # convert to strings
     if modules:
         modules = "<small><b>%s</b></small>" % ', '.join(modules)
