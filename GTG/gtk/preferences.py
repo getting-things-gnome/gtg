@@ -137,7 +137,7 @@ class PreferencesDialog:
         """Constructor."""
         self.config_obj = config_obj
         self.req = req
-        self.config = self.config_obj.conf_dict
+        self.config = self.config_obj.conf_dict            
         self.builder = gtk.Builder()
         self.builder.add_from_file(ViewConfig.PREFERENCES_GLADE_FILE)
         # store references to some objects
@@ -158,6 +158,20 @@ class PreferencesDialog:
         #FIXME: this is not needed and should be removed
 #        self.tb = taskbrowser
         self.pengine = PluginEngine()
+        #plugin config initiation, if never used
+        if self.config.has_key("plugins"):
+            if self.config["plugins"].has_key("enabled") == False:
+                self.config["plugins"]["enabled"] = []
+            
+            if self.config["plugins"].has_key("disabled") == False:
+                self.config["plugins"]["disabled"] = []
+        else:
+            if self.pengine.get_plugins():
+                self.config["plugins"] = {}
+                self.config["plugins"]["disabled"] = \
+                  [p.module_name for p in self.pengine.get_plugins("disabled")]
+                self.config["plugins"]["enabled"] = \
+                  [p.module_name for p in self.pengine.get_plugins("enabled")]
         # initialize tree models
         self._init_backend_tree()
         # this can't happen yet, due to the order of things in
@@ -304,15 +318,6 @@ class PreferencesDialog:
     def on_close(self, widget, data = None):
         """Close the preferences dialog."""
 
-        if self.pengine.get_plugins():
-            self.config["plugins"] = {}
-            self.config["plugins"]["disabled"] = \
-              [p.module_name for p in self.pengine.get_plugins("disabled")]
-            self.config["plugins"]["enabled"] = \
-              [p.module_name for p in self.pengine.get_plugins("enabled")]
-
-        self.config_obj.save()
-
         self.dialog.hide()
         return True
 
@@ -371,10 +376,18 @@ class PreferencesDialog:
         p.enabled = not self.plugin_store.get_value(iter, PLUGINS_COL_ENABLED)
         if p.enabled:
             self.pengine.activate_plugins([p])
+            self.config["plugins"]["enabled"].append(p.module_name)
+            if p.module_name in self.config["plugins"]["disabled"]:
+                self.config["plugins"]["disabled"].remove(p.module_name)
         else:
             self.pengine.deactivate_plugins([p])
+            self.config["plugins"]["disabled"].append(p.module_name)
+            if p.module_name in self.config["plugins"]["enabled"]:
+                self.config["plugins"]["enabled"].remove(p.module_name)
         self.plugin_store.set_value(iter, PLUGINS_COL_ENABLED, p.enabled)
         self._update_plugin_configure(p)
+        
+        self.config_obj.save()
 
     def toggle_preview(self, widget):
         """Toggle previews in the task view on or off."""
