@@ -85,7 +85,7 @@ class NotificationArea:
         if self.__indicator:
             self.__indicator.set_status(appindicator.STATUS_PASSIVE)
         else:
-            self.__status_icon.set_visible(False)
+            self.status_icon.set_visible(False)
 
 ## Helper methods ##############################################################
 
