@@ -179,6 +179,9 @@ class PreferencesDialog:
         # self._init_plugin_tree()
         pref_signals_dic = self.get_signals_dict()
         self.builder.connect_signals(pref_signals_dic)
+        
+        #this line enables the about dialog widget to be reused
+        self.plugin_about_dialog.connect("delete-event", lambda w, e: self.plugin_about_dialog.hide() or True)
 
     def _init_backend_tree(self):
         """Initialize the BackendTree gtk.TreeView."""
@@ -332,6 +335,7 @@ class PreferencesDialog:
             return
         plugin_id = self.plugin_store.get_value(iter, PLUGINS_COL_ID)
         p = self.pengine.get_plugin(plugin_id)
+        
         pad = self.plugin_about_dialog
         pad.set_name(p.full_name)
         pad.set_version(p.version)
@@ -345,6 +349,10 @@ class PreferencesDialog:
 
     def on_plugin_about_close(self, widget, *args):
         """Close the PluginAboutDialog."""
+        self.plugin_about_dialog.hide()
+        
+    def on_plugin_about_close_foo(self, widget, *args):
+        print "catched foo!"
         self.plugin_about_dialog.hide()
 
     def on_plugin_configure(self, widget):
