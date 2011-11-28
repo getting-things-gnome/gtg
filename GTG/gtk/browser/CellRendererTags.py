@@ -131,8 +131,6 @@ class CellRendererTags(gtk.GenericCellRenderer):
             rect_y  = orig_y
 
             if my_tag_icon:
-
-#                pixbuf     = gtk.gdk.pixbuf_new_from_file(my_tag_icon)
                 pixbuf = gtk.icon_theme_get_default().load_icon(\
                     my_tag_icon, 16, 0)
                 gdkcontext.set_source_pixbuf(pixbuf, rect_x, rect_y)
@@ -183,4 +181,3 @@ class CellRendererTags(gtk.GenericCellRenderer):
             return (self.xpad, self.ypad, self.xpad*2, self.ypad*2)
 
 gobject.type_register(CellRendererTags)
-

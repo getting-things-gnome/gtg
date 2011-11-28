@@ -45,7 +45,6 @@ url_separators = [' ', ',', '\n', '\t', '\0']
 
 bullet1_ltr = '→'
 bullet1_rtl = '←'
-bullet2 = '↳'
 
 
 class TaskView(gtk.TextView):
@@ -1306,4 +1305,3 @@ class TaskView(gtk.TextView):
 
 
 gobject.type_register(TaskView)
-

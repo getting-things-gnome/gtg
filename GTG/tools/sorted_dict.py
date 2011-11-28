@@ -21,14 +21,12 @@
 import  bisect
 
 
-
 class SortedDict(dict):
     '''
     Keeps a list of tuples sorted in the first tuple element.
     It's possible to delete a tuple just by giving an element and its position.
     The sorted element must be a Unicode string (lexicographical sorting)
     '''
-
 
     def __init__(self, key_position, sort_position, *initial_values):
         super(SortedDict, self).__init__()
@@ -58,6 +56,3 @@ class SortedDict(dict):
             return position
         else:
             return None
-
-
-

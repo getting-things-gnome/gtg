@@ -553,6 +553,3 @@ class TaskEditor:
 
     def get_window(self):
         return self.window
-
-
-

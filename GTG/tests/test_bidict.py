@@ -18,7 +18,7 @@
 # -----------------------------------------------------------------------------
 
 '''
-Tests for the diDict class
+Tests for the BiDict class
 '''
 
 import unittest

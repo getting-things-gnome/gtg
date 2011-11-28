@@ -208,4 +208,3 @@ class CustomInfoBar(gtk.InfoBar):
         self.dialog.destroy()
         threading.Thread(target = getattr(self.backend, self.callback), 
                           args = ("set_text", text)).start()
-
