@@ -68,6 +68,9 @@ def create_data_files():
     data_files.append(('share/applications', ['gtg.desktop']))
     data_files.append(('share/dbus-1/services', ['org.gnome.GTG.service']))
     data_files.append(('share/man/man1', ['doc/gtg.1', 'doc/gtg_new_task.1']))
+
+    # bash completion
+    data_files.append(('etc/bash_completion.d/gtg', ['gtcli_bash_completion']))
     return data_files
 
 

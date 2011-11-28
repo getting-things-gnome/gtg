@@ -21,14 +21,17 @@ from glob import glob
 
 tarlist = list()
 dirlist = list()
-exclude_list = ('dist/', 'build/','.bzr', 'test', 'pyc', 'scripts/', 'pot', \
-                'HACKING', 'MANIFEST', 'Makefile', 'profile.py')
+exclude_list = ('dist/', 'build/','.bzr', 'test', 'pyc', 'scripts/', 'tmp/', \
+		'pot', 'HACKING', 'MANIFEST', 'Makefile', 'profile.py', '.swp')
 
 for t in glob('dist/*.tar.gz'):
     tarball = tarfile.open(t, 'r')
     files = tarball.getnames()
     tarball.close()
     for f in [f for f in files if not f.endswith('/')]:
+	# Skip the general directory
+	if '/' not in f:
+	    continue
         tarlist.append(f.split('/', 1)[1])
 
 for root, dirs, files in os.walk('.'):
