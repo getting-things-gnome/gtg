@@ -24,7 +24,7 @@
                   <object class="GtkVBox" id="vbox2">
                     <property name="visible">True</property>
                     <child>
-                      <object class="GtkAlignment" id="treeview_window">
+                      <object class="GtkViewport" id="treeview_window">
                         <property name="height_request">400</property>
                         <property name="visible">True</property>
                         <child>
