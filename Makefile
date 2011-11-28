@@ -1,9 +1,6 @@
-# Just dump action to pack GTG correctly at Launchpad PPA
-build:
 
 # Run all of the tests.
-# FIXME special name to not run tests
-make-a-sanity-check:
+check:
 	./run-tests
 
 # Get rid of stale files or files made during testing.
