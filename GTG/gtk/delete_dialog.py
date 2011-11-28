@@ -23,9 +23,7 @@ from GTG     import _, ngettext
 from GTG.gtk import ViewConfig
 
 
-
 class DeletionUI():
-
     
     MAXIMUM_TIDS_TO_SHOW = 5
 

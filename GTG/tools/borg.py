@@ -18,7 +18,6 @@
 # -----------------------------------------------------------------------------
 
 
-
 class Borg(object):
     """
     This pattern ensures that all instances of a particular class share
@@ -29,5 +28,3 @@ class Borg(object):
     
     def __init__(self):
         self.__dict__ = self._borg_state
-
-

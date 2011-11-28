@@ -226,4 +226,3 @@ def get_canonical_date(arg):
                             next_date.month, \
                             next_date.day)
     return strtodate(arg)
-

@@ -26,6 +26,3 @@ Contains useful functions for use in any part of GTG.
 
 #cleanxml.py :
 # Contain function that are useful to handle XML stuff.
-
-
-

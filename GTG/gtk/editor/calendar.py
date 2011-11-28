@@ -21,8 +21,7 @@ import gtk
 from gtk import gdk
 import datetime
 
-from GTG.tools               import dates
-
+from GTG.tools import dates
 
 
 class GTGCalendar(gobject.GObject):

@@ -35,7 +35,7 @@ from GTG.core import CoreConfig
 def sleep_within_loop(duration):
     main_loop = gobject.MainLoop()
     gobject.timeout_add(duration*1000, main_loop.quit)
-    # FIXME: I am not sure why, but I need add this
+    # NOTE: I am not sure why, but I need add this
     # dumb thing to run _process method of LibLarch
     gobject.idle_add(lambda: True)
     main_loop.run()
