@@ -73,8 +73,14 @@ class hamsterPlugin:
             if len(intersection) > 0:
                 category = "%s" % categories[intersection.pop()]
             else:
-                # Force category if not found
-                category = gtg_tags[0]
+		# Check that there is at least one tag to set as the category
+		if len(gtg_tags) == 0:
+                   category = "unsorted"
+	        else:
+		    # Force category if not found
+                    category = gtg_tags[0]
+
+
 
         description = ""
         if self.preferences['description'] == 'title':
