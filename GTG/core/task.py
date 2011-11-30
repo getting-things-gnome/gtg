@@ -202,7 +202,8 @@ class Task(TreeNode):
     def set_status(self, status, donedate=None):
         old_status = self.status
         self.can_be_deleted = False
-        if status:
+        #No need to update children or whatever if the task is not loaded
+        if status and self.is_loaded():
             #we first modify the status of the children
             #If Done, we set the done date
             if status in [self.STA_DONE, self.STA_DISMISSED]:
@@ -387,7 +388,7 @@ class Task(TreeNode):
         TreeNode.add_child(self, tid)
         #now we set inherited attributes only if it's a new task
         child = self.req.get_task(tid)
-        if child and child.can_be_deleted:
+        if self.is_loaded() and child and child.can_be_deleted:
             child.set_start_date(self.get_start_date())
             for t in self.get_tags():
                 child.add_tag(t.get_name())
@@ -428,6 +429,7 @@ class Task(TreeNode):
 
     def get_subtask(self, tid):
         #FIXME : remove this function. This is not useful
+        print "DEPRECATED: get_subtask"
         """Return the task corresponding to a given ID.
 
         @param tid: the ID of the task to return.
@@ -439,6 +441,7 @@ class Task(TreeNode):
     #if the parent has this particular tag
     #FIXME : this function should be removed. Use the liblarch instead !
     def has_parents(self, tag=None):
+        print "DEPRECATED: has_parent"
         has_par = TreeNode.has_parent(self)
         #The "all tag" argument
         if tag and has_par:
