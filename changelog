@@ -1,3 +1,10 @@
+gtg (0.2.5-1) unstable; urgency=low
+
+  * New upstream bugfix release.
+    - Downgrade data from development GTG code (LP: #827658)
+
+ -- Izidor Matušov <izidor.matusov@gmail.com>  Thu, 01 Dec 2011 18:11:40 +0100
+
 gtg (0.2.4-1~karmic1) karmic; urgency=low
 
   * New upstream bugfix release.
