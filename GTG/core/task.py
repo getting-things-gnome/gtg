@@ -200,6 +200,7 @@ class Task(TreeNode):
             self.set_start_date(defer_date)
 
     def set_status(self, status, donedate=None):
+        print "set statud %s for %s" %(status,self.get_id())
         old_status = self.status
         self.can_be_deleted = False
         #No need to update children or whatever if the task is not loaded
@@ -234,6 +235,7 @@ class Task(TreeNode):
                 #We dont mark the children as Active because
                 #They might be already completed after all
             #then the task itself
+        if status:
             self.status = status
         self.sync()
 
