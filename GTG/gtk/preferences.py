@@ -351,10 +351,6 @@ class PreferencesDialog:
     def on_plugin_about_close(self, widget, *args):
         """Close the PluginAboutDialog."""
         self.plugin_about_dialog.hide()
-        
-    def on_plugin_about_close_foo(self, widget, *args):
-        print "catched foo!"
-        self.plugin_about_dialog.hide()
 
     def on_plugin_configure(self, widget):
         """Configure a plugin."""
