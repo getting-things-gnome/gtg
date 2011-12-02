@@ -1,4 +1,4 @@
-gtg (0.2.5-1) unstable; urgency=low
+gtg (0.2.5-3) oneiric; urgency=low
 
   * New upstream bugfix release.
     - Downgrade data from development GTG code (LP: #827658)
