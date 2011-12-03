@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2011-08-17 12:40+0200\n"
-"PO-Revision-Date: 2010-03-22 07:32+0000\n"
-"Last-Translator: Luca Invernizzi <invernizzi.l@gmail.com>\n"
+"PO-Revision-Date: 2011-12-02 23:58+0000\n"
+"Last-Translator: abuyop <Unknown>\n"
 "Language-Team: Malay <ms@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Launchpad-Export-Date: 2011-08-18 04:39+0000\n"
-"X-Generator: Launchpad (build 13697)\n"
+"X-Launchpad-Export-Date: 2011-12-03 05:14+0000\n"
+"X-Generator: Launchpad (build 14418)\n"
 
 #: GTG/gtk/deletion.glade.h:1
 msgid "Confirm task deletion"
@@ -138,7 +138,7 @@ msgstr ""
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:70
 #: GTG/core/treefactory.py:79
 msgid "All tasks"
-msgstr ""
+msgstr "Semua tugas"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:71
 msgid "Tasks with these tags"
@@ -280,7 +280,7 @@ msgstr "Mula pada"
 
 #: GTG/gtk/editor/taskeditor.glade.h:12
 msgid "Task"
-msgstr "Tugasan"
+msgstr "Tugas"
 
 #: GTG/gtk/editor/__init__.py:31 GTG/gtk/browser/__init__.py:34
 msgid "Mark as done"
@@ -308,37 +308,37 @@ msgstr "Tandakan tugas ini sebagai selesai"
 
 #: GTG/gtk/editor/__init__.py:39 GTG/gtk/editor/__init__.py:41
 msgid "Mark this task as to be done"
-msgstr ""
+msgstr "Tandakan tugas ini sebagai belum selesai"
 
 #: GTG/gtk/editor/__init__.py:40
 msgid "Mark this task as not to be done anymore"
-msgstr ""
+msgstr "Tanda tugas ini tidak dilakukan lagi"
 
 #: GTG/gtk/editor/__init__.py:42
 msgid "Permanently remove this task"
-msgstr ""
+msgstr "Buang tugas ini"
 
 #: GTG/gtk/editor/__init__.py:43
 msgid "Insert a subtask in this task"
-msgstr ""
+msgstr "Sisip subtugas dalam tugas ini"
 
 #: GTG/gtk/editor/__init__.py:44
 msgid "Insert a tag in this task"
-msgstr ""
+msgstr "Sisip tag dalam tugas ini"
 
 #: GTG/gtk/editor/editor.py:302
 #, python-format
 msgid "Completed %(days)d day late"
 msgid_plural "Completed %(days)d days late"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(days)d hari terlambat selesai"
+msgstr[1] "%(days)d hari terlambat selesai"
 
 #: GTG/gtk/editor/editor.py:305
 #, python-format
 msgid "Completed %(days)d day early"
 msgid_plural "Completed %(days)d days early"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(days)d hari terawal selesai"
+msgstr[1] "%(days)d hari terawal selesai"
 
 #: GTG/gtk/editor/editor.py:311
 #, python-format
@@ -399,14 +399,16 @@ msgstr "tiada tugasan aktif"
 #, python-format
 msgid "%(tasks)d active task"
 msgid_plural "%(tasks)d active tasks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(tasks)d tugas aktif"
+msgstr[1] "%(tasks)d tugas aktif"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:1
 msgid ""
 "\n"
 "Getting Things Gnome! is an organizer for the GNOME desktop environment."
 msgstr ""
+"\n"
+"Getting Things Gnome! merupakan penyusun untuk persekitaran desktop GNOME."
 
 #: GTG/gtk/browser/taskbrowser.glade.h:3
 msgid "About GTG!"
@@ -426,7 +428,7 @@ msgstr "Tambah satu tag..."
 
 #: GTG/gtk/browser/taskbrowser.glade.h:7
 msgid "Add a subtask"
-msgstr ""
+msgstr "Tambah subtugas"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:8
 msgid "Apply to subtasks"
@@ -439,6 +441,7 @@ msgstr "Batal"
 #: GTG/gtk/browser/taskbrowser.glade.h:10
 msgid "Copyrights&#xA9; 2008, 2009 Lionel Dricot, Bertrand Rousseau"
 msgstr ""
+"Hak cipta terpelihara&#xA9; 2008, 2009 Lionel Dricot, Bertrand Rousseau"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:11 GTG/gtk/browser/__init__.py:44
 msgid "Create a new task"
@@ -480,6 +483,19 @@ msgid ""
 "Getting Things Gnome!; if not, write to the Free Software Foundation, Inc., "
 "51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA."
 msgstr ""
+"Getting Things Gnome! adalah perisian bebas; anda boleh mengedarkannya "
+"dan/atau mengubahsuainya dibawah terma Pelesenan Awam Am GNU yang "
+"diterbitkan oleh Free Software Foundation; sama ada versi 2 dari lesen, atau "
+"(mengikut pilihan anda) mana-mana versi terkini\n"
+"\n"
+"Getting Things Gnome! ini diedarkan dengan harapan ianya akan berguna, TANPA "
+"SEBARANG JAMINAN; termasuk juga KESESUAIAN UNTUK DIPASARKAN, JAMINAN "
+"KUALITI, atau JAMINAN ATAS APA JUA SEBAB. Sila lihat GNU General Public "
+"License untuk maklumat lanjut.\n"
+"\n"
+"Anda seharusnya menerima satu salinan Lesen Awam Am GNU bersama-sama dengan "
+"Getting Things Gnome!; jika tidak, laporkannya ke Free Software Foundation, "
+"Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02111-130159, USA."
 
 #: GTG/gtk/browser/taskbrowser.glade.h:24
 msgid ""
@@ -491,15 +507,15 @@ msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:26
 msgid "Mark as Done"
-msgstr ""
+msgstr "Tanda sebagai Selesai"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:27
 msgid "Mark as Not Done"
-msgstr ""
+msgstr "Tanda sebagai Belum Selesai"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:28
 msgid "Mark as _Done"
-msgstr ""
+msgstr "Tanda sebagai _Selesai"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:29
 msgid "New Subtask"
@@ -507,15 +523,15 @@ msgstr "Subtask Baru"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:30
 msgid "New Task"
-msgstr "Task Baru"
+msgstr "Tugas Baru"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:31
 msgid "New _Subtask"
-msgstr ""
+msgstr "Subtugas _Baru"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:32
 msgid "New _Task"
-msgstr ""
+msgstr "_Tugas Baru"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:33
 msgid "Open GTG documentation in your web browser"
@@ -523,7 +539,7 @@ msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:34
 msgid "Redo"
-msgstr ""
+msgstr "Buat Semula"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:35
 msgid "Reset Color"
@@ -535,7 +551,7 @@ msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:37
 msgid "T_oolbar"
-msgstr ""
+msgstr "P_alang Alat"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:38
 msgid "TagName"
@@ -552,23 +568,23 @@ msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:41
 msgid "Und_ismiss"
-msgstr ""
+msgstr "_Jangan Singkir"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:42
 msgid "Undo"
-msgstr ""
+msgstr "Buat Asal"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:43
 msgid "Work View"
-msgstr ""
+msgstr "Paparan Kerja"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:44
 msgid "_Background Colors"
-msgstr ""
+msgstr "_Warna Latar Belakang"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:45
 msgid "_Closed Tasks Pane"
-msgstr ""
+msgstr "Anak Tetingkap Tu_gas Tertutup"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:46
 msgid "_Edit"
@@ -580,11 +596,11 @@ msgstr "_Bantuan"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:48
 msgid "_Plugins"
-msgstr ""
+msgstr "_Pemalam"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:49
 msgid "_Quick Add Entry"
-msgstr ""
+msgstr "Masukan Tambah _Pantas"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:50
 msgid "_Set start date"
@@ -592,7 +608,7 @@ msgstr ""
 
 #: GTG/gtk/browser/taskbrowser.glade.h:51
 msgid "_Tags Sidebar"
-msgstr ""
+msgstr "Palang Sisi _Tag"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:52
 msgid "_Tasks"
@@ -604,7 +620,7 @@ msgstr "_Lihat"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:54
 msgid "_Work View"
-msgstr ""
+msgstr "Paparan _Kerja"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:55
 msgid "_clear due date"
@@ -648,19 +664,19 @@ msgstr "hari_ini"
 
 #: GTG/gtk/browser/__init__.py:35
 msgid "Mark the selected task as done"
-msgstr ""
+msgstr "Tanda tugas yang dipilih sebagai telah selesai"
 
 #: GTG/gtk/browser/__init__.py:37 GTG/gtk/browser/__init__.py:41
 msgid "Mark the selected task as to be done"
-msgstr ""
+msgstr "Tandak tugas dipilih sebagai untuk dilaksanakan"
 
 #: GTG/gtk/browser/__init__.py:39
 msgid "Mark the task as not to be done anymore"
-msgstr ""
+msgstr "Tanda tugas sebagai tidak perlu dilaksanakan lagi"
 
 #: GTG/gtk/browser/__init__.py:42
 msgid "Permanently remove the selected task"
-msgstr ""
+msgstr "Buang tugas yang dipilih"
 
 #: GTG/gtk/browser/__init__.py:43
 msgid "Edit the selected task"
@@ -753,7 +769,7 @@ msgstr ""
 
 #: GTG/plugins/tomboy/tomboy.py:122
 msgid "Add Tomboy note"
-msgstr ""
+msgstr "Tambah nota Tomboy"
 
 #: GTG/plugins/tomboy/tomboy.py:196
 msgid ""
@@ -765,15 +781,15 @@ msgstr ""
 
 #: GTG/plugins/tomboy/tomboy.py:243
 msgid "That note does not exist!"
-msgstr ""
+msgstr "Nota tersebut tidak wujud!"
 
 #: GTG/plugins/tomboy/tomboy.py:248
 msgid "That note does not exist. Do you want to create a new one?"
-msgstr ""
+msgstr "Nota tersebut tidak wujud. Anda mahu cipta yang baru?"
 
 #: GTG/plugins/tomboy/tomboy.py:276
 msgid "This Tomboy note does not exist anymore. Do you want to create it?"
-msgstr ""
+msgstr "Nota Tomboy ini tidak wujud lagi. Adakah anda mahu ciptakannya?"
 
 #: GTG/plugins/send_email/sendEmail.py:44
 msgid "Send via email"
@@ -814,49 +830,51 @@ msgstr ""
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:1
 msgid "<b>Location Determination Method</b>"
-msgstr ""
+msgstr "<b>Kaedah Penentuan Lokasi</b>"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:2
 msgid "<b>Proximity Factor</b>"
-msgstr ""
+msgstr "<b>Faktor Kedekatan</b>"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:3
 msgid ""
 "<small>Distance in kilometers from \n"
 "the current location.</small>"
 msgstr ""
+"<small>Jarak dalam kilometer dari \n"
+"lokasi sekarang.</small>"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:5
 msgid "Associate with existing tag"
-msgstr ""
+msgstr "Kaitkan dengan tag yang sedia ada"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:6
 msgid "Associate with new tag"
-msgstr ""
+msgstr "Kaitkan dengan tag baru"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:7
 msgid "Geolocalized-tasks Preferences"
-msgstr ""
+msgstr "Keutamaan Tugas-Mengikut-Tempat"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:8
 msgid "Set the task's location"
-msgstr ""
+msgstr "Tetapkan lokasi tugas"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:9
 msgid "Use cellphone"
-msgstr ""
+msgstr "Guna telefon bimbit"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:10
 msgid "Use gps"
-msgstr ""
+msgstr "Guna gps"
 
 #: GTG/plugins/geolocalized_tasks/geolocalized.glade.h:11
 msgid "Use network"
-msgstr ""
+msgstr "Guna rangkaian"
 
 #: GTG/plugins/export/export.py:114
 msgid "Template not found"
-msgstr ""
+msgstr "Templat tidak dijumpai"
 
 #: GTG/plugins/export/export.py:121
 #, python-format
@@ -869,7 +887,7 @@ msgstr ""
 
 #: GTG/plugins/export/export.py:322
 msgid "Choose where to save your list"
-msgstr ""
+msgstr "Pilih di mana untuk simpan senarai anda"
 
 #: GTG/plugins/export/export_templates/description_pocketmod.py:18
 msgid "Foldable booklet (PDF)"
@@ -935,7 +953,7 @@ msgstr "Mula aktiviti baru dalam Hamster Time "
 
 #: GTG/gtg.py:84
 msgid "gtg is already running!"
-msgstr ""
+msgstr "gtg telah berjalan!"
 
 #: GTG/backends/backend_rtm.py:54
 msgid "Remember The Milk"
@@ -1004,7 +1022,7 @@ msgstr ""
 
 #: GTG/backends/rtm/rtm.py:53
 msgid "Invalid state"
-msgstr ""
+msgstr "Keadaan tidak sah"
 
 #: GTG/backends/backend_identica.py:54
 msgid "Identi.ca"
@@ -1085,7 +1103,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:34
 msgid "Learn how to use subtasks"
-msgstr ""
+msgstr "Pelajari bagaimana hendak guna subtugas"
 
 #: GTG/core/firstrun_tasks.py:35
 msgid ""
@@ -1106,7 +1124,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:48
 msgid "Learn how to use tags"
-msgstr ""
+msgstr "Pelajari bagaimana hendak gunakan tag"
 
 #: GTG/core/firstrun_tasks.py:49
 msgid ""
@@ -1140,7 +1158,7 @@ msgstr ""
 
 #: GTG/core/firstrun_tasks.py:66
 msgid "Learn how to use the Workview"
-msgstr ""
+msgstr "Pelajari bagaimana hendak gunakan Paparan Kerja"
 
 #: GTG/core/firstrun_tasks.py:67
 msgid ""
@@ -1234,47 +1252,47 @@ msgstr "Semua yang diperlukan untuk menjalankan plugin ini didapati."
 
 #: GTG/core/plugins/__init__.py:33
 msgid "The plugin can not be loaded"
-msgstr ""
+msgstr "Pemalam tidak boleh dimuatkan"
 
 #: GTG/core/plugins/__init__.py:34
 msgid "Some python modules are missing"
-msgstr ""
+msgstr "Beberapa modul python hilang"
 
 #: GTG/core/plugins/__init__.py:35
 msgid "Please install the following python modules:"
-msgstr ""
+msgstr "Sila pasang modul python berikut:"
 
 #: GTG/core/plugins/__init__.py:37
 msgid "Some remote dbus objects are missing."
-msgstr ""
+msgstr "Beberapa objek dbus jauh hilang."
 
 #: GTG/core/plugins/__init__.py:38
 msgid "Please start the following applications:"
-msgstr ""
+msgstr "Sila mulakan aplikasi berikut:"
 
 #: GTG/core/plugins/__init__.py:40
 msgid "Some modules and remote dbus objects are missing."
-msgstr ""
+msgstr "Beberapa modul dan objek dbus jauh hilang."
 
 #: GTG/core/plugins/__init__.py:41
 msgid "Please install or start the following components:"
-msgstr ""
+msgstr "Sila pasang atau mula komponen berikut:"
 
 #: GTG/core/plugins/__init__.py:43
 msgid "Unknown error while loading the plugin."
-msgstr ""
+msgstr "Ralat tidak diketahui ketika memuat pemalam."
 
 #: GTG/core/plugins/__init__.py:44
 msgid "Very helpful message, isn't it? Please report a bug."
-msgstr ""
+msgstr "Mesej sangat membantu? Sila laporkan pepijat."
 
 #: GTG/core/treefactory.py:90
 msgid "Tasks with no tags"
-msgstr ""
+msgstr "Tugas tanpa tag"
 
 #: GTG/core/task.py:60
 msgid "My new task"
-msgstr ""
+msgstr "Tugas baru saya"
 
 #: GTG/core/task.py:169
 msgid "tags"
@@ -1282,7 +1300,7 @@ msgstr "tanda"
 
 #: GTG/core/task.py:169
 msgid "tag"
-msgstr ""
+msgstr "tag"
 
 #: GTG/core/task.py:175
 msgid "defer"
@@ -1312,8 +1330,8 @@ msgstr "Hari ini"
 #, python-format
 msgid "Yesterday"
 msgid_plural "%(days)d days ago"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Semalam"
+msgstr[1] "%(days)d hari yang lalu"
 
 #: GTG/tools/dates.py:56
 #, python-format
@@ -1332,7 +1350,7 @@ msgstr "selasa"
 
 #: GTG/tools/dates.py:187
 msgid "wednesday"
-msgstr ""
+msgstr "rabu"
 
 #: GTG/tools/dates.py:188
 msgid "thursday"
@@ -1386,12 +1404,6 @@ msgstr "tahun depan"
 #~ "GTG ialah perisian yang masih diperingkat Alfa. Kami sukakannya dan "
 #~ "menggunakannya setiap hari namun anda pasti akan menghadapi beberapa pepijat."
 
-#~ msgid "Due today !"
-#~ msgstr "Hingga hari ini !"
-
-#~ msgid "Due tomorrow !"
-#~ msgstr "Hingga esok !"
-
 #~ msgid "New Note"
 #~ msgstr "Nota Baru"
 
@@ -1403,6 +1415,9 @@ msgstr "tahun depan"
 
 #~ msgid "Other stuff you should read:"
 #~ msgstr "Lain-lain artikel yang patut dibaca."
+
+#~ msgid "Try to type a word beginning with @ here:"
+#~ msgstr "Cuba taip satu perkataan dimulai dengan @ di sini:"
 
 #~ msgid "If a word begins with @, it is interpreted as a tag."
 #~ msgstr "Sekiranya perkataan dimulai dengan @, ia ditafsirkan sebagai tag."
@@ -1418,6 +1433,18 @@ msgstr "tahun depan"
 
 #~ msgid "Downloading..."
 #~ msgstr "Memuat turun..."
+
+#~ msgid "Updating "
+#~ msgstr "Mengemas kini "
+
+#~ msgid "Saving current state.."
+#~ msgstr "Menyimpan keadaan terkini.."
+
+#~ msgid "Adding "
+#~ msgstr "Menambah "
+
+#~ msgid "Closing in one second"
+#~ msgstr "Tutup dalam satu saat"
 
 #~ msgid "Later"
 #~ msgstr "Kemudian"
@@ -1443,6 +1470,9 @@ msgstr "tahun depan"
 #~ msgstr ""
 #~ "Entri quickadd adalah cara terpantas untuk mencipta suatu tugasan baru. Anda "
 #~ "boleh papar atau sembunyinya  dalam menu View."
+
+#~ msgid "Can't load the template file"
+#~ msgstr "Tidak boleh muat fail templat"
 
 #~ msgid "Updating changed tasks.."
 #~ msgstr "Mengemaskini tugasan yang ditukar.."
@@ -1506,3 +1536,260 @@ msgstr "tahun depan"
 #~ msgstr ""
 #~ "Anda juga boleh cipta tugas dengan atribut seperti tag, due date atau defer "
 #~ "date dalam entri quickadd"
+
+#~ msgid "Due today !"
+#~ msgstr "Luput hari ini !"
+
+#~ msgid "Due tomorrow !"
+#~ msgstr "Luput esok !"
+
+#~ msgid "Tag is displayed in the workview"
+#~ msgstr "Tag dipapar dalam paparan kerja"
+
+#~ msgid "Welcome to Getting Things Gnome!, your new task manager."
+#~ msgstr ""
+#~ "Selamat datang ke Getting Things Gnome!, pengurus tugas anda yang baru"
+
+#~ msgid ""
+#~ "Once you've read the above subtask, mark it as Done. If you don't want to do "
+#~ "the task, mark it as dismissed. Done and Dismissed tasks are kept in the "
+#~ "closed tasks pane, hidden by default but you can easily enable it in the "
+#~ "View menu."
+#~ msgstr ""
+#~ "Apabila anda telah baca subtugas di atas, tandakan sebagai Selesai. "
+#~ "Sekiranya anda tidak mahu buat tugas, tandakan sebagai singkir. Tugas "
+#~ "Selesai dan Singkir diletakkan dalam anak tetingkap tugas tertutup, "
+#~ "tersembunyi secara lalai tetapi anda boleh benarkan dalam Paparan menu."
+
+#~ msgid ""
+#~ "Tasks and subtasks can be re-organized by drag-n-drop in the tasks list."
+#~ msgstr ""
+#~ "Tugas dan subtugas boleh di susun semula dengan cara seret-dan-lepas dalam "
+#~ "senarai tugas."
+
+#~ msgid ""
+#~ "Some concepts come with subtasks: for example, a subtask's due date can "
+#~ "never be after its parent's due date."
+#~ msgstr ""
+#~ "Sebahagian konsep datang dengan subtugas; sebagai contoh, tarikh luput "
+#~ "subtugas tidak boleh selepas tarikh luput induknya."
+
+#~ msgid ""
+#~ "Once a task is done, you can push the &quot;Mark as done&quot; button. If "
+#~ "the task is not relevant any-more, simply press &quot;Dismiss&quot;."
+#~ msgstr ""
+#~ "Apabila tugas sudah selesai, anda boleh menekan butang &quot;Tandakan "
+#~ "Selesai&quot;. Jika tugas sudah tidak diperlukan lagi, tekan butang "
+#~ "&quot;Singkir&quot;."
+
+#~ msgid ""
+#~ "In GTG, everything is a task. From building a bridge over the Pacific Ocean "
+#~ "to changing a light bulb or organizing a party. When you edit a task, it is "
+#~ "automatically saved."
+#~ msgstr ""
+#~ "Dalam GTG, segalanya adalah tugas. Dari membina jambatan merentasi Lautan "
+#~ "Pasifik hingga menukar mentol lampu atau menganjur majlis. Apabila tugas "
+#~ "disunting, ia akan disimpan secara automatik."
+
+#~ msgid ""
+#~ "In the task description (this window), if you begin a line with &quot;-"
+#~ "&quot;, it will be considered as a &quot;subtask&quot;, something that needs "
+#~ "to be done in order to accomplish your task. Just try to write &quot;- test "
+#~ "subtask&quot; on the next line and press enter."
+#~ msgstr ""
+#~ "Dalam keterangan tugas (tetingkap ini), jika anda mula baris dengan &quot;-"
+#~ "&quot;, ia akan dianggap sebagai &quot;subtugas&quot;, sesuatu yang perlu "
+#~ "dilakukan untuk menyempurnakan tugas anda. Cuba tulis &quot;- uji "
+#~ "subtugas&quot; pada baris berikut dan tekan enter."
+
+#~ msgid ""
+#~ "We hope that you will appreciate GTG. Please send us bug reports and ideas "
+#~ "for improvement using: "
+#~ msgstr ""
+#~ "Kami berharap anda akan menghargai GTG. Sila hantar laporan kerosakan atau "
+#~ "idea untuk peningkatan menggunakan: "
+
+#~ msgid ""
+#~ "A task might be composed of multiple subtasks that appear as links in the "
+#~ "description. Simply click on the following link:"
+#~ msgstr ""
+#~ "Suatu tugas mungkin terdiri dari beberapa subtugas yang kelihatan seperti "
+#~ "pautan dalam keterangan. Hanya klik pada pautan berikut:"
+
+#~ msgid ""
+#~ "If you choose to close this current task, subtasks will be automatically "
+#~ "closed too. We indeed consider that, if you achieve a given task, you don't "
+#~ "need to do the subtask anymore."
+#~ msgstr ""
+#~ "Sekiranya anda pilih untuk tutup tugas semasa, subtugas juga akan ditutup "
+#~ "secara automatik. Kami menganggap jika anda selesai tugas yang diberikan, "
+#~ "anda tidak perlu untuk melakukan subtugas lagi."
+
+#~ msgid "Also, marking a parent as done will mark all the subtasks as done."
+#~ msgstr ""
+#~ "Menanda induk sebagai selesai akan tandakan semua subtugas sebagai selesai."
+
+#~ msgid ""
+#~ "You can drag-n-drop a tag onto another to create \"subtags\". As an example, "
+#~ "if you drag the tag @to_pay onto the tag @money, every task tagged with "
+#~ "@to_pay will also appear in the view of @money (but the @money tag is not "
+#~ "added to the task)."
+#~ msgstr ""
+#~ "Anda boleh seret-dan-lepas tag ke tag lain untuk cipta  \"subtugas\". "
+#~ "Sebagai contoh, jika anda seret tag @untuk_bayaran ke tag @kewangan, semua "
+#~ "tugas bertag dengan @untuk_bayaran akan kelihatan dalam paparan @kewangan "
+#~ "(tetapi tag @kewangan tidak ditambah dalam tugas)."
+
+#~ msgid ""
+#~ "If you press the &quot;Workview&quot; button, only actionable tasks will be "
+#~ "displayed."
+#~ msgstr ""
+#~ "Sekiranya anda tekan butang &quot;Paparan Kerja&quot; , hanya tugas yang "
+#~ "boleh dilakukan akan dipaparkan."
+
+#~ msgid ""
+#~ "A new tag is only added to the current task. There's no recursion and the "
+#~ "tag is not applied to subtasks. But when you create a new subtask, this "
+#~ "subtask will inherit the tags of its parent as a good primary default (it "
+#~ "will also be the case if you add a tag to a parent just after creating a "
+#~ "subtask). Of course, you can modify at any time the tags of this particular "
+#~ "subtask. It will never be changed by the parent."
+#~ msgstr ""
+#~ "Tag baru hanya ditambah ke tugas semasa. Tiada rekursi dan tag tidak ditera "
+#~ "pada subtugas. Tetapi apabila anda cipta subtugas baru, ia akan mewarisi tag "
+#~ "induk sebagaimana lalai (ia juga sama jika anda tambah tag ke induk setelah "
+#~ "mencipta subtugas). Anda boleh ubahsuai tag bila-bila masa untuk subtugas "
+#~ "tersebut. Ia tidak akan diubah oleh induk"
+
+#~ msgid ""
+#~ "If you right click on a tag in the sidebar you can also set its color. It "
+#~ "will allow you to have a more colorful list of tasks, if you want it that "
+#~ "way."
+#~ msgstr ""
+#~ "Jika anda klik kanan pada tag di palang sisi anda juga boleh menetapkan "
+#~ "warnanya. Ia membolehkan anda membuat senarai tugas yang berwarna-warni jika "
+#~ "anda mahu."
+
+#~ msgid ""
+#~ "Tags are useful to sort your tasks. In the view menu, you can enable a "
+#~ "sidebar which displays all the tags you are using so you can easily see "
+#~ "tasks assigned to a given tag. There's no limit to the number of tags a task "
+#~ "can have."
+#~ msgstr ""
+#~ "Tag berguna untuk mengisih tugas anda. Dalam paparan menu, anda boleh "
+#~ "benarkan palang sisi untuk memaparkan semua tag yang anda gunakan supaya "
+#~ "anda mudah untuk melihat tugas yang ditujukan kepada tag. Tiada had tag bagi "
+#~ "satu tugas."
+
+#~ msgid "A tag is a simple word that begins with &quot;@&quot;."
+#~ msgstr ""
+#~ "Tag merupakan perkataan ringkas yang bermula dengan simbol &quot;@&quot;."
+
+#~ msgid ""
+#~ "What is an actionable task? It's a task you can do directly, right now."
+#~ msgstr ""
+#~ "Apakah tugas yang boleh dilakukan? Ianya adalah tugas yang anda boleh buat "
+#~ "sekarang."
+
+#~ msgid ""
+#~ "It's a task that is already &quot;start-able&quot;, i.e. the start date is "
+#~ "already over."
+#~ msgstr ""
+#~ "Ia adalah tugas yang telah &quot;boleh-mula&quot;,cth. tarikh mula telah "
+#~ "lepas."
+
+#~ msgid ""
+#~ "It's a task that doesn't have open subtasks, i.e. you can do the task itself "
+#~ "directly."
+#~ msgstr ""
+#~ "Ia adalah tugas yang tidak ada subtugas, cth. anda boleh lakukan terus tugas "
+#~ "tersebut."
+
+#~ msgid "Thus, the workview will only show you tasks you should do right now."
+#~ msgstr ""
+#~ "Oleh itu, paparan kerja hanya akan memaparkan tugas yang anda perlu buat "
+#~ "sekarang."
+
+#~ msgid ""
+#~ "If you use tags, you can right click on a tag in the sidebar and choose to "
+#~ "hide tasks assigned to this particular tag in the workview. It's very useful "
+#~ "if you have a tag like &quot;someday&quot; that you use for tasks you would "
+#~ "like to do but are not particularly urgent."
+#~ msgstr ""
+#~ "Sekiranya anda guna tag, anda boleh klik kanan pada suatu tag dalam palang "
+#~ "sisi dan pilih untuk sembunyi tugas yang ditujukan kepada tag tertentu dalam "
+#~ "paparan kerja. Ianya amat berguna jika anda mempunyai tag seperti "
+#~ "&quot;suatu hari nanti&quot; yang anda guna untuk tugas yang anda ingin buat "
+#~ "tetapi tidak perlu dilakukan begitu segera."
+
+#~ msgid ""
+#~ "If you have some trouble with GTG, we might be able to help you or to solve "
+#~ "your problem really quickly."
+#~ msgstr ""
+#~ "Sekiranya anda mengalami masalah dengan GTG, kami mungkin dapat menolong "
+#~ "anda atau menyelesaikan masalah anda dengan pantas."
+
+#~ msgid "Please, report them on our Launchpad page:"
+#~ msgstr "Sila laporkan di laman Launchpad kami:"
+
+#~ msgid ""
+#~ "We need you to make this software better. Any contribution, any idea is "
+#~ "welcome."
+#~ msgstr ""
+#~ "Kami memerlukan anda untuk jadikan perisian ini lebih baik. Sebarang "
+#~ "sumbangan, sebarang idea dialu-alukan."
+
+#~ msgid "Couldn't connect to Remember The Milk"
+#~ msgstr "Tidak dapat hubungi ke Remember The Milk"
+
+#~ msgid "Synchronization started"
+#~ msgstr "Penyegerakkan bermula"
+
+#~ msgid "Synchronize with RTM"
+#~ msgstr "Segerak dengan RTM"
+
+#~ msgid "Trying to access, please stand by..."
+#~ msgstr "Cuba mencapai, sila tunggu..."
+
+#~ msgid ""
+#~ "Please authenticate to Remember The Milk in the browser that is being opened "
+#~ "now. When done, press OK"
+#~ msgstr ""
+#~ "Sila sahkan ke Remember The Milk dalam pelayar yang telah dibuka sekarang. "
+#~ "Setelah selesai, tekan OK"
+
+#~ msgid "saving critical object failed"
+#~ msgstr "penyimpanan objek kritikal gagal"
+
+#~ msgid "Downloading task list..."
+#~ msgstr "Memuat turun senarai tugas..."
+
+#~ msgid "Adding tasks to rtm.."
+#~ msgstr "Menambah tugas ke rtm.."
+
+#~ msgid "Adding tasks to gtg.."
+#~ msgstr "Menambah tugas ke gtg.."
+
+#~ msgid "Synchronization completed."
+#~ msgstr "Penyegerakan selesai."
+
+#~ msgid "Deleting tasks from rtm.."
+#~ msgstr "Memadam tugas dari rtm.."
+
+#~ msgid "Deleting tasks from gtg.."
+#~ msgstr "Memadam tugasan dari gtg.."
+
+#~ msgid "Deleting "
+#~ msgstr "Memadam "
+
+#, python-format
+#~ msgid "%(days)d day left"
+#~ msgid_plural "%(days)d days left"
+#~ msgstr[0] "%(days)d hari berbaki"
+#~ msgstr[1] "%(days)d hari berbaki"
+
+#, python-format
+#~ msgid "Was %(days)d day ago"
+#~ msgid_plural "Was %(days)d days ago"
+#~ msgstr[0] "%(days)d hari yang lalu"
+#~ msgstr[1] "%(days)d hari yang lalu"
