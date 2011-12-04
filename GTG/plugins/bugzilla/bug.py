@@ -14,7 +14,14 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from bugz import bugzilla
+#this handles old versions of pybugz and new ones
+try:
+    from bugz import bugzilla
+except:
+    import bugz as bugzilla
+
+#import pkg_resources
+#print pkg_resources.get_distribution("pybugz").version
 
 class Bug:
     def __init__(self, base, nb):
