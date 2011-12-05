@@ -24,7 +24,10 @@ except:
 
 class Bug:
     def __init__(self, base, nb):
-        self.bug = bugzilla.Bugz(base, skip_auth=True).get(nb)
+        try:
+            self.bug = bugzilla.Bugz(base, skip_auth=True).get(nb)
+        except:
+            self.bug = bugzilla.Bugz(base).get(nb)
         if self.bug is None:
             raise Exception('Failed to create bug')
 
@@ -48,11 +51,11 @@ class Bug:
         comment = self.bug.findall('//long_desc')[0]
         return comment.find('.//thetext').text
 
-if __name__ == '__main__':
-     for bug in [Bug('http://bugzilla.gnome.org', '598354'),
-         Bug('http://bugs.freedesktop.org', '24120')]:
-        print "title:", bug.get_title()
-        print "product:", bug.get_product()
-        print "component:", bug.get_component()
-        print "description:", bug.get_description()
-        print ""
+#if __name__ == '__main__':
+#     for bug in [Bug('http://bugzilla.gnome.org', '598354'),
+#         Bug('http://bugs.freedesktop.org', '24120')]:
+#        print "title:", bug.get_title()
+#        print "product:", bug.get_product()
+#        print "component:", bug.get_component()
+#        print "description:", bug.get_description()
+#        print ""
