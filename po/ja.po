@@ -8,15 +8,15 @@ msgstr ""
 "Project-Id-Version: gtg\n"
 "Report-Msgid-Bugs-To: Luca Falavigna <dktrkranz@ubuntu.com>\n"
 "POT-Creation-Date: 2011-08-17 12:40+0200\n"
-"PO-Revision-Date: 2010-03-12 14:53+0000\n"
-"Last-Translator: Hideki Yamane (Debian-JP) <henrich@debian.or.jp>\n"
+"PO-Revision-Date: 2011-12-05 08:25+0000\n"
+"Last-Translator: Kappa Tech(かっぱてっく) <Unknown>\n"
 "Language-Team: Japanese <debian-japanese@lists.debian.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Launchpad-Export-Date: 2011-08-18 04:39+0000\n"
-"X-Generator: Launchpad (build 13697)\n"
+"X-Launchpad-Export-Date: 2011-12-06 05:28+0000\n"
+"X-Generator: Launchpad (build 14435)\n"
 
 #: GTG/gtk/deletion.glade.h:1
 msgid "Confirm task deletion"
@@ -28,7 +28,7 @@ msgstr ""
 
 #: GTG/gtk/preferences.glade.h:2
 msgid "<b>General</b>"
-msgstr ""
+msgstr "<b>全般</b>"
 
 #: GTG/gtk/preferences.glade.h:3
 msgid "<b>Task Browser</b>"
@@ -44,7 +44,7 @@ msgstr ""
 
 #: GTG/gtk/preferences.glade.h:6
 msgid "Behaviour"
-msgstr ""
+msgstr "動作"
 
 #: GTG/gtk/preferences.glade.h:7
 msgid "Check spelling"
@@ -60,7 +60,7 @@ msgstr ""
 
 #: GTG/gtk/preferences.glade.h:10
 msgid "Plugins"
-msgstr ""
+msgstr "プラグイン"
 
 #: GTG/gtk/preferences.glade.h:11
 msgid "Show description preview in the task list."
@@ -83,26 +83,22 @@ msgid ""
 "Deleting a task cannot be undone, and will delete the following tasks: "
 msgid_plural ""
 "Deleting a task cannot be undone, and will delete the following task: "
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "タスクはまだ削除されていません。次のタスクを削除します: "
 
 #: GTG/gtk/delete_dialog.py:68
 msgid "Are you sure you want to delete these tasks?"
 msgid_plural "Are you sure you want to delete this task?"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "本当にこれらのタスクを削除してもよろしいですか？"
 
 #: GTG/gtk/delete_dialog.py:74
 msgid "Keep selected tasks"
 msgid_plural "Keep selected task"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "タスクの削除を中止"
 
 #: GTG/gtk/delete_dialog.py:77
 msgid "Permanently remove tasks"
 msgid_plural "Permanently remove task"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "永久的にタスクを削除"
 
 #: GTG/gtk/delete_dialog.py:108
 #, python-format
@@ -113,11 +109,11 @@ msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/passwordui.py:50
 msgid "Password:"
-msgstr ""
+msgstr "パスワード:"
 
 #: GTG/gtk/backends_dialog/parameters_ui/pathui.py:52
 msgid "Filename:"
-msgstr ""
+msgstr "ファイル名:"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:63
 msgid "Import tags"
@@ -125,7 +121,7 @@ msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:64
 msgid "All tags"
-msgstr ""
+msgstr "全てのタグ"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:65
 msgid "Just these tags"
@@ -146,7 +142,7 @@ msgstr ""
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:76
 msgid "Username"
-msgstr ""
+msgstr "ユーザー名"
 
 #: GTG/gtk/backends_dialog/parameters_ui/__init__.py:82
 msgid "Import tasks from @ replies "
@@ -364,11 +360,11 @@ msgstr ""
 
 #: GTG/gtk/crashhandler.py:170
 msgid "An error has occurred"
-msgstr ""
+msgstr "エラーが発生しました。"
 
 #: GTG/gtk/crashhandler.py:180
 msgid "It looks like an error has occurred."
-msgstr ""
+msgstr "エラーが発生したようです。"
 
 #: GTG/gtk/crashhandler.py:214
 msgid "_Details"
@@ -434,7 +430,7 @@ msgstr "サブタスクに適用"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:9
 msgid "Cancel"
-msgstr ""
+msgstr "キャンセル"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:10
 msgid "Copyrights&#xA9; 2008, 2009 Lionel Dricot, Bertrand Rousseau"
@@ -535,7 +531,7 @@ msgstr "やり直し"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:35
 msgid "Reset Color"
-msgstr ""
+msgstr "色を元に戻す"
 
 #: GTG/gtk/browser/taskbrowser.glade.h:36
 msgid "Set due date"
