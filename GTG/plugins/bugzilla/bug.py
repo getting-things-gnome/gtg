@@ -24,6 +24,7 @@ except:
 
 class Bug:
     def __init__(self, base, nb):
+        #this also handles old versions of pybugz
         try:
             self.bug = bugzilla.Bugz(base, skip_auth=True).get(nb)
         except:
