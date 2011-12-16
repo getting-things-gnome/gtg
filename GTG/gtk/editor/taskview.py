@@ -35,14 +35,13 @@ from gtk import gdk
 import gobject
 import pango
 import re
-import urllib #Check if necessary
 
 from GTG.gtk.editor import taskviewserial
 from GTG.tools      import openurl
 
 
 separators = [' ', '.', ',', '/', '\n', '\t', '!', '?', ';', '\0']
-#url_separators = [' ', ',', '\n', '\t', '\0']
+
 UTF_CHARS = ur'a-z0-9_\u00c0-\u00d6\u00d8-\u00f6\u00f8-\u00ff'
 # URLs
 PRE_CHARS = ur'(?:[^/"\':!=]|^|\:)'
@@ -585,15 +584,17 @@ class TaskView(gtk.TextView):
                 while it.get_char() and it.get_char()!='\0':
                     it.forward_char()
                 isurl = buff.get_text(prev,it)
-                print isurl
+
                 m = re.match(URL_REGEX, isurl)
                 if m is not None:
                     url = isurl[:m.end()] 
-                    print url,m.end(),numchar,m.re
-                    if url.startswith("http://") or url.startswith("https://") :
-                        #FIXME
-                        texttag = self.create_anchor_tag(buff,url,text=None,typ="http")
-                        buff.apply_tag(texttag, prev , it)
+                    
+                    #if url.startswith("http://") or url.startswith("https://") :
+                    
+                    texttag = self.create_anchor_tag(buff,url,text=None,typ="http")
+                    it = prev.copy()
+                    it.forward_chars(m.end())
+                    buff.apply_tag(texttag, prev , it)
 
             elif text in ["bug","lp","bgo","fdo", "bko"] :
                 if it.get_char() == " " :
