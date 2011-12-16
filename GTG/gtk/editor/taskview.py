@@ -34,14 +34,32 @@ import gtk
 from gtk import gdk
 import gobject
 import pango
+import re
+import urllib #Check if necessary
 
 from GTG.gtk.editor import taskviewserial
 from GTG.tools      import openurl
 
 
 separators = [' ', '.', ',', '/', '\n', '\t', '!', '?', ';', '\0']
-url_separators = [' ', ',', '\n', '\t', '\0']
+#url_separators = [' ', ',', '\n', '\t', '\0']
+UTF_CHARS = ur'a-z0-9_\u00c0-\u00d6\u00d8-\u00f6\u00f8-\u00ff'
+# URLs
+PRE_CHARS = ur'(?:[^/"\':!=]|^|\:)'
+DOMAIN_CHARS = ur'([\.-]|[^\s_\!\.\/])+\.[a-z]{2,}(?::[0-9]+)?'
+PATH_CHARS = ur'(?:[\.,]?[%s!\*\'\(\);:=\+\$/%s#\[\]\-_,~@])' % (UTF_CHARS, '%')
+QUERY_CHARS = ur'[a-z0-9!\*\'\(\);:&=\+\$/%#\[\]\-_\.,~]'
 
+# Valid end-of-path characters (so /foo. does not gobble the period).
+PATH_ENDING_CHARS = r'[%s\)=#/]' % UTF_CHARS
+QUERY_ENDING_CHARS = '[a-z0-9_&=#]'
+
+URL_REGEX = re.compile('((%s)((https?://|www\\.)(%s)(\/%s*%s?)?(\?%s*%s)?))'
+                       % (PRE_CHARS, DOMAIN_CHARS, PATH_CHARS,
+                         PATH_ENDING_CHARS, QUERY_CHARS, QUERY_ENDING_CHARS),
+                         re.IGNORECASE)
+# Registered IANA one letter domains
+IANA_ONE_LETTER_DOMAINS = ('x.com', 'x.org', 'z.com', 'q.net', 'q.com', 'i.net')
 
 bullet1_ltr = '→'
 bullet1_rtl = '←'
@@ -561,13 +579,22 @@ class TaskView(gtk.TextView):
             prev = it.copy()
             prev.backward_word_start()
             text = buff.get_text(prev,it)
+            
+            numchar = 0            
             if text in ["http","https"]:
-                while it.get_char() not in url_separators and (it.get_char() != '\0') :
+                while it.get_char() and it.get_char()!='\0':
                     it.forward_char()
-                url = buff.get_text(prev,it)
-                if url.startswith("http://") or url.startswith("https://") :
-                    texttag = self.create_anchor_tag(buff,url,text=None,typ="http")
-                    buff.apply_tag(texttag, prev , it)
+                isurl = buff.get_text(prev,it)
+                print isurl
+                m = re.match(URL_REGEX, isurl)
+                if m is not None:
+                    url = isurl[:m.end()] 
+                    print url,m.end(),numchar,m.re
+                    if url.startswith("http://") or url.startswith("https://") :
+                        #FIXME
+                        texttag = self.create_anchor_tag(buff,url,text=None,typ="http")
+                        buff.apply_tag(texttag, prev , it)
+
             elif text in ["bug","lp","bgo","fdo", "bko"] :
                 if it.get_char() == " " :
                     it.forward_char()
