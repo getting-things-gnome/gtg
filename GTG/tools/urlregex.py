@@ -40,5 +40,6 @@ URL_REGEX = re.compile('((%s)((https?://|www\\.)(%s)(\/%s*%s?)?(\?%s*%s)?))'
                          PATH_ENDING_CHARS, QUERY_CHARS, QUERY_ENDING_CHARS),
                          re.IGNORECASE)
 
+
 def match(text):
     return re.match(URL_REGEX, text)
