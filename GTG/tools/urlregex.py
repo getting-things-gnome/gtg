@@ -41,4 +41,4 @@ URL_REGEX = re.compile('((%s)((https?://|www\\.)(%s)(\/%s*%s?)?(\?%s*%s)?))'
                          re.IGNORECASE)
 
 def match(text):
-    return re.match(URL_REGEX,text)
+    return re.match(URL_REGEX, text)
