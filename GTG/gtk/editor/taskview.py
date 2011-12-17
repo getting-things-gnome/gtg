@@ -34,14 +34,13 @@ import gtk
 from gtk import gdk
 import gobject
 import pango
-import re
 
 from GTG.gtk.editor import taskviewserial
 from GTG.tools      import openurl
-
+from GTG.tools      import urlregex
 
 separators = [' ', '.', ',', '/', '\n', '\t', '!', '?', ';', '\0']
-
+'''
 UTF_CHARS = ur'a-z0-9_\u00c0-\u00d6\u00d8-\u00f6\u00f8-\u00ff'
 # URLs
 PRE_CHARS = ur'(?:[^/"\':!=]|^|\:)'
@@ -59,7 +58,7 @@ URL_REGEX = re.compile('((%s)((https?://|www\\.)(%s)(\/%s*%s?)?(\?%s*%s)?))'
                          re.IGNORECASE)
 # Registered IANA one letter domains
 IANA_ONE_LETTER_DOMAINS = ('x.com', 'x.org', 'z.com', 'q.net', 'q.com', 'i.net')
-
+'''
 bullet1_ltr = '→'
 bullet1_rtl = '←'
 
@@ -578,19 +577,16 @@ class TaskView(gtk.TextView):
             prev = it.copy()
             prev.backward_word_start()
             text = buff.get_text(prev,it)
-            
             numchar = 0            
-            if text in ["http","https"]:
+            
+            if text in ["http","https","www"]:
                 while it.get_char() and it.get_char()!='\0':
                     it.forward_char()
                 isurl = buff.get_text(prev,it)
 
-                m = re.match(URL_REGEX, isurl)
+                m = urlregex.match(isurl)
                 if m is not None:
                     url = isurl[:m.end()] 
-                    
-                    #if url.startswith("http://") or url.startswith("https://") :
-                    
                     texttag = self.create_anchor_tag(buff,url,text=None,typ="http")
                     it = prev.copy()
                     it.forward_chars(m.end())
