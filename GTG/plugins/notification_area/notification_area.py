@@ -23,9 +23,8 @@ try:
 except:
     pass
 
-from GTG                   import _, DATA_DIR
+from GTG                   import _
 from GTG.tools.borg        import Borg
-from GTG.tools.sorted_dict import SortedDict
 
 class NotificationArea:
     """
@@ -36,6 +35,7 @@ class NotificationArea:
     DEFAULT_PREFERENCES = {"start_minimized": False}
     PLUGIN_NAME = "notification_area"
     MAX_TITLE_LEN = 30
+    MAX_ITEMS = 5
 
     class TheIndicator(Borg):
         """
@@ -63,6 +63,7 @@ class NotificationArea:
     def __init__(self):
         self.__indicator = NotificationArea.TheIndicator().get_indicator()
         self.__browser_handler = None
+        self.__liblarch_callbacks = []
 
     def activate(self, plugin_api):
         """ Set up the plugin, set callbacks, etc """
@@ -72,7 +73,6 @@ class NotificationArea:
         # Tasks_in_menu will hold the menu_items in the menu, to quickly access
         # them given the task id. Contains tuple of this format:
         # (title, key, gtk.MenuItem)
-        self.__tasks_in_menu = SortedDict(key_position = 1, sort_position = 0)
         self.__init_gtk()
         self.__connect_to_tree()
 
@@ -103,6 +103,12 @@ class NotificationArea:
 
         # Allow closing GTG after the last window
         self.__view_manager.set_daemon_mode(True)
+
+        # Deactivate LibLarch callbacks
+        for key, event in self.__liblarch_callbacks:
+            self.__tree.deregister_cllbck(event, key)
+        self.__tree = None
+        self.__liblarch_callbacks = []
 
 ## Helper methods ##############################################################
 
@@ -135,6 +141,9 @@ class NotificationArea:
         self.__menu.append(self.__task_separator)
         self.__menu_top_length = len(self.__menu)
 
+        self.__tasks_menu = SortedLimitedMenu(self.MAX_ITEMS,
+                            self.__menu, self.__menu_top_length)
+
         if self.__indicator:
             self.__indicator.set_menu(self.__menu)
             self.__indicator.set_status(appindicator.STATUS_ACTIVE)
@@ -165,66 +174,45 @@ class NotificationArea:
         self.__tree = self.__requester.get_tasks_tree()
         # Request a new view so we do not influence anybody
         self.__tree = self.__tree.get_basetree().get_viewtree(refresh=False)
-        self.__tree.apply_filter('workview')
-        self.__tree.register_cllbck("node-added-inview", self.__on_task_added)
-        self.__tree.register_cllbck("node-deleted-inview", self.__on_task_deleted)
-        self.__tree.register_cllbck("node-modified-inview", self.__on_task_added)
 
-        #Flushing all tasks, as the plugin may have been started after GTG
-        def visit_tree(tree, nodes, fun):
-            for node in nodes:
-                tid = node.get_id()
-                if tree.is_displayed(tid):
-                    fun(tid)
-                    if node.has_child():
-                        children = [self.__tree.get_node(c) \
-                                    for c in node.get_children()]
-                        visit_tree(tree, children, fun)
-        virtual_root = self.__tree.get_root()
-        visit_tree(self.__tree,
-                   [self.__tree.get_node(c) \
-                            for c in virtual_root.get_children()],
-                   lambda t: self.__on_task_added(t, None))
+        c1 = self.__tree.register_cllbck("node-added-inview", self.__on_task_added)
+        c2 = self.__tree.register_cllbck("node-modified-inview", self.__on_task_added)
+        c3 = self.__tree.register_cllbck("node-deleted-inview", self.__on_task_deleted)
+        self.__liblarch_callbacks = [(c1, "node-added-inview"),
+            (c2, "node-modified-inview"), 
+            (c3, "node-deleted-inview")]
+
+        self.__tree.apply_filter('workview')
+        self.__tree.refresh_all()
 
     def __on_task_added(self, tid, path):
         self.__task_separator.show()
         task = self.__requester.get_task(tid)
+
         #ellipsis of the title
         title = self.__create_short_title(task.get_title())
-        try:
-            #if it's already in the menu, remove it (to reinsert in a sorted
-            # way)
-            menu_item = self.__tasks_in_menu.pop_by_key(tid)[2]
-            self.__menu.remove(menu_item)
-        except:
-            pass
+
         #creating the menu item
-        menu_item = gtk.MenuItem(title,False)
+        menu_item = gtk.MenuItem(title, False)
         menu_item.connect('activate', self.__open_task, tid)
-        menu_item.show()
-        position = self.__tasks_in_menu.sorted_insert((title, tid, menu_item))
-        self.__menu.insert(menu_item, position + self.__menu_top_length)
+        self.__tasks_menu.add(tid, title, menu_item)
+
         if self.__indicator:
             self.__indicator.set_menu(self.__menu)
 
+    def __on_task_deleted(self, tid, path):
+        self.__tasks_menu.remove(tid)
+        if self.__tasks_menu.empty():
+            self.__task_separator.hide()
+
     def __create_short_title(self, title):
-        # Underscores must be escaped to avoid to be ignored (or, optionally,
-        # treated like accelerators ~~ Invernizzi
+        """ Make title short if it is long.  Replace '_' by '__' so 
+        it is not ignored or  interpreted as an accelerator."""
         title =title.replace("_", "__")
         short_title = title[0 : self.MAX_TITLE_LEN]
         if len(title) > self.MAX_TITLE_LEN:
             short_title = short_title.strip() + "..."
         return short_title
-
-    def __on_task_deleted(self, tid, path):
-        try:
-            menu_item = self.__tasks_in_menu.pop_by_key(tid)[2]
-            self.__menu.remove(menu_item)
-        except:
-            return
-        #if the dynamic menu is empty, remove the separator
-        if not self.__tasks_in_menu:
-            self.__task_separator.hide()
 
     def __on_icon_popup(self, icon, button, timestamp, menu=None):
         if not self.__indicator:
@@ -311,3 +299,58 @@ class NotificationArea:
         if method is not None:
             self.__browser_handler = browser.window.connect(
                 "delete-event", method)
+
+class SortedLimitedMenu:
+    """ Sorted GTK Menu which shows only first N elements """
+
+    def __init__(self, max_items, gtk_menu, offset):
+        """ max_items - how many items could be shown
+            gtk_menu - items are added to this menu
+            offset - add to position this offset
+        """
+        self.max_items = max_items
+        self.menu = gtk_menu
+        self.offset = offset
+
+        self.sorted_keys = []
+        self.elements = {}
+    
+    def add(self, key, sort_elem, menu_item):
+        """ Add/modify item """
+        if key in self.elements:
+            self.remove(key)
+
+        item = (sort_elem, key)
+        self.sorted_keys.append(item)
+        self.sorted_keys.sort()
+        position = self.sorted_keys.index(item)
+        self.elements[key] = menu_item
+        self.menu.insert(menu_item, position + self.offset)
+
+        # Show/hide elements
+        if position < self.max_items:
+            menu_item.show()
+
+            if len(self.sorted_keys) > self.max_items:
+                hidden_key = self.sorted_keys[self.max_items][1]
+                self.elements[hidden_key].hide()
+
+    def remove(self, key):
+        """ Remove item """
+        menu_item = self.elements.pop(key)
+        self.menu.remove(menu_item)
+
+        for item in self.sorted_keys:
+            if item[1] == key:
+                position = self.sorted_keys.index(item)
+                self.sorted_keys.remove(item)
+                break
+
+        # show elemnt which takes the freed place
+        if position < self.max_items and len(self.sorted_keys) >= self.max_items:
+            shown_key = self.sorted_keys[self.max_items-1][1]
+            self.elements[shown_key].show()
+
+    def empty(self):
+        """ Menu is without items """
+        return self.sorted_keys == []
