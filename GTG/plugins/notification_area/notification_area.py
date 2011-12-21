@@ -147,14 +147,18 @@ class NotificationArea:
                                      self.__on_icon_popup, \
                                      self.__menu)
 
-    def __open_task(self, widget, tid = None):
+    def __open_task(self, widget, task_id = None):
         """
         Opens a task in the TaskEditor, if it's not currently opened.
-        If tid is None, it creates a new task and opens it
+        If task_id is None, it creates a new task and opens it
         """
-        if tid == None:
-            tid = self.__requester.new_task().get_id()
-        self.__view_manager.open_task(tid)
+        if task_id == None:
+            task_id = self.__requester.new_task().get_id()
+            new_task = True
+        else:
+            new_task = False
+
+        self.__view_manager.open_task(task_id, thisisnew=new_task)
 
     def __connect_to_tree(self):
         self.__tree = self.__requester.get_tasks_tree()
