@@ -65,15 +65,17 @@ class NotificationArea:
         self.__browser_handler = None
 
     def activate(self, plugin_api):
+        """ Set up the plugin, set callbacks, etc """
         self.__plugin_api = plugin_api
         self.__view_manager = plugin_api.get_view_manager()
         self.__requester = plugin_api.get_requester()
-        #Tasks_in_menu will hold the menu_items in the menu, to quickly access
-        #them given the task id. Contains tuple of this format: (title, key,
-        # gtk.MenuItem)
+        # Tasks_in_menu will hold the menu_items in the menu, to quickly access
+        # them given the task id. Contains tuple of this format:
+        # (title, key, gtk.MenuItem)
         self.__tasks_in_menu = SortedDict(key_position = 1, sort_position = 0)
         self.__init_gtk()
         self.__connect_to_tree()
+
         #Load the preferences
         self.preference_dialog_init()
         self.preferences_load()
@@ -85,10 +87,12 @@ class NotificationArea:
 
         # Don't quit GTG after closing browser
         self.__set_browser_close_callback(self.__on_browser_minimize)
+
         if self.preferences["start_minimized"]:
             self.__view_manager.start_browser_hidden()
 
     def deactivate(self, plugin_api):
+        """ Set everything back to normal """
         if self.__indicator:
             self.__indicator.set_status(appindicator.STATUS_PASSIVE)
         else:
@@ -103,15 +107,15 @@ class NotificationArea:
 ## Helper methods ##############################################################
 
     def __init_gtk(self):
+        browser = self.__view_manager.get_browser()
+
         self.__menu = gtk.Menu()
         #view in main window checkbox
         view_browser_checkbox = gtk.CheckMenuItem(_("_View Main Window"))
-        view_browser_checkbox.set_active(self.__view_manager.get_browser( \
-                                                            ).is_shown())
+        view_browser_checkbox.set_active(browser.is_shown())
         self.__signal_handler = view_browser_checkbox.connect('activate',
                                                        self.__toggle_browser)
-        self.__view_manager.get_browser().connect('visibility-toggled',
-                                                self.__on_browser_toggled,
+        browser.connect('visibility-toggled', self.__on_browser_toggled,
                                                 view_browser_checkbox)
         self.__menu.append(view_browser_checkbox)
         self.checkbox = view_browser_checkbox
