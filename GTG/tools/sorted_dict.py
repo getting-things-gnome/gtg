@@ -49,6 +49,7 @@ class SortedDict(dict):
         a_tuple = self[key]
         sort_elem = a_tuple[self.__sort_position].lower()
         self.__sorted_list.remove(sort_elem)
+        self.pop(key)
         return a_tuple
 
     def get_index(self, a_tuple):
