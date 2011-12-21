@@ -27,9 +27,6 @@ from GTG                   import _, DATA_DIR
 from GTG.tools.borg        import Borg
 from GTG.tools.sorted_dict import SortedDict
 
-
-#FIXME notification area is closed after closing the last task window
-
 class NotificationArea:
     """
     Plugin that display a notification area widget or an indicator
@@ -81,6 +78,12 @@ class NotificationArea:
         self.preference_dialog_init()
         self.preferences_load()
 
+        # When no windows (browser or text editors) are shown, it tries to quit
+        # With hidden browser and closing the only single text editor, 
+        # GTG would quit no matter what
+        self.__view_manager.set_daemon_mode(True)
+
+        # Don't quit GTG after closing browser
         self.__set_browser_close_callback(self.__on_browser_minimize)
         if self.preferences["start_minimized"]:
             self.__view_manager.start_browser_hidden()
@@ -93,6 +96,9 @@ class NotificationArea:
 
         # Allow to close browser after deactivation
         self.__set_browser_close_callback(None)
+
+        # Allow closing GTG after the last window
+        self.__view_manager.set_daemon_mode(True)
 
 ## Helper methods ##############################################################
 
