@@ -139,11 +139,8 @@ class NotificationArea:
             self.__indicator.set_menu(self.__menu)
             self.__indicator.set_status(appindicator.STATUS_ACTIVE)
         else:
-            print "ELSE?"
-#FIXME TODO there should be not GTG
-            icon = gtk.gdk.pixbuf_new_from_file_at_size(DATA_DIR + \
-                                "/icons/hicolor/16x16/apps/gtg.png", 16, 16)
-            self.status_icon = gtk.status_icon_new_from_pixbuf(icon)
+	    self.status_icon = gtk.StatusIcon()
+	    self.status_icon.set_from_icon_name("gtg")
             self.status_icon.set_tooltip("Getting Things Gnome!")
             self.status_icon.set_visible(True)
             self.status_icon.connect('activate', self.__toggle_browser)
