@@ -35,7 +35,7 @@ class NotificationArea:
     DEFAULT_PREFERENCES = {"start_minimized": False}
     PLUGIN_NAME = "notification_area"
     MAX_TITLE_LEN = 30
-    MAX_ITEMS = 5
+    MAX_ITEMS = 10
 
     class TheIndicator(Borg):
         """
@@ -195,7 +195,7 @@ class NotificationArea:
         #creating the menu item
         menu_item = gtk.MenuItem(title, False)
         menu_item.connect('activate', self.__open_task, tid)
-        self.__tasks_menu.add(tid, title, menu_item)
+        self.__tasks_menu.add(tid, (task.get_due_date(), title), menu_item)
 
         if self.__indicator:
             self.__indicator.set_menu(self.__menu)
