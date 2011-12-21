@@ -48,10 +48,21 @@ class TestSortedDict(unittest.TestCase):
         for item in items:
             self.assertEqual(sd[item[0]], item)
 
-        # Test the position
+        # Test the position (same as weight)
         for item in items:
-            print item
-            self.assertEqual(sd.get_index(item), item[0])
+            self.assertEqual(sd.get_index(item), item[1])
+
+    def test_popping(self):
+        """ Pop items from SortedDict and be sure they are removed """
+        sd = SortedDict(0, 0, *[(i,) for i in range(10)])
+
+        keys = range(10)
+        for k in [0, 9, 1, 4, 2, 3, 7, 5, 8, 6]:
+            keys.remove(k)
+            self.assertEqual(sd.pop_by_key(k), (k,))
+            self.assertEqual(sd.keys(), keys)
+
+        self.assertEqual(sd, {})
 
 def test_suite():
     return unittest.TestLoader().loadTestsFromTestCase(TestSortedDict)
