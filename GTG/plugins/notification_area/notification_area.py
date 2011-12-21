@@ -126,8 +126,8 @@ class NotificationArea:
         self.__menu.append(menuItem)
         self.__menu.show_all()
         #separator (it's intended to be after show_all)
+        # separator should be shown only when having tasks
         self.__task_separator = gtk.SeparatorMenuItem()
-        self.__task_separator.show()
         self.__menu.append(self.__task_separator)
         self.__menu_top_length = len(self.__menu)
 
