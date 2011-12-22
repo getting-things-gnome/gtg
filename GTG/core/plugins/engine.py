@@ -24,6 +24,7 @@ from configobj import ConfigObj
 import dbus
 
 from GTG.tools.borg import Borg
+from GTG.tools.logger import Log
 
 
 class Plugin(object):
@@ -129,8 +130,9 @@ class Plugin(object):
                 # no dependencies in info file; use the ImportError instead
                 self.missing_modules.append(str(e).split(" ")[3])
             self.error = True
-        except Exception:
+        except Exception, e:
             # load_module() failed for some other reason
+            Log.error(e)
             self.error = True
 
     def reload(self, module_path):

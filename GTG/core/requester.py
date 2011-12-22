@@ -124,6 +124,7 @@ class Requester(gobject.GObject):
         task = self.ds.get_task(tid)
         return task
 
+    # FIXME unused parameter newtask (maybe for compatibility?)
     def new_task(self, tags=None, newtask=True):
         """Create a new task.
 

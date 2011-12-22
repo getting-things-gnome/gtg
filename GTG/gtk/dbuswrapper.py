@@ -218,12 +218,13 @@ class DBusTaskWrapper(dbus.service.Object):
 
         This routine returns as soon as the GUI has launched.
         """
-        nt = self.req.new_task(newtask=True)
-        nt.set_title(title)
+        new_task = self.req.new_task(newtask=True)
+        if title != "":
+            new_task.set_title(title)
         if description != "":
-            nt.set_text(description)
-        uid = nt.get_id()
-        self.view_manager.open_task(uid,thisisnew=True)
+            new_task.set_text(description)
+        task_id = new_task.get_id()
+        self.view_manager.open_task(task_id, thisisnew=True)
 
     @dbus.service.method(BUSNAME)
     def HideTaskBrowser(self):

@@ -62,6 +62,10 @@ class Manager(object):
         self.browser = None
         self.__start_browser_hidden = False
         self.gtk_terminate = False #if true, the gtk main is not started
+
+        # if true, closing the last window doesn't quit GTG
+        # (GTG lives somewhere else without GUI, e.g. notification area)
+        self.daemon_mode = False
                                  
         #Shared clipboard
         self.clipboard = clipboard.TaskClipboard(self.req)
@@ -138,6 +142,11 @@ class Manager(object):
     def start_browser_hidden(self):
         self.__start_browser_hidden = True
 
+    def set_daemon_mode(self, in_daemon_mode):
+        """ Used by notification area plugin to override the behavior:
+        last closed window quits GTG """
+        self.daemon_mode = in_daemon_mode
+
 ################# Task Editor ############################################
 
     def get_opened_editors(self):
@@ -147,7 +156,7 @@ class Manager(object):
         '''
         return self.opened_task
 
-    def open_task(self, uid,thisisnew = False):
+    def open_task(self, uid, thisisnew = False):
         """Open the task identified by 'uid'.
 
         If a Task editor is already opened for a given task, we present it.
@@ -188,7 +197,7 @@ class Manager(object):
         '''
         checking if we need to shut down the whole GTG (if no window is open)
         '''
-        if not self.is_browser_visible() and not self.opened_task:
+        if not self.daemon_mode and not self.is_browser_visible() and not self.opened_task:
             #no need to live"
             self.quit()
             
