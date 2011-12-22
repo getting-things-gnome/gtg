@@ -80,6 +80,8 @@ if os.path.isdir(os.path.join(config_home, 'gtg/plugins')):
     PLUGIN_DIR.append(os.path.join(config_home, 'gtg/plugins'))
 
 # FIXME Register GTG URI (temporary, it should be created by a schema upon installing)
+# FIXME Uncomment it or even better - install it properly - it breaks build
+"""
 try:
     import gconf
     domain = "/desktop/gnome/url-handlers/gtg/"
@@ -91,3 +93,4 @@ try:
 except ImportError:
     # Ignore it on systems which do not have GConf
     pass
+    """
