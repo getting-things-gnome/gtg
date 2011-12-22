@@ -108,6 +108,8 @@ class Backend(GenericBackend):
         ####
         self.doc, self.xmlproj = cleanxml.openxmlfile( \
                                 self._parameters["path"], "project")
+        # Make safety daily backup after loading
+        cleanxml.savexml(self._parameters["path"], self.doc, backup=True)
 
     def initialize(self):
         """This is called when a backend is enabled"""
