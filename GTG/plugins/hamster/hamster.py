@@ -72,7 +72,7 @@ class hamsterPlugin:
             intersection = set(categories.keys()).intersection(set([x.lower() for x in gtg_tags]))
             if len(intersection) > 0:
                 category = "%s" % categories[intersection.pop()]
-            else:
+            elif len(gtg_tags) > 0:
                 # Force category if not found
                 category = gtg_tags[0]
 
@@ -92,7 +92,7 @@ class hamsterPlugin:
         except dbus.exceptions.DBusException:
             # old hamster version, doesn't support tags
             pass
-        tag_str = "".join([" #" + x for x in tag_candidates])
+        tag_str = "".join([" ," + x for x in tag_candidates])
             
         #print '%s%s,%s%s'%(activity, category, description, tag_str)
         hamster_id=self.hamster.AddFact(activity, tag_str, 0, 0, category, description)

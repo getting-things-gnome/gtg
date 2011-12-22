@@ -1,5 +1,6 @@
 
 ????-??-?? Getting Things GNOME! ?.?.?
+    * Fixed bugs #897703, #897703, hamster integration, by Richard Klein
     * Fixed url autolinking for http(s) schemes, by Madhumitha Viswanathan
     * Added Mantis Bug Tracker backend, by Alayn Gortazar
     * Added search feature, by João Ascenso
