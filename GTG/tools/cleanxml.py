@@ -22,6 +22,7 @@ import shutil
 import sys
 import time
 import re
+import datetime
 
 from GTG.tools.logger import Log
 
@@ -168,6 +169,10 @@ def savexml(zefile,doc,backup=False):
                 #So that it's not touched in case of bad opening next time
                 current = "%s.bak.0" %(zefile)
                 shutil.copy(zefile,current)
+
+                daily_backup = "%s.%s.bak" % (zefile, datetime.date.today().strftime("%Y-%m-%d"))
+                if not os.path.exists(daily_backup):
+                    shutil.copy(zefile, daily_backup)
             return True
         else:
             print "no file %s or no pretty xml"%zefile
