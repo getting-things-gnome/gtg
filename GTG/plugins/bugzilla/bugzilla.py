@@ -54,14 +54,14 @@ class pluginBugzilla:
         if server is None:
             return
 
-        base = '%s://%s' % (r.scheme, server.name)
-
+        base = '%s://%s' % (r.scheme, server.name)  
+        
         # get the number of the bug
         try:
             nb = r.query.split('id=')[1]
         except IndexError:
             return
-
+        
         try:
             bug = Bug(base, nb)
         except:

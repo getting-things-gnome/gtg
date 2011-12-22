@@ -14,11 +14,21 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from bugz import Bugz
+#this handles old versions of pybugz as well as new ones
+try:
+    from bugz import bugzilla
+except:
+    import bugz as bugzilla
+
+#changed the default action to skip auth
 
 class Bug:
     def __init__(self, base, nb):
-        self.bug = Bugz(base).get(nb)
+        #this also handles old versions of pybugz
+        try:
+            self.bug = bugzilla.Bugz(base, skip_auth=True).get(nb)
+        except:
+            self.bug = bugzilla.Bugz(base).get(nb)
         if self.bug is None:
             raise Exception('Failed to create bug')
 

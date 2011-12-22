@@ -40,6 +40,11 @@ class ServersStore:
         server = Server('bugzilla.samba.org')
         server.tag = SERVER_TAG_COMPONENT
         self.add(server)
+        
+        # GENTOO
+        server = Server('bugs.gentoo.org')
+        server.tag = SERVER_TAG_COMPONENT
+        self.add(server)
 
     def add(self, server):
         self.servers[server.name] = server
