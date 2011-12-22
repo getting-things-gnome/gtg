@@ -1,4 +1,6 @@
+
 ????-??-?? Getting Things GNOME! ?.?.?
+    * Fixed url autolinking for http(s) schemes, by Madhumitha Viswanathan
     * Added Mantis Bug Tracker backend, by Alayn Gortazar
     * Added search feature, by João Ascenso
     * Fixed crash traceback when pressing 'delete' key, by Jeff Oliver

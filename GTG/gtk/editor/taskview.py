@@ -37,11 +37,9 @@ import pango
 
 from GTG.gtk.editor import taskviewserial
 from GTG.tools      import openurl
-
+from GTG.tools      import urlregex
 
 separators = [' ', '.', ',', '/', '\n', '\t', '!', '?', ';', '\0']
-url_separators = [' ', ',', '\n', '\t', '\0']
-
 
 bullet1_ltr = '→'
 bullet1_rtl = '←'
@@ -561,13 +559,17 @@ class TaskView(gtk.TextView):
             prev = it.copy()
             prev.backward_word_start()
             text = buff.get_text(prev,it)
-            if text in ["http","https"]:
-                while it.get_char() not in url_separators and (it.get_char() != '\0') :
-                    it.forward_char()
-                url = buff.get_text(prev,it)
-                if url.startswith("http://") or url.startswith("https://") :
-                    texttag = self.create_anchor_tag(buff,url,text=None,typ="http")
+            
+            if text in ["http","https","www"]:
+                isurl = buff.get_text(prev, buff.get_end_iter())
+                m = urlregex.match(isurl)
+                if m is not None:
+                    url = isurl[:m.end()] 
+                    texttag = self.create_anchor_tag(buff, url, text=None, typ="http")
+                    it = prev.copy()
+                    it.forward_chars(m.end())
                     buff.apply_tag(texttag, prev , it)
+
             elif text in ["bug","lp","bgo","fdo", "bko"] :
                 if it.get_char() == " " :
                     it.forward_char()
@@ -590,7 +592,6 @@ class TaskView(gtk.TextView):
                         texttag = self.create_anchor_tag(buff,\
                                                 topoint,text=None,typ="http")
                         buff.apply_tag(texttag, prev , it)
-                
         
 
     #Detect tags in buff in the region between start iter and end iter
