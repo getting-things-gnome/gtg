@@ -198,7 +198,10 @@ class Tag(TreeNode):
         return self.get_total_tasks_count() > 0
 
     def is_actively_used(self):
-        return  self.is_special() or self.get_active_tasks_count() > 0
+        # FIXME quick hack to alway show views => do we want that?
+        # Use constant for that
+        search = self.has_parent('search')
+        return search or self.is_special() or self.get_active_tasks_count() > 0
 
     def __str__(self):
         return "Tag: %s" % self.get_name()
