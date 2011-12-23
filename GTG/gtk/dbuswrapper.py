@@ -17,7 +17,6 @@
 # You should have received a copy of the GNU General Public License along with
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-import unicodedata
 
 import dbus
 import dbus.glib
@@ -82,6 +81,15 @@ class DBusTaskWrapper(dbus.service.Object):
         dbus.service.Object.__init__(self, bus_name, BUSFACE)
         self.req = req
         self.view_manager = view_manager
+
+        #Start listening for signals from GTG core
+        task_tree = self.req.get_main_view()
+        task_tree.register_cllbck('node-added', lambda tid, _:
+                self.TaskAdded(tid))
+        task_tree.register_cllbck('node-modified', lambda tid, _:
+                self.TaskModified(tid))
+        task_tree.register_cllbck('node-deleted', lambda tid, _:
+                self.TaskDeleted(tid))
 
     @dbus.service.method(BUSNAME)
     def GetTask(self, tid):
@@ -256,3 +264,24 @@ class DBusTaskWrapper(dbus.service.Object):
         unminimized, with or without active focus.
         """
         return self.view_manager.is_browser_visible()
+
+    @dbus.service.signal(BUSNAME)
+    def TaskAdded(self, tid):
+        """
+        Signal: task added
+        """
+        pass
+
+    @dbus.service.signal(BUSNAME)
+    def TaskModified(self, tid):
+        """
+        Signal: task modified
+        """
+        pass
+
+    @dbus.service.signal(BUSNAME)
+    def TaskDeleted(self, tid):
+        """
+        Signal: task deleted
+        """
+        pass
