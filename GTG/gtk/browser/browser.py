@@ -49,6 +49,7 @@ from GTG.tools.dates             import no_date,\
 from GTG.tools.logger            import Log
 from GTG.tools.tags              import extract_tags_from_text
 from GTG.core.search             import Search
+#FIXME Why is this commented?
 #from GTG.tools                   import clipboard
 from GTG.core.tagstore           import Tag
 
@@ -110,8 +111,7 @@ class TaskBrowser(gobject.GObject):
             self.quickadd_changed = self.on_quicksearch_changed
         else:
             self.quickadd_callback = self.on_quickadd_activate
-            # Just ignore
-            self.quickadd_changed = lambda widget: None
+            self.quickadd_changed = self.on_quicksearch_safe_changed
 
         # Setup GTG icon theme
         self._init_icon_theme()
@@ -1773,6 +1773,26 @@ class TaskBrowser(gobject.GObject):
         """
         self.quickadd_entry.set_text(text)
         
+    def on_quicksearch_safe_changed(self, editable):
+        """ Just popup TextEntry completition to manually run search """
+        open = False
+        add = True
+        save = False
+        search = True
+        text = self.getMainEntryText()
+        #if the text is exactly a title of a task, filter for that task only
+        if self.req.task_exist(text, lowercase=True) :
+            #text = ''.join(['#',text,'#'])
+            open = True
+        #create the search
+        self.s = Search(text, self.req, self.searchtree)
+        #build the search
+        self.s.build_search_tokens()
+        if self.s.is_valid():
+            save = True
+        #add the actions for the popup
+        self.addActionsAutocomplete(open, add, save, search)
+
     def on_quicksearch_changed(self, editable):
         """
         controls the input from the main entry
@@ -1801,6 +1821,7 @@ class TaskBrowser(gobject.GObject):
             self._search_ui_widget()
             self.req.set_search_status(True)
             save = True
+            # FIXME what is doing this command?
             self.vtree_panes['search']
         else:
             self.req.set_search_status(False)
@@ -1808,7 +1829,7 @@ class TaskBrowser(gobject.GObject):
             #add the actions for the popup
         self.addActionsAutocomplete(open, add, save)
         
-    def addActionsAutocomplete(self, open, add, save):
+    def addActionsAutocomplete(self, open, add, save, search=False):
         """
         adds an action to autocomplete
         
@@ -1816,6 +1837,7 @@ class TaskBrowser(gobject.GObject):
         
         its necessary to do this because, when clicking an element of the autocomplete list, only the position is returned
         """
+        # FIXME added additional search parameter, it should be removed when performance issue is removed
         actions = 0
         #deletes old actions
         for i in range(len(self.autocompleteActions)):
@@ -1830,6 +1852,10 @@ class TaskBrowser(gobject.GObject):
         if add:
             self.completion.insert_action_markup(actions, self.autoCompleteAdd)
             self.autocompleteActions.append(self.autoCompleteAdd)
+            actions += 1
+        if search:
+            self.completion.insert_action_markup(actions, self.autoCompleteSearch)
+            self.autocompleteActions.append(self.autoCompleteSearch)
             actions += 1
         if save:
             self.completion.insert_action_markup(actions, self.autoCompleteSave)
@@ -1846,6 +1872,7 @@ class TaskBrowser(gobject.GObject):
         #text in pago markup for bold actions
         self.autoCompleteAdd = _("<b>Add Task</b>")
         self.autoCompleteOpen = _("<b>Open Task</b>")
+        self.autoCompleteSearch = _("<b>Search</b>")
         self.autoCompleteSave = _("<b>Save as View</b>")
         self.autocompleteActions = []
         self.doSearch = True
@@ -1896,7 +1923,8 @@ class TaskBrowser(gobject.GObject):
         #backsapce example
         if event.keyval == 65288:
             self.doSearch = True
-            self.on_quicksearch_changed(None)
+            # NOTE: this was changed to general callback (for instant search or for not)
+            self.quickadd_changed(None)
     
     def on_quicksearch_iconpress(self, widget, icon, event):
         """
@@ -1934,17 +1962,49 @@ class TaskBrowser(gobject.GObject):
         """
         deals when an action is selected on entryCompletion
         """
+        # NOTE: clear variable was added so search query is not erased every time
+        clear = True
         #add a task
         if self.autocompleteActions[index] is self.autoCompleteAdd:
             self.on_quickadd_activate(None)
         #open a task
         elif self.autocompleteActions[index] is self.autoCompleteOpen:
-            self.vmanager.open_task(self.req.get_task_id(self.getMainEntryText()))
+            # NOTE: Another piece of code to make search work without performance issue
+            # this allows to open task also without search pane to be active
+            if USE_QUICK_ADD_AS_A_SEARCH:
+                tree = 'search'
+            else:
+                tree = 'active'
+            self.vmanager.open_task(self.req.get_task_id(self.getMainEntryText(), tree=tree))
         #save a search as a view
         elif self.autocompleteActions[index] is self.autoCompleteSave:
             self.createView()
+        elif self.autocompleteActions[index] is self.autoCompleteSearch:
+            text = self.getMainEntryText()
+            #create the search
+            self.s = Search(text, self.req, self.searchtree)
+            #build the search
+            self.s.build_search_tokens()
+            if self.s.is_empty():
+                self.req.set_search_status(False)
+                self._active_ui_widget()
+            #if its a valid search
+            elif self.s.is_valid():
+                self.s.apply_search()
+                self._search_ui_widget()
+                self.req.set_search_status(True)
+                save = True
+                # FIXME what is doing this command?
+                self.vtree_panes['search']
+            else:
+                self.req.set_search_status(False)
+                self._active_ui_widget()
+            #add the actions for the popup
+            clear = False
+
         #clear the entry
-        self.setMainEntryText('')
+        if clear:
+            self.setMainEntryText('')
         
     def createView(self):
         """
