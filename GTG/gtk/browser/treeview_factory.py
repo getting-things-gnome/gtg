@@ -221,8 +221,12 @@ class TreeviewFactory():
             return label
         
     def get_tag_count(self,node):
-        toreturn = node.get_active_tasks_count()
-        return "<span color='%s'>%s</span>" %(self.unactive_color,toreturn)
+# FIXME: is this good idea?
+        if node.get_id() == 'search':
+            return ""
+        else:
+            toreturn = node.get_active_tasks_count()
+            return "<span color='%s'>%s</span>" %(self.unactive_color,toreturn)
         
     def is_tag_separator_filter(self,tag):
         return tag.get_attribute('special') == 'sep'
