@@ -17,6 +17,7 @@
 # this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 
+# FIXME: Why is there two times the same constant with the same value? Compare with core/tagstore.py
 TAG_XMLFILE = "tags.xml"
 TAG_XMLROOT = "tagstore"
 
