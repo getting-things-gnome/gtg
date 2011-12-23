@@ -234,7 +234,7 @@ class TaskBrowser(gobject.GObject):
             self.main_pane.add(self.vtree_panes['search'])
             # Active tasks TreeView
             self.vtree_panes['search'].connect('row-activated',\
-                self.on_edit_active_task)
+                self.on_edit_search_task)
             self.vtree_panes['search'].connect('button-press-event',\
                 self.on_task_treeview_button_press_event)
             self.vtree_panes['search'].connect('key-press-event',\
@@ -1151,6 +1151,11 @@ class TaskBrowser(gobject.GObject):
         tid = self.get_selected_task()
         if tid:
             self.vmanager.open_task(tid)
+    
+    def on_edit_search_task(self, widget, row=None, col=None):
+        tid = self.get_selected_task('search')
+        if tid:
+            self.vmanager.open_task(tid)
 
     def on_edit_done_task(self, widget, row=None, col=None):
         tid = self.get_selected_task('closed')
@@ -1492,7 +1497,7 @@ class TaskBrowser(gobject.GObject):
         """
         ids = self.get_selected_tasks(tv)
         if len(ids) > 0:
-            #fixme : we should also unselect all the others
+            #FIXME : we should also unselect all the others
             return ids[0]
         else:
             return None
