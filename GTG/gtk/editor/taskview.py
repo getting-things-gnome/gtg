@@ -560,7 +560,7 @@ class TaskView(gtk.TextView):
             prev.backward_word_start()
             text = buff.get_text(prev,it)
             
-            if text in ["http","https","www"]:
+            if text in ["http", "https", "www", "file"]:
                 isurl = buff.get_text(prev, buff.get_end_iter())
                 m = urlregex.match(isurl)
                 if m is not None:
@@ -570,7 +570,7 @@ class TaskView(gtk.TextView):
                     it.forward_chars(m.end())
                     buff.apply_tag(texttag, prev , it)
 
-            elif text in ["bug","lp","bgo","fdo", "bko"] :
+            elif text in ["bug", "lp", "bgo", "fdo", "bko"] :
                 if it.get_char() == " " :
                     it.forward_char()
                 if it.get_char() == "#" :
