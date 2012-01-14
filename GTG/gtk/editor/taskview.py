@@ -565,6 +565,9 @@ class TaskView(gtk.TextView):
                 m = urlregex.match(isurl)
                 if m is not None:
                     url = isurl[:m.end()] 
+                    # For short URL we must add http:// prefix
+                    if text == "www":
+                        url = "http://" + url
                     texttag = self.create_anchor_tag(buff, url, text=None, typ="http")
                     it = prev.copy()
                     it.forward_chars(m.end())
