@@ -34,6 +34,7 @@ import gtk
 from gtk import gdk
 import gobject
 import pango
+import os
 
 from GTG.gtk.editor import taskviewserial
 from GTG.tools      import openurl
@@ -52,6 +53,8 @@ class TaskView(gtk.TextView):
     __gproperties__ = {
         'link': (gobject.TYPE_PYOBJECT, 'link color',\
                   'link color of TextView', gobject.PARAM_READWRITE),
+        'failedlink': (gobject.TYPE_PYOBJECT, 'failed link color',\
+                  'failed link color of TextView', gobject.PARAM_READWRITE),
         'active': (gobject.TYPE_PYOBJECT, 'active color', \
                   'active color of TextView', gobject.PARAM_READWRITE),
         'hover': (gobject.TYPE_PYOBJECT, 'link:hover color', \
@@ -84,6 +87,9 @@ class TaskView(gtk.TextView):
         #Buffer init
         self.link = {'background': 'white', 'foreground': '#007bff', \
                       'underline': pango.UNDERLINE_SINGLE, \
+                      'strikethrough': False}
+        self.failedlink = {'background': 'white', 'foreground': '#ff5454', \
+                      'underline': pango.UNDERLINE_NONE, \
                       'strikethrough': False}
         self.done   = {'background': 'white', 'foreground': 'gray',\
                                     'strikethrough': True}
@@ -275,6 +281,18 @@ class TaskView(gtk.TextView):
         tag = self.create_anchor_tag(b,anchor,text,typ=typ)
         b.insert_with_tags(_iter, text, tag)
 
+    def check_link(self, url):
+        """ Check if the link is correct
+
+        file:// link can lead to uncorrect file, it should be disabled
+        """
+        if url.startswith('file://'):
+            filepath = url[len('file://'):]
+            return os.path.exists(filepath)
+        else:
+            return True
+
+
     def create_anchor_tag(self,b,anchor,text=None,typ=None):
         #We cannot have two tags with the same name
         #That's why the link tag has no name
@@ -288,6 +306,10 @@ class TaskView(gtk.TextView):
                 linktype = 'link'
             else :
                 linktype = 'done'
+
+        if linktype == 'link' and not self.check_link(anchor):
+            linktype = 'failedlink'
+
         tag = b.create_tag(None, **self.get_property(linktype)) #pylint: disable-msg=W0142
         tag.set_data('is_anchor', True)
         tag.set_data('link',anchor)
@@ -1202,7 +1224,7 @@ class TaskView(gtk.TextView):
                 if(anchor):
                     if typ == "subtask" :
                         self.open_task(anchor)
-                    elif typ == "http" :
+                    elif typ == "http" and self.check_link(anchor):
                         openurl.openurl(anchor)
 
             return True
@@ -1280,7 +1302,7 @@ class TaskView(gtk.TextView):
                 if typ == "subtask" :
                     self.open_task(anchor)
                 elif typ == "http":
-                    if button == 1:
+                    if button == 1 and self.check_link(anchor):
                         openurl.openurl(anchor)
                 else :
                     print "Unknown link type for %s" %anchor
@@ -1295,8 +1317,12 @@ class TaskView(gtk.TextView):
             editing_cursor = gtk.gdk.Cursor(gtk.gdk.XTERM)
             if tag.get_property('strikethrough') : 
                 linktype = 'done'
-            else : 
-                linktype = 'link'
+            else: 
+                anchor = tag.get_data('link')
+                if self.check_link(anchor):
+                    linktype = 'link'
+                else:
+                    linktype = 'failedlink'
             self.__set_anchor(window, tag, editing_cursor, self.get_property(linktype))
 
     def __set_anchor(self, window, tag, cursor, prop):
