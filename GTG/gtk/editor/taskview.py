@@ -131,6 +131,8 @@ class TaskView(gtk.TextView):
         self.connect('cut-clipboard', self.copy_clipboard,"cut")
         self.connect('paste-clipboard', self.paste_clipboard)
 
+        self.connect('drag-data-received', self.drag_receive)
+
         #All the typical properties of our textview
         self.set_wrap_mode(gtk.WRAP_WORD)
         self.set_editable(True)
@@ -167,6 +169,15 @@ class TaskView(gtk.TextView):
         else:
             self.bullet1 = bullet1_ltr
         self.editable = False
+
+    def drag_receive(self, widget, context, x, y, selection, datatype, etime):
+        """ After drag and drop just insert it and refresh the editor
+        
+        Example usage: drag and drop of file links """
+        self.buff.insert_at_cursor(selection.data)
+        self.modified(full=True)
+        self.stop_emission('drag-data-received')
+
 
     #editable means that the user can edit the taskview
     #this is initially set at False and then to True once the editor window
