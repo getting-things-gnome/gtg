@@ -159,7 +159,7 @@ class DataStore(object):
                 self.added_tag.pop(vname)
                 Log.debug("********* view added %s *******" % vname)
             else:
-                print "Warning: Trying to add tag %s multiple times" %vname
+                print "Warning: Trying to add view %s multiple times" %vname
         #we create a new view from a name
         vname = viewname.encode("UTF-8")
         #if vname not in self.tags:
