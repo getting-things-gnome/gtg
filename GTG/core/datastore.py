@@ -30,7 +30,6 @@ Contains the Datastore object, which is the manager of all the active backends
 """
 
 import threading
-import gobject
 import uuid
 import os.path
 from collections import deque
@@ -160,7 +159,7 @@ class DataStore(object):
                 self.added_tag.pop(vname)
                 Log.debug("********* view added %s *******" % vname)
             else:
-                print "Warning: Trying to add tag %s multiple times" %tname
+                print "Warning: Trying to add view %s multiple times" %vname
         #we create a new view from a name
         vname = viewname.encode("UTF-8")
         #if vname not in self.tags:
@@ -175,8 +174,8 @@ class DataStore(object):
                 #puts for save on exit
                 self.add_view_control(vname, params)
             else:
-                #it means that we are in the process of adding the tag
-                tag = self.added_tag[tname]
+                #it means that we are in the process of adding the view
+                tag = self.added_tag[vname]
         else:
             raise IndexError('view %s was already in the datastore' %vname)
         return tag
