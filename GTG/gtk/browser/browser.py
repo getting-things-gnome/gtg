@@ -1637,6 +1637,7 @@ class TaskBrowser(gobject.GObject):
         """ Unhides the TaskBrowser """
         self.browser_shown = True
         self.window.present()
+        self.quickadd_entry.grab_focus()
         #redraws the GDK window, bringing it to front
         self.window.show()
         gobject.idle_add(self.emit, "visibility-toggled")
