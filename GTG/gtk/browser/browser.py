@@ -1639,7 +1639,7 @@ class TaskBrowser(gobject.GObject):
         #redraws the GDK window, bringing it to front
         self.window.show()
         self.window.present()
-        self.window.focus()
+        self.window.grab_focus()
         self.quickadd_entry.grab_focus()
         gobject.idle_add(self.emit, "visibility-toggled")
 
