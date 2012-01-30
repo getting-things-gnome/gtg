@@ -210,12 +210,6 @@ class Task(TreeNode):
                 for c in self.get_subtasks():
                     if c.get_status() in [self.STA_ACTIVE]:
                         c.set_status(status, donedate=donedate)
-                #to the specified date (if any)
-                if donedate:
-                    self.closed_date = donedate
-                #or to today
-                else:
-                    self.closed_date = date_today()
             #If we mark a task as Active and that some parent are not
             #Active, we break the parent/child relation
             #It has no sense to have an active subtask of a done parent.
@@ -233,9 +227,19 @@ class Task(TreeNode):
                             par.set_status(self.STA_ACTIVE)
                 #We dont mark the children as Active because
                 #They might be already completed after all
-            #then the task itself
+
+        #then the task itself
         if status:
             self.status = status
+
+        # Set closing date
+        if status and status in [self.STA_DONE, self.STA_DISMISSED]:
+            #to the specified date (if any)
+            if donedate:
+                self.closed_date = donedate
+            #or to today
+            else:
+                self.closed_date = date_today()
         self.sync()
 
     def get_status(self):
