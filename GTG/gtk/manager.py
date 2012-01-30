@@ -177,6 +177,10 @@ class Manager(object):
                 clipboard = self.clipboard)
             #registering as opened
             self.opened_task[uid] = tv
+            # save that we opened this task
+            if uid not in self.config["browser"]["opened_tasks"]:
+                self.config["browser"]["opened_tasks"].append(uid)
+                self.config.write()
         return tv
 
     def close_task(self, tid):
@@ -191,6 +195,9 @@ class Manager(object):
                 #else, it close_task would be called once again 
                 #by editor.close
                 editor.close()
+            if tid in self.config["browser"]["opened_tasks"]:
+                self.config["browser"]["opened_tasks"].remove(tid)
+                self.config.write()
         self.check_quit_condition()
 
     def check_quit_condition(self):

@@ -117,6 +117,8 @@ class SubConfig():
 
     def set(self, name, value):
         self.__conf[name] = str(value)
+        # Save immediately
+        self.__conf.parent.write()
 
 
 class CoreConfig(Borg):
