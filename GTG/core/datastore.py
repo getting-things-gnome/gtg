@@ -310,6 +310,10 @@ class DataStore(object):
                         t_xml.setAttribute("name", tagname)
                         already_saved.append(tagname)
                         for a in attr:
+                            # Don't save labels => they are generated all the time
+                            if CoreConfig.SEARCH_TAG in t.get_parents() and a == 'label':
+                                continue
+
                             value = t.get_attribute(a)
                             if value:
                                 t_xml.setAttribute(a, value)
