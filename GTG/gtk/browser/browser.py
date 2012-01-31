@@ -1348,15 +1348,20 @@ class TaskBrowser(gobject.GObject):
         search and its views need to be handled diferent, as they use a diferent treeView
         """
 
+        # FIXME support just for the first selected tag? WTF? Is this because of search?
         self.tv_factory.disable_update_tags()
         #When you click on a tag, you want to unselect the tasks
         taglist = self.get_selected_tags()
-        views = self.req.get_view_dic()
-        #check if its a view click
-        if taglist[0] in views:
-            view = True
-        else:
-            view = False
+        # FIXME really ugly code => refractoring
+        # this code was removed because of removing get_view_dic()
+        #views = self.req.get_view_dic()
+        ##check if its a view click
+        #if taglist[0] in views:
+            ##view = True
+        #else:
+            #view = False
+        tag0 = self.tagtree.get_node(taglist[0])
+        view = CoreConfig.SEARCH_TAG in tag0.get_parents()
         #We apply filters for every visible ViewTree
         for pane in self.vtree_panes:
             #1st we reset the tags filter
@@ -1365,7 +1370,10 @@ class TaskBrowser(gobject.GObject):
                 vtree = self.req.get_search_tree(refresh=False)
                 vtree.reset_filters(refresh=False,transparent_only=False)
                 if view:
-                    vtree.apply_filter(taglist[0], views[taglist[0]], refresh=True)
+                    # FIXME another ugly hack because of removing view_params
+                    params = tag0.get_attribute('params')
+                    #vtree.apply_filter(taglist[0], views[taglist[0]], refresh=True)
+                    vtree.apply_filter(taglist[0], params, refresh=True)
                 else:
                     if self.s.is_empty():
                         vtree.apply_filter('search', None, refresh=True)
@@ -1548,7 +1556,9 @@ class TaskBrowser(gobject.GObject):
         if self.tagtreeview:
             view = self.tagtreeview.get_selected_nodes()
             if len(view)>0:
-                if view[0] in self.req.get_view_names():
+                # FIXME another ugly hack to remove view_paramas
+                vnode = self.tagtree.get_node(view[0])
+                if CoreConfig.SEARCH_TAG in vnode.get_parents():
                     return view[0]
         return None
     
@@ -2037,7 +2047,7 @@ class TaskBrowser(gobject.GObject):
                 text = 'view'
             #save on the tree
             try:
-                self.req.new_view(text, self.s.get_params())
+                self.req.new_view(text, self.s.get_query())
             except IndexError:
                 #case it has that view already, tags count has views
                 #gives another name case the view exists

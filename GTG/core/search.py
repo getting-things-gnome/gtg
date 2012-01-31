@@ -20,7 +20,6 @@
 import re
 
 import GTG
-from GTG.core.datastore import DataStore
 from GTG                import _, info, ngettext
 from GTG.core.task               import Task
 '''
@@ -118,6 +117,10 @@ class Search:
         self.paramsToFilter = {}
         #get all tags
         self.alltags = self.req.get_all_tags()
+
+    def get_query(self):
+        """ Returns original query """
+        return self.text
         
 ##################################private#####################################
 

@@ -246,6 +246,7 @@ class Requester(gobject.GObject):
         """
         return self.ds.new_tag(tagname)
     
+#FIXME => rename
     def new_view(self, viewname, params):
         """
         Similar to the above
@@ -288,18 +289,6 @@ class Requester(gobject.GObject):
         """
         return self.ds.get_tagstore().get_main_view().get_all_nodes()
     
-    def get_view_names(self):
-        """
-        returns the names of all views
-        """
-        return self.ds.get_view_control_names()
-    
-    def get_view_dic(self):
-        """
-        returns the dic of all views and params
-        """
-        return self.ds.get_view_dic()
-
     ############## Backends #######################
     ###############################################
 
