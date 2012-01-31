@@ -1371,6 +1371,8 @@ class TaskBrowser(gobject.GObject):
                 vtree.reset_filters(refresh=False,transparent_only=False)
                 if view:
                     # FIXME another ugly hack because of removing view_params
+# FIXME FIXME FIXME => I actually do not store anything in params and I should not need it (because we are selecting a view which is already stored and does not need any parameters)
+# maybe it be better to set it params = None... Think about it!
                     params = tag0.get_attribute('params')
                     #vtree.apply_filter(taglist[0], views[taglist[0]], refresh=True)
                     vtree.apply_filter(taglist[0], params, refresh=True)

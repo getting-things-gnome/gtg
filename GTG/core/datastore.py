@@ -67,7 +67,6 @@ class DataStore(object):
         self.requester = requester.Requester(self, global_conf)
         self.tagfile = None
         self.__tagstore = self.treefactory.get_tags_tree(self.requester)
-        self.view_params = {}
         self.added_tag = {}
         self.load_tag_tree()
         self._backend_signals = BackendSignals()
@@ -215,14 +214,11 @@ class DataStore(object):
         """
         Loads the tag tree from a xml file
         """
-        def convert_to_boolean(value):
-            return value == 'True'
-
         # Loading tags
         tagfile = os.path.join(CoreConfig().get_data_dir(), TAG_XMLFILE)
         doc, xmlstore = cleanxml.openxmlfile(tagfile, TAG_XMLROOT)
         for t in xmlstore.childNodes:
-            #We should only care about tag with a name beginning with "@", search tags and views
+            #We should only care about tag with a name beginning with "@" and search tags
             #Other are special tags
             tagname = t.getAttribute("name")
             #parent dictates what the element is
