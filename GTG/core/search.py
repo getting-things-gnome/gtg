@@ -82,11 +82,7 @@ class Search:
     lateKeywordsTranslation = _("")
     
     #character notations for different restrictions
-    taskNotation = '#'
-    tagNotation = '@'
     commandNotation = '!'
-    literalNotation = '"'
-    
     
     def __init__(self, text, requester, tree):
         '''
