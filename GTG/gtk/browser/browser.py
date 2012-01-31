@@ -1358,10 +1358,10 @@ class TaskBrowser(gobject.GObject):
         else:
             view = False
         #We apply filters for every visible ViewTree
-        for t in self.vtree_panes:
+        for pane in self.vtree_panes:
             #1st we reset the tags filter
             #search is a diferent view, so it should be combined
-            if t == 'search':
+            if pane == 'search':
                 vtree = self.req.get_search_tree(refresh=False)
                 vtree.reset_filters(refresh=False,transparent_only=False)
                 if view:
@@ -1373,15 +1373,15 @@ class TaskBrowser(gobject.GObject):
                         vtree.apply_filter('search', self.s.get_params(), refresh=True)
             #active tree_pane
             else:
-                vtree = self.req.get_tasks_tree(name=t,refresh=False)
+                vtree = self.req.get_tasks_tree(name=pane,refresh=False)
                 vtree.reset_filters(refresh=False,transparent_only=True)
                 #then applying the tag
                 if len(taglist) > 0:
                     #FIXME : support for multiple tags selection
-                    if taglist[0] != 'search' and not view:
+                    if taglist[0] != CoreConfig.SEARCH_TAG and not view:
                         vtree.apply_filter(taglist[0],refresh=True)
         
-        if 'search' in taglist:
+        if CoreConfig.SEARCH_TAG in taglist:
             self._search_ui_widget()
         elif view:
             self._search_ui_widget()
@@ -2033,7 +2033,7 @@ class TaskBrowser(gobject.GObject):
         if response == gtk.RESPONSE_OK:
             text = entry.get_text()
             #search is a reserved word for the main search filter
-            if text == '' or text == 'search':
+            if text == '' or text == CoreConfig.SEARCH_TAG:
                 text = 'view'
             #save on the tree
             try:

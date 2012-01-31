@@ -151,10 +151,9 @@ class DataStore(object):
         """Create a new view and return it or return the existing one
         with corresponding name"""
         def adding_view(vname,tag, params):
-            #if not self.__tagstore.get_node('search').has_node(tname):
             if not self.__tagstore.has_node(vname):
                 self.__tasks.add_filter(vname,self.treefactory.search,parameters=params)
-                self.__tagstore.add_node(tag,'search')
+                self.__tagstore.add_node(tag, CoreConfig.SEARCH_TAG)
                 tag.set_save_callback(self.save)
                 self.added_tag.pop(vname)
                 Log.debug("********* view added %s *******" % vname)
@@ -220,7 +219,7 @@ class DataStore(object):
             #parent dictates what the element is
             parent = t.getAttribute('parent')
             #a search is linear. by the time it finds a search all the params are extracted
-            if parent == 'search':
+            if parent == CoreConfig.SEARCH_TAG:
                 self.new_view(tagname, self.view_params[tagname])
             #if the xml finds a view
             elif parent == 'view':
