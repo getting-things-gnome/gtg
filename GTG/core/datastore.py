@@ -227,6 +227,7 @@ class DataStore(object):
             if parent == CoreConfig.SEARCH_TAG:
                 self.new_view(tagname, t.getAttribute('query'))
             else:
+                # FIXME write this in more python fashioned way
                 tag = self.new_tag(tagname)
                 attr = t.attributes
                 i = 0
