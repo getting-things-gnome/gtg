@@ -194,14 +194,14 @@ class Tag(TreeNode):
     def is_special(self):
         return bool(self.get_attribute('special'))
 
+    def is_search_tag(self):
+        return CoreConfig.SEARCH_TAG in self.get_parents()
+
     def is_used(self):
         return self.get_total_tasks_count() > 0
 
     def is_actively_used(self):
-        # FIXME quick hack to alway show views => do we want that?
-        # Use constant for that
-        search = self.has_parent(CoreConfig.SEARCH_TAG)
-        return search or self.is_special() or self.get_active_tasks_count() > 0
+        return self.is_search_tag() or self.is_special() or self.get_active_tasks_count() > 0
 
     def __str__(self):
         return "Tag: %s" % self.get_name()

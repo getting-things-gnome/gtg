@@ -1361,7 +1361,7 @@ class TaskBrowser(gobject.GObject):
         #else:
             #view = False
         tag0 = self.tagtree.get_node(taglist[0])
-        view = CoreConfig.SEARCH_TAG in tag0.get_parents()
+        view = tag0.is_search_tag()
         #We apply filters for every visible ViewTree
         for pane in self.vtree_panes:
             #1st we reset the tags filter
@@ -1560,7 +1560,7 @@ class TaskBrowser(gobject.GObject):
             if len(view)>0:
                 # FIXME another ugly hack to remove view_paramas
                 vnode = self.tagtree.get_node(view[0])
-                if CoreConfig.SEARCH_TAG in vnode.get_parents():
+                if vnode.is_search_tag():
                     return view[0]
         return None
     
