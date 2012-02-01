@@ -139,7 +139,7 @@ class DataStore(object):
         return tag
 
 #FIXME rename to new_search_tag
-    def new_view(self, name, query):
+    def new_search_tag(self, name, query):
         """ Create a new search tag """
         try:
             parameters = parse_query(query)
@@ -159,16 +159,10 @@ class DataStore(object):
         Log.debug("*** view added %s ***" % name)
         return tag
     
-# FIXME maybe not needed anymore because we don't have any view_params
-    def remove_view(self,viewname):
-        """
-        Removes a tag from the tagtree
-        Should only be used to remove views
-        """
+    def remove_tag(self, name):
+        """ Removes a tag from the tagtree """
         if self.__tagstore.has_node(viewname):
             self.__tagstore.del_node(viewname)
-# FIXME this is no longer needed because we don't have view_params anymore!
-            #self.del_view_control(viewname)
         else:
             raise IndexError("No view to by named %s" % viewname)
 
@@ -202,7 +196,7 @@ class DataStore(object):
             parent = t.getAttribute('parent')
             #a search is linear. by the time it finds a search all the params are extracted
             if parent == CoreConfig.SEARCH_TAG:
-                self.new_view(tagname, t.getAttribute('query'))
+                self.new_search_tag(tagname, t.getAttribute('query'))
             else:
                 # FIXME write this in more python fashioned way
                 tag = self.new_tag(tagname)

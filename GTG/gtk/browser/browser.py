@@ -1639,8 +1639,7 @@ class TaskBrowser(gobject.GObject):
         """ delete a selected search """
         search = self.get_selected_search()
         if search:
-            #FIXME rename => remove_view
-            self.req.remove_view(search)
+            self.req.remove_tag(search)
 
     def _init_search_completion(self):
         """ Initialize search completion """
@@ -1731,7 +1730,7 @@ class TaskBrowser(gobject.GObject):
             name, number = query, 1
             while True:
                 try:
-                    self.req.new_view(name, query)
+                    self.req.new_search_tag(name, query)
                     break
                 except IndexError:
                     # this name is used, adding number

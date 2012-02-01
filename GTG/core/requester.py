@@ -227,24 +227,21 @@ class Requester(gobject.GObject):
         """
         return self.ds.new_tag(tagname)
     
-#FIXME => rename
-    def new_view(self, viewname, params):
+    def new_search_tag(self, name, query):
         """
-        Similar to the above
-        Create a new view with the given name.
+        Create a new search tag from search query
+
         Note: this modifies the datastore.
         
-        @param viename: The name of the new view.
-        @param param:   parameters of the search to save
-        @return:        The newly-created view.
+        @param name:  name of the new search tag
+        @param query: Query will be parsed using search parser
+        @return:      new tag
         """
-        return self.ds.new_view(viewname, params)
+        return self.ds.new_search_tag(viewname, params)
     
-    def remove_view(self, viewname):
-        """
-        calls datastore to remove the given view
-        """
-        self.ds.remove_view(viewname)
+    def remove_tag(self, name):
+        """ calls datastore to remove a given tag """
+        self.ds.remove_tag(name)
     
     def rename_tag(self, oldname, newname):
         self.ds.rename_tag(oldname, newname)
