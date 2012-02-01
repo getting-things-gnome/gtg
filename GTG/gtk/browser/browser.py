@@ -48,7 +48,8 @@ from GTG.tools.dates             import no_date,\
                                         get_canonical_date
 from GTG.tools.logger            import Log
 from GTG.tools.tags              import extract_tags_from_text
-from GTG.core.search             import Search
+#FIXME
+from GTG.core.search             import parse_query, InvalidQuery
 #FIXME Why is this commented?
 #from GTG.tools                   import clipboard
 from GTG.core.tagstore           import Tag
@@ -134,9 +135,9 @@ class TaskBrowser(gobject.GObject):
         self._init_accelerators()
         
 #FIXME
-        self.s = Search('', self.req)
         #sets the autocomplete for the entry
         self.set_autoComplete()
+
         # Rember values from last time
         self.last_added_tags = "NewTag"
         self.last_apply_tags_to_subtasks = False
@@ -1745,7 +1746,9 @@ class TaskBrowser(gobject.GObject):
         # FIXME FIXME FIXME
         self.autoCompleteliststore = gtk.ListStore(str)
         tags = self.req.get_all_tags()
-        commands = self.s.get_commands()
+        #FIXME
+        #commands = self.s.get_commands()
+        commands = ['!refractor']
         for s in tags:
             #removes special tags
             if not s.startswith("@") :
@@ -1790,6 +1793,7 @@ class TaskBrowser(gobject.GObject):
         elif self.autocompleteActions[index] is self.autoCompleteSearch:
             text = self.getMainEntryText()
             #create the search
+            '''
             self.s = Search(text, self.req)
             #build the search
             self.s.build_search_tokens()
@@ -1804,6 +1808,12 @@ class TaskBrowser(gobject.GObject):
             else:
                 self.req.set_search_status(False)
                 self._active_ui_widget()
+                '''
+            try:
+                parse_query(text)
+                save = True
+            except InvalidQuery:
+                save = False
             #add the actions for the popup
             clear = False
 
@@ -1837,7 +1847,8 @@ class TaskBrowser(gobject.GObject):
                 text = 'view'
             #save on the tree
             try:
-                self.req.new_view(text, self.s.get_query())
+                print "FIXME missing there original query!"
+                self.req.new_view(text, "FIXME")
             except IndexError:
                 #case it has that view already, tags count has views
                 #gives another name case the view exists
@@ -1845,7 +1856,8 @@ class TaskBrowser(gobject.GObject):
                 while (1):
                     try:
                         #try to create the view, also puts it to save on gtg exit
-                        self.req.new_view(''.join(text + str(numeral)), self.s.get_params())
+                        self.req.new_view(''.join(text + str(numeral)), "FIXME")
+#FIXME wrong code there, it was not updated before
                     except IndexError:
                         numeral += 1
                         continue

@@ -45,7 +45,7 @@ from GTG.tools                   import cleanxml
 from GTG.backends.backendsignals import BackendSignals
 from GTG.tools.synchronized      import synchronized
 from GTG.tools.borg              import Borg
-from GTG.core.search             import Search
+from GTG.core.search             import parse_query, InvalidQuery
 
 
 class DataStore(object):
@@ -166,9 +166,14 @@ class DataStore(object):
                 print "Warning: Trying to add view %s multiple times" %vname
 
         # FIXME make it better looking
-        s = Search(query, self.get_requester())
-        s.build_search_tokens()
-        params = s.get_params()
+        #s = Search(query, self.get_requester())
+        #s.build_search_tokens()
+        #params = s.get_params()
+        try:
+            params = parse_query(query)
+        except InvalidQuery, e:
+            print "Problem with parsing query '%s' (skipping): %s" % (query, e.message)
+            return
 
         # We need to be transparent in the same way as tags!
 # FIXME make it look better
