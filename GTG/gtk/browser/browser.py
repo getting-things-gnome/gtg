@@ -97,6 +97,7 @@ class TaskBrowser(gobject.GObject):
         self.activetree = self.req.get_tasks_tree(name='active',refresh=False)
         self.vtree_panes['active'] = \
                 self.tv_factory.active_tasks_treeview(self.activetree)
+        # FIXME
         self.searchtree = self.req.get_search_tree(refresh=False)
         self.vtree_panes['search'] = \
                 self.tv_factory.active_tasks_treeview(self.searchtree)
@@ -149,6 +150,7 @@ class TaskBrowser(gobject.GObject):
         self._init_accelerators()
         
         #boolean to control with view is on
+        # fixme
         self.mainIsSearch = False
         self.s = Search('', self.req, self.req.get_search_tree())
         #self.search_tree.reset_filters()
@@ -225,10 +227,13 @@ class TaskBrowser(gobject.GObject):
         # The Active tasks treeview
         self.main_pane.add(self.vtree_panes['active'])
         
+# FIXME
     def _search_ui_widget(self, view=False):
         """
         changes the main pane to the search tree view
         """
+        print "_search_ui_widget does not work anymore"
+        return
         if not self.mainIsSearch:
             self.main_pane.remove(self.vtree_panes['active'])
             self.main_pane.add(self.vtree_panes['search'])
@@ -249,6 +254,8 @@ class TaskBrowser(gobject.GObject):
         """
         changes the main pane to the active tree view
         """
+        print "_active_ui_widget does not work anymore"
+        return
         if self.mainIsSearch:
             self.main_pane.remove(self.vtree_panes['search'])
             self.main_pane.add(self.vtree_panes['active'])
@@ -1348,6 +1355,9 @@ class TaskBrowser(gobject.GObject):
         search and its views need to be handled diferent, as they use a diferent treeView
         """
 
+        # FIXME FIXME right now we made it that every pane has the same content!!!!!
+
+
         # FIXME support just for the first selected tag? WTF? Is this because of search?
         self.tv_factory.disable_update_tags()
         #When you click on a tag, you want to unselect the tasks
@@ -1363,9 +1373,11 @@ class TaskBrowser(gobject.GObject):
         tag0 = self.tagtree.get_node(taglist[0])
         view = tag0.is_search_tag()
         #We apply filters for every visible ViewTree
+        #FIXME this code smells pretty badly!
         for pane in self.vtree_panes:
             #1st we reset the tags filter
             #search is a diferent view, so it should be combined
+            '''
             if pane == 'search':
                 vtree = self.req.get_search_tree(refresh=False)
                 vtree.reset_filters(refresh=False,transparent_only=False)
@@ -1378,25 +1390,39 @@ class TaskBrowser(gobject.GObject):
                     vtree.apply_filter(taglist[0], params, refresh=True)
                 else:
                     if self.s.is_empty():
+#search there means search filter => maybe rename it? FIXME
                         vtree.apply_filter('search', None, refresh=True)
                     else:
                         vtree.apply_filter('search', self.s.get_params(), refresh=True)
+                        '''
             #active tree_pane
+# FIXME refractoring
+            if False:
+                pass
             else:
-                vtree = self.req.get_tasks_tree(name=pane,refresh=False)
-                vtree.reset_filters(refresh=False,transparent_only=True)
+#FIXME WTF? Why we need to take every time tasks tree? We should have just one task tree!
+                vtree = self.req.get_tasks_tree(name=pane, refresh=False)
+                #vtree.reset_filters(refresh=False, transparent_only=True)
+#FIXME I had to change transparent_only into False... why? FIXME investigate this
+                vtree.reset_filters(refresh=False, transparent_only=True)
                 #then applying the tag
-                if len(taglist) > 0:
+                if view:
+# FIXME FIXME FIXME => I actually do not store anything in params and I should not need it (because we are selecting a view which is already stored and does not need any parameters)
+# maybe it be better to set it params = None... Think about it!
+                    #vtree.apply_filter(taglist[0], views[taglist[0]], refresh=True)
+                    vtree.apply_filter(taglist[0], refresh=True)
+
+                elif len(taglist) > 0:
                     #FIXME : support for multiple tags selection
                     if taglist[0] != CoreConfig.SEARCH_TAG and not view:
-                        vtree.apply_filter(taglist[0],refresh=True)
+                        vtree.apply_filter(taglist[0], refresh=True)
         
-        if CoreConfig.SEARCH_TAG in taglist:
-            self._search_ui_widget()
-        elif view:
-            self._search_ui_widget()
-        else:
-            self._active_ui_widget()
+        #if CoreConfig.SEARCH_TAG in taglist:
+            #self._search_ui_widget()
+        #elif view:
+            #self._search_ui_widget()
+        #else:
+            #self._active_ui_widget()
 
         # When enable_update_tags we should update all tags to match
         # the current state. However, applying tag filter does not influence
@@ -1795,7 +1821,6 @@ class TaskBrowser(gobject.GObject):
         open = False
         add = True
         save = False
-        search = True
         text = self.getMainEntryText()
         #if the text is exactly a title of a task, filter for that task only
         if self.req.task_exist(text, lowercase=True) :
@@ -1808,6 +1833,8 @@ class TaskBrowser(gobject.GObject):
         if self.s.is_valid():
             save = True
         #add the actions for the popup
+        # FIXME I've blocked online searching because we don't want that
+        search = False
         self.addActionsAutocomplete(open, add, save, search)
 
     def on_quicksearch_changed(self, editable):

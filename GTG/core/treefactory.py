@@ -103,9 +103,10 @@ class TreeFactory:
         search_tag.set_attribute("icon","search")
         search_tag.set_attribute("order",2)
         tagtree.add_node(search_tag)
+# FIXME I think we don't need any search 
         p = {'transparent':True}
         self.tasktree.add_filter('search',\
-                                    self.search, parameters=None)
+                                    self.search, parameters=p)
         
         # Build the separator
         sep_tag = Tag(CoreConfig.SEP_TAG, req=req)

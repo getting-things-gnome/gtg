@@ -165,6 +165,10 @@ class DataStore(object):
         s.build_search_tokens()
         params = s.get_params()
 
+        # We need to be transparent in the same way as tags!
+# FIXME make it look better
+        params['transparent'] = True
+
         #we create a new view from a name
         vname = viewname.encode("UTF-8")
         #if vname not in self.tags:
