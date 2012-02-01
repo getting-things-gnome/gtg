@@ -1,0 +1,10 @@
+[GTG Plugin]
+Module=urgency_coding
+Name=Urgency coding
+Short-description="Short description goes there"
+Description='''Long description goes right there
+'''
+Authors=XYZ <xyz@mail.com>
+Version=0.1
+Enabled=False
+Dependencies=
